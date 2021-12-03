@@ -69,7 +69,7 @@ class KDP002BViewModel extends ko.ViewModel {
     showBtnNoti: KnockoutObservable<boolean | null> = ko.observable(null);
     activeViewU: KnockoutObservable<boolean> = ko.observable(false);
     noticeSetting: KnockoutObservable<INoticeSet> = ko.observable(null);
-
+	stampTime: KnockoutObservable<string> = ko.observable('');
 
     constructor() {
         super();
@@ -77,9 +77,10 @@ class KDP002BViewModel extends ko.ViewModel {
 
     created(params: any) {
         const vm = this;
+		vm.stampTime(params.stampTime);
         vm.$window.shared("resultDisplayTime").done(displayTime => {
             vm.resultDisplayTime(displayTime);
-
+	
             vm.$window.shared("infoEmpToScreenB").done(infoEmp => {
 
                 vm.infoEmpFromScreenA = infoEmp;

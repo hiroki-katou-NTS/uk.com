@@ -1079,6 +1079,9 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			const { buttonPage, employeeData } = vm;
 			const { selectedId, employees, nameSelectArt } = ko.toJS(employeeData) as EmployeeListData;
+			let stampTime = moment(new Date()).format("HH:mm");
+			let stampDateTime = moment(new Date()).format();
+			
 			const reloadSetting = () =>
 				$.Deferred()
 					.resolve(true)
@@ -1180,7 +1183,7 @@ module nts.uk.at.kdp003.a {
 
 																					vm.$ajax(API.REGISTER, {
 																						employeeId,
-																						dateTime: moment(vm.$date.now()).format(),
+																						dateTime: stampDateTime,
 																						stampButton: {
 																							pageNo: layout.pageNo,
 																							buttonPositionNo: btn.btnPositionNo
@@ -1213,7 +1216,7 @@ module nts.uk.at.kdp003.a {
 																							return storage('resultDisplayTime', resultDisplayTime)
 																								.then(() => storage('infoEmpToScreenB', employeeInfo))
 																								.then(() => storage('screenB', { screen: "KDP003" }))
-																								.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+																								.then(() => modal('at', DIALOG.KDP002_B, {stampTime: stampTime })) as JQueryPromise<any>;
 																						}
 																					})
 																						.fail((message: BussinessException) => {
@@ -1224,7 +1227,7 @@ module nts.uk.at.kdp003.a {
 																		} else {
 																			vm.$ajax(API.REGISTER, {
 																				employeeId,
-																				dateTime: moment(vm.$date.now()).format(),
+																				dateTime: stampDateTime,
 																				stampButton: {
 																					pageNo: layout.pageNo,
 																					buttonPositionNo: btn.btnPositionNo
@@ -1256,7 +1259,7 @@ module nts.uk.at.kdp003.a {
 																					return storage('resultDisplayTime', resultDisplayTime)
 																						.then(() => storage('infoEmpToScreenB', employeeInfo))
 																						.then(() => storage('screenB', { screen: "KDP003" }))
-																						.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+																						.then(() => modal('at', DIALOG.KDP002_B, {stampTime: stampTime })) as JQueryPromise<any>;
 																				}
 																			}).fail((message: BussinessException) => {
 																				const { messageId, parameterIds } = message;
@@ -1274,7 +1277,7 @@ module nts.uk.at.kdp003.a {
 
 																	vm.$ajax(API.REGISTER, {
 																		employeeId,
-																		dateTime: moment(vm.$date.now()).format(),
+																		dateTime: stampDateTime,
 																		stampButton: {
 																			pageNo: layout.pageNo,
 																			buttonPositionNo: btn.btnPositionNo
@@ -1307,7 +1310,7 @@ module nts.uk.at.kdp003.a {
 																			return storage('resultDisplayTime', resultDisplayTime)
 																				.then(() => storage('infoEmpToScreenB', employeeInfo))
 																				.then(() => storage('screenB', { screen: "KDP003" }))
-																				.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+																				.then(() => modal('at', DIALOG.KDP002_B, {stampTime: stampTime })) as JQueryPromise<any>;
 																		}
 																	})
 																		.fail((message: BussinessException) => {
@@ -1319,7 +1322,7 @@ module nts.uk.at.kdp003.a {
 															vm.workPlaceId = dataStorage.WKPID[0];
 															vm.$ajax(API.REGISTER, {
 																employeeId,
-																dateTime: moment(vm.$date.now()).format(),
+																dateTime: stampDateTime,
 																stampButton: {
 																	pageNo: layout.pageNo,
 																	buttonPositionNo: btn.btnPositionNo
@@ -1351,7 +1354,7 @@ module nts.uk.at.kdp003.a {
 																	return storage('resultDisplayTime', resultDisplayTime)
 																		.then(() => storage('infoEmpToScreenB', employeeInfo))
 																		.then(() => storage('screenB', { screen: "KDP003" }))
-																		.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+																		.then(() => modal('at', DIALOG.KDP002_B, {stampTime: stampTime })) as JQueryPromise<any>;
 																}
 															}).fail((message: BussinessException) => {
 																const { messageId, parameterIds } = message;
@@ -1370,7 +1373,7 @@ module nts.uk.at.kdp003.a {
 
 																		vm.$ajax(API.REGISTER, {
 																			employeeId,
-																			dateTime: moment(vm.$date.now()).format(),
+																			dateTime: stampDateTime,
 																			stampButton: {
 																				pageNo: layout.pageNo,
 																				buttonPositionNo: btn.btnPositionNo
@@ -1404,7 +1407,7 @@ module nts.uk.at.kdp003.a {
 																				return storage('resultDisplayTime', resultDisplayTime)
 																					.then(() => storage('infoEmpToScreenB', employeeInfo))
 																					.then(() => storage('screenB', { screen: "KDP003" }))
-																					.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+																					.then(() => modal('at', DIALOG.KDP002_B, {stampTime: stampTime })) as JQueryPromise<any>;
 																			}
 																		})
 																			.fail((message: BussinessException) => {
@@ -1416,7 +1419,7 @@ module nts.uk.at.kdp003.a {
 															} else {
 																vm.$ajax(API.REGISTER, {
 																	employeeId,
-																	dateTime: moment(vm.$date.now()).format(),
+																	dateTime: stampDateTime,
 																	stampButton: {
 																		pageNo: layout.pageNo,
 																		buttonPositionNo: btn.btnPositionNo
@@ -1451,7 +1454,7 @@ module nts.uk.at.kdp003.a {
 																			return storage('resultDisplayTime', resultDisplayTime)
 																				.then(() => storage('infoEmpToScreenB', employeeInfo))
 																				.then(() => storage('screenB', { screen: "KDP003" }))
-																				.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+																				.then(() => modal('at', DIALOG.KDP002_B, {stampTime: stampTime })) as JQueryPromise<any>;
 																		}
 																	})
 																	.fail((message: BussinessException) => {

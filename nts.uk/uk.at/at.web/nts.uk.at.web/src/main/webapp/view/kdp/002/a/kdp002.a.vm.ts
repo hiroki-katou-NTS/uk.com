@@ -147,7 +147,8 @@ module nts.uk.at.view.kdp002.a {
             public clickBtn1(btn: any, layout: any) {
                 const vm = this;
                 const view = new ko.ViewModel();
-
+				let stampTime = moment(new Date()).format("HH:mm");
+				
                 nts.uk.ui.block.invisible();
                 nts.uk.request
                     .syncAjax("com", "server/time/now/")
@@ -185,7 +186,7 @@ module nts.uk.at.view.kdp002.a {
                                             if (vm.stampResultDisplay().notUseAttr == 1 && btn.changeClockArt == 1) {
                                                 vm.openScreenC(btn, layout);
                                             } else {
-                                                vm.openScreenB(btn, layout);
+                                                vm.openScreenB(btn, layout, stampTime);
                                             }
                                             
                                         }).fail((res) => {
@@ -203,7 +204,7 @@ module nts.uk.at.view.kdp002.a {
                                         if (vm.stampResultDisplay().notUseAttr == 1 && btn.changeClockArt == 1) {
                                             vm.openScreenC(btn, layout);
                                         } else {
-                                            vm.openScreenB(btn, layout);
+                                            vm.openScreenB(btn, layout, stampTime);
                                         }
                                         
             
@@ -217,8 +218,9 @@ module nts.uk.at.view.kdp002.a {
                     });
             }
 
-            public openScreenB(button, layout) {
+            public openScreenB(button, layout, stampTime) {
                 let self = this;
+				const vm = new ko.ViewModel();
 
                 nts.uk.ui.windows.setShared("resultDisplayTime", self.stampSetting().resultDisplayTime);
                 nts.uk.ui.windows.setShared("infoEmpToScreenB", {
@@ -229,7 +231,7 @@ module nts.uk.at.view.kdp002.a {
                 nts.uk.ui.windows.setShared("screenB", {
                     screen: "KDP002"
                 });
-                nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
+				vm.$window.modal('at', '/view/kdp/002/b/index.xhtml', {stampTime: stampTime}).then(() => {
                     if (self.stampGrid().displayMethod() === 1) {
                         self.getStampData();
                     } else {

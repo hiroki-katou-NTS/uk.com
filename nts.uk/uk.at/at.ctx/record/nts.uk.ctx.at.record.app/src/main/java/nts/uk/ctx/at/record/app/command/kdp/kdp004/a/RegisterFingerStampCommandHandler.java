@@ -177,7 +177,7 @@ public class RegisterFingerStampCommandHandler
 				AppContexts.user().companyId(), AppContexts.user().contractCode(), cmd.getEmployeeId(),
 				Optional.ofNullable(null),
 				new Relieve(EnumAdaptor.valueOf(cmd.getAuthcMethod(), AuthcMethod.class), StampMeans.FINGER_AUTHC),
-				cmd.getStampDatetime(), cmd.getStampButton(), cmd.getRefActualResult().toDomainValue());
+				cmd.getDatetime(), cmd.getStampButton(), cmd.getRefActualResult().toDomainValue());
 		// 2: not empty
 		if (inputResult != null && inputResult.at.isPresent()) {
 

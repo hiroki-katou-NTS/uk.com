@@ -557,10 +557,13 @@ module nts.uk.at.view.kdp004.a {
 				const vm = this;
 				vm.getWorkPlacesInfo();
 				nts.uk.ui.block.invisible();
+				let stampTime = moment(new Date()).format("HH:mm");
+				let stampDateTime = moment(new Date()).format();
+				
 				vm.doAuthent().done((res: IAuthResult) => {
 
 					if (res.isSuccess) {
-						vm.registerData(btn, layout, res);
+						vm.registerData(btn, layout, res, stampTime, stampDateTime);
 					}
 				});
 			}
@@ -674,7 +677,7 @@ module nts.uk.at.view.kdp004.a {
 				});
 			}
 
-			public registerData(button: any, layout: any, loginInfo: any) {
+			public registerData(button: any, layout: any, loginInfo: any, stampTime: any, stampDateTime: any) {
 				let self = this;
 				let vm = new ko.ViewModel();
 				block.invisible();
@@ -723,7 +726,7 @@ module nts.uk.at.view.kdp004.a {
 															.then((data: any) => {
 																let registerdata = {
 																	employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
-																	datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+																	datetime: stampDateTime,
 																	stampNumber: null,
 																	stampButton: {
 																		pageNo: layout.pageNo,
@@ -747,7 +750,7 @@ module nts.uk.at.view.kdp004.a {
 																	if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 																		self.openScreenC(button, layout, loginInfo.em);
 																	} else {
-																		self.openScreenB(button, layout, loginInfo.em);
+																		self.openScreenB(button, layout, loginInfo.em, stampTime);
 																	}
 
 																}).fail((res) => {
@@ -760,7 +763,7 @@ module nts.uk.at.view.kdp004.a {
 													} else {
 														let registerdata = {
 															employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
-															datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+															datetime: stampDateTime,
 															stampNumber: null,
 															stampButton: {
 																pageNo: layout.pageNo,
@@ -783,7 +786,7 @@ module nts.uk.at.view.kdp004.a {
 															if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 																self.openScreenC(button, layout, loginInfo.em);
 															} else {
-																self.openScreenB(button, layout, loginInfo.em);
+																self.openScreenB(button, layout, loginInfo.em, stampTime);
 															}
 
 														}).fail((res) => {
@@ -818,7 +821,7 @@ module nts.uk.at.view.kdp004.a {
 											.then((data: any) => {
 												let registerdata = {
 													employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
-													datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+													datetime: stampDateTime,
 													stampNumber: null,
 													stampButton: {
 														pageNo: layout.pageNo,
@@ -842,7 +845,7 @@ module nts.uk.at.view.kdp004.a {
 													if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 														self.openScreenC(button, layout, loginInfo.em);
 													} else {
-														self.openScreenB(button, layout, loginInfo.em);
+														self.openScreenB(button, layout, loginInfo.em, stampTime);
 													}
 
 												}).fail((res) => {
@@ -855,7 +858,7 @@ module nts.uk.at.view.kdp004.a {
 									} else {
 										let registerdata = {
 											employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
-											datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+											datetime: stampDateTime,
 											stampNumber: null,
 											stampButton: {
 												pageNo: layout.pageNo,
@@ -879,7 +882,7 @@ module nts.uk.at.view.kdp004.a {
 											if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 												self.openScreenC(button, layout, loginInfo.em);
 											} else {
-												self.openScreenB(button, layout, loginInfo.em);
+												self.openScreenB(button, layout, loginInfo.em, stampTime);
 											}
 
 										}).fail((res) => {
@@ -895,7 +898,7 @@ module nts.uk.at.view.kdp004.a {
 
 			}
 
-			public openScreenB(button, layout, loginInfo) {
+			public openScreenB(button, layout, loginInfo, stampTime) {
 				let self = this;
 				let vm = new ko.ViewModel();
 
@@ -911,8 +914,7 @@ module nts.uk.at.view.kdp004.a {
 					screen: "KDP004"
 				});
 
-				modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
-				});
+				vm.$window.modal('/view/kdp/002/b/index.xhtml', {stampTime: stampTime});
 			}
 
 			public openScreenC(button, layout, loginInfo) {

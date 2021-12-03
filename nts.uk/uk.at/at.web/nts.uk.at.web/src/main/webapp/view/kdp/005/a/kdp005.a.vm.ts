@@ -435,13 +435,15 @@ module nts.uk.at.view.kdp005.a {
 			public clickBtn1(btn: any, layout: any) {
 				const vm = this;
 				vm.getWorkPlacesInfo();
+				let stampTime = moment(new Date()).format("HH:mm");
+				let stampDateTime = moment(new Date()).format();
 
 				modal('/view/kdp/005/h/index.xhtml').onClosed(function (): any {
 					let ICCard = getShared('ICCard');
 					if (ICCard && ICCard != '') {
 						block.grayout();
 						vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
-							vm.registerData(btn, layout, ICCard, employeeId);
+							vm.registerData(btn, layout, ICCard, employeeId, stampTime, stampDateTime);
 						}).fail(() => {
 							vm.openIDialog();
 						}).always(() => {
@@ -588,7 +590,7 @@ module nts.uk.at.view.kdp005.a {
 				return dfd.promise();
 			}
 
-			public registerData(button, layout, stampedCardNumber, employeeIdRegister) {
+			public registerData(button, layout, stampedCardNumber, employeeIdRegister, stampTime, stampDateTime) {
 				let self = this;
 				let vm = new ko.ViewModel();
 				var showViewL = false;
@@ -596,7 +598,6 @@ module nts.uk.at.view.kdp005.a {
 				const employeeId = employeeIdRegister;
 
 				let source = self.playAudio(button.audioType);
-
 				//打刻入力で共通設定を取得する
 				vm.$ajax(API.SETTING_STAMP_COMMON)
 					.done((data: ISettingsStampCommon) => {
@@ -633,7 +634,7 @@ module nts.uk.at.view.kdp005.a {
 																	.then((data: any) => {
 																		let registerdata = {
 																			stampedCardNumber: stampedCardNumber,
-																			datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+																			datetime: stampDateTime,
 																			stampButton: {
 																				pageNo: layout.pageNo,
 																				buttonPositionNo: button.btnPositionNo
@@ -658,7 +659,7 @@ module nts.uk.at.view.kdp005.a {
 																			if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 																				self.openScreenC(button, layout, employeeIdRegister);
 																			} else {
-																				self.openScreenB(button, layout, employeeIdRegister);
+																				self.openScreenB(button, layout, employeeIdRegister, stampTime);
 																			}
 																		}).fail((res) => {
 																			dialog.alertError({ messageId: res.messageId });
@@ -670,7 +671,7 @@ module nts.uk.at.view.kdp005.a {
 															} else {
 																let registerdata = {
 																	stampedCardNumber: stampedCardNumber,
-																	datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+																	datetime: stampDateTime,
 																	stampButton: {
 																		pageNo: layout.pageNo,
 																		buttonPositionNo: button.btnPositionNo
@@ -694,7 +695,7 @@ module nts.uk.at.view.kdp005.a {
 																	if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 																		self.openScreenC(button, layout, employeeIdRegister);
 																	} else {
-																		self.openScreenB(button, layout, employeeIdRegister);
+																		self.openScreenB(button, layout, employeeIdRegister, stampTime);
 																	}
 																}).fail((res) => {
 																	dialog.alertError({ messageId: res.messageId });
@@ -718,7 +719,7 @@ module nts.uk.at.view.kdp005.a {
 													.then((data: any) => {
 														let registerdata = {
 															stampedCardNumber: stampedCardNumber,
-															datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+															datetime: stampDateTime,
 															stampButton: {
 																pageNo: layout.pageNo,
 																buttonPositionNo: button.btnPositionNo
@@ -743,7 +744,7 @@ module nts.uk.at.view.kdp005.a {
 															if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 																self.openScreenC(button, layout, employeeIdRegister);
 															} else {
-																self.openScreenB(button, layout, employeeIdRegister);
+																self.openScreenB(button, layout, employeeIdRegister, stampTime);
 															}
 														}).fail((res) => {
 															dialog.alertError({ messageId: res.messageId });
@@ -754,7 +755,7 @@ module nts.uk.at.view.kdp005.a {
 											} else {
 												let registerdata = {
 													stampedCardNumber: stampedCardNumber,
-													datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+													datetime: stampDateTime,
 													stampButton: {
 														pageNo: layout.pageNo,
 														buttonPositionNo: button.btnPositionNo
@@ -779,7 +780,7 @@ module nts.uk.at.view.kdp005.a {
 													if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 														self.openScreenC(button, layout, employeeIdRegister);
 													} else {
-														self.openScreenB(button, layout, employeeIdRegister);
+														self.openScreenB(button, layout, employeeIdRegister, stampTime);
 													}
 												}).fail((res) => {
 													dialog.alertError({ messageId: res.messageId });
@@ -793,7 +794,7 @@ module nts.uk.at.view.kdp005.a {
 					});
 			}
 
-			public openScreenB(button, layout, employeeIdRegister) {
+			public openScreenB(button, layout, employeeIdRegister, stampTime) {
 				let self = this;
 				let vm = new ko.ViewModel();
 				setShared("resultDisplayTime", self.stampSetting().resultDisplayTime);
@@ -805,7 +806,7 @@ module nts.uk.at.view.kdp005.a {
 				setShared("screenB", {
 					screen: "KDP005"
 				});
-				modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
+				vm.$window.modal('/view/kdp/002/b/index.xhtml', {stampTime: stampTime}).then(() => {
 					self.openKDP002T(button, layout);
 				});
 			}
