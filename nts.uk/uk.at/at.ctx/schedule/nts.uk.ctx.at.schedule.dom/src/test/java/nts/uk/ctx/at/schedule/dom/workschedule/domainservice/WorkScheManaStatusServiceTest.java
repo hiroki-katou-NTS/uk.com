@@ -19,6 +19,7 @@ import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
@@ -113,6 +114,7 @@ public class WorkScheManaStatusServiceTest {
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
 				new ArrayList<>(),
 				TaskSchedule.createWithEmptyList(),
+				SupportSchedule.createWithEmptyList(),
 				Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 
 		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),

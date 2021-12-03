@@ -69,7 +69,7 @@ public class CorrectWorkSchedule {
 		WorkSchedule workSchedules = new WorkSchedule(integrationOfDaily.getEmployeeId(),
 				integrationOfDaily.getYmd(), workSchedule.getConfirmedATR(), integrationOfDaily.getWorkInformation(),
 				integrationOfDaily.getAffiliationInfor(), integrationOfDaily.getBreakTime(),
-				integrationOfDaily.getEditState(), workSchedule.getTaskSchedule(), integrationOfDaily.getAttendanceLeave(),
+				integrationOfDaily.getEditState(), workSchedule.getTaskSchedule(), workSchedule.getSupportSchedule(), integrationOfDaily.getAttendanceLeave(),
 				integrationOfDaily.getAttendanceTimeOfDailyPerformance(), integrationOfDaily.getShortTime(),integrationOfDaily.getOutingTime());
 		
 		return workSchedules;

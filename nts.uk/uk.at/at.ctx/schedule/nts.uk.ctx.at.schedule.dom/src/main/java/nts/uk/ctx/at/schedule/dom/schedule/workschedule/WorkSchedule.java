@@ -19,6 +19,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.OptionalUtil;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -81,6 +82,9 @@ public class WorkSchedule implements DomainAggregate {
 	
 	/** 作業予定 **/
 	private TaskSchedule taskSchedule;
+	
+	/** 応援予定 **/
+	private SupportSchedule supportSchedule;
 
 	/** 出退勤 */
 	private Optional<TimeLeavingOfDailyAttd> optTimeLeaving;
@@ -134,6 +138,7 @@ public class WorkSchedule implements DomainAggregate {
 				new BreakTimeOfDailyAttd(),
 				new ArrayList<>(), 
 				TaskSchedule.createWithEmptyList(),
+				SupportSchedule.createWithEmptyList(),
 				optTimeLeaving, 
 				Optional.empty(), 
 				Optional.empty(),

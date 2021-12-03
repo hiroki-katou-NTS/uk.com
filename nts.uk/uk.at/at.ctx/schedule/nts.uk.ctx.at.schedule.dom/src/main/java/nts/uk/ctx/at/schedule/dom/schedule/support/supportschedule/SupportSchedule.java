@@ -29,7 +29,7 @@ public class SupportSchedule {
 	 * 応援なしで作る
 	 * @return
 	 */
-	public static SupportSchedule createWithEmpty() {
+	public static SupportSchedule createWithEmptyList() {
 		return new SupportSchedule( Collections.emptyList() );
 	}
 	
@@ -42,7 +42,7 @@ public class SupportSchedule {
 	public static SupportSchedule create(Require require, List<SupportScheduleDetail> details) {
 		
 		if ( details.isEmpty() ) {
-			return SupportSchedule.createWithEmpty();
+			return SupportSchedule.createWithEmptyList();
 		}
 		
 		Integer maxSupportTimes = require.getSupportOperationSetting();

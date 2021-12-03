@@ -23,6 +23,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText.Builder;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.CreateWorkSchedule.WorkTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule.Require;
@@ -251,6 +252,7 @@ public class CreateWorkScheduleTest {
 					new BreakTimeOfDailyAttd(), 
 					new ArrayList<>(),
 					TaskSchedule.createWithEmptyList(),
+					SupportSchedule.createWithEmptyList(),
 					Optional.empty(), 
 					Optional.empty(), 
 					Optional.empty(),

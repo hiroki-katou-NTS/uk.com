@@ -55,6 +55,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.DateRegistedEmpSche;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.RegistrationListDateSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.createworkschedule.createschedulecommon.correctworkschedule.CorrectWorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ProcessingStatus;
@@ -486,6 +487,7 @@ public class ScheduleCreatorExecutionTransaction {
 						new BreakTimeOfDailyAttd(),
 						new ArrayList<>(),
 						TaskSchedule.createWithEmptyList(),
+						SupportSchedule.createWithEmptyList(),
 						Optional.empty(),
 						Optional.empty(),
 						Optional.empty(),
@@ -756,6 +758,7 @@ public class ScheduleCreatorExecutionTransaction {
 							integrationOfDaily.getBreakTime(),
 							integrationOfDaily.getEditState(),
 							TaskSchedule.createWithEmptyList(),
+							SupportSchedule.createWithEmptyList(),
 							integrationOfDaily.getAttendanceLeave(),
 							integrationOfDaily.getAttendanceTimeOfDailyPerformance(),
 							integrationOfDaily.getShortTime(),
