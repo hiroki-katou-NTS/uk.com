@@ -372,10 +372,10 @@ module nts.uk.at.view.kmk002.d {
             public fromDto(dto: ParamToD): void {
                 let self = this;
                 if(!isNullOrEmpty(dto.selectableFormulas)){
-                    for (let i = 0; i <dto.operatorDatasource.length;i++){
+                    for (let i = 0; i < dto.selectableFormulas.length;i++){
                         let item :FormulaDto = dto.selectableFormulas[i];
                         let type  = EnumAdaptor.localizedNameOf(item.formulaAtr, dto.enums.formulaAtr);
-                        let name = item.symbolValue + type;
+                        let name = item.symbolValue + " " + type;
                         item.symbolValue = name;
                     }
                 }
