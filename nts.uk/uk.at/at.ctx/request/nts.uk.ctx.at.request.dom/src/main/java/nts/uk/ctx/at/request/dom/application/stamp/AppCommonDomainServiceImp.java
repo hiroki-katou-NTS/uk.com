@@ -19,6 +19,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.WorkLocationAdapter;
@@ -76,6 +77,9 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	
 	@Inject
 	private WorkLocationAdapter workLocationAdapter;
+	
+	@Inject
+	private ApplicationRepository appRepo;
 
 	@Override
 	public AppStampOutput getDataCommon(String companyId, Optional<GeneralDate> dates,
@@ -613,35 +617,39 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 			MaximumNumberOfSupport maxNumberOfSupportOfDay = supportOperationSetting.getMaxNumberOfSupportOfDay();
 			appStampOutput.setMaxOfCheer(maxNumberOfSupportOfDay.v());
 			
-			// 応援の運用設定.利用するか　＝　true
-			if (supportOperationSetting.isSupportDestinationCanSpecifySupporter()) {
-				List<WorkplaceId> workplaceIds = appStampOptional.isPresent()
-						? appStampOptional.get().getListTimeStampApp().stream()
-								.map(x -> x.getWorkplaceId().orElse(null))
-								.filter(Objects::nonNull)
-								.collect(Collectors.toList())
-						: new ArrayList<WorkplaceId>();
-								
-				List<String> workLocationCDs = appStampOptional.isPresent()
-						? appStampOptional.get().getListTimeStampApp().stream()
-								.map(x -> x.getWorkLocationCd().orElse(null))
-								.filter(Objects::nonNull)
-								.map(WorkLocationCD::v)
-								.collect(Collectors.toList())
-						: new ArrayList<String>();
+			GeneralDate appDate = GeneralDate.today();
+			if (appStampOptional.isPresent()) {
+				Optional<Application> optApp = this.appRepo.findByID(appId);
 				
-				WkpWorkLocationName wkpWorkLocationName = this.findWkpAndWorkLocationName(
-						appStampSettingOptional.isPresent() && appStampSettingOptional.get().getWkpDisAtr().isUse(),
-						appStampSettingOptional.isPresent() && appStampSettingOptional.get().getUseLocationSelection().isUse(),
-						workplaceIds,
-						workLocationCDs,
-						appStampOptional.isPresent()
-							? appStampOptional.get().getAppDate().getApplicationDate()
-							: GeneralDate.today());
-
-				appStampOutput.setWorkLocationNames(wkpWorkLocationName.getWorkLocationNames());
-				appStampOutput.setWorkplaceNames(wkpWorkLocationName.getWorkplaceNames());
+				if (optApp.isPresent()) {
+					appDate = optApp.get().getAppDate().getApplicationDate();
+				}
 			}
+			
+			List<WorkplaceId> workplaceIds = appStampOptional.isPresent()
+					? appStampOptional.get().getListTimeStampApp().stream()
+							.map(x -> x.getWorkplaceId().orElse(null))
+							.filter(Objects::nonNull)
+							.collect(Collectors.toList())
+					: new ArrayList<WorkplaceId>();
+							
+			List<String> workLocationCDs = appStampOptional.isPresent()
+					? appStampOptional.get().getListTimeStampApp().stream()
+							.map(x -> x.getWorkLocationCd().orElse(null))
+							.filter(Objects::nonNull)
+							.map(WorkLocationCD::v)
+							.collect(Collectors.toList())
+					: new ArrayList<String>();
+			
+			WkpWorkLocationName wkpWorkLocationName = this.findWkpAndWorkLocationName(
+					appStampSettingOptional.isPresent() && appStampSettingOptional.get().getWkpDisAtr().isUse(),
+					appStampSettingOptional.isPresent() && appStampSettingOptional.get().getUseLocationSelection().isUse(),
+					workplaceIds,
+					workLocationCDs,
+					appDate);
+
+			appStampOutput.setWorkLocationNames(wkpWorkLocationName.getWorkLocationNames());
+			appStampOutput.setWorkplaceNames(wkpWorkLocationName.getWorkplaceNames());
 			
 		}
 		appStampOutput.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
