@@ -396,7 +396,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	}
 	
 	private void removePramX(Connection con, String sid, GeneralDate date, String type) {
-		String sqlQuery = "Delete From " + checkErType(type) + " Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
+		String sqlQuery = "Delete From " + checkErType(type) + " Where SID = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
 		try (val st = con.createStatement()) {
 			st.executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -405,7 +405,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	}
 	
 	private void removePramXC(Connection con, String sid, GeneralDate date, String type) {
-		String sqlQuery = "Delete From " + checkErTypeC(type) + " Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
+		String sqlQuery = "Delete From " + checkErTypeC(type) + " Where SID = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
 		try (val st = con.createStatement()) {
 			st.executeUpdate(sqlQuery);
 		} catch (SQLException e) {
