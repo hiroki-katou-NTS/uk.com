@@ -8,7 +8,9 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
@@ -55,6 +57,9 @@ public class BentoMenuSetScreenProcessor {
         
         // 1: 会社IDと予約の運用区別によって予約受付時間帯を取得する
         List<ReservationRecTimeZone> reservationRecTimeZoneLst = reservationSettingRepository.getReservationRecTimeZoneByOpDist(companyID, 0);
+        if(CollectionUtil.isEmpty(reservationRecTimeZoneLst)) {
+        	throw new BusinessException("Msg_1847");
+        }
         
         // 2: 取得する
         Optional<BentoMenuHistory> opBentoMenuHistory = iBentoMenuHistoryRepository.findByCompanyId(companyID);
@@ -68,6 +73,8 @@ public class BentoMenuSetScreenProcessor {
         		startDate = opDateHistoryItem.get().start();
         		endDate = opDateHistoryItem.get().end();
         	}
+        } else {
+        	throw new BusinessException("Msg_1848");
         }
         
         // 2.1: 弁当メニューを取得
