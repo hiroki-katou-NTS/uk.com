@@ -1447,7 +1447,7 @@ module nts.uk.ui.at.kdw013.calendar {
             const checkEditDialog = () => {
                 let dfd = $.Deferred();
                 let eventNotSave = _.find(vm.calendar.getEvents(), (e) => !_.get(e, 'extendedProps.id'));
-                if (vm.$view() == "edit" && vm.params.$settings().isChange) {
+                if ((vm.$view() == "edit" && vm.params.$settings().isChange) || (vm.$view() == "edit" && eventNotSave)) {
                     vm.$dialog
                         .confirm({ messageId: 'Msg_2094' })
                         .then((v: 'yes' | 'no') => {
@@ -3593,11 +3593,11 @@ module nts.uk.ui.at.kdw013.calendar {
             let dfd = $.Deferred();
             const vm = this;
             let eventNotSave = _.find(vm.calendar.getEvents(), (e) => !_.get(e, 'extendedProps.id'));
-            if (vm.$view() == "edit" && vm.params.$settings().isChange) {
+            if ((vm.$view() == "edit" && vm.params.$settings().isChange) || (vm.$view() == "edit" && eventNotSave)) {
                 vm.$dialog
                     .confirm({ messageId: 'Msg_2094' })
                     .then((v: 'yes' | 'no') => {
-                        if (eventNotSave)
+                        if (v == 'yes' && eventNotSave)
                             eventNotSave.remove();
                         dfd.resolve(v);
                     });
@@ -3691,7 +3691,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
 
                             // close popup if target isn't owner & poper.
-                            if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr && !dig && !cd && !st && !cv && !ts && !event &&!cala) {
+                             if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr && !dig && !cd && !st && !cv && !ts && !event &&!cala) {
                                 vm.checkEditDialog().done((v) => {
                                     if (v == 'yes') {
 										$('.edit-event .nts-input').ntsError('clear');
