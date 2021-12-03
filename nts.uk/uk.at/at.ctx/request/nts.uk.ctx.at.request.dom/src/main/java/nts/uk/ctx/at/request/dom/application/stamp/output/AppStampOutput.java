@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.stamp.output;
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,10 +48,10 @@ public class AppStampOutput {
 	private Optional<Boolean> useTemporary = Optional.empty();
 
 //  場所名
-	private List<WorkLocationNameImported> workLocationNames;
+	private List<WorkLocationNameImported> workLocationNames = Collections.emptyList();
 	
 //  職場名
-	private List<WorkplaceNameImported> workplaceNames;
+	private List<WorkplaceNameImported> workplaceNames = Collections.emptyList();
 	
 // 応援を利用する
 	private boolean useCheering;

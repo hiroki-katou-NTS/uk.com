@@ -563,6 +563,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             } else if (type === STAMPTYPE.ATTENDENCE) {
                 if ($('#' + id).length) {
                     $('#' + id).ntsGrid(self.getAtdOrCheeringGrid(isChrome, dataSource, headerFlagContent, statesTable));
+                    _.forEach(dataSource, (data: any) => self.reloadWorkplaceWorkLocation(data, type));
                 }
             } else if (type === STAMPTYPE.CHEERING) {
                 if ($('#' + id).length) {
@@ -570,7 +571,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                     
                     if (self.kaf002Data && self.kaf002Data.maxOfCheer && self.kaf002Data.maxOfCheer > 3 && self.isLinkList[items[0].index]) {
                         const $expandRow = $('<tr id="trLinkCheer">');
-                        const $firstCol = $('<td class="titleCorlor" style="height: 50px; background-color: #CFF1A5">');
+                        const $firstCol = $('<td class="titleColor" style="height: 50px; background-color: #CFF1A5">');
                         const $secondCol = $('<td colspan="5">');
                         const $secondCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">');
                         const $secondCol__div__link = $(`<a style="color: blue; text-decoration: underline">${self.$i18n('KAF002_85', [self.kaf002Data.maxOfCheer])}</a>`)
@@ -581,6 +582,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         $expandRow.append($secondCol);
                         $('#' + id).append($expandRow);
                     }
+
+                    _.forEach(dataSource, (data: any) => self.reloadWorkplaceWorkLocation(data, type));
                 }
             } else {
                 if ($('#' + id).length) {
@@ -604,11 +607,12 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             }
 
             // add row to display expand row
-            if (items.length >= 10 && self.isLinkList[items[0].index]) {
+            if (type !== STAMPTYPE.CHEERING) {
+              if (items.length >= 10 && self.isLinkList[items[0].index]) {
                 if ($('#' + id).length) {
                     const $expandRow = $('<tr id="trLink2">');
-                    const $secondCol = $('<td class="titleCorlor" style="height: 50px; background-color: #CFF1A5">')
-                    const $thirdCol = $('<td colspan="4">');
+                    const $secondCol = $('<td class="titleColor" style="height: 50px; background-color: #CFF1A5">')
+                    const $thirdCol = $('<td colspan="5">');
                     const $thirdCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">')
                     $thirdCol__div.append('<a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']), text: \'' + self.$i18n('KAF002_73') + '\'"></a>');
                     
@@ -618,8 +622,9 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                     $('#' + id).append($expandRow);
                 }
 
-            } else {
-                self.isLinkList[items[0].index] = false;
+              } else {
+                  self.isLinkList[items[0].index] = false;
+              }
             }
 
             let moreRow = document.getElementById('moreRow' + String(items[0].index));
@@ -724,6 +729,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                 self.dataSource[data.index][data.idGetList].workplaceId = selected;
 
                                 const selectedInfor = nts.uk.ui.windows.getShared('workplaceInfor')
+                                self.dataSource[data.index][data.idGetList].workplaceName = selectedInfor[0].displayName;
                                 const $selected = $(`<div class="limited-label label-workplace-id">${selectedInfor[0].displayName}</div>`);
                                 if (self.selectedTab() == 'tab-1') {
                                     $('#grid1_container .nts-grid-control-workplaceId-' + data.id + ' .label-workplace-id').remove();
@@ -755,6 +761,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                 data.workLocationCD = workLocationCD;
                                 self.dataSource[data.index][data.idGetList].workLocationCD = workLocationCD;
 
+                                self.dataSource[data.index][data.idGetList].workLocationName = returnWorkLocationName;
                                 const $selected = $(`<div class="limited-label label-work-location">${returnWorkLocationName}</div>`);
                                 if (self.selectedTab() == 'tab-1') {
                                     $('#grid1_container .nts-grid-control-workLocationCD-' + data.id + ' .label-work-location').remove();
@@ -780,6 +787,32 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             return options;
         }
 
+        private reloadWorkplaceWorkLocation(data: GridItem, type: number) {
+          const self = this;
+          let gridId: number;
+          if (type === STAMPTYPE.ATTENDENCE) {
+            gridId = 1;
+          } else if (type === STAMPTYPE.CHEERING) {
+            gridId = 6;
+          } else return;
+          if (data.workplaceId && !_.isEmpty(data.workplaceId)) {
+            const $selected = $(`<div class="limited-label label-workplace-id">${data.workplaceName || ""}</div>`);
+            $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} button`).ready(() => {
+              $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} button`).removeAttr("tabindex");
+              $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} .label-workplace-id`).remove();
+              $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id}`).append($selected);
+            });
+          }
+          
+          if (data.workLocationCD && !_.isEmpty(data.workLocationCD)) {
+            const $selected = $(`<div class="limited-label label-work-location">${data.workLocationName || ""}</div>`);
+            $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} button`).ready(() => {
+              $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} button`).removeAttr("tabindex");
+              $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} .label-work-location`).remove();
+              $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id}`).append($selected);
+            });
+          }
+        }
     }
 
 
@@ -801,8 +834,10 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         nameEnd: string;
         workplace: string;
         workplaceId: string;
+        workplaceName: string;
         workLocation: string;
         workLocationCD: string;
+        workLocationName: string;
         idGetList: number;
 
         typeStamp: STAMPTYPE;

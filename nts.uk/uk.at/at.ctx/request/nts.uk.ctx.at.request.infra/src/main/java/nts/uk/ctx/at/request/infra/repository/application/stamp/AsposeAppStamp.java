@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.application.stamp;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -43,6 +44,7 @@ public class AsposeAppStamp {
 
 	private final String EMPTY = "";
 	private final String HALF_WIDTH_SPACE = " ";
+	private final int MAX_ROW = 58;
 
 	/**
 	 * @param worksheet
@@ -55,6 +57,7 @@ public class AsposeAppStamp {
 		Optional<AppStampOutput> appStampOutputOp = printContentOfApp.getOpAppStampOutput();
 		Cells cells = worksheet.getCells();
 
+		final int maxRow = MAX_ROW - 20 + appStampOutputOp.get().getMaxOfCheer();
 		if (type == StampRequestMode.STAMP_ONLINE_RECORD) {
 			Optional<AppRecordImage> appRecordImageOp = appStampOutputOp.get().getAppRecordImage();
 			AppRecordImage appRecordImage = appRecordImageOp.get();
@@ -78,8 +81,11 @@ public class AsposeAppStamp {
 					breakTime = EMPTY, breakTime2 = EMPTY, breakTime3 = EMPTY, breakTime4 = EMPTY, breakTime5 = EMPTY, breakTime6 = EMPTY, breakTime7 = EMPTY, breakTime8 = EMPTY, breakTime9 = EMPTY, breakTime10 = EMPTY,
 					childCareTime = EMPTY, childCareTime2 = EMPTY, nursingTime = EMPTY, nursingTime2 = EMPTY;
 			
-			Map<Integer, String> supportTimes = IntStream.rangeClosed(1, 3).boxed()
-					.collect(Collectors.toMap(Function.identity(), i -> EMPTY));
+			Map<Integer, String> supportTimes = Collections.emptyMap();
+			if (appStampOutputOp.get().getMaxOfCheer() > 0) {
+				supportTimes = IntStream.rangeClosed(1, appStampOutputOp.get().getMaxOfCheer()).boxed()
+				.collect(Collectors.toMap(Function.identity(), i -> EMPTY));
+			}
 			int deleteCnt = 0;
 
 			/*
@@ -642,7 +648,7 @@ public class AsposeAppStamp {
 
 			// Copy cells
 			try {
-				for (int i = 8; i <= 38; i++) {
+				for (int i = 8; i <= maxRow - 3; i++) {
 					cells.copyRow(cells, 7, i);
 				}
 			} catch (Exception e) {
@@ -962,24 +968,24 @@ public class AsposeAppStamp {
 
 			// set style for bottom
 
-			cells.setRowHeightPixel(41 - deleteCnt - 2, 5);
-			cells.setRowHeightPixel(41 - deleteCnt - 1, 130);
-			cells.setRowHeightPixel(41 - deleteCnt, 5);
-			cells.setRowHeightPixel(41 - deleteCnt + 1, 5);
-			cells.setRowHeightPixel(41 - deleteCnt + 2, 130);
-			cells.setRowHeightPixel(41 - deleteCnt + 3, 5);
+			cells.setRowHeightPixel(maxRow - deleteCnt - 2, 5);
+			cells.setRowHeightPixel(maxRow - deleteCnt - 1, 130);
+			cells.setRowHeightPixel(maxRow - deleteCnt, 5);
+			cells.setRowHeightPixel(maxRow - deleteCnt + 1, 5);
+			cells.setRowHeightPixel(maxRow - deleteCnt + 2, 130);
+			cells.setRowHeightPixel(maxRow - deleteCnt + 3, 5);
 
 			// before reason
-			Cell bReason = worksheet.getCells().get("B" + (41 - deleteCnt - 1));
-			Cell cReason = worksheet.getCells().get("C" + (41 - deleteCnt - 1));
-			Cell dReason = worksheet.getCells().get("D" + (41 - deleteCnt - 1));
-			Cell eReason = worksheet.getCells().get("E" + (41 - deleteCnt - 1));
-			Cell fReason = worksheet.getCells().get("F" + (41 - deleteCnt - 1));
-			Cell gReason = worksheet.getCells().get("G" + (41 - deleteCnt - 1));
-			Cell hReason = worksheet.getCells().get("H" + (41 - deleteCnt - 1));
-			Cell iReason = worksheet.getCells().get("I" + (41 - deleteCnt - 1));
-			Cell jReason = worksheet.getCells().get("J" + (41 - deleteCnt - 1));
-			Cell kReason = worksheet.getCells().get("K" + (41 - deleteCnt - 1));
+			Cell bReason = worksheet.getCells().get("B" + (maxRow - deleteCnt - 1));
+			Cell cReason = worksheet.getCells().get("C" + (maxRow - deleteCnt - 1));
+			Cell dReason = worksheet.getCells().get("D" + (maxRow - deleteCnt - 1));
+			Cell eReason = worksheet.getCells().get("E" + (maxRow - deleteCnt - 1));
+			Cell fReason = worksheet.getCells().get("F" + (maxRow - deleteCnt - 1));
+			Cell gReason = worksheet.getCells().get("G" + (maxRow - deleteCnt - 1));
+			Cell hReason = worksheet.getCells().get("H" + (maxRow - deleteCnt - 1));
+			Cell iReason = worksheet.getCells().get("I" + (maxRow - deleteCnt - 1));
+			Cell jReason = worksheet.getCells().get("J" + (maxRow - deleteCnt - 1));
+			Cell kReason = worksheet.getCells().get("K" + (maxRow - deleteCnt - 1));
 
 			Style bReasonStyle = bReason.getStyle();
 			Style cReasonStyle = cReason.getStyle();
@@ -1032,10 +1038,10 @@ public class AsposeAppStamp {
 			kReason.setStyle(kReasonStyle);
 
 			// reason
-			Cell bReasonLabel = cells.get("B" + (41 - deleteCnt));
-			Cell cReasonLabel = cells.get("C" + (41 - deleteCnt));
-			Cell dReasonLabel = cells.get("D" + (41 - deleteCnt));
-			Cell kReasonLabel = cells.get("K" + (41 - deleteCnt));
+			Cell bReasonLabel = cells.get("B" + (maxRow - deleteCnt));
+			Cell cReasonLabel = cells.get("C" + (maxRow - deleteCnt));
+			Cell dReasonLabel = cells.get("D" + (maxRow - deleteCnt));
+			Cell kReasonLabel = cells.get("K" + (maxRow - deleteCnt));
 
 			Style bReasonLabelStyle = bReasonLabel.getStyle();
 			Style cReasonLabelStyle = cReasonLabel.getStyle();
@@ -1067,20 +1073,20 @@ public class AsposeAppStamp {
 			dReasonLabel.setStyle(dReasonLabelStyle);
 			kReasonLabel.setStyle(kReasonLabelStyle);
 
-			cells.merge(41 - deleteCnt - 1, 1, 1, 2);
-			cells.merge(41 - deleteCnt - 1, 3, 1, 8);
+			cells.merge(maxRow - deleteCnt - 1, 1, 1, 2);
+			cells.merge(maxRow - deleteCnt - 1, 3, 1, 8);
 
 			// under reason
-			Cell bReasonUnder = worksheet.getCells().get("B" + (41 - deleteCnt + 1));
-			Cell cReasonUnder = worksheet.getCells().get("C" + (41 - deleteCnt + 1));
-			Cell dReasonUnder = worksheet.getCells().get("D" + (41 - deleteCnt + 1));
-			Cell eReasonUnder = worksheet.getCells().get("E" + (41 - deleteCnt + 1));
-			Cell fReasonUnder = worksheet.getCells().get("F" + (41 - deleteCnt + 1));
-			Cell gReasonUnder = worksheet.getCells().get("G" + (41 - deleteCnt + 1));
-			Cell hReasonUnder = worksheet.getCells().get("H" + (41 - deleteCnt + 1));
-			Cell iReasonUnder = worksheet.getCells().get("I" + (41 - deleteCnt + 1));
-			Cell jReasonUnder = worksheet.getCells().get("J" + (41 - deleteCnt + 1));
-			Cell kReasonUnder = worksheet.getCells().get("K" + (41 - deleteCnt + 1));
+			Cell bReasonUnder = worksheet.getCells().get("B" + (maxRow - deleteCnt + 1));
+			Cell cReasonUnder = worksheet.getCells().get("C" + (maxRow - deleteCnt + 1));
+			Cell dReasonUnder = worksheet.getCells().get("D" + (maxRow - deleteCnt + 1));
+			Cell eReasonUnder = worksheet.getCells().get("E" + (maxRow - deleteCnt + 1));
+			Cell fReasonUnder = worksheet.getCells().get("F" + (maxRow - deleteCnt + 1));
+			Cell gReasonUnder = worksheet.getCells().get("G" + (maxRow - deleteCnt + 1));
+			Cell hReasonUnder = worksheet.getCells().get("H" + (maxRow - deleteCnt + 1));
+			Cell iReasonUnder = worksheet.getCells().get("I" + (maxRow - deleteCnt + 1));
+			Cell jReasonUnder = worksheet.getCells().get("J" + (maxRow - deleteCnt + 1));
+			Cell kReasonUnder = worksheet.getCells().get("K" + (maxRow - deleteCnt + 1));
 
 			Style bReasonUnderStyle = bReasonUnder.getStyle();
 			Style cReasonUnderStyle = cReasonUnder.getStyle();
@@ -1143,10 +1149,10 @@ public class AsposeAppStamp {
 			kReasonUnder.setStyle(kReasonUnderStyle);
 
 			// before remark
-			Cell bRemark = worksheet.getCells().get("B" + (41 - deleteCnt + 2));
-			Cell cRemark = worksheet.getCells().get("C" + (41 - deleteCnt + 2));
-			Cell dRemark = worksheet.getCells().get("D" + (41 - deleteCnt + 2));
-			Cell kRemark = worksheet.getCells().get("K" + (41 - deleteCnt + 2));
+			Cell bRemark = worksheet.getCells().get("B" + (maxRow - deleteCnt + 2));
+			Cell cRemark = worksheet.getCells().get("C" + (maxRow - deleteCnt + 2));
+			Cell dRemark = worksheet.getCells().get("D" + (maxRow - deleteCnt + 2));
+			Cell kRemark = worksheet.getCells().get("K" + (maxRow - deleteCnt + 2));
 
 			Style bRemarkStyle = bRemark.getStyle();
 			Style cRemarkStyle = cRemark.getStyle();
@@ -1166,30 +1172,30 @@ public class AsposeAppStamp {
 			kRemark.setStyle(kRemarkStyle);
 
 			// remark
-			Cell bRemarkLabel = cells.get("B" + (41 - deleteCnt + 3));
-			Cell cRemarkLabel = cells.get("C" + (41 - deleteCnt + 3));
-			Cell dRemarkLabel = cells.get("D" + (41 - deleteCnt + 3));
-			Cell kRemarkLabel = cells.get("K" + (41 - deleteCnt + 3));
+			Cell bRemarkLabel = cells.get("B" + (maxRow - deleteCnt + 3));
+			Cell cRemarkLabel = cells.get("C" + (maxRow - deleteCnt + 3));
+			Cell dRemarkLabel = cells.get("D" + (maxRow - deleteCnt + 3));
+			Cell kRemarkLabel = cells.get("K" + (maxRow - deleteCnt + 3));
 
 			bRemarkLabel.setStyle(bReasonLabelStyle);
 			cRemarkLabel.setStyle(cReasonLabelStyle);
 			dRemarkLabel.setStyle(dReasonLabelStyle);
 			kRemarkLabel.setStyle(kReasonLabelStyle);
 
-			cells.merge(41 - deleteCnt + 2, 1, 1, 2);
-			cells.merge(41 - deleteCnt + 2, 3, 1, 8);
+			cells.merge(maxRow - deleteCnt + 2, 1, 1, 2);
+			cells.merge(maxRow - deleteCnt + 2, 3, 1, 8);
 
 			// under remark
-			Cell bRemarkUnder = worksheet.getCells().get("B" + (41 - deleteCnt + 4));
-			Cell cRemarkUnder = worksheet.getCells().get("C" + (41 - deleteCnt + 4));
-			Cell dRemarkUnder = worksheet.getCells().get("D" + (41 - deleteCnt + 4));
-			Cell eRemarkUnder = worksheet.getCells().get("E" + (41 - deleteCnt + 4));
-			Cell fRemarkUnder = worksheet.getCells().get("F" + (41 - deleteCnt + 4));
-			Cell gRemarkUnder = worksheet.getCells().get("G" + (41 - deleteCnt + 4));
-			Cell hRemarkUnder = worksheet.getCells().get("H" + (41 - deleteCnt + 4));
-			Cell iRemarkUnder = worksheet.getCells().get("I" + (41 - deleteCnt + 4));
-			Cell jRemarkUnder = worksheet.getCells().get("J" + (41 - deleteCnt + 4));
-			Cell kRemarkUnder = worksheet.getCells().get("K" + (41 - deleteCnt + 4));
+			Cell bRemarkUnder = worksheet.getCells().get("B" + (maxRow - deleteCnt + 4));
+			Cell cRemarkUnder = worksheet.getCells().get("C" + (maxRow - deleteCnt + 4));
+			Cell dRemarkUnder = worksheet.getCells().get("D" + (maxRow - deleteCnt + 4));
+			Cell eRemarkUnder = worksheet.getCells().get("E" + (maxRow - deleteCnt + 4));
+			Cell fRemarkUnder = worksheet.getCells().get("F" + (maxRow - deleteCnt + 4));
+			Cell gRemarkUnder = worksheet.getCells().get("G" + (maxRow - deleteCnt + 4));
+			Cell hRemarkUnder = worksheet.getCells().get("H" + (maxRow - deleteCnt + 4));
+			Cell iRemarkUnder = worksheet.getCells().get("I" + (maxRow - deleteCnt + 4));
+			Cell jRemarkUnder = worksheet.getCells().get("J" + (maxRow - deleteCnt + 4));
+			Cell kRemarkUnder = worksheet.getCells().get("K" + (maxRow - deleteCnt + 4));
 
 			bRemarkUnder.setStyle(bReasonUnderStyle);
 			cRemarkUnder.setStyle(cReasonUnderStyle);
@@ -1203,9 +1209,9 @@ public class AsposeAppStamp {
 			kRemarkUnder.setStyle(kReasonUnderStyle);
 
 			// print bottom
-			Cell reasonLabel = worksheet.getCells().get("B" + (41 - deleteCnt));
-			Cell remarkLabel = worksheet.getCells().get("B" + (44 - deleteCnt));
-			Cell reasonContent = worksheet.getCells().get("D" + (41 - deleteCnt));
+			Cell reasonLabel = worksheet.getCells().get("B" + (maxRow - deleteCnt));
+			Cell remarkLabel = worksheet.getCells().get("B" + (maxRow + 3 - deleteCnt));
+			Cell reasonContent = worksheet.getCells().get("D" + (maxRow - deleteCnt));
 
 			this.printBottomKAF002(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 		}

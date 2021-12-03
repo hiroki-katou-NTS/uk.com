@@ -184,6 +184,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
       data: any;
       mode: KnockoutObservable<number> = ko.observable(1); // 0 ->a, 1->b, 2->b(view)
       reasonList: Array<GoOutTypeDispControl> = [];
+      maxSupport: number = 0;
     
     
         bindComment(data: any) {
@@ -215,6 +216,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 .done(res => {
                     if (!res) return;
                     self.data = res;
+                    self.maxSupport = res.maxOfCheer;
                     self.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 0 ? self.mode(2) : self.mode(1);
                     self.checkExistData();
                     self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
@@ -265,7 +267,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     self.tabs()[3].visible(reflect.parentHours == 1 || self.isParentHours);
                     self.tabs()[4].visible(reflect.nurseTime == 1 || self.isNurseTime);
                     // not use
-                    self.tabs()[5].visible(true);
+                    self.tabs()[5].visible(reflect.startAndEndSupport === 1 && data.useCheering);
                 
                 } 
               } 
@@ -353,10 +355,15 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                          }
                          if (desItem.startEndClassification == 1) {
                              element.endTimeRequest(x.timeOfDay);
-                         }             
+                         }    
+                         if (!_.isNil(x.wkpId) && !_.isEmpty(x.wkpId)) {
+                          element.workplace = (_.find(self.data.workplaceNames, { "workplaceId": x.wkpId }) as any)?.wkpName || "";
+                         }
+                         if (!_.isNil(x.workLocationCd && !_.isEmpty(x.workLocationCd))) {
+                          element.workLocation = (_.find(self.data.workLocationNames, { "workLocationCode": x.workLocationCd }) as any)?.workLocationName || "";
+                         }
                      }
                });
-
            }
            
            if (destinationTimeAppDto) {
@@ -404,6 +411,15 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
               } else if (data.destinationTimeApp.startEndClassification === 1) {
                 element.endTimeRequest(data.timeOfDay);
               }
+
+              if (!_.isNil(data.wkpId) && !_.isEmpty(data.wkpId)) {
+                element.workplaceId = data.wkpId;
+                element.workplaceName = (_.find(self.data.workplaceNames, { "workplaceId": data.wkpId }) as any)?.wkpName || "";
+               }
+               if (!_.isNil(data.workLocationCd && !_.isEmpty(data.workLocationCd))) {
+                 element.workLocationCD = data.workLocationCd;
+                element.workLocationName = (_.find(self.data.workLocationNames, { "workLocationCode": data.workLocationCd }) as any)?.workLocationName || "";
+               }
             });
           }
         }
@@ -564,7 +580,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         
         let items7 = (function() {
           let list = [];
-          for (let i = 1; i <= 3; i++) {
+          for (let i = 1; i <= self.maxSupport; i++) {
               let dataObject = new TimePlaceOutput(i);
               const gridItem = new GridItem(dataObject, STAMPTYPE.CHEERING);
               self.bindDataRequest(gridItem, STAMPTYPE.CHEERING);
@@ -827,6 +843,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 .done(res => {
                     if (!res) return;
                     self.data = res;
+                    self.maxSupport = res.maxOfCheer;
                     self.isPreAtr(self.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr == 0);
                     self.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 0 ? self.mode(2) : self.mode(1);
                     self.isAttendence = false;
