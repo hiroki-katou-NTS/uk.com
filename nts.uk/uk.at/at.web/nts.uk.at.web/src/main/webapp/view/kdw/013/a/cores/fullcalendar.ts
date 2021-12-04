@@ -3970,8 +3970,13 @@ module nts.uk.ui.at.kdw013.calendar {
                                 } else {
                                     $el.style.left = `${(left || 0) - width - 23}px`;
                                 }
-
-                                $el.style.width = `${width + 20 + 35}px`;
+								
+								let w = width + 20;
+								if($($el).children().children().get(1).style.display == "block"){
+									//w += 35;
+								}
+								
+                                $el.style.width = `${w}px`;
                                 $el.style.height = `${height + 20}px`;
                             }
                         }

@@ -10,7 +10,7 @@ module nts.uk.ui.at.kdw013.c {
     const DATE_TIME_FORMAT = 'YYYY-MM-DDT00:00:00.000\\Z';
 
     const style = `.edit-event {
-        width: 380px;
+        width: 415px;
     }
     .edit-event .header {
         box-sizing: border-box;
