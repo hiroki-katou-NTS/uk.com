@@ -3973,7 +3973,7 @@ module nts.uk.ui.at.kdw013.calendar {
 								
 								let w = width + 20;
 								if($($el).children().children().get(1).style.display == "block"){
-									w += 35;
+									//w += 35;
 								}
 								
                                 $el.style.width = `${w}px`;
