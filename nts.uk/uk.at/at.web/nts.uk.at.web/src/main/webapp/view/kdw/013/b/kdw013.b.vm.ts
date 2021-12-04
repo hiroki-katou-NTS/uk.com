@@ -76,7 +76,7 @@ module nts.uk.ui.at.kdw013.b {
             <!-- F3_2 -->
             <div class="textEditor pb10">
                 <!-- F3_1 -->
-				<div data-bind="ntsFormLabel: {required: true}, text: nts.uk.resource.getText('KDW013_71')"></div>
+				<div data-bind="ntsFormLabel: {required: true, constraint: 'FavoriteTaskName'}, text: nts.uk.resource.getText('KDW013_71')"></div>
                 <input
                 class="input-f-b"
                 tabindex="1"
@@ -151,7 +151,7 @@ module nts.uk.ui.at.kdw013.b {
             .popup-area-f-from-b {
                 padding: 10px !important;
                 text-align: right;
-                width: 244px;
+                width: 268px;
             }
             .pb10 {
                 padding-bottom: 10px !important;
