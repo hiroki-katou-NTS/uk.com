@@ -164,20 +164,22 @@
 												<tr data-bind="if: start.use || end.use">
 													<td>
 														<div>
-															<com:ko-if bind="start.use">
-																<input data-bind="ntsTimeEditor: { 
-																	name: start.name, 
-																	constraint: 'AttendanceClock', 
-																	value: start.value, 
-																	inputFormat: 'time', 
-																	mode: 'time', 
-																	enable: start.enable,
-																	option: {width: '50px'}},
-																	attr: { id: start.itemId}
-																	" 
-																/>
-															</com:ko-if>
-															<span data-bind="if: start.use &amp;&amp; end.use">#{i18n.getText('KDW013_30')}</span>																			
+															<div class="startTime">
+																<com:ko-if bind="start.use">
+																	<input data-bind="ntsTimeEditor: { 
+																		name: start.name, 
+																		constraint: 'AttendanceClock', 
+																		value: start.value, 
+																		inputFormat: 'time', 
+																		mode: 'time', 
+																		enable: start.enable,
+																		option: {width: '50px'}},
+																		attr: { id: start.itemId}
+																		" 
+																	/>
+																</com:ko-if>
+															</div>
+															<span data-bind="if: start.use || end.use">#{i18n.getText('KDW013_30')}</span>																			
 															<com:ko-if bind="end.use">
 																<input data-bind="ntsTimeEditor: { 
 																	name: end.name, 
