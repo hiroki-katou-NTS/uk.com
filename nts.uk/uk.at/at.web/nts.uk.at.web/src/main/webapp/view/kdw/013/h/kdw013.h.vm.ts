@@ -228,7 +228,7 @@ module nts.uk.at.view.kdw013.h {
 						item.use = false;
 					}
 					let itemType = _.find(self.dataMaster.dailyAttendanceItem, d => d.attendanceItemId == item.itemId);
-					item.setUseNameType(itemName ? itemName.displayName : null, itemType ? itemType.dailyAttendanceAtr : null, self.getPrimitiveValue(itemType ? itemType.primitiveValue: null), itemType ? itemType.masterType: null);
+					item.setUseNameType(itemName ? itemName.attendanceItemName : null, itemType ? itemType.dailyAttendanceAtr : null, self.getPrimitiveValue(itemType ? itemType.primitiveValue: null), itemType ? itemType.masterType: null);
 					let option: Option[] = [];
 					let divergenceReasonInputMethods = null;
 					//trường hợp đặc biệt
