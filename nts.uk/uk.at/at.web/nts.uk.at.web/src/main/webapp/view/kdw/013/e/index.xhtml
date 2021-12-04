@@ -28,7 +28,7 @@
 							<tr>
 								<!-- E2_1 -->
 								<td>
-									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDW013_27')}</div>
+									<div data-bind="ntsFormLabel: {required: true, constraint: 'AttendanceTime'}">#{i18n.getText('KDW013_27')}</div>
 								</td>
 								<td>
 									<!-- E2_2 開始時刻 -->
@@ -59,7 +59,7 @@
 							<tr>
 								<!-- E3_1 作業時間 -->
 								<td>
-									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDW013_25')}</div>
+									<div data-bind="ntsFormLabel: {required: true, constraint: 'AttendanceTime'}">#{i18n.getText('KDW013_25')}</div>
 								</td>
 								<td> 
 									<input tabindex="3" 

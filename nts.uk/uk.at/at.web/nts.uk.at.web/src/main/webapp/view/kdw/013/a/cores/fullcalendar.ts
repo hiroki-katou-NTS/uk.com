@@ -323,7 +323,7 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-popup-editor.show {
             visibility: visible;
-            width: 250px;
+            width: 285px;
 -           height: 270px;
             padding: 10px;
             opacity: 1;
@@ -1376,7 +1376,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                             id: randomId(),
                                             status: 'normal',
                                             isTimeBreak: true,
-                                            isChanged: true,
+                                            isChanged: false,
                                             taskBlock: {
                                                 manHrContents,
                                                 taskDetails: []
@@ -2588,6 +2588,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     vm.selectedEvents = [{ start, end }, ...rels];
 
                     event.setExtendedProp('isChanged', true);
+                    
                     // update data sources
                     //mutatedEvents();
 
@@ -2684,7 +2685,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             const [first] = oEvents;
                             const currentEvent = _.find(vm.calendar.getEvents(), ['extendedProps.id', extendedProps.id]);
                             currentEvent.setEnd(first.start);
-
+                            vm.params.screenA.dataChanged(true);
                         } else {
                             oEvents = _.chain(IEvents)
                                 .filter((evn) => {
@@ -2701,7 +2702,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             if (oEvents.length) {
                                 
                                  vm.revertEvent([arg.oldEvent], $caches);
-
+                                return;
                             }
                         }
                     }else{
@@ -2754,7 +2755,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             }                            
                         }
                     }
-                    
+                    vm.params.screenA.dataChanged(true);
                     
                 },
                 eventResizeStart: (arg: EventResizeStartArg) => {
@@ -3970,7 +3971,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     $el.style.left = `${(left || 0) - width - 23}px`;
                                 }
 
-                                $el.style.width = `${width + 20}px`;
+                                $el.style.width = `${width + 20 + 35}px`;
                                 $el.style.height = `${height + 20}px`;
                             }
                         }
