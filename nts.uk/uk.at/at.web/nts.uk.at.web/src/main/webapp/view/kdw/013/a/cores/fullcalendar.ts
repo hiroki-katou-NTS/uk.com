@@ -3971,7 +3971,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     $el.style.left = `${(left || 0) - width - 23}px`;
                                 }
 
-                                $el.style.width = `${width + 20 + 35}px`;
+                                $el.style.width = `${width + 20}px`;
                                 $el.style.height = `${height + 20}px`;
                             }
                         }
