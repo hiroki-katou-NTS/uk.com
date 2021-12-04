@@ -63,7 +63,7 @@ module nts.uk.ui.at.kdw013.b.old {
         </div>
         <style>
             .detail-event {
-                width: 320px;
+                width: 390px;
             }
             .detail-event .header {
                 box-sizing: border-box;
