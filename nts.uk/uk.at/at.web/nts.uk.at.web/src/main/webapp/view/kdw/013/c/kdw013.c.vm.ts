@@ -22,7 +22,7 @@ module nts.uk.ui.at.kdw013.c {
     .edit-event .header .actions {
         position: absolute;
         top: 0px;
-        right: -5px;
+        right: -33px;
     }
     .edit-event .header .actions button {
         margin: 0;
