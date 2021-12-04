@@ -247,7 +247,6 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			PremiumAtr premiumAtr,
 			Optional<WorkTimezoneCommonSet> commonSetting,
 			NotUseAtr lateEarlyMinusAtr,
-			Optional<AttendanceTime> limitAddTime,
 			WithinWorkTimeSheet parentSheet) {
 		
 		// 休暇の計算方法の設定を取得する
@@ -277,14 +276,10 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				lateDecisionClock,
 				leaveEarlyDecisionClock);
 		workTime = new AttendanceTime(workTime.valueAsMinutes() - lateEarlyDiductionTime.valueAsMinutes());
-		// 休暇加算するかどうか判断
-		if (addSetting.getNotUseAtr(premiumAtr) == NotUseAtr.USE){
-			// 就業時間に加算する時間休暇相殺時間を取得
-			AttendanceTime timeVacationOffsetTime = this.getTimeVacationOffsetTimeForAddWorkTime(
-					integrationOfWorkTime, premiumAtr, commonSetting, holidayAddtionSet, holidayCalcMethodSet,
-					limitAddTime, lateEarlyMinusAtr);
-			workTime = new AttendanceTime(workTime.valueAsMinutes() + timeVacationOffsetTime.valueAsMinutes());
-		}
+		// 就業時間に加算する時間休暇相殺時間を取得
+		AttendanceTime timeVacationOffsetTime = this.getTimeVacationOffsetTimeForAddWorkTime(
+				integrationOfDaily, integrationOfWorkTime, addSetting, holidayAddtionSet);
+		workTime = new AttendanceTime(workTime.valueAsMinutes() + timeVacationOffsetTime.valueAsMinutes());
 		// 丸め処理
 		TimeRoundingSetting rounding = this.getRounding();
 		workTime = new AttendanceTime(rounding.round(workTime.valueAsMinutes()));
@@ -1238,39 +1233,35 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 
 	/**
 	 * 就業時間に加算する時間休暇相殺時間を取得
+	 * @param integrationOfDaily 日別実績(WORK)
 	 * @param integrationOfWorkTime 統合就業時間帯
-	 * @param premiumAtr 割増区分
-	 * @param commonSetting 就業時間帯の共通設定
+	 * @param addSetting 加算設定
 	 * @param holidayAddtionSet 休暇加算時間設定
-	 * @param holidayCalcMethodSet 休暇の計算方法の設定
-	 * @param limitAddTime 時間休暇を加算できる上限時間
-	 * @param lateEarlyMinusAtr 強制的に遅刻早退控除する
 	 * @return 相殺時間
 	 */
 	public AttendanceTime getTimeVacationOffsetTimeForAddWorkTime(
+			IntegrationOfDaily integrationOfDaily,
 			Optional<IntegrationOfWorkTime> integrationOfWorkTime,
-			PremiumAtr premiumAtr,
-			Optional<WorkTimezoneCommonSet> commonSetting,
-			HolidayAddtionSet holidayAddtionSet,
-			HolidayCalcMethodSet holidayCalcMethodSet,
-			Optional<AttendanceTime> limitAddTime,
-			NotUseAtr lateEarlyMinusAtr){
-		
-		// 相殺時間
-		TimeVacationWork offsetTime = this.getTimeVacationOffsetTime();
-		// 加算対象合計時間
-		TimeVacationWork addTarget = offsetTime.getValueForAddWorkTime(
-				integrationOfWorkTime, premiumAtr, commonSetting, holidayAddtionSet, holidayCalcMethodSet,
-				offsetTime, lateEarlyMinusAtr);
-		
-		if (!limitAddTime.isPresent()) return addTarget.total();
-		
-		// 加算時間
-		int addMinutes = Math.min(limitAddTime.get().valueAsMinutes(), addTarget.total().valueAsMinutes());
-		int limitMinutes = limitAddTime.get().valueAsMinutes() - addMinutes;
-		limitAddTime = Optional.of(new AttendanceTime(limitMinutes));
-		
-		return new AttendanceTime(addMinutes);
+			AddSetting addSetting,
+			HolidayAddtionSet holidayAddtionSet) {
+		if(!integrationOfWorkTime.isPresent()) {
+			return AttendanceTime.ZERO;
+		}
+		List<WithinWorkTimeFrame> frames = new ArrayList<>();
+		frames.add(this);
+		DeductionTimeSheet deductionTimeSheet = new DeductionTimeSheet(
+				this.deductionTimeSheet,
+				this.recordedTimeSheet,
+				integrationOfDaily.getBreakTime(),
+				integrationOfDaily.getOutingTime(), 
+				integrationOfDaily.getShortTime().map(c -> c.getShortWorkingTimeSheets()).orElse(new ArrayList<>()));
+		// 時間休暇加算時間を計算する
+		return holidayAddtionSet.calcTimeVacationAddTime(
+				integrationOfDaily,
+				deductionTimeSheet,
+				addSetting.getVacationCalcMethodSet(),
+				frames,
+				integrationOfWorkTime.get().getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm());//get()している
 	}
 	
 	/**

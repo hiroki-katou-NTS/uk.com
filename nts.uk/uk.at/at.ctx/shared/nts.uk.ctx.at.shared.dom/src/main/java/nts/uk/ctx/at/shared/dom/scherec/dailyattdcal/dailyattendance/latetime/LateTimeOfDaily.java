@@ -340,7 +340,7 @@ public class LateTimeOfDaily {
 	 * @param workTimeForm 就業時間帯の勤務形態
 	 * @return 時間休暇加算時間
 	 */
-	public AttendanceTime calcVacationAddTime(HolidayCalcMethodSet calcMethodSet, Optional<HolidayAddtionSet> holidayAddtionSet,
+	public AttendanceTime calcVacationAddTime(HolidayCalcMethodSet calcMethodSet, HolidayAddtionSet holidayAddtionSet,
 			List<WithinWorkTimeFrame> frames, WorkTimeForm workTimeForm) {
 		if(calcMethodSet.getNotUseAtr(PremiumAtr.RegularWork).isNotUse()) {
 			return AttendanceTime.ZERO;
@@ -353,7 +353,7 @@ public class LateTimeOfDaily {
 		AttendanceTime lateCalcTime = late.isPresent() ?
 				late.get().calcForRecordTime(true, false).getCalcTime() : AttendanceTime.ZERO;
 		
-		return holidayAddtionSet.get().getAddTime(this.timePaidUseTime, lateCalcTime, workTimeForm);
+		return holidayAddtionSet.getAddTime(this.timePaidUseTime, lateCalcTime, workTimeForm);
 	}
 	
 	public void resetData() {
