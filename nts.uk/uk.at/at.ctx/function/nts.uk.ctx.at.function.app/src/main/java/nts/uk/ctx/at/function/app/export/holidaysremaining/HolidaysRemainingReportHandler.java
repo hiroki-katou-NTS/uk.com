@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.export.holidaysremaining;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
@@ -37,6 +38,7 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControlServic
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.*;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataSevice;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
@@ -55,6 +57,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcar
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.NursingCareLeaveMonthlyRemaining;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -119,6 +122,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
     private IGetChildcareRemNumEachMonth getChildcareRemNumEachMonth;
     @Inject
     private GetRemainingNumberCareNurseAdapter getRemainingNumberChildCareNurseAdapter;
+    @Inject
+    private ClosureEmploymentRepository closureEmploymentRepository;
+    @Inject
+    private ShareEmploymentAdapter shareEmploymentAdapter;
 
     @Override
     protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
@@ -186,11 +193,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
 			// 休暇設定画面で設定した各休暇の「管理区分」を取得する
             val varVacaCtr = varVacaCtrSv.getVariousVacationControl();
-
 			// ドメインモデル「締め」(社員範囲選択)より当月、締め期間、締め日(日付)を求める　★使用禁止
-            val closureInforOpt = this.getClosureInfo(closureId);
-
-
+            // Update: 12/05/2021 - chinh.hm  - issues #121626
+            //val closureInforOpt = this.getClosureInfo(closureId);
 
             if (!varVacaCtr.isAnnualHolidaySetting()) {
                 hdManagement.getListItemsOutput().getAnnualHoliday().setYearlyHoliday(false);
@@ -242,6 +247,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			////////////////////////////////////////////////////////////////////////////////
 			// 社員のループSTART
 			////////////////////////////////////////////////////////////////////////////////
+            //Update: 12/05/2021 - chinh.hm  - issues #121626
+            val require = ClosureService.createRequireM3(closureRepository, closureEmploymentRepository, shareEmploymentAdapter);
+            int finalClosureId = closureId;
             parallel.forEach(listEmployeeInformationImport, emp -> {
                 String wpCode = emp.getWorkplace() != null ? emp.getWorkplace().getWorkplaceCode() : "";
                 String wpName = emp.getWorkplace() != null ? emp.getWorkplace().getWorkplaceName() : TextResource.localize("KDR001_55");
@@ -249,7 +257,12 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 String positionName = emp.getPosition() != null ? emp.getPosition().getPositionName() : "";
                 String employmentCode = emp.getEmployment() != null ? emp.getEmployment().getEmploymentCode() : "";
                 String positionCode = emp.getPosition() != null ? emp.getPosition().getPositionCode() : "";
-
+                // Update: 12/05/2021 - chinh.hm  - issues #121626
+                // 社員に対応する処理締めを取得する
+                Closure closure = ClosureService.getClosureDataByEmployee(
+                        require, new CacheCarrier(), emp.getEmployeeId(), GeneralDate.today());
+                int  idClosure = closure == null  ? finalClosureId : closure.getClosureId().value ;
+                val closureInforOpt = this.getClosureInfo(idClosure);
 	       		// 当月
                 Optional<YearMonth> currentMonth = hdRemainManageFinder.getCurrentMonth(
                         cId,
