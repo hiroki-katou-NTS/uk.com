@@ -127,7 +127,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         String cId = AppContexts.user().companyId();
 
 		// システム日付　★使用禁止
-        val baseDate = GeneralDate.fromString(hdRemainCond.getBaseDate(), "yyyy/MM/dd");
+        // Update: 12/05/2021 - chinh.hm  - issues #121627
+        //val baseDate = GeneralDate.fromString(hdRemainCond.getBaseDate(), "yyyy/MM/dd");
 
         val startDate = GeneralDate.fromString(hdRemainCond.getStartMonth(), "yyyy/MM/dd");		// 画面入力期間From(年月)/01
         val endDate   = GeneralDate.fromString(hdRemainCond.getEndMonth(),   "yyyy/MM/dd");		// 画面入力期間To  (年月)/月末日
@@ -158,8 +159,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             if (!criteriaDatePeriodOpt.isPresent()) {
                 return;
             }
-
             GeneralDate criteriaDate = criteriaDatePeriodOpt.get().end();
+            // Update: 12/05/2021 - chinh.hm  - issues #121627
+            GeneralDate baseDate = criteriaDate;
             // 画面項目「A2_2：社員リスト」で選択されている社員の社員ID
             List<String> employeeIds = query.getLstEmpIds().stream().map(EmployeeQuery::getEmployeeId)
                     .collect(Collectors.toList());
