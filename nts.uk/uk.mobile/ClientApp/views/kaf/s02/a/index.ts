@@ -314,6 +314,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     supportTimeItem.workLocationName = self.$i18n('KAFS02_35');
                 }
                 self.supportLst.push(supportTimeItem);
+
+                const error = new Error({ start: false, end: false, type: 'supportHour', frame: i });
+                self.errorList.push(error);
             }
         }
 
