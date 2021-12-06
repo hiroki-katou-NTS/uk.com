@@ -25,8 +25,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
+<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
+=======
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeUseInfor;
+>>>>>>> uk/release_bug901
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -195,7 +199,7 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
                 EnumAdaptor.valueOf(application.getAppType().value, ApplicationType.class), 
                 Optional.ofNullable(workTypeCode), 
                 Optional.ofNullable(workTimeCode),  
-                new ArrayList<VacationTimeInforNew>(), 
+                new ArrayList<VacationTimeUseInfor>(), 
                 Optional.empty(), 
                 Optional.empty(), 
                 application.getOpAppStartDate().map(ApplicationDate::getApplicationDate),

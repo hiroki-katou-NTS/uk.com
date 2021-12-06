@@ -13,7 +13,6 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
@@ -288,7 +287,6 @@ public class TotalWorkingTime {
 	 * @param workType 勤務種類
 	 * @param workTimeDailyAtr 勤務形態区分
 	 * @param flexCalcMethod フレックス勤務の設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
 	 * @param conditionItem 労働条件項目
 	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定
@@ -302,7 +300,6 @@ public class TotalWorkingTime {
 			WorkType workType,
 			Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			Optional<SettingOfFlexWork> flexCalcMethod,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			WorkingConditionItem conditionItem,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
@@ -345,7 +342,7 @@ public class TotalWorkingTime {
 		
 		//加給時間
 		val raiseTime = RaiseSalaryTimeOfDailyPerfor.calcBonusPayTime(recordClass.getCalculationRangeOfOneDay(),
-				recordClass.getIntegrationOfDaily().getCalAttr().getRasingSalarySetting(), bonusPayAutoCalcSet,
+				recordClass.getCompanyCommonSetting().getBpTimeItemSetting(),
 				recordClass.getIntegrationOfDaily().getCalAttr());
 		//勤務回数
 		val workCount = new WorkTimes(workCounter(recordClass.getCalculationRangeOfOneDay()));
@@ -1031,7 +1028,7 @@ public class TotalWorkingTime {
 		return new AttendanceTime(vacationAddTime);
 	}
 
-	public TotalWorkingTime SpecialHolidayCalculationForOotsuka(ManageReGetClass recordClass, VacationClass vacationClass, WorkType workType, Optional<WorkTimeDailyAtr> workTimeDailyAtr, Optional<SettingOfFlexWork> flexCalcMethod, BonusPayAutoCalcSet bonusPayAutoCalcSet, List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, WorkingConditionItem conditionItem, Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
+	public TotalWorkingTime SpecialHolidayCalculationForOotsuka(ManageReGetClass recordClass, VacationClass vacationClass, WorkType workType, Optional<WorkTimeDailyAtr> workTimeDailyAtr, Optional<SettingOfFlexWork> flexCalcMethod, List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, WorkingConditionItem conditionItem, Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
 		switch(conditionItem.getLaborSystem()) {
 			case FLEX_TIME_WORK:
 				AttendanceTimeOfExistMinus flexTime = this.excessOfStatutoryTimeOfDaily.getOverTimeWork().get().getFlexTime().getFlexTime().getTime();
@@ -1149,8 +1146,8 @@ public class TotalWorkingTime {
 				AttendanceTime excessRow = this.totalCalcTime.minusMinutes(recordClass.getDailyUnit().getDailyTime().valueAsMinutes());
 				//全残業枠時間＋
 				if(this.excessOfStatutoryTimeOfDaily.getOverTimeWork().isPresent()) {
-					final AttendanceTime withinRow = new AttendanceTime(this.excessOfStatutoryTimeOfDaily.getOverTimeWork().get().calcTotalFrameTime()
-											   					  + this.excessOfStatutoryTimeOfDaily.getOverTimeWork().get().calcTransTotalFrameTime()
+					final AttendanceTime withinRow = new AttendanceTime(this.excessOfStatutoryTimeOfDaily.getOverTimeWork().get().calcTotalFrameTime().v()
+											   					  + this.excessOfStatutoryTimeOfDaily.getOverTimeWork().get().calcTransTotalFrameTime().v()
 											   					  - excessRow.valueAsMinutes());
 					//法定内残業とする時間を計算する
 					this.excessOfStatutoryTimeOfDaily.getOverTimeWork().ifPresent(tc ->{

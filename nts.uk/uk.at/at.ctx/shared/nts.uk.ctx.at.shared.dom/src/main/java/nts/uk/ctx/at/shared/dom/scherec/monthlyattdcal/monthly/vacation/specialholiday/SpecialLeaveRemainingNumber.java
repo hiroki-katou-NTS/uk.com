@@ -136,7 +136,7 @@ public class SpecialLeaveRemainingNumber {
 	}
 
 	/**
-	 * 特休付与残数データから特休残数を作成
+	 * 特休付与残数データから特別休暇残数を作成
 	 * @param remainingDataList 特休付与残数データリスト
 	 */
 	public void createRemainingNumberFromGrantRemaining(
@@ -172,11 +172,11 @@ public class SpecialLeaveRemainingNumber {
 						Optional.ofNullable(remainingTime)));
 				}
 
-				// 合計残日数　←　「明細．日数」の合計
+				// 日数←「特別休暇付与残数．明細．残数．日数」を合計
 				this.dayNumberOfRemain = new DayNumberOfRemain(
 						this.dayNumberOfRemain.v() + remainingNumber.getDays().v());
 
-				// 合計残時間　←　「明細．時間」の合計
+				// 時間←「特別休暇付与残数．明細．残数．時間」を加算
 				if ( remainingNumber.getMinutes().isPresent() ){
 					this.timeOfRemain = Optional.of( new TimeOfRemain(
 						this.timeOfRemain.get().v() + remainingNumber.getMinutes().get().v()));

@@ -16,10 +16,6 @@ public class EntitySpeRemainAtom {
 	public Integer beforeFactUseMinutes;
 	public Integer afterFactUseMinutes;
 	public Integer factUseTimes;
-	public double remainDays;
-	public Integer remainMinutes;
-	public double factRemainDays;
-	public Integer factRemainMinutes;
 	public double beforeRemainDays;
 	public Integer beforeRemainMinutes;
 	public double beforeFactRemainDays;
@@ -48,10 +44,6 @@ public class EntitySpeRemainAtom {
 		this.beforeFactUseMinutes = null;
 		this.afterFactUseMinutes = null;
 		this.factUseTimes = null;
-		this.remainDays = 0.0;
-		this.remainMinutes = null;
-		this.factRemainDays = 0.0;
-		this.factRemainMinutes = null;
 		this.beforeRemainDays = 0.0;
 		this.beforeRemainMinutes = null;
 		this.beforeFactRemainDays = 0.0;

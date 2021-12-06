@@ -62,15 +62,6 @@ public class AnnualLeaveRemainingNumberExport {
 	 */
 	private Integer annualLeaveGrantTime;
 	
-	/**
-	 * 半休残数回数
-	 */
-	private Integer numberOfRemainGrant;
-	
-	/**
-	 * 時間年休上限
-	 */
-	private Integer timeAnnualLeaveWithMinusGrant;
 	
 	/**
 	 * 出勤率
