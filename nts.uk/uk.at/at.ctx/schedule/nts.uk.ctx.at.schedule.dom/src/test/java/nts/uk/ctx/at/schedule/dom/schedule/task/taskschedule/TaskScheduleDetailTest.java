@@ -102,41 +102,41 @@ public class TaskScheduleDetailTest {
 	}
 	
 	@Test
-	public void testIsSameTaskCodeAndContinuous_false_deferent_code_not_continuous() {
+	public void testIsContinuousTask_false_deferent_code_not_continuous() {
 		
 		TaskScheduleDetail other = TaskScheduleDetailTestHelper.create("code2", 13, 0, 15, 0);
 		
-		boolean result = target.isSameTaskCodeAndContinuous(other);
+		boolean result = target.isContinuousTask(other);
 		
 		assertThat( result ).isFalse();
 	}
 	
 	@Test
-	public void testIsSameTaskCodeAndContinuous_false_deferent_code_continuous() {
+	public void testIsContinuousTask_false_deferent_code_continuous() {
 		
 		TaskScheduleDetail other = TaskScheduleDetailTestHelper.create("code2", 6, 0, 8, 0);
 		
-		boolean result = target.isSameTaskCodeAndContinuous(other);
+		boolean result = target.isContinuousTask(other);
 		
 		assertThat( result ).isFalse();
 	}
 	
 	@Test
-	public void testIsSameTaskCodeAndContinuous_false_same_code_not_continuous() {
+	public void testIsContinuousTask_false_same_code_not_continuous() {
 		
 		TaskScheduleDetail other = TaskScheduleDetailTestHelper.create("code1", 13, 0, 15, 0);
 		
-		boolean result = target.isSameTaskCodeAndContinuous(other);
+		boolean result = target.isContinuousTask(other);
 		
 		assertThat( result ).isFalse();
 	}
 	
 	@Test
-	public void testIsSameTaskCodeAndContinuous_true() {
+	public void testIsContinuousTask_true() {
 		
 		TaskScheduleDetail other = TaskScheduleDetailTestHelper.create("code1", 6, 0, 8, 0);
 		
-		boolean result = target.isSameTaskCodeAndContinuous(other);
+		boolean result = target.isContinuousTask(other);
 		
 		assertThat( result ).isTrue();
 	}
