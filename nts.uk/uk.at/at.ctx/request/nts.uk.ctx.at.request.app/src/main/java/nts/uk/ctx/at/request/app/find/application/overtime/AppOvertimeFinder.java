@@ -13,7 +13,6 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.MultipleOvertimeC
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.*;
-import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFindDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -99,13 +98,9 @@ public class AppOvertimeFinder {
                             .filter(j -> j.getAttendanceType() == AttendanceType_Update.BREAKTIME)
                             .collect(Collectors.toList());
                     List<Integer> frameNos = breakTimes.stream().map(t -> t.getFrameNo().v()).collect(Collectors.toList());
-                    List<WorkdayoffFrameFindDto> dayOffWorkFrames = workdayoffFrameRepo.findByUseAtr(AppContexts.user().companyId(), UseAtr.USE.value).stream()
+                    List<WorkdayoffFrameDto> dayOffWorkFrames = workdayoffFrameRepo.findByUseAtr(AppContexts.user().companyId(), UseAtr.USE.value).stream()
                             .filter(f -> frameNos.contains(f.getWorkdayoffFrNo().v().intValue()))
-                            .map(category -> {
-                                WorkdayoffFrameFindDto dto = new WorkdayoffFrameFindDto();
-                                category.saveToMemento(dto);
-                                return dto;
-                            }).collect(Collectors.toList());
+                            .map(WorkdayoffFrameDto::fromDomain).collect(Collectors.toList());
 
 				    return new MultiOvertimWithWorkDayOffDto(
 							AppOverTimeDto.fromDomain(i),

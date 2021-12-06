@@ -7,7 +7,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			<div class="lblTitle pull-left" data-bind="text: $i18n('KAF005_349'), ntsFormLabel: {required: true}"></div>
 		</div>
 		<div class="cell table-time" style="margin-top: 5px;">
-			<div id="A15_2" class="label" data-bind="text: $i18n('KAF005_348')"></div>	
+			<div id="A15_2" class="label" data-bind="text: $i18n('KAF005_348')" style="padding: 5px 0;"></div>	
 			<div data-bind="foreach: multipleOvertimeContents">
 				<div class="control-group valign-center" data-bind="style: {width: 320 + ($parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? 210 : 0) + ($parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? 210 : 0) + 'px'}">
 					<input data-bind="ntsTimeWithDayEditor: {
@@ -34,6 +34,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 										optionsText: 'reasonForFixedForm',
 										value: fixedReasonCode,
 										columns: [{ prop: 'reasonForFixedForm', length: 20 }],
+										enable: ($parent.visibleModel.c7() && $parent.outputMode()),
 										required: (!!start() || !!end()) && $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting && $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.standardReasonRequired 
 									},
 									visible: $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1">
@@ -42,22 +43,22 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 							data-bind="ntsTextEditor: {            
 											 name: $parent.$i18n('KAF005_88'),           
 											 value: appReason,            
-											 constraint: 'AppReason',            
+											 constraint: 'AppReason',
+											 enable: ($parent.visibleModel.c7() && $parent.outputMode()),            
 											 required: ko.computed(function() { return (!!start() || !!end()) && $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting && $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason; }),
 											 option: {width: '200'}          
 									 },
 									 visible: $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1"/>
-					<button style="width: 30px; border: none; box-shadow: none; padding: 5px;" data-bind="click: $parent.removeMultipleRow.bind($parent, $data)">
+					<button style="width: 30px; border: none; box-shadow: none; padding: 5px;" data-bind="click: $parent.removeMultipleRow.bind($parent, $data, $element), enable: ($parent.visibleModel.c7() && $parent.outputMode())">
 					    <i data-bind="ntsIcon: { no: 237 }"></i>
                     </button>				
 				</div>
 			</div>
-			<div style="cursor: pointer; display: inline-block;" data-bind="click: addMultipleRow, visible: multipleOvertimeContents().length < 10">
-				<button style="width: 30px; border: none; box-shadow: none; padding: 5px;">
-					<i data-bind="ntsIcon: { no: 236 }"></i>
-				</button>
-				<span style="position: relative; top: -3px;" data-bind="text: $i18n('KAF005_350')"></span>
-			</div>
+			<button style="width: 100px; border: none; box-shadow: none; padding: 5px;" 
+					data-bind="click: addMultipleRow, visible: multipleOvertimeContents().length < 10, enable: (visibleModel.c7() && outputMode())">
+				<i data-bind="ntsIcon: { no: 236 }" style="background-position: left center;"></i>
+				<span style="position: relative; top: -27px; left: 10px;" data-bind="text: $i18n('KAF005_350')"></span>
+			</button>
 		</div>
 	</div>
 	
@@ -221,11 +222,6 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				</tbody>
 			</table>
 		</div>
-
-
-
-
-
 	</div>
 
 
@@ -326,19 +322,8 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				</tbody>
 			</table>
 		</div>
-
-
-
-
 	</div>
-
-
-
-
-
 </div>
-
-
 	`
 	@component({
         name: 'kaf005-share',
@@ -501,7 +486,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			this.start.subscribe(value => {
 				if (sub) sub();
 			});
-            this.start.subscribe(value => {
+            this.end.subscribe(value => {
 				if (sub) sub();
             });
 		}

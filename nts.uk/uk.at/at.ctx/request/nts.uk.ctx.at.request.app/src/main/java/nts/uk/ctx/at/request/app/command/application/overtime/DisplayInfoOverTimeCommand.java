@@ -37,8 +37,6 @@ public class DisplayInfoOverTimeCommand {
 	public Integer calculatedFlag;
 	
 	public WorkInfo workInfo;
-
-	public List<MultipleOvertimeContentCommand> latestMultipleOvertimeApp;
 	
 	public DisplayInfoOverTime toDomain() {
 		return new DisplayInfoOverTime(
@@ -55,24 +53,8 @@ public class DisplayInfoOverTimeCommand {
 				infoWithDateApplicationOp == null ? Optional.empty() : Optional.of(infoWithDateApplicationOp.toDomain()),
 				EnumAdaptor.valueOf(calculatedFlag, CalculatedFlag.class),
 				Optional.ofNullable(workInfo),
-				convert(latestMultipleOvertimeApp)
+				Optional.empty()
 		);
 	}
 
-	private Optional<OvertimeWorkMultipleTimes> convert(List<MultipleOvertimeContentCommand> command) {
-		if (CollectionUtil.isEmpty(command)) return Optional.empty();
-		List<OvertimeHour> overtimeHours = command.stream()
-				.map(i -> new OvertimeHour(
-						new OvertimeNumber(i.getFrameNo()),
-						new TimeSpanForCalc(new TimeWithDayAttr(i.getStartTime()), new TimeWithDayAttr(i.getEndTime()))
-				)).collect(Collectors.toList());
-		List<OvertimeReason> overtimeReasons = command.stream()
-				.filter(i -> i.getFixedReasonCode() != null || !StringUtils.isEmpty(i.getAppReason()))
-				.map(i -> new OvertimeReason(
-						new OvertimeNumber(i.getFrameNo()),
-						i.getFixedReasonCode() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(i.getFixedReasonCode())),
-						StringUtils.isEmpty(i.getAppReason()) ? Optional.empty() : Optional.of(new AppReason(i.getAppReason()))
-				)).collect(Collectors.toList());
-		return Optional.of(new OvertimeWorkMultipleTimes(overtimeHours, overtimeReasons));
-	}
 }

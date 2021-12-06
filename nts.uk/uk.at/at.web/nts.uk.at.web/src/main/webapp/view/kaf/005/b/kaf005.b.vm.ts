@@ -18,7 +18,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		<div id="kaf005-b">
 			<div id="contents-area"
 				style="background-color: inherit; height: calc(100vh - 137px);">
-				<div class="two-panel" style="height: 100%;">
+				<div class="two-panel" style="height: 100%;" data-bind="style: {display: opOvertimeAppAtr() == 3 &amp;&amp; appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason &amp;&amp; appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason ? 'inline-flex' : 'block'}">
 					<div class="left-panel"
 						style="width: calc(100% - 388px); height: inherit; padding-bottom: 5px;">
 						<div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px;"> 
@@ -183,6 +183,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 
         multipleOvertimeContents: KnockoutObservableArray<MultipleOvertimeContent> = ko.observableArray([]);
         reasonTypeItemLst: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        displayPrintButton: KnockoutObservable<boolean>;
 		
 		setTitleLabel() {
 			const vm = this;
@@ -239,6 +241,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             vm.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
             vm.approvalReason = params.approvalReason;
 			vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
+			vm.displayPrintButton = params.displayPrintButton;
             // gui event con ra viewmodel cha
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
             // luôn là component
@@ -288,6 +291,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             .done(res => {
                 if (res) {
                 	vm.opOvertimeAppAtr(res.displayInfoOverTime.overtimeAppAtr);
+                	vm.displayPrintButton(vm.opOvertimeAppAtr() != OvertimeAppAtr.MULTIPLE_OVERTIME);
                     vm.printContentOfEachAppDto().opDetailOutput = res;
 					vm.appOverTime = res.appOverTime;
 					ko.contextFor(vm.$el).$vm.getAppNameForAppOverTime(vm.appOverTime.overTimeClf);
@@ -318,13 +322,14 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					if (!_.isEmpty(res.appOverTime.multipleOvertimeContents)) {
                         vm.multipleOvertimeContents([]);
                         res.appOverTime.multipleOvertimeContents.forEach((i: any) => {
-                        	vm.multipleOvertimeContents.push({
-								frameNo: i.frameNo,
-								start: ko.observable(i.startTime),
-								end: ko.observable(i.endTime),
-								fixedReasonCode: ko.observable(i.fixedReasonCode),
-								appReason: ko.observable(i.appReason)
-							});
+                        	vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
+                                () => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+                                i.frameNo,
+                                i.startTime,
+                                i.endTime,
+                                i.fixedReasonCode,
+                                i.appReason
+                            ));
 						});
 					}
 
@@ -378,17 +383,21 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             if(!_.isUndefined(defaultReasonTypeItem)) {
                 fixedReasonCode = defaultReasonTypeItem.appStandardReasonCD;
             }
-            vm.multipleOvertimeContents.push({
-                frameNo: 1,
-                start: ko.observable(null),
-                end: ko.observable(null),
-                fixedReasonCode: ko.observable(fixedReasonCode),
-                appReason: ko.observable(null)
-            });
+            vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
+                () => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+                1,
+                null,
+                null,
+                fixedReasonCode,
+                null
+            ));
         }
 
-        removeMultipleRow(data: MultipleOvertimeContent) {
+        removeMultipleRow(data: MultipleOvertimeContent, $element: any) {
             const vm = this;
+            if ($($element.parentElement).ntsError("hasError")) {
+                $($element.parentElement).find("input").ntsError("clear");
+            }
             vm.multipleOvertimeContents.remove(data);
         }
 
@@ -451,7 +460,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             .then((isValid) => {
                 if (isValid) {
 					// validate riêng cho màn hình
-                    return true;
+                    return vm.$validate('.inputTime', '.multiple-reason:not([style*="display: none"])');
                 }
             })
 			.then((result) => {
@@ -503,6 +512,21 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							
 						}
 					}
+
+                    if (vm.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
+                        let error = false;
+                        vm.multipleOvertimeContents().forEach((i, idx) => {
+                            if (!!i.start() && !i.end()) {
+                                vm.$errors('#A15_5_' + idx, 'Msg_307');
+                                error = true;
+                            }
+                            if (!i.start() && !!i.end()) {
+                                vm.$errors('#A15_3_' + idx, 'Msg_307');
+                                error = true;
+                            }
+                        });
+                        if (error) return false;
+                    }
 					
 					// wokr type or worktime null
 					if (vm.visibleModel.c7()) {
@@ -608,9 +632,12 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			||	failData.messageId == "Msg_1536"
 			||	failData.messageId == "Msg_1537"
 			||	failData.messageId == "Msg_1538"
+			||  failData.messageId == "Msg_3238"
+			||  failData.messageId == "Msg_3248"
 				) {
 				return vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
 				.then(() => {
+                    if (failData.messageId == "Msg_3248") $("#A15_2")[0].scrollIntoView();
 					return $.Deferred().resolve(false);	
 				});	
 			}
@@ -1444,8 +1471,23 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		}
 		
 		calculate() {
-			
 			const self = this;
+
+            if (self.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
+                let error = false;
+                self.multipleOvertimeContents().forEach((i, idx) => {
+                    if (!!i.start() && !i.end()) {
+                        self.$errors('#A15_5_' + idx, 'Msg_307');
+                        error = true;
+                    }
+                    if (!i.start() && !!i.end()) {
+                        self.$errors('#A15_3_' + idx, 'Msg_307');
+                        error = true;
+                    }
+                });
+                if (error) return;
+            }
+
 			self.$blockui("show");
 			console.log('calculate');
 			let command = {} as ParamCalculationCMD;

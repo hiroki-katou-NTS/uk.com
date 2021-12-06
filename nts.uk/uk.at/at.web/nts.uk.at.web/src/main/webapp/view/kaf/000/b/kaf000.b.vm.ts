@@ -76,6 +76,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         enableCancelButton: KnockoutObservable<boolean> = ko.observable(true);
 		displayCancelLabel: KnockoutObservable<boolean> = ko.observable(false);
 
+        displayPrintButton: KnockoutObservable<boolean> = ko.observable(true);
+
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
 
         childUpdateEvent: () => any;
@@ -103,7 +105,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
                 eventUpdate: function(a: any) { vm.getChildUpdateEvent.apply(vm, [a]) },
 				eventReload: function(a: any) { vm.getChildReloadEvent.apply(vm, [a]) },
-            }
+				displayPrintButton: vm.displayPrintButton // temporary for kaf005 only
+            };
 			
 			vm.$blockui("show");
 			vm.$ajax(API.getAppNameInAppList).then((data) => {
@@ -118,6 +121,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             vm.$ajax(`${API.getDetailPC}/${vm.currentApp()}`).done((successData: any) => {
             	vm.approvalReason("");
                 vm.appType(successData.appDetailScreenInfo.application.appType);
+                if (vm.appType() != AppType.OVER_TIME_APPLICATION) vm.displayPrintButton(true);
 				vm.application().appType = vm.appType();
                 vm.application().appID(successData.appDetailScreenInfo.application.appID);
 		        vm.application().opAppReason(successData.appDetailScreenInfo.application.opAppReason);
@@ -181,7 +185,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     successData.appDetailScreenInfo.authorizableFlags,
                     successData.appDetailScreenInfo.alternateExpiration,
                     loginFlg,
-					successData.appDetailScreenInfo.pastApp);
+					successData.appDetailScreenInfo.pastApp
+				);
 				if(_.isFunction(vm.childReloadEvent)) {
 	                vm.childReloadEvent();
 	            }

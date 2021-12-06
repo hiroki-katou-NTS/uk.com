@@ -38,8 +38,9 @@ public class AppOverTimeInsertCommand {
 	public ApplicationInsertCmd application;
 
 	public AppOverTime toDomain() {
+		OvertimeAppAtr overtimeAppAtr = EnumAdaptor.valueOf(overTimeClf, OvertimeAppAtr.class);
 		return new AppOverTime(
-				EnumAdaptor.valueOf(overTimeClf, OvertimeAppAtr.class),
+				overtimeAppAtr,
 				applicationTime == null ? null : applicationTime.toDomain(),
 				CollectionUtil.isEmpty(breakTimeOp) ?
 						Optional.empty() : 
@@ -52,7 +53,7 @@ public class AppOverTimeInsertCommand {
 									.map(x -> x.toDomain())
 									.collect(Collectors.toList())),
 				workInfoOp == null ? Optional.empty() : Optional.of(workInfoOp.toDomain()),
-				CollectionUtil.isEmpty(multipleOvertimeContents)
+				overtimeAppAtr != OvertimeAppAtr.MULTIPLE_OVERTIME || CollectionUtil.isEmpty(multipleOvertimeContents)
 						? Optional.empty()
 						: Optional.of(OvertimeWorkMultipleTimes.create(
 								multipleOvertimeContents.stream()

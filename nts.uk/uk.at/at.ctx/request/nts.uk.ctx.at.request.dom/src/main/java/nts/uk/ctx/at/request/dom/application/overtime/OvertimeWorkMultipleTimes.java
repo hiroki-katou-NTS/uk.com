@@ -215,20 +215,22 @@ public class OvertimeWorkMultipleTimes {
                 if (time.getWorkNo().equals(predTime.getWorkNo())) {
                     if (time.getTimeZone().getStartTime().lessThan(predTime.getTimeZone().getStartTime())) {
                         overtimeHours.stream()
-                                .filter(ot -> time.getTimeZone().getStartTime().lessThan(ot.getOvertimeHours().getStart())
+                                .filter(ot -> time.getTimeZone().getStartTime().lessThanOrEqualTo(ot.getOvertimeHours().getStart())
                                         && time.getTimeZone().getEndTime().greaterThan(ot.getOvertimeHours().getEnd()))
                                 .findFirst()
                                 .ifPresent(ot -> {
-                                    breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), time.getTimeZone().getStartTime(), ot.getOvertimeHours().getStart()));
+                                    if (time.getTimeZone().getStartTime().lessThan(ot.getOvertimeHours().getStart()))
+                                        breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), time.getTimeZone().getStartTime(), ot.getOvertimeHours().getStart()));
                                 });
                     }
                     if (time.getTimeZone().getEndTime().greaterThan(predTime.getTimeZone().getEndTime())) {
                         overtimeHours.stream()
                                 .filter(ot -> time.getTimeZone().getStartTime().lessThan(ot.getOvertimeHours().getStart())
-                                        && time.getTimeZone().getEndTime().greaterThan(ot.getOvertimeHours().getEnd()))
+                                        && time.getTimeZone().getEndTime().greaterThanOrEqualTo(ot.getOvertimeHours().getEnd()))
                                 .reduce((first, second) -> second)
                                 .ifPresent(ot -> {
-                                    breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), ot.getOvertimeHours().getEnd(), time.getTimeZone().getEndTime()));
+                                    if (time.getTimeZone().getEndTime().greaterThan(ot.getOvertimeHours().getEnd()))
+                                        breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), ot.getOvertimeHours().getEnd(), time.getTimeZone().getEndTime()));
                                 });
                     }
                 }
