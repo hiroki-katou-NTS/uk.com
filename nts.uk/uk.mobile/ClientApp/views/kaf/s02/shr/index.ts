@@ -175,6 +175,11 @@ export class TimeSetDisp {
     public appHours = { applicationAchievementAtr: 0, startTime: null, endTime: null };
     public outingType: number;
     public cancelAtr: boolean;
+    public workplaceId: string = '';
+    public workplaceCD: string = '';
+    public workplaceName: string = '';
+    public workLocationCD: string = '';
+    public workLocationName: string = '';
 
     constructor( title: string, frame: number, actualStart: number, actulaEnd: number, appStart: number, appEnd: number, cancelAtr: boolean, outingType?: number ) {
         this.title = title;

@@ -28,14 +28,14 @@
                     </div>
                     <div class="row" v-if="workplaceNames.length > 0">
                         <!-- workplace selected -->
-                        <div class="col-12 ml-2 mt-2">
+                        <div class="col-12 ml-2 mt-2" v-if="itemWH.workplaceCD">
                             <span class="text-left pr-1">{{ "KAFS02_38" | i18n }}</span>
                             <span class="text-left pl-1">{{ `${itemWH.workplaceCD} ${itemWH.workplaceName}` }}</span>
                         </div>
                     </div>
                     <div class="row" v-if="workLocationNames.length > 0">
                         <!-- work location selected -->
-                        <div class="col-12 ml-2 mt-1">
+                        <div class="col-12 ml-2 mt-1" v-if="itemWH.workLocationCD">
                             <span class="text-left pr-1">{{ "KAFS02_39" | i18n }}</span>
                             <span class="text-left pl-1">{{ `${itemWH.workLocationCD} ${itemWH.workLocationName}` }}</span>
                         </div>
@@ -64,16 +64,16 @@
                     </div>
                     <div class="row" v-if="workplaceNames.length > 0">
                         <!-- workplace selected -->
-                        <div class="col-12 ml-2 mt-2">
+                        <div class="col-12 ml-2 mt-2" v-if="itemTH.workplaceCD">
                             <span class="text-left pr-1">{{ "KAFS02_38" | i18n }}</span>
-                            <span class="text-left pl-1">{{ `${itemWH.workplaceCD} ${itemWH.workplaceName}` }}</span>
+                            <span class="text-left pl-1">{{ `${itemTH.workplaceCD} ${itemTH.workplaceName}` }}</span>
                         </div>
                     </div>
                     <div class="row" v-if="workLocationNames.length > 0">
                         <!-- work location selected -->
-                        <div class="col-12 ml-2 mt-1">
+                        <div class="col-12 ml-2 mt-1" v-if="itemTH.workLocationCD">
                             <span class="text-left pr-1">{{ "KAFS02_39" | i18n }}</span>
-                            <span class="text-left pl-1">{{ `${itemWH.workLocationCD} ${itemWH.workLocationName}` }}</span>
+                            <span class="text-left pl-1">{{ `${itemTH.workLocationCD} ${itemTH.workLocationName}` }}</span>
                         </div>
                     </div>
 
@@ -258,14 +258,14 @@
                     </div>
                     <div class="row" v-if="workplaceNames.length > 0">
                         <!-- workplace selected -->
-                        <div class="col-12 ml-2 mt-2">
+                        <div class="col-12 ml-2 mt-2" v-if="itemSP.workplaceCD">
                             <span class="text-left pr-1">{{ "KAFS02_38" | i18n }}</span>
                             <span class="text-left pl-1">{{ `${itemSP.workplaceCD} ${itemSP.workplaceName}` }}</span>
                         </div>
                     </div>
                     <div class="row" v-if="workLocationNames.length > 0">
                         <!-- work location selected -->
-                        <div class="col-12 ml-2 mt-1">
+                        <div class="col-12 ml-2 mt-1" v-if="itemSP.workLocationCD">
                             <span class="text-left pr-1">{{ "KAFS02_39" | i18n }}</span>
                             <span class="text-left pl-1">{{ `${itemSP.workLocationCD} ${itemSP.workLocationName}` }}</span>
                         </div>

@@ -55,7 +55,7 @@
                       @click="openCDLS08(itemWH)"
                     >
                       <span class="badge badge-secondary">{{ itemWH.workplaceCD }}</span>
-                      <span :class="{ 'fs-smaller': !itemWH.workplaceCD || itemWH.workplaceCD.length === 0 }">{{ itemWH.workplaceName }}</span>
+                      <span :class="{ 'fs-smaller': !itemWH.workplaceCD }">{{ itemWH.workplaceName }}</span>
                     </button>
                   </template>
                   <template v-if="condition5 && condition15">
@@ -67,7 +67,7 @@
                       @click="openKDLS10(itemWH)"
                     >
                       <span class="badge badge-secondary">{{ itemWH.workLocationCD }}</span>
-                      <span :class="{ 'fs-smaller': !itemWH.workLocationCD || itemWH.workLocationCD.length === 0 }">{{ itemWH.workLocationName }}</span>
+                      <span :class="{ 'fs-smaller': !itemWH.workLocationCD }">{{ itemWH.workLocationName }}</span>
                     </button>
                   </template>
                 </div>
@@ -125,7 +125,7 @@
                       @click="openCDLS08(itemTH)"
                     >
                       <span class="badge badge-secondary">{{ itemTH.workplaceCD }}</span>
-                      <span :class="{ 'fs-smaller': !itemTH.workplaceCD || itemTH.workplaceCD.length === 0 }">{{ itemTH.workplaceName }}</span>
+                      <span :class="{ 'fs-smaller': !itemTH.workplaceCD }">{{ itemTH.workplaceName }}</span>
                     </button>
                   </template>
                   <template v-if="condition4 && condition15">
@@ -137,7 +137,7 @@
                       @click="openKDLS10(itemTH)"
                     >
                       <span class="badge badge-secondary">{{ itemTH.workLocationCD }}</span>
-                      <span :class="{ 'fs-smaller': !itemTH.workLocationCD || itemTH.workLocationCD.length === 0 }">{{ itemTH.workLocationName }}</span>
+                      <span :class="{ 'fs-smaller': !itemTH.workLocationCD }">{{ itemTH.workLocationName }}</span>
                     </button>
                   </template>
                 </div>
@@ -375,7 +375,7 @@
                       @click="openCDLS08(itemSP)"
                     >
                       <span class="badge badge-secondary">{{ itemSP.workplaceCD }}</span>
-                      <span :class="{ 'fs-smaller': !itemSP.workplaceCD || itemSP.workplaceCD.length === 0 }">{{ itemSP.workplaceName }}</span>
+                      <span :class="{ 'fs-smaller': !itemSP.workplaceCD }">{{ itemSP.workplaceName }}</span>
                     </button>
                   </template>
                   <template v-if="condition15">
@@ -387,7 +387,7 @@
                       @click="openKDLS10(itemSP)"
                     >
                       <span class="badge badge-secondary">{{ itemSP.workLocationCD }}</span>
-                      <span :class="{ 'fs-smaller': !itemSP.workLocationCD || itemSP.workLocationCD.length === 0 }">{{ itemSP.workLocationName }}</span>
+                      <span :class="{ 'fs-smaller': !itemSP.workLocationCD }">{{ itemSP.workLocationName }}</span>
                     </button>
                   </template>
                 </div>

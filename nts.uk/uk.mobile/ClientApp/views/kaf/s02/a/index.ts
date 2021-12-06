@@ -340,6 +340,13 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 return item;
             });
         }
+
+        // If workplace and location selector is not display, display all workHours, tempWorkHours and 3 support
+        if (!self.condition14 && !self.condition15) {
+            self.workHourLstNumber = 2;
+            self.tempWorkHourLstNumber = 3;
+            self.supportLstNumber = 3;
+        }
     }
 
     public fetchDataEdit() {
@@ -396,16 +403,16 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 item.workplaceName = workplace.wkpName;
                 item.workplaceId = workplace.workplaceId;
             } else {
-                item.workplaceCD = '';
+                item.workplaceCD = null;
                 item.workplaceName = self.$i18n('KAFS02_35');
-                item.workplaceId = '';
+                item.workplaceId = null;
             }
 
             if (workLocation) {
                 item.workLocationCD = workLocation.workLocationCode;
                 item.workLocationName = workLocation.workLocationName;
             } else {
-                item.workLocationCD = '';
+                item.workLocationCD = null;
                 item.workLocationName = self.$i18n('KAFS02_35');
             }
         };
@@ -1798,12 +1805,12 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 item.workplaceCD = code;
                 item.workplaceName = name;
             } else if (self.mode) {
-                item.workplaceId = '';
-                item.workplaceCD = '';
+                item.workplaceId = null;
+                item.workplaceCD = null;
                 item.workplaceName = self.$i18n('KAFS02_40');
             } else {
-                item.workplaceId = '';
-                item.workplaceCD = '';
+                item.workplaceId = null;
+                item.workplaceCD = null;
                 item.workplaceName = self.$i18n('KAFS02_35');
             }
         });
@@ -1821,10 +1828,10 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 item.workLocationCD = workLocationCD; 
                 item.workLocationName = workLocationName;  
             } else if (self.mode) {
-                item.workLocationCD = '';
+                item.workLocationCD = null;
                 item.workLocationName = self.$i18n('KAFS02_41');
             } else {
-                item.workLocationCD = '';
+                item.workLocationCD = null;
                 item.workLocationName = self.$i18n('KAFS02_35');
             }
         });
