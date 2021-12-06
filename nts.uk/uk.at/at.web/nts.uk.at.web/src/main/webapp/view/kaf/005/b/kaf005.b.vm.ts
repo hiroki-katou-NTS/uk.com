@@ -460,7 +460,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             .then((isValid) => {
                 if (isValid) {
 					// validate riêng cho màn hình
-                    return true;
+                    return vm.$validate('.inputTime', '.multiple-reason:not([style*="display: none"])');
                 }
             })
 			.then((result) => {

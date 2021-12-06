@@ -175,6 +175,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 												
 							}
 							if (vm.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME && vm.application().appDate()) {
+                                vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
 								vm.$blockui("show");
 								const params1 = {
                                     employeeId: vm.isAgentMode() ? vm.employeeIDLst[0] : vm.$user.employeeId,
