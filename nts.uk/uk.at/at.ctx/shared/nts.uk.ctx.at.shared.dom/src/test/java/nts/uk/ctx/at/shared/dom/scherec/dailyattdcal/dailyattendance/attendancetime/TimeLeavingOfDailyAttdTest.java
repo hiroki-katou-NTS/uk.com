@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -290,15 +291,38 @@ public class TimeLeavingOfDailyAttdTest {
 	 * 
 	 */
 	@Test
-	public void getTimeOfTimeLeavingAtt() {
-		val startTimeWork = Helper.createTimeStamp(new TimeWithDayAttr(480));
-		val endTimeWork = Helper.createTimeStamp(new TimeWithDayAttr(1020));
-		val timeLeavingWork = new TimeLeavingWork( new WorkNo(1), Optional.of(startTimeWork), Optional.of(endTimeWork), true, true);
-		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(4));
+	public void testGetTimeOfTimeLeavingAtt() {
+		
+		val work1 = TimeLeavingWork.createFromTimeSpan(
+				new WorkNo(1), 
+				new TimeSpanForCalc(TimeWithDayAttr.hourMinute(8, 30), 
+									TimeWithDayAttr.hourMinute(17, 30)));
+		val work2 = TimeLeavingWork.createFromTimeSpan(
+				new WorkNo(2), 
+				new TimeSpanForCalc(TimeWithDayAttr.hourMinute(20, 0), 
+									TimeWithDayAttr.hourMinute(22, 30)));
+		val work3 = TimeLeavingWork.createFromTimeSpan(
+				new WorkNo(3), 
+				new TimeSpanForCalc(TimeWithDayAttr.hourMinute(24, 0), 
+									TimeWithDayAttr.hourMinute(28, 0)));
+		
+		val timeLeavingDaily = new TimeLeavingOfDailyAttd(
+										Arrays.asList(work2, work3, work1), 
+										new WorkTimes(3));
 		
 		val actual = timeLeavingDaily.getTimeOfTimeLeavingAtt();
-		assertThat(actual).containsOnly(new TimeSpanForCalc(  timeLeavingWork.getAttendanceTime().get()
-				                                            , timeLeavingWork.getLeaveTime().get()));
+		
+		assertThat(actual)
+			.extracting(
+				e -> e.getStart().rawHour(),
+				e -> e.getStart().minute(),
+				e -> e.getEnd().rawHour(),
+				e -> e.getEnd().minute())
+			.containsExactly(
+					tuple(8, 30, 17, 30),
+					tuple(20, 0, 22, 30),
+					tuple(24, 0, 28, 0)
+					);
 	}
 	
 	/**
