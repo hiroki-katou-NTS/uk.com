@@ -7,7 +7,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			<div class="lblTitle pull-left" data-bind="text: $i18n('KAF005_349'), ntsFormLabel: {required: true}"></div>
 		</div>
 		<div class="cell table-time" style="margin-top: 5px;">
-			<div id="A15_2" class="label" data-bind="text: $i18n('KAF005_348')"></div>	
+			<div id="A15_2" class="label" data-bind="text: $i18n('KAF005_348')" style="padding: 5px 0;"></div>	
 			<div data-bind="foreach: multipleOvertimeContents">
 				<div class="control-group valign-center" data-bind="style: {width: 320 + ($parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? 210 : 0) + ($parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? 210 : 0) + 'px'}">
 					<input data-bind="ntsTimeWithDayEditor: {
@@ -49,7 +49,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 											 option: {width: '200'}          
 									 },
 									 visible: $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1"/>
-					<button style="width: 30px; border: none; box-shadow: none; padding: 5px;" data-bind="click: $parent.removeMultipleRow.bind($parent, $data), enable: ($parent.visibleModel.c7() && $parent.outputMode())">
+					<button style="width: 30px; border: none; box-shadow: none; padding: 5px;" data-bind="click: $parent.removeMultipleRow.bind($parent, $data, $element), enable: ($parent.visibleModel.c7() && $parent.outputMode())">
 					    <i data-bind="ntsIcon: { no: 237 }"></i>
                     </button>				
 				</div>

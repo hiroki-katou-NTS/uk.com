@@ -383,11 +383,21 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             if(!_.isUndefined(defaultReasonTypeItem)) {
                 fixedReasonCode = defaultReasonTypeItem.appStandardReasonCD;
             }
-            vm.multipleOvertimeContents.push(new MultipleOvertimeContent(() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED}, 1));
+            vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
+                () => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+                1,
+                null,
+                null,
+                fixedReasonCode,
+                null
+            ));
         }
 
-        removeMultipleRow(data: MultipleOvertimeContent) {
+        removeMultipleRow(data: MultipleOvertimeContent, $element: any) {
             const vm = this;
+            if ($($element.parentElement).ntsError("hasError")) {
+                $($element.parentElement).find("input").ntsError("clear");
+            }
             vm.multipleOvertimeContents.remove(data);
         }
 
@@ -1461,8 +1471,23 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		}
 		
 		calculate() {
-			
 			const self = this;
+
+            if (self.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
+                let error = false;
+                self.multipleOvertimeContents().forEach((i, idx) => {
+                    if (!!i.start() && !i.end()) {
+                        self.$errors('#A15_5_' + idx, 'Msg_307');
+                        error = true;
+                    }
+                    if (!i.start() && !!i.end()) {
+                        self.$errors('#A15_3_' + idx, 'Msg_307');
+                        error = true;
+                    }
+                });
+                if (error) return;
+            }
+
 			self.$blockui("show");
 			console.log('calculate');
 			let command = {} as ParamCalculationCMD;

@@ -396,6 +396,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                             });
                                             vm.holidayTime(holidayTimeArray);
 										}
+                                    } else {
+                                        vm.multipleOvertimeContents([
+                                            new MultipleOvertimeContent(() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED}, 1)
+                                        ]);
                                     }
 								}).fail(error => {
 									vm.$dialog.error(error);
@@ -782,6 +786,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                     i.appReason
                                 ));
                             });
+						} else {
+                            self.multipleOvertimeContents([
+                                new MultipleOvertimeContent(() => {self.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED}, 1)
+							]);
 						}
 					}
 				})
@@ -1076,11 +1084,21 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if(!_.isUndefined(defaultReasonTypeItem)) {
                 fixedReasonCode = defaultReasonTypeItem.appStandardReasonCD;
             }
-		    vm.multipleOvertimeContents.push(new MultipleOvertimeContent(() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED}, 1));
+		    vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
+		    	() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+				1,
+				null,
+				null,
+				fixedReasonCode,
+				null
+			));
         }
 
-        removeMultipleRow(data: MultipleOvertimeContent) {
+        removeMultipleRow(data: MultipleOvertimeContent, $element: any) {
 		    const vm = this;
+		    if ($($element.parentElement).ntsError("hasError")) {
+                $($element.parentElement).find("input").ntsError("clear");
+			}
 		    vm.multipleOvertimeContents.remove(data);
         }
 
@@ -2977,6 +2995,22 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 		calculate() {
 			const self = this;
+
+            if (self.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
+                let error = false;
+                self.multipleOvertimeContents().forEach((i, idx) => {
+                    if (!!i.start() && !i.end()) {
+                        self.$errors('#A15_5_' + idx, 'Msg_307');
+                        error = true;
+                    }
+                    if (!i.start() && !!i.end()) {
+                        self.$errors('#A15_3_' + idx, 'Msg_307');
+                        error = true;
+                    }
+                });
+                if (error) return;
+            }
+
 			self.$blockui("show");
 			let command = {} as ParamCalculationCMD;
 			command.overtimeAppSetCommand = self.dataSource.infoNoBaseDate.overTimeAppSet;
@@ -3239,8 +3273,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		isProxy: Boolean;
 		calculationResultOp?: CalculationResult;
 		infoWithDateApplicationOp?: InfoWithDateApplication;
-		calculatedFlag: number;,
-        latestMultiOvertimeApp?: any
+		calculatedFlag: number;
+        latestMultiOvertimeApp?: any;
 	}
 	export interface WorkdayoffFrame {
 		workdayoffFrNo: number;
