@@ -2566,6 +2566,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			dfd.resolve();
 			return dfd.promise();
 		}
+		
+		checkTimeRange(start : any, end : any, startRangeStart :any,startRangeEnd :any, endRangeStart: any, endRangeEnd: any){
+			
+			if (start >= startRangeStart && start <= startRangeEnd && end >= endRangeStart && end <= endRangeEnd) {
+				return true;
+			}
+			
+			return false;
+		}
 
 		// ADD CHART
 		addAllChart(datafilter: Array<model.ITimeGantChart>, i: number, lstBreakTime: any, screen: string, lstBrkNew?: any) {
@@ -2638,7 +2647,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							&& end1 - dispStart == limitEndMin - dispStart && limitEndMin - dispStart == limitEndMax - dispStart) {
 							fixedFix = "Both";
 						}
-						if (start1 != null) {
+						let checkRange = self.checkTimeRange(start1 - dispStart, end1 - dispStart, limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart, limitEndMax - dispStart);
+						if (start1 != null && checkRange) {
 							lgc = ruler.addChartWithType("Fixed", {
 								id: `lgc${i}`,
 								lineNo: i,
@@ -2679,23 +2689,26 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								fixedFix = "Both";
 							}
 							if (start2 != null) {
-								rgc = ruler.addChartWithType("Fixed", {
-									id: `rgc${i}`,
-									lineNo: i,
-									start: start2 - dispStart,
-									end: end2 - dispStart,
-									limitStartMin: limitStartMin - dispStart,
-									limitStartMax: limitStartMax - dispStart,
-									limitEndMin: limitEndMin - dispStart,
-									limitEndMax: limitEndMax - dispStart,
-									canSlide: false,
-									fixed: fixedFix
-								});
+								let checkRange = self.checkTimeRange(start2 - dispStart, end2 - dispStart, limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart, limitEndMax - dispStart);
+								if (checkRange) {
+									rgc = ruler.addChartWithType("Fixed", {
+										id: `rgc${i}`,
+										lineNo: i,
+										start: start2 - dispStart,
+										end: end2 - dispStart,
+										limitStartMin: limitStartMin - dispStart,
+										limitStartMax: limitStartMax - dispStart,
+										limitEndMin: limitEndMin - dispStart,
+										limitEndMax: limitEndMax - dispStart,
+										canSlide: false,
+										fixed: fixedFix
+									});
+								
+									fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "Fixed", `rgc${i}`, { startTime: timeChart2.startTime - dispStart, endTime: timeChart2.endTime - dispStart }, i, null,
+									limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart, limitEndMax - dispStart));
+									indexRight = indexRight++;
+								}
 							}
-
-							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "Fixed", `rgc${i}`, { startTime: timeChart2.startTime - dispStart, endTime: timeChart2.endTime - dispStart }, i, null,
-								limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart, limitEndMax - dispStart));
-							indexRight = indexRight++;
 						}
 					}
 					// add CHANGEABLE TIME - thời gian lưu động
@@ -2736,30 +2749,34 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								fixedFix = "Both";
 								canSlideFix = false;
 							}
+							
+							let checkRange = self.checkTimeRange(start1 - dispStart, end1 - dispStart, 0, 1000, 0, 1000);
+							if (checkRange){
+								lgc = ruler.addChartWithType("Changeable", {
+									id: `lgc${i}`,
+									lineNo: i,
+									start: start1 - dispStart,
+									end: end1 - dispStart,
+									limitStartMin: 0,
+									limitStartMax: 1000,
+									limitEndMin: 0,
+									limitEndMax: 1000,
+									resizeFinished: (b: any, e: any, p: any) => {
+										if (self.checkDisByDate == false) return;
+									},
+									dropFinished: (b: any, e: any) => {
+										if (self.checkDisByDate == false) return;
+									},
+									canSlide: canSlideFix,
+									fixed: fixedFix,
+									bePassedThrough: false
+								});
 
-							lgc = ruler.addChartWithType("Changeable", {
-								id: `lgc${i}`,
-								lineNo: i,
-								start: start1 - dispStart,
-								end: end1 - dispStart,
-								limitStartMin: 0,
-								limitStartMax: 1000,
-								limitEndMin: 0,
-								limitEndMax: 1000,
-								resizeFinished: (b: any, e: any, p: any) => {
-									if (self.checkDisByDate == false) return;
-								},
-								dropFinished: (b: any, e: any) => {
-									if (self.checkDisByDate == false) return;
-								},
-								canSlide: canSlideFix,
-								fixed: fixedFix,
-								bePassedThrough: false
-							});
-
-							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "Changeable", `lgc${i}`, { startTime: timeChart.startTime - dispStart, endTime: timeChart.endTime - dispStart }, i, null,
-								limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart, limitEndMax - dispStart));
-							indexLeft = indexLeft++;
+								fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "Changeable", `lgc${i}`, { startTime: timeChart.startTime - dispStart, endTime: timeChart.endTime - dispStart }, i, null,
+									limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart, limitEndMax - dispStart));
+								indexLeft = indexLeft++;
+								
+							}
 						}
 
 						if (changeable.length > 1 && changeable[1].startTime != null && changeable[1].endTime != null && changeable[1].startTime != 0 && changeable[1].endTime != 0) {
@@ -2786,29 +2803,33 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								canSlideFix = false;
 							}
 							if (start2 != null) {
-								rgc = ruler.addChartWithType("Changeable", {
-									id: `rgc${i}`,
-									lineNo: i,
-									start: start2 - dispStart,
-									end: end2 - dispStart,
-									limitStartMin: limitStartMin - dispStart,
-									limitStartMax: 1000,
-									limitEndMin: limitEndMin - dispStart,
-									limitEndMax: 1000,
-									resizeFinished: (b: any, e: any, p: any) => {
-										if (self.checkDisByDate == false) return;
-									},
-									dropFinished: (b: any, e: any) => {
-										if (self.checkDisByDate == false) return;
-									},
-									canSlide: canSlideFix,
-									fixed: fixedFix,
-									bePassedThrough: false,
-									pruneOnSlide: true
-								});
-								fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "Changeable", `rgc${i}`, { startTime: timeChart2.startTime - dispStart, endTime: timeChart2.endTime - dispStart }, i, null,
-									limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart, limitEndMax - dispStart));
-								indexRight = indexRight++;
+								let checkRange = self.checkTimeRange(start2 - dispStart, end2 - dispStart, limitStartMin - dispStart, 1000, limitEndMin - dispStart, 1000);
+								if (checkRange){
+									rgc = ruler.addChartWithType("Changeable", {
+										id: `rgc${i}`,
+										lineNo: i,
+										start: start2 - dispStart,
+										end: end2 - dispStart,
+										limitStartMin: limitStartMin - dispStart,
+										limitStartMax: 1000,
+										limitEndMin: limitEndMin - dispStart,
+										limitEndMax: 1000,
+										resizeFinished: (b: any, e: any, p: any) => {
+											if (self.checkDisByDate == false) return;
+										},
+										dropFinished: (b: any, e: any) => {
+											if (self.checkDisByDate == false) return;
+										},
+										canSlide: canSlideFix,
+										fixed: fixedFix,
+										bePassedThrough: false,
+										pruneOnSlide: true
+									});
+									fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "Changeable", `rgc${i}`, { startTime: timeChart2.startTime - dispStart, endTime: timeChart2.endTime - dispStart }, i, null,
+										limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart, limitEndMax - dispStart));
+									indexRight = indexRight++;
+								}
+								
 							}
 						}
 					}
@@ -2846,7 +2867,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 
 						if (timeMinus[0].startTime < timeMinus[0].endTime && timeChart.startTime < timeRangeLimit) {
-							lgc = ruler.addChartWithType("Flex", {
+							let checkRange = self.checkTimeRange(timeStart, timeEnd, limitStartMin, limitStartMax, limitEndMin, limitEndMax);
+							if (checkRange){
+								lgc = ruler.addChartWithType("Flex", {
 								id: `lgc${i}`,
 								lineNo: i,
 								start: timeStart,
@@ -2882,6 +2905,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "CoreTime", `lgc${i}_` + indexLeft, { startTime: timeChartCore.startTime - dispStart, endTime: timeChartCore.endTime - dispStart }, i, `lgc${i}`));
 								indexLeft = ++indexLeft;
 							}
+							}
+							
 						}
 					}
 					if (timeChart != null) {
