@@ -1,6 +1,6 @@
 #ccg020 {
   height: 30px;
-  width: 250px;
+  width: 240px;
   position: relative;
 }
 #message {
@@ -19,7 +19,7 @@
 }
 #search-bar {
   display: inline-block;
-  width: 250px;
+  width: 240px;
 }
 #search-bar button.search-btn.caret-bottom.ntsSearchBox_Component {
   display: none;
@@ -33,8 +33,7 @@
   top: 0px;
   position: absolute;
   cursor: pointer;
-  right: 15px;
-  top: 3px;
+  top: 2.6px;
 }
 .result-search {
   display: block !important;
@@ -170,7 +169,7 @@ div#user-image {
 }
 .ccg002-panel {
   background: white;
-  width: 40px;
+  width: 30px;
   height: 30px;
   position: absolute !important;
   right: 0;

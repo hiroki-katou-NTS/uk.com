@@ -12,7 +12,6 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
@@ -136,7 +135,6 @@ public class ActualWorkingTimeOfDaily {
 			   WorkType workType,
 		       Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
-			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
 			   List<DivergenceTimeRoot> divergenceTimeList, 
@@ -152,7 +150,6 @@ public class ActualWorkingTimeOfDaily {
 				    workType,
 				    workTimeDailyAtr,
 				    flexCalcMethod,
-					bonusPayAutoCalcSet,
 					eachCompanyTimeSet,
 					conditionItem,
 					predetermineTimeSetByPersonInfo,
@@ -171,7 +168,6 @@ public class ActualWorkingTimeOfDaily {
 						workType,
 						workTimeDailyAtr,
 						flexCalcMethod,
-						bonusPayAutoCalcSet,
 						eachCompanyTimeSet,
 						conditionItem,
 						predetermineTimeSetByPersonInfo);

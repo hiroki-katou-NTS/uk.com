@@ -30,7 +30,7 @@ public class TmpAnnualLeaveMngExport {
 	private String workTypeCode;
 	/** 使用日数 */
 	private UseDay useDays;
-	
+
 	/**
 	 * ファクトリー
 	 * @param employeeId 社員ID
@@ -52,7 +52,7 @@ public class TmpAnnualLeaveMngExport {
 //			RemainAtr remainAtr,
 			String workTypeCode,
 			UseDay useDays){
-		
+
 		TmpAnnualLeaveMngExport domain = new TmpAnnualLeaveMngExport();
 		domain.employeeId = employeeId;
 		domain.manageId = manageId;
@@ -64,7 +64,7 @@ public class TmpAnnualLeaveMngExport {
 		domain.useDays = useDays;
 		return domain;
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param interimRemain 暫定残数管理データ
@@ -74,7 +74,7 @@ public class TmpAnnualLeaveMngExport {
 	public static TmpAnnualLeaveMngExport of(
 			InterimRemain interimRemain,
 			TempAnnualLeaveMngs tmpAnnLeaMng){
-		
+
 		TmpAnnualLeaveMngExport domain = new TmpAnnualLeaveMngExport();
 		domain.employeeId = interimRemain.getSID();
 		domain.manageId = interimRemain.getRemainManaID();
@@ -84,7 +84,7 @@ public class TmpAnnualLeaveMngExport {
 //		domain.remainAtr = interimRemain.getRemainAtr();
 		domain.workTypeCode = tmpAnnLeaMng.getWorkTypeCode().v();
 		/** TODO: tmpAnnLeaMng.getUseNumber().getUsedDays > 1 -> error */
-		domain.useDays = tmpAnnLeaMng.getUsedNumber().getDays() !=null? new UseDay(tmpAnnLeaMng.getUsedNumber().getDays().v()): new UseDay(0d);
+		domain.useDays = tmpAnnLeaMng.getUsedNumber().getUsedDayNumber().isPresent() ? new UseDay(tmpAnnLeaMng.getUsedNumber().getUsedDayNumber().get().v()): new UseDay(0d);
 		return domain;
 	}
 }

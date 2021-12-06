@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
 
 /**
@@ -65,13 +66,13 @@ public class ReserveLeaveRemainingNumberInfo implements Cloneable {
 	/**
 	 * 積立年休付与情報を更新
 	 * @param remainingDataList 積立年休付与残数データリスト
-	 * @param afterGrantAtr 付与後フラグ
+	 * @param grantPeriodAtr 付与前付与後
 	 */
 	public void updateRemainingNumber(
-			List<ReserveLeaveGrantRemainingData> remainingDataList, boolean afterGrantAtr){
+			List<ReserveLeaveGrantRemainingData> remainingDataList, GrantBeforeAfterAtr grantPeriodAtr){
 
 		// 積立年休付与残数データから積立年休（マイナスあり）を作成
-		this.reserveLeaveWithMinus.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);
+		this.reserveLeaveWithMinus.createRemainingNumberFromGrantRemaining(remainingDataList, grantPeriodAtr);
 
 		// 積立年休（マイナスなし）を積立年休（マイナスあり）で上書き　＆　積立年休からマイナスを削除
 		this.reserveLeaveNoMinus.setValueFromRealReserveLeave(this.reserveLeaveWithMinus);

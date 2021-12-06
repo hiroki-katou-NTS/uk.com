@@ -6,7 +6,9 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.gul.serialize.binary.SerializableWithOptional;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.HalfdayAnnualLeaveMax;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 
 /**
  * 半日年休使用数
@@ -36,6 +38,14 @@ public class HalfDayAnnLeaUsedNum implements Cloneable, SerializableWithOptional
 		this.timesBeforeGrant = new UsedTimes(0);
 		this.timesAfterGrant = Optional.empty();
 	}
+	
+	//[C-1] 作成する
+	public  HalfDayAnnLeaUsedNum(UsedTimes timesBeforeGrant, Optional<UsedTimes> timesAfterGrant){
+		this.times = totalUsed(timesBeforeGrant, timesAfterGrant);
+		this.timesBeforeGrant = timesBeforeGrant;
+		this.timesAfterGrant = timesAfterGrant;
+	}
+	
 
 	/**
 	 * ファクトリー
@@ -70,11 +80,47 @@ public class HalfDayAnnLeaUsedNum implements Cloneable, SerializableWithOptional
 		return cloned;
 	}
 	
+	
+	//[1]更新する
+	public HalfDayAnnLeaUsedNum update(HalfdayAnnualLeaveMax maxData, GrantBeforeAfterAtr grantPeriodAtr){
+		if(grantPeriodAtr == GrantBeforeAfterAtr.BEFORE_GRANT){
+			return new HalfDayAnnLeaUsedNum(maxData.getUsedTimes(),this.timesAfterGrant);
+		}else{
+			return new HalfDayAnnLeaUsedNum(timesBeforeGrant,Optional.of(maxData.getUsedTimes()));
+		}
+	}
+	
+	
+	//[2]残数超過分を補正する
+	public HalfDayAnnLeaUsedNum correctTheExcess(HalfDayAnnLeaRemainingNum remainingNum){
+		UsedTimes beforeGrant = this.timesBeforeGrant.correctTheExcess(remainingNum.getTimesBeforeGrant());
+		
+		Optional<UsedTimes> afterGrant;
+		if(remainingNum.getTimesAfterGrant().isPresent()){
+			afterGrant = this.timesAfterGrant
+					.map(x -> x.correctTheExcess(remainingNum.getTimesAfterGrant().get()));
+		}else{
+			afterGrant = this.timesAfterGrant;
+		}
+		return new HalfDayAnnLeaUsedNum(beforeGrant,afterGrant);
+	}
+	
+	
 	private void writeObject(ObjectOutputStream stream){	
 		writeObjectWithOptional(stream);
 	}	
 	private void readObject(ObjectInputStream stream){	
 		readObjectWithOptional(stream);
 	}	
+	
+	//[prv-1]合計回数を求める
+	private UsedTimes totalUsed(UsedTimes timesBeforeGrant, Optional<UsedTimes> timesAfterGrant){
+		if(timesAfterGrant.isPresent()){
+			return new UsedTimes(timesBeforeGrant.v() + timesAfterGrant.get().v());
+		}else{
+			return timesBeforeGrant;
+		}
+			
+	}
 
 }
