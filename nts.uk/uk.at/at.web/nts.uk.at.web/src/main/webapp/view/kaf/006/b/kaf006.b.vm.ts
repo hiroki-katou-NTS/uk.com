@@ -446,6 +446,19 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
                         workTimeCd: value ? vm.selectedWorkTimeCD() : null, 
                         appAbsenceStartInfo: vm.data
                     };
+
+					command.appAbsenceStartInfo.leaveComDayOffManas = _.map(command.appAbsenceStartInfo.leaveComDayOffManas, (x: any) => {
+						x.dateOfUse = new Date(x.dateOfUse).toISOString();
+						x.outbreakDay = new Date(x.outbreakDay).toISOString();
+			
+						return x;
+					});
+					command.appAbsenceStartInfo.payoutSubofHDManas = _.map(command.appAbsenceStartInfo.payoutSubofHDManas, (x: any) => {
+						x.dateOfUse = new Date(x.dateOfUse).toISOString();
+						x.outbreakDay = new Date(x.outbreakDay).toISOString();
+						
+						return x;
+					});
     
                     vm.$ajax(API.changeUseingWorkTime, command).then((res) => {
                         if (res) {
