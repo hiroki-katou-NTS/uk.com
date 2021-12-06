@@ -277,8 +277,26 @@ export class KafS02AComponent extends KafS00ShrComponent {
         self.appStampOutputDto = data;
         self.appDispInfoStartupOutput = data.appDispInfoStartupOutput;
 
-        self.workHourLst.map((x) => x.dispCheckbox = this.useCancelFunction);
-        self.tempWorkHourLst.map((x) => x.dispCheckbox = this.useCancelFunction);
+        self.workHourLst.map((x) => {
+            x.dispCheckbox = this.useCancelFunction;
+            if (self.mode) {
+                x.workplaceName = self.$i18n('KAFS02_40');
+                x.workLocationName = self.$i18n('KAFS02_41');
+            } else {
+                x.workplaceName = self.$i18n('KAFS02_35');
+                x.workLocationName = self.$i18n('KAFS02_35');
+            }
+        });
+        self.tempWorkHourLst.map((x) => {
+            x.dispCheckbox = this.useCancelFunction;
+            if (self.mode) {
+                x.workplaceName = self.$i18n('KAFS02_40');
+                x.workLocationName = self.$i18n('KAFS02_41');
+            } else {
+                x.workplaceName = self.$i18n('KAFS02_35');
+                x.workLocationName = self.$i18n('KAFS02_35');
+            }
+        });
         self.breakLst.map((x) => x.dispCheckbox = this.useCancelFunction);
         self.goOutLst.map((x) => x.dispCheckbox = this.useCancelFunction);
         self.longTermLst.map((x) => x.dispCheckbox = this.useCancelFunction);
@@ -288,6 +306,13 @@ export class KafS02AComponent extends KafS00ShrComponent {
         if (useCheering && maxOfCheer && maxOfCheer > 0) {
             for (let i = 1; i <= maxOfCheer; i++) {
                 const supportTimeItem = new WorkHour({ startTime: null, endTime: null, frame: i, title: 'KAFS02_32', dispCheckbox: self.useCancelFunction, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+                if (self.mode) {
+                    supportTimeItem.workplaceName = self.$i18n('KAFS02_40');
+                    supportTimeItem.workLocationName = self.$i18n('KAFS02_41');
+                } else {
+                    supportTimeItem.workplaceName = self.$i18n('KAFS02_35');
+                    supportTimeItem.workLocationName = self.$i18n('KAFS02_35');
+                }
                 self.supportLst.push(supportTimeItem);
             }
         }
@@ -370,11 +395,18 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 item.workplaceCD = workplace.wkpCode;
                 item.workplaceName = workplace.wkpName;
                 item.workplaceId = workplace.workplaceId;
+            } else {
+                item.workplaceCD = '';
+                item.workplaceName = self.$i18n('KAFS02_35');
+                item.workplaceId = '';
             }
 
             if (workLocation) {
                 item.workLocationCD = workLocation.workLocationCode;
                 item.workLocationName = workLocation.workLocationName;
+            } else {
+                item.workLocationCD = '';
+                item.workLocationName = self.$i18n('KAFS02_35');
             }
         };
 
