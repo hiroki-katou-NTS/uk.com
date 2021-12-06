@@ -27,7 +27,23 @@ export class KDLS1OAComponent extends Vue {
     let self = this;
     self.$http.post('at', servicePath.getAllWorkLocation).then((result: any) => {
         if (_.isEmpty(result.data)) {
-          this.$modal.error({ messageId: 'Msg_1566', messageParams: ['Com_WorkLocation'],}).then(() => self.$close());
+          //create data 選択なし and concatenate into array
+          let self = this, $workLocation = [];
+
+          $workLocation.push({
+            workLocationCD: '',
+            workLocationName: '選択なし',
+            contractCode: '-1',
+          });
+
+          self.allData = $workLocation;
+          self.data = _.sortBy(self.allData, ['workLocationCD']);
+
+          if (!_.isEmpty(self.params.selectedCode) || _.find(self.allData,(item) => item.workLocationCD == self.params.selectedCode) != undefined) {
+            self.activeNoSelect = false;
+          } else {
+            self.activeNoSelect = true;
+          }
         } else {
           //create data 選択なし and concatenate into array
           let self = this, $workLocation = [];
