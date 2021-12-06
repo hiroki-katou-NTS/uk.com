@@ -190,8 +190,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
     public supportLst = [];
     public checkboxSP = [];
 
-    public workHourLstNumber = 2;
-    public tempWorkHourLstNumber = 2;
+    public workHourLstNumber = 1;
+    public tempWorkHourLstNumber = 1;
     public supportLstNumber = 2;
 
     public useCheering: boolean = false;
