@@ -11,14 +11,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -31,7 +31,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -44,7 +44,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -54,7 +54,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -64,28 +64,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -108,7 +108,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -177,7 +177,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 return browser;
@@ -7145,6 +7145,13 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../reference.ts"/>
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 var nts;
 (function (nts) {
     var uk;
@@ -7366,8 +7373,7 @@ var nts;
                         self.$container.tabIndex = -1;
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [],
-                            find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -14005,7 +14011,7 @@ var nts;
                                     var id = target.getAttribute("id");
                                     if (_.isNil(id))
                                         return;
-                                    if (!rightClickFt.chartFilter.apply(rightClickFt, id.split('-').concat([target])))
+                                    if (!rightClickFt.chartFilter.apply(rightClickFt, __spreadArrays(id.split('-'), [target])))
                                         return;
                                 }
                                 else {
@@ -14020,7 +14026,7 @@ var nts;
                                     ui = helper.getCellCoord(target);
                                 }
                                 else {
-                                    _a = id.split('-').slice(), ui.rowIndex = _a[0], ui.id = _a[1];
+                                    _a = __spreadArrays(id.split('-')), ui.rowIndex = _a[0], ui.id = _a[1];
                                 }
                                 ui.target = target;
                                 ui.contextMenu = function (items) {
@@ -17847,7 +17853,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-                                                accessor.checked(checkeds.concat([value_1]));
+                                                accessor.checked(__spreadArrays(checkeds, [value_1]));
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -20518,7 +20524,7 @@ var nts;
                             var delKeyCode = [46];
                             var dotWithNumpadKeyCodes = [110, 190]; //'.'
                             var minusWithNumpadKeyCodes = [109, 189]; //'-'
-                            var allowedKeyCodes = numberKeyCodes.concat(numberNumpadKeyCodes, backspaceKeyCode, delKeyCode, dotWithNumpadKeyCodes, minusWithNumpadKeyCodes);
+                            var allowedKeyCodes = __spreadArrays(numberKeyCodes, numberNumpadKeyCodes, backspaceKeyCode, delKeyCode, dotWithNumpadKeyCodes, minusWithNumpadKeyCodes);
                             if (allowedKeyCodes.indexOf(dorgi.keyCode) == -1) {
                                 $input.val(dval);
                                 $input.data(_kc, null);
@@ -21686,7 +21692,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -23162,7 +23168,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -23881,7 +23887,7 @@ var nts;
                                         read: function () {
                                             var ds = ko.toJS(accessor.dataSource);
                                             return ds.filter(function (d) { return d.visible !== false; })
-                                                .map(function (d) { return (__assign({}, d, { active: active,
+                                                .map(function (d) { return (__assign(__assign({}, d), { active: active,
                                                 tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
                                                     'btn-link': d.title,
                                                     icon: d.icon || 'CHECKBOX',
@@ -24235,8 +24241,7 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -34333,8 +34338,7 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
-                                    relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -36896,10 +36900,10 @@ var nts;
                                     color: self.metaholder.color,
                                     zIndex: self.pasteBand.zIndex || 1000
                                 });
-                                if (self.mode === "paste") {
-                                    self.metaholder.tempStart = self.metaholder.start;
-                                    self.metaholder.tempEnd = self.metaholder.end;
-                                }
+                                //                    if (self.mode === "paste") {
+                                //                        self.metaholder.tempStart = self.metaholder.start;
+                                //                        self.metaholder.tempEnd = self.metaholder.end;
+                                //                    }
                                 document.addEventListenerNS("mousemove.paste", manipulationMode.pasteMove.bind(self));
                                 document.addEventListenerNS("mouseup.paste", manipulationMode.pasteUp.bind(self));
                                 return;
@@ -37377,10 +37381,10 @@ var nts;
                                     color: self.pasteBand.color,
                                     zIndex: self.pasteBand.zIndex || 1000
                                 });
-                                if (self.mode === "paste") {
-                                    self.metaholder.tempStart = self.metaholder.start;
-                                    self.metaholder.tempEnd = self.metaholder.end;
-                                }
+                                //                    if (self.mode === "paste") {
+                                //                        self.metaholder.tempStart = self.metaholder.start;
+                                //                        self.metaholder.tempEnd = self.metaholder.end;
+                                //                    }
                                 document.addEventListenerNS("mousemove.paste", manipulationMode.pasteMove.bind(self));
                                 document.addEventListenerNS("mouseup.paste", manipulationMode.pasteUp.bind(self));
                                 self.placeholder.parentNode.removeChild(self.placeholder);
@@ -37748,6 +37752,10 @@ var nts;
                         }
                     }
                     support.closest = closest;
+                    function isInvisible(el) {
+                        return el.style.display === "none" || el.style.width === "0px";
+                    }
+                    support.isInvisible = isInvisible;
                 })(support || (support = {}));
                 var manipulationMode;
                 (function (manipulationMode) {
@@ -37771,7 +37779,7 @@ var nts;
                     manipulationMode.Metaresize = Metaresize;
                     function pasteMove() {
                         var self = this;
-                        if (!self.metaholder.isPressed || self.mode === "paste")
+                        if (!self.metaholder.isPressed /*|| self.mode === "paste"*/)
                             return;
                         var chart = self.metaholder.ancestorChart;
                         var startLine = chart.start, endLine = chart.end;
@@ -37927,7 +37935,7 @@ var nts;
                                 if (!self.metaresize.adjChart) {
                                     var minStart_1 = 9999;
                                     _.forEach(parent.children, function (child) {
-                                        if (child.html.style.display === "none")
+                                        if (support.isInvisible(child.html))
                                             return;
                                         if (nearestLine >= child.start && self.metaresize.start < child.start && child.start < minStart_1
                                             && child.id !== chart.id && child.canPaste) {
@@ -37941,7 +37949,7 @@ var nts;
                                 }
                                 else {
                                     _.forEach(parent.children, function (child) {
-                                        if (child.html.style.display === "none")
+                                        if (support.isInvisible(child.html))
                                             return;
                                         if (!child.canPaste && nearestLine >= child.start && nearestLine <= child.end) {
                                             cantPasteChart_1 = child;
@@ -37959,7 +37967,7 @@ var nts;
                                 }
                                 else if (self.metaresize.chart.definedType !== self.metaresize.adjChart.definedType) {
                                     var adjChart = self.metaresize.adjChart;
-                                    if (cantPasteChart_1) {
+                                    if (cantPasteChart_1 && adjChart.start >= cantPasteChart_1.end) {
                                         chart.reposition({ end: cantPasteChart_1.start, width: (cantPasteChart_1.start - self.metaresize.start) * chart.unitToPx - 1 });
                                         self.metaresize.tempEnd = cantPasteChart_1.start;
                                         adjChart.reposition({
@@ -37997,14 +38005,14 @@ var nts;
                             else {
                                 var minEnd = void 0, snatch = self._getSnatchInterval(chart), cantPasteChart_2;
                                 _.forEach(parent.children, function (child) {
-                                    if (child.html.style.display === "none")
+                                    if (support.isInvisible(child.html))
                                         return;
                                     if (!child.canPaste && child.id !== chart.id && nearestLine >= child.start && nearestLine <= child.end) {
                                         cantPasteChart_2 = child;
                                         return false;
                                     }
                                 });
-                                if (!_.isNil(cantPasteChart_2)) {
+                                if (!_.isNil(cantPasteChart_2) && chart.end <= cantPasteChart_2.start) {
                                     chart.reposition({ end: cantPasteChart_2.start, width: (cantPasteChart_2.start - self.metaresize.start) * chart.unitToPx - 1 });
                                     self.metaresize.tempEnd = cantPasteChart_2.start;
                                     if (self.metaresize.adjChart && self.metaresize.adjChart.id !== cantPasteChart_2.id) {
@@ -38043,7 +38051,7 @@ var nts;
                                 if (!self.metaresize.adjChart) {
                                     var maxEnd_1 = 0;
                                     _.forEach(parent.children, function (child) {
-                                        if (child.html.style.display === "none")
+                                        if (support.isInvisible(child.html))
                                             return;
                                         if (nearestLine <= child.end && child.start < self.metaresize.start && child.end > maxEnd_1
                                             && child.id !== chart.id && child.canPaste) {
@@ -38057,7 +38065,7 @@ var nts;
                                 }
                                 else {
                                     _.forEach(parent.children, function (child) {
-                                        if (child.html.style.display === "none")
+                                        if (support.isInvisible(child.html))
                                             return;
                                         if (!child.canPaste && nearestLine >= child.start && nearestLine <= child.end) {
                                             cantPasteChart_3 = child;
@@ -38079,7 +38087,7 @@ var nts;
                                 }
                                 else if (self.metaresize.chart.definedType !== self.metaresize.adjChart.definedType) {
                                     var minAdjEnd = void 0, adjChart = self.metaresize.adjChart, snatch = self._getSnatchInterval(chart);
-                                    if (cantPasteChart_3) {
+                                    if (cantPasteChart_3 && adjChart.end <= cantPasteChart_3.start) {
                                         chart.reposition({
                                             start: cantPasteChart_3.end,
                                             left: self.metaresize.left - (self.metaresize.start - cantPasteChart_3.end) * chart.unitToPx,
@@ -38126,14 +38134,14 @@ var nts;
                             else {
                                 var minStart = void 0, snatch = self._getSnatchInterval(chart), cantPasteChart_4;
                                 _.forEach(parent.children, function (child) {
-                                    if (child.html.style.display === "none")
+                                    if (support.isInvisible(child.html))
                                         return;
                                     if (!child.canPaste && nearestLine >= child.start && nearestLine <= child.end) {
                                         cantPasteChart_4 = child;
                                         return false;
                                     }
                                 });
-                                if (cantPasteChart_4) {
+                                if (cantPasteChart_4 && chart.start >= cantPasteChart_4.end) {
                                     chart.reposition({
                                         start: cantPasteChart_4.end,
                                         left: self.metaresize.left + (cantPasteChart_4.end - self.metaresize.start) * chart.unitToPx,
@@ -38735,7 +38743,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, Array.prototype.slice.apply(arguments, []).slice());
+                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
                         }
                     },
                     blank: {
@@ -40433,7 +40441,8 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60, formatter: function createButton(deleteField, row) {
+                            width: 60,
+                            formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
@@ -48081,8 +48090,7 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -48477,7 +48485,8 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        }, initValue: value,
+                                        },
+                                        initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,
