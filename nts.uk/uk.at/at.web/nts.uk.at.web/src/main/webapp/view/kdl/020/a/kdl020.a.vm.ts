@@ -18,6 +18,7 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 		disableSelection: KnockoutObservable<boolean>;
 
 		employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
+		employeeImports : any = [];
 		paramData: any = nts.uk.ui.windows.getShared('KDL020_DATA');
 
 		// search
@@ -208,12 +209,12 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 			nts.uk.ui.block.grayout();
 			let param = self.paramData;
 			if (value != "") {
-				let idParam = _.filter(self.paramData, (x: any) => {
-					return _.includes(x.slice(-12), value)
+				let idParam = _.filter(self.employeeImports, (x: any) => {
+					return _.includes(x.employeeCode, value)
 				})
 
 				if (idParam.length > 0) {
-					param = idParam;
+					param = [idParam[0].employeeId];
 				}
 			}
 			service.findAnnualHolidays(param).done((data: any) => {
@@ -255,6 +256,7 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 				}
 				if (!self.checkSub()) {
 					let dataEmp = _.sortBy(data.employeeImports, ['employeeCode']); // fix tạm để tránh miss sort
+					self.employeeImports = data.employeeImports;
 					_.forEach(dataEmp, (a: any, ind) => {
 						self.employeeList.push({ id: ind, code: a.employeeCode, name: a.employeeName, workplaceName: 'HN' })
 					});
