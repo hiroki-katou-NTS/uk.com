@@ -16,6 +16,7 @@ import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmploymentImport;
 import nts.uk.ctx.at.function.dom.adapter.child.ChildNursingLeaveThisMonthFutureSituation;
 import nts.uk.ctx.at.function.dom.adapter.child.GetRemainingNumberCareNurseAdapter;
 import nts.uk.ctx.at.function.dom.adapter.child.NursingCareLeaveThisMonthFutureSituation;
@@ -54,9 +55,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcar
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.IGetChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.NursingCareLeaveMonthlyRemaining;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.*;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
@@ -119,6 +118,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
     private IGetChildcareRemNumEachMonth getChildcareRemNumEachMonth;
     @Inject
     private GetRemainingNumberCareNurseAdapter getRemainingNumberChildCareNurseAdapter;
+    @Inject
+    private ClosureEmploymentRepository closureEmploymentRepository;
 
     @Override
     protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
@@ -191,10 +192,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			// 休暇設定画面で設定した各休暇の「管理区分」を取得する
             val varVacaCtr = varVacaCtrSv.getVariousVacationControl();
 
-			// ドメインモデル「締め」(社員範囲選択)より当月、締め期間、締め日(日付)を求める　★使用禁止
-            val closureInforOpt = this.getClosureInfo(closureId);
-
-
+            // ドメインモデル「締め」(社員範囲選択)より当月、締め期間、締め日(日付)を求める　★使用禁止
+            //---------------------------------------------------
+            // 2021.11.30 inaguma 削除
+            //val closureInforOpt = this.getClosureInfo(closureId);
+            //---------------------------------------------------
 
             if (!varVacaCtr.isAnnualHolidaySetting()) {
                 hdManagement.getListItemsOutput().getAnnualHoliday().setYearlyHoliday(false);
@@ -253,7 +255,22 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 String positionName = emp.getPosition() != null ? emp.getPosition().getPositionName() : "";
                 String employmentCode = emp.getEmployment() != null ? emp.getEmployment().getEmploymentCode() : "";
                 String positionCode = emp.getPosition() != null ? emp.getPosition().getPositionCode() : "";
-
+                //-----------------------------------------------------------------------------------
+                // 2021.12.06 - 3S - chinh.hm  - issues #121626- 追加 START
+                // ループ中の社員(emp.getEmployeeId())の雇用を取得⇒取得できなかった場合は次の社員の処理へ
+                // 雇用に紐付く締めIDを取得　　　　　　　　　　　 ⇒取得できなかった場合は次の社員の処理へ
+                EmploymentImport employment = emp.getEmployment();
+                if(employment == null){
+                    return;
+                }
+                Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(cId,employment.getEmploymentCode());
+                if(!closureEmployment.isPresent()){
+                    return;
+                }
+                int empClosureId = closureEmployment.get().getClosureId() ;
+                val closureInforOpt = this.getClosureInfo(empClosureId);
+                // 12/05/2021(MM/dd/yyyy) - chinh.hm  - issues #121626 追加 END
+                //-----------------------------------------------------------------------------------
 	       		// 当月
                 Optional<YearMonth> currentMonth = hdRemainManageFinder.getCurrentMonth(
                         cId,
