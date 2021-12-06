@@ -2149,6 +2149,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             let arrayItems = [];
                             let dataResult: any = {};
                             dataResult.listErrorInfo = [];
+                            dataResult.hasError = false;
+                            dataResult.isRegistered = true; 
                             _.forEach(res.taskDatas, item => {
                                 if (item.key == 'STATUS_REGISTER') {
                                     dataResult.isRegistered = item.valueAsBoolean;
