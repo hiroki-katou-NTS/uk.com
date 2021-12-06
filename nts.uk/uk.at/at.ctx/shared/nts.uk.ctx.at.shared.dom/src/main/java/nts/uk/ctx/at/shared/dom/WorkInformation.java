@@ -402,7 +402,7 @@ public class WorkInformation implements Serializable{
 	 * @return
 	 */
 	public boolean isGoStraight(Require require) {
-		val workType = require.getWorkType( this.workTypeCode.v() );
+		val workType = require.workType(AppContexts.user().companyId(), this.workTypeCode);
 		
 		return workType.isPresent() && workType.get().isAttendanceTimeAutoSet();
 	}
@@ -413,7 +413,7 @@ public class WorkInformation implements Serializable{
 	 * @return
 	 */
 	public boolean isBackStraight(Require require) {
-		val workType = require.getWorkType( this.workTypeCode.v() );
+		val workType = require.workType(AppContexts.user().companyId(),  this.workTypeCode);
 		
 		return workType.isPresent() && workType.get().isLeaveTimeAutoSet();
 	}

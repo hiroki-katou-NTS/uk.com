@@ -13,7 +13,6 @@ import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
@@ -285,14 +284,12 @@ public class TotalWorkingTime {
 	 * 日別実績の総労働時間
 	 * @param reGetClass 再取得クラス
 	 * @param settingOfFlex フレックス勤務の設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
 	 * @param declareResult 申告時間帯作成結果
 	 * @return 総労働時間
 	 */
 	public static TotalWorkingTime calcAllDailyRecord(
 			ManageReGetClass reGetClass,
 			Optional<SettingOfFlexWork> settingOfFlex,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			DeclareTimezoneResult declareResult) {
 
 		// 日別実績(Work)
@@ -335,9 +332,9 @@ public class TotalWorkingTime {
 		val shotrTime = ShortWorkTimeOfDaily.calcShortWorkTime(reGetClass, PremiumAtr.RegularWork);
 		
 		//加給時間
-		val raiseTime = RaiseSalaryTimeOfDailyPerfor.calcBonusPayTime(recordClass.getCalculationRangeOfOneDay(),
-				recordClass.getCompanyCommonSetting().getBpTimeItemSetting(),
-				recordClass.getIntegrationOfDaily().getCalAttr());
+		val raiseTime = RaiseSalaryTimeOfDailyPerfor.calcBonusPayTime(reGetClass.getCalculationRangeOfOneDay(),
+				reGetClass.getCompanyCommonSetting().getBpTimeItemSetting(),
+				reGetClass.getIntegrationOfDaily().getCalAttr());
 		//勤務回数
 		val workCount = new WorkTimes(workCounter(reGetClass.getCalculationRangeOfOneDay()));
 		

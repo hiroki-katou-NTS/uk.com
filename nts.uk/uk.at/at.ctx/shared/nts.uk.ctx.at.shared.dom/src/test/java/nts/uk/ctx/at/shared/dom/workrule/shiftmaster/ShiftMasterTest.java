@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster.Require;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @RunWith(JMockit.class)
 public class ShiftMasterTest {
@@ -173,7 +174,7 @@ public class ShiftMasterTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType(anyString);
+			require.workType(anyString, new WorkTypeCode(anyString));
 		}};
 
 		NtsAssert.businessException("Msg_1608", () -> shiftMaster.checkError(require));
@@ -195,13 +196,13 @@ public class ShiftMasterTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType(anyString);
+			require.workType(anyString, new WorkTypeCode(anyString));
 			result = Optional.of(workType);
 			// 勤務種類：就業時間帯が必須か＝任意
 			require.checkNeededOfWorkTimeSetting(anyString);
 			result = SetupType.OPTIONAL;
 			// 就業時間帯を取得する
-			require.getWorkTime(anyString);
+			require.workTimeSetting(anyString, new WorkTimeCode(anyString));
 		}};
 
 		NtsAssert.businessException("Msg_1609", () -> shiftMaster.checkError(require));
@@ -222,7 +223,7 @@ public class ShiftMasterTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType(anyString);
+			require.workType(anyString, new WorkTypeCode(anyString));
 			result = Optional.of(workType);
 			// 勤務種類：就業時間帯が必須か＝必須
 			require.checkNeededOfWorkTimeSetting(anyString);
@@ -247,7 +248,7 @@ public class ShiftMasterTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType(anyString);
+			require.workType(anyString, new WorkTypeCode(anyString));
 			result = Optional.of(workType);
 			// 勤務種類：就業時間帯が必須か＝不要
 			require.checkNeededOfWorkTimeSetting(anyString);

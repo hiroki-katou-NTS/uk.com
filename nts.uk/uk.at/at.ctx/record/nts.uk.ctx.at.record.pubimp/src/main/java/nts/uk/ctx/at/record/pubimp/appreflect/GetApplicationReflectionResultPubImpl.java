@@ -218,11 +218,6 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		}
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
-		}
-
-		@Override
 		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
@@ -325,16 +320,6 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		@Override
 		public Optional<StampReflectionManagement> findByCid(String companyId) {
 			return timePriorityRepository.findByCid(companyId);
-		}
-
-		@Override
-		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
-		}
-
-		@Override
-		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
-			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode);
 		}
 
 		@Override

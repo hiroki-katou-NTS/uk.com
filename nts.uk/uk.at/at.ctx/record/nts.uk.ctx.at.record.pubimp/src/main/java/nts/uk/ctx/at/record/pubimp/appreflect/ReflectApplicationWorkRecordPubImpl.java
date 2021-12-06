@@ -337,11 +337,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
-		}
-
-		@Override
 		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
@@ -486,16 +481,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
-		}
-
-		@Override
-		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
-			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode);
-		}
-
-		@Override
 		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
 				ExecutionType reCalcAtr) {
@@ -552,11 +537,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
 				WorkInfoOfDailyAttendance workInformation) {
 			return timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
-		}
-		
-		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
-			return workTimeSettingRepository.findByCode(cid, workTimeCode);
 		}
 	}
 }

@@ -1260,13 +1260,13 @@ public class ToppageStartupProcessMobFinder {
         }
 
         @Override
-        public CompensatoryLeaveEmSetting compensatoryLeaveEmSetting(String companyId, String employmentCode) {
-            return compensLeaveEmSetRepo.find(companyId, employmentCode);
+        public Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId, String employmentCode) {
+            return Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode));
         }
 
         @Override
-        public CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId) {
-            return compensLeaveComSetRepo.find(companyId);
+        public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
+            return Optional.ofNullable(compensLeaveComSetRepo.find(companyId));
         }
 
         @Override

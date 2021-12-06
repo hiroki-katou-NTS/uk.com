@@ -1250,7 +1250,7 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		
 		new Expectations() {{
-			require.getWorkType(target.getWorkTypeCode().v());
+			require.workType(anyString, target.getWorkTypeCode());
 			
 		}};
 		
@@ -1262,7 +1262,7 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		
 		new Expectations() {{
-			require.getWorkType(target.getWorkTypeCode().v());
+			require.workType(anyString, target.getWorkTypeCode());
 			result = Optional.of(workType);
 			
 			workType.isAttendanceTimeAutoSet();
@@ -1277,7 +1277,7 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		
 		new Expectations() {{
-			require.getWorkType(target.getWorkTypeCode().v());
+			require.workType(anyString, target.getWorkTypeCode());
 			result = Optional.of(workType);
 			
 			workType.isAttendanceTimeAutoSet();
@@ -1292,7 +1292,7 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		
 		new Expectations() {{
-			require.getWorkType(target.getWorkTypeCode().v());
+			require.workType(anyString, target.getWorkTypeCode());
 			
 		}};
 		
@@ -1304,7 +1304,7 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		
 		new Expectations() {{
-			require.getWorkType(target.getWorkTypeCode().v());
+			require.workType(anyString, target.getWorkTypeCode());
 			result = Optional.of(workType);
 			
 			workType.isLeaveTimeAutoSet();
@@ -1319,7 +1319,7 @@ public class WorkInformationTest {
 		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
 		
 		new Expectations() {{
-			require.getWorkType(target.getWorkTypeCode().v());
+			require.workType(anyString, target.getWorkTypeCode());
 			result = Optional.of(workType);
 			
 			workType.isLeaveTimeAutoSet();

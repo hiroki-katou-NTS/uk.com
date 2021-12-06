@@ -48,7 +48,7 @@ public class DeleteAttendanceProcessTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, new WorkTypeCode(anyString));
 				result = Optional.of(WorkType.createSimpleFromJavaType("003", "", "", "", "", 0, WorkTypeClassification.Holiday.value, // 休日
 						0, 0));
 				;
@@ -92,7 +92,7 @@ public class DeleteAttendanceProcessTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, new WorkTypeCode(anyString));
 				result = Optional.of(WorkType.createSimpleFromJavaType("003", "", "", "", "", 0, WorkTypeClassification.Attendance.value, // 出勤
 						0, 0));
 				;

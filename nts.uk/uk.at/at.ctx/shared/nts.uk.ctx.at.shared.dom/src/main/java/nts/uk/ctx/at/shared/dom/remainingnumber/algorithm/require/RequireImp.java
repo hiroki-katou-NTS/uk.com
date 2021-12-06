@@ -778,43 +778,28 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
     }
 
 	@Override
-	public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
-		return workTimeSettingRepo.findByCode(cid, workTimeCode);
+	public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+		return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
 	}
 
 	@Override
-	public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
-		return compensLeaveComSetRepo.find(companyId);
+	public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+		return fixedWorkSettingRepo.findByKey(companyId, workTimeCode.v());
 	}
 
 	@Override
-	public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-		return fixedWorkSettingRepo.findByKey(AppContexts.user().companyId(), code.v()).orElse(null);
+	public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+		return flowWorkSettingRepo.find(companyId, workTimeCode.v());
 	}
 
 	@Override
-	public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-		return flowWorkSettingRepo.find(AppContexts.user().companyId(), code.v()).orElse(null);
+	public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+		return flexWorkSettingRepo.find(companyId, workTimeCode.v());
 	}
 
 	@Override
-	public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-		return flexWorkSettingRepo.find(AppContexts.user().companyId(), code.v()).orElse(null);
-	}
-
-	@Override
-	public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+	public Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate) {
 		return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
-	}
-	
-	@Override
-	public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId){
-		return Optional.ofNullable(this.compensLeaveComSetRepo.find(companyId));
-	}
-	
-	@Override
-	public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode){
-		return Optional.ofNullable(this.compensLeaveEmSetRepo.find(companyId, employmentCode));
 	}
 
 }

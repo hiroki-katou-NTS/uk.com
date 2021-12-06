@@ -113,7 +113,6 @@ public class ActualWorkingTimeOfDaily {
 	 * 日別実績の実働時間の計算
 	 * @param recordClass 実績
 	 * @param settingOfFlex フレックス勤務の設定
-	 * @param bonusPayAutoCalcSet 加給時間計算設定
 	 * @param workScheduleTime 日別実績の勤務予定時間
 	 * @param declareResult 申告時間帯作成結果
 	 * @return 日別勤怠の勤務時間
@@ -121,7 +120,6 @@ public class ActualWorkingTimeOfDaily {
 	public static ActualWorkingTimeOfDaily calcRecordTime(
 			ManageReGetClass recordClass,
 			Optional<SettingOfFlexWork> settingOfFlex,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			WorkScheduleTimeOfDaily workScheduleTime,
 			DeclareTimezoneResult declareResult) {
 
@@ -134,7 +132,6 @@ public class ActualWorkingTimeOfDaily {
 		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(
 				recordClass,
 				settingOfFlex,
-				bonusPayAutoCalcSet,
 				declareResult);
 		
 		TotalWorkingTime calcResultOotsuka = totalWorkingTime;

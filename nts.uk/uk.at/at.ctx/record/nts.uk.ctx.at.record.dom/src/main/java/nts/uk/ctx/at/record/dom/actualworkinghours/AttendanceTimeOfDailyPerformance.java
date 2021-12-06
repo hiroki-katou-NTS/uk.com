@@ -146,7 +146,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			calcResult = Optional.of(calcTimeResultForContinusWork(
 					recordReGetClass,
 					flexCalcMethod,
-					bonusPayAutoCalcSet,
 					scheduleReGetClass));
 			// // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 			List<Integer> attendanceItemIdList = recordReGetClass.getIntegrationOfDaily().getEditState().stream()
@@ -172,7 +171,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					scheduleReGetClass,
 					recordReGetClass,
 					flexCalcMethod,
-					bonusPayAutoCalcSet,
 					declareResult));
 			// // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 			List<Integer> attendanceItemIdList = recordReGetClass.getIntegrationOfDaily().getEditState().stream()
@@ -406,20 +404,17 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * 時間計算（連続勤務）
 	 * @param recordReGetClass 実績再取得クラス
 	 * @param settingOfFlex フレックス勤務の設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
 	 * @param scheduleReGetClass 予定再取得クラス
 	 * @return 日別勤怠の勤怠時間
 	 */
 	public static AttendanceTimeOfDailyPerformance calcTimeResultForContinusWork(
 			ManageReGetClass recordReGetClass,
 			Optional<SettingOfFlexWork> settingOfFlex,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet, 
 			ManageReGetClass scheduleReGetClass){
 		
 		val workScheduleTime = calcWorkSheduleTime(
 				recordReGetClass,
 				settingOfFlex,
-				bonusPayAutoCalcSet,
 				scheduleReGetClass);
 		
 		return new AttendanceTimeOfDailyPerformance(recordReGetClass.getIntegrationOfDaily().getEmployeeId(),
@@ -439,7 +434,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @param scheduleReGetClass 予定
 	 * @param recordReGetClass 実績
 	 * @param settingOfFlex フレックス勤務の設定
-	 * @param bonusPayAutoCalcSet 加給時間計算設定
 	 * @param declareResult 申告時間帯作成結果
 	 * @return 計算結果
 	 */
@@ -447,7 +441,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			ManageReGetClass scheduleReGetClass,
 			ManageReGetClass recordReGetClass,
 			Optional<SettingOfFlexWork> settingOfFlex,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			DeclareTimezoneResult declareResult) {
 
 		// 総拘束時間
@@ -458,14 +451,12 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		val workScheduleTime = calcWorkSheduleTime(
 				recordReGetClass,
 				settingOfFlex,
-				bonusPayAutoCalcSet,
 				scheduleReGetClass);
 		
 		// 日別実績の実績時間の計算
 		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.calcRecordTime(
 				recordReGetClass,
 				settingOfFlex,
-				bonusPayAutoCalcSet,
 				workScheduleTime,
 				declareResult);
 
@@ -523,14 +514,12 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * 計画所定の算出
 	 * @param recordReGetClass 実績再取得クラス
 	 * @param flexCalcMethod フレックス勤務の設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
 	 * @param scheRegetManage 予定再取得クラス
 	 * @return 日別実績の勤務予定時間
 	 */
 	private static WorkScheduleTimeOfDaily calcWorkSheduleTime(
 			ManageReGetClass recordReGetClass,
 			Optional<SettingOfFlexWork> flexCalcMethod,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet, 
 			ManageReGetClass scheRegetManage) {
 		
 		//勤務予定時間を計算
@@ -547,7 +536,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		if(!scheRegetManage.getIntegrationOfWorkTime().isPresent() && recordReGetClass.getIntegrationOfWorkTime().isPresent()) {
 			totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(scheRegetManage,
 																   flexCalcMethod,
-																   bonusPayAutoCalcSet, //会社共通
 																   new DeclareTimezoneResult());
 			scheTotalTime = totalWorkingTime.getTotalTime();
 			if(totalWorkingTime.getWithinStatutoryTimeOfDaily() != null)

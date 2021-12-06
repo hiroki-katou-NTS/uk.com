@@ -948,7 +948,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			MonthlyCalculatingDailys monthlyCalculatingDailys) {
 		
 		// フレックス対象時間を集計する
-		val flexTargetTime = this.aggregateFlexTargetTime(datePeriod, aggregateTotalWorkingTime);
+		val flexTargetTime = this.aggregateFlexTargetTime(datePeriod, aggregateTotalWorkingTime, PremiumAtr.PREMIUM);
 		// 所定労働時間（代休控除後）を求める
 		AttendanceTimeMonth compLeaveAfterDeduct = this.getPrescribedTime(
 				require, cacheCarrier, companyId, employeeId, yearMonth, datePeriod, closureId, closureDate,
@@ -1271,7 +1271,8 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			MonthlyCalculatingDailys monthlyCalculatingDailys) {
 		
 		// フレックス対象時間を集計する
-		AttendanceTimeMonthWithMinus flexTargetTime = this.aggregateFlexTargetTime(datePeriod, aggregateTotalWorkingTime);
+		AttendanceTimeMonthWithMinus flexTargetTime = this.aggregateFlexTargetTime(
+				datePeriod, aggregateTotalWorkingTime, PremiumAtr.PREMIUM);
 		// 週平均超過時間を計算する
 		this.calcExcessWeekAveTime(require, yearMonth, datePeriod, closureId, aggregateAtr, flexTargetTime, settingsByFlex);
 		// 所定労働時間（代休控除後）を求める

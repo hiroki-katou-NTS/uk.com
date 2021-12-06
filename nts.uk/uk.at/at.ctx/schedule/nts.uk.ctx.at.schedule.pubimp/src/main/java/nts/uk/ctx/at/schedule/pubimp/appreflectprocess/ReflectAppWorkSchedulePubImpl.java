@@ -275,11 +275,6 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
-		}
-		
-		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 			return service.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
@@ -416,11 +411,6 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
-		}
-
-		@Override
 		public Optional<SubstituteWorkAppReflect> findSubWorkAppReflectByCompany(String companyId) {
 			return substituteWorkAppReflectRepository.findSubWorkAppReflectByCompany(companyId);
 		}
@@ -431,11 +421,6 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
-			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode);
-		}
-
-		@Override
 		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
 				ExecutionType reCalcAtr) {
@@ -443,8 +428,8 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
-			return compensLeaveComSetRepository.find(companyId);
+		public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
+			return Optional.ofNullable(compensLeaveComSetRepository.find(companyId));
 		}
 
 	}

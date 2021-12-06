@@ -597,7 +597,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				scheduleReGetClass,
 				recordReGetClass,
 				flexCalcMethod,
-				bonusPayAutoCalcSet,
 				eachCompanyTimeSet,
 				converter,
 				personalCostSetting,

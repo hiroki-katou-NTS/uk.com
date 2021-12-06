@@ -93,7 +93,7 @@ public class ReflectBusinessTripAppTest {
 		new Expectations() {
 			{
 				
-				require.getWorkType(anyString);
+				require.workType(anyString, new WorkTypeCode(anyString));
 				result = Optional.of(new WorkType(new WorkTypeCode("001"), null, null, null, null,
 						new DailyWork(WorkTypeUnit.OneDay, WorkTypeClassification.HolidayWork, null, null)));
 				

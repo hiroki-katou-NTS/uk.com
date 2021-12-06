@@ -40,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 /**
@@ -101,8 +102,8 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 		String companyId;
 
 		@Override
-		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
-			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode);
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode.v());
 		}
 
 		@Override
@@ -118,33 +119,33 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
-			return workTimeSettingRepository.findByCode(cid, workTimeCode);
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
-			return compensLeaveComSetRepository.find(companyId);
+		public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
+			return Optional.ofNullable(compensLeaveComSetRepository.find(companyId));
 		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			return fixedWorkSettingRepository.findByKey(companyId, code.v()).get();
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSettingRepository.findByKey(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			return flowWorkSettingRepository.find(companyId, code.v()).get();
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSettingRepository.find(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			return flexWorkSettingRepository.find(companyId, code.v()).get();
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSettingRepository.find(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
 		}
 
 	}

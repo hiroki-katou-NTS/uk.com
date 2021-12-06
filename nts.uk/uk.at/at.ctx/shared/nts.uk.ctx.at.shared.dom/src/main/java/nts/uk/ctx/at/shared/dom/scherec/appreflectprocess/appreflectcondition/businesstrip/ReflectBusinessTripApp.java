@@ -104,7 +104,7 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 	private List<Integer> reflectStartEndTime(Require require, BusinessTripInfoShare bussinessTrip,
 			DailyRecordOfApplication dailyApp, ReflectAppDestination destination) {
 		List<Integer> itemIds = new ArrayList<>();
-		Optional<WorkType> workTypeOpt = require.getWorkType(bussinessTrip.getWorkInformation().getWorkTypeCode().v());
+		Optional<WorkType> workTypeOpt = require.workType(this.companyId, bussinessTrip.getWorkInformation().getWorkTypeCode());
 		if (!workTypeOpt.isPresent() || !workTypeOpt.get().isHolidayWork())
 			return itemIds;
 		//申請から反映する時刻を作成する
@@ -137,15 +137,7 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 	}
 	
 	public static interface Require
-			extends ReflectWorkInformation.Require, ReflectAttendance.Require, ReflectStartEndWork.Require {
-
-		/**
-		 * 勤務種類を取得する
-		 * 
-		 * @param workTypeCd 就業時間帯コード
-		 * @return
-		 */
-		Optional<WorkType> getWorkType(String workTypeCd);
-	}
+			extends ReflectWorkInformation.Require, ReflectAttendance.Require, ReflectStartEndWork.Require,
+				WorkType.Require { }
 
 }
