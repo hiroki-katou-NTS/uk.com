@@ -3,7 +3,6 @@ import { component, Prop } from '@app/core/component';
 
 @component({
   name: 'kdls10',
-  route: '/kdl/s10/a',
   style: require('./style.scss'),
   template: require('./index.vue'),
   resource: require('./resources.json'),
