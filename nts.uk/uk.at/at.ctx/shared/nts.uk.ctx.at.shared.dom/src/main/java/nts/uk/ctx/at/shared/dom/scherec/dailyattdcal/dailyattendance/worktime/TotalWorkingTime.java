@@ -594,12 +594,12 @@ public class TotalWorkingTime {
 				recordReGetClass.getCalculationRangeOfOneDay(),
 				DeductionAtr.Deduction,
 				GoingOutReason.PRIVATE,
-				recordReGetClass.getGoOutCalc()).getTotalTime().getCalcTime();
+				recordReGetClass.getGoOutCalc(), NotUseAtr.USE).getTotalTime().getCalcTime();
 		AttendanceTime unionOutTime = OutingTotalTime.calcOutingTime(
 				recordReGetClass.getCalculationRangeOfOneDay(),
 				DeductionAtr.Deduction,
 				GoingOutReason.UNION,
-				recordReGetClass.getGoOutCalc()).getTotalTime().getCalcTime();
+				recordReGetClass.getGoOutCalc(), NotUseAtr.USE).getTotalTime().getCalcTime();
 		//短時間
 		AttendanceTime shortWorkTime = ShortWorkTimeOfDaily.calcTotalShortWorkTime(
 				recordReGetClass,
