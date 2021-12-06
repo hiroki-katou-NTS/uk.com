@@ -953,6 +953,12 @@ export class KafS06AComponent extends KafS00ShrComponent {
         commandCheck.appAbsenceStartInfoDto = vm.cloneappAbsenceStartInfoDto(vm.model.appAbsenceStartInfoDto);
         commandCheck.applyForLeave = vm.model.applyForLeaveDto;
         commandCheck.mode = vm.modeNew;
+        let linkWithVacation = _.clone(vm.linkWithVacation);
+        vm.changeDateFromList(linkWithVacation);
+        let linkWithDraw = _.clone(vm.linkWithDraw);
+        vm.changeDateFromList(linkWithDraw);
+        commandCheck.appAbsenceStartInfoDto.leaveComDayOffManas = linkWithVacation;
+        commandCheck.appAbsenceStartInfoDto.payoutSubofHDManas = linkWithDraw;
         if (vm.modeNew) {
             commandCheck.application = vm.toApplication();
         } else {
@@ -1810,6 +1816,19 @@ export class KafS06AComponent extends KafS00ShrComponent {
             appAbsenceStartInfo: self.model.appAbsenceStartInfoDto
         };
 
+        command.appAbsenceStartInfo.leaveComDayOffManas = _.map(command.appAbsenceStartInfo.leaveComDayOffManas, (x: any) => {
+            x.dateOfUse = new Date(x.dateOfUse).toISOString();
+            x.outbreakDay = new Date(x.outbreakDay).toISOString();
+
+            return x;
+        });
+        command.appAbsenceStartInfo.payoutSubofHDManas = _.map(command.appAbsenceStartInfo.payoutSubofHDManas, (x: any) => {
+            x.dateOfUse = new Date(x.dateOfUse).toISOString();
+            x.outbreakDay = new Date(x.outbreakDay).toISOString();
+            
+            return x;
+        });
+        
         self.$http.post('at', API.changeUseingWorkTime, command)
             .then((res: any) => {
                 if (res) {

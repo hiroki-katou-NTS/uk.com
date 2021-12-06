@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.kdl036;
+package nts.uk.ctx.at.request.app.command.application.kdl036;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,34 +31,31 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.screen.at.app.dailyperformance.correction.closure.FindClosureDateService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class HolidayWorkSubHolidayAssociationFinder {
-    @Inject
-    private FindClosureDateService closureService;
-
-    @Inject
-    private InterimBreakDayOffMngRepository interimBreakDayOffMngRepo;
-
-    @Inject
-    private LeaveManaDataRepository holidayWorkMngRepo;
-
+public class HolidayAssociationStart {
+    
     @Inject
     private OtherCommonAlgorithm otherCommonAlgorithm;
-
-    @Inject
-    private CompensLeaveComSetRepository comSubstVacationRepo;
-
+    
     @Inject
     private ClosureRepository closureRepo;
-
+    
     @Inject
     private ClosureEmploymentRepository closureEmploymentRepo;
 
     @Inject
     private ShareEmploymentAdapter shareEmploymentAdapter;
+    
+    @Inject
+    private InterimBreakDayOffMngRepository interimBreakDayOffMngRepo;
+    
+    @Inject
+    private LeaveManaDataRepository holidayWorkMngRepo;
+    
+    @Inject
+    private CompensLeaveComSetRepository comSubstVacationRepo;
     
     @Inject
     private LeaveComDayOffManaRepository leaveComDayOffManaRepo;
