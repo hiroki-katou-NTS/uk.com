@@ -122,7 +122,7 @@
                     <!-- A3_25 -->
                     <button type="button" class="btn btn-selection"
                       :disabled="checkboxTH.filter((x) => x === itemTH.frame).length > 0 && condition2"
-                      @click="openCDLS10(itemTH)"
+                      @click="openCDLS08(itemTH)"
                     >
                       <span class="badge badge-secondary">{{ itemTH.workplaceCD }}</span>
                       <span :class="{ 'fs-smaller': !itemTH.workplaceCD || itemTH.workplaceCD.length === 0 }">{{ itemTH.workplaceName }}</span>
