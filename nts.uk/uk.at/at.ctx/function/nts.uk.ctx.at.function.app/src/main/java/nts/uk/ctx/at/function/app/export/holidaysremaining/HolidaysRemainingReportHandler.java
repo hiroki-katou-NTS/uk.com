@@ -269,7 +269,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 }
                 int empClosureId = closureEmployment.get().getClosureId() ;
                 val closureInforOpt = this.getClosureInfo(empClosureId);
-                // 12/05/2021(MM/dd/yyyy) - chinh.hm  - issues #121626 追加 END
+                // 2021.12.06 - 3S - chinh.hm  - issues #121626- 追加 END
                 //-----------------------------------------------------------------------------------
 	       		// 当月
                 Optional<YearMonth> currentMonth = hdRemainManageFinder.getCurrentMonth(
