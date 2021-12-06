@@ -320,56 +320,48 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				if (overTimes.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							overTimes.get(frameNo).getOvertimeWorkFrName()));
-					item.setAttendanceItemName(item.getAttendanceItemName());
 				}
 				break;
 			case OverTimeTranfer:
 				if (overTimes.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							overTimes.get(frameNo).getTransferFrName()));
-					item.setAttendanceItemName(item.getAttendanceItemName());
 				}
 				break;
 			case Rest:
 				if (leave.containsKey(frameNo)) {
 					item.setAttendanceItemName(
 							MessageFormat.format(attName, leave.get(frameNo).getWorkdayoffFrName()));
-					item.setAttendanceItemName(item.getAttendanceItemName());
 				}
 				break;
 			case RestTranfer:
 				if (leave.containsKey(frameNo)) {
 					item.setAttendanceItemName(
 							MessageFormat.format(attName, leave.get(frameNo).getTransferFrName()));
-					item.setAttendanceItemName(item.getAttendanceItemName());
 				}
 				break;
 			case ExtraItem:
 				if (premiumItemnames.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							premiumItemnames.get(frameNo).getPremiumItemname()));
-					item.setAttendanceItemName(item.getAttendanceItemName());
 				}
 				break;
 			case AddtionTimeItem:
 				if (bonusPayTimeItems.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							bonusPayTimeItems.get(frameNo).getTimeItemName().v()));
-					item.setAttendanceItemName(item.getAttendanceItemName());
 				}
 				break;
 			case SpecificAddtionTimeItem:
 				if (specialBonusPayTimeItem.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							specialBonusPayTimeItem.get(frameNo).getTimeItemName().v()));
-					item.setAttendanceItemName(item.getAttendanceItemName());
 				}
 				break;
 			case DivergenceTimeItem:
 				if (divergenceTimes.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							divergenceTimes.get(frameNo).getDivTimeName()));
-					item.setAttendanceItemName(item.getAttendanceItemName());
 				}
 				break;
 			case AnyItem:
@@ -380,7 +372,6 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 							: "（" + optItem.getOptionalItemUnit() + "）";
 					// set value
 					item.setAttendanceItemName(MessageFormat.format(attName, optItem.getOptionalItemName() + unit));
-					item.setAttendanceItemName(item.getAttendanceItemName());
 				}
 				break;
 			case GoOut:
@@ -389,7 +380,6 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				if (specificDates.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							specificDates.get(frameNo).getSpecificName()));
-					item.setAttendanceItemName(item.getAttendanceItemName());
 				}
 				break;
 			case ExcessTime:
@@ -413,7 +403,6 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				}
 				
 				item.setAttendanceItemName(MessageFormat.format(attName, overTimeName, outsideOTBRDItemName));
-				item.setAttendanceItemName(item.getAttendanceItemName());
 				break;
 			case Week_ExcessTime: {
 				String outsiteName = outsideOTBRDItem
@@ -423,28 +412,24 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 											.orElseGet(() -> TextResource.localize("KDW003_126", frameNo.toString()));
 				
 				item.setAttendanceItemName(MessageFormat.format(attName, outsiteName));
-				item.setAttendanceItemName(item.getAttendanceItemName());
 				break;
 			}
 			case Absence:
 				if (absenceFrame.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							absenceFrame.get(frameNo).getAbsenceFrameName().v()));
-					item.setAttendanceItemName(item.getAttendanceItemName());
 				}
 				break;
 			case SpecialHolidayFrame:
 				if (specialHolidayFrame.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							specialHolidayFrame.get(frameNo).getSpecialHdFrameName().v()));
-					item.setAttendanceItemName(item.getAttendanceItemName());
 				}
 				break;
 			case TotalCount:
 				if (totalTimes.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							totalTimes.get(frameNo).getTotalTimesName().v()));
-					item.setAttendanceItemName(item.getAttendanceItemName());
 				}
 				break;
 			case SpecialHoliday:
@@ -455,7 +440,6 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 					String sphdName = MessageFormat.format("特別休暇{0}", frameNo);
 					item.setAttendanceItemName(MessageFormat.format(attName, sphdName));
 				}
-				item.setAttendanceItemName(item.getAttendanceItemName());
 				break;
 			case Reservation: 
 				if (bentos.containsKey(frameNo)) {
@@ -463,7 +447,6 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				} else {
 					item.setAttendanceItemName(MessageFormat.format(attName, "弁当メニュー枠番" + frameNo));
 				}
-				item.setAttendanceItemName(item.getAttendanceItemName());
 				break;
 			case SupportWork:
 				if (taskFrameSetting.containsKey(frameNo)) {
@@ -472,7 +455,6 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				} else {
 					item.setAttendanceItemName(MessageFormat.format(attName, "supportItem" + frameNo));
 				}
-				item.setAttendanceItemName(item.getAttendanceItemName());
 				break;
 				
 			default: break;
