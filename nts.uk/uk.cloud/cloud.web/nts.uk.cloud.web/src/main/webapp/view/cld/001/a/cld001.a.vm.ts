@@ -125,10 +125,14 @@ module nts.uk.cloud.view.cld001.a {
                 command.administratorPassword = self.tenantManagerPassword();
                 command.optionCode = self.optionCode();
 				command.companyName = self.companyName();
-                service.registTenant(command).done(function() {
+                service.registTenant(command)
+                .done(function(res: any) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_1148" }).then(function() {
                         self.executionMasterCopyData();
                     });
+                }).fail(function(rej: any){
+                    nts.uk.ui.dialog.alert(rej.errorMessage);
+                    console.log(rej);
                 });
 
             }
