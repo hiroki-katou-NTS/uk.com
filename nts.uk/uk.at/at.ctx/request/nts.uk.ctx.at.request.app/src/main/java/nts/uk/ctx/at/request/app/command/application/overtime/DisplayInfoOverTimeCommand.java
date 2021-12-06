@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.overtime;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +54,9 @@ public class DisplayInfoOverTimeCommand {
 				infoWithDateApplicationOp == null ? Optional.empty() : Optional.of(infoWithDateApplicationOp.toDomain()),
 				EnumAdaptor.valueOf(calculatedFlag, CalculatedFlag.class),
 				Optional.ofNullable(workInfo),
-				Optional.empty()
+				Optional.empty(),
+				new ArrayList<>(),
+				new ArrayList<>()
 		);
 	}
 

@@ -1576,7 +1576,31 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						self.dataSource.calculatedFlag = res.calculatedFlag;
 						self.isCalculation = true;
 						self.createVisibleModel(self.dataSource);
-						self.bindOverTime(self.dataSource, 1);
+
+						// self.bindOverTime(self.dataSource, 1);
+                        if (!_.isEmpty(res.calculatedWorkTimes)) {
+                            self.workInfo().workHours1.start(res.calculatedWorkTimes[0].timeZone.startTime);
+                            self.workInfo().workHours1.end(res.calculatedWorkTimes[0].timeZone.endTime);
+                            if (res.calculatedWorkTimes.length > 1) {
+                                self.workInfo().workHours2.start(res.calculatedWorkTimes[1].timeZone.startTime);
+                                self.workInfo().workHours2.end(res.calculatedWorkTimes[1].timeZone.endTime);
+                            } else {
+                                self.workInfo().workHours2.start(null);
+                                self.workInfo().workHours2.end(null);
+                            }
+                        }
+                        const calculatedBreakTimes = res.calculatedBreakTimes || [];
+                        self.restTime().forEach(i => {
+                            const t = _.find(calculatedBreakTimes, (o: any) => Number(o.workNo) == Number(i.frameNo));
+                            if (t) {
+                                i.start(t.timeZone.startTime);
+                                i.end(t.timeZone.endTime);
+                            } else {
+                                i.start(null);
+                                i.end(null);
+                            }
+                        });
+
 						self.bindHolidayTime(self.dataSource, 1);
 						self.assginTimeTemp();
 						self.assignWorkHourAndRest();
