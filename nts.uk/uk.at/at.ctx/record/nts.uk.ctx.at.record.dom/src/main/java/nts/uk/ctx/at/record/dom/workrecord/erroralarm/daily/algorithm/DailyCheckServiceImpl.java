@@ -660,7 +660,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					}
 				}
 				if(!isWorkTypeChk) {
-					if(renzoku > 1 && renzoku >= errorAlarm.getContinuousPeriod().v()) {
+					if(renzoku != 0 && renzoku >= errorAlarm.getContinuousPeriod().v()) {
 						this.createExtractAlarmRenzoku(sid,
 								lstExtractInfoResult,
 								alarmCheckConditionCode,
