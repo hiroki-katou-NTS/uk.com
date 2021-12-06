@@ -106,8 +106,8 @@ public class TranferHdWorkCompensatoryTest {
 				result = createRCHdCase();
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
 						(CompensatoryOccurrenceDivision) any);
-				result = ReflectApplicationHelper.createSubTrans(0, 0, 0,
-						SubHolTransferSetAtr.CERTAIN_TIME_EXC_SUB_HOL);
+				result = ReflectApplicationHelper.createSubTrans(0, 480, 210,
+						SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL);
 			}
 		};
 
@@ -118,7 +118,7 @@ public class TranferHdWorkCompensatoryTest {
 								.extracting(x -> x.getHolidayFrameNo().v(),
 										x -> x.getHolidayWorkTime().get().getTime().v(),
 										x -> x.getTransferTime().get().getTime().v())
-								.contains(Tuple.tuple(1, 0, 480), Tuple.tuple(2, 0, 360));
+								.contains(Tuple.tuple(1, 240, 240), Tuple.tuple(2, 120, 240));
 
 	}
 
@@ -127,20 +127,25 @@ public class TranferHdWorkCompensatoryTest {
 	@Test
 	public void test2a1(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
 
+		//日別勤怠(申請反映用work）
 		List<HolidayWorkFrameTime> hdTimeWorkFrameTime = new ArrayList<HolidayWorkFrameTime>();
 		hdTimeWorkFrameTime.addAll(Arrays.asList(create(1, 690, 0), create(2, 120, 0)));
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
+		
+		//最大の時間帯でworkを作成
+		List<HolidayWorkFrameTime> hdTimeWorkFrameTimeApp = new ArrayList<HolidayWorkFrameTime>();
+		hdTimeWorkFrameTimeApp.addAll(Arrays.asList(create(1, 690, 0), create(2, 120, 0)));
 		new Expectations() {
 			{
 				require.getWorkType(anyString);
 				result = Optional.of(createWorkType());
 				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
-				result = createRCHdCase2(hdTimeWorkFrameTime);
+				result = createRCHdCase21(hdTimeWorkFrameTimeApp);
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
 						(CompensatoryOccurrenceDivision) any);
-				result = ReflectApplicationHelper.createSubTrans(0, 0, 0,
-						SubHolTransferSetAtr.CERTAIN_TIME_EXC_SUB_HOL);
+				result = ReflectApplicationHelper.createSubTrans(0, 480, 210,//1日の時間
+						SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL);
 			}
 		};
 
@@ -151,10 +156,19 @@ public class TranferHdWorkCompensatoryTest {
 								.extracting(x -> x.getHolidayFrameNo().v(),
 										x -> x.getHolidayWorkTime().get().getTime().v(),
 										x -> x.getTransferTime().get().getTime().v())
-								.contains(Tuple.tuple(1, 0, 690), Tuple.tuple(2, 0, 120));
+								.contains(Tuple.tuple(1, 330, 360), Tuple.tuple(2, 0, 120));
 
 	}
 
+	public DailyRecordOfApplication createRCHdCase21(List<HolidayWorkFrameTime> lstFrameTime) {
+
+		List<HolidayWorkFrameTimeSheet> frameTimeSheetList = new ArrayList<HolidayWorkFrameTimeSheet>();
+		frameTimeSheetList.addAll(Arrays.asList(createTimeSpan(2, 300, 540, 0, 240),
+				createTimeSpan(1, 540, 1320, 690, 0), createTimeSpan(2, 1320, 1740, 420, 0)));
+		return ReflectApplicationHelper.createRCWithTimeLeavHoliday(ScheduleRecordClassifi.RECORD, 1, lstFrameTime,
+				frameTimeSheetList);
+	}
+	
 	// 申請時間②
 	@SuppressWarnings("unchecked")
 	@Test
@@ -195,7 +209,7 @@ public class TranferHdWorkCompensatoryTest {
 
 		List<HolidayWorkFrameTime> hdTimeWorkFrameTime = new ArrayList<HolidayWorkFrameTime>();
 		hdTimeWorkFrameTime.addAll(Arrays.asList(create(3, 690, 0), create(4, 120, 0)));
-		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
+		DailyRecordOfApplication dailyApp = createRCHdCase21(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
 				require.getWorkType(anyString);
@@ -205,8 +219,8 @@ public class TranferHdWorkCompensatoryTest {
 				result = createRCHdCase2(hdTimeWorkFrameTime);
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
 						(CompensatoryOccurrenceDivision) any);
-				result = ReflectApplicationHelper.createSubTrans(0, 0, 0,
-						SubHolTransferSetAtr.CERTAIN_TIME_EXC_SUB_HOL);
+				result = ReflectApplicationHelper.createSubTrans(0, 480, 210,
+						SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL);
 			}
 		};
 
@@ -217,7 +231,7 @@ public class TranferHdWorkCompensatoryTest {
 								.extracting(x -> x.getHolidayFrameNo().v(),
 										x -> x.getHolidayWorkTime().get().getTime().v(),
 										x -> x.getTransferTime().get().getTime().v())
-								.contains(Tuple.tuple(3, 0, 690), Tuple.tuple(4, 0, 120));
+								.contains(Tuple.tuple(3, 210, 480), Tuple.tuple(4, 120, 0));
 
 	}
 
@@ -271,8 +285,8 @@ public class TranferHdWorkCompensatoryTest {
 				result = createRCHdCase2(hdTimeWorkFrameTime);
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
 						(CompensatoryOccurrenceDivision) any);
-				result = ReflectApplicationHelper.createSubTrans(0, 0, 0,
-						SubHolTransferSetAtr.CERTAIN_TIME_EXC_SUB_HOL);
+				result = ReflectApplicationHelper.createSubTrans(0, 480, 210,
+						SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL);
 			}
 		};
 
@@ -283,7 +297,7 @@ public class TranferHdWorkCompensatoryTest {
 								.extracting(x -> x.getHolidayFrameNo().v(),
 										x -> x.getHolidayWorkTime().get().getTime().v(),
 										x -> x.getTransferTime().get().getTime().v())
-								.contains(Tuple.tuple(1, 0, 450), Tuple.tuple(4, 0, 360));
+								.contains(Tuple.tuple(1, 0, 450), Tuple.tuple(4, 330, 30));
 
 	}
 
@@ -304,8 +318,8 @@ public class TranferHdWorkCompensatoryTest {
 				result = createRCHdCase2(hdTimeWorkFrameTime);
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
 						(CompensatoryOccurrenceDivision) any);
-				result = ReflectApplicationHelper.createSubTrans(0, 0, 0,
-						SubHolTransferSetAtr.CERTAIN_TIME_EXC_SUB_HOL);
+				result = ReflectApplicationHelper.createSubTrans(0, 480, 210,
+						SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL);
 			}
 		};
 
@@ -316,7 +330,7 @@ public class TranferHdWorkCompensatoryTest {
 								.extracting(x -> x.getHolidayFrameNo().v(),
 										x -> x.getHolidayWorkTime().get().getTime().v(),
 										x -> x.getTransferTime().get().getTime().v())
-								.contains(Tuple.tuple(3, 0, 450), Tuple.tuple(2, 0, 120));
+								.contains(Tuple.tuple(3, 90, 360), Tuple.tuple(2, 0, 120));
 
 	}
 
@@ -490,9 +504,9 @@ public class TranferHdWorkCompensatoryTest {
 	}
 	
 	private WorkType createWorkType() {
-		 List<WorkTypeSet> workTypeSetList = new ArrayList<>();
-		 workTypeSetList.add(new WorkTypeSet("", null, WorkAtr.OneDay, null, null, null, null, 0, 0, null, null, WorkTypeSetCheck.CHECK, null));
+		List<WorkTypeSet> workTypeSetList = new ArrayList<>();
+		workTypeSetList.add(new WorkTypeSet("", null, WorkAtr.OneDay, null, null, null, null, 0, 0, null, null,
+				WorkTypeSetCheck.CHECK, null));
 		return new WorkType("", null, workTypeSetList);
 	}
-	
 }

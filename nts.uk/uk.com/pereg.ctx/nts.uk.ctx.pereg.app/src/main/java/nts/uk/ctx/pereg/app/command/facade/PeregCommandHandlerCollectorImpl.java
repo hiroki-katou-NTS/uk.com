@@ -20,6 +20,9 @@ import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.Upda
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.delete.DeleteStampCardCommand;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.add.AddStampCardCommand;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.update.UpdateStampCardCommand;
+import nts.uk.ctx.at.shared.app.command.dailyattdcal.empunitpricehistory.AddEmployeeUnitPriceCommand;
+import nts.uk.ctx.at.shared.app.command.dailyattdcal.empunitpricehistory.UpdateEmployeeUnitPriceCommand;
+import nts.uk.ctx.at.shared.app.command.dailyattdcal.empunitpricehistory.DeleteEmployeeUnitPriceCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.AddAnnLeaGrantRemnNumPeregCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.AddAnnuaLeaveCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.DeleteAnnuaLeaveCommand;
@@ -331,6 +334,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			},
 			// CS00092
 			new TypeLiteral<PeregAddCommandHandler<AddEmpSocialInsGradeInforCommand>>() {
+			},
+			// CS00097 単価
+			new TypeLiteral<PeregAddCommandHandler<AddEmployeeUnitPriceCommand>>() {
 			}
 	);
 	/** Update handlers */
@@ -460,8 +466,10 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			},
 			// CS00092
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmpSocialInsGradeInforCommand>>() {
+			},
+			// CS00097 単価
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeUnitPriceCommand>>() {
 			}
-
 	);
 	
 	
@@ -519,6 +527,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			},
 			// CS00092
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmpSocialInsGradeInforCommand>>() {
+			},
+			// CS00097 単価
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmployeeUnitPriceCommand>>() {
 			}
 	);
 	

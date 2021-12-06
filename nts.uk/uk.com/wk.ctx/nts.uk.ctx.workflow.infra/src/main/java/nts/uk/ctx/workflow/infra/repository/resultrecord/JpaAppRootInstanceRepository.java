@@ -112,7 +112,11 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			+ " AND appRoot.ROOT_TYPE = rootType" + " AND appRoot.END_DATE >= 'startDate'"
 			+ " AND appRoot.START_DATE <= 'endDate') result)";
 
-	private final String FIND_BY_CONTAIN_DATE = 
+	private final String FIND_BY_CONTAIN_DATE = BASIC_SELECT + " WHERE appRoot.CID = 'companyID'"
+			+ " AND appRoot.EMPLOYEE_ID = 'employeeID'" + " AND appRoot.ROOT_TYPE = rootType"
+			+ " AND appRoot.START_DATE <= 'recordDate'" + " AND appRoot.END_DATE >= 'recordDate'";
+	
+	private final String FIND_ROOT_ID_BY_CONTAIN_DATE = 
 			"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.START_DATE, appRoot.END_DATE, appRoot.ROOT_TYPE "
 			+ "FROM WWFDT_INST_ROUTE appRoot "
 			+ " WHERE appRoot.CID = 'companyID'"
@@ -179,7 +183,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 										.map(y -> new WwfdtInstFrame(
 												new WwfdpAppFrameInstancePK(appRootInstance.getRootID(),
 														x.getPhaseOrder(), y.getFrameOrder()),
-												y.isConfirmAtr() ? 1 : 0, null,
+												y.isConfirmAtr(), null,
 												y.getListApprover().stream().map(z -> new WwfdtInstApprove(
 														new WwfdpAppApproveInstancePK(appRootInstance.getRootID(),
 																x.getPhaseOrder(), y.getFrameOrder(), z),
@@ -396,8 +400,8 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 		
 			Query pstatement = this.getEntityManager().createNativeQuery(query);
 			pstatement.setParameter(1, approverID);
-			pstatement.setParameter(2, period.end().toString("yyyy-MM-dd"));
-			pstatement.setParameter(3, period.start().toString("yyyy-MM-dd"));
+			pstatement.setParameter(2, Date.valueOf(period.end().localDate()));
+			pstatement.setParameter(3, Date.valueOf(period.start().localDate()));
 			pstatement.setParameter(4, companyID);
 			pstatement.setParameter(5, rootType.value);
 			
@@ -574,6 +578,23 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			} else {
 				return Optional.of(listResult.get(0));
 			}
+		}
+	}
+	
+	@Override
+	@SneakyThrows
+	public String findIDByContainDate(
+			String companyID,
+			String employeeID,
+			GeneralDate recordDate,
+			RecordRootType rootType) {
+		String query = FIND_ROOT_ID_BY_CONTAIN_DATE;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("employeeID", employeeID);
+		query = query.replaceAll("rootType", String.valueOf(rootType.value));
+		query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
+		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+			return new NtsResultSet(pstatement.executeQuery()).getSingle(x -> x.getString("ROOT_ID")).orElse(null);
 		}
 	}
 

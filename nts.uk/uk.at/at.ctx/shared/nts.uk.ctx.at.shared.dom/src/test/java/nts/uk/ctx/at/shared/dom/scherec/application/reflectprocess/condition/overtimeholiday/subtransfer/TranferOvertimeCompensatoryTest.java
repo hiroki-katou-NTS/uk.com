@@ -132,8 +132,8 @@ public class TranferOvertimeCompensatoryTest {
 
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
 						(CompensatoryOccurrenceDivision) any);
-				result = ReflectApplicationHelper.createSubTrans(0, 0, 0,
-						SubHolTransferSetAtr.CERTAIN_TIME_EXC_SUB_HOL);
+				result = ReflectApplicationHelper.createSubTrans(0, 480, 210,
+						SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL);
 
 			}
 		};
@@ -144,7 +144,7 @@ public class TranferOvertimeCompensatoryTest {
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
 								.extracting(x -> x.getOverWorkFrameNo().v(), x -> x.getOverTimeWork().getTime().v(),
 										x -> x.getTransferTime().getTime().v())
-								.contains(Tuple.tuple(1, 0, 480), Tuple.tuple(4, 0, 360));
+								.contains(Tuple.tuple(1, 240, 240), Tuple.tuple(4, 120, 240));
 
 	}
 
@@ -163,8 +163,8 @@ public class TranferOvertimeCompensatoryTest {
 
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
 						(CompensatoryOccurrenceDivision) any);
-				result = ReflectApplicationHelper.createSubTrans(0, 0, 0,
-						SubHolTransferSetAtr.CERTAIN_TIME_EXC_SUB_HOL);
+				result = ReflectApplicationHelper.createSubTrans(0, 480, 210,
+						SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL);
 
 			}
 		};

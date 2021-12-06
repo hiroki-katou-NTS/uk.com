@@ -180,6 +180,9 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<AffWorkplaceHistory> getByEmpIdAndStandDate(String employeeId, GeneralDate standDate) {
+		if (standDate == null) {
+			return Optional.empty();
+		}
 		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy()
 				.query(SELECT_BY_EMPID_STANDDATE, BsymtAffiWorkplaceHist.class).setParameter("employeeId", employeeId)
 				.setParameter("standDate", standDate).getList();
