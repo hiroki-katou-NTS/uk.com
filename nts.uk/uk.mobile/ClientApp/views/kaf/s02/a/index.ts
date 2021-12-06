@@ -1791,10 +1791,21 @@ export class KafS02AComponent extends KafS00ShrComponent {
             if (!data) {
                 return;
             }
+
             const { code, name, workplaceId } = data;
-            item.workplaceId = workplaceId;
-            item.workplaceCD = code;
-            item.workplaceName = name;
+            if (!_.isEmpty(workplaceId)) {
+                item.workplaceId = workplaceId;
+                item.workplaceCD = code;
+                item.workplaceName = name;
+            } else if (self.mode) {
+                item.workplaceId = '';
+                item.workplaceCD = '';
+                item.workplaceName = self.$i18n('KAFS02_40');
+            } else {
+                item.workplaceId = '';
+                item.workplaceCD = '';
+                item.workplaceName = self.$i18n('KAFS02_35');
+            }
         });
     }
 
@@ -1809,10 +1820,13 @@ export class KafS02AComponent extends KafS00ShrComponent {
             if (workLocationCD != '') {
                 item.workLocationCD = workLocationCD; 
                 item.workLocationName = workLocationName;  
+            } else if (self.mode) {
+                item.workLocationCD = '';
+                item.workLocationName = self.$i18n('KAFS02_41');
             } else {
-                item.workLocationCD = ''; 
-                item.workLocationName = '';
-            } 
+                item.workLocationCD = '';
+                item.workLocationName = self.$i18n('KAFS02_35');
+            }
         });
     }
 
