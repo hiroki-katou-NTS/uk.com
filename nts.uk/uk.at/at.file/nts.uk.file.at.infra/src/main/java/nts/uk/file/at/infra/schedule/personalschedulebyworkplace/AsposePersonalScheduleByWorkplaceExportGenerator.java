@@ -219,8 +219,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         // C1 part
         cells.get(START_HEADER_ROW, PERSONAL_INFO_COLUMN).setValue(getText("KSU001_4131"));
         for (int i = 0; i < 4; i++) {
-            this.setHeaderStyle(cells.get(START_HEADER_ROW + i, PERSONAL_INFO_COLUMN), null, false, i == 0, i == 3, false, false);
-            this.setHeaderStyle(cells.get(START_HEADER_ROW + i, PERSONAL_INFO_COLUMN + 1), null, false, i == 0, i == 3, false, false);
+            this.setHeaderStyle(cells.get(START_HEADER_ROW + i, PERSONAL_INFO_COLUMN), null, false, i == 0,i == 1, i == 3, false, false);
+            this.setHeaderStyle(cells.get(START_HEADER_ROW + i, PERSONAL_INFO_COLUMN + 1), null, false, i == 0, i == 1, i == 3, false, false);
         }
         cells.merge(START_HEADER_ROW, PERSONAL_INFO_COLUMN, 4, 2, true);
         cells.setColumnWidth(PERSONAL_INFO_COLUMN, 10);
@@ -237,7 +237,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             }
         }
         for (int i = 0; i < 4; i++) {
-            this.setHeaderStyle(cells.get(START_HEADER_ROW + i, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, i == 0, i == 3, false, false);
+            this.setHeaderStyle(cells.get(START_HEADER_ROW + i, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, i == 0, i == 1, i == 3, false, false);
         }
         cells.merge(START_HEADER_ROW, ADDITIONAL_PERSONAL_INFO_COLUMN, 4, 1, true);
 
@@ -246,7 +246,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         boolean hasPersonalTotal = !dataSource.getOutputSetting().getPersonalCounterCategories().isEmpty();
         for (int i = 0; i < dataSource.getDateInfos().size(); i++) {
             DateInformation dateInfo = (DateInformation) dataSource.getDateInfos().get(i);
-            cells.get(START_HEADER_ROW, startCol + i).setValue(dateInfo.getYmd().toString(i == 0 || dateInfo.getYmd().day() == 1 ? "M/d" : "d") + "\n" + this.getDayOfWeek(dateInfo.getDayOfWeek()));
+            cells.get(START_HEADER_ROW, startCol + i).setValue(dateInfo.getYmd().toString(i == 0 || dateInfo.getYmd().day() == 1 ? "M/d" : "d"));
+            cells.get(START_HEADER_ROW + 1, startCol + i).setValue(this.getDayOfWeek(dateInfo.getDayOfWeek()));
             if (dateInfo.getOptCompanyEventName().isPresent()) {
                 cells.get(START_HEADER_ROW + 2, startCol + i).setValue(dateInfo.getOptCompanyEventName().get().v());
             }
@@ -254,9 +255,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                 cells.get(START_HEADER_ROW + 3, startCol + i).setValue(dateInfo.getOptWorkplaceEventName().get().v());
             }
             for (int j = 0; j < 4; j++) {
-                this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol + i), dateInfo, j < 2, j == 0, j == 3, i == dataSource.getDateInfos().size() - 1 && hasPersonalTotal, false);
+                this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol + i), dateInfo, false, j == 0, j == 1, j == 3, i == dataSource.getDateInfos().size() - 1 && hasPersonalTotal, false);
             }
-            cells.merge(START_HEADER_ROW, startCol + i, 2, 1, true);
             cells.setColumnWidth(startCol + i, COLUMN_WIDTH);
         }
 
@@ -271,9 +271,9 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     cells.get(START_HEADER_ROW + 1, startCol + 1).setValue(getText("KSU001_50"));
                     cells.get(START_HEADER_ROW + 1, startCol + 2).setValue(getText("KSU001_51"));
                     for (int j = 0; j < 4; j++) {
-                        this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol), null, j != 0, j == 0, j == 3, false, false);
-                        this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol + 1), null, j != 0, j == 0, j == 3, false, false);
-                        this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol + 2), null, j != 0, j == 0, j == 3, false, false);
+                        this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol), null, j != 0, j == 0, false, j == 3, false, false);
+                        this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol + 1), null, j != 0, j == 0, false, j == 3, false, false);
+                        this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol + 2), null, j != 0, j == 0, false, j == 3, false, false);
                     }
                     cells.merge(START_HEADER_ROW, startCol, 1, 3);
                     cells.merge(START_HEADER_ROW + 1, startCol, 3, 1);
@@ -290,8 +290,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     cells.get(START_HEADER_ROW + 1, startCol).setValue(getText("KSU001_18"));
                     cells.get(START_HEADER_ROW + 1, startCol + 1).setValue(getText("KSU001_19"));
                     for (int j = 0; j < 4; j++) {
-                        this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol), null, j != 0, j == 0, j == 3, false, false);
-                        this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol + 1), null, j != 0, j == 0, j == 3, false, false);
+                        this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol), null, j != 0, j == 0, false, j == 3, false, false);
+                        this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol + 1), null, j != 0, j == 0, false, j == 3, false, false);
                     }
                     cells.merge(START_HEADER_ROW, startCol, 1, 2);
                     cells.merge(START_HEADER_ROW + 1, startCol, 3, 1);
@@ -321,7 +321,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                         }
                         for (int j = 0; j < Math.max(totalTimes.size(), 1); j++) {
                             for (int k = 0; k < 4; k++) {
-                                this.setHeaderStyle(cells.get(START_HEADER_ROW + k, startCol + j), null, k != 0, k == 0, k == 3, false, false);
+                                this.setHeaderStyle(cells.get(START_HEADER_ROW + k, startCol + j), null, k != 0, k == 0, false, k == 3, false, false);
                             }
                         }
                         for (int j = 0; j < Math.max(totalTimes.size(), 1); j++) {
@@ -337,8 +337,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     cells.get(START_HEADER_ROW + 1, startCol).setValue(getText("KSU001_62"));
                     cells.get(START_HEADER_ROW + 1, startCol + 1).setValue(getText("KSU001_63"));
                     for (int j = 0; j < 4; j++) {
-                        this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol), null, j != 0, j == 0, j == 3, false, false);
-                        this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol + 1), null, j != 0, j == 0, j == 3, false, false);
+                        this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol), null, j != 0, j == 0, false, j == 3, false, false);
+                        this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol + 1), null, j != 0, j == 0, false, j == 3, false, false);
                     }
                     cells.merge(START_HEADER_ROW, startCol, 1, 2);
                     cells.merge(START_HEADER_ROW + 1, startCol, 3, 1);
@@ -364,13 +364,17 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         cells.merge(0, START_DATE_COL, 3, startCol - START_DATE_COL);
     }
 
-    private void setHeaderStyle(Cell cell, DateInformation dateInfo, boolean wrapText, boolean firstRow, boolean lastRow, boolean doubleBorder, boolean wkp) {
+    private void setHeaderStyle(Cell cell, DateInformation dateInfo, boolean wrapText, boolean firstRow, boolean secondRow, boolean lastRow, boolean doubleBorder, boolean wkp) {
         Style style = commonStyle();
         if (wrapText) {
             style.setTextWrapped(true);
         }
-        if (firstRow)
+        if (firstRow) {
             style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(wkp ? CellBorderType.THIN : CellBorderType.MEDIUM);
+            style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.NONE);
+        }
+        if (secondRow)
+            style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.NONE);
         if (lastRow)
             style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(wkp ? CellBorderType.THIN : CellBorderType.MEDIUM);
         if (doubleBorder)
@@ -1072,26 +1076,26 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         }
         // F1 part
         cells.get(row, PERSONAL_INFO_COLUMN).setValue(getText(category.nameId));
-        this.setHeaderStyle(cells.get(row, PERSONAL_INFO_COLUMN), null, false, true, false, false, true);
-        this.setHeaderStyle(cells.get(row + 1, PERSONAL_INFO_COLUMN), null, false, false, true, false, true);
-        this.setHeaderStyle(cells.get(row, PERSONAL_INFO_COLUMN + 1), null, false, true, false, false, true);
-        this.setHeaderStyle(cells.get(row + 1, PERSONAL_INFO_COLUMN + 1), null, false, false, true, false, true);
+        this.setHeaderStyle(cells.get(row, PERSONAL_INFO_COLUMN), null, false, true, false, false, false, true);
+        this.setHeaderStyle(cells.get(row + 1, PERSONAL_INFO_COLUMN), null, false, false, true, true, false, true);
+        this.setHeaderStyle(cells.get(row, PERSONAL_INFO_COLUMN + 1), null, false, true, false, false, false, true);
+        this.setHeaderStyle(cells.get(row + 1, PERSONAL_INFO_COLUMN + 1), null, false, false, true, true, false, true);
         cells.merge(row, PERSONAL_INFO_COLUMN, 2, 2, true);
 
         // F2 part
         cells.get(row, ADDITIONAL_PERSONAL_INFO_COLUMN).setValue(getText("KSU001_4134"));
-        this.setHeaderStyle(cells.get(row, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, true, false, false, true);
-        this.setHeaderStyle(cells.get(row + 1, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, false, true, false, true);
+        this.setHeaderStyle(cells.get(row, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, true, false, false, false, true);
+        this.setHeaderStyle(cells.get(row + 1, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, false, true, true, false, true);
         cells.merge(row, ADDITIONAL_PERSONAL_INFO_COLUMN, 2, 1, true);
 
         // F3 part
         int startCol = START_DATE_COL;
         for (int i = 0; i < dateInformations.size(); i++) {
             DateInformation dateInfo = dateInformations.get(i);
-            cells.get(row, startCol + i).setValue(dateInfo.getYmd().toString(i == 0 || dateInfo.getYmd().day() == 1 ? "M/d" : "d") + "\n" + this.getDayOfWeek(dateInfo.getDayOfWeek()));
-            this.setHeaderStyle(cells.get(row, startCol + i), dateInfo, true, true, false, i == dateInformations.size() - 1 && hasPersonalTotal, true);
-            this.setHeaderStyle(cells.get(row + 1, startCol + i), dateInfo, true, false, true, i == dateInformations.size() - 1 && hasPersonalTotal, true);
-            cells.merge(row, startCol + i, 2, 1, true);
+            cells.get(row, startCol + i).setValue(dateInfo.getYmd().toString(i == 0 || dateInfo.getYmd().day() == 1 ? "M/d" : "d"));
+            cells.get(row + 1, startCol + i).setValue(this.getDayOfWeek(dateInfo.getDayOfWeek()));
+            this.setHeaderStyle(cells.get(row, startCol + i), dateInfo, false, true, false, false, i == dateInformations.size() - 1 && hasPersonalTotal, true);
+            this.setHeaderStyle(cells.get(row + 1, startCol + i), dateInfo, false, false, true, true, i == dateInformations.size() - 1 && hasPersonalTotal, true);
         }
     }
 
