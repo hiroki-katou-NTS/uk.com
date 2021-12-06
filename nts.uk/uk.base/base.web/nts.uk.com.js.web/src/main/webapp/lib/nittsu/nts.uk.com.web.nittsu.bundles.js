@@ -37463,11 +37463,9 @@ var nts;
                                 get: function () { return self.color; },
                                 set: function (val) {
                                     var list = (ruler.definedType[self.name] || {}).list;
-                                    if (!_.isNil(list))
-                                        _.forEach(list, function (c) {
-                                            if (!_.isNil(c))
-                                                c.style.backgroundColor = val;
-                                        });
+                                    _.forEach(list, function (c) {
+                                        c.style.backgroundColor = val;
+                                    });
                                     self.color = val;
                                 }
                             });
