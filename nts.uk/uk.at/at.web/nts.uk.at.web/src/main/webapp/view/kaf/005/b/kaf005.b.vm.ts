@@ -18,9 +18,9 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		<div id="kaf005-b">
 			<div id="contents-area"
 				style="background-color: inherit; height: calc(100vh - 137px);">
-				<div class="two-panel" style="height: 100%; display: inline-flex;">
+				<div class="two-panel" style="height: 100%;" data-bind="style: {display: opOvertimeAppAtr() == 3 &amp;&amp; appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason &amp;&amp; appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason ? 'inline-flex' : 'block'}">
 					<div class="left-panel"
-						style="min-width: calc(100% - 388px); height: inherit; padding-bottom: 5px;">
+						style="width: calc(100% - 388px); height: inherit; padding-bottom: 5px;">
 						<div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px;"> 
 							<div class="table"
 								style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
@@ -183,6 +183,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 
         multipleOvertimeContents: KnockoutObservableArray<MultipleOvertimeContent> = ko.observableArray([]);
         reasonTypeItemLst: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        displayPrintButton: KnockoutObservable<boolean>;
 		
 		setTitleLabel() {
 			const vm = this;
@@ -239,6 +241,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             vm.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
             vm.approvalReason = params.approvalReason;
 			vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
+			vm.displayPrintButton = params.displayPrintButton;
             // gui event con ra viewmodel cha
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
             // luôn là component
@@ -288,6 +291,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             .done(res => {
                 if (res) {
                 	vm.opOvertimeAppAtr(res.displayInfoOverTime.overtimeAppAtr);
+                	vm.displayPrintButton(vm.opOvertimeAppAtr() != OvertimeAppAtr.MULTIPLE_OVERTIME);
                     vm.printContentOfEachAppDto().opDetailOutput = res;
 					vm.appOverTime = res.appOverTime;
 					ko.contextFor(vm.$el).$vm.getAppNameForAppOverTime(vm.appOverTime.overTimeClf);
@@ -498,6 +502,21 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							
 						}
 					}
+
+                    if (vm.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
+                        let error = false;
+                        vm.multipleOvertimeContents().forEach((i, idx) => {
+                            if (!!i.start() && !i.end()) {
+                                vm.$errors('#A15_5_' + idx, 'Msg_307');
+                                error = true;
+                            }
+                            if (!i.start() && !!i.end()) {
+                                vm.$errors('#A15_3_' + idx, 'Msg_307');
+                                error = true;
+                            }
+                        });
+                        if (error) return false;
+                    }
 					
 					// wokr type or worktime null
 					if (vm.visibleModel.c7()) {

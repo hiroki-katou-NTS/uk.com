@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOverTimeDto;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.MultipleOvertimeContentDto;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkInfo;
 
@@ -34,7 +33,7 @@ public class DisplayInfoOverTimeDto {
 	public WorkInfo workInfo;
 
 	// 最新の複数回残業申請
-	private AppOverTimeDto latestMultiOvertimeApp;
+	public AppOverTimeDto latestMultiOvertimeApp;
 	
 	public DisplayInfoOverTimeDto(
 			List<WorkdayoffFrameDto> workdayoffFrames,
