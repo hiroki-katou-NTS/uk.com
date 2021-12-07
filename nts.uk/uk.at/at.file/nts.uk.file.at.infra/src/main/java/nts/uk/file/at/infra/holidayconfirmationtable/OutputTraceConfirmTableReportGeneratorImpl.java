@@ -492,7 +492,12 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
     private String formatNoLinkedTime(OccurrenceAcquisitionDetails detail, int value) {
         StringBuilder formattedDate = new StringBuilder();
         int spaceLeft = 3, spaceRight = 3;
+        int hours = value / 60;
         formattedDate.append(convertToTime(value));
+        if(hours < 10){
+            formattedDate.insert(0, " ");
+            spaceLeft += -1;
+        }
         if (detail.getStatus() == MngHistDataAtr.SCHEDULE || detail.getStatus() == MngHistDataAtr.NOTREFLECT) {
             formattedDate.insert(0, "(");
             formattedDate.append(")");
