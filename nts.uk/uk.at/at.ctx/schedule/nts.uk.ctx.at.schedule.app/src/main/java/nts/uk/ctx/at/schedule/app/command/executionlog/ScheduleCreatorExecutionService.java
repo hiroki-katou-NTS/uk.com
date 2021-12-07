@@ -16,6 +16,7 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.task.tran.TransactionService;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -175,6 +176,9 @@ public class ScheduleCreatorExecutionService {
 
 	@Inject
 	private EmploymentHisScheduleAdapter scheAdapter;
+	
+	@Inject
+	protected TransactionService transactionService;
 
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";
@@ -228,46 +232,38 @@ public class ScheduleCreatorExecutionService {
 
 		// get company id
 		String companyId = loginUserContext.companyId();
+		command.setCompanyId(companyId);
+		
+		transactionService.execute(() -> preExecute(command, companyId));
+		
+		try {
+			this.registerPersonalSchedule(command, command.getScheduleExecutionLog(), asyncTask, companyId);
+		} catch (Exception ex) {
+			command.setIsExForKBT(true);
+			throw ex;
+		}
+	}
 
+	private void preExecute(ScheduleCreatorExecutionCommand command, String companyId) {
+		
 		if (!command.isAutomatic()) {
-			ScheduleExecutionLog scheduleExecutionLog = new ScheduleExecutionLog();
-
 			// update command
-			command.setCompanyId(companyId);
-//			command.setIsDeleteBeforInsert(false);
 
-			// find execution log by id
-			scheduleExecutionLog = this.scheduleExecutionLogRepository.findById(companyId, command.getExecutionId())
-					.get();
+			val scheduleExecutionLog = this.scheduleExecutionLogRepository.findById(companyId, command.getExecutionId()).get();
 
-			// update execution time to now
 			scheduleExecutionLog.setExecutionTimeToNow();
-
-			// set exeAtr is manual
 			scheduleExecutionLog.setExeAtrIsManual();
 
 			// update domain execution log
 			this.scheduleExecutionLogRepository.update(scheduleExecutionLog);
 
 			// find execution content by id
-			ScheduleCreateContent scheCreContent = this.contentRepository.findByExecutionId(command.getExecutionId())
-					.get();
-			command.setContent(scheCreContent);
-//			command.setConfirm(scheCreContent.getConfirm());
-			// register personal schedule
-			this.registerPersonalSchedule(command, scheduleExecutionLog, asyncTask, companyId);
+			command.setContent(this.contentRepository.findByExecutionId(command.getExecutionId()).get());
+			command.setScheduleExecutionLog(scheduleExecutionLog);
+			
 		} else {
-			// ドメインモデル「スケジュール作成実行ログ」を新規登録する
-			try {
-				this.registerPersonalSchedule(command, command.getScheduleExecutionLog(), asyncTask, companyId);
-			} catch (Exception ex) {
-				command.setIsExForKBT(true);
-				throw ex;
-			} finally {
-//				if (command.getCountDownLatch() != null) {
-//					command.getCountDownLatch().countDown();
-//				}
-			}
+			// アルゴリズム「実行ログ作成処理」を実行する
+			createExcutionLog(command, command.getScheduleExecutionLog());
 		}
 	}
 
@@ -289,15 +285,9 @@ public class ScheduleCreatorExecutionService {
 		String exeId = command.getExecutionId();
 		DatePeriod period = scheduleExecutionLog.getPeriod();
 
-		// パラメータ実施区分を判定
-		if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
-			// アルゴリズム「実行ログ作成処理」を実行する
-			createExcutionLog(command, scheduleExecutionLog);
-		}
 		// get all data creator
 		List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository.findAll(exeId);
-		List<String> employeeIds = scheduleCreators.stream().map(item -> item.getEmployeeId())
-				.collect(Collectors.toList());
+		List<String> employeeIds = scheduleCreators.stream().map(item -> item.getEmployeeId()).collect(Collectors.toList());
 
 		// EA No2017
 		// マスタ情報を取得する
@@ -321,8 +311,7 @@ public class ScheduleCreatorExecutionService {
 					if (exeStateOfCalAndSumImportSch.isPresent())
 						if (exeStateOfCalAndSumImportSch.get() == ExeStateOfCalAndSumImportSch.START_INTERRUPTION) {
 							checkStop.set(true);
-							this.updateStatusScheduleExecutionLog(scheduleExecutionLog,
-									CompletionStatus.INTERRUPTION);
+							this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
 							return;
 						}
 				} else {
@@ -336,8 +325,7 @@ public class ScheduleCreatorExecutionService {
 
 			// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
 			StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
-					command.getCompanyId(), scheduleCreator.getEmployeeId(), period,
-					masterCache.getEmpGeneralInfo());
+					command.getCompanyId(), scheduleCreator.getEmployeeId(), period, masterCache.getEmpGeneralInfo());
 
 			// 対象期間あり　の場合
 			if (stateAndValueDatePeriod.state == StateValueDate.TARGET_PERIOD ) {
@@ -382,33 +370,34 @@ public class ScheduleCreatorExecutionService {
 				this.scheduleCreatorRepository.update(scheduleCreator);
 			}
 		});
+		
+		transactionService.execute(() -> postExecute(command, scheduleExecutionLog, asyncTask, exeId, companySetting));
+
+	}
+
+	@SuppressWarnings("rawtypes")
+	private void postExecute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
+			Optional<AsyncCommandHandlerContext> asyncTask, String exeId, Object companySetting) {
 		scTimeAdapter.clearCompanySettingShareContainer(companySetting);
 
 		if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
-			Optional<ExeStateOfCalAndSumImportSch> exeStateOfCalAndSumImportSch = dailyMonthlyprocessAdapterSch
-					.executionStatus(exeId);
+			val exeStateOfCalAndSumImportSch = dailyMonthlyprocessAdapterSch.executionStatus(exeId);
 			if (exeStateOfCalAndSumImportSch.isPresent())
 				if (exeStateOfCalAndSumImportSch.get() == ExeStateOfCalAndSumImportSch.START_INTERRUPTION) {
 					return;
 				}
-			// EA修正履歴 No2378
-			// ドメインモデル「スケジュール作成実行ログ」を取得する find execution log by id
-			ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
-					.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();
-			if (scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
-				this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
-			}
 		} else {
 			if (asyncTask.map(c -> c.hasBeenRequestedToCancel()).orElse(false)) {
 				asyncTask.ifPresent(c -> c.finishedAsCancelled());
 			}
-			ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
-					.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).orElse(null);
-			if (scheExeLog != null && scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
-				this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
-			}
 		}
 
+		// EA修正履歴 No2378
+		// ドメインモデル「スケジュール作成実行ログ」を取得する
+		this.scheduleExecutionLogRepository.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).ifPresent(log -> {
+				if (log.getCompletionStatus() != CompletionStatus.INTERRUPTION) 
+					this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
+			});
 	}
 
 	/**
