@@ -1214,6 +1214,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             if (empIndexes.get(i) + addedHeaderRows - start > maxRowPerPage) {
                 if (wkpTotalIndexes.containsKey(empIndexes.get(i - 1))) {
                     this.printHeaderF(cells, empIndexes.get(i - 1)  + addedHeaderRows, wkpTotalIndexes.get(empIndexes.get(i - 1)), dataSource.getDateInfos(), hasPersonalTotal, true);
+					startRow += 2;
                 }
                 start = empIndexes.get(i - 1) + addedHeaderRows;
                 // adding page break must be after inserting rows
