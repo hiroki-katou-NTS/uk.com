@@ -9,9 +9,9 @@ import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteDisplayOrder;
 
 /**
@@ -43,12 +43,22 @@ public class DeleteOneDayFavoriteTaskServiceTest {
 			{
 				require.get(employeeId);
 				result = Optional.of(object);
-				
-				require.delete(employeeId, favoriteId);
 			}
 		};
 		AtomTask result = DeleteOneDayFavoriteTaskService.create(require, employeeId, favoriteId);
-		NtsAssert.atomTask(() -> result, any -> require.update(object));
+		
+		new Verifications() {{
+			require.update(object);
+			times = 0;
+		}};
+		
+		result.run();
+		
+		new Verifications() {{
+			require.update(object);
+			times = 1;
+		}};
+		
 	}
 
 	@Test
@@ -65,12 +75,22 @@ public class DeleteOneDayFavoriteTaskServiceTest {
 			{
 				require.get(employeeId);
 				result = Optional.of(object1);
-				
-				require.delete(employeeId, favoriteId);
 			}
 		};
 		AtomTask result = DeleteOneDayFavoriteTaskService.create(require, employeeId, favoriteId);
-		NtsAssert.atomTask(() -> result, any -> require.delete(employeeId));
+		
+		new Verifications() {{
+			require.delete(employeeId);
+			times = 0;
+		}};
+		
+		result.run();
+		
+		new Verifications() {{
+			require.delete(employeeId);
+			times = 1;
+		}};
+		
 	}
 	
 	@Test
@@ -86,6 +106,17 @@ public class DeleteOneDayFavoriteTaskServiceTest {
 			}
 		};
 		AtomTask result = DeleteOneDayFavoriteTaskService.create(require, employeeId, favoriteId);
-		NtsAssert.atomTask(() -> result, any -> require.delete(employeeId, favoriteId));
+		
+		new Verifications() {{
+			require.delete(employeeId, favoriteId);
+			times = 0;
+		}};
+		
+		result.run();
+		
+		new Verifications() {{
+			require.delete(employeeId, favoriteId);
+			times = 1;
+		}};
 	}
 }

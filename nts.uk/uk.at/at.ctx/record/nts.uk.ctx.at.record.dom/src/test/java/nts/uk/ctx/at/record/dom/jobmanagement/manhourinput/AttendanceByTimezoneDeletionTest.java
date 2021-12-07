@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.jobmanagement.manhourinput;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -69,15 +70,23 @@ public class AttendanceByTimezoneDeletionTest {
 	@Test
 	public void getItemIds() {
 
-		List<Integer> itemIds = new ArrayList<>();
-		itemIds.add(1);
-		itemIds.add(2);
-		itemIds.add(3);
+		List<Integer> itemIds1 = new ArrayList<>();
+		itemIds1.add(1);
+		itemIds1.add(2);
+		itemIds1.add(3);
+		
+		List<Integer> itemIds2 = new ArrayList<>();
+		itemIds2.add(4);
+		itemIds2.add(5);
+		itemIds2.add(6);
 
 		new Expectations() {
 			{
 				require.getAttendanceItemIds(SupportFrameNo.of(1));
-				result = itemIds;
+				result = itemIds1;
+				
+				require.getAttendanceItemIds(SupportFrameNo.of(2));
+				result = itemIds2;
 			}
 		};
 
@@ -96,7 +105,7 @@ public class AttendanceByTimezoneDeletionTest {
 
 	// [3] 勤怠情報を削除するかどうか判断する
 	@Test
-	public void isNeedDeletingAttInfo() {
+	public void isNeedDeletingAttInfo1() {
 		AttendanceByTimezoneDeletion deletion = new AttendanceByTimezoneDeletion(SupportFrameNo.of(1),
 				AttendanceDeletionStatusEnum.COMPLETE);
 
@@ -104,15 +113,35 @@ public class AttendanceByTimezoneDeletionTest {
 		assertTrue(actual);
 
 	}
+	
+	@Test
+	public void isNeedDeletingAttInfo2() {
+		AttendanceByTimezoneDeletion deletion = new AttendanceByTimezoneDeletion(SupportFrameNo.of(1),
+				AttendanceDeletionStatusEnum.OVERWRITE);
+
+		boolean actual = deletion.isNeedDeletingAttInfo();
+		assertFalse(actual);
+
+	}
 
 	// [4] 勤怠情報を削除するかどうか判断する
 	@Test
-	public void isNeedDeletingEditedStatus() {
+	public void isNeedDeletingEditedStatus1() {
 		AttendanceByTimezoneDeletion deletion = new AttendanceByTimezoneDeletion(SupportFrameNo.of(1),
 				AttendanceDeletionStatusEnum.OVERWRITE);
 
 		boolean actual = deletion.isNeedDeletingEditedStatus();
 		assertTrue(actual);
+
+	}
+	
+	@Test
+	public void isNeedDeletingEditedStatus2() {
+		AttendanceByTimezoneDeletion deletion = new AttendanceByTimezoneDeletion(SupportFrameNo.of(1),
+				AttendanceDeletionStatusEnum.COMPLETE);
+
+		boolean actual = deletion.isNeedDeletingEditedStatus();
+		assertFalse(actual);
 
 	}
 

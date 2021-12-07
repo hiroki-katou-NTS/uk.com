@@ -121,6 +121,8 @@ public class ActualManHrTaskBlockCreationServiceTest {
 		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getSupNo().v()).isEqualTo(1);
 		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(0).getItemId()).isEqualTo(1);
 		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(0).getValue()).isEqualTo("1");
+		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(1).getItemId()).isEqualTo(4);
+		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(1).getValue()).isEqualTo("2");
 	}
 	
 	@Test
@@ -163,6 +165,8 @@ public class ActualManHrTaskBlockCreationServiceTest {
 		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getSupNo().v()).isEqualTo(1);
 		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(0).getItemId()).isEqualTo(3);
 		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(0).getValue()).isEqualTo("1");
+		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(1).getItemId()).isEqualTo(2);
+		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(1).getValue()).isEqualTo("2");
 	}
 	
 	@Test
@@ -205,6 +209,8 @@ public class ActualManHrTaskBlockCreationServiceTest {
 		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getSupNo().v()).isEqualTo(1);
 		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(0).getItemId()).isEqualTo(3);
 		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(0).getValue()).isEqualTo("1");
+		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(1).getItemId()).isEqualTo(4);
+		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(1).getValue()).isEqualTo("2");
 	}
 	
 	@Test
@@ -249,12 +255,49 @@ public class ActualManHrTaskBlockCreationServiceTest {
 		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(0).getValue()).isEqualTo("1");
 		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(1).getItemId()).isEqualTo(2);
 		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(1).getValue()).isEqualTo("2");
+		
+		assertThat(actualResult.getTaskBlocks().get(1).getCaltimeSpan().start()).isEqualTo(1);
+		assertThat(actualResult.getTaskBlocks().get(1).getCaltimeSpan().end()).isEqualTo(2);
+		assertThat(actualResult.getTaskBlocks().get(1).getTaskDetails().get(0).getSupNo().v()).isEqualTo(2);
+		assertThat(actualResult.getTaskBlocks().get(1).getTaskDetails().get(0).getTaskItemValues().get(0).getItemId()).isEqualTo(1);
+		assertThat(actualResult.getTaskBlocks().get(1).getTaskDetails().get(0).getTaskItemValues().get(0).getValue()).isEqualTo("1");
+		assertThat(actualResult.getTaskBlocks().get(1).getTaskDetails().get(0).getTaskItemValues().get(1).getItemId()).isEqualTo(2);
+		assertThat(actualResult.getTaskBlocks().get(1).getTaskDetails().get(0).getTaskItemValues().get(1).getValue()).isEqualTo("2");
 	}
 	
 	@Test
 	public void test6() {
 		
-		// if $作業時間帯グループ.isEmpty
+		// if $作業時間帯グループ and 工数実績項目リスト isEmpty
+		new Expectations() {
+			{
+				require.get(sId, date);
+				result = Optional.empty();
+
+			}
+		};
+		DailyActualManHrActualTask expectedResult = new DailyActualManHrActualTask(date, new ArrayList<>());
+		DailyActualManHrActualTask actualResult = ActualManHrTaskBlockCreationService.create(require, sId, date,
+				new ArrayList<>());
+		assertThat(expectedResult.getDate()).isEqualTo(actualResult.getDate());
+		assertThat(actualResult.getTaskBlocks().size()).isEqualTo(0);
+	}
+	
+	@Test
+	public void test7() {
+		
+		List<ManHrTaskDetail> taskDetails = new ArrayList<>();
+		List<TaskItemValue> taskItemValues = new ArrayList<>();
+		
+		taskItemValues.add(new TaskItemValue(1, "1"));
+		taskItemValues.add(new TaskItemValue(2, "2"));
+		
+		ManHrTaskDetail detail = new ManHrTaskDetail(taskItemValues, new SupportFrameNo(1));
+		ManHrTaskDetail detail2 = new ManHrTaskDetail(taskItemValues, new SupportFrameNo(2));
+		taskDetails.add(detail);
+		taskDetails.add(detail2);
+		
+		// if $作業時間帯グループ is empty and 工数実績項目リスト is not Empty
 		new Expectations() {
 			{
 				require.get(sId, date);

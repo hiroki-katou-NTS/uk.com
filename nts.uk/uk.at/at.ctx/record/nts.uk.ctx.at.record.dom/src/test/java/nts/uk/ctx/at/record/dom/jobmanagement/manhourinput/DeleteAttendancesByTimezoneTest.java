@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
@@ -45,6 +46,7 @@ public class DeleteAttendancesByTimezoneTest {
 		
 		List<AttendanceByTimezoneDeletion> attendanceDeletionLst = new ArrayList<>();
 		attendanceDeletionLst.add(new AttendanceByTimezoneDeletion(SupportFrameNo.of(1), AttendanceDeletionStatusEnum.COMPLETE));
+		attendanceDeletionLst.add(new AttendanceByTimezoneDeletion(SupportFrameNo.of(1), AttendanceDeletionStatusEnum.OVERWRITE));
 		
 		DeleteAttendancesByTimezone deletion = new DeleteAttendancesByTimezone("sId", GeneralDate.today(), attendanceDeletionLst);
 		
@@ -59,8 +61,26 @@ public class DeleteAttendancesByTimezoneTest {
 		};
 		
 		
-		NtsAssert.atomTask(() -> result.get(0), any -> require.deleteBySupFrameNo("sId", GeneralDate.today(), SupportFrameNo.of(1)));
-		NtsAssert.atomTask(() -> result.get(1), any -> require.deleteByListItemId("sId", GeneralDate.today(), itemIds));
+		new Verifications() {{
+			require.deleteBySupFrameNo("sId", GeneralDate.today(), SupportFrameNo.of(1));
+			times = 0;
+			
+			require.deleteByListItemId("sId", GeneralDate.today(), itemIds);
+			times = 0;
+		}};
+		
+		for (AtomTask persist : result) {
+			persist.run();
+		}
+		
+		new Verifications() {{
+			require.deleteBySupFrameNo("sId", GeneralDate.today(), SupportFrameNo.of(1));
+			times = 1;
+			
+			require.deleteByListItemId("sId", GeneralDate.today(), itemIds);
+			times = 1;
+		}};
+		
 	}
 	
 		// [1] 応援作業別勤怠を削除する
@@ -85,9 +105,20 @@ public class DeleteAttendancesByTimezoneTest {
 			
 			DeleteAttendancesByTimezone deletion = new DeleteAttendancesByTimezone("sId", GeneralDate.today(), attendanceDeletionLst);
 			
+			List<Integer> itemIds = new ArrayList<>();
+			itemIds.add(1);
+			itemIds.add(2);
+			
+			new Expectations() {
+				{
+					require.getAttendanceItemIds(SupportFrameNo.of(1));
+					result = itemIds;
+				}
+			};
+			
 			List<Integer> result = deletion.getAttendanceItems(require);
 			
-			assertThat(result).isEqualTo(new ArrayList<>());
+			assertThat(result).isEqualTo(itemIds);
 			
 		}
 		
