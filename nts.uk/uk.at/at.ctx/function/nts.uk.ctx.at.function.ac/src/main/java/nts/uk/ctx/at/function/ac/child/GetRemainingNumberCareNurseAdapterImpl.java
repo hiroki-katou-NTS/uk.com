@@ -41,7 +41,7 @@ public class GetRemainingNumberCareNurseAdapterImpl implements GetRemainingNumbe
                 Optional.empty());
         if (rs206 != null) {
             //[*1]　子の看護介護休暇集計結果．集計期間の休暇情報
-            result.setYm(criteriaDate.yearMonth());
+            result.setYm(period.end().yearMonth());
             val aggrperiodinfo = rs206.getAggrperiodinfo();
             if (aggrperiodinfo != null) {
                 val thisYear = aggrperiodinfo.getThisYear().getAggrPeriodUsedNumber();
@@ -92,7 +92,7 @@ public class GetRemainingNumberCareNurseAdapterImpl implements GetRemainingNumbe
                 Optional.empty());
         if (rs207!= null) {
             //[*1]　子の看護介護休暇集計結果．集計期間の休暇情報
-            result.setYm(criteriaDate.yearMonth());
+            result.setYm(period.end().yearMonth());
             val aggrperiodinfo = rs207.getAggrperiodinfo();
             if (aggrperiodinfo != null) {
                 val nextYearOpt = aggrperiodinfo.getNextYear();
