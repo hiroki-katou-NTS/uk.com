@@ -78,7 +78,7 @@ public class SuppInfoIntItemDto implements  ItemConst, AttendanceItemDataGate {
 	public void set(String path, ItemValue value) {
 		switch (path) {
 		case VALUE:
-			this.value = value.valueOrDefault(0);
+			this.value = value.valueOrDefault(null);
 			break;
 		default:
 			break;
