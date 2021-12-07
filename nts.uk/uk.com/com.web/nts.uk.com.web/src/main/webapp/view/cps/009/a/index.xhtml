@@ -172,7 +172,7 @@
 											<td id="COL_3">#{i18n.getText('CPS009_23')}</td>
 										</tr>
 									</thead>
-									<tbody data-bind="foreach: currentCategory().itemList(), style: { 'overflow-y': _.size(currentCategory().itemList()) &lt; 15 ? 'hidden' : 'scroll'}">
+									<tbody data-bind="foreach: currentCategory().itemList()">
 										<tr>
 											<td class="input-units-1" data-bind="css:{ requiredCell: isRequired(), notrequiredCell:!isRequired()}">
 											<span class="months-input limited-label" data-bind='text: itemName,attr: {
