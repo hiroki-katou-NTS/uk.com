@@ -430,7 +430,7 @@ module nts.uk.com.view.cmm051.a {
                     vm.employeeId(null);
                     vm.employeeCode(null);
                     vm.employeeName(null);
-                    if(isNullOrEmpty(vm.employInfors())){
+                    if(!isNullOrEmpty(vm.employInfors())){
                         vm.openDialogCDL009();
                     }
                 }
@@ -438,7 +438,7 @@ module nts.uk.com.view.cmm051.a {
                     vm.workPlaceId(null);
                     vm.workplaceCode(null);
                     vm.workplaceName(null);
-                    if(isNullOrEmpty(vm.workPlaceList())){
+                    if(!isNullOrEmpty(vm.workPlaceList())){
                         vm.openCDL008Dialog();
                     }
                 }
