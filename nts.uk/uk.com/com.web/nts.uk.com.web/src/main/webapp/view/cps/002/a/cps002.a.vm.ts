@@ -530,7 +530,8 @@ module cps002.a.vm {
                     EmployeeCode: employee.employeeCode(),
                     cardNo: employee.cardNo(),
                     LoginId: employee.loginId(),
-                    employeeName: employee.employeeName()
+                    employeeName: employee.employeeName(),
+                    password: employee.password()
                 };
 
             if (!self.isError()) {
@@ -553,6 +554,15 @@ module cps002.a.vm {
                             break;
                         case "Msg_346":
                             $('#cardNumber').ntsError('set', error);
+                            break;
+                        default:
+                            if (error.errors && error.errors.length > 1) {
+                                error.errors.forEach(err => {
+                                    $('#password').ntsError('set', err);
+                                });
+                            } else {
+                                $('#password').ntsError('set', error);
+                            }      
                             break;
                     }
                 });
