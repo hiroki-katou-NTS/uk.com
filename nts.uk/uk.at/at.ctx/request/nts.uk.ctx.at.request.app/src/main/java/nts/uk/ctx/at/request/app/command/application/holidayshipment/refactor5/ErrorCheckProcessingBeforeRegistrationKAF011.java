@@ -204,7 +204,7 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
                 application.getOpAppStartDate().map(ApplicationDate::getApplicationDate),
                 application.getOpAppEndDate().map(ApplicationDate::getApplicationDate), 
                 new ArrayList<GeneralDate>(), 
-                null);
+                Optional.empty(), Optional.empty());
         result.add(appRemainCreateInfor);
         
 	    return result;
