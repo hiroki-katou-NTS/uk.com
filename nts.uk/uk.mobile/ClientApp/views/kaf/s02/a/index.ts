@@ -1794,7 +1794,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
             baseDate: new Date(),
             systemType: 2, //employement
             referenceRangeNarrow: false,
-            selectedItem: item.workplaceId,
+            selectedItem: [item.workplaceId],
             isSelectionRequired: false
         };
         self.$modal(Cdl008AComponent, data, { title: 'CDLS08_1' }).then((data: any) => {
