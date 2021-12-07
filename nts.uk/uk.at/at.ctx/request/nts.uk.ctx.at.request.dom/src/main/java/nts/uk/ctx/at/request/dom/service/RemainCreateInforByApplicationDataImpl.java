@@ -44,7 +44,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionUsageInfor;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeUseInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -246,7 +246,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			case ANNUAL_HOLIDAY_APPLICATION:
 				//時間休暇申請
 				this.timeLeaveRepo.findById(cid, appData.getAppID()).ifPresent(x -> {
-					List<VacationTimeInforNew> vacationTimes = x.getLeaveApplicationDetails().stream()
+					List<VacationTimeUseInfor> vacationTimes = x.getLeaveApplicationDetails().stream()
 							.map(time -> mapFromTimeLeave(time)).collect(Collectors.toList());
 					outData.setVacationTimes(vacationTimes);
 				});
@@ -281,11 +281,11 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				time.getNursingTime()     == null ? null : time.getNursingTime().v()));
 	}
 
-	private VacationTimeInforNew mapFromTimeLeave(TimeLeaveApplicationDetail time){
+	private VacationTimeUseInfor mapFromTimeLeave(TimeLeaveApplicationDetail time){
 
 		TimeDigestApplication timed = time.getTimeDigestApplication();
 
-		return VacationTimeInforNew.builder()
+		return VacationTimeUseInfor.builder()
 				.timeType(time.getAppTimeType())
 				.nenkyuTime(timed.getTimeAnnualLeave())
 				.kyukaTime(timed.getTimeOff())

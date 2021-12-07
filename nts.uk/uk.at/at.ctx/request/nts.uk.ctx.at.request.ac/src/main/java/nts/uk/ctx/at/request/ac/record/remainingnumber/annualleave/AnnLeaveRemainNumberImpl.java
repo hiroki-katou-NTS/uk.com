@@ -95,8 +95,6 @@ public class AnnLeaveRemainNumberImpl implements AnnLeaveRemainNumberAdapter {
 											number.getTimeAnnualLeaveWithMinusGrantPost(),
 											number.getAnnualLeaveGrantDay(),
 											number.getAnnualLeaveGrantTime(),
-											number.getNumberOfRemainGrant(),
-											number.getTimeAnnualLeaveWithMinusGrant(),
 											number.getAttendanceRate(),
 											number.getWorkingDays());
 	}
