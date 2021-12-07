@@ -192,7 +192,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
     public workHourLstNumber = 1;
     public tempWorkHourLstNumber = 1;
-    public supportLstNumber = 2;
+    public supportLstNumber = 1;
 
     public useCheering: boolean = false;
 
@@ -344,11 +344,11 @@ export class KafS02AComponent extends KafS00ShrComponent {
             });
         }
 
-        // If workplace and location selector is not display, display all workHours, tempWorkHours and 3 support
+        // If workplace and location selector is not display, display all workHours, tempWorkHours and 2 support
         if (!self.condition14 && !self.condition15) {
             self.workHourLstNumber = 2;
             self.tempWorkHourLstNumber = 3;
-            self.supportLstNumber = 3;
+            self.supportLstNumber = 2;
         }
     }
 
