@@ -308,9 +308,8 @@ public class ScheduleCreatorExecutionService {
 		transactionService.execute(() -> postExecute(command, scheduleExecutionLog, asyncTask, exeId, companySetting));
 	}
 
-	@SuppressWarnings("rawtypes")
 	private void createScheOnePerson(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
-			Optional<AsyncCommandHandlerContext> asyncTask, String companyId, String exeId, DatePeriod period,
+			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask, String companyId, String exeId, DatePeriod period,
 			CreateScheduleMasterCache masterCache, Object companySetting, AtomicBoolean checkStop, CacheCarrier carrier,
 			ScheduleCreator scheduleCreator) {
 		if (scheduleCreator == null)
@@ -384,9 +383,8 @@ public class ScheduleCreatorExecutionService {
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
 	private void postExecute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
-			Optional<AsyncCommandHandlerContext> asyncTask, String exeId, Object companySetting) {
+			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask, String exeId, Object companySetting) {
 		scTimeAdapter.clearCompanySettingShareContainer(companySetting);
 
 		if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
