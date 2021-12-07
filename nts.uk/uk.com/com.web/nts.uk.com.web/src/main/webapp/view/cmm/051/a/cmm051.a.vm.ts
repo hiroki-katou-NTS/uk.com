@@ -378,6 +378,7 @@ module nts.uk.com.view.cmm051.a {
                     if (!isNullOrEmpty(info)) {
                         vm.workplaceName(info.name);
                         vm.workplaceCode(info.code);
+                        vm.isDelete(true);
                     } else {
                         vm.workplaceName(null);
                         vm.workplaceCode(null);
