@@ -15,6 +15,8 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AssignmentMethod;
@@ -91,7 +93,7 @@ private static final long serialVersionUID = 1L;
 	 * 勤務種類を半休に変更する 0:False 1:True
 	 */
 	@Column(name ="CHANGE_HALF_DAY")
-	public Integer changeHalfDay;
+	public boolean changeHalfDay;
 	
 	/**
 	 * 外出区分 0:私用 1:公用 2:有償 3:組合
@@ -165,7 +167,7 @@ private static final long serialVersionUID = 1L;
 		this.changeClockArt = changeClockArt;
 		this.changeCalArt = changeCalArt;
 		this.setPreClockArt = setPreClockArt;
-		this.changeHalfDay = changeHalfDay;
+		this.changeHalfDay = BooleanUtils.toBoolean(changeHalfDay);
 		this.goOutArt = goOutArt;
 		this.textColor = textColor;
 		this.backGroundColor = backGroundColor;
@@ -176,9 +178,9 @@ private static final long serialVersionUID = 1L;
 	
 	public ButtonSettings toDomain(){
 		StampType stampType = null;
-		if(changeHalfDay != null && setPreClockArt != null && changeClockArt != null && changeCalArt != null) {
+		if(setPreClockArt != null && changeClockArt != null && changeCalArt != null) {
 			stampType = StampType.getStampType(
-					this.changeHalfDay == null ? null : this.changeHalfDay == 0 ? false : true  , 
+					this.changeHalfDay, 
 					this.goOutArt == null ? null : EnumAdaptor.valueOf(this.goOutArt, GoingOutReason.class), 
 					this.setPreClockArt == null ? null :EnumAdaptor.valueOf(this.setPreClockArt, SetPreClockArt.class), 
 					this.changeClockArt == null ? null : EnumAdaptor.valueOf(this.changeClockArt, ChangeClockAtr.class), 
