@@ -1375,7 +1375,7 @@ module nts.custombinding {
                             if (!byItemId) { // remove item by classification id (virtual id)
                                 items = _.filter(items, x => x.layoutID != data.layoutID);
                             } else if (data.listItemDf) { // remove item by item definition id
-                                items = _.filter(items, (x: IItemClassification) => x.listItemDf && x.listItemDf[0].id == data.listItemDf[0].id);
+                                items = _.filter(items, (x: IItemClassification) => x.listItemDf && x.listItemDf[0].id != data.listItemDf[0].id);
                             }
 
                             let maps: Array<number> = _(items).map((x: IItemClassification, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
@@ -1516,9 +1516,11 @@ module nts.custombinding {
                                 if (dups && dups.length) {
                                     // 情報メッセージ（#Msg_204#,既に配置されている項目名,選択したグループ名）を表示する
                                     // Show Msg_204 if itemdefinition is exist
+                                    let groupNames = _.uniqBy(defs, (x: IItemDefinition) => x.fieldGroupName).map((x: IItemDefinition) => x.fieldGroupName);
+                                    let itemNames = dups.map((x: IItemDefinition) => x.itemName);
                                     info({
                                         messageId: 'Msg_204',
-                                        messageParams: dups.map((x: IItemDefinition) => x.itemName)
+                                        messageParams: [itemNames.join("、"), groupNames.join("、")]
                                     })
                                         .then(() => {
                                             opts.sortable.removeItems(dups.map((x: IItemDefinition) => {
@@ -3179,6 +3181,8 @@ module nts.custombinding {
         systemRequired?: number;
         requireChangable?: number;
         itemTypeState: IItemTypeState;
+        personInfoItemGroupId?: string;
+        fieldGroupName?: string;
     }
 
     interface IItemTypeState extends ISetItem, ISingleItem {
