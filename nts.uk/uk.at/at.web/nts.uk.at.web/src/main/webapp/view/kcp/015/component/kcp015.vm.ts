@@ -4,6 +4,7 @@ import setShared = nts.uk.ui.windows.setShared;
 module nts.uk.ui.at.kcp015.shared {
 
     export interface Parameters {
+		enable: KnockoutObservable<boolean>;
         hasParams : KnockoutObservable<boolean>;
         visibleA31: KnockoutObservable<boolean>;
         visibleA32: KnockoutObservable<boolean>;
@@ -25,6 +26,7 @@ module nts.uk.ui.at.kcp015.shared {
             const name = COMPONENT_NAME;
 
             const selected = valueAccessor();
+			const enable = allBindingsAccessor.get('enable');
             const visibleA31 = allBindingsAccessor.get('visibleA31');
             const visibleA32 = allBindingsAccessor.get('visibleA32');
             const visibleA33 = allBindingsAccessor.get('visibleA33');
@@ -34,7 +36,7 @@ module nts.uk.ui.at.kcp015.shared {
             const sids = allBindingsAccessor.get('sids');
             const baseDate = allBindingsAccessor.get('baseDate');
 
-            const params = { visibleA31, visibleA32, visibleA33, visibleA34, visibleA35, visibleA36, sids, baseDate };
+            const params = { enable, visibleA31, visibleA32, visibleA33, visibleA34, visibleA35, visibleA36, sids, baseDate };
             const component = { name, params };
 
             ko.applyBindingsToNode(element, { component }, bindingContext);
@@ -46,7 +48,7 @@ module nts.uk.ui.at.kcp015.shared {
     @component({
         name: COMPONENT_NAME,
         template: `<!-- ko let: {text: nts.uk.resource.getText } -->
-             <button tabindex="12" id="showPopup" data-bind="text: text('KCP015_1'), visible: visibleA1 "></button>
+             <button tabindex="12" id="showPopup" data-bind="text: text('KCP015_1'), visible: visibleA1, enable: enable"></button>
              <div id="A1" class="popup-area popup-panel btn10">
                 <div id="button-top">
                     <button tabindex="1" class="small compensation" data-bind="text: text('Com_CompensationHoliday'), click: openKDL005, visible: visibleA31Com "></button>
@@ -71,6 +73,9 @@ module nts.uk.ui.at.kcp015.shared {
         visibleA35Com: KnockoutObservable<boolean> = ko.observable(true);
         visibleA36Com: KnockoutObservable<boolean> = ko.observable(true);
 
+		// biến này phục vụ enable trên màn KSU002- Nếu ko có param thì mặc định là true
+		enable:KnockoutObservable<boolean>;
+
         // Nếu đã khai báo model data ở đây thì các model từ dòng 65 đến dòng 71 để làm gì???
         constructor(private data: Parameters) {
             super();
@@ -92,7 +97,12 @@ module nts.uk.ui.at.kcp015.shared {
             });
             
             // Không thấy sử dụng gì với các biến này???
-            const { visibleA31, visibleA32, visibleA33, visibleA34, visibleA35, visibleA36, sids, baseDate } = vm.data;
+            const {enable, visibleA31, visibleA32, visibleA33, visibleA34, visibleA35, visibleA36, sids, baseDate } = vm.data;
+			if(enable != undefined){
+				vm.enable = enable;
+			}else{
+				vm.enable = ko.observable(true);
+			}
             
             vm.getSetting();
         }

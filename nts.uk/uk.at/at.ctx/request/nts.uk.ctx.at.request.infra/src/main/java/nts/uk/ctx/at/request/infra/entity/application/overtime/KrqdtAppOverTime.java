@@ -53,7 +53,7 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 	public KrqdtAppOvertimePK krqdtAppOvertimePK;
 	
 	@Column(name = "OVERTIME_ATR")
-	public boolean overtimeAtr;
+	public int overtimeAtr;
 	
 	@Column(name = "WORK_TYPE_CD")
 	public String workTypeCode;
@@ -182,7 +182,7 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 		if (getKey() == null) return null;
 		AppOverTime appOverTime = new AppOverTime();
 		
-		appOverTime.setOverTimeClf(EnumAdaptor.valueOf(BooleanUtils.toInteger(overtimeAtr), OvertimeAppAtr.class));
+		appOverTime.setOverTimeClf(EnumAdaptor.valueOf(overtimeAtr, OvertimeAppAtr.class));
 		if (StringUtils.isNotBlank(workTypeCode) || StringUtils.isNotBlank(workTimeCode)) {
 			WorkInformation workInformation = new WorkInformation("", "");
 			appOverTime.setWorkInfoOp(Optional.of(workInformation));
