@@ -15,8 +15,6 @@ import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 import nts.uk.ctx.sys.shared.dom.user.DisabledSegment;
 import nts.uk.ctx.sys.shared.dom.user.LoginID;
 import nts.uk.ctx.sys.shared.dom.user.User;
-import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
-import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 public class RoleIndividualGrantHelper {
 	@Injectable
@@ -66,7 +64,6 @@ public class RoleIndividualGrantHelper {
 		
 		return new User( "userID"
 				,	defaultUser
-				,	new HashPassword("hashPassword")
 				,	new LoginID("loginID")
 				,	new ContractCode( "contractCode" )
 				,	GeneralDate.ymd(9999, 12, 21)
@@ -74,8 +71,7 @@ public class RoleIndividualGrantHelper {
 				,	DisabledSegment.True
 				,	Optional.empty()
 				,	Optional.empty()
-				,	Optional.empty()
-				,	PassStatus.InitPassword );
+				,	Optional.empty());
 	}
 	
 	/**
@@ -88,7 +84,6 @@ public class RoleIndividualGrantHelper {
 		
 		return new User( userId
 				,	false
-				,	new HashPassword("hashPassword")
 				,	new LoginID("loginID")
 				,	new ContractCode( "contractCode" )
 				,	expirationDate
@@ -96,8 +91,7 @@ public class RoleIndividualGrantHelper {
 				,	DisabledSegment.True
 				,	Optional.empty()
 				,	Optional.empty()
-				,	Optional.empty()
-				,	PassStatus.InitPassword );
+				,	Optional.empty());
 	}
 	
 	/**
