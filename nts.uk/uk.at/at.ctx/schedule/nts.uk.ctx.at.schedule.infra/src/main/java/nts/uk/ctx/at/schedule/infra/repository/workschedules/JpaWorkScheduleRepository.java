@@ -980,7 +980,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
-				Integer confirmedATR = rs.getInt("DECISION_STATUS");
+				boolean confirmedATR = rs.getBoolean("DECISION_STATUS");
 				String empCd = rs.getString("EMP_CD");
 				String jobId = rs.getString("JOB_ID");
 				String wkpId = rs.getString("WKP_ID");
@@ -989,14 +989,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				String nurseLicense = rs.getString("NURSE_LICENSE");
 				String wktpCd = rs.getString("WKTP_CD");
 				String wktmCd = rs.getString("WKTM_CD");
-				Integer goStraightAtr = rs.getInt("GO_STRAIGHT_ATR");
-				Integer backStraightAtr = rs.getInt("BACK_STRAIGHT_ATR");
+				boolean goStraightAtr = rs.getBoolean("GO_STRAIGHT_ATR");
+				boolean backStraightAtr = rs.getBoolean("BACK_STRAIGHT_ATR");
 				Integer treatAsSubstituteAtr = rs.getInt("TREAT_AS_SUBSTITUTE_ATR");
 				Double treatAsSubstituteDays = rs.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
 
-				return new KscdtSchBasicInfo(new KscdtSchBasicInfoPK(sid, ymd), cid, confirmedATR == 1 ? true : false,
+				return new KscdtSchBasicInfo(new KscdtSchBasicInfoPK(sid, ymd), cid, confirmedATR,
 						empCd, jobId, wkpId, clsCd, busTypeCd, nurseLicense, wktpCd, wktmCd,
-						goStraightAtr == 1 ? true : false, backStraightAtr == 1 ? true : false, treatAsSubstituteAtr,
+						goStraightAtr, backStraightAtr, treatAsSubstituteAtr,
 						treatAsSubstituteDays, null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
 						new ArrayList<>(), new ArrayList<>());
 			});
