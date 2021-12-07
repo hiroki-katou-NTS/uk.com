@@ -85,8 +85,8 @@ public class AttendanceByTimezoneDeletionTest {
 				require.getAttendanceItemIds(SupportFrameNo.of(1));
 				result = itemIds1;
 				
-				require.getAttendanceItemIds(SupportFrameNo.of(2));
-				result = itemIds2;
+				//require.getAttendanceItemIds(SupportFrameNo.of(2));
+				//result = itemIds2;
 			}
 		};
 
