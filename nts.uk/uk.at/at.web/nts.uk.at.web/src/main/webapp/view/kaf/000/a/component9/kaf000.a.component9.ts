@@ -26,7 +26,11 @@ module nts.uk.at.view.kaf000.a.component9.viewmodel {
         }
 
 		backtoPre() {
-			window.history.back();	
+            if (document.referrer) {
+                window.location = document.referrer;
+            } else {
+                window.history.back();
+            }
 		}
     }
 }
