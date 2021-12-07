@@ -985,7 +985,7 @@ public class ProgramsManager {
     /**
      * KSU001R
      */
-    public static final Program KSU001R = new Program(WebAppId.AT, ProgramIdConsts.KSU001R, "",
+    public static final Program KSU001R = new Program(WebAppId.AT, ProgramIdConsts.KSU001R, "KSU001_3800",
             "/view/ksu/001/r/index.xhtml");
     /**
      * KSU001O1
@@ -1018,6 +1018,18 @@ public class ProgramsManager {
      */
     public static final Program KSU003A = new Program(WebAppId.AT, ProgramIdConsts.KSU003A, "KSU003_1",
             "/view/ksu/003/a/index.xhtml");
+    
+    /**
+     * KSU003B
+     */
+    public static final Program KSU003B = new Program(WebAppId.AT, ProgramIdConsts.KSU003B, "KSU003_71",
+            "/view/ksu/003/b/index.xhtml");
+    
+    /**
+     * KSU003C
+     */
+    public static final Program KSU003C = new Program(WebAppId.AT, ProgramIdConsts.KSU003C, "KSU003_85",
+            "/view/ksu/003/c/index.xhtml");
     
     /**
      * KSU005A
@@ -1072,6 +1084,25 @@ public class ProgramsManager {
      */
     public static final Program KML002G = new Program(WebAppId.AT, ProgramIdConsts.KML002G, "KML002_7",
             "/view/kml/002/g/index.xhtml");
+    
+    /**
+     * KML002H
+     */
+    public static final Program KML002H = new Program(WebAppId.AT, ProgramIdConsts.KML002H, "KML002_165",
+            "/view/kml/002/h/index.xhtml");
+    
+    /**
+     * KML002K
+     */
+    public static final Program KML002K = new Program(WebAppId.AT, ProgramIdConsts.KML002K, "KML002_165",
+            "/view/kml/002/k/index.xhtml");
+    
+    /**
+     * KML002L
+     */
+    public static final Program KML002L = new Program(WebAppId.AT, ProgramIdConsts.KML002L, "KML002_166",
+            "/view/kml/002/l/index.xhtml");
+    
     /**
      * KML004A
      */
@@ -1144,12 +1175,6 @@ public class ProgramsManager {
 
     public static final Program KDL023B = new Program(WebAppId.AT, ProgramIdConsts.KDL023B, "KDL023_2",
             "/view/kdl/023/b/index.xhtml");
-
-    /**
-     * The Constant KSM001.
-     */
-    public static final Program KSM001A = new Program(WebAppId.AT, ProgramIdConsts.KSM001A, "KSM001_62",
-            "/view/ksm/001/a/index.xhtml");
 
     /**
      * The Constant KMK009.
@@ -2551,6 +2576,10 @@ public class ProgramsManager {
             "/view/cmf/001/b/index.xhtml");
     public static final Program CMF001C = new Program(WebAppId.COM, ProgramIdConsts.CMF001C, "",
             "/view/cmf/001/c/index.xhtml");
+    public static final Program CMF001E = new Program(WebAppId.COM, ProgramIdConsts.CMF001E, "",
+            "/view/cmf/001/e/index.xhtml");
+    public static final Program CMF001F = new Program(WebAppId.COM, ProgramIdConsts.CMF001F, "",
+            "/view/cmf/001/f/index.xhtml");
     public static final Program CMF001X = new Program(WebAppId.COM, ProgramIdConsts.CMF001X, "",
             "/view/cmf/001/x/index.xhtml");
 
@@ -3871,6 +3900,30 @@ public class ProgramsManager {
 										    		, "KWR008_100"
 										    		, "/view/kwr/008/c/index.xhtml");
 
+    public static final Program OEM001A = new Program(WebAppId.COM, ProgramIdConsts.OEM001A, "OEM001_1",
+            "/view/oem/001/a/index.xhtml");
+    
+    public static final Program OEM002A = new Program(WebAppId.COM, ProgramIdConsts.OEM002A, "OEM002_1",
+            "/view/oem/002/a/index.xhtml");
+    
+    public static final Program OEM002B = new Program(WebAppId.COM, ProgramIdConsts.OEM002B, "OEM002_2",
+            "/view/oem/002/b/index.xhtml");
+    
+    public static final Program OEM004A = new Program(WebAppId.COM, ProgramIdConsts.OEM004A, "OEM004_1",
+            "/view/oem/004/a/index.xhtml");
+    
+    public static final Program OEW001A = new Program(WebAppId.COM, ProgramIdConsts.OEW001A, "OEW001_1",
+            "/view/oew/001/a/index.xhtml");
+    public static final Program OEW001B = new Program(WebAppId.COM, ProgramIdConsts.OEW001B, "OEW001_2",
+            "/view/oew/001/b/index.xhtml");
+    public static final Program OEW001C = new Program(WebAppId.COM, ProgramIdConsts.OEW001C, "OEW001_3",
+            "/view/oew/001/c/index.xhtml");
+    public static final Program OEW001D = new Program(WebAppId.COM, ProgramIdConsts.OEW001D, "OEW001_4",
+            "/view/oew/001/d/index.xhtml");
+    
+    public static final Program OEM003A = new Program(WebAppId.COM, ProgramIdConsts.OEM003A, "OEM003_1",
+            "/view/oem/003/a/index.xhtml");
+    
     /**
      * All programs map.
      */
