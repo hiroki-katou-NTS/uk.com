@@ -294,7 +294,8 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
                 .getEmpEmailAddress(companyID, employeeId, functionID);
         if (mailDestinationAlarmImport != null) {
             // Get all mail address
-            List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails().stream().filter(c -> c.getEmailAddress() != null).collect(Collectors.toList());
+            List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails().stream().filter(c -> c.getEmailAddress() != null)
+            		.filter(c -> !c.getEmailAddress().equals("")).collect(Collectors.toList());
             if (CollectionUtil.isEmpty(emails)) {
                 return false;
             } else {
