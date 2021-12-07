@@ -24,18 +24,18 @@ export class KDLS1OAComponent extends Vue {
   public searchText: string = '';
 
   public created() {
-    let self = this;
+    let self = this, $workLocation = [];
+
     self.$http.post('at', servicePath.getAllWorkLocation).then((result: any) => {
         if (_.isEmpty(result.data)) {
-          //create data 選択なし and concatenate into array
-          let self = this, $workLocation = [];
+          //create data 選択なし with empty work place list
 
           $workLocation.push({
             workLocationCD: '',
             workLocationName: '選択なし',
             contractCode: '-1',
           });
-
+          
           self.allData = $workLocation;
           self.data = _.sortBy(self.allData, ['workLocationCD']);
 
@@ -46,7 +46,7 @@ export class KDLS1OAComponent extends Vue {
           }
         } else {
           //create data 選択なし and concatenate into array
-          let self = this, $workLocation = [];
+
 
           $workLocation.push({
             workLocationCD: '',
