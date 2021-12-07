@@ -33,7 +33,7 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 				.map(item -> {
 					DailyAttendanceItem dto = new DailyAttendanceItem();
 					dto.setAttendanceItemId(item.getAttendanceItemId());
-					dto.setAttendanceItemName(item.getAttendanceItemName());
+					dto.setAttendanceItemName(item.getOldName());
 					dto.setAttendanceItemDisplayNumber(item.getAttendanceItemDisplayNumber());
 					dto.setTypeOfAttendanceItem(item.getTypeOfAttendanceItem());
 					dto.setFrameCategory(item.getFrameCategory());

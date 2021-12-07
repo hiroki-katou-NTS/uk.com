@@ -25,7 +25,7 @@ public class DailyAttendanceItemRecFinder implements DailyAttendanceItemNameAdap
 		return this.dailyAttendanceItemPub.getDailyAttendanceItemName(dailyAttendanceItemIds).stream().map(f -> {
 			return new DailyAttendanceItemNameAdapterDto(
 					f.getAttendanceItemId(), 
-					f.getAttendanceItemName(),
+					f.getAttendanceItemName()==null? "":f.getAttendanceItemName(),
 					f.getAttendanceItemDisplayNumber(), 
 					f.getTypeOfAttendanceItem(), 
 					f.getFrameCategory(),

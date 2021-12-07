@@ -484,13 +484,11 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 					.stream().map(item -> {
 						AttItemName dto = new AttItemName();
 						dto.setAttendanceItemId(item.getAttendanceItemId());
-						dto.setAttendanceItemName(this.formatName(item.getAttendanceName()));
+						dto.setOldName(this.formatName(item.getAttendanceName()));
 						dto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
 						dto.setUserCanUpdateAtr(item.getUserCanUpdateAtr());
 						dto.setNameLineFeedPosition(item.getNameLineFeedPosition());
-						if (item.getDisplayName().length() != 0) {
-							dto.setAttendanceItemName(item.getDisplayName());
-						}
+						dto.setAttendanceItemName(item.getDisplayName());
 						return dto;
 					}).collect(Collectors.toList());
 			break;
@@ -499,13 +497,11 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 					.findByAttendanceItemId(companyId, attendanceItemIds).stream().map(item -> {
 						AttItemName dto = new AttItemName();
 						dto.setAttendanceItemId(item.getAttendanceItemId());
-						dto.setAttendanceItemName(this.formatName(item.getAttendanceName().v()));
+						dto.setOldName(this.formatName(item.getAttendanceName().v()));
 						dto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
 						dto.setUserCanUpdateAtr(item.getUserCanUpdateAtr().value);
 						dto.setNameLineFeedPosition(item.getNameLineFeedPosition());
-						if (item.getDisplayName().isPresent()) {
-							dto.setAttendanceItemName(item.getDisplayName().get().v());
-						}
+						dto.setAttendanceItemName(item.getDisplayName().get().v());
 						return dto;
 					}).collect(Collectors.toList());
 			break;

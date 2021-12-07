@@ -64,6 +64,8 @@ public class DPHeaderDto {
 	private Boolean grant;
 	
 	private String columnCssClass;
+	
+	private Integer displayNumber;
 
 	private DPHeaderDto(String headerText, String attendanceName, String key, String dataType, String width, String color, boolean hidden,
 			String ntsControl, Boolean changedByOther, Boolean changedByYou, String headerCss, String inputProcess, String columnCssClass) {
@@ -240,6 +242,7 @@ public class DPHeaderDto {
 	}
 
 	public void setHeaderText(DPAttendanceItem param) {
+		this.displayNumber = param.getDisplayNumber();
 		if (param.getLineBreakPosition() != null && param.getLineBreakPosition() > 0 && param.getName() != null) {
 			String displayText = Strings.isNotBlank(param.getDisplayName()) ? param.getDisplayName() : param.getName();
 			if(displayText.length() > param.getLineBreakPosition()) {
