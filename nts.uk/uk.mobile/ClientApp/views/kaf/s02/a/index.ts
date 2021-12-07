@@ -16,6 +16,8 @@ import {
 import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
 import { xor } from 'lodash';
 import { CmmS45CComponent } from '../../../cmm/s45/c/index';
+import { Cdl008AComponent } from 'views/cdl/s08/a';
+import { KDLS1OAComponent } from 'views/kdl/s10/a';
 
 @component({
     name: 'kafs02a',
@@ -62,6 +64,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
     public useTemporary: boolean = false;
 
     public multipleWork: boolean = false;
+
+    public appStampSetting: any = null;
 
     public appDispInfoStartupOutput: any = {};
 
@@ -182,6 +186,19 @@ export class KafS02AComponent extends KafS00ShrComponent {
     public longTermLst = [this.longTermTime1, this.longTermTime2];
     public checkboxLH = [];
 
+    // support time
+    public supportLst = [];
+    public checkboxSP = [];
+
+    public workHourLstNumber = 1;
+    public tempWorkHourLstNumber = 1;
+    public supportLstNumber = 1;
+
+    public useCheering: boolean = false;
+
+    public workLocationNames: any[] = [];
+    public workplaceNames: any[] = [];
+
     public created() {
         const self = this;
         if (self.params) {
@@ -192,11 +209,12 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
     public mounted() {
         const self = this;
-
         if (self.mode) {
             self.fetchStart();
         } else {
             self.application = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application;
+            self.workplaceNames = self.data.workplaceNames || [];
+            self.workLocationNames = self.data.workLocationNames || [];
             self.fetchDataEdit();
         }
     }
@@ -239,6 +257,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
         const self = this;
 
         self.appStampReflectOptional = data.appStampReflectOptional;
+        self.appStampSetting = data.appStampSetting;
+        self.useCheering = data.useCheering;
 
         self.createParamA(data);
         self.createParamB(data);
@@ -257,12 +277,48 @@ export class KafS02AComponent extends KafS00ShrComponent {
         self.appStampOutputDto = data;
         self.appDispInfoStartupOutput = data.appDispInfoStartupOutput;
 
-        self.workHourLst.map((x) => x.dispCheckbox = this.useCancelFunction);
-        self.tempWorkHourLst.map((x) => x.dispCheckbox = this.useCancelFunction);
+        self.workHourLst.map((x) => {
+            x.dispCheckbox = this.useCancelFunction;
+            if (self.mode) {
+                x.workplaceName = self.$i18n('KAFS02_40');
+                x.workLocationName = self.$i18n('KAFS02_41');
+            } else {
+                x.workplaceName = self.$i18n('KAFS02_35');
+                x.workLocationName = self.$i18n('KAFS02_35');
+            }
+        });
+        self.tempWorkHourLst.map((x) => {
+            x.dispCheckbox = this.useCancelFunction;
+            if (self.mode) {
+                x.workplaceName = self.$i18n('KAFS02_40');
+                x.workLocationName = self.$i18n('KAFS02_41');
+            } else {
+                x.workplaceName = self.$i18n('KAFS02_35');
+                x.workLocationName = self.$i18n('KAFS02_35');
+            }
+        });
         self.breakLst.map((x) => x.dispCheckbox = this.useCancelFunction);
         self.goOutLst.map((x) => x.dispCheckbox = this.useCancelFunction);
         self.longTermLst.map((x) => x.dispCheckbox = this.useCancelFunction);
         self.childCareLst.map((x) => x.dispCheckbox = this.useCancelFunction);
+
+        const { useCheering, maxOfCheer } = data;
+        if (useCheering && maxOfCheer && maxOfCheer > 0) {
+            for (let i = 1; i <= maxOfCheer; i++) {
+                const supportTimeItem = new WorkHour({ startTime: null, endTime: null, frame: i, title: 'KAFS02_32', dispCheckbox: self.useCancelFunction, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+                if (self.mode) {
+                    supportTimeItem.workplaceName = self.$i18n('KAFS02_40');
+                    supportTimeItem.workLocationName = self.$i18n('KAFS02_41');
+                } else {
+                    supportTimeItem.workplaceName = self.$i18n('KAFS02_35');
+                    supportTimeItem.workLocationName = self.$i18n('KAFS02_35');
+                }
+                self.supportLst.push(supportTimeItem);
+
+                const error = new Error({ start: false, end: false, type: 'supportHour', frame: i });
+                self.errorList.push(error);
+            }
+        }
 
         let goOutTypeDispControl: any[] = data.appStampSetting.goOutTypeDispControl;
 
@@ -286,6 +342,13 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
                 return item;
             });
+        }
+
+        // If workplace and location selector is not display, display all workHours, tempWorkHours and 2 support
+        if (!self.condition14 && !self.condition15) {
+            self.workHourLstNumber = 2;
+            self.tempWorkHourLstNumber = 3;
+            self.supportLstNumber = 2;
         }
     }
 
@@ -315,6 +378,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
             if (!self.mode && !self.condition9) {
                 self.longTermLst = [];
             }
+            if (!self.mode && !self.condition13) {
+                self.supportLst = [];
+            }
             self.mappingApplication();
             let opActualContentDisplayLst = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
             if (!_.isEmpty(opActualContentDisplayLst)) {
@@ -331,6 +397,29 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
         let appStamp = self.data.appStampOptional;
 
+        const setWorkplaceAndLocation = (item, workplaceId, workLocationCd) => {
+            const workplace = self.workplaceNames.find((wkp) => wkp && wkp.workplaceId === workplaceId);
+            const workLocation = self.workLocationNames.find((location) => location && location.workLocationCode === workLocationCd);
+
+            if (workplace) {
+                item.workplaceCD = workplace.wkpCode;
+                item.workplaceName = workplace.wkpName;
+                item.workplaceId = workplace.workplaceId;
+            } else {
+                item.workplaceCD = null;
+                item.workplaceName = self.$i18n('KAFS02_35');
+                item.workplaceId = null;
+            }
+
+            if (workLocation) {
+                item.workLocationCD = workLocation.workLocationCode;
+                item.workLocationName = workLocation.workLocationName;
+            } else {
+                item.workLocationCD = null;
+                item.workLocationName = self.$i18n('KAFS02_35');
+            }
+        };
+
         appStamp.listTimeStampApp.forEach((item: TimeStampAppDto) => {
             // workHours
             if (item.destinationTimeApp.timeStampAppEnum === 0) {
@@ -342,6 +431,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             } else {
                                 x.workHours.end = item.timeOfDay;
                             }
+                            setWorkplaceAndLocation(x, item.wkpId, item.workLocationCd);
                         }
 
                         return x;
@@ -353,7 +443,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     } else {
                         workHour = new WorkHour({ startTime: null, endTime: item.timeOfDay, frame: item.destinationTimeApp.engraveFrameNo, title: item.destinationTimeApp.engraveFrameNo === 1 ? 'KAFS02_4' : 'KAFS02_6', disableCheckbox: false, dispCheckbox: true, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
                     }
-
+                    setWorkplaceAndLocation(workHour, item.wkpId, item.workLocationCd);
                     self.workHourLst.push(workHour);
                 }
             }
@@ -368,6 +458,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             } else {
                                 x.workHours.end = item.timeOfDay;
                             }
+                            setWorkplaceAndLocation(x, item.wkpId, item.workLocationCd);
                         }
 
                         return x;
@@ -379,7 +470,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     } else {
                         tempoHour = new WorkHour({ startTime: null, endTime: item.timeOfDay, frame: item.destinationTimeApp.engraveFrameNo, title: 'KAFS02_7', disableCheckbox: false, dispCheckbox: true, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
                     }
-
+                    setWorkplaceAndLocation(tempoHour, item.wkpId, item.workLocationCd);
                     self.tempWorkHourLst.push(tempoHour);
                 }
             }
@@ -409,6 +500,33 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     }
 
                     self.goOutLst.push(outingHour);
+                }
+            }
+
+            // supportHour
+            if (item.destinationTimeApp.timeStampAppEnum === 3) {
+                if (_.filter(self.supportLst, { frame: item.destinationTimeApp.engraveFrameNo }).length > 0) {
+                    self.supportLst = _.map(self.supportLst, (x) => {
+                        if (x.frame === item.destinationTimeApp.engraveFrameNo) {
+                            if (item.destinationTimeApp.startEndClassification === 0) {
+                                x.workHours.start = item.timeOfDay;
+                            } else {
+                                x.workHours.end = item.timeOfDay;
+                            }
+                            setWorkplaceAndLocation(x, item.wkpId, item.workLocationCd);
+                        }
+
+                        return x;
+                    });
+                } else {
+                    let supportHour: WorkHour;
+                    if (item.destinationTimeApp.startEndClassification === 0) {
+                        supportHour = new WorkHour({ startTime: item.timeOfDay, endTime: null, frame: item.destinationTimeApp.engraveFrameNo, title: 'KAFS02_32', disableCheckbox: false, dispCheckbox: true, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+                    } else {
+                        supportHour = new WorkHour({ startTime: null, endTime: item.timeOfDay, frame: item.destinationTimeApp.engraveFrameNo, title: 'KAFS02_32', disableCheckbox: false, dispCheckbox: true, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+                    }
+                    setWorkplaceAndLocation(supportHour, item.wkpId, item.workLocationCd);
+                    self.supportLst.push(supportHour);
                 }
             }
         });
@@ -590,6 +708,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
         self.breakLst = _.sortBy(self.breakLst, ['frame']);
         self.childCareLst = _.sortBy(self.childCareLst, ['frame']);
         self.longTermLst = _.sortBy(self.longTermLst, ['frame']);
+        self.supportLst = _.sortBy(self.supportLst, ['frame']);
     }
 
     public fetchErrorLst(errorLst: any[]) {
@@ -698,6 +817,23 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     }
                 }
             }
+
+            // supportHour
+            if (item.timeStampAppEnum === 3) {
+                if (item.startEndClassification === 0) {
+                    for (let x = 0; x < errorList.length; x++) {
+                        if (errorList[x].type === 'supportHour' && errorList[x].frame === item.stampFrameNo) {
+                            errorList[x].start = true;
+                        }
+                    }
+                } else {
+                    for (let x = 0; x < errorList.length; x++) {
+                        if (errorList[x].type === 'supportHour' && errorList[x].frame === item.stampFrameNo) {
+                            errorList[x].end = true;
+                        }
+                    }
+                }
+            }
         });
 
         self.errorList.forEach((item) => {
@@ -783,6 +919,20 @@ export class KafS02AComponent extends KafS00ShrComponent {
                         }
                         if (item.start && !item.end) {
                             this.longTermLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_27');
+                        }
+                    }
+                }
+            }
+
+            if (item.type === 'supportHour') {
+                for (let x = 0; x < this.longTermLst.length; x++) {
+                    if (item.frame === this.longTermLst[x].frame) {
+                        this.longTermLst[x].errorMsg = null;
+                        if (!item.start && item.end) {
+                            this.longTermLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_37');
+                        }
+                        if (item.start && !item.end) {
+                            this.longTermLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_36');
                         }
                     }
                 }
@@ -958,6 +1108,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
             let actualBreakTime: any[] = stampRecord.breakTime;
             let actualNursingTime: any[] = stampRecord.nursingTime;
             let actualParentingTime: any[] = stampRecord.parentingTime;
+            let actualSupportTime: any[] = stampRecord.supportTime;
 
             self.actualWorkingTime = actualWorkingTime;
             self.actualTempoTime = actualTempoTime;
@@ -1039,6 +1190,19 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             this.longTermLst[i].actualHours.applicationAchievementAtr = 1;
                             this.longTermLst[i].actualHours.startTime = item.opStartTime;
                             this.longTermLst[i].actualHours.endTime = item.opEndTime;
+                        }
+                    }
+                });
+            }
+
+            // support time
+            if (!_.isEmpty(actualSupportTime)) {
+                actualSupportTime.forEach((item) => {
+                    for (let i = 0; i < this.supportLst.length; i++) {
+                        if (item.frameNo === this.supportLst[i].frame) {
+                            this.supportLst[i].actualHours.applicationAchievementAtr = 1;
+                            this.supportLst[i].actualHours.startTime = item.opStartTime;
+                            this.supportLst[i].actualHours.endTime = item.opEndTime;
                         }
                     }
                 });
@@ -1276,13 +1440,13 @@ export class KafS02AComponent extends KafS00ShrComponent {
             self.workHourLst.forEach((item) => {
                 if (item.workHours.start) {
                     let destinationApp = new DestinationTimeAppDto(0, item.frame, 0);
-                    let hour = new TimeStampAppDto(destinationApp, item.workHours.start, null);
+                    let hour = new TimeStampAppDto(destinationApp, item.workHours.start, item.workLocationCD, null, item.workplaceId);
 
                     listTimeStampApp.push(hour);
                 }
                 if (item.workHours.end) {
                     let destinationApp = new DestinationTimeAppDto(0, item.frame, 1);
-                    let hour = new TimeStampAppDto(destinationApp, item.workHours.end, null);
+                    let hour = new TimeStampAppDto(destinationApp, item.workHours.end, item.workLocationCD, null, item.workplaceId);
 
                     listTimeStampApp.push(hour);
                 }
@@ -1292,13 +1456,13 @@ export class KafS02AComponent extends KafS00ShrComponent {
             self.tempWorkHourLst.forEach((item) => {
                 if (item.workHours.start) {
                     let destinationApp = new DestinationTimeAppDto(1, item.frame, 0);
-                    let hour = new TimeStampAppDto(destinationApp, item.workHours.start, null);
+                    let hour = new TimeStampAppDto(destinationApp, item.workHours.start, item.workLocationCD, null, item.workplaceId);
 
                     listTimeStampApp.push(hour);
                 }
                 if (item.workHours.end) {
                     let destinationApp = new DestinationTimeAppDto(1, item.frame, 1);
-                    let hour = new TimeStampAppDto(destinationApp, item.workHours.end, null);
+                    let hour = new TimeStampAppDto(destinationApp, item.workHours.end, item.workLocationCD, null, item.workplaceId);
 
                     listTimeStampApp.push(hour);
                 }
@@ -1377,6 +1541,22 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     }
                 }
             });
+
+            // support hour
+            self.supportLst.forEach((item: WorkHour) => {
+                if (item.workHours.start) {
+                    let destinationApp = new DestinationTimeAppDto(3, item.frame, 0);
+                    let hour = new TimeStampAppDto(destinationApp, item.workHours.start, item.workLocationCD, null, item.workplaceId);
+
+                    listTimeStampApp.push(hour);
+                }
+                if (item.workHours.end) {
+                    let destinationApp = new DestinationTimeAppDto(3, item.frame, 1);
+                    let hour = new TimeStampAppDto(destinationApp, item.workHours.end, item.workLocationCD, null, item.workplaceId);
+
+                    listTimeStampApp.push(hour);
+                }
+            });
         } else {
             // work hour
             self.workHourLst.forEach((item) => {
@@ -1394,13 +1574,13 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 } else {
                     if (item.workHours.start) {
                         let destinationApp = new DestinationTimeAppDto(0, item.frame, 0);
-                        let hour = new TimeStampAppDto(destinationApp, item.workHours.start, null);
+                        let hour = new TimeStampAppDto(destinationApp, item.workHours.start, item.workLocationCD, null, item.workplaceId);
 
                         listTimeStampApp.push(hour);
                     }
                     if (item.workHours.end) {
                         let destinationApp = new DestinationTimeAppDto(0, item.frame, 1);
-                        let hour = new TimeStampAppDto(destinationApp, item.workHours.end, null);
+                        let hour = new TimeStampAppDto(destinationApp, item.workHours.end, item.workLocationCD, null, item.workplaceId);
 
                         listTimeStampApp.push(hour);
                     }
@@ -1423,13 +1603,13 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 } else {
                     if (item.workHours.start) {
                         let destinationApp = new DestinationTimeAppDto(1, item.frame, 0);
-                        let hour = new TimeStampAppDto(destinationApp, item.workHours.start, null);
+                        let hour = new TimeStampAppDto(destinationApp, item.workHours.start, item.workLocationCD, null, item.workplaceId);
 
                         listTimeStampApp.push(hour);
                     }
                     if (item.workHours.end) {
                         let destinationApp = new DestinationTimeAppDto(1, item.frame, 1);
-                        let hour = new TimeStampAppDto(destinationApp, item.workHours.end, null);
+                        let hour = new TimeStampAppDto(destinationApp, item.workHours.end, item.workLocationCD, null, item.workplaceId);
 
                         listTimeStampApp.push(hour);
                     }
@@ -1539,6 +1719,35 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     }
                 }
             });
+
+            // support hour
+            self.supportLst.forEach((item) => {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && self.checkboxWH.filter((x) => x === item.frame).length > 0) {
+                    if (item.actualHours.startTime) {
+                        let destinationApp = new DestinationTimeAppDto(3, item.frame, 0);
+
+                        listDestinationTimeApp.push(destinationApp);
+                    }
+                    if (item.actualHours.endTime) {
+                        let destinationApp = new DestinationTimeAppDto(3, item.frame, 1);
+
+                        listDestinationTimeApp.push(destinationApp);
+                    }
+                } else {
+                    if (item.workHours.start) {
+                        let destinationApp = new DestinationTimeAppDto(3, item.frame, 0);
+                        let hour = new TimeStampAppDto(destinationApp, item.workHours.start, item.workLocationCD, null, item.workplaceId);
+
+                        listTimeStampApp.push(hour);
+                    }
+                    if (item.workHours.end) {
+                        let destinationApp = new DestinationTimeAppDto(3, item.frame, 1);
+                        let hour = new TimeStampAppDto(destinationApp, item.workHours.end, item.workLocationCD, null, item.workplaceId);
+
+                        listTimeStampApp.push(hour);
+                    }
+                }
+            });
         }
 
         self.appStampOutputDto.appStampOptional = {
@@ -1560,6 +1769,75 @@ export class KafS02AComponent extends KafS00ShrComponent {
         }
 
         self.application.enteredPerson = self.user.employeeId;
+    }
+
+    public displayMoreItem(type: string) {
+        const self = this;
+        if (type === 'workHourLst' && self.workHourLstNumber < self.workHourLst.length) {
+            self.workHourLstNumber++;
+        }
+
+        if (type === 'tempWorkHourLst' && self.tempWorkHourLstNumber < self.tempWorkHourLst.length) {
+            self.tempWorkHourLstNumber++;
+        }
+
+        if (type === 'supportLst' && self.supportLstNumber < self.supportLst.length) {
+            self.supportLstNumber++;
+        }
+    }
+
+    public openCDLS08(item: WorkHour) {
+        let self = this;
+        let data = {
+            workPlaceType: 0,
+            startMode: false,
+            baseDate: new Date(),
+            systemType: 2, //employement
+            referenceRangeNarrow: false,
+            selectedItem: [item.workplaceId],
+            isSelectionRequired: false
+        };
+        self.$modal(Cdl008AComponent, data, { title: 'CDLS08_1' }).then((data: any) => {
+            if (!data) {
+                return;
+            }
+
+            const { code, name, workplaceId } = data;
+            if (!_.isEmpty(workplaceId)) {
+                item.workplaceId = workplaceId;
+                item.workplaceCD = code;
+                item.workplaceName = name;
+            } else if (self.mode) {
+                item.workplaceId = null;
+                item.workplaceCD = null;
+                item.workplaceName = self.$i18n('KAFS02_40');
+            } else {
+                item.workplaceId = null;
+                item.workplaceCD = null;
+                item.workplaceName = self.$i18n('KAFS02_35');
+            }
+        });
+    }
+
+    public openKDLS10(item: WorkHour) {
+        let self = this;
+        self.$modal(KDLS1OAComponent, { isShowNoSelectRow: true, selectedCode: item.workLocationCD }).then((result: any) => {
+            if (_.isUndefined(result)) {
+                return;
+            }
+
+            const { workLocationCD, workLocationName } = result;
+            if (workLocationCD != '') {
+                item.workLocationCD = workLocationCD; 
+                item.workLocationName = workLocationName;  
+            } else if (self.mode) {
+                item.workLocationCD = null;
+                item.workLocationName = self.$i18n('KAFS02_41');
+            } else {
+                item.workLocationCD = null;
+                item.workLocationName = self.$i18n('KAFS02_35');
+            }
+        });
     }
 
     // ※5
@@ -1659,6 +1937,36 @@ export class KafS02AComponent extends KafS00ShrComponent {
         const self = this;
 
         if (self.appStampReflectOptional && self.appStampReflectOptional.nurseTime === 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // ※13
+    get condition13() {
+        const self = this;
+        if (self.useCheering && self.appStampReflectOptional && self.appStampReflectOptional.startAndEndSupport === 1) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    // ※14
+    get condition14() {
+        const self = this;
+        if (self.appStampSetting && self.appStampSetting.wkpDisAtr === 1) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    // ※15
+    get condition15() {
+        const self = this;
+        if (self.appStampSetting && self.appStampSetting.useLocationSelection === 1) {
             return true;
         }
 

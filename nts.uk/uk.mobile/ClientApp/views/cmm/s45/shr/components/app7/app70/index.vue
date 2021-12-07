@@ -26,6 +26,20 @@
                         <!-- B1_3 -->
                         <div class="col-6 text-left pl-1" style="font-size: 90%" v-if="dataFetch.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr === 1"><kafs00subp3 v-bind:params="itemWH.actualHours" /></div>
                     </div>
+                    <div class="row" v-if="workplaceNames.length > 0">
+                        <!-- workplace selected -->
+                        <div class="col-12 ml-2 mt-2" v-if="itemWH.workplaceCD">
+                            <span class="text-left pr-1">{{ "KAFS02_38" | i18n }}</span>
+                            <span class="text-left pl-1">{{ `${itemWH.workplaceCD} ${itemWH.workplaceName}` }}</span>
+                        </div>
+                    </div>
+                    <div class="row" v-if="workLocationNames.length > 0">
+                        <!-- work location selected -->
+                        <div class="col-12 ml-2 mt-1" v-if="itemWH.workLocationCD">
+                            <span class="text-left pr-1">{{ "KAFS02_39" | i18n }}</span>
+                            <span class="text-left pl-1">{{ `${itemWH.workLocationCD} ${itemWH.workLocationName}` }}</span>
+                        </div>
+                    </div>
                     <div class="mt-0 mb-n2" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null) && itemWH.frame < listWorkHours[listWorkHours.length - 1].frame || dispHRFrame(itemWH)"><hr/></div>
                 </div>
             </div>
@@ -47,6 +61,20 @@
 
                         <!-- B1_3 -->
                         <div class="col-6 text-left pl-1" style="font-size: 90%" v-if="dataFetch.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr === 1"><kafs00subp3 v-bind:params="itemTH.actualHours" /></div>
+                    </div>
+                    <div class="row" v-if="workplaceNames.length > 0">
+                        <!-- workplace selected -->
+                        <div class="col-12 ml-2 mt-2" v-if="itemTH.workplaceCD">
+                            <span class="text-left pr-1">{{ "KAFS02_38" | i18n }}</span>
+                            <span class="text-left pl-1">{{ `${itemTH.workplaceCD} ${itemTH.workplaceName}` }}</span>
+                        </div>
+                    </div>
+                    <div class="row" v-if="workLocationNames.length > 0">
+                        <!-- work location selected -->
+                        <div class="col-12 ml-2 mt-1" v-if="itemTH.workLocationCD">
+                            <span class="text-left pr-1">{{ "KAFS02_39" | i18n }}</span>
+                            <span class="text-left pl-1">{{ `${itemTH.workLocationCD} ${itemTH.workLocationName}` }}</span>
+                        </div>
                     </div>
 
                     <div class="mt-0 mb-n2" v-if="(itemTH.cancelAtr || itemTH.appHours.startTime !== null || itemTH.appHours.endTime !== null) && itemTH.frame < listTempoHours[listTempoHours.length - 1].frame"><hr/></div>
@@ -196,6 +224,53 @@
                     </div>
 
                     <div class="mt-0 mb-n2" v-if="(itemLH.cancelAtr || itemLH.appHours.startTime !== null || itemLH.appHours.endTime !== null) && itemLH.frame < listNursingHours[listNursingHours.length - 1].frame"><hr/></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- supportHours -->
+        <div v-if="listSupportHours.length > 0">
+            <!-- B6 -->
+            <div class="card card-label" v-if="dispTitleSupportHour">
+                <div class="card-header uk-bg-accordion mt-2">
+                <span>{{ "KAFS02_31" | i18n }}</span>
+                </div>
+            </div>
+
+            <div v-if="condition16 || listSupportHours.length > 0">
+                <div v-for="itemSP in listSupportHours" :key="itemSP.frame">
+                    <div class="row mt-1" v-if="(itemSP.cancelAtr || itemSP.appHours.startTime !== null || itemSP.appHours.endTime !== null)">
+                        <!-- B6_1 -->
+                        <div class="col-6">{{ itemSP.title | i18n(itemSP.frame) }}</div>
+                    </div>
+
+                    <div class="row" v-if="(itemSP.cancelAtr || itemSP.appHours.startTime !== null || itemSP.appHours.endTime !== null)">
+                        <!-- B6_2 -->
+                        <div class="col-6 text-left pr-1" style="font-size: 90%">
+                            <div v-if="itemSP.cancelAtr">{{ "KAFS02_5" | i18n }}</div>
+                            <kafs00subp3 v-else v-bind:params="itemSP.appHours" />
+                        </div>
+
+                        <!-- B6_3 -->
+                        <div class="col-6 text-left pl-1" style="font-size: 90%" v-if="dataFetch.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr === 1">
+                            <kafs00subp3 v-bind:params="itemSP.actualHours" />
+                        </div>
+                    </div>
+                    <div class="row" v-if="workplaceNames.length > 0">
+                        <!-- workplace selected -->
+                        <div class="col-12 ml-2 mt-2" v-if="itemSP.workplaceCD">
+                            <span class="text-left pr-1">{{ "KAFS02_38" | i18n }}</span>
+                            <span class="text-left pl-1">{{ `${itemSP.workplaceCD} ${itemSP.workplaceName}` }}</span>
+                        </div>
+                    </div>
+                    <div class="row" v-if="workLocationNames.length > 0">
+                        <!-- work location selected -->
+                        <div class="col-12 ml-2 mt-1" v-if="itemSP.workLocationCD">
+                            <span class="text-left pr-1">{{ "KAFS02_39" | i18n }}</span>
+                            <span class="text-left pl-1">{{ `${itemSP.workLocationCD} ${itemSP.workLocationName}` }}</span>
+                        </div>
+                    </div>
+                    <div class="mt-0 mb-n2" v-if="(itemSP.cancelAtr || itemSP.appHours.startTime !== null || itemSP.appHours.endTime !== null) && itemSP.frame < listSupportHours[listSupportHours.length - 1].frame"><hr/></div>
                 </div>
             </div>
         </div>

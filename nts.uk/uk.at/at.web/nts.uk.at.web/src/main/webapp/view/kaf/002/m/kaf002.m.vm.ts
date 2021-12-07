@@ -764,13 +764,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
                                 self.dataSource[data.index][data.idGetList].workLocationName = returnWorkLocationName;
                                 const $selected = $(`<div class="limited-label label-work-location">${returnWorkLocationName}</div>`);
-                                if (self.selectedTab() == 'tab-1') {
+                                if (data.index === 0) {
                                     $('#grid1_container .nts-grid-control-workLocationCD-' + data.id + ' .label-work-location').remove();
                                     if (!_.isEmpty(data.workLocationCD)) {
                                         $('#grid1_container .nts-grid-control-workLocationCD-' + data.id).append($selected);
                                     }
                                 }
-                                if (self.selectedTab() == 'tab-6') {
+                                if (data.index === 5) {
                                     $('#grid6_container .nts-grid-control-workLocationCD-' + data.id + ' .label-work-location').remove();
                                     if (!_.isEmpty(data.workLocationCD)) {
                                         $('#grid6_container .nts-grid-control-workLocationCD-' + data.id).append($selected);

@@ -13,6 +13,11 @@ export class WorkHour {
     public isCheck: boolean;
     public title: string;
     public errorMsg: string;
+    public workplaceId: string = '';
+    public workplaceCD: string = '';
+    public workplaceName: string = '';
+    public workLocationCD: string = '';
+    public workLocationName: string = '';
 
     constructor(iWorkHour: IWorkHour) {
         this.workHours.start = iWorkHour.startTime,
@@ -105,11 +110,14 @@ export class TimeStampAppDto {
     public timeOfDay: number;
     public workLocationCd?: string;
     public appStampGoOutAtr?: number;
-    constructor (destinationTimeApp: DestinationTimeAppDto, timeOfDay: number, workLocationCd?: string, appStampGoOutAtr?: number) {
+    public wkpId?: string;
+
+    constructor (destinationTimeApp: DestinationTimeAppDto, timeOfDay: number, workLocationCd?: string, appStampGoOutAtr?: number, wkpId?: string) {
         this.destinationTimeApp = destinationTimeApp;
         this.timeOfDay = timeOfDay;
         this.workLocationCd = workLocationCd;
         this.appStampGoOutAtr = appStampGoOutAtr;
+        this.wkpId = wkpId;
     }        
 }
 export class DestinationTimeAppDto {
@@ -167,6 +175,11 @@ export class TimeSetDisp {
     public appHours = { applicationAchievementAtr: 0, startTime: null, endTime: null };
     public outingType: number;
     public cancelAtr: boolean;
+    public workplaceId: string = '';
+    public workplaceCD: string = '';
+    public workplaceName: string = '';
+    public workLocationCD: string = '';
+    public workLocationName: string = '';
 
     constructor( title: string, frame: number, actualStart: number, actulaEnd: number, appStart: number, appEnd: number, cancelAtr: boolean, outingType?: number ) {
         this.title = title;
