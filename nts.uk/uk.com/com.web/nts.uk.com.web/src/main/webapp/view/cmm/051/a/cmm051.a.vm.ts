@@ -304,7 +304,7 @@ module nts.uk.com.view.cmm051.a {
                 isShowSelectAllButton: false,
                 showOptionalColumn: false,
                 maxWidth: 470,
-                maxRows: 15,
+                maxRows: 13,
             };
             $('#kcp005').ntsListComponent(vm.listComponentOption)
         }
