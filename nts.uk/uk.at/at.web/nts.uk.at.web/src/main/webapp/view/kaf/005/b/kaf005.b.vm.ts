@@ -1577,7 +1577,6 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						self.isCalculation = true;
 						self.createVisibleModel(self.dataSource);
 
-						// self.bindOverTime(self.dataSource, 1);
                         if (!_.isEmpty(res.calculatedWorkTimes)) {
                             self.workInfo().workHours1.start(res.calculatedWorkTimes[0].timeZone.startTime);
                             self.workInfo().workHours1.end(res.calculatedWorkTimes[0].timeZone.endTime);
@@ -1601,6 +1600,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                             }
                         });
 
+                        self.bindOverTime(self.dataSource, 1);
 						self.bindHolidayTime(self.dataSource, 1);
 						self.assginTimeTemp();
 						self.assignWorkHourAndRest();
