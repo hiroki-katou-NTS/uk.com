@@ -14,10 +14,12 @@ module nts.uk.at.view.kaf000.a.component9.viewmodel {
 		params: any = null;
 		displayBack: KnockoutObservable<boolean> = ko.pureComputed(() => {
 			if(nts.uk.request.location.current.isFromMenu) {
-				return false;	
-			} else {
-				return true;
+				return false;
 			}
+			if(history.length<=1) {
+				return false;
+			}
+			return true;
 		});
         created(params: any) {
             const vm = this;
