@@ -490,11 +490,11 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
         return formattedDate.toString();
     }
     private String formatNoLinkedTime(OccurrenceAcquisitionDetails detail, int value) {
-        StringBuilder formattedDate = new StringBuilder();
-        int spaceLeft = 3, spaceRight = 3;
         int hours = value / 60;
+        StringBuilder formattedDate = new StringBuilder();
+        int spaceLeft = hours >10 ? 2: 3, spaceRight = 3;
         formattedDate.append(convertToTime(value));
-        if(hours < 10){
+        if( hours < 10){
             formattedDate.insert(0, " ");
             spaceLeft += -1;
         }
@@ -510,7 +510,17 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
             spaceLeft += -1;
             spaceRight += -1;
         }
-        if (spaceLeft > 0) formattedDate.insert(0,spaceLeft == 1 ? " " : spaceLeft == 2 ? "  " : "   ");
+        if (spaceLeft > 0){
+            if(spaceLeft == 1){
+                formattedDate.insert(0, " ");
+            }
+            if(spaceLeft == 2){
+                formattedDate.insert(0, "  ");
+            }
+            if(spaceLeft == 3){
+                formattedDate.insert(0, "   ");
+            }
+        }
         if (spaceRight > 0) formattedDate.append(spaceRight == 1 ? " " : spaceRight == 2 ? "  " : "   ");
         return formattedDate.toString();
     }
