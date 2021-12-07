@@ -428,10 +428,10 @@ export class KafS02AComponent extends KafS00ShrComponent {
                         if (x.frame === item.destinationTimeApp.engraveFrameNo) {
                             if (item.destinationTimeApp.startEndClassification === 0) {
                                 x.workHours.start = item.timeOfDay;
-                                setWorkplaceAndLocation(x, item.wkpId, item.workLocationCd);
                             } else {
                                 x.workHours.end = item.timeOfDay;
                             }
+                            setWorkplaceAndLocation(x, item.wkpId, item.workLocationCd);
                         }
 
                         return x;
@@ -455,10 +455,10 @@ export class KafS02AComponent extends KafS00ShrComponent {
                         if (x.frame === item.destinationTimeApp.engraveFrameNo) {
                             if (item.destinationTimeApp.startEndClassification === 0) {
                                 x.workHours.start = item.timeOfDay;
-                                setWorkplaceAndLocation(x, item.wkpId, item.workLocationCd);
                             } else {
                                 x.workHours.end = item.timeOfDay;
                             }
+                            setWorkplaceAndLocation(x, item.wkpId, item.workLocationCd);
                         }
 
                         return x;
@@ -510,10 +510,10 @@ export class KafS02AComponent extends KafS00ShrComponent {
                         if (x.frame === item.destinationTimeApp.engraveFrameNo) {
                             if (item.destinationTimeApp.startEndClassification === 0) {
                                 x.workHours.start = item.timeOfDay;
-                                setWorkplaceAndLocation(x, item.wkpId, item.workLocationCd);
                             } else {
                                 x.workHours.end = item.timeOfDay;
                             }
+                            setWorkplaceAndLocation(x, item.wkpId, item.workLocationCd);
                         }
 
                         return x;
