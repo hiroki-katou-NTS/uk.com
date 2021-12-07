@@ -808,14 +808,11 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 saveData.updateData(self.stash.toDto());
                 saveData.useAtr(0);
             }
-
-			if(self.selectUse() == SelectUseConst.Use) {
-				if(_.isNaN(_.toNumber(self.attendanceModel.attendanceItemId()))) {
-					saveData.totalCondition.attendanceItemId(null);	
-				} else {
-					saveData.totalCondition.attendanceItemId(_.toNumber(self.attendanceModel.attendanceItemId()));	
-				}
-			}
+			if (self.selectUse() == SelectUseConst.Use && _.isNumber(self.attendanceModel.attendanceItemId())) { //(self.enableUnder() == true || self.enableUpper() == true) 
+                saveData.totalCondition.attendanceItemId(self.attendanceModel.attendanceItemId());
+            } else {
+                // saveData.totalCondition.attendanceItemId(SelectUseConst.NO_SELECT);
+            }
         }
 
         private switchCheckbox(value: number): void {
