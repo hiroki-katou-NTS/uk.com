@@ -62,7 +62,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
     public dispTitleBreakHour: boolean = false;
     public dispTitleParentHour: boolean = false;
     public dispTitleNursingHour: boolean = false;
-    public dispSupportHour: boolean = false;
+    public dispTitleSupportHour: boolean = false;
 
     public workLocationNames: any[] = [];
     public workplaceNames: any[] = [];
@@ -699,7 +699,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
 
         self.listSupportHours.forEach((item) => {
             if (item.cancelAtr || item.appHours.startTime !== null || item.appHours.endTime !== null) {
-                self.dispTitleWorkHour = true;
+                self.dispTitleSupportHour = true;
             }
         });
     }
