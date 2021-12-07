@@ -4,7 +4,8 @@ module nts.uk.cloud.view.cld001.a {
         var servicePath: any = {
             regist: "ctx/cld/operate/tenant/regist",
             generatePassword: "ctx/cld/operate/tenant/generatePassword",
-            executionMasterCopyData: "ctx/cld/operate/tenant/mastercopy/execute"
+            executionMasterCopyData: "ctx/cld/operate/tenant/mastercopy/execute",
+            getTaskInfo:"ctx/cld/operate/tenant/taskInfo/"
         }
         export function registTenant(command: any): JQueryPromise<void> {
             return nts.uk.request.ajax(servicePath.regist, command);
@@ -16,6 +17,10 @@ module nts.uk.cloud.view.cld001.a {
 
         export function executionMasterCopyData(command: any) {
             return nts.uk.request.ajax(servicePath.executionMasterCopyData, command);
+        }
+
+        export function getTaskInfo(id: string, tenantCode:string){
+            return nts.uk.request.ajax(servicePath.getTaskInfo + tenantCode + "/" + id);
         }
 
         export interface generatePasswordDto {
