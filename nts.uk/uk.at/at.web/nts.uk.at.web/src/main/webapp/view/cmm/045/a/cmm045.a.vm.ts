@@ -7,7 +7,9 @@ module cmm045.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+    import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
     export class ScreenModel {
+        menuName: KnockoutObservable<string> = ko.observable("");
         roundingRules: KnockoutObservableArray<vmbase.ApplicationDisplayAtr> = ko.observableArray([]);
         //delete switch button - ver35
 //        selectedRuleCode: KnockoutObservable<any> = ko.observable(0);// switch button
@@ -146,6 +148,7 @@ module cmm045.a.viewmodel {
             * Define how to use this list employee by yourself in the function's body.
             */
 
+
             returnDataFromCcg001: function(data: any){
                 self.showinfoSelectedEmployee(true);
                 self.selectedEmployee(data.listEmployee);
@@ -172,7 +175,7 @@ module cmm045.a.viewmodel {
                 // self.filter();
              }
             }
-
+            self.getMenu();
             window.onresize = function(event: any) {
 				if(self.mode()==1) {
 					character.restore('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj: any) => {
@@ -1499,16 +1502,29 @@ module cmm045.a.viewmodel {
         approveAll() {
             console.log("Approve all");
         }
-
+        getMenu(){
+            let self = this;
+            block.invisible();
+            service.getMenu().done((data)=>{
+                if(!isNullOrEmpty(data)){
+                    let item = _.filter(data, (e)=>e.param.equals(self.mode() == 1 ? "a=1" :"a=0"));
+                    if(!isNullOrEmpty(item)){
+                        self.menuName(item[0].name);
+					}
+                };
+            }).always(()=>{
+                block.clear()
+            });
+        };
         print(params: any) {
             let self = this;
             let lstApp = self.appListInfo,
-            programName = nts.uk.ui._viewModel.kiban.programName().replace('CMM045A ', '');
+                programName = self.menuName().replace('CMM045A ', '');
             lstApp.appLst = ko.toJS(self.items);
             lstApp.displaySet.startDateDisp = self.appListExtractConditionDto.periodStartDate;
             lstApp.displaySet.endDateDisp = self.appListExtractConditionDto.periodEndDate;
 			block.invisible();
-            const command = { appListAtr: self.appListAtr, lstApp: lstApp, programName: programName }
+            const command = { appListAtr: self.appListAtr, lstApp: lstApp, programName: programName };
             service.print(command).always(() => { 
 				block.clear(); 
 				$('#daterangepicker .ntsEndDatePicker').focus();
