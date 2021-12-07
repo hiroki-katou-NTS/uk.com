@@ -2657,6 +2657,10 @@ public class RecordDomRequireService {
 			return sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, processingDate);
 		}
 		
+		public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId){
+			return sharedAffWorkPlaceHisAdapter.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
+		}
+		
 		public List<SharedSidPeriodDateEmploymentImport> getEmpHistBySidAndPeriod(List<String> employeeID, DatePeriod Period){
 			return shareEmploymentAdapter.getEmpHistBySidAndPeriod(employeeID, Period);
 		}
