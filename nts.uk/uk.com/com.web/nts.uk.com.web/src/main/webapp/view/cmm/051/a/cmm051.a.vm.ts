@@ -202,9 +202,10 @@ module nts.uk.com.view.cmm051.a {
                 vm.employInfors(emps);
                 let info = _.find(vm.employInfors(), (e) => e.id == sid);
                 if (isNullOrUndefined(info)) {
-                    if (!isNullOrEmpty(emps))
+                    if (!isNullOrEmpty(emps)) {
                         vm.selectedEmCode(emps[0].code);
-                    vm.selectedEmCode.valueHasMutated();
+                        vm.selectedEmCode.valueHasMutated();
+                    }
                 } else {
                     vm.selectedEmCode(info.code);
                     vm.selectedEmCode.valueHasMutated();
@@ -319,6 +320,7 @@ module nts.uk.com.view.cmm051.a {
             vm.mode.subscribe((mode) => {
                 console.log("MODE :" + mode);
                 if (mode == Mode.WPL) {
+                    vm.employeeId(null);
                     vm.employeeCode(null);
                     vm.employeeName(null);
                     vm.workplaceCode(null);
