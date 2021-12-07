@@ -12,6 +12,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoExport;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataDto;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataUserDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
@@ -35,6 +39,9 @@ public class LockOutDataUserFinder {
 	@Inject
 	private UserAdapter userAdapter;
 	
+	@Inject
+	private EmployeeInfoPub employeeInfoPub;
+	
 	
 	/**
 	 * Find all.
@@ -47,21 +54,27 @@ public class LockOutDataUserFinder {
 		String contractCd = AppContexts.user().contractCode();
 		//get list LockOutData
 		List<LockoutData> lstLockOutData = lockOutDataRepository.findByContractCode(contractCd);
-			lstLockOutData.forEach(item -> {
-				LockOutDataUserDto lockOutDataUserDto = new LockOutDataUserDto();
-				if (item != null) {
-					lockOutDataUserDto.setLockOutDateTime(item.getLockOutDateTime());
-					lockOutDataUserDto.setLogType((item.getLogType().value));
-					lockOutDataUserDto.setUserId(item.getUserId());
-				}
-				UserDto userDto = userAdapter.getUser(Arrays.asList(item.getUserId())).get(0);
-                if(userDto != null){
-                    lockOutDataUserDto.setLoginId(userDto.getLoginId().trim());
-                    lockOutDataUserDto.setUserName(userDto.getUserName());
-                }
-				lstLockOutDataUserDto.add(lockOutDataUserDto);
+		
+		lstLockOutData.forEach(item -> {
+			LockOutDataUserDto lockOutDataUserDto = new LockOutDataUserDto();
+			if (item != null) {
+				lockOutDataUserDto.setLockOutDateTime(item.getLockOutDateTime());
+				lockOutDataUserDto.setLogType((item.getLogType().value));
+				lockOutDataUserDto.setUserId(item.getUserId());
+			}
+			UserDto userDto = userAdapter.getUser(Arrays.asList(item.getUserId())).get(0);
+			if (userDto != null) {
+				lockOutDataUserDto.setLoginId(userDto.getLoginId().trim());
+				lockOutDataUserDto.setUserName(userDto.getUserName());
 
-			});
+				// アルゴリズム「社員が削除されたかを取得」を実行する
+				List<EmpInfoExport> empInfoExportLst = employeeInfoPub
+						.getEmpInfoByPid(userDto.getAssociatedPersonID().trim());
+				if (!CollectionUtil.isEmpty(empInfoExportLst)) {
+					lstLockOutDataUserDto.add(lockOutDataUserDto);
+				}
+			}
+		});
 		return lstLockOutDataUserDto;
 	}
 
