@@ -69,7 +69,6 @@ module nts.uk.com.view.oew001.a {
       .always(() => {
         vm.isInitComplete = true;
         $("#A5_1").focus();
-        vm.$nextTick(() => model.setReadOnly("#A4_2"));
         vm.$blockui("clear");
       });
     }
