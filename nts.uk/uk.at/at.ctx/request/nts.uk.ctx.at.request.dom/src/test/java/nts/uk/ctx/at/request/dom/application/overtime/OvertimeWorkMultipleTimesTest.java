@@ -508,4 +508,50 @@ public class OvertimeWorkMultipleTimesTest {
         assertThat(result.get(3).getStartTime().v()).isEqualTo(1230);
         assertThat(result.get(3).getEndTime().v()).isEqualTo(1260);
     }
+
+    @Test
+    public void testGetBreakTimeToCalculateOvertime7() {
+        WorkInformation workInfo = new WorkInformation("001", "002");
+        List<TimeZoneWithWorkNo> workingHours = Arrays.asList(new TimeZoneWithWorkNo(1, 420, 1140)); // 勤務時間：　7:00~19:00　（始業終業時刻）
+        List<BreakTimeSheet> breakTimes = new ArrayList<>();
+        breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), new TimeWithDayAttr(720), new TimeWithDayAttr(780))); // 休憩時間帯：12:00~13:00
+
+        new Expectations() {
+            {
+                require.getPredetemineTimeSetting("", "002");
+                result = Optional.of(new PredetemineTimeSetting(
+                        "",
+                        new AttendanceTime(540),
+                        null,
+                        null,
+                        new PrescribedTimezoneSetting(
+                                null,
+                                null,
+                                Arrays.asList(new TimezoneUse(new TimeWithDayAttr(480), new TimeWithDayAttr(1020), UseSetting.USE, 1)) // // 勤務時間：　8:00~17:00
+                        ),
+                        new TimeWithDayAttr(480),
+                        true
+                ));
+            }
+        };
+
+        OvertimeWorkMultipleTimes target = OvertimeWorkMultipleTimes.create(
+                Arrays.asList(
+                        new OvertimeHour(new OvertimeNumber(1), new TimeSpanForCalc(new TimeWithDayAttr(420), new TimeWithDayAttr(480))) // 残業時間：	7:00~8:00
+                ),
+                Collections.emptyList()
+        );
+
+        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, breakTimes);
+
+        assertThat(result.size()).isEqualTo(2);
+
+        // 休憩枠NO1：12:00~13:00
+        assertThat(result.get(0).getStartTime().v()).isEqualTo(720);
+        assertThat(result.get(0).getEndTime().v()).isEqualTo(780);
+
+        // 休憩枠NO2：17:00~19:00
+        assertThat(result.get(1).getStartTime().v()).isEqualTo(1020);
+        assertThat(result.get(1).getEndTime().v()).isEqualTo(1140);
+    }
 }

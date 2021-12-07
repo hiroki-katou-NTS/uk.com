@@ -263,6 +263,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 			output.setCalculationResultOp(Optional.ofNullable(caculationOutput.getCalculationResult()));			
 			output.setCalculatedFlag(caculationOutput.getCalculatedFlag());
 		}
+		output.setCalculatedBreakTimes(workContent.getBreakTimes());
+		output.setCalculatedWorkTimes(workContent.getTimeZones());
 		// 残業時間帯の値と背景色をセット
 		return output;
 	}
@@ -999,7 +1001,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 			output.setWorkdayoffFrames(temp.getWorkdayoffFrames());
 			output.setCalculationResultOp(temp.getCalculationResultOp());
 			output.setCalculatedFlag(temp.getCalculatedFlag());
-			
+			output.setCalculatedBreakTimes(temp.getCalculatedBreakTimes());
+			output.setCalculatedWorkTimes(temp.getCalculatedWorkTimes());
 		} else {
 			output.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
 		}
@@ -1104,6 +1107,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 		displayInfoOverTime.setCalculationResultOp(displayInfoOverTimeTemp.getCalculationResultOp());
 		displayInfoOverTime.setWorkdayoffFrames(displayInfoOverTimeTemp.getWorkdayoffFrames());
 		displayInfoOverTime.setCalculatedFlag(displayInfoOverTimeTemp.getCalculatedFlag());
+		displayInfoOverTime.setCalculatedBreakTimes(displayInfoOverTimeTemp.getCalculatedBreakTimes());
+		displayInfoOverTime.setCalculatedWorkTimes(displayInfoOverTimeTemp.getCalculatedWorkTimes());
 		return displayInfoOverTime;
 	}
 

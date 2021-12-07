@@ -476,6 +476,36 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						vm.assginTimeTemp();
 						vm.assignWorkHourAndRest();
                         if (!_.isEmpty(successData.latestMultiOvertimeApp)) {
+                            if (successData.latestMultiOvertimeApp.workInfoOp) {
+                                const workType: Work = {}, workTime: Work = {};
+                                workType.code = successData.latestMultiOvertimeApp.workInfoOp.workType;
+                                if (!_.isNil(workType.code)) {
+                                    let workTypeList = vm.dataSource.infoBaseDateOutput.worktypes as Array<WorkType>;
+                                    let item = _.find(workTypeList, (item: WorkType) => item.workTypeCode == workType.code)
+                                    if (!_.isNil(item)) {
+                                        workType.name = item.name;
+                                    } else {
+                                        workType.name = vm.$i18n('KAF005_345');
+                                    }
+                                } else {
+                                    workType.name = vm.$i18n('KAF005_345');
+                                }
+                                workTime.code = successData.latestMultiOvertimeApp.workInfoOp.workTime;
+                                if (!_.isNil(workTime.code)) {
+                                    let workTimeList = vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst as Array<WorkTime>;
+                                    let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code)
+                                    if (!_.isNil(item)) {
+                                        workTime.name = item.workTimeDisplayName.workTimeName;
+                                    } else {
+                                        workTime.name = vm.$i18n('KAF005_345');
+                                    }
+
+                                } else {
+                                    workTime.name = vm.$i18n('KAF005_345');
+                                }
+                                vm.workInfo().workType(workType);
+                                vm.workInfo().workTime(workTime);
+                            }
                             vm.multipleOvertimeContents([]);
                             successData.latestMultiOvertimeApp.multipleOvertimeContents.forEach(i => {
                                 vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
@@ -769,13 +799,67 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						self.dataSource = res;
 						self.createVisibleModel(self.dataSource);
 						self.bindOverTimeWorks(self.dataSource);
-						self.bindWorkInfo(self.dataSource, ACTION.CHANGE_DATE);
-						self.bindRestTime(self.dataSource);
+
+						// self.bindWorkInfo(self.dataSource, ACTION.CHANGE_DATE);
+                        if (!_.isEmpty(res.calculatedWorkTimes)) {
+                            self.workInfo().workHours1.start(res.calculatedWorkTimes[0].timeZone.startTime);
+                            self.workInfo().workHours1.end(res.calculatedWorkTimes[0].timeZone.endTime);
+                            if (res.calculatedWorkTimes.length > 1) {
+                                self.workInfo().workHours2.start(res.calculatedWorkTimes[1].timeZone.startTime);
+                                self.workInfo().workHours2.end(res.calculatedWorkTimes[1].timeZone.endTime);
+                            } else {
+                                self.workInfo().workHours2.start(null);
+                                self.workInfo().workHours2.end(null);
+                            }
+                        }
+                        // self.bindRestTime(self.dataSource);
+                        const calculatedBreakTimes = res.calculatedBreakTimes || [];
+                        self.restTime().forEach(i => {
+							const t = _.find(calculatedBreakTimes, (o: any) => Number(o.workNo) == Number(i.frameNo));
+							if (t) {
+								i.start(t.timeZone.startTime);
+								i.end(t.timeZone.endTime);
+							} else {
+								i.start(null);
+								i.end(null);
+							}
+						});
+
 						self.bindHolidayTime(self.dataSource, 1);
 						self.bindOverTime(self.dataSource, 1);
 						self.assginTimeTemp();
 						self.assignWorkHourAndRest(true);
 						if (!_.isEmpty(res.latestMultiOvertimeApp)) {
+                            if (res.latestMultiOvertimeApp.workInfoOp) {
+                                const workType: Work = {}, workTime: Work = {};
+                                workType.code = res.latestMultiOvertimeApp.workInfoOp.workType;
+                                if (!_.isNil(workType.code)) {
+                                    let workTypeList = self.dataSource.infoBaseDateOutput.worktypes as Array<WorkType>;
+                                    let item = _.find(workTypeList, (item: WorkType) => item.workTypeCode == workType.code)
+                                    if (!_.isNil(item)) {
+                                        workType.name = item.name;
+                                    } else {
+                                        workType.name = self.$i18n('KAF005_345');
+                                    }
+                                } else {
+                                    workType.name = self.$i18n('KAF005_345');
+                                }
+                                workTime.code = res.latestMultiOvertimeApp.workInfoOp.workTime;
+                                if (!_.isNil(workTime.code)) {
+                                    let workTimeList = self.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst as Array<WorkTime>;
+                                    let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code)
+                                    if (!_.isNil(item)) {
+                                        workTime.name = item.workTimeDisplayName.workTimeName;
+                                    } else {
+                                        workTime.name = self.$i18n('KAF005_345');
+                                    }
+
+                                } else {
+                                    workTime.name = self.$i18n('KAF005_345');
+                                }
+                                self.workInfo().workType(workType);
+                                self.workInfo().workTime(workTime);
+                            }
 							self.multipleOvertimeContents([]);
                             res.latestMultiOvertimeApp.multipleOvertimeContents.forEach((i: any) => {
 								self.multipleOvertimeContents.push(new MultipleOvertimeContent(
@@ -3107,7 +3191,31 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						self.dataSource.calculatedFlag = res.calculatedFlag;
 						self.isCalculation = true;
 						self.createVisibleModel(self.dataSource);
-						self.bindOverTime(self.dataSource, 1);
+
+						// self.bindOverTime(self.dataSource, 1);
+                        if (!_.isEmpty(res.calculatedWorkTimes)) {
+                            self.workInfo().workHours1.start(res.calculatedWorkTimes[0].timeZone.startTime);
+                            self.workInfo().workHours1.end(res.calculatedWorkTimes[0].timeZone.endTime);
+                            if (res.calculatedWorkTimes.length > 1) {
+                                self.workInfo().workHours2.start(res.calculatedWorkTimes[1].timeZone.startTime);
+                                self.workInfo().workHours2.end(res.calculatedWorkTimes[1].timeZone.endTime);
+                            } else {
+                                self.workInfo().workHours2.start(null);
+                                self.workInfo().workHours2.end(null);
+                            }
+                        }
+                        const calculatedBreakTimes = res.calculatedBreakTimes || [];
+                        self.restTime().forEach(i => {
+                            const t = _.find(calculatedBreakTimes, (o: any) => Number(o.workNo) == Number(i.frameNo));
+                            if (t) {
+                                i.start(t.timeZone.startTime);
+                                i.end(t.timeZone.endTime);
+                            } else {
+                                i.start(null);
+                                i.end(null);
+                            }
+                        });
+
 						self.bindHolidayTime(self.dataSource, 1);
 						self.assginTimeTemp();
 						self.assignWorkHourAndRest();
