@@ -300,79 +300,88 @@ public class ScheduleCreatorExecutionService {
 		this.parallel.forEach(
 				scheduleCreators.stream().sorted((a,b) -> a.getEmployeeId().compareTo(b.getEmployeeId())).collect(Collectors.toList()),
 				scheduleCreator -> {
-				if (scheduleCreator == null)
-					return;
-				if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
-					if (checkStop.get()) {
-						return;
-					}
-					Optional<ExeStateOfCalAndSumImportSch> exeStateOfCalAndSumImportSch = dailyMonthlyprocessAdapterSch
-							.executionStatus(exeId);
-					if (exeStateOfCalAndSumImportSch.isPresent())
-						if (exeStateOfCalAndSumImportSch.get() == ExeStateOfCalAndSumImportSch.START_INTERRUPTION) {
-							checkStop.set(true);
-							this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
-							return;
-						}
-				} else {
-					// check is client submit cancel
-					if (asyncTask.map(c -> c.hasBeenRequestedToCancel()).orElse(false)) {
-						// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
-						this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
-						return;
-					}
-				}
-
-			// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
-			StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
-					command.getCompanyId(), scheduleCreator.getEmployeeId(), period, masterCache.getEmpGeneralInfo());
-
-			// 対象期間あり　の場合
-			if (stateAndValueDatePeriod.state == StateValueDate.TARGET_PERIOD ) {
-				DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
-
-				// process each by 2 months to make transaction small for performance
-				final int unitMonthsOfTransaction = 2;
-				dateAfterCorrection.forEachByMonths(unitMonthsOfTransaction, subPeriod -> {
-
-					List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findSomePropertyWithJDBC(
-							Arrays.asList(scheduleCreator.getEmployeeId()), subPeriod);
-
-					// 勤務予定作成する
-					this.transaction.execute(
-							command,
-							scheduleExecutionLog,
-							asyncTask,
-							companyId,
-							exeId,
-							subPeriod,
-							masterCache,
-							listBasicSchedule,
-							companySetting,
-							scheduleCreator,
-							carrier);
-				});
-			} else {
-				String errorContent = null;
-				
-				if(stateAndValueDatePeriod.state == StateValueDate.NO_TARGET_PERIOD)
-				errorContent = this.internationalization.localize("Msg_1509").get();
-				
-				if(stateAndValueDatePeriod.state == StateValueDate.NO_EMPLOYMENT_HIST)
-				errorContent = this.internationalization.localize("Msg_2196").get();
-				
-				// ドメインモデル「スケジュール作成エラーログ」を登録する
-				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(),
-						stateAndValueDatePeriod.value.end(), scheduleCreator.getEmployeeId());
-				this.scheduleErrorLogRepository.add(scheduleErrorLog);
-
-				scheduleCreator.updateToCreated();
-				this.scheduleCreatorRepository.update(scheduleCreator);
-			}
+					
+			transactionService.execute(() -> createScheOnePerson(command, scheduleExecutionLog, asyncTask, companyId, exeId, period, masterCache,
+					companySetting, checkStop, carrier, scheduleCreator));
 		});
-		
-		transactionService.execute(() -> postExecute(command, scheduleExecutionLog, asyncTask, exeId, companySetting));
 
+		transactionService.execute(() -> postExecute(command, scheduleExecutionLog, asyncTask, exeId, companySetting));
+	}
+
+	@SuppressWarnings("rawtypes")
+	private void createScheOnePerson(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
+			Optional<AsyncCommandHandlerContext> asyncTask, String companyId, String exeId, DatePeriod period,
+			CreateScheduleMasterCache masterCache, Object companySetting, AtomicBoolean checkStop, CacheCarrier carrier,
+			ScheduleCreator scheduleCreator) {
+		if (scheduleCreator == null)
+			return;
+		if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
+			if (checkStop.get()) {
+				return;
+			}
+			Optional<ExeStateOfCalAndSumImportSch> exeStateOfCalAndSumImportSch = dailyMonthlyprocessAdapterSch
+					.executionStatus(exeId);
+			if (exeStateOfCalAndSumImportSch.isPresent())
+				if (exeStateOfCalAndSumImportSch.get() == ExeStateOfCalAndSumImportSch.START_INTERRUPTION) {
+					checkStop.set(true);
+					this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
+					return;
+				}
+		} else {
+			// check is client submit cancel
+			if (asyncTask.map(c -> c.hasBeenRequestedToCancel()).orElse(false)) {
+				// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
+				this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
+				return;
+			}
+		}
+
+		// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
+		StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
+				command.getCompanyId(), scheduleCreator.getEmployeeId(), period, masterCache.getEmpGeneralInfo());
+
+		// 対象期間あり　の場合
+		if (stateAndValueDatePeriod.state == StateValueDate.TARGET_PERIOD ) {
+			DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
+
+			// process each by 2 months to make transaction small for performance
+			final int unitMonthsOfTransaction = 2;
+			dateAfterCorrection.forEachByMonths(unitMonthsOfTransaction, subPeriod -> {
+
+				List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findSomePropertyWithJDBC(
+						Arrays.asList(scheduleCreator.getEmployeeId()), subPeriod);
+
+				// 勤務予定作成する
+				this.transaction.execute(
+						command,
+						scheduleExecutionLog,
+						asyncTask,
+						companyId,
+						exeId,
+						subPeriod,
+						masterCache,
+						listBasicSchedule,
+						companySetting,
+						scheduleCreator,
+						carrier);
+			});
+		} else {
+			String errorContent = null;
+			
+			if(stateAndValueDatePeriod.state == StateValueDate.NO_TARGET_PERIOD)
+			errorContent = this.internationalization.localize("Msg_1509").get();
+			
+			if(stateAndValueDatePeriod.state == StateValueDate.NO_EMPLOYMENT_HIST)
+			errorContent = this.internationalization.localize("Msg_2196").get();
+			
+			// ドメインモデル「スケジュール作成エラーログ」を登録する
+			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(),
+					stateAndValueDatePeriod.value.end(), scheduleCreator.getEmployeeId());
+			this.scheduleErrorLogRepository.add(scheduleErrorLog);
+
+			scheduleCreator.updateToCreated();
+			this.scheduleCreatorRepository.update(scheduleCreator);
+		}
 	}
 
 	@SuppressWarnings("rawtypes")
