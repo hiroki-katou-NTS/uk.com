@@ -231,7 +231,7 @@
         <!-- supportHours -->
         <div v-if="listSupportHours.length > 0">
             <!-- B6 -->
-            <div class="card card-label" v-if="dispTitleWorkHour">
+            <div class="card card-label" v-if="dispTitleSupportHour">
                 <div class="card-header uk-bg-accordion mt-2">
                 <span>{{ "KAFS02_31" | i18n }}</span>
                 </div>
@@ -270,7 +270,7 @@
                             <span class="text-left pl-1">{{ `${itemSP.workLocationCD} ${itemSP.workLocationName}` }}</span>
                         </div>
                     </div>
-                    <div class="mt-0 mb-n2" v-if="(itemSP.cancelAtr || itemSP.appHours.startTime !== null || itemSP.appHours.endTime !== null) && itemSP.frame < listWorkHours[listWorkHours.length - 1].frame"><hr/></div>
+                    <div class="mt-0 mb-n2" v-if="(itemSP.cancelAtr || itemSP.appHours.startTime !== null || itemSP.appHours.endTime !== null) && itemSP.frame < listSupportHours[listSupportHours.length - 1].frame"><hr/></div>
                 </div>
             </div>
         </div>
