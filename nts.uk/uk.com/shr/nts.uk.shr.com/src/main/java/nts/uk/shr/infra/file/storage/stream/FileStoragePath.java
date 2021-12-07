@@ -4,6 +4,7 @@ import lombok.Getter;
 import nts.arc.system.ServerSystemProperties;
 import nts.gul.error.FatalLog;
 import nts.tenantlocator.client.TenantLocatorClient;
+import nts.uk.shr.com.context.AppContexts;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -29,6 +30,19 @@ public class FileStoragePath {
         this.singleStoragePath = this.isTenantStoragesMode ? null : new File(param).toPath();
     }
 
+    /**
+     * ログインしているテナントのファイルストレージパスを取得する
+     * @return
+     */
+    public Path getPathOfCurrentTenant(){
+        return getPath(AppContexts.user().contractCode());
+    }
+
+    /**
+     * ファイルストレージのパスを取得する
+     * @param tenantCode
+     * @return
+     */
     public Path getPath(String tenantCode) {
 
         if (!isTenantStoragesMode) {
@@ -38,6 +52,11 @@ public class FileStoragePath {
         Path path = getPathByTenant(tenantCode);
         if (path == null) {
             FatalLog.write(FileStoragePath.class, "テナント " + tenantCode + " のFileStorageが設定されていません。");
+        }
+
+        File dir = new File(path.toString());
+        if (!dir.exists()) {
+            FatalLog.write(FileStoragePath.class, "テナント " + tenantCode + " のFileStorageに対応するフォルダが存在しません。");
         }
 
         return path;
