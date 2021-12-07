@@ -1345,7 +1345,9 @@ public class InterimRemainOffDateCreateData {
 		String workTypeCode = appInfor.getWorkTypeCode().map(x -> x).orElse("");
 
 		//#116773
-		Optional<NumberOfDaySuspension> numberDaySuspension = appInfor.getNumberOfDaySusp();
+		Optional<NumberOfDaySuspension> numberDaySuspension = createInfo.getRecordData()
+				.map(x -> x.getNumberDaySuspension())
+				.orElse(createInfo.getScheData().map(x -> x.getNumberDaySuspension()).orElse(Optional.empty()));
 
 		//アルゴリズム「勤務種類別残数情報を作成する」を実行する
 		Optional<WorkTypeRemainInfor> remainInfor = createWorkTypeRemainInfor(require, cid, createAtr, workTypeCode,

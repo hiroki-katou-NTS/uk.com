@@ -61,5 +61,5 @@ public class AppRemainCreateInfor {
 	/**
 	 * 振休振出として扱う日数
 	 */
-	private Optional<NumberOfDaySuspension> numberOfDaySusp;
+	//private Optional<NumberOfDaySuspension> numberOfDaySusp;
 }
