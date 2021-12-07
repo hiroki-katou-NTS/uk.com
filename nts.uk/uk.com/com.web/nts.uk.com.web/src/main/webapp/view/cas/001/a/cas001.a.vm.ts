@@ -119,6 +119,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
                                 { code: 1, name: getText('CAS001_49') },
                                 { code: 3, name: getText('CAS001_51') }
                             ]);
+                            if (self.anotherSelectedAll() == 2) {
+                                self.anotherSelectedAll(1);
+                            }
+                            if (self.seftSelectedAll() == 2) {
+                                self.seftSelectedAll(1);
+                            }
                         } else {
                             self.itemListCbb([
                                 { code: 1, name: getText('CAS001_49') },
