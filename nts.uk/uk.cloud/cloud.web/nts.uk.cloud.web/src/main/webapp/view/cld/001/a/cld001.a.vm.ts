@@ -127,7 +127,9 @@ module nts.uk.cloud.view.cld001.a {
 				command.companyName = self.companyName();
                 service.registTenant(command)
                 .done(function(res: any) {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_1148" }).then(function() {
+                    nts.uk.ui.dialog.info({
+                        message: nts.uk.resource.getMessage("Msg_1148", []).replace(/Com_Company/g, "会社")
+                    }).then(function() {
                         self.executionMasterCopyData();
                     });
                 }).fail(function(rej: any){
