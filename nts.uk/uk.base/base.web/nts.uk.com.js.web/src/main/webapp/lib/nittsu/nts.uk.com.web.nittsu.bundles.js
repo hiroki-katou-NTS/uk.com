@@ -32098,7 +32098,7 @@ var nts;
                                     after = parseFloat(cellValue);
                                     before = parseFloat($.data(calcCell, v.DATA));
                                     total = sum[currentPage] + ((isNaN(after) ? 0 : after) - (isNaN(before) ? 0 : before));
-                                    sum[currentPage] = total;
+                                    sum[currentPage] = parseFloat(total).toFixed(5).toDecimal();
                                     sumDone = true;
                                 }
                                 sum[sheet].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[currentPage]) : sum[currentPage];

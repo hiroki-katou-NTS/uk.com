@@ -19,14 +19,22 @@ module nts.uk.ui.at.kdw013.datepicker {
 
     @component({
         name: 'kdw013-date-picker',
-        template: `<div id='fc-date-picker'></div>
+        
+        template: `
+            <div class='ac-date-picker' data-bind="ntsAccordion: {}">
+                <h3>
+                    <label data-bind="i18n: 'KDW013_97'"></label>
+                </h3>
+                <div>
+                    <div id='fc-date-picker'></div>
+                </div>
+            </div>
             <style rel="stylesheet">
-                .fc-date-picker{
-                    height:240px;
-                    padding: 0 !important;
-                }
                 .fc-date-picker .nts-input {
                     display: none;
+                }
+                .ac-date-picker .ui-accordion-header{
+                        margin-top: 4px !important;
                 }
             </style>
         `

@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -349,6 +350,8 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			List<Integer> attendanceItemIdList, GeneralDate targetDate, PremiumAtr premiumAtr,
 			HolidayCalcMethodSet holidayCalcMethodSet, Optional<WorkTimezoneCommonSet> commonSetting,
 			ManageReGetClass recordReGetClass) {
+		
+		 List<ItemValue> beforeItemValue = getBeforeItemValue(converter, calcResultIntegrationOfDaily);
 		// 乖離時間(AggregateRoot)取得
 		List<DivergenceTimeRoot> divergenceTimeList = companyCommonSetting.getDivergenceTime();
 		if (calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
@@ -436,14 +439,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 
 		if (calcResultIntegrationOfDaily != null
 				&& calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
-
-			// 割増時間の計算
-			PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance = ActualWorkingTimeOfDaily
-					.createPremiumTimeOfDailyPerformance(
-							companyCommonSetting.getPersonnelCostSetting().get(targetDate),
-							forCalcDivergenceDto,
-							recordReGetClass.getPersonDailySetting().getUnitPrice());
-
 			// 乖離時間を計算する
 			val reCalcDivergence = DivergenceTimeOfDaily.create(forCalcDivergenceDto,
 					divergenceTimeList, calcResultIntegrationOfDaily.getCalAttr(),
@@ -452,7 +447,18 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 						.getActualWorkingTimeOfDaily().getTotalWorkingTime(),
 							recordReGetClass.getWorkTimeSetting(),
 							recordReGetClass.getWorkType());
-
+			if(!beforeItemValue.isEmpty()) {
+				calcResultIntegrationOfDaily = mergeValueEdited(forCalcDivergenceDto, beforeItemValue);
+				forCalcDivergenceDto = converter.setData(calcResultIntegrationOfDaily);
+			}
+			
+			// 割増時間の計算
+			PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance = ActualWorkingTimeOfDaily
+					.createPremiumTimeOfDailyPerformance(
+							companyCommonSetting.getPersonnelCostSetting().get(targetDate),
+							forCalcDivergenceDto,
+							recordReGetClass.getPersonDailySetting().getUnitPrice());
+			
 			val reCreateActual = ActualWorkingTimeOfDaily.of(
 					calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get()
 						.getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
@@ -475,14 +481,29 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 					calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getMedicalCareTime());
 			calcResultIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(reCreateAttendanceTime));
 		}
+		
+		
 		// 総労働の上限設定
 		Optional<UpperLimitTotalWorkingHour> upperControl = companyCommonSetting.getUpperControl();
-		upperControl.ifPresent(tc -> {
-			tc.controlUpperLimit(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get()
+		if(upperControl.isPresent()) {
+			upperControl.get().controlUpperLimit(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get()
 					.getActualWorkingTimeOfDaily().getTotalWorkingTime());
-		});
-
+		}
 		return calcResultIntegrationOfDaily;
+	}
+	
+	private static List<ItemValue> getBeforeItemValue(DailyRecordToAttendanceItemConverter converter, IntegrationOfDaily domain) {
+		List<Integer> attendanceItemIdList = domain.getEditState().stream()
+				.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());
+		DailyRecordToAttendanceItemConverter beforDailyRecordDto = converter.setData(domain);
+		List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);
+		return itemValueList;
+	}
+	
+	private static IntegrationOfDaily mergeValueEdited(DailyRecordToAttendanceItemConverter converter,
+			List<ItemValue> itemValueList) {
+		converter.merge(itemValueList);
+		return converter.toDomain();
 	}
 	
 	/**
@@ -854,6 +875,8 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		if(!duplicate.isPresent()) {
 			return AttendanceTimeOfDailyAttendance.allZeroValue();
 		}
+		//常に「打刻から計算する」にする。※申請のみで運用する場合に応援作業の残業等が計算されない問題の対策
+		duplicate.get().getIntegrationOfDaily().setCalAttr(CalAttrOfDailyAttd.createAllCalculate());
 		
 		//日別勤怠の勤怠時間を計算する
 		return collectCalculationResult(

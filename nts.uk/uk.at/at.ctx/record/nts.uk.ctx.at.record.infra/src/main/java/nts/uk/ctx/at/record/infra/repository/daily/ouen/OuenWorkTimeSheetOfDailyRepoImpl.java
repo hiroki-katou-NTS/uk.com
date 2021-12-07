@@ -182,34 +182,34 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		entityOld.workplaceId = dataUpdate.workplaceId;
 		entityOld.startStampMethod = dataUpdate.startStampMethod;
 		entityOld.endStampMethod = dataUpdate.endStampMethod;
-		entityOld.workplaceId      = dataUpdate.workplaceId;
+		//entityOld.workplaceId      = dataUpdate.workplaceId;
 		if(entityOld.krcdtDayTsSupSupplInfo ==null) {
 			entityOld.krcdtDayTsSupSupplInfo = dataUpdate.krcdtDayTsSupSupplInfo;
 		}else {
 			
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime1 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime1;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime2 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime2;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime3 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime3;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime4 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime4;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime5 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime5;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime1 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime1;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime2 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime2;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime3 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime3;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime4 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime4;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime5 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime5;
 			
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber1 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber1;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber2 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber2;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber3 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber3;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber4 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber4;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber5 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber5;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber1 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber1;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber2 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber2;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber3 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber3;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber4 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber4;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber5 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber5;
 			
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment1 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment1;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment2 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment2;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment3 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment3;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment4 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment4;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment5 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment5;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment1 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment1;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment2 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment2;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment3 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment3;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment4 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment4;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment5 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment5;
 			
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode1 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode1;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode2 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode2;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode3 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode3;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode4 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode4;
-			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode5 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode5;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode1 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode1;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode2 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode2;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode3 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode3;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode4 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode4;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode5 = dataUpdate.krcdtDayTsSupSupplInfo == null ? null : dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode5;
 			
 		}
 	}
@@ -475,7 +475,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		
 		int ouenNo = supportFrameNo.v();
 		
-		String deleteTimeSheet = "DELETE FROM KrcdtDayOuenTimeSheet o " + " WHERE o.pk.sid = :sId "
+		String deleteTimeSheet = "DELETE FROM KrcdtDayOuenTimeSheet o " + " WHERE o.pk.sid = :sid "
 				+ " AND o.pk.ymd = :ymd "
 				+ " AND o.pk.ouenNo = :ouenNo ";
 		this.getEntityManager().createQuery(deleteTimeSheet).setParameter("sid", sId)
@@ -483,7 +483,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 												   .setParameter("ouenNo", ouenNo)
 												   .executeUpdate();
 		
-		String deleteTime = "DELETE FROM KrcdtDayOuenTime o " + " WHERE o.pk.sid = :sId "
+		String deleteTime = "DELETE FROM KrcdtDayOuenTime o " + " WHERE o.pk.sid = :sid "
 				+ " AND o.pk.ymd = :ymd "
 				+ " AND o.pk.ouenNo = :ouenNo ";
 		this.getEntityManager().createQuery(deleteTime).setParameter("sid", sId)
@@ -491,7 +491,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 												   .setParameter("ouenNo", ouenNo)
 												   .executeUpdate();
 		
-		String deleteInfo = "DELETE FROM KrcdtDayTsSupSupplInfo o " + " WHERE o.pk.sid = :sId "
+		String deleteInfo = "DELETE FROM KrcdtDayTsSupSupplInfo o " + " WHERE o.pk.sid = :sid "
 				+ " AND o.pk.date = :ymd "
 				+ " AND o.pk.supNo = :ouenNo ";
 		this.getEntityManager().createQuery(deleteInfo).setParameter("sid", sId)

@@ -101,11 +101,13 @@ module nts.uk.ui.at.kdw013.share {
         return task5 || task4 || task3 || task2 || task1;
     };
 
-    export const getTitles = (taskDetails, tasks: c.TaskDto[], character?) => {
+    export const getTitles = (taskDetails, tasks: c.TaskDto[], taskFrameUsageSetting, character?) => {
         
         let result = '';
+        const {frameSettingList} = taskFrameUsageSetting;
+        tasks = _.filter(tasks, tk => _.find(frameSettingList, fs => fs.frameNo == tk.taskFrameNo).useAtr == 1);
         _.forEach(taskDetails, td => {
-
+            
             let taskNames = _.chain(getTasks(createWG(td.taskItemValues), tasks))
                 .filter((item) => { return item })
                 .map((item) => {

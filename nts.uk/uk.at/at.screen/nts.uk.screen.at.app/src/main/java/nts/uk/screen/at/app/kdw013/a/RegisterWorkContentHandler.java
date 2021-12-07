@@ -92,12 +92,7 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 		
 		// 4. 作業時間帯グループを登録する
 		
-		command.getWorkDetails().forEach(wd -> {
-
-			RegisterTaskTimeGroupCommand cmd = new RegisterTaskTimeGroupCommand(command.getEmployeeId(), wd.getDate(), wd.toTimeZones());
-
-			this.handler.handle(cmd);
-		});
+		this.handler.handle(command);
 		
 		//5. 日別実績の登録時にエラーが発生しない場合
 		
@@ -106,19 +101,15 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 
 		//6. アラーム発生対象日を確認する
 
-		checkAlarmTargetDate.checkAlarm(command.getEmployeeId(), command.getChangedDates());
+		result.setAlarmMsg_2081(checkAlarmTargetDate.checkAlarm(command.getEmployeeId(),  new DatePeriod(startDate, endDate)));
 		
 		
-		if(command.getMode() == 1){
 			
-			// 7.残業申請・休出時間申請の対象時間を取得する
-			
-			List<OvertimeLeaveTimeDto> ots = this.getTargetTime.get(command.getEmployeeId(),
-					command.getChangedDates());
-			
-			result.setLstOvertimeLeaveTime(ots);
-			
-		}
+		// 7.残業申請・休出時間申請の対象時間を取得する
+
+		List<OvertimeLeaveTimeDto> ots = this.getTargetTime.get(command.getEmployeeId(), command.getChangedDates());
+
+		result.setLstOvertimeLeaveTime(ots);
 		
 		// 8. List<残業休出時間>.isPresent check dưới client
 

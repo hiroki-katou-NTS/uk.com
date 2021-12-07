@@ -48,7 +48,7 @@ module nts.uk.at.view.kdw013.h {
 			
 			errorLable: KnockoutObservable<string> = ko.observable('');
 			
-			block: KnockoutObservable<boolean> = ko.observable(true);
+			disableRegistration: KnockoutObservable<boolean> = ko.observable(true);
 
 			constructor() {
 				let self = this;
@@ -86,7 +86,8 @@ module nts.uk.at.view.kdw013.h {
 					self.dataMaster = data;
 					self.setDataMaster();
 					self.setEnable();
-					console.log(data);
+					//console.log(data);
+					self.setEnlableRegisterBotton();
 					dfd.resolve();
 					$(document).ready(function() {
 		                $('.proceed').focus();
@@ -97,6 +98,22 @@ module nts.uk.at.view.kdw013.h {
 					block.clear();
 				});
 				return dfd.promise();
+			}
+			
+			setEnlableRegisterBotton(){
+				let self = this;
+				let enableItems = false;
+				let isMe = __viewContext.user.employeeId == self.params.employeeId;
+				_.forEach(self.dataMaster.dailyAttendanceItemAuthority.displayAndInput, i =>{
+					let use = isMe ? i.youCanChangeIt : i.canBeChangedByOthers;
+					if(i.toUse && use){
+						enableItems = true;	
+					}
+				});
+				
+				if(!enableItems){
+					self.disableRegistration(true);
+				}
 			}
 			
 			setError(){
@@ -128,7 +145,7 @@ module nts.uk.at.view.kdw013.h {
 					if(err){
 						self.errorLable(getText('KDW013_52', [err]));
 					}else{
-						self.block(false);
+						self.disableRegistration(false);
 					}
 				}
 			}
@@ -211,7 +228,7 @@ module nts.uk.at.view.kdw013.h {
 						item.use = false;
 					}
 					let itemType = _.find(self.dataMaster.dailyAttendanceItem, d => d.attendanceItemId == item.itemId);
-					item.setUseNameType(itemName ? itemName.displayName : null, itemType ? itemType.dailyAttendanceAtr : null, self.getPrimitiveValue(itemType ? itemType.primitiveValue: null), itemType.masterType);
+					item.setUseNameType(itemName ? itemName.attendanceItemName : null, itemType ? itemType.dailyAttendanceAtr : null, self.getPrimitiveValue(itemType ? itemType.primitiveValue: null), itemType ? itemType.masterType: null);
 					let option: Option[] = [];
 					let divergenceReasonInputMethods = null;
 					//trường hợp đặc biệt
@@ -335,6 +352,9 @@ module nts.uk.at.view.kdw013.h {
 								} else {
 									self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + getText('KDW013_40'));
 								}	
+							}else{
+								self.itemId29.value(null);
+								self.itemId29.itemSelectedDisplay(getText('KDW013_86'));
 							}
 	                    console.log(kml001selectedCodeList);
 	                });
@@ -419,9 +439,13 @@ module nts.uk.at.view.kdw013.h {
 										errorCode: err.message, 
 										$control: $('#'+err.itemId+''), 
 										location: null
-									});	
+									});
 								}else{
-									error(err.message);
+									if($('#'+err.itemId+'').length){
+										$('#'+err.itemId+'').ntsError('set', err.message);
+									}else{
+										error(err.message);	
+									}
 								}
 							});
 						});

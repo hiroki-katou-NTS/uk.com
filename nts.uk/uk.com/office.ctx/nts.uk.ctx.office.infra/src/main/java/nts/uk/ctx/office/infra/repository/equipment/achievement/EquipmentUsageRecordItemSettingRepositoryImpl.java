@@ -51,7 +51,7 @@ public class EquipmentUsageRecordItemSettingRepositoryImpl extends JpaRepository
 				Integer.valueOf(domain.getItemNo().v()));
 		entity.setPk(pk);
 		entity.setItemCls(domain.getInputcontrol().getItemCls().value);
-		entity.setItemLength(domain.getInputcontrol().getDigitsNo().map(String::valueOf).orElse(null));
+		entity.setItemLength(domain.getInputcontrol().getDigitsNo().map(DigitsNumber::v).orElse(null));
 		entity.setItemName(domain.getItems().getItemName().v());
 		entity.setMaxValue(domain.getInputcontrol().getMaximum().map(MaximumUsageRecord::v).orElse(null));
 		entity.setMinValue(domain.getInputcontrol().getMinimum().map(MinimumUsageRecord::v).orElse(null));

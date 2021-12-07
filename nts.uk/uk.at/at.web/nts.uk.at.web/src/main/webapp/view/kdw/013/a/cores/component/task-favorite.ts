@@ -44,7 +44,7 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                         <li data-bind="i18n: 'KDW013_78' ,click:$component.removeFav"></li>
                     </ul>
             </div>
-            <div data-bind="ntsAccordion: {}">
+            <div data-bind="ntsAccordion: {active: 0}">
                 <h3>
                     <label data-bind="i18n: 'KDW013_75'"></label>
                 </h3>

@@ -102,9 +102,14 @@ module nts.uk.ui.at.kdw013.calendar {
                     user-select: none; /* Non-prefixed version, currently
                                         supported by Chrome, Edge, Opera and Firefox */
         }
+        .fc .fc-col-header-cell-cushion{
+            padding: 0px;
+            line-height: 20px;
+            font-size: 12px;
+        }
         .fc-container .fc-sidebar {
             float: left;
-            width: 210px;
+            width: 255px;
             min-width: 210px;
             max-width: calc(100vw - 755px);
             overflow: hidden;
@@ -113,7 +118,7 @@ module nts.uk.ui.at.kdw013.calendar {
             border-right: 1px solid #ccc;
             position: relative;
             padding-right: 1px;
-            min-height: calc(100vh - 162px);
+            min-height: calc(100vh - 148px);
         }
         .fc-container .fc-sidebar>div {
             padding: 0 10px;
@@ -161,7 +166,7 @@ module nts.uk.ui.at.kdw013.calendar {
             height: 224px;
         }
         .fc-container .fc-sidebar .fc-events>ul {
-            height: 140px;
+            height: auto;
         }
         .fc-container .fc-sidebar .fc-employees>.ui-igcombo-wrapper {
             width: 100%;
@@ -197,7 +202,7 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-toolbar.fc-header-toolbar {
             min-height: 33px;
-            margin-bottom: 10px;
+            margin-bottom: 2px;
         }
         .fc-container .fc-timegrid thead>tr>td td:first-child {
             font-size: 11px;
@@ -251,6 +256,9 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-container .fc-header-toolbar .fc-settings-button {
             width: 34px;
         }
+        .fc-settings-button {
+            margin-top: 2px;
+        }
         .fc-container .fc-timegrid-slot-label-bold {
             font-weight: bold;
         }
@@ -290,7 +298,7 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-event-note>div {
             padding: 2px;
-            min-height: 112px;
+            min-height: 50px;
             overflow: hidden;
         } 
         .fc-container .fc-event-note>div>div{
@@ -315,7 +323,7 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-popup-editor.show {
             visibility: visible;
-            width: 250px;
+            width: 285px;
 -           height: 270px;
             padding: 10px;
             opacity: 1;
@@ -387,7 +395,7 @@ module nts.uk.ui.at.kdw013.calendar {
         .favIcon{
             position: absolute;
             left: calc(100% - 22px);
-            bottom: calc(100% - 20px);
+            bottom: calc(100% - 18px);
         }
         .favIcon:hover{
                 background-color: rgb(229, 242, 255);
@@ -395,6 +403,23 @@ module nts.uk.ui.at.kdw013.calendar {
         .border-dashed{
             border-style: dashed !important;    
         }
+        .otTime {
+            background-color: #FFFF99;
+        }
+        .fc-view-harness{
+            background-color: white;
+        }
+        .fc-current-day-button,
+        .fc-preview-day-button,
+        .fc-next-day-button,
+        .fc-one-day-button,
+        .fc-full-week-button,
+        .fc-settings-button{
+            height: 25px;
+            font-size: 12px;
+            padding: 0 4px;
+        }
+        
 `;
 
     @handler({
@@ -880,11 +905,12 @@ module nts.uk.ui.at.kdw013.calendar {
                     this.popupPosition.event(null);
                     this.popupPosition.setting(null);
                 });
-    
+            
         }
 
         computedTaskDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcess | null){
                 const vm =this;
+                vm.taskDragItems([]);
                 if (datas && settings) {
                     const { tasks ,favTaskItems ,favTaskDisplayOrders } = settings;
 
@@ -927,28 +953,35 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             // update dragger items
                             vm.taskDragItems(draggers);
-                            $('#task-fav').sortable({
-                                axis: "y",
-                                update: function( event, ui ) {
+                            if (!$('#task-fav').hasClass("ui-sortable")) {
+                                $('#task-fav').sortable({
+                                    forcePlaceholderSize: true,
+                                    axis: "y",
+                                    update: (event, ui) =>{
+                                        $("#task-fav").sortable("destroy");
                                         let rows = $(event.target).find('li.title');
                                         let sortedList = [];
                                         for (let i = 1; i <= rows.length; i++) {
                                             let element = rows[i - 1];
                                             sortedList.push({ favId: $(element).attr("data-favId"), order: i });
                                         }
-                                    
-                                        let item = _.find(sortedList, [ 'favId', $(ui.item).attr('data-favId')]);
+
+                                        let item = _.find(sortedList, ['favId', $(ui.item).attr('data-favId')]);
 
                                         let command = { reorderedId: $(ui.item).attr('data-favId'), beforeOrder: $(ui.item).attr('data-order'), afterOrder: item.order };
+                                        vm.taskDragItems([]);
                                         vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/update_task_dis_order', command))
-                                                .done(() => {
-                                                    vm.params.screenA.reloadTaskFav();
-                                                }).always(() => vm.$blockui('clear'));
-                                },
-                                out: function(event, ui) {
-                                    $("#task-fav").sortable("cancel");
-                                }
-                            });
+                                            .done(() => {
+
+                                                vm.params.screenA.reloadTaskFav();
+                                            }).always(() => vm.$blockui('clear'));
+                                    },
+                                    out: (event, ui) => {
+                                        $("#task-fav").sortable("cancel");
+                                    }
+                                });
+                            }
+                            
                             return;
                         }
                     }
@@ -959,6 +992,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
             computedOnedayDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcessDto | null){
                 const vm =this;
+                $( "#one-day-fav" ).html('');
                 if (datas && settings) {
                     const { workGroupDtos } = datas;
                     const { tasks, oneDayFavSets, oneDayFavTaskDisplayOrders} = settings;
@@ -1002,29 +1036,34 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             // update dragger items
                             vm.onedayDragItems(draggers);
-                            $('#one-day-fav').sortable({
-                                axis: "y",
-                                update: function( event, ui ) {
+                            if (!$('#one-day-fav').hasClass("ui-sortable")) {
+                                $('#one-day-fav').sortable({
+                                    forcePlaceholderSize: true,
+                                    axis: "y",
+                                    update: function(event, ui) {
+                                        $("#one-day-fav").sortable("destroy");
                                         let rows = $(event.target).find('li.title');
                                         let sortedList = [];
                                         for (let i = 1; i <= rows.length; i++) {
                                             let element = rows[i - 1];
                                             sortedList.push({ favId: $(element).attr("data-favId"), order: i });
                                         }
-                                    
-                                        let item = _.find(sortedList,['favId', $(ui.item).attr('data-favId')]);
+
+                                        let item = _.find(sortedList, ['favId', $(ui.item).attr('data-favId')]);
 
                                         let command = { reorderedId: $(ui.item).attr('data-favId'), beforeOrder: $(ui.item).attr('data-order'), afterOrder: item.order };
 
                                         vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/update_one_day_dis_order', command))
-                                                .done(() => {
-                                                    vm.params.screenA.reloadOneDayFav();
-                                                }).always(() => vm.$blockui('clear'));
-                                },
-                                out: function(event, ui) {
-                                    $("#one-day-fav").sortable("cancel");
-                                }
-                            });
+                                            .done(() => {
+                                                vm.params.screenA.reloadOneDayFav();
+                                            }).always(() => vm.$blockui('clear'));
+                                    },
+                                    out: function(event, ui) {
+                                        $("#one-day-fav").sortable("cancel");
+                                    }
+                                });
+                            }
+                            
                             return;
                         }
                     }
@@ -1299,6 +1338,11 @@ module nts.uk.ui.at.kdw013.calendar {
                             .value());
 
                         updateEvents();
+
+                        if (!_.find(vm.params.events(), (e) => { return _.get(e, 'extendedProps.isChanged') })) {
+                            
+                            setTimeout(() => {vm.params.screenA.dataChanged(false)}, 100);
+                        }
                         return;
                     }
                     let data =  ko.unwrap(vm.params.$datas);
@@ -1312,31 +1356,43 @@ module nts.uk.ui.at.kdw013.calendar {
                                 
                                 let { manHrContents} = _.find(_.get(vm.params.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(etz.ymd), 'days'));
                                 const {no, breakTime} = bts;
-                                events.push({
-                                    id: randomId(),
-                                    title: vm.$i18n('KDW013_79'),
-                                    start,
-                                    end,
-                                    textColor: '',
-                                    backgroundColor: BREAKTIME_COLOR,
-                                    extendedProps: {
-                                        no,
-                                        breakTime,
+                                const businessHours = ko.unwrap(vm.params.businessHours);
+
+                                const bh = _.find(businessHours, bh => bh.dayOfWeek == start.getDay());
+                                const startAsMinites = (moment(start).hour() * 60) + moment(start).minute();
+                                const endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
+                                
+                                if (startAsMinites >= _.get(bh, 'start', 0) && endAsMinites <= _.get(bh, 'end', 1440)) {
+                                    events.push({
                                         id: randomId(),
-                                        status: 'normal',
-                                        isTimeBreak: true,
-                                        isChanged: true,
-                                        taskBlock: {
-                                            manHrContents,
-                                            taskDetails: []
-                                        }
-                                    } as any
-                                });
+                                        title: vm.$i18n('KDW013_79'),
+                                        start,
+                                        end,
+                                        textColor: '',
+                                        backgroundColor: BREAKTIME_COLOR,
+                                        extendedProps: {
+                                            no,
+                                            breakTime,
+                                            id: randomId(),
+                                            status: 'normal',
+                                            isTimeBreak: true,
+                                            isChanged: false,
+                                            taskBlock: {
+                                                manHrContents,
+                                                taskDetails: []
+                                            }
+                                        } as any
+                                    });
+                                }
+                               
                             });
                         
                     });
                 
                 updateEvents();
+                if (!_.find(vm.params.events(), (e) => { return _.get(e, 'extendedProps.isChanged') })) {
+                    setTimeout(() => {vm.params.screenA.dataChanged(false)}, 100);
+                }
             });
 
             // update drag item
@@ -1393,7 +1449,7 @@ module nts.uk.ui.at.kdw013.calendar {
             const checkEditDialog = () => {
                 let dfd = $.Deferred();
                 let eventNotSave = _.find(vm.calendar.getEvents(), (e) => !_.get(e, 'extendedProps.id'));
-                if (vm.$view() == "edit" && vm.params.$settings().isChange) {
+                if ((vm.$view() == "edit" && vm.params.$settings().isChange) || (vm.$view() == "edit" && eventNotSave)) {
                     vm.$dialog
                         .confirm({ messageId: 'Msg_2094' })
                         .then((v: 'yes' | 'no') => {
@@ -1548,6 +1604,23 @@ module nts.uk.ui.at.kdw013.calendar {
             };
             const customButtons: ButtonSet = {
                 'current-day': {
+                    text: vm.$i18n('今日'),
+                    click: () => {
+                        clearSelection();
+                        
+                        if (moment(initialDate()).isSame(moment(new Date()), 'day')) {
+                            return;
+                        }
+                        if (ko.isObservable(initialDate)) {
+                            initialDate(new Date());
+                        } else {
+                            vm.calendar.gotoDate(formatDate(new Date()));
+                        }
+                        const sc = ko.unwrap(scrollTime);
+                        vm.calendar.scrollToTime(formatTime(sc));
+                    }
+                },
+                'pika-day': {
                     text: vm.$i18n('今日'),
                     click: () => {
                         clearSelection();
@@ -1957,7 +2030,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     const events = vm.calendar.getEvents();
                     const data = ko.unwrap(params.$datas);
                     const startDate = moment(_.get(data, 'workStartDate'));
-
+                    const {lstIntegrationOfDaily} = data;
                     let hasEventNotSave = _.find(events, (e) => !_.get(e, 'extendedProps.id'));
                     
                     if (vm.$view() == "edit" && vm.params.$settings().isChange) {
@@ -1987,7 +2060,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     const events = vm.calendar.getEvents();
 
-                    let isHasTask = _.find(events, (e) => { return moment(e.start).isSameOrBefore(moment(info.date)) && moment(e.end).isSameOrAfter(moment(info.date)) });
+                    let isHasTask = _.find(events, (e) => { return moment(e.start).isSameOrBefore(moment(info.date)) && moment(e.end).isAfter(moment(info.date)) });
 
                     if (isHasTask) {
                         return;
@@ -2001,6 +2074,13 @@ module nts.uk.ui.at.kdw013.calendar {
                      let frameNos =[];                    
                      _.forEach(eventInDay, e => _.forEach(e.extendedProps.taskBlock.taskDetails, td => { frameNos.push(td.supNo); }));
                     
+                     let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(info.date).isSame(moment(id.ymd), 'days'); });
+                     _.forEach(_.filter(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null), ot => {
+                                frameNos.push(ot.workNo);
+                     })
+                            
+                            
+                    
                     let newEvent = {
                             id: randomId(),
                             start: info.date,
@@ -2009,6 +2089,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             [GROUP_ID]: SELECTED,
                             extendedProps: {
                                 status: 'new',
+                                isChanged: true,
                                 //作業枠利用設定
                                 taskFrameUsageSetting: ko.unwrap((vm.params.$settings)),
                                 //社員ID
@@ -2177,9 +2258,15 @@ module nts.uk.ui.at.kdw013.calendar {
                                                 let taskBlocks = _.map(eventInDay, e => {
                                                     let taskContents = []
                                                     _.forEach(_.get(e, 'extendedProps.taskBlock.taskDetails', []), td => {
+                                                        let tcs = [],
+                                                            attendanceTime = null;
                                                         _.forEach(td.taskItemValues, ti => {
-                                                            taskContents.push({ frameNo: td.supNo, taskContent: { itemId: ti.itemId, taskCode: ti.value } });
+                                                            if (ti.itemId == 3) {
+                                                                attendanceTime = ti.value;
+                                                            }
+                                                            tcs.push({ itemId: ti.itemId, taskCode: ti.value });
                                                         });
+                                                        taskContents.push({ frameNo: td.supNo, attendanceTime, taskContents: tcs });
                                                     });
                                                    
                                                     return { startTime: getTimeOfDate(e.start), endTime: getTimeOfDate(e.end), taskContents };
@@ -2310,7 +2397,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 .then(() => {
                                     $(vm.$el)
                                         .find('.fc-sidebar')
-                                        .css({ 'width': '220px' });
+                                        .css({ 'width': '255px', 'height': 'calc(100vh - 148px)', 'overflow-y': 'auto' });
 
                                     vm.calendar.updateSize();
                                 });
@@ -2318,11 +2405,14 @@ module nts.uk.ui.at.kdw013.calendar {
                     }
                 },
                 slotLabelClassNames: (arg) => {
-                    return moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
-                }
-                ,
+                    let result = moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
+
+                    return result ;
+                },
                 slotLaneClassNames: (arg) => {
-                    return moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
+                    let result = moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
+
+                    return result + ' ' + (vm.isOTTime(arg.date) ? 'otTime' : '');
                 }
                 ,
                 eventClick: ({ el, event, jsEvent, noCheckSave}) => {
@@ -2390,6 +2480,8 @@ module nts.uk.ui.at.kdw013.calendar {
                             vm.$view('view');
                         }
                         if (!event.extendedProps.isTimeBreak) {
+                            let frameNos = _.get(_.maxBy(_.filter(events, (e) => (moment(e.start).isSame(moment(event.start), 'days') && !e.extendedProps.isTimeBreak)), function(e) { return _.last(e.extendedProps.taskBlock.taskDetails).supNo; }), 'extendedProps.frameNos', []);
+                            event.setExtendedProp('frameNos',frameNos);
                             popupData.event(event);
                         }
                         // update exclude-times
@@ -2496,8 +2588,9 @@ module nts.uk.ui.at.kdw013.calendar {
                     vm.selectedEvents = [{ start, end }, ...rels];
 
                     event.setExtendedProp('isChanged', true);
+                    
                     // update data sources
-                    mutatedEvents();
+                    //mutatedEvents();
 
                     // add new event (no save) if new event is dragging
                     if (!title && extendedProps.status === 'new' && !rels.length) {
@@ -2538,10 +2631,29 @@ module nts.uk.ui.at.kdw013.calendar {
                             .value();
                     
                     const selecteds = _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
-                    
-                    if (extendedProps.isTimeBreak) {
-                        if (!moment(arg.oldEvent.start).isSame(start, 'days')) {
-                            vm.revertEvent(arg.oldEvent , $caches);
+                    const relBk = _.find(relatedEvents,re => re.extendedProps.isTimeBreak);
+                    if (extendedProps.isTimeBreak || relBk) {
+                        if (arg.delta.days != 0) {
+                            arg.revert();
+                            return;
+                        }
+                        
+                        const breakInday = _.filter(events(), e => moment(e.start).isSame(start, 'days') && e.extendedProps.isTimeBreak);
+                        const orverideBreak = _.filter(breakInday, br => moment(br.start).isSameOrBefore(start) && moment(br.end).isAfter(start) && (br.extendedProps.id != extendedProps.id));
+                        if (orverideBreak.length) {
+                            vm.revertEvent([arg.oldEvent], $caches);
+                            return;
+                        }
+                        
+                        const businessHours = ko.unwrap(vm.params.businessHours);
+                        
+                        const bh = _.find(businessHours, bh => bh.dayOfWeek == start.getDay());
+                        
+                        const startAsMinites = (moment(start).hour() * 60) + moment(start).minute();
+                        const endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
+                        if (startAsMinites < _.get(bh, 'start', 0) || endAsMinites > _.get(bh, 'end', 1440) || !moment(start).isSame(end,'days')){
+                            vm.revertEvent([arg.oldEvent], $caches);
+                            return;
                         }
                         
                         return;
@@ -2573,7 +2685,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             const [first] = oEvents;
                             const currentEvent = _.find(vm.calendar.getEvents(), ['extendedProps.id', extendedProps.id]);
                             currentEvent.setEnd(first.start);
-
+                            vm.params.screenA.dataChanged(true);
                         } else {
                             oEvents = _.chain(IEvents)
                                 .filter((evn) => {
@@ -2589,8 +2701,8 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             if (oEvents.length) {
                                 
-                                 vm.revertEvent(arg.oldEvent , $caches);
-
+                                 vm.revertEvent([arg.oldEvent], $caches);
+                                return;
                             }
                         }
                     }else{
@@ -2643,7 +2755,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             }                            
                         }
                     }
-                    
+                    vm.params.screenA.dataChanged(true);
                     
                 },
                 eventResizeStart: (arg: EventResizeStartArg) => {
@@ -2693,32 +2805,25 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         //valid another day
                         if (!moment(arg.oldEvent.end).isSame(end, 'days')) {
-                            vm.revertEvent(arg.oldEvent, $caches);
+                            vm.revertEvent([arg.oldEvent], $caches);
+                            return;
+                        }
+                        const breakInday = _.filter(events(), e => moment(e.start).isSame(start, 'days') && e.extendedProps.isTimeBreak);
+                        const orverideBreak = _.filter(breakInday, br => moment(br.start).isBefore(end) && (br.extendedProps.id != extendedProps.id));
+                        if (orverideBreak.length) {
+                            vm.revertEvent([arg.oldEvent], $caches);
                             return;
                         }
                         
+                        const businessHours = ko.unwrap(vm.params.businessHours);
                         
+                        const bh = _.find(businessHours, bh => bh.dayOfWeek == start.getDay());
                         
-                        //validate businessHours 
-//                        
-//                        let businessHours = vm.calendar.getOption('businessHours');
-//
-//                        let dow = moment(start).day();
-//
-//                        if (businessHours) {
-//                            let setting = _.find(businessHours, x => { return x.daysOfWeek.indexOf(dow) });
-//
-//                            let format = 'hh:mm:ss',
-//                                startTime = moment(start, format),
-//                                endTime = moment(end, format),
-//                                beforeTime = moment(setting.startTime, format),
-//                                afterTime = moment(setting.endTime, format);
-//                            if (!startTime.isBetween(beforeTime, afterTime) || !endTime.isBetween(beforeTime, afterTime)) {
-//                                 vm.revertEvent(arg.oldEvent , $caches);
-//                            }
-//
-//                            return;
-//                        }
+                        const endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
+                        if (endAsMinites > _.get(bh, 'end', 1440)){
+                            vm.revertEvent([arg.oldEvent], $caches);
+                            return;
+                        }
                         return;
                     }
                     
@@ -2786,7 +2891,6 @@ module nts.uk.ui.at.kdw013.calendar {
                   }
 				  
                    const sEvent = _.find(vm.calendar.getEvents(), e => { return e.extendedProps.id == extendedProps.id });
-
                         sEvent.setExtendedProp('isChanged', true);
                         updateEvents();
 
@@ -2798,6 +2902,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                     const data = ko.unwrap(params.$datas);
                     const startDate = moment(_.get(data, 'workStartDate'));
+                    const {lstIntegrationOfDaily} = data;
                     
                     if (startDate.isAfter(formatDate(start))) {
                         vm.calendar.unselect();
@@ -2815,6 +2920,10 @@ module nts.uk.ui.at.kdw013.calendar {
                             .value();
                     let frameNos = [];
                     _.forEach(eventInDay, e => _.forEach(e.extendedProps.taskBlock.taskDetails, td => { frameNos.push(td.supNo); }));
+                    let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(start).isSame(moment(id.ymd), 'days'); });
+                    _.forEach(_.filter(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null), ot => {
+                        frameNos.push(ot.workNo);
+                    });
                     let newEvent = {
                         id: randomId(),
                         start: start,
@@ -2882,7 +2991,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     } = event;
                     const data = ko.unwrap(params.$datas);
                     const startDate = moment(_.get(data, 'workStartDate'));
-                    
+                    const {lstIntegrationOfDaily} = data;
                     if (startDate.isAfter(formatDate(start))) {
                         event.remove();
                         return;
@@ -2903,6 +3012,15 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                     if (isTaskDrop) {
                         let taskItemValues = _.map(_.get(extendedProps, 'dropInfo.favoriteContents', []), ({itemId, taskCode}) => { return { itemId, value: taskCode } });
+                        let isHasEventInDropZone = _.chain(events())
+                            .filter((evn) => { return moment(evn.start).isSameOrBefore(start) && moment(evn.end).isAfter(start)})
+                            .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
+                            .sortBy('end')
+                            .value();
+                        
+                        if (isHasEventInDropZone.length) {
+                            return;
+                        }
                         
                         let wg = {
                             workCD1: _.get(extendedProps, 'dropInfo.favoriteContents[0].taskCode', null),
@@ -2920,15 +3038,36 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         let frameNos = [];
                         _.forEach(eventInDay, e => _.forEach(e.extendedProps.taskBlock.taskDetails, td => { frameNos.push(td.supNo); }));
+                        let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(start).isSame(moment(id.ymd), 'days'); });
+                        _.forEach(_.filter(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null), ot => {
+                            frameNos.push(ot.workNo);
+                        })
                         const startMinutes = (moment(start).hour() * 60) + moment(start).minute();
                         const endMinutes = (moment(end).hour() * 60) + moment(end).minute();
+                        const getFrameNo = (events) => {
+                            const vm = this;
+                            const data = ko.unwrap(vm.params.$datas());
+                            const {lstIntegrationOfDaily} = data;
+                            let maxNo = 20;
+                            let resultNo;
+                            for (let i = 1; i <= maxNo; i++) {
+                                let event = _.find(events, e => _.find(_.get(e, 'extendedProps.taskBlock.taskDetails', []), ['supNo', i]));
+                                let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(start).isSame(moment(id.ymd), 'days'); });
+                                let ouenTime = _.find(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null && ot.workNo == i)
+                                if (!event && !ouenTime) {
+                                    resultNo = i;
+                                    break;
+                                }
+                            }
+                            return resultNo;
+                        };
 
                         taskItemValues.push({ itemId: 1, value: startMinutes });
                         taskItemValues.push({ itemId: 2, value: endMinutes });
                         taskItemValues.push({ itemId: 3, value: endMinutes - startMinutes });
-                        let taskDetails = [{ supNo: _.isEmpty(eventInDay) ? 1 : vm.getFrameNo(eventInDay), taskItemValues }];
+                        let taskDetails = [{ supNo: _.isEmpty(eventInDay) ? 1 : getFrameNo(eventInDay), taskItemValues }];
                             events.push({
-                                title: getTitles(taskDetails, vm.params.$settings().tasks),
+                                title: getTitles(taskDetails, vm.params.$settings().tasks, vm.params.$settings().taskFrameUsageSetting),
                                 start,
                                 end,
                                 textColor,
@@ -2970,32 +3109,27 @@ module nts.uk.ui.at.kdw013.calendar {
                             let timeStart = moment(start).set('hour', task.startTime / 60).set('minute', task.startTime % 60).toDate();
                             let timeEnd = moment(start).set('hour', task.endTime / 60).set('minute', task.endTime % 60).toDate();
                             let workCDs = _.chain(task.taskContents).map(task => task.taskContent.taskCode).value();
-                            let [first] = task.taskContents;
                             let wg = {
-                                workCD1: _.get(task, 'taskContents[0].taskContent.taskCode', null),
-                                workCD2: _.get(task, 'taskContents[1].taskContent.taskCode', null),
-                                workCD3: _.get(task, 'taskContents[2].taskContent.taskCode', null),
-                                workCD4: _.get(task, 'taskContents[3].taskContent.taskCode', null),
-                                workCD5: _.get(task, 'taskContents[4].taskContent.taskCode', null),
+                                workCD1: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 4), 'taskCode', null),
+                                workCD2: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 5), 'taskCode', null),
+                                workCD3: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 6), 'taskCode', null),
+                                workCD4: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 7), 'taskCode', null),
+                                workCD5: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 8), 'taskCode', null),
                             }
                             let taskDetails = []
                             _.forEach(_.get(task, 'taskContents'), tc => {
-                                let td = _.find(taskDetails, ['supNo', tc.frameNo]);
-                                let taskdetail = { itemId: _.get(tc, 'taskContent.itemId'), value: _.get(tc, 'taskContent.taskCode') };
-                                if (td) {
-                                    td.taskItemValues.push(taskdetail);
-                                } else {
-                                    taskDetails.push({ supNo: tc.frameNo, taskItemValues: [taskdetail] });
-                                }
+                                
+                                let taskdetail = _.map(tc.taskContent, tcont => { return { itemId: tcont.itemId, value: tcont.taskCode }; });
+                                taskdetail.push({ itemId: 3, value: tc.attendanceTime });
+                                taskDetails.push({ supNo: tc.frameNo, taskItemValues: taskdetail });
                             });
                             //map item start , end between
                             _.forEach(taskDetails, td => {
                                 td.taskItemValues.push({ itemId: 1, value: task.startTime });
                                 td.taskItemValues.push({ itemId: 2, value: task.endTime });
-                                td.taskItemValues.push({ itemId: 3, value: task.endTime - task.startTime });
                             });
                             events.push({
-                                title: getTitles(taskDetails, vm.params.$settings().tasks),
+                                title: getTitles(taskDetails, vm.params.$settings().tasks, vm.params.$settings().taskFrameUsageSetting),
                                 start : timeStart,
                                 end : timeEnd,
                                 textColor,
@@ -3303,26 +3437,36 @@ module nts.uk.ui.at.kdw013.calendar {
                                     const brBeforeTime = breakOfDay.breakTimes[j - 1];
                                     let end = cbh.end;
                                     let start = cbh.start;
-                                    if (brTime.start > cbh.end) { end = 1440 };
-                                    if (brTime.start < cbh.start) { start = 0 };
-                                    bhs.push({
-                                        daysOfWeek: [cbh.dayOfWeek],
-                                        startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
-                                        endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
-                                    },
-                                        {
+                                    if (brTime.end < end) {
+                                        bhs.push({
                                             daysOfWeek: [cbh.dayOfWeek],
-                                            startTime: formatTime(brTime.end, false),
-                                            endTime: formatTime(end, false)
+                                            startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
+                                            endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
+                                        },
+                                            {
+                                                daysOfWeek: [cbh.dayOfWeek],
+                                                startTime: formatTime(brTime.end, false),
+                                                endTime: formatTime(end, false)
+                                            }
+                                        );
+                                    } else {
+                                        if (!_.find(bhs, ['daysOfWeek', cbh.dayOfWeek])) {
+                                            bhs.push({
+                                                daysOfWeek: [cbh.dayOfWeek],
+                                                startTime: start,
+                                                endTime: end
+                                            });
                                         }
-                                    );
+                                    }
+
                                 }
                             } else {
                                 bhs.push({
-                                     daysOfWeek: [cbh.dayOfWeek],
-                                     startTime: formatTime(cbh.start, false),
-                                     endTime: formatTime(cbh.end, false)
-                                });  
+                                    daysOfWeek: [cbh.dayOfWeek],
+                                    startTime: formatTime(cbh.start, false),
+                                    endTime: formatTime(cbh.end, false)
+                                });
+
                             }
                         }
                         
@@ -3369,28 +3513,19 @@ module nts.uk.ui.at.kdw013.calendar {
             vm.$nextTick(() => {
                 vm.calendar.updateSize();
             });
-
-            // test item
-            //_.extend(window, { draggerOne, calendar: vm.calendar, params, popupPosition });
         }
         
 
         
         
        
-
-        public getFrameNo(events){
-                let maxNo = 20;
-                let resultNo;
-                for (let i = 1; i < maxNo; i++) {
-                    let event = _.find(events, e => _.find(_.get(e, 'extendedProps.taskBlock.taskDetails', []), ['supNo', i]));
-
-                    if (!event) {
-                        resultNo = i;
-                        break;
-                    }
-                }
-                return resultNo;
+            
+         public   isOTTime(date){
+                const vm = this;
+                const datas = vm.params.$datas();
+                const etz = _.find(_.get(datas, 'estimateZones', []), es => moment(es.ymd).isSame(moment(date), 'days'));
+                const overTimeZones = _.get(etz, 'overTimeZones', []);
+                return false;
             }
 
         
@@ -3406,30 +3541,32 @@ module nts.uk.ui.at.kdw013.calendar {
                 return items;
             }
 
-           public revertEvent(oldEvent, caches){
-                let vm = this;
-                _.each(vm.calendar.getEvents(), (e: EventApi) => {
+           public revertEvent(oldEvents, caches){
+              let vm = this;
+              _.forEach(oldEvents, oldEvent => {
 
-                    if (e.extendedProps.id === oldEvent.extendedProps.id) {
-                        e.setExtendedProp('status', 'delete');
-                        e.remove();
-                        caches.new(null);
-                    }
-                });
-                let newEvent = vm.calendar
-                    .addEvent({
-                        id: randomId(),
-                        backgroundColor: oldEvent.backgroundColor,
-                        title: oldEvent.title,
-                        start: oldEvent.start,
-                        end: oldEvent.end,
-                        borderColor: oldEvent.borderColor,
-                        groupId: oldEvent.groupId,
-                        extendedProps: oldEvent.extendedProps
-                    });
-                caches.new(newEvent);
+                  _.each(vm.calendar.getEvents(), (e: EventApi) => {
 
-            }
+                      if (e.extendedProps.id === oldEvent.extendedProps.id) {
+                          e.setExtendedProp('status', 'delete');
+                          e.remove();
+                          caches.new(null);
+                      }
+                  });
+                  let newEvent = vm.calendar
+                      .addEvent({
+                          id: randomId(),
+                          backgroundColor: oldEvent.backgroundColor,
+                          title: oldEvent.title,
+                          start: oldEvent.start,
+                          end: oldEvent.end,
+                          borderColor: oldEvent.borderColor,
+                          groupId: oldEvent.groupId,
+                          extendedProps: oldEvent.extendedProps
+                      });
+                  caches.new(newEvent);
+              });
+          }
 
         public destroyed() {
             const vm = this;
@@ -3459,11 +3596,11 @@ module nts.uk.ui.at.kdw013.calendar {
             let dfd = $.Deferred();
             const vm = this;
             let eventNotSave = _.find(vm.calendar.getEvents(), (e) => !_.get(e, 'extendedProps.id'));
-            if (vm.$view() == "edit" && vm.params.$settings().isChange) {
+            if ((vm.$view() == "edit" && vm.params.$settings().isChange) || (vm.$view() == "edit" && eventNotSave)) {
                 vm.$dialog
                     .confirm({ messageId: 'Msg_2094' })
                     .then((v: 'yes' | 'no') => {
-                        if (eventNotSave)
+                        if (v == 'yes' && eventNotSave)
                             eventNotSave.remove();
                         dfd.resolve(v);
                     });
@@ -3530,6 +3667,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             const ovl = $tg.hasClass('ui-widget-overlay');
                             const ede = $tg.closest('.fc-oneday-events li').length > 0;
                             const tde = $tg.closest('.fc-task-events li').length > 0;
+                            const cala = $tg.closest('.fc-scrollgrid-section-body').length > 0;
                             
 
                             if (!ede) {
@@ -3556,7 +3694,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
 
                             // close popup if target isn't owner & poper.
-                            if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr && !dig && !cd && !st && !cv && !ts && !event) {
+                             if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr && !dig && !cd && !st && !cv && !ts && !event &&!cala) {
                                 vm.checkEditDialog().done((v) => {
                                     if (v == 'yes') {
 										$('.edit-event .nts-input').ntsError('clear');
@@ -3613,13 +3751,23 @@ module nts.uk.ui.at.kdw013.calendar {
                                         let canRemove = e.editable && starts.indexOf(formatDate(e.start)) !== -1;
                                         
                                         if (canRemove) {
-                                            let removeList = vm.params.screenA.removeList;
-                                            let removeDate = _.find(removeList(), (ri) => moment(ri.date).isSame(moment(e.start), 'days'));
-                                            let supNos = _.map(_.get(e, 'extendedProps.taskBlock.taskDetails', []), td => td.supNo);
-                                            if (removeDate) {
-                                                removeDate.supNos.push(...supNos);
+                                            if (e.extendedProps.isTimeBreak) {
+                                                let removeList = vm.params.screenA.removeBreakList;
+                                                let removeDate = _.find(removeList(), (ri) => moment(ri.date).isSame(moment(e.start), 'days'));
+                                                if (removeDate) {
+                                                    removeDate.nos.push(_.get(e, 'extendedProps.no', []));
+                                                } else {
+                                                    removeList.push({ date: moment(e.start).startOf('day').toDate(), nos: [_.get(e, 'extendedProps.no', [])] });
+                                                }
                                             } else {
-                                                removeList.push({ date: moment(e.start).startOf('day').toDate(), supNos });
+                                                let removeList = vm.params.screenA.removeList;
+                                                let removeDate = _.find(removeList(), (ri) => moment(ri.date).isSame(moment(e.start), 'days'));
+                                                let supNos = _.map(_.get(e, 'extendedProps.taskBlock.taskDetails', []), td => td.supNo);
+                                                if (removeDate) {
+                                                    removeDate.supNos.push(...supNos);
+                                                } else {
+                                                    removeList.push({ date: moment(e.start).startOf('day').toDate(), supNos });
+                                                }
                                             }
                                         }
 
@@ -3822,8 +3970,13 @@ module nts.uk.ui.at.kdw013.calendar {
                                 } else {
                                     $el.style.left = `${(left || 0) - width - 23}px`;
                                 }
-
-                                $el.style.width = `${width + 20}px`;
+								
+								let w = width + 20;
+								if($($el).children().children().get(1).style.display == "block"){
+									//w += 35;
+								}
+								
+                                $el.style.width = `${w}px`;
                                 $el.style.height = `${height + 20}px`;
                             }
                         }
@@ -3847,7 +4000,14 @@ module nts.uk.ui.at.kdw013.calendar {
 
                         // remove???
                         event.remove();
-
+                        let removeList = vm.params.screenA.removeList;
+                        let removeDate = _.find(removeList(), (ri) => moment(ri.date).isSame(moment(event.start), 'days'));
+                        let supNos = _.map(_.get(event, 'extendedProps.taskBlock.taskDetails', []), td => td.supNo);
+                        if (removeDate) {
+                            removeDate.supNos.push(...supNos);
+                        } else {
+                            removeList.push({ date: moment(event.start).startOf('day').toDate(), supNos });
+                        }
                         // trigger update from parent view
                         mutated.valueHasMutated();
                     })
@@ -3856,7 +4016,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     .then(() => view('view'));
             }
 
-            close(result?: 'yes' | 'cancel' | null) {
+            close(result ?: 'yes' | 'cancel' | 'save' | null) {
                 const vm = this;
                 const { params } = vm;
                 const { data, position, view, mutated } = params;
@@ -3869,11 +4029,14 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             if (event) {
                                 event.remove();
+                                
                             }
                         }
-
-                        // trigger update from parent view
-                        mutated.valueHasMutated();
+                        if(result === 'save'){
+                              // trigger update from parent view
+                              mutated.valueHasMutated();
+                        }
+                    
                     })
                     .then(() => data(null))
                     .then(() => position(null))
@@ -3971,8 +4134,9 @@ module nts.uk.ui.at.kdw013.calendar {
                     //chỉ khi click vào vùng màn hình riêng của KDW013 mới preventDefault
                     let clickOnMaster = $(tg).closest('#master-content').length > 0 ;
                     let notClickOnbreakTime = !$(tg).closest('.fc-ckb-break-time').length > 0;
+                    let notClickOnEventNote = !$(tg).closest('.fc-event-note').length > 0;
                     
-                    if (clickOnMaster  && notClickOnbreakTime)
+                    if (clickOnMaster  && notClickOnbreakTime && notClickOnEventNote)
                         evt.preventDefault();
 
                     if (tg && !!ko.unwrap(position)) {

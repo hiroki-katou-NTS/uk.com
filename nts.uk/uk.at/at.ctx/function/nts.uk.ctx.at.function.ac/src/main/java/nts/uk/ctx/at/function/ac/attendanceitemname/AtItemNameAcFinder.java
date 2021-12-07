@@ -43,8 +43,8 @@ public class AtItemNameAcFinder implements AtItemNameAdapter {
 			AttItemName dto = new AttItemName();
 			dto.setAttendanceItemId(x.getAttendanceItemId());
 			// to ver7
-			dto.setDisplayName(x.getDisplayName().isPresent() ? x.getDisplayName().get().v() : x.getAttendanceName().v());
-			dto.setAttendanceItemName(x.getAttendanceName().v());
+			dto.setOldName(x.getAttendanceName().v());
+			dto.setAttendanceItemName(x.getDisplayName().isPresent() && !x.getDisplayName().get().v().trim().equals("") ? x.getDisplayName().get().v() : x.getAttendanceName().v());
 			dto.setAttendanceItemDisplayNumber(x.getDisplayNumber());
 			dto.setNameLineFeedPosition(x.getNameLineFeedPosition());
 			dto.setUserCanUpdateAtr(x.getUserCanUpdateAtr().value);
@@ -65,9 +65,9 @@ public class AtItemNameAcFinder implements AtItemNameAdapter {
 		List<AttItemName> attItemName = attendanceItems.stream().map(x -> {
 			AttItemName dto = new AttItemName();
 			dto.setAttendanceItemId(x.getAttendanceItemId());
-			dto.setAttendanceItemName(x.getAttendanceName().v());
 			// to ver7
-			dto.setDisplayName(x.getDisplayName().isPresent() ? x.getDisplayName().get().v() : x.getAttendanceName().v());
+			dto.setOldName(x.getAttendanceName().v());
+			dto.setAttendanceItemName(x.getDisplayName().isPresent() && !x.getDisplayName().get().v().trim().equals("") ? x.getDisplayName().get().v() : x.getAttendanceName().v());
 			dto.setAttendanceItemDisplayNumber(x.getDisplayNumber());
 			dto.setNameLineFeedPosition(x.getNameLineFeedPosition());
 			dto.setUserCanUpdateAtr(x.getUserCanUpdateAtr().value);
