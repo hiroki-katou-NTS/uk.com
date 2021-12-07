@@ -22,8 +22,6 @@ import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 import nts.uk.ctx.sys.shared.dom.user.DisabledSegment;
 import nts.uk.ctx.sys.shared.dom.user.LoginID;
 import nts.uk.ctx.sys.shared.dom.user.User;
-import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
-import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 /**
  * ユーザIDから個人社員情報を取得するのUTコード
  * @author lan_lt
@@ -179,9 +177,9 @@ public class GetPersonalEmployeeInfoByUserIdServiceTest {
 		 * @return
 		 */
 		public static User createUser(String userID, Optional<String> associatedPersonID) {
-			return new User(userID, true, new HashPassword("password"), new LoginID("loginID"),
+			return new User(userID, true,new LoginID("loginID"),
 					new ContractCode("contractCode"), GeneralDate.ymd(9999, 12, 31), DisabledSegment.False,
-					DisabledSegment.False, Optional.empty(), Optional.empty(), associatedPersonID, PassStatus.InitPassword);
+					DisabledSegment.False, Optional.empty(), Optional.empty(), associatedPersonID);
 		}
 		
 	}
