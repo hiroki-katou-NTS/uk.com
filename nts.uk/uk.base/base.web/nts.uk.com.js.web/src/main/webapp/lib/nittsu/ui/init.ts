@@ -121,7 +121,6 @@ module nts.uk.ui {
                         kiban.header(!__viewContext.noHeader || (kiban.mode() === 'view'));
                     }
                     
-                    // rerun the base first
                     // update notification
                     if (__viewContext.program.operationSetting != undefined) {
                         kiban.notification(__viewContext.program.operationSetting.message);
