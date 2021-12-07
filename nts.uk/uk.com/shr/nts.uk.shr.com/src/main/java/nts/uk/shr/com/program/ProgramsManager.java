@@ -1809,6 +1809,12 @@ public class ProgramsManager {
 
     public static final Program CMM008A = new Program(WebAppId.COM, ProgramIdConsts.CMM008A, null,
             "/view/cmm/008/a/index.xhtml");
+    
+    /**
+     * CPS018
+     */
+    public static final Program CPS018A = new Program(WebAppId.COM, ProgramIdConsts.CPS018A, "CPS018_1",
+            "/view/cps/018/a/index.xhtml");
 
     /**
      * The Constant CMM014.
