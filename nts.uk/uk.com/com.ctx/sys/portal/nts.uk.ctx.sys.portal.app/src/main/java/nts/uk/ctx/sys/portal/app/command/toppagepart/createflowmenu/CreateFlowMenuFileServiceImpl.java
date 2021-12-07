@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.shr.infra.file.storage.stream.FileStoragePath;
 import org.apache.commons.io.FileUtils;
 
 import nts.arc.layer.app.file.storage.FileStorage;
@@ -44,9 +45,8 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 						fileInfo.getMimeType(), fileInfo.getOriginalSize());
 				String newFileId = newFileInfo.getId();
 				// Copy physical file
-				File file = this.findFile(fileId);
-				File newFile = new File(DATA_STORE_PATH + "//" 
-						+ AppContexts.user().contractCode() + "//" + newFileId);
+				File file = Paths.get(new FileStoragePath().getPathOfCurrentTenant().toString() + "//" + fileId).toFile();
+			  File newFile = new File(new FileStoragePath().getPathOfCurrentTenant().toString() + "//" + newFileId);
 				newFile.createNewFile();
 				FileUtils.copyFile(file, newFile, false);
 				// Persist
@@ -56,8 +56,7 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 			return "";
 		} catch (IOException e) {
 			return "";
-		}
-	}
+    }
 
 	@Override
 	public void deleteUploadedFiles(FlowMenuLayout layout) {
@@ -82,20 +81,6 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 	@Override
 	public void deleteLayout(FlowMenuLayout layout) {
 		this.deleteFile(layout.getFileId());
-	}
-
-	/**
-	 * Find uploaded file from FileStorage folder
-	 * Included main folder and subfolder with contractCd
-	 * @param fileId
-	 * @return
-	 */
-	private File findFile(String fileId) {
-		File file = Paths.get(DATA_STORE_PATH, fileId).toFile();
-		if (!file.exists()) {
-			file = Paths.get(DATA_STORE_PATH, AppContexts.user().contractCode(), fileId).toFile();
-		}
-		return file;
 	}
 	
 	private void deleteFile(String fileId) {
