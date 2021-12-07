@@ -14,11 +14,19 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.app.find.schedule.setting.functioncontrol.ScheFuncControlCorrectionFinder;
+import nts.uk.ctx.at.schedule.app.find.schedule.setting.functioncontrol.ScheFunctionCtrlByWorkplaceFinder;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByWorkplace;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByWorkplaceRepository;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadline;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadlineRepository;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlByWorkPlaceRepository;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlByWorkplace;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlCommon;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlCommonRepository;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyStartDateService;
+import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionControl;
+import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionCtrlByWorkplace;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.GetShiftTableRuleForOrganizationService;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRule;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForCompany;
@@ -36,7 +44,10 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapte
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
+import nts.uk.screen.at.app.ksu001.summarycategory.GetSummaryCategory;
+import nts.uk.screen.at.app.ksu001.summarycategory.SummaryCategoryDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 /**
  * @author laitv 
@@ -66,12 +77,28 @@ public class ScreenQueryGetInforOfInitStartup {
 	@Inject
 	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 	
+	@Inject
+	private ScheModifyAuthCtrlCommonRepository scheModifyAuthCtrlCommonRepository;
+	
+	@Inject
+	private ScheModifyAuthCtrlByWorkPlaceRepository scheModifyAuthCtrlByWorkPlaceRepository;
+	
+	@Inject
+	private ScheFuncControlCorrectionFinder scheFuncControlCorrectionFinder;
+	
+	@Inject
+	private ScheFunctionCtrlByWorkplaceFinder scheFunctionCtrlByWorkplaceFinder;
+	
+	@Inject
+	private GetSummaryCategory getSummaryCategory;
+
+	
 	public DataScreenQueryGetInforDto getData() {
 		// Step 1,2
 		String companyID = AppContexts.user().companyId();
 		Optional<DisplaySettingByWorkplace> workScheDisplaySettingOpt = workScheDisplaySettingRepo.get(companyID);
 		if (!workScheDisplaySettingOpt.isPresent()) {
-			return new DataScreenQueryGetInforDto(null, null, null, null, null, null, null);
+			return new DataScreenQueryGetInforDto();
 		}
 
 		DatePeriod datePeriod = workScheDisplaySettingOpt.get().calcuInitDisplayPeriod();
@@ -99,11 +126,54 @@ public class ScreenQueryGetInforOfInitStartup {
 		Boolean usePublicAtr = false; // 公開を利用するか
 		Boolean useWorkAvailabilityAtr = false; // 勤務希望を利用するか
 		if(shiftTableRule.isPresent()){
-			usePublicAtr =  shiftTableRule.get().getUsePublicAtr().value == 1 ? true : false;
-			useWorkAvailabilityAtr = shiftTableRule.get().getUseWorkAvailabilityAtr().value == 1 ? true : false;
+			usePublicAtr =  shiftTableRule.get().getUsePublicAtr().value == 1;
+			useWorkAvailabilityAtr = shiftTableRule.get().getUseWorkAvailabilityAtr().value == 1;
 		}
 		
-		return new DataScreenQueryGetInforDto(datePeriod.start(), datePeriod.end(), targetOrgIdenInforDto, displayInfoOrganization, scheduleModifyStartDate, usePublicAtr, useWorkAvailabilityAtr);
+		
+		// step 7 
+		Optional<ScheFunctionControl> scheFunctionControlOp = 
+				scheFuncControlCorrectionFinder.getData(companyID);
+		
+		// step 8 
+		Optional<ScheFunctionCtrlByWorkplace> scheFunctionCtrlByWorkplaceOp = 
+				scheFunctionCtrlByWorkplaceFinder.getScheFuncCtrlByWorkplace();
+		// step 9 getAllByRoleId
+		List<ScheModifyAuthCtrlCommon> scheModifyAuthCtrlCommons = 
+				scheModifyAuthCtrlCommonRepository.getAllByRoleId(companyID, roleId);
+		
+		// step 10 getAllByRoleId
+		List<ScheModifyAuthCtrlByWorkplace> scheModifyAuthCtrlByWorkplaces = 
+				scheModifyAuthCtrlByWorkPlaceRepository.getAllByRoleId(companyID, roleId);
+		
+		// step 11 取得する(表示形式)
+		SummaryCategoryDto summaryCategory = getSummaryCategory.get(null);
+		
+		// step 12 get()
+		OptionLicense optionaLicense = AppContexts.optionLicense();
+		
+		return new DataScreenQueryGetInforDto(
+				datePeriod.start(),
+				datePeriod.end(),
+				targetOrgIdenInforDto,
+				displayInfoOrganization,
+				scheduleModifyStartDate,
+				usePublicAtr,
+				useWorkAvailabilityAtr,
+				ScheFunctionControlDto.fromDomain(scheFunctionControlOp.orElse(null)),
+				ScheFunctionCtrlByWorkplaceDto.fromDomain(scheFunctionCtrlByWorkplaceOp.orElse(null)),
+				scheModifyAuthCtrlCommons.stream()
+											  .map(x -> ScheModifyAuthCtrlCommonDto.fromDomain(x))
+											  .collect(Collectors.toList()),
+			    scheModifyAuthCtrlByWorkplaces.stream()
+			    						      .map(x -> ScheModifyAuthCtrlByWorkplaceDto.fromDomain(x))
+			    						      .collect(Collectors.toList()),
+		        optionaLicense.attendance().schedule().medical(),
+		        optionaLicense.attendance().schedule().nursing(),
+		        summaryCategory.getUseCategoriesWorkplace(),
+			    summaryCategory.getUseCategoriesPersonal(),
+			    workScheDisplaySettingOpt.get().getEndDay().getClosingDate()
+				);
 	}
 	
 	

@@ -78,7 +78,7 @@ public class GetWorkRecord {
 
 	public List<WorkScheduleWorkInforDto> get(DisplayInWorkInfoInput param) {
 
-		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
+		DatePeriod period = new DatePeriod(param.getStartDate(), param.getEndDate());
 
 		RequireDailyImpl requireDailyImpl = new RequireDailyImpl(param.listSid, period, dailyRecordWorkFinder , empComHisAdapter, workCondRepo, empLeaveHisAdapter,
 				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);

@@ -348,6 +348,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			}
 
 			Optional<AffCompanyHistItem> affCompanyHistItem = mapAffComHistItem.get(employee.getEmployeeId());
+			if (affCompanyHistItem == null) affCompanyHistItem = Optional.empty();
 
 			if (affCompanyHistItem.isPresent()) {
 				result.setEntryDate(affCompanyHistItem.get().getDatePeriod().start());

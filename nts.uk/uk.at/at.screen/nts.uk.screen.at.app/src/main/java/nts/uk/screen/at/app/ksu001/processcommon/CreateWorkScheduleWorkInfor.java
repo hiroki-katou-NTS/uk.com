@@ -33,8 +33,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
@@ -56,8 +54,6 @@ public class CreateWorkScheduleWorkInfor {
 	private WorkTypeRepository workTypeRepo;
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepo;
-	@Inject
-	private WorkTimeSettingService workTimeSettingService;
 	@Inject
 	private BasicScheduleService basicScheduleService;
 	@Inject
@@ -124,30 +120,41 @@ public class CreateWorkScheduleWorkInfor {
 						.endTime(null)
 						.endTimeEditState(null)
 						.workHolidayCls(null)
-						.isEdit(true)   //
-						.isActive(true) //
+						.workTimeForm(null)
+						.conditionAbc1(true)
+						.conditionAbc2(true)
 						.build();
 
-				// ※Abc1
-				boolean isEdit = true;
-				if(dto.needToWork == false){
-					isEdit = false;
+				/*※Abc1
+				勤務予定（勤務情報）dto．実績か == true	Achievement						×	
+				勤務予定（勤務情報）dto．確定済みか == true Confirmed						×	
+				勤務予定（勤務情報）dto．勤務予定が必要か == false need a work				×	
+				勤務予定（勤務情報）dto．応援か == 時間帯応援先	 Support					× 
+				対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				× => check ở dưới UI	
+				上記以外																○	
+				*/
+				if(dto.achievements == true  || dto.confirmed == true || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value ){
+					dto.conditionAbc1 = false;
 				}
 
-				// ※Abc2
-				boolean isActive = true;
-				if(dto.needToWork == false){
-					isActive = false;
+				/* ※Abc2
+				 勤務予定（勤務情報）dto．実績か == true	Achievement						×	
+				勤務予定（勤務情報）dto．勤務予定が必要か == false	need a work				×	
+				勤務予定（勤務情報）dto．応援か == 時間帯応援先	 Support					×	
+				対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				× => check ở dưới UI
+				上記以外																○	
+				 */
+				if(dto.achievements == true  || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value ){
+					dto.conditionAbc2 = false;
 				}
-				dto.setEdit(isEdit);
-				dto.setActive(isActive);
+				
 				listWorkScheduleWorkInfor.add(dto);
 			} else {
 				// step 5.2.1
 				WorkSchedule workSchedule = value.get();
 				WorkInformation workInformation = workSchedule.getWorkInfo().getRecordInfo();
 
-				WorkInformation.Require require2 = new RequireWorkInforImpl(workTypeRepo,workTimeSettingRepo,workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
+				WorkInformation.Require require2 = new RequireWorkInforImpl(workTypeRepo,workTimeSettingRepo, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
 				Optional<WorkStyle> workStyle = Optional.empty();
 				if (workInformation.getWorkTypeCode() != null) {
 					workStyle = workInformation.getWorkStyle(require2); // workHolidayCls
@@ -236,29 +243,38 @@ public class CreateWorkScheduleWorkInfor {
 						.endTime(endtTime)
 						.endTimeEditState(endTimeEditStatus.isPresent() ? new EditStateOfDailyAttdDto(endTimeEditStatus.get().getAttendanceItemId(), endTimeEditStatus.get().getEditStateSetting().value) : null)
 						.workHolidayCls(workStyle.isPresent() ? workStyle.get().value : null)
-						.isEdit(true)
-						.isActive(true)
 						.workTypeIsNotExit(workTypeIsNotExit)
 						.workTimeIsNotExit(workTimeIsNotExit)
 						.workTypeNameKsu002(workTypeInfor.map(m -> m.getAbbreviationName()).orElse(workTypeCode == null ? null : workTypeCode + "{#KSU002_31}"))
 						.workTimeNameKsu002(workTimeSetting.map(m -> m.getWorkTimeDisplayName().getWorkTimeAbName().v()).orElse(workTimeCode == null ? null : workTimeCode + "{#KSU002_31}"))
+						.workTimeForm(workTimeSetting.map(m -> m.getWorkTimeDivision().getWorkTimeForm().value).orElse(null))
+						.conditionAbc1(true)
+						.conditionAbc2(true)
 						.build();
 
-				// ※Abc1
-				boolean isEdit = true;
-				if(dto.confirmed == true || dto.needToWork == false){
-					isEdit = false;
+				/*※Abc1
+				勤務予定（勤務情報）dto．実績か == true	Achievement						×	
+				勤務予定（勤務情報）dto．確定済みか == true Confirmed					    ×	
+				勤務予定（勤務情報）dto．勤務予定が必要か == false need a work				×	
+				勤務予定（勤務情報）dto．応援か == 時間帯応援先	 Support				    × 
+				対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				×	=> check ở dưới UI
+				上記以外															    ○	
+				*/
+				if(dto.achievements == true  || dto.confirmed == true || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value ){
+					dto.conditionAbc1 = false;
 				}
 
-				// ※Abc2
-				boolean isActive = true;
-				if(dto.needToWork == false){
-					isActive = false;
+				/* ※Abc2
+				 勤務予定（勤務情報）dto．実績か == true	Achievement						×	
+				勤務予定（勤務情報）dto．勤務予定が必要か == false	need a work				×	
+				勤務予定（勤務情報）dto．応援か == 時間帯応援先	 Support					×	
+				対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				× => check ở dưới UI
+				上記以外																○	
+				 */
+				if(dto.achievements == true  || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value ){
+					dto.conditionAbc2 = false;
 				}
-
-				dto.setEdit(isEdit);
-				dto.setActive(isActive);
-
+				
 				listWorkScheduleWorkInfor.add(dto);
 			}
 		});
@@ -275,8 +291,6 @@ public class CreateWorkScheduleWorkInfor {
 		private WorkTypeRepository workTypeRepo;
 		@Inject
 		private WorkTimeSettingRepository workTimeSettingRepository;
-		@Inject
-		private WorkTimeSettingService workTimeSettingService;
 		@Inject
 		private BasicScheduleService basicScheduleService;
 		@Inject
@@ -302,11 +316,6 @@ public class CreateWorkScheduleWorkInfor {
 		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
-
-//		@Override
-//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
-//			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-//		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {

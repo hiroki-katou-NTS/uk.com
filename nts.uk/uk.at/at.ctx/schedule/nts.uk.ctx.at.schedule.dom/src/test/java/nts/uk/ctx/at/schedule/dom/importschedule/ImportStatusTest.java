@@ -110,10 +110,10 @@ public class ImportStatusTest {
 
 
 	/**
-	 * Target	: from( ScheManaStatus )
+	 * Target	: from( WorkingStatus )
 	 */
 	@Test
-	public void test_from_ScheManaStatus() {
+	public void test_from_WorkingStatus() {
 
 		// 期待値※未チェック以外
 		@SuppressWarnings("serial")

@@ -75,9 +75,6 @@ public class GetActualOfShift {
 		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
 		RequireDailyImpl requireDailyImpl = new RequireDailyImpl(param.listSid, period, dailyRecordWorkFinder , empComHisAdapter, workCondRepo, empLeaveHisAdapter,empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
 		Map<EmployeeWorkingStatus , Optional<IntegrationOfDaily>> mapDataDaily = GetDailyRecordByScheduleManagementService.get(requireDailyImpl, param.listSid, period);
-		long end = System.nanoTime();
-		long duration = (end - start) / 1000000; // ms;
-		System.out.println("thoi gian get data Daily cua "+ param.listSid.size() + " employee: " + duration + "ms");
 
 		// step 2
 		// call 勤務実績で勤務予定（シフト）dtoを作成する

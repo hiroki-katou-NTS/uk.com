@@ -42,6 +42,10 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.screen.at.app.ksu001.start.SupportCategory;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.AllTaskScheduleDetail;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.EmpTaskInfoDto;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.GetListEmpWorkHours;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.TaskInfoDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DailyAttdTimeVacationDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DisplayWorkInfoByDateDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DisplayWorkInfoParam;
@@ -78,6 +82,8 @@ public class DisplayWorkInfoByDateSc {
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
 	@Inject
 	private GetFixedWorkInformation fixedWorkInformation;
+	@Inject
+	private GetListEmpWorkHours getListEmpWorkHours;
 
 	// return ・List<社員勤務情報　dto,社員勤務予定　dto,勤務固定情報　dto>
 	public List<DisplayWorkInfoByDateDto> displayDataKsu003(DisplayWorkInfoParam param) {
@@ -292,8 +298,27 @@ public class DisplayWorkInfoByDateSc {
 
 				workScheduleDto = null;
 			}
-
-			infoByDateDto = new DisplayWorkInfoByDateDto(key.getEmployeeID(), workInfoDto, workScheduleDto, inforDto == null ? null : inforDto.getFixedWorkInforDto().get(0));
+			
+			// 2.4
+			TaskInfoDto taskInfoDto = null;
+			//if(param.getSelectedDisplayPeriod() == 2) {
+				Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMa = new HashMap<EmployeeWorkingStatus, Optional<WorkSchedule>>();
+				mngStatusAndWScheMa.put(key, value);
+				
+				EmpTaskInfoDto infoDto = null;
+				
+				if(!getListEmpWorkHours.get(mngStatusAndWScheMa).isEmpty()) {
+					infoDto = getListEmpWorkHours.get(mngStatusAndWScheMa).get(0);
+					taskInfoDto = new TaskInfoDto(
+							infoDto.getDate(), 
+							infoDto.getEmpID(),
+							infoDto.getTaskScheduleDetail());
+				//}
+				
+			}
+			// 2.3.4
+			infoByDateDto = new DisplayWorkInfoByDateDto(key.getEmployeeID(), workInfoDto, workScheduleDto, inforDto == null ? null : inforDto.getFixedWorkInforDto().get(0), taskInfoDto);
+			
 			dateDtos.add(infoByDateDto);
 		};
 

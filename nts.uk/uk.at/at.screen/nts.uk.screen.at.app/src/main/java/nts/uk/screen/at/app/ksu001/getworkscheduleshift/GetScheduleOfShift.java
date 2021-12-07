@@ -76,10 +76,6 @@ public class GetScheduleOfShift {
 
 		// 管理状態と勤務予定Map
 		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap =  GetWorkScheduleByScheduleManagementService.getScheduleManagement(requireImpl1, param.listSid, period);
-		long end = System.nanoTime();
-		long duration = (end - start) / 1000000; // ms;
-		System.out.println("thoi gian get data Schedule cua "+ param.listSid.size() + " employee: " + duration + "ms");
-
 		// step 2
 		// call 勤務予定で勤務予定（シフト）dtoを作成する
 		WorkScheduleShiftResult rs = createWorkScheduleShift.getWorkScheduleShift(mngStatusAndWScheMap, param.listShiftMasterNotNeedGetNew);
