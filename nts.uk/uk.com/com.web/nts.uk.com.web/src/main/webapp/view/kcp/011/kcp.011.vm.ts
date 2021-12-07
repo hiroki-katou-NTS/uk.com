@@ -177,7 +177,7 @@ module nts.uk.com.view.kcp011.share {
         // 選択モード // NONE = 0, FIRST = 1, ALL = 2
         selectedMode: number;
         itemList: any;
-        // 種類
+        // 種類: 通常 = 0, 医療(病棟) = 1, 介護事業所 = 2
         workplaceGroupTypes: Array<number>;
     }
     
