@@ -283,6 +283,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                             if (dataResult.hasError == false) {
                                 vm.$blockui('hide');
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                                vm.close(true);
                             } else {
                                 // reset list data fail
                                 vm.data.mappingErrorList = [];
