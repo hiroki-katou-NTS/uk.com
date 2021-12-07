@@ -102,10 +102,12 @@
     margin-top: 5px;
 }
 #wpl_code {
-    width: 95px;
+    max-width: 85px;
+    margin-right: 10px;
 }
 #wpa3-code {
-    width: 115px;
+    max-width: 100px;
+    margin-right: 10px;
 }
 .wp-name{
     width: 410px;
@@ -158,5 +160,16 @@
     margin-bottom: 5px;
 }
 #wpcode{
-    width: 125px;
+    max-width: 90px;
+    margin-right: 10px;
+}
+#empCode{
+    max-width: 100px;
+    margin-right: 10px;
+}
+#empName{
+    width: 330px;
+}
+#wplName{
+    width: 150px;
 }

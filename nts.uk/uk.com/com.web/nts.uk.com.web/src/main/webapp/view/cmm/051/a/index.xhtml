@@ -82,8 +82,7 @@
                         <table id="wkp_list" tabindex="6"
                                data-bind="ntsGridList: {
 	                                            name:'#[CMM051_49]',
-	                                            width: 340,
-	                                            height: 441,
+	                                            width: 310,
 	                                            rows: 12,
 	                                            options: workPlaceList,
 	                                            optionsValue: workPlaceId,
@@ -107,9 +106,9 @@
                             <button tabindex="14" class=" a_62" id = "a10_2"
                                     data-bind="click: openDialogA62102, enable: isNewMode() ">#{i18n.getText('CMM051_42')}</button>
                             <!--A10_3-->
-                            <label class="ntsControl limited-label wp-code" data-bind="text: employeeCode(),required:true  "> </label>
+                            <label class="ntsControl limited-label wp-code" id="empCode" data-bind="text: employeeCode(),required:true  "> </label>
                             <!--A10_4-->
-                            <label class="ntsControl limited-label wp-name" data-bind="text: employeeName() "> </label>
+                            <label class="ntsControl limited-label wp-name" id="empName" data-bind="text: employeeName() "> </label>
                         </div>
                     </div>
                     <div data-bind="if: mode() == 0">
@@ -123,7 +122,7 @@
                             <!--A6_3-->
                             <label class="ntsControl limited-label wp-code code" id="wpcode" data-bind="text:  workplaceCode(),required:true"> </label>
                             <!--A6_4-->
-                            <label class="ntsControl limited-label wp-name name" data-bind="text:  workplaceName()"> </label>
+                            <label class="ntsControl limited-label wp-name name" id="wplName" data-bind="text:  workplaceName()"> </label>
                         </div>
                     </div>
 

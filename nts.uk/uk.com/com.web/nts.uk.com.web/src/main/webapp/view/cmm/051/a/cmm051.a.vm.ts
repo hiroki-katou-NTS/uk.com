@@ -303,7 +303,7 @@ module nts.uk.com.view.cmm051.a {
                 alreadySettingList: vm.alreadySettingPersonal,
                 isShowSelectAllButton: false,
                 showOptionalColumn: false,
-                maxWidth: 470,
+                maxWidth: 420,
                 maxRows: 13,
             };
             $('#kcp005').ntsListComponent(vm.listComponentOption)
