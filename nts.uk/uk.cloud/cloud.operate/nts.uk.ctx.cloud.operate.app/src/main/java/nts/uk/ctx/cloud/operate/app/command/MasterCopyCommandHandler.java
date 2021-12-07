@@ -1,8 +1,13 @@
 package nts.uk.ctx.cloud.operate.app.command;
 
 import lombok.SneakyThrows;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.AsyncCommandHandler;
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.task.AsyncTask;
+import nts.arc.task.AsyncTaskError;
 import nts.arc.task.AsyncTaskInfo;
 import nts.arc.task.AsyncTaskInfoRepository;
 import nts.uk.ctx.sys.assist.app.command.mastercopy.MasterCopyCategoryDto;
@@ -21,7 +26,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
-public class MasterCopyCommandHandler extends AsyncCommandHandler<MasterCopyCommand> {
+public class MasterCopyCommandHandler extends CommandHandlerWithResult<MasterCopyCommand, AsyncTaskInfo> {
 
     @Inject
     private MasterCopyCategoryFinder finder;
@@ -34,7 +39,7 @@ public class MasterCopyCommandHandler extends AsyncCommandHandler<MasterCopyComm
 
     @SneakyThrows
     @Override
-    protected void handle(CommandHandlerContext<MasterCopyCommand> context) {
+    protected AsyncTaskInfo handle(CommandHandlerContext<MasterCopyCommand> context) {
         List<MasterCopyCategoryFindDto> categories = finder.getAllMasterCopyCategory();
 
         List<MasterCopyCategoryDto> list = categories.stream().map(category -> {
@@ -50,14 +55,6 @@ public class MasterCopyCommandHandler extends AsyncCommandHandler<MasterCopyComm
         MasterCopyDataCommand command = new MasterCopyDataCommand();
         command.setCompanyId(CompanyId.create(context.getCommand().getTenantCode(), "0001"));
         command.setMasterDataList(list);
-        AsyncTaskInfo taskInfor = this.mastarCopyHandler.handle(command);
-
-        String taskId = taskInfor.getId();
-        Optional<AsyncTaskInfo> info = taskInfoRepo.find(taskId);
-
-        while(info.isPresent() && !info.get().isFailed()) {
-            Thread.sleep(1000);
-            info = taskInfoRepo.find(taskId);
-        }
+        return this.mastarCopyHandler.handle(command);
     }
 }
