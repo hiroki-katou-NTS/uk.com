@@ -367,6 +367,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 if (!vacationControl || vacationControl.nursingCareSetting == false) {
                     self.currentHoliday().nursingLeave(false);
                 }
+
+
                 // if (!vacationControl || vacationControl.publicHolidaySetting == false) {
                 //     self.currentHoliday().outputItemsHolidays(false);
                 //     self.currentHoliday().outputHolidayForward(false);
@@ -603,13 +605,18 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.remainingChargeSubstitute = ko.observable(param ? param.remainingChargeSubstitute || false : false);
             self.representSubstitute = ko.observable(param ? param.representSubstitute || false : false);
             self.outputItemSubstitute = ko.observable(param ? param.outputItemSubstitute || false : false);
-            self.outputHolidayForward = ko.observable(param ? param.outputHolidayForward || false : false);
-            self.monthlyPublic = ko.observable(param ? param.monthlyPublic || false : false);
-            self.outputItemsHolidays = ko.observable(param ? param.outputItemsHolidays || false : false);
+            //self.outputHolidayForward = ko.observable(param ? param.outputHolidayForward || false : false);
+            self.outputHolidayForward = ko.observable(false);
+            //self.monthlyPublic = ko.observable(param ? param.monthlyPublic || false : false);
+            self.monthlyPublic = ko.observable(false);
+            //self.outputItemsHolidays = ko.observable(param ? param.outputItemsHolidays || false : false);
+            self.outputItemsHolidays = ko.observable(false);
             self.childNursingLeave = ko.observable(param ? param.childNursingLeave || false : false);
             self.yearlyHoliday = ko.observable(param ? param.yearlyHoliday || false : false);
-            self.insideHours = ko.observable(param ? param.insideHours || false : false);
-            self.insideHalfDay = ko.observable(param ? param.insideHalfDay || false : false);
+            //self.insideHours = ko.observable(param ? param.insideHours || false : false);
+            self.insideHours = ko.observable(false);
+            //self.insideHalfDay = ko.observable(param ? param.insideHalfDay || false : false);
+            self.insideHalfDay = ko.observable(false);
             self.numberRemainingPause = ko.observable(param ? param.numberRemainingPause || false : false);
             self.unDigestedPause = ko.observable(param ? param.unDigestedPause || false : false);
             self.pauseItem = ko.observable(param ? param.pauseItem || false : false);
