@@ -1375,7 +1375,8 @@ module nts.custombinding {
                             if (!byItemId) { // remove item by classification id (virtual id)
                                 items = _.filter(items, x => x.layoutID != data.layoutID);
                             } else if (data.listItemDf) { // remove item by item definition id
-                                items = _.filter(items, (x: IItemClassification) => x.listItemDf && x.listItemDf[0].id != data.listItemDf[0].id);
+                                items = _.filter(items, 
+                                    (x: IItemClassification) => x.layoutItemType == IT_CLA_TYPE.SPER || (x.listItemDf && x.listItemDf[0].id != data.listItemDf[0].id));
                             }
 
                             let maps: Array<number> = _(items).map((x: IItemClassification, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
@@ -1433,7 +1434,7 @@ module nts.custombinding {
 
                             let items1 = _(ko.toJS(opts.sortable.data))
                                 .map(x => {
-                                    if (!Array.isArray(x.listItemDf)) {
+                                    if (x.listItemDf && !Array.isArray(x.listItemDf)) {
                                         x.listItemDf = Object.values(x.listItemDf);
                                     }
                                     return _.omit(x, "items");
