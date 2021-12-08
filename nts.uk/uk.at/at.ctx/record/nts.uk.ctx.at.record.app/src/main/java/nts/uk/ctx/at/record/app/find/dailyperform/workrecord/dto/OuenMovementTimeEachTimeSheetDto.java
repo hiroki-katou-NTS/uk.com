@@ -10,12 +10,14 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.PremiumTimeDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenMovementTimeEachTimeSheet;
 
 /** 応援別勤務の移動時間 */
@@ -49,15 +51,15 @@ public class OuenMovementTimeEachTimeSheetDto implements ItemConst, AttendanceIt
 				this.totalTime == null ? AttendanceTime.ZERO : new AttendanceTime(this.totalTime),
 				this.breakTime == null ? AttendanceTime.ZERO : new AttendanceTime(this.breakTime),
 				this.withinTime == null ? AttendanceTime.ZERO : new AttendanceTime(this.withinTime),
-				ConvertHelper.mapTo(premiumTimes, c -> c.toDomain()));
+				new PremiumTimeOfDailyPerformance(ConvertHelper.mapTo(premiumTimes, c -> c.toDomain()), AttendanceAmountDaily.ZERO, AttendanceTime.ZERO));
 	}
 	
-	public static OuenMovementTimeEachTimeSheetDto valueOf(OuenMovementTimeEachTimeSheet domain) {
+	public static OuenMovementTimeEachTimeSheetDto toDto(OuenMovementTimeEachTimeSheet domain) {
 		return new OuenMovementTimeEachTimeSheetDto(
 				domain.getTotalMoveTime().valueAsMinutes(),
 				domain.getBreakTime().valueAsMinutes(),
 				domain.getWithinMoveTime().valueAsMinutes(),
-				ConvertHelper.mapTo(domain.getPremiumTime(), c -> PremiumTimeDto.valueOf(c)));
+				ConvertHelper.mapTo(domain.getPremiumTime().getPremiumTimes(), c -> PremiumTimeDto.toDto(c)));
 	}
 	
 	@Override

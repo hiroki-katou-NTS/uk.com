@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem;
 
+import java.math.BigDecimal;
+
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 /**
@@ -19,4 +21,11 @@ public class PremiumRate extends IntegerPrimitiveValue<PremiumRate>{
 		super(rawValue);
 	}
 
+	/**
+	 * 小数へ変換する
+	 * @return ex) 95 → 0.95
+	 */
+	public BigDecimal toDecimal() {
+		return BigDecimal.valueOf(this.v()).movePointLeft(2);
+	}
 }

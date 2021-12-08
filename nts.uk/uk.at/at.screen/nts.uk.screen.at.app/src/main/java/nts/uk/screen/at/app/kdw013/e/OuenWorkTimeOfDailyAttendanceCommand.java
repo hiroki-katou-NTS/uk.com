@@ -24,6 +24,6 @@ public class OuenWorkTimeOfDailyAttendanceCommand {
 
 	public OuenWorkTimeOfDailyAttendance toDomain() {
 		return OuenWorkTimeOfDailyAttendance.create(SupportFrameNo.of(this.workNo),
-				this.workTime.toDomain(), null, null, null);
+				this.workTime.toDomain(), null, null);
 	}
 }

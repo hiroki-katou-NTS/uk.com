@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet.FullTimeNightShiftAttr;
@@ -46,10 +47,6 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 	/** 休憩時間 */
 	@Column(name = "BREAK_TIME")
 	public int breakTime;
-
-	/** 単価 */
-	@Column(name = "PRICE_UNIT")
-	public int priceUnit;
 
 	/** 金額 */
 	@Column(name = "AMOUNT")
@@ -211,6 +208,18 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 	@Column(name = "NIGHT_BREAK_TIME")
 	public int nightBreakTime;
 
+	/** 所定内時間金額 */
+	@Column(name = "WITHIN_AMOUNT")
+	public int withinAmount;
+
+	/** 割増時間合計 */
+	@Column(name = "PREMIUM_TIME_TOTAL")
+	public int premiumTimeTotal;
+
+	/** 割増金額合計 */
+	@Column(name = "PREMIUM_AMOUNT_TOTAL")
+	public int premiumAmountTotal;
+
 	@Override
 	protected Object getKey() {
 		return pk;
@@ -225,7 +234,6 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 			entity.pk = new KrcdtDayOuenTimePK(domain.getEmpId(), domain.getYmd(), oTimeOfDaily.getWorkNo().v());
 
 			entity.amount = oTimeOfDaily.getAmount().v();
-			entity.priceUnit = oTimeOfDaily.getPriceUnit().v();
 			entity.totalTime = oTimeOfDaily.getWorkTime().getTotalTime().valueAsMinutes();
 			entity.breakTime = oTimeOfDaily.getWorkTime().getBreakTime().valueAsMinutes();
 			entity.withinTime = oTimeOfDaily.getWorkTime().getWithinTime().valueAsMinutes();
@@ -262,6 +270,9 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 			entity.movePremiumTime8 = getPremiumTime(oTimeOfDaily.getMoveTime().getPremiumTime(), 8);
 			entity.movePremiumTime9 = getPremiumTime(oTimeOfDaily.getMoveTime().getPremiumTime(), 9);
 			entity.movePremiumTime10 = getPremiumTime(oTimeOfDaily.getMoveTime().getPremiumTime(), 10);
+			entity.withinAmount = oTimeOfDaily.getWorkTime().getWithinAmount().v();
+			entity.premiumTimeTotal = oTimeOfDaily.getWorkTime().getPremiumTime().getTotalWorkingTime().valueAsMinutes();
+			entity.premiumAmountTotal = oTimeOfDaily.getWorkTime().getPremiumTime().getTotalAmount().v();
 
 			getMedicalTime(oTimeOfDaily.getWorkTime().getMedicalTime(), FullTimeNightShiftAttr.DAY_SHIFT)
 					.ifPresent(m -> {
@@ -289,20 +300,19 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 				.findFirst();
 	}
 	
-	private static int getPremiumTime(List<PremiumTime> times, int no) {
+	private static int getPremiumTime(PremiumTimeOfDailyPerformance time, int no) {
 		
-		return times.stream().filter(c -> c.getPremiumTimeNo().value == no)
+		return time.getPremiumTimes().stream().filter(c -> c.getPremiumTimeNo().value == no)
 				.findFirst().map(c -> c.getPremitumTime().v()).orElse(0);
 	}
 
-	private static int getPremiumAmount(List<PremiumTime> times, int no) {
-		return times.stream().filter(c -> c.getPremiumTimeNo().value == no)
+	private static int getPremiumAmount(PremiumTimeOfDailyPerformance time, int no) {
+		return time.getPremiumTimes().stream().filter(c -> c.getPremiumTimeNo().value == no)
 				.findFirst().map(c -> c.getPremiumAmount().v()).orElse(0);
 	}
 
 	public void update(KrcdtDayOuenTime entity) {
 		this.amount = entity.amount;
-		this.priceUnit = entity.priceUnit;
 		this.totalTime = entity.totalTime;
 		this.breakTime = entity.breakTime;
 		this.withinTime = entity.withinTime;
@@ -345,6 +355,9 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 		this.nightWorkTime = entity.nightWorkTime;
 		this.nightBreakTime = entity.nightBreakTime;
 		this.nightDeductionTime = entity.nightDeductionTime;
+		this.withinAmount = entity.withinAmount;
+		this.premiumTimeTotal = entity.premiumTimeTotal;
+		this.premiumAmountTotal = entity.premiumAmountTotal;
 	}
 
 }

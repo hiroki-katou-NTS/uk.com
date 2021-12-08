@@ -30,6 +30,6 @@ public class UpdateAttendanceTimeZoneBySupportWork {
 						Optional.empty()),
 
 				OuenWorkTimeOfDailyAttendance.create(SupportFrameNo.of(command.ouenTime.workNo),
-						command.ouenTime.workTime.toDomain(), null, null, null));
+						command.ouenTime.workTime.toDomain(), null, null));
 	}
 }

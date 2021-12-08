@@ -8,9 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.UnitPrice;
-import nts.uk.shr.com.primitive.Memo;
 
 /**
  * 人件費計算設定
@@ -66,21 +65,63 @@ public class PersonCostCalculation extends AggregateRoot {
         return null;
     }
     
+
 	/**
 	 * 社員時間単価NOを取得する
 	 * @param no 割増時間項目NO
 	 * @return 「単価の設定方法」を判断して取得した「社員時間単価NO」
 	 */
-	public Optional<UnitPrice> getUnitPriceAsJudged(ExtraTimeItemNo no){
+	public Optional<UnitPrice> getUnitPriceAsJudged(ExtraTimeItemNo no) {
 		if(this.howToSetUnitPrice.isPremiumRate()) {
 			return this.unitPrice;
 		}
-		if(this.howToSetUnitPrice.isUnitPrice()) {
-			return this.premiumSettings.stream()
-					.filter(p -> p.getID().equals(no))
-					.map(p -> p.getUnitPrice())
-					.findFirst();
+		return this.premiumSettings.stream()
+				.filter(p -> p.getID().equals(no))
+				.map(p -> p.getUnitPrice())
+				.findFirst();
+	}
+
+	/**
+	 * 割増時間合計に含めるか
+	 * @param no 割増時間項目NO
+	 * @return 割増時間合計に含める
+	 */
+	public boolean isIncludeTotalTime(ExtraTimeItemNo no) {
+		Optional<PremiumSetting> set = this.premiumSettings.stream()
+				.filter(p -> p.getID().equals(no))
+				.findFirst();
+		return set.map(s -> s.isIncludeTotal()).orElse(false);
+	}
+
+	/**
+	 * 割増時間の単価を取得する
+	 * @param no 割増時間項目NO
+	 * @param employeeUnitPrice  社員単価履歴項目
+	 * @return 割増時間の単価
+	 */
+	public WorkingHoursUnitPrice getPremiumUnitPrice(ExtraTimeItemNo no, EmployeeUnitPriceHistoryItem employeeUnitPrice) {
+		Optional<UnitPrice> unitPriceNo = getUnitPriceAsJudged(no);
+		if(!unitPriceNo.isPresent()) {
+			return WorkingHoursUnitPrice.ZERO;
 		}
-		return Optional.empty();
+		return employeeUnitPrice.getWorkingHoursUnitPrice(unitPriceNo.get()).orElse(WorkingHoursUnitPrice.ZERO);
+	}
+
+	/**
+	 * 就業時間金額の単価を取得する
+	 * @param employeeUnitPrice 社員単価履歴項目
+	 * @return 就業時間金額の単価
+	 */
+	public WorkingHoursUnitPrice getWorkTimeUnitPrice(EmployeeUnitPriceHistoryItem employeeUnitPrice) {
+		return employeeUnitPrice.getWorkingHoursUnitPrice(this.workingHoursUnitPrice).orElse(WorkingHoursUnitPrice.ZERO);
+	}
+
+	/**
+	 * 割増設定を取得する
+	 * @param no 割増時間項目NO
+	 * @return 割増設定
+	 */
+	public Optional<PremiumSetting> getPremiumSetting(ExtraTimeItemNo no) {
+		return this.premiumSettings.stream().filter(p -> p.getID().equals(no)).findFirst();
 	}
 }

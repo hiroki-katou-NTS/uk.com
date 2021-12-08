@@ -14,4 +14,13 @@ public class AttendanceAmountDaily extends IntegerPrimitiveValue<AttendanceAmoun
 	public AttendanceAmountDaily(Integer rawValue) {
 		super(rawValue);
 	}
+
+	@Override
+	protected Integer reviseRawValue(Integer rawValue) {
+		if(rawValue > 999999)
+			rawValue = 999999;
+		if(-999999 > rawValue)
+			rawValue = -999999;
+		return super.reviseRawValue(rawValue);
+	}
 }

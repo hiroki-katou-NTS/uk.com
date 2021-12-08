@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_PER_COST_CALC")
+@Table(name = "KSRMT_PER_COST_CALC")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KmlmtPersonCostCalculation extends ContractUkJpaEntity implements Serializable {
