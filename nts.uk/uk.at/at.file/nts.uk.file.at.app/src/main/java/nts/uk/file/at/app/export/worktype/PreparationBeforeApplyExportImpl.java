@@ -1057,7 +1057,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                     case "KAF002":
                         return o.getAppType() == ApplicationType.STAMP_APPLICATION
                                 && ((o.getOpStampRequestMode().get() == StampRequestMode.STAMP_ADDITIONAL && menu.getScreenId().equals("A"))
-                                || (o.getOpStampRequestMode().get() == StampRequestMode.STAMP_ONLINE_RECORD && menu.getScreenId().equals("C")));
+                                || (o.getOpStampRequestMode().get() == StampRequestMode.STAMP_ONLINE_RECORD && menu.getScreenId().equals("B")));
                     case "KAF011":
                         return o.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
                     case "KAF020":
@@ -1825,8 +1825,8 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                 String value;
                 if (col == 0 && row == 0) value = TextResource.localize("KAF022_752");
                 else if (col == 0 && row == 4) value = TextResource.localize("KAF022_692");
-                else if (col == 0 && row == 9) value = TextResource.localize("KAF022_531");
-                else if (col == 0 && row == 10) value = TextResource.localize("KAF022_693");
+                else if (col == 0 && row == 8) value = TextResource.localize("KAF022_531");
+                else if (col == 0 && row == 9) value = TextResource.localize("KAF022_693");
                 else if (col == 1 && row == 0) value = TextResource.localize("KAF022_540");
                 else if (col == 1 && row == 1) value = TextResource.localize("KAF022_583");
                 else if (col == 1 && row == 4) value = TextResource.localize("KAF022_538");
