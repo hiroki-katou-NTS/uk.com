@@ -14,6 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
+import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoImport;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
@@ -32,30 +33,43 @@ public class UserFinder {
 	@Inject
 	private EmployeeInfoAdapter employeeInfoAdapter;
 	
+	/** The company adapter. */
+	@Inject
+	private CompanyAdapter companyAdapter;
+	
 	@Inject
 	private RoleIndividualGrantRepository roleIndividualGrantRepo;
 	
 	@Inject
 	private EmployeeInfoPub employeeInfoPub;
 
-	public List<UserDto> searchUser(String userNameID) {
+	public List<UserAuthDto> searchUser(String userNameID) {
 		GeneralDate date = GeneralDate.today();
 		if (userNameID == null) {
 			throw new BusinessException("Msg_438");
 		}
 		
-		List<UserDto> listUserDto = new ArrayList<UserDto>();
+		List<UserAuthDto> listUserDto = new ArrayList<UserAuthDto>();
 		List<SearchUser> listSearchUser = userRepo.searchUser(userNameID, date).stream().sorted(Comparator.comparing(SearchUser::getLoginID))
 										.collect(Collectors.toList());
 		listSearchUser.forEach(item -> {
-			UserDto userDto = UserDto.objDomain(item);
+			
+			
 			if (item != null) {				
 				// アルゴリズム「指定の個人IDから在籍社員を取得」を実行する
-				List<EmpInfoExport> empInfoExportLst = employeeInfoPub.getEmpInfoByPid(item.getPersonId().trim());				
-				 if(!CollectionUtil.isEmpty(empInfoExportLst)){
-					 listUserDto.add(userDto);					 
-         		}
-			}
+				List<EmpInfoExport> empInfoExportLst = employeeInfoPub.getEmpInfoByPid(item.getPersonId().trim());
+				if (!CollectionUtil.isEmpty(empInfoExportLst)) {
+					empInfoExportLst.forEach(empInfor -> {
+						UserAuthDto userDto = new UserAuthDto();
+						userDto.setUserID(item.getUserID());
+						userDto.setLoginID(item.getLoginID());
+						userDto.setUserName(item.getUserName());
+						userDto.setEmpCD(empInfor.getEmployeeCode());
+						userDto.setCompanyCD(companyAdapter.findCompanyByCid(empInfor.getCompanyId()).getCompanyCode());
+						listUserDto.add(userDto);
+					});		
+				}				
+			}			
 		});
 		
 		return listUserDto;
