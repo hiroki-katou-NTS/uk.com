@@ -1572,7 +1572,7 @@ public class AppContentServiceImpl implements AppContentService {
 
 					multipleOverTime.append(SV).append(I18NText.getText("CMM045_307", params));
 				}
-				return multipleOverTime  + "\n" + appReasonContent;
+				return appReasonContent  + "\n" + multipleOverTime;
 
 			}
 		}
