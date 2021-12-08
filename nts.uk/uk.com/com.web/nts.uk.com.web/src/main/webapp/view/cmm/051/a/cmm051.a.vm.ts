@@ -86,8 +86,8 @@ module nts.uk.com.view.cmm051.a {
             ]);
             vm.columns = ko.observableArray([
                 {headerText: '', key: 'id', hidden: true},
-                {headerText: nts.uk.resource.getText("CMM051_44"), key: 'code', width: 145},
-                {headerText: nts.uk.resource.getText("CMM051_45"), key: 'name', width: 195}
+                {headerText: nts.uk.resource.getText("CMM051_44"), key: 'code', width: 130},
+                {headerText: nts.uk.resource.getText("CMM051_45"), key: 'name', width: 180}
             ]);
 
         }
@@ -430,17 +430,13 @@ module nts.uk.com.view.cmm051.a {
                     vm.employeeId(null);
                     vm.employeeCode(null);
                     vm.employeeName(null);
-                    if(!isNullOrEmpty(vm.employInfors())){
-                        vm.openDialogCDL009();
-                    }
+                    vm.openDialogCDL009();
                 }
                 if(vm.mode() == Mode.EMPLOYMENT){
                     vm.workPlaceId(null);
                     vm.workplaceCode(null);
                     vm.workplaceName(null);
-                    if(!isNullOrEmpty(vm.workPlaceList())){
-                        vm.openCDL008Dialog();
-                    }
+                    vm.openCDL008Dialog();
                 }
                 vm.dateHistoryList([]);
                 vm.historyId(null);
