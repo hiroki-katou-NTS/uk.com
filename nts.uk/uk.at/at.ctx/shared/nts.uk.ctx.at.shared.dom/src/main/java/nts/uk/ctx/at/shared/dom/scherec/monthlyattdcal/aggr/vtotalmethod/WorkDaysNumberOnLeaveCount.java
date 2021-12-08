@@ -29,16 +29,16 @@ public class WorkDaysNumberOnLeaveCount extends AggregateRoot {
 		this.cid = cid;
 		this.countedLeaveList = countedLeaveList;
 		
-		if (!checkVacationType(LeaveCountedAsWorkDaysType.SPECIAL_VACATION)
-				|| !checkVacationType(LeaveCountedAsWorkDaysType.ANNUAL_LEAVE)
-				|| !checkVacationType(LeaveCountedAsWorkDaysType.ACCUMULATED_ANNUAL_LEAVE)) {
+		if (checkVacationType(LeaveCountedAsWorkDaysType.SPECIAL_VACATION)
+				|| checkVacationType(LeaveCountedAsWorkDaysType.ANNUAL_LEAVE)
+				|| checkVacationType(LeaveCountedAsWorkDaysType.ACCUMULATED_ANNUAL_LEAVE)) {
 			
-			throw new BusinessException("Msg_3258");
+			throw new RuntimeException("同じ種類のカウントする休暇が2件以上存在している");
 		}
 	}
 
 	private boolean checkVacationType(LeaveCountedAsWorkDaysType type) {
-		return countedLeaveList.stream().filter(c -> c == type).collect(Collectors.toList()).size() == 1;
+		return countedLeaveList.stream().filter(c -> c == type).collect(Collectors.toList()).size() > 1;
 	}
 	
 	/** [1] 休暇時の日数カウントを計算する */
