@@ -84,7 +84,7 @@
 								<!-- A2_1_6 -->
 								<div class="event-button">
 									<button tabindex="9" id="event" title=""
-										style="margin-left: 10px" class="small">#{i18n.getText('KSU003_6')}
+										style="margin-left: 10px" class="small" data-bind="enable: false">#{i18n.getText('KSU003_6')}
 									</button>
 								</div>
 							</div>
@@ -138,8 +138,8 @@
 							</div>
 							<div>
 								<!-- A3_3 -->
-								<div tabindex="12" id="check-name"
-									data-bind="ntsCheckBox: { checked: checkedName, enable: true}">#{i18n.getText('KSU003_19')}</div>
+								<div tabindex="12" id="check-name" 
+									data-bind="ntsCheckBox: { checked: checkedName, enable: false}, enable: false">#{i18n.getText('KSU003_19')}</div>
 							</div>
 							<button tabindex="13" id="note-sort" class="small">#{i18n.getText('KSU003_18')}</button>
 						</div>
