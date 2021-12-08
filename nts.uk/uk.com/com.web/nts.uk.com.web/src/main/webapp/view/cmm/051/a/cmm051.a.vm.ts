@@ -353,7 +353,7 @@ module nts.uk.com.view.cmm051.a {
                         vm.employeeId(eminfo.id);
                     } else {
                         vm.employeeCode(null);
-                        vm.employeeName(null)
+                        vm.employeeName(null);
                     }
                 }
             });
@@ -363,9 +363,9 @@ module nts.uk.com.view.cmm051.a {
                 if (!isNullOrUndefined(e) ) {
                     let eminfo = _.find(vm.employInfors(), (i) => i.id == e);
                     if (!isNullOrUndefined(eminfo)) {
-                        vm.employeeName(eminfo.name);
-                        vm.employeeCode(eminfo.code);
+                        vm.selectedEmCode(eminfo.code);
                         vm.isDelete(true);
+                        vm.isNewMode(false);
                     } else {
                         vm.employeeCode(null);
                         vm.employeeName(null)
@@ -381,6 +381,7 @@ module nts.uk.com.view.cmm051.a {
                         vm.workplaceName(info.name);
                         vm.workplaceCode(info.code);
                         vm.isDelete(true);
+                        vm.isNewMode(false);
                     } else {
                         vm.workplaceName(null);
                         vm.workplaceCode(null);
