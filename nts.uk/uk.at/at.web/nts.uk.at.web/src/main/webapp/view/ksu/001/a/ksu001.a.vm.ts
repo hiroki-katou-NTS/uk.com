@@ -5530,7 +5530,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         openLDialog(): void {
             let self = this;
             //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
-            setShared("baseDate", ko.observable(self.dateTimeAfter()));
+            setShared("KSU001La", {
+                date: self.dateTimeAfter(),
+                listEmpData: self.listEmpData
+            });
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml").onClosed(() => {
                 let dataShare = getShared("ksu001la-result");

@@ -92,10 +92,10 @@ public class ScreenQueryExtractTargetEmployees {
 		RequireGetEmpImpl requireGetEmpImpl = new RequireGetEmpImpl(workplaceGroupAdapter, regulInfoEmployeeAdap, regulInfoEmpPub);
 		String epmloyeeId = AppContexts.user().employeeId();
 		TargetOrgIdenInfor targetOrgIdenInfor = param.targetOrgIdenInfor;
-		List<String> sids = GetEmpCanReferService.getByOrg(requireGetEmpImpl, epmloyeeId, param.baseDate, DatePeriod.oneDay(param.baseDate), targetOrgIdenInfor);
+		List<String> sids = GetEmpCanReferService.getByOrg(requireGetEmpImpl, epmloyeeId, param.systemDate, param.period, targetOrgIdenInfor);
 
 		// step 2, 3
-		EmployeeInformationQueryDtoImport input = new EmployeeInformationQueryDtoImport(sids, param.baseDate, false, false, false, false, false, false);
+		EmployeeInformationQueryDtoImport input = new EmployeeInformationQueryDtoImport(sids, param.systemDate, false, false, false, false, false, false);
 
 		List<EmployeeInformationImport> listEmp = empInfoAdapter.getEmployeeInfo(input);
 		//2020/9/7　発注済み step 4
@@ -117,7 +117,7 @@ public class ScreenQueryExtractTargetEmployees {
 			return listEmp;
 		}
 
-		List<String> listSidOrder = sortSetting.get().sort(requireSortEmpImpl, param.baseDate, sids2);
+		List<String> listSidOrder = sortSetting.get().sort(requireSortEmpImpl, param.systemDate, sids2);
 
 		listEmp.sort(Comparator.comparing(v-> listSidOrder.indexOf(v.getEmployeeId())));
 

@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.DateHistoryCache;
 import nts.arc.layer.app.cache.KeyDateHistoryCache;
 import nts.arc.layer.app.cache.NestedMapCache;
@@ -40,9 +39,9 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.screen.at.app.ksu001.start.SupportCategory;
-import nts.uk.screen.at.app.ksu003.getlistempworkhours.AllTaskScheduleDetail;
 import nts.uk.screen.at.app.ksu003.getlistempworkhours.EmpTaskInfoDto;
 import nts.uk.screen.at.app.ksu003.getlistempworkhours.GetListEmpWorkHours;
 import nts.uk.screen.at.app.ksu003.getlistempworkhours.TaskInfoDto;
@@ -84,6 +83,8 @@ public class DisplayWorkInfoByDateSc {
 	private GetFixedWorkInformation fixedWorkInformation;
 	@Inject
 	private GetListEmpWorkHours getListEmpWorkHours;
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 
 	// return ・List<社員勤務情報　dto,社員勤務予定　dto,勤務固定情報　dto>
 	public List<DisplayWorkInfoByDateDto> displayDataKsu003(DisplayWorkInfoParam param) {
@@ -92,9 +93,7 @@ public class DisplayWorkInfoByDateSc {
 
 		List<DisplayWorkInfoByDateDto> dateDtos = new ArrayList<>();
 
-		RequireWorkScheManaStatusImpl requireImpl = new RequireWorkScheManaStatusImpl(param.getLstEmpId(), period,
-				workScheduleRepo, empComHisAdapter, workCondRepo, empLeaveHisAdapter, empLeaveWorkHisAdapter,
-				employmentHisScheduleAdapter);
+		RequireWorkScheManaStatusImpl requireImpl = new RequireWorkScheManaStatusImpl(param.getLstEmpId(), period);
 
 		// 1 .取得する(Require, List<社員ID>, 期間):Map<社員の予定管理状態, Optional<勤務予定>>
 		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mapScheMana = GetWorkScheduleByScheduleManagementService
@@ -329,8 +328,7 @@ public class DisplayWorkInfoByDateSc {
 		return dateDtos;
 	}
 
-	@AllArgsConstructor
-	public static class RequireWorkScheManaStatusImpl implements GetWorkScheduleByScheduleManagementService.Require {
+	public class RequireWorkScheManaStatusImpl implements GetWorkScheduleByScheduleManagementService.Require {
 
 		private NestedMapCache<String, GeneralDate, WorkSchedule> workScheduleCache;
 		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;
@@ -338,12 +336,8 @@ public class DisplayWorkInfoByDateSc {
 		private KeyDateHistoryCache<String, EmployeeLeaveJobPeriodImport> empLeaveJobPeriodCache;
 		private KeyDateHistoryCache<String, EmpLeaveWorkPeriodImport> empLeaveWorkPeriodCache;
 		private KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workCondItemWithPeriodCache;
-
-		public RequireWorkScheManaStatusImpl(List<String> empIdList, DatePeriod period,
-				WorkScheduleRepository workScheduleRepo, EmpComHisAdapter empComHisAdapter,
-				WorkingConditionRepository workCondRepo, EmpLeaveHistoryAdapter empLeaveHisAdapter,
-				EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter,
-				EmploymentHisScheduleAdapter employmentHisScheduleAdapter) {
+		
+		public RequireWorkScheManaStatusImpl(List<String> empIdList, DatePeriod period) {
 
 			List<WorkSchedule> lstWorkSchedule = workScheduleRepo.getList(empIdList, period);
 			workScheduleCache = NestedMapCache.preloadedAll(lstWorkSchedule.stream(),
@@ -370,7 +364,7 @@ public class DisplayWorkInfoByDateSc {
 			workCondItemWithPeriodCache = KeyDateHistoryCache.loaded(createEntries5(data6));
 		}
 
-		private static Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>>  createEntries1(Map<String, List<EmpEnrollPeriodImport>> data) {
+		private Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>>  createEntries1(Map<String, List<EmpEnrollPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<EmpEnrollPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmpEnrollPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -379,7 +373,7 @@ public class DisplayWorkInfoByDateSc {
 			return rs;
 		}
 
-		private static Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
+		private Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<EmploymentPeriodImported>> s = v.stream().map(i->new DateHistoryCache.Entry<EmploymentPeriodImported>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -388,7 +382,7 @@ public class DisplayWorkInfoByDateSc {
 			return rs;
 		}
 
-		private static Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>>  createEntries3(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
+		private Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>>  createEntries3(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -397,7 +391,7 @@ public class DisplayWorkInfoByDateSc {
 			return rs;
 		}
 
-		private static Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
+		private Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -406,7 +400,7 @@ public class DisplayWorkInfoByDateSc {
 			return rs;
 		}
 
-		private static Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries5(Map<String, List<WorkingConditionItemWithPeriod>> data) {
+		private Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries5(Map<String, List<WorkingConditionItemWithPeriod>> data) {
 			Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>> s = v.stream().map(i->new DateHistoryCache.Entry<WorkingConditionItemWithPeriod>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -417,14 +411,12 @@ public class DisplayWorkInfoByDateSc {
 
 		@Override
 		public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd) {
-			Optional<WorkSchedule> result = workScheduleCache.get(employeeID, ymd);
-			return result;
+			return workScheduleCache.get(employeeID, ymd);
 		}
 
 		@Override
 		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(String sid, GeneralDate startDate) {
-			Optional<EmpEnrollPeriodImport> data = affCompanyHistByEmployeeCache.get(sid, startDate);
-			return data;
+			return affCompanyHistByEmployeeCache.get(sid, startDate);
 		}
 
 		@Override
@@ -435,26 +427,22 @@ public class DisplayWorkInfoByDateSc {
 
 		@Override
 		public Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(String sid, GeneralDate startDate) {
-			Optional<EmployeeLeaveJobPeriodImport> data = empLeaveJobPeriodCache.get(sid, startDate);
-			return data;
+			return empLeaveJobPeriodCache.get(sid, startDate);
 		}
 
 		@Override
 		public Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(String sid, GeneralDate startDate) {
-			Optional<EmpLeaveWorkPeriodImport> data = empLeaveWorkPeriodCache.get(sid, startDate);
-			return data;
+			return empLeaveWorkPeriodCache.get(sid, startDate);
 		}
 
 		@Override
 		public Optional<EmploymentPeriodImported> getEmploymentHistory(String sid, GeneralDate startDate) {
-			Optional<EmploymentPeriodImported> data = employmentPeriodCache.get(sid, startDate);
-			return data;
+			return employmentPeriodCache.get(sid, startDate);
 		}
 
 		@Override
 		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
 		}
 	}
 }

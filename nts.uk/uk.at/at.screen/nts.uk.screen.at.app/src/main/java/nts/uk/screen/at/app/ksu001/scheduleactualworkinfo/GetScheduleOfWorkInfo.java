@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.DateHistoryCache;
 import nts.arc.layer.app.cache.KeyDateHistoryCache;
 import nts.arc.layer.app.cache.NestedMapCache;
@@ -33,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
 import nts.uk.screen.at.app.ksu001.processcommon.CreateWorkScheduleWorkInfor;
@@ -61,19 +61,18 @@ public class GetScheduleOfWorkInfo {
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
 	@Inject
 	private CreateWorkScheduleWorkInfor createWorkScheduleWorkInfor;
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 
 	public List<WorkScheduleWorkInforDto> getDataScheduleOfWorkInfo(DisplayInWorkInfoParam param) {
 
 		// step 1 start
 		// call 予定管理状態に応じて勤務予定を取得する
 		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
-		RequireImpl RequireImpl = new RequireImpl(param.listSid, period, workScheduleRepo, empComHisAdapter, workCondRepo, empLeaveHisAdapter,
-				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
+		RequireImpl RequireImpl = new RequireImpl(param.listSid, period);
 
 		// 管理状態と勤務予定Map
-		long start = System.nanoTime();
 		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap =  GetWorkScheduleByScheduleManagementService.getScheduleManagement(RequireImpl, param.listSid, period);
-		System.out.println("thoi gian get data Schedule cua "+ param.listSid.size() + " employee: " + ((System.nanoTime() - start )/1000000) + "ms");
 
 		// step 2
 		// call 勤務予定で勤務予定（勤務情報）dtoを作成する
@@ -81,8 +80,7 @@ public class GetScheduleOfWorkInfo {
 		return listWorkScheduleWorkInfor;
 	}
 
-	@AllArgsConstructor
-	private static class RequireImpl implements GetWorkScheduleByScheduleManagementService.Require {
+	private class RequireImpl implements GetWorkScheduleByScheduleManagementService.Require {
 
 		private NestedMapCache<String, GeneralDate, WorkSchedule> workScheduleCache;
 		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;
@@ -91,51 +89,34 @@ public class GetScheduleOfWorkInfo {
 		private KeyDateHistoryCache<String, EmpLeaveWorkPeriodImport> empLeaveWorkPeriodCache;
 		private KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workCondItemWithPeriodCache;
 
-		public RequireImpl(List<String> empIdList, DatePeriod period, WorkScheduleRepository workScheduleRepo,
-				EmpComHisAdapter empComHisAdapter, WorkingConditionRepository workCondRepo,
-				EmpLeaveHistoryAdapter empLeaveHisAdapter, EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter,
-				EmploymentHisScheduleAdapter employmentHisScheduleAdapter) {
+		public RequireImpl(List<String> empIdList, DatePeriod period) {
 
-			long start1 = System.nanoTime();
 			List<WorkSchedule> lstWorkSchedule = workScheduleRepo.getList(empIdList, period);
 			workScheduleCache = NestedMapCache.preloadedAll(lstWorkSchedule.stream(),
 					workSchedule -> workSchedule.getEmployeeID(), workSchedule -> workSchedule.getYmd());
-			System.out.println("thoi gian get data WorkSchedule " + ((System.nanoTime() - start1 )/1000000) + "ms");
 
-			long start2 = System.nanoTime();
 			List<EmpEnrollPeriodImport> affCompanyHists =  empComHisAdapter.getEnrollmentPeriod(empIdList, period);
 			Map<String, List<EmpEnrollPeriodImport>> data2 = affCompanyHists.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
 			affCompanyHistByEmployeeCache = KeyDateHistoryCache.loaded(createEntries1(data2));
-			System.out.println("thoi gian get data affCompanyHistByEmp " + ((System.nanoTime() - start2 )/1000000) + "ms");
 
-			long start3 = System.nanoTime();
 			List<EmploymentPeriodImported> listEmploymentPeriodImported = employmentHisScheduleAdapter.getEmploymentPeriod(empIdList, period);
 			Map<String, List<EmploymentPeriodImported>> data3 = listEmploymentPeriodImported.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
 			employmentPeriodCache = KeyDateHistoryCache.loaded(createEntries2(data3));
-			System.out.println("thoi gian get data EmploymentPeriod " + ((System.nanoTime() - start3 )/1000000) + "ms");
 
-			long start4 = System.nanoTime();
 			List<EmployeeLeaveJobPeriodImport> empLeaveJobPeriods = empLeaveHisAdapter.getLeaveBySpecifyingPeriod(empIdList, period);
 			Map<String, List<EmployeeLeaveJobPeriodImport>> data4 = empLeaveJobPeriods.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
 			empLeaveJobPeriodCache = KeyDateHistoryCache.loaded(createEntries3(data4));
-			System.out.println("thoi gian get data EmployeeLeaveJob " + ((System.nanoTime() - start4 )/1000000) + "ms");
 
-			long start5 = System.nanoTime();
 			List<EmpLeaveWorkPeriodImport> empLeaveWorkPeriods =  empLeaveWorkHisAdapter.getHolidayPeriod(empIdList, period);
 			Map<String, List<EmpLeaveWorkPeriodImport>> data5 = empLeaveWorkPeriods.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
 			empLeaveWorkPeriodCache = KeyDateHistoryCache.loaded(createEntries4(data5));
-			System.out.println("thoi gian get data EmpLeaveWork " + ((System.nanoTime() - start5 )/1000000) + "ms");
 
-			long start6 = System.nanoTime();
 			List<WorkingConditionItemWithPeriod> listData = workCondRepo.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(),empIdList, period);
 			Map<String, List<WorkingConditionItemWithPeriod>> data6 = listData.stream().collect(Collectors.groupingBy(item ->item.getWorkingConditionItem().getEmployeeId()));
 			workCondItemWithPeriodCache = KeyDateHistoryCache.loaded(createEntries5(data6));
-			System.out.println("thoi gian get data WorkingConditionItem " + ((System.nanoTime() - start6 )/1000000) + "ms");
-
-			System.out.println("thoi gian get data để lưu vào Cache " + ((System.nanoTime() - start1 )/1000000) + "ms");
 		}
 
-		private static Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>>  createEntries1(Map<String, List<EmpEnrollPeriodImport>> data) {
+		private Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>>  createEntries1(Map<String, List<EmpEnrollPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<EmpEnrollPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmpEnrollPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -144,7 +125,7 @@ public class GetScheduleOfWorkInfo {
 			return rs;
 		}
 
-		private static Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
+		private Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<EmploymentPeriodImported>> s = v.stream().map(i->new DateHistoryCache.Entry<EmploymentPeriodImported>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -153,7 +134,7 @@ public class GetScheduleOfWorkInfo {
 			return rs;
 		}
 
-		private static Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>>  createEntries3(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
+		private Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>>  createEntries3(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -162,7 +143,7 @@ public class GetScheduleOfWorkInfo {
 			return rs;
 		}
 
-		private static Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
+		private Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -171,7 +152,7 @@ public class GetScheduleOfWorkInfo {
 			return rs;
 		}
 
-		private static Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries5(Map<String, List<WorkingConditionItemWithPeriod>> data) {
+		private Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries5(Map<String, List<WorkingConditionItemWithPeriod>> data) {
 			Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>> s = v.stream().map(i->new DateHistoryCache.Entry<WorkingConditionItemWithPeriod>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -182,14 +163,12 @@ public class GetScheduleOfWorkInfo {
 
 		@Override
 		public Optional<WorkSchedule> get(String employeeId, GeneralDate date) {
-			Optional<WorkSchedule> result = workScheduleCache.get(employeeId, date);
-			return result;
+			return workScheduleCache.get(employeeId, date);
 		}
 
 		@Override
 		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(String sid, GeneralDate startDate) {
-			Optional<EmpEnrollPeriodImport> data = affCompanyHistByEmployeeCache.get(sid, startDate);
-			return data;
+			return affCompanyHistByEmployeeCache.get(sid, startDate);
 		}
 
 		@Override
@@ -200,28 +179,22 @@ public class GetScheduleOfWorkInfo {
 
 		@Override
 		public Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(String sid, GeneralDate startDate) {
-			Optional<EmployeeLeaveJobPeriodImport> data =  empLeaveJobPeriodCache.get(sid, startDate);
-			return data;
+			return  empLeaveJobPeriodCache.get(sid, startDate);
 		}
 
 		@Override
 		public Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(String sid, GeneralDate startDate) {
-			Optional<EmpLeaveWorkPeriodImport> data = empLeaveWorkPeriodCache.get(sid, startDate);
-			return data;
+			return empLeaveWorkPeriodCache.get(sid, startDate);
 		}
 
 		@Override
 		public Optional<EmploymentPeriodImported> getEmploymentHistory(String sid, GeneralDate startDate) {
-			Optional<EmploymentPeriodImported> data = employmentPeriodCache.get(sid, startDate);
-			return data;
+			return employmentPeriodCache.get(sid, startDate);
 		}
 
 		@Override
 		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
 		}
 	}
-
-
 }

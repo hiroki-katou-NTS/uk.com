@@ -222,5 +222,4 @@ public class KSU001WebService extends WebService{
 	@POST
 	@Path("change-mode")
 	public void changeMode(){}
-	
 }

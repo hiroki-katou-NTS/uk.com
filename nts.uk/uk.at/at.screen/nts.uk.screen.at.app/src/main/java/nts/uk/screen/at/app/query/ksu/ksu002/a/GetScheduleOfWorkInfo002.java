@@ -16,7 +16,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.DateHistoryCache;
-import nts.arc.layer.app.cache.DateHistoryCache.Entry;
 import nts.arc.layer.app.cache.KeyDateHistoryCache;
 import nts.arc.layer.app.cache.NestedMapCache;
 import nts.arc.time.GeneralDate;
@@ -41,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -235,6 +235,8 @@ public class GetScheduleOfWorkInfo002 {
 		private KeyDateHistoryCache<String, EmployeeLeaveJobPeriodImport> empLeaveJobPeriodCache;
 		private KeyDateHistoryCache<String, EmpLeaveWorkPeriodImport> empLeaveWorkPeriodCache;
 		private KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workCondItemWithPeriodCache;
+		@Inject
+		private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 
 		public RequireImpl(List<String> empIdList, DatePeriod period, WorkScheduleRepository workScheduleRepo,
 				EmpComHisAdapter empComHisAdapter, WorkingConditionRepository workCondRepo,
@@ -316,8 +318,7 @@ public class GetScheduleOfWorkInfo002 {
 
 		@Override
 		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
 		}
 	}
 	
