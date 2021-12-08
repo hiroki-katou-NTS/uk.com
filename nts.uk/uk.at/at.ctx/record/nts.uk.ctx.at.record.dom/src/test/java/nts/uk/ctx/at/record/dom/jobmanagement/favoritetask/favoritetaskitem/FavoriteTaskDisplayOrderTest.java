@@ -247,5 +247,19 @@ public class FavoriteTaskDisplayOrderTest {
 			}
 		}
 	}
+	
+	@Test
+	public void testBusinessException() {
+		List<FavoriteDisplayOrder> displayOrders = new ArrayList<>();
+		
+		for (int i = 1; i <= 99; i++) {
+			displayOrders.add(new FavoriteDisplayOrder("favId" + i, i));
+		}
+		
+		FavoriteTaskDisplayOrder order = new FavoriteTaskDisplayOrder(employeeId, displayOrders);
+
+		NtsAssert.businessException("Msg_3257",
+				() -> order.add("favId"));
+	}
 
 }

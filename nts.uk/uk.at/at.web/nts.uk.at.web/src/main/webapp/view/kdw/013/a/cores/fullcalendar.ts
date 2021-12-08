@@ -2053,8 +2053,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (hasEventNotSave) {
                         removeNotSaveEvents();
                     }
-
-                    if (startDate.isAfter(formatDate(info.date))) {
+                    const editableDay = vm.getEditableDay(info.date);
+                    if (startDate.isAfter(formatDate(info.date)) || !editableDay) {
                         return;
                     }
 
@@ -2453,7 +2453,8 @@ module nts.uk.ui.at.kdw013.calendar {
                         //return;
                     }
                     
-                    if (startDate.isAfter(formatDate(event.start))) {
+                    const editableDay = vm.getEditableDay(event.start);
+                    if (startDate.isAfter(formatDate(event.start)) || !editableDay) {
                         return;
                     }
 
@@ -2588,6 +2589,13 @@ module nts.uk.ui.at.kdw013.calendar {
                     vm.selectedEvents = [{ start, end }, ...rels];
 
                     event.setExtendedProp('isChanged', true);
+                    const data = ko.unwrap(vm.params.$datas);
+                    const startDate = moment(_.get(data, 'workStartDate'));
+                    const editableDay =  vm.getEditableDay(start);
+                    if (startDate.isAfter(formatDate(start)) || !editableDay) {
+                        arg.revert();
+                        return;
+                    }
                     
                     // update data sources
                     //mutatedEvents();
@@ -2903,8 +2911,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     const data = ko.unwrap(params.$datas);
                     const startDate = moment(_.get(data, 'workStartDate'));
                     const {lstIntegrationOfDaily} = data;
-                    
-                    if (startDate.isAfter(formatDate(start))) {
+                    const editableDay =  vm.getEditableDay(start);
+                    if (startDate.isAfter(formatDate(start)) || !editableDay) {
                         vm.calendar.unselect();
                         return;
                     }
@@ -2937,7 +2945,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             //社員ID
                             employeeId: vm.params.employee() || vm.$user.employeeId,
                             //年月日
-                            period: { start:  start, end: end },
+                            period: { start, end },
                             //現在の応援勤務枠
                             frameNos,
                             //工数実績作業ブロック
@@ -2992,7 +3000,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     const data = ko.unwrap(params.$datas);
                     const startDate = moment(_.get(data, 'workStartDate'));
                     const {lstIntegrationOfDaily} = data;
-                    if (startDate.isAfter(formatDate(start))) {
+                    const editableDay = vm.getEditableDay(start);
+                    if (startDate.isAfter(formatDate(start)) || !editableDay) {
                         event.remove();
                         return;
                     }
@@ -3517,16 +3526,21 @@ module nts.uk.ui.at.kdw013.calendar {
         
 
         
-        
-       
-            
-         public   isOTTime(date){
+        public getEditableDay(date){
                 const vm = this;
                 const datas = vm.params.$datas();
-                const etz = _.find(_.get(datas, 'estimateZones', []), es => moment(es.ymd).isSame(moment(date), 'days'));
-                const overTimeZones = _.get(etz, 'overTimeZones', []);
-                return false;
-            }
+                const convert = _.find(_.get(datas, 'convertRes', []), cvr => { return moment(cvr.ymd).isSame(moment(date), 'days'); } );
+                return !!convert;
+        }
+       
+            
+         public isOTTime(date){
+            const vm = this;
+            const datas = vm.params.$datas();
+            const etz = _.find(_.get(datas, 'estimateZones', []), es => moment(es.ymd).isSame(moment(date), 'days'));
+            const overTimeZones = _.get(etz, 'overTimeZones', []);
+            return false;
+        }
 
         
 

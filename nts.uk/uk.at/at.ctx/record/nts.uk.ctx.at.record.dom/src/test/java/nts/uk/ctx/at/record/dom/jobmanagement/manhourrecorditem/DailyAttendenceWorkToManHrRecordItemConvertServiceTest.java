@@ -126,9 +126,19 @@ public class DailyAttendenceWorkToManHrRecordItemConvertServiceTest {
  			if (v.getItemId() == 2) {
  				assertThat(v.getValue().equals("2"));
  			}
- 			
  		
  		}
  		
+ 		assertThat(actualResult.getTaskList().get(0).getSupNo().equals(new SupportFrameNo(1)));
+ 		for (TaskItemValue v : actualResult.getTaskList().get(0).getTaskItemValues()) {
+ 			if (v.getItemId() == 1) {
+ 				assertThat(v.getValue().equals("1"));
+ 			}
+ 			
+ 			if (v.getItemId() == 2) {
+ 				assertThat(v.getValue().equals("2"));
+ 			}
+ 		
+ 		}
  	}
 }
