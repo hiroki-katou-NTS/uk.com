@@ -174,7 +174,10 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     }
 
                     vm.checkCondition(vm.data);
-                    vm.hdAppSet(ko.toJS(vm.hdAppSetTmp));
+                    const hdAppSetTemp = _.filter(vm.hdAppSetTmp(), (x) => {
+                        return x.holidayAppType !== 6
+                    });
+                    vm.hdAppSet(ko.toJS(hdAppSetTemp));
                 }
             }).fail((error: any) => {
                 if (error) {
