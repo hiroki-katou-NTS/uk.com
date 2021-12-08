@@ -24,7 +24,7 @@ public class GetUsageDetailChildCareService {
 		
 		List<DailyInterimRemainMngData> interimRemainMng = require.getHolidayDetailByPeriod(
 				companyId, employeeId, period, referenceAtr);
-		
+		interimRemainMng = interimRemainMng.stream().sorted((x,y)->x.getYmd().compareTo(y.getYmd())).collect(Collectors.toList());
 		return interimRemainMng.stream()
 				.filter(c -> !c.getRecAbsData().isEmpty() && !c.getChildCareData().isEmpty())
 				.map(c -> {
