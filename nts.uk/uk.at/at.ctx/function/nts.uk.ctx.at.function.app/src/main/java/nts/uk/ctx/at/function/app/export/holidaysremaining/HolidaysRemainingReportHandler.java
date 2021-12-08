@@ -16,6 +16,7 @@ import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmploymentImport;
 import nts.uk.ctx.at.function.dom.adapter.child.ChildNursingLeaveThisMonthFutureSituation;
 import nts.uk.ctx.at.function.dom.adapter.child.GetRemainingNumberCareNurseAdapter;
 import nts.uk.ctx.at.function.dom.adapter.child.NursingCareLeaveThisMonthFutureSituation;
@@ -54,9 +55,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcar
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.IGetChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.NursingCareLeaveMonthlyRemaining;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.*;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
@@ -119,6 +118,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
     private IGetChildcareRemNumEachMonth getChildcareRemNumEachMonth;
     @Inject
     private GetRemainingNumberCareNurseAdapter getRemainingNumberChildCareNurseAdapter;
+    @Inject
+    private ClosureEmploymentRepository closureEmploymentRepository;
 
     @Override
     protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
@@ -126,8 +127,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         val hdRemainCond = query.getHolidayRemainingOutputCondition();
         String cId = AppContexts.user().companyId();
 
-		// システム日付　★使用禁止
-        val baseDate = GeneralDate.fromString(hdRemainCond.getBaseDate(), "yyyy/MM/dd");
+        // システム日付　★使用禁止
+        //---------------------------------------------------
+        // 2021.12.01 inaguma 削除
+        //val baseDate = GeneralDate.fromString(hdRemainCond.getBaseDate(), "yyyy/MM/dd");
 
         val startDate = GeneralDate.fromString(hdRemainCond.getStartMonth(), "yyyy/MM/dd");		// 画面入力期間From(年月)/01
         val endDate   = GeneralDate.fromString(hdRemainCond.getEndMonth(),   "yyyy/MM/dd");		// 画面入力期間To  (年月)/月末日
@@ -158,8 +161,12 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             if (!criteriaDatePeriodOpt.isPresent()) {
                 return;
             }
-
-            GeneralDate criteriaDate = criteriaDatePeriodOpt.get().end();
+            GeneralDate criteriaDate = criteriaDatePeriodOpt.get().end();	// 処理基準日
+            //-----------------------------------------------------------------------------------
+            // 2021.12.01 稲熊 追加 START
+            GeneralDate baseDate = criteriaDate;	// 処理基準日
+            // 2021.12.01 稲熊 追加 END
+            //--------------------
             // 画面項目「A2_2：社員リスト」で選択されている社員の社員ID
             List<String> employeeIds = query.getLstEmpIds().stream().map(EmployeeQuery::getEmployeeId)
                     .collect(Collectors.toList());
@@ -185,10 +192,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			// 休暇設定画面で設定した各休暇の「管理区分」を取得する
             val varVacaCtr = varVacaCtrSv.getVariousVacationControl();
 
-			// ドメインモデル「締め」(社員範囲選択)より当月、締め期間、締め日(日付)を求める　★使用禁止
-            val closureInforOpt = this.getClosureInfo(closureId);
-
-
+            // ドメインモデル「締め」(社員範囲選択)より当月、締め期間、締め日(日付)を求める　★使用禁止
+            //---------------------------------------------------
+            // 2021.11.30 inaguma 削除
+            //val closureInforOpt = this.getClosureInfo(closureId);
+            //---------------------------------------------------
 
             if (!varVacaCtr.isAnnualHolidaySetting()) {
                 hdManagement.getListItemsOutput().getAnnualHoliday().setYearlyHoliday(false);
@@ -247,7 +255,22 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 String positionName = emp.getPosition() != null ? emp.getPosition().getPositionName() : "";
                 String employmentCode = emp.getEmployment() != null ? emp.getEmployment().getEmploymentCode() : "";
                 String positionCode = emp.getPosition() != null ? emp.getPosition().getPositionCode() : "";
-
+                //-----------------------------------------------------------------------------------
+                // 2021.12.06 - 3S - chinh.hm  - issues #121626- 追加 START
+                // ループ中の社員(emp.getEmployeeId())の雇用を取得⇒取得できなかった場合は次の社員の処理へ
+                // 雇用に紐付く締めIDを取得　　　　　　　　　　　 ⇒取得できなかった場合は次の社員の処理へ
+                EmploymentImport employment = emp.getEmployment();
+                if(employment == null){
+                    return;
+                }
+                Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(cId,employment.getEmploymentCode());
+                if(!closureEmployment.isPresent()){
+                    return;
+                }
+                int empClosureId = closureEmployment.get().getClosureId() ;
+                val closureInforOpt = this.getClosureInfo(empClosureId);
+                // 2021.12.06 - 3S - chinh.hm  - issues #121626- 追加 END
+                //-----------------------------------------------------------------------------------
 	       		// 当月
                 Optional<YearMonth> currentMonth = hdRemainManageFinder.getCurrentMonth(
                         cId,
@@ -423,10 +446,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		////////////////////////////////////////////////////////////////////////////////
         CheckCallRequest check = new CheckCallRequest(call265, call268, call269, call363, call364, call369);
         HdRemainDetailMerEx remainDel = hdRemainAdapter.getRemainDetailMer(
-        								employeeId, 
-        								currentMonth, 
+        								employeeId,
+        								currentMonth,
         								baseDate,
-										new DatePeriod(startDate, endDate), 
+										new DatePeriod(startDate, endDate),
 										check);
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -460,7 +483,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 									currentMonth, 						// 当月
                 									baseDate,							// システム日付
                 									new DatePeriod(startDate, endDate), // 画面入力期間From(年月)/01　～　画面入力期間To  (年月)/月末日
-                									true);								// 
+                									true);								//
             }
         }
 
@@ -562,21 +585,23 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			// 当月・未来月
 			//========================================
 			// Call RequestList204
+            // 2021.12.06 - 3S - chinh.hm  - issues #120916- 追加 START
+            GeneralDate start  =  closureInforOpt.get().getPeriod().start();
+            GeneralDate end  =  closureInforOpt.get().getPeriod().end();
             for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
-
-                GeneralDate end        =                GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
-                DatePeriod  periodDate = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1), endDate.before(end) ? endDate : end);
-
+                //GeneralDate end        =                GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
+                //DatePeriod  periodDate = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1), endDate.before(end) ? endDate : end);
+                DatePeriod  periodDate = new DatePeriod(start,end);
                 val mngParam = new AbsRecMngInPeriodRefactParamInput(
-                		cId, 
-                		employeeId, 
+                		cId,
+                		employeeId,
                 		periodDate,
-                        closureInforOpt.get().getPeriod().end(), 
-                        false, 
-                        false, 
-                        new ArrayList<>(), 
-                        new ArrayList<>(), 
-                        new ArrayList<>(), 
+                        closureInforOpt.get().getPeriod().end(),
+                        false,
+                        false,
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
                         Optional.empty(),
                         Optional.empty(),
                         Optional.empty(),
@@ -591,7 +616,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                                 remainMng.getDayUse().v(),
                                 remainMng.getUnusedDay().v(),
                                 remainMng.getRemainDay().v()));
+                // ループが終了するたびに1か月を足すことで、翌月の締め開始日、締め終了日を取得する。
+                start = start.addMonths(1);
+                end = end.addMonths(1);
             }
+            // 2021.12.06 - 3S - chinh.hm  - issues #120916- 追加 END
 
 			//========================================
 			// 過去月
@@ -605,13 +634,13 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			// 現在
 			//========================================
 			// Call RequestList204
-            DatePeriod periodDate = new DatePeriod( GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1),
-            										GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
-
+            // 2021.12.06 - 3S - chinh.hm  - issues #120916　- 追加 START
+            // DatePeriod periodDate = new DatePeriod( GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1),
+            //										GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
             val param = new AbsRecMngInPeriodRefactParamInput(
                     cId,
                     employeeId,
-                    periodDate,
+                    closureInforOpt.get().getPeriod(),
                     closureInforOpt.get().getPeriod().end(),
                     false,
                     false,
@@ -622,6 +651,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     Optional.empty(),
                     Optional.empty(),
                     new FixedManagementDataMonth());
+            // 2021.12.06 - 3S - chinh.hm  - issues #120916　- 追加 END
             CompenLeaveAggrResult remainMng = NumberCompensatoryLeavePeriodQuery.process(
                     numberCompensatoryLeavePeriodProcess.createRequire(), param);
             currentHolidayRemainLeft = new CurrentHolidayRemainImported(
@@ -654,12 +684,16 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             for (YearMonth i = monCheck; i.lessThanOrEqualTo(endDate.yearMonth()); i = i.addMonths(1)) {
                 lstMon.add(i);
             }
+            // 2021.12.06 - 3S - chinh.hm  - issues #120916　- 追加 START
+            GeneralDate start  =  closureInforOpt.get().getPeriod().start();
+            GeneralDate end  =  closureInforOpt.get().getPeriod().end();
             for (YearMonth ym : lstMon) {// year mon
                 //Map<Integer, SpecialVacationImported> mapSPVaCurrMon = new HashMap<>();
+
                 Map<Integer, SpecialVacationImportedKdr> mapSP273CurrMon = new HashMap<>();
                 for (SpecialHoliday specialHolidayDto : variousVacationControl.getListSpecialHoliday()) {// sphdCd
                     int sphdCode = specialHolidayDto.getSpecialHolidayCode().v();
-                    YearMonth ymEnd = ym.addMonths(1);
+                    //YearMonth ymEnd = ym.addMonths(1);
                     //SpecialVacationImported spVaImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
                     //        employeeId,
                     //        new DatePeriod(GeneralDate.ymd(ym.year(), ym.month(), 1),
@@ -670,11 +704,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     SpecialVacationImportedKdr spVaImportedNew = specialLeaveAdapter.get273New(
                     		cId,
                             employeeId,
-                            new DatePeriod(	GeneralDate.ymd(ym.year(), ym.month(), 1),
-                                    		GeneralDate.ymd(ymEnd.year(), ymEnd.month(), 1).addDays(-1)),
-                            false, 
-                            baseDate, 
-                            sphdCode, 
+                            new DatePeriod(start,end),
+                            false,
+                            closureInforOpt.get().getPeriod().end(),
+                            sphdCode,
                             false);
 
                     //mapSPVaCurrMon.put(sphdCode, spVaImported);
@@ -682,7 +715,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 }
                 //lstMapSPVaCurrMon.put(ym, mapSPVaCurrMon);
                 lstMap273CurrMon.put(ym, mapSP273CurrMon);
+                //ループが終了するたびに1か月を足すことで、翌月の締め開始日、締め終了日を取得する。
+                start = start.addMonths(1);
+                end = end.addMonths(1);
             }
+            // 2021.12.06 - 3S - chinh.hm  - issues #120916　- 追加 END
         }
 
 		//========================================
@@ -706,7 +743,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     employeeId,
                     closureInforOpt.get().getPeriod(),
                     false,
-                    baseDate,
+                    // 2021.12.06 - 3S - chinh.hm  - issues #120916　- 追加 START
+                    closureInforOpt.get().getPeriod().end(),
+                    // 2021.12.06 - 3S - chinh.hm  - issues #120916　- 追加 START
                     sphdCode,
                     false);
             //mapSpecVaca.put(sphdCode, specialVacationImported);
@@ -775,11 +814,13 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		// 現在
 		//========================================
 		// RequestList203
-        DatePeriod periodDate = new DatePeriod(
-                GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1),
-                GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
+        // 2021.12.06 - 3S - chinh.hm  - issues #120916- 追加 START
+        //DatePeriod periodDate = new DatePeriod(
+        //        GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1),
+        //        GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
+        DatePeriod periodDate = closureInforOpt.get().getPeriod();
         BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
-                cId, 
+                cId,
                 employeeId,
                 periodDate,
                 false,
@@ -793,18 +834,18 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 Optional.empty(), new FixedManagementDataMonth());
         substituteHolidayAggrResult = NumberRemainVacationLeaveRangeQuery
                 .getBreakDayOffMngInPeriod(rq, inputRefactor);
-
+        // 2021.12.06 - 3S - chinh.hm  - issues #120916- 追加 END
 		//========================================
 		// 当月・未来月
 		//========================================
         // RequestList203
+        // 2021.12.06 - 3S - chinh.hm  - issues #120916- 追加 START
+        GeneralDate start  =  closureInforOpt.get().getPeriod().start();
+        GeneralDate end  =  closureInforOpt.get().getPeriod().end();
         for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
-
-            GeneralDate end    =                 GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
-            DatePeriod  periods = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1), endDate.before(end) ? endDate : end);
-
+            DatePeriod  periods = new DatePeriod(start,end);
             BreakDayOffRemainMngRefactParam input = new BreakDayOffRemainMngRefactParam(
-                    cId, 
+                    cId,
                     employeeId,
                     periods,
                     false,
@@ -819,7 +860,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             val item = NumberRemainVacationLeaveRangeQuery
                     .getBreakDayOffMngInPeriod(rq, input);
             substituteHolidayAggrResultsRight.put(s, item);
+            // ループが終了するたびに1か月を足すことで、翌月の締め開始日、締め終了日を取得する。
+            start = start.addMonths(1);
+            end = end.addMonths(1);
         }
+        // 2021.12.06 - 3S - chinh.hm  - issues #120916- 追加 END
 
 		////////////////////////////////////////////////////////////////////////////////
 		// 振休
@@ -876,8 +921,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		//========================================
 		// Call RequestList263
         getSpeHdOfConfMonVer2 =
-                rq263.getSpeHdOfConfMonVer2(employeeId, 
-                							period, 
+                rq263.getSpeHdOfConfMonVer2(employeeId,
+                							period,
                 							mapRemainMer).stream().map(e -> new SpecialVacationPastSituation(
                         e.getSid(),
                         e.getYm(),
@@ -905,42 +950,45 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		//========================================
 		// 当月・未来月
 		//========================================
+        // 2021.12.06 - 3S - chinh.hm  - issues #120916- 追加 START
+        GeneralDate closureStart  =  closureInforOpt.get().getPeriod().start();
+        GeneralDate closureEnd  =  closureInforOpt.get().getPeriod().end();
         for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
-
-            GeneralDate end     =                GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
-            DatePeriod  periods = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1), endDate.before(end) ? endDate : end);
-
+            //GeneralDate end     =                GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
+            //DatePeriod  periods = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1), endDate.before(end) ? endDate : end);
+            DatePeriod  periods = new DatePeriod(closureStart,closureEnd);
 			// RQ206(改)
             childCareRemNumWithinPeriodRight.add(
             				getRemainingNumberChildCareNurseAdapter.getChildCareRemNumWithinPeriod(
 	                            cId,
 	                            employeeId,
 	                            periods,
-	                            end)
+	                            closureInforOpt.get().getPeriod().end())
 	                        );
-
 			// RQ207(改)
             nursingCareLeaveThisMonthFutureSituationRight.add(
             				getRemainingNumberChildCareNurseAdapter.getNursingCareLeaveThisMonthFutureSituation(
                             	cId,
                             	employeeId,
                             	periods,
-                            	end)
+                                closureInforOpt.get().getPeriod().end())
                             );
+            //ループが終了するたびに1か月を足すことで、翌月の締め開始日、締め終了日を取得する。
+            closureStart = closureStart.addMonths(1);
+            closureEnd = closureEnd.addMonths(1);
         }
-
 		//========================================
 		// 現在
 		//========================================
-        GeneralDate end     =                GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1);
-        DatePeriod  periods = new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), endDate.before(end) ? endDate : end);
+        //GeneralDate end     =                GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1);
+        //DatePeriod  periods = new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), endDate.before(end) ? endDate : end);
 
 		// RQ206(改)
-        childCareRemNumWithinPeriodLeft = getRemainingNumberChildCareNurseAdapter.getChildCareRemNumWithinPeriod(cId, employeeId, periods, end);
+        childCareRemNumWithinPeriodLeft = getRemainingNumberChildCareNurseAdapter.getChildCareRemNumWithinPeriod(cId, employeeId, closureInforOpt.get().getPeriod(), closureInforOpt.get().getPeriod().end());
 		// RQ207(改)
-        nursingCareLeaveThisMonthFutureSituationLeft = getRemainingNumberChildCareNurseAdapter.getNursingCareLeaveThisMonthFutureSituation(cId, employeeId, periods, end);
+        nursingCareLeaveThisMonthFutureSituationLeft = getRemainingNumberChildCareNurseAdapter.getNursingCareLeaveThisMonthFutureSituation(cId, employeeId, closureInforOpt.get().getPeriod(), closureInforOpt.get().getPeriod().end());
 
-
+        // 2021.12.06 - 3S - chinh.hm  - issues #120916- 追加 END
 		////////////////////////////////////////////////////////////////////////////////
 		// RETURN
 		////////////////////////////////////////////////////////////////////////////////
