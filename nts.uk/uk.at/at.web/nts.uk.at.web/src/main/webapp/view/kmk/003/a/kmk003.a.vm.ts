@@ -1422,8 +1422,10 @@ module nts.uk.at.view.kmk003.a {
 					let amTimes : any = [], pmTimes : any = [];
 					
 					_.forEach(command.fixedWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.timezones, (z : any) => {
+						let checkAdd = 0;
 						if (_.inRange(z.start, workTimes.morning[0].timezone.start, workTimes.morning[0].timezone.end) &&
 						_.inRange(z.end, workTimes.morning[0].timezone.start, workTimes.morning[0].timezone.end)){
+							checkAdd = 1;
 							amTimes.push({
 								start: z.start, 
 								end: z.end
@@ -1432,13 +1434,25 @@ module nts.uk.at.view.kmk003.a {
 						
 						if (_.inRange(z.start, workTimes.afternoon[0].timezone.start, workTimes.afternoon[0].timezone.end) &&
 						_.inRange(z.end, workTimes.afternoon[0].timezone.start, workTimes.afternoon[0].timezone.end)){
+							checkAdd = 2;
+							pmTimes.push({
+								start: z.start, 
+								end: z.end
+							})
+						}
+						if (checkAdd == 0) {
+							amTimes.push({
+								start: z.start, 
+								end: z.end
+							})
+							
 							pmTimes.push({
 								start: z.start, 
 								end: z.end
 							})
 						}
 					});
-
+					
                     command.fixedWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.timezones = amTimes;
                     command.fixedWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.timezones = pmTimes;
 				}
