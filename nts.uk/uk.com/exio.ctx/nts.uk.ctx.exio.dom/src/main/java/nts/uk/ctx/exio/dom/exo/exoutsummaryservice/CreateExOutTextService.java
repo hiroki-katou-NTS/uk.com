@@ -1340,10 +1340,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 		NotUseAtr fixedLengthOutput = NotUseAtr.NOT_USE;
 		Optional<DataFormatIntegerDigit> fixedLongIntegerDigit = Optional.empty();
 		FixedLengthEditingMethod fixedLengthEditingMethod = FixedLengthEditingMethod.BEFORE_ZERO;
-		DelimiterSetting delimiterSetting = DelimiterSetting.SEPARATE_BY_DECIMAL;
+		DelimiterSetting delimiterSetting = DelimiterSetting.SEPARATE_BY_COLON;
 		HourMinuteClassification selectHourMinute = HourMinuteClassification.HOUR_AND_MINUTE;
 		Optional<DataFormatDecimalDigit> minuteFractionDigit = Optional.empty();
-		DecimalSelection decimalSelection = DecimalSelection.DECIMAL;
+		DecimalSelection decimalSelection = DecimalSelection.HEXA_DECIMAL;
 		FixedValueOperationSymbol fixedValueOperationSymbol = FixedValueOperationSymbol.PLUS;
 		NotUseAtr fixedValueOperation = NotUseAtr.NOT_USE;
 		Optional<DataFormatFixedValueOperation> fixedCalculationValue = Optional.empty();
