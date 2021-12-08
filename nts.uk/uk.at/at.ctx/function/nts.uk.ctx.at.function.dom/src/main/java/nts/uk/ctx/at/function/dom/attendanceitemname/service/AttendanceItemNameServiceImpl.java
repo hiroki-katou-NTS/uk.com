@@ -501,7 +501,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 						dto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
 						dto.setUserCanUpdateAtr(item.getUserCanUpdateAtr().value);
 						dto.setNameLineFeedPosition(item.getNameLineFeedPosition());
-						dto.setAttendanceItemName(item.getDisplayName().get().v());
+						dto.setAttendanceItemName(item.getDisplayName().isPresent() ? item.getDisplayName().get().v():"");
 						return dto;
 					}).collect(Collectors.toList());
 			break;
