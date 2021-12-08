@@ -44,7 +44,7 @@ public class GetScreenUsageDetails {
 
 	public GetScreenUsageDetailsDto get() {
 		GetScreenUsageDetailsDto result = new GetScreenUsageDetailsDto();
-		List<DailyAttendanceItemDto> dailyItem = new ArrayList<>();
+		List<DailyAttendanceItemKDW006Dto> dailyItem = new ArrayList<>();
 		
 		String companyId = AppContexts.user().companyId();
 		List<AttItemName> data = new ArrayList<>();
@@ -61,7 +61,7 @@ public class GetScreenUsageDetails {
 		// Mapping Dto
 		result.setManHourInputDisplayFormat(getDisplayFormatDto);
 		dailyItem = data.stream().map(m -> {
-			return new DailyAttendanceItemDto(m.getAttendanceItemId(), m.getAttendanceItemName(), m.getAttendanceItemDisplayNumber());
+			return new DailyAttendanceItemKDW006Dto(m.getAttendanceItemId(), m.getAttendanceItemName(), m.getAttendanceItemDisplayNumber());
 		}).collect(Collectors.toList());
 
 		hourRecordItemsDtos.forEach(f -> {
@@ -71,7 +71,7 @@ public class GetScreenUsageDetails {
 		});
 
 		// 勤怠項目に対応する名称を生成する
-		List<AttItemName> dailyAttItem = atItemNameAdapter.getNameOfDailyAttendanceItem(attendents);
+//		List<AttItemName> dailyAttItem = atItemNameAdapter.getNameOfDailyAttendanceItem(attendents);
 
 //		dailyItem.stream().forEach(f -> {
 //			Optional<AttItemName> exist = dailyAttItem.stream()

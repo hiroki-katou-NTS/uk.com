@@ -21,7 +21,7 @@ public class GetScreenUsageDetailsDto {
 	private GetDisplayFormatDto manHourInputDisplayFormat;
 
 	/** 利用する勤怠項目 */
-	private List<DailyAttendanceItemDto> dailyAttendanceItem;
+	private List<DailyAttendanceItemKDW006Dto> dailyAttendanceItem;
 
 	/** 工数実績項目 */
 	private List<AcquireManHourRecordItemsDto> manHourRecordItem;
