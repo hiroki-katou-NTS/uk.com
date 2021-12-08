@@ -1198,14 +1198,14 @@ module nts.uk.at.view.kmk003.a {
                             dto.employmentTimeFrameNo = morningNo++;
                             morningTimes.push(dto);
                         } else { //split time zone
-                            if (w.timezone.start() < morningEnd) {
+                            if (w.timezone.start() <= morningEnd) {
                                 let dto = w.toDto();
                                 dto.employmentTimeFrameNo = morningNo++;
                                 dto.timezone.end = morningEnd;
                                 morningTimes.push(dto);
                             }
 
-                            if (w.timezone.end() > afterStart) {
+                            if (w.timezone.end() >= afterStart) {
                                 let dto = w.toDto();
                                 dto.employmentTimeFrameNo = afternoonNo++;
                                 dto.timezone.start = afterStart;
