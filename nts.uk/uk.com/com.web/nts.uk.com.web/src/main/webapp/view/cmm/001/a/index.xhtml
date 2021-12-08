@@ -44,7 +44,7 @@
 				<!-- A1_4 -->
 				<button id="masterLog" tabindex="4" class="group-button-1"
 				    data-bind="visible: false">#{i18n.getText('CMM001_4')}</button>
-				<button tabindex="5" class="group-button-1" id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button>  
+				<button tabindex="5" class="group-button-1" id="print-button" data-bind="click: exportExcel" hidden= "false">#{i18n.getText('KMK007_4')}</button>  
 			</div>
 			<div id="contents-area" class="fixed-flex-layout" style="display: none" data-bind="visible: true">
 				<div class="fixed-flex-layout-left">
@@ -273,7 +273,7 @@
 
 												<th colspan="1">
 													<button id="searchZipCode" tabindex="19"
-														data-bind="click: $parent.search.bind($parent)">
+														data-bind="click: $parent.search.bind($parent)" hidden="false">
 														<!-- C1_3 -->
 														<span class="labelRed">〒</span>#{i18n.getText('CMM001_23')}
 													</button>
@@ -417,7 +417,7 @@
 										<table>
 											<tbody>
 												<!-- 1 -->
-												<tr style="margin-top: 5px;">
+												<tr style="margin-top: 5px;" hidden= "false">
 													<th colspan="1" class="th-col3">
 														<!-- D1_1 -->
 														<div class="form-label"
@@ -442,7 +442,7 @@
 													</th>
 												</tr>
 												<!-- 2 -->
-												<tr style="margin-top: 5px;">
+												<tr style="margin-top: 5px;" hidden="false">
 													<th colspan="1" class="th-col3">
 														<div class="form-label"
 															data-bind="ntsFormLabel:{required: true}">
@@ -466,7 +466,7 @@
 												</tr>
 												<!-- 3 -->
 												<!-- D1_5 -->
-												<tr style="margin-top: 5px;">
+												<tr style="margin-top: 5px;" hidden="false">
 													<th colspan="1" class="th-col3">
 														<div class="form-label"
 															data-bind="ntsFormLabel:{required: true}">
@@ -487,7 +487,7 @@
 														</div>
 													</th>
 												</tr>
-												<tr style="margin-top: 5px;">
+												<tr style="margin-top: 5px;" hidden="false">
 													<th colspan="1" class="th-col3">
 														<div class="form-label"
 															data-bind="ntsFormLabel:{required: true}">
