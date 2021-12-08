@@ -4,6 +4,7 @@ module nts.uk.com.view.ccg015.h {
   
   const API = {
     get: 'at/auth/workplace/initdisplayperiod/get',
+    getByCid: 'at/auth/workplace/initdisplayperiod/get-by-cid',
     save: 'at/auth/workplace/initdisplayperiod/save',
     delete: 'at/auth/workplace/initdisplayperiod/delete',
   }
@@ -13,7 +14,7 @@ module nts.uk.com.view.ccg015.h {
     component: ccg025Component.viewmodel.ComponentModel = new ccg025Component.viewmodel.ComponentModel({ 
       roleType: 3, //就業
       multiple: false,
-      isAlreadySetting: false,
+      isAlreadySetting: true,
       rows: 10,
       tabindex: 4,
     });
@@ -23,6 +24,7 @@ module nts.uk.com.view.ccg015.h {
     roleName: KnockoutObservable<string> = ko.observable('');
     isNewMode: KnockoutObservable<boolean> = ko.observable(true);
     selectedRoleId: string = '';
+    alreadyRoles: string[] = [];
 
     created() {
       const vm = this;
@@ -50,8 +52,20 @@ module nts.uk.com.view.ccg015.h {
         vm.roleName(`${role.roleCode} ${role.roleName}`);
       });
 
-      vm.component
-        .startPage()
+      vm.getAlreadySetting()
+    }
+
+    getAlreadySetting() {
+      const vm = this;
+      vm.$ajax('at', API.getByCid)
+        .then((result: InitDisplayPeriodSwitchSet[]) => {
+          if (!result) {
+            vm.alreadyRoles = [];
+            return;
+          }
+          vm.alreadyRoles = _.map(result, x => x.roleID);
+        })
+        .then(() => vm.component.startPage(vm.alreadyRoles, vm.selectedRoleId))
         .then(() => $('#ccg015_h10 .multi-list_container').focus());
     }
 
@@ -83,6 +97,7 @@ module nts.uk.com.view.ccg015.h {
       vm
         .$blockui('grayout')
         .then(() => vm.$ajax('at', API.save, command))
+        .then(() => vm.getAlreadySetting())
         .then(() => vm.$dialog.info({messageId: 'Msg_15'}))
         .then(() => vm.getData())
         .always(() => vm.$blockui('clear'));
@@ -101,6 +116,7 @@ module nts.uk.com.view.ccg015.h {
           if (response === 'yes') {
             vm
               .$ajax('at', API.delete, command)
+              .then(() => vm.getAlreadySetting())
               .then(() => vm.$dialog.info({messageId: 'Msg_16'}))
               .then(() => vm.getData());
           }

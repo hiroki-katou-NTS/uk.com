@@ -10,7 +10,7 @@
   <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
       <com:scriptfile set="IGNITE" />
-      <script>var dialogSize = { width: 750, height: 450 };</script>
+      <script>var dialogSize = { width: 830, height: 450 };</script>
       <com:stylefile path="/view/ccg/025/component/component.css" of="/nts.uk.com.web"/>
       <com:scriptfile path="/view/ccg/025/component/component.service.js" of="/nts.uk.com.web"/>
       <com:scriptfile path="/view/ccg/025/component/component.vm.js" of="/nts.uk.com.web"/>
@@ -40,13 +40,13 @@
             <!-- H2 -->
             <div data-bind="ntsFormLabel: {}" style="flex: 1;">#{i18n.getText('CCG015_99')}</div>
             <!-- H2_1 -->
-            <div class="label" data-bind="text: roleName" style="flex: 2;"></div>
+            <div class="label" data-bind="text: roleName" style="flex: 3;"></div>
           </div>
           <div class="content-right__section fixed-flex-layout">
             <!-- H3 -->
             <div data-bind="ntsFormLabel: {}" style="flex: 1;">#{i18n.getText('CCG015_100')}</div>
             <!-- H3_1 -->
-            <div class="label" style="flex: 1;">#{i18n.getText('CCG015_101')}</div>
+            <div class="label" style="flex: 1.5;">#{i18n.getText('CCG015_101')}</div>
             <!-- H3_2 -->
             <div tabindex="5" data-bind="ntsComboBox: {
               name: $i18n('CCG015_100'),
@@ -62,7 +62,7 @@
               columns: [
                 { prop: 'name', length: 4 }
               ]}"
-              style="flex: 1;">
+              style="flex: 1.5;">
             </div>
           </div>
           <div class="content-right__section fixed-flex-layout">

@@ -106,4 +106,13 @@ public class InitDisplayPeriodSwitchSetFinder {
 				initDisplayPeriodSwitchSet.get().getRoleID(),
 				initDisplayPeriodSwitchSet.get().getDay());
 	}
+	
+	public List<InitDisplayPeriodSwitchSetDataDto> getInitDisplayPeriodSwitchSetByCid(String cid) {
+		return this.repo.findByCid(cid).stream()
+				.map(x -> new InitDisplayPeriodSwitchSetDataDto(
+						x.getCompanyID(),
+						x.getRoleID(),
+						x.getDay()))
+				.collect(Collectors.toList());
+	}
 }
