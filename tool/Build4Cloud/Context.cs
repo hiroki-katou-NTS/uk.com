@@ -11,26 +11,6 @@ namespace Build4Cloud
     {
         public string RootPath { get; set; }
 
-        public string Project { get; set; }
-
-        public string GetPathToPersistenceXml()
-        {
-            return Path.Combine(
-                GetPathToWeb(),
-                "src",
-                "main",
-                "resources",
-                "META-INF",
-                "persistence.xml");
-        }
-
-        public string GetPathToWeb()
-        {
-            return Path.Combine(
-                RootPath,
-                $"uk.{Project}",
-                $"{Project}.web",
-                $"nts.uk.{Project}.web");
-        }
+        public IEnumerable<string> Projects { get; set; }
     }
 }
