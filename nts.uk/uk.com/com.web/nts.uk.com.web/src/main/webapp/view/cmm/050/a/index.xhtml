@@ -160,9 +160,9 @@
             <label id="A10_4" class="ml-10">#{i18n.getText('CMM050_22')}</label>
           </div>
           <div class="flex valign-center">
-            <div id="A10_5" class="setting-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM050_23')}</div>
+            <div id="A10_5" class="setting-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM050_18')}</div>
             <div id="A10_6" data-bind="ntsSwitchButton: {
-              name: '#[CMM050_23]',
+              name: '#[CMM050_18]',
               options: useServerArray,
               optionsValue: 'value',
               optionsText: 'name',
@@ -170,12 +170,12 @@
             }" tabindex="14"></div>
           </div>
           <div class="flex valign-center">
-            <div id="A10_9" class="setting-label" data-bind="ntsFormLabel: { required: true, constraint: 'Server' }">#{i18n.getText('CMM050_24')}</div>
+            <div id="A10_9" class="setting-label" data-bind="ntsFormLabel: { required: true, constraint: 'Server' }">#{i18n.getText('CMM050_23')}</div>
             <input id="A10_10" class="address-input" data-bind="ntsTextEditor: {
               value: imapServer,
               constraint: 'Server',
               required: imapUseServer() === 0,
-              name: '#[CMM050_24]',
+              name: '#[CMM050_23]',
             }" tabindex="15" />
           </div>
         </div>
