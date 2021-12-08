@@ -14,15 +14,15 @@ module nts.uk.at.view.ccg015.g.screenModel {
     created(){
       const vm = this;
       vm.itemListCb = ko.observableArray([
-        new ItemModel('0', ''),
-        new ItemModel('1', '1'),
-        new ItemModel('2', '5'),
-        new ItemModel('3', '10'),
-        new ItemModel('4', '20'),
-        new ItemModel('5', '30'),
-        new ItemModel('6', '40'),
-        new ItemModel('7', '50'),
-        new ItemModel('8', '60')
+        new ItemModel('0', 'なし'),
+        new ItemModel('1', '1分'),
+        new ItemModel('2', '5分'),
+        new ItemModel('3', '10分'),
+        new ItemModel('4', '20分'),
+        new ItemModel('5', '30分'),
+        new ItemModel('6', '40分'),
+        new ItemModel('7', '50分'),
+        new ItemModel('8', '60分')
       ]);
     }
 
