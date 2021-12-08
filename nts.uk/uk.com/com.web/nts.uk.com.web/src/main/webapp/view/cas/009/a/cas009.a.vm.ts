@@ -20,7 +20,8 @@ module nts.uk.com.view.cas009.a.viewmodel {
             roleType: 8,
             multiple: false,
             rows: 15,
-            tabindex: 0
+            tabindex: 0,
+            onDialog:true
         });
 
         created() {
