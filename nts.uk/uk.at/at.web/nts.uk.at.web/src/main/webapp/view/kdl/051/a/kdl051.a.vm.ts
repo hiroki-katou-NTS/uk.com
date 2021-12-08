@@ -34,7 +34,7 @@ module nts.uk.at.view.kdl051.a {
 			listEmployeeImport: any = [];
 			
 			//data table top
-			managementCheck: KnockoutObservable<number> =  ko.observable(0);
+			managementCheck: KnockoutObservable<number> =  ko.observable(2);
 			currentRemainNumberSelect: KnockoutObservable<string> =  ko.observable("");
 			expiredWithinMonthSelect: KnockoutObservable<string> =  ko.observable("");
 			dayCloseDeadlineSelect: KnockoutObservable<string> =  ko.observable("");
@@ -128,11 +128,9 @@ module nts.uk.at.view.kdl051.a {
                 let self = this;
                 let dfd = $.Deferred();
                 block.grayout();
-                $.when(self.getChildNursingLeave(self.listEmpId)).done(function() {
-	
-					
-                    block.clear();
-                    dfd.resolve();
+                self.getChildNursingLeave(self.listEmpId).done(function() {
+					block.clear();
+					dfd.resolve();
                 });
 
                 return dfd.promise();
@@ -171,7 +169,7 @@ module nts.uk.at.view.kdl051.a {
 				let self = this;
 				nts.uk.ui.windows.close();
 			}
-			public getChildNursingLeave(listEmp): any {
+			public getChildNursingLeave(listEmp): JQueryPromise<any>  {
                 let self = this;
                 let dfd = $.Deferred();
 				service.getChildNursingLeave(listEmp).done((data: any) => {
@@ -188,9 +186,10 @@ module nts.uk.at.view.kdl051.a {
                 return dfd.promise();
             }
 
-			public getDeitalInfoNursingByEmp(emp): any {
+			public getDeitalInfoNursingByEmp(emp) : JQueryPromise<any>  {
                 let self = this;
                 let dfd = $.Deferred();
+				self.managementCheck(2);
 				service.getDeitalInfoNursingByEmp(emp).done((data: any) => {
 					self.dataOneEmp(data);
 					self.items([]);

@@ -40,7 +40,7 @@ module nts.uk.at.view.kdl052.a {
         listEmployeeImport: any = [];
 
         //data table top
-        managementCheck: KnockoutObservable<number> =  ko.observable(1);
+        managementCheck: KnockoutObservable<number> =  ko.observable(2);
         currentRemainNumberSelect: KnockoutObservable<string> =  ko.observable("");
         expiredWithinMonthSelect: KnockoutObservable<string> =  ko.observable("");
         dayCloseDeadlineSelect: KnockoutObservable<string> =  ko.observable("");
@@ -123,6 +123,7 @@ module nts.uk.at.view.kdl052.a {
         findDetail(employeeId: string): void {
             let self = this;     
             let listDigestionDetails : Array<ItemModel> = [];
+			self.managementCheck(2);
             self.$ajax(Paths.GET_CHILD_NURSING_LEAVE_BY_EMPID + '/' + employeeId).done((data: any) => {
                self.managementCheck(data.managementSection ? 1 : 0);
                self.maxNumberOfYear(data.maxNumberOfYear);
