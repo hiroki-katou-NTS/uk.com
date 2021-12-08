@@ -189,7 +189,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                             workType.code = data.latestMultiOvertimeApp.workInfoOp.workType;
                                             if (!_.isNil(workType.code)) {
                                                 let workTypeList = vm.dataSource.infoBaseDateOutput.worktypes as Array<WorkType>;
-                                                let item = _.find(workTypeList, (item: WorkType) => item.workTypeCode == workType.code)
+                                                let item = _.find(workTypeList, (item: WorkType) => item.workTypeCode == workType.code);
                                                 if (!_.isNil(item)) {
                                                     workType.name = item.name;
                                                 } else {
@@ -201,7 +201,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                             workTime.code = data.latestMultiOvertimeApp.workInfoOp.workTime;
                                             if (!_.isNil(workTime.code)) {
                                                 let workTimeList = vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst as Array<WorkTime>;
-                                                let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code)
+                                                let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code);
                                                 if (!_.isNil(item)) {
                                                     workTime.name = item.workTimeDisplayName.workTimeName;
                                                 } else {
@@ -263,7 +263,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                                 });
                                             }
                                             // A6_28
-                                            // 計算結果．申請時間．就業時間外深夜時間
                                             {
                                                 let findOverTimeArray = _.find(vm.overTime(), (i: OverTime) =>  i.type == AttendanceType.MIDNIGHT_OUTSIDE) as OverTime;
                                                 if (!_.isNil(findOverTimeArray)) {
@@ -277,7 +276,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                                 }
                                             }
                                             // A6_33
-                                            // 計算結果．申請時間．フレックス超過時間
                                             {
                                                 let findOverTimeArray = _.find(vm.overTime(), (i: OverTime) =>  i.type == AttendanceType.FLEX_OVERTIME) as OverTime;
                                                 if (!_.isNil(findOverTimeArray)) {
@@ -398,9 +396,41 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                             vm.holidayTime(holidayTimeArray);
 										}
                                     } else {
+                                        if (vm.dataSource.infoWithDateApplicationOp) {
+                                            const workType: Work = {}, workTime: Work = {};
+                                            workType.code = vm.dataSource.infoWithDateApplicationOp.workTypeCD;
+                                            if (!_.isNil(workType.code)) {
+                                                let workTypeList = vm.dataSource.infoBaseDateOutput.worktypes as Array<WorkType>;
+                                                let item = _.find(workTypeList, (item: WorkType) => item.workTypeCode == workType.code);
+                                                if (!_.isNil(item)) {
+                                                    workType.name = item.name;
+                                                } else {
+                                                    workType.name = vm.$i18n('KAF005_345');
+                                                }
+                                            } else {
+                                                workType.name = vm.$i18n('KAF005_345');
+                                            }
+                                            workTime.code = vm.dataSource.infoWithDateApplicationOp.workTimeCD;
+                                            if (!_.isNil(workTime.code)) {
+                                                let workTimeList = vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst as Array<WorkTime>;
+                                                let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code);
+                                                if (!_.isNil(item)) {
+                                                    workTime.name = item.workTimeDisplayName.workTimeName;
+                                                } else {
+                                                    workTime.name = vm.$i18n('KAF005_345');
+                                                }
+
+                                            } else {
+                                                workTime.name = vm.$i18n('KAF005_345');
+                                            }
+                                            vm.workInfo().workType(workType);
+                                            vm.workInfo().workTime(workTime);
+                                        }
                                         vm.multipleOvertimeContents([
                                             new MultipleOvertimeContent(() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED}, 1)
                                         ]);
+                                        vm.bindOverTime(vm.dataSource, 1);
+                                        vm.bindHolidayTime(vm.dataSource, 1);
                                     }
 								}).fail(error => {
 									vm.$dialog.error(error);
@@ -636,6 +666,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				})
 				return $.Deferred().resolve(false);	
 			}
+			if (failData.messageId == "Msg_3248") {
+			    if (_.isEmpty(vm.multipleOvertimeContents()))
+			    	vm.$errors("#A15_9", "Msg_3248");
+			    else
+			    	vm.$errors("#A15_3_0", "Msg_3248");
+                return $.Deferred().resolve(false);
+            }
 			if (
 				failData.messageId == "Msg_750"
 				|| failData.messageId == "Msg_1654"
@@ -653,12 +690,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				|| failData.messageId == "Msg_1538"
 				|| failData.messageId == "Msg_3237"
 				|| failData.messageId == "Msg_3238"
-				|| failData.messageId == "Msg_3248"
 				) {
 				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
 					.then(() => {
 						if (failData.messageId == "Msg_3237") nts.uk.request.jumpToTopPage();
-						else if (failData.messageId == "Msg_3248") $("#A15_2")[0].scrollIntoView();
 					});
 				return $.Deferred().resolve(false);						
 			}
@@ -872,6 +907,36 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                 ));
                             });
 						} else {
+                            if (self.dataSource.infoWithDateApplicationOp) {
+                                const workType: Work = {}, workTime: Work = {};
+                                workType.code = self.dataSource.infoWithDateApplicationOp.workTypeCD;
+                                if (!_.isNil(workType.code)) {
+                                    let workTypeList = self.dataSource.infoBaseDateOutput.worktypes as Array<WorkType>;
+                                    let item = _.find(workTypeList, (item: WorkType) => item.workTypeCode == workType.code);
+                                    if (!_.isNil(item)) {
+                                        workType.name = item.name;
+                                    } else {
+                                        workType.name = self.$i18n('KAF005_345');
+                                    }
+                                } else {
+                                    workType.name = self.$i18n('KAF005_345');
+                                }
+                                workTime.code = self.dataSource.infoWithDateApplicationOp.workTimeCD;
+                                if (!_.isNil(workTime.code)) {
+                                    let workTimeList = self.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst as Array<WorkTime>;
+                                    let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code);
+                                    if (!_.isNil(item)) {
+                                        workTime.name = item.workTimeDisplayName.workTimeName;
+                                    } else {
+                                        workTime.name = self.$i18n('KAF005_345');
+                                    }
+
+                                } else {
+                                    workTime.name = self.$i18n('KAF005_345');
+                                }
+                                self.workInfo().workType(workType);
+                                self.workInfo().workTime(workTime);
+                            }
                             self.multipleOvertimeContents([
                                 new MultipleOvertimeContent(() => {self.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED}, 1)
 							]);
@@ -1164,6 +1229,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 		addMultipleRow() {
 		    const vm = this;
+            $("#A15_9").ntsError("clear");
 		    let fixedReasonCode = null;
             let defaultReasonTypeItem: any = _.find(vm.reasonTypeItemLst(), (o) => o.defaultValue);
             if(!_.isUndefined(defaultReasonTypeItem)) {
@@ -1184,6 +1250,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		    if ($($element.parentElement).ntsError("hasError")) {
                 $($element.parentElement).find("input").ntsError("clear");
 			}
+			if (!!data.start() || !!data.end()) {
+		    	vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+            }
 		    vm.multipleOvertimeContents.remove(data);
         }
 

@@ -1081,7 +1081,9 @@ public class AppContentServiceImpl implements AppContentService {
 				companyID, 
 				application.getEmployeeID(), 
 				Arrays.asList(application.getAppDate().getApplicationDate()), 
-				application.getAppType());
+				application.getAppType(),
+				Optional.ofNullable(appOverTime != null ? appOverTime.getOverTimeClf() : null)
+		);
 		if(!CollectionUtil.isEmpty(preAppContentDisplayLst)) {
 			preAppContentDisplay = preAppContentDisplayLst.get(0);
 		}

@@ -1076,6 +1076,23 @@ public class OvertimeServiceImpl implements OvertimeService {
 		}
 		workContent.setTimeZones(timeZones);
 		workContent.setBreakTimes(breakTimes);
+		if (displayInfoOverTime.getLatestMultipleOvertimeApp().isPresent()) {
+			if (displayInfoOverTime.getLatestMultipleOvertimeApp().get().getWorkHoursOp().isPresent()) {
+				workContent.setTimeZones(displayInfoOverTime.getLatestMultipleOvertimeApp().get().getWorkHoursOp().get()
+						.stream().map(i -> new TimeZone(
+								i.getTimeZone().getStartTime(),
+								i.getTimeZone().getEndTime()
+						)).collect(Collectors.toList()));
+			}
+			if (displayInfoOverTime.getLatestMultipleOvertimeApp().get().getBreakTimeOp().isPresent()) {
+				workContent.setBreakTimes(displayInfoOverTime.getLatestMultipleOvertimeApp().get().getBreakTimeOp().get()
+						.stream().map(i -> new BreakTimeSheet(
+								new BreakFrameNo(i.getWorkNo().v()),
+								i.getTimeZone().getStartTime(),
+								i.getTimeZone().getEndTime()
+						)).collect(Collectors.toList()));
+			}
+		}
 		Optional<AchievementDetail> opAchievementDetail = displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isPresent()
 				? displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail()
 				: Optional.empty();
@@ -1580,7 +1597,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				companyId,
 				appOverTime.getApplication().getEmployeeID(),
 				appDates,
-				ApplicationType.OVER_TIME_APPLICATION);
+				ApplicationType.OVER_TIME_APPLICATION,
+                Optional.of(appOverTime.getOverTimeClf())
+        );
 		// 実績内容の取得
 		List<ActualContentDisplay> actualContentDisplayLst = collectAchievement.getAchievementContents(
 				companyId,

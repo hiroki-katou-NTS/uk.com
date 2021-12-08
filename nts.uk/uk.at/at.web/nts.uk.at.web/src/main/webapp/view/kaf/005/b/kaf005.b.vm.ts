@@ -378,6 +378,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 
         addMultipleRow() {
             const vm = this;
+            $("#A15_9").ntsError("clear");
             let fixedReasonCode = null;
             let defaultReasonTypeItem: any = _.find(vm.reasonTypeItemLst(), (o) => o.defaultValue);
             if(!_.isUndefined(defaultReasonTypeItem)) {
@@ -397,6 +398,9 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             const vm = this;
             if ($($element.parentElement).ntsError("hasError")) {
                 $($element.parentElement).find("input").ntsError("clear");
+            }
+            if (!!data.start() || !!data.end()) {
+                vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
             }
             vm.multipleOvertimeContents.remove(data);
         }
@@ -619,6 +623,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				})
 				return $.Deferred().resolve(false);	
 			}
+            if (failData.messageId == "Msg_3248") {
+                if (_.isEmpty(vm.multipleOvertimeContents()))
+                    vm.$errors("#A15_9", "Msg_3248");
+                else
+                    vm.$errors("#A15_3_0", "Msg_3248");
+                return $.Deferred().resolve(false);
+            }
 			if(
 				failData.messageId == "Msg_750"
 			||	failData.messageId == "Msg_1654"
@@ -633,11 +644,9 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			||	failData.messageId == "Msg_1537"
 			||	failData.messageId == "Msg_1538"
 			||  failData.messageId == "Msg_3238"
-			||  failData.messageId == "Msg_3248"
 				) {
 				return vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
 				.then(() => {
-                    if (failData.messageId == "Msg_3248") $("#A15_2")[0].scrollIntoView();
 					return $.Deferred().resolve(false);	
 				});	
 			}
