@@ -138,15 +138,15 @@ module nts.uk.at.view.kmk003.a {
                   if (goOutSet.roundingMethod() !== 2) {
                     return false;
                   }
-                  return goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod() === 1
-                      || goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod() === 1
-                      || goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod() === 1
-                      || goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod() === 1
-                      || goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod() === 1
-                      || goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod() === 1
-                      || goOutSet.diffTimezoneSetting.ottimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod() === 1
-                      || goOutSet.diffTimezoneSetting.pubHolWorkTimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod() === 1
-                      || goOutSet.diffTimezoneSetting.workTimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod() === 1;
+                  return goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.ottimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.pubHolWorkTimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod() === 0
+                      || goOutSet.diffTimezoneSetting.workTimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod() === 0;
                 });
 
                 self.checkMsg1485.subscribe(value => {
