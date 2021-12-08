@@ -1192,7 +1192,7 @@ public class InterimRemainOffDateCreateData {
 		}
 		//アルゴリズム「就業時間帯から代休振替情報を作成する」を実行する
 		Optional<DayoffTranferInfor> tranferData = remainInfor.isPresent() ? createDayoffFromWorkTime(require, cid, scheData.getSid(),
-				scheData.getYmd(), remainInfor.get().getWorkTypeCode(), scheData.getWorkTimeCode(), 0, CreateAtr.SCHEDULE, 0, dayOffTimeIsUse) : Optional.empty();
+				scheData.getYmd(), remainInfor.get().getWorkTypeCode(), scheData.getWorkTimeCode(), scheData.getTransferTotal(), CreateAtr.SCHEDULE, scheData.getTransferOvertimesTotal(), dayOffTimeIsUse) : Optional.empty();
 		return Optional.of(new RemainNumberWtSubsLeavTransInfo(remainInfor, tranferData));
 	}
 
@@ -1226,7 +1226,7 @@ public class InterimRemainOffDateCreateData {
 			transferBreak = calDayoffTranferTime(require, cid, employeeId, date, createAtr, workTimeCode, timeSetting, DayoffChangeAtr.BREAKTIME);
 		} else {
 			// 振替残業時間を作成する
-			transferOver =transferBreak = calDayoffTranferTime(require, cid, employeeId, date, createAtr, workTimeCode, timeOverSetting, DayoffChangeAtr.OVERTIME); 
+			transferOver = calDayoffTranferTime(require, cid, employeeId, date, createAtr, workTimeCode, timeOverSetting, DayoffChangeAtr.OVERTIME); 
 		}
 		if (transferBreak.isPresent() || transferOver.isPresent()) {
 			return Optional.of(new DayoffTranferInfor(workTimeCode, transferBreak, transferOver));
