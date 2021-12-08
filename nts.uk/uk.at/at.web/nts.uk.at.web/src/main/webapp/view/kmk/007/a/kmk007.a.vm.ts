@@ -174,6 +174,15 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 } else {
                     self.setWorkTypeSet(self.currentWorkType().oneDay(), ko.toJS(self.oneDay));
                 }
+
+                // 『時間消化休暇』が選択されている場合のみ
+                if (newOneDayCls === 9) {
+                  if (!_.find(self.itemCalculatorMethod(), self.optionalItemCalculationMethod)) {
+                    self.itemCalculatorMethod.push(self.optionalItemCalculationMethod);
+                  }
+                } else {
+                  self.itemCalculatorMethod.remove(self.optionalItemCalculationMethod);
+                }
             });
 
             self.currentWorkType().morningCls.subscribe(function(newOneDayCls) {
@@ -289,6 +298,10 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             self.langId.subscribe(() => {
                 self.changeLanguage();
             });
+
+            self.currentWorkType().oneDay().closeAtr.subscribe((value) => {
+                self.setCalculatorMethod();
+            });
         }
 
 
@@ -324,6 +337,23 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 dfd.resolve();
             });
             return dfd.promise();
+        }
+
+        private setCalculatorMethod(): void {
+            const self = this;
+            const legalCloseAtr = self.itemCloseAtr().filter((item) => item.name === nts.uk.resource.getText('Enum_CloseAtr_PRENATAL') ||
+                item.name === nts.uk.resource.getText('Enum_CloseAtr_POSTPARTUM') || item.name === nts.uk.resource.getText('Enum_CloseAtr_CHILD_CARE') ||
+                item.name === nts.uk.resource.getText('Enum_CloseAtr_CARE'));
+            if (self.currentCode()) {
+                return;
+            }
+            if (legalCloseAtr.some((item) => item.code === self.currentWorkType().oneDay().closeAtr())) {
+                self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
+                self.enableMethod(false);
+            } else {
+                self.currentWorkType().calculatorMethod(CalculatorMethod.DO_NOT_GO_TO_WORK);
+                self.enableMethod(true);
+            }
         }
 
         /**
@@ -546,7 +576,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.enableMethod(false);
                 } if (workTypeSetCode == WorkTypeCls.TimeDigestVacation) {
                     self.currentWorkType().calculatorMethod(CalculatorMethod.TIME_DIGEST_VACATION);
-                    self.enableMethod(false);
+                    self.enableMethod(true);
                 } if (workTypeSetCode == WorkTypeCls.ContinuousWork) {
                     self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
                     self.enableMethod(false);
@@ -560,6 +590,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 if (workTypeSetCode == WorkTypeCls.Closure) {
                     self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
                     self.enableMethod(true);
+                    self.setCalculatorMethod();
                 }
 
             }
