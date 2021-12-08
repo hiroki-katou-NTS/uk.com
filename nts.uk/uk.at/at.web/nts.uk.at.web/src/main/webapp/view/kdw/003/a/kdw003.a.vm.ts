@@ -4115,7 +4115,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         uiType: 1,
                         employeeIDs: [],
                         stampRequestMode: 1,
-                        screenMode: 0
+                        screenMode: 0,
+						screenCode: 0
                     };
                     var vmNew = new ko.ViewModel();
 
