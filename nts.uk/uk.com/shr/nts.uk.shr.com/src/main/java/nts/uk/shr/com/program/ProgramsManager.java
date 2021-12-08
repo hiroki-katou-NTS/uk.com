@@ -1020,6 +1020,18 @@ public class ProgramsManager {
             "/view/ksu/003/a/index.xhtml");
     
     /**
+     * KSU003B
+     */
+    public static final Program KSU003B = new Program(WebAppId.AT, ProgramIdConsts.KSU003B, "KSU003_71",
+            "/view/ksu/003/b/index.xhtml");
+    
+    /**
+     * KSU003C
+     */
+    public static final Program KSU003C = new Program(WebAppId.AT, ProgramIdConsts.KSU003C, "KSU003_85",
+            "/view/ksu/003/c/index.xhtml");
+    
+    /**
      * KSU005A
      */
     public static final Program KSU005A = new Program(WebAppId.AT, ProgramIdConsts.KSU005A, "KSU005_1",
@@ -1797,6 +1809,12 @@ public class ProgramsManager {
 
     public static final Program CMM008A = new Program(WebAppId.COM, ProgramIdConsts.CMM008A, null,
             "/view/cmm/008/a/index.xhtml");
+    
+    /**
+     * CPS018
+     */
+    public static final Program CPS018A = new Program(WebAppId.COM, ProgramIdConsts.CPS018A, "CPS018_1",
+            "/view/cps/018/a/index.xhtml");
 
     /**
      * The Constant CMM014.

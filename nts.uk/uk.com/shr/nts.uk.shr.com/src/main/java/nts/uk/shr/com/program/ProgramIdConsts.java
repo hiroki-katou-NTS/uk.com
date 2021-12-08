@@ -304,6 +304,10 @@ public class ProgramIdConsts {
 	
 	public static final String KSU003A = "KSU003A";
 	
+	public static final String KSU003B = "KSU003B";
+	
+	public static final String KSU003C = "KSU003C";
+	
 	public static final String KSU005A = "KSU005A";
 	
 	public static final String KSU005B = "KSU005B";
@@ -773,6 +777,8 @@ public class ProgramIdConsts {
 	public static final String CPS017C = "CPS017C";
 
 	public static final String CPS017D = "CPS017D";
+	
+	public static final String CPS018A = "CPS018A";
 
 	public static final String CAS005A = "CAS005A";
 	public static final String CAS005B = "CAS005B";

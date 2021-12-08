@@ -111,7 +111,6 @@ public interface WorkScheduleRepository {
 
 	//Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd);
 
-
 	/**
 	 * 所属情報を取得する
 	 * @param sid 社員ID
