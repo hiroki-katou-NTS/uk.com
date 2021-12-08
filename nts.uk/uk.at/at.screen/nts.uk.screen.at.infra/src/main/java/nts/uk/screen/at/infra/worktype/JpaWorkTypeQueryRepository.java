@@ -11,7 +11,9 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
 import nts.uk.screen.at.app.worktype.WorkTypeDto;
+import nts.uk.screen.at.app.worktype.WorkTypeSetDto;
 import nts.uk.screen.at.app.worktype.WorkTypeQueryRepository;
 
 @Stateless
@@ -74,15 +76,13 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 		SELECT_WORKTYPE_KDW006 = stringBuilder.toString();   
 		
 		stringBuilder = new StringBuilder();
-		stringBuilder.append("SELECT NEW " + WorkTypeDto.class.getName());
-		stringBuilder.append(
-				"(c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.deprecateAtr, c.memo, c.worktypeAtr, c.oneDayAtr, c.morningAtr, c.afternoonAtr, c.calculatorMethod, 0) ");
+		stringBuilder.append("SELECT c ");
 		stringBuilder.append("FROM KshmtWorkType c ");
 		stringBuilder.append("WHERE c.kshmtWorkTypePK.companyId = :companyId AND c.deprecateAtr = 0 ");
 		stringBuilder.append("AND ((c.worktypeAtr = 0 and c.oneDayAtr = :workTypeAtr) ");
 		stringBuilder.append("OR (c.worktypeAtr = 1 and (c.morningAtr = :workTypeAtr or c.afternoonAtr = :workTypeAtr))) ");
 		stringBuilder.append("ORDER BY c.kshmtWorkTypePK.workTypeCode ASC ");
-		SELECT_WORKTYPE_KDW006G = stringBuilder.toString();   
+		SELECT_WORKTYPE_KDW006G = stringBuilder.toString();    
 		
 		stringBuilder = new StringBuilder();
 		stringBuilder.append("SELECT NEW " + WorkTypeDto.class.getName());
@@ -349,8 +349,46 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 		List<WorkTypeDto> listNew = new ArrayList<>();
 		if(!workTypeAtrList.isEmpty()){
 			for (int item: workTypeAtrList) {
-				List<WorkTypeDto> typeDto = this.queryProxy().query(SELECT_WORKTYPE_KDW006G, WorkTypeDto.class).setParameter("companyId", companyId)
-						.setParameter("workTypeAtr", item).getList();
+				List<WorkTypeDto> typeDto = this.queryProxy().query(SELECT_WORKTYPE_KDW006G, KshmtWorkType.class).setParameter("companyId", companyId)
+						.setParameter("workTypeAtr", item)
+						.getList()
+						.stream()
+						.map(c -> {
+							WorkTypeDto result = new WorkTypeDto(
+									c.kshmtWorkTypePK.workTypeCode,
+									c.name,
+									c.abbreviationName,
+									c.symbolicName,
+									c.deprecateAtr,
+									c.memo,
+									c.worktypeAtr,
+									c.oneDayAtr,
+									c.morningAtr,
+									c.afternoonAtr,
+									c.calculatorMethod,
+									0);
+							List<WorkTypeSetDto> workTypeList = c
+									.worktypeSetList
+									.stream()
+									.map(x -> new WorkTypeSetDto(
+											x.kshmtWorkTypeSetPK.workTypeCode,
+											x.kshmtWorkTypeSetPK.workAtr,
+											x.digestPublicHd,
+											x.hodidayAtr,
+											x.countHoliday,
+											x.closeAtr == null ? 0 : x.closeAtr,
+											x.sumAbsenseNo,
+											x.sumSpHolidayNo,
+											x.timeLeaveWork,
+											x.attendanceTime,
+											x.genSubHoliday,
+											x.dayNightTimeAsk
+											))
+									.collect(Collectors.toList());
+							result.setWorkTypeSet(workTypeList);
+							return result;
+						})
+						.collect(Collectors.toList());
 				if(!typeDto.isEmpty()){
 					listNew.addAll(typeDto);
 				}
