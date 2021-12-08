@@ -1399,11 +1399,38 @@ module nts.uk.at.view.ksu003.a.model {
 		gcTaskTime : any;
 	};
 
-	export interface IEmpidName {
-		empId: string,
-		name: string,
-		code: string
-	}
+    export interface IEmpidName {
+        empId: string,
+        name: string,
+        code: string
+    }
+
+    export interface IError {
+        sid: string,
+        scd: string,
+        empName: string,
+        date: string,
+        attendanceItemId: string,
+        errorMessage: string,
+    }
+
+    export class InforError {
+        sid: string;
+        scd: string;
+        empName: string;
+        date: string;
+        attendanceItemId: string;
+        errorMessage: string;
+        constructor(param: IError) {
+            let self = this;
+            self.sid = param.sid;
+            self.scd = param.scd;
+            self.empName = param.empName;
+            self.date = param.date;
+            self.attendanceItemId = param.attendanceItemId;
+            self.errorMessage = param.errorMessage;
+        }
+    }
 
 	/*service.sortEmployee(param)
 	.done((data: Array<model.DisplayWorkInfoByDateDto>) => {
