@@ -153,10 +153,17 @@ public class GetDeitalInfoNursingByEmp {
 			}
 			// 看護・介護残数DTOを作成
 			// set 年間上限数
-			Double limitDays = (double) aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getLimitDays().v()
-					- aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedDay().v();
-			
-			String KDL051_30 = TextResource.localize("KDL051_30", limitDays.toString(), "", "", "");
+			// 取得した子の看護介護休暇集計結果．起算日からの休暇情報．本年．残数．日数
+			Double limitDays = (double) aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getRemainDay().v(); //＃121581
+			String v1 ="";
+			String v2 ="";
+			//取得した介護看護休暇設定．時間介護看護設定．管理区分
+			if(acquireNursingAndChildNursingDto.getNursingLeaveSetting().get().getTimeCareNursingSetting().getManageDistinct() == ManageDistinct.YES ) {
+				v1 = TextResource.localize("KDL051_31");
+				//子の看護介護休暇集計結果．起算日からの休暇情報．本年．残数．時間、
+				v2 = convertTime(aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getRemainTimes().get().v());
+			}
+			String KDL051_30 = TextResource.localize("KDL051_30", limitDays.toString(), v1, v2);
 			dataResult.setMaxNumberOfYear(KDL051_30);
 			// set 上限制限開始日
 			dataResult.setUpperLimitStartDate(childCareNurseUpperLimitPeriod.getPeriod().start().toString());
@@ -166,15 +173,13 @@ public class GetDeitalInfoNursingByEmp {
 			String KDL051_34 = TextResource.localize("KDL051_34", Double.valueOf(aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getLimitDays().v()).toString());
 			dataResult.setMaxNumberOfDays(KDL051_34);
 			// set 使用数
-			String value0 = aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedDay()
-					.v().toString();
+			String value0 = aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getUsedDays().getUsedDay().v().toString();
 			String value1 = "";
 			String value2 = "";
 			String value3 = "";
 			if ( acquireNursingAndChildNursingDto.getNursingLeaveSetting().get().getTimeCareNursingSetting().getManageDistinct() == ManageDistinct.YES) { //120688
 				value1 = KDL051_31;
-				value2 = convertTime(aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber()
-						.getUsedTimes().get().v());
+				value2 = convertTime(aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getUsedDays().getUsedTimes().get().v());
 				value3 = KDL051_32;
 			}
 			String KDL051_35 = TextResource.localize("KDL051_35", value0, value1, value2, value3);
