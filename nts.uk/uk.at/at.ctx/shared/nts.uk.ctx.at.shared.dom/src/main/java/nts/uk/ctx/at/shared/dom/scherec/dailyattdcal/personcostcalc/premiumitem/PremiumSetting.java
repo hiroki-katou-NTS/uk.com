@@ -51,6 +51,9 @@ public class PremiumSetting implements Validatable{
 
     private List<Integer> attendanceItems;
 
+	/** 割増時間合計に含めるか */
+	private boolean includeTotal;
+
     public PremiumSetting(String companyID,String historyID,
 						  ExtraTimeItemNo iD, PremiumRate rate,
 						  UnitPrice unitPrice,
@@ -62,6 +65,7 @@ public class PremiumSetting implements Validatable{
 		this.attendanceItems = attendanceItems;
 		this.companyID = companyID;
 		this.historyID = historyID;
+		this.includeTotal = true; //ToDo UI実装時に要修正
 	}
 
 	@Override

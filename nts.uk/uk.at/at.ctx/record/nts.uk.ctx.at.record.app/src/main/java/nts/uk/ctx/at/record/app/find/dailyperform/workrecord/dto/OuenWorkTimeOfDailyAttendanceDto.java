@@ -40,34 +40,26 @@ public class OuenWorkTimeOfDailyAttendanceDto implements ItemConst, AttendanceIt
 	@AttendanceItemValue(type = ValueType.AMOUNT_NUM)
 	private Integer amount;
 	
-	/** 単価: 単価 */
-	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = PRICE_UNIT)
-	@AttendanceItemValue(type = ValueType.AMOUNT_NUM)
-	private Integer priceUnit;
-	
 	public OuenWorkTimeOfDailyAttendance toDomain() {
 		return OuenWorkTimeOfDailyAttendance.create(
 				SupportFrameNo.of(this.no),
 				this.workTime == null ? OuenAttendanceTimeEachTimeSheet.createAllZero() : this.workTime.toDomain(),
 				this.moveTime == null ? OuenMovementTimeEachTimeSheet.createAllZero() : this.moveTime.toDomain(),
-				this.amount == null ? AttendanceAmountDaily.ZERO : new AttendanceAmountDaily(this.amount),
-				this.priceUnit == null ? WorkingHoursUnitPrice.ZERO : new WorkingHoursUnitPrice(this.priceUnit));
+				this.amount == null ? AttendanceAmountDaily.ZERO : new AttendanceAmountDaily(this.amount));
 	}
 	
-	public static OuenWorkTimeOfDailyAttendanceDto valueOf(OuenWorkTimeOfDailyAttendance domain) {
+	public static OuenWorkTimeOfDailyAttendanceDto toDto(OuenWorkTimeOfDailyAttendance domain) {
 		return new OuenWorkTimeOfDailyAttendanceDto(
 				domain.getWorkNo().v(),
-				OuenAttendanceTimeEachTimeSheetDto.valueOf(domain.getWorkTime()),
-				OuenMovementTimeEachTimeSheetDto.valueOf(domain.getMoveTime()),
-				domain.getAmount().v(),
-				domain.getPriceUnit().v());
+				OuenAttendanceTimeEachTimeSheetDto.toDto(domain.getWorkTime()),
+				OuenMovementTimeEachTimeSheetDto.toDto(domain.getMoveTime()),
+				domain.getAmount().v());
 	}
 	
 	@Override
 	public PropType typeOf(String path) {
 		switch (path) {
 		case AMOUNT:
-		case PRICE_UNIT:
 			return PropType.VALUE;
 		default:
 			return PropType.OBJECT;
@@ -115,8 +107,6 @@ public class OuenWorkTimeOfDailyAttendanceDto implements ItemConst, AttendanceIt
 		switch (path) {
 		case AMOUNT:
 			return Optional.of(ItemValue.builder().value(this.amount).valueType(ValueType.AMOUNT_NUM));
-		case PRICE_UNIT:
-			return Optional.of(ItemValue.builder().value(this.priceUnit).valueType(ValueType.AMOUNT_NUM));
 		default:
 			return Optional.empty();
 		}
@@ -127,9 +117,6 @@ public class OuenWorkTimeOfDailyAttendanceDto implements ItemConst, AttendanceIt
 		switch (path) {
 		case AMOUNT:
 			this.amount = value.valueOrDefault(0);
-			break;
-		case PRICE_UNIT:
-			this.priceUnit = value.valueOrDefault(0);
 			break;
 		default:
 			break;

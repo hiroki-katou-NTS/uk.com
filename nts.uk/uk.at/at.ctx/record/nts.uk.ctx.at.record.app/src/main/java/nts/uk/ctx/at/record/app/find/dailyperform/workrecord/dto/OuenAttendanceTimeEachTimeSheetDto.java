@@ -10,12 +10,14 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.PremiumTimeDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenAttendanceTimeEachTimeSheet;
 
 /** 時間帯別勤怠の時間 */
@@ -39,10 +41,25 @@ public class OuenAttendanceTimeEachTimeSheetDto implements ItemConst, Attendance
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer withinTime;
 	
+	/** 所定内時間金額：勤怠日別金額 */
+	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = WITHIN_STATUTORY + AMOUNT)
+	@AttendanceItemValue(type = ValueType.AMOUNT_NUM)
+	private Integer withinAmount;
+	
 	/** 割増時間：割増時間 */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = PREMIUM + TIME, 
 			listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<PremiumTimeDto> premiumTimes;
+	
+	/** 割増金額合計: 勤怠日別金額 */
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = PREMIUM + AMOUNT + TOTAL)
+	@AttendanceItemValue(type = ValueType.AMOUNT_NUM)
+	private Integer totalPremiumAmount;
+
+	/** 割増労働時間合計: 勤怠時間 */
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = PREMIUM + TIME + TOTAL)
+	@AttendanceItemValue(type = ValueType.TIME)
+	private Integer totalPremiumTime;
 	
 	/** 医療時間：医療時間 */
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = MEDICAL + TIME, 
@@ -54,17 +71,24 @@ public class OuenAttendanceTimeEachTimeSheetDto implements ItemConst, Attendance
 				this.totalTime == null ? AttendanceTime.ZERO : new AttendanceTime(this.totalTime),
 				this.breakTime == null ? AttendanceTime.ZERO : new AttendanceTime(this.breakTime),
 				this.withinTime == null ? AttendanceTime.ZERO : new AttendanceTime(this.withinTime),
+				this.withinAmount == null ? AttendanceAmountDaily.ZERO : new AttendanceAmountDaily(this.withinAmount),
 				ConvertHelper.mapTo(this.medicalCareTimes, c -> c.toDomain()),
-				ConvertHelper.mapTo(this.premiumTimes, c -> c.toDomain()));
+				new PremiumTimeOfDailyPerformance(
+						ConvertHelper.mapTo(this.premiumTimes, c -> c.toDomain()),
+						this.totalPremiumAmount == null ? AttendanceAmountDaily.ZERO : new AttendanceAmountDaily(this.totalPremiumAmount),
+						this.totalPremiumTime == null ? AttendanceTime.ZERO : new AttendanceTime(this.totalPremiumTime)));
 	}
 	
-	public static OuenAttendanceTimeEachTimeSheetDto valueOf(OuenAttendanceTimeEachTimeSheet domain) {
+	public static OuenAttendanceTimeEachTimeSheetDto toDto(OuenAttendanceTimeEachTimeSheet domain) {
 		return new OuenAttendanceTimeEachTimeSheetDto(
 				domain.getTotalTime().valueAsMinutes(),
 				domain.getBreakTime().valueAsMinutes(),
 				domain.getWithinTime().valueAsMinutes(),
-				ConvertHelper.mapTo(domain.getPremiumTime(), c -> PremiumTimeDto.valueOf(c)),
-				ConvertHelper.mapTo(domain.getMedicalTime(), c -> MedicalCareTimeEachTimeSheetDto.valueOf(c)));
+				domain.getWithinAmount().v(),
+				ConvertHelper.mapTo(domain.getPremiumTime().getPremiumTimes(), c -> PremiumTimeDto.toDto(c)),
+				domain.getPremiumTime().getTotalAmount().v(),
+				domain.getPremiumTime().getTotalWorkingTime().v(),
+				ConvertHelper.mapTo(domain.getMedicalTime(), c -> MedicalCareTimeEachTimeSheetDto.toDto(c)));
 	}
 	
 	@Override
@@ -73,6 +97,9 @@ public class OuenAttendanceTimeEachTimeSheetDto implements ItemConst, Attendance
 		case (TOTAL_LABOR + TIME):
 		case (BREAK + TIME):
 		case (WITHIN_STATUTORY + TIME):
+		case (WITHIN_STATUTORY + AMOUNT):
+		case (PREMIUM + AMOUNT + TOTAL):
+		case (PREMIUM + TIME + TOTAL):
 			return PropType.VALUE;
 		case (PREMIUM + TIME):
 			return PropType.IDX_IN_IDX;
@@ -104,6 +131,12 @@ public class OuenAttendanceTimeEachTimeSheetDto implements ItemConst, Attendance
 			return Optional.of(ItemValue.builder().value(this.breakTime).valueType(ValueType.TIME));
 		case (WITHIN_STATUTORY + TIME):
 			return Optional.of(ItemValue.builder().value(this.withinTime).valueType(ValueType.TIME));
+		case (WITHIN_STATUTORY + AMOUNT):
+			return Optional.of(ItemValue.builder().value(this.withinAmount).valueType(ValueType.AMOUNT_NUM));
+		case (PREMIUM + AMOUNT + TOTAL):
+			return Optional.of(ItemValue.builder().value(this.totalPremiumAmount).valueType(ValueType.AMOUNT_NUM));
+		case (PREMIUM + TIME + TOTAL):
+			return Optional.of(ItemValue.builder().value(this.totalPremiumTime).valueType(ValueType.TIME));
 		default:
 			return Optional.empty();
 		}
@@ -120,6 +153,15 @@ public class OuenAttendanceTimeEachTimeSheetDto implements ItemConst, Attendance
 			break;
 		case (WITHIN_STATUTORY + TIME):
 			this.withinTime = value.valueOrDefault(0);
+			break;
+		case (WITHIN_STATUTORY + AMOUNT):
+			this.withinAmount = value.valueOrDefault(0);
+			break;
+		case (PREMIUM + AMOUNT + TOTAL):
+			this.totalPremiumAmount = value.valueOrDefault(0);
+			break;
+		case (PREMIUM + TIME + TOTAL):
+			this.totalPremiumTime = value.valueOrDefault(0);
 			break;
 		default:
 			break;

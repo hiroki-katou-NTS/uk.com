@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
@@ -39,7 +40,8 @@ public class SupportWorkTimeOfDailyAttendanceService {
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
 			BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			CalculateOfTotalConstraintTime calculateOfTotalConstraintTime,
-			DailyRecordToAttendanceItemConverter converter) {
+			DailyRecordToAttendanceItemConverter converter,
+			IntegrationOfDaily integrationOfDaily) {
 		
 		//日別勤怠の応援作業時間を計算する
 		return recordReGetClass.getIntegrationOfDaily().getOuenTimeSheet().stream()
@@ -53,7 +55,8 @@ public class SupportWorkTimeOfDailyAttendanceService {
 						calculateOfTotalConstraintTime,
 						converter,
 						recordReGetClass.getIntegrationOfDaily().getOuenTimeSheet(),
-						timeSheet))
+						timeSheet,
+						integrationOfDaily))
 				.collect(Collectors.toList());
 	}
 }

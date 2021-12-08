@@ -120,7 +120,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			if (!_.isNil(_.get(dataTransfer, 'appDate'))) {
 				dateLst.push(dataTransfer.appDate);
 			}	
+			let screenCode: number = null;
 			if (!_.isEmpty(params)) {
+				if (!nts.uk.util.isNullOrUndefined(params.screenCode)) {
+					screenCode = params.screenCode;
+				}
 				if (!_.isEmpty(params.employeeIds)) {
 					empLst = params.employeeIds;
 				}
@@ -149,7 +153,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 			vm.opOvertimeAppAtr = ko.observable(vm.getOverTimeAtrByUrl());
 			// load setting common KAF000
-			vm.loadData(empLst, dateLst, vm.appType(), null, Number(vm.getOverTimeAtrByUrl()))
+			let paramKAF000 = {
+				empLst, 
+				dateLst, 
+				appType: vm.appType(), 
+				opOvertimeAppAtr: Number(vm.getOverTimeAtrByUrl()),
+				screenCode	
+			};
+			vm.loadData(paramKAF000)
 				.then((loadDataFlag: any) => {
 					vm.application().appDate.subscribe(value => {
 						console.log(value);
