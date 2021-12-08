@@ -12,6 +12,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AdditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
@@ -205,7 +206,7 @@ public class LeaveEarlyTimeOfDaily {
 		}
 		
 		//早退計上時間の計算
-		TimeWithCalculation leaveEarlyTime = leaveEarlyTimeSheet.calcForRecordTime(leaveEarly, true);
+		TimeWithCalculation leaveEarlyTime = leaveEarlyTimeSheet.calcForRecordTime(leaveEarly, true, NotUseAtr.USE);
 		//早退控除時間の計算
 		TimeWithCalculation leaveEarlyDeductionTime = leaveEarlyTimeSheet.calcDedctionTime(leaveEarly,notDeductLateLeaveEarly);
 		//休暇使用時間
@@ -273,9 +274,19 @@ public class LeaveEarlyTimeOfDaily {
 				.findFirst().flatMap(l -> l);
 		//計算早退計上時間
 		AttendanceTime leaveEarlyCalcTime = leaveEarly.isPresent() ?
-				leaveEarly.get().calcForRecordTime(true, false).getCalcTime() : AttendanceTime.ZERO;
+				leaveEarly.get().calcForRecordTime(true, false, NotUseAtr.NOT_USE).getCalcTime() : AttendanceTime.ZERO;
 		
-		return holidayAddtionSet.getAddTime(this.timePaidUseTime, leaveEarlyCalcTime, workTimeForm);
+		AttendanceTime roundAfter = AttendanceTime.ZERO;
+		if(leaveEarly.flatMap(l -> l.getForRecordTimeSheet()).isPresent()) {
+			//丸め後の早退時間
+			roundAfter = new AttendanceTime(leaveEarly.get().getForRecordTimeSheet().get().getAfterRoundingAsLeaveEarly().lengthAsMinutes());
+		}
+		AttendanceTime useTime = new AttendanceTime(this.timePaidUseTime.calcTotalVacationAddTime(Optional.of(holidayAddtionSet), AdditionAtr.WorkingHoursOnly));
+		if(leaveEarlyCalcTime.lessThanOrEqualTo(useTime) && roundAfter.greaterThan(useTime)) {
+			//丸め前だったら相殺しきれるが、丸め後だと相殺しきれない場合、休暇加算時間は丸め後の時間帯から計算した値を使いたい
+			return roundAfter;
+		}
+		return holidayAddtionSet.getAddTime(this.timePaidUseTime, roundAfter, workTimeForm);
 	}
 	
 	//クリア 早退時間の時間

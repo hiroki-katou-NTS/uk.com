@@ -1137,12 +1137,12 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		if(isDeductLateTime && timeLeavingWork.getStampOfAttendance().isPresent()){
 			//出退勤．出勤 ← 遅刻時間帯終了時刻
 			timeLeavingWork.getStampOfAttendance().get().getTimeDay().setTimeWithDay(
-					Optional.of(lateDeducation.getTimeSheet().getEnd()));
+					Optional.of(lateDeducation.getAfterRoundingAsLate().getEnd()));
 			
 			//時間帯．開始 ← 遅刻時間帯終了時刻
 			this.withinWorkTimeFrame.stream()
 					.filter(c -> c.getWorkingHoursTimeNo().v() == workNo)
-					.findFirst().ifPresent(c -> c.shiftStart(lateDeducation.getTimeSheet().getEnd()));
+					.findFirst().ifPresent(c -> c.shiftStart(lateDeducation.getAfterRoundingAsLate().getEnd()));
 		}
 		return timeLeavingWork;
 	}
@@ -1209,7 +1209,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		if(!within.getLeaveEarlyTimeSheet().isPresent() || !within.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().isPresent()) {
 			return timeLeavingWork;
 		}
-		//遅刻控除時間帯
+		//早退控除時間帯
 		LateLeaveEarlyTimeSheet leaveEarlyDeducation = within.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get();
 		
 		//控除判断処理
@@ -1221,14 +1221,14 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		
 		//控除する場合
 		if(isDeductLateTime && timeLeavingWork.getStampOfLeave().isPresent()){
-			//出退勤．退勤 ← 早退時間帯終了時刻 
+			//出退勤．退勤 ← 早退時間帯開始時刻 
 			timeLeavingWork.getStampOfLeave().get().getTimeDay().setTimeWithDay(
-				 Optional.of(leaveEarlyDeducation.getTimeSheet().getStart()));
+				 Optional.of(leaveEarlyDeducation.getAfterRoundingAsLeaveEarly().getStart()));
 			
-			//時間帯．終了 ← 早退時間帯終了時刻
+			//時間帯．終了 ← 早退時間帯開始時刻
 			this.withinWorkTimeFrame.stream()
 					.filter(c -> c.getWorkingHoursTimeNo().v() == workNo)
-					.findFirst().ifPresent(c -> c.shiftEnd(leaveEarlyDeducation.getTimeSheet().getStart()));
+					.findFirst().ifPresent(c -> c.shiftEnd(leaveEarlyDeducation.getAfterRoundingAsLeaveEarly().getStart()));
 		}
 		return timeLeavingWork;
 	}
@@ -1244,6 +1244,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param deductionTimeSheet 控除時間帯
 	 * @param creatingWithinWorkTimeSheet 就業時間内時間帯（遅刻早退を事前に求めた結果が入っている）
 	 * @param timeVacationWork 時間休暇WORK
+	 * @param timeLeavingOfDaily 日別勤怠の出退勤
 	 * @return 就業時間内時間帯
 	 */
 	public static WithinWorkTimeSheet createAsFlow(
@@ -1255,17 +1256,21 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			PredetermineTimeSetForCalc predetermineTimeSet,
 			DeductionTimeSheet deductionTimeSheet,
 			WithinWorkTimeSheet creatingWithinWorkTimeSheet,
-			TimeVacationWork timeVacationWork) {
+			TimeVacationWork timeVacationWork,
+			TimeLeavingOfDailyAttd timeLeavingOfDaily) {
 		
 		// 1回目の開始
-		TimeWithDayAttr startTime = creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().get(0).getTimeSheet().getStart();
+		Optional<TimeWithDayAttr> startTime = timeLeavingOfDaily.getAttendanceLeavingWork(new WorkNo(1)).flatMap(t -> t.getAttendanceTime());
+		if(!startTime.isPresent()) {
+			return creatingWithinWorkTimeSheet;
+		}
 		// 就業時間内時間帯を作成
 		creatingWithinWorkTimeSheet.createWithinWorkTimeSheetAsFlowWork(
 				personDailySetting,
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
-				startTime,
+				startTime.get(),
 				deductionTimeSheet,
 				integrationOfWorkTime.getFlowWorkSetting().get(),
 				predetermineTimeSet,
@@ -1614,15 +1619,21 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	
 	/**
 	 * 就業時間内時間枠(List)の最初の開始時刻～最後の終了時刻を求める
-	 * @param withinWorkTimeFrame 就業時間内時間枠(List)
 	 * @return 最初の開始時刻～最後の終了時刻
 	 */
-	public Optional<TimeSpanForDailyCalc> getStartEndToWithinWorkTimeFrame() {
-		
-		if(this.withinWorkTimeFrame.isEmpty()) return Optional.empty();
-		TimeWithDayAttr start = this.withinWorkTimeFrame.get(0).getTimeSheet().getStart();
-		TimeWithDayAttr end = this.withinWorkTimeFrame.get(this.withinWorkTimeFrame.size()-1).getTimeSheet().getEnd();
-		return Optional.of(new TimeSpanForDailyCalc(start, end));
+	public Optional<TimeSpanForDailyCalc> getFirstStartAndLastEnd() {
+		Optional<TimeWithDayAttr> start = this.withinWorkTimeFrame.stream()
+				.map(t -> t.getTimeSheet().getStart())
+				.sorted((f, s) -> f.compareTo(s))
+				.findFirst();
+		Optional<TimeWithDayAttr> end = this.withinWorkTimeFrame.stream()
+				.map(t -> t.getTimeSheet().getEnd())
+				.sorted((f, s) -> s.compareTo(f))
+				.findFirst();
+		if(!start.isPresent() || !end.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.of(new TimeSpanForDailyCalc(start.get(), end.get()));
 	}
 	
 	/**

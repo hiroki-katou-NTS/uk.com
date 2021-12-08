@@ -12,6 +12,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AdditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
@@ -208,7 +209,7 @@ public class LateTimeOfDaily {
 			}
 		}
 		//遅刻計上時間の計算
-		TimeWithCalculation lateTime = lateTimeSheet.calcForRecordTime(late, true);
+		TimeWithCalculation lateTime = lateTimeSheet.calcForRecordTime(late, true, NotUseAtr.USE);
 		//遅刻控除時間の計算
 		TimeWithCalculation lateDeductionTime = lateTimeSheet.calcDedctionTime(late,notDeductLateLeaveEarly);
 		//休暇使用時間
@@ -351,9 +352,19 @@ public class LateTimeOfDaily {
 				.findFirst().flatMap(l -> l);
 		//計算遅刻計上時間
 		AttendanceTime lateCalcTime = late.isPresent() ?
-				late.get().calcForRecordTime(true, false).getCalcTime() : AttendanceTime.ZERO;
+				late.get().calcForRecordTime(true, false, NotUseAtr.NOT_USE).getCalcTime() : AttendanceTime.ZERO;
 		
-		return holidayAddtionSet.getAddTime(this.timePaidUseTime, lateCalcTime, workTimeForm);
+		AttendanceTime roundAfter = AttendanceTime.ZERO;
+		if(late.flatMap(l -> l.getForRecordTimeSheet()).isPresent()) {
+			//丸め後の遅刻時間
+			roundAfter = new AttendanceTime(late.get().getForRecordTimeSheet().get().getAfterRoundingAsLeaveEarly().lengthAsMinutes());
+		}
+		AttendanceTime useTime = new AttendanceTime(this.timePaidUseTime.calcTotalVacationAddTime(Optional.of(holidayAddtionSet), AdditionAtr.WorkingHoursOnly));
+		if(lateCalcTime.lessThanOrEqualTo(useTime) && roundAfter.greaterThan(useTime)) {
+			//丸め前だったら相殺しきれるが、丸め後だと相殺しきれない場合、休暇加算時間は丸め後の時間帯から計算した値を使いたい
+			return roundAfter;
+		}
+		return holidayAddtionSet.getAddTime(this.timePaidUseTime, roundAfter, workTimeForm);
 	}
 	
 	public void resetData() {

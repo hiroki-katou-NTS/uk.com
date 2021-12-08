@@ -280,6 +280,13 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		AttendanceTime timeVacationOffsetTime = this.getTimeVacationOffsetTimeForAddWorkTime(
 				integrationOfDaily, integrationOfWorkTime, addSetting, holidayAddtionSet);
 		workTime = new AttendanceTime(workTime.valueAsMinutes() + timeVacationOffsetTime.valueAsMinutes());
+		if(this.leaveEarlyTimeSheet.isPresent() && this.leaveEarlyTimeSheet.get().getForDeducationTimeSheet().isPresent()) {
+			//休暇加算によって、就業時間から溢れて残業になる時間帯
+			TimeSpanForDailyCalc overTimebyTimeVacation = new TimeSpanForDailyCalc(
+					this.timeSheet.getEnd(),
+					this.leaveEarlyTimeSheet.get().getForDeducationTimeSheet().get().getAfterRoundingAsLeaveEarly().getStart());
+			workTime = new AttendanceTime(workTime.valueAsMinutes() - overTimebyTimeVacation.lengthAsMinutes());
+		}
 		// 丸め処理
 		TimeRoundingSetting rounding = this.getRounding();
 		workTime = new AttendanceTime(rounding.round(workTime.valueAsMinutes()));
@@ -1136,11 +1143,6 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				beforeLateEarlyTimeSheet = beforeLateEarlyTimeSheet.shiftOnlyEnd(leaveEarlyCalcRange.get().getEnd());
 			}
 		}
-		//遅刻早退控除前時間帯に終了時刻が含まれていたら、終了時刻を変更する
-		if (endTime.isPresent() && beforeLateEarlyTimeSheet.contains(endTime.get())){
-			beforeLateEarlyTimeSheet = beforeLateEarlyTimeSheet.shiftOnlyEnd(
-					new TimeWithDayAttr(endTime.get().valueAsMinutes()));
-		}
 		return beforeLateEarlyTimeSheet;
 	}
 	
@@ -1261,7 +1263,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				deductionTimeSheet,
 				addSetting.getVacationCalcMethodSet(),
 				frames,
-				integrationOfWorkTime.get().getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm());//get()している
+				integrationOfWorkTime.get().getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm());
 	}
 	
 	/**
