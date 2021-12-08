@@ -83,8 +83,8 @@ public class Stamp implements DomainAggregate, Cloneable {
 	/**
 	 * 打刻記録ID
 	 */
-	@Getter
-	private String stampRecordId;
+//	@Getter
+//	private String stampRecordId;
 
 	/**
 	 * [C-1] 初回打刻データを作成する
@@ -107,7 +107,7 @@ public class Stamp implements DomainAggregate, Cloneable {
 		this.refActualResults = refActualResults;
 		this.imprintReflectionStatus = new ImprintReflectionState(false, Optional.empty());
 		this.locationInfor = locationInfor;
-		this.stampRecordId = stampRecordId;
+		//this.stampRecordId = stampRecordId;
 	}
 	
 	/**
@@ -118,22 +118,25 @@ public class Stamp implements DomainAggregate, Cloneable {
 	 * @param refActualResults
 	 * @param locationInfor
 	 */
-	public Stamp(StampRecord stampRecord, Relieve relieve, StampType stampType, RefectActualResult refActualResults,
-			Optional<GeoCoordinate> locationInfor) {
-		super();
-		this.contractCode = stampRecord.getContractCode(); //ver2　属性追加
-		this.cardNumber = stampRecord.getStampNumber();
-		this.stampDateTime = stampRecord.getStampDateTime();
-		this.relieve = relieve;
-		this.type = stampType;
-		this.refActualResults = refActualResults;
-		this.locationInfor = locationInfor;
-		this.stampRecordId = stampRecord.getStampRecordId();
-		this.imprintReflectionStatus = new ImprintReflectionState(false, Optional.empty());
-	}
+//	public Stamp(StampRecord stampRecord, Relieve relieve, StampType stampType, RefectActualResult refActualResults,
+//			Optional<GeoCoordinate> locationInfor) {
+//		super();
+//		this.contractCode = stampRecord.getContractCode(); //ver2　属性追加
+//		this.cardNumber = stampRecord.getStampNumber();
+//		this.stampDateTime = stampRecord.getStampDateTime();
+//		this.relieve = relieve;
+//		this.type = stampType;
+//		this.refActualResults = refActualResults;
+//		this.locationInfor = locationInfor;
+//		//this.stampRecordId = stampRecord.getStampRecordId();
+//		this.imprintReflectionStatus = new ImprintReflectionState(false, Optional.empty());
+//	}
+	
+	
 	
 	/**
-	 * [2] 勤怠打刻に変換する
+	 * [1] 勤怠打刻に変換する
+	 * 
 	 * @param referenceDate
 	 */
 	public WorkTimeInformation convertToAttendanceStamp(GeneralDate date) {
@@ -150,7 +153,17 @@ public class Stamp implements DomainAggregate, Cloneable {
 		
 		return workTimeInformation;
 	}
-
+	
+	/**
+	 * [2] 表示する打刻区分を作成する
+	 * 
+	 * @return 打刻区分
+	 */
+	public String createStampDivisionDisplayed() {
+		return this.type.createStampTypeDisplay();
+	}
+	
+	
 	public void setAttendanceTime(AttendanceTime attendanceTime) {
 		this.attendanceTime = Optional.ofNullable(attendanceTime);
 	}
@@ -169,6 +182,6 @@ public class Stamp implements DomainAggregate, Cloneable {
 				refActualResults.clone(),
 				imprintReflectionStatus.clone(),
 				locationInfor.map(x -> new GeoCoordinate(x.getLatitude(), x.getLongitude())),
-				attendanceTime.map(x -> new AttendanceTime(x.v())), stampRecordId);
+				attendanceTime.map(x -> new AttendanceTime(x.v())));
 	}
 }
