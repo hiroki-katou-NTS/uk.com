@@ -1,6 +1,7 @@
 module nts.uk.com.view.cas009.a.viewmodel {
     import ccg026 = nts.uk.com.view.ccg026.component;
     import ComponentModelCCG025 = nts.uk.com.view.ccg025.a.component.viewmodel.ComponentModel;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
 
     const API = {
         savePermission: 'ctx/com/screen/person/role/register',
@@ -19,7 +20,8 @@ module nts.uk.com.view.cas009.a.viewmodel {
             roleType: 8,
             multiple: false,
             rows: 15,
-            tabindex: 0
+            tabindex: 0,
+            onDialog:true
         });
 
         created() {
@@ -203,14 +205,18 @@ module nts.uk.com.view.cas009.a.viewmodel {
                             vm.$blockui("show");
                             vm.$ajax("com", API.removePermission, _.pick(role, ["roleId", "assignAtr"])).done(() => {
                                 vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+
                                     let roles: Array<IRole> = ko.toJS(vm.listRole),
                                         selected: IRole = roles[index];
-                                    vm.getListRole(selected.roleId).done(() => {
-
-                                    }).always(() => {
-                                        vm.$blockui("hide");
-                                        nts.uk.ui.errors.clearAll();
-                                    });
+                                    if(isNullOrUndefined(selected)){
+                                        vm.getListRole();
+                                    }else {
+                                        vm.getListRole(selected.roleId).done(() => {
+                                        }).always(() => {
+                                            vm.$blockui("hide");
+                                            nts.uk.ui.errors.clearAll();
+                                        });
+                                    }
                                 });
                             }).fail((error) => {
                                 vm.$dialog.error(error);
