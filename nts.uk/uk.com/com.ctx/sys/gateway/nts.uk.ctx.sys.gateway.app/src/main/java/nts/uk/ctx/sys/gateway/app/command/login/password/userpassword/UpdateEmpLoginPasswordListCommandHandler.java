@@ -65,7 +65,7 @@ public class UpdateEmpLoginPasswordListCommandHandler extends CommandHandlerWith
 			} catch(BundledBusinessException bundledEx) {
 				List<BusinessException> exList = bundledEx.cloneExceptions();
 				exList.forEach(e -> {
-					MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), e.getParameters(), Arrays.asList(cmd.getPersonId()), "パスワード");
+					MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), e.getParameters(), Arrays.asList(cmd.getEmployeeId()), "パスワード");
 					errorExceptionLst.add(ex);
 				});
 			}
