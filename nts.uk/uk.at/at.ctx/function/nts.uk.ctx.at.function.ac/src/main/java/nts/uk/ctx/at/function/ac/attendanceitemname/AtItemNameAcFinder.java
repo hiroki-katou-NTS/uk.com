@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.ac.attendanceitemname;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -21,7 +22,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceit
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class AtItemNameAcFinder implements AtItemNameAdapter {
@@ -101,17 +105,27 @@ public class AtItemNameAcFinder implements AtItemNameAdapter {
 	@Inject
 	private MonthlyAttendanceItemRepository monthlyAttendanceItemRepo;
 	
+	@Inject
+	private CompanyMonthlyItemService companyMonthlyItemService;
+	
+	@Inject
+	private CompanyDailyItemService companyDailyItemService;
+	
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AttItemName> getNameOfAttdItemByType(TypeOfItemImport type) {
 		String companyId = AppContexts.user().companyId();
 		List<Integer> listAllId = new ArrayList<>(); 
+		List<AttItemName> data = new ArrayList<>();
 		if(type ==TypeOfItemImport.Daily) {
 			listAllId = dailyAttendanceItemRepo.getList(companyId).stream().map(c->c.getAttendanceItemId()).collect(Collectors.toList());
+			data = companyDailyItemService.getDailyItems(companyId, Optional.empty(), listAllId, null);
 		}else if(type ==TypeOfItemImport.Monthly) {
 			listAllId = monthlyAttendanceItemRepo.findAll(companyId).stream().map(c->c.getAttendanceItemId()).collect(Collectors.toList());
+			data = companyMonthlyItemService.getMonthlyItems(companyId, Optional.empty(), listAllId, null);
 		}
-		List<AttItemName> data = this.getNameOfAttendanceItem(listAllId, type);
+		
+//		List<AttItemName> data = this.getNameOfAttendanceItem(listAllId, type);
 		if(data.isEmpty())
 			return Collections.emptyList();
 		return data;

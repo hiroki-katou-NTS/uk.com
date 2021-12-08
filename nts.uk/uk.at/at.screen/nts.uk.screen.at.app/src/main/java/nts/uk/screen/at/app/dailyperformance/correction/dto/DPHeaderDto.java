@@ -243,24 +243,18 @@ public class DPHeaderDto {
 
 	public void setHeaderText(DPAttendanceItem param) {
 		this.displayNumber = param.getDisplayNumber();
+		
+		String displayText = Strings.isNotBlank(param.getName()) ? param.getName() : param.getDisplayName();
 		if (param.getLineBreakPosition() != null && param.getLineBreakPosition() > 0 && param.getName() != null) {
-			String displayText = Strings.isNotBlank(param.getDisplayName()) ? param.getDisplayName() : param.getName();
 			if(displayText.length() > param.getLineBreakPosition()) {
 				this.headerText = displayText.substring(0, param.getLineBreakPosition()) + "<br/>" + displayText.substring(param.getLineBreakPosition(), displayText.length());
 			} else {
 				this.headerText = displayText;
 			}
-			if(param.getName().length() > param.getLineBreakPosition()) {
-				this.attendanceName = param.getName().substring(0, param.getLineBreakPosition()) + "<br/>" + param.getName().substring(param.getLineBreakPosition(), param.getName().length());
-			} else {
-				this.attendanceName = param.getName();
-			}
-			
 		} else {
-			String displayText = Strings.isNotBlank(param.getDisplayName()) ? param.getDisplayName() : param.getName();
-			this.headerText = displayText != null ? displayText : "";
-			this.attendanceName = param.getName() != null ? param.getName() : "";
+			this.headerText = displayText;
 		}
+		this.attendanceName = param.getDisplayName();
 	}
 
 	public void setHeaderColor(DPAttendanceItemControl param) {

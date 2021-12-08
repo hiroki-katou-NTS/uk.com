@@ -1643,12 +1643,17 @@ public class DailyPerformanceCorrectionProcessor {
 					lstGroupInput.add(x);
 				}
 			});
-			Map<Integer, String> itemName = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(new ArrayList<>(lstGroupInput))
+			List<DailyAttendanceItemNameAdapterDto> listDailyAttendanceItemNameAdapterDto =dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(new ArrayList<>(lstGroupInput));
+			Map<Integer, String> itemOldName = listDailyAttendanceItemNameAdapterDto
 					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
-							x -> x.getAttendanceItemName())); // 9s
+							x -> x.getDisplayName())); // 9s
+			Map<Integer, String> itemName = listDailyAttendanceItemNameAdapterDto
+					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
+							x -> x.getAttendanceItemName() == "" || x.getAttendanceItemName() == null ?x.getDisplayName():x.getAttendanceItemName())); // 9s
 			lstAttendanceItem = lstAtdItemUnique.isEmpty() ? Collections.emptyList()
 					: this.repo.getListAttendanceItem(lstAtdItemUnique).stream().map(x -> {
 						x.setName(itemName.get(x.getId()));
+						x.setDisplayName(itemOldName.get(x.getId()));
 						return x;
 					}).collect(Collectors.toList());
 			result.setItemInputName(itemName);
