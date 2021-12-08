@@ -97,7 +97,7 @@ public class Stamp implements DomainAggregate, Cloneable {
 	 * @param locationInfor
 	 */
 	public Stamp(ContractCode contractCode, StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve,
-			StampType type, RefectActualResult refActualResults, Optional<GeoCoordinate> locationInfor, String stampRecordId) {
+			StampType type, RefectActualResult refActualResults, Optional<GeoCoordinate> locationInfor) {
 		super();
 		this.contractCode = contractCode; //ver2　属性追加
 		this.cardNumber = cardNumber;
@@ -107,7 +107,6 @@ public class Stamp implements DomainAggregate, Cloneable {
 		this.refActualResults = refActualResults;
 		this.imprintReflectionStatus = new ImprintReflectionState(false, Optional.empty());
 		this.locationInfor = locationInfor;
-		//this.stampRecordId = stampRecordId;
 	}
 	
 	/**

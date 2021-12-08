@@ -78,13 +78,15 @@ public class CreateStampDataForEmployeesService {
 			return new TimeStampInputResult(stampDataReflectResult, stampResult.getAtomTask());
 			
 		}
-		//	$打刻データ = 打刻#打刻記録から打刻作成する($打刻記録,打刻する方法,ボタン種類.打刻種類, 実績への反映内容, 打刻場所情報)	
-		Stamp stamp = new Stamp(stampRecord, relieve, buttonType.getStampType().get(), refActualResults, stampLocationInfor);
 		
-		// $永続化処理 = 打刻データ反映処理#打刻を登録する(require, $打刻記録, $打刻データ)
+		//$打刻データ = 打刻#初回打刻データを作成する(契約コード,$打刻カード作成結果.打刻カード番号,打刻日時,打刻する方法,ボタン種類.打刻種類,実績への反映内容, 打刻場所情報)
+		Stamp stamp = new Stamp(contractCode, new StampNumber(stampResult.getCardNumber()), stampDateTime, relieve,
+				buttonType.getStampType().get(), refActualResults, stampLocationInfor);
+		
+		//$打刻の永続化 = 打刻を登録する#打刻を登録する(require, $打刻データ)
 		AtomTask atom = RegisterStampData.registerStamp(require, stampRecord, Optional.of(stamp)).orElse(AtomTask.none());
 		
-		// $打刻反映結果 = データタイムレコードを打刻に変換する#日別実績を処理する(require, 会社ID, 社員ID, $永続化処理)
+		//$打刻反映結果 = DS_打刻を日別実績へ反映する.反映する(require, 会社ID, $打刻の永続化)
 //		Optional<StampDataReflectResult> reflectResult = ConvertTimeRecordStampService.createDailyData(require,
 //				Optional.of(cid), Optional.of(employeeId), Optional.of(stamp), atom);
 		Optional<StampDataReflectResult> stampDataResultOpt = ReflectStampInDailyRecord.reflect(require, stamp);
