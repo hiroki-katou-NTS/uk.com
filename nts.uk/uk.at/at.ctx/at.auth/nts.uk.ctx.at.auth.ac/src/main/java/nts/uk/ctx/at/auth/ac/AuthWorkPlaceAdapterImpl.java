@@ -91,7 +91,7 @@ public class AuthWorkPlaceAdapterImpl implements AuthWorkPlaceAdapter{
 		
 		AffWorkplaceHistoryItemExport d = this.workplacePub.getAffWkpHistItemByEmpDate(employeeID, date);
 		
-		return new AffWorkplaceHistoryItemImport(d.getHistoryId(), employeeID, d.getWorkplaceId(), d.getNormalWorkplaceId());
+		return new AffWorkplaceHistoryItemImport(d.getHistoryId(), employeeID, d.getWorkplaceId());
 	}
 
 	@Override
@@ -103,8 +103,7 @@ public class AuthWorkPlaceAdapterImpl implements AuthWorkPlaceAdapter{
 		}
 		
 		List<AffWorkplaceHistoryItemImport> result = export.stream().map(item -> {
-			return new AffWorkplaceHistoryItemImport(item.getHistoryId(), item.getEmployeeId(), item.getWorkplaceId(),
-					item.getNormalWorkplaceId());
+			return new AffWorkplaceHistoryItemImport(item.getHistoryId(), item.getEmployeeId(), item.getWorkplaceId());
 		}).collect(Collectors.toList());
 
 		return result;
