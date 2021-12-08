@@ -50,12 +50,12 @@ module nts.uk.at.view.kmf002.g {
       vm.$window.modal("/view/kmf/002/h/index.xhtml");
     }
 
-    public openKDL050() {
+    public openKDL058() {
       const vm = this;
-      nts.uk.ui.windows.setShared("KDL050_A_PARAM", {
+      nts.uk.ui.windows.setShared("KDL058_A_PARAM", {
         yearMonth: moment.utc().format("YYYYMM")
       });
-      vm.$window.modal("/view/kdl/050/a/index.xhtml");
+      vm.$window.modal("/view/kdl/058/a/index.xhtml");
     }
 
     public openSidebarScreen() {
