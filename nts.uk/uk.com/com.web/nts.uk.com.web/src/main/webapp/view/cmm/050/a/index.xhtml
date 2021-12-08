@@ -29,7 +29,8 @@
 			<div id="functions-area">
 				<button id="mail_setting_register" class="proceed" tabindex="1"
 					style="margin-left: 45px" data-bind="click: registerMailSetting , enable: $root.errors.isEmpty ">#{i18n.getText('CMM050_3')}</button>
-        <button id="A1_2" data-bind="click: showDialogTest, enable: isEnableButtonTest" tabindex="2">#{i18n.getText('CMM050_5')}</button>
+        <button id="A1_2" data-bind="click: showDialogTest, 
+          enable: ko.computed(function() { return $root.errors.isEmpty() &amp;&amp; isEnableButtonTest() })" tabindex="2">#{i18n.getText('CMM050_5')}</button>
 			</div>
 			<div id="contents-area">
         <div class="common-setting setting-zone">
@@ -92,7 +93,7 @@
               value: emailAuth,
               constraint: 'MailAddress',
               required: true,
-              name: '#[CMM050_9]'
+              name: '#[CMM050_4]'
             }" tabindex="7" />
           </div>
           <com:ko-if bind="useSmtpAuthen">
