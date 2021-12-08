@@ -550,7 +550,7 @@ module nts.uk.com.view.cmm050.a {
         enum EncryptMethod {
             None = 0,
             SSL = 1,
-            TSL = 2
+            TLS = 2
         }
     }
 }
