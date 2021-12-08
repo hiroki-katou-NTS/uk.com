@@ -74,7 +74,7 @@ module nts.uk.com.view.cmm050.a {
                 _self.encryptionMethod = ko.observable(0);
                 _self.useSmtpAuthen = ko.observable(false);
                 
-                _self.smtpPort = ko.observable(587);
+                _self.smtpPort = ko.observable(null);
                 _self.smtpServer = ko.observable("");
                 
                 _self.imapPort = ko.observable(143);
