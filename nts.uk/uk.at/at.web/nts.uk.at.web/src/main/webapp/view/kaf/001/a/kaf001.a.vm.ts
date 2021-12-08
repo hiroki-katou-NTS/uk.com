@@ -128,17 +128,20 @@ module kaf001.a.viewmodel {
         start(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            block.invisible();
-            self.getAllProxyApplicationSetting();
-            block.clear();
-            dfd.resolve();
+            self.getAllProxyApplicationSetting().done(() => {
+                dfd.resolve();
+            }).fail(() => {
+                dfd.reject();
+            });
             $("#A4_2").focus();
             return dfd.promise();
         }
 
 
-        getAllProxyApplicationSetting() {
+        getAllProxyApplicationSetting(): JQueryPromise<any> {
             let self = this;
+            let dfd = $.Deferred();
+            block.invisible();
             service.getAppDispName().done((res) => {
                 let obj: ObjNameDis = new ObjNameDis('', '', '', '',
                     '', '', '', '',
@@ -225,11 +228,16 @@ module kaf001.a.viewmodel {
                     });
                 }
                 self.appNameDis(obj);
+                dfd.resolve();
             }).fail((err) => {
                 dialog.alertError(err).then(function () {
                     nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
                 });
+                dfd.reject();
+            }).always(() => {
+                block.clear();
             });
+            return dfd.promise();
         }
 
         /**
