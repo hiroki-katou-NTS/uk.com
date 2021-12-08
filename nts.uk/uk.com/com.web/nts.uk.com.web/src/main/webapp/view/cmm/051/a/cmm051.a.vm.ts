@@ -86,8 +86,8 @@ module nts.uk.com.view.cmm051.a {
             ]);
             vm.columns = ko.observableArray([
                 {headerText: '', key: 'id', hidden: true},
-                {headerText: nts.uk.resource.getText("CMM051_44"), key: 'code', width: 130},
-                {headerText: nts.uk.resource.getText("CMM051_45"), key: 'name', width: 180}
+                {headerText: nts.uk.resource.getText("CMM051_44"), key: 'code', width: 110},
+                {headerText: nts.uk.resource.getText("CMM051_45"), key: 'name', width: 170}
             ]);
 
         }
