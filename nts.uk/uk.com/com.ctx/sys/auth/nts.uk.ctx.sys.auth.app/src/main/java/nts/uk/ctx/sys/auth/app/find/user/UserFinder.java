@@ -11,10 +11,14 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoExport;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoImport;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.shared.dom.user.DisabledSegment;
+import nts.uk.ctx.sys.shared.dom.user.SearchUser;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,19 +34,31 @@ public class UserFinder {
 	
 	@Inject
 	private RoleIndividualGrantRepository roleIndividualGrantRepo;
+	
+	@Inject
+	private EmployeeInfoPub employeeInfoPub;
 
 	public List<UserDto> searchUser(String userNameID) {
 		GeneralDate date = GeneralDate.today();
 		if (userNameID == null) {
 			throw new BusinessException("Msg_438");
 		}
-		List<UserDto> listUserDto = userRepo.searchUser(userNameID, date).stream().map(c-> UserDto.objDomain(c))
-				.collect(Collectors.toList());
-		// Sort
-		listUserDto = listUserDto.stream().sorted(Comparator.comparing(UserDto::getLoginID))
-				.collect(Collectors.toList());
+		
+		List<UserDto> listUserDto = new ArrayList<UserDto>();
+		List<SearchUser> listSearchUser = userRepo.searchUser(userNameID, date).stream().sorted(Comparator.comparing(SearchUser::getLoginID))
+										.collect(Collectors.toList());
+		listSearchUser.forEach(item -> {
+			UserDto userDto = UserDto.objDomain(item);
+			if (item != null) {				
+				// アルゴリズム「指定の個人IDから在籍社員を取得」を実行する
+				List<EmpInfoExport> empInfoExportLst = employeeInfoPub.getEmpInfoByPid(item.getPersonId().trim());				
+				 if(!CollectionUtil.isEmpty(empInfoExportLst)){
+					 listUserDto.add(userDto);					 
+         		}
+			}
+		});
+		
 		return listUserDto;
-
 	}
 
 	public List<UserDto> getAllUser() {
