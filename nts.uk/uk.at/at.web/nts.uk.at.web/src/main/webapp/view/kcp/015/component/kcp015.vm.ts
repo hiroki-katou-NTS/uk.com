@@ -58,7 +58,7 @@ module nts.uk.ui.at.kcp015.shared {
                 <div id="button-bot">
                     <button tabindex="2" class="small substitute"     data-bind="text: text('Com_SubstituteHoliday'), click: openKDL009, visible: visibleA32Com "></button>
                     <button tabindex="4" class="small fundedPaid"     data-bind="text: text('Com_FundedPaidHoliday'), click: openKDL029, visible: visibleA34Com "></button>
-                    <button tabindex="6" class="small supportsetting" data-bind="text: text('KCP015_2'),          click: openKDL039, visible: visibleA36Com "></button>
+                    <button tabindex="6" class="small supportsetting" data-bind="text: text('KCP015_2'),          click: openKDL039, visible: false "></button>
                 </div>
              </div><!-- /ko -->`
     })
