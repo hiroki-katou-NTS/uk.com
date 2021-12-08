@@ -81,7 +81,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	
 	
 	
-	private static final String SELECT_BY_ID_OR_NAME = "SELECT c.sacmtUserPK.userID, c.loginID, c.userName, p.businessName, p.bpsmtPersonPk.pId FROM SacmtUser c"
+	private static final String SELECT_BY_ID_OR_NAME = "SELECT c.sacmtUserPK.userID, c.loginID, c.userName, p.personName, p.bpsmtPersonPk.pId FROM SacmtUser c"
 			+ " LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId"
 			+ " WHERE (LOWER(c.loginID) LIKE LOWER(CONCAT('%', :userIDName, '%')) ESCAPE '/'"
 			+ " OR LOWER(c.userName) LIKE LOWER(CONCAT('%', :userIDName, '%')) ESCAPE '/'"
