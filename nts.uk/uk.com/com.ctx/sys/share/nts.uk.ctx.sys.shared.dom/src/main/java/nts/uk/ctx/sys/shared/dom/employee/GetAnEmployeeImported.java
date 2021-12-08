@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.login.password.authenticate.getaneemployee;
+package nts.uk.ctx.sys.shared.dom.employee;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

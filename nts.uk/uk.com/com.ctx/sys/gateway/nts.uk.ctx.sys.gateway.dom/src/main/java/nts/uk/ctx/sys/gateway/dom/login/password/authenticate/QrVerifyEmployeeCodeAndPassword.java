@@ -7,10 +7,10 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.gateway.dom.login.password.InspectionResult;
 import nts.uk.ctx.sys.gateway.dom.login.password.VerifyEmployeeCodeAndPassword;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.getaneemployee.GetAnEmployeeAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.getaneemployee.GetAnEmployeeImported;
 import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
 import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUserRepository;
+import nts.uk.ctx.sys.shared.dom.employee.GetAnEmployeeAdapter;
+import nts.uk.ctx.sys.shared.dom.employee.GetAnEmployeeImported;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 

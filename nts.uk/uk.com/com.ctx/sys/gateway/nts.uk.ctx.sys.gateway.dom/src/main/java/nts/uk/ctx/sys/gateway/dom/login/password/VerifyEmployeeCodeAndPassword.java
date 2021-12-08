@@ -2,8 +2,8 @@ package nts.uk.ctx.sys.gateway.dom.login.password;
 
 import java.util.Optional;
 
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.getaneemployee.GetAnEmployeeImported;
 import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
+import nts.uk.ctx.sys.shared.dom.employee.GetAnEmployeeImported;
 import nts.uk.ctx.sys.shared.dom.user.User;
 
 /**

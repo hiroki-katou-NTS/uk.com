@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.gateway.dom.login.password.InspectionResult;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.getaneemployee.GetAnEmployeeImported;
+import nts.uk.ctx.sys.shared.dom.employee.GetAnEmployeeImported;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
