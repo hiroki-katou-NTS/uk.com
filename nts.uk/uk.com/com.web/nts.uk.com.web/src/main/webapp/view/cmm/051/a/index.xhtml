@@ -52,10 +52,12 @@
                         <div data-bind="ntsFormLabel:{required:true} ">#{i18n.getText('CMM051_46')}</div>
                         <!--A8_2-->
                         <button tabindex="8" id = "a8_2" class="cmm_051" data-bind="click: openDialogA3282 ">#{i18n.getText('CMM051_47')}</button>
+                        <div class="divlabel">
                         <!--A8_3-->
-                        <label class="ntsControl limited-label wp-code" id = "wpl_code" data-bind="text: workplaceCode(),required:true  "> </label>
+                            <label class="ntsControl limited-label wp-code" id = "wpl_code" data-bind="text: workplaceCode(),required:true  "> </label>
                         <!--A8_4-->
-                        <label class="ntsControl limited-label wp-name" data-bind="text: workplaceName()"> </label>
+                            <label class="ntsControl limited-label wp-name" data-bind="text: workplaceName()"> </label>
+                        </div>
                     </div>
                 </div>
                 <div data-bind="if: mode() == 0">
@@ -64,10 +66,12 @@
                         <div data-bind="ntsFormLabel:{required:true} ">#{i18n.getText('CMM051_41')}</div>
                         <!--A3_2-->
                         <button tabindex="5" id = "a3_2" class="cmm_051" data-bind="click: openDialogA3282 ">#{i18n.getText('CMM051_42')}</button>
+                        <div class="divlabel2">
                         <!--A3_3-->
-                        <label class="ntsControl limited-label wp-code " id = "wpa3-code" data-bind="text: employeeCode(),required:true  "> </label>
+                            <label class="ntsControl limited-label wp-code " id = "wpa3-code" data-bind="text: employeeCode(),required:true  "> </label>
                         <!--A3_3-->
-                        <label class="ntsControl limited-label wp-name " data-bind="text: employeeName()"> </label>
+                            <label class="ntsControl limited-label wp-name " data-bind="text: employeeName()"> </label>
+                        </div>
                     </div>
                 </div>
                 <div id="left-content">
@@ -101,28 +105,34 @@
                     <div data-bind="if: mode() == 1">
                         <div  class="a_6">
                             <!--A10_1-->
-                            <div data-bind="ntsFormLabel:{required:true}" style="width: 60px" >#{i18n.getText('CMM051_41')}</div>
+                            <div data-bind="ntsFormLabel:{required:true}" id="idtext" >#{i18n.getText('CMM051_41')}</div>
                             <!--A10_2-->
+
                             <button tabindex="10" class=" a_62" id = "a10_2"
                                     data-bind="click: openDialogA62102, enable: isNewMode() ">#{i18n.getText('CMM051_42')}</button>
+
+                            <div class="divlabel">
                             <!--A10_3-->
-                            <label class="ntsControl limited-label wp-code" id="empCode" data-bind="text: employeeCode(),required:true  "> </label>
+                                <label class="ntsControl limited-label wp-code" id="empCode" data-bind="text: employeeCode(),required:true  "> </label>
                             <!--A10_4-->
-                            <label class="ntsControl limited-label wp-name" id="empName" data-bind="text: employeeName() "> </label>
+                                <label class="ntsControl limited-label wp-name" id="empName" data-bind="text: employeeName() "> </label>
+                            </div>
                         </div>
                     </div>
                     <div data-bind="if: mode() == 0">
                         <!--A6-->
                         <div  class="a_10">
                             <!--A6_1-->
-                            <div data-bind="ntsFormLabel:{required:true} " style="width: 60px">#{i18n.getText('CMM051_46')}</div>
+                            <div data-bind="ntsFormLabel:{required:true} " id="idtext2">#{i18n.getText('CMM051_46')}</div>
                             <!--A6_2-->
                             <button tabindex="7" class=" a_62" id = "a6_2"
                                     data-bind="click: openDialogA62102, enable: isNewMode()">#{i18n.getText('CMM051_47')}</button>
+                            <div class="divlabel2">
                             <!--A6_3-->
-                            <label class="ntsControl limited-label wp-code code" id="wpcode" data-bind="text:  workplaceCode(),required:true"> </label>
+                                <label class="ntsControl limited-label wp-code code" id="wpcode" data-bind="text:  workplaceCode(),required:true"> </label>
                             <!--A6_4-->
-                            <label class="ntsControl limited-label wp-name name" id="wplName" data-bind="text:  workplaceName()"> </label>
+                                <label class="ntsControl limited-label wp-name name" id="wplName" data-bind="text:  workplaceName()"> </label>
+                            </div>
                         </div>
                     </div>
 
