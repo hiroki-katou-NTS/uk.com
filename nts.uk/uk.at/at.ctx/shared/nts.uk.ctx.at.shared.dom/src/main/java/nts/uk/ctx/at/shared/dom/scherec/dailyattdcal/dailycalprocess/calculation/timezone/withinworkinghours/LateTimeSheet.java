@@ -342,11 +342,11 @@ public class LateTimeSheet {
 		if (late) {
 			// 遅刻時間の計算
 			lateTimeForRecord = this.forRecordTimeSheet.get()
-					.calcTotalTime(deductOffset ? NotUseAtr.USE : NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
+					.calcTotalTime(deductOffset ? NotUseAtr.USE : NotUseAtr.NOT_USE, roundAtr);
 		}
 
 		// 計算遅刻時間の計算
-		calcforRecordTime = this.forRecordTimeSheet.get().calcTotalTime(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
+		calcforRecordTime = this.forRecordTimeSheet.get().calcTotalTime(NotUseAtr.NOT_USE, roundAtr);
 		
 		// インターバル免除時間を控除する
 		return TimeWithCalculation.createTimeWithCalculation(lateTimeForRecord, calcforRecordTime);
