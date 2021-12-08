@@ -162,7 +162,7 @@ module nts.uk.ui.ktg001.a {
                                         <div class="label font-size-sm fd-2" data-bind="
                                             text: $i18n('KTG001_15'),
                                             visible: $component.isChangingYM()"
-                                            style="text-align: left; background: #7f7f7f;">
+                                            style="text-align: left; color: #FF0000; background: #BCBCBC;">
                                         </div>
                                         <!-- A10_1 -->
                                         <div class="label font-size-sm flex fd-3 row-reverse" data-bind="
