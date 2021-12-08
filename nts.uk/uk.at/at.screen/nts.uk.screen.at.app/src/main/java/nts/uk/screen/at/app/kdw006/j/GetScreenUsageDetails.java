@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -37,10 +38,16 @@ public class GetScreenUsageDetails {
 
 	@Inject
 	private AtItemNameAdapter atItemNameAdapter;
+	
+	@Inject
+	private CompanyDailyItemService companyDailyItemService;
 
 	public GetScreenUsageDetailsDto get() {
 		GetScreenUsageDetailsDto result = new GetScreenUsageDetailsDto();
 		List<DailyAttendanceItemDto> dailyItem = new ArrayList<>();
+		
+		String companyId = AppContexts.user().companyId();
+		List<AttItemName> data = new ArrayList<>();
 
 		// Get Data
 		GetDisplayFormatDto getDisplayFormatDto = this.getDisplayFormat.get();
@@ -48,15 +55,13 @@ public class GetScreenUsageDetails {
 				.getListById(AppContexts.user().companyId(), getAttendanceId());
 		List<AcquireManHourRecordItemsDto> hourRecordItemsDtos = this.acquireManHourRecordItems.get();
 		List<AcquireManHourRecordItemsDto> hourRecordItemsDtoOuts = new ArrayList<>();
+		
+		data = companyDailyItemService.getDailyItems(companyId, Optional.empty(), getAttendanceId() ,null);
 
 		// Mapping Dto
 		result.setManHourInputDisplayFormat(getDisplayFormatDto);
-		dailyItem = attendents.stream().map(m -> {
-			return new DailyAttendanceItemDto(m.getCompanyId(), m.getAttendanceItemId(), m.getAttendanceName().v(),
-					m.getDisplayNumber(), m.getUserCanUpdateAtr().value, m.getDailyAttendanceAtr().value,
-					m.getNameLineFeedPosition(), m.getMasterType().map(t -> t.value).orElse(null),
-					m.getPrimitiveValue().map(p -> p.value).orElse(null),
-					m.getDisplayName().map(n -> n.v()).orElse(""));
+		dailyItem = data.stream().map(m -> {
+			return new DailyAttendanceItemDto(m.getAttendanceItemId(), m.getAttendanceItemName(), m.getAttendanceItemDisplayNumber());
 		}).collect(Collectors.toList());
 
 		hourRecordItemsDtos.forEach(f -> {
@@ -68,13 +73,13 @@ public class GetScreenUsageDetails {
 		// 勤怠項目に対応する名称を生成する
 		List<AttItemName> dailyAttItem = atItemNameAdapter.getNameOfDailyAttendanceItem(attendents);
 
-		dailyItem.stream().forEach(f -> {
-			Optional<AttItemName> exist = dailyAttItem.stream()
-					.filter(a -> a.getAttendanceItemId() == f.getAttendanceItemId()).findFirst();
-			if (exist.isPresent()) {
-				f.changeName(exist.get().getAttendanceItemName(), exist.get().getOldName());
-			}
-		});
+//		dailyItem.stream().forEach(f -> {
+//			Optional<AttItemName> exist = dailyAttItem.stream()
+//					.filter(a -> a.getAttendanceItemId() == f.getAttendanceItemId()).findFirst();
+//			if (exist.isPresent()) {
+//				f.changeName(exist.get().getAttendanceItemName(), exist.get().getOldName());
+//			}
+//		});
 
 		result.setDailyAttendanceItem(dailyItem);
 		result.setManHourRecordItem(hourRecordItemsDtoOuts);
