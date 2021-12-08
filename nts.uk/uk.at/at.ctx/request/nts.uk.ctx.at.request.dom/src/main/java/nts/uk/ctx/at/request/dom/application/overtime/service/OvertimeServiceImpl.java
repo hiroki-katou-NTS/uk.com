@@ -1580,7 +1580,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				companyId,
 				appOverTime.getApplication().getEmployeeID(),
 				appDates,
-				ApplicationType.OVER_TIME_APPLICATION);
+				ApplicationType.OVER_TIME_APPLICATION,
+                Optional.of(appOverTime.getOverTimeClf())
+        );
 		// 実績内容の取得
 		List<ActualContentDisplay> actualContentDisplayLst = collectAchievement.getAchievementContents(
 				companyId,

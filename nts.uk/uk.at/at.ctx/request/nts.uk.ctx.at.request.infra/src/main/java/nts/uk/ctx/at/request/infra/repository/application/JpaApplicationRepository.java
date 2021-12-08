@@ -421,8 +421,33 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", sid)
 				.paramDate("dateData", dateData)
-				.paramInt("recordStatus", reflect)
 				.paramInt("appType", appType)
+				.paramInt("scheStatus", reflect)
+				.paramInt("recordStatus", reflect)
+				.getList(rec -> toObject(rec));
+		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
+		return krqdtApplicationLst.stream().map(c -> c.toDomain()).collect(Collectors.toList());
+	}
+
+	@Override
+	@SneakyThrows
+	public List<Application> getByListDateReflectType2(String sid, List<GeneralDate> dateData, List<Integer> appTypes, List<Integer> reflectStatuses) {
+		if (dateData.isEmpty() || appTypes.isEmpty() || reflectStatuses.isEmpty()) return new ArrayList<>();
+		String sql = SELECT_MEMO
+				+ "FROM KRQDT_APPLICATION a"
+				+ " join KRQDT_APP_REFLECT_STATE b"
+				+ "  on a.APP_ID = b.APP_ID and  a.CID = b.CID"
+				+ " WHERE  a.APPLICANTS_SID =  @sid "
+				+ " AND a.APP_DATE IN @dateData "
+				+ " AND a.APP_TYPE IN @appType "
+				+ " AND (b.REFLECT_PLAN_STATE IN @scheStatus AND b.REFLECT_PER_STATE IN @recordStatus)"
+				+ " ORDER BY a.INPUT_DATE ASC";
+		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+				.paramString("sid", sid)
+				.paramDate("dateData", dateData)
+				.paramInt("appType", appTypes)
+				.paramInt("scheStatus", reflectStatuses)
+				.paramInt("recordStatus", reflectStatuses)
 				.getList(rec -> toObject(rec));
 		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
 		return krqdtApplicationLst.stream().map(c -> c.toDomain()).collect(Collectors.toList());

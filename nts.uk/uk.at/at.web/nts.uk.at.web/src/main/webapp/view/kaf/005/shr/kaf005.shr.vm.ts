@@ -7,9 +7,38 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			<div class="lblTitle pull-left" data-bind="text: $i18n('KAF005_349'), ntsFormLabel: {required: true}"></div>
 		</div>
 		<div class="cell table-time" style="margin-top: 5px;">
-			<div id="A15_2" class="label" data-bind="text: $i18n('KAF005_348')" style="padding: 5px 0;"></div>	
+			<div class="control-group valign-center" id="A15_2" data-bind="style: {width: 330 + (appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? 210 : 0) + (appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? 210 : 0) + 'px'}">
+				<div style="width: 107px; display: inline-block; text-align: center;">
+					<div data-bind="ntsFormLabel: {text: $i18n('KAF005_351')}"></div>
+				</div>
+			    <div style="width: 107px; margin-left: 35px; display: inline-block; text-align: center;">
+					<div data-bind="ntsFormLabel: {text: $i18n('KAF005_352')}"></div>
+				</div>
+			    <div style="display: inline-block; text-align: center;"
+					data-bind="if: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1, 
+							   style: {
+							   		width: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? '200px' : '0',
+							   		marginLeft: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? '10px' : '0'
+							   }">
+					<div data-bind="ntsFormLabel: {
+										text: $i18n('KAF005_51'), 
+										required: ko.computed(function() { return appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting && appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.standardReasonRequired;})
+									}"></div>		
+				</div>
+			    <div style="display: inline-block; text-align: center;"
+			    	data-bind="if: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1,
+			    			   style: {
+							   		width: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? '200px' : '0',
+							   		marginLeft: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? '10px' : '0'
+							   }">
+					<div data-bind="ntsFormLabel: {
+										text: $i18n('KAF005_52'), 
+										required: ko.computed(function() { return appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting && appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason;})
+									}"></div>
+				</div>
+            </div>	
 			<div data-bind="foreach: multipleOvertimeContents">
-				<div class="control-group valign-center" data-bind="style: {width: 320 + ($parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? 210 : 0) + ($parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? 210 : 0) + 'px'}">
+				<div class="control-group valign-center" data-bind="style: {width: 330 + ($parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? 210 : 0) + ($parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? 210 : 0) + 'px'}">
 					<input data-bind="ntsTimeWithDayEditor: {
 											name: '#[KAF005_333]', 
 											value: start, 
@@ -17,7 +46,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 											enable: ($parent.visibleModel.c7() && $parent.outputMode()),
 											option: {width: '85px', timeWithDay: true}
                                         }, attr: {id: 'A15_3_' + $index()}" />
-					<span data-bind="text: $parent.$i18n('KAF005_38')" style="padding-left: 5px; padding-right: 5px;"></span>
+					<span data-bind="text: $parent.$i18n('KAF005_38')" style="padding-left: 10px; padding-right: 10px;"></span>
 					<input data-bind="ntsTimeWithDayEditor: {
 											name: '#[KAF005_334]', 
 											value: end, 
@@ -54,7 +83,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
                     </button>				
 				</div>
 			</div>
-			<button style="width: 100px; border: none; box-shadow: none; padding: 5px;" 
+			<button id="A15_9" style="width: 100px; border: none; box-shadow: none; padding: 5px;" 
 					data-bind="click: addMultipleRow, visible: multipleOvertimeContents().length < 10, enable: (visibleModel.c7() && outputMode())">
 				<i data-bind="ntsIcon: { no: 236 }" style="background-position: left center;"></i>
 				<span style="position: relative; top: -27px; left: 10px;" data-bind="text: $i18n('KAF005_350')"></span>
