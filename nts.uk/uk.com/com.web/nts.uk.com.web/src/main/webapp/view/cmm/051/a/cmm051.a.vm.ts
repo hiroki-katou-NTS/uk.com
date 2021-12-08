@@ -675,7 +675,7 @@ module nts.uk.com.view.cmm051.a {
                 let sids: any[] = [];
                 if (!isNullOrUndefined(employeeId)) {
                     sids.push(employeeId);
-                    vm.getEmployeeInfo(sids, vm.workPlaceId());
+                    vm.getEmployeeInfo(sids, null);
                 }
             });
         }
@@ -945,6 +945,7 @@ module nts.uk.com.view.cmm051.a {
                     vm.workPlaceId(workplaceInfor[0].id);
                     vm.workplaceCode(workplaceInfor[0].code);
                     vm.workplaceName(workplaceInfor[0].name);
+                    vm.employeeId(null);
                     vm.getListWpl(wid);
                 }
             });
