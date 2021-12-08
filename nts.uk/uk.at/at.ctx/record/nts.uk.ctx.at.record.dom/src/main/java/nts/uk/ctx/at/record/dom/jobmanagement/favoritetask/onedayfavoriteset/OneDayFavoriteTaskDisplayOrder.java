@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteDisplayOrder;
 
@@ -63,6 +64,10 @@ public class OneDayFavoriteTaskDisplayOrder extends AggregateRoot {
 
 		// 表示順.追加する($新しいお気に入り)
 		this.displayOrders.add(FavoriteDisplayOrder.addFirstDisorder(favId));
+		
+		if (this.displayOrders.size() >= 100) {
+			throw new BusinessException("Msg_3256");
+		}
 
 		// 表示順：sort $.表示順 ASC
 		this.displayOrders.stream().sorted(Comparator.comparingInt(FavoriteDisplayOrder::getOrder))
@@ -77,7 +82,7 @@ public class OneDayFavoriteTaskDisplayOrder extends AggregateRoot {
 	public void delete(String favoriteId) {
 		// $削除対象
 		// filter $.お気に入りID == お気に入りID
-		Optional<FavoriteDisplayOrder> detetedObj = this.displayOrders.stream().filter(f -> f.getFavId() == favoriteId).findAny();
+		Optional<FavoriteDisplayOrder> detetedObj = this.displayOrders.stream().filter(f -> f.getFavId().equals(favoriteId)).findAny();
 
 		// filter $.表示順 > $削除対象.表示順
 		// $.表示順を前にずらす()
@@ -89,7 +94,7 @@ public class OneDayFavoriteTaskDisplayOrder extends AggregateRoot {
 			}
 
 			// except $削除対象
-			this.displayOrders = this.displayOrders.stream().filter(f -> f.getFavId() != favoriteId)
+			this.displayOrders = this.displayOrders.stream().filter(f -> !f.getFavId().equals(favoriteId))
 					.collect(Collectors.toList());
 		}
 	}
@@ -122,7 +127,7 @@ public class OneDayFavoriteTaskDisplayOrder extends AggregateRoot {
 		}
 
 		for (FavoriteDisplayOrder o : this.displayOrders) {
-			if (o.getFavId() == reorderedId) {
+			if (o.getFavId().equals(reorderedId)) {
 				o.changeDisplayOrder(backOrder);
 			}
 		}

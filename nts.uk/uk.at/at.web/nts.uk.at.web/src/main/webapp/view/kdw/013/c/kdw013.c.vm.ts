@@ -10,7 +10,7 @@ module nts.uk.ui.at.kdw013.c {
     const DATE_TIME_FORMAT = 'YYYY-MM-DDT00:00:00.000\\Z';
 
     const style = `.edit-event {
-        width: 380px;
+        width: 415px;
     }
     .edit-event .header {
         box-sizing: border-box;
@@ -33,11 +33,10 @@ module nts.uk.ui.at.kdw013.c {
         width: 30px;
     }
     .edit-event table {
-        width: 370px;
+        width: 405px;
     }
     .edit-event table>tbody>tr>td:first-child {
         vertical-align: top;
-        padding-top: 6px;
     }
     .edit-event table>tbody>tr.functional>td {
         text-align: right;
@@ -45,15 +44,15 @@ module nts.uk.ui.at.kdw013.c {
 	.edit-event table>tbody>tr.functional>td a{
 		color: #30cc40;
 	}
+	.edit-event table>tbody>tr.functional>td>span{
+		float: left;
+	}
     .edit-event table>tbody>tr>td>.ntsControl {
         width: 255px;
         display: block;
         box-sizing: border-box;
         margin-bottom: 10px;
     }
-	.edit-event table>tbody>tr>td>.ntsControl.fix input.nts-input, .edit-event table>tbody>tr>td>.ntsControl.fix textarea.nts-input{
-	    border: 1px solid #999;
-	}
 	.edit-event table>tbody>tr>td>.ntsControl.fix textarea.nts-input{
 		height: 54px;
 	}
@@ -109,11 +108,13 @@ module nts.uk.ui.at.kdw013.c {
 `;
 
     const { randomId } = nts.uk.util;
-    const { getTimeOfDate, setTimeOfDate } = share;
+    const { getTimeOfDate, setTimeOfDate, number2String } = share;
 
     const API: API = {
         START: '/screen/at/kdw013/common/start',
-        SELECT: '/screen/at/kdw013/c/select'
+        SELECT: '/screen/at/kdw013/c/select',
+		START_F: '',
+        ADD_FAV_TASK_F: ''
     };
 
     @handler({
@@ -159,7 +160,7 @@ module nts.uk.ui.at.kdw013.c {
                 })
             }, bindingContext);
 
-            element.removeAttribute('data-bind');
+//            element.removeAttribute('data-bind');
 
             return { controlsDescendantBindings: true };
         }
@@ -215,7 +216,7 @@ module nts.uk.ui.at.kdw013.c {
             <div class="header">
                 <div data-bind="i18n: 'KDW013_26'"></div>
                 <div class="actions">
-                    <button class="close" tabindex="-1" data-bind="click: $component.close, icon: 202, size: 12"></button>
+                    <button class="close" tabindex="1" data-bind="click: $component.close, icon: 202, size: 12"></button>
                 </div>
             </div>
 			<table class="timePeriod">
@@ -224,16 +225,34 @@ module nts.uk.ui.at.kdw013.c {
                 </colgroup>
                 <tbody>
                     <tr>
-                        <td data-bind="i18n: 'KDW013_27'"></td>
+                        <td>
+							<div data-bind="ntsFormLabel: {required: true, constraint: 'AttendanceTime'}, text: nts.uk.resource.getText('KDW013_27')"></div>
+						</td>
                         <td class="caltimeSpanView">
-                            <div data-bind="
-                                    kdw-timerange: taskBlocks.caltimeSpanView,
-                                    update: flag,
-                                    hasError: $component.timeError,
-                                    exclude-times: $component.params.excludeTimes,
-									range: range,
-									showInputTime: showInputTime
-                                "></div>
+                            <div class="ntsControl">
+								<input id="kdw013CStart" data-bind="ntsTimeEditor: {
+									name: nts.uk.resource.getText('KDW013_14'),
+									value: taskBlocks.caltimeSpanView.start,
+									constraint: 'AttendanceTime', 
+									mode: 'time',
+									inputFormat: 'time',
+									required: true,
+									enable: true,
+									option: {width: '40px'}
+									}" />
+								<span data-bind="text: nts.uk.resource.getText('KDW013_30')"></span>
+								<input id="kdw013CEnd" data-bind="ntsTimeEditor: {
+									name: nts.uk.resource.getText('KDW013_31'),
+									value: taskBlocks.caltimeSpanView.end,
+									constraint: 'AttendanceTime', 
+									mode: 'time',
+									inputFormat: 'time',
+									required: true,
+									enable: true,
+									option: {width: '40px'}
+									}" />
+								<span data-bind="text: taskBlocks.caltimeSpanView.range"></span>
+							</div>
                         </td>
                     </tr>
 				</tbody>
@@ -241,12 +260,14 @@ module nts.uk.ui.at.kdw013.c {
 			<div class="taskDetails" data-bind="foreach: taskBlocks.taskDetailsView">
                 <table>
 	                <colgroup>
-	                    <col width="105px" />
+	                    <col width="140px" />
 	                </colgroup>
                     <tbody data-bind = "foreach: taskItemValues">
 						<!-- ko if: (itemId == 3) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {required: true, constraint: 'AttendanceTime'}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input class="inputRange" data-bind="ntsTimeEditor: {
@@ -257,7 +278,7 @@ module nts.uk.ui.at.kdw013.c {
 											inputFormat: 'time',
 											required: true,
 											enable: true,
-											option: {width: '40px'}
+											option: {width: '50px'}
 											}" />
 									</div>
 								</td>
@@ -265,50 +286,86 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
                         <!-- ko if: (itemId == 4) && use-->
                             <tr>
-                                <td data-bind="text: lable"></td>
-                                <td><div data-bind="
-                                        dropdown: value,
-                                        items: options,
-                                        required: true,
-                                        name: lable,
-                                        hasError: ko.observable(false),
-										flagError: $parent.flag,
-                                        visibleItemsCount:10
+                                <td>
+									<div data-bind="ntsFormLabel: {required: true}, text: lable"></div>
+								</td>
+                                <td><div data-bind="ntsComboBox: {
+										options: options,
+										optionsValue: 'code',
+										name: lable,
+										value: value,
+										optionsText: 'name',
+										editable: true,
+										required: true,
+										dropDownAttachedToBody: false,
+										visibleItemsCount: 10,
+										width : '255px',
+										columns: [
+											{ prop: 'code' },
+											{ prop: 'name' },
+											{ prop: 'taskNote' },
+										]}
                                     "></div></td>
                             </tr>
                         <!-- /ko -->
                         <!-- ko if: (itemId == 5 || itemId == 6 || itemId == 7 || itemId == 8) && use -->
                             <tr>
-                                <td data-bind="text: lable"></td>
-                                <td><div data-bind="
-                                        dropdown: value,
-                                        name: lable,
-                                        items: options,
-                                        visibleItemsCount:10
+                                <td>
+									<div data-bind="ntsFormLabel: {}, text: lable"></div>
+								</td>
+                                <td><div data-bind="ntsComboBox: {
+										options: options,
+										optionsValue: 'code',
+										name: lable,
+										value: value,
+										optionsText: 'name',
+										editable: true,
+										dropDownAttachedToBody: false,
+										visibleItemsCount: 10,
+										width : '255px',
+										columns: [
+											{ prop: 'code'},
+											{ prop: 'name', length: 8 },
+											{ prop: 'taskNote' },
+										]}
                                     "></div></td>
                             </tr>
                         <!-- /ko -->
 						<!-- ko if:  (type == 0 && itemId > 8) && use -->
                             <tr>
-                                <td data-bind="text: lable"></td>
-                                <td><div data-bind="
-                                        dropdown: value,
-                                        name: lable,
-                                        items: options,
-                                        visibleItemsCount:5
+                                <td>
+									<div data-bind="ntsFormLabel: {}, text: lable"></div>
+								</td>
+                                <td><div data-bind="ntsComboBox: {
+										options: options,
+										optionsValue: 'code',
+										name: lable,
+										value: value,
+										optionsText: 'name',
+										editable: true,
+										dropDownAttachedToBody: false,
+										visibleItemsCount: 5,
+										width : '255px',
+										columns: [
+											{ prop: 'code', length: 6 },
+											{ prop: 'name', length: 8 },
+											{ prop: 'taskNote' },
+										]}
                                     "></div></td>
                             </tr>
                         <!-- /ko -->
 						<!-- ko if: type == 2 && itemId > 8 && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
 											name: lable,
 											constraint: primitiveValue, 
 											value: value,
-											option: {width: '233px',
+											option: {width: '50px',
 													unitID: 'TIMES'},
 										}" />
 									</div>
@@ -317,7 +374,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 3 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
@@ -325,7 +384,7 @@ module nts.uk.ui.at.kdw013.c {
 											constraint: primitiveValue, 
 											value: value,
 											option: {
-												width: '223px', 
+												width: '50px', 
 												numberGroup: true, 
 												decimallength: 2, 
 												currencyformat: 'JPY',
@@ -338,7 +397,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 5 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsTimeEditor: {
@@ -347,7 +408,7 @@ module nts.uk.ui.at.kdw013.c {
 											value: value,
 											mode: 'time',
 											inputFormat: 'time',
-											option: {width: '233px'}
+											option: {width: '50px'}
 											}" />
 									</div>
 								</td>
@@ -355,7 +416,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 6 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsTimeWithDayEditor: { 
@@ -364,7 +427,7 @@ module nts.uk.ui.at.kdw013.c {
 											constraint:'TimeWithDayAttr', 
 											value: value, 
 											option: {
-												width: '233px',
+												width: '50px',
 												timeWithDay: true
 											}
 										}" />
@@ -374,7 +437,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 7 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<textarea data-bind="ntsMultilineEditor: {
@@ -388,14 +453,16 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 9 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
 											name: lable,
 											constraint: primitiveValue, 
 											value: value,
-											option: {width: '233px'}}" />
+											option: {width: '70px'}}" />
 									</div>
 								</td>
                             </tr>
@@ -407,9 +474,10 @@ module nts.uk.ui.at.kdw013.c {
 				<tbody>
 					<tr class="functional">
                         <td>
-							<a href="#" data-bind="i18n: 'KDW013_69', click: addTaskDetails"></a>
+							<span></span>
+							<a href="#" data-bind="i18n: 'KDW013_69', click: addTaskDetails, visible: frameNos().length < 20"></a>
                             <br />
-							<button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, disable: timeError || errors || !$root.errors.isEmpty()"></button>
+							<button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, enable: errors"></button>
                         </td>
                     </tr>
                 </tbody>
@@ -487,13 +555,28 @@ module nts.uk.ui.at.kdw013.c {
 			.taskDetails table:nth-last-child(1){
    				margin-bottom: 0px;
 			}
-			.taskDetails table tr:first-child td:first-child{
-   				top: 10px;
-				position: relative
-			}
 			.taskDetails table tr:first-child td>div{
    				margin-top: 10px;
 			}
+			.edit-event .header .btn-error{
+				position: absolute;
+			}
+			body>div.constraint{
+				z-index: 100;
+			}
+			.edit-event table tr td:first-child div.form-label span{
+				line-height: 1.5;
+			}
+			.edit-event .taskDetails table tr td .ui-igcombo-dropdown {
+			    width: 255px !important;
+			}
+			.edit-event .taskDetails table tr td .ui-igcombo-list{
+				overflow-x: auto !important;
+				width: 253px !important;
+			}
+			.edit-event .taskDetails table tr td .ui-igcombo-dropdown .ui-igcombo-listitemholder{
+				overflow: unset !important;
+			} 
         </style>
         `;
 
@@ -503,10 +586,7 @@ module nts.uk.ui.at.kdw013.c {
     })
     export class ViewModel extends ko.ViewModel {
 		
-        errors: KnockoutObservable<boolean> = ko.observable(false);
-        timeError: KnockoutObservable<boolean> = ko.observable(false);
         taskFrameSettings: KnockoutObservableArray<a.TaskFrameSettingDto> = ko.observableArray([]);
-        flag: KnockoutObservable<boolean> = ko.observable(false);
 		showInputTime: KnockoutObservable<boolean> = ko.observable(false);
 		range: KnockoutObservable<number | null> = ko.observable(null);
 		taskBlocks: ManHrPerformanceTaskBlockView = 
@@ -515,28 +595,29 @@ module nts.uk.ui.at.kdw013.c {
 					caltimeSpan: {start: null, end: null}, 
 					taskDetails: []
 				}, 
-                __viewContext.user.employeeId,
-                this.flag,
+                __viewContext.user.employeeId,      
 				this.showInputTime,
 			);
 		frameNos:KnockoutObservableArray<number> = ko.observableArray([]);
+		
+		errors: KnockoutComputed<boolean> = ko.computed({
+			read: () => {
+				const hasError = ko.unwrap(nts.uk.ui.errors.hasError());
+				return !hasError;
+			}
+		});
+		
 		
         constructor(public params: Params) {
             super();
 
             const vm = this;
-        
+
             vm.taskFrameSettings.subscribe((t: a.TaskFrameSettingDto[]) => vm.taskBlocks.updateSetting(t));
 
-            this.timeError.subscribe(() => {
-                vm.updatePopupSize();
-            });
-            this.flag.subscribe(() => {
-                vm.checkError();
-            });
-			this.range.subscribe(() => {
-                $('.inputRange').trigger('validate');
-            });
+			this.taskBlocks.caltimeSpanView.start.subscribe(()=>{
+				
+			});
 			
 			vm.taskBlocks.taskDetailsView.subscribe((taskDetails: ManHrTaskDetailView[]) => {
 				vm.showInputTime(taskDetails.length > 1);
@@ -547,13 +628,86 @@ module nts.uk.ui.at.kdw013.c {
 				setTimeout(() => {
 					clearInterval(interval);
 				}, 1000);
+				_.forEach(taskDetails, t => {
+					t.parent = vm;
+					t.callbackCheckChangeValue = vm.checkChangedForScreenA;	
+				});
             });
+
+            vm.taskBlocks.caltimeSpanView.start.subscribe(() => {
+				vm.calTimeRange();
+                vm.validateRange($('#kdw013CStart'), $('#kdw013CEnd'));
+				vm.checkChangedForScreenA(vm);
+			});
+			vm.taskBlocks.caltimeSpanView.end.subscribe(() => {
+				vm.calTimeRange();
+                vm.validateRange($('#kdw013CEnd'), $('#kdw013CStart'));
+				vm.checkChangedForScreenA(vm);
+			});
 
 			$(window).resize(function () {
 				resetHeight();
 			});
+			
         }
 
+		checkChangedForScreenA(vm: ViewModel){
+			let settings = vm.params.$settings;
+			if(settings()){
+				vm.params.$settings().isChange = vm.changed();
+			}
+		}
+
+        calTimeRange(): void{
+			let vm = this;
+			const start = vm.taskBlocks.caltimeSpanView.start();
+    		const end = vm.taskBlocks.caltimeSpanView.end();
+			if(_.isNumber(start) && _.isNumber(end) && end > start){
+				vm.taskBlocks.caltimeSpanView.range(getText('KDW013_25') + ' '+ number2String(end - start));
+			}
+		}
+
+        validateRange(selector: JQuery, startOrEnd: JQuery){
+            let vm = this;
+			setTimeout(() => {
+				const start = vm.taskBlocks.caltimeSpanView.start();
+        		const end = vm.taskBlocks.caltimeSpanView.end();
+				if(!selector.ntsError('hasError') && _.isNumber(start) && _.isNumber(end)){
+	                if (start >= end) {
+                        selector.ntsError('set', {messageId:"Msg_1400"});
+						if(startOrEnd.ntsError('hasError')){
+							startOrEnd.ntsError('clear')
+							setTimeout(() => {
+								startOrEnd.ntsError('set', {messageId:"Msg_1400"});
+							}, 50);
+						}else{
+							startOrEnd.ntsError('set', {messageId:"Msg_1400"});
+						}
+						return;
+	                }else{
+						startOrEnd.ntsError('clear');
+					}
+					setTimeout(() => {
+						let startElement = $('#kdw013CStart');
+						let endElement = $('#kdw013CEnd');
+						_.forEach(vm.params.excludeTimes(), ({endTime, startTime}) => {
+		                    if (start <= startTime && endTime <= end && !startElement.ntsError('hasError') && !endElement.ntsError('hasError')) {
+		                        startElement.ntsError('set', {messageId:"Msg_2164"});
+								endElement.ntsError('set', {messageId:"Msg_2164"});
+		                    }else{
+								if (startTime < start && start < endTime && !startElement.ntsError('hasError')) {
+		                        	startElement.ntsError('set', {messageId:"Msg_2164"});
+			                    }
+			                    if (startTime < end && end < endTime && !endElement.ntsError('hasError')) {
+			                        endElement.ntsError('set', {messageId:"Msg_2164"});
+			                    }				
+							}
+						});
+					}, 50);
+	            }		
+			}, 50);
+        }
+        
 		// update popup size
         updatePopupSize(){
 			const vm = this;
@@ -562,10 +716,8 @@ module nts.uk.ui.at.kdw013.c {
 
 		checkError(){
             const vm = this;
-			vm.errors(false);
 			_.each(vm.taskBlocks.taskDetailsView(), (task: ManHrTaskDetailView)=>{
 				if(task.isErorr()){
-					vm.errors(true);
 					return;
 				}
             });
@@ -584,6 +736,10 @@ module nts.uk.ui.at.kdw013.c {
             };
 			data.subscribe((event: FullCalendar.EventApi| null) => {
 				if (event) {
+					nts.uk.ui.errors.clearAll();
+					setTimeout(() => {
+						jQuery('button.btn-error.small.danger').appendTo('.edit-event .functional td>span');
+					}, 500);
                     const {extendedProps, start} = event as any as calendar.EventRaw;
                     let {displayManHrRecordItems, taskBlock, employeeId} = extendedProps;
 					vm.frameNos(extendedProps.frameNos);
@@ -591,18 +747,39 @@ module nts.uk.ui.at.kdw013.c {
 						taskBlock.taskDetails[0].supNo = vm.generateFrameNo();
 					}
                     vm.taskFrameSettings(extendedProps.taskFrameUsageSetting.taskFrameUsageSetting.frameSettingList);
+					let workCodeFrameNo: any[] = [];
+					_.forEach(taskBlock.taskDetails, t => {
+						let frameNo = t.supNo;
+						let workCode1 = null, workCode2 = null, workCode3 = null, workCode4 = null, workCode5 = null; 
+						_.forEach(t.taskItemValues, i =>{
+							if(i.itemId == 4 && i.value != ''){
+								workCode1 = i.value;
+							}else if(i.itemId == 5 && i.value != ''){
+								workCode2 = i.value;
+							}else if(i.itemId == 6 && i.value != ''){
+								workCode3 = i.value;
+							}else if(i.itemId == 7 && i.value != ''){
+								workCode4 = i.value;
+							}else if(i.itemId == 8 && i.value != ''){
+								workCode5 = i.value;
+							}
+						});
+						workCodeFrameNo.push({frameNo, workCode1, workCode2, workCode3, workCode4, workCode5});
+					});
 					let param = {
+						employeeId: employeeId,
 						refDate: start,
-						itemIds: _.filter(_.map(displayManHrRecordItems, i => i.itemId), t => t > 8)
+						itemIds: _.filter(_.map(displayManHrRecordItems, i => i.itemId), t => t > 8),
+						workCodeFrameNo: workCodeFrameNo
 					}
 
-					block.grayout();
 		            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
-		            	vm.taskBlocks.update(taskBlock, employeeId, data, vm.taskFrameSettings());
+		            	vm.taskBlocks.update(taskBlock, employeeId, data, displayManHrRecordItems, vm.taskFrameSettings(), start);
 						setTimeout(() => {
 							vm.updatePopupSize();
+							custominePositionCombo();
 						}, 150);
-					}).always(() => block.clear());
+					});
 				}
 			});
 
@@ -620,8 +797,6 @@ module nts.uk.ui.at.kdw013.c {
             position
                 .subscribe((p: any) => {
                     if (!p) {
-                        vm.timeError(false);
-						vm.errors(false);
                         cache.view = 'view';
                     }
                     if (p && cache.position !== p) {
@@ -679,25 +854,34 @@ module nts.uk.ui.at.kdw013.c {
                 .then((isNew: boolean | null) => {
                     if (isNew) {
                         vm.$dialog
-                            .confirm({ messageId: 'Msg_2094' })
-                            .then((v: 'yes' | 'no') => {
-                                if (v === 'yes') {
-									$(vm.$el).find('.nts-input').ntsError("clear");
-                                    vm.params.close("yes");
-                                }
-                            });
+                        .confirm({ messageId: 'Msg_2094' })
+                        .then((v: 'yes' | 'no') => {
+                            if (v === 'yes') {
+                               nts.uk.ui.errors.clearAll();
+                               setTimeout(() => {
+                                   jQuery('button.btn-error.small.danger').appendTo('#functions-area');                                    
+                               }, 100);
+                                vm.params.close("yes");
+                            }
+                        });
                     } else {						
                         if (vm.changed()) {
                             vm.$dialog
                                 .confirm({ messageId: 'Msg_2094' })
                                 .then((v: 'yes' | 'no') => {
                                     if (v === 'yes') {
-										$(vm.$el).find('.nts-input').ntsError("clear");
+										nts.uk.ui.errors.clearAll();
+										setTimeout(() => {
+											jQuery('button.btn-error.small.danger').appendTo('#functions-area');									
+										}, 100);
                                          params.close();
                                     }
                                 });
                         } else {
-							$(vm.$el).find('.nts-input').ntsError("clear");
+							nts.uk.ui.errors.clearAll();
+							setTimeout(() => {
+								jQuery('button.btn-error.small.danger').appendTo('#functions-area');									
+							}, 100);
                             params.close();
                         }
                     }
@@ -709,13 +893,10 @@ module nts.uk.ui.at.kdw013.c {
 			if(vm.frameNos().length >= 20) {
 				return;
 			}
-			if(vm.taskBlocks.taskDetailsView().length == 1){
-				var i = _.find(vm.taskBlocks.taskDetailsView()[0].taskItemValues(), (i: TaskItemValue) => {return i.itemId == 3});
-				if(i){
-					i.value(vm.range().toString());	
-				}
-			}
 			vm.taskBlocks.addTaskDetailsView(vm.generateFrameNo());
+			setTimeout(() => {
+				custominePositionCombo();
+			}, 150);
 		}
 		
 		sumTotalTime():number{
@@ -735,20 +916,22 @@ module nts.uk.ui.at.kdw013.c {
             const { employeeId } = vm.$user;
             $.Deferred()
                 .resolve(true)
-                .then(() => {vm.checkError(); $(vm.$el).find('input').trigger('blur'); $(vm.$el).find('.inputRange').ntsError("hasError");})
-                .then(() => vm.errors() || vm.timeError())
+                .then(() => {
+					$(vm.$el).find('input').trigger('blur'); 
+					$('.ui-igcombo').ntsError('check'); })
+                .then(() => nts.uk.ui.errors.hasError())
                 .then((invalid: boolean) => {
                     if (!invalid) {
-						if(vm.sumTotalTime() > vm.range()){
-							error({ messageId: "Msg_2217"});
+						if(vm.sumTotalTime() > (vm.taskBlocks.caltimeSpanView.end() - vm.taskBlocks.caltimeSpanView.start())){
+							error({ messageId: "Msg_2230"});
 							return;
 						}
                         if (event) {
                             const { start } = event;
-                            const tr = vm.taskBlocks.caltimeSpanView();
+                            const tr = vm.taskBlocks.caltimeSpanView;
                             const task = vm.taskBlocks.getTaskInfo();
-                            event.setStart(setTimeOfDate(start, tr.start as number));
-                            event.setEnd(setTimeOfDate(start, tr.end as number));
+                            event.setStart(setTimeOfDate(start, tr.start()));
+                            event.setEnd(setTimeOfDate(start, tr.end()));
                             if (!event.extendedProps.id) {
                                 event.setExtendedProp('id', randomId());
                             }
@@ -763,12 +946,13 @@ module nts.uk.ui.at.kdw013.c {
                             }
                             event.setProp('title', vm.taskBlocks.getTitles());
                             event.setExtendedProp('sId', employeeId);
-                            event.setExtendedProp('workingHours', (tr.start) - (tr.start));
+                            event.setExtendedProp('workingHours', (tr.start()) - (tr.start()));
                             event.setExtendedProp('taskBlock', vm.taskBlocks.getTaskDetails());
+                            event.setExtendedProp('isChanged', vm.changed());
                         }
 
                         // close popup
-                        params.close();
+                        params.close('save');
                     }
                 });
         }
@@ -780,49 +964,48 @@ module nts.uk.ui.at.kdw013.c {
 	
 	export class ManHrPerformanceTaskBlockView extends ManHrPerformanceTaskBlock{
 		taskDetailsView: KnockoutObservableArray<ManHrTaskDetailView>;
-        caltimeSpanView: KnockoutObservable<{start: number, end: number}> = ko.observable({start: null, end: null});
+        caltimeSpanView: {start: KnockoutObservable<number>, end: KnockoutObservable<number>, range: KnockoutObservable<string>} = {start: ko.observable(null), end: ko.observable(null), range: ko.observable(null)};
 		employeeId: string = '';
 		setting: a.TaskFrameSettingDto[] = [];
 		data: StartWorkInputPanelDto = null;
-		constructor(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, private flag: KnockoutObservable<boolean>, private showInputTime: KnockoutObservable<boolean>) {
+		displayManHrRecordItem: DisplayManHrRecordItem[] = null;
+		start: Date;
+		constructor(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, private showInputTime: KnockoutObservable<boolean>) {
 			super(taskBlocks);
 			const vm = this;
 			vm.employeeId = employeeId;
 			vm.taskDetailsView = ko.observableArray(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, employeeId, flag, showInputTime, vm.data, []))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, employeeId, showInputTime, vm.data, [], vm.displayManHrRecordItem))
 			);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
-                vm.caltimeSpanView({start: getTimeOfDate(taskBlocks.caltimeSpan.start), end: getTimeOfDate(taskBlocks.caltimeSpan.end)});
+                vm.caltimeSpanView.start(getTimeOfDate(taskBlocks.caltimeSpan.start));
+				vm.caltimeSpanView.end(getTimeOfDate(taskBlocks.caltimeSpan.end));
             }
-            vm.taskDetailsView.subscribe((tasks: ManHrTaskDetailView[])=>{
-				let item = 0;
-				_.forEach(tasks, (task: ITaskItemValue[])=>{
-					_.forEach(task, ()=>{
-						item++;
-					});
-				});
-                setTimeout(() => {
-					flag(!flag());
-				}, item);
-				setTimeout(() => {
+            vm.taskDetailsView.subscribe(()=>{
+				let interval = setInterval(function () {
 					resetHeight();
-					flag(!flag());
-				}, 1);
+                });	
+				setTimeout(() => {
+					clearInterval(interval);
+				}, 1000);
             });
         }
-        
-        update(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, data: StartWorkInputPanelDto, setting: a.TaskFrameSettingDto[]) {
+		
+        update(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, data: StartWorkInputPanelDto, displayManHrRecordItem: DisplayManHrRecordItem[], setting: a.TaskFrameSettingDto[], start: Date) {
 			const vm = this;
 			vm.setting = setting;
 			vm.data = data;
+			vm.displayManHrRecordItem = displayManHrRecordItem;
 			vm.employeeId = employeeId;
+			vm.start = start;
 			vm.taskDetails(_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetail(t)));
 			vm.taskDetailsView(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, vm.employeeId, vm.flag, vm.showInputTime, vm.data, setting))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, start, vm.employeeId, vm.showInputTime, vm.data, setting, vm.displayManHrRecordItem))
 			);
 			vm.caltimeSpan = new TimeSpanForCalc(taskBlocks.caltimeSpan);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
-                vm.caltimeSpanView({start: _.isDate(taskBlocks.caltimeSpan.start) ? getTimeOfDate(taskBlocks.caltimeSpan.start):taskBlocks.caltimeSpan.start, end: _.isDate(taskBlocks.caltimeSpan.end) ? getTimeOfDate(taskBlocks.caltimeSpan.end): taskBlocks.caltimeSpan.end});
+                vm.caltimeSpanView.start(_.isDate(taskBlocks.caltimeSpan.start) ? getTimeOfDate(taskBlocks.caltimeSpan.start):taskBlocks.caltimeSpan.start); 
+				vm.caltimeSpanView.end(_.isDate(taskBlocks.caltimeSpan.end) ? getTimeOfDate(taskBlocks.caltimeSpan.end): taskBlocks.caltimeSpan.end);
             }
         }
         
@@ -840,32 +1023,49 @@ module nts.uk.ui.at.kdw013.c {
 			_.forEach(vm.taskDetailsView()[0].taskItemValues(), (taskItemValue: TaskItemValue)=>{
 				taskItemValues.push({ itemId: taskItemValue.itemId, value: '' });
 			});
+			
 			let newTaskDetails: IManHrTaskDetail = { supNo: supNo, taskItemValues: taskItemValues }
-			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.flag, vm.showInputTime, vm.data, vm.setting));
+			let workCodeFrameNo: any[] = [];
+			workCodeFrameNo.push({frameNo:supNo, workCode1: null, workCode2: null, workCode3: null, workCode4: null, workCode5: null});
+			let param = {
+				employeeId: vm.employeeId,
+				refDate: vm.start,
+				itemIds: _.filter(_.map(vm.displayManHrRecordItem, i => i.itemId), t => t > 8),
+				workCodeFrameNo: workCodeFrameNo
+			}
+            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
+				vm.data.frameNoVsTaskFrameNos.push(data.frameNoVsTaskFrameNos[0]);
+				vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.start, vm.employeeId, vm.showInputTime, vm.data, vm.setting, vm.displayManHrRecordItem));
+			});
 		}
 
 		isChangedTime(): boolean{
 			const vm = this;
-			if(vm.caltimeSpanView().start == getTimeOfDate(vm.caltimeSpan.start) && 
-				vm.caltimeSpanView().start == getTimeOfDate(vm.caltimeSpan.end))
+			if(vm.caltimeSpanView.start() != (_.isDate(vm.caltimeSpan.start) ? getTimeOfDate(vm.caltimeSpan.start): vm.caltimeSpan.start) 
+			|| vm.caltimeSpanView.end() != (_.isDate(vm.caltimeSpan.end) ? getTimeOfDate(vm.caltimeSpan.end) : vm.caltimeSpan.end))
 				return true;
 			return false;
 		}
 		isChangeTasks():boolean{
             const vm = this;
-            _.each(vm.taskDetailsView(), (taskDetail: ManHrTaskDetailView) => {
+			let result: boolean = false;
+            _.forEach(vm.taskDetailsView(), (taskDetail: ManHrTaskDetailView) => {
                 if(taskDetail.isChangedItemValues()){
-                    return true;
+                    result = true;
                 }
             })
-			return false;
+			return result;
         }
         getTitles(): string{
             const vm = this;
-            const titles: string[] = [];
+            let titles: string[] = [];
             _.each(vm.taskDetailsView(), (task: ManHrTaskDetailView) => {
                 titles.push(task.getTitles());
             });
+			let timeRange = _.find(vm.taskDetailsView()[0].taskItemValues(), i => i.itemId == 3);
+			if(titles.length == 1 && timeRange && (timeRange.value() == null || timeRange.value() == '')){
+				titles[0] = titles[0] + '\n' + getText('KDW013_25') + number2String(vm.caltimeSpanView.end() - vm.caltimeSpanView.start());
+			}
             return titles.join("\n\n");
         }
         getTaskInfo(): any{
@@ -887,17 +1087,17 @@ module nts.uk.ui.at.kdw013.c {
 				let start = _.find(taskItemValues, i => i.itemId == 1);
 				let end = _.find(taskItemValues, i => i.itemId == 2);
 				let range = _.find(taskItemValues, i => i.itemId == 3);
-				start.value = vm.caltimeSpanView().start ;
-				end.value = vm.caltimeSpanView().end;
+				start.value = vm.caltimeSpanView.start() ;
+				end.value = vm.caltimeSpanView.end();
 				if(range.value == null){
-					range.value = vm.caltimeSpanView().end - vm.caltimeSpanView().start;
+					range.value = vm.caltimeSpanView.end() - vm.caltimeSpanView.start();
 				}
                 taskDetails.push({supNo: task.supNo, taskItemValues: taskItemValues});
             });
             return {
                 caltimeSpan: { 
-                    start: setTimeOfDate(vm.caltimeSpan.start, vm.caltimeSpanView().start), 
-                    end:  setTimeOfDate(vm.caltimeSpan.start, vm.caltimeSpanView().end)
+                    start: setTimeOfDate(vm.caltimeSpan.start, vm.caltimeSpanView.start()), 
+                    end:  setTimeOfDate(vm.caltimeSpan.start, vm.caltimeSpanView.end())
                 }, 
                 taskDetails};
         }
@@ -907,8 +1107,13 @@ module nts.uk.ui.at.kdw013.c {
 	export class ManHrTaskDetailView extends ManHrTaskDetail {
 		employeeId: string;
         itemBeforChange: ITaskItemValue[];
-		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, private flag: KnockoutObservable<boolean>, showInputTime: KnockoutObservable<boolean>, data: StartWorkInputPanelDto | null, setting: a.TaskFrameSettingDto[]) {
-			super(manHrTaskDetail, data);
+
+		callbackCheckChangeValue: (vm: ViewModel) => void;
+		
+		parent: ViewModel = null;
+		
+		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, showInputTime: KnockoutObservable<boolean>, data: StartWorkInputPanelDto | null, setting: a.TaskFrameSettingDto[], displayManHrRecordItem: DisplayManHrRecordItem[]) {
+			super(manHrTaskDetail, data, displayManHrRecordItem);
 			const vm = this;
 			vm.itemBeforChange = manHrTaskDetail.taskItemValues;
 			vm.employeeId = employeeId;
@@ -919,9 +1124,6 @@ module nts.uk.ui.at.kdw013.c {
                 if(item.itemId == 3) {
                     item.use = showInputTime;
 					item.lable(getText("KDW013_25"));
-					item.value.subscribe(() => {
-	                    vm.flag(!vm.flag());
-                	});
 				}else if(item.itemId == 4) {
                     if (first) {
                         vm.setLableUse(item, first);
@@ -932,9 +1134,6 @@ module nts.uk.ui.at.kdw013.c {
 	                    if (value) {
                             vm.setWorkList(5, 2, value);
                         }
-						setTimeout(() => {
-                        	vm.flag(!vm.flag());
-						}, 1);
                 	});
 				}else if(item.itemId == 5){
                     if (second) {
@@ -1009,6 +1208,11 @@ module nts.uk.ui.at.kdw013.c {
 						}
 					}
 				}
+				item.value.subscribe(()=>{
+					if(parent && typeof vm.callbackCheckChangeValue === 'function'){
+						vm.callbackCheckChangeValue(vm.parent);
+					}
+				});
             });
 			if(data){
 				vm.setWorkLists(data);
@@ -1026,15 +1230,15 @@ module nts.uk.ui.at.kdw013.c {
 		}
 		
 		convertWorkLocationList(option: {code: string, name: string}[], code: KnockoutObservable<string> | undefined): DropdownItem[]{
-            const lst: DropdownItem[] = [{ id: '', code: '', name: getText('KDW013_40'), $raw: null, selected: false }];
+            const lst: DropdownItem[] = [{ id: '', code: '', name: getText('KDW013_41'), taskNote: '', $raw: null, selected: false }];
             if (code && code()) {
                 const taskSelected = _.find(option, { 'code': code() });
                 if (!taskSelected) {
-                    lst.push({ id: code(), code: code(), name: getText('KDW013_41'), selected: false, $raw: null });
+                    lst.push({ id: code(), code: code(), name: getText('KDW013_40'), taskNote: '', selected: false, $raw: null });
                 }
             }
             _.each(option, (t: {code: string, name: string}) => {
-                lst.push({ id: t.code, code: t.code, name: t.name , selected: false, $raw: null });
+                lst.push({ id: t.code, code: t.code, name: t.name ,  taskNote: '',selected: false, $raw: null });
             });
             return lst;
         }
@@ -1081,11 +1285,12 @@ module nts.uk.ui.at.kdw013.c {
             };
 			const itemNext = _.find(vm.taskItemValues(), (i) => {return i.itemId == nextItemId});
 			if(itemNext){
-				block.grayout();
 	            return ajax('at', API.SELECT, param).done((data: TaskDto[]) => {
+					if(_.find(data, o => o.code == itemNext.value()) == undefined){
+						itemNext.value(null);
+					}
 					itemNext.options(vm.getMapperList(data, itemNext.value));
-					block.clear();
-	            }).always(() => block.clear());
+	            });
 			}
         }
         
@@ -1093,45 +1298,57 @@ module nts.uk.ui.at.kdw013.c {
             const vm = this;
             const title: string[] = [];
             _.each(vm.taskItemValues(), (item: TaskItemValue) => {
-                if(item.itemId == 4) {
+                if(item.itemId == 4 && item.value() != '') {
                     const selected = _.find(ko.unwrap(item.options), ({ id }) => item.value() === id);
                     if (selected) {
                         title.push(selected.name);
                     }
-				}else if(item.itemId == 5){
+				}else if(item.itemId == 5 && item.value() != ''){
 					const selected = _.find(ko.unwrap(item.options), ({ id }) => item.value() === id);
                     if (selected) {
                         title.push(selected.name);
                     }
-				}else if(item.itemId == 6){
+				}else if(item.itemId == 6 && item.value() != ''){
 					const selected = _.find(ko.unwrap(item.options), ({ id }) => item.value() === id);
                     if (selected) {
                         title.push(selected.name);
                     }
-				}else if(item.itemId == 7){
+				}else if(item.itemId == 7 && item.value() != ''){
 					const selected = _.find(ko.unwrap(item.options), ({ id }) => item.value() === id);
                     if (selected) {
                         title.push(selected.name);
                     }
-				}else if(item.itemId == 8){
+				}else if(item.itemId == 8 && item.value() != ''){
 					const selected = _.find(ko.unwrap(item.options), ({ id }) => item.value() === id);
                     if (selected) {
                         title.push(selected.name);
                     }
 				}
             });
-            return title.join("\n");
+			let result = title.join("/");
+
+			let timeRange = _.find(vm.taskItemValues(), i => i.itemId == 3);
+            if(timeRange && timeRange.value() && timeRange.value() != '') {
+                result = result + "\n" + getText('KDW013_25') + number2String(parseInt(timeRange.value()));
+			}
+             
+            return result;
         }               
 		
 		isChangedItemValues(): boolean{
 			const vm = this;
-			_.each(vm.taskItemValues(), (itemValue: TaskItemValue)=>{
+			let result: boolean = false;
+			_.forEach(vm.taskItemValues(), (itemValue: TaskItemValue)=>{
 				const item = _.find(vm.itemBeforChange, (i) => {return i.itemId == itemValue.itemId});
-				if(item.value != itemValue.value()){
-					return true;
+				let i = item.value;
+				let v = itemValue.value();
+				if(i == '') i = null;
+				if(v == '') v = null;
+				if(i != v){
+					result = true;
 				}	
 			});
-			return false;
+			return result;
 		}
 		isErorr(): boolean{
 			const vm = this;
@@ -1143,23 +1360,26 @@ module nts.uk.ui.at.kdw013.c {
 		}
 		setWorkLists(taskList: StartWorkInputPanelDto): void{
 			const vm = this;
-			const { taskFrameNo1, taskFrameNo2, taskFrameNo3, taskFrameNo4, taskFrameNo5 } = taskList;
-			_.each(vm.taskItemValues(), (i: TaskItemValue) => {
-        		if(i.itemId == 4){
-					i.options(vm.getMapperList(taskFrameNo1, i.value));
-				}else if(i.itemId == 5){
-					i.options(vm.getMapperList(taskFrameNo2, i.value));
-				}
-				else if(i.itemId == 6){
-					i.options(vm.getMapperList(taskFrameNo3, i.value));
-				}
-				else if(i.itemId == 7){
-					i.options(vm.getMapperList(taskFrameNo4, i.value));
-				}
-				else if(i.itemId == 8){
-					i.options(vm.getMapperList(taskFrameNo5, i.value));
-				}
-            });
+			let frameNoVsTaskFrameNos = _.find(taskList.frameNoVsTaskFrameNos, i => i.frameNo == vm.supNo)
+			if(frameNoVsTaskFrameNos){
+				const { taskFrameNo1, taskFrameNo2, taskFrameNo3, taskFrameNo4, taskFrameNo5 } = frameNoVsTaskFrameNos;
+				_.each(vm.taskItemValues(), (i: TaskItemValue) => {
+	        		if(i.itemId == 4){
+						i.options(vm.getMapperList(taskFrameNo1, i.value));
+					}else if(i.itemId == 5){
+						i.options(vm.getMapperList(taskFrameNo2, i.value));
+					}
+					else if(i.itemId == 6){
+						i.options(vm.getMapperList(taskFrameNo3, i.value));
+					}
+					else if(i.itemId == 7){
+						i.options(vm.getMapperList(taskFrameNo4, i.value));
+					}
+					else if(i.itemId == 8){
+						i.options(vm.getMapperList(taskFrameNo5, i.value));
+					}
+	            });	
+			}
 		}
 		getMapperList(tasks: TaskDto[], code: KnockoutObservable<string> | undefined): DropdownItem[]{
 			const vm = this;
@@ -1167,7 +1387,7 @@ module nts.uk.ui.at.kdw013.c {
             if (code && code()) {
                 const taskSelected = _.find(tasks, { 'code': code() });
                 if (!taskSelected) {
-                    lst.push({ id: code(), code: code(), name: getText('KDW013_40'), selected: false, $raw: null });
+                    lst.push({ id: code(), code: code(), name: getText('KDW013_40'), taskNote: '', selected: false, $raw: null });
                 }
             }
             _.each(tasks, (t: TaskDto) => {
@@ -1179,9 +1399,9 @@ module nts.uk.ui.at.kdw013.c {
 		mapper($raw: TaskDto | null): DropdownItem {
 			let vm = this;
 			if($raw == null){
-				return { id: '', code: '', name: getText('KDW013_41'), $raw: null, selected: false };
+				return { id: '', code: '', name: getText('KDW013_41'), taskNote: '', $raw: null, selected: false };
 			}
-            return { id: $raw.code, code: $raw.code, name: vm.getName($raw.displayInfo) , selected: false, $raw: $raw };
+            return { id: $raw.code, code: $raw.code, name: $raw.displayInfo.taskName , taskNote: $raw.displayInfo.taskNote ? '(' + $raw.displayInfo.taskNote + ')': null, selected: false, $raw: $raw };
         }
 		getName(displayInfo: TaskDisplayInfoDto): string{
 			if(displayInfo.taskNote && displayInfo.taskNote!= ''){
@@ -1201,7 +1421,7 @@ module nts.uk.ui.at.kdw013.c {
 	}
 
     type Params = {
-        close: (result?: 'yes' | 'cancel' | null) => void;
+        close: (result?: 'yes' | 'cancel'| 'save' | null) => void;
         remove: () => void;
         mode: KnockoutObservable<boolean>;
         view: KnockoutObservable<'view' | 'edit'>;
@@ -1216,6 +1436,7 @@ module nts.uk.ui.at.kdw013.c {
         id: string;
         code: string;
         name: string;
+		taskNote: string;
         selected: boolean;
         $raw: any;
     };
@@ -1232,11 +1453,27 @@ module nts.uk.ui.at.kdw013.c {
 			aboveBelow = aboveBelow + caltimeSpanViewHeight - 40;
 		}
 		if(innerHeight - aboveBelow >= heightTaskDetails){
-			$('.taskDetails').css({ "overflow-y": "hidden"});
+			$('.taskDetails').css({ "overflow-y": "unset"});
 			$('.taskDetails').css({ "max-height": heightTaskDetails + 'px' });
 		}else if(innerHeight - aboveBelow < heightTaskDetails){
 			$('.taskDetails').css({ "overflow-y": "scroll"});
 			$('.taskDetails').css({ "max-height": (innerHeight - aboveBelow - 10) + 'px' });
 		}
+	}
+	
+	export function custominePositionCombo(){
+		$('.edit-event .taskDetails .ui-igcombo-wrapper').igCombo({
+			dropDownOpened: function () {
+				let d = $(this);
+				let heightContent = $('.taskDetails').css("overflow-y") == 'scroll'? $('.taskDetails').offset().top + $('.taskDetails').outerHeight(true) : $('#master-wrapper').outerHeight(true);
+				var dropdown = d.find('.ui-igcombo-dropdown');
+				var bottomDropdownr = dropdown.offset().top + dropdown.outerHeight(true);
+				if(bottomDropdownr > heightContent){
+					d.igCombo({dropDownOrientation: 'top'});
+				}else if(d.offset().top + d.outerHeight(true) + dropdown.outerHeight(true) < heightContent){
+					d.igCombo({dropDownOrientation: 'bottom'});
+				}	
+			}	
+		});
 	}
 }

@@ -47,6 +47,7 @@ module nts.uk.at.view.kdw003.b {
                      let i: number = 0;
                     _.each(errorValidate, value => {
                         data.push({
+							idRandom: nts.uk.util.randomId(),
                             id: i++,
                             date: value.date,
                             employeeCode: value.employeeCode,
@@ -131,10 +132,19 @@ module nts.uk.at.view.kdw003.b {
             }
 
             loadGridSimple() {
-                let self = this;
-
+                let self = this,
+					employeeCode_width = 120,
+					employeeName_width = 150,
+					date_width = 95,
+					message_width = 860 - 120;
+				if(self.diplayFormat() != 0) {
+					message_width = message_width - employeeCode_width - employeeName_width;
+				}
+				if(self.diplayFormat() != 1) {
+					message_width = message_width - date_width;
+				}
                 $("#grid").igGrid({
-                    primaryKey: "id",
+                    primaryKey: "idRandom",
                     height: 400,
                     dataSource: self.lstError(),
                     autoGenerateColumns: false,
@@ -142,12 +152,13 @@ module nts.uk.at.view.kdw003.b {
                     dataSourceType: "json",
                     autoCommit: true,
                     columns: [
+						{ key: "idRandom", width: "130px", hidden: true, dataType: "string" },	
                         { key: "id", width: "130px", hidden: true, dataType: "number" },
-                        { key: "employeeCode", width: "120px", headerText: getText('KDW003_32'), dataType: "string", hidden:self.diplayFormat() == 0 ? true : false },
-                        { key: "employeeName", width: "150px", headerText: getText('KDW003_33'), dataType: "string", hidden:self.diplayFormat() == 0 ? true : false },
-                        { key: "date", width: "130px", headerText: getText('KDW003_34'), dataType: "string",hidden:self.diplayFormat() == 1 ? true : false },
-                        { key: "message", width: "300px", headerText: getText('KDW003_36'), dataType: "string" },
-                        { key: "itemName", width: "170px", headerText: getText('KDW003_37'), dataType: "string" }
+                        { key: "employeeCode", width: employeeCode_width, headerText: getText('KDW003_32'), dataType: "string", hidden:self.diplayFormat() == 0 ? true : false },
+                        { key: "employeeName", width: employeeName_width, headerText: getText('KDW003_33'), dataType: "string", hidden:self.diplayFormat() == 0 ? true : false },
+                        { key: "date", width: date_width, headerText: getText('KDW003_34'), dataType: "string",hidden:self.diplayFormat() == 1 ? true : false },
+                        { key: "message", width: message_width, headerText: getText('KDW003_36'), dataType: "string" },
+                        { key: "itemName", width: "120px", headerText: getText('KDW003_37'), dataType: "string" }
                     ],
                     features: [
                         {
@@ -180,8 +191,18 @@ module nts.uk.at.view.kdw003.b {
                 });
             }
 
-         loadGridNormal(){
-                        let self = this;
+         	loadGridNormal(){
+                        let self = this,
+							employeeCode_width = 120,
+							employeeName_width = 150,
+							date_width = 95,
+							message_width = 1220 - 45 - 60 - 120 - 170 - 55;
+						if(self.diplayFormat() != 0) {
+							message_width = message_width - employeeCode_width - employeeName_width;
+						}
+						if(self.diplayFormat() != 1) {
+							message_width = message_width - date_width;
+						}
         
                         $("#grid").igGrid({
                             primaryKey: "id",
@@ -194,16 +215,16 @@ module nts.uk.at.view.kdw003.b {
                             columns: [
                                 { key: "id", width: "130px", hidden: true, dataType: "number" },
                                 { key: "stateBtn", width: "130px", hidden: true, dataType: "string" },
-                                { key: "employeeCode", width: "120px", headerText: getText('KDW003_32'), dataType: "string",hidden:self.diplayFormat() == 0 ? true : false },
-                                { key: "employeeName", width: "150px", headerText: getText('KDW003_33'), dataType: "string",hidden:self.diplayFormat() == 0 ? true : false },
-                                { key: "date", width: "130px", headerText: getText('KDW003_34'), dataType: "string", hidden:self.diplayFormat() == 1 ? true : false  },
-                                { key: "errorCode", width: "50px", headerText: "コード", dataType: "string" },
-                                { key: "errorAlarmAtr", width: "80px", headerText: getText('KDW003_129'), dataType: "string" },
-                                { key: "message", width: "300px", headerText: getText('KDW003_36'), dataType: "string" },
-                                { key: "itemName", width: "170px", headerText: getText('KDW003_37'), dataType: "string" },
+                                { key: "employeeCode", width: employeeCode_width, headerText: getText('KDW003_32'), dataType: "string",hidden:self.diplayFormat() == 0 ? true : false },
+                                { key: "employeeName", width: employeeName_width, headerText: getText('KDW003_33'), dataType: "string",hidden:self.diplayFormat() == 0 ? true : false },
+                                { key: "date", width: date_width, headerText: getText('KDW003_34'), dataType: "string", hidden:self.diplayFormat() == 1 ? true : false  },
+                                { key: "errorCode", width: "45px", headerText: "コード", dataType: "string" },
+                                { key: "errorAlarmAtr", width: "60px", headerText: getText('KDW003_129'), dataType: "string" },
+                                { key: "message", width: message_width, headerText: getText('KDW003_36'), dataType: "string" },
+                                { key: "itemName", width: "120px", headerText: getText('KDW003_37'), dataType: "string" },
                                 { key: "submitedName", width: "170px", headerText: getText('KDW003_62'), dataType: "string" },
                                 {
-                                    key: "application", width: "70px", headerText: getText('KDW003_63'), dataType: "string", unbound: true,
+                                    key: "application", width: "55px", headerText: getText('KDW003_63'), dataType: "string", unbound: true,
                                     template: "<input type= \"button\"  onclick = \"nts.uk.at.view.kdw003.b.viewmodel.redirectApplication(${id}) \" value= \" " + getText('KDW003_63') + " \" ${stateBtn} />"
                                 }
                             ],

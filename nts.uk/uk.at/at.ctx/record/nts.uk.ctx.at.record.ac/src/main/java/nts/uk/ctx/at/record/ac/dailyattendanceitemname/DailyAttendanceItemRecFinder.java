@@ -29,7 +29,7 @@ public class DailyAttendanceItemRecFinder implements DailyAttendanceItemNameAdap
 					f.getAttendanceItemDisplayNumber(), 
 					f.getTypeOfAttendanceItem(), 
 					f.getFrameCategory(),
-					f.getDisplayName());
+					f.getDisplayName()==null? "":f.getDisplayName());
 		}).collect(Collectors.toList());
 	}
 

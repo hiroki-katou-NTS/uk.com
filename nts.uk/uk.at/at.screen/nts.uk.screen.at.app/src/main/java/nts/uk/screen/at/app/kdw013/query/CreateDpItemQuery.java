@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,6 @@ import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordAnd
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordAndAttendanceItemLinkRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHrRecordConvertResult;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHrRecordTaskDetailToAttendanceItemService;
-import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHrTaskDetail;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -33,6 +33,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.kdw013.a.deletetimezoneattendance.GetListTimeZoneDeletions;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -54,6 +55,9 @@ public class CreateDpItemQuery {
 	
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
+	
+	@Inject
+	private GetListTimeZoneDeletions getListTimeZoneDeletions;
 	
 	/**
 	 * 実績登録パラメータを作成する
@@ -104,16 +108,42 @@ public class CreateDpItemQuery {
 		// 7. approvalConfirmCacheを作成する
 		ApprovalConfirmCache approvalConfirmCache = new ApprovalConfirmCache(sId, Arrays.asList(empTarget), period, 0,
 				lstConfirm, lstApproval);
-		// 8. DPItemParentを作成する
+		// 8. 「日別勤怠(Work)」を取得する
+		
+		// 9. 取得する(社員ID, 年月日)
+		Map<GeneralDate, List<Integer>> mapTimeZones = this.getListTimeZoneDeletions.get(empTarget, dateLst);
+		// 10. dailyEditsを作成する
+		/**
+		 * 取得した「Map<年月日,List<勤怠項目ID>>」から勤怠項目IDが含まれている「日別勤怠(Work)．編集状態．勤怠項目ID」を削除してdailyEdits作成する
+		 * ※年月日と日別勤怠(Work)．年月日が同じものをチェックすること
+		 * 
+		 */
+		
 		List<DailyRecordDto> ids = integrationOfDailys.stream().map(x -> DailyRecordDto.from(x))
 				.collect(Collectors.toList());
+		
+		mapTimeZones.entrySet().forEach(entry -> {
 
-		return createDPItemParent(empTarget, dpitems, approvalConfirmCache, ids, period);
+			Optional<IntegrationOfDaily> idOpt = integrationOfDailys.stream()
+					.filter(id -> id.getYmd().equals(entry.getKey())).findFirst();
+
+			idOpt.ifPresent(id -> {
+				id.getEditState().removeIf(es -> entry.getValue().indexOf(es.getAttendanceItemId()) != -1);
+			});
+
+		});
+
+		List<DailyRecordDto> dailyEdits = integrationOfDailys.stream().map(x -> DailyRecordDto.from(x))
+				.collect(Collectors.toList());
+
+		// 11.DPItemParentを作成する
+		
+		return createDPItemParent(empTarget, dpitems, approvalConfirmCache, ids, period, dailyEdits);
 				
 			
 	}
 
-	private DPItemParent createDPItemParent(String empTarget, List<DPItemValue> dpitems, ApprovalConfirmCache approvalConfirmCache, List<DailyRecordDto> ids, DatePeriod period) {
+	private DPItemParent createDPItemParent(String empTarget, List<DPItemValue> dpitems, ApprovalConfirmCache approvalConfirmCache, List<DailyRecordDto> ids, DatePeriod period , List<DailyRecordDto> dailyEdits) {
 		
 		/**
 		 * ■DPItemParent
@@ -151,8 +181,8 @@ public class CreateDpItemQuery {
     			new DateRange(period.start(), period.end()) , 
     			null, 
     			null, 
-    			ids, 
-    			ids, 
+    			ids,
+    			dailyEdits, 
     			ids, 
     			false, 
     			new ArrayList<>(), 
@@ -257,14 +287,6 @@ public class CreateDpItemQuery {
 		return converter.convert(itemIds);
 	}
 
-	private List<ItemValue> collectManHrContents(List<ManHrRecordConvertResult> manHrlst) {
-		
-		return manHrlst.stream()
-				.filter(x -> !x.getManHrContents().isEmpty())
-				.flatMap(x -> x.getManHrContents().stream())
-				.collect(Collectors.toList());
-	}
-
 	@AllArgsConstructor
 	private class ManHrRecordTaskDetailToAttendanceItemServiceImpl
 			implements ManHrRecordTaskDetailToAttendanceItemService.Require {
@@ -272,8 +294,8 @@ public class CreateDpItemQuery {
 		private ManHourRecordAndAttendanceItemLinkRepository manHourRepo;
 
 		@Override
-		public List<ManHourRecordAndAttendanceItemLink> get() {
-			return this.manHourRepo.get(AppContexts.user().companyId());
+		public List<ManHourRecordAndAttendanceItemLink> get(List<Integer> items) {
+			return this.manHourRepo.get(AppContexts.user().companyId(), items);
 		}
 
 	}

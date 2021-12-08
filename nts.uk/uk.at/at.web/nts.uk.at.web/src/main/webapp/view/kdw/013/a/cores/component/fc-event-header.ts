@@ -3,18 +3,33 @@ module nts.uk.ui.at.kdw013.eventheadear {
         name: 'fc-event-header',
         template:
         `<td data-bind="i18n: 'KDW013_20'"></td>
+                               
+
                 <!-- ko foreach: { data: $component.params.data, as: 'day' } -->
                 <td class="fc-event-note fc-day" style='text-align: center;' data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }">
-                    <div style='text-align: left;' data-bind="foreach: { data: day.events, as: 'note' }">
-                        <div class="text-note limited-label" data-bind="text: note"></div>
+                    <div style="display: flex;height:calc(100% - 19px);"> 
+                        <div style='text-align: left;' data-bind="foreach: { data: day.events, as: 'note' }">
+                            <div class="text-note" data-bind="text: note.title"></div>
+                        </div>
+                        <div style='text-align: left;margin-left: 5px;width: calc(100% - 70px);' data-bind="foreach: { data: day.events, as: 'note' }">
+                            <div style='display: block;' class="text-note limited-label" data-bind="text: note.text"></div>
+                        </div>
                     </div>
-                    <i class='openHIcon' data-bind="ntsIcon: { no: 232, width: 20, height: 20 },click: function(day) { $component.openHDialog(day) } " > </i>
+                    <!-- ko if: $component.showHIcon(day.date) -->
+                    <div style="min-height: 20px; height:20px;">     
+                        <i class='openHIcon' data-bind="ntsIcon: { no: 232, width: 20, height: 20 },click: function(day) { $component.openHDialog(day) } " > </i>
+                    </div>
+                    <!-- /ko -->
                 </td>
                 <!-- /ko -->
                 <style rel="stylesheet">
                     .openHIcon{
                         cursor: pointer;
                         }
+                    .fc-day,.text-note{
+                        font-size: 12px;
+                        line-height: 17px;
+                    }
                 </style>
                 `
     })
@@ -51,6 +66,19 @@ module nts.uk.ui.at.kdw013.eventheadear {
             // fix display on ie
             vm.$el.removeAttribute('style');
         }
+        
+        showHIcon(date) {
+            const vm = this;
+            const data = ko.unwrap(vm.params.screenA.$datas);
+
+            if (!data || !date) {
+                return false;
+            }
+
+            return !!_.find(_.get(data, 'convertRes', []), cv => { return moment(cv.ymd).isSame(moment(date), 'days'); });
+
+        }
+        
         openHDialog(day) {
             const vm = this;
             vm.params.setting();
@@ -63,21 +91,18 @@ module nts.uk.ui.at.kdw013.eventheadear {
            
             
             let param = {
-                //対象社員
-                employeeId: vm.$user.employeeId,
-                //対象日 
+                employeeId: vm.params.screenA.editable() ? vm.$user.employeeId : vm.params.screenA.employee(),
                 date: day.date,
-                //日別実績(Work) 
                 IntegrationOfDaily,
-                //実績入力ダイアログ表示項目一覧
                 displayAttItems,
-                //実績内容
-                itemValues: itemValues.manHrContents,
-                //日別実績のロック状態 Optional<日別実績のロック状態>
+                itemValues: _.get(itemValues,'manHrContents',[]),
                 lockInfos
-            }
+            };
+            
             vm.$window.shared('KDW013H', param);
-            vm.$window.modal('at', '/view/kdw/013/h/index.xhtml').then(() => { });
+            vm.$window.modal('at', '/view/kdw/013/h/index.xhtml').then(() => { 
+                vm.params.screenA.dateRange.valueHasMutated();
+            });
         }
     }
 

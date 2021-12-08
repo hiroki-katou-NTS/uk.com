@@ -36,8 +36,8 @@ module nts.uk.ui.at.kdw013.b {
                 <div class="actions">
                     <button id='edit' data-bind="click: $component.params.update, icon: 204, size: 12"></button>
                     <button data-bind="click: $component.remove, icon: 203, size: 12"></button>
-					<!-- ko if: dataSources().length == 1 -->
-						<button class="popupButton-f-from-b" data-bind="icon: 229, size: 12"></button>
+					<!-- ko if: dataSources().length == 1 && inputMode() == '0' -->
+						<button class="popupButton-f-from-b" data-bind="icon: 229, size: 12, click:$component.openFDialog"></button>
 					<!-- /ko -->
                     <button data-bind="click: $component.params.close, icon: 202, size: 12"></button>
                 </div>
@@ -68,13 +68,15 @@ module nts.uk.ui.at.kdw013.b {
 			</div>
         </div>
         <div class="popup-area-f-from-b">
+			<!-- F1_2 -->
+ 			<button class="closeF" data-bind="click: closeFDialog, icon: 202, size: 12"></button>
             <!-- F2_1 -->
             <div class= "pb10 align-left" data-bind="i18n: 'KDW013_70'"></div>
 
             <!-- F3_2 -->
             <div class="textEditor pb10">
                 <!-- F3_1 -->
-                <label class="pr10" data-bind="i18n: 'KDW013_71'"></label>
+				<div data-bind="ntsFormLabel: {required: true, constraint: 'FavoriteTaskName'}, text: nts.uk.resource.getText('KDW013_71')"></div>
                 <input
                 class="input-f-b"
                 tabindex="1"
@@ -117,8 +119,8 @@ module nts.uk.ui.at.kdw013.b {
                 border-radius: 50%;
                 width: 30px;
             }
-            .detail-event .header .actions button:focus {
-                background-color:#f7f7f7;
+            .detail-event .header .actions button:focus, .detail-event .header .actions button:hover {
+                background-color:#dddddd;
                 margin: 0;
                 padding: 0;
                 box-shadow: none;
@@ -132,7 +134,7 @@ module nts.uk.ui.at.kdw013.b {
             .detail-event table tr {
                 height: 34px;
             }
-            .detail-event table tr>td:first-child {
+            .detail-event table tr>td{
                 vertical-align: top;
                 padding-top: 6px;
 				padding-left: 5px;
@@ -147,9 +149,9 @@ module nts.uk.ui.at.kdw013.b {
 				margin-bottom: 5px;
 			}
             .popup-area-f-from-b {
-                padding: 20px !important;
+                padding: 10px !important;
                 text-align: right;
-                width: 244px;
+                width: 268px;
             }
             .pb10 {
                 padding-bottom: 10px !important;
@@ -163,6 +165,23 @@ module nts.uk.ui.at.kdw013.b {
             .pr10 {
                 padding-right: 10px;
             }
+			.closeF {
+			    box-shadow: none;
+			    border: none;
+			    border-radius: 50%;
+				width: 30px;
+			}
+			.taskDetailsB::-webkit-scrollbar{
+				width: 8px;
+			}
+			.taskDetailsB::-webkit-scrollbar-thumb {
+				border-radius: 4px;
+				background-color: #dededfa6;
+			}
+			.taskDetailsB::-webkit-scrollbar-thumb:hover
+			{
+				background-color: #c1c1c1;
+			}
         </style>
         `;
 
@@ -183,15 +202,32 @@ module nts.uk.ui.at.kdw013.b {
         // F画面: add new 
         taskContents: TaskContentDto[] = [];
 
+		inputMode: KnockoutObservable<string> = ko.observable('0');
+
 		position: any;
         constructor(public params: Params) {
             super();
             const vm = this
 
             // Init popup
-        	vm.initPopup();    
+        	vm.initPopup();  
+			vm.getInputMode();  
 
         }
+
+		getInputMode() {
+			$.urlParam = function (name) {
+				var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+				if (results == null) {
+					return '0';
+				}
+				else {
+					return decodeURI(results[1]) || 0;
+				}
+			}
+			const vm = this;
+			vm.inputMode($.urlParam('mode'));
+		}
 
 		initPopup(){
 			$(".popup-area-f-from-b").ntsPopup({
@@ -202,8 +238,24 @@ module nts.uk.ui.at.kdw013.b {
                     of: ".popupButton-f-from-b"
                 },
                 showOnStart: false,
-                dismissible: true
+  				dismissible: false
             })			
+		}
+    
+        openFDialog(){
+			const vm = this;
+			vm.favTaskName('');
+            setTimeout(() => { $('.input-f-b').focus(); }, 100);
+
+			nts.uk.ui.errors.clearAll();
+			setTimeout(() => {
+				jQuery('button.btn-error.small.danger').appendTo('.popup-area-f-from-b .textEditor.pb10');									
+			}, 100);
+		}
+
+		closeFDialog() {
+			$(".popup-area-f-from-b").ntsPopup('hide');
+			nts.uk.ui.errors.clearAll();
 		}
 
         mounted() {
@@ -217,8 +269,17 @@ module nts.uk.ui.at.kdw013.b {
                     const event = ko.unwrap(data);
 
                     if (event && event.extendedProps.status == "update") {
+						nts.uk.ui.errors.clearAll();
                         vm.favTaskName('');
                         const { extendedProps, start, end } = event as any as calendar.EventRaw;
+						if(extendedProps.taskBlock.taskDetails.length == 1){
+							
+							if (_.find(extendedProps.taskBlock.taskDetails[0].taskItemValues, i => i.itemId == 3).value == '') {
+								_.find(extendedProps.taskBlock.taskDetails[0].taskItemValues, i => i.itemId == 3).value = '0';
+							}
+							
+						}
+						
 						const startTime = getTimeOfDate(start);
                         const endTime = getTimeOfDate(end);
 						vm.time(`${number2String(startTime)}${vm.$i18n('KDW013_30')}${number2String(endTime)}`);
@@ -229,23 +290,43 @@ module nts.uk.ui.at.kdw013.b {
 						//set valua in f screen
 						
 						vm.taskContents = _.map(_.filter(taskBlock.taskDetails[0].taskItemValues, i => i.itemId > 3 && i.itemId < 9), t => {return { itemId: t.itemId, taskCode: t.value}});
-						
+						let workCodeFrameNo: any[] = [];
+						_.forEach(taskBlock.taskDetails, t => {
+							let frameNo = t.supNo;
+							let workCode1 = null, workCode2 = null, workCode3 = null, workCode4 = null, workCode5 = null; 
+							_.forEach(t.taskItemValues, i =>{
+								if(i.itemId == 4 && i.value != ''){
+									workCode1 = i.value;
+								}else if(i.itemId == 5 && i.value != ''){
+									workCode2 = i.value;
+								}else if(i.itemId == 6 && i.value != ''){
+									workCode3 = i.value;
+								}else if(i.itemId == 7 && i.value != ''){
+									workCode4 = i.value;
+								}else if(i.itemId == 8 && i.value != ''){
+									workCode5 = i.value;
+								}
+							});
+							workCodeFrameNo.push({frameNo, workCode1, workCode2, workCode3, workCode4, workCode5});
+						});
 						let param ={
+							employeeId: extendedProps.employeeId,
 							refDate: start,
-							itemIds: _.filter(_.map(extendedProps.displayManHrRecordItems, i => i.itemId), t => t > 8)
+							itemIds: _.filter(_.map(extendedProps.displayManHrRecordItems, i => i.itemId), t => t > 8),
+							workCodeFrameNo
 						}
-						block.grayout();
 			            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
 							_.forEach(taskBlock.taskDetails, taskDetail =>{
-								taskDetails.push(vm.setlableValueItems(taskDetail,data));
+								taskDetails.push(vm.setlableValueItems(taskDetail,data, extendedProps.displayManHrRecordItems));
 							});
 							vm.dataSources(taskDetails);
 							setTimeout(() => {
+								resetHeightB();
 								vm.updatePopupSize();
 								// Init popup
         						vm.initPopup();
 							}, 150);
-						}).always(() => block.clear());
+						});
                     } else {
                         vm.dataSources(taskDetails);
 						// Init popup
@@ -261,54 +342,54 @@ module nts.uk.ui.at.kdw013.b {
 //            vm.position.valueHasMutated();
         }
     
-		setlableValueItems(taskDetail: IManHrTaskDetail, data: StartWorkInputPanelDto): TaskDetailB {
+		setlableValueItems(taskDetail: IManHrTaskDetail, data: StartWorkInputPanelDto, displayManHrRecordItem: DisplayManHrRecordItem[]): TaskDetailB {
 			let vm = this;
 			let items: KeyValue[] = [];
 
 			let range = _.find(taskDetail.taskItemValues, i => i.itemId == 3).value;
 			items.push({ key: 'KDW013_25', value: number2String(parseInt(range)) });			
 			
+			let frameNoVsTaskFrameNos = _.find(data.frameNoVsTaskFrameNos, i => i.frameNo == taskDetail.supNo)
+			const { taskFrameNo1, taskFrameNo2, taskFrameNo3, taskFrameNo4, taskFrameNo5 } = frameNoVsTaskFrameNos;
+			
 			const [first, second, thirt, four, five] = vm.taskFrameSettings;
 			
 			if (first && first.useAtr === 1) {
 				let item = _.find(taskDetail.taskItemValues, i => i.itemId == 4);
 				if(item && item.value){
-					items.push(vm.setTaskData(first, item.value, data.taskFrameNo1));					
+					items.push(vm.setTaskData(first, item.value, taskFrameNo1));					
 				}
             }
             if (second && second.useAtr === 1) {
                 let item = _.find(taskDetail.taskItemValues, i => i.itemId == 5);
 				if(item && item.value){
-					items.push(vm.setTaskData(second, item.value, data.taskFrameNo2));					
+					items.push(vm.setTaskData(second, item.value, taskFrameNo2));					
 				}            }
             if (thirt && thirt.useAtr === 1) {
                 let item = _.find(taskDetail.taskItemValues, i => i.itemId == 6);
 				if(item && item.value){
-					items.push(vm.setTaskData(thirt, item.value, data.taskFrameNo3));					
+					items.push(vm.setTaskData(thirt, item.value, taskFrameNo3));					
 				}
             }
             if (four && four.useAtr === 1) {
                 let item = _.find(taskDetail.taskItemValues, i => i.itemId == 7);
 				if(item && item.value){
-					items.push(vm.setTaskData(four, item.value, data.taskFrameNo4));					
+					items.push(vm.setTaskData(four, item.value, taskFrameNo4));					
 				}
             }
             if (five && five.useAtr === 1) {
               let item = _.find(taskDetail.taskItemValues, i => i.itemId == 8);
 				if(item && item.value){
-					items.push(vm.setTaskData(five, item.value, data.taskFrameNo5));					
+					items.push(vm.setTaskData(five, item.value, taskFrameNo5));					
 				}
             }
 			// cho vao day de sap xep
-			let manHrTaskDetail = new ManHrTaskDetail(taskDetail, data);
-			
-			//loai bo item co dinh
-			_.remove(manHrTaskDetail.taskItemValues(), (i: ITaskItemValue) => i.itemId < 9);			
+			let manHrTaskDetail = new ManHrTaskDetail(taskDetail, data, displayManHrRecordItem);
 			
 			_.forEach(manHrTaskDetail.taskItemValues(), (item: TaskItemValue) => {
 				
 				let infor : ManHourRecordItemDto = _.find(data.manHourRecordItems, i => i.itemId == item.itemId);
-				if(infor && infor.useAtr == 1 && item.value() != null && item.value() != ''){
+				if(infor && infor.useAtr == 1 && item.value() != null && item.value() != '' && item.itemId > 8){
 					if(item.itemId == 9){
 						// work plate
 						let workLocation = _.find(data.workLocation, w => w.workLocationCD == item.value());
@@ -328,12 +409,34 @@ module nts.uk.ui.at.kdw013.b {
 							}
 						}
 					}else{
-						items.push({key: infor.name, value:  item.value() });	
+						items.push({key: infor.name, value:  vm.formatDataShow(item, data) });	
 					}
 				}
 			});
 			
 			return {items : items};
+		}
+		
+		formatDataShow(item: TaskItemValue, data: StartWorkInputPanelDto):string {
+			if(item.type == 0){
+				let optionValue = _.find(data.taskSupInfoChoicesDetails, t => t.itemId == item.itemId && t.code == item.value());
+				if(optionValue){
+					return item.value() + ' ' + optionValue.name;	
+				}else{
+					return item.value() + ' ' + getText('KDW013_40');
+				}
+			}else if(item.type == 2){
+				
+			}else if(item.type == 3){
+				
+			}else if(item.type == 5){
+				return number2String(parseInt(item.value()));
+			}else if(item.type == 6){
+				return number2String(parseInt(item.value()));
+			}else if(item.type == 7 || item.type == 9){
+				return item.value();
+			}
+			return item.value();
 		}
 
         setTaskData(setting: a.TaskFrameSettingDto, value: string, option: TaskDto[]):KeyValue{
@@ -361,10 +464,12 @@ module nts.uk.ui.at.kdw013.b {
             vm.$blockui('show');
             vm.$validate(".input-f-b").then((valid: boolean) => {
 				if (valid) {
+					nts.uk.ui.errors.clearAll();
                     vm.$ajax('at', API.ADD_FAV_TASK_F, registerFavoriteCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
-                                
+								vm.closeFDialog();
+                                vm.params.screenA.reloadTaskFav();
                         }); 
                     }).fail((error: any) => {
                         vm.$dialog.error(error);
@@ -376,8 +481,6 @@ module nts.uk.ui.at.kdw013.b {
                     vm.$blockui("clear");
                 }
             });
-
-               
         }
 
         remove() {
@@ -409,4 +512,21 @@ module nts.uk.ui.at.kdw013.b {
         $settings: KnockoutObservable<a.StartProcessDto | null>;
         $share: KnockoutObservable<nts.uk.ui.at.kdw013.StartWorkInputPanelDto | null>;
     }
+
+	export function resetHeightB():void {
+		let innerHeight = window.innerHeight - 35
+		let heightTaskDetails = -5; 
+		_.each($('.taskDetailsB table'),(table:any)=>{
+			heightTaskDetails = heightTaskDetails + table.offsetHeight + 5;
+		});
+		
+		let aboveBelow = 160;
+		if(innerHeight - aboveBelow >= heightTaskDetails){
+			$('.taskDetailsB').css({ "overflow-y": "unset"});
+			$('.taskDetailsB').css({ "max-height": heightTaskDetails + 'px' });
+		}else if(innerHeight - aboveBelow < heightTaskDetails){
+			$('.taskDetailsB').css({ "overflow-y": "scroll"});
+			$('.taskDetailsB').css({ "max-height": (innerHeight - aboveBelow - 45) + 'px' });
+		}
+	}
 }

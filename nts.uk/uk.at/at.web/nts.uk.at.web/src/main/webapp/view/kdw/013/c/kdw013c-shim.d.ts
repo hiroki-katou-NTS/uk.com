@@ -97,20 +97,8 @@ module nts.uk.ui.at.kdw013 {
     };
 
     export type StartWorkInputPanelDto = {
-        /** 利用可能作業1リスト */
-        taskFrameNo1: TaskDto[];
-
-        /** 利用可能作業2リスト */
-        taskFrameNo2: TaskDto[];
-
-        /** 利用可能作業3リスト */
-        taskFrameNo3: TaskDto[];
-
-        /** 利用可能作業4リスト */
-        taskFrameNo4: TaskDto[];
-
-        /** 利用可能作業5リスト */
-        taskFrameNo5: TaskDto[];
+        /** List<作業マスタ情報> */
+        frameNoVsTaskFrameNos: FrameNoVsTaskFrameNosDto[];
 
 		/** List<勤務場所> */
         workLocation: a.WorkLocationDto[];
@@ -127,6 +115,25 @@ module nts.uk.ui.at.kdw013 {
 		//List<工数実績項目と勤怠項目の紐付け>
 		manHourRecordAndAttendanceItemLink: ManHourRecordAndAttendanceItemLinkDto[];
 		
+    };
+
+	export type FrameNoVsTaskFrameNosDto = {
+		//応援勤務枠No
+		frameNo: number;
+        /** 利用可能作業1リスト */
+        taskFrameNo1: TaskDto[];
+
+        /** 利用可能作業2リスト */
+        taskFrameNo2: TaskDto[];
+
+        /** 利用可能作業3リスト */
+        taskFrameNo3: TaskDto[];
+
+        /** 利用可能作業4リスト */
+        taskFrameNo4: TaskDto[];
+
+        /** 利用可能作業5リスト */
+        taskFrameNo5: TaskDto[];
     };
 
 	export type DailyAttendanceItemDto = {

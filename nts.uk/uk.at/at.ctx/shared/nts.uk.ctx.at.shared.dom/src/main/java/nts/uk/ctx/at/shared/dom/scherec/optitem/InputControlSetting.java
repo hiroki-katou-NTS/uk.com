@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.shared.dom.scherec.optitem;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
-
-import java.math.BigDecimal;
-import java.util.Optional;
 
 /**
  * 入力制御設定
@@ -35,5 +37,35 @@ public class InputControlSetting extends DomainObject {
                 throw new BusinessException("Msg_2308");
             }
         }
+    }
+    /**
+     * 入力値が正しいか
+     * @param inputValue 入力値
+     * @param performanceAtr 実績区分
+     * @param optionalItemAtr 任意項目の属性
+     */
+    public CheckValueInputCorrectOuput checkValueInputCorrect(BigDecimal inputValue,PerformanceAtr performanceAtr, OptionalItemAtr optionalItemAtr) {
+    	List<String> errorContents = new ArrayList<>();
+    	boolean isError = false;
+    	//「@チェックボックスで入力する」とINPUT「実績区分」をチェックする
+    	if(!inputWithCheckbox && performanceAtr == PerformanceAtr.DAILY_PERFORMANCE && dailyInputUnit.isPresent() ) {
+    		//入力単位チェック
+    		ValueCheckResult valueCheckResult = dailyInputUnit.get().checkInputUnit(inputValue, optionalItemAtr);
+    		if(!valueCheckResult.isCheckResult()) {
+    			isError = true;
+    			errorContents.add(valueCheckResult.getErrorContent().get());
+    		}
+    	}
+    	//入力範囲チェック
+    	ValueCheckResult valueCheckResult = calcResultRange.checkInputRange(inputValue, performanceAtr, optionalItemAtr);
+    	if(!valueCheckResult.isCheckResult()) {
+    		errorContents.add(valueCheckResult.getErrorContent().get());
+    	}
+    	
+    	if(!isError && valueCheckResult.isCheckResult()) {
+    		return new CheckValueInputCorrectOuput(true, errorContents);
+    	}
+    	
+    	return new CheckValueInputCorrectOuput(false,errorContents);
     }
 }

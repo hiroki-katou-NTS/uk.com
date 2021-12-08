@@ -365,7 +365,7 @@ module nts.uk.at.view.kdw008.a {
             getDailyDetail(code: string, sheetNo: string): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-
+				if (self.isDuplicate) code = self.codeDuplicate;
 				if (code != '' && code != null && code != undefined ) {
 	                service.getDailyDetail(code, self.selectedSheetNo(), self.isMobile).done(data => {
 	                    self.clearDataSwapListAndSheetName();
@@ -512,11 +512,12 @@ module nts.uk.at.view.kdw008.a {
 
             setNewMode() {
                 let self = this;
+				self.isDuplicate = false;
                 self.currentDailyFormatCode(null);
                 self.currentDailyFormatName('');
                 self.selectedCode(null);
 
-                self.checked(true);
+                self.checked(false);
                 self.showCode(true);
                 self.isUpdate(false);
                 self.isRemove(false);

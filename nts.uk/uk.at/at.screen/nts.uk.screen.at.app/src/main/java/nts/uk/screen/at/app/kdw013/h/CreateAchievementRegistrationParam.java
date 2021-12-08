@@ -19,15 +19,16 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.Mo
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
-import nts.uk.screen.at.app.kdw013.query.GetWorkDataMasterInformation;
-import nts.uk.screen.at.app.kdw013.query.WorkDataMasterInformationDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -45,18 +46,18 @@ public class CreateAchievementRegistrationParam {
     private ConfirmStatusActualDayChange confirmStatusActualDayChange;
     
     @Inject
-    private GetWorkDataMasterInformation getWorkDataMasterInformation;
-    
-    @Inject
     private DailyModifyRCommandFacade dailyModifyRCommandFacade;
     
     @Inject 
     private IntegrationOfDailyGetter integrationOfDailyGetter;
     
+    @Inject
+    private AttendanceItemConvertFactory attendanceItemConvertFactory;
+    
     /**
      * @name 実績内容を登録する
      */
-    public void registerAchievements(String empTarget, GeneralDate targetDate, List<ItemValue> items){
+    public DataResultAfterIU registerAchievements(String empTarget, GeneralDate targetDate, List<ItemValue> items){
     	
     	//call ScreenQuery 実績登録パラメータを作成する
     	// chưa có mô tả param truyền vào.
@@ -65,17 +66,19 @@ public class CreateAchievementRegistrationParam {
     	//Call 修正した実績を登録する
     	//QA: 120067 -  đang hỏi anh thanhNX - Anh thanhNX trả lời là hàm DailyModifyRCommandFacade.insertItemDomain()
     	//Vì param 「過去修正モード」"Mode sửa quá khứ " là đang thiết kế nên vẫn chưa có source code.
-    	dailyModifyRCommandFacade.insertItemDomain(DPItemParent);
-    	
+		return dailyModifyRCommandFacade.insertItemDomain(DPItemParent);
     }
     
-    /**
-     * @name 実績内容確認を起動する
-     */
-    public WorkDataMasterInformationDto startAchievementConfirmation(GeneralDate refDate, List<Integer> itemIds){
+    //日別実績データを取得する
+    public List<ItemValue> getIntegrationOfDaily(String empTarget, GeneralDate targetDate, List<Integer> items){
+    	// 1:get()
+    	List<IntegrationOfDaily> integrationOfDailys = integrationOfDailyGetter.getIntegrationOfDaily(empTarget, new DatePeriod(targetDate, targetDate));
+    	Optional<IntegrationOfDaily> integrationOfDaily = integrationOfDailys.stream().filter(c->c.getYmd().equals(targetDate)).findFirst();
     	
-    	return getWorkDataMasterInformation.get(refDate, itemIds);
-    	
+    	// 2:<call> ItemValueに変換する
+    	DailyRecordToAttendanceItemConverter dailyRecordToAttendanceItemConverter = attendanceItemConvertFactory.createDailyConverter();
+    	dailyRecordToAttendanceItemConverter.setData(integrationOfDaily.get());															
+    	return dailyRecordToAttendanceItemConverter.convert(items);
     }
     
     /**

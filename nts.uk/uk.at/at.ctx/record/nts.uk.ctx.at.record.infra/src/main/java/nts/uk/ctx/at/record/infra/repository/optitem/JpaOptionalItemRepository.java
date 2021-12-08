@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -87,6 +88,18 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		// Return
 		return new OptionalItem(new JpaOptionalItemGetMemento(entity));
+	}
+    
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@Override
+	public Optional<OptionalItem> findByItemNo(String companyId, Integer optionalItemNo) {
+    	Optional<KrcmtAnyv> entity = this.queryProxy()
+				.find(new KrcmtAnyvPK(companyId, optionalItemNo), KrcmtAnyv.class);
+    	if(entity.isPresent()) {
+    		return Optional.of(new OptionalItem(new JpaOptionalItemGetMemento(entity.get())));
+    	}
+		// Return
+		return Optional.empty();
 	}
 
 	/*

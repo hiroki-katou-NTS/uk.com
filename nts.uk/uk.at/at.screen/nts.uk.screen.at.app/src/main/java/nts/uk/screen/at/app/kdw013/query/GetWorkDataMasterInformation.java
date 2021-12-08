@@ -2,9 +2,7 @@ package nts.uk.screen.at.app.kdw013.query;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,17 +21,20 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReasonInputMethodI;
-import nts.uk.ctx.at.shared.app.query.task.GetTaskListOfSpecifiedWorkFrameNoQuery;
 import nts.uk.ctx.at.shared.app.query.worktime.worktimeset.WorkTimeSettingQuery;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRootRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRelatedDailyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -41,6 +42,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRe
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
+import nts.uk.screen.at.app.kdw013.c.GetAvailableWorking;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -52,7 +54,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class GetWorkDataMasterInformation {
     
     @Inject
-    private GetTaskListOfSpecifiedWorkFrameNoQuery getTaskListOfSpecifiedWorkFrameNoQuery; 
+    private GetAvailableWorking getAvailableWorking; 
     
     @Inject 
     private WorkLocationRepository workLocationRepository;
@@ -90,22 +92,56 @@ public class GetWorkDataMasterInformation {
     @Inject
     private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
     
+    @Inject
+    private DailyAttdItemAuthRepository dailyAttdItemAuthRepository;
+    
+    @Inject
+    private TaskingRepository taskingRepository;
+    
     /**
      * @name 作業データマスタ情報を取得する
      * @param referenceDate 基準日
      * @param itemId List<工数実績項目ID>
+     * @param employeeId
      */
-    public WorkDataMasterInformationDto get(GeneralDate refDate, List<Integer> itemIds){
+    public WorkDataMasterInformationDto get(String employeeId, GeneralDate refDate, List<Integer> itemIds, List<WorkCodeFrameNoParamDto> workCodeFrameNos){
     	LoginUserContext loginUserContext = AppContexts.user();
 
-    	//1
-    	Map<Integer, List<Task>> mapTask = new HashMap<>();
-    	//作業枠NOを1～5をループする
-    	for (int i = 1 ; i <= 5; i++) {
-    		//取得する(ログイン会社ID, 処理中の作業枠NO)
-    		mapTask.put(i, getTaskListOfSpecifiedWorkFrameNoQuery.getListTask(loginUserContext.companyId(), i));
+    	List<FrameNoVsTaskFrameNosDto> frameNoVsTaskFrameNos = new ArrayList<FrameNoVsTaskFrameNosDto>(); 
+    	
+    	for (WorkCodeFrameNoParamDto workCodeFrameNo : workCodeFrameNos) {
+    		//利用可能作業を取得する
+    		List<TaskDto> taskFrameNo1 = getAvailableWorking.get(employeeId, refDate, new TaskFrameNo(1), Optional.empty())
+    				.stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList());
+    		List<TaskDto> taskFrameNo2 = getAvailableWorking.get(employeeId, refDate, new TaskFrameNo(2), Optional.ofNullable(workCodeFrameNo.workCode1).map(c -> Optional.of(new TaskCode(c))).orElse(Optional.empty()))
+    				.stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList());
+    		List<TaskDto> taskFrameNo3 = getAvailableWorking.get(employeeId, refDate, new TaskFrameNo(3), Optional.ofNullable(workCodeFrameNo.workCode2).map(c -> Optional.of(new TaskCode(c))).orElse(Optional.empty()))
+    				.stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList());
+    		List<TaskDto> taskFrameNo4 = getAvailableWorking.get(employeeId, refDate, new TaskFrameNo(4), Optional.ofNullable(workCodeFrameNo.workCode3).map(c -> Optional.of(new TaskCode(c))).orElse(Optional.empty()))
+    				.stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList());
+    		List<TaskDto> taskFrameNo5 = getAvailableWorking.get(employeeId, refDate, new TaskFrameNo(5), Optional.ofNullable(workCodeFrameNo.workCode4).map(c -> Optional.of(new TaskCode(c))).orElse(Optional.empty()))
+    				.stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList());
+    		
+    		//指定された作業情報を取得する
+    		if(Optional.ofNullable(workCodeFrameNo.workCode1).isPresent() && !taskFrameNo1.stream().filter(c->c.getCode().equals(workCodeFrameNo.workCode1)).findAny().isPresent()) {
+    			taskingRepository.getOptionalTask(loginUserContext.companyId(), new TaskFrameNo(1), new TaskCode(workCodeFrameNo.workCode1)).ifPresent(c-> taskFrameNo1.add(TaskDto.toDto(c)));
+    		}
+    		if(Optional.ofNullable(workCodeFrameNo.workCode2).isPresent() && !taskFrameNo2.stream().filter(c->c.getCode().equals(workCodeFrameNo.workCode2)).findAny().isPresent()) {
+    			taskingRepository.getOptionalTask(loginUserContext.companyId(), new TaskFrameNo(2), new TaskCode(workCodeFrameNo.workCode2)).ifPresent(c-> taskFrameNo2.add(TaskDto.toDto(c)));
+    		}
+    		if(Optional.ofNullable(workCodeFrameNo.workCode3).isPresent() && !taskFrameNo3.stream().filter(c->c.getCode().equals(workCodeFrameNo.workCode3)).findAny().isPresent()) {
+    			taskingRepository.getOptionalTask(loginUserContext.companyId(), new TaskFrameNo(3), new TaskCode(workCodeFrameNo.workCode3)).ifPresent(c-> taskFrameNo3.add(TaskDto.toDto(c)));
+    		}
+    		if(Optional.ofNullable(workCodeFrameNo.workCode4).isPresent() && !taskFrameNo4.stream().filter(c->c.getCode().equals(workCodeFrameNo.workCode4)).findAny().isPresent()) {
+    			taskingRepository.getOptionalTask(loginUserContext.companyId(), new TaskFrameNo(4), new TaskCode(workCodeFrameNo.workCode4)).ifPresent(c-> taskFrameNo4.add(TaskDto.toDto(c)));
+    		}
+    		if(Optional.ofNullable(workCodeFrameNo.workCode5).isPresent() && !taskFrameNo5.stream().filter(c->c.getCode().equals(workCodeFrameNo.workCode5)).findAny().isPresent()) {
+    			taskingRepository.getOptionalTask(loginUserContext.companyId(), new TaskFrameNo(5), new TaskCode(workCodeFrameNo.workCode5)).ifPresent(c-> taskFrameNo5.add(TaskDto.toDto(c)));
+    		}
+    		
+    		frameNoVsTaskFrameNos.add(new FrameNoVsTaskFrameNosDto(workCodeFrameNo.frameNo, taskFrameNo1, taskFrameNo2, taskFrameNo3, taskFrameNo4, taskFrameNo5));
 		}
-
+    	
     	//2
     	//List<勤務場所>
     	List<WorkLocation> workLocation = new ArrayList<WorkLocation>();
@@ -134,11 +170,7 @@ public class GetWorkDataMasterInformation {
     	ManHourRecordAttendanceItemLinkAttendanceItemsDto manHourRecordAttendanceItem = this.getManHourRecordAttendanceItemLinkAttendanceItems(itemIds);
     	
     	return new WorkDataMasterInformationDto(
-    			mapTask.get(1).stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList()), 
-    			mapTask.get(2).stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList()), 
-    			mapTask.get(3).stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList()), 
-    			mapTask.get(4).stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList()), 
-    			mapTask.get(5).stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList()), 
+    			frameNoVsTaskFrameNos, 
     			workLocation.stream().map(c->WorkLocationDto.fromDomain(c)).collect(Collectors.toList()), 
     			taskSupInfoChoicesDetails.stream().map(c-> new TaskSupInfoChoicesDetailDto(c)).collect(Collectors.toList()), 
     			manHourRecordItems.stream().map(c-> new ManHourRecordItemDto(c)).collect(Collectors.toList()),
@@ -177,6 +209,12 @@ public class GetWorkDataMasterInformation {
     	//List<勤怠項目>
     	List<AttItemName> attItemName = companyDailyItemService.getDailyItems(loginUser.companyId(), Optional.ofNullable(loginUser.roles().forAttendance()), itemIds, new ArrayList<>());
     	
+    	String roleId = loginUser.roles().forAttendance();
+    	Optional<DailyAttendanceItemAuthority> dailyAttendanceItemAuthority = Optional.empty();
+    	if(roleId != null) {
+    		dailyAttendanceItemAuthority = dailyAttdItemAuthRepository.getDailyAttdItemByAttItemId(loginUser.companyId(), roleId, itemIds);
+    	}
+    	
     	//日次の勤怠項目を取得する
     	//List<日次の勤怠項目>
     	List<DailyAttendanceItem> dailyAttendanceItem = dailyAttendanceItemRepo.findByADailyAttendanceItems(attItemName.stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList()), loginUser.companyId());
@@ -184,10 +222,13 @@ public class GetWorkDataMasterInformation {
     	//List<勤務種類>
     	List<WorkType> workTypes = new ArrayList<>();
     	//「日次の勤怠項目.属性 = コード AND 日次の勤怠項目.マスタの種類 = 勤務種類」がある
-    	if(dailyAttendanceItem.stream().filter(c-> c.getDailyAttendanceAtr().value == DailyAttendanceAtr.Code.value && c.getMasterType().isPresent() && c.getMasterType().get().value == TypesMasterRelatedDailyAttendanceItem.WORK_TYPE.value).findFirst().isPresent()) {
-        	//<<Public>> 勤務種類をすべて取得する
-    		workTypes = workTypeRepository.findByCompanyId(loginUser.companyId());
-    	}
+		dailyAttendanceItem.stream()
+				.filter(ai -> ai.getDailyAttendanceAtr().equals(DailyAttendanceAtr.Code))
+				.filter(ai -> ai.getMasterType().isPresent() &&  ai.getMasterType().get().equals(TypesMasterRelatedDailyAttendanceItem.WORK_TYPE))
+				.findFirst().ifPresent(ai -> {
+					// <<Public>> 勤務種類をすべて取得する
+					workTypes.addAll(workTypeRepository.findByCompanyId(loginUser.companyId()));
+				});
     	
     	//List<就業時間帯の設定>
     	List<WorkTimeSetting> workTimeSettings = new ArrayList<>();
@@ -214,7 +255,7 @@ public class GetWorkDataMasterInformation {
     		divergenceReasonInputMethods = divergenceReasonInputMethodI.getData(loginUser.companyId(), frames);
     	}
     	
-    	return new AttendanceItemMasterInformationDto(attItemName, dailyAttendanceItem, workTypes, workTimeSettings, divergenceTimeRoots, divergenceReasonInputMethods);
+    	return new AttendanceItemMasterInformationDto(attItemName, dailyAttendanceItem, workTypes, workTimeSettings, divergenceTimeRoots, divergenceReasonInputMethods, dailyAttendanceItemAuthority);
     }
     
     /**

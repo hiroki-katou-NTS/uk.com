@@ -8,6 +8,7 @@ import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHrRecordConvertResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.screen.at.app.kdw013.a.deletetimezoneattendance.RegisterDeleteTimeZoneAttendanceCommand;
 
 /**
  * 
@@ -38,6 +39,11 @@ public class RegisterWorkContentCommand {
 
 	/** 変更対象日 */
 	private List<GeneralDate> changedDates;
+	
+	// 対象項目リスト
+	private List<Integer> itemIds;
+	
+	private RegisterDeleteTimeZoneAttendanceCommand deleteAttByTimeZones;
 	
 	
 	public List<ManHrRecordConvertResult> getManHrlst(){

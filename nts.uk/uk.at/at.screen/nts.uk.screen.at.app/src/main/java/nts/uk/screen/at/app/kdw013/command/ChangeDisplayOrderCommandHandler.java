@@ -35,7 +35,7 @@ public class ChangeDisplayOrderCommandHandler extends CommandHandler<ChangeDispl
 
 		// 2: お気に入り作業の表示順.isPresent
 		if (optOrder.isPresent()) {
-			optOrder.get().changeOrder(command.getReorderedId(), command.getFrontOrder(), command.getBackOrder());
+			optOrder.get().changeOrder(command.getReorderedId(), command.getBeforeOrder(), command.getAfterOrder());
 	
 			// 3: persist()
 			repo.update(optOrder.get());

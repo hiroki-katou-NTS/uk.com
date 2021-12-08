@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -64,6 +65,10 @@ public class FavoriteTaskDisplayOrder extends AggregateRoot {
 
 		// 表示順.追加する($新しいお気に入り)
 		this.displayOrders.add(FavoriteDisplayOrder.addFirstDisorder(favId));
+		
+		if (this.displayOrders.size() >= 100) {
+			throw new BusinessException("Msg_3257");
+		}
 
 		// 表示順：sort $.表示順 ASC
 		this.displayOrders.stream().sorted(Comparator.comparingInt(FavoriteDisplayOrder::getOrder))
@@ -103,30 +108,30 @@ public class FavoriteTaskDisplayOrder extends AggregateRoot {
 	 * @param beforeOrder 変更前の表示順
 	 * @param afterOrder  変更後の表示順
 	 */
-	public void changeOrder(String reorderedId, int frontOrder, int backOrder) {
-		if (frontOrder == backOrder) {
+	public void changeOrder(String reorderedId, int beforeOrder, int afterOrder) {
+		if (beforeOrder == afterOrder) {
 			return;
 		}
 
-		if (frontOrder > backOrder) {
+		if (beforeOrder > afterOrder) {
 			for (FavoriteDisplayOrder o : this.displayOrders) {
-				if (o.getOrder() < frontOrder && o.getOrder() >= backOrder) {
+				if (o.getOrder() < beforeOrder && o.getOrder() >= afterOrder) {
 					o.shiftBackOrder();
 				}
 			}
 		}
 
-		if (frontOrder < backOrder) {
+		if (beforeOrder < afterOrder) {
 			for (FavoriteDisplayOrder o : this.displayOrders) {
-				if (o.getOrder() > frontOrder && o.getOrder() <= backOrder) {
+				if (o.getOrder() > beforeOrder && o.getOrder() <= afterOrder) {
 					o.shiftFrontOrder();
 				}
 			}
 		}
 
 		for (FavoriteDisplayOrder o : this.displayOrders) {
-			if (o.getFavId() == reorderedId) {
-				o.changeDisplayOrder(backOrder);
+			if (o.getFavId().equals(reorderedId)) {
+				o.changeDisplayOrder(afterOrder);
 			}
 		}
 

@@ -6,7 +6,7 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 500, height: 490 };</script>
+			<script>var dialogSize = { width: 500, height: 510 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
@@ -20,14 +20,16 @@
 			<div id="contents-area" class="kdw-013-e">
 				<!--E1_1-->
 				<div class="panel panel-frame panel-width" id="panel-e">
-					<table class="table-screen-e">
+					<table>
 						<colgroup>
 							<col width="123px" />
 						</colgroup>
 						<tbody>
 							<tr>
 								<!-- E2_1 -->
-								<td data-bind="i18n: 'KDW013_27'"></td>
+								<td>
+									<div data-bind="ntsFormLabel: {required: true, constraint: 'AttendanceTime'}">#{i18n.getText('KDW013_27')}</div>
+								</td>
 								<td>
 									<!-- E2_2 開始時刻 -->
 									<input tabindex="1"  id="editor-start"
@@ -56,7 +58,9 @@
 							</tr>
 							<tr>
 								<!-- E3_1 作業時間 -->
-								<td data-bind="i18n: 'KDW013_25'"></td>
+								<td>
+									<div data-bind="ntsFormLabel: {required: true, constraint: 'AttendanceTime'}">#{i18n.getText('KDW013_25')}</div>
+								</td>
 								<td> 
 									<input tabindex="3" 
 									data-bind="ntsTimeEditor: { 
@@ -72,11 +76,13 @@
 							</tr>
 							<tr>
 								<!-- E4_1 -->
-								<td data-bind="text: setTaskName1"></td>
+								<td>
+                                	<div data-bind="ntsFormLabel: {required: true}, text: setTaskName1"></div>
+                                </td>
 								<!-- E4_2 -->
 								<!-- E4_3 -->
 								<td>
-									<div id="task-combobox" style="vertical-align: bottom;" tabindex="4" 
+									<div class="task-combobox" id="task-combobox1" style="vertical-align: bottom;" tabindex="4" 
 									data-bind="ntsComboBox: {
 										name: setTaskName1,
 										options: taskLst1,
@@ -92,11 +98,13 @@
 							<com:ko-if bind="useTask2">
 								<tr>
 									<!-- E6_1 -->
-									<td data-bind="text: setTaskName2"></td>
+									<td>
+                                		<div data-bind="ntsFormLabel: {}, text: setTaskName2"></div>
+                                	</td>
 									<!-- E6_2 -->
 									<!-- E6_3 -->
 									<td>
-										<div id="task-combobox" style="vertical-align: bottom;" tabindex="5" 
+										<div class="task-combobox" style="vertical-align: bottom;" tabindex="5" 
 										data-bind="ntsComboBox: {
 											name: setTaskName2,
 											options: taskLst2,
@@ -112,11 +120,13 @@
 							<com:ko-if bind="useTask3">
 								<tr>
 									<!-- E7_1 -->
-									<td data-bind="text: setTaskName3"></td>
+									<td>
+                                		<div data-bind="ntsFormLabel: {}, text: setTaskName3"></div>
+                                	</td>
 									<!-- E7_2 -->
 									<!-- E7_3 -->
 									<td>
-										<div id="task-combobox" style="vertical-align: bottom;" tabindex="6" 
+										<div class="task-combobox" style="vertical-align: bottom;" tabindex="6" 
 										data-bind="ntsComboBox: {
 											name: setTaskName3,
 											options: taskLst3,
@@ -132,11 +142,13 @@
 							<com:ko-if bind="useTask4">
 								<tr>
 									<!-- E8_1 -->
-									<td data-bind="text: setTaskName4"></td>
+									<td>
+                                		<div data-bind="ntsFormLabel: {}, text: setTaskName4"></div>
+                                	</td>
 									<!-- E8_2 -->
 									<!-- E8_3 -->
 									<td>
-										<div id="task-combobox" style="vertical-align: bottom;" tabindex="7" 
+										<div class="task-combobox" style="vertical-align: bottom;" tabindex="7" 
 										 data-bind="ntsComboBox: {
 											name: setTaskName4,
 											options: taskLst4,
@@ -152,11 +164,13 @@
 							<com:ko-if bind="useTask5">
 								<tr>
 									<!-- E8_1 -->
-									<td data-bind="text: setTaskName5"></td>
+									<td>
+                                		<div data-bind="ntsFormLabel: {}, text: setTaskName5"></div>
+                                	</td>
 									<!-- E8_2 -->
 									<!-- E8_3 -->
 									<td>
-										<div id="task-combobox" style="vertical-align: bottom;" tabindex="8" 
+										<div class="task-combobox" style="vertical-align: bottom;" tabindex="8" 
 										data-bind="ntsComboBox: {
 											name: setTaskName5,
 											options: taskLst5,
@@ -177,7 +191,7 @@
 			</div>
 
 			<div id="functions-area-bottom" class="kdw013-function">
-				<button tabindex = "9" class="proceed normal" data-bind="i18n: 'KDW013_43', click: $vm.decide"></button>
+				<button tabindex = "9" class="proceed normal" data-bind="i18n: 'KDW013_43', click: $vm.decide, enable: $root.errors.isEmpty "></button>
 				<button tabindex = "10" class="normal" data-bind="i18n: 'KDW013_37', click: $vm.close"></button>
 			</div>
 		</ui:define>

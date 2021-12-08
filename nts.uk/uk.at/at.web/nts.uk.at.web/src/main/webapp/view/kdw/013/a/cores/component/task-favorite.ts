@@ -44,15 +44,17 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                         <li data-bind="i18n: 'KDW013_78' ,click:$component.removeFav"></li>
                     </ul>
             </div>
-            <div data-bind="ntsAccordion: {}">
+            <div data-bind="ntsAccordion: {active: 0}">
                 <h3>
                     <label data-bind="i18n: 'KDW013_75'"></label>
                 </h3>
                 <div class='fc-events fc-task-events'>
-                    <ul data-bind="foreach: { data: $component.params.items, as: 'item' }">
+                    <ul id='task-fav' data-bind="foreach: { data: $component.params.items, as: 'item' }">
                         <li class="title" data-bind="attr: {
                             'data-id': _.get(item.extendedProps, 'relateId', ''),
-                            'data-color': item.backgroundColor
+                            'data-color': item.backgroundColor,
+                            'data-order': _.get(item.extendedProps, 'order', ''),
+                            'data-favId': _.get(item.extendedProps, 'favId', '')
                         }">
                             <div data-bind="style: {
                                 'background-color': item.backgroundColor
@@ -68,6 +70,13 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 </div>
             </div>
             <style rel="stylesheet">
+               .fc-task-events .fc-events>ul>li>div:first-child {
+                    float: left;
+                    width: 22px;
+                    height: 22px;
+                    margin-right: 3px;
+                    border-radius: 50%;
+                }
                 .fc-container .fc-task-events .edit-popup{
                     visibility: hidden;
                     position: fixed;
@@ -114,7 +123,7 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                         of: ".popupButton-f"
                     },
                     showOnStart: false,
-                    dismissible: true
+                    dismissible: false
                 });
             }
             
@@ -124,8 +133,8 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 //A: お気に入り作業を削除する
                 vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/delete_task_set', { favId: id }))
                     .done(() => {
-                        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-                            vm.params.screenA.reLoad();
+                        vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
+                            vm.params.screenA.reloadTaskFav();
                         });
                     }).always(() => vm.$blockui('clear'));
                 
@@ -149,6 +158,11 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                     // お気に入り内容
                     favoriteContents: item.extendedProps.dropInfo.favoriteContents
                 });
+				setTimeout(() => {
+					$('.input-f').focus();
+				}, 100)
+			
+				jQuery('button.btn-error.small.danger').appendTo('.popup-area-f .textEditor.pb10');
             }
         }
         

@@ -32,6 +32,8 @@ import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWork
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.DaiPerformanceFunDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.DaiPerformanceFunFinder;
+import nts.uk.ctx.at.record.app.query.tasksupinforitemsetting.TaskSupInfoChoiceDetailsQuery;
+import nts.uk.ctx.at.record.app.query.tasksupinforitemsetting.TaskSupInfoItemAndSelectInforQueryDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ApprovalStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
@@ -135,6 +137,9 @@ public class InitScreenMob {
 	
 	@Inject
 	private RecordDomRequireService requireService;
+	
+	@Inject
+	private TaskSupInfoChoiceDetailsQuery taskSupInfoChoiceDetailsQuery;
 
 	private static final Integer[] DEVIATION_REASON = { 436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456,
 			458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
@@ -767,6 +772,17 @@ public class InitScreenMob {
 									}
 									cellDatas.add(new DPCellDataDto(codeColKey, value,attendanceAtrAsString, DPText.TYPE_LABEL));
 									value = codeNameTaskMap.containsKey(value+"|"+frameNo) ? codeNameTaskMap.get(value+"|"+frameNo).getName() : NAME_NOT_FOUND;
+								} else if(groupType == TypeLink.WORK_SUP_OPTION.value) {
+									List<TaskSupInfoItemAndSelectInforQueryDto> listName = taskSupInfoChoiceDetailsQuery.get(data.getDate(), item.getId());
+									cellDatas.add(new DPCellDataDto(codeColKey, value,attendanceAtrAsString, DPText.TYPE_LABEL));
+									String valueName = NAME_NOT_FOUND;
+									for(TaskSupInfoItemAndSelectInforQueryDto temp : listName) {
+										if(temp.getCode().equals(value)) {
+											valueName = temp.getName();
+											break;
+										}
+									}
+									value = valueName;
 								} else {
 									cellDatas.add(new DPCellDataDto(codeColKey, value, attendanceAtrAsString,
 											DPText.TYPE_LABEL));
@@ -827,11 +843,21 @@ public class InitScreenMob {
 						} else {
 							cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 						}
+					} else if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
+						cellDatas.add(new DPCellDataDto(anyChar, value.equals("0.0") ? "0" : value, attendanceAtrAsString, DPText.TYPE_LABEL));
+					} else if(attendanceAtr == DailyAttendanceAtr.NumberOfTime.value){
+						if (groupType != null && groupType == TypeLink.DOWORK.value) {
+							Double valueConvert = Double.parseDouble(value == "" ? "0.0" : value);
+							cellDatas.add(new DPCellDataDto(anyChar, valueConvert.equals(0.0) ? false : true, attendanceAtrAsString, DPText.TYPE_LABEL));
+						} else
+							cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
+					} else if(attendanceAtr == DailyAttendanceAtr.NumbericValue.value){
+						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					} else {
 						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					}
-				}
-			}
+				}			
+			} 
 		}
 		data.setTypeGroup(typeGroup);
 		data.setCellDatas(cellDatas);

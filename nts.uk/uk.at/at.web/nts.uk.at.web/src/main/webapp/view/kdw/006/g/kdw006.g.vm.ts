@@ -393,6 +393,32 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             }
             let viewG = __viewContext.viewModel;
             service.defaultValue(listWorkType).done(function(res) {
+				let holidayAtr: HolidayAtr;
+				switch(self.no) {
+					case 2:
+						holidayAtr = HolidayAtr.STATUTORY_HOLIDAYS;
+						break;
+					case 3:
+						holidayAtr = HolidayAtr.NON_STATUTORY_HOLIDAYS;
+						break;
+					case 4:
+						holidayAtr = HolidayAtr.PUBLIC_HOLIDAY;
+						break;
+					default:
+						break;
+						
+				}
+				if (!_.isNil(holidayAtr)) {
+					res = 	_	
+							.chain(res)
+							.filter((x: any) => !_.isEmpty(x.workTypeSets))
+							.filter((x: any) => x.workTypeSets[0].holidayAtr == holidayAtr)
+							.value();
+					
+				}
+					
+				
+				
                 let workTypeCodess: string[] = _.map(res, 'workTypeCode');
                 self.workTypeCodes = _.uniq(workTypeCodess);
                 let fullCodeNameList = ko.toJS(viewG.fullWorkTypeList);
@@ -455,6 +481,15 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         static JOB_TITLE = 3;
         static EMPLOYEE = 4;
     }
+
+	enum HolidayAtr {
+		// 法定内休日
+		STATUTORY_HOLIDAYS,
+		// 法定外休日
+		NON_STATUTORY_HOLIDAYS,
+		// 祝日
+		PUBLIC_HOLIDAY
+	}
 
     export class WorkTypeClass {
         static Attendance = 0;
