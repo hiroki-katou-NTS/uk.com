@@ -26,7 +26,7 @@ public class PersonalContactInfoAdapterImpl implements PersonalContactInfoAdapte
 
 		// 2. create()
 		return personalContacts.stream()
-				.map(data -> new PersonalMailAddressImport(data.getPersonId(),
+				.map(data -> new PersonalMailAddressImport(data.getEmployeeId(),
 						Optional.ofNullable(data.getMailAdress()).map(MailAddress::new),
 						Optional.ofNullable(data.getMobileMailAdress()).map(MailAddress::new)))
 				.collect(Collectors.toList());
