@@ -65,6 +65,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
@@ -176,6 +177,9 @@ public class ScheduleCreatorExecutionService {
 
 	@Inject
 	private EmploymentHisScheduleAdapter scheAdapter;
+	
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";
@@ -702,7 +706,7 @@ public class ScheduleCreatorExecutionService {
 	}
 
 	@AllArgsConstructor
-	public static class EmployeeWorkingStatusRequireImpl implements EmployeeWorkingStatus.Require {
+	public class EmployeeWorkingStatusRequireImpl implements EmployeeWorkingStatus.Require {
 
 		String companyId = AppContexts.user().companyId();
 
@@ -763,8 +767,7 @@ public class ScheduleCreatorExecutionService {
 
 		@Override
 		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
 		}
 
 	}
