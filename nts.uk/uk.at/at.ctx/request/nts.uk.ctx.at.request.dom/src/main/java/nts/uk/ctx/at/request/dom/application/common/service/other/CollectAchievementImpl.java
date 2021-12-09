@@ -330,6 +330,12 @@ public class CollectAchievementImpl implements CollectAchievement {
 								null))
 						.collect(Collectors.toList()));
 			}
+			
+			if (CollectionUtil.isEmpty(recordWorkInfoImport.getSupportTimes())) {
+				stampRecordOutput.setSupportTime(Collections.emptyList());
+			} else {
+				stampRecordOutput.setSupportTime(recordWorkInfoImport.getSupportTimes());
+			}
 		}
 		//ドメインモデル「勤務種類」を1件取得する - (lấy 1 dữ liệu của domain 「WorkType」)
 		opWorkTypeName = workTypeRepository.findByPK(companyID, workTypeCD).map(x -> x.getName().v());

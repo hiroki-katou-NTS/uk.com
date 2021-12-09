@@ -13,12 +13,17 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.pub.actualsituation.confirmstatusmonthly.ConfirmStatusMonthlyPub;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPub;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport_New;
+import nts.uk.ctx.at.record.pub.workinformation.SupportTimeSheet;
 import nts.uk.ctx.at.record.pub.workrecord.identificationstatus.IndentificationPub;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.actualsituation.confirmstatusmonthly.ConfirmStatusResultImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.actualsituation.confirmstatusmonthly.StatusConfirmMonthImport;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimePlaceOutput;
+import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 /**
  * 
  * @author Doan Duy Hung
@@ -67,6 +72,16 @@ public class RecordWorkInfoImpl implements RecordWorkInfoAdapter {
 	}
 	
 	private RecordWorkInfoImport fromExport(RecordWorkInfoPubExport_New recordWorkInfoPubExport) {
+		List<SupportTimeSheet> supportTimes = recordWorkInfoPubExport.getSupportTimes();
+		List<TimePlaceOutput> timePlaces = supportTimes.stream()
+				.map(x -> new TimePlaceOutput(x.getLocationCd() == null ? Optional.empty() : Optional.of(new WorkLocationCD(x.getLocationCd()))
+						, Optional.empty()
+						, new StampFrameNo(x.getFrameNo())
+						, Optional.ofNullable(x.getEnd())
+						, Optional.ofNullable(x.getStart())
+						, new WorkplaceId(x.getWorkplaceId())))
+				.collect(Collectors.toList());
+				
 		return new RecordWorkInfoImport(
 				recordWorkInfoPubExport.getEmployeeId(), 
 				recordWorkInfoPubExport.getDate(), 
@@ -101,7 +116,8 @@ public class RecordWorkInfoImpl implements RecordWorkInfoAdapter {
 				recordWorkInfoPubExport.getOutOfMidnight(), 
 				recordWorkInfoPubExport.getMidnightPublicHoliday(),
 				recordWorkInfoPubExport.getChildCareShortWorkingTimeList(),
-				recordWorkInfoPubExport.getCareShortWorkingTimeList());
+				recordWorkInfoPubExport.getCareShortWorkingTimeList(),
+				timePlaces);
 	}
 
 	@Override

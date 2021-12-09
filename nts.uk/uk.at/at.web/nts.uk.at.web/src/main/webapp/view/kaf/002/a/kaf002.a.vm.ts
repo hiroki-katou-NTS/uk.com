@@ -524,10 +524,10 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 
         let itemsCheering = (function() {
             let list = [];
-            let nursingTime = stampRecord.nursingTime;
+            let supportTime = stampRecord.supportTime;
             for (let i = 1; i <= self.maxSupport; i++) {
                 let dataObject = new TimePlaceOutput(i);
-                _.forEach(nursingTime, item => {
+                _.forEach(supportTime, item => {
                     if (item.frameNo == i) {
                         dataObject.opStartTime = item.opStartTime;
                         dataObject.opEndTime = item.opEndTime;
