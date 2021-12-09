@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.pub.contact.PersonContactObject;
-import nts.uk.ctx.bs.person.pub.contact.PersonContactPub;
+import nts.uk.ctx.bs.employee.pub.contact.EmployeeContactPub;
+import nts.uk.ctx.bs.employee.pub.contact.PersonContactObjectOfEmployee;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.maildestination.adapter.PersonalContactInfoAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.maildestination.adapter.PersonalMailAddressImport;
 import nts.uk.ctx.sys.env.dom.mailserver.MailAddress;
@@ -17,12 +17,12 @@ import nts.uk.ctx.sys.env.dom.mailserver.MailAddress;
 public class PersonalContactInfoAdapterImpl implements PersonalContactInfoAdapter {
 
 	@Inject
-	private PersonContactPub personContactPub;
+	private EmployeeContactPub employeeContactPub;
 
 	@Override
 	public List<PersonalMailAddressImport> find(List<String> sids) {
 		// 1. <call>(社員IDList): List<List<社員の個人連絡先>>
-		List<PersonContactObject> personalContacts = this.personContactPub.getList(sids);
+		List<PersonContactObjectOfEmployee> personalContacts = this.employeeContactPub.getListOfEmployees(sids);
 
 		// 2. create()
 		return personalContacts.stream()
