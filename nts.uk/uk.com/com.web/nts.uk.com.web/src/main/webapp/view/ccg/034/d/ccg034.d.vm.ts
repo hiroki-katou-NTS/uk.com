@@ -1358,12 +1358,13 @@ module nts.uk.com.view.ccg034.d {
             }),
           });
           // Filter for unused fileIds and deleted them
-          _.chain(vm.modifiedPartList.deleted)
-            .filter(fileId => !_.chain(listMenuSettingDto).map(data => data.fileId).includes(fileId)
-                           && !_.chain(listFileAttachmentSettingDto).map(data => data.fileId).includes(fileId)
-                           && !_.chain(listImageSettingDto).map(data => data.fileId).includes(fileId))
+          const files = _.chain(vm.modifiedPartList.deleted)
+            .filter(fileId => !_.chain(listMenuSettingDto).filter(data => data.isFixed === 1).map(data => data.fileId).includes(fileId).value()
+                           && !_.chain(listFileAttachmentSettingDto).map(data => data.fileId).includes(fileId).value()
+                           && !_.chain(listImageSettingDto).filter(data => data.isFixed === 1).map(data => data.fileId).includes(fileId).value())
             .uniq()
-            .forEach(fileId => vm.removeFile(fileId));
+            .value();
+          files.forEach(fileId => vm.removeFile(fileId));
           return vm.$ajax(API.updateLayout, updateLayoutParams);
         })
         // [After] save layout data

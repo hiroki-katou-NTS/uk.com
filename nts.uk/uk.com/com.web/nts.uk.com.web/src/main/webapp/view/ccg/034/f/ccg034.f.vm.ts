@@ -76,6 +76,20 @@ module nts.uk.com.view.ccg034.f {
     });
     fileId: KnockoutObservable<string> = ko.observable(null);
     uploadSrc: KnockoutObservable<string> = ko.observable(null);
+    isDisplayFileSize: KnockoutComputed<boolean>;
+
+    constructor() {
+      super();
+      const vm = this;
+      vm.isDisplayFileSize = ko.computed(() => {
+        if (vm.imageType() === 1 && !_.isNil(vm.fileId()) && !_.isEmpty(vm.fileId())) {
+          const isExist = ko.observable(false);
+          vm.$ajax("/shr/infra/file/storage/isexist/" + vm.fileId()).then((result: boolean) => isExist(result));
+          return isExist();
+        }
+        return false;
+      });
+    }
 
     created(params: any) {
       const vm = this;
