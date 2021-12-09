@@ -130,7 +130,9 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.Workpl
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
@@ -156,6 +158,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
@@ -2984,6 +2988,36 @@ public class RecordDomRequireService {
 		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
 				GeneralDate baseDate) {
 			return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
+			return interimBreakDayOffMngRepo.getDayOffBySidPeriod(sid, period);
+		}
+
+		@Override
+		public List<InterimBreakMng> getBreakBySidPeriod(String sid, DatePeriod period) {
+			return interimBreakDayOffMngRepo.getBySidPeriod(sid, period);
+		}
+
+		@Override
+		public List<TempChildCareManagement> findChildCareByPeriodOrderByYmd(String employeeId, DatePeriod period) {
+			return tempChildCareManagementRepo.findByPeriodOrderByYmd(employeeId, period);
+		}
+
+		@Override
+		public List<TempCareManagement> findCareByPeriodOrderByYmd(String employeeId, DatePeriod period) {
+			return tempCareManagementRepo.findByPeriodOrderByYmd(employeeId, period);
+		}
+		
+		@Override
+		public List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period){
+			return interimRecAbasMngRepo.getRecBySidDatePeriod(sid, period);
+		}
+		
+		@Override
+		public List<InterimAbsMng> getAbsBySidDatePeriod(String sid, DatePeriod period){
+			return interimRecAbasMngRepo.getAbsBySidDatePeriod(sid, period);
 		}
 	}
 }
