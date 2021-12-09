@@ -68,9 +68,12 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 						.getAppDispInfoStartupOutput()
 						.getAppDispInfoWithDateOutput()
 						.getOpActualContentDisplayLst()
-						.map(t -> t.size() > 0
-								? t.get(0).getOpAchievementDetail().get().getAchievementEarly()
-								: null
+						.map(t -> {
+							if (t.size() > 0 && t.get(0).getOpAchievementDetail().isPresent()) {
+								return t.get(0).getOpAchievementDetail().get().getAchievementEarly();
+							}
+							return null;
+						}
 						).orElse(null)
 				);
 				appAprrovalRepository.insertApp(application, 
@@ -121,10 +124,12 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 						.getAppDispInfoStartupOutput()
 						.getAppDispInfoWithDateOutput()
 						.getOpActualContentDisplayLst()
-						.map(t -> t.size() > 0
-								? t.get(0).getOpAchievementDetail().get().getAchievementEarly()
-								: null
-						).orElse(null)
+						.map(t -> {
+							if (t.size() > 0 && t.get(0).getOpAchievementDetail().isPresent()) {
+								return t.get(0).getOpAchievementDetail().get().getAchievementEarly();
+							}
+							return null;
+						}).orElse(null)
 			);
 			if (appStampOptional.isPresent()) {
 				appStampRepo.updateStamp(appStampOptional.get());
