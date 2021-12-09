@@ -161,7 +161,9 @@ public class GetDeitalInfoNursingByEmp {
 			if(acquireNursingAndChildNursingDto.getNursingLeaveSetting().get().getTimeCareNursingSetting().getManageDistinct() == ManageDistinct.YES ) {
 				v1 = TextResource.localize("KDL051_31");
 				//子の看護介護休暇集計結果．起算日からの休暇情報．本年．残数．時間、
-				v2 = convertTime(aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getRemainTimes().get().v());
+				v2 = convertTime(aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getRemainTimes().isPresent()? 
+						aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getRemainTimes().get().v():0);
+				
 			}
 			String KDL051_30 = TextResource.localize("KDL051_30", limitDays.toString(), v1, v2);
 			dataResult.setMaxNumberOfYear(KDL051_30);
@@ -179,7 +181,8 @@ public class GetDeitalInfoNursingByEmp {
 			String value3 = "";
 			if ( acquireNursingAndChildNursingDto.getNursingLeaveSetting().get().getTimeCareNursingSetting().getManageDistinct() == ManageDistinct.YES) { //120688
 				value1 = KDL051_31;
-				value2 = convertTime(aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getUsedDays().getUsedTimes().get().v());
+				value2 = convertTime(aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getUsedDays().getUsedTimes().isPresent()?
+						aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getUsedDays().getUsedTimes().get().v():0);
 				value3 = KDL051_32;
 			}
 			String KDL051_35 = TextResource.localize("KDL051_35", value0, value1, value2, value3);
