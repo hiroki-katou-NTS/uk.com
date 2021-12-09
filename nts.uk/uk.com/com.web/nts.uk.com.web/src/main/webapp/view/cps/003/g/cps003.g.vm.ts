@@ -45,7 +45,7 @@ module cps003.g.vm {
                     { headerText: text("CPS003_102"), key: "no", dataType: "string",width: "50px" },
                     { headerText: text("CPS003_103"), key: "resultRegister", dataType: "string",width: "50px", hidden: isDisplayRegiter.length > 0? false: true},
                     { headerText: text("CPS003_104"), key: "errorType", dataType: "string",width: "50px" },
-                    { headerText: text("CPS003_105"), key: "itemName", dataType: "string",width: "200px" },
+                    { headerText: text("CPS003_105"), key: "itemName", dataType: "string",width: isDisplayRegiter.length > 0 ? "150px" : "200px" },
                     { headerText: text("CPS003_106"), key: "message", dataType: "string",width: "500px" }
                 ],
                 features: [

@@ -1435,7 +1435,7 @@ module nts.custombinding {
                             let items1 = _(ko.toJS(opts.sortable.data))
                                 .map(x => {
                                     if (x.listItemDf && !Array.isArray(x.listItemDf)) {
-                                        x.listItemDf = Object.values(x.listItemDf);
+                                        x.listItemDf = Object.keys(x.listItemDf).map(key => x.listItemDf[key]);
                                     }
                                     return _.omit(x, "items");
                                 })
