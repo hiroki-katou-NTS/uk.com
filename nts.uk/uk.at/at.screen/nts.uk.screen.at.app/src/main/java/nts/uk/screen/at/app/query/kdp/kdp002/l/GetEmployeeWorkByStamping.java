@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.domainservice.GetWorkAvailableToEmployeesService;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskassign.taskassingemployee.TaskAssignEmployeeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskassign.taskassingworkplace.NarrowingByWorkplaceRepository;
@@ -20,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -38,21 +38,22 @@ public class GetEmployeeWorkByStamping {
 
 	@Inject
 	private GetWorkAvailableToEmployeesService getWork;
+	
+	@Inject
+	private TaskFrameUsageSettingRepository taskFrameUsageSettingRepository;
 
 	@Inject
-	private EmployeeRequestAdapter requestAdapter;
+	private TaskingRepository taskingRepo;
 
 	@Inject
-	private NarrowingByWorkplaceRepository narrowingByWorkplaceRepo;
+	private TaskAssignEmployeeRepository taskAssignEmployeeRepo;
 
 	@Inject
-	private TaskingRepository taskRepo;
+	private EmployeeAdapter employeeAdapter;
 
 	@Inject
-	private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
-
-	@Inject
-	private TaskAssignEmployeeRepository taskAssEmployee;
+	private NarrowingByWorkplaceRepository narrowRepo;
+	
 
 	public GetEmployeeWorkByStampingDto getEmployeeWorkByStamping(GetEmployeeWorkByStampingInput param) {
 
@@ -112,40 +113,39 @@ public class GetEmployeeWorkByStamping {
 	private class GetWorkAvailableToEmployeesServiceImp implements GetWorkAvailableToEmployeesService.Require {
 
 		@Override
-		public List<String> findWpkIdsBySid(String companyId, String sid, GeneralDate date) {
-			return requestAdapter.findWpkIdsBySid(companyId, sid, date);
+		public List<String> findWpkIdsBySid(String employeeID, GeneralDate date) {
+			return employeeAdapter.findWpkIdsBySid(AppContexts.user().companyId(), employeeID, date);
 		}
 
 		@Override
-		public Optional<NarrowingDownTaskByWorkplace> getOptionalWork(String workPlaceId, TaskFrameNo taskFrameNo) {
-			return narrowingByWorkplaceRepo.getOptionalWork(workPlaceId, taskFrameNo);
+		public Optional<NarrowingDownTaskByWorkplace> getNarrowingDownTaskByWorkplace(String workPlaceId,
+				TaskFrameNo taskFrameNo) {
+			return narrowRepo.getOptionalWork(workPlaceId, taskFrameNo);
 		}
 
 		@Override
-		public TaskFrameUsageSetting getWorkFrameUsageSetting(String cid) {
-			return taskFrameUsageSettingRepo.getWorkFrameUsageSetting(cid);
+		public TaskFrameUsageSetting getTask() {
+			return taskFrameUsageSettingRepository.getWorkFrameUsageSetting(AppContexts.user().companyId());
 		}
 
 		@Override
-		public List<Task> getListTask(String cid, GeneralDate referenceDate, List<TaskFrameNo> taskFrameNos) {
-			return taskRepo.getListTask(cid, referenceDate, taskFrameNos);
+		public List<Task> getTask(GeneralDate date, List<TaskFrameNo> taskFrameNo) {
+			return taskingRepo.getListTask(AppContexts.user().companyId(), date, taskFrameNo);
 		}
 
 		@Override
-		public List<Task> getListTask(String cid, GeneralDate referenceDate, TaskFrameNo taskFrameNo,
-				List<TaskCode> codes) {
-			return taskRepo.getListTask(cid, referenceDate, taskFrameNo, codes);
+		public List<Task> getListTask(GeneralDate referenceDate, TaskFrameNo taskFrameNo, List<TaskCode> codes) {
+			return taskingRepo.getListTask(AppContexts.user().companyId(), referenceDate, taskFrameNo, codes);
 		}
 
 		@Override
-		public Optional<Task> getOptionalTask(String cid, TaskFrameNo taskFrameNo, TaskCode code) {
-			return taskRepo.getOptionalTask(cid, taskFrameNo, code);
+		public Optional<Task> getOptionalTask(TaskFrameNo taskFrameNo, TaskCode code) {
+			return taskingRepo.getOptionalTask(AppContexts.user().companyId(), taskFrameNo, code);
 		}
 
 		@Override
-		public List<TaskAssignEmployee> get(String employeeId, int taskFrameNo) {
-			return taskAssEmployee.get(employeeId, taskFrameNo);
+		public List<TaskAssignEmployee> getTaskAssignEmployee(String employeeId, TaskFrameNo taskFrameNo) {
+			return taskAssignEmployeeRepo.get(employeeId, taskFrameNo.v());
 		}
-
 	}
 }
