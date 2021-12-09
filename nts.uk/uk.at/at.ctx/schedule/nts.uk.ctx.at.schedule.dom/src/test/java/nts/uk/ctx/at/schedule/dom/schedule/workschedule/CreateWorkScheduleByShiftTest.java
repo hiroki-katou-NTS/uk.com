@@ -14,6 +14,7 @@ import mockit.Injectable;
 import mockit.Mocked;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.FakeSupportTicket;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -68,7 +69,8 @@ public class CreateWorkScheduleByShiftTest {
 			require.getShiftMaster( (ShiftMasterCode) any );
 			result = Optional.of(shiftMaster);
 			
-			CreateWorkSchedule.create(require,  anyString, (GeneralDate) any, (WorkInformation )any, anyBoolean, (List<TimeSpanForCalc>) any, (Map<Integer, T>) any);
+			CreateWorkSchedule.create(require,  anyString, (GeneralDate) any, (WorkInformation )any, anyBoolean, 
+					(List<TimeSpanForCalc>) any, (List<FakeSupportTicket>) any,(Map<Integer, T>) any);
 			result = mockResult;
 		}};
 		

@@ -212,6 +212,7 @@ public class CreateWorkScheduleTest {
 					workInformation, 
 					false,
 					new ArrayList<>(),
+					new ArrayList<>(),
 					new HashMap<>());
 			
 			assertThat( result.getAtomTask() ).isEmpty();
@@ -320,6 +321,7 @@ public class CreateWorkScheduleTest {
 					workInformation, 
 					false,
 					new ArrayList<>(),
+					new ArrayList<>(),
 					updateInfoMap);
 			
 			assertThat( result.getAtomTask() ).isEmpty();
@@ -408,6 +410,7 @@ public class CreateWorkScheduleTest {
 					GeneralDate.ymd(2020, 11, 1), 
 					workInformation, 
 					false,
+					new ArrayList<>(),
 					new ArrayList<>(),
 					updateInfoMap);
 			
@@ -498,6 +501,7 @@ public class CreateWorkScheduleTest {
 					workInformation, 
 					false,
 					new ArrayList<>(),
+					new ArrayList<>(),
 					updateInfoMap);
 			
 			assertThat( result.getAtomTask() ).isEmpty();
@@ -551,6 +555,7 @@ public class CreateWorkScheduleTest {
 					workInformation, 
 					true, // 休憩時間帯が手修正か: true
 					breakTimeList,
+					new ArrayList<>(),
 					new HashMap<>());
 			
 		}
@@ -584,6 +589,7 @@ public class CreateWorkScheduleTest {
 					workInformation, 
 					false, // 休憩時間帯が手修正か: false
 					breakTimeList,
+					new ArrayList<>(),
 					new HashMap<>());
 			
 		}
@@ -630,6 +636,7 @@ public class CreateWorkScheduleTest {
 					GeneralDate.ymd(2020, 11, 1), 
 					workInformation, 
 					false,
+					new ArrayList<>(),
 					new ArrayList<>(),
 					updateInfoMap);
 			
@@ -682,6 +689,7 @@ public class CreateWorkScheduleTest {
 					GeneralDate.ymd(2020, 11, 1), 
 					workInformation, 
 					false,
+					new ArrayList<>(),
 					new ArrayList<>(),
 					updateInfoMap);
 			

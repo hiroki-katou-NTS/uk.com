@@ -11,6 +11,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.OptionalUtil;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.FakeSupportTicket;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAreaAtr;
@@ -43,6 +44,7 @@ public class CreateWorkSchedule {
 			WorkInformation workInformation,
 			boolean isUpdateBreakTimeList,
 			List<TimeSpanForCalc> breakTimeList,
+			List<FakeSupportTicket> supportTicketList,
 			Map<Integer, T> updateInfoMap) {
 		
 		Optional<WorkSchedule> registedWorkSchedule = require.getWorkSchedule(employeeId, date);
@@ -66,9 +68,19 @@ public class CreateWorkSchedule {
 			return ResultOfRegisteringWorkSchedule.createWithErrorList(errorList);
 		}
 		
+		// update item
 		workSchedule.changeAttendanceItemValueByHandCorrection(require, updateInfoMap);
+		
+		// update break time list
 		if ( isUpdateBreakTimeList ) {
 			workSchedule.handCorrectBreakTimeList(require, breakTimeList);
+		}
+		
+		// update support schedule
+		try {
+			workSchedule.createSupportSchedule(require, supportTicketList);
+		} catch ( BusinessException e ) {
+			return ResultOfRegisteringWorkSchedule.createWithError( employeeId, date, e.getMessage() );
 		}
 		
 		WorkSchedule correctedResult = require.correctWorkSchedule(workSchedule);

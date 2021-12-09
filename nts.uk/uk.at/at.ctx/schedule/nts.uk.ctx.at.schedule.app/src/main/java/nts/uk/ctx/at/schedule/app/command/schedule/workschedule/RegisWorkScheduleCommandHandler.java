@@ -5,6 +5,7 @@ package nts.uk.ctx.at.schedule.app.command.schedule.workschedule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -138,7 +139,9 @@ public class RegisWorkScheduleCommandHandler<T> extends CommandHandlerWithResult
 						requireImpl, sid, data.ymd,
 						workInfo,
 						data.isBreakByHand, // TODO VN team update
-						data.breakTimeList, data.mapAttendIdWithTime);
+						data.breakTimeList, 
+						Collections.emptyList(), // TODO VN-team is going to update
+						data.mapAttendIdWithTime);
 				
 				lstRsOfRegisWorkSchedule.add(rsOfRegisteringWorkSchedule);
 			}
