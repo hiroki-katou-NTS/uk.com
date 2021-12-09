@@ -29,7 +29,8 @@
 			<div id="functions-area">
 				<button id="mail_setting_register" class="proceed" tabindex="1"
 					style="margin-left: 45px" data-bind="click: registerMailSetting , enable: $root.errors.isEmpty ">#{i18n.getText('CMM050_3')}</button>
-        <button id="A1_2" data-bind="click: showDialogTest, enable: isEnableButtonTest" tabindex="2">#{i18n.getText('CMM050_5')}</button>
+        <button id="A1_2" data-bind="click: showDialogTest, 
+          enable: ko.computed(function() { return $root.errors.isEmpty() &amp;&amp; isEnableButtonTest() })" tabindex="2">#{i18n.getText('CMM050_5')}</button>
 			</div>
 			<div id="contents-area">
         <div class="common-setting setting-zone">
@@ -48,7 +49,7 @@
           </div>
           <div class="flex valign-center">
             <div id="A8_2" class="setting-label" data-bind="ntsFormLabel: { required: true, constraint: 'Port' }">#{i18n.getText('CMM050_12')}</div>
-            <input id="A8_3" class="port-input" data-bind="ntsTextEditor: {
+            <input id="A8_3" class="port-input" data-bind="ntsNumberEditor: {
               value: smtpPort,
               constraint: 'Port',
               required: true,
@@ -92,7 +93,7 @@
               value: emailAuth,
               constraint: 'MailAddress',
               required: true,
-              name: '#[CMM050_9]'
+              name: '#[CMM050_4]'
             }" tabindex="7" />
           </div>
           <com:ko-if bind="useSmtpAuthen">
@@ -160,9 +161,9 @@
             <label id="A10_4" class="ml-10">#{i18n.getText('CMM050_22')}</label>
           </div>
           <div class="flex valign-center">
-            <div id="A10_5" class="setting-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM050_23')}</div>
+            <div id="A10_5" class="setting-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM050_18')}</div>
             <div id="A10_6" data-bind="ntsSwitchButton: {
-              name: '#[CMM050_23]',
+              name: '#[CMM050_18]',
               options: useServerArray,
               optionsValue: 'value',
               optionsText: 'name',
@@ -170,12 +171,12 @@
             }" tabindex="14"></div>
           </div>
           <div class="flex valign-center">
-            <div id="A10_9" class="setting-label" data-bind="ntsFormLabel: { required: true, constraint: 'Server' }">#{i18n.getText('CMM050_24')}</div>
+            <div id="A10_9" class="setting-label" data-bind="ntsFormLabel: { required: true, constraint: 'Server' }">#{i18n.getText('CMM050_23')}</div>
             <input id="A10_10" class="address-input" data-bind="ntsTextEditor: {
               value: imapServer,
               constraint: 'Server',
               required: imapUseServer() === 0,
-              name: '#[CMM050_24]',
+              name: '#[CMM050_23]',
             }" tabindex="15" />
           </div>
         </div>
