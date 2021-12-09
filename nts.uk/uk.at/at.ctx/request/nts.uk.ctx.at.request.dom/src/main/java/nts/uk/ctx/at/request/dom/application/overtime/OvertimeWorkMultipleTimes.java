@@ -102,7 +102,7 @@ public class OvertimeWorkMultipleTimes {
             TimeWithDayAttr start2 = overtimeHours.stream()
                     .filter(i -> i.getOvertimeHours().getStart().greaterThanOrEqualTo(end1))
                     .findFirst()
-                    .map(i -> i.getOvertimeHours().getEnd()).orElse(null);
+                    .map(i -> i.getOvertimeHours().getStart()).orElse(null);
             if (start2 != null) {
                 if (zone2.getTimeZone().getStartTime().greaterThan(start2))
                     zone2.getTimeZone().setStartTime(start2);

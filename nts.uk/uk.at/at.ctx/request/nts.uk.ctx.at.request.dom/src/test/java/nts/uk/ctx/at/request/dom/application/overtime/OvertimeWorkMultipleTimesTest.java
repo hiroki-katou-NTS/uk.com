@@ -70,7 +70,7 @@ public class OvertimeWorkMultipleTimesTest {
         NtsAssert.businessException("Msg_3238", () -> OvertimeWorkMultipleTimes.create(
                 Arrays.asList(
                         new OvertimeHour(new OvertimeNumber(1), new TimeSpanForCalc(new TimeWithDayAttr(480), new TimeWithDayAttr(1020))),
-                        new OvertimeHour(new OvertimeNumber(1), new TimeSpanForCalc(new TimeWithDayAttr(480), new TimeWithDayAttr(1020)))
+                        new OvertimeHour(new OvertimeNumber(2), new TimeSpanForCalc(new TimeWithDayAttr(480), new TimeWithDayAttr(1020)))
                 ),
                 Collections.emptyList()
         ));
@@ -158,6 +158,24 @@ public class OvertimeWorkMultipleTimesTest {
     }
 
     @Test
+    public void testGetWorkingHoursToCalculateOvertime1_2() {
+        OvertimeWorkMultipleTimes target = OvertimeWorkMultipleTimes.create(
+                Arrays.asList(
+                        new OvertimeHour(new OvertimeNumber(1), new TimeSpanForCalc(new TimeWithDayAttr(600), new TimeWithDayAttr(650))),
+                        new OvertimeHour(new OvertimeNumber(2), new TimeSpanForCalc(new TimeWithDayAttr(800), new TimeWithDayAttr(850)))
+                ),
+                Collections.emptyList()
+        );
+
+        List<TimeZoneWithWorkNo> timeZones = Arrays.asList(new TimeZoneWithWorkNo(1, 500, 900));
+
+        List<TimeZoneWithWorkNo> result = target.getWorkingHoursToCalculateOvertime(timeZones);
+
+        assertThat(result.get(0).getTimeZone().getStartTime().v()).isEqualTo(500);
+        assertThat(result.get(0).getTimeZone().getEndTime().v()).isEqualTo(900);
+    }
+
+    @Test
     public void testGetWorkingHoursToCalculateOvertime2() {
         OvertimeWorkMultipleTimes target = OvertimeWorkMultipleTimes.create(
                 Arrays.asList(
@@ -180,6 +198,70 @@ public class OvertimeWorkMultipleTimesTest {
         assertThat(result.get(0).getTimeZone().getEndTime().v()).isEqualTo(600);
         assertThat(result.get(1).getTimeZone().getStartTime().v()).isEqualTo(700);
         assertThat(result.get(1).getTimeZone().getEndTime().v()).isEqualTo(1000);
+    }
+
+    @Test
+    public void testGetWorkingHoursToCalculateOvertime3() {
+        OvertimeWorkMultipleTimes target = OvertimeWorkMultipleTimes.create(
+                Arrays.asList(
+                        new OvertimeHour(new OvertimeNumber(1), new TimeSpanForCalc(new TimeWithDayAttr(600), new TimeWithDayAttr(650))),
+                        new OvertimeHour(new OvertimeNumber(2), new TimeSpanForCalc(new TimeWithDayAttr(800), new TimeWithDayAttr(850)))
+                ),
+                Collections.emptyList()
+        );
+
+        List<TimeZoneWithWorkNo> timeZones = Arrays.asList(
+                new TimeZoneWithWorkNo(1, 300, 500),
+                new TimeZoneWithWorkNo(2, 700, 930)
+        );
+
+        List<TimeZoneWithWorkNo> result = target.getWorkingHoursToCalculateOvertime(timeZones);
+        assertThat(result.get(0).getTimeZone().getStartTime().v()).isEqualTo(300);
+        assertThat(result.get(0).getTimeZone().getEndTime().v()).isEqualTo(650);
+        assertThat(result.get(1).getTimeZone().getStartTime().v()).isEqualTo(700);
+        assertThat(result.get(1).getTimeZone().getEndTime().v()).isEqualTo(930);
+    }
+
+    @Test
+    public void testGetWorkingHoursToCalculateOvertime4() {
+        OvertimeWorkMultipleTimes target = OvertimeWorkMultipleTimes.create(
+                Arrays.asList(
+                        new OvertimeHour(new OvertimeNumber(1), new TimeSpanForCalc(new TimeWithDayAttr(200), new TimeWithDayAttr(250)))
+                ),
+                Collections.emptyList()
+        );
+
+        List<TimeZoneWithWorkNo> timeZones = Arrays.asList(
+                new TimeZoneWithWorkNo(1, 300, 500),
+                new TimeZoneWithWorkNo(2, 700, 930)
+        );
+
+        List<TimeZoneWithWorkNo> result = target.getWorkingHoursToCalculateOvertime(timeZones);
+        assertThat(result.get(0).getTimeZone().getStartTime().v()).isEqualTo(200);
+        assertThat(result.get(0).getTimeZone().getEndTime().v()).isEqualTo(500);
+        assertThat(result.get(1).getTimeZone().getStartTime().v()).isEqualTo(700);
+        assertThat(result.get(1).getTimeZone().getEndTime().v()).isEqualTo(930);
+    }
+
+    @Test
+    public void testGetWorkingHoursToCalculateOvertime5() {
+        OvertimeWorkMultipleTimes target = OvertimeWorkMultipleTimes.create(
+                Arrays.asList(
+                        new OvertimeHour(new OvertimeNumber(1), new TimeSpanForCalc(new TimeWithDayAttr(800), new TimeWithDayAttr(850)))
+                ),
+                Collections.emptyList()
+        );
+
+        List<TimeZoneWithWorkNo> timeZones = Arrays.asList(
+                new TimeZoneWithWorkNo(1, 300, 500),
+                new TimeZoneWithWorkNo(2, 700, 930)
+        );
+
+        List<TimeZoneWithWorkNo> result = target.getWorkingHoursToCalculateOvertime(timeZones);
+        assertThat(result.get(0).getTimeZone().getStartTime().v()).isEqualTo(300);
+        assertThat(result.get(0).getTimeZone().getEndTime().v()).isEqualTo(500);
+        assertThat(result.get(1).getTimeZone().getStartTime().v()).isEqualTo(700);
+        assertThat(result.get(1).getTimeZone().getEndTime().v()).isEqualTo(930);
     }
 
     @Test
@@ -330,6 +412,86 @@ public class OvertimeWorkMultipleTimesTest {
         // 休憩枠NO4：20:30~21:00
         assertThat(result.get(3).getStartTime().v()).isEqualTo(1230);
         assertThat(result.get(3).getEndTime().v()).isEqualTo(1260);
+    }
+
+    @Test
+    public void testGetBreakTimeToCalculateOvertime3_2() {
+        WorkInformation workInfo = new WorkInformation("001", "002");
+        List<TimeZoneWithWorkNo> workingHours = Arrays.asList(new TimeZoneWithWorkNo(1, 510, 1050)); // 勤務時間：　8:30~17:30　（始業終業時刻）
+        List<BreakTimeSheet> breakTimes = new ArrayList<>();
+
+        CalculationParams calculationParams = new CalculationParams(
+                "",
+                GeneralDate.today(),
+                new WorkTypeCode("001"),
+                new WorkTimeCode("002"),
+                workingHours,
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList()
+        );
+
+        new Expectations() {
+            {
+                require.getWorkTimeSetting("", "002");
+                result = Optional.of(new WorkTimeSetting(
+                        "",
+                        new WorkTimeCode("002"),
+                        new WorkTimeDivision(WorkTimeDailyAtr.REGULAR_WORK, WorkTimeMethodSet.FLOW_WORK),
+                        AbolishAtr.NOT_ABOLISH,
+                        new WorkTimeDisplayName(new WorkTimeName("AAA"), new WorkTimeAbName("BBB")),
+                        null,
+                        null
+                ));
+
+                require.tempCalculateOneDayAttendanceTime(calculationParams);
+                result = new IntegrationOfDaily(
+                        "",
+                        GeneralDate.today(),
+                        null,
+                        null,
+                        null,
+                        Optional.empty(),
+                        new ArrayList<>(),
+                        Optional.empty(),
+                        new BreakTimeOfDailyAttd(breakTimes),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        new ArrayList<>(),
+                        Optional.empty(),
+                        new ArrayList<>(),
+                        Optional.empty()
+                );
+            }
+        };
+
+        OvertimeWorkMultipleTimes target = OvertimeWorkMultipleTimes.create(
+                Arrays.asList(
+                        new OvertimeHour(new OvertimeNumber(1), new TimeSpanForCalc(new TimeWithDayAttr(420), new TimeWithDayAttr(480))), // 残業時間：	7:00~8:00
+                        new OvertimeHour(new OvertimeNumber(2), new TimeSpanForCalc(new TimeWithDayAttr(1170), new TimeWithDayAttr(1230))), // 残業時間：19:30~20:30
+                        new OvertimeHour(new OvertimeNumber(3), new TimeSpanForCalc(new TimeWithDayAttr(1260), new TimeWithDayAttr(1320))) // 残業時間：	21:00~22:00
+                ),
+                Collections.emptyList()
+        );
+
+        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, new ArrayList<>());
+
+        assertThat(result.size()).isEqualTo(3);
+        // 休憩枠NO1：8:00~8:30
+        assertThat(result.get(0).getStartTime().v()).isEqualTo(480);
+        assertThat(result.get(0).getEndTime().v()).isEqualTo(510);
+
+        // 休憩枠NO2：17:30~19:30
+        assertThat(result.get(1).getStartTime().v()).isEqualTo(1050);
+        assertThat(result.get(1).getEndTime().v()).isEqualTo(1170);
+
+        // 休憩枠NO3：20:30~21:00
+        assertThat(result.get(2).getStartTime().v()).isEqualTo(1230);
+        assertThat(result.get(2).getEndTime().v()).isEqualTo(1260);
     }
 
     @Test
