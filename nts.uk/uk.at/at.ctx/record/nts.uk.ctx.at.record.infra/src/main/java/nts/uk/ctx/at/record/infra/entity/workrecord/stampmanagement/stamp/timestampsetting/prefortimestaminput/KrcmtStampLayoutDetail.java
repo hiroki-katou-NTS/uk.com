@@ -26,10 +26,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonNameSet;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SupportWplSet;
@@ -65,29 +63,23 @@ private static final long serialVersionUID = 1L;
 	public String buttonName;
 	
 	/**
-	 * 予約区分 0:なし 1:予約 2:予約取消
-	 */
-	@Column(name ="RESERVATION_ART")
-	public int reservationArt;
-	
-	/**
 	 * 時刻変更区分 0:出勤 1:退勤 2:入門 3:退門 4:応援開始 5:応援終了 6:応援出勤 7:外出 8:戻り 9:臨時+応援出勤
 	 * 10:臨時出勤 11:臨時退勤 12:PCログオン 13:PCログオフ
 	 */
 	@Column(name ="CHANGE_CLOCK_ART")
-	public Integer changeClockArt;
+	public int changeClockArt;
 	
 	/**
 	 * 計算区分変更対象 0:なし 1:早出 2:残業 3:休出 4:ﾌﾚｯｸｽ
 	 */
 	@Column(name ="CHANGE_CAL_ART")
-	public Integer changeCalArt;
+	public int changeCalArt;
 	
 	/**
 	 * 所定時刻セット区分 0:なし 1:直行 2:直帰
 	 */
 	@Column(name ="SET_PRE_CLOCK_ART")
-	public Integer setPreClockArt;
+	public int setPreClockArt;
 	
 	/**
 	 * 勤務種類を半休に変更する 0:False 1:True
@@ -156,14 +148,13 @@ private static final long serialVersionUID = 1L;
 		this.contractCd = AppContexts.user().contractCode();
 	}
 	
-	public KrcmtStampLayoutDetail(KrcmtStampLayoutDetailPk pk, int useArt, String buttonName, int reservationArt,
+	public KrcmtStampLayoutDetail(KrcmtStampLayoutDetailPk pk, int useArt, String buttonName,
 			Integer changeClockArt, Integer changeCalArt, Integer setPreClockArt, Integer changeHalfDay, Integer goOutArt,
 			String textColor, String backGroundColor, int aidioType, Integer supportWplSet, Integer taskChoiceArt) {
 		super();
 		this.pk = pk;
 		this.useArt = useArt;
 		this.buttonName = buttonName;
-		this.reservationArt = reservationArt;
 		this.changeClockArt = changeClockArt;
 		this.changeCalArt = changeCalArt;
 		this.setPreClockArt = setPreClockArt;
@@ -178,69 +169,41 @@ private static final long serialVersionUID = 1L;
 	
 	public ButtonSettings toDomain(){
 		StampType stampType = null;
-		if(setPreClockArt != null && changeClockArt != null && changeCalArt != null) {
-			stampType = StampType.getStampType(
-					this.changeHalfDay, 
-					this.goOutArt == null ? null : EnumAdaptor.valueOf(this.goOutArt, GoingOutReason.class), 
-					this.setPreClockArt == null ? null :EnumAdaptor.valueOf(this.setPreClockArt, SetPreClockArt.class), 
-					this.changeClockArt == null ? null : EnumAdaptor.valueOf(this.changeClockArt, ChangeClockAtr.class), 
-					this.changeCalArt == null ? null : EnumAdaptor.valueOf(this.changeCalArt, ChangeCalArt.class));
-		}
+		stampType = StampType.getStampType(this.changeHalfDay,
+				this.goOutArt == null ? null : EnumAdaptor.valueOf(this.goOutArt, GoingOutReason.class),
+				EnumAdaptor.valueOf(this.setPreClockArt, SetPreClockArt.class),
+				EnumAdaptor.valueOf(this.changeClockArt, ChangeClockAtr.class),
+				EnumAdaptor.valueOf(this.changeCalArt, ChangeCalArt.class));
 		 
-		
-		ButtonType buttonType = new ButtonType(
-				EnumAdaptor.valueOf(this.reservationArt, ReservationArt.class), Optional.ofNullable(stampType));
+//		
+//		ButtonType buttonType = new ButtonType(
+//				EnumAdaptor.valueOf(this.reservationArt, ReservationArt.class), Optional.ofNullable(stampType));
 		
 		return new ButtonSettings(
 				new ButtonPositionNo(pk.buttonPositionNo), 
+				EnumAdaptor.valueOf(this.useArt, NotUseAtr.class),
 				new ButtonDisSet(
-						new ButtonNameSet(
-								new ColorCode(this.textColor), 
-								this.buttonName == null ? null : new ButtonName(this.buttonName)), 
-						new ColorCode(this.backGroundColor)),buttonType 
-				,
-				EnumAdaptor.valueOf(this.useArt, NotUseAtr.class), 
-				EnumAdaptor.valueOf(this.aidioType, AudioType.class),
-				Optional.ofNullable(this.supportWplSet == null? null: SupportWplSet.valueOf(this.supportWplSet)),
-				Optional.ofNullable(this.taskChoiceArt == null? null: AssignmentMethod.valueOf(this.taskChoiceArt)));
+						new ButtonNameSet(new ColorCode(this.textColor),
+								this.buttonName == null ? null : new ButtonName(this.buttonName)),
+						new ColorCode(this.backGroundColor)),
+				stampType, EnumAdaptor.valueOf(this.aidioType, AudioType.class),
+				Optional.ofNullable(this.supportWplSet == null ? null : SupportWplSet.valueOf(this.supportWplSet)),
+				Optional.ofNullable(this.taskChoiceArt == null ? null : AssignmentMethod.valueOf(this.taskChoiceArt)));
 	}
 	
 	public static KrcmtStampLayoutDetail toEntity(ButtonSettings settings, String companyId, Integer pageNo, int stampMeans) {
-		Integer changeClockArt = null, changeCalArt = null, setPreClockArt = null, changeHalfDay = null,
-				goOutArt = null;
-
-		if (settings.getButtonType().getStampType().isPresent()) {
-			if (settings.getButtonType().getStampType().get().getChangeClockArt() != null) {
-				changeClockArt = settings.getButtonType().getStampType().get().getChangeClockArt().value;
-			}
-
-			if (settings.getButtonType().getStampType().get().getChangeCalArt() != null) {
-				changeCalArt = settings.getButtonType().getStampType().get().getChangeCalArt().value;
-			}
-
-			if (settings.getButtonType().getStampType().get().getSetPreClockArt() != null) {
-				setPreClockArt = settings.getButtonType().getStampType().get().getSetPreClockArt().value;
-			}
-
-			changeHalfDay = settings.getButtonType().getStampType().get().isChangeHalfDay() ? 1 : 0;
-
-			if (settings.getButtonType().getStampType().get().getGoOutArt().isPresent()) {
-				goOutArt = settings.getButtonType().getStampType().get().getGoOutArt().get().value;
-			}
-		}
 
 		return new KrcmtStampLayoutDetail(
 				new KrcmtStampLayoutDetailPk(companyId, stampMeans, pageNo, settings.getButtonPositionNo().v()),
 				settings.getUsrArt().value,
 				settings.getButtonDisSet().getButtonNameSet().getButtonName().isPresent()
 						? settings.getButtonDisSet().getButtonNameSet().getButtonName().get().v()
-						: null,
-				settings.getButtonType().getReservationArt().value
-				, changeClockArt
-				, changeCalArt
-				, setPreClockArt
-				,changeHalfDay
-				, goOutArt
+						: null
+				, settings.getType().getChangeClockArt().value
+				, settings.getType().getChangeCalArt().value
+				, settings.getType().getSetPreClockArt().value
+				, settings.getType().isChangeHalfDay() ? 1 : 0
+				, settings.getType().getGoOutArt().map(m -> m.value).orElse(null)
 				, settings.getButtonDisSet().getButtonNameSet().getTextColor().v()
 				,settings.getButtonDisSet().getBackGroundColor().v()
 				, settings.getAudioType().value
