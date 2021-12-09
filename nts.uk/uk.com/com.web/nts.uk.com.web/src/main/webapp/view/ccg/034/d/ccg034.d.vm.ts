@@ -915,6 +915,19 @@ module nts.uk.com.view.ccg034.d {
       switch (originPartData.partType) {
         case MenuPartType.PART_MENU:
           newPartData = new PartDataMenuModel(originPartData);
+          const menuFileId = (originPartData as PartDataMenuModel).fileId;
+          if (LayoutUtils.isValidFile(menuFileId)) {
+            vm.$ajax(nts.uk.text.format(API.copyFile, (originPartData as PartDataMenuModel).fileId))
+            .then(res => {
+              (newPartData as PartDataMenuModel).fileId = res.fileId;
+              (newPartData as PartDataMenuModel).originalFileId = null;
+              vm.modifiedPartList.added.push(res.fileId);
+            });
+          } else {
+            (newPartData as PartDataMenuModel).fileId = "";
+            (newPartData as PartDataMenuModel).originalFileId = null;
+            vm.modifiedPartList.added.push(null);
+          }
           break;
         case MenuPartType.PART_LABEL:
           newPartData = new PartDataLabelModel(originPartData);
@@ -1358,12 +1371,13 @@ module nts.uk.com.view.ccg034.d {
             }),
           });
           // Filter for unused fileIds and deleted them
-          _.chain(vm.modifiedPartList.deleted)
-            .filter(fileId => !_.chain(listMenuSettingDto).map(data => data.fileId).includes(fileId)
-                           && !_.chain(listFileAttachmentSettingDto).map(data => data.fileId).includes(fileId)
-                           && !_.chain(listImageSettingDto).map(data => data.fileId).includes(fileId))
+          const files = _.chain(vm.modifiedPartList.deleted)
+            .filter(fileId => !_.chain(listMenuSettingDto).filter(data => data.isFixed === 1).map(data => data.fileId).includes(fileId).value()
+                           && !_.chain(listFileAttachmentSettingDto).map(data => data.fileId).includes(fileId).value()
+                           && !_.chain(listImageSettingDto).filter(data => data.isFixed === 1).map(data => data.fileId).includes(fileId).value())
             .uniq()
-            .forEach(fileId => vm.removeFile(fileId));
+            .value();
+          files.forEach(fileId => vm.removeFile(fileId));
           return vm.$ajax(API.updateLayout, updateLayoutParams);
         })
         // [After] save layout data
@@ -1988,6 +2002,7 @@ module nts.uk.com.view.ccg034.d {
             const imageRatio = partDataMenuModel.ratio;
             $partHTML.css({ 'display': 'grid', 'grid-auto-columns': '100%', 'grid-auto-rows': 'minmax(0, 1fr) max-content' });
             const $partImageContainer = $('<a>', { 'href': `${location.origin}${partDataMenuModel.menuUrl}`, 'target': '_top' })
+              .addClass(CSS_CLASS_CCG034_HYPERLINK)
               .css({ "align-self": "start", "height": "100%" });
             const $partImage = $("<img>")
               .addClass("ccg034-hyperlink")

@@ -199,7 +199,10 @@ module nts.uk.ui.ktg004.a {
                   text-align: right;
                 }
                 .on-update {
-                  background: #7F7F7F !important;
+                  background: #BCBCBC !important;
+                }
+                .on-update div {
+                  color: #FF0000;
                 }
                 .ktg004-header-row {
                   margin: 10px 5px 5px 5px;

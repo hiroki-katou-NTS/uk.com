@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.auth.ws.employmentrole;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -50,6 +51,13 @@ public class InitDisplayPeriodSwitchSetWebService {
 	public InitDisplayPeriodSwitchSetDataDto get(String roleID) {
 		String companyID = AppContexts.user().companyId();
 		return initDisplayFinder.getInitDisplayPeriodSwitchSetData(companyID, roleID);
+	}
+	
+	@POST
+	@Path("/get-by-cid")
+	public List<InitDisplayPeriodSwitchSetDataDto> getByCid() {
+		String companyID = AppContexts.user().companyId();
+		return initDisplayFinder.getInitDisplayPeriodSwitchSetByCid(companyID);
 	}
 	
 	@POST

@@ -135,7 +135,6 @@ module ccg018.a1.viewmodel {
             dataType: 'string',
             width: '240px',
             ntsControl: 'Combobox1',
-            tabIndex: 3,
           },
           {
             headerText: nts.uk.resource.getText('CCG018_10'),
@@ -143,7 +142,6 @@ module ccg018.a1.viewmodel {
             dataType: 'string',
             width: '240px',
             ntsControl: 'Combobox3',
-            tabIndex: 4,
           },
         ],
         headerRendered: (evt: any, ui: any) => {

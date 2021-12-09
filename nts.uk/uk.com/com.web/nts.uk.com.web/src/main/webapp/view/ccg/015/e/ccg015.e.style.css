@@ -90,6 +90,7 @@
 .contents-area > .menu-creation-layout-container > #menu-creation-layout {
   position: relative;
   padding-bottom: 50px;
+  min-height: calc(100% - 50px);
 }
 .menu-creation-item-container {
   padding: 2px;

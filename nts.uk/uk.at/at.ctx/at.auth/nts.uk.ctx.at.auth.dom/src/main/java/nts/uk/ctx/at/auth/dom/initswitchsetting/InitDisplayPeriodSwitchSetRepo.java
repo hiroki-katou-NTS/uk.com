@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.auth.dom.initswitchsetting;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -12,6 +13,8 @@ import java.util.Optional;
 public interface InitDisplayPeriodSwitchSetRepo {
 	
 	Optional<InitDisplayPeriodSwitchSet> findByKey (String companyID , String roleID);
+	
+	List<InitDisplayPeriodSwitchSet> findByCid(String companyId);
 	
 	void save (InitDisplayPeriodSwitchSet domain);
 	
