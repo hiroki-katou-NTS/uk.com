@@ -300,7 +300,7 @@ public class LoginService {
 	 */
 	private static boolean isConditionValid(boolean isSuccess, String mailAddress, int isUse) {
 		if ((!isSuccess && isUse == NotUseAtr.USE.value) || (isSuccess && isUse == NotUseAtr.USE.value &&
-				!mailAddress.equals(null) && !mailAddress.equals(""))) {
+				mailAddress != null && !mailAddress.equals(""))) {
 			return true;
 		}
 		return false;
