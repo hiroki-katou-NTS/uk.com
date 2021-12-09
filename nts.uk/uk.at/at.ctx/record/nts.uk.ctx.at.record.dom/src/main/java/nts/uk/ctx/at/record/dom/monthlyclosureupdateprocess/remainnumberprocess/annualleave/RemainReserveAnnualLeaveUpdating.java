@@ -8,9 +8,6 @@ import java.util.stream.Collectors;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
-import nts.gul.text.IdentifierUtil;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveInfo;
@@ -18,9 +15,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainHistoryData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantTimeRemainHistoryData;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  *
@@ -39,11 +34,9 @@ public class RemainReserveAnnualLeaveUpdating {
 	public static AtomTask updateReservedAnnualLeaveRemainNumber(RequireM5 require, Optional<AggrResultOfReserveLeave> output,
 			AggrPeriodEachActualClosure period, String empId) {
 
-		/** アルゴリズム「当月以降の積休付与残数データを削除」を実行する */
-		return deleteDataAfterCurrentMonth(require, period, empId)
 				/** アルゴリズム「積休付与残数データの更新」を実行する */
-				.then(output.map(rev -> updateNumberOfRemainingLeaveData(require, rev, period, empId))
-							.orElseGet(() -> AtomTask.none()));
+		return 	output.map(rev -> updateNumberOfRemainingLeaveData(require, rev, period, empId))
+							.orElseGet(() -> AtomTask.none());
 	}
 
 	/**
@@ -102,11 +95,6 @@ public class RemainReserveAnnualLeaveUpdating {
 				}).orElseGet(() -> {
 					
 					/** ドメインモデル「積立年休付与残数データ」を追加する */
-					if (StringUtil.isNullOrEmpty(data.getLeaveID(), true)) {
-						data.setLeaveID(IdentifierUtil.randomUniqueId());
-					}
-
-					/** ドメインモデル「積立年休付与残数データ」を追加する */
 					return AtomTask.of(() -> require.addReserveLeaveGrantRemainingData(data));
 				});
 		}).collect(Collectors.toList());
@@ -136,20 +124,8 @@ public class RemainReserveAnnualLeaveUpdating {
 		return AtomTask.bundle(atomTask);
 	}
 
-	/**
-	 * 当月以降の積休付与残数データを削除
-	 */
-	private static AtomTask deleteDataAfterCurrentMonth(RequireM1 require, AggrPeriodEachActualClosure period, String empId) {
 
-		return AtomTask.of(() -> {
-			/** TODO: 一旦コメントアウト　*/
-//			require.deleteReserveLeaveGrantRemainingData(empId, period.getPeriod().start());
-//			require.deleteReserveLeaveGrantRemainHistoryData(empId, period.getYearMonth(), period.getClosureId(), period.getClosureDate());
-//			require.deleteReserveLeaveGrantTimeRemainHistoryData(empId, period.getPeriod().start());
-		});
-	}
-
-	public static interface RequireM5 extends RequireM1, RequireM4 {
+	public static interface RequireM5 extends  RequireM4 {
 
 	}
 
@@ -173,14 +149,4 @@ public class RemainReserveAnnualLeaveUpdating {
 
 		void addOrUpdateReserveLeaveGrantTimeRemainHistoryData(ReserveLeaveGrantTimeRemainHistoryData domain);
 	}
-
-	public static interface RequireM1 {
-
-		void deleteReserveLeaveGrantRemainingData(String employeeId, GeneralDate date);
-
-		void deleteReserveLeaveGrantRemainHistoryData(String employeeId, YearMonth ym, ClosureId closureId, ClosureDate closureDate);
-
-		void deleteReserveLeaveGrantTimeRemainHistoryData(String employeeId, GeneralDate date);
-	}
-
 }

@@ -44,7 +44,10 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		layout: KnockoutObservableArray<Layout> = ko.observableArray([]);
 		selectedItem: KnockoutObservable<string> = ko.observable();
 
-	    canEditDetail = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
+		canAddItem: KnockoutObservable<boolean> =
+			ko.computed(() => !util.isNullOrEmpty(this.importDomain()));
+	    canEditDetail: KnockoutObservable<boolean> =
+			ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
 	    
 		settingListColumns: KnockoutObservableArray<any> = ko.observableArray([
 			{ headerText: "コード", 				key: "code", 					width: 50 	},
@@ -202,7 +205,9 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 					info(nts.uk.resource.getMessage("Msg_15", []));
 					self.reloadPage();
 					self.selectedCode(self.settingCode());
-	            });
+	            }).fail(function(error) {
+					nts.uk.ui.dialog.alert({ messageId: error.messageId })
+				});
 			}
 		}
 

@@ -176,7 +176,7 @@ public class GetNextAnnualLeaveGrantProc {
 			// 次回年休付与に付与日数・半日年休上限回数・時間年休上限日数をセット
 			if (!grantHdTblOpt.isPresent()) continue;
 			val grantHdTbl = grantHdTblOpt.get();
-			nextAnnualLeaveGrant.setGrantDays(nts.gul.util.value.Finally.of(grantHdTbl.getGrantDays()));
+			nextAnnualLeaveGrant.setGrantDays(nts.gul.util.value.Finally.of(grantHdTbl.getGrantDays().toLeaveGrantDayNumber()));
 			nextAnnualLeaveGrant.setHalfDayAnnualLeaveMaxTimes(grantHdTbl.getLimitDayYear());
 			nextAnnualLeaveGrant.setTimeAnnualLeaveMaxDays(grantHdTbl.getLimitTimeHd());
 
