@@ -3,7 +3,9 @@
  */
 package nts.uk.screen.at.app.ksu001.getschedulesbyshift;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -89,12 +91,16 @@ public class GetScheduleActualOfShift {
 						personalCounterOp,
 						workplaceCounterOp,
 						true); // シフト表示か = true
+		
+		Map<ShiftMasterDto, Integer> mapShiftMasterWithWorkStyle = new HashMap<ShiftMasterDto, Integer>();
+		workScheduleShiftBaseResult.getMapShiftMasterWithWorkStyle().entrySet().forEach(i -> {
+			Integer value = i.getValue().isPresent() ? i.getValue().get().value : null;
+			mapShiftMasterWithWorkStyle.put(new ShiftMasterDto(i.getKey()), value);
+		});
+		
 		return new SchedulesbyShiftDataResult(
 				workScheduleShiftBaseResult.getListWorkScheduleShift(),
-				workScheduleShiftBaseResult.getMapShiftMasterWithWorkStyle()
-				   .entrySet()
-				   .stream()
-				   .collect(Collectors.toMap(e -> new ShiftMasterDto(e.getKey()), e -> e.getValue().map(x -> x.value).orElse(null))),
+				mapShiftMasterWithWorkStyle,
 				aggrerateSchedule.getAggreratePersonal(),
 				aggrerateSchedule.getAggrerateWorkplace()
 				);

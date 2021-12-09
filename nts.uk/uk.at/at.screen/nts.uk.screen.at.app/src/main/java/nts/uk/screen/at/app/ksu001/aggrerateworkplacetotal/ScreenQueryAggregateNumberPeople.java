@@ -162,7 +162,9 @@ public class ScreenQueryAggregateNumberPeople {
 					.map(x -> x.entrySet().stream().map(y -> y.getKey().v()).collect(Collectors.toList()))
 					.flatMap(list -> list.stream())
 					.distinct()
-					.collect(Collectors.toList()));
+					.collect(Collectors.toList()))
+					.stream()
+					.collect(Collectors.toList());
 			
 			Map<GeneralDate, Map<ClassificationDto, BigDecimal>> classificationOutput = 
 					countEachClassification
@@ -197,7 +199,7 @@ public class ScreenQueryAggregateNumberPeople {
 			// 3.2: <call>
 			List<JobTitleInfo> jobTitleInfos = 
 					jobTitleInfoRepository
-							.findByIds(
+							.findByIds( 
 								companyId,
 								countEachJob
 									.entrySet()
@@ -210,7 +212,10 @@ public class ScreenQueryAggregateNumberPeople {
 									.flatMap(list -> list.stream())
 									.distinct()
 									.collect(Collectors.toList()),
-							baseDate);
+							baseDate)
+					.stream()
+					.collect(Collectors.toList());
+			
 			Map<GeneralDate, Map<JobTitleInfoDto, BigDecimal>> jobTitileInfoOutput =
 					countEachJob.entrySet()
 					.stream()
