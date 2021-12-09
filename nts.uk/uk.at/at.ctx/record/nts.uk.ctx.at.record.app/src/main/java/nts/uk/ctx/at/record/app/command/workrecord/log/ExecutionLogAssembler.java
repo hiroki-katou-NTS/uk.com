@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.command.workrecord.log;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
