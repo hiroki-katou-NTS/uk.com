@@ -49,7 +49,7 @@
 
         <div id="functions-area-bottom">
             <!--C3_1-->
-            <button tabindex="3" data-bind="click: execution"
+            <button tabindex="3" data-bind="click: execution, enable: $root.errors.isEmpty()"
                     class="x-large proceed">#{i18n.getText('CMM051_59')}</button>
             <!--C3_2-->
             <button tabindex="4" data-bind="click: cancel_Dialog" class="large">#{i18n.getText('CMM051_60')}</button>
