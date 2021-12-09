@@ -259,7 +259,6 @@ module nts.uk.pr.view.kmf001.c {
                 command.timeOfDayReference =  self.selectC531();
                 command.uniformTime =  !isNaN(self.uniformTime()) ? self.uniformTime() : parseInt(self.uniformTime().split(':')[0])*60 + parseInt(self.uniformTime().split(':')[1]);
                 command.contractTimeRound =  self.selectC535() ;
-                
                 return command;
             }
             
@@ -294,7 +293,7 @@ module nts.uk.pr.view.kmf001.c {
                 self.timeMaxNumberCompany(res.maxTimeDay == null ? 5 : res.maxTimeDay);
                 self.selectedroundProcessClassific(res.roundProcessClassific);
                 self.selectC531(res.timeOfDayReference);
-                self.uniformTime(res.unifromTime ==  null ? '0:00' :  res.unifromTime);
+                self.uniformTime(res.unifromTime ==  null ? 0 :  res.unifromTime);
                 self.selectC535(res.contractTimeRound);
                 
             }

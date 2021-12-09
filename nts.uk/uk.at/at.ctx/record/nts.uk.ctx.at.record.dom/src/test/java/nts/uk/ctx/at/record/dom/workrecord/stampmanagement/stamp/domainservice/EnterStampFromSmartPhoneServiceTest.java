@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.AutoCreateStampCardNumberSe
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardCreateResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AssignmentMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonDisSet;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonLayoutType;
@@ -138,21 +139,24 @@ public class EnterStampFromSmartPhoneServiceTest {
 				new ButtonType(ReservationArt.NONE , Optional.empty()),
 				NotUseAtr.USE,
 				AudioType.NONE,
-				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE),
+				Optional.of(AssignmentMethod.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		lstButtonSet.add(new ButtonSettings(new ButtonPositionNo(1),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.NONE , Optional.empty()),
 				NotUseAtr.USE,
 				AudioType.NONE,
-				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE),
+				Optional.of(AssignmentMethod.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		lstButtonSet.add(new ButtonSettings(new ButtonPositionNo(1),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.NONE , Optional.empty()),
 				NotUseAtr.USE,
 				AudioType.NONE,
-				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE),
+				Optional.of(AssignmentMethod.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		stampPageLayouts.add(new StampPageLayout(new PageNo(1), new StampPageName("DUMMY"),
 				new StampPageComment(new PageComment("DUMMY"), new ColorCode("DUMMY")), ButtonLayoutType.SMALL_8,

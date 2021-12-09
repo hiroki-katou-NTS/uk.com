@@ -120,9 +120,15 @@ module cps003.a.vm {
                         "rowAdd", "deptName", "workplaceName", "positionName", "employmentName", "className" ];
 
         isCS00100: KnockoutObservable<boolean> = ko.observable(false);
-
+        isFromCPS018: KnockoutObservable<boolean> = ko.observable(false);
+    
         constructor() {
             let self = this;
+
+            let params = getShared("CPS003A_PARAMS") || { isFromCPS018: false };
+            self.isFromCPS018(params.isFromCPS018);
+            nts.uk.sessionStorage.removeItem(nts.uk.request.STORAGE_KEY_TRANSFER_DATA);
+
             cps003.control.selectButton();
             cps003.control.relateButton();
             cps003.control.validateDateRange();
