@@ -29,9 +29,10 @@ public interface RervLeaGrantRemDataRepository {
 	
 	void update(ReserveLeaveGrantRemainingData data);
 	
+	void updateWithGrantDate(ReserveLeaveGrantRemainingData data);
+	
 	void delete(String rsvLeaId);
 	
-	void deleteAfterDate(String employeeId, GeneralDate date);
 	/**
 	 * getAll
 	 * @param employeeId

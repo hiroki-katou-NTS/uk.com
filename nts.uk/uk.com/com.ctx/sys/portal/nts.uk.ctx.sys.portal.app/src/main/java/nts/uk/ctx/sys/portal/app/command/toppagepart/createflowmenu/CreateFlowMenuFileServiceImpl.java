@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.shr.infra.file.storage.stream.FileStoragePath;
 import org.apache.commons.io.FileUtils;
 
 import nts.arc.layer.app.file.storage.FileStorage;
@@ -20,8 +21,6 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FlowMenuLayout;
 
 @Stateless
 public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService {
-
-	public static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
 
 	@Inject
 	private StoredFileInfoRepository storedFileInfoRepository;
@@ -40,8 +39,8 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 					fileInfo.getMimeType(), fileInfo.getOriginalSize());
 			String newFileId = newFileInfo.getId();
 			// Copy physical file
-			File file = Paths.get(DATA_STORE_PATH + "//" + fileId).toFile();
-			File newFile = new File(DATA_STORE_PATH + "//" + newFileId);
+			File file = Paths.get(new FileStoragePath().getPathOfCurrentTenant().toString() + "//" + fileId).toFile();
+			File newFile = new File(new FileStoragePath().getPathOfCurrentTenant().toString() + "//" + newFileId);
 			newFile.createNewFile();
 			FileUtils.copyFile(file, newFile, false);
 			// Persist
