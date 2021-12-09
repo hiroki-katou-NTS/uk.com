@@ -23,5 +23,5 @@ public class AffWorkplaceHistoryItemWPeriod {
 	
 	private String  workplaceId;
 	
-	private String  normalWorkplaceId;
+//	private String  normalWorkplaceId;
 }

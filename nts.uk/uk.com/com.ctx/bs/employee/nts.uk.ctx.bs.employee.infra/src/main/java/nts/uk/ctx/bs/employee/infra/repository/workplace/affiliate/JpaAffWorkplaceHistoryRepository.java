@@ -717,7 +717,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	public List<AffWorkplaceHistoryItem> getHistItems(List<String> histIds) {
 		return this.queryProxy().query(GET_HIST_ITEMS, BsymtAffiWorkplaceHistItem.class)
 			.setParameter("hisIds", histIds)
-			.getList(c -> AffWorkplaceHistoryItem.createFromJavaType(c.getHisId(), c.getSid(), c.getWorkPlaceId(), c.getNormalWkpId()));
+			.getList(c -> AffWorkplaceHistoryItem.createFromJavaType(c.getHisId(), c.getSid(), c.getWorkPlaceId()));
 	}
 
 	@Override
@@ -750,8 +750,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 							datePeriod.end(),
 							mapper.getHistoryId(),
 							mapper.getEmployeeId(),
-							mapper.getWorkplaceId(),
-							mapper.getNormalWorkplaceId());
+							mapper.getWorkplaceId());
 				}
 				
 				return null;

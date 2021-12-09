@@ -12,10 +12,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
-import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.StatusOfEmployment;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport3;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmploymentImport;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
@@ -33,9 +32,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class EmployeesInWorkplaceScreenQuery {
 
 	@Inject
-    private SyWorkplaceAdapter syWorkplaceAdapter;
-	
-	@Inject
 	private EmployeeAdapter employeeAdapter;
 	
 	@Inject
@@ -43,6 +39,9 @@ public class EmployeesInWorkplaceScreenQuery {
 	
 	@Inject
 	private CollectApprovalRootService collectApprovalRootService;
+	
+	@Inject
+	private WorkplacePub workplacePub;
 	
 	/**
 	 * 職場の所属社員一覧を取得する
@@ -55,8 +54,9 @@ public class EmployeesInWorkplaceScreenQuery {
 	 * @return
 	 */
 	public List<EmployeesInWorkplace> get(List<String> wkpIds, GeneralDate referDate, Boolean incumbent, Boolean closed, Boolean leave, Boolean retiree) {
-		//1: <call> [No.597]職場の所属社員を取得する: Output 社員一覧
-        List<EmployeeInfoImported> empInfos = syWorkplaceAdapter.getLstEmpByWorkplaceIdsAndPeriod(wkpIds, new DatePeriod(referDate, referDate));
+		//1: 職場（List）と基準日から所属職場履歴項目を取得する
+		List<AffWorkplaceHistoryItemExport3> wkHistoryItems = workplacePub.getWorkHisItemfromWkpIdsAndBaseDate(wkpIds, referDate);
+		List<String> empInfos = wkHistoryItems.stream().map(x -> x.getEmployeeId()).distinct().collect(Collectors.toList());
         
         List<String> sids = new ArrayList<String>();
         
@@ -79,9 +79,9 @@ public class EmployeesInWorkplaceScreenQuery {
         }
         // Param status .end
         // Loop 社員ID　in　List<社員ID>
-        empInfos.forEach(e -> {
+        empInfos.forEach(sid -> {
         	//2: <call>在職状態を取得
-      		StatusOfEmploymentImport sttEmp = employeeAdapter.getStatusOfEmployment(e.getSid(), referDate);
+      		StatusOfEmploymentImport sttEmp = employeeAdapter.getStatusOfEmployment(sid, referDate);
       		
       		if (paramStatus.contains(sttEmp.getStatusOfEmployment().value)) {
       			sids.add(sttEmp.getEmployeeId());
