@@ -21,7 +21,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDispla
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.WorkInformationStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
@@ -66,7 +66,7 @@ public class CreateStampInfo implements DomainValue {
 						|| recept.getShift().isEmpty()) ? null : new WorkTimeCode(recept.getShift()),
 				(recept.getOverTimeHours().isEmpty() || recept.getMidnightTime().isEmpty()) ? null
 				: new OvertimeDeclaration(new AttendanceTime(Integer.parseInt(recept.getOverTimeHours())),
-						new AttendanceTime(Integer.parseInt(recept.getMidnightTime()))));
+						new AttendanceTime(Integer.parseInt(recept.getMidnightTime()))), null);
 		// 打刻する方法
 		Relieve relieve = new Relieve(recept.convertAuthcMethod(), StampMeans.TIME_CLOCK);
 
@@ -95,7 +95,7 @@ public class CreateStampInfo implements DomainValue {
 		}
 
 		val leavCategory = LeaveCategory.valueStringOf(category);
-		Optional<ChangeClockArt>  changeClockArt = (leavCategory == null ? Optional.empty() : this.stampInfoConver.convertFromNR(leavCategory));
+		Optional<ChangeClockAtr>  changeClockArt = (leavCategory == null ? Optional.empty() : this.stampInfoConver.convertFromNR(leavCategory));
 		if (!changeClockArt.isPresent())
 			return Optional.empty();
 

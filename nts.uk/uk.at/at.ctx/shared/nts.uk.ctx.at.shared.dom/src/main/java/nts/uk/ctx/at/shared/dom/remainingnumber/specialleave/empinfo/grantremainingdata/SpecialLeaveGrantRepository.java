@@ -22,6 +22,8 @@ public interface SpecialLeaveGrantRepository {
 	void addAll(String cid, List<SpecialLeaveGrantRemainingData> domains);
 
 	void update(SpecialLeaveGrantRemainingData data);
+	
+	void updateWithGrantDate(SpecialLeaveGrantRemainingData data);
 
 	void delete(String specialid);
 	
