@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
+import mockit.integration.junit4.JMockit;
 import org.junit.Test;
 
 import mockit.Expectations;
@@ -14,7 +15,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterHelper;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import org.junit.runner.RunWith;
 
+@RunWith(JMockit.class)
 public class AggregationUnitOfWorkMethodTest {
 	
 	@Injectable
