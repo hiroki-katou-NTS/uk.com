@@ -344,7 +344,7 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 				$("#A6_3").hide();
 				$("#A6_4").hide();
 				$("#A2_5").css("margin-left","30px");
-				$("#A2_23").css("margin-right","100px");
+				$("#A2_23").css("margin-right","57px");
 				$("#A2_21").css("margin-right","42px");
 			} else {
 				$("#A6_1").show();
