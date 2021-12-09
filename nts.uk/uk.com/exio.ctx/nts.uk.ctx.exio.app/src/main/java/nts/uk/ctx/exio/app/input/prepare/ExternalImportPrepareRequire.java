@@ -10,6 +10,8 @@ import javax.inject.Inject;
 
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
@@ -18,12 +20,12 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecordRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
@@ -32,6 +34,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRep
 import nts.uk.ctx.exio.dom.input.canonicalize.history.ExternalImportHistory;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryKeyColumnNames;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalizedDataRecord;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalizedDataRecordRepository;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainRepository;
@@ -73,9 +77,9 @@ public class ExternalImportPrepareRequire {
 			PrepareImporting.Require,
 			ExternalImportWorkspaceRepository.Require {
 		
-		ExternalImportSetting getExternalImportSetting(String companyId, ExternalImportCode settingCode);
+		ExternalImportSetting getExternalImportSetting(ExternalImportCode settingCode);
 		
-		ExternalImportCurrentState getExternalImportCurrentState(String companyId);
+		ExternalImportCurrentState getExternalImportCurrentState();
 	}
 	
 	@Inject
@@ -125,14 +129,21 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	private ExternalImportErrorsRepository errorsRepo;
+	
+	@Inject
+	private WorkplaceConfigurationRepository wkpConfigRepo;
 
 	@Inject
-	private WorkplaceInformationRepository wkpinfoRepo;
+	private WorkplaceInformationRepository wkpInfoRepo;
 	
-	@Inject JobTitleInfoRepository jobTitleInfoRepo;
+	@Inject
+	private JobTitleInfoRepository jobTitleInfoRepo;
 	
 	@Inject
 	private UserRepository userRepo;
+	
+	@Inject
+	private StampCardRepository stampCardRepo;
 	
 	
 	
@@ -151,12 +162,12 @@ public class ExternalImportPrepareRequire {
 		/***** 外部受入関連 *****/
 		
 		@Override
-		public void add(ExecutionContext context, ExternalImportError error) {
-			errorsRepo.add(context, error);
+		public void add(ExternalImportError error) {
+			errorsRepo.add(companyId, error);
 		}
 
 		@Override
-		public ExternalImportCurrentState getExternalImportCurrentState(String companyId) {
+		public ExternalImportCurrentState getExternalImportCurrentState() {
 			return currentStateRepo.find(companyId);
 		}
 
@@ -166,14 +177,9 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public ExternalImportSetting getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
-			return settingRepo.get(companyId, settingCode)
+		public ExternalImportSetting getExternalImportSetting(ExternalImportCode settingCode) {
+			return settingRepo.get(null, companyId, settingCode)
 						.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
-		}
-
-		@Override
-		public List<ImportingDomain> getAllImportingDomains() {
-			return importingDomainRepo.findAll();
 		}
 		
 		@Override
@@ -187,8 +193,8 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public Optional<ReviseItem> getReviseItem(String companyId, ExternalImportCode importCode, int importItemNumber) {
-			return reviseItemRepo.get(companyId, importCode, importItemNumber);
+		public Optional<ReviseItem> getReviseItem(ExternalImportCode importCode, ImportingDomainId domainId, int importItemNumber) {
+			return reviseItemRepo.get(companyId, importCode, domainId, importItemNumber);
 		}
 		
 		@Override
@@ -205,13 +211,23 @@ public class ExternalImportPrepareRequire {
 		
 		
 		/***** Workspace *****/
+				
+		@Override
+		public void setupWorkspace() {
+			errorsRepo.cleanOldTables(companyId);
+			
+			errorsRepo.setup(companyId);
+		}
 		
 		@Override
-		public void setupWorkspace(ExecutionContext context) {
+		public void setupWorkspaceForEachDomain(ExecutionContext context) {
+			workspaceRepo.cleanOldTables(this, context);
+			existingRepo.cleanOldTables(context);
+			metaRepo.cleanOldTables(context);
+			
 			workspaceRepo.setup(this, context);
 			existingRepo.setup(context);
 			metaRepo.setup(context);
-			errorsRepo.setup(context);
 		}
 		
 		@Override
@@ -247,6 +263,11 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public Optional<RevisedDataRecord> getRevisedDataRecordByRowNo(ExecutionContext context, int rowNo) {
 			return revisedDataRecordRepo.findByRowNo(this, context, rowNo);
+		}
+
+		@Override
+		public List<RevisedDataRecord> getAllRevisedDataRecords(ExecutionContext context) {
+			return revisedDataRecordRepo.findAll(this, context);
 		}
 		
 		@Override
@@ -290,7 +311,7 @@ public class ExternalImportPrepareRequire {
 
 		@Override
 		public Optional<WorkplaceInformation> getWorkplaceByCode(String workplaceCode, GeneralDate startdate) {
-			return wkpinfoRepo.getWkpNewByCdDate(companyId, workplaceCode, startdate);
+			return wkpInfoRepo.getWkpNewByCdDate(companyId, workplaceCode, startdate);
 		}
 
 
@@ -312,6 +333,20 @@ public class ExternalImportPrepareRequire {
 			return jobTitleInfoRepo.findAll(companyId, startdate).stream()
 					.filter(jobTitle -> jobTitle.getJobTitleCode().equals(jobTitleCode))
 					.findFirst();
+		}
+
+		@Override
+		public Optional<WorkplaceConfiguration> getWorkplaceConfiguration(String companyId) {
+			return wkpConfigRepo.getWkpConfig(companyId);
+		}
+
+		public Optional<StampCard> getStampCardByCardNumber(String cardNumber) {
+			return stampCardRepo.getByCardNoAndContractCode(cardNumber, contractCode);
+		}
+
+		@Override
+		public List<WorkplaceInformation> getAllWorkplaceInformations(String companyId) {
+			return wkpInfoRepo.findAll(companyId);
 		}
 
 	}

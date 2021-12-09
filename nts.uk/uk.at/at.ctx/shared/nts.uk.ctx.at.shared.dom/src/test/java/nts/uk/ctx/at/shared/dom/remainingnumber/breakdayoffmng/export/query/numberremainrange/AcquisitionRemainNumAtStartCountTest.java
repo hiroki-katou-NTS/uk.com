@@ -68,8 +68,10 @@ public class AcquisitionRemainNumAtStartCountTest {
 	 * 繰越数がない（代休日数 ＝ 休出日数）
 	 */
 	@Test
-	public void test(@Mocked SettingSubstituteHolidayProcess setting) {
+	public void test(@Mocked SettingSubstituteHolidayProcess settingProcess) {
 
+		SubstitutionHolidayOutput setting = new SubstitutionHolidayOutput();
+		setting.setTimeOfPeriodFlg(false);
 		new Expectations() {
 			{
 				// 代休管理データ
@@ -92,8 +94,10 @@ public class AcquisitionRemainNumAtStartCountTest {
 						createLeav("a6", GeneralDate.ymd(2019, 11, 14), 1.0, 0, 0.0, // 発生数
 								0));// 未使用数
 				
-				SettingSubstituteHolidayProcess.getSettingForSubstituteHoliday(require, anyString, anyString, (GeneralDate) any);
-				result = new SubstitutionHolidayOutput();
+				SettingSubstituteHolidayProcess.getSettingForSubstituteHoliday(require, anyString, anyString,
+						(GeneralDate) any);
+				result = setting;
+				
 			}
 		};
 

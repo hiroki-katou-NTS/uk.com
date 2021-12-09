@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -50,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepositor
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
+import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
@@ -89,7 +91,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -233,17 +234,17 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	private Optional<OutsideOTSetting> outsideOTSettingCache = Optional.empty();
 
-	private HashMap<String, Optional<FlowWorkSetting>>  flowWorkSetMap = new HashMap<String, Optional<FlowWorkSetting>>();
+	private Map<String, Optional<FlowWorkSetting>>  flowWorkSetMap = new ConcurrentHashMap<String, Optional<FlowWorkSetting>>();
 
-	private HashMap<String, Optional<FlexWorkSetting>>  flexWorkSetMap = new HashMap<String, Optional<FlexWorkSetting>>();
+	private Map<String, Optional<FlexWorkSetting>>  flexWorkSetMap = new ConcurrentHashMap<String, Optional<FlexWorkSetting>>();
 
-	private HashMap<String, Optional<FixedWorkSetting>>  fixedWorkSetMap = new HashMap<String, Optional<FixedWorkSetting>>();
+	private Map<String, Optional<FixedWorkSetting>>  fixedWorkSetMap = new ConcurrentHashMap<String, Optional<FixedWorkSetting>>();
 
-	private HashMap<String, Optional<WorkTimeSetting>>  workTimeSetMap = new HashMap<String, Optional<WorkTimeSetting>>();
+	private Map<String, Optional<WorkTimeSetting>>  workTimeSetMap = new ConcurrentHashMap<String, Optional<WorkTimeSetting>>();
 
-	private HashMap<String, Optional<WorkType>>  workTypeMap = new HashMap<String, Optional<WorkType>>();
+	private Map<String, Optional<WorkType>>  workTypeMap = new ConcurrentHashMap<String, Optional<WorkType>>();
 
-	private HashMap<Integer, Optional<Closure>> closureMap = new HashMap<Integer, Optional<Closure>>();
+	private Map<Integer, Optional<Closure>> closureMap = new ConcurrentHashMap<Integer, Optional<Closure>>();
 
 	private CheckCareService checkCareService;
 
@@ -748,5 +749,28 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
 		return workingConditionItemRepo.getBySidAndStandardDate(employeeId, baseDate);
 	}
+
+	@Override
+	public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+		return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
+	}
+
+	@Override
+	public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+		return closureRepo.findByListId(companyId, closureId);
+	}
+
+	@Override
+	public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
+			GeneralDate baseDate) {
+		return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+	}
+	
+    @Override
+    public Optional<WorkInformation> getHolidayWorkScheduleNew(String companyId, String employeeId,
+            GeneralDate baseDate, String workTypeCode, WorkingDayCategory workingDayCategory) {
+        return this.workingConditionItemService.getHolidayWorkScheduleNew(companyId, employeeId, baseDate, workTypeCode,
+                workingDayCategory);
+    }
 
 }

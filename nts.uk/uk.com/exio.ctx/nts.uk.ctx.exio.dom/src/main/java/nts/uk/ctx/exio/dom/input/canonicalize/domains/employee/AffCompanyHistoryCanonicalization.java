@@ -10,33 +10,45 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
-import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
-import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 
 /**
  * 入社退職履歴の正準化
  */
 public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicalization{
 	
-	public AffCompanyHistoryCanonicalization(DomainWorkspace workspace) {
-		super(workspace, HistoryType.UNDUPLICATABLE);
+	public AffCompanyHistoryCanonicalization() {
+		super(HistoryType.UNDUPLICATABLE);
+	}
+
+	@Override
+	public ItemNoMap getItemNoMap() {
+		return ItemNoMap.reflection(Items.class);
+	}
+	
+	public static class Items {
+		public static final int 社員コード = 1;
+		public static final int 開始日 = 2;
+		public static final int 終了日 = 3;
+		public static final int CID = 100;
+		public static final int SID = 101;
+		public static final int HIST_ID = 102;
+		public static final int PID = 103;
+		public static final int 出向先データである = 104;
+		public static final int 採用区分コード = 105;
+		public static final int 本採用年月日 = 106;
+		public static final int 退職金計算開始日 = 107;
 	}
 	
 	@Override
 	protected String getParentTableName() {
 		return "BSYMT_AFF_COM_HIST";
-	}
-	
-	@Override
-	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(new DomainDataColumn("HIST_ID", DataType.STRING));
 	}
 	
 	@Override
@@ -61,9 +73,9 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 			IntermediateResult interm = container.getInterm();
 			
 			interm = interm.addCanonicalized(new CanonicalItemList()
-					.add(103, personId) // 個人ID
-					.add(104, 0) // 出向先データである
-					.add(105, "") // 採用区分コード
+					.add(Items.PID, personId)
+					.add(Items.出向先データである, 0)
+					.add(Items.採用区分コード, "")
 					);
 			
 			results.add(new Container(interm, container.getAddingHistoryItem()));
@@ -76,9 +88,9 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 	protected List<IntermediateResult> canonicalizeHistory(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context, List<IntermediateResult> employeeCanonicalized) {
+		
 		List<IntermediateResult> addedRetireDay = employeeCanonicalized.stream()
-				// 退職日の既定値
-				.map(interm -> interm.optionalItem(CanonicalItem.of(3, GeneralDate.ymd(9999, 12, 31))))
+				.map(interm -> interm.optionalItem(CanonicalItem.of(Items.終了日, GeneralDate.ymd(9999, 12, 31))))
 				.collect(Collectors.toList());
 				
 		return super.canonicalizeHistory(require, context, addedRetireDay);

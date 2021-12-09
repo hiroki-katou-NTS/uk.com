@@ -7,10 +7,11 @@ import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.RecordError;
-import nts.uk.ctx.exio.dom.input.util.Either;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
+import nts.gul.util.Either;
 
 /**
  * 職場コードを職場IDに正準化
@@ -25,10 +26,10 @@ public class WorkplaceCodeCanonicalization {
 	/** 職場IDの項目No */
 	private final int itemNoWorkplaceId;
 	
-	public WorkplaceCodeCanonicalization(DomainWorkspace workspace) {
-		itemNoStartDate = workspace.getItemByName("開始日").getItemNo();
-		itemNoWorkplaceCode = workspace.getItemByName("職場コード").getItemNo();
-		itemNoWorkplaceId = workspace.getItemByName("WORKPLACE_ID").getItemNo();
+	public WorkplaceCodeCanonicalization(ItemNoMap map) {
+		itemNoStartDate = map.getItemNo("開始日");
+		itemNoWorkplaceCode = map.getItemNo("職場コード");
+		itemNoWorkplaceId = map.getItemNo("WORKPLACE_ID");
 	}
 
 	/**
@@ -56,8 +57,7 @@ public class WorkplaceCodeCanonicalization {
 
 	private IntermediateResult canonicalize(IntermediateResult canonicalizingData, String workplaceId) {
 		return canonicalizingData.addCanonicalized(
-				CanonicalItem.of(itemNoWorkplaceId, workplaceId),
-				itemNoWorkplaceCode);
+				CanonicalItem.of(itemNoWorkplaceId, workplaceId));
 	}
 
 	public static interface Require {

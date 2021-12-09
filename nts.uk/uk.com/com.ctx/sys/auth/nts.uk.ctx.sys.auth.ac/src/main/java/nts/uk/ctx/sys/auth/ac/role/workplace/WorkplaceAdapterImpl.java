@@ -81,7 +81,7 @@ public class WorkplaceAdapterImpl implements WorkplaceAdapter {
 	}
 
 	private AffiliationWorkplace toImport (AffAtWorkplaceExport ex){
-		return new AffiliationWorkplace(ex.getHistoryID(), ex.getEmployeeId(), ex.getWorkplaceId(), ex.getNormalWorkplaceID());
+		return new AffiliationWorkplace(ex.getHistoryID(), ex.getEmployeeId(), ex.getWorkplaceId());
 	}
 	
 	@Override

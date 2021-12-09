@@ -10,17 +10,16 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
-import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryKeyColumnNames;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
-import nts.uk.ctx.exio.dom.input.util.Either;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
+import nts.gul.util.Either;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -28,8 +27,28 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 public class ShortWorkTimeCanonicalization extends EmployeeHistoryCanonicalization {
 	
-	public ShortWorkTimeCanonicalization(DomainWorkspace w) {
-		super(w, HistoryType.UNDUPLICATABLE);
+	public ShortWorkTimeCanonicalization() {
+		super(HistoryType.UNDUPLICATABLE);
+	}
+
+	@Override
+	public ItemNoMap getItemNoMap() {
+		return ItemNoMap.reflection(Items.class);
+	}
+	
+	public static class Items {
+		public static final int 社員コード = 1;
+		public static final int 開始日 = 2;
+		public static final int 終了日 = 3;
+		public static final int 短時間勤務区分 = 4;
+		public static final int 短時間1開始時刻 = 5;
+		public static final int 短時間1終了時刻 = 6;
+		public static final int 短時間2開始時刻 = 7;
+		public static final int 短時間2終了時刻 = 8;
+		public static final int SID = 101;
+		public static final int HIST_ID = 102;
+		public static final int 短時間1回数 = 103;
+		public static final int 短時間2回数 = 104;
 	}
 	
 	@Override
@@ -53,7 +72,7 @@ public class ShortWorkTimeCanonicalization extends EmployeeHistoryCanonicalizati
 					canonicalizeds.add(new Container(itm, container.getAddingHistoryItem()));
 				})
 				.ifLeft(e -> {
-					require.add(context, ExternalImportError.record(container.getInterm().getRowNo(), e.getText()));
+					require.add(ExternalImportError.record(container.getInterm().getRowNo(), context.getDomainId(), e.getText()));
 				});
 		}
 		
@@ -95,11 +114,11 @@ public class ShortWorkTimeCanonicalization extends EmployeeHistoryCanonicalizati
 		Integer endTime;
 		
 		if (timeSlot == 1) {
-			startTime = source.getItemByNo(5).get().getJavaInt();
-			endTime = source.getItemByNo(6).get().getJavaInt();
+			startTime = source.getItemByNo(Items.短時間1開始時刻).get().getJavaInt();
+			endTime = source.getItemByNo(Items.短時間1終了時刻).get().getJavaInt();
 		} else if (timeSlot == 2) {
-			startTime = source.getItemByNo(7).map(e -> e.getJavaInt()).orElse(null);
-			endTime = source.getItemByNo(8).map(e -> e.getJavaInt()).orElse(null);
+			startTime = source.getItemByNo(Items.短時間2開始時刻).map(e -> e.getJavaInt()).orElse(null);
+			endTime = source.getItemByNo(Items.短時間2終了時刻).map(e -> e.getJavaInt()).orElse(null);
 		} else {
 			throw new RuntimeException("unknown: " + timeSlot);
 		}
@@ -153,12 +172,5 @@ public class ShortWorkTimeCanonicalization extends EmployeeHistoryCanonicalizati
 	@Override
 	protected List<String> getChildTableNames() {
 		return Arrays.asList("KSHMT_SHORTTIME_HIST_ITEM", "KSHMT_SHORTTIME_TS");
-	}
-	
-	@Override
-	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(
-				DomainDataColumn.SID,
-				DomainDataColumn.HIST_ID);
 	}
 }

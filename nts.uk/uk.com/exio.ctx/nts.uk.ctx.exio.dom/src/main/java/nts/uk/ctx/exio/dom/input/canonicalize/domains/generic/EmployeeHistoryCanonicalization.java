@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -20,11 +18,9 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
-import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.SystemImportingItems;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
@@ -38,12 +34,12 @@ import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryKeyColumnNames;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.util.Either;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
+import nts.gul.util.Either;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -70,19 +66,29 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 	/** どんな履歴か*/
 	private final HistoryType historyType;
 
-	public EmployeeHistoryCanonicalization(DomainWorkspace workspace, HistoryType historyType) {
-		itemNoStartDate = workspace.getItemByName("開始日").getItemNo();
-		itemNoEndDate = workspace.getItemByName("終了日").getItemNo();
-		itemNoHistoryId = workspace.getItemByName("HIST_ID").getItemNo();
+	public EmployeeHistoryCanonicalization(HistoryType historyType) {
+		
+		itemNoStartDate = this.getItemNoByName(Names.START);
+		itemNoEndDate = this.getItemNoByName(Names.END);
+		itemNoHistoryId = this.getItemNoByName(Names.HIST_ID);
+		
 		this.historyType = historyType;
-		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
+		
+		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(this.getItemNoMap());
+	}
+	
+	protected static class Names {
+		protected static final String SCD = "社員コード";
+		protected static final String SID = "社員ID";
+		protected static final String HIST_ID = "HIST_ID";
+		protected static final String START = "開始日";
+		protected static final String END = "終了日";
+		
 	}
 	
 	protected abstract String getParentTableName();
 	
 	protected abstract List<String> getChildTableNames();
-	
-	protected abstract List<DomainDataColumn> getDomainDataKeys();
 
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
@@ -118,10 +124,13 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 				.getItemByNo(this.getItemNoOfEmployeeId())
 				.get().getString();
 
-		DomainDataId id = new DomainDataId(this.getParentTableName(), Arrays.asList(new DomainDataId.Key(DomainDataColumn.SID, employeeId))); 
+		DomainDataId id = new DomainDataId(this.getParentTableName(), Arrays.asList(new DomainDataId.Key(DomainDataColumn.SID, employeeId)));
 		
-		//既存履歴
+		// 既存履歴
 		val existingHistory = require.getHistory(id, this.historyType, getKeyColumnNames());
+		
+		// 暫定仕様として、既存履歴は常に削除
+		deleteAllExistingHistory(require, context, employeeId, existingHistory);
 		
 		/*
 		 *  複数の履歴を追加する場合、全て追加し終えるまで補正結果が確定しない点に注意が必要。
@@ -138,7 +147,7 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 				.forEach(interm -> getPeriod(interm)
 						.map(p -> new Container(interm, DateHistoryItem.createNewHistory(p)))
 						.ifRight(c -> containers.add(c))
-						.ifLeft(e -> require.add(context, ExternalImportError.record(interm.getRowNo(), e.getText()))));
+						.ifLeft(e -> require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), e.getText()))));
 
 		// エラー行が除外された結果、空になったらここで終了
 		if (containers.isEmpty()) {
@@ -159,8 +168,7 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		} catch (BusinessException ex) {
 			// どのデータで失敗しようと１社員分すべて受け入れるか、全て受け入れないかのどちらかとする
 			containers.forEach(c -> require.add(
-					context,
-					ExternalImportError.record(c.interm.getRowNo(), ex.getMessage())));
+					ExternalImportError.record(c.interm.getRowNo(), context.getDomainId(), ex.getMessage())));
 			
 			return Collections.emptyList();
 		}
@@ -170,6 +178,29 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		return newContainers.stream()
 				.map(c -> c.complete())
 				.collect(toList());
+	}
+
+	/**
+	 * 既存履歴をすべて削除する
+	 * @param require
+	 * @param context
+	 * @param employeeId
+	 * @param existingHistory
+	 */
+	private void deleteAllExistingHistory(
+			DomainCanonicalization.RequireCanonicalize require,
+			ExecutionContext context,
+			String employeeId,
+			ExternalImportHistory existingHistory) {
+		
+		// 削除の補正データを作る
+		existingHistory.items().stream()
+			.map(e -> new EmployeeHistoryItem(employeeId, e))
+			.map(e -> e.toDelete(context))
+			.forEach(d -> require.save(context, d));
+		
+		// インスタンスからも除去
+		existingHistory.items().clear();
 	}
 	
 	/**
@@ -207,7 +238,7 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 					.add(itemNoStartDate, addingHistoryItem.start())
 					.add(itemNoEndDate, addingHistoryItem.end());
 			
-			return interm.addCanonicalized(canonicalizedItems, itemNoStartDate, itemNoEndDate);
+			return interm.addCanonicalized(canonicalizedItems);
 		}
 	}
 	
@@ -308,6 +339,7 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 	@Override
 	public AtomTask adjust(
 			RequireAdjsut require,
+			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
 		
@@ -391,10 +423,10 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		
 		return keyValues;
 	}
-	
-	
-	@Inject
-	private DomainDataRepository domainDataRepo;
+
+	protected List<DomainDataColumn> getDomainDataKeys() {
+		return Arrays.asList(DomainDataColumn.HIST_ID);
+	}
 	
 	public static interface RequireAdjust{
 		void delete(DomainDataId id);

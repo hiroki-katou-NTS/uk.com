@@ -17,16 +17,16 @@ import nts.arc.layer.app.cache.NestedMapCache;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.TimeVacation;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByScheduleManagementService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
-import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.WorkScheManaStatusService;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
@@ -41,6 +41,10 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.screen.at.app.ksu001.start.SupportCategory;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.AllTaskScheduleDetail;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.EmpTaskInfoDto;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.GetListEmpWorkHours;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.TaskInfoDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DailyAttdTimeVacationDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DisplayWorkInfoByDateDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DisplayWorkInfoParam;
@@ -77,6 +81,8 @@ public class DisplayWorkInfoByDateSc {
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
 	@Inject
 	private GetFixedWorkInformation fixedWorkInformation;
+	@Inject
+	private GetListEmpWorkHours getListEmpWorkHours;
 
 	// return ・List<社員勤務情報　dto,社員勤務予定　dto,勤務固定情報　dto>
 	public List<DisplayWorkInfoByDateDto> displayDataKsu003(DisplayWorkInfoParam param) {
@@ -90,7 +96,7 @@ public class DisplayWorkInfoByDateSc {
 				employmentHisScheduleAdapter);
 		
 		// 1 .取得する(Require, List<社員ID>, 期間):Map<社員の予定管理状態, Optional<勤務予定>>
-		Map<ScheManaStatuTempo, Optional<WorkSchedule>> mapScheMana = WorkScheManaStatusService
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mapScheMana = GetWorkScheduleByScheduleManagementService
 				.getScheduleManagement(requireImpl, param.getLstEmpId(), period);
 		List<ScheWorkDto> workDtos = mapScheMana.entrySet().stream().map(mapper-> new ScheWorkDto(mapper.getKey().getEmployeeID(), mapper.getKey(), mapper.getValue())).collect(Collectors.toList());
 		workDtos = workDtos.stream().sorted((a, b) -> param.getLstEmpId().indexOf(a.getEmpId()) - param.getLstEmpId().indexOf(b.getEmpId())).collect(Collectors.toList());
@@ -125,10 +131,10 @@ public class DisplayWorkInfoByDateSc {
 			Optional<EditStateOfDailyAttd> editStateSet6 = null;
 			Integer endTime2Status = null;
 			
-			ScheManaStatuTempo key = action.getManaStatuTempo(); // 予定管理状態
+			EmployeeWorkingStatus key = action.getManaStatuTempo(); // 予定管理状態
 			Optional<WorkSchedule> value = Optional.ofNullable(action.getSchedule()); // 勤務予定
 			// 2.1
-			boolean checkScheStatus = key.getScheManaStatus().needCreateWorkSchedule();
+			boolean checkScheStatus = key.getWorkingStatus().needCreateWorkSchedule();
 
 			// 2.3
 			if (value.isPresent()) {
@@ -200,7 +206,7 @@ public class DisplayWorkInfoByDateSc {
 				// Lấy ID để so sánh ở \\192.168.50.4\share\500_新構想開発\04_設計\40_ドメイン設計\ドメイン仕様書\UK\at_就業\shared.scherec_shared(勤務予定、勤務実績)
 				// 休憩時間帯編集状態 = 勤務予定．編集状態．編集状態
 				Optional<EditStateOfDailyAttd> editStateDaily = value.get().getLstEditState().stream()
-						.filter(x -> x.getAttendanceItemId() == 535).findFirst();
+						.filter(x -> x.getAttendanceItemId() == 157).findFirst();
 				breakTimeStatus = editStateDaily.isPresent() && editStateDaily.get().getEditStateSetting() != null ? editStateDaily.get().getEditStateSetting().value : null;
 
 				// 開始時刻 1= 勤務予定．出退勤．出退勤．出勤
@@ -292,7 +298,26 @@ public class DisplayWorkInfoByDateSc {
 				workScheduleDto = null;
 			}
 			
-			infoByDateDto = new DisplayWorkInfoByDateDto(key.getEmployeeID(), workInfoDto, workScheduleDto, inforDto == null ? null : inforDto.getFixedWorkInforDto().get(0));
+			// 2.4
+			TaskInfoDto taskInfoDto = null;
+			//if(param.getSelectedDisplayPeriod() == 2) {
+				Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMa = new HashMap<EmployeeWorkingStatus, Optional<WorkSchedule>>();
+				mngStatusAndWScheMa.put(key, value);
+				
+				EmpTaskInfoDto infoDto = null;
+				
+				if(!getListEmpWorkHours.get(mngStatusAndWScheMa).isEmpty()) {
+					infoDto = getListEmpWorkHours.get(mngStatusAndWScheMa).get(0);
+					taskInfoDto = new TaskInfoDto(
+							infoDto.getDate(), 
+							infoDto.getEmpID(),
+							infoDto.getTaskScheduleDetail());
+				//}
+				
+			}
+			// 2.3.4
+			infoByDateDto = new DisplayWorkInfoByDateDto(key.getEmployeeID(), workInfoDto, workScheduleDto, inforDto == null ? null : inforDto.getFixedWorkInforDto().get(0), taskInfoDto);
+			
 			dateDtos.add(infoByDateDto);
 		};
 		
@@ -304,7 +329,7 @@ public class DisplayWorkInfoByDateSc {
 	}
 
 	@AllArgsConstructor
-	public static class RequireWorkScheManaStatusImpl implements WorkScheManaStatusService.Require {
+	public static class RequireWorkScheManaStatusImpl implements GetWorkScheduleByScheduleManagementService.Require {
 
 		private NestedMapCache<String, GeneralDate, WorkSchedule> workScheduleCache;
 		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;
