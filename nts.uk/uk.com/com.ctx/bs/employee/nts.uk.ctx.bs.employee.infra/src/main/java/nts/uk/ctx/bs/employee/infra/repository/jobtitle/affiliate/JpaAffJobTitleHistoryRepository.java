@@ -168,6 +168,9 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 
 	@Override
 	public Optional<AffJobTitleHistory> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
+		if (standardDate == null) {
+			return Optional.empty();
+		}
 		Optional<BsymtAffJobTitleHist> optionaData = this.queryProxy()
 				.query(GET_BY_SID_DATE, BsymtAffJobTitleHist.class)
 				.setParameter("sid", employeeId).setParameter("standardDate", standardDate).getSingle();

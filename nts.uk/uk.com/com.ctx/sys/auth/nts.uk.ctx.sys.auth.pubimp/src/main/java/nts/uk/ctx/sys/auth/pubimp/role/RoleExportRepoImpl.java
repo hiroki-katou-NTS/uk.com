@@ -20,6 +20,7 @@ import nts.uk.ctx.sys.auth.app.find.person.role.RoleWhetherLoginDto;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.RoleWorkplaceIDFinder;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceIdDto;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceParam;
+import nts.uk.ctx.sys.auth.dom.algorithm.EmpReferenceRangeService;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
@@ -59,6 +60,9 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	
 	@Inject
 	private RoleSetService roleSetService;
+	
+	@Inject
+	private EmpReferenceRangeService empReferenceRangeService;
 	
 	/*
 	 * (non-Javadoc)
@@ -393,6 +397,11 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 			}).collect(Collectors.toList());
 		}
 		return null;
+	}
+	@Override
+	public Integer getEmployeeReferenceRange(String userId, int roleType, GeneralDate referenceDate) {
+		// TODO Auto-generated method stub
+		return empReferenceRangeService.getByUserIDAndReferenceDate(userId, roleType, referenceDate).map(c->c.getEmployeeReferenceRange().value).orElse(null);
 	}
 
 }
