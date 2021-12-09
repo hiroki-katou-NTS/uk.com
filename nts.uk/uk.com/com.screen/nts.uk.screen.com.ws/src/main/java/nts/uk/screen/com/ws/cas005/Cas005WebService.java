@@ -1,12 +1,12 @@
-package nts.uk.ctx.sys.portal.ws.webmenu.cas005;
+package nts.uk.screen.com.ws.cas005;
 
 
 import lombok.val;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuSimpleDto;
-import nts.uk.ctx.sys.portal.app.screenquery.webmenu.*;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTies;
+import nts.uk.screen.com.app.find.webmenu.webmenu.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

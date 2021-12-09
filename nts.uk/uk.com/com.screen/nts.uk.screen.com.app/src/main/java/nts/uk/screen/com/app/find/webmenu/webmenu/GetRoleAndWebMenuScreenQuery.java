@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.screenquery.webmenu;
+package nts.uk.screen.com.app.find.webmenu.webmenu;
 
 
 import lombok.val;
