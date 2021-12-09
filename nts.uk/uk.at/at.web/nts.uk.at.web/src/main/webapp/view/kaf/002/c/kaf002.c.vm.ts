@@ -19,9 +19,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
 	<div id="kaf002-c">
             <div id="contents-area"
                 style="background-color: inherit; height: calc(100vh - 138px);">
-                <div class="two-panel" style="height: 100%; width: 1260px">
+                <div class="two-panel" style="height: 100%; min-width: 1260px; display: inline-flex;">
                     <div class="left-panel"
-                        style="padding-bottom: 5px; width: calc(1260px - 388px); height: inherit;">
+                        style="padding-bottom: 5px; min-width: calc(1260px - 388px); height: inherit;">
                         <div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px;overflow-x: auto;">
                             <div class="table"
                                 style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
