@@ -66,12 +66,13 @@ public class TotalDayCountWs {
 			// 日別勤怠のスナップショット.勤務情報の勤務種類コードの値と合致するか
 			List<WorkTypeCode> workTypeCds = lstWorkType.stream().map(WorkType::getWorkTypeCode)
 					.collect(Collectors.toList());
-			long count = snapshotWorkTypeCds.stream()
-					.filter(data -> workTypeCds.contains(data)).count();
-			totalCountDay.setPredeterminedDay((int) count);
+			double count = snapshotWorkTypeCds.stream()
+					.filter(data -> workTypeCds.contains(data))
+					.mapToDouble(data -> this.getDayCount(lstWorkType, data, true)).sum();
+			totalCountDay.setPredeterminedDay(count);
 		}
 		else {
-			totalCountDay.setPredeterminedDay(0);
+			totalCountDay.setPredeterminedDay(0d);
 		}
 		return totalCountDay;
 	}
@@ -106,7 +107,7 @@ public class TotalDayCountWs {
 					// 日別勤務表の勤務種類コードの値と合致するか
 					if (optWorkType.isPresent()) {
 						// 日数をカウントする 
-						int dayCount = 1;
+						double dayCount = this.getDayCount(lstWorkType, workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode(), false);
 						switch (dayType) {
 						case ATTENDANCE:
 							totalCountDay.setWorkingDay(totalCountDay.getWorkingDay() + dayCount);
@@ -218,7 +219,7 @@ public class TotalDayCountWs {
 			return dayType.compareToWorkTypeCls(dailyWork.getOneDay());
 		case MonringAndAfternoon:
 			return dayType.compareToWorkTypeCls(dailyWork.getMorning())
-					|| dayType.compareToWorkTypeCls(dailyWork.getMorning());
+					|| dayType.compareToWorkTypeCls(dailyWork.getAfternoon());
 		}
 		return false;
 	}
@@ -233,5 +234,32 @@ public class TotalDayCountWs {
 				WorkTypeClassification.YearlyReserved, WorkTypeClassification.SpecialHoliday, WorkTypeClassification.SpecialHoliday,
 				WorkTypeClassification.Absence, WorkTypeClassification.SubstituteHoliday, WorkTypeClassification.Shooting,
 				WorkTypeClassification.TimeDigestVacation).contains(workTypeClassification);
+	}
+	
+	/**
+	 * Calculate day used for worktype (0/0.5/1)
+	 * @param workTypes
+	 * @param code
+	 * @param isPredetermined	所定日数?
+	 * @return
+	 */
+	private double getDayCount(List<WorkType> workTypes, WorkTypeCode code, boolean isPredetermined) {
+		Optional<WorkType> optWorkType = workTypes.stream()
+				.filter(data -> data.getWorkTypeCode().equals(code)).findFirst();
+		if (optWorkType.isPresent()) {
+			DailyWork dailyWork = optWorkType.get().getDailyWork();
+			switch (dailyWork.getWorkTypeUnit()) {
+			case OneDay:
+				return 1.0d;
+			case MonringAndAfternoon:
+				// Calculate sum if 所定日数
+				if (isPredetermined) {
+					return (this.isPredetermineWorkType(dailyWork.getMorning()) ? 0.5d : 0d)
+							+ (this.isPredetermineWorkType(dailyWork.getAfternoon()) ? 0.5d : 0d);
+				}
+				return 0.5d;
+			}
+		}
+		return 0d;
 	}
 }
