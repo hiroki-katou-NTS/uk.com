@@ -21,7 +21,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 							   		marginLeft: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? '10px' : '0'
 							   }">
 					<div data-bind="ntsFormLabel: {
-										text: $i18n('KAF005_51'), 
+										text: $i18n('KAF000_51'), 
 										required: ko.computed(function() { return appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting && appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.standardReasonRequired;})
 									}"></div>		
 				</div>
@@ -32,7 +32,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 							   		marginLeft: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? '10px' : '0'
 							   }">
 					<div data-bind="ntsFormLabel: {
-										text: $i18n('KAF005_52'), 
+										text: $i18n('KAF000_52'), 
 										required: ko.computed(function() { return appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting && appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason;})
 									}"></div>
 				</div>
