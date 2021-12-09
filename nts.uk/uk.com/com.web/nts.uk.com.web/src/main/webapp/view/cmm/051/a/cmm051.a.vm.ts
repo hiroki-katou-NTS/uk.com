@@ -246,7 +246,7 @@ module nts.uk.com.view.cmm051.a {
                 for (let i = 0; i < listHist.length; i++) {
                     let wpl = listHist[i];
                     let id = wpl.workplaceManagerId;
-                    let display = wpl.startDate + " - " + wpl.endDate;
+                    let display = wpl.startDate + " ~ " + wpl.endDate;
                     listDatePeriod.push({
                         id: id,
                         sid: wpl.employeeId,
@@ -945,7 +945,9 @@ module nts.uk.com.view.cmm051.a {
                     vm.workPlaceId(workplaceInfor[0].id);
                     vm.workplaceCode(workplaceInfor[0].code);
                     vm.workplaceName(workplaceInfor[0].name);
-                   // vm.employeeId(null);
+                    if(vm.mode() == Mode.WPL){
+                        vm.employeeId(null);
+                    }
                     vm.getListWpl(wid);
                 }
             });
