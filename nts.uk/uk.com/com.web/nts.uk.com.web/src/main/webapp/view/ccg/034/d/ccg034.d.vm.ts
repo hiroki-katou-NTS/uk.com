@@ -915,6 +915,19 @@ module nts.uk.com.view.ccg034.d {
       switch (originPartData.partType) {
         case MenuPartType.PART_MENU:
           newPartData = new PartDataMenuModel(originPartData);
+          const menuFileId = (originPartData as PartDataMenuModel).fileId;
+          if (LayoutUtils.isValidFile(menuFileId)) {
+            vm.$ajax(nts.uk.text.format(API.copyFile, (originPartData as PartDataMenuModel).fileId))
+            .then(res => {
+              (newPartData as PartDataMenuModel).fileId = res.fileId;
+              (newPartData as PartDataMenuModel).originalFileId = null;
+              vm.modifiedPartList.added.push(res.fileId);
+            });
+          } else {
+            (newPartData as PartDataMenuModel).fileId = "";
+            (newPartData as PartDataMenuModel).originalFileId = null;
+            vm.modifiedPartList.added.push(null);
+          }
           break;
         case MenuPartType.PART_LABEL:
           newPartData = new PartDataLabelModel(originPartData);
