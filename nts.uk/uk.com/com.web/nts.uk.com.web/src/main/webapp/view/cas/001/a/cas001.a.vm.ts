@@ -51,7 +51,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             multiple: false,
             isResize: true,
             rows: 5,
-            tabindex: 4,
+            tabindex: 5,
             onDialog: true
         });
         listRole: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
@@ -62,9 +62,15 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 headerText: getText('CAS001_69'), key: 'setting', width: 80, formatter: makeIcon
             }
         ]);
+        isFromCPS018: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
+
+            let params = getShared("CAS001A_PARAMS") || { isFromCPS018: false };
+            self.isFromCPS018(params.isFromCPS018);
+            nts.uk.sessionStorage.removeItem(nts.uk.request.STORAGE_KEY_TRANSFER_DATA);
+
             block.grayout();
             self.component.columns([
                 { headerText: getText("CCG025_3"), prop: 'roleId', width: 50, hidden: true },
