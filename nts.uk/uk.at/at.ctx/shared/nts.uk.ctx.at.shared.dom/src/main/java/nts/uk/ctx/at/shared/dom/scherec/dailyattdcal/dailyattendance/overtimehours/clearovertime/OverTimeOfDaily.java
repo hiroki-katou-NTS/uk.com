@@ -356,7 +356,13 @@ public class OverTimeOfDaily {
 		}
 		// 残業深夜時間の計算
 		TimeDivergenceWithCalculation midnightTime = overTimeSheet.calcMidNightTime(autoCalcSet);
-		midnightTime = midnightTime.addMinutes(flexWithoutTime, flexWithoutTime);
+		// フレックス：所定外深夜時間を加算する　（計算区分.普通残業深夜時間="打刻から計算する"時のみ、時間に加算する）
+		if (autoCalcSet.getNormalMidOtTime().getCalAtr().isCalculateEmbossing()){
+			midnightTime = midnightTime.addMinutes(flexWithoutTime, flexWithoutTime);
+		}
+		else{
+			midnightTime = midnightTime.addMinutes(AttendanceTime.ZERO, flexWithoutTime);
+		}
 		// 事前申請制御
 		if (calAttr.getOvertimeSetting().getNormalMidOtTime()
 				.getUpLimitORtSet() == TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION

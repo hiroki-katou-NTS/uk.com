@@ -40,7 +40,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.ActualWorkTimeSheetListService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
@@ -609,33 +608,11 @@ public class OverTimeSheet {
 	public TimeDivergenceWithCalculation calcMidNightTime(AutoCalOvertimeSetting autoCalcSet) {
 		TimeDivergenceWithCalculation calcTime = TimeDivergenceWithCalculation.defaultValue();
 		for(OverTimeFrameTimeSheetForCalc timeSheet:frameTimeSheets) {
-			val calcSet = getCalcSetByAtr(autoCalcSet, timeSheet.getWithinStatutryAtr(),timeSheet.isGoEarly());
+			AutoCalSetting calcSet = autoCalcSet.decisionUseCalcSettingForMidnight(
+					timeSheet.getWithinStatutryAtr(), timeSheet.isGoEarly());
 			calcTime = calcTime.addMinutes(timeSheet.calcMidNightTime(calcSet));
 		}
 		return calcTime;
-	}
-	
-	/**
-	 * 法定内区分、早出区分に従って計算区分の取得
-	 * @param autoCalcSet 自動計算設定
-	 * @param statutoryAtr　法定内区分
-	 * @param goEarly　早出区分
-	 * @return　自動計算設定
-	 */
-	private AutoCalSetting getCalcSetByAtr(AutoCalOvertimeSetting autoCalcSet,StatutoryAtr statutoryAtr, boolean goEarly) {
-		//法内である
-		if(statutoryAtr.isStatutory() ) {
-			return autoCalcSet.getLegalMidOtTime();
-		}
-		else {
-			//早出である
-			if(goEarly) {
-				return autoCalcSet.getEarlyMidOtTime();
-			}
-			else {
-				return autoCalcSet.getNormalMidOtTime();
-			}
-		}
 	}
 	
 	/**

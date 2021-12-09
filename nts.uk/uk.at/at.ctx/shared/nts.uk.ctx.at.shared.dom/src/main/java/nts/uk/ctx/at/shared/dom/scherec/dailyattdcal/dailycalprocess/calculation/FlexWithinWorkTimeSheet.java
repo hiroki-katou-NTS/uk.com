@@ -1178,7 +1178,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				dailyUnit,
 				commonSetting,
 				flexUpper,
-				lateEarlyMinusAtr).getFlexTime().getTime().valueAsMinutes();
+				lateEarlyMinusAtr).getFlexTime().getCalcTime().valueAsMinutes();
 		// 就業時間帯時間枠を時刻の遅い順に確認する
 		if (this.getWithinWorkTimeFrame().size() == 0) return Optional.empty();
 		List<WithinWorkTimeFrame> sortLateOrder = this.getWithinWorkTimeFrame().stream()
