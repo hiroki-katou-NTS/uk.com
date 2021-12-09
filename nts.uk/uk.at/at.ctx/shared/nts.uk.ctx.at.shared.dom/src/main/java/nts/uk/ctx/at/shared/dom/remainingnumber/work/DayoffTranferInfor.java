@@ -4,7 +4,6 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.work;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 /**
  * 代休振替情報
@@ -33,7 +32,7 @@ public class DayoffTranferInfor {
 		if ((tranferBreakTime.isPresent() && !tranferOverTime.isPresent())
 				|| (!tranferBreakTime.isPresent() && tranferOverTime.isPresent()))
 			return;
-		throw new BusinessException("DayoffTranferInfor validate");
+		throw new RuntimeException("DayoffTranferInfor validate");
 	}
 	
 	/**
@@ -81,7 +80,7 @@ public class DayoffTranferInfor {
 			return this.getTranferBreakTime().get().getCreateAtr();
 		if (this.getTranferOverTime().isPresent())
 			return this.getTranferOverTime().get().getCreateAtr();
-		throw new BusinessException("DayoffTranferInfor validate");
+		throw new RuntimeException("DayoffTranferInfor validate");
 	}
 
 }
