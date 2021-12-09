@@ -2002,6 +2002,7 @@ module nts.uk.com.view.ccg034.d {
             const imageRatio = partDataMenuModel.ratio;
             $partHTML.css({ 'display': 'grid', 'grid-auto-columns': '100%', 'grid-auto-rows': 'minmax(0, 1fr) max-content' });
             const $partImageContainer = $('<a>', { 'href': `${location.origin}${partDataMenuModel.menuUrl}`, 'target': '_top' })
+              .addClass(CSS_CLASS_CCG034_HYPERLINK)
               .css({ "align-self": "start", "height": "100%" });
             const $partImage = $("<img>")
               .addClass("ccg034-hyperlink")
