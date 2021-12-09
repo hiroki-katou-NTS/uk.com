@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -16,22 +17,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KfnmtSpecialHolidayPk implements Serializable {
+public class KfnmtRptHdRemainHdspPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 会社ID
-	 */
-	@Basic(optional = false)
-	@Column(name = "CID")
-	public String cid;
 
 	/**
-	 * コード
+	 * 出力レイアウトID : 休暇残数管理表の出力項目設定.会社ID
 	 */
 	@Basic(optional = false)
-	@Column(name = "CD")
-	public String cd;
+	@Column(name = "LAYOUT_ID")
+	public String layoutId;
 
 	/**
 	 * コード
