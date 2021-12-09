@@ -1,5 +1,6 @@
 module nts.uk.com.view.cas005.a.viewmodel {
     import ComponentModelCCG025 = nts.uk.com.view.ccg025.a.component.viewmodel.ComponentModel;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
 
     const API = {
         addRoleCas005 :"screen/sys/auth/cas005/addrolecas005",
@@ -199,12 +200,17 @@ module nts.uk.com.view.cas005.a.viewmodel {
                             vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                                 let roles: Array<IRole> = ko.toJS(vm.listRole),
                                     selected: IRole = roles[index];
-                                vm.getListRole(selected.roleId).done(() => {
-
-                                }).always(() => {
+                                if(isNullOrUndefined(selected)){
+                                    vm.getListRole();
                                     vm.$blockui("hide");
                                     nts.uk.ui.errors.clearAll();
-                                });
+                                }else {
+                                    vm.getListRole(selected.roleId).done(() => {
+                                    }).always(() => {
+                                        vm.$blockui("hide");
+                                        nts.uk.ui.errors.clearAll();
+                                    });
+                                }
                             });
                         }).fail((error) => {
                             vm.$dialog.error(error);
