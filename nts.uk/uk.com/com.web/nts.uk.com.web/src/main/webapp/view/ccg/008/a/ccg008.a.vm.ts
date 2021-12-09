@@ -207,7 +207,16 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 					if (data !== 0) {
 						vm.reload = setInterval(() => {
-							refreshLayout();
+							const widgetLeft = vm.widgetLeft();
+							const widgetRight = vm.widgetRight();
+							if (vm.widgetLeft().length > 0) {
+								vm.widgetLeft([]);
+								vm.widgetLeft(widgetLeft);
+							}
+							if (vm.widgetRight().length > 0) {
+								vm.widgetRight([]);
+								vm.widgetRight(widgetRight);
+							}
 						}, miliSeconds);
 					}
 				});
@@ -306,7 +315,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 			// clear widget data
 			vm.widgetLeft([]);
-			vm.widgetCenter(null);
+			// vm.widgetCenter(null);
 			vm.widgetRight([]);
 
 			vm
