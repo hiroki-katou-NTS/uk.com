@@ -7,6 +7,7 @@ import java.util.Optional;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.GetInterimRemainData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService.RequireM1;
@@ -90,14 +91,13 @@ public class GetHolidayDetailByPeriod {
 		}
 
 		DatePeriod periodNew = new DatePeriod(ymd.get(), period.end());
-		List<DailyInterimRemainMngData> data = require.mapInterimRemainData(require, cacheCarrier, companyId,
-				employeeId, periodNew);
-
+		List<DailyInterimRemainMngData> data = GetInterimRemainData.getInterimRemainData(require, employeeId, periodNew);
+		
 		return data;
 
 	}
 
-	public static interface Require extends RequireM1,GetClosureStartForEmployee.RequireM1 {
+	public static interface Require extends RequireM1,GetClosureStartForEmployee.RequireM1,GetInterimRemainData.Require {
 		/**
 		 * [R-1]暫定残数管理データを作成する AggregateMonthlyRecordService
 		 */
