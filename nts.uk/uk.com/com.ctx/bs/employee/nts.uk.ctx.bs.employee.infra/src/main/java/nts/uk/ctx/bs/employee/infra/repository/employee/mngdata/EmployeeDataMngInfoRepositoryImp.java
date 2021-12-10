@@ -917,4 +917,13 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.setParameter("employeeCode", employeeCd)
 				.getSingle(m -> toDomain(m));
 	}
+	
+	// Pub get all Sid
+	@Override
+	public List<String> getAllSidByCid(String cid) {
+		List<String> listEntity = this.queryProxy().query(GET_ALL, BsymtEmployeeDataMngInfo.class)
+				.setParameter("cid", cid).getList().stream().map(x -> x.bsymtEmployeeDataMngInfoPk.sId).collect(Collectors.toList());
+
+		return listEntity;
+	}
 }

@@ -6593,6 +6593,24 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			return dfd.promise();
 		}
 
+        public openKSU003D(): void {
+            let self = this;
+            let data = {
+                targetOrg: {
+                    unit: self.dataFromA().unit,
+                    workplaceId: self.dataFromA().workplaceId,
+                    workplaceGroupId: self.dataFromA().workplaceGroupId,
+                },
+                employeeIds: _.map(self.lstEmpId, (x: any) => { return x.empId }),
+                targetPeriod: {
+                    startDate: self.dataFromA().daySelect,
+                    endDate: self.dataFromA().daySelect
+                }
+            };
+            setShared('dataShareKsu003D', data);
+            nts.uk.ui.windows.sub.modal("/view/ksu/003/d/index.xhtml");
+        }
+		
 		// 決定（A14_11）をクリックする (click A14_11)
 		public closePopupA14() {
 			let self = this;
