@@ -109,7 +109,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 new ItemModel(6, nts.uk.resource.getText('Enum_WorkTypeClassification_SubstituteHoliday'), 5),
                 new ItemModel(7, nts.uk.resource.getText('Enum_WorkTypeClassification_Shooting'), 1),
                 new ItemModel(8, nts.uk.resource.getText('Enum_WorkTypeClassification_Pause'), 6),
-                new ItemModel(9, nts.uk.resource.getText('Enum_WorkTypeClassification_TimeDigestVacation'), 4)
+                // new ItemModel(9, nts.uk.resource.getText('Enum_WorkTypeClassification_TimeDigestVacation'), 4)
             ]);
 
 
