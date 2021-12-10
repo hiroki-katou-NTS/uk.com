@@ -2215,9 +2215,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         if ("日別作成".equals(typeExecution)) {
             try {
                 // ⑤社員の日別実績を作成する
-                ExecutionTypeDaily executionTypeDaily = ExecutionTypeDaily.CREATE;
+                ExecutionTypeDaily executionTypeDaily = ExecutionTypeDaily.IMPRINT;
                 if (dailyCreateLog.getExecutionType() == ExecutionType.RERUN) {
-                    executionTypeDaily = ExecutionTypeDaily.DELETE_ACHIEVEMENTS;
+                    executionTypeDaily = ExecutionTypeDaily.CREATE;
                 }
                 OutputCreateDailyResult status = createDailyResultDomainServiceNew.createDataNewWithNoImport(
                         asyContext,
