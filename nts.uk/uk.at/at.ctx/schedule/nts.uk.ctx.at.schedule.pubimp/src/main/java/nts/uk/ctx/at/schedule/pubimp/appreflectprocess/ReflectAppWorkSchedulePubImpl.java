@@ -162,7 +162,7 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 	private StampReflectionManagementRepository timePriorityRepository;
 
 	@Override
-	public Pair<SCReflectStatusResultExport, AtomTask> process(Object application, GeneralDate date, SCReflectStatusResultExport reflectStatus, int preAppWorkScheReflectAttr) {
+	public Pair<SCReflectStatusResultExport, AtomTask> process(Object application, GeneralDate date, SCReflectStatusResultExport reflectStatus, int preAppWorkScheReflectAttr, String execId) {
 		String companyId = AppContexts.user().companyId();
 		
 		RequireImpl impl = new RequireImpl(companyId, workTypeRepo, workTimeSettingRepository, service,
@@ -175,7 +175,7 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 				applicationReflectHistoryRepo);
 		Pair<SCReflectStatusResult, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId,
 				(ApplicationShare) application, date, convertToDom(reflectStatus),
-				preAppWorkScheReflectAttr);
+				preAppWorkScheReflectAttr, execId);
 		return Pair.of(convertToExport(result.getLeft()), result.getRight());
 	}
 
