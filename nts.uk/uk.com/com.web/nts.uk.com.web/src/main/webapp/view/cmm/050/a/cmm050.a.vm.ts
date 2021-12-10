@@ -216,7 +216,7 @@ module nts.uk.com.view.cmm050.a {
                     dfd.resolve();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
                         _self.startPage().done(function(){});
-                        $('#A2_2').focus();
+                        $('#A8_6').focus();
                     });
                 }).fail(function(){
                     alert('error');    
