@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.val;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTies;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -47,8 +48,8 @@ public class SptmtRoleByRoleTies extends ContractUkJpaEntity implements Serializ
 
 	public SptmtRoleByRoleTies(String roleId, String webMenuCd, String companyId) {
 		super();
-		this.pk.roleId = roleId;
+		val pk = new SptmtRoleByRoleTiesPK(roleId,companyId);
+		this.pk = pk;
 		this.webMenuCd = webMenuCd;
-		this.pk.companyId = companyId;
 	}
 }

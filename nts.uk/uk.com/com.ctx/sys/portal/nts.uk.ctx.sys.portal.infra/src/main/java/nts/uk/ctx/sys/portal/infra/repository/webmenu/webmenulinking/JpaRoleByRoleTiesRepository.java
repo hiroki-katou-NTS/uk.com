@@ -24,10 +24,9 @@ public class JpaRoleByRoleTiesRepository extends JpaRepository implements  RoleB
 
 	@Override
 	public void updateRoleByRoleTies(RoleByRoleTies roleByRoleTies) {
-		SptmtRoleByRoleTies dataUpdate = SptmtRoleByRoleTies.toEntity(roleByRoleTies);
-		SptmtRoleByRoleTies newData = this.queryProxy().find(dataUpdate.pk.roleId, SptmtRoleByRoleTies.class).get();
-		newData.setWebMenuCd(dataUpdate.webMenuCd);
-		
+		SptmtRoleByRoleTies newData = this.queryProxy().find(new SptmtRoleByRoleTiesPK(roleByRoleTies.getRoleId(),roleByRoleTies.getCompanyId()), SptmtRoleByRoleTies.class).get();
+		newData.setWebMenuCd(roleByRoleTies.getWebMenuCd().v());
+		this.commandProxy().update(newData);
 	}
 
 	@Override
