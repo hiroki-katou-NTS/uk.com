@@ -22,7 +22,9 @@ import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSettingAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workplace.WorkPlaceConfig;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.EmployeeGeneralInfoService;
@@ -45,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionMan
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.MasterList;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
@@ -166,8 +169,8 @@ public class CreateDailyResultDomainServiceNew {
 					ExecutionStatus.PROCESSING.value);
 		}
 		
-		Optional<StampReflectionManagement> stampReflectionManagement = this.stampReflectionManagementRepository
-				.findByCid(companyId);
+//		Optional<StampReflectionManagement> stampReflectionManagement = this.stampReflectionManagementRepository
+//				.findByCid(companyId);
 
 		// マスタ情報を取得する
 		// Imported(就業)「社員の履歴情報」 を取得する
@@ -181,15 +184,15 @@ public class CreateDailyResultDomainServiceNew {
 
 		// ...................................
 		// 社員ID（List）と期間から労働条件を取得する
-		val workingConditionItems = this.workingConditionItemRepository.getBySidsAndDatePeriod(emloyeeIds, periodTime);
+//		val workingConditionItems = this.workingConditionItemRepository.getBySidsAndDatePeriod(emloyeeIds, periodTime);
 
-		Map<String, List<WorkingConditionItem>> mapWOrking = workingConditionItems.parallelStream()
-				.collect(Collectors.groupingBy(WorkingConditionItem::getEmployeeId));
+//		Map<String, List<WorkingConditionItem>> mapWOrking = workingConditionItems.parallelStream()
+//				.collect(Collectors.groupingBy(WorkingConditionItem::getEmployeeId));
 
 		// Map<Sid, Map<HistoryID, List<WorkingConditionItem>>>
-		Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem = mapWOrking.entrySet()
-				.parallelStream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
-						.collect(Collectors.toMap(WorkingConditionItem::getHistoryId, Function.identity()))));
+//		Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem = mapWOrking.entrySet()
+//				.parallelStream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
+//						.collect(Collectors.toMap(WorkingConditionItem::getHistoryId, Function.identity()))));
 
 		val workingConditions = workingConditionRepo.getBySidsAndDatePeriod(emloyeeIds, periodTime);
 
@@ -198,9 +201,9 @@ public class CreateDailyResultDomainServiceNew {
 				Collectors.toMap(WorkingCondition::getEmployeeId, WorkingCondition::getDateHistoryItem));
 
 		// Map<Sid, Map<HistoryID, DateHistoryItem>>
-		Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem = mapLstDateHistoryItem.entrySet().stream()
-				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
-						.collect(Collectors.toMap(DateHistoryItem::identifier, Function.identity()))));
+//		Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem = mapLstDateHistoryItem.entrySet().stream()
+//				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
+//						.collect(Collectors.toMap(DateHistoryItem::identifier, Function.identity()))));
 
 		// [No.647]期間に対応する職場構成を取得する
 		val workPlaceConfigLst = this.affWorkplaceAdapter.findByCompanyIdAndPeriod(companyId, periodTime);
@@ -240,10 +243,9 @@ public class CreateDailyResultDomainServiceNew {
 					PeriodInMasterList periodInMasterList = getPeriodInMasterList(companyId, employeeId,
 							periodTime, historySeparatedList, employeeGeneralInfoImport);
 
-					OutputCreateDailyResult cStatus = createDataNew(asyncContext, periodTime, executionAttr, companyId,
+					OutputCreateDailyResult cStatus = createDataNew(periodTime, executionAttr, companyId,
 							empCalAndSumExeLog, dataSetter, employeeGeneralInfoImport,
-							stateHolder, employeeId, stampReflectionManagement, mapWorkingConditionItem,
-							mapDateHistoryItem, periodInMasterList,executionType, checkLock);
+							stateHolder, employeeId, periodInMasterList,executionType, checkLock);
 					listErrorMessageInfo.addAll(cStatus.getListErrorMessageInfo());
 					if (cStatus.getProcessState() == ProcessState.INTERRUPTION) {
 						stateHolder.add(cStatus.getProcessState());
@@ -435,25 +437,18 @@ public class CreateDailyResultDomainServiceNew {
 	 * @param checkLock
 	 * @return
 	 */
-	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public OutputCreateDailyResult createDataNew(AsyncCommandHandlerContext asyncContext, DatePeriod periodTime,
-			ExecutionAttr executionAttr, String companyId,
+	public OutputCreateDailyResult createDataNew(DatePeriod periodTime, ExecutionAttr executionAttr, String companyId,
 			Optional<EmpCalAndSumExeLog> empCalAndSumExeLog, TaskDataSetter dataSetter,
 			EmployeeGeneralInfoImport employeeGeneralInfoImport, StateHolder stateHolder, String employeeId,
-			Optional<StampReflectionManagement> stampReflectionManagement,
-			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
-			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList,
-			ExecutionTypeDaily executionType, Optional<Boolean> checkLock) {
+			PeriodInMasterList periodInMasterList, ExecutionTypeDaily executionType, Optional<Boolean> checkLock) {
 
 		/**
 		 * 勤務種別変更時に再作成 = false reCreateWorkType 異動時に再作成 = false reCreateWorkPlace
 		 * 休職・休業者再作成 = false reCreateRestTime
 		 */
 		OutputCreateDailyResult cStatus = createDailyResultEmployeeDomainServiceNew.createDailyResultEmployee(
-				asyncContext, employeeId, periodTime, companyId, empCalAndSumExeLog, false, false,
-				false, employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem,
-				mapDateHistoryItem, periodInMasterList, executionType, checkLock);
+				employeeId, periodTime, companyId, empCalAndSumExeLog, employeeGeneralInfoImport, periodInMasterList, executionType, checkLock);
 
 		// 暫定データの登録
 //		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId,
@@ -495,22 +490,22 @@ public class CreateDailyResultDomainServiceNew {
 			ExecutionTypeDaily executionType,Optional<EmpCalAndSumExeLog> empCalAndSumExeLog, Optional<Boolean> checkLock) {
 		val dataSetter = asyncContext.getDataSetter(); //TODO
 
-		val stampReflectionManagement = this.stampReflectionManagementRepository.findByCid(companyId);
+//		val stampReflectionManagement = this.stampReflectionManagementRepository.findByCid(companyId);
 
 		val employeeGeneralInfoImport = this.employeeGeneralInfoService.getEmployeeGeneralInfo(Arrays.asList(employeeId), periodTime);
 		val exWorkTypeHistoryImports = this.businessTypeOfEmpHisService.find(Arrays.asList(employeeId), periodTime);
 		
 		employeeGeneralInfoImport.setExWorkTypeHistoryImports(exWorkTypeHistoryImports);
 		// 社員ID（List）と期間から労働条件を取得する
-		val workingConditionItems = this.workingConditionItemRepository.getBySidsAndDatePeriod(Arrays.asList(employeeId), periodTime);
+//		val workingConditionItems = this.workingConditionItemRepository.getBySidsAndDatePeriod(Arrays.asList(employeeId), periodTime);
 
-		Map<String, List<WorkingConditionItem>> mapWOrking = workingConditionItems.parallelStream()
-				.collect(Collectors.groupingBy(WorkingConditionItem::getEmployeeId));
+//		Map<String, List<WorkingConditionItem>> mapWOrking = workingConditionItems.parallelStream()
+//				.collect(Collectors.groupingBy(WorkingConditionItem::getEmployeeId));
 
 		// Map<Sid, Map<HistoryID, List<WorkingConditionItem>>>
-		Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem = mapWOrking.entrySet()
-				.parallelStream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
-						.collect(Collectors.toMap(WorkingConditionItem::getHistoryId, Function.identity()))));
+//		Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem = mapWOrking.entrySet()
+//				.parallelStream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
+//						.collect(Collectors.toMap(WorkingConditionItem::getHistoryId, Function.identity()))));
 
 		val workingConditions = workingConditionRepo.getBySidsAndDatePeriod(Arrays.asList(employeeId), periodTime);
 
@@ -519,9 +514,9 @@ public class CreateDailyResultDomainServiceNew {
 				Collectors.toMap(WorkingCondition::getEmployeeId, WorkingCondition::getDateHistoryItem));
 
 		// Map<Sid, Map<HistoryID, DateHistoryItem>>
-		Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem = mapLstDateHistoryItem.entrySet().stream()
-				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
-						.collect(Collectors.toMap(DateHistoryItem::identifier, Function.identity()))));
+//		Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem = mapLstDateHistoryItem.entrySet().stream()
+//				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
+//						.collect(Collectors.toMap(DateHistoryItem::identifier, Function.identity()))));
 
 		// [No.647]期間に対応する職場構成を取得する
 		val workPlaceConfigLst = this.affWorkplaceAdapter.findByCompanyIdAndPeriod(companyId, periodTime);
@@ -550,10 +545,9 @@ public class CreateDailyResultDomainServiceNew {
 		 * 勤務種別変更時に再作成 = false reCreateWorkType 異動時に再作成 = false reCreateWorkPlace
 		 * 休職・休業者再作成 = false reCreateRestTime
 		 */
-		OutputCreateDailyResult cStatus = createDataNew(asyncContext, periodTime, executionAttr, companyId,
+		OutputCreateDailyResult cStatus = createDataNew(periodTime, executionAttr, companyId,
 				empCalAndSumExeLog, dataSetter, employeeGeneralInfoImport, stateHolder, employeeId,
-				stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList,
-				executionType, checkLock);
+				periodInMasterList, executionType, checkLock);
 		if (cStatus.getProcessState() == ProcessState.SUCCESS) {
 				for (ErrorMessageInfo errorMessageInfo : cStatus.getListErrorMessageInfo()) {
 					String empCalAndSumExeLogId = empCalAndSumExeLog.isPresent()?empCalAndSumExeLog.get().getEmpCalAndSumExecLogID():null;
@@ -613,6 +607,88 @@ public class CreateDailyResultDomainServiceNew {
 		
 		return Optional.of(new EmployeeGeneralAndPeriodMaster(employeeGeneralInfoImport, periodInMasterList));
 		
+	}
+	
+	/**
+	 * 日別実績の作成 (not use async)
+	 * @param asyncContext
+	 * @param employeeId
+	 * @param periodTime
+	 * @param executionAttr
+	 * @param companyId
+	 * @param empCalAndSumExecLogID
+	 * @param executionLog
+	 * @param executionType
+	 * @param checkLock
+	 * @return
+	 */
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public OutputCreateDailyResult createDataNewNotAsync(String employeeId,
+			DatePeriod periodTime, ExecutionAttr executionAttr, String companyId,
+			ExecutionTypeDaily executionType,Optional<EmpCalAndSumExeLog> empCalAndSumExeLog, Optional<Boolean> checkLock) {
+		
+//		Optional<StampReflectionManagement> stampReflectionManagement = this.stampReflectionManagementRepository
+//				.findByCid(companyId);
+
+		EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoService.getEmployeeGeneralInfo(Arrays.asList(employeeId), periodTime);
+		List<BusinessTypeOfEmployeeHis> exWorkTypeHistoryImports = this.businessTypeOfEmpHisService.find(Arrays.asList(employeeId), periodTime);
+		
+		employeeGeneralInfoImport.setExWorkTypeHistoryImports(exWorkTypeHistoryImports);
+		
+		// 社員ID（List）と期間から労働条件を取得する
+//		List<WorkingConditionItem> workingConditionItems = this.workingConditionItemRepository
+//				.getBySidsAndDatePeriod(Arrays.asList(employeeId), periodTime);
+
+//		Map<String, List<WorkingConditionItem>> mapWOrking = workingConditionItems.parallelStream()
+//				.collect(Collectors.groupingBy(WorkingConditionItem::getEmployeeId));
+
+		// Map<Sid, Map<HistoryID, List<WorkingConditionItem>>>
+//		Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem = mapWOrking.entrySet()
+//				.parallelStream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
+//						.collect(Collectors.toMap(WorkingConditionItem::getHistoryId, Function.identity()))));
+
+		List<WorkingCondition> workingConditions = workingConditionRepo.getBySidsAndDatePeriod(Arrays.asList(employeeId),
+				periodTime);
+
+		// Map<Sid, List<DateHistoryItem>>
+		Map<String, List<DateHistoryItem>> mapLstDateHistoryItem = workingConditions.parallelStream().collect(
+				Collectors.toMap(WorkingCondition::getEmployeeId, WorkingCondition::getDateHistoryItem));
+
+		// Map<Sid, Map<HistoryID, DateHistoryItem>>
+//		Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem = mapLstDateHistoryItem.entrySet().stream()
+//				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
+//						.collect(Collectors.toMap(DateHistoryItem::identifier, Function.identity()))));
+
+		// [No.647]期間に対応する職場構成を取得する
+		List<WorkPlaceConfig> workPlaceConfigLst = this.affWorkplaceAdapter.findByCompanyIdAndPeriod(companyId,
+				periodTime);
+		List<DatePeriod> workPlaceHistory = new ArrayList<>();
+
+		List<List<DatePeriod>> listWorkplaceHistory = workPlaceConfigLst.stream()
+				.map(c -> c.getWkpConfigHistory().stream().map(m -> m.getPeriod()).collect(Collectors.toList()))
+				.collect(Collectors.toList());
+
+		workPlaceHistory.addAll(listWorkplaceHistory.get(0));
+		StateHolder stateHolder = new StateHolder(1);
+		
+//		Optional<DatePeriod> newPeriod = this.checkPeriod(companyId, employeeId, periodTime);
+//		if (!newPeriod.isPresent()) {
+//			return new OutputCreateDailyResult(ProcessState.SUCCESS, new ArrayList<>());
+//		}
+		List<GeneralDate> historySeparatedList = this.historyIsSeparated(periodTime,
+				workPlaceHistory, employeeGeneralInfoImport, mapLstDateHistoryItem, employeeId);
+		
+		PeriodInMasterList periodInMasterList = getPeriodInMasterList(companyId, employeeId,
+				periodTime, historySeparatedList, employeeGeneralInfoImport);
+
+		/**
+		 * 勤務種別変更時に再作成 = false reCreateWorkType 異動時に再作成 = false reCreateWorkPlace
+		 * 休職・休業者再作成 = false reCreateRestTime
+		 */
+		OutputCreateDailyResult cStatus = createDataNew(periodTime, executionAttr, companyId,
+				empCalAndSumExeLog, null, employeeGeneralInfoImport, stateHolder, employeeId,
+				periodInMasterList, executionType, checkLock);
+		return cStatus;
 	}
 	
 	// 特定日、加給、計算区分情報を取得する

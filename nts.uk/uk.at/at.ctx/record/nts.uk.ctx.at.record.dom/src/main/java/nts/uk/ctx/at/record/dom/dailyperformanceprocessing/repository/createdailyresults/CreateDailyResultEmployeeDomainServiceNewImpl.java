@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdai
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -12,7 +11,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
-import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -33,12 +31,10 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Emp
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
-import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
@@ -48,7 +44,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -83,15 +78,10 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
 	@Inject
 	private EmpEmployeeAdapter employeeAdapter;
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public OutputCreateDailyResult createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
+	public OutputCreateDailyResult createDailyResultEmployee(String employeeId,
 			DatePeriod periodTimes, String companyId, Optional<EmpCalAndSumExeLog> empCalAndSumExeLog,
-			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
-			EmployeeGeneralInfoImport employeeGeneralInfoImport,
-			Optional<StampReflectionManagement> stampReflectionManagement,
-			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
-			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList,
+			EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,
 			ExecutionTypeDaily executionType, Optional<Boolean> checkLock) {
 		// 空のエラー一覧を作る
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
