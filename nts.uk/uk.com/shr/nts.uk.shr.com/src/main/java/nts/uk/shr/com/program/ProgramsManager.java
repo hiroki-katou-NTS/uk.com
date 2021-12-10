@@ -1010,6 +1010,11 @@ public class ProgramsManager {
      */
     public static final Program KSU002A = new Program(WebAppId.AT, ProgramIdConsts.KSU002A, "KSU002_32",
             "/view/ksu/002/a/index.xhtml");
+    /**
+     * KSU002B
+     */
+    public static final Program KSU002B = new Program(WebAppId.AT, ProgramIdConsts.KSU002B, "KSU002_46",
+            "/view/ksu/002/b/index.xhtml");
     /**   
      * KSU001SA
      */
@@ -1026,7 +1031,7 @@ public class ProgramsManager {
      */
     public static final Program KSU003A = new Program(WebAppId.AT, ProgramIdConsts.KSU003A, "KSU003_1",
             "/view/ksu/003/a/index.xhtml");
-    
+
     /**
      * KSU003B
      */
@@ -1040,22 +1045,28 @@ public class ProgramsManager {
             "/view/ksu/003/c/index.xhtml");
     
     /**
-     * KSU005A
+     * KSU003D
      */
-    public static final Program KSU005A = new Program(WebAppId.AT, ProgramIdConsts.KSU005A, "KSU005_1",
-            "/view/ksu/005/a/index.xhtml");
-    
+    public static final Program KSU003D = new Program(WebAppId.AT, ProgramIdConsts.KSU003D, "KSU003_109",
+            "/view/ksu/003/d/index.xhtml");
+
+    /**
+     * KSU005A -> KSU001KA
+     */
+    public static final Program KSU001KA = new Program(WebAppId.AT, ProgramIdConsts.KSU001KA, "KSU001_4076",
+            "/view/ksu/001/ka/index.xhtml");
+
     /**
      * KSU005B
      */
-    public static final Program KSU005B = new Program(WebAppId.AT, ProgramIdConsts.KSU005B, "KSU005_2",
-            "/view/ksu/005/b/index.xhtml");
-    
+    public static final Program KSU001KB = new Program(WebAppId.AT, ProgramIdConsts.KSU001KB, "KSU001_4077",
+            "/view/ksu/001/kb/index.xhtml");
+
     /**
      * KSU005C
      */
-    public static final Program KSU005C = new Program(WebAppId.AT, ProgramIdConsts.KSU005C, "KSU005_3",
-            "/view/ksu/005/c/index.xhtml");
+    public static final Program KSU001KC = new Program(WebAppId.AT, ProgramIdConsts.KSU001KC, "KSU001_4078",
+            "/view/ksu/001/kc/index.xhtml");
 
     /**
      * KML002A
