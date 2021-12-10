@@ -225,7 +225,7 @@ module nts.uk.at.view.cmf006.a {
             vm.$window.modal('com', '/view/cmf/006/b/index.xhtml').then((data: any) => {
                 let result = getShared('dataShareCMF006A');
                 if (!_.isNil(result)) {
-                    vm.componentCcg025.currentCode(result.copyDestinationRoleId);
+                    vm.componentCcg025.currentRoleId(result.copyDestinationRoleId);
                 }
                 $("#multi-list_container").focus();
             });
