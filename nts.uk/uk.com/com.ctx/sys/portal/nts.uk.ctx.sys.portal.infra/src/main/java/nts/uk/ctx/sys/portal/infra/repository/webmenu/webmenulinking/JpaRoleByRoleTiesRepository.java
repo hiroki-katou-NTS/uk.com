@@ -8,6 +8,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTies;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTiesRepository;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking.SptmtRoleByRoleTies;
+import nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking.SptmtRoleByRoleTiesPK;
 
 @Stateless
 public class JpaRoleByRoleTiesRepository extends JpaRepository implements  RoleByRoleTiesRepository {
@@ -24,25 +25,16 @@ public class JpaRoleByRoleTiesRepository extends JpaRepository implements  RoleB
 	@Override
 	public void updateRoleByRoleTies(RoleByRoleTies roleByRoleTies) {
 		SptmtRoleByRoleTies dataUpdate = SptmtRoleByRoleTies.toEntity(roleByRoleTies);
-		SptmtRoleByRoleTies newData = this.queryProxy().find(dataUpdate.roleId, SptmtRoleByRoleTies.class).get();
+		SptmtRoleByRoleTies newData = this.queryProxy().find(dataUpdate.pk.roleId, SptmtRoleByRoleTies.class).get();
 		newData.setWebMenuCd(dataUpdate.webMenuCd);
 		
 	}
 
 	@Override
 	public void deleteRoleByRoleTies(String roleId, String companyId) {
-		//TODO　修正お願いいたします。
-		//this.commandProxy().remove(SptmtRoleByRoleTies.class,roleId);
+		this.commandProxy().remove(SptmtRoleByRoleTies.class,new SptmtRoleByRoleTiesPK(roleId,companyId));
 	}
 
-//	TODO　削除お願いいたします。
-/*	@Override
-	public Optional<RoleByRoleTies> getRoleByRoleTiesById(String roleId) {
-		Optional<RoleByRoleTies> data = this.queryProxy().query(GET_ROLE_BY_ROLE_TIES_BY_CODE,SptmtRoleByRoleTies.class)
-				.setParameter("roleId", roleId)
-				.getSingle(c->c.toDomain());
-		return data;
-	}*/
 	
 	@Override
 	public Optional<RoleByRoleTies> getByRoleIdAndCompanyId(String roleId, String companyId) {

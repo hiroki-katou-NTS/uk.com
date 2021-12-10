@@ -2,10 +2,7 @@ package nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,20 +16,15 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 public class SptmtRoleByRoleTies extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@Id
-	@Column(name = "ROLE_ID")
-	public String roleId;
+	@EmbeddedId
+	public SptmtRoleByRoleTiesPK pk;
 	
 	@Column(name = "WEB_MENU_CD")
 	public String webMenuCd;
 	
-	//TODO 元々ROLE_IDがprimaryKeyですが、今回はprimaryKey 「ROLE_ID」と「CID」 になりました。
-	@Column(name = "CID")
-	public String companyId;
-	
 	@Override
 	protected Object getKey() {
-		return this.roleId;
+		return this.pk;
 	}
 
 	
@@ -46,8 +38,8 @@ public class SptmtRoleByRoleTies extends ContractUkJpaEntity implements Serializ
 	
 	public RoleByRoleTies toDomain() {
 		return new RoleByRoleTies(
-				this.roleId,
-				this.companyId,
+				this.pk.roleId,
+				this.pk.companyId,
 				new WebMenuCode(this.webMenuCd)
 				);
 	}
@@ -55,8 +47,8 @@ public class SptmtRoleByRoleTies extends ContractUkJpaEntity implements Serializ
 
 	public SptmtRoleByRoleTies(String roleId, String webMenuCd, String companyId) {
 		super();
-		this.roleId = roleId;
+		this.pk.roleId = roleId;
 		this.webMenuCd = webMenuCd;
-		this.companyId = companyId;
+		this.pk.companyId = companyId;
 	}
 }
