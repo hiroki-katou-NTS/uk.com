@@ -46,7 +46,6 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.MasterList;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
@@ -75,7 +74,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class CreateDailyResultDomainServiceNew {
-
+ 
 	@Inject
 	private TargetPersonRepository targetPersonRepository;
 
@@ -119,7 +118,7 @@ public class CreateDailyResultDomainServiceNew {
 	private RecSpecificDateSettingAdapter recSpecificDateSettingAdapter;
 
 	@Inject
-	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	private EmployeeRecordAdapter employeeRecordAdapter;
 
 	@Inject
 	private ManagedParallelWithContext managedParallelWithContext;
@@ -457,8 +456,8 @@ public class CreateDailyResultDomainServiceNew {
 				mapDateHistoryItem, periodInMasterList, executionType, checkLock);
 
 		// 暫定データの登録
-		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId,
-				periodTime.datesBetween());
+//		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId,
+//				periodTime.datesBetween());
 		if(empCalAndSumExeLog.isPresent() && cStatus.getProcessState() == ProcessState.SUCCESS ) {
 			// ログ情報（実行内容の完了状態）を更新する
 			updateExecutionStatusOfDailyCreation(employeeId, executionAttr.value, empCalAndSumExeLog.get().getEmpCalAndSumExecLogID());
