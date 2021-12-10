@@ -7149,14 +7149,6 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../reference.ts"/>
-<<<<<<< HEAD
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-=======
 var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
@@ -7165,7 +7157,6 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
         }
     }
     return to.concat(ar || Array.prototype.slice.call(from));
->>>>>>> uk/release_bug901
 };
 var nts;
 (function (nts) {
@@ -7388,7 +7379,8 @@ var nts;
                         self.$container.tabIndex = -1;
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [],
+                            find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -14026,11 +14018,7 @@ var nts;
                                     var id = target.getAttribute("id");
                                     if (_.isNil(id))
                                         return;
-<<<<<<< HEAD
-                                    if (!rightClickFt.chartFilter.apply(rightClickFt, __spreadArrays(id.split('-'), [target])))
-=======
                                     if (!rightClickFt.chartFilter.apply(rightClickFt, __spreadArray(__spreadArray([], id.split('-'), false), [target], false)))
->>>>>>> uk/release_bug901
                                         return;
                                 }
                                 else {
@@ -14045,11 +14033,7 @@ var nts;
                                     ui = helper.getCellCoord(target);
                                 }
                                 else {
-<<<<<<< HEAD
-                                    _a = __spreadArrays(id.split('-')), ui.rowIndex = _a[0], ui.id = _a[1];
-=======
                                     _a = __spreadArray([], id.split('-'), true), ui.rowIndex = _a[0], ui.id = _a[1];
->>>>>>> uk/release_bug901
                                 }
                                 ui.target = target;
                                 ui.contextMenu = function (items) {
@@ -17876,11 +17860,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-<<<<<<< HEAD
-                                                accessor.checked(__spreadArrays(checkeds, [value_1]));
-=======
                                                 accessor.checked(__spreadArray(__spreadArray([], checkeds, true), [value_1], false));
->>>>>>> uk/release_bug901
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -20551,11 +20531,7 @@ var nts;
                             var delKeyCode = [46];
                             var dotWithNumpadKeyCodes = [110, 190]; //'.'
                             var minusWithNumpadKeyCodes = [109, 189]; //'-'
-<<<<<<< HEAD
-                            var allowedKeyCodes = __spreadArrays(numberKeyCodes, numberNumpadKeyCodes, backspaceKeyCode, delKeyCode, dotWithNumpadKeyCodes, minusWithNumpadKeyCodes);
-=======
                             var allowedKeyCodes = __spreadArray(__spreadArray(__spreadArray(__spreadArray(__spreadArray(__spreadArray([], numberKeyCodes, true), numberNumpadKeyCodes, true), backspaceKeyCode, true), delKeyCode, true), dotWithNumpadKeyCodes, true), minusWithNumpadKeyCodes, true);
->>>>>>> uk/release_bug901
                             if (allowedKeyCodes.indexOf(dorgi.keyCode) == -1) {
                                 $input.val(dval);
                                 $input.data(_kc, null);
@@ -23918,12 +23894,7 @@ var nts;
                                         read: function () {
                                             var ds = ko.toJS(accessor.dataSource);
                                             return ds.filter(function (d) { return d.visible !== false; })
-<<<<<<< HEAD
-                                                .map(function (d) { return (__assign(__assign({}, d), { active: active,
-                                                tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
-=======
                                                 .map(function (d) { return (__assign(__assign({}, d), { active: active, tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
->>>>>>> uk/release_bug901
                                                     'btn-link': d.title,
                                                     icon: d.icon || 'CHECKBOX',
                                                     width: 40,
@@ -24276,7 +24247,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -34373,7 +34345,8 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
+                                    relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -38778,11 +38751,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-<<<<<<< HEAD
-                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
-=======
                             $jump.apply(null, __spreadArray([], Array.prototype.slice.apply(arguments, []), true));
->>>>>>> uk/release_bug901
                         }
                     },
                     blank: {
@@ -40480,8 +40449,7 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60,
-                            formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
@@ -48129,7 +48097,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -48528,8 +48497,7 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        },
-                                        initValue: value,
+                                        }, initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,
