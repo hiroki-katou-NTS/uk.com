@@ -18,22 +18,11 @@ public class WorkplaceHistoryItemImport {
 	/** 勤務場所コード */
 //	private Optional<String> workLocationCode;
 
-<<<<<<< HEAD
-	public WorkplaceHistoryItemImport(String historyId, String employeeId, String workplaceId,
-			Optional<String> workLocationCode) {
+	public WorkplaceHistoryItemImport(String historyId, String employeeId, String workplaceId) {
 		this.historyId = historyId;
 		this.employeeId = employeeId;
 		this.workplaceId = workplaceId;
-		this.workLocationCode = workLocationCode;
-=======
-	public WorkplaceHistoryItemImport(String historyId, String employeeId, String workplaceId, String normalWorkplaceId) {
-		this.historyId = historyId;
-		this.employeeId = employeeId;
-		this.workplaceId = workplaceId;
-		this.normalWorkplaceId = normalWorkplaceId;
+//		this.normalWorkplaceId = normalWorkplaceId;
 //		this.workLocationCode = workLocationCode;
->>>>>>> uk/release_bug901
 	}
-	
-	
 }

@@ -28,20 +28,9 @@ public class AffWorkplaceHistoryItemExport3 {
 
 //	private Optional<String> workLocationCode;
 	
-	public AffWorkplaceHistoryItemExport3(String historyId, String employeeId, String workplaceId,
-<<<<<<< HEAD
-			String workLocation) {
+	public AffWorkplaceHistoryItemExport3(String historyId, String employeeId, String workplaceId) {
 		this.historyId   = historyId;
 		this.employeeId  = employeeId;
 		this.workplaceId = workplaceId;
-		this.workLocationCode  = workLocation == null? Optional.empty(): Optional.of(workLocation);
-=======
-			String normalWorkplaceId) {
-		this.historyId   = historyId;
-		this.employeeId  = employeeId;
-		this.workplaceId = workplaceId;
-		this.normalWorkplaceId = normalWorkplaceId;
-//		this.workLocationCode  = workLocation == null? Optional.empty(): Optional.of(workLocation);
->>>>>>> uk/release_bug901
 	}
 }

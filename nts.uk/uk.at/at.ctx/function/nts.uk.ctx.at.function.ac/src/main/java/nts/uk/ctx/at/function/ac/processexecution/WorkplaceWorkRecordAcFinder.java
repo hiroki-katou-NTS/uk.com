@@ -98,12 +98,7 @@ public class WorkplaceWorkRecordAcFinder implements WorkplaceWorkRecordAdapter {
 	
 	public List<WorkplaceHistoryItemImport> findWorkplaceHistoryItem(List<String> empIds, GeneralDate baseDate) {
 		return workplaceHistoryItemPub.findByEmpIdsAndDate(empIds, baseDate).stream()
-			.map(w -> new WorkplaceHistoryItemImport(w.getHistoryId(), w.getEmployeeId(), w.getWorkplaceId(), 
-<<<<<<< HEAD
-						 w.getWorkLocationCode()))
-=======
-						w.getNormalWorkplaceId()))
->>>>>>> uk/release_bug901
+			.map(w -> new WorkplaceHistoryItemImport(w.getHistoryId(), w.getEmployeeId(), w.getWorkplaceId()))
 			.collect(Collectors.toList());
 	}
 }
