@@ -79,7 +79,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -286,11 +285,7 @@ public class ScheduleCreatorExecutionService {
 	 * @param context
 	 */
 	private void registerPersonalSchedule(ScheduleCreatorExecutionCommand command,
-<<<<<<< HEAD
-			ScheduleExecutionLog scheduleExecutionLog,
-=======
 			ScheduleExecutionLog scheduleExecutionLog, 
->>>>>>> uk/release_bug901
 			@SuppressWarnings("rawtypes") Optional<AsyncCommandHandlerContext> asyncTask,
 			String companyId) {
 
