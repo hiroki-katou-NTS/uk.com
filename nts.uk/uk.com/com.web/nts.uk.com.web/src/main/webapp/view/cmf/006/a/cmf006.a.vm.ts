@@ -43,7 +43,7 @@ module nts.uk.at.view.cmf006.a {
                 roleType: vm.roleType(),
                 multiple: false,
                 isResize: false,
-                rows: 9,
+                rows: 10,
                 tabindex: 3,
                 onDialog:true
             });
