@@ -21,28 +21,6 @@ module nts.uk.com.view.ccg015.e {
     created(params: any) {
       const vm = this;
       vm.params = params;
-      // Init sortableList binding
-      ko.bindingHandlers.sortableList = {
-        init: (element, valueAccessor) => {
-          const list: KnockoutObservableArray<ItemModel> = valueAccessor();
-          $(element).sortable({
-            update: (event, ui) => {
-              // figure out its new position
-              const oldPosition = _.findIndex(list(), (item) => item.itemType === ui.item.attr('id'));
-              const newPosition = _.findIndex(ui.item.parent().children(), (item) => item.id === ui.item.attr('id'));
-              // remove the item and add it back in the right spot
-              if (oldPosition >= 0 && newPosition >= 0) {
-                // retrieve our actual data item
-                const tempList = list();
-                const tempItem = tempList[oldPosition];
-                tempList.splice(oldPosition, 1);
-                tempList.splice(newPosition, 0, tempItem);
-                list(tempList);
-              }
-            }
-          });
-        },
-      };
     }
 
     mounted() {
@@ -57,15 +35,18 @@ module nts.uk.com.view.ccg015.e {
           vm.isMouseInsideLayout(false);
         });
       // Init dragable item
+      let menuPosition = -1;
       $(".menu-creation-option:not(.disabled)").draggable({
         connectToSortable: `#${MENU_CREATION_LAYOUT_ID}`,
         helper: "clone",
         start: (event, ui) => {
           LayoutUtils.startDragItemFromMenu(ui);
         },
+        drag: (event, ui) => {
+          menuPosition = _.findIndex(vm.$menuCreationLayout.children(), (item) => item.classList.contains('menu-creation-option'));
+        },
         stop: (event, ui) => {
           const itemType = ui.helper.prevObject.attr('id');
-          const menuPosition = _.findIndex(vm.$menuCreationLayout.children(), (item) => item.classList.contains('menu-creation-option'));
           // Remove drag item
           ui.helper.remove();
           setTimeout(() => {
