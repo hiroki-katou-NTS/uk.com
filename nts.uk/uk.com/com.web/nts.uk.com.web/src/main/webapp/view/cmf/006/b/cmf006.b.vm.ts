@@ -38,7 +38,8 @@ module nts.uk.at.view.cmf006.b {
                 multiple: false,
                 isResize: true,
                 rows: 5,
-                tabindex:1
+                tabindex: 1,
+                onDialog:true
             });
             vm.$blockui("grayout");
             vm.componentCcg025.columns([

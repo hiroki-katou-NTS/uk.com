@@ -44,7 +44,8 @@ module nts.uk.at.view.cmf006.a {
                 multiple: false,
                 isResize: false,
                 rows: 9,
-                tabindex: 3
+                tabindex: 3,
+                onDialog:true
             });
             vm.fetchPermissionSettingList();
             vm.fetchRoleList();
