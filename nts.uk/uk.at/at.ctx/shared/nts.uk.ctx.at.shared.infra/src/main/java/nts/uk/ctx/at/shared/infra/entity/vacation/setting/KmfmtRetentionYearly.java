@@ -38,7 +38,12 @@ public class KmfmtRetentionYearly extends ContractUkJpaEntity  implements Serial
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "MANAGEMENT_YEARLY_ATR")
-	private int managementYearlyAtr;
+	private boolean managementYearlyAtr;
+	
+    /** The leave as work days. */
+    @NotNull
+    @Column(name="LEAVE_AS_WORK_DAYS")
+    private int leaveAsWorkDays;
     
     /** The year amount. */
     @NotNull
