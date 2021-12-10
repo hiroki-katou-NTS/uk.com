@@ -1,0 +1,13 @@
+.header_backgroundcolor {
+    background-color: #CFF1A5 !important;
+    color: #000 !important;
+}
+
+.mgrid .mgrid-header td div {
+    color: #000 !important;
+}
+
+.align-center {
+    vertical-align: middle !important;
+    text-align: center !important;
+}

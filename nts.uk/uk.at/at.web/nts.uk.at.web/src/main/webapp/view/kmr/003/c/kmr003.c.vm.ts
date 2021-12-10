@@ -5,6 +5,8 @@ module nts.uk.at.kmr003.c {
         receptionHour: KnockoutObservable<string> = ko.observable("");
         frameNo: any;
         empIds: any[];
+        listEmpInfo: any[] = [];
+        gridOptions: any = { dataSource: [], columns: [], features: [], ntsControls: [] };
 
         created(param: any) {
             const vm = this;
@@ -25,15 +27,89 @@ module nts.uk.at.kmr003.c {
                 vm.$blockui('show');
                 vm.$ajax(API.startNewReservation, params).done((res: any) => {
                     if (res) {
-                        console.log(res);
-                        
+                        vm.convertToGridData(res);
+                        vm.bindGrid();
                     }
                 }).fail((error: any) => {
                     if (error) {
-
+                        vm.$dialog.error({messageId: error.messageId, messageParams: error.parameterIds});
                     }
                 }).always(() => vm.$blockui('hide'))
             }
+        }
+
+        convertToGridData(param: any) {
+            const vm = this;
+
+            vm.gridOptions = { dataSource: [], columns: [], features: [], ntsControls: [] };
+
+
+            //bind columns
+            vm.gridOptions.columns = [
+                { headerText: '' , itemId: 'employeeId', key: 'employeeId', dataType: 'string', width: '150px', hidden: true },
+                { headerText: vm.$i18n('KMR003_46') , itemId: 'employeeCode', key: 'employeeCode', ntsControl: 'Label', dataType: 'string', width: '150px' },
+                { headerText: vm.$i18n('KMR003_47') , itemId: 'employeeName', key: 'employeeName', ntsControl: 'Label', dataType: 'string', width: '200px' }
+            ];
+
+            let headerStyle = { name: 'HeaderStyles', columns: [
+                { key: 'employeeCode', colors: ['align-center', 'header_backgroundcolor'] }, 
+                { key: 'employeeName', colors: ['align-center', 'header_backgroundcolor'] }, 
+            ] };
+            let cellStates: any[] = [];
+
+            for (let i = 0; i < param.bento.length; i++) {
+                let columnHeader = "<div>" + param.bento[i].name + "</div><div>" + '(' + param.bento[i].unit + ')' + "</div>";
+                vm.gridOptions.columns.push({ headerText: columnHeader , itemId: 'bento' + param.bento[i].frameNo, key: 'bento' + param.bento[i].frameNo, dataType: 'string', width: '70px', constraint: {primitiveValue: 'BentoReservationCount'} })
+                headerStyle.columns.push({ key: 'bento' + param.bento[i].frameNo, colors: ['align-center', 'header_backgroundcolor'] });
+            }
+
+            // bind features
+            let columnFixing = { name: 'ColumnFixing', columnSettings: [
+                { columnKey: 'employeeCode', isFixed: true }, 
+                { columnKey: 'employeeName', isFixed: true }, 
+            ]};
+
+            // bind dataSource
+            vm.listEmpInfo = param.listEmpInfo;
+
+            for (let i = 0; i < vm.listEmpInfo.length; i++) {
+                let emp = vm.listEmpInfo[i];
+
+                let item = { 
+                    employeeId: emp.employeeId, 
+                    employeeCode: emp.employeeCode, 
+                    employeeName: emp.businessName
+                }
+
+                vm.gridOptions.dataSource.push(item);
+            }
+
+            vm.gridOptions.features.push(columnFixing);
+            vm.gridOptions.features.push(headerStyle);
+            vm.gridOptions.features.push({ name: 'CellStyles', states: cellStates });
+            vm.gridOptions.features.push({ name: 'Tooltip', error: true });
+        }
+
+        bindGrid() {
+            const vm = this;
+
+            if ($("#grid").data("mGrid")) $("#grid").mGrid("destroy");
+            new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
+                width: '1200px',
+                height: '600px',
+                headerHeight: "70px",
+                subHeight: "117px",
+                subWidth: "105px",
+                dataSource: vm.gridOptions.dataSource,
+                columns: vm.gridOptions.columns,
+                primaryKey: 'employeeId',
+                virtualization: true,
+                virtualizationMode: "continuous",
+                enter: "right",
+                autoFitWindow: true,
+                features: vm.gridOptions.features,
+                ntsControls: vm.gridOptions.ntsControls
+            }).create();
         }
 
         mounted() {

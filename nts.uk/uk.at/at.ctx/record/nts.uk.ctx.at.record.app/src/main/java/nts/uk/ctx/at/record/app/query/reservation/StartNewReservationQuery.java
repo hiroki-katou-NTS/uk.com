@@ -75,7 +75,7 @@ public class StartNewReservationQuery {
                 
                 // 1.2: Filter(受付時間帯NO　＝＝　Input．受付時間帯NO)
                 if (bentoMenu != null) {
-                    menus = bentoMenu.getMenu().stream().filter(menu -> menu.getFrameNo() == frameNo).collect(Collectors.toList());
+                    menus = bentoMenu.getMenu().stream().filter(menu -> menu.getReceptionTimezoneNo().value == frameNo).collect(Collectors.toList());
                 }
             }
         }
@@ -97,29 +97,29 @@ public class StartNewReservationQuery {
         List<PersonEmpBasicInfoImport> listEmpOutput = listPersonEmp.stream().filter(x -> {
                                                         return stampCards.containsKey(x.getEmployeeId()) 
                                                                 && !bentoReservations.stream()
-                                                                .filter(y -> y.getRegisterInfor().getReservationCardNo().equals(x.getEmployeeId()))
+                                                                .filter(y -> y.getRegisterInfor().getReservationCardNo().equals(stampCards.get(x.getEmployeeId()).v()))
                                                                 .findFirst()
                                                                 .isPresent();
                                                     }).collect(Collectors.toList());
         
-        List<BentoReservationWithFlag> bentoReservationWithFlags = bentoReservations.stream()
-                .map(x -> new BentoReservationWithFlag(BentoReservationDto.fromDomain(x), true))
-                .collect(Collectors.toList());
-        
-        Map<String, BentoReservationWithFlag> bentoReservationMap = new HashMap<String, BentoReservationWithFlag>();
-        
-        bentoReservationWithFlags.forEach(reservation -> {
-                stampCards.forEach((k, v) -> {
-                    if (v.v().equals(reservation.getBentoReservation().getReservationCardNo())) {
-                        bentoReservationMap.put(k, reservation);
-                    }
-                });
-        });
+//        List<BentoReservationWithFlag> bentoReservationWithFlags = bentoReservations.stream()
+//                .map(x -> new BentoReservationWithFlag(BentoReservationDto.fromDomain(x), true))
+//                .collect(Collectors.toList());
+//        
+//        Map<String, BentoReservationWithFlag> bentoReservationMap = new HashMap<String, BentoReservationWithFlag>();
+//        
+//        bentoReservationWithFlags.forEach(reservation -> {
+//                stampCards.forEach((k, v) -> {
+//                    if (v.v().equals(reservation.getBentoReservation().getReservationCardNo())) {
+//                        bentoReservationMap.put(k, reservation);
+//                    }
+//                });
+//        });
         
         return new StartReservationCorrectOutput(
                 menus.stream().map(x -> BentoDto.fromDomain(x)).collect(Collectors.toList()), 
                 listEmpOutput.stream().map(x -> PersonEmpBasicInfoImportDto.fromDomain(x)).collect(Collectors.toList()), 
-                bentoReservationMap);
+                new HashMap<String, BentoReservationWithFlag>());
     }
 
 }
