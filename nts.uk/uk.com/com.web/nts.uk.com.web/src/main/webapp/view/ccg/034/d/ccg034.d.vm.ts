@@ -1187,6 +1187,7 @@ module nts.uk.com.view.ccg034.d {
       const partClientId = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
       const partData: PartDataModel = vm.mapPartData[partClientId];
       switch (partData.partType) {
+        case MenuPartType.PART_MENU:
         case MenuPartType.PART_ATTACHMENT:
         case MenuPartType.PART_IMAGE:
           const part = partData as any;
