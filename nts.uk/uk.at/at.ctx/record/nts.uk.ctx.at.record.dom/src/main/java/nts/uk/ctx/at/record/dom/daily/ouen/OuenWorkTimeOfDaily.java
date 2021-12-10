@@ -52,9 +52,10 @@ public class OuenWorkTimeOfDaily extends AggregateRoot {
 			this.ouenTimes.add(OuenWorkTimeOfDailyAttendance.create(ouenTimeNew.getWorkNo(),
 					OuenAttendanceTimeEachTimeSheet.create(ouenTimeNew.getWorkTime().getTotalTime(),
 							updatedOuenTime.getWorkTime().getBreakTime(), updatedOuenTime.getWorkTime().getWithinTime(),
+							updatedOuenTime.getWorkTime().getWithinAmount(),
 							updatedOuenTime.getWorkTime().getMedicalTime(),
 							updatedOuenTime.getWorkTime().getPremiumTime()),
-					updatedOuenTime.getMoveTime(), updatedOuenTime.getAmount(), updatedOuenTime.getPriceUnit()));
+					updatedOuenTime.getMoveTime(), updatedOuenTime.getAmount()));
 		}
 	}
 }

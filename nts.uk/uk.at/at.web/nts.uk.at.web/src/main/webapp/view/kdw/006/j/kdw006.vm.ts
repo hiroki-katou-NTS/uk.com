@@ -396,8 +396,6 @@ module nts.uk.at.view.kmk006.j {
     }
 
     interface IDailyAttendanceItem {
-        /* 会社ID */
-        companyId: string;
 
         /* 勤怠項目ID */
         attendanceItemId: number;
@@ -407,24 +405,6 @@ module nts.uk.at.view.kmk006.j {
 
         /* 表示番号 */
         displayNumber: number;
-
-        /* ユーザーが値を変更できる */
-        userCanUpdateAtr: number;
-
-        /* 勤怠項目属性 */
-        dailyAttendanceAtr: number;
-
-        /* 名称の改行位置 */
-        nameLineFeedPosition: number;
-
-        /* マスタの種類 */
-        masterType: number;
-
-        /* 怠項目のPrimitiveValue */
-        primitiveValue: number;
-
-        /* 表示名称 */
-        displayName: string;
     }
 
     interface IAcquireManHourRecordItems {

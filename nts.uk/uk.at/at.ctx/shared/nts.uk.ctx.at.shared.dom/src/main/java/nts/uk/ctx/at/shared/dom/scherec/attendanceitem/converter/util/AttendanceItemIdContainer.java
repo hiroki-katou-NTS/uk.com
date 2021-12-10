@@ -463,26 +463,28 @@ public class AttendanceItemIdContainer implements ItemConst {
 		String attendActual = join(DAILY_ATTENDANCE_TIME_NAME, ACTUAL);
 		temp.put(747, join(attendActual, RESTRAINT + DIFF));
 		temp.put(575, join(attendActual, TIME_DIFF + WORKING_TIME));
-		temp.put(426, join(attendActual, PREMIUM, joinNS(PREMIUM, NUMBER_1)));
-		temp.put(427, join(attendActual, PREMIUM, joinNS(PREMIUM, NUMBER_2)));
-		temp.put(428, join(attendActual, PREMIUM, joinNS(PREMIUM, NUMBER_3)));
-		temp.put(429, join(attendActual, PREMIUM, joinNS(PREMIUM, NUMBER_4)));
-		temp.put(430, join(attendActual, PREMIUM, joinNS(PREMIUM, NUMBER_5)));
-		temp.put(431, join(attendActual, PREMIUM, joinNS(PREMIUM, NUMBER_6)));
-		temp.put(432, join(attendActual, PREMIUM, joinNS(PREMIUM, NUMBER_7)));
-		temp.put(433, join(attendActual, PREMIUM, joinNS(PREMIUM, NUMBER_8)));
-		temp.put(434, join(attendActual, PREMIUM, joinNS(PREMIUM, NUMBER_9)));
-		temp.put(435, join(attendActual, PREMIUM, joinNS(PREMIUM, NUMBER_1, NUMBER_0)));
-		temp.put(1295, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_1)));
-		temp.put(1296, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_2)));
-		temp.put(1297, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_3)));
-		temp.put(1298, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_4)));
-		temp.put(1299, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_5)));
-		temp.put(1300, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_6)));
-		temp.put(1301, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_7)));
-		temp.put(1302, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_8)));
-		temp.put(1303, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_9)));
-		temp.put(1304, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_0)));
+		temp.put(426, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM, NUMBER_1)));
+		temp.put(427, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM, NUMBER_2)));
+		temp.put(428, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM, NUMBER_3)));
+		temp.put(429, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM, NUMBER_4)));
+		temp.put(430, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM, NUMBER_5)));
+		temp.put(431, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM, NUMBER_6)));
+		temp.put(432, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM, NUMBER_7)));
+		temp.put(433, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM, NUMBER_8)));
+		temp.put(434, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM, NUMBER_9)));
+		temp.put(435, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM, NUMBER_1, NUMBER_0)));
+		temp.put(2188, join(attendActual, PREMIUM, TOTAL + TIME));
+		temp.put(1295, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_1)));
+		temp.put(1296, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_2)));
+		temp.put(1297, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_3)));
+		temp.put(1298, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_4)));
+		temp.put(1299, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_5)));
+		temp.put(1300, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_6)));
+		temp.put(1301, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_7)));
+		temp.put(1302, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_8)));
+		temp.put(1303, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_9)));
+		temp.put(1304, join(attendActual, PREMIUM, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_0)));
+		temp.put(2189, join(attendActual, PREMIUM, TOTAL + AMOUNT));
 		temp.put(748, join(attendActual, RESTRAINT, LATE_NIGHT));
 		temp.put(749, join(attendActual, RESTRAINT, TOTAL));
 		String divergence = join(attendActual, DIVERGENCE);
@@ -560,6 +562,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(532, join(totalLabol, WITHIN_STATUTORY, WORK_TIME));
 		temp.put(533, join(totalLabol, WITHIN_STATUTORY, ACTUAL + WORK_TIME));
 		temp.put(558, join(totalLabol, WITHIN_STATUTORY, PREMIUM));
+		temp.put(2190, join(totalLabol, WITHIN_STATUTORY, WORK_TIME + AMOUNT));
 		temp.put(576, join(totalLabol, HOLIDAY + ADD));
 		temp.put(1144, join(totalLabol, HOLIDAY, TRANSFER_HOLIDAY));
 		// ITEM_ID_CONTAINER.put(576,"日別実績の勤怠時間.実績時間.総労働時間.所定内時間.休暇加算時間.年休加算時間");
@@ -1016,37 +1019,18 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(394, join(totalLabol, RAISING_SALARY, SPECIFIC, LEGAL, joinNS(TIME, NUMBER_9)));
 		temp.put(395, join(totalLabol, RAISING_SALARY, SPECIFIC, LEGAL, joinNS(TIME, NUMBER_1, NUMBER_0)));
 		temp.put(1144, join(totalLabol, HOLIDAY, TRANSFER_HOLIDAY));
-		AttendanceItemIdContainer.getSupporTimeKey(temp);
+		AttendanceItemIdContainer.getSupporTimeKeyFrom1To10(temp);
+		AttendanceItemIdContainer.getSupporTimeKeyFrom11To20(temp);
 	}
 	
-	private static void getSupporTimeKey(Map<Integer, String> temp) {
+	private static void getSupporTimeKeyFrom1To10(Map<Integer, String> temp) {
 		String supportTime = join(DAILY_SUPPORT_TIME_NAME, TIME);
 		//応援枠1
 		temp.put(1305, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_1)));
 		temp.put(1306, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_1)));
+		temp.put(2231, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_1)));
 		temp.put(1307, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_1)));
-		temp.put(1308, join(supportTime, joinNS(PRICE_UNIT, NUMBER_1)));
 		temp.put(1309, join(supportTime, joinNS(AMOUNT, NUMBER_1)));
-//		temp.put(1310, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1), NUMBER_1));
-//		temp.put(1311, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_2), NUMBER_1));
-//		temp.put(1312, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_3), NUMBER_1));
-//		temp.put(1313, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_4), NUMBER_1));
-//		temp.put(1314, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_5), NUMBER_1));
-//		temp.put(1315, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_6), NUMBER_1));
-//		temp.put(1316, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_7), NUMBER_1));
-//		temp.put(1317, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_8), NUMBER_1));
-//		temp.put(1318, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_9), NUMBER_1));
-//		temp.put(1319, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_0), NUMBER_1));
-//		temp.put(1310, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1), NUMBER_1));
-//		temp.put(1311, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1), NUMBER_2));
-//		temp.put(1312, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1), NUMBER_3));
-//		temp.put(1313, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1), NUMBER_4));
-//		temp.put(1314, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1), NUMBER_5));
-//		temp.put(1315, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1), NUMBER_6));
-//		temp.put(1316, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1), NUMBER_7));
-//		temp.put(1317, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1), NUMBER_8));
-//		temp.put(1318, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1), NUMBER_9));
-//		temp.put(1319, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1), DEFAULT_IDX_SEPERATOR, joinNS(NUMBER_1, NUMBER_0)));
 		temp.put(1310, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1311, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1312, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1057,6 +1041,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1317, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1318, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1319, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2191, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_1)));
 		temp.put(1320, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1321, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1322, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1067,6 +1052,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1327, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1328, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1329, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2211, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_1)));
 		temp.put(1330, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_1, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1331, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_1, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1332, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_1, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1089,8 +1075,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠2
 		temp.put(1349, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_2)));
 		temp.put(1350, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_2)));
+		temp.put(2232, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_2)));
 		temp.put(1351, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_2)));
-		temp.put(1352, join(supportTime, joinNS(PRICE_UNIT, NUMBER_2)));
 		temp.put(1353, join(supportTime, joinNS(AMOUNT, NUMBER_2)));
 		temp.put(1354, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1355, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1102,6 +1088,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1361, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1362, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1363, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2192, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_2)));
 		temp.put(1364, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1365, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1366, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1112,6 +1099,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1371, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1372, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1373, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2212, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_2)));
 		temp.put(1374, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_2, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1375, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_2, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1376, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_2, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1134,8 +1122,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠3
 		temp.put(1393, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_3)));
 		temp.put(1394, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_3)));
+		temp.put(2233, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_3)));
 		temp.put(1395, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_3)));
-		temp.put(1396, join(supportTime, joinNS(PRICE_UNIT, NUMBER_3)));
 		temp.put(1397, join(supportTime, joinNS(AMOUNT, NUMBER_3)));
 		temp.put(1398, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1399, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1147,6 +1135,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1405, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1406, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1407, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2193, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_3)));
 		temp.put(1408, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1409, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1410, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1157,6 +1146,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1415, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1416, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1417, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2213, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_3)));
 		temp.put(1418, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_3, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1419, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_3, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1420, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_3, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1179,8 +1169,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠4
 		temp.put(1437, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_4)));
 		temp.put(1438, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_4)));
+		temp.put(2234, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_4)));
 		temp.put(1439, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_4)));
-		temp.put(1440, join(supportTime, joinNS(PRICE_UNIT, NUMBER_4)));
 		temp.put(1441, join(supportTime, joinNS(AMOUNT, NUMBER_4)));
 		temp.put(1442, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1443, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1192,6 +1182,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1449, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1450, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1451, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2194, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_4)));
 		temp.put(1452, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1453, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1454, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1202,6 +1193,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1459, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1460, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1461, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2214, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_4)));
 		temp.put(1462, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_4, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1463, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_4, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1464, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_4, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1224,8 +1216,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠5
 		temp.put(1481, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_5)));
 		temp.put(1482, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_5)));
+		temp.put(2235, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_5)));
 		temp.put(1483, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_5)));
-		temp.put(1484, join(supportTime, joinNS(PRICE_UNIT, NUMBER_5)));
 		temp.put(1485, join(supportTime, joinNS(AMOUNT, NUMBER_5)));
 		temp.put(1486, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1487, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1237,6 +1229,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1493, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1494, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1495, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2195, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_5)));
 		temp.put(1496, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1497, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1498, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1247,6 +1240,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1503, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1504, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1505, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2215, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_5)));
 		temp.put(1506, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_5, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1507, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_5, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1508, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_5, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1269,8 +1263,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠6
 		temp.put(1525, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_6)));
 		temp.put(1526, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_6)));
+		temp.put(2236, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_6)));
 		temp.put(1527, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_6)));
-		temp.put(1528, join(supportTime, joinNS(PRICE_UNIT, NUMBER_6)));
 		temp.put(1529, join(supportTime, joinNS(AMOUNT, NUMBER_6)));
 		temp.put(1530, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1531, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1282,6 +1276,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1537, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1538, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1539, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2196, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_6)));
 		temp.put(1540, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1541, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1542, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1292,6 +1287,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1547, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1548, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1549, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2216, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_6)));
 		temp.put(1550, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_6, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1551, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_6, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1552, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_6, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1314,8 +1310,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠7
 		temp.put(1569, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_7)));
 		temp.put(1570, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_7)));
+		temp.put(2237, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_7)));
 		temp.put(1571, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_7)));
-		temp.put(1572, join(supportTime, joinNS(PRICE_UNIT, NUMBER_7)));
 		temp.put(1573, join(supportTime, joinNS(AMOUNT, NUMBER_7)));
 		temp.put(1574, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1575, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1327,6 +1323,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1581, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1582, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1583, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2197, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_7)));
 		temp.put(1584, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1585, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1586, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1337,6 +1334,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1591, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1592, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1593, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2217, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_7)));
 		temp.put(1594, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_7, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1595, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_7, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1596, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_7, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1359,8 +1357,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠8
 		temp.put(1613, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_8)));
 		temp.put(1614, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_8)));
+		temp.put(2238, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_8)));
 		temp.put(1615, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_8)));
-		temp.put(1616, join(supportTime, joinNS(PRICE_UNIT, NUMBER_8)));
 		temp.put(1617, join(supportTime, joinNS(AMOUNT, NUMBER_8)));
 		temp.put(1618, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1619, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1372,6 +1370,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1625, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1626, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1627, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2198, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_8)));
 		temp.put(1628, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1629, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1630, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1382,6 +1381,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1635, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1636, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1637, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2218, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_8)));
 		temp.put(1638, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_8, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1639, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_8, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1640, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_8, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1404,8 +1404,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠9
 		temp.put(1657, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_9)));
 		temp.put(1658, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_9)));
+		temp.put(2239, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_9)));
 		temp.put(1659, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_9)));
-		temp.put(1660, join(supportTime, joinNS(PRICE_UNIT, NUMBER_9)));
 		temp.put(1661, join(supportTime, joinNS(AMOUNT, NUMBER_9)));
 		temp.put(1662, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1663, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1417,6 +1417,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1669, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1670, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1671, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2199, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_9)));
 		temp.put(1672, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1673, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1674, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1427,6 +1428,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1679, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1680, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1681, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2219, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_9)));
 		temp.put(1682, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_9, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1683, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_9, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1684, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_9, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1449,8 +1451,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠10
 		temp.put(1701, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_1, NUMBER_0)));
 		temp.put(1702, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_1, NUMBER_0)));
+		temp.put(2240, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_1, NUMBER_0)));
 		temp.put(1703, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_0)));
-		temp.put(1704, join(supportTime, joinNS(PRICE_UNIT, NUMBER_1, NUMBER_0)));
 		temp.put(1705, join(supportTime, joinNS(AMOUNT, NUMBER_1, NUMBER_0)));
 		temp.put(1706, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1707, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1462,6 +1464,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1713, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1714, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1715, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2200, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_1, NUMBER_0)));
 		temp.put(1716, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1717, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1718, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1472,6 +1475,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1723, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1724, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1725, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2220, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_1, NUMBER_0)));
 		temp.put(1726, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_1, NUMBER_0, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1727, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_1, NUMBER_0, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1728, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_0, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1491,11 +1495,15 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1742, join(supportTime, MOVE + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1743, join(supportTime, MOVE + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1744, join(supportTime, MOVE + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+	}
+	
+	private static void getSupporTimeKeyFrom11To20(Map<Integer, String> temp) {
+		String supportTime = join(DAILY_SUPPORT_TIME_NAME, TIME);
 		//応援枠11
 		temp.put(1745, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_1, NUMBER_1)));
 		temp.put(1746, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_1, NUMBER_1)));
+		temp.put(2241, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_1, NUMBER_1)));
 		temp.put(1747, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_1)));
-		temp.put(1748, join(supportTime, joinNS(PRICE_UNIT, NUMBER_1, NUMBER_1)));
 		temp.put(1749, join(supportTime, joinNS(AMOUNT, NUMBER_1, NUMBER_1)));
 		temp.put(1750, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1751, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1507,6 +1515,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1757, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1758, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1759, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2201, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_1, NUMBER_1)));
 		temp.put(1760, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1761, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1762, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1517,6 +1526,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1767, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1768, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1769, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_1, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2221, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_1, NUMBER_1)));
 		temp.put(1770, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_1, NUMBER_1, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1771, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_1, NUMBER_1, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1772, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_1, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1539,8 +1549,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠12
 		temp.put(1789, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_1, NUMBER_2)));
 		temp.put(1790, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_1, NUMBER_2)));
+		temp.put(2242, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_1, NUMBER_2)));
 		temp.put(1791, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_2)));
-		temp.put(1792, join(supportTime, joinNS(PRICE_UNIT, NUMBER_1, NUMBER_2)));
 		temp.put(1793, join(supportTime, joinNS(AMOUNT, NUMBER_1, NUMBER_2)));
 		temp.put(1794, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1795, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1552,6 +1562,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1801, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1802, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1803, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2202, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_1, NUMBER_2)));
 		temp.put(1804, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1805, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1806, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1562,6 +1573,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1811, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1812, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1813, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_2, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2222, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_1, NUMBER_2)));
 		temp.put(1814, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_1, NUMBER_2, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1815, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_1, NUMBER_2, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1816, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_2, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1584,8 +1596,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠13
 		temp.put(1833, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_1, NUMBER_3)));
 		temp.put(1834, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_1, NUMBER_3)));
+		temp.put(2243, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_1, NUMBER_3)));
 		temp.put(1835, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_3)));
-		temp.put(1836, join(supportTime, joinNS(PRICE_UNIT, NUMBER_1, NUMBER_3)));
 		temp.put(1837, join(supportTime, joinNS(AMOUNT, NUMBER_1, NUMBER_3)));
 		temp.put(1838, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1839, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1597,6 +1609,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1845, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1846, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1847, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2203, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_1, NUMBER_3)));
 		temp.put(1848, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1849, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1850, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1607,6 +1620,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1855, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1856, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1857, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_3, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2223, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_1, NUMBER_3)));
 		temp.put(1858, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_1, NUMBER_3, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1859, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_1, NUMBER_3, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1860, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_3, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1629,8 +1643,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠14
 		temp.put(1877, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_1, NUMBER_4)));
 		temp.put(1878, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_1, NUMBER_4)));
+		temp.put(2244, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_1, NUMBER_4)));
 		temp.put(1879, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_4)));
-		temp.put(1880, join(supportTime, joinNS(PRICE_UNIT, NUMBER_1, NUMBER_4)));
 		temp.put(1881, join(supportTime, joinNS(AMOUNT, NUMBER_1, NUMBER_4)));
 		temp.put(1882, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1883, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1642,6 +1656,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1889, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1890, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1891, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2204, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_1, NUMBER_4)));
 		temp.put(1892, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1893, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1894, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1652,6 +1667,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1899, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1900, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1901, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_4, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2224, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_1, NUMBER_4)));
 		temp.put(1902, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_1, NUMBER_4, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1903, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_1, NUMBER_4, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1904, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_4, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1674,8 +1690,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠15
 		temp.put(1921, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_1, NUMBER_5)));
 		temp.put(1922, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_1, NUMBER_5)));
+		temp.put(2245, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_1, NUMBER_5)));
 		temp.put(1923, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_5)));
-		temp.put(1924, join(supportTime, joinNS(PRICE_UNIT, NUMBER_1, NUMBER_5)));
 		temp.put(1925, join(supportTime, joinNS(AMOUNT, NUMBER_1, NUMBER_5)));
 		temp.put(1926, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1927, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1687,6 +1703,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1933, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1934, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1935, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2205, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_1, NUMBER_5)));
 		temp.put(1936, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1937, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1938, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1697,6 +1714,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1943, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1944, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1945, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_5, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2225, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_1, NUMBER_5)));
 		temp.put(1946, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_1, NUMBER_5, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1947, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_1, NUMBER_5, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1948, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_5, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1719,8 +1737,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠16
 		temp.put(1965, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_1, NUMBER_6)));
 		temp.put(1966, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_1, NUMBER_6)));
+		temp.put(2246, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_1, NUMBER_6)));
 		temp.put(1967, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_6)));
-		temp.put(1968, join(supportTime, joinNS(PRICE_UNIT, NUMBER_1, NUMBER_6)));
 		temp.put(1969, join(supportTime, joinNS(AMOUNT, NUMBER_1, NUMBER_6)));
 		temp.put(1970, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1971, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1732,6 +1750,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1977, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1978, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1979, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2206, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_1, NUMBER_6)));
 		temp.put(1980, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(1981, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(1982, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1742,6 +1761,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1987, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(1988, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(1989, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_6, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2226, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_1, NUMBER_6)));
 		temp.put(1990, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_1, NUMBER_6, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1991, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_1, NUMBER_6, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(1992, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_6, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1764,8 +1784,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠17
 		temp.put(2009, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_1, NUMBER_7)));
 		temp.put(2010, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_1, NUMBER_7)));
+		temp.put(2247, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_1, NUMBER_7)));
 		temp.put(2011, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_7)));
-		temp.put(2012, join(supportTime, joinNS(PRICE_UNIT, NUMBER_1, NUMBER_7)));
 		temp.put(2013, join(supportTime, joinNS(AMOUNT, NUMBER_1, NUMBER_7)));
 		temp.put(2014, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(2015, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1777,6 +1797,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(2021, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(2022, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(2023, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2207, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_1, NUMBER_7)));
 		temp.put(2024, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(2025, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(2026, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1787,6 +1808,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(2031, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(2032, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(2033, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_7, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2227, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_1, NUMBER_7)));
 		temp.put(2034, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_1, NUMBER_7, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(2035, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_1, NUMBER_7, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(2036, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_7, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1809,8 +1831,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠18
 		temp.put(2053, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_1, NUMBER_8)));
 		temp.put(2054, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_1, NUMBER_8)));
+		temp.put(2248, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_1, NUMBER_8)));
 		temp.put(2055, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_8)));
-		temp.put(2056, join(supportTime, joinNS(PRICE_UNIT, NUMBER_1, NUMBER_8)));
 		temp.put(2057, join(supportTime, joinNS(AMOUNT, NUMBER_1, NUMBER_8)));
 		temp.put(2058, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(2059, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1822,6 +1844,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(2065, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(2066, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(2067, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2208, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_1, NUMBER_8)));
 		temp.put(2068, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(2069, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(2070, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1832,6 +1855,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(2075, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(2076, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(2077, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_8, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2228, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_1, NUMBER_8)));
 		temp.put(2078, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_1, NUMBER_8, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(2079, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_1, NUMBER_8, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(2080, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_8, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1854,8 +1878,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠19
 		temp.put(2097, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_1, NUMBER_9)));
 		temp.put(2098, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_1, NUMBER_9)));
+		temp.put(2249, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_1, NUMBER_9)));
 		temp.put(2099, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_9)));
-		temp.put(2100, join(supportTime, joinNS(PRICE_UNIT, NUMBER_1, NUMBER_9)));
 		temp.put(2101, join(supportTime, joinNS(AMOUNT, NUMBER_1, NUMBER_9)));
 		temp.put(2102, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(2103, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1867,6 +1891,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(2109, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(2110, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(2111, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2209, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_1, NUMBER_9)));
 		temp.put(2112, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(2113, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(2114, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1877,6 +1902,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(2119, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(2120, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(2121, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_9, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2229, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_1, NUMBER_9)));
 		temp.put(2122, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_1, NUMBER_9, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(2123, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_1, NUMBER_9, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(2124, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_1, NUMBER_9, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
@@ -1899,8 +1925,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		//応援枠20
 		temp.put(2141, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_2, NUMBER_0)));
 		temp.put(2142, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_2, NUMBER_0)));
+		temp.put(2250, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + AMOUNT, NUMBER_2, NUMBER_0)));
 		temp.put(2143, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_2, NUMBER_0)));
-		temp.put(2144, join(supportTime, joinNS(PRICE_UNIT, NUMBER_1, NUMBER_9)));
 		temp.put(2145, join(supportTime, joinNS(AMOUNT, NUMBER_1, NUMBER_9)));
 		temp.put(2146, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_2, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(2147, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_2, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
@@ -1912,6 +1938,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(2153, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_2, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(2154, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_2, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(2155, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_2, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2210, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + TIME + TOTAL, NUMBER_2, NUMBER_0)));
 		temp.put(2156, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_2, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_1)));
 		temp.put(2157, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_2, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_2)));
 		temp.put(2158, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_2, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_3)));
@@ -1922,6 +1949,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(2163, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_2, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_8)));
 		temp.put(2164, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_2, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_9)));
 		temp.put(2165, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM + AMOUNT, NUMBER_2, NUMBER_0, DEFAULT_IDX_SEPERATOR, NUMBER_1, NUMBER_0)));
+		temp.put(2230, join(supportTime, WORKING_TIME + TIME, joinNS(PREMIUM + AMOUNT + TOTAL, NUMBER_2, NUMBER_0)));
 		temp.put(2166, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(WORKING_TIME + TIME, NUMBER_2, NUMBER_0, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(2167, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(DEDUCTION + TIME, NUMBER_2, NUMBER_0, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));
 		temp.put(2168, join(supportTime, WORKING_TIME + TIME, MEDICAL + TIME, joinNS(BREAK + TIME, NUMBER_2, NUMBER_0, DEFAULT_ENUM_SEPERATOR, DAY_SHIFT)));

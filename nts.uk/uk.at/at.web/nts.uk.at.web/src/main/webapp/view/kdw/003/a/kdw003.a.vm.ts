@@ -4115,7 +4115,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         uiType: 1,
                         employeeIDs: [],
                         stampRequestMode: 1,
-                        screenMode: 0
+                        screenMode: 0,
+						screenCode: 0
                     };
                     var vmNew = new ko.ViewModel();
 
@@ -4499,7 +4500,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 							if(_.isNaN(_.toNumber(id))) {
 								headerText = '<div style="max-height: 40px;">' + header.attendanceName + '</div>';
 							} else {
-								headerText = '<div style="max-height: 40px;">' + "[" + header.key.substring(1, header.key.length) + "]" + " " + header.attendanceName + '</div>';
+								headerText = '<div style="max-height: 40px;">' + "[" + header.displayNumber + "]" + " " + header.attendanceName + '</div>';
 							}
 							$("#dpGrid").mGrid("headerText", header.key, headerText, false);
                         } else {
@@ -4508,7 +4509,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     } else {
 						if(!nts.uk.util.isNullOrUndefined(self.showHeaderNumber())) {
 	                        if (self.showHeaderNumber()) {
-	                            headerText = "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.attendanceName;
+	                            headerText = "[" + header.displayNumber + "]" + " " + header.attendanceName;
 	                            $("#dpGrid").mGrid("headerText", header.key, '<div style="max-height: 20px;">' + headerText + '</div>', true);
 								header.key = _.replace(headerText, '<br/>', '');
 	                        } else {

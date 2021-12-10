@@ -33,7 +33,7 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 
         if (!listOldHistPersonCostCal.isPresent() || !listOldPersonCostCal.isPresent()) {
             throw new RuntimeException(" CAN NOT FIND DATA " +
-                    "IN  KSCMT_PER_COST_CALC_HIST" +
+                    "IN  KSRMT_PER_COST_CALC_HIST" +
                     " WITH HIST_ID = " + historyId +
                     "COMPANYID = " + companyId);
         }
@@ -42,7 +42,7 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
                 .filter(x -> x.identifier().equals(historyId)).findFirst();
         if (!optionalHisItem.isPresent()) {
             throw new RuntimeException(" CAN NOT FIND DATA " +
-                    "IN  KSCMT_PER_COST_CALC_HIST" +
+                    "IN  KSRMT_PER_COST_CALC_HIST" +
                     " WITH HIST_ID = " + historyId +
                     "COMPANYID = " + companyId);
         }
@@ -72,7 +72,7 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
                 .filter(x -> x.identifier().equals(historyId)).findFirst();
         if (!optionalHisItem.isPresent()) {
             throw new RuntimeException(" CAN NOT FIND DATA " +
-                    "IN  KSCMT_PER_COST_CALC_HIST" +
+                    "IN  KSRMT_PER_COST_CALC_HIST" +
                     " WITH HIST_ID = " + historyId +
                     "COMPANYID = " + companyId);
         }

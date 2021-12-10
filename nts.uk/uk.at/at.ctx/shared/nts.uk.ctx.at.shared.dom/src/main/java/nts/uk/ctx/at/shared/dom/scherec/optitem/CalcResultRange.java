@@ -229,6 +229,13 @@ public class CalcResultRange extends DomainObject {
 			if(this.lowerLimit == CalcRangeCheck.SET) {
 				lowerLimit = convertTime(controlRangeValue.getLowerLimit().get().intValue());
 			}
+		}else if (optionalItemAtr == OptionalItemAtr.AMOUNT) {
+			if(this.upperLimit == CalcRangeCheck.SET) {
+				upperLimit = String.valueOf((int)controlRangeValue.getUpperLimit().get().doubleValue());
+			}
+			if(this.lowerLimit == CalcRangeCheck.SET) {
+				lowerLimit = String.valueOf((int)controlRangeValue.getLowerLimit().get().doubleValue());
+			}
 		}else {
 			if(this.upperLimit == CalcRangeCheck.SET) {
 				upperLimit = String.valueOf(controlRangeValue.getUpperLimit().get().doubleValue());

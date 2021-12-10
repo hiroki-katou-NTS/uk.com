@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenAttendanceTimeEachTimeSheet;
 
 /**
@@ -22,7 +24,7 @@ public class OuenAttendanceTimeEachTimeSheetCommand {
 	public Integer totalTime;
 
 	public OuenAttendanceTimeEachTimeSheet toDomain() {
-		return OuenAttendanceTimeEachTimeSheet.create(new AttendanceTime(this.totalTime), null, null, new ArrayList<>(),
-				new ArrayList<>());
+		return OuenAttendanceTimeEachTimeSheet.create(new AttendanceTime(this.totalTime), null, null, AttendanceAmountDaily.ZERO, new ArrayList<>(),
+				PremiumTimeOfDailyPerformance.createEmpty());
 	}
 }

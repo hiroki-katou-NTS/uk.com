@@ -178,17 +178,29 @@ module nts.uk.at.view.kdl014.a {
             let self = this, tg : any = [], dfd = $.Deferred();
             self.empInfomationList([]);
 			self.lstDataBase([]);
-            _.forEach(self.dataServer, function(item, index : any) {
-                    if (self.display == false) {
-                        //item.locationInfo = null;
-                    }
-					self.getLocationAdd(item).done(() => {
-						item.locationAdd = self.locationAdd;
-                   	 	self.lstDataBase.push(new EmpInfomation(item));
-						if (index == self.dataServer.length - 1)
-						dfd.resolve();
-					});
-            });
+			
+            for(let i = 0; i < self.dataServer.length; i++){
+				let x = 0, y = 0;
+	 			if (self.dataServer[i].locationInfo != null){
+					x = self.dataServer[i].locationInfo.longitude;
+					y = self.dataServer[i].locationInfo.latitude;
+				}
+				
+				if (x == 0 && y == 0){
+					self.dataServer[i].locationAdd = "";
+	               	self.lstDataBase.push(new EmpInfomation(self.dataServer[i]));
+					
+					if (i == self.dataServer.length - 1)
+					dfd.resolve();
+				} else {
+					setTimeout(() => {
+						self.getLocationAdd(self.dataServer[i]).done(() => {
+							if (i == self.dataServer.length - 1)
+							dfd.resolve();
+						});
+					},10);
+				}
+            };
             return dfd.promise();
         }
 
@@ -199,19 +211,26 @@ module nts.uk.at.view.kdl014.a {
 				x = item.locationInfo.longitude;
 				y = item.locationInfo.latitude;
 			}
-            $.ajax({
-                url: 'http://geoapi.heartrails.com/api/json',
-                data: { method: 'searchByGeoLocation', x: x, y : y}
-            }).done(function (data) {
-                    if (data != null && !_.isNil(data.response.location) && data.response.location.length > 0) {
+				$.ajax({
+	                url: 'http://geoapi.heartrails.com/api/json',
+	                data: { method: 'searchByGeoLocation', x: x, y : y}
+	            }).done(function (data) {
+	                if (data != null && !_.isNil(data.response.location) && data.response.location.length > 0) {
 						self.locationAdd = data.response.location[0].prefecture + " " + data.response.location[0].city + " " + data.response.location[0].town; 
-                    }
+	                }
 					
 					if (data == null || (data != null && _.isNil(data.response.location)) || (data != null && !_.isNil(data.response.location) && data.response.location.length == 0)) {
-						self.locationAdd = x + "、" + y;
+						if (x == 0 && y == 0)
+							self.locationAdd = "";
+						else
+							self.locationAdd = x + "、" + y;
 					}
-			dfd.resolve();
-            });
+					item.locationAdd = self.locationAdd;
+	               	self.lstDataBase.push(new EmpInfomation(item));
+	
+					dfd.resolve();
+	            });
+            
 			return dfd.promise();
         }
         

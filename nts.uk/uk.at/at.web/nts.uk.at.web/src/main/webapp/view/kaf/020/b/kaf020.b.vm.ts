@@ -45,6 +45,10 @@ module nts.uk.at.view.kaf020.b {
 					params = __viewContext.transferred.value;
 				}
 			}
+			let screenCode: number = null;
+			if (params && !nts.uk.util.isNullOrUndefined(params.screenCode)) {
+				screenCode = params.screenCode;
+			}
             if (params && params.isAgentMode) vm.isAgentMode(params.isAgentMode);
             if (params != undefined && params.optionalItem) {
                 nts.uk.characteristics.save("KAF020InitParams", params.optionalItem);
@@ -66,8 +70,14 @@ module nts.uk.at.view.kaf020.b {
                 vm.application().opAppStartDate(paramDate);
                 vm.application().opAppEndDate(paramDate);
             }
+			let paramKAF000 = {
+				empLst: vm.empLst, 
+				dateLst: vm.dateLst, 
+				appType: vm.appType(),
+				screenCode
+			};
             vm.$blockui("show");
-            vm.loadData(vm.empLst, vm.dateLst, vm.appType()).then((loadFlag) => {
+            vm.loadData(paramKAF000).then((loadFlag) => {
                 if (loadFlag) {
                     if (params != undefined && params.optionalItem) {
                         return vm.fetchData(params.optionalItem);

@@ -216,13 +216,13 @@ public class CalcResultRangeTest {
 		BigDecimal inputValue = new BigDecimal(999);
 		new Expectations() {
             {
-            	TextResource.localize("Msg_2293","888.0");
-            	result =  "888.0以下の値で入力してください。";
+            	TextResource.localize("Msg_2293","888");
+            	result =  "888以下の値で入力してください。";
             }
         };
 		ValueCheckResult result = calcResultRange.checkInputRange(inputValue, performanceAtr, optionalItemAtr);
 		assertThat(result.isCheckResult()).isFalse();
-		assertThat(result.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2293","888.0"));
+		assertThat(result.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2293","888"));
 	}
 	
 	/**
@@ -260,13 +260,13 @@ public class CalcResultRangeTest {
 		BigDecimal inputValue = new BigDecimal(500);
 		new Expectations() {
             {
-            	TextResource.localize("Msg_2292","666.0");
-            	result =  "666.0以上の値で入力してください。";
+            	TextResource.localize("Msg_2292","666");
+            	result =  "666以上の値で入力してください。";
             }
         };
 		ValueCheckResult result = calcResultRange.checkInputRange(inputValue, performanceAtr, optionalItemAtr);
 		assertThat(result.isCheckResult()).isFalse();
-		assertThat(result.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2292","666.0"));
+		assertThat(result.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2292","666"));
 	}
 	
 	/**
@@ -304,13 +304,13 @@ public class CalcResultRangeTest {
 		BigDecimal inputValue = new BigDecimal(1000);
 		new Expectations() {
             {
-            	TextResource.localize("Msg_2291","666.0","888.0");
-            	result =  "666.0～888.0の範囲以内で入力してください。";
+            	TextResource.localize("Msg_2291","666","888");
+            	result =  "666～888の範囲以内で入力してください。";
             }
         };
 		ValueCheckResult result = calcResultRange.checkInputRange(inputValue, performanceAtr, optionalItemAtr);
 		assertThat(result.isCheckResult()).isFalse();
-		assertThat(result.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2291","666.0","888.0"));
+		assertThat(result.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2291","666","888"));
 	}
 	
 	
