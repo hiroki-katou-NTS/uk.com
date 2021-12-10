@@ -28,14 +28,14 @@ public class CalculationOfTransferTime {
 			return Optional.empty();
 		}
 
-		// 処理前に就業時間帯を更新する
+		// 該当日の就業時間帯を取得する
 		Optional<String> getWorkTimeCode = GetWorkTimeOfDay.getWorkInfoFromSetting(require, companyId,
 				employeeId, date, workTypeCode, beforeTransTime.getWorkTimeCode());
 
 		Optional<SubHolTransferSet> setting = GetSubHolOccurrenceSetting.process(require, companyId, getWorkTimeCode,
 				CompensatoryOccurrenceDivision.valueOf(atr.value));
 		if (!setting.isPresent()) {
-			return Optional.of(beforeTransTime);
+			return Optional.empty();
 		}
 
 		AttendanceTime tranferTime = setting.get()
@@ -44,8 +44,8 @@ public class CalculationOfTransferTime {
 						: beforeTransTime.getOverTransTime().orElse(new AttendanceTime(0)));
 
 		return Optional.of(atr == DayoffChangeAtr.BREAKTIME
-				? new CalculationOfTransferTimeResult(getWorkTimeCode, Optional.of(tranferTime), beforeTransTime.getOverTransTime())
-				: new CalculationOfTransferTimeResult(getWorkTimeCode, beforeTransTime.getHolidayTransTime(), Optional.of(tranferTime)));
+				? new CalculationOfTransferTimeResult(getWorkTimeCode, Optional.of(tranferTime), Optional.empty())
+				: new CalculationOfTransferTimeResult(getWorkTimeCode, Optional.empty(), Optional.of(tranferTime)));
 	}
 
 	public static interface Require extends CheckDateForManageCmpLeaveService.Require,

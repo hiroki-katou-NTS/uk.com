@@ -306,14 +306,11 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 							CalculationOfTransferTimeResult.create(x.getWorkInfoOp().flatMap(y -> y.getWorkTimeCodeNotNull().map(z -> z.v())), appBreakTimeTotal, appOvertimeTimeTotal), 
 							DayoffChangeAtr.OVERTIME);
 					if(transferTimer.isPresent()) {
-						appBreakTimeTotal = transferTimer.get().getHolidayTransTime().map(y -> y.v()).orElse(0);
-						appOvertimeTimeTotal = transferTimer.get().getOverTransTime().map(y -> y.v()).orElse(0);
 						outData.setWorkTimeCode(transferTimer.get().getWorkTimeCode());
+						outData.setAppBreakTimeTotal(transferTimer.get().getHolidayTransTime().map(y -> y.v()));
+						outData.setAppOvertimeTimeTotal(transferTimer.get().getOverTransTime().map(y -> y.v()));
 					}
 				}
-			
-				outData.setAppBreakTimeTotal(Optional.of(appBreakTimeTotal));
-				outData.setAppOvertimeTimeTotal(Optional.of(appOvertimeTimeTotal));
 				break;
 			case BREAK_TIME_APPLICATION:
 				Optional<AppHolidayWork> holidayWork = holidayWorkRepo.find(cid, appData.getAppID());
@@ -337,14 +334,12 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 							CalculationOfTransferTimeResult.create(x.getWorkInformation().getWorkTimeCodeNotNull().map(z -> z.v()), breakTimeTotal, overtimeTimeTotal),
 							DayoffChangeAtr.BREAKTIME);
 					if(transferTimer.isPresent()) {
-						appBreakTimeTotal = transferTimer.get().getHolidayTransTime().map(y -> y.v()).orElse(0);
-						appOvertimeTimeTotal = transferTimer.get().getOverTransTime().map(y -> y.v()).orElse(0);
 						outData.setWorkTimeCode(transferTimer.get().getWorkTimeCode());
+						outData.setAppBreakTimeTotal(transferTimer.get().getHolidayTransTime().map(y -> y.v()));
+						outData.setAppOvertimeTimeTotal(transferTimer.get().getOverTransTime().map(y -> y.v()));
 					}
 					
 				}
-				outData.setAppBreakTimeTotal(Optional.of(breakTimeTotal));
-				outData.setAppOvertimeTimeTotal(Optional.of(overtimeTimeTotal));
 				break;
 
 			case ANNUAL_HOLIDAY_APPLICATION:
