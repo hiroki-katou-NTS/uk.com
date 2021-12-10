@@ -45,6 +45,8 @@ import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.CreatingDailyResultsCondition;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.CreatingDailyResultsConditionRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgeementTimeCommonSettingService;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
@@ -63,6 +65,8 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.monthlyupdatemgr.Mon
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.ymupdate.ProcessYearMonthUpdate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationService;
+import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
+import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CreateTempAnnLeaMngProc;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.FindAnnLeaUsedDaysFromPreviousToNextGrantDate;
@@ -772,6 +776,11 @@ public class RecordDomRequireService {
 	private GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate;
 	@Inject
 	protected TransactionService transaction;
+
+	@Inject
+	private EmploymentAdapter employmentAdapter;
+	@Inject
+	private CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
   
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2, CalcAnnLeaAttendanceRate.RequireM3,
 		GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1, CalcNextAnnLeaGrantInfo.RequireM1, GetNextAnnualLeaveGrantProcKdm002.RequireM1,
@@ -823,7 +832,8 @@ public class RecordDomRequireService {
 				payoutSubofHDManaRepo, leaveComDayOffManaRepo , checkChildCareService, workingConditionItemService, publicHolidaySettingRepo, publicHolidayManagementUsageUnitRepo,
 				companyMonthDaySettingRepo,tempPublicHolidayManagementRepo, publicHolidayCarryForwardDataRepo, employmentMonthDaySettingRepo, workplaceMonthDaySettingRepo,
 				employeeMonthDaySettingRepo, publicHolidayCarryForwardHistoryRepo, childCareUsedNumberRepo, careUsedNumberRepo, childCareLeaveRemInfoRepo, careLeaveRemainingInfoRepo,
-				tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo,executionLogRepo, workDaysNumberOnLeaveCountRepo, getPeriodFromPreviousToNextGrantDate, transaction);
+				tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo,executionLogRepo, transaction, employmentAdapter, creatingDailyResultsConditionRepo, 
+				getPeriodFromPreviousToNextGrantDate, workDaysNumberOnLeaveCountRepo);
 	}
 
 	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
@@ -875,8 +885,8 @@ public class RecordDomRequireService {
 				PublicHolidayCarryForwardDataRepository publicHolidayCarryForwardDataRepo, EmploymentMonthDaySettingRepository employmentMonthDaySettingRepo, WorkplaceMonthDaySettingRepository workplaceMonthDaySettingRepo,
 				EmployeeMonthDaySettingRepository employeeMonthDaySettingRepo, PublicHolidayCarryForwardHistoryRepository publicHolidayCarryForwardHistoryRepo,ChildCareUsedNumberRepository childCareUsedNumberRepo,
 				CareUsedNumberRepository careUsedNumberRepo, ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepo, CareLeaveRemainingInfoRepository careLeaveRemainingInfoRepo, TempChildCareManagementRepository tempChildCareManagementRepo,
-				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,ExecutionLogRepository executionLogRepo, WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo, 
-				GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate, TransactionService transaction) {
+				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,ExecutionLogRepository executionLogRepo, TransactionService transaction,
+				EmploymentAdapter employmentAdapter, CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo, GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate, WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo) {
 
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo, specialLeaveBasicInfoRepo,
 					interimRecAbasMngRepo, empSubstVacationRepo, substitutionOfHDManaDataRepo, payoutManagementDataRepo, interimBreakDayOffMngRepo, comDayOffManaDataRepo, companyAdapter, shareEmploymentAdapter,
@@ -1024,7 +1034,11 @@ public class RecordDomRequireService {
 			this.workDaysNumberOnLeaveCountRepo = workDaysNumberOnLeaveCountRepo;
 			this.getPeriodFromPreviousToNextGrantDate = getPeriodFromPreviousToNextGrantDate;
 			this.transaction = transaction;
+			this.employmentAdapter = employmentAdapter;
+			this.creatingDailyResultsConditionRepo = creatingDailyResultsConditionRepo;
 		}
+		protected EmploymentAdapter employmentAdapter;
+		protected CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
 		private WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo;
 
 		protected TransactionService transaction;
@@ -2994,6 +3008,16 @@ public class RecordDomRequireService {
 		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
 				GeneralDate baseDate) {
 			return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public List<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId) {
+			return employmentAdapter.getEmpHistBySid(companyId, employeeId);
+		}
+
+		@Override
+		public Optional<CreatingDailyResultsCondition> creatingDailyResultsCondition(String cid) {
+			return creatingDailyResultsConditionRepo.findByCid(cid);
 		}
 
 		@Override

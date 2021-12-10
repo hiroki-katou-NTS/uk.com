@@ -2223,7 +2223,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			}
 		} else {
 			try {
-				processState = this.dailyCalculationEmployeeService.calculateForOnePerson(employeeId, period,
+				processState = this.dailyCalculationEmployeeService.calculateForOnePerson(companyId, employeeId, period,
 						Optional.empty(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
 						dailyCreateLog.getIsCalWhenLock().orElse(false));
 			} catch (Exception e) {
@@ -2289,7 +2289,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 
 		try {
 			// 社員の日別実績を計算
-			ProcessState2 = this.dailyCalculationEmployeeService.calculateForOnePerson(empId, period, Optional.empty(),
+			ProcessState2 = this.dailyCalculationEmployeeService.calculateForOnePerson(companyId, empId, period, Optional.empty(),
 					empCalAndSumExeLogId, dailyCreateLog.getIsCalWhenLock().orElse(false));
 			log.info("更新処理自動実行_日別実績の計算_END_" + procExec.getExecItemCode() + "_" + GeneralDateTime.now());
 		} catch (Exception e) {
