@@ -66,22 +66,18 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
         }
 
         public static openKDL051(param: any) {
-            setShared('KDL051A_PARAM', param);
+            setShared('KDL051A_PARAM', param.employeeIds);
             if(param.employeeIds.length > 1 ) {
-                modal("/view/kdl/051/multi.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 980, height: 570});
             } else {
-                modal("/view/kdl/051/single.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 650, height: 530});
             }
         }
 
         public static openKDL052(param: any) {
             const vm = new ko.ViewModel();
-
-            if (param.employeeIds.length > 1) {
-                vm.$window.modal('/view/kdl/052/multi.xhtml', param);
-            } else {
-                vm.$window.modal('/view/kdl/052/single.xhtml', param);
-            }
+            setShared('KDL052A_PARAM', param);            
+            vm.$window.modal('/view/kdl/052/a/index.xhtml');
         }
 
         public static openKDL017(param: any) {
