@@ -67,9 +67,11 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerf
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CreateTempAnnLeaMngProc;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.FindAnnLeaUsedDaysFromPreviousToNextGrantDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetHolidayDetailByPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetPeriodFromPreviousToNextGrantDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GrantPeriodDto;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetRemainingNumberChildCareNurseService;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumUsageDetail;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
@@ -130,7 +132,9 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.Workpl
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
@@ -156,6 +160,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
@@ -224,6 +230,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService.RequireM1;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSet;
@@ -393,6 +400,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService.RequireM3;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployeeProc;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -773,7 +781,9 @@ public class RecordDomRequireService {
 		AgeementTimeCommonSettingService.RequireM1, CreateTempAnnLeaMngProc.RequireM3, AggregateSpecifiedDailys.RequireM1, ClosureService.RequireM6, ClosureService.RequireM5,
 		MonthlyUpdateMgr.RequireM4, MonthlyClosureUpdateLogProcess.RequireM3, CancelActualLock.RequireM1, ProcessYearMonthUpdate.RequireM1, BreakDayOffMngInPeriodQuery.RequireM2,
 		AgreementDomainService.RequireM5, AgreementDomainService.RequireM6, GetAgreementTime.RequireM5, VerticalTotalAggregateService.RequireM1, GetExcessTimesYear.RequireM2, 
-		GetRemainingNumberPublicHolidayService.RequireM1, GetRemainingNumberChildCareNurseService.Require, FindAnnLeaUsedDaysFromPreviousToNextGrantDate.Require{
+		GetRemainingNumberPublicHolidayService.RequireM1, GetRemainingNumberChildCareNurseService.Require, GetHolidayDetailByPeriod.Require, GetRsvLeaRemNumUsageDetail.Require, 
+		FindAnnLeaUsedDaysFromPreviousToNextGrantDate.Require{
+
 
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
 		
@@ -2876,6 +2886,17 @@ public class RecordDomRequireService {
 		}
 
 		@Override
+		public List<DailyInterimRemainMngData> mapInterimRemainData(RequireM1 require, CacheCarrier cacheCarrier,
+				String cid, String sid, DatePeriod datePeriod) {
+			return AggregateMonthlyRecordService.mapInterimRemainData(require, cacheCarrier, cid, sid, datePeriod);
+		}
+
+		@Override
+		public Optional<GeneralDate> algorithm(GetClosureStartForEmployee.RequireM1 require, CacheCarrier cacheCarrier, String employeeId) {
+			return GetClosureStartForEmployeeProc.algorithm(require, cacheCarrier, employeeId);
+		}
+
+		@Override	
 		public Optional<GrantPeriodDto> getPeriodYMDGrant(String cid, String sid, GeneralDate ymd, Integer periodOutput,
 				Optional<DatePeriod> fromTo) {
 			return getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(cid, sid, ymd, periodOutput, fromTo);
@@ -2900,6 +2921,7 @@ public class RecordDomRequireService {
 					employeeId, criteriaDate, period);
 		}
 
+		@Override
 		public void transaction(AtomTask task) {
 			this.transaction.execute(task);
 		}
@@ -2974,6 +2996,36 @@ public class RecordDomRequireService {
 			return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
 		}
 
+		@Override
+		public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
+			return interimBreakDayOffMngRepo.getDayOffBySidPeriod(sid, period);
+		}
+
+		@Override
+		public List<InterimBreakMng> getBreakBySidPeriod(String sid, DatePeriod period) {
+			return interimBreakDayOffMngRepo.getBySidPeriod(sid, period);
+		}
+
+		@Override
+		public List<TempChildCareManagement> findChildCareByPeriodOrderByYmd(String employeeId, DatePeriod period) {
+			return tempChildCareManagementRepo.findByPeriodOrderByYmd(employeeId, period);
+		}
+
+		@Override
+		public List<TempCareManagement> findCareByPeriodOrderByYmd(String employeeId, DatePeriod period) {
+			return tempCareManagementRepo.findByPeriodOrderByYmd(employeeId, period);
+		}
+		
+		@Override
+		public List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period){
+			return interimRecAbasMngRepo.getRecBySidDatePeriod(sid, period);
+		}
+		
+		@Override
+		public List<InterimAbsMng> getAbsBySidDatePeriod(String sid, DatePeriod period){
+			return interimRecAbasMngRepo.getAbsBySidDatePeriod(sid, period);
+		}
+		
 		@Override
 		public WorkDaysNumberOnLeaveCount workDaysNumberOnLeaveCount(String cid) {
 			return workDaysNumberOnLeaveCountRepo.findByCid(cid);

@@ -5644,7 +5644,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             return dfd.promise();
         }
-        
+        openDialogK() {
+            let self = this;
+            characteristics.restore(self.KEY).done((userInfor: IUserInfor) => {
+                setShared('dataShareDialogK', {
+                    orgUnit: userInfor.unit,
+                    orgId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId,
+                    startDate: moment(self.dtPrev()).toISOString(),
+                    endDate: moment(self.dtAft()).toISOString(),
+                    employeeIds : self.sids(),
+                    closeDate: self.closeDate
+                });
+                nts.uk.ui.windows.sub.modal("/view/ksu/001/ka/index.xhtml");
+            });
+        }
         btnOpenKDL055(): void {
             let self = this;
             let arrCellUpdated = $("#extable").exTable("updatedCells");

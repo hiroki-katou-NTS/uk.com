@@ -4756,12 +4756,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         openKDL020Dialog() {
             let self = this;
-            setShared('KDL020A_PARAM', { baseDate: new Date(), employeeIds: [self.selectedEmployee()] });
-            if(self.selectedEmployee().length > 1 ) {
-              modal("/view/kdl/020/a/multi.xhtml");
-            } else {
-              modal("/view/kdl/020/a/single.xhtml");
-            }
+			setShared('KDL020_DATA', [self.selectedEmployee()]);
+			if ([self.selectedEmployee()].length > 1)
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 1040, height: 660 });
+			else
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 730, height: 660 });
         }
 
         openKDL009Dialog() {
@@ -4780,12 +4779,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         openkdl029Dialog() {
             let self = this;
-            let param = {
-                employeeIds: [self.selectedEmployee()],
-                baseDate: moment(new Date()).format("YYYY/MM/DD")
-            }
-            setShared('KDL029_PARAM', param);
-            modal('/view/kdl/029/a/index.xhtml');
+            setShared('KDL029_DATA', [self.selectedEmployee()]);
+			if ([self.selectedEmployee()].length > 1)
+				modal("/view/kdl/029/a/index.xhtml",{  width: 1060, height: 600 });
+			else
+				modal("/view/kdl/029/a/index.xhtml",{  width: 710, height: 600 });
         }
 
         openKDL005Dialog() {
@@ -4805,8 +4803,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 employeeIds: [self.selectedEmployee()],
                 baseDate: new Date()
             }
-            setShared('KDL051A_PARAM', param);
-            modal("/view/kdl/051/single.xhtml");
+            setShared('KDL051A_PARAM', param.employeeIds);
+            nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 650, height: 530});
         }
 
 		openKDL052Dialog() {
@@ -4815,8 +4813,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 employeeIds: [self.selectedEmployee()],
                 baseDate: moment(new Date()).format("YYYY/MM/DD")
             }
-			setShared('OPEN_WINDOWS_DATA', param);// nts.uk.characteristics.OPEN_WINDOWS_DATA
-            modal('/view/kdl/052/single.xhtml');
+			setShared('KDL052A_PARAM', param);// nts.uk.characteristics.OPEN_WINDOWS_DATA
+            modal('/view/kdl/052/a/index.xhtml');
         }
 
     }
