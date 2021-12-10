@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 
 /**
@@ -16,7 +16,7 @@ public class GrantWork {
 	/** 付与年月日 */
 	private GeneralDate grantYmd;
 	/** 付与日数 */
-	private ReserveLeaveGrantDayNumber grantDays;
+	private LeaveGrantDayNumber grantDays;
 	
 	/**
 	 * コンストラクタ
@@ -24,7 +24,7 @@ public class GrantWork {
 	public GrantWork(){
 		
 		this.grantYmd = GeneralDate.today();
-		this.grantDays = new ReserveLeaveGrantDayNumber(0.0);
+		this.grantDays = new LeaveGrantDayNumber(0.0);
 	}
 	
 	/**
@@ -34,7 +34,7 @@ public class GrantWork {
 	 * @return 積立年休付与WORK
 	 */
 	public static GrantWork of(
-			GeneralDate grantYmd, ReserveLeaveGrantDayNumber grantDays){
+			GeneralDate grantYmd, LeaveGrantDayNumber grantDays){
 		
 		GrantWork domain = new GrantWork();
 		domain.grantYmd = grantYmd;
@@ -80,6 +80,6 @@ public class GrantWork {
 		}
 		
 		// 計算した付与日数を設定する
-		this.grantDays = new ReserveLeaveGrantDayNumber(grantDays);
+		this.grantDays = new LeaveGrantDayNumber(grantDays);
 	}
 }

@@ -112,6 +112,7 @@ import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphe
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.UpdateEmpHealInsQualifiInfoCommand;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.AddEmpSocialInsGradeInforCommand;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.UpdateEmpSocialInsGradeInforCommand;
+import nts.uk.ctx.sys.gateway.app.command.login.password.userpassword.UpdateEmpLoginPasswordCommand;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregListCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
@@ -329,6 +330,8 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpHealInsQualifiInfoCommand>>(){},
 			//CS00092 社員社会保険等級情報
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpSocialInsGradeInforCommand>>(){},
+			//CS00100 パスワード
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpLoginPasswordCommand>>(){},
 			//CS00097 単価
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmployeeUnitPriceCommand>>(){}
 			);

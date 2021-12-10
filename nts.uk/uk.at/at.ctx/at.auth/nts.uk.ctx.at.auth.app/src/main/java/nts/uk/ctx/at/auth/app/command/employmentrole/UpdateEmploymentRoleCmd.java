@@ -45,6 +45,7 @@ public class UpdateEmploymentRoleCmd {
 	 * 未来日参照許可 FUTURE_DATE_REF_PERMIT
 	 */
 	private int futureDateRefPermit;
+	
 	public UpdateEmploymentRoleCmd(String companyId, String roleId, int scheduleEmployeeRef, int bookEmployeeRef,
 			int employeeRefSpecAgent, int presentInqEmployeeRef, int futureDateRefPermit) {
 		super();

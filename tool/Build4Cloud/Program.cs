@@ -12,51 +12,58 @@ namespace Build4Cloud
     {
         static void Main(string[] args)
         {
-            if (args.Length != 2)
+            int dataSourcesCount = 1;
+            IEnumerable<string> targetProjects = new[] { "cloud" };
+            string mode = "build";
+
+            foreach (string arg in args)
             {
-                Console.WriteLine("コマンドライン引数でプロジェクト（comやatなど）とデータソース数を指定してください");
-                return;
+                string[] parts = arg.Split('=');
+                string name = parts[0];
+                string value = parts[1];
+
+                switch (name)
+                {
+                    case "-d":
+                        dataSourcesCount = int.Parse(value);
+                        break;
+                    case "-p":
+                        targetProjects = value.Split(',');
+                        break;
+                    case "-m":
+                        mode = value.ToLower();
+                        break;
+                }
             }
 
             var context = new Context
             {
-                RootPath = FindRootPathFromCurrent(),
-                Project = args[0],  // "com" | "at" | ...
+                RootPath = Util.FindRootPathFromCurrent(),
+                Projects = targetProjects,
             };
 
-            int datasourcesCount = int.Parse(args[1]);
+            var loader = new EntityManagerLoader(context.RootPath);
+            loader.CreateCloudEdition(dataSourcesCount);
 
-            var xml = new PersistenceXml(context.GetPathToPersistenceXml());
-
-            xml.CreateCloudEdition(datasourcesCount);
-
-            Build(context);
-
-            xml.RestoreOriginalFile();
-        }
-
-        private static string FindRootPathFromCurrent()
-        {
-            for (string dir = Environment.CurrentDirectory; Directory.Exists(dir); dir = Path.Combine(dir, ".."))
+            foreach (var project in context.Projects)
             {
-                string root = Path.Combine(dir, "nts.uk");
-                if (Directory.Exists(root))
+                string pathToWeb = Path.Combine(context.RootPath, $"uk.{project}", $"{project}.web", $"nts.uk.{project}.web");
+
+                var xml = new PersistenceXml(context.RootPath, pathToWeb);
+                xml.CreateCloudEdition(dataSourcesCount);
+
+                if (mode == "build")
                 {
-                    return root;
+                    Util.Gradle("build", pathToWeb);
+
+                    xml.RestoreOriginalFile();
                 }
             }
 
-            throw new Exception("root not found: " + Environment.CurrentDirectory);
-        }
-
-        private static void Build(Context context)
-        {
-            var processStartInfo = new ProcessStartInfo("gradle", "build");
-            processStartInfo.WorkingDirectory = context.GetPathToWeb();
-
-            var process = Process.Start(processStartInfo);
-            process.WaitForExit();
-            process.Close();
+            if (mode == "build")
+            {
+                loader.RestoreOriginalFile();
+            }
         }
     }
 

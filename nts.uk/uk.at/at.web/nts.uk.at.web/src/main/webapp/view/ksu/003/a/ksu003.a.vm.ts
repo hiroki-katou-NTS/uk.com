@@ -120,6 +120,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		modes = ko.observableArray(["normal", "paste", "pasteFlex"].map(c => ({ code: c, name: c })));
 
+        taskId = null;
+        
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -2475,31 +2477,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				let dataReg = model.buidDataReg(updatedCells, self.dataScreen003A().targetInfor, self.dataScreen003A().employeeInfo,
 					self.employeeIdLogin, self.colorBreak45, self.index045);
 				service.regWorkSchedule(dataReg).done((rs: any) => {
-					block.clear();
-					self.colorBreak45 = true
-					if (rs.hasError == false) {
-						if (type != 1) {
-							nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-								block.grayout();
-								self.enableSave(false);
-								let $grid = $('div.ex-body-detail');
-								self.updateAfterSaveData($grid[0]).done(() => {
-									self.destroyAndCreateGrid(self.lstEmpId, 0);
-								});
-							});
-						} else {
-							self.enableSave(false);
-							let $grid = $('div.ex-body-detail');
-							self.updateAfterSaveData($grid[0]).done(() => {
-								self.destroyAndCreateGrid(self.lstEmpId, 0);
-							});
-						}
-					} else {
-						setTimeout(function() {
-							self.openKDL053(rs);
-						}, 500);
-						block.clear();
-					}
+                    self.taskId = rs.taskInfor.id;
+                    self.checkStateAsyncTaskNormalMode();
+                    
 				}).fail(function(error: any) {
 					block.clear();
 					alertError(error);
@@ -2527,29 +2507,91 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				})
 				service.addTaskWorkSchedule(self.taskPasteData).done((rs: any) => {
-					if (type != 1) {
-						nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-						block.grayout();
-						self.destroyAndCreateGrid(self.lstEmpId, 0);
-						//self.getTask();
-					}
-					block.grayout();
-					self.taskSaveData = [];
-					self.taskPasteData = [];
-					self.lstTaskScheduleDetailEmp = [];
-					self.lstChartTask = [];
-					self.enableSave(false);
-					//block.clear();
-				}).fail(function(error: any) {
-					block.clear();
-					alertError(error);
-					dfd.reject();
-				});
-			}
+                    if (type != 1) {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        block.grayout();
+                        self.destroyAndCreateGrid(self.lstEmpId, 0);
+                        //self.getTask();
+                    }
+                    block.grayout();
+                    self.taskSaveData = [];
+                    self.taskPasteData = [];
+                    self.lstTaskScheduleDetailEmp = [];
+                    self.lstChartTask = [];
+                    self.enableSave(false);
 
-			dfd.resolve();
-			return dfd.promise();
+                    //block.clear();
+                }).fail(function(error: any) {
+                    block.clear();
+                    alertError(error);
+                    dfd.reject();
+                });
+            }
+
+            dfd.resolve();
+            return dfd.promise();
 		}
+
+        checkStateAsyncTaskNormalMode(type : any) {
+            let self = this;
+            nts.uk.deferred.repeat(conf => conf
+                .task(() => {
+                    return nts.uk.request.asyncTask.getInfo(self.taskId).done(function(res: any) {
+                        // finish task
+                        if (res.succeeded || res.failed || res.cancelled) {
+                            let arrayItems = [];
+                            let dataResult: any = {};
+                            dataResult.listErrorInfo = [];
+                            dataResult.hasError = false;
+                            dataResult.isRegistered = true; 
+                            _.forEach(res.taskDatas, item => {
+                                if (item.key == 'STATUS_REGISTER') {
+                                    dataResult.isRegistered = item.valueAsBoolean;
+                                } else if (item.key == 'STATUS_ERROR') {
+                                    dataResult.hasError = item.valueAsBoolean;
+                                } else {
+                                    arrayItems.push(item);
+                                }
+                            });
+                            
+                            if (arrayItems.length > 0) {
+                                let listErrorInfo = _.map(arrayItems, obj2 => {
+                                    return new model.InforError(JSON.parse(obj2.valueAsString));
+                                });
+                                dataResult.listErrorInfo = listErrorInfo;
+                            }
+                            
+                            block.clear();
+                            self.colorBreak45 = true
+                            if (dataResult.hasError == false) {
+                                if (type != 1) {
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                        block.grayout();
+                                        self.enableSave(false);
+                                        let $grid = $('div.ex-body-detail');
+                                        self.updateAfterSaveData($grid[0]).done(() => {
+                                            self.destroyAndCreateGrid(self.lstEmpId, 0);
+                                        });
+                                    });
+                                } else {
+                                    self.enableSave(false);
+                                    let $grid = $('div.ex-body-detail');
+                                    self.updateAfterSaveData($grid[0]).done(() => {
+                                        self.destroyAndCreateGrid(self.lstEmpId, 0);
+                                    });
+                                }
+                            } else {
+                                setTimeout(function() {
+                                    self.openKDL053(dataResult);
+                                }, 500);
+                                block.clear();
+                            }
+                        }
+                    });
+                }).while(infor => {
+                    return infor.pending || infor.running;
+                }).pause(1000));    
+        }
 
 		updateAfterSaveData($grid: HTMLElement): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred();
@@ -5599,7 +5641,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			// kiem tra truong hop khong chon task nao de paste
 			let taskInfo: any = _.filter(__viewContext.viewModel.viewmodelAb.dataTaskInfo.lstTaskDto, (x: any) => {
-				return _.split(type, 'TASK', 1)[0] === x.code && _.includes(type, "TASK");
+				return _.isEqual(type.substring(0,type.length - 4), x.code) && _.includes(type, "TASK");
 			});
 
 			if (taskInfo == null) return;
@@ -6551,6 +6593,24 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			return dfd.promise();
 		}
 
+        public openKSU003D(): void {
+            let self = this;
+            let data = {
+                targetOrg: {
+                    unit: self.dataFromA().unit,
+                    workplaceId: self.dataFromA().workplaceId,
+                    workplaceGroupId: self.dataFromA().workplaceGroupId,
+                },
+                employeeIds: _.map(self.lstEmpId, (x: any) => { return x.empId }),
+                targetPeriod: {
+                    startDate: self.dataFromA().daySelect,
+                    endDate: self.dataFromA().daySelect
+                }
+            };
+            setShared('dataShareKsu003D', data);
+            nts.uk.ui.windows.sub.modal("/view/ksu/003/d/index.xhtml");
+        }
+		
 		// 決定（A14_11）をクリックする (click A14_11)
 		public closePopupA14() {
 			let self = this;
