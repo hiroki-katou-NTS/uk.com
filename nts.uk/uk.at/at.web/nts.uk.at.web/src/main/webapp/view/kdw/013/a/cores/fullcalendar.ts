@@ -2762,6 +2762,10 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     
                     vm.params.screenA.dataChanged(true);
+                    let id = randomId();
+                    if (ko.unwrap<boolean>(dataEvent.shift)) {
+                        event.setExtendedProp('id', id);
+                    }
                     
                     mutatedEvents();
 
@@ -2785,31 +2789,50 @@ module nts.uk.ui.at.kdw013.calendar {
                         };
                         let tempEs = [...events()];
                         _.forEach(tempEs, (evn) => {
-                            if (evn.extendedProps.id == extendedProps.id) {
+                            if (evn.extendedProps.id == id) {
                                 let tds = [...evn.extendedProps.taskBlock.taskDetails];
                                 let eventInDay = _.chain(events())
                                     .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
-                                    .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
+                                    .filter((evn) => { return evn.extendedProps.id != id })
                                     .sortBy('end')
                                     .value();
+                                let supNo = null;
+                                const startMinutes = (moment(start).hour() * 60) + moment(start).minute();
+                                const endMinutes = (moment(end).hour() * 60) + moment(end).minute();
                                 _.forEach(tds, td => {
-                                    td.supNo = _.isEmpty(eventInDay) ? 1 : getFrameNo(eventInDay);
+                                    supNo = supNo ? supNo + 1 : _.isEmpty(eventInDay) ? 1 : getFrameNo(eventInDay);
+                                    td.supNo = supNo;
+                                    _.forEach(td.taskItemValues, tiv => {
+                                        if (tiv.itemId == 1) {
+                                            tiv.value = startMinutes;
+                                        }
+                                        if (tiv.itemId == 2) {
+                                            tiv.value = endMinutes;
+                                        }
+                                        if (tiv.itemId == 3) {
+                                            tiv.value = endMinutes - startMinutes;
+                                        }
+                                    });
                                 });
-                                evn.extendedProps.taskDetails = tds
+                                evn.extendedProps.taskDetails = tds;
+                                evn.extendedProps.isChanged = true;
+                                evn.extendedProps.taskBlock.caltimeSpan = { start: startMinutes, end: endMinutes };
+                                evn.extendedProps.period = { start: startMinutes, end: endMinutes };
+                            };
+                        });
+                        events(tempEs);
+                        updateEvents();
+                    } else {
+
+                        let tempEs = [...events()];
+                        _.forEach(tempEs, (evn) => {
+                            if (evn.extendedProps.id == extendedProps.id) {
+                                evn.extendedProps.isChanged = true;
                             };
                         });
                         events(tempEs);
                         updateEvents();
                     }
-
-                    let tempEs = [...events()];
-                    _.forEach(tempEs, (evn) => {
-                        if (evn.extendedProps.id == extendedProps.id) {
-                            evn.extendedProps.isChanged = true;
-                        };
-                    });
-                    events(tempEs);
-                    updateEvents();
                 },
                 eventResizeStart: (arg: EventResizeStartArg) => {
                     // remove new event (with no data) & background event
