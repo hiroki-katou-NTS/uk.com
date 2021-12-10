@@ -2759,8 +2759,48 @@ module nts.uk.ui.at.kdw013.calendar {
                             }                            
                         }
                     }
+
+                    
                     vm.params.screenA.dataChanged(true);
+                    
                     mutatedEvents();
+
+                    if (ko.unwrap<boolean>(dataEvent.shift)) {
+                        const getFrameNo = (events) => {
+                            const vm = this;
+                            const data = ko.unwrap(vm.params.$datas());
+                            const {lstIntegrationOfDaily} = data;
+                            let maxNo = 20;
+                            let resultNo;
+                            for (let i = 1; i <= maxNo; i++) {
+                                let event = _.find(events, e => _.find(_.get(e, 'extendedProps.taskBlock.taskDetails', []), ['supNo', i]));
+                                let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(start).isSame(moment(id.ymd), 'days'); });
+                                let ouenTime = _.find(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null && ot.workNo == i)
+                                if (!event && !ouenTime) {
+                                    resultNo = i;
+                                    break;
+                                }
+                            }
+                            return resultNo;
+                        };
+                        let tempEs = [...events()];
+                        _.forEach(tempEs, (evn) => {
+                            if (evn.extendedProps.id == extendedProps.id) {
+                                let tds = [...evn.extendedProps.taskBlock.taskDetails];
+                                let eventInDay = _.chain(events())
+                                    .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
+                                    .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
+                                    .sortBy('end')
+                                    .value();
+                                _.forEach(tds, td => {
+                                    td.supNo = _.isEmpty(eventInDay) ? 1 : getFrameNo(eventInDay);
+                                });
+                                evn.extendedProps.taskDetails = tds
+                            };
+                        });
+                        events(tempEs);
+                        updateEvents();
+                    }
 
                     let tempEs = [...events()];
                     _.forEach(tempEs, (evn) => {
