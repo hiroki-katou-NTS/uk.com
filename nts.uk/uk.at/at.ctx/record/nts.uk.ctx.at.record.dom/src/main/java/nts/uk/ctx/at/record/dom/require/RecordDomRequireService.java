@@ -11,9 +11,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -262,6 +260,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.Aggrega
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.PayItemCountOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.WorkDaysNumberOnLeaveCount;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.WorkDaysNumberOnLeaveCountRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
@@ -758,6 +758,8 @@ public class RecordDomRequireService {
 	private NursingLeaveSettingRepository nursingLeaveSettingRepo;
 	@Inject 
 	private ExecutionLogRepository executionLogRepo;
+	@Inject
+	private WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo;
 	@Inject 
 	private GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate;
 	@Inject
@@ -811,7 +813,7 @@ public class RecordDomRequireService {
 				payoutSubofHDManaRepo, leaveComDayOffManaRepo , checkChildCareService, workingConditionItemService, publicHolidaySettingRepo, publicHolidayManagementUsageUnitRepo,
 				companyMonthDaySettingRepo,tempPublicHolidayManagementRepo, publicHolidayCarryForwardDataRepo, employmentMonthDaySettingRepo, workplaceMonthDaySettingRepo,
 				employeeMonthDaySettingRepo, publicHolidayCarryForwardHistoryRepo, childCareUsedNumberRepo, careUsedNumberRepo, childCareLeaveRemInfoRepo, careLeaveRemainingInfoRepo,
-				tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo,executionLogRepo, getPeriodFromPreviousToNextGrantDate, transaction);
+				tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo,executionLogRepo, workDaysNumberOnLeaveCountRepo, getPeriodFromPreviousToNextGrantDate, transaction);
 	}
 
 	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
@@ -863,8 +865,8 @@ public class RecordDomRequireService {
 				PublicHolidayCarryForwardDataRepository publicHolidayCarryForwardDataRepo, EmploymentMonthDaySettingRepository employmentMonthDaySettingRepo, WorkplaceMonthDaySettingRepository workplaceMonthDaySettingRepo,
 				EmployeeMonthDaySettingRepository employeeMonthDaySettingRepo, PublicHolidayCarryForwardHistoryRepository publicHolidayCarryForwardHistoryRepo,ChildCareUsedNumberRepository childCareUsedNumberRepo,
 				CareUsedNumberRepository careUsedNumberRepo, ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepo, CareLeaveRemainingInfoRepository careLeaveRemainingInfoRepo, TempChildCareManagementRepository tempChildCareManagementRepo,
-				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,ExecutionLogRepository executionLogRepo, GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate, 
-				TransactionService transaction) {
+				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,ExecutionLogRepository executionLogRepo, WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo, 
+				GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate, TransactionService transaction) {
 
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo, specialLeaveBasicInfoRepo,
 					interimRecAbasMngRepo, empSubstVacationRepo, substitutionOfHDManaDataRepo, payoutManagementDataRepo, interimBreakDayOffMngRepo, comDayOffManaDataRepo, companyAdapter, shareEmploymentAdapter,
@@ -1009,9 +1011,11 @@ public class RecordDomRequireService {
 			this.tempCareManagementRepo = tempCareManagementRepo;
 			this.nursingLeaveSettingRepo = nursingLeaveSettingRepo;
 			this.executionLogRepo = executionLogRepo;
+			this.workDaysNumberOnLeaveCountRepo = workDaysNumberOnLeaveCountRepo;
 			this.getPeriodFromPreviousToNextGrantDate = getPeriodFromPreviousToNextGrantDate;
 			this.transaction = transaction;
 		}
+		private WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo;
 
 		protected TransactionService transaction;
 		
@@ -2969,5 +2973,11 @@ public class RecordDomRequireService {
 				GeneralDate baseDate) {
 			return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
 		}
+
+		@Override
+		public WorkDaysNumberOnLeaveCount workDaysNumberOnLeaveCount(String cid) {
+			return workDaysNumberOnLeaveCountRepo.findByCid(cid);
+		}
+
 	}
 }
