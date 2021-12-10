@@ -13,7 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class SptmtRoleByRoleTiesPK extends ContractUkJpaEntity implements Serializable {
+public class SptmtRoleByRoleTiesPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Column(name = "ROLE_ID")
 	public String roleId;
@@ -21,8 +21,4 @@ public class SptmtRoleByRoleTiesPK extends ContractUkJpaEntity implements Serial
 	@Column(name = "CID")
 	public String companyId;
 
-	@Override
-	protected Object getKey() {
-		return this.roleId;
-	}
 }
