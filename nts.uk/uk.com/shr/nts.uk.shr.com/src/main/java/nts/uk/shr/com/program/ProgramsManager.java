@@ -3723,24 +3723,15 @@ public class ProgramsManager {
 	public static final Program KDL052A = new Program(WebAppId.AT, 
             ProgramIdConsts.KDL052A,
             "KDL052_1",
-            "/view/kdl/052/single.xhtml");
-	
-	public static final Program KDL052B = new Program(WebAppId.AT, 
-            ProgramIdConsts.KDL052B,
-            "KDL052_1",
-            "/view/kdl/052/multi.xhtml");
+            "/view/kdl/052/a/index.xhtml");	
+
 	 /**
 	 * KDL051
 	 */
 	public static final Program KDL051 = new Program(WebAppId.AT, 
-            ProgramIdConsts.KDL051B,
-            "KDL051_1",
-            "/view/kdl/051/multi.xhtml");
-
-	public static final Program KDL051_1 = new Program(WebAppId.AT, 
             ProgramIdConsts.KDL051A,
             "KDL051_1",
-            "/view/kdl/051/single.xhtml");
+            "/view/kdl/051/a/index.xhtml");
 	/**
 	 * KDL053
 	 */
