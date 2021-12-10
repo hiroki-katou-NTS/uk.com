@@ -115,7 +115,6 @@ module ccg018.a1.viewmodel {
         rowVirtualization: true,
         virtualization: true,
         virtualizationMode: 'continuous',
-        tabIndex: 2,
         columns: [
           {
             headerText: nts.uk.resource.getText('CCG018_8'),
@@ -135,6 +134,7 @@ module ccg018.a1.viewmodel {
             dataType: 'string',
             width: '240px',
             ntsControl: 'Combobox1',
+            tabIndex: 2,
           },
           {
             headerText: nts.uk.resource.getText('CCG018_10'),
@@ -142,6 +142,7 @@ module ccg018.a1.viewmodel {
             dataType: 'string',
             width: '240px',
             ntsControl: 'Combobox3',
+            tabIndex: 2,
           },
         ],
         headerRendered: (evt: any, ui: any) => {
@@ -192,6 +193,10 @@ module ccg018.a1.viewmodel {
         .find('.nts-combo-container')
         .find('.ui-igcombo-field').focus();
       });
+
+      if (_.isEmpty(vm.lisTopPageRoleSet())) {
+        $('#grid2-wrapper').focus();
+      }
     }
 
     save() {
