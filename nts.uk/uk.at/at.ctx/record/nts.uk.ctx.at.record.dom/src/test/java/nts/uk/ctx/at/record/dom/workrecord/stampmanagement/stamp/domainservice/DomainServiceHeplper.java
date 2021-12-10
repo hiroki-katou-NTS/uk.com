@@ -69,7 +69,7 @@ public class DomainServiceHeplper {
 	}
 
 	public static StampDataOfEmployees getStampDataOfEmployeesDefault() {
-		return new StampDataOfEmployees("employeeId", GeneralDate.today(), new ArrayList<>(), new ArrayList<>());
+		return new StampDataOfEmployees("employeeId", GeneralDate.today(), new ArrayList<>());
 	}
 
 	public static StampDataReflectResult getStampDataReflectResultDefault() {

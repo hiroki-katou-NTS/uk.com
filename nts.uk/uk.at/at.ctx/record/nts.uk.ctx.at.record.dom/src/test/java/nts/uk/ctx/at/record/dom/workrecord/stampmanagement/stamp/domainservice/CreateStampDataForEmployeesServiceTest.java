@@ -21,7 +21,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualRes
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateStampDataForEmployeesService.Require;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
 /**
@@ -58,7 +57,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		
 		NtsAssert.businessException("Msg_433", () -> CreateStampDataForEmployeesService.create(
 				require, "", contractCd, employeeId, stampNumber, stampDateTime,
-				relieve, buttonType, refActualResults, stampLocationInfor));
+				relieve, buttonType.getStampType().get(), refActualResults, stampLocationInfor));
 	}
 	
 	/**
@@ -95,13 +94,13 @@ public class CreateStampDataForEmployeesServiceTest {
 		
 		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
 				require, cid, contractCd, employeeId, stampNumber, stampDateTime,
-				relieve, buttonType, refActualResults, stampLocationInfor);
+				relieve, buttonType.getStampType().get(), refActualResults, stampLocationInfor);
 		
 		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
 		
 		NtsAssert.atomTask(
 				() -> stampDataReflectResult.getStampDataReflectResult().getAtomTask(),
-				any -> require.insert((StampRecord) any.get()),
+//				any -> require.insert((StampRecord) any.get()),
 				any -> require.insert((Stamp) any.get())
 		);
 	}
@@ -138,13 +137,13 @@ public class CreateStampDataForEmployeesServiceTest {
 		
 		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
 				require, "", contractCd, employeeId, stampNumber, stampDateTime,
-				relieve, buttonType, refActualResults, stampLocationInfor);
+				relieve, buttonType.getStampType().get(), refActualResults, stampLocationInfor);
 		
 		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
 		
 		NtsAssert.atomTask(
 				() -> stampDataReflectResult.getStampDataReflectResult().getAtomTask(),
-				any -> require.insert((StampRecord) any.get()),
+//				any -> require.insert((StampRecord) any.get()),
 				any -> require.insert((Stamp) any.get())
 		);
 		
@@ -181,13 +180,14 @@ public class CreateStampDataForEmployeesServiceTest {
 		
 		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
 				require, "", contractCd, employeeId, stampNumber, stampDateTime,
-				relieve, buttonType, refActualResults, stampLocationInfor);
+				relieve, buttonType.getStampType().get(), refActualResults, stampLocationInfor);
 		
 		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
-		NtsAssert.atomTask(
-				() -> stampDataReflectResult.getStampDataReflectResult().getAtomTask(),
-				any -> require.insert((StampRecord) any.get())
-		);
+//		NtsAssert.atomTask(
+//				() -> stampDataReflectResult.getStampDataReflectResult().getAtomTask(),
+//				any -> require.insert((StampRecord) any.get()
+//						)
+//		);
 	}
 
 }
