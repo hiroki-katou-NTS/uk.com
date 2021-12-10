@@ -21,7 +21,7 @@ public class RoleSetExportAdapterImpl implements RoleSetExportAdapter {
                         x.getRoleSetCd(),
                         x.getCompanyId(),
                         x.getRoleSetName(),
-                        x.getApprovalAuthority(),
+//                        x.getApprovalAuthority(),
                         x.getOfficeHelperRoleId(),
                         x.getMyNumberRoleId(),
                         x.getHRRoleId(),
