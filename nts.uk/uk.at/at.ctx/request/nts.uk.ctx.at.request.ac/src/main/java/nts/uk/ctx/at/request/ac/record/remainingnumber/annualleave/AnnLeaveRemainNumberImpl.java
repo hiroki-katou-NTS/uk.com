@@ -94,26 +94,15 @@ public class AnnLeaveRemainNumberImpl implements AnnLeaveRemainNumberAdapter {
 		if (number == null) {
 			return null;
 		}
-		return new AnnualLeaveRemainingNumberImport(
-											number.getAnnualLeaveGrantPreDay(), 
-											number.getAnnualLeaveGrantPreTime(),
-											number.getNumberOfRemainGrantPre(), 
-											number.getNumberOfRemainGrantPre(), 
-											number.getAnnualLeaveGrantPostDay(),
-											number.getAnnualLeaveGrantPostTime(), 
-											number.getNumberOfRemainGrantPost(), 
-<<<<<<< HEAD
-											number.getTimeAnnualLeaveGrantPost(),
-											number.getNumberOfRemainGrant(),
-											number.getTimeAnnualLeaveGrant()
-											);
-=======
-											number.getTimeAnnualLeaveWithMinusGrantPost(),
-											number.getAnnualLeaveGrantDay(),
-											number.getAnnualLeaveGrantTime(),
-											number.getAttendanceRate(),
-											number.getWorkingDays());
->>>>>>> uk/release_bug901
+		
+		return new AnnualLeaveRemainingNumberImport(number.getAnnualLeaveGrantPreDay(), 
+				number.getAnnualLeaveGrantPreTime(), 
+				number.getNumberOfRemainGrantPre(),
+				number.getTimeAnnualLeaveGrantPre(), 
+				number.getAnnualLeaveGrantPostDay(), 
+				number.getAnnualLeaveGrantPostTime(),
+				number.getNumberOfRemainGrantPost(), 
+				number.getAnnualLeaveGrantPostTime());
 	}
 
 }

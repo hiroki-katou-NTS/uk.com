@@ -171,13 +171,10 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	
 	@Inject
 	private ShareEmploymentAdapter employmentAdapterShare;
-<<<<<<< HEAD
 	@Inject
 	private CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
 	@Inject
 	private EmpEmployeeAdapter employeeAdapter;
-=======
->>>>>>> uk/release_bug901
 	
 	@Inject
 	private TransactionService transactionService;
@@ -412,15 +409,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	private List<ClosureStatusManagement> getClosureList(List<String> employeeId, DatePeriod datePeriod) {
 		return closureStatusManagementRepository.getByIdListAndDatePeriod(employeeId, datePeriod);
 	}
-<<<<<<< HEAD
 	
 	public ProcessState calculateForOnePerson(String companyId, String employeeId,
 			DatePeriod datePeriod, Optional<Consumer<ProcessState>> counter, String executeLogId, boolean isCalWhenLock ) {
-=======
-
-	public ProcessState calculateForOnePerson(String employeeId,DatePeriod datePeriod,Optional<Consumer<ProcessState>> counter,String executeLogId,boolean isCalWhenLock ) {
->>>>>>> uk/release_bug901
-		
 		
 		// Imported（就業）「所属雇用履歴」を取得する (Lấy dữ liệu)
 		List<EmploymentHistShareImport> listEmploymentHisShare = this.employmentAdapterShare.findByEmployeeIdOrderByStartDate(employeeId);

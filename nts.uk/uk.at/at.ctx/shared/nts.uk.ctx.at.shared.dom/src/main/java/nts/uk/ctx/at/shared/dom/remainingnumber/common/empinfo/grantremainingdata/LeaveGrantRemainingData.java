@@ -11,17 +11,13 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-<<<<<<< HEAD
-=======
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveUsedNumber;
->>>>>>> uk/release_bug901
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.*;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 
 /**
  * 休暇付与残数データ
@@ -157,11 +153,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 	 */
 	public static Optional<LeaveGrantRemainingData> digest(LeaveRemainingNumber.RequireM3 require,
 			List<LeaveGrantRemainingData> targetRemainingDatas, RemNumShiftListWork remNumShiftListWork,
-<<<<<<< HEAD
-			LeaveUsedNumber leaveUsedNumber, String companyId, String employeeId, GeneralDate date) {
-=======
 			LeaveUsedNumber leaveUsedNumber, String companyId, String employeeId, GeneralDate baseDate) {
->>>>>>> uk/release_bug901
 
 		// 取得した「付与残数」でループ
 		for (val targetRemainingData : targetRemainingDatas) {
@@ -170,32 +162,20 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			remNumShiftListWork.AddLeaveGrantRemainingData(targetRemainingData);
 
 			// 休暇使用数を消化できるかチェック
-<<<<<<< HEAD
-			if (remNumShiftListWork.canDigest(require, leaveUsedNumber, companyId, employeeId, date)) {
-=======
 			if (remNumShiftListWork.canDigest(require, leaveUsedNumber, companyId, employeeId, baseDate)) {
->>>>>>> uk/release_bug901
 				// 消化できないときはループ
 				break;
 			}
 		}
 
 		// 休暇使用数を消化する
-<<<<<<< HEAD
-		remNumShiftListWork.digest(require, leaveUsedNumber, companyId, employeeId, date);
-=======
 		remNumShiftListWork.digest(require, leaveUsedNumber, companyId, employeeId, baseDate);
->>>>>>> uk/release_bug901
 
 		// 残数不足で一部消化できなかったとき
 		if (remNumShiftListWork.getUnusedNumber().isLargerThanZero()) {
 
 			// 消化できなかった休暇使用数をもとに、付与残数ダミーデータを作成する
-<<<<<<< HEAD
-			return Optional.of(LeaveGrantRemainingData.of(employeeId, date, date, LeaveExpirationStatus.AVAILABLE,
-=======
 			return Optional.of(LeaveGrantRemainingData.of(employeeId, baseDate, baseDate, LeaveExpirationStatus.AVAILABLE,
->>>>>>> uk/release_bug901
 					GrantRemainRegisterType.MONTH_CLOSE, remNumShiftListWork.toDetails()));
 
 		}

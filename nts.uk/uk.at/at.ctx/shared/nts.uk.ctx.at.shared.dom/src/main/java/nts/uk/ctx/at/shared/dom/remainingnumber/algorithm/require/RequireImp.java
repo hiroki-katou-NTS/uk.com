@@ -251,10 +251,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	private WorkingConditionItemService workingConditionItemService;
 	
-<<<<<<< HEAD
-=======
 	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
->>>>>>> uk/release_bug901
 
 	public RequireImp(ComSubstVacationRepository comSubstVacationRepo,
 			CompensLeaveComSetRepository compensLeaveComSetRepo, SpecialLeaveGrantRepository specialLeaveGrantRepo,

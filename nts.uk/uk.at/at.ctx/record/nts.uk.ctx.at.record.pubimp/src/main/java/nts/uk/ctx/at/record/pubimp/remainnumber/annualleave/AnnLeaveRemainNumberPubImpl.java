@@ -277,8 +277,6 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		if(aggrResult.isPresent()){
 			AnnualLeaveInfo asOfPeriodEnd = aggrResult.get().getAsOfPeriodEnd();
 			if(asOfPeriodEnd != null){
-<<<<<<< HEAD
-			
 				//年休残数(マイナスあり)作成
 				AnnualLeaveRemainingNumberExport remainNumberWithMinusExport =createAnnualLeaveRemainingNumberExport(
 						asOfPeriodEnd.getRemainingNumber().getAnnualLeaveWithMinus(),
@@ -307,114 +305,6 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 					if(asOfPeriodEnd.getRemainingNumber().getAnnualLeaveUndigestNumber().get().getMinutes().isPresent()){
 						leaveUndigesttime = asOfPeriodEnd.getRemainingNumber()
 								.getAnnualLeaveUndigestNumber().get().getMinutes().get().v();
-=======
-				// 年休（マイナスあり）
-				AnnualLeave  realAnnualLeave = asOfPeriodEnd.getRemainingNumber().getAnnualLeaveWithMinus();
-				// 半日年休（マイナスあり）
-				Optional<HalfDayAnnualLeave> halfDayAnnualLeaveWithMinus = asOfPeriodEnd.getRemainingNumber().getHalfDayAnnualLeaveWithMinus();
-				// 時間年休（マイナスあり）
-				Optional<AnnualLeaveMaxRemainingTime> timeAnnualLeaveWithMinus = asOfPeriodEnd.getRemainingNumber().getTimeAnnualLeaveWithMinus();
-				// set 半休残数（付与後）回数
-				Integer numberOfRemainGrantPost = 0;
-				// set 半休残数（付与前）回数
-				Integer numberOfRemainGrantPre = 0;
-				if(halfDayAnnualLeaveWithMinus.isPresent()){
-					HalfDayAnnLeaRemainingNum remainingNum = halfDayAnnualLeaveWithMinus.get().getRemainingNum();
-					if(remainingNum.getTimesAfterGrant().isPresent()){
-						numberOfRemainGrantPost = remainingNum.getTimesAfterGrant().get().v();
-					}
-					numberOfRemainGrantPre = remainingNum.getTimesBeforeGrant().v();
-				}
-				// set 時間年休上限（付与後）
-				Integer timeAnnualLeaveWithMinusGrantPost = 0;
-				// set 時間年休上限（付与前）
-				Integer timeAnnualLeaveWithMinusGrantPre = 0;
-				if(timeAnnualLeaveWithMinus.isPresent()){
-					Optional<LeaveRemainingTime> timeAfterGrant = timeAnnualLeaveWithMinus.get().getTimeAfterGrant();
-					if(timeAfterGrant.isPresent()){
-						timeAnnualLeaveWithMinusGrantPost = timeAfterGrant.get().v();
-					}
-					timeAnnualLeaveWithMinusGrantPre = timeAnnualLeaveWithMinus.get().getTimeBeforeGrant().v();
-				}
-				// set 年休残数（付与前）時間
-				Integer annualLeaveGrantPreTime = 0;
-				// set 年休残数（付与前）日数
-				Double annualLeaveGrantPreDay = 0.00;
-				// set 年休残数（付与後）時間
-				Integer annualLeaveGrantPostTime = 0;
-				// set 年休残数（付与後）日数
-				Double annualLeaveGrantPostDay = 0.00;
-				// set 年休残数時間
-				Integer annualLeaveGrantTime = 0;
-				// set 年休残数日数
-				Double annualLeaveGrantDay = 0.00;
-				if(realAnnualLeave.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent()){
-					AnnualLeaveRemainingNumber remainingNumberAfterGrant = realAnnualLeave.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get();
-
-					if(remainingNumberAfterGrant.getTotalRemainingTime().isPresent()){
-						annualLeaveGrantPostTime = remainingNumberAfterGrant.getTotalRemainingTime().get().v();
-					}
-					annualLeaveGrantPostDay = remainingNumberAfterGrant.getTotalRemainingDays().v();
-				}
-				if(realAnnualLeave.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()){
-					annualLeaveGrantPreTime = realAnnualLeave.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingTime().get().v();
-				}
-				annualLeaveGrantPreDay = realAnnualLeave.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
-				// 取得結果を出力用クラスに格納
-				AnnualLeaveRemainingNumberExport annualLeaveRemainingNumberExport = new AnnualLeaveRemainingNumberExport(
-						annualLeaveGrantPreDay,
-						annualLeaveGrantPreTime,
-						numberOfRemainGrantPre,
-						timeAnnualLeaveWithMinusGrantPre,
-						annualLeaveGrantPostDay,
-						annualLeaveGrantPostTime,
-						numberOfRemainGrantPost,
-						timeAnnualLeaveWithMinusGrantPost,
-						annualLeaveGrantDay,
-						annualLeaveGrantTime,
-						0.00,
-						0.00);
-				result.setAnnualLeaveRemainNumberExport(annualLeaveRemainingNumberExport);
-				// add 年休付与情報(仮)
-				if(!CollectionUtil.isEmpty(asOfPeriodEnd.getGrantRemainingDataList())){
-					for(AnnualLeaveGrantRemainingData annualLeave : asOfPeriodEnd.getGrantRemainingDataList()){
-						Double grantNumber = 0.00;
-						Double daysUsedNo = 0.00;
-						Integer usedMinutes = 0;
-						Double remainDays = 0.00;
-						Integer remainMinutes = 0;
-						if(annualLeave.getDetails() != null){
-							if (annualLeave.getDetails().getGrantNumber() != null) {
-								grantNumber = annualLeave.getDetails().getGrantNumber().getDays() != null
-										? annualLeave.getDetails().getGrantNumber().getDays().v() : 0.00;
-							}
-							if (annualLeave.getDetails().getUsedNumber() != null) {
-								if (annualLeave.getDetails().getUsedNumber().getDays() != null) {
-									daysUsedNo = annualLeave.getDetails().getUsedNumber().getDays().v();
-								}
-								if (annualLeave.getDetails().getUsedNumber().getMinutes().isPresent()) {
-									usedMinutes = annualLeave.getDetails().getUsedNumber().getMinutes().get().v();
-								}
-							}
-							if (annualLeave.getDetails().getRemainingNumber() != null) {
-								if (annualLeave.getDetails().getRemainingNumber().getDays() != null) {
-									remainDays = annualLeave.getDetails().getRemainingNumber().getDays().v();
-								}
-								if(annualLeave.getDetails().getRemainingNumber().getMinutes().isPresent()){
-									remainMinutes = annualLeave.getDetails().getRemainingNumber().getMinutes().get().v();
-								}
-							}
-
-						}
-						AnnualLeaveGrantExport annualLeaveGrantExport = new AnnualLeaveGrantExport(annualLeave.getGrantDate(),
-								grantNumber,
-								daysUsedNo,
-								usedMinutes,
-								remainDays,
-								remainMinutes,
-								annualLeave.getDeadline());
-						annualLeaveGrantExports.add(annualLeaveGrantExport);
->>>>>>> uk/release_bug901
 					}
 					
 				}
@@ -448,8 +338,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			// đối ứng bug #109638: thêm hiển thị workType cho KDL020
 			String workTypeCD = interimRemain.getWorkTypeCode().v();
 			Integer usedMinutes = 0;
-			if(interimRemain.getUsedNumber().getMinutes().isPresent()){
-				usedMinutes = interimRemain.getUsedNumber().getMinutes().get().v();
+			if(interimRemain.getUsedNumber().getUsedTime().isPresent()) {
+				usedMinutes = interimRemain.getUsedNumber().getUsedTime().get().v();
 			}
 			
 			//時間消化休暇かどうか
@@ -533,7 +423,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				numberOfRemainGrantPost = remainingNum.getTimesAfterGrant().get().v();
 			}
 			numberOfRemainGrantPre = remainingNum.getTimesBeforeGrant().v();
-			numberOfRemainGrant = remainingNum.getTimes().v();
+			numberOfRemainGrant = remainingNum.getTimesAfterGrant().map(x -> x.v()).orElse(0);
 		}
 		// set 時間年休上限（付与後）
 		Integer timeAnnualLeaveWithMinusGrantPost = 0;
@@ -542,12 +432,12 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		// set 時間年休上限
 		Integer timeAnnualLeaveWithMinusGrant = 0;
 		if(timeAnnualLeaveWithMinus.isPresent()){
-			Optional<RemainingMinutes> timeAfterGrant = timeAnnualLeaveWithMinus.get().getTimeAfterGrant();
+			Optional<LeaveRemainingTime> timeAfterGrant = timeAnnualLeaveWithMinus.get().getTimeAfterGrant();
 			if(timeAfterGrant.isPresent()){
 				timeAnnualLeaveWithMinusGrantPost = timeAfterGrant.get().v();
 			}
 			timeAnnualLeaveWithMinusGrantPre = timeAnnualLeaveWithMinus.get().getTimeBeforeGrant().v();
-			timeAnnualLeaveWithMinusGrant = timeAnnualLeaveWithMinus.get().getTime().v();
+			timeAnnualLeaveWithMinusGrant = timeAnnualLeaveWithMinus.get().getTimeAfterGrant().map(x -> x.v()).orElse(0);
 		}
 		// set 年休残数（付与前）時間
 		Integer annualLeaveGrantPreTime = 0;
@@ -593,44 +483,19 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 						x.getTime().orElse(new AnnualLeaveRemainingTime(0)).v());
 				}).collect(Collectors.toList());
 		
-
-		//set 使用日数
-		Double usedDays = 0.00;
-		if(realAnnualLeave.getUsedNumberInfo().getUsedNumber().getUsedDays().isPresent()){
-			usedDays = realAnnualLeave.getUsedNumberInfo().getUsedNumber().getUsedDays().get().v();
-		}
-		
-		//set 使用（付与前）日数
-		Double usedNumberBeforeGrantDay = 0.00;
-		if(realAnnualLeave.getUsedNumberInfo().getUsedNumberBeforeGrant().getUsedDays().isPresent()){
-			usedNumberBeforeGrantDay = realAnnualLeave.getUsedNumberInfo().getUsedNumberBeforeGrant().getUsedDays().get().v();
-		}
-		
-		//set 使用（付与後）日数
-		Double usedNumberAfterGrantDay = 0.00;
 		//set 使用（付与後）時間
 		Integer usedNumberAfterGrantTime = 0;
 		if(realAnnualLeave.getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent()){
-			if(realAnnualLeave.getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUsedDays().isPresent()){
-				usedNumberAfterGrantDay = realAnnualLeave.getUsedNumberInfo().getUsedNumberAfterGrantOpt().get()
-						.getUsedDays().get().v();
-			}
 			if(realAnnualLeave.getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUsedTime().isPresent()){
 				usedNumberAfterGrantTime = realAnnualLeave.getUsedNumberInfo().getUsedNumberAfterGrantOpt().get()
 						.getUsedTime().get().v();
 			}
 		}
 		
-		//set 使用時間
-		Integer usedTime = 0;
-		if(realAnnualLeave.getUsedNumberInfo().getUsedNumber().getUsedTime().isPresent()){
-			usedTime = realAnnualLeave.getUsedNumberInfo().getUsedNumber().getUsedTime().get().v();
-		}
-		
 		//set 使用（付与前）時間
 		Integer usedNumberBeforeGrantTime = 0;
 		if(realAnnualLeave.getUsedNumberInfo().getUsedNumberBeforeGrant().getUsedTime().isPresent()){
-			usedTime = realAnnualLeave.getUsedNumberInfo().getUsedNumberBeforeGrant().getUsedTime().get().v();
+			usedNumberBeforeGrantTime = realAnnualLeave.getUsedNumberInfo().getUsedNumberBeforeGrant().getUsedTime().get().v();
 		}
 		
 
@@ -643,30 +508,15 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		
 		
 		
-		
 		// 取得結果を出力用クラスに格納
-		return new AnnualLeaveRemainingNumberExport(
-				annualLeaveGrantPreDay,
-				annualLeaveGrantPostDay,
-				annualLeaveGrantPreTime,
-				annualLeaveGrantPostTime,
-				remainingDetailGrantPre,
-				remainingDetailGrantPost,
-				numberOfRemainGrant,
-				numberOfRemainGrantPre,
-				numberOfRemainGrantPost,
-				timeAnnualLeaveWithMinusGrant,
-				timeAnnualLeaveWithMinusGrantPre,
+		return new AnnualLeaveRemainingNumberExport(annualLeaveGrantPreDay, annualLeaveGrantPostDay, annualLeaveGrantPreTime,
+				annualLeaveGrantPostTime, remainingDetailGrantPre, remainingDetailGrantPost, 
+				numberOfRemainGrant, numberOfRemainGrantPre,
+				numberOfRemainGrantPost, 
+				timeAnnualLeaveWithMinusGrant, 
+				timeAnnualLeaveWithMinusGrantPre, 
 				timeAnnualLeaveWithMinusGrantPost,
-				usedDays,
-				usedNumberBeforeGrantDay,
-				usedNumberAfterGrantDay,
-				usedTime,
-				usedNumberBeforeGrantTime,
-				usedNumberAfterGrantTime,
-				annualLeaveUsedTimes,
-				annualLeaveUsedDayTimes
-				);
+				usedNumberBeforeGrantTime, usedNumberAfterGrantTime, annualLeaveUsedTimes, annualLeaveUsedDayTimes);
 	}
 	
 	

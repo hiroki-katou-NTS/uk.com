@@ -307,33 +307,20 @@ public class ReserveLeaveInfo implements Cloneable {
 			return aggrResult;
 
 		// 付与日から期限日を計算
-<<<<<<< HEAD
-		if (!aggrPeriodWork.getReserveLeaveGrant().isPresent()) return aggrResult;
-
-		// 「積立年休付与残数データ」を作成する
-		val newRemainData = aggrPeriodWork.getReserveLeaveGrant().get().toReserveLeaveGrantRemainingData(employeeId);
-=======
 		if (!aggrPeriodWork.getGrantWork().getReserveLeaveGrant().isPresent()) return aggrResult;
 
 		// 「積立年休付与残数データ」を作成する
 		val newRemainData = aggrPeriodWork.getGrantWork().getReserveLeaveGrant().get().toReserveLeaveGrantRemainingData(employeeId);
->>>>>>> uk/release_bug901
 
 
 		// 作成した「積立年休付与残数データ」を付与残数データリストに追加
 		this.grantRemainingList.add(newRemainData);
 
-<<<<<<< HEAD
-
-		// 付与情報に付与時の情報をセット
-		this.grantInfo = aggrPeriodWork.getReserveLeaveGrant().get().toReserveLeaveGrantInfo(grantInfo);
-=======
 		// 付与情報に付与時の情報をセット
 		this.grantInfo = aggrPeriodWork.getGrantWork().getReserveLeaveGrant().get().toReserveLeaveGrantInfo(grantInfo);
 
 		// 付与前付与後を判断する
 		GrantBeforeAfterAtr grantPeriodAtr = aggrPeriodWork.getGrantWork().judgeGrantPeriodAtr();
->>>>>>> uk/release_bug901
 
 		// 積立年休情報残数を更新
 		this.updateRemainingNumber(grantPeriodAtr);

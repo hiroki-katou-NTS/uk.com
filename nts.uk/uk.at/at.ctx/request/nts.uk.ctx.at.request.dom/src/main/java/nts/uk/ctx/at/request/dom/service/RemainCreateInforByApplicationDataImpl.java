@@ -66,7 +66,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.CorrectDail
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -248,16 +247,10 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				Optional<AbsenceLeaveApp> optAbsApp = absAppRepo.findByAppId(appData.getAppID());
 				optAbsApp.ifPresent(x -> {
 					outData.setWorkTypeCode(Optional.of(x.getWorkInformation().getWorkTypeCode().v()));
-<<<<<<< HEAD
-					if(x.getWorkChangeUse().equals(NotUseAtr.USE)) {
-						outData.setWorkTimeCode(Optional.ofNullable(x.getWorkInformation().getWorkTimeCodeNotNull()
-								.map(wt -> wt == null ? null : wt.v()).orElse(null)));
-=======
 					if (x.getWorkChangeUse().equals(NotUseAtr.USE)) {
 						outData.setWorkTimeCode(
 								x.getWorkInformation().getWorkTimeCodeNotNull().isPresent() ? Optional.empty()
 										: Optional.of(x.getWorkInformation().getWorkTimeCode().v()));
->>>>>>> uk/release_bug901
 					}
 
 				});

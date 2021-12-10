@@ -5,11 +5,8 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
-<<<<<<< HEAD
-=======
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 
->>>>>>> uk/release_bug901
 
 /**
  * 付与情報WORK

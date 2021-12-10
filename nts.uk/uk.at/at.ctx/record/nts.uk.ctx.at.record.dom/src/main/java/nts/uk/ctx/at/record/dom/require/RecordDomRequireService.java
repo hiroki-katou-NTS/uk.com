@@ -45,12 +45,9 @@ import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
-<<<<<<< HEAD
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.CreatingDailyResultsCondition;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.CreatingDailyResultsConditionRepository;
-=======
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
->>>>>>> uk/release_bug901
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgeementTimeCommonSettingService;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
@@ -69,19 +66,16 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.monthlyupdatemgr.Mon
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.ymupdate.ProcessYearMonthUpdate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationService;
-<<<<<<< HEAD
+import nts.uk.ctx.at.record.dom.monthlyprocess.vacation.CreateDailyInterimRemainMngs;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
-=======
-import nts.uk.ctx.at.record.dom.monthlyprocess.vacation.CreateDailyInterimRemainMngs;
->>>>>>> uk/release_bug901
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CreateTempAnnLeaMngProc;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.FindAnnLeaUsedDaysFromPreviousToNextGrantDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetHolidayDetailByPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetPeriodFromPreviousToNextGrantDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GrantPeriodDto;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetHolidayDetailByPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetRemainingNumberChildCareNurseService;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumUsageDetail;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
@@ -787,16 +781,12 @@ public class RecordDomRequireService {
 	private GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate;
 	@Inject
 	protected TransactionService transaction;
-<<<<<<< HEAD
-
 	@Inject
 	private EmploymentAdapter employmentAdapter;
 	@Inject
 	private CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
-=======
 	@Inject
 	private  CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
->>>>>>> uk/release_bug901
   
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2, CalcAnnLeaAttendanceRate.RequireM3,
 		GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1, CalcNextAnnLeaGrantInfo.RequireM1, GetNextAnnualLeaveGrantProcKdm002.RequireM1,
@@ -806,13 +796,8 @@ public class RecordDomRequireService {
 		AgeementTimeCommonSettingService.RequireM1, CreateTempAnnLeaMngProc.RequireM3, AggregateSpecifiedDailys.RequireM1, ClosureService.RequireM6, ClosureService.RequireM5,
 		MonthlyUpdateMgr.RequireM4, MonthlyClosureUpdateLogProcess.RequireM3, CancelActualLock.RequireM1, ProcessYearMonthUpdate.RequireM1, BreakDayOffMngInPeriodQuery.RequireM2,
 		AgreementDomainService.RequireM5, AgreementDomainService.RequireM6, GetAgreementTime.RequireM5, VerticalTotalAggregateService.RequireM1, GetExcessTimesYear.RequireM2, 
-<<<<<<< HEAD
 		GetRemainingNumberPublicHolidayService.RequireM1, GetRemainingNumberChildCareNurseService.Require, GetHolidayDetailByPeriod.Require, GetRsvLeaRemNumUsageDetail.Require, 
-		FindAnnLeaUsedDaysFromPreviousToNextGrantDate.Require{
-
-=======
-		GetRemainingNumberPublicHolidayService.RequireM1, GetRemainingNumberChildCareNurseService.Require, CreateDailyInterimRemainMngs.Require{
->>>>>>> uk/release_bug901
+		FindAnnLeaUsedDaysFromPreviousToNextGrantDate.Require,  CreateDailyInterimRemainMngs.Require{
 
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
 		
@@ -3039,7 +3024,6 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-<<<<<<< HEAD
 		public List<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId) {
 			return employmentAdapter.getEmpHistBySid(companyId, employeeId);
 		}
@@ -3084,7 +3068,6 @@ public class RecordDomRequireService {
 			return workDaysNumberOnLeaveCountRepo.findByCid(cid);
 		}
 
-=======
 		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
 			return predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode);
 		}
@@ -3100,6 +3083,5 @@ public class RecordDomRequireService {
 		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK( AppContexts.user().companyId(), workTypeCd);
 		}
->>>>>>> uk/release_bug901
 	}
 }

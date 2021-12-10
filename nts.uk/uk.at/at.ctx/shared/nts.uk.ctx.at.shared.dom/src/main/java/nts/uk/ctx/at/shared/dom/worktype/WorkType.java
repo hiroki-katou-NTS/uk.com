@@ -640,7 +640,6 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 		return Optional.empty();
 	}
 	
-<<<<<<< HEAD
 	/** [5] 指定の分類の1日午前午後区分を取得 */
 	public Optional<WorkAtr> getWorkAtrForWorkTypeClassification(WorkTypeClassification clas) {
 		
@@ -667,7 +666,6 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 		return Optional.empty();
 	}
 	
-=======
 	//[10] 代休が発生する勤務種類かどうか判断する
 	public boolean isSubstituteHolidayOccurs() {
 		WorkStyle style = this.checkWorkDay();
@@ -680,7 +678,6 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 		return true;
 	}
 
->>>>>>> uk/release_bug901
 	/**
 	 * 出勤時刻自動セットであるか
 	 * @return

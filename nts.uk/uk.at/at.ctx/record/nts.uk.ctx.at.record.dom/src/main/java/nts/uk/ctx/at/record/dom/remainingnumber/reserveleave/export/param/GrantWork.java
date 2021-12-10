@@ -18,13 +18,9 @@ public class GrantWork {
 	private GeneralDate grantYmd;
 	/** 付与日数 */
 	private LeaveGrantDayNumber grantDays;
-<<<<<<< HEAD
-	
-=======
 	/** 付与回数 */
 	private int grantNumber = 0;
 
->>>>>>> uk/release_bug901
 	/**
 	 * コンストラクタ
 	 */
@@ -32,10 +28,7 @@ public class GrantWork {
 
 		this.grantYmd = GeneralDate.today();
 		this.grantDays = new LeaveGrantDayNumber(0.0);
-<<<<<<< HEAD
-=======
 		this.grantNumber = 0;
->>>>>>> uk/release_bug901
 	}
 
 	/**
@@ -48,11 +41,7 @@ public class GrantWork {
 	 * @return 積立年休付与WORK
 	 */
 	public static GrantWork of(
-<<<<<<< HEAD
-			GeneralDate grantYmd, LeaveGrantDayNumber grantDays){
-=======
 			GeneralDate grantYmd, LeaveGrantDayNumber grantDays, int grantNumber) {
->>>>>>> uk/release_bug901
 		
 		GrantWork domain = new GrantWork();
 		domain.grantYmd = grantYmd;

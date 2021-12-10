@@ -7,16 +7,15 @@ import java.util.Optional;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.UseSimultaneousGrant;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdTime;;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.UseSimultaneousGrant;;
 
 /**
  * 処理：次回年休付与を取得する
@@ -160,20 +159,12 @@ public class GetNextAnnualLeaveGrantProc {
 			
 			// 次回年休付与に付与日数・半日年休上限回数・時間年休上限日数をセット
 			val grantHdTbl = grantHdTblOpt.get();
-<<<<<<< HEAD
-			nextAnnualLeaveGrant.setGrantDays(nts.gul.util.value.Finally.of(grantHdTbl.getGrantDays().toLeaveGrantDayNumber()));
-			nextAnnualLeaveGrant.setHalfDayAnnualLeaveMaxTimes(grantHdTbl.getLimitDayYear());
-			nextAnnualLeaveGrant.setTimeAnnualLeaveMaxDays(grantHdTbl.getLimitTimeHd());
-
-			// 契約時間を取得する
-=======
 			nextAnnualLeaveGrant
 					.setGrantDays(nts.gul.util.value.Finally.of(grantHdTbl.getGrantDays().toLeaveGrantDayNumber()));
 			nextAnnualLeaveGrant
 					.setHalfDayAnnualLeaveMaxTimes(annualSetting.getLimitedHalfCount(grantHdTbl.getLimitDayYear()));
 			nextAnnualLeaveGrant
 					.setTimeAnnualLeaveMaxDays(annualSetting.getLimitedTimeHdDays(grantHdTbl.getLimitTimeHd()));
->>>>>>> uk/release_bug901
 			nextAnnualLeaveGrant.setTimeAnnualLeaveMaxTime(
 					annualSetting.getLimitedTimeHdTime(grantHdTbl.getLimitTimeHd(), laborContractTimeOpt));
 

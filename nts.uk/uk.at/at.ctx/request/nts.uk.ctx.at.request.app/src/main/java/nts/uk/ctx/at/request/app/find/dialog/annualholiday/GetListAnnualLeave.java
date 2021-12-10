@@ -59,15 +59,15 @@ public class GetListAnnualLeave {
 				//年休消化詳細．使用数　＝　ループ中の暫定年休管理データ．暫定残数管理データ．年休使用数．使用日数　+　＃KDL020_66 +　ループ中の暫定年休管理データ．暫定残数管理データ．年休使用数．使用時間
 				String minu = "";
 				String usedNumText = "";
-				if (x.getUsedNumber().getMinutes().isPresent()) {
-					minu = String.valueOf(x.getUsedNumber().getMinutes().get().v() % 60).length() > 1 ? 
-							String.valueOf(x.getUsedNumber().getMinutes().get().v() % 60)
-							: 0 + String.valueOf(x.getUsedNumber().getMinutes().get().v() % 60);
+				if (x.getUsedNumber().getUsedTime().isPresent()) {
+					minu = String.valueOf(x.getUsedNumber().getUsedTime().get().v() % 60).length() > 1 ? 
+							String.valueOf(x.getUsedNumber().getUsedTime().get().v() % 60)
+							: 0 + String.valueOf(x.getUsedNumber().getUsedTime().get().v() % 60);
 					
-					usedNumText = String.valueOf(x.getUsedNumber().getMinutes().get().v() / 60) + ":" + minu;
+					usedNumText = String.valueOf(x.getUsedNumber().getUsedTime().get().v() / 60) + ":" + minu;
 				}
 				
-				String textNumberOfUse = x.getUsedNumber().getDays() + TextResource.localize("KDL020_66") + usedNumText;
+				String textNumberOfUse = x.getUsedNumber().getUsedDayNumberOrZero().v() + TextResource.localize("KDL020_66") + usedNumText;
 				
 				// 年休消化詳細．使用数をセット
 				detailAnn.setNumberOfUse(textNumberOfUse);

@@ -243,51 +243,6 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		// 次回年休付与日を計算
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();
-
-<<<<<<< HEAD
-						if (resultRateOpt.isPresent()){
-							val resultRate = resultRateOpt.get();
-							nextAnnualGrantList.setAttendanceRate(Optional.of(
-									new AttendanceRate(resultRate.getAttendanceRate())));
-							nextAnnualGrantList.setPrescribedDays(Optional.of(
-									new YearlyDays(resultRate.getPrescribedDays())));
-							nextAnnualGrantList.setWorkingDays(Optional.of(
-									new YearlyDays(resultRate.getWorkingDays())));
-							nextAnnualGrantList.setDeductedDays(Optional.of(
-									new YearlyDays(resultRate.getDeductedDays())));
-
-							// 日数と出勤率から年休付与テーブルを取得する
-							val grantConditionOpt = grantHdTblSetOpt.get().getGrantCondition(
-									resultRate.getAttendanceRate(),
-									resultRate.getPrescribedDays(),
-									resultRate.getWorkingDays(),
-									resultRate.getDeductedDays());
-
-							if (grantConditionOpt.isPresent()){
-								val grantCondition = grantConditionOpt.get();
-								val conditionNo = grantCondition.getConditionNo();
-
-								// 付与日数を計算
-								val grantHdTblOpt = require.grantHdTbl(companyId, conditionNo,
-																	grantTableCode, nextAnnualGrantList.getTimes().v());
-
-								if (grantHdTblOpt.isPresent()){
-									val grantHdTbl = grantHdTblOpt.get();
-									nextAnnualGrantList.setGrantDays(Finally.of(grantHdTbl.getGrantDays().toLeaveGrantDayNumber()));
-									nextAnnualGrantList.setHalfDayAnnualLeaveMaxTimes(grantHdTbl.getLimitDayYear());
-									nextAnnualGrantList.setTimeAnnualLeaveMaxDays(grantHdTbl.getLimitTimeHd());
-								}
-							}
-							else {
-
-								// 次回年休付与．付与日数　←　0
-								nextAnnualGrantList.setGrantDays(Finally.of(new LeaveGrantDayNumber(0.0)));
-							}
-						}
-					}
-				}
-//			}
-=======
 		nextAnnualLeaveGrantList = CalcNextAnnualLeaveGrantDate.algorithm(
 				require, cacheCarrier,
 				companyId, employeeId, Optional.of(period.get()),
@@ -361,7 +316,6 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 						.getLimitedTimeHdTime(grantHdTbl.getLimitTimeHd(), laborContractTimeOpt));
 				
 			}
->>>>>>> uk/release_bug901
 		}
 
 

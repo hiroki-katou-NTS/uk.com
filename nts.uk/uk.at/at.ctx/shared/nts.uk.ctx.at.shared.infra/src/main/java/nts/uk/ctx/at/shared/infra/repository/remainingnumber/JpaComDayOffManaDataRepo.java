@@ -24,6 +24,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcdtHdComMng;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcdtHdWorkMng;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -428,10 +429,6 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 				.getList(x -> toDomain(x));
 	}
 	
-
-<<<<<<< HEAD
-=======
-
 	@Override
 	public Optional<CompensatoryDayOffManaData> findBySidAndDate(String sid, GeneralDate date) {
 		return this.queryProxy().query(SELECT_BY_SID_AND_DAY_OFF, KrcdtHdComMng.class)
@@ -448,6 +445,5 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 		.setParameter("targetDate", target)
 		.executeUpdate();
 	}
->>>>>>> uk/release_bug901
 
 }

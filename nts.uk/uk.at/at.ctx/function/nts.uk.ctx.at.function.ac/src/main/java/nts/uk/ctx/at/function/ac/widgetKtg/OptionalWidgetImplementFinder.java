@@ -168,17 +168,10 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 			annualLeaveRemainNumberImport = new AnnualLeaveRemainingNumberImport(0.0, 0, 0, 0, 0.0, 0, 0, 0, 0.0,0.0);
 		}else {
 			annualLeaveRemainNumberImport = new AnnualLeaveRemainingNumberImport(
-<<<<<<< HEAD
 																				remainNumber.getAnnualLeaveGrantPreDay(),
 																				remainNumber.getAnnualLeaveGrantPreTime(),
-																				remainNumber.getNumberOfRemainGrant(),
-																				remainNumber.getTimeAnnualLeaveGrantPre(),
-=======
-																				remainNumber.getAnnualLeaveGrantDay(),
-																				remainNumber.getAnnualLeaveGrantPreTime(),
 																				remainNumber.getNumberOfRemainGrantPre(),
-																				remainNumber.getTimeAnnualLeaveWithMinusGrantPre(),
->>>>>>> uk/release_bug901
+																				remainNumber.getTimeAnnualLeaveGrantPre(),
 																				remainNumber.getAnnualLeaveGrantPostDay(),
 																				remainNumber.getAnnualLeaveGrantPostTime(),
 																				remainNumber.getNumberOfRemainGrantPost(),
