@@ -99,7 +99,7 @@ public class WorkByIndividualWorkDay extends DomainObject{
 						workTimeCode = this.workTime.getHolidayWork() == null ? Optional.empty(): this.workTime.getHolidayWork().getWorkTimeCode();
 					}
 				} else {
-					return inOtherCase(workTypeCode, workTimeCode);
+					return new WorkInformation(workTypeCode, inOtherCase().orElse(null));
 				}
 			}
 			break;
@@ -113,7 +113,7 @@ public class WorkByIndividualWorkDay extends DomainObject{
 						workTimeCode = this.workTime.getHolidayWork() == null ? Optional.empty() : this.workTime.getHolidayWork().getWorkTimeCode();
 					}
 				} else {
-					return inOtherCase(workTypeCode, workTimeCode);
+					return new WorkInformation(workTypeCode, inOtherCase().orElse(null));
 				}
 			}
 			break;
@@ -127,7 +127,7 @@ public class WorkByIndividualWorkDay extends DomainObject{
 						workTimeCode = this.workTime.getHolidayWork() == null ? Optional.empty() : this.workTime.getHolidayWork().getWorkTimeCode();
 					}
 				} else {
-					return inOtherCase(workTypeCode, workTimeCode);
+					return new WorkInformation(workTypeCode, inOtherCase().orElse(null));
 				}
 			}
 			break;
@@ -140,14 +140,8 @@ public class WorkByIndividualWorkDay extends DomainObject{
                 				   workTimeCode.isPresent() ? workTimeCode.get().v() : null);
 	}
 	
-	private WorkInformation inOtherCase( WorkTypeCode workTypeCode, Optional<WorkTimeCode> workTimeCode) {
-		workTypeCode = this.workType.getHolidayWorkWTypeCode();
-
-		if (this.workTime != null) {
-			workTimeCode = this.workTime.getHolidayWork() == null ? Optional.empty() : this.workTime.getHolidayWork().getWorkTimeCode();
-		}
-		return new WorkInformation(workTypeCode == null ? null : workTypeCode.v(),
-				                   workTimeCode.isPresent() ? workTimeCode.get().v() : null);
+	private Optional<WorkTimeCode> inOtherCase() {
+		return this.getWorkTime().getHolidayWork().getWorkTimeCode();
 	}
 	
 	// [5] 就業時間帯コードを取得する
@@ -169,7 +163,7 @@ public class WorkByIndividualWorkDay extends DomainObject{
 
 			// 勤務情報を作成
 			return Optional.of(new WorkInformation(workType.getWorkTypeCode(),
-					this.getWorkTime().getHolidayWork().getWorkTimeCode().orElse(null)));
+					inOtherCase().orElse(null)));
 		}
 
 		WorkInformation workInfo = this.getWorkInformationDayOfTheWeek(date);

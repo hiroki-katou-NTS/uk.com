@@ -36,17 +36,17 @@ public class GetWorkTimeOfDay {
 		}
 
 		workTypeCodeProcess = updateWorkTypeCode(workTypeCodeProcess,
-				workInfoOfDailyRecord.flatMap(x -> x.getRecordInfo().getWorkTimeCodeNotNull().map(y -> y.v())));
+				workInfoOfDailyRecord.map(x -> x.getRecordInfo().getWorkTypeCode().v()));
 
 		val schedule = require.findByIDRefactor(employeeId, date);
-		if (schedule.isPresent()) {
+		if (schedule.isPresent() &&  schedule.get().getWorkTimeCode().isPresent()) {
 			return schedule.get().getWorkTimeCode();
 		}
 
 		workTypeCodeProcess = updateWorkTypeCode(workTypeCodeProcess, schedule.map(x -> x.getWorkTypeCode()));
 
 		return getWorkInfoFromSetting(require, companyId, employeeId, date, workTypeCodeProcess)
-				.flatMap(x -> x.getWorkTimeCodeNotNull().map(y -> y.v()));
+				.map(x -> x.getWorkTypeCode().v());
 	}
 
 	private static Optional<String> updateWorkTypeCode(Optional<String> workTypeCodeBefore,
