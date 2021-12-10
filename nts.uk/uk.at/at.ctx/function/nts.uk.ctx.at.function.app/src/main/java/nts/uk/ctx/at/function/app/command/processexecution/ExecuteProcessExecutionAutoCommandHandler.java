@@ -52,6 +52,8 @@ import nts.uk.ctx.at.function.dom.adapter.worklocation.WorkInfoOfDailyPerFnImpor
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.createextractionprocess.CreateExtraProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.execalarmlistprocessing.ExecAlarmListProcessingService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.execalarmlistprocessing.OutputExecAlarmListPro;
+import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
+import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.ExtractionState;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionAdapter;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionImport;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetAdapter;
@@ -280,6 +282,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	
 	@Inject
 	private TopPageAlarmAdapter topPageAlarmAdapter;
+	@Inject
+	private AlarmListExtraProcessStatusRepository alarmExtraProcessStatusRepo;
 	
 	@Inject
 	private ByPeriodAggregationService byPeriodAggregationService;
@@ -2012,6 +2016,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					return true;
 				}
 			} catch (Exception e) {
+				setExtractStatusAbnormalTermination(extraProcessStatusID);
 				// 各処理の後のログ更新処理
 				checkException = true;
 				errorMessage = "Msg_1339";
@@ -2027,6 +2032,15 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.AL_EXTRACTION, companyId, execItemCd,
 				processExecution, ProcessExecutionLog, checkException, checkStopExec, errorMessage);
 		return false;
+	}
+
+	private void setExtractStatusAbnormalTermination(String extraProcessStatusID) {
+		val alarmExtraProcessStatusOpt = alarmExtraProcessStatusRepo.getAlListExtaProcessByID(extraProcessStatusID);
+		if (alarmExtraProcessStatusOpt.isPresent()){
+			val extractProcessStatus = alarmExtraProcessStatusOpt.get();
+			extractProcessStatus.setStatus(ExtractionState.ABNORMAL_TERMI);
+			alarmExtraProcessStatusRepo.updateAlListExtaProcess(extractProcessStatus);
+		}
 	}
 
 	private DatePeriod findClosurePeriodMinDate(String companyId, List<Closure> closureList) {

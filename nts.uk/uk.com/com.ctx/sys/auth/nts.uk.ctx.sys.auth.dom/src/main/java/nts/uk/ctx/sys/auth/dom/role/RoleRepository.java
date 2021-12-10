@@ -134,4 +134,12 @@ public interface RoleRepository {
 	 * @return
 	 */
 	Map<String, String> findRoleIdAndNameByListRoleId(String cid, List<String> roleIds);
+
+	/**
+	 * find by company
+	 *
+	 * @param companyId
+	 * @return Role
+	 */
+	List<Role> findByCompanyId(String companyId);
 }

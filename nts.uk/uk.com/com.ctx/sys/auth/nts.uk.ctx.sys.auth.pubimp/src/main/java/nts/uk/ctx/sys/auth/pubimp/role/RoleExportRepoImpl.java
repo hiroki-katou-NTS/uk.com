@@ -381,6 +381,23 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 					));
 	}
 
+	/**
+	 * find by company
+	 *
+	 * @param companyId
+	 * @return Role
+	 */
+	@Override
+	public List<RoleExport> findByCompanyId(String companyId) {
+		List<Role> lstRole = roleRepo.findByCompanyId(companyId);
+		if (!lstRole.isEmpty()) {
+			return lstRole.stream().map(role -> {
+				return new RoleExport(role.getCompanyId(), role.getRoleId(), role.getRoleCode().v(),
+						role.getName().v(), role.getAssignAtr().value, role.getEmployeeReferenceRange().value);
+			}).collect(Collectors.toList());
+		}
+		return null;
+	}
 	@Override
 	public Integer getEmployeeReferenceRange(String userId, int roleType, GeneralDate referenceDate) {
 		// TODO Auto-generated method stub
