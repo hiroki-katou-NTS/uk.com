@@ -662,7 +662,7 @@ public class ProgramsManager {
      */
 
     public static final Program KDL020A = new Program(WebAppId.AT, ProgramIdConsts.KDL020A, "KDL020_1",
-            "/view/kdl/020/a/single.xhtml");
+            "/view/kdl/020/a/index.xhtml");
     public static final Program KDL020B = new Program(WebAppId.AT, ProgramIdConsts.KDL020B, "KDL020_1",
             "/view/kdl/020/a/multi.xhtml");
     public static final Program KDL048 = new Program(WebAppId.AT, ProgramIdConsts.KDL048, "KDL048_1",
