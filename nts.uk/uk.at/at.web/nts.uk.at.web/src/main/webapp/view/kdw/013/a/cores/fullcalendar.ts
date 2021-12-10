@@ -2765,6 +2765,10 @@ module nts.uk.ui.at.kdw013.calendar {
                     let id = randomId();
                     if (ko.unwrap<boolean>(dataEvent.shift)) {
                         event.setExtendedProp('id', id);
+                        let etemp = _.cloneDeep(event);
+                        event.remove();
+                        $caches.new(vm.calendar
+                            .addEvent(etemp));
                     }
                     
                     mutatedEvents();
