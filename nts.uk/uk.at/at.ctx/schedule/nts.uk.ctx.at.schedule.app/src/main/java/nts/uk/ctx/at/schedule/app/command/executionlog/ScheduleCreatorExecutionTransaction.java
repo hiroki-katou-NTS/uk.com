@@ -417,11 +417,16 @@ public class ScheduleCreatorExecutionTransaction {
 				// 確定状態を確認する
 				// 作成しない
 				if (workSchedule.get().getConfirmedATR().value == ConfirmedATR.CONFIRMED.value
-						&& command.getContent().getRecreateCondition().isPresent()
-						&& !command.getContent().getRecreateCondition().get().getReOverwriteConfirmed()) {
-					return new DataProcessingStatusResult(CID, null,
-							ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY.value), null, null, null);
+					&& command.getContent().getRecreateCondition().isPresent()
+					&& !command.getContent().getRecreateCondition().get().getReOverwriteConfirmed()) {
+					
+					return new DataProcessingStatusResult(
+							CID, 
+							null,
+							ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY.value), 
+							null, null, null);
 				}
+				
 				/// 作成する
 				return new DataProcessingStatusResult(CID, null,
 						ProcessingStatus.valueOf(ProcessingStatus.NORMAL_PROCESS.value), workSchedule.get(),
@@ -446,10 +451,13 @@ public class ScheduleCreatorExecutionTransaction {
 						dateInPeriod,
 						ConfirmedATR.UNSETTLED,
 						new WorkInfoOfDailyAttendance(new WorkInformation("", ""), 
-								CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek
-										.valueOf(dateInPeriod.dayOfWeek() - 1),
-								new ArrayList<>(), Optional.empty()),
+								CalculationState.No_Calculated, 
+								NotUseAttribute.Not_use, 
+								NotUseAttribute.Not_use,
+								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek.valueOf(
+										dateInPeriod.dayOfWeek() - 1),
+								new ArrayList<>(), 
+								Optional.empty()),
 						null,
 						new BreakTimeOfDailyAttd(),
 						new ArrayList<>(),
@@ -552,7 +560,7 @@ public class ScheduleCreatorExecutionTransaction {
 				.filter(x -> x.getDatePeriod().contains(dateInPeriod) && empId.equals(x.getEmployeeId())).findFirst();
 
 		// 社員と対象日と該当する社員の在職状態を取得する
-		Optional<ScheManaStatuTempo> optManaStatuTempo = masterCache.getListManaStatuTempo().stream()
+		Optional<EmployeeWorkingStatus> optManaStatuTempo = masterCache.getListManaStatuTempo().stream()
 				.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod)
 						&& employmentInfo.getEmployeeID().equals(empId))
 				.findFirst();
@@ -774,20 +782,25 @@ public class ScheduleCreatorExecutionTransaction {
 
 		// 「社員の在職状態」から該当社員、該当日の在職状態を取得する
 		// EA修正履歴 No2716
-		Optional<ScheManaStatuTempo> optScheManaStatuTempo = employeesTempo.getOptManaStatuTempo();
-
+		List<EmployeeWorkingStatus> listEmploymentInfo = masterCache.getListManaStatuTempo();
+		Optional<EmployeeWorkingStatus> optEmploymentInfo = Optional.empty();
+		
+		if (listEmploymentInfo != null) {
+			optEmploymentInfo = listEmploymentInfo.stream()
+					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod) && employmentInfo.getEmployeeID().equals(creator.getEmployeeId())).findFirst();
+		}
 		// if 在籍してない OR 取得できない
-		if (!optScheManaStatuTempo.isPresent()
-				|| optScheManaStatuTempo.get().getScheManaStatus().value == ScheManaStatus.NOT_ENROLLED.value) {
+		if (!optEmploymentInfo.isPresent()
+				|| optEmploymentInfo.get().getWorkingStatus().value == WorkingStatus.NOT_ENROLLED.value) {
 
 			// return 社員の当日在職状態＝Null, 社員の当日労働条件＝Null, エラー＝Null, 勤務予定＝Null, 処理状態＝処理終了する
 			DataProcessingStatusResult result = new DataProcessingStatusResult(null, null,
 					ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY.value), null, null, null);
 			return result;
 		}
-		ScheManaStatuTempo scheManaStatuTempo = optScheManaStatuTempo.get();
+		EmployeeWorkingStatus  scheManaStatuTempo = optEmploymentInfo.get();
 		// 「予定管理しない」 - fix bug 113922
-		if (scheManaStatuTempo.getScheManaStatus() == ScheManaStatus.DO_NOT_MANAGE_SCHEDULE) {
+		if (scheManaStatuTempo.getWorkingStatus() == WorkingStatus.DO_NOT_MANAGE_SCHEDULE) {
 
 			// return 社員の当日在職状態＝Null 社員の当日労働条件＝Null エラー＝Null 勤務予定＝Null 処理状態＝次の日へ
 			DataProcessingStatusResult result = new DataProcessingStatusResult(null, null,
@@ -817,9 +830,8 @@ public class ScheduleCreatorExecutionTransaction {
 
 			// ドメインモデル「スケジュール作成エラーログ」を登録する
 			ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization,
-					command.getExecutionId(), creator.getEmployeeId(), dateInPeriod,
-					"Msg_602", "#KSC001_87");
-			// return 社員の当日在職状態＝Null, 社員の当日労働条件＝Null, エラー＝エラー内容, 勤務予定＝Null, 処理状態＝次の日へ
+					command.getExecutionId(), creator.getEmployeeId(), dateInPeriod,"Msg_602", "#KSC001_87");
+			
 			DataProcessingStatusResult result = new DataProcessingStatusResult(CID, scheduleErrorLog,
 					ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY.value), null, null, null);
 			return result;
@@ -955,71 +967,23 @@ public class ScheduleCreatorExecutionTransaction {
 		// データなし
 		// 社員の在職状態を確認する
 		// if 休職中、休業中
-<<<<<<< HEAD
 		// if 休職中
 		if (optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE || 
 				optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.CLOSED) {
-		prepareWorkOutput = this.getWorkInfoLeave(command, creator, domain,
+		prepareWorkOutput = this.getWorkInfoLeave( employeesTempo, command, creator, domain,
 			 targetPeriod, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, carrier);
 		return prepareWorkOutput;
-=======
-		if (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE
-				|| optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.CLOSED) {
-			prepareWorkOutput = this.getWorkInfoLeave(employeesTempo, command, creator, domain, targetPeriod,
-					dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, carrier);
->>>>>>> uk/release_bug901
+
 		}
 
 		// if 予定管理する
 		PrepareWorkOutput workOutput = new PrepareWorkOutput(null, null, null, Optional.empty());
-<<<<<<< HEAD
+
 		if (optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.SCHEDULE_MANAGEMENT) {
-			// 入力パラメータ「作成方法区分」を確認する
-			// 入力パラメータ「作成方法区分」を確認する
-			// if 個人スケジュールコピー
-			if (command.getContent().getSpecifyCreation()
-					.getCreationMethod().value == CreationMethod.SCHEDULE_COPY.value) {
-				int daysToAdd = targetPeriod.datesBetween().size() - 1;
-				// 
-				DatePeriod copyDate = new DatePeriod(command.getContent().getSpecifyCreation().getCopyStartDate().get(),
-						command.getContent().getSpecifyCreation().getCopyStartDate().get().addDays(daysToAdd));
-				prepareWorkOutput = this.copyAndCreateWorkSchedule(creator.getEmployeeId(),command.getExecutionId(),copyDate, carrier, dateInPeriod, targetPeriod);
-			}
-
-			// if 作成方法（参照先）
-			if (command.getContent().getSpecifyCreation()
-			.getCreationMethod().value == CreationMethod.SPECIFY_CREATION.value) {
-				Optional<WorkCondItemDto> itemDto = masterCache.getListWorkingConItem().stream()
-						.filter(x -> x.getDatePeriod().contains(dateInPeriod)).findFirst();
-				// パラメータ。作成参照先を確認する
-				if (command.getContent().getSpecifyCreation().getReferenceMaster().isPresent() && command.getContent()
-						.getSpecifyCreation().getReferenceMaster().get() == ReferenceMaster.MONTH_PATTERN) {
-					// 月間パターンで勤務予定を作成する
-					prepareWorkOutput = createMonthPattern(itemDto, command, dateInPeriod, masterCache, creator);
-				} else {
-					// 営業日カレンダーで勤務予定作成する
-					prepareWorkOutput = createBusinessCalendar(itemDto, command, dateInPeriod, masterCache, creator);
-				}
-				// masterCache.getListWorkingConItem();
-			}
-
-			// if 個人情報
-			if (command.getContent().getSpecifyCreation()
-					.getCreationMethod().value == CreationMethod.PERSONAL_INFO.value) {
-				// 「労働条件。予定作成方法。 基本作成方法」を確認する
-				Optional<WorkCondItemDto> itemDto = masterCache.getListWorkingConItem().stream()
-						.filter(x -> x.getEmployeeId().equals(creator.getEmployeeId())).findFirst();
-				// call 営業日カレンダーで勤務予定作成する, 月間パターンで勤務予定を作成する, 個人曜日別で勤務予定作成する
-				//作成方法ごとに勤務情報を取得する
-				prepareWorkOutput = this.getPersonalInfo(itemDto, command, dateInPeriod, masterCache, creator);
-			}
-=======
-		if (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.SCHEDULE_MANAGEMENT) {
 			// 作成方法ごとに勤務情報を取得する
 			prepareWorkOutput = this.getPersonalInfo(employeesTempo, command, targetPeriod, dateInPeriod, masterCache,
 					creator, carrier);
 		}
->>>>>>> uk/release_bug901
 
 		if (prepareWorkOutput.getExecutionLog().isPresent()) {
 			return new PrepareWorkOutput(null, null, null, prepareWorkOutput.getExecutionLog());
@@ -1099,8 +1063,8 @@ public class ScheduleCreatorExecutionTransaction {
 				
 				if(!workType.isPresent()) {
 					ScheduleErrorLog scheExeLog = ScheduleErrorLog.createErrorLog(internationalization,
-							command.getExecutionId(), creator.getEmployeeId(), dateInPeriod,
-							"Msg_590");
+							command.getExecutionId(), creator.getEmployeeId(), dateInPeriod,"Msg_590");
+					
 					// ドメインモデル「スケジュール作成エラーログ」を返す
 					preWork.setExecutionLog(Optional.of(scheExeLog));
 					return preWork;
@@ -1123,15 +1087,9 @@ public class ScheduleCreatorExecutionTransaction {
 					preWork.setInformation(information);
 					return preWork;
 				}
-<<<<<<< HEAD
-				
-				List<EmployeeWorkingStatus> listEmploymentInfo = masterCache.getListManaStatuTempo();
-				Optional<EmployeeWorkingStatus> optEmploymentInfo = Optional.empty();
-=======
 
-				List<ScheManaStatuTempo> listEmploymentInfo = masterCache.getListManaStatuTempo();
-				Optional<ScheManaStatuTempo> optEmploymentInfo = Optional.empty();
->>>>>>> uk/release_bug901
+				List <EmployeeWorkingStatus> listEmploymentInfo = masterCache.getListManaStatuTempo();
+				Optional <EmployeeWorkingStatus> optEmploymentInfo = Optional.empty();
 
 				if (listEmploymentInfo != null) {
 					optEmploymentInfo = listEmploymentInfo.stream()
@@ -1141,38 +1099,25 @@ public class ScheduleCreatorExecutionTransaction {
 				}
 				if(!optEmploymentInfo.isPresent()) {
 					ScheduleErrorLog scheExeLog = ScheduleErrorLog.createErrorLog(internationalization,
-							command.getExecutionId(), creator.getEmployeeId(), dateInPeriod,
-							"Msg_1156", "#Com_Person");
+							command.getExecutionId(), creator.getEmployeeId(), dateInPeriod,"Msg_1156", "#Com_Person");
+					
 					// ドメインモデル「スケジュール作成エラーログ」を返す
 					preWork.setExecutionLog(Optional.of(scheExeLog));
 					return preWork;
 				}
 				
-<<<<<<< HEAD
-				List<WorkType> lstWorkType = workTypeRepository.findWorkOneDay(command.getCompanyId(),
-						DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-						optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE ? 12 : 13);
-				
-				if ((optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE || optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.CLOSED) 
-						&& optEmploymentInfo.get().getOptTempAbsenceFrameNo().isPresent()) {
-					lstWorkType = workTypeRepository.findHolidayWorkTypeClo(command.getCompanyId(),
-							DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-							optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE ? 12 : 13, 
-							optEmploymentInfo.get().getOptTempAbsenceFrameNo().get().v().intValue() - 2); // CloseAtr
-=======
 				Optional<WorkType> lstWorkType = Optional.empty();
 				//休職の勤務種類を取得
-				if(optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE) {
+				if(optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE) {
 					lstWorkType = workTypeRepository.findWorkOneDay(command.getCompanyId(),
 							DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,12).stream().findFirst();
 				}
 				//休業の勤務種類を取得
-				if (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.CLOSED
+				if (optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.CLOSED
 						&& optEmploymentInfo.get().getOptTempAbsenceFrameNo().isPresent()) {
 					lstWorkType = workTypeRepository.findHolidayWorkTypeClo(command.getCompanyId(),
 							DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,13,
 							optEmploymentInfo.get().getOptTempAbsenceFrameNo().get().v().intValue() - 2).stream().findFirst(); // CloseAtr
->>>>>>> uk/release_bug901
 				}
 
 				if (!lstWorkType.isPresent()) {
