@@ -13,6 +13,7 @@ import java.util.stream.IntStream;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.request.dom.adapter.CalculationParams;
 import nts.uk.ctx.at.request.dom.adapter.OneDayAttendanceTimeTempCalcAdapter;
 import nts.uk.ctx.at.request.dom.application.overtime.*;
@@ -930,44 +931,66 @@ public class OvertimeServiceImpl implements OvertimeService {
 		}
 
 		WorkContent workContent = new WorkContent();
-		workContent.setWorkTypeCode(output.getInfoWithDateApplicationOp()
-										  .map(x -> x.getWorkTypeCD())
-										  .orElse(Optional.empty()));
-		workContent.setWorkTimeCode(
-				output.getInfoWithDateApplicationOp()
-				  .map(x -> x.getWorkTimeCD())
-				  .orElse(Optional.empty()));
-		List<TimeZone> timeZones = new ArrayList<TimeZone>();
-		List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
-		if (output.getInfoWithDateApplicationOp().isPresent()) {
-			Optional<WorkHours> workHours = output.getInfoWithDateApplicationOp().get().getWorkHours();
-			if (workHours.isPresent()) {
-				if (workHours.get().getStartTimeOp1().isPresent() || workHours.get().getEndTimeOp1().isPresent()) {
-					TimeZone timeZone = new TimeZone(
-							workHours.get().getStartTimeOp1().orElse(null),
-							workHours.get().getEndTimeOp1().orElse(null));
-					timeZones.add(timeZone);
-				}
-				if (workHours.get().getStartTimeOp2().isPresent() || workHours.get().getEndTimeOp2().isPresent()) {
-					TimeZone timeZone = new TimeZone(
-							workHours.get().getStartTimeOp2().orElse(null),
-							workHours.get().getEndTimeOp2().orElse(null));
-					timeZones.add(timeZone);
-				}
+		if (output.getLatestMultipleOvertimeApp().isPresent()) {
+			if (output.getLatestMultipleOvertimeApp().get().getWorkInfoOp().isPresent()) {
+				workContent.setWorkTypeCode(Optional.of(output.getLatestMultipleOvertimeApp().get().getWorkInfoOp().get().getWorkTypeCode().v()));
+				workContent.setWorkTimeCode(output.getLatestMultipleOvertimeApp().get().getWorkInfoOp().get().getWorkTimeCodeNotNull().map(PrimitiveValueBase::v));
 			}
-			Optional<BreakTimeZoneSetting> breakTime = output.getInfoWithDateApplicationOp().get().getBreakTime();
-			if (breakTime.isPresent()) {
-				List<DeductionTime> breakTimeZones = breakTime.get().getTimeZones();
-				breakTimes = IntStream.range(1, (int) breakTimeZones.stream().count())
+			if (output.getLatestMultipleOvertimeApp().get().getWorkHoursOp().isPresent()) {
+				workContent.setTimeZones(output.getLatestMultipleOvertimeApp().get().getWorkHoursOp().get()
+						.stream().map(i -> new TimeZone(
+								i.getTimeZone().getStartTime(),
+								i.getTimeZone().getEndTime()
+						)).collect(Collectors.toList()));
+			}
+			if (output.getLatestMultipleOvertimeApp().get().getBreakTimeOp().isPresent()) {
+				workContent.setBreakTimes(output.getLatestMultipleOvertimeApp().get().getBreakTimeOp().get()
+						.stream().map(i -> new BreakTimeSheet(
+								new BreakFrameNo(i.getWorkNo().v()),
+								i.getTimeZone().getStartTime(),
+								i.getTimeZone().getEndTime()
+						)).collect(Collectors.toList()));
+			}
+		} else {
+			workContent.setWorkTypeCode(output.getInfoWithDateApplicationOp()
+					.map(x -> x.getWorkTypeCD())
+					.orElse(Optional.empty()));
+			workContent.setWorkTimeCode(
+					output.getInfoWithDateApplicationOp()
+							.map(x -> x.getWorkTimeCD())
+							.orElse(Optional.empty()));
+			List<TimeZone> timeZones = new ArrayList<TimeZone>();
+			List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
+			if (output.getInfoWithDateApplicationOp().isPresent()) {
+				Optional<WorkHours> workHours = output.getInfoWithDateApplicationOp().get().getWorkHours();
+				if (workHours.isPresent()) {
+					if (workHours.get().getStartTimeOp1().isPresent() || workHours.get().getEndTimeOp1().isPresent()) {
+						TimeZone timeZone = new TimeZone(
+								workHours.get().getStartTimeOp1().orElse(null),
+								workHours.get().getEndTimeOp1().orElse(null));
+						timeZones.add(timeZone);
+					}
+					if (workHours.get().getStartTimeOp2().isPresent() || workHours.get().getEndTimeOp2().isPresent()) {
+						TimeZone timeZone = new TimeZone(
+								workHours.get().getStartTimeOp2().orElse(null),
+								workHours.get().getEndTimeOp2().orElse(null));
+						timeZones.add(timeZone);
+					}
+				}
+				Optional<BreakTimeZoneSetting> breakTime = output.getInfoWithDateApplicationOp().get().getBreakTime();
+				if (breakTime.isPresent()) {
+					List<DeductionTime> breakTimeZones = breakTime.get().getTimeZones();
+					breakTimes = IntStream.range(1, (int) breakTimeZones.stream().count())
 							.mapToObj(i -> new BreakTimeSheet(
 									new BreakFrameNo(i),
 									breakTimeZones.get(i).getStart(),
 									breakTimeZones.get(i).getEnd()))
 							.collect(Collectors.toList());
+				}
 			}
+			workContent.setTimeZones(timeZones);
+			workContent.setBreakTimes(breakTimes);
 		}
-		workContent.setTimeZones(timeZones);
-		workContent.setBreakTimes(breakTimes);
 		if (!(CollectionUtil.isEmpty(output.getInfoBaseDateOutput().getWorktypes())
 			|| !output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent())) {
 			Optional<AchievementDetail> opAchievementDetail = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isPresent()
@@ -1036,47 +1059,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 		}
 
 		WorkContent workContent = new WorkContent();
-		workContent.setWorkTypeCode(displayInfoOverTime.getInfoWithDateApplicationOp()
-										  .map(x -> x.getWorkTypeCD())
-										  .orElse(Optional.empty()));
-		workContent.setWorkTimeCode(
-				displayInfoOverTime.getInfoWithDateApplicationOp()
-				  .map(x -> x.getWorkTimeCD())
-				  .orElse(Optional.empty()));
-		List<TimeZone> timeZones = new ArrayList<TimeZone>();
-		List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
-		if (displayInfoOverTime.getInfoWithDateApplicationOp().isPresent()) {
-			Optional<WorkHours> workHours = displayInfoOverTime.getInfoWithDateApplicationOp().get().getWorkHours();
-			if (workHours.isPresent()) {
-				if (workHours.get().getStartTimeOp1().isPresent() || workHours.get().getEndTimeOp1().isPresent()) {
-					TimeZone timeZone = new TimeZone(
-							workHours.get().getStartTimeOp1().orElse(null),
-							workHours.get().getEndTimeOp1().orElse(null));
-					timeZones.add(timeZone);
-				}
-				if (workHours.get().getStartTimeOp2().isPresent() || workHours.get().getEndTimeOp2().isPresent()) {
-					TimeZone timeZone = new TimeZone(
-							workHours.get().getStartTimeOp2().orElse(null),
-							workHours.get().getEndTimeOp2().orElse(null));
-					timeZones.add(timeZone);
-				}
-			}
-			Optional<BreakTimeZoneSetting> breakTime = displayInfoOverTime.getInfoWithDateApplicationOp().get().getBreakTime();
-			if (breakTime.isPresent()) {
-				List<DeductionTime> breakTimeZones = breakTime.get().getTimeZones();
-				if(!CollectionUtil.isEmpty(breakTimeZones)) {
-					breakTimes = IntStream.range(0, (int) breakTimeZones.stream().count())
-							.mapToObj(i -> new BreakTimeSheet(
-									new BreakFrameNo(i+1),
-									breakTimeZones.get(i).getStart(),
-									breakTimeZones.get(i).getEnd()))
-							.collect(Collectors.toList());
-				}
-			}
-		}
-		workContent.setTimeZones(timeZones);
-		workContent.setBreakTimes(breakTimes);
 		if (displayInfoOverTime.getLatestMultipleOvertimeApp().isPresent()) {
+			if (displayInfoOverTime.getLatestMultipleOvertimeApp().get().getWorkInfoOp().isPresent()) {
+				workContent.setWorkTypeCode(Optional.of(displayInfoOverTime.getLatestMultipleOvertimeApp().get().getWorkInfoOp().get().getWorkTypeCode().v()));
+				workContent.setWorkTimeCode(displayInfoOverTime.getLatestMultipleOvertimeApp().get().getWorkInfoOp().get().getWorkTimeCodeNotNull().map(PrimitiveValueBase::v));
+			}
 			if (displayInfoOverTime.getLatestMultipleOvertimeApp().get().getWorkHoursOp().isPresent()) {
 				workContent.setTimeZones(displayInfoOverTime.getLatestMultipleOvertimeApp().get().getWorkHoursOp().get()
 						.stream().map(i -> new TimeZone(
@@ -1092,6 +1079,47 @@ public class OvertimeServiceImpl implements OvertimeService {
 								i.getTimeZone().getEndTime()
 						)).collect(Collectors.toList()));
 			}
+		} else {
+			workContent.setWorkTypeCode(displayInfoOverTime.getInfoWithDateApplicationOp()
+					.map(x -> x.getWorkTypeCD())
+					.orElse(Optional.empty()));
+			workContent.setWorkTimeCode(
+					displayInfoOverTime.getInfoWithDateApplicationOp()
+							.map(x -> x.getWorkTimeCD())
+							.orElse(Optional.empty()));
+			List<TimeZone> timeZones = new ArrayList<TimeZone>();
+			List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
+			if (displayInfoOverTime.getInfoWithDateApplicationOp().isPresent()) {
+				Optional<WorkHours> workHours = displayInfoOverTime.getInfoWithDateApplicationOp().get().getWorkHours();
+				if (workHours.isPresent()) {
+					if (workHours.get().getStartTimeOp1().isPresent() || workHours.get().getEndTimeOp1().isPresent()) {
+						TimeZone timeZone = new TimeZone(
+								workHours.get().getStartTimeOp1().orElse(null),
+								workHours.get().getEndTimeOp1().orElse(null));
+						timeZones.add(timeZone);
+					}
+					if (workHours.get().getStartTimeOp2().isPresent() || workHours.get().getEndTimeOp2().isPresent()) {
+						TimeZone timeZone = new TimeZone(
+								workHours.get().getStartTimeOp2().orElse(null),
+								workHours.get().getEndTimeOp2().orElse(null));
+						timeZones.add(timeZone);
+					}
+				}
+				Optional<BreakTimeZoneSetting> breakTime = displayInfoOverTime.getInfoWithDateApplicationOp().get().getBreakTime();
+				if (breakTime.isPresent()) {
+					List<DeductionTime> breakTimeZones = breakTime.get().getTimeZones();
+					if(!CollectionUtil.isEmpty(breakTimeZones)) {
+						breakTimes = IntStream.range(0, (int) breakTimeZones.stream().count())
+								.mapToObj(i -> new BreakTimeSheet(
+										new BreakFrameNo(i+1),
+										breakTimeZones.get(i).getStart(),
+										breakTimeZones.get(i).getEnd()))
+								.collect(Collectors.toList());
+					}
+				}
+			}
+			workContent.setTimeZones(timeZones);
+			workContent.setBreakTimes(breakTimes);
 		}
 		Optional<AchievementDetail> opAchievementDetail = displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isPresent()
 				? displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail()

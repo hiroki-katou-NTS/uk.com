@@ -7,7 +7,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			<div class="lblTitle pull-left" data-bind="text: $i18n('KAF005_349'), ntsFormLabel: {required: true}"></div>
 		</div>
 		<div class="cell table-time" style="margin-top: 5px;">
-			<div class="control-group valign-center" id="A15_2" data-bind="style: {width: 330 + (appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? 210 : 0) + (appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? 210 : 0) + 'px'}">
+			<div class="valign-center" id="A15_2" data-bind="style: {width: 330 + (appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? 210 : 0) + (appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? 210 : 0) + 'px'}">
 				<div style="width: 107px; display: inline-block; text-align: center;">
 					<div data-bind="ntsFormLabel: {text: $i18n('KAF005_351')}"></div>
 				</div>
@@ -33,13 +33,15 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 							   }">
 					<div data-bind="ntsFormLabel: {
 										text: $i18n('KAF000_52'), 
+										constraint: 'AppReason',
 										required: ko.computed(function() { return appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting && appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason;})
 									}"></div>
 				</div>
             </div>	
 			<div data-bind="foreach: multipleOvertimeContents">
 				<div class="control-group valign-center" data-bind="style: {width: 330 + ($parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? 210 : 0) + ($parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? 210 : 0) + 'px'}">
-					<input data-bind="ntsTimeWithDayEditor: {
+					<input class="inputTime-kaf005 right-content" 
+							data-bind="ntsTimeWithDayEditor: {
 											name: '#[KAF005_333]', 
 											value: start, 
 											constraint:'TimeWithDayAttr', 
@@ -47,7 +49,8 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 											option: {width: '85px', timeWithDay: true}
                                         }, attr: {id: 'A15_3_' + $index()}" />
 					<span data-bind="text: $parent.$i18n('KAF005_38')" style="padding-left: 10px; padding-right: 10px;"></span>
-					<input data-bind="ntsTimeWithDayEditor: {
+					<input class="inputTime-kaf005 right-content" 
+							data-bind="ntsTimeWithDayEditor: {
 											name: '#[KAF005_334]', 
 											value: end, 
 											constraint:'TimeWithDayAttr', 
