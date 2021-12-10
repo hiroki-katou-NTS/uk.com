@@ -1264,65 +1264,6 @@ module nts.uk.at.view.kmk002.a {
                         if($('#inp-upper-time-month').is(':enabled')){
                             $('#inp-upper-time-month').ntsEditor('validate');
                         }
-                        // TIME DAY
-                        if(this.lowerCheck()) {
-                           if(!isNullOrUndefined(this.timeUpperDay()) && !isNullOrUndefined(this.timeLowerDay())){
-                               if (parseInt(this.timeUpperDay().toString()) < parseInt(this.timeLowerDay().toString())) {
-                                   $('#inp-upper-time-day').ntsError('set', { messageId: "Msg_574" });
-                               }
-                           }
-
-                        }
-                        // TIME MONTH
-                        if(this.lowerCheck()) {
-                            if(!isNullOrUndefined(this.timeUpperMonth()) && !isNullOrUndefined(this.timeLowerMonth())){
-                                if (parseInt(this.timeUpperMonth().toString()) < parseInt(this.timeLowerMonth().toString())) {
-                                    $('#inp-upper-time-month').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }
-
-                        }
-                        // AMOUNT DAY
-                        if(this.lowerCheck()) {
-                            if(!isNullOrUndefined(this.amountUpperDay()) && !isNullOrUndefined(this.amountLowerDay()))
-                            {
-                                if (parseInt(this.amountUpperDay().toString()) < parseInt(this.amountLowerDay().toString())) {
-                                    $('#inp-upper-amount-day').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }
-
-                        }
-                        // AMOUNT MONTH
-                        if(this.lowerCheck()) {
-                            if(!isNullOrUndefined(this.amountUpperMonth()) && !isNullOrUndefined(this.amountLowerMonth()))
-                            {
-                                if (parseInt(this.amountUpperMonth().toString()) < parseInt(this.amountLowerMonth().toString())) {
-                                    $('#inp-upper-amount-month').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }
-                        }
-
-                        // NUMBER DAY
-                        if(this.lowerCheck()) {
-                            if(!isNullOrUndefined(this.numberUpperDay()) && !isNullOrUndefined(this.numberLowerDay))
-                            {
-                                if (parseInt(this.numberUpperDay().toString()) < parseInt(this.numberLowerDay().toString())) {
-                                    $('#inp-upper-number-day').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }
-
-                        }
-                        // NUMBER MONTH
-                        if(this.lowerCheck()) {
-                            if(!isNullOrUndefined(this.numberUpperMonth()) && !isNullOrUndefined(this.numberLowerMonth()))
-                            {
-                                if (parseInt(this.numberUpperMonth().toString()) < parseInt(this.numberLowerMonth().toString())) {
-                                    $('#inp-upper-number-month').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }
-
-                        }
-
                         this.upperRequired(true);
                     } else {
                         if ($('#inp-upper-amount-day').ntsError("hasError")) {
@@ -1343,51 +1284,6 @@ module nts.uk.at.view.kmk002.a {
                         if ($('#inp-upper-time-month').ntsError("hasError")) {
                             $('#inp-upper-time-month').ntsError('clear');
                         }
-                        // TIME DAY
-                        if($('#inp-lower-time-day').is(':enabled'))
-                        if(this.lowerCheck()){
-                            if ($('#inp-lower-time-day').ntsError("hasError")) {
-                                $('#inp-lower-time-day').ntsError('clear');
-                            }
-                        }
-                        // TIME MONTH
-                        if($('#inp-lower-time-month').is(':enabled'))
-                        if(this.lowerCheck()){
-                            if ($('#inp-lower-time-month').ntsError("hasError")) {
-                                $('#inp-lower-time-month').ntsError('clear');
-                            }
-                        }
-                        // AMOUNT DAY
-                        if($('#inp-lower-amount-day').is(':enabled'))
-                            if(this.lowerCheck()){
-                                if ($('#inp-lower-amount-day').ntsError("hasError")) {
-                                    $('#inp-lower-amount-day').ntsError('clear');
-                                }
-                            }
-                        // AMOUNT MONTH
-                        if($('#inp-lower-amount-month').is(':enabled'))
-                            if(this.lowerCheck()){
-                                if ($('#inp-lower-amount-month').ntsError("hasError")) {
-                                    $('#inp-lower-amount-month').ntsError('clear');
-                                }
-                            }
-
-                        // NUMBER DAY
-                        if($('#inp-lower-number-day').is(':enabled'))
-                            if(this.lowerCheck()){
-                                if ($('#inp-lower-number-day').ntsError("hasError")) {
-                                    $('#inp-lower-number-day').ntsError('clear');
-                                }
-                            }
-                        // AMOUNT MONTH
-                        if($('#inp-lower-number-month').is(':enabled'))
-                            if(this.lowerCheck()){
-                                if ($('#inp-lower-number-month').ntsError("hasError")) {
-                                    $('#inp-lower-number-month').ntsError('clear');
-                                }
-                            }
-
-
                         this.upperRequired(false);
                     }
                 });
@@ -1411,68 +1307,6 @@ module nts.uk.at.view.kmk002.a {
                         if($('#inp-lower-time-month').is(':enabled')){
                             $('#inp-lower-time-month').ntsEditor('validate');
                         }
-                        // TIME DAY
-                        if(this.upperCheck()){
-                            if(!isNullOrUndefined(this.timeUpperDay()) && !isNullOrUndefined(this.timeLowerDay()))
-                            {
-                                if (parseInt(this.timeUpperDay().toString()) < parseInt(this.timeLowerDay().toString())) {
-                                    $('#inp-lower-time-day').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }
-
-                        }
-                        //TIME MONTH
-                        if(this.upperCheck()){
-                            if(!isNullOrUndefined(this.timeUpperMonth()) && !isNullOrUndefined(this.timeLowerMonth()))
-                            {
-                                if (parseInt(this.timeUpperMonth().toString()) < parseInt(this.timeLowerMonth().toString())) {
-                                    $('#inp-lower-time-month').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }
-
-                        }
-
-                        // AMOUNT DAY
-                        if(this.upperCheck()){
-                            if(!isNullOrUndefined(this.amountUpperDay()) && !isNullOrUndefined(this.amountLowerDay()))
-                            {
-                                if (parseInt(this.amountUpperDay().toString()) < parseInt(this.amountLowerDay().toString())) {
-                                    $('#inp-lower-amount-day').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }
-
-                        }
-
-                        // AMOUNT MONTH
-                        if(this.upperCheck()){
-                            if(!isNullOrUndefined(this.amountUpperMonth()) && !isNullOrUndefined(this.amountLowerMonth()))
-                            {
-                                if (parseInt(this.amountUpperMonth().toString()) < parseInt(this.amountLowerMonth().toString())) {
-                                    $('#inp-lower-amount-month').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }
-
-                        }
-
-                        // NUMBER DAY
-                        if(this.upperCheck()){
-                            if(!isNullOrUndefined(this.numberUpperDay()) && !isNullOrUndefined(this.numberLowerDay()))
-                            {
-                                if (parseInt(this.numberUpperDay().toString()) < parseInt(this.numberLowerDay().toString())) {
-                                    $('#inp-lower-number-day').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }
-                        }
-
-                        // NUMBER MONTH
-                        if(this.upperCheck()){
-                            if(!isNullOrUndefined(this.numberUpperMonth()) && !isNullOrUndefined(this.numberLowerMonth()))
-                            {
-                                if (parseInt(this.numberUpperMonth().toString()) < parseInt(this.numberLowerMonth().toString())) {
-                                    $('#inp-lower-number-month').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }
-                        }
 
                         this.lowerRequired(true);
                     } else {
@@ -1494,249 +1328,9 @@ module nts.uk.at.view.kmk002.a {
                         if ($('#inp-lower-time-month').ntsError("hasError")) {
                             $('#inp-lower-time-month').ntsError('clear');
                         }
-                        // TIME DAY
-                        if($('#inp-upper-time-day').is(':enabled'))
-                        if(this.upperCheck()){
-                            if ($('#inp-upper-time-day').ntsError("hasError")) {
-                                $('#inp-upper-time-day').ntsError('clear');
-                            }
-                        }
-                        // TIME MONTH
-                        if($('#inp-upper-time-month').is(':enabled'))
-                        if(this.upperCheck()){
-                            if ($('#inp-upper-time-month').ntsError("hasError")) {
-                                $('#inp-upper-time-month').ntsError('clear');
-                            }
-                        }
-
-                        // AMOUNT DAY
-                        if($('#inp-upper-amount-day').is(':enabled'))
-                            if(this.upperCheck()){
-                                if ($('#inp-upper-amount-day').ntsError("hasError")) {
-                                    $('#inp-upper-amount-day').ntsError('clear');
-                                }
-                            }
-                        // AMOUNT MONTH
-                        if($('#inp-upper-amount-month').is(':enabled'))
-                            if(this.upperCheck()){
-                                if ($('#inp-upper-amount-month').ntsError("hasError")) {
-                                    $('#inp-upper-amount-month').ntsError('clear');
-                                }
-                            }
-
-                         // NUMBER DAY
-                        if($('#inp-upper-number-day').is(':enabled'))
-                            if(this.upperCheck()){
-                                if ($('#inp-upper-number-day').ntsError("hasError")) {
-                                    $('#inp-upper-number-day').ntsError('clear');
-                                }
-                            }
-                        // NUMBER MONTH
-                        if($('#inp-upper-number-month').is(':enabled'))
-                            if(this.upperCheck()){
-                                if ($('#inp-upper-number-month').ntsError("hasError")) {
-                                    $('#inp-upper-number-month').ntsError('clear');
-                                }
-                            }
                         this.lowerRequired(false);
                     }
                 });
-
-                // TIME DAY
-                this.timeUpperDay.subscribe((e)=>{
-                    if(this.lowerCheck()){
-                        if(!isNullOrUndefined(this.timeLowerDay())){
-                            if(parseInt(e.toString()) < parseInt(this.timeLowerDay().toString())){
-                                if (!$('#inp-upper-time-day').ntsError("hasError")){
-                                    $('#inp-upper-time-day').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }else {
-                                $('#inp-lower-time-day').ntsError('clear');
-                                $('#inp-upper-time-day').ntsError('clear');
-                            }
-                        }
-                    }
-                });
-                this.timeLowerDay.subscribe((e)=>{
-                    if(this.upperCheck()){
-                        if(!isNullOrUndefined(this.timeUpperDay())){
-                            if(parseInt(e.toString()) > parseInt(this.timeUpperDay().toString())){
-                                if (!$('#inp-lower-time-day').ntsError("hasError")){
-                                    $('#inp-lower-time-day').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }else {
-                                $('#inp-lower-time-day').ntsError('clear');
-                                $('#inp-upper-time-day').ntsError('clear');
-                            }
-
-                        }
-                    }
-                });
-
-                //TIME MONTH
-                this.timeUpperMonth.subscribe((e)=>{
-                    if(this.lowerCheck())
-                    {
-                        if(!isNullOrUndefined(this.timeLowerMonth())){
-                            if(parseInt(e.toString()) < parseInt(this.timeLowerMonth().toString())){
-                                if (!$('#inp-upper-time-month').ntsError("hasError")){
-                                    $('#inp-upper-time-month').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }else {
-                                $('#inp-lower-time-month').ntsError('clear');
-                                $('#inp-upper-time-month').ntsError('clear');
-                            }
-                        }
-                    }
-                });
-                this.timeLowerMonth.subscribe((e)=>{
-                    if(this.upperCheck())
-                    {
-                        if(!isNullOrUndefined(this.timeUpperMonth())){
-                            if(parseInt(e.toString()) > parseInt(this.timeUpperMonth().toString())){
-                                if (!$('#inp-lower-time-month').ntsError("hasError")){
-                                    $('#inp-lower-time-month').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }else {
-                                $('#inp-lower-time-month').ntsError('clear');
-                                $('#inp-upper-time-month').ntsError('clear');
-                            }
-                        }
-                    }
-                });
-
-                // AMOUNT DAY
-                this.amountUpperDay.subscribe((e)=>{
-                    if(this.lowerCheck())
-                    {
-                        if(!isNullOrUndefined(this.amountLowerDay())){
-                            if(parseInt(e.toString()) < parseInt(this.amountLowerDay().toString())){
-                                if (!$('#inp-upper-amount-day').ntsError("hasError")){
-                                    $('#inp-upper-amount-day').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }else {
-                                $('#inp-lower-amount-day').ntsError('clear');
-                                $('#inp-upper-amount-day').ntsError('clear');
-                            }
-                        }
-                    }
-                });
-                this.amountLowerDay.subscribe((e)=>{
-                    if(this.upperCheck())
-                    {
-                        if(!isNullOrUndefined(this.amountUpperDay())){
-                            if(parseInt(e.toString()) > parseInt(this.amountUpperDay().toString())){
-                                if (!$('#inp-lower-amount-day').ntsError("hasError")){
-                                    $('#inp-lower-amount-day').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }else {
-                                $('#inp-lower-amount-day').ntsError('clear');
-                                $('#inp-upper-amount-day').ntsError('clear');
-                            }
-                        }
-                    }
-                });
-
-                // AMOUNT MONTH
-                this.amountUpperMonth.subscribe((e)=>{
-                    if(this.lowerCheck())
-                    {
-                        if(!isNullOrUndefined(this.amountLowerMonth())){
-                            if(parseInt(e.toString()) < parseInt(this.amountLowerMonth().toString())){
-                                if (!$('#inp-upper-amount-month').ntsError("hasError"))
-                                {
-                                    $('#inp-upper-amount-month').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }else {
-                                $('#inp-lower-amount-month').ntsError('clear');
-                                $('#inp-upper-amount-month').ntsError('clear');
-                            }
-                        }
-                    }
-                });
-                this.amountLowerMonth.subscribe((e)=>{
-                    if(this.upperCheck())
-                    {
-                        if(!isNullOrUndefined(this.amountUpperMonth())){
-                            if(parseInt(e.toString()) > parseInt(this.amountUpperMonth().toString())){
-                                if (!$('#inp-lower-amount-month').ntsError("hasError"))
-                                {
-                                    $('#inp-lower-amount-month').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }else {
-                                $('#inp-lower-amount-month').ntsError('clear');
-                                $('#inp-upper-amount-month').ntsError('clear');
-                            }
-                        }
-                    }
-                });
-
-                // NUMBER DAY
-                this.numberUpperDay.subscribe((e)=>{
-                    if(this.lowerCheck())
-                    {
-                        if(!isNullOrUndefined(this.numberLowerDay())){
-                            if(parseInt(e.toString()) < parseInt(this.numberLowerDay().toString())){
-                                if (!$('#inp-upper-number-day').ntsError("hasError"))
-                                {
-                                    $('#inp-upper-number-day').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }else {
-                                $('#inp-lower-number-day').ntsError('clear');
-                                $('#inp-upper-number-day').ntsError('clear');
-                            }
-                        }
-                    }
-                });
-                this.numberLowerDay.subscribe((e)=>{
-                    if(this.upperCheck())
-                    {
-                        if(!isNullOrUndefined(this.numberUpperDay())){
-                            if(parseInt(e.toString()) > parseInt(this.numberUpperDay().toString())){
-                                if (!$('#inp-lower-number-day').ntsError("hasError"))
-                                {
-                                    $('#inp-lower-number-day').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }else {
-                                $('#inp-lower-number-day').ntsError('clear');
-                                $('#inp-upper-number-day').ntsError('clear');
-                            }
-                        }
-                    }
-                });
-
-                // NUMBER MONTH
-                this.numberUpperMonth.subscribe((e)=>{
-                    if(this.lowerCheck())
-                    {
-                        if(!isNullOrUndefined(this.numberLowerMonth())){
-                            if(parseInt(e.toString()) < parseInt(this.numberLowerMonth().toString())){
-                                if (!$('#inp-upper-number-month').ntsError("hasError"))
-                                {
-                                    $('#inp-upper-number-month').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }else {
-                                $('#inp-lower-number-month').ntsError('clear');
-                                $('#inp-upper-number-month').ntsError('clear');
-                            }
-                        }
-                    }
-                });
-
-                this.numberLowerMonth.subscribe((e)=>{
-                    if(this.upperCheck())
-                        if(!isNullOrUndefined(this.numberUpperMonth())){
-                            if(parseInt(e.toString()) > parseInt(this.numberUpperMonth().toString())){
-                                if (!$('#inp-lower-number-month').ntsError("hasError")){
-                                    $('#inp-lower-number-month').ntsError('set', { messageId: "Msg_574" });
-                                }
-                            }
-                        }else {
-                            $('#inp-lower-number-month').ntsError('clear');
-                            $('#inp-upper-number-month').ntsError('clear');
-                        }
-                });
-
             }
             /**
              * Check if limit range is set.
@@ -1805,7 +1399,49 @@ module nts.uk.at.view.kmk002.a {
                     }
                 }
             }
+            validateDomain(){
+                // TIME DAY
+                let self = this;
+                    if(self.lowerCheck() && self.upperCheck()){
+                        if(!isNullOrUndefined(self.timeLowerDay()) && !isNullOrUndefined(self.timeUpperDay())){
+                            if(parseInt(self.timeUpperDay().toString()) < parseInt(self.timeLowerDay().toString())){
+                            $('#inp-upper-time-day').ntsError('set', { messageId: "Msg_574" });
+                            $('#inp-lower-time-day').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.timeLowerMonth()) && !isNullOrUndefined(self.timeUpperMonth()) ){
+                            if(parseInt(self.timeUpperMonth().toString()) < parseInt(self.timeLowerMonth().toString())){
+                                    $('#inp-upper-time-month').ntsError('set', { messageId: "Msg_574" });
+                                    $('#inp-lower-time-month').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.amountLowerDay()) && !isNullOrUndefined(self.amountUpperDay())){
+                            if(parseInt(self.amountUpperDay().toString()) < parseInt(self.amountLowerDay().toString())){
+                                    $('#inp-upper-amount-day').ntsError('set', { messageId: "Msg_574" });
+                                    $('#inp-lower-amount-day').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.amountLowerMonth()) && !isNullOrUndefined(self.amountUpperMonth())){
+                            if(parseInt(self.amountUpperMonth().toString()) < parseInt(self.amountLowerMonth().toString())){
+                               $('#inp-upper-amount-month').ntsError('set', { messageId: "Msg_574" });
+                               $('#inp-lower-amount-month').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.numberLowerDay()) &&!isNullOrUndefined(self.numberUpperDay())){
+                            if(parseInt(self.numberUpperDay().toString()) < parseInt(self.numberLowerDay().toString())){
+                                    $('#inp-upper-number-day').ntsError('set', { messageId: "Msg_574" });
+                                    $('#inp-lower-number-day').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                        if(!isNullOrUndefined(self.numberLowerMonth()) && !isNullOrUndefined(self.numberUpperMonth())){
+                            if(parseInt(self.numberUpperMonth().toString()) < parseInt(self.numberLowerMonth().toString())){
+                                    $('#inp-upper-number-month').ntsError('set', { messageId: "Msg_574" });
+                                    $('#inp-lower-number-month').ntsError('set', { messageId: "Msg_574" });
+                            }
+                        }
+                    }
 
+            }
             /**
              * Reset to default value
              */
@@ -2278,6 +1914,7 @@ module nts.uk.at.view.kmk002.a {
 
                 // validate calculation result range input
                 self.optionalItem.calcResultRange.validateInput();
+                self.optionalItem.calcResultRange.validateDomain();
 
                 // check has error.
                 if ($('.nts-editor').ntsError('hasError')) {
