@@ -238,7 +238,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 							rs.getGeneralDate("END_DATE"),
 							Integer.valueOf(rs.getString("ROOT_TYPE")), Integer.valueOf(rs.getString("PHASE_ORDER")),
 							Integer.valueOf(rs.getString("APPROVAL_FORM")), Integer.valueOf(rs.getString("FRAME_ORDER")),
-							Integer.valueOf(rs.getString("CONFIRM_ATR")), rs.getString("APPROVER_CHILD_ID")));
+							rs.getBoolean("CONFIRM_ATR") ? 1 : 0, rs.getString("APPROVER_CHILD_ID")));
 
 
 		return listFullData;
@@ -671,7 +671,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 						rec.getString("ROOT_ID"), 
 						rec.getInt("PHASE_ORDER"), 
 						rec.getInt("FRAME_ORDER"),
-						rec.getInt("CONFIRM_ATR")));
+						rec.getBoolean("CONFIRM_ATR") ? 1 : 0));
 	}
 
 	@Override

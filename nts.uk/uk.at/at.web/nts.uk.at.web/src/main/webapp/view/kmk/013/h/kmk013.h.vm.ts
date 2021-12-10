@@ -20,6 +20,9 @@ module nts.uk.at.view.kmk013.h {
             itemListH9_2: KnockoutObservableArray<any>;
             selectedIdH9_2: KnockoutObservable<number>;
 
+            itemListH4_6: KnockoutObservableArray<any>;
+            selectedIdH4_6: KnockoutObservable<number>;
+
             goOutMaxUsage: KnockoutObservable<number>;
             selectedReasonGoOut: KnockoutObservable<number>;
             goOutReasonOptions: KnockoutObservableArray<any>;
@@ -57,6 +60,12 @@ module nts.uk.at.view.kmk013.h {
                 ]);
                 self.selectedIdH9_2 = ko.observable(0);
 
+                self.itemListH4_6 = ko.observableArray([
+                  new BoxModel(0, nts.uk.resource.getText("KMK013_576")),
+                  new BoxModel(1, nts.uk.resource.getText("KMK013_577"))
+                ]);
+                self.selectedIdH4_6 = ko.observable(0);
+
                 self.goOutMaxUsage = ko.observable(3);
                 self.selectedReasonGoOut = ko.observable(0);
                 self.goOutReasonOptions = ko.observableArray(__viewContext.enums.GoingOutReason);
@@ -69,7 +78,8 @@ module nts.uk.at.view.kmk013.h {
                 const self = this;
                 const dfd = $.Deferred();
                 blockUI.invisible();
-                $.when(service.findByCompanyId(), service.findUsageData()).done((stampData: any, usageData: any) => {
+                $.when(service.findByCompanyId(), service.findUsageData(), service.getCreatingDailyResultsCondition())
+                .done((stampData: any, usageData: any, isCreatingFutureDay: boolean) => {
                     if (stampData) {
                         self.selectedIdH3_2(stampData.autoStampReflectionClass);
                         self.selectedIdH4_2(stampData.autoStampForFutureDayClass);
@@ -85,7 +95,8 @@ module nts.uk.at.view.kmk013.h {
                     if (usageData.tempWorkManage) {
                       self.tempMaxUsage(usageData.tempWorkManage.maxUsage);
                       self.timeTreatTemporarySame(usageData.tempWorkManage.timeTreatTemporarySame);
-                    } 
+                    }
+                    self.selectedIdH4_6(isCreatingFutureDay ? 1 : 0);
                     self.isEnabledTempMaxUsage(usageData.tempWorkUseManageAtr === 1);
                     dfd.resolve();
                 }).fail(error => {
@@ -113,7 +124,7 @@ module nts.uk.at.view.kmk013.h {
                     actualStampOfPriorityClass: self.selectedIdH8_2(),
                     breakSwitchClass: self.selectedIdH9_2()
                 };
-                $.when(service.save(data), self.saveUsageData()).done(() => {
+                $.when(service.save(data), self.saveUsageData(), service.saveCreatingFutureDay(self.selectedIdH4_6())).done(() => {
                     nts.uk.ui.dialog.info({messageId: 'Msg_15'}).then(() => {
                         $("#h3_2").focus();
                     });
