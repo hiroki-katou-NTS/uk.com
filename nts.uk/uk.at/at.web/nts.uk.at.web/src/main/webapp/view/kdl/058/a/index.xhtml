@@ -12,20 +12,20 @@
 			<com:ValidatorScript>
 					nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.HolidayName
 				</com:ValidatorScript>
-			<com:stylefile path="ksm004.c.style.css" />
-			<com:scriptfile path="ksm004.c.service.js" />
-			<com:scriptfile path="ksm004.c.start.js" />
-			<com:scriptfile path="ksm004.c.vm.js" />
+			<com:stylefile path="kdl058.a.style.css" />
+			<com:scriptfile path="kdl058.a.service.js" />
+			<com:scriptfile path="kdl058.a.start.js" />
+			<com:scriptfile path="kdl058.a.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" data-bind="click : createButtonClick">#{i18n.getText('KSM004_60')}</button>
+				<button tabindex="1" data-bind="click : createButtonClick">#{i18n.getText('KDL058_2')}</button>
 				<button class="proceed" tabindex="2"
-					data-bind="click : registryButtonClick, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_1')}</button>
+					data-bind="click : registryButtonClick, enable: $root.errors.isEmpty">#{i18n.getText('KDL058_3')}</button>
 				<button class="danger" tabindex="3"
-					data-bind="click : removePublicHoliday , enable: !isCreate()">#{i18n.getText('KSM004_4')}</button>
-				<button tabindex="4" data-bind="click :  cancel_Dialog">#{i18n.getText('KSM004_59')}</button>
+					data-bind="click : removePublicHoliday , enable: !isCreate()">#{i18n.getText('KDL058_4')}</button>
+				<button tabindex="4" data-bind="click :  cancel_Dialog">#{i18n.getText('KDL058_5')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="container">
@@ -48,15 +48,15 @@
 					</div>
 					<div class="right-contents" data-bind="with: selectedPublicHoliday">
 						<div class="row1-right">
-							<label id="label-head">#{i18n.getText('KSM004_25')}</label>
+							<label id="label-head">#{i18n.getText('KDL058_9')}</label>
 						</div>
 						<div class="row2-right">
-							<div id="label2" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM004_26')}</div>
-							<div id="date" tabindex="7" data-bind="ntsDatePicker: {name : '#[KSM004_26]', value: date, inputFormat: 'YYYY/MM/DD', valueFormat: 'YYYYMMDD', enable: $parent.isCreate(), required: true}"></div>
+							<div id="label2" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL058_10')}</div>
+							<div id="date" tabindex="7" data-bind="ntsDatePicker: {name : '#[KDL058_10]', value: date, inputFormat: 'YYYY/MM/DD', valueFormat: 'YYYYMMDD', enable: $parent.isCreate(), required: true}"></div>
 						</div>
 						<div class="row3-right cf">
-							<div data-bind="ntsFormLabel: { constraint: 'HolidayName', required: true }">#{i18n.getText('KSM004_27')}</div>
-							<input id="name" tabindex="8" data-bind="ntsTextEditor: {value: holidayName, constraint: 'HolidayName', required: true , name : '#[KSM004_27]' }" />
+							<div data-bind="ntsFormLabel: { constraint: 'HolidayName', required: true }">#{i18n.getText('KDL058_11')}</div>
+							<input id="name" tabindex="8" data-bind="ntsTextEditor: {value: holidayName, constraint: 'HolidayName', required: true , name : '#[KDL058_11]' }" />
 						</div>
 					</div>
 				</div>

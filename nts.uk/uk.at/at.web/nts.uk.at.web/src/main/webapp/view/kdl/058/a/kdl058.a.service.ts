@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksm004.c.service {
+module nts.uk.at.view.kdl058.a.service {
     var paths: any = {
         getAllHoliday: "at/schedule/holiday/getAllHoliday",
         createPublicHoliday : "at/schedule/holiday/create",
@@ -19,7 +19,7 @@ module nts.uk.at.view.ksm004.c.service {
     }
 
     /** Delete PublicHoliday */
-    export function deletePublicHoliday(command): JQueryPromise<void> {
+    export function deletePublicHoliday(command: any): JQueryPromise<void> {
         return nts.uk.request.ajax("at", paths.deletePublicHoliday, command);
     }
 }

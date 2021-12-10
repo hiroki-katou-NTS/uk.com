@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksm004.c.viewmodel {
+module nts.uk.at.view.kdl058.a.viewmodel {
     import block = nts.uk.ui.block;
     export class ScreenModel {
         year: KnockoutObservable<number>;
@@ -13,7 +13,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
         isCreate: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
-            self.year = ko.observable(nts.uk.ui.windows.getShared('KSM004_C_PARAM').yearMonth);
+            self.year = ko.observable(nts.uk.ui.windows.getShared('KDL058_A_PARAM').yearMonth);
             self.year.subscribe((newValue) => {
                 self.findPublicHolidayByYear(newValue);
                 self.selectHolidayByIndex(0);
@@ -28,9 +28,9 @@ module nts.uk.at.view.ksm004.c.viewmodel {
                 self.findPublicHoliday(value);
             });
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KSM004_23"), key: 'date', hidden: true },
-                { headerText: nts.uk.resource.getText("KSM004_23"), key: 'displayDate', width: 85 },
-                { headerText: nts.uk.resource.getText("KSM004_24"), key: 'holidayName', width: 240, formatter: _.escape }
+                { headerText: nts.uk.resource.getText("KDL058_7"), key: 'date', hidden: true },
+                { headerText: nts.uk.resource.getText("KDL058_7"), key: 'displayDate', width: 85 },
+                { headerText: nts.uk.resource.getText("KDL058_8"), key: 'holidayName', width: 240, formatter: _.escape }
             ]);
             // Holiday Details
             self.selectedPublicHoliday = ko.observable(new PublicHolidayObs("", ""));
@@ -102,7 +102,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
         /** Select Holiday by Index: Start & Delete case */
         private selectHolidayByIndex(index: number) {
             var self = this;
-            var selectHolidayByIndex = _.nth(self.filterHolidays(), index);
+            var selectHolidayByIndex = self.filterHolidays()[index];
             if (selectHolidayByIndex !== undefined)
                 self.currentCode(selectHolidayByIndex.date);
             else
@@ -140,7 +140,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
             $(".nts-input").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 var publicHoliday = self.selectedPublicHoliday().toPublicHoliday();
-                nts.uk.ui.block.invisible();
+                block.invisible();
                 if (self.isCreate() === true) {
                     service.createPublicHoliday(publicHoliday).done((data) => {
                         self.getAllData().done(() => {
@@ -155,7 +155,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
                             $("#date").focus();
                         });
                     }).always(() => {
-                        nts.uk.ui.block.clear();
+                        block.clear();
                     });
                 }
                 else {
@@ -165,7 +165,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
                             $("#name").focus();
                         });
                     }).always(() => {
-                        nts.uk.ui.block.clear();
+                        block.clear();
                     });
                 }
             }
@@ -176,7 +176,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
             var self = this;
             if (self.currentCode() !== null) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
-                    nts.uk.ui.block.invisible();
+                    block.invisible();
                     service.deletePublicHoliday({ date: moment(self.selectedPublicHoliday().date()).format('YYYY/MM/DD') }).done(() => {
                         var index = _.findIndex(self.filterHolidays(), (item) => {
                             return item.date == self.currentCode();
@@ -190,9 +190,9 @@ module nts.uk.at.view.ksm004.c.viewmodel {
                             });
                         });
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                        (nts.uk.ui.dialog as any).alertError({ messageId: res.messageId });
                     }).always(() => {
-                        nts.uk.ui.block.clear();
+                        block.clear();
                     });
                 })
             }
