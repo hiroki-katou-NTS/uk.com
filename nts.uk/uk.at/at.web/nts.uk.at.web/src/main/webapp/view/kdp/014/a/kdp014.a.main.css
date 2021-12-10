@@ -1,4 +1,8 @@
-
+.A_4{
+    padding-left: 7px;
+    border-top: 23px solid transparent;
+    border-bottom: 36px solid transparent;
+}
 .A_4 span {
     width: 140px;
 } 
@@ -9,15 +13,19 @@ table span{
 tr {
     padding: 10px;
 }
-#A1_1.disabled {
-	opacity: 0.3;
-	pointer-events: none;
-}
-#A1_2.disabled {
-	opacity: 0.3;
-	pointer-events: none;
+
+.disabled {
+	/* opacity: 0.3;
+	pointer-events: none; */
+    pointer-events: none;
+    
 }
 
-.A_4.disabled {
-    display: none;
+.content tr {
+    border-top: 17px solid transparent;
+    border-bottom: 14px solid transparent;
+}
+
+.rd2 label.radio-wrapper:nth-child(2) span {
+    width: 125px !important;
 }

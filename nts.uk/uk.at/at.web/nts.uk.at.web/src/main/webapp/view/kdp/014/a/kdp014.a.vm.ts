@@ -3,10 +3,12 @@
 module nts.uk.at.view.kdp014.a {
   
   import block  = nts.uk.ui.block;
-
+  import dialog = nts.uk.ui.dialog.info;
   const API = {
     INSERT_UPDATE_STAMPING_SETTING: "at/record/stampmanagement/setting/preparation/smartphonestamping/employee/insertUpdateStampingSetting",
-    GET_STATUS_STAMPING_EMP: "at/record/stampmanagement/setting/preparation/smartphonestamping/employee/getStatusStampingEmpl"
+    GET_STATUS_STAMPING_EMP: "at/record/stampmanagement/setting/preparation/smartphonestamping/employee/getStatusStampingEmpl",
+    GET_ONE_BY_EMPID: "at/record/stampmanagement/setting/preparation/smartphonestamping/employee/findOneById",
+    REMOVESTAMP: "at/record/stampmanagement/setting/preparation/smartphonestamping/employee/delete"
   };
 
   @bean()
@@ -14,18 +16,19 @@ module nts.uk.at.view.kdp014.a {
 
 selectedDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
 listComponentOption: any;
-alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([new UnitAlreadySettingModel("設定済", true)]);
+alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
 isShowWorkPlaceName: KnockoutObservable<boolean> = ko.observable(false);
 
 employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
 selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
 selectedEmployeeCode : KnockoutObservable<string> = ko.observable(null);
 selectedEmployeeName :  KnockoutObservable<string> = ko.observable(null);
+listEmplId : KnockoutObservableArray<string> = ko.observableArray([]);
 // Radio 
 itemList: KnockoutObservableArray<any>;
 selectedId: KnockoutObservable<number>;
-enable: KnockoutObservable<boolean>;
-
+enableLocation: KnockoutObservable<boolean>;
+enableStamp:KnockoutObservable<boolean>;
 itemList2: KnockoutObservableArray<any>;
 selectedId2: KnockoutObservable<number>;
 NEW_MODE = 1;
@@ -39,17 +42,18 @@ created() {
   // Radio
   self.itemList = ko.observableArray([
     new BoxModel(1, nts.uk.resource.getText('KDP014_7')),
-    new BoxModel(2, nts.uk.resource.getText('KDP014_8')),
+    new BoxModel(0, nts.uk.resource.getText('KDP014_8')),
   ]);
   self.selectedId = ko.observable(null);
-  self.enable = ko.observable(true);
+  self.enableLocation = ko.observable(false);
 
   self.itemList2 = ko.observableArray([
-    new BoxModel(1, nts.uk.resource.getText('KDP014_10')),
-    new BoxModel(2, nts.uk.resource.getText('KDP014_11')),
-    new BoxModel(3, nts.uk.resource.getText('KDP014_12'))
+    new BoxModel(2, nts.uk.resource.getText('KDP014_10')),
+    new BoxModel(1, nts.uk.resource.getText('KDP014_11')),
+    new BoxModel(0, nts.uk.resource.getText('KDP014_12'))
   ])
-  self.selectedId2 = ko.observable(1);
+  self.selectedId2 = ko.observable(null);
+  self.enableStamp = ko.observable(false);
 
   const data = {
     employeeId: '000000000003',
@@ -119,34 +123,51 @@ created() {
   self.selectedEmployeeCode.subscribe(newValue => {
     if (!nts.uk.text.isNullOrEmpty(newValue)) {
         self.getDetail(self.selectedEmployeeCode());
-    } else {
-       
-    }
+    } 
 });
 
-
- 
 self.mode.subscribe(function(value) {
   if(self.isStart == true){
-    $( "#A1_1" ).addClass("disabled");
-    $( "#A1_2" ).addClass("disabled");
-    $(".A_4").addClass("disabled");
-    $(".A_5").hide();
-    $(".rd1").hide();
-    $(".rd2").hide();
+    self.enableLocation(false);
+  }else {
+    self.enableLocation(true);
   }
-  else {
-    $( "#A1_1" ).removeClass("disabled");
-    $( "#A1_2" ).removeClass("disabled");
-    $(".A_4").removeClass("disabled");
-    $(".A_5").show();
-    $(".rd1").show();
-    $(".rd2").show();
+
+});
+
+self.selectedId.subscribe(function(value){
+  if(self.selectedId() == 1 ){
+    self.enableStamp(true);
+    self.selectedId2(0);
+  }
+  if(self.selectedId() == 0)  {
+    self.selectedId2(null);
+     self.enableStamp(true);
   }
 });
 self.mode(self.UNSELECT_MODE);
 }
 
+register() {
+  const self = this;
+
+  const data = {
+    employeeId: self.selectedEmployeeCode(),
+    locationInformation: self.selectedId(),
+    isLimitArea: self.selectedId2()
+  };
+
+  self.$ajax(API.INSERT_UPDATE_STAMPING_SETTING,data).then((res: any) => {
+      if(res){
+        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+        self.selectedId(res.isLimitArea);
+        self.selectedId2(res.locationInformation);
+       
+      }
+  });
+  self.getAll();
+ 
+}
 
 getDetail(employmentCategoryCode: string) {
   const self = this;
@@ -155,12 +176,23 @@ getDetail(employmentCategoryCode: string) {
   let employeeModel: UnitModel = _.find(self.employeeList(), item => {
       return item.code === employmentCategoryCode;
   });
+  const data = {
+    employeeId: employeeModel.code
+  };
+  self.$ajax(API.GET_ONE_BY_EMPID, data).then((res: any) => {
+    if (res) {
+      self.selectedId(res.isLimitArea);
+      self.selectedId2(res.locationInformation);
+    } else {
+      self.selectedId(0);
+      self.selectedId2(0);
+    }
+    self.isStart = false;
+    self.selectedEmployeeCode(employeeModel.code);
+    self.selectedEmployeeName(employeeModel.name);
+    self.mode(self.UPDATE_MODE);
+  });
   
-  self.isStart = false;
-  self.selectedEmployeeCode(employeeModel.code);
-  self.selectedEmployeeName(employeeModel.name);
-  self.mode(self.UPDATE_MODE);
-
 }
 
 applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
@@ -172,26 +204,86 @@ applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
       code: employeeSearch.employeeCode,
       name: employeeSearch.employeeName
     };
+    self.listEmplId.push(employeeSearch.employeeCode);
     employeeSearchs.push(employee);
   }
-  self.employeeList(employeeSearchs);
-  self.listComponentOption = {
-    isShowAlreadySet: true,
-    listType: ListType.EMPLOYEE,
-    employeeInputList: self.employeeList,
-    selectType: SelectType.SELECT_BY_SELECTED_CODE,
-    selectedCode: self.selectedEmployeeCode,
-    isDialog: false,
-    alreadySettingList: self.alreadySettingList,
-    maxWidth: 450,
-    maxRows: 20
-  };
-  $('#kcp005component').ntsListComponent(self.listComponentOption);
-  self.start();
+  self.$ajax(API.GET_STATUS_STAMPING_EMP, self.listEmplId()).then((res: []) => {
+    self.alreadySettingList.removeAll();
+    res.forEach(item => {
+      self.alreadySettingList.push({
+        code: item,
+        isAlreadySetting: true
+      })
+    });
+    self.employeeList(employeeSearchs);
+    self.listComponentOption = {
+      isShowAlreadySet: true,
+      listType: ListType.EMPLOYEE,
+      employeeInputList: self.employeeList,
+      selectType: SelectType.SELECT_BY_SELECTED_CODE,
+      selectedCode: self.selectedEmployeeCode,
+      isDialog: false,
+      alreadySettingList: self.alreadySettingList,
+      maxWidth: 450,
+      maxRows: 20
+    };
+    $('#kcp005component').ntsListComponent(self.listComponentOption);
+    self.start();
+  });
+  
 }
 
+getAll(){
+  const self = this;
+  self.$ajax(API.GET_STATUS_STAMPING_EMP, self.listEmplId()).then((res: []) => {
+    self.alreadySettingList.removeAll();
+    res.forEach(item => {
+      self.alreadySettingList.push({
+        code: item,
+        isAlreadySetting: true
+      })
+    });
+    // self.employeeList(employeeSearchs);
+    self.listComponentOption = {
+      isShowAlreadySet: true,
+      listType: ListType.EMPLOYEE,
+      employeeInputList: self.employeeList,
+      selectType: SelectType.SELECT_BY_SELECTED_CODE,
+      selectedCode: self.selectedEmployeeCode,
+      isDialog: false,
+      alreadySettingList: self.alreadySettingList,
+      maxWidth: 450,
+      maxRows: 20
+    };
+    $('#kcp005component').ntsListComponent(self.listComponentOption);
+    self.start();
+  });
+}
 
+public remove() {
+  const vm = this;
+  const data = {
+    employeeId: vm.selectedEmployeeCode()
+  };
+  vm.$dialog.confirm({ messageId: "Msg_18" })
+    .then((result: 'no' | 'yes' | 'cancel') => {
+      if (result === 'yes') {
+        vm.$blockui('grayout');
+        vm.$ajax(API.REMOVESTAMP,data).then((res: any)  => {
+            vm.$blockui('clear');
+            vm.getAll();
+            vm.selectedId(3);
+            vm.selectedId2(3);
+            vm.$dialog.info({ messageId: "Msg_16" });
 
+          })
+          .fail((res) => {
+            vm.$blockui('clear');
+            vm.$dialog.alert({ messageId: res.messageId });
+          });
+      }
+    });
+}
 
 start(): JQueryPromise<any> {
   let self = this;
@@ -202,7 +294,7 @@ start(): JQueryPromise<any> {
   $("#A4_2").focus();
   return dfd.promise();
 }
-  }
+}
 
   // Note: Defining these interfaces are optional
   export interface GroupOption {
@@ -299,15 +391,15 @@ returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
     isAlreadySetting: boolean;
   }
 
-  export class UnitAlreadySettingModel {
-    code: string;
-    isAlreadySetting: boolean;
-    constructor(code: string, isAlreadySetting: boolean){
-      var self = this;
-      self.code = code;
-      self.isAlreadySetting = isAlreadySetting;
-    }
-  }
+  // export class UnitAlreadySettingModel {
+  //   code: string;
+  //   isAlreadySetting: boolean;
+  //   constructor(code: string, isAlreadySetting: boolean){
+  //     var self = this;
+  //     self.code = code;
+  //     self.isAlreadySetting = isAlreadySetting;
+  //   }
+  // }
 
   class BoxModel {
     id: number;

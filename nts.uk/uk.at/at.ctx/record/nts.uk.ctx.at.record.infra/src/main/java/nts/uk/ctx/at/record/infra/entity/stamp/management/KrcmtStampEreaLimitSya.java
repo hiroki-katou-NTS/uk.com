@@ -3,15 +3,17 @@ package nts.uk.ctx.at.record.infra.entity.stamp.management;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaLimit;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 @Entity
@@ -27,6 +29,9 @@ import nts.uk.shr.com.context.AppContexts;
 public class KrcmtStampEreaLimitSya implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	@EmbeddedId
+	public KrcmStampEreaLimitSyaPK PK;
 	/** 契約コード */
 	@NotNull
 	@Column(name = "CONTRACT_CD")
@@ -37,34 +42,30 @@ public class KrcmtStampEreaLimitSya implements Serializable {
 	@Column(name = "CID")
 	private String cId;
 	
-	/** 社員ID */
-	@Id
-	@NotNull
-	@Column(name = "SID")
-	private String sId;
-	
 	/** 位置情報を利用する */
 	@NotNull
-	@Column(name = "LOCATION_INFO_USE", columnDefinition ="0")
+	@Column(name = "LOCATION_INFO_USE")
 	private int locationInforUse;
 	
 	/** 制限方法 */
 	@NotNull
-	@Column(name = "AREA_LIMIT_ATR",columnDefinition ="0")
+	@Column(name = "AREA_LIMIT_ATR")
 	private int areaLimitAtr;
 
-	
 	public StampingAreaRestriction toDomain() {
-		StampingAreaRestriction areaRestriction = new StampingAreaRestriction(this.areaLimitAtr, this.locationInforUse);
+		 NotUseAtr locationInforUse = NotUseAtr.toEnum(this.locationInforUse);
+		 StampingAreaLimit areaLimitAtr = StampingAreaLimit.toEnum(this.areaLimitAtr);
+		StampingAreaRestriction areaRestriction = new StampingAreaRestriction(locationInforUse,areaLimitAtr);
 		return areaRestriction;
 	}
 	public static KrcmtStampEreaLimitSya toEntity(String emplId,StampingAreaRestriction stampingAreaRestriction) {
 		String contractCd = AppContexts.user().contractCode();
 		String cId = AppContexts.user().companyId();
 		KrcmtStampEreaLimitSya krcmtStampEreaLimitSya = new KrcmtStampEreaLimitSya();
+		KrcmStampEreaLimitSyaPK ereaLimitSyaPK = new KrcmStampEreaLimitSyaPK(emplId);
 		krcmtStampEreaLimitSya.setContractCd(contractCd);
 		krcmtStampEreaLimitSya.setCId(cId);
-		krcmtStampEreaLimitSya.setSId(emplId);
+		krcmtStampEreaLimitSya.setPK(ereaLimitSyaPK);
 		krcmtStampEreaLimitSya.setAreaLimitAtr(stampingAreaRestriction.getStampingAreaLimit().value);
 		krcmtStampEreaLimitSya.setLocationInforUse(stampingAreaRestriction.getUseLocationInformation().value);
 		return krcmtStampEreaLimitSya;

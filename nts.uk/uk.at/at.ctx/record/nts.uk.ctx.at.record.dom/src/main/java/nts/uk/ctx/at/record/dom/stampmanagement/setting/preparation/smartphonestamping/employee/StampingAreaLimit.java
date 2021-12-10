@@ -10,23 +10,22 @@ import nts.arc.enums.EnumAdaptor;
 public enum StampingAreaLimit {
 	
 	/** エリア制限しない */
-	NO_AREA_RESTRICTION(0, "Enum_UseClassificationAtr_NOT_USE"),
+	NO_AREA_RESTRICTION(0),
 
 	/** エリア内のみ許可 */
-	ALLOWED_ONLY_WITHIN_THE_AREA(1, "Enum_UseClassificationAtr_USE"),
+	ALLOWED_ONLY_WITHIN_THE_AREA(1),
 	
 	/** 所属職場のみ許可 */
-	ONLY_THE_WORKPLACE_BELONG_ALLOWED(2, "Enum_UseClassificationAtr_USE");
+	ONLY_THE_WORKPLACE_BELONG_ALLOWED(2);
 
 	/** The value. */
 	public final int value;
 
 	/** The name id. */
-	public final String nameId;
 	
-	private StampingAreaLimit(int value, String nameId) {
+	private StampingAreaLimit(int value) {
 		this.value = value;
-		this.nameId = nameId;
+		
 	}
 	public static StampingAreaLimit toEnum(int value){
 		return EnumAdaptor.valueOf(value, StampingAreaLimit.class);

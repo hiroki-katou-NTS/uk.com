@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import nts.uk.ctx.at.record.app.command.stampmanagement.setting.preparation.smartphonestamping.employee.DeleteStampingAreaRestrictionCommand;
 import nts.uk.ctx.at.record.app.command.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestrictionCommand;
 import nts.uk.ctx.at.record.app.command.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestrictionCommandHandler;
+import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartphonestamping.employee.StampingSettingEmplFindOneQuery;
 import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartphonestamping.employee.StampingSettingEmployeeQuery;
 
 @Path("at/record/stampmanagement/setting/preparation/smartphonestamping/employee")
@@ -24,10 +25,14 @@ public class StampingAreaRestrictionWS {
 	@Inject 
 	private StampingSettingEmployeeQuery stampingSettingEmployeeQuery;
 	
+	@Inject
+	private StampingSettingEmplFindOneQuery emplFindOneQuery;
+	
 	@POST
 	@Path("insertUpdateStampingSetting")
-	public void insert(StampingAreaRestrictionCommand areaRestrictionCommand) {
-		this.stampingAreaRestrictionCommandHandler.handle(areaRestrictionCommand);
+	public Boolean  insert(StampingAreaRestrictionCommand areaRestrictionCommand) {
+		 this.stampingAreaRestrictionCommandHandler.handle(areaRestrictionCommand);
+		 return true;
 	}
 	
 	@POST
@@ -40,6 +45,12 @@ public class StampingAreaRestrictionWS {
 	@Path("delete")
 	public void delete(StampingAreaRestrictionCommand command) {
 		this.seleteStampingAreaRestrictionCommand.handle(command);
+	}
+	
+	@POST
+	@Path("findOneById")
+	public StampingAreaRestrictionCommand findOneById (StampingAreaRestrictionCommand areaRestrictionCommand) {
+		return this.emplFindOneQuery.getStatuEmployee(areaRestrictionCommand.getEmployeeId());
 	}
 	
 }

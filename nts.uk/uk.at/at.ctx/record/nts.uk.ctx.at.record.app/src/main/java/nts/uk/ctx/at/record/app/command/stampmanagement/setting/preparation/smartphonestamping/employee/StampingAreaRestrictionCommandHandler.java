@@ -18,12 +18,14 @@ public class StampingAreaRestrictionCommandHandler extends CommandHandler<Stampi
 	@Override
 	protected void handle(CommandHandlerContext<StampingAreaRestrictionCommand> context) {
 		StampingAreaRestrictionCommand areaRestrictionCommand = context.getCommand();
-		Optional<StampingAreaRestriction> result = workLocationRepository.findByEmployeeId(areaRestrictionCommand.getEmployeeId());
-		if (result.isPresent()) {
-			workLocationRepository.updateStampingArea(areaRestrictionCommand.getEmployeeId(), areaRestrictionCommand.toDomain());
-		}else {	
+			Optional<StampingAreaRestriction> result = workLocationRepository.findByEmployeeId(areaRestrictionCommand.getEmployeeId());
+			if (result.isPresent()) {
+				workLocationRepository.updateStampingArea(areaRestrictionCommand.getEmployeeId(), areaRestrictionCommand.toDomain());
+			}
+		else {	
 			workLocationRepository.insertStampingArea(areaRestrictionCommand.getEmployeeId(),areaRestrictionCommand.toDomain());
 		}
+	
 	}
 
 }

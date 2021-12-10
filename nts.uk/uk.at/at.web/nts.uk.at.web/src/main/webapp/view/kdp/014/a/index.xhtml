@@ -20,8 +20,8 @@
 
 		<ui:define name="content">
 		<div id="functions-area">
-			<button id="A1_1" class="proceed" >#{i18n.getText('KDP014_2')}</button>
-			<button id="A1_2" class="danger" >#{i18n.getText('KDP014_3')}</button>
+			<button id="A1_1" class="proceed" data-bind="click: register, enable:enableLocation" >#{i18n.getText('KDP014_2')}</button>
+			<button id="A1_2" class="danger" data-bind="click: remove, enable:enableLocation" >#{i18n.getText('KDP014_3')}</button>
 		</div>
 		<div id="contents-area">
 			<div id="ccg001component"></div>
@@ -34,19 +34,19 @@
 						<span class="label" data-bind="text: selectedEmployeeCode"></span>
                         <span class="label" data-bind="text: selectedEmployeeName"></span>
 					</div>
-					<div class="A_5" style="margin-bottom: 15px;">#{i18n.getText('KDP014_5')}</div>
-						<table>
+					<div class="A_5">#{i18n.getText('KDP014_5')}</div>
+						<table class="content" style=" margin-left: 14px;">
 							<tr>
 								<td>
 									<div class="rd1" data-bind="ntsFormLabel1: {}">#{i18n.getText('KDP014_6')}</div>
 								</td>
 								<td>
-									<div class="rd1" data-bind="ntsRadioBoxGroup: {
+									<div class="rd1 " data-bind="ntsRadioBoxGroup: {
 										options: itemList,
 										optionsValue: 'id',
 										optionsText: 'name',
 										value: selectedId,
-										enable: enable}" style="margin-left: 20px;">
+										enable: enableLocation}" style="margin-left: 20px;">
 									</div>
 								</td>
 							</tr>
@@ -55,12 +55,12 @@
 									<div class="rd2" data-bind="ntsFormLabel2: {}">#{i18n.getText('KDP014_9')}</div>
 								</td>
 								<td>
-									<div class="rd2" data-bind="ntsRadioBoxGroup: {
+									<div class="rd2 " data-bind="ntsRadioBoxGroup: {
 										options: itemList2,
 										optionsValue: 'id',
 										optionsText: 'name',
 										value: selectedId2,
-										enable: enable}" style="margin-left: 20px;">
+										enable: enableStamp}" style="margin-left: 20px;">
 									</div>
 								</td>
 							</tr>

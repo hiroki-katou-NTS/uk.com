@@ -14,7 +14,7 @@ public interface WorkLocationReposiroty {
 	
 	Optional<StampingAreaRestriction> findByEmployeeId (String employId);
 	
-	void updateStampingArea(String emplId,StampingAreaRestriction areaRestriction);
+	Boolean updateStampingArea(String emplId,StampingAreaRestriction areaRestriction);
 	
 	List<String> getStatusStampingEmpl(List<String>listEmplId);
 	

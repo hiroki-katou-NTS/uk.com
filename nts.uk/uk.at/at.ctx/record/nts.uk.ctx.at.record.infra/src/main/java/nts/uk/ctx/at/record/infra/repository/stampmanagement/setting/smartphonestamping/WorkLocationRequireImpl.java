@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.infra.repository.worklocation.JpaWorkLocationReposit
 @Stateless
 public class WorkLocationRequireImpl extends JpaRepository implements WorkLocationReposiroty {
 	private JpaWorkLocationRepository jpaWorkLocationRepository;
-	private static final String SELECT_SINGLE = "SELECT c FROM KrcmtStampEreaLimitSya c WHERE c.sId = :employId";
+	private static final String SELECT_SINGLE = "SELECT c FROM KrcmtStampEreaLimitSya c WHERE c.PK.sId = :employId";
 	@Override
 	public List<WorkLocation> findAll(String contractCode) {
 		List<WorkLocation> result = jpaWorkLocationRepository.findAll(contractCode);
@@ -43,7 +43,7 @@ public class WorkLocationRequireImpl extends JpaRepository implements WorkLocati
 	}
 
 	@Override
-	public void updateStampingArea(String emplId,StampingAreaRestriction areaRestriction) {
+	public Boolean updateStampingArea(String emplId,StampingAreaRestriction areaRestriction) {
 		Optional<KrcmtStampEreaLimitSya> oldData = this.queryProxy().query(SELECT_SINGLE, KrcmtStampEreaLimitSya.class).setParameter("employId", emplId)
 				.getSingle();
 		if (oldData.isPresent()) {
@@ -51,7 +51,9 @@ public class WorkLocationRequireImpl extends JpaRepository implements WorkLocati
 			oldData.get().setAreaLimitAtr(newData.getAreaLimitAtr());
 			oldData.get().setLocationInforUse(newData.getLocationInforUse());
 			this.commandProxy().update(oldData.get());
+			return true;
 		}
+		return false;
 	}
 
 	@Override

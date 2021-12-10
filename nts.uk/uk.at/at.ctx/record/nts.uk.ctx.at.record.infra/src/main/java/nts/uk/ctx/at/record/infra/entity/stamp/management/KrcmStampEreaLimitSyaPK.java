@@ -7,9 +7,11 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Embeddable
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 /**
@@ -21,8 +23,8 @@ public class KrcmStampEreaLimitSyaPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	/** 会社ID */
+	/** 社員ID */
 	@NotNull
-	@Column(name = "CID")
-	private String cId;
+	@Column(name = "SID")
+	private String sId;
 }

@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction.Require;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
@@ -14,8 +16,9 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
  *
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
-public class EmployeeStampingAreaRestrictionSetting {
+public class EmployeeStampingAreaRestrictionSetting extends AggregateRoot {
 	
 	// 社員ID
 	private final String employeeId;

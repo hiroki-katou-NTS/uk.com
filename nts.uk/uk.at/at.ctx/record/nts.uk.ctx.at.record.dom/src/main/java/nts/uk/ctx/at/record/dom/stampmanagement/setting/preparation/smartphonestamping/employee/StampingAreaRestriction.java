@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.persistence.internal.xr.ValueObject;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 @AllArgsConstructor
 @Getter
 @Setter
-public class StampingAreaRestriction  {
+public class StampingAreaRestriction extends ValueObject {
 
 	private final NotUseAtr useLocationInformation;
 
@@ -36,34 +38,35 @@ public class StampingAreaRestriction  {
 	 *
 	 * @return the work location
 	 */
-	public StampingAreaRestriction(int useLocationInformation, int stampingAreaLimit) {
-		
-		this.useLocationInformation =NotUseAtr.toEnum(useLocationInformation);
-		this.stampingAreaLimit = StampingAreaLimit.toEnum(stampingAreaLimit) ;
-	}
-	
+
 	public Optional<WorkLocation> checkAreaStamp(Require require, String contractCd, String companyId,
-			String employeeId, Optional<GeoCoordinate> positionInfor) {
+												 String employeeId, Optional<GeoCoordinate> positionInfor) {
 		Optional<WorkLocation> workLocation = null;
 		List<WorkLocation> listWorkLocation = new ArrayList<>();
 		if (useLocationInformation == NotUseAtr.NOT_USE) {
 			return Optional.empty();
 		}
+		
 		if (!positionInfor.isPresent()) {
 			throw new BusinessException("Msg_2096");
 		}
+		
 		if (stampingAreaLimit == StampingAreaLimit.ONLY_THE_WORKPLACE_BELONG_ALLOWED) {
 			// $場所一覧 = [prv-1] 所属職場に紐づける勤務場所を特定する(require,契約コード,会社ID,社員ID,打刻位置)
 			listWorkLocation = identifyWorkLocation(require, contractCd, companyId, employeeId, positionInfor);
 		} else {
 			// $場所一覧 = require.全ての勤務場所を取得する(契約コード)
 			listWorkLocation = require.findAll(contractCd);
-			workLocation = listWorkLocation.stream().sorted(Comparator.comparing(WorkLocation::getWorkLocationCD))
-					.filter(c -> c.canStamptedByMobile(positionInfor.get())).findFirst();
-			if (stampingAreaLimit != StampingAreaLimit.NO_AREA_RESTRICTION && !workLocation.isPresent()) {
-				throw new BusinessException("Msg_2095");
-			}
 		}
+		workLocation = listWorkLocation.stream()
+				.sorted(Comparator.comparing(WorkLocation::getWorkLocationCD))
+				.filter(c -> c.canStamptedByMobile(positionInfor.get()))
+				.findFirst();
+		
+		if (stampingAreaLimit != StampingAreaLimit.NO_AREA_RESTRICTION && !workLocation.isPresent()) {
+			throw new BusinessException("Msg_2095");
+		}
+		
 		return workLocation;
 	}
 
@@ -73,6 +76,9 @@ public class StampingAreaRestriction  {
 		val baseDate = GeneralDate.today();
 		Optional<WorkLocation> location = require.getWorkPlaceOfEmpl(employeeId, baseDate);
 		String workpalceId = location.flatMap(t -> t.getWorkplace()).map(t -> t.getWorkpalceId()).orElse("");
+		if (workpalceId.isEmpty()) {
+			throw new BusinessException("Msg_427");
+		}
 		return require.findByWorkPlace(contractCd, companyId, workpalceId);
 	}
 
