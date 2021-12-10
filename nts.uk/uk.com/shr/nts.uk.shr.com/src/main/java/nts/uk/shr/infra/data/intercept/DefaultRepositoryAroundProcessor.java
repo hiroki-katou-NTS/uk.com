@@ -39,6 +39,10 @@ public class DefaultRepositoryAroundProcessor implements RepositoryAroundProcess
 
 	private static boolean isConnectionError(Exception e) {
 		String message = e.getMessage();
+		if (message == null) {
+			return false;
+		}
+
 		boolean connectionError
 				= message.contains("Transaction cannot proceed: STATUS_MARKED_ROLLBACK")
 				|| message.contains("This connection has been closed")
