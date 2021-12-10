@@ -1075,7 +1075,6 @@ public class ScheduleCreatorExecutionTransaction {
 						&& optEmploymentInfo.get().getOptTempAbsenceFrameNo().isPresent()) {
 					lstWorkType = workTypeRepository.findHolidayWorkTypeClo(command.getCompanyId(),
 							DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-							//ScheManaStatus.ON_LEAVE = WorkTypeClassification.LeaveOfAbsence, ScheManaStatus.CLOSED = WorkTypeClassification.Closure
 							optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE ? 12 : 13, 
 							optEmploymentInfo.get().getOptTempAbsenceFrameNo().get().v().intValue() - 2); // CloseAtr
 				}

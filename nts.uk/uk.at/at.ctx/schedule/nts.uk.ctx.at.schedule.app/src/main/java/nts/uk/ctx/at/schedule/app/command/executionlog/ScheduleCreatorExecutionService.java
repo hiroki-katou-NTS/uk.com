@@ -68,6 +68,8 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -181,6 +183,9 @@ public class ScheduleCreatorExecutionService {
 	private EmploymentHisScheduleAdapter scheAdapter;
 	
 	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+	
+	@Inject
 	protected TransactionService transactionService;
 
 	/** The Constant DEFAULT_CODE. */
@@ -281,7 +286,7 @@ public class ScheduleCreatorExecutionService {
 	 * @param context
 	 */
 	private void registerPersonalSchedule(ScheduleCreatorExecutionCommand command,
-			ScheduleExecutionLog scheduleExecutionLog, 
+			ScheduleExecutionLog scheduleExecutionLog,
 			@SuppressWarnings("rawtypes") Optional<AsyncCommandHandlerContext> asyncTask,
 			String companyId) {
 
@@ -302,10 +307,10 @@ public class ScheduleCreatorExecutionService {
 		CacheCarrier carrier = new CacheCarrier();
 		this.parallel.forEach(
 				scheduleCreators.stream().sorted((a,b) -> a.getEmployeeId().compareTo(b.getEmployeeId())).collect(Collectors.toList()),
-				scheduleCreator -> {
-					
-			transactionService.execute(() -> createScheOnePerson(command, scheduleExecutionLog, asyncTask, companyId, exeId, period, masterCache,
-					companySetting, checkStop, carrier, scheduleCreator));
+				scheduleCreator -> {					
+					transactionService.execute(() -> createScheOnePerson(command, scheduleExecutionLog, asyncTask, companyId, exeId, period, masterCache,
+						companySetting, checkStop, carrier, scheduleCreator));
+
 		});
 
 		transactionService.execute(() -> postExecute(command, scheduleExecutionLog, asyncTask, exeId, companySetting));
@@ -494,7 +499,7 @@ public class ScheduleCreatorExecutionService {
 			for (val date : period.datesBetween()) {
 				// 「社員の予定管理状態」を取得する
 				// 「Output」・社員の予定管理状態一覧
-				EmployeeWorkingStatus.Require require = new ScheManaStatuTempoImpl(companyId, comHisAdapter,
+				EmployeeWorkingStatus.Require require = new EmployeeWorkingStatusRequireImpl(companyId, comHisAdapter,
 						conditionRespo, empHisAdapter, leaHisAdapter, scheAdapter);
 				EmployeeWorkingStatus manaStatuTempo = EmployeeWorkingStatus.create(require, id, date);
 				lstStatuTempos.add(manaStatuTempo);
@@ -702,8 +707,10 @@ public class ScheduleCreatorExecutionService {
 	}
 
 	@AllArgsConstructor
-	public static class ScheManaStatuTempoImpl implements EmployeeWorkingStatus.Require {
+	public class EmployeeWorkingStatusRequireImpl implements EmployeeWorkingStatus.Require {
+
 		String companyId = AppContexts.user().companyId();
+
 		@Inject
 		private EmpComHisAdapter comHisAdapter;
 
@@ -718,6 +725,7 @@ public class ScheduleCreatorExecutionService {
 
 		@Inject
 		private EmploymentHisScheduleAdapter scheAdapter;
+
 
 		@Override
 		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(String employeeId, GeneralDate date) {
@@ -756,5 +764,12 @@ public class ScheduleCreatorExecutionService {
 				return Optional.empty();
 			return Optional.of(result.get(0));
 		}
+
+
+		@Override
+		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
+			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
+		}
+
 	}
 }
