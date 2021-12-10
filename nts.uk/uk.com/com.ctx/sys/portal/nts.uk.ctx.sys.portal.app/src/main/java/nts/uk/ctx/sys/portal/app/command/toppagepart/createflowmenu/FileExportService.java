@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -41,6 +40,8 @@ public class FileExportService extends ExportService<FileExportCommand> {
 
 	@Inject
 	private StoredFileStreamService fileStreamService;
+	
+	public static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
 
 	@Override
 	protected void handle(ExportServiceContext<FileExportCommand> context) {
@@ -58,15 +59,6 @@ public class FileExportService extends ExportService<FileExportCommand> {
 		applicationTemporaryFilesContainer.removeContainer();
 	}
 
-<<<<<<< HEAD
-	public ExtractionResponseDto extract(String fileId) throws IOException {
-		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
-		Path destinationDirectory = Paths.get(new FileStoragePath().getPathOfCurrentTenant().toString() + "//packs" + "//" + fileId);
-		ExtractStatus status = FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, destinationDirectory);
-		if (!status.equals(ExtractStatus.SUCCESS)) {
-			return null;
-		}
-=======
 	public Optional<ExtractionResponseDto> extract(String fileId) throws IOException {
 		try (InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId)) {
 			Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
@@ -74,7 +66,6 @@ public class FileExportService extends ExportService<FileExportCommand> {
 			if (!status.equals(ExtractStatus.SUCCESS)) {
 				return Optional.empty();
 			}
->>>>>>> uk/release_bug901
 
 			File file = destinationDirectory.toFile().listFiles()[0];
 			return Optional.of(new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8),

@@ -8,7 +8,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.shr.infra.file.storage.stream.FileStoragePath;
 import org.apache.commons.io.FileUtils;
 
 import nts.arc.layer.app.file.storage.FileStorage;
@@ -29,27 +28,10 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 
 	@Inject
 	private FileStorage fileStorage;
+	
+	public static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
 
 	@Override
-<<<<<<< HEAD
-	public String copyFile(String fileId) throws IOException {
-		// Get original file information
-		Optional<StoredFileInfo> optFileInfo = this.storedFileInfoRepository.find(fileId);
-		if (optFileInfo.isPresent()) {
-			StoredFileInfo fileInfo = optFileInfo.get();
-			// Copy file info, change to new fileId
-			StoredFileInfo newFileInfo = StoredFileInfo.createNew(fileInfo.getOriginalName(), fileInfo.getFileType(),
-					fileInfo.getMimeType(), fileInfo.getOriginalSize());
-			String newFileId = newFileInfo.getId();
-			// Copy physical file
-			File file = Paths.get(new FileStoragePath().getPathOfCurrentTenant().toString() + "//" + fileId).toFile();
-			File newFile = new File(new FileStoragePath().getPathOfCurrentTenant().toString() + "//" + newFileId);
-			newFile.createNewFile();
-			FileUtils.copyFile(file, newFile, false);
-			// Persist
-			this.storedFileInfoRepository.add(newFileInfo);
-			return newFileId;
-=======
 	public String copyFile(String fileId) {
 		try {
 			// Get original file information
@@ -73,7 +55,6 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 			return "";
 		} catch (IOException e) {
 			return "";
->>>>>>> uk/release_bug901
 		}
 	}
 
