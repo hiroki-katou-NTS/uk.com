@@ -189,23 +189,29 @@ module nts.uk.at.view.kdl014.a {
 				if (x == 0 && y == 0){
 					self.dataServer[i].locationAdd = "";
 	               	self.lstDataBase.push(new EmpInfomation(self.dataServer[i]));
-					
-					if (i == self.dataServer.length - 1)
-					dfd.resolve();
 				} else {
-					setTimeout(() => {
-						self.getLocationAdd(self.dataServer[i]).done(() => {
-							if (i == self.dataServer.length - 1)
-							dfd.resolve();
-						});
-					},10);
+					self.getLocationAdd(self.dataServer[i], tg).done((a : any) => {
+						self.lstDataBase.push(a);
+						
+						if (self.lstDataBase().length == self.dataServer.length){
+						dfd.resolve();
 				}
+					});
+					
+				}
+				
+				if (self.lstDataBase().length == self.dataServer.length){
+					//setTimeout(() => {
+						dfd.resolve();
+					//},self.dataServer.length * 100);
+				}
+					
             };
             return dfd.promise();
         }
 
-		getLocationAdd(item : any): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
+		getLocationAdd(item : any, tg : any,): JQueryPromise<any>{
+            let self = this,  dfd = $.Deferred();
 			let x = 0, y = 0;
  			if (item.locationInfo != null){
 				x = item.locationInfo.longitude;
@@ -226,11 +232,8 @@ module nts.uk.at.view.kdl014.a {
 							self.locationAdd = x + "、" + y;
 					}
 					item.locationAdd = self.locationAdd;
-	               	self.lstDataBase.push(new EmpInfomation(item));
-	
-					dfd.resolve();
+					dfd.resolve(new EmpInfomation(item));
 	            });
-            
 			return dfd.promise();
         }
         
