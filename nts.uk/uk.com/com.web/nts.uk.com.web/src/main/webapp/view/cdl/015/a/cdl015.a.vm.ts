@@ -32,7 +32,10 @@ module nts.uk.com.view.cdl015.a {
 		}
 
 		mounted() {
-			
+		  setTimeout(() => {
+		    $('.switchbox-wrappers').focus();
+		    }, 200);
+			 
 		}
 
 		register() {
