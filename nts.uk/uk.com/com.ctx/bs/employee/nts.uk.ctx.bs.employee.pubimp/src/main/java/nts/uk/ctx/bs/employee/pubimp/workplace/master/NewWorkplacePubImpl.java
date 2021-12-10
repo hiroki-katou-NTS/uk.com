@@ -96,7 +96,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 
 	@Override
 	public List<WorkplaceInforExport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
-			GeneralDate baseDate) {
+																GeneralDate baseDate) {
 		return wkpExpService.getWorkplaceInforFromWkpIds(companyId, listWorkplaceId, baseDate).stream()
 				.map(i -> new WorkplaceInforExport(i.getWorkplaceId(), i.getHierarchyCode(), i.getWorkplaceCode(),
 						i.getWorkplaceName(), i.getDisplayName(), i.getGenericName(), i.getExternalCode()))
@@ -115,7 +115,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 
 	@Override
 	public List<WorkplaceInforExport> getPastWorkplaceInfor(String companyId, String historyId,
-			List<String> listWorkplaceId) {
+															List<String> listWorkplaceId) {
 		return wkpExpService.getPastWorkplaceInfor(companyId, historyId, listWorkplaceId).stream()
 				.map(i -> new WorkplaceInforExport(i.getWorkplaceId(), i.getHierarchyCode(), i.getWorkplaceCode(),
 						i.getWorkplaceName(), i.getDisplayName(), i.getGenericName(), i.getExternalCode()))
@@ -230,8 +230,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		} else {
 			return new AffWorkplaceHistoryItemExport(
 					itemLst.get(0).getHistoryId(), 
-					itemLst.get(0).getWorkplaceId(), 
-					itemLst.get(0).getNormalWorkplaceId());
+					itemLst.get(0).getWorkplaceId());
 		}
 	}
 
@@ -325,7 +324,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 	public List<AffAtWorkplaceExport> findBySIdAndBaseDateV2(List<String> sids, GeneralDate baseDate) {
 
 		return affWkpHistItemRepo.getAffWrkplaHistItemByListEmpIdAndDateV2(baseDate, sids).stream().map(x -> {
-			return new AffAtWorkplaceExport(x.getEmployeeId(), x.getWorkplaceId(), x.getHistoryId(), x.getNormalWorkplaceId());
+			return new AffAtWorkplaceExport(x.getEmployeeId(), x.getWorkplaceId(), x.getHistoryId());
 		}).collect(Collectors.toList());
 	}
 	
@@ -534,7 +533,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 				if (workplacehistItemOpt.isPresent()) {
 					AffWorkplaceHistoryItem histItem = workplacehistItemOpt.get();
 					AffWorkplaceHistoryItemExport histItemExport = new AffWorkplaceHistoryItemExport(
-							histItem.getHistoryId(), histItem.getWorkplaceId(), histItem.getNormalWorkplaceId());
+							histItem.getHistoryId(), histItem.getWorkplaceId());
 					workplaceHistItems.put(hist.identifier(), histItemExport);
 				}
 			});
@@ -642,7 +641,6 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 			affWkp.setEmployeeId(x.getEmployeeId());
 			affWkp.setHistoryID(x.getHistoryId());
 			affWkp.setWorkplaceId(x.getWorkplaceId());
-			affWkp.setNormalWorkplaceID(x.getNormalWorkplaceId());
 			return affWkp;
 		}).collect(Collectors.toList());
 	}
@@ -829,7 +827,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		return listData;
 	}
 	
-	private SWkpHistExport convertFromWorkplaceInfo(WorkplaceInformation wkpInfo,AffWorkplaceHistory affWrkPlc) {
+	private SWkpHistExport convertFromWorkplaceInfo(WorkplaceInformation wkpInfo, AffWorkplaceHistory affWrkPlc) {
 		return SWkpHistExport.builder()
 				.dateRange(affWrkPlc.getHistoryItems().get(0).span())
 		.employeeId(affWrkPlc.getEmployeeId())
@@ -854,7 +852,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 				.hierarchyCd(configInfo.getHierarchyCode().v()).build()).collect(Collectors.toList());
 	}
 	@Override
-	public List<WorkplaceInforExport> findByWkpIds(List<String> wkpIds) {	
+	public List<WorkplaceInforExport> findByWkpIds(List<String> wkpIds) {
 		return workplaceInformationRepository.findByWkpIds(wkpIds).stream().map(i -> new WorkplaceInforExport(i.getWorkplaceId(), "", i.getWorkplaceCode().v(),
 				i.getWorkplaceName().v(), i.getWkpDisplayName().v(), i.getWkpGenericName().v(), i.getOutsideWkpCode().v())).collect(Collectors.toList());
 	}
@@ -886,7 +884,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		}
 		
 		List<AffWorkplaceHistoryItemExport2> result = affWrkPlcItems.stream().map(item -> {
-			return new AffWorkplaceHistoryItemExport2(item.getHistoryId(), item.getEmployeeId(), item.getWorkplaceId(), item.getNormalWorkplaceId()); 
+			return new AffWorkplaceHistoryItemExport2(item.getHistoryId(), item.getEmployeeId(), item.getWorkplaceId()); 
 		}).collect(Collectors.toList());
 		
 		return result;
@@ -902,7 +900,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 
 		List<AffWorkplaceHistoryItemExport3> result = affWrkPlcItems.stream().map(item -> {
 			return new AffWorkplaceHistoryItemExport3(item.getHistoryId(), item.getEmployeeId(), item.getWorkplaceId(),
-					item.getNormalWorkplaceId(), item.getWorkLocationCode().isPresent() ? item.getWorkLocationCode().get().toString() : null);
+					item.getWorkLocationCode().isPresent() ? item.getWorkLocationCode().get().toString() : null);
 		}).collect(Collectors.toList());
 
 		return result;
