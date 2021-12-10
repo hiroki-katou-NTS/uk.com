@@ -5478,7 +5478,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 				        showExpireDate: false,
 				        referenceDate: dateParam15,
 				        workFrameNoSelection,
-				        selectionCodeList: [self.selectedCode()]
+				        selectionCodeList: [self.selectedCode()],
+                        sid: selfParent.selectedEmployee(),
+                        taskCode: workFrameNoSelection
                     };
                     setShared('KDL012Params', paramsKDL012);
                     modal("/view/kdl/012/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
