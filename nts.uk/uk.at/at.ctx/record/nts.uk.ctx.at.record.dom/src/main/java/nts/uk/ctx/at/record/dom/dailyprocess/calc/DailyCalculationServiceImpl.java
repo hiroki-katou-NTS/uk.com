@@ -73,10 +73,9 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		//　※　実行しない時、終了状態＝正常終了
 		if (!executionLog.isPresent()) return status;
 		if (executionLog.get().getExecutionContent() != ExecutionContent.DAILY_CALCULATION) return status;
-		if (!executionLog.get().getDailyCalSetInfo().isPresent()) return status;
 		val executionContent = executionLog.get().getExecutionContent();
 		// 実行種別　取得　（通常、再実行）
-		ExecutionType reCalcAtr = executionLog.get().getDailyCalSetInfo().get().getExecutionType();
+		ExecutionType reCalcAtr = executionLog.get().getExecutionType();
 		// ログ情報更新（実行ログ）　→　処理中
 		updatelog(empCalAndSumExecLogID, executionContent,ExecutionStatus.PROCESSING);
 		

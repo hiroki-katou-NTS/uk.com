@@ -26,8 +26,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdail
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CaseSpecExeContent;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CaseSpecExeContentRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
@@ -69,9 +67,6 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 
 	@Inject
 	private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
-	
-	@Inject
-	private CaseSpecExeContentRepository caseSpecExeContentRepository;
 //	@Inject
 //	private PersonInfoAdapter personInfoAdapter;
 
@@ -152,16 +147,14 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 
 			Optional<ExecutionLog> dailyCreationLog =
 					Optional.of(logsMap.get(ExecutionContent.DAILY_CREATION));
-			Optional<CaseSpecExeContent> optCaseSpecExeContent = this.caseSpecExeContentRepository
-					.getCaseSpecExeContentById(empCalAndSumExeLog.get().getCaseSpecExeContentID());
 //			finalStatus = this.createDailyResultDomainService.createDailyResult(asyncContext, employeeIdList,
 //					periodTime, executionAttr, companyId, empCalAndSumExecLogID, dailyCreationLog);
 			ExecutionTypeDaily executionTypeDaily = ExecutionTypeDaily.CREATE;
-			if (optCaseSpecExeContent.isPresent() && optCaseSpecExeContent.get().getDailyCreationSetInfo().isPresent()) {
-				if (optCaseSpecExeContent.get().getDailyCreationSetInfo().get().getExecutionType()
-						.equals(ExecutionType.NORMAL_EXECUTION)) {
+			if(dailyCreationLog.isPresent()) {
+				if( dailyCreationLog.get().getExecutionType() == ExecutionType.RERUN ) {
 					executionTypeDaily = ExecutionTypeDaily.IMPRINT;
 				}
+
 			}
 			Optional<Boolean> checkLock = dailyCreationLog.flatMap(c -> c.getIsCalWhenLock());
 			

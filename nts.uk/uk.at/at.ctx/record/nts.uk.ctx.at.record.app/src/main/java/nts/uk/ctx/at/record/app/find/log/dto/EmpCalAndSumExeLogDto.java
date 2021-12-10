@@ -38,12 +38,6 @@ public class EmpCalAndSumExeLogDto {
 	 * 処理月
 	 */
 	private Integer processingMonth;
-	
-	/**
-	 * 実行したメニュー
-	 * ・選択して実行 ・ケース別実行
-	 */
-	private int executedMenu;
 
 	/**
 	 * 実行日
@@ -72,18 +66,6 @@ public class EmpCalAndSumExeLogDto {
 	 */
 	private int closureID;
 	
-
-	/**
-	 * 運用ケース
-	 */
-	private String caseSpecExeContentID;	
-	
-	
-
-
-	
-	
-	
 	/**
 	 * 実行ログ
 	 * 1->4 elements
@@ -96,13 +78,11 @@ public class EmpCalAndSumExeLogDto {
 				domain.getCompanyID(),
 				null,
 				domain.getProcessingMonth().v(), 
-				domain.getExecutedMenu().value, 
 				domain.getExecutionDate(), 
 				(domain.getExecutionStatus()!=null && domain.getExecutionStatus().isPresent())?	domain.getExecutionStatus().get().value:null,
 				((domain.getExecutionStatus()!=null && domain.getExecutionStatus().isPresent()))?domain.getExecutionStatus().get().nameId: " ",
 				domain.getEmployeeID(),
 				domain.getClosureID(),
-				domain.getCaseSpecExeContentID(),
 				lstExecutionLog.stream().map(c->ExecutionLogDto.fromDomain(c)).collect(Collectors.toList())
 				);
 	}
