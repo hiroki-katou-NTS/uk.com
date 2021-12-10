@@ -10,7 +10,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 
 /**
  * DS : 社員の打刻一覧を取得する
@@ -53,15 +52,6 @@ public class GetListStampEmployeeService {
 		 * @return
 		 */
 		List<StampCard> getListStampCard(String sid);
-
-		/**
-		 * [R-2] 打刻記録を取得する StampRecordRepository
-		 * 
-		 * @param stampNumbers
-		 * @param stampDateTime
-		 * @return
-		 */
-		List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate stampDate);
 
 		/**
 		 * [R-3] 打刻を取得する StampDakokuRepository

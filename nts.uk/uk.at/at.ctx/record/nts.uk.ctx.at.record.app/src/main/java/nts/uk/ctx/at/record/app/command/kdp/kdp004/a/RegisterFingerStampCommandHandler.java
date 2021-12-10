@@ -13,7 +13,6 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.auth.dom.adapter.login.IGetInfoForLogin;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
@@ -41,11 +40,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -98,9 +94,6 @@ public class RegisterFingerStampCommandHandler
 
 	@Inject
 	private EmployeeRecordAdapter sysEmpPub;
-
-	@Inject
-	private StampRecordRepository stampRecordRepo;
 
 	@Inject
 	private StampDakokuRepository stampDakokuRepo;
@@ -166,7 +159,7 @@ public class RegisterFingerStampCommandHandler
 		
 		EnterStampForSharedStampServiceRequireImpl require = new EnterStampForSharedStampServiceRequireImpl(
 				stampSetCommunalRepository, stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub,
-				stampRecordRepo, stampDakokuRepo, createDailyResults, temporarilyReflectStampDailyAttd,
+				stampDakokuRepo, createDailyResults, temporarilyReflectStampDailyAttd,
 				empInfoTerminalRepository, employeeManageRCAdapter, dailyRecordAdUpService,
 				getMngInfoFromEmpIDListAdapter, iGetInfoForLogin, loginUserContextManager, calcService, closureRepo,
 				closureEmploymentRepo, shareEmploymentAdapter, attendanceItemConvertFactory, iCorrectionAttendanceRule,
@@ -214,9 +207,6 @@ public class RegisterFingerStampCommandHandler
 
 		@Inject
 		private EmployeeRecordAdapter sysEmpPub;
-
-		@Inject
-		private StampRecordRepository stampRecordRepo;
 
 		@Inject
 		private StampDakokuRepository stampDakokuRepo;
@@ -286,12 +276,6 @@ public class RegisterFingerStampCommandHandler
 		}
 
 		@Override
-		public void insert(StampRecord stampRecord) {
-			this.stampRecordRepo.insert(stampRecord);
-
-		}
-
-		@Override
 		public void insert(Stamp stamp) {
 			this.stampDakokuRepo.insert(stamp);
 		}
@@ -299,12 +283,6 @@ public class RegisterFingerStampCommandHandler
 		@Override
 		public Optional<StampSetCommunal> gets() {
 			return this.stampSetCommunalRepository.gets(AppContexts.user().companyId());
-		}
-
-		@Override
-		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
-				GeneralDateTime dateTime) {
-			return stampRecordRepo.get(contractCode.v(), stampNumber.v(), dateTime);
 		}
 
 		@Override
@@ -376,12 +354,6 @@ public class RegisterFingerStampCommandHandler
 		public Optional<StampCard> getByCardNoAndContractCode(ContractCode contractCode, StampNumber stampNumber) {
 			return stampCardRepository.getByCardNoAndContractCode(stampNumber.v(), contractCode.v());
 		}
-		
-		@Override
-		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
-				ChangeClockAtr changeClockArt) {
-			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
-        }
 
 		@Override
 		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,

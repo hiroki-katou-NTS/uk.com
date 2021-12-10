@@ -13,7 +13,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.auth.dom.adapter.login.IGetInfoForLogin;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
@@ -37,11 +36,8 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateStampDataForEmployeesService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
@@ -83,9 +79,6 @@ public class RegisterStampIndividualSampleCommandHandler
 
 	@Inject
 	private StampDakokuRepository stampDakokuRepo;
-
-	@Inject
-	private StampRecordRepository stampRecordRepo;
 
 	@Inject
 	private StampCardEditingRepo stampCardEditRepo;
@@ -151,9 +144,9 @@ public class RegisterStampIndividualSampleCommandHandler
 	protected RegisterStampIndividualSampleResult handle(CommandHandlerContext<RegisterStampIndividualSampleCommand> context) {
 		
 		CreateStampDataForEmployeesRequiredImpl required = new CreateStampDataForEmployeesRequiredImpl(
-				stampCardRepository, stampDakokuRepo, stampRecordRepo, stampCardEditRepo,
+				stampCardRepository, stampDakokuRepo, stampCardEditRepo,
 				sysEmpPub, companyAdapter, createDailyResults, temporarilyReflectStampDailyAttd,
-				empInfoTerminalRepository, stampRecordRepo, employeeManageRCAdapter, 
+				empInfoTerminalRepository, employeeManageRCAdapter, 
 				dailyRecordAdUpService, getMngInfoFromEmpIDListAdapter, iGetInfoForLogin, loginUserContextManager, 
 				calcService, closureRepo, closureEmploymentRepo, shareEmploymentAdapter, attendanceItemConvertFactory,
 				iCorrectionAttendanceRule, interimRemainDataMngRegisterDateChange, dailyRecordShareFinder, timeReflectFromWorkinfo);
@@ -165,7 +158,7 @@ public class RegisterStampIndividualSampleCommandHandler
 		 * 1. 作成する(@Require, 契約コード, 社員ID, 打刻カード番号, 日時, 打刻する方法, ボタン種類, 実績への反映内容, 打刻場所情報) */
 		TimeStampInputResult result = CreateStampDataForEmployeesService.create(required, AppContexts.user().companyId(),
 			new ContractCode(AppContexts.user().contractCode()), employeeId, Optional.empty(), cmd.retriveDateTime(), cmd.toRelieve(),
-				cmd.toButtonType(), null, Optional.empty());
+				cmd.toButtonType().getStampType().map(m -> m).orElse(null), null, Optional.empty());
 		
 		/**
 		 * 2.  */
@@ -189,9 +182,6 @@ public class RegisterStampIndividualSampleCommandHandler
 		private StampDakokuRepository stampDakokuRepo;
 
 		@Inject
-		private StampRecordRepository stampRecordRepo;
-
-		@Inject
 		private StampCardEditingRepo stampCardEditRepo;
 
 		@Inject
@@ -208,9 +198,6 @@ public class RegisterStampIndividualSampleCommandHandler
 
 		@Inject
 		private final EmpInfoTerminalRepository empInfoTerminalRepository;
-
-		@Inject
-		private final StampRecordRepository stampRecordRepository;
 
 		@Inject
 		private final EmployeeManageRCAdapter employeeManageRCAdapter;
@@ -248,12 +235,6 @@ public class RegisterStampIndividualSampleCommandHandler
 	    private DailyRecordShareFinder dailyRecordShareFinder;
 		
 		private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
-
-		@Override
-		public void insert(StampRecord stampRecord) {
-			stampRecordRepo.insert(stampRecord);
-
-		}
 
 		@Override
 		public void insert(Stamp stamp) {
@@ -295,12 +276,6 @@ public class RegisterStampIndividualSampleCommandHandler
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode,
 				ContractCode contractCode) {
 			return empInfoTerminalRepository.getEmpInfoTerminal(empInfoTerCode, contractCode);
-		}
-
-		@Override
-		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
-				GeneralDateTime dateTime) {
-			return stampRecordRepository.get(contractCode.v(), stampNumber.v(), dateTime);
 		}
 
 		@Override
@@ -365,12 +340,6 @@ public class RegisterStampIndividualSampleCommandHandler
 		@Override
 		public Optional<Closure> closure(String companyId, int closureId) {
 			return closureRepo.findById(companyId, closureId);
-		}
-
-		@Override
-		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
-				ChangeClockAtr changeClockArt) {
-			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
 		}
 
 		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,

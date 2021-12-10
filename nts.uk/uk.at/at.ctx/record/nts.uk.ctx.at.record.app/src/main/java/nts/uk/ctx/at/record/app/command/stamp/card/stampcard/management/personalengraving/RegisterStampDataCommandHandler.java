@@ -13,7 +13,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.auth.dom.adapter.login.IGetInfoForLogin;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
@@ -37,11 +36,8 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateStampDataForEmployeesService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
@@ -79,9 +75,6 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 
 	@Inject
 	private StampDakokuRepository stampDakokuRepo;
-
-	@Inject
-	private StampRecordRepository stampRecordRepo;
 
 	@Inject
 	private StampCardEditingRepo stampCardEditRepo;
@@ -146,7 +139,7 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 	@Override
 	protected RegisterStampDataResult handle(CommandHandlerContext<RegisterStampDataCommand> context) {
 		CreateStampDataForEmployeesRequiredImpl required = new CreateStampDataForEmployeesRequiredImpl(stampCardRepository,
-				stampDakokuRepo, stampRecordRepo, stampCardEditRepo, sysEmpPub, companyAdapter,
+				stampDakokuRepo, stampCardEditRepo, sysEmpPub, companyAdapter,
 				empInfoTerminalRepository, employeeManageRCAdapter, dailyRecordAdUpService,
 				getMngInfoFromEmpIDListAdapter, iGetInfoForLogin, loginUserContextManager, calcService, closureRepo,
 				closureEmploymentRepo, shareEmploymentAdapter, dailyRecordShareFinder, timeReflectFromWorkinfo);
@@ -156,7 +149,7 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		TimeStampInputResult result = CreateStampDataForEmployeesService.create(required,
 				AppContexts.user().companyId(),
 				new ContractCode(AppContexts.user().contractCode()), employeeId, Optional.empty(),
-				cmd.retriveDateTime(), cmd.toRelieve(), cmd.toButtonType(),
+				cmd.retriveDateTime(), cmd.toRelieve(), cmd.toButtonType().getStampType().map(m -> m).orElse(null),
 				cmd.toRefectActualResult(), Optional.ofNullable(cmd.toGeoCoordinate()));
 		
 		Optional<AtomTask> atomOpt = result.getAt();
@@ -186,9 +179,6 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 
 		@Inject
 		private StampDakokuRepository stampDakokuRepo;
-
-		@Inject
-		private StampRecordRepository stampRecordRepo;
 
 		@Inject
 		private StampCardEditingRepo stampCardEditRepo;
@@ -224,12 +214,6 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		 private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
 
 		@Override
-		public void insert(StampRecord stampRecord) {
-			stampRecordRepo.insert(stampRecord);
-
-		}
-
-		@Override
 		public void insert(Stamp stamp) {
 			stampDakokuRepo.insert(stamp);
 		}
@@ -263,12 +247,6 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		@Override
 		public Optional<StampCard> getByCardNoAndContractCode(String stampNumber, String contractCode) {
 			return this.stampCardRepository.getByCardNoAndContractCode(stampNumber, contractCode);
-		}
-
-		@Override
-		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
-				GeneralDateTime dateTime) {
-			return stampRecordRepo.get(contractCode.v(), stampNumber.v(), dateTime);
 		}
 		
 		@Override
@@ -338,12 +316,6 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		@Override
 		public void addAllDomain(IntegrationOfDaily domain) {
 			dailyRecordAdUpService.addAllDomain(domain);
-		}
-		
-		@Override
-		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
-				ChangeClockAtr changeClockArt) {
-			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
 		}
 
 		@Override

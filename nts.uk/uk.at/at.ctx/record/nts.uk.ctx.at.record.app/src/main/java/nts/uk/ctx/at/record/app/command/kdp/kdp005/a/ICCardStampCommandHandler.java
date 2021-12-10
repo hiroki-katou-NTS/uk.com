@@ -12,7 +12,6 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.auth.dom.adapter.login.IGetInfoForLogin;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
@@ -36,12 +35,9 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromICCardService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampingResultEmployeeId;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -91,9 +87,6 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 
 	@Inject
 	private EmployeeRecordAdapter sysEmpPub;
-
-	@Inject
-	private StampRecordRepository stampRecordRepo;
 
 	@Inject
 	private StampDakokuRepository stampDakokuRepo;
@@ -157,7 +150,7 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 
 		EnterStampFromICCardServiceRequireImpl require = new EnterStampFromICCardServiceRequireImpl(
 				stampSetCommunalRepository, stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub,
-				stampRecordRepo, stampDakokuRepo, createDailyResults, temporarilyReflectStampDailyAttd,
+				stampDakokuRepo, createDailyResults, temporarilyReflectStampDailyAttd,
 				empInfoTerminalRepository, stampCardRepo, employeeManageRCAdapter, dailyRecordAdUpService,
 				getMngInfoFromEmpIDListAdapter, iGetInfoForLogin, loginUserContextManager, calcService, closureRepo,
 				closureEmploymentRepo, shareEmploymentAdapter, attendanceItemConvertFactory, iCorrectionAttendanceRule,
@@ -204,9 +197,6 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 
 		@Inject
 		private EmployeeRecordAdapter sysEmpPub;
-
-		@Inject
-		private StampRecordRepository stampRecordRepo;
 
 		@Inject
 		private StampDakokuRepository stampDakokuRepo;
@@ -278,12 +268,6 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 		}
 
 		@Override
-		public void insert(StampRecord stampRecord) {
-			this.stampRecordRepo.insert(stampRecord);
-
-		}
-
-		@Override
 		public void insert(Stamp stamp) {
 			this.stampDakokuRepo.insert(stamp);
 		}
@@ -291,12 +275,6 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 		@Override
 		public Optional<StampSetCommunal> gets() {
 			return this.stampSetCommunalRepository.gets(AppContexts.user().companyId());
-		}
-
-		@Override
-		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
-				GeneralDateTime dateTime) {
-			return stampRecordRepo.get(contractCode.v(), stampNumber.v(), dateTime);
 		}
 
 		@Override
@@ -367,13 +345,6 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 		public Optional<Closure> closure(String companyId, int closureId) {
 			return closureRepo.findById(companyId, closureId);
 		}
-
-		@Override
-		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
-				ChangeClockAtr changeClockArt) {
-			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
-		}
-
 
 		@Override
 		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,

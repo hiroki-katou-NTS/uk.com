@@ -65,10 +65,10 @@ public class RegisterStampDataCommand {
 					SetPreClockArt.valueOf(setPreClockArt), changeClockArt == null ? null : ChangeClockAtr.valueOf(changeClockArt),
 					ChangeCalArt.valueOf(changeCalArt));
 		
-		if(reservationArt != 2 && reservationArt != 1) {
+//		if(reservationArt != 2 && reservationArt != 1) {
 			return new ButtonType(ReservationArt.valueOf(reservationArt), Optional.of(stampType));
-		}
-		return new ButtonType(ReservationArt.valueOf(reservationArt), Optional.ofNullable(null));
+//		}
+//		return new ButtonType(ReservationArt.valueOf(reservationArt), Optional.ofNullable(null));
 
 	}
 

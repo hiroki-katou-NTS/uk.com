@@ -38,12 +38,9 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromPortalService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -93,9 +90,6 @@ public class RegisterStampInputCommandHandler
 
 	@Inject
 	private CompanyAdapter companyAdapter;
-
-	@Inject
-	private StampRecordRepository stampRecordRepo;
 
 	@Inject
 	private StampDakokuRepository stampDakokuRepo;
@@ -159,7 +153,7 @@ public class RegisterStampInputCommandHandler
 		RegisterStampInputCommand cmd = context.getCommand();
 
 		EnterStampFromPortalServiceRequireImpl require = new EnterStampFromPortalServiceRequireImpl(settingRepo,
-				stampCardRepo, sysEmpPub, companyAdapter, stampRecordRepo, stampDakokuRepo, stampCardEditRepo,
+				stampCardRepo, sysEmpPub, companyAdapter, stampDakokuRepo, stampCardEditRepo,
 				empInfoTerminalRepository, stampCardRepo, employeeManageRCAdapter, dailyRecordAdUpService,
 				getMngInfoFromEmpIDListAdapter, iGetInfoForLogin, loginUserContextManager, calcService, closureRepo,
 				closureEmploymentRepo, shareEmploymentAdapter, attendanceItemConvertFactory, iCorrectionAttendanceRule,
@@ -225,9 +219,6 @@ public class RegisterStampInputCommandHandler
 		private CompanyAdapter companyAdapter;
 
 		@Inject
-		private StampRecordRepository stampRecordRepo;
-
-		@Inject
 		private StampDakokuRepository stampDakokuRepo;
 
 		@Inject
@@ -290,11 +281,6 @@ public class RegisterStampInputCommandHandler
 		}
 
 		@Override
-		public void insert(StampRecord stampRecord) {
-			this.stampRecordRepo.insert(stampRecord);
-		}
-
-		@Override
 		public void insert(Stamp stamp) {
 			this.stampDakokuRepo.insert(stamp);
 		}
@@ -314,11 +300,6 @@ public class RegisterStampInputCommandHandler
 
 			StampCardEditing stampCardEdit = this.stampCardEditRepo.get(companyId);
 			return Optional.ofNullable(stampCardEdit);
-		}
-
-		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
-				GeneralDateTime dateTime) {
-			return stampRecordRepo.get(contractCode.v(), stampNumber.v(), dateTime);
 		}
 
 		@Override
@@ -389,12 +370,6 @@ public class RegisterStampInputCommandHandler
 		@Override
 		public Optional<Closure> closure(String companyId, int closureId) {
 			return closureRepo.findById(companyId, closureId);
-		}
-		
-		@Override
-		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
-				ChangeClockAtr changeClockArt) {
-			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
 		}
 		
 		@Override
