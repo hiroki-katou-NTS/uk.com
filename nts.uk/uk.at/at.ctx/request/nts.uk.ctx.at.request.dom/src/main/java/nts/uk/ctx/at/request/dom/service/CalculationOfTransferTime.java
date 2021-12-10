@@ -22,10 +22,10 @@ public class CalculationOfTransferTime {
 			GeneralDate date, Optional<String> workTypeCode,
 			CalculationOfTransferTimeResult beforeTransTime, DayoffChangeAtr atr) {
 
-		// 時間管理かどうか
+		// 代休を管理する年月日かどうかを判断する
 		boolean check = CheckDateForManageCmpLeaveService.check(require, companyId, employeeId, date);
 		if (!check) {
-			return Optional.of(beforeTransTime);
+			return Optional.empty();
 		}
 
 		// 処理前に就業時間帯を更新する
