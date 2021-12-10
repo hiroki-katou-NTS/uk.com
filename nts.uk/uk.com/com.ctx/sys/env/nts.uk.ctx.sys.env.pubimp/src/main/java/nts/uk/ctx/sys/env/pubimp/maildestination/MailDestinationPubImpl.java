@@ -65,7 +65,8 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 		boolean personalEmailAddressFlag = false;
 		boolean companyMobileEmailAddressFlag = false;
 		boolean personalMobileEmailAddressFlag = false;
-		if (!userInformationUseMethod.getEmailDestinationFunctions().isEmpty()) {
+		if (userInformationUseMethod.getEmailDestinationFunctions() != null
+				&& !userInformationUseMethod.getEmailDestinationFunctions().isEmpty()) {
 			for (EmailDestinationFunction e : userInformationUseMethod.getEmailDestinationFunctions()) {
 				if (e.getEmailClassification() == EmailClassification.COMPANY_EMAIL_ADDRESS
 						&& e.getFunctionIds().stream().anyMatch(id -> id.v() == functionID) //#115050
