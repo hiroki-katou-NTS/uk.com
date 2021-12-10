@@ -18,7 +18,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		<div id="kaf005-b">
 			<div id="contents-area"
 				style="background-color: inherit; height: calc(100vh - 137px);">
-				<div class="two-panel" style="height: 100%;" data-bind="style: {display: opOvertimeAppAtr() == 3 &amp;&amp; appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason &amp;&amp; appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason ? '1344px' : '1260px'}">
+				<div class="two-panel" style="height: 100%;" data-bind="style: {width: opOvertimeAppAtr() == 3 &amp;&amp; appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason &amp;&amp; appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason ? '1344px' : '1260px'}">
 					<div class="left-panel"
 						style="width: calc(100% - 388px); height: inherit; padding-bottom: 5px;">
 						<div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px;"> 
