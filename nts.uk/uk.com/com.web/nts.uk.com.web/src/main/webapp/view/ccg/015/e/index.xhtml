@@ -78,7 +78,7 @@
             <div class="arrow"></div>
           </div>
           <div class="menu-creation-layout-container" id="menu-creation-layout-container">
-            <div id="menu-creation-layout" data-bind="foreach: itemList, sortableList: itemList">
+            <div id="menu-creation-layout" data-bind="ntsSortable: {data: itemList}">
               <div class="menu-creation-item-container" data-bind="attr: { id: itemType }">
                 <div class="menu-creation-item" data-bind="attr: { 'id': itemType }">
                   <div class="widget-setting bg-green">
