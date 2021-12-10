@@ -11,9 +11,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -867,9 +865,8 @@ public class RecordDomRequireService {
 				PublicHolidayCarryForwardDataRepository publicHolidayCarryForwardDataRepo, EmploymentMonthDaySettingRepository employmentMonthDaySettingRepo, WorkplaceMonthDaySettingRepository workplaceMonthDaySettingRepo,
 				EmployeeMonthDaySettingRepository employeeMonthDaySettingRepo, PublicHolidayCarryForwardHistoryRepository publicHolidayCarryForwardHistoryRepo,ChildCareUsedNumberRepository childCareUsedNumberRepo,
 				CareUsedNumberRepository careUsedNumberRepo, ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepo, CareLeaveRemainingInfoRepository careLeaveRemainingInfoRepo, TempChildCareManagementRepository tempChildCareManagementRepo,
-				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,ExecutionLogRepository executionLogRepo, WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo) {
-				GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate, 
-				TransactionService transaction) {
+				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,ExecutionLogRepository executionLogRepo, WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo, 
+				GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate, TransactionService transaction) {
 
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo, specialLeaveBasicInfoRepo,
 					interimRecAbasMngRepo, empSubstVacationRepo, substitutionOfHDManaDataRepo, payoutManagementDataRepo, interimBreakDayOffMngRepo, comDayOffManaDataRepo, companyAdapter, shareEmploymentAdapter,
