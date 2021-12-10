@@ -287,7 +287,7 @@ public class ScheduleCreatorExecutionService {
 	 */
 	private void registerPersonalSchedule(ScheduleCreatorExecutionCommand command,
 			ScheduleExecutionLog scheduleExecutionLog,
-			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask,
+			@SuppressWarnings("rawtypes") Optional<AsyncCommandHandlerContext> asyncTask,
 			String companyId) {
 
 		String exeId = command.getExecutionId();
