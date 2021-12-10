@@ -10,6 +10,19 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistoryData;
+<<<<<<< HEAD
+=======
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.HalfdayAnnualLeaveMax;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.MaxMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.MaxTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.TimeAnnualLeaveMax;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
+>>>>>>> uk/release_bug901
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -25,9 +38,6 @@ public class KrcdtAnnLeaMaxHist extends ContractUkJpaEntity {
 	/** プライマリキー */
 	@EmbeddedId
 	public KrcdtAnnLeaMaxHistPK PK;
-
-	@Column(name = "CID")
-	public String cid;
 
 	//半日年休上限回数
 	@Column(name = "MAX_TIMES")
@@ -64,11 +74,10 @@ public class KrcdtAnnLeaMaxHist extends ContractUkJpaEntity {
 		return this.PK;
 	}
 
-	public KrcdtAnnLeaMaxHist(String sid, String cid, Integer maxTimes, Integer usedTimes, Integer remainingTimes,
+	public KrcdtAnnLeaMaxHist(String sid, Integer maxTimes, Integer usedTimes, Integer remainingTimes,
 			Integer maxMinutes, Integer usedMinutes, Integer remainingMinutes, int yearMonth, int closureId,
 			Integer closeDay, Integer isLastDay) {
 		super();
-		this.cid = cid;
 		this.maxTimes = maxTimes;
 		this.usedTimes = usedTimes;
 		this.remainingTimes = remainingTimes;
@@ -79,7 +88,7 @@ public class KrcdtAnnLeaMaxHist extends ContractUkJpaEntity {
 	}
 
 	public static KrcdtAnnLeaMaxHist fromDomain(AnnualLeaveMaxHistoryData domain) {
-		return new KrcdtAnnLeaMaxHist(domain.getEmployeeId(), domain.getCompanyId(),
+		return new KrcdtAnnLeaMaxHist(domain.getEmployeeId(),
 				domain.getHalfdayAnnualLeaveMax().isPresent()
 						? domain.getHalfdayAnnualLeaveMax().get().getMaxTimes().v() : null,
 				domain.getHalfdayAnnualLeaveMax().isPresent()

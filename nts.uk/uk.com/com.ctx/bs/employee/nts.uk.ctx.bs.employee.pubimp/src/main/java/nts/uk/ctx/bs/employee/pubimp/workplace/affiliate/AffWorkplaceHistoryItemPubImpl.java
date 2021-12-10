@@ -1,16 +1,16 @@
 package nts.uk.ctx.bs.employee.pubimp.workplace.affiliate;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.pub.workplace.affiliate.AffWorkplaceHistoryItemExport;
 import nts.uk.ctx.bs.employee.pub.workplace.affiliate.AffWorkplaceHistoryItemPub;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 public class AffWorkplaceHistoryItemPubImpl implements AffWorkplaceHistoryItemPub {
@@ -26,7 +26,11 @@ public class AffWorkplaceHistoryItemPubImpl implements AffWorkplaceHistoryItemPu
                 x.getHistoryId(),
                 x.getEmployeeId(),
                 x.getWorkplaceId(),
+<<<<<<< HEAD
                 x.getWorkLocationCode().isPresent() ? Optional.of(x.getWorkLocationCode().get().v()) : Optional.empty());
+=======
+                x.getNormalWorkplaceId());
+>>>>>>> uk/release_bug901
         }).collect(Collectors.toList());
     }
 }

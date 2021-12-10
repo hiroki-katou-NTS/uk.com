@@ -16,7 +16,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveGrantImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveManageInforImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberImport;
-import nts.uk.ctx.at.function.dom.adapter.widgetKtg.ApplicationTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AttendanceTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyExcessTotalTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyLateAndLeaveEarlyTimeImport;
@@ -169,10 +168,17 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 			annualLeaveRemainNumberImport = new AnnualLeaveRemainingNumberImport(0.0, 0, 0, 0, 0.0, 0, 0, 0, 0.0,0.0);
 		}else {
 			annualLeaveRemainNumberImport = new AnnualLeaveRemainingNumberImport(
+<<<<<<< HEAD
 																				remainNumber.getAnnualLeaveGrantPreDay(),
 																				remainNumber.getAnnualLeaveGrantPreTime(),
 																				remainNumber.getNumberOfRemainGrant(),
 																				remainNumber.getTimeAnnualLeaveGrantPre(),
+=======
+																				remainNumber.getAnnualLeaveGrantDay(),
+																				remainNumber.getAnnualLeaveGrantPreTime(),
+																				remainNumber.getNumberOfRemainGrantPre(),
+																				remainNumber.getTimeAnnualLeaveWithMinusGrantPre(),
+>>>>>>> uk/release_bug901
 																				remainNumber.getAnnualLeaveGrantPostDay(),
 																				remainNumber.getAnnualLeaveGrantPostTime(),
 																				remainNumber.getNumberOfRemainGrantPost(),

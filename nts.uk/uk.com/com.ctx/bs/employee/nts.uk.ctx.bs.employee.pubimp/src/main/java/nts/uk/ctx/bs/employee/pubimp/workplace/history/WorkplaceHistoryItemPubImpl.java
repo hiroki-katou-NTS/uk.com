@@ -21,7 +21,11 @@ public class WorkplaceHistoryItemPubImpl implements WorkplaceHistoryItemPub {
 	public List<WorkplaceHistoryItemExport> findByEmpIdsAndDate(List<String> empIds, GeneralDate baseDate) {
 		return workplaceHistoryItemRepo.getAffWrkplaHistItemByListEmpIdAndDateV2(baseDate, empIds).stream()
 				.map(w -> new WorkplaceHistoryItemExport(w.getHistoryId(), w.getEmployeeId(), w.getWorkplaceId(), 
+<<<<<<< HEAD
 						w.getWorkLocationCode().map(c -> c.v())))
+=======
+						w.getNormalWorkplaceId()))
+>>>>>>> uk/release_bug901
 				.collect(Collectors.toList());
 	}
 

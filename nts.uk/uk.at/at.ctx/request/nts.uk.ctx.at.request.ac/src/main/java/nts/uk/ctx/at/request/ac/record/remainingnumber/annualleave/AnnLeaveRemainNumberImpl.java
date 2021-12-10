@@ -102,10 +102,18 @@ public class AnnLeaveRemainNumberImpl implements AnnLeaveRemainNumberAdapter {
 											number.getAnnualLeaveGrantPostDay(),
 											number.getAnnualLeaveGrantPostTime(), 
 											number.getNumberOfRemainGrantPost(), 
+<<<<<<< HEAD
 											number.getTimeAnnualLeaveGrantPost(),
 											number.getNumberOfRemainGrant(),
 											number.getTimeAnnualLeaveGrant()
 											);
+=======
+											number.getTimeAnnualLeaveWithMinusGrantPost(),
+											number.getAnnualLeaveGrantDay(),
+											number.getAnnualLeaveGrantTime(),
+											number.getAttendanceRate(),
+											number.getWorkingDays());
+>>>>>>> uk/release_bug901
 	}
 
 }

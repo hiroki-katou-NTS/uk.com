@@ -76,6 +76,7 @@ public class AnnualLeaveRemainingNumberExport {
 	 */
 	private Integer timeAnnualLeaveGrantPost;
 	
+<<<<<<< HEAD
 	/**
 	 * 使用日数
 	 */	
@@ -95,6 +96,8 @@ public class AnnualLeaveRemainingNumberExport {
 	 * 使用時間
 	 */	
 	private Integer usedTime;
+=======
+>>>>>>> uk/release_bug901
 	
 	/**
 	 * 使用（付与前）時間

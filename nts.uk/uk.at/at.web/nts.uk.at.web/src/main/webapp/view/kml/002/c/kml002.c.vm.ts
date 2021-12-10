@@ -190,8 +190,13 @@ module nts.uk.at.view.kml002.c {
       const vm = this;
       let links = [
         { icon: "images/go-out.png", link: '/view/kml/001/a/index.xhtml', text: vm.$i18n('KML002_11') },
+<<<<<<< HEAD
         { icon: "images/go-out.png", link: '/view/kmf/002/a/index.xhtml', text: vm.$i18n('KML002_45') },
         // { icon: "images/go-out.png", link: '/view/ksm/001/a/index.xhtml', text: vm.$i18n('KML002_46') },
+=======
+        { icon: "images/go-out.png", link: '/view/kmf/002/g/index.xhtml', text: vm.$i18n('KML002_45') },
+        { icon: "images/go-out.png", link: '/view/ksm/001/a/index.xhtml', text: vm.$i18n('KML002_46') },
+>>>>>>> uk/release_bug901
         //{ icon: "images/go-out.png", link: '#', text: vm.$i18n('KML002_118') },
       ];
       _.forEach(links, (item) => {

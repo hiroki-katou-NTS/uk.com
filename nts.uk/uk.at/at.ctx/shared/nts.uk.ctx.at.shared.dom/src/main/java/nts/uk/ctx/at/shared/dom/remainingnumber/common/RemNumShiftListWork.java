@@ -7,6 +7,11 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+<<<<<<< HEAD
+=======
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveUsedNumber;
+>>>>>>> uk/release_bug901
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
@@ -163,8 +168,12 @@ public class RemNumShiftListWork {
 		RemNumShiftWork remNumShiftWorkLast = remNumShiftWorkListOpt.get(size - 1);
 		if (remNumShiftWorkLast.getRefLeaveGrantRemainingData() != null) {
 			remNumShiftWorkLast.getRefLeaveGrantRemainingData().getDetails()
+<<<<<<< HEAD
 					.setRemainingNumber(leaveRemainingNumberOpt.get());
 			remNumShiftWorkLast.calcUsedNumber(require, companyId, employeeId, baseDate);
+=======
+					.setRemainingNumber(require, companyId, employeeId, baseDate,leaveRemainingNumberOpt.get());
+>>>>>>> uk/release_bug901
 		}
 	}
 

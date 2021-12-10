@@ -901,7 +901,11 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 
 		List<AffWorkplaceHistoryItemExport3> result = affWrkPlcItems.stream().map(item -> {
 			return new AffWorkplaceHistoryItemExport3(item.getHistoryId(), item.getEmployeeId(), item.getWorkplaceId(),
+<<<<<<< HEAD
 					item.getWorkLocationCode().isPresent() ? item.getWorkLocationCode().get().toString() : null);
+=======
+					item.getNormalWorkplaceId());
+>>>>>>> uk/release_bug901
 		}).collect(Collectors.toList());
 
 		return result;
@@ -939,8 +943,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 				.employeeId(affWrkPlc.get().getEmployeeId()).workplaceId(param.getWorkplaceId())
 				.workplaceCode(param.getWorkplaceCode()).workplaceName(param.getWorkplaceName())
 				.wkpDisplayName(param.getDisplayName())
-				.workLocationCd(affWrkPlcItem.get().getWorkLocationCode().isPresent()?
-						affWrkPlcItem.get().getWorkLocationCode().get().v() : null )
+				.workLocationCd( null )
 				.build());
 	}
 

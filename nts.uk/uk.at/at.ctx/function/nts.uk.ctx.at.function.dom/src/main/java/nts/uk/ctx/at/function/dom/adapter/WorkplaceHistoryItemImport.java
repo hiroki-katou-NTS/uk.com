@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.function.dom.adapter;
 
-import java.util.Optional;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,14 +16,23 @@ public class WorkplaceHistoryItemImport {
 //	private String  normalWorkplaceId;
 	
 	/** 勤務場所コード */
-	private Optional<String> workLocationCode;
+//	private Optional<String> workLocationCode;
 
+<<<<<<< HEAD
 	public WorkplaceHistoryItemImport(String historyId, String employeeId, String workplaceId,
 			Optional<String> workLocationCode) {
 		this.historyId = historyId;
 		this.employeeId = employeeId;
 		this.workplaceId = workplaceId;
 		this.workLocationCode = workLocationCode;
+=======
+	public WorkplaceHistoryItemImport(String historyId, String employeeId, String workplaceId, String normalWorkplaceId) {
+		this.historyId = historyId;
+		this.employeeId = employeeId;
+		this.workplaceId = workplaceId;
+		this.normalWorkplaceId = normalWorkplaceId;
+//		this.workLocationCode = workLocationCode;
+>>>>>>> uk/release_bug901
 	}
 	
 	
