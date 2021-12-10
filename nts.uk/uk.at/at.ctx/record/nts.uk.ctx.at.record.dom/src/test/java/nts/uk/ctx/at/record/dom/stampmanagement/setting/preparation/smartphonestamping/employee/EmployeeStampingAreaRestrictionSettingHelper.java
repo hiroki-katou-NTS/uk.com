@@ -10,7 +10,7 @@ public class EmployeeStampingAreaRestrictionSettingHelper {
 	
 	public static EmployeeStampingAreaRestrictionSetting getStampDefault() {
 		String employeeId  = "dummy";
-		NotUseAtr notUseAtr = NotUseAtr.NOT_USE;
+		NotUseAtr notUseAtr = NotUseAtr.USE;
 		StampingAreaLimit areaLimit = StampingAreaLimit.NO_AREA_RESTRICTION;
 		
 		StampingAreaRestriction stampingAreaRestriction = new StampingAreaRestriction(notUseAtr,areaLimit);
@@ -18,10 +18,16 @@ public class EmployeeStampingAreaRestrictionSettingHelper {
 	}
 	
 	public static StampingAreaRestriction  createStamp () {
-		NotUseAtr notUseAtr = NotUseAtr.NOT_USE;
+		NotUseAtr notUseAtr = NotUseAtr.USE;
 		StampingAreaLimit areaLimit = StampingAreaLimit.NO_AREA_RESTRICTION;
 		StampingAreaRestriction areaRestriction = new StampingAreaRestriction(notUseAtr,areaLimit);
-//		Optional<WorkLocation> opt=	areaRestriction.checkAreaStamp(require, contractCd, companyId, employeeId, positionInfor)
 		return areaRestriction;
 	}
 } 
+
+
+
+
+
+
+

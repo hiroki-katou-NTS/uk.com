@@ -19,20 +19,26 @@ public class EmployeeStampingAreaRestrictionSettingTest {
 	@Injectable
 	private Require require;
 
-	 
 	@Test
 	public void getters() {	
 		EmployeeStampingAreaRestrictionSetting domain = EmployeeStampingAreaRestrictionSettingHelper.getStampDefault();
 		NtsAssert.invokeGetters(domain);
 	}
-	
+	/*
+	 * 
+	 *return @打刻エリア制限.打刻してもいいエリアかチェックする(require,契約コード,会社ID
+	 * */
 	@Test
-	public void checkAreaStampAgr() {
-		
+	public void checkAreaStampAgroot() {
 		StampingAreaRestriction domain = EmployeeStampingAreaRestrictionSettingHelper.createStamp();
 		EmployeeStampingAreaRestrictionSetting areaRestrictionSetting = new EmployeeStampingAreaRestrictionSetting("dummy", domain);
 		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(getGeoCoordinateDefault());//dummy
-		Optional<WorkLocation> worklocation = areaRestrictionSetting.checkAreaStamp(require, EmployeeStampingAreaRestrictionSettingHelper.CONTRACTCD, EmployeeStampingAreaRestrictionSettingHelper.CID, EmployeeStampingAreaRestrictionSettingHelper.SID, stampLocationInfor);
+		Optional<WorkLocation> worklocation = areaRestrictionSetting.checkAreaStamp(
+																					require,
+																					EmployeeStampingAreaRestrictionSettingHelper.CONTRACTCD,
+																					EmployeeStampingAreaRestrictionSettingHelper.CID,
+																					EmployeeStampingAreaRestrictionSettingHelper.SID,
+																					stampLocationInfor);
 		assertThat(worklocation).isEmpty();
 	}
 	

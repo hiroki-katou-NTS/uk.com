@@ -28,35 +28,29 @@ public class StampingAreaRestrictionTestHelp {
 	public static final String CONTRACTCD = "000000000004"; 
 	
 	//エリア外の打刻
-	public static StampingAreaRestriction getStampDefault() {
+	public static StampingAreaRestriction iseUseLocation() {
 		NotUseAtr notUseAtr = NotUseAtr.NOT_USE;
 		StampingAreaLimit areaLimit = StampingAreaLimit.NO_AREA_RESTRICTION;			
 		return new StampingAreaRestriction(notUseAtr ,areaLimit);
 	}
 	//エリアが特定できない
-	public static StampingAreaRestriction specifyArea () {
+	public static StampingAreaRestriction isUserGeoCoordinate () {
 		NotUseAtr notUseAtr = NotUseAtr.USE;
 		StampingAreaLimit areaLimit = StampingAreaLimit.ALLOWED_ONLY_WITHIN_THE_AREA ;
 		return new StampingAreaRestriction(notUseAtr,areaLimit);
 	}
-	public static StampingAreaRestriction check1() {
+	public static StampingAreaRestriction useOnlyWorkplaceAndLoacation() {
 		NotUseAtr notUseAtr = NotUseAtr.USE;
 		StampingAreaLimit areaLimit = StampingAreaLimit.ONLY_THE_WORKPLACE_BELONG_ALLOWED ;
 		return new StampingAreaRestriction(notUseAtr,areaLimit);
 	}
-	public static StampingAreaRestriction check1_2() {
+	public static StampingAreaRestriction useWithinAreaAndLoacation() {
 		NotUseAtr notUseAtr = NotUseAtr.USE;
 		StampingAreaLimit areaLimit = StampingAreaLimit.ALLOWED_ONLY_WITHIN_THE_AREA ;
 		return new StampingAreaRestriction(notUseAtr,areaLimit);
 	}
 
-	public static StampingAreaRestriction check1_3() {
-		NotUseAtr notUseAtr = NotUseAtr.USE;
-		StampingAreaLimit areaLimit = StampingAreaLimit.NO_AREA_RESTRICTION ;
-		return new StampingAreaRestriction(notUseAtr,areaLimit);
-	}
-	
-	public static StampingAreaRestriction check2() {
+	public static StampingAreaRestriction notUseLoacationAndUseOnlyWorkplace() {
 		NotUseAtr notUseAtr = NotUseAtr.NOT_USE;
 		StampingAreaLimit areaLimit = StampingAreaLimit.ONLY_THE_WORKPLACE_BELONG_ALLOWED ;
 		return new StampingAreaRestriction(notUseAtr,areaLimit);
@@ -93,11 +87,9 @@ public class StampingAreaRestrictionTestHelp {
 	
 	public static GeoCoordinate getGeoCoordinateDefault() {
 		return new GeoCoordinate(1, 2);
-		
 	}
 	public static GeoCoordinate getGeoCoordinateDefaultNo() {
 		return null;
-		
 	}
 	
 }

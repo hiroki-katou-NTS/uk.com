@@ -33,46 +33,52 @@ public class StampingAreaRestrictionTest {
 	
 	@Test
 	public void getters() {
-		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.getStampDefault();
+		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.iseUseLocation();
 		NtsAssert.invokeGetters(domain);
 	}
-	
+	/*
+	 * 
+	 * 打刻位置.isEmpty
+	 * */
 	@Test
 	public void specifyAreaTest() {
-		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.specifyArea();
+		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.isUserGeoCoordinate();
 		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampingAreaRestrictionTestHelp.getGeoCoordinateDefaultNo());//dummy
 		NtsAssert.businessException("Msg_2096",()-> domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor));
 	}	
-	
+	/*
+	 * if @位置情報を利用する == しない
+	 * */
 	@Test
-	public void check1() {
+	public void checkUseLocation() {
 		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampingAreaRestrictionTestHelp.getGeoCoordinateDefault());//dummy
-		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.check2();
+		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.notUseLoacationAndUseOnlyWorkplace();
 		Optional<WorkLocation> result  =  domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor );
 		assertThat(result).isEmpty();
-		
 	}	
+	/*
+	 * [prv-1] 所属職場に紐づける勤務場所を特定する
+	 * */
 	@Test
-	public void check2() {
+	public void identifyWorkLocation() {
 		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampingAreaRestrictionTestHelp.getGeoCoordinateDefault());//dummy
-		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.check1();
+		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.useOnlyWorkplaceAndLoacation();
 		
 		new Expectations() {
 			{
 				require.getWorkPlaceOfEmpl(sId,GeneralDate.today());
-				
 			}	
 		};
 		NtsAssert.businessException("Msg_427",()-> domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor));
-
 	}	
-	
-	//check throw 2059
+	/*
+	 * if @制限方法 == 所属職場のみ許可
+	 * 
+	 * */
 	@Test
-	public void check3() {
+	public void setValueidentifyWorkLocation() {
 		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampingAreaRestrictionTestHelp.getGeoCoordinateDefault());//dummy
-		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.check1();
-		
+		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.useOnlyWorkplaceAndLoacation();
 		new Expectations() {
 			{
 				require.getWorkPlaceOfEmpl(sId,GeneralDate.today());
@@ -85,18 +91,24 @@ public class StampingAreaRestrictionTest {
 		};
 		NtsAssert.businessException("Msg_2095",()-> domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor));
 	}
-	
+	/*
+	 * $場所一覧 = require.全ての勤務場所を取得する(契約コード)
+	 * 
+	 * */
 	@Test
-	public void check4() {
+	public void checkfindAll() {
 		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampingAreaRestrictionTestHelp.getGeoCoordinateDefault());//dummy
-		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.check1_2();
+		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.useWithinAreaAndLoacation();
 		
 		NtsAssert.businessException("Msg_2095",()-> domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor));
 	}
-	
+	/*
+	 * if @制限方法 <> エリア制限しない　&&　$勤務場所.isEmpty
+	 * 
+	 * */	
 	@Test
-	public void checkSetValue() {
-		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.check1_2();
+	public void setValueFindAll() {
+		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.useWithinAreaAndLoacation();
 		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampingAreaRestrictionTestHelp.getGeoCoordinateDefault());//dummy
 		new Expectations() {
 			{
@@ -106,13 +118,5 @@ public class StampingAreaRestrictionTest {
 		};
 		Optional<WorkLocation> lisst = domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor);
 		assertThat(lisst).isNotEmpty();
-	}
-
-	@Test
-	public void check5() {
-		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampingAreaRestrictionTestHelp.getGeoCoordinateDefault());//dummy
-		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.check1_3();
-		Optional<WorkLocation> result  =  domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor );
-		assertThat(result).isEmpty();
 	}
 }
