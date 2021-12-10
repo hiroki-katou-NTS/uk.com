@@ -149,10 +149,10 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 					Optional.of(logsMap.get(ExecutionContent.DAILY_CREATION));
 //			finalStatus = this.createDailyResultDomainService.createDailyResult(asyncContext, employeeIdList,
 //					periodTime, executionAttr, companyId, empCalAndSumExecLogID, dailyCreationLog);
-			ExecutionTypeDaily executionTypeDaily = ExecutionTypeDaily.CREATE;
+			ExecutionTypeDaily executionTypeDaily = ExecutionTypeDaily.IMPRINT;
 			if(dailyCreationLog.isPresent()) {
 				if( dailyCreationLog.get().getExecutionType() == ExecutionType.RERUN ) {
-					executionTypeDaily = ExecutionTypeDaily.IMPRINT;
+					executionTypeDaily = ExecutionTypeDaily.CREATE;
 				}
 
 			}
