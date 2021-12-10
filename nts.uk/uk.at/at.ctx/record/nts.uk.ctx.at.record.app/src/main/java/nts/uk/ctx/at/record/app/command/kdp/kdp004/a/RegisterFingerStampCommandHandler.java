@@ -45,7 +45,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -177,7 +177,7 @@ public class RegisterFingerStampCommandHandler
 				AppContexts.user().companyId(), AppContexts.user().contractCode(), cmd.getEmployeeId(),
 				Optional.ofNullable(null),
 				new Relieve(EnumAdaptor.valueOf(cmd.getAuthcMethod(), AuthcMethod.class), StampMeans.FINGER_AUTHC),
-				cmd.getStampDatetime(), cmd.getStampButton(), cmd.getRefActualResult().toDomainValue());
+				cmd.getDatetime(), cmd.getStampButton(), cmd.getRefActualResult().toDomainValue());
 		// 2: not empty
 		if (inputResult != null && inputResult.at.isPresent()) {
 
@@ -379,7 +379,7 @@ public class RegisterFingerStampCommandHandler
 		
 		@Override
 		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
-				ChangeClockArt changeClockArt) {
+				ChangeClockAtr changeClockArt) {
 			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
         }
 

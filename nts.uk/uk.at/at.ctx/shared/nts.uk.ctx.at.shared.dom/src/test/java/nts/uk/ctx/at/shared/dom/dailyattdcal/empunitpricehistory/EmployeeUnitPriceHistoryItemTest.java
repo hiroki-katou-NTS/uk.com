@@ -29,8 +29,7 @@ public class EmployeeUnitPriceHistoryItemTest {
 	 */
 	@Test
 	public void testgetEmployeeHourlyUnitPrice1() {
-		EmployeeUnitPriceHistoryItem empUnitPriceHisItem = EmployeeUnitPriceHistoryHelper.getEmployeeUnitPriceHistoryItemDefault();
-		
+		EmployeeUnitPriceHistoryItem empUnitPriceHisItem = EmployeeUnitPriceHistoryHelper.getEmployeeUnitPriceHistoryItemDefault();		
 		Optional<WorkingHoursUnitPrice> result = empUnitPriceHisItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_2);
 		
 		assertThat(result.get().v()).isEqualTo(200);
