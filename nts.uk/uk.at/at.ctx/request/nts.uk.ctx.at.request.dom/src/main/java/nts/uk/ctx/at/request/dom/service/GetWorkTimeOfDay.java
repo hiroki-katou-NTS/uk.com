@@ -8,17 +8,16 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * @author thanh_nx
  *
- *         処理前に就業時間帯を更新する
+ *         該当日の就業時間帯を取得する
  */
-public class UpdateWorkTimeBeforeProcess {
+public class GetWorkTimeOfDay {
 
-	// 就業時間帯を更新する
+	// 就業時間帯を取得する
 	public static Optional<String> getWorkInfoFromSetting(Require require, String companyId, String employeeId,
 			GeneralDate date, Optional<String> workTypeCode, Optional<String> workTimeCode) {
 
@@ -31,7 +30,8 @@ public class UpdateWorkTimeBeforeProcess {
 		Optional<WorkInfoOfDailyAttendance> workInfoOfDailyRecord = require.getWorkInfoOfDailyAttendance(employeeId,
 				date);
 
-		if (workInfoOfDailyRecord.isPresent()) {
+		if (workInfoOfDailyRecord.isPresent()
+				&& workInfoOfDailyRecord.get().getRecordInfo().getWorkTimeCodeNotNull().isPresent()) {
 			return workInfoOfDailyRecord.get().getRecordInfo().getWorkTimeCodeNotNull().map(x -> x.v());
 		}
 
@@ -45,7 +45,8 @@ public class UpdateWorkTimeBeforeProcess {
 
 		workTypeCodeProcess = updateWorkTypeCode(workTypeCodeProcess, schedule.map(x -> x.getWorkTypeCode()));
 
-		return getWorkInfoFromSetting(require, companyId, employeeId, date, workTypeCodeProcess);
+		return getWorkInfoFromSetting(require, companyId, employeeId, date, workTypeCodeProcess)
+				.flatMap(x -> x.getWorkTimeCodeNotNull().map(y -> y.v()));
 	}
 
 	private static Optional<String> updateWorkTypeCode(Optional<String> workTypeCodeBefore,
@@ -57,8 +58,8 @@ public class UpdateWorkTimeBeforeProcess {
 		return workTypeCodeAfter;
 	}
 
-	// 個人勤務設定から就業時間帯コードを取得する
-	public static Optional<String> getWorkInfoFromSetting(Require require, String companyId, String employeeId,
+	// 勤務情報を取得する
+	private static Optional<WorkInformation> getWorkInfoFromSetting(Require require, String companyId, String employeeId,
 			GeneralDate date, Optional<String> workTypeCode) {
 		if (!workTypeCode.isPresent()) {
 			return Optional.empty();
@@ -73,31 +74,9 @@ public class UpdateWorkTimeBeforeProcess {
 			return Optional.empty();
 		}
 
-		// 1日半日出勤・1日休日系の判定（休出判定あり）
-		AttendanceDayAttr attAtr = workType.get().chechAttendanceDay();
-		if (attAtr == AttendanceDayAttr.HOLIDAY) {
-			return Optional.empty();
-		}
-
-		if (attAtr == AttendanceDayAttr.HOLIDAY_WORK) {
-			// 休出時の勤務情報を取得する
-			WorkInformation workInfo = workCondition.get().getWorkCategory().getWorkinfoOnVacation(workType.get());
-			if (workInfo.getWorkTimeCodeNotNull().isPresent()) {
-				return workInfo.getWorkTimeCodeNotNull().map(x -> x.v());
-			}
-
-			// 勤務情報を作成
-			return workCondition.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTimeCode()
-					.map(x -> x.v());
-		}
-
-		WorkInformation workInfo = workCondition.get().getWorkCategory().getWorkInformationDayOfTheWeek(date);
-		if (workInfo.getWorkTimeCodeNotNull().isPresent()) {
-			return workInfo.getWorkTimeCodeNotNull().map(x -> x.v());
-		}
-
-		return workCondition.get().getWorkCategory().getWorkInformationWorkDay().getWorkTimeCodeNotNull()
-				.map(x -> x.v());
+		// 就業時間帯コードを取得する
+		return workCondition.get().getWorkCategory().getWorkInfoFromSetting(companyId, employeeId, date,
+				workType.get());
 
 	}
 
@@ -110,10 +89,11 @@ public class UpdateWorkTimeBeforeProcess {
 		// 日別勤怠(Work)を取得する
 		public Optional<WorkInfoOfDailyAttendance> getWorkInfoOfDailyAttendance(String employeeId, GeneralDate ymd);
 
-		public Optional<WorkType> findByPK(String companyId, String workTypeCd);
-
+		//労働条件項目を取得する
 		public Optional<WorkingConditionItem> getWorkingConditionItemByEmpIDAndDate(String companyID, GeneralDate ymd,
 				String empID);
 
+		//勤務種類を取得する
+		public Optional<WorkType> findByPK(String companyId, String workTypeCd);
 	}
 }

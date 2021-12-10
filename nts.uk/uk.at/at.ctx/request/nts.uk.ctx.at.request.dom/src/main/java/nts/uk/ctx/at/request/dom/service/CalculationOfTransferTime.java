@@ -29,7 +29,7 @@ public class CalculationOfTransferTime {
 		}
 
 		// 処理前に就業時間帯を更新する
-		Optional<String> getWorkTimeCode = UpdateWorkTimeBeforeProcess.getWorkInfoFromSetting(require, companyId,
+		Optional<String> getWorkTimeCode = GetWorkTimeOfDay.getWorkInfoFromSetting(require, companyId,
 				employeeId, date, workTypeCode, beforeTransTime.getWorkTimeCode());
 
 		Optional<SubHolTransferSet> setting = GetSubHolOccurrenceSetting.process(require, companyId, getWorkTimeCode,
@@ -49,7 +49,7 @@ public class CalculationOfTransferTime {
 	}
 
 	public static interface Require extends CheckDateForManageCmpLeaveService.Require,
-			GetSubHolOccurrenceSetting.Require, UpdateWorkTimeBeforeProcess.Require {
+			GetSubHolOccurrenceSetting.Require, GetWorkTimeOfDay.Require {
 	}
 
 }

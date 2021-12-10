@@ -7,6 +7,7 @@ import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -149,4 +150,34 @@ public class WorkByIndividualWorkDay extends DomainObject{
 				                   workTimeCode.isPresent() ? workTimeCode.get().v() : null);
 	}
 	
+	// [5] 就業時間帯コードを取得する
+	public Optional<WorkInformation> getWorkInfoFromSetting(String companyId, String employeeId,
+			GeneralDate date, WorkType workType) {
+		
+		// 1日半日出勤・1日休日系の判定（休出判定あり）
+		AttendanceDayAttr attAtr = workType.chechAttendanceDay();
+		if (attAtr == AttendanceDayAttr.HOLIDAY) {
+			return Optional.empty();
+		}
+
+		if (attAtr == AttendanceDayAttr.HOLIDAY_WORK) {
+			// 休出時の勤務情報を取得する
+			WorkInformation workInfo = this.getWorkinfoOnVacation(workType);
+			if (workInfo.getWorkTimeCodeNotNull().isPresent()) {
+				return Optional.of(new WorkInformation(workType.getWorkTypeCode(), workInfo.getWorkTimeCode()));
+			}
+
+			// 勤務情報を作成
+			return Optional.of(new WorkInformation(workType.getWorkTypeCode(),
+					this.getWorkTime().getHolidayWork().getWorkTimeCode().orElse(null)));
+		}
+
+		WorkInformation workInfo = this.getWorkInformationDayOfTheWeek(date);
+		if (workInfo.getWorkTimeCodeNotNull().isPresent()) {
+			return Optional.of(new WorkInformation(workType.getWorkTypeCode(), workInfo.getWorkTimeCode()));
+		}
+
+		return Optional.of(new WorkInformation(workType.getWorkTypeCode(), this.getWorkInformationWorkDay().getWorkTimeCode()));
+
+	}
 }
