@@ -19,6 +19,7 @@ import nts.uk.ctx.sys.auth.app.find.person.role.RoleWhetherLoginDto;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.RoleWorkplaceIDFinder;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceIdDto;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceParam;
+import nts.uk.ctx.sys.auth.dom.algorithm.EmpReferenceRangeService;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
@@ -58,6 +59,9 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	
 	@Inject
 	private RoleSetService roleSetService;
+	
+	@Inject
+	private EmpReferenceRangeService empReferenceRangeService;
 	
 	/*
 	 * (non-Javadoc)
@@ -359,5 +363,28 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		}
     	return roleSetExport;
     }
+
+	/**
+	 * find by company
+	 *
+	 * @param companyId
+	 * @return Role
+	 */
+	@Override
+	public List<RoleExport> findByCompanyId(String companyId) {
+		List<Role> lstRole = roleRepo.findByCompanyId(companyId);
+		if (!lstRole.isEmpty()) {
+			return lstRole.stream().map(role -> {
+				return new RoleExport(role.getCompanyId(), role.getRoleId(), role.getRoleCode().v(),
+						role.getName().v(), role.getAssignAtr().value, role.getEmployeeReferenceRange().value);
+			}).collect(Collectors.toList());
+		}
+		return null;
+	}
+	@Override
+	public Integer getEmployeeReferenceRange(String userId, int roleType, GeneralDate referenceDate) {
+		// TODO Auto-generated method stub
+		return empReferenceRangeService.getByUserIDAndReferenceDate(userId, roleType, referenceDate).map(c->c.getEmployeeReferenceRange().value).orElse(null);
+	}
 
 }

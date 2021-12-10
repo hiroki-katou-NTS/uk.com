@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -36,7 +37,6 @@ import nts.uk.screen.at.app.ksu001.extracttargetemployees.ExtractTargetEmployees
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTargetEmployees;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
-import nts.uk.screen.at.app.ksu001.start.AggregateNumberPeopleMapDto;
 import nts.uk.screen.at.app.ksu001.start.AggregatePersonalMapDto;
 import nts.uk.screen.at.app.ksu001.start.AggregateWorkplaceMapDto;
 import nts.uk.screen.at.app.ksu001.start.ShiftPaletteWantGet;
@@ -77,8 +77,8 @@ public class ChangeWorkPlaceFinder {
 		
 		GeneralDate startDate = GeneralDate.fromString(param.startDate, DATE_FORMAT);
 		GeneralDate endDate   = GeneralDate.fromString(param.endDate, DATE_FORMAT);
-
-		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, targetOrgIdenInfor);
+		
+		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(GeneralDate.today(), new DatePeriod(startDate, endDate), targetOrgIdenInfor);
 		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp(param2);
 		//
 		
