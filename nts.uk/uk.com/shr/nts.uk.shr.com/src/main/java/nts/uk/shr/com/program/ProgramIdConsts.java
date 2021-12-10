@@ -1120,6 +1120,7 @@ public class ProgramIdConsts {
 	//KMR003
 	public static final String KMR003A = "KMR003A";
 	public static final String KMR003B = "KMR003B";
+	public static final String KMR003C = "KMR003C";
 
 	//KMR004
 	public static final String KMR004A = "KMR004A";

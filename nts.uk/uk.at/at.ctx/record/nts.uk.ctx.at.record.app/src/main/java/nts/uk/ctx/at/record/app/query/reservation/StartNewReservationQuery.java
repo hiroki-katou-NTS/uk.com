@@ -58,10 +58,9 @@ public class StartNewReservationQuery {
      * @param correctionDate 注文日
      * @param reservationDate 予約日
      * @param frameNo 枠NO
-     * @param extractCondition 抽出条件
      * @param employeeIds List＜社員ID＞
      */
-    public StartReservationCorrectOutput startNewReservation(GeneralDate correctionDate, GeneralDate reservationDate, int frameNo, int extractCondition, List<String> employeeIds) {
+    public StartReservationCorrectOutput startNewReservation(GeneralDate correctionDate, int frameNo, List<String> employeeIds) {
         // 1: get(会社ID＝ログイン会社ID,期間，開始日＜＝注文日＜＝期間．終了日)
         Optional<BentoMenuHistory> yokakuHistOpt = bentoMenuHistoryRepository.findByCompanyId(AppContexts.user().companyId());
         

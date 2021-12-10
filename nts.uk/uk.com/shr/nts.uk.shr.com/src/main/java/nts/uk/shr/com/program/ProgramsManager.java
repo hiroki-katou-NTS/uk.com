@@ -2719,10 +2719,12 @@ public class ProgramsManager {
     /**
      * KMR003
      */
-    public static final Program KMR003A = new Program(WebAppId.AT, ProgramIdConsts.KMR003A, "KMR003_1",
+    public static final Program KMR003A = new Program(WebAppId.AT, ProgramIdConsts.KMR003A, "KMR003_35",
             "/view/kmr/003/a/index.xhtml");
-    public static final Program KMR003B = new Program(WebAppId.AT, ProgramIdConsts.KMR003B, "KMR003_26",
+    public static final Program KMR003B = new Program(WebAppId.AT, ProgramIdConsts.KMR003B, "KMR003_36",
             "/view/kmr/003/b/index.xhtml");
+    public static final Program KMR003C = new Program(WebAppId.AT, ProgramIdConsts.KMR003C, "KMR003_37",
+            "/view/kmr/003/c/index.xhtml");
 
     /**
      * KMR004

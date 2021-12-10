@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationOrderMngAtr;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -94,13 +95,19 @@ public class StartReservationCorrectQuery {
             }
         }
         String correctionDateParam = TextResource.localize("KMR003_53", Arrays.asList(correctionDate.toString("yyyy/MM/dd"), correctionDate.toString("E")));
-        String receptionTimeNameParam = setting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo().value == frameNo).findFirst().get().getReceptionHours().getReceptionName() + 
-                TextResource.localize("KMR003_52", 
-                        Arrays.asList(
-                                setting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo().value == frameNo).findFirst().get().getReceptionHours().getStartTime().v().toString(), 
-                                setting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo().value == frameNo).findFirst().get().getReceptionHours().getEndTime().v().toString()));
-        if (menus.isEmpty()) {
-            throw new BusinessException("Msg_2255", correctionDateParam, receptionTimeNameParam);
+        Optional<ReservationRecTimeZone> reservationFrameNo = setting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo().value == frameNo).findFirst();
+        String receptionTimeNameParam = "";
+        if (reservationFrameNo.isPresent()) {
+            receptionTimeNameParam = reservationFrameNo.get().getReceptionHours().getReceptionName() + 
+                    TextResource.localize("KMR003_52", 
+                            Arrays.asList(
+                                    setting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo().value == frameNo).findFirst().get().getReceptionHours().getStartTime().v().toString(), 
+                                    setting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo().value == frameNo).findFirst().get().getReceptionHours().getEndTime().v().toString()));
+            if (menus.isEmpty()) {
+                throw new BusinessException("Msg_2255", correctionDateParam, receptionTimeNameParam);
+            }
+        } else {
+            return new StartReservationCorrectOutput();
         }
         
         // 3: 社員情報を取得(List＜社員ID＞　＝　Input．List＜社員ID＞)

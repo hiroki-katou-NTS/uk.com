@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
-public class RegisterReservationCorrectCommand {
+public class DeleteReservationCorrectCommandHandler {
     
     @Inject
     private ReservationSettingRepository reservationSettingRepository;
@@ -26,7 +26,7 @@ public class RegisterReservationCorrectCommand {
     @Inject
     private BentoReservationRepository bentoReservationRepository;
 
-    public List<RegisterErrorMessage> register(List<BentoReservationWithEmp> bentoReservations) {
+    public List<RegisterErrorMessage> delete(List<BentoReservationWithEmp> bentoReservations) {
         List<RegisterErrorMessage> exceptions = new ArrayList<RegisterErrorMessage>();
         List<AtomTask> result = new ArrayList<AtomTask>();
         
@@ -34,7 +34,7 @@ public class RegisterReservationCorrectCommand {
         ReservationSetting setting = reservationSettingRepository.findByCId(AppContexts.user().companyId()).get();
         
         // 2: 社員は予約内容を修正できるか(char, 年月日, 年月日, 時刻時分, int, boolean, 予約受付時間帯)
-        //      (ロールID=ログイン者の就業ロールID, 注文日=システム日付, 予約日=ループ中の弁当予約．予約日, 予約時刻=システム日時, 枠NO=ループ中弁当予約．予約対象日．締め時刻枠, 発注区分=ループ中の弁当予約．発注済み,予約受付時間帯=取得した予約設定．予約受付時間帯(ループ中弁当予約．予約対象日．締め時刻枠）)
+        // ロールID=ログイン者の就業ロールID, 注文日=システム日付, 予約日=ループ中の弁当予約．予約日, 予約時刻=システム日時, 枠NO=ループ中弁当予約．予約対象日．締め時刻枠, 発注区分=ループ中の弁当予約．発注済み,予約受付時間帯=取得した予約設定．予約受付時間帯(ループ中弁当予約．予約対象日．締め時刻枠）
         bentoReservations.forEach(s -> {
             boolean flag = setting.getCorrectionContent().canEmployeeChangeReservation(
                     AppContexts.user().roles().forAttendance(), 
@@ -55,7 +55,7 @@ public class RegisterReservationCorrectCommand {
              */
             if (flag) {
                 result.add(AtomTask.of(() -> {
-                    bentoReservationRepository.update(s.getBentorReservation());
+                    bentoReservationRepository.delete(s.getBentorReservation());
                 }));
             } else {
                 String param0 = s.getEmployeeCode() + " " + s.getEmployeeName();
@@ -70,7 +70,7 @@ public class RegisterReservationCorrectCommand {
                         + "～" 
                         + new TimeWithDayAttr(receptionHours.getEndTime().v()).getInDayTimeWithFormat();
                 
-                exceptions.add(new RegisterErrorMessage("Msg_2257", Arrays.asList(param0, param1, param2)));
+                exceptions.add(new RegisterErrorMessage("Msg_2258", Arrays.asList(param0, param1, param2)));
             }
         });
         
