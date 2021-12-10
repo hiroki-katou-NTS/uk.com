@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
@@ -122,12 +121,8 @@ public class SubstitutionHolidayProcess {
 		
 		String companyId = AppContexts.user().companyId();
 		
-		/**　当月以降の振出管理データを削除　*/
-		return deletePayoutManaData(require, period.getPeriod(), empId)
 				/**　アルゴリズム「振出管理データの更新」を実行する　*/
-				.then(updatePayoutMngData(require, companyId, vacationDetails.getLstAcctAbsenDetail()))
-				/**　アルゴリズム「当月以降の振休管理データを削除」を実行する　*/
-				.then(deleteSubManaData(require, period.getPeriod(), empId))
+		return	updatePayoutMngData(require, companyId, vacationDetails.getLstAcctAbsenDetail())
 				/**　アルゴリズム「振休管理データの更新」を実行する　*/
 				.then(updateSubstitutionHolidayMngData(require, companyId, vacationDetails.getLstAcctAbsenDetail()));
 	}
@@ -145,21 +140,6 @@ public class SubstitutionHolidayProcess {
 		return AtomTask.of(() -> require.deleteInterimAbsMngBySidDatePeriod(employeeId, period))
 				//暫定振出管理データ 削除
 				.then(AtomTask.of(() -> require.deleteInterimRecMngBySidDatePeriod(employeeId, period)));
-	}
-	
-	
-	/**　当月以降の振出管理データを削除　*/
-	private static AtomTask deletePayoutManaData(RequireM4 require, DatePeriod period, String empId){
-
-		/** ドメインモデル「振出管理データ」を削除する */
-		return AtomTask.of(() -> require.deletePayoutManagementDataAfter(empId, false, period.start()));
-	}
-
-	/**　アルゴリズム「当月以降の振休管理データを削除」を実行する　*/
-	private static AtomTask deleteSubManaData(RequireM6 require, DatePeriod period, String empId){
-
-		/** ドメインモデル「振休管理データ」を削除する */
-		return AtomTask.of(() -> require.deleteSubstitutionOfHDManagementDataAfter(empId, false, period.start()));
 	}
 
 	/** 振出管理データの更新 */
@@ -238,17 +218,8 @@ public class SubstitutionHolidayProcess {
 		}
 	}
 
-	public static interface RequireM5 extends RequireM8, RequireM7, RequireM6, RequireM4 {}
+	public static interface RequireM5 extends RequireM8, RequireM7 {}
 	
-	public static interface RequireM4 {
-		
-		void deletePayoutManagementDataAfter(String sid, boolean unknownDateFlag, GeneralDate target);
-	}
-	
-	public static interface RequireM6 {
-		
-		void deleteSubstitutionOfHDManagementDataAfter(String sid, boolean unknownDateFlag, GeneralDate target);
-	}
 	
 	public static interface RequireM7 {
 		

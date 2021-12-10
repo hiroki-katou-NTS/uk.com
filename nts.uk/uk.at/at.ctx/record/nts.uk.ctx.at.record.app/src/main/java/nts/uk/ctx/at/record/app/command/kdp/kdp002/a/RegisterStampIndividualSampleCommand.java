@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
@@ -67,7 +67,7 @@ public class RegisterStampIndividualSampleCommand {
 	 */
 	public ButtonType toButtonType() {
 		StampType stampType = new StampType(changeHalfDay, GoingOutReason.valueOf(goOutArt),
-				SetPreClockArt.valueOf(setPreClockArt), ChangeClockArt.valueOf(changeClockArt),
+				SetPreClockArt.valueOf(setPreClockArt), ChangeClockAtr.valueOf(changeClockArt),
 				ChangeCalArt.valueOf(changeCalArt));
 		return new ButtonType(ReservationArt.valueOf(reservationArt), Optional.of(stampType));
 	}

@@ -9,6 +9,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
@@ -66,6 +68,8 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -83,6 +87,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ScheduleCreatorExecutionService {
 	@Inject
 	private ManagedParallelWithContext parallel;
@@ -178,6 +183,9 @@ public class ScheduleCreatorExecutionService {
 	private EmploymentHisScheduleAdapter scheAdapter;
 	
 	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+	
+	@Inject
 	protected TransactionService transactionService;
 
 	/** The Constant DEFAULT_CODE. */
@@ -225,8 +233,8 @@ public class ScheduleCreatorExecutionService {
 	// 休業
 	public static final int HOLIDAY = 3;
 
-	public void handle(ScheduleCreatorExecutionCommand command,
-			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask) {
+	@SuppressWarnings("rawtypes")
+	public void handle(ScheduleCreatorExecutionCommand command, Optional<AsyncCommandHandlerContext> asyncTask) {
 		System.out.println("Run batch service !");
 		LoginUserContext loginUserContext = AppContexts.user();
 
@@ -278,8 +286,8 @@ public class ScheduleCreatorExecutionService {
 	 * @param context
 	 */
 	private void registerPersonalSchedule(ScheduleCreatorExecutionCommand command,
-			ScheduleExecutionLog scheduleExecutionLog, 
-			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask,
+			ScheduleExecutionLog scheduleExecutionLog,
+			@SuppressWarnings("rawtypes") Optional<AsyncCommandHandlerContext> asyncTask,
 			String companyId) {
 
 		String exeId = command.getExecutionId();
@@ -299,17 +307,18 @@ public class ScheduleCreatorExecutionService {
 		CacheCarrier carrier = new CacheCarrier();
 		this.parallel.forEach(
 				scheduleCreators.stream().sorted((a,b) -> a.getEmployeeId().compareTo(b.getEmployeeId())).collect(Collectors.toList()),
-				scheduleCreator -> {
-					
-			transactionService.execute(() -> createScheOnePerson(command, scheduleExecutionLog, asyncTask, companyId, exeId, period, masterCache,
-					companySetting, checkStop, carrier, scheduleCreator));
+				scheduleCreator -> {					
+					transactionService.execute(() -> createScheOnePerson(command, scheduleExecutionLog, asyncTask, companyId, exeId, period, masterCache,
+						companySetting, checkStop, carrier, scheduleCreator));
+
 		});
 
 		transactionService.execute(() -> postExecute(command, scheduleExecutionLog, asyncTask, exeId, companySetting));
 	}
 
+	@SuppressWarnings("rawtypes")
 	private void createScheOnePerson(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
-			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask, String companyId, String exeId, DatePeriod period,
+			Optional<AsyncCommandHandlerContext> asyncTask, String companyId, String exeId, DatePeriod period,
 			CreateScheduleMasterCache masterCache, Object companySetting, AtomicBoolean checkStop, CacheCarrier carrier,
 			ScheduleCreator scheduleCreator) {
 		if (scheduleCreator == null)
@@ -383,8 +392,9 @@ public class ScheduleCreatorExecutionService {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	private void postExecute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
-			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask, String exeId, Object companySetting) {
+			Optional<AsyncCommandHandlerContext> asyncTask, String exeId, Object companySetting) {
 		scTimeAdapter.clearCompanySettingShareContainer(companySetting);
 
 		if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
@@ -489,7 +499,7 @@ public class ScheduleCreatorExecutionService {
 			for (val date : period.datesBetween()) {
 				// 「社員の予定管理状態」を取得する
 				// 「Output」・社員の予定管理状態一覧
-				EmployeeWorkingStatus.Require require = new ScheManaStatuTempoImpl(companyId, comHisAdapter,
+				EmployeeWorkingStatus.Require require = new EmployeeWorkingStatusRequireImpl(companyId, comHisAdapter,
 						conditionRespo, empHisAdapter, leaHisAdapter, scheAdapter);
 				EmployeeWorkingStatus manaStatuTempo = EmployeeWorkingStatus.create(require, id, date);
 				lstStatuTempos.add(manaStatuTempo);
@@ -697,8 +707,10 @@ public class ScheduleCreatorExecutionService {
 	}
 
 	@AllArgsConstructor
-	public static class ScheManaStatuTempoImpl implements EmployeeWorkingStatus.Require {
+	public class EmployeeWorkingStatusRequireImpl implements EmployeeWorkingStatus.Require {
+
 		String companyId = AppContexts.user().companyId();
+
 		@Inject
 		private EmpComHisAdapter comHisAdapter;
 
@@ -713,6 +725,7 @@ public class ScheduleCreatorExecutionService {
 
 		@Inject
 		private EmploymentHisScheduleAdapter scheAdapter;
+
 
 		@Override
 		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(String employeeId, GeneralDate date) {
@@ -751,5 +764,12 @@ public class ScheduleCreatorExecutionService {
 				return Optional.empty();
 			return Optional.of(result.get(0));
 		}
+
+
+		@Override
+		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
+			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
+		}
+
 	}
 }

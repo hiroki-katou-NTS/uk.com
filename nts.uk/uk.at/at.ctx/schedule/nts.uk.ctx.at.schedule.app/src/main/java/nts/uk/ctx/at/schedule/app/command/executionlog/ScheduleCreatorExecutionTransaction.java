@@ -143,7 +143,7 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
  * ScheduleCreatorExecutionCommandHandlerから並列で実行されるトランザクション処理を担当するサービス
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class ScheduleCreatorExecutionTransaction {
 
 	/** The schedule creator repository. */
@@ -227,8 +227,9 @@ public class ScheduleCreatorExecutionTransaction {
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
 	
+	@SuppressWarnings("rawtypes")
 	public void execute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
-			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask, String companyId, String exeId,
+			Optional<AsyncCommandHandlerContext> asyncTask, String companyId, String exeId,
 			DatePeriod period, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			Object companySetting, ScheduleCreator scheduleCreator, CacheCarrier carrier) {
 		RegistrationListDateSchedule registrationListDateSchedule = new RegistrationListDateSchedule(new ArrayList<>());
@@ -270,8 +271,9 @@ public class ScheduleCreatorExecutionTransaction {
 //		});
 	}
 
+	@SuppressWarnings("rawtypes")
 	private void createSchedule(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
-			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask, DatePeriod period,
+			Optional<AsyncCommandHandlerContext> asyncTask, DatePeriod period,
 			CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule, Object companySetting,
 			ScheduleCreator scheduleCreator, RegistrationListDateSchedule registrationListDateSchedule,
 			ScheduleCreateContent content, CacheCarrier carrier) {
@@ -495,9 +497,10 @@ public class ScheduleCreatorExecutionTransaction {
 	 * @param mapFlowWorkSetting
 	 * @param mapDiffTimeWorkSetting
 	 */
+	@SuppressWarnings("rawtypes")
 	private OutputCreateSchedule createScheduleBasedPersonWithMultiThread(ScheduleCreatorExecutionCommand command,
 			ScheduleCreator creator, ScheduleExecutionLog domain,
-			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask, DatePeriod targetPeriod,
+			Optional<AsyncCommandHandlerContext> asyncTask, DatePeriod targetPeriod,
 			CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			RegistrationListDateSchedule registrationListDateSchedule, CacheCarrier carrier) {
 
@@ -1072,7 +1075,6 @@ public class ScheduleCreatorExecutionTransaction {
 						&& optEmploymentInfo.get().getOptTempAbsenceFrameNo().isPresent()) {
 					lstWorkType = workTypeRepository.findHolidayWorkTypeClo(command.getCompanyId(),
 							DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-							//ScheManaStatus.ON_LEAVE = WorkTypeClassification.LeaveOfAbsence, ScheManaStatus.CLOSED = WorkTypeClassification.Closure
 							optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE ? 12 : 13, 
 							optEmploymentInfo.get().getOptTempAbsenceFrameNo().get().v().intValue() - 2); // CloseAtr
 				}
