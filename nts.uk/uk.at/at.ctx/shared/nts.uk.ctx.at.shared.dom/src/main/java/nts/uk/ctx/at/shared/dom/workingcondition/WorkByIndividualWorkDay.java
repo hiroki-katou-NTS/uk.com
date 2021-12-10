@@ -150,20 +150,9 @@ public class WorkByIndividualWorkDay extends DomainObject{
 		
 		// 1日半日出勤・1日休日系の判定（休出判定あり）
 		AttendanceDayAttr attAtr = workType.chechAttendanceDay();
-		if (attAtr == AttendanceDayAttr.HOLIDAY) {
-			return Optional.empty();
-		}
-
 		if (attAtr == AttendanceDayAttr.HOLIDAY_WORK) {
 			// 休出時の勤務情報を取得する
-			WorkInformation workInfo = this.getWorkinfoOnVacation(workType);
-			if (workInfo.getWorkTimeCodeNotNull().isPresent()) {
-				return Optional.of(new WorkInformation(workType.getWorkTypeCode(), workInfo.getWorkTimeCode()));
-			}
-
-			// 勤務情報を作成
-			return Optional.of(new WorkInformation(workType.getWorkTypeCode(),
-					inOtherCase().orElse(null)));
+			return Optional.of(this.getWorkinfoOnVacation(workType));
 		}
 
 		WorkInformation workInfo = this.getWorkInformationDayOfTheWeek(date);
