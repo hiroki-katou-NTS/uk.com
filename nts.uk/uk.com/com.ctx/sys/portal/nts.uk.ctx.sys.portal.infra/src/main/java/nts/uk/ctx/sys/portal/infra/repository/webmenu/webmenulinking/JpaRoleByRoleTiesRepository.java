@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking.SptmtRoleByRole
 public class JpaRoleByRoleTiesRepository extends JpaRepository implements  RoleByRoleTiesRepository {
 
 	private static final String  GET_ROLE_BY_ROLE_TIES_BY_CODE = "SELECT c FROM SptmtRoleByRoleTies c "
-			+ " WHERE c.roleId  = :roleId ";
+			+ " WHERE c.pk.roleId  = :roleId ";
 	
 	@Override
 	public void insertRoleByRoleTies(RoleByRoleTies roleByRoleTies) {
@@ -38,7 +38,7 @@ public class JpaRoleByRoleTiesRepository extends JpaRepository implements  RoleB
 	@Override
 	public Optional<RoleByRoleTies> getByRoleIdAndCompanyId(String roleId, String companyId) {
 		Optional<RoleByRoleTies> data = this.queryProxy().query(GET_ROLE_BY_ROLE_TIES_BY_CODE 
-				+ "AND (c.companyId = :companyId OR c.companyId = '000000000000-0000')", SptmtRoleByRoleTies.class)
+				+ "AND (c.pk.companyId = :companyId OR c.pk.companyId = '000000000000-0000')", SptmtRoleByRoleTies.class)
 				.setParameter("roleId", roleId)
 				.setParameter("companyId", companyId)
 				.getSingle(c -> c.toDomain());
