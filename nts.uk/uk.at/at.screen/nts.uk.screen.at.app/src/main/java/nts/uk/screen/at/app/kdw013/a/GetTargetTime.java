@@ -52,6 +52,10 @@ public class GetTargetTime {
 		List<GeneralDate> dates = inputDates.stream().filter(x -> x.afterOrEquals(period.start()))
 				.collect(Collectors.toList());
 		
+		if (dates.isEmpty()) {
+			return result;
+		}
+		
 		//2 .get (対象社員,年月日リスト)
 		
 		List<AttendanceTimeOfDailyPerformance> atts =  this.attendanceTimeRepository.find(sid, dates);

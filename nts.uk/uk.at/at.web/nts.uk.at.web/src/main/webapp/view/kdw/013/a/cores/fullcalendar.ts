@@ -2583,15 +2583,15 @@ module nts.uk.ui.at.kdw013.calendar {
                 },
                 eventDrop: (arg: EventDropArg) => {
                     let { event, relatedEvents } = arg;
-                    const { start, end, id, title, extendedProps, borderColor, groupId } = event;
-                    const rels = relatedEvents.map(({ start, end }) => ({ start, end }));
+                    let { start, end, id, title, extendedProps, borderColor, groupId } = event;
+                    let rels = relatedEvents.map(({ start, end }) => ({ start, end }));
 
                     vm.selectedEvents = [{ start, end }, ...rels];
 
                     event.setExtendedProp('isChanged', true);
-                    const data = ko.unwrap(vm.params.$datas);
-                    const startDate = moment(_.get(data, 'workStartDate'));
-                    const editableDay =  vm.getEditableDay(start);
+                    let data = ko.unwrap(vm.params.$datas);
+                    let startDate = moment(_.get(data, 'workStartDate'));
+                    let editableDay =  vm.getEditableDay(start);
                     if (startDate.isAfter(formatDate(start)) || !editableDay) {
                         arg.revert();
                         return;
@@ -2664,10 +2664,6 @@ module nts.uk.ui.at.kdw013.calendar {
                             return;
                         }
                         
-                        return;
-                    }
-                  
-                    if (!IEvents.length) {
                         return;
                     }
                     
@@ -2764,7 +2760,16 @@ module nts.uk.ui.at.kdw013.calendar {
                         }
                     }
                     vm.params.screenA.dataChanged(true);
-                    
+                    mutatedEvents();
+
+                    let tempEs = [...events()];
+                    _.forEach(tempEs, (evn) => {
+                        if (evn.extendedProps.id == extendedProps.id) {
+                            evn.extendedProps.isChanged = true;
+                        };
+                    });
+                    events(tempEs);
+                    updateEvents();
                 },
                 eventResizeStart: (arg: EventResizeStartArg) => {
                     // remove new event (with no data) & background event
@@ -2898,9 +2903,14 @@ module nts.uk.ui.at.kdw013.calendar {
 
                   }
 				  
-                   const sEvent = _.find(vm.calendar.getEvents(), e => { return e.extendedProps.id == extendedProps.id });
-                        sEvent.setExtendedProp('isChanged', true);
-                        updateEvents();
+                   let tempEs = [...events()];
+                    _.forEach(tempEs, (evn) => {
+                        if (evn.extendedProps.id == extendedProps.id) {
+                            evn.extendedProps.isChanged = true;
+                        };
+                    });
+                    events(tempEs);
+                    updateEvents();
 
                 },
                 eventResizeStop: ({ el, event }) => {
