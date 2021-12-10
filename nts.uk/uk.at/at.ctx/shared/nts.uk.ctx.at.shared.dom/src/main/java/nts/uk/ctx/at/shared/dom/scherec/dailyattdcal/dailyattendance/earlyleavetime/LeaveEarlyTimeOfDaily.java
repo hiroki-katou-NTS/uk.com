@@ -272,15 +272,13 @@ public class LeaveEarlyTimeOfDaily {
 				.filter(f -> f.getWorkingHoursTimeNo().equals(new EmTimeFrameNo(this.workNo.v())))
 				.map(f -> f.getLeaveEarlyTimeSheet())
 				.findFirst().flatMap(l -> l);
-		//計算早退計上時間
+		//計算早退計上時間（丸め前）
 		AttendanceTime leaveEarlyCalcTime = leaveEarly.isPresent() ?
 				leaveEarly.get().calcForRecordTime(true, false, NotUseAtr.NOT_USE).getCalcTime() : AttendanceTime.ZERO;
-		
-		AttendanceTime roundAfter = AttendanceTime.ZERO;
-		if(leaveEarly.flatMap(l -> l.getForRecordTimeSheet()).isPresent()) {
-			//丸め後の早退時間
-			roundAfter = new AttendanceTime(leaveEarly.get().getForRecordTimeSheet().get().getAfterRoundingAsLeaveEarly().lengthAsMinutes());
-		}
+		//計算早退計上時間（丸め後）
+		AttendanceTime roundAfter = leaveEarly.isPresent() ?
+				leaveEarly.get().calcForRecordTime(true, false, NotUseAtr.USE).getCalcTime() : AttendanceTime.ZERO;
+		//休暇使用時間
 		AttendanceTime useTime = new AttendanceTime(this.timePaidUseTime.calcTotalVacationAddTime(Optional.of(holidayAddtionSet), AdditionAtr.WorkingHoursOnly));
 		if(leaveEarlyCalcTime.lessThanOrEqualTo(useTime) && roundAfter.greaterThan(useTime)) {
 			//丸め前だったら相殺しきれるが、丸め後だと相殺しきれない場合、休暇加算時間は丸め後の時間帯から計算した値を使いたい

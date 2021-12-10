@@ -224,11 +224,8 @@ public class LateLeaveEarlyTimeSheet extends TimeVacationOffSetItem{
 	 */
 	public TimeSpanForDailyCalc getAfterRoundingAsLate() {
 		//丸め差分
-		int roundDiff = this.rounding.round(this.timeSheet.lengthAsMinutes()) - this.timeSheet.lengthAsMinutes();
+		int roundDiff = this.calcTotalTime(NotUseAtr.USE, NotUseAtr.USE).valueAsMinutes() - this.calcTotalTime(NotUseAtr.USE, NotUseAtr.NOT_USE).valueAsMinutes();
 		TimeSpanForDailyCalc result = this.timeSheet.shiftEndAhead(roundDiff);
-		if(result.isReverse()) {
-			return result.shiftOnlyEnd(this.timeSheet.getStart());
-		}
 		return result;
 	}
 	
@@ -238,11 +235,8 @@ public class LateLeaveEarlyTimeSheet extends TimeVacationOffSetItem{
 	 */
 	public TimeSpanForDailyCalc getAfterRoundingAsLeaveEarly() {
 		//丸め差分
-		int roundDiff = this.rounding.round(this.timeSheet.lengthAsMinutes()) - this.timeSheet.lengthAsMinutes();
+		int roundDiff = this.calcTotalTime(NotUseAtr.USE, NotUseAtr.USE).valueAsMinutes() - this.calcTotalTime(NotUseAtr.USE, NotUseAtr.NOT_USE).valueAsMinutes();
 		TimeSpanForDailyCalc result = this.timeSheet.shiftStartBack(roundDiff);
-		if(result.isReverse()) {
-			return result.shiftOnlyStart(this.timeSheet.getEnd());
-		}
 		return result;
 	}
 	

@@ -350,15 +350,13 @@ public class LateTimeOfDaily {
 				.filter(f -> f.getWorkingHoursTimeNo().equals(new EmTimeFrameNo(this.workNo.v())))
 				.map(f -> f.getLateTimeSheet())
 				.findFirst().flatMap(l -> l);
-		//計算遅刻計上時間
+		//計算遅刻計上時間（丸め前）
 		AttendanceTime lateCalcTime = late.isPresent() ?
 				late.get().calcForRecordTime(true, false, NotUseAtr.NOT_USE).getCalcTime() : AttendanceTime.ZERO;
-		
-		AttendanceTime roundAfter = AttendanceTime.ZERO;
-		if(late.flatMap(l -> l.getForRecordTimeSheet()).isPresent()) {
-			//丸め後の遅刻時間
-			roundAfter = new AttendanceTime(late.get().getForRecordTimeSheet().get().getAfterRoundingAsLeaveEarly().lengthAsMinutes());
-		}
+		//計算遅刻計上時間（丸め後）
+		AttendanceTime roundAfter = late.isPresent() ?
+				late.get().calcForRecordTime(true, false, NotUseAtr.USE).getCalcTime() : AttendanceTime.ZERO;
+		//休暇使用時間
 		AttendanceTime useTime = new AttendanceTime(this.timePaidUseTime.calcTotalVacationAddTime(Optional.of(holidayAddtionSet), AdditionAtr.WorkingHoursOnly));
 		if(lateCalcTime.lessThanOrEqualTo(useTime) && roundAfter.greaterThan(useTime)) {
 			//丸め前だったら相殺しきれるが、丸め後だと相殺しきれない場合、休暇加算時間は丸め後の時間帯から計算した値を使いたい
