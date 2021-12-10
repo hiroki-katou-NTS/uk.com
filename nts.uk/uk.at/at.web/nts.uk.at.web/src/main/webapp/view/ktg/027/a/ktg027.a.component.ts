@@ -454,13 +454,18 @@ module nts.uk.at.view.ktg027.a {
                     errorRefStartAtr: false,
                     changePeriodAtr: true,
                     screenMode: 0, //normal
-                    
                     lstEmployee: [item.employeeId],
+                    transitionDesScreen: '',
+                    yearMonth: vm.targetYear(),
                 },
                 extractionParam: {
                     displayFormat: 0, //individual
                     startDate: vm.targetYear(),
-                    endDate: vm.targetYear()
+                    endDate: vm.targetYear(),
+                    dateTarget: vm.targetYear(),
+                    lstExtractedEmployee: [item.employeeId],
+                    individualTarget: item.employeeId,
+
                 },
             };
             vm.$jump('at', "/view/kdw/003/a/index.xhtml", paramKDW003);
