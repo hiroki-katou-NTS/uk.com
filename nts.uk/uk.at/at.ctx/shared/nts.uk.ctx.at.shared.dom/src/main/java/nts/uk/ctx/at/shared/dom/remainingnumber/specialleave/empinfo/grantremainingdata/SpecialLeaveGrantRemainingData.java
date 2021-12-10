@@ -6,9 +6,11 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 
 @Getter
 /** 特別休暇付与残数データ */
@@ -38,21 +40,12 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 			double usedPercent,
 			int specialLeaveCode) {
 
-		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
-		domain.leaveID = leavID;
-		domain.employeeId = employeeId;
-		domain.grantDate = grantDate;
-		domain.deadline = deadline;
-		domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
-		domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
-		domain.details = new SpecialLeaveNumberInfo(
-				grantDays, grantMinutes, usedDays, usedMinutes,
-				stowageDays, numberOverDays,
-				timeOver, remainDays, remainMinutes, usedPercent);
-
-		domain.specialLeaveCode = specialLeaveCode;
-
-		return domain;
+		return new SpecialLeaveGrantRemainingData(leavID, employeeId, grantDate, deadline,
+				EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class),
+				EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class),
+				new SpecialLeaveNumberInfo(grantDays, grantMinutes, usedDays, usedMinutes, stowageDays, numberOverDays,
+						timeOver, remainDays, remainMinutes, usedPercent),
+				specialLeaveCode);
 	}
 
 	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
@@ -103,19 +96,57 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 	}
 
 	public static SpecialLeaveGrantRemainingData of(LeaveGrantRemainingData remain, int code) {
-		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
+		return new SpecialLeaveGrantRemainingData(remain.getLeaveID(), remain.getEmployeeId(), remain.getGrantDate(),
+				remain.getDeadline(), remain.getExpirationStatus(), remain.getRegisterType(),
+				remain.getDetails().clone(), code);
+	}
+	
+	
+	/**
+	 * コンストラクタ
+	 * @param employeeId
+	 * @param grantDate
+	 * @param deadline
+	 * @param expirationStatus
+	 * @param grantRemainRegisterType
+	 * @param leaveNumberInfo
+	 * @param specialLeaveCode
+	 */
+	public SpecialLeaveGrantRemainingData(String employeeId, GeneralDate grantDate, GeneralDate deadline,
+			LeaveExpirationStatus expirationStatus, GrantRemainRegisterType grantRemainRegisterType,
+			LeaveNumberInfo leaveNumberInfo, int specialLeaveCode) {
 
-		domain.leaveID = remain.getLeaveID();
-		domain.employeeId = remain.getEmployeeId();
-		domain.grantDate = remain.getGrantDate();
-		domain.deadline = remain.getDeadline();
-		domain.expirationStatus = remain.getExpirationStatus();
-		domain.registerType = remain.getRegisterType();
-		domain.details = remain.getDetails().clone();
+		super(IdentifierUtil.randomUniqueId(), employeeId, grantDate, deadline, expirationStatus,
+				grantRemainRegisterType,leaveNumberInfo);
+		this.specialLeaveCode = specialLeaveCode;
+	}
+	/**
+	 * コンストラクタ
+	 * @param leaveID
+	 * @param employeeId
+	 * @param grantDate
+	 * @param deadline
+	 * @param expirationStatus
+	 * @param grantRemainRegisterType
+	 * @param leaveNumberInfo
+	 * @param specialLeaveCode
+	 */
+	public SpecialLeaveGrantRemainingData(String leaveID, String employeeId, GeneralDate grantDate,
+			GeneralDate deadline, LeaveExpirationStatus expirationStatus,
+			GrantRemainRegisterType grantRemainRegisterType, LeaveNumberInfo leaveNumberInfo, int specialLeaveCode) {
 
-		domain.specialLeaveCode = code;
-
-		return domain;
+		super(leaveID, employeeId, grantDate, deadline, expirationStatus, grantRemainRegisterType, leaveNumberInfo);
+		this.specialLeaveCode = specialLeaveCode;
+	}
+	
+	/**
+	 * コンストラクタ
+	 * @param data
+	 */
+	public SpecialLeaveGrantRemainingData(SpecialLeaveGrantRemainingData data) {
+		super(data.getLeaveID(), data.getEmployeeId(), data.getGrantDate(), data.getDeadline(),
+				data.getExpirationStatus(), data.getRegisterType(), data.getDetails().clone());
+		this.specialLeaveCode = data.getSpecialLeaveCode();
 	}
 
 }
