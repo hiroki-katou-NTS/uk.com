@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class AggregateNumberPeopleDto {
 				)
 				.entrySet()
 				.stream()
-				.map(x -> new NumberPeopleMapDtoList(x.getKey(), x.getValue()))
+				.map(x -> new NumberPeopleMapDtoList(x.getKey(), x.getValue().stream().sorted(Comparator.nullsLast(Comparator.comparing(y -> y.code))).collect(Collectors.toList())))
 				.collect(Collectors.toList());
 	}
 	
@@ -69,12 +70,17 @@ public class AggregateNumberPeopleDto {
 				)
 				.entrySet()
 				.stream()
-				.map(x -> new NumberPeopleMapDtoList(x.getKey(), x.getValue()))
+				.map(x -> new NumberPeopleMapDtoList(x.getKey(), x.getValue().stream().sorted(Comparator.nullsLast(Comparator.comparing(y -> y.code))).collect(Collectors.toList())))
 				.collect(Collectors.toList());
 	}
 	
 	public List<NumberPeopleMapDtoList> convertJobTitleInfo() {
-		return this.jobTitleInfo
+		
+		// sort condition
+		Comparator<NumberPeopleMapDto> sortCond = Comparator.comparing(NumberPeopleMapDto::getRankCode,Comparator.nullsLast(Comparator.naturalOrder()))
+				.thenComparing(NumberPeopleMapDto::getCode);
+		
+		List<NumberPeopleMapDtoList> rs = this.jobTitleInfo
 				.entrySet()
 				.stream()
 				.collect(Collectors.toMap(
@@ -85,14 +91,17 @@ public class AggregateNumberPeopleDto {
 							  .map(x -> new NumberPeopleMapDto(
 									  x.getKey().getJobTitleCode(),
 									  x.getKey().getJobTitleName(),
-									  x.getValue()
+									  x.getValue(),
+									  x.getKey().getSequenceCode()
 									  ))
 							  .collect(Collectors.toList())
 						)
 				)
 				.entrySet()
 				.stream()
-				.map(x -> new NumberPeopleMapDtoList(x.getKey(), x.getValue()))
+				.map(x -> new NumberPeopleMapDtoList(x.getKey(), x.getValue().stream().sorted(sortCond).collect(Collectors.toList())))
 				.collect(Collectors.toList());
+		
+		return rs;
 	}
 }

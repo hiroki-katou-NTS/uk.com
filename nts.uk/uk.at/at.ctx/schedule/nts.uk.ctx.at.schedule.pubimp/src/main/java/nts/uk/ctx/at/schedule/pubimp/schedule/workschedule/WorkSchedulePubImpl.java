@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeave
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -258,6 +259,16 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
                 }).collect(Collectors.toList());
                 result.setListShortWorkingTimeSheetExport(listExport);                          
             });     
+            
+            List<BreakTimeSheet> breakTimeSheets = x.getLstBreakTime().getBreakTimeSheets();
+            List<BreakTimeSheetExport> breakTimeSheetExports = breakTimeSheets.stream().map(y -> {
+                return new BreakTimeSheetExport(
+                        y.getBreakFrameNo().v(), 
+                        y.getStartTime() != null ? y.getStartTime().v() : 0, 
+                        y.getEndTime() != null ? y.getEndTime().v() : 0, 
+                        y.getBreakTime() != null ? y.getBreakTime().v() : 0);
+            }).collect(Collectors.toList());
+            result.setListBreakTimeSheetExports(breakTimeSheetExports);
         });
         
 

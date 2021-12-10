@@ -125,6 +125,8 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		//処理した社員の実行状況を「完了」にする
 		return ProcessStateReflect.SUCCESS;
 	}
+	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public void reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod,
 			ExecutionTypeExImport refAppResult) {
@@ -156,11 +158,13 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		
 		this.reflectAppOfAppDate(workId, sid, refAppResult, dateProcess);
 	}
+	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public void reflectAppOfAppDate(String workId, String sid, ExecutionTypeExImport refAppResult,
 			DatePeriod appDatePeriod) {
 		
-		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(AppContexts.user().companyId(), sid, GeneralDate.today());
+		List<SEmpHistImport> sEmpHistImport = employeeAdapter.getEmpHist(AppContexts.user().companyId(), sid);
 		
 		List<Application> lstApp = this.getApps(sid, appDatePeriod, refAppResult);
 		
@@ -324,6 +328,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		return t -> seen.add(keyExtractor.apply(t));
 	}
 
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessStateReflect reflectAppOfEmployeeTotal(String workId, String sid, DatePeriod datePeriod) {
 		Optional<ExeStateOfCalAndSumImport> optState = execuLog.executionStatus(workId);
@@ -340,6 +345,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		return ProcessStateReflect.SUCCESS;
 	}
 
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public void reflectApplication(List<String> lstID) {
 		List<Application> lstApplication = repoApp.findByListID(AppContexts.user().companyId(), lstID);

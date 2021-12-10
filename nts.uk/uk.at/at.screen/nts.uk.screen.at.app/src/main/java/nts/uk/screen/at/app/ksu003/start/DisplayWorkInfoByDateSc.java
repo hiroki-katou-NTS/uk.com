@@ -41,6 +41,10 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.screen.at.app.ksu001.start.SupportCategory;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.AllTaskScheduleDetail;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.EmpTaskInfoDto;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.GetListEmpWorkHours;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.TaskInfoDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DailyAttdTimeVacationDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DisplayWorkInfoByDateDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DisplayWorkInfoParam;
@@ -77,6 +81,8 @@ public class DisplayWorkInfoByDateSc {
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
 	@Inject
 	private GetFixedWorkInformation fixedWorkInformation;
+	@Inject
+	private GetListEmpWorkHours getListEmpWorkHours;
 
 	// return ・List<社員勤務情報　dto,社員勤務予定　dto,勤務固定情報　dto>
 	public List<DisplayWorkInfoByDateDto> displayDataKsu003(DisplayWorkInfoParam param) {
@@ -200,7 +206,7 @@ public class DisplayWorkInfoByDateSc {
 				// Lấy ID để so sánh ở \\192.168.50.4\share\500_新構想開発\04_設計\40_ドメイン設計\ドメイン仕様書\UK\at_就業\shared.scherec_shared(勤務予定、勤務実績)
 				// 休憩時間帯編集状態 = 勤務予定．編集状態．編集状態
 				Optional<EditStateOfDailyAttd> editStateDaily = value.get().getLstEditState().stream()
-						.filter(x -> x.getAttendanceItemId() == 535).findFirst();
+						.filter(x -> x.getAttendanceItemId() == 157).findFirst();
 				breakTimeStatus = editStateDaily.isPresent() && editStateDaily.get().getEditStateSetting() != null ? editStateDaily.get().getEditStateSetting().value : null;
 
 				// 開始時刻 1= 勤務予定．出退勤．出退勤．出勤
@@ -292,7 +298,26 @@ public class DisplayWorkInfoByDateSc {
 				workScheduleDto = null;
 			}
 			
-			infoByDateDto = new DisplayWorkInfoByDateDto(key.getEmployeeID(), workInfoDto, workScheduleDto, inforDto == null ? null : inforDto.getFixedWorkInforDto().get(0));
+			// 2.4
+			TaskInfoDto taskInfoDto = null;
+			//if(param.getSelectedDisplayPeriod() == 2) {
+				Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMa = new HashMap<EmployeeWorkingStatus, Optional<WorkSchedule>>();
+				mngStatusAndWScheMa.put(key, value);
+				
+				EmpTaskInfoDto infoDto = null;
+				
+				if(!getListEmpWorkHours.get(mngStatusAndWScheMa).isEmpty()) {
+					infoDto = getListEmpWorkHours.get(mngStatusAndWScheMa).get(0);
+					taskInfoDto = new TaskInfoDto(
+							infoDto.getDate(), 
+							infoDto.getEmpID(),
+							infoDto.getTaskScheduleDetail());
+				//}
+				
+			}
+			// 2.3.4
+			infoByDateDto = new DisplayWorkInfoByDateDto(key.getEmployeeID(), workInfoDto, workScheduleDto, inforDto == null ? null : inforDto.getFixedWorkInforDto().get(0), taskInfoDto);
+			
 			dateDtos.add(infoByDateDto);
 		};
 		

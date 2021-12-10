@@ -185,6 +185,8 @@ module nts.uk.ui.at.ksu002.a {
 		visibleA1_2: KnockoutObservable<boolean> = ko.observable(false);
 		visibleA1_3: KnockoutObservable<boolean> = ko.observable(false);
 		visibleA1_4: KnockoutObservable<boolean> = ko.observable(false);
+    
+        taskId = null;
 		
 		dr: c.DateRange = {
 				begin: null,
@@ -798,35 +800,75 @@ module nts.uk.ui.at.ksu002.a {
 
 						vm.$blockui('show')
 							.then(() => vm.$ajax('at', API.SAVE_DATA, command))
-							.then((info: HandlerResult) => {
-								vm.achievement(vm.achievement());
-								vm.achievement.valueHasMutated();
-								if (!info.listErrorInfo.length) {
-									return vm.$dialog.info({ messageId: 'Msg_15' }).then(() => vm.schedules.reset(true));
-								} else {
-									const { listErrorInfo, registered } = info;
-									const params = {
-										errorRegistrationList: listErrorInfo,
-										employeeIds: [sid],
-										isRegistered: Number(registered)
-									};
-									setShared('dataShareDialogKDL053', params);
-									// call KDL053
-									try {
-									  vm.kdl053Open.close();
-									}
-									catch (exception_var) {}
-									
-									vm.kdl053Open =  nts.uk.ui.windows.sub.modeless('at', '/view/kdl/053/a/index.xhtml');
-									return vm.kdl053Open;
-								}
-							})
+                            .then((rs: any) => {
+                                vm.taskId = rs.taskInfor.id;
+                                vm.checkStateAsyncTask();
+                            });
 							// reload data
 							// .then(() => vm.achievement.valueHasMutated())
-							.always(() => vm.$blockui('clear'));
+							//.always(() => vm.$blockui('clear'));
 					}
 				});
-		}
+        }
+
+        checkStateAsyncTask() {
+            let vm = this;
+
+            nts.uk.deferred.repeat(conf => conf
+                .task(() => {
+                    return nts.uk.request.asyncTask.getInfo(vm.taskId).done(function(res: any) {
+                        // finish task
+                        if (res.succeeded || res.failed || res.cancelled) {
+                            vm.$blockui('clear');
+                            let arrayItems = [];
+                            let dataResult: any = {};
+                            dataResult.listErrorInfo = [];
+                            dataResult.hasError = false;
+                            dataResult.isRegistered = true;
+                            _.forEach(res.taskDatas, item => {
+                                if (item.key == 'STATUS_REGISTER') {
+                                    dataResult.isRegistered = item.valueAsBoolean;
+                                } else if (item.key == 'STATUS_ERROR') {
+                                    dataResult.hasError = item.valueAsBoolean;
+                                } else {
+                                    arrayItems.push(item);
+                                }
+                            });
+
+                            if (arrayItems.length > 0) {
+                                let listErrorInfo = _.map(arrayItems, obj2 => {
+                                    return new InforError(JSON.parse(obj2.valueAsString));
+                                });
+                                dataResult.listErrorInfo = listErrorInfo;
+                            }
+
+                            vm.achievement(vm.achievement());
+                            vm.achievement.valueHasMutated();
+                            if (!dataResult.listErrorInfo.length) {
+                                return vm.$dialog.info({ messageId: 'Msg_15' }).then(() => { vm.schedules.reset(true); });
+                            } else {
+                                const { listErrorInfo, registered } = dataResult;
+                                const params = {
+                                    errorRegistrationList: listErrorInfo,
+                                    employeeIds: [vm.$user.employeeId],
+                                    isRegistered: Number(registered)
+                                };
+                                setShared('dataShareDialogKDL053', params);
+                                // call KDL053
+                                try {
+                                    vm.kdl053Open.close();
+                                }
+                                catch (exception_var) { }
+
+                                vm.kdl053Open = nts.uk.ui.windows.sub.modeless('at', '/view/kdl/053/a/index.xhtml');
+                                return vm.kdl053Open;
+                            }
+                        }
+                    });
+                }).while(infor => {
+                    return infor.pending || infor.running;
+                }).pause(1000));
+        }
 
 		// check state & memento data
 		private memento(current: DayDataSave2Memento, preview: DayDataSave2Memento) {
@@ -983,12 +1025,39 @@ module nts.uk.ui.at.ksu002.a {
 		optWorkplaceEventName: string | null;
 	}
 
-	interface EditStateOfDailyAttd {
-		// 勤怠項目ID
-		attendanceItemId: number;
-		// 編集状態: 日別実績の編集状態
-		editStateSetting: EDIT_STATE;
-	}
+    interface EditStateOfDailyAttd {
+        // 勤怠項目ID
+        attendanceItemId: number;
+        // 編集状態: 日別実績の編集状態
+        editStateSetting: EDIT_STATE;
+    }
+
+    interface IError {
+        sid: string,
+        scd: string,
+        empName: string,
+        date: string,
+        attendanceItemId: string,
+        errorMessage: string,
+    }
+
+    export class InforError {
+        sid: string;
+        scd: string;
+        empName: string;
+        date: string;
+        attendanceItemId: string;
+        errorMessage: string;
+        constructor(param: IError) {
+            let self = this;
+            self.sid = param.sid;
+            self.scd = param.scd;
+            self.empName = param.empName;
+            self.date = param.date;
+            self.attendanceItemId = param.attendanceItemId;
+            self.errorMessage = param.errorMessage;
+        }
+    }
 }
 function calculateDaysStartEndWeek(start: Date, end: Date, settingDayStart: number, isSelectedSettingDayStart: boolean): ({start: Date, end: Date}){
 	if(isSelectedSettingDayStart){
@@ -1013,5 +1082,8 @@ function calculateDaysStartEndWeek(start: Date, end: Date, settingDayStart: numb
 	}
 }
 function converNumberToTime(number: number): string{
+	if (-60 < number &&  number < 0) {
+		return ('-' + Math.ceil(number/60).toString() +':'+ (Math.abs(number%60) == 0 ? '00': (Math.abs(number%60)).toString())); 
+	}
 	return (number < 0 ? Math.ceil(number/60).toString():Math.floor(number/60).toString()) +':'+ (Math.abs(number%60) == 0 ? '00': (Math.abs(number%60)).toString()); 
 }

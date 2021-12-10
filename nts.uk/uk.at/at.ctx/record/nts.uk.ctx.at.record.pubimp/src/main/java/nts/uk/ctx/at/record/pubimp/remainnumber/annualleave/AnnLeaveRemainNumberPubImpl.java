@@ -475,8 +475,15 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 
 		try {
 			String companyId = AppContexts.user().companyId();
+
 			// 社員に対応する処理締めを取得する
-			Optional<Closure> closure = checkShortageFlex.findClosureByEmployee(employeeId, GeneralDate.today());
+            //-----------------------------------------------------------------------------------
+			// 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
+			//Optional<Closure> closure = checkShortageFlex.findClosureByEmployee(employeeId, GeneralDate.today());
+			Optional<Closure> closure = checkShortageFlex.findClosureByEmployee(employeeId, datePeriod.end());
+			// 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 END
+            //-----------------------------------------------------------------------------------
+
 			if (!closure.isPresent())
 				return new ArrayList<>();
 			// 指定した年月の期間をすべて取得する
