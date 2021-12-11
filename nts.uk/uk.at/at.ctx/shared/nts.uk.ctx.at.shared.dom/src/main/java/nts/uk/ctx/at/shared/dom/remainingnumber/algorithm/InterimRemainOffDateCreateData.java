@@ -1502,6 +1502,7 @@ public class InterimRemainOffDateCreateData {
 		lstOutput.add(WorkTypeClassification.HolidayWork);
 		lstOutput.add(WorkTypeClassification.Shooting);
 		lstOutput.add(WorkTypeClassification.SpecialHoliday);
+		lstOutput.add(WorkTypeClassification.Holiday);
 		return lstOutput;
 	}
 

@@ -2720,6 +2720,10 @@ public class RecordDomRequireService {
 			return sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, processingDate);
 		}
 		
+		public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId){
+			return sharedAffWorkPlaceHisAdapter.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
+		}
+		
 		public List<SharedSidPeriodDateEmploymentImport> getEmpHistBySidAndPeriod(List<String> employeeID, DatePeriod Period){
 			return shareEmploymentAdapter.getEmpHistBySidAndPeriod(employeeID, Period);
 		}
@@ -2728,7 +2732,7 @@ public class RecordDomRequireService {
 			return this.tempPublicHolidayManagementRepo.findByPeriodOrderByYmd(employeeId, Period);
 		}
 		
-		public List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData(String employeeId){
+		public Optional<PublicHolidayCarryForwardData> publicHolidayCarryForwardData(String employeeId){
 			return this.publicHolidayCarryForwardDataRepo.get(employeeId);
 		}
 		
@@ -2764,17 +2768,8 @@ public class RecordDomRequireService {
 			this.publicHolidayCarryForwardDataRepo.delete(employeeId);
 		}
 		
-		public void deletePublicHolidayCarryForwardDataAfter(String employeeId, YearMonth yearMonth){
-			this.publicHolidayCarryForwardDataRepo.deleteThisMonthAfter(employeeId, yearMonth);
-		}
 		public void persistAndUpdateCarryForwardHistory(PublicHolidayCarryForwardHistory hist){
 			this.publicHolidayCarryForwardHistoryRepo.persistAndUpdate(hist);
-		}
-		
-		public void deleteCarryForwardDataHistoryAfter(
-				String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate){
-			this.publicHolidayCarryForwardHistoryRepo.deleteThisMonthAfter(
-							employeeId, yearMonth, closureId, closureDate);
 		}
 		
 		public void persistAndUpdateUseChildCare(String employeeId, ChildCareUsedNumberData domain){

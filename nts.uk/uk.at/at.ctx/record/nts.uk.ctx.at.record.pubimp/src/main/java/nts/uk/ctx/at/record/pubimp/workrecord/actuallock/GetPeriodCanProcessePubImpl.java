@@ -8,6 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -56,6 +58,7 @@ public class GetPeriodCanProcessePubImpl implements GetPeriodCanProcessePub {
 	@Inject
 	private EmpEmployeeAdapter employeeAdapter;
 
+
 	@Override
 	public List<DatePeriod> get(String employeeId, DatePeriod period, List<EmploymentHistoryExport> listEmploymentHis,
 			IgnoreFlagDuringLockExport ignoreFlagDuringLock, AchievementAtrExport achievementAtr) {
@@ -81,6 +84,7 @@ public class GetPeriodCanProcessePubImpl implements GetPeriodCanProcessePub {
 		private final EmploymentAdapter employmentAdapter;
 		private final CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
 		private final EmpEmployeeAdapter employeeAdapter;
+
 
 		@Override
 		public DatePeriod getClosurePeriod(int closureId, YearMonth processYm) {
