@@ -50,7 +50,7 @@ public class GetTargetTime {
 						.getOverTimeWork().get();
 
 				// 勤怠時間
-				int calOvertime = overTimeWork.calcTotalFrameTime();
+				int calOvertime = overTimeWork.calcTotalFrameTime().v();
 
 				// 1.2: [残業合計時間 > 0]:取得する(対象者,申請種類.残業申請,日別勤怠(Work).年月日,事前事後区分.事後):List<申請>
 				if (calOvertime > 0) {
@@ -76,7 +76,7 @@ public class GetTargetTime {
 						.getWorkHolidayTime().get();
 
 				// 勤怠時間
-				int calHolidayTime = holidayTime.calcTotalFrameTime();
+				int calHolidayTime = holidayTime.calcTotalFrameTime().v();
 
 				// 2.2: [休出合計時間 > 0]:取得する(対象者,申請種類.休出時間申請,日別勤怠(Work).年月日,事前事後区分.事後): List<申請>
 				if (calHolidayTime > 0) {

@@ -330,13 +330,4 @@ public class GetScheduleOfWorkInfo002 {
 		});
 		return rs;
 	}
-	
-	private static Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries(Map<String, List<WorkingConditionItemWithPeriod>> data) {
-		Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>> rs = new HashMap<>();
-		data.forEach( (k,v) -> {
-			List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>> s = v.stream().map(i->new DateHistoryCache.Entry<WorkingConditionItemWithPeriod>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
-			rs.put(k, s);
-		});
-		return rs;
-	}
 }
