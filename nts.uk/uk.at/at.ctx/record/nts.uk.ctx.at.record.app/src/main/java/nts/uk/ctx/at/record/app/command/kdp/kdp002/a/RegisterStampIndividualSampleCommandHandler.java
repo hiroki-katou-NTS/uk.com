@@ -158,7 +158,7 @@ public class RegisterStampIndividualSampleCommandHandler
 		 * 1. 作成する(@Require, 契約コード, 社員ID, 打刻カード番号, 日時, 打刻する方法, ボタン種類, 実績への反映内容, 打刻場所情報) */
 		TimeStampInputResult result = CreateStampDataForEmployeesService.create(required, AppContexts.user().companyId(),
 			new ContractCode(AppContexts.user().contractCode()), employeeId, Optional.empty(), cmd.retriveDateTime(), cmd.toRelieve(),
-				cmd.toButtonType().getStampType().map(m -> m).orElse(null), null, Optional.empty());
+				cmd.toStampType(), null, Optional.empty());
 		
 		/**
 		 * 2.  */
