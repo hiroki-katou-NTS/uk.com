@@ -1334,12 +1334,12 @@ module nts.uk.ui.at.kdw013.calendar {
             isShowBreakTime.subscribe(value => {
                     if(!value){
                         events(_.chain(events())
-                            .filter((evn) => { return !evn.extendedProps.isTimeBreak ||  (evn.extendedProps.isTimeBreak && evn.editable == false) })
+                            .filter((evn) => { return !evn.extendedProps.isTimeBreak  })
                             .value());
 
                         updateEvents();
 
-                        if (!_.find(vm.params.events(), (e) => { return _.get(e, 'extendedProps.isChanged') })) {
+                        if (!_.find(vm.params.events(), (e) => { return _.get(e, 'extendedProps.isChanged') }) && !vm.params.screenA.removeList().length ) {
                             
                             setTimeout(() => {vm.params.screenA.dataChanged(false)}, 100);
                         }
@@ -1390,7 +1390,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     });
                 
                 updateEvents();
-                if (!_.find(vm.params.events(), (e) => { return _.get(e, 'extendedProps.isChanged') })) {
+                if (!_.find(vm.params.events(), (e) => { return _.get(e, 'extendedProps.isChanged') }) && !vm.params.screenA.removeList().length ) {
                     setTimeout(() => {vm.params.screenA.dataChanged(false)}, 100);
                 }
             });
