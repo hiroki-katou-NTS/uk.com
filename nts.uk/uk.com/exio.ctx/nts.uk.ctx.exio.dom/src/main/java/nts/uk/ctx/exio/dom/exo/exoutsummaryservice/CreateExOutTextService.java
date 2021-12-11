@@ -6,14 +6,7 @@ import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -485,7 +478,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private OperationStateResult serverExOutTypeDataOrMaster(CategorySetting type, FileGeneratorContext generatorContext,
 			ExOutSetting exOutSetting, ExOutSettingResult settingResult, String fileName,GeneralDate baseDate) {
 		String loginSid = AppContexts.user().employeeId();
-		List<String> header = new ArrayList<>();
+		Map<String,String> header = new LinkedHashMap<>();
 		List<Map<String, Object>> csvData = new ArrayList<>();
 		StdOutputCondSet stdOutputCondSet = (StdOutputCondSet) settingResult.getStdOutputCondSet();
 		List<OutputItemCustom> outputItemCustomList = settingResult.getOutputItemCustomList();
@@ -515,7 +508,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			if (stringFormat == StringFormat.SINGLE_QUOTATION) {
 				outputName = stringFormat.character + outputName;
 			}
-			header.add(outputName);
+			header.put(outputItemCustom.getStandardOutputItem().getOutputItemCode().v(),outputName);
 		}
 
 		Map<String, String> sqlAndParam;
@@ -958,7 +951,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 			}
 			
-			lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
+			lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemCode().v(), targetValue);
 			index += outputItemCustom.getCtgItemDataList().size();
 		}
 
@@ -1501,7 +1494,6 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && (decimaValue.doubleValue() < 0))
 				? BigDecimal.valueOf(0) : decimaValue;
-		
 		if (setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
 			int precision = setting.getMinuteFractionDigit().map(item -> item.v()).orElse(0);
 			decimaValue = roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
@@ -1519,7 +1511,6 @@ public class CreateExOutTextService extends ExportService<Object> {
 			targetValue = fixlengthData(targetValue, setting.getFixedLongIntegerDigit().get().v(),
 					setting.getFixedLengthEditingMethod());
 		}
-
 		result.put(RESULT_STATE, state);
 		result.put(ERROR_MESS, errorMess);
 		result.put(RESULT_VALUE, targetValue);
