@@ -249,6 +249,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	private CheckCareService checkCareService;
 
 	private WorkingConditionItemService workingConditionItemService;
+	
 
 	public RequireImp(ComSubstVacationRepository comSubstVacationRepo,
 			CompensLeaveComSetRepository compensLeaveComSetRepo, SpecialLeaveGrantRepository specialLeaveGrantRepo,

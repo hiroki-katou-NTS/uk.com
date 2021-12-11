@@ -22,4 +22,7 @@ public interface PersonEmpBasicInfoPub {
 	List<PersonEmpBasicInfoDto> getEmpBasicInfo(String companyId, List<String> employeeIds);
 
 	//List<PersonEmployeeInfoDto> getEmployeesMatchingName(List<String> pid, String companyId);
+
+	// Pub get all Sid
+	List<String> getAllSidByCid(String cid);
 }

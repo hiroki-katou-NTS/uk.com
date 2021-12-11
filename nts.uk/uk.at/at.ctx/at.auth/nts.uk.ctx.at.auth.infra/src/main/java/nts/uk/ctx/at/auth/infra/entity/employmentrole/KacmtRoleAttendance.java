@@ -3,7 +3,6 @@ package nts.uk.ctx.at.auth.infra.entity.employmentrole;
 import java.io.Serializable;
 
 import javax.persistence.*;
-import javax.ws.rs.Path;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

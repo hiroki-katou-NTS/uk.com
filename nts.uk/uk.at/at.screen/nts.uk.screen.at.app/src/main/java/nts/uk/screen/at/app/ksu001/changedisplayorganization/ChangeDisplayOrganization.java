@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
@@ -54,7 +56,7 @@ public class ChangeDisplayOrganization {
 		}
 		// 抽出する(年月日, 対象組織識別情報)
 		List<EmployeeInformationImport> employeeInformationImports = 
-				screenQueryExtractTargetEmployees.getListEmp(new ExtractTargetEmployeesParam(param.getBaseDate(), targetOrgIdenInfor));
+				screenQueryExtractTargetEmployees.getListEmp(new ExtractTargetEmployeesParam(GeneralDate.today(), new DatePeriod(param.getStartDate(), param.getEndDate()), targetOrgIdenInfor));
 		output.setEmployeeInformationDtos(
 				employeeInformationImports.stream()
 										  .map(x -> new EmployeeInformationDto(

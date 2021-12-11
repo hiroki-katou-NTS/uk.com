@@ -124,7 +124,7 @@ public interface RoleRepository {
 	 * @return
 	 */
 	Map<String, String> findRoleIdAndNameByListRoleId(String cid, List<String> roleIds);
-	
+
 	/**
 	 * exists(会社ID, ロール種類, 担当区分毎に, ロールコード)
 	 * @param cid 会社ID
@@ -149,4 +149,12 @@ public interface RoleRepository {
 	 * @return ロール
 	 */
 	Optional<Role> getRoleWorks(String cid, String eplRoleId);
+
+	/**
+	 * find by company
+	 *
+	 * @param companyId
+	 * @return Role
+	 */
+	List<Role> findByCompanyId(String companyId);
 }
