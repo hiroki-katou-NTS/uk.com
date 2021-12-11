@@ -12,7 +12,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
                             <div class="text-note" data-bind="text: note.title"></div>
                         </div>
                         <div style='text-align: left;margin-left: 5px;width: calc(100% - 70px);' data-bind="foreach: { data: day.events, as: 'note' }">
-                            <div style='display: block;' class="text-note limited-label" data-bind="text: note.text"></div>
+                            <div style='display: block;' class="text-note limited-label" data-bind="html: note.text"></div>
                         </div>
                     </div>
                     <!-- ko if: $component.showHIcon(day.date) -->

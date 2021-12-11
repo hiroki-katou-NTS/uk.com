@@ -463,6 +463,10 @@ module nts.uk.ui.at.kdw013.a {
 
                     if (datas) {
                         
+                        setTimeout(() => {
+                            j ko.applyBindings($('.fc-evn-checkbox'));
+                        }, 200);
+                        
                       return   _.chain(dateRanges())
                             .map(date => {
                                 let events: string[] = [];
@@ -493,12 +497,12 @@ module nts.uk.ui.at.kdw013.a {
                                     if (!_.isNaN(Number(hr.value)) && hr.valueType == 1) {
                                         return (formatTime(hr.value, 'Time_Short_HM'));
                                     }
-
+                                    //check box
                                     if (_.get(attItem, 'masterType') == 9 && _.get(attItem, 'dailyAttendanceAtr') == 2 && hr.value == 1) {
-                                        return '☑ する'
+                                        return '<div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: true }">する</div>'
                                     }
                                     if (_.get(attItem, 'masterType') == 9 && _.get(attItem, 'dailyAttendanceAtr') == 2) {
-                                        return '☐ する'
+                                        return '<div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: false }">する</div>'
                                     }
 
                                     return hr.value;
@@ -518,9 +522,13 @@ module nts.uk.ui.at.kdw013.a {
                                 return { date, events };
                             })
                             .value();
+                        
+                         
                     }
-
+                  
                     return [] as calendar.AttendanceTime[];
+                   
+                    
                 }
             }).extend({ rateLimit: 500 });
             let inputDate = ko.unwrap(vm.inputDate);
