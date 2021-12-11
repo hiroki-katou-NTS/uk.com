@@ -559,12 +559,9 @@ public class DailyModifyRCommandFacade {
 						// 月次登録処理
 						errorMonthAfterCalc = errorMonth.getHasError();
 						if (!errorMonthAfterCalc) {
-							this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
+//							this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
 							
-							dataResultAfterIU.setDomainMonthOpt(resultMonth.getLstMonthDomain().isEmpty() ? Optional.empty()
-									: resultMonth.getLstMonthDomain().stream()
-											.map(x -> MonthlyRecordWorkDto.fromDtoWithOptional(x, optionalMaster))
-											.findFirst());
+							dataResultAfterIU.setDomainMonthOpt(Optional.empty());
 						}
 						// dataResultAfterIU.setErrorMap(errorMonth.getResultError());
 						dataResultAfterIU.setFlexShortage(errorMonth.getFlexShortage());
