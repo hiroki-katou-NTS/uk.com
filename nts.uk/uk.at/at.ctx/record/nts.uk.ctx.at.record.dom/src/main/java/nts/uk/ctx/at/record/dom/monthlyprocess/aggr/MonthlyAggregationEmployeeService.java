@@ -166,7 +166,7 @@ public class MonthlyAggregationEmployeeService {
 		IgnoreFlagDuringLock ignoreFlagDuringLock = executionLog.flatMap(c -> c.getIsCalWhenLock())
 				.map(c -> c ? IgnoreFlagDuringLock.CAN_CAL_LOCK : IgnoreFlagDuringLock.CANNOT_CAL_LOCK)
 				.orElse(IgnoreFlagDuringLock.CANNOT_CAL_LOCK);
-		
+
 //		List<BsEmploymentHistoryImport> employments = employeeSets.getEmployments();
 		
 		for (val aggrPeriod : aggrPeriods){

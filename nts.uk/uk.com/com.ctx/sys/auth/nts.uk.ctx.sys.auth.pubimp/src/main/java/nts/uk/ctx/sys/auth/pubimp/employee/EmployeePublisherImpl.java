@@ -541,10 +541,10 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		if (roleIndividualGrantOpt.isPresent()) {
 			return Optional.empty();
 		} else {
-			if (!roleSetOpt.isPresent())
+			if (!roleSetOpt.isPresent() || !roleSetOpt.get().getEmploymentRoleId().isPresent())
 				return Optional.empty();
 			else
-				return roleRepository.findByRoleId(roleSetOpt.get().getEmploymentRoleId());
+				return roleRepository.findByRoleId(roleSetOpt.get().getEmploymentRoleId().get());
 		}
 	}
 

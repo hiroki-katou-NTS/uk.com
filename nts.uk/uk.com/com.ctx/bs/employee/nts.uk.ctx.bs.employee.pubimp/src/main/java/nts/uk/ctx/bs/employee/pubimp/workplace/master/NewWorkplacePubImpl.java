@@ -97,7 +97,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 
 	@Override
 	public List<WorkplaceInforExport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
-			GeneralDate baseDate) {
+																GeneralDate baseDate) {
 		return wkpExpService.getWorkplaceInforFromWkpIds(companyId, listWorkplaceId, baseDate).stream()
 				.map(i -> new WorkplaceInforExport(i.getWorkplaceId(), i.getHierarchyCode(), i.getWorkplaceCode(),
 						i.getWorkplaceName(), i.getDisplayName(), i.getGenericName(), i.getExternalCode()))
@@ -116,7 +116,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 
 	@Override
 	public List<WorkplaceInforExport> getPastWorkplaceInfor(String companyId, String historyId,
-			List<String> listWorkplaceId) {
+															List<String> listWorkplaceId) {
 		return wkpExpService.getPastWorkplaceInfor(companyId, historyId, listWorkplaceId).stream()
 				.map(i -> new WorkplaceInforExport(i.getWorkplaceId(), i.getHierarchyCode(), i.getWorkplaceCode(),
 						i.getWorkplaceName(), i.getDisplayName(), i.getGenericName(), i.getExternalCode()))
@@ -828,7 +828,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		return listData;
 	}
 	
-	private SWkpHistExport convertFromWorkplaceInfo(WorkplaceInformation wkpInfo,AffWorkplaceHistory affWrkPlc) {
+	private SWkpHistExport convertFromWorkplaceInfo(WorkplaceInformation wkpInfo, AffWorkplaceHistory affWrkPlc) {
 		return SWkpHistExport.builder()
 				.dateRange(affWrkPlc.getHistoryItems().get(0).span())
 		.employeeId(affWrkPlc.getEmployeeId())
@@ -853,7 +853,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 				.hierarchyCd(configInfo.getHierarchyCode().v()).build()).collect(Collectors.toList());
 	}
 	@Override
-	public List<WorkplaceInforExport> findByWkpIds(List<String> wkpIds) {	
+	public List<WorkplaceInforExport> findByWkpIds(List<String> wkpIds) {
 		return workplaceInformationRepository.findByWkpIds(wkpIds).stream().map(i -> new WorkplaceInforExport(i.getWorkplaceId(), "", i.getWorkplaceCode().v(),
 				i.getWorkplaceName().v(), i.getWkpDisplayName().v(), i.getWkpGenericName().v(), i.getOutsideWkpCode().v())).collect(Collectors.toList());
 	}

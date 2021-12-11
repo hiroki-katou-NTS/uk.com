@@ -93,6 +93,7 @@ public class ProcessReflectWorkRecordTest {
 		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId,  stamp,
 				true, dateRefer, statusWorkRecord, new ArrayList<>(), "1");
 
+
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.REFLECTED);
 	}
 
@@ -125,12 +126,14 @@ public class ProcessReflectWorkRecordTest {
 
 				PreCheckProcessWorkRecord.preCheck(require, companyId, stamp, closureId, anyBoolean,
 						(ReflectStatusResult) any, dateRefer, (List<SEmpHistImport>)any);
+
 				result = new PreCheckProcessResult(NotUseAtr.NOT_USE, statusWorkRecord);
 			}
 		};
 
 		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId, stamp,
 				true, dateRefer, statusWorkRecord, new ArrayList<>(), "1");
+
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.NOTREFLECTED);
 	}
@@ -164,6 +167,7 @@ public class ProcessReflectWorkRecordTest {
 
 				PreCheckProcessWorkRecord.preCheck(require, companyId, stamp, closureId, anyBoolean,
 						(ReflectStatusResult) any, dateRefer, (List<SEmpHistImport>)any);
+
 				result = new PreCheckProcessResult(NotUseAtr.USE, statusWorkRecord);
 				
 				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResult) any, (GeneralDateTime) any, anyString);

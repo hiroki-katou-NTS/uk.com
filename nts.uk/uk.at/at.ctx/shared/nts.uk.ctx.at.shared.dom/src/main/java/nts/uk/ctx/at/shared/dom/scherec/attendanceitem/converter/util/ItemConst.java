@@ -174,6 +174,7 @@ public interface ItemConst extends Cloneable {
 	public final String MONTHLY_CHILD_CARE_HD_REMAIN_CODE = LAYOUT_K;
 	public final String MONTHLY_CHILD_CARE_HD_REMAIN_NAME = "子の看護月別残数データ";
 	
+	public final String MONTHLY_PUBLIC_HOLIDAYREMAIN_CODE = LAYOUT_M;
 	public final String MONTHLY_PUBLIC_HOLIDAYREMAIN_NAME = "公休月別残数データ";
 	
 	public final String AGREEMENT_TIME_OF_MANAGE_PERIOD_CODE = LAYOUT_L;
@@ -344,4 +345,6 @@ public interface ItemConst extends Cloneable {
 	public final String WORKREMARKS = "作業入力備考";
 	public final String THIS_YEAR = "本年";
 	public final String NEXT_YEAR = "翌年";
+	public final String NEXT_MONTH = "翌月";
+	public final String CARRIED_FORWARD = "繰越数";
 }

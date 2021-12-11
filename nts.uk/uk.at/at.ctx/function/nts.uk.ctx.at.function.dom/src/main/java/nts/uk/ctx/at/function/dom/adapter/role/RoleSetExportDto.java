@@ -13,7 +13,7 @@ public class RoleSetExportDto {
 
     private String roleSetName;
 
-    private int approvalAuthority;
+//    private int approvalAuthority;
 
     private String officeHelperRoleId;
 

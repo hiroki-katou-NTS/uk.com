@@ -745,7 +745,10 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					vm.fetchDataAppForLeave(success.applyForLeave);
 					vm.checkCondition32(success.applyForLeave);
 					if (hdAppSetInput && hdAppSetInput.length > 0) {
-						vm.hdAppSet(hdAppSetInput);
+						const hdAppSetTemp = _.filter(hdAppSetInput, (x) => {
+							return x.holidayAppType !== 6
+						});
+						vm.hdAppSet(hdAppSetTemp);
 					}
 					
 					vm.printContentOfEachAppDto().opPrintContentApplyForLeave = {
