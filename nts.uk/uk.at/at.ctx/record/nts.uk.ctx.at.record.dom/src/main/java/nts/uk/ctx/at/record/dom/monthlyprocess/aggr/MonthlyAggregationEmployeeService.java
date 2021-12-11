@@ -188,11 +188,11 @@ public class MonthlyAggregationEmployeeService {
 
 			// 「就業計算と集計実行ログ」を取得し、実行状況を確認する
 			val exeLogOpt = require.calAndSumExeLog(empCalAndSumExecLogID);
-			if (!exeLogOpt.isPresent()){
-				status.setState(ProcessState.INTERRUPTION);
-				return AggregationResult.build(status);
-			}
-			if (exeLogOpt.get().getExecutionStatus().isPresent()){
+//			if (!exeLogOpt.isPresent()){
+//				status.setState(ProcessState.INTERRUPTION);
+//				return AggregationResult.build(status);
+//			}
+			if (exeLogOpt.isPresent() && exeLogOpt.get().getExecutionStatus().isPresent()){
 				val executionStatus = exeLogOpt.get().getExecutionStatus().get();
 				if (executionStatus == ExeStateOfCalAndSum.START_INTERRUPTION){
 					status.setState(ProcessState.INTERRUPTION);
