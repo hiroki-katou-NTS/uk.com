@@ -863,7 +863,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 	}
 	
-	public <V> List<V> removeInsertData(List<V> oldDatas, List<V> newDatas, BiFunction<V, V, Boolean> keyCheck) {
+	private <V> List<V> removeInsertData(List<V> oldDatas, List<V> newDatas, BiFunction<V, V, Boolean> keyCheck) {
 		oldDatas.forEach(x -> {
 			if(!newDatas.stream().anyMatch(y -> keyCheck.apply(x, y))) {
 				this.commandProxy().remove(x);
