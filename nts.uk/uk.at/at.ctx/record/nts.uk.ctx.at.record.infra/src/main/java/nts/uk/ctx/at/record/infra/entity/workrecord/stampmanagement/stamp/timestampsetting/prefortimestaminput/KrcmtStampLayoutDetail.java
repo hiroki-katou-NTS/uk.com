@@ -55,7 +55,7 @@ private static final long serialVersionUID = 1L;
 	/**
 	 * 使用区分 0:使用しない 1:使用する
 	 */
-	@Column(name ="USE_ART")
+	@Column(name ="USE_ATR")
 	public int useArt;
 	
 	/** ボタン名称 */
@@ -66,19 +66,19 @@ private static final long serialVersionUID = 1L;
 	 * 時刻変更区分 0:出勤 1:退勤 2:入門 3:退門 4:応援開始 5:応援終了 6:応援出勤 7:外出 8:戻り 9:臨時+応援出勤
 	 * 10:臨時出勤 11:臨時退勤 12:PCログオン 13:PCログオフ
 	 */
-	@Column(name ="CHANGE_CLOCK_ART")
+	@Column(name ="CHANGE_CLOCK_ATR")
 	public int changeClockArt;
 	
 	/**
 	 * 計算区分変更対象 0:なし 1:早出 2:残業 3:休出 4:ﾌﾚｯｸｽ
 	 */
-	@Column(name ="CHANGE_CAL_ART")
+	@Column(name ="CHANGE_CAL_ATR")
 	public int changeCalArt;
 	
 	/**
 	 * 所定時刻セット区分 0:なし 1:直行 2:直帰
 	 */
-	@Column(name ="SET_PRE_CLOCK_ART")
+	@Column(name ="SET_PRE_CLOCK_ATR")
 	public int setPreClockArt;
 	
 	/**
@@ -90,7 +90,7 @@ private static final long serialVersionUID = 1L;
 	/**
 	 * 外出区分 0:私用 1:公用 2:有償 3:組合
 	 */
-	@Column(name ="GO_OUT_ART")
+	@Column(name ="GO_OUT_ATR")
 	public Integer goOutArt;
 	
 	/** コメント色 */
@@ -120,7 +120,7 @@ private static final long serialVersionUID = 1L;
 	 * 0：指定なし
 	 * 1：打刻時に選択
 	 */
-	@Column(name = "TASK_CHOICE_ART")
+	@Column(name = "TASK_CHOICE_ATR")
 	public Integer taskChoiceArt;
 	
 	@ManyToOne
