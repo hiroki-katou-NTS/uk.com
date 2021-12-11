@@ -187,7 +187,7 @@ public class DailyCalculationRCommandFacade {
 					new DailyCalcParam(mapSidDate, dataParent.getLstNotFoundWorkType(), resultOlds,
 							dataParent.getDateRange(), dataParent.getDailyEdits(), dataParent.getItemValues()),
 					editedDtos, domainOld, dailyItems, querys, monthParam, dataParent.getShowDialogError(),
-					executionType);
+					executionType,dataParent.getCheckUnLock());
 			if (dailyCalcResult.getResultUI() == null) {
 				return new DailyPerformanceCalculationDto(editedKeep, new ArrayList<>(),
 						new DataResultAfterIU(dailyCalcResult.getDataResultAfterIU().getErrorMap(), flexShortage, false,
