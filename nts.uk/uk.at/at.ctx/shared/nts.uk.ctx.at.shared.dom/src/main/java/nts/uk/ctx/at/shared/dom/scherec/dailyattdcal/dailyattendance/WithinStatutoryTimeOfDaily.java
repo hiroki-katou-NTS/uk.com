@@ -41,6 +41,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 日別実績の所定内時間
+ * 日別勤怠の所定内時間(new)
  * @author keisuke_hoshina
  */
 @Getter
@@ -59,8 +60,8 @@ public class WithinStatutoryTimeOfDaily {
 	@Setter
 	private WithinStatutoryMidNightTime withinStatutoryMidNightTime = new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)));
 
-
-	/** 就業時間金額 **/
+	/** 所定内労働時間金額   -  就業時間金額 ? **/
+	@Setter
 	private AttendanceAmountDaily withinWorkTimeAmount = new AttendanceAmountDaily(0);
 
 
@@ -386,7 +387,8 @@ public class WithinStatutoryTimeOfDaily {
 	 * @param lateEarlyMinusAtr 強制的に遅刻早退控除する
 	 * @return 実働就業時間
 	 */
-	public static AttendanceTime calcActualWorkTime(WithinWorkTimeSheet withinTimeSheet,
+	public static AttendanceTime calcActualWorkTime(
+			WithinWorkTimeSheet withinTimeSheet,
 			IntegrationOfDaily integrationOfDaily,
 			Optional<IntegrationOfWorkTime> integrationOfWorkTime,
 			VacationClass vacationClass,
@@ -404,17 +406,14 @@ public class WithinStatutoryTimeOfDaily {
 			NotUseAtr lateEarlyMinusAtr) {
 		
 		// 統合就業時間帯の確認
-		Optional<WorkTimeDailyAtr> workTimeDailyAtr = Optional.empty();	// 勤務形態区分
+		boolean isFlexDay = false;										// フレックス勤務日かどうか
 		Optional<CoreTimeSetting> coreTimeSetting = Optional.empty();	// コアタイム時間帯設定
 		if (integrationOfWorkTime.isPresent()){
 			WorkTimeSetting workTimeSet = integrationOfWorkTime.get().getWorkTimeSetting();	// 就業時間帯の設定
-			workTimeDailyAtr = Optional.of(workTimeSet.getWorkTimeDivision().getWorkTimeDailyAtr());
+			isFlexDay = workTimeSet.getWorkTimeDivision().isFlexWorkDay(conditionItem);
 			coreTimeSetting = integrationOfWorkTime.get().getCoreTimeSetting();
 		}
-		
-		if(conditionItem.getLaborSystem().isFlexTimeWork()
-			&& (!workTimeDailyAtr.isPresent() || workTimeDailyAtr.get().isFlex())) {
-			
+		if (isFlexDay) {
 			FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)withinTimeSheet;
 			Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime =
 					commonSetting.isPresent() &&

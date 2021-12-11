@@ -16,22 +16,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 @Getter
 public class ReserveLeaveNumberInfo extends LeaveNumberInfo implements Serializable {
 
-//	/**
-//	 * 付与数
-//	 */
-//	private ReserveLeaveGrantDayNumber grantNumber;
-//
-//	/**
-//	 * 使用数
-//	 */
-//	private ReserveLeaveUsedNumber usedNumber;
-//
-//	/**
-//	 * 残数
-//	 */
-//	@Setter
-//	private ReserveLeaveRemainingDayNumber remainingNumber;
-
 	private static final long serialVersionUID = 1L;
 
 	public ReserveLeaveNumberInfo(
@@ -40,12 +24,14 @@ public class ReserveLeaveNumberInfo extends LeaveNumberInfo implements Serializa
 			double usedDays,
 			Integer usedMinutes,
 			Double stowageDays,
+			Double numberOverDays,
+			Integer timeOver,
 			double remainDays,
 			Integer remainMinutes,
 			double usedPercent) {
 
 		super(grantDays, grantMinutes, usedDays, usedMinutes,
-			stowageDays, remainDays, remainMinutes,usedPercent);
+			stowageDays, numberOverDays, timeOver, remainDays, remainMinutes,usedPercent);
 	}
 
 	public ReserveLeaveNumberInfo(double grantDays, double usedDays,

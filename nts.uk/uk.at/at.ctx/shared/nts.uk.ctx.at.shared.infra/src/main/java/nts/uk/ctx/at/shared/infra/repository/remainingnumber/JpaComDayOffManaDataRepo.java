@@ -23,7 +23,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcdtHdComMng;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcdtHdWorkMng;
 import nts.uk.shr.com.context.AppContexts;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -98,6 +97,12 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 			throw new BusinessException("Msg_198");
 		}
 		this.commandProxy().remove(entity);
+	}
+	
+	@Override
+	public void deleteAllByEmployeeId(String employeeId) {
+		String jpql = "DELETE FROM KrcdtHdComMng a WHERE a.sID = :sid";
+		this.getEntityManager().createQuery(jpql).setParameter("sid", employeeId).executeUpdate();
 	}
 
 	/**
@@ -419,15 +424,6 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 				.getList(x -> toDomain(x));
 	}
 	
-	@Override
-	public void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target) {
 
-		this.getEntityManager().createQuery("DELETE FROM KrcdtHdComMng d WHERE d.sID = :sid "
-				+ " AND d.unknownDate = :unknownDate AND d.dayOff >= :targetDate", KrcdtHdWorkMng.class)
-		.setParameter("sid", sid)
-		.setParameter("unknownDate", unknownDateFlag)
-		.setParameter("targetDate", target)
-		.executeUpdate();
-	}
 
 }

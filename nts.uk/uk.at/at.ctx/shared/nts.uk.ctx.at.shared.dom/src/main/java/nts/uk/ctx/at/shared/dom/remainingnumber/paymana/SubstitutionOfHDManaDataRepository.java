@@ -39,6 +39,8 @@ public interface SubstitutionOfHDManaDataRepository {
 	
 	void delete(String subOfHDID);
 	
+	void deleteAllByEmployeeId(String employeeId);
+	
 	void update(SubstitutionOfHDManagementData domain);
 	
 	Optional<SubstitutionOfHDManagementData> findByID(String Id);
@@ -89,6 +91,4 @@ public interface SubstitutionOfHDManaDataRepository {
 	
 	List<SubstitutionOfHDManagementData> getByListId(List<String> subOfHDIDs);
 
-	/** 当月以降の管理データを削除 */
-	void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target);
 }

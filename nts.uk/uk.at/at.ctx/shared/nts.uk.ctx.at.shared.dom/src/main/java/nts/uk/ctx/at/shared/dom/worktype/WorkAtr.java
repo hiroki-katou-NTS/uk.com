@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.worktype;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
+/** 1日午前午後区分 */
 public enum WorkAtr {	
 	// 1日
 	OneDay(0),
@@ -63,6 +64,20 @@ public enum WorkAtr {
 		}
 
 		// Not found.
+		return null;
+	}
+	
+	/**
+	 * [1] 日数カウントを取得する	
+	 */
+	public DailyActualDayCount countDays() {
+		switch (this) {
+		case OneDay:
+			return new DailyActualDayCount(1.0);
+		case Monring:
+		case Afternoon:
+			return new DailyActualDayCount(0.5);
+		}
 		return null;
 	}
 }

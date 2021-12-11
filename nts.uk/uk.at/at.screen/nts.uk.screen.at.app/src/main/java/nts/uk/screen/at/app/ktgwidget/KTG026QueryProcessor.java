@@ -238,9 +238,9 @@ public class KTG026QueryProcessor {
 		}
 		
 		YearMonth loopYM = datePeriod.get().start().yearMonth();
-		int month = loopYM.month();
+		YearMonth nextYM = loopYM.addYears(1);
 		// 取得した期間の年月をループする
-		for (int i = month; i <= 12; i++) {
+		while (loopYM.lessThan(nextYM)) {
 			int ym = loopYM.v();
 			// ループする年月とINPUT．当月の年月の大小比較
 			if (processingDate.addMonths(2).lessThanOrEqualTo(loopYM)) { // [INPUT．当月の年月．AddMonth(2)<=ループする年月]がtrue

@@ -37,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyAggre
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.WeeklyCalculation;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
@@ -234,7 +235,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 					
 					// 週の計算
 					val weekCalc = newWeek.getWeeklyCalculation();
-					weekCalc.aggregate(companyId, employeeId, yearMonth, this.weekAggrPeriod,
+					weekCalc.aggregate(require, companyId, employeeId, yearMonth, this.weekAggrPeriod,
 							datePeriod, workingSystem, aggregateAtr, settingsByReg, settingsByDefo,
 							aggregateTotalWorkingTime, weekStart, this.weekPremiumTimeOfPrevMonth,
 							attendanceTimeOfDailyMap, companySets);
@@ -644,7 +645,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 	}
 
 	public static interface RequireM3 extends MonAggrCompanySettings.RequireM1, RequireM2, 
-												ExcessOutsideWorkMng.RequireM4 {
+												ExcessOutsideWorkMng.RequireM4, WeeklyCalculation.Require {
 		
 		Optional<WeekRuleManagement> weekRuleManagement(String cid);
 	}

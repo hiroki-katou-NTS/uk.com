@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.dom.exi.condset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
@@ -28,17 +28,16 @@ public class StdAcceptCondSetServiceImpl implements StdAcceptCondSetService {
 	@Override
 	public void copyConditionSetting(StdAcceptCondSetCopyParam param) {
 		//Destination AcceptItem data
-		List<StdAcceptItem> destAcceptItemList = null;
+		List<StdAcceptItem> destAcceptItemList = new ArrayList<>();
 		//Destination Condition setting data
-		StdAcceptCondSet desCondSet = null;
+		StdAcceptCondSet desCondSet = new StdAcceptCondSet();
 		
 		// Get source condition setting
-		Optional<StdAcceptCondSet> sourceCondSetOp = repository.getStdAcceptCondSetById(param.getCId(),
-				param.getSystemType(), param.getSourceCondSetCode());
+		Optional<StdAcceptCondSet> sourceCondSetOp = repository.getById(param.getCId(), param.getSourceCondSetCode());
 		if (!sourceCondSetOp.isPresent())
 			return;
 		//get source  accept item list data
-		List<StdAcceptItem> sourceAcceptItemList = acceptItemRepository.getListStdAcceptItems(param.getCId(), param.getSystemType(), param.getSourceCondSetCode());
+		List<StdAcceptItem> sourceAcceptItemList = acceptItemRepository.getListStdAcceptItems(param.getCId(), param.getSourceCondSetCode());
 		
 		// make destination condition setting data.
 		desCondSet = sourceCondSetOp.get();
@@ -49,7 +48,6 @@ public class StdAcceptCondSetServiceImpl implements StdAcceptCondSetService {
 						param.getCId(), 
 						new AcceptanceConditionCode(param.getDestCondSetCode()), 
 						item.getAcceptItemNumber(),
-						EnumAdaptor.valueOf(param.getSystemType(), SystemType.class), 
 						item.getCsvItemNumber(), 
 						item.getCsvItemName(), 
 						item.getItemType(), 
@@ -61,14 +59,15 @@ public class StdAcceptCondSetServiceImpl implements StdAcceptCondSetService {
 		}
 		
 		//Check override
-		Optional<StdAcceptCondSet> existCondSet = repository.getStdAcceptCondSetById(param.getCId(), param.getSystemType(), param.getDestCondSetCode());
+		Optional<StdAcceptCondSet> existCondSet = repository.getById(param.getCId(), param.getDestCondSetCode());
 		//Override 
 		if (param.isOverride() && existCondSet.isPresent()) {
+			desCondSet.setConditionSetName(new AcceptanceConditionName(param.getDestCondSetName()));
 			//ドメインモデル「受入条件設定（定型）」へ更新する
 			repository.update(desCondSet);
 			//ドメインモデル「受入項目（定型）」へのデリートインサート
 			//Delete current acceptItem data
-			acceptItemRepository.removeAll(param.getCId(), param.getSystemType(), param.getDestCondSetCode());			
+			acceptItemRepository.removeAll(param.getCId(), param.getDestCondSetCode());			
 			//Register 受入項目（定型）
 			if(CollectionUtil.isEmpty(destAcceptItemList)){ return;}
 			//Copy AcceptItem
@@ -77,10 +76,11 @@ public class StdAcceptCondSetServiceImpl implements StdAcceptCondSetService {
 			}
 			
 		}else{
+			desCondSet.setConditionSetCode(new AcceptanceConditionCode(param.getDestCondSetCode()));
 			//ドメインモデル「受入条件設定（定型）」へ登録する
 			repository.add(desCondSet);
 			
-			if(CollectionUtil.isEmpty(destAcceptItemList)){ return;}			
+			if(destAcceptItemList.isEmpty()){ return;}			
 			//Register 受入項目（定型）
 			for (StdAcceptItem stdAcceptItem : destAcceptItemList) {
 				acceptItemRepository.add(stdAcceptItem);
@@ -99,7 +99,7 @@ public class StdAcceptCondSetServiceImpl implements StdAcceptCondSetService {
 		
 		//受入項目（定型）から削除を行う
 		//(Delete from acceptance item (fixed form))
-		acceptItemRepository.removeAll(cid, sysType, conditionSetCd);
+		acceptItemRepository.removeAll(cid, conditionSetCd);
 		//TODO for next version
 		//ドメインモデル「外部受入の自動設定」
 		//(Domain model "Automatic setting of external acceptance")
@@ -115,7 +115,7 @@ public class StdAcceptCondSetServiceImpl implements StdAcceptCondSetService {
 		//(Determine the sidebar selection status)
 		
 		//1件（同一キーのデータがある）
-		if (this.repository.isSettingCodeExist(domain.getCompanyId(), domain.getSystemType().value, domain.getConditionSetCode().v())){
+		if (this.repository.isSettingCodeExist(domain.getCompanyId(), domain.getConditionSetCode().v())){
 			//エラーメッセージ表示　Msg_3	
 			throw new BusinessException("Msg_3");
 		}

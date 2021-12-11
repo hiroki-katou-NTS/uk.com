@@ -59,6 +59,12 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
 		// Convert to domain
 		TotalTimes totalTimes = command.toDomain(companyId);
 
+		if (totalTimes.getTotalCondition().getAtdItemId().isPresent()
+				&& totalTimes.getTotalCondition().getUpperLimitSettingAtr() == UseAtr.NotUse
+				&& totalTimes.getTotalCondition().getLowerLimitSettingAtr() == UseAtr.NotUse) {
+			throw new BusinessException("Msg_2217");
+		}
+
 		// Alway has 30 items and allow update only
 		this.totalTimesRepo.update(totalTimes);
 	}
@@ -76,10 +82,10 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
 		 * In case UseAtr.Use.value or uncheck both LowerLimitSettingAtr and
 		 * UpperLimitSettingAtr will value in DB
 		 */
-		if (command.getTotalCondition().getLowerLimitSettingAtr() == 0
-				&& command.getTotalCondition().getUpperLimitSettingAtr() == 0) {
-			command.getTotalCondition().setAttendanceItemId(totalTimeDb.getTotalCondition().getAtdItemId().orElse(null));
-		}
+//		if (command.getTotalCondition().getLowerLimitSettingAtr() == 0
+//				&& command.getTotalCondition().getUpperLimitSettingAtr() == 0) {
+//			command.getTotalCondition().setAttendanceItemId(totalTimeDb.getTotalCondition().getAtdItemId().orElse(null));
+//		}
 
 		if (command.getUseAtr() == UseAtr.Use.value) {
 			return;

@@ -3,41 +3,48 @@ package nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapt
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 
 /**
  * 職場グループAdapter
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.組織管理.職場.Imported.職場グループAdapter
  * @author HieuLt
  */
 public interface WorkplaceGroupAdapter {
-	
+
 	/**
-	 * [1] 職場グループIDを指定して取得する														
-	 * @param lstWorkplaceGroupID
-	 * @return
+	 * 職場グループIDを指定して取得する
+	 * @param workplaceGroupIds 職場グループIDリスト
+	 * @return List<職場グループImported>
 	 */
-	List<WorkplaceGroupImport>  getbySpecWorkplaceGroupID (List<String> lstWorkplaceGroupID);
+	List<WorkplaceGroupImport>  getbySpecWorkplaceGroupID (List<String> workplaceGroupIds);
+
 	/**
-	 * [2] 所属する職場をすべて取得する
-	 * @param date
-	 * @param lstWorkplaceGroupID
-	 * @return
+	 * 所属する社員をすべて取得する
+	 * @param date 基準日
+	 * @param workplaceGroupId 職場グループID
+	 * @return List<社員の所属組織Imported>
 	 */
-	List<WorkplaceGroupImport> getAllWorkplaces(GeneralDate date, String workplaceGroupID);
+	List<EmpOrganizationImport> getGetAllEmployees(GeneralDate date, String workplaceGroupId);
+
 	/**
-	 * [3] 所属する社員をすべて取得する
-	 * @param date
-	 * @param lstWorkplaceGroupID
-	 * @return
+	 * 参照可能な所属社員を取得する
+	 * @param employeeId 社員ID
+	 * @param date 基準日
+	 * @param period 期間
+	 * @param workplaceGroupId 職場グループID
+	 * @return List<社員ID>
 	 */
-	List<EmpOrganizationImport> getGetAllEmployees(GeneralDate date, String workplaceGroupID);
+	List<String> getReferableEmp(String employeeId, GeneralDate date, DatePeriod period, String workplaceGroupId);
+
 	/**
-	 * [4] 参照可能な社員を取得する
-	 * @param date
-	 * @param empId
-	 * @param lstWorkplaceGroupID
-	 * @return
+	 * 参照可能な社員をすべて取得する
+	 * @param employeeId 社員ID
+	 * @param date 基準日
+	 * @param period 期間
+	 * @return List<社員ID>
 	 */
-	List<String> getReferableEmp(GeneralDate date,String empId, String workplaceGroupID);
+	List<String> getAllReferableEmp(String employeeId, GeneralDate date, DatePeriod period);
 
 }

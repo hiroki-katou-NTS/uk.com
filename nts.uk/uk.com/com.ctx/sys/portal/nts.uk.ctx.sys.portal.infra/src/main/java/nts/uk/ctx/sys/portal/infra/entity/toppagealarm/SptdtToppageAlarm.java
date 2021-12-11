@@ -147,14 +147,15 @@ public class SptdtToppageAlarm extends UkJpaEntity implements Serializable {
 				.linkUrl(domain.getLinkUrl().map(LinkURL::v).orElse(null))
 				.readDateTime(domain.getReadDateTime().orElse(null))
 				.resolved(domain.getIsResolved() ? 1 : 0)
-				.subSids(subSidsToEntity(domain.getCid(), domain.getDisplaySId(), domain.getSubSids()))
+				.subSids(subSidsToEntity(domain.getCid(), domain.getDisplaySId(), domain.getSubSids(),
+						domain.getPatternCode().map(AlarmListPatternCode::v).orElse(null)))
 				.build();
 	}
 	
-	public static List<SptdtTopAlarmSubSya> subSidsToEntity(String cid, String dispSid, List<String> subSids) {
+	public static List<SptdtTopAlarmSubSya> subSidsToEntity(String cid, String dispSid, List<String> subSids, String patternCode) {
 		return subSids.stream().map(sid -> {
 			SptdtTopAlarmSubSya entity = new SptdtTopAlarmSubSya();
-			entity.toEntity(cid, dispSid, sid);
+			entity.toEntity(cid, dispSid, sid, patternCode);
 			return entity;
 		}).collect(Collectors.toList());
 	}

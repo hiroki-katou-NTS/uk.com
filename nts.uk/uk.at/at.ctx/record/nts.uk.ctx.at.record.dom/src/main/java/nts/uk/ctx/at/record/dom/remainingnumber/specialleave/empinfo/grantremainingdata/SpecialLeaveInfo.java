@@ -11,11 +11,9 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveOverNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestNumber;
@@ -339,26 +337,11 @@ public class SpecialLeaveInfo implements Cloneable {
 		// 特別休暇付与残数データを作成する --------------------------
 
 		// パラメータ「次回特別休暇付与.期限日」を取得
-		GeneralDate deadline = GeneralDate.max();
 		if ( aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().isPresent() ){
-			deadline = aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get().getDeadLine();
 
 			// 「特別休暇付与残数データ」を作成
-			val newRemainData =
-					SpecialLeaveGrantRemainingData.createFromJavaType(
-					"",
-					employeeId,
-					aggregatePeriodWork.getPeriod().start(),
-					deadline,
-					LeaveExpirationStatus.AVAILABLE.value,
-					GrantRemainRegisterType.MONTH_CLOSE.value,
-					aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get().getGrantDays().v(), // 付与日数
-					0,
-					0.0, 0,
-					0.0,
-					aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get().getGrantDays().v(), // 付与日数
-					0,
-					0.0, specialLeaveCode);
+			val newRemainData = aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get()
+					.toSpecialLeaveGrantRemainingData(employeeId, specialLeaveCode);		
 
 
 			// 作成した「特休付与残数データ」を付与残数データリストに追加
@@ -614,7 +597,7 @@ public class SpecialLeaveInfo implements Cloneable {
 
 		// 合計した「特別休暇使用数」「特別休暇残数」から特別休暇付与残数を作成
 		SpecialLeaveGrantRemainingData specialLeaveGrantRemainingData
-			= new SpecialLeaveGrantRemainingData();
+			= new SpecialLeaveGrantRemainingData(dummyRemainingList.stream().findFirst().get());
 		SpecialLeaveNumberInfo leaveNumberInfo = new SpecialLeaveNumberInfo();
 		// 明細．残数　←　合計した「特別休暇残数」
 		leaveNumberInfo.setRemainingNumber(leaveRemainingNumberTotal);

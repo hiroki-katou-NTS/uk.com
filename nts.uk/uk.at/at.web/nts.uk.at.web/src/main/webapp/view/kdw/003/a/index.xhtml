@@ -189,22 +189,27 @@
 		                                <tbody>
 		                                    <tr>
 		                                        <td class="ui-widget-body remain-compen-day">
-		                                        	<span class="text-holiday" data-bind="text: dataHoliday().compensationDay"></span>
-		                                       	</td>
+		                                        	<!-- <span class="text-holiday" data-bind="text: dataHoliday().compensationDay"></span> -->
+                                                    <a class="hyperlink" href="" data-bind="text: dataHoliday().compensationDay, click: openKDL005Dialog"></a>
+                                                </td>
 		                                        <td class="ui-widget-body remain-subst-day">
-		                                        	<span class="text-holiday" data-bind="text: dataHoliday().substitute"></span>
+                                                    <!-- <span class="text-holiday" data-bind="text: dataHoliday().substitute"></span> -->
+                                                    <a class="hyperlink" href="" data-bind="text: dataHoliday().substitute, click: openKDL009Dialog"></a>
 		                                        </td>
 		                                        <td class="ui-widget-body remain-annual-day">
-		                                        	<span class="text-holiday" data-bind="text: dataHoliday().annualDay"></span>
+                                                    <!-- <span class="text-holiday" data-bind="text: dataHoliday().annualDay"></span> -->
+                                                    <a class="hyperlink" href="" data-bind="text: dataHoliday().annualDay, click: openKDL020Dialog"></a>
 		                                        </td>
 		                                        <td class="ui-widget-body remain-reserve-day">
-		                                        	<span class="text-holiday" data-bind="text: dataHoliday().reserve"></span>
+                                                    <span class="text-holiday" data-bind="text: dataHoliday().reserve"></span>
 		                                        </td>
 		                                        <td class="ui-widget-body remain-childCare-day">
-		                                        	<span class="text-holiday" data-bind="text: dataHoliday().childCareValue"></span>
+                                                    <!-- <span class="text-holiday" data-bind="text: dataHoliday().childCareValue"></span> -->
+                                                    <a class="hyperlink" href="" data-bind="text: dataHoliday().childCareValue, click: openKDL051Dialog"></a>
 		                                        </td>
 		                                        <td class="ui-widget-body remain-longTermCare-day">
-		                                        	<span class="text-holiday" data-bind="text: dataHoliday().longTermCareValue"></span>
+                                                    <!-- <span class="text-holiday" data-bind="text: dataHoliday().longTermCareValue"></span> -->
+                                                    <a class="hyperlink" href="" data-bind="text: dataHoliday().longTermCareValue, click: openKDL052Dialog"></a>
 		                                        </td>
 		                                    </tr>
 		                                    <!-- <tr>
@@ -220,8 +225,8 @@
 		                                </tbody>
 		                            </table>
 		                            <div style="width: 350px">
-		                            <label data-bind="text: dataHoliday().dispSysDate, visible: referenceVacation().allVacation()" style="max-width: 100px"></label>
-		                            <label style="max-width: 125px" data-bind="text: dataHoliday().dispNextGrantDate, visible: referenceVacation().yearHoliday20()"></label>
+		                            <label data-bind="text: dataHoliday().dispSysDate, visible: dataHoliday().displayAllUI" style="max-width: 100px"></label>
+		                            <label style="max-width: 125px" data-bind="text: dataHoliday().dispNextGrantDate, visible: dataHoliday().dispAnnualDayUI"></label>
 		                            </div>
 		                        </div>
 		                        <div class="agree-column" data-bind="let: { fst: agreementInfomation() }">

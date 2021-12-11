@@ -80,4 +80,7 @@ public interface LeaveComDayOffManaRepository {
 	 
 	 //[7] 登録及び更新
 	void updateOrInsert(LeaveComDayOffManagement domain);
+	
+	List<LeaveComDayOffManagement> getLeavByListOccDate(String sid, List<GeneralDate> lstDate);
+	
 }

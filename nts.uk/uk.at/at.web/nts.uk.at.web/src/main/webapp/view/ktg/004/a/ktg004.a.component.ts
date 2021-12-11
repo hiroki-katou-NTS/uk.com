@@ -137,8 +137,8 @@ module nts.uk.ui.ktg004.a {
 
         detailedWorkStatusSettings = ko.observable(false);
 
-        itemsDisplay: KnockoutObservableArray<ItemDisplay> = ko.observableArray([]);
         specialHolidaysRemainings: KnockoutObservableArray<SpecialHolidaysRemaining> = ko.observableArray([]);
+        itemsDisplay: KnockoutObservableArray<ItemDisplay> = ko.observableArray([]);
 
         constructor(private params: { currentOrNextMonth: 1 | 2; }) {
             super();
@@ -187,7 +187,8 @@ module nts.uk.ui.ktg004.a {
                         remainingHolidays,
                         specialHolidaysRemainings,
 						grantDate,
-						grantDays
+						grantDays, 
+                        subHolidayTimeManage
                     } = remainingNumberInfor;
 
                     const itemsDisplay: ItemDisplay[] = [];
@@ -283,11 +284,12 @@ module nts.uk.ui.ktg004.a {
                                         .push({
                                             name: 'KTG004_11',
                                             text: 
-												numberOfSubstituteHoliday.day <= 0 && numberOfSubstituteHoliday.time != ZERO_TIME
-												?
-												`${numberOfSubstituteHoliday.time}`
-												:
-												vm.$i18n('KTG004_15', [`${numberOfSubstituteHoliday.day}`])
+                                            numberOfSubstituteHoliday.day <= 0 && numberOfSubstituteHoliday.time != ZERO_TIME
+                                            ?
+                                            `${numberOfSubstituteHoliday.time}`
+                                            : numberOfSubstituteHoliday.day == 0 && numberOfSubstituteHoliday.time == ZERO_TIME && subHolidayTimeManage == 1 ?
+                                            `${numberOfSubstituteHoliday.time}` :
+                                            vm.$i18n('KTG004_15', [`${numberOfSubstituteHoliday.day}`])
                                         })
                                     break;
                                 case 30:
@@ -455,6 +457,8 @@ module nts.uk.ui.ktg004.a {
         specialHolidaysRemainings: SpecialHolidaysRemainings[];
 		grantDate?: string;
 		grantDays: number;
+        subHolidayTimeManage: number;
+
     }
 
     interface SpecialHolidaysRemainings {

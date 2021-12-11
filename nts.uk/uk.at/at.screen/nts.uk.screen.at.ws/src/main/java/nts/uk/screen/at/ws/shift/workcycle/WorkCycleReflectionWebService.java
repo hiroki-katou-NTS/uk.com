@@ -4,8 +4,11 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleCode;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCreateMethod;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCycleRefSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
 import nts.uk.screen.at.app.shift.workcycle.BootMode;
 import nts.uk.screen.at.app.shift.workcycle.WorkCycleReflectionDialog;
@@ -21,6 +24,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 勤務サイクル反映ダイアログ Webservice
@@ -66,13 +70,13 @@ public class WorkCycleReflectionWebService extends WebService {
 	public List<WorkCycleReflectionDto.RefImageEachDayDto> getWorkCycleAppImage(GetWorkCycleAppImageParam param){
 
 		List<WorkCreateMethod> refOrder = createFromIntArray(param.getRefOrder());
-		WorkCycleRefSetting config = new WorkCycleRefSetting(
-				param.getWorkCycleCode(),
+		WorkCycleRefSetting config = WorkCycleRefSetting.create(
+				new WorkCycleCode(param.getWorkCycleCode()),
 				refOrder,
 				param.getNumOfSlideDays(),
-				param.getLegalHolidayCd(),
-				param.getNonStatutoryHolidayCd(),
-				param.getHolidayCd()
+				StringUtil.isNullOrEmpty(param.getLegalHolidayCd(), true) ? Optional.empty() : Optional.of(new WorkTypeCode(param.getLegalHolidayCd())),
+				StringUtil.isNullOrEmpty(param.getNonStatutoryHolidayCd(), true) ? Optional.empty() : Optional.of(new WorkTypeCode(param.getNonStatutoryHolidayCd())),
+				StringUtil.isNullOrEmpty(param.getHolidayCd(), true) ? Optional.empty() : Optional.of(new WorkTypeCode(param.getHolidayCd()))
 		);
 
 		DatePeriod creationPeriod = createDatePeriod(

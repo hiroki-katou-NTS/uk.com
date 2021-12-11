@@ -162,11 +162,11 @@ public class MonthlyAggregationEmployeeService {
 		
 		//get ロック中の計算/集計できるか
 		Optional<ExecutionLog> executionLog = require.getByExecutionContent(empCalAndSumExecLogID, ExecutionContent.MONTHLY_AGGREGATION.value);
-		IgnoreFlagDuringLock ignoreFlagDuringLock = (executionLog.isPresent()
-				&& executionLog.get().getIsCalWhenLock() != null && executionLog.get().getIsCalWhenLock().booleanValue()
-						? IgnoreFlagDuringLock.CAN_CAL_LOCK
-						: IgnoreFlagDuringLock.CANNOT_CAL_LOCK);
 		
+		IgnoreFlagDuringLock ignoreFlagDuringLock = executionLog.flatMap(c -> c.getIsCalWhenLock())
+				.map(c -> c ? IgnoreFlagDuringLock.CAN_CAL_LOCK : IgnoreFlagDuringLock.CANNOT_CAL_LOCK)
+				.orElse(IgnoreFlagDuringLock.CANNOT_CAL_LOCK);
+
 //		List<BsEmploymentHistoryImport> employments = employeeSets.getEmployments();
 		
 		for (val aggrPeriod : aggrPeriods){
@@ -206,7 +206,7 @@ public class MonthlyAggregationEmployeeService {
 				if (executionType == ExecutionType.RERUN){
 	
 					// 編集状態を削除
-					atomTasks.add(AtomTask.of(() -> require.removeMonthEditState(employeeId, yearMonth, closureId, closureDate)));
+					require.transaction(AtomTask.of(() -> require.removeMonthEditState(employeeId, yearMonth, closureId, closureDate)));
 				}
 	
 				// 残数処理を行う必要があるかどうか判断　（Redmine#107271、EA#3434）
@@ -457,6 +457,7 @@ public class MonthlyAggregationEmployeeService {
 
 		void removeMonthEditState(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 
+		void transaction(AtomTask task);
 	}
 
 	public static interface RequireM3 {

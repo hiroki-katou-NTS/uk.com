@@ -303,6 +303,12 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 		}
 		this.commandProxy().remove(entity);
 	}
+	
+	@Override
+	public void deleteAllByEmployeeId(String employeeId) {
+		String jpql = "DELETE FROM KrcdtHdWorkMng a WHERE a.sID = :sid";
+		this.getEntityManager().createQuery(jpql).setParameter("sid", employeeId).executeUpdate();
+	}
 
 	@Override
 	public List<LeaveManagementData> getByDayOffDatePeriod(String sid, DatePeriod dateData) {
@@ -539,17 +545,5 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				.setParameter("expiredDate", expiredDate)
 				.setParameter("unUse", unUse)
 				.getList(entity -> toDomain(entity));
-	}
-
-	@Override
-	public void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target) {
-
-		this.getEntityManager().createQuery("DELETE FROM KrcdtHdWorkMng d WHERE d.sID = :sid "
-				+ " AND d.unknownDate = :unknownDate AND d.dayOff >= :targetDate", KrcdtHdWorkMng.class)
-		.setParameter("sid", sid)
-		.setParameter("unknownDate", unknownDateFlag)
-		.setParameter("targetDate", target)
-		.executeUpdate();
-	}
-	
+	}	
 }

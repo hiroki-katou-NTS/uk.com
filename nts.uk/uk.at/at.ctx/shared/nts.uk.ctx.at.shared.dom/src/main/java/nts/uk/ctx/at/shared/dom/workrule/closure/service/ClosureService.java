@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.workrule.closure.service;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.Day;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * The Class DefaultClosureServiceImpl.
@@ -331,6 +333,34 @@ public class ClosureService {
 		
 		return optClosure.get();
 	}
+	
+	public static Map<String, Closure> getClosureDataByEmployeeClones(RequireM3 require, CacheCarrier cacheCarrier, 
+			List<String> employeeId, GeneralDate baseDate) {
+		
+		String companyId = AppContexts.user().companyId();
+		
+		//Imported「（就業）所属雇用履歴」を取得する
+		Map<String, BsEmploymentHistoryImport>  bsEmploymentHistMap = require.employmentHistoryClones(companyId, employeeId, baseDate);
+		
+		//対応するドメインモデル「雇用に紐づく就業締め」を取得する (Lấy về domain model "Thuê" tương ứng)
+		List<ClosureEmployment> closureEmploymentList = require.employmentClosureClones(companyId, bsEmploymentHistMap.values().stream().map(c->c.getEmploymentCode()).collect(Collectors.toList()));
+
+		//対応するドメインモデル「締め」を取得する (Lấy về domain model "Hạn định" tương ứng)
+		List<Closure> closureList = require.closureClones(companyId, closureEmploymentList.stream().map(c->c.getClosureId()).collect(Collectors.toList()));
+		
+		Map<String, Closure> result = new HashMap<String, Closure>();
+		for (val bsEmploymentHist : bsEmploymentHistMap.entrySet()) {
+			Optional<ClosureEmployment> closureEmployment = closureEmploymentList.stream().filter(c->c.getEmploymentCD().equals(bsEmploymentHist.getValue().getEmploymentCode())).findAny();
+			if(closureEmployment.isPresent()) {
+				Optional<Closure> closure = closureList.stream().filter(c->c.getClosureId().value == closureEmployment.get().getClosureId()).findAny();
+				if(closure.isPresent()) {
+					result.put(bsEmploymentHist.getKey(), closure.get());
+				}
+			}
+		}
+		
+		return result;
+	}
 
 	public static DatePeriod findClosurePeriod(RequireM3 require, CacheCarrier cacheCarrier, 
 			String employeeId, GeneralDate baseDate) {
@@ -487,9 +517,77 @@ public class ClosureService {
 		return false;
 	}
 	
+	/**
+	 * 年月日期間から年月締め期間を求める
+	 * @param require
+	 * @param cacheCarrier
+	 * @param employeeId
+	 * @param baseDate
+	 * @param period
+	 * @return
+	 */
+	public static List<YearMonth> GetYearMonthClosurePeriod(RequireM3 require, CacheCarrier cacheCarrier, 
+	String employeeId, GeneralDate baseDate, DatePeriod period){
+		// 社員に対応する処理締めを取得する.
+		Closure closure = getClosureDataByEmployee(require, cacheCarrier, employeeId, baseDate);
+		if(closure == null) {
+			return new ArrayList<>();
+		}
+		
+		List<DatePeriod> periodList = separateThePeriodByTheClosing(period,closure);
+		
+	
+		return periodList.stream().map(x -> x.end().yearMonth()).collect(Collectors.toList());
+	}
+	
+	/**
+	 * 期間を締め日で区切る
+	 * @param period
+	 * @param closure
+	 * @return
+	 */
+	private static List<DatePeriod> separateThePeriodByTheClosing(DatePeriod period, Closure closure){
+		List<DatePeriod> closurePeriod = new ArrayList<>();
+		
+		//INPUT．期間．開始日を期間．開始日とする
+		GeneralDate startday = period.start();
+		GeneralDate closureday;
+		
+		//当月の締め日を取得する
+		Optional<ClosureDate> closureDate = closure.getClosureDateOfCurrentMonth();
+		if(!closureDate.isPresent()){
+			return closurePeriod;
+		}
+		
+		do {
+			if(closureDate.get().getLastDayOfMonth() == Boolean.TRUE){
+				//期間．開始日の月の末日を締め終了日とする
+				closureday = startday.yearMonth().lastGeneralDate();
+			}else{
+				//締め日．日を締め終了日とする
+				closureday =  GeneralDate.ymd(startday.yearMonth().nextMonth(),closureDate.get().getClosureDay().v().intValue());
+			}
+			
+			
+			if(closureday.beforeOrEquals(startday) || closureday.after(period.end())){
+				closureday = period.end();
+			}
+			
+			closurePeriod.add(new DatePeriod(startday,closureday));
+			
+			
+			startday = closurePeriod.get(closurePeriod.size()-1).end().addDays(1);
+		} while (period.end().before(closurePeriod.get(closurePeriod.size()-1).end()));
+		
+		return closurePeriod;
+	}
+	
+	
 	public static interface RequireM1 extends RequireM4 {
 		
 		Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD);
+		
+		List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD);
 	}
 	
 	public static interface RequireM2 {
@@ -502,11 +600,15 @@ public class ClosureService {
 	public static interface RequireM3 extends RequireM1 {
 
 		Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate);
+		
+		Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId, GeneralDate baseDate);
 	}
 	
 	public static interface RequireM4 {
 
 		Optional<Closure> closure(String companyId, int closureId);
+		
+		List<Closure> closureClones(String companyId, List<Integer> closureId);
 	}
 	
 	public static interface RequireM5 {
@@ -568,6 +670,16 @@ public class ClosureService {
 			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
 				return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
 			}
+			
+			@Override
+			public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+				return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
+			}
+
+			@Override
+			public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+				return closureRepo.findByListId(companyId, closureId);
+			}
 		};
 	}
 	
@@ -591,6 +703,22 @@ public class ClosureService {
 			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
 					String employeeId, GeneralDate baseDate) {
 				return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+			}
+
+			@Override
+			public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId,
+					List<String> employeeId, GeneralDate baseDate) {
+				return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+			}
+
+			@Override
+			public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+				return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
+			}
+
+			@Override
+			public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+				return closureRepo.findByListId(companyId, closureId);
 			}
 		};
 	}

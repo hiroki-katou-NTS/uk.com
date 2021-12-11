@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.ws.workrule.closure;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -408,6 +409,18 @@ public class ClosureWs {
 		}
 		return closure.getClosureId().value;
 	}
+
+	@POST
+	@Path("get-current-closure-period-by-logged-in-employee")
+	public DatePeriodDto getClosurePeriod() {
+		DatePeriod period = ClosureService.findClosurePeriod(
+				createRequireM3(),
+				new CacheCarrier(),
+				AppContexts.user().employeeId(),
+				GeneralDate.today()
+		);
+		return new DatePeriodDto(period.start().toString(), period.end().toString());
+	}
 	
 	private ClosureService.RequireM3 createRequireM3 () {
 		return new ClosureService.RequireM3() {
@@ -427,6 +440,22 @@ public class ClosureWs {
 			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
 					String employeeId, GeneralDate baseDate) {
 				return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+			}
+
+			@Override
+			public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+				return closureEmpRepo.findListEmployment(companyID, employmentCD);
+			}
+
+			@Override
+			public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+				return closureRepository.findByListId(companyId, closureId);
+			}
+
+			@Override
+			public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
+					GeneralDate baseDate) {
+				return shrEmpAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
 			}
 		};
 	}

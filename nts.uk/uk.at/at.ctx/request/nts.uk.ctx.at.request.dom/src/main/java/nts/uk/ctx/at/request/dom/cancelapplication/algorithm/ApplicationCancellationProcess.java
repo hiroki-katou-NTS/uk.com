@@ -171,7 +171,7 @@ public class ApplicationCancellationProcess {
 						null));
 		// 勤務予定の取消処理
 		SCCancelProcessOneDayOutput scOutPut = SCApplicationCancellationProcess.processSchedule(require, cid, app, date,
-				closureId, oneDayReflect.getStatusWorkSchedule(), dbRegisterClassfi);
+				closureId, oneDayReflect.getStatusWorkSchedule(), dbRegisterClassfi, empHist);
 
 		// 勤務実績の取消処理
 		RCCancelProcessOneDayOutput rcOutPut = RCApplicationCancellationProcess.processRecord(require, cid, app, date,
