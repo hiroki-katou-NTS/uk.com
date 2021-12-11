@@ -3,12 +3,16 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyatten
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.GettingTimeVacactionService;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimeVacation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -389,5 +393,15 @@ public class IntegrationOfDaily {
 		this.ouenTime = daily.getOuenTime();
 		this.ouenTimeSheet = daily.getOuenTimeSheet();
 		this.snapshot = daily.getSnapshot();
+	}
+	
+	/**
+	 * 時間休暇を取得する
+	 * @return Map<TimezoneToUseHourlyHoliday, TimeVacation>
+	 */
+	public Map<TimezoneToUseHourlyHoliday, TimeVacation> getTimeVacation() {
+		return GettingTimeVacactionService.get(this.attendanceLeave
+				,	this.attendanceTimeOfDailyPerformance
+				,	this.outingTime);
 	}
 }

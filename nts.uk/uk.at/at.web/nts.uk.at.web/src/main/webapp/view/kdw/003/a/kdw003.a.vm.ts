@@ -281,6 +281,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         changeConditionExtract:  KnockoutObservable<boolean> = ko.observable(false);
 		showWorkLoad: KnockoutObservable<boolean> = ko.observable(false);
 
+        checkUnLock: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor(dataShare: any) {
             var self = this;
 
@@ -1274,6 +1276,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let checkDailyChange = (dataChangeProcess.length > 0 || dataCheckSign.length > 0 || dataCheckApproval.length > 0 || self.sprStampSourceInfo() != null) && checkDataCare;
             dataParent["checkDailyChange"] = (dataChangeProcess.length > 0 || self.sprStampSourceInfo()) ? true : false;
             dataParent["showFlex"] = self.showFlex();
+            dataParent["checkUnLock"] = self.checkUnLock();
             if (checkDailyChange || (self.valueUpdateMonth != null && !_.isEmpty(self.valueUpdateMonth.items)) || self.flagCalculation || !_.isEmpty(sprStampSourceInfo)) {
                 service.addAndUpdate(dataParent).done((dataAfter) => {
                     // alert("done");
@@ -1666,7 +1669,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let checkDailyChange = (dataChangeProcess.length > 0 || dataCheckSign.length > 0 || dataCheckApproval.length > 0 || self.sprStampSourceInfo() != null) && checkDataCare;
             dataParent["checkDailyChange"] = (dataChangeProcess.length > 0 || self.sprStampSourceInfo()) ? true : false;
             dataParent["showFlex"] = self.showFlex();
-
+            dataParent["checkUnLock"] = self.checkUnLock();
             //self.removeErrorRefer();
             let dfd = $.Deferred();
             service.calculation(dataParent).done((data) => {
@@ -3272,6 +3275,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             //Msg_984
             nts.uk.ui.dialog.info({ messageId: "Msg_984" });
             if (!self.hasEmployee || self.hasErrorBuss) return;
+            self.checkUnLock(false);
             self.showLock(true);
             self.unLock(false);
             self.processLockButton(true);
@@ -3282,6 +3286,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             //Msg_982
             nts.uk.ui.dialog.confirm({ messageId: "Msg_982" }).ifYes(() => {
                 if (!self.hasEmployee || self.hasErrorBuss) return;
+                self.checkUnLock(true);
                 self.showLock(false);
                 self.unLock(true);
                 self.processLockButton(false);
@@ -4175,40 +4180,60 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             //KAF002-打刻申請（外出許可）
                             transfer.stampRequestMode = 0;
                             transfer.screenMode = 1;
+<<<<<<< HEAD
                             vmNew.$jump.blank("/view/kaf/002/a/index.xhtml", transfer);
                             //nts.uk.request.jump("/view/kaf/002/a/index.xhtml", transfer);
+=======
+                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", transfer);
+>>>>>>> pj/at/release_ver4
                             break;
 
                         case 9:
                             //KAF002-打刻申請（出退勤打刻漏れ）
                             transfer.stampRequestMode = 1;
                             transfer.screenMode = 1;
+<<<<<<< HEAD
                             vmNew.$jump.blank("/view/kaf/002/b/index.xhtml", transfer);
                             // nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
+=======
+                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", transfer);
+>>>>>>> pj/at/release_ver4
                             break;
 
                         case 10:
                             //KAF002-打刻申請（打刻取消）
                             transfer.stampRequestMode = 2;
                             transfer.screenMode = 1;
+<<<<<<< HEAD
                             vmNew.$jump.blank("/view/kaf/012/a/index.xhtml", transfer);
                             //nts.uk.request.jump("/view/kaf/012/a/index.xhtml", transfer);
+=======
+                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", transfer);
+>>>>>>> pj/at/release_ver4
                             break;
 
                         case 11:
                             //KAF004
                             transfer.stampRequestMode = 3;
                             transfer.screenMode = 1;
+<<<<<<< HEAD
                             vmNew.$jump.blank("/view/kaf/004/a/index.xhtml", transfer);
                             // nts.uk.request.jump("/view/kaf/004/a/index.xhtml", transfer);
+=======
+                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", transfer);
+>>>>>>> pj/at/release_ver4
                             break;
 
                         case 12:
 
                             transfer.stampRequestMode = 4;
                             transfer.screenMode = 1;
+<<<<<<< HEAD
                             vmNew.$jump.blank("/view/kaf/011/a/index.xhtml", transfer);
                             // nts.uk.request.jump("/view/kaf/011/a/index.xhtml", transfer);
+=======
+                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", transfer);
+>>>>>>> pj/at/release_ver4
                             break;
 
                         case 13:
@@ -4783,6 +4808,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         //__viewContext.vm.lstDomainEdit = value.dailyEdits;
                         _.each(value.cellEdits, itemResult => {
                             $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true, true);
+							if (itemResult.id.indexOf("Code")) {
+								let data = __viewContext.vm.search(itemResult.item, itemResult.id, itemResult.value).done((v : any) => {
+									let name = "Name" + itemResult.item.substring(4)
+									$("#dpGrid").mGrid("updateCell", itemResult.id, name, v, true, true);
+								});
+							}
                         });
                         _.each(value.clearStates, itemResult => {
                             $("#dpGrid").mGrid("clearState", itemResult.rowId, itemResult.columnKey, itemResult.state);
@@ -4854,12 +4885,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         openKDL020Dialog() {
             let self = this;
-            setShared('KDL020A_PARAM', { baseDate: new Date(), employeeIds: [self.selectedEmployee()] });
-            if(self.selectedEmployee().length > 1 ) {
-              modal("/view/kdl/020/a/multi.xhtml");
-            } else {
-              modal("/view/kdl/020/a/single.xhtml");
-            }
+			setShared('KDL020_DATA', [self.selectedEmployee()]);
+			if ([self.selectedEmployee()].length > 1)
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 1040, height: 660 });
+			else
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 730, height: 660 });
         }
 
         openKDL009Dialog() {
@@ -4868,36 +4898,32 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 employeeIds: [self.selectedEmployee()],
                 baseDate: moment(new Date()).toISOString().split("T")[0].replace('-', '').replace('-', '')
             };
-            setShared('KDL009_DATA', param);
+            setShared('KDL009_DATA', param.employeeIds);
             if (param.employeeIds.length > 1) {
-                modal("/view/kdl/009/a/multi.xhtml");
+                modal("/view/kdl/009/a/index.xhtml",{width: 1100, height: 650})
             } else {
-                modal("/view/kdl/009/a/single.xhtml");
+                modal("/view/kdl/009/a/index.xhtml",{width: 770, height: 650});
             }
         }
 
         openkdl029Dialog() {
             let self = this;
-            let param = {
-                employeeIds: [self.selectedEmployee()],
-                baseDate: moment(new Date()).format("YYYY/MM/DD")
-            }
-            setShared('KDL029_PARAM', param);
-            modal('/view/kdl/029/a/index.xhtml');
+            setShared('KDL029_DATA', [self.selectedEmployee()]);
+			if ([self.selectedEmployee()].length > 1)
+				modal("/view/kdl/029/a/index.xhtml",{  width: 1060, height: 600 });
+			else
+				modal("/view/kdl/029/a/index.xhtml",{  width: 710, height: 600 });
         }
 
         openKDL005Dialog() {
             var self = this;
-            var param = {
-                employeeIds: [self.selectedEmployee()],
-                baseDate: moment(new Date()).toISOString().split("T")[0].replace('-', '').replace('-', '')
-            };
-            setShared('KDL005_DATA', param);
-            if(param.employeeIds.length > 1) {
-                modal("/view/kdl/005/a/multi.xhtml");
+            setShared('KDL005_DATA', [self.selectedEmployee()]);
+			if ([self.selectedEmployee()].length > 1){
+				 nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml", {  width: 1160, height: 640 });
             } else {
-                modal("/view/kdl/005/a/single.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 860, height: 640 });
             }
+            
         }
 
 		openKDL051Dialog() {
@@ -4906,8 +4932,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 employeeIds: [self.selectedEmployee()],
                 baseDate: new Date()
             }
-            setShared('KDL051A_PARAM', param);
-            modal("/view/kdl/051/single.xhtml");
+            setShared('KDL051A_PARAM', param.employeeIds);
+            nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 650, height: 530});
         }
 
 		openKDL052Dialog() {
@@ -4916,8 +4942,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 employeeIds: [self.selectedEmployee()],
                 baseDate: moment(new Date()).format("YYYY/MM/DD")
             }
-			setShared('OPEN_WINDOWS_DATA', param);// nts.uk.characteristics.OPEN_WINDOWS_DATA
-            modal('/view/kdl/052/single.xhtml');
+			setShared('KDL052A_PARAM', param);// nts.uk.characteristics.OPEN_WINDOWS_DATA
+            modal('/view/kdl/052/a/index.xhtml');
         }
 
     }

@@ -6,6 +6,8 @@ package nts.uk.ctx.at.record.infra.repository.optitem;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyfResultRange;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
@@ -41,7 +43,7 @@ public class JpaCalcResultRangeSetMemento implements CalcResultRangeSetMemento {
 	 */
 	@Override
 	public void setUpperLimit(CalcRangeCheck upper) {
-		this.typeValue.setUpperLimitAtr(upper.value);
+		this.typeValue.setUpperLimitAtr(BooleanUtils.toBoolean(upper.value));
 	}
 
 	/*
@@ -53,7 +55,7 @@ public class JpaCalcResultRangeSetMemento implements CalcResultRangeSetMemento {
 	 */
 	@Override
 	public void setLowerLimit(CalcRangeCheck lower) {
-		this.typeValue.setLowerLimitAtr(lower.value);
+		this.typeValue.setLowerLimitAtr(BooleanUtils.toBoolean(lower.value));
 	}
 
 	/*

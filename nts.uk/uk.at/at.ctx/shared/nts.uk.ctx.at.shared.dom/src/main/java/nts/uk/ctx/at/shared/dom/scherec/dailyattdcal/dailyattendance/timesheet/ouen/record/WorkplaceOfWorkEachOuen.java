@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 public class WorkplaceOfWorkEachOuen implements DomainObject {
 
 	/** 職場: 職場ID */
+	@Setter
 	private WorkplaceId workplaceId;
 	
 	/** 場所: 勤務場所コード */

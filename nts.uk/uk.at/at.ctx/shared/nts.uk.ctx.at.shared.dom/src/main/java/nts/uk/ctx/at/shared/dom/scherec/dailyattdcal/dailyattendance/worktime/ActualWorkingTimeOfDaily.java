@@ -13,7 +13,11 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
+=======
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
+>>>>>>> pj/at/release_ver4
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
@@ -32,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
@@ -141,7 +146,6 @@ public class ActualWorkingTimeOfDaily {
 			   WorkType workType,
 		       Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
-			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
 			   List<DivergenceTimeRoot> divergenceTimeList, 
@@ -157,7 +161,6 @@ public class ActualWorkingTimeOfDaily {
 				    workType,
 				    workTimeDailyAtr,
 				    flexCalcMethod,
-					bonusPayAutoCalcSet,
 					eachCompanyTimeSet,
 					conditionItem,
 					predetermineTimeSetByPersonInfo,
@@ -176,7 +179,6 @@ public class ActualWorkingTimeOfDaily {
 						workType,
 						workTimeDailyAtr,
 						flexCalcMethod,
-						bonusPayAutoCalcSet,
 						eachCompanyTimeSet,
 						conditionItem,
 						predetermineTimeSetByPersonInfo);
@@ -355,5 +357,13 @@ public class ActualWorkingTimeOfDaily {
 											TotalWorkingTime.createAllZEROInstance(), 
 											new DivergenceTimeOfDaily(new ArrayList<>()), 
 											PremiumTimeOfDailyPerformance.createEmpty());
+	}
+	
+	public AttendanceTime getWorkHolidayTime() {
+		return this.getTotalWorkingTime().getWorkHolidayTime();
+	}
+	
+	public AttendanceTime getOverTime() {
+		return this.getTotalWorkingTime().getOverTime();
 	}
 }

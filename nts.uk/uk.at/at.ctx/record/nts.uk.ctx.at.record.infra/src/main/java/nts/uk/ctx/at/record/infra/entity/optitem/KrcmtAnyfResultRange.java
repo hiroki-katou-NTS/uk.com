@@ -38,11 +38,39 @@ public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Seriali
 
 	/** The upper limit atr. */
 	@Column(name = "UPPER_LIMIT_ATR")
-	private int upperLimitAtr;
+	private boolean upperLimitAtr;
 
 	/** The lower limit atr. */
 	@Column(name = "LOWER_LIMIT_ATR")
+<<<<<<< HEAD
 	private int lowerLimitAtr;
+=======
+	private boolean lowerLimitAtr;
+
+//	/** The upper time range. */
+//	@Column(name = "UPPER_TIME_RANGE")
+//	private Integer upperTimeRange;
+//
+//	/** The lower time range. */
+//	@Column(name = "LOWER_TIME_RANGE")
+//	private Integer lowerTimeRange;
+//
+//	/** The upper number range. */
+//	@Column(name = "UPPER_NUMBER_RANGE")
+//	private Double upperNumberRange;
+//
+//	/** The lower number range. */
+//	@Column(name = "LOWER_NUMBER_RANGE")
+//	private Double lowerNumberRange;
+//
+//	/** The upper amount range. */
+//	@Column(name = "UPPER_AMOUNT_RANGE")
+//	private Integer upperAmountRange;
+//
+//	/** The lower amount range. */
+//	@Column(name = "LOWER_AMOUNT_RANGE")
+//	private Integer lowerAmountRange;
+>>>>>>> pj/at/release_ver4
 	
 	@Column(name = "UPPER_DAY_TIME_RANGE")
 	private Integer upperDayTimeRange;

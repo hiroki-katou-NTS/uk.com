@@ -820,14 +820,15 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public Optional<String> getNewestPreAppIDByEmpDate(String employeeID, GeneralDate date, ApplicationType appType) {
 		String companyID = AppContexts.user().companyId();
-		String sql = "select TOP 1 APP_ID from KRQDT_APPLICATION where CID = @companyID and APP_TYPE = @appType " +
+		String sql = "select APP_ID from KRQDT_APPLICATION where CID = @companyID and APP_TYPE = @appType " +
 				"and APPLICANTS_SID = @employeeID and APP_DATE = @date and PRE_POST_ATR = 0 order by INPUT_DATE desc";
 		return new NtsStatement(sql, this.jdbcProxy())
 				.paramString("companyID", companyID)
 				.paramInt("appType", appType.value)
 				.paramString("employeeID", employeeID)
 				.paramDate("date", date)
-				.getSingle(rec -> rec.getString("APP_ID"));
+				.getList(rec -> rec.getString("APP_ID"))
+				.stream().findFirst();
 	}
 	
 	//http://192.168.50.4:3000/issues/113816
@@ -870,7 +871,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	// get application by list employee and date period
 	@Override
 	public List<Application> getAllApplication(List<String> sID, DatePeriod period) {
-		
+		if (CollectionUtil.isEmpty(sID)) return Collections.emptyList();
 		String sql = SELECT_MEMO
 				+ "FROM KRQDT_APPLICATION a " 
 				+ "join KRQDT_APP_REFLECT_STATE b "

@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
@@ -44,6 +45,14 @@ public class KscdtSchPremium extends ContractUkJpaEntity {
 	/** 割増時間 **/
 	@Column(name = "PREMIUM_TIME")
 	public int premiumTime;
+	
+	/** 割増時間 **/
+	@Column(name = "PREMIUM_TIME_AMOUNT")
+	public int premiumTimeAmount;
+	
+	/** 割増時間 **/
+	@Column(name = "PREMIUM_TIME_UNIT_COST")
+	public int premiumTimeUnitCost;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "SID", referencedColumnName = "SID"),
@@ -55,23 +64,38 @@ public class KscdtSchPremium extends ContractUkJpaEntity {
 		return this.pk;
 	}
 
-	public KscdtSchPremium(KscdtSchPremiumPK pk, String cid, int premiumTime) {
+	public KscdtSchPremium(KscdtSchPremiumPK pk, String cid, int premiumTime, int premiumTimeAmount,
+			int premiumTimeUnitCost) {
 		super();
 		this.pk = pk;
 		this.cid = cid;
 		this.premiumTime = premiumTime;
+		this.premiumTimeAmount = premiumTimeAmount;
+		this.premiumTimeUnitCost = premiumTimeUnitCost;
 	}
 
+
 	public static KscdtSchPremium toEntity(PremiumTime premiumTime, String sid, GeneralDate ymd) {
+<<<<<<< HEAD
 		return new KscdtSchPremium(new KscdtSchPremiumPK(sid, ymd, premiumTime.getPremiumTimeNo().value),
 				AppContexts.user().companyId(), premiumTime.getPremitumTime().v());
+=======
+		return new KscdtSchPremium(new KscdtSchPremiumPK(sid, ymd, premiumTime.getPremiumTimeNo()),
+				AppContexts.user().companyId(), premiumTime.getPremitumTime().v(), premiumTime.getPremiumAmount().v(),
+				premiumTime.getUnitPrice().v());
+>>>>>>> pj/at/release_ver4
 	}
 	//勤務予定．勤怠時間．勤務時間．割増時間．割増時間
 	public List<PremiumTime> toDomain(List<KscdtSchPremium> premiums){
 		List<PremiumTime> result = new ArrayList<>();
 		if(!premiums.isEmpty()) {
 		premiums.stream().forEach( x ->{
+<<<<<<< HEAD
 			PremiumTime time = new PremiumTime(ExtraTimeItemNo.valueOf(x.getPk().getFrameNo()), new AttendanceTime(x.getPremiumTime()), AttendanceAmountDaily.ZERO, WorkingHoursUnitPrice.ZERO);
+=======
+			PremiumTime time = new PremiumTime(x.getPk().getFrameNo(), new AttendanceTime(x.getPremiumTime()),
+					new AttendanceAmountDaily(x.premiumTimeAmount), new PriceUnit(x.premiumTimeUnitCost));
+>>>>>>> pj/at/release_ver4
 			result.add(time);
 		});
 		}

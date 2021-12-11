@@ -6,15 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeavaRemainTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseTimes;
 
@@ -57,19 +54,7 @@ public class TimeUsedNumberDto implements ItemConst, AttendanceItemDataGate {
 		return new UsedMinutes(usedTime);
 	}
 
-	public static TimeUsedNumberDto from(AnnualLeaveMaxRemainingTime domain) {
-		return domain == null ? null : new TimeUsedNumberDto(
-						0, domain.getTime().valueAsMinutes(),
-						domain.getTimeBeforeGrant().valueAsMinutes(),
-						domain.getTimeAfterGrant().isPresent() ? domain.getTimeAfterGrant().get().valueAsMinutes() : null);
-	}
 
-	public AnnualLeaveMaxRemainingTime toMaxRemainingTimeDomain() {
-		return AnnualLeaveMaxRemainingTime.of(
-							new RemainingMinutes(usedTime),
-							new RemainingMinutes(usedTimeBeforeGrant),
-							Optional.ofNullable(usedTimeAfterGrant == null ? null : new RemainingMinutes(usedTimeAfterGrant)));
-	}
 
 	public static TimeUsedNumberDto from(SpecialLeaveUseTimes domain) {
 

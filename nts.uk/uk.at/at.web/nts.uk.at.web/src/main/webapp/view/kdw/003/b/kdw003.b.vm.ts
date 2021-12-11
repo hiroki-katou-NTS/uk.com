@@ -330,19 +330,33 @@ module nts.uk.at.view.kdw003.b {
                         break;
 
                     case 8:
+<<<<<<< HEAD
                         //KAF002-打刻申請（外出許可） 打刻申請
                         vmNew.$jump.blank("/view/kaf/002/a/index.xhtml", transfer);
+=======
+                        //KAF002-打刻申請（外出許可）
+                        transfer.stampRequestMode = 0;
+                         transfer.screenMode = 1;
+                        jump("/view/kaf/002/a/index.xhtml", transfer);
+>>>>>>> pj/at/release_ver4
                         break;
 
                     case 9:
                         //KAF002-打刻申請（出退勤打刻漏れ）
+<<<<<<< HEAD
 
                         vmNew.$jump.blank("/view/kaf/002/b/index.xhtml", transfer);
+=======
+                        transfer.stampRequestMode = 1;
+                         transfer.screenMode = 1;
+                        jump("/view/kaf/002/a/index.xhtml", transfer);
+>>>>>>> pj/at/release_ver4
                         break;
 
                     case 10:
                         //KAF002-打刻申請（打刻取消）
                         transfer.stampRequestMode = 2;
+<<<<<<< HEAD
                         transfer.screenMode = 1;
                         vmNew.$jump.blank("/view/kaf/002/b/index.xhtml", transfer);
                         break;
@@ -360,6 +374,24 @@ module nts.uk.at.view.kdw003.b {
                     case 13:
                         //任意申請
                         vmNew.$jump.blank("/view/kaf/020/a/index.xhtml", transfer);
+=======
+                         transfer.screenMode = 1;
+                        jump("/view/kaf/002/a/index.xhtml", transfer);
+                        break;
+
+                    case 11:
+                        //KAF002-打刻申請（レコーダイメージ）
+                        transfer.stampRequestMode = 3;
+                         transfer.screenMode = 1;
+                        jump("/view/kaf/002/a/index.xhtml", transfer);
+                        break;
+
+                    case 12:
+                        //KAF002-打刻申請（その他）
+                        transfer.stampRequestMode = 4;
+                         transfer.screenMode = 1;
+                        jump("/view/kaf/002/a/index.xhtml", transfer);
+>>>>>>> pj/at/release_ver4
                         break;
 
                     case 14:

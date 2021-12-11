@@ -143,7 +143,7 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 
     @Override
     public void setCalAtr(CalculationClassification calAtr) {
-        // TODO Auto-generated method stub
+        this.calcAtr = calAtr.value;
         
     }
 

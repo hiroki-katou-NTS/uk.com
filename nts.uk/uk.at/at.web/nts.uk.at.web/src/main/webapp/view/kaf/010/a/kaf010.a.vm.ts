@@ -821,14 +821,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			// 		workHours2.end(hdWorkDispInfoWithDateOutput.workHours.endTimeOp2);
 			// 	}
 			// } else {
-				let workHours1 = self.workInfo().workHours1;
-				let workHours2 = self.workInfo().workHours2;
-				if(hdWorkDispInfoWithDateOutput && hdWorkDispInfoWithDateOutput.workHours){
-					workHours1.start(hdWorkDispInfoWithDateOutput.workHours.startTimeOp1);
-					workHours1.end(hdWorkDispInfoWithDateOutput.workHours.endTimeOp1);
-					workHours2.start(hdWorkDispInfoWithDateOutput.workHours.startTimeOp2);
-					workHours2.end(hdWorkDispInfoWithDateOutput.workHours.endTimeOp2);
-				}
+				
 			// }
 			
 			let workInfo = new WorkInfo();
@@ -838,6 +831,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			} else {
 				workInfo = self.workInfo();
 			}
+			let workHours1 = self.workInfo().workHours1;
+				let workHours2 = self.workInfo().workHours2;
+				if(hdWorkDispInfoWithDateOutput && hdWorkDispInfoWithDateOutput.workHours){
+					workHours1.start(hdWorkDispInfoWithDateOutput.workHours.startTimeOp1);
+					workHours1.end(hdWorkDispInfoWithDateOutput.workHours.endTimeOp1);
+					workHours2.start(hdWorkDispInfoWithDateOutput.workHours.startTimeOp2);
+					workHours2.end(hdWorkDispInfoWithDateOutput.workHours.endTimeOp2);
+				}
 			workInfo.workHours1 = workHours1;
 			workInfo.workHours2 = workHours2;
 			self.workInfo(workInfo);
@@ -1502,17 +1503,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			} else {
 				employeeIdList = [self.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].sid];
 			}
-			nts.uk.ui.windows.setShared( 'KDL005_DATA', {
-				employeeIds: employeeIdList,
-				baseDate: self.dataSource.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate.replaceAll('/', ""),
-            }, true);
+			nts.uk.ui.windows.setShared( 'KDL005_DATA', employeeIdList);
 
-			if(self.mode()==MODE.MULTiPLE_AGENT){
-				nts.uk.ui.windows.sub.modal('/view/kdl/005/a/multi.xhtml').onClosed( function(): any {})
-			}else{
-				nts.uk.ui.windows.sub.modal('/view/kdl/005/a/single.xhtml').onClosed( function(): any {})
-			}
-
+			if (employeeIdList.length > 1) {
+				nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml", {  width: 1160, height: 640 });
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 860, height: 640 });
+            }
 		}
 
 		openDialogKdl003() {

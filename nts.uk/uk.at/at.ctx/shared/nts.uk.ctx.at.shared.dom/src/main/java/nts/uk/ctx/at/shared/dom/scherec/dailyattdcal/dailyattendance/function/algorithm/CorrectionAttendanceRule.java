@@ -106,7 +106,11 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 
 	@Inject
 	private WorkingConditionRepository workingConditionRepo;
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> pj/at/release_ver4
 	@Inject
 	private CorrectionShortWorkingHour correctShortWorkingHour;
 	
@@ -154,17 +158,23 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 				afterDomain = workImport.getIntegrationOfDaily().orElse(afterDomain);
 		}
 
+<<<<<<< HEAD
 		
+=======
+>>>>>>> pj/at/release_ver4
 		if(changeAtt.workInfo || changeAtt.isDirectBounceClassifi() || changeAtt.attendance) {
 		//短時間勤務の補正
 			afterDomain = correctShortWorkingHour.correct(companyId, afterDomain);
 		}
 		
+<<<<<<< HEAD
 		if(changeAtt.workInfo || changeAtt.isDirectBounceClassifi() || changeAtt.attendance) {
 		//短時間勤務の補正
 			afterDomain = correctShortWorkingHour.correct(companyId, afterDomain);
 		}
 		
+=======
+>>>>>>> pj/at/release_ver4
 		/** 休憩時間帯の補正 */
 		BreakTimeSheetCorrector.correct(createBreakRequire(optionalItems), afterDomain, changeAtt.correctValCopyFromSche);
 
@@ -222,7 +232,7 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 			@Override
 			public Optional<WorkType> workType(String companyId, String workTypeCd) {
 
-				return workTypeRepo.findByDeprecated(companyId, workTypeCd);
+				return workTypeRepo.findByPK(companyId, workTypeCd);
 			}
 
 			@Override

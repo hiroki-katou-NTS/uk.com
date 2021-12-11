@@ -136,8 +136,8 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				KrcmtAnyfResultRange range = new KrcmtAnyfResultRange();
 				range.setKrcstCalcResultRangePK(new KrcmtCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
 				
-				if (rec.getInt("UPPER_LIMIT_ATR") != null) {
-				    range.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
+				if (rec.getBoolean("UPPER_LIMIT_ATR") != null) {
+				    range.setUpperLimitAtr(rec.getBoolean("UPPER_LIMIT_ATR"));
 				    
 				    range.setUpperDayTimeRange(rec.getInt("UPPER_DAY_TIME_RANGE"));
 				    range.setUpperDayNumberRange(rec.getBigDecimal("UPPER_DAY_NUMBER_RANGE"));
@@ -146,11 +146,11 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				    range.setUpperMonNumberRange(rec.getBigDecimal("UPPER_MON_NUMBER_RANGE"));
 				    range.setUpperMonAmountRange(rec.getInt("UPPER_MON_AMOUNT_RANGE"));
 				} else {
-				    range.setUpperLimitAtr(0);
+				    range.setUpperLimitAtr(false);
 				}
 				
-				if (rec.getInt("LOWER_LIMIT_ATR") != null) {
-				    range.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
+				if (rec.getBoolean("LOWER_LIMIT_ATR") != null) {
+				    range.setLowerLimitAtr(rec.getBoolean("LOWER_LIMIT_ATR"));
 				    
 				    range.setLowerDayTimeRange(rec.getInt("LOWER_DAY_TIME_RANGE"));
 				    range.setLowerDayNumberRange(rec.getBigDecimal("LOWER_DAY_NUMBER_RANGE"));
@@ -159,7 +159,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				    range.setLowerMonNumberRange(rec.getBigDecimal("LOWER_MON_NUMBER_RANGE"));
 				    range.setLowerMonAmountRange(rec.getInt("LOWER_MON_AMOUNT_RANGE"));
 				} else {
-				    range.setLowerLimitAtr(0);
+				    range.setLowerLimitAtr(false);
 				}
 				range.setTimeItemInputUnit(rec.getInt("INPUT_UNIT_TIME"));
 				range.setNumberItemInputUnit(rec.getInt("INPUT_UNIT_NUMBER"));
@@ -260,8 +260,8 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				item.setInputCheck(rec.getBoolean("INPUT_WITH_CHECKBOX"));
 				KrcmtAnyfResultRange range = new KrcmtAnyfResultRange();
 				range.setKrcstCalcResultRangePK(new KrcmtCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
-				if (rec.getInt("UPPER_LIMIT_ATR") != null) {
-                    range.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
+				if (rec.getBoolean("UPPER_LIMIT_ATR") != null) {
+                    range.setUpperLimitAtr(rec.getBoolean("UPPER_LIMIT_ATR"));
                     
                     range.setUpperDayTimeRange(rec.getInt("UPPER_DAY_TIME_RANGE"));
                     range.setUpperDayNumberRange(rec.getBigDecimal("UPPER_DAY_NUMBER_RANGE"));
@@ -270,11 +270,11 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
                     range.setUpperMonNumberRange(rec.getBigDecimal("UPPER_MON_NUMBER_RANGE"));
                     range.setUpperMonAmountRange(rec.getInt("UPPER_MON_AMOUNT_RANGE"));
                 } else {
-                    range.setUpperLimitAtr(0);
+                    range.setUpperLimitAtr(false);
                 }
                 
-                if (rec.getInt("LOWER_LIMIT_ATR") != null) {
-                    range.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
+                if (rec.getBoolean("LOWER_LIMIT_ATR") != null) {
+                    range.setLowerLimitAtr(rec.getBoolean("LOWER_LIMIT_ATR"));
                     
                     range.setLowerDayTimeRange(rec.getInt("LOWER_DAY_TIME_RANGE"));
                     range.setLowerDayNumberRange(rec.getBigDecimal("LOWER_DAY_NUMBER_RANGE"));
@@ -283,7 +283,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
                     range.setLowerMonNumberRange(rec.getBigDecimal("LOWER_MON_NUMBER_RANGE"));
                     range.setLowerMonAmountRange(rec.getInt("LOWER_MON_AMOUNT_RANGE"));
                 } else {
-                    range.setLowerLimitAtr(0);
+                    range.setLowerLimitAtr(false);
                 }
                 range.setTimeItemInputUnit(rec.getInt("INPUT_UNIT_TIME"));
                 range.setNumberItemInputUnit(rec.getInt("INPUT_UNIT_NUMBER"));
@@ -497,7 +497,6 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 						+ "where oi.CID = ? AND ec.EMP_CD IS NOT NULL ORDER BY oi.OPTIONAL_ITEM_NO ASC")) {
 			stmt.setString(1, companyId);
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-				CalFormulasItemExportData item = new CalFormulasItemExportData();
 				return toReportData(rec);
 			});
 		} 
@@ -541,7 +540,6 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				)) {
 			stmt.setString(1, companyId);
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-				CalFormulasItemTableExportData item = new CalFormulasItemTableExportData();
 				return toReportDataTable(rec);
 			});
 		}
@@ -549,9 +547,6 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	}
 
 	private CalFormulasItemTableExportData toReportDataTable(NtsResultRecord rec) {
-		CalFormulasItemTableExportData item = new CalFormulasItemTableExportData(
-				//
-		);
 		return null;
 	}
 	/*

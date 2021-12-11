@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflect.StartAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
@@ -37,8 +38,8 @@ public class GetSupportDataJudgedSameDSTest {
 	@Test
 	public void case1() {
 		List<OuenWorkTimeSheetOfDailyAttendance> supportDataList = new ArrayList<OuenWorkTimeSheetOfDailyAttendance>();
-		OuenWorkTimeSheetOfDailyAttendance targetSupportData = null;
-		boolean isStart = true;
+		TimeWithDayAttr targetSupportData = new TimeWithDayAttr(0);
+		StartAtr isStart = StartAtr.START_OF_SUPPORT;
 		new Expectations() {
 			{
 				required.getCriteriaSameStampOfSupport();
@@ -76,13 +77,17 @@ public class GetSupportDataJudgedSameDSTest {
 		supportDataList.add(ouenWorkTime1);
 		supportDataList.add(ouenWorkTime2);
 		supportDataList.add(ouenWorkTime3);
+<<<<<<< HEAD
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(
 				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(20))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(70)))), Optional.empty());
+=======
+		TimeWithDayAttr targetSupportData = new TimeWithDayAttr(20);
+>>>>>>> pj/at/release_ver4
 		
-		boolean isStart = true;
+		StartAtr isStart = StartAtr.START_OF_SUPPORT;
 		
 		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
 		new Expectations() {
@@ -123,6 +128,7 @@ public class GetSupportDataJudgedSameDSTest {
 		supportDataList.add(ouenWorkTime2);
 		supportDataList.add(ouenWorkTime3);
 		
+<<<<<<< HEAD
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(
 				SupportFrameNo.of(1), 
 				null, 
@@ -130,8 +136,11 @@ public class GetSupportDataJudgedSameDSTest {
 						new WorkNo(1), 
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(120))), 
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(170)))), Optional.empty());
+=======
+		TimeWithDayAttr targetSupportData = new TimeWithDayAttr(120);
+>>>>>>> pj/at/release_ver4
 		
-		boolean isStart = true;
+		StartAtr isStart = StartAtr.START_OF_SUPPORT;
 		
 		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
 		new Expectations() {
@@ -172,13 +181,17 @@ public class GetSupportDataJudgedSameDSTest {
 		supportDataList.add(ouenWorkTime2);
 		supportDataList.add(ouenWorkTime3);
 		
+<<<<<<< HEAD
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(
 				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(5))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(10)))), Optional.empty()); 
+=======
+		TimeWithDayAttr targetSupportData = new TimeWithDayAttr(10); 
+>>>>>>> pj/at/release_ver4
 		
-		boolean isStart = false;
+		StartAtr isStart = StartAtr.END_OF_SUPPORT;
 
 		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
 		new Expectations() {
@@ -219,6 +232,7 @@ public class GetSupportDataJudgedSameDSTest {
 		supportDataList.add(ouenWorkTime2);
 		supportDataList.add(ouenWorkTime3);
 		
+<<<<<<< HEAD
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(
 				SupportFrameNo.of(1), 
 				null, 
@@ -226,8 +240,11 @@ public class GetSupportDataJudgedSameDSTest {
 						new WorkNo(1), 
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(5))), 
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(10)))), Optional.empty());
+=======
+		TimeWithDayAttr targetSupportData = new TimeWithDayAttr(10);
+>>>>>>> pj/at/release_ver4
 		
-		boolean isStart = false;
+		StartAtr isStart = StartAtr.END_OF_SUPPORT;
 
 		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
 		new Expectations() {
@@ -273,12 +290,16 @@ public class GetSupportDataJudgedSameDSTest {
 		supportDataList.add(ouenWorkTime2);
 		supportDataList.add(ouenWorkTime3);
 		
+<<<<<<< HEAD
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), null,
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(20))),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(70)))), Optional.empty());
+=======
+		TimeWithDayAttr targetSupportData = new TimeWithDayAttr(20);
+>>>>>>> pj/at/release_ver4
 
-		boolean isStart = true;
+		StartAtr isStart = StartAtr.START_OF_SUPPORT;
 
 		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
 		new Expectations() {
@@ -322,12 +343,16 @@ public class GetSupportDataJudgedSameDSTest {
 		supportDataList.add(ouenWorkTime2);
 		supportDataList.add(ouenWorkTime3);
 		
+<<<<<<< HEAD
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), null,
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(20))),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(70)))), Optional.empty());
+=======
+		TimeWithDayAttr targetSupportData = new TimeWithDayAttr(70);
+>>>>>>> pj/at/release_ver4
 
-		boolean isStart = false;
+		StartAtr isStart = StartAtr.END_OF_SUPPORT;
 
 		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(10), new MaximumNumberOfSupport(20));
 		new Expectations() {

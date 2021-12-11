@@ -15,7 +15,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.val;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
@@ -246,16 +249,22 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			List<ClosureStatusManagement> closureList,
 			ExecutionType reCalcAtr,
 			String executeLogId){
+
+		Map<Pair<String, GeneralDate>, AtomTask> atomTasks = new HashMap<>();
 		
 		val setting = Optional.of(commonCompanySettingForCalc.getCompanySetting());
 		
 		//時間・回数の勤怠項目だけ　編集状態テーブルから削除
 		BiConsumer<IntegrationOfDaily, List<Integer>> actionOnClearedItemIds = (iod, clearedItems) -> {
-			dailyEditStateRepo.deleteByListItemId(iod.getEmployeeId(), iod.getYmd(), clearedItems);
+			atomTasks.put(Pair.of(iod.getEmployeeId(), iod.getYmd()), AtomTask.of(() -> {
+				dailyEditStateRepo.deleteByListItemId(iod.getEmployeeId(), iod.getYmd(), clearedItems);
+			}));
 		};
 		
-		return calculateForManageStateInternal(setting, CalculateOption.asDefault(), integrationOfDailys, 
+		val result = calculateForManageStateInternal(setting, CalculateOption.asDefault(), integrationOfDailys, 
 				closureList, reCalcAtr, Optional.of(executeLogId), actionOnClearedItemIds);
+		
+		return result;
 	}
 	
 	private ManageProcessAndCalcStateResult calculateForManageStateInternal(Optional<ManagePerCompanySet> companySet,

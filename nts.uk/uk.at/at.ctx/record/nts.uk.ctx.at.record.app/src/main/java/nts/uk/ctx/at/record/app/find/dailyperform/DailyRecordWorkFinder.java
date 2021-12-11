@@ -334,7 +334,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 						.withOuenWorkTime(getValue(ouenWorkTime.get(p.getKey()), d))
 						.complete();
 			}).collect(Collectors.toList());
-		}).flatMap(List::stream).collect(Collectors.toList());
+		}).flatMap(List::stream).filter(x -> x.getWorkInfo() != null).collect(Collectors.toList());
 	}
 
 	private <T extends ConvertibleAttendanceItem> T getValue(Map<GeneralDate, T> data, GeneralDate date) {

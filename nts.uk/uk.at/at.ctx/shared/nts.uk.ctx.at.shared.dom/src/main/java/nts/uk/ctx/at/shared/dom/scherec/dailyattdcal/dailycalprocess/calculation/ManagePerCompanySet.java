@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BPUnitUseSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BPTimeItemSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.shorttimework.CalcOfShortTimeWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOT;
@@ -52,8 +53,8 @@ public class ManagePerCompanySet {
 	//エラーアラームマスタ
 //	List<ErrorAlarmWorkRecord> errorAlarm; 
 	
-	//加給利用単位
-	Optional<BPUnitUseSetting> bpUnitSetting;
+	//加給自動計算設定
+	List<BPTimeItemSetting> bpTimeItemSetting;
 	
 	@Setter
 	MasterShareContainer<String> shareContainer;
@@ -106,7 +107,7 @@ public class ManagePerCompanySet {
 			CompensatoryLeaveComSetting compensatoryLeaveComSet,
 			List<DivergenceTimeRoot> divergenceTime,
 //			List<ErrorAlarmWorkRecord> errorAlarm,
-			Optional<BPUnitUseSetting> bpUnitSetting,
+			List<BPTimeItemSetting> bpTimeItemSetting,
 			List<OptionalItem> optionalItems,
 			List<Formula> formulaList,
 			List<FormulaDispOrder> formulaOrderList,
@@ -128,7 +129,7 @@ public class ManagePerCompanySet {
 		this.compensatoryLeaveComSet = compensatoryLeaveComSet;
 		this.divergenceTime = divergenceTime;
 //		this.errorAlarm = errorAlarm;
-		this.bpUnitSetting = bpUnitSetting;
+		this.bpTimeItemSetting = bpTimeItemSetting;
 		this.optionalItems = optionalItems;
 		this.formulaList = formulaList;
 		this.formulaOrderList = formulaOrderList;

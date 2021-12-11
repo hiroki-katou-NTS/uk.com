@@ -110,6 +110,5 @@ public class GetAvailableWorking {
 		public List<TaskAssignEmployee> getTaskAssignEmployee(String employeeId, TaskFrameNo taskFrameNo) {
 			return taskAssignEmployeeRepo.get(employeeId, taskFrameNo.v());
 		}
-
 	}
 }
