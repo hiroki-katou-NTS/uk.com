@@ -17,7 +17,6 @@ const servicePath = {
     getOmission: basePath + 'get-omission',
 
     getSettingStampCommon: 'at/record/stamp/settings_stamp_common',
-    create_daily: 'at/record/stamp/craeteDaily',
     getEmployeeWorkByStamping: 'at/record/stamp/employee_work_by_stamping'
 
 };
@@ -309,13 +308,6 @@ export class KdpS01AComponent extends Vue {
                                                 break;
                                         }
                                     }
-                                }).then(() => {
-                                    const param = {
-                                        sid: userInfo.employeeId,
-                                        date: vm.$dt.now
-                                    };
-                                    vm.$http.post('at', servicePath.create_daily, param);
-
                                 }).catch((res: any) => {
                                     vm.showError(res);
                                 });
@@ -344,13 +336,6 @@ export class KdpS01AComponent extends Vue {
                                             break;
                                     }
                                 }
-                            }).then(() => {
-                                const param = {
-                                    sid: userInfo.employeeId,
-                                    date: vm.$dt.now
-                                };
-                                vm.$http.post('at', servicePath.create_daily, param);
-
                             }).catch((res: any) => {
                                 vm.showError(res);
                             });

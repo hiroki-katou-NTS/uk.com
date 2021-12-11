@@ -189,8 +189,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD5().map(t -> t.v()).orElse(null)).orElse(null), 
 				(stamp.getImprintReflectionStatus() != null && stamp.getImprintReflectionStatus().getReflectedDate().isPresent())
 						? stamp.getImprintReflectionStatus().getReflectedDate().get() 
-						: null, // REFLECTED_INTO_DATE,
-				stamp.getStampRecordId());
+						: null);
 		
 	}
 
@@ -236,7 +235,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 						stampNumber, 
 						entity.pk.stampDateTime,
 						relieve, stampType, refectActualResult,
-						imprintReflectionState, Optional.ofNullable(geoLocation), Optional.empty(), entity.stampRecordId);
+						imprintReflectionState, Optional.ofNullable(geoLocation), Optional.empty());
 	}
 	
 	private Stamp toDomainVer2(Object[] object) {
@@ -272,8 +271,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				new ImprintReflectionState(entity.reflectedAtr, Optional.ofNullable(entity.reflectedIntoDate)),
 				Optional.ofNullable(( entity.locationLat == null && entity.locationLon == null ) ? null
 						: new GeoCoordinate(entity.locationLat.doubleValue(), entity.locationLon.doubleValue())), 
-				Optional.empty(),
-				entity.stampRecordId);
+				Optional.empty());
 		return stamp;
 	}
 
@@ -315,8 +313,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 					Optional.ofNullable(( entity.locationLat == null && entity.locationLon == null) ? null :
 						new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue())),
-					Optional.empty(),
-					entity.stampRecordId
+					Optional.empty()
 			);
 		return stamp;
 	}
