@@ -168,7 +168,7 @@ public class WorkDaysOfMonthly implements Serializable{
 			boolean isAttendanceDay, boolean isTwoTimesStampExists){
 		
 		// 出勤日数の集計
-		this.attendanceDays.aggregate(workingSystem, workTypeDaysCountTable, isAttendanceDay);
+		this.attendanceDays.aggregate(require, cid, workType, workingSystem, workTypeDaysCountTable, isAttendanceDay);
 		
 		// 欠勤日数の集計
 		this.absenceDays.aggregate(require, cid, sid, ymd, workInfo.getRecordInfo(),
@@ -251,7 +251,7 @@ public class WorkDaysOfMonthly implements Serializable{
 	}
 	
 	public static interface RequireM1 extends SpecificDaysOfMonthly.RequireM1, RecruitmentDaysOfMonthly.RequireM1,
-		SpcVacationDaysOfMonthly.Require, AbsenceDaysOfMonthly.Require {
+		SpcVacationDaysOfMonthly.Require, AbsenceDaysOfMonthly.Require, AttendanceDaysOfMonthly.Require {
 
 	}
 }

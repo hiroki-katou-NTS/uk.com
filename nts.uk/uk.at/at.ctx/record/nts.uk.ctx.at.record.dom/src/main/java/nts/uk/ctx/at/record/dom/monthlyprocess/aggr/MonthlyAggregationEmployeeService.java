@@ -163,14 +163,12 @@ public class MonthlyAggregationEmployeeService {
 		List<AtomTask> atomTasks = new ArrayList<>();
 		
 		//get ロック中の計算/集計できるか
-		IgnoreFlagDuringLock ignoreFlagDuringLock = canAggrWhenLock.flatMap(c -> {
-			val executionLog = require.getByExecutionContent(empCalAndSumExecLogID, ExecutionContent.MONTHLY_AGGREGATION.value);
-			
-			return executionLog.flatMap(e -> e.getIsCalWhenLock())
-					.map(e -> e != null && e ? IgnoreFlagDuringLock.CAN_CAL_LOCK : IgnoreFlagDuringLock.CANNOT_CAL_LOCK);
-					
-		}).orElse(IgnoreFlagDuringLock.CANNOT_CAL_LOCK);
+		Optional<ExecutionLog> executionLog = require.getByExecutionContent(empCalAndSumExecLogID, ExecutionContent.MONTHLY_AGGREGATION.value);
 		
+		IgnoreFlagDuringLock ignoreFlagDuringLock = executionLog.flatMap(c -> c.getIsCalWhenLock())
+				.map(c -> c ? IgnoreFlagDuringLock.CAN_CAL_LOCK : IgnoreFlagDuringLock.CANNOT_CAL_LOCK)
+				.orElse(IgnoreFlagDuringLock.CANNOT_CAL_LOCK);
+
 //		List<BsEmploymentHistoryImport> employments = employeeSets.getEmployments();
 		
 		for (val aggrPeriod : aggrPeriods){

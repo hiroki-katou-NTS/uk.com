@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AssignmentMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
@@ -32,7 +33,11 @@ public class ButtonSettingsCommand {
 	/** 音声使用方法 */
 	private int audioType;
 	
+	/** 応援職場設定方法 */
 	private Integer supportWplSet;
+	
+	/** 作業指定方法 */
+	private Integer taskChoiceArt;
 	
 	public ButtonSettings toDomain() {
 		return new ButtonSettings(
@@ -41,7 +46,8 @@ public class ButtonSettingsCommand {
 				this.buttonType.toDomain(), 
 				NotUseAtr.valueOf(this.usrArt), 
 				AudioType.valueOf(this.audioType),
-				Optional.ofNullable(this.supportWplSet == null? null: SupportWplSet.valueOf(this.supportWplSet))
+				Optional.ofNullable(this.supportWplSet == null? null: SupportWplSet.valueOf(this.supportWplSet)),
+				Optional.ofNullable(this.taskChoiceArt == null? null: AssignmentMethod.valueOf(this.taskChoiceArt))
 			);
 	}
 
