@@ -430,9 +430,10 @@ public final class AttendanceItemUtilRes {
 	
 	private static Map<String, List<ItemValue>> groupEnum(List<ItemValue> items) {
 		return items.stream().collect(Collectors.groupingBy(c -> {
-			String partWithNoIdxAndEnum = c.path().replaceAll(ItemConst.IDX_WITH_ENUM_REG, "");
-			String idxWithEnum = c.path().replace(partWithNoIdxAndEnum, "");
-			return idxWithEnum;
+			String[] parts = c.path().split(Pattern.quote(ItemConst.DEFAULT_ENUM_SEPERATOR));
+			if(parts.length>=2)
+				return parts[parts.length - 1];
+			return "";
 		}));
 	}
 	
