@@ -2762,67 +2762,68 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     
                     vm.params.screenA.dataChanged(true);
-                    let id = randomId();
+                    let ids = [randomId()];
                     if (ko.unwrap<boolean>(dataEvent.shift)) {
-                        event.setExtendedProp('id', id);
-                        let etemp = _.cloneDeep(event);
+                        event.setExtendedProp('id', ids[0]);
                         event.remove();
-                        $caches.new(vm.calendar
-                            .addEvent(etemp));
+                        $caches.new(vm.calendar.addEvent(_.cloneDeep(event)));
+                        _.forEach(arg.relatedEvents, re => {
+                            let id = randomId();
+                            ids.push(id);
+                            re.setExtendedProp('id', id);
+                            re.remove();
+                            $caches.new(vm.calendar.addEvent(_.cloneDeep(re)));
+                        });
                     }
                     
                     mutatedEvents();
 
                     if (ko.unwrap<boolean>(dataEvent.shift)) {
-                        const getFrameNo = (events) => {
+                        const getFrameNos = (events) => {
                             const vm = this;
                             const data = ko.unwrap(vm.params.$datas());
                             const {lstIntegrationOfDaily} = data;
                             let maxNo = 20;
-                            let resultNo;
+                            let resultNos = [];
                             for (let i = 1; i <= maxNo; i++) {
                                 let event = _.find(events, e => _.find(_.get(e, 'extendedProps.taskBlock.taskDetails', []), ['supNo', i]));
                                 let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(start).isSame(moment(id.ymd), 'days'); });
                                 let ouenTime = _.find(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null && ot.workNo == i)
                                 if (!event && !ouenTime) {
-                                    resultNo = i;
-                                    break;
+                                    resultNos.push(i);
                                 }
                             }
-                            return resultNo;
+                            return resultNos;
                         };
                         let tempEs = [...events()];
-                        _.forEach(tempEs, (evn) => {
-                            if (evn.extendedProps.id == id) {
-                                let tds = [...evn.extendedProps.taskBlock.taskDetails];
-                                let eventInDay = _.chain(events())
-                                    .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
-                                    .filter((evn) => { return evn.extendedProps.id != id })
+                        let eventInDay = _.chain(events())
+                                    .filter((e) => { return moment(start).isSame(e.start, 'days'); })
+                                    .filter((e) => { return ids.indexOf(e.extendedProps.id) != -1 })
                                     .sortBy('end')
                                     .value();
-                                let supNo = null;
-                                const startMinutes = (moment(start).hour() * 60) + moment(start).minute();
-                                const endMinutes = (moment(end).hour() * 60) + moment(end).minute();
-                                _.forEach(tds, td => {
-                                    supNo = supNo ? supNo + 1 : _.isEmpty(eventInDay) ? 1 : getFrameNo(eventInDay);
-                                    td.supNo = supNo;
-                                    _.forEach(td.taskItemValues, tiv => {
-                                        if (tiv.itemId == 1) {
-                                            tiv.value = startMinutes;
-                                        }
-                                        if (tiv.itemId == 2) {
-                                            tiv.value = endMinutes;
-                                        }
-                                        if (tiv.itemId == 3) {
-                                            tiv.value = endMinutes - startMinutes;
-                                        }
-                                    });
+                        let frameNos = getFrameNos(eventInDay);
+                        
+                        _.forEach(ids, id => {
+                            let evn = _.find(tempEs, e => e.extendedProps.id == id);
+                            let tds = [...evn.extendedProps.taskBlock.taskDetails];
+                            const startMinutes = (moment(evn.start).hour() * 60) + moment(evn.start).minute();
+                            const endMinutes = (moment(evn.end).hour() * 60) + moment(evn.end).minute();
+                            _.forEach(tds, td => {
+                                td.supNo = frameNos[0];
+                                frameNos.shift();
+                                _.forEach(td.taskItemValues, tiv => {
+                                    if (tiv.itemId == 1) {
+                                        tiv.value = startMinutes;
+                                    }
+                                    if (tiv.itemId == 2) {
+                                        tiv.value = endMinutes;
+                                    }
                                 });
-                                evn.extendedProps.taskDetails = tds;
-                                evn.extendedProps.isChanged = true;
-                                evn.extendedProps.taskBlock.caltimeSpan = { start: startMinutes, end: endMinutes };
-                                evn.extendedProps.period = { start: startMinutes, end: endMinutes };
-                            };
+                            });
+                            evn.extendedProps.taskDetails = tds;
+                            evn.extendedProps.isChanged = true;
+                            evn.extendedProps.taskBlock.caltimeSpan = { start: evn.start, end: evn.end };
+                            evn.extendedProps.period = { start: evn.start, end: evn.end };
                         });
                         events(tempEs);
                         updateEvents();
@@ -2834,6 +2835,21 @@ module nts.uk.ui.at.kdw013.calendar {
                                 evn.extendedProps.isChanged = true;
                             };
                         });
+                        if (arg.delta.days != 0) {
+                            _.forEach([].concat(arg.oldEvent, arg.relatedEvents), e => {
+
+                                let removeList = vm.params.screenA.removeList;
+                                let removeDate = _.find(removeList(), (ri) => moment(ri.date).isSame(moment(e.start), 'days'));
+                                let supNos = _.map(_.get(e, 'extendedProps.taskBlock.taskDetails', []), td => td.supNo);
+                                if (removeDate) {
+                                    removeDate.supNos.push(...supNos);
+                                } else {
+                                    removeList.push({ date: moment(arg.oldEvent.start).startOf('day').toDate(), supNos });
+                                }
+
+
+                            });
+                        }
                         events(tempEs);
                         updateEvents();
                     }
