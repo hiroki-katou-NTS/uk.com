@@ -463,9 +463,7 @@ module nts.uk.ui.at.kdw013.a {
 
                     if (datas) {
                         
-                        setTimeout(() => {
-                            j ko.applyBindings($('.fc-evn-checkbox'));
-                        }, 200);
+                        
                         
                       return   _.chain(dateRanges())
                             .map(date => {
@@ -481,7 +479,7 @@ module nts.uk.ui.at.kdw013.a {
                                     
                                     let name = _.get(_.find(workTypes, wt => { return wt.workTypeCode == wkTypeCd }), 'name');
                                     //PC3_2 PC3_3
-                                    events.push({ title: vm.$i18n('KDW013_67'), text: wkTypeCd + ' ' + (name ? name : vm.$i18n('KDW013_40')) });
+                                    events.push({ title: vm.$i18n('KDW013_67'), text: wkTypeCd + ' ' + (name ? name : vm.$i18n('KDW013_40')) , valueType: 0});
                                 }
 
                                 let start = _.get(_.find(manHrContents, hr => { return hr.itemId == 31 }), 'value');
@@ -489,23 +487,23 @@ module nts.uk.ui.at.kdw013.a {
 
                                 if (convert) {
                                     //PC3_4 PC3_5
-                                    events.push({ title: vm.$i18n('KDW013_68'), text: vm.$i18n('KDW013_73', [start ? formatTime(start, 'Time_Short_HM') : '　　', end ? formatTime(end, 'Time_Short_HM') : '']) });
+                                    events.push({ title: vm.$i18n('KDW013_68'), text: vm.$i18n('KDW013_73', [start ? formatTime(start, 'Time_Short_HM') : '　　', end ? formatTime(end, 'Time_Short_HM') : '']), valueType: 0 });
                                 }
 
                                 let rdis = _.sortBy(_.get(setting, 'manHrInputDisplayFormat.recordColumnDisplayItems', []), ['order']);
-                                const gentext = (hr, attItem) => {
+                                const genControl = (hr, attItem) => {
                                     if (!_.isNaN(Number(hr.value)) && hr.valueType == 1) {
-                                        return (formatTime(hr.value, 'Time_Short_HM'));
+                                        return { text: (formatTime(hr.value, 'Time_Short_HM')), type: 0 };
                                     }
                                     //check box
                                     if (_.get(attItem, 'masterType') == 9 && _.get(attItem, 'dailyAttendanceAtr') == 2 && hr.value == 1) {
-                                        return '<div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: true }">する</div>'
+                                        return { text: '', type: 3 };
                                     }
                                     if (_.get(attItem, 'masterType') == 9 && _.get(attItem, 'dailyAttendanceAtr') == 2) {
-                                        return '<div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: false }">する</div>'
+                                        return { text: '', type: 2 };
                                     }
 
-                                    return hr.value;
+                                    return { text: hr.value, type: 0 };
 
                                 }
                                 _.forEach(rdis, rdi => {
@@ -514,7 +512,8 @@ module nts.uk.ui.at.kdw013.a {
                                     let attItem = _.find(_.get(setting, 'dailyAttendanceItem', []), ati => ati.attendanceItemId == rdi.attendanceItemId);
                                     //PC3_6 PC3_7 ☐ ☑
                                     if (!_.isNil(_.get(hr, 'value'))) {
-                                        events.push({ title: rdi.displayName, text:gentext(hr,attItem), valueType: hr.valueType });
+                                        let control  = genControl(hr,attItem);
+                                        events.push({ title: rdi.displayName, text: control.text, valueType: control.type });
                                     }
 
                                 });

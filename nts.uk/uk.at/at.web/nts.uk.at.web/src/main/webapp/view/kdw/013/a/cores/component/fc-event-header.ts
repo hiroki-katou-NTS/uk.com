@@ -12,7 +12,17 @@ module nts.uk.ui.at.kdw013.eventheadear {
                             <div class="text-note" data-bind="text: note.title"></div>
                         </div>
                         <div style='text-align: left;margin-left: 5px;width: calc(100% - 70px);' data-bind="foreach: { data: day.events, as: 'note' }">
-                            <div style='display: block;' class="text-note limited-label" data-bind="html: note.text"></div>
+                            <!-- ko if: note.valueType == 0 -->
+                                <div style='display: block;' class="text-note limited-label" data-bind="text: note.text"></div>
+                            <!-- /ko -->
+                            
+                            <!-- ko if: note.valueType == 3 -->
+                                <div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: true , enable:false}">する</div>
+                            <!-- /ko -->
+                            
+                            <!-- ko if: note.valueType == 2 -->
+                                <div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: false , enable:false }">する</div>
+                            <!-- /ko -->
                         </div>
                     </div>
                     <!-- ko if: $component.showHIcon(day.date) -->
@@ -23,6 +33,30 @@ module nts.uk.ui.at.kdw013.eventheadear {
                 </td>
                 <!-- /ko -->
                 <style rel="stylesheet">
+                    .fc-evn-checkbox input[type="checkbox"]+span::before{
+                        top: 0px;
+                        left: 0px;
+                        width: 12px;
+                        height: 12px;
+                    }
+                    .fc-evn-checkbox input[type="checkbox"]+span::after{
+                        top: 3px;
+                        left: 2px;
+                        width: 8px;
+                        height: 5px;
+                        transform: rotate(-59deg);
+                    }
+                    .fc-evn-checkbox input[type="checkbox"]+span{
+                        line-height: 12px;
+                        font-size: 12px;
+                    }
+                    .fc-evn-checkbox{
+                        padding: 0px 0px 0px 17px;
+                    }
+                    .fc-evn-checkbox label{
+                         line-height: 11px;
+                    }
+                   
                     .openHIcon{
                         cursor: pointer;
                         }
