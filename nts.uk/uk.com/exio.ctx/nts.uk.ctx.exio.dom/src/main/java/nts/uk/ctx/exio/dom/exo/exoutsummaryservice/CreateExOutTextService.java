@@ -722,12 +722,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 
 				if(outingPeriodClassific == OutingPeriodClassific.YEAR_MONTH){
-					subSqlStart.append(" DATEADD(MONTH, DATEDIFF(MONTH, 0, ");
-					subSqlEtart.append(" DATEADD(MONTH, DATEDIFF(MONTH, 0, ");
+					subSqlStart.append(" CONVERT(date, CONCAT(");
+					subSqlEtart.append(" CONVERT(date, CONCAT(");
 					subSqlStart.append(startDateItemName);
 					subSqlEtart.append(endDateItemName);
-					subSqlStart.append(" ), 0) ");
-					subSqlEtart.append(" ), 0) ");
+					subSqlStart.append(",'01'))");
+					subSqlEtart.append(",'01'))");
 					createWhereCondition(sql, subSqlStart.toString(), " >= ", START_DATE_PARAM);
 					createWhereCondition(sql, subSqlEtart.toString(), " <= ", END_DATE_PARAM);
 
@@ -746,9 +746,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 					//　　出力条件項目名　≦　処理期間.終了年月（yyyyMM）」
 					//    Convert to YM
 					//	  DATEADD(MONTH, DATEDIFF(MONTH, 0, <dateField>), 0)
-					subSql.append(" DATEADD(MONTH, DATEDIFF(MONTH, 0, ");
+					subSql.append("  CONVERT(date, CONCAT( ");
 					subSql.append(startDateItemName);
-					subSql.append(" ), 0) ");
+					subSql.append(",'01'))");
 					createWhereCondition(sql, subSql.toString(), " >= ", START_DATE_PARAM);
 					createWhereCondition(sql, subSql.toString(), " <= ", END_DATE_PARAM);
 
