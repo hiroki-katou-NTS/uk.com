@@ -284,6 +284,13 @@ public class ProgramsManager {
      */
     public static final Program CDL028A = new Program(WebAppId.COM, ProgramIdConsts.CDL028A, "CDL028_1",
             "/view/cdl/028/a/index.xhtml");
+    
+    /**
+     * CDL028A
+     */
+    public static final Program CDL015A = new Program(WebAppId.COM, ProgramIdConsts.CDL015A, "CDL015_1",
+            "/view/cdl/015/a/index.xhtml");
+    
     /**
      * CPS007A
      */
