@@ -273,8 +273,7 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 					ouenSheets.stream().filter(x -> x.getYmd().equals(ymd)).findFirst().map(x->x.getOuenTimeSheet()).orElse(new ArrayList<>()),
 					snapshots.stream().filter(x-> x.getYmd().equals(ymd)).findFirst().map(c -> c.getSnapshot().toDomain()));
 			
-<<<<<<< HEAD
-=======
+
 			ouenSheets.stream().filter(x -> x.getYmd().equals(ymd)).findFirst().ifPresent(x -> {
 				daily.setOuenTimeSheet(x.getOuenTimeSheet());
 			});
@@ -285,7 +284,6 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 				daily.setOuenTime(OuenTime.getOuenTimes());
 			}
 
->>>>>>> pj/at/release_ver4
 			returnList.add(daily);
 		}
 		return returnList;
@@ -421,13 +419,11 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 					ouenSheets.stream().filter(x -> x.getYmd().equals(ymd) && x.getEmpId().equals(attendanceTime.getEmployeeId())).findFirst().map(x->x.getOuenTimeSheet()).orElse(new ArrayList<>()),
 					snapshots.stream().filter(x-> x.getYmd().equals(ymd) && x.getSid().equals(attendanceTime.getEmployeeId())).findFirst().map(c -> c.getSnapshot().toDomain()));
 			
-<<<<<<< HEAD
-=======
+
 			ouenSheets.stream().filter(x -> x.getYmd().equals(ymd) && x.getEmpId().equals(attendanceTime.getEmployeeId())).findFirst().ifPresent(x -> {
 				daily.setOuenTimeSheet(x.getOuenTimeSheet());
 			});
-						
->>>>>>> pj/at/release_ver4
+
 			returnList.add(daily);
 		}
 		return returnList;
