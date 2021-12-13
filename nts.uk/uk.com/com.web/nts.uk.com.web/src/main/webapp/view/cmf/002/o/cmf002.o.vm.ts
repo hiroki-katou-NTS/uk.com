@@ -408,7 +408,13 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let userId = "";
             let startDate = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").toISOString();
             let lastDayOfMonth = moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD");
-            let endDate = lastDayOfMonth.clone().endOf('month').toISOString();
+            let endDate = "";
+            if(self.show81YmPeriod()){
+                endDate = lastDayOfMonth.clone().endOf('month').toISOString();
+            }
+            else{
+                endDate = lastDayOfMonth.toISOString();
+            }
             let referenceDate = self.referenceDate();
             let standardType = true;
             let sidList = self.dataEmployeeId;
