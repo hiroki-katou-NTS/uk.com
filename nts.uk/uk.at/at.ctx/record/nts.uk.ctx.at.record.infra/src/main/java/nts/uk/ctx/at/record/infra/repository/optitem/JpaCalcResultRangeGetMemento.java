@@ -5,13 +5,7 @@
 package nts.uk.ctx.at.record.infra.repository.optitem;
 
 import java.util.Optional;
-
-<<<<<<< HEAD
-import nts.arc.enums.EnumAdaptor;
-=======
 import org.apache.commons.lang3.BooleanUtils;
-
->>>>>>> pj/at/release_ver4
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyfResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.*;
 
