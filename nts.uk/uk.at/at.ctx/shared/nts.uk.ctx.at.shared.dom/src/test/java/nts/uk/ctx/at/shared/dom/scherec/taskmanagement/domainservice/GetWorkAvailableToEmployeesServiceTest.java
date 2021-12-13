@@ -28,9 +28,9 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
  *
  */
 
-//@RunWith(JMockit.class)
+@RunWith(JMockit.class)
 public class GetWorkAvailableToEmployeesServiceTest {
-<<<<<<< HEAD
+
 
 	@Injectable
 	private GetWorkAvailableToEmployeesService.Require require;
@@ -39,7 +39,6 @@ public class GetWorkAvailableToEmployeesServiceTest {
 	private String employeeID = "employeeID";
 	private GeneralDate date = GeneralDate.today();
 	private TaskFrameNo taskFrameNo = new TaskFrameNo(1);
-	private TaskFrameNo taskFrameNo2 = new TaskFrameNo(2);
 
 	private TaskFrameUsageSetting taskFrameUsageSetting = GetWorkAvailableToEmployeesServiceHelper.getTask();
 	private Task task = GetWorkAvailableToEmployeesServiceHelper.getTaskDefault();
@@ -65,163 +64,18 @@ public class GetWorkAvailableToEmployeesServiceTest {
 	// 作業枠NO <> 1 AND 上位枠作業コード.isPresent
 	// if $職場別作業の絞込.isNotPresent()
 	// $親作業 isnotPresent
-	// return require.getTask(date, Arrays.asList(taskFrameNo));
-	@Test
-	public void test_2() {
-
-		List<TaskFrameNo> taskFrameNo = new ArrayList<>();
-		taskFrameNo.add(new TaskFrameNo(2));
-
-		tasks.add(task);
-
-		new Expectations() {
-			{
-				require.getTask();
-				result = taskFrameUsageSetting;
-
-				require.getTask(date, taskFrameNo);
-				result = tasks;
-			}
-		};
-
-		List<Task> result = GetWorkAvailableToEmployeesService.get(require, companyID, employeeID, date,
-				new TaskFrameNo(2), Optional.of(new TaskCode("DUMMY")));
-		assertThat(result.isEmpty()).isFalse();
-		assertThat(result.size()).isEqualTo(1);
-		assertThat(result.get(0).getCode().v()).isEqualTo("DUMMY");
-		assertThat(result.get(0).getTaskFrameNo().v()).isEqualTo(2);
-	}
-
-	// return require.getTask(date, Arrays.asList(taskFrameNo));
-	// if 子作業.isPresent AND $絞込作業.isPresent
-	@Test
-	public void test_3() {
-
-		tasks.add(task);
-		tasks.add(task);
-		tasks.add(task);
-
-		new Expectations() {
-			{
-				require.getTask();
-				result = taskFrameUsageSetting;
-
-				require.getOptionalTask(taskFrameNo, new TaskCode("DUMMY"));
-				result = Optional.of(task);
-
-				require.getListTask(date, taskFrameNo2, task.getChildTaskList());
-				result = tasks;
-
-			}
-		};
-
-		new MockUp<NarrowingDownTaskByWorkplaceFromEmployeesService>() {
-			@Mock
-			public Optional<NarrowingDownTaskByWorkplace> get(
-					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignworkplace.NarrowingDownTaskByWorkplaceFromEmployeesService.Require require,
-					String companyID, String employeeID, GeneralDate date, TaskFrameNo taskFrameNo) {
-				return Optional.of(narrowingDown);
-			}
-		};
-
-		List<Task> result = GetWorkAvailableToEmployeesService.get(require, companyID, employeeID, date,
-				new TaskFrameNo(2), Optional.of(new TaskCode("DUMMY")));
-		assertThat(result.isEmpty()).isFalse();
-		assertThat(result.size()).isEqualTo(3);
-		assertThat(result.get(0).getCode().v()).isEqualTo("DUMMY");
-		assertThat(result.get(0).getTaskFrameNo().v()).isEqualTo(2);
-	}
-
-	// return require.getTask(date, Arrays.asList(taskFrameNo));
-	// if !子作業.isPresent AND !$絞込作業.isPresent
-	@Test
-	public void test_4() {
-		tasks.add(task);
-		tasks.add(task);
-		tasks.add(task);
-
-		Optional<Task> optTask = Optional.empty();
-
-		List<TaskCode> childTaskListfilter = new ArrayList<TaskCode>();
-
-		childTaskListfilter.add(new TaskCode("DUMMY"));
-
-		new Expectations() {
-			{
-//				require.getOptionalTask(new TaskFrameNo(2), new TaskCode("DUMMY"));
-//				result = optTask; // => childTaskList == empty
-
-				require.getTask();
-				result = taskFrameUsageSetting;
-
-				require.getListTask(date, taskFrameNo2, childTaskListfilter);
-				result = tasks;
-			}
-		};
-
-		new MockUp<NarrowingDownTaskByWorkplaceFromEmployeesService>() {
-			@Mock
-			public Optional<NarrowingDownTaskByWorkplace> get(
-					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignworkplace.NarrowingDownTaskByWorkplaceFromEmployeesService.Require require,
-					String companyID, String employeeID, GeneralDate date, TaskFrameNo taskFrameNo) {
-				return Optional.of(narrowingDown);
-			}
-		};
-
-		List<Task> result = GetWorkAvailableToEmployeesService.get(require, companyID, employeeID, date,
-				new TaskFrameNo(2), Optional.of(new TaskCode("DUMMY")));
-
-		assertThat(result.isEmpty()).isFalse();
-		assertThat(result.size()).isEqualTo(3);
-		assertThat(result.get(0).getCode().v()).isEqualTo("DUMMY");
-		assertThat(result.get(0).getTaskFrameNo().v()).isEqualTo(2);
-	}
-=======
-//
-//	@Injectable
-//	private GetWorkAvailableToEmployeesService.Require require;
-//
-//	private String companyID = "companyID";
-//	private String employeeID = "employeeID";
-//	private GeneralDate date = GeneralDate.today();
-//	private TaskFrameNo taskFrameNo = new TaskFrameNo(1);
-//
-//	private TaskFrameUsageSetting taskFrameUsageSetting = GetWorkAvailableToEmployeesServiceHelper.getTask();
-//	private Task task = GetWorkAvailableToEmployeesServiceHelper.getTaskDefault();
-//	private NarrowingDownTaskByWorkplace narrowingDown = GetWorkAvailableToEmployeesServiceHelper.getNarrowingDown();
-//	private List<Task> tasks = new ArrayList<>();
-//
-//	// $作業枠利用設定 isNull
-//	@Test
-//	public void test_1() {
-//
-//		new Expectations() {
-//			{
-//				require.getWorkFrameUsageSetting(companyID);
-//			}
-//		};
-//
-//		List<Task> result = GetWorkAvailableToEmployeesService.get(require, companyID, employeeID, date, taskFrameNo,
-//				Optional.empty());
-//		assertThat(result.isEmpty()).isTrue();
-//	}
-//
-//	// $作業枠利用設定 isNotNull
-//	// 作業枠NO <> 1 AND 上位枠作業コード.isPresent
-//	// if $職場別作業の絞込.isNotPresent()
-//	// $親作業 isnotPresent
 //	@Test
 //	public void test_2() {
 //
 //		new Expectations() {
 //			{
-//				require.getWorkFrameUsageSetting(companyID);
+//				require.getTask();
 //				result = taskFrameUsageSetting;
 //				
-//				require.getListTask(companyID, date, taskFrameNo, new ArrayList<>());
+//				require.getListTask(date, taskFrameNo, new ArrayList<>());
 //				result = tasks;
 //
-//				require.getOptionalTask(companyID, taskFrameNo, new TaskCode("DUMMY"));
+//				require.getOptionalTask(taskFrameNo, new TaskCode("DUMMY"));
 //			}
 //		};
 //
@@ -229,8 +83,8 @@ public class GetWorkAvailableToEmployeesServiceTest {
 //				new TaskFrameNo(2), Optional.of(new TaskCode("DUMMY")));
 //		assertThat(result.isEmpty()).isTrue();
 //	}
-//
-//	// if $子作業.isEmpty AND $絞込作業.isEmpty
+
+	// if $子作業.isEmpty AND $絞込作業.isEmpty
 //	@Test
 //	public void test_3() {
 //
@@ -240,13 +94,13 @@ public class GetWorkAvailableToEmployeesServiceTest {
 //
 //		new Expectations() {
 //			{
-//				require.getWorkFrameUsageSetting(companyID);
+//				require.getTask();
 //				result = taskFrameUsageSetting;
 //
-//				require.getOptionalTask(companyID, taskFrameNo, new TaskCode("DUMMY"));
+//				require.getOptionalTask(taskFrameNo, new TaskCode("DUMMY"));
 //				result = Optional.of(task);
 //
-//				require.getListTask(companyID, date, taskFrameNo, new ArrayList<>());
+//				require.getListTask(date, taskFrameNo, new ArrayList<>());
 //				result = tasks;
 //
 //			}
@@ -265,8 +119,8 @@ public class GetWorkAvailableToEmployeesServiceTest {
 //				new TaskFrameNo(2), Optional.of(new TaskCode("DUMMY")));
 //		assertThat(result.isEmpty()).isTrue();
 //	}
-//
-//	// if $子作業.isEmpty AND $絞込作業.isEmpty
+
+	// if $子作業.isEmpty AND $絞込作業.isEmpty
 //	@Test
 //	public void test_4() {
 //
@@ -278,13 +132,13 @@ public class GetWorkAvailableToEmployeesServiceTest {
 //
 //		new Expectations() {
 //			{
-//				require.getOptionalTask(companyID, taskFrameNo, new TaskCode("DUMMY"));
+//				require.getOptionalTask(taskFrameNo, new TaskCode("DUMMY"));
 //				result = optTask;
 //
-//				require.getWorkFrameUsageSetting(companyID);
+//				require.getTask();
 //				result = taskFrameUsageSetting;
 //
-//				require.getListTask(companyID, date, taskFrameNo, new ArrayList<>());
+//				require.getListTask(date, taskFrameNo, new ArrayList<>());
 //				result = tasks;
 //			}
 //		};
@@ -303,5 +157,4 @@ public class GetWorkAvailableToEmployeesServiceTest {
 //		assertThat(result.isEmpty()).isFalse();
 //		assertThat(result.size()).isEqualTo(3);
 //	}
->>>>>>> pj/at/release_ver4
 }
