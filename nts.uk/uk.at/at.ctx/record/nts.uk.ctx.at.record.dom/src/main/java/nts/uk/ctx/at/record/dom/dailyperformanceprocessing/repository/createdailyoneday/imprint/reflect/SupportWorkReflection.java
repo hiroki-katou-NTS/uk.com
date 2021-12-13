@@ -13,17 +13,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-<<<<<<< HEAD
 import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSetting;
 import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSettingRepository;
-=======
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
->>>>>>> pj/at/release_ver4
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.GetSupportDataJudgedSameDS;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSameStampOfSupportRepo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudgmentCriteriaSameStampOfSupport;
@@ -69,19 +66,16 @@ public class SupportWorkReflection {
 	@Inject
 	private JudCriteriaSameStampOfSupportRepo ofSupportRepo;
 	
-<<<<<<< HEAD
 	@Inject
 	private ManHrInputUsageSettingRepository manHrInputUsageSettingRepo;
 	
 	@Inject
 	private TaskOperationSettingRepository taskOperationSettingRepo;
-=======
 	@Inject 
 	private StampCardRepository stampCardRepo;
 	
 	@Inject
 	private StampDakokuRepository stampRepo;
->>>>>>> pj/at/release_ver4
 
 	public ReflectionAtr supportWorkReflect(String cid, SupportParam param, IntegrationOfDaily integrationOfDaily,
 			StampReflectRangeOutput stampReflectRangeOutput) {
@@ -1068,27 +1062,13 @@ public class SupportWorkReflection {
 			/** 日別実績の応援作業別勤怠時間帯。時間帯。開始＝パラメータ。勤怠打刻 */
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 					Optional.ofNullable(timeDay), Optional.empty());
-<<<<<<< HEAD
-			attendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), workContent, timeSheet, Optional.empty());
-			return attendance;
-=======
-
-			/** 「日別実績の応援作業別勤怠時間帯。時間帯」を返す */
-			return OuenWorkTimeSheetOfDailyAttendance.create(1, workContent, timeSheet);
->>>>>>> pj/at/release_ver4
+			return OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), workContent, timeSheet, Optional.empty());
 		}
 		
 		/** 日別実績の応援作業別勤怠時間帯。時間帯。終了＝パラメータ。勤怠打刻 */
 		TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 				Optional.empty(), Optional.ofNullable(timeDay));
-<<<<<<< HEAD
-		attendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), workContent, timeSheet, Optional.empty());
-		return attendance;
-=======
-
-		/** 「日別実績の応援作業別勤怠時間帯。時間帯」を返す */
-		return OuenWorkTimeSheetOfDailyAttendance.create(1, workContent, timeSheet);
->>>>>>> pj/at/release_ver4
+		return OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), workContent, timeSheet, Optional.empty());
 	}
 
 	/**
@@ -1110,21 +1090,13 @@ public class SupportWorkReflection {
 			WorkTimeInformation ouenSpNew = WorkTimeInformation.createByAutomaticSet(lstOuenWorkTime.get(0).getTimeSheet().getStart().get().getTimeWithDay().get());
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 					Optional.empty(), Optional.ofNullable(ouenSpNew));
-<<<<<<< HEAD
-			// 取得した応援データをベースして終了の応援データ作る
-			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1),
-					workContent, timeSheet, Optional.empty());
-			// 作成した応援データを応援データ一覧の先頭に入れる
-			departureTempo.setFirstAttendance(Optional.ofNullable(dailyAttendance));
-=======
 			
 			/** 取得した応援データをベースして終了の応援データ作る */
-			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(1,
-					workContent, timeSheet);
+			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1),
+					workContent, timeSheet, Optional.empty());
 			
 			/** 作成した応援データを返す */
 			return Optional.ofNullable(dailyAttendance);
->>>>>>> pj/at/release_ver4
 		}
 		
 		return Optional.empty();
