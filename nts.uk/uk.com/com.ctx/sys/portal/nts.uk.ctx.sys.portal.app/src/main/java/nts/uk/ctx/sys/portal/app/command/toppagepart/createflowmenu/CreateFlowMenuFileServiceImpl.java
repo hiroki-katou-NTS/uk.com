@@ -8,7 +8,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.shr.infra.file.storage.stream.FileStoragePath;
 import org.apache.commons.io.FileUtils;
 
 import nts.arc.layer.app.file.storage.FileStorage;
@@ -20,7 +19,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuFileSe
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FixedClassification;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FlowMenuLayout;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.ImageInformation;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.file.storage.stream.FileStoragePath;
 
 @Stateless
 public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService {
@@ -56,6 +55,7 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 			return "";
 		} catch (IOException e) {
 			return "";
+		}
     }
 
 	@Override
