@@ -30,61 +30,66 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class DailyRecordPubImpl implements DailyRecordPub{
-	
+
 	@Inject
 	DailyRecordShareFinder dailyRecordShareFinder;
-	
+
 	@Inject
 	private EmpComHisAdapter empComHisAdapter;
-	
+
 	@Inject
 	private WorkingConditionRepository workCondRepo;
-	
+
 	@Inject
 	private EmpLeaveHistoryAdapter empLeaveHisAdapter;
-	
+
 	@Inject
 	private EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter;
-	
+
 	@Inject
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
+	
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 
 	@Override
 	public List<IntegrationOfDaily> getDailyRecordByScheduleManagement(List<String> employeeIds, DatePeriod period) {
-		
+
 		RequireImpl requireImpl = new RequireImpl(employeeIds, period);
-		
+
 		return GetDailyRecordByScheduleManagementService.get(requireImpl, employeeIds, period)
 						.values().stream()
 						.flatMap(OptionalUtil::stream)
 						.collect(Collectors.toList());
 	}
-	
+
 	private class RequireImpl implements GetDailyRecordByScheduleManagementService.Require {
-		
+
 		private NestedMapCache<String, GeneralDate, IntegrationOfDaily> dailyRecordCache;
 		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;
 		private KeyDateHistoryCache<String, EmploymentPeriodImported> employmentPeriodCache;
 		private KeyDateHistoryCache<String, EmployeeLeaveJobPeriodImport> empLeaveJobPeriodCache;
 		private KeyDateHistoryCache<String, EmpLeaveWorkPeriodImport> empLeaveWorkPeriodCache;
 		private KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workCondItemWithPeriodCache;
-		
-		public RequireImpl(List<String> employeeIds, DatePeriod period) { 
-			
+
+		public RequireImpl(List<String> employeeIds, DatePeriod period) {
+
 			List<IntegrationOfDaily> dailyRecordList =  dailyRecordShareFinder.findByListEmployeeId(employeeIds, period);
 			dailyRecordCache = NestedMapCache.preloadedAll(
 					dailyRecordList.stream(),
 					dailyRecord -> dailyRecord.getEmployeeId(),
 					dailyRecord -> dailyRecord.getYmd());
-			
+
 			List<EmpEnrollPeriodImport> affCompanyHists =  empComHisAdapter.getEnrollmentPeriod(employeeIds, period);
 			Map<String, List<EmpEnrollPeriodImport>> data2 = affCompanyHists.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
 			affCompanyHistByEmployeeCache = KeyDateHistoryCache.loaded(createEntries1(data2));
-			
+
 			List<EmploymentPeriodImported> listEmploymentPeriodImported = employmentHisScheduleAdapter.getEmploymentPeriod(employeeIds, period);
 			Map<String, List<EmploymentPeriodImported>> data3 = listEmploymentPeriodImported.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
 			employmentPeriodCache = KeyDateHistoryCache.loaded(createEntries2(data3));
@@ -101,9 +106,9 @@ public class DailyRecordPubImpl implements DailyRecordPub{
 			Map<String, List<WorkingConditionItemWithPeriod>> data6 = listData.stream().collect(Collectors.groupingBy(item ->item.getWorkingConditionItem().getEmployeeId()));
 			workCondItemWithPeriodCache = KeyDateHistoryCache.loaded(createEntries5(data6));
 		}
-		
+
 		private Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>> createEntries1(Map<String, List<EmpEnrollPeriodImport>> data) {
-			
+
 			Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<EmpEnrollPeriodImport>> s = v.stream()
@@ -113,9 +118,9 @@ public class DailyRecordPubImpl implements DailyRecordPub{
 			});
 			return rs;
 		}
-		
+
 		private Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>> createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
-			
+
 			Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<EmploymentPeriodImported>> s = v.stream()
@@ -125,9 +130,9 @@ public class DailyRecordPubImpl implements DailyRecordPub{
 			});
 			return rs;
 		}
-		
+
 		private Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>> createEntries3(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
-			
+
 			Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>> s = v.stream()
@@ -137,9 +142,9 @@ public class DailyRecordPubImpl implements DailyRecordPub{
 			});
 			return rs;
 		}
-		
+
 		private Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>> createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
-			
+
 			Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>> s = v.stream()
@@ -149,9 +154,9 @@ public class DailyRecordPubImpl implements DailyRecordPub{
 			});
 			return rs;
 		}
-		
+
 		private Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>> createEntries5(Map<String, List<WorkingConditionItemWithPeriod>> data) {
-			
+
 			Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
 				List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>> s = v.stream()
@@ -161,12 +166,12 @@ public class DailyRecordPubImpl implements DailyRecordPub{
 			});
 			return rs;
 		}
-		
+
 		@Override
 		public Optional<IntegrationOfDaily> getDailyResults(String empId, GeneralDate date) {
 			return dailyRecordCache.get(empId, date);
 		}
-		
+
 		@Override
 		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(String sid, GeneralDate startDate) {
 			return affCompanyHistByEmployeeCache.get(sid, startDate);
@@ -192,7 +197,13 @@ public class DailyRecordPubImpl implements DailyRecordPub{
 		public Optional<EmploymentPeriodImported> getEmploymentHistory(String sid, GeneralDate startDate) {
 			return employmentPeriodCache.get(sid, startDate);
 		}
-	
+
+		@Override
+		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
+			
+			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
+		}
+
 	}
 
 }

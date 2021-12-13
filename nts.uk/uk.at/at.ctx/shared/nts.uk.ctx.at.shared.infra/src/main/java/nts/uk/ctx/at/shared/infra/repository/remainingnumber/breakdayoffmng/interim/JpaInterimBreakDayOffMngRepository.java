@@ -86,7 +86,11 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	private static final String DELETE_BREAKMNG_BYID = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.breakMngId = :breakMngId";
 	private static final String DELETE_BREAKMNG_BY_SID_AND_YMD = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
 
-	
+	private static final String SELECT_DAY_OFF_BY_SID_DATE = "SELECT t FROM KrcmtInterimDayOffMng t "
+			+ "WHERE t.pk.sid = :sid "
+			+ "AND t.pk.ymd = :date";
+	private static final String SELECT_DAY_OFF_BY_IDS = "SELECT t FROM KrcmtInterimDayOffMng t "
+			+ "WHERE t.remainMngId IN :remainMngIds";
 	
 	@Override
 	public Optional<InterimBreakMng> getBreakManaBybreakMngId(String breakManaId) {
@@ -558,5 +562,22 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				.setParameter("sid", sid)
 				.setParameter("ymd", lstDate)
 				.getList(i -> toDomainDayoffMng(i));
+	}
+	
+	@Override
+	public Optional<InterimDayOffMng> getDayOffByDate(String sid, GeneralDate date) {
+		return this.queryProxy().query(SELECT_DAY_OFF_BY_SID_DATE, KrcmtInterimDayOffMng.class)
+				.setParameter("sid", sid).setParameter("date", date)
+				.getSingle(this::toDomainDayoffMng);
+	}
+
+	@Override
+	public List<InterimDayOffMng> getDayOffByIds(List<String> remainManaIds) {
+		if (remainManaIds.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return this.queryProxy().query(SELECT_DAY_OFF_BY_IDS, KrcmtInterimDayOffMng.class)
+				.setParameter("remainMngIds", remainManaIds)
+				.getList(this::toDomainDayoffMng);
 	}
 }

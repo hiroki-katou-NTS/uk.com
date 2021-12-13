@@ -239,7 +239,7 @@ module nts.uk.at.view.ksu003.a.model {
 	export function calcAllTime(schedule: any, lstTime: any, timeRangeLimit: any, dispStart: any, dispStartHours: any) {
 		// Tính tổng thời gian làm việc
 		timeRangeLimit = timeRangeLimit;
-		let targetInfor = nts.uk.ui.windows.getShared("targetInforKsu003"); // thay tạm cho __viewContext.viewModel.viewmodelA.dataScreen003A().targetInfor
+		let targetInfor = nts.uk.ui.windows.getShared("targetInforKsu003"); // thay tạm cho __viewContext.viewModel.viewmodelA.dataScreen003A().targetInfor sau khi merge 5_3 thì xóa đi
 		let totalTimeAll = 0, totalTimeWork = 0,
 			start1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.startTime1 != null && schedule.workScheduleDto.startTime1 != 0) ? (model.checkTimeChart(schedule.workScheduleDto.startTime1, timeRangeLimit * 5 + dispStart *5, dispStartHours)) : 0,
 			end1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.endTime1 != null && schedule.workScheduleDto.endTime1 != 0) ? (model.checkTimeChart(schedule.workScheduleDto.endTime1, timeRangeLimit * 5 + dispStart *5, dispStartHours)) : 0,
@@ -1399,11 +1399,38 @@ module nts.uk.at.view.ksu003.a.model {
 		gcTaskTime : any;
 	};
 
-	export interface IEmpidName {
-		empId: string,
-		name: string,
-		code: string
-	}
+    export interface IEmpidName {
+        empId: string,
+        name: string,
+        code: string
+    }
+
+    export interface IError {
+        sid: string,
+        scd: string,
+        empName: string,
+        date: string,
+        attendanceItemId: string,
+        errorMessage: string,
+    }
+
+    export class InforError {
+        sid: string;
+        scd: string;
+        empName: string;
+        date: string;
+        attendanceItemId: string;
+        errorMessage: string;
+        constructor(param: IError) {
+            let self = this;
+            self.sid = param.sid;
+            self.scd = param.scd;
+            self.empName = param.empName;
+            self.date = param.date;
+            self.attendanceItemId = param.attendanceItemId;
+            self.errorMessage = param.errorMessage;
+        }
+    }
 
 	/*service.sortEmployee(param)
 	.done((data: Array<model.DisplayWorkInfoByDateDto>) => {

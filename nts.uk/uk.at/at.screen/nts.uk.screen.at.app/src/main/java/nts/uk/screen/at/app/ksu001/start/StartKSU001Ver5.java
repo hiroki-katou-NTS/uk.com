@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -78,7 +79,7 @@ public class StartKSU001Ver5 {
 			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, Optional.empty(),Optional.of(param.workplaceGroupId == null ? resultStep1.targetOrgIdenInfor.workplaceGroupId : param.workplaceGroupId));
 		}
 
-		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, targetOrgIdenInfor);
+		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(GeneralDate.today(), new DatePeriod(startDate, endDate), targetOrgIdenInfor);
 		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp(param2);
 		// step 2 end
 		

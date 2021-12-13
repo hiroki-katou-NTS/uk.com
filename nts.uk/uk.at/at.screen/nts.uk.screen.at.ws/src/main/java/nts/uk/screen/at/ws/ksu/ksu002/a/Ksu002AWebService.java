@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExecutionInfor;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ResultRegisWorkSchedule;
 import nts.uk.ctx.at.shared.app.find.workrule.weekmanage.WeekRuleManagementDto;
 import nts.uk.ctx.at.shared.app.find.workrule.weekmanage.WeekRuleManagementFinder;
@@ -133,7 +134,7 @@ public class Ksu002AWebService extends WebService {
 	// <<Command>> 勤務予定を登録する
 	@POST
 	@Path("regisWorkSchedule")
-	public ResultRegisWorkSchedule regisWorkSchedule(RegisterWorkScheduleInputCommand param) {
+	public ExecutionInfor regisWorkSchedule(RegisterWorkScheduleInputCommand param) {
 		return this.regisWorkSchedule.handle(param);
 	}
 

@@ -518,9 +518,8 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				});
 	}
 
-	@Override
 	@SneakyThrows
-	public Optional<SpecialHoliday> findByCode(String companyId, int specialHolidayCode) {
+	private Optional<SpecialHoliday> findByCode(String companyId, int specialHolidayCode) {
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(SELECT_SPHD_BY_CODE_QUERY)) {
 
