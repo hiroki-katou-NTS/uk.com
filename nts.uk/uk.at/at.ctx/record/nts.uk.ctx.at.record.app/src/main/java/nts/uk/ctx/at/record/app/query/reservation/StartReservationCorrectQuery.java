@@ -37,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * @author anhnm
@@ -98,11 +99,11 @@ public class StartReservationCorrectQuery {
         Optional<ReservationRecTimeZone> reservationFrameNo = setting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo().value == frameNo).findFirst();
         String receptionTimeNameParam = "";
         if (reservationFrameNo.isPresent()) {
-            receptionTimeNameParam = reservationFrameNo.get().getReceptionHours().getReceptionName() + 
+            receptionTimeNameParam = reservationFrameNo.get().getReceptionHours().getReceptionName() + " " +
                     TextResource.localize("KMR003_52", 
                             Arrays.asList(
-                                    setting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo().value == frameNo).findFirst().get().getReceptionHours().getStartTime().v().toString(), 
-                                    setting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo().value == frameNo).findFirst().get().getReceptionHours().getEndTime().v().toString()));
+                                    new TimeWithDayAttr(setting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo().value == frameNo).findFirst().get().getReceptionHours().getStartTime().v()).getInDayTimeWithFormat(), 
+                                    new TimeWithDayAttr(setting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo().value == frameNo).findFirst().get().getReceptionHours().getEndTime().v()).getInDayTimeWithFormat()));
             if (menus.isEmpty()) {
                 throw new BusinessException("Msg_2255", correctionDateParam, receptionTimeNameParam);
             }
@@ -165,6 +166,7 @@ public class StartReservationCorrectQuery {
         return new StartReservationCorrectOutput(
                 menus.stream().map(x -> BentoDto.fromDomain(x)).collect(Collectors.toList()), 
                 listPersonEmp.stream().map(x -> PersonEmpBasicInfoImportDto.fromDomain(x)).collect(Collectors.toList()), 
-                bentoReservationMap);
+                bentoReservationMap, 
+                stampCards.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().v())));
     }
 }

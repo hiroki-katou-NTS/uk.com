@@ -102,24 +102,11 @@ public class StartNewReservationQuery {
                                                                 .isPresent();
                                                     }).collect(Collectors.toList());
         
-//        List<BentoReservationWithFlag> bentoReservationWithFlags = bentoReservations.stream()
-//                .map(x -> new BentoReservationWithFlag(BentoReservationDto.fromDomain(x), true))
-//                .collect(Collectors.toList());
-//        
-//        Map<String, BentoReservationWithFlag> bentoReservationMap = new HashMap<String, BentoReservationWithFlag>();
-//        
-//        bentoReservationWithFlags.forEach(reservation -> {
-//                stampCards.forEach((k, v) -> {
-//                    if (v.v().equals(reservation.getBentoReservation().getReservationCardNo())) {
-//                        bentoReservationMap.put(k, reservation);
-//                    }
-//                });
-//        });
-        
         return new StartReservationCorrectOutput(
                 menus.stream().map(x -> BentoDto.fromDomain(x)).collect(Collectors.toList()), 
                 listEmpOutput.stream().map(x -> PersonEmpBasicInfoImportDto.fromDomain(x)).collect(Collectors.toList()), 
-                new HashMap<String, BentoReservationWithFlag>());
+                new HashMap<String, BentoReservationWithFlag>(), 
+                stampCards.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().v())));
     }
 
 }

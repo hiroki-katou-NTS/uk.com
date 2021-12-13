@@ -23,6 +23,7 @@ module nts.uk.at.kmr003.a {
         receptionHours2: KnockoutObservable<ReservationRecTime> = ko.observable(null);
         closingTime: KnockoutObservable<string> = ko.observable();
         orderMngAtr: KnockoutObservable<boolean> = ko.observable(false);
+        isEnableRegister: KnockoutObservable<boolean> = ko.observable(true);
 
         listComponentOption: any = {
             isShowAlreadySet: false,
@@ -133,6 +134,9 @@ module nts.uk.at.kmr003.a {
                 }
             }).fail((err) => {
                 if (err) {
+                    if (err.messageId == 'Msg_2254') {
+                        vm.isEnableRegister(false);
+                    }
                     vm.$dialog.error({messageId: err.messageId, messageParams: err.parameterIds});
                 }
             }).always(() => vm.$blockui('hide'));

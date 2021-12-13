@@ -7,6 +7,8 @@ module nts.uk.at.kmr003.c {
         empIds: any[];
         listEmpInfo: any[] = [];
         gridOptions: any = { dataSource: [], columns: [], features: [], ntsControls: [] };
+        stampMap: any;
+        hasErrorsGrid: KnockoutObservable<boolean> = ko.observable(false);
 
         created(param: any) {
             const vm = this;
@@ -27,6 +29,7 @@ module nts.uk.at.kmr003.c {
                 vm.$blockui('show');
                 vm.$ajax(API.startNewReservation, params).done((res: any) => {
                     if (res) {
+                        vm.stampMap = res.stampMap;
                         vm.convertToGridData(res);
                         vm.bindGrid();
                     }
@@ -113,21 +116,86 @@ module nts.uk.at.kmr003.c {
         }
 
         mounted() {
+            const vm = this;
 
+            setInterval(() => {
+                let dataSource = $('#grid').mGrid("dataSource");
+                let errors = $('#grid').mGrid('errors');
+                if (errors.length > 0) {
+                    vm.hasErrorsGrid(false);
+                } else {
+                    vm.hasErrorsGrid(true);
+                }
+            }, 200);
         }
 
         register() {
+            const vm = this;
 
+            let dataSource = $('#grid').mGrid("dataSource");
+            let command = {
+                frameNo: vm.frameNo, 
+                correctionDate: moment(vm.date()).format("YYYY/MM/DD"), 
+                bentoReservations: []
+            }
+            for (let i = 0; i < dataSource.length; i++) {
+                let row = dataSource[i];
+                let empId = row.employeeId;
+                let cardNo = vm.stampMap[empId];
+                let record = {
+                    reservationCardNo: cardNo, 
+                    reservationDate: moment(vm.date()).format("YYYY/MM/DD"), 
+                    closingTimeFrame: vm.frameNo, 
+                    ordered: false, 
+                    workLocationCode: null, 
+                    listBentoReservationDetail: []
+                }
+
+                for (let item in row) {
+                    if (_.startsWith(item, 'bento')) {
+                        let frame = item.substring(5);
+
+                        if (item) {
+                            let detail = {
+                                frameNo: frame, 
+                                bentoCount: row[item], 
+                                dateTime: moment().format("YYYY/MM/DD HH:mm:ss"), 
+                                autoReservation: false
+                            }
+
+                            record.listBentoReservationDetail.push(detail);
+                        }
+                    }
+                }
+
+                if (record.listBentoReservationDetail.length > 0) {
+                    command.bentoReservations.push(record);
+                }
+            }
+
+            vm.$blockui('grayout');
+            vm.$ajax(API.register, command).done((res: any) => {
+                vm.$dialog.info("Msg_15").then(() => {
+                    nts.uk.ui.windows.setShared("STATUSC", "DONE");
+                    vm.$window.close();
+                });
+            }).fail((err: any) => {
+                if (err) {
+                    vm.$dialog.error({messageId: err.messageId, messageParams: err.parameterIds});
+                }
+            }).always(() => { vm.$blockui('hide') });
         }
 
         close() {
             const vm = this;
 
+            nts.uk.ui.windows.setShared("STATUSC", "CLOSE");
             vm.$window.close();
         }
     }
 
     const API = {
-        startNewReservation: "at/record/reservation/bento-menu/startNewReservation"
+        startNewReservation: "at/record/reservation/bento-menu/startNewReservation", 
+        register: "at/record/reservation/bento-menu/registerNewReservation"
     }
 }

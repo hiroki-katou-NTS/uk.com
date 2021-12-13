@@ -18,7 +18,7 @@
             <ui:define name="content">
                 <div id="functions-area">
                     <!-- C1_1 -->
-                    <button class="proceed" data-bind="click: register, text: $i18n('KMR003_50')"></button>
+                    <button class="proceed" data-bind="click: register, text: $i18n('KMR003_50'), enable: hasErrorsGrid() &amp;&amp; $root.errors.isEmpty "></button>
                     <!-- C1_2 -->
                     <button data-bind="click: close, text: $i18n('KMR003_51')"></button>
                 </div>

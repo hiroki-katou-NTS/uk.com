@@ -14,6 +14,8 @@ import nts.uk.ctx.at.record.app.command.reservation.bento.BentoReservationWithEm
 import nts.uk.ctx.at.record.app.command.reservation.bento.DeleteReservationCorrectCommandHandler;
 import nts.uk.ctx.at.record.app.command.reservation.bento.RegisterErrorMessage;
 import nts.uk.ctx.at.record.app.command.reservation.bento.RegisterReservationCorrectCommandHandler;
+import nts.uk.ctx.at.record.app.query.reservation.RegisterNewReservationCommand;
+import nts.uk.ctx.at.record.app.query.reservation.RegisterNewReserCommandHandler;
 import nts.uk.ctx.at.record.app.query.reservation.ReservationQueryOuput;
 import nts.uk.ctx.at.record.app.query.reservation.ReservationSettingQuery;
 import nts.uk.ctx.at.record.app.query.reservation.StartNewReservationQuery;
@@ -47,6 +49,9 @@ public class BentoMenuWebService extends WebService{
     
     @Inject
     private StartNewReservationQuery startNewReservationQuery;
+    
+    @Inject
+    private RegisterNewReserCommandHandler registerNewReservationQuery;
 
     @POST
     @Path("getbentomenu")
@@ -106,5 +111,14 @@ public class BentoMenuWebService extends WebService{
                 GeneralDate.fromString(param.getCorrectionDate(), "yyyy/MM/dd"), 
                 param.getFrameNo(), 
                 param.getEmployeeIds());
+    }
+    
+    @POST
+    @Path("registerNewReservation")
+    public void registerNewReservation(RegisterNewReservationCommand param) {
+        registerNewReservationQuery.register(
+                param.getFrameNo(), 
+                GeneralDate.fromString(param.getCorrectionDate(), "yyyy/MM/dd"), 
+                param.getBentoReservations().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
     }
 }

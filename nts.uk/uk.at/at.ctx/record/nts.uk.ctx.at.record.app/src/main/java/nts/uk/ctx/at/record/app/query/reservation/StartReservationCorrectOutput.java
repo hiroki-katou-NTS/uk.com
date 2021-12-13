@@ -26,4 +26,6 @@ public class StartReservationCorrectOutput {
     public List<PersonEmpBasicInfoImportDto> listEmpInfo = new ArrayList<PersonEmpBasicInfoImportDto>();
     
     public Map<String, BentoReservationWithFlag> bentoReservation = new HashMap<String, BentoReservationWithFlag>();
+    
+    public Map<String, String> stampMap = new HashMap<String, String>();
 }

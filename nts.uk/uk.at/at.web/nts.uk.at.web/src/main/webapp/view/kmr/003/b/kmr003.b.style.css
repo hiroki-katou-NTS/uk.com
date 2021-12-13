@@ -8,10 +8,19 @@
     color: #000 !important;
 }
 
-.mgrid table tr td.mgrid-disable {
-    background-color: #fff;
-}
-
 .mgrid .mgrid-header td div {
     color: #000 !important;
+}
+
+.disable-cell {
+    background-color: #CCC !important;
+}
+
+.remove-border-top {
+    border-top: none !important;
+    border-bottom: none !important;
+}
+
+.remove-border-bottom {
+    border-bottom: none !important;
 }
