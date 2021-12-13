@@ -133,6 +133,7 @@ public class CreateAchievementRegistrationParam {
     			true, 
     			approvalConfirmCache, 
     			Optional.empty(), 
+    			null,
     			null);
     }
 }

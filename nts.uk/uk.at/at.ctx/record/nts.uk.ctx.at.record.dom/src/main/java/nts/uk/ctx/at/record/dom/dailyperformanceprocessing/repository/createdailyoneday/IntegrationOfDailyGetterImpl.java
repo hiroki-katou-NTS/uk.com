@@ -278,10 +278,10 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 				daily.setOuenTimeSheet(x.getOuenTimeSheet());
 			});
 			
-			OuenWorkTimeOfDaily OuenTime = ouenWorkTimeOfDailyRepo.find(employeeId, attendanceTime.getYmd()); 
+			Optional<OuenWorkTimeOfDaily> OuenTime = ouenWorkTimeOfDailyRepo.find(employeeId, attendanceTime.getYmd()); 
 
-			if (OuenTime != null) {
-				daily.setOuenTime(OuenTime.getOuenTimes());
+			if (OuenTime.isPresent()) {
+				daily.setOuenTime(OuenTime.get().getOuenTimes());
 			}
 
 			returnList.add(daily);
