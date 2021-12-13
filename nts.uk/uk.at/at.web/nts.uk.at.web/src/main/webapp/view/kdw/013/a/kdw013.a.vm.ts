@@ -368,9 +368,8 @@ module nts.uk.ui.at.kdw013.a {
                         }
 
                         if (cache.pair <= 0) {
-                            // s.h.i.t
-                            // vm.$datas(null);
-
+                            vm.$datas(null);
+                            
                             vm
                                 .$blockui('grayout')
                                 .then(() => vm.$ajax('at', API.CHANGE_DATE, params))
@@ -605,9 +604,9 @@ module nts.uk.ui.at.kdw013.a {
             vm.$settings.subscribe((settings) => computedEvents(ko.unwrap(vm.$datas), settings));
 
             const computedEvents = (data: SelectTargetEmployeeDto | null, settings: StartProcessDto | null) => {
-                if (cache.pair === -1) {
-                    return;
-                }
+//                if (cache.pair === -1) {
+//                    return;
+//                }
                 const { tasks, taskFrameUsageSetting } = settings;
                 if (data) {
                     let events = [];

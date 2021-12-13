@@ -2978,6 +2978,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     _.forEach(tempEs, (evn) => {
                         if (evn.extendedProps.id == extendedProps.id) {
                             evn.extendedProps.isChanged = true;
+                            evn.extendedProps.taskBlock.caltimeSpan = { start: evn.start, end: evn.end };
+                            evn.extendedProps.period = { start: evn.start, end: evn.end };
                         };
                     });
                     events(tempEs);
