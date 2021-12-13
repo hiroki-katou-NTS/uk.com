@@ -282,7 +282,8 @@ module nts.uk.at.view.kdw003.b {
                     uiType: 1,
                     employeeIDs: [],
                     stampRequestMode: 1,
-                    screenMode: 0
+                    screenMode: 0,
+					screenCode: 0
                 };
 				
 				var vmNew = new ko.ViewModel();
@@ -315,7 +316,7 @@ module nts.uk.at.view.kdw003.b {
 
                     case 5:
                         //KAF008-出張申請 
-                        vmNew.$jump.blank("/view/kaf/008/b/index.xhtml", transfer);
+                        vmNew.$jump.blank("/view/kaf/008/a/index.xhtml", transfer);
                         break;
 
                     case 6:
@@ -331,12 +332,15 @@ module nts.uk.at.view.kdw003.b {
 
                     case 8:
                         //KAF002-打刻申請（外出許可） 打刻申請
+                        transfer.stampRequestMode = 0;
+                        transfer.screenMode = 1;
                         vmNew.$jump.blank("/view/kaf/002/a/index.xhtml", transfer);
                         break;
 
                     case 9:
                         //KAF002-打刻申請（出退勤打刻漏れ）
-
+						transfer.stampRequestMode = 1;
+                        transfer.screenMode = 1;
                         vmNew.$jump.blank("/view/kaf/002/b/index.xhtml", transfer);
                         break;
 
@@ -344,16 +348,20 @@ module nts.uk.at.view.kdw003.b {
                         //KAF002-打刻申請（打刻取消）
                         transfer.stampRequestMode = 2;
                         transfer.screenMode = 1;
-                        vmNew.$jump.blank("/view/kaf/002/b/index.xhtml", transfer);
+                        vmNew.$jump.blank("/view/kaf/012/a/index.xhtml", transfer);
                         break;
 
                     case 11:
                         //遅刻早退取消申請
+                        transfer.stampRequestMode = 3;
+                        transfer.screenMode = 1;
                         vmNew.$jump.blank("/view/kaf/004/a/index.xhtml", transfer);
                         break;
 
                     case 12:
                         //KAF011-振休振出申請
+                        transfer.stampRequestMode = 4;
+                        transfer.screenMode = 1;
                         vmNew.$jump.blank("/view/kaf/011/a/index.xhtml", transfer);
                         break;
 
@@ -364,7 +372,7 @@ module nts.uk.at.view.kdw003.b {
 
                     case 14:
                         //申請一覧
-                        vmNew.$jump.blank("/view/cmm/045/a/index.xhtml", transfer);
+                        vmNew.$jump.blank("at", "/view/cmm/045/a/index.xhtml?a=0");
                         break;
                     default:
                         break;
