@@ -93,8 +93,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			"b.CANCEL_PLAN_SCHE_REASON as bCANCEL_PLAN_SCHE_REASON, b.CANCEL_PLAN_TIME as bCANCEL_PLAN_TIME, " + 
 			"b.CANCEL_PER_SCHE_REASON as bCANCEL_PER_SCHE_REASON, b.CANCEL_PER_TIME as bCANCEL_PER_TIME ";
 	
-	private static final String SELECT_BY_SID_PRE_POST_ATR_APPTYPE = "SELECT a FROM KrqdtApplication_New a "
-			+ " WHERE a.employeeID = :employeeID" + " a.appDate = :appDate"
+	private static final String SELECT_BY_SID_PRE_POST_ATR_APPTYPE = "SELECT a FROM KrqdtApplication a "
+			+ " WHERE a.employeeID = :employeeID" + " AND a.appDate = :appDate"
 			+ " AND a.prePostAtr = :prePostAtr" + " AND a.appType = :appType";
 
 	/**

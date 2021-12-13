@@ -624,6 +624,15 @@ public class ProgramsManager {
      */
     public static final Program KDL012 = new Program(WebAppId.AT, ProgramIdConsts.KDL012, "KDL012_1",
             "/view/kdl/012/index.xhtml");
+    
+    /**
+     * KDL013
+     */
+    public static final Program KDL013 = new Program(WebAppId.AT, ProgramIdConsts.KDL013, "KDL013_8",
+            "/view/kdl/013/a/index.xhtml");
+    /**
+     * 
+     */
     /**
      * KDL017A
      */
@@ -815,8 +824,16 @@ public class ProgramsManager {
             "/view/kdw/006/e/index.xhtml");
     public static final Program KDW006G = new Program(WebAppId.AT, ProgramIdConsts.KDW006G, "KDW006_71",
             "/view/kdw/006/g/index.xhtml");
+    public static final Program KDW006I = new Program(WebAppId.AT, ProgramIdConsts.KDW006I, "KDW006_232",
+            "/view/kdw/006/i/index.xhtml");
     public static final Program KDW006H = new Program(WebAppId.AT, ProgramIdConsts.KDW006H, "KDW006_305",
             "/view/kdw/006/h/index.xhtml");
+    public static final Program KDW006J = new Program(WebAppId.AT, ProgramIdConsts.KDW006J, "KDW006_340",
+            "/view/kdw/006/j/index.xhtml");
+    public static final Program KDW006K = new Program(WebAppId.AT, ProgramIdConsts.KDW006K, "KDW006_341",
+            "/view/kdw/006/k/index.xhtml");
+    public static final Program KDW006L = new Program(WebAppId.AT, ProgramIdConsts.KDW006L, "KDW006_342",
+            "/view/kdw/006/l/index.xhtml");
 
     /**
      * KDW009A
@@ -835,12 +852,30 @@ public class ProgramsManager {
      */
     public static final Program KDW013A = new Program(WebAppId.AT, ProgramIdConsts.KDW013A, null,
             "/view/kdw/013/a/index.xhtml");
+    
+    /**
+     * KDW013K
+     */
+    public static final Program KDW013K = new Program(WebAppId.AT, ProgramIdConsts.KDW013K, "KDW013_62",
+            "/view/kdw/013/k/index.xhtml");
 
     /**
      * KDW013D
      */
     public static final Program KDW013D = new Program(WebAppId.AT, ProgramIdConsts.KDW013D, "KDW013_42",
             "/view/kdw/013/d/index.xhtml");
+    
+    /**
+     * KDW013E
+     */
+    public static final Program KDW013E = new Program(WebAppId.AT, ProgramIdConsts.KDW013E, "KDW013_91",
+            "/view/kdw/013/e/index.xhtml");
+    
+    /**
+     * KDW013H
+     */
+    public static final Program KDW013H = new Program(WebAppId.AT, ProgramIdConsts.KDW013H, "KDW013_94",
+            "/view/kdw/013/h/index.xhtml");
 
     /**
      * KSM002A
@@ -1991,6 +2026,9 @@ public class ProgramsManager {
 
     public static final Program KDW003D = new Program(WebAppId.AT, ProgramIdConsts.KDW003D, "KDW003_52",
             "/view/kdw/003/d/index.xhtml");
+    
+    public static final Program KDW003G = new Program(WebAppId.AT, ProgramIdConsts.KDW003G, "KDW003_133",
+            "/view/kdw/003/g/index.xhtml");
 
     public static final Program CMM018Q = new Program(WebAppId.COM, ProgramIdConsts.CMM018Q, "CMM018_114",
             "/view/cmm/018/q/index.xhtml");
@@ -3970,6 +4008,21 @@ public class ProgramsManager {
 										    		, "/view/kwr/008/c/index.xhtml");
     public static final Program CMM029A = new Program(WebAppId.COM, ProgramIdConsts.CMM029A, "CMM029_1", 
     		"/view/cmm/029/a/index.xhtml");
+
+
+    /**
+     * KHA003
+     */
+    public static final Program KHA003A = new Program(WebAppId.AT, ProgramIdConsts.KHA003A, "KHA003_1",
+            "/view/kha/003/a/index.xhtml");
+    public static final Program KHA003B = new Program(WebAppId.AT, ProgramIdConsts.KHA003B, "KHA003_2",
+            "/view/kha/003/b/index.xhtml");
+    public static final Program KHA003C = new Program(WebAppId.AT, ProgramIdConsts.KHA003C, "KHA003_3",
+            "/view/kha/003/c/index.xhtml");
+    public static final Program KHA003D = new Program(WebAppId.AT, ProgramIdConsts.KHA003D, "KHA003_4",
+            "/view/kha/003/d/index.xhtml");
+    public static final Program KHA003E = new Program(WebAppId.AT, ProgramIdConsts.KHA003E, "KHA003_5",
+            "/view/kha/003/e/index.xhtml");
 
     public static final Program OEM001A = new Program(WebAppId.COM, ProgramIdConsts.OEM001A, "OEM001_1",
             "/view/oem/001/a/index.xhtml");

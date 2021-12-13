@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.arc.error.BundledBusinessException;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -61,9 +61,8 @@ public class OptionalItem extends AggregateRoot {
 	// 属性
 	private OptionalItemAtr optionalItemAtr;
 
-	/** The calculation result range. */
-	// 計算結果の範囲
-	private CalcResultRange calcResultRange;
+	// 入力制御設定
+	private InputControlSetting inputControlSetting;
 
 	/** The unit. */
 	// 単位
@@ -87,25 +86,32 @@ public class OptionalItem extends AggregateRoot {
 	@Override
 	public void validate() {
 		super.validate();
-		if (this.calcResultRange.hasBothLimit()) {
-			BundledBusinessException be = BundledBusinessException.newInstance();
-			be.addMessage("Msg_574");
+		if (this.inputControlSetting.getCalcResultRange().hasBothLimit()) {
 			if (this.performanceAtr.equals(PerformanceAtr.DAILY_PERFORMANCE)) {
 			    switch (this.optionalItemAtr) {
 			    case NUMBER:
-			        if (this.calcResultRange.getNumberRange().get().getDailyTimesRange().get().isInvalidRange()) {
-			            be.throwExceptions();
+			        if (this.inputControlSetting.getCalcResultRange().getNumberRange().get().getDailyTimesRange().get().isInvalidRange()) {
+			            throw new BusinessException("Msg_574");
 			        }
+			        if (!this.inputControlSetting.getDailyInputUnit().isPresent() || !this.inputControlSetting.getDailyInputUnit().get().getNumberItemInputUnit().isPresent()) {
+                        throw new BusinessException("Msg_2307");
+                    }
 			        break;
 			    case AMOUNT:
-			        if (this.calcResultRange.getAmountRange().get().getDailyAmountRange().get().isInvalidRange()) {
-			            be.throwExceptions();
+			        if (this.inputControlSetting.getCalcResultRange().getAmountRange().get().getDailyAmountRange().get().isInvalidRange()) {
+                        throw new BusinessException("Msg_574");
 			        }
+                    if (!this.inputControlSetting.getDailyInputUnit().isPresent() || !this.inputControlSetting.getDailyInputUnit().get().getAmountItemInputUnit().isPresent()) {
+                        throw new BusinessException("Msg_2307");
+                    }
 			        break;
 			    case TIME:
-			        if (this.calcResultRange.getTimeRange().get().getDailyTimeRange().get().isInvalidRange()) {
-			            be.throwExceptions();
+			        if (this.inputControlSetting.getCalcResultRange().getTimeRange().get().getDailyTimeRange().get().isInvalidRange()) {
+                        throw new BusinessException("Msg_574");
 			        }
+                    if (!this.inputControlSetting.getDailyInputUnit().isPresent() || !this.inputControlSetting.getDailyInputUnit().get().getTimeItemInputUnit().isPresent()) {
+                        throw new BusinessException("Msg_2307");
+                    }
 			        break;
 			    default:
 			        throw new RuntimeException("unknown value of enum OptionalItemAtr");
@@ -113,18 +119,18 @@ public class OptionalItem extends AggregateRoot {
 			} else {
 			    switch (this.optionalItemAtr) {
                 case NUMBER:
-                    if (this.calcResultRange.getNumberRange().get().getMonthlyTimesRange().get().isInvalidRange()) {
-                        be.throwExceptions();
+                    if (this.inputControlSetting.getCalcResultRange().getNumberRange().get().getMonthlyTimesRange().get().isInvalidRange()) {
+                        throw new BusinessException("Msg_574");
                     }
                     break;
                 case AMOUNT:
-                    if (this.calcResultRange.getAmountRange().get().getMonthlyAmountRange().get().isInvalidRange()) {
-                        be.throwExceptions();
+                    if (this.inputControlSetting.getCalcResultRange().getAmountRange().get().getMonthlyAmountRange().get().isInvalidRange()) {
+                        throw new BusinessException("Msg_574");
                     }
                     break;
                 case TIME:
-                    if (this.calcResultRange.getTimeRange().get().getMonthlyTimeRange().get().isInvalidRange()) {
-                        be.throwExceptions();
+                    if (this.inputControlSetting.getCalcResultRange().getTimeRange().get().getMonthlyTimeRange().get().isInvalidRange()) {
+                        throw new BusinessException("Msg_574");
                     }
                     break;
                 default:
@@ -156,7 +162,7 @@ public class OptionalItem extends AggregateRoot {
 		this.usageAtr = memento.getOptionalItemUsageAtr();
 		this.empConditionAtr = memento.getEmpConditionAtr();
 		this.performanceAtr = memento.getPerformanceAtr();
-		this.calcResultRange = memento.getCalculationResultRange();
+		this.inputControlSetting = memento.getInputControlSetting();
 		this.unit = memento.getUnit();
 		this.calcAtr = memento.getCalcAtr();
 		this.note = memento.getNote();
@@ -176,7 +182,7 @@ public class OptionalItem extends AggregateRoot {
 		memento.setOptionalItemUsageAtr(this.usageAtr);
 		memento.setEmpConditionAtr(this.empConditionAtr);
 		memento.setPerformanceAtr(this.performanceAtr);
-		memento.setCalculationResultRange(this.calcResultRange);
+		memento.setInputControlSetting(this.inputControlSetting);
 		memento.setUnit(this.unit);
 		memento.setCalAtr(this.calcAtr);
 		memento.setNote(this.note);
@@ -353,7 +359,7 @@ public class OptionalItem extends AggregateRoot {
 //        }
         
         //上限下限チェック
-        result = this.calcResultRange.checkRange(result, this);
+        result = this.inputControlSetting.getCalcResultRange().checkRange(result, this);
         
         return result;
     }
@@ -389,4 +395,35 @@ public class OptionalItem extends AggregateRoot {
 //      int index = str.indexOf(".");
 //      return str.substring(index + 1).length();
 //   	}
+    
+    /**
+     * 入力値が正しいか
+     * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).任意項目.関数アルゴリズム.任意項目.<<Public>> 入力値が正しいか
+     * @param inputValue
+     * @return
+     */
+    public CheckValueInputCorrectOuput checkInputValueCorrect(BigDecimal inputValue) {
+    	CheckValueInputCorrectOuput data = this.inputControlSetting.checkValueInputCorrect(inputValue, this.performanceAtr, this.optionalItemAtr);
+		return data;
+	}
+
+	public OptionalItem(CompanyId companyId, OptionalItemNo optionalItemNo, OptionalItemName optionalItemName,
+			OptionalItemUsageAtr usageAtr, EmpConditionAtr empConditionAtr, PerformanceAtr performanceAtr,
+			OptionalItemAtr optionalItemAtr, InputControlSetting inputControlSetting, Optional<UnitOfOptionalItem> unit,
+			CalculationClassification calcAtr, Optional<NoteOptionalItem> note,
+			Optional<DescritionOptionalItem> description) {
+		super();
+		this.companyId = companyId;
+		this.optionalItemNo = optionalItemNo;
+		this.optionalItemName = optionalItemName;
+		this.usageAtr = usageAtr;
+		this.empConditionAtr = empConditionAtr;
+		this.performanceAtr = performanceAtr;
+		this.optionalItemAtr = optionalItemAtr;
+		this.inputControlSetting = inputControlSetting;
+		this.unit = unit;
+		this.calcAtr = calcAtr;
+		this.note = note;
+		this.description = description;
+	}
 }

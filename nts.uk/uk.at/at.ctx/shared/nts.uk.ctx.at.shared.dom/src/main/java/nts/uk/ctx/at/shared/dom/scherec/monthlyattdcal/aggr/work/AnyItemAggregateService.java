@@ -257,7 +257,7 @@ public class AnyItemAggregateService {
 	/** 上限下限チェック */
 	private static AnyItemAggrResult limitCheck(OptionalItem optionalItem,
 			Integer optionalItemNo, AnyItemAggrResult result) {
-		val checkedResult = optionalItem.getCalcResultRange().checkRange(new CalcResultOfAnyItem(optionalItem.getOptionalItemNo(),
+		val checkedResult = optionalItem.getInputControlSetting().getCalcResultRange().checkRange(new CalcResultOfAnyItem(optionalItem.getOptionalItemNo(),
 																						result.getAnyTimes().map(c -> c.v()),
 																						result.getAnyTime().map(c -> BigDecimal.valueOf(c.v())),
 																						result.getAnyAmount().map(c -> BigDecimal.valueOf(c.v()))),
