@@ -2,8 +2,11 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annuall
 
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.HalfdayAnnualLeaveMax;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 
 /**
  * 半日年休
@@ -11,6 +14,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class HalfDayAnnualLeave implements Cloneable, Serializable {
 
 	/**
@@ -59,5 +63,21 @@ public class HalfDayAnnualLeave implements Cloneable, Serializable {
 			throw new RuntimeException("HalfDayAnnualLeave clone error.");
 		}
 		return cloned;
+	}
+	
+	//[1]更新する
+	public HalfDayAnnualLeave update(HalfdayAnnualLeaveMax maxData, GrantBeforeAfterAtr grantPeriodAtr){
+		HalfDayAnnLeaUsedNum usedNum = this.usedNum.update(maxData, grantPeriodAtr) ;
+		HalfDayAnnLeaRemainingNum remainNum = this.remainingNum.update(maxData, grantPeriodAtr) ;
+		
+		return new HalfDayAnnualLeave(remainNum, usedNum);
+		
+	}
+	//[2]残数超過分を補正する
+	public HalfDayAnnualLeave correctTheExcess(){
+		HalfDayAnnLeaUsedNum usedNum = this.usedNum.correctTheExcess(remainingNum);
+		HalfDayAnnLeaRemainingNum remainNum = this.remainingNum.correctTheExcess();
+		
+		return new HalfDayAnnualLeave(remainNum, usedNum);
 	}
 }
