@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.auth.dom.adapter.login.IGetInfoForLogin;
 import nts.uk.ctx.at.record.dom.adapter.employeemanage.EmployeeManageRCAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
@@ -33,6 +34,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.ConvertTimeRecordStampPub;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampDataReflectResultExport;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampReceptionDataExport;
@@ -327,6 +329,12 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
 				WorkInfoOfDailyAttendance workInformation) {
 			return timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
+		}
+
+		@Override
+		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
+				ChangeClockAtr changeClockArt) {
+			return stampDakokuRepository.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
 		}
 	}
 }
