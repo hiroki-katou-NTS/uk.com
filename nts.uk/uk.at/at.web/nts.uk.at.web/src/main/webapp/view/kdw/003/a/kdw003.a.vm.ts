@@ -4180,60 +4180,40 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             //KAF002-打刻申請（外出許可）
                             transfer.stampRequestMode = 0;
                             transfer.screenMode = 1;
-<<<<<<< HEAD
                             vmNew.$jump.blank("/view/kaf/002/a/index.xhtml", transfer);
                             //nts.uk.request.jump("/view/kaf/002/a/index.xhtml", transfer);
-=======
-                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", transfer);
->>>>>>> pj/at/release_ver4
                             break;
 
                         case 9:
                             //KAF002-打刻申請（出退勤打刻漏れ）
                             transfer.stampRequestMode = 1;
                             transfer.screenMode = 1;
-<<<<<<< HEAD
                             vmNew.$jump.blank("/view/kaf/002/b/index.xhtml", transfer);
                             // nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
-=======
-                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", transfer);
->>>>>>> pj/at/release_ver4
                             break;
 
                         case 10:
                             //KAF002-打刻申請（打刻取消）
                             transfer.stampRequestMode = 2;
                             transfer.screenMode = 1;
-<<<<<<< HEAD
                             vmNew.$jump.blank("/view/kaf/012/a/index.xhtml", transfer);
                             //nts.uk.request.jump("/view/kaf/012/a/index.xhtml", transfer);
-=======
-                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", transfer);
->>>>>>> pj/at/release_ver4
                             break;
 
                         case 11:
                             //KAF004
                             transfer.stampRequestMode = 3;
                             transfer.screenMode = 1;
-<<<<<<< HEAD
                             vmNew.$jump.blank("/view/kaf/004/a/index.xhtml", transfer);
                             // nts.uk.request.jump("/view/kaf/004/a/index.xhtml", transfer);
-=======
-                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", transfer);
->>>>>>> pj/at/release_ver4
                             break;
 
                         case 12:
 
                             transfer.stampRequestMode = 4;
                             transfer.screenMode = 1;
-<<<<<<< HEAD
                             vmNew.$jump.blank("/view/kaf/011/a/index.xhtml", transfer);
                             // nts.uk.request.jump("/view/kaf/011/a/index.xhtml", transfer);
-=======
-                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", transfer);
->>>>>>> pj/at/release_ver4
                             break;
 
                         case 13:
