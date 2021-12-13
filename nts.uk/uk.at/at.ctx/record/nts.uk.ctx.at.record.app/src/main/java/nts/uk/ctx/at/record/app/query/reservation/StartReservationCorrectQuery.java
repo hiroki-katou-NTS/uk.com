@@ -16,15 +16,13 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.clock.ClockHourMinute;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
-import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationOrderMngAtr;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
@@ -35,7 +33,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.service.GetStampCardQuery;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -51,10 +48,7 @@ public class StartReservationCorrectQuery {
     private ReservationSettingRepository reservationSettingRepository;
 
     @Inject
-    private IBentoMenuHistoryRepository bentoMenuHistoryRepository;
-
-    @Inject
-    private BentoMenuRepository bentoMenuRepository;
+    private BentoMenuHistRepository bentoMenuHistoryRepository;
     
     @Inject
     private EmpEmployeeAdapter empEmployeeAdapter;
@@ -79,21 +73,14 @@ public class StartReservationCorrectQuery {
         ReservationSetting setting = reservationSettingRepository.findByCId(AppContexts.user().companyId()).get();
         
         // 2: get(期間．開始日＜＝注文日＜＝期間．終了日): 弁当メニュー履歴
-        Optional<BentoMenuHistory> yokakuHistOpt = bentoMenuHistoryRepository.findByCompanyId(AppContexts.user().companyId());
+        Optional<BentoMenuHistory> yokakuHistOpt = bentoMenuHistoryRepository.findByCompanyDate(AppContexts.user().companyId(), correctionDate);
         
         // 2.1: get(受付時間帯NO = Input．枠NO): 弁当メニュー
         List<Bento> menus = new ArrayList<Bento>();
         if (yokakuHistOpt.isPresent()) {
-            Optional<DateHistoryItem> historyItem = yokakuHistOpt.get().getHistoryItems().stream()
-                    .filter(x -> x.contains(correctionDate)).findFirst();
-            
-            if (historyItem.isPresent()) {
-                BentoMenu bentoMenu = bentoMenuRepository.getBentoMenuByHistId(AppContexts.user().companyId(), historyItem.get().identifier());
-                
-                if (bentoMenu != null) {
-                    menus = bentoMenu.getMenu().stream().filter(menu -> menu.getReceptionTimezoneNo().value == frameNo).collect(Collectors.toList());
-                }
-            }
+            menus = yokakuHistOpt.get().getMenu().stream()
+                    .filter(menu -> menu.getReceptionTimezoneNo().value == frameNo)
+                    .collect(Collectors.toList());
         }
         String correctionDateParam = TextResource.localize("KMR003_53", Arrays.asList(correctionDate.toString("yyyy/MM/dd"), correctionDate.toString("E")));
         Optional<ReservationRecTimeZone> reservationFrameNo = setting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo().value == frameNo).findFirst();

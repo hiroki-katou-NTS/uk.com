@@ -13,22 +13,19 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
-import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.service.GetStampCardQuery;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * @author anhnm
@@ -39,10 +36,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 public class StartNewReservationQuery {
     
     @Inject
-    private IBentoMenuHistoryRepository bentoMenuHistoryRepository;
-    
-    @Inject
-    private BentoMenuRepository bentoMenuRepository;
+    private BentoMenuHistRepository bentoMenuHistoryRepository;
     
     @Inject
     private EmpEmployeeAdapter empEmployeeAdapter;
@@ -62,22 +56,13 @@ public class StartNewReservationQuery {
      */
     public StartReservationCorrectOutput startNewReservation(GeneralDate correctionDate, int frameNo, List<String> employeeIds) {
         // 1: get(会社ID＝ログイン会社ID,期間，開始日＜＝注文日＜＝期間．終了日)
-        Optional<BentoMenuHistory> yokakuHistOpt = bentoMenuHistoryRepository.findByCompanyId(AppContexts.user().companyId());
+        Optional<BentoMenuHistory> yokakuHistOpt = bentoMenuHistoryRepository.findByCompanyDate(AppContexts.user().companyId(), correctionDate);
         
         List<Bento> menus = new ArrayList<Bento>();
         if (yokakuHistOpt.isPresent()) {
-            Optional<DateHistoryItem> historyItem = yokakuHistOpt.get().getHistoryItems().stream()
-                    .filter(x -> x.contains(correctionDate)).findFirst();
-            
-            if (historyItem.isPresent()) {
-                // 1.1: Filter(履歴ID　＝＝　取得した履歴ID)
-                BentoMenu bentoMenu = bentoMenuRepository.getBentoMenuByHistId(AppContexts.user().companyId(), historyItem.get().identifier());
-                
-                // 1.2: Filter(受付時間帯NO　＝＝　Input．受付時間帯NO)
-                if (bentoMenu != null) {
-                    menus = bentoMenu.getMenu().stream().filter(menu -> menu.getReceptionTimezoneNo().value == frameNo).collect(Collectors.toList());
-                }
-            }
+            menus = yokakuHistOpt.get().getMenu().stream()
+                    .filter(menu -> menu.getReceptionTimezoneNo().value == frameNo)
+                    .collect(Collectors.toList());
         }
         
         // 2: 社員情報を取得(List＜社員ID＞　＝　Input．社員一覧)
