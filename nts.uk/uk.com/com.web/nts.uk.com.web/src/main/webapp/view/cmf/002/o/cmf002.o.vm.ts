@@ -409,7 +409,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let startDate = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").toISOString();
             let lastDayOfMonth = moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD");
             let endDate = "";
-            if(self.show81YmPeriod()){
+            if(self.show61YmPeriod()||self.show81YmPeriod()){
                 endDate = lastDayOfMonth.clone().endOf('month').toISOString();
             }
             else{
