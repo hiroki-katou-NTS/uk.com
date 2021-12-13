@@ -47,7 +47,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
                         transform: rotate(-59deg);
                     }
                     .fc-evn-checkbox input[type="checkbox"]+span{
-                        line-height: 12px;
+                        line-height: 14px;
                         font-size: 12px;
                     }
                     .fc-evn-checkbox{
