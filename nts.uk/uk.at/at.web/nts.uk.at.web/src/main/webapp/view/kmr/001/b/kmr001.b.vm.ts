@@ -21,7 +21,7 @@ module nts.uk.at.view.kmr001.b {
 		contentChangeDeadlineDayLst: KnockoutObservableArray<any> = ko.observableArray([]);
 		contentChangeDeadlineDayCurrent: KnockoutObservable<number> = ko.observable(0);
 		orderMngAtr: KnockoutObservable<number> = ko.observable(0);
-		monthlyResults: KnockoutObservable<boolean> = ko.observable(false);
+		monthlyResults: KnockoutObservable<boolean> = ko.observable(true);
 		listRole: KnockoutObservableArray<any> = ko.observableArray([]);
 		roleName: KnockoutObservable<string> = ko.pureComputed(() => {
 			return _.chain(this.listRole()).sortBy('roleCode').map(o => o.name).join(", ").value();
