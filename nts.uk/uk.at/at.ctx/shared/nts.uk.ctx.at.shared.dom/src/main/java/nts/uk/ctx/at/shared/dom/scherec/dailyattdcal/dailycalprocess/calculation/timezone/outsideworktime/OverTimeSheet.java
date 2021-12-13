@@ -15,8 +15,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BPTimeItemSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
@@ -41,7 +40,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.ActualWorkTimeSheetListService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
@@ -466,10 +464,10 @@ public class OverTimeSheet {
 	 * @return 控除時間
 	 */
 	public AttendanceTime getDeductionTime(
-			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr) {
+			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr, nts.uk.shr.com.enumcommon.NotUseAtr canOffset) {
 		
 		return ActualWorkTimeSheetListService.calcDeductionTime(conditionAtr, dedAtr, roundAtr,
-				this.frameTimeSheets.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()));
+				this.frameTimeSheets.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()), canOffset);
 	}
 
 	/**
@@ -523,17 +521,11 @@ public class OverTimeSheet {
 	/**
 	 * 残業時間帯に入っている加給時間の計算
 	 * アルゴリズム：加給時間の計算
-	 * @param raisingAutoCalcSet 加給の自動計算設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
-	 * @param bonusPayAtr 加給区分
+	 * @param bpTimeItemSets 加給自動計算設定
 	 * @param calcAtrOfDaily 日別実績の計算区分
 	 * @return 加給時間(List)
 	 */
-	public List<BonusPayTime> calcBonusPayTimeInOverWorkTime(
-			AutoCalRaisingSalarySetting raisingAutoCalcSet,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			BonusPayAtr bonusPayAtr,
-			CalAttrOfDailyAttd calcAtrOfDaily) {
+	public List<BonusPayTime> calcBonusPayTimeInOverWorkTime(List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily) {
 		
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		ActualWorkTimeSheetAtr sheetAtr;
@@ -545,7 +537,7 @@ public class OverTimeSheet {
 					sheetAtr = ActualWorkTimeSheetAtr.EarlyWork;
 				}
 			}
-			bonusPayList.addAll(timeFrame.calcBonusPay(sheetAtr,raisingAutoCalcSet,bonusPayAutoCalcSet,calcAtrOfDaily,bonusPayAtr));
+			bonusPayList.addAll(timeFrame.calcBonusPay(sheetAtr, bpTimeItemSets, calcAtrOfDaily));
 		}
 		return sumBonusPayTime(bonusPayList);
 	}
@@ -559,11 +551,7 @@ public class OverTimeSheet {
 	 * @param calcAtrOfDaily 日別実績の計算区分
 	 * @return 特定加給時間(List)
 	 */
-	public List<BonusPayTime> calcSpecBonusPayTimeInOverWorkTime(
-			AutoCalRaisingSalarySetting raisingAutoCalcSet,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			BonusPayAtr bonusPayAtr,
-			CalAttrOfDailyAttd calcAtrOfDaily) {
+	public List<BonusPayTime> calcSpecBonusPayTimeInOverWorkTime(List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily) {
 		
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		ActualWorkTimeSheetAtr sheetAtr;
@@ -575,7 +563,7 @@ public class OverTimeSheet {
 					sheetAtr = ActualWorkTimeSheetAtr.EarlyWork;
 				}
 			}
-			bonusPayList.addAll(timeFrame.calcSpacifiedBonusPay(sheetAtr,raisingAutoCalcSet,bonusPayAutoCalcSet,calcAtrOfDaily,bonusPayAtr));
+			bonusPayList.addAll(timeFrame.calcSpacifiedBonusPay(sheetAtr, bpTimeItemSets, calcAtrOfDaily));
 		}
 		return sumBonusPayTime(bonusPayList);
 	}

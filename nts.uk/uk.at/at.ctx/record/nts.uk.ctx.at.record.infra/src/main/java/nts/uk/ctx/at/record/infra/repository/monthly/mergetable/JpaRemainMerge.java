@@ -21,6 +21,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.MonthMergeKey;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMerge;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicholiday.PublicHolidayRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -438,6 +440,17 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 														(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0)),
 								entity -> entity.toEntityRsvLeaRemNumEachMonth(domain));
 	}
+	
+	/** 登録および更新 */
+	@Override
+	public void persistAndUpdate(PublicHolidayRemNumEachMonth domain){
+		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getEmployeeId(),
+														domain.getYearMonth().v(),
+														domain.getClosureId().value,
+														domain.getClosureDate().getClosureDay().v(),
+														(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0)),
+								entity -> entity.toEntityPublicHoliday(domain));
+	}
 
 
 	/** 削除 */
@@ -516,6 +529,11 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	@Override
 	public void removeSpecHoliday(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, int no) {
 		internalRemove(employeeId, yearMonth, closureId, closureDate, entity -> entity.deleteSpeRemain(no));
+	}
+	
+	@Override
+	public void removeMonpublicHoliday(String employeeId, YearMonth yearMonth){
+		internalRemove(employeeId, yearMonth, entity -> entity.deletePublicHoliday());
 	}
 
 	private void internalRemove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, Consumer<KrcdtMonRemain> remove) {

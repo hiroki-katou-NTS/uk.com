@@ -19,8 +19,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BPTimeItemSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -61,7 +60,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
@@ -73,6 +71,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWorkTimeCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -296,32 +295,25 @@ public class CalculationRangeOfOneDay {
 	/**
 	 * 加給時間を計算する(就内・残業・休出時間帯)
 	 * アルゴリズム：加給時間の計算
-	 * @param raisingAutoCalcSet 加給の自動計算設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param bpTimeItemSets 加給自動計算設定
 	 * @param calcAtrOfDaily 日別実績の計算区分
-	 * @param bonusPayAtr 加給区分
 	 * @return 加給時間(List)
 	 */
-	public List<BonusPayTime> calcBonusPayTime(
-			AutoCalRaisingSalarySetting raisingAutoCalcSet,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			CalAttrOfDailyAttd calcAtrOfDaily,
-			BonusPayAtr bonusPayAtr) {
-		
+	public List<BonusPayTime> calcBonusPayTime(List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily) {
 		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
 		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
 		List<BonusPayTime> withinBonusPay = new ArrayList<>();
 		if(this.withinWorkingTimeSheet != null && withinWorkingTimeSheet.isPresent())
-			withinBonusPay = withinWorkingTimeSheet.get().calcBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
+			withinBonusPay = withinWorkingTimeSheet.get().calcBonusPayTimeInWithinWorkTime(bpTimeItemSets, calcAtrOfDaily);
 		
 		if(this.outsideWorkTimeSheet != null && this.outsideWorkTimeSheet.isPresent())
 		{
 			if(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
-				overTimeBonusPay = outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcBonusPayTimeInOverWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
+				overTimeBonusPay = outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcBonusPayTimeInOverWorkTime(bpTimeItemSets, calcAtrOfDaily);
 			}
 			
 			if(this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
-				holidayWorkBonusPay = outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcBonusPayTimeInHolidayWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
+				holidayWorkBonusPay = outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcBonusPayTimeInHolidayWorkTime(bpTimeItemSets, calcAtrOfDaily);
 			}
 		}
 		return calcBonusPayTime(withinBonusPay,overTimeBonusPay,holidayWorkBonusPay);
@@ -330,33 +322,26 @@ public class CalculationRangeOfOneDay {
 	/**
 	 * 特定加給時間を計算する(就内・残業・休出時間帯)
 	 * アルゴリズム：加給時間の計算
-	 * @param raisingAutoCalcSet 加給の自動計算設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param bpTimeItemSets 加給自動計算設定
 	 * @param calcAtrOfDaily 日別実績の計算区分
-	 * @param bonusPayAtr 加給区分
 	 * @return 特定加給時間(List)
 	 */
-	public List<BonusPayTime> calcSpecBonusPayTime(
-			AutoCalRaisingSalarySetting raisingAutoCalcSet,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			CalAttrOfDailyAttd calcAtrOfDaily,
-			BonusPayAtr bonusPayAtr){
-		
+	public List<BonusPayTime> calcSpecBonusPayTime(List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily){
 		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
 		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
 		List<BonusPayTime> withinBonusPay = new ArrayList<>();
 		
 		if(withinWorkingTimeSheet.isPresent())
-			 withinBonusPay = withinWorkingTimeSheet.get().calcSpecifiedBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
+			 withinBonusPay = withinWorkingTimeSheet.get().calcSpecifiedBonusPayTimeInWithinWorkTime(bpTimeItemSets, calcAtrOfDaily);
 
 		if(outsideWorkTimeSheet.isPresent())
 		{
 			if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
-				overTimeBonusPay = outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcSpecBonusPayTimeInOverWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
+				overTimeBonusPay = outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcSpecBonusPayTimeInOverWorkTime(bpTimeItemSets, calcAtrOfDaily);
 			}
 			
 			if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
-				holidayWorkBonusPay = outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcSpecBonusPayTimeInHolidayWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
+				holidayWorkBonusPay = outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcSpecBonusPayTimeInHolidayWorkTime(bpTimeItemSets, calcAtrOfDaily);
 			}
 		}
 		return calcBonusPayTime(withinBonusPay,overTimeBonusPay,holidayWorkBonusPay);
@@ -444,7 +429,8 @@ public class CalculationRangeOfOneDay {
 			DeductionAtr dedAtr,
 			StatutoryAtr statutoryAtr,
 			TimeSheetRoundingAtr roundAtr,
-			Optional<TimeRoundingSetting> sumRoundSet) {
+			Optional<TimeRoundingSetting> sumRoundSet,
+			NotUseAtr canOffset) {
 		
 		int deductMinutes = 0;		// 控除時間
 		// 法定内
@@ -452,7 +438,7 @@ public class CalculationRangeOfOneDay {
 			if (this.withinWorkingTimeSheet.isPresent()) {
 				// 就業時間帯から控除時間を取得
 				deductMinutes += this.withinWorkingTimeSheet.get()
-						.getDeductionTime(conditionAtr, dedAtr, roundAtr).valueAsMinutes();
+						.getDeductionTime(conditionAtr, dedAtr, roundAtr, canOffset).valueAsMinutes();
 			}
 		}
 		// 法定外
@@ -460,10 +446,10 @@ public class CalculationRangeOfOneDay {
 			if (this.outsideWorkTimeSheet.isPresent()) {
 				// 残業時間帯から控除時間を取得
 				deductMinutes += this.outsideWorkTimeSheet.get()
-						.getDeductionTimeFromOverTime(conditionAtr, dedAtr, roundAtr).valueAsMinutes();
+						.getDeductionTimeFromOverTime(conditionAtr, dedAtr, roundAtr, canOffset).valueAsMinutes();
 				// 休出時間帯から控除時間を取得
 				deductMinutes += this.outsideWorkTimeSheet.get()
-						.getDeductionTimeFromHolidayWork(conditionAtr, dedAtr, roundAtr).valueAsMinutes();
+						.getDeductionTimeFromHolidayWork(conditionAtr, dedAtr, roundAtr, canOffset).valueAsMinutes();
 			}
 		}
 		// 丸め区分を取得
