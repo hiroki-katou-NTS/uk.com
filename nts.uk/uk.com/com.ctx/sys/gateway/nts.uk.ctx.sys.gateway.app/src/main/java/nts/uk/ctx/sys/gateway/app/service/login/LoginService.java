@@ -33,7 +33,7 @@ import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailAddressNotificationImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestiImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestiImportDto;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestinationFunctionManageImport;
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestinationImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.SentMailListImport;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.mail.MailSender;
@@ -113,13 +113,14 @@ public class LoginService {
 
 		if (employee != null) {
 			// 社員のメールアドレスを取得する
-			MailDestinationImport mailDestinationImport = mailDestinationAdapter.getMailofEmployee(companyId,
+			MailDestiImport mailDestinationImport = mailDestinationAdapter.getMailDestiOfEmployee(companyId,
 					Arrays.asList(employee.getEmployeeId()), LOGIN_FUNCTION_ID);
 			// get userInfo
 			Optional<UserImportNew> user = this.userAdapter.findUserByAssociateId(employee.getPersonId());
-
+			Optional<SentMailListImport> optMailList = mailDestinationImport.getSentMailLists().stream()
+					.filter(data -> data.getSid().equals(employee.getEmployeeId())).findFirst();
 			if (user.isPresent()) {
-				if (mailDestinationImport.getOutGoingMails().isEmpty()) {
+				if (!optMailList.isPresent() || optMailList.get().getMailAddresses().isEmpty()) {
 					// check mail present
 					if (user.get().getMailAddress().get().isEmpty()) {
 						throw new BusinessException("Msg_1129");
@@ -130,7 +131,7 @@ public class LoginService {
 					}
 					// return new SendMailReturnDto(null);
 				} else {
-					return this.sendMail(mailDestinationImport.getOutGoingMails(), user.get().getLoginId(), contractCode,
+					return this.sendMail(optMailList.get().getMailAddresses(), user.get().getLoginId(), contractCode,
 							employee, companyId);
 				}
 			} else {
