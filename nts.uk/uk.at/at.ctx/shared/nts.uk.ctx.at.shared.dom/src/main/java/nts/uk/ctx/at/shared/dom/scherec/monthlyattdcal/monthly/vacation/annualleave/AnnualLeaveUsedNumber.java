@@ -98,6 +98,5 @@ public class AnnualLeaveUsedNumber implements Cloneable, SerializableWithOptiona
 		readObjectWithOptional(stream);
 	}
 
-
 }
 

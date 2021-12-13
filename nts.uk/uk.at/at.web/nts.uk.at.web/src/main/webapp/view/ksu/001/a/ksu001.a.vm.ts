@@ -182,6 +182,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         funcNo15_WorkPlace: boolean = false;
         changeableWorks = [];
         callAlgSumA12 = true;
+        taskId = null;
         
         constructor(dataLocalStorage) {
             let self = this;
@@ -2126,32 +2127,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let data = self.buidDataReg(self.userInfor.disPlayFormat, cellsGroup);
             
             service.regWorkSchedule(data).done((rs) => {
-                if (rs.hasError == false) {
-                    $("#extable").exTable('saveScroll');
-                    let $grid = $('div.ex-body-detail');
-                    self.updateAfterSaveData($grid[0]);
-                    self.getAggregatedInfo(true, true, true, true).done(()=>{
-                        if (isKsu003) {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.openKsu003(ui, detailContentDs);
-                            });
-                        } else {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        }
-                    });
-                } else {
-                    $("#extable").exTable('saveScroll');
-                    let $grid = $('div.ex-body-detail');
-                    self.updateAfterSaveData($grid[0]);
-                    // get lại data A11.A12
-                    self.getAggregatedInfo(true, true, true, true).done(() => {
-                        if (rs.listErrorInfo.length > 0) {
-                            self.openKDL053(rs);
-                        }
-                    });
-                }
-                self.hasChangeModeBg = false;
-                self.listCellUpdatedWhenChangeModeBg = [];
+                self.taskId = rs.taskInfor.id;
+                self.checkStateAsyncTask(isKsu003, detailContentDs);
+                
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alertError(error);
@@ -2159,7 +2137,70 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             return dfd.promise();
         }
- 
+        
+        checkStateAsyncTask(isKsu003, detailContentDs) {
+            let self = this;
+
+            nts.uk.deferred.repeat(conf => conf
+                .task(() => {
+                    return nts.uk.request.asyncTask.getInfo(self.taskId).done(function(res: any) {
+                        // finish task
+                        if (res.succeeded || res.failed || res.cancelled) {
+                            let arrayItems = [];
+                            let dataResult: any = {};
+                            dataResult.listErrorInfo = [];
+                            dataResult.hasError = false;
+                            dataResult.isRegistered = true; 
+                            _.forEach(res.taskDatas, item => {
+                                if (item.key == 'STATUS_REGISTER') {
+                                    dataResult.isRegistered = item.valueAsBoolean;
+                                } else if (item.key == 'STATUS_ERROR') {
+                                    dataResult.hasError = item.valueAsBoolean;
+                                } else {
+                                    arrayItems.push(item);
+                                }
+                            });
+                            
+                            if (arrayItems.length > 0) {
+                                let listErrorInfo = _.map(arrayItems, obj2 => {
+                                    return new InforError(JSON.parse(obj2.valueAsString));
+                                });
+                                dataResult.listErrorInfo = listErrorInfo;
+                            }
+                            
+                            if (dataResult.hasError == false) {
+                                $("#extable").exTable('saveScroll');
+                                let $grid = $('div.ex-body-detail');
+                                self.updateAfterSaveData($grid[0]);
+                                self.getAggregatedInfo(true, true, true, true).done(() => {
+                                    if (isKsu003) {
+                                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                            self.openKsu003(ui, detailContentDs);
+                                        });
+                                    } else {
+                                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                                    }
+                                });
+                            } else {
+                                $("#extable").exTable('saveScroll');
+                                let $grid = $('div.ex-body-detail');
+                                self.updateAfterSaveData($grid[0]);
+                                // get lại data A11.A12
+                                self.getAggregatedInfo(true, true, true, true).done(() => {
+                                    if (dataResult.listErrorInfo.length > 0) {
+                                        self.openKDL053(dataResult);
+                                    }
+                                });
+                            }
+                            self.hasChangeModeBg = false;
+                            self.listCellUpdatedWhenChangeModeBg = [];
+                        }
+                    });
+                }).while(infor => {
+                    return infor.pending || infor.running;
+                }).pause(1000));
+        }
+
         buidDataReg(viewMode, cellsGroup) {
             let self = this;
             let dataReg = [];
@@ -5530,7 +5571,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         openLDialog(): void {
             let self = this;
             //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
-            setShared("baseDate", ko.observable(self.dateTimeAfter()));
+            setShared("KSU001La", {
+                date: self.dateTimeAfter(),
+                listEmpData: self.listEmpData
+            });
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml").onClosed(() => {
                 let dataShare = getShared("ksu001la-result");
@@ -5603,7 +5647,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             return dfd.promise();
         }
-        
+        openDialogK() {
+            let self = this;
+            characteristics.restore(self.KEY).done((userInfor: IUserInfor) => {
+                setShared('dataShareDialogK', {
+                    orgUnit: userInfor.unit,
+                    orgId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId,
+                    startDate: moment(self.dtPrev()).toISOString(),
+                    endDate: moment(self.dtAft()).toISOString(),
+                    employeeIds : self.sids(),
+                    closeDate: self.closeDate
+                });
+                nts.uk.ui.windows.sub.modal("/view/ksu/001/ka/index.xhtml");
+            });
+        }
         btnOpenKDL055(): void {
             let self = this;
             let arrCellUpdated = $("#extable").exTable("updatedCells");
@@ -6688,5 +6745,32 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     enum MODE {
         SCHEDULE = 2,
         ACTUAL = 1,
+    }
+
+    interface IError {
+        sid: string,
+        scd: string,
+        empName: string,
+        date: string,
+        attendanceItemId: string,
+        errorMessage: string,
+    }
+
+    export class InforError {
+        sid: string;
+        scd: string;
+        empName: string;
+        date: string;
+        attendanceItemId: string;
+        errorMessage: string;
+        constructor(param: IError) {
+            let self = this;
+            self.sid = param.sid;
+            self.scd = param.scd;
+            self.empName = param.empName;
+            self.date = param.date;
+            self.attendanceItemId = param.attendanceItemId;
+            self.errorMessage = param.errorMessage;
+        }
     }
 }

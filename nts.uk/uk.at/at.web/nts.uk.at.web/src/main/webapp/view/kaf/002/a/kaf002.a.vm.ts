@@ -38,6 +38,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         mode: KnockoutObservable<number> = ko.observable(0); // 0 ->a, 1->b, 2->b(view)
         reasonList: Array<GoOutTypeDispControl>;
         date: KnockoutObservable<string> = ko.observable(null);
+        errorList: KnockoutObservableArray<any> = ko.observableArray([]);
 
 //    ※M2.1_1
 //    打刻申請起動時の表示情報.申請設定（基準日関係なし）.複数回勤務の管理　＝　true
@@ -123,11 +124,11 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 		}
         self.loadData(empLst, dateLst, self.appType())
 		.then((loadDataFlag: any) => {
-            self.appDispInfoStartupOutput.subscribe(value => {
-                if (value) { 
-                    self.changeDate();
-                }
-            });
+            // self.appDispInfoStartupOutput.subscribe(value => {
+            //     if (value) { 
+            //         self.changeDate();
+            //     }
+            // });
             
             if (!_.isNull(ko.toJS(self.application().prePostAtr))) {
                 self.isPreAtr(self.application().prePostAtr() == 0);                
@@ -140,7 +141,28 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             });
             self.application().appDate.subscribe(value => {
                 self.date(value);
+
+                let command = {
+                    companyId: self.$user.companyId,
+                    appStampOutputDto: self.data,
+                    date: [moment(value).format('YYYY/MM/DD')],
+                    recorderFlag: false,
+                }
+
+                self.$blockui('show');
+                self.$ajax(API.changeAppDate, command).done((res) => {
+                    if (res) {
+                        // console.log(res);
+                        self.errorList(res.errorListOptional);
+                        self.changeDate();
+                    }
+                }).fail((err) => {
+                    if (err) {
+                        self.$dialog.error({ messageId: err.messageId, messageParams: err.parameterIds });
+                    }
+                })
             });
+
             if(loadDataFlag) {
 				self.application().employeeIDLst(empLst);
                 let companyId = self.$user.companyId;
@@ -392,12 +414,16 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             let timePlaceList = stampRecord.workingTime;
             for (let i = 1; i < 3; i++) {
                 let dataObject = new TimePlaceOutput(i);
+                let errStartFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 0, 'stampFrameNo': i, 'startEndClassification': 0 });
+                let errEndFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 0, 'stampFrameNo': i, 'startEndClassification': 1 });
                 _.forEach(timePlaceList, item => {
                     if (item.frameNo == i) {
                         dataObject.opStartTime = item.opStartTime;
                         dataObject.opEndTime = item.opEndTime;
                         dataObject.opWorkLocationCD = item.opWorkLocationCD;
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        dataObject.errorStart = errStartFilter.length > 0;
+                        dataObject.errorEnd = errEndFilter.length > 0;
                     }
                 });
                 list.push(new GridItem(dataObject, STAMPTYPE.ATTENDENCE)); 
@@ -410,12 +436,16 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             let extraordinaryTime = stampRecord.extraordinaryTime;
             for (let i = 3; i < 6; i++) {
                 let dataObject = new TimePlaceOutput(i);
+                let errStartFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 1, 'stampFrameNo': i - 2, 'startEndClassification': 0 });
+                let errEndFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 1, 'stampFrameNo': i - 2, 'startEndClassification': 1 });
                 _.forEach(extraordinaryTime, item => {
                     if (item.frameNo + 2 == i) {
                         dataObject.opStartTime = item.opStartTime;
                         dataObject.opEndTime = item.opEndTime;
                         dataObject.opWorkLocationCD = item.opWorkLocationCD;
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        dataObject.errorStart = errStartFilter.length > 0;
+                        dataObject.errorEnd = errEndFilter.length > 0;
                     }
                 });
                 list.push(new GridItem(dataObject, STAMPTYPE.EXTRAORDINARY));
@@ -430,12 +460,16 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             let outingTime = stampRecord.outingTime;
             for ( let i = 1; i < 11; i++ ) {
                 let dataObject = new TimePlaceOutput( i );
+                let errStartFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 2, 'stampFrameNo': i, 'startEndClassification': 0 });
+                let errEndFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 2, 'stampFrameNo': i, 'startEndClassification': 1 });
                 _.forEach(outingTime, item => {
                     if (item.frameNo == i) {
                         dataObject.opStartTime = item.opStartTime;
                         dataObject.opEndTime = item.opEndTime;
                         dataObject.opWorkLocationCD = item.opWorkLocationCD;
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        dataObject.errorStart = errStartFilter.length > 0;
+                        dataObject.errorEnd = errEndFilter.length > 0;
                     }
                 });
                 list.push( new GridItem( dataObject, STAMPTYPE.GOOUT_RETURNING ) );
@@ -813,7 +847,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             start: "at/request/application/stamp/startStampApp",
             checkRegister: "at/request/application/stamp/checkBeforeRegister",
             register: "at/request/application/stamp/register",
-            reflectApp: "at/request/application/reflect-app"
+            reflectApp: "at/request/application/reflect-app", 
+            changeAppDate: "at/request/application/stamp/changeAppDateMobile"
         }
     const RECORD_FLAG_STAMP = false;
     

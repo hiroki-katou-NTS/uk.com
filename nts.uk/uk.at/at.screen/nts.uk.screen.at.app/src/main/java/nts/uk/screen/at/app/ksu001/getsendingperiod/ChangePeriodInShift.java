@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
@@ -24,8 +25,6 @@ import nts.uk.screen.at.app.ksu001.extracttargetemployees.ExtractTargetEmployees
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTargetEmployees;
 import nts.uk.screen.at.app.ksu001.getschedulesbyshift.GetScheduleActualOfShift;
 import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftDataResult;
-import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftDataResult;
-import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftParam;
 
 /**
  * @author laitv
@@ -57,7 +56,7 @@ public class ChangePeriodInShift {
 					Optional.of(param.workplaceGroupId));
 		}
 
-		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(param.endDate, targetOrgIdenInfor);
+		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(GeneralDate.today(), new DatePeriod(param.startDate, param.endDate), targetOrgIdenInfor);
 		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp(param2);
 		
 		List<String> sids = resultStep2.stream().map(i -> i.getEmployeeId()).collect(Collectors.toList());
@@ -71,7 +70,7 @@ public class ChangePeriodInShift {
 		SchedulesbyShiftDataResult schedulesbyShiftDataResult_New = 
 				getSchedulesAndAchievementsByShift.getData(
 						param.getListShiftMasterNotNeedGetNew(),
-						param.getSids(),
+						sids,
 						new DatePeriod(param.getStartDate(), param.getEndDate()),
 						param.getCloseDate(),
 						param.getActualData,
