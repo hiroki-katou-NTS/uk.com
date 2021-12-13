@@ -42,6 +42,7 @@ public class CorrectDaikyuFurikyuFixed {
 				&& absDetail.getDateOccur().getDayoffDate().map(x -> pastDate(x, period)).orElse(false);
 	}
 
+	//過去かどうか
 	private static boolean pastDate(GeneralDate date, DatePeriod period) {
 		return !period.contains(date) && date.before(period.start());
 	}
