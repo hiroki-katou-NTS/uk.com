@@ -115,6 +115,26 @@ module nts.uk.at.view.kmr002.a.model {
 				if(nts.uk.ui.errors.hasError()) {
 					return;
 				}
+				
+				self.getData().done(() => {
+					if(self.currentFrameNo()==1) {
+						let reservationFrame1 = _.find(self.listOrder, o => o.closingTimeFrame==1);
+						if(reservationFrame1) {
+							if(reservationFrame1.ordered) {
+								error({ messageId: 'Msg_2284' });	
+							}
+						}
+					}
+					if(self.currentFrameNo()==2) {
+						let reservationFrame2 = _.find(self.listOrder, o => o.closingTimeFrame==2);
+						if(reservationFrame2) {
+							if(reservationFrame2.ordered) {
+								error({ messageId: 'Msg_2284' });	
+							}
+						}
+					}
+				});
+				
 				if(moment(value).isBefore(moment(new Date()).format("YYYY/MM/DD"))) {
 					self.modeFuture(false);
 				} else {
@@ -123,7 +143,6 @@ module nts.uk.at.view.kmr002.a.model {
 				if(!self.modeFuture()) {
 					error({ messageId: 'Msg_2283' });	
 				}
-				self.getData();
 			});
 			dfd.resolve();
             return dfd.promise();
