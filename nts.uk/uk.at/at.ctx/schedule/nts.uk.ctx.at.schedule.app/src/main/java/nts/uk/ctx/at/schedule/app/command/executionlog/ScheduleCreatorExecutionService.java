@@ -79,7 +79,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -286,7 +285,7 @@ public class ScheduleCreatorExecutionService {
 	 * @param context
 	 */
 	private void registerPersonalSchedule(ScheduleCreatorExecutionCommand command,
-			ScheduleExecutionLog scheduleExecutionLog,
+			ScheduleExecutionLog scheduleExecutionLog, 
 			@SuppressWarnings("rawtypes") Optional<AsyncCommandHandlerContext> asyncTask,
 			String companyId) {
 
@@ -510,8 +509,7 @@ public class ScheduleCreatorExecutionService {
 		// 勤務種類情報を取得する ↓
 		// EA修正履歴 No2282
 		// ドメインモデル「勤務種類」を取得する
-		List<WorkType> lstWorkTypeInfo = workTypeRepository.findWorkByDeprecate(companyId,
-				DeprecateClassification.NotDeprecated.value);
+		List<WorkType> lstWorkTypeInfo = workTypeRepository.findByCompanyId(companyId);
 		// -----↑
 		// 勤務種別をテク定期間の社員情報を入れて返す (Comment theo luồng của bác Bình)
 		CreateScheduleMasterCache cache = new CreateScheduleMasterCache(empGeneralInfo, mapEmploymentStatus,

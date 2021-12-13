@@ -45,13 +45,12 @@ import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateStampDataForEmployeesService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
+
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
@@ -92,9 +91,6 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 
 	@Inject
 	private StampDakokuRepository stampDakokuRepo;
-
-	@Inject
-	private StampRecordRepository stampRecordRepo;
 
 	@Inject
 	private StampCardEditingRepo stampCardEditRepo;
@@ -170,7 +166,7 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 	@Override
 	protected RegisterStampDataResult handle(CommandHandlerContext<RegisterStampDataCommand> context) {
 		CreateStampDataForEmployeesRequiredImpl required = new CreateStampDataForEmployeesRequiredImpl(stampCardRepository,
-				stampDakokuRepo, stampRecordRepo, stampCardEditRepo, sysEmpPub, companyAdapter,
+				stampDakokuRepo, stampCardEditRepo, sysEmpPub, companyAdapter,
 				empInfoTerminalRepository, employeeManageRCAdapter, dailyRecordAdUpService,
 				getMngInfoFromEmpIDListAdapter, iGetInfoForLogin, loginUserContextManager, calcService, closureRepo,
 				closureEmploymentRepo, shareEmploymentAdapter, dailyRecordShareFinder, timeReflectFromWorkinfo,
@@ -181,7 +177,7 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		TimeStampInputResult result = CreateStampDataForEmployeesService.create(required,
 				AppContexts.user().companyId(),
 				new ContractCode(AppContexts.user().contractCode()), employeeId, Optional.empty(),
-				cmd.retriveDateTime(), cmd.toRelieve(), cmd.toButtonType(),
+				cmd.retriveDateTime(), cmd.toRelieve(), cmd.toStampType(),
 				cmd.toRefectActualResult(), Optional.ofNullable(cmd.toGeoCoordinate()));
 		
 		Optional<AtomTask> atomOpt = result.getAt();
@@ -211,9 +207,6 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 
 		@Inject
 		private StampDakokuRepository stampDakokuRepo;
-
-		@Inject
-		private StampRecordRepository stampRecordRepo;
 
 		@Inject
 		private StampCardEditingRepo stampCardEditRepo;
@@ -255,12 +248,6 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		protected EmpEmployeeAdapter empEmployeeAdapter;
 
 		@Override
-		public void insert(StampRecord stampRecord) {
-			stampRecordRepo.insert(stampRecord);
-
-		}
-
-		@Override
 		public void insert(Stamp stamp) {
 			stampDakokuRepo.insert(stamp);
 		}
@@ -294,12 +281,6 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		@Override
 		public Optional<StampCard> getByCardNoAndContractCode(String stampNumber, String contractCode) {
 			return this.stampCardRepository.getByCardNoAndContractCode(stampNumber, contractCode);
-		}
-
-		@Override
-		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
-				GeneralDateTime dateTime) {
-			return stampRecordRepo.get(contractCode.v(), stampNumber.v(), dateTime);
 		}
 		
 		@Override
@@ -369,12 +350,6 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		@Override
 		public void addAllDomain(IntegrationOfDaily domain) {
 			dailyRecordAdUpService.addAllDomain(domain);
-		}
-		
-		@Override
-		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
-				ChangeClockAtr changeClockArt) {
-			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
 		}
 
 		@Override

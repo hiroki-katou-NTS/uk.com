@@ -11,6 +11,8 @@ import lombok.Setter;
 import lombok.val;
 import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
 
 /**
  * 年休使用情報
@@ -77,6 +79,14 @@ public class AnnualLeaveUsedInfo implements Cloneable, SerializableWithOptional 
 		usedNumberAfterGrantOpt = Optional.empty();
 	}
 
+	/** 合計をセット */
+	public void setTotal() {
+		usedNumber = new AnnualLeaveUsedNumber();
+		usedNumber.addUsedNumber(usedNumberBeforeGrant);
+		if (usedNumberAfterGrantOpt.isPresent()) {
+			usedNumber.addUsedNumber(usedNumberAfterGrantOpt.get());
+		}
+	}
 
 	/**
 	 * クローン
@@ -112,13 +122,10 @@ public class AnnualLeaveUsedInfo implements Cloneable, SerializableWithOptional 
 	 * @param usedNumber 使用数
 	 * @param afterGrantAtr 付与後フラグ
 	 */
-	public void addUsedNumber(AnnualLeaveUsedNumber usedNumber, boolean afterGrantAtr){
-
-		// 使用数に加算
-		this.usedNumber.addUsedNumber(usedNumber);
+	public void addUsedNumber(AnnualLeaveUsedNumber usedNumber, GrantBeforeAfterAtr grantPeriodAtr){
 
 		// 「付与後フラグ」をチェック
-		if (afterGrantAtr){
+		if (grantPeriodAtr.equals(GrantBeforeAfterAtr.AFTER_GRANT)){
 
 			// 使用日数付与後に加算
 			if ( this.usedNumberAfterGrantOpt.isPresent() ){
@@ -133,6 +140,9 @@ public class AnnualLeaveUsedInfo implements Cloneable, SerializableWithOptional 
 			this.usedNumberBeforeGrant.addUsedNumber(usedNumber);
 
 		}
+
+		//合計使用数を求める
+		this.setTotal();
 	}
 
 	/**

@@ -12,10 +12,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.WorkInformationStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -59,16 +57,13 @@ public class RegisterStampDataCommand {
 	public Relieve toRelieve() {
 		return new Relieve(AuthcMethod.valueOf(authcMethod), StampMeans.valueOf(stampMeans));
 	}
-
-	public ButtonType toButtonType() {
+	
+	public StampType toStampType() {
 		StampType stampType = StampType.getStampType(changeHalfDay, GoingOutReason.valueOf(goOutArt),
 					SetPreClockArt.valueOf(setPreClockArt), changeClockArt == null ? null : ChangeClockAtr.valueOf(changeClockArt),
 					ChangeCalArt.valueOf(changeCalArt));
 		
-		if(reservationArt != 2 && reservationArt != 1) {
-			return new ButtonType(ReservationArt.valueOf(reservationArt), Optional.of(stampType));
-		}
-		return new ButtonType(ReservationArt.valueOf(reservationArt), Optional.ofNullable(null));
+			return stampType;
 
 	}
 

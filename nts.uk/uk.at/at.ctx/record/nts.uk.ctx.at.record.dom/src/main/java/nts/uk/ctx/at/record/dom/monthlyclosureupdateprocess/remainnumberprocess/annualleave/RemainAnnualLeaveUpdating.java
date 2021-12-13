@@ -86,7 +86,7 @@ public class RemainAnnualLeaveUpdating {
 			AggrResultOfAnnualLeave output, AggrPeriodEachActualClosure period, String empId) {
 		
 		/** パラメータ「年休上限管理」を受け取る */
-		AnnualLeaveMaxData maxDataOutput = output.getAsOfPeriodEnd().getMaxData();
+		AnnualLeaveMaxData maxDataOutput = output.getAsOfStartNextDayOfPeriodEnd().getMaxData();
 		
 		/** ドメインモデル「年休上限データ」を取得する */
 		return require.annualLeaveMaxData(empId).map(annualMax -> {
