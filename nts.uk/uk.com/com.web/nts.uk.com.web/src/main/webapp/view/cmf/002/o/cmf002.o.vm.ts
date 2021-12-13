@@ -407,7 +407,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let conditionSetCd = self.selectedConditionCd();
             let userId = "";
             let startDate = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").toISOString();
-            let endDate = moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD").toISOString();
+            let lastDayOfMonth = moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD");
+            let endDate = lastDayOfMonth.clone().endOf('month').toISOString();
             let referenceDate = self.referenceDate();
             let standardType = true;
             let sidList = self.dataEmployeeId;
