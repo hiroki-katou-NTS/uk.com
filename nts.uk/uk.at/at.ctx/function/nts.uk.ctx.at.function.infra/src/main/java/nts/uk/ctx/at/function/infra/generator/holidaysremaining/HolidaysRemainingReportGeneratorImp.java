@@ -2003,7 +2003,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                             .getRemainingNumber().getHalfDayAnnualLeaveWithMinus();
                                     if (i.isPresent()) {
                                         return
-                                                i.get().getRemainingNum().getTimes().v();
+                                                i.get().getRemainingNum().getTimesBeforeGrant().v();
                                     } else {
                                         return 0;
                                     }
@@ -2118,8 +2118,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 val number_of_date_remainOpt = item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                         .getRemainingNumber().getHalfDayAnnualLeaveWithMinus();
                 if (number_of_date_remainOpt.isPresent() && number_of_date_remainOpt.get().getRemainingNum() != null &&
-                        number_of_date_remainOpt.get().getRemainingNum().getTimes().v() != 0) {
-                    val number_of_date_remain = number_of_date_remainOpt.get().getRemainingNum().getTimes();
+                        number_of_date_remainOpt.get().getRemainingNum().getTimesBeforeGrant().v() != 0) {
+                    val number_of_date_remain = number_of_date_remainOpt.get().getRemainingNum().getTimesBeforeGrant();
                     cells.get(firstRow + 1, 10 + totalMonth)
                             .setValue(number_of_date_remain + TextResource.localize("KDR001_75"));
                     if (number_of_date_remain.v() < 0) {

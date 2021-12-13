@@ -10,6 +10,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
+import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryMidNightTime;
@@ -226,7 +227,8 @@ public class TotalWorkingTime {
 									WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(0), 
 																								new AttendanceTime(0), 
 																								new AttendanceTime(0), 
-																								new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)))),
+																								new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+																								AttendanceAmountDaily.ZERO),
 									new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), new AttendanceTime(0)),
 																	 Optional.of(new OverTimeOfDaily(new ArrayList<>(), 
 																			 						 new ArrayList<>(), 
@@ -1006,20 +1008,15 @@ public class TotalWorkingTime {
 		Optional<IntegrationOfWorkTime> integrationOfWorkTime = recordClass.getIntegrationOfWorkTime();
 		// 休暇加算処理
 		vacationAddTime += withinWorkTimeSheet.vacationAddProcess(
-				integrationOfDaily,
 				integrationOfWorkTime,
 				PremiumAtr.RegularWork,
 				vacationClass,
 				workType,
 				recordClass.getAddSetting(),
 				recordClass.getHolidayAddtionSet().get(),
-				flexCalcMethod,
 				recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
-				recordClass.getDailyUnit(),
-				commonSetting,
 				conditionItem,
-				predetermineTimeSetByPersonInfo,
-				NotUseAtr.NOT_USE).valueAsMinutes();
+				predetermineTimeSetByPersonInfo).valueAsMinutes();
 		// 時間枠毎の相殺による加算時間の合計を取得
 		vacationAddTime += withinWorkTimeSheet.getTotalAddTimeByOffset(
 				integrationOfDaily,
@@ -1259,6 +1256,13 @@ public class TotalWorkingTime {
 		this.holidayOfDaily = holidayOfDaily;
 		this.vacationAddTime = vacationAddTime;
 		this.intervalTime = intervalTime;
+	}
+	
+	public AttendanceTime getWorkHolidayTime() {
+		return this.getExcessOfStatutoryTimeOfDaily().calcWorkHolidayTime();
+	}
+	public AttendanceTime getOverTime() {
+		return this.getExcessOfStatutoryTimeOfDaily().calcOverTime();
 	}
 	
 }

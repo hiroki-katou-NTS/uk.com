@@ -48,12 +48,6 @@ public class AffWorkplaceHistoryItem {
 		this.historyId = historyId;
 		this.employeeId = employeeId;
 		this.workplaceId = workplaceId;
-<<<<<<< HEAD
-//		this.normalWorkplaceId = normalWorkplaceId;
-		this.workLocationCode = Optional.empty();
-=======
-		this.normalWorkplaceId = normalWorkplaceId;
 //		this.workLocationCode = Optional.empty();
->>>>>>> uk/release_bug901
 	}
 }

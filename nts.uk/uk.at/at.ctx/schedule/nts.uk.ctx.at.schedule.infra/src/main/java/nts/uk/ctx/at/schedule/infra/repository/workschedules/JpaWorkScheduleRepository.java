@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -49,6 +50,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchLeaveEa
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchLeaveEarlyPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchOvertimeWork;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchOvertimeWorkPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchLeaveEarly;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchPremium;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchPremiumPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTime;
@@ -229,34 +231,16 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 			if (oldData.get().kscdtSchTime != null) {
 				// List<KscdtSchOvertimeWork> overtimeWorks
-				if (!oldData.get().kscdtSchTime.overtimeWorks.isEmpty()) {
-					for (KscdtSchOvertimeWork y : newData.kscdtSchTime.overtimeWorks) {
-						oldData.get().kscdtSchTime.overtimeWorks.forEach(x -> {
-							if (y.pk.frameNo == x.pk.frameNo) {
-								x.cid = y.cid;
-								x.overtimeWorkTime = y.overtimeWorkTime;
-								x.overtimeWorkTimeTrans = y.overtimeWorkTimeTrans;
-								x.overtimeWorkTimePreApp = y.getOvertimeWorkTimePreApp();
-							}
+				oldData.get().kscdtSchTime.overtimeWorks = removeInsertData(oldData.get().kscdtSchTime.overtimeWorks,
+						newData.kscdtSchTime.overtimeWorks, (x, y) -> {
+							return y.pk.frameNo == x.pk.frameNo;
 						});
-					}
-				}
 
 				// List<KscdtSchHolidayWork> holidayWorks
-				if (!oldData.get().kscdtSchTime.holidayWorks.isEmpty()) {
-					for (KscdtSchHolidayWork y : newData.kscdtSchTime.holidayWorks) {
-						oldData.get().kscdtSchTime.holidayWorks.forEach(x -> {
-							if (y.pk.frameNo == x.pk.frameNo) {
-								x.cid = y.cid;
-								x.holidayWorkTsStart = y.holidayWorkTsStart;
-								x.holidayWorkTsEnd = y.holidayWorkTsEnd;
-								x.holidayWorkTime = y.holidayWorkTime;
-								x.holidayWorkTimeTrans = y.holidayWorkTimeTrans;
-								x.holidayWorkTimePreApp = y.holidayWorkTimePreApp;
-							}
+				oldData.get().kscdtSchTime.holidayWorks = removeInsertData(oldData.get().kscdtSchTime.holidayWorks,
+						newData.kscdtSchTime.holidayWorks, (x, y) -> {
+							return y.pk.frameNo == x.pk.frameNo;
 						});
-					}
-				}
 
 				// List<KscdtSchBonusPay> bonusPays
 				if (!oldData.get().kscdtSchTime.bonusPays.isEmpty()) {
@@ -1547,4 +1531,12 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		return mapPairKscdtSchTask;
 	}
 
+	private <V> List<V> removeInsertData(List<V> oldDatas, List<V> newDatas, BiFunction<V, V, Boolean> keyCheck) {
+		oldDatas.forEach(x -> {
+			if(!newDatas.stream().anyMatch(y -> keyCheck.apply(x, y))) {
+				this.commandProxy().remove(x);
+			}
+		});
+		return newDatas;
+	}
 }

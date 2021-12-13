@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
 
 /*import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;*/
@@ -27,6 +28,8 @@ import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigest
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.reflect.GetApplicationReflectionResultAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
@@ -52,11 +55,15 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveAppli
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.adapter.workschedule.WorkScheWorkInforSharedAdapter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DayoffChangeAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionUsageInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeUseInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -66,6 +73,13 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.CorrectDail
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -78,8 +92,10 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -134,7 +150,19 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	private FlowWorkSettingRepository flowWorkSettingRepository;
 	@Inject
 	private WorkScheduleToIntegrationOfDailyAdapter workScheduleAdapter;
-
+	@Inject
+	private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepo;
+	@Inject
+	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
+	@Inject
+	private ScBasicScheduleAdapter scBasicScheduleAdapter;
+	@Inject
+	private WorkScheWorkInforSharedAdapter workScheWorkInforSharedAdapter;
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepo;
+	
 	@Override
 	public List<AppRemainCreateInfor> lstRemainDataFromApp(CacheCarrier cacheCarrier, String cid, String sid,
 			DatePeriod dateData) {
@@ -195,30 +223,23 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 
 	// 申請種類に応じて残数作成元情報を作成する
 	private List<AppRemainCreateInfor> lstResult(String cid, String sid, List<Application> lstAppData) {
+		RequireImpl impl = new RequireImpl(cid);
 		List<AppRemainCreateInfor> lstOutputData = new ArrayList<>();
 		lstAppData.stream().forEach(appData -> {
-			AppRemainCreateInfor outData = new AppRemainCreateInfor();
-			outData.setSid(sid);
-			outData.setAppDate(appData.getAppDate().getApplicationDate());
-			outData.setAppId(appData.getAppID());
-			outData.setAppType(EnumAdaptor.valueOf(appData.getAppType().value, ApplicationType.class));
-			outData.setPrePosAtr(EnumAdaptor.valueOf(appData.getPrePostAtr().value, PrePostAtr.class));
-			outData.setInputDate(appData.getInputDate());
-			outData.setWorkTimeCode(Optional.empty());
-			outData.setWorkTypeCode(Optional.empty());
-			outData.setStartDate(appData.getOpAppStartDate().isPresent()
-					? Optional.of(appData.getOpAppStartDate().get().getApplicationDate())
-					: Optional.empty());
-			outData.setEndDate(appData.getOpAppEndDate().isPresent()
-					? Optional.of(appData.getOpAppEndDate().get().getApplicationDate())
-					: Optional.empty());
-			outData.setNumberOfDaySusp(Optional.empty());
+			AppRemainCreateInfor outData = AppRemainCreateInfor.createDefault(sid, appData.getAppID(), 
+					appData.getInputDate(), 
+					appData.getAppDate().getApplicationDate(), 
+					EnumAdaptor.valueOf(appData.getPrePostAtr().value, PrePostAtr.class), 
+					EnumAdaptor.valueOf(appData.getAppType().value, ApplicationType.class),
+					appData.getOpAppStartDate().map(x -> x.getApplicationDate()),
+					appData.getOpAppEndDate().map(x -> x.getApplicationDate())
+					);
 			switch (outData.getAppType()) {
 			case WORK_CHANGE_APPLICATION:
 				Optional<AppWorkChange> workChange = workChangeService.findbyID(cid, appData.getAppID());
 				workChange.ifPresent(x -> {
-					outData.setWorkTimeCode(x.getOpWorkTimeCD().map(time -> time.v()));
-					outData.setWorkTypeCode(x.getOpWorkTypeCD().map(type -> type.v()));
+					outData.setWorkTimeCode(x.getOpWorkTimeCD().map(time -> getWTimeCode(time)));
+					outData.setWorkTypeCode(x.getOpWorkTypeCD().map(type -> getWTypeCode(type)));
 				});
 				break;
 			case GO_RETURN_DIRECTLY_APPLICATION:
@@ -257,8 +278,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 
 				Optional<RecruitmentApp> recApp = recAppRepo.findByID(appData.getAppID());
 				recApp.ifPresent(y -> {
-					outData.setWorkTimeCode(Optional.of(y.getWorkInformation().getWorkTimeCode().v()));
-					outData.setWorkTypeCode(Optional.of(y.getWorkInformation().getWorkTypeCode().v()));
+					outData.setWorkTimeCode(Optional.ofNullable(getWTimeCode(y.getWorkInformation().getWorkTimeCode())));
+					outData.setWorkTypeCode(Optional.ofNullable(getWTypeCode(y.getWorkInformation().getWorkTypeCode())));
 
 				});
 
@@ -281,9 +302,16 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 					appOvertimeTimeTotal = x.getApplicationTime().getApplicationTime().stream()
 							.filter(time -> time.getAttendanceType().equals(AttendanceType_Update.NORMALOVERTIME))
 							.mapToInt(time -> time.getApplicationTime().v()).sum();
+					
+					val transferTimer = CalculationOfTransferTime.process(impl, cid, sid, appData.getAppDate().getApplicationDate(), x.getWorkInfoOp().map(y -> y.getWorkTypeCode().v()), 
+							CalculationOfTransferTimeResult.create(x.getWorkInfoOp().flatMap(y -> y.getWorkTimeCodeNotNull().map(z -> z.v())), appBreakTimeTotal, appOvertimeTimeTotal), 
+							DayoffChangeAtr.OVERTIME);
+					if(transferTimer.isPresent()) {
+						outData.setWorkTimeCode(transferTimer.get().getWorkTimeCode());
+						outData.setAppBreakTimeTotal(transferTimer.get().getHolidayTransTime().map(y -> y.v()));
+						outData.setAppOvertimeTimeTotal(transferTimer.get().getOverTransTime().map(y -> y.v()));
+					}
 				}
-				outData.setAppBreakTimeTotal(Optional.of(appBreakTimeTotal));
-				outData.setAppOvertimeTimeTotal(Optional.of(appOvertimeTimeTotal));
 				break;
 			case BREAK_TIME_APPLICATION:
 				Optional<AppHolidayWork> holidayWork = holidayWorkRepo.find(cid, appData.getAppID());
@@ -301,9 +329,17 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 					overtimeTimeTotal = x.getApplicationTime().getApplicationTime().stream()
 							.filter(time -> time.getAttendanceType().equals(AttendanceType_Update.NORMALOVERTIME))
 							.mapToInt(time -> time.getApplicationTime().v()).sum();
+					val transferTimer = CalculationOfTransferTime.process(impl, cid, sid,
+							appData.getAppDate().getApplicationDate(),
+							Optional.of(x.getWorkInformation().getWorkTypeCode().v()),
+							CalculationOfTransferTimeResult.create(x.getWorkInformation().getWorkTimeCodeNotNull().map(z -> z.v()), breakTimeTotal, overtimeTimeTotal),
+							DayoffChangeAtr.BREAKTIME);
+					if(transferTimer.isPresent()) {
+						outData.setWorkTimeCode(transferTimer.get().getWorkTimeCode());
+						outData.setAppBreakTimeTotal(transferTimer.get().getHolidayTransTime().map(y -> y.v()));
+						outData.setAppOvertimeTimeTotal(transferTimer.get().getOverTransTime().map(y -> y.v()));
+					}
 				}
-				outData.setAppBreakTimeTotal(Optional.of(breakTimeTotal));
-				outData.setAppOvertimeTimeTotal(Optional.of(overtimeTimeTotal));
 				break;
 
 			case ANNUAL_HOLIDAY_APPLICATION:
@@ -319,11 +355,9 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				// 出張申請
 				this.businessTripRepo.findByAppId(cid, appData.getAppID()).ifPresent(x -> {
 					if (!x.getInfos().isEmpty()) {
-						WorkInformation wrkInfo = x.getInfos().get(0).getWorkInformation();
-						outData.setWorkTimeCode(wrkInfo.getWorkTimeCode() == null ? Optional.empty()
-								: Optional.of(wrkInfo.getWorkTimeCode().v()));
-						outData.setWorkTypeCode(wrkInfo.getWorkTypeCode() == null ? Optional.empty()
-								: Optional.of(wrkInfo.getWorkTypeCode().v()));
+						WorkInformation wrkInfo =  x.getInfos().get(0).getWorkInformation();
+						outData.setWorkTimeCode(Optional.ofNullable(getWTimeCode(wrkInfo.getWorkTimeCode())));
+						outData.setWorkTypeCode(Optional.ofNullable(getWTypeCode(wrkInfo.getWorkTypeCode())));
 					}
 				});
 				break;
@@ -332,7 +366,6 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			}
 			
 			//予定or実績への全ての申請反映結果を取得
-			RequireImpl impl = new RequireImpl(cid);
 //			Optional<IntegrationOfDaily> domainDailySche = ObtainAllAppReflecResultInScheduleRecord.getData(impl, cid,
 //					sid, outData.getAppDate(), outData.getAppId());
 //			if(domainDailySche.isPresent()) {
@@ -354,6 +387,12 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		return lstOutputData;
 	}
 
+	private String getWTypeCode(WorkTypeCode workTypeCode) {
+		return workTypeCode == null ? null : workTypeCode.v();
+	}
+	private String getWTimeCode(WorkTimeCode workTimeCode) {
+		return workTimeCode == null ? null : workTimeCode.v();
+	}
 	private Optional<TimeDigestionUsageInfor> fromTimeDegest(TimeDigestApplication time) {
 		return Optional.ofNullable(
 				new TimeDigestionUsageInfor(time.getTimeAnnualLeave() == null ? null : time.getTimeAnnualLeave().v(),
@@ -376,7 +415,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				.build();
 	}
 
-	public static interface Require extends ObtainAllAppReflecResultInScheduleRecord.Require, CorrectDailyAttendanceService.Require {
+	public static interface Require extends ObtainAllAppReflecResultInScheduleRecord.Require, CorrectDailyAttendanceService.Require, CalculationOfTransferTime.Require {
 	}
 
 	@AllArgsConstructor
@@ -511,6 +550,52 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		@Override
 		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
 			return predetemineTimeSettingRepository.findByWorkTimeCode(cid, wktmCd.v()).get();
+		}
+
+		@Override
+		public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+			return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
+		}
+		
+		@Override
+		public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId){
+			return Optional.ofNullable(compensLeaveComSetRepo.find(companyId));
+		}
+		
+		@Override
+		public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode){
+			return Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode));
+		}
+
+		@Override
+		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+			return workTimeSettingRepository.findByCode(cid, workTimeCode);
+		}
+
+		@Override
+		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+			return compensLeaveComSetRepo.find(companyId);
+		}
+
+		@Override
+		public Optional<ScBasicScheduleImport> findByIDRefactor(String employeeID, GeneralDate date) {
+			return Optional.ofNullable(scBasicScheduleAdapter.findByIDRefactor(employeeID, date));
+		}
+
+		@Override
+		public Optional<WorkInfoOfDailyAttendance> getWorkInfoOfDailyAttendance(String employeeId, GeneralDate ymd) {
+			return workScheWorkInforSharedAdapter.getWorkInfoOfDailyAttendance(employeeId, ymd);
+		}
+
+		@Override
+		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+			return getWorkType(workTypeCd);
+		}
+
+		@Override
+		public Optional<WorkingConditionItem> getWorkingConditionItemByEmpIDAndDate(String companyID, GeneralDate ymd,
+				String empID) {
+			return workingConditionItemRepo.getBySidAndStandardDate(empID, ymd);
 		}
 
 	}

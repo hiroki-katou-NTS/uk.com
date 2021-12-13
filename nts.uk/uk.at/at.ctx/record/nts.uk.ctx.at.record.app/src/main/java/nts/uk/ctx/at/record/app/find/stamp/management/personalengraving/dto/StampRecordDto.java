@@ -12,7 +12,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualRes
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampInfoDisp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
@@ -69,9 +68,10 @@ public class StampRecordDto {
 
 	private int buttonValueType;
 
-	public StampRecordDto(StampRecord stampRecord, Stamp stamp) {
-		this.stampNumber = stampRecord.getStampNumber().v();
-		GeneralDateTime stampDate = stampRecord.getStampDateTime();
+	public StampRecordDto(Stamp stamp) {
+//		this.stampNumber = stampRecord.getStampNumber().v();
+//		GeneralDateTime stampDate = stampRecord.getStampDateTime();
+		GeneralDateTime stampDate = stamp.getStampDateTime();
 		this.stampDate = stampDate.toString("yyyy/MM/dd");
 		this.stampTime = stampDate.toString("HH:mm");
 		this.stampTimeWithSec = stampDate.toString();

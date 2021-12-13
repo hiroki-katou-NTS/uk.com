@@ -70,10 +70,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM16;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM4;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM5;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM6;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.pererror.CreatePerErrorsFromLeaveErrors;
@@ -234,9 +230,8 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 	 * @param isCalcAttendanceRate
 	 *            出勤率計算フラグ
 	 */
-	public void annualAndReserveLeaveRemain(RequireM6 require, CacheCarrier cacheCarrier, DatePeriod period,
-			InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate,
-			List<DailyInterimRemainMngData> interimDatas) {
+	public void annualAndReserveLeaveRemain(GetDaysForCalcAttdRate.RequireM2 require, CacheCarrier cacheCarrier, 
+			DatePeriod period, InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate,List<DailyInterimRemainMngData> interimDatas) {
 
 		// 暫定残数データを年休・積立年休に絞り込む
 		List<TempAnnualLeaveMngs> tmpAnnualLeaveMngs = new ArrayList<>();
@@ -346,8 +341,8 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 			// ReserveLeaveUndigestedNumber undigestedNumber= new
 			// ReserveLeaveUndigestedNumber();
 
-			ReserveLeaveRemainingDayNumber undigested = asOfStartNextDayOfPeriodEnd.getRemainingNumber()
-					.getＲeserveLeaveUndigestedNumber().getUndigestedDays();
+			ReserveLeaveRemainingDayNumber undigested = asOfStartNextDayOfPeriodEnd.getRemainingNumber().getReserveLeaveUndigestedNumber()
+					.getUndigestedDays();
 			// Optional<LeaveUndigestTime> minutes =
 			// asOfStartNextDayOfPeriodEnd.getRemainingNumber().getAnnualLeaveUndigestNumber().get().getMinutes();
 
@@ -390,8 +385,8 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 	 * @param interimRemainMngMode
 	 *            暫定残数データ管理モード
 	 */
-	public void absenceLeaveRemain(RequireM5 require, CacheCarrier cacheCarrier, DatePeriod period,
-			InterimRemainMngMode interimRemainMngMode, List<DailyInterimRemainMngData> interimDatas) {
+	public void absenceLeaveRemain(NumberCompensatoryLeavePeriodQuery.Require require, CacheCarrier cacheCarrier, 
+			DatePeriod period, InterimRemainMngMode interimRemainMngMode,List<DailyInterimRemainMngData> interimDatas) {
 
 		// 暫定残数データを振休・振出に絞り込む
 		List<InterimRemain> interimMng = new ArrayList<>();
@@ -450,8 +445,8 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 	 * @param interimRemainMngMode
 	 *            暫定残数データ管理モード
 	 */
-	public void dayoffRemain(RequireM4 require, CacheCarrier cacheCarrier, DatePeriod period,
-			InterimRemainMngMode interimRemainMngMode, List<DailyInterimRemainMngData> interimDatas) {
+	public void dayoffRemain(NumberRemainVacationLeaveRangeQuery.Require require, CacheCarrier cacheCarrier, 
+			DatePeriod period, InterimRemainMngMode interimRemainMngMode, List<DailyInterimRemainMngData> interimDatas) {
 
 		// 暫定残数データを休出・代休に絞り込む
 		List<InterimRemain> interimMng = new ArrayList<>();
@@ -637,14 +632,13 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 
 		// 集計結果を前回集計結果に引き継ぐ
 	}
-
-	// 公休
-
-	public void publicHolidayRemain(RequireM16 require, CacheCarrier cacheCarrier, DatePeriod period,
+	
+	//公休
+	public void publicHolidayRemain(GetRemainingNumberPublicHolidayService.RequireM1 require, CacheCarrier cacheCarrier, DatePeriod period,
 			Optional<DatePeriod> periodForOverWrite, InterimRemainMngMode interimRemainMngMode,
 			List<DailyInterimRemainMngData> interimDatas) {
-
-		// 暫定残数データを公休に絞り込む
+		
+		//暫定残数データを公休に絞り込む
 		List<TempPublicHolidayManagement> overWriteList = new ArrayList<>();
 		for (val dailyInterimRemainMng : interimDatas) {
 			dailyInterimRemainMng.getPublicHolidayData().forEach(c -> overWriteList.add(c));

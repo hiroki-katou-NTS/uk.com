@@ -11,8 +11,10 @@ import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+
 import nts.uk.ctx.at.auth.dom.adapter.login.IGetInfoForLogin;
 import nts.uk.ctx.at.record.dom.adapter.employeemanage.EmployeeManageRCAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
@@ -41,8 +43,6 @@ import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.ConvertTimeRecordStampPub;
@@ -90,9 +90,6 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 
 	@Inject
 	private StampDakokuRepository stampDakokuRepository;
-
-	@Inject
-	private StampRecordRepository stampRecordRepository;
 
 	@Inject
 	private StampCardRepository stampCardRepository;
@@ -164,7 +161,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 			String contractCode, StampReceptionDataExport stampReceptData) {
 
 		RequireImpl require = new RequireImpl(empInfoTerminalRepository,
-				stampDakokuRepository, stampRecordRepository, stampCardRepository,
+				stampDakokuRepository, stampCardRepository,
 				employeeManageRCAdapter, createDailyResults, temporarilyReflectStampDailyAttd,
 				dailyRecordAdUpService, getMngInfoFromEmpIDListAdapter, companyAdapter, iGetInfoForLogin, loginUserContextManager,
 				calcService, closureRepo, closureEmploymentRepo, shareEmploymentAdapter, attendanceItemConvertFactory, iCorrectionAttendanceRule,
@@ -190,8 +187,6 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		private final EmpInfoTerminalRepository empInfoTerminalRepository;
 
 		private final StampDakokuRepository stampDakokuRepository;
-
-		private final StampRecordRepository stampRecordRepository;
 
 		private final StampCardRepository stampCardRepository;
 
@@ -239,18 +234,6 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode,
 				ContractCode contractCode) {
 			return empInfoTerminalRepository.getEmpInfoTerminal(empInfoTerCode, contractCode);
-		}
-
-		@Override
-		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
-				GeneralDateTime dateTime) {
-			return stampRecordRepository.get(contractCode.v(), stampNumber.v(), dateTime);
-		}
-
-		@Override
-		public void insert(StampRecord stampRecord) {
-			stampRecordRepository.insert(stampRecord);
-
 		}
 
 		@Override
@@ -320,12 +303,6 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		@Override
 		public Optional<Closure> closure(String companyId, int closureId) {
 			return closureRepo.findById(companyId, closureId);
-		}
-
-		@Override
-		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
-				ChangeClockAtr changeClockArt) {
-			return stampDakokuRepository.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
 		}
 		
 		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
@@ -430,6 +407,12 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		@Override
 		public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
 			return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
+		}
+		
+		@Override
+		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
+				ChangeClockAtr changeClockArt) {
+			return stampDakokuRepository.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
 		}
 	}
 }
