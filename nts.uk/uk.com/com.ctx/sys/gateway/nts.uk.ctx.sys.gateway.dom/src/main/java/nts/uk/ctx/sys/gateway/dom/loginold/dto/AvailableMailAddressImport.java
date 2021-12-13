@@ -1,29 +1,36 @@
 package nts.uk.ctx.sys.gateway.dom.loginold.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@AllArgsConstructor
 @Data
+@AllArgsConstructor
 public class AvailableMailAddressImport {
+
+	/**
+	 * 社員ID
+	 */
+	private String sid;
 	
 	/**
 	 * 会社メールアドレス
 	 */
-	private String companyMailAddress;
+	private Optional<String> optCompanyMailAddress;
 	
 	/**
 	 * 会社携帯メールアドレス
 	 */
-	private String companyMobileMailAddress;
+	private Optional<String> optCompanyMobileMailAddress;
 	
 	/**
 	 * 個人メールアドレス
 	 */
-	private String personalMailAddress;
+	private Optional<String> optPersonalMailAddress;
 	
 	/**
 	 * 個人携帯メールアドレス
 	 */
-	private String personalMobileMailAddress;
+	private Optional<String> optPersonalMobileMailAddress;
 }

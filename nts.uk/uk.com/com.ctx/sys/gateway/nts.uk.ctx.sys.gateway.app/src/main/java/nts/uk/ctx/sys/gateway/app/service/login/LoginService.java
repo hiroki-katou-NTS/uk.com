@@ -28,7 +28,10 @@ import nts.uk.ctx.sys.gateway.dom.login.password.EmployeeCodeSettingImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.adapter.MailDestinationAdapter;
 import nts.uk.ctx.sys.gateway.dom.loginold.adapter.SysEmployeeCodeSettingAdapter;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.AvailableMailAddressImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.AvailableMailAddressImportDto;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailAddressNotificationImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestiImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestiImportDto;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestinationFunctionManageImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestinationImport;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -157,14 +160,15 @@ public class LoginService {
 			// 社員のメールアドレス通知を取得する
 			MailDestiImport mailDestiImport = mailDestinationAdapter.getMailDestiOfEmployee(companyId,
 					Arrays.asList(employee.getEmployeeId()), LOGIN_FUNCTION_ID);
+			MailDestiImportDto mailDestiImportDto = convertMailImportToImportDto(mailDestiImport);
 			Optional<UserImportNew> user = this.userAdapter.findUserByAssociateId(employee.getPersonId());
-			AvailableMailAddressImport mailAddressImport = null;
+			AvailableMailAddressImportDto mailAddressImport = null;
 			
 			// send mail
 			List<SendMailReturnDto> sendMailReturnDtos = new ArrayList<>();
-			if (mailDestiImport.getMailAddress().isPresent()) {
+			if (mailDestiImportDto.getMailAddress().isPresent()) {
 				List<String> mailAddresses = new ArrayList<>();
-				mailAddressImport = mailDestiImport.getMailAddress().get();
+				mailAddressImport = mailDestiImportDto.getMailAddress().get();
 				// add mail address from mailAddressImport
 				mailAddresses.add(mailAddressImport.getCompanyMailAddress());
 				mailAddresses.add(mailAddressImport.getCompanyMobileMailAddress());
@@ -179,8 +183,8 @@ public class LoginService {
 			
 			// get MailDestinationFunctionManageImport from mailDestiImport
 			MailDestinationFunctionManageImport destinationFunctionManageImport = null;
-			if (mailDestiImport.getMailDestinationFunctionManage().isPresent()) {
-				destinationFunctionManageImport = mailDestiImport.getMailDestinationFunctionManage().get();
+			if (mailDestiImportDto.getMailDestinationFunctionManage().isPresent()) {
+				destinationFunctionManageImport = mailDestiImportDto.getMailDestinationFunctionManage().get();
 			}
 			
 			StringBuilder message = new StringBuilder("");
@@ -243,6 +247,45 @@ public class LoginService {
 	}
 	
 	/**
+	 * Convert mail export to import.
+	 *
+	 * @param destinationExport the destination export
+	 * @return the mail desti import dto
+	 */
+	private static MailDestiImportDto convertMailImportToImportDto(MailDestiImport destinationExport) {
+		MailAddressNotificationImport addressNotificationImport = destinationExport.getMailAddressNotification();
+		
+		// set MailDestinationFunctionManageImport
+		Optional<MailDestinationFunctionManageImport> mailDestinationFunctionManage;
+		if (addressNotificationImport.getMailDestinationFunctionManage().isPresent()) {
+			MailDestinationFunctionManageImport export = addressNotificationImport.getMailDestinationFunctionManage().get();
+			mailDestinationFunctionManage = Optional.of(new MailDestinationFunctionManageImport(export.getFunctionId(), export.getUseCompanyMailAddress(), 
+					export.getUseCompanyMobileMailAddress(), export.getUsePersonalMailAddress(), export.getUsePersonalMobileMailAddress()));
+		} else {
+			mailDestinationFunctionManage = Optional.empty();
+		}
+		
+		// set AvailableMailAddressImport
+		Optional<AvailableMailAddressImportDto> availableMailAddressImport;
+		if (!addressNotificationImport.getMailAddresses().isEmpty()) {
+			AvailableMailAddressImport addressExport = addressNotificationImport.getMailAddresses().get(0);
+			String companyMailAddress = addressExport.getOptCompanyMailAddress().map(t -> t).orElse(null);
+			String companyMobileMailAddress = addressExport.getOptCompanyMobileMailAddress().map(t -> t).orElse(null);
+			String personalMailAddress = addressExport.getOptPersonalMailAddress().map(t -> t).orElse(null);
+			String personalMobileMailAddress = addressExport.getOptPersonalMobileMailAddress().map(t -> t).orElse(null);
+			availableMailAddressImport = Optional.of(new AvailableMailAddressImportDto(
+					companyMailAddress,
+					companyMobileMailAddress,
+					personalMailAddress,
+					personalMobileMailAddress));
+		} else {
+			availableMailAddressImport = Optional.empty();
+		}
+		
+		return new MailDestiImportDto(availableMailAddressImport, mailDestinationFunctionManage);
+	}
+	
+	/**
 	 * Checks if is setting send mail.
 	 *
 	 * @param destinationFunctionManageImport the destination function manage import
@@ -269,7 +312,7 @@ public class LoginService {
 	 * @return the string
 	 */
 	private static String setMessageCCG007(MailDestinationFunctionManageImport destinationFunctionManageImport,
-			AvailableMailAddressImport mailAddressImport, boolean isSuccess) {
+			AvailableMailAddressImportDto mailAddressImport, boolean isSuccess) {
 		StringBuilder message = new StringBuilder("");
 		if (isConditionValid(isSuccess, mailAddressImport.getCompanyMailAddress(), destinationFunctionManageImport.getUseCompanyMailAddress())) {
 			message.append(I18NText.getText("CDL011_7"));
