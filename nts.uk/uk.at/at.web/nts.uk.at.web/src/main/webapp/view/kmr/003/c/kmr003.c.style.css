@@ -7,3 +7,8 @@
     vertical-align: middle !important;
     text-align: center !important;
 }
+
+.padding-3 {
+    padding: 0 3px !important;
+    display: table-cell !important;
+}

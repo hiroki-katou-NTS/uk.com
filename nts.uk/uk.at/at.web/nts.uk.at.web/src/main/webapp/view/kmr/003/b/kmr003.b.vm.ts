@@ -226,7 +226,7 @@ module nts.uk.at.kmr003.b {
                 if (!param.bentoReservation[empId].canChangeReservation) {
                     cellStates.push({ rowId: empId, columnKey: 'deleteFlg', state: ['mgrid-disable'] });
                     cellStates.push({ rowId: empId, columnKey: 'employeeCode', state: ['disable-cell'] });
-                    cellStates.push({ rowId: empId, columnKey: 'employeeName', state: ['disable-cell'] });
+                    cellStates.push({ rowId: empId, columnKey: 'employeeName', state: ['disable-cell', 'limited-label', 'padding-3'] });
                     cellStates.push({ rowId: empId, columnKey: 'time', state: ['disable-cell'] });
                     cellStates.push({ rowId: empId, columnKey: 'ordered', state: ['mgrid-disable'] });
                 }

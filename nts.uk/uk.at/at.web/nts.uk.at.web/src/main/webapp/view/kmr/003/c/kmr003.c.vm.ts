@@ -65,7 +65,7 @@ module nts.uk.at.kmr003.c {
                 vm.gridOptions.columns.push({ headerText: columnHeader , itemId: 'bento' + param.bento[i].frameNo, key: 'bento' + param.bento[i].frameNo, dataType: 'string', width: '70px', constraint: {primitiveValue: 'BentoReservationCount'} })
                 headerStyle.columns.push({ key: 'bento' + param.bento[i].frameNo, colors: ['align-center', 'header_backgroundcolor'] });
             }
-
+            
             // bind features
             let columnFixing = { name: 'ColumnFixing', columnSettings: [
                 { columnKey: 'employeeCode', isFixed: true }, 
@@ -74,16 +74,17 @@ module nts.uk.at.kmr003.c {
 
             // bind dataSource
             vm.listEmpInfo = param.listEmpInfo;
-
+            
             for (let i = 0; i < vm.listEmpInfo.length; i++) {
                 let emp = vm.listEmpInfo[i];
-
+                
                 let item = { 
                     employeeId: emp.employeeId, 
                     employeeCode: emp.employeeCode, 
                     employeeName: emp.businessName
                 }
-
+                cellStates.push({ rowId: emp.employeeId, columnKey: 'employeeName', state: ['limited-label', 'padding-3'] });
+                
                 vm.gridOptions.dataSource.push(item);
             }
 

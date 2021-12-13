@@ -24,3 +24,8 @@
 .remove-border-bottom {
     border-bottom: none !important;
 }
+
+.padding-3 {
+    padding: 0 3px !important;
+    display: table-cell !important;
+}
