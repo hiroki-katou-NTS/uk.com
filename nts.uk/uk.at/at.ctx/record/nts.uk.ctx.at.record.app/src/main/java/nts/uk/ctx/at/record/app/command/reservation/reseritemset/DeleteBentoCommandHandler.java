@@ -6,8 +6,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -22,7 +22,7 @@ public class DeleteBentoCommandHandler extends CommandHandler<DeleteBentoCommand
 
 
     @Inject
-    private BentoMenuRepository bentoMenuRepository;
+    private BentoMenuHistRepository bentoMenuRepository;
 
     @Override
     protected void handle(CommandHandlerContext<DeleteBentoCommand> commandHandlerContext) {
@@ -30,7 +30,7 @@ public class DeleteBentoCommandHandler extends CommandHandler<DeleteBentoCommand
         val cid = AppContexts.user().companyId();
         GeneralDate date = GeneralDate.max();
 
-        BentoMenu bentoMenu = command.getHistId() == null ?
+        BentoMenuHistory bentoMenu = command.getHistId() == null ?
                 bentoMenuRepository.getBentoMenuByEndDate(cid,date) :
                 bentoMenuRepository.getBentoMenuByHistId(cid,command.getHistId());
         if (bentoMenu != null){

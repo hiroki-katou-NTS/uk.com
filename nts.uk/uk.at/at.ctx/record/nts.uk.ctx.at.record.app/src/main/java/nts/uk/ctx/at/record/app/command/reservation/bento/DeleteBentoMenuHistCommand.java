@@ -4,5 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class DeleteBentoMenuHistCommand {
+	
+	public String startDate;
+	
     public String historyId;
 }

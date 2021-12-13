@@ -4,7 +4,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,6 +21,7 @@ import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -25,17 +29,20 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBento;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuHist;
+import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuHistPK;
+import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoPK;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMenuRepository {
+public class JpaBentoMenuHistRepositoryImpl extends JpaRepository implements BentoMenuHistRepository {
 
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	
@@ -112,11 +119,34 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		return listFullData;
 	}
 	
-	private List<BentoMenu> toDomain(List<FullJoinBentoMenu> listFullJoin) {
+	@SneakyThrows
+	private List<FullJoinBentoMenu> createFullJoinBentoMenuBasic(ResultSet rs){
+		List<FullJoinBentoMenu> listFullData = new ArrayList<>();
+		while (rs.next()) {
+			listFullData.add(new FullJoinBentoMenu(
+					rs.getString("CID"), 
+					rs.getString("HIST_ID"),
+					rs.getString("CONTRACT_CD"), 
+					GeneralDate.fromString(rs.getString("START_YMD"), "yyyy/MM/dd"),
+					GeneralDate.fromString(rs.getString("END_YMD"), "yyyy/MM/dd"),
+					rs.getInt("MENU_FRAME"),
+					rs.getString("BENTO_NAME"),
+					rs.getString("UNIT_NAME"),
+					rs.getInt("PRICE1"),
+					rs.getInt("PRICE2"),
+					rs.getString("WORK_LOCATION_CD"),
+					rs.getInt("FRAME_NO")));
+		}
+		return listFullData;
+	}
+	
+	private List<BentoMenuHistory> toDomain(List<FullJoinBentoMenu> listFullJoin) {
 		return listFullJoin.stream().collect(Collectors.groupingBy(FullJoinBentoMenu::getHistID))
 				.entrySet().stream().map(x -> {
 					FullJoinBentoMenu first = x.getValue().get(0);
 					String historyID = first.getHistID();
+					GeneralDate startDate = first.getStartDate();
+					GeneralDate endDate = first.getEndDate();
 					List<Bento> bentos = x.getValue().stream()
 							.collect(Collectors.groupingBy(FullJoinBentoMenu::getFrameNo))
 							.entrySet().stream().map(y -> {
@@ -131,20 +161,21 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 																	: Optional.of(new WorkLocationCode(workLocationCodeStr));
 								return new Bento(frameNo, name, amount1, amount2, unit, receptionTimezoneNo, workLocationCode);
 							}).collect(Collectors.toList());
-					return new BentoMenu(
+					return new BentoMenuHistory(
 							historyID, 
+							new DateHistoryItem(historyID, new DatePeriod(startDate, endDate)),
 							bentos);
 				}).collect(Collectors.toList());
 	}
 
 	@Override
 	@SneakyThrows
-	public BentoMenu getBentoMenu(String companyID, GeneralDate date) {
+	public BentoMenuHistory getBentoMenu(String companyID, GeneralDate date) {
 		String query = FIND_BENTO_MENU_DATE;
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceAll("date", date.toString());
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
-			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(new NtsResultSet(stmt.executeQuery())));
+			List<BentoMenuHistory> bentoMenuLst = toDomain(createFullJoinBentoMenu(new NtsResultSet(stmt.executeQuery())));
 			if (CollectionUtil.isEmpty(bentoMenuLst)){
 				return  null;
 			}
@@ -156,7 +187,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 
 	@Override
 	@SneakyThrows
-	public BentoMenu getBentoMenu(String companyID, GeneralDate date, Optional<WorkLocationCode> workLocationCode) {
+	public BentoMenuHistory getBentoMenu(String companyID, GeneralDate date, Optional<WorkLocationCode> workLocationCode) {
 		String query = FIND_BENTO_MENU_DATE;
 
 		if (workLocationCode.isPresent()){
@@ -177,7 +208,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceAll("date", date.toString());
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
-			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(new NtsResultSet(stmt.executeQuery())));
+			List<BentoMenuHistory> bentoMenuLst = toDomain(createFullJoinBentoMenu(new NtsResultSet(stmt.executeQuery())));
 			if (CollectionUtil.isEmpty(bentoMenuLst)) return null;
 			return bentoMenuLst.get(0).getMenu().stream()
 					.filter(x -> x.getFrameNo()==frameNo).findAny().orElse(null);
@@ -193,7 +224,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceAll("date", date.toString());
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
-			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(new NtsResultSet(stmt.executeQuery())));
+			List<BentoMenuHistory> bentoMenuLst = toDomain(createFullJoinBentoMenu(new NtsResultSet(stmt.executeQuery())));
 			if (bentoMenuLst.isEmpty()) {
 				return new ArrayList<>();
 			}
@@ -202,7 +233,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	}
 
 	@Override
-	public List<BentoMenu> getBentoMenuPeriod(String companyID, DatePeriod period) {
+	public List<BentoMenuHistory> getBentoMenuPeriod(String companyID, DatePeriod period) {
 		String query = FIND_BENTO_MENU_PERIOD;
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceAll("startDate", period.end().toString());
@@ -211,7 +242,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	}
 
 	@Override
-	public List<BentoMenu> getBentoMenu(String companyID, GeneralDate date, ReservationClosingTimeFrame reservationClosingTimeFrame) {
+	public List<BentoMenuHistory> getBentoMenu(String companyID, GeneralDate date, ReservationClosingTimeFrame reservationClosingTimeFrame) {
 		String query = FIND_BENTO_MENU_DATE;
 
 		if (reservationClosingTimeFrame == ReservationClosingTimeFrame.FRAME1) {
@@ -226,7 +257,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	}
 
 	@Override
-	public BentoMenu getBentoMenuByHistId(String companyID, String histId) {
+	public BentoMenuHistory getBentoMenuByHistId(String companyID, String histId) {
 		String query = FIND_BENTO_MENU_BY_HISTID;
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceFirst("histId", histId);
@@ -234,17 +265,17 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	}
 
 	@Override
-	public BentoMenu getBentoMenuByEndDate(String companyID, GeneralDate date) {
+	public BentoMenuHistory getBentoMenuByEndDate(String companyID, GeneralDate date) {
 		String query = FIND_BENTO_MENU_BY_ENDATE;
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceFirst("date", date.toString());
 		return getBentoMenu(query);
 	}
 
-	private BentoMenu getBentoMenu(String query) {
+	private BentoMenuHistory getBentoMenu(String query) {
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
-			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(new NtsResultSet(stmt.executeQuery())));
+			List<BentoMenuHistory> bentoMenuLst = toDomain(createFullJoinBentoMenu(new NtsResultSet(stmt.executeQuery())));
 			if(bentoMenuLst.isEmpty()){
 				return null;
 			}
@@ -254,10 +285,10 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		}
 	}
 
-	private List<BentoMenu> getBentoMenus(String query) {
+	private List<BentoMenuHistory> getBentoMenus(String query) {
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
-			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(new NtsResultSet(stmt.executeQuery())));
+			List<BentoMenuHistory> bentoMenuLst = toDomain(createFullJoinBentoMenu(new NtsResultSet(stmt.executeQuery())));
 			return bentoMenuLst;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -265,30 +296,76 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	}
 
 	@Override
-	public void addBentoMenu(BentoMenu bentoMenu) {
-		List<KrcmtBento> bentos = new ArrayList<>();
-		for(Bento bento : bentoMenu.getMenu()) {
-			bentos.add(KrcmtBento.fromDomain(bento, bentoMenu.getHistoryID()));
-		}
-		commandProxy().insertAll(bentos);
-	}
-
-	@Override
-	public void update(BentoMenu bentoMenu) {
-		String companyID = AppContexts.user().companyId();
-		new NtsStatement("delete from KRCMT_BENTO where CID = @companyID and HIST_ID = @histID", this.jdbcProxy())
-        .paramString("companyID", companyID)
-        .paramString("histID", bentoMenu.getHistoryID())
-        .execute();
-		commandProxy().updateAll(bentoMenu.getMenu().stream().map(x -> KrcmtBento.fromDomain(x, bentoMenu.getHistoryID())).collect(Collectors.toList()));
-	}
-
-	@Override
 	public void delete(String companyId, String historyId) {
-		new NtsStatement("delete from KRCMT_BENTO where CID = @companyID and HIST_ID = @histID", this.jdbcProxy())
-        .paramString("companyID", companyId)
-        .paramString("histID", historyId)
-        .execute();
+		commandProxy().remove(KrcmtBentoMenuHist.class, new KrcmtBentoMenuHistPK(companyId, historyId));
+	}
+	
+	@Override
+	public Optional<BentoMenuHistory> findByCompanyDate(String companyID, GeneralDate date) {
+		String query =
+				"SELECT a.CID, a.HIST_ID, a.START_YMD, a.END_YMD, c.MENU_FRAME, c.WORK_LOCATION_CD, c.BENTO_NAME, c.UNIT_NAME, c.PRICE1, c.PRICE2, c.FRAME_NO " + 
+				"FROM KRCMT_BENTO_MENU_HIST a LEFT JOIN KRCMT_BENTO c ON a.HIST_ID = c.HIST_ID AND a.CID = c.CID " + 
+				"WHERE a.CID = @companyID AND a.START_YMD <= @date AND a.END_YMD >= @date";
+		List<Map<String, Object>> mapLst = new NtsStatement(query, this.jdbcProxy())
+				.paramString("companyID", companyID)
+				.paramDate("date", date)
+				.getList(rec -> toObject(rec));
+		List<KrcmtBentoMenuHist> krcmtBentoMenuHistLst = convertToEntity(mapLst);
+		if(CollectionUtil.isEmpty(krcmtBentoMenuHistLst)) {
+			return Optional.empty();
+		} else {
+			return krcmtBentoMenuHistLst.stream().findFirst().map(x -> x.toDomain());
+		}
+	}
+	
+	private Map<String, Object> toObject(NtsResultRecord rec) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		// KRCMT_BENTO_MENU_HIST
+		map.put("CID", rec.getString("CID"));
+		map.put("HIST_ID", rec.getString("HIST_ID"));
+		map.put("START_YMD", rec.getGeneralDate("START_YMD"));
+		map.put("END_YMD", rec.getGeneralDate("END_YMD"));
+		// KRCMT_BENTO
+		map.put("MENU_FRAME", rec.getInt("MENU_FRAME"));
+		map.put("WORK_LOCATION_CD", rec.getString("WORK_LOCATION_CD"));
+		map.put("BENTO_NAME", rec.getString("BENTO_NAME"));
+		map.put("UNIT_NAME", rec.getString("UNIT_NAME"));
+		map.put("PRICE1", rec.getInt("PRICE1"));
+		map.put("PRICE2", rec.getInt("PRICE2"));
+		map.put("FRAME_NO", rec.getInt("FRAME_NO"));
+		return map;
+	}
+	
+	private List<KrcmtBentoMenuHist> convertToEntity(List<Map<String, Object>> mapLst) {
+		List<KrcmtBentoMenuHist> result = mapLst.stream().collect(Collectors.groupingBy(x -> x.get("HIST_ID"))).entrySet()
+			.stream().map(x -> {
+				List<KrcmtBento> krcmtBentoLst = Collections.emptyList();
+				if(x.getValue().get(0).get("MENU_FRAME")!=null) {
+					krcmtBentoLst = x.getValue().stream().collect(Collectors.groupingBy(y -> y.get("MENU_FRAME"))).entrySet()
+							.stream().map(y -> {
+								return new KrcmtBento(
+										new KrcmtBentoPK(
+												(String) y.getValue().get(0).get("CID"), 
+												(String) y.getValue().get(0).get("HIST_ID"), 
+												(int) y.getValue().get(0).get("MENU_FRAME")), 
+										(String) y.getValue().get(0).get("BENTO_NAME"), 
+										(String) y.getValue().get(0).get("UNIT_NAME"), 
+										(int) y.getValue().get(0).get("PRICE1"), 
+										(int) y.getValue().get(0).get("PRICE2"), 
+										(String) y.getValue().get(0).get("WORK_LOCATION_CD"), 
+										(int) y.getValue().get(0).get("FRAME_NO"), 
+										null);
+							}).collect(Collectors.toList());
+				}
+				return new KrcmtBentoMenuHist(
+						new KrcmtBentoMenuHistPK(
+								(String) x.getValue().get(0).get("CID"), 
+								(String) x.getValue().get(0).get("HIST_ID")), 
+						(GeneralDate) x.getValue().get(0).get("START_YMD"), 
+						(GeneralDate) x.getValue().get(0).get("END_YMD"), 
+						krcmtBentoLst);
+			}).collect(Collectors.toList());
+		return result;
 	}
 
 	@Override
@@ -311,4 +388,28 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
         			Optional.empty());
         });
 	}
+	
+	@Override
+	public void update(BentoMenuHistory bentoMenu) {
+		commandProxy().update(KrcmtBentoMenuHist.fromDomain(bentoMenu));
+	}
+	
+	@Override
+	public void add(BentoMenuHistory bentoMenu) {
+		commandProxy().insert(KrcmtBentoMenuHist.fromDomain(bentoMenu));
+	}
+
+	@Override
+	public List<BentoMenuHistory> findByCompany(String companyID) {
+		String query =
+				"SELECT a.CID, a.HIST_ID, a.START_YMD, a.END_YMD, c.MENU_FRAME, c.WORK_LOCATION_CD, c.BENTO_NAME, c.UNIT_NAME, c.PRICE1, c.PRICE2, c.FRAME_NO " + 
+				"FROM KRCMT_BENTO_MENU_HIST a LEFT JOIN KRCMT_BENTO c ON a.HIST_ID = c.HIST_ID AND a.CID = c.CID " + 
+				"WHERE a.CID = @companyID";
+		List<Map<String, Object>> mapLst = new NtsStatement(query, this.jdbcProxy())
+				.paramString("companyID", companyID)
+				.getList(rec -> toObject(rec));
+		List<KrcmtBentoMenuHist> krcmtBentoMenuHistLst = convertToEntity(mapLst);
+		return krcmtBentoMenuHistLst.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+	}
+	
 }

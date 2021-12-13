@@ -13,8 +13,8 @@ import nts.uk.ctx.at.record.app.find.reservation.bento.query.ListBentoResevation
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationStateService;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.SWkpHistExport;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
@@ -59,7 +59,7 @@ public class ReservationModifyQuery {
     private PersonEmpBasicInfoPub personEmpBasicInfoPub;
 
     @Inject
-    private BentoMenuRepository bentoMenuRepo;
+    private BentoMenuHistRepository bentoMenuRepo;
 
     @Inject
     private ListBentoResevationQuery listBentoResevationQuery;
@@ -120,10 +120,10 @@ public class ReservationModifyQuery {
 
         // 4: 取得する
         // 弁当メニュー
-        List<BentoMenu> bentoMenus = bentoMenuRepo.getBentoMenu(cid, reservationDate.getDate(),
+        List<BentoMenuHistory> bentoMenus = bentoMenuRepo.getBentoMenu(cid, reservationDate.getDate(),
                 reservationDate.getClosingTimeFrame());
         if (!CollectionUtil.isEmpty(bentoMenus)) {
-            BentoMenu bentoMenu = bentoMenus.get(0);
+            BentoMenuHistory bentoMenu = bentoMenus.get(0);
             BentoMenuByClosingTime menu = null;
             if (bentoReservationSetting.getOperationDistinction() == OperationDistinction.BY_COMPANY) {
                 // 4.2: 会社ごと締め時刻別のメニュー

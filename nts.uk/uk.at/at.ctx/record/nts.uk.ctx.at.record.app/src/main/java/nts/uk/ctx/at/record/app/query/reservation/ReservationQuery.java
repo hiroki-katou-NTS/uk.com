@@ -20,7 +20,7 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
@@ -37,7 +37,7 @@ public class ReservationQuery {
 	private BentoReservationRepository bentoReservationRepo;
 
 	@Inject
-	private BentoMenuRepository bentoMenuRepo;
+	private BentoMenuHistRepository bentoMenuRepo;
 
 	@Inject
 	private ReservationSettingRepository reservationSettingRepository;

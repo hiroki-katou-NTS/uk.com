@@ -9,8 +9,11 @@ import java.util.Map;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.reservation.Helper;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 public class BentoAmountTotalTest {
 
@@ -30,8 +33,9 @@ public class BentoAmountTotalTest {
 	@Test
 	public void calculateTotalAmount() {
 
-	 	BentoMenu bentoMenu = new BentoMenu(
+	 	BentoMenuHistory bentoMenu = new BentoMenuHistory(
 	 			"historyID",
+	 			new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
 	 			Arrays.asList(
 	 					Helper.Menu.Item.bentoAmount(1, 20, 10),  // frameNo, amount1, amount2
 	 					Helper.Menu.Item.bentoAmount(2, 100, 30)));
@@ -49,8 +53,9 @@ public class BentoAmountTotalTest {
 	public void calculateTotalAmount_invalidFrame() {
 
 		// only frame 1
-	 	BentoMenu bentoMenu = new BentoMenu(
+	 	BentoMenuHistory bentoMenu = new BentoMenuHistory(
 	 			"historyID",
+	 			new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
 	 			Arrays.asList(Helper.Menu.Item.bentoAmount(1, 20, 10)));
 	 	
 		Map<Integer, Integer> bentoDetails = new HashMap<>();

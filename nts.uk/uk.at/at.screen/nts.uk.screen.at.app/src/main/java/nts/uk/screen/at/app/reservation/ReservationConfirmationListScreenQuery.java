@@ -13,8 +13,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationOrderMngAtr;
@@ -34,7 +34,7 @@ public class ReservationConfirmationListScreenQuery {
     private ReservationSettingRepository bentoReservationSettingRepository;
 
     @Inject
-    private BentoMenuRepository bentoMenuRepo;
+    private BentoMenuHistRepository bentoMenuRepo;
 
     /**
      * 社員参照範囲を取得する
@@ -56,7 +56,7 @@ public class ReservationConfirmationListScreenQuery {
         }
 
         // 取得する(会社ID、年月日) 会社ID＝ログイン会社ID,年月日＝9999/12/31
-        List<BentoMenu> bentoMenuLst = bentoMenuRepo.getBentoMenuPeriod(companyId, new DatePeriod(startDate, endDate));
+        List<BentoMenuHistory> bentoMenuLst = bentoMenuRepo.getBentoMenuPeriod(companyId, new DatePeriod(startDate, endDate));
 
         List<Bento> menu = bentoMenuLst.stream().flatMap(x -> x.getMenu().stream()).collect(Collectors.toList());
         List<List<Bento>> partitions = new ArrayList<>(

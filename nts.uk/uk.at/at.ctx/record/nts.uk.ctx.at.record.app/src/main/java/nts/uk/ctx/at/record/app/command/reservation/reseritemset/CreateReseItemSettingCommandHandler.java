@@ -21,7 +21,7 @@ import java.util.Optional;
 public class CreateReseItemSettingCommandHandler extends CommandHandler<CreateReseItemSettingCommand> {
 
     @Inject
-    private BentoMenuRepository bentoMenuRepository;
+    private BentoMenuHistRepository bentoMenuRepository;
 
     @Override
     protected void handle(CommandHandlerContext<CreateReseItemSettingCommand> commandHandlerContext) {
@@ -40,7 +40,7 @@ public class CreateReseItemSettingCommandHandler extends CommandHandler<CreateRe
         String cid = AppContexts.user().companyId();
         GeneralDate date = GeneralDate.max();
 
-        BentoMenu bentoMenu = command.getHistId() == null ?
+        BentoMenuHistory bentoMenu = command.getHistId() == null ?
                 bentoMenuRepository.getBentoMenuByEndDate(cid,date) :
                 bentoMenuRepository.getBentoMenuByHistId(cid,command.getHistId());
         bentoMenu.getMenu().add(bento);

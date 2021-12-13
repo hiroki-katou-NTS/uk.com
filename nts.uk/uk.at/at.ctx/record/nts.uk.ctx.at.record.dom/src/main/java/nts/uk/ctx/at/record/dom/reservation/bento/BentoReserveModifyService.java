@@ -7,7 +7,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
 
 /**
@@ -39,7 +39,7 @@ public class BentoReserveModifyService {
 		}
 		
 		// 1: get(予約対象日)
-		BentoMenu bentoMenu = require.getBentoMenu(reservationDate,workLocationCode);
+		BentoMenuHistory bentoMenu = require.getBentoMenu(reservationDate,workLocationCode);
 		
 		// 3: get(予約登録情報, 予約対象日)
 		Optional<BentoReservation> opBeforeBento = require.getBefore(registerInfor, reservationDate);
@@ -64,7 +64,7 @@ public class BentoReserveModifyService {
 	
 	public static interface Require {
 
-		BentoMenu getBentoMenu(ReservationDate reservationDate,Optional<WorkLocationCode> workLocationCode);
+		BentoMenuHistory getBentoMenu(ReservationDate reservationDate,Optional<WorkLocationCode> workLocationCode);
 		
 		Optional<BentoReservation> getBefore(ReservationRegisterInfo registerInfor, ReservationDate reservationDate);
 		

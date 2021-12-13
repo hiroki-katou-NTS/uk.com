@@ -126,7 +126,7 @@ module nts.uk.at.kmr001.d {
             vm.$dialog.confirm({ messageId: 'Msg_18' }).then(res => {
                 if (res == "yes") {
                     vm.$blockui("invisible");
-                    let data = new CommandDelete(vm.selectedHistoryId());
+                    let data = new CommandDelete(vm.selectedStartDateText(), vm.selectedHistoryId());
                     if (vm.lstWpkHistory().length > 1) {
                         vm.$ajax(API.DELETE, data).done(() => {
                             vm.created(vm.params).done(() => {
@@ -175,7 +175,7 @@ module nts.uk.at.kmr001.d {
                     endDate = moment.utc(vm.selectedEndDate(), "YYYY/MM/DD");
                 switch (vm.screenMode()) {
                     case SCREEN_MODE.NEW:
-                        data = new BentoMenuHistCommand(startDate);
+                        data = new BentoMenuHistCommand(startDate.format('YYYY/MM/DD'), endDate.format('YYYY/MM/DD'));
                         vm.$ajax(API.ADDNEW, data).done((historyId) => {
                             vm.created(vm.params).done(() => {
                                 vm.selectedHistoryId(historyId);
@@ -190,7 +190,7 @@ module nts.uk.at.kmr001.d {
                         });
                         break;
                     case SCREEN_MODE.ADD:
-                        data = new BentoMenuHistCommand(startDate);
+                        data = new BentoMenuHistCommand(startDate.format('YYYY/MM/DD'), endDate.format('YYYY/MM/DD'));
                         vm.$ajax(API.ADDNEW, data).done((historyId) => {
                             vm.created(vm.params).done(() => {
                                 vm.selectedHistoryId(historyId);
@@ -205,7 +205,10 @@ module nts.uk.at.kmr001.d {
                         });
                         break;
                     case SCREEN_MODE.UPDATE:
-                        data = new CommandUpdate(startDate.toISOString(), endDate.toISOString(), vm.selectedHistoryId());
+                        data = new CommandUpdate(
+							moment(startDate).format('YYYY/MM/DD'), 
+							moment(endDate).format('YYYY/MM/DD'), 
+							_.find(vm.lstWpkHistory(), o => o.historyId==vm.selectedHistoryId()).startDate);
                         vm.$ajax(API.UPDATE, data).done(() => {
                             vm.created(vm.params).done(() => {
                                 vm.selectedHistoryId.valueHasMutated();
@@ -328,22 +331,24 @@ module nts.uk.at.kmr001.d {
     }
 
     class CommandDelete {
-        historyId: string;
+		startDate: string;
+		historyId: string;
 
-        constructor(historyId: string) {
+        constructor(startDate: string, historyId: string) {
+			this.startDate = startDate;
             this.historyId = historyId;
         }
     }
 
     class CommandUpdate {
-        startDatePerio: string;
-        endDatePerio: string;
-        historyId: string;
+		startDatePerio: string;
+		endDatePerio: string;
+		originalStartDate: string;
 
-        constructor(startDatePerio: string, endDatePerio: string, historyId: string) {
+        constructor(startDatePerio: string, endDatePerio: string, originalStartDate: string) {
             this.startDatePerio = startDatePerio;
             this.endDatePerio = endDatePerio;
-            this.historyId = historyId;
+            this.originalStartDate = originalStartDate;
         }
     }
 
@@ -384,10 +389,12 @@ module nts.uk.at.kmr001.d {
     }
 
     class BentoMenuHistCommand {
-        date: string;
+        startDate: string;
+		endDate: string;
 
-        constructor(date) {
-            this.date = date;
+        constructor(startDate: string, endDate: string) {
+            this.startDate = startDate;
+			this.endDate = endDate;
         }
     }
 
