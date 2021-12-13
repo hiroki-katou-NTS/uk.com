@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.env.pub.mailnoticeset.maildestination;
+package nts.uk.ctx.sys.env.pub.maildestination;
 
 import java.util.List;
 import java.util.Optional;

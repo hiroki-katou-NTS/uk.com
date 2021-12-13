@@ -4,26 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.ac.find.maildestination;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.sys.env.pub.maildestination.AvailableMailAddressExport;
 import nts.uk.ctx.sys.env.pub.maildestination.IMailDestinationPub;
-import nts.uk.ctx.sys.env.pub.maildestination.MailDestination;
-import nts.uk.ctx.sys.env.pub.mailnoticeset.maildestination.AvailableMailAddressExport;
-import nts.uk.ctx.sys.env.pub.mailnoticeset.maildestination.MailAddressNotificationExport;
-import nts.uk.ctx.sys.env.pub.mailnoticeset.maildestination.MailDestinationExport;
-import nts.uk.ctx.sys.env.pub.mailnoticeset.maildestination.MailDestinationFunctionManageExport;
-import nts.uk.ctx.sys.env.pub.mailnoticeset.maildestination.MailDestinationFunctionManagePub;
+import nts.uk.ctx.sys.env.pub.maildestination.MailAddressNotificationExport;
+import nts.uk.ctx.sys.env.pub.maildestination.MailDestinationExport;
+import nts.uk.ctx.sys.env.pub.maildestination.MailDestinationFunctionManageExport;
 import nts.uk.ctx.sys.gateway.dom.loginold.adapter.MailDestinationAdapter;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.AvailableMailAddressImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestiImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestinationFunctionManageImport;
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestinationImport;
 
 /**
  * The Class MailDestinationAdapterImpl.
@@ -35,31 +30,6 @@ public class MailDestinationAdapterImpl implements MailDestinationAdapter {
 	@Inject
 	private IMailDestinationPub iMailDestinationPub;
 	
-	@Inject
-	private MailDestinationFunctionManagePub mailDestinationFunctionManagePub;
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.gateway.dom.login.adapter.MailDestinationAdapter#getMailofEmployee(java.lang.String, java.util.List, java.lang.Integer)
-	 */
-	@Override
-	public MailDestinationImport getMailofEmployee(String cid, List<String> lstSid, Integer functionId) {
-		MailDestinationImport mailDestinationImport = new MailDestinationImport();
-		List<MailDestination> lstMail = iMailDestinationPub.getEmpEmailAddress(cid, lstSid, functionId);
-		lstMail.stream().forEach(i -> {
-			List<String> mailAdds = new ArrayList<>();
-			i.getOutGoingMails().stream().forEach(e -> {
-				if (e.getEmailAddress() != null) {
-					mailAdds.add(e.getEmailAddress());
-				}
-			});
-			mailDestinationImport.addMail(mailAdds);
-		});
-		List<String> distintMailLst = mailDestinationImport.getOutGoingMails().stream().distinct()
-				.collect(Collectors.toList());
-		mailDestinationImport.setOutGoingMails(distintMailLst);
-		return mailDestinationImport;
-	}
-	
 	/**
 	 * Gets the mail desti of employee.
 	 *
@@ -70,7 +40,7 @@ public class MailDestinationAdapterImpl implements MailDestinationAdapter {
 	 */
 	@Override
 	public MailDestiImport getMailDestiOfEmployee(String cid, List<String> lstSid, Integer functionId) {
-		MailDestinationExport mailDestinationExport = this.mailDestinationFunctionManagePub.getEmployeeMails(cid, lstSid, functionId);
+		MailDestinationExport mailDestinationExport = this.iMailDestinationPub.getEmployeeMails(cid, lstSid, functionId);
 		MailDestiImport mailDestiImport = convertMailExportToImport(mailDestinationExport);
 		return mailDestiImport;
 	}
