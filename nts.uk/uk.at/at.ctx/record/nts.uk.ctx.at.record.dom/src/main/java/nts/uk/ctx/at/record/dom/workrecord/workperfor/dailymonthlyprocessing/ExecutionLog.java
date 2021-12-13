@@ -6,6 +6,7 @@ package nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -54,7 +55,8 @@ public class ExecutionLog extends AggregateRoot {
     /**
      * 実行種別
      */
-    public ExecutionType executionType;
+    @Setter
+    private ExecutionType executionType;
 	
 	public ExecutionLog(String empCalAndSumExecLogID, ExecutionContent executionContent, ErrorPresent existenceError,
 			ExecutionTime executionTime, ExecutionStatus processStatus, ObjectPeriod objectPeriod, Optional<Boolean> isCalWhenLock,
@@ -89,7 +91,7 @@ public class ExecutionLog extends AggregateRoot {
 				EnumAdaptor.valueOf(processStatus,ExecutionStatus.class),
 				new ObjectPeriod(startObjectPeriod,endObjectPeriod),
 				isCalWhenLock,
-				EnumAdaptor.valueOf(executionType, ExecutionType.class));
+				executionType != null ? EnumAdaptor.valueOf(executionType, ExecutionType.class) : null);
 	}
 	
 	public boolean isComplete() {
