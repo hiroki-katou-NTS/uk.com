@@ -4,5 +4,5 @@ import lombok.Getter;
 
 public class BentoRequest {
     @Getter
-    public String histId;
+    public String date;
 }

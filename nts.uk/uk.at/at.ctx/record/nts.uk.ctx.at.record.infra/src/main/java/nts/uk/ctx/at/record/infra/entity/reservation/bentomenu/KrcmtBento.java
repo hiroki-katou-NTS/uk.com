@@ -5,7 +5,12 @@ import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
+
+import org.apache.logging.log4j.util.Strings;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -45,6 +50,13 @@ public class KrcmtBento extends ContractUkJpaEntity {
     
     @Column(name = "FRAME_NO")
     public int receptionTimezoneNo;
+    
+    @ManyToOne
+    @PrimaryKeyJoinColumns({
+    	@PrimaryKeyJoinColumn(name="CID", referencedColumnName="CID"),
+    	@PrimaryKeyJoinColumn(name="HIST_ID", referencedColumnName="HIST_ID")
+    })
+	public KrcmtBentoMenuHist krcmtBentoMenuHist;
 
     @Override
     protected Object getKey() {
@@ -59,7 +71,7 @@ public class KrcmtBento extends ContractUkJpaEntity {
                 new BentoAmount(price2),
                 new BentoReservationUnitName(unitName),
                 EnumAdaptor.valueOf(receptionTimezoneNo, ReservationClosingTimeFrame.class),
-                Optional.of(new WorkLocationCode(workLocationCode)));
+                Strings.isBlank(workLocationCode) ? Optional.empty() : Optional.of(new WorkLocationCode(workLocationCode)));
     }
 
     public static KrcmtBento fromDomain(Bento bento, String hisId) {
@@ -74,7 +86,8 @@ public class KrcmtBento extends ContractUkJpaEntity {
                 bento.getAmount1().v(),
                 bento.getAmount2().v(),
                 bento.getWorkLocationCode().isPresent() ? bento.getWorkLocationCode().get().v() : null,
-        		bento.getReceptionTimezoneNo().value
+        		bento.getReceptionTimezoneNo().value,
+        		null
         );
     }
 

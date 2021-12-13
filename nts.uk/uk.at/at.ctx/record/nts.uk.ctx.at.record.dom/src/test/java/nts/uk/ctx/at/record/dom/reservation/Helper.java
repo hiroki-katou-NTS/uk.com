@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.clock.ClockHourMinute;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
@@ -21,7 +22,7 @@ import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
@@ -37,6 +38,7 @@ import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationOrderM
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTime;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 public class Helper {
 	
@@ -140,8 +142,9 @@ public class Helper {
 	}
 
 	public static class Menu {
-		public static final BentoMenu DUMMY = new BentoMenu(
+		public static final BentoMenuHistory DUMMY = new BentoMenuHistory(
 				"historyId",
+				new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
 				Arrays.asList(Item.DUMMY));
 		
 		public static class Item {

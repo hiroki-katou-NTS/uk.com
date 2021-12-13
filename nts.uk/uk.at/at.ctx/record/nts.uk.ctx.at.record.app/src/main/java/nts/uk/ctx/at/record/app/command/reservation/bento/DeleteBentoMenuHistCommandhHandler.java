@@ -1,18 +1,20 @@
 package nts.uk.ctx.at.record.app.command.reservation.bento;
 
-import lombok.val;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
-import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.DateHistoryItem;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.Optional;
+
+import lombok.val;
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 予約構成を削除する
@@ -21,34 +23,26 @@ import java.util.Optional;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class DeleteBentoMenuHistCommandhHandler extends CommandHandler<DeleteBentoMenuHistCommand> {
     @Inject
-    private IBentoMenuHistoryRepository bentoMenuHistoryRepository;
+    private BentoMenuHistRepository bentoMenuHistRepository;
 
     @Override
     protected void handle(CommandHandlerContext<DeleteBentoMenuHistCommand> commandHandlerContext) {
-        // Get command
+    	// Get command
         val command = commandHandlerContext.getCommand();
         // Get companyid
         val cid = AppContexts.user().companyId();
-        //Get list old bentomenuhist by companyId
-        val listOld = bentoMenuHistoryRepository.findByCompanyId(cid);
-
-        if (!listOld.isPresent()){
-            throw new BusinessException("invalid BentoMenuHistory!");
+    	GeneralDate date = GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd");
+        // 2: 弁当メニュー履歴を取得
+        Optional<BentoMenuHistory> opBentoMenuHistory = bentoMenuHistRepository.findByCompanyDate(cid, date.decrease());
+        if(opBentoMenuHistory.isPresent()) {
+        	// 2.1: 取得した弁当メニュー履歴を更新する
+        	BentoMenuHistory oldBentoMenuHistory = opBentoMenuHistory.get();
+        	DatePeriod period = new DatePeriod(oldBentoMenuHistory.getHistoryItem().start(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
+        	oldBentoMenuHistory.getHistoryItem().changeSpan(period);
+        	bentoMenuHistRepository.update(oldBentoMenuHistory);
         }
-        // Get item delete
-        Optional<DateHistoryItem> optionalHisItem = listOld.get().getHistoryItems().stream()
-                .filter(x -> x.identifier().equals(command.historyId)).findFirst();
-        if (!optionalHisItem.isPresent()) {
-
-            throw new BusinessException("invalid BentoMenuHistory!");
-        }
-        // Remove history in list
-        listOld.get().remove(optionalHisItem.get());
-
-        // Delete history
-        bentoMenuHistoryRepository.delete(cid,command.getHistoryId());
-
-        // Update before history
-        bentoMenuHistoryRepository.update(listOld.get());
+        
+        // 3: 弁当メニュー履歴を削除
+        bentoMenuHistRepository.delete(cid, command.historyId);
     }
 }

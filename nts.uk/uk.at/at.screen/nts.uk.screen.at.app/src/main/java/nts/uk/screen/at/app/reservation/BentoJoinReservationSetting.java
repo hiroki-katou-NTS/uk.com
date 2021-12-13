@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
@@ -46,21 +45,19 @@ public class BentoJoinReservationSetting {
 
     public List<BentoDto> bentoDtos;
 
-    public static BentoJoinReservationSetting setData(List<ReservationRecTimeZone> reservationRecTimeZoneLst, GeneralDate startDate, GeneralDate endDate, BentoMenu bentoMenu){
+    public static BentoJoinReservationSetting setData(List<ReservationRecTimeZone> reservationRecTimeZoneLst, GeneralDate startDate, GeneralDate endDate, List<Bento> menu){
     	List<BentoDto> bentoDtos = new ArrayList<>();
-    	if(bentoMenu!=null) {
-    		for(Bento bento : bentoMenu.getMenu()) {
-    			bentoDtos.add(new BentoDto(
-    					bento.getFrameNo(), 
-    					bento.getName().v(), 
-    					bento.getUnit().v(), 
-    					bento.getAmount1().v(), 
-    					bento.getAmount2().v(), 
-    					bento.getReceptionTimezoneNo().value,
-    					bento.getWorkLocationCode().map(x -> x.v()).orElse(null), 
-    					null));
-    		}
-    	}
+		for(Bento bento : menu) {
+			bentoDtos.add(new BentoDto(
+					bento.getFrameNo(), 
+					bento.getName().v(), 
+					bento.getUnit().v(), 
+					bento.getAmount1().v(), 
+					bento.getAmount2().v(), 
+					bento.getReceptionTimezoneNo().value,
+					bento.getWorkLocationCode().map(x -> x.v()).orElse(null), 
+					null));
+		}
     	
     	ReservationRecTimeZone frame1 = reservationRecTimeZoneLst.stream().filter(x -> x.getFrameNo()==ReservationClosingTimeFrame.FRAME1).findAny().orElse(null);
     	ReservationRecTimeZone frame2 = reservationRecTimeZoneLst.stream().filter(x -> x.getFrameNo()==ReservationClosingTimeFrame.FRAME2).findAny().orElse(null);

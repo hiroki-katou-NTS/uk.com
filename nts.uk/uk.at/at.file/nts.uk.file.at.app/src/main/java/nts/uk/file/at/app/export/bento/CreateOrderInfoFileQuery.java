@@ -36,8 +36,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
@@ -78,7 +78,7 @@ public class CreateOrderInfoFileQuery {
     private WorkLocationRepository workLocationRepository;
 
     @Inject
-    private BentoMenuRepository bentoMenuRepository;
+    private BentoMenuHistRepository bentoMenuRepository;
 
     @Inject
     private AffWorkplaceHistoryRepository affWorkplaceHistoryRepository;
@@ -147,7 +147,7 @@ public class CreateOrderInfoFileQuery {
 				throw new BusinessException("Msg_1617");
 			}
         //4. //5.
-        List<BentoMenu> bentoMenuList = getAllBentoMenu(companyId, period);
+        List<BentoMenuHistory> bentoMenuList = getAllBentoMenu(companyId, period);
         if (CollectionUtil.isEmpty(bentoMenuList)) {
             throw new BusinessException("Msg_1640");
         }
@@ -300,7 +300,7 @@ public class CreateOrderInfoFileQuery {
     }
 
     /** 4. 弁当メニューを取得 */
-    private List<BentoMenu> getAllBentoMenu(String companyId, DatePeriod period){
+    private List<BentoMenuHistory> getAllBentoMenu(String companyId, DatePeriod period){
         return bentoMenuRepository.getBentoMenuPeriod(companyId, period);
     }
 
@@ -427,7 +427,7 @@ public class CreateOrderInfoFileQuery {
         for(BentoReservation item : reservations){
             int totalFee = 0;
             reservationDetails.addAll(item.getBentoReservationDetails());
-            BentoMenu bentoMenuList = bentoMenuRepository.getBentoMenu(companyId, item.getReservationDate().getDate());
+            BentoMenuHistory bentoMenuList = bentoMenuRepository.getBentoMenu(companyId, item.getReservationDate().getDate());
             if (bentoMenuList == null) {
             	continue;
 			}

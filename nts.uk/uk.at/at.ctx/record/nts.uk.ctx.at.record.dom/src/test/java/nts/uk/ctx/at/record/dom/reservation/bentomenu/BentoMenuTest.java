@@ -16,7 +16,9 @@ import java.util.Optional;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.reservation.Helper;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
@@ -25,21 +27,13 @@ import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 public class BentoMenuTest {
 
 	
 	private static final Map<Integer, BentoReservationCount> DUMMY_DETAILS =
 			Collections.singletonMap(1, Helper.count(1));
-	
-	@Test
-	public void invariant_empty() {
-		
-		NtsAssert.systemError(() -> {
-			new BentoMenu("dummy", Collections.emptyList());
-		});
-		
-	}
 	
 	@Test
 	public void invariant_over40() {
@@ -50,7 +44,7 @@ public class BentoMenuTest {
 		}
 		
 		NtsAssert.systemError(() -> {
-			new BentoMenu("dummy", bentoList41);
+			new BentoMenuHistory("dummy", new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())), bentoList41);
 		});
 	}
 	
@@ -60,14 +54,14 @@ public class BentoMenuTest {
 		notUniqueLst.add(Helper.Menu.Item.bentoAmount(1, 1, 1));
 		notUniqueLst.add(Helper.Menu.Item.bentoAmount(1, 1, 1));
 		NtsAssert.systemError(() -> {
-			new BentoMenu("dummy", notUniqueLst);
+			new BentoMenuHistory("dummy", new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())), notUniqueLst);
 		});
 	}
 	
 	@Test
 	public void reserve_fail_receptionCheck() {
 
-		BentoMenu target = Helper.Menu.DUMMY;
+		BentoMenuHistory target = Helper.Menu.DUMMY;
 		ReservationDate pastDay = Helper.Reservation.Date.of(today().addDays(-1));
 		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
 		ReservationRecTimeZone reservationRecTimeZone = Helper.Setting.ReserRecTimeZone.ReserFrame1;
@@ -85,8 +79,9 @@ public class BentoMenuTest {
 	@Test
 	public void reserve_fail_invalidFrame() {
 		
-		BentoMenu target = new BentoMenu(
+		BentoMenuHistory target = new BentoMenuHistory(
 				"historyID",
+				new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
 				Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)));
 		ReservationRecTimeZone reservationRecTimeZone = Helper.Setting.ReserRecTimeZone.ReserFrame1;
 		
@@ -117,8 +112,9 @@ public class BentoMenuTest {
 		GeneralDateTime now = now();
 		ReservationRecTimeZone reservationRecTimeZone = Helper.Setting.ReserRecTimeZone.ReserFrame1;
 		
-		BentoMenu target = new BentoMenu(
+		BentoMenuHistory target = new BentoMenuHistory(
 				"historyID",
+				new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
 				Arrays.asList(
 						Helper.Menu.Item.bentoReserveFrame(1, true, true),
 						Helper.Menu.Item.bentoReserveFrame(2, true, true)));
@@ -148,7 +144,7 @@ public class BentoMenuTest {
 	@Test
 	public void receptionCheck_pastDay() {
 
-		BentoMenu target = Helper.Menu.DUMMY;
+		BentoMenuHistory target = Helper.Menu.DUMMY;
 		ReservationDate pastDay = Helper.Reservation.Date.of(today().addDays(-1));
 		ReservationRecTimeZone reservationRecTimeZone = Helper.Setting.ReserRecTimeZone.ReserFrame1;
 		
@@ -160,8 +156,9 @@ public class BentoMenuTest {
 	@Test
 	public void receptionCheck_todayCanNotReserve() {
 		
-		BentoMenu target = new BentoMenu(
+		BentoMenuHistory target = new BentoMenuHistory(
 				"historyID",
+				new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
 				Arrays.asList(Helper.Menu.Item.DUMMY));
 		ReservationRecTimeZone reservationRecTimeZone = Helper.Setting.ReserRecTimeZone.ReserFrame1;
 		NtsAssert.businessException("Msg_2287", () -> {
@@ -176,8 +173,9 @@ public class BentoMenuTest {
 	public void receptionCheck_todayCanReserve() {
 
 		ReservationRecTimeZone reservationRecTimeZone = Helper.Setting.ReserRecTimeZone.ReserFrame1;
-		BentoMenu target = new BentoMenu(
+		BentoMenuHistory target = new BentoMenuHistory(
 				"historyID",
+				new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
 				Arrays.asList(Helper.Menu.Item.DUMMY));
 		
 		// no error
@@ -190,8 +188,9 @@ public class BentoMenuTest {
 	@Test
 	public void receptionCheck_futureDay() {
 
-		BentoMenu target = new BentoMenu(
+		BentoMenuHistory target = new BentoMenuHistory(
 				"historyID",
+				new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
 				Arrays.asList(Helper.Menu.Item.DUMMY));
 		ReservationRecTimeZone reservationRecTimeZone = Helper.Setting.ReserRecTimeZone.ReserFrame1;
 		
@@ -204,8 +203,9 @@ public class BentoMenuTest {
 	@Test
 	public void getters() {
 		
-		BentoMenu target = new BentoMenu(
+		BentoMenuHistory target = new BentoMenuHistory(
 				"historyID",
+				new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
 				Arrays.asList(Helper.Menu.Item.DUMMY));
 		
 		NtsAssert.invokeGetters(target);

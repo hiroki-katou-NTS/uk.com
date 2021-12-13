@@ -21,8 +21,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoAmountTotal;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoDetailsAmountTotal;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -50,7 +50,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 	private BentoReservationRepository bentoReservationRepository;
 
 	@Inject
-	private BentoMenuRepository bentoMenuRepository;
+	private BentoMenuHistRepository bentoMenuRepository;
 
 	@Inject
 	private RegulationInfoEmployeeAdapter regulationInfoEmployeeAdapter;
@@ -92,7 +92,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		}
 
 		// get(年月日)
-		BentoMenu bentoMenu = bentoMenuRepository.getBentoMenu(companyID, period.end());
+		BentoMenuHistory bentoMenu = bentoMenuRepository.getBentoMenu(companyID, period.end());
 
 		/*
 		// 社員を並べ替える
@@ -122,7 +122,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		return createDataSource(period, bentoReservationLst, bentoMenu, empInfoLst, companyInfo, stampCardLst, title);
 	}
 
-	private ReservationMonthDataSource createDataSource(DatePeriod period, List<BentoReservation> bentoReservationLst, BentoMenu bentoMenu,
+	private ReservationMonthDataSource createDataSource(DatePeriod period, List<BentoReservation> bentoReservationLst, BentoMenuHistory bentoMenu,
 			List<EmployeeInformationExport> empInfoLst, CompanyInfor companyInfo, List<StampCard> stampCardLst, String title) {
 		ReservationMonthDataSource dataSource = new ReservationMonthDataSource();
 		dataSource.setCompanyName(companyInfo.getCompanyName());
@@ -138,7 +138,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 	}
 
 	private ReservationWkpLedger createReservationWkpLedger(Entry<WorkplaceExport, List<EmployeeInformationExport>> wkpEntry,
-			List<BentoReservation> bentoReservationLst, BentoMenu bentoMenu, List<StampCard> stampCardLst) {
+			List<BentoReservation> bentoReservationLst, BentoMenuHistory bentoMenu, List<StampCard> stampCardLst) {
 		ReservationWkpLedger wkpLedger = new ReservationWkpLedger();
 		wkpLedger.setWkpCD(wkpEntry.getKey().getWorkplaceCode());
 		wkpLedger.setWkpName(wkpEntry.getKey().getWorkplaceName());
@@ -156,7 +156,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 	}
 
 	private ReservationEmpLedger createReservationEmpLedger(Entry<String, List<EmployeeInformationExport>> empEntry,
-			List<BentoReservation> bentoReservationLst, BentoMenu bentoMenu, String cardNo) {
+			List<BentoReservation> bentoReservationLst, BentoMenuHistory bentoMenu, String cardNo) {
 		ReservationEmpLedger empLedger = new ReservationEmpLedger();
 		empLedger.setEmpID(empEntry.getKey());
 		empLedger.setEmpCD(empEntry.getValue().get(0).getEmployeeCode());

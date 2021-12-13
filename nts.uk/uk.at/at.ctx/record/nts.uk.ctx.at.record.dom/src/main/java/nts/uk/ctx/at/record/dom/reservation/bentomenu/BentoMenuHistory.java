@@ -10,7 +10,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
@@ -21,13 +20,14 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClo
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoAmountTotal;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoDetailsAmountTotal;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
- * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.支給賞与額履歴.予約.弁当メニュー.弁当メニュー
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.支給賞与額履歴.予約.弁当メニュー.弁当メニュー履歴
  * @author Doan Duy Hung
  *
  */
-public class BentoMenu extends AggregateRoot {
+public class BentoMenuHistory extends AggregateRoot {
 	
 	/**
 	 * 履歴ID
@@ -41,15 +41,18 @@ public class BentoMenu extends AggregateRoot {
 	@Getter
 	private final List<Bento> menu;
 	
-	public BentoMenu(String historyID, List<Bento> menu) {
-		// inv-1	1 <= ＠メニュー.size <= 40
-		if(menu.size() <= 0 || menu.size() > 40) {
+	/**
+	 * 履歴
+	 */
+	@Getter
+	private DateHistoryItem historyItem;
+	
+	public BentoMenuHistory(String historyID, DateHistoryItem historyItem, List<Bento> menu) {
+		// inv-1	0 <= ＠メニュー.size <= 40
+		if(menu.size() < 0 || menu.size() > 40) {
 			throw new RuntimeException("System error");
 		}
-		// 	inv-2	@メニュー.枠番が重複しないこと	
-		if(CollectionUtil.isEmpty(menu)) {
-			throw new RuntimeException("System error");
-		}
+		// 	inv-2	@メニュー.枠番が重複しないこと
 		List<Integer> frameNoLst = menu.stream().map(x -> x.getFrameNo()).collect(Collectors.toList());
 		List<Integer> frameNoDistinctLst = frameNoLst.stream().distinct().collect(Collectors.toList());
 		if(frameNoLst.size()!=frameNoDistinctLst.size()) {
@@ -57,6 +60,7 @@ public class BentoMenu extends AggregateRoot {
 		}
 		this.historyID = historyID;
 		this.menu = menu;
+		this.historyItem = historyItem;
 	}
 	
 	/**

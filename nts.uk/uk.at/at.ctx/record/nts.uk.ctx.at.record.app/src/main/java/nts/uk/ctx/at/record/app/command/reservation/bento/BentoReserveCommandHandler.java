@@ -22,8 +22,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveService;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
@@ -36,7 +36,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class BentoReserveCommandHandler extends CommandHandler<BentoReserveCommand> {
 	
 	@Inject
-	private BentoMenuRepository bentoMenuRepository;
+	private BentoMenuHistRepository bentoMenuRepository;
 	
 	@Inject
 	private BentoReservationRepository bentoReservationRepository;
@@ -100,14 +100,14 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 	@RequiredArgsConstructor
 	private static class RequireImpl implements BentoReserveService.Require {
 		
-		private final BentoMenuRepository bentoMenuRepository;
+		private final BentoMenuHistRepository bentoMenuRepository;
 		
 		private final BentoReservationRepository bentoReservationRepository;
 		
 		private final ReservationSettingRepository reservationSettingRepository;
 		
 		@Override
-		public BentoMenu getBentoMenu(ReservationDate reservationDate,Optional<WorkLocationCode> workLocationCode) {
+		public BentoMenuHistory getBentoMenu(ReservationDate reservationDate,Optional<WorkLocationCode> workLocationCode) {
 			String companyID = AppContexts.user().companyId();
 			return bentoMenuRepository.getBentoMenu(companyID, reservationDate.getDate(),workLocationCode);
 		}

@@ -25,8 +25,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -48,7 +48,7 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 
 	@Inject
-	private BentoMenuRepository bentoMenuRepository;
+	private BentoMenuHistRepository bentoMenuRepository;
 
 	@Inject
 	private BentoReservationRepository bentoReservationRepository;
@@ -93,7 +93,7 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 
 		private final EmployeeManageRCAdapter employeeManageRCAdapter;
 
-		private final BentoMenuRepository bentoMenuRepository;
+		private final BentoMenuHistRepository bentoMenuRepository;
 
 		private final BentoReservationRepository bentoReservationRepository;
 
@@ -159,7 +159,7 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 		}
 
 		@Override
-		public BentoMenu getBentoMenu(ReservationDate reservationDate, Optional<WorkLocationCode> workLocationCode) {
+		public BentoMenuHistory getBentoMenu(ReservationDate reservationDate, Optional<WorkLocationCode> workLocationCode) {
 			return bentoMenuRepository.getBentoMenu(companyId, reservationDate.getDate(), workLocationCode);
 
 		}

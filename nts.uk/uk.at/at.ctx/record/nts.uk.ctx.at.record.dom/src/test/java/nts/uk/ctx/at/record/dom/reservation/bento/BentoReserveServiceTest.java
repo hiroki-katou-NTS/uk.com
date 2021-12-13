@@ -16,9 +16,12 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.reservation.Helper;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 @RunWith(JMockit.class)
 public class BentoReserveServiceTest {
@@ -36,8 +39,9 @@ public class BentoReserveServiceTest {
 		GeneralDateTime now = now().min().addHours(9);
 		Map<Integer, BentoReservationCount> details = Collections.singletonMap(1, Helper.count(1));
 
-		BentoMenu menu = new BentoMenu(
+		BentoMenuHistory menu = new BentoMenuHistory(
 				"historyId",
+				new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
 				Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)));
 
 		new Expectations() {{
@@ -63,8 +67,9 @@ public class BentoReserveServiceTest {
 		GeneralDateTime now = now().min().addHours(9);
 		Map<Integer, BentoReservationCount> details = Collections.singletonMap(1, Helper.count(1));
 
-		BentoMenu menu = new BentoMenu(
+		BentoMenuHistory menu = new BentoMenuHistory(
 				"historyId",
+				new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
 				Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)));
 
 		new Expectations() {{

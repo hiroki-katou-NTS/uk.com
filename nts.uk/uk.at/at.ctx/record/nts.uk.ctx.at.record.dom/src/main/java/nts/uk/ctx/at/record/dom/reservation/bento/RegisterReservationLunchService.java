@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.reservation.bento;
 
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.Achievements;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
@@ -32,7 +32,7 @@ public class RegisterReservationLunchService {
         ReservationSetting bentoReservationSetting = require.getReservationSettings(companyId);
 
         // 3: get(会社ID,’9999/12/31’)
-        BentoMenu bentoMenu = require.getBentoMenu(companyId, date);
+        BentoMenuHistory bentoMenu = require.getBentoMenu(companyId, date);
         String historyID = bentoMenu != null ? bentoMenu.getHistoryID() : null;
 
         return AtomTask.of(() -> {
@@ -57,7 +57,7 @@ public class RegisterReservationLunchService {
         /**
          * 弁当メニュを取得する
          */
-        BentoMenu getBentoMenu(String cid, GeneralDate date);
+        BentoMenuHistory getBentoMenu(String cid, GeneralDate date);
 
         /**
          * 弁当メニューを登録する

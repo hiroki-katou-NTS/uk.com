@@ -1,13 +1,15 @@
 package nts.uk.ctx.at.record.app.command.reservation.bento;
 
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
 /**
  * 予約構成を追加する\
  *
  * @author Minh Chinh.
  */
+@Getter
 public class BentoMenuHistCommand {
-    @Getter
-    private GeneralDate date;
+    
+	private String startDate;
+    
+    private String endDate;
 }

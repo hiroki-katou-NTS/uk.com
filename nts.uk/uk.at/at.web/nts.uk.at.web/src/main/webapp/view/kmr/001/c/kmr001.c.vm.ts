@@ -93,50 +93,46 @@ module nts.uk.at.kmr001.c {
             const vm = this;
             vm.$blockui("invisible");
             //get list bento
-            vm.$ajax(API.GET_ALL, { histId: vm.history && vm.history.params.historyId ? vm.history.params.historyId : null }).done(dataRes => {
+            vm.$ajax(API.GET_ALL, { date: "9999/12/31" }).done(dataRes => {
                 let bentoDtos = dataRes.bentoDtos;
-                if (bentoDtos.length > 0) {
-                    if (vm.operationDistinction() == 1) {
-                        let array: Array<any> = [];
-                        _.range(1, 41).forEach(item =>
-                            array.push(new ItemBentoByLocation(
-                                item.toString(),
-                                "",
-                                "",
-                            ))
-                        );
-                        bentoDtos.forEach(item => {
-                            vm.listIdBentoMenu.push(item.frameNo);
-                            array.forEach((rc, index) => {
-                                if (item.frameNo == rc.id) {
-                                    array[index].locationName = item.workLocationName;
-                                    array[index].name = item.bentoName;
-                                }
-                            })
-                        }
-                        );
-                        vm.itemsBento(array);
-                    } else {
-                        let array: Array<any> = [];
-                        _.range(1, 41).forEach(item =>
-                            array.push(new ItemBentoByCompany(
-                                item.toString(),
-                                "",
-                            ))
-                        );
-                        bentoDtos.forEach(item => {
-                            vm.listIdBentoMenu.push(item.frameNo);
-                            array.forEach((rc, index) => {
-                                if (item.frameNo == rc.id) {
-                                    array[index].name = item.bentoName;
-                                }
-                            })
-                        }
-                        );
-                        vm.itemsBento(array);
+                if (vm.operationDistinction() == 1) {
+                    let array: Array<any> = [];
+                    _.range(1, 41).forEach(item =>
+                        array.push(new ItemBentoByLocation(
+                            item.toString(),
+                            "",
+                            "",
+                        ))
+                    );
+                    bentoDtos.forEach(item => {
+                        vm.listIdBentoMenu.push(item.frameNo);
+                        array.forEach((rc, index) => {
+                            if (item.frameNo == rc.id) {
+                                array[index].locationName = item.workLocationName;
+                                array[index].name = item.bentoName;
+                            }
+                        })
                     }
+                    );
+                    vm.itemsBento(array);
                 } else {
-                    vm.$dialog.error({ messageId: 'Msg_1849' });
+                    let array: Array<any> = [];
+                    _.range(1, 41).forEach(item =>
+                        array.push(new ItemBentoByCompany(
+                            item.toString(),
+                            "",
+                        ))
+                    );
+                    bentoDtos.forEach(item => {
+                        vm.listIdBentoMenu.push(item.frameNo);
+                        array.forEach((rc, index) => {
+                            if (item.frameNo == rc.id) {
+                                array[index].name = item.bentoName;
+                            }
+                        })
+                    }
+                    );
+                    vm.itemsBento(array);
                 }
                 vm.listData = [...bentoDtos];
             }).fail(function (error) {
@@ -233,7 +229,7 @@ module nts.uk.at.kmr001.c {
         getBentoMenu(historyId: string) {
             const vm = this;
             //get list bento
-            vm.$ajax(API.GET_ALL, { histId: historyId ? historyId : null }).done(dataRes => {
+            vm.$ajax(API.GET_ALL, { date: "9999/12/31" }).done(dataRes => {
                 vm.$blockui('invisible');
                 let bentoDtos = dataRes.bentoDtos;
                 vm.reservationFrameName1(dataRes.reservationFrameName1);
@@ -249,72 +245,68 @@ module nts.uk.at.kmr001.c {
                     vm.reservationStartTime2(parseTime(dataRes.reservationStartTime2, true).format());
                     vm.reservationFrameName2(dataRes.reservationFrameName2);
                 }
-                if (bentoDtos.length > 0) {
-                    bentoDtos = _.orderBy(bentoDtos, ['frameNo', 'asc']);
-                    if (dataRes.operationDistinction == 1) {
-                        vm.columnBento([
-                            { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50, formatter: _.escape },
-                            { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 225, formatter: _.escape },
-                            { headerText: vm.$i18n('KMR001_50'), key: 'locationName', width: 100, formatter: _.escape },
-                        ]);
+                bentoDtos = _.orderBy(bentoDtos, ['frameNo', 'asc']);
+                if (dataRes.operationDistinction == 1) {
+                    vm.columnBento([
+                        { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50, formatter: _.escape },
+                        { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 225, formatter: _.escape },
+                        { headerText: vm.$i18n('KMR001_50'), key: 'locationName', width: 100, formatter: _.escape },
+                    ]);
 
-                        let array: Array<any> = [];
-                        _.range(1, 41).forEach(item =>
-                            array.push(new ItemBentoByLocation(
-                                item.toString(),
-                                "",
-                                "",
-                            ))
-                        );
-                        bentoDtos.forEach(item => {
-                            vm.listIdBentoMenu.push(item.frameNo);
-                            array.forEach((rc, index) => {
-                                if (item.frameNo == rc.id) {
-                                    array[index].locationName = item.workLocationName;
-                                    array[index].name = item.bentoName;
-                                }
-                            })
-                        }
-                        );
-                        vm.itemsBento(array);
-                        vm.selectedBentoSetting(bentoDtos[0].frameNo);
-                        vm.selectedWorkLocationCode(bentoDtos[0].workLocationCode);
-
-                    } else {
-                        vm.columnBento([
-                            { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50, formatter: _.escape },
-                            { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 325, formatter: _.escape },
-                        ]);
-                        let array: Array<any> = [];
-                        _.range(1, 41).forEach(item =>
-                            array.push(new ItemBentoByCompany(
-                                item.toString(),
-                                "",
-                            ))
-                        );
-                        bentoDtos.forEach(item => {
-                            vm.listIdBentoMenu.push(item.frameNo);
-                            array.forEach((rc, index) => {
-                                if (item.frameNo == rc.id) {
-                                    array[index].name = item.bentoName;
-                                }
-                            })
-                        }
-                        );
-                        vm.itemsBento(array);
-                        vm.selectedBentoSetting(bentoDtos[0].frameNo);
-                    }
-
-                    vm.model().updateData(
-                        bentoDtos[0].bentoName, bentoDtos[0].unitName,
-                        bentoDtos[0].receptionTimezoneNo,
-                        Number(bentoDtos[0].price1), Number(bentoDtos[0].price2),
-                        bentoDtos[0].workLocationCode
+                    let array: Array<any> = [];
+                    _.range(1, 41).forEach(item =>
+                        array.push(new ItemBentoByLocation(
+                            item.toString(),
+                            "",
+                            "",
+                        ))
                     );
-                    vm.model.valueHasMutated();
+                    bentoDtos.forEach(item => {
+                        vm.listIdBentoMenu.push(item.frameNo);
+                        array.forEach((rc, index) => {
+                            if (item.frameNo == rc.id) {
+                                array[index].locationName = item.workLocationName;
+                                array[index].name = item.bentoName;
+                            }
+                        })
+                    }
+                    );
+                    vm.itemsBento(array);
+                    vm.selectedBentoSetting(bentoDtos[0].frameNo);
+                    vm.selectedWorkLocationCode(bentoDtos[0].workLocationCode);
+
                 } else {
-                    vm.$dialog.error({ messageId: 'Msg_1849' });
+                    vm.columnBento([
+                        { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50, formatter: _.escape },
+                        { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 325, formatter: _.escape },
+                    ]);
+                    let array: Array<any> = [];
+                    _.range(1, 41).forEach(item =>
+                        array.push(new ItemBentoByCompany(
+                            item.toString(),
+                            "",
+                        ))
+                    );
+                    bentoDtos.forEach(item => {
+                        vm.listIdBentoMenu.push(item.frameNo);
+                        array.forEach((rc, index) => {
+                            if (item.frameNo == rc.id) {
+                                array[index].name = item.bentoName;
+                            }
+                        })
+                    }
+                    );
+                    vm.itemsBento(array);
+                    vm.selectedBentoSetting(bentoDtos[0].frameNo);
                 }
+
+                vm.model().updateData(
+                    bentoDtos[0].bentoName, bentoDtos[0].unitName,
+                    bentoDtos[0].receptionTimezoneNo,
+                    Number(bentoDtos[0].price1), Number(bentoDtos[0].price2),
+                    bentoDtos[0].workLocationCode
+                );
+                vm.model.valueHasMutated();
             }).then(() => {
                 vm.selectedBentoSetting.subscribe(data => {
                     vm.$blockui('invisible');
