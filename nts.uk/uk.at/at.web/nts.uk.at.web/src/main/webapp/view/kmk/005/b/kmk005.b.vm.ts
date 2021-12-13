@@ -391,65 +391,6 @@ module nts.uk.at.view.kmk005.b {
                     }
                 });
 
-<<<<<<< HEAD
-                service.getListSpecialBonusPayTimeItem().done(function(item: Array<any>) {
-                    if (item === undefined || item.length == 0) {
-//                                                for (i = 0; i < 10; i++) {
-//                                                    self.timeItemSpecList.push(
-//                                                       new TimeItem(
-//                                                            "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 1, "" 
-//                                                      ));
-//                                               }
-                        self.timeItemSpecList.push(
-                            new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 22), 1, "", '#[KMK005_150]'
-                            ));
-                        self.timeItemSpecList.push(
-                            new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 23), 1, "", '#[KMK005_151]'
-                            ));
-                        self.timeItemSpecList.push(
-                            new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 24), 1, "", '#[KMK005_152]'
-                            ));
-                        self.timeItemSpecList.push(
-                            new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 25), 1, "", '#[KMK005_153]'
-                            ));
-                        self.timeItemSpecList.push(
-                            new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 26), 1, "", '#[KMK005_154]'
-                            ));
-                        self.timeItemSpecList.push(
-                            new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 27), 1, "", '#[KMK005_155]'
-                            ));
-                        self.timeItemSpecList.push(
-                            new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 28), 1, "", '#[KMK005_156]'
-                            ));
-                        self.timeItemSpecList.push(
-                            new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 29), 1, "", '#[KMK005_157]'
-                            ));
-                        self.timeItemSpecList.push(
-                            new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 30), 1, "", '#[KMK005_158]'
-                            ));
-                        self.timeItemSpecList.push(
-                            new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 31), 1, "", '#[KMK005_159]'
-                            ));
-
-                    } else {
-                        let name = '#[KMK005_';
-                        let i = 150;
-                        item.forEach(function(item) {
-                            self.timeItemSpecList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId, name + i++ + ']'));
-                        });
-                    }
-                });
-=======
                 service.getListSpecialBonusPayTimeItem().done(function(item: Array<any>) {                    
                     if(!_.isUndefined(item) || !_.isEmpty(item)) {
                         for (let i = 0; i < item.length; i++){
@@ -459,7 +400,6 @@ module nts.uk.at.view.kmk005.b {
                                 self.timeItemSpecId1(item[i].timeItemId);
                                 self.isSpecRequired1(item[i].useAtr == 1);
                             }
->>>>>>> pj/at/release_ver4
 
                             if(i == 1) {
                                 self.useSpecAtr2(item[i].useAtr);
@@ -537,14 +477,8 @@ module nts.uk.at.view.kmk005.b {
                 let self = this;
                 $(".premiumName").trigger("validate");
                 if (!nts.uk.ui.errors.hasError()) {
-<<<<<<< HEAD
-                    let bonusPayTimeItemListCommand = [];
-                    let lstUseArt = [], lstUseSpecArt = [];
-=======
                     let bonusPayTimeItemListCommand: Array<any> = [], bonusPayTimeItemSpecListCommand: Array<any> = [],
                          lstUseArt: Array<boolean> = [], lstUseSpecArt: Array<boolean> = [];
->>>>>>> pj/at/release_ver4
-
                     lstUseArt.push(self.useAtr1() == 1 ? true : false);
                     lstUseArt.push(self.useAtr2() == 1 ? true : false);
                     lstUseArt.push(self.useAtr3() == 1 ? true : false);
@@ -578,12 +512,6 @@ module nts.uk.at.view.kmk005.b {
                     lstUseSpecArt.push(self.useSpecAtr9() == 1 ? true : false);
                     lstUseSpecArt.push(self.useSpecAtr10() == 1 ? true : false);                    
 
-<<<<<<< HEAD
-                    ko.utils.arrayForEach(self.timeItemSpecList(), function(item) {
-                        lstUseSpecArt.push(item.useAtr() == 1 ? true : false);
-                        bonusPayTimeItemSpecListCommand.push(ko.mapping.toJS(item));
-                    });
-=======
                     bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName1(), useAtr: self.useSpecAtr1(),timeItemNo: 1, timeItemTypeAtr: 1 });                    
                     bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName2(), useAtr: self.useSpecAtr2(),timeItemNo: 2, timeItemTypeAtr: 1 });
                     bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName3(), useAtr: self.useSpecAtr3(),timeItemNo: 3, timeItemTypeAtr: 1 });
@@ -594,7 +522,7 @@ module nts.uk.at.view.kmk005.b {
                     bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName8(), useAtr: self.useSpecAtr8(),timeItemNo: 8, timeItemTypeAtr: 1 });
                     bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName9(), useAtr: self.useSpecAtr9(),timeItemNo: 9, timeItemTypeAtr: 1 });
                     bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName10(), useAtr: self.useSpecAtr10(),timeItemNo: 10, timeItemTypeAtr: 1 });
->>>>>>> pj/at/release_ver4
+
 
                     service.checkUseArt(lstUseArt).done(function() {
                         service.getListBonusPTimeItem().done(function(res: Array<any>) {
