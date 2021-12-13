@@ -61,28 +61,28 @@ public class RegisterOneDayFavoriteTaskServiceTest {
 		
 	}
 	
-//	@Test
-//	public void test2() {
-//
-//		new Expectations() {
-//			{
-//				require.get(anyString);
-//				result = Optional.empty();
-//			}
-//		};
-//		AtomTask result = RegisterOneDayFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
-//				new ArrayList<>());
-//
-//		new Verifications() {{
-//			require.insert(new OneDayFavoriteTaskDisplayOrder("employeeId", Collections.singletonList(new FavoriteDisplayOrder(anyString, 1))));
-//			times = 0;
-//		}};
-//		
-//		result.run();
-//		
-//		new Verifications() {{
-//			require.insert(new OneDayFavoriteTaskDisplayOrder("employeeId", Collections.singletonList(new FavoriteDisplayOrder(anyString, 1))));
-//			times = 1;
-//		}};
-//	}
+	@Test
+	public void test2() {
+
+		new Expectations() {
+			{
+				require.get(anyString);
+				result = Optional.empty();
+			}
+		};
+		AtomTask result = RegisterOneDayFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
+				new ArrayList<>());
+
+		new Verifications() {{
+			require.insert(new OneDayFavoriteTaskDisplayOrder("employeeId", Collections.singletonList(new FavoriteDisplayOrder(anyString, 1))));
+			times = 0;
+		}};
+		
+		result.run();
+		
+		new Verifications() {{
+			require.insert(new OneDayFavoriteTaskDisplayOrder("employeeId", Collections.singletonList(new FavoriteDisplayOrder(anyString, 1))));
+			times = 0;
+		}};
+	}
 }

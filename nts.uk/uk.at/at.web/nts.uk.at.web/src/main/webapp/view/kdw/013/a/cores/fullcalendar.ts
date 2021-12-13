@@ -1841,7 +1841,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 const getEditable = (date, isTimeBreak) => {
                     const startDate = moment(_.get(data, 'workStartDate'));
                     let lockStatus = _.find(_.get(data, 'lockInfos'), li => { return moment(li.date).isSame(moment(date), 'days'); });
-                    return startDate.isAfter(date) ? false : !isLock(lockStatus);
+                    return startDate.isAfter(date) ? false : !(isTimeBreak && isLock(lockStatus));
                 };
                 let events = ko.unwrap<EventRaw[]>(params.events);
                 
@@ -2978,6 +2978,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     _.forEach(tempEs, (evn) => {
                         if (evn.extendedProps.id == extendedProps.id) {
                             evn.extendedProps.isChanged = true;
+                            evn.extendedProps.taskBlock.caltimeSpan = { start: evn.start, end: evn.end };
+                            evn.extendedProps.period = { start: evn.start, end: evn.end };
                         };
                     });
                     events(tempEs);
