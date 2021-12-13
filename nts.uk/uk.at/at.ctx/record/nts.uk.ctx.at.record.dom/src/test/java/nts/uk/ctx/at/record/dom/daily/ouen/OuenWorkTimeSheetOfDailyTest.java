@@ -17,15 +17,10 @@ import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
-<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-=======
-import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
->>>>>>> pj/at/release_ver4
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
@@ -36,10 +31,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
-//@RunWith(JMockit.class)
+@RunWith(JMockit.class)
 public class OuenWorkTimeSheetOfDailyTest {
 
-<<<<<<< HEAD
 	private String empId = "empId";
 	private GeneralDate ymd = GeneralDate.today();
 
@@ -58,42 +52,6 @@ public class OuenWorkTimeSheetOfDailyTest {
 		NtsAssert.invokeGetters(rs);
 	}
 
-	@Test
-	public void testMethodChangeAdd() {
-
-		List<ItemValue> itemValues = new ArrayList<>();
-
-		itemValues.add(new ItemValue());
-
-		Map<Integer, List<ItemValue>> map = new HashMap<Integer, List<ItemValue>>();
-		map.put(1, itemValues);
-
-		new MockUp<AttendanceItemIdContainer>() {
-			@Mock
-			public Map<Integer, List<ItemValue>> mapWorkNoItemsValue(Collection<ItemValue> items) {
-				return map;
-			}
-		};
-//		
-=======
-//	private String empId = "empId";
-//	private GeneralDate ymd = GeneralDate.today();
-//
-//	@Test
-//	public void testOuenWorkTimeSheetOfDaily_contructor() {
-//
-//		new MockUp<AttendanceItemIdContainer>() {
-//			@Mock
-//			public List<ItemValue> getIds(AttendanceItemType type) {
-//				return new ArrayList<>();
-//
-//			}
-//		};
-//
-//		OuenWorkTimeSheetOfDaily rs = new OuenWorkTimeSheetOfDaily(empId, ymd, new ArrayList<>());
-//		NtsAssert.invokeGetters(rs);
-//	}
-//
 //	@Test
 //	public void testMethodChange() {
 //
@@ -104,22 +62,22 @@ public class OuenWorkTimeSheetOfDailyTest {
 //		Map<Integer, List<ItemValue>> map = new HashMap<Integer, List<ItemValue>>();
 //		map.put(1, itemValues);
 //
->>>>>>> pj/at/release_ver4
+//
 //		new MockUp<AttendanceItemIdContainer>() {
 //			@Mock
 //			public List<ItemValue> getIds(AttendanceItemType type) {
 //				return itemValues;
 //			}
-<<<<<<< HEAD
+//
 //		};
-		
-		OuenWorkTimeSheetOfDaily rs = OuenWorkTimeSheetOfDailyHelper.getOuenWorkTimeSheetOfDailyDefault();
-
-		AttendanceItemToChange attendanceItemToChange = rs.change(OuenWorkTimeSheetOfDailyHelper.getlist());
-
-		assertThat(attendanceItemToChange.getOuenWorkTimeSheetOfDaily().getOuenTimeSheet().size()).isEqualTo(3);
-		assertThat(attendanceItemToChange.getOuenWorkTimeSheetOfDaily().getOuenTimeSheet().get(1).getWorkNo().v()).isEqualTo(2);
-	}
+//		
+//		OuenWorkTimeSheetOfDaily rs = OuenWorkTimeSheetOfDailyHelper.getOuenWorkTimeSheetOfDailyDefault();
+//
+//		AttendanceItemToChange attendanceItemToChange = rs.change(OuenWorkTimeSheetOfDailyHelper.getlist());
+//
+//		assertThat(attendanceItemToChange.getOuenWorkTimeSheetOfDaily().getOuenTimeSheet().size()).isEqualTo(3);
+//		assertThat(attendanceItemToChange.getOuenWorkTimeSheetOfDaily().getOuenTimeSheet().get(1).getWorkNo().v()).isEqualTo(2);
+//	}
 	
 	@Test
 	public void testMethodChangeUdate() {
@@ -187,21 +145,5 @@ public class OuenWorkTimeSheetOfDailyTest {
 		
 		assertThat(result.isEmpty()).isFalse();
 	}
-=======
-//
-//			@Mock
-//			public Map<Integer, List<ItemValue>> mapWorkNoItemsValue(Collection<ItemValue> items) {
-//				return map;
-//			}
-//		};
-//		OuenWorkTimeSheetOfDaily rs = OuenWorkTimeSheetOfDailyHelper.getOuenWorkTimeSheetOfDailyDefault();
-//
-//		AttendanceItemToChange attendanceItemToChange = rs.change(OuenWorkTimeSheetOfDailyHelper.getListOuenWorkTime());
-//
-//		assertThat(attendanceItemToChange.getOuenWorkTimeSheetOfDaily().getEmpId()).isEqualTo(empId);
-//		assertThat(attendanceItemToChange.getAttendanceId().isEmpty()).isFalse();
-//		assertThat(attendanceItemToChange.getAttendanceId().get(0)).isEqualTo(0);
-//	}
->>>>>>> pj/at/release_ver4
 
 }
