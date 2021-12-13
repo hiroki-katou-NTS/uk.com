@@ -2,13 +2,14 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annuall
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.serialize.binary.SerializableWithOptional;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.TimeAnnualLeaveMax;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 
 /**
  * 年休上限残時間
@@ -23,20 +24,17 @@ public class AnnualLeaveMaxRemainingTime implements Cloneable, SerializableWithO
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	/** 時間 */
-	private RemainingMinutes time;
 	/** 時間付与前 */
-	private RemainingMinutes timeBeforeGrant;
+	private LeaveRemainingTime timeBeforeGrant;
 	/** 時間付与後 */
-	private Optional<RemainingMinutes> timeAfterGrant;
+	private Optional<LeaveRemainingTime> timeAfterGrant;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public AnnualLeaveMaxRemainingTime(){
 		
-		this.time = new RemainingMinutes(0);
-		this.timeBeforeGrant = new RemainingMinutes(0);
+		this.timeBeforeGrant = new LeaveRemainingTime(0);
 		this.timeAfterGrant = Optional.empty();
 	}
 	
@@ -48,12 +46,10 @@ public class AnnualLeaveMaxRemainingTime implements Cloneable, SerializableWithO
 	 * @return 年休上限残時間
 	 */
 	public static AnnualLeaveMaxRemainingTime of(
-			RemainingMinutes time,
-			RemainingMinutes timeBeforeGrant,
-			Optional<RemainingMinutes> timeAfterGrant){
+			LeaveRemainingTime timeBeforeGrant,
+			Optional<LeaveRemainingTime> timeAfterGrant){
 		
 		AnnualLeaveMaxRemainingTime domain = new AnnualLeaveMaxRemainingTime();
-		domain.time = time;
 		domain.timeBeforeGrant = timeBeforeGrant;
 		domain.timeAfterGrant = timeAfterGrant;
 		return domain;
@@ -63,16 +59,31 @@ public class AnnualLeaveMaxRemainingTime implements Cloneable, SerializableWithO
 	public AnnualLeaveMaxRemainingTime clone() {
 		AnnualLeaveMaxRemainingTime cloned = new AnnualLeaveMaxRemainingTime();
 		try {
-			cloned.time = new RemainingMinutes(this.time.v());
-			cloned.timeBeforeGrant = new RemainingMinutes(this.timeBeforeGrant.v());
+			cloned.timeBeforeGrant = new LeaveRemainingTime(this.timeBeforeGrant.v());
 			if (this.timeAfterGrant.isPresent()){
-				cloned.timeAfterGrant = Optional.of(new RemainingMinutes(this.timeAfterGrant.get().v()));
+				cloned.timeAfterGrant = Optional.of(new LeaveRemainingTime(this.timeAfterGrant.get().v()));
 			}
 		}
 		catch (Exception e){
 			throw new RuntimeException("AnnualLeaveMaxRemainingTime clone error.");
 		}
 		return cloned;
+	}
+	//[1]更新する
+	public AnnualLeaveMaxRemainingTime update(TimeAnnualLeaveMax maxData, GrantBeforeAfterAtr grantPeriodAtr){
+		if(grantPeriodAtr == GrantBeforeAfterAtr.BEFORE_GRANT){
+			return AnnualLeaveMaxRemainingTime.of(maxData.getRemainingMinutes(),this.timeAfterGrant);
+		}else{
+			return AnnualLeaveMaxRemainingTime.of(this.timeBeforeGrant, Optional.of(maxData.getRemainingMinutes()));
+		}
+	}
+	
+	//[2]残数超過分を補正する
+	public AnnualLeaveMaxRemainingTime correctTheExcess(){
+		LeaveRemainingTime beforeGrant = this.timeBeforeGrant.correctTheExcess();
+		Optional<LeaveRemainingTime> afterGrant = this.timeAfterGrant.map(x -> x.correctTheExcess());
+		
+		return AnnualLeaveMaxRemainingTime.of(beforeGrant, afterGrant);
 	}
 	
 	private void writeObject(ObjectOutputStream stream){	

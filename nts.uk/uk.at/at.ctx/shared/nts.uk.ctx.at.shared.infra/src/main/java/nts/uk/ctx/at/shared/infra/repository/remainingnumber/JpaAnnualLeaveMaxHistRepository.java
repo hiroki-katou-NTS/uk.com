@@ -17,6 +17,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Rema
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.TimeAnnualLeaveMax;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnLeaMaxHist;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnLeaMaxHistPK;
@@ -79,7 +82,6 @@ public class JpaAnnualLeaveMaxHistRepository extends JpaRepository implements An
 	private KrcdtAnnLeaMaxHist toEntity(AnnualLeaveMaxHistoryData domain) {
 		return new KrcdtAnnLeaMaxHist(
 				domain.getEmployeeId(),
-				domain.getCompanyId(),
 				domain.getHalfdayAnnualLeaveMax().map(c -> c.getMaxTimes().v()).orElse(null),
 				domain.getHalfdayAnnualLeaveMax().map(c -> c.getUsedTimes().v()).orElse(null),
 				domain.getHalfdayAnnualLeaveMax().map(c -> c.getRemainingTimes().v()).orElse(null),
@@ -97,7 +99,7 @@ public class JpaAnnualLeaveMaxHistRepository extends JpaRepository implements An
 		Optional<HalfdayAnnualLeaveMax> halfdayAnnualLeaveMax = Optional.empty();
 		if ( entity.maxTimes != null && entity.usedTimes != null && entity.remainingTimes != null ) {
 			halfdayAnnualLeaveMax = Optional.of(new HalfdayAnnualLeaveMax(
-					new MaxTimes(entity.maxTimes),
+					new AnnualNumberDay(entity.maxTimes),
 					new UsedTimes(entity.usedTimes),
 					new RemainingTimes(entity.remainingTimes)));
 		}
@@ -106,13 +108,12 @@ public class JpaAnnualLeaveMaxHistRepository extends JpaRepository implements An
 		if ( entity.maxMinutes != null && entity.usedMinutes != null && entity.remainingMinutes != null ) {
 			timeAnnualLeaveMax = Optional.of(new TimeAnnualLeaveMax(
 					new MaxMinutes(entity.maxMinutes),
-					new UsedMinutes(entity.usedMinutes),
-					new RemainingMinutes(entity.remainingMinutes)));
+					new LeaveUsedTime(entity.usedMinutes),
+					new LeaveRemainingTime(entity.remainingMinutes)));
 		}
 
 		return new AnnualLeaveMaxHistoryData(
 				entity.PK.sid,
-				entity.cid,
 				halfdayAnnualLeaveMax,
 				timeAnnualLeaveMax,
 				new YearMonth(entity.PK.yearMonth),

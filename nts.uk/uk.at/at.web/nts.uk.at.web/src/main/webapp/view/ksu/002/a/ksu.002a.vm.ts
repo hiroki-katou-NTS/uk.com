@@ -185,6 +185,8 @@ module nts.uk.ui.at.ksu002.a {
 		visibleA1_2: KnockoutObservable<boolean> = ko.observable(false);
 		visibleA1_3: KnockoutObservable<boolean> = ko.observable(false);
 		visibleA1_4: KnockoutObservable<boolean> = ko.observable(false);
+    
+        taskId = null;
 		
 		dr: c.DateRange = {
 				begin: null,
@@ -287,99 +289,10 @@ module nts.uk.ui.at.ksu002.a {
 			vm.achievement
 				.subscribe((arch) => {
 					const { IMPRINT } = EDIT_STATE;
-//					const { begin, finish } = vm.baseDate();
-					
-//					const command = {
-//						listSid: [vm.$user.employeeId],
-//						startDate: moment(begin).format('YYYY/MM/DD'),
-//						endDate: moment(finish).format('YYYY/MM/DD')
-//					};
-					
 					const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
 
-//					if (arch === ACHIEVEMENT.NO) {
 						vm.loadData();
 						return;
-//					}
-//					$.Deferred()
-//						.resolve(true)
-//						.then(() => vm.$blockui('grayout'))
-//						// fc
-//						.then(() => vm.getPlansResultsData(true))
-//						.then((response: Achievement[]) => {
-//							if (response.length === 0) {
-//								return;
-//							}
-//
-//							_.each(schedules, (sc) => {
-//								const { data } = sc;
-//								const { $raw } = data;
-//								const exist = _.find(response, (d: Achievement & { date: string; }) => moment(d.date, 'YYYY/MM/DD').isSame(sc.date, 'date'));
-//
-//								if (!exist) {
-//									$raw.achievements = null;
-//								} else {
-//									const { endTime, startTime, workTimeCode, workTimeName, workTypeCode, workTypeName } = exist;
-//
-//									$raw.achievements = {
-//										endTime,
-//										startTime,
-//										workTimeCode,
-//										workTimeName,
-//										workTypeCode,
-//										workTypeName
-//									};
-//								}
-//							});
-//						})
-//						.then(() => {
-//							// reset data
-//							_.each(schedules, (sc) => {
-//								const { data } = sc;
-//								const { $raw, wtype, wtime, value } = data;
-//								const { endTimeEditState, startTimeEditState, workTimeEditStatus, workTypeEditStatus } = $raw;
-//
-//								// UI-4-1 実績表示を「する」に選択する
-//								// UI-4-2 実績表示を「しない」に選択する
-//								if (!!$raw.achievements) {
-//									const {
-//										workTypeCode,
-//										workTypeName,
-//										workTimeCode,
-//										workTimeName,
-//										startTime,
-//										endTime,
-//									} = $raw.achievements;
-//									
-//									wtype.code(workTypeCode || null);
-//									wtype.name(workTypeName || null);
-//
-//									wtime.code(workTimeCode || null);
-//									wtime.name(workTimeName || null);
-//
-//									value.begin(startTime);
-//									value.finish(endTime);
-//
-//									data.confirmed($raw.confirmed);
-//									data.achievement(null);
-//									data.classification($raw.workHolidayCls);
-//									data.need2Work($raw.needToWork);
-//
-//									data.state.wtype(workTypeEditStatus ? workTypeEditStatus.editStateSetting : IMPRINT);
-//									data.state.wtime(workTimeEditStatus ? workTimeEditStatus.editStateSetting : IMPRINT);
-//
-//									data.state.value.begin(startTimeEditState ? startTimeEditState.editStateSetting : IMPRINT);
-//									data.state.value.finish(endTimeEditState ? endTimeEditState.editStateSetting : IMPRINT);
-//								}
-//
-//								// state of achievement (both data & switch select)
-//								data.achievement(!!$raw.achievements);
-//							});
-//
-//							// reset state of memento
-//							vm.schedules.reset();
-//						})
-//						.always(() => vm.$blockui('clear'));
 				});
 		}
 		
@@ -394,19 +307,6 @@ module nts.uk.ui.at.ksu002.a {
 		
 		loadData(){
 			let vm = this;	
-			//vm.getPlansResultsData();
-			
-//			const command = {
-//				listSid: [vm.$user.employeeId],
-//				startDate: moment(vm.dr.begin).format('YYYY/MM/DD'),
-//				endDate: moment(vm.dr.finish).format('YYYY/MM/DD'),
-//				actualData: vm.achievement() === ACHIEVEMENT.YES
-//			};
-
-//			if(vm.achievement() === ACHIEVEMENT.YES){
-//				vm.achievement(vm.achievement());
-//				return;
-//			}
 			
 			vm.$errors('clear')
 				.then(() => vm.$blockui('grayout'))
@@ -618,18 +518,24 @@ module nts.uk.ui.at.ksu002.a {
 		}
 		
 		openB() {
-			let self = this;
-			const { begin, finish } = self.baseDate();
-			let param = {
-				employeeCode: self.startupProcessingInformation().employeeCode,//社員コード
-				businessName: self.startupProcessingInformation().businessName,//社員名
-				yearMonth: self.yearMonth(),//対象年月
-				startDate: moment(begin).format('YYYY/MM/DD'),//対象期間開始日
-				endDate: moment(finish).format('YYYY/MM/DD'),//対象期間終了日
-				dayOfWeek: self.dayStartWeek()//起算曜日
-			}
-			setShared('dataShareDialogKSU002B', param);
-			nts.uk.ui.windows.sub.modal('/view/ksu/002/b/index.xhtml');
+			let vm = this;
+			const { begin, finish } = vm.baseDate();
+			let shareData = {
+                startDate: moment(begin).format('YYYY/MM/DD'),//対象期間開始日
+                endDate: moment(finish).format('YYYY/MM/DD'),//対象期間終了日
+                employeeCode: vm.startupProcessingInformation().employeeCode,//社員コード
+                employeeName: vm.startupProcessingInformation().businessName,//社員名
+                targetDate: moment(vm.yearMonth(), 'YYYYMMDD').format('YYYY/MM/DD'),//対象年月
+                startDay: 0, //起算曜日
+                isStartingDayOfWeek: false
+            }
+			vm.$window.storage("KSU002.USER_DATA").done(data => {
+				shareData.startDay = data.fdate;
+				shareData.isStartingDayOfWeek = vm.dayStartWeek() === data.fdate;
+				vm.$window.storage("ksu002B_params", shareData).then(() => {
+		            nts.uk.ui.windows.sub.modal('/view/ksu/002/b/index.xhtml');
+		        });				
+			});
 		}
 		// UI-8: Undo-Redoの処理
 		undoOrRedo(action: 'undo' | 'redo') {
@@ -798,35 +704,75 @@ module nts.uk.ui.at.ksu002.a {
 
 						vm.$blockui('show')
 							.then(() => vm.$ajax('at', API.SAVE_DATA, command))
-							.then((info: HandlerResult) => {
-								vm.achievement(vm.achievement());
-								vm.achievement.valueHasMutated();
-								if (!info.listErrorInfo.length) {
-									return vm.$dialog.info({ messageId: 'Msg_15' }).then(() => vm.schedules.reset(true));
-								} else {
-									const { listErrorInfo, registered } = info;
-									const params = {
-										errorRegistrationList: listErrorInfo,
-										employeeIds: [sid],
-										isRegistered: Number(registered)
-									};
-									setShared('dataShareDialogKDL053', params);
-									// call KDL053
-									try {
-									  vm.kdl053Open.close();
-									}
-									catch (exception_var) {}
-									
-									vm.kdl053Open =  nts.uk.ui.windows.sub.modeless('at', '/view/kdl/053/a/index.xhtml');
-									return vm.kdl053Open;
-								}
-							})
+                            .then((rs: any) => {
+                                vm.taskId = rs.taskInfor.id;
+                                vm.checkStateAsyncTask();
+                            });
 							// reload data
 							// .then(() => vm.achievement.valueHasMutated())
-							.always(() => vm.$blockui('clear'));
+							//.always(() => vm.$blockui('clear'));
 					}
 				});
-		}
+        }
+
+        checkStateAsyncTask() {
+            let vm = this;
+
+            nts.uk.deferred.repeat(conf => conf
+                .task(() => {
+                    return nts.uk.request.asyncTask.getInfo(vm.taskId).done(function(res: any) {
+                        // finish task
+                        if (res.succeeded || res.failed || res.cancelled) {
+                            vm.$blockui('clear');
+                            let arrayItems = [];
+                            let dataResult: any = {};
+                            dataResult.listErrorInfo = [];
+                            dataResult.hasError = false;
+                            dataResult.isRegistered = true;
+                            _.forEach(res.taskDatas, item => {
+                                if (item.key == 'STATUS_REGISTER') {
+                                    dataResult.isRegistered = item.valueAsBoolean;
+                                } else if (item.key == 'STATUS_ERROR') {
+                                    dataResult.hasError = item.valueAsBoolean;
+                                } else {
+                                    arrayItems.push(item);
+                                }
+                            });
+
+                            if (arrayItems.length > 0) {
+                                let listErrorInfo = _.map(arrayItems, obj2 => {
+                                    return new InforError(JSON.parse(obj2.valueAsString));
+                                });
+                                dataResult.listErrorInfo = listErrorInfo;
+                            }
+
+                            vm.achievement(vm.achievement());
+                            vm.achievement.valueHasMutated();
+                            if (!dataResult.listErrorInfo.length) {
+                                return vm.$dialog.info({ messageId: 'Msg_15' }).then(() => { vm.schedules.reset(true); });
+                            } else {
+                                const { listErrorInfo, registered } = dataResult;
+                                const params = {
+                                    errorRegistrationList: listErrorInfo,
+                                    employeeIds: [vm.$user.employeeId],
+                                    isRegistered: Number(registered)
+                                };
+                                setShared('dataShareDialogKDL053', params);
+                                // call KDL053
+                                try {
+                                    vm.kdl053Open.close();
+                                }
+                                catch (exception_var) { }
+
+                                vm.kdl053Open = nts.uk.ui.windows.sub.modeless('at', '/view/kdl/053/a/index.xhtml');
+                                return vm.kdl053Open;
+                            }
+                        }
+                    });
+                }).while(infor => {
+                    return infor.pending || infor.running;
+                }).pause(1000));
+        }
 
 		// check state & memento data
 		private memento(current: DayDataSave2Memento, preview: DayDataSave2Memento) {
@@ -983,12 +929,39 @@ module nts.uk.ui.at.ksu002.a {
 		optWorkplaceEventName: string | null;
 	}
 
-	interface EditStateOfDailyAttd {
-		// 勤怠項目ID
-		attendanceItemId: number;
-		// 編集状態: 日別実績の編集状態
-		editStateSetting: EDIT_STATE;
-	}
+    interface EditStateOfDailyAttd {
+        // 勤怠項目ID
+        attendanceItemId: number;
+        // 編集状態: 日別実績の編集状態
+        editStateSetting: EDIT_STATE;
+    }
+
+    interface IError {
+        sid: string,
+        scd: string,
+        empName: string,
+        date: string,
+        attendanceItemId: string,
+        errorMessage: string,
+    }
+
+    export class InforError {
+        sid: string;
+        scd: string;
+        empName: string;
+        date: string;
+        attendanceItemId: string;
+        errorMessage: string;
+        constructor(param: IError) {
+            let self = this;
+            self.sid = param.sid;
+            self.scd = param.scd;
+            self.empName = param.empName;
+            self.date = param.date;
+            self.attendanceItemId = param.attendanceItemId;
+            self.errorMessage = param.errorMessage;
+        }
+    }
 }
 function calculateDaysStartEndWeek(start: Date, end: Date, settingDayStart: number, isSelectedSettingDayStart: boolean): ({start: Date, end: Date}){
 	if(isSelectedSettingDayStart){
