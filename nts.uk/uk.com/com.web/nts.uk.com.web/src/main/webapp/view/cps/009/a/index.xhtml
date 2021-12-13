@@ -40,7 +40,7 @@
 					data-bind="click: closeDialog" tabindex="3">#{i18n.getText('CPS016_4')}</button>
 				<!--Export Excel-->
 				<button tabindex="4"
-					data-bind="click : exportExcel">#{i18n.getText('CPS009_39')}</button>
+					data-bind="click : exportExcel,  enable: false">#{i18n.getText('CPS009_39')}</button>
 				<!-- A1_005: link label 個人情報定義へ -->
 				<a class='goout link-button'
 						data-bind="ntsLinkButton: {jump: '/view/cps/002/a/index.xhtml' }, style: { 'margin-left': _.size(currentCategory().itemList()) &lt; 15 ? ($vm.isFromCPS018() ? '358px' : '480px') : ($vm.isFromCPS018() ? '376px' : '498px')}"

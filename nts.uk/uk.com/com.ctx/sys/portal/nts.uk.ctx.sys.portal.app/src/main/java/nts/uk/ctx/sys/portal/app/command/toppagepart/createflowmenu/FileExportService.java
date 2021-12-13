@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -39,6 +40,8 @@ public class FileExportService extends ExportService<FileExportCommand> {
 
 	@Inject
 	private StoredFileStreamService fileStreamService;
+	
+	public static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
 
 	@Override
 	protected void handle(ExportServiceContext<FileExportCommand> context) {
@@ -56,17 +59,22 @@ public class FileExportService extends ExportService<FileExportCommand> {
 		applicationTemporaryFilesContainer.removeContainer();
 	}
 
-	public ExtractionResponseDto extract(String fileId) throws IOException {
-		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
-		Path destinationDirectory = Paths.get(new FileStoragePath().getPathOfCurrentTenant().toString() + "//packs" + "//" + fileId);
-		ExtractStatus status = FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, destinationDirectory);
-		if (!status.equals(ExtractStatus.SUCCESS)) {
-			return null;
-		}
+	public Optional<ExtractionResponseDto> extract(String fileId) throws IOException {
+		try (InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId)) {
+			Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
+			ExtractStatus status = FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, destinationDirectory);
+			if (!status.equals(ExtractStatus.SUCCESS)) {
+				return Optional.empty();
+			}
 
-		File file = destinationDirectory.toFile().listFiles()[0];
-		return new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8),
-				file.getAbsolutePath());
+			File file = destinationDirectory.toFile().listFiles()[0];
+			return Optional.of(new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8),
+					file.getAbsolutePath()));
+		} catch (IOException e) {
+			throw e;
+		} catch (Exception e) {
+			return Optional.empty();
+		}
 	}
 
 	public List<ExtractionResponseDto> extractByListFileId(List<String> lstFileId) throws IOException {

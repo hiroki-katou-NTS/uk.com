@@ -54,6 +54,8 @@ import nts.uk.ctx.at.function.dom.adapter.worklocation.WorkInfoOfDailyPerFnImpor
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.createextractionprocess.CreateExtraProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.execalarmlistprocessing.ExecAlarmListProcessingService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.execalarmlistprocessing.OutputExecAlarmListPro;
+import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
+import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.ExtractionState;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionAdapter;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionImport;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetAdapter;
@@ -273,7 +275,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	
 	@Inject
 	private TopPageAlarmAdapter topPageAlarmAdapter;
-	
+    @Inject
+    private AlarmListExtraProcessStatusRepository alarmExtraProcessStatusRepo;
+
 	@Inject
 	private ByPeriodAggregationService byPeriodAggregationService;
 	
@@ -1892,10 +1896,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                     return;
                                 }
 
-                                AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
-                                AggregationResult result = MonthlyAggregationEmployeeService.aggregate(require, cacheCarrier, asyContext, companyId,
-                                        item,
-                                        date.get(), execId, ExecutionType.NORMAL_EXECUTION);
+                                val asyContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
+                                AggregationResult result = MonthlyAggregationEmployeeService.aggregate(require, cacheCarrier, 
+                                		Optional.of(asyContext), companyId, item,
+                                        date.get(), execId, ExecutionType.NORMAL_EXECUTION, Optional.empty());
                                 // 中断
                                 transaction.allInOneTransaction(result.getAtomTasks());
                                 if (result.getStatus().getState().value == 0) {
@@ -2043,6 +2047,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                     return true;
                 }
             } catch (Exception e) {
+                setExtractStatusAbnormalTermination(extraProcessStatusID);
                 // 各処理の後のログ更新処理
                 checkException = true;
                 errorMessage = "Msg_1339";
@@ -2058,6 +2063,15 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                 ProcessExecutionLog, checkException, checkStopExec, errorMessage);
 
         return false;
+    }
+
+    private void setExtractStatusAbnormalTermination(String extraProcessStatusID) {
+        val alarmExtraProcessStatusOpt = alarmExtraProcessStatusRepo.getAlListExtaProcessByID(extraProcessStatusID);
+        if (alarmExtraProcessStatusOpt.isPresent()){
+            val extractProcessStatus = alarmExtraProcessStatusOpt.get();
+            extractProcessStatus.setStatus(ExtractionState.ABNORMAL_TERMI);
+            alarmExtraProcessStatusRepo.updateAlListExtaProcess(extractProcessStatus);
+        }
     }
 
     private DatePeriod findClosurePeriodMinDate(String companyId, List<Closure> closureList) {

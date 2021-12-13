@@ -19,7 +19,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetStampTypeToSuppressService.Require;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 
@@ -301,8 +300,8 @@ public class GetStampTypeToSuppressServiceTest {
 								GeneralDate.today().addDays(-10)),
 						StampHelper.getStampCardByInput("stampCardId3", "stampNumber3",
 								GeneralDate.today().addDays(-3)));
-				require.getStampRecord((List<StampNumber>) any, (GeneralDate) any);
-				result = Arrays.asList(StampRecordHelper.getStampRecord());
+//				require.getStampRecord((List<StampNumber>) any, (GeneralDate) any);
+//				result = Arrays.asList(StampRecordHelper.getStampRecord());
 				
 				require.getStamp((List<StampNumber>) any, (GeneralDate) any);
 				result = Arrays.asList(StampHelper.getStampByChangeClockArt("stampCardId1",ChangeClockAtr.GOING_TO_WORK,GeneralDateTime.now()),
@@ -361,8 +360,8 @@ public class GetStampTypeToSuppressServiceTest {
 								GeneralDate.today().addDays(-10)),
 						StampHelper.getStampCardByInput("stampCardId3", "stampNumber3",
 								GeneralDate.today().addDays(-3)));
-				require.getStampRecord((List<StampNumber>) any, (GeneralDate) any);
-				result = Arrays.asList(StampRecordHelper.getStampRecord());
+//				require.getStampRecord((List<StampNumber>) any, (GeneralDate) any);
+//				result = Arrays.asList(StampRecordHelper.getStampRecord());
 				
 				require.getStamp((List<StampNumber>) any, (GeneralDate) any);
 				result = Arrays.asList(StampHelper.getStampByChangeClockArt("stampCardId1",ChangeClockAtr.GOING_TO_WORK,GeneralDateTime.now().addMinutes(3)),
@@ -417,8 +416,8 @@ public class GetStampTypeToSuppressServiceTest {
 								GeneralDate.today().addDays(-10)),
 						StampHelper.getStampCardByInput("stampCardId3", "stampNumber3",
 								GeneralDate.today().addDays(-3)));
-				require.getStampRecord((List<StampNumber>) any, (GeneralDate) any);
-				result = Arrays.asList(StampRecordHelper.getStampRecord());
+//				require.getStampRecord((List<StampNumber>) any, (GeneralDate) any);
+//				result = Arrays.asList(StampRecordHelper.getStampRecord());
 				
 				require.getStamp((List<StampNumber>) any, (GeneralDate) any);
 				result = Arrays.asList(
@@ -473,8 +472,8 @@ public class GetStampTypeToSuppressServiceTest {
 								GeneralDate.today().addDays(-10)),
 						StampHelper.getStampCardByInput("stampCardId3", "stampNumber3",
 								GeneralDate.today().addDays(-3)));
-				require.getStampRecord((List<StampNumber>) any, (GeneralDate) any);
-				result = Arrays.asList(StampRecordHelper.getStampRecord());
+//				require.getStampRecord((List<StampNumber>) any, (GeneralDate) any);
+//				result = Arrays.asList(StampRecordHelper.getStampRecord());
 				
 				require.getStamp((List<StampNumber>) any, (GeneralDate) any);
 				result = Arrays.asList(StampHelper.getStampByChangeClockArt("stampCardId1",ChangeClockAtr.GOING_TO_WORK,GeneralDateTime.now().addMinutes(5)),
@@ -529,8 +528,8 @@ public class GetStampTypeToSuppressServiceTest {
 								GeneralDate.today().addDays(-10)),
 						StampHelper.getStampCardByInput("stampCardId3", "stampNumber3",
 								GeneralDate.today().addDays(-3)));
-				require.getStampRecord((List<StampNumber>) any, (GeneralDate) any);
-				result = Arrays.asList(StampRecordHelper.getStampRecord());
+//				require.getStampRecord((List<StampNumber>) any, (GeneralDate) any);
+//				result = Arrays.asList(StampRecordHelper.getStampRecord());
 				
 				require.getStamp((List<StampNumber>) any, (GeneralDate) any);
 				result = Arrays.asList(StampHelper.getStampByChangeClockArt("stampCardId1",ChangeClockAtr.GOING_TO_WORK,GeneralDateTime.now().addMinutes(3)),

@@ -126,7 +126,7 @@ public class FindAnnLeaUsedDaysFromPreviousToNextGrantDate {
 		List<TempAnnualLeaveMngs> interimRemains = require.tmpAnnualHolidayMng(employeeId, period);
 		
 		double total = interimRemains.stream().mapToDouble(c ->{
-			return c.getUsedNumber().getDays().v();
+			return c.getUsedNumber().getUsedDayNumberOrZero().v();
 		}).sum();
 		
 		return new AnnualLeaveUsedDayNumber(total);

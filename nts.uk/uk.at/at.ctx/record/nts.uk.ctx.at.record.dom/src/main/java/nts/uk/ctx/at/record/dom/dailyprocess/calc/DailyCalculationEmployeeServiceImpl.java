@@ -413,7 +413,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	public ProcessState calculateForOnePerson(String companyId, String employeeId,
 			DatePeriod datePeriod, Optional<Consumer<ProcessState>> counter, String executeLogId, boolean isCalWhenLock ) {
 		
-		
 		// Imported（就業）「所属雇用履歴」を取得する (Lấy dữ liệu)
 		List<EmploymentHistShareImport> listEmploymentHisShare = this.employmentAdapterShare.findByEmployeeIdOrderByStartDate(employeeId);
 		//実績処理できる期間を取得する

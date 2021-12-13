@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.employee.pub.workplace.*;
 import nts.uk.ctx.bs.employee.pub.workplace.config.WorkPlaceConfigExport;
 import nts.uk.ctx.bs.employee.pub.workplace.config.WorkPlaceConfigPub;
+import nts.uk.ctx.bs.employee.pub.workplace.config.WorkplaceConfigHistoryExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInformationExport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
@@ -96,7 +97,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 
 	@Override
 	public List<WorkplaceInforExport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
-			GeneralDate baseDate) {
+																GeneralDate baseDate) {
 		return wkpExpService.getWorkplaceInforFromWkpIds(companyId, listWorkplaceId, baseDate).stream()
 				.map(i -> new WorkplaceInforExport(i.getWorkplaceId(), i.getHierarchyCode(), i.getWorkplaceCode(),
 						i.getWorkplaceName(), i.getDisplayName(), i.getGenericName(), i.getExternalCode()))
@@ -115,7 +116,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 
 	@Override
 	public List<WorkplaceInforExport> getPastWorkplaceInfor(String companyId, String historyId,
-			List<String> listWorkplaceId) {
+															List<String> listWorkplaceId) {
 		return wkpExpService.getPastWorkplaceInfor(companyId, historyId, listWorkplaceId).stream()
 				.map(i -> new WorkplaceInforExport(i.getWorkplaceId(), i.getHierarchyCode(), i.getWorkplaceCode(),
 						i.getWorkplaceName(), i.getDisplayName(), i.getGenericName(), i.getExternalCode()))
@@ -437,7 +438,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		String historyId = wkpConfig.items().get(0).identifier();
 		
 		List<WorkplaceInformation> opWkpConfigInfos = workplaceInformationRepository.getAllWorkplaceByCompany(companyId, historyId);
-		if (!opWkpConfigInfos.isEmpty()) {
+		if (opWkpConfigInfos.isEmpty()) {
 			return Collections.emptyList();
 		}
 		
@@ -827,7 +828,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		return listData;
 	}
 	
-	private SWkpHistExport convertFromWorkplaceInfo(WorkplaceInformation wkpInfo,AffWorkplaceHistory affWrkPlc) {
+	private SWkpHistExport convertFromWorkplaceInfo(WorkplaceInformation wkpInfo, AffWorkplaceHistory affWrkPlc) {
 		return SWkpHistExport.builder()
 				.dateRange(affWrkPlc.getHistoryItems().get(0).span())
 		.employeeId(affWrkPlc.getEmployeeId())
@@ -852,7 +853,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 				.hierarchyCd(configInfo.getHierarchyCode().v()).build()).collect(Collectors.toList());
 	}
 	@Override
-	public List<WorkplaceInforExport> findByWkpIds(List<String> wkpIds) {	
+	public List<WorkplaceInforExport> findByWkpIds(List<String> wkpIds) {
 		return workplaceInformationRepository.findByWkpIds(wkpIds).stream().map(i -> new WorkplaceInforExport(i.getWorkplaceId(), "", i.getWorkplaceCode().v(),
 				i.getWorkplaceName().v(), i.getWkpDisplayName().v(), i.getWkpGenericName().v(), i.getOutsideWkpCode().v())).collect(Collectors.toList());
 	}
@@ -899,8 +900,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		}
 
 		List<AffWorkplaceHistoryItemExport3> result = affWrkPlcItems.stream().map(item -> {
-			return new AffWorkplaceHistoryItemExport3(item.getHistoryId(), item.getEmployeeId(), item.getWorkplaceId(),
-					item.getWorkLocationCode().isPresent() ? item.getWorkLocationCode().get().toString() : null);
+			return new AffWorkplaceHistoryItemExport3(item.getHistoryId(), item.getEmployeeId(), item.getWorkplaceId());
 		}).collect(Collectors.toList());
 
 		return result;
@@ -938,8 +938,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 				.employeeId(affWrkPlc.get().getEmployeeId()).workplaceId(param.getWorkplaceId())
 				.workplaceCode(param.getWorkplaceCode()).workplaceName(param.getWorkplaceName())
 				.wkpDisplayName(param.getDisplayName())
-				.workLocationCd(affWrkPlcItem.get().getWorkLocationCode().isPresent()?
-						affWrkPlcItem.get().getWorkLocationCode().get().v() : null )
+				.workLocationCd( null )
 				.build());
 	}
 
@@ -948,11 +947,13 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 
 		//[No.647]期間に対応する職場構成を取得する
 		List<WorkPlaceConfigExport> workPlaceConfigLst = workPlaceConfigPub.findByCompanyIdAndPeriod(companyId, datePeriod);
-		List<String> wkpIds = new ArrayList<>();
+		List<String> wkpHistIds = new ArrayList<>();
+		List<WorkplaceConfigHistoryExport> wkpConfigs = new ArrayList<>();
 		workPlaceConfigLst.forEach(x -> {
-			x.getWkpConfigHistory().forEach(i -> wkpIds.add(i.getHistoryId()));
+			x.getWkpConfigHistory().forEach(i -> wkpHistIds.add(i.getHistoryId()));
+			wkpConfigs.addAll(x.getWkpConfigHistory());
 		});
-		List<WorkplaceInformation> workplaceInforLst = workplaceInformationRepository.findByHistoryIds(AppContexts.user().companyId(), wkpIds);
+		List<WorkplaceInformation> workplaceInforLst = workplaceInformationRepository.findByHistoryIds(AppContexts.user().companyId(), wkpHistIds);
 
 		return workplaceInforLst.stream()
 			.map(i -> new WorkplaceInformationExport(
@@ -965,7 +966,8 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 					i.getWorkplaceGeneric().v(),
 					i.getWorkplaceDisplayName().v(),
 					i.getHierarchyCode().v(),
-					i.getWorkplaceExternalCode().isPresent() ? Optional.of(i.getWorkplaceExternalCode().get().v()) : Optional.empty()
+					i.getWorkplaceExternalCode().isPresent() ? Optional.of(i.getWorkplaceExternalCode().get().v()) : Optional.empty(),
+					wkpConfigs.stream().filter(c -> c.getHistoryId().equals(i.getWorkplaceHistoryId())).findFirst().map(c -> c.getPeriod()).orElse(null)
 				)
 			).collect(Collectors.toList());
 	}

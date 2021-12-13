@@ -395,31 +395,31 @@ public class ProgramsManager {
     /**
      * KSP001A
      */
-    public static final Program KSP001A = new Program(WebAppId.COM, ProgramIdConsts.KSP001A, "KSP001_1",
+    public static final Program KSP001A = new Program(WebAppId.AT, ProgramIdConsts.KSP001A, "KSP001_1",
             "/view/ksp/001/a/index.xhtml");
 
     /**
      * KSP001B
      */
-    public static final Program KSP001B = new Program(WebAppId.COM, ProgramIdConsts.KSP001B, "KSP001_2",
+    public static final Program KSP001B = new Program(WebAppId.AT, ProgramIdConsts.KSP001B, "KSP001_2",
             "/view/ksp/001/b/index.xhtml");
 
     /**
      * KSP001C
      */
-    public static final Program KSP001C = new Program(WebAppId.COM, ProgramIdConsts.KSP001C, "KSP001_3",
+    public static final Program KSP001C = new Program(WebAppId.AT, ProgramIdConsts.KSP001C, "KSP001_3",
             "/view/ksp/001/c/index.xhtml");
 
     /**
      * KSP001D
      */
-    public static final Program KSP001D = new Program(WebAppId.COM, ProgramIdConsts.KSP001D, "KSP001_4",
+    public static final Program KSP001D = new Program(WebAppId.AT, ProgramIdConsts.KSP001D, "KSP001_4",
             "/view/ksp/001/d/index.xhtml");
 
     /**
      * KSP001E
      */
-    public static final Program KSP001E = new Program(WebAppId.COM, ProgramIdConsts.KSP001E, "KSP001_5",
+    public static final Program KSP001E = new Program(WebAppId.AT, ProgramIdConsts.KSP001E, "KSP001_5",
             "/view/ksp/001/e/index.xhtml");
 
     /**
@@ -2426,8 +2426,12 @@ public class ProgramsManager {
     /**
      * CMM051A
      */
-    public static final Program CMM051A = new Program(WebAppId.COM, ProgramIdConsts.CMM051A, "CMM051_1",
+    public static final Program CMM051A = new Program(WebAppId.COM, ProgramIdConsts.CMM051A, "CMM051_35",
             "/view/cmm/051/a/index.xhtml");
+    public static final Program CMM051B = new Program(WebAppId.COM, ProgramIdConsts.CMM051B, "CMM051_36",
+            "/view/cmm/051/b/index.xhtml");
+    public static final Program CMM051C = new Program(WebAppId.COM, ProgramIdConsts.CMM051C, "CMM051_37",
+            "/view/cmm/051/c/index.xhtml");
     /**
      * CMM001
      */
@@ -2522,6 +2526,9 @@ public class ProgramsManager {
     // KAL012A
     public static final Program KAL012A = new Program(WebAppId.AT, ProgramIdConsts.KAL012A, "KAL012_1",
             "/view/kal/012/a/index.xhtml");
+    // KAL012A
+    public static final Program KAL012B = new Program(WebAppId.AT, ProgramIdConsts.KAL012B, "KAL012_4",
+            "/view/kal/012/b/index.xhtml");
 
     // KAL013A
     public static final Program KAL013A = new Program(WebAppId.AT, ProgramIdConsts.KAL013A, "KAL013_1",

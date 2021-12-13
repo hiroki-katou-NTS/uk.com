@@ -15,6 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+
 import nts.uk.ctx.at.auth.dom.adapter.login.IGetInfoForLogin;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
@@ -46,12 +47,9 @@ import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromSmartPhoneService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -106,9 +104,6 @@ public class RegisterSmartPhoneStampCommandHandler
 
 	@Inject
 	private EmployeeRecordAdapter sysEmpPub;
-
-	@Inject
-	private StampRecordRepository stampRecordRepo;
 
 	@Inject
 	private StampDakokuRepository stampDakokuRepo;
@@ -187,7 +182,7 @@ public class RegisterSmartPhoneStampCommandHandler
 		// 1:require, 契約コード, ログイン社員ID, 打刻日時, 打刻ボタン, 地理座標, 実績への反映内容
 
 		EnterStampFromSmartPhoneServiceImpl require = new EnterStampFromSmartPhoneServiceImpl(stampCardRepo,
-				stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo, getSettingRepo,
+				stampCardEditRepo, companyAdapter, sysEmpPub, stampDakokuRepo, getSettingRepo,
 				createDailyResults, temporarilyReflectStampDailyAttd, workLocationRepository, empInfoTerminalRepository,
 				stampCardRepo, employeeManageRCAdapter, dailyRecordAdUpService, getMngInfoFromEmpIDListAdapter,
 				iGetInfoForLogin, loginUserContextManager, calcService, closureRepo, closureEmploymentRepo,
@@ -237,9 +232,6 @@ public class RegisterSmartPhoneStampCommandHandler
 
 		@Inject
 		private EmployeeRecordAdapter sysEmpPub;
-
-		@Inject
-		private StampRecordRepository stampRecordRepo;
 
 		@Inject
 		private StampDakokuRepository stampDakokuRepo;
@@ -322,12 +314,6 @@ public class RegisterSmartPhoneStampCommandHandler
 		}
 
 		@Override
-		public void insert(StampRecord stampRecord) {
-			this.stampRecordRepo.insert(stampRecord);
-
-		}
-
-		@Override
 		public void insert(Stamp stamp) {
 			this.stampDakokuRepo.insert(stamp);
 		}
@@ -345,12 +331,6 @@ public class RegisterSmartPhoneStampCommandHandler
 		@Override
 		public List<WorkLocation> findAll() {
 			return workLocationRepository.findAll(AppContexts.user().contractCode());
-		}
-
-		@Override
-		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
-				GeneralDateTime dateTime) {
-			return stampRecordRepo.get(contractCode.v(), stampNumber.v(), dateTime);
 		}
 
 		@Override
@@ -419,12 +399,6 @@ public class RegisterSmartPhoneStampCommandHandler
 		@Override
 		public Optional<Closure> closure(String companyId, int closureId) {
 			return closureRepo.findById(companyId, closureId);
-		}
-		
-		@Override
-		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
-				ChangeClockAtr changeClockArt) {
-			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
 		}
 
 		@Override

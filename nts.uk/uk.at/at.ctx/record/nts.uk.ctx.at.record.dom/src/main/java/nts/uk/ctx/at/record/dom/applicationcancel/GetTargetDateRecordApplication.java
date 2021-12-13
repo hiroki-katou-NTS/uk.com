@@ -50,7 +50,7 @@ public class GetTargetDateRecordApplication {
 				new StampType(false,
 						applicaton.getAppStampGoOutAtr().map(x -> EnumAdaptor.valueOf(x.value, GoingOutReason.class)),
 						SetPreClockArt.NONE, ChangeClockAtr.GOING_TO_WORK, ChangeCalArt.NONE),
-				new RefectActualResult(null, null, null, null), Optional.empty(), lstCard.get(0).getStampCardId());
+				new RefectActualResult(null, null, null, null), Optional.empty());
 
 		Optional<GeneralDate> date = ReflectDataStampDailyService.getJudgment(require,
 				stamp).map(x -> x.getDate());

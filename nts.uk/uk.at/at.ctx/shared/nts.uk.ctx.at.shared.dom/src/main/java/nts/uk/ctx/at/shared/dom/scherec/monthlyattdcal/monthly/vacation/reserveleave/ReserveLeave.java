@@ -6,9 +6,11 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 
 /**
  * 積立年休
@@ -23,13 +25,6 @@ public class ReserveLeave implements Cloneable {
 	/** 残数 */
 	private ReserveLeaveRemainingInfo remainingNumberInfo;
 
-//	/** 残数付与前 */
-//	private ReserveLeaveRemainingNumber remainingNumberInfoBeforeGrant;
-//	/** 残数付与後 */
-//	private Optional<ReserveLeaveRemainingNumber> remainingNumberInfoAfterGrant;
-//	/** 未消化数 */
-//	private ReserveLeaveUndigestedNumber undigestedNumber;
-
 	/**
 	 * コンストラクタ
 	 */
@@ -37,9 +32,6 @@ public class ReserveLeave implements Cloneable {
 
 		this.usedNumber = new ReserveLeaveUsedNumber();
 		this.remainingNumberInfo = new ReserveLeaveRemainingInfo();
-//		this.remainingNumberInfoBeforeGrant = new ReserveLeaveRemainingNumber();
-//		this.remainingNumberInfoAfterGrant = Optional.empty();
-//		this.undigestedNumber = new ReserveLeaveUndigestedNumber();
 	}
 
 	/**
@@ -55,9 +47,6 @@ public class ReserveLeave implements Cloneable {
 		ReserveLeave domain = new ReserveLeave();
 		domain.usedNumber = usedNumber;
 		domain.remainingNumberInfo = remainingInfo;
-//		domain.remainingNumberInfoBeforeGrant = remainingNumberInfoBeforeGrant;
-//		domain.remainingNumberInfoAfterGrant = remainingNumberInfoAfterGrant;
-//		domain.undigestedNumber = undigestedNumber;
 		return domain;
 	}
 
@@ -67,11 +56,6 @@ public class ReserveLeave implements Cloneable {
 		try {
 			cloned.usedNumber = this.usedNumber.clone();
 			cloned.remainingNumberInfo = this.remainingNumberInfo.clone();
-//			cloned.remainingNumberInfoBeforeGrant = this.remainingNumberInfoBeforeGrant.clone();
-//			if (this.remainingNumberInfoAfterGrant.isPresent()){
-//				cloned.remainingNumberInfoAfterGrant = Optional.of(this.remainingNumberInfoAfterGrant.get().clone());
-//			}
-//			cloned.undigestedNumber = this.undigestedNumber.clone();
 		}
 		catch (Exception e){
 			throw new RuntimeException("ReserveLeave clone error.");
@@ -148,48 +132,12 @@ public class ReserveLeave implements Cloneable {
 			remainingNumberInfoAfterGrantValue.setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
 		}
 	}
-
-	/**
-	 * 積立年休付与残数データから積立年休残数を作成
-	 * @param remainingDataList 積立年休付与残数データリスト
-	 * @param afterGrantAtr 付与後フラグ
-	 */
+	
 	public void createRemainingNumberFromGrantRemaining(
-			List<ReserveLeaveGrantRemainingData> remainingDataList, boolean afterGrantAtr){
+			List<ReserveLeaveGrantRemainingData> remainingDataList, GrantBeforeAfterAtr grantPeriodAtr){
 
-		// 積立年休付与残数データから残数を作成
-//		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList);
-		this.remainingNumberInfo.getRemainingNumber().createRemainingNumberFromGrantRemaining(remainingDataList);
+		remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList, grantPeriodAtr);
 
-		// 「付与後フラグ」をチェック
-		if (afterGrantAtr){
-			// 残数付与後　←　残数
-			//this.remainingNumberInfoAfterGrant = Optional.of(this.remainingNumberInfo.clone());
-			saveStateAfterGrant();
-		}
-		else {
-			// 残数付与前　←　残数
-			//this.remainingNumberInfoBeforeGrant = this.remainingNumberInfo.clone();
-			saveStateBeforeGrant();
-		}
-	}
-
-	/**
-	 * 付与前退避処理
-	 */
-	public void saveStateBeforeGrant(){
-		// 合計残数を付与前に退避する
-		this.usedNumber.saveStateBeforeGrant();
-		this.remainingNumberInfo.saveStateBeforeGrant();
-	}
-
-	/**
-	 * 付与後退避処理
-	 */
-	public void saveStateAfterGrant(){
-		// 合計残数を付与後に退避する
-		this.usedNumber.saveStateAfterGrant();
-		this.remainingNumberInfo.saveStateAfterGrant();
 	}
 
 }

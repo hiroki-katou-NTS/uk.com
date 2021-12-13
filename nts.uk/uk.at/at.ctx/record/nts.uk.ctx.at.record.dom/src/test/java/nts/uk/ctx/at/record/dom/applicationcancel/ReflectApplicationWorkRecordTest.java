@@ -97,8 +97,8 @@ public class ReflectApplicationWorkRecordTest {
 
 		};
 
-		val actualResult = ReflectApplicationWorkRecord.process(require,  "", appImg,
-				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW);
+		val actualResult = ReflectApplicationWorkRecord.process(require, "", appImg,
+				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW, "1");
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
 
@@ -143,9 +143,8 @@ public class ReflectApplicationWorkRecordTest {
 
 		};
 
-		val actualResult = ReflectApplicationWorkRecord.process(require,  "", appImg,
-				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW);
-
+		val actualResult = ReflectApplicationWorkRecord.process(require, "", appImg,
+				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW, "1");
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
 
 		NtsAssert.atomTask(() -> actualResult.getRight().get(), any -> require.addAllDomain(any.get(), true));
@@ -162,6 +161,6 @@ public class ReflectApplicationWorkRecordTest {
 						SetPreClockArt.NONE, // 所定時刻セット区分
 						ChangeClockAtr.GOING_TO_WORK, // 時刻変更区分
 						ChangeCalArt.NONE), // 計算区分変更対象
-				new RefectActualResult( null, null, null, null), Optional.empty(), "DUMMY");
+				new RefectActualResult( null, null, null, null), Optional.empty());
 	}
 }

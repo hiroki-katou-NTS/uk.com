@@ -239,7 +239,7 @@ module nts.uk.at.view.ksu003.a.model {
 	export function calcAllTime(schedule: any, lstTime: any, timeRangeLimit: any, dispStart: any, dispStartHours: any) {
 		// Tính tổng thời gian làm việc
 		timeRangeLimit = timeRangeLimit;
-		let targetInfor = nts.uk.ui.windows.getShared("targetInforKsu003"); // thay tạm cho __viewContext.viewModel.viewmodelA.dataScreen003A().targetInfor
+		let targetInfor = nts.uk.ui.windows.getShared("targetInforKsu003"); // thay tạm cho __viewContext.viewModel.viewmodelA.dataScreen003A().targetInfor sau khi merge 5_3 thì xóa đi
 		let totalTimeAll = 0, totalTimeWork = 0,
 			start1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.startTime1 != null && schedule.workScheduleDto.startTime1 != 0) ? (model.checkTimeChart(schedule.workScheduleDto.startTime1, timeRangeLimit * 5 + dispStart *5, dispStartHours)) : 0,
 			end1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.endTime1 != null && schedule.workScheduleDto.endTime1 != 0) ? (model.checkTimeChart(schedule.workScheduleDto.endTime1, timeRangeLimit * 5 + dispStart *5, dispStartHours)) : 0,

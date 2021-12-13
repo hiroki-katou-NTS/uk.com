@@ -54,8 +54,7 @@ public class StampHelper {
 																group),
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty(),
-				"DUMMY"
+				Optional.empty()
 				);
 	}
 	
@@ -83,8 +82,7 @@ public class StampHelper {
 								group),
 				new ImprintReflectionState(true, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty(),
-				"DUMMY");
+				Optional.empty());
 
 	}
 	
@@ -112,8 +110,7 @@ public class StampHelper {
 								group),
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty(),
-				"DUMMY");
+				Optional.empty());
 	}
 	public static List<Stamp> getListStampDefault() {
 		List<Stamp> data = new ArrayList<>();
@@ -130,8 +127,7 @@ public class StampHelper {
 						group),
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty(),
-				"DUMMY")
+				Optional.empty())
 				);
 		data.add(new Stamp(new ContractCode("DUMMY"),new StampNumber("stampNumber"), GeneralDateTime.now(),
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
@@ -145,8 +141,7 @@ public class StampHelper {
 						group),
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty(),
-				"DUMMY")
+				Optional.empty())
 				);
 		return data;
 	}
