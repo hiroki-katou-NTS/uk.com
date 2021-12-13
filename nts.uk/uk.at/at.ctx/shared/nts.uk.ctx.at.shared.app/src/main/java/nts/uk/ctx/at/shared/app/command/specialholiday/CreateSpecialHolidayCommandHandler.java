@@ -33,7 +33,7 @@ public class CreateSpecialHolidayCommandHandler extends CommandHandlerWithResult
 		List<String> errList = new ArrayList<String>();
 
 		// check exists code
-		Optional<SpecialHoliday> specialHoliday = sphdRepo.findByCode(companyId, command.getSpecialHolidayCode());
+		Optional<SpecialHoliday> specialHoliday = sphdRepo.findBySingleCD(companyId, command.getSpecialHolidayCode());
 		if (specialHoliday.isPresent()) {
 			addMessage(errList, "Msg_3");
 		}

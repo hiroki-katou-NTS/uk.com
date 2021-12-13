@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.NextReserveLeaveGrant;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveGrantWork;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveLapsedWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLeaNextDayAfterPeriodEndWork;
 
 /**
@@ -17,32 +19,25 @@ public class RsvLeaDividedDay {
 
 	/** 年月日 */
 	private GeneralDate ymd;
-
-	/** 次回積立年休付与 */
+	/** 付与 */
 	@Setter
-	private Optional<NextReserveLeaveGrant> nextReserveLeaveGrant;
-	/** 期間終了後翌日 */
+	private ReserveLeaveGrantWork grantWork;
+	/** 消滅 */
+	@Setter
+	private ReserveLeaveLapsedWork lapsedWork;
+	/** 終了日 */
 	@Setter
 	private RsvLeaNextDayAfterPeriodEndWork endWork;
-	/** 付与フラグ */
-	@Setter
-	private boolean grantAtr;
-	/** 消滅フラグ */
-	@Setter
-	private boolean lapsedAtr;
 
 	/**
 	 * コンストラクタ
 	 * @param ymd 年月日
 	 */
 	public RsvLeaDividedDay(GeneralDate ymd){
-
 		this.ymd = ymd;
-
-		this.nextReserveLeaveGrant = Optional.empty();
+		this.grantWork = new ReserveLeaveGrantWork();
+		this.lapsedWork = new ReserveLeaveLapsedWork();
 		this.endWork = new RsvLeaNextDayAfterPeriodEndWork();
-		this.grantAtr = false;
-		this.lapsedAtr = false;
 	}
 
 	/**
@@ -62,10 +57,10 @@ public class RsvLeaDividedDay {
 			boolean lapsedAtr){
 
 		RsvLeaDividedDay domain = new RsvLeaDividedDay(ymd);
-		domain.nextReserveLeaveGrant = nextReserveLeaveGrant;
+		domain.getGrantWork().setReserveLeaveGrant(nextReserveLeaveGrant);
+		domain.getGrantWork().setGrantAtr(grantAtr);
+		domain.getLapsedWork().setLapsedAtr(lapsedAtr);
 		domain.endWork = endWork;
-		domain.grantAtr = grantAtr;
-		domain.lapsedAtr = lapsedAtr;
 		return domain;
 	}
 }

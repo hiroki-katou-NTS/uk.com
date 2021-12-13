@@ -90,8 +90,8 @@
 					<button  id="A1_2"  class="proceed marginleft15px" tabindex="2">#{i18n.getText('KSU001_2')}</button>
 					<button  id="A1_3"  class="create  marginleft15px" tabindex="3">#{i18n.getText('KSU001_3')}</button>
 					<button  id="A1_5"  class="confirm marginleft15px" tabindex="5" data-bind="click: openDialogU">#{i18n.getText('KSU001_5')}</button>
-					<button  id="A1_6"  class="release marginleft15px" data-bind="click: openKSU005 " tabindex="6" >#{i18n.getText('KSU001_6')}</button>
-					
+					<button  id="A1_6"  class="release marginleft15px" tabindex="6" data-bind="click: openDialogK">#{i18n.getText('KSU001_6')}</button>
+
 					<button  id="A1_7" tabindex="7">#{i18n.getText('KSU001_7')}</button>
 					<button  id="A1_8" tabindex="10" class="hope     marginleft15px" >#{i18n.getText('KSU001_8')}</button>
 					<button  id="A1_9" tabindex="11" class="vacation marginleft15px" data-bind="click: btnOpenKDL055">#{i18n.getText('KSU001_9')}</button>
@@ -381,7 +381,7 @@
 											data-bind="click: undoData, enable: enableBtnUndo , visible : visibleBtnUndo , timeClick: -1"><i data-bind="ntsIcon: { no: 44 }"></i></button>
 										<button id="redo" class="size-image-button2 A7_5" tabindex="40" 
 											data-bind="click: redoData, enable: enableBtnRedo , visible : visibleBtnRedo , timeClick: -1"><i data-bind="ntsIcon: { no: 154 }"></i></button>
-										<button tabindex="41"  data-bind="ntsHelpButton: {textId: '', textParams:[], position: 'right center' ,enable: enableHelpBtn}"
+										<button tabindex="41"  data-bind="ntsHelpButton: {textId: '', textParams:[], position: 'right center' ,enable: false}"
 											style="margin-top: 13px;">？</button>
 									</div>
 									<div data-bind="ifnot: visibleShiftPalette" style="width: 100%;margin-left: 140px; margin-top: 5px;">

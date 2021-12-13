@@ -545,17 +545,5 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				.setParameter("expiredDate", expiredDate)
 				.setParameter("unUse", unUse)
 				.getList(entity -> toDomain(entity));
-	}
-
-	@Override
-	public void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target) {
-
-		this.getEntityManager().createQuery("DELETE FROM KrcdtHdWorkMng d WHERE d.sID = :sid "
-				+ " AND d.unknownDate = :unknownDate AND d.dayOff >= :targetDate", KrcdtHdWorkMng.class)
-		.setParameter("sid", sid)
-		.setParameter("unknownDate", unknownDateFlag)
-		.setParameter("targetDate", target)
-		.executeUpdate();
-	}
-	
+	}	
 }

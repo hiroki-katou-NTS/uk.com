@@ -16,6 +16,7 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.Range;
+import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExecutionInfor;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.AddScheduleByDisplaySettingCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.AddScheduleByDisplaySettingCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.AddWorkScheduleCommand;
@@ -38,6 +39,8 @@ import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeDto;
 import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeSc;
 import nts.uk.screen.at.app.ksu003.changeworktype.CheckWorkType;
 import nts.uk.screen.at.app.ksu003.changeworktype.CheckWorkTypeDto;
+import nts.uk.screen.at.app.ksu003.d.GetInfoInitScreenKsu003D;
+import nts.uk.screen.at.app.ksu003.d.InitKsu003DInfoDto;
 import nts.uk.screen.at.app.ksu003.checkempattendancesystem.CheckEmpAttParam;
 import nts.uk.screen.at.app.ksu003.checkempattendancesystem.CheckEmpAttendanceSystem;
 import nts.uk.screen.at.app.ksu003.getempworkfixedworkkinfo.EmpWorkFixedWorkInfoDto;
@@ -90,6 +93,9 @@ public class KSU003WebService extends WebService{
 	
 	@Inject
 	private RegisterWorkScheduleKsu003 regWorkSchedule;
+
+	@Inject
+	private GetInfoInitScreenKsu003D getInfoInitScreenKsu003D;
 	
 	@Inject 
 	private GetWorkSelectionInfor selectTaskInfor;
@@ -176,8 +182,8 @@ public class KSU003WebService extends WebService{
 	@POST
 	@Path("registerKSU003")
 	// 勤務予定を登録する
-	public ResultRegisWorkSchedule registerWorkSchedule (List<WorkScheduleParam> param){
-		ResultRegisWorkSchedule rs = regWorkSchedule.handle(param);
+	public ExecutionInfor registerWorkSchedule (List<WorkScheduleParam> param){
+		ExecutionInfor rs = regWorkSchedule.handle(param);
 		return rs;
 	}
 	
@@ -196,7 +202,13 @@ public class KSU003WebService extends WebService{
 		TaskPaletteDto rs = taskPalletQuery.get(GeneralDate.fromString(param.getBaseDate(), "yyyy/MM/dd"), param.getPage(), param.getTargetUnit(),  param.getOrganizationID());
 		return rs;
 	}
-	
+
+	@POST
+	@Path("ksu003/d/init")
+	// 画面初期起動
+	public InitKsu003DInfoDto getDataStartScreenD () {
+		return getInfoInitScreenKsu003D.getData();
+	}
 	@POST
 	@Path("getTaskPaletteDisplay")
 	// 作業パレット表示情報を取得する taskPaletteDisplay

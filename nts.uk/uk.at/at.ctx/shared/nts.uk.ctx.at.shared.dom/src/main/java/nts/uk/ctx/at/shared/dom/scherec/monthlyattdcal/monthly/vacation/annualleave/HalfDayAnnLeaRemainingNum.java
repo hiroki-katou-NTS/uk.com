@@ -6,7 +6,9 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.gul.serialize.binary.SerializableWithOptional;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.HalfdayAnnualLeaveMax;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 
 /**
  * 半日年休残数
@@ -20,8 +22,6 @@ public class HalfDayAnnLeaRemainingNum implements Cloneable, SerializableWithOpt
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	/** 回数 */
-	private RemainingTimes times;
 	/** 回数付与前 */
 	private RemainingTimes timesBeforeGrant;
 	/** 回数付与後 */
@@ -32,23 +32,20 @@ public class HalfDayAnnLeaRemainingNum implements Cloneable, SerializableWithOpt
 	 */
 	public HalfDayAnnLeaRemainingNum(){
 		
-		this.times = new RemainingTimes(0);
 		this.timesBeforeGrant = new RemainingTimes(0);
 		this.timesAfterGrant = Optional.empty();
 	}
 
 	/**
 	 * ファクトリー
-	 * @param times 回数
 	 * @param timesBeforeGrant 回数付与前
 	 * @param timesAfterGrant 回数付与後
 	 * @return 半日年休残数
 	 */
 	public static HalfDayAnnLeaRemainingNum of(
-			RemainingTimes times, RemainingTimes timesBeforeGrant, Optional<RemainingTimes> timesAfterGrant){
+			 RemainingTimes timesBeforeGrant, Optional<RemainingTimes> timesAfterGrant){
 		
 		HalfDayAnnLeaRemainingNum domain = new HalfDayAnnLeaRemainingNum();
-		domain.times = times;
 		domain.timesBeforeGrant = timesBeforeGrant;
 		domain.timesAfterGrant = timesAfterGrant;
 		return domain;
@@ -58,7 +55,6 @@ public class HalfDayAnnLeaRemainingNum implements Cloneable, SerializableWithOpt
 	public HalfDayAnnLeaRemainingNum clone() {
 		HalfDayAnnLeaRemainingNum cloned = new HalfDayAnnLeaRemainingNum();
 		try {
-			cloned.times = new RemainingTimes(this.times.v());
 			cloned.timesBeforeGrant = new RemainingTimes(this.timesBeforeGrant.v());
 			if (this.timesAfterGrant.isPresent()){
 				cloned.timesAfterGrant = Optional.of(new RemainingTimes(this.timesAfterGrant.get().v()));
@@ -69,6 +65,24 @@ public class HalfDayAnnLeaRemainingNum implements Cloneable, SerializableWithOpt
 		}
 		return cloned;
 	}
+	
+	//[1]更新する
+	public HalfDayAnnLeaRemainingNum update(HalfdayAnnualLeaveMax maxData, GrantBeforeAfterAtr grantPeriodAtr){
+		if(grantPeriodAtr == GrantBeforeAfterAtr.BEFORE_GRANT){
+			return HalfDayAnnLeaRemainingNum.of(maxData.getRemainingTimes(),timesAfterGrant);
+		}else{
+			return  HalfDayAnnLeaRemainingNum.of(timesBeforeGrant,Optional.of(maxData.getRemainingTimes()));
+		}
+	}
+	//[2]残数超過分を補正する
+	public HalfDayAnnLeaRemainingNum correctTheExcess(){
+		RemainingTimes timesBeforeGrant = this.timesBeforeGrant.correctTheExcess();
+		Optional<RemainingTimes> timesAfterGrant = this.getTimesAfterGrant()
+				.map(x->x.correctTheExcess());
+		
+		return HalfDayAnnLeaRemainingNum.of(timesBeforeGrant, timesAfterGrant) ;
+	}
+	
 	
 	private void writeObject(ObjectOutputStream stream){	
 		writeObjectWithOptional(stream);

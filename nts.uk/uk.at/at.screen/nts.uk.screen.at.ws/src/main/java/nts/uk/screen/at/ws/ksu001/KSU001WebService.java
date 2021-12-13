@@ -8,8 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.task.AsyncTaskInfo;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
+import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExecutionInfor;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ChangeConfirmedStateCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ChangeConfirmedStateCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.RegisterWorkSchedule;
@@ -179,10 +181,10 @@ public class KSU001WebService extends WebService{
 	}
 	
 	@POST
-	@Path("reg-workschedule") 
-	public ResultRegisWorkSchedule regWorkSchedule(List<WorkScheduleCommand> param) {
-		ResultRegisWorkSchedule rs = regWorkSchedule.handle(param);
-		return rs;
+	@Path("reg-workschedule")
+	public ExecutionInfor regWorkSchedule(List<WorkScheduleCommand> param) {
+		ExecutionInfor executionInfor = regWorkSchedule.handle(param);
+		return executionInfor;
 	}
 	
 	@POST
@@ -222,5 +224,4 @@ public class KSU001WebService extends WebService{
 	@POST
 	@Path("change-mode")
 	public void changeMode(){}
-	
 }

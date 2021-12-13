@@ -917,4 +917,26 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.setParameter("employeeCode", employeeCd)
 				.getSingle(m -> toDomain(m));
 	}
+	private static final String FIND_EMPLOYEES_PIDS = "SELECT e FROM BsymtEmployeeDataMngInfo e "
+			+ "WHERE e.bsymtEmployeeDataMngInfoPk.pId IN :pId ";
+
+	@Override
+	public List<EmployeeDataMngInfo> getByPersonIdList(List<String> personIdList) {
+		List<EmployeeDataMngInfo> rs = new ArrayList<>();
+		CollectionUtil.split(personIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, ids -> {
+			List<EmployeeDataMngInfo> _emps = queryProxy().query(FIND_EMPLOYEES_PIDS, BsymtEmployeeDataMngInfo.class)
+					.setParameter("pId", ids)
+					.getList(this::toDomain);
+			rs.addAll(_emps);
+		});
+		return rs;
+	}
+	// Pub get all Sid
+	@Override
+	public List<String> getAllSidByCid(String cid) {
+		List<String> listEntity = this.queryProxy().query(GET_ALL, BsymtEmployeeDataMngInfo.class)
+				.setParameter("cid", cid).getList().stream().map(x -> x.bsymtEmployeeDataMngInfoPk.sId).collect(Collectors.toList());
+
+		return listEntity;
+	}
 }
