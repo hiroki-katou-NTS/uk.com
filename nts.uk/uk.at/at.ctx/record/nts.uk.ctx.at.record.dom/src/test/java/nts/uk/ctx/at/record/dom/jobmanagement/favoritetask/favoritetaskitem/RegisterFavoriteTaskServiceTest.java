@@ -107,40 +107,36 @@ public class RegisterFavoriteTaskServiceTest {
 		}};
 	}
 
-//	@Test
-//	public void test2() {
-//
-//		Optional<FavoriteTaskDisplayOrder> optdisplayOrder = Optional.empty();
-//
-//		new Expectations() {
-//			{
-//				require.getBySameSetting(anyString, new ArrayList<>());
-//				result = new ArrayList<>();
-//
-//				require.get(anyString);
-//				result = optdisplayOrder;
-//			}
-//		};
-//
-//		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
-//				new ArrayList<>());
-//		
-//		new Verifications() {{
-//			List<FavoriteDisplayOrder> lst = new ArrayList<>();
-//			lst.add(new FavoriteDisplayOrder(anyString, 1));
-//			require.insert(new FavoriteTaskDisplayOrder("employeeId", lst));
-//			times = 0;
-//		}};
-//		
-//		result.run();
-//		
-//		new Verifications() {{
-//			List<FavoriteDisplayOrder> lst = new ArrayList<>();
-//			lst.add(new FavoriteDisplayOrder(anyString, 1));
-//			require.insert(new FavoriteTaskDisplayOrder("employeeId", lst));
-//			times = 1;
-//		}};
-//	
-//	}
+	@Test
+	public void test2() {
+
+		Optional<FavoriteTaskDisplayOrder> optdisplayOrder = Optional.empty();
+
+		new Expectations() {
+			{
+				require.getBySameSetting(anyString, new ArrayList<>());
+				result = new ArrayList<>();
+
+				require.get(anyString);
+				result = optdisplayOrder;
+			}
+		};
+
+		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
+				new ArrayList<>());
+		
+		new Verifications() {{
+			require.insert(FavoriteTaskDisplayOrder.addNewFavTaskDisporder("employeeId", anyString));
+			times = 0;
+		}};
+		
+		result.run();
+		
+		new Verifications() {{
+			require.insert(FavoriteTaskDisplayOrder.addNewFavTaskDisporder("employeeId", anyString));
+			times = 0;
+		}};
+	
+	}
 
 }
