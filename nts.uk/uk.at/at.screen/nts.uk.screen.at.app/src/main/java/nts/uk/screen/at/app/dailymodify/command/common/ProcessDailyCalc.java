@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,11 +32,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.Employ
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
-<<<<<<< HEAD
-import nts.uk.screen.at.app.checkarbitraryitems.CheckArbitraryItems;
-=======
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
->>>>>>> pj/at/release_ver4
+import nts.uk.screen.at.app.checkarbitraryitems.CheckArbitraryItems;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
@@ -65,11 +62,10 @@ public class ProcessDailyCalc {
 	private OptionalItemRepository optionalMasterRepo;
 	
 	@Inject
-<<<<<<< HEAD
 	private CheckArbitraryItems checkArbitraryItems;
-=======
+	
+	@Inject
 	private RecordDomRequireService requireService;
->>>>>>> pj/at/release_ver4
 
 	private Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> checkBeforeCalc(DailyCalcParam param,
 			List<DailyRecordDto> dailyEdits) {
