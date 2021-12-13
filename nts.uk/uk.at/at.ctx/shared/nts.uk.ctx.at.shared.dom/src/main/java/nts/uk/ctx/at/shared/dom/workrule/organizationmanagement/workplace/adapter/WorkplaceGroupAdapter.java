@@ -45,13 +45,9 @@ public interface WorkplaceGroupAdapter {
 	 * @param period 期間
 	 * @return List<社員ID>
 	 */
-<<<<<<< HEAD
-	List<String> getAllReferableEmp(GeneralDate date, String employeeId);
+	List<String> getAllReferableEmp(String employeeId, GeneralDate date, DatePeriod period);
 	
 	
 	String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
-=======
-	List<String> getAllReferableEmp(String employeeId, GeneralDate date, DatePeriod period);
->>>>>>> pj/at/release_ver4
 
 }
