@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
@@ -186,7 +185,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 	 */
 	public static IntegrationOfDaily calcTimeResult(
 			VacationClass vacation, WorkType workType,
-			Optional<SettingOfFlexWork> flexCalcMethod, BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			Optional<SettingOfFlexWork> flexCalcMethod,
 			List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			List<DivergenceTimeRoot> divergenceTimeList,
 			CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, ManageReGetClass scheduleReGetClass,
@@ -212,7 +211,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 																   workType, 
 																   vacation, 
 																   flexCalcMethod, 
-																   bonusPayAutoCalcSet, 
 																   eachCompanyTimeSet, 
 																   scheduleReGetClass,
 																   conditionItem, 
@@ -241,7 +239,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			calcResult = Optional.of(collectCalculationResult(vacation,
 															  workType,
 															  flexCalcMethod,
-															  bonusPayAutoCalcSet,
 															  eachCompanyTimeSet,
 															  forCalcDivergenceDto,
 															  divergenceTimeList,
@@ -287,7 +284,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 					workType,
 					recordWorkTimeCode,
 					predetermineTimeSetByPersonInfo,
-					bonusPayAutoCalcSet,
 					calculateOfTotalConstraintTime,
 					converter,
 					result));
@@ -439,6 +435,10 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 						.recalcActualTime().valueAsMinutes());
 			}
 		}
+
+		// 実働時間
+		calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+				.getTotalWorkingTime().calcActualTimeForReCalc();
 
 		// 乖離時間計算用 勤怠項目ID紐づけDto作成
 		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = converter.setData(calcResultIntegrationOfDaily);
@@ -632,14 +632,14 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 	 * @return　計算結果
 	 */
 	public static AttendanceTimeOfDailyAttendance calcTimeResultForContinusWork(ManageReGetClass recordReGetClass, WorkType workType, 
-			VacationClass vacation, Optional<SettingOfFlexWork> flexCalcMethod, BonusPayAutoCalcSet bonusPayAutoCalcSet, 
+			VacationClass vacation, Optional<SettingOfFlexWork> flexCalcMethod, 
 			List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, ManageReGetClass scheduleReGetClass, WorkingConditionItem conditionItem, 
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo, 
 			Optional<WorkTimeCode> recordWorkTimeCode){
 		
 		val workScheduleTime = calcWorkSheduleTime(recordReGetClass, workType, 
 												   vacation, 
-												   flexCalcMethod, bonusPayAutoCalcSet, 
+												   flexCalcMethod, 
 												   eachCompanyTimeSet, scheduleReGetClass,conditionItem,
 												   predetermineTimeSetByPersonInfo,recordWorkTimeCode);
 		
@@ -667,7 +667,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 	 */
 	private static AttendanceTimeOfDailyAttendance collectCalculationResult(
 				VacationClass vacation, WorkType workType,
-				Optional<SettingOfFlexWork> flexCalcMethod,BonusPayAutoCalcSet bonusPayAutoCalcSet,
+				Optional<SettingOfFlexWork> flexCalcMethod,
 				List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 				DailyRecordToAttendanceItemConverter forCalcDivergenceDto, List<DivergenceTimeRoot> divergenceTimeList,
 				CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, ManageReGetClass scheduleReGetClass,
@@ -680,7 +680,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		/*日別実績の勤務予定時間の計算*/
 		val workScheduleTime = calcWorkSheduleTime(recordReGetClass, workType, 
 													vacation, 
-												   flexCalcMethod, bonusPayAutoCalcSet, 
+												   flexCalcMethod,  
 												    eachCompanyTimeSet, scheduleReGetClass,conditionItem,
 												    predetermineTimeSetByPersonInfo,
 												    recordWorkTimeCode);
@@ -694,7 +694,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			    workType,
 			    workDailyAtr,
 			    flexCalcMethod,
-				bonusPayAutoCalcSet,
 				eachCompanyTimeSet,
 				forCalcDivergenceDto,
 				divergenceTimeList,
@@ -790,7 +789,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 															   WorkType workType, 
 															   VacationClass vacationClass, 
 															   Optional<SettingOfFlexWork> flexCalcMethod,
-															   BonusPayAutoCalcSet bonusPayAutoCalcSet, 
 															   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 															   ManageReGetClass scheRegetManage
 															   ,WorkingConditionItem conditionItem,
@@ -821,7 +819,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 																   scheRegetManage.getWorkType().get(), 
 																   workDailyAtr, //就業時間帯依存
 																   flexCalcMethod, //詳細が決まってなさそう(2018.6.21)
-																   bonusPayAutoCalcSet, //会社共通
 																   eachCompanyTimeSet, //会社共通 
 																   conditionItem,
 																   predetermineTimeSetByPersonInfo,
@@ -830,10 +827,10 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			scheTotalTime = totalWorkingTime.getTotalTime();
 			if(totalWorkingTime.getWithinStatutoryTimeOfDaily() != null)
 				scheWithinTotalTime = totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime();
-			int overWorkTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTotalFrameTime():0;
-			overWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTransTotalFrameTime():0;
-			int holidayWorkTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTotalFrameTime():0;
-			holidayWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTransTotalFrameTime():0;
+			int overWorkTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTotalFrameTime().v():0;
+			overWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTransTotalFrameTime().v():0;
+			int holidayWorkTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTotalFrameTime().v():0;
+			holidayWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTransTotalFrameTime().v():0;
 			scheExcessTotalTime = new AttendanceTime(overWorkTime + holidayWorkTime);
 			//計画所定時間の計算
 			schePreTimeSet = Optional.of(scheRegetManage.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc());
@@ -906,7 +903,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			WorkType workType,
 			Optional<WorkTimeCode> recordWorkTimeCode,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			CalculateOfTotalConstraintTime calculateOfTotalConstraintTime,
 			DailyRecordToAttendanceItemConverter converter,
 			TimeSpanForDailyCalc timeSpan) {
@@ -925,7 +921,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 				VacationClass.createAllZero(),
 				workType,
 				Optional.of(SettingOfFlexWork.defaultValue()),
-				bonusPayAutoCalcSet,
 				duplicate.get().getCompanyCommonSetting().getCompensatoryLeaveComSet().getCompensatoryOccurrenceSetting(),
 				converter,
 				duplicate.get().getCompanyCommonSetting().getDivergenceTime(),

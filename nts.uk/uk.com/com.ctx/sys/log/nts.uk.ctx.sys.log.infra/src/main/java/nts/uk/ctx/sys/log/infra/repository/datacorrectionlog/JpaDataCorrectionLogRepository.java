@@ -1283,7 +1283,6 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 		}
 	}
 
-<<<<<<< HEAD
 	@Override
 	public List<DataCorrectionLog> getAllLogDataByYM(TargetDataType targetDataType, List<String> listEmployeeId,
 			YearMonth ym, GeneralDate ymd) {
@@ -1341,7 +1340,8 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 			}
 		});
 		return resultList;
-=======
+	}
+		
 	String GET_LOG_BASIC = "SELECT OPERATION_ID, USER_ID, TARGET_DATA_TYPE, ITEM_ID, USER_NAME, SID, YMD_KEY, YM_KEY, Y_KEY, STRING_KEY, CORRECTION_ATTR, ITEM_NAME, RAW_VALUE_BEFORE_ID, VIEW_VALUE_BEFORE, RAW_VALUE_AFTER_ID, VIEW_VALUE_AFTER, VALUE_DATA_TYPE, SHOW_ORDER, NOTE"
 			+ " FROM SRCDT_DATA_CORRECTION "
 			+ " WHERE TARGET_DATA_TYPE = @type" 
@@ -1381,6 +1381,5 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 				correctionAttr, itemName, rawValueBefore, viewValueBefore, rawValueAfter, viewValueAfter, valueType,
 				showOrder, note);
 		return srcdtDataCorrectionLog.toDomainToView();
->>>>>>> pj/at/release_ver4
 	}
 }

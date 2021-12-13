@@ -131,9 +131,5 @@ public class ReflectSupportStartEnd {
 	}
 
 	public static interface Require {
-<<<<<<< HEAD
-
-=======
->>>>>>> pj/at/release_ver4
 	}
 }

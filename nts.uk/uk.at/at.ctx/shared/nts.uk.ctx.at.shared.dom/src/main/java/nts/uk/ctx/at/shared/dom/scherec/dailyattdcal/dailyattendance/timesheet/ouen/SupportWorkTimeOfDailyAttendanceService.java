@@ -4,12 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -38,7 +37,6 @@ public class SupportWorkTimeOfDailyAttendanceService {
 			WorkType workType,
 			Optional<WorkTimeCode> recordWorkTimeCode,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			CalculateOfTotalConstraintTime calculateOfTotalConstraintTime,
 			DailyRecordToAttendanceItemConverter converter,
 			IntegrationOfDaily integrationOfDaily) {
@@ -51,7 +49,6 @@ public class SupportWorkTimeOfDailyAttendanceService {
 						workType,
 						recordWorkTimeCode,
 						predetermineTimeSetByPersonInfo,
-						bonusPayAutoCalcSet,
 						calculateOfTotalConstraintTime,
 						converter,
 						recordReGetClass.getIntegrationOfDaily().getOuenTimeSheet(),

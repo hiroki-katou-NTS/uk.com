@@ -14,9 +14,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcessing.DailyStoredProcessResult;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
@@ -78,7 +76,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
@@ -583,15 +580,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			DeclareTimezoneResult declareResult) {
 		String companyId = AppContexts.user().companyId();
 
-<<<<<<< HEAD
-		// 加給時間計算設定
-		BonusPayAutoCalcSet bonusPayAutoCalcSet = new BonusPayAutoCalcSet(new CompanyId(companyId), 1,
-				WorkingTimesheetCalculationSetting.CalculateAutomatic,
-				OvertimeTimesheetCalculationSetting.CalculateAutomatic,
-				HolidayTimesheetCalculationSetting.CalculateAutomatical);
-=======
 		GeneralDate targetDate = recordReGetClass.getIntegrationOfDaily().getYmd();
->>>>>>> pj/at/release_ver4
 
 		// 休暇クラス
 		VacationClass vacation = CalcDefaultValue.DEFAULT_VACATION;
@@ -629,13 +618,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 		
 		/* 時間の計算 */
-<<<<<<< HEAD
 		recordReGetClass.setIntegrationOfDaily(AttendanceTimeOfDailyAttendance.calcTimeResult(vacation, workType.get(),
-				flexCalcMethod, bonusPayAutoCalcSet, eachCompanyTimeSet, divergenceTimeList,
-=======
-		recordReGetClass.setIntegrationOfDaily(AttendanceTimeOfDailyPerformance.calcTimeResult(vacation, workType.get(),
 				flexCalcMethod, eachCompanyTimeSet, divergenceTimeList,
->>>>>>> pj/at/release_ver4
 				calculateOfTotalConstraintTime, scheduleReGetClass, recordReGetClass,
 				recordReGetClass.getPersonDailySetting().getPersonInfo(),
 				getPredByPersonInfo(recordReGetClass.getPersonDailySetting().getPersonInfo().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode(),
