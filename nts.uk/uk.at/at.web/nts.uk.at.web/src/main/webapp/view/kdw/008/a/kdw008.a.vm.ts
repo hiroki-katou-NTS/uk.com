@@ -169,7 +169,6 @@ module nts.uk.at.view.kdw008.a {
                     } else {
                         self.enableSheetNo(true);
                     }
-<<<<<<< HEAD
                     if (self.formatCodeItems().length > 0) {
 	                    if (self.isDaily()) {
 	                        nts.uk.ui.errors.clearAll();
@@ -183,25 +182,12 @@ module nts.uk.at.view.kdw008.a {
 	                    }
 	                } else {
 						if (self.isDaily()) {
-							self.clearDataSwapList();	
+							self.clearDataSwapListAndSheetName();	
 						} else {
 							self.clearSwapListByMonth();
 						}
 	                	block.clear();
 	                }
-=======
-                    if (self.isDaily()) {
-                        if (self.currentDailyFormatCode() != undefined && self.currentDailyFormatCode().length > 0) {
-	                        self.getDailyDetail(self.currentDailyFormatCode(), value).done(() => {
-                                nts.uk.ui.errors.clearAll();
-	                        });
-                        } 
-                        block.clear();
-                    } else {
-                        self.getMonthCorrectionDetail(value);
-                        block.clear();
-                    }
->>>>>>> pj/at/release_ver4
                 });
 
                 self.authorityFormatDailyValue = ko.observableArray([]);
