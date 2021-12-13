@@ -168,6 +168,8 @@ public class IntegrationOfDailyHelperInAggregation {
 				, new ArrayList<>()	// 編集状態
 				, Optional.empty()	// 臨時出退勤
 				, new ArrayList<>()	// 備考
+				, new ArrayList<>()	
+				, new ArrayList<>()	
 				, Optional.empty()	// スナップショット
 			);
 	}
