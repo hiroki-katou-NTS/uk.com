@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.support.SupportWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -36,10 +35,10 @@ public class OuenMovementTimeEachTimeSheet implements DomainObject {
 	private AttendanceTime withinMoveTime;
 	
 	/** 割増時間: 割増時間 */
-	private List<PremiumTime> premiumTime;
+	private PremiumTimeOfDailyPerformance premiumTime;
 
 	private OuenMovementTimeEachTimeSheet(AttendanceTime totalMoveTime, AttendanceTime breakTime,
-			AttendanceTime withinMoveTime, List<PremiumTime> premiumTime) {
+			AttendanceTime withinMoveTime, PremiumTimeOfDailyPerformance premiumTime) {
 		super();
 		this.totalMoveTime = totalMoveTime;
 		this.breakTime = breakTime;
@@ -48,7 +47,7 @@ public class OuenMovementTimeEachTimeSheet implements DomainObject {
 	}
 	
 	public static OuenMovementTimeEachTimeSheet create(AttendanceTime totalMoveTime, 
-			AttendanceTime breakTime, AttendanceTime withinMoveTime, List<PremiumTime> premiumTime) {
+			AttendanceTime breakTime, AttendanceTime withinMoveTime, PremiumTimeOfDailyPerformance premiumTime) {
 		return new OuenMovementTimeEachTimeSheet(totalMoveTime, breakTime, withinMoveTime, premiumTime);
 	}
 	
@@ -101,24 +100,17 @@ public class OuenMovementTimeEachTimeSheet implements DomainObject {
 		
 		copyIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(calcResult));
 		
-		//編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
-		List<Integer> attendanceItemIdList = recordReGetClass.getIntegrationOfDaily().getEditState().stream()
-				.map(editState -> editState.getAttendanceItemId())
-				.distinct()
-				.collect(Collectors.toList());
-		
 		//手修正後の再計算
 		IntegrationOfDaily result = AttendanceTimeOfDailyAttendance.reCalcForSupport(
 				copyIntegrationOfDaily,
 				converter,
-				attendanceItemIdList,
 				recordReGetClass);
 		
 		if(!result.getAttendanceTimeOfDailyPerformance().isPresent())
 			return OuenMovementTimeEachTimeSheet.createAllZero();
 		
 		//項目移送
-		return valueOf(result.getAttendanceTimeOfDailyPerformance().get());
+		return create(result.getAttendanceTimeOfDailyPerformance().get());
 	}
 	
 	/**
@@ -126,7 +118,7 @@ public class OuenMovementTimeEachTimeSheet implements DomainObject {
 	 * @return 応援別勤務の移動時間
 	 */
 	public static OuenMovementTimeEachTimeSheet createAllZero() {
-		return new OuenMovementTimeEachTimeSheet(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO, Collections.emptyList());
+		return new OuenMovementTimeEachTimeSheet(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO, PremiumTimeOfDailyPerformance.createEmpty());
 	}
 	
 	/**
@@ -209,18 +201,18 @@ public class OuenMovementTimeEachTimeSheet implements DomainObject {
 				processingTimeSheet.getTimeSheet().getEndTimeWithDayAttr().get(),
 				next.get().getTimeSheet().getStartTimeWithDayAttr().get()));
 	}
-	
+
 	/**
 	 * 日別勤怠の勤怠時間から作成する
 	 * @param attendanceTime 日別勤怠の勤怠時間
 	 * @return 応援別勤務の移動時間
 	 */
-	public static OuenMovementTimeEachTimeSheet valueOf(AttendanceTimeOfDailyAttendance attendanceTime) {
+	private static OuenMovementTimeEachTimeSheet create(AttendanceTimeOfDailyAttendance attendanceTime) {
 		return new OuenMovementTimeEachTimeSheet(
 				attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime(),
 				attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getActualWorkTime().addMinutes(
 						attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getActualWithinPremiumTime().minute()),
 				attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime(),
-				attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance().getPremiumTimes());
+				attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
 	}
 }

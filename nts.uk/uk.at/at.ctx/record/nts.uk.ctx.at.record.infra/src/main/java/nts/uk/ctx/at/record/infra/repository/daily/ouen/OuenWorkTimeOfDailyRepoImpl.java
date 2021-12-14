@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTimePK;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenAttendanceTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
@@ -136,20 +137,26 @@ public class OuenWorkTimeOfDailyRepoImpl extends JpaRepository implements OuenWo
 						new AttendanceTime(r.getInt("TOTAL_TIME")), 
 						new AttendanceTime(r.getInt("BREAK_TIME")), 
 						new AttendanceTime(r.getInt("WITHIN_TIME")),
+						new AttendanceAmountDaily(r.getInt("WITHIN_AMOUNT")),
 						medicalTimes, 
-						premiumTime(r.getInt("PREMIUM_TIME1"), r.getInt("PREMIUM_TIME2"), r.getInt("PREMIUM_TIME3"), r.getInt("PREMIUM_TIME4"), r.getInt("PREMIUM_TIME5"), 
-								r.getInt("PREMIUM_TIME6"), r.getInt("PREMIUM_TIME7"), r.getInt("PREMIUM_TIME8"), r.getInt("PREMIUM_TIME9"), r.getInt("PREMIUM_TIME10"),
-								r.getInt("PREMIUM_AMOUNT1"), r.getInt("PREMIUM_AMOUNT2"), r.getInt("PREMIUM_AMOUNT3"), r.getInt("PREMIUM_AMOUNT4"), r.getInt("PREMIUM_AMOUNT5"),
-								r.getInt("PREMIUM_AMOUNT6"), r.getInt("PREMIUM_AMOUNT7"), r.getInt("PREMIUM_AMOUNT8"), r.getInt("PREMIUM_AMOUNT9"), r.getInt("PREMIUM_AMOUNT10"))),
+						new PremiumTimeOfDailyPerformance(
+								premiumTime(r.getInt("PREMIUM_TIME1"), r.getInt("PREMIUM_TIME2"), r.getInt("PREMIUM_TIME3"), r.getInt("PREMIUM_TIME4"), r.getInt("PREMIUM_TIME5"), 
+										r.getInt("PREMIUM_TIME6"), r.getInt("PREMIUM_TIME7"), r.getInt("PREMIUM_TIME8"), r.getInt("PREMIUM_TIME9"), r.getInt("PREMIUM_TIME10"),
+										r.getInt("PREMIUM_AMOUNT1"), r.getInt("PREMIUM_AMOUNT2"), r.getInt("PREMIUM_AMOUNT3"), r.getInt("PREMIUM_AMOUNT4"), r.getInt("PREMIUM_AMOUNT5"),
+										r.getInt("PREMIUM_AMOUNT6"), r.getInt("PREMIUM_AMOUNT7"), r.getInt("PREMIUM_AMOUNT8"), r.getInt("PREMIUM_AMOUNT9"), r.getInt("PREMIUM_AMOUNT10")),
+								new AttendanceAmountDaily(r.getInt("PREMIUM_AMOUNT_TOTAL")),
+								new AttendanceTime(r.getInt("PREMIUM_TIME_TOTAL")))),
 				OuenMovementTimeEachTimeSheet.create(
 						new AttendanceTime(r.getInt("MOVE_TOTAL_TIME")), 
 						new AttendanceTime(r.getInt("MOVE_BREAK_TIME")), 
 						new AttendanceTime(r.getInt("MOVE_WITHIN_TIME")), 
-						premiumTime(r.getInt("MOVE_PREMIUM_TIME1"), r.getInt("MOVE_PREMIUM_TIME2"), r.getInt("MOVE_PREMIUM_TIME3"), r.getInt("MOVE_PREMIUM_TIME4"), r.getInt("MOVE_PREMIUM_TIME5"), 
-								r.getInt("MOVE_PREMIUM_TIME6"), r.getInt("MOVE_PREMIUM_TIME7"), r.getInt("MOVE_PREMIUM_TIME8"), r.getInt("MOVE_PREMIUM_TIME9"), r.getInt("MOVE_PREMIUM_TIME10"),
-								0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
-				new AttendanceAmountDaily(r.getInt("AMOUNT")), 
-				new WorkingHoursUnitPrice(r.getInt("PRICE_UNIT")));
+						new PremiumTimeOfDailyPerformance(
+							premiumTime(r.getInt("MOVE_PREMIUM_TIME1"), r.getInt("MOVE_PREMIUM_TIME2"), r.getInt("MOVE_PREMIUM_TIME3"), r.getInt("MOVE_PREMIUM_TIME4"), r.getInt("MOVE_PREMIUM_TIME5"), 
+									r.getInt("MOVE_PREMIUM_TIME6"), r.getInt("MOVE_PREMIUM_TIME7"), r.getInt("MOVE_PREMIUM_TIME8"), r.getInt("MOVE_PREMIUM_TIME9"), r.getInt("MOVE_PREMIUM_TIME10"),
+									0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+							AttendanceAmountDaily.ZERO,
+							AttendanceTime.ZERO)),
+				new AttendanceAmountDaily(r.getInt("AMOUNT")));
 	}
 
 	@Override
@@ -217,20 +224,26 @@ public class OuenWorkTimeOfDailyRepoImpl extends JpaRepository implements OuenWo
 									new AttendanceTime(ots.totalTime), 
 									new AttendanceTime(ots.breakTime), 
 									new AttendanceTime(ots.withinTime),
-									medicalTimes, 
-									premiumTime(ots.premiumTime1, ots.premiumTime2, ots.premiumTime3, ots.premiumTime4, ots.premiumTime5, 
-											ots.premiumTime6, ots.premiumTime7, ots.premiumTime8, ots.premiumTime9, ots.premiumTime10,
-											ots.premiumAmount1, ots.premiumAmount2, ots.premiumAmount3, ots.premiumAmount4, ots.premiumAmount5, 
-											ots.premiumAmount6, ots.premiumAmount7, ots.premiumAmount8, ots.premiumAmount9, ots.premiumAmount10)),
+									new AttendanceAmountDaily(ots.withinAmount),
+									medicalTimes,
+									new PremiumTimeOfDailyPerformance(
+										premiumTime(ots.premiumTime1, ots.premiumTime2, ots.premiumTime3, ots.premiumTime4, ots.premiumTime5,
+												ots.premiumTime6, ots.premiumTime7, ots.premiumTime8, ots.premiumTime9, ots.premiumTime10,
+												ots.premiumAmount1, ots.premiumAmount2, ots.premiumAmount3, ots.premiumAmount4, ots.premiumAmount5,
+												ots.premiumAmount6, ots.premiumAmount7, ots.premiumAmount8, ots.premiumAmount9, ots.premiumAmount10),
+										new AttendanceAmountDaily(ots.premiumAmountTotal),
+										new AttendanceTime(ots.premiumTimeTotal))),
 							OuenMovementTimeEachTimeSheet.create(
 									new AttendanceTime(ots.moveTotalTime), 
 									new AttendanceTime(ots.moveBreakTime), 
 									new AttendanceTime(ots.moveWithinTime), 
-									premiumTime(ots.movePremiumTime1, ots.movePremiumTime2, ots.movePremiumTime3, ots.movePremiumTime4, ots.movePremiumTime5, 
-											    ots.movePremiumTime6, ots.movePremiumTime7, ots.movePremiumTime8, ots.movePremiumTime9, ots.movePremiumTime10,
-											    0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
-							new AttendanceAmountDaily(ots.amount), 
-							new WorkingHoursUnitPrice(ots.priceUnit));
+									new PremiumTimeOfDailyPerformance(
+										premiumTime(ots.movePremiumTime1, ots.movePremiumTime2, ots.movePremiumTime3, ots.movePremiumTime4, ots.movePremiumTime5,
+												ots.movePremiumTime6, ots.movePremiumTime7, ots.movePremiumTime8, ots.movePremiumTime9, ots.movePremiumTime10,
+												0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+										AttendanceAmountDaily.ZERO,
+										AttendanceTime.ZERO)),
+							new AttendanceAmountDaily(ots.amount));
 		}).collect(Collectors.toList());
 		
 		return OuenWorkTimeOfDaily.create(es.get(0).pk.sid, es.get(0).pk.ymd, ouenTimes);

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Setter
 @Entity
-@Table(name = "KSCMT_PER_COST_PREMIUM")
+@Table(name = "KSRMT_PER_COST_PREMIUM")
 public class KscmtPerCostPremium extends ContractUkJpaEntity {
     @EmbeddedId
     public KmldpPremiumAttendancePK kmldpPremiumAttendancePK;

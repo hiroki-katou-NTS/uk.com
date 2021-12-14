@@ -2,10 +2,13 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostRoundingSetting;
+
+import java.math.BigDecimal;
 
 import org.eclipse.persistence.internal.xr.ValueObject;
 
@@ -28,5 +31,14 @@ public class PersonCostRoundingSetting extends ValueObject {
 		return new PersonCostRoundingSetting(
 				new UnitPriceRoundingSetting(UnitPriceRounding.TRUNCATION),
 				new AmountRoundingSetting(AmountUnit.ONE_YEN, AmountRounding.TRUNCATION));
+	}
+	
+	/**
+	 * 就業時間金額を丸める
+	 * @param workTimeAmount 就業時間金額
+	 * @return 丸めた金額
+	 */
+	public AttendanceAmountDaily roundWorkTimeAmount(BigDecimal workTimeAmount) {
+		return new AttendanceAmountDaily(amountRoundingSetting.round(workTimeAmount).intValue());
 	}
 }

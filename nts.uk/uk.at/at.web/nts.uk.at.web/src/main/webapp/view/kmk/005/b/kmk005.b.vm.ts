@@ -105,43 +105,43 @@ module nts.uk.at.view.kmk005.b {
 //                                               }
                         self.timeItemSpecList.push(
                             new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 22), 0, "", '#[KMK005_150]'
+                                "", 1, nts.uk.resource.getText("KMK005_" + 22), 1, "", '#[KMK005_150]'
                             ));
                         self.timeItemSpecList.push(
                             new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 23), 0, "", '#[KMK005_151]'
+                                "", 1, nts.uk.resource.getText("KMK005_" + 23), 1, "", '#[KMK005_151]'
                             ));
                         self.timeItemSpecList.push(
                             new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 24), 0, "", '#[KMK005_152]'
+                                "", 1, nts.uk.resource.getText("KMK005_" + 24), 1, "", '#[KMK005_152]'
                             ));
                         self.timeItemSpecList.push(
                             new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 25), 0, "", '#[KMK005_153]'
+                                "", 1, nts.uk.resource.getText("KMK005_" + 25), 1, "", '#[KMK005_153]'
                             ));
                         self.timeItemSpecList.push(
                             new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 26), 0, "", '#[KMK005_154]'
+                                "", 1, nts.uk.resource.getText("KMK005_" + 26), 1, "", '#[KMK005_154]'
                             ));
                         self.timeItemSpecList.push(
                             new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 27), 0, "", '#[KMK005_155]'
+                                "", 1, nts.uk.resource.getText("KMK005_" + 27), 1, "", '#[KMK005_155]'
                             ));
                         self.timeItemSpecList.push(
                             new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 28), 0, "", '#[KMK005_156]'
+                                "", 1, nts.uk.resource.getText("KMK005_" + 28), 1, "", '#[KMK005_156]'
                             ));
                         self.timeItemSpecList.push(
                             new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 29), 0, "", '#[KMK005_157]'
+                                "", 1, nts.uk.resource.getText("KMK005_" + 29), 1, "", '#[KMK005_157]'
                             ));
                         self.timeItemSpecList.push(
                             new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 30), 0, "", '#[KMK005_158]'
+                                "", 1, nts.uk.resource.getText("KMK005_" + 30), 1, "", '#[KMK005_158]'
                             ));
                         self.timeItemSpecList.push(
                             new TimeItem(
-                                "", 1, nts.uk.resource.getText("KMK005_" + 31), 0, "", '#[KMK005_159]'
+                                "", 1, nts.uk.resource.getText("KMK005_" + 31), 1, "", '#[KMK005_159]'
                             ));
 
                     } else {
@@ -167,7 +167,7 @@ module nts.uk.at.view.kmk005.b {
                 $(".premiumName").trigger("validate");
                 if (!nts.uk.ui.errors.hasError()) {
                     let bonusPayTimeItemListCommand = [];
-                    let lstUseArt = [];
+                    let lstUseArt = [], lstUseSpecArt = [];
 
                     ko.utils.arrayForEach(self.timeItemList(), function(item) {
                         lstUseArt.push(item.useAtr() == 1 ? true : false);
@@ -177,7 +177,7 @@ module nts.uk.at.view.kmk005.b {
                     let bonusPayTimeItemSpecListCommand = [];
 
                     ko.utils.arrayForEach(self.timeItemSpecList(), function(item) {
-                        lstUseArt.push(item.useAtr() == 1 ? true : false);
+                        lstUseSpecArt.push(item.useAtr() == 1 ? true : false);
                         bonusPayTimeItemSpecListCommand.push(ko.mapping.toJS(item));
                     });
 
@@ -185,9 +185,21 @@ module nts.uk.at.view.kmk005.b {
                         service.getListBonusPTimeItem().done(function(res: Array<any>) {
                             if (res === undefined || res.length == 0) {
                                 service.addListBonusPayTimeItem(bonusPayTimeItemListCommand);
-                                service.addListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
                             } else {
                                 service.updateListBonusPayTimeItem(bonusPayTimeItemListCommand);
+                            }
+                            self.closeDialog();
+                        })
+
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    });
+
+                    service.checkUseArt(lstUseSpecArt).done(function() {
+                        service.getListSpecialBonusPayTimeItem().done(function(res: Array<any>) {
+                            if (res === undefined || res.length == 0) {
+                                service.addListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
+                            } else {
                                 service.updateListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
                             }
                             self.closeDialog();

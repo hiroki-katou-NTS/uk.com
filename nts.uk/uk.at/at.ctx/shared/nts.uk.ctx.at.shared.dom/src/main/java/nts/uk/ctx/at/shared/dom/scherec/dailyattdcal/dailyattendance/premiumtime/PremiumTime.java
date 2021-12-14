@@ -9,7 +9,6 @@ import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.UnitPrice;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostRoundingSetting;
@@ -40,6 +39,7 @@ public class PremiumTime {
 		this.premiumTimeNo = premiumTimeNo;
 		this.premitumTime = premitumTime;
 		this.premiumAmount = premiumAmount;
+		this.unitPrice = WorkingHoursUnitPrice.ZERO;
 	}
 	
 	/**
@@ -75,7 +75,10 @@ public class PremiumTime {
 				.sum());
 		
 		//社員時間単価を取得する
-		WorkingHoursUnitPrice priceUnit = getWorkingHoursUnitPrice(premiumSetting.getID(), personCostCalculation, unitPriceHistory);
+		WorkingHoursUnitPrice priceUnit = WorkingHoursUnitPrice.ZERO;
+		if(unitPriceHistory.isPresent()) {
+			priceUnit = personCostCalculation.getPremiumUnitPrice(premiumSetting.getID(), unitPriceHistory.get());
+		}
 		
 		//割増金額
 		AttendanceAmountDaily amount = calcPremiumAmount(priceUnit, premiumSetting.getRate(), time, personCostCalculation.getRoundingSetting());
@@ -109,12 +112,30 @@ public class PremiumTime {
 				.sum());
 		
 		//社員時間単価を取得する
-		WorkingHoursUnitPrice priceUnit = getWorkingHoursUnitPrice(premiumSetting.getID(), personCostCalculation, unitPriceHistory);
+		WorkingHoursUnitPrice priceUnit = WorkingHoursUnitPrice.ZERO;
+		if(unitPriceHistory.isPresent()) {
+			priceUnit = personCostCalculation.getPremiumUnitPrice(premiumSetting.getID(), unitPriceHistory.get());
+		}
 		
 		//割増金額
 		AttendanceAmountDaily amount = calcPremiumAmount(priceUnit, premiumSetting.getRate(), time, personCostCalculation.getRoundingSetting());
 		
 		return new PremiumTime(premiumSetting.getID(), time, amount, priceUnit);
+	}
+	
+	/**
+	 * 再計算する
+	 * @param personCostCalc 人件費計算設定
+	 * @return 割増時間
+	 */
+	public PremiumTime reCalc(PersonCostCalculation personCostCalc) {
+		//割増金額
+		AttendanceAmountDaily amount = AttendanceAmountDaily.ZERO;
+		Optional<PremiumSetting> premiumSetting = personCostCalc.getPremiumSetting(this.premiumTimeNo);
+		if(premiumSetting.isPresent()) {
+			amount = calcPremiumAmount(this.unitPrice, premiumSetting.get().getRate(), this.premitumTime, personCostCalc.getRoundingSetting());
+		}
+		return new PremiumTime(this.premiumTimeNo, this.premitumTime, amount, this.unitPrice);
 	}
 	
 	/**
@@ -125,36 +146,17 @@ public class PremiumTime {
 	 * @param roundingSet 人件費丸め設定
 	 * @return 割増金額
 	 */
-	public static AttendanceAmountDaily calcPremiumAmount(WorkingHoursUnitPrice priceUnit, PremiumRate premiumRate,
+	private static AttendanceAmountDaily calcPremiumAmount(WorkingHoursUnitPrice priceUnit, PremiumRate premiumRate,
 			AttendanceTime premiumTime, PersonCostRoundingSetting roundingSet) {
 		// A = 単価 * 割増率
-		int afterPremium = priceUnit.v() * premiumRate.v();
+		BigDecimal afterPremium = BigDecimal.valueOf(priceUnit.v()).multiply(premiumRate.toDecimal());
 		// Aを丸める
-		BigDecimal afterPremiumRounding = roundingSet.getRoundingOfPremium().round(BigDecimal.valueOf(afterPremium));
+		BigDecimal afterPremiumRounding = roundingSet.getRoundingOfPremium().round(afterPremium);
 		// B = A * 割増時間
-		BigDecimal amount = afterPremiumRounding.multiply(BigDecimal.valueOf(premiumTime.valueAsMinutes()));
+		BigDecimal amount = afterPremiumRounding.multiply(premiumTime.hourWithDecimal());
 		// Bを丸める
 		BigDecimal afterAmountRounding = roundingSet.getAmountRoundingSetting().round(amount);
 		// Bを返す
 		return  new AttendanceAmountDaily(afterAmountRounding.intValue());
-	}
-	
-	/**
-	 * 社員時間単価を取得する
-	 * @param no 割増時間項目NO
-	 * @param personCostCalculation 人件費計算設定
-	 * @param unitPriceHistory 社員単価履歴項目
-	 * @return 社員時間単価
-	 */
-	private static WorkingHoursUnitPrice getWorkingHoursUnitPrice(
-			ExtraTimeItemNo no, PersonCostCalculation personCostCalculation, Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory) {
-		Optional<UnitPrice> unitPriceNo = personCostCalculation.getUnitPriceAsJudged(no);
-		if(!unitPriceNo.isPresent()) {
-			return WorkingHoursUnitPrice.ZERO;
-		}
-		if(!unitPriceHistory.isPresent()) {
-			return WorkingHoursUnitPrice.ZERO;
-		}
-		return unitPriceHistory.get().getWorkingHoursUnitPrice(unitPriceNo.get()).orElse(WorkingHoursUnitPrice.ZERO);
 	}
 }

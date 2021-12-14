@@ -56,7 +56,7 @@ public class ManHourRecordUseSettingFinder {
 					false,
 					false, 
 					833,
-					ErrorAlarmClassification.ALARM.value,
+					ErrorAlarmClassification.ERROR.value,
 					false, 
 					"",
 					false,

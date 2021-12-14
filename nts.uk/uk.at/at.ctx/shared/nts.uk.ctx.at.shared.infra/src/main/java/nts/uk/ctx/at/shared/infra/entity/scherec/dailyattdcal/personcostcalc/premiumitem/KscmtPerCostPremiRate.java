@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_PER_COST_PREMI_RATE")
+@Table(name = "KSRMT_PER_COST_PREMI_RATE")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KscmtPerCostPremiRate extends ContractUkJpaEntity implements Serializable {
@@ -36,6 +36,10 @@ public class KscmtPerCostPremiRate extends ContractUkJpaEntity implements Serial
     @Column(name = "UNIT_PRICE")
     public int unitPrice;
 
+	// 割増時間合計に含める
+	@Column(name = "INCLUDE_TOTAL")
+	public int includeTotal;
+
     @Override
     protected Object getKey() {
         return pk;
@@ -46,7 +50,8 @@ public class KscmtPerCostPremiRate extends ContractUkJpaEntity implements Serial
                 new KscmtPerCostPremiRate(
                         new KmlspPremiumSetPK(domain.getCompanyID(), histId, e.getID().value),
                         e.getRate().v(),
-                        e.getUnitPrice().value
+                        e.getUnitPrice().value,
+                        e.isIncludeTotal() ? 1 : 0
                 )
         ).collect(Collectors.toList());
 

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,9 +10,9 @@ import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteDisplayOrder;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskName;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset.RegisterOneDayFavoriteTaskService.Require;
@@ -46,8 +47,18 @@ public class RegisterOneDayFavoriteTaskServiceTest {
 		AtomTask result = RegisterOneDayFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
 				new ArrayList<>());
 
-		NtsAssert.atomTask(() -> result, any -> require
-				.insert(new OneDayFavoriteSet("employeeId", "favId1", new FavoriteTaskName("name"), new ArrayList<>())));
+		new Verifications() {{
+			require.update(optdisplayOrder.get());
+			times = 0;
+		}};
+		
+		result.run();
+		
+		new Verifications() {{
+			require.update(optdisplayOrder.get());
+			times = 1;
+		}};
+		
 	}
 	
 	@Test
@@ -62,7 +73,16 @@ public class RegisterOneDayFavoriteTaskServiceTest {
 		AtomTask result = RegisterOneDayFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
 				new ArrayList<>());
 
-		NtsAssert.atomTask(() -> result, any -> require
-				.insert(new OneDayFavoriteSet("employeeId", "favId1", new FavoriteTaskName("name"), new ArrayList<>())));
+		new Verifications() {{
+			require.insert(new OneDayFavoriteTaskDisplayOrder("employeeId", Collections.singletonList(new FavoriteDisplayOrder(anyString, 1))));
+			times = 0;
+		}};
+		
+		result.run();
+		
+		new Verifications() {{
+			require.insert(new OneDayFavoriteTaskDisplayOrder("employeeId", Collections.singletonList(new FavoriteDisplayOrder(anyString, 1))));
+			times = 0;
+		}};
 	}
 }

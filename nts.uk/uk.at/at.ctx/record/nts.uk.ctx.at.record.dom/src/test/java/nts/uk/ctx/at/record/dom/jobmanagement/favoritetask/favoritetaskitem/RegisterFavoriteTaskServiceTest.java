@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,7 @@ import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
@@ -74,7 +76,11 @@ public class RegisterFavoriteTaskServiceTest {
 		displayOrders.add(new FavoriteDisplayOrder("favId2", 2));
 		Optional<FavoriteTaskDisplayOrder> optdisplayOrder = Optional
 				.of(new FavoriteTaskDisplayOrder("employeeId", displayOrders));
-
+		
+		List<TaskContent> favoriteContents = new ArrayList<>();
+		favoriteContents.add(new TaskContent(1, new WorkCode("a")));
+		favoriteContents.add(new TaskContent(2, new WorkCode("b")));
+		
 		new Expectations() {
 			{
 				require.getBySameSetting(anyString, new ArrayList<>());
@@ -88,8 +94,17 @@ public class RegisterFavoriteTaskServiceTest {
 		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
 				new ArrayList<>());
 
-		NtsAssert.atomTask(() -> result, any -> require
-				.insert(new FavoriteTaskItem("employeeId", new FavoriteTaskName("name"), new ArrayList<>())));
+		new Verifications() {{
+			require.update(optdisplayOrder.get());
+			times = 0;
+		}};
+		
+		result.run();
+		
+		new Verifications() {{
+			require.update(optdisplayOrder.get());
+			times = 1;
+		}};
 	}
 
 	@Test
@@ -109,8 +124,19 @@ public class RegisterFavoriteTaskServiceTest {
 
 		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
 				new ArrayList<>());
-
-		NtsAssert.atomTask(() -> result, any -> require.insert(FavoriteTaskDisplayOrder.addNewFavTaskDisporder("employeeId", "newFavId")));
+		
+		new Verifications() {{
+			require.insert(FavoriteTaskDisplayOrder.addNewFavTaskDisporder("employeeId", anyString));
+			times = 0;
+		}};
+		
+		result.run();
+		
+		new Verifications() {{
+			require.insert(FavoriteTaskDisplayOrder.addNewFavTaskDisporder("employeeId", anyString));
+			times = 0;
+		}};
+	
 	}
 
 }

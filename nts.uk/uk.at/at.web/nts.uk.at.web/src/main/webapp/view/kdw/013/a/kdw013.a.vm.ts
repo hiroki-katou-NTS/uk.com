@@ -368,9 +368,8 @@ module nts.uk.ui.at.kdw013.a {
                         }
 
                         if (cache.pair <= 0) {
-                            // s.h.i.t
-                            // vm.$datas(null);
-
+                            vm.$datas(null);
+                            
                             vm
                                 .$blockui('grayout')
                                 .then(() => vm.$ajax('at', API.CHANGE_DATE, params))
@@ -463,6 +462,8 @@ module nts.uk.ui.at.kdw013.a {
 
                     if (datas) {
                         
+                        
+                        
                       return   _.chain(dateRanges())
                             .map(date => {
                                 let events: string[] = [];
@@ -477,7 +478,7 @@ module nts.uk.ui.at.kdw013.a {
                                     
                                     let name = _.get(_.find(workTypes, wt => { return wt.workTypeCode == wkTypeCd }), 'name');
                                     //PC3_2 PC3_3
-                                    events.push({ title: vm.$i18n('KDW013_67'), text: wkTypeCd + ' ' + (name ? name : vm.$i18n('KDW013_40')) });
+                                    events.push({ title: vm.$i18n('KDW013_67'), text: wkTypeCd + ' ' + (name ? name : vm.$i18n('KDW013_40')) , valueType: 0});
                                 }
 
                                 let start = _.get(_.find(manHrContents, hr => { return hr.itemId == 31 }), 'value');
@@ -485,23 +486,23 @@ module nts.uk.ui.at.kdw013.a {
 
                                 if (convert) {
                                     //PC3_4 PC3_5
-                                    events.push({ title: vm.$i18n('KDW013_68'), text: vm.$i18n('KDW013_73', [start ? formatTime(start, 'Time_Short_HM') : '　　', end ? formatTime(end, 'Time_Short_HM') : '']) });
+                                    events.push({ title: vm.$i18n('KDW013_68'), text: vm.$i18n('KDW013_73', [start ? formatTime(start, 'Time_Short_HM') : '　　', end ? formatTime(end, 'Time_Short_HM') : '']), valueType: 0 });
                                 }
 
                                 let rdis = _.sortBy(_.get(setting, 'manHrInputDisplayFormat.recordColumnDisplayItems', []), ['order']);
-                                const gentext = (hr, attItem) => {
+                                const genControl = (hr, attItem) => {
                                     if (!_.isNaN(Number(hr.value)) && hr.valueType == 1) {
-                                        return (formatTime(hr.value, 'Time_Short_HM'));
+                                        return { text: (formatTime(hr.value, 'Time_Short_HM')), type: 0 };
                                     }
-
+                                    //check box
                                     if (_.get(attItem, 'masterType') == 9 && _.get(attItem, 'dailyAttendanceAtr') == 2 && hr.value == 1) {
-                                        return '☑ する'
+                                        return { text: '', type: 3 };
                                     }
                                     if (_.get(attItem, 'masterType') == 9 && _.get(attItem, 'dailyAttendanceAtr') == 2) {
-                                        return '☐ する'
+                                        return { text: '', type: 2 };
                                     }
 
-                                    return hr.value;
+                                    return { text: hr.value, type: 0 };
 
                                 }
                                 _.forEach(rdis, rdi => {
@@ -510,7 +511,8 @@ module nts.uk.ui.at.kdw013.a {
                                     let attItem = _.find(_.get(setting, 'dailyAttendanceItem', []), ati => ati.attendanceItemId == rdi.attendanceItemId);
                                     //PC3_6 PC3_7 ☐ ☑
                                     if (!_.isNil(_.get(hr, 'value'))) {
-                                        events.push({ title: rdi.displayName, text:gentext(hr,attItem), valueType: hr.valueType });
+                                        let control  = genControl(hr,attItem);
+                                        events.push({ title: rdi.displayName, text: control.text, valueType: control.type });
                                     }
 
                                 });
@@ -518,9 +520,13 @@ module nts.uk.ui.at.kdw013.a {
                                 return { date, events };
                             })
                             .value();
+                        
+                         
                     }
-
+                  
                     return [] as calendar.AttendanceTime[];
+                   
+                    
                 }
             }).extend({ rateLimit: 500 });
             let inputDate = ko.unwrap(vm.inputDate);
@@ -598,9 +604,9 @@ module nts.uk.ui.at.kdw013.a {
             vm.$settings.subscribe((settings) => computedEvents(ko.unwrap(vm.$datas), settings));
 
             const computedEvents = (data: SelectTargetEmployeeDto | null, settings: StartProcessDto | null) => {
-                if (cache.pair === -1) {
-                    return;
-                }
+//                if (cache.pair === -1) {
+//                    return;
+//                }
                 const { tasks, taskFrameUsageSetting } = settings;
                 if (data) {
                     let events = [];

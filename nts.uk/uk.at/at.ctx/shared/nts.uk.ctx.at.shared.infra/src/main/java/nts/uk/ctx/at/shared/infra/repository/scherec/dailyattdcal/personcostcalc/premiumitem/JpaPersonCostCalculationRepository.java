@@ -213,7 +213,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     }
     private List<KscmtPremiumItem> getPremiumItems(String comId) {
         try (PreparedStatement statement = this.connection().prepareStatement(
-                "select * FROM KSCMT_PREMIUM_ITEM where CID = ? ")) {
+                "select * FROM KSRMT_PREMIUM_ITEM where CID = ? ")) {
 
             statement.setString(1, comId);
             List<KscmtPremiumItem> krcdtTimeLeaveWorks = new NtsResultSet(statement.executeQuery()).getList(rec -> {

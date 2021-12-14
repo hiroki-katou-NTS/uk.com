@@ -94,6 +94,12 @@ public class KrcdtDayTimePremium extends ContractUkJpaEntity implements Serializ
 	/* 割増金額10 */
 	@Column(name = "PREMIUM_AMOUNT10")
 	public int premiumAmount10;
+	/* 割増時間合計 */
+	@Column(name = "PREMIUM_TIME_TOTAL")
+	public int premiumTimeTotal;
+	/* 割増金額合計 */
+	@Column(name = "PREMIUM_AMOUNT_TOTAL")
+	public int premiumAmountTotal;
 	
 	@OneToOne(mappedBy="krcdtDayPremiumTime", fetch = FetchType.LAZY)
 	//public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
@@ -116,7 +122,7 @@ public class KrcdtDayTimePremium extends ContractUkJpaEntity implements Serializ
 		premiumTimeList.add(new PremiumTime(ExtraTimeItemNo.valueOf(8), new AttendanceTime(this.premiumTime8), new AttendanceAmountDaily(this.premiumAmount8)));
 		premiumTimeList.add(new PremiumTime(ExtraTimeItemNo.valueOf(9), new AttendanceTime(this.premiumTime9), new AttendanceAmountDaily(this.premiumAmount9)));
 		premiumTimeList.add(new PremiumTime(ExtraTimeItemNo.valueOf(10), new AttendanceTime(this.premiumTime10), new AttendanceAmountDaily(this.premiumAmount10)));
-		return new PremiumTimeOfDailyPerformance(premiumTimeList);
+		return new PremiumTimeOfDailyPerformance(premiumTimeList, new AttendanceAmountDaily(premiumAmountTotal), new AttendanceTime(premiumTimeTotal));
 	}
 	
 	public void setData(PremiumTimeOfDailyPerformance domain) {
@@ -144,6 +150,10 @@ public class KrcdtDayTimePremium extends ContractUkJpaEntity implements Serializ
 				FieldReflection.setField(amount, this, 0);
 			}
 		}
+		Field timeTotal = FieldReflection.getField(this.getClass(), "premiumTimeTotal");
+		FieldReflection.setField(timeTotal, this, domain.getTotalWorkingTime().valueAsMinutes());
+		Field amountTotal = FieldReflection.getField(this.getClass(), "premiumAmountTotal");
+		FieldReflection.setField(amountTotal, this, domain.getTotalAmount().v());
 	}
 	
 	public static KrcdtDayTimePremium totoEntity(String employeeId,GeneralDate targetDate,PremiumTimeOfDailyPerformance domain) {
