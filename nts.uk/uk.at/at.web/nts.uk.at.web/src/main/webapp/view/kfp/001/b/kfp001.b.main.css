@@ -67,6 +67,7 @@ body {
 
 div.label {
 	width: 19%;
+	padding: 7px;
 }
 
 #button-reference-B7_3 {
@@ -93,7 +94,6 @@ div.label {
 
 .nts-wizard {
 	width: 1200px;
-	height: inherit;
 }
 
 .nts-wizard>.content>.body {
