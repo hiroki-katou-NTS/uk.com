@@ -179,7 +179,7 @@ module nts.uk.at.view.kdp.share {
 		template
 	})
 	export class StampClock extends ko.ViewModel {
-		time: KnockoutObservable<Date> = ko.observable();
+		time: KnockoutObservable<Date> = ko.observable(new Date());
 
 		events!: ClickEvent;
 		settings!: KnockoutComputed<StampColor>;
@@ -236,7 +236,7 @@ module nts.uk.at.view.kdp.share {
 				});
 			}
 
-			vm.$ajax('com', '/server/time/now')
+			vm.$ajax('at', '/server/time/now')
 				.then((c) => {
 					const date = moment(c, 'YYYY-MM-DDTHH:mm:ss').toDate();
 
