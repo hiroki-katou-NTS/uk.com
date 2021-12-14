@@ -56,7 +56,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
     private static final String IS_CHECK = TextResource.localize("KMR004_36");
 
     //Work Place
-    private static final String WOKR_PLACE_LABEL = TextResource.localize("KMR004_38");
+    private static final String WOKR_PLACE_LABEL = TextResource.localize("Com_Workplace");
     ////Work Location
     private static final String WOKR_LOCATION_LABEL = TextResource.localize("KMR004_38");
     private static final String NUMBER_FORMAT = "\"¥\"#,##0;[RED]\"¥\"-#,##0";
