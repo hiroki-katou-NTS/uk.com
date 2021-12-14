@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,9 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
@@ -33,7 +37,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.AggregateAttendanceTimeValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.AgreementTimeAggregateService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.AnyItemAggregateService;
@@ -42,7 +45,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployee
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyOldDatas;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.anyitem.AnyItemAggrResult;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
@@ -53,13 +55,14 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.Employ
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.ErrorType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.Flex;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.aggframe.OuenAggregateFrameSetOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.totalcount.TotalCountByPeriod;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcResultOfAnyItem;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.GetPeriodExcluseEntryRetireTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.i18n.TextResource;
@@ -528,6 +531,66 @@ public class AggregateMonthlyRecordServiceProc {
 		return result;
 	}
 
+	/** 上限下限チェック */
+	private static AnyItemAggrResult limitCheck(OptionalItem optionalItem,
+			Integer optionalItemNo, AnyItemAggrResult result) {
+		val checkedResult = optionalItem.getInputControlSetting().getCalcResultRange().checkRange(new CalcResultOfAnyItem(optionalItem.getOptionalItemNo(),
+																						result.getAnyTimes().map(c -> c.v()),
+																						result.getAnyTime().map(c -> BigDecimal.valueOf(c.v())),
+																						result.getAnyAmount().map(c -> BigDecimal.valueOf(c.v()))),
+																		optionalItem);
+
+		return AnyItemAggrResult.of(optionalItemNo,
+										checkedResult.getTime().map(c -> new AnyTimeMonth(c.intValue())),
+										checkedResult.getCount().map(c -> new AnyTimesMonth(c.doubleValue())),
+										checkedResult.getMoney().map(c -> new AnyAmountMonth(c.intValue())));
+	}
+
+
+	/**
+	 * 計画所定労働日数
+	 *
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @return 任意項目集計結果
+	 */
+	private AnyItemAggrResult getPredWorkingDays(RequireM11 require, CacheCarrier cacheCarrier,
+			YearMonth yearMonth, ClosureId closureId, MonAggrCompanySettings companySets) {
+
+		AnyItemAggrResult emptyResult = AnyItemAggrResult.of(69, Optional.empty(), Optional.of(new AnyTimesMonth(0.0)), Optional.empty());
+
+		// 指定した年月の締め期間を取得する
+		DatePeriod period = null;
+		{
+			// 対象の締めを取得する
+			if (!companySets.getClosureMap().containsKey(closureId.value))
+				return emptyResult;
+			Closure closure = companySets.getClosureMap().get(closureId.value);
+
+			// 指定した年月の期間をすべて取得する
+			List<DatePeriod> periods = closure.getPeriodByYearMonth(yearMonth);
+			if (periods.size() == 0)
+				return emptyResult;
+
+			// 期間を合算する
+			GeneralDate startDate = periods.get(0).start();
+			GeneralDate endDate = periods.get(0).end();
+			if (periods.size() == 2) {
+				if (startDate.after(periods.get(1).start()))
+					startDate = periods.get(1).start();
+				if (endDate.before(periods.get(1).end()))
+					endDate = periods.get(1).end();
+			}
+			period = new DatePeriod(startDate, endDate);
+		}
+
+		// RQ608：指定期間の所定労働日数を取得する(大塚用)
+		double predWorkingDays = require.monthAttendanceDays(cacheCarrier, period, this.companySets.getAllWorkTypeMap()).v();
+
+		// 任意項目69へ格納
+		return AnyItemAggrResult.of(69, Optional.empty(), Optional.of(new AnyTimesMonth(predWorkingDays)), Optional.empty());
+	}
 
 	/**
 	 * 合算後のチェック処理
@@ -671,6 +734,58 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param attendanceTime 月別実績の勤怠時間
 	 * @return 月別実績の勤怠時間
 	 */
+
+	public static AttendanceTimeOfMonthly recalcAttendanceTime(AttendanceTimeOfMonthly attendanceTime) {
+
+		val monthlyCalculation = attendanceTime.getMonthlyCalculation();
+
+		// 残業合計時間を集計する
+		monthlyCalculation.getAggregateTime().getOverTime().recalcTotal();
+
+		// 休出合計時間を集計する
+		monthlyCalculation.getAggregateTime().getHolidayWorkTime().recalcTotal();
+
+		// 総労働時間と36協定時間の再計算
+		monthlyCalculation.recalcTotal();
+
+		return attendanceTime;
+	}
+
+	/**
+	 * 手修正された項目を元に戻す （任意項目用）
+	 *
+	 * @param monthlyOldDatas 集計前の月別実績データ
+	 */
+	private void undoRetouchValuesForAnyItems(RequireM10 require, MonthlyOldDatas monthlyOldDatas) {
+
+		this.isRetouch = false;
+
+		// 既存データを確認する
+		val oldDataList = monthlyOldDatas.getAnyItemList();
+		if (oldDataList.size() == 0)
+			return;
+		val oldConverter = require.createMonthlyConverter();
+		val oldItemConvert = oldConverter.withAnyItem(oldDataList);
+
+		// 計算後データを確認
+		val monthlyConverter = require.createMonthlyConverter();
+		MonthlyRecordToAttendanceItemConverter convert = monthlyConverter
+				.withAttendanceTime(this.aggregateResult.getAttendanceTime().get());
+		convert = convert.withAnyItem(this.aggregateResult.getAnyItemList());
+
+		// 月別実績の編集状態を取得
+		for (val editState : this.editStates) {
+
+			// 勤怠項目IDから項目を判断
+			val itemValueOpt = oldItemConvert.convert(editState.getAttendanceItemId());
+			if (!itemValueOpt.isPresent())
+				continue;
+			val itemValue = itemValueOpt.get();
+			if (itemValue.value() == null)
+				continue;
+		}
+	}
+	
 	private AttendanceTimeOfMonthly recalcAttendanceTime(RequireM10 require,
 			AttendanceTimeOfMonthly attendanceTime, MonthlyOldDatas monthlyOldDatas) {
 

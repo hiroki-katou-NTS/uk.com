@@ -39,8 +39,8 @@ public class MonthModifyCommandFacade {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void handleUpdate(List<MonthlyModifyQuery> query,List<MonthlyRecordWorkDto> values) {
-		this.commandHandler.handleUpdate(createMultiCommand(query,values));
+	public void handleUpdate(List<MonthlyRecordWorkCommand> commands) {
+		this.commandHandler.handleUpdate(commands);
 	}
 
 	public MonthlyRecordWorkDto toDto(MonthlyModifyQuery query) {
@@ -60,7 +60,7 @@ public class MonthModifyCommandFacade {
 		return oldValues;
 	}
 	
-	private List<MonthlyRecordWorkCommand> createMultiCommand(List<MonthlyModifyQuery> query,List<MonthlyRecordWorkDto> values) {
+	public List<MonthlyRecordWorkCommand> createMultiCommand(List<MonthlyModifyQuery> query,List<MonthlyRecordWorkDto> values) {
 		Set<String> emps = new HashSet<>();
 		Set<YearMonth> yearmonth = new HashSet<>();
 		query.stream().forEach(q -> {

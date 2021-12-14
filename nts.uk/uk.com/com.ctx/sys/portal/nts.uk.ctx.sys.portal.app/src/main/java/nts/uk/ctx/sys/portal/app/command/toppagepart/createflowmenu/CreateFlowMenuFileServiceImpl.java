@@ -18,7 +18,8 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuFileService;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FixedClassification;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FlowMenuLayout;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.ImageInformation;
+import nts.uk.shr.infra.file.storage.stream.FileStoragePath;
 
 @Stateless
 public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService {
@@ -43,9 +44,8 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 						fileInfo.getMimeType(), fileInfo.getOriginalSize());
 				String newFileId = newFileInfo.getId();
 				// Copy physical file
-				File file = this.findFile(fileId);
-				File newFile = new File(DATA_STORE_PATH + "//" 
-						+ AppContexts.user().contractCode() + "//" + newFileId);
+				File file = Paths.get(new FileStoragePath().getPathOfCurrentTenant().toString() + "//" + fileId).toFile();
+			  File newFile = new File(new FileStoragePath().getPathOfCurrentTenant().toString() + "//" + newFileId);
 				newFile.createNewFile();
 				FileUtils.copyFile(file, newFile, false);
 				// Persist
@@ -56,14 +56,23 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 		} catch (IOException e) {
 			return "";
 		}
-	}
+    }
 
 	@Override
 	public void deleteUploadedFiles(FlowMenuLayout layout) {
 		layout.getFileAttachmentSettings().forEach(file -> this.deleteFile(file.getFileId()));
 		layout.getImageSettings().forEach(image -> {
-			if (image.getIsFixed().equals(FixedClassification.RANDOM) && image.getFileId().isPresent()) {
-				this.deleteFile(image.getFileId().get());
+			ImageInformation imageInfo = image.getImageInformation();
+			if (imageInfo.getIsFixed().equals(FixedClassification.RANDOM) && imageInfo.getFileId().isPresent()) {
+				this.deleteFile(imageInfo.getFileId().get());
+			}
+		});
+		layout.getMenuSettings().forEach(menu -> {
+			if (menu.getImageInformation().isPresent()) {
+				ImageInformation imageInfo = menu.getImageInformation().get();
+				if (imageInfo.getIsFixed().equals(FixedClassification.RANDOM) && imageInfo.getFileId().isPresent()) {
+					this.deleteFile(imageInfo.getFileId().get());
+				}
 			}
 		});
 		this.deleteLayout(layout);
@@ -72,20 +81,6 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 	@Override
 	public void deleteLayout(FlowMenuLayout layout) {
 		this.deleteFile(layout.getFileId());
-	}
-
-	/**
-	 * Find uploaded file from FileStorage folder
-	 * Included main folder and subfolder with contractCd
-	 * @param fileId
-	 * @return
-	 */
-	private File findFile(String fileId) {
-		File file = Paths.get(DATA_STORE_PATH, fileId).toFile();
-		if (!file.exists()) {
-			file = Paths.get(DATA_STORE_PATH, AppContexts.user().contractCode(), fileId).toFile();
-		}
-		return file;
 	}
 	
 	private void deleteFile(String fileId) {
