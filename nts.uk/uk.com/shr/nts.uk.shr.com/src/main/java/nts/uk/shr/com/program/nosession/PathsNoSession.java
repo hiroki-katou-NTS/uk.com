@@ -14,10 +14,12 @@ public class PathsNoSession implements PathsToCheckCsrf {
 	public static PathsNoSession WEB_APIS = PathsNoSession.define(
 			"/sample/.*",
 			"/public/.*",
+			"/develop/.*",
 			"/ntscommons/arc/task/async/.*",
 			"/ntscommons/arc/filegate/.*",
 			"/ntscommons/arc/diagnose/.*",
 			"/nts/jobdstributor/worker/.*",
+			"/nts/tenantlocator/client/.*",
 			"/shr/infra/file/storage/.*",
 			"/operation/stop/.*",
 			"/i18n/.*",

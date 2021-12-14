@@ -342,8 +342,7 @@ public class HolidayShipmentScreenBFinder {
 		){
 			return leaveComDayOffManaRepository.getByListDate(employeeID, Arrays.asList(applicationDate))
 					.stream().filter(c-> { 
-						return c.getAssocialInfo().getTargetSelectionAtr() == TargetSelectionAtr.REQUEST 
-								&& c.getAssocialInfo().getDayNumberUsed().v().compareTo(workType.getDailyWork().getWorkTypeUnit().isOneDay() ? 1 : 0.5) == 0;
+						return c.getAssocialInfo().getTargetSelectionAtr() == TargetSelectionAtr.REQUEST;
 						}
 					).collect(Collectors.toList());
 		}
@@ -373,8 +372,7 @@ public class HolidayShipmentScreenBFinder {
 				){
 			return payoutSubofHDManaRepository.getByListDate(employeeID, Arrays.asList(applicationDate))
 					.stream().filter(c-> { 
-						return c.getAssocialInfo().getTargetSelectionAtr() == TargetSelectionAtr.REQUEST 
-								&& c.getAssocialInfo().getDayNumberUsed().v().compareTo(workType.getDailyWork().getWorkTypeUnit().isOneDay() ? 1 : 0.5) == 0;
+						return c.getAssocialInfo().getTargetSelectionAtr() == TargetSelectionAtr.REQUEST;
 						}
 					).collect(Collectors.toList());
 		}

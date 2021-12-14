@@ -83,7 +83,7 @@ public class PreCheckProcessWorkRecordTest {
 			}
 		};
 		PreCheckProcessResult check = PreCheckProcessWorkRecord.preCheck(require, companyId, application, closureId,
-				false, reflectStatus, dateRefer, new SEmpHistImport());
+				false, reflectStatus, dateRefer, new ArrayList<>());
 
 		assertThat(check.getProcessFlag()).isEqualTo(NotUseAtr.NOT_USE);
 
@@ -120,7 +120,8 @@ public class PreCheckProcessWorkRecordTest {
 			}
 		};
 		PreCheckProcessResult check = PreCheckProcessWorkRecord.preCheck(require, companyId, application, closureId,
-				true, reflectStatus, dateRefer, new SEmpHistImport());
+				true, reflectStatus, dateRefer, new ArrayList<>());
+
 
 		assertThat(check.getProcessFlag()).isEqualTo(NotUseAtr.USE);
 	}
@@ -158,7 +159,8 @@ public class PreCheckProcessWorkRecordTest {
 		};
 
 		PreCheckProcessResult check = PreCheckProcessWorkRecord.preCheck(require, companyId, application, closureId,
-				true, reflectStatus, dateRefer, new SEmpHistImport());
+				true, reflectStatus, dateRefer, new ArrayList<>());
+
 
 		assertThat(check.getProcessFlag()).isEqualTo(NotUseAtr.NOT_USE);
 
@@ -201,7 +203,8 @@ public class PreCheckProcessWorkRecordTest {
 		};
 
 		PreCheckProcessResult check = PreCheckProcessWorkRecord.preCheck(require, companyId, application, closureId,
-				true, reflectStatus, dateRefer, new SEmpHistImport());
+				true, reflectStatus, dateRefer, new ArrayList<>());
+
 
 		assertThat(check.getProcessFlag()).isEqualTo(NotUseAtr.NOT_USE);
 
@@ -242,7 +245,8 @@ public class PreCheckProcessWorkRecordTest {
 		};
 
 		PreCheckProcessResult check = PreCheckProcessWorkRecord.preCheck(require, companyId, application, closureId,
-				true, reflectStatus, dateRefer, new SEmpHistImport());
+				true, reflectStatus, dateRefer, new ArrayList<>());
+
 
 		assertThat(check.getProcessFlag()).isEqualTo(NotUseAtr.USE);
 	}

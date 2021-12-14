@@ -49,6 +49,13 @@ public class LeaveNumberInfo implements Cloneable {
 		remainingNumber = new LeaveRemainingNumber();
 		usedPercent = new LeaveUsedPercent(new BigDecimal(0.0));
 	}
+	
+	public LeaveNumberInfo (LeaveNumberInfo info){
+		this.grantNumber=info.getGrantNumber();
+		this.usedNumber=info.getUsedNumber();
+		this.remainingNumber=info.getRemainingNumber();
+		this.usedPercent=info.getUsedPercent();
+	}
 
 	/**
 	 * ファクトリー
@@ -130,9 +137,10 @@ public class LeaveNumberInfo implements Cloneable {
 
 	public LeaveNumberInfo(
 			double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes,
-			Double stowageDays, double remainDays, Integer remainMinutes, double usedPercent) {
+			Double stowageDays, Double numberOverDays, Integer timeOver, 
+			double remainDays, Integer remainMinutes, double usedPercent) {
 		this.grantNumber = LeaveGrantNumber.createFromJavaType(grantDays, grantMinutes);
-		this.usedNumber = LeaveUsedNumber.createFromJavaType(usedDays, usedMinutes, stowageDays);
+		this.usedNumber = LeaveUsedNumber.createFromJavaType(usedDays, usedMinutes, stowageDays, numberOverDays, timeOver);
 		this.remainingNumber = LeaveRemainingNumber.createFromJavaType(remainDays, remainMinutes);
 		this.usedPercent = new LeaveUsedPercent(new BigDecimal(0));
 		if (grantDays != 0){

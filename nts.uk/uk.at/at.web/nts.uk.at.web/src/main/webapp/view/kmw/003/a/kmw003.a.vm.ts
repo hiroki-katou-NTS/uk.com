@@ -320,13 +320,13 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
         }
 
-        startPage(): JQueryPromise<any> {
+        startPage(param?: any): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
 
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
-            self.initScreen().done((processDate, selectedClosure) => {
+            self.initScreen(param).done((processDate, selectedClosure) => {
                 //date process
 				if(!_.isNil(processDate))
                 self.yearMonth(processDate);
@@ -383,13 +383,19 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         /**********************************
         * Initialize Screen 
         **********************************/
-        initScreen(): JQueryPromise<any> {
+        initScreen(param?: any): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             localStorage.removeItem(window.location.href + '/dpGrid');
             nts.uk.ui.errors.clearAllGridErrors();
+
+            if(!_.isNil(param)){
+                self.monthlyParam().closureId = param.closureId;
+                self.monthlyParam().yearMonth = param.yearMonth;
+            }   
+                     
             self.monthlyParam().lstLockStatus = [];
             if (self.monthlyParam().actualTime) {
                 self.monthlyParam().actualTime.startDate = moment.utc(self.monthlyParam().actualTime.startDate, "YYYY/MM/DD").toISOString();
@@ -1966,7 +1972,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.available_A1_9(self.checkAvailable(data, 12));
                 self.available_A1_11(self.checkAvailable(data, 12));
                 //A2_1
-                $('#ccg001').hide();
+                //$('#ccg001').hide();
             } else if (initMode == 2) {
                 $('#cbClosureInfo').show();
                 //A4_7

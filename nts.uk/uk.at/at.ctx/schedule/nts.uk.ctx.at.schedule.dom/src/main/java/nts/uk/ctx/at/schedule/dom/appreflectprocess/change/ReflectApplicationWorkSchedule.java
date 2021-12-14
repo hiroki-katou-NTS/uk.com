@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.snapshot.DailySnapshotWork;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.CreateApplicationReflectionHist;
@@ -42,7 +44,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 public class ReflectApplicationWorkSchedule {
 
 	public static Pair<SCReflectStatusResult, AtomTask> process(Require require, String companyId,  ApplicationShare application,
-			GeneralDate date, SCReflectStatusResult reflectStatus, int preAppWorkScheReflectAttr) {
+			GeneralDate date, SCReflectStatusResult reflectStatus, int preAppWorkScheReflectAttr, String execId) {
 		// 勤務予定から日別実績(work）を取得する
 		WorkSchedule workSchedule = require.get(application.getEmployeeID(), date).orElse(null);
 		if (workSchedule == null)
@@ -70,7 +72,7 @@ public class ReflectApplicationWorkSchedule {
 		// input.日別勤怠(work）を[反映前の日別勤怠(work)]へコピーして保持する
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(workSchedule.getEmployeeID(), workSchedule.getYmd(),
 				workSchedule.getWorkInfo(), CalAttrOfDailyAttd.createAllCalculate(), workSchedule.getAffInfo(), Optional.empty(), new ArrayList<>(),
-				Optional.empty(), workSchedule.getLstBreakTime(), workSchedule.getOptAttendanceTime(),
+				workSchedule.getOutingTime(), workSchedule.getLstBreakTime(), workSchedule.getOptAttendanceTime(),
 				workSchedule.getOptTimeLeaving(), workSchedule.getOptSortTimeWork(), Optional.empty(), Optional.empty(),
 				Optional.empty(), workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>(), snapshot);
 
@@ -86,7 +88,7 @@ public class ReflectApplicationWorkSchedule {
 		dailyRecordApp.setDomain(affterReflect.getDomainDaily());
 
 		// 日別実績の補正処理
-		ChangeDailyAttendance changeAtt = createChangeDailyAtt(affterReflect.getLstItemId());
+		ChangeDailyAttendance changeAtt = ChangeDailyAttendance.createChangeDailyAtt(affterReflect.getLstItemId(), ScheduleRecordClassifi.SCHEDULE);
 		IntegrationOfDaily domainCorrect = CorrectDailyAttendanceService.processAttendanceRule(require,
 				dailyRecordApp.getDomain(), changeAtt);
 
@@ -103,6 +105,7 @@ public class ReflectApplicationWorkSchedule {
 			dailyRecordApp.setDomain(lstAfterCalc.get(0));
 		}
 		
+		ReflectedStateShare before = EnumAdaptor.valueOf(reflectStatus.getReflectStatus().value, ReflectedStateShare.class);
 		AtomTask atomTask = AtomTask.of(() -> {
 			// 勤務予定の更新 --- co update , thuoc tinh ConfirmedATR
 			WorkSchedule workScheduleReflect = new WorkSchedule(dailyRecordApp.getEmployeeId(), dailyRecordApp.getYmd(),
@@ -114,7 +117,7 @@ public class ReflectApplicationWorkSchedule {
 
 			// 申請反映履歴を作成する
 			CreateApplicationReflectionHist.create(require, application.getAppID(), ScheduleRecordClassifi.SCHEDULE,
-					dailyRecordApp, domainBeforeReflect, GeneralDateTime.now());
+					dailyRecordApp, domainBeforeReflect, GeneralDateTime.now(), execId, before);
 		});
 
 		reflectStatus.setReflectStatus(SCReflectedState.REFLECTED);
@@ -127,19 +130,6 @@ public class ReflectApplicationWorkSchedule {
 		DailyRecordToAttendanceItemConverter converter = require.createDailyConverter();
 		converter.setData(domainDaily).employeeId(domainDaily.getEmployeeId()).workingDate(domainDaily.getYmd());
 		return converter.toDomain();
-	}
-
-	private static ChangeDailyAttendance createChangeDailyAtt(List<Integer> lstItemId) {
-
-		boolean workInfo = lstItemId.stream().filter(x -> x.intValue() == 28 || x.intValue() == 29).findFirst()
-				.isPresent();
-		boolean attendance = lstItemId.stream()
-				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
-				.findFirst().isPresent();
-		boolean directBounceClassifi = lstItemId.stream()
-				.filter(x -> x.intValue() == 859 || x.intValue() == 860)
-				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.SCHEDULE, directBounceClassifi);
 	}
 
 	public static interface Require extends CorrectDailyAttendanceService.Require,

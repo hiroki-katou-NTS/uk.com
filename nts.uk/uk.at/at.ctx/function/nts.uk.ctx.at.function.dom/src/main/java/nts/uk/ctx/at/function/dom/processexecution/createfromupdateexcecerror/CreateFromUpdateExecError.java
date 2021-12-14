@@ -48,7 +48,9 @@ public class CreateFromUpdateExecError {
 
 				if (item.getCurrentStatus().get() == CurrentExecutionStatus.WAITING && executionTaskSettingMap.get(item.getExecItemCd()) != null) {
 					// 次回実行日時作成処理
-					GeneralDateTime nextTime = rq.processNextExecDateTimeCreation(executionTaskSettingMap.get(item.getExecItemCd())); //#115526
+					GeneralDateTime nextTime = executionTaskSettingMap.get(item.getExecItemCd()) != null
+							? rq.processNextExecDateTimeCreation(executionTaskSettingMap.get(item.getExecItemCd()))
+							: null; //#115526
 					
 					if (nextTime != null && nextTime.before(GeneralDateTime.now())) { 
 						alarmFlag = true;
@@ -64,6 +66,7 @@ public class CreateFromUpdateExecError {
 									.displaySId(sid)
 									.displayAtr(1) // 上長
 									.subEmployeeIds(Collections.emptyList()) //#116503
+									.noErrEmployeeIds(Collections.emptyList())
 									.patternCode(Optional.empty())
 									.patternName(Optional.empty())
 									.linkUrl(Optional.empty())

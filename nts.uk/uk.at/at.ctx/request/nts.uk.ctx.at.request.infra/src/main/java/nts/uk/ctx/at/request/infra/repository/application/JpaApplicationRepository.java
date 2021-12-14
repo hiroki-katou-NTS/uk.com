@@ -92,6 +92,10 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			"b.REFLECT_PER_SCHE_REASON as bREFLECT_PER_SCHE_REASON, b.REFLECT_PER_TIME as bREFLECT_PER_TIME, " + 
 			"b.CANCEL_PLAN_SCHE_REASON as bCANCEL_PLAN_SCHE_REASON, b.CANCEL_PLAN_TIME as bCANCEL_PLAN_TIME, " + 
 			"b.CANCEL_PER_SCHE_REASON as bCANCEL_PER_SCHE_REASON, b.CANCEL_PER_TIME as bCANCEL_PER_TIME ";
+	
+	private static final String SELECT_BY_SID_PRE_POST_ATR_APPTYPE = "SELECT a FROM KrqdtApplication_New a "
+			+ " WHERE a.employeeID = :employeeID" + " a.appDate = :appDate"
+			+ " AND a.prePostAtr = :prePostAtr" + " AND a.appType = :appType";
 
 	/**
 	 * @author hoatt get List Application phuc vu CMM045
@@ -317,7 +321,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				+ " join KRQDT_APP_REFLECT_STATE b"
 				+ "  on a.APP_ID = b.APP_ID and  a.CID = b.CID"
 				+ " WHERE  a.APPLICANTS_SID =  @sid "
-				+ " AND a.APP_START_DATE <= @strData " + " AND a.APP_END_DATE >= @endData " + " AND a.APP_TYPE IN @appType " 
+				+ " AND a.APP_START_DATE >= @strData " + " AND a.APP_END_DATE <= @endData " + " AND a.APP_TYPE IN @appType " 
 				+ " AND b.REFLECT_PER_STATE IN @recordStatus" + " ORDER BY a.INPUT_DATE ASC";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", sid)
@@ -331,6 +335,26 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		
 	}
 
+	final static String FIND_WITH_BASEDATE = SELECT_MEMO
+			+ " FROM KRQDT_APPLICATION a" 
+			+ " join KRQDT_APP_REFLECT_STATE b"
+			+ "  on a.APP_ID = b.APP_ID and  a.CID = b.CID"
+			+ " WHERE  a.APPLICANTS_SID =  @sid "
+			+ " AND a.APP_START_DATE <= @baseDate " + " AND a.APP_END_DATE >= @baseDate " + " AND a.APP_TYPE IN @appType " 
+			+ " AND b.REFLECT_PER_STATE IN @recordStatus" + " ORDER BY a.INPUT_DATE ASC";
+	@Override
+	public List<Application> getByPeriodReflectType(String sid, GeneralDate baseDate, List<Integer> reflect,
+			List<Integer> appType) {
+		List<Map<String, Object>> mapLst = new NtsStatement(FIND_WITH_BASEDATE, this.jdbcProxy())
+				.paramString("sid", sid)
+				.paramDate("baseDate", baseDate)
+				.paramInt("recordStatus", reflect)
+				.paramInt("appType", appType)
+				.getList(rec -> toObject(rec));
+		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
+		return krqdtApplicationLst.stream().map(c -> c.toDomain()).collect(Collectors.toList());
+	}
+	
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<Application> getListAppByType(String companyId, String employeeID, GeneralDate startDate,
@@ -796,14 +820,15 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public Optional<String> getNewestPreAppIDByEmpDate(String employeeID, GeneralDate date, ApplicationType appType) {
 		String companyID = AppContexts.user().companyId();
-		String sql = "select TOP 1 APP_ID from KRQDT_APPLICATION where CID = @companyID and APP_TYPE = @appType " +
+		String sql = "select APP_ID from KRQDT_APPLICATION where CID = @companyID and APP_TYPE = @appType " +
 				"and APPLICANTS_SID = @employeeID and APP_DATE = @date and PRE_POST_ATR = 0 order by INPUT_DATE desc";
 		return new NtsStatement(sql, this.jdbcProxy())
 				.paramString("companyID", companyID)
 				.paramInt("appType", appType.value)
 				.paramString("employeeID", employeeID)
 				.paramDate("date", date)
-				.getSingle(rec -> rec.getString("APP_ID"));
+				.getList(rec -> rec.getString("APP_ID"))
+				.stream().findFirst();
 	}
 	
 	//http://192.168.50.4:3000/issues/113816
@@ -846,7 +871,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	// get application by list employee and date period
 	@Override
 	public List<Application> getAllApplication(List<String> sID, DatePeriod period) {
-		
+		if (CollectionUtil.isEmpty(sID)) return Collections.emptyList();
 		String sql = SELECT_MEMO
 				+ "FROM KRQDT_APPLICATION a " 
 				+ "join KRQDT_APP_REFLECT_STATE b "
@@ -884,5 +909,16 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.getList(rec -> toObject(rec));
 		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
 		return krqdtApplicationLst.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+	}
+	
+	//申請データを取得する
+	@Override
+	public List<Application> getAllApplicationByAppTypeAndPrePostAtr(String employeeID, int appType,
+			GeneralDate appDate, int prePostAtr) {
+		
+		return this.queryProxy().query(SELECT_BY_SID_PRE_POST_ATR_APPTYPE, KrqdtApplication.class)
+				.setParameter("employeeID", employeeID)
+				.setParameter("appDate", appDate).setParameter("appType", appType)
+				.setParameter("prePostAtr", prePostAtr).getList(c -> c.toDomain());
 	}
 }

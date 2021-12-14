@@ -41,6 +41,8 @@ public interface PayoutManagementDataRepository {
 	
 	void delete(String payoutId);
 	
+	void deleteAllByEmployeeId(String employeeId);
+	
 	void update(PayoutManagementData domain);
 	
 	Optional<PayoutManagementData> findByID(String ID);
@@ -115,7 +117,4 @@ public interface PayoutManagementDataRepository {
 	List<PayoutManagementData> getByListId(List<String> payoutIds);
 	
 	List<PayoutManagementData> getByIdAndUnUse(String cid, String sid, GeneralDate expiredDate, double unUse);
-	
-	/** 当月以降の管理データを削除 */
-	void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target);
 }

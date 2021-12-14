@@ -185,7 +185,6 @@ export class KafS08A2Component extends KafS00ShrComponent {
     
                 return;
             }
-            vm.$modal.error({ messageId: 'Msg_1912' });
         });
     }
 
@@ -282,7 +281,16 @@ export class KafS08A2Component extends KafS00ShrComponent {
         vm.$http.post('at', API.checkBeforeApply, {
             businessTripInfoOutputDto: vm.data.businessTripInfoOutput,
             businessTripDto: paramsBusinessTrip,
+            application: vm.application,
+            mode: vm.mode,
             screenDetails
+        }).then((res: any) => {
+            if (res) {
+                let errList = res.data;
+                if (!_.isEmpty(errList)) {
+                    vm.handleErrorMessage(errList);
+                }
+            }
         }).then((res: any) => {
             vm.mode ? vm.registerData() : vm.updateBusinessTrip();
         }).catch((err: any) => {
@@ -345,13 +353,10 @@ export class KafS08A2Component extends KafS00ShrComponent {
                 if (res) {
                     vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
                     vm.$emit('nextToStepThree', res.data.appIDLst[0]);
-                } else {
-                    vm.$modal.error({ messageId: 'Msg_1912' });
-                }
+                } 
                 vm.$mask('hide');
             }).catch(() => {
                 vm.$mask('hide');
-                vm.$modal.error({ messageId: 'Msg_1912' });
             });
         } else {
             vm.$modal.error({ messageId: 'Msg_1703' });

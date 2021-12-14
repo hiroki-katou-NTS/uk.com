@@ -74,6 +74,9 @@ public interface LeaveManaDataRepository {
 	 * @param leaveId ID
 	 */
 	void deleteByLeaveId(String leaveId);
+	
+	void deleteAllByEmployeeId(String employeeId);
+	
 	/**
 	 * ドメインモデル「休出管理データ」を取得する
 	 * @param sid
@@ -149,7 +152,4 @@ public interface LeaveManaDataRepository {
 	 * @return List<LeaveManagementData>
 	 */
 	List<LeaveManagementData> getListByIdAndUnUse(String cid, String sid, GeneralDate expiredDate, double unUse);
-	
-	/** 当月以降の管理データを削除 */
-	void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target);
 }

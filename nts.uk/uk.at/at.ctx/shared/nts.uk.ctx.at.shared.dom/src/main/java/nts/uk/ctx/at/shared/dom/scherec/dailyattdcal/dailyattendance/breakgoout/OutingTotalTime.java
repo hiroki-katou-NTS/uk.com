@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.CalcDeductionTimeService;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 外出合計時間
@@ -75,8 +74,8 @@ public class OutingTotalTime {
 		
 		// コアタイム内の外出計算を取得
 		if(outingCalcSet.isPresent()) {
-			// コア内と外を分けて計算するかどうか判定
-			if (outingCalcSet.get().getEspecialCalc() == NotUseAtr.USE) isSeparate = true;
+			// コア内と外を分けて計算するかどうか判断
+			if (outingCalcSet.get().isSeparateCoreInOutCalc(reason)) isSeparate = true;
 		}
 		if (isSeparate){
 			// 所定内外出をコア内と外で分けて計算

@@ -9,23 +9,20 @@ module nts.uk.com.view.cmf001.a {
              */
             importScreen(): void {
                 let self = this;
-                nts.uk.request.jump("/view/cmf/001/o/index.xhtml");
+                nts.uk.request.jump("/view/cmf/001/x/index.xhtml");
             }
             
             /**
              * request to create creation screen
              */
-            settingScreen(): void {
+            settingScreenB(): void {
                 let self = this;
                 nts.uk.request.jump("/view/cmf/001/b/index.xhtml");
             }
-            
-            /**
-             * request to reference history screen
-             */
-            referenceHistoryScreen(): void {
+
+            settingScreenE(): void {
                 let self = this;
-               nts.uk.request.jump("/view/cmf/001/s/index.xhtml");
+                nts.uk.request.jump("/view/cmf/001/e/index.xhtml");
             }
         }
     }

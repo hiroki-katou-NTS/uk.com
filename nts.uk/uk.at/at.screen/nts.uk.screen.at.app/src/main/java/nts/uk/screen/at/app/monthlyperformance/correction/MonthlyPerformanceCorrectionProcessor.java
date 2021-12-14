@@ -193,8 +193,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private static final String HAND_CORRECTION_OTHER = "mgrid-manual-edit-other";
 //	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
 	private static final String STATE_ERROR = "mgrid-error";
-	private static final String STATE_ALARM = "mgrid-alarm";
-	private static final String STATE_SPECIAL = "mgrid-special";
 	private static final String ADD_CHARACTER = "A";
 //	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	
@@ -257,7 +255,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		// アルゴリズム「締め情報の表示」を実行する move 締め情報の表示 in authority 2.
 		//set A3_2
 		yearMonth = 0;
-		if (param.getYearMonth() == 0) {
+		if (param.getYearMonth() == null || (param.getYearMonth() != null && param.getYearMonth() == 0)) {
 			if (presentClosingPeriodExport.isPresent()) {
 				yearMonth = presentClosingPeriodExport.get().getProcessingYm().v();
 				param.setYearMonth(yearMonth);

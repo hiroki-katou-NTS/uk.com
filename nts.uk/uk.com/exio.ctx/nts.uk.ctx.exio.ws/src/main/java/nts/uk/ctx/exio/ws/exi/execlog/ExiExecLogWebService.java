@@ -14,11 +14,13 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.app.find.exi.execlog.ErrorContentDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacErrorLogDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacErrorLogFinder;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacExeResultLogDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacExeResultLogFinder;
+import nts.uk.ctx.exio.app.find.exi.execlog.ExacExeResultLogNameDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExiExecLogExportService;
 
 /**
@@ -47,6 +49,12 @@ public class ExiExecLogWebService extends WebService {
 	
 //	@Inject
 //	private UpdateExterOutExecLogCommandHandler updateExterOutExecLogCommandHandler;
+	
+	@Path("getLogResultsList")
+	@POST
+	public List<ExacExeResultLogNameDto> getLogResultsList(TimeInput time) {
+		return this.exacExeResultLogFinder.getAllExacExeResultLog(time.getStart(), time.getEnd());
+	}
 	
 	
 	/**

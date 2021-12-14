@@ -21,6 +21,7 @@ public class AppRootInstance {
 	/**
 	 * 承認ルート中間データID
 	 */
+	@Setter
 	private String rootID;
 	
 	/**

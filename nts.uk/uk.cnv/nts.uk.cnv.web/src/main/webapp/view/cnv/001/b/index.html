@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CNV001B カテゴリの登録</title>
+<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="../../../../lib/nittsu/ui/style/stylesheets/base.css">
+<link rel="stylesheet" type="text/css" href="cnv001.b.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="cnv001.b.js"></script>
+</head>
+
+<body>
+<div id="messageDialog" title="">
+	<label id="lblMessage"></label>
+</div>
+<div id="master-wrapper" data-bind="with: content">
+	<div id="header">
+		<div id="menu-header">
+			<div id="logo-area" class="cf"><div id="logo"><img src="/nts.uk.cnv.web/master/images/kinjirou.png"></div></div>
+			<div id="nav-area" class="cf"></div>
+			<div id="pg-area" class="cf">
+				<div id="pg-name" class="title">CNV001B カテゴリの登録</div>
+			</div>
+		</div>
+	</div>
+	<div id="master-content">
+		<div id="functions-area">
+			<button id="btnRegist" class="large proceed">登録</button>
+			<button id="btnNew" class="large">新規</button>
+			<button id="btnDelete" class="large danger">削除</button>
+		</div>
+		<div id="contents-area" class="fixed-flex-layout" style="height: calc(100vh - 161px);">
+			<div class="fixed-flex-layout-left bg-green caret-right caret-background cf">
+				<fieldset>
+				<legend id="categoryListTitle">カテゴリ一覧</legend>
+					<table>
+						<tr>
+							<td>
+								<select id="category" size="24">
+								</select>
+							</td>
+							<td style="vertical-align:top; whidth:45px;">
+								<button id="toUp" class="small" style="margin-bottom: 10px;">▲</button>
+								<button id="toDown" class="small">▼</button>
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+			</div>
+			<table style="width: 700px;">
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td colspan=3>
+								<div class="control-group">
+									<div class="form-label required broken">
+										<label>カテゴリ名：</label>
+										<i>全角25文字</i>
+									</div>
+									<span class="nts-editor-wrapped ntsControl">
+										<input type="text" id="categoryName" style="margin-left: 11px; width: 270px;" class="nts-editor nts-input reset-element">
+									</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<fieldset>
+									<legend id="tableListTitle">選択中一覧</legend>
+									<table>
+										<tr>
+											<td>
+												<select id="uktableSelected" size=14>
+												</select>
+											</td>
+											<td style="vertical-align:top; whidth:45px;">
+												<button id="table_toUp" class="small" style="margin-bottom: 10px;">▲</button>
+												<button id="table_toDown" class="small">▼</button>
+											</td>
+										</tr>
+									</table>
+								</fieldset>
+							</td>
+							<td style="width:90px;">
+								<button id="toLeft" class="small" style="width:70px; margin-bottom: 20px;">◀</button>
+								<button id="toRight" class="small" style="width:70px;">▶</button>
+							</td>
+							<td>
+								<fieldset>
+									<legend>未選択一覧</legend>
+									<select id="uktableUnSelected" size=14>
+									</select>
+								</fieldset>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			</table>
+		</div>
+	</div>
+</div>
+</body>
+</html>

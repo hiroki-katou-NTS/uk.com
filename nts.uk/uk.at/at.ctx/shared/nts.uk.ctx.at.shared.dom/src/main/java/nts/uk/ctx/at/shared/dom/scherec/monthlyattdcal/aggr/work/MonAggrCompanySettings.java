@@ -39,7 +39,6 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeCom;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeEmp;
@@ -131,9 +130,6 @@ public class MonAggrCompanySettings {
 	/** フレックス勤務の月別集計設定 */
 	@Getter
 	private MonthlyAggrSetOfFlex aggrSetOfFlex;
-	/** フレックス勤務所定労働時間 */
-	@Getter
-	private GetFlexPredWorkTime flexPredWorkTime;
 	/** フレックス不足の年休補填管理 */
 	@Getter
 	private Optional<InsufficientFlexHolidayMnt> insufficientFlexOpt;
@@ -438,15 +434,6 @@ public class MonAggrCompanySettings {
 			this.aggrSetOfFlex = aggrSetOfFlexOpt.get();
 		}
 
-		// フレックス勤務所定労働時間
-		val flexPredWorkTimeOpt = require.flexPredWorkTime(companyId);
-		if (!flexPredWorkTimeOpt.isPresent()){
-			this.errorInfos.put("016", new ErrMessageContent(TextResource.localize("Msg_1243")));
-		}
-		else {
-			this.flexPredWorkTime = flexPredWorkTimeOpt.get();
-		}
-
 		// フレックス不足の年休補填管理
 		this.insufficientFlexOpt = require.insufficientFlexHolidayMnt(companyId);
 		
@@ -733,8 +720,6 @@ public class MonAggrCompanySettings {
 		Optional<ComFlexMonthActCalSet> monthFlexCalSetByCompany(String companyId);
 		
 		Optional<MonthlyAggrSetOfFlex> monthFlexAggrSet(String companyId);
-		
-		Optional<GetFlexPredWorkTime> flexPredWorkTime(String companyId);
 		
 		Optional<InsufficientFlexHolidayMnt> insufficientFlexHolidayMnt(String cid);
 		

@@ -60,6 +60,7 @@ declare module nts.uk.ui.vm {
 		readonly codeNames: Resources;
 
 		readonly primitiveValueConstraints: PrimitiveConstraints;
+		readonly enums: any;
 
 		readonly title: string;
 		readonly transferred: nts.uk.util.optional.Optional<any>;

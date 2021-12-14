@@ -62,7 +62,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	
 	@Override	
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void reflectEmployeeOfApp(Application appInfor, SEmpHistImport sEmpHistImport, 
+	public void reflectEmployeeOfApp(Application appInfor, List<SEmpHistImport> sEmpHistImport, 
 			ExecutionTypeExImport execuTionType, String excLogId, int currentRecord) {
 		try {
 			self.reflectEmployeeOfAppWithTransaction(appInfor, sEmpHistImport, execuTionType, excLogId);
@@ -94,7 +94,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Transactional
-	public void reflectEmployeeOfAppWithTransaction(Application appInfor, SEmpHistImport sEmpHistImport, ExecutionTypeExImport execuTionType,
+	public void reflectEmployeeOfAppWithTransaction(Application appInfor, List<SEmpHistImport> sEmpHistImport, ExecutionTypeExImport execuTionType,
 			String excLogId) {
 		String companyID = AppContexts.user().companyId();
 		
@@ -104,10 +104,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			GeneralDate loopDate = appInfor.getOpAppStartDate().get().getApplicationDate().addDays(i);
 
             Boolean isCalWhenLock = this.executionLogRequestImport.isCalWhenLock(excLogId, 2);
-          //TODO: new Process
 			Pair<Optional<OneDayReflectStatusOutput>, Optional<AtomTask>> resultAfterReflect = ReflectionProcess
 					.process(createRequireReflectionProcess.createImpl(), companyID, appInfor,
-							isCalWhenLock == null ? false : isCalWhenLock, loopDate, sEmpHistImport);
+							isCalWhenLock == null ? false : isCalWhenLock, loopDate, sEmpHistImport, excLogId);
 			
 			resultAfterReflect.getRight().ifPresent(x -> {
 				x.run();

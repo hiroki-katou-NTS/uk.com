@@ -1,447 +1,416 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.com.view.cmf001.f.viewmodel {
-    import close = nts.uk.ui.windows.close;
-    import getText = nts.uk.resource.getText;
-    import model = cmf001.share.model;
-    import dialog = nts.uk.ui.dialog;
-    import block = nts.uk.ui.block;
-    export class ScreenModel {
-        codeConvertList: KnockoutObservableArray<AcceptanceCodeConvert> = ko.observableArray([]);
-        selectedConvertCode: KnockoutObservable<string> = ko.observable('');
-        selectedConvertDetail: KnockoutObservable<number> = ko.observable(0); 
-        screenMode: KnockoutObservable<number>;
-        codeConvertData: KnockoutObservable<AcceptanceCodeConvert> = ko.observable(new AcceptanceCodeConvert('', '', 0, []));
-        acceptWithoutSettingItems: KnockoutObservableArray<model.ItemModel>;
-        
-        constructor() {
-            let self = this;
-            self.screenMode = ko.observable(model.SCREEN_MODE.UPDATE);
-            $("#detail-code-convert").ntsFixedTable({ height: 184 });
-            
-            self.acceptWithoutSettingItems =  ko.observableArray([
-                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_209')),
-                new model.ItemModel(model.NOT_USE_ATR.USE    , getText('CMF001_210')), 
-            ]);
+	import ajax = nts.uk.request.ajax;
+	import info = nts.uk.ui.dialog.info;
+	import setShared = nts.uk.ui.windows.setShared;
+	import getShared = nts.uk.ui.windows.getShared;
 
-            //登録済のコード変換を参照する
-            //コード一覧でいづれか選択する
-            self.selectedConvertCode.subscribe(function(convertCode: any) {
-                if (convertCode) {
-                    block.invisible();
-                    //ドメインモデル「受入コード変換」を取得し内容を画面（右側）にセットする
-                    service.getAcceptCodeConvert(convertCode).done(function(codeConvert) {
-                        if (codeConvert) {
-                            self.codeConvertData().cdConvertDetails.removeAll();
-                            self.selectedConvertCode(codeConvert.convertCd);
-                            self.codeConvertData().convertCd(codeConvert.convertCd);
-                            self.codeConvertData().convertName(codeConvert.convertName);
-                            self.codeConvertData().acceptWithoutSetting(codeConvert.acceptWithoutSetting);
-                            var detail: Array<any> = _.sortBy(codeConvert.cdConvertDetails, ['lineNumber']);
-                            for (let i = 0; i < detail.length; i++) {
-                                self.codeConvertData().cdConvertDetails.push(new CodeConvertDetail(detail[i].convertCd, detail[i].lineNumber, detail[i].outputItem, detail[i].systemCd));
-                            }
+	function deleteButton(required, data) {
+		if (required === false) {
+				return '<button type="button" class="delete-button" data-target="'+ data.itemNo +'">削除</button>';
+		} else {
+				return '';
+		}
+	}
 
-                            //UI設計の「項目制御」のl更新モードに画面設定する
-                            self.screenMode(model.SCREEN_MODE.UPDATE);
+	$(function() {
+		$(document).on("click",".delete-button",function(){
+			let vm = nts.uk.ui._viewModel.content;
+			vm.removeItem($(this).data("target"));
+		});
+	})
 
-                            //フォーカス制御
-                            self.setFocusItem(FOCUS_TYPE.ROW_PRESS, model.SCREEN_MODE.UPDATE);
-                        }
-                    }).fail(function(error) {
-                        dialog.alertError(error);
-                    }).always(function() {
-                        block.clear();
-                    });
-                } else {
-                    self.settingCreateMode();
-                    setTimeout(() => {
-                        nts.uk.ui.errors.clearAll();
-                    }, 10);
-                }
-            });
+	@bean()
+	class ViewModel extends ko.ViewModel {
+        settingCode: string;
+		
+		itemNameRow: KnockoutObservable<number> = ko.observable();
+		importStartRow: KnockoutObservable<number> = ko.observable();
+		
+		canEditDetail: KnockoutObservable<boolean> = ko.observable(false);
+		
+		//domain
+		domainInfoList:KnockoutObservableArray<DomainInfo> = ko.observableArray([]);
+		domainList: KnockoutObservableArray<ImportDomain> = ko.observableArray([]);
+		layoutItemNoList: KnockoutObservableArray<number> = ko.observableArray([]);
+		layout: KnockoutObservableArray<Layout> = ko.observableArray([]);
 
-            self.codeConvertData().cdConvertDetails.subscribe(() => {
-                for (var i = 0; i < self.codeConvertData().cdConvertDetails().length; i++) {
-                    self.codeConvertData().cdConvertDetails()[i].lineNumber(i + 1);
-                }
-            });
-        }
+		importDomainOption: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ImportingDomainId);
+		importDomain: KnockoutObservable<number> = ko.observable();
+		selectedDomainId: KnockoutObservable<number> = ko.observable();
+		
+		//csv
+		csvItemOption: KnockoutObservableArray<CsvItem> = ko.observableArray([]);
 
-        /**
-         * 起動する
-         * - アルゴリズム「一覧登録画面を表示する」を実行する
-         */
-        initialScreen(convertCodeParam?: string) {
-            let self = this;
-            block.invisible();
-            nts.uk.ui.errors.clearAll();
-            //ドメインモデル「受入コード変換」を取得する
-            service.getCodeConvertByCompanyId().done(function(result: Array<any>) {
-                //データが存在するか判別する
-                //データが存在する場合
-                if (result && result.length) {
-                    let _codeConvertResult: Array<any> = _.sortBy(result, ['convertCd']);
-                    let _codeConvertList: Array<AcceptanceCodeConvert> = _.map(_codeConvertResult, x => {
-                        return new AcceptanceCodeConvert(x.convertCd, x.convertName, x.acceptWithoutSetting, x.cdConvertDetails);
-                    });
+		selectedItem: KnockoutObservable<string> = ko.observable();
+		
+	    $grid!: JQuery;
+		
+		domainListColumns: KnockoutObservableArray<any> = ko.observableArray([
+			{ headerText: "ID", 					key: "domainId", 		width: 50 , 	hidden: true },
+			{ headerText: "受入ドメイン", 	key: "name", 			width: 280},
+		]);
 
-                    //F:「コード変換一括登録」ダイアログを更新モードでモーダル表示する
-                    self.screenMode(model.SCREEN_MODE.UPDATE);
+		constructor() {
+			super();
+			var self = this;
+			
+			var params = __viewContext.transferred.get();
+			self.settingCode = params.settingCode;
 
-                    let _codeConvert: string;
-                    if (convertCodeParam) {
-                        _codeConvert = convertCodeParam;
-                    } else {
-                        _codeConvert = _codeConvertList[0].convertCd();
-                    }
-                    self.selectedConvertCode(_codeConvert);
-                    //取得した受入コード変換を「コード変換一覧」（グリッドリスト）に表示する
-                    self.codeConvertList(_codeConvertList);
+			self.startPage();
+			
+			self.selectedDomainId.subscribe((value) => {
+				if (value) {
+					var info = $.grep(self.domainInfoList(), function (di) {
+						return di.domainId == self.selectedDomainId();
+					});
+					if (info.length !== 0){
+						self.setDomain(info[0]);
+						self.canEditDetail(info[0].resistered);
+						return;
+					}
+				}
+				self.layoutItemNoList([]);
+				self.canEditDetail(false);
+			})
+	
+			self.layoutItemNoList.subscribe((value) => {
+				self.setLayout(value);
+			})
+			
+			if (params.domainId !== undefined){
+				self.selectedDomainId(params.domainId);
+			}
+		}
+		
+		setDomain(info: DomainInfo) {
+			let self = this;
+			self.layoutItemNoList(info.itemNoList);
+		}
 
-                    //フォーカス制御
-                    self.setFocusItem(FOCUS_TYPE.INIT, model.SCREEN_MODE.UPDATE);
-                }
-                //データが存在しない場合
-                else {
-                    //F:「コード変換一括登録」ガイアログを新規モードでモーダル表示する
-                    self.screenMode(model.SCREEN_MODE.NEW);
+		startPage(){
+			var self = this;
+			let dfd = $.Deferred();
+						
+			self.getListData().done(function() {
+				if (self.domainList() !== null && self.domainList().length !== 0) {
+					self.selectedDomainId(self.domainList()[0].domainId);
+				}
+			});
+			
+			self.$grid = $("#grid");
+			self.initGrid();
+		      
+			return dfd.promise();
+		}
 
-                    //フォーカス制御
-                    self.setFocusItem(FOCUS_TYPE.INIT, model.SCREEN_MODE.NEW);
-                }
-            }).fail(function(error) {
-                dialog.alertError(error);
-            }).always(function() {
-                block.clear();
-            });
-        }
+		reloadPage(){
+			var self = this;
+			self.getListData().done(function() {
+				self.initGrid();
+			});
+		}
+		
+		getListData() {
+			var self = this;
+			let dfd = $.Deferred();
+			ajax("screen/com/cmf/cmf001/e/get/setting/" + self.settingCode)
+			.done((res) => {
+				let importDomains = $.map(res.domains, d => {
+					let target = $.grep(__viewContext.enums.ImportingDomainId, (domain) => domain.value === d.domainId)[0];
+					return new ImportDomain(d.domainId, target.name, true);
+				});
+				let importDomainInfoList = $.map(res.domains, d => {
+					let target = $.grep(__viewContext.enums.ImportingDomainId, (domain) => domain.value === d.domainId)[0];
+					return new DomainInfo(d.domainId, d.itemNoList, true);
+				});
+				self.domainList(importDomains);
+				self.domainInfoList(importDomainInfoList);
+				
+				let csvItem = $.map(res.csvItems, function(value, index) {
+					return new CsvItem(index + 1, value);
+				});
+				csvItem.unshift(new CsvItem(null, ''));
+				self.csvItemOption=ko.observableArray(csvItem);
 
-        //新規登録を始める
-        //「新規」ボタンを押下
-        addCodeConvert_click() {
-            let self = this;
-            block.invisible();
-            self.settingCreateMode();
-            block.clear();
-        }
+				dfd.resolve();
+			}).fail(function(error) {
+				dfd.reject();
+				alert(error.message);
+			})
+			return dfd.promise();
+		}
+		
+		initGrid(){
+			var self = this;
+			var comboColumns = [
+				{ prop: "no",	length:2 },
+				{ prop: "name", length:10}
+			];
+			if (self.$grid.data("igGrid")) {
+				self.$grid.ntsGrid("destroy");
+			}
+			
+			self.$grid.ntsGrid({
+				height: '300px',
+				dataSource: self.layout(),
+		        primaryKey: 'itemNo',
+		        rowVirtualization: true,
+		        virtualization: true,
+		        virtualizationMode: 'continuous',
+		        columns: [
+					{ headerText: "削除", 				key: "required", 			dataType: 'boolean',	width: 50, formatter: deleteButton},
+					{ headerText: "NO", 					key: "itemNo", 				dataType: 'number',	width: 50, 	hidden: true },
+					{ headerText: "名称", 				key: "name", 				dataType: 'string',		width: 250},
+					{ headerText: "受入元", 				key: "isFixedValue",		dataType: 'number',	width: 130, ntsControl: 'SwitchButtons'},
+					{ headerText: "CSVヘッダ名", 	key: "selectedCsvItemNo",	dataType: 'number',	width: 220, ntsControl: 'Combobox' },
+					{ headerText: "サンプルデータ", 				key: "csvData", 				dataType: 'string',		width: 120	}
+				],
+		        features: [
+		          {
+		          },
+		        ],
+		        ntsControls: [
+		          {
+			            name: 'SwitchButtons',
+			            options: [{ value:0, text: 'CSV' },{ value:1, text: '固定値' }],
+                        optionsValue: 'value',
+                        optionsText: 'text',
+                        controlType: 'SwitchButtons',
+                        enable: true 
+		          },
+		          {
+		            name: 'Combobox',
+		            options: self.csvItemOption(),
+		            optionsValue: 'no',
+		            optionsText: 'name',
+		            columns: comboColumns,
+		            controlType: 'ComboBox',
+		            visibleItemsCount: 5,
+		            dropDownAttachedToBody: false,
+		        	selectFirstIfNull: false,
+		            enable: true
+		          }
+		        ]
+		      });
+		}
+		
+		removeItem(target: number){
+			let self = this;
+			let index = self.layoutItemNoList().findIndex((item) => item === target);
+			self.layoutItemNoList().splice(index, 1);
+			self.setLayout(self.layoutItemNoList());
+		}
 
-        //フォーカス制御
-        setFocusItem(focus: number, screenMode: number, index?: number) {
-            let self = this;
-            if (focus == FOCUS_TYPE.ADD_ROW_PRESS || focus == FOCUS_TYPE.DEL_ROW_PRESS) {
-                $('tr[data-id=' + index + ']').find("input").first().focus();
-            } else {
-                if (screenMode == model.SCREEN_MODE.NEW) {
-                    $('#F4_2').focus();
-                } else if (screenMode == model.SCREEN_MODE.UPDATE) {
-                    $('#F4_3').focus();
-                }
-            }
-            _.defer(() => {nts.uk.ui.errors.clearAll()});
-        }
+		checkError(){
+			nts.uk.ui.errors.clearAll()
+			$('.check-target').ntsError('check');
+		}
 
-        start(): JQueryPromise<any> {
-            let self = this;
-            var dfd = $.Deferred();
-            
-            self.initialScreen();
-            
-            dfd.resolve();
-            return dfd.promise();
-        }
+		setLayout(itemNoList: number[]){
+			let self = this;
+			if(itemNoList.length > 0){
+				let condition = {
+					settingCode: self.settingCode,
+					importingDomainId: self.selectedDomainId(),
+					itemNoList: itemNoList};
+				ajax("screen/com/cmf/cmf001/f/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
+					self.layout(layoutItems);
+					self.initGrid();
+				});
+			}else{
+				self.layout([]);
+			}
+		}
 
-        //一覧の行追加
-        //行追加ボタンを押下
-        addDetailConvert_click() {
-            let self = this;
-            block.invisible();
+		canSave = ko.computed(() => !nts.uk.ui.errors.hasError() );
+	
+		save(){
+			let self = this;
+			self.checkError();
+			if(!nts.uk.ui.errors.hasError()){
+				let domains = $.map(self.layout(), l =>{
+					return {
+						itemNo: l.itemNo,
+						isFixedValue: l.isFixedValue,
+						csvItemNo: l.selectedCsvItemNo,
+						fixedValue: l.fixedValue
+					}
+				});
+				let saveContents = {
+					code: self.settingCode,
+					domainId: self.selectedDomainId(),
+					items: domains
+				};
+				ajax("screen/com/cmf/cmf001/f/save", saveContents).done(() => {
+					info(nts.uk.resource.getMessage("Msg_15", []));
+					self.reloadPage();
+	            });
+			}
+		}
 
-            if (self.codeConvertData().cdConvertDetails == null || self.codeConvertData().cdConvertDetails == undefined) {
-                self.codeConvertData().cdConvertDetails = ko.observableArray([]);
-            }
+		uploadCsv() {
+			let self = this;
+		}
+		
+		addImportDomain() {
+			let self = this;
+			
+			let index = self.domainInfoList().findIndex((di) => di.domainId === self.importDomain());
+			if(index != -1){
+				info("既に追加されています");
+				return;
+			}
 
-            //コード変換一覧の最下行に1行追加する
-            self.codeConvertData().cdConvertDetails.push(new CodeConvertDetail(self.codeConvertData().convertCd(), self.codeConvertData().cdConvertDetails().length + 1, '', ''));
-            self.selectedConvertDetail(self.codeConvertData().cdConvertDetails().length);
-            $("#detail-code-convert tr")[self.codeConvertData().cdConvertDetails().length - 1].scrollIntoView();
+			let selected = $.grep(__viewContext.enums.ImportingDomainId, (domain) => domain.value === self.importDomain())[0];
+			self.domainList.push(new ImportDomain(selected.value, selected.name, true ));
+			
+			let condition = {
+				settingCode: self.settingCode,
+				importingDomainId: self.importDomain(),
+				itemNoList: []};
+			ajax("com", "screen/com/cmf/cmf001/b/get/layout", condition)
+			.done((itemNoList: number[]) => {
+				self.domainInfoList.push(new DomainInfo(self.importDomain(), itemNoList), false);
+				self.selectedDomainId(self.importDomain());
+				self.importDomain(null);
 
-            let indexFocus:number = self.codeConvertData().cdConvertDetails().length;
-            //フォーカス制御
-            self.setFocusItem(FOCUS_TYPE.ADD_ROW_PRESS, model.SCREEN_MODE.UPDATE, indexFocus);
-            
-            block.clear();
-        }
+			});
+		}
+		
+		deleteImportDomain() {
+			let self = this;
 
-        //一覧の行削除
-        //行削除ボタンを押下
-        deleteDetailConvert_click() {
-            let self = this;
-            let indexFocus: number = 0;
-            block.invisible();
+	        ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+				ajax("screen/com/cmf/cmf001/f/delete", {
+					code: self.settingCode,
+					domainId: self.selectedDomainId()
+				}).done(() => {
+					info(nts.uk.resource.getMessage("Msg_16", []));
+					
+					let index = self.domainInfoList().findIndex((di) => di.domainId === self.selectedDomainId());
+					self.domainInfoList.splice(index, 1);
+					self.domainList.splice(index, 1);
+					self.selectedDomainId(null);
+					
+					self.reloadPage();
+	            });
+	        });
+		}
 
-            //選択行がない場合
-            if (self.selectedConvertDetail() < 1 || self.selectedConvertDetail() > self.codeConvertData().cdConvertDetails().length) {
-                //エラーメッセージの表示　Msg_897　削除行が選択されていません。
-                dialog.alertError({ messageId: "Msg_897" });
-                block.clear();
-                return;
-            }
+		selectLayout() {
+			let self = this;
+			setShared('CMF001DParams', {
+					domainId: self.selectedDomainId(),
+					selectedItems: self.layoutItemNoList()
+			}, true);
+	
+			nts.uk.ui.windows.sub.modal("/view/cmf/001/d/index.xhtml").onClosed(function() {
+				// ダイアログを閉じたときの処理
+				if(!getShared('CMF001DCancel')){
+					let ItemNoList: string[] = getShared('CMF001DOutput')
+					console.log("closed: " + ItemNoList)
+					ko.utils.arrayPushAll(self.layoutItemNoList, ItemNoList.map(n => Number(n)));
+				}
+			});
+		}
 
-            //現在の行を「コード変換コード表」グリッドリストから1削除する（削除後に記入する）
-            self.codeConvertData().cdConvertDetails.remove(function(item) { return item.lineNumber() == (self.selectedConvertDetail()); })
-            nts.uk.ui.errors.clearAll();
-            for (var i = 0; i < self.codeConvertData().cdConvertDetails().length; i++) {
-                self.codeConvertData().cdConvertDetails()[i].lineNumber(i + 1);
-            }
-            if (self.selectedConvertDetail() >= self.codeConvertData().cdConvertDetails().length) {
-                self.selectedConvertDetail(self.codeConvertData().cdConvertDetails().length);
-                indexFocus = self.codeConvertData().cdConvertDetails().length;
-            } else {
-                indexFocus = self.selectedConvertDetail();
-            }
+		gotoDetailSetting() {
+			let self = this;
+			request.jump("../c/index.xhtml", {
+				settingCode: self.settingCode,
+				domainId: self.selectedDomainId(),
+				screenId: 'cmf001f'
+			});
+		}
+	}
 
-            //フォーカス制御
-            self.setFocusItem(FOCUS_TYPE.DEL_ROW_PRESS, model.SCREEN_MODE.UPDATE, indexFocus);
-            self.selectedConvertDetail.valueHasMutated();
-            
-            block.clear();
-        }
-        
-        //登録ボタンを押下
-        regAcceptCodeConvert_Click() {
-            
-            let self = this;
-            nts.uk.ui.errors.clearAll();
-            block.invisible();
-            for (var i = 0; i < self.codeConvertData().cdConvertDetails().length; i++) {
-                self.codeConvertData().cdConvertDetails()[i].convertCd(self.codeConvertData().convertCd());
-            }
+	export class Setting {
+		code: string;
+		name: string;
+	
+		constructor(code: string, name: string) {
+				this.code = code;
+				this.name = name;
+		}
+	}
+	
+	export class SettingInfo {
+		companyId: string;
+		code: string;
+		name: string;
+		itemNameRow: number;
+		importStartRow: number;
+	
+		constructor(companyId: string, code: string, name: string, itemNameRow: number, importStartRow: number) {
+			this.companyId = companyId;
+			this.code = code;
+			this.name = name;
+			this.itemNameRow = itemNameRow;
+			this.importStartRow = importStartRow;
+		}
+	
+		static new(){
+			return new SettingInfo(__viewContext.user.companyId, "", "", null, null, null)
+		}
+	}
 
-            let currentAcceptCodeConvert = self.codeConvertData;
-
-            //新規モードか更新モードを判別する
-            if (model.SCREEN_MODE.NEW == self.screenMode()) {
-                //コード変換コードが既に登録されていないか判別
-                var existCode = self.codeConvertList().filter(x => x.convertCd() === currentAcceptCodeConvert().convertCd());
-                //同一コード有の場合
-                if (existCode.length > 0) {
-                    //エラーメッセージ　Msg_1094　を表示する 
-                    dialog.alertError({ messageId: "Msg_1094" });
-                    block.clear();
-                    return;
-                }
-            }
-
-            //コード一覧に変換データの有無を判別
-            if (_.isEmpty(currentAcceptCodeConvert().cdConvertDetails())) {
-                //エラーメッセージ　Msg_906　変換コードが設定されていません
-                dialog.alertError({ messageId: "Msg_906" });
-                block.clear();
-                return;
-            }
-
-            let _lineError: Array<any> = [];
-            let _codeDuplicate: Array<any> = [];
-            let _emptyData: Boolean = true;
-            for (let detail of currentAcceptCodeConvert().cdConvertDetails()) {
-                if (_.isEmpty(detail.outputItem()) && _.isEmpty(detail.systemCd())) {
-                    continue;
-                }
-                 _emptyData = false;
-                if (_.isEmpty(detail.outputItem()) || _.isEmpty(detail.systemCd())) {
-                    _lineError.push(detail.lineNumber());
-                }
-                let data = currentAcceptCodeConvert().cdConvertDetails().filter(x => x.outputItem() === detail.outputItem());
-                if (data.length >= 2) {
-                    _codeDuplicate.push(detail);
-                }
-            }
-            
-            if(_emptyData){
-                dialog.alertError({ messageId: "Msg_906" });
-                block.clear();
-                return;
-            }
-
-            if (!_.isEmpty(_lineError)) {
-                //コードの未入力チェックを全行行いエラーの場合エラーリストにセットする　　　　Msg_1016
-                $('tr[data-id=' + _lineError[0] + ']').find("input").first().ntsError('set', { messageId: 'Msg_1016', messageParams: [_lineError.join(',')] });
-            }
-
-            if (!_.isEmpty(_codeDuplicate)) {
-                // Remove duplicate outputItem
-                let _errorCodeDuplicate: Array<any> = _.uniqBy(ko.toJS(_codeDuplicate), 'outputItem');
-                //受入コードに同一の値がないか全行のチェックを行いエラーをエラーリストにセットする　　Msg_1015
-                for (let i = 0; i < _errorCodeDuplicate.length; i++) {
-                    $('tr[data-id=' + _errorCodeDuplicate[i].lineNumber + ']').find("input").first().ntsError('set', { messageId: 'Msg_1015', messageParams: [_errorCodeDuplicate[i].outputItem] });
-                }
-            }
-            $('.nts-input').trigger("validate");
-            if (!nts.uk.ui.errors.hasError()) {
-                self.codeConvertData().cdConvertDetails(_.filter(self.codeConvertData().cdConvertDetails(), x => !_.isEmpty(x.outputItem()) && !_.isEmpty(x.systemCd())));
-
-                //画面の項目を、ドメインモデル「受入コード変換」に登録/更新する
-                if (model.SCREEN_MODE.NEW == self.screenMode()) {
-                    service.addAcceptCodeConvert(ko.toJS(self.codeConvertData())).done((acceptConvertCode) => {
-
-                        //情報メッセージ　Msg_15 登録しました。を表示する。
-                        dialog.info({ messageId: "Msg_15" }).then(() => {
-                            //登録した受入コード変換を「コード変換一覧パネル」へ追加/更新する
-                            self.initialScreen(self.codeConvertData().convertCd());
-                        });
-                    }).fail(function(error) {
-                        dialog.alertError(error);
-                    }).always(function() {
-                        block.clear();
-                    });
-                } else {
-                    service.updateAcceptCodeConvert(ko.toJS(self.codeConvertData())).done((acceptConvertCode) => {
-                        //情報メッセージ　Msg_15 登録しました。を表示する。
-                        dialog.info({ messageId: "Msg_15" }).then(() => {
-                            //登録した受入コード変換を「コード変換一覧パネル」へ追加/更新する
-                            self.initialScreen(self.selectedConvertCode());
-                        });
-                    }).fail(function(error) {
-                        dialog.alertError(error);
-                    }).always(function() {
-                        block.clear();
-                    });
-                }
-            } else {
-                block.clear();
-            }
-        }
-        
-        //削除ボタンを押下
-        delAcceptCodeConvert_Click(){
-            let self = this
-            let listAcceptCodeConvert = self.codeConvertList;
-            let currentCodeConvert = self.codeConvertData;
-            block.invisible();
-
-            //確認メッセージ（Msg_18）を表示する
-            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                service.deleteAcceptCodeConvert(ko.toJS(currentCodeConvert)).done(function() {
-                    //select next code convert
-                    let index: number = _.findIndex(listAcceptCodeConvert(), function(x)
-                    { return x.convertCd() == currentCodeConvert().convertCd() });
-
-                    if (index > -1) {
-                        self.codeConvertList.splice(index, 1);
-                        if (index >= listAcceptCodeConvert().length) {
-                            index = listAcceptCodeConvert().length - 1;
-                        }
-                    }
-
-                    //情報メッセージ　Msg-16を表示する
-                    dialog.info({ messageId: "Msg_16" }).then(() => {
-                        if (listAcceptCodeConvert().length > 0) {
-                            self.initialScreen(listAcceptCodeConvert()[index].convertCd());
-                            self.screenMode(model.SCREEN_MODE.UPDATE);
-                        } else {
-                            self.settingCreateMode();
-                        }
-                    });
-                }).fail(function(error) {
-                    dialog.alertError(error);
-                }).always(function() {
-                    block.clear();
-                });
-            }).then(() => {
-                block.clear();
-            });
-        }
-        
-        settingCreateMode() {
-            let self = this;
-            nts.uk.ui.errors.clearAll();
-            
-            //コード変換一覧のカレントを解除する
-            self.selectedConvertCode('');
-
-            //画面右側のコード/名称/上記の設定にないコードをクリア
-            self.codeConvertData().convertCd('');
-            self.codeConvertData().convertName('');
-            self.codeConvertData().acceptWithoutSetting(0);
-
-            //コード変換コード表をクリア
-            self.codeConvertData().cdConvertDetails.removeAll();
-            self.selectedConvertDetail(0);
-
-            //UI設計の「項目制御」新規モードで表示する
-            self.screenMode(model.SCREEN_MODE.NEW);
-
-            //フォーカス制御
-            self.setFocusItem(FOCUS_TYPE.ADD_PRESS, model.SCREEN_MODE.NEW);
-        }
-
-        //終了する
-        closeDialog() {
-            close();
-        }
-    }//end screenModel
-
-    export enum FOCUS_TYPE {
-        INIT = 0,
-        ADD_PRESS = 1,
-        REG_PRESS = 2,
-        DEL_PRESS = 3,
-        ROW_PRESS = 4,
-        ADD_ROW_PRESS = 5,
-        DEL_ROW_PRESS = 6
-    }
-
-    export class AcceptanceCodeConvert {
-
-        //コード変換コード
-        convertCd: KnockoutObservable<string>;
-        dispConvertCode: string;
-
-        //コード変換名称
-        convertName: KnockoutObservable<string>;
-        dispConvertName: string;
-
-        //設定のないコードの受入
-        acceptWithoutSetting: KnockoutObservable<number>;
-
-        //コード変換詳細
-        cdConvertDetails: KnockoutObservableArray<CodeConvertDetail>;
-
-        constructor(code: string, name: string, acceptWithoutSettings: number, cdConvertDetails:Array<any>) {
-            this.convertCd            = ko.observable(code);
-            this.convertName          = ko.observable(name);
-            this.cdConvertDetails     = ko.observableArray(cdConvertDetails);
-            this.acceptWithoutSetting = ko.observable(acceptWithoutSettings);
-            this.dispConvertCode      = code;
-            this.dispConvertName      = name;
-        } 
-    }
-
-    export class CodeConvertDetail {
-        //コード変換コード
-        convertCd: KnockoutObservable<string>;
-
-        //行番号
-        lineNumber: KnockoutObservable<number>;
-
-        //出力項目
-        outputItem: KnockoutObservable<string>;
-
-        //本システムのコード
-        systemCd: KnockoutObservable<string>;
-
-        constructor(code: string, lineNumber: number, outputItem: string, systemCd: string) {
-            this.convertCd  = ko.observable(code);
-            this.lineNumber = ko.observable(lineNumber);
-            this.outputItem = ko.observable(outputItem);
-            this.systemCd   = ko.observable(systemCd);
-        }
-    }
-}//end module
-
-$(function() {
-    $("#detail-code-convert").on("click focus", "tr", function() {
-        var id = $(this).attr("data-id");
-        nts.uk.ui.errors.clearAll();
-        nts.uk.ui._viewModel.content.selectedConvertDetail(id);
-    })
-})
+	export class ImportDomain {
+		domainId: number;
+		name: string;
+		deletable: boolean;
+	
+		constructor(domainId: number, name: string, deletable: boolean) {
+				this.domainId = domainId;
+				this.name = name;
+				this.deletable = deletable;
+		}
+	}
+	
+	export class DomainInfo {
+		domainId: number;
+		itemNoList: Array<number>;
+		resistered: boolean;
+		
+		constructor(domainId: number, itemNoList: Array<number>, resistered: boolean) {
+			this.domainId = domainId;
+			this.itemNoList = itemNoList;
+			this.resistered = resistered;
+		}
+	
+		static new(){
+			return new DomainInfo(null, [], false)
+		}
+	}
+	
+	export class Layout {
+		csvData: string;
+		fixedValue: string;
+		itemNo: number;
+		name: string;
+		required: boolean;
+		selectedCsvItemNo: number;
+		isFixedValue: number;
+	
+		constructor(itemNo: number, name: string, required: boolean, selectedCsvItemNo: number, fixedValue: string, csvData: string, isFixedValue: number) {
+			this.itemNo = itemNo;
+			this.name = name;
+			this.required = required;
+			this.selectedCsvItemNo = selectedCsvItemNo;
+			this.fixedValue = fixedValue;
+			this.csvData = csvData;
+			this.isFixedValue = isFixedValue;
+		}
+	}
+	
+	export class CsvItem {
+	    no: number;
+	    name: string;
+	
+	    constructor(no: number, name: string) {
+	        this.no = no;
+	        this.name = name;
+	    }
+	}
+}

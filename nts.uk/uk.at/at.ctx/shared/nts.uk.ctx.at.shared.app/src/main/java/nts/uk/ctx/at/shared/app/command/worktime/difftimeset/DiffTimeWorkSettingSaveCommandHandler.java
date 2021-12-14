@@ -66,10 +66,10 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 		}
 
 		// update mode
-		DiffTimeWorkSetting oldData = this.difftimeRepo.find(companyId, command.getWorktimeSetting().worktimeCode)
-				.get();
+//		DiffTimeWorkSetting oldData = this.difftimeRepo.find(companyId, command.getWorktimeSetting().worktimeCode)
+//				.get();
 		difftimeWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
-				command.getWorktimeSetting().getWorkTimeDivision(), oldData);
+				command.getWorktimeSetting().getWorkTimeDivision(), difftimeWorkSetting);
 		difftimeWorkSetting.setDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 		// Validate + common handler
 		this.validate(command, difftimeWorkSetting);
