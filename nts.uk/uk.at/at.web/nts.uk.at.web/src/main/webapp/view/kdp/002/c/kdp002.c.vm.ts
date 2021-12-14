@@ -65,6 +65,7 @@ module nts.uk.at.view.kdp002.c {
 			currentCodeList: KnockoutObservableArray<any>;
 			permissionCheck: KnockoutObservable<boolean> = ko.observable(false);
 			displayButton: KnockoutObservable<boolean> = ko.observable(true);
+			timeView: KnockoutObservable<Date> = ko.observable();
 
 			notificationStamp: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
 			modeShowPointNoti: KnockoutObservable<boolean | null> = ko.observable(null);
@@ -89,6 +90,7 @@ module nts.uk.at.view.kdp002.c {
 				super();
 
 				let self = this;
+				const vm = new ko.ViewModel();
 
 				self.columns2 = ko.observableArray([
 					{ headerText: nts.uk.resource.getText("KDP002_59"), key: 'itemId', width: 200, hidden: true },
@@ -105,6 +107,8 @@ module nts.uk.at.view.kdp002.c {
 				.then((data: any) => {
 					self.noticeSetting(data.noticeSetDto);
 				});
+
+				self.timeView(vm.$date.now())
 			}
 
 			setSizeDialog() {
