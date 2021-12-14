@@ -401,7 +401,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         int total = 0;
         GeneralDate start = dataRow.getReservationDate();
         String timezone = dataRow.getClosedName();
-        startIndex = setRowReservationDate(cells, template, startIndex, 2, start.toString() + " " + timezone);
+        startIndex = setRowReservationDate(cells, template, startIndex, 2, start.toString("yyyy/MM/dd (E)") + " " + timezone);
         double height = cells.getRowHeight(0);
 
         //copy Header
@@ -481,7 +481,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
 
                 GeneralDate start = detailInfo.getReservationDate();
                 String timezone = detailInfo.getClosingTimeName();
-                startIndex = setRowReservationDate(cells, tempSheet, startIndex, 1, start.toString() + " " + timezone);
+                startIndex = setRowReservationDate(cells, tempSheet, startIndex, 1, start.toString("yyyy/MM/dd (E)") + " " + timezone);
                 for (BentoReservedInfoDto item : detailInfo.getBentoReservedInfoDtos())
                     startIndex = handleBodyDetailFormat(worksheet, item, startIndex, cells, orderInfoExportData.isBreakPage(), tempSheet, orderInfoExportData.getOutputExt());
 
