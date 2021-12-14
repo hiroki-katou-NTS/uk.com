@@ -578,7 +578,11 @@ module nts.uk.ui.kdp001.a {
                         const { backgroundColor, textColor } = settingDateTimeColor || {};
 
                         // set time for request update server time
-                        vm.$date.interval((serverCorrectionInterval || 1) * 60000);
+                        let self = this;
+                        vm.$date.interval(100);
+                        setTimeout(() => {
+                            vm.$date.interval((serverCorrectionInterval || 1) * 60000);
+                        }, 1000);
 
                         vm.time.displayTime(resultDisplayTime || 0);
 

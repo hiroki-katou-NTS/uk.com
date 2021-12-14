@@ -259,6 +259,11 @@ module nts.uk.at.view.kdp005.a {
 			}
 
 			alwaysLoadMessage(param: number) {
+				const vm = new ko.ViewModel();
+				vm.$date.interval(100);
+				setTimeout(() => {
+					vm.$date.interval(3600000);
+				}, 1000);
 				if (param > 0) {
 					setInterval(() => {
 						this.loadNotice();

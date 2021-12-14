@@ -277,6 +277,11 @@ module nts.uk.at.view.kdp004.a {
 			}
 
 			alwaysLoadMessage(param: number) {
+				const vm = new ko.ViewModel();
+				vm.$date.interval(100);
+				setTimeout(() => {
+					vm.$date.interval(3600000);
+				}, 1000);
 				if (param > 0) {
 					setInterval(() => {
 						this.loadNotice();
@@ -559,7 +564,7 @@ module nts.uk.at.view.kdp004.a {
 				nts.uk.ui.block.invisible();
 				let stampTime = moment(new Date()).format("HH:mm");
 				let stampDateTime = moment(new Date()).format();
-				
+
 				vm.doAuthent().done((res: IAuthResult) => {
 
 					if (res.isSuccess) {
@@ -914,7 +919,7 @@ module nts.uk.at.view.kdp004.a {
 					screen: "KDP004"
 				});
 
-				vm.$window.modal('/view/kdp/002/b/index.xhtml', {stampTime: stampTime});
+				vm.$window.modal('/view/kdp/002/b/index.xhtml', { stampTime: stampTime });
 			}
 
 			public openScreenC(button, layout, loginInfo) {
