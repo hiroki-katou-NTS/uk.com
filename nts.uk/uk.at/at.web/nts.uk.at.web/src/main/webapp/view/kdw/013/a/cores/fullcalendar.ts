@@ -419,6 +419,10 @@ module nts.uk.ui.at.kdw013.calendar {
             font-size: 12px;
             padding: 0 4px;
         }
+        .fc .fc-non-business
+        {
+            background: var(--fc-non-business-color,rgba(215,215,215,.7));
+        }
         
 `;
 
@@ -2978,6 +2982,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     _.forEach(tempEs, (evn) => {
                         if (evn.extendedProps.id == extendedProps.id) {
                             evn.extendedProps.isChanged = true;
+                            evn.extendedProps.taskBlock.caltimeSpan = { start: evn.start, end: evn.end };
+                            evn.extendedProps.period = { start: evn.start, end: evn.end };
                         };
                     });
                     events(tempEs);
@@ -3511,8 +3517,12 @@ module nts.uk.ui.at.kdw013.calendar {
                 read: () => {
                     const businessHours = ko.unwrap<BussinessHour[]>(params.businessHours);
                     if (!businessHours.length) {
-                        vm.calendar.setOption('businessHours', false);
-
+                        if (params.initialView() == 'oneDay') {
+                            vm.calendar.setOption('businessHours', true);
+                        } else {
+                            vm.calendar.setOption('businessHours', false);
+                        }
+                        
                         //vm.updateStyle('breaktime', '');
                     } else {
                         const breakTimes = ko.unwrap<BreakTime[]>(params.breakTime);
@@ -3543,8 +3553,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                         if (!_.find(bhs, ['daysOfWeek', cbh.dayOfWeek])) {
                                             bhs.push({
                                                 daysOfWeek: [cbh.dayOfWeek],
-                                                startTime: start,
-                                                endTime: end
+                                                startTime: formatTime(start, false),
+                                                endTime: formatTime(end, false)
                                             });
                                         }
                                     }

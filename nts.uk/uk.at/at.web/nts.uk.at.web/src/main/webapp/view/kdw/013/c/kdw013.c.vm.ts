@@ -1060,11 +1060,17 @@ module nts.uk.ui.at.kdw013.c {
             const vm = this;
             let titles: string[] = [];
             _.each(vm.taskDetailsView(), (task: ManHrTaskDetailView) => {
-                titles.push(task.getTitles());
+                titles.push(task.getTitles(vm.taskDetailsView().length));
             });
 			let timeRange = _.find(vm.taskDetailsView()[0].taskItemValues(), i => i.itemId == 3);
 			if(titles.length == 1 && timeRange && (timeRange.value() == null || timeRange.value() == '')){
-				titles[0] = titles[0] + '\n' + getText('KDW013_25') + number2String(vm.caltimeSpanView.end() - vm.caltimeSpanView.start());
+                let workTime = '';
+                
+                if (vm.taskDetailsView().length > 1) {
+                    workTime = '\n' + getText('KDW013_25') + number2String(vm.caltimeSpanView.end() - vm.caltimeSpanView.start());
+                }
+                
+                titles[0] = titles[0] + workTime;
 			}
             return titles.join("\n\n");
         }
@@ -1294,7 +1300,7 @@ module nts.uk.ui.at.kdw013.c {
 			}
         }
         
-	    getTitles(): string{
+	    getTitles(taskViewNumber): string{
             const vm = this;
             const title: string[] = [];
             _.each(vm.taskItemValues(), (item: TaskItemValue) => {
@@ -1328,9 +1334,13 @@ module nts.uk.ui.at.kdw013.c {
 			let result = title.join("/");
 
 			let timeRange = _.find(vm.taskItemValues(), i => i.itemId == 3);
-            if(timeRange && timeRange.value() && timeRange.value() != '') {
-                result = result + "\n" + getText('KDW013_25') + number2String(parseInt(timeRange.value()));
-			}
+            if (timeRange && timeRange.value() && timeRange.value() != '') {
+                let workTime = '';
+                if (taskViewNumber > 1) {
+                    workTime = "\n" + getText('KDW013_25') + number2String(parseInt(timeRange.value()));
+                }
+                result = result + workTime;
+            }
              
             return result;
         }               
