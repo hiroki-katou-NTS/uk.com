@@ -78,7 +78,7 @@ module nts.uk.at.kmr003.a {
                 showWorktype: true,
                 isMutipleCheck: null,
                 tabindex: 6,
-                showOnStart: true,
+                showOnStart: false,
 
                 /**
                  * Self-defined function: Return data from CCG001
@@ -90,7 +90,7 @@ module nts.uk.at.kmr003.a {
             }
         }
 
-        created() {
+        created(param: any) {
             const vm = this;
             vm.empSearchItems.subscribe((value) => {
                 if (value) {
@@ -108,6 +108,11 @@ module nts.uk.at.kmr003.a {
                     vm.closingTime(nts.uk.time.format.byId("Time_Short_HM", vm.receptionHours2().startTime) + '~' + nts.uk.time.format.byId("Time_Short_HM", vm.receptionHours2().endTime) );
                 }
             })
+
+            if (param) {
+                vm.employeeList(param.employeeList);
+                vm.date(param.correctionDate);
+            }
             
             vm.$blockui('show');
             vm.$ajax(API.RESERVATION_CORRECTION).done((res) => {
@@ -117,7 +122,7 @@ module nts.uk.at.kmr003.a {
                     let reservationRecTimeZoneLst = res.reservationRecTimeZoneLst;
                     let receptionName1: any[] = _.filter(reservationRecTimeZoneLst, x => x.frameNo === 1);
                     let receptionName2: any[] = _.filter(reservationRecTimeZoneLst, x => x.frameNo === 2);
-
+                    
                     if (receptionName1.length > 0) {
                         vm.receptionHours1(receptionName1[0].receptionHours);
                         nameLst.push({ id: '1', name: receptionName1[0].receptionHours.receptionName });
@@ -127,9 +132,13 @@ module nts.uk.at.kmr003.a {
                         vm.receptionHours2(receptionName2[0].receptionHours);
                         nameLst.push({ id: '2', name: receptionName2[0].receptionHours.receptionName });
                     }
-
+                    
                     vm.receptionNames(nameLst);
-                    vm.selectedReception('1');
+                    if (param) {
+                        vm.selectedReception(param.selectedReception);
+                    } else {
+                        vm.selectedReception('1');
+                    }
                     vm.orderMngAtr(res.correctionContent.orderMngAtr);
                 }
             }).fail((err) => {

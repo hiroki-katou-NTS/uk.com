@@ -266,7 +266,12 @@ module nts.uk.at.kmr003.b {
         backToA() {
             const vm = this;
 
-            vm.$jump("../a/index.xhtml");
+            let param = {
+                employeeList: _.map(vm.listEmpInfo, x => {return { id: x.employeeId, code: x.employeeCode, name: x.businessName, workplaceName: null  }}), 
+                correctionDate: vm.date(), 
+                selectedReception: vm.selectedReception()
+            }
+            vm.$jump("../a/index.xhtml", param);
         }
 
         createNew() {
