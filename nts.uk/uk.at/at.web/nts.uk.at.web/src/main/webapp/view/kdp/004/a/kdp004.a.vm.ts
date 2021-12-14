@@ -560,10 +560,11 @@ module nts.uk.at.view.kdp004.a {
 			public clickBtn1(btn: any, layout: any) {
 
 				const vm = this;
+				const mVm = new ko.ViewModel()
 				vm.getWorkPlacesInfo();
 				nts.uk.ui.block.invisible();
-				let stampTime = moment(new Date()).format("HH:mm");
-				let stampDateTime = moment(new Date()).format();
+				let stampTime = moment(mVm.$date.now()).format("HH:mm");
+				let stampDateTime = moment(mVm.$date.now()).format();
 
 				vm.doAuthent().done((res: IAuthResult) => {
 

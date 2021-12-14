@@ -13,9 +13,9 @@ module nts.uk.at.view.kdp002.c {
 		displayTime: KnockoutObservable<number>;
 	}
 
-	const initTime = (): TimeClock => ({
+	const initTime = (date: any): TimeClock => ({
 		tick: -1,
-		now: ko.observable(new Date()),
+		now: ko.observable(date),
 		style: ko.observable(''),
 		displayTime: ko.observable(10)
 	});
@@ -57,7 +57,7 @@ module nts.uk.at.view.kdp002.c {
 
 			timeName2: KnockoutObservable<string> = ko.observable("");
 
-			time: TimeClock = initTime();
+			time: TimeClock = initTime(this.$date.now());
 
 			items: KnockoutObservableArray<model.ItemModels> = ko.observableArray([]);
 			columns2: KnockoutObservableArray<NtsGridListColumn>;
