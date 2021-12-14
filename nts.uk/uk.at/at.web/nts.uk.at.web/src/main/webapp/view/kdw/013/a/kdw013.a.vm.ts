@@ -1371,7 +1371,7 @@ module nts.uk.ui.at.kdw013.a {
             
             let param = {
                 workNo: data.workNo,
-                taskDtos: ko.unwrap(vm.taskDtos),
+                //taskDtos: ko.unwrap(vm.taskDtos),
                 ouenWorkTimes: ko.unwrap(vm.ouenWorkTimes),
                 ouenWorkTimeSheets: ko.unwrap(vm.ouenWorkTimeSheets),
                 taskSettings: ko.unwrap(vm.taskSettings),
