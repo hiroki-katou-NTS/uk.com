@@ -103,3 +103,8 @@ div.label {
 #left-content {
 	margin-left: 10px;
 }
+
+.text-comment{
+	text-align: center;
+	padding: 100px;
+}
