@@ -47,8 +47,8 @@ public class NumberCompensatoryLeavePeriodQuery {
 		List<AccumulationAbsenceDetail> lstAbsRec = sequentialVacaDetail.getVacationDetail().getLstAcctAbsenDetail();
 
 		//休出振出管理データを補正する。
-		CorrectDaikyuFurikyuFixed.correct(require, inputParam.getSid(), inputParam.getScreenDisplayDate(),
-				sequentialVacaDetail.getVacationDetail(), sequentialVacaDetail.getSeqVacInfoList());
+		CorrectDaikyuFurikyuFixed.correct(sequentialVacaDetail.getVacationDetail(),
+				sequentialVacaDetail.getSeqVacInfoList());
 				
 		// 振休振出から月初の繰越数を計算
 		val calcNumCarry = CalcNumCarryAtBeginMonthFromHol.calculate(require, inputParam.getCid(), inputParam.getSid(),
@@ -87,7 +87,7 @@ public class NumberCompensatoryLeavePeriodQuery {
 	}
 
 	public static interface Require extends GetSequentialVacationDetail.Require, CalcNumCarryAtBeginMonthFromHol.Require,
-			CompenSuspensionOffsetProcess.Require, CorrectDaikyuFurikyuFixed.Require {
+			CompenSuspensionOffsetProcess.Require {
 
 	}
 
