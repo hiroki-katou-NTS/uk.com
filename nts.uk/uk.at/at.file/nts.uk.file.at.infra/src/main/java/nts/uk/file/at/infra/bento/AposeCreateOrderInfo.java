@@ -471,7 +471,11 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             for (DetailOrderInfoDto detailInfo : dataPrint){
 				if (page > 0) {
 					breakPage("M", startIndex, worksheet);
-					copyRowFromTemplateSheet(cells, worksheet, 0, startIndex - 1);
+					try {
+						cells.copyRows(cells, 0, startIndex - 1, 2);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					startIndex += 3;
 				}
 
