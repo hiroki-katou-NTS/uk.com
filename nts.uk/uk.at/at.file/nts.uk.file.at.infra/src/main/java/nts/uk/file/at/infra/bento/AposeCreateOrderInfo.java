@@ -56,7 +56,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
     private static final String IS_CHECK = TextResource.localize("KMR004_36");
 
     //Work Place
-    private static final String WOKR_PLACE_LABEL = TextResource.localize("KMR004_38");
+    private static final String WOKR_PLACE_LABEL = TextResource.localize("Com_Workplace");
     ////Work Location
     private static final String WOKR_LOCATION_LABEL = TextResource.localize("KMR004_38");
     private static final String NUMBER_FORMAT = "\"¥\"#,##0;[RED]\"¥\"-#,##0";
@@ -401,7 +401,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         int total = 0;
         GeneralDate start = dataRow.getReservationDate();
         String timezone = dataRow.getClosedName();
-        startIndex = setRowReservationDate(cells, template, startIndex, 2, start.toString() + " " + timezone);
+        startIndex = setRowReservationDate(cells, template, startIndex, 2, start.toString("yyyy/MM/dd (E)") + " " + timezone);
         double height = cells.getRowHeight(0);
 
         //copy Header
@@ -471,13 +471,17 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             for (DetailOrderInfoDto detailInfo : dataPrint){
 				if (page > 0) {
 					breakPage("M", startIndex, worksheet);
-					copyRowFromTemplateSheet(cells, worksheet, 0, startIndex - 1);
+					try {
+						cells.copyRows(cells, 0, startIndex - 1, 2);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					startIndex += 3;
 				}
 
                 GeneralDate start = detailInfo.getReservationDate();
                 String timezone = detailInfo.getClosingTimeName();
-                startIndex = setRowReservationDate(cells, tempSheet, startIndex, 1, start.toString() + " " + timezone);
+                startIndex = setRowReservationDate(cells, tempSheet, startIndex, 1, start.toString("yyyy/MM/dd (E)") + " " + timezone);
                 for (BentoReservedInfoDto item : detailInfo.getBentoReservedInfoDtos())
                     startIndex = handleBodyDetailFormat(worksheet, item, startIndex, cells, orderInfoExportData.isBreakPage(), tempSheet, orderInfoExportData.getOutputExt());
 
