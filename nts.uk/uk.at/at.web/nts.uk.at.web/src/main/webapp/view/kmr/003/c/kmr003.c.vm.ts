@@ -99,7 +99,7 @@ module nts.uk.at.kmr003.c {
 
             if ($("#grid").data("mGrid")) $("#grid").mGrid("destroy");
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
-                width: '1200px',
+                width: '1170px',
                 height: '600px',
                 headerHeight: "70px",
                 subHeight: "117px",

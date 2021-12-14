@@ -3,6 +3,11 @@
     color: #000 !important;
 }
 
+.header_backgroundcolor div {
+    background-color: #CFF1A5 !important;
+    color: #000 !important;
+}
+
 .align-center {
     vertical-align: middle !important;
     text-align: center !important;
