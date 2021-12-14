@@ -240,10 +240,15 @@ module nts.uk.at.view.kdp.share {
 				.then((c) => {
 					const date = moment(c, 'YYYY-MM-DDTHH:mm:ss').toDate();
 
-					vm.time(date);
-				});
+					const dataTest = moment('2021-12-11T13:14:13.376Z', 'YYYY-MM-DDTHH:mm:ss').toDate();
 
-			setInterval(() => vm.time(vm.$date.now()), 100);
+					vm.time(dataTest);
+				})
+				.then(() => {
+					setInterval(() => {
+						vm.time(vm.$date.now())
+					}, 500);
+				});
 		}
 
 		mounted() {
