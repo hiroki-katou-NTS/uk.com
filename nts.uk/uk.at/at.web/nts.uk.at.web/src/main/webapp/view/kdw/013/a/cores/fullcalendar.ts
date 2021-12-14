@@ -419,6 +419,10 @@ module nts.uk.ui.at.kdw013.calendar {
             font-size: 12px;
             padding: 0 4px;
         }
+        .fc .fc-non-business
+        {
+            background: var(--fc-non-business-color,rgba(215,215,215,.7));
+        }
         
 `;
 
@@ -3513,7 +3517,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 read: () => {
                     const businessHours = ko.unwrap<BussinessHour[]>(params.businessHours);
                     if (!businessHours.length) {
-                        vm.calendar.setOption('businessHours', false);
+                        vm.calendar.setOption('businessHours', true);
 
                         //vm.updateStyle('breaktime', '');
                     } else {
