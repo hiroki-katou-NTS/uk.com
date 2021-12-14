@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
+import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
 
 /**
  * 年休付与条件情報
@@ -21,23 +21,30 @@ public class AnnualLeaveConditionInfo implements Serializable{
 	/**
 	 * 所定日数
 	 */
-	private YearDayNumber prescribedDays;
+	private YearlyDays prescribedDays;
 
 	/**
 	 * 控除日数
 	 */
-	private YearDayNumber deductedDays;
+	private YearlyDays deductedDays;
 
 	/**
 	 * 労働日数
 	 */
-	private YearDayNumber workingDays;
+	private YearlyDays workingDays;
+	
+	public AnnualLeaveConditionInfo(){
+		this.prescribedDays=new YearlyDays(0.0);
+		this.deductedDays=new YearlyDays(0.0);
+		this.workingDays=new YearlyDays(0.0);
+	}
+	
 
 	public static AnnualLeaveConditionInfo createFromJavaType(Double prescribedDays, Double deductedDays, Double workingDays) {
 		AnnualLeaveConditionInfo domain = new AnnualLeaveConditionInfo();
-		domain.prescribedDays = new YearDayNumber(prescribedDays);
-		domain.deductedDays = new YearDayNumber(deductedDays);
-		domain.workingDays = new YearDayNumber(workingDays);
+		domain.prescribedDays = new YearlyDays(prescribedDays);
+		domain.deductedDays = new YearlyDays(deductedDays);
+		domain.workingDays = new YearlyDays(workingDays);
 		return domain;
 	}
 	/**
@@ -48,9 +55,9 @@ public class AnnualLeaveConditionInfo implements Serializable{
 	 * @return AnnualLeaveConditionInfo
 	*/
 	public static AnnualLeaveConditionInfo of(
-			YearDayNumber prescribedDays,
-			YearDayNumber deductedDays,
-			YearDayNumber workingDays) {
+			YearlyDays prescribedDays,
+			YearlyDays deductedDays,
+			YearlyDays workingDays) {
 
 		AnnualLeaveConditionInfo domain = new AnnualLeaveConditionInfo();
 		domain.prescribedDays = prescribedDays;

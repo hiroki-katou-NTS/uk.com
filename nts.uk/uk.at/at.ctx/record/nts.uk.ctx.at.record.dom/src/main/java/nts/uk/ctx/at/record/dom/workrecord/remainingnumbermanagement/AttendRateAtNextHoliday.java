@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 
@@ -19,7 +20,7 @@ public class AttendRateAtNextHoliday {
 	private GeneralDate nextHolidayGrantDate;
 
 	/** 次回年休付与日数 */
-	private GrantDays nextHolidayGrantDays;
+	private LeaveGrantDayNumber nextHolidayGrantDays;
 
 	/** 出勤率 */
 	private AttendanceRate attendanceRate;

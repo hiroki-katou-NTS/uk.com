@@ -127,6 +127,24 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     newCategory.loadRoleItems(self.currentRoleId(), categoryId).done(() => {
                         newCategory.setCategoryAuth(result);
                         self.currentRole().currentCategory(newCategory);
+                        if (categoryId.includes('CS00100')) {
+                            self.itemListCbb([
+                                { code: 1, name: getText('CAS001_49') },
+                                { code: 3, name: getText('CAS001_51') }
+                            ]);
+                            if (self.anotherSelectedAll() == 2) {
+                                self.anotherSelectedAll(1);
+                            }
+                            if (self.seftSelectedAll() == 2) {
+                                self.seftSelectedAll(1);
+                            }
+                        } else {
+                            self.itemListCbb([
+                                { code: 1, name: getText('CAS001_49') },
+                                { code: 2, name: getText('CAS001_50') },
+                                { code: 3, name: getText('CAS001_51') }
+                            ]);
+                        }
                     }).always(() => {
                         block.clear(); 
                     });
@@ -635,6 +653,16 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         text: getText('CAS001_51')
                     }];
 
+            if (CategoryId.includes('CS00100')) {
+                array3E = [{
+                    value: '1',
+                    text: getText('CAS001_49')
+                }, {
+                        value: '3',
+                        text: getText('CAS001_51')
+                    }]
+            }
+
             service.getPersonRoleItemList(roleId, CategoryId).done(function(result: any) {
                 self.roleItemDatas(_.map(result.itemLst, x => new PersonRoleItem(x)));
                 self.roleItemList(_.filter(_.map(result.itemLst, x => new PersonRoleItem(x)), ['parrentCd', null]));
@@ -732,13 +760,13 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     $('#anotherSelectedAll_auth').on('click', 'label input', (e) => {
                         // find index of selected input
                         const index = Array.prototype.indexOf.call($('#anotherSelectedAll_auth')[0].childNodes, $(e.currentTarget).parent()[0]);
-                        screenModel.changeAll('anotherSelectedAll_auth', index + 1);
+                        screenModel.changeAll('anotherSelectedAll_auth', self.categoryId.includes('CS00100') && index == 1 ? 3 : index + 1);
                     });
 
                     $('#seftSelectedAll_auth').on('click', 'label input', (e) => {
                         // find index of selected input
                         const index = Array.prototype.indexOf.call($('#seftSelectedAll_auth')[0].childNodes, $(e.currentTarget).parent()[0]);
-                        screenModel.changeAll('seftSelectedAll_auth', index + 1);
+                        screenModel.changeAll('seftSelectedAll_auth', self.categoryId.includes('CS00100') && index == 1 ? 3 : index + 1);
                     });
 
                     $('.ui-iggrid-header').on('focus', function() {

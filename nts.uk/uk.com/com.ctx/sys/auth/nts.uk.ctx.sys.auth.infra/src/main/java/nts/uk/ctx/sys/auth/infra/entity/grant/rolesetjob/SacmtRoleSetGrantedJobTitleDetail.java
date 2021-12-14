@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "SACMT_ROLESET_JOB_DETAIL")
+@Table(name = "SACMT_ROLESET_JOB")
 public class SacmtRoleSetGrantedJobTitleDetail extends ContractUkJpaEntity implements Serializable {
 	/**
 	 * 

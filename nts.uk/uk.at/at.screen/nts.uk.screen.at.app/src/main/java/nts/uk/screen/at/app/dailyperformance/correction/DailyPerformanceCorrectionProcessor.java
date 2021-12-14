@@ -1108,6 +1108,9 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 	
 	public String getEmploymentCode(String companyId, GeneralDate date, String sId) {
+		if (date == null) {
+			return "";
+		}
 		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, date);
 		return employment == null ? "" : employment.getEmploymentCode();
 	}
