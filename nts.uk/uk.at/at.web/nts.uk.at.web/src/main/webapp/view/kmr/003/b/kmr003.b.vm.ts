@@ -47,7 +47,7 @@ module nts.uk.at.kmr003.b {
                 ];
                 vm.extractionConditions(conditions);
             }
-            vm.selectedCondition(1);
+            vm.selectedCondition(0);
 
             vm.selectedReception.subscribe((value) => {
                 if (value == 1 && vm.receptionHours1()) {
