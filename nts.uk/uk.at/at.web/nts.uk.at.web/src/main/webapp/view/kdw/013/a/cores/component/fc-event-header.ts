@@ -17,11 +17,11 @@ module nts.uk.ui.at.kdw013.eventheadear {
                             <!-- /ko -->
                             
                             <!-- ko if: note.valueType == 3 -->
-                                <div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: true , enable:false}">する</div>
+                                <div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: true , readonly: true }">する</div>
                             <!-- /ko -->
                             
                             <!-- ko if: note.valueType == 2 -->
-                                <div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: false , enable:false }">する</div>
+                                <div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: false , readonly: true }">する</div>
                             <!-- /ko -->
                         </div>
                     </div>
