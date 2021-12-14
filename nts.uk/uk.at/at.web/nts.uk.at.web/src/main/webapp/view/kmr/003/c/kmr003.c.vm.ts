@@ -50,7 +50,7 @@ module nts.uk.at.kmr003.c {
             //bind columns
             vm.gridOptions.columns = [
                 { headerText: '' , itemId: 'employeeId', key: 'employeeId', dataType: 'string', width: '150px', hidden: true },
-                { headerText: vm.$i18n('KMR003_46') , itemId: 'employeeCode', key: 'employeeCode', ntsControl: 'Label', dataType: 'string', width: '150px' },
+                { headerText: vm.$i18n('KMR003_46') , itemId: 'employeeCode', key: 'employeeCode', ntsControl: 'Label', dataType: 'string', width: '120px' },
                 { headerText: vm.$i18n('KMR003_47') , itemId: 'employeeName', key: 'employeeName', ntsControl: 'Label', dataType: 'string', width: '200px' }
             ];
 

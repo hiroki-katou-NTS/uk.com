@@ -132,9 +132,9 @@ module nts.uk.at.kmr003.b {
             vm.gridOptions.columns = [
                 { headerText: '' , itemId: 'deleteFlg', key: 'deleteFlg', dataType: 'boolean', width: '50px', checkbox: true, ntsControl: 'deleteFlg' }, 
                 { headerText: '' , itemId: 'employeeId', key: 'employeeId', dataType: 'string', width: '150px', hidden: true }, 
-                { headerText: vm.$i18n('KMR003_46') , itemId: 'employeeCode', key: 'employeeCode', ntsControl: 'Label', dataType: 'string', width: '150px' }, 
+                { headerText: vm.$i18n('KMR003_46') , itemId: 'employeeCode', key: 'employeeCode', ntsControl: 'Label', dataType: 'string', width: '120px' }, 
                 { headerText: vm.$i18n('KMR003_47') , itemId: 'employeeName', key: 'employeeName', ntsControl: 'Label', dataType: 'string', width: '200px' }, 
-                { headerText: vm.$i18n('KMR003_48') , itemId: 'time', key: 'time', ntsControl: 'Label', dataType: 'string', width: '200px' }, 
+                { headerText: vm.$i18n('KMR003_48') , itemId: 'time', key: 'time', ntsControl: 'Label', dataType: 'string', width: '160px' }, 
             ];
             if (vm.orderMngAtr()) {
                 vm.gridOptions.columns.push(
