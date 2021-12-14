@@ -3,8 +3,6 @@ module nts.uk.ui.at.kdw013.eventheadear {
         name: 'fc-event-header',
         template:
         `<td data-bind="i18n: 'KDW013_20'"></td>
-                               
-
                 <!-- ko foreach: { data: $component.params.data, as: 'day' } -->
                 <td class="fc-event-note fc-day" style='text-align: center;' data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }">
                     <div style="display: flex;height:calc(100% - 19px);"> 
@@ -17,11 +15,11 @@ module nts.uk.ui.at.kdw013.eventheadear {
                             <!-- /ko -->
                             
                             <!-- ko if: note.valueType == 3 -->
-                                <div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: true , enable:false}">する</div>
+                                <div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: true , readonly: true }">する</div>
                             <!-- /ko -->
                             
                             <!-- ko if: note.valueType == 2 -->
-                                <div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: false , enable:false }">する</div>
+                                <div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: false , readonly: true }">する</div>
                             <!-- /ko -->
                         </div>
                     </div>
@@ -34,7 +32,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
                 <!-- /ko -->
                 <style rel="stylesheet">
                     .fc-evn-checkbox input[type="checkbox"]+span::before{
-                        top: 0px;
+                        top: 2px;
                         left: 0px;
                         width: 12px;
                         height: 12px;
@@ -52,6 +50,8 @@ module nts.uk.ui.at.kdw013.eventheadear {
                     }
                     .fc-evn-checkbox{
                         padding: 0px 0px 0px 17px;
+                        height: 17px;
+                        display: flex;
                     }
                     .fc-evn-checkbox label{
                          line-height: 11px;
