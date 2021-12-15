@@ -142,8 +142,9 @@ public class ManHrRecordTaskDetailToAttendanceItemServiceTest {
 		List<ManHourRecordAndAttendanceItemLink> settings = new ArrayList<>();
 		List<ItemValue> values = new ArrayList<>();
 		List<ItemValue> expectedResult = new ArrayList<>();
-		values.add(new ItemValue(null, null, 3, "3"));
-		values.add(new ItemValue(null, null, 4, "4"));
+		values.add(new ItemValue(null, null, 1, "1"));
+		values.add(new ItemValue(null, null, 2, "2"));
+		values.add(new ItemValue(null, null, 5, "5"));
 		
 		expectedResult.add(new ItemValue(null, null, 3, "3"));
 
@@ -155,6 +156,39 @@ public class ManHrRecordTaskDetailToAttendanceItemServiceTest {
 		List<ManHrTaskDetail> taskDetails = new ArrayList<>();
 		taskDetails.add(new ManHrTaskDetail(value1, new SupportFrameNo(1)));
 		settings.add(new ManHourRecordAndAttendanceItemLink(new SupportFrameNo(1), 3, 3));
+
+		new Expectations() {
+			{
+				require.get(itemLst);
+				result = settings;
+			}
+		};
+		List<ItemValue> actualResult = ManHrRecordTaskDetailToAttendanceItemService.convert(require, values,
+				taskDetails);
+		assertThat(expectedResult.equals(actualResult));
+
+	}
+	
+	@Test
+	public void test5() {
+		List<Integer> itemLst = new ArrayList<>();
+		itemLst.add(1);
+		itemLst.add(2);
+
+		List<ManHourRecordAndAttendanceItemLink> settings = new ArrayList<>();
+		List<ItemValue> values = new ArrayList<>();
+		List<ItemValue> expectedResult = new ArrayList<>();
+		values.add(new ItemValue(null, null, 3, "3"));
+		values.add(new ItemValue(null, null, 4, "4"));
+		values.add(new ItemValue(null, null, 1, "1"));
+
+		List<TaskItemValue> value1 = new ArrayList<>();
+		value1.add(new TaskItemValue(1, "1"));
+		value1.add(new TaskItemValue(2, "2"));
+
+		List<ManHrTaskDetail> taskDetails = new ArrayList<>();
+		taskDetails.add(new ManHrTaskDetail(value1, new SupportFrameNo(1)));
+		settings.add(new ManHourRecordAndAttendanceItemLink(new SupportFrameNo(1), 4, 1));
 
 		new Expectations() {
 			{
