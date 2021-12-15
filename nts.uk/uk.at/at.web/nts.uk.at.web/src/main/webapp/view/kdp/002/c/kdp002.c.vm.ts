@@ -104,11 +104,14 @@ module nts.uk.at.view.kdp002.c {
 					self.setSizeDialog();
 				});
 				self.$ajax(kDP002RequestUrl.FINGER_STAMP_SETTING)
-				.then((data: any) => {
-					self.noticeSetting(data.noticeSetDto);
-				});
+					.then((data: any) => {
+						self.noticeSetting(data.noticeSetDto);
+					});
 
-				self.timeView(vm.$date.now())
+				vm.$ajax("at", "server/time/now").then((output: any) => {
+					let data: Date = moment(moment(output).utc().format('YYYY/MM/DD HH:MM')).toDate();
+					self.timeView(data)
+				})
 			}
 
 			setSizeDialog() {
@@ -246,7 +249,7 @@ module nts.uk.at.view.kdp002.c {
 						if (res.setting == 2) {
 							if (self.infoEmpFromScreenA.error && self.infoEmpFromScreenA.error.dailyAttdErrorInfos && self.infoEmpFromScreenA.error.dailyAttdErrorInfos.length > 0) {
 								self.permissionCheck(false);
-							}else {
+							} else {
 								self.permissionCheck(true);
 							}
 						}
@@ -359,7 +362,7 @@ module nts.uk.at.view.kdp002.c {
 			 */
 			public registerDailyIdentify(): void {
 				const vm = this;
-				const param = {sid: vm.infoEmpFromScreenA.employeeId};
+				const param = { sid: vm.infoEmpFromScreenA.employeeId };
 
 				service.registerDailyIdentify(param).done(() => {
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" })
