@@ -38,14 +38,14 @@ public class AppLstApprovalLstDispSetDto {
 	private int appDateWarningDisp;
 
 	/**
-	 * 承認機能を利用する (申請⑧EA4134) todo
+	 * 承認機能を利用する (申請⑧EA4134)
 	 */
 	private int useApprovalFunction;
-	
+
 
 	public static AppLstApprovalLstDispSetDto fromDomain(AppLstApprovalLstDispSet displaySet) {
 		return new AppLstApprovalLstDispSetDto(
-				displaySet.getStartDateDisp() == null ? null : displaySet.getStartDateDisp().toString(), 
+				displaySet.getStartDateDisp() == null ? null : displaySet.getStartDateDisp().toString(),
 				displaySet.getPrePostAtrDisp(), 
 				displaySet.getEndDateDisp() == null ? null : displaySet.getEndDateDisp().toString(), 
 				displaySet.getWorkplaceNameDisp(), 

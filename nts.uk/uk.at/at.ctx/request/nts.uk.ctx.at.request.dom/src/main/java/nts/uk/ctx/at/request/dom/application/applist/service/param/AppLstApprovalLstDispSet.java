@@ -44,19 +44,8 @@ public class AppLstApprovalLstDispSet {
 	private int appDateWarningDisp;
 
 	/**
-	 * 承認機能を利用する (申請⑧EA4134) todo
+	 * 承認機能を利用する (申請⑧EA4134)
 	 */
 	private int useApprovalFunction;
-	public AppLstApprovalLstDispSet(GeneralDate startDateDisp,
-									int prePostAtrDisp,
-									GeneralDate endDateDisp,
-									int workplaceNameDisp,
-									int appDateWarningDisp) {
-		this.startDateDisp = startDateDisp;
-		this.prePostAtrDisp = prePostAtrDisp;
-		this.endDateDisp = endDateDisp;
-		this.workplaceNameDisp = workplaceNameDisp;
-		this.appDateWarningDisp = appDateWarningDisp;
-	}
 
 }

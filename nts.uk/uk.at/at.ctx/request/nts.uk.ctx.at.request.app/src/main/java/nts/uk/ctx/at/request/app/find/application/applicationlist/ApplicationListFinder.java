@@ -386,6 +386,15 @@ public class ApplicationListFinder {
     	applicationListDtoMobile.setAppPerNumber(applicationListCmdMobile.getAppPerNumber());
     	applicationListDtoMobile.setAppListInfoDto(AppListInfoDto.fromDomain(appListInitOutput.getAppListInfo()));
     	applicationListDtoMobile.setAppListExtractConditionDto(AppListExtractConditionDto.fromDomain(appListInitOutput.getAppListExtractCondition()));
+		// ドメインモデル「承認一覧表示設定」を取得する
+		Optional<ApprovalListDisplaySetting> opApprovalListDisplaySetting = approvalListDispSetRepository.findByCID(AppContexts.user().companyId());
+		if(opApprovalListDisplaySetting.isPresent()) {
+			applicationListDtoMobile.getAppListInfoDto().getDisplaySet().setWorkplaceNameDisp(opApprovalListDisplaySetting.get().getDisplayWorkPlaceName().value);
+			applicationListDtoMobile.getAppListInfoDto().getDisplaySet().setAppDateWarningDisp(opApprovalListDisplaySetting.get().getWarningDateDisAtr().v());
+			//2021/10　申請⑧EA4134
+			//・申請一覧承認一覧表示設定.所属職場名表示.承認機能を利用する＝承認一覧表示設定.承認機能を利用する
+			applicationListDtoMobile.getAppListInfoDto().getDisplaySet().setUseApprovalFunction(opApprovalListDisplaySetting.get().getUseApprovalFunction().value);
+		}
     	return applicationListDtoMobile;
     }
 
