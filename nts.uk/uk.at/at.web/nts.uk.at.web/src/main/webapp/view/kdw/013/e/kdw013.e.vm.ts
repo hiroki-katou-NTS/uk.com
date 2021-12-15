@@ -199,7 +199,7 @@ module nts.uk.ui.at.kdw013.e {
 					}
 
 					let selectedTask3 = _.find(vm.taskDtos3(), t => t.taskFrameNo == 3 && t.code == paramS.taskCode3);
-					if (!selectedTask3 && vm.selectedTaskCD3() != '') {
+					if (!selectedTask3 && paramS.taskCode3 != '') {
 						vm.taskLst3.push({
 							taskCode: paramS.taskCode3,
 							taskName: paramS.taskCode3 + ' ' + getText('KDW013_40')
