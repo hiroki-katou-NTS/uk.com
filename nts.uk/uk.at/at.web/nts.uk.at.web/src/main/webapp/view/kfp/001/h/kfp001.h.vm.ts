@@ -47,7 +47,12 @@ module nts.uk.com.view.kfp001.h.viewmodel {
         
         search() {
             let self = this;
-            self.startPage();
+            $('#period').ntsError('validate');
+            setTimeout(() => {
+                if (!$('#period').ntsError('hasError')) {
+                    self.startPage();
+                }
+            }, 1);
         }
         
         private closeDialog() {
