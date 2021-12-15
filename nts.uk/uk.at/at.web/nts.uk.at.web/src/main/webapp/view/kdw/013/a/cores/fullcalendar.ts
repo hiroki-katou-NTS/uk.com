@@ -3465,7 +3465,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                             daysOfWeek: [cbh.dayOfWeek],
                                             startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
                                             endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
-                                        },
+                                            },
                                             {
                                                 daysOfWeek: [cbh.dayOfWeek],
                                                 startTime: formatTime(brTime.end, false),

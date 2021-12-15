@@ -47,6 +47,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
                     .fc-evn-checkbox input[type="checkbox"]+span{
                         line-height: 14px;
                         font-size: 12px;
+                        cursor: default;
                     }
                     .fc-evn-checkbox{
                         padding: 0px 0px 0px 17px;
