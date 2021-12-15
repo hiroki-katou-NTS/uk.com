@@ -10,9 +10,9 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSameStampOfSupportRepo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudgmentCriteriaSameStampOfSupport;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.MaximumNumberOfSupport;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.RangeRegardedSupportStamp;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportStampSet;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
 
 /**
  * 応援の同一打刻の判断基準Repository 

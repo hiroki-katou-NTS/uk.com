@@ -3862,6 +3862,12 @@ public class ProgramsManager {
 										    		, "KWR008_100"
 										    		, "/view/kwr/008/c/index.xhtml");
 
+    /** KHA001 */
+    public static final Program KHA001A = new Program(WebAppId.AT
+            , ProgramIdConsts.KHA001A
+            , "KHA001_50"
+            , "/view/kha/001/a/index.xhtml");
+
     /**
      * All programs map.
      */
