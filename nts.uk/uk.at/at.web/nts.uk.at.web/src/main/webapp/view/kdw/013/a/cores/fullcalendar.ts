@@ -1778,6 +1778,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 .filter(f => f.display !== 'background')
                 // map EventApi to EventRaw
                 .map(({
+                    id,
                     start,
                     end,
                     title,
@@ -1790,7 +1791,9 @@ module nts.uk.ui.at.kdw013.calendar {
                     title,
                     backgroundColor,
                     textColor,
-                    extendedProps: extendedProps as any
+                    extendedProps:{
+                        ...extendedProps,
+                        id} 
                 }));
             const mutatedEvents = () => {
                 if (ko.isObservable(events)) {
@@ -2689,19 +2692,8 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     
                     vm.params.screenA.dataChanged(true);
-                    let ids = [randomId()];
-                        event.setExtendedProp('id', ids[0]);
-                        event.remove();
-                        $caches.new(vm.calendar.addEvent(_.cloneDeep(event)));
-                        _.forEach(arg.relatedEvents, re => {
-                            let id = randomId();
-                            ids.push(id);
-                            re.setExtendedProp('id', id);
-                            re.remove();
-                            $caches.new(vm.calendar.addEvent(_.cloneDeep(re)));
-                        });
-                    
                     mutatedEvents();
+                    let ids = [].concat(event.id, _.map(arg.relatedEvents, re => re.id));              
 
                         const getFrameNos = (events) => {
                             const vm = this;
@@ -3460,20 +3452,21 @@ module nts.uk.ui.at.kdw013.calendar {
                                     const brBeforeTime = breakOfDay.breakTimes[j - 1];
                                     let end = cbh.end;
                                     let start = cbh.start;
-                                    if (brTime.end < end) {
-                                        bhs.push({
-                                            daysOfWeek: [cbh.dayOfWeek],
-                                            startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
-                                            endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
-                                            },
+                                    if (brTime.end < end && brTime.end > start) {
+                                        bhs.push(
                                             {
                                                 daysOfWeek: [cbh.dayOfWeek],
                                                 startTime: formatTime(brTime.end, false),
                                                 endTime: formatTime(end, false)
+                                            },
+                                            {
+                                            daysOfWeek: [cbh.dayOfWeek],
+                                            startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
+                                            endTime: !brBeforeTime ?  formatTime(brTime.start, false) : formatTime(brTime.start, false)
                                             }
                                         );
                                     } else {
-                                        if (!_.find(bhs, ['daysOfWeek', cbh.dayOfWeek])) {
+                                        if (!_.find(bhs, bh => bh.daysOfWeek.indexOf(cbh.dayOfWeek) != -1)) {
                                             bhs.push({
                                                 daysOfWeek: [cbh.dayOfWeek],
                                                 startTime: formatTime(start, false),
