@@ -12,7 +12,6 @@ import nts.uk.ctx.at.record.app.find.reservation.bento.dto.*;
 import nts.uk.ctx.at.record.app.find.reservation.bento.query.ListBentoResevationQuery;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationStateService;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
@@ -78,7 +77,7 @@ public class ReservationModifyQuery {
      */
     public ReservationModifyDto getReservations(List<String> empIds,
                                                 ReservationDate reservationDate,
-                                                BentoReservationSearchConditionDto searchCondition) {
+                                                BentoReservationSearchCondition searchCondition) {
         ReservationModifyDto result = new ReservationModifyDto();
         List<ReservationModifyError> errors = new ArrayList<>();
 
@@ -102,7 +101,7 @@ public class ReservationModifyQuery {
         List<PersonEmpBasicInfoDto> empBasicInfos = personEmpBasicInfoPub.getPerEmpBasicInfo(empIds);
 
         // UI処理[16]
-        if (searchCondition == BentoReservationSearchConditionDto.NEW_ORDER) {
+        if (searchCondition == BentoReservationSearchCondition.NEW_ORDER) {
             for (String empId : empIds) {
                 if (stampCards.containsKey(empId)) {
                     continue;
@@ -165,7 +164,7 @@ public class ReservationModifyQuery {
         }
 
         List<ReservationModifyEmployeeDto> reservationModifyEmps = new ArrayList<>();
-        if (searchCondition != BentoReservationSearchConditionDto.NEW_ORDER) {
+        if (searchCondition != BentoReservationSearchCondition.NEW_ORDER) {
             // 6: 一覧弁当予約を取得する(検索条件, 期間, List<予約登録情報>, 勤務場所コード, 予約締め時刻枠)
             reservationModifyEmps = getReservationModifyEmps(reservationRegisterInfos, reservationDate,
                     workLocationCodeOpt, searchCondition, stampCards, empBasicInfos);
@@ -221,7 +220,7 @@ public class ReservationModifyQuery {
     private List<ReservationModifyEmployeeDto> getReservationModifyEmps(List<ReservationRegisterInfo> reservationRegisterInfos,
                                                                         ReservationDate reservationDate,
                                                                         Optional<WorkLocationCode> workLocationCodeOpt,
-                                                                        BentoReservationSearchConditionDto searchCondition,
+                                                                        BentoReservationSearchCondition searchCondition,
                                                                         Map<String, StampNumber> stampCards,
                                                                         List<PersonEmpBasicInfoDto> empBasicInfos) {
         // List<予約登録情報>.size > 0 AND Input．検索条件!=新規条件
@@ -324,7 +323,7 @@ public class ReservationModifyQuery {
      */
     private List<EmployeeInfoMonthFinishDto> getEmpFinishs(List<PersonEmpBasicInfoDto> empBasicInfos,
                                                            ReservationDate reservationDate,
-                                                           BentoReservationSearchConditionDto searchCondition,
+                                                           BentoReservationSearchCondition searchCondition,
                                                            List<ReservationModifyEmployeeDto> reservationModifyEmps) {
         List<EmployeeInfoMonthFinishDto> empFinishs = new ArrayList<>();
         RequireImpl require = new RequireImpl(requireService);
@@ -339,7 +338,7 @@ public class ReservationModifyQuery {
                     PersonEmpBasicInfoDto empBasicInfo = empBasicInfoOpt.get();
 
                     // 8.2: 月締め処理が済んでいる社員情報を作る
-                    if (searchCondition == BentoReservationSearchConditionDto.NEW_ORDER) {
+                    if (searchCondition == BentoReservationSearchCondition.NEW_ORDER) {
                         empFinishs.add(new EmployeeInfoMonthFinishDto(empBasicInfo.getEmployeeCode(),
                                 empBasicInfo.getBusinessName()));
                     }

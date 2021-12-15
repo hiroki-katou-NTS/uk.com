@@ -40,6 +40,9 @@ public interface BentoMenuHistRepository {
 	// 	[6]  弁当メニューを追加する
 	public void add(BentoMenuHistory bentoMenuHistory);
 	
+	// 	[9] 弁当メニューを取得
+	public List<BentoMenuHistory> findByCompanyPeriod(String companyID, DatePeriod period);
+	
 	// 	[10] 会社の弁当メニューを取得
 	public List<BentoMenuHistory> findByCompany(String companyID);
 

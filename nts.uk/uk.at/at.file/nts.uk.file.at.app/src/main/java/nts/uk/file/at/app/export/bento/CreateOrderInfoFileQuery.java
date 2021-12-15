@@ -22,7 +22,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoReservationInfoForEmpDto;
-import nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoReservationSearchConditionDto;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoReservedInfoDto;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoTotalDto;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.DetailOrderInfoDto;
@@ -33,11 +32,12 @@ import nts.uk.ctx.at.record.app.find.reservation.bento.query.ListBentoResevation
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationSearchCondition;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
@@ -78,7 +78,7 @@ public class CreateOrderInfoFileQuery {
     private WorkLocationRepository workLocationRepository;
 
     @Inject
-    private BentoMenuHistRepository bentoMenuRepository;
+    private BentoMenuHistRepository bentoMenuHistRepository;
 
     @Inject
     private AffWorkplaceHistoryRepository affWorkplaceHistoryRepository;
@@ -108,8 +108,8 @@ public class CreateOrderInfoFileQuery {
     private ReservationSettingRepository reservationSettingRepository;
 
     public OrderInfoDto createOrderInfoFileQuery(DatePeriod period, List<String> workplaceId,
-                                                 List<String> workLocationCodes, Optional<BentoReservationSearchConditionDto> totalExtractCondition,
-                                                 Optional<BentoReservationSearchConditionDto> itemExtractCondition, Optional<Integer> frameNo, Optional<String> totalTitle,
+                                                 List<String> workLocationCodes, Optional<BentoReservationSearchCondition> totalExtractCondition,
+                                                 Optional<BentoReservationSearchCondition> itemExtractCondition, Optional<Integer> frameNo, Optional<String> totalTitle,
                                                  Optional<String> detailTitle, ReservationClosingTimeFrame reservationClosingTimeFrame){
         if (!totalTitle.isPresent() & !detailTitle.isPresent())
             throw new BusinessException("Msg_1642");
@@ -129,28 +129,31 @@ public class CreateOrderInfoFileQuery {
         List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos = (List<BentoReservationInfoForEmpDto>) condition[2];
         @SuppressWarnings("unchecked")
         List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = (List<PlaceOfWorkInfoDto>) condition[3];
-        // 3. 弁当予約を取得する
-        List<BentoReservation> bentoReservationsTotal = new ArrayList<>();
-        List<BentoReservation> bentoReservationsDetail = new ArrayList<>();
-        if (totalExtractCondition.isPresent())
-            bentoReservationsTotal = getListBentoResevation(totalExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-        if (detailTitle.isPresent()) {
-            if (frameNo.isPresent())
-                bentoReservationsDetail = getListBentoResevation(frameNo.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-            else if(itemExtractCondition.isPresent())
-                bentoReservationsDetail = getListBentoResevation(itemExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-        }
-        if (CollectionUtil.isEmpty(bentoReservationsTotal) & CollectionUtil.isEmpty(bentoReservationsDetail))
-        	if (totalTitle.isPresent()) {
-				throw new BusinessException("Msg_6");
-			} else {
-				throw new BusinessException("Msg_1617");
-			}
-        //4. //5.
-        List<BentoMenuHistory> bentoMenuList = getAllBentoMenu(companyId, period);
+        //4. 
+        List<BentoMenuHistory> bentoMenuList = bentoMenuHistRepository.findByCompanyPeriod(companyId, period);
         if (CollectionUtil.isEmpty(bentoMenuList)) {
             throw new BusinessException("Msg_1640");
         }
+        List<ReservationRegisterInfo> reservationRegisterInfoLst = new ArrayList<>(map.values()).stream().map(ReservationRegisterInfo::new).collect(Collectors.toList());
+        //5.
+        List<BentoReservation> bentoReservationLst = bentoReservationRepository.findByExtractionCondition(
+        		reservationRegisterInfoLst, period, reservationClosingTimeFrame.value, totalExtractCondition.orElse(BentoReservationSearchCondition.ALL));
+        //5.1
+        if(frameNo.isPresent()) {
+        	bentoReservationLst = bentoReservationLst.stream().map(x -> {
+        		List<BentoReservationDetail> bentoReservationDetails = x.getBentoReservationDetails().stream().filter(y -> y.getFrameNo()==frameNo.get()).collect(Collectors.toList());
+        		return new BentoReservation(
+        				x.getRegisterInfor(), 
+        				x.getReservationDate(), 
+        				x.isOrdered(), 
+        				x.getWorkLocationCode(), 
+        				bentoReservationDetails);
+        	}).collect(Collectors.toList());
+        }
+        if(CollectionUtil.isEmpty(bentoReservationLst)) {
+        	throw new BusinessException("Msg_1617");
+        }
+        
         //6. 
         ReservationSetting reservationSetting = reservationSettingRepository.findByCId(companyId).orElse(null);
         Optional<String> closingName = Optional.empty();
@@ -165,9 +168,22 @@ public class CreateOrderInfoFileQuery {
             }
         }
         Optional<WorkLocationCode> workLocationCode = CollectionUtil.isEmpty(workLocationCodes) ? Optional.empty() : Optional.of(new WorkLocationCode(workLocationCodes.get(0)));
-        List<TotalOrderInfoDto> totalOrderInfoDtos = exportTotalOrderInfo(companyId, bentoReservationsTotal, placeOfWorkInfoDtos, frameNo, closingName, 
-        		reservationClosingTimeFrame, workLocationCode, reservationSetting);
-        List<DetailOrderInfoDto> detailOrderInfoDtos = exportDetailOrderInfo(bentoReservationsDetail, companyId, placeOfWorkInfoDtos, bentoReservationInfoForEmpDtos, frameNo, closingName);
+        List<TotalOrderInfoDto> totalOrderInfoDtos = exportTotalOrderInfo(
+        		companyId, 
+        		totalTitle.isPresent() ? bentoReservationLst : Collections.emptyList(), 
+        		placeOfWorkInfoDtos, 
+        		frameNo, 
+        		closingName, 
+        		reservationClosingTimeFrame, 
+        		workLocationCode, 
+        		reservationSetting);
+        List<DetailOrderInfoDto> detailOrderInfoDtos = exportDetailOrderInfo(
+        		detailTitle.isPresent() ? bentoReservationLst : Collections.emptyList(), 
+        		companyId, 
+        		placeOfWorkInfoDtos, 
+        		bentoReservationInfoForEmpDtos, 
+        		frameNo, 
+        		closingName);
         result.setCompanyName(companyName);
         result.setDetailOrderInfoDtoList(detailOrderInfoDtos);
         result.setDetailTittle(isCheckedEmpInfo ? detailTitle.get() : "");
@@ -282,7 +298,7 @@ public class CreateOrderInfoFileQuery {
     }
 
     /** 3. 弁当予約を取得する */
-    private List<BentoReservation> getListBentoResevation(BentoReservationSearchConditionDto searchCondition,
+    private List<BentoReservation> getListBentoResevation(BentoReservationSearchCondition searchCondition,
                                                          DatePeriod period, List<String> stampCardNo,
                                                          List<String> workLocationCodes, ReservationClosingTimeFrame reservationClosingTimeFrame){
         List<ReservationRegisterInfo> reservationRegisterInfoList = stampCardNo.stream().map(ReservationRegisterInfo::new).collect(Collectors.toList());
@@ -301,7 +317,7 @@ public class CreateOrderInfoFileQuery {
 
     /** 4. 弁当メニューを取得 */
     private List<BentoMenuHistory> getAllBentoMenu(String companyId, DatePeriod period){
-        return bentoMenuRepository.getBentoMenuPeriod(companyId, period);
+        return bentoMenuHistRepository.getBentoMenuPeriod(companyId, period);
     }
 
     /** 5. 注文情報を取得する */
@@ -363,7 +379,7 @@ public class CreateOrderInfoFileQuery {
             BentoReservationInfoForEmpDto item = items.get(0);
             for(BentoReservation reservation : handlerReservation){
                 for(BentoReservationDetail detail : reservation.getBentoReservationDetails()){
-                    Bento bento = bentoMenuRepository.getBento(companyID, reservation.getReservationDate().getDate(), detail.getFrameNo());
+                    Bento bento = bentoMenuHistRepository.getBento(companyID, reservation.getReservationDate().getDate(), detail.getFrameNo());
 
                     // Bento is deleted
                     if (bento == null) continue;
@@ -427,7 +443,7 @@ public class CreateOrderInfoFileQuery {
         for(BentoReservation item : reservations){
             int totalFee = 0;
             reservationDetails.addAll(item.getBentoReservationDetails());
-            BentoMenuHistory bentoMenuList = bentoMenuRepository.getBentoMenu(companyId, item.getReservationDate().getDate());
+            BentoMenuHistory bentoMenuList = bentoMenuHistRepository.getBentoMenu(companyId, item.getReservationDate().getDate());
             if (bentoMenuList == null) {
             	continue;
 			}

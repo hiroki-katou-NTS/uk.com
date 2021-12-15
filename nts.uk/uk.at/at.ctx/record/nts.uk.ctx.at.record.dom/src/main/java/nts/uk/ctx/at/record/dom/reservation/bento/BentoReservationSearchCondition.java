@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.reservation.bento.dto;
+package nts.uk.ctx.at.record.dom.reservation.bento;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum BentoReservationSearchConditionDto {
+public enum BentoReservationSearchCondition {
 
     /** 全部 */
     ALL(4, "Enum_OrderSearchCondition_ALL"),

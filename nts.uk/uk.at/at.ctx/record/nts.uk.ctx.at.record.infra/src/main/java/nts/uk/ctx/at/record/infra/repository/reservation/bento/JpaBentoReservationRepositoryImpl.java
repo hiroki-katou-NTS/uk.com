@@ -1,32 +1,42 @@
 package nts.uk.ctx.at.record.infra.repository.reservation.bento;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.reservation.bento.*;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationSearchCondition;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservation;
 import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservationDetail;
 import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservationDetailPK;
 import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservationPK;
 import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -407,6 +417,102 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		result.append(list.get(list.size()-1));
 		result.append("'");
 		return result.toString();
+	}
+
+	@Override
+	public List<BentoReservation> findByCardNoPeriodFrame(List<ReservationRegisterInfo> inforLst, DatePeriod period,
+			int closingTimeFrame) {
+		String query = SELECT;
+		query += "WHERE a.CARD_NO in @cardNoLst AND a.RESERVATION_YMD >= @startDate AND a.RESERVATION_YMD <= @endDate AND a.RESERVATION_FRAME = @closingTimeFrame";
+		List<Map<String, Object>> mapLst = new NtsStatement(query, this.jdbcProxy())
+				.paramString("cardNoLst", inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList()))
+				.paramDate("startDate", period.start())
+				.paramDate("endDate", period.end())
+				.paramInt("closingTimeFrame", closingTimeFrame)
+				.getList(rec -> toObject(rec));
+		List<KrcdtReservation> krcdtReservationLst = convertToEntity(mapLst);
+		return krcdtReservationLst.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+	}
+	
+	private Map<String, Object> toObject(NtsResultRecord rec) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		// KRCDT_RESERVATION
+		map.put("CID", rec.getString("CID"));
+		map.put("RESERVATION_ID", rec.getString("RESERVATION_ID"));
+		map.put("CONTRACT_CD", rec.getString("CONTRACT_CD"));
+		map.put("RESERVATION_YMD", rec.getGeneralDate("RESERVATION_YMD"));
+		map.put("RESERVATION_FRAME", rec.getInt("RESERVATION_FRAME"));
+		map.put("CARD_NO", rec.getString("CARD_NO"));
+		map.put("ORDERED", rec.getInt("ORDERED"));
+		map.put("WORK_LOCATION_CD", rec.getString("WORK_LOCATION_CD"));
+		// KRCDT_RESERVATION_DETAIL
+		map.put("MENU_FRAME", rec.getInt("MENU_FRAME"));
+		map.put("REGIST_DATETIME", rec.getGeneralDateTime("REGIST_DATETIME"));
+		map.put("QUANTITY", rec.getInt("QUANTITY"));
+		map.put("AUTO_RESERVATION_ATR", rec.getInt("AUTO_RESERVATION_ATR"));
+		return map;
+	}
+	
+	private List<KrcdtReservation> convertToEntity(List<Map<String, Object>> mapLst) {
+		List<KrcdtReservation> result = mapLst.stream().collect(Collectors.groupingBy(x -> x.get("RESERVATION_ID"))).entrySet()
+			.stream().map(x -> {
+				List<KrcdtReservationDetail> detailLst = x.getValue().stream()
+							.collect(Collectors.groupingBy(y -> {
+								return y.get("MENU_FRAME").toString() + " " + y.get("REGIST_DATETIME").toString();
+							})).entrySet().stream().map(y -> {
+								return new KrcdtReservationDetail(
+										new KrcdtReservationDetailPK(
+												(String) y.getValue().get(0).get("CID"), 
+												(String) y.getValue().get(0).get("RESERVATION_ID"), 
+												(int) y.getValue().get(0).get("MENU_FRAME"),
+												(GeneralDateTime) y.getValue().get(0).get("REGIST_DATETIME")), 
+										(int) y.getValue().get(0).get("QUANTITY"), 
+										(int) y.getValue().get(0).get("AUTO_RESERVATION_ATR"), 
+										null);
+							}).collect(Collectors.toList());
+				return new KrcdtReservation(
+						new KrcdtReservationPK(
+								(String) x.getValue().get(0).get("CID"), 
+								(String) x.getValue().get(0).get("RESERVATION_ID")), 
+						(GeneralDate) x.getValue().get(0).get("RESERVATION_YMD"), 
+						(int) x.getValue().get(0).get("RESERVATION_FRAME"),
+						(String) x.getValue().get(0).get("CARD_NO"),
+						(int) x.getValue().get(0).get("ORDERED"),
+						(String) x.getValue().get(0).get("WORK_LOCATION_CD"),
+						detailLst);
+			}).collect(Collectors.toList());
+		return result;
+	}
+
+	@Override
+	public List<BentoReservation> findByExtractionCondition(List<ReservationRegisterInfo> inforLst, DatePeriod period,
+			int closingTimeFrame, BentoReservationSearchCondition bentoReservationSearchCondition) {
+		// 	$List<弁当予約> =  [8]打刻カード番号一覧・期間・受付時間帯から取得する(打刻カード番号一覧,期間, 受付時間帯NO)
+		List<BentoReservation> bentoReservationLst = this.findByCardNoPeriodFrame(inforLst, period, closingTimeFrame);
+		// 	if(抽出条件 == 予約した全部)
+		if(bentoReservationSearchCondition==BentoReservationSearchCondition.ALL) {
+			// 	return	$List<弁当予約>
+			return bentoReservationLst;
+		}
+		// 	if(予約修正抽出条件 == １商品２件以上)
+		if(bentoReservationSearchCondition==BentoReservationSearchCondition.MORE_THAN_1_PRODUCT) {
+			// 	$List<弁当予約>  = $List<弁当予約>	&& any(弁当予約.弁当予約明細.個数 ≧　２)
+			bentoReservationLst = bentoReservationLst.stream().filter(x -> {
+				return x.getBentoReservationDetails().stream().filter(y -> y.getBentoCount().v() >= 2).findAny().isPresent();
+			}).collect(Collectors.toList());
+		}
+		// 	if(予約修正抽出条件 == 発注済み)
+		if(bentoReservationSearchCondition==BentoReservationSearchCondition.ORDERED) {
+			// 	$List<弁当予約>  = $List<弁当予約>	&& 弁当予約.発注済み　＝＝　True
+			bentoReservationLst = bentoReservationLst.stream().filter(x -> x.isOrdered()).collect(Collectors.toList());
+		}
+		// 	if(予約修正抽出条件 == 未発注)
+		if(bentoReservationSearchCondition==BentoReservationSearchCondition.UN_ORDERED) {
+			// 	$List<弁当予約>  = $List<弁当予約>	&& 弁当予約.発注済み　＝＝　False
+			bentoReservationLst = bentoReservationLst.stream().filter(x -> !x.isOrdered()).collect(Collectors.toList());
+		}
+		// 	return	$List<弁当予約>
+		return bentoReservationLst;
 	}
 
 }

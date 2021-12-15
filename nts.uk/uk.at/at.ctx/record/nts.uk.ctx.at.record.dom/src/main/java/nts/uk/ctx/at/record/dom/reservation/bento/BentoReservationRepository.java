@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
-
 import java.util.List;
 import java.util.Optional;
+
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 
 public interface BentoReservationRepository {
 
@@ -55,4 +55,24 @@ public interface BentoReservationRepository {
 	List<BentoReservation> getAllReservationOfBento(int frameNo,
 			List<ReservationRegisterInfo> inforLst, DatePeriod period,ReservationClosingTimeFrame closingTimeFrame,
 			List<WorkLocationCode> workLocationCode);
+		
+	/**
+	 * [8]打刻カード番号一覧・期間・受付時間帯から取得する
+	 * @param inforLst 打刻カード番号一覧	
+	 * @param period 期間	
+	 * @param closingTimeFrame 受付時間帯NO
+	 * @return
+	 */
+	List<BentoReservation> findByCardNoPeriodFrame(List<ReservationRegisterInfo> inforLst, DatePeriod period, int closingTimeFrame);
+	
+	/**
+	 * [9]予約確認一覧弁当予約を取得
+	 * @param inforLst 打刻カード番号一覧
+	 * @param period 期間
+	 * @param closingTimeFrame 受付時間帯NO
+	 * @param bentoReservationSearchCondition 抽出条件
+	 * @return
+	 */
+	List<BentoReservation> findByExtractionCondition(List<ReservationRegisterInfo> inforLst, DatePeriod period, 
+			int closingTimeFrame, BentoReservationSearchCondition bentoReservationSearchCondition);
 }

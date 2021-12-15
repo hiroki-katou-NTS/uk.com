@@ -398,6 +398,21 @@ public class JpaBentoMenuHistRepositoryImpl extends JpaRepository implements Ben
 	public void add(BentoMenuHistory bentoMenu) {
 		commandProxy().insert(KrcmtBentoMenuHist.fromDomain(bentoMenu));
 	}
+	
+	@Override
+	public List<BentoMenuHistory> findByCompanyPeriod(String companyID, DatePeriod period) {
+		String query =
+				"SELECT a.CID, a.HIST_ID, a.START_YMD, a.END_YMD, c.MENU_FRAME, c.WORK_LOCATION_CD, c.BENTO_NAME, c.UNIT_NAME, c.PRICE1, c.PRICE2, c.FRAME_NO " + 
+				"FROM KRCMT_BENTO_MENU_HIST a LEFT JOIN KRCMT_BENTO c ON a.HIST_ID = c.HIST_ID AND a.CID = c.CID " + 
+				"WHERE a.CID = @companyID AND a.START_YMD <= @endDate AND a.END_YMD >= @startDate";
+		List<Map<String, Object>> mapLst = new NtsStatement(query, this.jdbcProxy())
+				.paramString("companyID", companyID)
+				.paramDate("startDate", period.start())
+				.paramDate("endDate", period.end())
+				.getList(rec -> toObject(rec));
+		List<KrcmtBentoMenuHist> krcmtBentoMenuHistLst = convertToEntity(mapLst);
+		return krcmtBentoMenuHistLst.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+	}
 
 	@Override
 	public List<BentoMenuHistory> findByCompany(String companyID) {
