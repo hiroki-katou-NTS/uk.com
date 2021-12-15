@@ -38,7 +38,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
                         height: 12px;
                     }
                     .fc-evn-checkbox input[type="checkbox"]+span::after{
-                        top: 3px;
+                        top: 5px;
                         left: 2px;
                         width: 8px;
                         height: 5px;
@@ -47,6 +47,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
                     .fc-evn-checkbox input[type="checkbox"]+span{
                         line-height: 14px;
                         font-size: 12px;
+                        cursor: default;
                     }
                     .fc-evn-checkbox{
                         padding: 0px 0px 0px 17px;
