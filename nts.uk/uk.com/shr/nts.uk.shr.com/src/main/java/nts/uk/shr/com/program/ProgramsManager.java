@@ -2491,6 +2491,11 @@ public class ProgramsManager {
     public static final Program CMM051C = new Program(WebAppId.COM, ProgramIdConsts.CMM051C, "CMM051_37",
             "/view/cmm/051/c/index.xhtml");
     /**
+     * CMM052A
+     */
+    public static final Program CMM052A = new Program(WebAppId.COM, ProgramIdConsts.CMM052A, "CMM052_1",
+            "/view/cmm/052/a/index.xhtml");
+    /**
      * CMM001
      */
     public static final Program CMM001A = new Program(WebAppId.COM, ProgramIdConsts.CMM001A, "CMM001_39",
@@ -3996,6 +4001,9 @@ public class ProgramsManager {
     /** CDL010 */
     public static final Program CDL010A = new Program(WebAppId.COM, ProgramIdConsts.CDL010A, "CDL010_1",
     		"/view/cdl/010/a/index.xhtml");
+    
+    public static final Program CDL011A = new Program(WebAppId.COM, ProgramIdConsts.CDL011A, "CDL011_1",
+    		"/view/cdl/011/a/index.xhtml");
     
     /**
      * CCGS03
