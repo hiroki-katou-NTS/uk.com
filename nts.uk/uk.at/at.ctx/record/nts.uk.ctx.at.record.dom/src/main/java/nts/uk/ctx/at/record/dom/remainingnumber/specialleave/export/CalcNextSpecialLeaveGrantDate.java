@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.GrantNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
@@ -522,7 +523,7 @@ public class CalcNextSpecialLeaveGrantDate {
 								= specialLeaveBasicInfoOpt.get().getGrantSetting().getGrantDays();
 							if ( grantNumberOpt.isPresent() ){
 								int grantDays = grantNumberOpt.get().v();
-								nextSpecialLeaveGrant.setGrantDays(new GrantDays((double)grantDays));
+								nextSpecialLeaveGrant.setGrantDays(new LeaveGrantDayNumber((double)grantDays));
 							}
 						}
 						// 「特別休暇基本情報．適用設定＝所定の条件を適用する」　の場合
@@ -551,7 +552,7 @@ public class CalcNextSpecialLeaveGrantDate {
 									}
 								}
 							}
-							nextSpecialLeaveGrant.setGrantDays(new GrantDays(tmpGrantDays));
+							nextSpecialLeaveGrant.setGrantDays(new LeaveGrantDayNumber(tmpGrantDays));
 						}
 
 						// 回数←期間中に付与された回数
@@ -929,7 +930,7 @@ public class CalcNextSpecialLeaveGrantDate {
 				//　「テーブル以降付与日数.付与日数」
 				NextSpecialLeaveGrant outPut = new NextSpecialLeaveGrant();
 				outPut.setGrantDate(grantDate);
-				outPut.setGrantDays(new GrantDays(grantDays));
+				outPut.setGrantDays(new LeaveGrantDayNumber(grantDays));
 				outPut.setTimes(new GrantNum(count));
 				lstOutput.add(outPut);
 			}
@@ -1029,7 +1030,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			EmployeeRecordImport empInfor = require.employeeFullInfo(cacheCarrier, employeeId);
 
 			// 取得しているドメインモデル「定期付与．特別休暇利用条件．性別条件」をチェックする
-			if(specialLeaveRestric.getGenderRest().equals(UseAtr.USE)){ // 利用するとき
+			if(specialLeaveRestric.isGenderRest()){ // 利用するとき
 
 				// 性別が一致するかチェックする
 				if(empInfor.getGender() == specialLeaveRestric.getGender().value) {
@@ -1045,7 +1046,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			}
 
 			// 取得しているドメインモデル「定期付与．特別休暇利用条件．雇用条件」をチェックする
-			if(specialLeaveRestric.getRestEmp().equals(UseAtr.USE)){ // 利用するとき
+			if(specialLeaveRestric.isRestEmp()){ // 利用するとき
 
 				// アルゴリズム「社員所属雇用履歴を取得」を実行する
 				Optional<BsEmploymentHistoryImport> employmentHistory
@@ -1074,7 +1075,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			}
 
 			// ドメインモデル「特別休暇利用条件」．分類条件をチェックする
-			if(specialLeaveRestric.getRestrictionCls().equals(UseAtr.USE)){ // 利用するとき
+			if(specialLeaveRestric.isRestrictionCls()){ // 利用するとき
 
 				// アルゴリズム「社員所属分類履歴を取得」を実行する
 				List<String> emploeeIdList = new ArrayList<>();
@@ -1114,7 +1115,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			}
 
 			// ドメインモデル「特別休暇利用条件」．年齢条件をチェックする
-			if(specialLeaveRestric.getAgeLimit().equals(UseAtr.USE)){ // 利用するとき
+			if(specialLeaveRestric.isAgeLimit()){ // 利用するとき
 
 				GeneralDate ageBase = ymd;
 

@@ -53,30 +53,21 @@ public class AnnualLeaveRemainingNumberImport {
 	/**
 	 * 年休残数日数
 	 */
-	private Double annualLeaveGrantDay;
+	//private Double annualLeaveGrantDay;
 	
 	/**
 	 * 年休残数時間
 	 */
-	private Integer annualLeaveGrantTime;
+	//private Integer annualLeaveGrantTime;
 	
-	/**
-	 * 半休残数回数
-	 */
-	private Integer numberOfRemainGrant;
-	
-	/**
-	 * 時間年休上限
-	 */
-	private Integer timeAnnualLeaveWithMinusGrant;
 	
 	/**
 	 * 出勤率
 	 */
-	private Double attendanceRate;
+	//private Double attendanceRate;
 	
 	/**
 	 * 労働日数
 	 */
-	private Double workingDays;
+	//private Double workingDays;
 }

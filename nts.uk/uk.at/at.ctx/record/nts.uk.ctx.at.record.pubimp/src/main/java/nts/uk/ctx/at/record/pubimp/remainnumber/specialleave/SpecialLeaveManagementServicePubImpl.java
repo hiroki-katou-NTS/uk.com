@@ -357,8 +357,8 @@ public class SpecialLeaveManagementServicePubImpl implements SpecialLeaveManagem
 
 	/**
 	 * ドメインへ変換
-	 * @param generalDate 
-	 * @param sId 
+	 * @param generalDate
+	 * @param sId
 	 * @param param
 	 * @return
 	 */

@@ -6,7 +6,10 @@ module cmm045.a.viewmodel {
     import request = nts.uk.request;
     import getShared = nts.uk.ui.windows.getShared;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+    import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
     export class ScreenModel {
+        menuName: KnockoutObservable<string> = ko.observable("");
         roundingRules: KnockoutObservableArray<vmbase.ApplicationDisplayAtr> = ko.observableArray([]);
         //delete switch button - ver35
 //        selectedRuleCode: KnockoutObservable<any> = ko.observable(0);// switch button
@@ -29,8 +32,12 @@ module cmm045.a.viewmodel {
         mode: KnockoutObservable<number> = ko.observable(1);
         startDateString: KnockoutObservable<string> = ko.observable("");
         endDateString: KnockoutObservable<string> = ko.observable("");
+        useApprovalFunction : KnockoutObservable<number> = ko.observable(0);
+        //UPDATE EA 4134
+		//  USE(1, "Enum_UseClassificationAtr_USE"),
+        //	NOT_USE(0, "Enum_UseClassificationAtr_NOT_USE");
+        //  spr
 
-        //spr
         isSpr: KnockoutObservable<boolean> = ko.observable(false);
         // extractCondition: KnockoutObservable<number> = ko.observable(0);
         //ver33
@@ -141,6 +148,7 @@ module cmm045.a.viewmodel {
             * Define how to use this list employee by yourself in the function's body.
             */
 
+
             returnDataFromCcg001: function(data: any){
                 self.showinfoSelectedEmployee(true);
                 self.selectedEmployee(data.listEmployee);
@@ -163,35 +171,11 @@ module cmm045.a.viewmodel {
 				block.invisible();
 				service.findByEmpIDLst(self.appListExtractConditionDto).done((data: any) => {
 					return self.reload(data.appListExtractCondition, data.appListInfo);
-					/*self.approvalLstDispSet = data.displaySet;
-					let newItemLst = [];
-					_.each(data.appLst, item => {
-						newItemLst.push(new vmbase.DataModeApp(item));
-					});
-					self.items(newItemLst);
-					if (data.appStatusCount != null) {
-                        self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
-                            data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
-                            data.appStatusCount.denialNumber));
-                    }
-
-                    if (self.mode() == 1) {
-                        $("#grid1").ntsGrid("destroy");
-                        let colorBackGr = self.fillColorbackGrAppr();
-                        let lstHidden: Array<any> = self.findRowHidden(self.items());
-                        self.reloadGridApproval(lstHidden,colorBackGr, false);
-                        // self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
-                    } else {
-                        let colorBackGr = self.fillColorbackGr();
-                        $("#grid2").ntsGrid("destroy");
-                        self.reloadGridApplicaion(colorBackGr, false);
-                        // self.reloadGridApplicaion(colorBackGr, self.isHidden());
-                    }*/
 				}).always(() => block.clear());
                 // self.filter();
              }
             }
-
+            self.getMenu();
             window.onresize = function(event: any) {
 				if(self.mode()==1) {
 					character.restore('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj: any) => {
@@ -554,54 +538,12 @@ module cmm045.a.viewmodel {
 			block.invisible();
 			service.findByPeriod(self.appListExtractConditionDto).done((data: any) => {
 				return self.reload(data.appListExtractCondition, data.appListInfo);
-				/*self.appListExtractConditionDto = data.appListExtractCondition;
-				self.updateFromAppListExtractCondition();
-				self.approvalLstDispSet = data.appListInfo.displaySet;
-				let newItemLst = [];
-				_.each(data.appListInfo.appLst, item => {
-					newItemLst.push(new vmbase.DataModeApp(item));
-				});
-				self.items(newItemLst);
-				if (data.appStatusCount != null) {
-                    self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
-                        data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
-                        data.appStatusCount.denialNumber));
-                }
-
-                if (self.mode() == 1) {
-                    $("#grid1").ntsGrid("destroy");
-                    let colorBackGr = self.fillColorbackGrAppr();
-                    let lstHidden: Array<any> = self.findRowHidden(self.items());
-                    self.reloadGridApproval(lstHidden,colorBackGr, false);
-                    // self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
-                } else {
-                    let colorBackGr = self.fillColorbackGr();
-                    $("#grid2").ntsGrid("destroy");
-                    self.reloadGridApplicaion(colorBackGr, false);
-                    // self.reloadGridApplicaion(colorBackGr, self.isHidden());
-              	}*/
 			}).always(() => block.clear());
 		}
 
         start(): JQueryPromise<any> {
 			const self = this;
             block.invisible();
-//            let self = this;
-//            var dfd = $.Deferred();
-            //get param url
-            /*let url = $(location).attr('search');
-            let urlParam: number = undefined;
-			if(_.isUndefined(url.split("=")[1])) {
-				history.pushState({}, null, "?a=0");
-			} else {
-				urlParam = parseInt(url.split("=")[1]);
-			}*/
-            // let characterData = null;
-            // let appCHeck = null;
-            /*if (urlParam !== undefined) {
-                character.save('AppListExtractCondition', null);
-            }*/
-            //get param spr
             let paramSprCmm045: vmbase.IntefaceSPR = __viewContext.transferred.value == null ?
                     null : __viewContext.transferred.value.PARAM_SPR_CMM045;
             //spr call
@@ -611,58 +553,25 @@ module cmm045.a.viewmodel {
                 self.dateValue(date);
                 self.mode(paramSprCmm045.mode);
                 self.isSpr(true);
-                // self.extractCondition(paramSprCmm045.extractCondition);
             }
             return character.restore("AppListExtractCondition").then((obj) => {
-				// characterData = obj;
-                if (obj !== undefined && obj !== null && !self.isSpr() && !nts.uk.request.location.current.isFromMenu) {
-					self.appListExtractConditionDto = obj;
-					self.updateFromAppListExtractCondition();
-                    /*let date: vmbase.Date = { startDate: obj.periodStartDate, endDate: obj.periodEndDate }
-                    self.dateValue(date);
-                    self.selectedIds([]);
-                    if (obj.opUnapprovalStatus) {//未承認
-                        self.selectedIds.push(1);
-                    }
-                    if (obj.opApprovalStatus) {//承認済み
-                        self.selectedIds.push(2);
-                    }
-                    if (obj.opDenialStatus) {//否認
-                        self.selectedIds.push(3);
-                    }
-                    if (obj.opAgentApprovalStatus) {//代行承認済み
-                        self.selectedIds.push(4);
-                    }
-                    if (obj.opRemandStatus) {//差戻
-                        self.selectedIds.push(5);
-                    }
-                    if (obj.opCancelStatus) {//取消
-                        self.selectedIds.push(6);
-                    }*/
-//                    self.selectedRuleCode(obj.appDisplayAtr);
-                    //combo box
-                    // appCHeck = obj.appType;
-                    // self.lstSidFilter(obj.opListEmployeeID);
-					// self.selectedAppId(_.chain(obj.opListOfAppTypes).filter(o => o.choice).map((x: any) => x.appType).value());
-					character.remove('AppListExtractCondition');
-                }
 				let url = $(location).attr('search');
 	            let urlParam: number = undefined;
 				if(!_.isUndefined(url.split("=")[1])) {
 					urlParam = parseInt(url.split("=")[1]);
 				}
-                if (urlParam === undefined && !self.isSpr()) {
-					if (obj !== undefined && obj !== null) {
-						self.mode(obj.appListAtr);
-					} else {
+				if(_.isNaN(_.toNumber(urlParam))) {
+					if(_.isEmpty(obj)) {
 						self.mode(1);
+					} else {
+						self.appListExtractConditionDto = obj;
+						self.updateFromAppListExtractCondition();
+						self.mode(obj.appListAtr);	
 					}
+					nts.uk.request.location.current.queryString.items = {a: self.mode().toString()};
 					history.pushState({}, null, "?a="+self.mode());
-                }
-                if(urlParam !== undefined && !self.isSpr()){
-                    self.mode(urlParam);
-                }
-				if(nts.uk.request.location.current.isFromMenu) {
+				} else {
+					character.remove('AppListExtractCondition');
 					self.mode(urlParam);	
 				}
                 //write log
@@ -670,15 +579,6 @@ module cmm045.a.viewmodel {
                                 screenId: 'A',
                                 queryString: 'a='+self.mode()};
                 service.writeLog(paramLog);
-//                let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
-//                    self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-//                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
-//                let param = {   condition: condition,
-//                                spr: self.isSpr(),
-//                                extractCondition: self.extractCondition(),
-//                                device: 0,
-//                                lstAppType: []
-//                            };
 				return service.getAppNameInAppList();
 			}).then((data: any) => {
 				if(_.isEmpty(self.appListExtractConditionDto.opListOfAppTypes)) {
@@ -711,83 +611,6 @@ module cmm045.a.viewmodel {
 				return service.getApplicationList(newParam);
 			}).then((data: any) => {
 				return self.reload(data.appListExtractCondition, data.appListInfo);
-//                if(self.appList().appLst.length > 500) {
-//
-//                }
-//                self.isLimit500(data.appListInfo.moreThanDispLineNO);
-//                // self.appListAtr = data.appListExtractCondition.appListAtr;
-//				// self.dateValue({ startDate: data.appListInfo.displaySet.startDateDisp, endDate: data.appListInfo.displaySet.endDateDisp });
-//				self.appListExtractConditionDto = data.appListExtractCondition;
-//				self.updateFromAppListExtractCondition();
-//				self.approvalLstDispSet = data.appListInfo.displaySet;
-//                self.lstContentApp(data.lstContentApp);
-//                let isHidden = data.isDisPreP == 1 ? true : true;
-//                self.isHidden(isHidden);
-//                        self.selectedRuleCode.subscribe(function(codeChanged) {
-//                            self.filter();
-//                        });
-                        //luu param
-                        /*if (self.dateValue().startDate == '' || self.dateValue().endDate == '') {
-                            let date: vmbase.Date = { startDate: data.startDate, endDate: data.endDate }
-                            self.dateValue(date);
-                        }*/
-//                let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
-//                    self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-//                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
-                // character.save('AppListExtractCondition', self.appListExtractConditionDto);
-//                _.each(data.lstApp, function(app) {
-//                    self.lstAppCommon.push(new vmbase.ApplicationDataOutput(app.applicationID, app.prePostAtr, app.inputDate,
-//                        app.enteredPersonSID, app.applicationDate, app.applicationType, app.applicantSID, app.reflectPerState,
-//                        app.startDate, app.endDate, app.version, app.reflectStatus));
-//                });
-//                _.each(data.lstMasterInfo, function(master) {
-//                    self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName,master.inpEmpName,
-//                        master.workplaceName, master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor, master.detailSet));
-//                });
-//                self.itemApplication([]);
-//                _.each(data.lstAppInfor, function(appInfo){
-//                    self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));
-//                });
-//                self.lstListAgent([]);
-//                _.each(data.lstAgent, function(agent){
-//                    self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
-//                });
-//                _.each(data.lstSyncData, function(complt){
-//                    self.lstAppCompltSync.push(new vmbase.AppAbsRecSyncData(complt.typeApp, complt.appMainID, complt.appSubID, complt.appDateSub));
-//                });
-//                let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
-//                self.lstApp(lstData);
-//				let newItemLst = [];
-//				_.each(data.appListInfo.appLst, item => {
-//					newItemLst.push(new vmbase.DataModeApp(item));
-//				});
-//				self.items(newItemLst);
-//                //mode approval - count
-//                if (data.appStatusCount != null) {
-//                    self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
-//                        data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
-//                        data.appStatusCount.denialNumber));
-//                }
-//                if (self.mode() == 1) {
-//                    let colorBackGr = self.fillColorbackGrAppr();
-//                     let lstHidden: Array<any> = self.findRowHidden(self.items());
-//                    //  self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
-//                     self.reloadGridApproval(lstHidden,colorBackGr, false);
-//                } else {
-//                    let colorBackGr = self.fillColorbackGr();
-//                    self.reloadGridApplicaion(colorBackGr, self.isHidden());
-//                }
-                /*if(appCHeck != null){
-                    self.selectedCode(appCHeck);
-                }
-                if(self.isSpr()){
-                    let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
-                    self.selectedCode(selectedType);
-                }*/
-                // if(self.mode() == 0){
-
-                // }
-                // dfd.resolve();
 			}).then((data) => {
 				if(data) {
 					$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
@@ -797,92 +620,6 @@ module cmm045.a.viewmodel {
 					nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
 				});
 			}).always(() => block.clear());
-
-//                service.getApplicationDisplayAtr().done(function(data1) {
-//                    _.each(data1, function(obj) {
-//                        self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
-//                    });
-//					service.getAppNameInAppList().then((data) => {
-//						let newParam = {
-//							mode: 0,
-//							device: 0,
-//							listOfAppTypes: data
-//						};
-//
-//
-//                    service.getApplicationList(newParam).done(function(data: any) {
-//						self.dateValue({ startDate: data.appListInfoDto.displaySet.startDateDisp, endDate: data.appListInfoDto.displaySet.endDateDisp });
-//                        self.lstContentApp(data.lstContentApp);
-//                        let isHidden = data.isDisPreP == 1 ? false : true;
-//                        self.isHidden(isHidden);
-////                        self.selectedRuleCode.subscribe(function(codeChanged) {
-////                            self.filter();
-////                        });
-//                        //luu param
-//                        /*if (self.dateValue().startDate == '' || self.dateValue().endDate == '') {
-//                            let date: vmbase.Date = { startDate: data.startDate, endDate: data.endDate }
-//                            self.dateValue(date);
-//                        }*/
-//                        let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
-//                            self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-//                            self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
-//                        character.save('AppListExtractCondition', paramSave);
-//                        _.each(data.lstApp, function(app) {
-//                            self.lstAppCommon.push(new vmbase.ApplicationDataOutput(app.applicationID, app.prePostAtr, app.inputDate,
-//                                app.enteredPersonSID, app.applicationDate, app.applicationType, app.applicantSID, app.reflectPerState,
-//                                app.startDate, app.endDate, app.version, app.reflectStatus));
-//                        });
-//                        _.each(data.lstMasterInfo, function(master) {
-//                            self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName,master.inpEmpName,
-//                                master.workplaceName, master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor, master.detailSet));
-//                        });
-//                        self.itemApplication([]);
-//                        _.each(data.lstAppInfor, function(appInfo){
-//                            self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));
-//                        });
-//                        self.lstListAgent([]);
-//                        _.each(data.lstAgent, function(agent){
-//                            self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
-//                        });
-//                        _.each(data.lstSyncData, function(complt){
-//                            self.lstAppCompltSync.push(new vmbase.AppAbsRecSyncData(complt.typeApp, complt.appMainID, complt.appSubID, complt.appDateSub));
-//                        });
-//                        let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
-//                        self.lstApp(lstData);
-//                        self.items(data.appListInfoDto.appLst);
-//                        //mode approval - count
-//                        if (data.appStatusCount != null) {
-//                            self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
-//                                data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
-//                                data.appStatusCount.denialNumber));
-//                        }
-//                        if (self.mode() == 1) {
-//                            let colorBackGr = self.fillColorbackGrAppr();
-//                             let lstHidden: Array<any> = self.findRowHidden(self.items());
-//                             self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
-//                        } else {
-//                            let colorBackGr = self.fillColorbackGr();
-//                            self.reloadGridApplicaion(colorBackGr, self.isHidden());
-//                        }
-//                        if(appCHeck != null){
-//                            self.selectedCode(appCHeck);
-//                        }
-//                        if(self.isSpr()){
-//                            let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
-//                            self.selectedCode(selectedType);
-//                        }
-//                        if(self.mode() == 0){
-//                            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-//                        }
-//                        block.clear();
-//                        dfd.resolve();
-//                    });
-//					});
-//                }).fail(()=>{
-//                    block.clear();
-//                });
-//            });
-            //return dfd.promise();
         }
 
 		reload(appListExtractCondition: any, appListInfo: any) {
@@ -892,6 +629,10 @@ module cmm045.a.viewmodel {
 				self.updateFromAppListExtractCondition();
 			}
 			self.appListInfo = appListInfo;
+			if(!isNullOrUndefined(appListInfo) && !isNullOrUndefined(appListInfo.displaySet)){
+				let displaySet = appListInfo.displaySet.useApprovalFunction;
+				self.useApprovalFunction(displaySet)
+			};
 			let newItemLst = [];
 			_.each(appListInfo.appLst, item => {
 				newItemLst.push(new vmbase.DataModeApp(item));
@@ -929,18 +670,6 @@ module cmm045.a.viewmodel {
                 return self.items().length > 0 && _.filter(self.items(), x => x.checkAtr).length > 0;
             }, self);
 
-			/*self.appList(data.appListInfo);
-            if(self.appList().appLst.length > 500) {
-
-            }
-            self.isLimit500(data.appListInfo.moreThanDispLineNO);
-            self.lstContentApp(data.lstContentApp);
-            let isHidden = data.isDisPreP == 1 ? true : true;
-            self.isHidden(isHidden);
-
-            // if(self.mode() == 0){
-                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-            // }*/
 			return true;
 		}
 
@@ -995,7 +724,7 @@ module cmm045.a.viewmodel {
                 checkbox?: { visible: Function, applyToProperty: string },
                 button?: { text: string, click: Function }
             }>
-        }) {
+        },useApprovalFunction: number) {
 
             let $container = $("#app-grid-container");
             $container.hide();
@@ -1033,7 +762,7 @@ module cmm045.a.viewmodel {
                                     .attr("id", "batch-check")
                                     .attr("type", "checkbox")
                                     .addClass(column.key))
-                                .append($("<span/>").addClass("box"))
+                                .append($("<span/>").addClass(useApprovalFunction == 1 ? "box" : ""))
                                 .change((e) => {
                                     let checked = $(e.target).prop("checked");
                                     $appGrid.find("input[type=checkbox]." + column.key)
@@ -1149,15 +878,28 @@ module cmm045.a.viewmodel {
                             extraClass = "";
                         }
                         if (column.checkbox.visible(item) === true) {
-                            $("<label/>")
-                                .addClass("ntsCheckBox")
-                                .append($("<input/>")
-                                    .attr("type", "checkbox")
-                                    .addClass(column.key))
-                                .append($("<span/>").addClass("box"))
-                                .appendTo($td)
-                                .parent("td")
-                                .addClass(extraClass);
+                        	if(self.useApprovalFunction() == 1){
+                                $("<label/>")
+                                    .addClass("ntsCheckBox")
+                                    .append($("<input/>")
+                                        .attr("type", "checkbox")
+                                        .addClass(column.key))
+                                    .append($("<span/>").addClass("box"))
+                                    .appendTo($td)
+                                    .parent("td")
+                                    .addClass(extraClass);
+							}else {
+                                $("<label/>")
+                                    .addClass("ntsCheckBox")
+                                    .append($("<input/>")
+                                        .attr("type", "checkbox")
+                                        .addClass(column.key))
+                                    .append($("<span/>").addClass(""))
+                                    .appendTo($td)
+                                    .parent("td")
+                                    .addClass(extraClass);
+							}
+
                         }
                     }
                     else if (column.button !== undefined) {
@@ -1345,118 +1087,13 @@ module cmm045.a.viewmodel {
                 $("#app-resize").css("width", widthAuto);
             });
 
-
-/*
-            $("#grid2").ntsGrid({
-                width: widthAuto,
-                height: window.innerHeight -250,
-                dataSource: self.items(),
-                primaryKey: 'appId',
-                virtualization: true,
-                rows: 8,
-                hidePrimaryKey: true,
-                rowVirtualization: true,
-                virtualizationMode: 'continuous',
-                columns: [
-                    { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', hidden: true },
-                    { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '55px', unbound: false, ntsControl: 'Button' },
-                    { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
-                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '90px'},
-                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '65px', hidden: isHidden},
-                    { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '157px'},
-                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '408px'},
-                    { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '120px'},
-                    { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '75px'}
-                ],
-                features: [
-                    { name: 'Resizing' },
-                    {
-                        name: 'Selection',
-                        mode: 'row',
-                        multipleSelection: true
-                    }
-                ],
-                ntsFeatures:[
-                    {
-                        name: 'CellState',
-                        rowId: 'rowId',
-                        columnKey: 'columnKey',
-                        state: 'state',
-                        states: colorBackGr
-                    },
-                ],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    { name: 'Button', text: getText('CMM045_50'), controlType: 'Button', enable: true },
-                ]
-            });
-            $("#grid2").on("click", ".ntsButton", function(evt, ui) {
-                let _this = $(this);
-                let id = _this.parents('tr').data('id');
-                //Bug #97203 - EA2540
-//                let a = self.findDataModeAppByID(id, self.items());
-//                let lstAppId = self.findListAppType(a.appType);
-                let lstAppId = [];
-                _.each(self.items(), function(app){
-                    lstAppId.push(app.appId);
-                });
-                nts.uk.localStorage.setItem('UKProgramParam', 'a=0');
-                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': id });
-            });
-            */
         }
-        /*findDataModeAppByID(appId: string, lstAppCommon: Array<vmbase.DataModeApp>){
-            return _.find(lstAppCommon, function(app) {
-                return app.appId == appId;
-            });
-        }
-        findListAppType(appType: number){
-            let self = this;
-            let lstAppId = [];
-            _.each(self.items(), function(item){
-                if(item.appType == appType){
-                    lstAppId.push(item.appId);
-                }
-            });
-            return lstAppId;
-        }*/
 
         fillColorbackGr(): Array<vmbase.CellState>{
             let self = this;
             let result = [];
             _.each(self.items(), function(item) {
                 let rowId = item.appID;
-                // //fill color in 承認状況
-                // if (item.appStatusNo == 0) {//0 下書き保存/未反映　=　未
-                //     item.appStatusName = 'unapprovalCell';
-                //     result.push(new vmbase.CellState(rowId,'appStatus',['unapprovalCell']));
-                // }
-                // if (item.appStatusNo == 1) {//1 反映待ち　＝　承認済み
-                //     item.appStatusName = 'approvalCell';
-                //     result.push(new vmbase.CellState(rowId,'appStatus',['approvalCell']));
-                // }
-                // if (item.appStatusNo == 2) {//2 反映済　＝　反映済み
-                //     item.appStatusName = 'reflectCell';
-                //     result.push(new vmbase.CellState(rowId,'appStatus',['reflectCell']));
-                // }
-                // if (item.appStatusNo == 3 || item.appStatusNo == 4) {//3,4 取消待ち/取消済　＝　取消
-                //     item.appStatusName = 'cancelCell';
-                //     result.push(new vmbase.CellState(rowId,'appStatus',['cancelCell']));
-                // }
-                // if (item.appStatusNo == 5) {//5 差し戻し　＝　差戻
-                //     item.appStatusName = 'remandCell';
-                //     result.push(new vmbase.CellState(rowId,'appStatus',['remandCell']));
-                // }
-                // if (item.appStatusNo == 6) {//6 否認　=　否
-                //     item.appStatusName = 'denialCell';
-                //     result.push(new vmbase.CellState(rowId,'appStatus',['denialCell']));
-                // }
-                // //fill color in 申請内容
-                // if (item.checkTimecolor == 1) {//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
-                //     result.push(new vmbase.CellState(rowId,'appContent',['preAppExcess']));
-                // }
-                // if (item.checkTimecolor == 2) {////2: thuc te < xin sau
-                //     result.push(new vmbase.CellState(rowId,'appContent',['workingResultExcess']));
-                // }
 
                 if(item.reflectionStatus === 'CMM045_63') {
                     item.appStatusName = 'approvalCell';
@@ -1490,34 +1127,6 @@ module cmm045.a.viewmodel {
             let result = [];
             _.each(self.items(), function(item) {
                 let rowId = item.appID;
-                //fill color in 承認状況
-                // if (item.appStatusNo == 5) {//5 -UNAPPROVED 未
-                //     item.appStatusName = 'unapprovalCell';
-                //     result.push(new vmbase.CellState(rowId,'appStatus',['unapprovalCell']));
-                // }
-                // if (item.appStatusNo == 4) {//4 APPROVED 承認済み
-                //     item.appStatusName = 'approvalCell';
-                //     result.push(new vmbase.CellState(rowId,'appStatus',['approvalCell']));
-                // }
-                // if (item.appStatusNo == 3) {//3 CANCELED 取消
-                //     item.appStatusName = 'cancelCell';
-                //     result.push(new vmbase.CellState(rowId,'appStatus',['cancelCell']));
-                // }
-                // if (item.appStatusNo == 2) {//2 REMAND 差戻
-                //     item.appStatusName = 'remandCell';
-                //     result.push(new vmbase.CellState(rowId,'appStatus',['remandCell']));
-                // }
-                // if (item.appStatusNo == 1) {//1 DENIAL 否
-                //     item.appStatusName = 'denialCell';
-                //     result.push(new vmbase.CellState(rowId,'appStatus',['denialCell']));
-                // }
-                // //fill color in 申請内容
-                // if (item.checkTimecolor == 1) {//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
-                //     result.push(new vmbase.CellState(rowId,'appContent',['preAppExcess']));
-                // }
-                // if (item.checkTimecolor == 2) {////2: thuc te < xin sau
-                //     result.push(new vmbase.CellState(rowId,'appContent',['workingResultExcess']));
-                // }
 
                 if(item.reflectionStatus === 'CMM045_63') {
                     item.appStatusName = 'approvalCell';
@@ -1606,30 +1215,32 @@ module cmm045.a.viewmodel {
                     }
             }).then(() => {
                 let columns = [
-                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: checkWidth, checkbox: {
-                        visible: item => item.checkAtr === true,
-                        applyToProperty: "check"
-                    } },
-                    { headerText: getText('CMM045_50'), key: 'details', width: detailsWidth, button: {
-                        text: getText('CMM045_50'),
-                        click: (e) => {
-                            let targetAppId = $(e.target).closest("td").data("app-id");
-                            let lstAppId = self.items().map(app => app.appID);
-                            // nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
-                            character.save('AppListExtractCondition', self.appListExtractConditionDto).then(() => {
-								nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
-							});
-                        }
-                    } },
-                    { headerText: getText('CMM045_51'), key: 'applicantName', width: applicantNameWidth },
-                    { headerText: getText('CMM045_52'), key: 'appType', width: appTypeWidth},
-                    { headerText: getText('CMM045_53'), key: 'prePostAtr', width: prePostAtrWidth, hidden: isHidden},
-                    { headerText: getText('CMM045_54'), key: 'appDate', width: appDateWidth},
-                    { headerText: getText('CMM045_55'), key: 'appContent', width: contentWidth},
-                    { headerText: getText('CMM045_56'), key: 'inputDate', width: inputDateWidth},
-                    { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: reflectionStatusWidth, extraClassProperty: "appStatusName"},
-                    { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: opApprovalStatusInquiryWidth },
-                ]
+                        { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: checkWidth, checkbox: {
+                                visible: item => item.checkAtr === true,
+                                applyToProperty: "check"
+                            } },
+                        { headerText: getText('CMM045_50'), key: 'details', width: detailsWidth, button: {
+                                text: getText('CMM045_50'),
+                                click: (e) => {
+                                    let targetAppId = $(e.target).closest("td").data("app-id");
+                                    let lstAppId = self.items().map(app => app.appID);
+                                    // nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
+                                    character.save('AppListExtractCondition', self.appListExtractConditionDto).then(() => {
+                                        nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+                                    });
+                                }
+                            } },
+                        { headerText: getText('CMM045_51'), key: 'applicantName', width: applicantNameWidth },
+                        { headerText: getText('CMM045_52'), key: 'appType', width: appTypeWidth},
+                        { headerText: getText('CMM045_53'), key: 'prePostAtr', width: prePostAtrWidth, hidden: isHidden},
+                        { headerText: getText('CMM045_54'), key: 'appDate', width: appDateWidth},
+                        { headerText: getText('CMM045_55'), key: 'appContent', width: contentWidth},
+                        { headerText: getText('CMM045_56'), key: 'inputDate', width: inputDateWidth},
+                        { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: reflectionStatusWidth, extraClassProperty: "appStatusName"},
+                        { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: opApprovalStatusInquiryWidth },
+                    ]
+
+
                 let heightAuto = window.innerHeight - 364 > 60 ? window.innerHeight - 364 : 60;
                 // let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
                 this.setupGrid({
@@ -1637,259 +1248,13 @@ module cmm045.a.viewmodel {
                     width: widthAuto,
                     height: heightAuto,
                     columns: columns.filter(c => c.hidden !== true)
-                });
+                },self.useApprovalFunction());
 
                 $("#app-resize").css("width", widthAuto);
             });
 
-/*
-            $("#grid1").ntsGrid({
-                width: widthAuto,
-                height: window.innerHeight - 330,
-                dataSource: self.items(),
-                primaryKey: 'appId',
-                rowVirtualization: true,
-                virtualization: true,
-                hidePrimaryKey: true,
-                rows: 8,
-                virtualizationMode: 'continuous',
-                columns: [
-                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '35px',
-                            showHeaderCheckbox: lstHidden.length < self.items().length, ntsControl: 'Checkbox',  hiddenRows: lstHidden},
-                    { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '55px', unbound: false, ntsControl: 'Button' },
-                    { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
-                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '90px'},
-                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '65px', hidden: isHidden},
-                    { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '157px'},
-                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '341px'},
-                    { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '120px'},
-                    { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '75px'},
-                    { headerText: getText('CMM045_58'), key: 'displayAppStatus', dataType: 'string', width: '95px' },
-                    { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', ntsControl: 'Label', hidden: true }
-                ],
-                features: [{ name: 'Resizing' },
-                    {
-                        name: 'Selection',
-                        mode: 'row',
-                        multipleSelection: true
-                    }
-                ],
-                 ntsFeatures:[
-                    {
-                        name: 'CellState',
-                        rowId: 'rowId',
-                        columnKey: 'columnKey',
-                        state: 'state',
-                        states: colorBackGr
-                    },
-                 ],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox' },
-                    { name: 'Button', text: getText('CMM045_50'), controlType: 'Button', enable: true }],
-            });
-
-            $("#grid1").on("click", ".ntsButton", function(evt, ui) {
-                let _this = $(this);
-                let id = _this.parents('tr').data('id');
-                //Bug #97203 - EA2540
-//                let a = self.findDataModeAppByID(id, self.items());
-//                let lstAppId = self.findListAppType(a.appType);
-                let lstAppId = [];
-                _.each(self.items(), function(app){
-                    lstAppId.push(app.appId);
-                });
-                nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
-                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': id });
-            });
-
-            $("#grid1").setupSearchScroll("igGrid", true);
-            */
         }
-        /**
-         * 休日出勤時間申請
-         * kaf010 - appTYpe = 6
-         * format data: holiday work before
-         * ※申請モード、承認モード(事前)用レイアウト
-         */
-        /*formatHdWorkBf(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
-            let self = this;
-            let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
-            let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
-
-            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''),
-                self.findContent(app.applicationID).content, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
-                app.reflectStatus, masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,
-                null, app.reflectPerState);
-            return a;
-        }*/
-        /**
-         * 残業申請
-         * kaf005 - appType = 0
-         * format data: over time before
-         * ※申請モード、承認モード(事前)用レイアウト
-         */
-        /*formatOverTimeBf(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
-            let self = this;
-            let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-//            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
-            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
-            let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
-            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''),
-                self.findContent(app.applicationID).content, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
-                app.reflectStatus, masterInfo.phaseStatus,
-                masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,null, app.reflectPerState);
-            return a;
-        }*/
-        /**
-         * ※承認モード(事後)用レイアウト
-         * format data: over time after
-         */
-        /*formatHdWorkAf(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
-            let self = this;
-            let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
-            let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
-            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''),
-                self.findContent(app.applicationID).content, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
-                app.reflectStatus, masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,
-                null, app.reflectPerState);
-            return a;
-        }*/
-
-        /**
-         * ※承認モード(事後)用レイアウト
-         * format data: over time after
-         */
-        /*formatOverTimeAf(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
-            let self = this;
-            let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
-            let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
-            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''),
-                self.findContent(app.applicationID).content, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
-                app.reflectStatus, masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,
-                null, app.reflectPerState);
-            return a;
-        }*/
-        /**
-         * 直行直帰申請
-         * kaf009 - appType = 4
-         */
-        /*formatGoBack(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
-            let self = this;
-            let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
-            let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
-            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''),
-                self.findContent(app.applicationID).content, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
-                app.reflectStatus, masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,
-                null, app.reflectPerState);
-            return a;
-        }*/
-        /**
-         * 勤務変更申請
-         * kaf007 - appType = 2
-         */
-        /*formatWorkChange(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
-            let self = this;
-            let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
-            let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
-            let dateRange = app.startDate == app.endDate ? self.appDateColor(self.convertDateMDW(app.applicationDate), '','') :
-                self.appDateRangeColor(self.convertDateMDW(app.startDate), self.convertDateMDW(app.endDate));
-            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, dateRange, self.findContent(app.applicationID).content,
-                self.inputDateColor(self.convertDateTime(app.inputDate), ''), app.reflectStatus, masterInfo.phaseStatus,
-                masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor, null, app.reflectPerState);
-            return a;
-        }*/
-        /**
-         * 休暇申請
-         * kaf006 - appType = 1
-         * DOING
-         */
-        /*formatAbsence(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
-            let self = this;
-            let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
-            let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
-            let dateRange = app.startDate == app.endDate ? self.appDateColor(self.convertDateMDW(app.applicationDate), '','') :
-                self.appDateRangeColor(self.convertDateMDW(app.startDate), self.convertDateMDW(app.endDate));
-            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, dateRange, self.findContent(app.applicationID).content,
-                self.inputDateColor(self.convertDateTime(app.inputDate), ''), app.reflectStatus, masterInfo.phaseStatus,
-                masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor, null, app.reflectPerState);
-            return a;
-        }*/
-        /**
-         * 振休振出申請
-         * kaf011 - appType = 10
-         */
-        /*formatCompltLeave(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp{
-            let self = this;
-            let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
-
-            //振出 rec typeApp = 1
-            //振休 abs typeApp = 0
-            let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let appDate = self.appDateColor(self.convertDateMDW(app.applicationDate), '','');
-            let inputDate = self.inputDateColor(self.convertDateTime(app.inputDate), '');
-
-            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePost, appDate, self.findContent(app.applicationID).content, inputDate,
-                app.reflectStatus, masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,
-                null, app.reflectPerState);
-            return a;
-        }*/
-        /**
-         * 振休振出申請
-         * 同期
-         * kaf011 - appType = 10
-         */
-        /*formatCompltSync(app: vmbase.ApplicationDataOutput, complt: vmbase.AppAbsRecSyncData, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp{
-            let self = this;
-            let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
-
-            let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-
-            let appDateAbs = '';
-            let appDateRec = '';
-            let inputDateAbs = '';
-            let inputDateRec = '';
-            //振出 rec typeApp = 1
-            //振休 abs typeApp = 0
-            if(complt.typeApp == 0){
-                appDateAbs = self.appDateColor(self.convertDateMDW(app.applicationDate), 'abs','');
-                appDateRec = self.appDateColor(self.convertDateMDW(complt.appDateSub), 'rec','');
-                inputDateAbs = self.inputDateColor(self.convertDateTime(app.inputDate), 'abs');
-                inputDateRec = self.inputDateColor(self.convertDateTime(app.inputDate), 'rec');
-            }else{
-                appDateRec = self.appDateColor(self.convertDateMDW(app.applicationDate), 'rec','');
-                appDateAbs = self.appDateColor(self.convertDateMDW(complt.appDateSub), 'abs','');
-                inputDateRec = self.inputDateColor(self.convertDateTime(app.inputDate), 'rec');
-                inputDateAbs = self.inputDateColor(self.convertDateTime(app.inputDate), 'abs');
-            }
-            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePost, appDateRec + '<br/>' + appDateAbs, self.findContent(app.applicationID).content,
-                inputDateRec + '<br/>' + inputDateAbs,
-                '<div class = "rec" >' + app.reflectStatus + '</div>' + '<br/>' + '<div class = "abs" >' + app.reflectStatus + '</div>',
-                masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor, complt.appSubID, app.reflectPerState);
-            return a;
-        }*/
+        
         inputDateColor_Old(input: string, classApp: string): string{
             let inputDate = '<div class = "' + classApp + '" >' + input + '</div>';
             //fill color text input date
@@ -1974,50 +1339,7 @@ module cmm045.a.viewmodel {
             }
             return sDate + '<div class = "dateRange" >' + '－' +  '</div>' +  eDate;
         }
-        /**
-         * map data -> fill in grid list
-         */
-        /*mapData(lstApp: Array<vmbase.ApplicationDataOutput>, lstMaster: Array<vmbase.AppMasterInfo>, lstCompltLeave: Array<vmbase.AppAbsRecSyncData>): Array<vmbase.DataModeApp> {
-            let self = this;
-            let lstData: Array<vmbase.DataModeApp> = [];
-            _.each(lstApp, function(app: vmbase.ApplicationDataOutput) {
-                let masterInfo = self.findMasterInfo(lstMaster, app.applicationID);
-                let data: vmbase.DataModeApp;
-                if (app.applicationType == 0) {//over time
-                    if (self.mode() == 1 && app.prePostAtr == 1) {
-                        data = self.formatOverTimeAf(app, masterInfo);
-                    } else {
-                        data = self.formatOverTimeBf(app, masterInfo);
-                    }
-                }
-                if (app.applicationType == 4) {//goback
-                    data = self.formatGoBack(app, masterInfo);
-                }
-                if(app.applicationType == 6){//holiday work
-                    if(self.mode() == 1 && app.prePostAtr == 1){
-                        data = self.formatHdWorkAf(app, masterInfo);
-                    }else{
-                        data = self.formatHdWorkBf(app, masterInfo);
-                    }
-                }
-                if(app.applicationType == 2){//work change
-                    data = self.formatWorkChange(app, masterInfo);
-                }
-                if(app.applicationType == 1){//absence
-                    data = self.formatAbsence(app, masterInfo);
-                }
-                if(app.applicationType == 10){//Complement Leave
-                    let complt = self.checkSync(app.applicationID, lstCompltLeave);
-                    if(complt !== undefined){
-                        data = self.formatCompltSync(app, complt, masterInfo);
-                    }else{
-                        data = self.formatCompltLeave(app, masterInfo);
-                    }
-                }
-                lstData.push(data);
-            });
-            return lstData;
-        }*/
+        
         /**
          * find application holiday work by id
          */
@@ -2098,114 +1420,7 @@ module cmm045.a.viewmodel {
             let time = dateTime.split(" ")[1];
             return this.convertDateMDW(date) + ' ' + time;
         }
-        /**
-         * when click button 検索
-         */
-        /*filter() {
-            block.invisible();
-            if (nts.uk.ui.errors.hasError()) {
-                block.clear();
-                return;
-            }
-            let self = this;
-            //check filter
-            //check startDate
-            if (self.dateValue().startDate == null || self.dateValue().startDate == '') {//期間開始日付または期間終了日付が入力されていない
-                $('.ntsDatepicker.nts-input.ntsStartDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
-                block.clear();
-                return;
-            }
-            //check endDate
-            if (self.dateValue().endDate == null || self.dateValue().endDate == '') {//期間開始日付または期間終了日付が入力されていない
-                $('.ntsDatepicker.nts-input.ntsEndDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
-                block.clear();
-                return;
-            }
-            if (self.mode() == 1 && self.selectedIds().length == 0) {//承認状況のチェックの確認
-                nts.uk.ui.dialog.error({ messageId: "Msg_360" });
-                block.clear();
-                return;
-            }
-            let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
-                self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
-            let param = {   condition: condition,
-                            spr: false,
-                            extractCondition: 0,
-                            device: 0,
-                            lstAppType: []
-                        }
-            service.getApplicationList(param).done(function(data) {
-                self.lstContentApp([]);
-                self.lstContentApp(data.lstContentApp);
-                //reset data
-                self.lstAppCommon([]);
-                self.lstAppMaster([]);
-                self.lstApp([]);
-                self.lstListAgent([]);
-                self.lstAppCompltSync([]);
-                //luu
-                character.save('AppListExtractCondition', condition);
-                _.each(data.lstApp, function(app) {
-                    self.lstAppCommon.push(new vmbase.ApplicationDataOutput(app.applicationID, app.prePostAtr, app.inputDate,
-                        app.enteredPersonSID, app.applicationDate, app.applicationType, app.applicantSID,
-                        app.reflectPerState, app.startDate, app.endDate, app.version, app.reflectStatus));
-                });
-                _.each(data.lstMasterInfo, function(master) {
-                    self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName, master.inpEmpName, master.workplaceName,
-                        master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor, master.detailSet));
-                });
-                self.itemApplication([]);
-                _.each(data.lstAppInfor, function(appInfo){
-                    self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));
-                });
-                self.lstListAgent([]);
-                _.each(data.lstAgent, function(agent){
-                    self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
-                });
-                _.each(data.lstSyncData, function(complt){
-                    self.lstAppCompltSync.push(new vmbase.AppAbsRecSyncData(complt.typeApp, complt.appMainID, complt.appSubID, complt.appDateSub));
-                });
-                let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
-                self.lstApp(lstData);
-                //check list app new exist selectedCode???
-                let check = self.findExist();
-                if(check === undefined){
-                    self.selectedCode(-1);
-                }
-                if (self.selectedCode() != -1) {
-                    self.filterByAppType(self.selectedCode());
-                } else {
-                    self.items(lstData);
-                    //mode approval - count
-                    if (data.appStatusCount != null) {
-                        self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
-                            data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
-                            data.appStatusCount.denialNumber));
-                    }
-
-                    if (self.mode() == 1) {
-                        $("#grid1").ntsGrid("destroy");
-                        let colorBackGr = self.fillColorbackGrAppr();
-                        let lstHidden: Array<any> = self.findRowHidden(self.items());
-                        self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
-                    } else {
-                        let colorBackGr = self.fillColorbackGr();
-                        $("#grid2").ntsGrid("destroy");
-                        self.reloadGridApplicaion(colorBackGr, self.isHidden());
-                    }
-                }
-                block.clear();
-            }).fail(() => {
-                block.clear();
-            });
-        }*/
-        /*findExist(): any{
-            let self = this;
-            return _.find(self.itemApplication(), function(item){
-                return item.appId == self.selectedCode();
-            });
-        }*/
+        
         /**
          * find row hidden
          */
@@ -2230,86 +1445,7 @@ module cmm045.a.viewmodel {
             });
             return check;
         }
-        /**
-         * When click button 承認
-         */
-        /*approval() {
-            block.invisible();
-            let self = this;
-            let data = null;
-            let lstApp = [];
-            _.each(self.items(), function(item) {
-                if (item.check && item.checkAtr) {
-                    if(item.appType == 10 && item.appIdSub != null){
-                        lstApp.push({ appId: item.appId, version: item.version });
-                        lstApp.push({ appId: item.appIdSub, version: item.version });
-                    }else{
-                        lstApp.push({ appId: item.appId, version: item.version });
-                    }
-                }
-            });
-            if(lstApp.length == 0){
-                block.clear();
-                return;
-            }
-            service.approvalListApp(lstApp).done(function(data) {
-                if(data.length > 0){
-                    service.reflectListApp(data);
-                }
-                nts.uk.ui.dialog.info({ messageId: "Msg_220" });
-                self.filter();
-                block.clear();
-            }).fail(function(res) {
-                block.clear();
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-            });
-        }*/
-        /**
-         * When select combo box 申請種類
-         */
-        /*filterByAppType(appType: number) {
-            let self = this;
-            let paramOld = null;
-            let paramNew = null;
-            character.restore("AppListExtractCondition").done((obj) => {
-                 if (obj !== undefined) {
-                    paramOld = obj;
-                }
-            });
-            if(paramOld != null){
-                paramNew = paramOld.setAppType(appType);
-            }else{
-                paramNew = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
-                self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
-            }
-            //luu
-                character.save('AppListExtractCondition', paramNew);
-            if (appType == -1) {//全件表示
-                self.items(self.lstApp());
-            } else {
-                let lstAppFitler: Array<vmbase.DataModeApp> = _.filter(self.lstApp(), function(item) {
-                    return item.appType == appType;
-                });
-                self.items([]);
-                self.items(lstAppFitler);
-            }
-            if (self.mode() == 1) {
-                self.approvalCount(self.countStatus(self.items()));
-                if($("#grid1").data("igGrid") !== undefined){
-                    $("#grid1").ntsGrid("destroy");
-                }
-                let colorBackGr = self.fillColorbackGrAppr();
-                let lstHidden: Array<any> = self.findRowHidden(self.items());
-                self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
-            } else {
-                if($("#grid2").data("igGrid") !== undefined){
-                    $("#grid2").ntsGrid("destroy");
-                }
-                let colorBackGr = self.fillColorbackGr();
-                self.reloadGridApplicaion(colorBackGr, self.isHidden());
-            }
-        }*/
+        
         /**
          * count status when filter by appType
          */
@@ -2366,47 +1502,35 @@ module cmm045.a.viewmodel {
         approveAll() {
             console.log("Approve all");
         }
-
+        getMenu(){
+            let self = this;
+            block.invisible();
+            service.getMenu().done((data)=>{
+                if(!isNullOrEmpty(data)){
+                    let item = _.filter(data, (e)=>e.param.equals(self.mode() == 1 ? "a=1" :"a=0"));
+                    if(!isNullOrEmpty(item)){
+                        self.menuName(item[0].name);
+					}
+                };
+            }).always(()=>{
+                block.clear()
+            });
+        };
         print(params: any) {
             let self = this;
             let lstApp = self.appListInfo,
-            programName = nts.uk.ui._viewModel.kiban.programName().replace('CMM045A ', '');
+                programName = self.menuName().replace('CMM045A ', '');
             lstApp.appLst = ko.toJS(self.items);
             lstApp.displaySet.startDateDisp = self.appListExtractConditionDto.periodStartDate;
             lstApp.displaySet.endDateDisp = self.appListExtractConditionDto.periodEndDate;
 			block.invisible();
-            const command = { appListAtr: self.appListAtr, lstApp: lstApp, programName: programName }
+            const command = { appListAtr: self.appListAtr, lstApp: lstApp, programName: programName };
             service.print(command).always(() => { 
 				block.clear(); 
 				$('#daterangepicker .ntsEndDatePicker').focus();
 			});
             
         }
-
-        // getNtsFeatures(): Array<any> {
-        //     let self = this;
-
-        //     var features = [
-        //         { name: 'TextColor',
-        //             columns: [
-        //                 {
-        //                     key: 'inputDate',
-        //                     parse: value => { return value; },
-        //                     map: (content: String) => {
-        //                         if(content.includes("土")) {
-        //                             return "#0000ff";
-        //                         }
-        //                         if(content.includes("日")) {
-        //                             return "#ff0000";
-        //                         }
-        //                     }
-        //                 }
-        //             ]
-        //     }
-        //     ];
-
-        //     return features;
-        // }
 
 		checkDialog(itemLst: any, itemConfirmLst: any, confirmAllPreApp: boolean, notConfirmAllPreApp: boolean, confirmAllActual: boolean, notConfirmAllActual: boolean): any {
 			const self = this;
@@ -2452,17 +1576,6 @@ module cmm045.a.viewmodel {
 					});
 				}
 			}
-//			if(notConfirmAll) {
-//				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
-//					return dfd.resolve(result);
-//				});
-//			}
-//			if(confirmAll) {
-//				itemConfirmLst.push(item);
-//				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
-//					return dfd.resolve(result);
-//				});
-//			}
 			let appInfo = { appName: ''},
 				appName = "";
 			if(item.opAppTypeDisplay) {
@@ -2508,36 +1621,6 @@ module cmm045.a.viewmodel {
 											result ? result.notConfirmAllActual : false).then((result: any) => {
 					return dfd.resolve(result);
 				});
-				
-//				switch(result) {
-//					case vmbase.ConfirmDialog.CONFIRM: 
-//						itemConfirmLst.push(item);
-//						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false, false, false).then((result: any) => {
-//							return dfd.resolve(result);
-//						});
-//					case vmbase.ConfirmDialog.CONFIRM_ALL_PREAPP: 
-//						itemConfirmLst.push(item);
-//						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, true, false).then((result: any) => {
-//							return dfd.resolve(result);
-//						});
-//					case vmbase.ConfirmDialog.NOT_CONFIRM_ALL_PREAPP: 
-//						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, true).then((result: any) => {
-//							return dfd.resolve(result);
-//						});
-//					case vmbase.ConfirmDialog.CONFIRM_ALL_ACTUAL: 
-//						itemConfirmLst.push(item);
-//						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, true, false).then((result: any) => {
-//							return dfd.resolve(result);
-//						});
-//					case vmbase.ConfirmDialog.CONOT_CONFIRM_ALL_ACTUAL: 
-//						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, true).then((result: any) => {
-//							return dfd.resolve(result);
-//						});
-//					default: 
-//						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
-//							return dfd.resolve(result);
-//						});
-//				}
 			});
 			return dfd.promise();
 		}

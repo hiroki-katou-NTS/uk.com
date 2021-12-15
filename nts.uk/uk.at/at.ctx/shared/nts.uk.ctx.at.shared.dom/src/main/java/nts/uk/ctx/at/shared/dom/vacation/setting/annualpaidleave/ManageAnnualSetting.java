@@ -5,9 +5,11 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt;
 
 /**
  * The Class YearVacationManageSetting.
@@ -28,10 +30,6 @@ public class ManageAnnualSetting extends DomainObject implements Serializable{
     /** The half day manage. */
     // 半日年休管理
     private HalfDayManage halfDayManage;
-
-    /** The work day calculate. */
-    // 年休を出勤日数として加算する
-    private boolean isWorkDayCalculate;
 
     /** The remaining number setting. */
     // 残数設定
@@ -55,7 +53,6 @@ public class ManageAnnualSetting extends DomainObject implements Serializable{
         super();
 //        this.maxGrantDay = memento.getMaxGrantDay();
         this.halfDayManage = memento.getHalfDayManage();
-        this.isWorkDayCalculate = memento.getIsWorkDayCalculate();
         this.remainingNumberSetting = memento.getRemainingNumberSetting();
         this.yearlyOfNumberDays = memento.getYearLyOfDays();
     }
@@ -67,7 +64,6 @@ public class ManageAnnualSetting extends DomainObject implements Serializable{
      */
     public void saveToMemento(ManageAnnualSettingSetMemento memento) {
         memento.setHalfDayManage(this.halfDayManage);
-        memento.setWorkDayCalculate(this.isWorkDayCalculate);
         if(this.remainingNumberSetting == null){
         	memento.setRemainingNumberSetting(new RemainingNumberSetting(new RetentionYear(2)));
         }else{
@@ -78,4 +74,13 @@ public class ManageAnnualSetting extends DomainObject implements Serializable{
         memento.setYearLyOfDays(this.yearlyOfNumberDays);}
         
     }
+    /**
+     * [3] 半日年休上限回数を取得
+     * @param fromGrantTableCount
+     * @return
+     */
+	 public Optional<LimitedHalfHdCnt> getLimitedHalfCount(Optional<LimitedHalfHdCnt> fromGrantTableCount){
+		 return this.getHalfDayManage().getLimitedHalfCount(fromGrantTableCount);
+	 }
+	 
 }

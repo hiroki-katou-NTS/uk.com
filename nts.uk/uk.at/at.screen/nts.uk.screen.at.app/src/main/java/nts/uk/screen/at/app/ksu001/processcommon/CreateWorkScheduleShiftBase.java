@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package nts.uk.screen.at.app.ksu001.processcommon;
 
@@ -16,8 +16,8 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -59,7 +59,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class CreateWorkScheduleShiftBase {
-	
+
 	@Inject
 	private WorkTypeRepository workTypeRepo;
 	@Inject
@@ -71,7 +71,7 @@ public class CreateWorkScheduleShiftBase {
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
 	@Inject
-	private FixedWorkSettingRepository fixedWorkSet; 
+	private FixedWorkSettingRepository fixedWorkSet;
 	@Inject
 	private FlowWorkSettingRepository flowWorkSet;
 	@Inject
@@ -80,7 +80,7 @@ public class CreateWorkScheduleShiftBase {
 	private PredetemineTimeSettingRepository predetemineTimeSet;
 
 	public WorkScheduleShiftBaseResult getWorkScheduleShiftBase(
-			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> mapDataDaily,
+			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> mapDataDaily,
 			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew) {
 
 		List<WorkInfoOfDailyAttendance> workInfoOfDailyAttendances = new ArrayList<WorkInfoOfDailyAttendance>();
@@ -119,11 +119,11 @@ public class CreateWorkScheduleShiftBase {
 		// loop：日別実績 in 管理状態と勤務実績Map.values()
 		List<ScheduleOfShiftDto> listWorkScheduleShift = new ArrayList<>();
 		mapDataDaily.forEach((k, v) -> {
-			ScheManaStatuTempo key = k;
+			EmployeeWorkingStatus key = k;
 			Optional<IntegrationOfDaily> value = v;
 
 			// step 4.1
-			boolean needToWork = key.getScheManaStatus().needCreateWorkSchedule();
+			boolean needToWork = key.getWorkingStatus().needCreateWorkSchedule();
 			// 4.2
 			if (value.isPresent()) {
 				IntegrationOfDaily daily = value.get();
@@ -157,23 +157,26 @@ public class CreateWorkScheduleShiftBase {
 							.workHolidayCls(null)
 							.isEdit(false)
 							.isActive(false)
+							.conditionAa1(false)
+							.conditionAa2(false)
 							.build();
 					listWorkScheduleShift.add(dto);
 				}
 			}
 		});
-		
+
 		// convert list to Map
 		Map<ShiftMaster, Optional<WorkStyle>> mapShiftMasterWithWorkStyle2 = new HashMap<>();
 		String companyId = AppContexts.user().companyId();
 		for (ShiftMasterMapWithWorkStyle obj : listShiftMaster) {
-			ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(new ShiftMasterName(obj.shiftMasterName),new ColorCodeChar6(obj.color),new ColorCodeChar6(obj.color), new Remarks(obj.remark));
-			ShiftMaster ShiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(obj.shiftMasterCode), displayInfor,obj.workTypeCode, obj.workTimeCode);
+			ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(new ShiftMasterName(obj.shiftMasterName),new ColorCodeChar6(obj.color),new ColorCodeChar6(obj.color), Optional.of(new Remarks(obj.remark)));
+			//TODO 取り込みコード追加
+			ShiftMaster ShiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(obj.shiftMasterCode), displayInfor,obj.workTypeCode, obj.workTimeCode, Optional.empty());
 			mapShiftMasterWithWorkStyle2.put(ShiftMaster, obj.workStyle == null ? Optional.empty(): Optional.of(EnumAdaptor.valueOf(Integer.valueOf(obj.workStyle), WorkStyle.class)));
 		}
 		return new WorkScheduleShiftBaseResult(listWorkScheduleShift, mapShiftMasterWithWorkStyle2);
 	}
-	
+
 	@AllArgsConstructor
 	private static class RequireCombiAndWorkHolidayImpl implements GetCombinationrAndWorkHolidayAtrService.Require {
 
