@@ -3440,11 +3440,11 @@ module nts.uk.ui.at.kdw013.calendar {
                 read: () => {
                     const businessHours = ko.unwrap<BussinessHour[]>(params.businessHours);
                     if (!businessHours.length) {
-                        if (params.initialView() == 'oneDay') {
-                            vm.calendar.setOption('businessHours', true);
-                        } else {
-                            vm.calendar.setOption('businessHours', false);
-                        }
+                        vm.calendar.setOption('businessHours', {
+                                    daysOfWeek: [0,1,2,3,4,5,6],
+                                    startTime: formatTime(10, false),
+                                    endTime: formatTime(10, false)
+                                });
                         
                         //vm.updateStyle('breaktime', '');
                     } else {
