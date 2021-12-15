@@ -2561,12 +2561,21 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                     //check override events
                     
-                    
                      const IEvents = _.chain(events())
                             .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
                             .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
                             .sortBy('end')
                             .value();
+
+                     let ovrEvent = _.find(IEvents, e => !!_.find([].concat(event, relatedEvents), ce =>
+                         (moment(ce.start).isSameOrAfter(e.start) && moment(ce.start).isBefore(e.end)) ||
+                         (moment(ce.end).isAfter(e.start) && moment(ce.end).isSameOrBefore(e.end))
+                     ));
+
+                     if (ovrEvent) {
+                         arg.revert();
+                         return;
+                     }
                     
                     const selecteds = _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
                     const relBk = _.find(relatedEvents,re => re.extendedProps.isTimeBreak);
