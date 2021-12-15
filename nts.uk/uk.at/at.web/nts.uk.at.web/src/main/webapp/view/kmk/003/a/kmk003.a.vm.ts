@@ -1615,6 +1615,8 @@ module nts.uk.at.view.kmk003.a {
 							command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.hereAfterRestSet = { flowPassageTime: 0 ,flowRestTime: 0}
 							command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.hereAfterRestSet = { flowPassageTime: 0 ,flowRestTime: 0}
 						}
+						command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = [];
+						command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = [];
 					} else {
 						_.forEach(command.flexWorkSetting.lstHalfDayWorkTimezone[0].restTimezone.fixedRestTimezone.timezones, (z : any) => {
 							let checkAdd = 0;
