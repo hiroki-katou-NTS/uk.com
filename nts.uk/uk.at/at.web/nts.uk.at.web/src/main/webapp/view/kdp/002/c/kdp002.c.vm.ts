@@ -109,7 +109,7 @@ module nts.uk.at.view.kdp002.c {
 					});
 
 				vm.$ajax("at", "server/time/now").then((output: any) => {
-					let data: Date = moment(moment(output).utc().format('YYYY/MM/DD HH:MM')).toDate();
+					let data: Date = moment(output).utc();
 					self.timeView(data)
 				})
 			}
