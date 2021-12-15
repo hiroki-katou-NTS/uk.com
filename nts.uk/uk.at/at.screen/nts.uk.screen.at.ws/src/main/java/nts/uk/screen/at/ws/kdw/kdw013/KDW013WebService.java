@@ -259,8 +259,8 @@ public class KDW013WebService {
 	// E: 作業項目を選択する
 	@POST
 	@Path("e/select_task_item")
-	public List<TaskDto> selectTaskItem(GetAvailableWorkingCommand command) {
-		return selectTaskItem.selectTaskItem(command);
+	public SelectTaskItemDto selectTaskItem(GetAvailableWorkingCommand command) {
+		return new SelectTaskItemDto(selectTaskItem.selectTaskItem(command));
 	}
 
 }
@@ -271,4 +271,11 @@ class StartParam {
 	// 基準日
 	private GeneralDate inputDate;
 
+}
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+class SelectTaskItemDto {
+	private List<TaskDto> taskDtos;
 }

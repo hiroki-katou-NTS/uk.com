@@ -18,6 +18,10 @@ module nts.uk.ui.at.kdw013.e {
 		tasks5: TaskDto[];
 	}
 
+	interface SelectTaskItemDto {
+		taskDtos: TaskDto[];
+	}
+
 	type TaskCbb = {
 		taskCode: string,
 		taskName: string
@@ -61,6 +65,12 @@ module nts.uk.ui.at.kdw013.e {
 		selectedTaskCD4: KnockoutObservable<string> = ko.observable('');
 		selectedTaskCD5: KnockoutObservable<string> = ko.observable('');
 
+		taskCD1: any;
+		taskCD2: any;
+		taskCD3: any;
+		taskCD4: any;
+		taskCD5: any;
+
 		startTime: KnockoutObservable<number> = ko.observable();
 		endTime: KnockoutObservable<number> = ko.observable();
 		totalTime: KnockoutObservable<number> = ko.observable();
@@ -80,11 +90,17 @@ module nts.uk.ui.at.kdw013.e {
 			vm.startTime(vm.ouenWorkTimeSheet().timeSheet.start.timeWithDay);
 			vm.endTime(vm.ouenWorkTimeSheet().timeSheet.end.timeWithDay);
 			vm.totalTime(vm.ouenWorkTime() ? vm.ouenWorkTime().workTime.totalTime : 0);
-			vm.selectedTaskCD1(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD1 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD1);
-			vm.selectedTaskCD2(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD2 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD2);
-			vm.selectedTaskCD3(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD3 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD3);
-			vm.selectedTaskCD4(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD4 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD4);
-			vm.selectedTaskCD5(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD5 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD5);
+
+			vm.taskCD1 = vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD1 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD1;
+			vm.taskCD2 = vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD2 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD2;
+			vm.taskCD3 = vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD3 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD3;
+			vm.taskCD4 = vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD4 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD4;
+			vm.taskCD5 = vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD5 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD5;
+			vm.selectedTaskCD1(vm.taskCD1);
+			vm.selectedTaskCD2(vm.taskCD2);
+			vm.selectedTaskCD3(vm.taskCD3);
+			vm.selectedTaskCD4(vm.taskCD4);
+			vm.selectedTaskCD5(vm.taskCD5);
 			vm.getCbbList();
 		}
 
@@ -151,13 +167,13 @@ module nts.uk.ui.at.kdw013.e {
 			const paramS = {
 				sId: __viewContext.user.employeeId,
 				refDate: vm.date(),
-				taskCode1: vm.selectedTaskCD1(),
-				taskCode2: vm.selectedTaskCD2(),
-				taskCode3: vm.selectedTaskCD3(),
-				taskCode4: vm.selectedTaskCD4(),
-				taskCode5: vm.selectedTaskCD5()
+				taskCode1: vm.taskCD1,
+				taskCode2: vm.taskCD2,
+				taskCode3: vm.taskCD3,
+				taskCode4: vm.taskCD4,
+				taskCode5: vm.taskCD5
 			};
-			
+
 			vm.$ajax('at', '/screen/at/kdw013/e/start_task_content_without_time', paramS)
 				.then((result: GetWorkDataMasterInforDto) => {
 					vm.taskDtos1(result.tasks1);
@@ -205,8 +221,8 @@ module nts.uk.ui.at.kdw013.e {
 							taskName: paramS.taskCode5 + ' ' + getText('KDW013_40')
 						});
 					}
-					
-					let t1:any = vm.taskLst1();
+
+					let t1: any = vm.taskLst1();
 					_.forEach(vm.taskDtos1(), task => {
 						t1.push({
 							taskCode: task.code,
@@ -249,11 +265,12 @@ module nts.uk.ui.at.kdw013.e {
 					vm.taskLst3().sort((a, b) => parseInt(a.taskCode) - parseInt(b.taskCode));
 					vm.taskLst4().sort((a, b) => parseInt(a.taskCode) - parseInt(b.taskCode));
 					vm.taskLst5().sort((a, b) => parseInt(a.taskCode) - parseInt(b.taskCode));
-					vm.selectedTaskCD1(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD1 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD1);
-					vm.selectedTaskCD2(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD2 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD2);
-					vm.selectedTaskCD3(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD3 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD3);
-					vm.selectedTaskCD4(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD4 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD4);
-					vm.selectedTaskCD5(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD5 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD5);
+
+					vm.selectedTaskCD1(vm.taskCD1);
+					vm.selectedTaskCD2(vm.taskCD2);
+					vm.selectedTaskCD3(vm.taskCD3);
+					vm.selectedTaskCD4(vm.taskCD4);
+					vm.selectedTaskCD5(vm.taskCD5);
 				});
 		}
 
@@ -268,25 +285,30 @@ module nts.uk.ui.at.kdw013.e {
 				} else {
 					vm.ouenWorkTimeSheet().workContent.work.workCD1 = value;
 				}
+
+				vm.selectTask(2, vm.selectedTaskCD1());
 			});
 
 			vm.selectedTaskCD2.subscribe((value) => {
 				vm.ouenWorkTimeSheet().workContent.work.workCD2 = value == '' ? null : value;
+				vm.selectTask(3, vm.selectedTaskCD2());
 			});
 
 			vm.selectedTaskCD3.subscribe((value) => {
 				vm.ouenWorkTimeSheet().workContent.work.workCD3 = value == '' ? null : value;
+				vm.selectTask(4, vm.selectedTaskCD3());
 			});
 
 			vm.selectedTaskCD4.subscribe((value) => {
 				vm.ouenWorkTimeSheet().workContent.work.workCD4 = value == '' ? null : value;
+				vm.selectTask(5, vm.selectedTaskCD4());
 			});
 
 			vm.selectedTaskCD5.subscribe((value) => {
 				vm.ouenWorkTimeSheet().workContent.work.workCD5 = value == '' ? null : value;
 			});
 
-			vm.startTime.subscribe((value)  => {
+			vm.startTime.subscribe((value) => {
 				vm.ouenWorkTimeSheet().timeSheet.start.timeWithDay = value;
 			})
 
@@ -307,6 +329,76 @@ module nts.uk.ui.at.kdw013.e {
 
 		}
 
+		selectTask(taskFrameNo: number, upperTaskCode: String) {
+			const vm = this;
+			const param = {
+				sId: vm.$user.employeeId,
+				refDate: vm.date(),
+				taskFrameNo: taskFrameNo,
+				taskCode: upperTaskCode
+			}
+			vm.$ajax('at', '/screen/at/kdw013/e/select_task_item', param)
+				.then((result: SelectTaskItemDto) => {
+					let taskLst: TaskCbb[] = [];
+					taskLst.push({
+						taskCode: '',
+						taskName: '未選択'
+					});
+
+					_.forEach(result.taskDtos, task => {
+						taskLst.push({
+							taskCode: task.code,
+							taskName: task.code + ' ' + task.displayInfo.taskName
+						});
+					});
+
+					switch (taskFrameNo) {
+						case 2:
+							let selectedTask2 = _.find(taskLst, t => t.taskCode == vm.taskCD2);
+							if (!selectedTask2 && vm.taskCD2 != '') {
+								taskLst.push({
+									taskCode: vm.taskCD2,
+									taskName: vm.taskCD2 + ' ' + getText('KDW013_40')
+								});
+							}
+							vm.taskLst2(taskLst);
+							break;
+						case 3:
+							let selectedTask3 = _.find(taskLst, t => t.taskCode == vm.taskCD3);
+							if (!selectedTask3 && vm.taskCD3 != '') {
+								taskLst.push({
+									taskCode: vm.taskCD3,
+									taskName: vm.taskCD3 + ' ' + getText('KDW013_40')
+								});
+							}
+							vm.taskLst3(taskLst);
+							break;
+						case 4:
+							let selectedTask4 = _.find(taskLst, t => t.taskCode == vm.taskCD4);
+							if (!selectedTask4 && vm.taskCD4 != '') {
+								taskLst.push({
+									taskCode: vm.taskCD4,
+									taskName: vm.taskCD4 + ' ' + getText('KDW013_40')
+								});
+							}
+							vm.taskLst4(taskLst);
+							break;
+						case 5:
+							let selectedTask5 = _.find(taskLst, t => t.taskCode == vm.taskCD5);
+							if (!selectedTask5 && vm.taskCD5 != '') {
+								taskLst.push({
+									taskCode: vm.taskCD5,
+									taskName: vm.taskCD5 + ' ' + getText('KDW013_40')
+								});
+							}
+							vm.taskLst5(taskLst);
+							break;
+
+					}
+				});
+
+		}
+
 		decide() {
 			const vm = this;
 			vm.totalTime.valueHasMutated();
@@ -314,7 +406,7 @@ module nts.uk.ui.at.kdw013.e {
 				empId: vm.$user.employeeId,
 				date: vm.date(),
 				ouenTimeSheet: ko.unwrap(vm.ouenWorkTimeSheet),
-				ouenTime: { workNo: ko.unwrap(vm.ouenWorkTime).no, workTime: ko.unwrap(vm.ouenWorkTime).workTime  },
+				ouenTime: { workNo: ko.unwrap(vm.ouenWorkTime).no, workTime: ko.unwrap(vm.ouenWorkTime).workTime },
 			};
 
 			vm.$blockui('show');
