@@ -157,8 +157,6 @@ module nts.uk.at.view.kdp002.c {
 				let itemIds: DISPLAY_ITEM_IDS = nts.uk.ui.windows.getShared("KDP010_2C");
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenC");
 
-				console.log(self.infoEmpFromScreenA);
-
 				self.getWorkPlacwName(self.infoEmpFromScreenA.workPlaceId);
 
 				let data = {

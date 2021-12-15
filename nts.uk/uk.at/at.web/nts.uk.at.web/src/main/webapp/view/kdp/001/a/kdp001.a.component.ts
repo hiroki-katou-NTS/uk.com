@@ -865,7 +865,6 @@ module nts.uk.ui.kdp001.a {
                                 })
                             }
                         }
-                        console.log(result);
 
                         vm.stamps(result);
 
