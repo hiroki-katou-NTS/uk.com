@@ -1778,6 +1778,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 .filter(f => f.display !== 'background')
                 // map EventApi to EventRaw
                 .map(({
+                    id,
                     start,
                     end,
                     title,
@@ -1790,7 +1791,9 @@ module nts.uk.ui.at.kdw013.calendar {
                     title,
                     backgroundColor,
                     textColor,
-                    extendedProps: extendedProps as any
+                    extendedProps:{
+                        ...extendedProps,
+                        id} 
                 }));
             const mutatedEvents = () => {
                 if (ko.isObservable(events)) {
@@ -2689,19 +2692,8 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     
                     vm.params.screenA.dataChanged(true);
-                    let ids = [randomId()];
-                        event.setExtendedProp('id', ids[0]);
-                        event.remove();
-                        $caches.new(vm.calendar.addEvent(_.cloneDeep(event)));
-                        _.forEach(arg.relatedEvents, re => {
-                            let id = randomId();
-                            ids.push(id);
-                            re.setExtendedProp('id', id);
-                            re.remove();
-                            $caches.new(vm.calendar.addEvent(_.cloneDeep(re)));
-                        });
-                    
                     mutatedEvents();
+                    let ids = [].concat(event.id, _.map(arg.relatedEvents, re => re.id));              
 
                         const getFrameNos = (events) => {
                             const vm = this;
