@@ -279,6 +279,7 @@ module nts.uk.at.view.kdw001.f {
             objectPeriod: ObjectPeriod;
             calExecutionSetInfoID :string;
             numberPersonErr : number;
+            executionTypeName : string;
         }
 
         export interface IExecutionTime {
@@ -359,6 +360,7 @@ module nts.uk.at.view.kdw001.f {
             objectPeriod: ObjectPeriod;
             calExecutionSetInfoID :string;
             numberPersonErr : number;
+            executionTypeName : string;
             constructor(data: IExecutionLog) {
                 this.empCalAndSumExecLogID = data.empCalAndSumExecLogID;
                 this.executionContent = data.executionContent;
@@ -370,6 +372,7 @@ module nts.uk.at.view.kdw001.f {
                 this.objectPeriod = data.objectPeriod;
                 this.calExecutionSetInfoID = data.calExecutionSetInfoID;
                 this.numberPersonErr = data.numberPersonErr;
+                this.executionTypeName = data.executionTypeName;
             }
         }//end class ExecutionLog
         

@@ -82,73 +82,23 @@
 									<td><span data-bind="text: $data.executionContentName"></span></td>
 									<!-- I2_14 -->
 									<td>
-										<com:ko-if bind="$data.executionContent == 0">
-											<span data-bind="text: $data.dailyCreationSetInfo.executionTypeName"></span>
-										</com:ko-if>
-										<com:ko-if bind="$data.executionContent == 1">
-											<span data-bind="text: $data.dailyCalSetInfo.executionTypeName"></span>
-										</com:ko-if>
-										<com:ko-if bind="$data.executionContent == 2">
-											<span data-bind="text: $data.reflectApprovalSetInfo.executionTypeName"></span>
-										</com:ko-if>
-										<com:ko-if bind="$data.executionContent == 3">
-											<span data-bind="text: $data.monlyAggregationSetInfo.executionTypeName"></span>
-										</com:ko-if>
+                    <span data-bind="text: $data.executionTypeName"></span>
 									</td>
 									<!-- I2_15 o day -->
 									<td>
 										<com:ko-if bind="$data.executionContent == 0">
 										
-											<com:ko-if bind="$data.dailyCreationSetInfo.executionType == 1">
-												<com:ko-if bind="$data.dailyCreationSetInfo.creationType == 0">
+											<com:ko-if bind="$data.executionType == 1">
+												<com:ko-if bind="$data.creationType == 0">
 													<span>#{i18n.getText('KDW001_56')}</span>
 												</com:ko-if>
 												
-												<com:ko-if bind="$data.dailyCreationSetInfo.creationType == 1">
+												<com:ko-if bind="$data.creationType == 1">
 													<span>#{i18n.getText('KDW001_57')}</span>
 												</com:ko-if><br />
 												
-												<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification !== null">
-													<!-- 1 -->
-													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.calculationClassificationResetting == true">
-														<span>#{i18n.getText('KDW001_94')}</span><br />
-													</com:ko-if>
-													<!-- 2 -->
-													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.closedHolidays == true">
-														<span>#{i18n.getText('KDW001_98')}</span><br />
-													</com:ko-if>
-													<!-- 3 -->
-													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.masterReconfiguration == true">
-														<span>#{i18n.getText('KDW001_96')}</span><br />
-													</com:ko-if>
-													<!-- 4 -->
-													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.reflectsTheNumberOfFingerprintChecks == true">
-														<span>#{i18n.getText('KDW001_101')}</span><br />
-													</com:ko-if>
-													<!-- 5 -->
-													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.resetTimeAssignment == true">
-														<span>#{i18n.getText('KDW001_100')}</span><br />
-													</com:ko-if>
-													<!-- 6 -->
-													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.resetTimeChildOrNurseCare == true">
-														<span>#{i18n.getText('KDW001_97')}</span><br />
-													</com:ko-if>
-													<!-- 7 -->
-													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.resettingWorkingHours == true">
-														<span>#{i18n.getText('KDW001_99')}</span><br />
-													</com:ko-if>
-													<!-- 8 -->
-													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.specificDateClassificationResetting == true">
-														<span>#{i18n.getText('KDW001_95')}</span>
-													</com:ko-if>
-												</com:ko-if>
 											</com:ko-if>
 											
-										</com:ko-if>
-										<com:ko-if bind="$data.executionContent == 2">
-											<com:ko-if bind="$data.reflectApprovalSetInfo.forciblyReflect == true">
-												<span>#{i18n.getText('KDW001_102')}</span>
-											</com:ko-if>
 										</com:ko-if>
 										
 									</td>

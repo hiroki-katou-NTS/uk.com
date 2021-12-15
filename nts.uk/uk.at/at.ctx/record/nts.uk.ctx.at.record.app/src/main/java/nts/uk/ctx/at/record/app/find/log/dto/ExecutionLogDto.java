@@ -57,7 +57,9 @@ public class ExecutionLogDto {
 	/**
      * 実行種別
      */
-    public Integer executionType;
+    private Integer executionType;
+    
+    private String executionTypeName;
 
 	public static ExecutionLogDto fromDomain(ExecutionLog domain) {
 		ExecutionLogDto data = new ExecutionLogDto(domain.getEmpCalAndSumExecLogID(),
@@ -66,7 +68,7 @@ public class ExecutionLogDto {
 				new ExecutionTime(domain.getExecutionTime().getStartTime(), domain.getExecutionTime().getEndTime()),
 				domain.getProcessStatus().value,
 				(domain.getObjectPeriod()!=null && domain.getObjectPeriod().isPresent())? new ObjectPeriod(domain.getObjectPeriod().get().getStartDate(), domain.getObjectPeriod().get().getEndDate()):null,
-				domain.getExecutionType().value);
+				domain.getExecutionType().value, domain.getExecutionType().nameId);
 		return data;
 	}
 
