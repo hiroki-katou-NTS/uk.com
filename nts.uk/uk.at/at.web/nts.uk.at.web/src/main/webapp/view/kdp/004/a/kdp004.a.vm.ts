@@ -280,7 +280,7 @@ module nts.uk.at.view.kdp004.a {
 				const vm = new ko.ViewModel();
 				vm.$date.interval(100);
 				setTimeout(() => {
-					vm.$date.interval(3600000);
+					vm.$date.interval( param * 60000);
 				}, 1000);
 				if (param > 0) {
 					setInterval(() => {
