@@ -3460,20 +3460,21 @@ module nts.uk.ui.at.kdw013.calendar {
                                     const brBeforeTime = breakOfDay.breakTimes[j - 1];
                                     let end = cbh.end;
                                     let start = cbh.start;
-                                    if (brTime.end < end) {
-                                        bhs.push({
-                                            daysOfWeek: [cbh.dayOfWeek],
-                                            startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
-                                            endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
-                                            },
+                                    if (brTime.end < end && brTime.end > start) {
+                                        bhs.push(
                                             {
                                                 daysOfWeek: [cbh.dayOfWeek],
                                                 startTime: formatTime(brTime.end, false),
                                                 endTime: formatTime(end, false)
+                                            },
+                                            {
+                                            daysOfWeek: [cbh.dayOfWeek],
+                                            startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
+                                            endTime: !brBeforeTime ?  formatTime(brTime.start, false) : formatTime(brTime.start, false)
                                             }
                                         );
                                     } else {
-                                        if (!_.find(bhs, ['daysOfWeek', cbh.dayOfWeek])) {
+                                        if (!_.find(bhs, bh => bh.daysOfWeek.indexOf(cbh.dayOfWeek) != -1)) {
                                             bhs.push({
                                                 daysOfWeek: [cbh.dayOfWeek],
                                                 startTime: formatTime(start, false),
