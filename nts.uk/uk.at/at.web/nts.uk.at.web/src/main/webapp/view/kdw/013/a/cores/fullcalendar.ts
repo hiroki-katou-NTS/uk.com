@@ -1500,9 +1500,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                             } else {
                                                 vm.calendar.changeView('timeGridDay');
                                             }
-                                            const sc = ko.unwrap(scrollTime);
-
-                                            vm.calendar.scrollToTime(formatTime(sc));
+                                            
                                         }
                                     });
                                       
@@ -1536,9 +1534,6 @@ module nts.uk.ui.at.kdw013.calendar {
                                 vm.calendar.changeView('timeGridWeek');
                             }
                         }
-                        const sc = ko.unwrap(scrollTime);
-
-                        vm.calendar.scrollToTime(formatTime(sc));
                     }
                 },
                 'full-week': {
@@ -1559,9 +1554,6 @@ module nts.uk.ui.at.kdw013.calendar {
                                         vm.calendar.changeView('timeGridWeek');
                                     }
                                 }
-                                const sc = ko.unwrap(scrollTime);
-
-                                vm.calendar.scrollToTime(formatTime(sc));
                             }
                         });
 
@@ -1583,9 +1575,6 @@ module nts.uk.ui.at.kdw013.calendar {
                                 vm.calendar.changeView('dayGridMonth');
                             }
                         }
-                        const sc = ko.unwrap(scrollTime);
-
-                        vm.calendar.scrollToTime(formatTime(sc));
                     }
                 },
                 'list-week': {
@@ -1608,23 +1597,6 @@ module nts.uk.ui.at.kdw013.calendar {
             };
             const customButtons: ButtonSet = {
                 'current-day': {
-                    text: vm.$i18n('今日'),
-                    click: () => {
-                        clearSelection();
-                        
-                        if (moment(initialDate()).isSame(moment(new Date()), 'day')) {
-                            return;
-                        }
-                        if (ko.isObservable(initialDate)) {
-                            initialDate(new Date());
-                        } else {
-                            vm.calendar.gotoDate(formatDate(new Date()));
-                        }
-                        const sc = ko.unwrap(scrollTime);
-                        vm.calendar.scrollToTime(formatTime(sc));
-                    }
-                },
-                'pika-day': {
                     text: vm.$i18n('今日'),
                     click: () => {
                         clearSelection();
@@ -2335,58 +2307,6 @@ module nts.uk.ui.at.kdw013.calendar {
                                         
                                     }
 
-                                    // add date picker to both next/prev button
-//                                    const dpker = $('<div>').insertAfter('.fc-preview-day-button').get(0);
-//
-//                                    if (dpker) {
-//                                        const startDate = ko.computed({
-//                                            read: () => {
-//                                                const { start } = ko.unwrap(validRange);
-//
-//                                                return start || null;
-//                                            }
-//                                        });
-//                                        const endDate = ko.computed({
-//                                            read: () => {
-//                                                const { end } = ko.unwrap(validRange);
-//
-//                                                if (end) {
-//                                                    return moment(end).subtract(1, 'day').toDate();
-//                                                }
-//
-//                                                return null;
-//                                            }
-//                                        });
-//
-//                                        const value = ko.observable(ko.unwrap(initialDate) || new Date());
-//
-//                                        value.subscribe((v: Date | null) => {
-//                                            if (ko.isObservable(initialDate)) {
-//                                                if (_.isDate(v)) {
-//                                                    if (!moment(v).isSame(ko.unwrap(initialDate), 'date')) {
-//                                                        initialDate(v);
-//                                                    }
-//                                                } else {
-//                                                    value(ko.unwrap(initialDate) || new Date());
-//                                                }
-//                                            }
-//                                        });
-//
-//                                        if (ko.isObservable(initialDate)) {
-//                                            initialDate.subscribe((d: Date | null) => {
-//                                                if (_.isDate(d)) {
-//                                                    if (!moment(d).isSame(ko.unwrap(value), 'date')) {
-//                                                        value(d);
-//                                                    }
-//                                                } else {
-//                                                    value(new Date());
-//                                                }
-//                                            });
-//                                        }
-//
-//                                        //ko.applyBindingsToNode(dpker, { ntsDatePicker: { name:vm.$i18n('KDW013_8') ,value, startDate, endDate } }, vm);
-//                                    }
-
                                     const setting = $('.fc-settings-button').get(0);
 
                                     if (setting) {
@@ -2407,6 +2327,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                 });
                         }
                     }
+                    const sc = ko.unwrap(scrollTime);
+                    vm.calendar.scrollToTime(formatTime(sc));
                 },
                 slotLabelClassNames: (arg) => {
                     let result = moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
@@ -3381,6 +3303,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     const cv = ko.unwrap<string>(computedView);
 
                     vm.calendar.changeView(cv);
+                    vm.calendar.scrollToTime(formatTime(ko.unwrap(scrollTime)));
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
@@ -3517,11 +3440,11 @@ module nts.uk.ui.at.kdw013.calendar {
                 read: () => {
                     const businessHours = ko.unwrap<BussinessHour[]>(params.businessHours);
                     if (!businessHours.length) {
-                        if (params.initialView() == 'oneDay') {
-                            vm.calendar.setOption('businessHours', true);
-                        } else {
-                            vm.calendar.setOption('businessHours', false);
-                        }
+                        vm.calendar.setOption('businessHours', {
+                                    daysOfWeek: [0,1,2,3,4,5,6],
+                                    startTime: formatTime(10, false),
+                                    endTime: formatTime(10, false)
+                                });
                         
                         //vm.updateStyle('breaktime', '');
                     } else {
@@ -3542,7 +3465,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                             daysOfWeek: [cbh.dayOfWeek],
                                             startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
                                             endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
-                                        },
+                                            },
                                             {
                                                 daysOfWeek: [cbh.dayOfWeek],
                                                 startTime: formatTime(brTime.end, false),
