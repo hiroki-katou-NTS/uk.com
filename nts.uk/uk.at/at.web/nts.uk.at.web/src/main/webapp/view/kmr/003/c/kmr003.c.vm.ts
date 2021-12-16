@@ -187,7 +187,7 @@ module nts.uk.at.kmr003.c {
 
             vm.$blockui('grayout');
             vm.$ajax(API.register, command).done((res: any) => {
-                vm.$dialog.info("Msg_15").then(() => {
+                vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
                     nts.uk.ui.windows.setShared("STATUSC", "DONE");
                     vm.$window.close();
                 });
