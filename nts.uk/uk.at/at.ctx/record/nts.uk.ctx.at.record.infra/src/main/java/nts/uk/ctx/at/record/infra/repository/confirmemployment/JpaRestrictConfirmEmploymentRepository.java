@@ -27,7 +27,7 @@ public class JpaRestrictConfirmEmploymentRepository extends JpaRepository implem
 				.getSingle(rec -> {
 					return new RestrictConfirmEmployment(
 							rec.getString("CID"), 
-							rec.getInt("USAGE_ATR") == 0 ? false : true);
+							rec.getBoolean("USAGE_ATR"));
 		});
 	}
 
