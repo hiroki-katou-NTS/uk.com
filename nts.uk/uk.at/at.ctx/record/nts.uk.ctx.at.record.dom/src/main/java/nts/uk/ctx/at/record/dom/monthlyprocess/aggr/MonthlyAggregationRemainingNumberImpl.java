@@ -340,7 +340,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 			// ReserveLeaveUndigestedNumber();
 
 			ReserveLeaveRemainingDayNumber undigested = asOfStartNextDayOfPeriodEnd.getRemainingNumber()
-					.getＲeserveLeaveUndigestedNumber().getUndigestedDays();
+					.getReserveLeaveUndigestedNumber().getUndigestedDays();
 			// Optional<LeaveUndigestTime> minutes =
 			// asOfStartNextDayOfPeriodEnd.getRemainingNumber().getAnnualLeaveUndigestNumber().get().getMinutes();
 
