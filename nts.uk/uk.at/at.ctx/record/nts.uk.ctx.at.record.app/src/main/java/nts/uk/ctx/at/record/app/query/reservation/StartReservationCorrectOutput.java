@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.record.app.command.reservation.bento.RegisterErrorMessage;
 
 
 /**
@@ -28,4 +29,6 @@ public class StartReservationCorrectOutput {
     public Map<String, BentoReservationWithFlag> bentoReservation = new HashMap<String, BentoReservationWithFlag>();
     
     public Map<String, String> stampMap = new HashMap<String, String>();
+    
+    public List<RegisterErrorMessage> exceptions = new ArrayList<RegisterErrorMessage>();
 }

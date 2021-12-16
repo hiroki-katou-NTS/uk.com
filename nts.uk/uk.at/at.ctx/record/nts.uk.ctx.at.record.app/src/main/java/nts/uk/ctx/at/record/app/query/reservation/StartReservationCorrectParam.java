@@ -31,6 +31,11 @@ public class StartReservationCorrectParam {
     public int frameNo;
     
     /**
+     * 受付名称
+     */
+    public String frameName;
+    
+    /**
      * 抽出条件
      */
     public int extractCondition;

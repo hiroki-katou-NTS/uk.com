@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.query.reservation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +12,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BundledBusinessException;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.app.command.reservation.bento.RegisterErrorMessage;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
@@ -54,7 +58,9 @@ public class StartNewReservationQuery {
      * @param frameNo 枠NO
      * @param employeeIds List＜社員ID＞
      */
-    public StartReservationCorrectOutput startNewReservation(GeneralDate correctionDate, int frameNo, List<String> employeeIds) {
+    public StartReservationCorrectOutput startNewReservation(GeneralDate correctionDate, int frameNo, String frameName, List<String> employeeIds) {
+        List<RegisterErrorMessage> listErrors = new ArrayList<RegisterErrorMessage>();
+        
         // 1: get(会社ID＝ログイン会社ID,期間，開始日＜＝注文日＜＝期間．終了日)
         Optional<BentoMenuHistory> yokakuHistOpt = bentoMenuHistoryRepository.findByCompanyDate(AppContexts.user().companyId(), correctionDate);
         
@@ -70,6 +76,13 @@ public class StartNewReservationQuery {
         
         // 3: 社員IDから打刻カード番号を取得(社員ID＝Input．社員一覧)
         Map<String, StampNumber> stampCards = getStampCardQuery.getStampNumberBy(employeeIds);
+        
+        employeeIds.forEach(x -> {
+            if (!stampCards.containsKey(x)) {
+                PersonEmpBasicInfoImport empInfo = listPersonEmp.stream().filter(y -> y.getEmployeeId().equals(x)).findFirst().get();
+                listErrors.add(new RegisterErrorMessage("Msg_2259", Arrays.asList(empInfo.getEmployeeCode() + " " + empInfo.getBusinessName())));
+            }
+        });
         
         // 4: 全て予約内容を取得(打刻カード一覧=取得した打刻カード番号,対象日=Input．注文日,  受付時間帯NO＝Input．受付時間帯NO,勤務場所コード＝Empty): 弁当予約
         List<BentoReservation> bentoReservations = bentoReservationRepository.getAllReservationDetail(
@@ -87,11 +100,16 @@ public class StartNewReservationQuery {
                                                                 .isPresent();
                                                     }).collect(Collectors.toList());
         
+        if (listEmpOutput.isEmpty()) {
+            throw new BusinessException("Msg_2282", correctionDate.toString(), frameName);
+        }
+        
         return new StartReservationCorrectOutput(
                 menus.stream().map(x -> BentoDto.fromDomain(x)).collect(Collectors.toList()), 
                 listEmpOutput.stream().map(x -> PersonEmpBasicInfoImportDto.fromDomain(x)).collect(Collectors.toList()), 
                 new HashMap<String, BentoReservationWithFlag>(), 
-                stampCards.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().v())));
+                stampCards.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().v())), 
+                listErrors);
     }
 
 }

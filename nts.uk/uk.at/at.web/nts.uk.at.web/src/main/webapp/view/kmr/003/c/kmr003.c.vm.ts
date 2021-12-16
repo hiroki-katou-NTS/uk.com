@@ -9,6 +9,7 @@ module nts.uk.at.kmr003.c {
         gridOptions: any = { dataSource: [], columns: [], features: [], ntsControls: [] };
         stampMap: any;
         hasErrorsGrid: KnockoutObservable<boolean> = ko.observable(false);
+        errorList: any[] = [];
 
         created(param: any) {
             const vm = this;
@@ -23,15 +24,25 @@ module nts.uk.at.kmr003.c {
                 let params = {
                     correctionDate: vm.date(), 
                     frameNo: vm.frameNo, 
+                    frameName: param.receptionHour.receptionName, 
                     employeeIds: vm.empIds
                 }
 
                 vm.$blockui('show');
                 vm.$ajax(API.startNewReservation, params).done((res: any) => {
                     if (res) {
+                        vm.errorList = res.exceptions;
                         vm.stampMap = res.stampMap;
                         vm.convertToGridData(res);
                         vm.bindGrid();
+                        let errors: any[] = [];
+                        _.forEach(vm.errorList, (x: any) => {
+                            let message = vm.$i18n.message(x.messageId, x.params);
+                            errors.push({ message: message, messageId: x.messageId, supplements: {} });
+                        })
+                        nts.uk.ui.dialog.bundledErrors({
+                            errors: errors
+                        })
                     }
                 }).fail((error: any) => {
                     if (error) {

@@ -16,6 +16,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.clock.ClockHourMinute;
+import nts.uk.ctx.at.record.app.command.reservation.bento.RegisterErrorMessage;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
@@ -154,6 +155,7 @@ public class StartReservationCorrectQuery {
                 menus.stream().map(x -> BentoDto.fromDomain(x)).collect(Collectors.toList()), 
                 listPersonEmp.stream().map(x -> PersonEmpBasicInfoImportDto.fromDomain(x)).collect(Collectors.toList()), 
                 bentoReservationMap, 
-                stampCards.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().v())));
+                stampCards.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().v())), 
+                new ArrayList<RegisterErrorMessage>());
     }
 }

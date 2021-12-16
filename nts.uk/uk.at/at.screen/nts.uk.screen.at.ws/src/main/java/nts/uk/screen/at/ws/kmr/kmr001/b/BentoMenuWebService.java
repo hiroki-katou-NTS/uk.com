@@ -110,6 +110,7 @@ public class BentoMenuWebService extends WebService{
         return startNewReservationQuery.startNewReservation(
                 GeneralDate.fromString(param.getCorrectionDate(), "yyyy/MM/dd"), 
                 param.getFrameNo(), 
+                param.getFrameName(), 
                 param.getEmployeeIds());
     }
     
