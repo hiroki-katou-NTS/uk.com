@@ -137,27 +137,27 @@ module nts.uk.ui.at.kdw013.timeheader {
         }
         
         isHasWarning(date) {
-            const vm = this;
-            const datas = ko.unwrap(vm.params.screenA.$datas);
+            let vm = this;
+            let datas = ko.unwrap(vm.params.screenA.$datas);
 
             if (!datas) {
                 return false;
             }
 
-            const manHrTask = _.find(_.get(datas, 'dailyManHrTasks', []), hr => { return moment(hr.date).isSame(moment(date), 'days'); });
+            let manHrTask = _.find(_.get(datas, 'dailyManHrTasks', []), hr => { return moment(hr.date).isSame(moment(date), 'days'); });
 
-            const id = _.find(_.get(datas, 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days'); });
+            let id = _.find(_.get(datas, 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days'); });
 
-            const ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
+            let ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
 
-            const taskBlocks = _.get(manHrTask, 'taskBlocks', []);
+            let taskBlocks = _.get(manHrTask, 'taskBlocks', []);
 
             if (!id || !ouenTimeSheet.length) {
                 return false;
             }
 
             for (let i = 0; i < ouenTimeSheet.length; i++) {
-                const workNo = _.get(ouenTimeSheet[i], 'workNo');
+                let workNo = _.get(ouenTimeSheet[i], 'workNo');
                 
                 if (!_.find(taskBlocks, tb => _.find(tb.taskDetails, ['supNo', workNo]))) {
                     return true;
