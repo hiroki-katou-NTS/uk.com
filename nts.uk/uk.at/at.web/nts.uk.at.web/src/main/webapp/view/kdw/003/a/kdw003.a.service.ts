@@ -21,7 +21,8 @@ module nts.uk.at.view.kdw003.a.service {
         lock: 'screen/at/correctionofdailyperformance/lock',
         loadMonth: "screen/at/correctionofdailyperformance/loadMonth",
         initParam: "screen/at/correctionofdailyperformance/initParam",
-        genDate: "screen/at/correctionofdailyperformance/gendate"
+        genDate: "screen/at/correctionofdailyperformance/gendate", 
+        findWplIDByCode: "screen/at/correctionofdailyperformance/findWplIDByCode"
     }
 
     export function startScreen(param) {
@@ -46,6 +47,10 @@ module nts.uk.at.view.kdw003.a.service {
 
     export function findAllCodeName(param) {
         return nts.uk.request.ajax(paths.findAllCodeName, param);
+    }
+
+    export function findWplIDByCode(param) {
+        return nts.uk.request.ajax(paths.findWplIDByCode, param);
     }
 
     export function addAndUpdate(param) {
@@ -80,8 +85,8 @@ module nts.uk.at.view.kdw003.a.service {
         return nts.uk.request.ajax(paths.getNameMonthlyAttItem, data);
     }
 
-    export function searchEmployee(employeeId: string) {
-        return nts.uk.request.ajax(paths.searchEmployee + "/" + employeeId);
+    export function searchEmployee(employeeCode: string) {
+        return nts.uk.request.ajax(paths.searchEmployee + "/" + employeeCode);
     }
 
     export function calcTime(param: any) {

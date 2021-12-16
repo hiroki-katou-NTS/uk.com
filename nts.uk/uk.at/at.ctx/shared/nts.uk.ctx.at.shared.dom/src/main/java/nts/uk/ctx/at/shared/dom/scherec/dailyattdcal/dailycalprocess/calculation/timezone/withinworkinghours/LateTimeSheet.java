@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidayprio
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.ootsuka.OotsukaStaticService;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -31,6 +33,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * 遅刻時間帯
  * @author keisuke_hoshina
  */
+@AllArgsConstructor
 @Getter
 public class LateTimeSheet {
 	
@@ -327,23 +330,30 @@ public class LateTimeSheet {
 	 * 遅刻計上時間の計算
 	 * @param late 計算区分
 	 * @param deductOffset 相殺時間控除区分
+	 * @param roundAtr 丸めを行う
 	 * @return 遅刻計上時間
 	 */
-	public TimeWithCalculation calcForRecordTime(boolean late, boolean deductOffset){
+	public TimeWithCalculation calcForRecordTime(boolean late, boolean deductOffset, NotUseAtr roundAtr){
 		//遅刻時間の計算
 		AttendanceTime calcforRecordTime = AttendanceTime.ZERO;
-		if(this.forRecordTimeSheet.isPresent()) {
-			calcforRecordTime = this.forRecordTimeSheet.get().calcTotalTime(
-					deductOffset ? NotUseAtr.USE : NotUseAtr.NOT_USE, NotUseAtr.USE);
+		//遅刻時間←0：00
+		AttendanceTime lateTimeForRecord = AttendanceTime.ZERO;
+		if (!this.forRecordTimeSheet.isPresent()) {
+			return TimeWithCalculation.createTimeWithCalculation(lateTimeForRecord, calcforRecordTime);
 		}
+		// 計算区分を取得
+		if (late) {
+			// 遅刻時間の計算
+			lateTimeForRecord = this.forRecordTimeSheet.get()
+					.calcTotalTime(deductOffset ? NotUseAtr.USE : NotUseAtr.NOT_USE, roundAtr);
+		}
+
+		// 計算遅刻時間の計算
+		calcforRecordTime = this.forRecordTimeSheet.get().calcTotalTime(NotUseAtr.NOT_USE, roundAtr);
 		
-		//インターバル免除時間を控除する
+		// インターバル免除時間を控除する
+		return TimeWithCalculation.createTimeWithCalculation(lateTimeForRecord, calcforRecordTime);
 		
-		//遅刻計上時間の作成
-		TimeWithCalculation lateTime = late ?
-				TimeWithCalculation.sameTime(calcforRecordTime) :
-					TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0), calcforRecordTime);	
-		return lateTime;
 	}
 	
 	/**
@@ -392,5 +402,29 @@ public class LateTimeSheet {
 		// 相殺する
 		timeVacationUseTime = this.getDecitionTimeSheet(deductionAtr).get().offsetProcess(
 				companyholidayPriorityOrder, timeVacationUseTime, NotUseAtr.NOT_USE);
+	}
+	
+	/**
+	 * 重複する時間帯で作り直す
+	 * @param timeSpan 時間帯
+	 * @param deductionTimeSheet 控除時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 遅刻時間帯
+	 */
+	public Optional<LateTimeSheet> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, DeductionTimeSheet deductionTimeSheet, WorkTimezoneCommonSet commonSet) {
+		//計上用時間帯を変更する
+		Optional<LateLeaveEarlyTimeSheet> record = this.forRecordTimeSheet.flatMap(
+				r -> r.recreateWithDuplicate(timeSpan, ActualWorkTimeSheetAtrForLate.Late, deductionTimeSheet, commonSet));
+		//控除用時間帯を変更する
+		Optional<LateLeaveEarlyTimeSheet> deducation = this.forDeducationTimeSheet.flatMap(
+				d -> d.recreateWithDuplicate(timeSpan, ActualWorkTimeSheetAtrForLate.Late, deductionTimeSheet, commonSet));
+		if(!record.isPresent() && !deducation.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.of(new LateTimeSheet(
+				record,
+				deducation,
+				this.workNo,
+				this.noCoreFlexLateTime.map(n -> new AttendanceTime(n.valueAsMinutes()))));
 	}
 }

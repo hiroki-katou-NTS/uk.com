@@ -48,9 +48,10 @@ public class CorrectWorkSchedule {
 		
 		CalAttrOfDailyAttd calAttrOfDailyAttd = CalAttrOfDailyAttd.createAllCalculate();
 		IntegrationOfDaily integrationOfDaily = new IntegrationOfDaily(employeeId, targetDate, workSchedule.getWorkInfo(), calAttrOfDailyAttd, workSchedule.getAffInfo(), 
-				Optional.empty(), new ArrayList<>(), Optional.empty(), workSchedule.getLstBreakTime(), workSchedule.getOptAttendanceTime(), 
+				Optional.empty(), new ArrayList<>(), workSchedule.getOutingTime(), workSchedule.getLstBreakTime(), workSchedule.getOptAttendanceTime(), 
 				workSchedule.getOptTimeLeaving(), workSchedule.getOptSortTimeWork(), Optional.empty(), Optional.empty(), 
-				Optional.empty(), workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>(), Optional.empty());
+				Optional.empty(), workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>(), new ArrayList<>(),
+				new ArrayList<>(), Optional.empty());
 		//勤怠ルールの補正処理 
 		
 		ChangeDailyAttendance changeAtt = new ChangeDailyAttendance(true, false, false, true, ScheduleRecordClassifi.SCHEDULE, false);
@@ -108,15 +109,8 @@ public class CorrectWorkSchedule {
 		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>(integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks());
 		for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
 			// 出退勤を削除すべきかを確認する
-			// True　←　出退勤。出勤。打刻　＝　EMPTY　AND　出退勤。退勤。打刻　＝　EMPTY
-			// False　←　以外
-
-			boolean attendanceStampIsEmpty = (!timeLeavingWork.getAttendanceStamp().isPresent())
-										  || (timeLeavingWork.getAttendanceStamp().isPresent() && !timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent());
-			
-			boolean leaveStampIsEmpty = (!timeLeavingWork.getLeaveStamp().isPresent())
-					  				 || (timeLeavingWork.getLeaveStamp().isPresent() && !timeLeavingWork.getLeaveStamp().get().getStamp().isPresent());	
-			if (attendanceStampIsEmpty == true && leaveStampIsEmpty == true) {
+			if (!timeLeavingWork.existsTimeWithDay()) {
+				// 出勤時刻と退勤時刻が両方空だった場合
 				// 処理中の出退勤を削除する
 				integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().remove(timeLeavingWork);
 			}

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
@@ -77,7 +78,7 @@ public class SpcVacationDaysOfMonthly implements Serializable{
 	 * @param predTimeSetOnWeekday 所定時間設定（平日時）
 	 */
 	public void aggregate(Require require, String cid, String sid, GeneralDate ymd, WorkingSystem workingSystem,
-			WorkType workType, WorkInformation workInfo, AttendanceTimeOfDailyAttendance attendanceDaily,
+			WorkType workType, WorkInformation workInfo, Optional<AttendanceTimeOfDailyAttendance> attendanceDaily,
 			WorkTypeDaysCountTable workTypeDaysCountTable, boolean isAttendanceDay){
 
 		if (workType == null) return;
@@ -99,7 +100,7 @@ public class SpcVacationDaysOfMonthly implements Serializable{
 	
 	/** 特別休暇枠日数の集計 */
 	private void aggrateSpcVacation(Require require, String cid, String sid, GeneralDate ymd, WorkingSystem workingSystem,
-			int spcNo, WorkType workType, WorkInformation workInfo, AttendanceTimeOfDailyAttendance attendanceDaily,
+			int spcNo, WorkType workType, WorkInformation workInfo, Optional<AttendanceTimeOfDailyAttendance> attendanceDaily,
 			WorkTypeDaysCountTable workTypeDaysCountTable, boolean isAttendanceDay, AggregateSpcVacationDays aggrSpcVacationDays) {
 		
 		this.spcVacationDaysList.putIfAbsent(spcNo, new AggregateSpcVacationDays(spcNo));
@@ -123,7 +124,7 @@ public class SpcVacationDaysOfMonthly implements Serializable{
 	
 	/** 枠時間の集計 */
 	private int aggrTime(Require require, String cid, String sid, GeneralDate ymd, Double spcDays,
-			WorkInformation workInfo, int spcNo, AttendanceTimeOfDailyAttendance attendanceDaily) {
+			WorkInformation workInfo, int spcNo, Optional<AttendanceTimeOfDailyAttendance> attendanceDaily) {
 		
 		/** ○INPUT．発生日数を確認する */
 		if (spcDays <= 0) {
@@ -138,6 +139,22 @@ public class SpcVacationDaysOfMonthly implements Serializable{
 	public static interface Require extends SpcVacationUseTimeCalc.Require {
 		
 	}
+	
+	/** 特別休暇合計日数の再集計 */
+	public void recalcTotal() {
+		
+		this.totalSpcVacationDays = new AttendanceDaysMonth(0d);
+		this.totalSpcVacationTime = new AttendanceTimeMonth(0);
+		
+		/** ○特別休暇日数を取得 */
+		for (val spe : this.spcVacationDaysList.entrySet()) {
+			
+			/** ○日数、時間を累計 */
+			this.totalSpcVacationDays = this.totalSpcVacationDays.addDays(spe.getValue().getDays().v());
+			this.totalSpcVacationTime = this.totalSpcVacationTime.addMinutes(spe.getValue().getTime().valueAsMinutes());
+		}
+	}
+	
 	
 	/**
 	 * 合算する

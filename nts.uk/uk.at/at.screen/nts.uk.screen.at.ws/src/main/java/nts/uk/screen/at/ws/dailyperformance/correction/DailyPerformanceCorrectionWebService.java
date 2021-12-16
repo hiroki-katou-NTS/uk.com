@@ -23,16 +23,21 @@ import javax.ws.rs.Produces;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
-import nts.arc.enums.EnumConstant;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.web.session.HttpSubSession;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceAuthoritySetting;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.MonthlyPerfomanceAuthorityFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
+import nts.uk.ctx.bs.employee.dom.employee.service.SearchEmployeeService;
+import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeSearchData;
+import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeSearchDto;
+
 import nts.uk.screen.at.app.dailymodify.command.DailyCalculationRCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
@@ -58,6 +63,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErAlWorkRecordShortDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.GetWkpIDOutput;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.GetWkpIDParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.HolidayRemainNumberDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTime;
@@ -83,11 +90,9 @@ import nts.uk.screen.at.app.dailyperformance.correction.mobile.DPCorrectionProce
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.MonthParamInit;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ProcessMonthScreen;
-import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.DPEmployeeSearchData;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindEmployeeBase;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -168,6 +173,12 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private DPCorrectionProcessorMob dpCorrectionProcessorMob;
+	
+	@Inject
+	private WorkplacePub workplacePub;
+
+	@Inject
+	private SearchEmployeeService searchEmployeeService;
 	
 	@POST
 	@Path("startScreen")
@@ -290,10 +301,10 @@ public class DailyPerformanceCorrectionWebService {
 				: (Optional<MonthlyRecordWorkDto>) objectCacheMonth;
 		dataParent.setDomainMonthOpt(domainMonthOpt);
 		DataResultAfterIU dataResultAfterIU =  dailyModifyRCommandFacade.insertItemDomain(dataParent);
-		//TODO: set cache month
-		if(dataResultAfterIU.getDomainMonthOpt().isPresent()) {
-			session.setAttribute("domainMonths", dataResultAfterIU.getDomainMonthOpt());
-		}
+//		//TODO: set cache month
+//		if(dataResultAfterIU.getDomainMonthOpt().isPresent()) {
+			session.setAttribute("domainMonths", null);
+//		}
 
 		session.setAttribute("lstSidDateErrorCalc", dataResultAfterIU.getLstSidDateDomainError());
 		session.setAttribute("errorAllCalc", dataResultAfterIU.isErrorAllSidDate());
@@ -436,9 +447,13 @@ public class DailyPerformanceCorrectionWebService {
 	
 
 	@POST
-	@Path("get-info/{employeeId}")
-	public DPEmployeeSearchData getInfo(@PathParam(value = "employeeId") String employeeId) {
-		return findEmployeeBase.findInAllEmployee(employeeId, GeneralDate.today(), AppContexts.user().companyId()).orElse(null);
+	@Path("get-info/{employeeCode}")
+	public EmployeeSearchData getInfo(@PathParam(value = "employeeCode") String employeeCode) {
+		EmployeeSearchDto dto = new EmployeeSearchDto();
+		dto.setBaseDate(GeneralDate.today());
+		dto.setSystem("1");
+		dto.setEmployeeCode(employeeCode);
+		return this.searchEmployeeService.searchByCode(dto);
 	}
 	
 	@POST
@@ -540,14 +555,14 @@ public class DailyPerformanceCorrectionWebService {
 				errorParam.getEmployeeIDLst(), 
 				errorParam.getAttendanceItemID());
 	}
-	
+
 	@POST
 	@Path("getMasterDialogMob")
 	public Map<Integer, List<CodeName>> getMasterDialog(MasterDialogParam masterDialogParam) {
 		String companyID = AppContexts.user().companyId();
 		Map<Integer, Map<String, CodeName>> allMasterData = dialogProcessor.getAllCodeNameWT(
 				masterDialogParam.getTypes(),
-				companyID,
+				companyID,				
 				masterDialogParam.getEmployeeID(),
 				masterDialogParam.getWorkTypeCD(),
 				masterDialogParam.getDate());
@@ -555,8 +570,41 @@ public class DailyPerformanceCorrectionWebService {
 	}
 	
 	@POST
+	@Path("getMasterTaskSupMob")
+	public Map<Integer, List<CodeName>> getMasterTaskSup(MasterDialogParam masterDialogParam) {
+		Map<Integer, Map<String, CodeName>> allMasterData = dialogProcessor.getAllCodeNameByItemId(				
+				masterDialogParam.getDate(), 
+				masterDialogParam.getItemIds());
+		return allMasterData.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new ArrayList<CodeName>(entry.getValue().values())));
+	}
+
+	
+	@POST
 	@Path("getPrimitiveAll")
 	public Map<Integer, String> getPrimitiveAll() {
 		return DPHeaderDto.getPrimitiveAll();
+	}
+	
+	@SuppressWarnings("unchecked")
+    @POST
+	@Path("findWplIDByCode")
+	public GetWkpIDOutput findWplIDByCode(GetWkpIDParam param) {
+	    val domain  = session.getAttribute("domainEdits");
+        List<DailyRecordDto> dailyEdits = new ArrayList<>();
+        if(domain == null){
+            dailyEdits = cloneListDto((List<DailyRecordDto>) session.getAttribute("domainOlds"));
+        }else{
+            dailyEdits = (List<DailyRecordDto>) domain;
+        }
+        
+        Optional<DailyRecordDto> dailyEditOpt = dailyEdits.stream().filter(x -> {
+            return x.getDate().toString("yyyy/MM/dd").equals(param.getBaseDate());
+        }).findFirst();
+        
+        return new GetWkpIDOutput(dailyEditOpt.map(x -> x.getAffiliationInfo().getWorkplaceID()).orElse(null));
+//	    return new GetWkpIDOutput(workplacePub.getWkpNewByCdDate(
+//	            param.getCompanyId(), 
+//	            param.getWkpCode(), 
+//	            GeneralDate.fromString(param.baseDate, "yyyy/MM/dd")).orElse(null));
 	}
 }

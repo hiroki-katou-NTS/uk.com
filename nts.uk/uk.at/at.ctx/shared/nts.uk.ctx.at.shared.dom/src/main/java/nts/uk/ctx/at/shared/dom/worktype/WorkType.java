@@ -88,9 +88,11 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 		}
 	}
 	
-	
-	/** 取得したドメインモデル「勤務種類．一日の勤務．一日」をチェックする */
-	public boolean isWokingDay() {
+	/**
+	 * 出勤系かどうか判断
+	 * @return true:出勤系,false:出勤系でない
+	 */
+	public boolean isWorkingDay() {
 		if(dailyWork == null) { return false; }
 		if (dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
 			return isWorkingType(dailyWork.getOneDay());
@@ -98,12 +100,17 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 		return isWorkingType(dailyWork.getMorning()) || isWorkingType(dailyWork.getAfternoon());
 	}
 
-	/** 出勤系かチェックする　*/
+	/**
+	 * 出勤系分類かどうか判断
+	 * @param wt 勤務種類の分類
+	 * @return true:出勤系分類,false:出勤系分類でない
+	 */
 	private boolean isWorkingType(WorkTypeClassification wt) {
 		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting 
 				|| wt == WorkTypeClassification.HolidayWork;
 	}
 	
+	/** [6] 計算時に就業時間帯が不要かどうか判断する */
 	public boolean isNoneWorkTimeType(){
 		if (dailyWork != null && dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
 			return isNoneWorkTimeType(dailyWork.getOneDay());
@@ -320,6 +327,7 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 	 *
 	 * @return the work type set
 	 */
+	//勤務種類設定を取得する
 	public WorkTypeSet getWorkTypeSet() {
 		// 1日
 		if (this.isOneDay()) {
@@ -546,7 +554,7 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 	}
 	
 	/**
-	 * 休出かどうかの判断
+	 * 休日出勤かどうか判断する
 	 * @return true=休出,false=休出ではない
 	 */
 	public boolean isHolidayWork(){
@@ -631,4 +639,61 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 		
 		return Optional.empty();
 	}
+	
+	/** [5] 指定の分類の1日午前午後区分を取得 */
+	public Optional<WorkAtr> getWorkAtrForWorkTypeClassification(WorkTypeClassification clas) {
+		
+		/** if @1日の勤務.勤務区分 = １日 and @1日の勤務.1日 = 勤務種類の分類 */
+		if (isOneDay() && dailyWork.getOneDay() == clas)
+			return Optional.of(WorkAtr.OneDay);
+		
+		/** if @1日の勤務.勤務区分 = 午前と午後 */
+		if (!isOneDay()) {
+			
+			/** if @1日の勤務.午前 = 勤務種類の分類 and @1日の勤務.午後 = 勤務種類の分類 */
+			if (dailyWork.getAfternoon() == clas && dailyWork.getMorning() == clas)
+				return Optional.of(WorkAtr.OneDay);
+				
+			/** if @1日の勤務.午前 = 勤務種類の分類 */
+			if (dailyWork.getMorning() == clas)
+				return Optional.of(WorkAtr.Monring);
+			
+			/** if @1日の勤務.午後 = 勤務種類の分類 */
+			if (dailyWork.getAfternoon() == clas)
+				return Optional.of(WorkAtr.Afternoon);
+		}
+		
+		return Optional.empty();
+	}
+	
+	//[10] 代休が発生する勤務種類かどうか判断する
+	public boolean isSubstituteHolidayOccurs() {
+		WorkStyle style = this.checkWorkDay();
+		if(style.equals(WorkStyle.ONE_DAY_REST))
+			return false;
+		
+		if(this.isHolidayWork())
+			return this.getWorkTypeSet().getGenSubHodiday().isCheck();
+		
+		return true;
+	}
+
+	/**
+	 * 出勤時刻自動セットであるか
+	 * @return
+	 */
+	public boolean isAttendanceTimeAutoSet() {
+		return this.workTypeSetList.stream().anyMatch( 
+				workTimeSetting -> workTimeSetting.getAttendanceTime() == WorkTypeSetCheck.CHECK);
+	}
+	
+	/**
+	 * 退勤時刻自動セットであるか
+	 * @return
+	 */
+	public boolean isLeaveTimeAutoSet() {
+		return this.workTypeSetList.stream().anyMatch(
+				workTimeSetting -> workTimeSetting.getTimeLeaveWork() == WorkTypeSetCheck.CHECK);
+	}
+	
 }
