@@ -608,14 +608,15 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintTime(),
 				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTimeDifferenceWorkingHours(),
 				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
-				new DivergenceTimeOfDaily(new ArrayList<>()),
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime(),
 				reCalc);
 
 		AttendanceTimeOfDailyAttendance reCreateAttendanceTime = new AttendanceTimeOfDailyAttendance(
 				calcResult.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily(),
 				reCreateActual,
 				calcResult.getAttendanceTimeOfDailyPerformance().get().getStayingTime(),
-				AttendanceTimeOfExistMinus.ZERO, AttendanceTimeOfExistMinus.ZERO,
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getUnEmployedTime(),
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getBudgetTimeVariance(),
 				calcResult.getAttendanceTimeOfDailyPerformance().get().getMedicalCareTime());
 		
 		calcResult.setAttendanceTimeOfDailyPerformance(Optional.of(reCreateAttendanceTime));
