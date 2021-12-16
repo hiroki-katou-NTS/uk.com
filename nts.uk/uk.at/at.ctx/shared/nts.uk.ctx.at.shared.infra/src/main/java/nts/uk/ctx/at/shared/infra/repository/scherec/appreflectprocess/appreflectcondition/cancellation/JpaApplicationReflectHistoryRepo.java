@@ -157,7 +157,7 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 	private KsrdtReflectAppHist toEntityHist(String cid, ApplicationReflectHistory dom) {
 		return new KsrdtReflectAppHist(new KsrdtReflectAppHistPK(dom.getEmployeeId(), dom.getDate(),
 				dom.getApplicationId(), dom.getClassification().value, dom.getAppExecInfo().getReflectionTime()), cid, 
-				dom.isCancellationCate() ? 1 : 0, dom.getAppExecInfo().isReReflect() ? 1 : 0, dom.getAppExecInfo().getExecId());
+				dom.isCancellationCate() ? 1 : 0, dom.getAppExecInfo().isReReflect(), dom.getAppExecInfo().getExecId());
 	}
 
 	private List<KsrdtReflectAppHistRestore> toEntityRestore(String cid, ApplicationReflectHistory dom) {
