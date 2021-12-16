@@ -914,7 +914,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
         computedTaskDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcess | null){
                 let vm =this;
-                vm.taskDragItems([]);
+                $( "#task-fav" ).html('');
                 if (datas && settings) {
                     let { tasks ,favTaskItems ,favTaskDisplayOrders } = settings;
 
@@ -2768,8 +2768,6 @@ module nts.uk.ui.at.kdw013.calendar {
                                 } else {
                                     removeList.push({ date: moment(arg.oldEvent.start).startOf('day').toDate(), supNos });
                                 }
-
-
                             });
                         }
                 },
