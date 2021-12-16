@@ -355,6 +355,11 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		public Optional<SubstituteLeaveAppReflect> findSubLeaveAppReflectByCompany(String companyId) {
 			return subLeaveAppReflectRepository.findSubLeaveAppReflectByCompany(companyId);
 		}
+
+		@Override
+		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+			return workTimeSettingRepository.findByCode(cid, workTimeCode);
+		}
 	}
 
 }

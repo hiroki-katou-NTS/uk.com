@@ -6,7 +6,6 @@ import java.util.Map;
 import nts.arc.time.calendar.period.DatePeriod;
 
 public interface ApprovalRootPub {
-	
 	/**
 	 * 就業の承認ルート未登録の社員を取得する
 	 * @param cid

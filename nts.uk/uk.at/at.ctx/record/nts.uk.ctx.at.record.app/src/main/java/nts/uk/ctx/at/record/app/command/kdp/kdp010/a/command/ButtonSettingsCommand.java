@@ -36,9 +36,9 @@ public class ButtonSettingsCommand {
 
 	public ButtonSettings toDomain() {
 		return new ButtonSettings(new ButtonPositionNo(this.buttonPositionNo), 
-				this.buttonDisSet.toDomain(),
-				this.buttonType.toDomain(), 
-				NotUseAtr.valueOf(this.usrArt), 
+				NotUseAtr.valueOf(this.usrArt),
+				this.buttonDisSet.toDomain(), 
+				this.buttonType.getStampType().toDomain(), 
 				AudioType.valueOf(this.audioType),
 				Optional.ofNullable(this.supportWplSet == null ? null: SupportWplSet.valueOf(this.supportWplSet)),
 				Optional.ofNullable(this.taskChoiceArt == null ? null: AssignmentMethod.valueOf(this.taskChoiceArt)));

@@ -1896,10 +1896,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                     return;
                                 }
 
-                                AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
-                                AggregationResult result = MonthlyAggregationEmployeeService.aggregate(require, cacheCarrier, asyContext, companyId,
-                                        item,
-                                        date.get(), execId, ExecutionType.NORMAL_EXECUTION);
+                                val asyContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
+                                AggregationResult result = MonthlyAggregationEmployeeService.aggregate(require, cacheCarrier, 
+                                		Optional.of(asyContext), companyId, item,
+                                        date.get(), execId, ExecutionType.NORMAL_EXECUTION, Optional.empty());
                                 // 中断
                                 transaction.allInOneTransaction(result.getAtomTasks());
                                 if (result.getStatus().getState().value == 0) {

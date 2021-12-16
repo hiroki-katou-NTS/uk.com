@@ -219,13 +219,6 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 	@Column(name = "REFLECTED_INTO_DATE")
 	public GeneralDate reflectedIntoDate;
 
-	/**
-	 * 打刻記録ID
-	 */
-	@Basic(optional = false)
-	@Column(name = "STAMP_RECORD_ID")
-	public String stampRecordId;
-
 	@Override
 	protected Object getKey() {
 		return this.pk;
@@ -264,8 +257,6 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		this.taskCd3 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD3().map(t -> t.v()).orElse(null)).orElse(null);
 		this.taskCd4 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD4().map(t -> t.v()).orElse(null)).orElse(null);
 		this.taskCd5 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD5().map(t -> t.v()).orElse(null)).orElse(null);
-
-		this.stampRecordId = stamp.getStampRecordId();
 		
 		// ver6,ver7
 		this.reflectedIntoDate = stamp.getImprintReflectionStatus().getReflectedDate().orElse(null);
@@ -314,8 +305,7 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 						stampNumber, 
 						this.pk.stampDateTime,
 						relieve, stampType, refectActualResult,
-						imprintReflectionState, Optional.ofNullable(geoLocation), Optional.empty(),
-						this.stampRecordId);
+						imprintReflectionState, Optional.ofNullable(geoLocation), Optional.empty());
 
 	}
 }
