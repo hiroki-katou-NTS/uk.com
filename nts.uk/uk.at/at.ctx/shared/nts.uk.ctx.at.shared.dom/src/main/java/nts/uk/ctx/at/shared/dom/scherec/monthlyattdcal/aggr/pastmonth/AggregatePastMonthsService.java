@@ -41,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flex.ConditionCal
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.ReservationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
@@ -176,10 +177,10 @@ public class AggregatePastMonthsService {
 		
 		val aggrAttendanceTimes = workConGroup.stream().map(wc -> {
 			/** 月別実績の勤怠時間を集計 */
-			val aggrResult = new AggregateAttendanceTimeValue(sid, ym, closureId, closureDate, wc.getDatePeriod());
-			val attendanceTimeWeeks = aggrResult.getAttendanceTime().aggregateAttendanceTime(createRequire(require, aggrResults), 
-					cacheCarrier, cid, wc.getDatePeriod(), wc.getWorkingConditionItem(), companySets, employeeSets, 
-					dailyWorks, monthlyOldDatas, new HashMap<>());
+			AggregateAttendanceTimeValue aggrResult = new AggregateAttendanceTimeValue(sid, ym, closureId, closureDate, wc.getDatePeriod());
+			List<AttendanceTimeOfWeekly> attendanceTimeWeeks = aggrResult.getAttendanceTime().aggregateAttendanceTime(
+					createRequire(require, aggrResults), cacheCarrier, cid, wc.getDatePeriod(), wc.getWorkingConditionItem(), 
+					companySets, employeeSets, dailyWorks, monthlyOldDatas, new HashMap<>());
 			aggrResult.getAttendanceTimeWeeks().addAll(attendanceTimeWeeks);
 			return aggrResult;
 		}).collect(Collectors.toList());
