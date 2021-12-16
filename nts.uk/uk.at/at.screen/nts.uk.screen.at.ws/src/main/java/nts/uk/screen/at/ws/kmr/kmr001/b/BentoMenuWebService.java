@@ -99,8 +99,7 @@ public class BentoMenuWebService extends WebService{
     @POST
     @Path("removeReservation")
     public List<RegisterErrorMessage> removeCorrectReservation(List<BentoReservationWithEmpCommand> param) {
-        return deleteReservationCorrectCommandHandler
-                .delete(param.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+        return deleteReservationCorrectCommandHandler.delete(param);
     }
     
     // Screen C

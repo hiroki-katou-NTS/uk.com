@@ -19,12 +19,12 @@ import nts.arc.time.clock.ClockHourMinute;
 import nts.uk.ctx.at.record.app.command.reservation.bento.RegisterErrorMessage;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationCorrect;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationCorrectNotOrder;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
-import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationOrderMngAtr;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
@@ -107,11 +107,11 @@ public class StartReservationCorrectQuery {
         
         // 5: 予約の修正の抽出条件から弁当予約を取得する(打刻カード番号, 年月日, int, 予約修正抽出条件, 勤務場所コード)
         //      (打刻カード一覧=取得した打刻カード番号, 対象日=Input.発注日, 受付時間帯NO=Input.枠NO, 予約修正抽出条件=Input.抽出条件, 勤務場所コード=Empty)
-        List<BentoReservation> bentoReservations = bentoReservationRepository.getAllReservationDetail(
+        List<BentoReservation> bentoReservations = bentoReservationRepository.findByExtractionCondition(
                 stampCards.values().stream().map(card -> new ReservationRegisterInfo(card.v())).collect(Collectors.toList()), 
                 new DatePeriod(correctionDate, correctionDate), 
-                EnumAdaptor.valueOf(frameNo, ReservationClosingTimeFrame.class), 
-                new ArrayList<WorkLocationCode>());
+                frameNo, 
+                EnumAdaptor.valueOf(extractCondition, ReservationCorrect.class));
         if (bentoReservations.isEmpty()) {
             if (setting.getCorrectionContent().getOrderMngAtr().equals(ReservationOrderMngAtr.CANNOT_MANAGE)) {
                 throw new BusinessException("Msg_2256", 

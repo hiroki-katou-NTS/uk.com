@@ -26,7 +26,7 @@ public class DeleteReservationCorrectCommandHandler {
     @Inject
     private BentoReservationRepository bentoReservationRepository;
 
-    public List<RegisterErrorMessage> delete(List<BentoReservationWithEmp> bentoReservations) {
+    public List<RegisterErrorMessage> delete(List<BentoReservationWithEmpCommand> bentoReservations) {
         List<RegisterErrorMessage> exceptions = new ArrayList<RegisterErrorMessage>();
         List<AtomTask> result = new ArrayList<AtomTask>();
         
@@ -38,13 +38,13 @@ public class DeleteReservationCorrectCommandHandler {
         bentoReservations.forEach(s -> {
             boolean flag = setting.getCorrectionContent().canEmployeeChangeReservation(
                     AppContexts.user().roles().forAttendance(), 
-                    s.getBentorReservation().getReservationDate().getDate(), 
+                    GeneralDate.fromString(s.getBentorReservation().getReservationDate(), "yyyy/MM/dd"), 
                     ClockHourMinute.now(), 
-                    s.getBentorReservation().getReservationDate().getClosingTimeFrame().value, 
+                    s.getBentorReservation().getClosingTimeFrame(), 
                     GeneralDate.today(), 
                     s.getBentorReservation().isOrdered(), 
                     setting.getReservationRecTimeZoneLst().stream()
-                        .filter(x -> x.getFrameNo().value == s.getBentorReservation().getReservationDate().getClosingTimeFrame().value)
+                        .filter(x -> x.getFrameNo().value == s.getBentorReservation().getClosingTimeFrame())
                         .findFirst().get());
             
             /**
@@ -55,14 +55,17 @@ public class DeleteReservationCorrectCommandHandler {
              */
             if (flag) {
                 result.add(AtomTask.of(() -> {
-                    bentoReservationRepository.delete(s.getBentorReservation());
+                    bentoReservationRepository.deleteByPK(
+                            s.getBentorReservation().getReservationCardNo(), 
+                            s.getBentorReservation().getReservationDate(), 
+                            s.getBentorReservation().getClosingTimeFrame());
                 }));
             } else {
                 String param0 = s.getEmployeeCode() + " " + s.getEmployeeName();
-                String param1 = s.getBentorReservation().getReservationDate().getDate().toString();
+                String param1 = s.getBentorReservation().getReservationDate();
                 
                 ReservationRecTime receptionHours = setting.getReservationRecTimeZoneLst().stream()
-                        .filter(x -> x.getFrameNo().value == s.getBentorReservation().getReservationDate().getClosingTimeFrame().value)
+                        .filter(x -> x.getFrameNo().value == s.getBentorReservation().getClosingTimeFrame())
                         .findFirst().get().getReceptionHours();
                 String param2 = receptionHours.getReceptionName().v() 
                         + " " 

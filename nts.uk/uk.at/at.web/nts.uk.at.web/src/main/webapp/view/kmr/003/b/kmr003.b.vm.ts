@@ -307,6 +307,7 @@ module nts.uk.at.kmr003.b {
                     let message = vm.$i18n.message("Msg_2297", [param]);
                     errors.push({ message: message, messageId: "Msg_2297", supplements: {} });
                 })
+                errors = _.sortBy(errors, ['message']);
                 nts.uk.ui.dialog.bundledErrors({
                     errors: errors
                 });
@@ -321,6 +322,7 @@ module nts.uk.at.kmr003.b {
                         let message = vm.$i18n.message(x.messageId, x.params);
                         errors.push({ message: message, messageId: x.messageId, supplements: {} });
                     })
+                    errors = _.sortBy(errors, ['message']);
                     nts.uk.ui.dialog.bundledErrors({
                         errors: errors
                     }).then(() => vm.startReservation());
@@ -331,7 +333,9 @@ module nts.uk.at.kmr003.b {
                 if (err) {
                     vm.$dialog.error({messageId: err.messageId, messageParams: err.parameterIds});
                 }
-            }).always(() => vm.$blockui('hide'));
+                vm.$blockui('hide')
+            })
+            // .always(() => vm.$blockui('hide'));
         }
 
         clear() {
@@ -349,6 +353,7 @@ module nts.uk.at.kmr003.b {
                             let message = vm.$i18n.message(x.messageId, x.params);
                             errors.push({ message: message, messageId: x.messageId, supplements: {} });
                         })
+                        errors = _.sortBy(errors, ['message']);
                         nts.uk.ui.dialog.bundledErrors({
                             errors: errors
                         }).then(() => vm.startReservation());
@@ -358,8 +363,10 @@ module nts.uk.at.kmr003.b {
                 }).fail((err) => {
                     if (err) {
                         vm.$dialog.error({messageId: err.messageId, messageParams: err.parameterIds});
+                        vm.$blockui('hide');
                     }
-                }).always(() => vm.$blockui('hide'));
+                })
+                // .always(() => vm.$blockui('hide'));
             }).ifNo(function(){
                 vm.$blockui('hide');
             });

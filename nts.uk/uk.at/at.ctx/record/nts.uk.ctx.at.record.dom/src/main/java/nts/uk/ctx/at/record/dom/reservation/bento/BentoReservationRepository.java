@@ -15,6 +15,8 @@ public interface BentoReservationRepository {
 	void add(BentoReservation bentoReservation);
 
 	void delete(BentoReservation bentoReservation);
+	
+	void deleteByPK(String cardNo, String date, int frameAtr);
 
 	List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, DatePeriod period, boolean ordered, String companyID);
 
@@ -74,5 +76,5 @@ public interface BentoReservationRepository {
 	 * @return
 	 */
 	List<BentoReservation> findByExtractionCondition(List<ReservationRegisterInfo> inforLst, DatePeriod period, 
-			int closingTimeFrame, BentoReservationSearchCondition bentoReservationSearchCondition);
+			int closingTimeFrame, ReservationCorrect bentoReservationSearchCondition);
 }

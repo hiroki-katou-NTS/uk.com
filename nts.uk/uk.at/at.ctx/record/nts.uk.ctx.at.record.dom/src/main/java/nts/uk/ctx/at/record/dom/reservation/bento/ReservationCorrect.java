@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.query.reservation;
+package nts.uk.ctx.at.record.dom.reservation.bento;
 
 /**
  * @author anhnm

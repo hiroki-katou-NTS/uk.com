@@ -27,7 +27,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationSearchCondition;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationCorrect;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
@@ -234,6 +234,23 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 			throw new RuntimeException(ex);
 		}
 	}
+	
+	@Override
+    public void deleteByPK(String cardNo, String date, int frameAtr) {
+        String query = FIND_BY_ID_DATE;
+        query = query.replaceFirst("cardNo", cardNo);
+        query = query.replaceFirst("date", date);
+        query = query.replaceFirst("frameAtr", String.valueOf(frameAtr));
+        try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            KrcdtReservation beforeKrcdtReservation = toEntity(createFullJoinBentoReservation(rs)).get(0);
+            
+            commandProxy().remove(KrcdtReservation.class, beforeKrcdtReservation.pk);
+            this.getEntityManager().flush();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
 	@Override
 	public List<BentoReservation> findList(ReservationRegisterInfo registerInfor, ReservationDate reservationDate) {
@@ -486,28 +503,28 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 
 	@Override
 	public List<BentoReservation> findByExtractionCondition(List<ReservationRegisterInfo> inforLst, DatePeriod period,
-			int closingTimeFrame, BentoReservationSearchCondition bentoReservationSearchCondition) {
+			int closingTimeFrame, ReservationCorrect bentoReservationSearchCondition) {
 		// 	$List<弁当予約> =  [8]打刻カード番号一覧・期間・受付時間帯から取得する(打刻カード番号一覧,期間, 受付時間帯NO)
 		List<BentoReservation> bentoReservationLst = this.findByCardNoPeriodFrame(inforLst, period, closingTimeFrame);
 		// 	if(抽出条件 == 予約した全部)
-		if(bentoReservationSearchCondition==BentoReservationSearchCondition.ALL) {
+		if(bentoReservationSearchCondition==ReservationCorrect.ALL_RESERVE) {
 			// 	return	$List<弁当予約>
 			return bentoReservationLst;
 		}
 		// 	if(予約修正抽出条件 == １商品２件以上)
-		if(bentoReservationSearchCondition==BentoReservationSearchCondition.MORE_THAN_1_PRODUCT) {
+		if(bentoReservationSearchCondition==ReservationCorrect.MORE_THAN_2_ITEMS) {
 			// 	$List<弁当予約>  = $List<弁当予約>	&& any(弁当予約.弁当予約明細.個数 ≧　２)
 			bentoReservationLst = bentoReservationLst.stream().filter(x -> {
 				return x.getBentoReservationDetails().stream().filter(y -> y.getBentoCount().v() >= 2).findAny().isPresent();
 			}).collect(Collectors.toList());
 		}
 		// 	if(予約修正抽出条件 == 発注済み)
-		if(bentoReservationSearchCondition==BentoReservationSearchCondition.ORDERED) {
+		if(bentoReservationSearchCondition==ReservationCorrect.ORDER) {
 			// 	$List<弁当予約>  = $List<弁当予約>	&& 弁当予約.発注済み　＝＝　True
 			bentoReservationLst = bentoReservationLst.stream().filter(x -> x.isOrdered()).collect(Collectors.toList());
 		}
 		// 	if(予約修正抽出条件 == 未発注)
-		if(bentoReservationSearchCondition==BentoReservationSearchCondition.UN_ORDERED) {
+		if(bentoReservationSearchCondition==ReservationCorrect.NOT_ORDERING) {
 			// 	$List<弁当予約>  = $List<弁当予約>	&& 弁当予約.発注済み　＝＝　False
 			bentoReservationLst = bentoReservationLst.stream().filter(x -> !x.isOrdered()).collect(Collectors.toList());
 		}
