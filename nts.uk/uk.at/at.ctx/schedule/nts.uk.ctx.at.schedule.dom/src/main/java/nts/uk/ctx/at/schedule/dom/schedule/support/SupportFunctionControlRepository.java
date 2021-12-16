@@ -11,7 +11,7 @@ public interface SupportFunctionControlRepository {
 	 * @param cid 会社ID
 	 * @return 応援予定の機能制御
 	 */
-	public SupportFunctionControlRepository get(String cid);
+	public SupportFunctionControl get(String cid);
 
 	/**
 	 * update

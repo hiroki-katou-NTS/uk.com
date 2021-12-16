@@ -2,7 +2,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.support;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
  * 応援予定の機能制御
@@ -11,7 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 @Getter
 @AllArgsConstructor
-public class SupportFunctionControl extends AggregateRoot {
+public class SupportFunctionControl implements DomainAggregate {
 
 	/** Serializable */
 	@SuppressWarnings("unused") private static final long serialVersionUID = 1L;
