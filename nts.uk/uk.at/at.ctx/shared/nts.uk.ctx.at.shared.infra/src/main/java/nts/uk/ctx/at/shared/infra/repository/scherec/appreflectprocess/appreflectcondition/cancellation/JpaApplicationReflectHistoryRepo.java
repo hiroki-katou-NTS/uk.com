@@ -179,7 +179,7 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 		lstRestore.add(restore);
 		return new ApplicationReflectHistory(rec.getString("SID"), rec.getGeneralDate("YMD"), rec.getString("APP_ID"),
 				EnumAdaptor.valueOf(rec.getInt("ATR"), ScheduleRecordClassifi.class), rec.getInt("DELETE_ATR") == 1,
-				lstRestore, new AppReflectExecInfo(rec.getInt("RE_REFLECT_ATR") == 1, rec.getString("EXECUTION_ID"), rec.getGeneralDateTime("REFLECT_TIME")));
+				lstRestore, new AppReflectExecInfo(rec.getBoolean("RE_REFLECT_ATR"), rec.getString("EXECUTION_ID"), rec.getGeneralDateTime("REFLECT_TIME")));
 
 	}
 
