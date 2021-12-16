@@ -69,8 +69,10 @@ module nts.uk.at.kmr003.b {
             const vm = this;
             vm.startReservation();
     
-            vm.date.subscribe(() => {
-                vm.startReservation();
+            vm.date.subscribe((value) => {
+                if (value) {
+                    vm.startReservation();
+                }
             });
     
             vm.selectedReception.subscribe(() => {
