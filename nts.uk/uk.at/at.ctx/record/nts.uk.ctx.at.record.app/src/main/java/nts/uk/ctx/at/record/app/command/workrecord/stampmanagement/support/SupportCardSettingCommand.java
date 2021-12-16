@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.command.workrecord.stampmanagement.support;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardEdit;
 
 /**
  * 
@@ -12,10 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SupportCardSettingCommand {
 	
-	private int edit;
+	private int editMethod;
 	
-	public void toDomain() {
-		// TODO
+	public SupportCardEdit toDomain() {
+		return new SupportCardEdit(editMethod);
 	}
 
 }

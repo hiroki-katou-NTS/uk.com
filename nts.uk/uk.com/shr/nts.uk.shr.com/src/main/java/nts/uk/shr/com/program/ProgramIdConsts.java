@@ -1661,4 +1661,8 @@ public class ProgramIdConsts {
 
 	/** KHA001 */
 	public static final String KHA001A = "KHA001A";
+	
+	/** KMP002 */
+	public static final String KMP002A = "KMP002A";
+	public static final String KMP002B = "KMP002B";
 }

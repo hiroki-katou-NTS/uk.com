@@ -3867,6 +3867,16 @@ public class ProgramsManager {
             , ProgramIdConsts.KHA001A
             , "KHA001_50"
             , "/view/kha/001/a/index.xhtml");
+    
+    /** KMP002 */
+    public static final Program KMP002A = new Program(WebAppId.AT
+            , ProgramIdConsts.KMP002A
+            , "KMP002_1"
+            , "/view/kmp/002/a/index.xhtml");
+    public static final Program KMP002B = new Program(WebAppId.AT
+            , ProgramIdConsts.KMP002B
+            , "KMP002_2"
+            , "/view/kmp/002/b/index.xhtml");
 
     /**
      * All programs map.

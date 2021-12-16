@@ -13,6 +13,6 @@ import lombok.Getter;
 public class SupportCardSettingDto {
 	
 	// how to edit
-	private int edit;
+	private int editMethod;
 
 }

@@ -2,6 +2,8 @@
 
 module nts.uk.at.view.kmp002.b {
 
+  import setShared = nts.uk.ui.windows.setShared;
+
   // URL API backend
   const API = {
     GET_INITIAL_DISPLAY: "at/record/workrecord/stampmanagement/support/initialStartupSupportCardSetting",
@@ -23,8 +25,7 @@ module nts.uk.at.view.kmp002.b {
       ]);
       self.$ajax(API.GET_INITIAL_DISPLAY)
         .then((data: any) => {
-          console.log(data);
-          // self.supportCardSetting().howToEdit(data);
+          self.supportCardSetting().editMethod(data.editMethod);
         });
     }
 
@@ -36,9 +37,13 @@ module nts.uk.at.view.kmp002.b {
     registerSetting() {
       // update the support card edit settings
       const vm = this;
-      vm.$ajax(API.UPDATE_SUPPORT_CARD_SETTING, vm.supportCardSetting())
+      const data: SupportCardEditDto = {
+        editMethod: vm.supportCardSetting().editMethod()
+      }
+      vm.$ajax(API.UPDATE_SUPPORT_CARD_SETTING, data)
         .then((data: any) => {
-          console.log(data);
+          // set return value
+          setShared('KMP002B_Output', vm.supportCardSetting().editMethod());
           vm.$window.close();
         });
     }
@@ -71,11 +76,15 @@ module nts.uk.at.view.kmp002.b {
   }
 
   class SupportCardSetting {
-    howToEdit: KnockoutObservable<number>;
+    editMethod: KnockoutObservable<number>;
 
-    constructor(howToEdit: number) {
-      this.howToEdit = ko.observable(howToEdit);
+    constructor(editMethod: number) {
+      this.editMethod = ko.observable(editMethod);
     }
+  }
+
+  interface SupportCardEditDto {
+    editMethod: number;
   }
 
 }

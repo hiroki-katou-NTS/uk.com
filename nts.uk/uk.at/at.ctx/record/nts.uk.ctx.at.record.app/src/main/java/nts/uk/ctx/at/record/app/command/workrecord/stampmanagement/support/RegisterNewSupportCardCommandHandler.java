@@ -22,12 +22,17 @@ public class RegisterNewSupportCardCommandHandler extends CommandHandler<Support
 	
 	@Inject
 	private SupportCardRepository supportCardRepository;
+	
+//	@Inject
+//	private SupportCardEditRepository supportCardEditRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<SupportCardCommand> context) {
 		SupportCardCommand command = context.getCommand();
+//		String companyId = AppContexts.user().companyId();
 		
-		// カードを編集する
+		// カードを編集する(応援カード番号): 応援カード番号
+//		Optional<SupportCardEdit> supportCardEdit = this.supportCardEditRepository.get(companyId);
 		
 		// get(応援カード番号): 応援カード
 		Optional<SupportCard> supportCard = this.supportCardRepository.getBySupportCardNo(command.getSupportCardNumber());

@@ -26,6 +26,6 @@ public class InitialStartupDto {
 	private List<WorkplaceInfor> workplaceInfors;
 	
 	// 応援カード編集設定
-//	private 
+	private SupportCardSettingDto supportCardEdit;
 
 }

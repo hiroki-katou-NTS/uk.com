@@ -28,7 +28,7 @@ public class RenewalSupportCardCommandHandler extends CommandHandler<SupportCard
 		SupportCardCommand command = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		// カードを編集する
-		// TODO
+//		Optional<SupportCardEdit> supportCardEdit = this.supportCardEditRepository.get(cid);
 		
 		// get(応援カード番号, 会社ID): 応援カード
 		Optional<SupportCard> supportCard = this.supportCardRepository.get(cid, command.getSupportCardNumber());

@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.app.query.workrecord.stampmanagement.support;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardEditRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -12,6 +14,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class SupportCardSettingQuery {
 	
+	@Inject
+	private SupportCardEditRepository supportCardEditRepository;
+	
 	/**
 	 * Gets the support card setting.
 	 *
@@ -19,9 +24,9 @@ public class SupportCardSettingQuery {
 	 */
 	public SupportCardSettingDto getSupportCardSetting() {
 		String cid = AppContexts.user().companyId();
-		// TODO
-//		return 応援カード編集設定
-		return null;
+		return this.supportCardEditRepository.get(cid)
+				.map(t -> new SupportCardSettingDto(t.getEditMethod().value))
+				.orElse(null);
 	}
 
 }

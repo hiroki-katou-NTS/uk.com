@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardEditRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardRepository;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
@@ -32,6 +33,9 @@ public class SupportCardQuery {
 	
 	@Inject
 	private CompanyAdapter companyAdapter;
+	
+	@Inject
+	private SupportCardEditRepository supportCardEditRepository;
 	
 	/**
 	 * Initial startup support card.
@@ -60,8 +64,10 @@ public class SupportCardQuery {
 				.forEach(t -> workplaceInfors.addAll(t));
 		
 		// get 応援カード編集設定
-		// TODO
+		SupportCardSettingDto supportCardEdit = this.supportCardEditRepository.get(companyId)
+				.map(t -> new SupportCardSettingDto(t.getEditMethod().value))
+				.orElse(null);
 		
-		return new InitialStartupDto(listSupportCard, companyInfos, workplaceInfors);
+		return new InitialStartupDto(listSupportCard, companyInfos, workplaceInfors, supportCardEdit);
 	}
 }
