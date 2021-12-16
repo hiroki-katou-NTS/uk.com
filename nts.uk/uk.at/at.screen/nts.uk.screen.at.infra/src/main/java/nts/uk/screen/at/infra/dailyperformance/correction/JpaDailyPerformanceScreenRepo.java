@@ -68,8 +68,6 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDayFun
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDayFuncControlPk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformance;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformancePk;
-import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixed;
-import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixedPK;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -1356,26 +1354,28 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@SneakyThrows
 	@Override
 	public List<WorkFixedDto> findWorkFixed(int closureId, int yearMonth) {
-		try (val statement = this.connection().prepareStatement(
-				"select * from KRCST_WORK_FIXED where CLOSURE_ID = ? and CID = ? and CONFIRM_CLS = 1")) {
-			statement.setInt(1, closureId);
-			statement.setString(2, AppContexts.user().companyId());
+//		try (val statement = this.connection().prepareStatement(
+//				"select * from KRCDT_WORK_FIXED where CLOSURE_ID = ? and CID = ? ")) {
+//			statement.setInt(1, closureId);
+//			statement.setString(2, AppContexts.user().companyId());
+//			
+			List<WorkFixedDto> workOp = new ArrayList<>();
 
-			List<WorkFixedDto> workOp = new NtsResultSet(statement.executeQuery()).getList(rec -> {
-				KrcstWorkFixed w = new KrcstWorkFixed();
-				w.setKrcstWorkFixedPK(
-						new KrcstWorkFixedPK(rec.getString("WKPID"), rec.getInt("CLOSURE_ID"), rec.getString("CID")));
-				w.setConfirmPid(rec.getString("CONFIRM_PID"));
-				w.setConfirmCls(rec.getInt("CONFIRM_CLS"));
-				w.setFixedDate(rec.getDate("FIXED_DATE"));
-				w.setProcessYm(rec.getInt("PROCESS_YM"));
-
-				return new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
-						w.getConfirmCls(), w.getFixedDate(), yearMonth, w.getKrcstWorkFixedPK().getCid());
-			});
+//			List<WorkFixedDto> workOp = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+//				EmploymentConfirmed w = new EmploymentConfirmed();
+//				w.setKrcstWorkFixedPK(
+//						new EmploymentConfirmed(rec.getString("WKPID"), rec.getInt("CLOSURE_ID"), rec.getString("CID")));
+//				w.setConfirmPid(rec.getString("CONFIRM_PID"));
+//				w.setConfirmCls(rec.getInt("CONFIRM_CLS"));
+//				w.setFixedDate(rec.getDate("FIXED_DATE"));
+//				w.setProcessYm(rec.getInt("PROCESS_YM"));
+//
+//				return new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
+//						w.getConfirmCls(), w.getFixedDate(), yearMonth, w.getKrcstWorkFixedPK().getCid());
+//			});
 
 			return workOp;
-		}
+//		}
 	}
 
 	@Override
