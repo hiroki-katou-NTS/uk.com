@@ -47,14 +47,15 @@ public class DeleteOneDayFavoriteTaskServiceTest {
 		};
 		AtomTask result = DeleteOneDayFavoriteTaskService.create(require, employeeId, favoriteId);
 		
-		new Verifications() {{
-			require.update(object);
-			times = 0;
-		}};
-		
 		result.run();
 		
 		new Verifications() {{
+			require.delete(employeeId, favoriteId);
+			times = 1;
+			
+			require.delete(employeeId);
+			times = 0;
+			
 			require.update(object);
 			times = 1;
 		}};
@@ -79,14 +80,15 @@ public class DeleteOneDayFavoriteTaskServiceTest {
 		};
 		AtomTask result = DeleteOneDayFavoriteTaskService.create(require, employeeId, favoriteId);
 		
-		new Verifications() {{
-			require.delete(employeeId);
-			times = 0;
-		}};
-		
 		result.run();
 		
 		new Verifications() {{
+			require.delete(employeeId, favoriteId);
+			times = 1;
+			
+			require.delete(employeeId);
+			times = 1;
+			
 			require.delete(employeeId);
 			times = 1;
 		}};
@@ -107,14 +109,15 @@ public class DeleteOneDayFavoriteTaskServiceTest {
 		};
 		AtomTask result = DeleteOneDayFavoriteTaskService.create(require, employeeId, favoriteId);
 		
-		new Verifications() {{
-			require.delete(employeeId, favoriteId);
-			times = 0;
-		}};
-		
 		result.run();
 		
 		new Verifications() {{
+			require.delete(employeeId, favoriteId);
+			times = 1;
+			
+			require.delete(employeeId);
+			times = 0;
+			
 			require.delete(employeeId, favoriteId);
 			times = 1;
 		}};

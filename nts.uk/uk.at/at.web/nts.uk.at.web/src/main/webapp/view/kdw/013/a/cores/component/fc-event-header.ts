@@ -6,10 +6,10 @@ module nts.uk.ui.at.kdw013.eventheadear {
                 <!-- ko foreach: { data: $component.params.data, as: 'day' } -->
                 <td class="fc-event-note fc-day" style='text-align: center;' data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }">
                     <div style="display: flex;height:calc(100% - 19px);"> 
-                        <div style='text-align: left;' data-bind="foreach: { data: day.events, as: 'note' }">
+                        <div style='text-align: left;flex-grow: 1;' data-bind="foreach: { data: day.events, as: 'note' }">
                             <div class="text-note" data-bind="text: note.title"></div>
                         </div>
-                        <div style='text-align: left;margin-left: 5px;width: calc(100% - 70px);' data-bind="foreach: { data: day.events, as: 'note' }">
+                        <div style='text-align: left;margin-left: 5px;flex-grow: 1000;' data-bind="foreach: { data: day.events, as: 'note' }">
                             <!-- ko if: note.valueType == 0 -->
                                 <div style='display: block;' class="text-note limited-label" data-bind="text: note.text"></div>
                             <!-- /ko -->

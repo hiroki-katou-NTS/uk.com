@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,14 +93,15 @@ public class RegisterFavoriteTaskServiceTest {
 		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
 				new ArrayList<>());
 
-		new Verifications() {{
-			require.update(optdisplayOrder.get());
-			times = 0;
-		}};
-		
 		result.run();
 		
 		new Verifications() {{
+			require.insert(new FavoriteTaskItem(anyString, anyString, new FavoriteTaskName(anyString), new ArrayList<>()));
+			times = 0;
+			
+			require.insert(new FavoriteTaskDisplayOrder(anyString, new ArrayList<>()));
+			times = 0;
+			
 			require.update(optdisplayOrder.get());
 			times = 1;
 		}};
@@ -125,14 +125,15 @@ public class RegisterFavoriteTaskServiceTest {
 		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
 				new ArrayList<>());
 		
-		new Verifications() {{
-			require.insert(FavoriteTaskDisplayOrder.addNewFavTaskDisporder("employeeId", anyString));
-			times = 0;
-		}};
-		
 		result.run();
 		
 		new Verifications() {{
+			require.insert(new FavoriteTaskItem(anyString, anyString, new FavoriteTaskName(anyString), new ArrayList<>()));
+			times = 0;
+			
+			require.insert(new FavoriteTaskDisplayOrder(anyString, new ArrayList<>()));
+			times = 0;
+			
 			require.insert(FavoriteTaskDisplayOrder.addNewFavTaskDisporder("employeeId", anyString));
 			times = 0;
 		}};
