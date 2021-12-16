@@ -1101,7 +1101,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
             return data;
 
         OtWorkAppReflect overtimeWorkAppReflect = reflectSetting.get();
-        for (int row = 0; row < 21; row++) {
+        for (int row = 0; row < 20; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < OVERTIME_COL_SIZE; col++) {
                 String value;
@@ -1126,16 +1126,16 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                     else if (row == 12) value = TextResource.localize("KAF022_713");
                     else if (row == 13) value = TextResource.localize("KAF022_798");
                     else if (row == 14) value = TextResource.localize("KAF022_622");
-                    else if (row == 17) value = TextResource.localize("KAF022_611");
+                    else if (row == 16) value = TextResource.localize("KAF022_611");
                     else value = "";
                 } else if (col == 2) {
-                    if (row == 14) value = TextResource.localize("KAF022_717");
-                    else if (row == 15) value = TextResource.localize("KAF022_718");
-                    else if (row == 16) value = TextResource.localize("KAF022_719");
-                    else if (row == 17) value = TextResource.localize("KAF022_720");
-                    else if (row == 18) value = TextResource.localize("KAF022_719");
-                    else if (row == 19) value = TextResource.localize("KAF022_721");
-                    else if (row == 20) value = TextResource.localize("KAF022_722");
+//                    if (row == 14) value = TextResource.localize("KAF022_717");
+                    if (row == 14) value = TextResource.localize("KAF022_718");
+                    else if (row == 15) value = TextResource.localize("KAF022_719");
+                    else if (row == 16) value = TextResource.localize("KAF022_720");
+                    else if (row == 17) value = TextResource.localize("KAF022_719");
+                    else if (row == 18) value = TextResource.localize("KAF022_721");
+                    else if (row == 19) value = TextResource.localize("KAF022_722");
                     else value = "";
                 } else {
                     if (row == 0) value = applySetting.get().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr() == NotUseAtr.USE
@@ -1178,17 +1178,17 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                             ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
                     else if (row == 13) value = overtimeWorkAppReflect.getReflectActualWorkAtr() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
-                    else if (row == 14) value = overtimeWorkAppReflect.getBefore().getReflectWorkInfoAtr() == NotUseAtr.USE
+//                    else if (row == 14) value = overtimeWorkAppReflect.getBefore().getReflectWorkInfoAtr() == NotUseAtr.USE
+//                            ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                    else if (row == 14) value = overtimeWorkAppReflect.getBefore().getReflectActualOvertimeHourAtr() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
-                    else if (row == 15) value = overtimeWorkAppReflect.getBefore().getReflectActualOvertimeHourAtr() == NotUseAtr.USE
+                    else if (row == 15) value = overtimeWorkAppReflect.getBefore().getBreakLeaveApplication().getBreakReflectAtr() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
-                    else if (row == 16) value = overtimeWorkAppReflect.getBefore().getBreakLeaveApplication().getBreakReflectAtr() == NotUseAtr.USE
+                    else if (row == 16) value = overtimeWorkAppReflect.getAfter().getWorkReflect() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
-                    else if (row == 17) value = overtimeWorkAppReflect.getAfter().getWorkReflect() == NotUseAtr.USE
+                    else if (row == 17) value = overtimeWorkAppReflect.getAfter().getBreakLeaveApplication().getBreakReflectAtr() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
-                    else if (row == 18) value = overtimeWorkAppReflect.getAfter().getBreakLeaveApplication().getBreakReflectAtr() == NotUseAtr.USE
-                            ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
-                    else if (row == 19) value = overtimeWorkAppReflect.getAfter().getOthersReflect().getReflectDivergentReasonAtr() == NotUseAtr.USE
+                    else if (row == 18) value = overtimeWorkAppReflect.getAfter().getOthersReflect().getReflectDivergentReasonAtr() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
                     else value = overtimeWorkAppReflect.getAfter().getOthersReflect().getReflectPaytimeAtr() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
