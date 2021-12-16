@@ -1334,12 +1334,16 @@ module nts.uk.at.view.kmk002.a {
                 // TIME DAY
                 this.timeUpperDay.subscribe((e)=>{
                     if(this.lowerCheck()){
-                        $('#inp-lower-time-day').ntsError('clear');
+                        if(!isNullOrUndefined(this.timeLowerDay())){
+                                $('#inp-lower-time-day').ntsError('clear');
+                        }
                     }
                 });
                 this.timeLowerDay.subscribe((e)=>{
                     if(this.upperCheck()){
-                        $('#inp-upper-time-day').ntsError('clear');
+                        if(!isNullOrUndefined(this.timeUpperDay())){
+                                $('#inp-upper-time-day').ntsError('clear');
+                        }
                     }
                 });
 
@@ -1347,13 +1351,18 @@ module nts.uk.at.view.kmk002.a {
                 this.timeUpperMonth.subscribe((e)=>{
                     if(this.lowerCheck())
                     {
-                       $('#inp-lower-time-month').ntsError('clear');
+                        if(!isNullOrUndefined(this.timeLowerMonth())){
+                                $('#inp-lower-time-month').ntsError('clear');
+                        }
                     }
                 });
                 this.timeLowerMonth.subscribe((e)=>{
                     if(this.upperCheck())
                     {
-                        $('#inp-upper-time-month').ntsError('clear');
+                        if(!isNullOrUndefined(this.timeUpperMonth())){
+                                $('#inp-upper-time-month').ntsError('clear');
+
+                        }
                     }
                 });
 
@@ -1361,51 +1370,70 @@ module nts.uk.at.view.kmk002.a {
                 this.amountUpperDay.subscribe((e)=>{
                     if(this.lowerCheck())
                     {
-                        $('#inp-lower-amount-day').ntsError('clear');
+                        if(!isNullOrUndefined(this.amountLowerDay())){
+                                $('#inp-lower-amount-day').ntsError('clear');
+                        }
                     }
                 });
                 this.amountLowerDay.subscribe((e)=>{
                     if(this.upperCheck())
                     {
-                        $('#inp-upper-amount-day').ntsError('clear');
+                        if(!isNullOrUndefined(this.amountUpperDay())){
+                                $('#inp-upper-amount-day').ntsError('clear');
+                        }
                     }
                 });
+
                 // AMOUNT MONTH
                 this.amountUpperMonth.subscribe((e)=>{
                     if(this.lowerCheck())
                     {
-                        $('#inp-lower-amount-month').ntsError('clear');
+                        if(!isNullOrUndefined(this.amountLowerMonth())){
+                                $('#inp-lower-amount-month').ntsError('clear');
+                        }
                     }
                 });
                 this.amountLowerMonth.subscribe((e)=>{
                     if(this.upperCheck())
                     {
-                         $('#inp-upper-amount-month').ntsError('clear');
+                        if(!isNullOrUndefined(this.amountUpperMonth())){
+                                $('#inp-upper-amount-month').ntsError('clear');
+                        }
                     }
                 });
+
                 // NUMBER DAY
                 this.numberUpperDay.subscribe((e)=>{
                     if(this.lowerCheck())
                     {
-                         $('#inp-lower-number-day').ntsError('clear');
+                        if(!isNullOrUndefined(this.numberLowerDay())){
+                                $('#inp-lower-number-day').ntsError('clear');
+                        }
                     }
                 });
                 this.numberLowerDay.subscribe((e)=>{
                     if(this.upperCheck())
                     {
-                          $('#inp-upper-number-day').ntsError('clear');
+                        if(!isNullOrUndefined(this.numberUpperDay())){
+                                $('#inp-upper-number-day').ntsError('clear');
+                        }
                     }
                 });
+
                 // NUMBER MONTH
                 this.numberUpperMonth.subscribe((e)=>{
                     if(this.lowerCheck())
                     {
-                        $('#inp-lower-number-month').ntsError('clear');
+                        if(!isNullOrUndefined(this.numberLowerMonth())){
+                                $('#inp-lower-number-month').ntsError('clear');
+                        }
                     }
                 });
+
                 this.numberLowerMonth.subscribe((e)=>{
-                    if(this.upperCheck()){
-                         $('#inp-upper-number-month').ntsError('clear');
+                    if(this.upperCheck())
+                        if(!isNullOrUndefined(this.numberUpperMonth())){
+                            $('#inp-upper-number-month').ntsError('clear');
                         }
                 });
             }
