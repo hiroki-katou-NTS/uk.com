@@ -11,9 +11,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.OptionalUtil;
-import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.FakeSupportTicket;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAreaAtr;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ContainsResult;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -44,7 +44,7 @@ public class CreateWorkSchedule {
 			WorkInformation workInformation,
 			boolean isUpdateBreakTimeList,
 			List<TimeSpanForCalc> breakTimeList,
-			List<FakeSupportTicket> supportTicketList,
+			List<SupportTicket> supportTicketList,
 			Map<Integer, T> updateInfoMap) {
 		
 		Optional<WorkSchedule> registedWorkSchedule = require.getWorkSchedule(employeeId, date);

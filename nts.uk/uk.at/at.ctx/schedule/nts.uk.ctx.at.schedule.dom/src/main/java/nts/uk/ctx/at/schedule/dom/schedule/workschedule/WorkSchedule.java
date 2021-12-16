@@ -19,8 +19,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.OptionalUtil;
-import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.FakeSupportTicket;
-import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.FakeSupportType;
 import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
@@ -46,6 +44,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -593,7 +593,7 @@ public class WorkSchedule implements DomainAggregate {
 	 * @param require
 	 * @param supportTickets 応援チケットリスト
 	 */
-	public void createSupportSchedule(Require require, List<FakeSupportTicket> supportTickets) {
+	public void createSupportSchedule(Require require, List<SupportTicket> supportTickets) {
 		
 		supportTickets.stream().forEach( ticket -> this.checkWhetherCanUpdateSupportSchedule(ticket, false) );
 		
@@ -607,7 +607,7 @@ public class WorkSchedule implements DomainAggregate {
 	 * @param require
 	 * @param ticket 応援チケット
 	 */
-	public void addSupportSchedule(Require require, FakeSupportTicket ticket) {
+	public void addSupportSchedule(Require require, SupportTicket ticket) {
 		
 		this.checkWhetherCanUpdateSupportSchedule(ticket, false);
 		
@@ -622,7 +622,7 @@ public class WorkSchedule implements DomainAggregate {
 	 * @param beforeModify 修正前
 	 * @param afterModify 修正後
 	 */
-	public void modifySupportSchedule(Require require, FakeSupportTicket beforeModify, FakeSupportTicket afterModify) {
+	public void modifySupportSchedule(Require require, SupportTicket beforeModify, SupportTicket afterModify) {
 		
 		this.checkWhetherCanUpdateSupportSchedule(afterModify, false);
 		
@@ -635,16 +635,16 @@ public class WorkSchedule implements DomainAggregate {
 	 * 応援予定を削除する
 	 * @param ticket 応援チケット
 	 */
-	public void removeSupportSchedule(FakeSupportTicket ticket) {
+	public void removeSupportSchedule(SupportTicket ticket) {
 		
 		this.checkWhetherCanUpdateSupportSchedule(ticket, true);
 		
 		switch (ticket.getSupportType()) {
-		case FULL_DAY_SUPPORT:
+		case ALLDAY:
 			this.taskSchedule = TaskSchedule.createWithEmptyList();
 			break;
-		case TIME_SPAN_SUPPORT:
-			this.taskSchedule = this.taskSchedule.removeTaskScheduleDetailIn(ticket.getTimeSpan().get());
+		case TIMEZONE:
+			this.taskSchedule = this.taskSchedule.removeTaskScheduleDetailIn(ticket.getTimespan().get());
 			break;
 		default:
 			throw new RuntimeException("support type is invalid!");
@@ -758,9 +758,9 @@ public class WorkSchedule implements DomainAggregate {
 	 * @param supportTicket 応援チケット
 	 * @param isRemove 削除するか
 	 */
-	private void checkWhetherCanUpdateSupportSchedule(FakeSupportTicket supportTicket, boolean isRemove) {
+	private void checkWhetherCanUpdateSupportSchedule(SupportTicket supportTicket, boolean isRemove) {
 		
-		if ( supportTicket.getEmployeeId() != this.employeeID || !supportTicket.getDate().equals(this.ymd) ) {
+		if ( supportTicket.getEmployeeId().v().equals(this.employeeID) || !supportTicket.getDate().equals(this.ymd) ) {
 			throw new BusinessException("Msg_3254");
 		}
 		
@@ -773,13 +773,13 @@ public class WorkSchedule implements DomainAggregate {
 		}
 		
 		switch (supportTicket.getSupportType()) {
-		case FULL_DAY_SUPPORT:
+		case ALLDAY:
 			if ( this.taskSchedule.isTaskScheduleGranted() ) {
 				throw new BusinessException("Msg_2271");
 			}
 			break;
-		case TIME_SPAN_SUPPORT:
-			if ( this.taskSchedule.isTaskScheduleGrantedIn(supportTicket.getTimeSpan().get()) ) {
+		case TIMEZONE:
+			if ( this.taskSchedule.isTaskScheduleGrantedIn(supportTicket.getTimespan().get()) ) {
 				throw new BusinessException("Msg_2273");
 			}
 			break;	
@@ -796,7 +796,7 @@ public class WorkSchedule implements DomainAggregate {
 	private void checkConsistencyOfSupportSchedule(Require require) {
 		
 		val supportType = this.supportSchedule.getSupportType();
-		if ( !supportType.isPresent() || supportType.get() == FakeSupportType.FULL_DAY_SUPPORT ) {
+		if ( !supportType.isPresent() || supportType.get() == SupportType.ALLDAY ) {
 			return;
 		}
 			

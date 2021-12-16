@@ -8,10 +8,10 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.FakeSupportType;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 
 /**
  * 作業予定を一括付与する
@@ -37,7 +37,7 @@ public class GrantListOfTaskSchedule {
 		boolean existTimeSpanSupportType = listWorkSchedule.stream().anyMatch( workSchedule -> {
 
 					val supportType = workSchedule.getSupportSchedule().getSupportType();
-					if ( supportType.isPresent() && supportType.get() == FakeSupportType.TIME_SPAN_SUPPORT) {
+					if ( supportType.isPresent() && supportType.get() == SupportType.TIMEZONE) {
 						return true;
 					}
 					

@@ -6,7 +6,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.FakeSupportTicket;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定.応援チケットで応援予定を変更する
@@ -22,9 +22,9 @@ public class UpdateSupportScheduleBySupportTicket {
 	 * @param ticket 応援チケット
 	 * @return
 	 */
-	public static ResultOfRegisteringWorkSchedule add(Require require, FakeSupportTicket ticket) {
+	public static ResultOfRegisteringWorkSchedule add(Require require, SupportTicket ticket) {
 		
-		WorkSchedule workSchedule = require.getWorkSchedule(ticket.getEmployeeId(), ticket.getDate());
+		WorkSchedule workSchedule = require.getWorkSchedule(ticket.getEmployeeId().v(), ticket.getDate());
 		
 		try {
 			workSchedule.addSupportSchedule(require, ticket);
@@ -45,13 +45,13 @@ public class UpdateSupportScheduleBySupportTicket {
 	 * @param afterModify 修正後
 	 * @return
 	 */
-	public static Optional<ResultOfRegisteringWorkSchedule> modify(Require require, FakeSupportTicket beforeModify, FakeSupportTicket afterModify) {
+	public static Optional<ResultOfRegisteringWorkSchedule> modify(Require require, SupportTicket beforeModify, SupportTicket afterModify) {
 	
-		if ( beforeModify.isSame(afterModify) ) {
+		if ( beforeModify.equals(afterModify) ) {
 			return Optional.empty();
 		}
 		
-		WorkSchedule workSchedule = require.getWorkSchedule(afterModify.getEmployeeId(), afterModify.getDate());
+		WorkSchedule workSchedule = require.getWorkSchedule(afterModify.getEmployeeId().v(), afterModify.getDate());
 		
 		try {
 			workSchedule.modifySupportSchedule(require, beforeModify, afterModify);
@@ -71,9 +71,9 @@ public class UpdateSupportScheduleBySupportTicket {
 	 * @param ticket 応援チケット
 	 * @return
 	 */
-	public static ResultOfRegisteringWorkSchedule remove(Require require, FakeSupportTicket ticket) {
+	public static ResultOfRegisteringWorkSchedule remove(Require require, SupportTicket ticket) {
 		
-		WorkSchedule workSchedule = require.getWorkSchedule(ticket.getEmployeeId(), ticket.getDate());
+		WorkSchedule workSchedule = require.getWorkSchedule(ticket.getEmployeeId().v(), ticket.getDate());
 		
 		try {
 			workSchedule.removeSupportSchedule(ticket);

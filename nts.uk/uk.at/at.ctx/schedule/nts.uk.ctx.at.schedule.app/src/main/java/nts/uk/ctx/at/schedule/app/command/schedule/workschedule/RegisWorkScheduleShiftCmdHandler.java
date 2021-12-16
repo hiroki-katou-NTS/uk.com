@@ -385,5 +385,11 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends CommandHandlerWithResul
 			Optional<ShiftMaster> rs = shiftMasterRepo.getByShiftMaterCd(companyId, shiftMasterCode  == null ? null : shiftMasterCode.toString());
 			return rs;
 		}
+
+		@Override
+		public Integer getSupportOperationSetting() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 }

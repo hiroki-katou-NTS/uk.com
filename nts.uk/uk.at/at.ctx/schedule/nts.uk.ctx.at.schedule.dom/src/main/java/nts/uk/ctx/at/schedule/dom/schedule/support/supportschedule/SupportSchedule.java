@@ -11,6 +11,9 @@ import lombok.Value;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
 
 /**
  * 応援予定
@@ -45,13 +48,13 @@ public class SupportSchedule {
 			return SupportSchedule.createWithEmptyList();
 		}
 		
-		Integer maxSupportTimes = require.getSupportOperationSetting();
+		Integer maxSupportTimes = require.getSupportOperationSetting().getMaxNumberOfSupportOfDay().v();
 		if ( details.size() > maxSupportTimes ) {
 			throw new BusinessException("Msg_2315");
 		}
 		
 		boolean haveFullDaySupport = details.stream()
-				.anyMatch( detail -> detail.getSupportType() == FakeSupportType.FULL_DAY_SUPPORT );
+				.anyMatch( detail -> detail.getSupportType() == SupportType.ALLDAY );
 		if ( haveFullDaySupport ) {
 			
 			// inv-1
@@ -81,7 +84,7 @@ public class SupportSchedule {
 	 * @param supportTicketList 応援チケットリスト
 	 * @return
 	 */
-	public static SupportSchedule createFromSupportTicketList(Require require, List<FakeSupportTicket> supportTicketList) {
+	public static SupportSchedule createFromSupportTicketList(Require require, List<SupportTicket> supportTicketList) {
 		
 		List<SupportScheduleDetail> details = supportTicketList.stream()
 				.map(ticket -> SupportScheduleDetail.createBySupportTicket(ticket))
@@ -96,7 +99,7 @@ public class SupportSchedule {
 	 * @param ticket 応援チケット
 	 * @return
 	 */
-	public SupportSchedule add(Require require, FakeSupportTicket ticket) {
+	public SupportSchedule add(Require require, SupportTicket ticket) {
 		
 		val addTarget = SupportScheduleDetail.createBySupportTicket(ticket);
 		
@@ -113,13 +116,13 @@ public class SupportSchedule {
 	 * @param afterUpdate
 	 * @return
 	 */
-	public SupportSchedule update(Require require, FakeSupportTicket beforeUpdate, FakeSupportTicket afterUpdate) {
+	public SupportSchedule update(Require require, SupportTicket beforeUpdate, SupportTicket afterUpdate) {
 		
 		val beforeUpdateTarget = SupportScheduleDetail.createBySupportTicket(beforeUpdate);
 		val afterUpdateTarget = SupportScheduleDetail.createBySupportTicket(afterUpdate);
 		
 		val registeredList = this.details.stream()
-				.filter(e -> !e.isSame(beforeUpdateTarget))
+				.filter(e -> !e.equals(beforeUpdateTarget))
 				.collect(Collectors.toList());
 		registeredList.add(afterUpdateTarget);
 		
@@ -132,12 +135,12 @@ public class SupportSchedule {
 	 * @param ticket 応援チケット
 	 * @return
 	 */
-	public SupportSchedule remove(FakeSupportTicket ticket) {
+	public SupportSchedule remove(SupportTicket ticket) {
 		
 		val removeTarget = SupportScheduleDetail.createBySupportTicket(ticket);
 		
 		val newDetailList = this.details.stream()
-				.filter(e -> !e.isSame(removeTarget))
+				.filter(e -> !e.equals(removeTarget))
 				.collect(Collectors.toList());
 		
 		return new SupportSchedule(newDetailList);
@@ -149,7 +152,7 @@ public class SupportSchedule {
 	 */
 	public List<TimeSpanForCalc> getSupportTimeSpanList() {
 		
-		return this.details.stream().filter( e -> e.getSupportType() == FakeSupportType.TIME_SPAN_SUPPORT )
+		return this.details.stream().filter( e -> e.getSupportType() == SupportType.TIMEZONE )
 				.map(e -> e.getTimeSpan().get())
 				.collect(Collectors.toList());
 	}
@@ -158,7 +161,7 @@ public class SupportSchedule {
 	 * 応援形式を返す
 	 * @return
 	 */
-	public Optional<FakeSupportType> getSupportType() {
+	public Optional<SupportType> getSupportType() {
 		
 		if ( this.details.isEmpty() ) {
 			return Optional.empty(); 
@@ -183,7 +186,7 @@ public class SupportSchedule {
 		public static TimeSpanSupportScheduleDetailList create(List<SupportScheduleDetail> details) {
 			
 			boolean isAllTimeSpanSupport = details.stream()
-					.allMatch( detail -> detail.getSupportType() == FakeSupportType.TIME_SPAN_SUPPORT);
+					.allMatch( detail -> detail.getSupportType() == SupportType.TIMEZONE);
 			
 			if ( !isAllTimeSpanSupport ) {
 				throw new BusinessException("");
@@ -226,7 +229,7 @@ public class SupportSchedule {
 		 * 応援の運用設定を取得する
 		 * @return
 		 */
-		Integer getSupportOperationSetting();
+		SupportOperationSetting getSupportOperationSetting();
 	}
 
 }

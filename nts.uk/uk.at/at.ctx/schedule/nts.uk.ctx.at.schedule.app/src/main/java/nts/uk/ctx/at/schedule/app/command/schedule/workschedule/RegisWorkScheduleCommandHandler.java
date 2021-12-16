@@ -378,5 +378,11 @@ public class RegisWorkScheduleCommandHandler<T> extends CommandHandlerWithResult
 		public void registerTemporaryData(String employeeId, GeneralDate date) {
 			interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, Arrays.asList(date));
 		}
+
+		@Override
+		public Integer getSupportOperationSetting() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 }

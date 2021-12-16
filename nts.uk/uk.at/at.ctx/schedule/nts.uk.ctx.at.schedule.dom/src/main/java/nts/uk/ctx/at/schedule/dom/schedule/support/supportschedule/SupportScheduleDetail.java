@@ -3,11 +3,14 @@ package nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
@@ -16,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  * @author dan_pv
  */
 @Value
+@EqualsAndHashCode
 public class SupportScheduleDetail implements DomainValue, Comparable<SupportScheduleDetail> {
 	
 	/**
@@ -26,7 +30,7 @@ public class SupportScheduleDetail implements DomainValue, Comparable<SupportSch
 	/**
 	 * 応援形式
 	 */
-	private final FakeSupportType supportType; // TODO: change variable type
+	private final SupportType supportType;
 	
 	/**
 	 * 時間帯
@@ -38,12 +42,11 @@ public class SupportScheduleDetail implements DomainValue, Comparable<SupportSch
 	 * @param supportTicket 応援チケット
 	 * @return
 	 */
-	public static final SupportScheduleDetail createBySupportTicket(FakeSupportTicket supportTicket) {
-		// TODO: complete this code
+	public static SupportScheduleDetail createBySupportTicket(SupportTicket supportTicket) {
 		return new SupportScheduleDetail(
-				TargetOrgIdenInfor.creatIdentifiWorkplace("id"), 
-				FakeSupportType.FULL_DAY_SUPPORT, 
-				Optional.empty());
+				supportTicket.getRecipient(), 
+				SupportType.ALLDAY, 
+				supportTicket.getTimespan());
 	}
 	
 	/**
@@ -53,7 +56,7 @@ public class SupportScheduleDetail implements DomainValue, Comparable<SupportSch
 	 */
 	public boolean doesItFitInTheSpecifiedTimeSpan(List<TimeSpanForCalc> specifiedTimeSpans) {
 		
-		if ( this.supportType == FakeSupportType.FULL_DAY_SUPPORT ) {
+		if ( this.supportType == SupportType.ALLDAY ) {
 			return true;
 		}
 		
@@ -63,17 +66,6 @@ public class SupportScheduleDetail implements DomainValue, Comparable<SupportSch
 					duplicationCheckResult == TimeSpanDuplication.CONTAINED;
 		});
 		
-	}
-	
-	/**
-	 * 同一か
-	 * @param target 比較対象
-	 * @return
-	 */
-	public boolean isSame(SupportScheduleDetail target) {
-		return this.supportDestination == target.getSupportDestination()
-				&& this.supportType == target.getSupportType()
-				&& this.timeSpan == target.getTimeSpan();
 	}
 
 	@Override
