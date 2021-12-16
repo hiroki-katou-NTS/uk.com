@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.scherec.optitem;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -389,4 +390,58 @@ public class OptionalItem extends AggregateRoot {
 //      int index = str.indexOf(".");
 //      return str.substring(index + 1).length();
 //   	}
+    
+    
+    /**
+	 * 	[1] 任意項目に対応する日次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getDaiLyAttendanceIdByNo() {
+		return Arrays.asList(this.optionalItemNo.v()+640);
+	}
+	
+	/**
+	 * 	[2] 任意項目に対応する月次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getMonthlyAttendanceIdByNo() {
+		return Arrays.asList(this.optionalItemNo.v()+588);
+	}
+    
+	
+	/**
+	 * 	[3] 利用できない日次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getDailyAttendanceIdNotAvailable() {
+		if(this.usageAtr == OptionalItemUsageAtr.NOT_USE) {
+			return this.getDaiLyAttendanceIdByNo();
+		}
+		return new ArrayList<>();
+	}
+	
+	/**
+	 * 	[4] 利用できない月次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getMonthlyAttendanceIdNotAvailable() {
+		if(this.usageAtr == OptionalItemUsageAtr.NOT_USE) {
+			return this.getMonthlyAttendanceIdByNo();
+		}
+		return new ArrayList<>();
+	}
+
+	public OptionalItem(OptionalItemNo optionalItemNo, OptionalItemUsageAtr usageAtr) {
+		super();
+		this.optionalItemNo = optionalItemNo;
+		this.usageAtr = usageAtr;
+	}
+	
+    
+    
+    
+    
+    
+    
+    
 }

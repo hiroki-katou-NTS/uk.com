@@ -535,4 +535,14 @@ public class DivergenceTimeRoot extends AggregateRoot {
 			return 0;
 		}
 	}
+	
+	public static interface Require {
+		
+		/**
+		 * DivergenceReasonInputMethodRepository
+		 */
+//		Optional<DivergenceReasonInputMethod> getDivTimeInfo(String companyId, int divTimeNo);
+    	
+	}
+	
 }
