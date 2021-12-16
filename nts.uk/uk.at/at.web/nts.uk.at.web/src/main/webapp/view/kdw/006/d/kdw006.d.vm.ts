@@ -38,7 +38,7 @@ module nts.uk.at.view.kdw006.d.viewmodel {
             });
 
             _.extend(self.selectedRole, {
-                roleId: self.componentCcg025.currentCode
+                roleId: self.componentCcg025.currentRoleId
             });
 
             self.selectedRole.roleId.subscribe(rid => {
