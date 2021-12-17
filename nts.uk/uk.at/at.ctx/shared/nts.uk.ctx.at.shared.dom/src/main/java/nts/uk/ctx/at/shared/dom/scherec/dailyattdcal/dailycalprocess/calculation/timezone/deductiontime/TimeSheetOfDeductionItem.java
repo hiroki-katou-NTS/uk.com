@@ -601,6 +601,11 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		TimeWithDayAttr newStart = oneDayRange.getStart();
 		TimeWithDayAttr newEnd = oneDayRange.getEnd();
 		
+		//控除の場合、出退勤との重複は見ない
+		if (dedAtr == DeductionAtr.Deduction) {
+			result.add(cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(newStart, newEnd))));
+			return result;
+		}
 		//出勤時刻が含まれているか判断する
 		if(oneDayRange.getStart().lessThan(time.getTimespan().getStart())
 				&& time.getTimespan().getStart().lessThanOrEqualTo(oneDayRange.getEnd())
@@ -613,12 +618,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			if(oneDayRange.contains(time.getTimespan().getStart())){
 				newStart = time.getTimespan().getStart();
 			}
-			
-			if (dedAtr == DeductionAtr.Deduction) {
-				result.add(cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(newStart, newEnd))));
-				return result;
-			}
-		
 			switch(calcMethod) {
 				//計上しない
 				case NOT_APPROP_ALL:
@@ -851,6 +850,35 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 				
 	}
 	
+	/**
+	 * 外出の相殺時間を削除する
+	 * （私用外出、組合外出の相殺時間のみを削除して返す）
+	 * @return
+	 */
+	public TimeSheetOfDeductionItem getAfterDeleteOffsetTime() {
+		if(this.deductionAtr.isGoOut() 
+				&& this.goOutReason.isPresent()?this.goOutReason.get().isPrivateOrUnion():false) {
+			//控除相殺時間を渡さずに作成する
+			return new TimeSheetOfDeductionItem(
+					this.timeSheet.clone(),
+					this.rounding.clone(),
+					this.recordedTimeSheet.stream().map(r -> r.clone()).collect(Collectors.toList()),
+					this.deductionTimeSheet.stream().map(d -> d.clone()).collect(Collectors.toList()),
+					WorkingBreakTimeAtr.valueOf(this.workingBreakAtr.toString()),
+					this.goOutReason.isPresent()
+						? Finally.of(GoingOutReason.valueOf(this.goOutReason.get().value))
+						: Finally.empty(),
+					this.breakAtr.isPresent()
+						? Finally.of(BreakClassification.valueOf(this.breakAtr.get().toString()))
+						: Finally.empty(),
+					this.shortTimeSheetAtr.map(s -> ShortTimeSheetAtr.valueOf(s.toString())),
+					DeductionClassification.valueOf(this.deductionAtr.toString()),
+					this.childCareAtr.map(c -> ChildCareAtr.valueOf(c.value)),
+					this.recordOutside ? true : false);
+		}
+		return this.clone();
+	}
+
 	public TimeSheetOfDeductionItem clone() {
 		TimeSheetOfDeductionItem clone = new TimeSheetOfDeductionItem(
 				this.timeSheet,
@@ -888,5 +916,11 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			throw new RuntimeException("TimeSheetOfDeductionItem clone error.");
 		}
 		return clone;
+	}
+	
+	public TimeSheetOfDeductionItem reCreateOwn(TimeSpanForDailyCalc range) {
+		TimeSheetOfDeductionItem divideStartTime = this.reCreateOwn(range.getStart(), false);
+		TimeSheetOfDeductionItem correctAfterTimeSheet = divideStartTime.reCreateOwn(range.getEnd(), true);
+		return correctAfterTimeSheet;
 	}
 }

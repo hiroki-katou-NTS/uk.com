@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
@@ -37,9 +35,6 @@ public class RemainAnnualLeaveUpdating {
 	 */
 	public static AtomTask updateRemainAnnualLeave(RequireM5 require, String cid, Optional<AggrResultOfAnnualLeave> output, AggrPeriodEachActualClosure period,
 			String empId) {
-		/**　一旦コメントアウト　*/
-		/** アルゴリズム「当月以降の年休付与残数データを削除」を実行する */
-//		deleteDataAfterCurrentMonth(period, empId);
 		
 		/** 「年休情報OUTPUT」が存在するかチェック */
 		return output.map(annunal -> {
@@ -91,7 +86,7 @@ public class RemainAnnualLeaveUpdating {
 			AggrResultOfAnnualLeave output, AggrPeriodEachActualClosure period, String empId) {
 		
 		/** パラメータ「年休上限管理」を受け取る */
-		AnnualLeaveMaxData maxDataOutput = output.getAsOfPeriodEnd().getMaxData();
+		AnnualLeaveMaxData maxDataOutput = output.getAsOfStartNextDayOfPeriodEnd().getMaxData();
 		
 		/** ドメインモデル「年休上限データ」を取得する */
 		return require.annualLeaveMaxData(empId).map(annualMax -> {
@@ -132,9 +127,6 @@ public class RemainAnnualLeaveUpdating {
 				}).orElseGet(() -> {
 					
 					/** ドメインモデル「年休付与残数データ」を追加する */
-					if (StringUtil.isNullOrEmpty(data.getLeaveID(), true)) {
-						data.setLeaveID(IdentifierUtil.randomUniqueId());
-					}
 					return AtomTask.of(() -> require.addAnnualLeaveGrantRemainingData(data));
 				});
 		}).collect(Collectors.toList());
@@ -160,15 +152,6 @@ public class RemainAnnualLeaveUpdating {
 		return AtomTask.bundle(atomTask);
 	}
 
-	
-	/**
-	 * 当月以降の年休付与残数データを削除
-	 */
-//	private void deleteDataAfterCurrentMonth(AggrPeriodEachActualClosure period, String empId) {
-//		annLeaveRemainRepo.deleteAfterDate(empId, period.getPeriod().start());
-//		annLeaveRemainHistRepo.delete(empId, period.getYearMonth(), period.getClosureId(), period.getClosureDate());
-//		annLeaveTimeRemainHistRepo.deleteAfterDate(empId, period.getPeriod().start());
-//	}
 	
 
 	public static interface RequireM5 extends RequireM4, RequireM3 {
