@@ -164,7 +164,7 @@ module nts.uk.at.view.kdp010.i {
 				self.dataShare = nts.uk.ui.windows.getShared('KDP010_G');
 				self.showSelectedAudio(self.dataShare.fromScreen === 'A');
 
-				if (self.dataShare.fromScreen == 1 || self.dataShare.fromScreen == 3) {
+				if (self.dataShare.stampMeans == 1 || self.dataShare.stampMeans == 3) {
 					self.isSupportUse(null);
 				}
 
