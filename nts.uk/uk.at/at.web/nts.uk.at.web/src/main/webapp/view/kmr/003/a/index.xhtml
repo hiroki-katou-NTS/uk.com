@@ -24,7 +24,7 @@
             <ui:define name="content">
                 <div id="functions-area">
                     <!--A1_1-->
-                    <button tabindex="1" id="A1_1" class="proceed" data-bind="click: gotoScreenB, enable: $root.errors.isEmpty &amp;&amp; isEnableRegister()">#{i18n.getText('KMR003_38')}</button>
+                    <button tabindex="1" id="A1_1" class="proceed" data-bind="click: gotoScreenB, enable: isEnableRegister() &amp;&amp; $root.errors.isEmpty ">#{i18n.getText('KMR003_38')}</button>
                 </div>
                 <div id="contents-area">
                     <div class="kmr003-left-content">
