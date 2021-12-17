@@ -2,10 +2,6 @@
   padding: 15px;
 }
 
-.grid-list {
-  margin-top: 15px;
-}
-
 .date-picker {
   margin-left: 15px;
   margin-right: 10px;
@@ -13,6 +9,7 @@
 
 .two-panel {
   display: inline-flex;
+  margin-top: 15px;
 }
 
 .right-panel {

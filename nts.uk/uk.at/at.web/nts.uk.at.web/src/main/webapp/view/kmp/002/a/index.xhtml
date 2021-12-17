@@ -50,14 +50,22 @@
               <div>
                 <div id="A2_11" style="width: 30%" data-bind="ntsFormLabel: {}">#{i18n.getText('KMP002_6')}</div>
                 <input id="A2_12"
-                  data-bind="ntsTextEditor: {
-                    value: supportCardNo,
-                    constraint: 'SupportCardNumber',
-                    required: true,
-                    option: { textalign: 'left' }
-                  }, disable: $parent.mode() === $parent.NORMAL_MODE,
-                    hasFocus: $parent.isFocusInput,
-                    valueUpdate: 'afterkeydown'" />
+                  data-bind="visible: $parent.isFocusInput() === true,
+                    ntsNumberEditor: {
+                      value: supportCardNo,
+                      constraint: 'SupportCardNumber',
+                      required: true,
+                      option: { textalign: 'left' }
+                    },
+                    hasFocus: $parent.isFocusInput" />
+                <input id="A2_12"
+                  data-bind="visible: $parent.isFocusInput() === false,
+                    ntsTextEditor: {
+                      value: supportCardNo,
+                      option: { textalign: 'left' }
+                    },
+                    disable: $parent.mode() === $parent.NORMAL_MODE,
+                    hasFocus: $parent.isFocusInputText" />
               </div>
               <div style="margin-top: 20px;">
                 <div id="A2_13" style="width: 30%;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMP002_7')}</div>

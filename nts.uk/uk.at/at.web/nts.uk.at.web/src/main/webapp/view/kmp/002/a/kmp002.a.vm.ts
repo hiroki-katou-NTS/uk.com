@@ -32,7 +32,8 @@ module nts.uk.at.view.kmp002.a {
     NEW_MODE = 2;
     NORMAL_MODE = 1;
     mode: KnockoutObservable<number> = ko.observable(this.NEW_MODE);
-    isFocusInput: KnockoutObservable<boolean> = ko.observable(true);
+    isFocusInput: KnockoutObservable<boolean> = ko.observable(false);
+    isFocusInputText: KnockoutObservable<boolean> = ko.observable(false);
 
     created() {
       const self = this;
@@ -63,16 +64,23 @@ module nts.uk.at.view.kmp002.a {
         if (self.isFocusInput()) {
           self.supportCard().supportCardNo(self.supportCard().supportCardNumber + '');
         } else {
-          self.supportCard().supportCardNumber = parseInt(self.supportCard().supportCardNo());
-          self.supportCard().supportCardNo(self.editSupportCardNumber(self.supportCard().supportCardNumber));
+          const supportCardNumber = parseInt(self.supportCard().supportCardNo());
+          self.supportCard().supportCardNumber = supportCardNumber;
+          const supportCardNo = self.editSupportCardNumber(supportCardNumber);
+          const companyId = self.supportCard().companyId;
+          const companyCode = self.supportCard().companyCode;
+          const companyName = self.supportCard().companyName;
+          const workplaceId = self.supportCard().workplaceId;
+          const workplaceCode = self.supportCard().workplaceCode;
+          const workplaceName = self.supportCard().workplaceName;
+          self.supportCard(new SupportCardDto(supportCardNo, '', supportCardNumber, companyId, companyCode, companyName, workplaceId, workplaceCode, workplaceName));
         }
       });
-      // $('#A2_12').addEventLi
-      // ('keydown', (event: any) => {
-      //   if (event.keyCode < 48 || event.keyCode > 57) {
-      //     event.preventDefault();
-      //   }
-      // });
+      self.isFocusInputText.subscribe(() => {
+        if (self.isFocusInputText()) {
+          self.isFocusInput(true);
+        }
+      })
     }
 
     performInitialStartup(isInitSupportCard: boolean = false, isSetMode: boolean = false, indexSupportCard: number = 0) {
