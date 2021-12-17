@@ -34,7 +34,7 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 		val addingTicket = supportableEmployee.toTickets();
 		
 		return updateSupportScheduleBySupportTicket(require, supportableEmployee, addingTicket, 
-				(req, ticket) -> UpdateSupportScheduleBySupportTicket.add(req, ticket) );
+				UpdateSupportScheduleBySupportTicket::add );
 		
 	}
 	
@@ -59,7 +59,7 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 				.filter( ticket -> addingDates.contains(ticket.getDate()))
 				.collect(Collectors.toList());
 		val addingResult = updateSupportScheduleBySupportTicket(require, afterModify, addingTickets, 
-				(req, ticket) -> UpdateSupportScheduleBySupportTicket.add(req, ticket) );
+				UpdateSupportScheduleBySupportTicket::add );
 		if ( addingResult.isError() ) {
 			return addingResult;
 		}
@@ -73,7 +73,7 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 				.filter( ticket -> removingDates.contains(ticket.getDate()))
 				.collect(Collectors.toList());
 		val removingResult = updateSupportScheduleBySupportTicket(require, afterModify, removingTicket, 
-				(req, ticket) -> UpdateSupportScheduleBySupportTicket.remove(req, ticket) );
+				UpdateSupportScheduleBySupportTicket::remove );
 		if ( removingResult.isError() ) {
 			return removingResult;
 		}
@@ -102,7 +102,7 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 		
 		val removingTicket = supportableEmployee.toTickets();
 		return updateSupportScheduleBySupportTicket(require, supportableEmployee, removingTicket, 
-				(req, ticket) -> UpdateSupportScheduleBySupportTicket.remove(req, ticket) );
+				UpdateSupportScheduleBySupportTicket::remove );
 	}
 	
 	/**
