@@ -98,7 +98,7 @@ module nts.uk.at.view.kmp002.a {
       vm.supportCardList.removeAll();
       const loginCompany = vm.getCompanyInfo(data.companyInfos, vm.$user.companyId);
       vm.loginCompanyInfo(loginCompany);
-      vm.supportCardEdit = data.supportCardEdit;
+      vm.supportCardEdit = data.supportCardEdit !== null ? data.supportCardEdit : new SupportCardEdit(0);
       data.supportCards.forEach((item: SupportCard) => {
         const workplace = vm.getWorkplaceInfo(data.workplaceInfors, item.workplaceId);
         const company = vm.getCompanyInfo(data.companyInfos, item.companyId);
