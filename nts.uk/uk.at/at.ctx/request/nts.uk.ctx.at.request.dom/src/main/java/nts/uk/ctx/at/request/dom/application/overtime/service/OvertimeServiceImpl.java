@@ -1269,30 +1269,48 @@ public class OvertimeServiceImpl implements OvertimeService {
 			Boolean agent
 			) {
 		DisplayInfoOverTimeMobile output = new DisplayInfoOverTimeMobile();
-		DisplayInfoOverTime displayInfoOverTime;
-		if (!mode) { // 修正モード
-			// INPUT「残業申請の表示情報」と「残業申請」を返す
-			output.setAppOverTimeOp(appOptional);
-			output.setDisplayInfoOverTime(disOptional.get());
-			return output;
-		}
+
 		// PCのアルゴリズム「01_初期起動の処理」を実行する
-		displayInfoOverTime = this.getInitData(
+		DisplayInfoOverTime displayInfoOverTime = this.getInitData(
 				companyId,
 				dateOptional,
 				overtimeAppAtr,
 				appDispInfoStartupOutput,
 				Optional.empty(),
 				Optional.empty(),
-				false);
-		output.setDisplayInfoOverTime(displayInfoOverTime);	
+				false
+		);
+
+		if (displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().getTimeCalUse() == NotUseAtr.NOT_USE && overtimeAppAtr == OvertimeAppAtr.MULTIPLE_OVERTIME)
+			throw new BusinessException("Msg_3237");
+
+		if (!mode) { // 修正モード
+			// INPUT「残業申請の表示情報」と「残業申請」を返す
+			output.setAppOverTimeOp(appOptional);
+			output.setDisplayInfoOverTime(disOptional.get());
+			return output;
+		}
+
+		output.setDisplayInfoOverTime(displayInfoOverTime);
+
+		Integer prePost = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getPrePostAtr().value;
+		if (overtimeAppAtr == OvertimeAppAtr.MULTIPLE_OVERTIME && dateOptional.isPresent() && employeeIdOptional.isPresent()) {
+			output.setAppOverTimeOp(appOverTimeRepository.findLatestMultipleOvertimeApp(
+					employeeIdOptional.get(),
+					dateOptional.get(),
+					EnumAdaptor.valueOf(prePost, PrePostAtr.class)
+			));
+		}
+
 		return output;
 	}
 
 	@Override
 	public DisplayInfoOverTime changeDateMobile(
 			String companyId,
+			String employeeId,
 			GeneralDate date,
+			PrePostAtr prePostAtr,
 			DisplayInfoOverTime displayInfoOverTime) {
 		
 		List<GeneralDate> dates = new ArrayList<>();
@@ -1310,7 +1328,13 @@ public class OvertimeServiceImpl implements OvertimeService {
 		displayInfoOverTime.getAppDispInfoStartup().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		// 申請日に関する情報を取得する
 		commonAlgorithmOverTime.changeApplicationDate(companyId, date, displayInfoOverTime);
-		
+		if (displayInfoOverTime.getOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
+			displayInfoOverTime.setLatestMultipleOvertimeApp(appOverTimeRepository.findLatestMultipleOvertimeApp(
+					employeeId,
+					date,
+					prePostAtr
+			));
+		}
 		return displayInfoOverTime;
 	}
 
@@ -1514,8 +1538,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 					workContent,
 					displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet(),
 					agent,
-					new ArrayList<>(),
-					new ArrayList<>(),
+					appOverTime.getMultipleTimesOp().isPresent() ? appOverTime.getMultipleTimesOp().get().getOvertimeHours() : new ArrayList<>(),
+					appOverTime.getMultipleTimesOp().isPresent() ? appOverTime.getMultipleTimesOp().get().getOvertimeReasons() : new ArrayList<>(),
 					opAchievementDetail
 			);
 			displayInfoOverTime.setCalculationResultOp(temp.getCalculationResultOp());

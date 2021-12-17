@@ -363,14 +363,8 @@ export class KafS05Component extends KafS00ShrComponent {
     }
 
 
-
-
     public created() {
         const vm = this;
-
-
-        
-
         if (!_.isNil(vm.params) && vm.params.isDetailMode) {
             vm.modeNew = false;
             let model = {} as Model;
@@ -385,6 +379,8 @@ export class KafS05Component extends KafS00ShrComponent {
                 vm.overTimeClf = 0;
             } else if (vm.$route.query.overworkatr == '1') {
                 vm.overTimeClf = 1;
+            } else if (vm.$route.query.overworkatr == '3') {
+                vm.overTimeClf = 3;
             } else {
                 vm.overTimeClf = 2;
             }
@@ -396,11 +392,13 @@ export class KafS05Component extends KafS00ShrComponent {
             vm.overTimeClf = 2;
         }
         if (vm.overTimeClf == 0) {
-            vm.pgName = 'kafs05step1';
+            vm.pgName = 'kafs05PgName1';
         } else if (vm.overTimeClf == 1) {
-            vm.pgName = 'kafs05step2';
+            vm.pgName = 'kafs05PgName2';
+        } else if (vm.overTimeClf == 3) {
+            vm.pgName = 'kafs05PgName4';
         } else {
-            vm.pgName = 'kafs05step3';
+            vm.pgName = 'kafs05PgName3';
         }
     }
     public mounted() {
@@ -418,6 +416,8 @@ export class KafS05Component extends KafS00ShrComponent {
                 vm.overTimeClf = 0;
             } else if (vm.$route.query.overworkatr == '1') {
                 vm.overTimeClf = 1;
+            } else if (vm.$route.query.overworkatr == '3') {
+                vm.overTimeClf = 3;
             } else {
                 vm.overTimeClf = 2;
             }
@@ -518,7 +518,9 @@ export class KafS05Component extends KafS00ShrComponent {
         self.$mask('show');
         let command = {
             companyId: self.user.companyId,
+            employeeId: !_.isEmpty(self.application.employeeIDLst) ? self.application.employeeIDLst[0] : self.user.employeeId,
             date,
+            prePostAtr: self.application.prePostAtr,
             displayInfoOverTime: self.model.displayInfoOverTime,
             agent: false
         };
@@ -564,7 +566,6 @@ export class KafS05Component extends KafS00ShrComponent {
 
     public kaf000BChangeDate(objectDate) {
         const self = this;
-        console.log('emit' + objectDate);
         if (objectDate.startDate) {
             if (self.modeNew) {
                 self.application.appDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
@@ -578,19 +579,45 @@ export class KafS05Component extends KafS00ShrComponent {
 
     public kaf000BChangePrePost(prePostAtr) {
         const self = this;
-        console.log('emit' + prePostAtr);
         self.application.prePostAtr = prePostAtr;
+        if (self.getoverTimeClf == 3 && self.date && self.modeNew) {
+            self.$mask('show');
+            self.$http.post('at', API.getLatestMultiApp, {
+                employeeId: !_.isEmpty(self.application.employeeIDLst) ? self.application.employeeIDLst[0] : self.user.employeeId,
+                dateOp: self.date,
+                prePost: prePostAtr
+            }).then((res: any) => {
+                const step1 = self.$refs.step1 as KafS05Step1Component;
+                if (res.data && res.data.latestMultiOvertimeApp) {
+                    step1.loadDataLatestMultiOvertime(res.data.latestMultiOvertimeApp);
+                } else {
+                    step1.loadDataFromDisplayInfo(self.model.displayInfoOverTime);
+                }
+                self.$nextTick(() => {
+                    self.$mask('hide');
+                });
+            }).catch((error) => {
+                self.$nextTick(() => {
+                    self.$mask('hide');
+                });
+                // xử lý lỗi nghiệp vụ riêng
+                self.handleErrorCustom(error).then((result: any) => {
+                    if (result) {
+                        // xử lý lỗi nghiệp vụ chung
+                        self.handleErrorCommon(error);
+                    }
+                });
+            });
+        }
     }
 
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {
         const self = this;
-        console.log('emit' + opAppStandardReasonCD);
         self.application.opAppStandardReasonCD = opAppStandardReasonCD;
     }
 
     public kaf000CChangeAppReason(opAppReason) {
         const self = this;
-        console.log('emit' + opAppReason);
         self.application.opAppReason = opAppReason;
     }
     public toAppOverTime() {
@@ -655,9 +682,18 @@ export class KafS05Component extends KafS00ShrComponent {
                     }
                 });
             }
-
+            if (self.getoverTimeClf == 3) {
+                appOverTimeInsert.multipleOvertimeContents = step1.multiOverTimes
+                    .filter((item) => item.valueHours && (!!item.valueHours.start || !!item.valueHours.end))
+                    .map((item, index) => ({
+                        frameNo: index + 1,
+                        startTime: item.valueHours.start,
+                        endTime: item.valueHours.end,
+                        fixedReasonCode: item.fixedReasonCode,
+                        appReason: item.appReason
+                    }));
+            }
         }
-
 
         return appOverTimeInsert;
     }
@@ -914,8 +950,8 @@ export class KafS05Component extends KafS00ShrComponent {
         const vm = this;
 
         return new Promise((resolve) => {
-            if (failData.messageId == 'Msg_197') {
-                vm.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+            if (failData.messageId == 'Msg_197' || (!vm.modeNew && failData.messageId == 'Msg_3237')) {
+                vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds }).then(() => {
                     let appID = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
                     vm.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData: InitParam) => {
                         vm.params = newData;
@@ -932,11 +968,13 @@ export class KafS05Component extends KafS00ShrComponent {
                             vm.overTimeClf = 2;
                         }
                         if (vm.overTimeClf == 0) {
-                            vm.pgName = 'kafs05step1';
+                            vm.pgName = 'kafs05PgName1';
                         } else if (vm.overTimeClf == 1) {
-                            vm.pgName = 'kafs05step2';
+                            vm.pgName = 'kafs05PgName2';
+                        } else if (vm.overTimeClf == 3) {
+                            vm.pgName = 'kafs05PgName4';
                         } else {
-                            vm.pgName = 'kafs05step3';
+                            vm.pgName = 'kafs05PgName3';
                         }
                         vm.fetchData();
                     });
@@ -945,10 +983,22 @@ export class KafS05Component extends KafS00ShrComponent {
                 return resolve(false);
             }
 
-            if (failData.messageId == 'Msg_26') {
+            if (failData.messageId == 'Msg_26' || (vm.modeNew && failData.messageId == 'Msg_3237')) {
                 vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
                     .then(() => {
                         vm.$goto('ccg008a');
+                    });
+
+                return resolve(false);
+            }
+
+            if (failData.messageId == 'Msg_3238' || failData.messageId == 'Msg_3248') {
+                vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+                    .then(() => {
+                        let content = document.getElementsByClassName('multi-overtime-contents');
+                        if (!_.isEmpty(content)) {
+                            content[0].scrollIntoView();
+                        }
                     });
 
                 return resolve(false);
@@ -1226,11 +1276,13 @@ export class KafS05Component extends KafS00ShrComponent {
             vm.overTimeClf = 2;
         }
         if (vm.overTimeClf == 0) {
-            vm.pgName = 'kafs05step1';
+            vm.pgName = 'kafs05PgName1';
         } else if (vm.overTimeClf == 1) {
-            vm.pgName = 'kafs05step2';
+            vm.pgName = 'kafs05PgName2';
+        } else if (vm.overTimeClf == 3) {
+            vm.pgName = 'kafs05PgName4';
         } else {
-            vm.pgName = 'kafs05step3';
+            vm.pgName = 'kafs05PgName3';
         }
         vm.fetchData();
     }
@@ -1265,11 +1317,13 @@ export class KafS05Component extends KafS00ShrComponent {
             vm.overTimeClf = 2;
         }
         if (vm.overTimeClf == 0) {
-            vm.pgName = 'kafs05step1';
+            vm.pgName = 'kafs05PgName1';
         } else if (vm.overTimeClf == 1) {
-            vm.pgName = 'kafs05step2';
+            vm.pgName = 'kafs05PgName2';
+        } else if (vm.overTimeClf == 3) {
+            vm.pgName = 'kafs05PgName4';
         } else {
-            vm.pgName = 'kafs05step3';
+            vm.pgName = 'kafs05PgName3';
         }
         vm.fetchData();
     }
@@ -1284,7 +1338,7 @@ const API = {
     checkBeforeRegister: 'at/request/application/overtime/mobile/checkBeforeInsert',
     register: 'at/request/application/overtime/mobile/insert',
     reflectApp: 'at/request/application/reflect-app',
-
+    getLatestMultiApp: 'at/request/application/overtime/latestMultiApp',
     sendMailAfterRegisterSample: ''
 };
 

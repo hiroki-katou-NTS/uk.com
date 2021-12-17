@@ -79,6 +79,45 @@
         </div>
     </div>
 
+    <!-- B9_1 -->
+    <div class="card card-label" v-if="dataOutput && dataOutput.appOverTime && dataOutput.appOverTime.overTimeClf == 3">
+        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+            <span class="textPosition">{{ "KAFS05_92" | i18n }}</span>
+        </div>
+    </div>
+    <div v-if="dataOutput && dataOutput.appOverTime && dataOutput.appOverTime.overTimeClf == 3">
+        <div v-if="multiOverTimes.length == 0">{{'KAFS05_54' | i18n}}</div>
+        <div
+                v-for="(item, index) in multiOverTimes"
+                v-bind:key="index"
+                :value="index"
+        >
+            <div class="row mt-1 mb-1">
+                <!-- B9_2 -->
+                <div class="col-4 textSize"> {{ "KAFS05_91" | i18n([index + 1]) }} </div>
+                <!-- B9_3 -->
+                <div class="col-8 row">
+                    <div class="col-1.5 pl-3 pr-1 text-left">
+                        {{item.startTime | timewd}}
+                    </div>
+                    <div class="col-0 pl-0 pr-0 text-center">
+                        ~
+                    </div>
+                    <div class="col-1.5 text-left pl-1">
+                        {{item.endTime | timewd}}
+                    </div>
+                </div>
+            </div>
+            <!-- B9_4 -->
+            <div class="row mt-1 mb-1 ml-3" v-if="comboReasonDisp">
+                {{comboReason(item.fixedReasonCode)}}
+            </div>
+            <!-- B9_4 -->
+            <div class="row mt-1 mb-1 ml-3" v-if="textReasonDisp">
+                {{item.appReason}}
+            </div>
+        </div>
+    </div>
 
     <!-- B4_1 -->
     <div class="card card-label" v-if="c3">
