@@ -52,7 +52,7 @@ public class AttItemNameDto {
 		this.typeOfAttendanceItem = domain.getTypeOfAttendanceItem();
 		this.nameLineFeedPosition = domain.getNameLineFeedPosition();
 		this.frameCategory = domain.getFrameCategory();
-		this.authority = new AttItemAuthorityDto(domain.getAuthority());
+		this.authority = domain.getAuthority() == null ? new AttItemAuthorityDto(): new AttItemAuthorityDto(domain.getAuthority());
 		this.frameNo = domain.getFrameNo();
 		this.attendanceAtr = domain.getAttendanceAtr();
 		this.dailyAttendanceLinkingList = domain.getDailyAttendanceLinkingList() == null? new ArrayList<FrameNoAdapter1Dto>() : domain.getDailyAttendanceLinkingList().stream().map(c -> new FrameNoAdapter1Dto(c)).collect(Collectors.toList());
