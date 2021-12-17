@@ -135,7 +135,11 @@ module nts.uk.at.kmr003.a {
                     
                     vm.receptionNames(nameLst);
                     if (param) {
-                        vm.selectedReception(param.selectedReception);
+                        if (param.selectedReception) {
+                            vm.selectedReception(param.selectedReception);
+                        } else {
+                            vm.selectedReception('1');
+                        }
                     } else {
                         vm.selectedReception('1');
                     }

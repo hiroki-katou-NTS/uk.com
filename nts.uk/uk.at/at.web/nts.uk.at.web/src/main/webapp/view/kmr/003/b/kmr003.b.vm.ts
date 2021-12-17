@@ -20,6 +20,7 @@ module nts.uk.at.kmr003.b {
         condition5: KnockoutObservable<boolean> = ko.observable(false);
         hasErrorsGrid: KnockoutObservable<boolean> = ko.observable(false);
         disableAllRow: KnockoutObservable<boolean> = ko.observable(false);
+        isDateError: KnockoutObservable<boolean> = ko.observable(false);
     
         created(param: any) {
             const vm = this;
@@ -60,7 +61,11 @@ module nts.uk.at.kmr003.b {
             });
 
             if (param) {
-                vm.selectedReception(param.selectedReception);
+                if (param.selectedReception) {
+                    vm.selectedReception(param.selectedReception);
+                } else {
+                    vm.selectedReception('1');
+                }
             }
 
             
@@ -73,6 +78,9 @@ module nts.uk.at.kmr003.b {
             vm.date.subscribe((value) => {
                 if (value) {
                     vm.startReservation();
+                    vm.isDateError(false);
+                } else {
+                    vm.isDateError(true);
                 }
             });
     

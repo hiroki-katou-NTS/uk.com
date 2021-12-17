@@ -26,7 +26,7 @@
                     <!-- <button class="proceed goback" data-bind="click: backToA">#{i18n.getText('KMR003_41')}</button> -->
                     <a class="goback link-button" style="background-color: #f1fdfb;height: 30px !important;" data-bind="click: backToA, text: $i18n('KMR003_41')">#{i18n.getText('KMR003_41')}</a>
                     <!-- B1_2 -->
-                    <button data-bind="click: createNew, text: $i18n('KMR003_42'), enable: condition3"></button>
+                    <button data-bind="click: createNew, text: $i18n('KMR003_42'), enable: condition3() &amp;&amp; !isDateError()"></button>
                     <!-- B1_3 -->
                     <button class="proceed" data-bind="click: register, text: $i18n('KMR003_43'), enable: condition3() &amp;&amp; condition5() &amp;&amp; hasErrorsGrid() &amp;&amp; !disableAllRow() &amp;&amp; $root.errors.isEmpty"></button>
                 </div>
