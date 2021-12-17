@@ -1135,6 +1135,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	
 	@Getter
 	@AllArgsConstructor
+	/** 36協定時間集計結果*/
 	public static class AgreementTimeResult {
 		
 		private List<MonthlyAggregationErrorInfo> error = new ArrayList<>();

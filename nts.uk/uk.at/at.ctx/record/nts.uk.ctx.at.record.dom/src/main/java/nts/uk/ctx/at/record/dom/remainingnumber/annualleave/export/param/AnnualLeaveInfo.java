@@ -212,7 +212,6 @@ public class AnnualLeaveInfo implements Cloneable {
 
 		this.annualPaidLeaveSet = annualPaidLeaveSet;
 
-		// ○年休情報．年月日を開始日に更新
 		this.ymd = aggregatePeriodWork.getPeriod().end();
 
 		// ○付与処理
@@ -223,7 +222,7 @@ public class AnnualLeaveInfo implements Cloneable {
 				aggrResult);
 
 		// ○エラーをチェックする
-		List<AnnualLeaveError> lstError = checkError(aggregatePeriodWork);
+		List<AnnualLeaveError> lstError = checkError(aggregatePeriodWork, companyId, require);
 
 		// 期間終了退避処理
 		periodEndSaveProcess(companyId, employeeId, aggregatePeriodWork, aggrResult);
@@ -290,7 +289,6 @@ public class AnnualLeaveInfo implements Cloneable {
 		while (itrGrantRemainingNumber.hasNext()) {
 			val grantRemainingNumber = itrGrantRemainingNumber.next();
 
-			// 期限日が年休集計期間WORK.期間.終了日でなければ、消滅処理しない
 			if (!grantRemainingNumber.getDeadline().equals(aggregatePeriodWork.getPeriod().end())) {
 				continue;
 			}
@@ -403,7 +401,6 @@ public class AnnualLeaveInfo implements Cloneable {
 
 			if (!aggregatePeriodWork.getPeriod().contains(tempAnnualLeaveMng.getYmd()))
 				continue;
-
 			// 年休を消化する
 
 			// 年休付与残数を取得
@@ -482,17 +479,6 @@ public class AnnualLeaveInfo implements Cloneable {
 				}
 			}
 
-			// 時間年休消化日一覧に追加をする
-			{
-				// 消化できた時間 ＞０
-				if (leaveUsedTime.v() > 0) {
-					// 消化日←年月日
-					// ※注意
-					// 同じ年月日が既にリストにあったとしても追加する
-					digestDateList.add(tempAnnualLeaveMng.getYmd());
-				}
-			}
-
 			// 消化する
 			this.maxData = this.maxData.digest(tempAnnualLeaveMng);
 
@@ -545,13 +531,13 @@ public class AnnualLeaveInfo implements Cloneable {
 		// 時間年休を消化できた件数を求める
 		int digestTimes = digestDateList.size();
 		// 年休（マイナスなし）．使用数．時間年休使用回数←時間年休消化日数一覧の件数
-		this.getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
+		this.getRemainingNumber().getAnnualLeaveNoMinus().getUsedNumberInfo()
 				.setAnnualLeaveUsedTimes(new UsedTimes(digestTimes));
 
 		// 時間年休を消化できた日の件数を求める
 		int digestDayTimes = digestDateList.stream().distinct().collect(Collectors.toList()).size(); // 日付をユニークに取得
 		// 年休（マイナスなし）．使用数．時間年休使用日数←時間年休消化日数一覧の内同じ消化日を除いた件数
-		this.getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
+		this.getRemainingNumber().getAnnualLeaveNoMinus().getUsedNumberInfo()
 				.setAnnualLeaveUsedDayTimes(new UsedTimes(digestDayTimes));
 	}
 
@@ -562,7 +548,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	 *            年休集計期間WORK
 	 * @return List<年休エラー>
 	 */
-	public List<AnnualLeaveError> checkError(AggregatePeriodWork aggregatePeriodWork) {
+	public List<AnnualLeaveError> checkError(AggregatePeriodWork aggregatePeriodWork, String companyId, LeaveRemainingNumber.RequireM3 require ) {
 
 		List<AnnualLeaveError> annualLeaveErrors = new ArrayList<AnnualLeaveError>();
 
@@ -576,7 +562,7 @@ public class AnnualLeaveInfo implements Cloneable {
 		// 付与前付与後を判断する
 		GrantBeforeAfterAtr grantAtr = aggregatePeriodWork.getGrantWork().judgeGrantPeriodAtr();
 		// エラーチェック
-		annualLeaveErrors.addAll(this.maxData.ErroeCheck(grantAtr));
+		annualLeaveErrors.addAll(this.maxData.ErroeCheck(grantAtr, companyId, require));
 
 		return annualLeaveErrors;
 	}

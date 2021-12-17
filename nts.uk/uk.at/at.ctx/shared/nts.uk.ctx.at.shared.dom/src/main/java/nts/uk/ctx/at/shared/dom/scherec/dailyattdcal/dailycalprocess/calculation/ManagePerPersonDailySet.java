@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -8,6 +10,10 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
@@ -35,6 +41,12 @@ public class ManagePerPersonDailySet {
 	
 	/** 加給設定 */
 	private Optional<BonusPaySetting> bonusPaySetting;
+	
+	/** 残業時間帯Require */
+	private OverTimeSheet.TransProcRequire overTimeSheetReq;
+
+	/** 社員単価履歴 */
+	private Optional<EmployeeUnitPriceHistoryItem> unitPrice;
 	
 	/** 平日時の所定時間設定
 	 *年休、欠勤の場合に実績に就業時間帯が埋まっていない時に使用する。
@@ -68,8 +80,9 @@ public class ManagePerPersonDailySet {
 			Optional<BonusPaySetting> bonusPaySetting,
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay,
 			Optional<FlexMonthWorkTimeAggrSet> flexBasicSet,
-			FactoryManagePerPersonDailySet.Require require) {
-		
+			FactoryManagePerPersonDailySet.Require require,
+			OverTimeSheet.TransProcRequire overTimeSheetReq,
+			Optional<EmployeeUnitPriceHistoryItem> unitPrice) {
 		super();
 		this.ymd = ymd;
 		this.personInfo = personInfo;
@@ -79,5 +92,7 @@ public class ManagePerPersonDailySet {
 		this.predetermineTimeSetByPersonWeekDay = predetermineTimeSetByPersonWeekDay;
 		this.flexBasicSet = flexBasicSet;
 		this.require = require;
+		this.overTimeSheetReq = overTimeSheetReq;
+		this.unitPrice = unitPrice;
 	}
 }

@@ -35,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 //import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 
@@ -178,9 +179,9 @@ public class OutingTimeOfDaily {
 							.map(o -> o.getTimeVacationUseOfDaily())
 							.findFirst());
 			//計上用合計時間
-			recordTotalTime = OutingTotalTime.calcOutingTime(oneDay, DeductionAtr.Appropriate, reason, outingCalcSet); 
+			recordTotalTime = calcOutingTimeDeductAppro(oneDay, reason, outingCalcSet, DeductionAtr.Appropriate); 
 			//控除用合計時間
-			dedTotalTime = OutingTotalTime.calcOutingTime(oneDay, DeductionAtr.Deduction, reason, outingCalcSet);
+			dedTotalTime = calcOutingTimeDeductAppro(oneDay, reason, outingCalcSet, DeductionAtr.Deduction);
 			//補正後時間帯 
 			
 			/** 相殺休暇使用時間を補正する */
@@ -198,6 +199,26 @@ public class OutingTimeOfDaily {
 				dedTotalTime,
 				correctedTimeSheet,
 				offsetTime);
+	}
+	
+	//外出合計時間の計算
+	private static OutingTotalTime calcOutingTimeDeductAppro(CalculationRangeOfOneDay oneDay,
+			GoingOutReason reason,
+			Optional<OutingCalcWithinCoreTime> outingCalcSet, DeductionAtr deductAtr) {
+		
+		//外出時間の計算
+		OutingTotalTime recordTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet,
+				deductAtr == DeductionAtr.Deduction ? NotUseAtr.NOT_USE : NotUseAtr.USE);
+
+		//計算外出時間の計算
+		OutingTotalTime calcTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet, NotUseAtr.NOT_USE);
+		
+		return OutingTotalTime.of(
+				TimeWithCalculation.mergeTimeAndCalcTime(recordTotalTime.getTotalTime(), calcTotalTime.getTotalTime()),
+				WithinOutingTotalTime.mergeTimeAndCalcTime(recordTotalTime.getWithinTotalTime(),
+						calcTotalTime.getWithinTotalTime()),
+				TimeWithCalculation.mergeTimeAndCalcTime(recordTotalTime.getExcessTotalTime(),
+						calcTotalTime.getExcessTotalTime()));
 	}
 	
 	/**
@@ -271,7 +292,7 @@ public class OutingTimeOfDaily {
 	 */
 	public AttendanceTime calcVacationAddTime(
 			AddSettingOfWorkingTime calcMethodSet,
-			Optional<HolidayAddtionSet> holidayAddtionSet,
+			HolidayAddtionSet holidayAddtionSet,
 			DeductionTimeSheet deductionTimeSheet,
 			WorkTimeForm workTimeForm) {
 		
@@ -285,7 +306,7 @@ public class OutingTimeOfDaily {
 		//計算計上用外出時間
 		AttendanceTime outCalcTime = deductionTimeSheet.getDeductionTotalTime(records, false).getTotalTime().getCalcTime();
 		
-		return holidayAddtionSet.get().getAddTime(this.timeVacationUseOfDaily, outCalcTime, workTimeForm);
+		return holidayAddtionSet.getAddTime(this.timeVacationUseOfDaily, outCalcTime, workTimeForm);
 	}
 	
 	public static OutingTimeOfDaily createDefaultWithReason(GoingOutReason reason) {

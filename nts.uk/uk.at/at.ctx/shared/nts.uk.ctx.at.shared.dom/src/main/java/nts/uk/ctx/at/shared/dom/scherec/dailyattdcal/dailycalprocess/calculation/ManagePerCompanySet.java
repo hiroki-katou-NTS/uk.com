@@ -6,10 +6,12 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BPTimeItemSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.shorttimework.CalcOfShortTimeWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
@@ -19,6 +21,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidayprio
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.service.HistAnPerCost;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
@@ -72,8 +76,9 @@ public class ManagePerCompanySet {
 	//0時跨ぎの設定
 	Optional<ZeroTime> zeroTime;
 	
+	/** 人件費計算設定 */
 	@Setter
-	List<PersonnelCostSettingImport> personnelCostSettings;
+	HistAnPerCost personnelCostSetting;
 
 	@Setter
 	Optional<UpperLimitTotalWorkingHour> upperControl;
@@ -113,6 +118,7 @@ public class ManagePerCompanySet {
 			List<FormulaDispOrder> formulaOrderList,
 			List<EmpCondition> empCondition,
 			Optional<ZeroTime> zeroTime,
+			HistAnPerCost personCostCalculation,
 			Optional<UpperLimitTotalWorkingHour> upperControl,
 			Optional<UsageUnitSetting> usageSetting,
 			MidNightTimeSheet midNightTimeSheet,
@@ -135,7 +141,7 @@ public class ManagePerCompanySet {
 		this.formulaOrderList = formulaOrderList;
 		this.empCondition = empCondition;
 		this.zeroTime = zeroTime;
-		this.personnelCostSettings = Collections.emptyList();
+		this.personnelCostSetting = personCostCalculation;
 		this.upperControl = upperControl;
 		this.usageSetting = usageSetting;
 		this.midNightTimeSheet = midNightTimeSheet;

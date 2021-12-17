@@ -247,7 +247,6 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			PremiumAtr premiumAtr,
 			Optional<WorkTimezoneCommonSet> commonSetting,
 			NotUseAtr lateEarlyMinusAtr,
-			Optional<AttendanceTime> limitAddTime,
 			WithinWorkTimeSheet parentSheet) {
 		
 		// 労働時間の加算設定を取得する
@@ -277,13 +276,16 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				lateDecisionClock,
 				leaveEarlyDecisionClock);
 		workTime = new AttendanceTime(workTime.valueAsMinutes() - lateEarlyDiductionTime.valueAsMinutes());
-		// 休暇加算するかどうか判断
-		if (addSetting.isAddVacation(premiumAtr) == NotUseAtr.USE){
-			// 就業時間に加算する時間休暇相殺時間を取得
-			AttendanceTime timeVacationOffsetTime = this.getTimeVacationOffsetTimeForAddWorkTime(
-					integrationOfWorkTime, premiumAtr, commonSetting, holidayAddtionSet, addSetOfWorkTime,
-					limitAddTime, lateEarlyMinusAtr);
-			workTime = new AttendanceTime(workTime.valueAsMinutes() + timeVacationOffsetTime.valueAsMinutes());
+		// 就業時間に加算する時間休暇相殺時間を取得
+		AttendanceTime timeVacationOffsetTime = this.getTimeVacationOffsetTimeForAddWorkTime(
+				integrationOfDaily, integrationOfWorkTime, addSetting, holidayAddtionSet);
+		workTime = new AttendanceTime(workTime.valueAsMinutes() + timeVacationOffsetTime.valueAsMinutes());
+		if(this.leaveEarlyTimeSheet.isPresent() && this.leaveEarlyTimeSheet.get().getForDeducationTimeSheet().isPresent()) {
+			//休暇加算によって、就業時間から溢れて残業になる時間帯
+			TimeSpanForDailyCalc overTimebyTimeVacation = new TimeSpanForDailyCalc(
+					this.timeSheet.getEnd(),
+					this.leaveEarlyTimeSheet.get().getForDeducationTimeSheet().get().getAfterRoundingAsLeaveEarly().getStart());
+			workTime = new AttendanceTime(workTime.valueAsMinutes() - overTimebyTimeVacation.lengthAsMinutes());
 		}
 		// 丸め処理
 		TimeRoundingSetting rounding = this.getRounding();
@@ -1130,11 +1132,6 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				beforeLateEarlyTimeSheet = beforeLateEarlyTimeSheet.shiftOnlyEnd(leaveEarlyCalcRange.get().getEnd());
 			}
 		}
-		//遅刻早退控除前時間帯に終了時刻が含まれていたら、終了時刻を変更する
-		if (endTime.isPresent() && beforeLateEarlyTimeSheet.contains(endTime.get())){
-			beforeLateEarlyTimeSheet = beforeLateEarlyTimeSheet.shiftOnlyEnd(
-					new TimeWithDayAttr(endTime.get().valueAsMinutes()));
-		}
 		return beforeLateEarlyTimeSheet;
 	}
 	
@@ -1227,9 +1224,9 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 
 	/**
 	 * 就業時間に加算する時間休暇相殺時間を取得
+	 * @param integrationOfDaily 日別実績(WORK)
 	 * @param integrationOfWorkTime 統合就業時間帯
-	 * @param premiumAtr 割増区分
-	 * @param commonSetting 就業時間帯の共通設定
+	 * @param addSetting 加算設定
 	 * @param holidayAddtionSet 休暇加算時間設定
 	 * @param addSetOfWorkTime 労働時間の加算設定
 	 * @param limitAddTime 時間休暇を加算できる上限時間
@@ -1237,29 +1234,28 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	 * @return 相殺時間
 	 */
 	public AttendanceTime getTimeVacationOffsetTimeForAddWorkTime(
+			IntegrationOfDaily integrationOfDaily,
 			Optional<IntegrationOfWorkTime> integrationOfWorkTime,
-			PremiumAtr premiumAtr,
-			Optional<WorkTimezoneCommonSet> commonSetting,
-			HolidayAddtionSet holidayAddtionSet,
-			AddSettingOfWorkingTime addSetOfWorkTime,
-			Optional<AttendanceTime> limitAddTime,
-			NotUseAtr lateEarlyMinusAtr){
-		
-		// 相殺時間
-		TimeVacationWork offsetTime = this.getTimeVacationOffsetTime();
-		// 加算対象合計時間
-		TimeVacationWork addTarget = offsetTime.getValueForAddWorkTime(
-				integrationOfWorkTime, premiumAtr, commonSetting, holidayAddtionSet, addSetOfWorkTime,
-				offsetTime, lateEarlyMinusAtr);
-		
-		if (!limitAddTime.isPresent()) return addTarget.total();
-		
-		// 加算時間
-		int addMinutes = Math.min(limitAddTime.get().valueAsMinutes(), addTarget.total().valueAsMinutes());
-		int limitMinutes = limitAddTime.get().valueAsMinutes() - addMinutes;
-		limitAddTime = Optional.of(new AttendanceTime(limitMinutes));
-		
-		return new AttendanceTime(addMinutes);
+			AddSetting addSetting,
+			HolidayAddtionSet holidayAddtionSet) {
+		if(!integrationOfWorkTime.isPresent()) {
+			return AttendanceTime.ZERO;
+		}
+		List<WithinWorkTimeFrame> frames = new ArrayList<>();
+		frames.add(this);
+		DeductionTimeSheet deductionTimeSheet = new DeductionTimeSheet(
+				this.deductionTimeSheet,
+				this.recordedTimeSheet,
+				integrationOfDaily.getBreakTime(),
+				integrationOfDaily.getOutingTime(), 
+				integrationOfDaily.getShortTime().map(c -> c.getShortWorkingTimeSheets()).orElse(new ArrayList<>()));
+		// 時間休暇加算時間を計算する
+		return holidayAddtionSet.calcTimeVacationAddTime(
+				integrationOfDaily,
+				deductionTimeSheet,
+				addSetting.getVacationCalcMethodSet(),
+				frames,
+				integrationOfWorkTime.get().getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm());
 	}
 	
 	/**
@@ -1294,5 +1290,39 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			results.add(result);
 		}
 		return results;
+	}
+	
+	/**
+	 * 重複する時間帯で作り直す
+	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 就業時間内時間枠
+	 */
+	public Optional<WithinWorkTimeFrame> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		Optional<TimeSpanForDailyCalc> duplicate = this.timeSheet.getDuplicatedWith(timeSpan);
+		if(!duplicate.isPresent()) {
+			return Optional.empty();
+		}
+		WithinWorkTimeFrame recreated = new WithinWorkTimeFrame(
+				new EmTimeFrameNo(this.workingHoursTimeNo.v().intValue()),
+				new WorkNo(this.workNo.v()),
+				duplicate.get(),
+				this.beforeLateEarlyTimeSheet.getDuplicatedWith(duplicate.get()).orElse(duplicate.get()),
+				this.rounding.clone(),
+				this.recordedTimeSheet.stream().map(t->t.getAfterDeleteOffsetTime()).collect(Collectors.toList()),
+				this.deductionTimeSheet.stream().map(t->t.getAfterDeleteOffsetTime()).collect(Collectors.toList()),
+				this.getDuplicatedBonusPayNotStatic(this.bonusPayTimeSheet, duplicate.get()),
+				this.midNightTimeSheet.getDuplicateRangeTimeSheet(duplicate.get()),
+				this.getDuplicatedSpecBonusPayzNotStatic(this.specBonusPayTimesheet, duplicate.get()),
+				this.lateTimeSheet.flatMap(l -> l.recreateWithDuplicate(duplicate.get(), this.getCloneDeductionTimeSheet(), commonSet.get())),
+				this.leaveEarlyTimeSheet.flatMap(l -> l.recreateWithDuplicate(duplicate.get(), this.getCloneDeductionTimeSheet(), commonSet.get())));
+		
+		//所定内時間帯を重複する時間帯で作り直す
+		recreated.premiumTimeSheetInPredetermined = recreated.premiumTimeSheetInPredetermined.flatMap(p -> p.recreateWithDuplicate(duplicate.get()));
+		
+		//控除時間帯の登録
+		recreated.registDeductionListForWithin(this.getCloneDeductionTimeSheet(), commonSet);
+		
+		return Optional.of(recreated);
 	}
 }

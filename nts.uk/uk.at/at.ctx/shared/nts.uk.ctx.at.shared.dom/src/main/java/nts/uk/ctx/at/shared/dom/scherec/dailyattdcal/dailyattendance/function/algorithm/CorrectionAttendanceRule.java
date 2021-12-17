@@ -62,52 +62,51 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 
 	@Inject
 	private AttendanceItemConvertFactory attendanceItemConvertFactory;
-	
+
 	@Inject
 	private OptionalItemRepository optionalItem;
-	
+
 	@Inject
 	private CorrectionAfterTimeChange correctionAfterTimeChange;
 
 	@Inject
 	private CorrectionAfterChangeWorkInfo correctionAfterChangeWorkInfo;
-	
+
 	@Inject
 	private CommonCompanySettingForCalc companyCommonSettingRepo;
-	
+
 	@Inject
 	private FactoryManagePerPersonDailySet personDailySetFactory;
-	
+
 	@Inject
 	private FixedWorkSettingRepository fixWorkSetRepo;
-	
+
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSetRepo;
-	
+
 	@Inject
 	private CreateOneDayRangeCalc createOneDayRangeCalc;
-	
-	@Inject 
+
+	@Inject
 	private WorkTypeRepository workTypeRepo;
-	
+
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepo;
-	
+
 	@Inject
 	private FlowWorkSettingRepository flowWorkSettingRepo;
-	
+
 	@Inject
 	private FlexWorkSettingRepository flexWorkSettingRepo;
-	
+
 	@Inject
 	private SupportWorkAdapter supportAdapter;
 
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepo;
-	
+
 	@Inject
 	private WorkingConditionRepository workingConditionRepo;
-	
 	@Inject
 	private CorrectionShortWorkingHour correctShortWorkingHour;
 	
@@ -116,7 +115,7 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 	public IntegrationOfDaily process(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
 
 		String companyId = AppContexts.user().companyId();
-		
+
 		val optionalItems = 
 				optionalItem.findAll(companyId).stream()
 				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
@@ -133,12 +132,12 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		// 社員の労働条件を取得する
 		Optional<WorkingConditionItem> workCondOpt = WorkingConditionService.findWorkConditionByEmployee(createImp(),
 				domainDaily.getEmployeeId(), domainDaily.getYmd());
-		
+
 		// 勤怠変更後の補正
 		IntegrationOfDaily afterDomain = correctionAfterTimeChange
 				.corection(domainDaily, changeAtt, workCondOpt).getRight();
 
-		if (changeAtt.workInfo || changeAtt.isDirectBounceClassifi()) {
+		if (changeAtt.workInfo || changeAtt.isDirectBounceClassifi() ) {
 			// 変更する勤怠項目を確認
 			//// 勤務情報変更後の補正
 			afterDomain = correctionAfterChangeWorkInfo.correction(companyId, afterDomain, workCondOpt,
@@ -148,12 +147,13 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		
 		//出退勤変更後の補正
 		if(changeAtt.attendance) {
+
 			SupportDataWorkImport workImport = supportAdapter.correctionAfterChangeAttendance(afterDomain);
 			
 			if(workImport != null)
 				afterDomain = workImport.getIntegrationOfDaily().orElse(afterDomain);
 		}
-		
+
 		if(changeAtt.workInfo || changeAtt.isDirectBounceClassifi() || changeAtt.attendance) {
 		//短時間勤務の補正
 			afterDomain = correctShortWorkingHour.correct(companyId, afterDomain);
@@ -166,7 +166,7 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		DailyRecordToAttendanceItemConverter afterConverter = attendanceItemConvertFactory.createDailyConverter().setData(afterDomain)
 				.completed();
 		if(!beforeItems.isEmpty()) afterConverter.merge(beforeItems);
-		
+
 		IntegrationOfDaily integrationOfDaily = afterConverter.toDomain();
 		integrationOfDaily.setOuenTimeSheet(afterDomain.getOuenTimeSheet());
 		return integrationOfDaily;
@@ -190,68 +190,68 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 	}
 
 	private BreakTimeSheetCorrector.RequireM1 createBreakRequire(Map<Integer, OptionalItem> optionalItems) {
-		
+
 		return new BreakTimeSheetCorrector.RequireM1() {
-			
+
 			@Override
 			public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 
 				return fixWorkSetRepo.findByKey(companyId, workTimeCode.v());
 			}
-			
+
 			@Override
 			public Optional<PredetemineTimeSetting> predetemineTimeSetting(String cid, WorkTimeCode workTimeCode) {
 				
 				return predetemineTimeSetRepo.findByWorkTimeCode(cid, workTimeCode.v());
 			}
-			
+
 			@Override
 			public CalculationRangeOfOneDay createOneDayRange(
 					IntegrationOfDaily integrationOfDaily, Optional<WorkTimezoneCommonSet> commonSet, WorkType workType,
 					JustCorrectionAtr justCorrectionAtr, Optional<WorkTimeCode> workTimeCode) {
-				
+
+
 				return createOneDayRangeCalc.createOneDayRange(integrationOfDaily, commonSet, workType, justCorrectionAtr, workTimeCode);
 			}
-			
+
 			@Override
 			public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCd) {
-
-				return workTypeRepo.findByDeprecated(companyId, workTypeCd.v());
+				return workTypeRepo.findByPK(companyId, workTypeCd.v());
 			}
-			
+
 			@Override
 			public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
 
 				return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
 			}
-			
+
 			@Override
 			public ManagePerCompanySet managePerCompanySet() {
 
 				return companyCommonSettingRepo.getCompanySetting();
 			}
-			
+
 			@Override
 			public Optional<ManagePerPersonDailySet> managePerPersonDailySet(String sid, GeneralDate ymd, IntegrationOfDaily dailyRecord) {
-				
+
 				return personDailySetFactory.create(AppContexts.user().companyId(), sid, ymd, dailyRecord);
 			}
-			
+
 			@Override
 			public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 
 				return flowWorkSettingRepo.find(companyId, workTimeCode.v());
 			}
-			
+
 			@Override
 			public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 
 				return flexWorkSettingRepo.find(companyId, workTimeCode.v());
 			}
-			
+
 			@Override
 			public DailyRecordToAttendanceItemConverter createDailyConverter() {
-				
+
 				return attendanceItemConvertFactory.createDailyConverter(optionalItems);
 			}
 		};

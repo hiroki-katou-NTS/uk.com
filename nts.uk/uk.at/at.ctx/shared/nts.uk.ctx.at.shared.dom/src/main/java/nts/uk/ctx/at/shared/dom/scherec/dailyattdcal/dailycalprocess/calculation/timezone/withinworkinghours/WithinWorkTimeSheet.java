@@ -589,7 +589,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					premiumAtr,
 					commonSetting,
 					lateEarlyMinusAtr,
-					limitAddTime,
 					this)
 					.valueAsMinutes();
 		}
@@ -751,10 +750,10 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @return 控除時間
 	 */
 	public AttendanceTime getDeductionTime(
-			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr) {
+			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr, NotUseAtr canOffset) {
 		
 		return ActualWorkTimeSheetListService.calcDeductionTime(conditionAtr, dedAtr, roundAtr,
-				this.withinWorkTimeFrame.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()));
+				this.withinWorkTimeFrame.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()), canOffset);
 	}
 	
 	/**
@@ -880,12 +879,12 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		if(isDeductLateTime && timeLeavingWork.getStampOfAttendance().isPresent()){
 			//出退勤．出勤 ← 遅刻時間帯終了時刻
 			timeLeavingWork.getStampOfAttendance().get().getTimeDay().setTimeWithDay(
-					Optional.of(lateDeducation.getTimeSheet().getEnd()));
+					Optional.of(lateDeducation.getAfterRoundingAsLate().getEnd()));
 			
 			//時間帯．開始 ← 遅刻時間帯終了時刻
 			this.withinWorkTimeFrame.stream()
 					.filter(c -> c.getWorkingHoursTimeNo().v() == workNo)
-					.findFirst().ifPresent(c -> c.shiftStart(lateDeducation.getTimeSheet().getEnd()));
+					.findFirst().ifPresent(c -> c.shiftStart(lateDeducation.getAfterRoundingAsLate().getEnd()));
 		}
 		return timeLeavingWork;
 	}
@@ -952,7 +951,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		if(!within.getLeaveEarlyTimeSheet().isPresent() || !within.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().isPresent()) {
 			return timeLeavingWork;
 		}
-		//遅刻控除時間帯
+		//早退控除時間帯
 		LateLeaveEarlyTimeSheet leaveEarlyDeducation = within.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get();
 		// 控除判断処理
 		boolean isDeductLateTime = addSetOfWorkTime.getAddSetOfWorkTime().decisionLateDeductSetting(
@@ -963,14 +962,14 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				integrationOfWorkTime.getCommonSetting().getLateEarlySet());
 		//控除する場合
 		if(isDeductLateTime && timeLeavingWork.getStampOfLeave().isPresent()){
-			//出退勤．退勤 ← 早退時間帯終了時刻 
+			//出退勤．退勤 ← 早退時間帯開始時刻 
 			timeLeavingWork.getStampOfLeave().get().getTimeDay().setTimeWithDay(
-				 Optional.of(leaveEarlyDeducation.getTimeSheet().getStart()));
+				 Optional.of(leaveEarlyDeducation.getAfterRoundingAsLeaveEarly().getStart()));
 			
-			//時間帯．終了 ← 早退時間帯終了時刻
+			//時間帯．終了 ← 早退時間帯開始時刻
 			this.withinWorkTimeFrame.stream()
 					.filter(c -> c.getWorkingHoursTimeNo().v() == workNo)
-					.findFirst().ifPresent(c -> c.shiftEnd(leaveEarlyDeducation.getTimeSheet().getStart()));
+					.findFirst().ifPresent(c -> c.shiftEnd(leaveEarlyDeducation.getAfterRoundingAsLeaveEarly().getStart()));
 		}
 		return timeLeavingWork;
 	}
@@ -986,6 +985,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param deductionTimeSheet 控除時間帯
 	 * @param creatingWithinWorkTimeSheet 就業時間内時間帯（遅刻早退を事前に求めた結果が入っている）
 	 * @param timeVacationWork 時間休暇WORK
+	 * @param timeLeavingOfDaily 日別勤怠の出退勤
 	 * @return 就業時間内時間帯
 	 */
 	public static WithinWorkTimeSheet createAsFlow(
@@ -997,17 +997,21 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			PredetermineTimeSetForCalc predetermineTimeSet,
 			DeductionTimeSheet deductionTimeSheet,
 			WithinWorkTimeSheet creatingWithinWorkTimeSheet,
-			TimeVacationWork timeVacationWork) {
+			TimeVacationWork timeVacationWork,
+			TimeLeavingOfDailyAttd timeLeavingOfDaily) {
 		
 		// 1回目の開始
-		TimeWithDayAttr startTime = creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().get(0).getTimeSheet().getStart();
+		Optional<TimeWithDayAttr> startTime = timeLeavingOfDaily.getAttendanceLeavingWork(new WorkNo(1)).flatMap(t -> t.getAttendanceTime());
+		if(!startTime.isPresent()) {
+			return creatingWithinWorkTimeSheet;
+		}
 		// 就業時間内時間帯を作成
 		creatingWithinWorkTimeSheet.createWithinWorkTimeSheetAsFlowWork(
 				personDailySetting,
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
-				startTime,
+				startTime.get(),
 				deductionTimeSheet,
 				integrationOfWorkTime.getFlowWorkSetting().get(),
 				predetermineTimeSet,
@@ -1079,19 +1083,19 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					holidayAdditionSet);
 			int totalVacationAddMinutes = vacationAddTime.calcTotaladdVacationAddTime();
 			// 時間休暇加算時間を計算する
-			AttendanceTime timeVacationAddTime = this.calcTimeVacationAddTime(
+			AttendanceTime timeVacationAddTime = holidayAdditionSet.map(h -> h.calcTimeVacationAddTime(
 					integrationOfDaily,
 					deductionTimeSheet,
 					personDailySetting.getAddSetting().getAddSetOfWorkingTime(),
-					holidayAdditionSet,
-					integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm());
+					this.withinWorkTimeFrame,
+					integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm())).orElse(AttendanceTime.ZERO);
 			// 経過時間を計算する
 			int elapsedMinutes =
 					elapsedTime.valueAsMinutes() - totalVacationAddMinutes - timeVacationAddTime.valueAsMinutes();
 			// 経過時間から終了時刻を計算
 			endTime = this.withinWorkTimeFrame.get(0).getTimeSheet().getStart().forwardByMinutes(elapsedMinutes);
 			// 上限実働就業時間をセット
-			this.limitActualWorkTime = Optional.of(new AttendanceTime(elapsedMinutes));
+			this.limitActualWorkTime = Optional.empty();
 			
 			// 控除時間帯と重複している分、退勤時刻を後ろにずらす
 			endTime = new TimeSpanForDailyCalc(startTime, endTime).forwardByDeductionTime(deductionTimeSheet.getForDeductionTimeZoneList());
@@ -1326,8 +1330,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		for (WithinWorkTimeFrame frame : this.withinWorkTimeFrame){
 			// 就業時間に加算する時間休暇相殺時間を取得
 			AttendanceTime addTime = frame.getTimeVacationOffsetTimeForAddWorkTime(
-					integrationOfWorkTime, premiumAtr, commonSetting, holidayAddtionSet,
-					addSetOfWorkTime, limitTime, lateEarlyMinusAtr);
+					integrationOfDaily, integrationOfWorkTime, addSetting, holidayAddtionSet);
 			totalAddMinutes += addTime.valueAsMinutes();
 		}
 		return new AttendanceTime(totalAddMinutes);
@@ -1474,15 +1477,21 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	
 	/**
 	 * 就業時間内時間枠(List)の最初の開始時刻～最後の終了時刻を求める
-	 * @param withinWorkTimeFrame 就業時間内時間枠(List)
 	 * @return 最初の開始時刻～最後の終了時刻
 	 */
-	public Optional<TimeSpanForDailyCalc> getStartEndToWithinWorkTimeFrame() {
-		
-		if(this.withinWorkTimeFrame.isEmpty()) return Optional.empty();
-		TimeWithDayAttr start = this.withinWorkTimeFrame.get(0).getTimeSheet().getStart();
-		TimeWithDayAttr end = this.withinWorkTimeFrame.get(this.withinWorkTimeFrame.size()-1).getTimeSheet().getEnd();
-		return Optional.of(new TimeSpanForDailyCalc(start, end));
+	public Optional<TimeSpanForDailyCalc> getFirstStartAndLastEnd() {
+		Optional<TimeWithDayAttr> start = this.withinWorkTimeFrame.stream()
+				.map(t -> t.getTimeSheet().getStart())
+				.sorted((f, s) -> f.compareTo(s))
+				.findFirst();
+		Optional<TimeWithDayAttr> end = this.withinWorkTimeFrame.stream()
+				.map(t -> t.getTimeSheet().getEnd())
+				.sorted((f, s) -> s.compareTo(f))
+				.findFirst();
+		if(!start.isPresent() || !end.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.of(new TimeSpanForDailyCalc(start.get(), end.get()));
 	}
 	
 	/**
@@ -1544,5 +1553,29 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		List<TimeSpanForCalc> results = timeSpan.getNotDuplicatedWith(target);
 		// 結果を返す
 		return results;
+	}
+
+	/**
+	 * 重複する時間帯で作り直す
+	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 就業時間内時間帯
+	 */
+	public WithinWorkTimeSheet recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		List<WithinWorkTimeFrame> frames = this.withinWorkTimeFrame.stream()
+				.filter(t -> t.getTimeSheet().checkDuplication(timeSpan).isDuplicated())
+				.collect(Collectors.toList());
+		
+		List<WithinWorkTimeFrame> duplicate = frames.stream()
+				.map(f -> f.recreateWithDuplicate(timeSpan, commonSet))
+				.filter(f -> f.isPresent())
+				.map(f -> f.get())
+				.collect(Collectors.toList());
+		
+		return new WithinWorkTimeSheet(
+				duplicate,
+				this.shortTimeSheet,
+				this.leaveEarlyDecisionClock,
+				this.lateDecisionClock);
 	}
 }

@@ -44,8 +44,9 @@ public class MonthlyStatutoryWorkingHours {
 				.map(flexMonthUnit -> new MonthlyFlexStatutoryLaborTime(flexMonthUnit.getLaborTime().getLegalLaborTime(), 
 																		flexMonthUnit.getLaborTime().getWithinLaborTime()
 																			.orElseGet(() -> new MonthlyEstimateTime(0)), 
-																		flexMonthUnit.getLaborTime().getWeekAvgTime().get()))
-				.orElseGet(() -> new MonthlyFlexStatutoryLaborTime());
+																		flexMonthUnit.getLaborTime().getWeekAvgTime()
+																			.orElseGet(() -> new MonthlyEstimateTime(0))))
+				.orElseGet(() -> MonthlyFlexStatutoryLaborTime.zeroMonthlyFlexStatutoryLaborTime());
 	}
 	
 	/**
