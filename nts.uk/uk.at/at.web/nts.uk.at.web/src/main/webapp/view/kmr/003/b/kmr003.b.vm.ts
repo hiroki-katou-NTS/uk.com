@@ -233,6 +233,7 @@ module nts.uk.at.kmr003.b {
                     cellStates.push({ rowId: empId, columnKey: 'ordered', state: ['mgrid-disable'] });
                 }
                 
+                cellStates.push({ rowId: empId, columnKey: 'employeeName', state: ['limited-label', 'padding-3'] });
                 cellStates.push({ rowId: empId, columnKey: 'deleteFlg', state: ['align-center'] });
                 cellStates.push({ rowId: empId, columnKey: 'ordered', state: ['align-center'] });
             }
