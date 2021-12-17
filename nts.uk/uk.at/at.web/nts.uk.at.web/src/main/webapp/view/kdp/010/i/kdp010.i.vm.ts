@@ -150,7 +150,7 @@ module nts.uk.at.view.kdp010.i {
 					}
 					self.contentsStampType(tg);
 					self.isUseWork(data.workUse);
-					if (self.dataShare.stampMeans != 1 || self.dataShare.stampMeans != 3) {
+					if (self.dataShare.stampMeans != 1 && self.dataShare.stampMeans != 3) {
 						self.isSupportUse(data.supportUse);
 					}
 					dfd.resolve();
