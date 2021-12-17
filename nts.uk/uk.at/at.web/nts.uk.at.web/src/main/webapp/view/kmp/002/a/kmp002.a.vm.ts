@@ -221,11 +221,14 @@ module nts.uk.at.view.kmp002.a {
         if (vm.supportCard().supportCardNo() === '') {
           return;
         }
-        vm.supportCard().supportCardNumber = parseInt(vm.supportCard().supportCardNo());
+        const supportCardId = vm.supportCard().supportCardNo();
+        const supportCard = vm.supportCard();
         vm.$ajax(API.REGISTER_SUPPORT_CARD, vm.supportCard())
           .then((data: any) => {
             vm.$dialog.info({ messageId: "Msg_15" });
-            vm.performInitialStartup(true, true);
+            vm.currentCard(supportCardId);
+            vm.supportCard(supportCard);
+            vm.performInitialStartup(false, true);
           }).fail((err) => {
             vm.$dialog.error({ messageId: err.messageId });
           });
@@ -303,7 +306,9 @@ module nts.uk.at.view.kmp002.a {
         vm.supportCard().workplaceCode,
         vm.supportCard().workplaceName);
       vm.supportCard(data);
-      vm.currentCard(vm.supportCard().supportCardId);
+      if (vm.mode() === vm.NORMAL_MODE) {
+        vm.currentCard(vm.supportCard().supportCardId);
+      }
     }
 
     applyBaseDate() {
@@ -316,17 +321,20 @@ module nts.uk.at.view.kmp002.a {
       }
       vm.$ajax(API.GET_REGISTRATION_INFO_CARD, param)
         .then((data: any) => {
+          const supportCardNo = vm.supportCard().supportCardNo();
+          const supportCardNumber = vm.supportCard().supportCardNumber;
+          const companyId = vm.supportCard().companyId;
+          const companyCode = vm.supportCard().companyCode;
+          const companyName = vm.supportCard().companyName;
+          const workplaceId = vm.supportCard().workplaceId;
+          const workplaceCode = vm.supportCard().workplaceCode;
+          let workplaceName = '';
           if (data) {
-            const supportCardNo = vm.supportCard().supportCardNo();
-            const supportCardNumber = vm.supportCard().supportCardNumber;
-            const companyId = vm.supportCard().companyId;
-            const companyCode = vm.supportCard().companyCode;
-            const companyName = data.companyName;
-            const workplaceId = vm.supportCard().workplaceId;
-            const workplaceCode = vm.supportCard().workplaceCode;
-            const workplaceName = workplaceId ? data.workplaceName : '';
-            vm.supportCard(new SupportCardDto(supportCardNo, supportCardNo, supportCardNumber, companyId, companyCode, companyName, workplaceId, workplaceCode, workplaceName));
+            workplaceName = data.workplaceName;
+          } else {
+            workplaceName = param.baseDate + ' 時点の名称なし';
           }
+          vm.supportCard(new SupportCardDto(supportCardNo, supportCardNo, supportCardNumber, companyId, companyCode, companyName, workplaceId, workplaceCode, workplaceName));
         });
     }
 
