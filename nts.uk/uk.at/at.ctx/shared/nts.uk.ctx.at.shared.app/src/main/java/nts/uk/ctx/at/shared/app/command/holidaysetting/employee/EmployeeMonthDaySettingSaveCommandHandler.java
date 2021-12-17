@@ -41,7 +41,8 @@ public class EmployeeMonthDaySettingSaveCommandHandler extends CommandHandler<Em
 	
 		// save data
 		if(optional.isPresent()){
-			this.repository.update(domain);
+			this.repository.remove(domain);
+			this.repository.add(domain);
 		} else {
 			this.repository.add(domain);
 		}
