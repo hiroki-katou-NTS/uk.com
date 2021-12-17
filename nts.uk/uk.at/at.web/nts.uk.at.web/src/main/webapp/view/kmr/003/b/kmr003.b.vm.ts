@@ -301,18 +301,14 @@ module nts.uk.at.kmr003.b {
 
             let output: any = vm.convertRowToCommand(false);
             let command = output.command;
+            let errors2297: any[] = [];
             if (output.errors.length > 0) {
-                let errors: any[] = [];
                 _.forEach(output.errors, (x: any) => {
                     let param = x.employeeCode + ' ' + x.employeeName;
                     let message = vm.$i18n.message("Msg_2297", [param]);
-                    errors.push({ message: message, messageId: "Msg_2297", supplements: {} });
+                    errors2297.push({ message: message, messageId: "Msg_2297", supplements: {} });
                 })
-                errors = _.sortBy(errors, ['message']);
-                nts.uk.ui.dialog.bundledErrors({
-                    errors: errors
-                });
-                return;
+                errors2297 = _.sortBy(errors2297, ['message']);
             }
 
             vm.$blockui('grayout');
@@ -322,13 +318,20 @@ module nts.uk.at.kmr003.b {
                     _.forEach(res, (x: any) => {
                         let message = vm.$i18n.message(x.messageId, x.params);
                         errors.push({ message: message, messageId: x.messageId, supplements: {} });
-                    })
+                    });
+                    errors = errors.concat(errors2297);
                     errors = _.sortBy(errors, ['message']);
                     nts.uk.ui.dialog.bundledErrors({
                         errors: errors
                     }).then(() => vm.startReservation());
                 } else {
-                    vm.$dialog.info({ messageId: "Msg_15"}).then(() => vm.startReservation());
+                    if (errors2297.length > 0) {
+                        nts.uk.ui.dialog.bundledErrors({
+                            errors: errors2297
+                        }).then(() => vm.startReservation());
+                    } else {
+                        vm.$dialog.info({ messageId: "Msg_15"}).then(() => vm.startReservation());
+                    }
                 }
             }).fail((err) => {
                 if (err) {
@@ -437,6 +440,10 @@ module nts.uk.at.kmr003.b {
                                 employeeCode: emp.employeeCode, 
                                 employeeName: emp.businessName
                             })
+
+                            if (!isDelete) {
+                                continue;
+                            }
                         }
     
                         // add 1 reservation record to list command
