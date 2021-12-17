@@ -21,6 +21,7 @@ module nts.uk.at.kmr003.b {
         hasErrorsGrid: KnockoutObservable<boolean> = ko.observable(false);
         disableAllRow: KnockoutObservable<boolean> = ko.observable(false);
         isDateError: KnockoutObservable<boolean> = ko.observable(false);
+        dateParam: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
     
         created(param: any) {
             const vm = this;
@@ -31,6 +32,7 @@ module nts.uk.at.kmr003.b {
                 vm.receptionHours2(param.receptionHours2);
                 vm.orderMngAtr(param.orderMngAtr);
                 vm.date(param.correctionDate);
+                vm.dateParam(param.correctionDate);
                 vm.empIds = param.empIds;
             }
 
@@ -288,7 +290,7 @@ module nts.uk.at.kmr003.b {
 
             let param = {
                 employeeList: _.map(vm.listEmpInfo, x => {return { id: x.employeeId, code: x.employeeCode, name: x.businessName, workplaceName: null  }}), 
-                correctionDate: vm.date(), 
+                correctionDate: vm.dateParam() ? vm.dateParam() : vm.date(), 
                 selectedReception: vm.selectedReception()
             }
             vm.$jump("../a/index.xhtml", param);
