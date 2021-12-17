@@ -16,14 +16,16 @@ public interface SupportableEmployeeRepository {
 
 	/**
 	 * insert
+	 * @param cid 会社ID
 	 * @param domain 応援可能な社員
 	 */
-	public void insert(SupportableEmployee domain);
+	public void insert(String cid, SupportableEmployee domain);
 	/**
 	 * update
+	 * @param cid 会社ID
 	 * @param domain 応援可能な社員
 	 */
-	public void update(SupportableEmployee domain);
+	public void update(String cid, SupportableEmployee domain);
 	/**
 	 * delete
 	 * @param id 応援可能な社員ID

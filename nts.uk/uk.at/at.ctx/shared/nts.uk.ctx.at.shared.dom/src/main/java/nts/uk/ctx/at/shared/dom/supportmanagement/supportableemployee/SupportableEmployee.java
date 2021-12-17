@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  */
 @Getter
 @AllArgsConstructor
-public class SupportableEmployee extends AggregateRoot {
+public class SupportableEmployee implements DomainAggregate {
 
 	/** Serializable */
 	@SuppressWarnings("unused") private static final long serialVersionUID = 1L;
