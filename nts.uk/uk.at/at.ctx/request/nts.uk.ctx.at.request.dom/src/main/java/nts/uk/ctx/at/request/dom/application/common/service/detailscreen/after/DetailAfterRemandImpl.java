@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -29,6 +27,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.OutGoingMail
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
@@ -83,9 +82,10 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	 * 11-2.詳細画面差し戻し後の処理
 	 */
 	@Override
-	public MailSenderResult doRemand(String companyID, RemandCommand remandCm) {
+	public MailResult doRemand(String companyID, RemandCommand remandCm) {
 		List<String> successList = new ArrayList<>();
-		List<String> errorList = new ArrayList<>();
+		List<String> failList = new ArrayList<>();
+		List<String> failServerList = new ArrayList<>();
 		boolean isSendMail = true;
 		for (String appID : remandCm.getAppID()) {
 			Application application = applicationRepository.findByID(companyID, appID).get();
@@ -98,13 +98,15 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			String reSname = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
 			String remandReason = GeneralDate.today().toString() + "　" + reSname + "⇒" + destination + "：" + "\n" + remandCm.getRemandReason();
 			application.setOpReversionReason(Optional.of(new ReasonForReversion(remandReason)));
+			//UPDATE ドメインモデル「申請」
+			applicationRepository.update(application);
 			Optional<AppTypeSetting> opAppTypeSetting = Optional.empty();
 			Optional<ApplicationSetting> opApplicationSetting = applicationSettingRepository.findByCompanyId(companyID);
 			if(opApplicationSetting.isPresent()) {
 				opAppTypeSetting = opApplicationSetting.get().getAppTypeSettings().stream()
 						.filter(x -> x.getAppType()==application.getAppType()).findAny();
 			}
-			MailSenderResult mailResult = new MailSenderResult(new ArrayList<>(), new ArrayList<>());
+			MailResult mailResult = new MailResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 			if (order != null) {// 差し戻し先が承認者の場合
 				//Imported（承認申請）「差し戻しする（承認者まで）」-(Imported（approvalApplication）「trả về（đến  approver）」)
 				//RequestList482
@@ -127,6 +129,8 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {
 					reflectionStatusOfDay.setScheReflectStatus(ReflectedState.REMAND);
 				}
+				//UPDATE ドメインモデル「申請」
+				applicationRepository.update(application);
 				// 暫定データの登録
 				List<GeneralDate> dateLst = new ArrayList<>();
 				GeneralDate startDate = application.getOpAppStartDate().map(x -> x.getApplicationDate()).orElse(application.getAppDate().getApplicationDate());
@@ -139,20 +143,19 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 					mailResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()), remandReason, isSendMail);
 				}
 			}
-			successList.addAll(mailResult.getSuccessList());
-			errorList.addAll(mailResult.getErrorList());
-			//UPDATE ドメインモデル「申請」
-			applicationRepository.update(application);
+			successList.addAll(mailResult.getSuccessList().stream().distinct().collect(Collectors.toList()));
+			failList.addAll(mailResult.getFailList().stream().distinct().collect(Collectors.toList()));
+			failServerList.addAll(mailResult.getFailServerList().stream().distinct().collect(Collectors.toList()));
 			isSendMail = false;
 		}
-		return new MailSenderResult(successList, errorList);
+		return new MailResult(successList, failList, failServerList);
 	}
 
 	@Override
-	public MailSenderResult getMailSenderResult(Application application, List<String> employeeList, String returnReason, boolean isSendMail) {
+	public MailResult getMailSenderResult(Application application, List<String> employeeList, String returnReason, boolean isSendMail) {
 		//doi ung kaf011 - tranh spam mail
 		if(!isSendMail){
-			return new MailSenderResult(new ArrayList<>(), new ArrayList<>());
+			return new MailResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		}
 		String applicantID = application.getEmployeeID();
 		String mailTitle = "";
@@ -167,19 +170,22 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		mailBody = appEmailSet.getEmailContentLst().stream().findFirst().map(x -> x.getOpEmailText().map(y -> y.v()).orElse("")).orElse("");
 //		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(AppContexts.user().companyId());
 		List<String> successList = new ArrayList<>();
-		List<String> errorList = new ArrayList<>();
-		
+		List<String> failList = new ArrayList<>();
+		List<String> failServerList = new ArrayList<>();
 		// Using RQL 419 instead (1 not have mail)
 		//get list mail by list sID
 		List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, employeeList, 6);
 //		Optional<AppDispName> appDispName = repoAppDispName.getDisplay(application.getAppType().value);
-		String appName = "";
+		String appName = application.getAppType().name;
 //		if(appDispName.isPresent()){
 //			appName = appDispName.get().getDispName().v();
 //		}
 		//get mail login
 		List<MailDestinationImport> lstMailLogin = envAdapter.getEmpEmailAddress(cid, Arrays.asList(sidLogin), 6);
-		List<OutGoingMailImport> mailLogin = lstMailLogin.get(0).getOutGoingMails();
+		List<OutGoingMailImport> mailLogin = lstMailLogin.stream()
+				.findFirst()
+				.map(mail -> mail.getOutGoingMails())
+				.orElse(Collections.emptyList());
 		String loginMail = mailLogin.isEmpty() ||  mailLogin.get(0) == null || mailLogin.get(0).getEmailAddress() == null ? "" :
 					mailLogin.get(0).getEmailAddress();
 		//get name login
@@ -217,18 +223,18 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 					//{9}差し戻し理由 //ver2
 					returnReason);
 			if (Strings.isBlank(employeeMail)) {
-				errorList.add(I18NText.getText("Msg_768", employeeName));
+				failList.add(employeeName);
 				continue;
 			} else {
 				try {
 					mailsender.sendFromAdmin(employeeMail, new MailContents(mailTitle, mailContentToSend));
 					successList.add(employeeName);
 				} catch (Exception ex) {
-					throw new BusinessException("Msg_1057");
+					failServerList.add(employeeName);
 				}
 			}
 		}
-		return new MailSenderResult(successList, errorList);
+		return new MailResult(successList, failList, failServerList);
 	}
 	
 	private String getRemandEmailEmbeddedURL(String appID, ApplicationType appType, PrePostAtr prePostAtr,

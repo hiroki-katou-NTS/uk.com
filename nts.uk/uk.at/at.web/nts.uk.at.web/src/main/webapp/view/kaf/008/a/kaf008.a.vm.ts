@@ -41,9 +41,13 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 				}
 			}
 			let empLst: Array<string> = [],
-				dateLst: Array<string> = [];
+				dateLst: Array<string> = [],
+				screenCode: number = null;
             vm.isSendMail = ko.observable(false);
 			if (!_.isEmpty(params)) {
+				if (!nts.uk.util.isNullOrUndefined(params.screenCode)) {
+					screenCode = params.screenCode;
+				}
 				if (!_.isEmpty(params.employeeIds)) {
 					empLst = params.employeeIds;
 				}
@@ -59,8 +63,14 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 				}
 			}
             // 起動する
+			let paramKAF000 = {
+				empLst, 
+				dateLst, 
+				appType: vm.appType(),
+				screenCode
+			};
             vm.$blockui("show");
-            vm.loadData(empLst, dateLst, vm.appType())
+            vm.loadData(paramKAF000)
                 .then((loadDataFlag: boolean) => {
                     if (loadDataFlag) {
 						vm.application().employeeIDLst(empLst);
@@ -267,7 +277,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
             if (err && err.messageId) {
                 // 年月日＋#Msg_ID
-                if ( _.includes(["Msg_23","Msg_24","Msg_1912","Msg_1913","Msg_457","Msg_1685"], err.messageId)) {
+                if ( _.includes(["Msg_23","Msg_24","Msg_1913","Msg_457","Msg_1685"], err.messageId)) {
                     err.message = err.parameterIds[0] + err.message;
                 }
 
@@ -289,7 +299,6 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                         break;
                     }
                     case "Msg_1685":
-                    case "Msg_1912":
                     case "Msg_1913": {
                         let id = '#' + err.parameterIds[0].replace(/\//g, "") + '-tmCode';
                         vm.$errors({

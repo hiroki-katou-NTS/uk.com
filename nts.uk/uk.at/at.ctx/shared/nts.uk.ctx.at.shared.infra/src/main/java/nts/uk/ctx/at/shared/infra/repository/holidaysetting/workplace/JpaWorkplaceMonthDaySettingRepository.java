@@ -62,8 +62,8 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 		if (result.isEmpty()) {
 			return new ArrayList<>();
 		}
-		Map<Integer, List<KshmtHdpubDPerMWkp>> entityAll = result.stream()
-				.collect(Collectors.groupingBy(x -> x.getKshmtWkpMonthDaySetPK().getManageYear(), Collectors.toList()));
+		Map<String, List<KshmtHdpubDPerMWkp>> entityAll = result.stream()
+				.collect(Collectors.groupingBy(x -> x.getKshmtWkpMonthDaySetPK().getWkpId(), Collectors.toList()));
 		return entityAll.entrySet().stream().map(x -> new WorkplaceMonthDaySetting(new JpaWorkplaceMonthDaySettingGetMemento(x.getValue())))
 				.collect(Collectors.toList());
 	}
@@ -199,12 +199,9 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 		
 		for(Year year:years){
 			List<KshmtHdpubDPerMWkp> result = this.findBy(companyId, workplaceId, year, null, null);
-			// Check continue
-			if (result.isEmpty()) {
-				continue;
+			if (!result.isEmpty()) {	
+				domain.add(new WorkplaceMonthDaySetting(new JpaWorkplaceMonthDaySettingGetMemento(result)));
 			}
-		
-			domain.add(new WorkplaceMonthDaySetting(new JpaWorkplaceMonthDaySettingGetMemento(result)));
 		}
 		return domain;
 	}
