@@ -32,7 +32,7 @@ public class KrcmtRestrictConfirmEmployment extends ContractUkJpaEntity implemen
 	 * 就業確定を行う
 	 */
 	 @Column(name = "USAGE_ATR")
-	 public int usageAtr;
+	 public boolean usageAtr;
 
 	@Override
 	protected Object getKey() {
@@ -40,12 +40,12 @@ public class KrcmtRestrictConfirmEmployment extends ContractUkJpaEntity implemen
 	}
 	
 	public RestrictConfirmEmployment toDomain() {
-        return new RestrictConfirmEmployment(this.restrictConfirmEmploymentPk.cid, this.usageAtr == 0 ? false : true);
+        return new RestrictConfirmEmployment(this.restrictConfirmEmploymentPk.cid, this.usageAtr);
     }
 	
     public static KrcmtRestrictConfirmEmployment toEntity(RestrictConfirmEmployment domain) {
         return new KrcmtRestrictConfirmEmployment(
-        		new KrcmtRestrictConfirmEmploymentPk(domain.getCompanyID()), domain.isConfirmEmployment() ? 1 : 0
+        		new KrcmtRestrictConfirmEmploymentPk(domain.getCompanyID()), domain.isConfirmEmployment()
         		);
     }
 }

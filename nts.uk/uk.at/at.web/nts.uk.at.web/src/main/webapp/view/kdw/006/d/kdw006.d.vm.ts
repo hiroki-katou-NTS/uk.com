@@ -38,7 +38,7 @@ module nts.uk.at.view.kdw006.d.viewmodel {
             });
 
             _.extend(self.selectedRole, {
-                roleId: self.componentCcg025.currentCode
+                roleId: self.componentCcg025.currentRoleId
             });
 
             self.selectedRole.roleId.subscribe(rid => {
@@ -133,6 +133,8 @@ module nts.uk.at.view.kdw006.d.viewmodel {
         getFuncRest(roleId: string): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            if(!roleId || roleId.length === 0) return dfd.promise();
+
             service.findFuncRest(roleId).done(function(res: Array<FuncRestItem>) {
                 if (res.every((el: FuncRestItem) => el.availability == null)) {
                     self.mode(MODE.NEW);
@@ -253,8 +255,10 @@ module nts.uk.at.view.kdw006.d.viewmodel {
         roleCode: KnockoutObservable<string>;
         roleName: KnockoutObservable<string>;
 
-        constructor(params: IRole) {
-            let self = this;
+        constructor() {
+            this.roleId = ko.observable("");
+            this.roleCode = ko.observable("");
+            this.roleName = ko.observable("");
         }
     }
 

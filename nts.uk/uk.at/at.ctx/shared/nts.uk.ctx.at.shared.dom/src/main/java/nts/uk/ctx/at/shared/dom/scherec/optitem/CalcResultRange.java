@@ -82,13 +82,13 @@ public class CalcResultRange extends DomainObject {
 	 * 上限下限チェック
 	 * @return
 	 */
-	public CalcResultOfAnyItem checkRange(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem) {
+	public CalcResultOfAnyItem checkRange(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem, PerformanceAtr performanceAtr) {
 		if(this.upperLimit.isSET()) {
-			BigDecimal upperValue = getUpperLimitValue(calcResultOfAnyItem, optionalItem);
+			BigDecimal upperValue = getUpperLimitValue(calcResultOfAnyItem, optionalItem, performanceAtr);
 			calcResultOfAnyItem = calcResultOfAnyItem.reCreateCalcResultOfAnyItem(upperValue, optionalItem.getOptionalItemAtr());
 		}
 		if(this.lowerLimit.isSET()) {
-			BigDecimal lowerValue = getLowerLimitValue(calcResultOfAnyItem, optionalItem);
+			BigDecimal lowerValue = getLowerLimitValue(calcResultOfAnyItem, optionalItem, performanceAtr);
 			calcResultOfAnyItem = calcResultOfAnyItem.reCreateCalcResultOfAnyItem(lowerValue, optionalItem.getOptionalItemAtr());
 		}
 		return calcResultOfAnyItem;
@@ -101,27 +101,27 @@ public class CalcResultRange extends DomainObject {
 	 * @param optionalItem
 	 * @return
 	 */
-	public BigDecimal getUpperLimitValue(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem) {
+	public BigDecimal getUpperLimitValue(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem, PerformanceAtr performanceAtr) {
 		switch(optionalItem.getOptionalItemAtr()) {
 		case TIME:
 			return this.timeRange.map(range -> {
 				
 				return getValueOrUpper(() -> calcResultOfAnyItem.getTime(), 
-										() -> range.getUpper(optionalItem.getPerformanceAtr()));
+										() -> range.getUpper(performanceAtr));
 			}).orElse(BigDecimal.ZERO);
 			
 		case NUMBER:
 			return this.numberRange.map(range -> {
 				
 				return getValueOrUpper(() -> calcResultOfAnyItem.getCount(), 
-										() -> range.getUpper(optionalItem.getPerformanceAtr()));
+										() -> range.getUpper(performanceAtr));
 			}).orElse(BigDecimal.ZERO);
 			
 		case AMOUNT:
 			return this.amountRange.map(range -> {
 				
 				return getValueOrUpper(() -> calcResultOfAnyItem.getMoney(), 
-										() -> range.getUpper(optionalItem.getPerformanceAtr()));
+										() -> range.getUpper(performanceAtr));
 			}).orElse(BigDecimal.ZERO);
 			
 		default:
@@ -135,27 +135,27 @@ public class CalcResultRange extends DomainObject {
 	 * @param optionalItem
 	 * @return
 	 */
-	public BigDecimal getLowerLimitValue(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem) {
+	public BigDecimal getLowerLimitValue(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem, PerformanceAtr performanceAtr) {
 		switch(optionalItem.getOptionalItemAtr()) {
 		case TIME:
 			return this.timeRange.map(range -> {
 				
 				return getValueOrLower(() -> calcResultOfAnyItem.getTime(),
-										() -> range.getLower(optionalItem.getPerformanceAtr()));
+										() -> range.getLower(performanceAtr));
 			}).orElse(BigDecimal.ZERO);
 			
 		case NUMBER:
 			return this.numberRange.map(range -> {
 				
 				return getValueOrLower(() -> calcResultOfAnyItem.getCount(),
-										() -> range.getLower(optionalItem.getPerformanceAtr()));
+										() -> range.getLower(performanceAtr));
 			}).orElse(BigDecimal.ZERO);
 			
 		case AMOUNT:
 			return this.amountRange.map(range -> {
 				
 				return getValueOrLower(() -> calcResultOfAnyItem.getMoney(),
-										() -> range.getLower(optionalItem.getPerformanceAtr()));
+										() -> range.getLower(performanceAtr));
 			}).orElse(BigDecimal.ZERO);
 			
 		default:
