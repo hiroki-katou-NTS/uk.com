@@ -38,7 +38,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 @Setter
-public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
+public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet {
 
 	//加給
 	protected List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = new ArrayList<>();

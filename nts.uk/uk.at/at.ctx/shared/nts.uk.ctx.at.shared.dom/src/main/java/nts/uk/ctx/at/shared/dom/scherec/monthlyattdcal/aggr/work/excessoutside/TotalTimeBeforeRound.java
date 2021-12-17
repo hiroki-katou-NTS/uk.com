@@ -60,13 +60,11 @@ public class TotalTimeBeforeRound {
 	 * @param flexTimeOfMonthly 月別実績のフレックス時間
 	 * @param flexAggrSet フレックス時間勤務の月の集計設定
 	 * @param outsideOTBDItems 時間外超過設定：内訳項目一覧（積上番号順）
+	 * @param isMultiMonth 清算期間が複数月か
 	 */
-	public void copyValues(
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			RegularAndIrregularTimeOfMonthly regAndIrgTimeOfMonthly,
-			FlexTimeOfMonthly flexTimeOfMonthly,
-			FlexMonthWorkTimeAggrSet flexAggrSet,
-			List<OutsideOTBRDItem> outsideOTBDItems){
+	public void copyValues(AggregateTotalWorkingTime aggregateTotalWorkingTime, 
+			RegularAndIrregularTimeOfMonthly regAndIrgTimeOfMonthly, FlexTimeOfMonthly flexTimeOfMonthly,
+			FlexMonthWorkTimeAggrSet flexAggrSet, List<OutsideOTBRDItem> outsideOTBDItems, boolean isMultiMonth) {
 		
 		// 就業時間をコピーする
 		val workTimeOfMonthly = aggregateTotalWorkingTime.getWorkTime();
@@ -95,26 +93,35 @@ public class TotalTimeBeforeRound {
 							aggrHolidayWorkTime.getTransferTime()));
 		}
 		
+		val illegalFlexTime = isMultiMonth ? 
+				flexTimeOfMonthly.getFlexTime().getFlexTimeCurrentMonth().getFlexTime().getIllegalFlexTime()
+				: flexTimeOfMonthly.getFlexTime().getFlexTime().getIllegalFlexTime();
 		// 法定内フレックス時間を含めるか判断する
 		if (ExcessOutsideWorkMng.isIncludeLegalFlexTime(outsideOTBDItems)){
-			
+
+			val legalFlexTime = isMultiMonth ? 
+					flexTimeOfMonthly.getFlexTime().getFlexTimeCurrentMonth().getFlexTime().getLegalFlexTime()
+					: flexTimeOfMonthly.getFlexTime().getFlexTime().getLegalFlexTime();
+					
 			// 法定内フレックスを含んでフレックス時間をコピーする
-			this.flexExcessTime = new AttendanceTimeMonth(
-					flexTimeOfMonthly.getFlexTime().getIllegalFlexTime().v() +
-					flexTimeOfMonthly.getFlexTime().getLegalFlexTime().v() +
+			this.flexExcessTime = new AttendanceTimeMonth(illegalFlexTime.v() + legalFlexTime.v() +
 					flexTimeOfMonthly.getFlexCarryforwardTime().getFlexCarryforwardWorkTime().v());
 		}
 		else {
 
 			// 法定外フレックスのみでフレックス時間をコピーする
-			this.flexExcessTime = new AttendanceTimeMonth(
-					flexTimeOfMonthly.getFlexTime().getIllegalFlexTime().v() +
+			this.flexExcessTime = new AttendanceTimeMonth(illegalFlexTime.v() +
 					flexTimeOfMonthly.getFlexCarryforwardTime().getFlexCarryforwardWorkTime().v());
 		}
 		
 		// 週割増・月割増をコピーする
 		this.weeklyTotalPremiumTime = regAndIrgTimeOfMonthly.getWeeklyTotalPremiumTime();
-		this.monthlyTotalPremiumTime = regAndIrgTimeOfMonthly.getMonthlyTotalPremiumTime();
+		if (isMultiMonth) {
+			val time = regAndIrgTimeOfMonthly.getIrregularWorkingTime().getIrregularPeriodCarryforwardTime().valueAsMinutes();
+			this.monthlyTotalPremiumTime = new AttendanceTimeMonth(time > 0 ? time : 0);			
+		} else {
+			this.monthlyTotalPremiumTime = regAndIrgTimeOfMonthly.getMonthlyTotalPremiumTime();
+		}
 	}
 	
 	/**

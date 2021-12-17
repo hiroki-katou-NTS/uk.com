@@ -1,19 +1,20 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget;
 
 import lombok.Getter;
-import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.getvacationaddtime.AddSet;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.getvacationaddtime.GetVacationAddTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
  * 通常勤務の週割増対象時間
  * @author shuichi_ishida
  */
 @Getter
-public class TargetPremiumTimeWeekOfRegular {
+public class TargetPremiumTimeWeek {
 
 	/** 週割増時間 */
 	private AttendanceTimeMonth premiumTimeWeek;
@@ -30,44 +31,24 @@ public class TargetPremiumTimeWeekOfRegular {
 	 * @param addSet 加算設定
 	 * @param aggregateTotalWorkingTime 集計総労働時間
 	 * @param premiumTimeOfPrevMonLast 前月の最終週の週割増対象時間
+	 * @param isAddVacationTime 休暇加算区分（boolean - nullの場合trueとする)
 	 * @return 通常勤務の週割増対象時間
 	 */
-	public static TargetPremiumTimeWeekOfRegular askPremiumTimeWeek(String companyId, String employeeId,
+	public static TargetPremiumTimeWeek askPremiumTimeWeek(Require require, String companyId, String employeeId,
 			DatePeriod weekPeriod, AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			AttendanceTimeMonth premiumTimeOfPrevMonLast){
+			AttendanceTimeMonth premiumTimeOfPrevMonLast, boolean isAddVacationTime, WorkingSystem workingSystem,
+			MonthlyCalculatingDailys monthlyCalcDailys, MonthlyAggregateAtr aggregateAtr) {
 
-		TargetPremiumTimeWeekOfRegular domain = new TargetPremiumTimeWeekOfRegular();
+		TargetPremiumTimeWeek domain = new TargetPremiumTimeWeek();
 		domain.premiumTimeWeek = new AttendanceTimeMonth(0);
 		domain.premiumTimeOfCurrentMonth = new AttendanceTimeMonth(0);
 		domain.premiumTimeOfPrevMonth = new AttendanceTimeMonth(premiumTimeOfPrevMonLast.v());
 		
-		// 集計対象時間を取得する
-		val workTimeOfMonthly = aggregateTotalWorkingTime.getWorkTime();
-		val workTime = workTimeOfMonthly.getAggregateTargetTime(weekPeriod, addSet);
 
-		// 週割増時間に集計対象時間を加算する
-		domain.premiumTimeWeek = domain.premiumTimeWeek.addMinutes(workTime.v());
-		
-		// 法定内残業時間を取得する
-		val overTime = aggregateTotalWorkingTime.getOverTime();
-		val legalOverTime = overTime.calcOverTimeForPremium(weekPeriod, aggregateTotalWorkingTime);
-		
-		// 週割増時間に残業時間を加算する
-		domain.premiumTimeWeek = domain.premiumTimeWeek.addMinutes(legalOverTime.v());
-
-		// 法定内休出時間を取得する
-		val holidayWorkTime = aggregateTotalWorkingTime.getHolidayWorkTime();
-		val legalHolidayWorkTime = holidayWorkTime.getLegalHolidayWorkTime(weekPeriod);
-		
-		// 週割増時間に休出時間を加算する
-		domain.premiumTimeWeek = domain.premiumTimeWeek.addMinutes(legalHolidayWorkTime.v());
-		
-		// 休暇加算時間を取得する
-		val vacationUseTime = aggregateTotalWorkingTime.getVacationUseTime();
-		val addVacationTime = GetVacationAddTime.getTime(weekPeriod, vacationUseTime, addSet);
-		
-		// 週割増時間に休暇加算時間を加算する
-		domain.premiumTimeWeek = domain.premiumTimeWeek.addMinutes(addVacationTime.v());
+		/** ○変形労働勤務の週割増時間の対象となる時間を求める */
+		domain.premiumTimeWeek = TargetPremiumTimeGetter.askPremiumTime(require, companyId, employeeId, weekPeriod, addSet, 
+					aggregateTotalWorkingTime, isAddVacationTime, monthlyCalcDailys, aggregateAtr, workingSystem)
+				.getTargetPremiumTime();
 
 		// 「当月の週割増対象時間」を求める
 		domain.premiumTimeOfCurrentMonth = new AttendanceTimeMonth(domain.premiumTimeWeek.v());
@@ -76,5 +57,9 @@ public class TargetPremiumTimeWeekOfRegular {
 		domain.premiumTimeWeek = domain.premiumTimeWeek.addMinutes(domain.premiumTimeOfPrevMonth.v());
 		
 		return domain;
+	}
+	
+	public static interface Require extends TargetPremiumTimeGetter.Require {
+		
 	}
 }

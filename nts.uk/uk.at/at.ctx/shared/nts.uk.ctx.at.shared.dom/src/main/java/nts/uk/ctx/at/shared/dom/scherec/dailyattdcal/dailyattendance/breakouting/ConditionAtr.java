@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakoutin
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
- * 条件
+ * 控除種別区分
  * @author keisuke_hoshina
  *
  */

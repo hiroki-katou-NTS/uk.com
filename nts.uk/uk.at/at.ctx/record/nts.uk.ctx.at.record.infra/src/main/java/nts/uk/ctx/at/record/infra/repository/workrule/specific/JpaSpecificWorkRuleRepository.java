@@ -10,14 +10,13 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcmtCalcDRestTime;
-import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstConstraintTimeCalPK;
-import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcmtCalcMHdOffset;
-import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstHolidayPriorOrderPK;
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcmtCalcDTotaltime;
+import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcmtCalcMHdOffset;
+import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstConstraintTimeCalPK;
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstWkHourLimitCtrlPK;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.workrule.specific.SpecificWorkRuleRepository;
-import nts.uk.ctx.at.shared.dom.workrule.specific.TimeOffVacationPriorityOrder;
 import nts.uk.ctx.at.shared.dom.workrule.specific.UpperLimitTotalWorkingHour;
 
 /**
@@ -58,17 +57,6 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 * To domain.
 	 *
 	 * @param entity the entity
-	 * @return the time off vacation priority order
-	 */
-	public TimeOffVacationPriorityOrder toDomain(KrcmtCalcMHdOffset entity) {
-		return TimeOffVacationPriorityOrder.createFromJavaType(entity.getId().getCid(), entity.getSubstitute(),
-				entity.getSixtyHour(), entity.getSpecial(), entity.getAnnual());
-	}
-	
-	/**
-	 * To domain.
-	 *
-	 * @param entity the entity
 	 * @return the upper limit total working hour
 	 */
 	public UpperLimitTotalWorkingHour toDomain(KrcmtCalcDTotaltime entity) {
@@ -86,24 +74,6 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 		KrcstConstraintTimeCalPK primaryKey = new KrcstConstraintTimeCalPK();
 		primaryKey.setCid(setting.getCompanyId().v());
 		entity.setCalMethod(setting.getCalcMethod().value);
-		entity.setId(primaryKey);
-		return entity;
-	}
-	
-	/**
-	 * To db type.
-	 *
-	 * @param setting the setting
-	 * @return the krcst holiday prior order
-	 */
-	public KrcmtCalcMHdOffset toDbType(TimeOffVacationPriorityOrder setting) {
-		KrcmtCalcMHdOffset entity = new KrcmtCalcMHdOffset();
-		KrcstHolidayPriorOrderPK primaryKey = new KrcstHolidayPriorOrderPK();
-		primaryKey.setCid(setting.getCompanyId().v());
-		entity.setSubstitute(setting.getSubstituteHoliday());
-		entity.setSixtyHour(setting.getSixtyHourVacation());
-		entity.setSpecial(setting.getSpecialHoliday());
-		entity.setAnnual(setting.getAnnualHoliday());
 		entity.setId(primaryKey);
 		return entity;
 	}
@@ -140,13 +110,11 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 * @see nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository#findTimeOffVacationOrderByCid(java.lang.String)
 	 */
 	@Override
-	public Optional<TimeOffVacationPriorityOrder> findTimeOffVacationOrderByCid(String companyId) {
-		Optional<KrcmtCalcMHdOffset> opt = this.queryProxy().query(SEL_TIME_OFF_ORDER, KrcmtCalcMHdOffset.class).
-				setParameter("companyId", companyId).getSingle();
-		if (opt.isPresent()) {
-			return Optional.of(toDomain(opt.get()));
-		}
-		return Optional.empty();
+	public Optional<CompanyHolidayPriorityOrder> findTimeOffVacationOrderByCid(String companyId) {
+		return this.queryProxy()
+				.query(SEL_TIME_OFF_ORDER, KrcmtCalcMHdOffset.class)
+				.setParameter("companyId", companyId)
+				.getSingle().map(c -> c.domain());
 	}
 
 	/* (non-Javadoc)
@@ -189,9 +157,8 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 * @see nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository#insertTimeOffVacationOrder(nts.uk.ctx.at.record.dom.workrule.specific.TimeOffVacationPriorityOrder)
 	 */
 	@Override
-	public void insertTimeOffVacationOrder(TimeOffVacationPriorityOrder setting) {
-		KrcmtCalcMHdOffset entity = toDbType(setting);
-		this.commandProxy().insert(entity);
+	public void insertTimeOffVacationOrder(CompanyHolidayPriorityOrder setting) {
+		this.commandProxy().insert(KrcmtCalcMHdOffset.from(setting));
 	}
 
 	/* (non-Javadoc)
@@ -216,9 +183,8 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 * @see nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository#updateTimeOffVacationOrder(nts.uk.ctx.at.record.dom.workrule.specific.TimeOffVacationPriorityOrder)
 	 */
 	@Override
-	public void updateTimeOffVacationOrder(TimeOffVacationPriorityOrder setting) {
-		KrcmtCalcMHdOffset entity = toDbType(setting);
-		this.commandProxy().update(entity);
+	public void updateTimeOffVacationOrder(CompanyHolidayPriorityOrder setting) {
+		this.commandProxy().update(KrcmtCalcMHdOffset.from(setting));
 	}
 
 	/* (non-Javadoc)

@@ -337,7 +337,7 @@ public class VacationClass {
 	 * @param holidayCalcMethodSet 休暇の計算方法の設定
 	 * @return 休暇加算時間
 	 */
-	private static VacationAddTime judgeVacationAddTime(
+	public static VacationAddTime judgeVacationAddTime(
 			BreakDownTimeDay breakdownTimeDay,
 			PremiumAtr premiumAtr,
 			HolidayAddtionSet holidayAddtionSet,

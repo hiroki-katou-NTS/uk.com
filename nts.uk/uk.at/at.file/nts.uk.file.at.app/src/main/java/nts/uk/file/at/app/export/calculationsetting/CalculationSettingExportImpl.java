@@ -1,10 +1,17 @@
 package nts.uk.file.at.app.export.calculationsetting;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceAttendanceItemFinder;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.midnight.MidnightTimeSheetRepo;
@@ -21,14 +28,35 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Da
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.*;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHour;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHourRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.CalculationMethodForNormalWorkAndDeformedLaborOverTime;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.CalcurationByActualTimeAtr;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSetRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TimeHolidayAddingMethod;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TimeHolidayAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.VacationAdditionTimeRef;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkClassOfTimeHolidaySet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSetRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSetRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOT;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOTRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.*;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.HdFromHd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.HdFromWeekday;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.WeekdayHoliday;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
@@ -42,7 +70,6 @@ import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRep
 import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSetting;
 import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.specific.SpecificWorkRuleRepository;
-import nts.uk.ctx.at.shared.dom.workrule.specific.TimeOffVacationPriorityOrder;
 import nts.uk.ctx.at.shared.dom.workrule.specific.UpperLimitTotalWorkingHour;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
@@ -1347,18 +1374,41 @@ public class CalculationSettingExportImpl implements MasterListData {
         String companyId = AppContexts.user().companyId();
         Optional<UpperLimitTotalWorkingHour> upperLimitTotalWorkingHour = specificWorkRuleRepo.findUpperLimitWkHourByCid(companyId);
         Optional<CalculateOfTotalConstraintTime> calculateOfTotalConstraintTime = specificWorkRuleRepo.findCalcMethodByCid(companyId);
-        Optional<TimeOffVacationPriorityOrder> timeOffVacationPriorityOrder = specificWorkRuleRepo.findTimeOffVacationOrderByCid(companyId);
+        val timeOffVacationPriorityOrder = specificWorkRuleRepo.findTimeOffVacationOrderByCid(companyId);
         Map<Integer, String> timeOffMap = new HashMap<>();
         if (timeOffVacationPriorityOrder.isPresent()) {
-            timeOffMap.put(timeOffVacationPriorityOrder.get().getAnnualHoliday() + 1, TextResource.localize("年休"));
-            timeOffMap.put(timeOffVacationPriorityOrder.get().getSixtyHourVacation() + 1, TextResource.localize("60H超休"));
-            timeOffMap.put(timeOffVacationPriorityOrder.get().getSpecialHoliday() + 1, TextResource.localize("特別休暇"));
-            timeOffMap.put(timeOffVacationPriorityOrder.get().getSubstituteHoliday() + 1, TextResource.localize("代休"));
+        	for(val o : timeOffVacationPriorityOrder.get().getHolidayPriorityOrders()) {
+        		val position = timeOffVacationPriorityOrder.get().getHolidayPriorityOrders().indexOf(o) + 1;
+        		switch (o) {
+    			case ANNUAL_HOLIDAY:
+    				timeOffMap.put(position, TextResource.localize("KMK013_376"));
+    				break;
+    			case SIXTYHOUR_HOLIDAY:
+    				timeOffMap.put(position, TextResource.localize("KMK013_377"));
+    				break;
+    			case SUB_HOLIDAY:
+    				timeOffMap.put(position, TextResource.localize("KMK013_478"));
+    				break;
+    			case SPECIAL_HOLIDAY:
+    				timeOffMap.put(position, TextResource.localize("KMK013_479"));
+    				break;
+    			case CHILD_CARE:
+    				timeOffMap.put(position, TextResource.localize("KMK013_476"));
+    				break;
+    			case CARE:
+    				timeOffMap.put(position, TextResource.localize("KMK013_477"));
+    				break;
+    			default:
+    				break;
+    			}
+        	}
         } else {
-            timeOffMap.put(1, TextResource.localize("年休"));
-            timeOffMap.put(2, TextResource.localize("代休"));
-            timeOffMap.put(3, TextResource.localize("60H超休"));
-            timeOffMap.put(4, TextResource.localize("特別休暇"));
+            timeOffMap.put(1, TextResource.localize("KMK013_378"));
+            timeOffMap.put(2, TextResource.localize("KMK013_377"));
+            timeOffMap.put(3, TextResource.localize("KMK013_379"));
+            timeOffMap.put(4, TextResource.localize("KMK013_376"));
+            timeOffMap.put(5, TextResource.localize("KMK013_476"));
+            timeOffMap.put(6, TextResource.localize("KMK013_477"));
         }
         Optional<AggregateMethodOfMonthly> aggregateMethodOfMonthly = verticalTotalMethodOfMonthlyRepo.findByCid(companyId);
         List<MasterData> data = new ArrayList<>();

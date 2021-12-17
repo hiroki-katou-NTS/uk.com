@@ -609,7 +609,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 
 		// 控除時間帯の相殺時間を計算
 		result.calcOffsetTimeOfDeductTimeSheet(result.getWorkNo().v(), timeVacationWork,
-				new CompanyHolidayPriorityOrder(integrationOfWorkTime.getWorkTimeSetting().getCompanyId()));
+												companyCommonSetting.getCompanyHolidayPriorityOrder());
 		
 		// 加給時間帯を作成
 		result.createBonusPayTimeSheet(

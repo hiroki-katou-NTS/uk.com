@@ -1,32 +1,40 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.*;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ActualWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.HolidayWorkFrameTimeSheetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.OutsideWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.ActualWorkTimeSheetListService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 //import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 
@@ -37,6 +45,7 @@ import java.util.stream.Collectors;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class OutingTimeOfDaily {
 	
 	//回数：休憩外出回数
@@ -51,7 +60,8 @@ public class OutingTimeOfDaily {
 	private OutingTotalTime deductionTotalTime;
 	//補正後時間帯:外出時間帯(List)
 	private List<OutingTimeSheet> outingTimeSheets;
-	
+	/** 休暇相殺時間 */
+	private TimevacationUseTimeOfDaily timeOffsetUseTime;
 	
 	/**
 	 * Constcutor
@@ -152,12 +162,15 @@ public class OutingTimeOfDaily {
 						TimeWithCalculation.sameTime(new AttendanceTime(0))),
 				TimeWithCalculation.sameTime(new AttendanceTime(0)));
 		
+		TimevacationUseTimeOfDaily offsetTime = TimevacationUseTimeOfDaily.defaultValue();
+		
 		//補正後時間帯
 		List<OutingTimeSheet> correctedTimeSheet = new ArrayList<>();
 		
 		if(isCalculatable) {
+			val conditionAtr = ConditionAtr.convertFromGoOutReason(reason);
 			//外出回数
-			goOutTimes = calcGoOutTimes(recordClass, ConditionAtr.convertFromGoOutReason(reason));
+			goOutTimes = calcGoOutTimes(recordClass, conditionAtr);
 			//休暇使用時間
 			useVacationTime = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance()
 					.flatMap(a -> a.getOutingTimeOfDaily().stream()
@@ -169,6 +182,13 @@ public class OutingTimeOfDaily {
 			//控除用合計時間
 			dedTotalTime = OutingTotalTime.calcOutingTime(oneDay, DeductionAtr.Deduction, reason, outingCalcSet);
 			//補正後時間帯 
+			
+			/** 相殺休暇使用時間を補正する */
+			WithinWorkTimeSheet withinWorkTimeSheet = recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get();
+			offsetTime = ActualWorkTimeSheetListService.calcOffsetTimeVacationUseTime(conditionAtr, DeductionAtr.Deduction, 
+					withinWorkTimeSheet.getWithinWorkTimeFrame().stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()), 
+					recordClass.getCompanyCommonSetting().getCompanyHolidayPriorityOrder(),
+					useVacationTime.orElse(TimevacationUseTimeOfDaily.defaultValue()));
 		}
 		return new OutingTimeOfDaily(
 				goOutTimes,
@@ -176,7 +196,8 @@ public class OutingTimeOfDaily {
 				useVacationTime.orElse(TimevacationUseTimeOfDaily.defaultValue()), 
 				recordTotalTime, 
 				dedTotalTime,
-				correctedTimeSheet);
+				correctedTimeSheet,
+				offsetTime);
 	}
 	
 	/**

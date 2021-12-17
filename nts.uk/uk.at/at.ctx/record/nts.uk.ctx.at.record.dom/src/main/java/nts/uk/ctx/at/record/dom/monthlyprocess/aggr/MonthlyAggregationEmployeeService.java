@@ -451,7 +451,8 @@ public class MonthlyAggregationEmployeeService {
 
 	public static interface RequireM1 extends MonAggrEmployeeSettings.RequireM2,
 		GetClosurePeriod.RequireM1, AggregateMonthlyRecordService.RequireM2,
-		RequireM2, RequireM3, RequireM4, MonAggrCompanySettings.RequireM6,GetPeriodCanProcesse.Require {
+		RequireM2, RequireM3, RequireM4, MonAggrCompanySettings.RequireM6,
+		GetPeriodCanProcesse.Require {
 
 		Optional<EmpCalAndSumExeLog> calAndSumExeLog (String empCalAndSumExecLogID);
 

@@ -14,8 +14,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TimeHolidayAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
@@ -69,7 +69,6 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -1020,7 +1019,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		creatingWithinWorkTimeSheet.timeVacationUseTime = timeVacationWork.clone();
 		// 控除時間中の時間休暇相殺時間の計算
 		creatingWithinWorkTimeSheet.calcTimeVacationOffsetTime(
-				new CompanyHolidayPriorityOrder(integrationOfWorkTime.getWorkTimeSetting().getCompanyId()),
+				companyCommonSetting.getCompanyHolidayPriorityOrder(),
 				timeVacationWork);
 		// 加給時間帯を作成
 		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().get(0).createBonusPayTimeSheet(
@@ -1159,8 +1158,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		
 		for (WithinWorkTimeFrame frame : this.withinWorkTimeFrame){
 			// 控除時間帯の相殺時間を計算
-			frame.calcOffsetTimeOfDeductTimeSheet(frame.getWorkNo().v(), timeVacationWork,
-					new CompanyHolidayPriorityOrder(AppContexts.user().companyId()));
+			frame.calcOffsetTimeOfDeductTimeSheet(frame.getWorkNo().v(), timeVacationWork, priorityOrder);
 		}
 	}
 

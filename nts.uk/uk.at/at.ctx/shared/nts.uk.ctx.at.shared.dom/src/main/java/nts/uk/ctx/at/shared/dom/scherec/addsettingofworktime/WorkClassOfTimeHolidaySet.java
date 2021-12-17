@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime;
 
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
+
 /**
  * The Enum WorkClassOfTimeHolidaySet.
  */
@@ -57,5 +59,17 @@ public enum WorkClassOfTimeHolidaySet {
 
 		// Not found.
 		return null;
+	}
+	
+	/** 就業時間帯の勤務形態をチェックする */
+	public boolean checkWorkForm(WorkTimeForm workForm) {
+		
+		if (this == WORK_FOR_FLEX && workForm == WorkTimeForm.FLEX)
+			return true;
+		
+		if (this == WORK_FOR_FLOW && workForm == WorkTimeForm.FLOW)
+			return true;
+		
+		return false;
 	}
 }

@@ -12,6 +12,7 @@ import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -250,6 +252,30 @@ public abstract class CalculationTimeSheet {
 		}
 		// 控除時間を返す
 		return new AttendanceTime(totalMinutes);
+	}
+
+	/**
+	 * 相殺時間休暇使用の合計を算出する
+	 * @param conditionAtr 控除種別区分
+	 * @param dedAtr 控除区分
+	 * @param priorityOrder 時間休暇相殺優先順位
+	 * @return 日別勤怠の時間休暇使用時間
+	 */
+	public TimevacationUseTimeOfDaily calcOffsetTimeVacationUseTime(ConditionAtr conditionAtr, DeductionAtr dedAtr,
+			CompanyHolidayPriorityOrder priorityOrder, TimevacationUseTimeOfDaily timeVacationUseOfDaily) {
+		
+		// 保持している控除時間帯を取得
+		List<TimeSheetOfDeductionItem> itemList = this.getDedTimeSheetByAtr(dedAtr, conditionAtr);
+		// 控除時間を計算
+		// ※　相殺は常に行う。「時間帯毎に丸める」時のみ、控除項目ごとに先に丸めを行う。
+		TimevacationUseTimeOfDaily offsetTime = TimevacationUseTimeOfDaily.defaultValue();
+		for (TimeSheetOfDeductionItem item : itemList) {
+			/** 相殺時間休暇使用時間の算算 */
+			offsetTime = offsetTime.add(item.calcTotalOffsetTimeVacationUseTime(priorityOrder, timeVacationUseOfDaily));
+		}
+		
+		// 控除時間を返す
+		return offsetTime;
 	}
 	
 	/**

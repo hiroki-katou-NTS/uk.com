@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 
 /**
  * 当月フレックス時間
@@ -20,7 +19,7 @@ public class FlexTimeCurrentMonth implements Serializable{
 
 	/** フレックス時間 */
 	@Setter
-	private AttendanceTimeMonthWithMinus flexTime;
+	private FlexTimeTotalTimeMonth flexTime;
 	/** 基準時間 */
 	@Setter
 	private AttendanceTimeMonth standardTime;
@@ -32,7 +31,7 @@ public class FlexTimeCurrentMonth implements Serializable{
 	 * コンストラクタ
 	 */
 	public FlexTimeCurrentMonth(){
-		this.flexTime = new AttendanceTimeMonthWithMinus(0);
+		this.flexTime = new FlexTimeTotalTimeMonth();
 		this.standardTime = new AttendanceTimeMonth(0);
 		this.excessWeekAveTime = new AttendanceTimeMonth(0);
 	}
@@ -45,7 +44,7 @@ public class FlexTimeCurrentMonth implements Serializable{
 	 * @return 当月フレックス時間
 	 */
 	public static FlexTimeCurrentMonth of(
-			AttendanceTimeMonthWithMinus flexTime,
+			FlexTimeTotalTimeMonth flexTime,
 			AttendanceTimeMonth standardTime,
 			AttendanceTimeMonth excessWeekAveTime){
 		
@@ -62,7 +61,7 @@ public class FlexTimeCurrentMonth implements Serializable{
 	 */
 	public void sum(FlexTimeCurrentMonth target){
 		
-		this.flexTime = this.flexTime.addMinutes(target.flexTime.v());
+		this.flexTime.sum(target.flexTime);
 		this.standardTime = this.standardTime.addMinutes(target.standardTime.v());
 		this.excessWeekAveTime = this.excessWeekAveTime.addMinutes(target.excessWeekAveTime.v());
 	}

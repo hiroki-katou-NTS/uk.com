@@ -10,12 +10,12 @@ import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BPTimeItemSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.shorttimework.CalcOfShortTimeWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOT;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
@@ -98,6 +98,9 @@ public class ManagePerCompanySet {
 	/** 残業枠 */
 	List<OvertimeWorkFrame> overtimeFrameList;
 	
+	/** 時間休暇相殺優先順位 */
+	CompanyHolidayPriorityOrder companyHolidayPriorityOrder;
+	
 	public ManagePerCompanySet(
 			Optional<HolidayAddtionSet> holidayAdditionPerCompany,
 			Optional<CalculateOfTotalConstraintTime> calculateOfTotalCons,
@@ -117,7 +120,8 @@ public class ManagePerCompanySet {
 			DeformLaborOT deformLaborOT,
 			Optional<DeclareSet> declareSet,
 			Optional<CalcOfShortTimeWork> calcShortWork,
-			List<OvertimeWorkFrame> overtimeFrameList) {
+			List<OvertimeWorkFrame> overtimeFrameList,
+			CompanyHolidayPriorityOrder companyHolidayPriorityOrder) {
 		
 		super();
 		this.holidayAdditionPerCompany = holidayAdditionPerCompany;
@@ -140,5 +144,6 @@ public class ManagePerCompanySet {
 		this.declareSet = declareSet;
 		this.calcShortTimeWork = calcShortWork;
 		this.overtimeFrameList = overtimeFrameList;
+		this.companyHolidayPriorityOrder = companyHolidayPriorityOrder;
 	}
 }

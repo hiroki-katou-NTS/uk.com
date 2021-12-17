@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.workrule.specific;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 
 /**
  * The Interface SpecificWorkRuleRepository.
@@ -24,7 +25,7 @@ public interface SpecificWorkRuleRepository {
 	 * @param companyId the company id
 	 * @return the optional
 	 */
-	public Optional<TimeOffVacationPriorityOrder> findTimeOffVacationOrderByCid(String companyId);
+	public Optional<CompanyHolidayPriorityOrder> findTimeOffVacationOrderByCid(String companyId);
 	
 	/**
 	 * Find upper limit wk hour by cid.
@@ -46,7 +47,7 @@ public interface SpecificWorkRuleRepository {
 	 *
 	 * @param setting the setting
 	 */
-	public void insertTimeOffVacationOrder(TimeOffVacationPriorityOrder setting);
+	public void insertTimeOffVacationOrder(CompanyHolidayPriorityOrder setting);
 	
 	/**
 	 * Insert upper limit wk hour.
@@ -67,7 +68,7 @@ public interface SpecificWorkRuleRepository {
 	 *
 	 * @param setting the setting
 	 */
-	public void updateTimeOffVacationOrder(TimeOffVacationPriorityOrder setting);
+	public void updateTimeOffVacationOrder(CompanyHolidayPriorityOrder setting);
 	
 	/**
 	 * Update upper limit wk hour.

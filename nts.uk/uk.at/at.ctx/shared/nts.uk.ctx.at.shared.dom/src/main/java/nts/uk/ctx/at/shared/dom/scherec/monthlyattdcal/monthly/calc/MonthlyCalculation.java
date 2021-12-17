@@ -45,6 +45,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOf
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexLegalTimeGetter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.Flex;
@@ -820,13 +821,14 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			// 通常・変形労働勤務の月単位の時間を集計する
 			this.actualWorkingTime.aggregateMonthlyHours(require, cacheCarrier, this.companyId, this.employeeId, this.yearMonth,
 					this.closureId, this.closureDate, aggrPeriod, this.workingSystem, aggrAtr, this.isRetireMonth,
-					this.workplaceId, this.employmentCd, this.settingsByReg, this.settingsByDefo, this.aggregateTime);
+					this.workplaceId, this.employmentCd, this.settingsByReg, this.settingsByDefo, this.aggregateTime,
+					this.monthlyCalculatingDailys, this.statutoryWorkingTime);
 
 			ConcurrentStopwatches.stop("12223:通常変形の月単位：");
 		} else if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK) { // フレックス時間勤務 の時
 			
 			// 月の法定労働時間を取得する
-			this.statutoryWorkingTime = new AttendanceTimeMonth(FlexTimeOfMonthly.getFlexStatutoryLaborTime(
+			this.statutoryWorkingTime = new AttendanceTimeMonth(FlexLegalTimeGetter.getFlexStatutoryLaborTime(
 					require, cacheCarrier, this.companySets, this.employeeSets, this.settingsByFlex,
 					true, this.yearMonth, this.companyId, this.employmentCd, this.employeeId,
 					aggrPeriod.end(), Optional.of(aggrPeriod), this.closureId, this.closureDate,
@@ -878,13 +880,10 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			}
 
 			// フレックス勤務の就業時間を求める （Redmine#106235）
-			val workTimeOpt = this.flexTime.askWorkTimeOfFlex(require, cacheCarrier,
+			this.flexTime.askWorkTimeOfFlex(require, cacheCarrier,
 					this.companyId, this.employeeId, this.yearMonth, aggrPeriod, this.closureId, this.closureDate,
-					this.employmentCd, this.companySets, this.employeeSets, this.settingsByFlex,
+					aggrAtr, this.employmentCd, this.companySets, this.employeeSets, this.settingsByFlex,
 					this.aggregateTime, monthlyCalculatingDailys);
-			if (workTimeOpt.isPresent()) {
-				this.aggregateTime.getWorkTime().setWorkTime(workTimeOpt.get());
-			}
 			
 			/** 大塚モードかを確認する */
 			if (AppContexts.optionLicense().customize().ootsuka()) { 
@@ -1269,8 +1268,6 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		// 就業時間
 		if (attendanceItemId == AttendanceItemOfMonthly.WORK_TIME.value) {
 			val workTime = this.aggregateTime.getWorkTime().getWorkTime();
-			if (isExcessOutside)
-				return roundingSet.itemRound(attendanceItemId, workTime);
 			return roundingSet.itemRound(attendanceItemId, workTime);
 		}
 
@@ -1281,10 +1278,6 @@ public class MonthlyCalculation implements SerializableWithOptional {
 					attendanceItemId - AttendanceItemOfMonthly.OVER_TIME_01.value + 1);
 			if (!overTimeMap.containsKey(overTimeFrameNo))
 				return notExistTime;
-			if (isExcessOutside) {
-				return roundingSet.itemRound(attendanceItemId,
-						overTimeMap.get(overTimeFrameNo).getOverTime().getTime());
-			}
 			return roundingSet.itemRound(attendanceItemId, overTimeMap.get(overTimeFrameNo).getOverTime().getTime());
 		}
 
@@ -1295,10 +1288,6 @@ public class MonthlyCalculation implements SerializableWithOptional {
 					attendanceItemId - AttendanceItemOfMonthly.CALC_OVER_TIME_01.value + 1);
 			if (!overTimeMap.containsKey(overTimeFrameNo))
 				return notExistTime;
-			if (isExcessOutside) {
-				return roundingSet.itemRound(attendanceItemId,
-						overTimeMap.get(overTimeFrameNo).getOverTime().getCalcTime());
-			}
 			return roundingSet.itemRound(attendanceItemId,
 					overTimeMap.get(overTimeFrameNo).getOverTime().getCalcTime());
 		}
@@ -1310,10 +1299,6 @@ public class MonthlyCalculation implements SerializableWithOptional {
 					attendanceItemId - AttendanceItemOfMonthly.TRANSFER_OVER_TIME_01.value + 1);
 			if (!overTimeMap.containsKey(overTimeFrameNo))
 				return notExistTime;
-			if (isExcessOutside) {
-				return roundingSet.itemRound(attendanceItemId,
-						overTimeMap.get(overTimeFrameNo).getTransferOverTime().getTime());
-			}
 			return roundingSet.itemRound(attendanceItemId,
 					overTimeMap.get(overTimeFrameNo).getTransferOverTime().getTime());
 		}
@@ -1325,10 +1310,6 @@ public class MonthlyCalculation implements SerializableWithOptional {
 					attendanceItemId - AttendanceItemOfMonthly.CALC_TRANSFER_OVER_TIME_01.value + 1);
 			if (!overTimeMap.containsKey(overTimeFrameNo))
 				return notExistTime;
-			if (isExcessOutside) {
-				return roundingSet.itemRound(attendanceItemId,
-						overTimeMap.get(overTimeFrameNo).getTransferOverTime().getCalcTime());
-			}
 			return roundingSet.itemRound(attendanceItemId,
 					overTimeMap.get(overTimeFrameNo).getTransferOverTime().getCalcTime());
 		}
@@ -1340,10 +1321,6 @@ public class MonthlyCalculation implements SerializableWithOptional {
 					attendanceItemId - AttendanceItemOfMonthly.HOLIDAY_WORK_TIME_01.value + 1);
 			if (!hdwkTimeMap.containsKey(holidayWorkTimeFrameNo))
 				return notExistTime;
-			if (isExcessOutside) {
-				return roundingSet.itemRound(attendanceItemId,
-						hdwkTimeMap.get(holidayWorkTimeFrameNo).getHolidayWorkTime().getTime());
-			}
 			return roundingSet.itemRound(attendanceItemId,
 					hdwkTimeMap.get(holidayWorkTimeFrameNo).getHolidayWorkTime().getTime());
 		}
@@ -1355,10 +1332,6 @@ public class MonthlyCalculation implements SerializableWithOptional {
 					attendanceItemId - AttendanceItemOfMonthly.CALC_HOLIDAY_WORK_TIME_01.value + 1);
 			if (!hdwkTimeMap.containsKey(holidayWorkTimeFrameNo))
 				return notExistTime;
-			if (isExcessOutside) {
-				return roundingSet.itemRound(attendanceItemId,
-						hdwkTimeMap.get(holidayWorkTimeFrameNo).getHolidayWorkTime().getCalcTime());
-			}
 			return roundingSet.itemRound(attendanceItemId,
 					hdwkTimeMap.get(holidayWorkTimeFrameNo).getHolidayWorkTime().getCalcTime());
 		}
@@ -1370,10 +1343,6 @@ public class MonthlyCalculation implements SerializableWithOptional {
 					attendanceItemId - AttendanceItemOfMonthly.TRANSFER_TIME_01.value + 1);
 			if (!hdwkTimeMap.containsKey(holidayWorkTimeFrameNo))
 				return notExistTime;
-			if (isExcessOutside) {
-				return roundingSet.itemRound(attendanceItemId,
-						hdwkTimeMap.get(holidayWorkTimeFrameNo).getTransferTime().getTime());
-			}
 			return roundingSet.itemRound(attendanceItemId,
 					hdwkTimeMap.get(holidayWorkTimeFrameNo).getTransferTime().getTime());
 		}
@@ -1385,68 +1354,48 @@ public class MonthlyCalculation implements SerializableWithOptional {
 					attendanceItemId - AttendanceItemOfMonthly.CALC_TRANSFER_TIME_01.value + 1);
 			if (!hdwkTimeMap.containsKey(holidayWorkTimeFrameNo))
 				return notExistTime;
-			if (isExcessOutside) {
-				return roundingSet.itemRound(attendanceItemId,
-						hdwkTimeMap.get(holidayWorkTimeFrameNo).getTransferTime().getCalcTime());
-			}
 			return roundingSet.itemRound(attendanceItemId,
 					hdwkTimeMap.get(holidayWorkTimeFrameNo).getTransferTime().getCalcTime());
 		}
 
+		/** TODO: map item flex, defor premium*/
 		// フレックス法定内時間
 		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value) {
-			val flexLegalMinutes = this.flexTime.getFlexTime().getLegalFlexTime().v();
-			if (isExcessOutside) {
-				return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
-			}
+			val flexLegalMinutes = this.flexTime.getFlexTime().getFlexTime().getLegalFlexTime().v();
 			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
 		}
 
 		// フレックス法定外時間
 		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value) {
-			int flexIllegalMinutes = this.flexTime.getFlexTime().getIllegalFlexTime().v();
+			int flexIllegalMinutes = this.flexTime.getFlexTime().getFlexTime().getIllegalFlexTime().v();
 			flexIllegalMinutes += this.flexTime.getFlexSettleTime().v(); // 当月精算フレックス時間を加算
-			if (isExcessOutside) {
-				return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
-			}
 			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
 		}
 
 		// フレックス超過時間 （フレックス時間のプラス分）
 		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_EXCESS_TIME.value) {
-			val flexExcessMinutes = this.flexTime.getFlexTime().getFlexTime().getTime().v();
+			val flexExcessMinutes = this.flexTime.getFlexExcessTime().v();
+//			val flexExcessMinutes = this.flexTime.getFlexTime().getFlexTime().getFlexTime().getTime().v();
 			if (flexExcessMinutes <= 0)
 				return notExistTime;
-			if (isExcessOutside) {
-				return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexExcessMinutes));
-			}
 			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexExcessMinutes));
 		}
 
 		// 所定内割増時間
 		if (attendanceItemId == AttendanceItemOfMonthly.WITHIN_PRESCRIBED_PREMIUM_TIME.value) {
 			val withinPrescribedPremiumTime = this.aggregateTime.getWorkTime().getWithinPrescribedPremiumTime();
-			if (isExcessOutside) {
-				return roundingSet.itemRound(attendanceItemId, withinPrescribedPremiumTime);
-			}
 			return roundingSet.itemRound(attendanceItemId, withinPrescribedPremiumTime);
 		}
 
 		// 週割増合計時間
 		if (attendanceItemId == AttendanceItemOfMonthly.WEEKLY_TOTAL_PREMIUM_TIME.value) {
 			val weeklyTotalPremiumTime = this.actualWorkingTime.getWeeklyTotalPremiumTime();
-			if (isExcessOutside) {
-				return roundingSet.itemRound(attendanceItemId, weeklyTotalPremiumTime);
-			}
 			return roundingSet.itemRound(attendanceItemId, weeklyTotalPremiumTime);
 		}
 
 		// 月割増合計時間
 		if (attendanceItemId == AttendanceItemOfMonthly.MONTHLY_TOTAL_PREMIUM_TIME.value) {
 			val monthlyTotalPremiumTime = this.actualWorkingTime.getMonthlyTotalPremiumTime();
-			if (isExcessOutside) {
-				return roundingSet.itemRound(attendanceItemId, monthlyTotalPremiumTime);
-			}
 			return roundingSet.itemRound(attendanceItemId, monthlyTotalPremiumTime);
 		}
 

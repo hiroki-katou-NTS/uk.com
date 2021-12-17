@@ -201,8 +201,16 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByScheData;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHour;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHourRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSetRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSetRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.MonthlyCalculationByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
@@ -766,6 +774,14 @@ public class RecordDomRequireService {
 	protected TransactionService transaction;
 	@Inject
 	private  CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
+	@Inject
+	private WorkRegularAdditionSetRepository workRegularAdditionSetRepo;
+	@Inject
+	private AddSetManageWorkHourRepository addSetManageWorkHourRepo;
+	@Inject
+	private WorkFlexAdditionSetRepository workFlexAdditionSetRepo;
+	@Inject
+	private WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo;
   
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2, CalcAnnLeaAttendanceRate.RequireM3,
 		GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1, CalcNextAnnLeaGrantInfo.RequireM1, GetNextAnnualLeaveGrantProcKdm002.RequireM1,
@@ -809,13 +825,12 @@ public class RecordDomRequireService {
 				comFlexMonthActCalSetRepo, empFlexMonthActCalSetRepo, wkpFlexMonthActCalSetRepo, empDeforLaborMonthActCalSetRepo, empRegulaMonthActCalSetRepo, comDeforLaborMonthActCalSetRepo,
 				comRegulaMonthActCalSetRepo, shaDeforLaborMonthActCalSetRepo, shaRegulaMonthActCalSetRepo, wkpDeforLaborMonthActCalSetRepo, wkpRegulaMonthActCalSetRepo, monthlyWorkTimeSetRepo,
 				verticalTotalMethodOfMonthlyRepo, stampCardRepo, bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter, weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
-//				elapseYearRepository, syCompanyRecordAdapter, snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber,
-//				payoutSubofHDManaRepo, leaveComDayOffManaRepo , checkChildCareService, workingConditionItemService,executionLogRepo);
 				elapseYearRepository, syCompanyRecordAdapter, snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber,
 				payoutSubofHDManaRepo, leaveComDayOffManaRepo , checkChildCareService, workingConditionItemService, publicHolidaySettingRepo, publicHolidayManagementUsageUnitRepo,
 				companyMonthDaySettingRepo,tempPublicHolidayManagementRepo, publicHolidayCarryForwardDataRepo, employmentMonthDaySettingRepo, workplaceMonthDaySettingRepo,
 				employeeMonthDaySettingRepo, publicHolidayCarryForwardHistoryRepo, childCareUsedNumberRepo, careUsedNumberRepo, childCareLeaveRemInfoRepo, careLeaveRemainingInfoRepo,
-				tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo,executionLogRepo, transaction);
+				tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo,executionLogRepo, transaction, workRegularAdditionSetRepo, addSetManageWorkHourRepo, workFlexAdditionSetRepo, 
+				workDeformedLaborAdditionSetRepo);
 	}
 
 	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
@@ -867,7 +882,8 @@ public class RecordDomRequireService {
 				PublicHolidayCarryForwardDataRepository publicHolidayCarryForwardDataRepo, EmploymentMonthDaySettingRepository employmentMonthDaySettingRepo, WorkplaceMonthDaySettingRepository workplaceMonthDaySettingRepo,
 				EmployeeMonthDaySettingRepository employeeMonthDaySettingRepo, PublicHolidayCarryForwardHistoryRepository publicHolidayCarryForwardHistoryRepo,ChildCareUsedNumberRepository childCareUsedNumberRepo,
 				CareUsedNumberRepository careUsedNumberRepo, ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepo, CareLeaveRemainingInfoRepository careLeaveRemainingInfoRepo, TempChildCareManagementRepository tempChildCareManagementRepo,
-				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,ExecutionLogRepository executionLogRepo, TransactionService transaction) {
+				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,ExecutionLogRepository executionLogRepo, TransactionService transaction,
+				WorkRegularAdditionSetRepository workRegularAdditionSetRepo, AddSetManageWorkHourRepository addSetManageWorkHourRepo,WorkFlexAdditionSetRepository workFlexAdditionSetRepo, WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo) {
 
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
 					grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
@@ -1024,6 +1040,10 @@ public class RecordDomRequireService {
 			this.executionLogRepo = executionLogRepo;
 			this.transaction = transaction;
 			this.workTypeRepo = workTypeRepo;
+			this.workRegularAdditionSetRepo = workRegularAdditionSetRepo;
+			this.addSetManageWorkHourRepo = addSetManageWorkHourRepo;
+			this.workFlexAdditionSetRepo = workFlexAdditionSetRepo;
+			this.workDeformedLaborAdditionSetRepo = workDeformedLaborAdditionSetRepo;
 		}
 
 		protected TransactionService transaction;
@@ -1153,8 +1173,6 @@ public class RecordDomRequireService {
 		private Classification36AgreementTimeRepository agreementTimeOfClassificationRepo;
 
 		private Company36AgreedHoursRepository agreementTimeCompanyRepo;
-
-
 
 		private AgreementYearSettingRepository agreementYearSettingRepo;
 
@@ -1299,6 +1317,10 @@ public class RecordDomRequireService {
 		
 		private ExecutionLogRepository executionLogRepo;
 		private WorkTypeRepository workTypeRepo;
+		private WorkRegularAdditionSetRepository workRegularAdditionSetRepo;
+		private AddSetManageWorkHourRepository addSetManageWorkHourRepo;
+		private WorkFlexAdditionSetRepository workFlexAdditionSetRepo;
+		private WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo;
 
 		Map<String,Optional<PredetemineTimeSetting>> predetemineTimeSettingMap = new ConcurrentHashMap<String, Optional<PredetemineTimeSetting>>();
 		Map<String, Optional<RegularLaborTimeEmp>> regularLaborTimeEmpMap = new ConcurrentHashMap<String, Optional<RegularLaborTimeEmp>>();
@@ -2973,6 +2995,26 @@ public class RecordDomRequireService {
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
 				ExecutionType reCalcAtr) {
 			return calculateDailyRecordServiceCenter.calculatePassCompanySetting(calcOption, integrationOfDaily, companySet, reCalcAtr);
+		}
+
+		@Override
+		public Optional<AddSetManageWorkHour> addSetManageWorkHour(String cid) {
+			return addSetManageWorkHourRepo.findByCid(cid);
+		}
+
+		@Override
+		public Optional<WorkFlexAdditionSet> workFlexAdditionSet(String cid) {
+			return workFlexAdditionSetRepo.findByCid(cid);
+		}
+
+		@Override
+		public Optional<WorkRegularAdditionSet> workRegularAdditionSet(String cid) {
+			return workRegularAdditionSetRepo.findByCID(cid);
+		}
+
+		@Override
+		public Optional<WorkDeformedLaborAdditionSet> workDeformedLaborAdditionSet(String cid) {
+			return workDeformedLaborAdditionSetRepo.findByCid(cid);
 		}
 	}
 }
