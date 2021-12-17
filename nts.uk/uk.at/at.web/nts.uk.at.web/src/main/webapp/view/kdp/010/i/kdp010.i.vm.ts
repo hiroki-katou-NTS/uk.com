@@ -148,8 +148,7 @@ module nts.uk.at.view.kdp010.i {
 					}
 					self.contentsStampType(tg);
 					self.isUseWork(data.workUse);
-					// Fix bug 122043
-					// self.isSupportUse(data.supportUse);
+					self.isSupportUse(data.supportUse);
 					dfd.resolve();
 				}).fail(function (res: any) {
 					error({ messageId: res.messageId });
@@ -164,6 +163,11 @@ module nts.uk.at.view.kdp010.i {
 				let self = this;
 				self.dataShare = nts.uk.ui.windows.getShared('KDP010_G');
 				self.showSelectedAudio(self.dataShare.fromScreen === 'A');
+
+				if (self.dataShare.fromScreen == 1 || self.dataShare.fromScreen == 3) {
+					self.isSupportUse(null);
+				}
+
 				self.buttonPositionNo(self.dataShare.buttonPositionNo);
 				if (self.dataShare.dataShare != undefined) {
 					let data = self.dataShare.dataShare.lstButtonSet ? self.dataShare.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataShare.buttonPositionNo)[0] : self.dataShare.dataShare;
