@@ -148,7 +148,8 @@ module nts.uk.at.view.kdp010.i {
 					}
 					self.contentsStampType(tg);
 					self.isUseWork(data.workUse);
-					self.isSupportUse(data.supportUse);
+					// Fix bug 122043
+					// self.isSupportUse(data.supportUse);
 					dfd.resolve();
 				}).fail(function (res: any) {
 					error({ messageId: res.messageId });
