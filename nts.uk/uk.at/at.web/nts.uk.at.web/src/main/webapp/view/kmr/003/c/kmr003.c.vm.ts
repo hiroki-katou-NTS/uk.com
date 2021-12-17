@@ -40,9 +40,12 @@ module nts.uk.at.kmr003.c {
                             let message = vm.$i18n.message(x.messageId, x.params);
                             errors.push({ message: message, messageId: x.messageId, supplements: {} });
                         })
-                        nts.uk.ui.dialog.bundledErrors({
-                            errors: errors
-                        })
+                        
+                        if (errors.length > 0) {
+                            nts.uk.ui.dialog.bundledErrors({
+                                errors: errors
+                            })
+                        }
                     }
                 }).fail((error: any) => {
                     if (error) {
