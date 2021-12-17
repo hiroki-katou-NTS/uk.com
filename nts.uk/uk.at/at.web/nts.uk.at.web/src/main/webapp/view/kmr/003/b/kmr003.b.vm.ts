@@ -19,6 +19,7 @@ module nts.uk.at.kmr003.b {
         condition4: KnockoutObservable<boolean> = ko.observable(false);
         condition5: KnockoutObservable<boolean> = ko.observable(false);
         hasErrorsGrid: KnockoutObservable<boolean> = ko.observable(false);
+        disableAllRow: KnockoutObservable<boolean> = ko.observable(false);
     
         created(param: any) {
             const vm = this;
@@ -90,6 +91,14 @@ module nts.uk.at.kmr003.b {
                     vm.condition4(false);
                 } else {
                     vm.condition4(true);
+                }
+
+                let states = _.filter(vm.gridOptions.features, ['name', 'CellStyles'])[0].states;
+                let deleteState = _.filter(states, {'columnKey': "deleteFlg", 'state': ['mgrid-disable']});
+                if (deleteState.length === dataSource.length) {
+                    vm.disableAllRow(true);
+                } else {
+                    vm.disableAllRow(false);
                 }
 
                 let errors = $('#grid').mGrid('errors');

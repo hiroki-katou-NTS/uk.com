@@ -28,7 +28,7 @@
                     <!-- B1_2 -->
                     <button data-bind="click: createNew, text: $i18n('KMR003_42'), enable: condition3"></button>
                     <!-- B1_3 -->
-                    <button class="proceed" data-bind="click: register, text: $i18n('KMR003_43'), enable: condition3() &amp;&amp; condition5() &amp;&amp; hasErrorsGrid() &amp;&amp; $root.errors.isEmpty"></button>
+                    <button class="proceed" data-bind="click: register, text: $i18n('KMR003_43'), enable: condition3() &amp;&amp; condition5() &amp;&amp; hasErrorsGrid() &amp;&amp; !disableAllRow() &amp;&amp; $root.errors.isEmpty"></button>
                 </div>
                 <div id="contents-area">
                     <div class="table" style="margin-left: 30px;">
