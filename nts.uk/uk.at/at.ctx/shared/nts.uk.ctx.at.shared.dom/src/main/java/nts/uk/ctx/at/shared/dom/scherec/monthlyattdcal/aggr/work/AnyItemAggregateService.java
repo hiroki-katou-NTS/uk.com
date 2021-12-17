@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOf
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate.EditStateOfMonthlyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.TermsOfUseForOptItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcResultOfAnyItem;
@@ -114,7 +115,8 @@ public class AnyItemAggregateService {
 			OptionalItem optionalItem, Optional<AttendanceTimeOfMonthly> attendanceTime,
 			MonAggrCompanySettings companySets) {
 
-		List<AnyItemOfMonthly> anyItems = results.entrySet().stream().map(c -> AnyItemOfMonthly.of(sid, ym, closureId, closureDate, c.getValue()))
+		List<AnyItemOfMonthly> anyItems = results.entrySet().stream()
+				.map(c -> AnyItemOfMonthly.of(sid, ym, closureId, closureDate, c.getValue()))
 				.collect(Collectors.toList());
 				
 		int optionalItemNo = optionalItem.getOptionalItemNo().v();
@@ -127,7 +129,7 @@ public class AnyItemAggregateService {
 
 			// 月別実績 計算処理
 			result = AnyItemAggrResult.calcFromMonthly(require, optionalItemNo, 
-					optionalItem, attendanceTime.get(), anyItems, companySets);
+					optionalItem, attendanceTime.get(), anyItems, companySets, PerformanceAtr.MONTHLY_PERFORMANCE);
 		}
 
 		return result;
@@ -261,7 +263,7 @@ public class AnyItemAggregateService {
 																						result.getAnyTimes().map(c -> c.v()),
 																						result.getAnyTime().map(c -> BigDecimal.valueOf(c.v())),
 																						result.getAnyAmount().map(c -> BigDecimal.valueOf(c.v()))),
-																		optionalItem);
+																		optionalItem, PerformanceAtr.MONTHLY_PERFORMANCE);
 
 		return AnyItemAggrResult.of(optionalItemNo,
 										checkedResult.getTime().map(c -> new AnyTimeMonth(c.intValue())),
