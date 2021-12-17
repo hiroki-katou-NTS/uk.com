@@ -961,7 +961,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 $('#task-fav').sortable({
                                     forcePlaceholderSize: true,
                                     axis: "y",
-                                    update: (event, ui) =>{
+                                    update: (event, ui) => {
                                         $("#task-fav").sortable("destroy");
                                         let rows = $(event.target).find('li.title');
                                         let sortedList = [];
