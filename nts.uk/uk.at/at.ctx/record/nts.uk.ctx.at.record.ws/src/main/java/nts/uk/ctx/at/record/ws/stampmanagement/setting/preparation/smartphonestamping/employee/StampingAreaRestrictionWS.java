@@ -8,8 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.record.app.command.stampmanagement.setting.preparation.smartphonestamping.employee.DeleteStampingAreaRestrictionCommand;
-import nts.uk.ctx.at.record.app.command.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestrictionCommand;
 import nts.uk.ctx.at.record.app.command.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestrictionCommandHandler;
+import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestrictionDto;
 import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartphonestamping.employee.StampingSettingEmplFindOneQuery;
 import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartphonestamping.employee.StampingSettingEmployeeQuery;
 
@@ -20,7 +20,7 @@ public class StampingAreaRestrictionWS {
 	private StampingAreaRestrictionCommandHandler stampingAreaRestrictionCommandHandler;
 	
 	@Inject
-	private DeleteStampingAreaRestrictionCommand seleteStampingAreaRestrictionCommand;
+	private DeleteStampingAreaRestrictionCommand deleteStampingAreaRestrictionCommand;
 	
 	@Inject 
 	private StampingSettingEmployeeQuery stampingSettingEmployeeQuery;
@@ -30,8 +30,8 @@ public class StampingAreaRestrictionWS {
 	
 	@POST
 	@Path("insertUpdateStampingSetting")
-	public Boolean  insert(StampingAreaRestrictionCommand areaRestrictionCommand) {
-		 this.stampingAreaRestrictionCommandHandler.handle(areaRestrictionCommand);
+	public Boolean  insert(StampingAreaRestrictionDto areaRestrictionDto) {
+		 this.stampingAreaRestrictionCommandHandler.handle(areaRestrictionDto);
 		 return true;
 	}
 	
@@ -43,14 +43,14 @@ public class StampingAreaRestrictionWS {
 	
 	@POST
 	@Path("delete")
-	public void delete(StampingAreaRestrictionCommand command) {
-		this.seleteStampingAreaRestrictionCommand.handle(command);
+	public void delete(StampingAreaRestrictionDto areaRestrictionDto) {
+		this.deleteStampingAreaRestrictionCommand.handle(areaRestrictionDto);
 	}
 	
 	@POST
 	@Path("findOneById")
-	public StampingAreaRestrictionCommand findOneById (StampingAreaRestrictionCommand areaRestrictionCommand) {
-		return this.emplFindOneQuery.getStatuEmployee(areaRestrictionCommand.getEmployeeId());
+	public StampingAreaRestrictionDto findOneById (StampingAreaRestrictionDto areaRestrictionDto) {
+		return this.emplFindOneQuery.getStatuEmployee(areaRestrictionDto.getEmployeeId());
 	}
 	
 }

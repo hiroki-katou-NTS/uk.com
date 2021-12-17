@@ -117,14 +117,12 @@ created() {
     } 
 });
 
-
 self.mode.subscribe(function(value) {
   if(self.isStart == true){
     self.enableLocation(false);
   }else {
     self.enableLocation(true);
   }
-
 });
 
 self.selectedId.subscribe(function(value){
@@ -134,11 +132,9 @@ self.selectedId.subscribe(function(value){
   }
   if(self.selectedId() == 0)  {
      self.enableStamp(false);
-
   }
 });
 self.mode(self.UNSELECT_MODE);
-
 }
 
 register() {
@@ -155,12 +151,10 @@ register() {
         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
         self.selectedId(res.isLimitArea);
         self.selectedId2(res.locationInformation);
-       
       }
   });
   self.enabledelete(true);
   self.getAll();
- 
 }
 
 getDetail(employmentCategoryCode: string) {
@@ -188,7 +182,6 @@ getDetail(employmentCategoryCode: string) {
     self.selectedEmployeeName(employeeModel.name);
     self.mode(self.UPDATE_MODE);
   });
-  
 }
 
 applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
@@ -287,10 +280,7 @@ public remove() {
         vm.$ajax(API.REMOVESTAMP,data).then((res: any)  => {
             vm.$blockui('clear');
             vm.getAll();
-            // vm.selectedId(0);
-            // vm.selectedId2(2);
             vm.$dialog.info({ messageId: "Msg_16" });
-
           })
           .fail((res) => {
             vm.$blockui('clear');
@@ -311,7 +301,6 @@ start(): JQueryPromise<any> {
   return dfd.promise();
 }
 }
-
   // Note: Defining these interfaces are optional
   export interface GroupOption {
     /** Common properties */
