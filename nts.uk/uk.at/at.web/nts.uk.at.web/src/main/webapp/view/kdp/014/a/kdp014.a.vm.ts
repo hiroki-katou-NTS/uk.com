@@ -24,11 +24,13 @@ selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArra
 selectedEmployeeCode : KnockoutObservable<string> = ko.observable(null);
 selectedEmployeeName :  KnockoutObservable<string> = ko.observable(null);
 listEmplId : KnockoutObservableArray<string> = ko.observableArray([]);
+listEmployee: EmployeeSearchDto[] ;
 // Radio 
 itemList: KnockoutObservableArray<any>;
 selectedId: KnockoutObservable<number>;
 enableLocation: KnockoutObservable<boolean>;
 enableStamp:KnockoutObservable<boolean>;
+enabledelete:KnockoutObservable<boolean>;
 itemList2: KnockoutObservableArray<any>;
 selectedId2: KnockoutObservable<number>;
 NEW_MODE = 1;
@@ -54,19 +56,7 @@ created() {
   ])
   self.selectedId2 = ko.observable(null);
   self.enableStamp = ko.observable(false);
-
-  const data = {
-    employeeId: '000000000003',
-    locationInformation: 1,
-    isLimitArea: 1
-  }
-  // self.$ajax(API.INSERT_UPDATE_STAMPING_SETTING, data).then((res: any) => {
-  //   console.log(res);
-  // });
-
-  // self.$ajax(API.GET_STATUS_STAMPING_EMP, ['000000000003']).then((res: any) => {
-  //   console.log(res);
-  // });
+  self.enabledelete = ko.observable(false);
 
   self.applyKCP005ContentSearch([]);
   // Set component option
@@ -120,11 +110,13 @@ created() {
     // Start component
   }
   $('#ccg001component').ntsGroupComponent(ccg001ComponentOption); // '#com-ccg-001' is the component container's id
+
   self.selectedEmployeeCode.subscribe(newValue => {
     if (!nts.uk.text.isNullOrEmpty(newValue)) {
         self.getDetail(self.selectedEmployeeCode());
     } 
 });
+
 
 self.mode.subscribe(function(value) {
   if(self.isStart == true){
@@ -141,11 +133,12 @@ self.selectedId.subscribe(function(value){
     self.selectedId2(0);
   }
   if(self.selectedId() == 0)  {
-    self.selectedId2(null);
-     self.enableStamp(true);
+     self.enableStamp(false);
+
   }
 });
 self.mode(self.UNSELECT_MODE);
+
 }
 
 register() {
@@ -165,6 +158,7 @@ register() {
        
       }
   });
+  self.enabledelete(true);
   self.getAll();
  
 }
@@ -172,7 +166,7 @@ register() {
 getDetail(employmentCategoryCode: string) {
   const self = this;
   // vm.isShowButton(true);
-
+  console.log(self.employeeList());
   let employeeModel: UnitModel = _.find(self.employeeList(), item => {
       return item.code === employmentCategoryCode;
   });
@@ -183,9 +177,11 @@ getDetail(employmentCategoryCode: string) {
     if (res) {
       self.selectedId(res.isLimitArea);
       self.selectedId2(res.locationInformation);
+      self.enabledelete(true);
     } else {
       self.selectedId(0);
       self.selectedId2(0);
+      self.enabledelete(false);
     }
     self.isStart = false;
     self.selectedEmployeeCode(employeeModel.code);
@@ -197,6 +193,7 @@ getDetail(employmentCategoryCode: string) {
 
 applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
   const self = this;
+  const firstcode = dataList.length > 0 ? dataList[0].employeeCode : null;
   self.employeeList.removeAll();
   let employeeSearchs: Array<UnitModel> = [];
   for (let employeeSearch of dataList) {
@@ -230,7 +227,25 @@ applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
     $('#kcp005component').ntsListComponent(self.listComponentOption);
     self.start();
   });
-  
+  if(firstcode !=null){
+    
+  const data = {
+    employeeId: firstcode
+  };
+    self.$ajax(API.GET_ONE_BY_EMPID, data).then((res: any) => {
+      if (res) {
+        self.selectedId(res.isLimitArea);
+        self.selectedId2(res.locationInformation);
+      } else {
+        self.selectedId(0);
+        self.selectedId2(0);
+      }
+      self.isStart = false;
+      self.selectedEmployeeCode(dataList[0].employeeCode);
+      self.selectedEmployeeName(dataList[0].employeeName);
+      self.mode(self.UPDATE_MODE);
+    });
+  }
 }
 
 getAll(){
@@ -272,8 +287,8 @@ public remove() {
         vm.$ajax(API.REMOVESTAMP,data).then((res: any)  => {
             vm.$blockui('clear');
             vm.getAll();
-            vm.selectedId(3);
-            vm.selectedId2(3);
+            // vm.selectedId(0);
+            // vm.selectedId2(2);
             vm.$dialog.info({ messageId: "Msg_16" });
 
           })
@@ -281,6 +296,7 @@ public remove() {
             vm.$blockui('clear');
             vm.$dialog.alert({ messageId: res.messageId });
           });
+          vm.getDetail(vm.selectedEmployeeCode());
       }
     });
 }
@@ -291,7 +307,7 @@ start(): JQueryPromise<any> {
   block.invisible();
   block.clear();
   dfd.resolve();
-  $("#A4_2").focus();
+  $("#kcp005component").focus();
   return dfd.promise();
 }
 }
