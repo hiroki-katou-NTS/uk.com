@@ -28,5 +28,5 @@ public class KmldpPremiumAttendancePK implements Serializable {
     public Integer displayNumber;
 
     @Column(name="ATTENDANCE_ID")
-    public Integer attendanceID;
+    public String attendanceID;
 }
