@@ -826,7 +826,7 @@ export class KdwS03BComponent extends Vue {
                 taskFrameNo,
                 selectionCodeList: [selectedCD],
                 sid: self.params.employeeID,
-                taskCode: taskFrameNo
+                taskCode: selectedCD == '' ? null : selectedCD
             }
         ).then((data: any) => {
             if (data) {
