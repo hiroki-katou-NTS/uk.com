@@ -281,7 +281,7 @@ module nts.uk.at.view.kml001.a {
                       if (!_.isNil(findItem)) {
                         let attendanceNames = [];
                         _.forEach(findItem.attendanceNames, (o) => {
-                          attendanceNames.push({...o, name: o.attendanceItemName});
+                          attendanceNames.push({shortAttendanceID:o.attendanceItemId, name: o.attendanceItemName});
                         });
                         self.currentPersonCost().premiumSets.push( 
                           new vmbase.PremiumSetting(
