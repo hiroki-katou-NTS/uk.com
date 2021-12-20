@@ -3998,7 +3998,7 @@ public class ProgramsManager {
      */
     public static final Program KTG026A = new Program(WebAppId.AT, 
             ProgramIdConsts.KTG026A,
-            "KTG026_1",
+            "KTG026_5",
             "/view/ktg/026/a/superior.xhtml");
     
     /** CDL010 */
