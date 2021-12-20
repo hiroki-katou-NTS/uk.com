@@ -24,7 +24,6 @@ module nts.uk.com.view.ccg015.h {
       isAlreadySetting: true,
       rows: 10,
       tabindex: 4,
-      roleAtr: 1, //incharge
       onDialog: true,
     }));
     currentRoleId: KnockoutComputed<string>;
@@ -79,7 +78,6 @@ module nts.uk.com.view.ccg015.h {
             rows: 10,
             tabindex: 4,
             onDialog: true,
-            roleAtr: 0, //incharge
             alreadySetList: vm.alreadyRoles,
           }))
           return vm.component().startPage(vm.selectedRoleId);
