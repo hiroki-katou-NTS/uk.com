@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -17,6 +19,13 @@ public class TaskOperationSetting extends AggregateRoot {
     private TaskOperationMethod taskOperationMethod;
     
     
+    /**
+	 * 	[1] 残業枠NOに対応する日次の勤怠項目を取得する
+	 * @return
+	 */
+//	public List<Integer> getDaiLyAttendanceIdByWork() {
+//		return GetAttendanceItemIdService
+//	}
     
     /**
      * [3] 実績で作業を利用できるか

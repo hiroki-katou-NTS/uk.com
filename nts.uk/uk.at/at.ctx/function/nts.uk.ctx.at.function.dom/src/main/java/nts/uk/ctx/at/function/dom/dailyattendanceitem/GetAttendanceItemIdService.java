@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤怠項目.日次の勤怠項目.勤怠項目IDを取得する
- * DS: 勤怠項目IDを取得する
+ * DS: 勤怠項目IDを取得する (old name) - 応援作業の勤怠項目一覧を取得する (new name)
  * 
  * @author tutt
  *
