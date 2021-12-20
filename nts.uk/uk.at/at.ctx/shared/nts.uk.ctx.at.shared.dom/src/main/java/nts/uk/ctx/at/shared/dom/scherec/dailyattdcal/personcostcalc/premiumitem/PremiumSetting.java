@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -49,7 +50,11 @@ public class PremiumSetting implements Validatable{
 	// 単価
     private UnitPrice unitPrice;
 
-    private List<Integer> attendanceItems;
+    private List<String> attendanceItems;
+
+	public List<Integer> getAttendanceItems() {
+		return attendanceItems.stream().map(j-> Integer.valueOf(j)).collect(Collectors.toList());
+	}
 
 	/** 割増時間合計に含めるか */
 	private boolean includeTotal;
@@ -57,7 +62,7 @@ public class PremiumSetting implements Validatable{
     public PremiumSetting(String companyID,String historyID,
 						  ExtraTimeItemNo iD, PremiumRate rate,
 						  UnitPrice unitPrice,
-						  List<Integer> attendanceItems) {
+						  List<String> attendanceItems) {
 		super();
 		this.iD = iD;
 		this.rate = rate;

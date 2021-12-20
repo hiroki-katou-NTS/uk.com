@@ -699,7 +699,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                             if (dataTemp != undefined) {
                                 let data = [dataTemp];
-
+								self.formatCodes(data);
                                 let param = {
                                     dateRange: dateRangeParam ? {
                                         startDate: moment(dateRangeParam.startDate).utc().toISOString(),
@@ -801,7 +801,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.dataAll(data);
             self.itemValueAll(data.itemValues);
             self.comment(data.comment != null ? '■ ' + data.comment : null);
-            self.formatCodes(data.lstControlDisplayItem.formatCode);
+			if(data.lstControlDisplayItem.formatCode !=  null){
+           	 	self.formatCodes(data.lstControlDisplayItem.formatCode);
+			}
             self.autBussCode(data.autBussCode);
             self.createSumColumn(data);
             // combo box
@@ -5480,6 +5482,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 						}
 					}
                     nts.uk.ui.block.invisible();
+                    let taskCode = self.selectedCode() == '' ? null : self.selectedCode();
                     let paramsKDL012 = {
 						isMultiple: false,
 				        showExpireDate: false,
@@ -5487,7 +5490,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 				        workFrameNoSelection,
 				        selectionCodeList: [self.selectedCode()],
                         sid: selfParent.selectedEmployee(),
-                        taskCode: workFrameNoSelection
+                        taskCode
                     };
                     setShared('KDL012Params', paramsKDL012);
                     modal("/view/kdl/012/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
