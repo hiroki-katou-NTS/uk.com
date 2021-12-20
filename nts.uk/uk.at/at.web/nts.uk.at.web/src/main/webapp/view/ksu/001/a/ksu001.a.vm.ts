@@ -3682,7 +3682,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let wkpEventName     = rs.wkpEventName;
                         // update lai header grid
                         self.updateHeader().done(() => {
-                            if (userInfor.disPlayFormat == ViewMode.TIME) {
+                            if (self.userInfor.disPlayFormat == ViewMode.TIME) {
                                 // enable những cell đã disable trước đó đi rồi sau khi update grid mới disable đi được
                                 self.enableCellsTime();
                                 self.diseableCellsTime();
