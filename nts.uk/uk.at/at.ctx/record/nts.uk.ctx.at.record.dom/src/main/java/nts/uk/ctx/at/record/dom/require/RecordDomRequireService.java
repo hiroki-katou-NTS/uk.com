@@ -805,6 +805,14 @@ public class RecordDomRequireService {
 	private CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
 	@Inject
 	private  CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
+	@Inject
+	private WorkRegularAdditionSetRepository workRegularAdditionSetRepo;
+	@Inject
+	private AddSetManageWorkHourRepository addSetManageWorkHourRepo;
+	@Inject
+	private WorkFlexAdditionSetRepository workFlexAdditionSetRepo;
+	@Inject
+	private WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo;
   
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2, CalcAnnLeaAttendanceRate.RequireM3,
 		GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1, CalcNextAnnLeaGrantInfo.RequireM1, GetNextAnnualLeaveGrantProcKdm002.RequireM1,
@@ -854,7 +862,8 @@ public class RecordDomRequireService {
 				companyMonthDaySettingRepo,tempPublicHolidayManagementRepo, publicHolidayCarryForwardDataRepo, employmentMonthDaySettingRepo, workplaceMonthDaySettingRepo,
 				employeeMonthDaySettingRepo, publicHolidayCarryForwardHistoryRepo, childCareUsedNumberRepo, careUsedNumberRepo, childCareLeaveRemInfoRepo, careLeaveRemainingInfoRepo,
 				tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo, executionLogRepo, workingConditionRepository, transaction, employmentAdapter, 
-				creatingDailyResultsConditionRepo, getPeriodFromPreviousToNextGrantDate, workDaysNumberOnLeaveCountRepo);
+				creatingDailyResultsConditionRepo, getPeriodFromPreviousToNextGrantDate, workDaysNumberOnLeaveCountRepo, workRegularAdditionSetRepo, addSetManageWorkHourRepo, 
+				workFlexAdditionSetRepo, workDeformedLaborAdditionSetRepo);
 	}
 
 	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
@@ -907,7 +916,8 @@ public class RecordDomRequireService {
 				EmployeeMonthDaySettingRepository employeeMonthDaySettingRepo, PublicHolidayCarryForwardHistoryRepository publicHolidayCarryForwardHistoryRepo,ChildCareUsedNumberRepository childCareUsedNumberRepo,
 				CareUsedNumberRepository careUsedNumberRepo, ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepo, CareLeaveRemainingInfoRepository careLeaveRemainingInfoRepo, TempChildCareManagementRepository tempChildCareManagementRepo,
 				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,ExecutionLogRepository executionLogRepo, WorkingConditionRepository workingConditionRepository, TransactionService transaction,
-				EmploymentAdapter employmentAdapter, CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo, GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate, WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo) {
+				EmploymentAdapter employmentAdapter, CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo, GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate, WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo,
+				WorkRegularAdditionSetRepository workRegularAdditionSetRepo, AddSetManageWorkHourRepository addSetManageWorkHourRepo, WorkFlexAdditionSetRepository workFlexAdditionSetRepo, WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo) {
 
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
 					grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
@@ -1069,6 +1079,10 @@ public class RecordDomRequireService {
 			this.workTypeRepo = workTypeRepo;
 			this.employmentAdapter = employmentAdapter;
 			this.creatingDailyResultsConditionRepo = creatingDailyResultsConditionRepo;
+			this.workRegularAdditionSetRepo = workRegularAdditionSetRepo;
+			this.addSetManageWorkHourRepo = addSetManageWorkHourRepo;
+			this.workFlexAdditionSetRepo = workFlexAdditionSetRepo;
+			this.workDeformedLaborAdditionSetRepo = workDeformedLaborAdditionSetRepo;
 		}
 		protected EmploymentAdapter employmentAdapter;
 		protected CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
