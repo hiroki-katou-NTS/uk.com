@@ -43,18 +43,16 @@ public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
      * [1] 時間特別休暇に対応する日次の勤怠項目を取得する
      */
     public List<Integer> getDailyAttdItemsCorrespondSpecialLeave(){
-    	List<Integer> attendanceItemIds = Arrays.asList(543,504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
-		return attendanceItemIds;
+    	return Arrays.asList(543,504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
     }
     
     /**
      * [2] 利用できない日次の勤怠項目を取得する
      */
     public List<Integer> getDailyAttdItemsNotAvailable(){
-    	List<Integer> attendanceItemIds = new ArrayList<>();
     	if (manageType == ManageDistinct.NO) { // Nhờ NWS sửa theo tài liệu mới
-    		attendanceItemIds = Arrays.asList(504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
+    		return Arrays.asList(504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
     	}
-		return attendanceItemIds;
+		return new ArrayList<>();
     }
 }
