@@ -255,9 +255,8 @@ public class ScheduleInformationByDateFileQuery {
         private PredetemineTimeSettingRepository predetemineTimeSet;
 
         @Override
-        public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-            Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
-            return workSetting.orElse(null);
+        public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+            return predetemineTimeSet.findByWorkTimeCode(companyId, workTimeCode.v());
         }
 
         @Override

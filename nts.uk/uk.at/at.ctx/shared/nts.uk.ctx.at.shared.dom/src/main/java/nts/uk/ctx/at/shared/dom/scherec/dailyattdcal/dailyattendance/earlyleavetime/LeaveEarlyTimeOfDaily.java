@@ -287,13 +287,13 @@ public class LeaveEarlyTimeOfDaily {
 	
 	/**
 	 * 時間休暇加算時間を取得する
-	 * @param calcMethodSet 休暇の計算方法の設定
+	 * @param calcMethodSet 労働時間の加算設定
 	 * @param holidayAddtionSet 休暇加算時間設定
 	 * @param frames 就業時間内時間枠(List)
 	 * @param workTimeForm 就業時間帯の勤務形態
 	 * @return 時間休暇加算時間
 	 */
-	public AttendanceTime calcVacationAddTime(HolidayCalcMethodSet calcMethodSet, HolidayAddtionSet holidayAddtionSet,
+	public AttendanceTime calcVacationAddTime(AddSettingOfWorkingTime calcMethodSet, HolidayAddtionSet holidayAddtionSet,
 			List<WithinWorkTimeFrame> frames, WorkTimeForm workTimeForm) {
 		if(calcMethodSet.isAddVacation(PremiumAtr.RegularWork).isNotUse()) {
 			return AttendanceTime.ZERO;

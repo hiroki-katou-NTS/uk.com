@@ -100,7 +100,7 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 			if (!remainInfor.isPresent())
 				continue;
 
-			val workType = impl.getWorkType(c.getWorkInfo().getRecordInfo().getWorkTypeCode().v());
+			val workType = impl.workType(cid, c.getWorkInfo().getRecordInfo().getWorkTypeCode());
 			if (!workType.isPresent() || !c.getOptAttendanceTime().isPresent()) {
 				scheRemainInfor.add(ScheRemainCreateInfor.toScheRemain(remainInfor.get()));
 				continue;
@@ -200,16 +200,6 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 		@Override
 		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
 			return workTypeRepo.findByPK(companyId, workTypeCode.v());
-		}
-
-		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId,wktmCd.v()).get();
-		}
-
-		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
 		@Override

@@ -126,7 +126,7 @@ public class HolidayAddtionSet extends AggregateRoot implements SerializableWith
 	 * @return 時間休暇加算時間
 	 */
 	public AttendanceTime calcTimeVacationAddTime(IntegrationOfDaily integrationOfDaily, DeductionTimeSheet deductionTimeSheet,
-			HolidayCalcMethodSet calcMethodSet, List<WithinWorkTimeFrame> frames, WorkTimeForm workTimeForm) {
+			AddSettingOfWorkingTime calcMethodSet, List<WithinWorkTimeFrame> frames, WorkTimeForm workTimeForm) {
 		if(!integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
 			return AttendanceTime.ZERO;
 		}

@@ -237,7 +237,7 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			}
 			
 			/**　勤務種類 */
-			val workType = require.workType(companyId, nowWorkingItem.getWorkCategory().getWorkType().getWeekdayTimeWTypeCode().v());
+			val workType = require.workType(companyId, nowWorkingItem.getWorkCategory().getWorkType().getWeekdayTimeWTypeCode());
 			if(!workType.isPresent()) {
 				return Optional.empty();
 			}
@@ -246,14 +246,6 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay = this.getPredByPersonInfo(
 					nowWorkingItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get(), shareContainer, workType.get());
 			
-			/** 残業時間帯Require */
-			OverTimeSheet.TransProcRequire overTimeSheetRequire = new TransProcRequireImpl(
-					companyId,
-					this.checkDateForManageCmpLeaveService,
-					this.sysEmploymentHisAdapter,
-					this.compensLeaveComSetRepo,
-					this.compensLeaveEmSetRepo);
-
 			// フレックス勤務基本設定
 			Optional<FlexMonthWorkTimeAggrSet> flexBasicSet = Optional.empty();
 			if (usageUnitSet.isPresent()){
@@ -272,9 +264,9 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			/*社員単価履歴*/
 			Optional<EmployeeUnitPriceHistoryItem> unitPrice = this.employeeUnitPriceHistoryRepositoly.get(daily.getEmployeeId(), daily.getYmd());
 			
-			return Optional.of(new ManagePerPersonDailySet(nowWorkingItem, dailyUnit,
+			return Optional.of(new ManagePerPersonDailySet(daily.getYmd(), nowWorkingItem, dailyUnit,
 								addSetting, bonusPaySetting, predetermineTimeSetByPersonWeekDay,
-								overTimeSheetRequire, unitPrice, flexBasicSet, require));
+								flexBasicSet, require, unitPrice));
 		}
 		catch(RuntimeException e) {
 			return Optional.empty();

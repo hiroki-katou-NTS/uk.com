@@ -102,10 +102,11 @@ public class WithinStatutoryTimeOfDaily {
 		AttendanceTime actualTime = new AttendanceTime(0);
 		AttendanceTime withinpremiumTime = new AttendanceTime(0);
 		AttendanceTime actualWithinPremiumTime = new AttendanceTime(0);
+		WithinStatutoryMidNightTime midNightTime = new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.defaultValue());
 
 		// 勤務種類
 		if (!recordReget.getWorkType().isPresent()){
-			return new WithinStatutoryTimeOfDaily(workTime, actualTime, withinpremiumTime, actualWithinPremiumTime, midNightTime);
+			return new WithinStatutoryTimeOfDaily(workTime, actualTime, withinpremiumTime, midNightTime);
 		}
 		WorkType workType = recordReget.getWorkType().get();
 		// 時間外の自動計算区分
@@ -164,14 +165,7 @@ public class WithinStatutoryTimeOfDaily {
 				NotUseAtr.USE);
 
 		//所定内深夜時間の計算
-		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(
-				recordReget,
-				workType,
-				conditionItem,
-				flexCalcMethod,
-				vacationClass,
-				workTimeCode,
-				predetermineTimeSetByPersonInfo);
+		midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(recordReget, settingOfFlex);
 		
 		//単価
 		WorkingHoursUnitPrice unitPrice = WorkingHoursUnitPrice.ZERO;

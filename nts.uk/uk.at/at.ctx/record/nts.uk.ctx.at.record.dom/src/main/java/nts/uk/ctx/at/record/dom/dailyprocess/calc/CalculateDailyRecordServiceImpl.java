@@ -53,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.D
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.BreakTimeSheetGetter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
@@ -69,6 +70,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
@@ -583,12 +585,12 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 		// 乖離時間(AggregateRoot)取得
 		List<DivergenceTimeRoot> divergenceTimeList = recordReGetClass.getCompanyCommonSetting().getDivergenceTime();
-
 		
 		/* 時間の計算 */
-		recordReGetClass.setIntegrationOfDaily(AttendanceTimeOfDailyAttendance.calcTimeResult(vacation, workType.get(),
+		recordReGetClass.setIntegrationOfDaily(AttendanceTimeOfDailyAttendance.calcTimeResult(
+				VacationClass.createAllZero(), workType.get(),
 				flexCalcMethod, eachCompanyTimeSet, divergenceTimeList,
-				calculateOfTotalConstraintTime, scheduleReGetClass, recordReGetClass,
+				optionalCalculateOfTotalConstraintTime.get(), scheduleReGetClass, recordReGetClass,
 				recordReGetClass.getPersonDailySetting().getPersonInfo(),
 				getPredByPersonInfo(recordReGetClass.getPersonDailySetting().getPersonInfo().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode(),
 						recordReGetClass.getCompanyCommonSetting().getShareContainer(), workType.get()),
@@ -598,6 +600,40 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 		/* 日別実績への項目移送 */
 		return recordReGetClass.getIntegrationOfDaily();
+	}
+	
+	private Optional<PredetermineTimeSetForCalc> getPredByPersonInfo(Optional<WorkTimeCode> workTimeCode,
+			MasterShareContainer<String> shareContainer, WorkType workType) {
+		if (!workTimeCode.isPresent())
+			return Optional.empty();
+		// val predSetting =
+		// predetemineTimeSetRepository.findByWorkTimeCode(AppContexts.user().companyId(),
+		// workTimeCode.get().toString());
+		val predSetting = getPredetermineTimeSetFromShareContainer(shareContainer, AppContexts.user().companyId(),
+				workTimeCode.get().toString());
+		if (!predSetting.isPresent())
+			return Optional.empty();
+		return Optional.of(PredetermineTimeSetForCalc.convertFromAggregatePremiumTime(predSetting.get(), workType));
+	}
+	
+	/**
+	 * 就業時間帯コードの取得 勤務情報 > 労働条件 > 就業時間帯無と判定
+	 * 
+	 * @param workInfo
+	 * @param personCommonSetting
+	 * @param workType
+	 * @return
+	 */
+	private Optional<WorkTimeCode> decisionWorkTimeCode(WorkInfoOfDailyAttendance workInfo,
+			ManagePerPersonDailySet personCommonSetting, Optional<WorkType> workType) {
+		if(!workType.isPresent() || workType.get().isNoneWorkTimeType())
+			return Optional.empty();
+		
+		if (workInfo == null || workInfo.getRecordInfo() == null
+				|| workInfo.getRecordInfo().getWorkTimeCode() == null) {
+				return personCommonSetting.getPersonInfo().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode();
+		}
+		return Optional.of(workInfo.getRecordInfo().getWorkTimeCode());
 	}
 
 	/**

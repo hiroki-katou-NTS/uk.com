@@ -12,7 +12,6 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcmtCalcDRestTime;
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcmtCalcDTotaltime;
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcmtCalcMHdOffset;
-import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstConstraintTimeCalPK;
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstWkHourLimitCtrlPK;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
@@ -29,13 +28,13 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	private static final String SEL_TOTAL_CONSTRAINT = 
 			"SELECT a "
 			+ "FROM KrcmtCalcDRestTime a "
-			+ "WHERE a.id.cid = :companyId ";
+			+ "WHERE a.cid = :companyId ";
 	
 	/** The Constant SEL_TIME_OFF_ORDER. */
 	private static final String SEL_TIME_OFF_ORDER = 
 			"SELECT a "
 			+ "FROM KrcmtCalcMHdOffset a "
-			+ "WHERE a.id.cid = :companyId ";
+			+ "WHERE a.cid = :companyId ";
 	
 	/** The Constant SEL_WORK_HOUR_LIMIT. */
 //	private static final String SEL_WORK_HOUR_LIMIT = 
@@ -50,7 +49,7 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 * @return the calculate of total constraint time
 	 */
 	public CalculateOfTotalConstraintTime toDomain(KrcmtCalcDRestTime entity) {
-		return CalculateOfTotalConstraintTime.createFromJavaType(entity.getId().getCid(), entity.getCalMethod());
+		return CalculateOfTotalConstraintTime.createFromJavaType(entity.getCid(), entity.getCalMethod());
 	}
 	
 	/**
@@ -71,10 +70,8 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 */
 	public KrcmtCalcDRestTime toDbType(CalculateOfTotalConstraintTime setting) {
 		KrcmtCalcDRestTime entity = new KrcmtCalcDRestTime();
-		KrcstConstraintTimeCalPK primaryKey = new KrcstConstraintTimeCalPK();
-		primaryKey.setCid(setting.getCompanyId().v());
 		entity.setCalMethod(setting.getCalcMethod().value);
-		entity.setId(primaryKey);
+		entity.setCid(setting.getCompanyId().v());
 		return entity;
 	}
 	

@@ -1253,7 +1253,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		return holidayAddtionSet.calcTimeVacationAddTime(
 				integrationOfDaily,
 				deductionTimeSheet,
-				addSetting.getVacationCalcMethodSet(),
+				addSetting.getAddSetOfWorkingTime(),
 				frames,
 				integrationOfWorkTime.get().getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm());
 	}

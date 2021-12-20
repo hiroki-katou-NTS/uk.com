@@ -2126,7 +2126,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		
 		/**　フレックス時間を計算する　*/
 		val flexTime = this.flexExcessTime.valueAsMinutes() - this.flexShortageTime.valueAsMinutes();
-		this.flexTime.getFlexTime().setTime(new AttendanceTimeMonthWithMinus(flexTime));
+		this.flexTime.getFlexTime().getFlexTime().setTime(new AttendanceTimeMonthWithMinus(flexTime));
 	}
 	
 	/**

@@ -284,7 +284,7 @@ public class OutingTimeOfDaily {
 	
 	/**
 	 * 時間休暇加算時間を取得する
-	 * @param calcMethodSet 休暇の計算方法の設定
+	 * @param calcMethodSet 労働時間の加算設定
 	 * @param holidayAddtionSet 休暇加算時間設定
 	 * @param deductionTimeSheet 控除時間帯
 	 * @param workTimeForm 就業時間帯の勤務形態

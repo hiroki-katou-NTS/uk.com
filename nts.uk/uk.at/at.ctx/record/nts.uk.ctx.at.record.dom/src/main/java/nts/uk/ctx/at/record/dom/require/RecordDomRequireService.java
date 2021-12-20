@@ -45,10 +45,10 @@ import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
-import nts.uk.ctx.at.record.dom.monthly.MonthlyAggregateForEmployees;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.CreatingDailyResultsCondition;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.CreatingDailyResultsConditionRepository;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
+import nts.uk.ctx.at.record.dom.monthly.MonthlyAggregateForEmployees;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgeementTimeCommonSettingService;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
@@ -410,7 +410,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -806,14 +805,6 @@ public class RecordDomRequireService {
 	private CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
 	@Inject
 	private  CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
-	@Inject
-	private WorkRegularAdditionSetRepository workRegularAdditionSetRepo;
-	@Inject
-	private AddSetManageWorkHourRepository addSetManageWorkHourRepo;
-	@Inject
-	private WorkFlexAdditionSetRepository workFlexAdditionSetRepo;
-	@Inject
-	private WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo;
   
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2, CalcAnnLeaAttendanceRate.RequireM3,
 		GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1, CalcNextAnnLeaGrantInfo.RequireM1, GetNextAnnualLeaveGrantProcKdm002.RequireM1,
@@ -1076,10 +1067,6 @@ public class RecordDomRequireService {
 			this.getPeriodFromPreviousToNextGrantDate = getPeriodFromPreviousToNextGrantDate;
 			this.transaction = transaction;
 			this.workTypeRepo = workTypeRepo;
-			this.workRegularAdditionSetRepo = workRegularAdditionSetRepo;
-			this.addSetManageWorkHourRepo = addSetManageWorkHourRepo;
-			this.workFlexAdditionSetRepo = workFlexAdditionSetRepo;
-			this.workDeformedLaborAdditionSetRepo = workDeformedLaborAdditionSetRepo;
 			this.employmentAdapter = employmentAdapter;
 			this.creatingDailyResultsConditionRepo = creatingDailyResultsConditionRepo;
 		}
@@ -3107,11 +3094,6 @@ public class RecordDomRequireService {
 		@Override
 		public WorkDaysNumberOnLeaveCount workDaysNumberOnLeaveCount(String cid) {
 			return workDaysNumberOnLeaveCountRepo.findByCid(cid);
-		}
-		
-		@Override
-		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
-			return predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode);
 		}
 
 		@Override
