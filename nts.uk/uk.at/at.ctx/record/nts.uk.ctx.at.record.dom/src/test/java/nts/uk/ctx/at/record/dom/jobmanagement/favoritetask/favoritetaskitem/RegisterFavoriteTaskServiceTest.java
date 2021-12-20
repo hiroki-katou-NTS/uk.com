@@ -124,20 +124,10 @@ public class RegisterFavoriteTaskServiceTest {
 
 		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
 				new ArrayList<>());
-		
-		result.run();
-		
-		new Verifications() {{
-			require.insert(new FavoriteTaskItem(anyString, anyString, new FavoriteTaskName(anyString), new ArrayList<>()));
-			times = 0;
-			
-			require.insert(new FavoriteTaskDisplayOrder(anyString, new ArrayList<>()));
-			times = 0;
-			
-			require.insert(FavoriteTaskDisplayOrder.addNewFavTaskDisporder("employeeId", anyString));
-			times = 0;
-		}};
-	
+
+		NtsAssert.atomTask(() -> result,
+				any -> require.insert(new FavoriteTaskDisplayOrder("employeeId", new ArrayList<>())));
+
 	}
 
 }
