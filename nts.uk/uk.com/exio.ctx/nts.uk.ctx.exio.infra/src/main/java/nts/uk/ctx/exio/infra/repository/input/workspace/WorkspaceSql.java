@@ -2,10 +2,7 @@ package nts.uk.ctx.exio.infra.repository.input.workspace;
 
 import static java.util.stream.Collectors.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -47,9 +44,9 @@ public class WorkspaceSql {
 	private final JdbcProxy jdbcProxy;
 	private final DatabaseProduct database;	//this.database().product();
 
-	static final Column ROW_NO = new Column("ROW_NO", new DataTypeConfiguration(DataType.INT, 10,0), "rowno");
-	static final Column CONTRACT_CD = new Column("CONTRACT_CD", new DataTypeConfiguration(DataType.STRING, 12,0), "contract");
-	static final Column CID = new Column("CID", new DataTypeConfiguration(DataType.STRING, 17,0), "cid");
+	static final Column ROW_NO = new Column("ROW_NO", new DataTypeConfiguration(DataType.INT, 10,0), "rowno", true);
+	static final Column CONTRACT_CD = new Column("CONTRACT_CD", new DataTypeConfiguration(DataType.STRING, 12,0), "contract", false);
+	static final Column CID = new Column("CID", new DataTypeConfiguration(DataType.STRING, 17,0), "cid", false);
 
 	public static WorkspaceSql create(Require require, ExecutionContext context, JdbcProxy jdbcProxy, DatabaseProduct database) {
 
@@ -90,18 +87,27 @@ public class WorkspaceSql {
 
 	private void createTable(String tableName) {
 		TemporaryTable.createTable(jdbcProxy, database, tableName, b -> {
-			// 正準化時にうまれる項目を主キーに指定できない（編集時にはNULLである）ので、一旦ROW_NOを固定で主キーとする
-			// 必要なら主キーではなくインデックスにすることを検討する
-			b = b.columnPK(ROW_NO.name, ROW_NO.type)
-					.column(CONTRACT_CD.name, CONTRACT_CD.type)
-					.column(CID.name, CID.type);
-			for (WorkspaceItem item : workspace.getItemsPk()){
-				b = b.column(item.getName(), item.getDataTypeConfig());
-			}
-			for (WorkspaceItem item : workspace.getItemsNotPk()){
-				b = b.column(item.getName(), item.getDataTypeConfig());
+			for (Column column : allWorkspaceTableColumns()){
+				if (column.pkey) {
+					b = b.columnPK(column.name, column.type);
+				}
+				else {
+					b = b.column(column.name, column.type);
+				}
 			}
 		});
+	}
+
+	protected List<Column> allWorkspaceTableColumns() {
+		List<Column> result = new ArrayList<>();
+		result.add(ROW_NO);
+		result.add(CONTRACT_CD);
+		result.add(CID);
+		for (WorkspaceItem item : workspace.getAllItemsSortedByItemNo()){
+			if(CONTRACT_CD.name.equals(item.getName()) || CID.name.equals(item.getName())) break;
+			result.add(new Column(item.getName(), item.getDataTypeConfig(), "@" + Insert.paramItem(item.getItemNo()), false));
+		}
+		return result;
 	}
 	
 	static class CommonColumns {
@@ -129,6 +135,7 @@ public class WorkspaceSql {
 		String name;
 		DataTypeConfiguration type;
 		String paramName;
+		boolean pkey;
 	}
 
 	/**
@@ -163,7 +170,7 @@ public class WorkspaceSql {
 		 * VALUES句の列順は、項目No順にテーブルが作られるという仕様を前提とする。
 		 * ただし先頭はROW_NO, CONTRACT_CD, CID列で固定。
 		 */
-		String sql = Insert.createInsertSql(tableName, workspace);
+		String sql = Insert.createInsertSql(tableName, workspace, allWorkspaceTableColumns());
 		
 		val statement = jdbcProxy.query(sql);
 		
@@ -180,11 +187,14 @@ public class WorkspaceSql {
 
 	static class Insert {
 
-		static String createInsertSql(String tableName, DomainWorkspace workspace) {
-			
+		static String createInsertSql(String tableName, DomainWorkspace workspace, List<Column> columns) {
+
 			return new StringBuilder()
 				.append("insert into ")
 				.append(tableName)
+				.append(" (")
+				.append(columns.stream().map(col -> col.getName()).collect(joining(",")))
+				.append(")")
 				.append(" values (")
 				.append(CommonColumns.sqlParams() + ",")
 				.append(workspace.getAllItemsSortedByItemNo().stream()
