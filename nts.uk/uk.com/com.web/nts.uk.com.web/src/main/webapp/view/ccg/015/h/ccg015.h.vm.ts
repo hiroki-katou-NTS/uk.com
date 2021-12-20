@@ -1,6 +1,6 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.com.view.ccg015.h {
-  import ccg025Component = nts.uk.com.view.ccg025.a.component;
+  import ComponentModel = nts.uk.com.view.ccg025.a.component.viewmodel.ComponentModel;
   
   const API = {
     get: 'at/auth/workplace/initdisplayperiod/get',
@@ -11,13 +11,6 @@ module nts.uk.com.view.ccg015.h {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    component: ccg025Component.viewmodel.ComponentModel = new ccg025Component.viewmodel.ComponentModel({ 
-      roleType: 3, //就業
-      multiple: false,
-      isAlreadySetting: true,
-      rows: 10,
-      tabindex: 4,
-    });
     numberOfDays: KnockoutObservableArray<{name: string, value: number}> = ko.observableArray([]);
     selectedNumberOfDay: KnockoutObservable<any> = ko.observable(0);
 
@@ -25,6 +18,15 @@ module nts.uk.com.view.ccg015.h {
     isNewMode: KnockoutObservable<boolean> = ko.observable(true);
     selectedRoleId: string = '';
     alreadyRoles: string[] = [];
+    component: KnockoutObservable<ComponentModel> = ko.observable(new ComponentModel({ 
+      roleType: 3, //就業
+      multiple: false,
+      isAlreadySetting: true,
+      rows: 10,
+      tabindex: 4,
+      onDialog: true,
+    }));
+    currentRoleId: KnockoutComputed<string>;
 
     created() {
       const vm = this;
@@ -36,14 +38,17 @@ module nts.uk.com.view.ccg015.h {
 
         vm.numberOfDays.push({name: vm.$i18n('CCG015_104', [i.toString()]), value: i});
       }
+      vm.currentRoleId = ko.computed(() => {
+        return vm.component().currentRoleId();
+      });
     }
 
     mounted() {
       const vm = this;
-      vm.component.currentCode.subscribe((value: any) => {
+      vm.currentRoleId.subscribe((value: any) => {
         vm.selectedRoleId = value;
         vm.getData();
-        const role = _.find(vm.component.listRole(), role => role.roleId === value);
+        const role = _.find(vm.component().listRole(), role => role.roleId === value);
         if (_.isNil(role)) {
           vm.roleName('');
           return;
@@ -52,7 +57,7 @@ module nts.uk.com.view.ccg015.h {
         vm.roleName(`${role.roleCode} ${role.roleName}`);
       });
 
-      vm.getAlreadySetting()
+      vm.getAlreadySetting();
     }
 
     getAlreadySetting() {
@@ -65,7 +70,18 @@ module nts.uk.com.view.ccg015.h {
           }
           vm.alreadyRoles = _.map(result, x => x.roleID);
         })
-        .then(() => vm.component.startPage(vm.alreadyRoles, vm.selectedRoleId))
+        .then(() => {
+          vm.component(new ComponentModel({ 
+            roleType: 3, //就業
+            multiple: false,
+            isAlreadySetting: true,
+            rows: 10,
+            tabindex: 4,
+            onDialog: true,
+            alreadySetList: vm.alreadyRoles,
+          }))
+          return vm.component().startPage(vm.selectedRoleId);
+        })
         .then(() => $('#ccg015_h10 .multi-list_container').focus());
     }
 

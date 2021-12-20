@@ -485,6 +485,7 @@ module nts.uk.at.view.kml002.k {
                             }                            
                         })                        
                     });
+					data.listHandlingByNo  = _.sortBy(data.listHandlingByNo, [function(o) { return o.frameNo; }]);
 
                     for (let i = 1; i < 6; i++) {
                         if (i <= data.listHandlingByNo.length && data.listHandlingByNo[i - 1].frameNo == i) {

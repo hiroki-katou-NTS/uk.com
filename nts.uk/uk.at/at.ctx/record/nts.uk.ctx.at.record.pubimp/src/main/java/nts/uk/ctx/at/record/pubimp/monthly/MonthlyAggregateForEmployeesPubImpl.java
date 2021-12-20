@@ -55,6 +55,7 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRep
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
@@ -129,6 +130,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.Spe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
@@ -814,6 +816,22 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 			this.cache = cache;
 		}
 
+		@Override
+		public Map<GeneralDate, WorkInfoOfDailyAttendance> dailyWorkInfos(String employeeId, DatePeriod datePeriod) {
+			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeId, datePeriod);
+			//List<WorkInfoOfDailyPerformance>
+			List<WorkInfoOfDailyPerformance> lstDom = lstDomCache.stream()
+					.map(x -> new WorkInfoOfDailyPerformance(x.getEmployeeId(), x.getYmd(), x.getWorkInformation()))
+					.collect(Collectors.toList());
+			List<WorkInfoOfDailyPerformance> lstDomOld = workInformationRepo.findByPeriodOrderByYmd(employeeId, datePeriod);
+			lstDomOld.removeIf(x -> {
+				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd())).findFirst();
+				return fromCache.isPresent();
+			});
+			lstDomOld.addAll(lstDom);
+			return lstDomOld.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getWorkInformation()));
+		}
+		
 		@Override
 		public Map<GeneralDate, TimeLeavingOfDailyAttd> dailyTimeLeavings(String employeeId, DatePeriod datePeriod) {
 			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeId, datePeriod);
