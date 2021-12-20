@@ -78,11 +78,10 @@ public class ShortWorkTimeOfDaily {
 		if (workType.isWorkingDay() == false) return zeroValue;
 		
 		if(recordClass.getCalculatable() && recordClass.getIntegrationOfDaily().getShortTime().isPresent()){
-			//短時間勤務回数
-			workTimes = new WorkTimes(recordClass.getIntegrationOfDaily().getShortTime().get().getShortWorkingTimeSheets().stream()
-					.filter(tc -> tc.getChildCareAttr().equals(careAtr))
-					.collect(Collectors.toList())
-					.size());
+			//回数の計算
+			workTimes = new WorkTimes(recordClass.getCalculationRangeOfOneDay().getDeductionCount(
+					careAtr.isCare() ? ConditionAtr.Care : ConditionAtr.Child,
+					DeductionAtr.Appropriate));
 			
 			//計上時間の計算
 			totalTime = calcTotalShortWorkTime(recordClass, DeductionAtr.Appropriate, careAtr, premiumAtr);

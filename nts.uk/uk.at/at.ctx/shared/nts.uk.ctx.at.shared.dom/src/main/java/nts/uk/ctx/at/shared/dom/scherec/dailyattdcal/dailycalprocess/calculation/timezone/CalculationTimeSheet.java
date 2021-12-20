@@ -152,7 +152,7 @@ public abstract class CalculationTimeSheet {
 	/**
 	 * 指定した控除時間帯を取得
 	 * @param dedAtr 控除区分
-	 * @param conditionAtr　条件
+	 * @param conditionAtr 条件
 	 * @return　控除項目の時間帯List
 	 */
 	public List<TimeSheetOfDeductionItem> getDedTimeSheetByAtr(DeductionAtr dedAtr, ConditionAtr conditionAtr) {
