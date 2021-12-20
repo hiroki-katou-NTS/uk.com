@@ -46,16 +46,22 @@ public class ApplicationAvailable {
 			resultDate = applicationSetting.get().getBaseDate(Optional.of(date));
 		}
 
-		// $申請承認設定 = require.申請承認設定情報の取得を取得する(会社ID,社員ID,$基準日,申請種類)							
+		// $申請承認設定 = require.申請承認設定情報の取得を取得する(会社ID,社員ID,$基準日,申請種類)
 		ApprovalFunctionSet approvalFunctionSet = require.getApprovalFunctionSet(cid, sid, resultDate, appType);
 
-		// $.利用区分 = $申請承認設定.申請利用設定：$.申請種類 == INPUT「申請種類」										
-		//	map $.利用区分
+		// if $申請承認設定.isPresent()
+		// return false
+		if (approvalFunctionSet == null) {
+			return false;
+		}
+
+		// $.利用区分 = $申請承認設定.申請利用設定：$.申請種類 == INPUT「申請種類」
+		// map $.利用区分
 		List<ApplicationUseSetting> applicationUseSettings = approvalFunctionSet.getAppUseSetLst().stream()
 				.filter(m -> m.getAppType().value == appType.value).collect(Collectors.toList());
-		
+
 		// return $利用区分 == 利用する ? true ： false
-		return applicationUseSettings.isEmpty()? false : true;
+		return applicationUseSettings.isEmpty() ? false : true;
 	}
 
 	public static interface Require {
