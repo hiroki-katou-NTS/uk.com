@@ -31,7 +31,7 @@ module nts.uk.at.view.kmk013.m {
                 ]);
                 self.calcMethodChoice = ko.observable(0);
                 
-                self.vacationOrder = ko.observable(createDefaultVacationOrder());
+                self.vacationOrder = ko.observable(self.createDefaultVacationOrder());
             }
             
             public startPage(): JQueryPromise<void>  {
@@ -81,12 +81,15 @@ module nts.uk.at.view.kmk013.m {
                 blockUI.grayout();
                 data.constraintCalcMethod = self.calcMethodChoice();
                 data.upperLimitSet = self.upperLimitChoice();
-                data.offVacationPriorityOrder.substituteHoliday = self.vacationOrder().substitute;
-                data.offVacationPriorityOrder.sixtyHourVacation = self.vacationOrder().sixtyHour;
-                data.offVacationPriorityOrder.specialHoliday = self.vacationOrder().special;
-                data.offVacationPriorityOrder.annualHoliday = self.vacationOrder().annual;
-                data.offVacationPriorityOrder.childCare = self.vacationOrder().childCare;
-                data.offVacationPriorityOrder.care = self.vacationOrder().care;
+                data.offVacationPriorityOrder = {
+                    substituteHoliday: self.vacationOrder().substitute,
+                    sixtyHourVacation: self.vacationOrder().sixtyHour,
+                    specialHoliday: self.vacationOrder().special,
+                    annualHoliday: self.vacationOrder().annual,
+                    childCare: self.vacationOrder().childCare,
+                    care: self.vacationOrder().care
+                };
+                
                 service.register(data).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                         $('#upper-limit').focus();

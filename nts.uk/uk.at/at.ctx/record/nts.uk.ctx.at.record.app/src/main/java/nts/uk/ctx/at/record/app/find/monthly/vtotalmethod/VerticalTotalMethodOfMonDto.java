@@ -12,7 +12,7 @@ public class VerticalTotalMethodOfMonDto {
     private int calculationMethod;
 
     /** 時間休暇相殺優先順位 */
-    private TimeOffVacationPriorityOrderDto timeOffVacationPriorityOrder;
+    private TimeOffVacationPriorityOrderDto offVacationPriorityOrder;
     
     // 月別実績の集計方法.振出日数.振出日数カウント条件
     private int countingDay;

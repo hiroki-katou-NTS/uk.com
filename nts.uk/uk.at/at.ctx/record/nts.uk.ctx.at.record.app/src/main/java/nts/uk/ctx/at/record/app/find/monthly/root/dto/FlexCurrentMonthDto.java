@@ -83,7 +83,7 @@ public class FlexCurrentMonthDto implements ItemConst, AttendanceItemDataGate {
 	@Override
 	public Optional<AttendanceItemDataGate> get(String path) {
 		switch (path) {
-		case TIME:
+		case FLEX:
 			return Optional.ofNullable(flexTime);
 		default:
 			return Optional.empty();
@@ -103,7 +103,7 @@ public class FlexCurrentMonthDto implements ItemConst, AttendanceItemDataGate {
 	public AttendanceItemDataGate newInstanceOf(String path) {
 		switch (path) {
 		case FLEX:
-			return new TimeMonthWithCalculationDto();
+			return new FlexTotalTimeDto();
 		default:
 			return null;
 		}

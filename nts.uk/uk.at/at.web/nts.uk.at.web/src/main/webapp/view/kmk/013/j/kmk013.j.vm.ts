@@ -110,7 +110,9 @@ module nts.uk.at.view.kmk013.j {
                 if (vacationPriority.substituteHoliday == 0 &&
                     vacationPriority.sixtyHourVacation == 0 &&
                     vacationPriority.specialHoliday == 0 &&
-                    vacationPriority.annualHoliday == 0) {
+                    vacationPriority.annualHoliday == 0 &&
+                    vacationPriority.care == 0 &&
+                    vacationPriority.childCare == 0) {
                     data = {
                         annual: 2,
                         substitute: 0,
@@ -258,7 +260,7 @@ module nts.uk.at.view.kmk013.j {
                 sixtyHourVacation: param.offVacationPriorityOrder.sixtyHourVacation,
                 specialHoliday: param.offVacationPriorityOrder.specialHoliday,
                 childCare: param.offVacationPriorityOrder.childCare,
-                care: param.offVacationPriorityOrder.childCare
+                care: param.offVacationPriorityOrder.care
             };
             this.countingDay = param.countingDay;
             this.countingCon = param.countingCon;

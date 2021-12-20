@@ -127,7 +127,7 @@ public class FlexTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 		switch (path) {
 		case CARRY_FORWARD:
 			return Optional.ofNullable(carryforwardTime);
-		case TIME:
+		case FLEX:
 			return Optional.ofNullable(flexTime);
 		case (SHORTAGE + DEDUCTION):
 			return Optional.ofNullable(shortDeductTime);

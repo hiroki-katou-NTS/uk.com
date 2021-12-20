@@ -104,7 +104,7 @@ public class FlexTotalTimeDto implements ItemConst, AttendanceItemDataGate {
 	@Override
 	public void set(String path, AttendanceItemDataGate value) {
 		switch (path) {
-		case TIME:
+		case FLEX:
 			flexTime = (TimeMonthWithCalculationDto) value; break;
 		default:
 		}

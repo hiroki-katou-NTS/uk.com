@@ -64,10 +64,10 @@ public class AddVerticalTotalMethodOfMonthlyCommandHandler extends CommandHandle
 		val optVacationOrder = specificWorkRuleRepository.findTimeOffVacationOrderByCid(companyId);
 		if (optVacationOrder.isPresent()) {
 			specificWorkRuleRepository.updateTimeOffVacationOrder(new CompanyHolidayPriorityOrder(companyId,
-																	command.getTimeOffVacationPriorityOrder().order()));
+																	command.getOffVacationPriorityOrder().order()));
 		} else {
 			specificWorkRuleRepository.insertTimeOffVacationOrder(new CompanyHolidayPriorityOrder(companyId,
-																	command.getTimeOffVacationPriorityOrder().order()));
+																	command.getOffVacationPriorityOrder().order()));
 		}
 
 		// ドメインモデル「月別実績の集計方法」を登録する

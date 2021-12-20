@@ -63,7 +63,7 @@ public class KrcmtCalcMHdOffset extends ContractUkJpaEntity implements Serializa
 	
 	public static KrcmtCalcMHdOffset from(CompanyHolidayPriorityOrder setting) {
 		KrcmtCalcMHdOffset entity = new KrcmtCalcMHdOffset();
-		
+		entity.cid = setting.getCompanyId();
 		for (val order : setting.getHolidayPriorityOrders()) {
 			switch (order) {
 			case ANNUAL_HOLIDAY:

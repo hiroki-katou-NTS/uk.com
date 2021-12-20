@@ -37,11 +37,11 @@ module nts.uk.at.view.kmk013.o {
                     for (var i = 0; i <= 5; i++) {
                         var positionText = (i + 1).toString();
                         if (data.substitute == i) {
-                            model = new ItemModel(0, positionText, nts.uk.resource.getText("KMK013_376"));
+                            model = new ItemModel(0, positionText, nts.uk.resource.getText("KMK013_378"));
                         } else if (data.sixtyHour == i) {
                             model = new ItemModel(1, positionText, nts.uk.resource.getText("KMK013_377"));
                         } else if (data.annual == i) {
-                            model = new ItemModel(2, positionText, nts.uk.resource.getText("KMK013_378"));
+                            model = new ItemModel(2, positionText, nts.uk.resource.getText("KMK013_376"));
                         } else if (data.special == i) {
                             model = new ItemModel(3, positionText, nts.uk.resource.getText("KMK013_379"));
                         } else if (data.childCare == i) {
