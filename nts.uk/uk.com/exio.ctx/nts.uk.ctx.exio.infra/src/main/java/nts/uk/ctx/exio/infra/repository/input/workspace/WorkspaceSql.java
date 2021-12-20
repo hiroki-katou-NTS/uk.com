@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.val;
@@ -280,6 +281,8 @@ public class WorkspaceSql {
 			return DataItem.of(itemNo, record.getString(name));
 		case DATE:
 			return DataItem.of(itemNo, record.getGeneralDate(name));
+		case BOOLEAN:
+			return DataItem.of(itemNo, record.getBoolean(name));
 		default:
 			throw new RuntimeException("unknown: " + dataType.getType());
 		}
