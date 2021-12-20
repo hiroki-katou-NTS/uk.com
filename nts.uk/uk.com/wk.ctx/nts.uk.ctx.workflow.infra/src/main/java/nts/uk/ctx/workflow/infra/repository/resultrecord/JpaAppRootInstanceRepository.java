@@ -429,7 +429,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 					Integer.valueOf(String.valueOf(mapper[6])),
 					Integer.valueOf(String.valueOf(mapper[7])),
 					Integer.valueOf(String.valueOf(mapper[8])),
-					BooleanUtils.toIntegerObject((Boolean) mapper[9]),
+					BooleanUtils.toIntegerObject(Boolean.parseBoolean(mapper[9].toString())),
 					String.valueOf(mapper[10])))
 				.collect(Collectors.toList()));
 		return listFullData;
