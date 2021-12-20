@@ -56,7 +56,7 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<PremiumItem> findByCompanyID(String companyID) {
-		return this.queryProxy().query(FIND_ALL, KscmtPremiumItem.class).setParameter("CID", companyID)
+		return this.queryProxy().query(FIND_ALL + " ORDER BY a.kmnmpPremiumItemPK.displayNumber", KscmtPremiumItem.class).setParameter("CID", companyID)
 				.getList(x -> convertToDomain(x));
 	}
 	

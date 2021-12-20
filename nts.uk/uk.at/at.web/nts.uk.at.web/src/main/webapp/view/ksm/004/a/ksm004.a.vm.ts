@@ -1129,7 +1129,7 @@ module nts.uk.at.view.ksm004.a {
             isShowAlreadySet: boolean;
             isShowSelectButton: boolean;
             baseDate: KnockoutObservable<any>;
-            selectedWorkplaceId: KnockoutObservable<any>;
+            selectedId: KnockoutObservable<any>;
             alreadySettingList: KnockoutObservableArray<any>;
             systemType : number;
         }
