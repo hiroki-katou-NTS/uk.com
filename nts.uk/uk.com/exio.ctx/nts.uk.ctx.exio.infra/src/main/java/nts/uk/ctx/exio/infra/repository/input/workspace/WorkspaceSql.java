@@ -189,7 +189,7 @@ public class WorkspaceSql {
 				.append("insert into ")
 				.append(tableName)
 				.append(" (")
-				.append(columns.stream().map(col -> col.getName()).collect(joining(",")))
+				.append(columns.stream().map(col -> col.getName()).collect(Collectors.joining(",")))
 				.append(")")
 				.append(" values (")
 				.append(CommonColumns.sqlParams() + ",")
@@ -209,7 +209,12 @@ public class WorkspaceSql {
 			String param = paramItem(workspaceItem.getItemNo());
 			
 			try {
-				dataType.getType().setParam(statement, param, value);
+				if(dataType.getType() == DataType.BOOLEAN){
+					// bool型への暫定対応　本来はItemTypeにBOOLEANを追加すべきだが、一旦ここで変換して回避
+					dataType.getType().setParam(statement, param, Objects.equals(value,1));
+				} else{
+					dataType.getType().setParam(statement, param, value);
+				}
 			} catch (Exception ex) {
 				throw new RuntimeException("パラメータ設定に失敗：" + value + ", " + dataType + ", " + workspaceItem, ex);
 			}
