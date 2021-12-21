@@ -61,7 +61,7 @@ public class SupportScheduleDetail implements DomainValue, Comparable<SupportSch
 		}
 		
 		return specifiedTimeSpans.stream().anyMatch( specifiedTimeSpan -> {
-			val duplicationCheckResult = specifiedTimeSpan.checkDuplication(this.timeSpan.get());
+			val duplicationCheckResult = this.timeSpan.get().checkDuplication(specifiedTimeSpan);
 			return duplicationCheckResult == TimeSpanDuplication.SAME_SPAN || 
 					duplicationCheckResult == TimeSpanDuplication.CONTAINED;
 		});
