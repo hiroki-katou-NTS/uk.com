@@ -1265,7 +1265,7 @@ public class ScheduleCreatorExecutionTransaction {
 		
 		// 「勤務種類コード」、「就業時間帯コード」を返す
 		WorkInformation workInformation = new WorkInformation(workType.map(m -> m.getWorkTypeCode().v()).orElse(""),
-				workTimeCode == null ? null : workTimeCode.getValue().v());
+				workTimeCode.getValue() == null ? null : workTimeCode.getValue().v());
 
 		return new PrepareWorkOutput(workInformation, null, null, basicWorkSetting.getScheduleErrorLog());
 
