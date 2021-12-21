@@ -422,9 +422,9 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	public void updateTaskSchedule(Require require, TaskSchedule newtaskSchedule ) {
 		
-		this.checkWhetherTaskScheduleIsCorrect(require, newtaskSchedule);
-		
 		this.taskSchedule = newtaskSchedule;
+		
+		this.checkWhetherTaskScheduleIsCorrect(require);
 	}
 	
 	/**
@@ -594,7 +594,7 @@ public class WorkSchedule implements DomainAggregate {
 	 * @param targetTaskSchedule 作業予定
 	 * @return
 	 */
-	private boolean checkWhetherTaskScheduleIsCorrect(Require require, TaskSchedule targetTaskSchedule) {
+	private boolean checkWhetherTaskScheduleIsCorrect(Require require) {
 		
 		if( !this.workInfo.isAttendanceRate(require) ) {
 			throw new BusinessException( "Msg_2103" );
@@ -605,7 +605,7 @@ public class WorkSchedule implements DomainAggregate {
 								.flatMap( x -> x.stream())
 								.collect(Collectors.toList());
 		
-		targetTaskSchedule.getDetails().stream()
+		this.taskSchedule.getDetails().stream()
 			.map( detail -> detail.getTimeSpan())
 			.forEach( taskTimeSpan -> {
 				
@@ -642,7 +642,7 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	private void checkWhetherCanUpdateSupportSchedule(SupportTicket supportTicket, boolean isRemove) {
 		
-		if ( supportTicket.getEmployeeId().v().equals(this.employeeID) || !supportTicket.getDate().equals(this.ymd) ) {
+		if ( !supportTicket.getEmployeeId().v().equals(this.employeeID) || !supportTicket.getDate().equals(this.ymd) ) {
 			throw new BusinessException("Msg_3254");
 		}
 		
@@ -708,8 +708,7 @@ public class WorkSchedule implements DomainAggregate {
 		
 		val existATaskWhichIsStraddled = supportTimeSpanList.stream().anyMatch( supportTimeSpan -> 
 			this.taskSchedule.getDetails().stream()
-				.anyMatch( task -> task.isDuplicateWith(supportTimeSpan) || 
-						!task.isContainedIn(supportTimeSpan))
+				.anyMatch( task -> task.isDuplicateWith(supportTimeSpan) && !task.isContainedIn(supportTimeSpan))
 		);
 		
 		if ( existATaskWhichIsStraddled ) {
