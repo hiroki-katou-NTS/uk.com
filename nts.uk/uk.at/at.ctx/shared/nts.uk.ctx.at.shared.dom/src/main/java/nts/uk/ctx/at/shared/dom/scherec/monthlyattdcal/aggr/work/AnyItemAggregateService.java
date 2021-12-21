@@ -58,7 +58,8 @@ public class AnyItemAggregateService {
 
 		// 月別実績の任意項目を集計
 		val anyItems = aggregateAnyItem(require, period, sid, ym, closureId, closureDate, anyItemCustomizeValue, 
-								companySets, employeeSets, attendanceWeeks, monthlyCalcDailys, attendanceTime);
+								companySets, employeeSets, attendanceWeeks, monthlyCalcDailys, attendanceTime,
+								monthlyOldDatas.getAnyItemList());
 
 		// 手修正された項目を元に戻す （任意項目用）
 		return undoRetouchValuesForAnyItems(require, sid, ym, closureId, closureDate,
@@ -76,7 +77,7 @@ public class AnyItemAggregateService {
 			Map<Integer, Map<Integer, AnyItemAggrResult>> anyItemCustomizeValue,
 			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
 			List<AttendanceTimeOfWeekly> attendanceWeeks, MonthlyCalculatingDailys monthlyCalcDailys,
-			Optional<AttendanceTimeOfMonthly> attendanceTime) {
+			Optional<AttendanceTimeOfMonthly> attendanceTime, List<AnyItemOfMonthly> oldItemLists) {
 		
 		List<AnyItemOfMonthly> result = new ArrayList<>();
 		
@@ -96,7 +97,8 @@ public class AnyItemAggregateService {
 
 		// 月ごとの集計
 		val monthResults = aggregateAnyItemMonth(require, sid, ym, closureId, closureDate, monthPeriod, 
-				anyItemCustomizeValue.get(0), monthlyCalcDailys, companySets, employeeSets, attendanceTime);
+				anyItemCustomizeValue.get(0), monthlyCalcDailys, companySets, employeeSets, attendanceTime,
+				oldItemLists);
 		
 		for (val monthResult : monthResults.values()) {
 			
@@ -200,9 +202,12 @@ public class AnyItemAggregateService {
 			ClosureId closureId, ClosureDate closureDate, DatePeriod period,
 			Map<Integer, AnyItemAggrResult> anyItemCustomizeValue,
 			MonthlyCalculatingDailys monthlyCalc, MonAggrCompanySettings companySets,
-			MonAggrEmployeeSettings employeeSets, Optional<AttendanceTimeOfMonthly> attendanceTime) {
+			MonAggrEmployeeSettings employeeSets, Optional<AttendanceTimeOfMonthly> attendanceTime, 
+			List<AnyItemOfMonthly> oldItemLists) {
 
-		Map<Integer, AnyItemAggrResult> results = new HashMap<>();
+		Map<Integer, AnyItemAggrResult> results = oldItemLists.stream()
+				.map(c -> AnyItemAggrResult.of(c.getAnyItemId(), c.getTime(), c.getTimes(), c.getAmount()))
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo(), c -> c));
 
 		Map<Integer, AggregateAnyItem> anyItemTotals = createAggregateAnyItem(period, monthlyCalc);
 
@@ -233,6 +238,8 @@ public class AnyItemAggregateService {
 				
 				result = monthlyCalc(require, sid, ym, closureId, closureDate, results, 
 						optionalItem, attendanceTime, companySets);
+				
+				results.put(optionalItemNo, result);
 				break;
 			case DAILY_VTOTAL: // 日別縦計する
 				
@@ -242,15 +249,16 @@ public class AnyItemAggregateService {
 				/** 上限下限チェック */
 				result = limitCheck(optionalItem, optionalItemNo, result);
 
+				results.put(optionalItemNo, result);
 				break;
 			case NOT_USE: // 利用しない
 			default:
 				/** ○縦計の結果をセット */
 				result = AnyItemAggrResult.of(optionalItemNo, 
 						Optional.of(new AnyTimeMonth(0)), Optional.of(new AnyTimesMonth(0d)), Optional.of(new AnyAmountMonth(0)));
+				
+				results.putIfAbsent(optionalItemNo, result);
 			}
-
-			results.put(optionalItemNo, result);
 		}
 
 		return results;
