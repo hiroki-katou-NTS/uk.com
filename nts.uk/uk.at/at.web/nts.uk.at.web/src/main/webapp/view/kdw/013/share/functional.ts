@@ -113,7 +113,10 @@ module nts.uk.ui.at.kdw013.share {
                 .map((item) => {
                     return item.displayInfo.taskName;
                 }).value();
-            let workTime = nts.uk.resource.getText('KDW013_25') + formatTime(_.get(_.find(td.taskItemValues, ti => ti.itemId == 3), 'value', null), 'Time_Short_HM');
+            let workTime = '';
+            if (taskDetails.length > 1) {
+                workTime = nts.uk.resource.getText('KDW013_25') + formatTime(_.get(_.find(td.taskItemValues, ti => ti.itemId == 3), 'value', null), 'Time_Short_HM');
+            }
             let taskWorkText = taskNames.join(character ? character : "/") + "\n" + workTime;
             result = result + taskWorkText + "\n\n";
         });

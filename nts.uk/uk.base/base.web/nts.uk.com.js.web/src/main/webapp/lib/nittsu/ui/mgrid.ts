@@ -6983,6 +6983,28 @@ module nts.uk.ui.mgrid {
                         if (control === dkn.LINK_LABEL) {
                             let link = t.c.querySelector("a");
                             link.innerHTML = cellValue;
+                        } else if (control === dkn.CHECKBOX) {
+                            let check = t.c.querySelector("input[type='checkbox']");
+                            if (!check) return;
+                            if (cellValue) {
+                                check.setAttribute("checked", "checked");
+                                check.checked = true;
+                                let evt = document.createEvent("HTMLEvents");
+                                evt.initEvent("change", false, true);
+                                evt.resetValue = reset;
+                                evt.checked = cellValue;
+                                evt.stopUpdate = true;
+                                check.dispatchEvent(evt);
+                            } else if (!cellValue) {
+                                check.removeAttribute("checked");
+                                check.checked = false;
+                                let evt = document.createEvent("HTMLEvents");
+                                evt.initEvent("change", false, true);
+                                evt.resetValue = reset;
+                                evt.checked = cellValue;
+                                evt.stopUpdate = true;
+                                check.dispatchEvent(evt);
+                            }
                         } else if (_.isObject(control) && control.type === dkn.COMBOBOX) {
                             let sel = _.find(control.options, o => o.code === cellValue);
                             if (sel) { 
@@ -8450,7 +8472,7 @@ module nts.uk.ui.mgrid {
                 }
                 
                 let r = ti.closest($checkBox, "tr");
-                if (r) {
+                if (r && !evt.stopUpdate) {
                     setChecked(checked, parseFloat($.data(r, lo.VIEW)), evt.resetValue, evt.pg);
                 }
             });
