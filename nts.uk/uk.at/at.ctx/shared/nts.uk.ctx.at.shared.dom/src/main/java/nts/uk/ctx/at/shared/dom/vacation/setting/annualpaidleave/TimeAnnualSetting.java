@@ -35,10 +35,6 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     // 上限日数:時間年休の上限日数
     private TimeAnnualMaxDay maxYearDayLeave;
 
-//    /** The is enough time one day. */
-//    // 1日の時間未満の時間年休を積立年休とする
-//    private boolean isEnoughTimeOneDay;
-
     /** 端数処理区分 */
     // 端数処理区分
     private TimeAnnualRoundProcesCla roundProcessClassific;
