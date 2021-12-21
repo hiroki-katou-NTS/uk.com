@@ -2576,7 +2576,7 @@ module nts.uk.ui.at.kdw013.calendar {
                          (moment(ce.end).isAfter(e.start) && moment(ce.end).isSameOrBefore(e.end))
                      ));
 
-                     if (ovrEvent) {
+                     if ((ovrEvent && !extendedProps.isTimeBreak && !ovrEvent.extendedProps.isTimeBreak)  ||  (extendedProps.isTimeBreak && _.get(ovrEvent,'isTimeBreak',false))) {
                          arg.revert();
                          return;
                      }
@@ -2606,7 +2606,8 @@ module nts.uk.ui.at.kdw013.calendar {
                             vm.revertEvent([arg.oldEvent], $caches);
                             return;
                         }
-                        
+                        vm.params.screenA.dataChanged(true);
+                        mutatedEvents();
                         return;
                     }
                     
