@@ -16,7 +16,6 @@ module nts.uk.com.view.ccg015.h {
 
     roleName: KnockoutObservable<string> = ko.observable('');
     isNewMode: KnockoutObservable<boolean> = ko.observable(true);
-    selectedRoleId: string = '';
     alreadyRoles: string[] = [];
     component: KnockoutObservable<ComponentModel> = ko.observable(new ComponentModel({ 
       roleType: 3, //就業
@@ -46,7 +45,6 @@ module nts.uk.com.view.ccg015.h {
     mounted() {
       const vm = this;
       vm.currentRoleId.subscribe((value: any) => {
-        vm.selectedRoleId = value;
         vm.getData();
         const role = _.find(vm.component().listRole(), role => role.roleId === value);
         if (_.isNil(role)) {
@@ -57,11 +55,13 @@ module nts.uk.com.view.ccg015.h {
         vm.roleName(`${role.roleCode} ${role.roleName}`);
       });
 
-      vm.getAlreadySetting();
+      vm.getAlreadySetting(true);
     }
 
-    getAlreadySetting() {
+    getAlreadySetting(isStart?: boolean) {
       const vm = this;
+      const roleAtr = ko.unwrap<number>(vm.component().roleClassification);
+      const selectedRole = ko.unwrap<string>(vm.component().currentRoleId);
       vm.$ajax('at', API.getByCid)
         .then((result: InitDisplayPeriodSwitchSet[]) => {
           if (!result) {
@@ -69,18 +69,26 @@ module nts.uk.com.view.ccg015.h {
             return;
           }
           vm.alreadyRoles = _.map(result, x => x.roleID);
+          
         })
         .then(() => {
-          vm.component(new ComponentModel({ 
+          vm.component(new ComponentModel({
             roleType: 3, //就業
             multiple: false,
             isAlreadySetting: true,
             rows: 10,
             tabindex: 4,
             onDialog: true,
+            roleAtr,
             alreadySetList: vm.alreadyRoles,
-          }))
-          return vm.component().startPage(vm.selectedRoleId);
+          }));
+          return vm.component().startPage();
+        })
+        .then(() => {
+          vm.component().displayRoleClassification(true);
+          if (!isStart) {
+            vm.component().currentRoleId(selectedRole);
+          }
         })
         .then(() => $('#ccg015_h10 .multi-list_container').focus());
     }
@@ -89,7 +97,7 @@ module nts.uk.com.view.ccg015.h {
       const vm = this;
       vm
         .$blockui('grayout')
-        .then(() => vm.$ajax('at', API.get, vm.selectedRoleId))
+        .then(() => vm.$ajax('at', API.get, vm.currentRoleId()))
         .then((response: InitDisplayPeriodSwitchSet) => {
           if (!response) {
             vm.selectedNumberOfDay(0);
@@ -107,7 +115,7 @@ module nts.uk.com.view.ccg015.h {
       const vm = this;
       const command = {
         companyId: __viewContext.user.companyId,
-        roleId: vm.selectedRoleId,
+        roleId: vm.currentRoleId(),
         day: vm.selectedNumberOfDay(),
       };
       vm
@@ -123,7 +131,7 @@ module nts.uk.com.view.ccg015.h {
       const vm = this;
       const command = {
         companyId: __viewContext.user.companyId,
-        roleId: vm.selectedRoleId,
+        roleId: vm.currentRoleId(),
       };
       vm
         .$blockui('grayout')
