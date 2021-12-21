@@ -10,14 +10,15 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit.Require;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays;
 
 /**
- * 　時間年休管理設定
+ * 　UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.休暇.年次有給休暇.時間年休管理.時間年休管理.時間年休管理設定
  * The Class TimeAnnualSetting.
  */
 /** 時間年休管理設定 **/
@@ -29,14 +30,6 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
 	 * Serializable
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/** The time manage type. */
-    // 時間年休管理区分
-    private ManageDistinct timeManageType;
-
-    /** The time unit. */
-    // 時間年休消化単位
-    private TimeDigestiveUnit timeUnit;
 
     /** The max day. */
     // 上限日数:時間年休の上限日数
@@ -51,7 +44,10 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     private TimeAnnualRoundProcesCla roundProcessClassific;
 
     // 時間年休一日の時間
-    private TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay; 
+    private TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay;
+    
+    // 時間年休の消化単位
+    private TimeVacationDigestUnit timeVacationDigestUnit;
     
     /**
      * Instantiates a new time vacation setting.
@@ -59,11 +55,10 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
      * @param memento the memento
      */
     public TimeAnnualSetting(TimeAnnualSettingGetMemento memento) {
-        this.timeManageType = memento.getTimeManageType();
-        this.timeUnit = memento.getTimeUnit();
         this.maxYearDayLeave = memento.getMaxYearDayLeave();
         this.roundProcessClassific = memento.GetRoundProcessClassific();
         this.timeAnnualLeaveTimeDay = memento.getTimeAnnualLeaveTimeDay();
+        this.timeVacationDigestUnit = memento.getTimeVacationDigestUnit();
     }
 
     /**
@@ -72,8 +67,6 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
      * @param memento the memento
      */
     public void saveToMemento(TimeAnnualSettingSetMemento memento) {
-        memento.setTimeManageType(this.timeManageType);
-        memento.setTimeUnit(this.timeUnit);
         memento.setMaxYearDayLeave(this.maxYearDayLeave);
         if(this.roundProcessClassific == null){
         memento.setRoundProcessClassific(EnumAdaptor.valueOf(0, TimeAnnualRoundProcesCla.class));
@@ -81,6 +74,7 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
         	  memento.setRoundProcessClassific(this.roundProcessClassific);	
         }
         memento.setTimeAnnualLeaveTimeDay(this.timeAnnualLeaveTimeDay);
+        memento.setTimeVacationDigestUnit(this.timeVacationDigestUnit);
     }
     /**
      * [6] 時間年休上限日数を取得
@@ -89,5 +83,14 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
      */
     public Optional<LimitedTimeHdDays> getLimitedTimeHdDays(Optional<LimitedTimeHdDays> fromGrantTableDays){
     	return this.maxYearDayLeave.getLimitedTimeHdDays(fromGrantTableDays);
+    }
+    
+    /**
+     * [7] 消化単位をチェックする
+     * @param time 休暇使用時間
+     * @param manage 年休管理区分
+     */
+    public boolean checkDigestUnits(Require require, AttendanceTime time, ManageDistinct manage) {
+    	return this.timeVacationDigestUnit.checkDigestUnit(require, time, manage);
     }
 }
