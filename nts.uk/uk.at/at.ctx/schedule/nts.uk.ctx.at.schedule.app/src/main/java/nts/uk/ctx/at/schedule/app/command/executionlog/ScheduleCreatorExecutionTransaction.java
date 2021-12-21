@@ -305,16 +305,19 @@ public class ScheduleCreatorExecutionTransaction {
 				this.workScheduleRepository.insert(ws);
 				
 				this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(), dates);
-				
-				// エラー一覧を繰り返す
-				result.getListError().stream().filter(e -> e != null && e.getEmployeeId().equals(ws.getEmployeeID())
-						&& e.getDate().equals(ws.getYmd())).forEach(error -> {
-					// エラーを登録する
-					error.setExecutionId(command.getExecutionId());
-					this.scheduleErrorLogRepository.addByTransaction(error);
-				});
 			});
 		});
+		
+		this.transactionService.execute(() -> {
+			
+			// エラー一覧を繰り返す
+			result.getListError().stream().filter(e -> e != null).forEach(error -> {
+				// エラーを登録する
+				error.setExecutionId(command.getExecutionId());
+				this.scheduleErrorLogRepository.addByTransaction(error);
+			});
+		});
+		
 		this.transactionService.execute(() -> {
 			scheduleCreator.updateToCreated();
 			this.scheduleCreatorRepository.update(scheduleCreator);
