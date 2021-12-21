@@ -216,7 +216,7 @@ public class WorkspaceSql {
 			try {
 				if(dataType.getType() == DataType.BOOLEAN){
 					// bool型への暫定対応　本来はItemTypeにBOOLEANを追加すべきだが、一旦ここで変換して回避
-					dataType.getType().setParam(statement, param, value.equals(1));
+					dataType.getType().setParam(statement, param, Objects.equals(value,1));
 				} else{
 					dataType.getType().setParam(statement, param, value);
 				}
