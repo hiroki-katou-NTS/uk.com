@@ -1,6 +1,6 @@
 package nts.uk.ctx.exio.infra.repository.input.workspace;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,12 +21,10 @@ import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalizedDataRecord;
-import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository.Require;
 import nts.uk.ctx.exio.dom.input.workspace.TemporaryTable;
 import nts.uk.ctx.exio.dom.input.workspace.WorkspaceTableName;
-import nts.uk.ctx.exio.dom.input.workspace.builder.CreateTableBuilder;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
@@ -42,7 +40,6 @@ import nts.uk.shr.com.company.CompanyId;
 public class WorkspaceSql {
 
 	private final ExecutionContext context;
-	private final ImportingDomain domain;
 	private final DomainWorkspace workspace;
 	private final JdbcProxy jdbcProxy;
 	private final DatabaseProduct database;	//this.database().product();
@@ -53,10 +50,9 @@ public class WorkspaceSql {
 
 	public static WorkspaceSql create(Require require, ExecutionContext context, JdbcProxy jdbcProxy, DatabaseProduct database) {
 
-		val domain = require.getImportingDomain(context.getDomainId());
 		val workspace = require.getDomainWorkspace(context.getDomainId());
 		
-		return new WorkspaceSql(context, domain, workspace, jdbcProxy, database);
+		return new WorkspaceSql(context, workspace, jdbcProxy, database);
 	}
 	
 	/**
@@ -66,8 +62,7 @@ public class WorkspaceSql {
 	 * @param jdbcProxy
 	 */
 	public static void cleanOldTables(Require require, ExecutionContext context, JdbcProxy jdbcProxy) {
-		val domain = require.getImportingDomain(context.getDomainId());		
-		val tableName = tableName(context, domain);
+		val tableName = tableName(context);
 		TemporaryTable.dropTable(jdbcProxy, tableName.asRevised());
 		TemporaryTable.dropTable(jdbcProxy, tableName.asCanonicalized());
 	}
@@ -298,10 +293,10 @@ public class WorkspaceSql {
 	}
 	
 	private WorkspaceTableName tableName() {
-		return tableName(context, domain);
+		return tableName(context);
 	}
 	
-	private static WorkspaceTableName tableName(ExecutionContext context, ImportingDomain domain) {
-		return new WorkspaceTableName(context, domain.getName());
+	private static WorkspaceTableName tableName(ExecutionContext context) {
+		return new WorkspaceTableName(context);
 	}
 }
