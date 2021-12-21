@@ -214,7 +214,12 @@ public class WorkspaceSql {
 			String param = paramItem(workspaceItem.getItemNo());
 			
 			try {
-				dataType.getType().setParam(statement, param, value);
+				if(dataType.getType() == DataType.BOOLEAN){
+					// bool型への暫定対応　本来はItemTypeにBOOLEANを追加すべきだが、一旦ここで変換して回避
+					dataType.getType().setParam(statement, param, value.equals(1));
+				} else{
+					dataType.getType().setParam(statement, param, value);
+				}
 			} catch (Exception ex) {
 				throw new RuntimeException("パラメータ設定に失敗：" + value + ", " + dataType + ", " + workspaceItem, ex);
 			}
