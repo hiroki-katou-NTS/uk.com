@@ -82,13 +82,8 @@ module nts.uk.com.view.ccg015.h {
             roleAtr,
             alreadySetList: vm.alreadyRoles,
           }));
-          return vm.component().startPage();
-        })
-        .then(() => {
           vm.component().displayRoleClassification(true);
-          if (!isStart) {
-            vm.component().currentRoleId(selectedRole);
-          }
+          return vm.component().startPage(selectedRole);
         })
         .then(() => $('#ccg015_h10 .multi-list_container').focus());
     }
