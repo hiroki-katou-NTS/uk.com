@@ -47,7 +47,6 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
     private static final String EXCEL_EXT = ".xlsx";
     private final String EMPTY = "";
     private static int MINUTES_IN_AN_HOUR = 60;
-    private static final String MENU_ERROR = "Menu is not found !!!";
     private static final String HOUR = "時";
     private static final String MINUTE = "分";
     private static final String DAY = "日";
@@ -69,7 +68,6 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
     @Override
     public void generate(FileGeneratorContext context, Form9ExcelByFormatDataSource dataSource, Form9ExcelByFormatQuery query) {
         try {
-            long startTime = System.nanoTime();
             val menus = standardMenuRepo.findAll(AppContexts.user().companyId());
             val menuDisplayName = menus.stream().filter(i -> i.getSystem().value == 1 && i.getMenuAtr() == MenuAtr.Menu && i.getProgramId().equals("KSU008"))
                     .findFirst().map(i -> i.getDisplayName().v()).orElse(TextResource.localize("KSU008_1"));
@@ -91,11 +89,23 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
 
             val infoRelatedWkpGroups = dataSource.getInfoRelatedWkpGroups().stream().sorted(Comparator.comparing(DisplayInfoRelatedToWorkplaceGroupDto::getWkpGroupCode))
                     .collect(Collectors.toList());
-            for (int i = 0, infoRelatedWkpGroupsSize = infoRelatedWkpGroups.size(); i < infoRelatedWkpGroupsSize; i++) {
-                DisplayInfoRelatedToWorkplaceGroupDto wkpGroupInfo = infoRelatedWkpGroups.get(i);
+            for (int i = 0; i < infoRelatedWkpGroups.size(); i++) {
                 if (i > 0) {
+                    // Copy the first sheet of the first book with in the workbook for next sheet
                     worksheets.addCopy(0);
                 }
+            }
+
+            for (int i = 0, infoRelatedWkpGroupsSize = infoRelatedWkpGroups.size(); i < infoRelatedWkpGroupsSize; i++) {
+                DisplayInfoRelatedToWorkplaceGroupDto wkpGroupInfo = infoRelatedWkpGroups.get(i);
+//                if (i > 0) {
+//                    // Copy the first sheet of the first book with in the workbook
+////                    worksheets.addCopy(0);
+//                    // Add new worksheet into target worksheet
+//                    int sheetIndex = worksheets.add();
+//                    // Copy the first sheet of the template into newly created sheet of target worksheet
+//                    worksheets.get(sheetIndex).copy(worksheetTemplate);
+//                }
 
                 Worksheet worksheet = worksheets.get(i);
                 worksheet.setName(wkpGroupInfo.getWkpGroupCode() + "　" + wkpGroupInfo.getWkpGroupName());
@@ -110,7 +120,6 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
 
             // Save as excel file
             reportContext.saveAsExcel(createNewFile(context, getReportName(menuDisplayName + EXCEL_EXT)));
-            System.out.println("Thoi gian export: " + (System.nanoTime() - startTime) / 1000000000 + " seconds");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

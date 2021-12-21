@@ -21,6 +21,7 @@ public class Form9ExcelByFormatExportService extends ExportService<Form9ExcelByF
 
     @Override
     protected void handle(ExportServiceContext<Form9ExcelByFormatQuery> exportServiceContext) {
+        long startTime = System.nanoTime();
         Form9ExcelByFormatQuery query = exportServiceContext.getQuery();
 
          // 1.1. 出力する(対象期間, 年月, int, 様式９のコード)
@@ -28,5 +29,6 @@ public class Form9ExcelByFormatExportService extends ExportService<Form9ExcelByF
 
         // 1.2. create report Form9
         this.exportGenerator.generate(exportServiceContext.getGeneratorContext(), dataSource, query);
+        System.out.println("Thoi gian export: " + (System.nanoTime() - startTime) / 1000000000 + " seconds");
     }
 }

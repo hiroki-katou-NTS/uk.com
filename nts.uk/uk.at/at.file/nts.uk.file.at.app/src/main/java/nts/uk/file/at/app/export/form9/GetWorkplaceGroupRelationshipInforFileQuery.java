@@ -82,7 +82,6 @@ public class GetWorkplaceGroupRelationshipInforFileQuery {
     private DailyRecordAdapter dailyRecordAdapter;
 
     public DisplayInfoRelatedToWorkplaceGroupDto get(WorkplaceGroupInfoDto workplaceGroup, DatePeriod period, int acquireTarget) {
-        String cid = AppContexts.user().companyId();
 
         // 1. get 病棟・事業所情報履歴
         val hospitalBusinessOfficeOpt = hospitalBusinessOfficeRepo.get(workplaceGroup.getId(), period.end());
@@ -197,7 +196,6 @@ public class GetWorkplaceGroupRelationshipInforFileQuery {
 
         @Override
         public String getRoleID(GeneralDate date, String employId) {
-            // (Lấy userID từ employeeID)
             Optional<String> userID = acquireUserIDFromEmpIDService.getUserIDByEmpID(employId);
             if (!userID.isPresent()) {
                 return null;

@@ -4,15 +4,15 @@ import lombok.Value;
 
 @Value
 public class Form9WorkingHoursDto {
-        // 利用区分
-        private boolean isUse;
+    // 利用区分
+    private boolean isUse;
 
-        // 表示対象
-        private int displayTarget;
+    // 表示対象
+    private int displayTarget;
 
-        // 予定色
-        private String scheduleColor;
+    // 予定色
+    private String scheduleColor;
 
-        // 実績色
-        private String actualColor;
+    // 実績色
+    private String actualColor;
 }
