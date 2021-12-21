@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +54,9 @@ public class PremiumSetting implements Validatable{
     private List<String> attendanceItems;
 
 	public List<Integer> getAttendanceItems() {
+		if (attendanceItems == null || attendanceItems.size()<=0){
+			return new ArrayList<>();
+		}
 		return attendanceItems.stream().map(j-> Integer.valueOf(j)).collect(Collectors.toList());
 	}
 
