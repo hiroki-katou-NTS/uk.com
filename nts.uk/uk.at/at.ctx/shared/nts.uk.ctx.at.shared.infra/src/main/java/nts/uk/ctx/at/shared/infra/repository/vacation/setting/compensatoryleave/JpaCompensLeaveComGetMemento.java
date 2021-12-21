@@ -10,8 +10,9 @@ import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.SubstituteHolidaySetting;
@@ -71,17 +72,6 @@ public class JpaCompensLeaveComGetMemento implements CompensatoryLeaveComGetMeme
      * (non-Javadoc)
      * 
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryLeaveComGetMemento#getCompensatoryDigestiveTimeUnit()
-     */
-    @Override
-    public CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit() {
-    	return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
      * CompensatoryLeaveComGetMemento#getCompensatoryOccurrenceSetting()
      */
     @Override
@@ -103,6 +93,12 @@ public class JpaCompensLeaveComGetMemento implements CompensatoryLeaveComGetMeme
 	public ManageDistinct getLinkingManagementATR() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public TimeVacationDigestUnit getTimeVacationDigestUnit() {
+		return new TimeVacationDigestUnit(ManageDistinct.valueOf(BooleanUtils.toInteger(this.entity.isManageAtr())),
+				TimeDigestiveUnit.valueOf(this.entity.getDigestionUnit()));
 	}
 
 }

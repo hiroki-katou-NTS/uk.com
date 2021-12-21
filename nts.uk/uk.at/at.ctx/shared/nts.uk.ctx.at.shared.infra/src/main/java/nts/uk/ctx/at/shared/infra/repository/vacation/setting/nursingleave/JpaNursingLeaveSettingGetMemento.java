@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
 import java.util.List;
-
 //import java.util.List;
 import java.util.Optional;
 //import java.util.stream.Collectors;
@@ -13,10 +12,10 @@ import java.util.Optional;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
@@ -106,12 +105,10 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
 	}
 
 	@Override
-	public TimeCareNursingSet getTimeCareNursingSet() {
-		return new TimeCareNursingSet(
-				EnumAdaptor.valueOf(this.entityNursing.getDigestiveUnit() != null ? this.entityNursing.getDigestiveUnit() : 0, TimeDigestiveUnit.class),
-				EnumAdaptor.valueOf(this.entityNursing.getTimeManageAtr() != null ? this.entityNursing.getTimeManageAtr(): 0, ManageDistinct.class ));
-
-
+	public TimeVacationDigestUnit getTimeVacationDigestUnit() {
+		return new TimeVacationDigestUnit(
+				EnumAdaptor.valueOf(this.entityNursing.getTimeManageAtr() != null ? this.entityNursing.getTimeManageAtr(): 0, ManageDistinct.class ),
+				EnumAdaptor.valueOf(this.entityNursing.getDigestiveUnit() != null ? this.entityNursing.getDigestiveUnit() : 0, TimeDigestiveUnit.class));
 	}
 
 

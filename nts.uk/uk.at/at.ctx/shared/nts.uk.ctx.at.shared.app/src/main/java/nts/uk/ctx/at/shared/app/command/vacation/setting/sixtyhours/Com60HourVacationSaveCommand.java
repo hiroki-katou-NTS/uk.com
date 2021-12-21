@@ -9,9 +9,9 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.SixtyHourExtra;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSetting;
 
 /**
  * The Class ComSubstVacationSaveCommand.
@@ -64,17 +64,14 @@ public class Com60HourVacationSaveCommand extends SixtyHourVacationSaveBaseComma
 			return this.companyId;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
-		 * ComSubstVacationGetMemento#getSetting()
-		 */
 		@Override
-		public SixtyHourVacationSetting getSetting() {
-			return new SixtyHourVacationSetting(ManageDistinct.valueOf(this.dto.getIsManage()),
-					SixtyHourExtra.valueOf(this.dto.getSixtyHourExtra()),
-					TimeDigestiveUnit.valueOf(this.dto.getDigestiveUnit()));
+		public TimeVacationDigestUnit getDigestiveUnit() {
+			return new TimeVacationDigestUnit(ManageDistinct.valueOf(this.dto.getIsManage()), TimeDigestiveUnit.valueOf(this.dto.getDigestiveUnit()));
+		}
+
+		@Override
+		public SixtyHourExtra getSixtyHourExtra() {
+			return SixtyHourExtra.valueOf(this.dto.getSixtyHourExtra());
 		}
 	}
 
