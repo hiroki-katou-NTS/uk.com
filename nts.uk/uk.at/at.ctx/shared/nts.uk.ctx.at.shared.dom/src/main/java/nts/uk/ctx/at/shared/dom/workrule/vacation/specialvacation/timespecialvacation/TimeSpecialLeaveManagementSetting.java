@@ -1,11 +1,16 @@
 package nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation;
 
-import lombok.AllArgsConstructor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 
 /**
@@ -13,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
  * 時間特別休暇の管理設定
  */
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
@@ -23,6 +27,41 @@ public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
     // 時間休暇消化単位
     private TimeVacationDigestUnit timeVacationDigestUnit;
     
+    private TimeDigestiveUnit timeDigestiveUnit;
+
+    // 管理区分
+    private ManageDistinct manageType;
+    
+    /**
+     * C-0 Nhờ nws sửa lại khi update theo tài liệu mới
+     */
+    public TimeSpecialLeaveManagementSetting(String companyId, TimeDigestiveUnit timeDigestiveUnit,
+			ManageDistinct manageType) {
+		super();
+		this.companyId = companyId;
+		this.timeDigestiveUnit = timeDigestiveUnit;
+		this.manageType = manageType;
+	}
+    
+    /**
+     * [1] 時間特別休暇に対応する日次の勤怠項目を取得する
+     */
+    public List<Integer> getDailyAttdItemsCorrespondSpecialLeave(){
+    	List<Integer> attendanceItemIds = Arrays.asList(543,504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
+		return attendanceItemIds;
+    }
+    
+    /**
+     * [2] 利用できない日次の勤怠項目を取得する
+     */
+    public List<Integer> getDailyAttdItemsNotAvailable(){
+    	List<Integer> attendanceItemIds = new ArrayList<>();
+    	if (manageType == ManageDistinct.NO) { // Nhờ NWS sửa theo tài liệu mới
+    		attendanceItemIds = Arrays.asList(504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
+    	}
+		return attendanceItemIds;
+    }
+
     /**
      * [3]時間休暇が管理するか
      * @param require
@@ -37,6 +76,6 @@ public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
      * @param time 休暇使用時間
      */
     public boolean checkVacationTimeUnitUsed(TimeVacationDigestUnit.Require require, AttendanceTime time) {
-		return this.timeVacationDigestUnit.checkDigestUnit(require, time);
-	}
+      return this.timeVacationDigestUnit.checkDigestUnit(require, time);
+    }
 }
