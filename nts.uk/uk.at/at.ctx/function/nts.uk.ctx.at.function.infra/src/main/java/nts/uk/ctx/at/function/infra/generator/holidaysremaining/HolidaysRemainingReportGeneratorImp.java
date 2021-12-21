@@ -1254,7 +1254,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         boolean isTime = false;
         if (compensatoryLeaveComSet != null)
             isTime = compensatoryLeaveComSet
-                    .getCompensatoryDigestiveTimeUnit().getIsManageByTime() == ManageDistinct.YES;
+                    .getTimeVacationDigestUnit().getManage() == ManageDistinct.YES;
 
         val substituteHolidayAggrResultsRight = hdRemainingInfor.getSubstituteHolidayAggrResultsRight();
 
@@ -2653,8 +2653,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         //※2
         val listNursingLeaveSetting = nursingLeaveSettingRepository.findByCompanyId(AppContexts.user().companyId());
         val childNursing = listNursingLeaveSetting.stream()
-                .filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing && i.getTimeCareNursingSetting()
-                        .getManageDistinct() == ManageDistinct.YES).findFirst();
+                .filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing && i.getTimeVacationDigestUnit()
+                        .getManage() == ManageDistinct.YES).findFirst();
         boolean isTime = false;
         if (childNursing.isPresent()) {
             isTime = childNursing.get().isManaged();
@@ -2975,8 +2975,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
         val nursingCare = listNursingLeaveSetting.stream()
                 .filter(i -> i.getNursingCategory() == NursingCategory.Nursing
-                        && i.getTimeCareNursingSetting()
-                        .getManageDistinct() == ManageDistinct.YES).findFirst();
+                        && i.getTimeVacationDigestUnit()
+                        .getManage() == ManageDistinct.YES).findFirst();
         boolean isTime = false;
         if (nursingCare.isPresent()) {
             isTime = nursingCare.get().isManaged();
@@ -3469,7 +3469,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             if ((checkLeave == null || checkLeave.getYearManageType() == ManageDistinct.NO)) {
                 return false;
             } else {
-                if (checkLeave.getTimeSetting().getTimeManageType() == ManageDistinct.YES) {
+                if (checkLeave.getTimeSetting().getTimeVacationDigestUnit().getManage() == ManageDistinct.YES) {
                     return true;
                 } else {
                     return false;
@@ -3504,7 +3504,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             if ((checkLeave == null || checkLeave.getYearManageType() == ManageDistinct.NO)) {
                 return false;
             } else {
-                if (checkLeave.getTimeSetting().getTimeManageType() == ManageDistinct.NO) {
+                if (checkLeave.getTimeSetting().getTimeVacationDigestUnit().getManage() == ManageDistinct.NO) {
                     return false;
                 } else {
                     if (checkLeave.getTimeSetting().getMaxYearDayLeave().manageType == ManageDistinct.NO) {
@@ -3714,8 +3714,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         }
         val listNursingLeaveSetting = nursingLeaveSettingRepository.findByCompanyId(AppContexts.user().companyId());
         val childNursing = listNursingLeaveSetting.stream()
-                .filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing && i.getTimeCareNursingSetting()
-                        .getManageDistinct() == ManageDistinct.YES).findFirst();
+                .filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing && i.getTimeVacationDigestUnit()
+                        .getManage() == ManageDistinct.YES).findFirst();
         boolean isTime = false;
         if (childNursing.isPresent()) {
             isTime = childNursing.get().isManaged();
@@ -3739,8 +3739,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         int firstRow = 0;
         val listNursingLeaveSetting = nursingLeaveSettingRepository.findByCompanyId(AppContexts.user().companyId());
         val childNursing = listNursingLeaveSetting.stream()
-                .filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing && i.getTimeCareNursingSetting()
-                        .getManageDistinct() == ManageDistinct.YES).findFirst();
+                .filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing && i.getTimeVacationDigestUnit()
+                        .getManage() == ManageDistinct.YES).findFirst();
         boolean isTime = false;
         if (childNursing.isPresent()) {
             isTime = childNursing.get().isManaged();

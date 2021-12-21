@@ -48,8 +48,8 @@ public class PaidHolidayDuringPeriodSetting {
 			return new TimeLapseVacationSetting(empHist.getPeriod(), compLeavCom.getIsManaged().value == 1,
 					compLeavCom.getCompensatoryAcquisitionUse().getExpirationTime().value,
 					compLeavCom.getCompensatoryAcquisitionUse().getPreemptionPermit().value == 1,
-					Optional.of(compLeavCom.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value == 1),
-					Optional.of(compLeavCom.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value));
+					Optional.of(compLeavCom.getTimeVacationDigestUnit().getManage().value == 1),
+					Optional.of(compLeavCom.getTimeVacationDigestUnit().getDigestUnit().value));
 		} else {
 
 			//ドメインモデル「代休管理設定」を取得する
@@ -60,8 +60,8 @@ public class PaidHolidayDuringPeriodSetting {
 			return new TimeLapseVacationSetting(empHist.getPeriod(), comLeavEmp.getIsManaged().value == 1,
 					compLeavCom.getCompensatoryAcquisitionUse().getExpirationTime().value,
 					compLeavCom.getCompensatoryAcquisitionUse().getPreemptionPermit().value == 1,
-					Optional.of(compLeavCom.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value == 1),
-					Optional.of(compLeavCom.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value));
+					Optional.of(compLeavCom.getTimeVacationDigestUnit().getManage().value == 1),
+					Optional.of(compLeavCom.getTimeVacationDigestUnit().getDigestUnit().value));
 			
 			
 		}

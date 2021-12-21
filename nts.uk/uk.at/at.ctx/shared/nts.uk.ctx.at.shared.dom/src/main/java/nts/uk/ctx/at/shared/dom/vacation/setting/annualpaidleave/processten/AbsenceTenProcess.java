@@ -61,7 +61,7 @@ public class AbsenceTenProcess {
 				annualHoliday.setHalfHolidayLitmit(0);
 			}
 			// ドメインモデル「時間年休管理設定」．時間年休管理区分をチェックする(kiểm tra domain「時間年休管理設定」．時間年休管理区分)
-			if(annualPaidLeave.getTimeSetting().getTimeManageType().equals(ManageDistinct.NO)){
+			if(annualPaidLeave.getTimeSetting().getTimeVacationDigestUnit().getManage().equals(ManageDistinct.NO)){
 				// ドメインモデル「時間年休管理設定」．時間年休管理区分 = 管理しない
 				annualHoliday.setSuspensionTimeYearFlg(false);
 				annualHoliday.setHoursHolidayLimit(0);
@@ -69,7 +69,7 @@ public class AbsenceTenProcess {
 			}else{
 				// ドメインモデル「時間年休管理設定」．時間年休管理区分 = 管理する
 				annualHoliday.setSuspensionTimeYearFlg(true);
-				annualHoliday.setTimeYearRest(annualPaidLeave.getTimeSetting().getTimeUnit().value);
+				annualHoliday.setTimeYearRest(annualPaidLeave.getTimeSetting().getTimeVacationDigestUnit().getDigestUnit().value);
 				// ドメインモデル「時間年休の上限日数」．参照先をチェックする(kiêm tra domain 「時間年休の上限日数」．参照先)
 				if(annualPaidLeave.getTimeSetting().getMaxYearDayLeave().reference.equals(MaxDayReference.CompanyUniform)){
 					// ドメインモデル「時間年休の上限日数」．参照先 = 会社一律
@@ -132,9 +132,9 @@ public class AbsenceTenProcess {
 							compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getExpirationTime().value);
 					// add refactor RequestList203
 					result.setAdvancePayment(compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
-					isManageByTime = compensatoryLeaveComSet.getCompensatoryDigestiveTimeUnit()
-							.getIsManageByTime().value;
-					digestiveUnit = compensatoryLeaveComSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;
+					isManageByTime = compensatoryLeaveComSet.getTimeVacationDigestUnit()
+							.getManage().value;
+					digestiveUnit = compensatoryLeaveComSet.getTimeVacationDigestUnit().getDigestUnit().value;
 				}
 			}else{
 				//ドメインモデル「代休管理設定」．管理区分 = 管理しない

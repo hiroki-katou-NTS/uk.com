@@ -62,8 +62,8 @@ public class SettingSubstituteHolidayProcess {
 				// add refactor RequestList203
 				result.setAdvancePayment(
 						compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
-				isManageByTime = compensatoryLeaveComSet.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value;
-				digestiveUnit = compensatoryLeaveComSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;
+				isManageByTime = compensatoryLeaveComSet.getTimeVacationDigestUnit().getManage().value;
+				digestiveUnit = compensatoryLeaveComSet.getTimeVacationDigestUnit().getDigestUnit().value;
 
 			}
 		}

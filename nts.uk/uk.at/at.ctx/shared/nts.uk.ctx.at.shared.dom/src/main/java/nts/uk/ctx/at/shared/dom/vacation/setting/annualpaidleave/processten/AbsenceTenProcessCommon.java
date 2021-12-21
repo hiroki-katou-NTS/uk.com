@@ -81,7 +81,7 @@ public class AbsenceTenProcessCommon {
 	    Com60HourVacation com60HourVacation = com60HourVacationRepo.findById(companyId).orElse(null);
 	    SixtyHourSettingOutput super60HLeaveMng = new SixtyHourSettingOutput(
                 com60HourVacation != null && com60HourVacation.isManaged(),
-                com60HourVacation == null ? null : com60HourVacation.getSetting().getDigestiveUnit().value
+                com60HourVacation == null ? null : com60HourVacation.getTimeVacationDigestUnit().getDigestUnit().value
         );
 	    
 	    return super60HLeaveMng;

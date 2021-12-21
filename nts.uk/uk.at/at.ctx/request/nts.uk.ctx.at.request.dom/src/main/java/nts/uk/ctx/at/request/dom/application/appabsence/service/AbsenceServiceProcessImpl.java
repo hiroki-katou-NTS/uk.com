@@ -577,10 +577,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 
 			nursingCareLeaveManagement = new NursingCareLeaveManagement(
 					childNursingLeaveSetting.getManageType(),
-					nursingLeaveSetting.getTimeCareNursingSetting().getTimeDigestiveUnit(),
-					nursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct(),
-					childNursingLeaveSetting.getTimeCareNursingSetting().getTimeDigestiveUnit(),
-					childNursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct(),
+					nursingLeaveSetting.getTimeVacationDigestUnit().getDigestUnit(),
+					nursingLeaveSetting.getTimeVacationDigestUnit().getManage(),
+					childNursingLeaveSetting.getTimeVacationDigestUnit().getDigestUnit(),
+					childNursingLeaveSetting.getTimeVacationDigestUnit().getManage(),
 					nursingLeaveSetting.getManageType());
 	    }catch (Exception ignored){}
 
