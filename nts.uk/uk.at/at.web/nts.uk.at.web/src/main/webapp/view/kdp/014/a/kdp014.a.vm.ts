@@ -297,7 +297,7 @@ start(): JQueryPromise<any> {
   block.invisible();
   block.clear();
   dfd.resolve();
-  $("#kcp005component").focus();
+  $("kcp005component").focus();
   return dfd.promise();
 }
 }
