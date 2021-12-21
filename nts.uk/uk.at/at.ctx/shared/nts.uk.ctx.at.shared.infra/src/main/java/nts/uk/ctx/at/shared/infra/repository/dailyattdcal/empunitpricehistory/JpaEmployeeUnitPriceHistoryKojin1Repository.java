@@ -80,6 +80,7 @@ public class JpaEmployeeUnitPriceHistoryKojin1Repository extends JpaRepository i
 
 	@Override
 	public Optional<EmployeeUnitPriceHistory> getHistByEmployeeIdAndBaseDate(String sid, GeneralDate baseDate) {
+		if (baseDate == null) return Optional.empty();
 		List<KrcmtUnitPrice> listHist = this.queryProxy()
 				.query(SELECT_HIST_BY_EMPID_BASEDATE, KrcmtUnitPrice.class)
 				.setParameter("sid", sid).setParameter("baseDate", baseDate)
