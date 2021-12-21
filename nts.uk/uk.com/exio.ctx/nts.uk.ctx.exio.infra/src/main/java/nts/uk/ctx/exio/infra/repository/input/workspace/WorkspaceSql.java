@@ -189,7 +189,7 @@ public class WorkspaceSql {
 				.append("insert into ")
 				.append(tableName)
 				.append(" (")
-				.append(columns.stream().map(col -> col.getName()).collect(joining(",")))
+				.append(columns.stream().map(col -> col.getName()).collect(Collectors.joining(",")))
 				.append(")")
 				.append(" values (")
 				.append(CommonColumns.sqlParams() + ",")
