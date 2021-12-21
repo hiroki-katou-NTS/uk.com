@@ -5,10 +5,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 
 /**
  * DS: 申請を利用できるか
@@ -32,7 +32,7 @@ public class ApplicationAvailable {
 	 * @param appType
 	 *            申請種類
 	 */
-	public static boolean get(Require require, String cid, String sid, GeneralDate date, ApplicationType appType) {
+	public static boolean get(Require require, String cid, String sid, GeneralDate date, ApplicationTypeShare appType) {
 
 		// $申請設定 = require.申請設定を取得する(会社ID)
 		Optional<ApplicationSetting> applicationSetting = require.findByCompanyId(cid);
@@ -74,7 +74,7 @@ public class ApplicationAvailable {
 		 * [R-2] 申請承認設定情報の取得を取得する
 		 */
 		ApprovalFunctionSet getApprovalFunctionSet(String companyID, String employeeID, GeneralDate date,
-				ApplicationType targetApp);
+				ApplicationTypeShare targetApp);
 
 	}
 

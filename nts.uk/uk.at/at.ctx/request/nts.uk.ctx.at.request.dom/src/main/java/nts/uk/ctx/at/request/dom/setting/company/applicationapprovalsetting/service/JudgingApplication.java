@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -32,7 +32,7 @@ public class JudgingApplication {
 	 * @param workTypeCode
 	 *            勤務種類コード
 	 */
-	public static Optional<ApplicationType> toDecide(Require require, String cid, String sid, GeneralDate date,
+	public static Optional<ApplicationTypeShare> toDecide(Require require, String cid, String sid, GeneralDate date,
 			String workTypeCode) {
 
 		// $勤務種類 = require.勤務種類を取得する(会社ID,勤務種類コード)
@@ -44,13 +44,13 @@ public class JudgingApplication {
 			return Optional.empty();
 		}
 
-		ApplicationType result = null;
+		ApplicationTypeShare result = null;
 
 		if (workType.get().isHolidayWork() || (workType.get().getDailyWork().getWorkTypeUnit().isOneDay()
 				&& workType.get().getDailyWork().getOneDay().isHoliday())) {
-			result = ApplicationType.HOLIDAY_WORK_APPLICATION;
+			result = ApplicationTypeShare.HOLIDAY_WORK_APPLICATION;
 		} else if (!workType.get().chechAttendanceDay().isHoliday()) {
-			result = ApplicationType.OVER_TIME_APPLICATION;
+			result = ApplicationTypeShare.OVER_TIME_APPLICATION;
 		} else {
 			return Optional.empty();
 		}
