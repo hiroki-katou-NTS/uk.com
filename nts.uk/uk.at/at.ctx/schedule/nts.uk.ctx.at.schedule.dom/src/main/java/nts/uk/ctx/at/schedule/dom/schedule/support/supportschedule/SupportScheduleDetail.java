@@ -45,13 +45,13 @@ public class SupportScheduleDetail implements DomainValue, Comparable<SupportSch
 	public static SupportScheduleDetail createBySupportTicket(SupportTicket supportTicket) {
 		return new SupportScheduleDetail(
 				supportTicket.getRecipient(), 
-				SupportType.ALLDAY, 
+				supportTicket.getSupportType(), 
 				supportTicket.getTimespan());
 	}
 	
 	/**
 	 * 指定時間帯に収まるか
-	 * @param specifiedTimeSpans
+	 * @param specifiedTimeSpans 指定時間帯リスト
 	 * @return
 	 */
 	public boolean doesItFitInTheSpecifiedTimeSpan(List<TimeSpanForCalc> specifiedTimeSpans) {

@@ -42,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
@@ -387,7 +388,7 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends CommandHandlerWithResul
 		}
 
 		@Override
-		public Integer getSupportOperationSetting() {
+		public SupportOperationSetting getSupportOperationSetting() {
 			// TODO Auto-generated method stub
 			return null;
 		}

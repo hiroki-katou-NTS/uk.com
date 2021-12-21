@@ -112,8 +112,8 @@ public class SupportSchedule {
 	/**
 	 * 変更する
 	 * @param require
-	 * @param beforeUpdate
-	 * @param afterUpdate
+	 * @param beforeUpdate 変更前
+	 * @param afterUpdate 変更後
 	 * @return
 	 */
 	public SupportSchedule update(Require require, SupportTicket beforeUpdate, SupportTicket afterUpdate) {
@@ -189,7 +189,7 @@ public class SupportSchedule {
 					.allMatch( detail -> detail.getSupportType() == SupportType.TIMEZONE);
 			
 			if ( !isAllTimeSpanSupport ) {
-				throw new BusinessException("");
+				throw new BusinessException("詳細リストが全部時間帯応援じゃないです");
 			}
 			
 			return new TimeSpanSupportScheduleDetailList(details);
