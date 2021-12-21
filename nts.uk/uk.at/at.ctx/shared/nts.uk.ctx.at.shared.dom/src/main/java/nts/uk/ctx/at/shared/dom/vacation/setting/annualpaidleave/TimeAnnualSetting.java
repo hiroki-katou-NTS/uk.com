@@ -5,6 +5,9 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -72,6 +75,82 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
         memento.setTimeAnnualLeaveTimeDay(this.timeAnnualLeaveTimeDay);
         memento.setTimeVacationDigestUnit(this.timeVacationDigestUnit);
     }
+    
+    /**
+     * [C-0]
+     */
+    public TimeAnnualSetting(ManageDistinct timeManageType, TimeDigestiveUnit timeUnit,
+			TimeAnnualMaxDay maxYearDayLeave, TimeAnnualRoundProcesCla roundProcessClassific,
+			TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay) {
+		super();
+		this.timeManageType = timeManageType;
+		this.timeUnit = timeUnit;
+		this.maxYearDayLeave = maxYearDayLeave;
+		this.roundProcessClassific = roundProcessClassific;
+		this.timeAnnualLeaveTimeDay = timeAnnualLeaveTimeDay;
+	}
+    
+    /**
+     * [1] 時間年休に対応する日次の勤怠項目を取得する
+     */
+    public List<Integer> getDailyAttdItemsCorrespondAnnualLeave(){
+    	List<Integer> attendanceItemIds = Arrays.asList(502,514,595,601,607,613);
+		return attendanceItemIds;
+    }
+    
+    /**
+     * [2] 時間年休に対応する月次の勤怠項目を取得する
+     */
+    public List<Integer> acquireMonthAttdItemsHourlyAnnualLeave(){
+    	// $時間年休項目
+    	List<Integer> annualLeaveItems = new ArrayList<>();
+    	annualLeaveItems.addAll(this.getAttdItemsDoNotIncludeMaximumNumberDays());
+    	// $上限項目
+    	annualLeaveItems.addAll(maxYearDayLeave.acquiremonthAttendItemMaximumNumberDaysAnnualLeave());
+    	return annualLeaveItems;
+    }
+    
+    /**
+     * [3] 利用できない日次の勤怠項目を取得する
+     */
+    public List<Integer> getDailyAttendItemsNotAvailable(ManageDistinct distinct){
+    	if (distinct == ManageDistinct.YES) { // nhờ bên NWS update lại hộ mình khi sửa theo tài liệu mới. xin cảm ơn.
+    		return this.getDailyAttdItemsCorrespondAnnualLeave();
+    	}
+    	return new ArrayList<>();
+    }
+    
+    /**
+     * [4] 利用できない月次の勤怠項目を取得する
+     */
+    public List<Integer> getMonthlyAttendItemsNotAvailable(ManageDistinct distinct){
+    	List<Integer> timeAnnualLeaveItems = new ArrayList<>();
+    	if (distinct == ManageDistinct.YES) { // nhờ bên NWS update lại hộ mình khi sửa theo tài liệu mới. xin cảm ơn.
+    		// $時間年休項目
+    		timeAnnualLeaveItems.addAll(this.getAttdItemsDoNotIncludeMaximumNumberDays());
+    	}
+    	
+    	// $上限項目
+    	List<Integer> upperlimitItems = maxYearDayLeave.getMonthAttendItemsNotAvailable(distinct, timeManageType);
+    	timeAnnualLeaveItems.addAll(upperlimitItems);
+    	
+    	return timeAnnualLeaveItems;
+    }
+    
+    /**
+     * [5] 時間年休を管理するか
+     */
+    public boolean isManageTimeAnnualLeave(ManageDistinct distinct) {
+    	return distinct == ManageDistinct.YES && timeManageType == ManageDistinct.YES;
+    }
+    
+    /**
+     * [prv-1] 上限日数を含まない時間年休に対応する月次の勤怠項目を取得する
+     */
+    private List<Integer> getAttdItemsDoNotIncludeMaximumNumberDays(){
+		return Arrays.asList(1424,1425,1426,1429,1430,1431,1861,1862);
+    }
+    
     /**
      * [6] 時間年休上限日数を取得
      * @param fromGrantTableDays

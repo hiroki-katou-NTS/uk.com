@@ -38,8 +38,7 @@ public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
      * [1] 時間特別休暇に対応する日次の勤怠項目を取得する
      */
     public List<Integer> getDailyAttdItemsCorrespondSpecialLeave(){
-    	List<Integer> attendanceItemIds = Arrays.asList(543,504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
-		return attendanceItemIds;
+    	return Arrays.asList(543,504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
     }
     
     /**
@@ -50,7 +49,7 @@ public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
     	if (!this.isManageTimeVacation(require)) {
     		attendanceItemIds = Arrays.asList(504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
     	}
-		return attendanceItemIds;
+		return new ArrayList<>();
     }
 
     /**
