@@ -8,6 +8,9 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpDailyLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpDailyLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
@@ -48,8 +51,8 @@ public class CreateInterimAnnualMngData {
 				CreateAtr.FLEXCOMPEN,
 				RemainType.ANNUAL,
 				new WorkTypeCode("000"),
-				LeaveUsedNumber.of(new LeaveUsedDayNumber(deductDays),
-				Optional.ofNullable(new LeaveUsedTime((int) deductTimes)),Optional.empty(),Optional.empty()),
+				new TempAnnualLeaveUsedNumber(Optional.of(new TmpDailyLeaveUsedDayNumber(deductDays)),
+				Optional.ofNullable(new TmpDailyLeaveUsedTime((int) deductTimes))),
 				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty()))
 				);
 

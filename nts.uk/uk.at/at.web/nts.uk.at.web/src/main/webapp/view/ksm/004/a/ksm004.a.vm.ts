@@ -916,16 +916,16 @@ module nts.uk.at.view.ksm004.a {
             }
             
             /*
-                open Dialog D, set param = {yearMonth} 
+                open Dialog KDL058, set param = {yearMonth} 
             */
-            openDialogC() {
+            openDialogKdl058() {
                 nts.uk.ui.block.invisible()
                 var self = this;
-                nts.uk.ui.windows.setShared('KSM004_C_PARAM', 
+                nts.uk.ui.windows.setShared('KDL058_A_PARAM', 
                 {
                     yearMonth: self.yearMonthPicked().toString().substring(0,4)
                 });
-                nts.uk.ui.windows.sub.modal("/view/ksm/004/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                nts.uk.ui.windows.sub.modal("/view/kdl/058/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     self.isShowDatepicker = false;
 					self.yearMonthPicked.valueHasMutated();
 //                    $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
@@ -1062,13 +1062,13 @@ module nts.uk.at.view.ksm004.a {
                     && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
                     && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
                     && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
-                    $("#print-button_1").hide();
-                    $("#print-button_2").hide();
-                    $("#print-button_3").hide();
+                    // $("#print-button_1").hide();
+                    // $("#print-button_2").hide();
+                    // $("#print-button_3").hide();
                 } else {
-                    $("#print-button_1").show();
-                    $("#print-button_2").show();
-                    $("#print-button_3").show();
+                    // $("#print-button_1").show();
+                    // $("#print-button_2").show();
+                    // $("#print-button_3").show();
                 }
             }
 
