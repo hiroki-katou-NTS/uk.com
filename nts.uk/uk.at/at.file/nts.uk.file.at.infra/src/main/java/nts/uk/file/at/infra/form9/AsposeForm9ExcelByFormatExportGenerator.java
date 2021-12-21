@@ -99,8 +99,6 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
             for (int i = 0, infoRelatedWkpGroupsSize = infoRelatedWkpGroups.size(); i < infoRelatedWkpGroupsSize; i++) {
                 DisplayInfoRelatedToWorkplaceGroupDto wkpGroupInfo = infoRelatedWkpGroups.get(i);
 //                if (i > 0) {
-//                    // Copy the first sheet of the first book with in the workbook
-////                    worksheets.addCopy(0);
 //                    // Add new worksheet into target worksheet
 //                    int sheetIndex = worksheets.add();
 //                    // Copy the first sheet of the template into newly created sheet of target worksheet
@@ -136,9 +134,13 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
 
     private void printHeader(Worksheet worksheet, Form9ExcelByFormatDataSource dataSource, Form9ExcelByFormatQuery query, String wkpGroupId) {
         if (dataSource.getForm9Layout() == null) return;
+
         val wkpGroupInfoOpt = dataSource.getInfoRelatedWkpGroups().stream().filter(x -> x.getWkpGroupId().equals(wkpGroupId)).findFirst();
         Form9Cover cellCover = dataSource.getForm9Layout().getCover();
         Cells cells = worksheet.getCells();
+
+        Form9CellIndexDto header = this.getCellIndex(cellCover.getCellYear().get().v());
+        cells.clearContents(header.getRowIndex(), 0, header.getRowIndex(), cells.getMaxColumn());
 
         // A1_1
         if (cellCover.getCellYear().isPresent()) {
@@ -205,6 +207,8 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
         int column1Start = cell1.getColumnIndex();
         int column2Start = cell2.getColumnIndex();
 
+        cells.clearContents(cell1.getRowIndex(), column1Start, cell1.getRowIndex() + 1, cells.getMaxColumn());
+
         for (GeneralDate date : datePeriod.datesBetween()) {
             // date
             cells.get(cell1.getRowIndex(), column1Start).setValue(date.day() + DAY);
@@ -233,28 +237,71 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
         /**
          * C Area: Nursing
          */
+        // Row
+        int rowC1 = dataSource.getForm9Layout().getNursingTable().getDetailSetting().getBodyStartRow().v();
+        // Column for left content
+        val columnC11 = dataSource.getForm9Layout().getNursingTable().getLicense();
+        val columnC12 = dataSource.getForm9Layout().getNursingTable().getHospitalWardName();
+        val columnC13 = dataSource.getForm9Layout().getNursingTable().getFullName().v();
+        val columnC14 = dataSource.getForm9Layout().getNursingTable().getFullTime();
+        val columnC15 = dataSource.getForm9Layout().getNursingTable().getShortTime();
+        val columnC16 = dataSource.getForm9Layout().getNursingTable().getPartTime();
+        val columnC17 = dataSource.getForm9Layout().getNursingTable().getConcurrentPost();
+        val columnC18 = dataSource.getForm9Layout().getNursingTable().getNightShiftOnly();
+
+        // Column for right content
+        // Row C2 == Row C1
+        String columnStartC2 = dataSource.getForm9Layout().getNursingTable().getDay1StartColumn().v();
+
+        // max display number of employee
+        int maxEmpNursing = dataSource.getForm9Layout().getNursingTable().getDetailSetting().getMaxNumerOfPeople().v();
+
+        if (columnC11.isPresent()) {
+            val cellIndexC11 = this.getCellIndex(columnC11.get().v() + rowC1);
+            cells.clearContents(rowC1, cellIndexC11.getColumnIndex(), rowC1, cellIndexC11.getColumnIndex());
+        }
+
+        // Clear content left
+        if (columnC12.isPresent() && columnC18.isPresent()) {
+            val cellIndexStart = this.getCellIndex(columnC12.get().v() + rowC1);
+            val cellIndexEnd = this.getCellIndex(columnC18.get().v() + rowC1);
+            cells.clearContents(
+                    rowC1,
+                    cellIndexStart.getColumnIndex(),
+                    ((maxEmpNursing * 3) + rowC1 - 1) - 1,
+                    cellIndexEnd.getColumnIndex()
+            );
+        }
+
+        // Clear content right
+        if (columnStartC2 != null) {
+            val cell = this.getCellIndex(columnStartC2 + rowC1);
+            int columnStart = cell.getColumnIndex();
+            cells.clearContents(rowC1,
+                    columnStart,
+                    ((maxEmpNursing * 3) + rowC1 - 1) - 1,
+                    cells.getMaxColumn());
+        }
+
         val nurseEmpInfoList = wkpGroupInfoOpt.get().getForm9OutputEmpInfos().stream().filter(x -> x.getLicense().value == LicenseClassification.NURSE.value ||
                 x.getLicense().value == LicenseClassification.NURSE_ASSOCIATE.value).collect(Collectors.toList());
-        int rowC1 = dataSource.getForm9Layout().getNursingTable().getDetailSetting().getBodyStartRow().v();
         for (Form9OutputEmployeeInfo empInfo : nurseEmpInfoList) {
             Map<GeneralDate, MedicalTimeOfEmployee> medicalTimeOfEmpMap = wkpGroupInfoOpt.get().getMedicalTimeOfEmpMap().entrySet().stream()
                     .filter(x -> x.getKey().getEmployeeId().equals(empInfo.getEmployeeId()))
                     .collect(Collectors.toMap(x -> x.getKey().getYmd(), Map.Entry::getValue));
-            val columnC11 = dataSource.getForm9Layout().getNursingTable().getLicense();
+
             if (columnC11.isPresent()) {
                 val cellIndex = this.getCellIndex(columnC11.get().v() + rowC1);
                 cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(empInfo.getLicense().name);
                 setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
             }
 
-            val columnC12 = dataSource.getForm9Layout().getNursingTable().getHospitalWardName();
             if (columnC12.isPresent()) {
                 val cellIndex = this.getCellIndex(columnC12.get().v() + rowC1);
                 cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(wkpGroupInfoOpt.get().getWkpGroupName());
                 setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
             }
 
-            String columnC13 = dataSource.getForm9Layout().getNursingTable().getFullName().v();
             if (columnC13 != null) {
                 val cellIndex = this.getCellIndex(columnC13 + rowC1);
                 cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(empInfo.getFullName());
@@ -263,35 +310,30 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
 
             if ((!medicalTimeOfEmpMap.isEmpty() && isAttributeBlankIfZero) || (!medicalTimeOfEmpMap.isEmpty() && !isAttributeBlankIfZero)
                     || (medicalTimeOfEmpMap.isEmpty() && !isAttributeBlankIfZero)) {
-                val columnC14 = dataSource.getForm9Layout().getNursingTable().getFullTime();
                 if (columnC14.isPresent()) {
                     val cellIndex = this.getCellIndex(columnC14.get().v() + rowC1);
                     cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(empInfo.isFullTime() ? 1 : EMPTY);
                     setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
                 }
 
-                val columnC15 = dataSource.getForm9Layout().getNursingTable().getShortTime();
                 if (columnC15.isPresent()) {
                     val cellIndex = this.getCellIndex(columnC15.get().v() + rowC1);
                     cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(empInfo.isShortTime() ? 1 : EMPTY);
                     setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
                 }
 
-                val columnC16 = dataSource.getForm9Layout().getNursingTable().getPartTime();
                 if (columnC16.isPresent()) {
                     val cellIndex = this.getCellIndex(columnC16.get().v() + rowC1);
                     cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(empInfo.isPartTime() ? 1 : EMPTY);
                     setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
                 }
 
-                val columnC17 = dataSource.getForm9Layout().getNursingTable().getConcurrentPost();
                 if (columnC17.isPresent()) {
                     val cellIndex = this.getCellIndex(columnC17.get().v() + rowC1);
                     cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(empInfo.isConcurrentPost() ? 1 : EMPTY);
                     setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
                 }
 
-                val columnC18 = dataSource.getForm9Layout().getNursingTable().getNightShiftOnly();
                 if (columnC18.isPresent()) {
                     val cellIndex = this.getCellIndex(columnC18.get().v() + rowC1);
                     cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(empInfo.isNightShiftOnly() ? 1 : EMPTY);
@@ -299,9 +341,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                 }
             }
 
-//            int rowC2 = dataSource.getForm9Layout().getNursingTable().getDetailSetting().getBodyStartRow().v();  // Row C2 == Row C1
-            String columnStartC2 = dataSource.getForm9Layout().getNursingTable().getDay1StartColumn().v();
-            this.printDataOfEmpByDates(cells, columnStartC2 + rowC1, dateList, medicalTimeOfEmpMap, query.getColorSetting(), timeRoundingSetting);
+            this.printDataOfEmpByDates(cells, columnStartC2 + rowC1, dateList, medicalTimeOfEmpMap, query.getColorSetting(), timeRoundingSetting, maxEmpNursing);
 
             rowC1 += 3;
         }
@@ -309,21 +349,58 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
         /**
          * E Area: Nursing aide
          */
+        // Row
         int rowE1 = dataSource.getForm9Layout().getNursingAideTable().getDetailSetting().getBodyStartRow().v();
+        // Column for left content
+        val columnE11 = dataSource.getForm9Layout().getNursingAideTable().getHospitalWardName();
+        val columnE12 = dataSource.getForm9Layout().getNursingAideTable().getFullName();
+        val columnE13 = dataSource.getForm9Layout().getNursingAideTable().getFullTime();
+        val columnE14 = dataSource.getForm9Layout().getNursingAideTable().getShortTime();
+        val columnE15 = dataSource.getForm9Layout().getNursingAideTable().getPartTime();
+        val columnE16 = dataSource.getForm9Layout().getNursingAideTable().getConcurrentPost();
+        val columnE17 = dataSource.getForm9Layout().getNursingAideTable().getOfficeWork();
+        val columnE18 = dataSource.getForm9Layout().getNursingAideTable().getNightShiftOnly();
+
+        // Column for right content
+        String columnStartE2 = dataSource.getForm9Layout().getNursingAideTable().getDay1StartColumn().v();
+
+        // max display number of employee
+        int maxEmpNursingAide = dataSource.getForm9Layout().getNursingAideTable().getDetailSetting().getMaxNumerOfPeople().v();
+
+        // Clear content left
+        if (columnE11.isPresent() && columnE18.isPresent()) {
+            val cellIndexStart = this.getCellIndex(columnE11.get().v() + rowC1);
+            val cellIndexEnd = this.getCellIndex(columnE18.get().v() + rowC1);
+            cells.clearContents(
+                    rowE1,
+                    cellIndexStart.getColumnIndex(),
+                    ((maxEmpNursingAide * 3) + rowE1 - 1) - 1,
+                    cellIndexEnd.getColumnIndex()
+            );
+        }
+
+        // Clear content right
+        if (columnStartE2 != null) {
+            val cell = this.getCellIndex(columnStartE2 + rowE1);
+            int columnStart = cell.getColumnIndex();
+            cells.clearContents(rowE1,
+                    columnStart,
+                    ((maxEmpNursingAide * 3) + rowE1 - 1) - 1,
+                    cells.getMaxColumn());
+        }
+
         val nurseAssistEmpInfoList = wkpGroupInfoOpt.get().getForm9OutputEmpInfos().stream().filter(x -> x.getLicense().value == LicenseClassification.NURSE_ASSIST.value)
                 .collect(Collectors.toList());
         for (Form9OutputEmployeeInfo nursingAideEmpInfo : nurseAssistEmpInfoList) {
             Map<GeneralDate, MedicalTimeOfEmployee> medicalTimeOfEmpMap = wkpGroupInfoOpt.get().getMedicalTimeOfEmpMap().entrySet().stream()
                     .filter(x -> x.getKey().getEmployeeId().equals(nursingAideEmpInfo.getEmployeeId()))
                     .collect(Collectors.toMap(x -> x.getKey().getYmd(), Map.Entry::getValue));
-            val columnE11 = dataSource.getForm9Layout().getNursingAideTable().getHospitalWardName();
             if (columnE11.isPresent()) {
                 val cellIndex = this.getCellIndex(columnE11.get().v() + rowE1);
                 cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(wkpGroupInfoOpt.get().getWkpGroupName());
                 setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
             }
 
-            val columnE12 = dataSource.getForm9Layout().getNursingAideTable().getFullName();
             if (columnE12 != null) {
                 val cellIndex = this.getCellIndex(columnE12.v() + rowE1);
                 cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(nursingAideEmpInfo.getFullName());
@@ -332,42 +409,36 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
 
             if ((!medicalTimeOfEmpMap.isEmpty() && isAttributeBlankIfZero) || (!medicalTimeOfEmpMap.isEmpty() && !isAttributeBlankIfZero)
                     || (medicalTimeOfEmpMap.isEmpty() && !isAttributeBlankIfZero)) {
-                val columnE13 = dataSource.getForm9Layout().getNursingAideTable().getFullTime();
                 if (columnE13.isPresent()) {
                     val cellIndex = this.getCellIndex(columnE13.get().v() + rowE1);
                     cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(nursingAideEmpInfo.isFullTime() ? 1 : EMPTY);
                     setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
                 }
 
-                val columnE14 = dataSource.getForm9Layout().getNursingAideTable().getShortTime();
                 if (columnE14.isPresent()) {
                     val cellIndex = this.getCellIndex(columnE14.get().v() + rowE1);
                     cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(nursingAideEmpInfo.isShortTime() ? 1 : EMPTY);
                     setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
                 }
 
-                val columnE15 = dataSource.getForm9Layout().getNursingAideTable().getPartTime();
                 if (columnE15.isPresent()) {
                     val cellIndex = this.getCellIndex(columnE15.get().v() + rowE1);
                     cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(nursingAideEmpInfo.isPartTime() ? 1 : EMPTY);
                     setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
                 }
 
-                val columnE16 = dataSource.getForm9Layout().getNursingAideTable().getConcurrentPost();
                 if (columnE16.isPresent()) {
                     val cellIndex = this.getCellIndex(columnE16.get().v() + rowE1);
                     cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(nursingAideEmpInfo.isConcurrentPost() ? 1 : EMPTY);
                     setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
                 }
 
-                val columnE17 = dataSource.getForm9Layout().getNursingAideTable().getOfficeWork();
                 if (columnE17.isPresent()) {
                     val cellIndex = this.getCellIndex(columnE17.get().v() + rowE1);
                     cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(nursingAideEmpInfo.isOfficeWorker() ? 1 : EMPTY);
                     setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
                 }
 
-                val columnE18 = dataSource.getForm9Layout().getNursingAideTable().getNightShiftOnly();
                 if (columnE18.isPresent()) {
                     val cellIndex = this.getCellIndex(columnE18.get().v() + rowE1);
                     cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(nursingAideEmpInfo.isNightShiftOnly() ? 1 : EMPTY);
@@ -375,16 +446,14 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                 }
             }
 
-//            int rowE2 = dataSource.getForm9Layout().getNursingAideTable().getDetailSetting().getBodyStartRow().v();
-            String columnStartE2 = dataSource.getForm9Layout().getNursingAideTable().getDay1StartColumn().v();
-            this.printDataOfEmpByDates(cells, columnStartE2 + rowE1, dateList, medicalTimeOfEmpMap, query.getColorSetting(), timeRoundingSetting);
+            this.printDataOfEmpByDates(cells, columnStartE2 + rowE1, dateList, medicalTimeOfEmpMap, query.getColorSetting(), timeRoundingSetting, maxEmpNursingAide);
 
             rowE1 += 3;
         }
     }
 
-    private void printDataOfEmpByDates(Cells cells, String cellName, List<GeneralDate> dateList, Map<GeneralDate, MedicalTimeOfEmployee> medicalTimeOfEmpMap, Form9ColorSettingsDTO colorSetting,
-                                       Form9TimeRoundingSetting roundingSetting) {
+    private void printDataOfEmpByDates(Cells cells, String cellName, List<GeneralDate> dateList, Map<GeneralDate, MedicalTimeOfEmployee> medicalTimeOfEmpMap,
+                                       Form9ColorSettingsDTO colorSetting, Form9TimeRoundingSetting roundingSetting, int maxEmployee) {
         val cell = this.getCellIndex(cellName);
         int columnStart = cell.getColumnIndex();
 
@@ -395,7 +464,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
             val roundingUnit = roundingSetting.getRoundingUnit();
             val roundingMode = roundingSetting.getRoundingMethod();
 
-            // Day shift
+            /** Day shift */
             if (medicalTime.get().getDayShiftHours() != null) {
                 cells.get(cell.getRowIndex(), columnStart).setValue(rounding(roundingMode, roundingUnit, medicalTime.get().getDayShiftHours().getTime().v()));
                 val colorDayShift = this.getCellColorSetting(colorSetting, medicalTime.get().getScheRecAtr(), medicalTime.get().getDayShiftHours());
@@ -407,7 +476,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                 }
             }
 
-            // Night shift
+            /** Night shift */
             if (medicalTime.get().getNightShiftHours() != null) {
                 cells.get(cell.getRowIndex() + 1, columnStart).setValue(rounding(roundingMode, roundingUnit, medicalTime.get().getNightShiftHours().getTime().v()));
                 val color = this.getCellColorSetting(colorSetting, medicalTime.get().getScheRecAtr(), medicalTime.get().getNightShiftHours());
@@ -419,7 +488,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                 }
             }
 
-            // Total night shift
+            /** Total night shift */
             if (medicalTime.get().getTotalNightShiftHours() != null) {
                 cells.get(cell.getRowIndex() + 2, columnStart).setValue(rounding(roundingMode, roundingUnit, medicalTime.get().getTotalNightShiftHours().getTime().v()));
                 val color = this.getCellColorSetting(colorSetting, medicalTime.get().getScheRecAtr(), medicalTime.get().getTotalNightShiftHours());
@@ -440,15 +509,15 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
         String cellBgColor = null;
         if (colorSetting.getDeliveryTimeDeductionDate().isUse()) {
             if (colorSetting.getDeliveryTimeDeductionDate().getDisplayTarget() == Form9DisplayTarget.TEXT_COLOR.value) {
-                // ドメインモデルの社員の出力医療時間.申し送り時間か==trueの時に、以下の色処理を実行する
+                /** ドメインモデルの社員の出力医療時間.申し送り時間か==trueの時に、以下の色処理を実行する */
                 if (value.isDeductionDateFromDeliveryTime()) {
-                    // セルの文字色＝色設定.申し送り時間控除日.色
+                    /** セルの文字色＝色設定.申し送り時間控除日.色 */
                     cellTextColor = colorSetting.getDeliveryTimeDeductionDate().getColor().replace("#", "");
                 }
             }
 
             if (colorSetting.getDeliveryTimeDeductionDate().getDisplayTarget() == Form9DisplayTarget.BACKGROUND_COLOR.value) {
-                // ドメインモデルの社員の出力医療時間.申し送り時間か==trueの時に、以下の色処理を実行する
+                /** ドメインモデルの社員の出力医療時間.申し送り時間か==trueの時に、以下の色処理を実行する */
                 if (value.isDeductionDateFromDeliveryTime()) {
                     cellBgColor = colorSetting.getDeliveryTimeDeductionDate().getColor().replace("#", "");
                 }
@@ -485,7 +554,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
 
     private String getTitleDisplay(Form9ExcelByFormatQuery query, DisplayInfoRelatedToWorkplaceGroupDto infoRelatedWkpGroup) {
         String acquireText = "";
-        switch (query.getAcquireTarget()){
+        switch (query.getAcquireTarget()) {
             case 0:
                 acquireText = getText("KSU008_18");
                 break;
@@ -590,15 +659,6 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
         style.setHorizontalAlignment(horizontal);
         style.setShrinkToFit(isShrinkToFit);
         cell.setStyle(style);
-    }
-
-    private void setBottomBorder(Cells cells, int row, int columnStart, int columnEnd) {
-        for (int col = columnStart; col <= columnEnd; col++) {
-            Cell cell = cells.get(row, col);
-            Style style = cell.getStyle();
-            style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-            cell.setStyle(style);
-        }
     }
 
     public InputStream getSystemTemplate(String fileName) {
