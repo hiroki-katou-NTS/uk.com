@@ -1368,7 +1368,6 @@ public class ScheduleCreatorExecutionTransaction {
 			return Pair.of(null, optSingleDaySchedule.get().getWorkTimeCode().get().v());
 		}
 		// エラーログを作成する
-		/** TODO: check */
 //		this.scheCreExeErrorLogHandler.addError(scheduleErrorLogGeterCommand, employeeID, "Msg_594");
 		return Pair.of("Msg_594", null);
 	}
@@ -1459,7 +1458,7 @@ public class ScheduleCreatorExecutionTransaction {
 						// fix bug 113909
 						if (!workdayDivision.isPresent()) {
 							ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization, command.getExecutionId()
-									, creator.getEmployeeId(), dateInPeriod, "Msg_588", "#Com_Workplace");
+									, creator.getEmployeeId(), dateInPeriod, "Msg_588");
 							settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));
 							return settingDto;
 						}
@@ -1470,7 +1469,7 @@ public class ScheduleCreatorExecutionTransaction {
 								optWorkplaceHistItem.getWorkplaceItems().get(0).getWorkplaceId(), null);
 						if (basicWorkSettings.isPresent()) {
 							ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization, command.getExecutionId()
-									, creator.getEmployeeId(), dateInPeriod, "Msg_589", "#Com_Workplace");
+									, creator.getEmployeeId(), dateInPeriod, "Msg_589");
 							settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));
 						}
 						// 取得した「基本勤務設定」を返す
@@ -1508,7 +1507,7 @@ public class ScheduleCreatorExecutionTransaction {
 						// fix bug 113909
 						if (!workdayDivision.isPresent()) {
 							ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization, command.getExecutionId()
-									, creator.getEmployeeId(), dateInPeriod, "Msg_588", "#Com_Class");
+									, creator.getEmployeeId(), dateInPeriod, "Msg_588");
 							settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));
 							return settingDto;
 						}
@@ -1519,7 +1518,7 @@ public class ScheduleCreatorExecutionTransaction {
 										.getClassificationCode());
 						if (basicWorkSettings.isPresent()) {
 							ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization, command.getExecutionId()
-									, creator.getEmployeeId(), dateInPeriod, "Msg_589", "#Com_Class");
+									, creator.getEmployeeId(), dateInPeriod, "Msg_589");
 							settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));
 						}
 						settingDto.setBasicSet(basicWorkSettings);
