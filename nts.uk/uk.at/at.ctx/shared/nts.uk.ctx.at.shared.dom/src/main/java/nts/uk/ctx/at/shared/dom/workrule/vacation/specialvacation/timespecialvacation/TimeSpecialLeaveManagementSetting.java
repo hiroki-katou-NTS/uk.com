@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 
 /**
@@ -27,20 +25,13 @@ public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
     // 時間休暇消化単位
     private TimeVacationDigestUnit timeVacationDigestUnit;
     
-    private TimeDigestiveUnit timeDigestiveUnit;
-
-    // 管理区分
-    private ManageDistinct manageType;
-    
     /**
-     * C-0 Nhờ nws sửa lại khi update theo tài liệu mới
+     * [C-0] 時間特別休暇の管理設定 (会社ID,時間休暇消化単位)
      */
-    public TimeSpecialLeaveManagementSetting(String companyId, TimeDigestiveUnit timeDigestiveUnit,
-			ManageDistinct manageType) {
+    public TimeSpecialLeaveManagementSetting(String companyId, TimeVacationDigestUnit timeVacationDigestUnit) {
 		super();
 		this.companyId = companyId;
-		this.timeDigestiveUnit = timeDigestiveUnit;
-		this.manageType = manageType;
+		this.timeVacationDigestUnit = timeVacationDigestUnit;
 	}
     
     /**
@@ -54,9 +45,9 @@ public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
     /**
      * [2] 利用できない日次の勤怠項目を取得する
      */
-    public List<Integer> getDailyAttdItemsNotAvailable(){
+    public List<Integer> getDailyAttdItemsNotAvailable(TimeVacationDigestUnit.Require require){
     	List<Integer> attendanceItemIds = new ArrayList<>();
-    	if (manageType == ManageDistinct.NO) { // Nhờ NWS sửa theo tài liệu mới
+    	if (!this.isManageTimeVacation(require)) {
     		attendanceItemIds = Arrays.asList(504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
     	}
 		return attendanceItemIds;
