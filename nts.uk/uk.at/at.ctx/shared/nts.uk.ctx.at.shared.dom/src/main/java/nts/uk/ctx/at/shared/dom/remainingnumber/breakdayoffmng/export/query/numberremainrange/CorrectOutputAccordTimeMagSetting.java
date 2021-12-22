@@ -19,7 +19,7 @@ public class CorrectOutputAccordTimeMagSetting {
 		val setting = require.findComLeavComSet(companyId);
 
 		//管理区分を確認して補正する。
-		if (setting.getCompensatoryDigestiveTimeUnit().getIsManageByTime() == ManageDistinct.YES) {
+		if (setting.getTimeVacationDigestUnit().getManage() == ManageDistinct.YES) {
 			result.removeAllDayValue();
 		} else {
 			result.removeAllTimeValue();

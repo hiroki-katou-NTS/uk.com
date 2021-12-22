@@ -294,7 +294,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         TimeSpecialLeaveManagementSetting timeSpecialLeaveManagementSetting = timeSpecialLeaveMngSetRepo.findByCompany(companyId).orElse(null);
         TimeSpecialLeaveManagement timeSpecialLeaveMng = new TimeSpecialLeaveManagement(
                 timeSpecialLeaveManagementSetting == null ? null : timeSpecialLeaveManagementSetting.getTimeVacationDigestUnit().getDigestUnit(),
-                timeSpecialLeaveManagementSetting != null && timeSpecialLeaveManagementSetting.getManageType() == ManageDistinct.YES,
+                timeSpecialLeaveManagementSetting != null && timeSpecialLeaveManagementSetting.getTimeVacationDigestUnit().getManage() == ManageDistinct.YES,
                 new ArrayList<>()
         );
         if (timeSpecialLeaveMng.isTimeSpecialLeaveManagement()) {
