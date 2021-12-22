@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.app.find.shift.specificdayset.company;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,7 +38,5 @@ public class CompanySpecificDateFinder {
 				.stream()
 				.map(item -> CompanySpecificDateDto.fromDomain(item))
 				.collect(Collectors.toList());
-		*/
-		return Collections.emptyList();
 	}
 }
