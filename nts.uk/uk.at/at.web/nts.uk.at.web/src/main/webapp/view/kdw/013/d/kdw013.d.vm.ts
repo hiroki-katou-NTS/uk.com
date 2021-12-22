@@ -4,19 +4,19 @@ module nts.uk.ui.at.kdw013.d {
         OVER_TIME_APPLICATION = 0,
 
         //1: 休日出勤申請
-        HOLIDAY_WORK_APPLICATION = 1
+        HOLIDAY_WORK_APPLICATION = 6
     };
 
     const { formatTime } = share;
     const $vm = new ko.ViewModel();
 
     const { OVER_TIME_APPLICATION } = OverTimeLeaveAtr;
-    const map2Description = (otAtr: OverTimeLeaveAtr, time: number) => {
+    const map2Description = (appType: OverTimeLeaveAtr, date: Date) => {
         if (otAtr === OVER_TIME_APPLICATION) {
-            return $vm.$i18n('KDW013_38', [formatTime(time, 'Time_Short_HM')]);
+            return $vm.$i18n('KDW013_38', [formatTime((moment(date).hour() *60)+  moment(date).minute(), 'Time_Short_HM')]);
         }
 
-        return $vm.$i18n('KDW013_39', [formatTime(time, 'Time_Short_HM')]);
+        return $vm.$i18n('KDW013_39', [formatTime((moment(date).hour() *60)+  moment(date).minute(), 'Time_Short_HM')]);
     };
 
     @bean()
@@ -34,11 +34,11 @@ module nts.uk.ui.at.kdw013.d {
                 .chain(params)
                 .orderBy(['date'])
                 // mapping data from dto to grid
-                .map(({ date, overtimeLeaveAtr, time }) => ({
-                    overtimeLeaveAtr,
+                .map(({ date, appType }) => ({
+                    appType,
                     date,
-                    time,
-                    description: map2Description(overtimeLeaveAtr, time)
+                    date,
+                    description: map2Description(appType, date)
                 }))
                 .value();
 
