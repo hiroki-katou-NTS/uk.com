@@ -19,13 +19,20 @@ module nts.uk.at.view.kmp002.b {
       const self = this;
       self.itemList = ko.observableArray([
         new BoxModel(SupportCardEditSettingEnum.PreviousZero, nts.uk.resource.getText("KMP002_20")),
-        new BoxModel(SupportCardEditSettingEnum.AfterZero, nts.uk.resource.getText("KMP002_21")),
-        new BoxModel(SupportCardEditSettingEnum.PreviousSpace, nts.uk.resource.getText("KMP002_22")),
+        new BoxModel(SupportCardEditSettingEnum.PreviousSpace, nts.uk.resource.getText("KMP002_21")),
+        new BoxModel(SupportCardEditSettingEnum.AfterZero, nts.uk.resource.getText("KMP002_22")),
         new BoxModel(SupportCardEditSettingEnum.AfterSpace, nts.uk.resource.getText("KMP002_23"))
       ]);
       self.$ajax(API.GET_INITIAL_DISPLAY)
         .then((data: any) => {
-          self.supportCardSetting().editMethod(data.editMethod);
+          if (data.editMethod) {
+            self.supportCardSetting().editMethod(data.editMethod);
+            $("#B1_1").find("label").eq(data.editMethod).find("input").focus();
+          } else {
+            $("#B1_1").find("label").eq(0).find("input").focus();
+          }
+        }).fail(() => {
+          $("#B1_1").find("label").eq(0).find("input").focus();
         });
     }
 

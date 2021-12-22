@@ -51,8 +51,10 @@ module nts.uk.at.view.kmp002.a {
         }
       });
       self.mode.subscribe(() => {
+        nts.uk.ui.errors.clearAll();
         if (self.mode() === self.NEW_MODE) {
-          self.isFocusInput(true);
+          // self.isFocusInput(true);
+          $('#A2_2').focus();
         } else {
           self.isFocusInput(false);
         }
@@ -80,7 +82,7 @@ module nts.uk.at.view.kmp002.a {
         if (self.isFocusInputText()) {
           self.isFocusInput(true);
         }
-      })
+      });
     }
 
     performInitialStartup(isInitSupportCard: boolean = false, isSetMode: boolean = false, indexSupportCard: number = 0) {
@@ -209,6 +211,7 @@ module nts.uk.at.view.kmp002.a {
       vm.mode(vm.NEW_MODE);
       vm.currentCard(null);
       vm.supportCard(new SupportCardDto('', '', 0, vm.loginCompanyInfo().companyId, vm.loginCompanyInfo().companyCode, vm.loginCompanyInfo().companyName, '', '', ''));
+      $('#A2_2').focus();
     }
 
     register() {
