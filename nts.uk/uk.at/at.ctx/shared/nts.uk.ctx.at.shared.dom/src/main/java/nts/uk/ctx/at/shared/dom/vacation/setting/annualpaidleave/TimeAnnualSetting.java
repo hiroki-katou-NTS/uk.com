@@ -78,9 +78,8 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     /**
      * [C-0]
      */
-    public TimeAnnualSetting(ManageDistinct timeManageType, TimeVacationDigestUnit timeVacationDigestUnit,
-			TimeAnnualMaxDay maxYearDayLeave, TimeAnnualRoundProcesCla roundProcessClassific,
-			TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay) {
+    public TimeAnnualSetting(TimeAnnualMaxDay maxYearDayLeave, TimeAnnualRoundProcesCla roundProcessClassific,
+			TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay, TimeVacationDigestUnit timeVacationDigestUnit) {
 		super();
 		this.maxYearDayLeave = maxYearDayLeave;
 		this.roundProcessClassific = roundProcessClassific;
