@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.daily.ouen;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -499,6 +500,23 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 												   .setParameter("ouenNo", ouenNo)
 												   .executeUpdate();
 	}
-	
-}
 
+	// [9]  日別実績の応援作業別勤怠時間帯を取得する
+	@Override
+	public List<OuenWorkTimeSheetOfDaily> get(String sId, List<GeneralDate> dates) {
+		if (CollectionUtil.isEmpty(dates)) return Collections.emptyList();
+		
+		List<KrcdtDayOuenTimeSheet> timeSheets = new ArrayList<>();
+		CollectionUtil.split(dates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			timeSheets.addAll(this.queryProxy().query(
+					"SELECT o FROM KrcdtDayOuenTimeSheet o WHERE o.pk.sid = :sId AND o.pk.ymd IN :dates", KrcdtDayOuenTimeSheet.class)
+					  .setParameter("sId", sId)
+					  .setParameter("dates", subList).getList());
+		});
+		
+		List<OuenWorkTimeSheetOfDaily> domains = new ArrayList<>();
+		domains.add(toDomain(timeSheets));
+		
+		return domains;
+	}
+}
