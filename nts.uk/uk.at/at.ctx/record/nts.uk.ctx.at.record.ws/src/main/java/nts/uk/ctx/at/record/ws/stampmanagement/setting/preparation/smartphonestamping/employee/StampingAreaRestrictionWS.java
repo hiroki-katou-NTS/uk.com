@@ -5,10 +5,13 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.record.app.command.stampmanagement.setting.preparation.smartphonestamping.employee.DeleteStampingAreaRestrictionCommand;
+import nts.uk.ctx.at.record.app.command.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaCmd;
 import nts.uk.ctx.at.record.app.command.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestrictionCommandHandler;
+import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartphonestamping.employee.CommonObjectParam;
 import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestrictionDto;
 import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartphonestamping.employee.StampingSettingEmplFindOneQuery;
 import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartphonestamping.employee.StampingSettingEmployeeQuery;
@@ -30,27 +33,27 @@ public class StampingAreaRestrictionWS {
 	
 	@POST
 	@Path("insertUpdateStampingSetting")
-	public Boolean  insert(StampingAreaRestrictionDto areaRestrictionDto) {
-		 this.stampingAreaRestrictionCommandHandler.handle(areaRestrictionDto);
+	public Boolean  insert(StampingAreaCmd cmd) {
+		 this.stampingAreaRestrictionCommandHandler.handle(cmd);
 		 return true;
 	}
-	
 	@POST
 	@Path("getStatusStampingEmpl")
-	public List<String> getNamesByCodes(List<String> listEmplId) {
-		return this.stampingSettingEmployeeQuery.getStatuEmployee(listEmplId);
+	public List<String> getNamesByCodes(CommonObjectParam listEmplId) {
+		return this.stampingSettingEmployeeQuery.getStatuEmployee(listEmplId.listId);
 	}
 	
 	@POST
 	@Path("delete")
-	public void delete(StampingAreaRestrictionDto areaRestrictionDto) {
-		this.deleteStampingAreaRestrictionCommand.handle(areaRestrictionDto);
+	public void delete(StampingAreaCmd cmd) {
+		this.deleteStampingAreaRestrictionCommand.handle(cmd);
 	}
 	
 	@POST
-	@Path("findOneById")
-	public StampingAreaRestrictionDto findOneById (StampingAreaRestrictionDto areaRestrictionDto) {
-		return this.emplFindOneQuery.getStatuEmployee(areaRestrictionDto.getEmployeeId());
+	@Path("findOneById/{selectedEmpl}")
+	public StampingAreaRestrictionDto findOneById (@PathParam("selectedEmpl") String employeeId) {
+		return this.emplFindOneQuery.getStatuEmployee(employeeId);
 	}
+	
 	
 }

@@ -119,4 +119,34 @@ public class StampingAreaRestrictionTest {
 		Optional<WorkLocation> lisst = domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor);
 		assertThat(lisst).isNotEmpty();
 	}
+	
+	@Test
+	public void setValueForWork() {
+		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.notUseAreanAndUseOnlyWorkplace();
+		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampingAreaRestrictionTestHelp.getGeoCoordinateDefault());//dummy
+		new Expectations() {
+			{
+			require.findAll(contractCD);
+			result = StampingAreaRestrictionTestHelp.createDataForFindAll("dummy", "dummy", "dummy");
+			}	
+		};
+		Optional<WorkLocation> lisst = domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor);
+		assertThat(lisst).isNotEmpty();
+	}
+	
+	@Test
+	public void setValueForWorkEmty() {
+		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.notUseAreanAndUseOnlyWorkplace();
+		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampingAreaRestrictionTestHelp.getGeoCoordinateDefault());//dummy
+		new Expectations() {
+			{
+			require.findAll(contractCD);
+			result = null;
+			}	
+		};
+		Optional<WorkLocation> lisst = domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor);
+		assertThat(lisst).isNotEmpty();
+	}
+	
+	
 }

@@ -7,24 +7,23 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestrictionDto;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaReposiroty;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
 
 @Stateless
-public class StampingAreaRestrictionCommandHandler extends CommandHandler<StampingAreaRestrictionDto> {
+public class StampingAreaRestrictionCommandHandler extends CommandHandler<StampingAreaCmd> {
 	
 	@Inject
 	private  StampingAreaReposiroty stampingAreaReposiroty;
 	@Override
-	protected void handle(CommandHandlerContext<StampingAreaRestrictionDto> context) {
-		StampingAreaRestrictionDto dto = context.getCommand();
-			Optional<StampingAreaRestriction> result = stampingAreaReposiroty.findByEmployeeId(dto.getEmployeeId());
+	protected void handle(CommandHandlerContext<StampingAreaCmd> context) {
+		StampingAreaCmd cmd = context.getCommand();
+			Optional<StampingAreaRestriction> result = stampingAreaReposiroty.findByEmployeeId(cmd.getEmployeeId());
 			if (result.isPresent()) {
-				stampingAreaReposiroty.updateStampingArea(dto.getEmployeeId(), dto.toDomain());
+				stampingAreaReposiroty.updateStampingArea(cmd.getEmployeeId(), cmd.toDomain());
 			}
 		else {	
-			stampingAreaReposiroty.insertStampingArea(dto.getEmployeeId(),dto.toDomain());
+			stampingAreaReposiroty.insertStampingArea(cmd.getEmployeeId(),cmd.toDomain());
 		}
 	
 	}

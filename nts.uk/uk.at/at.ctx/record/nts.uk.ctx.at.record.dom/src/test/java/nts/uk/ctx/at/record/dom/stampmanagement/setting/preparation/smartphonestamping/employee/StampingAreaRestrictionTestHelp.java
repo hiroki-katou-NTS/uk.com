@@ -55,6 +55,11 @@ public class StampingAreaRestrictionTestHelp {
 		StampingAreaLimit areaLimit = StampingAreaLimit.ONLY_THE_WORKPLACE_BELONG_ALLOWED ;
 		return new StampingAreaRestriction(notUseAtr,areaLimit);
 	}
+	public static StampingAreaRestriction notUseAreanAndUseOnlyWorkplace() {
+		NotUseAtr notUseAtr = NotUseAtr.USE;
+		StampingAreaLimit areaLimit = StampingAreaLimit.NO_AREA_RESTRICTION ;
+		return new StampingAreaRestriction(notUseAtr,areaLimit);
+	}
 	
 	public static WorkLocation createWorklocation(String contractCode, String workLocationCD,String workLocationName) {
 		
