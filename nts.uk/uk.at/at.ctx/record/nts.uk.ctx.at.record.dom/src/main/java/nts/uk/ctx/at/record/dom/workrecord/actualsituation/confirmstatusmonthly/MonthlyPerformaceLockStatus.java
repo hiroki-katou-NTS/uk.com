@@ -4,12 +4,14 @@ import org.apache.logging.log4j.util.Strings;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 
 /**
  * 月の実績のロック状態
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class MonthlyPerformaceLockStatus {
 	public static String LOCK_MONTHLY_PAST = "pastPerformaceLock";

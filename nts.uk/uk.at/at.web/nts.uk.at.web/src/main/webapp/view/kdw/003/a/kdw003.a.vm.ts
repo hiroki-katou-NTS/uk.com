@@ -699,7 +699,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                             if (dataTemp != undefined) {
                                 let data = [dataTemp];
-
+								self.formatCodes(data);
                                 let param = {
                                     dateRange: dateRangeParam ? {
                                         startDate: moment(dateRangeParam.startDate).utc().toISOString(),
@@ -801,7 +801,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.dataAll(data);
             self.itemValueAll(data.itemValues);
             self.comment(data.comment != null ? '■ ' + data.comment : null);
-            self.formatCodes(data.lstControlDisplayItem.formatCode);
+			if(data.lstControlDisplayItem.formatCode !=  null){
+           	 	self.formatCodes(data.lstControlDisplayItem.formatCode);
+			}
             self.autBussCode(data.autBussCode);
             self.createSumColumn(data);
             // combo box
@@ -1875,7 +1877,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let lstData = _.map(_.sortBy(_.filter(self.dailyPerfomanceData(), (v) => _.includes(rowIds, v.id)), (sort) => {
                 return new Date(sort.date);
             }), (map) => {
-                map.date = moment(map.date).utc().toISOString();
+                map.date = moment(map.date).format('YYYY-MM-DD') + 'T00:00:00.000Z';
                 map.state = "";
                 map.error = "";
                 map.sign = false;
@@ -5125,7 +5127,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let workplaceCode: any = null;
                     let workplaceId: any = null;
                     if(row){
-                        dateParam2 = row.date;
+                        dateParam2 = moment(row.date.substring(0,10)).format("YYYY/MM/DD");
                         let workplaceIDObj = _.find(row.cellDatas, (item: any) => item.columnKey=='Code623')
                         if(workplaceIDObj) {
                             workplaceCode = workplaceIDObj.value;	
@@ -5135,7 +5137,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let findWkpParam = {
                         companyId: __viewContext.user.companyId, 
                         wkpCode: workplaceCode, 
-                        baseDate: moment(dateParam2).format("YYYY/MM/DD")
+                        baseDate: dateParam2
                     };
 
                     $.when(service.findWplIDByCode(findWkpParam), service.findAllCodeName(param2)).done((res1, res2) => {
@@ -5480,12 +5482,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 						}
 					}
                     nts.uk.ui.block.invisible();
+                    let taskCode = self.selectedCode() == '' ? null : self.selectedCode();
                     let paramsKDL012 = {
 						isMultiple: false,
 				        showExpireDate: false,
 				        referenceDate: dateParam15,
 				        workFrameNoSelection,
-				        selectionCodeList: [self.selectedCode()]
+				        selectionCodeList: [self.selectedCode()],
+                        sid: selfParent.selectedEmployee(),
+                        taskCode
                     };
                     setShared('KDL012Params', paramsKDL012);
                     modal("/view/kdl/012/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {

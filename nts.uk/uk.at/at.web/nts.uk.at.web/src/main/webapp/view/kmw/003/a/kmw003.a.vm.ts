@@ -399,10 +399,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             }   
                      
             self.monthlyParam().lstLockStatus = [];
-            if (self.monthlyParam().actualTime) {
-                self.monthlyParam().actualTime.startDate = moment.utc(self.monthlyParam().actualTime.startDate, "YYYY/MM/DD").toISOString();
-                self.monthlyParam().actualTime.endDate = moment.utc(self.monthlyParam().actualTime.endDate, "YYYY/MM/DD").toISOString();
-            }
             self.noCheckColumn(false);
             let checkLoadKdw: boolean = localStorage.getItem('isKmw');
             nts.uk.characteristics.restore("cacheKMW003").done(function (cacheData) { 
@@ -412,6 +408,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             localStorage.removeItem('isKmw');
             __viewContext.transferred.value = false;
             nts.uk.characteristics.save("cacheKMW003",self.monthlyParam());
+
+			if (self.monthlyParam().actualTime) {
+                self.monthlyParam().actualTime.startDate = moment.utc(self.monthlyParam().actualTime.startDate, "YYYY/MM/DD").toISOString();
+                self.monthlyParam().actualTime.endDate = moment.utc(self.monthlyParam().actualTime.endDate, "YYYY/MM/DD").toISOString();
+            }
             service.startScreen(self.monthlyParam()).done((data) => {
 				self.employmentConfirm = data.useSetingOutput.employmentConfirm;
                 if(self.employmentConfirm){
@@ -590,7 +591,15 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 // Fixed Header
                 self.setFixedHeader(data.lstFixedHeader);
                 self.extractionData();
-				$("#dpGrid").mGrid("destroy");
+				 /*if ($("#dpGrid").data('mGrid')) {
+	                $("#dpGrid").mGrid("destroy");
+	                $("#dpGrid").off();
+	            }*/
+				if ($("#dpGrid").hasClass("mgrid")) {
+	                $("#dpGrid").mGrid("destroy");
+	                $("#dpGrid").removeClass("mgrid");
+	                $("#dpGrid").off(); 
+	            }
                 self.loadGrid();
                 _.forEach(data.mpsateCellHideControl, (cellHide =>{
                     $('#dpGrid').mGrid("setState", cellHide.rowId, cellHide.columnKey, ["mgrid-hide"])
