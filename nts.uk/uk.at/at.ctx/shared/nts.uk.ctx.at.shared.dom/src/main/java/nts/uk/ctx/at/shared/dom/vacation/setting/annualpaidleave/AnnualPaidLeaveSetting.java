@@ -14,7 +14,6 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays;
@@ -158,8 +157,8 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 	 * [9] 時間年休を管理するか
 	 * @return
 	 */
-	public boolean isManageTimeAnnualLeave() {
-		return this.timeSetting
+	public boolean isManageTimeAnnualLeave(Require require) {
+		return this.timeSetting.isManageTimeAnnualLeave(require, this.yearManageType);
 	}
 
 	/**
@@ -167,7 +166,9 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 	 * @param time 休暇使用時間
 	 * @return
 	 */
-	public boolean checkVacationTimeUnitUsed(TimeVacationDigestUnit.Require require, AttendanceTime time) {
+	public boolean checkVacationTimeUnitUsed(Require require, AttendanceTime time) {
 		return this.timeSetting.checkDigestUnits(require, time, this.yearManageType);
 	}
+	
+	public static interface Require extends TimeAnnualSetting.Require {}
 }
