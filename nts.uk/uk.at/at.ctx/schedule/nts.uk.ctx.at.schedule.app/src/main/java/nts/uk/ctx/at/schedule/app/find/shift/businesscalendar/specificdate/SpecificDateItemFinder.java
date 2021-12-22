@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -56,9 +57,12 @@ public class SpecificDateItemFinder {
 	 * @return
 	 */
 	public List<SpecificDateItemDto> getSpecificDateItemByListCode(List<Integer> lstSpecificDateItem){
-		/*TODO dev fix
 		String companyId = AppContexts.user().companyId();
- 		return specificDateItemRepository.getSpecifiDateByListCode(companyId, lstSpecificDateItem)
+		List<SpecificDateItemNo> lstSpecificDate = lstSpecificDateItem.stream()
+				.map(item -> new SpecificDateItemNo(item))
+				.collect(Collectors.toList());
+		
+		return specificDateItemRepository.getSpecifiDateByListCode(companyId, lstSpecificDate)
 				.stream()
 				.map(c-> toSpecificDateItemDto(c))
 				.collect(Collectors.toList());*/

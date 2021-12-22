@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -22,8 +23,8 @@ public class DeleteCompanySpecificDateCommandHandler extends CommandHandler<Dele
 		String companyId = AppContexts.user().companyId();
 		GeneralDate startDate = GeneralDate.fromString(context.getCommand().getStartDate(), DATE_FORMAT);
 		GeneralDate endDate = GeneralDate.fromString(context.getCommand().getEndDate(), DATE_FORMAT);
-		/**TODO dev fix
-		repo.DeleteComSpecDate(companyId, startDate, endDate); **/
+		DatePeriod period = new DatePeriod(startDate, endDate);
+		this.repo.delete(companyId, period);
 	}
 
 }

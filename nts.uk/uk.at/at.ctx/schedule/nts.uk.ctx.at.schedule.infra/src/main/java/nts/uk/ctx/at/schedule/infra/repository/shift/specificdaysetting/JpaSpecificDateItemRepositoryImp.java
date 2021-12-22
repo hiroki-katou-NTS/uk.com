@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.specificdaysetting;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -12,6 +12,7 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate.KscmtSpecDateItem;
+import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate.KsmstSpecificDateItemPK;
 
 @Stateless
 public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements SpecificDateItemRepository {
@@ -59,21 +60,24 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<SpecificDateItem> getSpecifiDateByListCode(String companyId, List<SpecificDateItemNo> lstSpecificDateItem) {
-		List<SpecificDateItem> resultList = new ArrayList<>();
-/*		TODO dev fix
- * 		CollectionUtil.split(lstSpecificDateItem, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(GET_BY_LIST_CODE, KscmtSpecDateItem.class)
-								  .setParameter("companyId", companyId)
-								  .setParameter("lstSpecificDateItem", subList)
-								  .getList(c->toBonusPaySettingDomain(c)));
-		});*/
-		return resultList;
+    	List<Integer> lstSpecificDateItemNo = lstSpecificDateItem.stream()
+    			.map(t -> t.v())
+    			.collect(Collectors.toList());
+    	return this.queryProxy().query(GET_BY_LIST_CODE, KscmtSpecDateItem.class).setParameter("companyId", companyId)
+				.setParameter("lstSpecificDateItem", lstSpecificDateItemNo).getList(x -> this.toBonusPaySettingDomain(x));
 	}
 
 	@Override
 	public void update(SpecificDateItem domain) {
-		// TODO Auto-generated method stub
-		
+		this.commandProxy().update(toEntity(domain));
+	}
+	
+	private KscmtSpecDateItem toEntity(SpecificDateItem domain) {
+		return new KscmtSpecDateItem(
+				new KsmstSpecificDateItemPK(domain.getCompanyId(), domain.getSpecificDateItemNo().v()),
+				domain.getUseAtr().value,
+				domain.getSpecificName().v()
+				);
 	}
 
 }

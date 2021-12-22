@@ -50,14 +50,13 @@ public class UpdateSpecificDateItemCommandHandler extends CommandHandler<List<Sp
 				lstAdd.add(specificDateItem);
 			}
 		}
-		/**TODO dev fix
 		if(lstUpdate.size()>0){
-			repo.updateSpecificDateItem(lstUpdate);
+			lstUpdate.stream()
+					.forEach(item -> repo.update(item));
 		}
-		if(lstAdd.size()>0){
-			repo.addSpecificDateItem(lstAdd);
-		}
-	*/
+//		if(lstAdd.size()>0){
+//			repo.addSpecificDateItem(lstAdd);
+//		}
 	}
 
 
