@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting.Require;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
@@ -25,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.screen.com.app.find.cmm029.DisplayDataDto.DisplayDataDtoBuilder;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.license.option.OptionLicense;
 
 /**
@@ -101,7 +101,7 @@ public class LeaveSettingFunctionScreenQuery extends AbstractFunctionScreenQuery
 				.useAtr(domain != null ? domain.isManaged() : true).programId("CMM029_28");
 		DisplayDataDtoBuilder builder2 = DisplayDataDto.builder().system(SYSTEM_TYPE).programId("CMM029_29")
 				.useAtr(domain != null
-						? domain.getCompensatoryDigestiveTimeUnit().getIsManageByTime().equals(ManageDistinct.YES)
+						? domain.getTimeVacationDigestUnit().getManage().equals(ManageDistinct.YES)
 						: false);
 		return Arrays.asList(builder1.build(), builder2.build());
 	}
@@ -124,13 +124,13 @@ public class LeaveSettingFunctionScreenQuery extends AbstractFunctionScreenQuery
 				.useAtr(optNursing.map(NursingLeaveSetting::isManaged).orElse(true)).programId("CMM029_33");
 		DisplayDataDtoBuilder builder2 = DisplayDataDto.builder().system(SYSTEM_TYPE).programId("CMM029_34")
 				.useAtr(optNursing
-						.map(data -> data.getTimeCareNursingSetting().getManageDistinct().equals(ManageDistinct.YES))
+						.map(data -> data.getTimeVacationDigestUnit().getManage().equals(ManageDistinct.YES))
 						.orElse(true));
 		DisplayDataDtoBuilder builder3 = this.findFromStandardMenu(standardMenus, "CMM029_20", "CMM029_32")
 				.useAtr(optChildNursing.map(NursingLeaveSetting::isManaged).orElse(true)).programId("CMM029_35");
 		DisplayDataDtoBuilder builder4 = DisplayDataDto.builder().system(SYSTEM_TYPE).programId("CMM029_36")
 				.useAtr(optChildNursing
-						.map(data -> data.getTimeCareNursingSetting().getManageDistinct().equals(ManageDistinct.YES))
+						.map(data -> data.getTimeVacationDigestUnit().getManage().equals(ManageDistinct.YES))
 						.orElse(true));
 		return Arrays.asList(builder1.build(), builder2.build(), builder3.build(), builder4.build());
 	}
