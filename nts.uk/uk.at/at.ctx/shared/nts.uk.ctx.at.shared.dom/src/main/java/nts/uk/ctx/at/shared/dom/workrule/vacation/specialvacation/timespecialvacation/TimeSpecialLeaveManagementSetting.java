@@ -44,7 +44,7 @@ public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
     /**
      * [2] 利用できない日次の勤怠項目を取得する
      */
-    public List<Integer> getDailyAttdItemsNotAvailable(TimeVacationDigestUnit.Require require){
+    public List<Integer> getDailyAttdItemsNotAvailable(Require require){
     	List<Integer> attendanceItemIds = new ArrayList<>();
     	if (!this.isManageTimeVacation(require)) {
     		attendanceItemIds = Arrays.asList(504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
@@ -56,7 +56,7 @@ public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
      * [3]時間休暇が管理するか
      * @param require
      */
-    public boolean isManageTimeVacation(TimeVacationDigestUnit.Require require) {
+    public boolean isManageTimeVacation(Require require) {
     	return this.timeVacationDigestUnit.isVacationTimeManage(require);
     }
     
@@ -65,7 +65,9 @@ public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
      * @param require
      * @param time 休暇使用時間
      */
-    public boolean checkVacationTimeUnitUsed(TimeVacationDigestUnit.Require require, AttendanceTime time) {
+    public boolean checkVacationTimeUnitUsed(Require require, AttendanceTime time) {
       return this.timeVacationDigestUnit.checkDigestUnit(require, time);
     }
+    
+    public static interface Require extends TimeVacationDigestUnit.Require {}
 }

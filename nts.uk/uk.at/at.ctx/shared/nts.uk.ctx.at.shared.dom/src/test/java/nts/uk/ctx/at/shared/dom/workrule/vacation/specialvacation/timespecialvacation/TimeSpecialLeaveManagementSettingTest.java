@@ -4,15 +4,29 @@ package nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialva
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
+import nts.uk.shr.com.license.option.OptionLicense;
 
+@RunWith(JMockit.class)
 public class TimeSpecialLeaveManagementSettingTest {
+	@Injectable
+	private TimeSpecialLeaveManagementSetting.Require require;
+	
 	@Test
 	public void getters() {
-		TimeSpecialLeaveManagementSetting managementSetting = new TimeSpecialLeaveManagementSetting("000000000003-0004", TimeDigestiveUnit.OneHour, ManageDistinct.NO);
+		TimeSpecialLeaveManagementSetting managementSetting = new TimeSpecialLeaveManagementSetting("000000000003-0004",
+				new TimeVacationDigestUnit(ManageDistinct.NO, TimeDigestiveUnit.OneHour));
 		NtsAssert.invokeGetters(managementSetting);
 	}
 	
@@ -34,7 +48,13 @@ public class TimeSpecialLeaveManagementSettingTest {
 	@Test
 	public void testDailyAttdItemsNotAvailable() {
 		TimeSpecialLeaveManagementSetting setting = TimeSpecialLeaveManagementHelper.createManagementSettingManageDistinctIsNo(ManageDistinct.NO);
-		List<Integer> attendanceItemIds = setting.getDailyAttdItemsNotAvailable();
+		new Expectations() {
+			{
+				require.getOptionLicense();
+				result = new OptionLicense() {};
+			}
+		};
+		List<Integer> attendanceItemIds = setting.getDailyAttdItemsNotAvailable(require);
 		assertThat( attendanceItemIds )
 		.extracting( d -> d)
 		.containsExactly(504,516,1123,1124,1127,1128,1131,1132,1135,1136,1145,1146);
@@ -46,7 +66,30 @@ public class TimeSpecialLeaveManagementSettingTest {
 	@Test
 	public void testDailyAttdItemsNotAvailable_isEmpty() {
 		TimeSpecialLeaveManagementSetting setting = TimeSpecialLeaveManagementHelper.createManagementSettingManageDistinctIsYes(ManageDistinct.YES);
-		List<Integer> attendanceItemIds = setting.getDailyAttdItemsNotAvailable();
+		new Expectations() {
+			{
+				require.getOptionLicense();
+				result = new OptionLicense() {};
+			}
+		};
+		List<Integer> attendanceItemIds = setting.getDailyAttdItemsNotAvailable(require);
 		assertThat( attendanceItemIds.isEmpty());
+	}
+	
+	/**
+	 * Test [4]利用する休暇時間の消化単位をチェックする
+	 */
+	@Test
+	public void testCheckVacationTimeUnitUsed() {
+		TimeSpecialLeaveManagementSetting managementSetting = new TimeSpecialLeaveManagementSetting("000000000003-0004",
+				new TimeVacationDigestUnit(ManageDistinct.NO, TimeDigestiveUnit.OneHour));
+		new Expectations() {
+			{
+				require.getOptionLicense();
+				result = new OptionLicense() {};
+			}
+		};
+		boolean checkVacationTimeUnitUsed = managementSetting.checkVacationTimeUnitUsed(require, AttendanceTime.ZERO);
+		assertThat(checkVacationTimeUnitUsed);
 	}
 }
