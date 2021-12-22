@@ -34,8 +34,8 @@ public class ChildCareNurseUsedInfo {
 	 */
 	public ChildCareNurseUsedInfo(ChildCareNurseUsedInfo c){
 		this.usedNumber = c.usedNumber.clone();
-		this.usedTimes = c.usedTimes.clone();
-		this.usedDays = c.usedDays.clone();
+		this.usedTimes = new UsedTimes(c.usedTimes.v());
+		this.usedDays = new UsedTimes(c.usedDays.v());
 	}
 
 	/**

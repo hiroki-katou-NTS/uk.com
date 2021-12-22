@@ -4,11 +4,24 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.worktimeset;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
+import nts.uk.ctx.at.shared.app.find.worktime.filtercriteria.WorkHoursFilterConditionDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.PredetemineTimeSetFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeResultDto;
@@ -18,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRep
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.AffWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.filtercriteria.WorkHoursFilterConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -32,12 +46,6 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * The Class WorkTimeSettingFinder.
@@ -80,6 +88,9 @@ public class WorkTimeSettingFinder {
 
     @Inject
     public WorkTypeRepository workTypeRepository;
+    
+    @Inject
+    private WorkHoursFilterConditionRepository workHoursFilterConditionRepository;
 
     /**
      * Find all simple.
@@ -365,6 +376,11 @@ public class WorkTimeSettingFinder {
         List<WorkTimeDto> selectableWorkingHours = new ArrayList<>();
         String cid = null;
         Integer useATR = null;
+        // ドメインモデル「就業時間帯の絞り込み条件」を取得
+        List<WorkHoursFilterConditionDto> filterConditions = this.workHoursFilterConditionRepository
+        		.findByCid(companyID).stream().map(WorkHoursFilterConditionDto::fromDomain)
+        		.sorted(Comparator.comparing(WorkHoursFilterConditionDto::getNo))
+        		.collect(Collectors.toList());
         // ドメインモデル「複数回勤務管理」を取得する
         Optional<WorkManagementMultiple> optWorkMultiple = workMultipleRepo.findByCode(companyID);
         if (optWorkMultiple.isPresent()) {
@@ -401,6 +417,7 @@ public class WorkTimeSettingFinder {
                 GeneralDate baseDate = GeneralDate.fromString(date, "yyyy/MM/dd");
                 List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyID,
                         workPlaceId, baseDate);
+                
                 // 取得した所属職場ID＋その上位職場IDを先頭から最後までループする
                 // Loop theo AffWorkplace ID + upperWorkplaceID  từ đầu đến cuối
                 List<WorkTimeSetting> workTimeSettingList = new ArrayList<>();
@@ -431,8 +448,81 @@ public class WorkTimeSettingFinder {
                 , workingHoursByWorkplace
                 , cid
                 , useATR
+                , filterConditions
         );
 
     }
+
+	/**
+	 * UKDesign.UniversalK.就業.KDL_ダイアログ.KDLS01_就業時間帯選択（スマホ）.A：就業時間帯選択.アルゴリズム.起動時処理.起動時処理
+     * @param workTimeCodes : 選択可能な就業時間帯
+     * @param workTimeSelected : 選択状態の就業時間帯
+     * @param workplaceID : 対象の勤務種類
+     * @param referenceDate : 基準日
+     * @param display : なしを表示するか
+     * @return
+     */
+	public List<WorkTimeDto> findByCodeKDLS01(List<String> workTimeCodes, String workTimeSelected, String workplaceID, String referenceDate, boolean display) {
+		
+		String companyID = AppContexts.user().companyId();
+		List<WorkTimeDto> result = new ArrayList<>();
+
+		// 起動時のParameter．なしを表示するかをチェックする (Check なしを表示するか/hiển thị なし của Parameter khi khởi động )
+		if(display){
+			// 先頭に「選択なし」を追加する / Add 「選択なし/không chọn」 vào đầu
+			result.add(new WorkTimeDto("", "選択なし", "", "", "", "", 0, 0, 0, 0));
+		}
+		
+		// ver3対応 : 会社で使用できる就業時間帯を全件を取得する
+        List<WorkTimeSetting> listWorkTime = workTimeSettingRepository.findByCompanyId(AppContexts.user().companyId()).stream()
+                .filter(x -> x.getAbolishAtr() == AbolishAtr.NOT_ABOLISH)
+                .sorted(Comparator.comparing(x -> x.getWorktimeCode().v())).collect(Collectors.toList());
+		
+        List<PredetemineTimeSetting> workTimeSetItems = this.predetemineTimeSettingRepository
+                .findByCompanyID(companyID);
+        // 全件の就業時間帯: AllWorkHours
+        List<WorkTimeDto> allWorkTime = new ArrayList<>(getWorkTimeDtos(listWorkTime, workTimeSetItems));
+        result.addAll(allWorkTime);
+		//起動時のParameter．選択可能な就業時間帯をチェックする
+        // 就業時間帯の指定が0件の場合
+		if (workTimeCodes.isEmpty() || workTimeCodes == null ) { 
+			if (referenceDate != null) {
+				
+				GeneralDate baseDate = GeneralDate.fromString(referenceDate, "yyyy/MM/dd");
+                List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyID,
+                		workplaceID, baseDate);
+                
+                // 取得した所属職場ID＋その上位職場IDを先頭から最後までループする
+                // Loop theo AffWorkplace ID + upperWorkplaceID  từ đầu đến cuối
+                List<WorkTimeSetting> workTimeSettingList = new ArrayList<>();
+                for (String wkpID : workPlaceIdList) {
+                    // アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
+                    List<WorkTimeSetting> listWorkTimeItem = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
+                    workTimeSettingList.addAll(listWorkTimeItem);
+                }
+				
+				if (workTimeSettingList.isEmpty())
+					throw new BusinessException("Msg_1525");
+
+				List<PredetemineTimeSetting> predetemineTimeSettingList = this.predetemineTimeSettingRepository
+						.findByCompanyID(companyID);
+				result = new ArrayList<>();
+				if(display){
+					// 先頭に「選択なし」を追加する / Add 「選択なし/không chọn」 vào đầu
+					result.add(new WorkTimeDto("", "選択なし", "", "", "", "", 0, 0, 0, 0));
+				}
+				result = getWorkTimeDtos(workTimeSettingList, predetemineTimeSettingList);
+			} else {
+				throw new BusinessException("Msg_1525");
+				
+			}
+		} else {
+			
+			result = result.stream().filter(i -> workTimeCodes.contains(i.code)  ||  i.code == "").collect(Collectors.toList());
+			
+		}
+		
+		return result; 
+	}
 
 }
