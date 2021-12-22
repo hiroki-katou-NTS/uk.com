@@ -2,7 +2,7 @@ module ksm002.b.viewmodel {
     import flat = nts.uk.util.flatArray;
     import bService = nts.uk.at.view.ksm002.b.service;
     export class ScreenModel {
-        checkBoxList: KnockoutObservableArray<CheckBoxItem> = ko.observableArray([]); 
+        checkBoxList: KnockoutObservableArray<SpecItem> = ko.observableArray([]); 
         selectedIds: KnockoutObservableArray<number> = ko.observableArray([]); 
         yearMonthPicked: KnockoutObservable<number> = ko.observable(Number(moment(new Date()).format('YYYYMM')));
         workPlaceText: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText('KSM002_61', [nts.uk.resource.getText('Com_Workplace')]));
@@ -104,13 +104,13 @@ module ksm002.b.viewmodel {
             $.when(
                 self.getAllSpecDate(), 
                 nts.uk.characteristics.restore("IndividualStartDay"),
-                bService.getCompanyStartDay(),
+                // bService.getCompanyStartDay(),
                 self.getSpecDateByIsUse(),
                 self.getCalendarWorkPlaceByCode()
             ).done((data1, data2, data3, data4, data5)=>{            
-                if(!nts.uk.util.isNullOrUndefined(data3)) { 
-                    self.firstDay(data3.startDay); 
-                }
+                // if(!nts.uk.util.isNullOrUndefined(data3)) { 
+                //     self.firstDay(data3.startDay); 
+                // }
                 if(nts.uk.util.isNullOrEmpty(self.checkBoxList())){
                     self.openDialogC();
                 }
@@ -148,19 +148,24 @@ module ksm002.b.viewmodel {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });       
                         } else {
                             nts.uk.ui.block.invisible();
-                            if(self.isUpdate()){
-                                self.updateCalendarWorkPlace().done(()=>{
-                                    nts.uk.ui.block.clear();        
-                                }).fail((res)=>{
-                                    nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
-                                }); 
-                            } else {
-                                self.insertCalendarWorkPlace().done(()=>{
-                                    nts.uk.ui.block.clear();        
-                                }).fail((res)=>{
-                                    nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
-                                }); 
-                            }    
+                            self.updateCalendarWorkPlace().done(()=>{
+                                nts.uk.ui.block.clear();        
+                            }).fail((res)=>{
+                                nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
+                            }); 
+                            // if(self.isUpdate()){
+                            //     self.updateCalendarWorkPlace().done(()=>{
+                            //         nts.uk.ui.block.clear();        
+                            //     }).fail((res)=>{
+                            //         nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
+                            //     }); 
+                            // } else {
+                            //     self.insertCalendarWorkPlace().done(()=>{
+                            //         nts.uk.ui.block.clear();        
+                            //     }).fail((res)=>{
+                            //         nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
+                            //     }); 
+                            // }    
                         }
                     }
                 }
@@ -216,7 +221,7 @@ module ksm002.b.viewmodel {
                     let sortData = _.sortBy(data, o => o.specificDateItemNo);
                     let a = []
                     sortData.forEach(item => {
-                        a.push(new CheckBoxItem(item.specificDateItemNo, item.specificName));    
+                        a.push(new SpecItem(item.specificDateItemNo, item.specificName));    
                     });   
                     self.checkBoxList(a);
                 }
@@ -405,65 +410,68 @@ module ksm002.b.viewmodel {
          * check selected item is selectable
          */
         checkItemUse(): boolean {
-            var self = this;
-            let selectedUniqueCode = [];
-            let selectableUniqueCode = _.map(self.checkBoxList(), o => o.id);
-            self.calendarPanel.optionDates().forEach(item => {
-                selectedUniqueCode = _.concat(selectedUniqueCode, self.convertNameToNumber(item.listText));  
-            });        
-            selectedUniqueCode = _.uniq(selectedUniqueCode);
-            let result = 1;
-            selectedUniqueCode.forEach(item => {
-                if(_.includes(selectableUniqueCode,item)){
-                    result*=1;   
-                } else {
-                    result*=0;    
-                }    
-            });
-            if(result == 0) return false;
-            else return true;
+            const vm = this;
+            const selectedIds: any[] = vm.checkBoxList().filter((item) => item.choose() == 1);
+            return selectedIds.length > 0;
         }
         
         /**
          * create command data for insert/update
          */
         createCommand(){
-            var self = this;
-            let a = [];
-            if(self.isUpdate()){
-                // update case
-                self.calendarPanel.optionDates().forEach(item => {
-                    let before = _.find(self.rootList, o => o.specificDate == moment(item.start).format('YYYY/MM/DD')); 
-                    if(nts.uk.util.isNullOrUndefined(before)){
-                        a.push({
-                            workPlaceId: self.currentWorkPlace().id(),
-                            specificDate: moment(item.start).format('YYYY/MM/DD'),
-                            specificDateItemNo: self.convertNameToNumber(item.listText),
-                            isUpdate: false
-                        });
-                    } else {
-                        let current = {
-                            workPlaceId: self.currentWorkPlace().id(),
-                            specificDate: moment(item.start).format('YYYY/MM/DD'),
-                            specificDateItemNo: self.convertNameToNumber(item.listText)
-                        };   
-                        if(!_.isEqual(ko.mapping.toJSON(before),ko.mapping.toJSON(current))) {
-                            current["isUpdate"] = true;
-                            a.push(current);    
-                        }
-                    }
+            const vm = this;
+            let arrCommand: any[] = [];
+            let startOfMonth = 1;
+            const endOfMonth: number = moment(vm.yearMonthPicked(), "YYYYMM").endOf('month').date();
+            const selectedIds: any[] = vm.checkBoxList().filter((item) => item.choose() == 1).map(item => item.id);
+            while(startOfMonth <= endOfMonth) {
+                let processDay: string = vm.yearMonthPicked() + _.padStart(startOfMonth + '', 2, '0');
+                processDay = moment(processDay).format('YYYY/MM/DD');
+                arrCommand.push({
+                    workPlaceId: vm.currentWorkPlace().id(),
+                    specificDate: processDay,
+                    specificDateItemNo: selectedIds
                 });
-            } else {
-                // insert case
-                self.calendarPanel.optionDates().forEach(item => {
-                    a.push({
-                        workPlaceId: self.currentWorkPlace().id(),
-                        specificDate: moment(item.start).format('YYYY/MM/DD'),
-                        specificDateItemNo: self.convertNameToNumber(item.listText)
-                    })    
-                });  
+                startOfMonth++;
             }
-            return a;
+            return arrCommand;
+
+            // var self = this;
+            // let a = [];
+            // if(self.isUpdate()){
+            //     // update case
+            //     self.calendarPanel.optionDates().forEach(item => {
+            //         let before = _.find(self.rootList, o => o.specificDate == moment(item.start).format('YYYY/MM/DD')); 
+            //         if(nts.uk.util.isNullOrUndefined(before)){
+            //             a.push({
+            //                 workPlaceId: self.currentWorkPlace().id(),
+            //                 specificDate: moment(item.start).format('YYYY/MM/DD'),
+            //                 specificDateItemNo: self.convertNameToNumber(item.listText),
+            //                 isUpdate: false
+            //             });
+            //         } else {
+            //             let current = {
+            //                 workPlaceId: self.currentWorkPlace().id(),
+            //                 specificDate: moment(item.start).format('YYYY/MM/DD'),
+            //                 specificDateItemNo: self.convertNameToNumber(item.listText)
+            //             };   
+            //             if(!_.isEqual(ko.mapping.toJSON(before),ko.mapping.toJSON(current))) {
+            //                 current["isUpdate"] = true;
+            //                 a.push(current);    
+            //             }
+            //         }
+            //     });
+            // } else {
+            //     // insert case
+            //     self.calendarPanel.optionDates().forEach(item => {
+            //         a.push({
+            //             workPlaceId: self.currentWorkPlace().id(),
+            //             specificDate: moment(item.start).format('YYYY/MM/DD'),
+            //             specificDateItemNo: self.convertNameToNumber(item.listText)
+            //         })    
+            //     });  
+            // }
+            // return a;
         }
         
         /**
@@ -550,6 +558,18 @@ module ksm002.b.viewmodel {
             this.id = id;
             this.name = name;
         } 
+    }
+
+    class SpecItem {
+        id: number;
+        name: string;
+        choose: KnockoutObservable<number>;
+        constructor(specItemNo: number, specItemName: string) {
+            var self = this;
+            self.id = specItemNo;
+            self.name = specItemName;
+            self.choose = ko.observable(0);
+        }
     }
     
     class CalendarItem {

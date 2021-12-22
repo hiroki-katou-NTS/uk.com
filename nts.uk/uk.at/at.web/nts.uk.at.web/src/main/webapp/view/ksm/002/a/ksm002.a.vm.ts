@@ -5,7 +5,7 @@ module ksm002.a.viewmodel {
         //MODE
         isNew: KnockoutObservable<boolean>;
         //PANE
-        boxItemList: KnockoutObservableArray<BoxModel>;
+        boxItemList: KnockoutObservableArray<SpecItem>;
         fullBoxItemList: KnockoutObservableArray<BoxModel>;
         selectedIds: KnockoutObservableArray<number>;
         enable: KnockoutObservable<boolean>;
@@ -58,8 +58,8 @@ module ksm002.a.viewmodel {
                     self.openKsm002EDialog(date);
                 },
                 cellClick: function(date) {
-                    let param: IData = { date: date, selectable: _.map(self.boxItemList(), 'id'), selecteds: self.selectedIds() };
-                    self.setSpecificItemToSelectedDate(param);
+                    // let param: IData = { date: date, selectable: _.map(self.boxItemList(), 'id'), selecteds: self.selectedIds() };
+                    // self.setSpecificItemToSelectedDate(param);
                 }
             });
             //Side bar tab change
@@ -98,38 +98,23 @@ module ksm002.a.viewmodel {
             let arrOptionaDates: Array<OptionalDate> = [];
 //            self.showExportBtn();
             service.getSpecificDateByIsUse(isUse).done(function(lstSpecifiDate: any) {
-                if (lstSpecifiDate.length > 0) {
-                    //getAll SpecDate
-                    self.getAllSpecDate();
-                    //Set Start Day of Company
-                    nts.uk.characteristics.restore('IndividualStartDay').done(function(data) {
-                        if (nts.uk.util.isNullOrEmpty(data)) {
-                            self.getComStartDay().done(function(startDay: number) {
-                                self.firstDay(startDay);
-                            });
-                        } else {
-                            self.firstDay(data);
-                        }
-                    });
-                    //set parameter to calendar
-                    let lstBoxCheck: Array<BoxModel> = [];
-                    _.forEach(lstSpecifiDate, function(item) {
-                        lstBoxCheck.push(new BoxModel(item.specificDateItemNo, item.specificName));
-                    });
-                    self.boxItemList(_.orderBy(lstBoxCheck, ['id'], ['asc']));
-                    //Set data to calendar
-                    self.getDataToOneMonth(self.yearMonthPicked()).done(function(arrOptionaDates) {
-                        if (arrOptionaDates.length > 0) {
-                            self.optionDates(arrOptionaDates);
-                            self.optionDates.valueHasMutated();
-                            self.isNew(false);
-                        }
-                        dfd.resolve();
-                    })
-                } else {
-                    //In Case no Data, openCDialog                    self.openKsm002CDialog();
+                //getAll SpecDate
+                self.getAllSpecDate();
+                //set parameter to calendar
+                let lstBoxCheck: Array<SpecItem> = [];
+                _.forEach(lstSpecifiDate, function(item) {
+                    lstBoxCheck.push(new SpecItem(item.specificDateItemNo, item.specificName));
+                });
+                self.boxItemList(_.orderBy(lstBoxCheck, ['id'], ['asc']));
+                //Set data to calendar
+                self.getDataToOneMonth(self.yearMonthPicked() + '').done(function(arrOptionaDates) {
+                    if (arrOptionaDates.length > 0) {
+                        self.optionDates(arrOptionaDates);
+                        self.optionDates.valueHasMutated();
+                        self.isNew(false);
+                    }
                     dfd.resolve();
-                };
+                })
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject();
@@ -160,7 +145,7 @@ module ksm002.a.viewmodel {
             let root: Array<IOptionalDate> = [];
             //Array Name to fill on  one Date
             let arrName: Array<string> = [];
-            let arrId: Array<string> = [];
+            let arrId: Array<number> = [];
             let selectedDate = moment(processMonth, self.dateFormat);
             service.getCompanySpecificDateByCompanyDateWithName(selectedDate.format(self.dateFormat)).done(function(lstComSpecDate: any) {
                 if (lstComSpecDate.length > 0) {
@@ -177,6 +162,11 @@ module ksm002.a.viewmodel {
                                 arrId.push(comItem.specificDateItemNo);
                             };
                         });
+                        self.boxItemList().filter(item => {
+                            if (arrId.indexOf(item.id) >= 0) {
+                                return item;
+                            }
+                        }).map(item => console.log(item.name));
                         arrOptionaDates.push(new OptionalDate(moment(processDay).format("YYYY-MM-DD"), arrName, arrId));
                     };
                 }
@@ -228,7 +218,8 @@ module ksm002.a.viewmodel {
         setSpecificItemToSelectedDate(param: IData) {
             var self = this;
             //get process date
-            let selectedDate: string = moment(param.date).format("YYYY-MM-DD");            //find exist item 
+            let selectedDate: string = moment(param.date).format("YYYY-MM-DD");
+            //find exist item 
             let selectedOptionalDate: OptionalDate = _.find(self.optionDates(), function(o) { return o.start == selectedDate; });
 
             if (nts.uk.util.isNullOrUndefined(selectedOptionalDate)) {
@@ -240,7 +231,8 @@ module ksm002.a.viewmodel {
                 selectedOptionalDate.listText = self.getNamefromSpecId(param.selecteds);
                 self.optionDates.push(selectedOptionalDate);
             }
-        }
+        }
+
         /**
          * Insert Calendar data
          */
@@ -271,6 +263,7 @@ module ksm002.a.viewmodel {
                         //Set dataSource to Null
                         self.optionDates([]);
                         self.isNew(true);
+                        self.start();
                     });
                     nts.uk.ui.block.clear();
                     dfd.resolve();
@@ -294,23 +287,18 @@ module ksm002.a.viewmodel {
             if (self.hasItemSpecNotUse()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });
             } else {
-                if (self.isNew()) {
-                    // INSERT
-                    self.insertCompanySpecDate(self.getInsertCommand())
-                } else {
-                    // UDPATE  
-                    service.updateComSpecificDate(self.getUpdateCommand()).done(function(res: Array<any>) {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            if(_.flattenDeep(_.map(self.optionDates(), o => o.listId)).length == 0){
-                                self.isNew(true);    
-                            };
-                            self.start();
-                            nts.uk.ui.block.clear();
-                        });
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                // UDPATE
+                service.insertComSpecificDate(self.getUpdateCommand()).done(function(res: Array<any>) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        // if(_.flattenDeep(_.map(self.optionDates(), o => o.listId)).length == 0){
+                        //     self.isNew(true);
+                        // };
+                        self.start();
+                        nts.uk.ui.block.clear();
                     });
-                }
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
                 //focus the first CheckBox
                 $(".chkBox ").find("label").eq(0).focus();
                 return dfd.promise();
@@ -320,27 +308,20 @@ module ksm002.a.viewmodel {
          * get Update Command
          */
         getUpdateCommand() {
-            var self = this;
-            let arrCommand = [];
-            self.optionDates().forEach(item => {
-                let before = _.find(self.serverSource, o => o.start == item.start);
-                if (nts.uk.util.isNullOrUndefined(before)) {
-                    arrCommand.push({
-                        specificDate: moment(item.start, 'YYYYMMDD').format(self.dateFormat),
-                        specificDateItemNo: self.getSpecIdfromName(item.listText),
-                        isUpdate: false
-                    });
-                } else {
-                    let current = {
-                        specificDate: moment(item.start, 'YYYYMMDD').format(self.dateFormat),
-                        specificDateItemNo: self.getSpecIdfromName(item.listText)
-                    };
-                    if (!_.isEqual(ko.mapping.toJSON(before), ko.mapping.toJSON(current))) {
-                        current["isUpdate"] = true;
-                        arrCommand.push(current);
-                    }
-                }
-            });
+            const vm = this;
+            let arrCommand: any[] = [];
+            let startOfMonth = 1;
+            const endOfMonth: number = moment(vm.yearMonthPicked(), "YYYYMM").endOf('month').date();
+            const selectedIds: any[] = vm.boxItemList().filter((item) => item.choose() == 1).map(item => item.id);
+            while(startOfMonth <= endOfMonth) {
+                let processDay: string = vm.yearMonthPicked() + _.padStart(startOfMonth + '', 2, '0');
+                processDay = moment(processDay).format(vm.dateFormat);
+                arrCommand.push({
+                    specificDate: processDay,
+                    specificDateNo: selectedIds
+                });
+                startOfMonth++;
+            }
             return arrCommand;
         }
         /**
@@ -364,18 +345,9 @@ module ksm002.a.viewmodel {
          * check spec item is Use
          */
         hasItemSpecNotUse(): boolean {
-            var self = this;
-            let allCode = [];
-            let isUseCode = _.map(self.boxItemList(), o => o.id);
-            _.forEach(self.optionDates(), function(k) {
-                allCode = _.concat(allCode, self.getSpecIdfromName(k.listText));
-            });
-            allCode = _.uniq(allCode);
-            let arrDiff: Array<string> = _.difference(allCode, isUseCode);
-            if (arrDiff.length > 0)
-                return true;
-            else
-                return false;
+            const vm = this;
+            const selectedIds: any[] = vm.boxItemList().filter((item) => item.choose() == 1);
+            return selectedIds.length == 0;
         }
 
         /**
@@ -506,12 +478,14 @@ module ksm002.a.viewmodel {
     }
 
     class SpecItem {
-        specItemNo: number;
-        specItemName: string;
-        constructor(specItemNo: string, specItemName: string) {
+        id: number;
+        name: string;
+        choose: KnockoutObservable<number>;
+        constructor(specItemNo: number, specItemName: string) {
             var self = this;
-            self.specItemNo = specItemNo;
-            self.specItemName = specItemName;
+            self.id = specItemNo;
+            self.name = specItemName;
+            self.choose = ko.observable(0);
         }
     }
 

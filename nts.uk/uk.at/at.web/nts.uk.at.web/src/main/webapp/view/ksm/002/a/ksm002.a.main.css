@@ -46,3 +46,17 @@
 #sidebar-area {
 	min-width: 60px;
 }
+
+#screenA {
+	height: calc(100vh - 190px);
+}
+
+#screenB {
+	height: calc(100vh - 165px);
+}
+
+/* .spec-item label span {
+	width: 10px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+} */

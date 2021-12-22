@@ -28,7 +28,7 @@ module ksm002.e{
                     _.each(lstData, item => {
                         self.dataSource.push(new SpecificDateItemDto(
                                 item.specificDateItemNo, 
-                                0,
+                                param.selecteds.indexOf(item.specificDateItemNo) >= 0 || param.selecteds.indexOf(item.specificName) >= 0 ? 1 : 0,
                                 item.specificDateItemNo,
                                 item.specificName));
                         
@@ -50,7 +50,7 @@ module ksm002.e{
              */
             submitAndCloseDialog(): void {
                 var self = this;
-                let selectedCodes = [];
+                let selectedCodes: any = [];
                 _.each(self.dataSource(), item => {
                     if(item.useAtr()== 1){
                         selectedCodes.push(item.specificDateItemNo());

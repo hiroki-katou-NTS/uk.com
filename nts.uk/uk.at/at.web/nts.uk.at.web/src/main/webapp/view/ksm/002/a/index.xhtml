@@ -50,13 +50,22 @@
 				<div id="screenA" class="contents-area">
 					<div class="panel panel-frame">
 						<label class="info">#{i18n.getText('KSM002_10')}</label><BR />
-						<div class="chkBox"
+						<!-- <div class="chkBox"
 							data-bind="ntsMultiCheckBox: {
 							options: boxItemList,
 							optionsValue: 'id',
 							optionsText: 'name',
 							value: selectedIds,	
 							enable: enable}">
+						</div> -->
+						<div style="width: 113%;">
+							<div style = "margin-top: 10px;" data-bind = "foreach: boxItemList">
+								<div style="width: 12%;" class = "spec-item limited-label" data-bind="ntsCheckBox: { 
+									checked: choose,
+									text: name},
+									attr:{id: 'item'+'_'+$index()}">
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="calendarContent">
@@ -96,10 +105,10 @@
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Workplace')}</span>
 					<button class="proceed" data-bind="click: submitEventHandler, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_6')}</button>
-					<button data-bind="click: openDialogC, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_7')}</button>
+					<!-- <button data-bind="click: openDialogC, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_7')}</button> -->
 					<button data-bind="click: openDialogD, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_8')}</button>
 					<button class="danger" data-bind="click: removeEventHandler, enable: Boolean(isUpdate()&#38;$root.errors.isEmpty())">#{i18n.getText('KSM002_9')}</button>
-					<button id="print-button_2" data-bind="click: opencdl028Dialog">#{i18n.getText('KSM002_97')}</button>
+					<!-- <button id="print-button_2" data-bind="click: opencdl028Dialog">#{i18n.getText('KSM002_97')}</button> -->
 				</div>
 				<div id="screenB" class="contents-area">
 					<ui:include src="../b/index.xhtml" />
