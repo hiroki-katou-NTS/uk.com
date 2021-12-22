@@ -84,7 +84,7 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 	}
 	
 	//時間代休を管理するか判断する
-	public boolean isManagedTime(RequireM7 require) {
+	public boolean isManagedTime(RequireM2 require) {
 		return this.timeVacationDigestUnit.isVacationTimeManage(require, this.isManaged);
 	}
 
@@ -157,6 +157,6 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 		return this.timeVacationDigestUnit.isVacationTimeManage(require, ManageDistinct.valueOf(isManage ? 1 : 0));
 	}
 	
-	public static interface RequireM7 extends CheckDateForManageCmpLeaveService.Require, TimeVacationDigestUnit.Require {}
-	
+	public static interface RequireM2 extends TimeVacationDigestUnit.Require {}
+	public static interface RequireM7 extends CheckDateForManageCmpLeaveService.Require, RequireM2 {}
 }

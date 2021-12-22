@@ -116,11 +116,6 @@ public class SaveCompensatoryLeaveCommand {
 		}
 
 		@Override
-		public TimeVacationDigestUnit getCompensatoryDigestiveTimeUnit() {
-			return this.command.compensatoryDigestiveTimeUnit.toDomain();
-		}
-
-		@Override
 		public List<CompensatoryOccurrenceSetting> getCompensatoryOccurrenceSetting() {
 //			return this.command.compensatoryOccurrenceSetting.stream().map(item -> {
 //				return item.toDomain();
@@ -138,6 +133,11 @@ public class SaveCompensatoryLeaveCommand {
 		public ManageDistinct getLinkingManagementATR() {
 			
 			return ManageDistinct.valueOf(this.command.linkingManagementATR);
+		}
+
+		@Override
+		public TimeVacationDigestUnit getTimeVacationDigestUnit() {
+			return this.command.compensatoryDigestiveTimeUnit.toDomain();
 		}
 	}
 }

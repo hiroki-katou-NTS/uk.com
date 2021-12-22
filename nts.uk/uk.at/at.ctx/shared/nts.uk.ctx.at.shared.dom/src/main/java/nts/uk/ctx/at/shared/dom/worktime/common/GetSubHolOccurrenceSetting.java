@@ -25,7 +25,7 @@ public class GetSubHolOccurrenceSetting {
 		//	if($代休管理設定.is not Present())
 		if (comLeavSet == null)
 			return Optional.empty();
-		if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime) && !comLeavSet.isManagedTime()) {
+		if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime) && !comLeavSet.isManagedTime(require)) {
 			return Optional.empty();
 		}
 
@@ -59,7 +59,7 @@ public class GetSubHolOccurrenceSetting {
 		return (result != null && result.isUseDivision()) ? Optional.of(result) : Optional.empty();
 	}
 
-	public static interface Require extends WorkTimeSetting.Require{
+	public static interface Require extends WorkTimeSetting.Require, CompensatoryLeaveComSetting.RequireM2 {
 
 		//WorkTimeSettingRepository.findByCode
 		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode);

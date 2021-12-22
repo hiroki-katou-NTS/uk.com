@@ -124,6 +124,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @AllArgsConstructor
 public class RequireImp implements RemainNumberTempRequireService.Require {
@@ -815,6 +816,11 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	@Override
 	public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode){
 		return Optional.ofNullable(this.compensLeaveEmSetRepo.find(companyId, employmentCode));
+	}
+
+	@Override
+	public OptionLicense getOptionLicense() {
+		return AppContexts.optionLicense();
 	}
 
 }

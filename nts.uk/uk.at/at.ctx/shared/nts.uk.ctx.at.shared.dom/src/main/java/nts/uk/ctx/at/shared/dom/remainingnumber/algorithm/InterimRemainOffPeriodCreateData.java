@@ -94,7 +94,7 @@ public class InterimRemainOffPeriodCreateData {
 					inputParam.getCid(),
 					inputParam.getSid(),
 					loopDate,
-					comHolidaySetting.getDayOffSetting().isManagedTime(),
+					comHolidaySetting.getDayOffSetting().isManagedTime(require),
 					dataCreate,
 					comHolidaySetting,
 					employmentHolidaySetting,
@@ -218,7 +218,7 @@ public class InterimRemainOffPeriodCreateData {
 		return createInterimRemainDataMng(require, cacheCarrier, createDataParam, comHolidaySetting);
 	}
 
-	public static interface RequireM4 extends RequireM1, RequireM3, InterimRemainOffDateCreateData.RequireM9 {
+	public static interface RequireM4 extends RequireM1, RequireM3, InterimRemainOffDateCreateData.RequireM9, CompensatoryLeaveComSetting.RequireM2 {
 
 		List<SharedSidPeriodDateEmploymentImport> employmentHistory(CacheCarrier cacheCarrier, List<String> sids , DatePeriod datePeriod);
 	}
