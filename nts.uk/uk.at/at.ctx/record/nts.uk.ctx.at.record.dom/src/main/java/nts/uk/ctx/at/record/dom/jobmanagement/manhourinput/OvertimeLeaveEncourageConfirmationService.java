@@ -37,52 +37,54 @@ public class OvertimeLeaveEncourageConfirmationService {
 
 		// $締め期間 = require.社員に対応する締め期間を取得する(社員ID,年月日#今日())
 		DatePeriod closingPeriod = require1.getPeriod(sId, GeneralDate.today());
-		
+
 		// $処理日リスト = 対象日リスト：filter $ >= $締め期間.開始日
-		List<GeneralDate> dates = inputDates.stream().filter(f -> f.afterOrEquals((closingPeriod.start()))).collect(Collectors.toList());
-		
-		// if $処理日リスト.isEmpty()		
-		// return List.Empty	
+		List<GeneralDate> dates = inputDates.stream().filter(f -> f.afterOrEquals((closingPeriod.start())))
+				.collect(Collectors.toList());
+
+		// if $処理日リスト.isEmpty()
+		// return List.Empty
 		if (dates.isEmpty()) {
 			return new ArrayList<>();
 		}
-		
-		// $勤務情報リスト = require.勤務情報を取得する(社員ID,$処理日リスト)	
+
+		// $勤務情報リスト = require.勤務情報を取得する(社員ID,$処理日リスト)
 		List<WorkInfoOfDailyPerformance> workInfos = require1.findByListDate(sId, dates);
-		
+
 		// $応援作業リスト = require.応援作業別勤怠時間帯を取得する(社員ID,$処理日リスト)
 		List<OuenWorkTimeSheetOfDaily> ouenTasks = require1.get(sId, dates);
-		
+
 		// $促す対象申請リスト = List.Empty
 		List<EncouragedTargetApplication> result = new ArrayList<>();
-		
+
 		// $処理日リスト：
 		dates.stream().forEach(d -> {
-			
+
 			// $対象勤務情報 = $勤務情報リスト：filter $.年月日 == $
 			WorkInfoOfDailyPerformance workInfo = workInfos.stream().filter(f -> f.getYmd().equals(d)).findAny().get();
-			
+
 			// $対象応援作業 = $応援作業リスト：filter $.年月日 == $
-			OuenWorkTimeSheetOfDaily ouenWorkTimeSheet = ouenTasks.stream().filter(f -> f.getYmd().equals(d)).findAny().get();
-			
+			OuenWorkTimeSheetOfDaily ouenWorkTimeSheet = ouenTasks.stream().filter(f -> f.getYmd().equals(d)).findAny()
+					.get();
+
 			// if [prv-1] 申請を促す必要か($対象勤務情報,$対象応援作業)
 			if (isNeedToEncourageApp(workInfo, ouenWorkTimeSheet)) {
-				
+
 				// $勤務種類 = $対象勤務情報.勤務情報.勤務情報.勤務種類コード
 				WorkTypeCode workTypeCode = workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode();
-				
+
 				// $申請種類 = require.勤務種類から促す申請を判断する(require,会社ID,社員ID,$,$勤務種類)
 				Optional<ApplicationTypeShare> appTypeOpt = require1.toDecide(cId, sId, d, workTypeCode);
-				
-				//if $申請種類.isPresent
-					if (appTypeOpt.isPresent()) {
-						
-						// $促す対象申請リスト.add(促す対象申請#促す対象申請($,$申請種類)
-						result.add(new EncouragedTargetApplication(d, appTypeOpt.get()));
-					}
+
+				// if $申請種類.isPresent
+				if (appTypeOpt.isPresent()) {
+
+					// $促す対象申請リスト.add(促す対象申請#促す対象申請($,$申請種類)
+					result.add(new EncouragedTargetApplication(d, appTypeOpt.get()));
+				}
 			}
 		});
-		
+
 		return result;
 	}
 
@@ -93,17 +95,20 @@ public class OvertimeLeaveEncourageConfirmationService {
 	 * @param timesheet 日別実績の応援作業別勤怠時間帯
 	 * @return boolean
 	 */
-	private static boolean isNeedToEncourageApp(WorkInfoOfDailyPerformance workInfo, OuenWorkTimeSheetOfDaily timesheet) {
+	private static boolean isNeedToEncourageApp(WorkInfoOfDailyPerformance workInfo,
+			OuenWorkTimeSheetOfDaily timesheet) {
 
 		// $基準開始 = 日別実績の勤務情報.始業終業時間帯：filter $.勤務NO == 1
 		// map $.出勤
 		TimeWithDayAttr attendance = workInfo.getWorkInformation().getScheduleTimeSheets().stream()
-				.filter(f -> f.getWorkNo().v() == 1).map(m -> m.getAttendance()).findAny().orElse(null);
+				.filter(f -> f.getWorkNo().v() == 1 && f.getAttendance() != null).map(m -> m.getAttendance()).findAny()
+				.orElse(null);
 
 		// $基準終了 = 日別実績の勤務情報.始業終業時間帯：filter $.勤務NO == 1
 		// map $.退勤
 		TimeWithDayAttr leaveWork = workInfo.getWorkInformation().getScheduleTimeSheets().stream()
-				.filter(f -> f.getWorkNo().v() == 1).map(m -> m.getLeaveWork()).findAny().orElse(null);
+				.filter(f -> f.getWorkNo().v() == 1 && f.getLeaveWork() != null).map(m -> m.getLeaveWork()).findAny()
+				.orElse(null);
 
 		// $比較開始 = 日別実績の応援作業別勤怠時間帯.応援時間帯： sort $.時間帯.開始.時刻 ASC
 		// map $.時間帯.開始.時刻
@@ -126,7 +131,7 @@ public class OvertimeLeaveEncourageConfirmationService {
 		// OR $基準開始 > $比較開始 OR $基準終了 < $比較終了
 		// return true
 		if ((attendance == null && start.isPresent()) || (leaveWork == null && end.isPresent())
-				|| (attendance.v() > start.get().v() || leaveWork.v() < end.get().v())) {
+				|| (attendance.v() > start.get().v()) || (leaveWork.v() < end.get().v())) {
 			return true;
 		}
 
