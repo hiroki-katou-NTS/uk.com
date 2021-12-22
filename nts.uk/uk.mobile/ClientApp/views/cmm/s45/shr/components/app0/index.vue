@@ -9,7 +9,7 @@
     <div v-if="c3">
         <!-- B1_2 -->
         <div class="row mt-1 mb-1">
-            <div class="col-12 pl-3 textSize">{{"KAFS05_64" | i18n}}</div>
+            <div class="col-12 pl-3 uk-text-dark-gray">{{"KAFS05_64" | i18n}}</div>
         </div>
         <!-- B1_3 -->
         <div class="row mt-1 mb-1">
@@ -23,7 +23,7 @@
 
         <!-- B1_4 -->
         <div class="row mt-1 mb-1">
-            <div class="col-12 pl-3 textSize"> {{"KAFS05_65" | i18n}} </div>
+            <div class="col-12 pl-3 uk-text-dark-gray"> {{"KAFS05_65" | i18n}} </div>
         </div>
         <!-- B1_5 -->
         <div class="row mt-1 mb-1">
@@ -94,7 +94,7 @@
         >
             <div class="row mt-1 mb-1">
                 <!-- B9_2 -->
-                <div class="col-4 textSize"> {{ "KAFS05_91" | i18n([index + 1]) }} </div>
+                <div class="col-4 uk-text-dark-gray"> {{ "KAFS05_91" | i18n([index + 1]) }} </div>
                 <!-- B9_3 -->
                 <div class="col-8 row">
                     <div class="col-1.5 pl-3 pr-1 text-left">
@@ -109,11 +109,11 @@
                 </div>
             </div>
             <!-- B9_4 -->
-            <div class="row mt-1 mb-1 ml-3" v-if="comboReasonDisp">
+            <div class="row mt-1 mb-1 ml-3" v-if="comboReasonDisp && !!item.fixedReasonCode">
                 {{comboReason(item.fixedReasonCode)}}
             </div>
             <!-- B9_4 -->
-            <div class="row mt-1 mb-1 ml-3" v-if="textReasonDisp">
+            <div class="row mt-1 mb-1 ml-3" v-if="textReasonDisp && !!item.appReason">
                 {{item.appReason}}
             </div>
         </div>
@@ -134,7 +134,7 @@
         >
             <!-- B4_2 -->
             <div class="row mt-1 mb-1">
-                <div class="col-12 textSize"> {{item.title}} </div>
+                <div class="col-12 uk-text-dark-gray"> {{item.title}} </div>
             </div>
             <!-- B4_3 -->
             <div class="row mt-1 mb-1">
@@ -164,7 +164,7 @@
     >   
         <div v-if="c4" class="row mt-1 mb-1">
             <!-- B5_2_1 -->
-            <div class="col pl-4 textSize">
+            <div class="col pl-4 uk-text-dark-gray">
                 {{item.title}}
             </div>
             <!-- B5_2_2 -->
@@ -207,7 +207,7 @@
       >  
         <div class="row mt-1 mb-1">
             <!-- B6_2_1 -->
-            <div class="col pl-4 textSize">
+            <div class="col pl-4 uk-text-dark-gray">
                 {{item.title}}
             </div>
             <!-- B6_2_2 -->

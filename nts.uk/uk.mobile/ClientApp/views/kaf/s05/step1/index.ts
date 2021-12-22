@@ -285,7 +285,7 @@ export class KafS05Step1Component extends Vue {
                         frameNo: item.frameNo,
                         valueHours: {start: item.startTime, end: item.endTime},
                         fixedReasonCode: item.fixedReasonCode,
-                        appReason: item.appReason
+                        appReason: item.appReason || ''
                     }));
                 }
 
@@ -363,7 +363,7 @@ export class KafS05Step1Component extends Vue {
                 frameNo: item.frameNo,
                 valueHours: {start: item.startTime, end: item.endTime},
                 fixedReasonCode: item.fixedReasonCode,
-                appReason: item.appReason
+                appReason: item.appReason || ''
             }));
         }
 

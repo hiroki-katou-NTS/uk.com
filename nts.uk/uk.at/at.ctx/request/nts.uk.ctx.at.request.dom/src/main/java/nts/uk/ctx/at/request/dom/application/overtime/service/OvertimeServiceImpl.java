@@ -1544,6 +1544,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 			);
 			displayInfoOverTime.setCalculationResultOp(temp.getCalculationResultOp());
 			displayInfoOverTime.setWorkdayoffFrames(temp.getWorkdayoffFrames());
+			displayInfoOverTime.setCalculatedWorkTimes(temp.getCalculatedWorkTimes());
+			displayInfoOverTime.setCalculatedBreakTimes(temp.getCalculatedBreakTimes());
 		}
 		
 		return displayInfoOverTime;

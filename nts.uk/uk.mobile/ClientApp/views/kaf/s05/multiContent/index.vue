@@ -8,7 +8,7 @@
         </div>
         <div class="card-body" v-if="dispReason">
             <div class="mb-1">
-                <span class="small-header">{{'KAFS00_93' | i18n}}</span>
+                <span class="small-header">{{'KAFS00_16' | i18n}}</span>
             </div>
             <div v-if="displayFixedReason">
                 <nts-dropdown v-model="params.fixedReasonCode">

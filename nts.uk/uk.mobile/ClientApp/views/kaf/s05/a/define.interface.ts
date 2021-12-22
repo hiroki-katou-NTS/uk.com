@@ -23,6 +23,8 @@ export interface DisplayInfoOverTime {
     infoWithDateApplicationOp?: InfoWithDateApplication;
     calculatedFlag: CalculatedFlag;
     latestMultiOvertimeApp: any;
+    calculatedBreakTimes: Array<any>;
+    calculatedWorkTimes: Array<any>;
 }
 export interface WorkdayoffFrame {
     workdayoffFrNo: number;

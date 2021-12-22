@@ -828,6 +828,8 @@ export class KafS05Component extends KafS00ShrComponent {
                     vm.model.displayInfoOverTime.calculationResultOp = res.data.calculationResultOp;
                     vm.model.displayInfoOverTime.workdayoffFrames = res.data.workdayoffFrames;
                     vm.model.displayInfoOverTime.calculatedFlag = res.data.calculatedFlag;
+                    vm.model.displayInfoOverTime.calculatedBreakTimes = res.data.calculatedBreakTimes;
+                    vm.model.displayInfoOverTime.calculatedWorkTimes = res.data.calculatedWorkTimes;
                     let step2 = vm.$refs.step2 as KafS05Step2Component;
                     // 計算後の「残業申請の表示情報．計算結果．事前申請・実績の超過状態．実績状態」 = 超過エラー
                     let c1 = _.get(vm.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.achivementStatus') == ExcessState.EXCESS_ERROR;
@@ -856,6 +858,30 @@ export class KafS05Component extends KafS00ShrComponent {
                     });
                 });
         } else if (vm.numb == 2 && value == 1) { // step 2 -> step 1
+            let step1 = vm.$refs.step1 as KafS05Step1Component;
+            if (!_.isEmpty(vm.model.displayInfoOverTime.calculatedWorkTimes)) {
+                let workHours1 = {} as any;
+                let workHours2 = {} as any;
+                if (vm.model.displayInfoOverTime.calculatedWorkTimes.length > 0) {
+                    workHours1.start = vm.model.displayInfoOverTime.calculatedWorkTimes[0].timeZone.startTime;
+                    workHours1.end = vm.model.displayInfoOverTime.calculatedWorkTimes[0].timeZone.endTime;
+                }
+                if (vm.model.displayInfoOverTime.calculatedWorkTimes.length > 1) {
+                    workHours2.start = vm.model.displayInfoOverTime.calculatedWorkTimes[1].timeZone.startTime;
+                    workHours2.end = vm.model.displayInfoOverTime.calculatedWorkTimes[1].timeZone.endTime;
+                }
+                step1.workHours1 = (_.isNumber(workHours1.start) || _.isNumber(workHours1.end)) ?  workHours1 : null;
+                step1.workHours2 = (_.isNumber(workHours2.start) || _.isNumber(workHours2.end)) ?  workHours2 : null;
+            }
+            if (!_.isEmpty(vm.model.displayInfoOverTime.calculatedBreakTimes)) {
+                step1.createBreakTime(_.map(vm.model.displayInfoOverTime.calculatedBreakTimes, (x: any) => {
+                    return {
+                        start: x.timeZone.startTime,
+                        end: x.timeZone.endTime
+                    };
+                }));
+            }
+
             let step2 = vm.$refs.step2 as KafS05Step2Component;
             step2.overTimes = [];
             step2.holidayTimes = [];
