@@ -68,7 +68,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ScreenQueryAggregatePersonal {
 
 	@Inject 

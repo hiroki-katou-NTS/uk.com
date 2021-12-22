@@ -30,7 +30,6 @@ import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.ScreenQueryP
 
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ScreenQueryAggregatedInformation {
 
 	@Inject
