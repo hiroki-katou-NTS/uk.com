@@ -726,12 +726,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 					subSqlEtart.append("CONCAT(SUBSTRING(CAST(");
 					subSqlStart.append(startDateItemName);
 					subSqlEtart.append(endDateItemName);
-					subSqlStart.append(" as nchar), 0, 5),'-',SUBSTRING(CAST(");
+					subSqlStart.append(" as varchar), 0, 5),'-',SUBSTRING(CAST(");
 					subSqlStart.append(startDateItemName);
-					subSqlStart.append(" as nchar), 5,7),'-','01')");
-					subSqlEtart.append(" as nchar), 0, 5),'-',SUBSTRING(CAST(");
+					subSqlStart.append(" as varchar), 5,7),'-','01')");
+					subSqlEtart.append(" as varchar), 0, 5),'-',SUBSTRING(CAST(");
 					subSqlEtart.append(endDateItemName);
-					subSqlEtart.append(" as nchar), 5,7),'-','01')");
+					subSqlEtart.append(" as varchar), 5,7),'-','01')");
 					createWhereCondition(sql, subSqlStart.toString(), " >= ", START_DATE_PARAM);
 					createWhereCondition(sql, subSqlEtart.toString(), " <= ", END_DATE_PARAM);
 
@@ -752,9 +752,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 					//	  DATEADD(MONTH, DATEDIFF(MONTH, 0, <dateField>), 0)
 					subSql.append("CONCAT(SUBSTRING(CAST(");
 					subSql.append(startDateItemName);
-					subSql.append(" as nchar), 0, 5),'-',SUBSTRING(CAST(");
+					subSql.append(" as varchar), 0, 5),'-',SUBSTRING(CAST(");
 					subSql.append(startDateItemName);
-					subSql.append(" as nchar), 5,7),'-','01')");
+					subSql.append(" as varchar), 5,7),'-','01')");
 					createWhereCondition(sql, subSql.toString(), " >= ", START_DATE_PARAM);
 					createWhereCondition(sql, subSql.toString(), " <= ", END_DATE_PARAM);
 
