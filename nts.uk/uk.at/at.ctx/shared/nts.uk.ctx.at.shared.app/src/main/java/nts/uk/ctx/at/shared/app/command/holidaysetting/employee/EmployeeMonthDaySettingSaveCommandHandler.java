@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.shared.app.command.holidaysetting.employee;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -12,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.Employe
  * The Class EmployeeMonthDaySettingSaveCommandHandler.
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class EmployeeMonthDaySettingSaveCommandHandler extends CommandHandler<EmployeeMonthDaySettingSaveCommand> {
 	
 	/** The repository. */

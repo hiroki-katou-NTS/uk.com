@@ -2090,7 +2090,7 @@ module nts.uk.com.view.ccg034.d {
           break;
         case MenuPartType.PART_ATTACHMENT:
           const partDataAttachmentModel: PartDataAttachmentModel = (partData as PartDataAttachmentModel);
-          partDataMenuModel.originalFileId = partDataMenuModel.fileId;
+          partDataAttachmentModel.originalFileId = partDataAttachmentModel.fileId;
           const fileLink: string = `${location.origin}/nts.uk.com.web/webapi/shr/infra/file/storage/get/${partDataAttachmentModel.fileId}`;
           const $partAttachmentHTML: JQuery = $('<a>', { 'href': fileLink, 'target': '_blank' })
             .text(partDataAttachmentModel.linkContent || partDataAttachmentModel.fileName)
@@ -2120,7 +2120,7 @@ module nts.uk.com.view.ccg034.d {
           break;
         case MenuPartType.PART_IMAGE:
           const partDataImageModel: PartDataImageModel = (partData as PartDataImageModel);
-          partDataMenuModel.originalFileId = partDataMenuModel.fileId;
+          partDataImageModel.originalFileId = partDataImageModel.fileId;
           const $partImageHTML: JQuery = $('<img>', {
             'src': partDataImageModel.isFixed === 0
               ? partDataImageModel.fileName
