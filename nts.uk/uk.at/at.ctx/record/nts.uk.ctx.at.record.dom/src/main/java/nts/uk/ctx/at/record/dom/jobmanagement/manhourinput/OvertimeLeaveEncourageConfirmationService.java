@@ -6,14 +6,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ws.rs.core.Application;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -34,7 +32,7 @@ public class OvertimeLeaveEncourageConfirmationService {
 	 * @param inputDates 年月日
 	 * @return List<促す対象申請>
 	 */
-	public static List<EncouragedTargetApplication> check(Require1 require1, Require2 require2, String cId, String sId,
+	public static List<EncouragedTargetApplication> check(Require1 require1, String cId, String sId,
 			List<GeneralDate> inputDates) {
 
 		// $締め期間 = require.社員に対応する締め期間を取得する(社員ID,年月日#今日())
@@ -74,7 +72,7 @@ public class OvertimeLeaveEncourageConfirmationService {
 				WorkTypeCode workTypeCode = workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode();
 				
 				// $申請種類 = require.勤務種類から促す申請を判断する(require,会社ID,社員ID,$,$勤務種類)
-				Optional<ApplicationTypeShare> appTypeOpt = require1.toDecide(require2, cId, sId, d, workTypeCode);
+				Optional<ApplicationTypeShare> appTypeOpt = require1.toDecide(cId, sId, d, workTypeCode);
 				
 				//if $申請種類.isPresent
 					if (appTypeOpt.isPresent()) {
@@ -151,16 +149,6 @@ public class OvertimeLeaveEncourageConfirmationService {
 
 		// [R-4] 勤務種類から促す申請を判断する
 		// 勤務種類から促す申請を判断するAdapter.判断する(require,会社ID,社員ID,申請日,勤務種類コード)
-		Optional<ApplicationTypeShare> toDecide(Require2 require2, String cId, String sId, GeneralDate date, WorkTypeCode workTypeCode);
-	}
-	
-
-	// ■Require
-	public static interface Require2 {
-		// [R-1] 勤務種類を取得する
-		Optional<WorkType> findByPK(String companyId, String workTypeCd);
-
-		// [R-2] 申請を取得する
-		List<Application> getAllApplicationByAppTypeAndPrePostAtr(String employeeID, int appType, GeneralDate appDate, int prePostAtr);
+		Optional<ApplicationTypeShare> toDecide(String cId, String sId, GeneralDate date, WorkTypeCode workTypeCode);
 	}
 }

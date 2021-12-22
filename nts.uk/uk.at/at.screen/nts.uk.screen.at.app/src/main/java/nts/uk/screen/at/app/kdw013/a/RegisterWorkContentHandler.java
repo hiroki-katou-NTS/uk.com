@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.kdw013.a;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,13 +11,13 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourinput.EncouragedTargetApplication;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.kdw013.a.deletetimezoneattendance.DeleteTimeZoneAttendanceCommand;
 import nts.uk.screen.at.app.kdw013.a.deletetimezoneattendance.DeleteTimeZoneAttendanceCommandHandler;
 import nts.uk.screen.at.app.kdw013.a.deletetimezoneattendance.RegisterDeleteTimeZoneAttendanceCommandHandler;
-import nts.uk.screen.at.app.kdw013.command.RegisterTaskTimeGroupCommand;
 import nts.uk.screen.at.app.kdw013.command.RegisterTaskTimeGroupCommandHandler;
 import nts.uk.screen.at.app.kdw013.query.CreateDpItemQuery;
 
@@ -106,11 +107,11 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 		
 			
 		// 7.残業申請・休出時間申請の対象時間を取得する
-		// comment lai do update method getTargetTime.get
 
-		//List<OvertimeLeaveTimeDto> ots = this.getTargetTime.get(command.getEmployeeId(), command.getChangedDates());
+		List<EncouragedTargetApplication> ots = this.getTargetTime.get(command.getEmployeeId(), command.getChangedDates());
 
-		//result.setLstOvertimeLeaveTime(ots);
+		result.setLstOvertimeLeaveTime(
+				ots.stream().map(x -> EncouragedTargetApplicationDto.fromDomain(x)).collect(Collectors.toList()));
 		
 		// 8. List<残業休出時間>.isPresent check dưới client
 
