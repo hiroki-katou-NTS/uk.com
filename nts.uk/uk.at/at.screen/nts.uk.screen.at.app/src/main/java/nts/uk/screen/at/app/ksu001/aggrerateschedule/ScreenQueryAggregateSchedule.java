@@ -35,7 +35,6 @@ import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.WorkInfo;
  */
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ScreenQueryAggregateSchedule {
 
 	@Inject 
