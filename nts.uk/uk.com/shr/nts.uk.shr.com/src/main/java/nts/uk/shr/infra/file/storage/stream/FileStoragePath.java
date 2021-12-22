@@ -60,15 +60,11 @@ public class FileStoragePath {
         return path;
     }
 
-    private final Map<String, Path> pathsByTenant = new ConcurrentHashMap<>();
-
     private Path getPathByTenant(String tenantCode) {
-
-        return pathsByTenant.computeIfAbsent(
-                tenantCode,
-                tc -> TenantLocatorClient.getFileStorage(tc)
-                        .map(f -> f.getStoragePath())
-                        .map(p -> new File(p).toPath())
-                        .orElseThrow(() -> FatalLog.writeThenException(this, "テナント " + tc + " のFileStorageが設定されていません。")));
+        return TenantLocatorClient.getFileStorage(tenantCode)
+                .map(f -> f.getStoragePath())
+                .map(p -> new File(p).toPath())
+                .orElseThrow(() -> FatalLog.writeThenException(
+                        this, "テナント " + tenantCode + " のFileStorageが設定されていません。"));
     }
 }
