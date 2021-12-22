@@ -299,12 +299,13 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             Cells cells = worksheet.getCells();
             StringBuilder printArea = new StringBuilder();
             printArea.append("A0:");
-            int startIndex = 3;
+            int startIndex = 0;
             printHeadData(cells, exportData);
             List<TotalOrderInfoDto> dataRaw = orderInfoDto.getTotalOrderInfoDtoList();
             Map<GeneralDate, List<TotalOrderInfoDto>> map = dataRaw.stream()
                     .collect(Collectors.groupingBy(TotalOrderInfoDto::getReservationDate));
             List<TotalOrderInfoDto> dataPrint = handleDataPrint(map);
+            int page = 0;
             for (TotalOrderInfoDto dataRow : dataPrint)
                 startIndex = handleBodyTotalFormat(worksheet, dataRow, startIndex, cells, tempSheet);
 
@@ -398,14 +399,18 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
 
     private int handleBodyTotalFormat(Worksheet worksheet, TotalOrderInfoDto dataRow, int startIndex, Cells cells,
                                       Worksheet template) {
+    	//copy Header
+        try {
+			cells.copyRows(cells, 0, startIndex, 2);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        copyRowFromTemplateSheet(cells, template, 0, startIndex + 4);
         int total = 0;
         GeneralDate start = dataRow.getReservationDate();
         String timezone = dataRow.getClosedName();
-        startIndex = setRowReservationDate(cells, template, startIndex, 2, start.toString("yyyy/MM/dd (E)") + " " + timezone);
+        startIndex = setRowReservationDate(cells, template, startIndex+3, 2, start.toString("yyyy/MM/dd (E)") + " " + timezone);
         double height = cells.getRowHeight(0);
-
-        //copy Header
-        copyRowFromTemplateSheet(cells,template,0,startIndex - 1);
 
         cells.get(startIndex - 1, 3).setValue(TOTAL_ORDINAL);
         cells.get(startIndex - 1, 5).setValue(TOTAL_BENTO_NAME);
@@ -414,7 +419,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
 
         if (dataRow.getBentoTotalDto().size() == 0){
             //copy Footer
-            copyRowFromTemplateSheet(cells,template,3,startIndex + 1);
+            copyRowFromTemplateSheet(cells,template,3,startIndex - 1);
 
             cells.get(startIndex + dataRow.getBentoTotalDto().size(), 5).setValue(TOTAL_LABEL);
             startIndex += 4;
@@ -433,7 +438,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         startIndex += 4 - 1 ;
         // page break
         breakPage("J", startIndex - 1, worksheet);
-        return startIndex;
+        return startIndex-2;
     }
 
     private int setBodyDataTotalFormat(Cells cells, int startIndex, int index, BentoTotalDto bentoTotalDto, double height, Worksheet template) {
