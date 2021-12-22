@@ -98,12 +98,6 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
 
             for (int i = 0, infoRelatedWkpGroupsSize = infoRelatedWkpGroups.size(); i < infoRelatedWkpGroupsSize; i++) {
                 DisplayInfoRelatedToWorkplaceGroupDto wkpGroupInfo = infoRelatedWkpGroups.get(i);
-//                if (i > 0) {
-//                    // Add new worksheet into target worksheet
-//                    int sheetIndex = worksheets.add();
-//                    // Copy the first sheet of the template into newly created sheet of target worksheet
-//                    worksheets.get(sheetIndex).copy(worksheetTemplate);
-//                }
 
                 Worksheet worksheet = worksheets.get(i);
                 worksheet.setName(wkpGroupInfo.getWkpGroupCode() + "　" + wkpGroupInfo.getWkpGroupName());
@@ -229,7 +223,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
 
         // Prepare data
         val wkpGroupInfoOpt = dataSource.getInfoRelatedWkpGroups().stream().filter(x -> x.getWkpGroupId().equals(wkpGroupId)).findFirst();
-        if (!wkpGroupInfoOpt.isPresent() || wkpGroupInfoOpt.get().getForm9OutputEmpInfos().isEmpty()) return;
+
         val dateList = new DatePeriod(query.getStartDate(), query.getEndDate()).datesBetween();
         val timeRoundingSetting = dataSource.getDetailOutputSetting().getTimeRoundingSetting();
         boolean isAttributeBlankIfZero = dataSource.getDetailOutputSetting().isAllZeroIsAttributeBlank();
@@ -258,7 +252,10 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
 
         if (columnC11.isPresent()) {
             val cellIndexC11 = this.getCellIndex(columnC11.get().v() + rowC1);
-            cells.clearContents(rowC1, cellIndexC11.getColumnIndex(), rowC1, cellIndexC11.getColumnIndex());
+            cells.clearContents(rowC1 - 1,
+                    cellIndexC11.getColumnIndex(),
+                    ((maxEmpNursing * 3) + rowC1 - 1) - 1,
+                    cellIndexC11.getColumnIndex());
         }
 
         // Clear content left
@@ -266,7 +263,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
             val cellIndexStart = this.getCellIndex(columnC12.get().v() + rowC1);
             val cellIndexEnd = this.getCellIndex(columnC18.get().v() + rowC1);
             cells.clearContents(
-                    rowC1,
+                    rowC1 - 1,
                     cellIndexStart.getColumnIndex(),
                     ((maxEmpNursing * 3) + rowC1 - 1) - 1,
                     cellIndexEnd.getColumnIndex()
@@ -277,7 +274,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
         if (columnStartC2 != null) {
             val cell = this.getCellIndex(columnStartC2 + rowC1);
             int columnStart = cell.getColumnIndex();
-            cells.clearContents(rowC1,
+            cells.clearContents(rowC1 - 1,
                     columnStart,
                     ((maxEmpNursing * 3) + rowC1 - 1) - 1,
                     cells.getMaxColumn());
@@ -341,7 +338,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                 }
             }
 
-            this.printDataOfEmpByDates(cells, columnStartC2 + rowC1, dateList, medicalTimeOfEmpMap, query.getColorSetting(), timeRoundingSetting, maxEmpNursing);
+            this.printDataOfEmpByDates(cells, columnStartC2 + rowC1, dateList, medicalTimeOfEmpMap, query.getColorSetting(), timeRoundingSetting);
 
             rowC1 += 3;
         }
@@ -372,7 +369,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
             val cellIndexStart = this.getCellIndex(columnE11.get().v() + rowC1);
             val cellIndexEnd = this.getCellIndex(columnE18.get().v() + rowC1);
             cells.clearContents(
-                    rowE1,
+                    rowE1 - 1,
                     cellIndexStart.getColumnIndex(),
                     ((maxEmpNursingAide * 3) + rowE1 - 1) - 1,
                     cellIndexEnd.getColumnIndex()
@@ -383,7 +380,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
         if (columnStartE2 != null) {
             val cell = this.getCellIndex(columnStartE2 + rowE1);
             int columnStart = cell.getColumnIndex();
-            cells.clearContents(rowE1,
+            cells.clearContents(rowE1 - 1,
                     columnStart,
                     ((maxEmpNursingAide * 3) + rowE1 - 1) - 1,
                     cells.getMaxColumn());
@@ -446,14 +443,14 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                 }
             }
 
-            this.printDataOfEmpByDates(cells, columnStartE2 + rowE1, dateList, medicalTimeOfEmpMap, query.getColorSetting(), timeRoundingSetting, maxEmpNursingAide);
+            this.printDataOfEmpByDates(cells, columnStartE2 + rowE1, dateList, medicalTimeOfEmpMap, query.getColorSetting(), timeRoundingSetting);
 
             rowE1 += 3;
         }
     }
 
     private void printDataOfEmpByDates(Cells cells, String cellName, List<GeneralDate> dateList, Map<GeneralDate, MedicalTimeOfEmployee> medicalTimeOfEmpMap,
-                                       Form9ColorSettingsDTO colorSetting, Form9TimeRoundingSetting roundingSetting, int maxEmployee) {
+                                       Form9ColorSettingsDTO colorSetting, Form9TimeRoundingSetting roundingSetting) {
         val cell = this.getCellIndex(cellName);
         int columnStart = cell.getColumnIndex();
 
