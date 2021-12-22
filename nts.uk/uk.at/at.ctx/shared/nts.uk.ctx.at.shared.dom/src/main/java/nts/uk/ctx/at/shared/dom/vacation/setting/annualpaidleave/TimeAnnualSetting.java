@@ -17,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit.Require;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays;
 
 /**
@@ -79,15 +78,14 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     /**
      * [C-0]
      */
-    public TimeAnnualSetting(ManageDistinct timeManageType, TimeDigestiveUnit timeUnit,
+    public TimeAnnualSetting(ManageDistinct timeManageType, TimeVacationDigestUnit timeVacationDigestUnit,
 			TimeAnnualMaxDay maxYearDayLeave, TimeAnnualRoundProcesCla roundProcessClassific,
 			TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay) {
 		super();
-		this.timeManageType = timeManageType;
-		this.timeUnit = timeUnit;
 		this.maxYearDayLeave = maxYearDayLeave;
 		this.roundProcessClassific = roundProcessClassific;
 		this.timeAnnualLeaveTimeDay = timeAnnualLeaveTimeDay;
+		this.timeVacationDigestUnit = timeVacationDigestUnit;
 	}
     
     /**
@@ -113,8 +111,8 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     /**
      * [3] 利用できない日次の勤怠項目を取得する
      */
-    public List<Integer> getDailyAttendItemsNotAvailable(ManageDistinct distinct){
-    	if (distinct == ManageDistinct.YES) { // nhờ bên NWS update lại hộ mình khi sửa theo tài liệu mới. xin cảm ơn.
+    public List<Integer> getDailyAttendItemsNotAvailable(Require require, ManageDistinct distinct){
+    	if (this.isManageTimeAnnualLeave(require, distinct)) {
     		return this.getDailyAttdItemsCorrespondAnnualLeave();
     	}
     	return new ArrayList<>();
@@ -123,13 +121,14 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     /**
      * [4] 利用できない月次の勤怠項目を取得する
      */
-    public List<Integer> getMonthlyAttendItemsNotAvailable(ManageDistinct distinct){
+    public List<Integer> getMonthlyAttendItemsNotAvailable(Require require, ManageDistinct distinct) {
     	List<Integer> timeAnnualLeaveItems = new ArrayList<>();
-    	if (distinct == ManageDistinct.YES) { // nhờ bên NWS update lại hộ mình khi sửa theo tài liệu mới. xin cảm ơn.
+    	if (this.isManageTimeAnnualLeave(require, distinct)) {
     		// $時間年休項目
     		timeAnnualLeaveItems.addAll(this.getAttdItemsDoNotIncludeMaximumNumberDays());
     	}
     	
+    	ManageDistinct timeManageType = this.isManageTimeAnnualLeave(require, distinct) ? ManageDistinct.YES : ManageDistinct.NO;
     	// $上限項目
     	List<Integer> upperlimitItems = maxYearDayLeave.getMonthAttendItemsNotAvailable(distinct, timeManageType);
     	timeAnnualLeaveItems.addAll(upperlimitItems);
@@ -140,15 +139,8 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     /**
      * [5] 時間年休を管理するか
      */
-    public boolean isManageTimeAnnualLeave(ManageDistinct distinct) {
-    	return distinct == ManageDistinct.YES && timeManageType == ManageDistinct.YES;
-    }
-    
-    /**
-     * [prv-1] 上限日数を含まない時間年休に対応する月次の勤怠項目を取得する
-     */
-    private List<Integer> getAttdItemsDoNotIncludeMaximumNumberDays(){
-		return Arrays.asList(1424,1425,1426,1429,1430,1431,1861,1862);
+    public boolean isManageTimeAnnualLeave(Require require, ManageDistinct distinct) {
+    	return this.timeVacationDigestUnit.isVacationTimeManage(require, distinct);
     }
     
     /**
@@ -168,4 +160,13 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     public boolean checkDigestUnits(Require require, AttendanceTime time, ManageDistinct manage) {
     	return this.timeVacationDigestUnit.checkDigestUnit(require, time, manage);
     }
+    
+    /**
+     * [prv-1] 上限日数を含まない時間年休に対応する月次の勤怠項目を取得する
+     */
+    private List<Integer> getAttdItemsDoNotIncludeMaximumNumberDays(){
+		return Arrays.asList(1424,1425,1426,1429,1430,1431,1861,1862);
+    }
+    
+    public static interface Require extends TimeVacationDigestUnit.Require {}
 }
