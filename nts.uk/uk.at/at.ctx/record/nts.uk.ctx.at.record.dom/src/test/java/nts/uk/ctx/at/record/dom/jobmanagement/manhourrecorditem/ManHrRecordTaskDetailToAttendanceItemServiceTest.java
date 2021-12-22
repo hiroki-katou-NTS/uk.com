@@ -136,26 +136,20 @@ public class ManHrRecordTaskDetailToAttendanceItemServiceTest {
 	public void test4() {
 		List<Integer> itemLst = new ArrayList<>();
 		itemLst.add(1);
-		itemLst.add(2);
-		itemLst.add(3);
 		
 		List<ManHourRecordAndAttendanceItemLink> settings = new ArrayList<>();
 		List<ItemValue> values = new ArrayList<>();
 		List<ItemValue> expectedResult = new ArrayList<>();
-		values.add(new ItemValue(null, null, 1, "1"));
-		values.add(new ItemValue(null, null, 2, "2"));
-		values.add(new ItemValue(null, null, 5, "5"));
+		values.add(new ItemValue(null, null, 1, "5"));
 		
-		expectedResult.add(new ItemValue(null, null, 3, "3"));
+		expectedResult.add(new ItemValue(null, null, 1, "1"));
 
 		List<TaskItemValue> value1 = new ArrayList<>();
 		value1.add(new TaskItemValue(1, "1"));
-		value1.add(new TaskItemValue(2, "2"));
-		value1.add(new TaskItemValue(3, "3"));
 
 		List<ManHrTaskDetail> taskDetails = new ArrayList<>();
 		taskDetails.add(new ManHrTaskDetail(value1, new SupportFrameNo(1)));
-		settings.add(new ManHourRecordAndAttendanceItemLink(new SupportFrameNo(1), 3, 3));
+		settings.add(new ManHourRecordAndAttendanceItemLink(new SupportFrameNo(1), 1, 1));
 
 		new Expectations() {
 			{
