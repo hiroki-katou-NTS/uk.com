@@ -89,8 +89,8 @@ public class DeleteOneDayFavoriteTaskServiceTest {
 			require.delete(employeeId);
 			times = 1;
 			
-			require.delete(employeeId);
-			times = 1;
+			require.update(object1);
+			times = 0;
 		}};
 		
 	}
@@ -117,9 +117,6 @@ public class DeleteOneDayFavoriteTaskServiceTest {
 			
 			require.delete(employeeId);
 			times = 0;
-			
-			require.delete(employeeId, favoriteId);
-			times = 1;
 		}};
 	}
 }
