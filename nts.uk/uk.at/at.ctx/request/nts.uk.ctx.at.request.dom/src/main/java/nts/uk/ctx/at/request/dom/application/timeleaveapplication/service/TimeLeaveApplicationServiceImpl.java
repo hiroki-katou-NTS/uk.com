@@ -276,25 +276,25 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         Com60HourVacation com60HourVacation = com60HourVacationRepo.findById(companyId).orElse(null);
         SupHolidayManagement super60HLeaveMng = new SupHolidayManagement(
                 com60HourVacation == null ? null : com60HourVacation.getTimeVacationDigestUnit().getDigestUnit(),
-                com60HourVacation != null && com60HourVacation.isManaged()
+                com60HourVacation != null && com60HourVacation.isVacationTimeManage(require)
         );
-
+        
         // ドメインモデル「介護看護休暇設定」を取得する
         List<NursingLeaveSetting> nursingLeaveSettingList = nursingLeaveSettingRepo.findByCompanyId(companyId);
         NursingLeaveSetting careNursingLeaveSetting = nursingLeaveSettingList.stream().filter(i -> i.getNursingCategory() == NursingCategory.Nursing).findFirst().orElse(null);
         NursingLeaveSetting childCareNursingLeaveSetting = nursingLeaveSettingList.stream().filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing).findFirst().orElse(null);
         ChildNursingManagement nursingLeaveMng = new ChildNursingManagement(
                 careNursingLeaveSetting == null ? null : careNursingLeaveSetting.getTimeVacationDigestUnit().getDigestUnit(),
-                careNursingLeaveSetting != null && careNursingLeaveSetting.isManaged() && careNursingLeaveSetting.getTimeVacationDigestUnit().getManage() == ManageDistinct.YES,
+                careNursingLeaveSetting != null && careNursingLeaveSetting.isManageTimeVacation(require),
                 childCareNursingLeaveSetting == null ? null : childCareNursingLeaveSetting.getTimeVacationDigestUnit().getDigestUnit(),
-                childCareNursingLeaveSetting != null && childCareNursingLeaveSetting.isManaged() && childCareNursingLeaveSetting.getTimeVacationDigestUnit().getManage() == ManageDistinct.YES
+                childCareNursingLeaveSetting != null && childCareNursingLeaveSetting.isManageTimeVacation(require)
         );
-
+        
         // ドメインモデル「時間特別休暇の管理設定」を取得する
         TimeSpecialLeaveManagementSetting timeSpecialLeaveManagementSetting = timeSpecialLeaveMngSetRepo.findByCompany(companyId).orElse(null);
         TimeSpecialLeaveManagement timeSpecialLeaveMng = new TimeSpecialLeaveManagement(
                 timeSpecialLeaveManagementSetting == null ? null : timeSpecialLeaveManagementSetting.getTimeVacationDigestUnit().getDigestUnit(),
-                timeSpecialLeaveManagementSetting != null && timeSpecialLeaveManagementSetting.getTimeVacationDigestUnit().getManage() == ManageDistinct.YES,
+                timeSpecialLeaveManagementSetting != null && timeSpecialLeaveManagementSetting.isManageTimeVacation(require),
                 new ArrayList<>()
         );
         if (timeSpecialLeaveMng.isTimeSpecialLeaveManagement()) {
