@@ -19,21 +19,21 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class GetTargetTime {
 
-	@Inject
-	private OvertimeLeaveEncourageConfirmationService.Require1 require1;
-
-	@Inject
-	private OvertimeLeaveEncourageConfirmationService.Require2 require2;
-
-	/**
-	 * 
-	 * @param sid        対象社員
-	 * @param inputDates 対象日リスト
-	 * @return List<残業休出時間>
-	 */
-	public List<EncouragedTargetApplication> get(String sId, List<GeneralDate> inputDates) {
-		return OvertimeLeaveEncourageConfirmationService.check(require1, require2, AppContexts.user().companyId(), sId,
-				inputDates);
-	}
+//	@Inject
+//	private OvertimeLeaveEncourageConfirmationService.Require1 require1;
+//
+//	@Inject
+//	private OvertimeLeaveEncourageConfirmationService.Require2 require2;
+//
+//	/**
+//	 * 
+//	 * @param sid        対象社員
+//	 * @param inputDates 対象日リスト
+//	 * @return List<残業休出時間>
+//	 */
+//	public List<EncouragedTargetApplication> get(String sId, List<GeneralDate> inputDates) {
+//		return OvertimeLeaveEncourageConfirmationService.check(require1, require2, AppContexts.user().companyId(), sId,
+//				inputDates);
+//	}
 
 }
