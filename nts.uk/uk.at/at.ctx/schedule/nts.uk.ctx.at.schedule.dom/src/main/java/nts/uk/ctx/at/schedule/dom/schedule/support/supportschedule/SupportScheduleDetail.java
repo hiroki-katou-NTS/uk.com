@@ -51,7 +51,7 @@ public class SupportScheduleDetail implements DomainValue, Comparable<SupportSch
 	
 	/**
 	 * 指定時間帯に収まるか
-	 * @param specifiedTimeSpans
+	 * @param specifiedTimeSpans 指定時間帯リスト
 	 * @return
 	 */
 	public boolean doesItFitInTheSpecifiedTimeSpan(List<TimeSpanForCalc> specifiedTimeSpans) {
