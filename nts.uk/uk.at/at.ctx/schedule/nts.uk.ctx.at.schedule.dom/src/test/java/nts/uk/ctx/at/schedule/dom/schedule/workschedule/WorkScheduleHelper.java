@@ -250,5 +250,15 @@ public class WorkScheduleHelper {
 		
 		return workSchedule;
 	}
+	
+	public static WorkSchedule createWithParams(String employeeId, GeneralDate date,
+			ConfirmedATR confirmedAtr, TaskSchedule taskSchedule, SupportSchedule supportSchedule) {
+		
+		return new WorkSchedule(employeeId, date, confirmedAtr, 
+				defaultWorkInfo, defaultAffInfo, 
+				new BreakTimeOfDailyAttd(), Collections.emptyList(), 
+				taskSchedule, supportSchedule, 
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+	}
 
 }
