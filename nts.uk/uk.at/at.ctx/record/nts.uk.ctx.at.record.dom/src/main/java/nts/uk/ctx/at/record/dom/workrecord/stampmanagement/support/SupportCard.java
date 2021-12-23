@@ -3,7 +3,11 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support;
 
+import java.util.Optional;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
@@ -12,6 +16,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  * @author laitv
  */
 @Getter
+@AllArgsConstructor
 public class SupportCard implements DomainAggregate {
 
 	// 会社ID
@@ -21,12 +26,19 @@ public class SupportCard implements DomainAggregate {
 	private final SupportCardNumber supportCardNumber;
 
 	// 	職場ID
+	@Setter
 	private String workplaceId;
-
-	public SupportCard(String cid, SupportCardNumber supportCardNumber, String workplaceId) {
-		super();
-		this.cid = cid;
-		this.supportCardNumber = supportCardNumber;
-		this.workplaceId = workplaceId;
+	
+	// [C-1] 応援カード作成する
+	public static SupportCard create(Require require, String cid, SupportCardNumber supportCardNumber, String workplaceId) {
+		Optional<SupportCardEdit> optEdit = require.getSupportCardEditSetting(cid);
+		SupportCardNumber cardNumber = optEdit.map(data -> data.editTheCard(supportCardNumber)).orElse(null);
+		return new SupportCard(cid, cardNumber, workplaceId);
+	}
+	
+	public interface Require {
+		
+		// [R-1] 編集設定を取得する	
+		Optional<SupportCardEdit> getSupportCardEditSetting(String cid);
 	}
 }

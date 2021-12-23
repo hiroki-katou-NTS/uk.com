@@ -11,8 +11,10 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCard;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardEdit;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardEditRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 応援カードの更新登録を行う
@@ -25,17 +27,25 @@ public class RenewalSupportCardCommandHandler extends CommandHandler<SupportCard
 	
 	@Inject
 	private SupportCardRepository supportCardRepository;
+	
+	@Inject
+	private SupportCardEditRepository supportCardEditRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<SupportCardCommand> context) {
 		SupportCardCommand command = context.getCommand();
-		String cid = AppContexts.user().companyId();
+		
+		// カードを編集する(編集前番号): 応援カード番号
+		Optional<SupportCardEdit> optEdit = this.supportCardEditRepository.get(command.getCompanyId());
+		SupportCardNumber supportCardNumber = optEdit
+				.map(data -> data.editTheCard(new SupportCardNumber(command.getSupportCardNumber())))
+				.orElse(new SupportCardNumber(command.getSupportCardNumber()));
 		
 		// get(応援カード番号, 会社ID): 応援カード
-		Optional<SupportCard> supportCard = this.supportCardRepository.get(cid, command.getSupportCardNumber());
+		Optional<SupportCard> supportCard = this.supportCardRepository.getBySupportCardNo(supportCardNumber.v());
 		supportCard.ifPresent(t -> {
-			SupportCard cardUpdate = new SupportCard(t.getCid(), t.getSupportCardNumber(), command.getWorkplaceId());
-			this.supportCardRepository.update(Arrays.asList(cardUpdate));
+			t.setWorkplaceId(command.getWorkplaceId());
+			this.supportCardRepository.update(Arrays.asList(t));
 		});
 	}
 

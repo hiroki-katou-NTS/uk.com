@@ -4,8 +4,9 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.EditMethod;
+import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardEdit;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardEditRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportCardEdit;
@@ -22,7 +23,8 @@ public class SupportCardEditRepoImpl extends JpaRepository implements SupportCar
 	public Optional<SupportCardEdit> get(String cid) {
 		return this.queryProxy()
 				.find(new KrcmtSupportCardEditPk(cid), KrcmtSupportCardEdit.class)
-				.map(entity -> new SupportCardEdit(EditMethod.valueOf(entity.editMethod)));
+				.map(entity -> new SupportCardEdit(EnumAdaptor
+						.valueOf(entity.editMethod, StampCardEditMethod.class)));
 	}
 
 	@Override

@@ -24,5 +24,7 @@ public interface SupportCardRepository {
 	public List<SupportCard> getAll();
 	
 	public Optional<SupportCard> getBySupportCardNo(int supportCardNo);
+	
+	public void delete(String cid, int supportCardNo);
 
 }

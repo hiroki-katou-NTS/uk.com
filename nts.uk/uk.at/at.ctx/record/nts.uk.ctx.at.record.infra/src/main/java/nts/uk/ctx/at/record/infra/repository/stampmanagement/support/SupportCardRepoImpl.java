@@ -102,5 +102,10 @@ public class SupportCardRepoImpl extends JpaRepository implements SupportCardRep
 		SupportCard dm = toDomain(entiti);
 		return Optional.of(dm);
 	}
+
+	@Override
+	public void delete(String cid, int supportCardNo) {
+		this.commandProxy().remove(KrcmtSupportCard.class, new KrcmtSupportCardPk(cid, supportCardNo));
+	}
 	
 }

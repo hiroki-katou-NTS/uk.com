@@ -2,8 +2,6 @@ package nts.uk.ctx.at.record.app.command.workrecord.stampmanagement.support;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCard;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 
 /**
  * 
@@ -22,9 +20,4 @@ public class SupportCardCommand {
 
 	// 	職場ID
 	private String workplaceId;
-	
-	public SupportCard toDomain() {
-		return new SupportCard(companyId, new SupportCardNumber(supportCardNumber), workplaceId);
-	}
-
 }
