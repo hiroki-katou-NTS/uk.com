@@ -103,11 +103,14 @@ public class ProcessDailyCalc {
 			List<DPItemValue> itemInputs = validatorDataDaily.checkInputData(itemCovert, itemValues);
 			// 開始終了時刻順序不正チェック
 			List<DPItemValue> itemInputsPlus = validatorDataDaily.checkInputDataPlus(itemCovert, itemValues);
+			// 時間休暇の消化単位チェック
+			List<DPItemValue> checkTimeVacationDigestionUnit = validatorDataDaily.timeVacationDigestionUnitCheck(itemCovert, itemValues);
 			// 任意項目の入力チェック
 			List<DPItemValue> checkInputOptionlItems = checkArbitraryItems.check(itemCovert, itemValues);
 			itemInputErors.addAll(itemInputs);
 			itemInputErors.addAll(itemInputsPlus);
 			itemInputErors.addAll(checkInputOptionlItems);
+			itemInputErors.addAll(checkTimeVacationDigestionUnit);
 			itemInputWorkType = lstNotFoundWorkType.stream().filter(
 					wt -> wt.getEmployeeId().equals(x.getKey().getLeft()) && wt.getDate().equals(x.getKey().getRight()))
 					.collect(Collectors.toList());
