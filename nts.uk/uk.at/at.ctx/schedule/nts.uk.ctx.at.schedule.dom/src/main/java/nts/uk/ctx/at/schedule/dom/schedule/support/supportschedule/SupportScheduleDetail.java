@@ -45,7 +45,7 @@ public class SupportScheduleDetail implements DomainValue, Comparable<SupportSch
 	public static SupportScheduleDetail createBySupportTicket(SupportTicket supportTicket) {
 		return new SupportScheduleDetail(
 				supportTicket.getRecipient(), 
-				SupportType.ALLDAY, 
+				supportTicket.getSupportType(), 
 				supportTicket.getTimespan());
 	}
 	
