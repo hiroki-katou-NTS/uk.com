@@ -111,7 +111,7 @@ module ksm002.a.viewmodel {
                     if (arrOptionaDates.length > 0) {
                         self.optionDates(arrOptionaDates);
                         self.optionDates.valueHasMutated();
-                        self.isNew(false);
+                        // self.isNew(false);
                     } else {
                         self.optionDates(arrOptionaDates);
                         self.optionDates.valueHasMutated();
@@ -151,28 +151,30 @@ module ksm002.a.viewmodel {
             let arrId: Array<number> = [];
             let selectedDate = moment(processMonth, self.dateFormat);
             service.getCompanySpecificDateByCompanyDateWithName(selectedDate.format(self.dateFormat)).done(function(lstComSpecDate: any) {
-                // if (lstComSpecDate.length > 0) {
-                    self.isNew(false);
-                    for (let j = 1; j < endOfMonth + 1; j++) {
-                        let processDay: string = processMonth + _.padStart(j, 2, '0');
-                        processDay = moment(processDay).format(self.dateFormat);
-                        arrName = [];
-                        arrId = [];
-                        //Loop in each Day
-                        _.forEach(_.orderBy(lstComSpecDate,'specificDateItemNo','asc'), function(comItem) {
-                            if (comItem.specificDate == processDay) {
-                                // arrName.push(comItem.specificDateItemName);
-                                arrId = comItem.specificDateItemNo;
-                            };
-                        });
-                        arrName = self.boxItemList().filter(item => {
-                            if (arrId.indexOf(item.id) >= 0) {
-                                return item;
-                            }
-                        }).map(item => item.name);
-                        arrOptionaDates.push(new OptionalDate(moment(processDay).format("YYYY-MM-DD"), arrName, arrId));
-                    };
-                // }
+                let isEmpty = true;
+                for (let j = 1; j < endOfMonth + 1; j++) {
+                    let processDay: string = processMonth + _.padStart(j, 2, '0');
+                    processDay = moment(processDay).format(self.dateFormat);
+                    arrName = [];
+                    arrId = [];
+                    //Loop in each Day
+                    _.forEach(_.orderBy(lstComSpecDate,'specificDateItemNo','asc'), function(comItem) {
+                        if (comItem.specificDate == processDay) {
+                            // arrName.push(comItem.specificDateItemName);
+                            arrId = comItem.specificDateItemNo;
+                        };
+                    });
+                    arrName = self.boxItemList().filter(item => {
+                        if (arrId.indexOf(item.id) >= 0) {
+                            return item;
+                        }
+                    }).map(item => item.name);
+                    if (arrName.length > 0) {
+                        isEmpty = false;
+                    }
+                    arrOptionaDates.push(new OptionalDate(moment(processDay).format("YYYY-MM-DD"), arrName, arrId));
+                };
+                self.isNew(isEmpty);
                 //Return Array of Data in Month
                 self.serverSource = _.cloneDeep(arrOptionaDates);
                 dfd.resolve(arrOptionaDates);
@@ -293,9 +295,9 @@ module ksm002.a.viewmodel {
                 // UDPATE
                 service.insertComSpecificDate(self.getUpdateCommand()).done(function(res: Array<any>) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        // if(_.flattenDeep(_.map(self.optionDates(), o => o.listId)).length == 0){
-                        //     self.isNew(true);
-                        // };
+                        if(_.flattenDeep(_.map(self.optionDates(), o => o.listId)).length == 0){
+                            self.isNew(true);
+                        };
                         self.start();
                         nts.uk.ui.block.clear();
                     });

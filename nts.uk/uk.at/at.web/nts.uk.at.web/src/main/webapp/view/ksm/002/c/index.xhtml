@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 418, height: 630 };</script>
+			<script>var dialogSize = { width: 420, height: 630 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificName
    			</com:ValidatorScript>
@@ -41,7 +41,7 @@
 						<tr>
 							<td data-bind="text: ($index()+1)"></td>
 							<td>
-								<input class="specificName" data-bind="ntsTextEditor: {
+								<input tabindex="1" class="specificName" data-bind="ntsTextEditor: {
 										name: '#[KSM002_39]',
 										value: specificName,
 										constraint: 'SpecificName',
@@ -50,7 +50,7 @@
 										attr: { id: 'specificName' + $index()}" />
 							</td>
 							<td>
-								<div class="cf" data-bind="ntsSwitchButton: {
+								<div tabindex="2" class="cf" data-bind="ntsSwitchButton: {
 										name: '#[KSM002_38]',
 										options: ko.observableArray([
 											{ code: 1, name: '#{i18n.getText('Enum_UseAtr_Use')}' },
@@ -67,9 +67,9 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- C2_1: Button 決定 -->
-				<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_56')}</button>
+				<button tabindex="3" class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_56')}</button>
 				<!-- C2_2: Button キャンセル -->
-				<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KSM002_41')}</button>	
+				<button tabindex="4" class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KSM002_41')}</button>	
 			</div>
 		</ui:define>
 	</ui:composition>

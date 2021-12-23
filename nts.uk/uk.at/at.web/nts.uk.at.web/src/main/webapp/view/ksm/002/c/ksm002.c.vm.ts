@@ -85,7 +85,6 @@ module ksm002.c {
                 }
                 lstSpecificDateItem.push(new SpecificDateItemCommand(item.useAtr(),item.specificDateItemNo(),item.specificName()));
             });
-            self.specificDateItem
             if (!nts.uk.ui.errors.hasError()){
                 service.updateSpecificDate(lstSpecificDateItem).done(function(res: Array<any>) {
                     nts.uk.ui.block.clear();

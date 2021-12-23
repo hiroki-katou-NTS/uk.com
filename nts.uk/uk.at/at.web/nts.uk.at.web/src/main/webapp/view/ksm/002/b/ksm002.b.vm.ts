@@ -100,17 +100,12 @@ module ksm002.b.viewmodel {
             var self = this;  
             $('#tree-grid').focusTreeGridComponent();
             nts.uk.ui.block.invisible();
-//            self.showExportBtn();
             $.when(
                 self.getAllSpecDate(), 
                 nts.uk.characteristics.restore("IndividualStartDay"),
-                // bService.getCompanyStartDay(),
                 self.getSpecDateByIsUse(),
                 self.getCalendarWorkPlaceByCode()
-            ).done((data1, data2, data3, data4, data5)=>{            
-                // if(!nts.uk.util.isNullOrUndefined(data3)) { 
-                //     self.firstDay(data3.startDay); 
-                // }
+            ).done((data1, data2, data3, data4, data5)=>{
                 if(nts.uk.util.isNullOrEmpty(self.checkBoxList())){
                     self.openDialogC();
                 }
@@ -152,20 +147,7 @@ module ksm002.b.viewmodel {
                                 nts.uk.ui.block.clear();        
                             }).fail((res)=>{
                                 nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
-                            }); 
-                            // if(self.isUpdate()){
-                            //     self.updateCalendarWorkPlace().done(()=>{
-                            //         nts.uk.ui.block.clear();        
-                            //     }).fail((res)=>{
-                            //         nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
-                            //     }); 
-                            // } else {
-                            //     self.insertCalendarWorkPlace().done(()=>{
-                            //         nts.uk.ui.block.clear();        
-                            //     }).fail((res)=>{
-                            //         nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
-                            //     }); 
-                            // }    
+                            });
                         }
                     }
                 }
@@ -435,43 +417,6 @@ module ksm002.b.viewmodel {
                 startOfMonth++;
             }
             return arrCommand;
-
-            // var self = this;
-            // let a = [];
-            // if(self.isUpdate()){
-            //     // update case
-            //     self.calendarPanel.optionDates().forEach(item => {
-            //         let before = _.find(self.rootList, o => o.specificDate == moment(item.start).format('YYYY/MM/DD')); 
-            //         if(nts.uk.util.isNullOrUndefined(before)){
-            //             a.push({
-            //                 workPlaceId: self.currentWorkPlace().id(),
-            //                 specificDate: moment(item.start).format('YYYY/MM/DD'),
-            //                 specificDateItemNo: self.convertNameToNumber(item.listText),
-            //                 isUpdate: false
-            //             });
-            //         } else {
-            //             let current = {
-            //                 workPlaceId: self.currentWorkPlace().id(),
-            //                 specificDate: moment(item.start).format('YYYY/MM/DD'),
-            //                 specificDateItemNo: self.convertNameToNumber(item.listText)
-            //             };   
-            //             if(!_.isEqual(ko.mapping.toJSON(before),ko.mapping.toJSON(current))) {
-            //                 current["isUpdate"] = true;
-            //                 a.push(current);    
-            //             }
-            //         }
-            //     });
-            // } else {
-            //     // insert case
-            //     self.calendarPanel.optionDates().forEach(item => {
-            //         a.push({
-            //             workPlaceId: self.currentWorkPlace().id(),
-            //             specificDate: moment(item.start).format('YYYY/MM/DD'),
-            //             specificDateItemNo: self.convertNameToNumber(item.listText)
-            //         })    
-            //     });  
-            // }
-            // return a;
         }
         
         /**
