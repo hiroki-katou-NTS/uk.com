@@ -37,7 +37,6 @@ module nts.uk.ui.at.kdw013.d {
                 .map(({ date, appType }) => ({
                     appType,
                     date,
-                    date,
                     description: map2Description(appType, date)
                 }))
                 .value();

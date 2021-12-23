@@ -117,15 +117,8 @@ module nts.uk.ui.at.kdw013.timeheader {
         getTimeString(date){
             const vm = this;
             const datas = ko.unwrap(vm.params.screenA.$datas);
-            let convert = _.find(_.get(datas, 'convertRes', []), cvr => { return moment(cvr.ymd).isSame(moment(date), 'days'); });
-            let listItems = [1305, 1349, 1393, 1437, 1481, 1525, 1569, 1613, 1657, 1701, 1745, 1789, 1833, 1877, 1921, 1965, 2009, 2053, 2097, 2141];
-            let sumList = [];
-            _.forEach(_.get(convert, 'manHrContents', []), hrc => {
-                if (listItems.indexOf(hrc.itemId) != -1 && !!hrc.value) {
-                    sumList.push(hrc.value);
-                }
-            });
-            return _.sum(_.map(sumList, s => Number(s)));
+            let totalWorktimes = _.filter(_.get(datas, 'totalWorktimes', []), twt => { return moment(twt.date).isSame(moment(date), 'days'); });
+            return _.sum(_.map(totalWorktimes, t => Number(t.taskTime)));
         }
         
         isNoCvrTaskList(date) {

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.screen.at.app.kdw013.query.TotalWorktimeDto;
 
 /**
  * 
@@ -31,6 +32,8 @@ public class EmployeeDisplayInfo {
 	private List<EstimatedTimeZoneDto> estimateZones = new ArrayList<>();
 	// List<日別実績のロック状態>
 	private List<DailyLockDto> lockInfos;
+	//List<作業合計時間>
+	private List<TotalWorktimeDto> totalWorktimes;
 
 	public void setDailyPerformanceData(GetDailyPerformanceDataResult domain) {
 		this.lstIntegrationOfDaily = domain.getLstIntegrationOfDaily().stream().map(d -> IntegrationOfDailyDto.toDto(d))

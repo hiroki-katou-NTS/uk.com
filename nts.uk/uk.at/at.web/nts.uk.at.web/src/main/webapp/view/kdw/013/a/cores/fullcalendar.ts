@@ -2417,6 +2417,9 @@ module nts.uk.ui.at.kdw013.calendar {
                         if (!event.extendedProps.isTimeBreak) {
                             let frameNos = _.get(_.maxBy(_.filter(events, (e) => (moment(e.start).isSame(moment(event.start), 'days') && !e.extendedProps.isTimeBreak)), function(e) { return _.last(e.extendedProps.taskBlock.taskDetails).supNo; }), 'extendedProps.frameNos', []);
                             event.setExtendedProp('frameNos',frameNos);
+                            let integrationOfDaily = _.find(_.get(data,'lstIntegrationOfDaily',[]),id=> moment(id.ymd).isSame(moment(event.start),'days'));
+                            event.setExtendedProp('outingTime', _.get(integrationOfDaily,'outingTime'));
+                            
                             popupData.event(event);
                         }
                         // update exclude-times

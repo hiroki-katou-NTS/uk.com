@@ -7,10 +7,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -28,7 +24,7 @@ public class CalculateTotalWorktimePerDay {
 	@Inject
 	private CalculateWorktime calWorktime;
 
-	public CalculateTotalWorktimePerDayDto calculateTotalWorktimePerDay(CalculateTotalWorktimePerDayCommand command) {
+	public List<TotalWorktimeDto> calculateTotalWorktimePerDay(CalculateTotalWorktimePerDayCommand command) {
 		List<TotalWorktimeDto> totalWorktimes = new ArrayList<>();
 
 		// Loop List<日別勤怠(Work)>
@@ -62,17 +58,18 @@ public class CalculateTotalWorktimePerDay {
 
 					// 基準時間帯．開始時刻 = 処理中の「日別勤怠(Work)．応援時間帯．時間帯．開始．時刻」の一番小さい時刻を利用する
 					Integer start = daily.getOuenTimeSheet().stream()
-							.map(m -> m.getTimeSheet().getStart().get().getTimeWithDay().get().v()).reduce(Integer::min)
-							.get();
+							.mapToInt(m -> m.getTimeSheet().getStart()
+									.map(s -> s.getTimeWithDay().map(td -> td.v()).orElse(0)).orElse(0))
+							.min().getAsInt();
 
 					// 基準時間帯．終了時刻 = 処理中の「日別勤怠(Work)．応援時間帯．時間帯．終了．時刻」の一番小さい時刻を利用する
 					Integer end = daily.getOuenTimeSheet().stream()
-							.map(m -> m.getTimeSheet().getEnd().get().getTimeWithDay().get().v()).reduce(Integer::min)
-							.get();
+							.mapToInt(m -> m.getTimeSheet().getEnd()
+									.map(s -> s.getTimeWithDay().map(td -> td.v()).orElse(0)).orElse(0))
+							.min().getAsInt();
 
 					// 基準時間帯
-					TimeSpanForCalc refTimezone = new TimeSpanForCalc(new TimeWithDayAttr(start),
-							new TimeWithDayAttr(end));
+					TimeSpanForCalc refTimezone = new TimeSpanForCalc(new TimeWithDayAttr(start),new TimeWithDayAttr(end));
 
 					// $休憩リスト = 処理中の「日別勤怠(Work)」．休憩時間帯．時間帯：map 計算用時間帯#計算用時間帯($．開始、$．終了)
 					List<TimeSpanForCalc> goOutBreakTimeLst = daily.getBreakTime().getBreakTimeSheets().stream()
@@ -112,33 +109,6 @@ public class CalculateTotalWorktimePerDay {
 
 		}
 
-		return new CalculateTotalWorktimePerDayDto(totalWorktimes);
-	}
-
-	@Getter
-	@AllArgsConstructor
-	class CalculateTotalWorktimePerDayDto {
-
-		// 作業合計時間
-		public List<TotalWorktimeDto> totalWorktime;
-
-	}
-
-	@Getter
-	@Setter
-	class TotalWorktimeDto {
-		// 年月日：年月日
-		public GeneralDate date;
-
-		// 作業時間
-		public int taskTime;
-	}
-
-	@Getter
-	@AllArgsConstructor
-	class CalculateTotalWorktimePerDayCommand {
-
-		// List<日別勤怠(Work)>
-		public List<IntegrationOfDaily> integrationOfDailyLst;
+		return totalWorktimes;
 	}
 }
