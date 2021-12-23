@@ -8,6 +8,7 @@ import {TimePoint} from '@app/utils/time';
     validations: {
         params: {
             valueHours: {
+                required: false,
                 timeRange: true,
                 valueCheck: {
                     test(value: any) {
@@ -16,14 +17,14 @@ import {TimePoint} from '@app/utils/time';
                     },
                     messageId: ['MsgB_45', TimePoint.toString(-720, 'h'), TimePoint.toString(4319, 'h')]
                 },
-                requiredCheck: {
-                    test(value: any) {
-                        this.updateValidatorReason();
-
-                        return ((!!value.start && !!value.end) || (!value.start && !value.end));
-                    },
-                    messageId: ['MsgB_30']
-                },
+                // requiredCheck: {
+                //     test(value: any) {
+                //         this.updateValidatorReason();
+                //
+                //         return ((!!value.start && !!value.end) || (!value.start && !value.end));
+                //     },
+                //     messageId: ['MsgB_30']
+                // },
             },
             appReason: {
                 constraint: 'AppReason'
@@ -151,6 +152,21 @@ export class KafS05MultiComponent extends Vue {
         const self = this;
 
         return self.appDispInfoStartupOutput && self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason;
+    }
+
+    @Watch('timeRequired')
+    public updateValidator(data: any) {
+        const self = this;
+        self.$updateValidator('params.valueHours', {
+            required: !!data,
+            timeRange: true
+        });
+        self.$validate();
+        self.updateValidatorReason();
+    }
+
+    get timeRequired() {
+        return this.params.valueHours && (!!this.params.valueHours.start || !!this.params.valueHours.end);
     }
 
 }

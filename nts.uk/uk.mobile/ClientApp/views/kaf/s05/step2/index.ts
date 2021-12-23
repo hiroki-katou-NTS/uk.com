@@ -102,10 +102,6 @@ export class KafS05Step2Component extends Vue {
         }
         
     }
-    public mounted() {
-        const self = this;
-        console.log('mounted');
-    }
 
     public bindOverTime() {
         const self = this;

@@ -400,11 +400,19 @@ export class KafS05Component extends KafS00ShrComponent {
         } else {
             vm.pgName = 'kafs05PgName3';
         }
+
+        if (!vm.modeNew
+            && vm.model.displayInfoOverTime.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == 0
+            && vm.model.appOverTime.overTimeClf == 3) {
+            vm.handleErrorCustom({messageId: 'Msg_3237'});
+        }
     }
+
     public mounted() {
         const vm = this;
         vm.fetchData();
     }
+
     public fetchData() {
         const vm = this;
         vm.$mask('show');
@@ -863,6 +871,7 @@ export class KafS05Component extends KafS00ShrComponent {
                 });
         } else if (vm.numb == 2 && value == 1) { // step 2 -> step 1
             let step1 = vm.$refs.step1 as KafS05Step1Component;
+            step1.isFirstModeUpdate = true;
             if (!_.isEmpty(vm.model.displayInfoOverTime.calculatedWorkTimes)) {
                 let workHours1 = {} as any;
                 let workHours2 = {} as any;
