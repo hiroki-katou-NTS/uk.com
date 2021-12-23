@@ -77,6 +77,7 @@ public class OutingTimeOfDaily {
 		this.recordTotalTime = recordTotalTime;
 		this.deductionTotalTime = deductionTotalTime;
 		this.outingTimeSheets = outingTimeSheets;
+		this.timeOffsetUseTime = TimevacationUseTimeOfDaily.defaultValue();
 	}
 	
 	/** 相殺代休時間を求める */

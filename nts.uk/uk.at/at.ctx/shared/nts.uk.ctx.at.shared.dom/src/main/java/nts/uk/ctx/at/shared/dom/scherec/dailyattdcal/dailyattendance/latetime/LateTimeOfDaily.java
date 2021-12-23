@@ -73,6 +73,21 @@ public class LateTimeOfDaily {
 		this.timePaidUseTime = timePaidUseTime;
 		this.exemptionTime = exemptionTime;
 		this.doNotSetAlarm = false;
+		this.timeOffsetUseTime = TimevacationUseTimeOfDaily.defaultValue();
+		this.addTime = new AttendanceTime(0);
+	}
+	
+	public LateTimeOfDaily(TimeWithCalculation lateTime, TimeWithCalculation lateDeductionTime, WorkNo workNo,
+			TimevacationUseTimeOfDaily timePaidUseTime, IntervalExemptionTime exemptionTime,
+			TimevacationUseTimeOfDaily timeOffsetTime, AttendanceTime addTime) {		
+		this.lateTime = lateTime;
+		this.lateDeductionTime = lateDeductionTime;
+		this.workNo = workNo;
+		this.timePaidUseTime = timePaidUseTime;
+		this.exemptionTime = exemptionTime;
+		this.doNotSetAlarm = false;
+		this.timeOffsetUseTime = timeOffsetTime;
+		this.addTime = addTime;
 	}
 	
 	/** 相殺代休時間を求める */

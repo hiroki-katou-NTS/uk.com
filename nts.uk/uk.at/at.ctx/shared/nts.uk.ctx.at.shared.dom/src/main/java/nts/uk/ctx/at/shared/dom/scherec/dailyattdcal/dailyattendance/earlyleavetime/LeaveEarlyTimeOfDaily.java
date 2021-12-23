@@ -61,16 +61,30 @@ public class LeaveEarlyTimeOfDaily {
 	private TimevacationUseTimeOfDaily timeOffsetUseTime;
 	/** 加算時間 */
 	private AttendanceTime addTime;
-	
-	
+
 	public LeaveEarlyTimeOfDaily(TimeWithCalculation leaveEarlyTime, TimeWithCalculation lateDeductionTime, WorkNo workNo,
-			TimevacationUseTimeOfDaily timePaidUseTime, IntervalExemptionTime exemptionTime) {
+			TimevacationUseTimeOfDaily timePaidUseTime, IntervalExemptionTime exemptionTime) {	
 		this.leaveEarlyTime = leaveEarlyTime;
 		this.leaveEarlyDeductionTime = lateDeductionTime;
 		this.workNo = workNo;
 		this.timePaidUseTime = timePaidUseTime;
 		this.intervalTime = exemptionTime;
 		this.doNotSetAlarm = false;
+		this.timeOffsetUseTime = TimevacationUseTimeOfDaily.defaultValue();
+		this.addTime = new AttendanceTime(0);
+	}
+	
+	public LeaveEarlyTimeOfDaily(TimeWithCalculation leaveEarlyTime, TimeWithCalculation lateDeductionTime, WorkNo workNo,
+			TimevacationUseTimeOfDaily timePaidUseTime, IntervalExemptionTime exemptionTime,
+			TimevacationUseTimeOfDaily timeOffsetTime, AttendanceTime addTime) {	
+		this.leaveEarlyTime = leaveEarlyTime;
+		this.leaveEarlyDeductionTime = lateDeductionTime;
+		this.workNo = workNo;
+		this.timePaidUseTime = timePaidUseTime;
+		this.intervalTime = exemptionTime;
+		this.doNotSetAlarm = false;
+		this.timeOffsetUseTime = timeOffsetTime;
+		this.addTime = addTime;
 	}
 	
 	/** 相殺代休時間を求める */
