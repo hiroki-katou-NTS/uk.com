@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,53 +93,41 @@ public class RegisterFavoriteTaskServiceTest {
 		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
 				new ArrayList<>());
 
-		new Verifications() {{
-			require.update(optdisplayOrder.get());
-			times = 0;
-		}};
-		
 		result.run();
 		
 		new Verifications() {{
+			require.insert(new FavoriteTaskItem(anyString, anyString, new FavoriteTaskName(anyString), new ArrayList<>()));
+			times = 0;
+			
+			require.insert(new FavoriteTaskDisplayOrder(anyString, new ArrayList<>()));
+			times = 0;
+			
 			require.update(optdisplayOrder.get());
 			times = 1;
 		}};
 	}
 
-//	@Test
-//	public void test2() {
-//
-//		Optional<FavoriteTaskDisplayOrder> optdisplayOrder = Optional.empty();
-//
-//		new Expectations() {
-//			{
-//				require.getBySameSetting(anyString, new ArrayList<>());
-//				result = new ArrayList<>();
-//
-//				require.get(anyString);
-//				result = optdisplayOrder;
-//			}
-//		};
-//
-//		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
-//				new ArrayList<>());
-//		
-//		new Verifications() {{
-//			List<FavoriteDisplayOrder> lst = new ArrayList<>();
-//			lst.add(new FavoriteDisplayOrder(anyString, 1));
-//			require.insert(new FavoriteTaskDisplayOrder("employeeId", lst));
-//			times = 0;
-//		}};
-//		
-//		result.run();
-//		
-//		new Verifications() {{
-//			List<FavoriteDisplayOrder> lst = new ArrayList<>();
-//			lst.add(new FavoriteDisplayOrder(anyString, 1));
-//			require.insert(new FavoriteTaskDisplayOrder("employeeId", lst));
-//			times = 1;
-//		}};
-//	
-//	}
+	@Test
+	public void test2() {
+
+		Optional<FavoriteTaskDisplayOrder> optdisplayOrder = Optional.empty();
+
+		new Expectations() {
+			{
+				require.getBySameSetting(anyString, new ArrayList<>());
+				result = new ArrayList<>();
+
+				require.get(anyString);
+				result = optdisplayOrder;
+			}
+		};
+
+		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
+				new ArrayList<>());
+
+		NtsAssert.atomTask(() -> result,
+				any -> require.insert(new FavoriteTaskDisplayOrder("employeeId", new ArrayList<>())));
+
+	}
 
 }
