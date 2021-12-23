@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.app.command.workrecord.stampmanagement.support;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -17,6 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class UpdateSupportCardSettingCommandHandler extends CommandHandler<SupportCardSettingCommand> {
 	
 	@Inject

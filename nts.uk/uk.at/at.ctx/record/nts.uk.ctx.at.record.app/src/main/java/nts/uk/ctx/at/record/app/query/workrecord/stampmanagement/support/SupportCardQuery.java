@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -23,6 +25,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author : NWS_namnv
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class SupportCardQuery {
 	
 	@Inject
@@ -48,13 +51,13 @@ public class SupportCardQuery {
 		
 		// get 応援カード
 		List<SupportCardDto> listSupportCard = this.supportCardRepository.getAll().stream()
-																	.map(SupportCardDto::toDto)
-																	.collect(Collectors.toList());
+				.map(SupportCardDto::toDto)
+				.collect(Collectors.toList());
 		
 		// [RQ622]会社IDから会社情報を取得する
 		List<CompanyInfo> companyInfos = listSupportCard.stream()
-														.map(t -> this.companyAdapter.getCompanyInfoById(t.getCompanyId()))
-														.collect(Collectors.toList());
+				.map(t -> this.companyAdapter.getCompanyInfoById(t.getCompanyId()))
+				.collect(Collectors.toList());
 		companyInfos.add(this.companyAdapter.getCompanyInfoById(companyId));
 
 		// [No.560]職場IDから職場の情報をすべて取得する

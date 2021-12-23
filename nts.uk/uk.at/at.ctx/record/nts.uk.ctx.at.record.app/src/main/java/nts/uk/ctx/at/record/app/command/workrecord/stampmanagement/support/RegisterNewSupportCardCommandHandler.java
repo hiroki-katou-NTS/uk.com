@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
@@ -18,21 +20,15 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardRe
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class RegisterNewSupportCardCommandHandler extends CommandHandler<SupportCardCommand> {
 	
 	@Inject
 	private SupportCardRepository supportCardRepository;
-	
-//	@Inject
-//	private SupportCardEditRepository supportCardEditRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<SupportCardCommand> context) {
 		SupportCardCommand command = context.getCommand();
-//		String companyId = AppContexts.user().companyId();
-		
-		// カードを編集する(応援カード番号): 応援カード番号
-//		Optional<SupportCardEdit> supportCardEdit = this.supportCardEditRepository.get(companyId);
 		
 		// get(応援カード番号): 応援カード
 		Optional<SupportCard> supportCard = this.supportCardRepository.getBySupportCardNo(command.getSupportCardNumber());

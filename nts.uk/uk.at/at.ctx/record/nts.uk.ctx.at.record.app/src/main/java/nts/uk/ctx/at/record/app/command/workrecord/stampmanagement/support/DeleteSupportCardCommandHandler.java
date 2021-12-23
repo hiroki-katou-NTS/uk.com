@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.app.command.workrecord.stampmanagement.support;
 import java.util.Arrays;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -15,6 +17,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardRe
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class DeleteSupportCardCommandHandler extends CommandHandler<SupportCardCommand> {
 	
 	@Inject

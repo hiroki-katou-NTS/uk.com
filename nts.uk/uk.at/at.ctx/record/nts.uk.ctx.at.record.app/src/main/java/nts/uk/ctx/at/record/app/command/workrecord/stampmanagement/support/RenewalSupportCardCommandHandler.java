@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -18,6 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class RenewalSupportCardCommandHandler extends CommandHandler<SupportCardCommand> {
 	
 	@Inject
@@ -27,8 +30,6 @@ public class RenewalSupportCardCommandHandler extends CommandHandler<SupportCard
 	protected void handle(CommandHandlerContext<SupportCardCommand> context) {
 		SupportCardCommand command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		// カードを編集する
-//		Optional<SupportCardEdit> supportCardEdit = this.supportCardEditRepository.get(cid);
 		
 		// get(応援カード番号, 会社ID): 応援カード
 		Optional<SupportCard> supportCard = this.supportCardRepository.get(cid, command.getSupportCardNumber());
