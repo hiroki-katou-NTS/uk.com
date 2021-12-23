@@ -23,7 +23,7 @@ import nts.uk.shr.com.license.option.OptionLicense;
 @RunWith(JMockit.class)
 public class TimeAnnualSettingTest {
 	@Injectable
-	private TimeAnnualSetting.Require require;
+	private TimeVacationDigestUnit.Require require;
 	
 	@Test
 	public void getters() {

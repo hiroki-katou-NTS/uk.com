@@ -21,7 +21,7 @@ import nts.uk.shr.com.license.option.OptionLicense;
 @RunWith(JMockit.class)
 public class TimeSpecialLeaveManagementSettingTest {
 	@Injectable
-	private TimeSpecialLeaveManagementSetting.Require require;
+	private TimeVacationDigestUnit.Require require;
 	
 	@Test
 	public void getters() {

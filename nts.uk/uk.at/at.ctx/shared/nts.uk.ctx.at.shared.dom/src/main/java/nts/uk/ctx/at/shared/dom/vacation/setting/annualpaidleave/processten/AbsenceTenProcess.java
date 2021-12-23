@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService;
@@ -259,7 +260,7 @@ public class AbsenceTenProcess {
 		Optional<RetentionYearlySetting> retentionYearlySetting(String companyId);
 	}
 	
-	public static interface RequireM1 extends AnnualPaidLeaveSetting.Require {
+	public static interface RequireM1 extends TimeVacationDigestUnit.Require {
 		
 		AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId);
 	}

@@ -110,7 +110,7 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     /**
      * [3] 利用できない日次の勤怠項目を取得する
      */
-    public List<Integer> getDailyAttendItemsNotAvailable(Require require, ManageDistinct distinct){
+    public List<Integer> getDailyAttendItemsNotAvailable(TimeVacationDigestUnit.Require require, ManageDistinct distinct){
     	if (this.isManageTimeAnnualLeave(require, distinct)) {
     		return this.getDailyAttdItemsCorrespondAnnualLeave();
     	}
@@ -120,7 +120,7 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     /**
      * [4] 利用できない月次の勤怠項目を取得する
      */
-    public List<Integer> getMonthlyAttendItemsNotAvailable(Require require, ManageDistinct distinct) {
+    public List<Integer> getMonthlyAttendItemsNotAvailable(TimeVacationDigestUnit.Require require, ManageDistinct distinct) {
     	List<Integer> timeAnnualLeaveItems = new ArrayList<>();
     	if (this.isManageTimeAnnualLeave(require, distinct)) {
     		// $時間年休項目
@@ -138,7 +138,7 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     /**
      * [5] 時間年休を管理するか
      */
-    public boolean isManageTimeAnnualLeave(Require require, ManageDistinct distinct) {
+    public boolean isManageTimeAnnualLeave(TimeVacationDigestUnit.Require require, ManageDistinct distinct) {
     	return this.timeVacationDigestUnit.isVacationTimeManage(require, distinct);
     }
     
@@ -156,7 +156,7 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
      * @param time 休暇使用時間
      * @param manage 年休管理区分
      */
-    public boolean checkDigestUnits(Require require, AttendanceTime time, ManageDistinct manage) {
+    public boolean checkDigestUnits(TimeVacationDigestUnit.Require require, AttendanceTime time, ManageDistinct manage) {
     	return this.timeVacationDigestUnit.checkDigestUnit(require, time, manage);
     }
     
@@ -167,5 +167,4 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
 		return Arrays.asList(1424,1425,1426,1429,1430,1431,1861,1862);
     }
     
-    public static interface Require extends TimeVacationDigestUnit.Require {}
 }

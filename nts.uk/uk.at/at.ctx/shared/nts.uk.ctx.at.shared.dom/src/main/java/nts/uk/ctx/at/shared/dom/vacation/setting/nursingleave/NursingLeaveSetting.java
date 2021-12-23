@@ -465,18 +465,16 @@ public class NursingLeaveSetting extends AggregateRoot {
      * @param require
      * @param time
      */
-    public boolean checkVacationTimeUnitUsed(RequireM13 require, AttendanceTime time) {
+    public boolean checkVacationTimeUnitUsed(TimeVacationDigestUnit.Require require, AttendanceTime time) {
     	return this.timeVacationDigestUnit.checkDigestUnit(require, time, this.manageType);
     }
     
     /**
      * [13] 時間休暇を管理するか
      */
-    public boolean isManageTimeVacation(RequireM13 require) {
+    public boolean isManageTimeVacation(TimeVacationDigestUnit.Require require) {
     	return this.timeVacationDigestUnit.isVacationTimeManage(require, this.manageType);
     }
-
-    public static interface RequireM13 extends TimeVacationDigestUnit.Require {}
 
 	// Require
 	public static interface RequireM8 {
