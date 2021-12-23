@@ -7,6 +7,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRepository;
 
+
+
 @Stateless
 public class StampingSettingEmployeeQuery {
 	

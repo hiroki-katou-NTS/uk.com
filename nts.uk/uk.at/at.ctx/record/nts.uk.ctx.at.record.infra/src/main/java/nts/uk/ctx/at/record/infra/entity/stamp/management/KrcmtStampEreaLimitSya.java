@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.EmployeeStampingAreaRestrictionSetting;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaLimit;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
@@ -52,22 +53,24 @@ public class KrcmtStampEreaLimitSya implements Serializable {
 	@Column(name = "AREA_LIMIT_ATR")
 	private int areaLimitAtr;
 
-	public StampingAreaRestriction toDomain() {
+	public EmployeeStampingAreaRestrictionSetting toDomain() {
 		 NotUseAtr locationInforUse = NotUseAtr.toEnum(this.locationInforUse);
 		 StampingAreaLimit areaLimitAtr = StampingAreaLimit.toEnum(this.areaLimitAtr);
-		StampingAreaRestriction areaRestriction = new StampingAreaRestriction(locationInforUse,areaLimitAtr);
-		return areaRestriction;
+		 StampingAreaRestriction areaRestriction = new StampingAreaRestriction(locationInforUse,areaLimitAtr);
+		 EmployeeStampingAreaRestrictionSetting areaRestrictionSetting = new EmployeeStampingAreaRestrictionSetting(cId,areaRestriction);
+		
+		return areaRestrictionSetting;
 	}
-	public static KrcmtStampEreaLimitSya toEntity(String emplId,StampingAreaRestriction stampingAreaRestriction) {
+	public static KrcmtStampEreaLimitSya toEntity(EmployeeStampingAreaRestrictionSetting restrictionSetting) {
 		String contractCd = AppContexts.user().contractCode();
 		String cId = AppContexts.user().companyId();
 		KrcmtStampEreaLimitSya krcmtStampEreaLimitSya = new KrcmtStampEreaLimitSya();
-		KrcmStampEreaLimitSyaPK ereaLimitSyaPK = new KrcmStampEreaLimitSyaPK(emplId);
+		KrcmStampEreaLimitSyaPK ereaLimitSyaPK = new KrcmStampEreaLimitSyaPK(restrictionSetting.getEmployeeId());
 		krcmtStampEreaLimitSya.setContractCd(contractCd);
 		krcmtStampEreaLimitSya.setCId(cId);
 		krcmtStampEreaLimitSya.setPK(ereaLimitSyaPK);
-		krcmtStampEreaLimitSya.setAreaLimitAtr(stampingAreaRestriction.getStampingAreaLimit().value);
-		krcmtStampEreaLimitSya.setLocationInforUse(stampingAreaRestriction.getUseLocationInformation().value);
+		krcmtStampEreaLimitSya.setAreaLimitAtr(restrictionSetting.getStampingAreaRestriction().getStampingAreaLimit().value);
+		krcmtStampEreaLimitSya.setLocationInforUse(restrictionSetting.getStampingAreaRestriction().getUseLocationInformation().value);
 		return krcmtStampEreaLimitSya;
 	}
 	

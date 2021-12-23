@@ -15,45 +15,46 @@ import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartp
 import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestrictionDto;
 import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartphonestamping.employee.StampingSettingEmplFindOneQuery;
 import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartphonestamping.employee.StampingSettingEmployeeQuery;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.EmployeeStampingAreaRestrictionSetting;
 
 @Path("at/record/stampmanagement/setting/preparation/smartphonestamping/employee")
 @Produces("application/json")
 public class StampingAreaRestrictionWS {
-	@Inject 
+	@Inject
 	private StampingAreaRestrictionCommandHandler stampingAreaRestrictionCommandHandler;
-	
+
 	@Inject
 	private DeleteStampingAreaRestrictionCommand deleteStampingAreaRestrictionCommand;
-	
-	@Inject 
+
+	@Inject
 	private StampingSettingEmployeeQuery stampingSettingEmployeeQuery;
-	
+
 	@Inject
 	private StampingSettingEmplFindOneQuery emplFindOneQuery;
-	
+
 	@POST
 	@Path("insertUpdateStampingSetting")
-	public Boolean  insert(StampingAreaCmd cmd) {
-		 this.stampingAreaRestrictionCommandHandler.handle(cmd);
-		 return true;
+	public Boolean insert(StampingAreaCmd cmd) {
+		this.stampingAreaRestrictionCommandHandler.handle(cmd);
+		return true;
 	}
+
 	@POST
 	@Path("getStatusStampingEmpl")
 	public List<String> getNamesByCodes(CommonObjectParam listEmplId) {
 		return this.stampingSettingEmployeeQuery.getStatuEmployee(listEmplId.listId);
 	}
-	
+
 	@POST
 	@Path("delete")
 	public void delete(StampingAreaCmd cmd) {
 		this.deleteStampingAreaRestrictionCommand.handle(cmd);
 	}
-	
+
 	@POST
 	@Path("findOneById/{selectedEmpl}")
-	public StampingAreaRestrictionDto findOneById (@PathParam("selectedEmpl") String employeeId) {
+	public StampingAreaRestrictionDto findOneById(@PathParam("selectedEmpl") String employeeId) {
 		return this.emplFindOneQuery.getStatuEmployee(employeeId);
 	}
-	
-	
+
 }
