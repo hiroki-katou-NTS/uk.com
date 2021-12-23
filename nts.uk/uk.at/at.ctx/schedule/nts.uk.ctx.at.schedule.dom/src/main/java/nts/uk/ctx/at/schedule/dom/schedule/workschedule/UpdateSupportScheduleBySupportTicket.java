@@ -24,7 +24,7 @@ public class UpdateSupportScheduleBySupportTicket {
 	 */
 	public static ResultOfRegisteringWorkSchedule add(Require require, SupportTicket ticket) {
 		
-		WorkSchedule workSchedule = require.getWorkSchedule(ticket.getEmployeeId().v(), ticket.getDate());
+		WorkSchedule workSchedule = require.getWorkSchedule(ticket.getEmployeeId().v(), ticket.getDate()).get();
 		
 		try {
 			workSchedule.addSupportSchedule(require, ticket);
@@ -51,7 +51,7 @@ public class UpdateSupportScheduleBySupportTicket {
 			return Optional.empty();
 		}
 		
-		WorkSchedule workSchedule = require.getWorkSchedule(afterModify.getEmployeeId().v(), afterModify.getDate());
+		WorkSchedule workSchedule = require.getWorkSchedule(afterModify.getEmployeeId().v(), afterModify.getDate()).get();
 		
 		try {
 			workSchedule.modifySupportSchedule(require, beforeModify, afterModify);
@@ -73,7 +73,7 @@ public class UpdateSupportScheduleBySupportTicket {
 	 */
 	public static ResultOfRegisteringWorkSchedule remove(Require require, SupportTicket ticket) {
 		
-		WorkSchedule workSchedule = require.getWorkSchedule(ticket.getEmployeeId().v(), ticket.getDate());
+		WorkSchedule workSchedule = require.getWorkSchedule(ticket.getEmployeeId().v(), ticket.getDate()).get();
 		
 		try {
 			workSchedule.removeSupportSchedule(ticket);
@@ -95,7 +95,7 @@ public class UpdateSupportScheduleBySupportTicket {
 		 * @param date 年月日
 		 * @return
 		 */
-		WorkSchedule getWorkSchedule(String employeeId, GeneralDate date);
+		Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date);
 		
 		/**
 		 * 勤務予定を変更する
