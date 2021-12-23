@@ -665,7 +665,10 @@ module nts.uk.ui.at.kdw013.c {
             const end = vm.taskBlocks.caltimeSpanView.end();
             let refTimezone = { start, end };
             let { extendedProps } = ko.unwrap(vm.params.data);
-            let goOutBreakTimeLst = _.map(_.get(extendedProps, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } }); 
+            let goOutBreakTimeLst = _.map(_.get(extendedProps, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+            _.forEach(_.get(extendedProps, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                goOutBreakTimeLst.push({ start, end });
+            });
             let calParam = { refTimezone, goOutBreakTimeLst };
             if(_.isNumber(start) && _.isNumber(end) && end > start){
                 ajax('at', API.CALWKTIME, calParam).done((time) => {
@@ -788,7 +791,9 @@ module nts.uk.ui.at.kdw013.c {
 						}, 150);
                         let refTimezone = { start: (moment(start).hour() * 60) + moment(start).minute(), end: (moment(end).hour() * 60) + moment(end).minute() };
                         let goOutBreakTimeLst = _.map(_.get(extendedProps, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
-                        
+                        _.forEach(_.get(extendedProps, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                            goOutBreakTimeLst.push({ start, end });
+                        });
                         let calparam = {refTimezone, goOutBreakTimeLst};
                         ajax('at', API.CALWKTIME, calparam).done((time) => {
                             vm.taskBlocks.caltimeSpanView.range(getText('KDW013_25') + ' '+ number2String(time));
@@ -1111,7 +1116,9 @@ module nts.uk.ui.at.kdw013.c {
 				start.value = vm.caltimeSpanView.start() ;
 				end.value = vm.caltimeSpanView.end();
 				if(range.value == null){
-					range.value = vm.caltimeSpanView.end() - vm.caltimeSpanView.start();
+                    let tr = nts.uk.time.parseTime(vm.caltimeSpanView.range().replace('作業時間 ', ''));
+                    
+                    range.value = (tr.hours * 60) + tr.minutes;
 				}
                 taskDetails.push({supNo: task.supNo, taskItemValues: taskItemValues});
             });

@@ -2419,6 +2419,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             event.setExtendedProp('frameNos',frameNos);
                             let integrationOfDaily = _.find(_.get(data,'lstIntegrationOfDaily',[]),id=> moment(id.ymd).isSame(moment(event.start),'days'));
                             event.setExtendedProp('outingTime', _.get(integrationOfDaily,'outingTime'));
+                            event.setExtendedProp('breakTime', _.get(integrationOfDaily,'breakTime'));
                             
                             popupData.event(event);
                         }
