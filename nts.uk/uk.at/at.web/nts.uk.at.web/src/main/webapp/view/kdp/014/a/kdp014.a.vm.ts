@@ -134,8 +134,7 @@ module nts.uk.at.view.kdp014.a {
     }
     mounted(): void {
       const vm = this;
-      $('#kcp005component').focus();
-      vm.$nextTick(() => $('#kcp005component').focus());
+      setTimeout(() => $('#kcp005component .ui-iggrid.nts-gridlist').focus(), 500);
     }
 
     register() {
@@ -159,6 +158,7 @@ module nts.uk.at.view.kdp014.a {
 
     getDetail(employmentCategoryCode: string) {
       const vm = this;
+      vm.$blockui("grayout");
       let employeeModel: UnitModel = _.find(vm.employeeList(), item => {
         return item.code === employmentCategoryCode;
       });
@@ -177,12 +177,15 @@ module nts.uk.at.view.kdp014.a {
         vm.selectedEmployeeCode(employeeModel.code);
         vm.selectedEmployeeName(employeeModel.name);
         vm.mode(UPDATE_MODE);
+      }).always(() => {
+        $("#A6_2").focus();
+        vm.$blockui("clear");
       });
     }
 
     applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
       const vm = this;
-      $('#kcp005component').focus();
+      vm.$blockui("grayout");
       const firstcode = dataList.length > 0 ? dataList[0].employeeCode : null;
       vm.employeeList.removeAll();
       let employeeSearchs: Array<UnitModel> = [];
@@ -219,7 +222,7 @@ module nts.uk.at.view.kdp014.a {
           maxRows: 20
         };
         $('#kcp005component').ntsListComponent(vm.listComponentOption);
-      }).always(() => vm.$nextTick(() => $('#kcp005component').focus()));
+      });
 
 
       if (firstcode != null) {
@@ -236,6 +239,9 @@ module nts.uk.at.view.kdp014.a {
           vm.selectedEmployeeCode(dataList[0].employeeCode);
           vm.selectedEmployeeName(dataList[0].employeeName);
           vm.mode(UPDATE_MODE);
+        }).always(() => {
+          $("#A6_2").focus();
+          vm.$blockui("clear");
         });
       }
     }
