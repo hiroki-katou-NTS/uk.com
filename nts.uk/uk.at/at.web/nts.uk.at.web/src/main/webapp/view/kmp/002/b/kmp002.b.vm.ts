@@ -28,7 +28,13 @@ module nts.uk.at.view.kmp002.b {
         .then((data: any) => {
           if (data.editMethod) {
             self.supportCardSetting().editMethod(data.editMethod);
-            $("#B1_1").find("label").eq(data.editMethod).find("input").focus();
+            if (data.editMethod == SupportCardEditSettingEnum.PreviousSpace) {
+              $("#B1_1").find("label").eq(data.editMethod - 1).find("input").focus();
+            } else if (data.editMethod == SupportCardEditSettingEnum.AfterZero) {
+              $("#B1_1").find("label").eq(data.editMethod + 1).find("input").focus();
+            } else {
+              $("#B1_1").find("label").eq(data.editMethod).find("input").focus();
+            }
           } else {
             $("#B1_1").find("label").eq(0).find("input").focus();
           }
