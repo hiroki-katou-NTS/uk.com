@@ -42,14 +42,7 @@ module ksm002.b.viewmodel {
             
             // get new data when year month change
             self.yearMonthPicked.subscribe(value => {
-                if(!nts.uk.util.isNullOrEmpty(value)){
-                    nts.uk.ui.block.invisible();
-                    self.getCalendarWorkPlaceByCode()
-                    .done(()=>{ nts.uk.ui.block.clear(); })
-                    .fail((res) => {
-                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
-                    });
-                }        
+                self.start(false);
             });
             
             // calendar event handler 

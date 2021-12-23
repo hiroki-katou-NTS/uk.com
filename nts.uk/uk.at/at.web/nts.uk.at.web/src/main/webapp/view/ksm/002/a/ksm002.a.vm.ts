@@ -75,16 +75,7 @@ module ksm002.a.viewmodel {
             });
             //Change Month 
             self.yearMonthPicked.subscribe(function(value) {
-                let arrOptionaDates: Array<OptionalDate> = [];
-                self.getDataToOneMonth(value).done(function(arrOptionaDates) {
-                    if (arrOptionaDates.length > 0) {
-                        self.optionDates(arrOptionaDates);
-                        self.optionDates.valueHasMutated();
-                        self.isNew(false);
-                    } else {
-                        self.isNew(true);
-                    }
-                })
+                self.start();
             })
         }
 
