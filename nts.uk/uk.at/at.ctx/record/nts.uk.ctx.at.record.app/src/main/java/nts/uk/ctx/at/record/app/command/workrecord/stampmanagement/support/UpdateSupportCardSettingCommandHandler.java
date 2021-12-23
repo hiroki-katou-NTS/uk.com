@@ -29,6 +29,7 @@ public class UpdateSupportCardSettingCommandHandler extends CommandHandler<Suppo
 	protected void handle(CommandHandlerContext<SupportCardSettingCommand> context) {
 		SupportCardSettingCommand command = context.getCommand();
 		String cid = AppContexts.user().companyId();
+		// get 応援カード編集設定
 		Optional<SupportCardEdit> supportCardEdit = this.supportCardEditRepository.get(cid);
 		if (supportCardEdit.isPresent()) {
 			this.supportCardEditRepository.update(command.toDomain());
