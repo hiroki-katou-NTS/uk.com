@@ -12,11 +12,12 @@ module nts.uk.ui.at.kdw013.d {
 
     const { OVER_TIME_APPLICATION } = OverTimeLeaveAtr;
     const map2Description = (appType: OverTimeLeaveAtr, date: Date) => {
-        if (otAtr === OVER_TIME_APPLICATION) {
-            return $vm.$i18n('KDW013_38', [formatTime((moment(date).hour() *60)+  moment(date).minute(), 'Time_Short_HM')]);
+        
+        if (appType === OVER_TIME_APPLICATION) {
+            return $vm.$i18n('KDW013_38');
         }
-
-        return $vm.$i18n('KDW013_39', [formatTime((moment(date).hour() *60)+  moment(date).minute(), 'Time_Short_HM')]);
+        
+        return $vm.$i18n('KDW013_39');
     };
 
     @bean()

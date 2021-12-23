@@ -61,17 +61,16 @@ public class OvertimeLeaveEncourageConfirmationService {
 		dates.stream().forEach(d -> {
 
 			// $対象勤務情報 = $勤務情報リスト：filter $.年月日 == $
-			WorkInfoOfDailyPerformance workInfo = workInfos.stream().filter(f -> f.getYmd().equals(d)).findAny().get();
+			Optional<WorkInfoOfDailyPerformance> workInfo = workInfos.stream().filter(f -> f.getYmd().equals(d)).findAny();
 
 			// $対象応援作業 = $応援作業リスト：filter $.年月日 == $
-			OuenWorkTimeSheetOfDaily ouenWorkTimeSheet = ouenTasks.stream().filter(f -> f.getYmd().equals(d)).findAny()
-					.get();
+			Optional<OuenWorkTimeSheetOfDaily> ouenWorkTimeSheet = ouenTasks.stream().filter(f -> f.getYmd().equals(d)).findAny();
 
 			// if [prv-1] 申請を促す必要か($対象勤務情報,$対象応援作業)
-			if (isNeedToEncourageApp(workInfo, ouenWorkTimeSheet)) {
+			if (workInfo.isPresent() && ouenWorkTimeSheet.isPresent() && isNeedToEncourageApp(workInfo.get(), ouenWorkTimeSheet.get())) {
 
 				// $勤務種類 = $対象勤務情報.勤務情報.勤務情報.勤務種類コード
-				WorkTypeCode workTypeCode = workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode();
+				WorkTypeCode workTypeCode = workInfo.get().getWorkInformation().getRecordInfo().getWorkTypeCode();
 
 				// $申請種類 = require.勤務種類から促す申請を判断する(require,会社ID,社員ID,$,$勤務種類)
 				Optional<ApplicationTypeShare> appTypeOpt = require1.toDecide(cId, sId, d, workTypeCode);
