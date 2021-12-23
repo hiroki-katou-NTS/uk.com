@@ -288,7 +288,7 @@ module nts.uk.at.view.kdw002.c {
                                         
                                     });
                                 }).always(() => {
-                                    //nts.uk.ui.block.clear();
+                                    nts.uk.ui.block.clear();
                                 });
                             }                               
                         });
@@ -316,7 +316,7 @@ module nts.uk.at.view.kdw002.c {
 
                                     });
                                 }).always(() => {
-                                    //nts.uk.ui.block.clear();
+                                    nts.uk.ui.block.clear();
                                 });
                             }                              
                         });
