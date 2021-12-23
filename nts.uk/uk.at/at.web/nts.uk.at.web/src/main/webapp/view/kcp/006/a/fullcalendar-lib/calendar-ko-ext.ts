@@ -462,6 +462,7 @@ module nts.uk.at.view.kcp006.a {
                         $("#" + currentCalendar + " .event-note").css("left", $(this).offset().left + 47);
                         $("#" + currentCalendar + " .event-note").css("min-height", "100px");
                         $("#" + currentCalendar + " .event-note").css("height", "fit-content");
+                        $("#" + currentCalendar + " .event-note").css("background-color", "#F8EFD4");
                         $("#" + currentCalendar + " .event-note").show();
                     }, function() {
                         $("#" + currentCalendar + " .event-note").hide();
@@ -512,6 +513,7 @@ module nts.uk.at.view.kcp006.a {
                 $("#" + currentCalendar + " .event-note").append($("#" + currentCalendar + " .event-data[data-date='" + $(this).attr("data-date") + "']").children().clone());
                 $("#" + currentCalendar + " .event-note").css("top", $(this).offset().top - 10);
                 $("#" + currentCalendar + " .event-note").css("left", $(this).offset().left + 27);
+                $("#" + currentCalendar + " .event-note").css("background-color", "#E8DEF8");
                 $("#" + currentCalendar + " .event-note").show();
             }, function() {
                 $("#" + currentCalendar + " .event-note").hide();
@@ -563,6 +565,7 @@ module nts.uk.at.view.kcp006.a {
                             $("#" + currentCalendar + " .event-note").css("left", $(this).offset().left + 47);
                             $("#" + currentCalendar + " .event-note").css("min-height", "100px");
                             $("#" + currentCalendar + " .event-note").css("height", "fit-content");
+                            $("#" + currentCalendar + " .event-note").css("background-color", "#F8EFD4");
                             $("#" + currentCalendar + " .event-note").show();
                         }, function() {
                             $("#" + currentCalendar + " .event-note").hide();

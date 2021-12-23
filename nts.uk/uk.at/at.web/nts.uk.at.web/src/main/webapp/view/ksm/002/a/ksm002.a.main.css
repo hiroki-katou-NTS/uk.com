@@ -1,5 +1,5 @@
 .panel.panel-frame {
-	width: 570px;
+	width: 576px;
 	margin: 20px;
 }
 
@@ -54,9 +54,3 @@
 #screenB {
 	height: calc(100vh - 165px);
 }
-
-/* .spec-item label span {
-	width: 10px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-} */

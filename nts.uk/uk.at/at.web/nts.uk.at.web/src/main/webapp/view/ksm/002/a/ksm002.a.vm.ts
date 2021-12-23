@@ -112,6 +112,9 @@ module ksm002.a.viewmodel {
                         self.optionDates(arrOptionaDates);
                         self.optionDates.valueHasMutated();
                         self.isNew(false);
+                    } else {
+                        self.optionDates(arrOptionaDates);
+                        self.optionDates.valueHasMutated();
                     }
                     dfd.resolve();
                 })
@@ -148,7 +151,7 @@ module ksm002.a.viewmodel {
             let arrId: Array<number> = [];
             let selectedDate = moment(processMonth, self.dateFormat);
             service.getCompanySpecificDateByCompanyDateWithName(selectedDate.format(self.dateFormat)).done(function(lstComSpecDate: any) {
-                if (lstComSpecDate.length > 0) {
+                // if (lstComSpecDate.length > 0) {
                     self.isNew(false);
                     for (let j = 1; j < endOfMonth + 1; j++) {
                         let processDay: string = processMonth + _.padStart(j, 2, '0');
@@ -158,18 +161,18 @@ module ksm002.a.viewmodel {
                         //Loop in each Day
                         _.forEach(_.orderBy(lstComSpecDate,'specificDateItemNo','asc'), function(comItem) {
                             if (comItem.specificDate == processDay) {
-                                arrName.push(comItem.specificDateItemName);
-                                arrId.push(comItem.specificDateItemNo);
+                                // arrName.push(comItem.specificDateItemName);
+                                arrId = comItem.specificDateItemNo;
                             };
                         });
-                        self.boxItemList().filter(item => {
+                        arrName = self.boxItemList().filter(item => {
                             if (arrId.indexOf(item.id) >= 0) {
                                 return item;
                             }
-                        }).map(item => console.log(item.name));
+                        }).map(item => item.name);
                         arrOptionaDates.push(new OptionalDate(moment(processDay).format("YYYY-MM-DD"), arrName, arrId));
                     };
-                }
+                // }
                 //Return Array of Data in Month
                 self.serverSource = _.cloneDeep(arrOptionaDates);
                 dfd.resolve(arrOptionaDates);

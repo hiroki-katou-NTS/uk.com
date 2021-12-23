@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 430, height: 630 };</script>
+			<script>var dialogSize = { width: 418, height: 630 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificName
    			</com:ValidatorScript>
@@ -32,9 +32,9 @@
 							<!-- C1_3: No -->
 							<th>#{i18n.getText('KSM002_59')}</th>
 							<!-- C1_5: 表示名称 -->
-							<th data-bind="text: textKSM002_39"></th>
+							<th style="width: 156px;" data-bind="text: textKSM002_39"></th>
 							<!-- C1_4: 使用区分 -->
-							<th>#{i18n.getText('KSM002_38')}</th>
+							<th style="width: 160px;">#{i18n.getText('KSM002_38')}</th>
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: specificDateItem">
