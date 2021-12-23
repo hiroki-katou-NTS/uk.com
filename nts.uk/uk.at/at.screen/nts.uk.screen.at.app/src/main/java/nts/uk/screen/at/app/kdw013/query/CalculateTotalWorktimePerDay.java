@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.kdw013.query;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,7 @@ public class CalculateTotalWorktimePerDay {
 		// Loop List<日別勤怠(Work)>
 		for (IntegrationOfDaily daily : command.getIntegrationOfDailyLst()) {
 
-			for (TimeLeavingWork timeLeavingWork : daily.getAttendanceLeave().get().getTimeLeavingWorks()) {
+			for (TimeLeavingWork timeLeavingWork : daily.getAttendanceLeave().map(d -> d.getTimeLeavingWorks()).orElse(Collections.emptyList())) {
 
 				// 処理中の「日別勤怠(Work)．出退勤．出退勤．勤務NO」 = 1
 				if (timeLeavingWork.getWorkNo().v() == 1) {
