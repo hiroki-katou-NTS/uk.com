@@ -115,7 +115,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepositor
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByScheData;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHourRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSetRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSetRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
@@ -131,6 +135,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.Sn
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
@@ -569,6 +574,16 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
 	@Inject
 	private AttendanceItemConvertFactory factory;
+	@Inject
+	private WorkRegularAdditionSetRepository workRegularAdditionSetRepo;
+	@Inject
+	private AddSetManageWorkHourRepository addSetManageWorkHourRepo;
+	@Inject
+	private WorkFlexAdditionSetRepository workFlexAdditionSetRepo;
+	@Inject
+	private WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo;
+	@Inject
+	private FlexSetRepository flexSetRepo;
 
 	@Override
 	public List<AtomTask> aggregate(CacheCarrier cache, String cid, List<String> sids, boolean canAggrWhenLock) {
@@ -621,7 +636,8 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 				careUsedNumberRepo, childCareLeaveRemInfoRepo, careLeaveRemainingInfoRepo, tempChildCareManagementRepo,
 				tempCareManagementRepo, nursingLeaveSettingRepo, executionLogRepo, workingConditionRepository,
 				transaction, employmentAdapter, creatingDailyResultsConditionRepo, getPeriodFromPreviousToNextGrantDate,
-				workDaysNumberOnLeaveCountRepo);
+				workDaysNumberOnLeaveCountRepo, calculateDailyRecordServiceCenter, workRegularAdditionSetRepo, addSetManageWorkHourRepo, 
+				workFlexAdditionSetRepo, workDeformedLaborAdditionSetRepo, flexSetRepo);
 
 		return MonthlyAggregateForEmployees.aggregate(require, cid, sids, canAggrWhenLock);
 	}
@@ -760,7 +776,11 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 				EmploymentAdapter employmentAdapter,
 				CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo,
 				GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate,
-				WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo) {
+				WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo, 
+				CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter, 
+				WorkRegularAdditionSetRepository workRegularAdditionSetRepo, AddSetManageWorkHourRepository addSetManageWorkHourRepo, 
+				WorkFlexAdditionSetRepository workFlexAdditionSetRepo, WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo,
+				FlexSetRepository flexSetRepo) {
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
 					grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
 					specialLeaveBasicInfoRepo, interimRecAbasMngRepo, empSubstVacationRepo,
@@ -811,8 +831,9 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 					careUsedNumberRepo, childCareLeaveRemInfoRepo, careLeaveRemainingInfoRepo,
 					tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo, executionLogRepo,
 					workingConditionRepository, transaction, employmentAdapter, creatingDailyResultsConditionRepo,
-					getPeriodFromPreviousToNextGrantDate, workDaysNumberOnLeaveCountRepo,
-					calculateDailyRecordServiceCenter);
+					getPeriodFromPreviousToNextGrantDate, workDaysNumberOnLeaveCountRepo, calculateDailyRecordServiceCenter,
+					workRegularAdditionSetRepo, addSetManageWorkHourRepo,  workFlexAdditionSetRepo, workDeformedLaborAdditionSetRepo,
+					flexSetRepo);
 			this.cache = cache;
 		}
 

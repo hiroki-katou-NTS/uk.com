@@ -285,8 +285,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			GrantYearHolidayRepository grantYearHolidayRepo, PayoutSubofHDManaRepository payoutSubofHDManaRepo,
 			LeaveComDayOffManaRepository leaveComDayOffManaRepo, CheckCareService checkChildCareService,
 			WorkingConditionItemService workingConditionItemService, RemainCreateInforByRecordData remainCreateInforByRecordData,
-			SysEmploymentHisAdapter sysEmploymentHisAdapter
-			) {
+			SysEmploymentHisAdapter sysEmploymentHisAdapter) {
 		this.comSubstVacationRepo = comSubstVacationRepo;
 		this.compensLeaveComSetRepo = compensLeaveComSetRepo;
 		this.specialLeaveGrantRepo = specialLeaveGrantRepo;
