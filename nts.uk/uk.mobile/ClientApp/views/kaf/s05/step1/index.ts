@@ -298,7 +298,7 @@ export class KafS05Step1Component extends Vue {
 
                 return;
             }
-            if (displayInfoOverTime.latestMultiOvertimeApp) {
+            if (displayInfoOverTime.latestMultiOvertimeApp && !isOpenKDL) {
                 self.loadDataLatestMultiOvertime(displayInfoOverTime.latestMultiOvertimeApp);
             } else {
                 self.loadDataFromDisplayInfo(displayInfoOverTime, isOpenKDL);

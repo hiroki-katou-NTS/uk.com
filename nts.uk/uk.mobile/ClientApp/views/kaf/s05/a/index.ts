@@ -548,7 +548,10 @@ export class KafS05Component extends KafS00ShrComponent {
                 } else {
                     self.isMsg_1556 = false;
                 }
-                self.$mask('hide');
+                self.$nextTick(() => {
+                    self.customValidate(step1);
+                    self.$mask('hide');
+                });
             })
             .catch((res: any) => {
                 self.$nextTick(() => {
@@ -594,6 +597,7 @@ export class KafS05Component extends KafS00ShrComponent {
                     step1.loadDataFromDisplayInfo(self.model.displayInfoOverTime);
                 }
                 self.$nextTick(() => {
+                    self.customValidate(step1);
                     self.$mask('hide');
                 });
             }).catch((error) => {
@@ -1127,22 +1131,13 @@ export class KafS05Component extends KafS00ShrComponent {
                     if (res) {
                         let step1 = self.$refs.step1 as KafS05Step1Component;
                         // call API select work info
-                        let infoWithDateApplicationOp = _.get(self.model.displayInfoOverTime, 'infoWithDateApplicationOp') as InfoWithDateApplication;
-                        if (!_.isNil(infoWithDateApplicationOp)) {
-                            infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
-                            infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
-                            infoWithDateApplicationOp.workHours = res.data.workHours;
-                            infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
-                            infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
-                        } else {
-                            infoWithDateApplicationOp = {} as InfoWithDateApplication;
-                            infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
-                            infoWithDateApplicationOp.workHours = res.data.workHours;
-                            infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
-                            infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
-                            infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
-                            self.model.displayInfoOverTime.infoWithDateApplicationOp = infoWithDateApplicationOp;
-                        }
+                        let infoWithDateApplicationOp = {} as InfoWithDateApplication;
+                        infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
+                        infoWithDateApplicationOp.workHours = res.data.workHours;
+                        infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
+                        infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
+                        infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                        self.model.displayInfoOverTime.infoWithDateApplicationOp = infoWithDateApplicationOp;
                         step1.loadData(self.model.displayInfoOverTime, true, true);
                         step1.createHoursWorkTime();
                     }
@@ -1207,22 +1202,13 @@ export class KafS05Component extends KafS00ShrComponent {
                     if (res) {
                         // call API select work info
                         let step1 = self.$refs.step1 as KafS05Step1Component;
-                        let infoWithDateApplicationOp = _.get(self.model.displayInfoOverTime, 'infoWithDateApplicationOp') as InfoWithDateApplication;
-                        if (!_.isNil(infoWithDateApplicationOp)) {
-                            infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
-                            infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
-                            infoWithDateApplicationOp.workHours = res.data.workHours;
-                            infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
-                            infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
-                        } else {
-                            infoWithDateApplicationOp = {} as InfoWithDateApplication;
-                            infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
-                            infoWithDateApplicationOp.workHours = res.data.workHours;
-                            infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
-                            infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
-                            infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
-                            self.model.displayInfoOverTime.infoWithDateApplicationOp = infoWithDateApplicationOp;
-                        }
+                        let infoWithDateApplicationOp = {} as InfoWithDateApplication;
+                        infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
+                        infoWithDateApplicationOp.workHours = res.data.workHours;
+                        infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
+                        infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
+                        infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                        self.model.displayInfoOverTime.infoWithDateApplicationOp = infoWithDateApplicationOp;
                         step1.loadData(self.model.displayInfoOverTime, true, true);
                         step1.createHoursWorkTime();
                     }
