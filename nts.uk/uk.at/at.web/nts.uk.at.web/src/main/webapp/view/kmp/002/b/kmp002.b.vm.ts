@@ -23,6 +23,7 @@ module nts.uk.at.view.kmp002.b {
         new BoxModel(SupportCardEditSettingEnum.AfterZero, nts.uk.resource.getText("KMP002_22")),
         new BoxModel(SupportCardEditSettingEnum.AfterSpace, nts.uk.resource.getText("KMP002_23"))
       ]);
+      self.$blockui("grayout");
       self.$ajax(API.GET_INITIAL_DISPLAY)
         .then((data: any) => {
           if (data.editMethod) {
@@ -33,7 +34,7 @@ module nts.uk.at.view.kmp002.b {
           }
         }).fail(() => {
           $("#B1_1").find("label").eq(0).find("input").focus();
-        });
+        }).always(() => self.$blockui("clear"));
     }
 
     closeDialog() {
@@ -47,12 +48,13 @@ module nts.uk.at.view.kmp002.b {
       const data: SupportCardEditDto = {
         editMethod: vm.supportCardSetting().editMethod()
       }
+      vm.$blockui("grayout");
       vm.$ajax(API.UPDATE_SUPPORT_CARD_SETTING, data)
         .then((data: any) => {
           // set return value
           setShared('KMP002B_Output', vm.supportCardSetting().editMethod());
           vm.$window.close();
-        });
+        }).always(() => vm.$blockui("clear"));
     }
 
 	}

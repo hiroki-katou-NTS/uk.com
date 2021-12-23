@@ -60,9 +60,10 @@ public class SupportCardRepoImpl extends JpaRepository implements SupportCardRep
 
 	@Override
 	public void delete(List<SupportCard> domains) {
-		domains.stream().forEach(e -> {
-			commandProxy().remove(KrcmtSupportCard.class, new KrcmtSupportCardPk(e.getCid(), e.getSupportCardNumber().v()));
-		});
+		List<KrcmtSupportCardPk> primaryKeys = domains.stream()
+				.map(domain -> new KrcmtSupportCardPk(domain.getCid().toString(), domain.getSupportCardNumber().v()))
+				.collect(Collectors.toList());
+		commandProxy().removeAll(KrcmtSupportCard.class, primaryKeys);
 	}
 	
 	private SupportCard toDomain(KrcmtSupportCard entity) {

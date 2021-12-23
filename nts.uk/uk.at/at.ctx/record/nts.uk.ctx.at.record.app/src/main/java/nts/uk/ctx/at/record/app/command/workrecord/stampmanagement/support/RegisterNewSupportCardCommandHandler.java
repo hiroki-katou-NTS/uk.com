@@ -38,7 +38,7 @@ public class RegisterNewSupportCardCommandHandler extends CommandHandler<Support
 			throw new BusinessException("Msg_2137");
 		}
 		
-		// 応援カード作成する(Require, 会社ID, 応援カード番号, 職場ID): 応援カード
+		// 応援カード作成する
 		this.supportCardRepository.insert(Arrays.asList(command.toDomain()));
 	}
 

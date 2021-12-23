@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * AR: 応援カード編集設定
@@ -9,14 +11,19 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  * @author nws_namnv2
  */
 @Getter
-public class SupportCardEdit implements DomainAggregate {
+@AllArgsConstructor
+public class SupportCardEdit extends AggregateRoot {
 	
 	// 編集方法
 	private EditMethod editMethod;
 	
-	public SupportCardEdit(int editMethod) {
-		super();
-		this.editMethod = EditMethod.valueOf(editMethod);
+	// カードを編集する
+	public SupportCardNumber editTheCard(SupportCardNumber editNumber) {
+		int numberOfDigits = 6;
+		if (editNumber.v().toString().length() > numberOfDigits) {
+			new BusinessException("Msg_2130");
+		}
+		return editNumber;
 	}
 
 }

@@ -3,7 +3,6 @@
 module nts.uk.at.view.kmp002.a {
   import getText = nts.uk.resource.getText;
   import getShared = nts.uk.ui.windows.getShared;
-  import blockUI = nts.uk.ui.block;
   import modal = nts.uk.ui.windows.sub.modal;
   import setShared = nts.uk.ui.windows.setShared;
 
@@ -87,12 +86,13 @@ module nts.uk.at.view.kmp002.a {
 
     performInitialStartup(isInitSupportCard: boolean = false, isSetMode: boolean = false, indexSupportCard: number = 0) {
       const vm = this;
+      vm.$blockui("grayout");
       vm.$ajax(API.GET_INITIAL_STARTUP)
         .then((data: any) => {
           if (data) {
             vm.initData(new InitialStartup(data.supportCards, data.companyInfos, data.workplaceInfors, data.supportCardEdit), isInitSupportCard, isSetMode, indexSupportCard);
           }
-        });
+        }).always(() => vm.$blockui("clear"));
     }
 
     initData(data: InitialStartup, isInitSupportCard: boolean, isSetMode: boolean, indexSupportCard: number) {
@@ -226,6 +226,7 @@ module nts.uk.at.view.kmp002.a {
         }
         const supportCardId = vm.supportCard().supportCardNo();
         const supportCard = vm.supportCard();
+        vm.$blockui("grayout");
         vm.$ajax(API.REGISTER_SUPPORT_CARD, vm.supportCard())
           .then((data: any) => {
             vm.$dialog.info({ messageId: "Msg_15" });
@@ -234,16 +235,17 @@ module nts.uk.at.view.kmp002.a {
             vm.performInitialStartup(false, true);
           }).fail((err) => {
             vm.$dialog.error({ messageId: err.messageId });
-          });
+          }).always(() => vm.$blockui("clear"));
         return;
       } else {
         // Register for renewal of support card
         const indexUpdate = vm.getIndexOfSupportCard();
+        vm.$blockui("grayout");
         vm.$ajax(API.RENEWAL_SUPPORT_CARD, vm.supportCard())
           .then((data: any) => {
             vm.$dialog.info({ messageId: "Msg_15" });
             vm.performInitialStartup(true, false, indexUpdate);
-          });
+          }).always(() => vm.$blockui("clear"));
         return;
       }
     }
@@ -268,11 +270,12 @@ module nts.uk.at.view.kmp002.a {
           if (result === 'yes') {
             const indexDelete = vm.getIndexOfSupportCard();
             // delete the support card
+            vm.$blockui("grayout");
             vm.$ajax(API.DELETE_SUPPORT_CARD, vm.supportCard())
               .then((data: any) => {
                 vm.$dialog.info({ messageId: "Msg_16" });
                 vm.performInitialStartup(true, true, indexDelete);
-              });
+              }).always(() => vm.$blockui("clear"));
           }
         });
     }
@@ -322,6 +325,7 @@ module nts.uk.at.view.kmp002.a {
         workplaceId: vm.supportCard().workplaceId,
         baseDate: moment(vm.date()).format('YYYY/MM/DD')
       }
+      vm.$blockui("grayout");
       vm.$ajax(API.GET_REGISTRATION_INFO_CARD, param)
         .then((data: any) => {
           const supportCardNo = vm.supportCard().supportCardNo();
@@ -338,12 +342,12 @@ module nts.uk.at.view.kmp002.a {
             workplaceName = param.baseDate + ' 時点の名称なし';
           }
           vm.supportCard(new SupportCardDto(supportCardNo, supportCardNo, supportCardNumber, companyId, companyCode, companyName, workplaceId, workplaceCode, workplaceName));
-        });
+        }).always(() => vm.$blockui("clear"));
     }
 
     openDialogCDL008() {
       const vm = this;
-      blockUI.invisible();
+      vm.$blockui("grayout");
       setShared('inputCDL008', {
         baseDate: moment(vm.date()).toDate(),
         isMultiple: false,
@@ -364,7 +368,7 @@ module nts.uk.at.view.kmp002.a {
         const workplaceCode = workplaceInfor.code;
         const workplaceName = workplaceInfor.name;
         vm.supportCard(new SupportCardDto(supportCardNo, supportCardNo, supportCardNumber, companyId, companyCode, companyName, workplaceId, workplaceCode, workplaceName));
-        blockUI.clear();
+        vm.$blockui("clear");
       });
     }
 
