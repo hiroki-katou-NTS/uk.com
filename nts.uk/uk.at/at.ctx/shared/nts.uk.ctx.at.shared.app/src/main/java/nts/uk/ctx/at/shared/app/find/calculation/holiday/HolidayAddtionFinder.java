@@ -108,7 +108,7 @@ public class HolidayAddtionFinder {
 	 */
 	private RegularWorkDto convertToDbTypeRegularWork(WorkRegularAdditionSet regularWork) {
 		if (regularWork == null) {
-			return null;
+			return new RegularWorkDto(AppContexts.user().companyId());
 		}
 		RegularWorkDto regularWorkDto = new RegularWorkDto();
 		regularWorkDto.setUseAtr(regularWork.getAddSetOfWorkingTime().getUseAtr().value);
