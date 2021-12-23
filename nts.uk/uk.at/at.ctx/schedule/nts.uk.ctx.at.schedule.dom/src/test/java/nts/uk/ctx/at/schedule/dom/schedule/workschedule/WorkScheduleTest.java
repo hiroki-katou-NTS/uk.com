@@ -2196,6 +2196,7 @@ public class WorkScheduleTest {
 					tuple(recipient, SupportType.TIMEZONE, 10, 0, 11, 0));
 	}
 	
+	@Test
 	public void testRemoveSupportSchedule_Msg_3254(
 			@Injectable TargetOrgIdenInfor recipient) {
 		
