@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.adapter.AcquireWorkLocationEmplAdapter;
-import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.adapter.AffWorkplaceHistoryItemImport;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
@@ -13,22 +12,15 @@ import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 public class AcquiceWorkLocationAdapterImpl implements AcquireWorkLocationEmplAdapter {
 	@Inject
 	private WorkplacePub workplacePub;
-	
+
 	@Override
-	public AffWorkplaceHistoryItemImport getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
+	public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
+		// [No.650]社員が所属している職場を取得する
 		AffWorkplaceHistoryItemExport affWorkplaceHistoryExport = workplacePub.getAffWkpHistItemByEmpDate(employeeID, date);
-		return changeToImport(affWorkplaceHistoryExport);
+		if (affWorkplaceHistoryExport != null) {
+			return affWorkplaceHistoryExport.getWorkplaceId();
+		}
+		return null;
 	}
-	
-	private AffWorkplaceHistoryItemImport changeToImport (AffWorkplaceHistoryItemExport affWorkplaceHistoryExport) {
-		
-		AffWorkplaceHistoryItemImport affWorkplaceHistoryItemImport = new AffWorkplaceHistoryItemImport();
-		affWorkplaceHistoryItemImport.setHistoryId(affWorkplaceHistoryExport.getHistoryId());
-		affWorkplaceHistoryItemImport.setNormalWorkplaceId(affWorkplaceHistoryExport.getNormalWorkplaceId());
-		affWorkplaceHistoryItemImport.setWorkplaceId(affWorkplaceHistoryExport.getNormalWorkplaceId());
-		return affWorkplaceHistoryItemImport;
-	} 
-	
-	
 
 }

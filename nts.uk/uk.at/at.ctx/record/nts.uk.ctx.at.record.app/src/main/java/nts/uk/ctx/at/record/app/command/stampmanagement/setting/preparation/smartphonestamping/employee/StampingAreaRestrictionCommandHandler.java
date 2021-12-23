@@ -7,14 +7,14 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaReposiroty;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRepository;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
 
 @Stateless
 public class StampingAreaRestrictionCommandHandler extends CommandHandler<StampingAreaCmd> {
 	
 	@Inject
-	private  StampingAreaReposiroty stampingAreaReposiroty;
+	private  StampingAreaRepository stampingAreaReposiroty;
 	@Override
 	protected void handle(CommandHandlerContext<StampingAreaCmd> context) {
 		StampingAreaCmd cmd = context.getCommand();

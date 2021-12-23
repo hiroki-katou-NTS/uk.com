@@ -74,17 +74,16 @@ public class StampingAreaRestriction extends ValueObject {
 			String employeeId, Optional<GeoCoordinate> positionInfor) {
 		// [R-1]
 		val baseDate = GeneralDate.today();
-		Optional<WorkLocation> location = require.getWorkPlaceOfEmpl(employeeId, baseDate);
-		String workpalceId = location.flatMap(t -> t.getWorkplace()).map(t -> t.getWorkpalceId()).orElse("");
-		if (workpalceId.isEmpty()) {
+		Optional<String> workplaceId = require.getWorkPlaceOfEmpl(employeeId, baseDate);
+		if (!workplaceId.isPresent()) {
 			throw new BusinessException("Msg_427");
 		}
-		return require.findByWorkPlace(contractCd, companyId, workpalceId);
+		return require.findByWorkPlace(contractCd, companyId, workplaceId.get());
 	}
 
 	public static interface Require {
 		// [R-1] 社員が所属している職場を取得する
-		Optional<WorkLocation> getWorkPlaceOfEmpl(String employeeID, GeneralDate date);
+		Optional<String> getWorkPlaceOfEmpl(String employeeID, GeneralDate date);
 
 		// [R-2] 職場グループ所属情報を取得する
 		List<WorkLocation> findByWorkPlace(String contractCode, String cid, String workPlaceId);

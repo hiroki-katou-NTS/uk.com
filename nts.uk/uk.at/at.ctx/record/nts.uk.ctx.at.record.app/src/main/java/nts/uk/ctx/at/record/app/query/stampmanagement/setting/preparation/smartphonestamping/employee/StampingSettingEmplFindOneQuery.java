@@ -5,13 +5,13 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaReposiroty;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRepository;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
 
 @Stateless
 public class StampingSettingEmplFindOneQuery {
 	@Inject
-	private StampingAreaReposiroty stampingAreaReposiroty;  
+	private StampingAreaRepository stampingAreaReposiroty;  
 	
 	public StampingAreaRestrictionDto getStatuEmployee(String employId) {
 		Optional<StampingAreaRestriction> domain = stampingAreaReposiroty.findByEmployeeId(employId);

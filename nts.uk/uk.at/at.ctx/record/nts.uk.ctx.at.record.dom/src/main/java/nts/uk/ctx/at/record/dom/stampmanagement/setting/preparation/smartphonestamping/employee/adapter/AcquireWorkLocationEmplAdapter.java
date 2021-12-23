@@ -2,9 +2,10 @@ package nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphones
 
 import nts.arc.time.GeneralDate;
 
+/**
+ * 社員が所属している職場を取得するAdapter
+ */
 public interface AcquireWorkLocationEmplAdapter  {
 	
-	public AffWorkplaceHistoryItemImport getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
-	
-
+	public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
 }

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphones
 import java.util.List;
 import java.util.Optional;
 
-public interface StampingAreaReposiroty {
+public interface StampingAreaRepository {
 	void insertStampingArea(String emplId, StampingAreaRestriction areaRestriction);
 	
 	Optional<StampingAreaRestriction> findByEmployeeId (String employId);

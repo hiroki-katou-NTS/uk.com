@@ -7,13 +7,13 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaReposiroty;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRepository;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
 import nts.uk.ctx.at.record.infra.entity.stamp.management.KrcmStampEreaLimitSyaPK;
 import nts.uk.ctx.at.record.infra.entity.stamp.management.KrcmtStampEreaLimitSya;
 
 @Stateless
-public class StampingAreaReposirotyImpl extends JpaRepository implements StampingAreaReposiroty {
+public class StampingAreaReposirotyImpl extends JpaRepository implements StampingAreaRepository {
 	private static final String SELECT_SINGLE = "SELECT c FROM KrcmtStampEreaLimitSya c WHERE c.PK.sId = :employId";
 
 	@Override
