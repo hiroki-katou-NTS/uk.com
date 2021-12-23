@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import java.util.Optional;
 
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -59,7 +60,7 @@ public class GetSubHolOccurrenceSetting {
 		return (result != null && result.isUseDivision()) ? Optional.of(result) : Optional.empty();
 	}
 
-	public static interface Require extends WorkTimeSetting.Require, CompensatoryLeaveComSetting.RequireM2 {
+	public static interface Require extends WorkTimeSetting.Require, TimeVacationDigestUnit.Require {
 
 		//WorkTimeSettingRepository.findByCode
 		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode);

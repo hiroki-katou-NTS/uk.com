@@ -10,6 +10,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService.Require;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
@@ -24,8 +26,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.screen.com.app.find.cmm029.DisplayDataDto.DisplayDataDtoBuilder;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.license.option.OptionLicense;
 
 /**
  * UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM029_機能の選択.A :機能の選択.メニュー別OCD.休暇の設定機能を取得する.休暇の設定機能を取得する
@@ -48,6 +48,9 @@ public class LeaveSettingFunctionScreenQuery extends AbstractFunctionScreenQuery
 
 	@Inject
 	private NursingLeaveSettingRepository nursingLeaveSettingRepository;
+	
+	@Inject
+	private RecordDomRequireService requireService;
 	
 	@Override
 	protected DisplayDataDto getMainDisplayData(List<StandardMenu> standardMenus) {
@@ -75,13 +78,7 @@ public class LeaveSettingFunctionScreenQuery extends AbstractFunctionScreenQuery
 		DisplayDataDtoBuilder builder1 = this.findFromStandardMenu(standardMenus, "CMM029_20", "CMM029_23")
 				.useAtr(domain != null ? domain.getYearManageType().equals(ManageDistinct.YES) : true)
 				.programId("CMM029_22");
-		AnnualPaidLeaveSetting.Require require = new AnnualPaidLeaveSetting.Require() {
-					
-			@Override
-			public OptionLicense getOptionLicense() {
-				return AppContexts.optionLicense();
-			}
-		};
+		Require require = requireService.createRequire(); 
 		DisplayDataDtoBuilder builder2 = DisplayDataDto.builder().system(SYSTEM_TYPE).programId("CMM029_26")
 				.useAtr(domain != null ? domain.isManageTimeAnnualLeave(require) : true);
 		return Arrays.asList(builder1.build(), builder2.build());
