@@ -89,7 +89,9 @@ module nts.uk.at.view.kmr001.b {
 			}).then((valid) => {
 				if(valid) {
 					let command = vm.createCommand();
-					return vm.$ajax(API.ADD_BENTO_RESERVATION, command);	
+					vm.$ajax(API.ADD_BENTO_RESERVATION, command).done(() => {
+						vm.$dialog.info({ messageId: 'Msg_15' });	
+					});	
 				}	
 			}).fail(function(res) {
 				vm.$dialog.error({ messageId: res.messageId });	
