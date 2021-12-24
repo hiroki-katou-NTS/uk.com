@@ -25,7 +25,7 @@
 				<button tabindex="2" class="proceed save" data-bind="click:saveData">#{i18n.getText('KMK013_168')}</button>
 			</div>
 			<div id="contents-area">
-				<div>
+				<div class="setting-zone">
           <div id="D8_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_578')}</div>
           <div id="D8_2" class="group-radio" data-bind="ntsRadioBoxGroup: {
             name: '#[KMK013_578]',
@@ -35,7 +35,7 @@
             value: selectedCalculationMethod
           }" tabindex="3"></div>
 				</div>
-				<div style="width: 1000px">
+				<div class="setting-zone" style="width: 1000px">
 					<div id="D3">
 						<div id="D3_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_491')}</div>
 						<div class="group-radio" tabIndex='4'>

@@ -104,6 +104,10 @@ div[tabindex]:focus {
 	padding: 3px 0;
 }
 
+.setting-zone {
+  margin-bottom: 15px;
+}
+
 #D3_4, #D4_4 {
 	padding-left: 35px;
 }
