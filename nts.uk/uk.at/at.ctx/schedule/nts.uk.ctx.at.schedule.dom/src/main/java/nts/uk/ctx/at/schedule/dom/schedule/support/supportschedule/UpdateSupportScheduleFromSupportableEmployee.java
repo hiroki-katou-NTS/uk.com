@@ -29,7 +29,7 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 	 * @param supportableEmployee 応援可能な社員
 	 * @return
 	 */
-	public RegisterResultFromSupportableEmployee add(Require require, SupportableEmployee supportableEmployee) {
+	public static RegisterResultFromSupportableEmployee add(Require require, SupportableEmployee supportableEmployee) {
 		
 		val addingTicket = supportableEmployee.toTickets();
 		
@@ -44,7 +44,7 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 	 * @param afterModify 修正後
 	 * @return
 	 */
-	public RegisterResultFromSupportableEmployee modify(Require require, SupportableEmployee afterModify) {
+	public static RegisterResultFromSupportableEmployee modify(Require require, SupportableEmployee afterModify) {
 		
 		SupportableEmployee beforeModify = require.getSupportableEmployee(afterModify.getId()).get();
 		List<SupportTicket> ticketsBeforeModify = beforeModify.toTickets();
@@ -98,7 +98,7 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 	 * @param supportableEmployee 応援可能な社員
 	 * @return
 	 */
-	public RegisterResultFromSupportableEmployee remove(Require require, SupportableEmployee supportableEmployee) {
+	public static RegisterResultFromSupportableEmployee remove(Require require, SupportableEmployee supportableEmployee) {
 		
 		val removingTicket = supportableEmployee.toTickets();
 		return updateSupportScheduleBySupportTicket(require, supportableEmployee, removingTicket, 
@@ -113,7 +113,7 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 	 * @param doSomething 応援予定変更処理
 	 * @return
 	 */
-	private RegisterResultFromSupportableEmployee updateSupportScheduleBySupportTicket(
+	private static RegisterResultFromSupportableEmployee updateSupportScheduleBySupportTicket(
 			Require require, SupportableEmployee supportableEmployee, 
 			List<SupportTicket> supportTicketList, ISupportScheduleRegister processUpdateSupportSchedule) {
 		
@@ -154,7 +154,7 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 	 * @param ticketsAfterModify 修正後の応援チケットリスト
 	 * @return
 	 */
-	private RegisterResultFromSupportableEmployee updateSupportScheduleByModifySupportTicket(
+	private static RegisterResultFromSupportableEmployee updateSupportScheduleByModifySupportTicket(
 			Require require, SupportableEmployee supportableEmployee,
 			List<SupportTicket> ticketsBeforeModify, List<SupportTicket> ticketsAfterModify
 			) {
