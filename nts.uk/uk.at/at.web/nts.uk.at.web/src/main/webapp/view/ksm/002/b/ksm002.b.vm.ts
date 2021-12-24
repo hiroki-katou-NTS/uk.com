@@ -172,6 +172,7 @@ module ksm002.b.viewmodel {
                     nts.uk.ui.block.invisible();
                     self.deleteCalendarWorkPlace().done(()=>{
                         nts.uk.ui.block.clear();        
+                        self.start(false);
                     }).fail((res)=>{
                         nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
                     });        
@@ -235,17 +236,30 @@ module ksm002.b.viewmodel {
                 bService.getCalendarWorkPlaceByCode(workplaceParam).done(data=>{
                     self.rootList = data;
                     self.calendarPanel.optionDates.removeAll();
-                    let a = [];
-                    if(!nts.uk.util.isNullOrEmpty(data)) {
-                        data.forEach(item => {
-                            let sortItemNumber = _.sortBy(item.specificDateItemNo, o => o);
-                            a.push(new CalendarItem(item.specificDate, self.convertNumberToName(sortItemNumber)))                    
-                        });   
-                        self.isUpdate(true);
-                    } else {
-                        self.isUpdate(false);
-                    }
-                    self.calendarPanel.optionDates(a);
+                    let isEmpty = false;
+                    let arrName: Array<string> = [];
+                    let arrId: Array<number> = [];
+                    let arrOptionaDates: Array<CalendarItem> = [];
+                    let endOfMonth: number = moment(self.yearMonthPicked(), "YYYYMM").endOf('month').date();
+                    for (let j = 1; j < endOfMonth + 1; j++) {
+                        let processDay: string = self.yearMonthPicked() + _.padStart(j, 2, '0');
+                        processDay = moment(processDay).format("YYYY/MM/DD");
+                        arrName = [];
+                        arrId = [];
+                        //Loop in each Day
+                        _.forEach(data, function(comItem) {
+                            if (comItem.specificDate == processDay) {
+                                arrId = comItem.specificDateItemNo;
+                            };
+                        });
+                        arrName = self.convertNumberToName(arrId);
+                        if (arrName.length > 0) {
+                            isEmpty = true;
+                        }
+                        arrOptionaDates.push(new CalendarItem(moment(processDay).format("YYYY-MM-DD"), arrName));
+                    };
+                    self.isUpdate(isEmpty);
+                    self.calendarPanel.optionDates(arrOptionaDates);
                     self.calendarPanel.optionDates.valueHasMutated();
                     dfd.resolve();
                 }).fail(res => {
