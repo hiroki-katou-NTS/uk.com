@@ -1360,31 +1360,15 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<WorkFixedDto> findWorkFixed(int closureId, int yearMonth) {
 		
 		String SELECT_LIST_WORK_FIXED = "SELECT r FROM KrcdtWorkFixed r WHERE r.pk.companyId = :companyId "
-				+ "and r.pk.closureId = :closureId " ;
+				+ "and r.pk.closureId = :closureId " 
+				+ "and r.pk.processYM = :processYM ";
 		
 		List<EmploymentConfirmed> employmentConfirmeds = this.queryProxy().query(SELECT_LIST_WORK_FIXED, KrcdtWorkFixed.class)
 				.setParameter("companyId", AppContexts.user().companyId())
-				.setParameter("closureId", closureId).getList(x ->toDomainEmploymentConfirmed(x));
-		
-//		try (val statement = this.connection().prepareStatement(
-//				"select * from KRCDT_WORK_FIXED where CLOSURE_ID = ? and CID = ? ")) {
-//			statement.setInt(1, closureId);
-//			statement.setString(2, AppContexts.user().companyId());
+				.setParameter("closureId", closureId)
+				.setParameter("processYM", yearMonth).getList(x ->toDomainEmploymentConfirmed(x));
 			
 			List<WorkFixedDto> workOp = new ArrayList<>();
-
-//			List<WorkFixedDto> workOp = new NtsResultSet(statement.executeQuery()).getList(rec -> {
-//				EmploymentConfirmed w = new EmploymentConfirmed();
-//				w.setKrcstWorkFixedPK(
-//						new EmploymentConfirmed(rec.getString("WKPID"), rec.getInt("CLOSURE_ID"), rec.getString("CID")));
-//				w.setConfirmPid(rec.getString("CONFIRM_PID"));
-//				w.setConfirmCls(rec.getInt("CONFIRM_CLS"));
-//				w.setFixedDate(rec.getDate("FIXED_DATE"));
-//				w.setProcessYm(rec.getInt("PROCESS_YM"));
-//
-//				return new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
-//						w.getConfirmCls(), w.getFixedDate(), yearMonth, w.getKrcstWorkFixedPK().getCid());
-//			});
 			
 			workOp = employmentConfirmeds.stream().map(m -> {
 				return new WorkFixedDto(
@@ -1399,7 +1383,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			}).collect(Collectors.toList());
 
 			return workOp;
-//		}
 			
 	}
 	
