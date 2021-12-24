@@ -3875,7 +3875,7 @@ public class ProgramsManager {
             , "/view/kmp/002/a/index.xhtml");
     public static final Program KMP002B = new Program(WebAppId.AT
             , ProgramIdConsts.KMP002B
-            , "KMP002_2"
+            , "KMP002_4"
             , "/view/kmp/002/b/index.xhtml");
 
     /**
