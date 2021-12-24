@@ -56,7 +56,7 @@ public class ReservationConfirmationListScreenQuery {
         }
 
         // 取得する(会社ID、年月日) 会社ID＝ログイン会社ID,年月日＝9999/12/31
-        List<BentoMenuHistory> bentoMenuLst = bentoMenuRepo.getBentoMenuPeriod(companyId, new DatePeriod(startDate, endDate));
+        List<BentoMenuHistory> bentoMenuLst = bentoMenuRepo.findByCompanyPeriod(companyId, new DatePeriod(startDate, endDate));
 
         List<Bento> menu = bentoMenuLst.stream().flatMap(x -> x.getMenu().stream()).collect(Collectors.toList());
         List<List<Bento>> partitions = new ArrayList<>(

@@ -444,8 +444,8 @@ public class CreateOrderInfoFileQuery {
         for(BentoReservation item : reservations){
             int totalFee = 0;
             reservationDetails.addAll(item.getBentoReservationDetails());
-            BentoMenuHistory bentoMenuList = bentoMenuHistRepository.getBentoMenu(companyId, item.getReservationDate().getDate());
-            if (bentoMenuList == null) {
+            Optional<BentoMenuHistory> opBentoMenuHistory = bentoMenuHistRepository.findByCompanyDate(companyId, item.getReservationDate().getDate());
+            if (!opBentoMenuHistory.isPresent()) {
             	continue;
 			}
             List<BentoTotalDto> bentoTotalDtoLst = new ArrayList<>();
@@ -455,7 +455,7 @@ public class CreateOrderInfoFileQuery {
             BentoMenuByClosingTime menu = BentoMenuByClosingTime.createForCurrent(
             		roleID, 
             		reservationSetting, 
-            		bentoMenuList.getMenu(), 
+            		opBentoMenuHistory.get().getMenu(), 
             		orderAtr, 
             		item.getReservationDate().getDate());
             List<BentoItemByClosingTime> bentos;

@@ -105,7 +105,7 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 		@Override
 		public BentoMenuHistory getBentoMenu(ReservationDate reservationDate,Optional<WorkLocationCode> workLocationCode) {
 			String companyID = AppContexts.user().companyId();
-			return bentoMenuRepository.getBentoMenu(companyID, reservationDate.getDate(),workLocationCode);
+			return bentoMenuRepository.findByCompanyDate(companyID, reservationDate.getDate()).get();
 		}
 
 		@Override

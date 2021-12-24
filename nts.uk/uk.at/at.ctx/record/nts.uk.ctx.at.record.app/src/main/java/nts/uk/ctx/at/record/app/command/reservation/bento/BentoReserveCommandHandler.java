@@ -109,7 +109,7 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 		@Override
 		public BentoMenuHistory getBentoMenu(ReservationDate reservationDate,Optional<WorkLocationCode> workLocationCode) {
 			String companyID = AppContexts.user().companyId();
-			return bentoMenuRepository.getBentoMenu(companyID, reservationDate.getDate(),workLocationCode);
+			return bentoMenuRepository.findByCompanyDate(companyID, reservationDate.getDate()).get();
 		}
 
 		@Override
