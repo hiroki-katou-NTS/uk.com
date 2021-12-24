@@ -42,7 +42,7 @@ module nts.uk.at.view.kdp014.a {
         new BoxModel(1, nts.uk.resource.getText('KDP014_7')),
         new BoxModel(0, nts.uk.resource.getText('KDP014_8')),
       ]);
-      vm.selectedId = ko.observable(null);
+      vm.selectedId = ko.observable(0);
       vm.enableLocation = ko.observable(false);
 
       vm.itemList2 = ko.observableArray([
@@ -50,7 +50,7 @@ module nts.uk.at.view.kdp014.a {
         new BoxModel(1, nts.uk.resource.getText('KDP014_11')),
         new BoxModel(0, nts.uk.resource.getText('KDP014_12'))
       ]);
-      vm.selectedId2 = ko.observable(null);
+      vm.selectedId2 = ko.observable(0);
       vm.enableStamp = ko.observable(false);
       vm.enabledelete = ko.observable(false);
 
