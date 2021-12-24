@@ -29,7 +29,7 @@ public class ApplicationAvailableTest {
 	private GeneralDate date = GeneralDate.today();
 	private ApplicationTypeShare targetApp = EnumAdaptor.valueOf(1, ApplicationTypeShare.class);
 	private ApprovalFunctionSet dataTest = new ApprovalFunctionSet(new ArrayList<>());
-	private ApplicationUseSetting itemSuccess = ApplicationUseSetting.createNew(0, 1, "dummy");
+	private ApplicationUseSetting itemSuccess = ApplicationUseSetting.createNew(1, 1, "dummy");
 	private ApplicationUseSetting itemFail = ApplicationUseSetting.createNew(0, 2, "dummy");
 	private ApplicationSetting appSetting = new ApplicationSetting(cid, null, new ArrayList<>(), new ArrayList<>(),
 											new ArrayList<>(), null, new ArrayList<>(), null);
