@@ -2909,15 +2909,28 @@ module nts.uk.ui.at.kdw013.calendar {
                   }
 				  
                    let tempEs = [...events()];
-                    _.forEach(tempEs, (evn) => {
-                        if (evn.extendedProps.id == extendedProps.id) {
-                            evn.extendedProps.isChanged = true;
-                            evn.extendedProps.taskBlock.caltimeSpan = { start: evn.start, end: evn.end };
-                            evn.extendedProps.period = { start: evn.start, end: evn.end };
-                        };
+
+                   let evn = _.find(tempEs, tempE => tempE.extendedProps.id == event.id);
+                    evn.extendedProps.isChanged = true;
+                    evn.extendedProps.taskBlock.caltimeSpan = { start: evn.start, end: evn.end };
+                    evn.extendedProps.period = { start: evn.start, end: evn.end };
+
+                    let it = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
+                    let refTimezone = { start: (moment(start).hour() * 60) + moment(start).minute(), end: (moment(end).hour() * 60) + moment(end).minute() };
+                    let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(event.start), 'days'));
+                    let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                    _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                        goOutBreakTimeLst.push({ start, end });
                     });
-                    events(tempEs);
-                    updateEvents();
+                    let calParam = { refTimezone, goOutBreakTimeLst };
+                    
+                        vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                            it.value = time;
+                            events(tempEs);
+                            updateEvents();
+                        });
+                    
+                   
 
                 },
                 eventResizeStop: ({ el, event }) => {
