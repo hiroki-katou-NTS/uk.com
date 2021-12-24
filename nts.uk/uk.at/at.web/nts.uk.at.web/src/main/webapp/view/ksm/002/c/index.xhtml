@@ -40,8 +40,8 @@
 					<tbody data-bind="foreach: specificDateItem">
 						<tr>
 							<td data-bind="text: ($index()+1)"></td>
-							<td>
-								<input tabindex="1" class="specificName" data-bind="ntsTextEditor: {
+							<td tabindex="1">
+								<input class="specificName" data-bind="ntsTextEditor: {
 										name: '#[KSM002_39]',
 										value: specificName,
 										constraint: 'SpecificName',
@@ -49,8 +49,8 @@
 										required: true },
 										attr: { id: 'specificName' + $index()}" />
 							</td>
-							<td>
-								<div tabindex="2" class="cf" data-bind="ntsSwitchButton: {
+							<td tabindex="2">
+								<div class="cf" data-bind="ntsSwitchButton: {
 										name: '#[KSM002_38]',
 										options: ko.observableArray([
 											{ code: 1, name: '#{i18n.getText('Enum_UseAtr_Use')}' },

@@ -58,8 +58,11 @@ module ksm002.a.viewmodel {
                     self.openKsm002EDialog(date);
                 },
                 cellClick: function(date) {
-                    // let param: IData = { date: date, selectable: _.map(self.boxItemList(), 'id'), selecteds: self.selectedIds() };
-                    // self.setSpecificItemToSelectedDate(param);
+                    const selectedIds = self.boxItemList().filter((item) => item.choose() == 1).map((item) => item.id);
+                    if (selectedIds.length > 0) {
+                        let param: IData = { date: date, selectable: _.map(self.boxItemList(), 'id'), selecteds: selectedIds };
+                        self.setSpecificItemToSelectedDate(param);
+                    }
                 }
             });
             //Side bar tab change
@@ -280,11 +283,11 @@ module ksm002.a.viewmodel {
             var self = this;
             let dfd = $.Deferred<any>();
             //Check Is used item 
-            if (self.hasItemSpecNotUse()) {
+            if (self.getInsertCommand().length == 0) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });
             } else {
                 // UDPATE
-                service.insertComSpecificDate(self.getUpdateCommand()).done(function(res: Array<any>) {
+                service.insertComSpecificDate(self.getInsertCommand()).done(function(res: Array<any>) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         if(_.flattenDeep(_.map(self.optionDates(), o => o.listId)).length == 0){
                             self.isNew(true);
@@ -326,12 +329,10 @@ module ksm002.a.viewmodel {
          */
         getInsertCommand() {
             var self = this;
-            let lstComSpecificDateCommand: Array<ICompanySpecificDateCommand> = [];
+            let lstComSpecificDateCommand: Array<any> = [];
             _.forEach(self.optionDates(), function(processDay) {
                 if (processDay.listId.length > 0) {
-                    _.forEach(processDay.listId, function(id) {
-                        lstComSpecificDateCommand.push({ specificDate: moment(processDay.start, 'YYYYMMDD').format(self.dateFormat), specificDateNo: Number(id) });
-                    });
+                    lstComSpecificDateCommand.push({ specificDate: moment(processDay.start, 'YYYYMMDD').format(self.dateFormat), specificDateNo: processDay.listId });
                 };
             });
             return lstComSpecificDateCommand;

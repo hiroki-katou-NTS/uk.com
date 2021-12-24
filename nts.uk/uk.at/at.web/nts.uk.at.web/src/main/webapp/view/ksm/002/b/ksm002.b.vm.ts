@@ -48,7 +48,10 @@ module ksm002.b.viewmodel {
             // calendar event handler 
             $("#calendar1").ntsCalendar("init", {
                 cellClick: function(date) {
-                    nts.uk.ui._viewModel.content.viewModelB.setListText(date, self.convertNumberToName(self.selectedIds()));
+                    const selectedIds = self.checkBoxList().filter((item) => item.choose() == 1).map((item) => item.id);
+                    if (selectedIds.length > 0) {
+                        nts.uk.ui._viewModel.content.viewModelB.setListText(date, self.convertNumberToName(selectedIds));
+                    }
                 },
                 buttonClick: function(date) {
                     let item = _.find(self.calendarPanel.optionDates(), o => o.start == date);
@@ -71,7 +74,22 @@ module ksm002.b.viewmodel {
                 self.currentWorkPlace().id.subscribe(value => {
                     nts.uk.ui.block.invisible();
                     let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs');
-                    let item = _.find(data, m => m.workplaceId == value);
+                    let item: any = null;
+                    data.forEach((wpl) => {
+                        if (wpl.id == value) {
+                            item = wpl;
+                            return;
+                        }
+                        if (wpl.children.length > 0) {
+                            wpl.children.forEach((wplChild: any) => {
+                                if (wplChild.id == value) {
+                                    item = wplChild;
+                                    return;
+                                }
+                            });
+                        }
+                    })
+                    // let item = _.find(data, m => m.id == value);
                     if (item) {
                         self.currentWorkPlace().name(item.name);
                     } else {
@@ -129,19 +147,15 @@ module ksm002.b.viewmodel {
             } else {
                 $(".yearMonthPicker").trigger("validate");
                 if (!nts.uk.ui.errors.hasError()) {
-                    if(nts.uk.util.isNullOrEmpty(self.selectedIds())){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_339" });     
+                    if(self.createCommand().length == 0) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });       
                     } else {
-                        if(!self.checkItemUse()) {
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });       
-                        } else {
-                            nts.uk.ui.block.invisible();
-                            self.updateCalendarWorkPlace().done(()=>{
-                                nts.uk.ui.block.clear();        
-                            }).fail((res)=>{
-                                nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
-                            });
-                        }
+                        nts.uk.ui.block.invisible();
+                        self.insertCalendarWorkPlace().done(()=>{
+                            nts.uk.ui.block.clear();        
+                        }).fail((res)=>{
+                            nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
+                        });
                     }
                 }
             }
@@ -264,6 +278,7 @@ module ksm002.b.viewmodel {
             var dfd = $.Deferred();
             bService.updateCalendarWorkPlace(self.createCommand()).done(data=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                self.start(false);
                 self.getCalendarWorkPlaceByCode().done(()=>{dfd.resolve();}).fail((res)=>{dfd.reject(res);});   
             }).fail(res => {
                 dfd.reject(res);
@@ -396,19 +411,15 @@ module ksm002.b.viewmodel {
         createCommand(){
             const vm = this;
             let arrCommand: any[] = [];
-            let startOfMonth = 1;
-            const endOfMonth: number = moment(vm.yearMonthPicked(), "YYYYMM").endOf('month').date();
-            const selectedIds: any[] = vm.checkBoxList().filter((item) => item.choose() == 1).map(item => item.id);
-            while(startOfMonth <= endOfMonth) {
-                let processDay: string = vm.yearMonthPicked() + _.padStart(startOfMonth + '', 2, '0');
-                processDay = moment(processDay).format('YYYY/MM/DD');
-                arrCommand.push({
-                    workPlaceId: vm.currentWorkPlace().id(),
-                    specificDate: processDay,
-                    specificDateItemNo: selectedIds
-                });
-                startOfMonth++;
-            }
+            vm.calendarPanel.optionDates().forEach(item => {
+                if (item.listText.length > 0) {
+                    arrCommand.push({
+                        workPlaceId: vm.currentWorkPlace().id(),
+                        specificDate: moment(item.start).format('YYYY/MM/DD'),
+                        specificDateItemNo: vm.convertNameToNumber(item.listText)
+                    });
+                }
+            });
             return arrCommand;
         }
         
