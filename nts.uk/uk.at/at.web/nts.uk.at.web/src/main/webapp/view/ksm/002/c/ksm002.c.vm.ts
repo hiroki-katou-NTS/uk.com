@@ -14,12 +14,7 @@ module ksm002.c {
             vm.textKSM002_39 = nts.uk.resource.getText("KSM002_39")+ '(' + nts.uk.util.getConstraintMes("SpecificName") +')';
             vm.startPage().done(() => {
                 nts.uk.util.value.reset($(".specificName"));
-                $('.specificName:eq('+0+')').focus();
-                $("* input").attr('tabindex', -1);
-                $("#specific-set-tbl-b > tbody > tr > td:NTH-CHILD(2) > div").each(function (i) { $(this).attr('tabindex', i*2+1); });
-                $("#specific-set-tbl-b > tbody > tr > td:NTH-CHILD(3) > span > input").each(function (i) { $(this).attr('tabindex', i*2+2); });
-                $("#functions-area-bottom > button:NTH-CHILD(1)").attr('tabindex', 21);
-                $("#functions-area-bottom > button:NTH-CHILD(2)").attr('tabindex', 22);
+                $('.specificName:eq(0)').focus();
             })
         }
         
