@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphones
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -112,28 +113,31 @@ public class StampingAreaRestrictionTest {
 	public void setValueFindAll() {
 		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.useWithinAreaAndLoacation();
 		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampingAreaRestrictionTestHelp.getGeoCoordinateDefault());//dummy
+		List<WorkLocation> listWorkLocation = StampingAreaRestrictionTestHelp.createDataForFindAll("dummy", "dummy", "dummy");
 		new Expectations() {
 			{
 			require.findAll(contractCD);
 			result = StampingAreaRestrictionTestHelp.createDataForFindAll("dummy", "dummy", "dummy");
 			}	
 		};
-		Optional<WorkLocation> lisst = domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor);
-		assertThat(lisst).isNotEmpty();
+		Optional<WorkLocation> optWorklocation = domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor);
+		assertThat(optWorklocation).isNotEmpty();
+		assertThat(listWorkLocation.get(0).getWorkLocationCD()).isEqualTo(optWorklocation.get().getWorkLocationCD());
 	}
-	
+
 	@Test
 	public void setValueForWork() {
 		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.notUseAreanAndUseOnlyWorkplace();
 		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampingAreaRestrictionTestHelp.getGeoCoordinateDefault());//dummy
+		List<WorkLocation> listWorkLocation = StampingAreaRestrictionTestHelp.createDataForFindAll("dummy", "dummy", "dummy");
 		new Expectations() {
 			{
 			require.findAll(contractCD);
 			result = StampingAreaRestrictionTestHelp.createDataForFindAll("dummy", "dummy", "dummy");
 			}	
 		};
-		Optional<WorkLocation> lisst = domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor);
-		assertThat(lisst).isNotEmpty();
+		Optional<WorkLocation> optWorklocation = domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor);
+		assertThat(optWorklocation).isNotEmpty();
+		assertThat(listWorkLocation.get(0).getWorkLocationCD()).isEqualTo(optWorklocation.get().getWorkLocationCD());
 	}
-	
 }

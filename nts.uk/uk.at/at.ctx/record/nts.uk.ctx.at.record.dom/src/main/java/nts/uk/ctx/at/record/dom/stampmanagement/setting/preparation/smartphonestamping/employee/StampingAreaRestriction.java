@@ -38,7 +38,6 @@ public class StampingAreaRestriction extends ValueObject {
 	 *
 	 * @return the work location
 	 */
-
 	public Optional<WorkLocation> checkAreaStamp(Require require, String contractCd, String companyId,
 												 String employeeId, Optional<GeoCoordinate> positionInfor) {
 		Optional<WorkLocation> workLocation = null;
