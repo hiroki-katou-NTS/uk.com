@@ -16,6 +16,7 @@ import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReservedYearHolidayImport
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.RsvLeaUsedCurrentMonImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.CurrentHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
+import nts.uk.ctx.at.function.dom.holidaysremaining.report.SpecialVacationPastSituation;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.AbsenceleaveCurrentMonthOfEmployee;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.MonthlyAbsenceleaveRemainExport;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.export.DayoffCurrentMonthOfEmployee;
@@ -107,12 +108,23 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 
 		//263
 		List<SpecialHolidayRemainDataOutput> lstSpeHd = e.getSpeHdOfConfMonVer2(employeeId, period, mapRemainMer);
-		List<SpecialHolidayImported> result263 = new ArrayList<>();
-		for (SpecialHolidayRemainDataOutput speHd : lstSpeHd) {
-			SpecialHolidayImported specialHoliday = new SpecialHolidayImported(speHd.getYm(), speHd.getUseDays(),
-					speHd.getUseTimes(), speHd.getRemainDays(), speHd.getRemainTimes());
-			result263.add(specialHoliday);
-		}
+		// 2021.12.24 - 3S - chinh.hm  - issues #122037 - 変更 START
+		//List<SpecialHolidayImported> result263 = new ArrayList<>();
+		//for (SpecialHolidayRemainDataOutput speHd : lstSpeHd) {
+		//	SpecialHolidayImported specialHoliday = new SpecialHolidayImported(speHd.getYm(), speHd.getUseDays(),
+		//			speHd.getUseTimes(), speHd.getRemainDays(), speHd.getRemainTimes());
+		//	result263.add(specialHoliday);
+		//}
+		// 2021.12.24 - 3S - chinh.hm  - issues #122037 - 変更 END
+		List<SpecialVacationPastSituation> result263 = lstSpeHd.stream().map(e -> new SpecialVacationPastSituation(
+				e.getSid(),
+				e.getYm(),
+				e.getSpecialHolidayCd(),
+				e.getUseDays(),
+				e.getUseTimes(),
+				e.getAfterRemainDays() == 0 ?e.getBeforeRemainDays() :e.getAfterRemainDays(),
+				e.getAfterRemainTimes() == 0 ?e.getBeforeRemainTimes():e.getAfterRemainTimes()
+		)).collect(Collectors.toList());
 
 		return new HolidayRemainMerEx(result255, result258, result259, result260, result263);
 	}

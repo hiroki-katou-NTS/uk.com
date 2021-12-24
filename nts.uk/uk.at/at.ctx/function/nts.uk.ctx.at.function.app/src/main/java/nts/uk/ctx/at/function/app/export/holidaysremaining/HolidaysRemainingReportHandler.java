@@ -121,6 +121,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
     @Inject
     private ClosureEmploymentRepository closureEmploymentRepository;
 
+    @Inject
+    private ClosureRepository closureRepo;
+
     @Override
     protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
         val query = context.getQuery();
@@ -426,7 +429,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
 		// 過去月の年月のリスト作成
         val lstYrMon = ConvertHelper.yearMonthsBetween(period);
-        Map<YearMonth, List<RemainMerge>> mapRemainMer = repoRemainMer.findBySidsAndYrMons(employeeId, lstYrMon);
+        //Map<YearMonth, List<RemainMerge>> mapRemainMer = repoRemainMer.findBySidsAndYrMons(employeeId, lstYrMon);
 
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -995,20 +998,25 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		//========================================
 		// 過去月
 		//========================================
-		// Call RequestList263
-        getSpeHdOfConfMonVer2 =
-                rq263.getSpeHdOfConfMonVer2(employeeId,
-                							period,
-                							mapRemainMer).stream().map(e -> new SpecialVacationPastSituation(
-                        e.getSid(),
-                        e.getYm(),
-                        e.getSpecialHolidayCd(),
-                        e.getUseDays(),
-                        e.getUseTimes(),
-                        e.getAfterRemainDays() == 0 ?e.getBeforeRemainDays() :e.getAfterRemainDays(),
-                        e.getAfterRemainTimes() == 0 ?e.getBeforeRemainTimes():e.getAfterRemainTimes()
-                )).collect(Collectors.toList());
 
+
+		// Call RequestList263
+        //-----------------------------------------------------------------------------------
+        // 2021.12.24 - 3S - chinh.hm  - issues #122037 - 変更 START
+        //getSpeHdOfConfMonVer2 =
+        //        rq263.getSpeHdOfConfMonVer2(employeeId,
+        //        							period,
+        //        							mapRemainMer).stream().map(e -> new SpecialVacationPastSituation(
+        //                e.getSid(),
+        //                e.getYm(),
+        //                e.getSpecialHolidayCd(),
+        //                e.getUseDays(),
+        //                e.getUseTimes(),
+        //                e.getAfterRemainDays() == 0 ?e.getBeforeRemainDays() :e.getAfterRemainDays(),
+        //                e.getAfterRemainTimes() == 0 ?e.getBeforeRemainTimes():e.getAfterRemainTimes()
+        //        )).collect(Collectors.toList());
+        // 2021.12.24 - 3S - chinh.hm  - issues #122037 - 変更 END
+        getSpeHdOfConfMonVer2 = hdRemainMer.getResult263();
 
 		////////////////////////////////////////////////////////////////////////////////
 		// 子の看護
@@ -1158,5 +1166,26 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
         val listClosureInfo = ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepository));
         return listClosureInfo.stream().filter(i -> i.getClosureId().value == closureId).findFirst();
+    }
+
+    /**
+     * アルゴリズム「締めごとの出力期間を作成する」を実行する
+     * @param yearMonthPeriod
+     * @param closureId
+     * @return
+     */
+    private Objects createOutputPeriodForClosing(YearMonthPeriod yearMonthPeriod, int closureId ){
+
+        String companyId = AppContexts.user().companyId();
+        UseClassification useClassification = UseClassification.UseClass_Use;
+        // ドメインモデル「締め」を取得する(get domain[closure])
+        Optional<Closure> optionalClosure = closureRepository.findClosureHistory(companyId, closureId, useClassification.value);
+        if(optionalClosure.isPresent()){
+            Closure closure = optionalClosure.get();
+            YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
+            DatePeriod datePeriod = ClosureService.getClosurePeriod(closure,processingYm);
+        }
+
+        return null;
     }
 }
