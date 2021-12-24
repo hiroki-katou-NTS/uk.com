@@ -61,20 +61,6 @@ public class StampingAreaRestrictionTestHelp {
 		return new StampingAreaRestriction(notUseAtr,areaLimit);
 	}
 	
-	public static WorkLocation createWorklocation(String contractCode, String workLocationCD,String workLocationName) {
-		
-		ContractCode contractCd = new ContractCode(contractCode);
-		WorkLocationCD workLocaCD = new WorkLocationCD(workLocationCD);
-		WorkLocationName nameWorkLocation = new WorkLocationName(workLocationName);
-		RadiusAtr atr = RadiusAtr.M_100;
-		GeoCoordinate geoCoordinate = getGeoCoordinateDefault();
-		StampMobilePossibleRange stampRange = new StampMobilePossibleRange(atr, geoCoordinate);
-		List<Ipv4Address> listIPAddress = new ArrayList<>();
-		Optional<WorkplacePossible> workplace = Optional.of(new WorkplacePossible("dummy","dummy"));
-		WorkLocation location = new WorkLocation(contractCd, workLocaCD, nameWorkLocation, stampRange, listIPAddress, workplace);
-		return location;
-	}
-	
 	public static List<WorkLocation> createDataForFindAll(String contractCd, String workLocaCD,String workLocaName) {
 		ContractCode contracttCd = new ContractCode(contractCd);
 		WorkLocationCD workLocationCD = new WorkLocationCD(workLocaCD);

@@ -14,10 +14,13 @@ import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonest
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
-public class DeleteStampingAreaRestrictionCommand extends CommandHandler<StampingAreaCmd> {
+public class DeleteStampingAreaRestrictionCommandHandler extends CommandHandler<StampingAreaCmd> {
 	@Inject
 	private StampingAreaRepository stampingAreaReposiroty;
-
+	
+	/*
+	 * 選択社員の打刻エリア制限設定を削除する
+	 * */
 	@Override
 	protected void handle(CommandHandlerContext<StampingAreaCmd> context) {
 		

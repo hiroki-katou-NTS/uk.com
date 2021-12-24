@@ -67,10 +67,11 @@ public class StampingAreaRestrictionTest {
 		new Expectations() {
 			{
 				require.getWorkPlaceOfEmpl(sId,GeneralDate.today());
-			}	
+			}
 		};
 		NtsAssert.businessException("Msg_427",()-> domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor));
-	}	
+	}
+
 	/*
 	 * if @制限方法 == 所属職場のみ許可
 	 * 
@@ -82,7 +83,7 @@ public class StampingAreaRestrictionTest {
 		new Expectations() {
 			{
 				require.getWorkPlaceOfEmpl(sId,GeneralDate.today());
-				result = Optional.of(StampingAreaRestrictionTestHelp.createWorklocation(contractCD, "dummy", "dummy")); 
+				result = Optional.of("dummy"); 
 			}
 			{
 				require.findByWorkPlace(contractCD, cId, "dummy");
@@ -91,6 +92,7 @@ public class StampingAreaRestrictionTest {
 		};
 		NtsAssert.businessException("Msg_2095",()-> domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor));
 	}
+	
 	/*
 	 * $場所一覧 = require.全ての勤務場所を取得する(契約コード)
 	 * 
@@ -133,20 +135,5 @@ public class StampingAreaRestrictionTest {
 		Optional<WorkLocation> lisst = domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor);
 		assertThat(lisst).isNotEmpty();
 	}
-	
-	@Test
-	public void setValueForWorkEmty() {
-		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.notUseAreanAndUseOnlyWorkplace();
-		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampingAreaRestrictionTestHelp.getGeoCoordinateDefault());//dummy
-		new Expectations() {
-			{
-			require.findAll(contractCD);
-			result = null;
-			}	
-		};
-		Optional<WorkLocation> lisst = domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor);
-		assertThat(lisst).isNotEmpty();
-	}
-	
 	
 }

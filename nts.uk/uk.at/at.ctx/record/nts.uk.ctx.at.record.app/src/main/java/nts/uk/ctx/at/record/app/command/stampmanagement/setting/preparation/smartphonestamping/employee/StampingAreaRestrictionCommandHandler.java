@@ -18,7 +18,10 @@ public class StampingAreaRestrictionCommandHandler extends CommandHandler<Stampi
 
 	@Inject
 	private StampingAreaRepository stampingAreaReposiroty;
-
+	
+	/*
+	 * 選択社員の打刻エリア制限設定を更新登録する
+	 * */
 	@Override
 	protected void handle(CommandHandlerContext<StampingAreaCmd> context) {
 		StampingAreaCmd cmd = context.getCommand();

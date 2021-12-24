@@ -15,12 +15,14 @@ import nts.uk.ctx.at.record.infra.entity.stamp.management.KrcmtStampEreaLimitSya
 @Stateless
 public class StampingAreaReposirotyImpl extends JpaRepository implements StampingAreaRepository {
 	private static final String SELECT_SINGLE = "SELECT c FROM KrcmtStampEreaLimitSya c WHERE c.PK.sId = :employId";
-
+	/*
+	 * 選択社員の打刻エリア制限設定を取得する
+	 * */
 	@Override
 	public void insertStampingArea(EmployeeStampingAreaRestrictionSetting restrictionSetting) {
 		this.commandProxy().insert(KrcmtStampEreaLimitSya.toEntity(restrictionSetting));
 	}
-
+	
 	@Override
 	public Optional<EmployeeStampingAreaRestrictionSetting> findByEmployeeId(String employId) {
 		Optional<EmployeeStampingAreaRestrictionSetting> result = this.queryProxy()
@@ -28,7 +30,10 @@ public class StampingAreaReposirotyImpl extends JpaRepository implements Stampin
 				.getSingle(c -> c.toDomain());
 		return result;
 	}
-
+	
+	/*
+	 * 選択社員の打刻エリア制限設定を取得する
+	 * */
 	@Override
 	public Boolean updateStampingArea(EmployeeStampingAreaRestrictionSetting areaRestriction) {
 		Optional<KrcmtStampEreaLimitSya> oldData = this.queryProxy().query(SELECT_SINGLE, KrcmtStampEreaLimitSya.class)
@@ -42,7 +47,10 @@ public class StampingAreaReposirotyImpl extends JpaRepository implements Stampin
 		}
 		return false;
 	}
-
+	
+	/*
+	 *  社員別の打刻エリア制限設定状態を取得する
+	 * */
 	@Override
 	public List<String> getStatusStampingEmpl(List<String> listEmplId) {
 		List<String> resultList = new ArrayList<>();
@@ -53,7 +61,10 @@ public class StampingAreaReposirotyImpl extends JpaRepository implements Stampin
 		}
 		return resultList;
 	}
-
+	
+	/*
+	 * 選択社員の打刻エリア制限設定を削除する
+	 * */
 	@Override
 	public void deleteStampSetting(String employeeId) {
 		Optional<EmployeeStampingAreaRestrictionSetting> data = this.findByEmployeeId(employeeId);

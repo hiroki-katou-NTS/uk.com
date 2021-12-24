@@ -8,7 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.at.record.app.command.stampmanagement.setting.preparation.smartphonestamping.employee.DeleteStampingAreaRestrictionCommand;
+import nts.uk.ctx.at.record.app.command.stampmanagement.setting.preparation.smartphonestamping.employee.DeleteStampingAreaRestrictionCommandHandler;
 import nts.uk.ctx.at.record.app.command.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaCmd;
 import nts.uk.ctx.at.record.app.command.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestrictionCommandHandler;
 import nts.uk.ctx.at.record.app.query.stampmanagement.setting.preparation.smartphonestamping.employee.CommonObjectParam;
@@ -24,7 +24,7 @@ public class StampingAreaRestrictionWS {
 	private StampingAreaRestrictionCommandHandler stampingAreaRestrictionCommandHandler;
 
 	@Inject
-	private DeleteStampingAreaRestrictionCommand deleteStampingAreaRestrictionCommand;
+	private DeleteStampingAreaRestrictionCommandHandler deleteStampingAreaRestrictionCommandHandler;
 
 	@Inject
 	private StampingSettingEmployeeQuery stampingSettingEmployeeQuery;
@@ -48,7 +48,7 @@ public class StampingAreaRestrictionWS {
 	@POST
 	@Path("delete")
 	public void delete(StampingAreaCmd cmd) {
-		this.deleteStampingAreaRestrictionCommand.handle(cmd);
+		this.deleteStampingAreaRestrictionCommandHandler.handle(cmd);
 	}
 
 	@POST
