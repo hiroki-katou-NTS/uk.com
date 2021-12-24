@@ -19,8 +19,8 @@ module nts.uk.at.view.kmp002.a {
   export class ViewModel extends ko.ViewModel {
     columns = ko.observableArray([
       {headerText: getText("KMP002_6"), key: 'supportCardId', width: 120},
-      {headerText: getText("KMP002_7"), key: 'companyCode', width: 100},
-      {headerText: getText("KMP002_8"), key: 'workplaceCode', width: 250}
+      {headerText: getText("Com_Company"), key: 'companyCode', width: 100},
+      {headerText: getText("Com_Workplace"), key: 'workplaceCode', width: 250}
     ]);
     supportCardList: KnockoutObservableArray<SupportCardDto> = ko.observableArray([]);
     supportCard: KnockoutObservable<SupportCardDto> = ko.observable(null);
