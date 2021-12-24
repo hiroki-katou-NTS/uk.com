@@ -33,7 +33,9 @@ module nts.uk.at.view.kmr001.b {
 			vm.$ajax(API.GET_BENTO_RESERVATION)
 			.then((data) => {
 				if(data) {
-					vm.contentChangeDeadlineDayLst(data.contentChangeDeadlineDayEnum);
+					let contentChangeDeadlineDayLst = [{ value: 0, localizedName: "" }];
+					contentChangeDeadlineDayLst = _.concat(contentChangeDeadlineDayLst, data.contentChangeDeadlineDayEnum);
+					vm.contentChangeDeadlineDayLst(contentChangeDeadlineDayLst);
 					vm.contentChangeDeadlineDayCurrent(_.head(vm.contentChangeDeadlineDayLst()).value);
 					if(data.setting) {
 						let frame1 = _.find(data.setting.reservationRecTimeZoneLst, (o: any) => o.frameNo==1);
@@ -150,6 +152,12 @@ module nts.uk.at.view.kmr001.b {
 					vm.$dialog.error({ messageId: 'Msg_849' });
 					return false;	
 				}	
+			}
+			if(vm.selectedContent()==ContentChangeDeadline.MODIFIED_FROM_ORDER_DATE) {
+				if(vm.contentChangeDeadlineDayCurrent()==0) {
+					vm.$dialog.error({ messageId: 'Msg_2263' });
+					return false;
+				}
 			}
 			return true;	
 		}

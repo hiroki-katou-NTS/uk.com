@@ -93,7 +93,7 @@ public class BentoReserveSettingCommand {
         public CorrectionContent toDomain() {
         	return new CorrectionContent(
         			EnumAdaptor.valueOf(contentChangeDeadline, ContentChangeDeadline.class), 
-        			EnumAdaptor.valueOf(contentChangeDeadlineDay, ContentChangeDeadlineDay.class), 
+        			contentChangeDeadlineDay==0 ? null : EnumAdaptor.valueOf(contentChangeDeadlineDay, ContentChangeDeadlineDay.class), 
         			EnumAdaptor.valueOf(orderMngAtr, ReservationOrderMngAtr.class), 
         			canModifiLst);
         }

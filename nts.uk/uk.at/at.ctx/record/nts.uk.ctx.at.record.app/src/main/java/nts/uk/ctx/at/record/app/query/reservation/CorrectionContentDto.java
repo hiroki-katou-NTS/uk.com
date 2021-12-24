@@ -25,7 +25,7 @@ public class CorrectionContentDto {
      * 予約済みの内容変更期限日数
      */
     // content change deadline days.
-    private int contentChangeDeadlineDay;
+    private Integer contentChangeDeadlineDay;
 
     /**
      * 発注機能管理区分
@@ -41,7 +41,7 @@ public class CorrectionContentDto {
     public static CorrectionContentDto fromDomain(CorrectionContent domain) {
         return new CorrectionContentDto(
                 domain.getContentChangeDeadline().value, 
-                domain.getContentChangeDeadlineDay().value, 
+                domain.getContentChangeDeadlineDay()==null?null:domain.getContentChangeDeadlineDay().value, 
                 domain.getOrderMngAtr().value, 
                 domain.getCanModifiLst());
     }
