@@ -1673,7 +1673,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 
 		// 年休：残数
 		val normalR = domain.getAnnualLeave();
-		val normalRemain = normalR.getRemainingNumberInfo().getRemainingNumber();
 		val normalRemainBefore = normalR.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
 		val normalRemainAfterOpt = normalR.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
 
@@ -1691,7 +1690,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 
 		// 実年休：残数
 		val realR = domain.getRealAnnualLeave();
-		val realRemain = realR.getRemainingNumberInfo().getRemainingNumber();
 		val realRemainBefore = realR.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
 		val realRemainAfterOpt = realR.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
 
