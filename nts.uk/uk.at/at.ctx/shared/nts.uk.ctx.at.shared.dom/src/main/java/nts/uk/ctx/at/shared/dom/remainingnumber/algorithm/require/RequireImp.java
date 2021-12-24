@@ -778,7 +778,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
-		return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
+		return workTimeSetting(companyId, workTimeCode.v());
 	}
 
 	@Override

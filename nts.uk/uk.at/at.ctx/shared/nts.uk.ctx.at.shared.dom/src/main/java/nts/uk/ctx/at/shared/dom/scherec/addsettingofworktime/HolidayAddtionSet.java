@@ -204,7 +204,7 @@ public class HolidayAddtionSet extends AggregateRoot implements SerializableWith
 			TimeVacationWork offsetWork, WorkInformation workInfo) {
 		
 		/** $就業時間帯　＝ require.就業時間帯を取得する（Appcontext.user().companyId(), 勤務情報。就業時間帯コード） */
-		val workTime = require.workTimeSetting(cid, workInfo.getWorkTimeCode()).orElse(null);
+		val workTime = workInfo.getWorkTimeCodeNotNull().flatMap(wt -> require.workTimeSetting(cid, wt)).orElse(null);
 		if (workTime == null) return TimeVacationWork.defaultValue();
 		
 		/** $勤務形態 = ＄就業時間帯.勤務区分.勤務形態を取得する（） */
