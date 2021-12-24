@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.hamcrest.collection.IsEmptyCollection;
+
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -58,13 +60,13 @@ public class CalculateTotalWorktimePerDay {
 					// call 作業時間を計算する
 
 					// 基準時間帯．開始時刻 = 処理中の「日別勤怠(Work)．応援時間帯．時間帯．開始．時刻」の一番小さい時刻を利用する
-					Integer start = daily.getOuenTimeSheet().stream()
+					Integer start = daily.getOuenTimeSheet().isEmpty() ? 0 :daily.getOuenTimeSheet().stream()
 							.mapToInt(m -> m.getTimeSheet().getStart()
 									.map(s -> s.getTimeWithDay().map(td -> td.v()).orElse(0)).orElse(0))
 							.min().getAsInt();
 
 					// 基準時間帯．終了時刻 = 処理中の「日別勤怠(Work)．応援時間帯．時間帯．終了．時刻」の一番小さい時刻を利用する
-					Integer end = daily.getOuenTimeSheet().stream()
+					Integer end = daily.getOuenTimeSheet().isEmpty() ? 0 : daily.getOuenTimeSheet().stream()
 							.mapToInt(m -> m.getTimeSheet().getEnd()
 									.map(s -> s.getTimeWithDay().map(td -> td.v()).orElse(0)).orElse(0))
 							.min().getAsInt();
