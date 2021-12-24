@@ -257,7 +257,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		data.setAffiliationInfor(employeeState.getAffiliationInforOfDailyPerfor().get());
 		if(workInformation.getRecordInfo().isSame(data.getWorkInformation().getRecordInfo())) {
 			val scheduleTimeSheet = workInformation.getScheduleTimeSheets();
-			workInformation.setScheduleTimeSheets(scheduleTimeSheet);
+			data.getWorkInformation().setScheduleTimeSheets(scheduleTimeSheet);
 			return false;
 		}else {
 			data.setWorkInformation(workInformation);
