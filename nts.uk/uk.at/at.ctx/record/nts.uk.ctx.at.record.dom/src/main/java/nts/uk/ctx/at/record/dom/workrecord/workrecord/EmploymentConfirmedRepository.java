@@ -45,6 +45,4 @@ public interface EmploymentConfirmedRepository {
 	 * @return
 	 */
 	public List<EmploymentConfirmed> get(String companyId, List<String> workplaceId, ClosureId closureId, YearMonth processYM);
-	
-	public List<EmploymentConfirmed> getListByCompany(String companyId);
 }
