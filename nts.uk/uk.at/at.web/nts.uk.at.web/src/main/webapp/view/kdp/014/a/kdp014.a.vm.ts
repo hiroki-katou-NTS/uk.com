@@ -218,8 +218,8 @@ module nts.uk.at.view.kdp014.a {
           selectedCode: vm.selectedEmployeeCode,
           isDialog: false,
           alreadySettingList: vm.alreadySettingList,
-          maxWidth: 450,
-          maxRows: 20
+          maxWidth: 400,
+          maxRows: 15
         };
         $('#kcp005component').ntsListComponent(vm.listComponentOption);
       });

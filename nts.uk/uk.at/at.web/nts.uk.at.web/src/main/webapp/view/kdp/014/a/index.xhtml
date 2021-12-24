@@ -23,13 +23,12 @@
 			<button id="A1_1" class="proceed" data-bind="click: register, enable:enableLocation" >#{i18n.getText('KDP014_2')}</button>
 			<button id="A1_2" class="danger" data-bind="click: remove, enable:enabledelete" >#{i18n.getText('KDP014_3')}</button>
 		</div>
-		<div id="contents-area">
-			<div id="ccg001component"></div>
-			<div class="fixed-flex-layout"  style="margin: 20px 0 0 100px">
-				<div class="fixed-flex-layout-left">
-					<div id="kcp005component"></div>
-				</div>
-				<div class="fixed-flex-layout-right" style="margin-top: 20px;">
+		<div id="contents-area" class ='fixed-flex-layout'>
+			<div id="left-content" class ="fixed-flex-layout-left">
+				<div id="ccg001component"></div>
+				<div id="kcp005component"></div>
+			</div>
+				<div id="right-content" class="fixed-flex-layout-right" style="margin-top: 20px;">
 					<div class="A_4">
 						<span class="spcode" data-bind="text: selectedEmployeeCode"></span>
                         <span class="cpname" data-bind="text: selectedEmployeeName" style="padding-left: 20px;"></span>
@@ -67,7 +66,7 @@
 							</tr>
 						</table>
 				</div>
-			</div>
+			
 		</div>
 		</ui:define>
 	</ui:composition>
