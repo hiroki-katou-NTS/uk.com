@@ -74,4 +74,21 @@ public enum TimeDigestiveUnit {
 		// Not found.
 		return null;
 	}
+	
+	public static int toMinus(TimeDigestiveUnit unit) {
+		switch (unit) {
+			case OneMinute:
+				return 1;
+			case FifteenMinute:
+				return 15;
+			case ThirtyMinute:
+				return 30;
+			case OneHour:
+				return 60;
+			case TwoHour:
+				return 120;
+			default:
+				return 0;
+		}
+	}
 }

@@ -35,7 +35,7 @@ public class TimeVacationDigestUnit extends ValueObject {
 			return true;
 		}
 
-		return time.v() % this.digestUnit.value == 0;
+		return time.v() % TimeDigestiveUnit.toMinus(this.digestUnit) == 0;
 	}
 	
 	/**
@@ -49,11 +49,7 @@ public class TimeVacationDigestUnit extends ValueObject {
 			return false;
 		}
 		
-		if (manage == ManageDistinct.YES && this.manage == ManageDistinct.YES) {
-			return true;
-		}
-		
-		return false;
+		return manage == ManageDistinct.YES && this.manage == ManageDistinct.YES;
 	}
 	
 	/**
@@ -76,15 +72,11 @@ public class TimeVacationDigestUnit extends ValueObject {
 	 */
 	public boolean checkDigestUnit(Require require, AttendanceTime time) {
 		boolean timeManageCls = this.isVacationTimeManage(require);
-		if (timeManageCls) {
+		if (!timeManageCls) {
 			return true;
 		}
 		
-		if (time.v() % this.digestUnit.value == 0) {
-			return true;
-		}
-		
-		return false;
+		return time.v() % TimeDigestiveUnit.toMinus(this.digestUnit) == 0;
 	}
 	
 	public static interface Require {
