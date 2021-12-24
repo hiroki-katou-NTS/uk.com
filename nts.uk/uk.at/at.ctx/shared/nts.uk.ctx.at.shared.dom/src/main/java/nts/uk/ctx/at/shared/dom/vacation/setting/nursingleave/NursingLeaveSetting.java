@@ -132,7 +132,8 @@ public class NursingLeaveSetting extends AggregateRoot {
 			MonthDay startMonthDay,
 			List<MaxPersonSetting> maxPersonSetting,
 			Optional<Integer> specialHolidayFrame,
-			Optional<Integer> workAbsence){
+			Optional<Integer> workAbsence,
+			TimeVacationDigestUnit timeVacationDigestUnit){
 
 		NursingLeaveSetting domain = new NursingLeaveSetting();
 	domain.companyId = companyId;
@@ -142,6 +143,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 	domain.maxPersonSetting = maxPersonSetting;
 	domain.specialHolidayFrame = specialHolidayFrame;
 	domain.workAbsence = workAbsence;
+	domain.timeVacationDigestUnit = timeVacationDigestUnit;
 	return domain;
 	}
 
