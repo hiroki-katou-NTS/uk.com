@@ -25,9 +25,10 @@ public class SupportCardEdit extends AggregateRoot {
 		if (editNumber.v().toString().length() > numberOfDigits) {
 			new BusinessException("Msg_2130", String.valueOf(numberOfDigits));
 		}
-		String supportCardNumber = this.editMethod.editCardNumber(String.valueOf(numberOfDigits),
-				String.valueOf(editNumber.v()));
-		return new SupportCardNumber(Integer.valueOf(supportCardNumber));
+		return editNumber;
+//		String supportCardNumber = this.editMethod.editCardNumber(String.valueOf(numberOfDigits),
+//				String.valueOf(editNumber.v()));
+//		return new SupportCardNumber(Integer.valueOf(supportCardNumber));
 	}
 
 }
