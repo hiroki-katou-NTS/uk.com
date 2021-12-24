@@ -63,6 +63,15 @@ public class ShortWorkTimeOfDaily {
 		this.totalTime = totalTime;
 		this.totalDeductionTime = totalDeductionTime;
 		this.childCareAttribute = childCareAttribute;
+		this.addTime = new AttendanceTime(0);
+	}
+	
+	public ShortWorkTimeOfDaily() {
+		this.workTimes = new WorkTimes(1);
+		this.totalTime = DeductionTotalTime.defaultValue();
+		this.totalDeductionTime = DeductionTotalTime.defaultValue();
+		this.childCareAttribute = ChildCareAtr.CHILD_CARE;
+		this.addTime = new AttendanceTime(0);
 	}
 	
 	/**
