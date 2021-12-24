@@ -887,45 +887,45 @@ module nts.uk.ui.at.kdw013.a {
                 .then(() => vm.$ajax('at', API.REGISTER, command))
                 .then((response: RegisterWorkContentDto) => {
                     let { dataResult, lstOvertimeLeaveTime, alarmMsg_2081 } = response;
-					if(dataResult.errorMap.message){
-						if(_.includes(dataResult.errorMap.message, 'Msg_')){
-							return vm.$dialog.error({ messageId: dataResult.errorMap[0].message });
-						}else{
-							return vm.$dialog.error(dataResult.errorMap.message);
-						}						
-					}else{
-						
-						let messageId = '';
-						let messageParams = [];
-						
-						if (alarmMsg_2081 && alarmMsg_2081.length > 0) {
-							messageId = 'Msg_2081';
-							messageParams = alarmMsg_2081[0].parameters;
-							return nts.uk.ui.dialog.caution({ messageId: messageId, messageParams: messageParams })
-								.then(() => {
-		                            vm.dataChanged(false);
-		                            //trigger reload data
-		                            vm.dateRange.valueHasMutated();
-		                        })
-		                        .then(() => lstOvertimeLeaveTime);
-						} else {
-							return vm.$dialog.info({ messageId: 'Msg_15'})
-							.then(() => {
-                                vm.dataChanged(false);
-                                //trigger reload data
-                                vm.dateRange.valueHasMutated();
-                            })
-                            .then(() => lstOvertimeLeaveTime);
-						}
-					}
+                    if (dataResult.errorMap.message) {
+                        if (_.includes(dataResult.errorMap.message, 'Msg_')) {
+                            return vm.$dialog.error({ messageId: dataResult.errorMap[0].message });
+                        } else {
+                            return vm.$dialog.error(dataResult.errorMap.message);
+                        }
+                    } else {
+                        
+                        if (alarmMsg_2081 && alarmMsg_2081.length > 0) {
+                            
+                            return vm.$dialog.info({ messageId: 'Msg_2081', messageParams: alarmMsg_2081[0].parameters })
+                                .then(() => {
+                                    vm.dataChanged(false);
+                                    //trigger reload data
+                                    vm.dateRange.valueHasMutated();
+                                })
+                                .then(() => {
+                                    return lstOvertimeLeaveTime;
+                                });
+                        } else {
+                            return vm.$dialog.info({ messageId: 'Msg_15' })
+                                .then(() => {
+                                    vm.dataChanged(false);
+                                    //trigger reload data
+                                    vm.dateRange.valueHasMutated();
+                                })
+                                .then(() => {
+                                    return lstOvertimeLeaveTime;
+                                });
+                        }
+                    }
                 })
                 .fail((response: ErrorMessage) => {
                     let { messageId, parameterIds } = response;
-					if(messageId){
-						return vm.$dialog
-                        .error({ messageId, messageParams: parameterIds })
-                        .then(() => null);	
-					}
+                    if (messageId) {
+                        return vm.$dialog
+                            .error({ messageId, messageParams: parameterIds })
+                            .then(() => null);
+                    }
                 })
                 .then((data: OvertimeLeaveTime[] | null) => {
                     if (data && data.length) {
