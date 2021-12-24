@@ -15,7 +15,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaRemNumValueObject;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -51,7 +50,7 @@ public class AnnLeaEmpBasicInfoDomService{
 
 		AnnualPaidLeaveSetting setting = annPaidLeaSettingRepo.findByCompanyId(companyId);
 		boolean useTimeAnnualLeave = setting.getYearManageType() == ManageDistinct.YES
-				&& setting.getTimeSetting().getTimeManageType() == ManageDistinct.YES;
+				&& setting.getTimeSetting().getTimeVacationDigestUnit().getManage() == ManageDistinct.YES;
 
 		int remainingMinutes = 0;
 		if (useTimeAnnualLeave) {
@@ -68,7 +67,7 @@ public class AnnLeaEmpBasicInfoDomService{
 		Map<String, AnnLeaRemNumValueObject> result = new HashMap<>();
 		AnnualPaidLeaveSetting setting = annPaidLeaSettingRepo.findByCompanyId(companyId);
 		boolean useTimeAnnualLeave = setting.getYearManageType() == ManageDistinct.YES
-				&& setting.getTimeSetting().getTimeManageType() == ManageDistinct.YES;
+				&& setting.getTimeSetting().getTimeVacationDigestUnit().getManage() == ManageDistinct.YES;
 
 		for(Map.Entry<String, List<AnnualLeaveGrantRemainingData>> entry : annualLeaveGrantDataLst.entrySet()) {
 		    String key = entry.getKey();
@@ -101,7 +100,7 @@ public class AnnLeaEmpBasicInfoDomService{
 		// No268特別休暇の利用制御
 		AnnualPaidLeaveSetting annualPaidLeaveSet = annualPaidLeaveSettingRepository.findByCompanyId(AppContexts.user().companyId());
 
-		if (annualPaidLeaveSet.getTimeSetting().getTimeManageType() == ManageDistinct.NO) {
+		if (annualPaidLeaveSet.getTimeSetting().getTimeVacationDigestUnit().getManage() == ManageDistinct.NO) {
 			return annLeaveRemainNumber.getDays() + "日";
 		}	
 
@@ -120,7 +119,7 @@ public class AnnLeaEmpBasicInfoDomService{
 		AnnualPaidLeaveSetting annualPaidLeaveSet = annualPaidLeaveSettingRepository.findByCompanyId(AppContexts.user().companyId());
 
 		Map<String, AnnLeaRemNumValueObject> annLeaveRemainNumber = getAnnualLeaveNumber(cid,  annualLeaveGrantDataLst);
-		boolean isNo = annualPaidLeaveSet.getTimeSetting().getTimeManageType() == ManageDistinct.NO
+		boolean isNo = annualPaidLeaveSet.getTimeSetting().getTimeVacationDigestUnit().getManage() == ManageDistinct.NO
 				|| annualPaidLeaveSet.getTimeSetting().getMaxYearDayLeave().manageType == ManageDistinct.NO;
 		for (Map.Entry<String, AnnLeaRemNumValueObject> entry : annLeaveRemainNumber.entrySet()) {
 			String key = entry.getKey();

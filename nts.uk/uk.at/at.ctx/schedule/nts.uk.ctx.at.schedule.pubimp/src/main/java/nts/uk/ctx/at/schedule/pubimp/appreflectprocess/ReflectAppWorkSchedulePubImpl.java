@@ -85,6 +85,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
 public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSchedulePub {
@@ -439,6 +440,11 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		@Override
 		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
 			return compensLeaveComSetRepository.find(companyId);
+		}
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 
 	}

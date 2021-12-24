@@ -4,10 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.sixtyhour;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.SixtyHourExtra;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationSetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshmtHd60hCom;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstSixtyHourVacationSetting;
 
 /**
  * The Class JpaComSubstVacationSetMemento.
@@ -35,12 +35,15 @@ public class JpaCom60HourVacationSetMemento implements Com60HourVacationSetMemen
 		this.typeValue.setCid(companyId);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationSetMemento#setSetting(nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSetting)
-	 */
 	@Override
-	public void setSetting(SixtyHourVacationSetting setting) {
-		setting.saveToMemento(new Jpa60HourVacationSettingSetMemento<KshstSixtyHourVacationSetting>(this.typeValue));
+	public void setTimeVacationDigestUnit(TimeVacationDigestUnit digestiveUnit) {
+		this.typeValue.setTimeDigestTive(digestiveUnit.getDigestUnit().value);
+		this.typeValue.setManageDistinct(digestiveUnit.getManage().value);
+	}
+
+	@Override
+	public void setSixtyHourExtra(SixtyHourExtra sixtyHourExtra) {
+		this.typeValue.setSixtyHourExtra(sixtyHourExtra.value);
 	}
 
 }

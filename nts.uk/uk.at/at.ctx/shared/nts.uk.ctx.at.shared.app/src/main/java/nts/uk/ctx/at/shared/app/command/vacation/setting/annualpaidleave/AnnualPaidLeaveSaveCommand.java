@@ -11,6 +11,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -377,6 +378,12 @@ public class AnnualPaidLeaveSaveCommand {
 					Optional.ofNullable(this.command.contractTimeRound == null ? null : ContractTimeRound.valueOf(this.command.contractTimeRound)   ));
 			
 			return data;
+		}
+
+		@Override
+		public TimeVacationDigestUnit getTimeVacationDigestUnit() {
+			return new TimeVacationDigestUnit(ManageDistinct.valueOf(this.command.getTimeManageType()),
+					TimeDigestiveUnit.valueOf(this.command.timeUnit));
 		}		
     }
 }

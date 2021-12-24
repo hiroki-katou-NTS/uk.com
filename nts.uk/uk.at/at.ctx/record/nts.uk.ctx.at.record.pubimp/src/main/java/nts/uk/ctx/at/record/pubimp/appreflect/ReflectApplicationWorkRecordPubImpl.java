@@ -104,6 +104,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
 public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWorkRecordPub {
@@ -551,6 +552,11 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		@Override
 		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
 			return workTimeSettingRepository.findByCode(cid, workTimeCode);
+		}
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 	}
 }

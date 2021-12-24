@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 
 /**
  * The Interface TimeVacationSettingSetMemento.
@@ -51,4 +52,6 @@ public interface TimeAnnualSettingSetMemento {
     void setRoundProcessClassific(TimeAnnualRoundProcesCla timeAnnualRoundProcesCla);
     
     void setTimeAnnualLeaveTimeDay(TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay);
+    
+    void setTimeVacationDigestUnit(TimeVacationDigestUnit timeVacationDigestUnit);
 }
