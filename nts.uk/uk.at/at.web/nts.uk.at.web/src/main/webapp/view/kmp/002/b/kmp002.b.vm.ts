@@ -78,16 +78,16 @@ module nts.uk.at.view.kmp002.b {
 
   export enum SupportCardEditSettingEnum {
     // 前ゼロ
-    PreviousZero = 0,
+    PreviousZero = 1,
 
     // 後ろゼロ
-    AfterZero = 1,
+    AfterZero = 2,
 
     // 前スペース
-    PreviousSpace = 2,
+    PreviousSpace = 3,
 
     // 後ろスペース
-    AfterSpace = 3
+    AfterSpace = 4
   }
 
   class SupportCardSetting {
