@@ -44,6 +44,7 @@ import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthority
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheet;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtDailyPerformanceDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
+import nts.uk.ctx.at.record.dom.workrecord.workrecord.EmploymentConfirmed;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheet;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcmtDvgcTime;
@@ -68,6 +69,9 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDayFun
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDayFuncControlPk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformance;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformancePk;
+import nts.uk.ctx.at.record.infra.entity.workrecord.workrecord.KrcdtWorkFixed;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -1354,11 +1358,19 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@SneakyThrows
 	@Override
 	public List<WorkFixedDto> findWorkFixed(int closureId, int yearMonth) {
+		
+		String SELECT_LIST_WORK_FIXED = "SELECT r FROM KrcdtWorkFixed r WHERE r.pk.companyId = :companyId "
+				+ "and r.pk.closureId = :closureId " ;
+		
+		List<EmploymentConfirmed> employmentConfirmeds = this.queryProxy().query(SELECT_LIST_WORK_FIXED, KrcdtWorkFixed.class)
+				.setParameter("companyId", AppContexts.user().companyId())
+				.setParameter("closureId", closureId).getList(x ->toDomainEmploymentConfirmed(x));
+		
 //		try (val statement = this.connection().prepareStatement(
 //				"select * from KRCDT_WORK_FIXED where CLOSURE_ID = ? and CID = ? ")) {
 //			statement.setInt(1, closureId);
 //			statement.setString(2, AppContexts.user().companyId());
-//			
+			
 			List<WorkFixedDto> workOp = new ArrayList<>();
 
 //			List<WorkFixedDto> workOp = new NtsResultSet(statement.executeQuery()).getList(rec -> {
@@ -1373,9 +1385,31 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 //				return new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
 //						w.getConfirmCls(), w.getFixedDate(), yearMonth, w.getKrcstWorkFixedPK().getCid());
 //			});
+			
+			workOp = employmentConfirmeds.stream().map(m -> {
+				return new WorkFixedDto(
+						m.getClosureId().value,
+						"",
+						m.getWorkplaceId().v(),
+						null,
+						m.getDate().date(),
+						m.getProcessYM().v(),
+						m.getCompanyId().v()
+						);
+			}).collect(Collectors.toList());
 
 			return workOp;
 //		}
+			
+	}
+	
+	public EmploymentConfirmed toDomainEmploymentConfirmed(KrcdtWorkFixed entity) {
+
+		EmploymentConfirmed domain = new EmploymentConfirmed(new CompanyId(entity.pk.companyId),
+				new WorkplaceId(entity.pk.workplaceId), ClosureId.valueOf(entity.pk.closureId),
+				new YearMonth(entity.pk.processYM), entity.employeeId, entity.confirm_date_time);
+
+		return domain;
 	}
 
 	@Override
