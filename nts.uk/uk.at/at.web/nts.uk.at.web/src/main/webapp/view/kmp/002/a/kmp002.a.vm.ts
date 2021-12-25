@@ -53,7 +53,6 @@ module nts.uk.at.view.kmp002.a {
         nts.uk.ui.errors.clearAll();
         if (self.mode() === self.NEW_MODE) {
           // self.isFocusInput(true);
-          $('#A2_2').focus();
         } else {
           self.isFocusInput(false);
         }
@@ -136,10 +135,14 @@ module nts.uk.at.view.kmp002.a {
       const vm = this;
       if (vm.supportCardList().length === 0) {
         vm.supportCard(new SupportCardDto('', '', 0, vm.loginCompanyInfo().companyId, vm.loginCompanyInfo().companyCode, vm.loginCompanyInfo().companyName, '', '', ''));
+        $('#A2_2').focus();
       } else {
         indexSupportCard = indexSupportCard >= vm.supportCardList().length ? indexSupportCard - 1 : indexSupportCard;
         vm.supportCard(vm.supportCardList()[indexSupportCard]);
         vm.currentCard(vm.supportCard().supportCardId);
+        if (vm.supportCard().companyId === vm.loginCompanyInfo().companyId) {
+          $('#A2_2').focus();
+        }
       }
     }
 
