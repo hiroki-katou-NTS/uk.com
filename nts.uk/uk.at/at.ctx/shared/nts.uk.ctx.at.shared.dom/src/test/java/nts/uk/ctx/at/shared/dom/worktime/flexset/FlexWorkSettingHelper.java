@@ -565,8 +565,8 @@ public class FlexWorkSettingHelper {
 	@AllArgsConstructor
 	public static class WorkTimezoneGoOutSetImpl implements WorkTimezoneGoOutSetGetMemento{
 		@Override
-		public TotalRoundingSet getTotalRoundingSet() {
-			return new  TotalRoundingSet(GoOutTimeRoundingMethod.ROUNDING_AND_TOTAL, GoOutTimeRoundingMethod.ROUNDING_AND_TOTAL);
+		public GoOutTimeRoundingMethod getRoundingMethod() {
+			return GoOutTimeRoundingMethod.IN_FRAME;
 		}
 
 		@Override

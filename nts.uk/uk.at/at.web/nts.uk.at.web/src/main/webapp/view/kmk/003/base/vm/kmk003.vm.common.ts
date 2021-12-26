@@ -1380,29 +1380,29 @@ module nts.uk.at.view.kmk003.a {
 
 
             export class WorkTimezoneGoOutSetModel {
-                totalRoundingSet: TotalRoundingSetModel;
+                roundingMethod: KnockoutObservable<number>;
                 diffTimezoneSetting: GoOutTimezoneRoundingSetModel;
 
                 constructor() {
-                    this.totalRoundingSet = new TotalRoundingSetModel();
+                    this.roundingMethod = ko.observable(0);
                     this.diffTimezoneSetting = new GoOutTimezoneRoundingSetModel();
                 }
 
                 updateData(data: WorkTimezoneGoOutSetDto) {
-                    this.totalRoundingSet.updateData(data.totalRoundingSet);
+                    this.roundingMethod(data.roundingMethod);
                     this.diffTimezoneSetting.updateData(data.diffTimezoneSetting);
                 }
 
                 toDto(): WorkTimezoneGoOutSetDto {
                     var dataDTO: WorkTimezoneGoOutSetDto = {
-                        totalRoundingSet: this.totalRoundingSet.toDto(),
+                        roundingMethod: this.roundingMethod(),
                         diffTimezoneSetting: this.diffTimezoneSetting.toDto()
                     };
                     return dataDTO;
                 }
 
                 resetData() {
-                    this.totalRoundingSet.resetData();
+                    this.roundingMethod(0);
                     this.diffTimezoneSetting.resetData();
                 }
             }

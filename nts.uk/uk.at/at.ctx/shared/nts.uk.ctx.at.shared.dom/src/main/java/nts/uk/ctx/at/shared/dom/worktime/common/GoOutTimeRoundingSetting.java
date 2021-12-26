@@ -134,4 +134,16 @@ public class GoOutTimeRoundingSetting extends WorkTimeDomainObject implements Cl
 		}
 		return cloned;
 	}
+
+	/**
+	 * 丸め設定を取得する
+	 * @param reverse 逆丸め用
+	 * @return 時間丸め設定
+	 */
+	public TimeRoundingSetting getRoundingSet(TimeRoundingSetting reverse) {
+		if(this.roundingMethod.isIndividualRounding()) {
+			return this.roundingSetting;
+		}
+		return reverse.getReverseRounding();
+	}
 }

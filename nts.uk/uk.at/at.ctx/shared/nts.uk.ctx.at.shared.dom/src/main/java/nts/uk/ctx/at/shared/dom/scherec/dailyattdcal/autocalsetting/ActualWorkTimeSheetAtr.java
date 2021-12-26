@@ -43,6 +43,7 @@ public enum ActualWorkTimeSheetAtr {
 		return this.equals(StatutoryOverTimeWork);
 	}
 	
+
 	/**
 	 * 休出か
 	 * @return 休出である

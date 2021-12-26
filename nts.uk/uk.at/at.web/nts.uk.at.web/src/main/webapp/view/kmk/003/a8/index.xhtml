@@ -13,25 +13,15 @@
 	</div>
 	
 	<div class="tab-block" style="display: flex">
-		<div class="tab_8_round_setting">
-			<label>#{i18n.getText('KMK003_213')}</label>
-			<div tabindex="99" class="tab_8_radio_setting" data-bind="ntsRadioBoxGroup: {
-					name: '#[KMK003_205]',
-					options: listRoundingBreakTimezone,
+		<div class="tab_8_round_setting table">
+			<label id="A33_40" class="cell">#{i18n.getText('KMK003_333')}</label>
+			<div id="A33_41" tabindex="101" class="tab_8_radio_setting cell" data-bind="ntsRadioBoxGroup: {
+					name: '#[KMK003_333]',
+					options: listRoundingMethods,
 					optionsValue: 'value',
 					optionsText: 'localizedName',
-					value: totalRoundingSameFrameRoundingSet,
+					value: roundingMethod,
 					enable: true}"></div>
-		</div>
-		<div class="tab_8_round_setting">
-			<label>#{i18n.getText('KMK003_214')}</label>
-			<div tabindex="100" class="tab_8_radio_setting" data-bind="ntsRadioBoxGroup: {
-					name: '#[KMK003_205]',
-					options: listRoundingBreakTimezone,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					value: totalRoundingFrameStraddRoundingSet,
-					enable: !isFlow() }"></div>
 		</div>
 	</div>
 	
@@ -42,7 +32,7 @@
 				direction: 'horizontal' }">
 					
 			<div tabindex ="101" class="personal-setting-tab-content">				
-				<div class="personal-setting-tab-container" style="min-width: 1200px;">	
+				<div class="personal-setting-tab-container" style="min-width: 1240px;">	
 				<table style="display: inline-block;">
 					<tr>
 						<td colspan="4">
@@ -92,7 +82,7 @@
 						<td class="tab_8_radio_cell">
 							<div tabindex="105" class="tab_8_radio_setting" data-bind="ntsRadioBoxGroup: {
 									name: '#[KMK003_169]',
-									options: listRoundingBreakTime,
+									options: listRoundingBreakTimeOvertime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									value: timeRoundingMethod,
@@ -127,7 +117,7 @@
 						<td class="tab_8_radio_cell">
 							<div tabindex="108" class="tab_8_radio_setting" data-bind="ntsRadioBoxGroup: {
 									name: '#[KMK003_169]',
-									options: listRoundingBreakTime,
+									options: listRoundingBreakTimeHoliday,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									value: timeRoundingMethod,
@@ -204,7 +194,7 @@
 						<td class="tab_8_radio_cell">
 							<div tabindex="114" class="tab_8_radio_setting" data-bind="ntsRadioBoxGroup: {
 									name: '#[KMK003_169]',
-									options: listRoundingBreakTime,
+									options: listRoundingBreakTimeOvertime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									value: timeRoundingMethod,
@@ -238,7 +228,7 @@
 						<td class="tab_8_radio_cell">
 							<div tabindex="117" class="tab_8_radio_setting" data-bind="ntsRadioBoxGroup: {
 									name: '#[KMK003_169]',
-									options: listRoundingBreakTime,
+									options: listRoundingBreakTimeHoliday,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									value: timeRoundingMethod,
@@ -320,7 +310,7 @@
 						<td class="tab_8_radio_cell">
 							<div tabindex="124" class="tab_8_radio_setting" data-bind="ntsRadioBoxGroup: {
 									name: '#[KMK003_169]',
-									options: listRoundingBreakTime,
+									options: listRoundingBreakTimeOvertime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									value: timeRoundingMethod,
@@ -355,7 +345,7 @@
 						<td class="tab_8_radio_cell">
 							<div tabindex="127" class="tab_8_radio_setting" data-bind="ntsRadioBoxGroup: {
 									name: '#[KMK003_169]',
-									options: listRoundingBreakTime,
+									options: listRoundingBreakTimeHoliday,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									value: timeRoundingMethod,
