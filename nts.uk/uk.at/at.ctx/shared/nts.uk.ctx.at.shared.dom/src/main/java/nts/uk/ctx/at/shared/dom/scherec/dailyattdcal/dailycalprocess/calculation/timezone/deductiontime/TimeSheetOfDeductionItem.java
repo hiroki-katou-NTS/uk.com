@@ -702,6 +702,8 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		switch(dedAtr) {
 			//計上
 			case Appropriate:
+				// 就業時間帯の短時間勤務設定.丸め設定を取得　→　丸め付与
+				return Optional.of(commonSet.getShortTimeWorkSet().getRoundingSet());
 			//控除
 			case Deduction:
 				if(this.getShortTimeSheetAtr().isPresent()) {

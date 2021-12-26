@@ -420,8 +420,7 @@ public class CalculationRangeOfOneDay {
 	 * @param conditionAtr 条件
 	 * @param dedAtr 控除区分
 	 * @param statutoryAtr 法定内区分
-	 * @param roundAtr 丸め区分(時間帯で丸めるかの区分)
-	 * @param sumRoundSet 合算丸め設定
+	 * @param goOutSet 就業時間帯の外出設定
 	 * @return 控除時間
 	 */
 	public TimeWithCalculation getDeductionTime(
