@@ -47,7 +47,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.shr.com.context.AppContexts;
@@ -284,7 +283,8 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 							createTimeSheet,
 							integrationOfDaily.getCalAttr().getOvertimeSetting(),
 							integrationOfWorkTime.getLegalOverTimeFrameNoMap(todayWorkType),
-							personDailySetting.getAddSetting().getAddSetOfWorkingTime());
+							personDailySetting.getAddSetting().getAddSetOfWorkingTime(),
+							integrationOfWorkTime.getCommonSetting().getGoOutSet());
 			}
 		}
 		return createTimeSheet;
@@ -366,7 +366,8 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 							.collect(Collectors.toList()),
 					integrationOfDaily.getCalAttr().getOvertimeSetting(),
 					integrationOfWorkTime.getLegalOverTimeFrameNoMap(todayWorkType),
-					personDailySetting.getAddSetting().getAddSetOfWorkingTime());
+					personDailySetting.getAddSetting().getAddSetOfWorkingTime(),
+					integrationOfWorkTime.getCommonSetting().getGoOutSet());
 					
 					return result;
 				}
@@ -378,12 +379,20 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 	/**
 	 * 振替処理
 	 * @param ableRangeTime 振替できる時間
-	 * @param overTimeWorkFrameTimeSheetList　残業時間枠時間帯クラス
-	 * @param autoCalculationSet　時間外の自動計算設定
+	 * @param overTimeWorkFrameTimeSheetList 残業時間枠時間帯クラス
+	 * @param autoCalculationSet 時間外の自動計算設定
+	 * @param statutoryOverFrames 法内残業枠No
+	 * @param addSetOfWorkTime 労働時間の加算設定
 	 * @param goOutSet 就業時間帯の外出設定
 	 */
-	public static List<OverTimeFrameTimeSheetForCalc> reclassified(AttendanceTime ableRangeTime,List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList,
-			AutoCalOvertimeSetting autoCalculationSet,Map<EmTimezoneNo, OverTimeFrameNo> statutoryOverFrames,AddSettingOfWorkingTime holidayCalcMethodSet) {
+	public static List<OverTimeFrameTimeSheetForCalc> reclassified(
+			AttendanceTime ableRangeTime,
+			List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList,
+			AutoCalOvertimeSetting autoCalculationSet,
+			Map<EmTimezoneNo, OverTimeFrameNo> statutoryOverFrames,
+			AddSettingOfWorkingTime addSetOfWorkTime,
+			WorkTimezoneGoOutSet goOutSet) {
+		
 		boolean forceAtr = true;
 		AttendanceTime overTime = new AttendanceTime(0);
 		AttendanceTime transTime = new AttendanceTime(0);

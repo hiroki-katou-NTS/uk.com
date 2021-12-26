@@ -263,7 +263,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		Optional<LeaveEarlyDecisionClock> leaveEarlyDecisionClock =
 				parentSheet.getLeaveEarlyDecisionClock(this.workingHoursTimeNo.v());
 		// 就業時間の計算
-		AttendanceTime actualTime = calcActualTime(addSetOfWorkTime, premiumAtr);
+		AttendanceTime actualTime = calcActualTime(addSetOfWorkTime, premiumAtr, commonSetting.map(c -> c.getGoOutSet()));
 		// 実働時間を就業時間に入れる
 		AttendanceTime workTime = new AttendanceTime(actualTime.valueAsMinutes());
 		// 遅刻、早退時間を就業時間から控除
@@ -383,20 +383,31 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	
 	/**
 	 * 実働時間を計算する
-	 * @return　実働時間
+	 * @param addSetOfWorkTime 労働時間の加算設定
+	 * @param premiumAtr 割増区分
+	 * @param goOutSet 就業時間帯の外出設定
+	 * @return 実働時間
 	 */
-	public AttendanceTime calcActualTime(AddSettingOfWorkingTime holidayCalcMethodSet,PremiumAtr premiumAtr) {
+	public AttendanceTime calcActualTime(
+			AddSettingOfWorkingTime addSetOfWorkTime,
+			PremiumAtr premiumAtr,
+			Optional<WorkTimezoneGoOutSet> goOutSet) {
+		
 		//開始～終了の間の時間を計算する
 		AttendanceTime result = new AttendanceTime(this.beforeLateEarlyTimeSheet.getTimeSpan().lengthAsMinutes());
 		//控除時間を控除する
-		result =  result.minusMinutes(this.calcDeductionTime(holidayCalcMethodSet, premiumAtr, goOutSet).valueAsMinutes());
+		result =  result.minusMinutes(this.calcDeductionTime(addSetOfWorkTime, premiumAtr, goOutSet).valueAsMinutes());
 		//丸め処理
 		result = new AttendanceTime(this.rounding.round(result.valueAsMinutes()));
 		return result;
 	}
 	
 	//控除時間の計算
-	public AttendanceTime calcDeductionTime(AddSettingOfWorkingTime addSetOfWorkTime,PremiumAtr premiumAtr) {
+	public AttendanceTime calcDeductionTime(
+			AddSettingOfWorkingTime addSetOfWorkTime,
+			PremiumAtr premiumAtr,
+			Optional<WorkTimezoneGoOutSet> goOutSet) {
+		
 		AttendanceTime result = new AttendanceTime(0);
 		//休憩
 		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.BREAK, goOutSet).valueAsMinutes());
