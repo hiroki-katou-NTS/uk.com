@@ -78,14 +78,14 @@ module ksm002.a.viewmodel {
             });
             //Change Month 
             self.yearMonthPicked.subscribe(function(value) {
-                self.start();
+                self.start(false);
             })
         }
 
         /** 
          *Start page 
          */
-        start(): JQueryPromise<any> {
+        start(isResetBoxItemList: boolean = true): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
             let isUse: number = 1;
@@ -96,8 +96,15 @@ module ksm002.a.viewmodel {
                 self.getAllSpecDate();
                 //set parameter to calendar
                 let lstBoxCheck: Array<SpecItem> = [];
-                _.forEach(lstSpecifiDate, function(item) {
-                    lstBoxCheck.push(new SpecItem(item.specificDateItemNo, item.specificName));
+                _.forEach(lstSpecifiDate, (item) => {
+                    let specItem = new SpecItem(item.specificDateItemNo, item.specificName);
+                    if (!isResetBoxItemList) {
+                        const hasItem = _.find(self.boxItemList(), (boxItem) => boxItem.id == item.specificDateItemNo);
+                        if (hasItem) {
+                            specItem.choose(hasItem.choose());
+                        }
+                    }
+                    lstBoxCheck.push(specItem);
                 });
                 self.boxItemList(_.orderBy(lstBoxCheck, ['id'], ['asc']));
                 //Set data to calendar
@@ -292,7 +299,7 @@ module ksm002.a.viewmodel {
                         if(_.flattenDeep(_.map(self.optionDates(), o => o.listId)).length == 0){
                             self.isNew(true);
                         };
-                        self.start();
+                        self.start(false);
                         nts.uk.ui.block.clear();
                     });
                 }).fail(function(res) {
@@ -478,7 +485,7 @@ module ksm002.a.viewmodel {
         id: number;
         name: string;
         choose: KnockoutObservable<number>;
-        constructor(specItemNo: number, specItemName: string) {
+        constructor(specItemNo: number, specItemName: string, choose: number = 0) {
             var self = this;
             self.id = specItemNo;
             self.name = specItemName;
