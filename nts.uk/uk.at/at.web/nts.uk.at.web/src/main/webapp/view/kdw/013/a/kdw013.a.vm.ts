@@ -379,6 +379,7 @@ module nts.uk.ui.at.kdw013.a {
                                     vm.dataChanged(false);
                                     vm.removeList([]);
                                     vm.removeBreakList([]);
+                                    vm.loaded= true;
                                 })
                                 .always(() => vm.$blockui('clear'));
                         }
@@ -692,13 +693,11 @@ module nts.uk.ui.at.kdw013.a {
                     });
 
                     vm.events(events);
-                    setTimeout(() => {vm.loaded = true;}, 500);
                     
                     return;
                 }
 
                 vm.events([]);
-                setTimeout(() => {vm.loaded= true;}, 500);
             };
         }
 
