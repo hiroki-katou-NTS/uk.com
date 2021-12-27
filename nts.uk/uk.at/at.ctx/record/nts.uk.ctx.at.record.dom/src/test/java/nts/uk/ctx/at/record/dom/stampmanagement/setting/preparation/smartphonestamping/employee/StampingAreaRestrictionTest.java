@@ -3,8 +3,10 @@ package nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphones
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +18,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction.Require;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.RadiusAtr;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 /**
  * Test 打刻エリア制限 
@@ -124,6 +127,26 @@ public class StampingAreaRestrictionTest {
 		assertThat(optWorklocation).isNotEmpty();
 		assertThat(listWorkLocation.get(0).getWorkLocationCD()).isEqualTo(optWorklocation.get().getWorkLocationCD());
 	}
+	
+	@Test
+	public void setValueFindAllMultiple() {
+		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.useWithinAreaAndLoacation();
+		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(new GeoCoordinate(1.008, 2));//dummy
+		List<WorkLocation> listWorkLocation = Arrays.asList(
+				StampingAreaRestrictionTestHelp.createDataForFindAll("dummy", "01", "dummy", RadiusAtr.M_100),
+				StampingAreaRestrictionTestHelp.createDataForFindAll("dummy", "02", "dummy", RadiusAtr.M_1000),
+				StampingAreaRestrictionTestHelp.createDataForFindAll("dummy", "03", "dummy", RadiusAtr.M_1000)).stream()
+				.flatMap(List::stream).collect(Collectors.toList());
+		new Expectations() {
+			{
+				require.findAll(contractCD);
+				result = listWorkLocation;
+			}	
+		};
+		Optional<WorkLocation> optWorklocation = domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor);
+		assertThat(optWorklocation).isNotEmpty();
+		assertThat(optWorklocation.get().getWorkLocationCD().v()).isEqualTo("02");
+	}
 
 	@Test
 	public void setValueForWork() {
@@ -139,5 +162,25 @@ public class StampingAreaRestrictionTest {
 		Optional<WorkLocation> optWorklocation = domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor);
 		assertThat(optWorklocation).isNotEmpty();
 		assertThat(listWorkLocation.get(0).getWorkLocationCD()).isEqualTo(optWorklocation.get().getWorkLocationCD());
+	}
+	
+	@Test
+	public void setValueForWorkMultiple() {
+		StampingAreaRestriction domain = StampingAreaRestrictionTestHelp.notUseAreanAndUseOnlyWorkplace();
+		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(new GeoCoordinate(1.008, 2));//dummy
+		List<WorkLocation> listWorkLocation = Arrays.asList(
+				StampingAreaRestrictionTestHelp.createDataForFindAll("dummy", "01", "dummy", RadiusAtr.M_1000),
+				StampingAreaRestrictionTestHelp.createDataForFindAll("dummy", "02", "dummy", RadiusAtr.M_100),
+				StampingAreaRestrictionTestHelp.createDataForFindAll("dummy", "03", "dummy", RadiusAtr.M_1000)).stream()
+				.flatMap(List::stream).collect(Collectors.toList());
+		new Expectations() {
+			{
+				require.findAll(contractCD);
+				result = listWorkLocation;
+			}	
+		};
+		Optional<WorkLocation> optWorklocation = domain.checkAreaStamp(require, contractCD, cId, sId,stampLocationInfor);
+		assertThat(optWorklocation).isNotEmpty();
+		assertThat(optWorklocation.get().getWorkLocationCD().v()).isEqualTo("01");
 	}
 }

@@ -62,9 +62,13 @@ public class StampingAreaRestrictionTestHelp {
 	}
 	
 	public static List<WorkLocation> createDataForFindAll(String contractCd, String workLocaCD,String workLocaName) {
+		return createDataForFindAll(contractCd, workLocaCD, workLocaName, RadiusAtr.M_100);
+	}
+	
+	public static List<WorkLocation> createDataForFindAll(String contractCd, String workLocaCD,String workLocaName, RadiusAtr radius) {
 		ContractCode contracttCd = new ContractCode(contractCd);
 		WorkLocationCD workLocationCD = new WorkLocationCD(workLocaCD);
-		RadiusAtr atr = RadiusAtr.M_100;
+		RadiusAtr atr = radius;
 		WorkLocationName workLocationName = new WorkLocationName(workLocaName);
 		GeoCoordinate geoCoordinate = getGeoCoordinateDefault();
 		StampMobilePossibleRange stampRange = new StampMobilePossibleRange(atr, geoCoordinate);
