@@ -583,8 +583,17 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         
         let items7 = (function() {
           let list = [];
+          let supportTime = stampRecord.supportTime;
           for (let i = 1; i <= self.maxSupport; i++) {
               let dataObject = new TimePlaceOutput(i);
+              _.forEach(supportTime, item => {
+                if (item.frameNo == i) {
+                    dataObject.opStartTime = item.opStartTime;
+                    dataObject.opEndTime = item.opEndTime;
+                    dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                    dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                }
+              });
               const gridItem = new GridItem(dataObject, STAMPTYPE.CHEERING);
               self.bindDataRequest(gridItem, STAMPTYPE.CHEERING);
               list.push(gridItem);
