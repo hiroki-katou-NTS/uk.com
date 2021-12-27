@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.export.holidaysremaining;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
@@ -36,8 +37,11 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControl;
 import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControlService;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.*;
+import nts.uk.ctx.at.record.dom.adapter.personempbasic.EmployeeBasicInfoExport;
+import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoAdapter;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataSevice;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
@@ -67,7 +71,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -123,6 +129,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
     @Inject
     private ClosureRepository closureRepo;
+
+    @Inject
+    private PersonEmpBasicInfoAdapter  personEmpBasicInfoAdapter;
+    @Inject
+    private ShareEmploymentAdapter shareEmploymentAdapter;
 
     @Override
     protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
@@ -1170,22 +1181,120 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
     /**
      * アルゴリズム「締めごとの出力期間を作成する」を実行する
-     * @param yearMonthPeriod
+     * @param outPutPeriod
      * @param closureId
      * @return
      */
-    private Objects createOutputPeriodForClosing(YearMonthPeriod yearMonthPeriod, int closureId ){
-
+    private OutputPeriodInformation createOutputPeriodForClosing(YearMonthPeriod outPutPeriod, int closureId) {
+        OutputPeriodInformation rs = new OutputPeriodInformation();
+        YearMonthPeriod pastPeriod = null;
+        List<PeriodCorrespondingYm> correspondingYmList = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         UseClassification useClassification = UseClassification.UseClass_Use;
         // ドメインモデル「締め」を取得する(get domain[closure])
         Optional<Closure> optionalClosure = closureRepository.findClosureHistory(companyId, closureId, useClassification.value);
-        if(optionalClosure.isPresent()){
+        if (optionalClosure.isPresent()) {
             Closure closure = optionalClosure.get();
+            //Current month;
             YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
-            DatePeriod datePeriod = ClosureService.getClosurePeriod(closure,processingYm);
-        }
+            //<締め>のアルゴリズム「当月の期間を算出する」を実行する
+            DatePeriod currentMonthPeriod = ClosureService.getClosurePeriod(closure, processingYm);
 
-        return null;
+            // 出力期間情報を作成する
+            // 出力期間を設定する
+            // Input : 出力期間：INPUT.出力期間
+            if (currentMonthPeriod != null) {
+                // 過去の期間 - Past period
+                // 出力期間に過去が含まれるかをチェックする
+                // INPUT.出力期間.開始年月＜当月期間.年月
+                if (outPutPeriod.start().lessThan(processingYm)) {
+                    YearMonth start = outPutPeriod.start();
+                    YearMonth end = null;
+                    if (outPutPeriod.end().lessThanOrEqualTo(currentMonthPeriod.start().yearMonth())) {
+                        end = outPutPeriod.end();
+                    } else {
+                        end = currentMonthPeriod.start().yearMonth();
+                    }
+                    pastPeriod = new YearMonthPeriod(start, end);
+                } else {
+                    //INPUT.出力期間.開始年月≧当月期間.年月
+                    //当月および未来の期間 - The current and future period
+                    //出力期間に当月以降が含まれるかをチェックする
+
+                    //出力期間に当月以降が含まれるかをチェックする
+                    //当月期間.年月≦INPUT.出力期間.終了年月
+                    if(processingYm.lessThanOrEqualTo(outPutPeriod.end())){
+                        YearMonth end = outPutPeriod.end();
+                        YearMonth start = null;
+                        if(currentMonthPeriod.end().yearMonth().lessThanOrEqualTo(outPutPeriod.start())){
+                            start = outPutPeriod.start();
+                        }else {
+                            start = currentMonthPeriod.end().yearMonth();
+                        }
+                        if(start!= null){
+                            YearMonthPeriod ymCurrentAndFuture =  new YearMonthPeriod(start,end);
+                            List<YearMonth> yearMonthList = ymCurrentAndFuture.yearMonthsBetween();
+                            for (val ym: yearMonthList ) {
+                                //<締め>のアルゴリズム「指定した年月の期間をすべて取得する」を実行する
+                                List<DatePeriod> lstDatePeriod = closure.getPeriodByYearMonth(ym);
+                                correspondingYmList.add(new PeriodCorrespondingYm(
+                                        ym,
+                                        lstDatePeriod
+                                ));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        rs.setPastPeriod(pastPeriod == null ? Optional.empty():Optional.of(pastPeriod));
+        rs.setCurrentMonthAndFuture(correspondingYmList.isEmpty()?Optional.empty():Optional.of(correspondingYmList));
+        rs.setPeriod(outPutPeriod);
+        return rs;
+    }
+    //社員の入社・退職情報を取得する
+    //(Lấy thông tin vào công ty・nghỉ việc của employee)
+    private CurrentStatusAndPeriodInformation createExportPeriodForEmployee(
+            String sid,
+            Map<String,EmployeeBasicInfoExport> basicInfoExportMap,
+            DatePeriod thisMonthPeriod){
+        CurrentStatusAndPeriodInformation rs = new CurrentStatusAndPeriodInformation();
+        EmployeeBasicInfoExport employee = basicInfoExportMap.getOrDefault(sid,null);
+        if(employee!=null){
+           rs.setCurrentStatus(checkStatus(employee,thisMonthPeriod));
+        }
+        //開始年月日の補正
+
+        return rs;
+    }
+    //社員の入社・退職情報を取得する
+    //(Lấy thông tin vào công ty・nghỉ việc của employee)
+    private Map<String,EmployeeBasicInfoExport> employeeBasicInfoExportMap(List<String> sids){
+        return personEmpBasicInfoAdapter.getEmployeeBasicInfoExport
+                (sids).stream().filter(distinctByKey(EmployeeBasicInfoExport::getEmployeeId))
+                .collect(Collectors.toMap(EmployeeBasicInfoExport::getEmployeeId, e->e));
+    }
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
+    //当月の在職状況を設定する
+    //(Set trạng thái còn đương chức )
+    private boolean checkStatus(EmployeeBasicInfoExport employeeBasicInfoExport,DatePeriod currentMonth){
+        return employeeBasicInfoExport.getEntryDate().beforeOrEquals(currentMonth.end())
+                || employeeBasicInfoExport.getRetiredDate().afterOrEquals(currentMonth.start());
+    }
+    /**
+     * アルゴリズム「指定日時点の締め期間を取得する」
+     */
+
+    private Optional<ClosurePeriod> getClosingPeriodOfSpecifiedDate(String sid, GeneralDate baseDate){
+        val require = ClosureService.createRequireM3(closureRepo, closureEmploymentRepository, shareEmploymentAdapter);
+        // 社員に対応する処理締めを取得する
+        Closure closure = ClosureService.getClosureDataByEmployee(
+                require, new CacheCarrier(), sid, baseDate);
+        if(closure == null) return Optional.empty();
+        return closure.getClosurePeriodByYmd(baseDate);
+
     }
 }

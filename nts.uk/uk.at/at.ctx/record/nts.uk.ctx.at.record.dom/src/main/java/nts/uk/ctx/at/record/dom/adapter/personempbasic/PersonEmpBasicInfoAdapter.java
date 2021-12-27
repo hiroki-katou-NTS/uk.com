@@ -5,5 +5,6 @@ import java.util.List;
 public interface PersonEmpBasicInfoAdapter {
 
     List<EmployeeInfor> getPerEmpBasicInfo(List<String> employeeIds);
+    List<EmployeeBasicInfoExport> getEmployeeBasicInfoExport(List<String> employeeIds);
 
 }
