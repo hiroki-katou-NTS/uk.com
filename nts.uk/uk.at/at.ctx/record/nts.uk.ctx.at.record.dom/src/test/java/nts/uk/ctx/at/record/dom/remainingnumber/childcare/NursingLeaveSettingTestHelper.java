@@ -1,10 +1,9 @@
-package nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours;
+package nts.uk.ctx.at.record.dom.remainingnumber.childcare;
 
 import nts.uk.shr.com.license.option.AttendanceOptions;
 import nts.uk.shr.com.license.option.OptionLicense;
 
-public class Com60HourVacationTestHelper {
-
+public class NursingLeaveSettingTestHelper {
 	/**
 	 * Mock: オプションライセンスInterface
 	 * hourlyPaidLeave: $Option.就業.時間休暇

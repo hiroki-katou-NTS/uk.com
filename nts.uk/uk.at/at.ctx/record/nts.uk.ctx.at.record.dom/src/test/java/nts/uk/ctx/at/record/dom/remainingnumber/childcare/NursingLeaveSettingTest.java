@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.childcare;
 
+import static nts.arc.time.GeneralDate.ymd;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
-import static nts.arc.time.GeneralDate.*;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.CareManagementDate;
@@ -31,7 +31,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.license.option.OptionLicense;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
@@ -332,33 +331,69 @@ public class NursingLeaveSettingTest {
 	
 	/**
 	 * Test [8]利用する休暇時間の消化単位をチェックする
+	 * Case 1: $Option.就業.時間休暇 = true && 「休暇使用時間」 % 「@消化単位」 = 0
 	 */
 	@Test
-	public void testCheckVacationTimeUnitUsed() {
+	public void testCheckVacationTimeUnitUsed1() {
 		val childCare = createChildCare(NursingCategory.Nursing);
 		new Expectations() {
 			{
 				timeVacationDigestUnitRequire.getOptionLicense();
-				result = new OptionLicense() {};
+				result = NursingLeaveSettingTestHelper.getOptionLicense(true);
 			}
 		};
 		boolean checkVacationTimeUnitUsed = childCare.checkVacationTimeUnitUsed(timeVacationDigestUnitRequire, AttendanceTime.ZERO);
-		assertThat(checkVacationTimeUnitUsed);
+		assertThat(checkVacationTimeUnitUsed).isTrue();
+	}
+	
+	/**
+	 * Test [8]利用する休暇時間の消化単位をチェックする
+	 * Case 2: $Option.就業.時間休暇 = true && 「休暇使用時間」 % 「@消化単位」 != 0
+	 */
+	@Test
+	public void testCheckVacationTimeUnitUsed2() {
+		val childCare = createChildCare(NursingCategory.Nursing);
+		new Expectations() {
+			{
+				timeVacationDigestUnitRequire.getOptionLicense();
+				result = NursingLeaveSettingTestHelper.getOptionLicense(true);
+			}
+		};
+		boolean checkVacationTimeUnitUsed = childCare.checkVacationTimeUnitUsed(timeVacationDigestUnitRequire, new AttendanceTime(11));
+		assertThat(checkVacationTimeUnitUsed).isFalse();
 	}
 	
 	/**
 	 * Test [13] 時間休暇を管理するか
+	 * Case 1: $Option.就業.時間休暇 = true
 	 */
 	@Test
-	public void testManageTimeVacation() {
+	public void testManageTimeVacation1() {
 		val childCare = createChildCare(NursingCategory.Nursing);
 		new Expectations() {
 			{
 				timeVacationDigestUnitRequire.getOptionLicense();
-				result = new OptionLicense() {};
+				result = NursingLeaveSettingTestHelper.getOptionLicense(true);
 			}
 		};
 		boolean isManageTimeVacation = childCare.isManageTimeVacation(timeVacationDigestUnitRequire);
-		assertThat(isManageTimeVacation);
+		assertThat(isManageTimeVacation).isTrue();
+	}
+	
+	/**
+	 * Test [13] 時間休暇を管理するか
+	 * Case 2: $Option.就業.時間休暇 = false && 管理区分 = 管理しない
+	 */
+	@Test
+	public void testManageTimeVacation2() {
+		val childCare = createChildCare(NursingCategory.Nursing);
+		new Expectations() {
+			{
+				timeVacationDigestUnitRequire.getOptionLicense();
+				result = NursingLeaveSettingTestHelper.getOptionLicense(false);
+			}
+		};
+		boolean isManageTimeVacation = childCare.isManageTimeVacation(timeVacationDigestUnitRequire);
+		assertThat(isManageTimeVacation).isFalse();
 	}
 }
