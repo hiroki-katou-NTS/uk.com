@@ -16,10 +16,10 @@ import nts.uk.shr.com.license.option.OptionLicense;
 @AllArgsConstructor
 public class TimeVacationDigestUnit extends ValueObject {
 	// 管理区分
-	private ManageDistinct manage;
+	private final ManageDistinct manage;
 	
 	// 消化単位：時間休暇の消化単位を設定する
-	private TimeDigestiveUnit digestUnit;
+	private final TimeDigestiveUnit digestUnit;
 	
 	/**
 	 * [1] 消化単位をチェックする
