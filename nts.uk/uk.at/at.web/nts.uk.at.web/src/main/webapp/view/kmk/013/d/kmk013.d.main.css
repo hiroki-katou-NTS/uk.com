@@ -97,10 +97,15 @@ div[tabindex]:focus {
 
 .group-radio {
 	margin-left: 30px;
+  width: 400px !important;
 }
 
 .group-radio .ntsRadioBox {
 	padding: 3px 0;
+}
+
+.setting-zone {
+  margin-bottom: 15px;
 }
 
 #D3_4, #D4_4 {
