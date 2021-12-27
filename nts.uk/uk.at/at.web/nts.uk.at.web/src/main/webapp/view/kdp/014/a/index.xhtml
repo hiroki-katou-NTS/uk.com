@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">	
+		<ui:define name="htmlHead">
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+
+			<com:stylefile path="./kdp014.a.main.css" />
+			<com:scriptfile path="./kdp014.a.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+		<div id="functions-area">
+			<button id="A1_1" class="proceed" data-bind="click: register, enable:enableLocation" >#{i18n.getText('KDP014_2')}</button>
+			<button id="A1_2" class="danger" data-bind="click: remove, enable:enabledelete" >#{i18n.getText('KDP014_3')}</button>
+		</div>
+		<div id="contents-area" class ='fixed-flex-layout'>
+			<div id="left-content" class ="fixed-flex-layout-left">
+				<div id="ccg001component"></div>
+				<div id="kcp005component"></div>
+			</div>
+				<div id="right-content" class="fixed-flex-layout-right" style="margin-top: 20px;">
+					<div class="A_4">
+						<span class="spcode" data-bind="text: selectedEmployeeCode"></span>
+                        <span class="cpname" data-bind="text: selectedEmployeeName" style="padding-left: 20px;"></span>
+					</div>
+					<div class="A_5">#{i18n.getText('KDP014_5')}</div>
+						<table class="content" style=" margin-left: 14px;">
+							<tr>
+								<td class="rd1">
+									<div class="rd1" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KDP014_6')}</div>
+									
+								</td>
+								<td>
+									<div id="A6_2" class="rd1 " data-bind="ntsRadioBoxGroup: {
+										options: itemList,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: selectedId,
+										enable: enableLocation}" style="margin-left: 20px;">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="rd2" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KDP014_9')}</div>
+								</td>
+								<td>
+									<div class="rd2 " data-bind="ntsRadioBoxGroup: {
+										options: itemList2,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: selectedId2,
+										enable: enableStamp}" style="margin-left: 20px;">
+									</div>
+								</td>
+							</tr>
+						</table>
+				</div>
+			
+		</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
