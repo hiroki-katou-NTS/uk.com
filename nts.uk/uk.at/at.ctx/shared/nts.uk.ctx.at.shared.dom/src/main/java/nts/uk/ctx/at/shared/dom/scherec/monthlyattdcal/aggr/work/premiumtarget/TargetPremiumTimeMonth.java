@@ -66,9 +66,9 @@ public class TargetPremiumTimeMonth {
 		val totalStatutory = defoAggregateMethod.calc(require, cacheCarrier, employeeId, targetYm,
 														baseDate, companyId, employmentCode, datePeriod, closureId);
 		
-		// 月割増対象時間と法定労働時間を比較する
-		if (targetPremiumTimeMonthSrc.lessThanOrEqualTo(totalStatutory.v())) 
-			return;
+//		// 月割増対象時間と法定労働時間を比較する
+//		if (targetPremiumTimeMonthSrc.lessThanOrEqualTo(totalStatutory.v())) 
+//			return;
 		
 		// 月割増対象時間（過不足分）を求める
 		int premiumTime = targetPremiumTimeMonthSrc.v() - totalStatutory.v();

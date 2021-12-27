@@ -600,8 +600,8 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 		
 		/** 法内法外休暇加算時間を求めるかを確認する */
 		val isAdded = addSet.map(c -> c.getAddSetOfWorkingTime())
-							.map(c -> c.getAddSetOfWorkTime().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME
-							&& c.getAddSetOfPremium().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME)
+							.map(c -> c.getAddSetOfWorkTime().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME
+							&& c.getAddSetOfPremium().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME)
 				.orElse(false);
 		if (!isAdded) return;
 		
