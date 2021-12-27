@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -15,6 +16,10 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 @Stateless
 public class UpdateBentoMenuHistService {
     public static AtomTask register(Require require, String companyID, DatePeriod period, GeneralDate startDate){
+    	
+    	if(startDate.afterOrEquals(period.start())) {
+    		throw new BusinessException("Msg_3261");
+    	}
     	
     	// 1: 弁当メニュー履歴を取得
     	Optional<BentoMenuHistory> opBeforeBentoMenuHistory = require.getBentoMenu(companyID, startDate.decrease());

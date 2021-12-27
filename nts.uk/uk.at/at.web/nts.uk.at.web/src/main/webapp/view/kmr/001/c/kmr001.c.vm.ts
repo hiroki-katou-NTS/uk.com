@@ -74,7 +74,7 @@ module nts.uk.at.kmr001.c {
                     vm.$blockui('clear');
                 }
             });
-            vm.getBentoMenu(null);
+            vm.getBentoMenu("9999/12/31");
         }
 
         created() {
@@ -212,24 +212,27 @@ module nts.uk.at.kmr001.c {
         openConfigHisDialog() {
             const vm = this;
             vm.$blockui('invisible');
-            vm.$window.modal('at', PATH.KMR001_D, vm.history && vm.history.params ? vm.history.params : null)
+            vm.$window.modal('at', PATH.KMR001_D)
                 .then((result: any) => {
-                    if (vm.history && vm.history.params.historyId == result.params.historyId && result.params.endDate == '9999/12/31') {
-                        return
-                    }
-                    vm.isLasted(!!(result.params.endDate == '9999/12/31' || null));
-                    vm.getBentoMenu(result.params.historyId);
-                    vm.history = result;
+					if(result) {
+						vm.getBentoMenu(result.params);	
+					}
+//                    if (vm.history && vm.history.params.historyId == result.params.historyId && result.params.endDate == '9999/12/31') {
+//                        return
+//                    }
+//                    vm.isLasted(!!(result.params.endDate == '9999/12/31' || null));
+//                    vm.getBentoMenu(result.params.startDate);
+//                    vm.history = result;
                 }).then(() => {
                     vm.$blockui('clear');
                     vm.$errors("clear");
                 });
         }
 
-        getBentoMenu(historyId: string) {
+        getBentoMenu(date: string) {
             const vm = this;
             //get list bento
-            vm.$ajax(API.GET_ALL, { date: "9999/12/31" }).done(dataRes => {
+            vm.$ajax(API.GET_ALL, {date}).done(dataRes => {
                 vm.$blockui('invisible');
                 let bentoDtos = dataRes.bentoDtos;
                 vm.reservationFrameName1(dataRes.reservationFrameName1);
@@ -297,16 +300,19 @@ module nts.uk.at.kmr001.c {
                     }
                     );
                     vm.itemsBento(array);
-                    vm.selectedBentoSetting(bentoDtos[0].frameNo);
+					if(!_.isEmpty(bentoDtos)) {
+						vm.selectedBentoSetting(bentoDtos[0].frameNo);	
+					}
                 }
-
-                vm.model().updateData(
-                    bentoDtos[0].bentoName, bentoDtos[0].unitName,
-                    bentoDtos[0].receptionTimezoneNo,
-                    Number(bentoDtos[0].price1), Number(bentoDtos[0].price2),
-                    bentoDtos[0].workLocationCode
-                );
-                vm.model.valueHasMutated();
+				if(!_.isEmpty(bentoDtos)) {
+					vm.model().updateData(
+	                    bentoDtos[0].bentoName, bentoDtos[0].unitName,
+	                    bentoDtos[0].receptionTimezoneNo,
+	                    Number(bentoDtos[0].price1), Number(bentoDtos[0].price2),
+	                    bentoDtos[0].workLocationCode
+	                );
+	                vm.model.valueHasMutated();	
+				}
             }).then(() => {
                 vm.selectedBentoSetting.subscribe(data => {
                     vm.$blockui('invisible');

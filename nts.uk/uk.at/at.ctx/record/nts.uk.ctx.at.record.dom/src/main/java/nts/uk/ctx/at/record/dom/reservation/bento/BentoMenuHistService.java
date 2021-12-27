@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -26,8 +27,12 @@ public class BentoMenuHistService {
     		// 2: 更新する
     		if(opBentoMenuHistory.isPresent()) {
     			BentoMenuHistory bentoMenuHistory = opBentoMenuHistory.get();
-    			DatePeriod newPeriod = new DatePeriod(bentoMenuHistory.getHistoryItem().span().start(), bentoMenuHistory.getHistoryItem().span().end().decrease()) ;
+    			if(bentoMenuHistory.getHistoryItem().span().start().afterOrEquals(period.start())) {
+    				throw new BusinessException("Msg_102");
+    			}
+    			DatePeriod newPeriod = new DatePeriod(bentoMenuHistory.getHistoryItem().span().start(), period.start().decrease()) ;
     			bentoMenuHistory.getHistoryItem().changeSpan(newPeriod);
+    			require.update(bentoMenuHistory);
     		}
     		// 3: 追加する
     		String guid = IdentifierUtil.randomUniqueId();

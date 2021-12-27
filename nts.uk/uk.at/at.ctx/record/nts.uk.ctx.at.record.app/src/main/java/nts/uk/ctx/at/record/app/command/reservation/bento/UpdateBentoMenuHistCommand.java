@@ -4,8 +4,14 @@ import lombok.Getter;
 
 @Getter
 public class UpdateBentoMenuHistCommand {
+	/**
+	 * 期間
+	 */
     public String startDatePerio;
     public String endDatePerio;
+    /**
+     * 元の開始日
+     */
     public String originalStartDate;
 
 }

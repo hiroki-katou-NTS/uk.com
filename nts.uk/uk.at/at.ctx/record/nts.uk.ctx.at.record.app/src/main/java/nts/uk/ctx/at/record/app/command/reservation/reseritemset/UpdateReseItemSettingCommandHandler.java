@@ -41,9 +41,7 @@ public class UpdateReseItemSettingCommandHandler extends CommandHandler<UpdateRe
         String cid = AppContexts.user().companyId();
         GeneralDate date = GeneralDate.max();
 
-        BentoMenuHistory bentoMenu = command.getHistId() == null ?
-                bentoMenuRepository.getBentoMenuByEndDate(cid,date) :
-                bentoMenuRepository.getBentoMenuByHistId(cid,command.getHistId());
+        BentoMenuHistory bentoMenu = bentoMenuRepository.findByCompanyDate(cid,date).get();
 
         Optional<Bento> optionalBento = bentoMenu.getMenu() .stream().filter(x -> x.getFrameNo() == bento.getFrameNo()) .findFirst();
         optionalBento.ifPresent(bento1 -> bentoMenu.getMenu().set(bentoMenu.getMenu().indexOf(bento1), bento));

@@ -40,9 +40,7 @@ public class CreateReseItemSettingCommandHandler extends CommandHandler<CreateRe
         String cid = AppContexts.user().companyId();
         GeneralDate date = GeneralDate.max();
 
-        BentoMenuHistory bentoMenu = command.getHistId() == null ?
-                bentoMenuRepository.getBentoMenuByEndDate(cid,date) :
-                bentoMenuRepository.getBentoMenuByHistId(cid,command.getHistId());
+        BentoMenuHistory bentoMenu = bentoMenuRepository.findByCompanyDate(cid,date).get();
         bentoMenu.getMenu().add(bento);
 
         bentoMenuRepository.update(bentoMenu);

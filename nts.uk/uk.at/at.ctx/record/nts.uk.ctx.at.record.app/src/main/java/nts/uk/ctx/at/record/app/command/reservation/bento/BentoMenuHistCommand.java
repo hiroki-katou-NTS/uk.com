@@ -9,7 +9,9 @@ import lombok.Getter;
 @Getter
 public class BentoMenuHistCommand {
     
+	/**
+	 * 期間
+	 */
 	private String startDate;
-    
     private String endDate;
 }

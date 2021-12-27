@@ -226,23 +226,22 @@ module nts.uk.at.kmr001.d {
                         vm.$blockui("clear");
                         if (vm.selectedHistoryId()) {
                             let preSelectHist = _.find(vm.lstWpkHistory(), h => h.historyId == vm.selectedHistoryId());
-                            let params = {
-                                historyId: preSelectHist.historyId,
-                                startDate: preSelectHist.startDate,
-                                endDate: preSelectHist.endDate
-                            };
-                            vm.$window.close({
-                                params
-                            });
+                            let params = preSelectHist.startDate;
+							if(_.isEmpty(params)) {
+								vm.$window.close();	
+							} else {
+								vm.$window.close({ params });		
+							}
                         } else {
-                            let params = {
-                                historyId: vm.lstWpkHistory()[0].historyId,
-                                startDate: vm.lstWpkHistory()[0].startDate,
-                                endDate: vm.lstWpkHistory()[0].endDate
-                            };
-                            vm.$window.close({
-                                params
-                            });
+							vm.$window.close();
+//                            let params = {
+//                                historyId: vm.lstWpkHistory()[0].historyId,
+//                                startDate: vm.lstWpkHistory()[0].startDate,
+//                                endDate: vm.lstWpkHistory()[0].endDate
+//                            };
+//                            vm.$window.close({
+//                                params
+//                            });
                         }
                         break;
                 }
@@ -251,37 +250,37 @@ module nts.uk.at.kmr001.d {
 
         cancel() {
             const vm = this;
-            if (vm.lstWpkHistory().length == 0) {
-                let params = {
-                    historyId: null,
-                    startDate: null,
-                    endDate: null
-                };
-                vm.$window.close({
-                    params
-                });
-            }
-            let preSelectHist = _.find(vm.lstWpkHistory(), h => h.historyId == vm.bkHistoryId);
-            if (preSelectHist && (preSelectHist.startDate != vm.bkStartDate || preSelectHist.endDate != vm.bkEndDate)) {
-                let params = {
-                    historyId: preSelectHist.historyId,
-                    startDate: preSelectHist.startDate,
-                    endDate: preSelectHist.endDate
-                };
-                vm.$window.close({
-                    params
-                });
-
-            } else if (preSelectHist == null && vm.lstWpkHistory().length > 0) {
-                let params = {
-                    historyId: vm.lstWpkHistory()[0].historyId,
-                    startDate: vm.lstWpkHistory()[0].startDate,
-                    endDate: vm.lstWpkHistory()[0].endDate
-                };
-                vm.$window.close({
-                    params
-                });
-            }
+//            if (vm.lstWpkHistory().length == 0) {
+//                let params = {
+//                    historyId: null,
+//                    startDate: null,
+//                    endDate: null
+//                };
+//                vm.$window.close({
+//                    params
+//                });
+//            }
+//            let preSelectHist = _.find(vm.lstWpkHistory(), h => h.historyId == vm.bkHistoryId);
+//            if (preSelectHist && (preSelectHist.startDate != vm.bkStartDate || preSelectHist.endDate != vm.bkEndDate)) {
+//                let params = {
+//                    historyId: preSelectHist.historyId,
+//                    startDate: preSelectHist.startDate,
+//                    endDate: preSelectHist.endDate
+//                };
+//                vm.$window.close({
+//                    params
+//                });
+//
+//            } else if (preSelectHist == null && vm.lstWpkHistory().length > 0) {
+//                let params = {
+//                    historyId: vm.lstWpkHistory()[0].historyId,
+//                    startDate: vm.lstWpkHistory()[0].startDate,
+//                    endDate: vm.lstWpkHistory()[0].endDate
+//                };
+//                vm.$window.close({
+//                    params
+//                });
+//            }
             vm.$window.close();
         }
 
