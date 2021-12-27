@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+  <ui:composition template="/master/dialog.xhtml">
+    <ui:define name="htmlHead">
+      <script>var dialogSize = { width: 400, height: 270 };</script>
+      <com:stylefile path="kmp002.b.style.css" />
+      <com:scriptfile path="kmp002.b.vm.js" />
+    </ui:define>
+
+    <ui:define name="content">
+      <div id="contents-area">
+        <div id="B1_1" class="radio-box-group" data-bind="ntsRadioBoxGroup: {
+          options: itemList,
+          optionsValue: 'id',
+          optionsText: 'name',
+          value: supportCardSetting().editMethod,
+          enable: true}"></div>
+      </div>
+      <div id="functions-area-bottom">
+        <button id="B2_2" class="proceed large" data-bind="click: registerSetting">#{i18n.getText('KMP002_24')}</button>
+        <button id="B2_3" data-bind="click: closeDialog, timeClick: 500">#{i18n.getText('KMP002_25')}</button>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+
+</html>

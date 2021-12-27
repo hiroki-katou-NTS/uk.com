@@ -20,5 +20,11 @@ public interface SupportCardRepository {
 	public void insert(List<SupportCard> domains);
 
 	public void delete(List<SupportCard> domains);
+	
+	public List<SupportCard> getAll();
+	
+	public Optional<SupportCard> getBySupportCardNo(int supportCardNo);
+	
+	public void delete(String cid, int supportCardNo);
 
 }
