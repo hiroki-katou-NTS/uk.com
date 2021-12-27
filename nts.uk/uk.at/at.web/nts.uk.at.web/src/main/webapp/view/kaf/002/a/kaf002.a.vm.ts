@@ -173,6 +173,18 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         }).always(() => {
             self.$blockui('hide');
         });
+
+        self.application().appDate.subscribe((value) => {
+            if (!value) return;
+            let command = {
+                appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
+                recoderFlag: RECORD_FLAG_STAMP,
+                companyId: self.$user.companyId
+            };
+            self.$ajax(API.start, command).done((res: any) => {
+                $('#componentM').trigger('changeAppDate', [res]);
+            });
+        });
         // do not have actual data, or date is not selected
         self.initData();
     }

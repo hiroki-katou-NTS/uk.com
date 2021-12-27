@@ -80,6 +80,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
         appDate: KnockoutObservable<any>;
         kaf002Data: any;
+        workLocationNames: any[] = [];
+        workplaceNames: any[] = [];
 
         created(params: any) {
 
@@ -200,8 +202,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             });
 
 
-
         }
+
         createdReasonItem(reasonList: Array<GoOutTypeDispControl>) {
             let comboItems = [] as Array<any>;
             _.forEach(reasonList, (e: GoOutTypeDispControl) => {
@@ -270,6 +272,11 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.loadAll();
 			self.selectedTab(_.find(self.tabs(), item => item.visible()).id)
 
+            $('#kaf002TabPanel').parent().on('changeAppDate', (_, param) => {
+                if (!param) return;
+                self.workLocationNames = param.workLocationNames;
+                self.workplaceNames = param.workplaceNames;
+            });
         }
         loadAll() {
             const self = this;
@@ -564,7 +571,6 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             } else if (type === STAMPTYPE.ATTENDENCE) {
                 if ($('#' + id).length) {
                     $('#' + id).ntsGrid(self.getAtdOrCheeringGrid(isChrome, dataSource, headerFlagContent, statesTable));
-                    _.forEach(dataSource, (data: any) => self.reloadWorkplaceWorkLocation(data, type));
                 }
             } else if (type === STAMPTYPE.CHEERING) {
                 if ($('#' + id).length) {
@@ -583,14 +589,18 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         $expandRow.append($secondCol);
                         $('#' + id).append($expandRow);
                     }
-
-                    _.forEach(dataSource, (data: any) => self.reloadWorkplaceWorkLocation(data, type));
                 }
             } else {
                 if ($('#' + id).length) {
                     $('#' + id).ntsGrid(optionGrid);
                 }
             }
+
+            // Handle data of workplace and location if screen in update mode
+            if (self.mode() == 1 && (type == STAMPTYPE.ATTENDENCE || type == STAMPTYPE.CHEERING)) {
+                _.forEach(dataSource, (data: any) => self.reloadWorkplaceWorkLocation(data, type));
+            }
+
             // if isCondition2 => error state of text1
             let nameAtr = 'td[aria-describedby ="' + id + '_text1"]';
             if ($(nameAtr)) {
