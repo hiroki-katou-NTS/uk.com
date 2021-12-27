@@ -241,7 +241,8 @@ public class OverTimeOfDaily {
 				recordReGet.getIntegrationOfDaily(), 
 				recordReGet.getStatutoryFrameNoList(),
 				true,
-				recordReGet.getCompanyCommonSetting().getOvertimeFrameList());
+				recordReGet.getCompanyCommonSetting().getOvertimeFrameList(),
+				recordReGet.getIntegrationOfWorkTime().map(i -> i.getCommonSetting().getGoOutSet()));
 		//残業時間の計算
 		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(
 				recordReGet.getPersonDailySetting().getRequire(),
@@ -253,7 +254,8 @@ public class OverTimeOfDaily {
 				recordReGet.getStatutoryFrameNoList(),
 				declareResult,
 				true,
-				recordReGet.getCompanyCommonSetting().getOvertimeFrameList());
+				recordReGet.getCompanyCommonSetting().getOvertimeFrameList(),
+				recordReGet.getIntegrationOfWorkTime().map(i -> i.getCommonSetting().getGoOutSet()));
 		//残業深夜時間の計算
 		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(
 				recordReGet,
@@ -264,7 +266,7 @@ public class OverTimeOfDaily {
 				declareResult,
 				settingOfFlex));
 		//変形法定内残業時間の計算
-		val irregularTime = overTimeSheet.calcIrregularTime();
+		val irregularTime = overTimeSheet.calcIrregularTime(recordReGet.getIntegrationOfWorkTime().map(i -> i.getCommonSetting().getGoOutSet()));
 		//フレックス時間
 		FlexTime flexTime = new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 		//フレ時間の計算に挑戦
@@ -356,7 +358,13 @@ public class OverTimeOfDaily {
 		}
 		// 残業深夜時間の計算
 		TimeDivergenceWithCalculation midnightTime = overTimeSheet.calcMidNightTime(autoCalcSet);
-		midnightTime = midnightTime.addMinutes(flexWithoutTime, flexWithoutTime);
+		// フレックス：所定外深夜時間を加算する　（計算区分.普通残業深夜時間="打刻から計算する"時のみ、時間に加算する）
+		if (autoCalcSet.getNormalMidOtTime().getCalAtr().isCalculateEmbossing()){
+			midnightTime = midnightTime.addMinutes(flexWithoutTime, flexWithoutTime);
+		}
+		else{
+			midnightTime = midnightTime.addMinutes(AttendanceTime.ZERO, flexWithoutTime);
+		}
 		// 事前申請制御
 		if (calAttr.getOvertimeSetting().getNormalMidOtTime()
 				.getUpLimitORtSet() == TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION

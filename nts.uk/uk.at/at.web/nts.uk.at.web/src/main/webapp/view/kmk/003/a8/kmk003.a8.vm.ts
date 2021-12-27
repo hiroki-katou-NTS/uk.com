@@ -35,8 +35,7 @@ module a8 {
         workTimeSelectedTab: KnockoutObservable<string>;
         
         // Detail mode - Data       
-        totalRoundingSameFrameRoundingSet: KnockoutObservable<number>;
-        totalRoundingFrameStraddRoundingSet: KnockoutObservable<number>;
+        roundingMethod: KnockoutObservable<number>;
 
         otTimePersonApproTimeSetting: TimeRoundingSetting;
         workTimePersonApproTimeSetting: TimeRoundingSetting;
@@ -50,7 +49,7 @@ module a8 {
         workTimePublicApproTimeSetting: TimeRoundingSetting;
         pubHolWorkTimePublicApproTimeSetting: TimeRoundingSetting;
         
-        listRoundingBreakTimezone: KnockoutObservableArray<any>;
+        listRoundingMethods: KnockoutObservableArray<any>;
 
         screenMode: any;
         
@@ -110,9 +109,10 @@ module a8 {
             _self.workTimePublicApproTimeSetting = new TimeRoundingSetting(settingEnum);
             _self.pubHolWorkTimePublicApproTimeSetting = new TimeRoundingSetting(settingEnum);          
             
-            _self.listRoundingBreakTimezone = ko.observableArray([
-                { value: 1, localizedName: nts.uk.resource.getText("KMK003_198") },
-                { value: 0, localizedName: nts.uk.resource.getText("KMK003_199") }
+            _self.listRoundingMethods = ko.observableArray([
+                { value: 0, localizedName: nts.uk.resource.getText("KMK003_334") },
+                { value: 1, localizedName: nts.uk.resource.getText("KMK003_335") },
+                { value: 2, localizedName: nts.uk.resource.getText("KMK003_336") },
             ]);          
             //_self.listRoundingBreakTimezone(_self.settingEnum.roundingBreakTimezone);  
             
@@ -153,8 +153,7 @@ module a8 {
         private changeBinding(goOutSet: WorkTimezoneGoOutSetModel): void {
             let _self = this;
             
-            _self.totalRoundingSameFrameRoundingSet = goOutSet.totalRoundingSet.setSameFrameRounding;
-            _self.totalRoundingFrameStraddRoundingSet = goOutSet.totalRoundingSet.frameStraddRoundingSet;
+            _self.roundingMethod = goOutSet.roundingMethod;
             
             // Update binding for Time Setting model
             _self.otTimePersonApproTimeSetting.updateBinding(goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.approTimeRoundingSetting);

@@ -56,13 +56,17 @@ public class KshmtWtCom extends ContractUkJpaEntity implements Serializable {
 	@Column(name = "NUR_TIMEZONE_WORK_USE")
 	private int nurTimezoneWorkUse;
 
-	/** The emp time deduct. */
-	@Column(name = "EMP_TIME_DEDUCT")
-	private int empTimeDeduct;
-
 	/** The child care work use. */
 	@Column(name = "CHILD_CARE_WORK_USE")
 	private int childCareWorkUse;
+	
+	/** 短時間丸め単位 */
+	@Column(name = "SHORTTIME_UNIT")
+	private int shorttimeUnit;
+
+	/** 短時間丸め端数処理 */
+	@Column(name = "SHORTTIME_ROUNDING")
+	private int shorttimeRounding;
 
 	/** The late night unit. */
 	@Column(name = "LATE_NIGHT_UNIT")

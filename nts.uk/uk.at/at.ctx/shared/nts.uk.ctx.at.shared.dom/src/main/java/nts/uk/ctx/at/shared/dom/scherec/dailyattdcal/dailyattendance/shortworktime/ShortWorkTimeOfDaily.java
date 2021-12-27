@@ -98,11 +98,10 @@ public class ShortWorkTimeOfDaily {
 		if (workType.isWorkingDay() == false) return zeroValue;
 		
 		if(recordClass.getCalculatable() && recordClass.getIntegrationOfDaily().getShortTime().isPresent()){
-			//短時間勤務回数
-			workTimes = new WorkTimes(recordClass.getIntegrationOfDaily().getShortTime().get().getShortWorkingTimeSheets().stream()
-					.filter(tc -> tc.getChildCareAttr().equals(careAtr))
-					.collect(Collectors.toList())
-					.size());
+			//回数の計算
+			workTimes = new WorkTimes(recordClass.getCalculationRangeOfOneDay().getDeductionCount(
+					careAtr.isCare() ? ConditionAtr.Care : ConditionAtr.Child,
+					DeductionAtr.Appropriate));
 			
 			//計上時間の計算
 			totalTime = calcTotalShortWorkTime(recordClass, DeductionAtr.Appropriate, careAtr, premiumAtr);
@@ -201,10 +200,10 @@ public class ShortWorkTimeOfDaily {
 			ConditionAtr conditionAtr = (careAtr.isChildCare() ? ConditionAtr.Child : ConditionAtr.Care);
 			// 所定内育児時間の計算
 			TimeWithCalculation withinTime = oneDay.getDeductionTime(
-					conditionAtr, dedAtr, StatutoryAtr.Statutory, TimeSheetRoundingAtr.ALL, Optional.empty(), NotUseAtr.NOT_USE);
+					conditionAtr, dedAtr, StatutoryAtr.Statutory, NotUseAtr.NOT_USE, Optional.empty());
 			// 所定外育児時間の計算
 			TimeWithCalculation excessTime = oneDay.getDeductionTime(
-					conditionAtr, dedAtr, StatutoryAtr.Excess, TimeSheetRoundingAtr.ALL, Optional.empty(), NotUseAtr.NOT_USE);
+					conditionAtr, dedAtr, StatutoryAtr.Excess, NotUseAtr.NOT_USE, Optional.empty());
 			// 合計時間の計算
 			result = DeductionTotalTime.of(
 					withinTime.addMinutes(excessTime.getTime(), excessTime.getCalcTime()),

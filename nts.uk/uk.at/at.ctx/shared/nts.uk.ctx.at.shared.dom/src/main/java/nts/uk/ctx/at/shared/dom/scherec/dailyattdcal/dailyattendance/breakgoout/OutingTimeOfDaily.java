@@ -180,9 +180,9 @@ public class OutingTimeOfDaily {
 							.map(o -> o.getTimeVacationUseOfDaily())
 							.findFirst());
 			//計上用合計時間
-			recordTotalTime = calcOutingTimeDeductAppro(oneDay, reason, outingCalcSet, DeductionAtr.Appropriate); 
+			recordTotalTime = calcOutingTimeDeductAppro(oneDay, reason, commonSetting, outingCalcSet, DeductionAtr.Appropriate); 
 			//控除用合計時間
-			dedTotalTime = calcOutingTimeDeductAppro(oneDay, reason, outingCalcSet, DeductionAtr.Deduction);
+			dedTotalTime = calcOutingTimeDeductAppro(oneDay, reason, commonSetting, outingCalcSet, DeductionAtr.Deduction);
 			//補正後時間帯 
 			
 			/** 相殺休暇使用時間を補正する */
@@ -204,15 +204,17 @@ public class OutingTimeOfDaily {
 	
 	//外出合計時間の計算
 	private static OutingTotalTime calcOutingTimeDeductAppro(CalculationRangeOfOneDay oneDay,
-			GoingOutReason reason,
+			GoingOutReason reason, Optional<WorkTimezoneCommonSet> commonSetting, 
 			Optional<OutingCalcWithinCoreTime> outingCalcSet, DeductionAtr deductAtr) {
 		
 		//外出時間の計算
 		OutingTotalTime recordTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet,
-				deductAtr == DeductionAtr.Deduction ? NotUseAtr.NOT_USE : NotUseAtr.USE);
+				deductAtr == DeductionAtr.Deduction ? NotUseAtr.NOT_USE : NotUseAtr.USE,
+				commonSetting.map(c -> c.getGoOutSet()));
 
 		//計算外出時間の計算
-		OutingTotalTime calcTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet, NotUseAtr.NOT_USE);
+		OutingTotalTime calcTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet, 
+				NotUseAtr.NOT_USE, commonSetting.map(c -> c.getGoOutSet()));
 		
 		return OutingTotalTime.of(
 				TimeWithCalculation.mergeTimeAndCalcTime(recordTotalTime.getTotalTime(), calcTotalTime.getTotalTime()),
