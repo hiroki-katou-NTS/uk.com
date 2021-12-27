@@ -49,14 +49,16 @@ module nts.uk.at.view.kmk013.d {
                     new BoxModel(0, nts.uk.resource.getText('KMK013_579')),
                 ]);
                 self.itemListD510 = ko.observableArray([
-                    new BoxModel(0, nts.uk.resource.getText('KMK013_264')),
-                    new BoxModel(1, nts.uk.resource.getText('KMK013_265')),
+                    new BoxModel(1, nts.uk.resource.getText('KMK013_264')),
+                    new BoxModel(0, nts.uk.resource.getText('KMK013_265')),
                 ]);
                 
                 self.selectedId = ko.observable(1);
                 self.enable = ko.observable(true);
                  
                 self.suppDays = ko.observable(2);
+
+                self.selectedCalculationMethod.subscribe(value => self.selectedD410(value === 0 ? 1 : 0));
             }
             startPage(): JQueryPromise<any> {
                 var self = this;
@@ -69,14 +71,13 @@ module nts.uk.at.view.kmk013.d {
 
                     if (flexSet && flexSet[0]) {
                         let data = flexSet[0];
-                        //半日勤務の計算方法.半日代休時.不足計算
-                        self.selectedD410(data.missCalcSubhd);
-                        // 代休取得時の計算方法．所定から控除するかどうか
-                        self.selectedCalculationMethod(data.isDeductPred);
-                        // 半日休日の計算方法．不足計算
-                        self.selectedD310(data.missCalcHd);
                         // 代休取得時の計算方法．割増計算
                         self.selectedD410(data.premiumCalcSubhd);
+                        // 代休取得時の計算方法．所定から控除するかどうか
+                        self.selectedCalculationMethod(data.isDeductPred);
+                        self.selectedCalculationMethod.valueHasMutated();
+                        // 半日休日の計算方法．不足計算
+                        self.selectedD310(data.missCalcHd);
                         // 代休取得時の計算方法．時間代休時の計算設定
                         self.selectedD52(data.calcSetTimeSubhd);
                     }

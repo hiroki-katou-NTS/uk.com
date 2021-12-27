@@ -401,7 +401,7 @@ public class CalculationSettingExportImpl implements MasterListData {
 		Optional<FlexWorkSet> optFlexWorkSet = flexWorkRepo.find(companyId);
         Optional<AggDeformedLaborSetting> optAggSetting = aggSettingRepo.findByCid(companyId);
 		List<MasterData> data = new ArrayList<>();
-        for (int row = 0; row < 71; row++) {
+        for (int row = 0; row < 47; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 5; col++) {
                 String value = "";
