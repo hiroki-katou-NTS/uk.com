@@ -57,7 +57,7 @@ public class TimeAnnualMaxDay implements Serializable {
 	 * [1] 時間年休の上限日数に対応する月次の勤怠項目を取得する
 	 */
 	public List<Integer> acquiremonthAttendItemMaximumNumberDaysAnnualLeave() {
-		return Arrays.asList(1424,1425,1426,1429);
+		return Arrays.asList(1442,1443,1444,1445);
 	}
 	
 	/**

@@ -46,7 +46,7 @@ public class TimeAnnualSettingTest {
 		TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting();
     	List<Integer> annualLeaveItems = setting.acquireMonthAttdItemsHourlyAnnualLeave();
     	assertThat( annualLeaveItems ).extracting( d -> d)
-									  .containsExactly(1424,1425,1426,1429,1430,1431,1861,1862,1424,1425,1426,1429);
+									  .containsExactly(1424,1425,1426,1429,1430,1431,1861,1862,1442,1443,1444,1445);
     }
 	
 	 /**
@@ -75,7 +75,7 @@ public class TimeAnnualSettingTest {
     	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
     	List<Integer> annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(ManageDistinct.YES);
     	assertThat( annualLeaveItems ).extracting( d -> d)
-		  .containsExactly(1424,1425,1426,1429,1430,1431,1861,1862,1424,1425,1426,1429);
+		  .containsExactly(1424,1425,1426,1429,1430,1431,1861,1862,1442,1443,1444,1445);
     }
 	// $時間年休項目 is empty, $上限項目 is empty
 	@Test

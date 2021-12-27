@@ -26,7 +26,7 @@ public class TimeAnnualMaxDayTest {
 		TimeAnnualMaxDay maxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay();
 		List<Integer> lstResult = maxDay.acquiremonthAttendItemMaximumNumberDaysAnnualLeave();
 		assertThat( lstResult ).extracting( d -> d)
-		   .containsExactly(1424,1425,1426,1429);
+		   .containsExactly(1442,1443,1444,1445);
 	}
 	
 	/**
@@ -78,7 +78,7 @@ public class TimeAnnualMaxDayTest {
 		List<Integer> lstResult = maxDay.getMonthAttendItemsNotAvailable(ManageDistinct.YES , ManageDistinct.YES);
 		
 		assertThat( lstResult ).extracting( d -> d)
-		   					   .containsExactly(1424,1425,1426,1429);
+		   					   .containsExactly(1442,1443,1444,1445);
 	}
 	
 	/**
