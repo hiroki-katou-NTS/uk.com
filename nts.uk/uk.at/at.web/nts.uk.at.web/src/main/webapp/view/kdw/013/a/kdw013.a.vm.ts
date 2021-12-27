@@ -692,13 +692,13 @@ module nts.uk.ui.at.kdw013.a {
                     });
 
                     vm.events(events);
-                    setTimeout(() => {vm.loaded = true;}, 1000);
+                    setTimeout(() => {vm.loaded = true;}, 500);
                     
                     return;
                 }
 
                 vm.events([]);
-                setTimeout(() => {vm.loaded= true;}, 1000);
+                setTimeout(() => {vm.loaded= true;}, 500);
             };
         }
 
