@@ -21,7 +21,7 @@ public class TimeVacationDigestUnitHelper {
 	}
 	
 	/**
-	 * オプションライセンスInterface
+	 * Mock: オプションライセンスInterface
 	 * hourlyPaidLeave: $Option.就業.時間休暇
 	 */
 	public static OptionLicense getOptionLicense(boolean hourlyPaidLeave) {
