@@ -1,3 +1,9 @@
 .setting-label {
   width: 150px;
 }
+
+.flex.valign-center {
+  align-items: center;
+  padding-top: 10px !important;
+  padding-bottom: 15px !important
+}
