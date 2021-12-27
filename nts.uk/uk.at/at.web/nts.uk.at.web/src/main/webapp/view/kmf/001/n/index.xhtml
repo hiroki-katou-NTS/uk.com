@@ -7,6 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+      <com:scriptfile set="IGNITE" />
 			<script>
         var dialogSize = { width: 390, height: 400 };
       </script>
@@ -38,15 +39,28 @@
           <div id="N1_7" class="setting-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_357')}</div>
           <div id="N1_8" data-bind="ntsSwitchButton: {
             name: $i18n('KMF001_357'),
-            options: manageDistinctList,
+            options: timeManageMentDistinctList,
             optionsValue: 'value',
-            optionsText: 'name',
-            value: selectedManageDistinct
+            optionsText: 'localizedName',
+            value: selectedTimeManagement
           }" tabindex="1"></div>
         </div>
         <!-- N1_9,10,11 -->
-        <div id="N1_9" class="setting-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_358')}</div>
-
+        <div class="flex valign-center">
+          <div id="N1_9" class="setting-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_358')}</div>
+          <div id="combo-box-time-unit"
+            data-bind="ntsComboBox: {
+              options: vacationTimeUnitList,
+              optionsValue: 'value',
+              visibleItemsCount: 5,
+              value: selectedVacationTimeUnit,
+              optionsText: 'localizedName',
+              editable: false,
+              enable:enableTimeSetting,
+              columns: [
+                {prop: 'localizedName', length: 10 }
+              ]}"></div>
+        </div>
       </div>
 			<div id="functions-area-bottom">
         <button id="N2_1" class="proceed" data-bind="click: processSave" tabindex="2">#{i18n.getText('KMF001_354')}</button>
