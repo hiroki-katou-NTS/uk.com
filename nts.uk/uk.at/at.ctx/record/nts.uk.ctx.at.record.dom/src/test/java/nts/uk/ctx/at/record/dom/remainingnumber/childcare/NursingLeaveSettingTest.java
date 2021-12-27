@@ -382,7 +382,7 @@ public class NursingLeaveSettingTest {
 	
 	/**
 	 * Test [13] 時間休暇を管理するか
-	 * Case 2: $Option.就業.時間休暇 = false && 管理区分 = 管理しない
+	 * Case 2: $Option.就業.時間休暇 = false
 	 */
 	@Test
 	public void testManageTimeVacation2() {
