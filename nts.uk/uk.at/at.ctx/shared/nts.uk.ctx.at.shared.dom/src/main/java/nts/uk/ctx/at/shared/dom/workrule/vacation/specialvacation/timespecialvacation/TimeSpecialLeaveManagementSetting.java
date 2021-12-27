@@ -10,6 +10,8 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.specialleave.TimeSpecialLeaveManagementSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.specialleave.TimeSpecialLeaveManagementSettingSetMemento;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.shared.就業規則.休暇.特別休暇.時間特別休暇
@@ -68,5 +70,15 @@ public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
     public boolean checkVacationTimeUnitUsed(TimeVacationDigestUnit.Require require, AttendanceTime time) {
       return this.timeVacationDigestUnit.checkDigestUnit(require, time);
     }
+    
+    public TimeSpecialLeaveManagementSetting(TimeSpecialLeaveManagementSettingGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.timeVacationDigestUnit = memento.getTimeVacationDigestUnit();
+	}
+    
+	public void saveToMemento(TimeSpecialLeaveManagementSettingSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setTimeVacationDigestUnit(this.timeVacationDigestUnit);
+	}
     
 }

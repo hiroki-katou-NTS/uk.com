@@ -12,6 +12,8 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.scherec.monthlyattdcal.aggr.vtotalmethod.RegisterWorkDaysNumberOnLeaveCountCommand;
 import nts.uk.ctx.at.shared.app.command.scherec.monthlyattdcal.aggr.vtotalmethod.RegisterWorkDaysNumberOnLeaveCountCommandHandler;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.specialleave.TimeSpecialLeaveSaveCommand;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.specialleave.TimeSpecialLeaveSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattdcal.aggr.vtotalmethod.WorkDaysNumberOnLeaveCountDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattdcal.aggr.vtotalmethod.WorkDaysNumberOnLeaveCountFinder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -26,6 +28,9 @@ public class WorkDaysNumberOnLeaveCountWebService extends WebService {
 	
 	@Inject
 	private RegisterWorkDaysNumberOnLeaveCountCommandHandler registerCommandHandler;
+	
+	@Inject
+	private TimeSpecialLeaveSaveCommandHandler saveCommandHandler;
 	
 	@POST
 	@Path("/get")
@@ -50,4 +55,11 @@ public class WorkDaysNumberOnLeaveCountWebService extends WebService {
     public List<EnumConstant> findTimeVacationDigestiveUnit() {
         return EnumAdaptor.convertToValueNameList(TimeDigestiveUnit.class);
     }
+    
+    @POST
+    @Path("/save")
+    public void save(TimeSpecialLeaveSaveCommand command) {
+        this.saveCommandHandler.handle(command);
+    }
+    
 }

@@ -56,7 +56,10 @@ module nts.uk.at.view.kmf001.n {
         isCounting: vm.selectedManageDistinct() === 1,
         leaveType: LEAVE_TYPE
       };
-      vm.$ajax(API.register, param).always(() => vm.$dialog.info({ messageId: "Msg_15" })
+      const paramTimeManager = {
+      };
+
+      vm.$ajax(API.register, param).vm.$ajax(API.save, paramTimeManager).always(() => vm.$dialog.info({ messageId: "Msg_15" })
         .then(() => vm.$blockui("clear")).then(() => vm.processCloseDialog()));
     }
 
