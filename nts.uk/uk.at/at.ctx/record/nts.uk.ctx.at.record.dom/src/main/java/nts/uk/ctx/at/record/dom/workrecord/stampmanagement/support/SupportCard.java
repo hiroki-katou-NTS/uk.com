@@ -32,7 +32,7 @@ public class SupportCard implements DomainAggregate {
 	// [C-1] 応援カード作成する
 	public static SupportCard create(Require require, String cid, SupportCardNumber supportCardNumber, String workplaceId) {
 		Optional<SupportCardEdit> optEdit = require.getSupportCardEditSetting(cid);
-		SupportCardNumber cardNumber = optEdit.map(data -> data.editTheCard(supportCardNumber)).orElse(null);
+		SupportCardNumber cardNumber = optEdit.map(data -> data.editTheCard(supportCardNumber)).orElse(supportCardNumber);
 		return new SupportCard(cid, cardNumber, workplaceId);
 	}
 	
