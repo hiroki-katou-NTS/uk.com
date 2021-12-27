@@ -83,7 +83,11 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 		return this.isManaged.equals(ManageDistinct.YES);
 	}
 	
-	//時間代休を管理するか判断する
+	/**
+	 * [2] 時間代休を管理するかどうか判断する
+	 * @param require
+	 * @return
+	 */
 	public boolean isManagedTime(TimeVacationDigestUnit.Require require) {
 		return this.timeVacationDigestUnit.isVacationTimeManage(require, this.isManaged);
 	}
