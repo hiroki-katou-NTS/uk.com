@@ -220,6 +220,7 @@ module nts.uk.ui.at.kdw013.a {
 		btnContent: KnockoutObservable<String> = ko.observable('');
 		
 		reloadFlag: KnockoutObservable<Boolean> =  ko.observable(false);
+        loaded: Boolean =  false;
 
         constructor() {
             super();
@@ -369,7 +370,7 @@ module nts.uk.ui.at.kdw013.a {
 
                         if (cache.pair <= 0) {
                             vm.$datas(null);
-                            
+                            vm.loaded= false;
                             vm
                                 .$blockui('grayout')
                                 .then(() => vm.$ajax('at', API.CHANGE_DATE, params))
@@ -691,10 +692,13 @@ module nts.uk.ui.at.kdw013.a {
                     });
 
                     vm.events(events);
+                    setTimeout(() => {vm.loaded = true;}, 1000);
+                    
                     return;
                 }
 
                 vm.events([]);
+                setTimeout(() => {vm.loaded= true;}, 1000);
             };
         }
 

@@ -1166,7 +1166,9 @@ module nts.uk.ui.at.kdw013.calendar {
             });
 
             // calculate time on header
-            let timesSet: KnockoutComputed<({ date: string | null; value: number | null; })[]> = ko.computed({
+            let timesSet: KnockoutObservable<({ date: string | null; value: number | null; })[]> = ko.observable([]);
+
+            ko.computed({
                 read: () => {
                     let ds = ko.unwrap(datesSet);
                     let wd = ko.unwrap(firstDay);
@@ -1177,7 +1179,11 @@ module nts.uk.ui.at.kdw013.calendar {
                     let nkend = moment(start).clone().add(1, 'hour').toDate();
                     let duration = moment(end || nkend).diff(start, 'minute');
                     let nday = dayOfView(iv);
-
+                    
+                    let loaded = vm.params.screenA.loaded;
+                    if (loaded) {
+                        return;
+                    }
                     if (ds) {
                         let { start, end } = ds;
 
@@ -1210,12 +1216,35 @@ module nts.uk.ui.at.kdw013.calendar {
                             }
                         }
 
-                        return days;
+                        timesSet(days);
                     }
 
-                    return [];
+                    //timesSet([]);
                 },
-                disposeWhenNodeIsRemoved: vm.$el
+                disposeWhenNodeIsRemoved: $el
+            });
+
+             ko.computed({
+                read: () => {
+                    let ds = ko.unwrap(datesSet);
+                    let wd = ko.unwrap(firstDay);
+                    let iv = ko.unwrap(initialView);
+                    let evts = ko.unwrap<EventRaw[]>(events);
+                    let cache = ko.unwrap<EventApi>($caches.new);
+                    let { start, end } = cache || { start: null, end: null };
+                    let nkend = moment(start).clone().add(1, 'hour').toDate();
+                    let duration = moment(end || nkend).diff(start, 'minute');
+                    let nday = dayOfView(iv);
+                    
+                    let loaded = vm.params.screenA.loaded;
+                    
+                    let el = $(".fc-times[data-date='"+ moment(start).format(DATE_FORMAT) + "']");
+                    
+                    if (el && el.html()) {
+                            el.html(vm.$i18n('KDW013_98'));
+                    }
+                },
+                disposeWhenNodeIsRemoved: $el
             });
 
             let attendancesSet: KnockoutComputed<({ date: string | null; events: string[]; })[]> = ko.computed({
@@ -2710,6 +2739,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     
                     vm.params.screenA.dataChanged(true);
+                    $caches.new(event);
                     mutatedEvents();
                     let ids = [].concat(event.id, _.map(arg.relatedEvents, re => re.id));              
 
@@ -2929,9 +2959,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             events(tempEs);
                             updateEvents();
                         });
-                    
-                   
-
+                    $caches.new(event);
                 },
                 eventResizeStop: ({ el, event }) => {
                     console.log('stop', event.extendedProps);
@@ -3201,6 +3229,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         });
                         updateEvents();
                     }
+                $caches.new(event);
                 },
                 datesSet: ({ start, end }) => {
                     let current = moment().startOf('day');
