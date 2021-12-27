@@ -205,17 +205,35 @@ public class TimeAnnualSettingTest {
 	
 	/**
 	 * Test [7] 消化単位をチェックする
+	 * Case 1: $Option.就業.時間休暇 = true && 「休暇使用時間」 % 「@消化単位」 = 0
 	 */
 	@Test
-	public void testCheckDigestUnits() {
+	public void testCheckDigestUnits1() {
 		TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting();
 		new Expectations() {
     		{
     			require.getOptionLicense();
-    			result = new OptionLicense() {};
+    			result = TimeAnnualSettingHelper.getOptionLicense(true);
     		}
 		};
     	boolean checkDigestUnits = setting.checkDigestUnits(require, AttendanceTime.ZERO, ManageDistinct.YES);
+    	assertThat(checkDigestUnits).isTrue();
+	}
+	
+	/**
+	 * Test [7] 消化単位をチェックする
+	 * Case 2: $Option.就業.時間休暇 = true && 「休暇使用時間」 % 「@消化単位」 != 0
+	 */
+	@Test
+	public void testCheckDigestUnits2() {
+		TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting();
+		new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = TimeAnnualSettingHelper.getOptionLicense(true);
+    		}
+		};
+    	boolean checkDigestUnits = setting.checkDigestUnits(require, new AttendanceTime(11), ManageDistinct.YES);
     	assertThat(checkDigestUnits);
 	}
 }
