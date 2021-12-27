@@ -1226,15 +1226,8 @@ module nts.uk.ui.at.kdw013.calendar {
 
              ko.computed({
                 read: () => {
-                    let ds = ko.unwrap(datesSet);
-                    let wd = ko.unwrap(firstDay);
-                    let iv = ko.unwrap(initialView);
-                    let evts = ko.unwrap<EventRaw[]>(events);
                     let cache = ko.unwrap<EventApi>($caches.new);
                     let { start, end } = cache || { start: null, end: null };
-                    let nkend = moment(start).clone().add(1, 'hour').toDate();
-                    let duration = moment(end || nkend).diff(start, 'minute');
-                    let nday = dayOfView(iv);
                     
                     let loaded = vm.params.screenA.loaded;
                     
