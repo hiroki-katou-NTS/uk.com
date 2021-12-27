@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
@@ -62,13 +64,16 @@ public class MonthlyCorrectionLogCommandHandler extends CommandHandler<MonthlyCo
 				itemNewMap.forEach((key, value) -> {
 					ItemValue itemNew = value;
 					ItemValue itemOld = itemOldMap.get(key);
-					if(itemNew.getValue() != null && itemOld.getValue() != null && itemNew.getValueType().isDouble()){
+					if(itemOld != null && itemNew != null && itemNew.getValue() != null && itemOld.getValue() != null && itemNew.getValueType().isDouble()){
 						itemNew.value(String.valueOf(Double.valueOf(itemNew.getValue()))).valueType(ValueType.COUNT_WITH_DECIMAL);
 						itemOld.value(String.valueOf(Double.valueOf(itemOld.getValue()))).valueType(ValueType.COUNT_WITH_DECIMAL);;
 					}
-					if (!itemNew.equals(itemOld)) {
-						MonthlyCorrectedItem item = new MonthlyCorrectedItem(itemNameMap.get(key), key, itemOld.getValue(),
-								itemNew.getValue(), convertType(itemNew.getValueType()),
+					if (itemOld != null && itemNew != null && (itemNew.getItemId() == itemOld.getItemId())
+							&& (itemNew.getValue() != null && itemOld.getValue() != null)
+							&& !StringUtils.equals(itemNew.getValue(), itemOld.getValue())) {
+						MonthlyCorrectedItem item = new MonthlyCorrectedItem(itemNameMap.get(key), key,
+								itemOld != null ? itemOld.getValue() : null,
+								itemNew != null ? itemNew.getValue() : null, convertType(itemNew.getValueType()),
 								editItems.contains(key) ? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
 						monthTarget.getCorrectedItems().add(item);
 					}
