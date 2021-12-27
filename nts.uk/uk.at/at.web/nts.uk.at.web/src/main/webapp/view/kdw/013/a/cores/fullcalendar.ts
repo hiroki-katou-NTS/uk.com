@@ -1166,7 +1166,9 @@ module nts.uk.ui.at.kdw013.calendar {
             });
 
             // calculate time on header
-            let timesSet: KnockoutComputed<({ date: string | null; value: number | null; })[]> = ko.computed({
+            let timesSet: KnockoutObservable<({ date: string | null; value: number | null; })[]> = ko.observable([]);
+
+            ko.computed({
                 read: () => {
                     let ds = ko.unwrap(datesSet);
                     let wd = ko.unwrap(firstDay);
@@ -1177,7 +1179,11 @@ module nts.uk.ui.at.kdw013.calendar {
                     let nkend = moment(start).clone().add(1, 'hour').toDate();
                     let duration = moment(end || nkend).diff(start, 'minute');
                     let nday = dayOfView(iv);
-
+                    
+                    let loaded = vm.params.screenA.loaded;
+                    if (loaded) {
+                        return;
+                    }
                     if (ds) {
                         let { start, end } = ds;
 
@@ -1210,12 +1216,28 @@ module nts.uk.ui.at.kdw013.calendar {
                             }
                         }
 
-                        return days;
+                        timesSet(days);
                     }
 
-                    return [];
+                    //timesSet([]);
                 },
-                disposeWhenNodeIsRemoved: vm.$el
+                disposeWhenNodeIsRemoved: $el
+            });
+
+             ko.computed({
+                read: () => {
+                    let cache = ko.unwrap<EventApi>($caches.new);
+                    let { start, end } = cache || { start: null, end: null };
+                    
+                    let loaded = vm.params.screenA.loaded;
+                    
+                    let el = $(".fc-times[data-date='"+ moment(start).format(DATE_FORMAT) + "']");
+                    
+                    if (el && el.html()) {
+                            el.html(vm.$i18n('KDW013_98'));
+                    }
+                },
+                disposeWhenNodeIsRemoved: $el
             });
 
             let attendancesSet: KnockoutComputed<({ date: string | null; events: string[]; })[]> = ko.computed({
@@ -2417,6 +2439,10 @@ module nts.uk.ui.at.kdw013.calendar {
                         if (!event.extendedProps.isTimeBreak) {
                             let frameNos = _.get(_.maxBy(_.filter(events, (e) => (moment(e.start).isSame(moment(event.start), 'days') && !e.extendedProps.isTimeBreak)), function(e) { return _.last(e.extendedProps.taskBlock.taskDetails).supNo; }), 'extendedProps.frameNos', []);
                             event.setExtendedProp('frameNos',frameNos);
+                            let integrationOfDaily = _.find(_.get(data,'lstIntegrationOfDaily',[]),id=> moment(id.ymd).isSame(moment(event.start),'days'));
+                            event.setExtendedProp('outingTime', _.get(integrationOfDaily,'outingTime'));
+                            event.setExtendedProp('breakTime', _.get(integrationOfDaily,'breakTime'));
+                            
                             popupData.event(event);
                         }
                         // update exclude-times
@@ -2706,6 +2732,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     
                     vm.params.screenA.dataChanged(true);
+                    $caches.new(event);
                     mutatedEvents();
                     let ids = [].concat(event.id, _.map(arg.relatedEvents, re => re.id));              
 
@@ -2905,16 +2932,27 @@ module nts.uk.ui.at.kdw013.calendar {
                   }
 				  
                    let tempEs = [...events()];
-                    _.forEach(tempEs, (evn) => {
-                        if (evn.extendedProps.id == extendedProps.id) {
-                            evn.extendedProps.isChanged = true;
-                            evn.extendedProps.taskBlock.caltimeSpan = { start: evn.start, end: evn.end };
-                            evn.extendedProps.period = { start: evn.start, end: evn.end };
-                        };
-                    });
-                    events(tempEs);
-                    updateEvents();
 
+                   let evn = _.find(tempEs, tempE => tempE.extendedProps.id == event.id);
+                    evn.extendedProps.isChanged = true;
+                    evn.extendedProps.taskBlock.caltimeSpan = { start: evn.start, end: evn.end };
+                    evn.extendedProps.period = { start: evn.start, end: evn.end };
+
+                    let it = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
+                    let refTimezone = { start: (moment(start).hour() * 60) + moment(start).minute(), end: (moment(end).hour() * 60) + moment(end).minute() };
+                    let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(event.start), 'days'));
+                    let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                    _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                        goOutBreakTimeLst.push({ start, end });
+                    });
+                    let calParam = { refTimezone, goOutBreakTimeLst };
+                    
+                        vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                            it.value = time;
+                            events(tempEs);
+                            updateEvents();
+                        });
+                    $caches.new(event);
                 },
                 eventResizeStop: ({ el, event }) => {
                     console.log('stop', event.extendedProps);
@@ -3184,6 +3222,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         });
                         updateEvents();
                     }
+                $caches.new(event);
                 },
                 datesSet: ({ start, end }) => {
                     let current = moment().startOf('day');

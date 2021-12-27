@@ -40,7 +40,7 @@ public class JudgingApplication {
 
 		// if $勤務種類.isEmpty
 		// return Optional.Empty
-		if (workType.isPresent()) {
+		if (!workType.isPresent()) {
 			return Optional.empty();
 		}
 
