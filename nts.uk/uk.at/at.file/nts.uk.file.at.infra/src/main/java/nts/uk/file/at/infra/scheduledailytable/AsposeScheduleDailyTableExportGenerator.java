@@ -63,6 +63,7 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
             this.printHeader(worksheet, wkgGroupData, dataSource.getHeadingTitles(), period);
             this.printContent(worksheet, wkgGroupData, period, displayBothWhenDiffOnly, dataSource.getComment());
             this.handlePageBreak(worksheet, period.datesBetween().size());
+			worksheet.setGridlinesVisible(false);
             worksheet.setViewType(ViewType.PAGE_LAYOUT_VIEW);
         }
         designer.processDesigner();

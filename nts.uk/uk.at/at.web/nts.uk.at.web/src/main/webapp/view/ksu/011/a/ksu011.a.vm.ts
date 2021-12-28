@@ -34,7 +34,7 @@ module nts.uk.at.view.ksu011.a.viewmodel {
             vm.printTarget = ko.observable(0);
             vm.displayBothWhenDiffOnly = ko.observable(false);
             vm.periodEnd = ko.computed(() => {
-                if (vm.periodStart() && moment.utc(vm.periodStart()).isValid()) {
+                if (vm.periodStart() && moment.utc(vm.periodStart(), "YYYY/MM/DD").isValid()) {
                     if (vm.targetPeriod() == 0) {
                         return moment.utc(vm.periodStart()).add(1, "month").add(-1, "day");
                     } else {
@@ -45,9 +45,7 @@ module nts.uk.at.view.ksu011.a.viewmodel {
             vm.displayPeriod = ko.computed(() => {
                 if (vm.periodStart() && vm.periodEnd()
                     && moment.utc(vm.periodStart()).isSameOrAfter(moment.utc("01/01/1900"))
-                    && moment.utc(vm.periodStart()).isSameOrBefore(moment.utc("12/31/9999"))
-                    && vm.periodEnd().isSameOrAfter(moment.utc("01/01/1900"))
-                    && vm.periodEnd().isSameOrBefore(moment.utc("12/31/9999")))
+                    && moment.utc(vm.periodStart()).isSameOrBefore(moment.utc("12/31/9999")))
                     return vm.$i18n("KSU011_79", [moment.utc(vm.periodStart()).format("YYYY/MM/DD") + "～" + vm.periodEnd().format("YYYY/MM/DD")]);
                 else return "";
             });
