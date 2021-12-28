@@ -40,7 +40,7 @@ public class Com60HourVacationTest {
 				result = Com60HourVacationTestHelper.getOptionLicense(true);
 			}
 		};
-		boolean checkVacationTimeUnitUsed = domain.checkVacationTimeUnitUsed(require, AttendanceTime.ZERO);
+		boolean checkVacationTimeUnitUsed = domain.checkVacationTimeUnitUsed(require, new AttendanceTime(600));
 		assertThat(checkVacationTimeUnitUsed).isTrue();
 	}
 	

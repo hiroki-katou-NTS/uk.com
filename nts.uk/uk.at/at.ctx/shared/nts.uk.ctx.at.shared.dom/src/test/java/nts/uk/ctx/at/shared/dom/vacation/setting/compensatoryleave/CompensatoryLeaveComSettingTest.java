@@ -15,8 +15,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
@@ -28,14 +26,7 @@ public class CompensatoryLeaveComSettingTest {
 	@Injectable
 	private RequireM7 require;
 	
-	public CompensatoryLeaveComSetting create() {
-		return new CompensatoryLeaveComSetting("DUMMY-CID",
-				ManageDistinct.YES,
-				new CompensatoryAcquisitionUse(ExpirationTime.THIS_MONTH, ApplyPermission.ALLOW, DeadlCheckMonth.ONE_MONTH, TermManagement.MANAGE_BASED_ON_THE_DATE),
-				new SubstituteHolidaySetting(new HolidayWorkHourRequired(false, new TimeSetting()), new OvertimeHourRequired(false, new TimeSetting())),
-				new TimeVacationDigestUnit(ManageDistinct.YES, TimeDigestiveUnit.OneHour),
-				ManageDistinct.YES);
-	}
+	
 	
 	/**
 	 * Test [2] 時間代休を管理するかどうか判断する
@@ -43,7 +34,7 @@ public class CompensatoryLeaveComSettingTest {
 	 */
 	@Test
 	public void testIsManagedTime1() {
-		val domain = create();
+		val domain = CompensatoryLeaveComSettingTestHelper.create();
 		new Expectations() {
 			{
 				require.getOptionLicense();
@@ -60,7 +51,7 @@ public class CompensatoryLeaveComSettingTest {
 	 */
 	@Test
 	public void testIsManagedTime2() {
-		val domain = create();
+		val domain = CompensatoryLeaveComSettingTestHelper.create();
 		new Expectations() {
 			{
 				require.getOptionLicense();
@@ -76,7 +67,7 @@ public class CompensatoryLeaveComSettingTest {
 	 */
 	@Test
 	public void testCheckVacationTimeUnitUsed1() {
-		val domain = create();
+		val domain = CompensatoryLeaveComSettingTestHelper.create();
 		new Expectations() {
 			{
 				require.getCmpLeaveComSet("DUMMY-CID");
@@ -87,7 +78,7 @@ public class CompensatoryLeaveComSettingTest {
 				result = CompensatoryLeaveComSettingTestHelper.getOptionLicense(true);
 			}
 		};
-		boolean checkVacationTimeUnitUsed = domain.checkVacationTimeUnitUsed(require, "DUMMY-CID", AttendanceTime.ZERO, "DUMMY-SID", GeneralDate.today());
+		boolean checkVacationTimeUnitUsed = domain.checkVacationTimeUnitUsed(require, "DUMMY-CID", new AttendanceTime(600), "DUMMY-SID", GeneralDate.today());
 		assertThat(checkVacationTimeUnitUsed).isTrue();
 	}
 	
@@ -96,7 +87,7 @@ public class CompensatoryLeaveComSettingTest {
 	 */
 	@Test
 	public void testCheckVacationTimeUnitUsed2() {
-		val domain = create();
+		val domain = CompensatoryLeaveComSettingTestHelper.create();
 		val dummyDate = GeneralDate.today();
 		new Expectations() {
 			{
@@ -117,7 +108,7 @@ public class CompensatoryLeaveComSettingTest {
 				result = CompensatoryLeaveComSettingTestHelper.getOptionLicense(true);
 			}
 		};
-		boolean checkVacationTimeUnitUsed = domain.checkVacationTimeUnitUsed(require, "DUMMY-CID", AttendanceTime.ZERO, "DUMMY-SID", dummyDate);
+		boolean checkVacationTimeUnitUsed = domain.checkVacationTimeUnitUsed(require, "DUMMY-CID", new AttendanceTime(600), "DUMMY-SID", dummyDate);
 		assertThat(checkVacationTimeUnitUsed).isTrue();
 	}
 	
@@ -127,7 +118,7 @@ public class CompensatoryLeaveComSettingTest {
 	 */
 	@Test
 	public void testCheckVacationTimeUnitUsed3() {
-		val domain = create();
+		val domain = CompensatoryLeaveComSettingTestHelper.create();
 		val dummyDate = GeneralDate.today();
 		new Expectations() {
 			{
@@ -157,7 +148,7 @@ public class CompensatoryLeaveComSettingTest {
 	 */
 	@Test
 	public void testManageTimeOffAccordingEmpSettings1() {
-		val domain = create();
+		val domain = CompensatoryLeaveComSettingTestHelper.create();
 		val dummyDate = GeneralDate.today();
 		new Expectations() {
 			{
@@ -178,7 +169,7 @@ public class CompensatoryLeaveComSettingTest {
 	 */
 	@Test
 	public void testManageTimeOffAccordingEmpSettings2() {
-		val domain = create();
+		val domain = CompensatoryLeaveComSettingTestHelper.create();
 		val dummyDate = GeneralDate.today();
 		new Expectations() {
 			{
@@ -209,7 +200,7 @@ public class CompensatoryLeaveComSettingTest {
 	 */
 	@Test
 	public void testManageTimeOffAccordingEmpSettings3() {
-		val domain = create();
+		val domain = CompensatoryLeaveComSettingTestHelper.create();
 		val dummyDate = GeneralDate.today();
 		new Expectations() {
 			{

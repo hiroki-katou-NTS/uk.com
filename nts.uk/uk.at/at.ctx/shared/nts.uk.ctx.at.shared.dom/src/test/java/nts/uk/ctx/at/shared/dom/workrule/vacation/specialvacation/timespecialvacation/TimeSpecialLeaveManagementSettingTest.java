@@ -126,7 +126,7 @@ public class TimeSpecialLeaveManagementSettingTest {
 				result = TimeSpecialLeaveManagementHelper.getOptionLicense(true);
 			}
 		};
-		boolean checkVacationTimeUnitUsed = managementSetting.checkVacationTimeUnitUsed(require, AttendanceTime.ZERO);
+		boolean checkVacationTimeUnitUsed = managementSetting.checkVacationTimeUnitUsed(require, new AttendanceTime(600));
 		assertThat(checkVacationTimeUnitUsed).isTrue();
 	}
 	

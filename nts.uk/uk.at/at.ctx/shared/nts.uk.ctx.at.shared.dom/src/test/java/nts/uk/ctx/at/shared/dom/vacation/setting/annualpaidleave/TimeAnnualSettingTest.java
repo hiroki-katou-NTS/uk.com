@@ -216,7 +216,7 @@ public class TimeAnnualSettingTest {
     			result = TimeAnnualSettingHelper.getOptionLicense(true);
     		}
 		};
-    	boolean checkDigestUnits = setting.checkDigestUnits(require, AttendanceTime.ZERO, ManageDistinct.YES);
+    	boolean checkDigestUnits = setting.checkDigestUnits(require, new AttendanceTime(600), ManageDistinct.YES);
     	assertThat(checkDigestUnits).isTrue();
 	}
 	

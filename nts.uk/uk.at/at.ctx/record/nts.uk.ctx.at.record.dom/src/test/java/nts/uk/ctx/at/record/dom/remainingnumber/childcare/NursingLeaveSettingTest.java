@@ -342,7 +342,7 @@ public class NursingLeaveSettingTest {
 				result = NursingLeaveSettingTestHelper.getOptionLicense(true);
 			}
 		};
-		boolean checkVacationTimeUnitUsed = childCare.checkVacationTimeUnitUsed(timeVacationDigestUnitRequire, AttendanceTime.ZERO);
+		boolean checkVacationTimeUnitUsed = childCare.checkVacationTimeUnitUsed(timeVacationDigestUnitRequire, new AttendanceTime(600));
 		assertThat(checkVacationTimeUnitUsed).isTrue();
 	}
 	
