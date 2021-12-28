@@ -56,14 +56,14 @@
                       value: supportCardNo,
                       constraint: 'SupportCardNumber',
                       required: true,
-                      option: { textalign: 'left' }
+                      option: { textalign: 'left', width: '60px' }
                     },
                     hasFocus: $parent.isFocusInput" />
                 <input tabindex="7" id="A2_12"
                   data-bind="visible: $parent.isFocusInput() === false,
                     ntsTextEditor: {
                       value: supportCardNo,
-                      option: { textalign: 'left' }
+                      option: { textalign: 'left', width: '60px' }
                     },
                     disable: $parent.mode() === $parent.NORMAL_MODE,
                     hasFocus: $parent.isFocusInputText" />
