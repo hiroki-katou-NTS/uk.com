@@ -221,8 +221,10 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		Boolean isCon6 = BooleanUtils.toBoolean(appStampReflect.getGoOutReflectAtr().value);
 //		休憩時間帯を反映する＝しない
 		Boolean isCon7 = BooleanUtils.toBoolean(appStampReflect.getBreakReflectAtr().value);
+//		応援開始、終了を反映する=しない
+		Boolean isCon8 = BooleanUtils.toBoolean(appStampReflect.getSupportReflectAtr().value);
 		
-		if (!isCon1 && !isCon2 && (!isCon3 || !isCon4) && !isCon5 && !isCon6 && !isCon7) {
+		if (!isCon1 && !isCon2 && (!isCon3 || !isCon4) && !isCon5 && !isCon6 && !isCon7 && !isCon8) {
 			throw new BusinessException("Msg_1757");
 		}
 		
