@@ -10,19 +10,15 @@ module nts.uk.at.view.kmk013.d {
             selectedRuleCode2: any;
             itemListD310: KnockoutObservableArray<any>;
             itemListD410: KnockoutObservableArray<any>;
-            itemListD610: KnockoutObservableArray<any>;
             itemListD510: KnockoutObservableArray<any>;
+            calculationMethods: KnockoutObservableArray<any>;
             selectedId: KnockoutObservable<number>;
             enable: KnockoutObservable<boolean>;
 
-            selectedD62: KnockoutObservable<number> = ko.observable(0);
             selectedD310: KnockoutObservable<number>  = ko.observable(0);
-            checkedD34: KnockoutObservable<boolean>  = ko.observable(false);
-            enableD34: KnockoutObservable<boolean> = ko.observable(true);
             selectedD410: KnockoutObservable<number> = ko.observable(0);
-            checkedD44: KnockoutObservable<boolean> = ko.observable(false);
-            enableD44: KnockoutObservable<boolean> = ko.observable(true);
             selectedD52: KnockoutObservable<number> = ko.observable(0);
+            selectedCalculationMethod: KnockoutObservable<number> = ko.observable(0);
             otsukaMode: KnockoutObservable<boolean> = ko.observable(false);
             
             suppDays: KnockoutObservable<number>;
@@ -48,40 +44,21 @@ module nts.uk.at.view.kmk013.d {
                     new BoxModel(0, nts.uk.resource.getText('KMK013_196')),
                     new BoxModel(1, nts.uk.resource.getText('KMK013_197')),
                 ]);
-                self.itemListD610 = ko.observableArray([
-                    new BoxModel(0, nts.uk.resource.getText('KMK013_268')),
-                    new BoxModel(1, nts.uk.resource.getText('KMK013_269')),
+                self.calculationMethods = ko.observableArray([
+                    new BoxModel(1, nts.uk.resource.getText('KMK013_580')),
+                    new BoxModel(0, nts.uk.resource.getText('KMK013_579')),
                 ]);
                 self.itemListD510 = ko.observableArray([
-                    new BoxModel(0, nts.uk.resource.getText('KMK013_264')),
-                    new BoxModel(1, nts.uk.resource.getText('KMK013_265')),
-                    new BoxModel(2, nts.uk.resource.getText('KMK013_266')),
+                    new BoxModel(1, nts.uk.resource.getText('KMK013_264')),
+                    new BoxModel(0, nts.uk.resource.getText('KMK013_265')),
                 ]);
                 
                 self.selectedId = ko.observable(1);
                 self.enable = ko.observable(true);
-
-                self.selectedD310.subscribe(value => {
-                   if (value == 0) {
-                       self.enableD34(true);
-                       self.checkedD34(true);
-                   } else {
-                       self.enableD34(false);
-                       self.checkedD34(false);
-                   }
-                });
-
-                self.selectedD410.subscribe(value => {
-                    if (value == 0) {
-                        self.enableD44(true);
-                        self.checkedD44(true);
-                    } else {
-                        self.enableD44(false);
-                        self.checkedD44(false);
-                    }
-                });
                  
                 self.suppDays = ko.observable(2);
+
+                self.selectedCalculationMethod.subscribe(value => self.selectedD410(value === 0 ? 1 : 0));
             }
             startPage(): JQueryPromise<any> {
                 var self = this;
@@ -94,18 +71,15 @@ module nts.uk.at.view.kmk013.d {
 
                     if (flexSet && flexSet[0]) {
                         let data = flexSet[0];
-                        // 非勤務日計算.設定
-                        self.selectedD62(data.flexNonworkingDayCalc);
-                        //半日勤務の計算方法.半日休日時.不足計算
+                        // 代休取得時の計算方法．割増計算
+                        self.selectedD410(data.premiumCalcSubhd);
+                        // 代休取得時の計算方法．所定から控除するかどうか
+                        self.selectedCalculationMethod(data.isDeductPred);
+                        self.selectedCalculationMethod.valueHasMutated();
+                        // 半日休日の計算方法．不足計算
                         self.selectedD310(data.missCalcHd);
-                        //半日勤務の計算方法.半日休日時.割増計算
-                        self.checkedD34(data.premiumCalcHd == 1);
-                        //半日勤務の計算方法.半日代休時.不足計算
-                        self.selectedD410(data.missCalcSubhd);
-                        //半日勤務の計算方法.半日代休時.割増計算
-                        self.checkedD44(data.premiumCalcSubhd == 1);
-                        // 法定労働控除時間計算.設定
-                        self.selectedD52(data.flexDeductTimeCalc);
+                        // 代休取得時の計算方法．時間代休時の計算設定
+                        self.selectedD52(data.calcSetTimeSubhd);
                     }
 
                     if (setting) {
@@ -134,12 +108,12 @@ module nts.uk.at.view.kmk013.d {
                 
                 if (!$('.nts-input').ntsError('hasError')) {
                     let data: any = {};
-                    data.premiumCalcHd = (self.enableD34() && self.checkedD34()) ? 1 : 0;
-                    data.missCalcHd = self.selectedD310();
-                    data.premiumCalcSubhd = (self.enableD44() && self.checkedD44()) ? 1 : 0;
                     data.missCalcSubhd = self.selectedD410();
-                    data.flexDeductTimeCalc = self.selectedD52();
-                    data.flexNonworkingDayCalc = self.selectedD62();
+                    data.isDeductPred = self.selectedCalculationMethod();
+                    data.missCalcHd = self.selectedD310();
+                    data.premiumCalcHd = self.selectedD310();
+                    data.premiumCalcSubhd = self.selectedD410();
+                    data.calcSetTimeSubhd = self.selectedD52();
     
                     service.save(data).done(() => {
                         let insuffData: any = {};

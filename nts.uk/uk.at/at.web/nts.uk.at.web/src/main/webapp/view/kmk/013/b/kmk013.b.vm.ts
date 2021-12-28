@@ -635,31 +635,31 @@ module nts.uk.at.view.kmk013.b_ref {
                     /** 時間外超過の加算設定 */
                     self.selectedIdB3_8(obj.addSetManageWorkHour);
                     // 通常勤務の加算設定.休暇の計算方法の設定.休暇の就業時間計算方法.実働のみで計算する
-                    self.selectedB54(obj.regularWork.calcActualOperationWork);
+                    self.selectedB54(obj.regularWork?.calcActualOperationWork || 0);
                     // 通常勤務の加算設定.休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.休暇分を含める設定.加算する
-                    self.checkedB57(convertToBoolean(obj.regularWork.additionTimeWork));
+                    self.checkedB57(convertToBoolean(obj.regularWork?.additionTimeWork || 0));
                     // 通常勤務の加算設定.休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.育児・介護時間を含めて計算する
-                    self.checkedB58(convertToBoolean(obj.regularWork.incChildNursingCareWork));
+                    self.checkedB58(convertToBoolean(obj.regularWork?.incChildNursingCareWork || 0));
                     // 通常勤務の加算設定.休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.インターバル免除時間を含めて計算する
-                    self.checkedB510(convertToBoolean(obj.regularWork.exemptTaxTimeWork));
+                    self.checkedB510(convertToBoolean(obj.regularWork?.exemptTaxTimeWork || 0));
                     // 通常勤務の加算設定.休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.遅刻・早退を控除する.就業時間から控除する設定.就業時間から控除する
-                    self.checkedB59(convertToBoolean(obj.regularWork.notDeductLateleaveWork));
+                    self.checkedB59(convertToBoolean(obj.regularWork?.notDeductLateleaveWork || 0));
                     // 通常勤務の加算設定.休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.遅刻・早退を控除する.就業時間帯毎の設定を可能とする
-                    self.checkedB591(convertToBoolean(obj.regularWork.enableSetPerWorkHour1));
+                    self.checkedB591(convertToBoolean(obj.regularWork?.enableSetPerWorkHour1 || 0));
                     // 通常勤務の加算設定.休暇の計算方法の設定.割増計算方法を設定する
-                    self.checkedB61(convertToBoolean(obj.regularWork.useAtr));
+                    self.checkedB61(convertToBoolean(obj.regularWork?.useAtr || 0));
                     // 通常勤務の加算設定.休暇の計算方法の設定.休暇の割増計算方法.実働のみで計算する
-                    self.selectedB74(obj.regularWork.calcActualOperationPre);
+                    self.selectedB74(obj.regularWork?.calcActualOperationPre || 0);
                     // 通常勤務の加算設定.休暇の計算方法の設定.休暇の割増計算方法.詳細設定.休暇分を含める設定.加算する
-                    self.checkedB77(convertToBoolean(obj.regularWork.additionTimePre));
+                    self.checkedB77(convertToBoolean(obj.regularWork?.additionTimePre || 0));
                     // 通常勤務の加算設定.休暇の計算方法の設定.休暇の割増計算方法.詳細設定.休暇分を含める設定.通常、変形の所定超過時
-                    self.selectedB772(obj.regularWork.deformatExcValuePre);
+                    self.selectedB772(obj.regularWork?.deformatExcValuePre || 0);
                     // 通常勤務の加算設定.休暇の計算方法の設定.休暇の割増計算方法.詳細設定.育児・介護時間を含めて計算する
-                    self.checkedB78(convertToBoolean(obj.regularWork.incChildNursingCarePre));
+                    self.checkedB78(convertToBoolean(obj.regularWork?.incChildNursingCarePre || 0));
                     // 通常勤務の加算設定.休暇の計算方法の設定.休暇の割増計算方法.詳細設定.インターバル免除時間を含めて計算する
-                    self.checkedB710(convertToBoolean(obj.regularWork.exemptTaxTimePre));
+                    self.checkedB710(convertToBoolean(obj.regularWork?.exemptTaxTimePre || 0));
                     // 通常勤務の加算設定.休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除する.就業時間から控除する設定.就業時間から控除する
-                    self.checkedB79(convertToBoolean(obj.regularWork.notDeductLateleavePre));
+                    self.checkedB79(convertToBoolean(obj.regularWork?.notDeductLateleavePre || 0));
                     // 時給者の加算設定.休暇の計算方法の設定.休暇の就業時間計算方法.実働のみで計算する
                     self.selectedB84(obj.hourlyPaymentAdditionSet.calcWorkHourVacation);
                     // 時給者の加算設定.休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.休暇分を含める設定.加算する
