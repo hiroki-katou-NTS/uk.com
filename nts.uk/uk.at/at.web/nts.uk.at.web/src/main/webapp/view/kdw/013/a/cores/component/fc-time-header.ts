@@ -4,7 +4,7 @@ module nts.uk.ui.at.kdw013.timeheader {
         template:
         `<td data-bind="i18n: 'KDW013_25'"></td>
                 <!-- ko foreach: { data: $component.params.timesSet, as: 'time' } -->
-                    <td class="fc-day" style='position: relative;' data-bind="html: $component.formatTime(time), attr: { 'data-date': time.date }"></td>
+                    <td class="fc-day fc-times" style='position: relative;' data-bind="html: $component.formatTime(time), attr: { 'data-date': time.date }"></td>
                 <!-- /ko -->
                 <style rel="stylesheet">
                     .warningIcon {
