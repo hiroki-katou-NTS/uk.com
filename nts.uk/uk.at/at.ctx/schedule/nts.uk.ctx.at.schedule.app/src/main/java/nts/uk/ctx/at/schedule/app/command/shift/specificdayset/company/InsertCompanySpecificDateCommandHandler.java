@@ -37,7 +37,9 @@ public class InsertCompanySpecificDateCommandHandler extends CommandHandler<List
 			if (existData.isPresent()) {
 				this.repo.delete(companyId, date);
 			}
-			this.repo.insert(new CompanySpecificDateItem(companyId, date, OneDaySpecificItem.create(specificDayItems)));
+			if (!specificDayItems.isEmpty()) {
+				this.repo.insert(new CompanySpecificDateItem(companyId, date, OneDaySpecificItem.create(specificDayItems)));
+			}
 		}
 	}
 

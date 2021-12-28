@@ -290,7 +290,7 @@ module ksm002.a.viewmodel {
             var self = this;
             let dfd = $.Deferred<any>();
             //Check Is used item 
-            if (self.getInsertCommand().length == 0) {
+            if (!self.hasItemInCalendarInsert()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });
             } else {
                 // UDPATE
@@ -338,12 +338,22 @@ module ksm002.a.viewmodel {
             var self = this;
             let lstComSpecificDateCommand: Array<any> = [];
             _.forEach(self.optionDates(), function(processDay) {
-                if (processDay.listId.length > 0) {
-                    lstComSpecificDateCommand.push({ specificDate: moment(processDay.start, 'YYYYMMDD').format(self.dateFormat), specificDateNo: processDay.listId });
-                };
+                lstComSpecificDateCommand.push({ specificDate: moment(processDay.start, 'YYYYMMDD').format(self.dateFormat), specificDateNo: processDay.listId });
             });
             return lstComSpecificDateCommand;
         };
+
+        hasItemInCalendarInsert() {
+            var self = this;
+            let hasItem = false;
+            _.forEach(self.optionDates(), (processDay) => {
+                if (processDay.listId.length > 0) {
+                    hasItem = true;
+                    return;
+                };
+            });
+            return hasItem;
+        }
 
         /**
          * check spec item is Use

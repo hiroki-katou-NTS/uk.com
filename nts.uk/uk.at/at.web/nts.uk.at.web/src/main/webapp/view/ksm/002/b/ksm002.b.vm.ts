@@ -107,14 +107,14 @@ module ksm002.b.viewmodel {
         /**
          * get required data
          */
-        start(value: boolean){
+        start(isResetBoxItemList: boolean = true){
             var self = this;  
             $('#tree-grid').focusTreeGridComponent();
             nts.uk.ui.block.invisible();
             $.when(
                 self.getAllSpecDate(), 
                 nts.uk.characteristics.restore("IndividualStartDay"),
-                self.getSpecDateByIsUse(),
+                self.getSpecDateByIsUse(isResetBoxItemList),
                 self.getCalendarWorkPlaceByCode()
             ).done((data1, data2, data3, data4, data5)=>{
                 if(nts.uk.util.isNullOrEmpty(self.checkBoxList())){
@@ -202,17 +202,24 @@ module ksm002.b.viewmodel {
         /**
          * get selectable item
          */
-        getSpecDateByIsUse(): JQueryPromise<any>{
+        getSpecDateByIsUse(isResetBoxItemList: boolean = true): JQueryPromise<any>{
             var self = this;
             var dfd = $.Deferred();
             bService.getSpecificDateByIsUse(1).done(data=>{
                 if(!nts.uk.util.isNullOrEmpty(data)){
-                    self.checkBoxList.removeAll();
                     let sortData = _.sortBy(data, o => o.specificDateItemNo);
                     let a = []
                     sortData.forEach(item => {
-                        a.push(new SpecItem(item.specificDateItemNo, item.specificName));    
+                        let specItem = new SpecItem(item.specificDateItemNo, item.specificName);
+                        if (!isResetBoxItemList) {
+                            const hasItem = _.find(self.checkBoxList(), (boxItem) => boxItem.id == item.specificDateItemNo);
+                            if (hasItem) {
+                                specItem.choose(hasItem.choose());
+                            }
+                        }
+                        a.push(specItem);
                     });   
+                    self.checkBoxList.removeAll();
                     self.checkBoxList(a);
                 }
                 dfd.resolve();
