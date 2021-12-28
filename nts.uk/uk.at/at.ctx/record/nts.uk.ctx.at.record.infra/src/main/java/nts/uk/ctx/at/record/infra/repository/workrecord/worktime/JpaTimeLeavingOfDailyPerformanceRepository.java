@@ -179,6 +179,13 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 	private void internalUpdate(TimeLeavingOfDailyPerformance domain,KrcdtDayTsAtd entity) {
 		List<KrcdtDayTsAtdStmp> timeWorks = entity.timeLeavingWorks;
+		List<KrcdtTimeLeavingWorkPK> lstTsAtdStmpRemovePk =  entity.timeLeavingWorks.stream().filter(x -> {
+			return x.krcdtTimeLeavingWorkPK.timeLeavingType == 0
+					&& domain.getAttendance().getTimeLeavingWorks().stream()
+							.noneMatch(y -> y.getWorkNo().v().intValue() == x.krcdtTimeLeavingWorkPK.workNo
+									&& x.krcdtTimeLeavingWorkPK.employeeId.equals(domain.getEmployeeId())
+									&& x.krcdtTimeLeavingWorkPK.ymd.equals(domain.getYmd()));
+		}).map(x -> x.krcdtTimeLeavingWorkPK).collect(Collectors.toList());
 		entity.workTimes = domain.getAttendance().getWorkTimes() == null ? null : domain.getAttendance().getWorkTimes().v();
 		domain.getAttendance().getTimeLeavingWorks().stream().forEach(c -> {
 			KrcdtDayTsAtdStmp krcdtTimeLeavingWork = timeWorks.stream()
@@ -300,11 +307,16 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 			}
 		});
 
-		entity.timeLeavingWorks = timeWorks.isEmpty() ? null : timeWorks;
+		
+		entity.timeLeavingWorks = timeWorks.isEmpty() ||  domain.getAttendance().getTimeLeavingWorks().isEmpty() ? new ArrayList<>() : timeWorks;
 		this.commandProxy().update(entity);
-		if (!timeWorks.isEmpty()) {
+		
+		if (!entity.timeLeavingWorks.isEmpty()) {
 			this.commandProxy().updateAll(entity.timeLeavingWorks);
 		}
+		
+		lstTsAtdStmpRemovePk.stream().forEach(x -> this.commandProxy().remove(KrcdtDayTsAtdStmp.class, x));
+		
 		// this.getEntityManager().flush();
 	}
 
