@@ -28,9 +28,7 @@ public class SharedAffWorkplaceHistoryItemAdapterImpl implements SharedAffWorkpl
                 new AffWorkplaceHistoryItemImport(
                         x.getHistoryId(),
                         x.getEmployeeId(),
-                        x.getWorkplaceId(),
-                        x.getNormalWorkplaceId(),
-                        x.getWorkLocationCode()
+                        x.getWorkplaceId()
                 )).collect(Collectors.toList());
     }
 

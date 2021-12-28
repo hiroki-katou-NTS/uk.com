@@ -110,19 +110,25 @@ module nts.uk.at.view.kmk013.j {
                 if (vacationPriority.substituteHoliday == 0 &&
                     vacationPriority.sixtyHourVacation == 0 &&
                     vacationPriority.specialHoliday == 0 &&
-                    vacationPriority.annualHoliday == 0) {
+                    vacationPriority.annualHoliday == 0 &&
+                    vacationPriority.care == 0 &&
+                    vacationPriority.childCare == 0) {
                     data = {
                         annual: 2,
                         substitute: 0,
                         sixtyHour: 1,
-                        special: 3
+                        special: 3,
+                        childCare: 4,
+                        care: 5
                     };
                 } else {
                     data = {
                         annual: vacationPriority.annualHoliday,
                         substitute: vacationPriority.substituteHoliday,
                         sixtyHour: vacationPriority.sixtyHourVacation,
-                        special: vacationPriority.specialHoliday
+                        special: vacationPriority.specialHoliday,
+                        childCare: vacationPriority.childCare,
+                        care: vacationPriority.care
                     };
                 }
 
@@ -136,7 +142,9 @@ module nts.uk.at.view.kmk013.j {
                             res.substitute,
                             res.sixtyHour,
                             res.special,
-                            res.annual
+                            res.annual,
+                            res.childCare,
+                            res.care
                         );
                     }
 
@@ -150,10 +158,7 @@ module nts.uk.at.view.kmk013.j {
                 let data = {
                     config: self.selectedControlSetItem(),
                     calculationMethod: self.selectedCalculationMethod(),
-                    annualHoliday: self.verticalTotalMethodOfMon.vacationOffset.annualHoliday,
-                    substituteHoliday: self.verticalTotalMethodOfMon.vacationOffset.substituteHoliday,
-                    sixtyHourVacation: self.verticalTotalMethodOfMon.vacationOffset.sixtyHourVacation,
-                    specialHoliday: self.verticalTotalMethodOfMon.vacationOffset.specialHoliday,
+                    offVacationPriorityOrder: self.verticalTotalMethodOfMon.vacationOffset,
                     countingDay: self.selectedTransAttendMethod(),
                     countingCon: self.selectedNonCalculationMethod(),
                     countingWorkDay:  self.selectedWorkDayItem(),
@@ -250,10 +255,12 @@ module nts.uk.at.view.kmk013.j {
             this.config = param.config;
             this.calculationMethod = param.calculationMethod;
             this.vacationOffset = {
-                annualHoliday: param.annualHoliday,
-                substituteHoliday: param.substituteHoliday,
-                sixtyHourVacation: param.sixtyHourVacation,
-                specialHoliday: param.specialHoliday
+                annualHoliday: param.offVacationPriorityOrder.annualHoliday,
+                substituteHoliday: param.offVacationPriorityOrder.substituteHoliday,
+                sixtyHourVacation: param.offVacationPriorityOrder.sixtyHourVacation,
+                specialHoliday: param.offVacationPriorityOrder.specialHoliday,
+                childCare: param.offVacationPriorityOrder.childCare,
+                care: param.offVacationPriorityOrder.care
             };
             this.countingDay = param.countingDay;
             this.countingCon = param.countingCon;
@@ -261,11 +268,13 @@ module nts.uk.at.view.kmk013.j {
             this.countingNonWorkDay = param.countingNonWorkDay;
         }
 
-        updateOffsetPriority(substitute: number, sixtyHour: number, special: number, annual: number) {
+        updateOffsetPriority(substitute: number, sixtyHour: number, special: number, annual: number, childCare: number, care: number) {
             this.vacationOffset.annualHoliday = annual;
             this.vacationOffset.substituteHoliday = substitute;
             this.vacationOffset.sixtyHourVacation = sixtyHour;
             this.vacationOffset.specialHoliday = special;
+            this.vacationOffset.childCare = childCare;
+            this.vacationOffset.care = care;
         }
 
         getOffsetPriority() {
@@ -277,10 +286,7 @@ module nts.uk.at.view.kmk013.j {
     interface IVerticalTotalMethodOfMon {
         config: number; // 総労働時間の上限値制御.設定
         calculationMethod: number; // 総拘束時間の計算.計算方法
-        annualHoliday: number; // 時間休暇相殺優先順位.年休
-        substituteHoliday: number; // 時間休暇相殺優先順位.代休
-        sixtyHourVacation: number; // 時間休暇相殺優先順位.60H超休
-        specialHoliday: number; // 時間休暇相殺優先順位.特別休暇
+        offVacationPriorityOrder: ITimeVacationOffsetPriority; // 時間休暇相殺優先順位
         countingDay: number; // 月別実績の集計方法.振出日数.振出日数カウント条件
         countingCon: number; // 月別実績の集計方法.特定日.計算対象外のカウント条件
         countingWorkDay: number; // 月別実績の集計方法.特定日.連続勤務の日でもカウントする
@@ -292,6 +298,8 @@ module nts.uk.at.view.kmk013.j {
         substituteHoliday: number; // 時間休暇相殺優先順位.代休
         sixtyHourVacation: number; // 時間休暇相殺優先順位.60H超休
         specialHoliday: number; // 時間休暇相殺優先順位.特別休暇
+        childCare: number; // 時間休暇相殺優先順位.子の看護
+        care: number; // 時間休暇相殺優先順位.介護
     }
 
 }

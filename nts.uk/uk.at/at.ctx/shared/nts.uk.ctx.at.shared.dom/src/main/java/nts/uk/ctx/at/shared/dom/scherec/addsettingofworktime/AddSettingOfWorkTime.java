@@ -169,6 +169,18 @@ public class AddSettingOfWorkTime extends DomainObject implements SerializableWi
 	}
 	
 	/**
+	 * 休暇分を就業時間に含めるか判断する
+	 * @return true：含める、false：含めない
+	 */
+	public boolean isCalculateIncludVacation() {
+		if (this.calculateActualOperation.isCalclationByActualTime() ||
+				!this.treatVacation.isPresent()) 
+			return false;
+		
+		return this.treatVacation.get().isCalculateIncludVacation();
+	}
+	
+	/**
 	 * 欠勤をマイナスせず所定から控除する
 	 * @return true：控除する、false：控除しない
 	 */

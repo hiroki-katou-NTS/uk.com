@@ -23,11 +23,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
-import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
-import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -132,6 +131,25 @@ public class KrcdtDayTimeGoout extends ContractUkJpaEntity implements Serializab
 	//外出回数
 	@Column(name = "OUTING_COUNT")
 	public int count;
+
+	/** 時間年休相殺時間 */
+	@Column(name = "TIME_ANALLV_OFFSET_TIME")
+	public int anuuualLeaveOffTime;
+	/** 時間代休相殺時間 */
+	@Column(name = "TIME_CMPNSTLV_OFFSET_TIME")
+	public int compensLeaveOffTime;
+	/** 超過有休相殺時間 */
+	@Column(name = "OVER_PAY_VACTN_OFFSET_TIME")
+	public int specialHolidayOffTime;
+	/** 特別休暇相殺時間 */
+	@Column(name = "SP_VACTN_OFFSET_TIME")
+	public int overVacationOffTime;
+	/** 子の看護休暇相殺時間 */
+	@Column(name = "CHILD_CARE_OFFSET_TIME")
+	public int childCareOffTime;
+	/** 介護休暇相殺時間 */
+	@Column(name = "CARE_OFFSET_TIME")
+	public int careOffTime;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns(value = {
@@ -246,6 +264,19 @@ public class KrcdtDayTimeGoout extends ContractUkJpaEntity implements Serializab
 			if(outingTimeOfDaily.getWorkTime() != null) {
 				this.count = outingTimeOfDaily.getWorkTime().v();
 			}
+			
+			/** 時間年休相殺時間 */
+			this.anuuualLeaveOffTime = outingTimeOfDaily.getTimeOffsetUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes();
+			/** 時間代休相殺時間 */
+			this.compensLeaveOffTime = outingTimeOfDaily.getTimeOffsetUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes();
+			/** 超過有休相殺時間 */
+			this.specialHolidayOffTime = outingTimeOfDaily.getTimeOffsetUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes();
+			/** 特別休暇相殺時間 */
+			this.overVacationOffTime = outingTimeOfDaily.getTimeOffsetUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes();
+			/** 子の看護休暇相殺時間 */
+			this.childCareOffTime = outingTimeOfDaily.getTimeOffsetUseTime().getTimeChildCareHolidayUseTime().valueAsMinutes();
+			/** 介護休暇相殺時間 */
+			this.careOffTime = outingTimeOfDaily.getTimeOffsetUseTime().getTimeCareHolidayUseTime().valueAsMinutes();
 		}
 	}
 	
@@ -275,6 +306,14 @@ public class KrcdtDayTimeGoout extends ContractUkJpaEntity implements Serializab
 									 											 TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionCoreOutTime), new AttendanceTime(calDeductionCoreOutTime))), 
 									 					TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(calDeductionOutTime), new AttendanceTime(calDeductionOutTime))),
 									 //補正後時間帯
-									 new ArrayList<>());
+									 new ArrayList<>(),
+									 new TimevacationUseTimeOfDaily(
+												new AttendanceTime(this.anuuualLeaveOffTime),
+												new AttendanceTime(this.compensLeaveOffTime),
+												new AttendanceTime(this.overVacationOffTime),
+												new AttendanceTime(this.specialHolidayOffTime),
+												Optional.ofNullable(this.specialHdFrameNo == null ? null : new SpecialHdFrameNo(this.specialHdFrameNo)),
+												new AttendanceTime(this.childCareOffTime),
+												new AttendanceTime(this.careOffTime)));
 	}
 }

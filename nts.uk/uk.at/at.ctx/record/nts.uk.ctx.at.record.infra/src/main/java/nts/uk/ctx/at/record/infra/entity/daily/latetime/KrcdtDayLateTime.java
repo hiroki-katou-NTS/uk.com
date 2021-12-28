@@ -67,6 +67,28 @@ public class KrcdtDayLateTime extends ContractUkJpaEntity implements Serializabl
 	@Column(name = "CARE_USE_TIME")
 	public int careUseTime;
 
+	/** 時間年休相殺時間 */
+	@Column(name = "TIME_ANALLV_OFFSET_TIME")
+	public int anuuualLeaveOffTime;
+	/** 時間代休相殺時間 */
+	@Column(name = "TIME_CMPNSTLV_OFFSET_TIME")
+	public int compensLeaveOffTime;
+	/** 超過有休相殺時間 */
+	@Column(name = "OVER_PAY_VACTN_OFFSET_TIME")
+	public int specialHolidayOffTime;
+	/** 特別休暇相殺時間 */
+	@Column(name = "SP_VACTN_OFFSET_TIME")
+	public int overVacationOffTime;
+	/** 子の看護休暇相殺時間 */
+	@Column(name = "CHILD_CARE_OFFSET_TIME")
+	public int childCareOffTime;
+	/** 介護休暇相殺時間 */
+	@Column(name = "CARE_OFFSET_TIME")
+	public int careOffTime;
+	/** 加算時間 */
+	@Column(name = "ADD_TIME")
+	public int addTime;
+
 //	@ManyToOne
 //	@JoinColumns(value = {
 //			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
@@ -124,6 +146,21 @@ public class KrcdtDayLateTime extends ContractUkJpaEntity implements Serializabl
 			/*介護休暇使用時間*/
 			this.careUseTime = vacation.getTimeCareHolidayUseTime() == null ? 0 : vacation.getTimeCareHolidayUseTime().valueAsMinutes();
 		}
+
+		/** 時間年休相殺時間 */
+		this.anuuualLeaveOffTime = domain.getTimeOffsetUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes();
+		/** 時間代休相殺時間 */
+		this.compensLeaveOffTime = domain.getTimeOffsetUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes();
+		/** 超過有休相殺時間 */
+		this.specialHolidayOffTime = domain.getTimeOffsetUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes();
+		/** 特別休暇相殺時間 */
+		this.overVacationOffTime = domain.getTimeOffsetUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes();
+		/** 子の看護休暇相殺時間 */
+		this.childCareOffTime = domain.getTimeOffsetUseTime().getTimeChildCareHolidayUseTime().valueAsMinutes();
+		/** 介護休暇相殺時間 */
+		this.careOffTime = domain.getTimeOffsetUseTime().getTimeCareHolidayUseTime().valueAsMinutes();
+		/** 加算時間 */
+		this.addTime = domain.getAddTime().valueAsMinutes();
 	}
 
 	public LateTimeOfDaily toDomain() {
@@ -133,15 +170,24 @@ public class KrcdtDayLateTime extends ContractUkJpaEntity implements Serializabl
 				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.lateDedctTime),
 						new AttendanceTime(this.calcLateDedctTime)),
 				new WorkNo(this.krcdtDayLateTimePK.workNo),
-				new TimevacationUseTimeOfDaily(new AttendanceTime(this.timeAnallvUseTime),
+				new TimevacationUseTimeOfDaily(
+						new AttendanceTime(this.timeAnallvUseTime),
 						new AttendanceTime(this.timeCmpnstlvUseTime),
 						new AttendanceTime(this.overPayVactnUseTime),
 						new AttendanceTime(this.spVactnUseTime),
 						Optional.ofNullable(this.specialHdFrameNo == null ? null : new SpecialHdFrameNo(this.specialHdFrameNo)),
 						new AttendanceTime(this.childCareUseTime),
-						new AttendanceTime(this.careUseTime)
-						),
-				new IntervalExemptionTime());
+						new AttendanceTime(this.careUseTime)),
+				new IntervalExemptionTime(),
+				new TimevacationUseTimeOfDaily(
+						new AttendanceTime(this.anuuualLeaveOffTime),
+						new AttendanceTime(this.compensLeaveOffTime),
+						new AttendanceTime(this.overVacationOffTime),
+						new AttendanceTime(this.specialHolidayOffTime),
+						Optional.ofNullable(this.specialHdFrameNo == null ? null : new SpecialHdFrameNo(this.specialHdFrameNo)),
+						new AttendanceTime(this.childCareOffTime),
+						new AttendanceTime(this.careOffTime)),
+				new AttendanceTime(this.addTime));
 	}
 
 }

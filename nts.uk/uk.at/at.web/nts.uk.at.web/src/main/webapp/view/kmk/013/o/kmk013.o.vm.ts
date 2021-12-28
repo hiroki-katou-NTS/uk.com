@@ -10,24 +10,12 @@ module nts.uk.at.view.kmk013.o {
             
             columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             currentVacation: KnockoutObservable<any>;
-            positionTextArray: KnockoutObservableArray<string>;
             
             constructor() {
                 var self = this;
-                self.vacationSortingOrderDisp = ko.observableArray([
-                    new ItemModel(0,nts.uk.resource.getText("KMK013_372"),nts.uk.resource.getText("KMK013_376")),
-                    new ItemModel(1,nts.uk.resource.getText("KMK013_373"),nts.uk.resource.getText("KMK013_377")),
-                    new ItemModel(2,nts.uk.resource.getText("KMK013_374"),nts.uk.resource.getText("KMK013_378")),
-                    new ItemModel(3,nts.uk.resource.getText("KMK013_375"),nts.uk.resource.getText("KMK013_379"))
-                ]);
+                self.vacationSortingOrderDisp = ko.observableArray([]);
                 self.vacationSortingTemp = ko.observableArray([]);
                 self.currentVacation = ko.observable("");
-                self.positionTextArray = ko.observableArray([
-                    nts.uk.resource.getText("KMK013_372"),
-                    nts.uk.resource.getText("KMK013_373"),
-                    nts.uk.resource.getText("KMK013_374"),
-                    nts.uk.resource.getText("KMK013_375")
-                ]);
                 
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KMK013_370"), key: 'position', width: 80},
@@ -46,15 +34,20 @@ module nts.uk.at.view.kmk013.o {
                 if (data) {
                     self.vacationSortingOrderDisp.removeAll();
                     let model;
-                    for (var i = 0; i <= 3; i++) {
+                    for (var i = 0; i <= 5; i++) {
+                        var positionText = (i + 1).toString();
                         if (data.substitute == i) {
-                            model = new ItemModel(0,self.positionTextArray()[i],nts.uk.resource.getText("KMK013_376"));
+                            model = new ItemModel(0, positionText, nts.uk.resource.getText("KMK013_378"));
                         } else if (data.sixtyHour == i) {
-                            model = new ItemModel(1,self.positionTextArray()[i],nts.uk.resource.getText("KMK013_377"));
+                            model = new ItemModel(1, positionText, nts.uk.resource.getText("KMK013_377"));
                         } else if (data.annual == i) {
-                            model = new ItemModel(2,self.positionTextArray()[i],nts.uk.resource.getText("KMK013_378"));
+                            model = new ItemModel(2, positionText, nts.uk.resource.getText("KMK013_376"));
                         } else if (data.special == i) {
-                            model = new ItemModel(3,self.positionTextArray()[i],nts.uk.resource.getText("KMK013_379"));
+                            model = new ItemModel(3, positionText, nts.uk.resource.getText("KMK013_379"));
+                        } else if (data.childCare == i) {
+                            model = new ItemModel(4, positionText, nts.uk.resource.getText("KMK013_476"));
+                        } else if (data.care == i) {
+                            model = new ItemModel(5, positionText, nts.uk.resource.getText("KMK013_477"));
                         }
                         if (i == 0) {
                             self.currentVacation(model.name);
@@ -91,16 +84,22 @@ module nts.uk.at.view.kmk013.o {
                 _.forEach(self.vacationSortingOrderDisp(), items => {
                     if (items.id == 0)
                         //data.substitute = parseInt(items.position) - 1;
-                        data.substitute = i++;
+                        data["substitute"] = i++;
                     else if (items.id == 1)
                         //data.sixtyHour = parseInt(items.position) - 1;
-                        data.sixtyHour = i++;
+                        data["sixtyHour"] = i++;
                     else if (items.id == 2)
                         //data.annual = parseInt(items.position) - 1;
-                        data.annual = i++;
+                        data["annual"] = i++;
                     else if (items.id == 3)
                         //data.special = parseInt(items.position) - 1;
-                        data.special = i++;
+                        data["special"] = i++;
+                    else if (items.id == 4)
+                        //data.special = parseInt(items.position) - 1;
+                        data["childCare"] = i++;
+                    else if (items.id == 5)
+                        //data.special = parseInt(items.position) - 1;
+                        data["care"] = i++;
                 });
                 nts.uk.ui.windows.setShared('KMK013_O_NewOrder', data);
                 self.close();

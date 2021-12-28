@@ -6,6 +6,7 @@ import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
@@ -35,6 +36,9 @@ public class ManagePerPersonDailySet {
 	
 	/** 加給設定 */
 	private Optional<BonusPaySetting> bonusPaySetting;
+
+	/** 社員単価履歴 */
+	private Optional<EmployeeUnitPriceHistoryItem> unitPrice;
 	
 	/** 平日時の所定時間設定
 	 *年休、欠勤の場合に実績に就業時間帯が埋まっていない時に使用する。
@@ -68,8 +72,8 @@ public class ManagePerPersonDailySet {
 			Optional<BonusPaySetting> bonusPaySetting,
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay,
 			Optional<FlexMonthWorkTimeAggrSet> flexBasicSet,
-			FactoryManagePerPersonDailySet.Require require) {
-		
+			FactoryManagePerPersonDailySet.Require require,
+			Optional<EmployeeUnitPriceHistoryItem> unitPrice) {
 		super();
 		this.ymd = ymd;
 		this.personInfo = personInfo;
@@ -79,5 +83,6 @@ public class ManagePerPersonDailySet {
 		this.predetermineTimeSetByPersonWeekDay = predetermineTimeSetByPersonWeekDay;
 		this.flexBasicSet = flexBasicSet;
 		this.require = require;
+		this.unitPrice = unitPrice;
 	}
 }

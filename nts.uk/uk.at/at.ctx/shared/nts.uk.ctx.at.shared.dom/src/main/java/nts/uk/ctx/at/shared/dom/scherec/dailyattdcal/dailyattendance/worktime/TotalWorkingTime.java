@@ -10,6 +10,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
+import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
@@ -227,7 +228,8 @@ public class TotalWorkingTime {
 									WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(0), 
 																								new AttendanceTime(0), 
 																								new AttendanceTime(0), 
-																								new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)))),
+																								new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+																								AttendanceAmountDaily.ZERO),
 									new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), new AttendanceTime(0)),
 																	 Optional.of(new OverTimeOfDaily(new ArrayList<>(), 
 																			 						 new ArrayList<>(), 
@@ -567,12 +569,14 @@ public class TotalWorkingTime {
 				DeductionAtr.Deduction,
 				GoingOutReason.PRIVATE,
 				recordReGetClass.getGoOutCalc(),
+				NotUseAtr.USE,
 				recordReGetClass.getIntegrationOfWorkTime().map(i -> i.getCommonSetting().getGoOutSet())).getTotalTime().getCalcTime();
 		AttendanceTime unionOutTime = OutingTotalTime.calcOutingTime(
 				recordReGetClass.getCalculationRangeOfOneDay(),
 				DeductionAtr.Deduction,
 				GoingOutReason.UNION,
 				recordReGetClass.getGoOutCalc(),
+				NotUseAtr.USE,
 				recordReGetClass.getIntegrationOfWorkTime().map(i -> i.getCommonSetting().getGoOutSet())).getTotalTime().getCalcTime();
 		//短時間
 		AttendanceTime shortWorkTime = ShortWorkTimeOfDaily.calcTotalShortWorkTime(
@@ -662,15 +666,28 @@ public class TotalWorkingTime {
 		return totalOverTime + totalTransTime;
 	}
 
+	public void calcActualTimeForReCalc() {
+		this.actualTime = recalcActualTime();
+	}
+	
 	/**
 	 * 手修正後の再計算(実働時間)
 	 * @return
 	 */
 	public AttendanceTime recalcActualTime() {
 		//実働時間
-		//return recalcTotalWorkingTime();
-		//return this.getWithinStatutoryTimeOfDaily().getActualWorkTime();
-		return this.getActualTime();
+		int actualWorkTime = this.getWithinStatutoryTimeOfDaily().getActualWorkTime().v();
+		int overTime = this.getExcessOfStatutoryTimeOfDaily().calcOverTime().v();
+		int workHolidayTime = this.getExcessOfStatutoryTimeOfDaily().calcWorkHolidayTime().v();
+		int flexOverTime = this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork()
+				.map(x -> x.getFlexTime().getFlexOverTime().v()).orElse(0);
+		int irregularWithinPrescribedOverTime = this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork()
+				.map(x -> x.getIrregularWithinPrescribedOverTimeWork().v()).orElse(0);
+		int withinPrescribedPremiumTime = this.getWithinStatutoryTimeOfDaily().getWithinPrescribedPremiumTime().v();
+		int temporaryTime = this.getTemporaryTime().totalTemporaryFrameTime();
+		return new AttendanceTime(actualWorkTime + overTime + workHolidayTime + flexOverTime
+				+ irregularWithinPrescribedOverTime + withinPrescribedPremiumTime + temporaryTime);
+		//return this.getActualTime();
 						 //+変形基準内残業を足して返す;
 	}
 	/**
@@ -1157,6 +1174,13 @@ public class TotalWorkingTime {
 		this.holidayOfDaily = holidayOfDaily;
 		this.vacationAddTime = vacationAddTime;
 		this.intervalTime = intervalTime;
+	}
+	
+	public AttendanceTime getWorkHolidayTime() {
+		return this.getExcessOfStatutoryTimeOfDaily().calcWorkHolidayTime();
+	}
+	public AttendanceTime getOverTime() {
+		return this.getExcessOfStatutoryTimeOfDaily().calcOverTime();
 	}
 	
 }

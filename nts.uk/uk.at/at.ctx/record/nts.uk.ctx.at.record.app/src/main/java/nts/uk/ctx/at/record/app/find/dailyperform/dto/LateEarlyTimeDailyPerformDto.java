@@ -45,6 +45,10 @@ public class LateEarlyTimeDailyPerformDto implements ItemConst, AttendanceItemDa
 	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = VALUE)
 	private boolean doNotSetAlarm;
 	
+	private ValicationUseDto valicationOffsetTime;
+	
+	public int addTime;
+	
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
 		switch (path) {
@@ -123,6 +127,7 @@ public class LateEarlyTimeDailyPerformDto implements ItemConst, AttendanceItemDa
 	public LateEarlyTimeDailyPerformDto clone() {
 		return new LateEarlyTimeDailyPerformDto(time == null ? null : time.clone(),
 						deductionTime == null ? null : deductionTime.clone(),
-						valicationUseTime == null ? null : valicationUseTime.clone(), intervalExemptionTime, no, doNotSetAlarm);
+						valicationUseTime == null ? null : valicationUseTime.clone(), intervalExemptionTime, no, doNotSetAlarm,
+						valicationOffsetTime.clone(), addTime);
 	}
 }

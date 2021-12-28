@@ -46,6 +46,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmetho
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.wkp.WkpFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.wkp.WkpFlexMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.export.GetFlexAggrSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryRepositoly;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.DailyStatutoryLaborTime;
@@ -109,7 +111,11 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	/** 職場別別通常勤務法定労働時間 */
 	@Inject
 	private RegularLaborTimeWkpRepo regularLaborTimeWkpRepo;
-	/** 職場別変形労働法定労働時間 */
+
+	/* 社員単価履歴 */
+	@Inject
+	private EmployeeUnitPriceHistoryRepositoly employeeUnitPriceHistoryRepositoly;
+
 	@Inject
 	private DeforLaborTimeWkpRepo deforLaborTimeWkpRepo;
 	/** 雇用別通常勤務法定労働時間 */
@@ -230,13 +236,15 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 								specBonusPay));
 			}
 			
-			// 平日時の計算用所定時間設定
-			WorkType workType = require.workType(
-					companyId, nowWorkingItem.getWorkCategory().getWorkInformationWorkDay().getWorkTypeCode())
-					.orElseThrow(() -> new RuntimeException("No WorkType"));
+			/**　勤務種類 */
+			val workType = require.workType(companyId, nowWorkingItem.getWorkCategory().getWorkType().getWeekdayTimeWTypeCode());
+			if(!workType.isPresent()) {
+				return Optional.empty();
+			}
+		
+			/*平日時*/
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay = this.getPredByPersonInfo(
-					nowWorkingItem.getWorkCategory().getWorkInformationWorkDay().getWorkTimeCodeNotNull().get(),
-					shareContainer, workType);
+					nowWorkingItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get(), shareContainer, workType.get());
 			
 			// フレックス勤務基本設定
 			Optional<FlexMonthWorkTimeAggrSet> flexBasicSet = Optional.empty();
@@ -252,17 +260,13 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 						this.shaFlexMonthActCalSetRepo.find(companyId, daily.getEmployeeId()),
 						this.comFlexMonthActCalSetRepo.find(companyId));
 			}
+
+			/*社員単価履歴*/
+			Optional<EmployeeUnitPriceHistoryItem> unitPrice = this.employeeUnitPriceHistoryRepositoly.get(daily.getEmployeeId(), daily.getYmd());
 			
-			// ManagePerPersonDailySetを返す
-			return Optional.of(new ManagePerPersonDailySet(
-					daily.getYmd(),
-					nowWorkingItem,
-					dailyUnit,
-					addSetting,
-					bonusPaySetting,
-					predetermineTimeSetByPersonWeekDay,
-					flexBasicSet,
-					require));
+			return Optional.of(new ManagePerPersonDailySet(daily.getYmd(), nowWorkingItem, dailyUnit,
+								addSetting, bonusPaySetting, predetermineTimeSetByPersonWeekDay,
+								flexBasicSet, require, unitPrice));
 		}
 		catch(RuntimeException e) {
 			return Optional.empty();

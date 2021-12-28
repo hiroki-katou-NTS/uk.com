@@ -25,7 +25,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -57,7 +56,8 @@ public class BreakTimeSheetGetter {
 		}
 		
 		/** require.就業時間帯を取得 */
-		val workTimeSet = getWorkTime(require, cid, domainDaily);
+		val workTimeSet = IntegrationOfWorkTime.getWorkTime(require, cid,
+				domainDaily.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull());
 		
 		/** 就業時間帯=NULLチェック */
 		if(workTimeSet == null) {
@@ -179,45 +179,12 @@ public class BreakTimeSheetGetter {
 		
 		return timeSheet.getForDeductionTimeZoneList();
 	}
-	
-	private static IntegrationOfWorkTime getWorkTime(RequireM2 require, String cid, IntegrationOfDaily domainDaily) {
-		/** require.就業時間帯を取得 */
-		val workTimeSet = domainDaily.getWorkInformation().getRecordInfo()
-				.getWorkTimeCodeNotNull()
-				.flatMap(c -> require.workTimeSetting(cid, c))
-				.orElse(null);
-		
-		/** 就業時間帯=NULLチェック */
-		if(workTimeSet == null) {
-			return null;
-		}
-		
-		switch(workTimeSet.getWorkTimeDivision().getWorkTimeForm()) {
-			case FIXED:				
-				return new IntegrationOfWorkTime(workTimeSet.getWorktimeCode(), workTimeSet, 
-						                         require.fixedWorkSetting(cid, workTimeSet.getWorktimeCode()).get());
-			case FLEX:				
-				return new IntegrationOfWorkTime(workTimeSet.getWorktimeCode(), workTimeSet, 
-												 require.flexWorkSetting(cid, workTimeSet.getWorktimeCode()).get());
-			case FLOW:				
-				return new IntegrationOfWorkTime(workTimeSet.getWorktimeCode(), workTimeSet, 
-						                         require.flowWorkSetting(cid, workTimeSet.getWorktimeCode()).get());
-			case TIMEDIFFERENCE:	
-				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
-			default:				
-				throw new RuntimeException("Non-conformity No Work");
-		}
-	}
 
 	public static interface RequireM3 extends PredetemineTimeSetting.Require{
 
 	}
 
-	public static interface RequireM2 extends WorkTimeSetting.Require {
-		
-	}
-
-	public static interface RequireM1 extends RequireM2, RequireM3, WorkType.Require {
+	public static interface RequireM1 extends IntegrationOfWorkTime.RequireM2, RequireM3, WorkType.Require {
 		
 		CalculationRangeOfOneDay createOneDayRange(
 				IntegrationOfDaily integrationOfDaily, Optional<WorkTimezoneCommonSet> commonSet,

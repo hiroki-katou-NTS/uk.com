@@ -21,16 +21,14 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
-
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.TimeRoundingOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeBreakdown;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
@@ -38,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overti
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNote;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
 /**
@@ -395,12 +394,56 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		converter.withAttendanceTime(attendanceTime);
 		val attendanceItemValues = converter.convert(breakdownItems);
 		
+		/** ⁂複数月対応で、複数の場合（フレックスと変形）以下の項目を値を補正する */
+		if (isMultiMonthMode(monthlyCalculation)) {
+			correctItems(attendanceItemValues, converter);
+		}
+		
 		/** ○丸め処理 */
 		attendanceItemValues.stream().forEach(v -> {
 			val value = new AttendanceTimeMonth(v.valueOrDefault());
 			val rounded = roundSet.map(r -> r.itemRound(v.getItemId(), value)).orElse(value);
 			breakdown.addTimeByAttendanceItemId(v.getItemId(), rounded);
 		});
+	}
+	
+	private void correctItems(List<ItemValue> attendanceItemValues, MonthlyRecordToAttendanceItemConverter converter) {
+		
+		val alterItemIds = attendanceItemValues.stream().map(c -> {
+			if (c.getItemId() == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value) 
+				return AttendanceItemOfMonthly.CUR_MONTH_FLEX_LEGAL_TIME.value;
+			if (c.getItemId() == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value) 
+				return AttendanceItemOfMonthly.CUR_MONTH_FLEX_ILLEGAL_TIME.value;
+			if (c.getItemId() == AttendanceItemOfMonthly.MONTHLY_TOTAL_PREMIUM_TIME.value) 
+				return AttendanceItemOfMonthly.DEFOR_PERIOD_CARRY_TIME.value;
+			return 0;
+		}).filter(c -> c > 0).collect(Collectors.toList());
+		
+		if (!alterItemIds.isEmpty()) {
+			
+			val alterItems = converter.convert(alterItemIds);
+			
+			alterItems.stream().forEach(c -> {
+				attendanceItemValues.stream().filter(i -> i.getItemId() == c.getItemId())
+									.findFirst().ifPresent(ai -> {
+					ai.value(c.value());
+				});
+			});
+		}
+	}
+	
+	private boolean isMultiMonthMode(MonthlyCalculation monthlyCalculation) {
+		
+		if (monthlyCalculation.getWorkingSystem() == WorkingSystem.FLEX_TIME_WORK) {
+			
+			return monthlyCalculation.getSettingsByFlex().getFlexAggrSet().isMultiMonthSettlePeriod();
+			
+		} else if (monthlyCalculation.getWorkingSystem() == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
+			
+			return monthlyCalculation.getSettingsByDefo().getDeforAggrSet().isMultiMonthSettlePeriod(monthlyCalculation.getYearMonth());
+		}
+		
+		return false;
 	}
 	
 	/** clones from 36協定対象時間を取得 */

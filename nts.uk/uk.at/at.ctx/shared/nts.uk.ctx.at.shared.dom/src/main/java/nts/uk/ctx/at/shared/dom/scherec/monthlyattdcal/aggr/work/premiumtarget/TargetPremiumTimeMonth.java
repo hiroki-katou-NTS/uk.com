@@ -9,8 +9,11 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.DefoAggregateMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.getvacationaddtime.AddSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /**
@@ -45,29 +48,27 @@ public class TargetPremiumTimeMonth {
 	 * @param statutoryWorkingTimeMonth 月間法定労働時間
 	 * @param isAddVacation 休暇加算　（true=する）
 	 */
-	public void askTime(Require require, CacheCarrier cacheCarrier,
-			String companyId, String employeeId, DatePeriod datePeriod,
-			YearMonth targetYm, GeneralDate baseDate, String employmentCode, ClosureId closureId,
-			AttendanceTimeMonth weeklyTotalPremiumTime,
-			AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			boolean isAddVacation, DefoAggregateMethodOfMonthly defoAggregateMethod){
+	public void askTime(Require require, CacheCarrier cacheCarrier, String companyId, String employeeId, DatePeriod datePeriod,
+			YearMonth targetYm, GeneralDate baseDate, String employmentCode, ClosureId closureId, 
+			AttendanceTimeMonth weeklyTotalPremiumTime, AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			boolean isAddVacation, DefoAggregateMethodOfMonthly defoAggregateMethod,
+			MonthlyCalculatingDailys monthlyCalcDailys, MonthlyAggregateAtr aggregateAtr, WorkingSystem workingSystem) {
 		
 		// 変形労働勤務の月割増時間の対象となる時間を求める
-		val targetPremiumTimeMonthOfIrregular = new TargetPremiumTimeMonthOfIrregular();
-		targetPremiumTimeMonthOfIrregular.askPremiumTimeMonth(companyId, employeeId, datePeriod, addSet,
-																aggregateTotalWorkingTime, isAddVacation);
+		val targetPremiumTimeMonthOfIrregular = TargetPremiumTimeGetter.askPremiumTime(require, companyId, employeeId, datePeriod, 
+				addSet, aggregateTotalWorkingTime, isAddVacation, monthlyCalcDailys, aggregateAtr, workingSystem);
 		
 		this.addedVacationUseTime = targetPremiumTimeMonthOfIrregular.getAddedVacationUseTime();
 		
-		val targetPremiumTimeMonthSrc = targetPremiumTimeMonthOfIrregular.getTargetPremiumTimeMonth();
+		val targetPremiumTimeMonthSrc = targetPremiumTimeMonthOfIrregular.getTargetPremiumTime();
 
 		/** 総枠時間を取得する */
 		val totalStatutory = defoAggregateMethod.calc(require, cacheCarrier, employeeId, targetYm,
 														baseDate, companyId, employmentCode, datePeriod, closureId);
 		
-		// 月割増対象時間と法定労働時間を比較する
-		if (targetPremiumTimeMonthSrc.lessThanOrEqualTo(totalStatutory.v())) 
-			return;
+//		// 月割増対象時間と法定労働時間を比較する
+//		if (targetPremiumTimeMonthSrc.lessThanOrEqualTo(totalStatutory.v())) 
+//			return;
 		
 		// 月割増対象時間（過不足分）を求める
 		int premiumTime = targetPremiumTimeMonthSrc.v() - totalStatutory.v();
@@ -77,5 +78,5 @@ public class TargetPremiumTimeMonth {
 		this.time = excessOrDificiency.minusMinutes(weeklyTotalPremiumTime.v());
 	}
 	
-	public static interface Require extends DefoAggregateMethodOfMonthly.Require {}
+	public static interface Require extends DefoAggregateMethodOfMonthly.Require, TargetPremiumTimeGetter.Require {}
 }

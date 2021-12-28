@@ -204,7 +204,7 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public Optional<BonusPaySettingCode> getRaisingSalarySet() {
-		return Optional.ofNullable(new BonusPaySettingCode(this.entity.getRaisingSalarySet()));
+		return Optional.ofNullable(new BonusPaySettingCode(null));
 	}
 
 }

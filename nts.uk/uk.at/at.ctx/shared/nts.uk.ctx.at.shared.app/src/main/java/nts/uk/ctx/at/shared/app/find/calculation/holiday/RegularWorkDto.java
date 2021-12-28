@@ -4,8 +4,10 @@ package nts.uk.ctx.at.shared.app.find.calculation.holiday;
  * 通常勤務の加算設定
  */
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class RegularWorkDto {
 	/** 会社ID */
 	private String companyId = "dummy";
@@ -54,5 +56,9 @@ public class RegularWorkDto {
 	// B6_1
 	// 割増計算方法を設定する
 	private int useAtr = 0;
+	
+	public RegularWorkDto(String companyId) {
+		this.companyId = companyId;
+	}
 
 }

@@ -14,10 +14,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcessing.DailyStoredProcessResult;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
@@ -34,7 +31,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
@@ -57,9 +53,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.D
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.BreakTimeSheetGetter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.TimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
@@ -72,6 +70,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
@@ -147,10 +146,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	// 任意項目の計算の為に追加
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
-
-	// 割増計算用に追加
-	@Inject
-	private PersonnelCostSettingAdapter personnelCostSettingAdapter;
 
 	@Inject
 	// 日別作成側にあったエラーチェック処理
@@ -588,49 +583,57 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val workType = recordReGetClass.getWorkType();
 		if (!workType.isPresent()) return recordReGetClass.getIntegrationOfDaily();
 
-		// 割増設定取得
-		List<PersonnelCostSettingImport> personalCostSetting = getPersonalSetting(companyId, targetDate,
-				recordReGetClass.getCompanyCommonSetting());
-
+		// 乖離時間(AggregateRoot)取得
+		List<DivergenceTimeRoot> divergenceTimeList = recordReGetClass.getCompanyCommonSetting().getDivergenceTime();
+		
 		/* 時間の計算 */
-		recordReGetClass.setIntegrationOfDaily(AttendanceTimeOfDailyPerformance.calcTimeResult(
-				scheduleReGetClass,
-				recordReGetClass,
-				flexCalcMethod,
-				eachCompanyTimeSet,
-				converter,
-				personalCostSetting,
+		recordReGetClass.setIntegrationOfDaily(AttendanceTimeOfDailyAttendance.calcTimeResult(
+				VacationClass.createAllZero(), workType.get(),
+				flexCalcMethod, eachCompanyTimeSet, divergenceTimeList,
+				optionalCalculateOfTotalConstraintTime.get(), scheduleReGetClass, recordReGetClass,
+				recordReGetClass.getPersonDailySetting().getPersonInfo(),
+				getPredByPersonInfo(recordReGetClass.getPersonDailySetting().getPersonInfo().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode(),
+						recordReGetClass.getCompanyCommonSetting().getShareContainer(), workType.get()),
+				converter, recordReGetClass.getCompanyCommonSetting(),
+				decisionWorkTimeCode(recordReGetClass.getIntegrationOfDaily().getWorkInformation(), recordReGetClass.getPersonDailySetting(), workType),
 				declareResult));
 
 		/* 日別実績への項目移送 */
 		return recordReGetClass.getIntegrationOfDaily();
 	}
-
+	
+	private Optional<PredetermineTimeSetForCalc> getPredByPersonInfo(Optional<WorkTimeCode> workTimeCode,
+			MasterShareContainer<String> shareContainer, WorkType workType) {
+		if (!workTimeCode.isPresent())
+			return Optional.empty();
+		// val predSetting =
+		// predetemineTimeSetRepository.findByWorkTimeCode(AppContexts.user().companyId(),
+		// workTimeCode.get().toString());
+		val predSetting = getPredetermineTimeSetFromShareContainer(shareContainer, AppContexts.user().companyId(),
+				workTimeCode.get().toString());
+		if (!predSetting.isPresent())
+			return Optional.empty();
+		return Optional.of(PredetermineTimeSetForCalc.convertFromAggregatePremiumTime(predSetting.get(), workType));
+	}
+	
 	/**
-	 * 割増設定取得
+	 * 就業時間帯コードの取得 勤務情報 > 労働条件 > 就業時間帯無と判定
 	 * 
-	 * @param companyId
-	 *            会社ID
-	 * @param targetDate
-	 *            対象日
-	 * @param companyCommonSetting
-	 *            会社共通設定
-	 * @return 割増設定
+	 * @param workInfo
+	 * @param personCommonSetting
+	 * @param workType
+	 * @return
 	 */
-	private List<PersonnelCostSettingImport> getPersonalSetting(String companyId, GeneralDate targetDate,
-			ManagePerCompanySet companyCommonSetting) {
-		if (!CollectionUtil.isEmpty(companyCommonSetting.getPersonnelCostSettings())) {
-
-			List<PersonnelCostSettingImport> current = companyCommonSetting.getPersonnelCostSettings().stream()
-					.filter(pcs -> {
-						return pcs.getPeriod().contains(targetDate);
-					}).collect(Collectors.toList());
-
-			if (!current.isEmpty()) {
-				return current;
-			}
+	private Optional<WorkTimeCode> decisionWorkTimeCode(WorkInfoOfDailyAttendance workInfo,
+			ManagePerPersonDailySet personCommonSetting, Optional<WorkType> workType) {
+		if(!workType.isPresent() || workType.get().isNoneWorkTimeType())
+			return Optional.empty();
+		
+		if (workInfo == null || workInfo.getRecordInfo() == null
+				|| workInfo.getRecordInfo().getWorkTimeCode() == null) {
+				return personCommonSetting.getPersonInfo().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode();
 		}
-		return personnelCostSettingAdapter.findAll(companyId, targetDate);
+		return Optional.of(workInfo.getRecordInfo().getWorkTimeCode());
 	}
 
 	/**
@@ -1054,7 +1057,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			String companyId, String WorkTypeCode) {
 		// val x = shareContainer.getShared("WorkType" + WorkTypeCode);
 		val workType = shareContainer.getShared("WorkType" + WorkTypeCode,
-				() -> workTypeRepository.findNoAbolishByPK(companyId, WorkTypeCode));
+				() -> workTypeRepository.findByPK(companyId, WorkTypeCode));
 		if (workType.isPresent()) {
 			return Optional.of(workType.get().clone());
 		}

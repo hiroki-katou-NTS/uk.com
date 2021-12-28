@@ -21,6 +21,12 @@ public enum AttendanceItemOfMonthly {
 	FLEX_EXCESS_TIME(17),
 	/** フレックス不足時間 */
 	FLEX_SHORTAGE_TIME(18),
+	/** 当月フレックス法定内時間 */
+	CUR_MONTH_FLEX_LEGAL_TIME(2261),
+	/** 当月フレックス法定外時間 */
+	CUR_MONTH_FLEX_ILLEGAL_TIME(2262),
+	/** 変形期間繰越時間 */
+	DEFOR_PERIOD_CARRY_TIME(1352),
 	
 	/** 就業時間 */
 	WORK_TIME(31),
@@ -247,8 +253,7 @@ public enum AttendanceItemOfMonthly {
 	/** 法定内振替休出時間10 */
 	LEGAL_HOL_TRANSFER_WORK_TIME_10(184),
 	/** 臨時勤務時間  */
-	/** TODO: 対応されていない */
-	TEMPORARY_TIME(9998),
+	TEMPORARY_TIME(2079),
 	
 	MAX_ID(9999);
 	

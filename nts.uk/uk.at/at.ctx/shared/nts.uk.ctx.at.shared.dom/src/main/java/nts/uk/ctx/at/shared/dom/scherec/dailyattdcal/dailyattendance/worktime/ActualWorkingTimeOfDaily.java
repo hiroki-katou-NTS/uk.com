@@ -1,19 +1,18 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
@@ -38,6 +37,8 @@ import nts.uk.shr.com.context.AppContexts;
  * @author nampt 日別実績の勤務実績時間 (old)
  */
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ActualWorkingTimeOfDaily {
 
 	// 割増時間
@@ -81,24 +82,24 @@ public class ActualWorkingTimeOfDaily {
 		return new ActualWorkingTimeOfDaily(new AttendanceTime(bindDiff),
 				new ConstraintTime(new AttendanceTime(midBind), new AttendanceTime(totalBind)),
 				new AttendanceTime(diffTimeWork), totalWorkTime, new DivergenceTimeOfDaily(),
-				new PremiumTimeOfDailyPerformance());
+				PremiumTimeOfDailyPerformance.createEmpty());
 	}
 
-	public static ActualWorkingTimeOfDaily of(TotalWorkingTime totalWorkTime, int midBind, int totalBind, int bindDiff,
-	        int diffTimeWork, DivergenceTimeOfDaily divTime) {
-	    return new ActualWorkingTimeOfDaily(new AttendanceTime(bindDiff),
-	            new ConstraintTime(new AttendanceTime(midBind), new AttendanceTime(totalBind)),
-	            new AttendanceTime(diffTimeWork), totalWorkTime, divTime, new PremiumTimeOfDailyPerformance());
-	}
-	
-	public static ActualWorkingTimeOfDaily of(TotalWorkingTime totalWorkTime, int midBind, int totalBind, int bindDiff,
-	        int diffTimeWork, DivergenceTimeOfDaily divTime, PremiumTimeOfDailyPerformance premiumTime) {
-	    return new ActualWorkingTimeOfDaily(new AttendanceTime(bindDiff),
-	            new ConstraintTime(new AttendanceTime(midBind), new AttendanceTime(totalBind)),
-	            new AttendanceTime(diffTimeWork), totalWorkTime, divTime, premiumTime);
-	}
-	
-	public static ActualWorkingTimeOfDaily of(AttendanceTime constraintDiffTime, ConstraintTime constraintTime,
+    public static ActualWorkingTimeOfDaily of(TotalWorkingTime totalWorkTime, int midBind, int totalBind, int bindDiff,
+            int diffTimeWork, DivergenceTimeOfDaily divTime) {
+        return new ActualWorkingTimeOfDaily(new AttendanceTime(bindDiff),
+                new ConstraintTime(new AttendanceTime(midBind), new AttendanceTime(totalBind)),
+                new AttendanceTime(diffTimeWork), totalWorkTime, divTime, PremiumTimeOfDailyPerformance.createEmpty());
+    }
+
+    public static ActualWorkingTimeOfDaily of(TotalWorkingTime totalWorkTime, int midBind, int totalBind, int bindDiff,
+            int diffTimeWork, DivergenceTimeOfDaily divTime, PremiumTimeOfDailyPerformance premiumTime) {
+        return new ActualWorkingTimeOfDaily(new AttendanceTime(bindDiff),
+                new ConstraintTime(new AttendanceTime(midBind), new AttendanceTime(totalBind)),
+                new AttendanceTime(diffTimeWork), totalWorkTime, divTime, premiumTime);
+    }
+    
+    public static ActualWorkingTimeOfDaily of(AttendanceTime constraintDiffTime, ConstraintTime constraintTime,
 			AttendanceTime timeDiff, TotalWorkingTime totalWorkingTime, DivergenceTimeOfDaily divTime,
 			PremiumTimeOfDailyPerformance premiumTime) {
 		return new ActualWorkingTimeOfDaily(constraintDiffTime,constraintTime,
@@ -174,7 +175,7 @@ public class ActualWorkingTimeOfDaily {
 		val timeDifferenceWorkingHours = new AttendanceTime(0);
 		
 		/* 割増時間の計算 */
-		val premiumTime = new PremiumTimeOfDailyPerformance(Collections.emptyList());
+		val premiumTime = PremiumTimeOfDailyPerformance.createEmpty();
 		/* 乖離時間の計算 */
 //		val divergenceTimeOfDaily = createDivergenceTimeOfDaily(
 //													   forCalcDivergenceDto,
@@ -195,12 +196,6 @@ public class ActualWorkingTimeOfDaily {
 				premiumTime
 				);
 		
-	}
-	
-	
-	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformance(List<PersonnelCostSettingImport> personnelCostSettingImport,
-	 																				Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto) {
-		return PremiumTimeOfDailyPerformance.calcPremiumTime(personnelCostSettingImport, dailyRecordDto);
 	}
 
 	/**
@@ -325,6 +320,14 @@ public class ActualWorkingTimeOfDaily {
 		return new ActualWorkingTimeOfDaily(AttendanceTime.ZERO, ConstraintTime.defaultValue(), AttendanceTime.ZERO, 
 											TotalWorkingTime.createAllZEROInstance(), 
 											new DivergenceTimeOfDaily(new ArrayList<>()), 
-											new PremiumTimeOfDailyPerformance(new ArrayList<>()));
+											PremiumTimeOfDailyPerformance.createEmpty());
+	}
+	
+	public AttendanceTime getWorkHolidayTime() {
+		return this.getTotalWorkingTime().getWorkHolidayTime();
+	}
+	
+	public AttendanceTime getOverTime() {
+		return this.getTotalWorkingTime().getOverTime();
 	}
 }

@@ -24,4 +24,15 @@ public abstract class IncludeVacationSetForCalcWorkTime extends DomainObject imp
 	protected NotUseAtr addition = NotUseAtr.NOT_USE;
 	/** 通常、変形の所定超過時 */
 	protected Optional<CalculationMethodForNormalWorkAndDeformedLaborOverTime> deformationExceedsPredeterminedValue = Optional.empty();
+	
+	/**
+	 * 休暇分を就業時間に含めるか判断する
+	 * @return true：含める、false：含めない
+	 */
+	public boolean isCalculateIncludVacation() {
+		
+		if (addition == NotUseAtr.NOT_USE) return false;
+		
+		return true;
+	}
 }

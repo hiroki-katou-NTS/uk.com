@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 
 /**
@@ -56,15 +57,16 @@ public class WithinOutingTotalTime {
 			CalculationRangeOfOneDay oneDay,
 			DeductionAtr dedAtr,
 			Optional<WorkTimezoneGoOutSet> goOutSet,
-			GoingOutReason reason) {
+			GoingOutReason reason,
+			NotUseAtr canOffset) {
 		
 		ConditionAtr conditionAtr = ConditionAtr.convertFromGoOutReason(reason);	// 控除種別区分
 		
 		// コア内の外出時間の計算
 		FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)oneDay.getWithinWorkingTimeSheet().get();
-		AttendanceTime withinFlex = changedFlexTimeSheet.calcOutingTimeInFlex(true, conditionAtr, dedAtr, goOutSet);
+		AttendanceTime withinFlex = changedFlexTimeSheet.calcOutingTimeInFlex(true, conditionAtr, dedAtr, goOutSet, canOffset);
 		// コア外外出時間の計算
-		AttendanceTime excessFlex = changedFlexTimeSheet.calcOutingTimeInFlex(false, conditionAtr, dedAtr, goOutSet);
+		AttendanceTime excessFlex = changedFlexTimeSheet.calcOutingTimeInFlex(false, conditionAtr, dedAtr, goOutSet, canOffset);
 		// 外出合計時間を返す
 		return WithinOutingTotalTime.of(
 				TimeWithCalculation.sameTime(withinFlex),
@@ -84,16 +86,23 @@ public class WithinOutingTotalTime {
 			CalculationRangeOfOneDay oneDay,
 			DeductionAtr dedAtr,
 			Optional<WorkTimezoneGoOutSet> goOutSet,
-			GoingOutReason reason) {
+			GoingOutReason reason,
+			NotUseAtr canOffset) {
 		
 		// 所定内合計時間の計算
 		TimeWithCalculation withinDedTime = oneDay.getDeductionTime(
 				ConditionAtr.convertFromGoOutReason(reason),
-				dedAtr, StatutoryAtr.Statutory, goOutSet);
+				dedAtr, StatutoryAtr.Statutory, canOffset, goOutSet);
 		// 外出合計時間を返す
 		return WithinOutingTotalTime.of(
 				withinDedTime,
 				TimeWithCalculation.sameTime(AttendanceTime.ZERO),
 				TimeWithCalculation.sameTime(AttendanceTime.ZERO));
+	}
+	
+	public static WithinOutingTotalTime mergeTimeAndCalcTime(WithinOutingTotalTime time, WithinOutingTotalTime calcTime) {
+		return new WithinOutingTotalTime(TimeWithCalculation.mergeTimeAndCalcTime(time.getTotalTime(), calcTime.getTotalTime()), 
+				TimeWithCalculation.mergeTimeAndCalcTime(time.getWithinCoreTime(), calcTime.getWithinCoreTime()), 
+				TimeWithCalculation.mergeTimeAndCalcTime(time.getExcessCoreTime(), calcTime.getExcessCoreTime()));
 	}
 }

@@ -96,4 +96,18 @@ public class TimeVacationWorkEachNo implements Cloneable {
 				resultLate.getValueForAddWorkTime(holidayAddtionSet),
 				resultEarly.getValueForAddWorkTime(holidayAddtionSet));
 	}
+	
+	/**
+	 * 就業時間に加算する時間のみ取得
+	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @return 勤務NO毎の時間休暇WORK
+	 */
+	public TimeVacationWorkEachNo getValueForAddWorkTime(HolidayAddtionSet holidayAddtionSet) {
+		
+		// 勤務NO毎の時間休暇WORKを返す
+		return TimeVacationWorkEachNo.of(
+				this.workNo,
+				this.late.getValueForAddWorkTime(holidayAddtionSet),
+				this.leaveEarly.getValueForAddWorkTime(holidayAddtionSet));
+	}
 }

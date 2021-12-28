@@ -5,9 +5,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.timeseries.AnnualLeaveUseTimeOfTimeSeries;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.timeseries.RetentionYearlyUseTimeOfTimeSeries;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.timeseries.SpecialHolidayUseTimeOfTimeSeries;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.timeseries.WorkTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
@@ -23,12 +21,14 @@ public class ReverseWeeklyPremiumAssignedTime {
 
 	/** 就業時間 */
 	private Map<GeneralDate, WorkTimeOfTimeSeries> workTime;
-	/** 年休使用時間 */
-	private Map<GeneralDate, AnnualLeaveUseTimeOfTimeSeries> annualLeaveUseTime;
-	/** 積立年休使用時間 */
-	private Map<GeneralDate, RetentionYearlyUseTimeOfTimeSeries> retentionYearlyUseTime;
-	/** 特別休暇使用時間 */
-	private Map<GeneralDate, SpecialHolidayUseTimeOfTimeSeries> specialHolidayUseTime;
+//	/** 年休使用時間 */
+//	private Map<GeneralDate, AnnualLeaveUseTimeOfTimeSeries> annualLeaveUseTime;
+//	/** 積立年休使用時間 */
+//	private Map<GeneralDate, RetentionYearlyUseTimeOfTimeSeries> retentionYearlyUseTime;
+//	/** 特別休暇使用時間 */
+//	private Map<GeneralDate, SpecialHolidayUseTimeOfTimeSeries> specialHolidayUseTime;
+	/** 割増時間 */
+	private Map<GeneralDate, AttendanceTimeMonth> premiumAddTime;
 	/** 残業時間 */
 	private Map<OverTimeFrameNo, AggregateOverTime> overTime;
 	/** 休出時間 */
@@ -40,9 +40,7 @@ public class ReverseWeeklyPremiumAssignedTime {
 	public ReverseWeeklyPremiumAssignedTime(){
 		
 		this.workTime = new HashMap<>();
-		this.annualLeaveUseTime = new HashMap<>();
-		this.retentionYearlyUseTime = new HashMap<>();
-		this.specialHolidayUseTime = new HashMap<>();
+		this.premiumAddTime = new HashMap<>();
 		this.overTime = new HashMap<>();
 		this.holidayWorkTime = new HashMap<>();
 	}

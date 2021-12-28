@@ -72,8 +72,11 @@ public class FlexTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 	public static FlexTimeOfMonthlyDto from(FlexTimeByPeriod domain) {
 		FlexTimeOfMonthlyDto dto = new FlexTimeOfMonthlyDto();
 		if(domain != null) {
-			dto.setFlexTime(new FlexTimeMDto(new TimeMonthWithCalculationDto(domain.getFlexTime().v(), domain.getFlexTime().v()), 
-												domain.getBeforeFlexTime().valueAsMinutes(), 0, 0, null));
+			dto.setFlexTime(new FlexTimeMDto(
+					new FlexTotalTimeDto(
+							new TimeMonthWithCalculationDto(domain.getFlexTime().v(), domain.getFlexTime().v()),
+							0, 0), 
+					domain.getBeforeFlexTime().valueAsMinutes(), null));
 			dto.setExcessTime(domain.getFlexExcessTime() == null ? 0 : domain.getFlexExcessTime().valueAsMinutes());
 			dto.setShortageTime(domain.getFlexShortageTime() == null ? 0 : domain.getFlexShortageTime().valueAsMinutes());
 		}
@@ -82,8 +85,8 @@ public class FlexTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	public FlexTimeByPeriod toDomainPeriod() {
 		return FlexTimeByPeriod.of(
-				new AttendanceTimeMonthWithMinus(this.flexTime == null || this.flexTime.getFlexTime() == null
-														? 0 : this.flexTime.getFlexTime().getTime()), 
+				this.flexTime == null || this.flexTime.getFlexTime() == null
+					? new AttendanceTimeMonthWithMinus(0) : this.flexTime.getFlexTime().getFlexTime().toDomainWithMinus().getTime(), 
 				new AttendanceTimeMonth(this.excessTime), 
 				new AttendanceTimeMonth(this.shortageTime), 
 				new AttendanceTimeMonth(this.flexTime == null ? 0 : this.flexTime.getBeforeFlexTime()));
@@ -108,7 +111,7 @@ public class FlexTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 		switch (path) {
 		case CARRY_FORWARD:
 			return new FlexCarryforwardTimeDto();
-		case TIME:
+		case FLEX:
 			return new FlexTimeMDto();
 		case (SHORTAGE + DEDUCTION):
 			return new FlexShortDeductTimeDto();
@@ -124,7 +127,7 @@ public class FlexTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 		switch (path) {
 		case CARRY_FORWARD:
 			return Optional.ofNullable(carryforwardTime);
-		case TIME:
+		case FLEX:
 			return Optional.ofNullable(flexTime);
 		case (SHORTAGE + DEDUCTION):
 			return Optional.ofNullable(shortDeductTime);
@@ -169,7 +172,7 @@ public class FlexTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 		case CARRY_FORWARD:
 			carryforwardTime = (FlexCarryforwardTimeDto) value;
 			break;
-		case TIME:
+		case FLEX:
 			flexTime = (FlexTimeMDto) value;
 			break;
 		case (SHORTAGE + DEDUCTION):

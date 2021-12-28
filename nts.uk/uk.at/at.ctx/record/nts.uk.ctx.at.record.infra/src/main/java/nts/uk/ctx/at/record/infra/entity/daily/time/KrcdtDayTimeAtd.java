@@ -30,6 +30,7 @@ import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarly
 import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayTimePremium;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
+import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -84,7 +85,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.To
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheet;
-import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -1233,6 +1233,10 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	@Column(name = "CALC_DIFF_TIME")
 	public int calcDiffTime;
 	
+	/** 就業時間金額 */
+	@Column(name = "WORK_TIME_AMOUNT")
+	public int workTimeAmount;
+	
 	/*----------------------日別実績の加給時間------------------------------*/
 	
 	@Override
@@ -1726,6 +1730,8 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 							this.divPrsIncldMidnTime = winthinTime == null || winthinTime.getDivergenceTime() == null ? 0
 									: withinDomain.getWithinStatutoryMidNightTime().getTime().getDivergenceTime().valueAsMinutes();
 						}
+						/*就業時間金額*/
+						this.workTimeAmount = withinDomain.getWithinWorkTimeAmount() == null ? 0 : withinDomain.getWithinWorkTimeAmount().v();
 //						/*休暇加算時間*/
 //						this.vactnAddTime = withinDomain.getVacationAddTime() == null ? 0 : withinDomain.getVacationAddTime().valueAsMinutes();
 					}
@@ -2372,7 +2378,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 																						entity.bindDiffTime,
 																						entity.diffTimeWorkTime,
 																						divergence,
-																						entity.krcdtDayPremiumTime == null ? new PremiumTimeOfDailyPerformance() : entity.krcdtDayPremiumTime.toDomain());
+																						entity.krcdtDayPremiumTime == null ? PremiumTimeOfDailyPerformance.createEmpty() : entity.krcdtDayPremiumTime.toDomain());
 		
 		AttendanceTimeOfDailyPerformance domain = new AttendanceTimeOfDailyPerformance(entity.krcdtDayTimePK.employeeID,
 																					   entity.krcdtDayTimePK.generalDate,
@@ -2443,33 +2449,12 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		
 		for(KrcdtDayShorttime shortTimeValue : krcdtDayShorttime) {
 			if(shortTimeValue != null) {
-				shortTime.add(new ShortWorkTimeOfDaily(new WorkTimes(shortTimeValue.count == null ? 0 : shortTimeValue.count),
-											  DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordTotalTime == null ? 0 : shortTimeValue.toRecordTotalTime), 
-													  															  new AttendanceTime(shortTimeValue.calToRecordTotalTime == null ? 0 : shortTimeValue.calToRecordTotalTime)), 
-													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordInTime == null ? 0 : shortTimeValue.toRecordInTime), 
-													  															  new AttendanceTime(shortTimeValue.calToRecordInTime == null ? 0 : shortTimeValue.calToRecordInTime)), 
-													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordOutTime == null ? 0 : shortTimeValue.toRecordOutTime), 
-													  															  new AttendanceTime(shortTimeValue.calToRecordOutTime == null ? 0 : shortTimeValue.calToRecordOutTime ))),
-											  DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionTotalTime == null ? 0 : shortTimeValue.deductionTotalTime ), 
-													  															  new AttendanceTime(shortTimeValue.calDeductionTotalTime == null ? 0 : shortTimeValue.calDeductionTotalTime)), 
-													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionInTime == null ? 0 : shortTimeValue.deductionInTime), 
-													  															  new AttendanceTime(shortTimeValue.calDeductionInTime == null ? 0 : shortTimeValue.calDeductionInTime)), 
-													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionOutTime == null ? 0 : shortTimeValue.deductionOutTime),
-													  															  new AttendanceTime(shortTimeValue.calDeductionOutTime == null ? 0 : shortTimeValue.calDeductionOutTime))),
-											  ChildCareAtr.valueOf(shortTimeValue.krcdtDayShorttimePK == null || shortTimeValue.krcdtDayShorttimePK.childCareAtr == null? 0 : shortTimeValue.krcdtDayShorttimePK.childCareAtr)));
+				shortTime.add(shortTimeValue.toDomain());
 			}
 		}
 		
 		if(shortTime.isEmpty()) {
-			shortTime.add( new  ShortWorkTimeOfDaily(new WorkTimes(0),
-                    DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-                                           TimeWithCalculation.sameTime(new AttendanceTime(0)),
-                                           TimeWithCalculation.sameTime(new AttendanceTime(0))),
-                    DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-                                              TimeWithCalculation.sameTime(new AttendanceTime(0)),
-                                              TimeWithCalculation.sameTime(new AttendanceTime(0))),
-                    ChildCareAtr.CARE));
-
+			shortTime.add(new ShortWorkTimeOfDaily());
 		}
 		
 		return shortTime;
@@ -2753,7 +2738,8 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 				   																  new AttendanceTime(entity.pefomWorkTime),
 				   																  new AttendanceTime(entity.prsIncldPrmimTime),
 				   																  new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.prsIncldMidnTime),
-				   																		  																				  new AttendanceTime(entity.calcPrsIncldMidnTime))));
+				   																		  																				  new AttendanceTime(entity.calcPrsIncldMidnTime))),
+				   																  new AttendanceAmountDaily(entity.workTimeAmount));
 	}
 
 	private static WorkScheduleTimeOfDaily createScheduleWorkTime(KrcdtDayTimeAtd entity) {

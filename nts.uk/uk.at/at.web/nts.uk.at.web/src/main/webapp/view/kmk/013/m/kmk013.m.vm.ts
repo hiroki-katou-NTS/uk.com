@@ -31,7 +31,7 @@ module nts.uk.at.view.kmk013.m {
                 ]);
                 self.calcMethodChoice = ko.observable(0);
                 
-                self.vacationOrder = ko.observable(new VacationOrderDto(0,1,3,2));
+                self.vacationOrder = ko.observable(self.createDefaultVacationOrder());
             }
             
             public startPage(): JQueryPromise<void>  {
@@ -42,10 +42,13 @@ module nts.uk.at.view.kmk013.m {
                     if (data) {
                         self.upperLimitChoice(data.upperLimitSet);
                         self.calcMethodChoice(data.constraintCalcMethod);
-                        if (data.substituteHoliday == data.sixtyHourVacation == data.specialHoliday == data.annualHoliday)
-                            self.vacationOrder(new VacationOrderDto(0,1,3,2));
-                        else
-                            self.vacationOrder(new VacationOrderDto(data.substituteHoliday, data.sixtyHourVacation, data.specialHoliday, data.annualHoliday));
+                        self.vacationOrder(new VacationOrderDto(
+                                                    data.offVacationPriorityOrder.substituteHoliday, 
+                                                    data.offVacationPriorityOrder.sixtyHourVacation, 
+                                                    data.offVacationPriorityOrder.specialHoliday,
+                                                    data.offVacationPriorityOrder.annualHoliday,
+                                                    data.offVacationPriorityOrder.childCare,
+                                                    data.offVacationPriorityOrder.care));
                     }
                     dfd.resolve();
                 })
@@ -66,6 +69,8 @@ module nts.uk.at.view.kmk013.m {
                         self.vacationOrder().sixtyHour = data.sixtyHour;
                         self.vacationOrder().annual = data.annual;
                         self.vacationOrder().special = data.special;
+                        self.vacationOrder().childCare = data.childCare;
+                        self.vacationOrder().care = data.care;
                     }
                 });
             }
@@ -76,10 +81,15 @@ module nts.uk.at.view.kmk013.m {
                 blockUI.grayout();
                 data.constraintCalcMethod = self.calcMethodChoice();
                 data.upperLimitSet = self.upperLimitChoice();
-                data.substituteHoliday = self.vacationOrder().substitute;
-                data.sixtyHourVacation = self.vacationOrder().sixtyHour;
-                data.specialHoliday = self.vacationOrder().special;
-                data.annualHoliday = self.vacationOrder().annual;
+                data.offVacationPriorityOrder = {
+                    substituteHoliday: self.vacationOrder().substitute,
+                    sixtyHourVacation: self.vacationOrder().sixtyHour,
+                    specialHoliday: self.vacationOrder().special,
+                    annualHoliday: self.vacationOrder().annual,
+                    childCare: self.vacationOrder().childCare,
+                    care: self.vacationOrder().care
+                };
+                
                 service.register(data).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                         $('#upper-limit').focus();
@@ -89,6 +99,11 @@ module nts.uk.at.view.kmk013.m {
                 }).always(() => {
                     blockUI.clear();
                 });
+            }
+            
+            createDefaultVacationOrder(): VacationOrderDto{
+                
+                return new VacationOrderDto(0,1,2,3,4,5);
             }
         }
         
@@ -110,11 +125,16 @@ module nts.uk.at.view.kmk013.m {
         sixtyHour: number;
         special: number;
         annual: number;
-        constructor(substitute: number, sixtyHour: number, special: number, annual: number) {
+        care: number;
+        childCare: number;
+        
+        constructor(substitute: number, sixtyHour: number, special: number, annual: number, childCare: number, care: number) {
             this.substitute = substitute;
             this.sixtyHour = sixtyHour;
             this.special = special;
             this.annual = annual;
+            this.care = care;
+            this.childCare = childCare;
         }
     }
 }

@@ -9,14 +9,25 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.serialize.binary.SerializableWithOptional;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeVacationWork;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 
 /**
  * The Class HolidayAddtionSet.
@@ -106,6 +117,43 @@ public class HolidayAddtionSet extends AggregateRoot implements SerializableWith
     }
 
 	/**
+	 * 時間休暇加算時間を計算する
+	 * @param integrationOfDaily 日別勤怠(Work)
+	 * @param deductionTimeSheet 控除時間帯
+	 * @param calcMethodSet 休暇の計算方法の設定
+	 * @param frames 就業時間内時間枠
+	 * @param workTimeForm 就業時間帯の勤務形態
+	 * @return 時間休暇加算時間
+	 */
+	public AttendanceTime calcTimeVacationAddTime(IntegrationOfDaily integrationOfDaily, DeductionTimeSheet deductionTimeSheet,
+			AddSettingOfWorkingTime calcMethodSet, List<WithinWorkTimeFrame> frames, WorkTimeForm workTimeForm) {
+		if(!integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			return AttendanceTime.ZERO;
+		}
+		// 遅刻の時間休暇加算時間を取得する
+		List<LateTimeOfDaily> lateDailies = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily();
+		AttendanceTime lateTime = new AttendanceTime(lateDailies.stream()
+				.map(l -> l.calcVacationAddTime(calcMethodSet, this, frames, workTimeForm))
+				.collect(Collectors.summingInt(a -> a.valueAsMinutes())));
+		// 早退の時間休暇加算時間を取得する
+		List<LeaveEarlyTimeOfDaily> leaveEarlyDailies = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily();
+		AttendanceTime leaveEarlyTime = new AttendanceTime(leaveEarlyDailies.stream()
+				.map(l -> l.calcVacationAddTime(calcMethodSet, this, frames, workTimeForm))
+				.collect(Collectors.summingInt(a -> a.valueAsMinutes())));
+		// 外出の時間休暇加算時間を取得する
+		AttendanceTime outTime = new AttendanceTime(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().stream()
+					.filter(o -> o.getReason().isPrivateOrUnion())
+					.map(o -> o.calcVacationAddTime(calcMethodSet, this, deductionTimeSheet, workTimeForm))
+					.collect(Collectors.summingInt(a -> a.valueAsMinutes())));
+		
+		AttendanceTime totalTime = AttendanceTime.ZERO;
+		return totalTime
+				.addMinutes(lateTime.valueAsMinutes())
+				.addMinutes(leaveEarlyTime.valueAsMinutes())
+				.addMinutes(outTime.valueAsMinutes());
+	}
+
+	/**
 	 * 時間休暇加算時間を取得する
 	 * @param useTime 時間休暇使用時間
 	 * @param offsetTarget 相殺対象時間
@@ -149,5 +197,31 @@ public class HolidayAddtionSet extends AggregateRoot implements SerializableWith
 					.findFirst();
 		}
 		return Optional.empty();
+	}
+	
+	/** 加算する時間休暇Workを判断する */
+	public TimeVacationWork decideTimeVacationWork(Require require, String cid, TimeVacationWork useWork, 
+			TimeVacationWork offsetWork, WorkInformation workInfo) {
+		
+		/** $就業時間帯　＝ require.就業時間帯を取得する（Appcontext.user().companyId(), 勤務情報。就業時間帯コード） */
+		val workTime = workInfo.getWorkTimeCodeNotNull().flatMap(wt -> require.workTimeSetting(cid, wt)).orElse(null);
+		if (workTime == null) return TimeVacationWork.defaultValue();
+		
+		/** $勤務形態 = ＄就業時間帯.勤務区分.勤務形態を取得する（） */
+		val workForm = workTime.getWorkTimeDivision().getWorkTimeForm();
+		
+		/** if (＄勤務形態　！＝　フレックス勤務　＆＆　＄勤怠形態　！＝　流動勤務)*/
+		if (workForm != WorkTimeForm.FLEX && workForm != WorkTimeForm.FLOW) return offsetWork;
+		
+		/** ＄時間休暇加算設定＝　＠時間休暇加算：filter $.勤務区分　＝＝　＄勤務形態 */
+		val timeVacationAddSet = this.timeHolidayAddition.stream().filter(c -> c.getWorkClass().checkWorkForm(workForm)).findFirst();
+		
+		/** return	＄時間休暇加算設定。加算する時間休暇WORKを判断する（時間休暇使用時間、相殺対象時間） */
+		return timeVacationAddSet.map(c -> c.getAddTime(useWork, offsetWork)).orElseGet(() -> TimeVacationWork.defaultValue());
+	}
+	
+	public static interface Require {
+		
+		Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode);
 	}
 }

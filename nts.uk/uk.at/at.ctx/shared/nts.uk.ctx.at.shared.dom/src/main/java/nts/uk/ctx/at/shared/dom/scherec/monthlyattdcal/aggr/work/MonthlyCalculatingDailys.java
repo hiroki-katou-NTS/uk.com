@@ -13,6 +13,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
@@ -107,10 +108,29 @@ public class MonthlyCalculatingDailys {
 					Optional.ofNullable(specificDateAttrOfDailyMap.get(wi.getKey())),
 					Optional.empty(), Optional.ofNullable(anyItemValueOfDailyList.get(wi.getKey())),
 					new ArrayList<>(), Optional.ofNullable(temporaryTimeOfDailyMap.get(wi.getKey())),
-					new ArrayList<>(), Optional.ofNullable(snapshots.get(wi.getKey())));
+					new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+					Optional.ofNullable(snapshots.get(wi.getKey())));
 		}).collect(Collectors.toList());
 	}
 
+	public List<IntegrationOfDaily> getDailyWorks(String sid, DatePeriod period) {
+
+		return workInfoOfDailyMap.entrySet().stream().filter(wk -> period.contains(wk.getKey())).map(wi -> {
+
+			return new IntegrationOfDaily(sid, wi.getKey(), wi.getValue(),
+					null, affiInfoOfDailyMap.get(wi.getKey()),
+					Optional.ofNullable(pcLogonInfoMap.get(wi.getKey())), new ArrayList<>(),
+					Optional.empty(), new BreakTimeOfDailyAttd(new ArrayList<>()),
+					Optional.ofNullable(attendanceTimeOfDailyMap.get(wi.getKey())),
+					Optional.ofNullable(timeLeaveOfDailyMap.get(wi.getKey())), Optional.empty(),
+					Optional.ofNullable(specificDateAttrOfDailyMap.get(wi.getKey())),
+					Optional.empty(), Optional.ofNullable(anyItemValueOfDailyList.get(wi.getKey())),
+					new ArrayList<>(), Optional.ofNullable(temporaryTimeOfDailyMap.get(wi.getKey())),
+					new ArrayList<>(), new ArrayList<>(),new ArrayList<>(),
+					Optional.ofNullable(snapshots.get(wi.getKey())));
+		}).collect(Collectors.toList());
+	}
+	
 	/**
 	 * データ取得
 	 * @param employeeId 社員ID
@@ -470,7 +490,8 @@ public class MonthlyCalculatingDailys {
 														new AttendanceTime(0),
 														new AttendanceTime(0),
 														beforeActualWork.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWithinPrescribedPremiumTime(),
-														beforeActualWork.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWithinStatutoryMidNightTime()),
+														beforeActualWork.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWithinStatutoryMidNightTime(),
+														AttendanceAmountDaily.ZERO),
 												beforeActualWork.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily(),
 												beforeActualWork.getTotalWorkingTime().getLateTimeOfDaily(),
 												beforeActualWork.getTotalWorkingTime().getLeaveEarlyTimeOfDaily(),

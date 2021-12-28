@@ -10,6 +10,7 @@ import java.util.Optional;
  * The Interface WorkRegularAdditionSetRepository.
  */
 public interface WorkRegularAdditionSetRepository {
+	
 	Optional<WorkRegularAdditionSet> findByCID(String companyID);
 }
 

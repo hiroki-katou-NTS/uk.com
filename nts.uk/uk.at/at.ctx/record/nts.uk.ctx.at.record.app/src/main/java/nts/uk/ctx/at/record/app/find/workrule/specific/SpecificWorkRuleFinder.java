@@ -5,9 +5,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.workrule.specific.SpecificWorkRuleRepository;
-import nts.uk.ctx.at.shared.dom.workrule.specific.TimeOffVacationPriorityOrder;
 import nts.uk.ctx.at.shared.dom.workrule.specific.UpperLimitTotalWorkingHour;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -46,14 +47,9 @@ public class SpecificWorkRuleFinder {
 		}
 		
 		// ドメインモデル「時間休暇相殺優先順位」を取得する
-		Optional<TimeOffVacationPriorityOrder> optVacationOrder = repository.findTimeOffVacationOrderByCid(companyId);
-		if (optVacationOrder.isPresent()) {
-			TimeOffVacationPriorityOrder vacationOrder = optVacationOrder.get();
-			dto.setSubstituteHoliday(vacationOrder.getSubstituteHoliday());
-			dto.setSixtyHourVacation(vacationOrder.getSixtyHourVacation());
-			dto.setSpecialHoliday(vacationOrder.getSpecialHoliday());
-			dto.setAnnualHoliday(vacationOrder.getAnnualHoliday());
-		}
+		val orders = repository.findTimeOffVacationOrderByCid(companyId)
+				.orElseGet(() -> new CompanyHolidayPriorityOrder(companyId));
+		dto.setOffVacationPriorityOrder(TimeOffVacationPriorityOrderDto.from(orders.getHolidayPriorityOrders()));
 		
 		return dto;
 	}
