@@ -34,7 +34,6 @@ import nts.uk.ctx.at.request.dom.application.stamp.TimeStampApp;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppEnum;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppOther;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
-import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.TimeZone;
@@ -360,7 +359,7 @@ public class AsposeAppStamp {
 					
 					if (appStampOutputOp.get().getAppStampReflectOptional().get().getSupportReflectAtr().isUse()
 							&& appStampOutputOp.get().isUseCheering()
-							&& destTimeApp.getSupportWorkNo().map(WorkNo::v).orElse(0) <= appStampOutputOp.get().getMaxOfCheer()) {
+							&& destTimeApp.getEngraveFrameNo() <= appStampOutputOp.get().getMaxOfCheer()) {
 						String value = supportTimes.get(destTimeApp.getEngraveFrameNo());
 						if (destTimeApp.getTimeStampAppEnum().equals(TimeStampAppEnum.CHEERING)) {
 							if (destTimeApp.getStartEndClassification().equals(StartEndClassification.START) ) {
@@ -421,10 +420,10 @@ public class AsposeAppStamp {
 						outTime10 = I18NText.getText("KAF002_80");
 					}
 					if (appStampOutputOp.get().getAppStampReflectOptional().get().getSupportReflectAtr().isUse()
-							&& appStampOutputOp.get().isUseCheering() && destinationTimeApp.getSupportWorkNo().isPresent()
-							&& destinationTimeApp.getSupportWorkNo().get().v() <= appStampOutputOp.get().getMaxOfCheer()
+							&& appStampOutputOp.get().isUseCheering()
+							&& destinationTimeApp.getEngraveFrameNo() <= appStampOutputOp.get().getMaxOfCheer()
 							&& destinationTimeApp.getTimeStampAppEnum().equals(TimeStampAppEnum.CHEERING)) {
-						supportTimes.put(destinationTimeApp.getSupportWorkNo().get().v(), I18NText.getText("KAF002_80"));
+						supportTimes.put(destinationTimeApp.getEngraveFrameNo(), I18NText.getText("KAF002_80"));
 					}
 				}
 
