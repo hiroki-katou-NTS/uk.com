@@ -412,7 +412,7 @@ public class CreateOrderInfoFileQuery {
         }else{*/
         for(BentoReservation item : reservations){
             int totalFee = 0;
-            reservationDetails.addAll(item.getBentoReservationDetails());
+            reservationDetails = item.getBentoReservationDetails();
             Optional<BentoMenuHistory> opBentoMenuHistory = bentoMenuHistRepository.findByCompanyDate(companyId, item.getReservationDate().getDate());
             if (!opBentoMenuHistory.isPresent()) {
             	continue;
@@ -452,13 +452,9 @@ public class CreateOrderInfoFileQuery {
 
     private BentoTotalDto createBentoTotalDto(BentoItemByClosingTime bento, List<BentoReservationDetail> reservation){
         int quantity = 0;
-        Iterator<BentoReservationDetail> iterator = reservation.iterator();
-        while (iterator.hasNext()){
-            BentoReservationDetail temp = iterator.next();
-            if(temp.getFrameNo() == bento.getFrameNo()){
-                quantity += temp.getBentoCount().v();
-                iterator.remove();
-            }
+        Optional<BentoReservationDetail> opBentoReservationDetail = reservation.stream().filter(x -> x.getFrameNo()==bento.getFrameNo()).findAny();
+        if(opBentoReservationDetail.isPresent()) {
+        	quantity = opBentoReservationDetail.get().getBentoCount().v();
         }
         return new BentoTotalDto(bento.getUnit().v(),bento.getName().v(), quantity,
                 bento.getFrameNo(),bento.getAmount1().v() + bento.getAmount2().v());

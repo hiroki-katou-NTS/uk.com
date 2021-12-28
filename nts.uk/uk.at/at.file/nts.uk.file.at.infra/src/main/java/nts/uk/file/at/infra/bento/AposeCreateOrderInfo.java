@@ -333,10 +333,9 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
                 String name = totalDtos.get(0).getName();
                 int frameNo = totalDtos.get(0).getFrameNo();
                 int quantity = 0;
-                int amount = 0;
+                int amount = totalDtos.get(0).getAmount();
                 for(BentoTotalDto totalDto : totalDtos){
                     quantity += totalDto.getQuantity();
-                    amount += totalDto.getAmount();
                 }
                 bentoTotalDtos.add(new BentoTotalDto(unit, name, quantity, frameNo, amount));
             }
