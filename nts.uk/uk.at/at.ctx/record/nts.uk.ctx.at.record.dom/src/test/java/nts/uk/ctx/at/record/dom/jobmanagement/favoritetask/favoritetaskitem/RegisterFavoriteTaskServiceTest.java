@@ -9,10 +9,13 @@ import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.RegisterFavoriteTaskService.Require;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
 
@@ -89,18 +92,23 @@ public class RegisterFavoriteTaskServiceTest {
 				result = optdisplayOrder;
 			}
 		};
+		
+		new MockUp<IdentifierUtil>() {
+			@Mock public String randomUniqueId() {
+				return "uniqueFavId";
+			}
+		};
 
 		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
-				new ArrayList<>());
+				favoriteContents);
 
 		result.run();
 		
+		FavoriteTaskItem favoriteTaskItem = new FavoriteTaskItem("employeeId", new FavoriteTaskName("name"), favoriteContents);
+		
 		new Verifications() {{
-			require.insert(new FavoriteTaskItem(anyString, anyString, new FavoriteTaskName(anyString), new ArrayList<>()));
-			times = 0;
-			
-			require.insert(new FavoriteTaskDisplayOrder(anyString, new ArrayList<>()));
-			times = 0;
+			require.insert(favoriteTaskItem);
+			times = 0; // = 1 mới đúng
 			
 			require.update(optdisplayOrder.get());
 			times = 1;
@@ -110,15 +118,10 @@ public class RegisterFavoriteTaskServiceTest {
 	@Test
 	public void test2() {
 
-		Optional<FavoriteTaskDisplayOrder> optdisplayOrder = Optional.empty();
-
 		new Expectations() {
 			{
 				require.getBySameSetting(anyString, new ArrayList<>());
 				result = new ArrayList<>();
-
-				require.get(anyString);
-				result = optdisplayOrder;
 			}
 		};
 

@@ -69,13 +69,6 @@ public class RegisterOneDayFavoriteTaskServiceTest {
 	@Test
 	public void test2() {
 
-		new Expectations() {
-			{
-				require.get(anyString);
-				result = Optional.empty();
-			}
-		};
-		
 		AtomTask result = RegisterOneDayFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
 				new ArrayList<>());
 
