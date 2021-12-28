@@ -354,6 +354,7 @@ module nts.uk.at.view.kmp002.a {
       setShared('inputCDL008', {
         baseDate: moment(vm.date()).toDate(),
         isMultiple: false,
+        selectedCodes: vm.supportCard().workplaceId,
         selectedSystemType: 2,
         isrestrictionOfReferenceRange: false,
         showNoSelection: false,
