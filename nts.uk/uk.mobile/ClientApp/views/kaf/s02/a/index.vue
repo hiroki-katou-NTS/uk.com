@@ -352,7 +352,7 @@
         <div class="card-header uk-bg-accordion mt-2 mb-n2">
           <span>{{ "KAFS02_31" | i18n }}</span>
         </div>
-        <div v-if="(mode && condition5) || (!mode && supportLst.length > 0)">
+        <div v-if="(mode && condition13) || (!mode && supportLst.length > 0)">
           <div v-for="(itemSP, index) in supportLst" :key="itemSP.frame">
             <template v-if="index < supportLstNumber">
               <div class="row mt-3">
@@ -396,7 +396,7 @@
                   class="checkbox-text uk-text-dark-gray"
                   style="font-size: 90%"
                   v-if="itemSP.dispCheckbox && condition2 && (itemSP.actualHours.startTime != null || itemSP.actualHours.endTime != null)"
-                  v-model="checkboxWH"
+                  v-model="checkboxSP"
                   v-bind:value="itemSP.frame"
                   v-bind:disabled="itemSP.disableCheckbox"
                   >{{ "KAFS02_5" | i18n }}</nts-checkbox

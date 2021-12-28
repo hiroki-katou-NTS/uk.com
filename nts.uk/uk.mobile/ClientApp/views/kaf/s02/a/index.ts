@@ -602,6 +602,10 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 if (_.filter(self.checkboxWH, (x) => { if (item.engraveFrameNo === x) { return x; } }).length === 0) {
                     self.checkboxWH.push(item.engraveFrameNo);
                 }
+                
+                if (_.filter(self.checkboxSP, (x) => { if (item.engraveFrameNo === x) { return x; } }).length === 0) {
+                    self.checkboxSP.push(item.engraveFrameNo);
+                }
             }
 
             // cancel tempoHours
