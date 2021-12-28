@@ -400,6 +400,23 @@ public class JpaBentoMenuHistRepositoryImpl extends JpaRepository implements Ben
 	}
 	
 	@Override
+	public Optional<BentoMenuHistory> findByHistoryID(String historyID) {
+		String query =
+				"SELECT a.CID, a.HIST_ID, a.START_YMD, a.END_YMD, c.MENU_FRAME, c.WORK_LOCATION_CD, c.BENTO_NAME, c.UNIT_NAME, c.PRICE1, c.PRICE2, c.FRAME_NO " + 
+				"FROM KRCMT_BENTO_MENU_HIST a LEFT JOIN KRCMT_BENTO c ON a.HIST_ID = c.HIST_ID AND a.CID = c.CID " + 
+				"WHERE a.HIST_ID = @historyID";
+		List<Map<String, Object>> mapLst = new NtsStatement(query, this.jdbcProxy())
+				.paramString("historyID", historyID)
+				.getList(rec -> toObject(rec));
+		List<KrcmtBentoMenuHist> krcmtBentoMenuHistLst = convertToEntity(mapLst);
+		if(CollectionUtil.isEmpty(krcmtBentoMenuHistLst)) {
+			return Optional.empty();
+		} else {
+			return krcmtBentoMenuHistLst.stream().findFirst().map(x -> x.toDomain());
+		}
+	}
+	
+	@Override
 	public List<BentoMenuHistory> findByCompanyPeriod(String companyID, DatePeriod period) {
 		String query =
 				"SELECT a.CID, a.HIST_ID, a.START_YMD, a.END_YMD, c.MENU_FRAME, c.WORK_LOCATION_CD, c.BENTO_NAME, c.UNIT_NAME, c.PRICE1, c.PRICE2, c.FRAME_NO " + 
@@ -426,5 +443,4 @@ public class JpaBentoMenuHistRepositoryImpl extends JpaRepository implements Ben
 		List<KrcmtBentoMenuHist> krcmtBentoMenuHistLst = convertToEntity(mapLst);
 		return krcmtBentoMenuHistLst.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 	}
-	
 }

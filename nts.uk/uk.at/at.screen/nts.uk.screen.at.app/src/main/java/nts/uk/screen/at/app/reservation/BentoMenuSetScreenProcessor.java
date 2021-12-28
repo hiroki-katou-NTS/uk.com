@@ -49,16 +49,17 @@ public class BentoMenuSetScreenProcessor {
         // 1: 会社IDと予約の運用区別によって予約受付時間帯を取得する
         List<ReservationRecTimeZone> reservationRecTimeZoneLst = reservationSettingRepository.getReservationRecTimeZoneByOpDist(companyID, 0);
         if(CollectionUtil.isEmpty(reservationRecTimeZoneLst)) {
-        	throw new BusinessException("Msg_1847");
+        	throw new BusinessException("Msg_3259");
         }
         
         // 2: 取得する
         Optional<BentoMenuHistory> opBentoMenuHistory = bentoMenuHistRepository.findByCompanyDate(companyID, GeneralDate.fromString(request.getDate(), "yyyy/MM/dd"));
         if(!opBentoMenuHistory.isPresent()) {
-        	throw new BusinessException("Msg_1848");
+        	throw new BusinessException("Msg_3260");
         }
 
         return BentoJoinReservationSetting.setData(
+        		opBentoMenuHistory.get().getHistoryID(),
         		reservationRecTimeZoneLst, 
         		opBentoMenuHistory.get().getHistoryItem().start(), 
         		opBentoMenuHistory.get().getHistoryItem().end(), 

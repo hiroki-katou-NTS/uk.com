@@ -1,20 +1,24 @@
 package nts.uk.ctx.at.record.app.command.reservation.reseritemset;
 
-import lombok.val;
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.command.CommandHandler;
-import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.*;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
-import nts.uk.shr.com.context.AppContexts;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.Optional;
+
+import lombok.val;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -37,10 +41,8 @@ public class CreateReseItemSettingCommandHandler extends CommandHandler<CreateRe
                 command.getWorkLocationCode() != null?
                         Optional.of(new WorkLocationCode(command.getWorkLocationCode())): Optional.empty()
         );
-        String cid = AppContexts.user().companyId();
-        GeneralDate date = GeneralDate.max();
 
-        BentoMenuHistory bentoMenu = bentoMenuRepository.findByCompanyDate(cid,date).get();
+        BentoMenuHistory bentoMenu = bentoMenuRepository.findByHistoryID(command.getHistId()).get();
         bentoMenu.getMenu().add(bento);
 
         bentoMenuRepository.update(bentoMenu);

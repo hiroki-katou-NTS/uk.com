@@ -20,6 +20,8 @@ public class BentoJoinReservationSetting {
     public int operationDistinction;
 
     //bentomenu
+    
+    public String historyID;
 
     public GeneralDate startDate;
 
@@ -45,7 +47,7 @@ public class BentoJoinReservationSetting {
 
     public List<BentoDto> bentoDtos;
 
-    public static BentoJoinReservationSetting setData(List<ReservationRecTimeZone> reservationRecTimeZoneLst, GeneralDate startDate, GeneralDate endDate, List<Bento> menu){
+    public static BentoJoinReservationSetting setData(String historyID, List<ReservationRecTimeZone> reservationRecTimeZoneLst, GeneralDate startDate, GeneralDate endDate, List<Bento> menu){
     	List<BentoDto> bentoDtos = new ArrayList<>();
 		for(Bento bento : menu) {
 			bentoDtos.add(new BentoDto(
@@ -64,6 +66,7 @@ public class BentoJoinReservationSetting {
 
         return new BentoJoinReservationSetting(
         		OperationDistinction.BY_COMPANY.value,
+        		historyID,
         		startDate,
         		endDate,
         		frame1==null ? null : frame1.getReceptionHours().getReceptionName().v(),

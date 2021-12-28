@@ -1,20 +1,19 @@
 package nts.uk.ctx.at.record.app.command.reservation.reseritemset;
 
-import lombok.val;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
-import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
-import nts.uk.shr.com.context.AppContexts;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.Optional;
+
+import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -27,12 +26,8 @@ public class DeleteBentoCommandHandler extends CommandHandler<DeleteBentoCommand
     @Override
     protected void handle(CommandHandlerContext<DeleteBentoCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
-        val cid = AppContexts.user().companyId();
-        GeneralDate date = GeneralDate.max();
 
-        BentoMenuHistory bentoMenu = command.getHistId() == null ?
-                bentoMenuRepository.getBentoMenuByEndDate(cid,date) :
-                bentoMenuRepository.getBentoMenuByHistId(cid,command.getHistId());
+        BentoMenuHistory bentoMenu = bentoMenuRepository.findByHistoryID(command.getHistId()).get();
         if (bentoMenu != null){
             Optional<Bento> optionalBento = bentoMenu.getMenu().stream()
                     .filter(x -> x.getFrameNo() == command.getFrameNo())
