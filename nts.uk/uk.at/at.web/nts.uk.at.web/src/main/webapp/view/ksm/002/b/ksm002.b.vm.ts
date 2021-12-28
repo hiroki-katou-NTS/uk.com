@@ -111,19 +111,10 @@ module ksm002.b.viewmodel {
             var self = this;  
             $('#tree-grid').focusTreeGridComponent();
             nts.uk.ui.block.invisible();
-            $.when(
-                self.getAllSpecDate(), 
-                nts.uk.characteristics.restore("IndividualStartDay"),
-                self.getSpecDateByIsUse(isResetBoxItemList),
-                self.getCalendarWorkPlaceByCode()
-            ).done((data1, data2, data3, data4, data5)=>{
-                if(nts.uk.util.isNullOrEmpty(self.checkBoxList())){
-                    self.openDialogC();
-                }
-                nts.uk.ui.block.clear(); 
-            }).fail((res1,res2,res3,res4,res5) => {
-                nts.uk.ui.dialog.alertError(res1.message+res2.message+res3.message+res4.message+res4.message).then(()=>{nts.uk.ui.block.clear();});
-            });
+            self.getSpecDateByIsUse(isResetBoxItemList).done(() => {
+                self.getAllSpecDate();
+                self.getCalendarWorkPlaceByCode();
+            }).always(() => nts.uk.ui.block.clear());
         }
         
          showExportBtn() {
@@ -147,7 +138,7 @@ module ksm002.b.viewmodel {
             } else {
                 $(".yearMonthPicker").trigger("validate");
                 if (!nts.uk.ui.errors.hasError()) {
-                    if(self.createCommand().length == 0) {
+                    if(!self.hasItemInCalendarInsert()) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });       
                     } else {
                         nts.uk.ui.block.invisible();
@@ -159,6 +150,18 @@ module ksm002.b.viewmodel {
                     }
                 }
             }
+        }
+
+        hasItemInCalendarInsert() {
+            var self = this;
+            let hasItem = false;
+            _.forEach(self.calendarPanel.optionDates(), (processDay) => {
+                if (processDay.listText.length > 0) {
+                    hasItem = true;
+                    return;
+                };
+            });
+            return hasItem;
         }
         
         /**
@@ -433,13 +436,11 @@ module ksm002.b.viewmodel {
             const vm = this;
             let arrCommand: any[] = [];
             vm.calendarPanel.optionDates().forEach(item => {
-                if (item.listText.length > 0) {
-                    arrCommand.push({
-                        workPlaceId: vm.currentWorkPlace().id(),
-                        specificDate: moment(item.start).format('YYYY/MM/DD'),
-                        specificDateItemNo: vm.convertNameToNumber(item.listText)
-                    });
-                }
+                arrCommand.push({
+                    workPlaceId: vm.currentWorkPlace().id(),
+                    specificDate: moment(item.start).format('YYYY/MM/DD'),
+                    specificDateItemNo: vm.convertNameToNumber(item.listText)
+                });
             });
             return arrCommand;
         }

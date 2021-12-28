@@ -37,11 +37,13 @@ public class InsertWorkplaceSpecificDateCommandHandler extends CommandHandler<Li
 			if (oldWplSpecDateItem.isPresent()) {
 				this.repo.delete(workplaceSpecificDateCommand.getWorkPlaceId(), date);
 			}
-			WorkplaceSpecificDateItem workplaceSpecificDateItem = new WorkplaceSpecificDateItem(
-					workplaceSpecificDateCommand.getWorkPlaceId(),
-					date,
-					OneDaySpecificItem.create(specificDayItems));
-			this.repo.insert(companyId, workplaceSpecificDateItem);
+			if (!specificDayItems.isEmpty()) {
+				WorkplaceSpecificDateItem workplaceSpecificDateItem = new WorkplaceSpecificDateItem(
+						workplaceSpecificDateCommand.getWorkPlaceId(),
+						date,
+						OneDaySpecificItem.create(specificDayItems));
+				this.repo.insert(companyId, workplaceSpecificDateItem);
+			}
 		}
 	}
 
