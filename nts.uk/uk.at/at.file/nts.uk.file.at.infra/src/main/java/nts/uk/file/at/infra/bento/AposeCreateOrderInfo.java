@@ -339,7 +339,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
                 }
                 bentoTotalDtos.add(new BentoTotalDto(unit, name, quantity, frameNo, amount));
             }
-            bentoTotalDtos.stream().sorted(Comparator.comparing(BentoTotalDto::getFrameNo));
+            bentoTotalDtos = bentoTotalDtos.stream().sorted(Comparator.comparing(BentoTotalDto::getFrameNo)).collect(Collectors.toList());
             int totalFee = 0;
             for(TotalOrderInfoDto item: totalOrderInfoDtos){
                 totalFee += item.getTotalFee();
