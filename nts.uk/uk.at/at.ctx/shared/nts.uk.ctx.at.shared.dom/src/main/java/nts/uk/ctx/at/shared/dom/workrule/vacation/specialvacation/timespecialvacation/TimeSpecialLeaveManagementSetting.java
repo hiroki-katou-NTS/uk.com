@@ -78,7 +78,8 @@ public class TimeSpecialLeaveManagementSetting extends AggregateRoot {
     
 	public void saveToMemento(TimeSpecialLeaveManagementSettingSetMemento memento) {
 		memento.setCompanyId(this.companyId);
-		memento.setTimeVacationDigestUnit(this.timeVacationDigestUnit);
+		memento.setManagementAtr(this.timeVacationDigestUnit.getManage().value);
+		memento.setUseUnit(this.timeVacationDigestUnit.getDigestUnit().value);
 	}
     
 }

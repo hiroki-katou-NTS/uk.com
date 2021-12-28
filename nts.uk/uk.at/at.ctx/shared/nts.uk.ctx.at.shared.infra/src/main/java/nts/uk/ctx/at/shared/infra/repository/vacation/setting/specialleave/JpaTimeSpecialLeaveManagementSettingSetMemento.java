@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.specialleave;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.specialleave.TimeSpecialLeaveManagementSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.workrule.vacation.specialvacation.timespecialvacation.KshmtHdspTimeMgt;
 
@@ -19,9 +18,14 @@ public class JpaTimeSpecialLeaveManagementSettingSetMemento implements TimeSpeci
 	}
 
 	@Override
-	public void setTimeVacationDigestUnit(TimeVacationDigestUnit timeSetting) {
-		this.entity.setManagementAtr(timeSetting.getManage().value);
-		this.entity.setUseUnit(timeSetting.getDigestUnit().value);
+	public void setManagementAtr(Integer managementAtr) {
+		this.entity.setManagementAtr(managementAtr);
+		
+	}
+
+	@Override
+	public void setUseUnit(Integer useUnit) {
+		this.entity.setUseUnit(useUnit);
 		
 	}
 

@@ -57,10 +57,12 @@ module nts.uk.at.view.kmf001.n {
         leaveType: LEAVE_TYPE
       };
       const paramTimeManager = {
+        timeManageType: vm.selectedTimeManagement(),
+        timeUnit: vm.selectedVacationTimeUnit()
       };
 
-      vm.$ajax(API.register, param).vm.$ajax(API.save, paramTimeManager).always(() => vm.$dialog.info({ messageId: "Msg_15" })
-        .then(() => vm.$blockui("clear")).then(() => vm.processCloseDialog()));
+      vm.$ajax(API.register, param).then(() =>  vm.$ajax(API.save, paramTimeManager).always(() => vm.$dialog.info({ messageId: "Msg_15" })
+      .then(() => vm.$blockui("clear")).then(() => vm.processCloseDialog())));
     }
 
     public processCloseDialog() {

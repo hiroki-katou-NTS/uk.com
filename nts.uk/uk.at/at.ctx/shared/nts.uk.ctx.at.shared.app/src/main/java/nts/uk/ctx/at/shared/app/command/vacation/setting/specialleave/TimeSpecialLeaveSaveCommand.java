@@ -44,7 +44,7 @@ public class TimeSpecialLeaveSaveCommand {
 		@Override
 		public TimeVacationDigestUnit getTimeVacationDigestUnit() {
 			return new TimeVacationDigestUnit(ManageDistinct.valueOf(this.command.getTimeManageType()),
-					TimeDigestiveUnit.valueOf(this.command.timeUnit));
+					TimeDigestiveUnit.valueOf(this.command.getTimeUnit()));
 			
 		}
     }
