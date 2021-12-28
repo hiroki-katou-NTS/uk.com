@@ -28,7 +28,6 @@ import nts.uk.ctx.at.record.app.find.reservation.bento.dto.DetailOrderInfoDto;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.OrderInfoDto;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.PlaceOfWorkInfoDto;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.TotalOrderInfoDto;
-import nts.uk.ctx.at.record.app.find.reservation.bento.query.ListBentoResevationQuery;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
@@ -46,7 +45,6 @@ import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettin
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.service.GetStampCardQuery;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.bs.company.dom.company.Company;
@@ -56,8 +54,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
-import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
 import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmpBasicInfoDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -71,9 +69,6 @@ public class CreateOrderInfoFileQuery {
 
     @Inject
     private CompanyRepository companyRepository;
-
-    @Inject
-    private WorkplaceInformationRepository workplaceInformationRepository;
 
     @Inject
     private WorkLocationRepository workLocationRepository;
@@ -97,16 +92,13 @@ public class CreateOrderInfoFileQuery {
     private BentoReservationRepository bentoReservationRepository;
 
     @Inject
-    private ListBentoResevationQuery query;
-
-    @Inject
-    private GetStampCardQuery getStampCardQuery;
-
-    @Inject
     private PersonEmpBasicInfoPub personEmpBasicInfoPub;
     
     @Inject
     private ReservationSettingRepository reservationSettingRepository;
+    
+    @Inject
+    private WorkplaceExportService workplaceExportService;
 
     public OrderInfoDto createOrderInfoFileQuery(DatePeriod period, List<String> workplaceId,
                                                  List<String> workLocationCodes, Optional<ReservationCorrect> totalExtractCondition,
@@ -199,11 +191,11 @@ public class CreateOrderInfoFileQuery {
         List<String> sIds = new ArrayList<>();
         Set<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos = new HashSet<>();
         List<WorkLocation> workLocations = new ArrayList<>();
-        List<WorkplaceInformation> workplaceInformations = new ArrayList<>();
+        List<WorkplaceInforParam> workplaceInformations = new ArrayList<>();
         List<PersonEmpBasicInfoDto> personEmpBasicInfoDtos;
         String contractCode = AppContexts.user().contractCode();
         if (!CollectionUtil.isEmpty(workplaceIds)) {
-            workplaceInformations = getWorkplaceInfoById(workplaceIds, companyId);
+            workplaceInformations = getWorkplaceInfoById(workplaceIds, companyId, period.start());
             sIds = getListEmpIdInWorkPlace(workplaceIds, period);
             result[0] = workplaceInformations;
         } else if (!CollectionUtil.isEmpty(workLocationCodes)) {
@@ -231,8 +223,8 @@ public class CreateOrderInfoFileQuery {
     }
 
     /** 会社IDと所属職場履歴IDから所属している職場情報を取得する */
-    private List<WorkplaceInformation> getWorkplaceInfoById(List<String> workplaceIds, String companyId){
-        return workplaceInformationRepository.findByWkpIds(companyId, workplaceIds);
+    private List<WorkplaceInforParam> getWorkplaceInfoById(List<String> workplaceIds, String companyId, GeneralDate date){
+        return workplaceExportService.getWorkplaceInforFromWkpIds(companyId, workplaceIds, date);
     }
 
     /** 期間内に特定の職場（List）に所属している社員一覧を取得 */
@@ -284,41 +276,18 @@ public class CreateOrderInfoFileQuery {
     }
 
     /** convert to DTO::職場又は場所情報 */
-    private List<PlaceOfWorkInfoDto> convertToPlaceOfWorkInfoDto(List<WorkplaceInformation> workplaceInformations, List<WorkLocation> workLocations){
+    private List<PlaceOfWorkInfoDto> convertToPlaceOfWorkInfoDto(List<WorkplaceInforParam> workplaceInformations, List<WorkLocation> workLocations){
         List<PlaceOfWorkInfoDto> result = new ArrayList<>();
         if(CollectionUtil.isEmpty(workplaceInformations))
             for(WorkLocation item : workLocations)
                 result.add(new PlaceOfWorkInfoDto(item.getWorkLocationCD().v(), item.getWorkLocationName().v()));
         else
-            for(WorkplaceInformation item : workplaceInformations)
-                result.add(new PlaceOfWorkInfoDto(item.getWorkplaceCode().v(), item.getWorkplaceName().v()));
+            for(WorkplaceInforParam item : workplaceInformations)
+                result.add(new PlaceOfWorkInfoDto(item.getWorkplaceCode(), item.getWorkplaceName()));
 
         if(result.size() > 2)
             return new ArrayList<>(Arrays.asList(result.get(0), result.get(result.size() - 1)));
         return result;
-    }
-
-    /** 3. 弁当予約を取得する */
-    private List<BentoReservation> getListBentoResevation(BentoReservationSearchCondition searchCondition,
-                                                         DatePeriod period, List<String> stampCardNo,
-                                                         List<String> workLocationCodes, ReservationClosingTimeFrame reservationClosingTimeFrame){
-        List<ReservationRegisterInfo> reservationRegisterInfoList = stampCardNo.stream().map(ReservationRegisterInfo::new).collect(Collectors.toList());
-        List<WorkLocationCode> workLocationCodeList = CollectionUtil.isEmpty(workLocationCodes) ? Collections.EMPTY_LIST
-                : workLocationCodes.stream().map(WorkLocationCode::new).collect(Collectors.toList());
-        return query.getListBentoResevationQuery(searchCondition, period, reservationRegisterInfoList, workLocationCodeList, reservationClosingTimeFrame);
-    }
-
-    private List<BentoReservation> getListBentoResevation(int frameNo,
-                                                          DatePeriod period, List<String> stampCardNo,
-                                                          List<String> workLocationCodes, ReservationClosingTimeFrame reservationClosingTimeFrame){
-        List<ReservationRegisterInfo> reservationRegisterInfoList = stampCardNo.stream().map(ReservationRegisterInfo::new).collect(Collectors.toList());
-        List<WorkLocationCode> workLocationCodeList = workLocationCodes.stream().map(WorkLocationCode::new).collect(Collectors.toList());
-        return bentoReservationRepository.getAllReservationOfBento(frameNo, reservationRegisterInfoList, period, reservationClosingTimeFrame, workLocationCodeList);
-    }
-
-    /** 4. 弁当メニューを取得 */
-    private List<BentoMenuHistory> getAllBentoMenu(String companyId, DatePeriod period){
-        return bentoMenuHistRepository.getBentoMenuPeriod(companyId, period);
     }
 
     /** 5. 注文情報を取得する */
