@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.g
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
@@ -555,9 +556,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 				require, employeeId, yearMonth, closureId, closureDate, setlPeriod);
 		
 		// 開始月～当月の変形期間繰越時間を求める
-		AttendanceTimeMonthWithMinus totalIrregularPeriodCarryforwardsTime = new AttendanceTimeMonthWithMinus(
-				pastIrregularPeriodCarryforwardsTime.v());
-		totalIrregularPeriodCarryforwardsTime = totalIrregularPeriodCarryforwardsTime.addMinutes(
+		AttendanceTimeMonthWithMinus totalIrregularPeriodCarryforwardsTime = pastIrregularPeriodCarryforwardsTime.addMinutes(
 				this.irregularPeriodCarryforwardsTime.getTime().v());
 
 		// 精算月か確認する
@@ -581,10 +580,29 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 					aggregateTime, statutoryWorkingTime);
 		} else{
 			
-			// 精算月でない時、複数月変形途中時間・変形期間繰越時間に集計結果を入れる
+			/**　○合計した値を複数月変形途中時間に入れる　*/
 			this.irregularWorkingTime.setMultiMonthIrregularMiddleTime(totalIrregularPeriodCarryforwardsTime);
-			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(this.irregularPeriodCarryforwardsTime.getTime());
 		}
+		
+		/**　○当月の変形期間繰越時間を変形期間繰越時間に入れる　*/
+		this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(this.irregularPeriodCarryforwardsTime.getTime());
+		
+		/** 変形基準内残業を集計する */
+		aggregateIrregularLegalOverTime(employeeId, datePeriod, monthlyCalcDailys);
+	}
+	
+	/** 変形基準内残業を集計する */
+	private void aggregateIrregularLegalOverTime(String employeeId, DatePeriod period, MonthlyCalculatingDailys monthlyCalcDailys) {
+		
+		val dailies = monthlyCalcDailys.getDailyWorks(employeeId, period);
+		
+		/** 「日別実績の残業時間」．変形法定内残業を集計する */
+		val ot = dailies.stream().mapToInt(c -> c.getAttendanceTimeOfDailyPerformance().flatMap(at -> 
+			at.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork())
+				.map(t -> t.getIrregularWithinPrescribedOverTimeWork().v()).orElse(0)).sum();
+		
+		/** 集計した変形法定内残業を月別実績に入れる */
+		this.irregularWorkingTime.setIrregularLegalOverTime(TimeMonthWithCalculation.ofSameTime(ot));
 	}
 	
 	/** 変形法内・法外休暇加算時間を集計する */
@@ -647,10 +665,10 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 	 * @param setlPeriod 変形労働精算期間
 	 * @return 過去の変形期間繰越時間
 	 */
-	private AttendanceTimeMonth aggregatePastIrregularPeriodCarryforwardsTime(RequireM1 require, String employeeId, 
+	private AttendanceTimeMonthWithMinus aggregatePastIrregularPeriodCarryforwardsTime(RequireM1 require, String employeeId, 
 			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, GetSettlementPeriodOfDefor setlPeriod){
 		
-		AttendanceTimeMonth irregularPeriodCarryforwardsTime = new AttendanceTimeMonth(0);
+		AttendanceTimeMonthWithMinus irregularPeriodCarryforwardsTime = new AttendanceTimeMonthWithMinus(0);
 		
 		// 精算期間を取得する
 		val pastYearMonths = setlPeriod.getPastSettlementYearMonths(yearMonth);

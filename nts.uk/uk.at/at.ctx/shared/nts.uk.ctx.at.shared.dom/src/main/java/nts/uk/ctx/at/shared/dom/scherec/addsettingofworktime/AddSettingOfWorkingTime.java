@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.ProcAtrAddMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -120,6 +121,30 @@ public class AddSettingOfWorkingTime extends AggregateRoot implements Serializab
 			return this.addSetOfPremium.isCalculateIncludCareTime();
 		}
 		return this.addSetOfWorkTime.isCalculateIncludCareTime();
+	}
+	
+	/** [5] 休暇分の加算方法を取得する */
+	public ProcAtrAddMethod getAddMethodForVacation() {
+		
+		/** if 割増計算方法を設定する = しない　 */
+		if (this.useAtr == NotUseAtr.NOT_USE) {
+			
+			/** if @就業時間の加算設定．休暇分を就業時間に含めるか判断する（） */
+			return this.addSetOfWorkTime.isCalculateIncludVacation() 
+					? ProcAtrAddMethod.ADD : ProcAtrAddMethod.NOT_ADD;
+		}
+		
+		/** if @就業時間の加算設定．休暇分を就業時間に含めるか判断する（）　
+		 * AND　not @割増時間の加算設定．休暇分を就業時間に含めるか判断する（） */
+		if (this.addSetOfWorkTime.isCalculateIncludVacation() 
+				&& !this.addSetOfPremium.isCalculateIncludVacation()) 
+			return ProcAtrAddMethod.ADD_FOR_SHORTAGE;
+
+		if (!this.addSetOfWorkTime.isCalculateIncludVacation() 
+				&& !this.addSetOfPremium.isCalculateIncludVacation()) 
+			return ProcAtrAddMethod.NOT_ADD;
+		
+		return ProcAtrAddMethod.ADD;
 	}
 	
 	/**

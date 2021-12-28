@@ -5,6 +5,7 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.export.GetSettlementPeriodOfDefor;
 
 /**
@@ -56,10 +57,10 @@ public abstract class DeforWorkTimeAggrSet extends AggregateRoot implements Seri
 	}
 
 	/** 清算期間が複数月か判断する */
-	public boolean isMultiMonthSettlePeriod() {
+	public boolean isMultiMonthSettlePeriod(YearMonth ym) {
 		
 		val defoPeriod = GetSettlementPeriodOfDefor.createFromDeforAggrSet(this);
 		
-		return defoPeriod.getSettlementPeriods().size() > 1;
+		return !defoPeriod.isSingleMonth(ym);
 	}
 }

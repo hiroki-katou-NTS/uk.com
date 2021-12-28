@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeVacationWork;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -59,7 +60,7 @@ public class WorkTimeAddTimeSetForMonthAggr {
 		val shortTime = calcShortTimeAddTime(dailies).valueAsMinutes();
 		
 		/** 遅刻・早退加算時間を取得する */
-		val lateEarlyTime = calcAbsenceAddTime(dailies).valueAsMinutes();
+		val lateEarlyTime = calcLateEarlyAddTime(require, cid, dailies).valueAsMinutes();
 		
 		/** 取得できた時間をすべて加算する */
 		return new AttendanceTimeMonth(vacationTime + absenceTime + shortTime + lateEarlyTime);
@@ -87,7 +88,7 @@ public class WorkTimeAddTimeSetForMonthAggr {
 	public AttendanceTimeMonth calcLateEarlyAddTime(RequireM4 require, String cid, List<IntegrationOfDaily> dailies) {
 		
 		/** 加算するかを確認する */
-		if (!this.lateEarlySet.isEnableSetPerWorkHour()) return new AttendanceTimeMonth(0);
+		if (!this.lateEarlySet.getTreatSet().isInclude()) return new AttendanceTimeMonth(0);
 		
 		/** 遅刻・早退時間を求める */
 		val absenveAddTime = dailies.stream().mapToInt(c -> getLateEarlyTime(require, cid, c)).sum();
@@ -98,14 +99,18 @@ public class WorkTimeAddTimeSetForMonthAggr {
 	
 	/** 遅刻・早退時間を求める */
 	private int getLateEarlyTime(RequireM4 require, String cid, IntegrationOfDaily daily) {
-		
-		/** 就業時間帯の共通設定を取得する */
-		val lateEarlySet = IntegrationOfWorkTime.getWorkTime(require, cid, 
-							daily.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull())
-				.getCommonSetting().getLateEarlySet();
-		
+
 		/** 遅刻早退を就業時間に含めるか判断する */
-		if (this.lateEarlySet.isIncludeLateEarlyInWorkTime(Optional.of(lateEarlySet)))
+		val isInclude = daily.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().map(wtc -> {
+			
+			/** 就業時間帯の共通設定を取得する */
+			WorkTimezoneLateEarlySet lateEarlySet = IntegrationOfWorkTime.getWorkTime(require, cid, Optional.of(wtc))
+					.getCommonSetting().getLateEarlySet();
+			
+			return this.lateEarlySet.isIncludeLateEarlyInWorkTime(Optional.of(lateEarlySet));
+		}).orElse(false); 
+		
+		if (isInclude)
 			return 0;
 		
 		return daily.getAttendanceTimeOfDailyPerformance().map(at -> {

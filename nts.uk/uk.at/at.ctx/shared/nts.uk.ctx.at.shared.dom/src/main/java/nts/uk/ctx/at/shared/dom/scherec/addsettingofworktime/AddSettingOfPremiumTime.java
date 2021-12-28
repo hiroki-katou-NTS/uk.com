@@ -118,4 +118,16 @@ public class AddSettingOfPremiumTime extends DomainObject implements Serializabl
 	public boolean isCalculateIncludIntervalExemptionTime() {
 		return this.getTreatDeductPrv().isCalculateIncludIntervalExemptionTime();
 	}
+	
+	/**
+	 * 休暇分を就業時間に含めるか判断する
+	 * @return true：含める、false：含めない
+	 */
+	public boolean isCalculateIncludVacation() {
+		if (this.calculateActualOperation.isCalclationByActualTime() ||
+				!this.treatVacation.isPresent()) 
+			return false;
+		
+		return this.treatVacation.get().isCalculateIncludVacation();
+	}
 }

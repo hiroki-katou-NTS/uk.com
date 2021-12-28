@@ -156,16 +156,6 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent implements Serializable{
 	}
 	
 	public static interface Require extends TargetPremiumTimeMonth.Require {}
-
-	/**
-	 * 加算方法
-	 * @author shuichu_ishida
-	 */
-	private enum ProcAtrAddMethod{
-		ADD,
-		NOT_ADD,
-		ADD_FOR_SHORTAGE;
-	}
 	
 	/**
 	 * 変形労働勤務の加算設定（加算方法）を取得する
@@ -176,33 +166,8 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent implements Serializable{
 		// 変形労働勤務の加算設定を取得する
 		if (!holidayAdditionMap.containsKey("irregularWork")) return ProcAtrAddMethod.ADD;
 		val setOfIrregular = (WorkDeformedLaborAdditionSet)holidayAdditionMap.get("irregularWork");
-		val addSetOfWorkTime = setOfIrregular.getAddSetOfWorkingTime();
 		
-		boolean isPremiumAdd = false;		// 割増計算：休暇分を含める＝加算する なら true
-		boolean isWorkTimeAdd = false;		// 就業計算：休暇分を含める＝加算する なら true
-		
-		val premiumCalcMethod = addSetOfWorkTime.getAddSetOfPremium();
-		if (premiumCalcMethod.getTreatVacation().isPresent()){
-			if (premiumCalcMethod.getTreatVacation().get().getAddition() == NotUseAtr.USE){
-				isPremiumAdd = true;
-			}
-		}
-		val workTimeCalcMethod = addSetOfWorkTime.getAddSetOfWorkTime();
-		if (workTimeCalcMethod.getTreatVacation().isPresent()){
-			if (workTimeCalcMethod.getTreatVacation().get().getAddition() == NotUseAtr.USE){
-				isWorkTimeAdd = true;
-			}
-		}
-		
-		if (!isPremiumAdd && isWorkTimeAdd){
-			// 不足時加算
-			return ProcAtrAddMethod.ADD_FOR_SHORTAGE;
-		}
-		if (!isPremiumAdd && !isWorkTimeAdd){
-			// 加算しない
-			return ProcAtrAddMethod.NOT_ADD;
-		}
-		// 加算する
-		return ProcAtrAddMethod.ADD;
+		/** 休暇分の加算方法を取得する */
+		return setOfIrregular.getAddSetOfWorkingTime().getAddMethodForVacation();
 	}
 }
