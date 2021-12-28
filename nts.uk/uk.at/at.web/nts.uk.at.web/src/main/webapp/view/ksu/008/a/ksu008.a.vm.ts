@@ -42,7 +42,8 @@ module nts.uk.at.ksu008.a {
                 showPanel: false,
                 rows: 12,
                 selectedMode: 3,
-                itemList: self.checkWorkplaceGroups.bind(self)
+                itemList: self.checkWorkplaceGroups.bind(self),
+                workplaceGroupTypes: [1]
             };
 
             self.targetPeriod = ko.observable(0);
