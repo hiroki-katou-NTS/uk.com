@@ -55,6 +55,7 @@ public class AnnualPaidLeaveSettingTest {
 	 * Test [10] 利用する休暇時間の消化単位をチェックする
 	 * Case 1: $Option.就業.時間休暇 = true && 「休暇使用時間」 % 「@消化単位」 = 0
 	 */
+	@Test
 	public void testCheckVacationTimeUnitUsed1() {
 		AnnualPaidLeaveSetting domain = AnnualPaidLeaveSettingTestHelper.createDefault();
 		new Expectations() {
@@ -71,6 +72,7 @@ public class AnnualPaidLeaveSettingTest {
 	 * Test [10] 利用する休暇時間の消化単位をチェックする
 	 * Case 2: $Option.就業.時間休暇 = true && 「休暇使用時間」 % 「@消化単位」 != 0
 	 */
+	@Test
 	public void testCheckVacationTimeUnitUsed2() {
 		AnnualPaidLeaveSetting domain = AnnualPaidLeaveSettingTestHelper.createDefault();
 		new Expectations() {
