@@ -20,13 +20,13 @@ table, td, th {
    background-color: #A4EEB0;
 }
 
-table tbody {
+.kmr002-table tbody {
   display: block;
   height: 520px;
   overflow-y: scroll;
 }
 
-table thead, table tbody tr, table tfoot {
+.kmr002-table thead, .kmr002-table tbody tr, .kmr002-table tfoot {
   display: table;
   table-layout: fixed;
 }
