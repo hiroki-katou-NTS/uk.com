@@ -2036,6 +2036,9 @@ public class ProgramsManager {
     
     public static final Program KDW003G = new Program(WebAppId.AT, ProgramIdConsts.KDW003G, "KDW003_133",
             "/view/kdw/003/g/index.xhtml");
+    
+    public static final Program KDW004A = new Program(WebAppId.AT, ProgramIdConsts.KDW004A, "KDW004_1",
+            "/view/kdw/004/a/index.xhtml");
 
     public static final Program CMM018Q = new Program(WebAppId.COM, ProgramIdConsts.CMM018Q, "CMM018_114",
             "/view/cmm/018/q/index.xhtml");
@@ -2490,6 +2493,11 @@ public class ProgramsManager {
             "/view/cmm/051/b/index.xhtml");
     public static final Program CMM051C = new Program(WebAppId.COM, ProgramIdConsts.CMM051C, "CMM051_37",
             "/view/cmm/051/c/index.xhtml");
+    /**
+     * CMM052A
+     */
+    public static final Program CMM052A = new Program(WebAppId.COM, ProgramIdConsts.CMM052A, "CMM052_1",
+            "/view/cmm/052/a/index.xhtml");
     /**
      * CMM001
      */
@@ -3990,12 +3998,15 @@ public class ProgramsManager {
      */
     public static final Program KTG026A = new Program(WebAppId.AT, 
             ProgramIdConsts.KTG026A,
-            "KTG026_1",
+            "KTG026_5",
             "/view/ktg/026/a/superior.xhtml");
     
     /** CDL010 */
     public static final Program CDL010A = new Program(WebAppId.COM, ProgramIdConsts.CDL010A, "CDL010_1",
     		"/view/cdl/010/a/index.xhtml");
+    
+    public static final Program CDL011A = new Program(WebAppId.COM, ProgramIdConsts.CDL011A, "CDL011_1",
+    		"/view/cdl/011/a/index.xhtml");
     
     /**
      * CCGS03

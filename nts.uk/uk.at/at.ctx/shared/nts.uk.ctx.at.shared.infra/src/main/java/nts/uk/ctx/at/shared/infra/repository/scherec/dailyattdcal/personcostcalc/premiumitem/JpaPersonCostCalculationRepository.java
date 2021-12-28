@@ -432,7 +432,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
         return result;
     }
 
-    private List<Integer> listEntityAtt(String cid, String historyID, int displayNumber) {
+    private List<String> listEntityAtt(String cid, String historyID, int displayNumber) {
         return this.queryProxy().query(SEL_PER_COST, KscmtPerCostPremium.class)
                 .setParameter("cid", cid)
                 .setParameter("historyID", historyID)

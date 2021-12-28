@@ -307,9 +307,25 @@ public class ActualManHrTaskBlockCreationServiceTest {
 		};
 		DailyActualManHrActualTask expectedResult = new DailyActualManHrActualTask(date, new ArrayList<>());
 		DailyActualManHrActualTask actualResult = ActualManHrTaskBlockCreationService.create(require, sId, date,
-				new ArrayList<>());
+				taskDetails);
+		
 		assertThat(expectedResult.getDate()).isEqualTo(actualResult.getDate());
-		assertThat(actualResult.getTaskBlocks().size()).isEqualTo(0);
+		assertThat(actualResult.getTaskBlocks().size()).isEqualTo(2);
+		assertThat(actualResult.getTaskBlocks().get(0).getCaltimeSpan().start()).isEqualTo(1);
+		assertThat(actualResult.getTaskBlocks().get(0).getCaltimeSpan().end()).isEqualTo(2);
+		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getSupNo().v()).isEqualTo(1);
+		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(0).getItemId()).isEqualTo(1);
+		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(0).getValue()).isEqualTo("1");
+		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(1).getItemId()).isEqualTo(2);
+		assertThat(actualResult.getTaskBlocks().get(0).getTaskDetails().get(0).getTaskItemValues().get(1).getValue()).isEqualTo("2");
+		
+		assertThat(actualResult.getTaskBlocks().get(1).getCaltimeSpan().start()).isEqualTo(1);
+		assertThat(actualResult.getTaskBlocks().get(1).getCaltimeSpan().end()).isEqualTo(2);
+		assertThat(actualResult.getTaskBlocks().get(1).getTaskDetails().get(0).getSupNo().v()).isEqualTo(2);
+		assertThat(actualResult.getTaskBlocks().get(1).getTaskDetails().get(0).getTaskItemValues().get(0).getItemId()).isEqualTo(1);
+		assertThat(actualResult.getTaskBlocks().get(1).getTaskDetails().get(0).getTaskItemValues().get(0).getValue()).isEqualTo("1");
+		assertThat(actualResult.getTaskBlocks().get(1).getTaskDetails().get(0).getTaskItemValues().get(1).getItemId()).isEqualTo(2);
+		assertThat(actualResult.getTaskBlocks().get(1).getTaskDetails().get(0).getTaskItemValues().get(1).getValue()).isEqualTo("2");
 	}
 
 }
