@@ -234,6 +234,6 @@ public class TimeAnnualSettingTest {
     		}
 		};
     	boolean checkDigestUnits = setting.checkDigestUnits(require, new AttendanceTime(11), ManageDistinct.YES);
-    	assertThat(checkDigestUnits);
+    	assertThat(checkDigestUnits).isFalse();
 	}
 }
