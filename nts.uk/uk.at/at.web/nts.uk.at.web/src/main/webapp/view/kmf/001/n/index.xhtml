@@ -36,7 +36,7 @@
         <label id="N1_5">#{i18n.getText('KMF001_356')}</label>
         <hr></hr>
         <div class="flex valign-center">
-          <div id="N1_7" class="setting-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_357')}</div>
+          <div id="N1_7" class="setting-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF001_357')}</div>
           <div id="N1_8" data-bind="ntsSwitchButton: {
             name: $i18n('KMF001_357'),
             options: timeManageMentDistinctList,
@@ -47,7 +47,7 @@
         </div>
         <!-- N1_9,10,11 -->
         <div class="flex valign-center">
-          <div id="N1_9" class="setting-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_358')}</div>
+          <div id="N1_9" class="setting-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF001_358')}</div>
           <div id="combo-box-time-unit"
             data-bind="ntsComboBox: {
               options: vacationTimeUnitList,

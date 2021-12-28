@@ -21,13 +21,6 @@ public class TimeSpecialLeaveSaveCommandHandler extends CommandHandler<TimeSpeci
     @Inject
     private TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository;
     
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
-	 * .CommandHandlerContext)
-	 */
 	@Override
 	protected void handle(CommandHandlerContext<TimeSpecialLeaveSaveCommand> context) {
 		String companyId = AppContexts.user().companyId();

@@ -25,6 +25,7 @@ module nts.uk.at.view.kmf001.n {
 
     mounted() {
       const vm = this;
+      var dfd = $.Deferred();
       vm.$blockui("grayout");
       vm.$ajax(API.findOne).then((result: WorkDaysNumberOnLeaveCountDto) => {
         const isCounting = !!_.includes(result.countedLeaveList, LEAVE_TYPE);
@@ -32,27 +33,28 @@ module nts.uk.at.view.kmf001.n {
       // Fix tabindex
         vm.$nextTick(() => $("#N1_4").attr("tabindex", 1));
       }).always(() => vm.$blockui("clear"));
+
       // call api time management
       vm.$ajax(API.findManageDistinct).done(function(res: Array<EnumerationModel>) {
         vm.timeManageMentDistinctList(res);
       }).fail(function(res) {
-          nts.uk.ui.dialog.alertError(res.message);
+          vm.$dialog.error(res.message);
       });
       // call api time unit
       vm.$ajax(API.findTimeUnit).done(function(res: Array<EnumerationModel>) {
           vm.vacationTimeUnitList(res);
 
       }).fail(function(res) {
-          nts.uk.ui.dialog.alertError(res.message);
+          vm.$dialog.error(res.message);
       });
-
+      // call api find all data
       vm.$ajax(API.findAll).done(function(res) {
         vm.timeManageType(res.timeManageType);
         vm.timeUnit(res.timeUnit);
       }).fail(function(res) {
-          nts.uk.ui.dialog.alertError(res.message);
+         vm.$dialog.error(res.message);
       });
-      
+
       return dfd.promise();
     }
 
@@ -63,14 +65,15 @@ module nts.uk.at.view.kmf001.n {
         isCounting: vm.selectedManageDistinct() === 1,
         leaveType: LEAVE_TYPE
       };
+
       const paramTimeManager = {
         timeManageType: vm.timeManageType(),
         timeUnit: vm.timeUnit()
       };
 
-      vm.$ajax(API.register, param).then(() =>  vm.$ajax(API.save, paramTimeManager).always(() => vm.$dialog.info({ messageId: "Msg_15" })
+      vm.$ajax(API.register, param).then(() =>  vm.$ajax(API.save, paramTimeManager).then(() => vm.$dialog.info({ messageId: "Msg_15" })
       .then(() => vm.$blockui("clear")).then(() => vm.processCloseDialog())));
-    }
+      }
 
     public processCloseDialog() {
       const vm = this;
