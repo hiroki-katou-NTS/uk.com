@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -54,7 +53,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInf
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.AnnualHolidayManagementAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaGrantRemainingImport;
@@ -144,6 +142,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
+import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.HolidayDaysInfo;
+import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.ManagementSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.RemainingVacationDays;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
@@ -1443,33 +1444,30 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 			GeneralDate startDate, GeneralDate endDate, String workTypeCD, List<GeneralDate> lstDateIsHoliday,
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
-		// 休暇の優先順をチェックする
-		// todo // KAF006: -PhuongDV domain fix pending- Bên KMF001 team C đang làm phần này, liên lạc vs Hiếu
+		// ドメインモデル「休暇の取得ルール」を取得する
+		Optional<AcquisitionRule> acquisitionRule = repoAcquisitionRule.findById(companyID);
+		if (acquisitionRule.isPresent()) {
+		    DatePeriod period = new DatePeriod(startDate, endDate);
+		    RemainingVacationDays remainingVacationDays = new RemainingVacationDays(
+		            appAbsenceStartInfoOutput.getRemainVacationInfo().getSubHdRemain().orElse(0d), 
+		            appAbsenceStartInfoOutput.getRemainVacationInfo().getSubVacaRemain().orElse(0d));
+		    WorkType workType = appAbsenceStartInfoOutput.getWorkTypeLst().stream().filter(x -> x.getWorkTypeCode().v().equals(workTypeCD)).findFirst().get();
+		    ManagementSetting managementSetting = new ManagementSetting(
+		            appAbsenceStartInfoOutput.getRemainVacationInfo().getSubstituteLeaveManagement().getSubstituteLeaveManagement(), 
+		            appAbsenceStartInfoOutput.getRemainVacationInfo().getHolidayManagement().getHolidayManagement());
+		    HolidayDaysInfo holidayInfo = new HolidayDaysInfo(
+		            period.datesBetween().size() - lstDateIsHoliday.size() + 1, 
+		            remainingVacationDays, 
+		            workType, 
+		            managementSetting);
+		    // 休暇の優先順をチェックする
+		    acquisitionRule.get().checkVacationPriorities(holidayInfo);
+		}
+		
 
 		//計画年休上限チェック
 		this.checkLimitAbsencePlan(companyID, employeeID, workTypeCD, startDate, endDate, lstDateIsHoliday);
-		// 代休振休優先消化チェック
-//		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet()
-//				.stream().filter(x -> x.getHolidayOrPauseType() == HolidayAppType.ANNUAL_PAID_LEAVE.value).findFirst().orElse(null);
-		// AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
-//		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x ->
-//		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false :
-//			geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getSwingOutAtr().get().value == HolidayAppType.ANNUAL_PAID_LEAVE.value : geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getHolidayAppType().get().value == HolidayAppType.ANNUAL_PAID_LEAVE.value : false
-//
-//				).findFirst();
-//		AppEmploymentSetting employmentSet = setting.get();
-//		List<ConfirmMsgOutput> confirmLst1 = this.checkDigestPriorityHd(
-//				mode,
-//				appAbsenceStartInfoOutput.getHdAppSet(),
-//				employmentSet,
-//				appAbsenceStartInfoOutput.getRemainVacationInfo().isSubVacaManage(),
-//				appAbsenceStartInfoOutput.getRemainVacationInfo().isSubHdManage(),
-//				appAbsenceStartInfoOutput.getRemainVacationInfo().getSubVacaRemain(),
-//				appAbsenceStartInfoOutput.getRemainVacationInfo().getSubHdRemain());
-//		// 計画年休上限チェック
-//		checkLimitAbsencePlan(companyID, employeeID, workTypeCD, startDate, endDate, lstDateIsHoliday);
-//		// OUTPUTの確認メッセージを返す
-//		result.addAll(confirmLst1);
+		
 		return result;
 	}
 
