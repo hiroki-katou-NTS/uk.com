@@ -75,7 +75,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         reasonList: Array<GoOutTypeDispControl>;
         mode: KnockoutObservable<number>;
 
-		comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+		    comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
         comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
 
         appDate: KnockoutObservable<any>;
@@ -196,9 +196,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.isPreAtr.subscribe((value) => {
                 if (!_.isNull(value) && self.mode() == 0) {
                     self.loadAll();
-					
                 }
-
             });
 
 
@@ -259,6 +257,19 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 ko.cleanNode($('.flag')[index]);
                 ko.applyBindings(self, item);
             });
+
+            _.each($('td.btn_workplace').children(), (item, index) => {
+                if (!$('td.btn_workplace').children()[index]) return;
+                ko.cleanNode($('td.btn_workplace').children()[index]);
+                ko.applyBindings(self, item);
+            });
+
+            _.each($('td.btn_worklocation').children(), (item, index) => {
+                if (!$('td.btn_worklocation').children()[index]) return;
+                ko.cleanNode($('td.btn_worklocation').children()[index]);
+                ko.applyBindings(self, item);
+            });
+
             _.each(ko.toJS(self.nameGrids), (item, index) => {
                 if (!$('#' + item + '_flag')[0]) return;
                 ko.cleanNode($('#' + item + '_flag')[0]);
@@ -270,12 +281,11 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             // change tabs by root component
             self.tabsTemp(self.tabs());
             self.loadAll();
-			self.selectedTab(_.find(self.tabs(), item => item.visible()).id)
-
+			      self.selectedTab(_.find(self.tabs(), item => item.visible()).id);
             $('#kaf002TabPanel').parent().on('changeAppDate', (_, param) => {
-                if (!param) return;
-                self.workLocationNames = param.workLocationNames;
-                self.workplaceNames = param.workplaceNames;
+              if (!param) return;
+              self.workLocationNames = param.workLocationNames;
+              self.workplaceNames = param.workplaceNames;
             });
         }
         loadAll() {
@@ -595,55 +605,59 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                     $('#' + id).ntsGrid(optionGrid);
                 }
             }
-
-            // Handle data of workplace and location if screen in update mode
-            if (self.mode() == 1 && (type == STAMPTYPE.ATTENDENCE || type == STAMPTYPE.CHEERING)) {
-                _.forEach(dataSource, (data: any) => self.reloadWorkplaceWorkLocation(data, type));
-            }
-
+            
             // if isCondition2 => error state of text1
             let nameAtr = 'td[aria-describedby ="' + id + '_text1"]';
             if ($(nameAtr)) {
                 $(nameAtr).addClass('titleColor');
             }
-
+            
             let buttonWorkplaceAtr = 'td[aria-describedby ="' + id + '_workplaceId"]';
             if ($(buttonWorkplaceAtr)) {
                 $(buttonWorkplaceAtr).addClass('btn_workplace');
             }
-
+            
             let buttonWorkLocationAtr = 'td[aria-describedby ="' + id + '_workLocationCD"]';
             if ($(buttonWorkLocationAtr)) {
                 $(buttonWorkLocationAtr).addClass('btn_worklocation');
             }
-
+            
             // add row to display expand row
             if (type !== STAMPTYPE.CHEERING) {
-              if (items.length >= 10 && self.isLinkList[items[0].index]) {
-                if ($('#' + id).length) {
-                    const $expandRow = $('<tr id="trLink2">');
-                    const $secondCol = $('<td class="titleColor" style="height: 50px; background-color: #CFF1A5">')
-                    const $thirdCol = $('<td colspan="5">');
-                    const $thirdCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">')
-                    $thirdCol__div.append('<a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']), text: \'' + self.$i18n('KAF002_73') + '\'"></a>');
+                if (items.length >= 10 && self.isLinkList[items[0].index]) {
+                    if ($('#' + id).length) {
+                        const $expandRow = $('<tr id="trLink2">');
+                        const $secondCol = $('<td class="titleColor" style="height: 50px; background-color: #CFF1A5">')
+                        const $thirdCol = $('<td colspan="5">');
+                        const $thirdCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">')
+                        $thirdCol__div.append('<a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']), text: \'' + self.$i18n('KAF002_73') + '\'"></a>');
+                        
+                        $thirdCol.append($thirdCol__div);
+                        $expandRow.append($secondCol);
+                        $expandRow.append($thirdCol);
+                        $('#' + id).append($expandRow);
+                    }
                     
-                    $thirdCol.append($thirdCol__div);
-                    $expandRow.append($secondCol);
-                    $expandRow.append($thirdCol);
-                    $('#' + id).append($expandRow);
+                } else {
+                    self.isLinkList[items[0].index] = false;
                 }
-
-              } else {
-                  self.isLinkList[items[0].index] = false;
-              }
             }
-
+            
             let moreRow = document.getElementById('moreRow' + String(items[0].index));
             if (moreRow && self.isLinkList[items[0].index]) {
                 ko.applyBindings(self, moreRow);
             }
+            
+            // Handle data of workplace and location if screen in update mode
+            if (self.mode() == 1 && (type == STAMPTYPE.ATTENDENCE || type == STAMPTYPE.CHEERING)) {
+                _.forEach(dataSource, (data: any) => self.reloadWorkplaceWorkLocation(data, type));
+            }
 
-
+            // Handle data of workplace and location if screen in new mode
+            if (self.mode() == 0 && (type == STAMPTYPE.ATTENDENCE || type == STAMPTYPE.CHEERING)) {
+                _.forEach(dataSource, (data: any) => self.setActualWorkplaceAndLocation(data, type));
+            }
+            
         }
 
         private getAtdOrCheeringGrid(isChrome: boolean, dataSource: any, headerFlagContent: any, statesTable: any) {
@@ -826,6 +840,46 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
               $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id}`).append($selected);
             }
           });
+        }
+
+        private setActualWorkplaceAndLocation(data: GridItem, type: number) {
+            const self = this;
+            let gridId: number;
+            if (type === STAMPTYPE.ATTENDENCE) gridId = 1;
+            else if (type === STAMPTYPE.CHEERING) gridId = 6;
+            else return;
+            if (self.isPreAtr()) return;
+            const setActualData = () => {
+              $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} button`).ready(() => {
+                $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} button`).removeAttr("tabindex");
+                $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} .label-workplace-id`).remove();
+    
+                if (data.workplaceId) {
+                  const wkpName = _.find(self.workplaceNames, wkp => wkp.workplaceId == data.workplaceId)?.wkpName;
+                  $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} .nts-button-container`).after(() => {
+                    return $(`<div class="limited-label label-workplace-id">${wkpName || ""}</div>`);
+                  });
+                }
+              });
+            
+              $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} button`).ready(() => {
+                $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} button`).removeAttr("tabindex");
+                $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} .label-work-location`).remove();
+                if (data.workLocationCD) {
+                  const locationName = _.find(self.workLocationNames, lo => lo.workLocationCode == data.workLocationCD)?.workLocationName;
+                  $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} .nts-button-container`).after(() => {
+                    return $(`<div class="limited-label label-work-location">${locationName || ""}</div>`);
+                  });
+                }
+              });
+            };
+            setActualData();
+            $('#kaf002TabPanel').parent().on('changeAppDate', (_, param) => {
+              if (!param) return;
+              self.workLocationNames = param.workLocationNames;
+              self.workplaceNames = param.workplaceNames;
+              setActualData();
+            });
         }
     }
 
