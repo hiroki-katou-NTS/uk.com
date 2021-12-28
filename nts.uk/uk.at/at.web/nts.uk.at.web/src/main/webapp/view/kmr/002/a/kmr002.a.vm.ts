@@ -14,8 +14,9 @@ module nts.uk.at.view.kmr002.a.model {
 		frameOption: KnockoutObservableArray<any> = ko.observableArray([]);
 		currentFrameNo: KnockoutObservable<number> = ko.observable(null);
 		timeLabel: KnockoutObservable<string> = ko.pureComputed(() => {
-			if(this.currentFrameNo()) {
-				let currentFrame = _.find(this.frameOption(), (o: any) => o.frameNo == this.currentFrameNo());
+			let self = this;
+			if(self.currentFrameNo()) {
+				let currentFrame = _.find(self.frameOption(), (o: any) => o.frameNo == self.currentFrameNo());
 				if(currentFrame) {
 					let startTime = '',
 						endTime = '';
@@ -30,77 +31,61 @@ module nts.uk.at.view.kmr002.a.model {
 			}
 			return '';
 		});
-		canOrder: KnockoutObservable<boolean> = ko.pureComputed(() => {
-			let orderFrame1 = _.find(this.listOrder, o => o.closingTimeFrame==1);
-			if(orderFrame1) {
-				if(orderFrame1.ordered == false && this.currentFrameNo()==1 && this.bentoMenuByClosingTimeDto.reservationTime1) {
-					return true;
-				}				
-			} else {
-				if(this.currentFrameNo()==1 && this.bentoMenuByClosingTimeDto.reservationTime1) {
-					return true;
-				}
-			}
-			let orderFrame2 = _.find(this.listOrder, o => o.closingTimeFrame==2);
-			if(orderFrame2) {
-				if(orderFrame2.ordered == false && this.currentFrameNo()==2 && this.bentoMenuByClosingTimeDto.reservationTime2) {
-					return true;
-				}				
-			} else {
-				if(this.currentFrameNo()==2 && this.bentoMenuByClosingTimeDto.reservationTime2) {
-					return true;
-				}
-			}
-			return false;
-		});
+		canOrder: KnockoutObservable<boolean> = ko.observable(true);
 		bentoFrame1List: KnockoutObservableArray<Bento> = ko.observableArray([]);
 		countAllFrame1: KnockoutObservable<number> = ko.pureComputed(() => {
-			if(_.isEmpty(this.bentoFrame1List())) {
+			let self = this;
+			if(_.isEmpty(self.bentoFrame1List())) {
 				return 0;	
 			}
-			let countAll = _.chain(this.bentoFrame1List()).map((item: Bento) => _.toNumber(item.bentoCount())).sum().value();
+			let countAll = _.chain(self.bentoFrame1List()).map((item: Bento) => _.toNumber(item.bentoCount())).sum().value();
 			return countAll;
 		});
 		unitAllFrame1: KnockoutObservable<string> = ko.pureComputed(() => {
-			if(_.isEmpty(this.bentoFrame1List())) {
+			let self = this;
+			if(_.isEmpty(self.bentoFrame1List())) {
 				return '';	
 			}
-			let listUnit = _.chain(this.bentoFrame1List()).map((item: Bento) => item.unit()).uniq().value();
+			let listUnit = _.chain(self.bentoFrame1List()).map((item: Bento) => item.unit()).uniq().value();
 			if(_.size(listUnit) > 1) {
 				return '';
 			}
 			return getText('KMR002_28') + listUnit[0] + getText('KMR002_29');
 		});
 		priceAllFrame1: KnockoutObservable<number> = ko.pureComputed(() => {
-			if(_.isEmpty(this.bentoFrame1List())) {
+			let self = this;
+			if(_.isEmpty(self.bentoFrame1List())) {
 				return 0;	
 			}
-			let countAll = _.chain(this.bentoFrame1List()).map((item: Bento) => item.sumFunction()).sum().value();
+			let countAll = _.chain(self.bentoFrame1List()).map((item: Bento) => item.sumFunction()).sum().value();
 			return countAll;
 		});
 		bentoFrame2List: KnockoutObservableArray<Bento> = ko.observableArray([]);
 		countAllFrame2: KnockoutObservable<number> = ko.pureComputed(() => {
-			if(_.isEmpty(this.bentoFrame2List())) {
+			let self = this;
+			if(_.isEmpty(self.bentoFrame2List())) {
 				return 0;	
 			}
-			let countAll = _.chain(this.bentoFrame2List()).map((item: Bento) => _.toNumber(item.bentoCount())).sum().value();
+			let countAll = _.chain(self.bentoFrame2List()).map((item: Bento) => _.toNumber(item.bentoCount())).sum().value();
 			return countAll;
 		});
 		unitAllFrame2: KnockoutObservable<string> = ko.pureComputed(() => {
-			if(_.isEmpty(this.bentoFrame2List())) {
+			let self = this;
+			if(_.isEmpty(self.bentoFrame2List())) {
 				return '';	
 			}
-			let listUnit = _.chain(this.bentoFrame2List()).map((item: Bento) => item.unit()).uniq().value();
+			let listUnit = _.chain(self.bentoFrame2List()).map((item: Bento) => item.unit()).uniq().value();
 			if(_.size(listUnit) > 1) {
 				return '';
 			}
 			return getText('KMR002_28') + listUnit[0] + getText('KMR002_29');
 		});
 		priceAllFrame2: KnockoutObservable<number> = ko.pureComputed(() => {
-			if(_.isEmpty(this.bentoFrame2List())) {
+			let self = this;
+			if(_.isEmpty(self.bentoFrame2List())) {
 				return 0;	
 			}
-			let countAll = _.chain(this.bentoFrame2List()).map((item: Bento) => item.sumFunction()).sum().value();
+			let countAll = _.chain(self.bentoFrame2List()).map((item: Bento) => item.sumFunction()).sum().value();
 			return countAll;
 		});
 		bentoMenuByClosingTimeDto: any = null;
@@ -143,6 +128,10 @@ module nts.uk.at.view.kmr002.a.model {
 				if(!self.modeFuture()) {
 					error({ messageId: 'Msg_2283' });	
 				}
+			});
+			
+			self.currentFrameNo.subscribe(() => {
+				self.canOrder(self.getCanOrder());
 			});
 			dfd.resolve();
             return dfd.promise();
@@ -191,6 +180,7 @@ module nts.uk.at.view.kmr002.a.model {
 				} else {
 					self.listOrder = data.listOrder;
 				}
+				self.canOrder(self.getCanOrder());
 				dfd.resolve();
 			}).fail((res: any) => {
 				error({ messageId: res.messageId });
@@ -199,6 +189,31 @@ module nts.uk.at.view.kmr002.a.model {
 				nts.uk.ui.block.clear();	
 			});
             return dfd.promise();	
+		}
+		
+		getCanOrder() {
+			let self = this;
+			let orderFrame1 = _.find(self.listOrder, o => o.closingTimeFrame==1);
+			if(orderFrame1) {
+				if(orderFrame1.ordered == false && self.currentFrameNo()==1 && self.bentoMenuByClosingTimeDto.reservationTime1) {
+					return true;
+				}				
+			} else {
+				if(self.currentFrameNo()==1 && self.bentoMenuByClosingTimeDto.reservationTime1) {
+					return true;
+				}
+			}
+			let orderFrame2 = _.find(self.listOrder, o => o.closingTimeFrame==2);
+			if(orderFrame2) {
+				if(orderFrame2.ordered == false && self.currentFrameNo()==2 && self.bentoMenuByClosingTimeDto.reservationTime2) {
+					return true;
+				}				
+			} else {
+				if(self.currentFrameNo()==2 && self.bentoMenuByClosingTimeDto.reservationTime2) {
+					return true;
+				}
+			}
+			return false;	
 		}
 
 		register() {
