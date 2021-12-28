@@ -84,7 +84,7 @@
               </div>
             </template>
           </div>
-          <template v-if="condition5 && workHourLstNumber < workHourLst.length">
+          <template v-if="condition5 && workHourLstNumber < workHourLst.length && multipleWork">
             <div class="text-center position-relative" style="height: 55px">
               <!-- A3_18 -->
               <div class="position-absolute w-100 mt-4 pt-2">
