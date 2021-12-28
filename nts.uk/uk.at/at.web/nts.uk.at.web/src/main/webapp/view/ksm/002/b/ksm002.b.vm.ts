@@ -452,7 +452,7 @@ module ksm002.b.viewmodel {
             var self = this;   
             let a = [];
             inputArray.forEach(item => {
-                let rs = _.find(self.fullCheckBoxItem, o => {return o.id == item});
+                let rs = _.find(self.checkBoxList(), o => {return o.id == item});
                 a.push(rs.name);       
             });
             return a; 
@@ -465,7 +465,7 @@ module ksm002.b.viewmodel {
             var self = this;   
             let a = [];
             inputArray.forEach(item => {
-                let rs = _.find(self.fullCheckBoxItem, o => {return o.name == item});
+                let rs = _.find(self.checkBoxList(), o => {return o.name == item});
                 a.push(rs.id);       
             });
             return a; 
