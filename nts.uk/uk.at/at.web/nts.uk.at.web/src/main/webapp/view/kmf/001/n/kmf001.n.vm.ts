@@ -47,8 +47,8 @@ module nts.uk.at.view.kmf001.n {
       });
 
       vm.$ajax(API.findAll).done(function(res) {
-        res.timeManageType = vm.timeManageType();
-        res.timeUnit = vm.timeUnit();
+        vm.timeManageType(res.timeManageType);
+        vm.timeUnit(res.timeUnit);
       }).fail(function(res) {
           nts.uk.ui.dialog.alertError(res.message);
       });
