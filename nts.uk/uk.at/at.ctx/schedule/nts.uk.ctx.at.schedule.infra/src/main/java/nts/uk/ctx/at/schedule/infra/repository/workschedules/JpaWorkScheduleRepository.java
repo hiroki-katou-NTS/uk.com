@@ -50,7 +50,6 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchLeaveEa
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchLeaveEarlyPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchOvertimeWork;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchOvertimeWorkPK;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchLeaveEarly;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchPremium;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchPremiumPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTime;
@@ -113,6 +112,16 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	public List<WorkSchedule> getListBySid(String sid, DatePeriod period) {
 
 		return this.getList(Arrays.asList(sid), period);
+	}
+	
+	private static final String SELECT_BY_LIST_KEY = "SELECT c FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND ( c.pk.ymd between :startDate AND :endDate ) ";
+
+	@Override
+	public List<WorkSchedule> getListBySidJpa(String sid, DatePeriod period) {
+		return this.queryProxy().query(SELECT_BY_LIST_KEY, KscdtSchBasicInfo.class).setParameter("employeeID", sid)
+				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList().stream()
+				.map(x -> x.toDomain(x.pk.sid, x.pk.ymd)).collect(Collectors.toList());
+
 	}
 
 	@Override
