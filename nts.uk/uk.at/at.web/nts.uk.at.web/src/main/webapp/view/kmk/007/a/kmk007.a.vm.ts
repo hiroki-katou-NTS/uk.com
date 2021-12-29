@@ -572,7 +572,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.enableMethod(true);
                 } if (workTypeSetCode == WorkTypeCls.SubstituteHoliday) {
                     self.currentWorkType().calculatorMethod(CalculatorMethod.EXCLUDE_FROM_WORK_DAY);
-                    self.enableMethod(true);
+                    self.enableMethod(false);
                 } if (workTypeSetCode == WorkTypeCls.Shooting) {
                     self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
                     self.enableMethod(false);
@@ -1134,7 +1134,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             let listAbsenceFrames = _.map(listAbsences, item => new ItemModel(item.code, item.name, item.priority)),
                 absCode = this.sumAbsenseNo(),
                 selectedAbs = _.find(listAbsenceFrames, { 'code': absCode });
-            if (!selectedAbs && absCode != 0) {
+            if (!selectedAbs && absCode != 0 && absCode != null) {
                 listAbsenceFrames.push(new ItemModel(absCode,
                     absCode + "マスタ未登録",
                     1));
