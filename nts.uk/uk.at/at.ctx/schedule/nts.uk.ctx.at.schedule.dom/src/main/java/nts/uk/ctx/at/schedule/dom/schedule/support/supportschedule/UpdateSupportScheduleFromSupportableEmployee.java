@@ -1,16 +1,15 @@
 package nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ResultOfRegisteringWorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.UpdateSupportScheduleBySupportTicket;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
@@ -31,10 +30,20 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 	 */
 	public static RegisterResultFromSupportableEmployee add(Require require, SupportableEmployee supportableEmployee) {
 		
-		val addingTicket = supportableEmployee.toTickets();
+		val addingTickets = supportableEmployee.toTickets();
 		
-		return updateSupportScheduleBySupportTicket(require, supportableEmployee, addingTicket, 
-				UpdateSupportScheduleBySupportTicket::add );
+		List<AtomTask> atomTaskList = new ArrayList<>();
+		for (SupportTicket addingTicket : addingTickets) {
+			
+			val addingResult = updateSupportScheduleByAddSupportTicket(require, supportableEmployee, addingTicket);
+			if ( addingResult.isError() ) {
+				return addingResult;
+			}
+			
+			atomTaskList.addAll( addingResult.getAtomTaskList() );
+		}
+		
+		return RegisterResultFromSupportableEmployee.createWithoutError(atomTaskList);
 		
 	}
 	
@@ -47,47 +56,55 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 	public static RegisterResultFromSupportableEmployee modify(Require require, SupportableEmployee afterModify) {
 		
 		SupportableEmployee beforeModify = require.getSupportableEmployee(afterModify.getId()).get();
-		List<SupportTicket> ticketsBeforeModify = beforeModify.toTickets();
-		List<SupportTicket> ticketsAfterModify = afterModify.toTickets();
-		
-		// add
-		val addingDates = afterModify.getPeriod().subtract(beforeModify.getPeriod()).stream()
-				.map(DatePeriod::datesBetween)
-				.flatMap(List::stream)
-				.collect(Collectors.toList());
-		val addingTickets = ticketsAfterModify.stream()
-				.filter( ticket -> addingDates.contains(ticket.getDate()))
-				.collect(Collectors.toList());
-		val addingResult = updateSupportScheduleBySupportTicket(require, afterModify, addingTickets, 
-				UpdateSupportScheduleBySupportTicket::add );
-		if ( addingResult.isError() ) {
-			return addingResult;
-		}
-		
-		// remove
-		val removingDates = beforeModify.getPeriod().subtract(afterModify.getPeriod()).stream()
-				.map(DatePeriod::datesBetween)
-				.flatMap(List::stream)
-				.collect(Collectors.toList());
-		val removingTicket = ticketsAfterModify.stream()
-				.filter( ticket -> removingDates.contains(ticket.getDate()))
-				.collect(Collectors.toList());
-		val removingResult = updateSupportScheduleBySupportTicket(require, afterModify, removingTicket, 
-				UpdateSupportScheduleBySupportTicket::remove );
-		if ( removingResult.isError() ) {
-			return removingResult;
-		}
-		
-		// modify
-		val modifyingResult = updateSupportScheduleByModifySupportTicket(require, afterModify, ticketsBeforeModify, ticketsAfterModify);
-		if ( modifyingResult.isError() ) {
-			return modifyingResult;
-		}
 		
 		List<AtomTask> atomTaskList = new ArrayList<>();
-		atomTaskList.addAll(addingResult.getAtomTaskList());
-		atomTaskList.addAll(removingResult.getAtomTaskList());
-		atomTaskList.addAll(modifyingResult.getAtomTaskList());
+		val dates = beforeModify.getPeriod().join(afterModify.getPeriod()).datesBetween();
+		
+		for (GeneralDate date : dates) {
+			Action action = getAction(beforeModify.getPeriod(), afterModify.getPeriod(), date);
+			
+			switch (action) {
+			case ADD:
+				
+				val addTicket = afterModify.createTicket(date).get();
+				
+				val addingResult = updateSupportScheduleByAddSupportTicket(require, afterModify, addTicket);
+				if ( addingResult.isError() ) {
+					return addingResult;
+				}
+				
+				atomTaskList.addAll( addingResult.getAtomTaskList() );
+				
+				break;
+			case MODIFY:
+				
+				val ticketAfterModify = afterModify.createTicket(date).get();
+				val ticketBeforeModify = beforeModify.createTicket(date).get();
+				
+				val modifyingResult = updateSupportScheduleByModifySupportTicket(require, afterModify, ticketBeforeModify, ticketAfterModify);
+				if ( modifyingResult.isError() ) {
+					return modifyingResult;
+				}
+				atomTaskList.addAll( modifyingResult.getAtomTaskList() );
+				
+				break;
+			case REMOVE:
+				
+				val removeTicket = beforeModify.createTicket(date).get();
+				
+				val removingResult = updateSupportScheduleByRemoveSupportTicket(require, afterModify, removeTicket);
+				if ( removingResult.isError() ) {
+					return removingResult;
+				}
+				
+				atomTaskList.addAll( removingResult.getAtomTaskList() );
+				
+				break;
+			case DO_NOTHING:
+			default:
+				break;
+			}
+		}
 		
 		return RegisterResultFromSupportableEmployee.createWithoutError(atomTaskList);
 	}
@@ -100,109 +117,125 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 	 */
 	public static RegisterResultFromSupportableEmployee remove(Require require, SupportableEmployee supportableEmployee) {
 		
-		val removingTicket = supportableEmployee.toTickets();
-		return updateSupportScheduleBySupportTicket(require, supportableEmployee, removingTicket, 
-				UpdateSupportScheduleBySupportTicket::remove );
-	}
-	
-	/**
-	 * 応援チケットで応援予定を変更する	
-	 * @param require
-	 * @param supportableEmployee 応援可能な社員
-	 * @param supportTicketList 応援チケットリスト
-	 * @param doSomething 応援予定変更処理
-	 * @return
-	 */
-	private static RegisterResultFromSupportableEmployee updateSupportScheduleBySupportTicket(
-			Require require, SupportableEmployee supportableEmployee, 
-			List<SupportTicket> supportTicketList, ISupportScheduleRegister processUpdateSupportSchedule) {
+		val removingTickets = supportableEmployee.toTickets();
 		
 		List<AtomTask> atomTaskList = new ArrayList<>();
-		
-		for (SupportTicket ticket : supportTicketList) {
+		for (SupportTicket removingTicket : removingTickets) {
 			
-			boolean isExistWorkSchedule = require.isExistWorkSchedule(ticket.getEmployeeId().v(), ticket.getDate());
+			val removingResult = updateSupportScheduleByRemoveSupportTicket(require, supportableEmployee, removingTicket);
+			if ( removingResult.isError() ) {
+				return removingResult;
+			}
+			
+			atomTaskList.addAll( removingResult.getAtomTaskList() );
+		}
+		
+		return RegisterResultFromSupportableEmployee.createWithoutError(atomTaskList);
+	}
+	
+	private static RegisterResultFromSupportableEmployee updateSupportScheduleByAddSupportTicket(
+			Require require, SupportableEmployee supportableEmployee, 
+			SupportTicket addingTicket) {
+			
+			boolean isExistWorkSchedule = require.isExistWorkSchedule(addingTicket.getEmployeeId().v(), addingTicket.getDate());
 			
 			if ( !isExistWorkSchedule ) {
-				if ( ticket.getSupportType() == SupportType.ALLDAY ) {
-					continue; 
+				if ( addingTicket.getSupportType() == SupportType.ALLDAY ) {
+					return RegisterResultFromSupportableEmployee.createEmpty();
 				} else {
 					return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
 							new BusinessException("Msg_2274").getMessage());
 				}
 			}
 			
-			val registerResult = processUpdateSupportSchedule.apply(require, ticket);
+			val registerResult = UpdateSupportScheduleBySupportTicket.add(require, addingTicket);
 			if ( registerResult.isHasError() ) {
 				
 				return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
 						registerResult.getErrorInformation().get(0).getErrorMessage());
 			}
 			
-			atomTaskList.add( registerResult.getAtomTask().get() );
-		}
-		
-		
-		return RegisterResultFromSupportableEmployee.createWithoutError(atomTaskList);
+			return RegisterResultFromSupportableEmployee.createWithoutError( Arrays.asList(registerResult.getAtomTask().get()) );
 	}
 	
-	/**
-	 * 修正の応援チケットで応援予定を変更する
-	 * @param require
-	 * @param supportableEmployee 応援可能な社員
-	 * @param ticketsBeforeModify 修正前の応援チケットリスト
-	 * @param ticketsAfterModify 修正後の応援チケットリスト
-	 * @return
-	 */
-	private static RegisterResultFromSupportableEmployee updateSupportScheduleByModifySupportTicket(
-			Require require, SupportableEmployee supportableEmployee,
-			List<SupportTicket> ticketsBeforeModify, List<SupportTicket> ticketsAfterModify
-			) {
-		
-		List<AtomTask> atomTaskList = new ArrayList<>();
-		
-		for (SupportTicket ticketAfterModify : ticketsAfterModify) {
+	private static RegisterResultFromSupportableEmployee updateSupportScheduleByRemoveSupportTicket(
+			Require require, SupportableEmployee supportableEmployee, 
+			SupportTicket addingTicket) {
 			
-			Optional<SupportTicket> ticketBeforeModify = ticketsBeforeModify.stream()
-					.filter( ticket -> ticket.getDate().equals(ticketAfterModify.getDate()) )
-					.findFirst();
-			if ( !ticketBeforeModify.isPresent() ) {
-				continue;
-			}
-			
-			boolean isExistWorkSchedule = require.isExistWorkSchedule(ticketAfterModify.getEmployeeId().v(), ticketAfterModify.getDate());
+			boolean isExistWorkSchedule = require.isExistWorkSchedule(addingTicket.getEmployeeId().v(), addingTicket.getDate());
 			
 			if ( !isExistWorkSchedule ) {
-				if ( ticketAfterModify.getSupportType() == SupportType.ALLDAY ) {
-					continue; 
+				if ( addingTicket.getSupportType() == SupportType.ALLDAY ) {
+					return RegisterResultFromSupportableEmployee.createEmpty();
 				} else {
 					return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
 							new BusinessException("Msg_2274").getMessage());
 				}
 			}
 			
-			val modifyResult = UpdateSupportScheduleBySupportTicket.modify(require, ticketBeforeModify.get(), ticketAfterModify);
-			if ( !modifyResult.isPresent() ) {
-				continue;
-			}
-			
-			if ( modifyResult.get().isHasError() ) {
+			val registerResult = UpdateSupportScheduleBySupportTicket.remove(require, addingTicket);
+			if ( registerResult.isHasError() ) {
+				
 				return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
-						modifyResult.get().getErrorInformation().get(0).getErrorMessage());
+						registerResult.getErrorInformation().get(0).getErrorMessage());
 			}
 			
-			atomTaskList.add( modifyResult.get().getAtomTask().get() );
-			
-		}
-		
-		return RegisterResultFromSupportableEmployee.createWithoutError(atomTaskList);
+			return RegisterResultFromSupportableEmployee.createWithoutError( Arrays.asList(registerResult.getAtomTask().get()) );
 	}
 	
-	@FunctionalInterface
-	public static interface ISupportScheduleRegister {
+	private static RegisterResultFromSupportableEmployee updateSupportScheduleByModifySupportTicket(
+			Require require, SupportableEmployee supportableEmployee, 
+			SupportTicket ticketBeforeModify,
+			SupportTicket ticketAfterModify) {
+			
+			boolean isExistModifyingWorkSchedule = require.isExistWorkSchedule(ticketAfterModify.getEmployeeId().v(), ticketAfterModify.getDate());
+			
+			if ( !isExistModifyingWorkSchedule ) {
+				if ( ticketAfterModify.getSupportType() == SupportType.ALLDAY ) {
+					return RegisterResultFromSupportableEmployee.createEmpty();
+				} else {
+					return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
+							new BusinessException("Msg_2274").getMessage());
+				}
+			}
+			
+			val modifyingResult = UpdateSupportScheduleBySupportTicket.modify(require, ticketBeforeModify, ticketAfterModify);
+			if ( !modifyingResult.isPresent() ) {
+				return RegisterResultFromSupportableEmployee.createEmpty();
+			}
+			
+			if ( modifyingResult.get().isHasError() ) {
+				return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
+						modifyingResult.get().getErrorInformation().get(0).getErrorMessage());
+			}
+			
+			return RegisterResultFromSupportableEmployee.createWithoutError( Arrays.asList(modifyingResult.get().getAtomTask().get()) );
+	}
+	
+	
+	private static Action getAction(DatePeriod beforeModify, DatePeriod afterModify, GeneralDate date) {
 		
-		ResultOfRegisteringWorkSchedule apply(Require require, SupportTicket ticket);
-
+		if ( beforeModify.contains(date) ) {
+			if ( afterModify.contains(date) ) {
+				return Action.MODIFY;
+			} else {
+				return Action.REMOVE;
+			}
+		} else {
+			if ( afterModify.contains(date)) {
+				return Action.ADD;
+			} else {
+				return Action.DO_NOTHING;
+			} 
+		}
+		
+	}
+	
+	private static enum Action {
+		ADD,
+		MODIFY,
+		REMOVE,
+		DO_NOTHING
 	}
 	
 	public static interface Require extends UpdateSupportScheduleBySupportTicket.Require {

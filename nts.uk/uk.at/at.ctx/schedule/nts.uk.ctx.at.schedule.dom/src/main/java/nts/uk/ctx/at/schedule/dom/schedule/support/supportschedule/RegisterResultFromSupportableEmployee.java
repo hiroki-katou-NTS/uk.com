@@ -57,6 +57,11 @@ public class RegisterResultFromSupportableEmployee {
 		return new RegisterResultFromSupportableEmployee(false, Optional.empty(), atomTaskList);
 	}
 	
+	public static RegisterResultFromSupportableEmployee createEmpty () {
+		
+		return new RegisterResultFromSupportableEmployee(false, Optional.empty(), Collections.emptyList() );
+	}
+	
 	@Value
 	static class ErrorInformation {
 		
