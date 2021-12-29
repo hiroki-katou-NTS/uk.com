@@ -46,7 +46,7 @@
               <div class="card-body" v-if="condition1(itemWH)">
                 <nts-time-range-input class="mb-1" v-model="itemWH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxWH.filter((x) => x === itemWH.frame).length > 0 && condition2" />
                 <div class="mt-1 mb-1">
-                  <template v-if="condition5 && condition14">
+                  <template v-if="condition14">
                     <!-- A3_13 -->
                     <span class="uk-text-dark-gray fs-smaller">{{ "KAFS02_33" | i18n }}</span>
                     <!-- A3_14 -->
@@ -58,7 +58,7 @@
                       <span :class="{ 'fs-smaller': !itemWH.workplaceCD }">{{ itemWH.workplaceName }}</span>
                     </button>
                   </template>
-                  <template v-if="condition5 && condition15">
+                  <template v-if="condition15">
                     <!-- A3_15 -->
                     <span class="uk-text-dark-gray fs-smaller">{{ "KAFS02_34" | i18n }}</span>
                     <!-- A3_16 -->
@@ -116,7 +116,7 @@
               <div class="card-body">
                 <nts-time-range-input class="mb-1" v-model="itemTH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxTH.filter((x) => x === itemTH.frame).length > 0 && condition2" />
                 <div class="mt-1 mb-1">
-                  <template v-if="condition4 && condition14">
+                  <template v-if="condition14">
                     <!-- A3_24 -->
                     <span class="uk-text-dark-gray fs-smaller">{{ "KAFS02_33" | i18n }}</span>
                     <!-- A3_25 -->
@@ -128,7 +128,7 @@
                       <span :class="{ 'fs-smaller': !itemTH.workplaceCD }">{{ itemTH.workplaceName }}</span>
                     </button>
                   </template>
-                  <template v-if="condition4 && condition15">
+                  <template v-if="condition15">
                     <!-- A3_26 -->
                     <span class="uk-text-dark-gray fs-smaller">{{ "KAFS02_34" | i18n }}</span>
                     <!-- A3_27 -->

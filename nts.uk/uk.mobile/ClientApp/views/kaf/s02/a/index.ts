@@ -645,6 +645,24 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.checkboxGH.push(item.engraveFrameNo);
                 }
             }
+
+            // cancel supportHours
+            if (item.timeStampAppEnum === 3) {
+                if (_.filter(self.supportLst, { frame: item.engraveFrameNo }).length > 0) {
+                    self.supportLst = _.map(self.supportLst, (x) => {
+                        x.isCheck = true;
+
+                        return x;
+                    });
+                } else {
+                    const supportHour = new WorkHour({ startTime: null, endTime: null, frame: item.engraveFrameNo, title: 'KAFS02_32', disableCheckbox: false, dispCheckbox: true, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+                    self.supportLst.push(supportHour);
+                }
+
+                if (_.filter(self.checkboxSP, (x) => { if (item.engraveFrameNo === x) { return x; } }).length === 0) {
+                    self.checkboxSP.push(item.engraveFrameNo);
+                }
+            }
         });
 
         appStamp.listDestinationTimeZoneApp.forEach((item: DestinationTimeZoneAppDto) => {
@@ -929,14 +947,14 @@ export class KafS02AComponent extends KafS00ShrComponent {
             }
 
             if (item.type === 'supportHour') {
-                for (let x = 0; x < this.longTermLst.length; x++) {
-                    if (item.frame === this.longTermLst[x].frame) {
-                        this.longTermLst[x].errorMsg = null;
+                for (let x = 0; x < this.supportLst.length; x++) {
+                    if (item.frame === this.supportLst[x].frame) {
+                        this.supportLst[x].errorMsg = null;
                         if (!item.start && item.end) {
-                            this.longTermLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_37');
+                            this.supportLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_37');
                         }
                         if (item.start && !item.end) {
-                            this.longTermLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_36');
+                            this.supportLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_36');
                         }
                     }
                 }
