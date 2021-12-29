@@ -10,6 +10,8 @@ module nts.uk.at.view.kmk007.b.viewmodel {
         enableB41: KnockoutObservable<boolean> = ko.observable(false);
         timeMngAtr : any;
         itemListB41 : KnockoutObservableArray<any>;
+        checkActivi:  boolean = true;
+
         constructor() {
             var self = this;
             
@@ -89,6 +91,15 @@ module nts.uk.at.view.kmk007.b.viewmodel {
             var dfd = $.Deferred();
             
             self.items([]);
+            service.getAllLeaveCount().done(function(data: any) {
+                if (data.timeManageType != null) {
+                    if ((data.timeManageType == 0)) {
+                        self.checkActivi = false;
+                    }
+                }
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
             
             if(self.frameId() == Cls_Of_Duty.SpecialHolidayFrame){
                 self.enableB41(true);

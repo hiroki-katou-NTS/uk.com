@@ -20,9 +20,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CertainPeriodOfTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.DeadlCheckMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EnumTimeDivision;
@@ -133,8 +133,8 @@ public class KclmtCompensLeaveCom extends ContractUkJpaEntity implements Seriali
     			domain.getCompensatoryAcquisitionUse().getPreemptionPermit().value,
     			domain.getCompensatoryAcquisitionUse().getTermManagement().value,
     			domain.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value,
-    			domain.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value,
-    			domain.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value ,
+    			domain.getTimeVacationDigestUnit().getManage().value,
+    			domain.getTimeVacationDigestUnit().getDigestUnit().value ,
     			domain.getSubstituteHolidaySetting().getOvertimeHourRequired().isUseAtr()?1:0,
 				domain.getSubstituteHolidaySetting().getOvertimeHourRequired().getTimeSetting().getEnumTimeDivision().value,
 				domain.getSubstituteHolidaySetting().getOvertimeHourRequired().getTimeSetting().getDesignatedTime().getOneDayTime().v().intValue(), 
@@ -173,7 +173,7 @@ public class KclmtCompensLeaveCom extends ContractUkJpaEntity implements Seriali
     	SubstituteHolidaySetting substituteHolidaySetting = new SubstituteHolidaySetting(holidayWorkHourRequired, overtimeHourRequired);
     	
     	// 時間代休の消化単位
-    	CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit = new CompensatoryDigestiveTimeUnit(
+    	TimeVacationDigestUnit timeVacationDigestUnit = new TimeVacationDigestUnit(
     			ManageDistinct.valueOf(BooleanUtils.toInteger(this.timeManageAtr)), 
     			TimeDigestiveUnit.valueOf(this.digestionUnit));
     	return new CompensatoryLeaveComSetting(
@@ -181,7 +181,7 @@ public class KclmtCompensLeaveCom extends ContractUkJpaEntity implements Seriali
     			ManageDistinct.valueOf(BooleanUtils.toInteger(this.manageAtr)), 
     			compensatoryAcquisitionUse,
     			substituteHolidaySetting, 
-    			compensatoryDigestiveTimeUnit, 
+    			timeVacationDigestUnit, 
     			ManageDistinct.valueOf(BooleanUtils.toInteger(this.linkMngAtr)));
     }
 

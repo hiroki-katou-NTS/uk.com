@@ -73,6 +73,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /** 月別実績過去月集計する */
@@ -568,6 +569,11 @@ public class AggregatePastMonthsService {
 			@Override
 			public WorkDaysNumberOnLeaveCount workDaysNumberOnLeaveCount(String cid) {
 				return require.workDaysNumberOnLeaveCount(cid);
+			}
+
+			@Override
+			public OptionLicense getOptionLicense() {
+				return AppContexts.optionLicense();
 			}
 		};
 	}

@@ -18,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationDomainEvent;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -54,10 +53,10 @@ public class Com60HourVacationSaveCommandHandler
 
 		// Check is managed, keep old values when is not managed
 		if (optCom60HourVacation.isPresent()) {
-			SixtyHourVacationSetting setting = optCom60HourVacation.get().getSetting();
+			Com60HourVacation setting = optCom60HourVacation.get();
 			if (command.getIsManage() == ManageDistinct.NO.value) {
 				command.setSixtyHourExtra(setting.getSixtyHourExtra().value);
-				command.setDigestiveUnit(setting.getDigestiveUnit().value);
+				command.setDigestiveUnit(setting.getTimeVacationDigestUnit().getDigestUnit().value);
 			}
 		} else {
 			if (command.getIsManage() == ManageDistinct.NO.value) {
@@ -78,7 +77,7 @@ public class Com60HourVacationSaveCommandHandler
 		}
 
 		//get isManageByTime from DB
-		int isManageDB = optCom60HourVacation.isPresent() ? optCom60HourVacation.get().getSetting().getIsManage().value : -1;
+		int isManageDB = optCom60HourVacation.isPresent() ? optCom60HourVacation.get().getTimeVacationDigestUnit().getManage().value : -1;
 		//check managementCategory change
 		boolean isManage = command.getIsManage() != isManageDB;
 		if (isManage) {

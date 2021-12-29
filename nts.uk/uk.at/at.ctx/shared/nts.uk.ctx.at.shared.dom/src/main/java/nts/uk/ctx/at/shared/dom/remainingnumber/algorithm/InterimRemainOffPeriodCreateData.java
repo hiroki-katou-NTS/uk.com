@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -94,7 +95,7 @@ public class InterimRemainOffPeriodCreateData {
 					inputParam.getCid(),
 					inputParam.getSid(),
 					loopDate,
-					comHolidaySetting.getDayOffSetting().isManagedTime(),
+					comHolidaySetting.getDayOffSetting().isManagedTime(require),
 					dataCreate,
 					comHolidaySetting,
 					employmentHolidaySetting,
@@ -218,7 +219,7 @@ public class InterimRemainOffPeriodCreateData {
 		return createInterimRemainDataMng(require, cacheCarrier, createDataParam, comHolidaySetting);
 	}
 
-	public static interface RequireM4 extends RequireM1, RequireM3, InterimRemainOffDateCreateData.RequireM9 {
+	public static interface RequireM4 extends RequireM1, RequireM3, InterimRemainOffDateCreateData.RequireM9, TimeVacationDigestUnit.Require {
 
 		List<SharedSidPeriodDateEmploymentImport> employmentHistory(CacheCarrier cacheCarrier, List<String> sids , DatePeriod datePeriod);
 	}
