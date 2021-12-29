@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.dailyattendanceitem;
+package nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting;
 
 import java.util.ArrayList;
 import java.util.List;
