@@ -28,15 +28,8 @@ public class JpaTimeSpecialLeaveMngSetRepository extends JpaRepository implement
 	}
 	
     private KshmtHdspTimeMgt toEntity(TimeSpecialLeaveManagementSetting setting) {
-        Optional<KshmtHdspTimeMgt> optinal = this.queryProxy().find(setting.getCompanyId(),
-        		KshmtHdspTimeMgt.class);
-        KshmtHdspTimeMgt entity = null;
-        if (optinal.isPresent()) {
-            entity = optinal.get();
-        } else {
-            entity = new KshmtHdspTimeMgt();
-        }
-        setting.saveToMemento(new JpaTimeSpecialLeaveManagementSettingSetMemento(entity));
-        return entity;
+    	KshmtHdspTimeMgt entity = new KshmtHdspTimeMgt();
+    	setting.saveToMemento(new JpaTimeSpecialLeaveManagementSettingSetMemento(entity));
+    	return entity;
     }
 }
