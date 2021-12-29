@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.AddWorkRecodConfirmationCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmCommand;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourinput.EncouragedTargetApplication;
 import nts.uk.screen.at.app.kdw013.a.AddWorkRecordConfirmationCommandHandler;
 import nts.uk.screen.at.app.kdw013.a.ChangeFavOneDayDisplayOrder;
 import nts.uk.screen.at.app.kdw013.a.ChangeFavTaskDisplayOrder;
@@ -21,6 +22,7 @@ import nts.uk.screen.at.app.kdw013.a.DeleteOneDayTaskSet;
 import nts.uk.screen.at.app.kdw013.a.DeleteTaskSet;
 import nts.uk.screen.at.app.kdw013.a.DeleteWorkRecordConfirmationCommandHandler;
 import nts.uk.screen.at.app.kdw013.a.EmployeeDisplayInfo;
+import nts.uk.screen.at.app.kdw013.a.GetTargetTime;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentCommand;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentDto;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentHandler;
@@ -123,6 +125,9 @@ public class KDW013WebService {
 	@Inject
 	private SelectTaskItem selectTaskItem;
 	
+	@Inject
+	private GetTargetTime getTargetTime;
+	
 	@POST
 	@Path("a/get-fav-task")
 	public FavTaskDto getFavTask() {
@@ -163,13 +168,20 @@ public class KDW013WebService {
 	public List<ConfirmerDto> deleteConfirmation(DeleteWorkResultConfirmCommand param) {
 		return deleteWorkRecordConfirmationHandler.delete(param);
 	}
-
+	
 	// A:工数入力.メニュー別OCD
 	// 作業内容を登録する
 	@POST
-	@Path("a/register_work_content")
+	@Path("a/register-work-content")
 	public RegisterWorkContentDto registerWorkContent(RegisterWorkContentCommand command) {
 		return registerHandler.handle(command);
+	}
+
+	// 7.残業申請・休出時間申請の対象時間を取得する
+	@POST
+	@Path("a/get-target-time")
+	public List<EncouragedTargetApplication> getTargetTime(GetTargetTimeCommand command) {
+		return this.getTargetTime.get(command.getEmployeeId(), command.getChangedDates());
 	}
 
 	// A:1日作業セットを削除する

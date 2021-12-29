@@ -35,7 +35,9 @@ module nts.uk.ui.at.kdw013.a {
         // Chọn ngày ở [画面イメージ]A6_1/[固有部品]A1_1
         CHANGE_DATE: '/screen/at/kdw013/a/changeDate',
         // RegisterWorkContentCommand
-        REGISTER: '/screen/at/kdw013/a/register_work_content',
+        REGISTER: '/screen/at/kdw013/a/register-work-content',
+        
+        GETARGETTIME: '/screen/at/kdw013/a/get-target-time',
 
         // POPUP F
         // 作業お気に入り登録を起動する
@@ -913,7 +915,7 @@ module nts.uk.ui.at.kdw013.a {
                                     vm.dateRange.valueHasMutated();
                                 })
                                 .then(() => {
-                                    return lstOvertimeLeaveTime;
+                                    return command;
                                 });
                         } else {
                             return vm.$dialog.info({ messageId: 'Msg_15' })
@@ -923,7 +925,7 @@ module nts.uk.ui.at.kdw013.a {
                                     vm.dateRange.valueHasMutated();
                                 })
                                 .then(() => {
-                                    return lstOvertimeLeaveTime;
+                                    return command;
                                 });
                         }
                     }
@@ -936,10 +938,13 @@ module nts.uk.ui.at.kdw013.a {
                             .then(() => null);
                     }
                 })
-                .then((data: OvertimeLeaveTime[] | null) => {
-                    if (data && data.length) {
-                        vm.openDialogCaculationResult(data);
-                    }
+                .then((command) => {
+                    
+                    vm.$ajax('at', API.GETARGETTIME, command).then(result => {
+                        if (result && result.length) {
+                            vm.openDialogCaculationResult(result);
+                        }
+                    });
                 })
                 .always(() => vm.$blockui('clear'));
         }
