@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 
 import org.junit.Test;
@@ -9,8 +11,6 @@ import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -77,19 +77,74 @@ public class TimeSpecialLeaveManagementSettingTest {
 	}
 	
 	/**
-	 * Test [4]利用する休暇時間の消化単位をチェックする
+	 * Test [3]時間休暇が管理するか
+	 * Case 1: $Option.就業.時間休暇 = true
 	 */
 	@Test
-	public void testCheckVacationTimeUnitUsed() {
+	public void testIsManageTimeVacation1() {
+		TimeSpecialLeaveManagementSetting domain = new TimeSpecialLeaveManagementSetting("000000000003-0004",
+				new TimeVacationDigestUnit(ManageDistinct.YES, TimeDigestiveUnit.OneHour));
+		new Expectations() {
+			{
+				require.getOptionLicense();
+				result = TimeSpecialLeaveManagementHelper.getOptionLicense(true);
+			}
+		};
+		boolean isManageTimeVacation = domain.isManageTimeVacation(require);
+		assertThat(isManageTimeVacation).isTrue();
+	}
+	
+	/**
+	 * Test [3]時間休暇が管理するか
+	 * Case 2: $Option.就業.時間休暇 = false
+	 */
+	@Test
+	public void testIsManageTimeVacation2() {
+		TimeSpecialLeaveManagementSetting domain = new TimeSpecialLeaveManagementSetting("000000000003-0004",
+				new TimeVacationDigestUnit(ManageDistinct.YES, TimeDigestiveUnit.OneHour));
+		new Expectations() {
+			{
+				require.getOptionLicense();
+				result = TimeSpecialLeaveManagementHelper.getOptionLicense(false);
+			}
+		};
+		boolean isManageTimeVacation = domain.isManageTimeVacation(require);
+		assertThat(isManageTimeVacation).isFalse();
+	}
+	
+	/**
+	 * Test [4]利用する休暇時間の消化単位をチェックする
+	 * Case 1: $Option.就業.時間休暇 = true && 「休暇使用時間」 % 「@消化単位」 = 0
+	 */
+	@Test
+	public void testCheckVacationTimeUnitUsed1() {
 		TimeSpecialLeaveManagementSetting managementSetting = new TimeSpecialLeaveManagementSetting("000000000003-0004",
 				new TimeVacationDigestUnit(ManageDistinct.NO, TimeDigestiveUnit.OneHour));
 		new Expectations() {
 			{
 				require.getOptionLicense();
-				result = new OptionLicense() {};
+				result = TimeSpecialLeaveManagementHelper.getOptionLicense(true);
 			}
 		};
-		boolean checkVacationTimeUnitUsed = managementSetting.checkVacationTimeUnitUsed(require, AttendanceTime.ZERO);
-		assertThat(checkVacationTimeUnitUsed);
+		boolean checkVacationTimeUnitUsed = managementSetting.checkVacationTimeUnitUsed(require, new AttendanceTime(600));
+		assertThat(checkVacationTimeUnitUsed).isTrue();
+	}
+	
+	/**
+	 * Test [4]利用する休暇時間の消化単位をチェックする
+	 * Case 2: $Option.就業.時間休暇 = true && 「休暇使用時間」 % 「@消化単位」 != 0
+	 */
+	@Test
+	public void testCheckVacationTimeUnitUsed2() {
+		TimeSpecialLeaveManagementSetting managementSetting = new TimeSpecialLeaveManagementSetting("000000000003-0004",
+				new TimeVacationDigestUnit(ManageDistinct.YES, TimeDigestiveUnit.OneHour));
+		new Expectations() {
+			{
+				require.getOptionLicense();
+				result = TimeSpecialLeaveManagementHelper.getOptionLicense(true);
+			}
+		};
+		boolean checkVacationTimeUnitUsed = managementSetting.checkVacationTimeUnitUsed(require, new AttendanceTime(11));
+		assertThat(checkVacationTimeUnitUsed).isFalse();
 	}
 }

@@ -1,25 +1,23 @@
-package nts.uk.ctx.at.shared.dom.vacation.setting;
+package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.shr.com.license.option.AttendanceOptions;
 import nts.uk.shr.com.license.option.OptionLicense;
 
-public class TimeVacationDigestUnitHelper {
-
-	/**
-	 * Create default data with 管理区分=管理する and 消化単位=1分
-	 * @return 時間休暇の消化単位
-	 */
-	public static TimeVacationDigestUnit createDefault() {
-		ManageDistinct manage = ManageDistinct.YES;
-		TimeDigestiveUnit digestUnit = TimeDigestiveUnit.OneMinute;
-		return new TimeVacationDigestUnit(manage, digestUnit);
-	}
+public class CompensatoryLeaveComSettingTestHelper {
 	
-	public static TimeVacationDigestUnit createWithManage(ManageDistinct manage) {
-		TimeDigestiveUnit digestUnit = TimeDigestiveUnit.OneMinute;
-		return new TimeVacationDigestUnit(manage, digestUnit);
+	public static CompensatoryLeaveComSetting create() {
+		return new CompensatoryLeaveComSetting("DUMMY-CID",
+				ManageDistinct.YES,
+				new CompensatoryAcquisitionUse(ExpirationTime.THIS_MONTH, ApplyPermission.ALLOW, DeadlCheckMonth.ONE_MONTH, TermManagement.MANAGE_BASED_ON_THE_DATE),
+				new SubstituteHolidaySetting(new HolidayWorkHourRequired(false, new TimeSetting()), new OvertimeHourRequired(false, new TimeSetting())),
+				new TimeVacationDigestUnit(ManageDistinct.YES, TimeDigestiveUnit.OneHour),
+				ManageDistinct.YES);
 	}
-	
 	/**
 	 * Mock: オプションライセンスInterface
 	 * hourlyPaidLeave: $Option.就業.時間休暇
@@ -99,4 +97,5 @@ public class TimeVacationDigestUnitHelper {
 			}
 		};
 	}
+
 }

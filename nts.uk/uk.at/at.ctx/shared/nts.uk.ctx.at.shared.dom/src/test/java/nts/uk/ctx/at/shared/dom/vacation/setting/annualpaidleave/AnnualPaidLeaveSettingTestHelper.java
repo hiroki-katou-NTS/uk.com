@@ -1,23 +1,44 @@
-package nts.uk.ctx.at.shared.dom.vacation.setting;
+package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.shr.com.license.option.AttendanceOptions;
 import nts.uk.shr.com.license.option.OptionLicense;
 
-public class TimeVacationDigestUnitHelper {
-
-	/**
-	 * Create default data with 管理区分=管理する and 消化単位=1分
-	 * @return 時間休暇の消化単位
-	 */
-	public static TimeVacationDigestUnit createDefault() {
-		ManageDistinct manage = ManageDistinct.YES;
-		TimeDigestiveUnit digestUnit = TimeDigestiveUnit.OneMinute;
-		return new TimeVacationDigestUnit(manage, digestUnit);
+public class AnnualPaidLeaveSettingTestHelper {
+	
+	public static AnnualPaidLeaveSetting createDefault() {
+		String companyId = "DUMMY-CID";
+		AcquisitionSetting acquisitionSetting = new AcquisitionSetting(AnnualPriority.FIFO);
+		ManageDistinct yearManageType = ManageDistinct.YES;
+		ManageAnnualSetting manageAnnualSetting = createManageAnnualSetting();
+		TimeAnnualSetting timeSetting = TimeAnnualSettingHelper.createTimeAnnualSetting();
+		return new AnnualPaidLeaveSetting(companyId, acquisitionSetting, yearManageType, manageAnnualSetting, timeSetting);
 	}
 	
-	public static TimeVacationDigestUnit createWithManage(ManageDistinct manage) {
-		TimeDigestiveUnit digestUnit = TimeDigestiveUnit.OneMinute;
-		return new TimeVacationDigestUnit(manage, digestUnit);
+	private static ManageAnnualSetting createManageAnnualSetting() {
+		ManageAnnualSettingGetMemento memento = new ManageAnnualSettingGetMemento() {
+			
+			@Override
+			public YearLyOfNumberDays getYearLyOfDays() {
+				return null;
+			}
+			
+			@Override
+			public RemainingNumberSetting getRemainingNumberSetting() {
+				return null;
+			}
+			
+			@Override
+			public HalfDayManage getHalfDayManage() {
+				return null;
+			}
+			
+			@Override
+			public String getCompanyId() {
+				return "DUMMY-CID";
+			}
+		};
+		return new ManageAnnualSetting(memento);
 	}
 	
 	/**
@@ -99,4 +120,5 @@ public class TimeVacationDigestUnitHelper {
 			}
 		};
 	}
+
 }

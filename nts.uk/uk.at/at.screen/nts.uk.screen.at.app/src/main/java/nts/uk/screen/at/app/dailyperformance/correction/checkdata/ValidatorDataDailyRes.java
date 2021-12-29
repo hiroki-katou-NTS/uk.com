@@ -983,7 +983,7 @@ public class ValidatorDataDailyRes {
     			for (DPItemValue item : hasSpecialTimeLeave) {
     				boolean checkVacationTimeUnitUsed = timeSpecialLeaveManagementSetting.checkVacationTimeUnitUsed(require, new AttendanceTime(Integer.parseInt(item.getValue())));
     				if (!checkVacationTimeUnitUsed) {
-    					item.setMessage(TextResource.localize("Msg_1686", "KDW003_142", timeSpecialLeaveManagementSetting.getTimeVacationDigestUnit().getDigestUnit().description));
+    					item.setMessage(TextResource.localize("Msg_1686", "#KDW003_142", timeSpecialLeaveManagementSetting.getTimeVacationDigestUnit().getDigestUnit().description));
     					errors.add(item);
     				}
     			}
@@ -1028,7 +1028,7 @@ public class ValidatorDataDailyRes {
     			for (DPItemValue item : hasChildNursingLeave) {
     				boolean checkVacationTimeUnitUsed = nursingLeaveSet.checkVacationTimeUnitUsed(require, new AttendanceTime(Integer.parseInt(item.getValue())));
     				if (!checkVacationTimeUnitUsed) {
-    					item.setMessage(TextResource.localize("Msg_1686", "Com_ChildNurseHoliday", nursingLeaveSet.getTimeVacationDigestUnit().getDigestUnit().description));
+    					item.setMessage(TextResource.localize("Msg_1686", "#Com_ChildNurseHoliday", nursingLeaveSet.getTimeVacationDigestUnit().getDigestUnit().description));
     					errors.add(item);
     				}
     			}
@@ -1043,7 +1043,7 @@ public class ValidatorDataDailyRes {
     			for (DPItemValue item : hasNursingCareLeave) {
     				boolean checkVacationTimeUnitUsed = nursingLeaveSet.checkVacationTimeUnitUsed(require, new AttendanceTime(Integer.parseInt(item.getValue())));
     				if (!checkVacationTimeUnitUsed) {
-    					item.setMessage(TextResource.localize("Msg_1686", "Com_CareHoliday", nursingLeaveSet.getTimeVacationDigestUnit().getDigestUnit().description));
+    					item.setMessage(TextResource.localize("Msg_1686", "#Com_CareHoliday", nursingLeaveSet.getTimeVacationDigestUnit().getDigestUnit().description));
     					errors.add(item);
     				}
     			}

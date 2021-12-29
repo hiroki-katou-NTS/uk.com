@@ -918,10 +918,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// ドメインモデル「時間特別休暇の管理設定」を取得する
 			TimeSpecialLeaveManagementSetting timeSpecialLeaveMngSet = timeSpecialLeaveMngSetRepo.findByCompany(companyID).orElse(null);
 			// 利用する休暇時間の消化単位をチェックする
-			if (timeSpecialLeaveMngSet == null || timeSpecialLeaveMngSet.checkVacationTimeUnitUsed(require, timeSpecialVacation)) {
+			if (timeSpecialLeaveMngSet == null || !timeSpecialLeaveMngSet.checkVacationTimeUnitUsed(require, timeSpecialVacation)) {
 				// エラーメッセージ(Msg_1686)を表示する
 				throw new BusinessException("Msg_1686",
-						"KAFS12_46",
+						"#KAFS12_46",
 						timeSpecialLeaveMngSet.getTimeVacationDigestUnit().getDigestUnit().description);
 			}
 		}
@@ -931,10 +931,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// ドメインモデル「介護看護休暇設定」を取得する
 			NursingLeaveSetting nursingLeaveSet = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyID, NursingCategory.ChildNursing.value);
 			// 利用する休暇時間の消化単位をチェックする
-			if (nursingLeaveSet!= null && nursingLeaveSet.checkVacationTimeUnitUsed(require, childTime)) {
+			if (nursingLeaveSet!= null && !nursingLeaveSet.checkVacationTimeUnitUsed(require, childTime)) {
 				// エラーメッセージ(Msg_1686)を表示する
 				throw new BusinessException("Msg_1686",
-						"Com_ChildNurseHoliday",
+						"#Com_ChildNurseHoliday",
 						nursingLeaveSet.getTimeVacationDigestUnit().getDigestUnit().description);
 			}
 		}
@@ -944,10 +944,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// ドメインモデル「介護看護休暇設定」を取得する
 			NursingLeaveSetting nursingLeaveSet = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyID, NursingCategory.Nursing.value);
 			// 利用する休暇時間の消化単位をチェックする
-			if (nursingLeaveSet != null && nursingLeaveSet.checkVacationTimeUnitUsed(require, nursingTime)) {
+			if (nursingLeaveSet != null && !nursingLeaveSet.checkVacationTimeUnitUsed(require, nursingTime)) {
 				// エラーメッセージ(Msg_1686)を表示する
 				throw new BusinessException("Msg_1686",
-						"Com_CareHoliday",
+						"#Com_CareHoliday",
 						nursingLeaveSet.getTimeVacationDigestUnit().getDigestUnit().description);
 			}
 		}
