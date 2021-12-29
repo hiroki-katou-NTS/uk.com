@@ -921,7 +921,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			if (timeSpecialLeaveMngSet == null || !timeSpecialLeaveMngSet.checkVacationTimeUnitUsed(require, timeSpecialVacation)) {
 				// エラーメッセージ(Msg_1686)を表示する
 				throw new BusinessException("Msg_1686",
-						"KAFS12_46",
+						"#KAFS12_46",
 						timeSpecialLeaveMngSet.getTimeVacationDigestUnit().getDigestUnit().description);
 			}
 		}
@@ -934,7 +934,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			if (nursingLeaveSet!= null && !nursingLeaveSet.checkVacationTimeUnitUsed(require, childTime)) {
 				// エラーメッセージ(Msg_1686)を表示する
 				throw new BusinessException("Msg_1686",
-						"Com_ChildNurseHoliday",
+						"#Com_ChildNurseHoliday",
 						nursingLeaveSet.getTimeVacationDigestUnit().getDigestUnit().description);
 			}
 		}
@@ -947,7 +947,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			if (nursingLeaveSet != null && !nursingLeaveSet.checkVacationTimeUnitUsed(require, nursingTime)) {
 				// エラーメッセージ(Msg_1686)を表示する
 				throw new BusinessException("Msg_1686",
-						"Com_CareHoliday",
+						"#Com_CareHoliday",
 						nursingLeaveSet.getTimeVacationDigestUnit().getDigestUnit().description);
 			}
 		}
