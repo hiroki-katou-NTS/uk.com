@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor()
-public class TimeSpecialLeaveSaveCommandDto {
+public class TimeSpecialLeaveManagementSettingDto {
 	
     private Integer timeManageType;
 

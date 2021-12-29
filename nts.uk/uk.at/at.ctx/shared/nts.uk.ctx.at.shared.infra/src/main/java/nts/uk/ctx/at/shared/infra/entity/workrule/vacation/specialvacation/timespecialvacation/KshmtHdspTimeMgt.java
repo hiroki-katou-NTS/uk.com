@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.shared.infra.entity.workrule.vacation.specialvacation.timespecialvacation;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
@@ -16,8 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Setter
-@Getter
 @Entity
 @Table(name = "KSHMT_HDSP_TIME_MGT")
 @NoArgsConstructor

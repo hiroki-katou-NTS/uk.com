@@ -3,7 +3,7 @@
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting;
-
+import nts.arc.enums.EnumAdaptor;
 /**
  * The Enum YearVacationTimeUnit.
  */
@@ -74,4 +74,9 @@ public enum TimeDigestiveUnit {
 		// Not found.
 		return null;
 	}
+
+	public static TimeDigestiveUnit toEnum(int value){
+		return EnumAdaptor.valueOf(value, TimeDigestiveUnit.class);
+	}
+	
 }

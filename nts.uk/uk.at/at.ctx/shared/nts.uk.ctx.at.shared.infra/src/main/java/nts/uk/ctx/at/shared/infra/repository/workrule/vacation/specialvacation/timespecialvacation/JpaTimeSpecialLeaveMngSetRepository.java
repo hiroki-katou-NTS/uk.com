@@ -4,7 +4,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveManagementSetting;
 import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveMngSetRepository;
 import nts.uk.ctx.at.shared.infra.entity.workrule.vacation.specialvacation.timespecialvacation.KshmtHdspTimeMgt;
-import nts.uk.ctx.at.shared.infra.repository.vacation.setting.specialleave.JpaTimeSpecialLeaveManagementSettingSetMemento;
 
 import javax.ejb.Stateless;
 import java.util.Optional;
@@ -19,24 +18,11 @@ public class JpaTimeSpecialLeaveMngSetRepository extends JpaRepository implement
     
     @Override
 	public void add(TimeSpecialLeaveManagementSetting setting) {
-		this.commandProxy().insert(this.toEntity(setting));
+		this.commandProxy().insert(KshmtHdspTimeMgt.fromDomain(setting));
 	}
 
 	@Override
 	public void update(TimeSpecialLeaveManagementSetting setting) {
-		this.commandProxy().update(this.toEntity(setting));
+		this.commandProxy().update(KshmtHdspTimeMgt.fromDomain(setting));
 	}
-	
-    private KshmtHdspTimeMgt toEntity(TimeSpecialLeaveManagementSetting setting) {
-        Optional<KshmtHdspTimeMgt> optinal = this.queryProxy().find(setting.getCompanyId(),
-        		KshmtHdspTimeMgt.class);
-        KshmtHdspTimeMgt entity = null;
-        if (optinal.isPresent()) {
-            entity = optinal.get();
-        } else {
-            entity = new KshmtHdspTimeMgt();
-        }
-        setting.saveToMemento(new JpaTimeSpecialLeaveManagementSettingSetMemento(entity));
-        return entity;
-    }
 }
