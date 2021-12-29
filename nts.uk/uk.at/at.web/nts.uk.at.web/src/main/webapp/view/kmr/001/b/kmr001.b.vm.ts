@@ -30,6 +30,19 @@ module nts.uk.at.view.kmr001.b {
         constructor() {
             super();
             const vm = this;
+			vm.$blockui("show");
+			vm.start();
+			
+			vm.useTime2.subscribe((value) => {
+				if(!value) {
+					$('.required-field-2').ntsError('clear');
+				}
+			});
+        }
+
+		start() {
+			const vm = this;
+			vm.$blockui("show");
 			vm.$ajax(API.GET_BENTO_RESERVATION)
 			.then((data) => {
 				if(data) {
@@ -71,18 +84,13 @@ module nts.uk.at.view.kmr001.b {
 			}).fail(function(res) {
 				vm.$dialog.error({ messageId: res.messageId });
 			}).always(() => {
-				vm.$blockui("clear");
+				vm.$blockui("hide");
 			});
-			
-			vm.useTime2.subscribe((value) => {
-				if(!value) {
-					$('.required-field-2').ntsError('clear');
-				}
-			});
-        }
+		}
 
         registerBentoReserveSetting() {
 			const vm = this;
+			vm.$blockui("show");
 			vm.$validate('.required-field', '.required-field-2')
 			.then((valid) => {
 				if(valid) {
@@ -91,14 +99,16 @@ module nts.uk.at.view.kmr001.b {
 			}).then((valid) => {
 				if(valid) {
 					let command = vm.createCommand();
-					vm.$ajax(API.ADD_BENTO_RESERVATION, command).done(() => {
-						vm.$dialog.info({ messageId: 'Msg_15' });	
-					});	
-				}	
+					vm.$ajax(API.ADD_BENTO_RESERVATION, command).then(() => {
+						vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+							vm.start();
+						});
+					});
+				}
 			}).fail(function(res) {
 				vm.$dialog.error({ messageId: res.messageId });	
 			}).always(() => {
-				vm.$blockui("clear");
+				vm.$blockui("hide");
 			});
         }
 
@@ -174,6 +184,7 @@ module nts.uk.at.view.kmr001.b {
             .then(() => {
 				let dataReturn = nts.uk.ui.windows.getShared("dataCdl025");
 				if (!nts.uk.util.isNullOrUndefined(dataReturn)) {
+					vm.$blockui("show");
 					vm.$ajax('com', API.GET_ROLE_INFO, nts.uk.util.isNullOrEmpty(dataReturn) ? [] : dataReturn).done((dataRole) => {
 						if(dataRole) {
 							vm.listRole(dataRole);
@@ -181,7 +192,7 @@ module nts.uk.at.view.kmr001.b {
 					}).fail(function(res) {
 						vm.$dialog.error({ messageId: res.messageId });	
 					}).always(() => {
-						vm.$blockui("clear");
+						vm.$blockui("hide");
 					});	
 				}	
             });	
