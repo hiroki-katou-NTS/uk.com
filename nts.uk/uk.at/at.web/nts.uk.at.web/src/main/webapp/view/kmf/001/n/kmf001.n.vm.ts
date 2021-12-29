@@ -27,9 +27,13 @@ module nts.uk.at.view.kmf001.n {
       .then((result1: WorkDaysNumberOnLeaveCountDto, result2: any) => {
         const isCounting = !!_.includes(result1.countedLeaveList, LEAVE_TYPE);
         vm.selectedManageDistinct(isCounting ? 1 : 0);
-
+      if (result2 !=null) {
         vm.timeManageType(result2.timeManageType);
         vm.timeUnit(result2.timeUnit);
+      } else {
+        vm.timeManageType(1);
+        vm.timeUnit(0);
+      }
       })
       .fail(err => vm.$dialog.error({messageId: err.messageId}))
       .always(() => {
