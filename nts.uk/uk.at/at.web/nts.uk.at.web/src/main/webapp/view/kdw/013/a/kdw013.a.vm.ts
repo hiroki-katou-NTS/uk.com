@@ -765,20 +765,26 @@ module nts.uk.ui.at.kdw013.a {
             let vm = this;
             let $events = ko.unwrap(vm.events);
            return _.chain(dates).map(date => {
-                let events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'days') });
-                let data = _.find(vm.$datas().dailyManHrTasks, (e) => { return moment(e.date).isSame(date, 'days') });
+                let events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'days') && !e.extendedProps.isTimeBreak  });
+                let data = _.find(vm.$datas().dailyManHrTasks, (e) => { return moment(e.date).isSame(date, 'days')});
 
                 if (events.length != _.size(_.get(data, 'taskBlocks'))) {
                     return { date: date, changed: true };
                 }
                 
-                let isChanged = _.find(events, (e) => { return _.get(e, 'extendedProps.isChanged') });
+                let isChanged = _.find($events, (e) => { return moment(e.start).isSame(date, 'days') && _.get(e, 'extendedProps.isChanged')});
 
                 if (isChanged) {
                     return { date: date, changed: true };
                 }
-
-                return { date: date, changed: false };
+               
+                let removeDate =  _.find(vm.removeList(), ri => moment(ri.date).isSame(moment(date), 'days'));
+               
+                if (removeDate) {
+                    return { date: date, changed: true };
+                }
+               
+               return  { date: date, changed: false };
             }).filter(d => { return d.changed }).map(d => moment(d.date).format(DATE_TIME_FORMAT)).value();
         }
 
