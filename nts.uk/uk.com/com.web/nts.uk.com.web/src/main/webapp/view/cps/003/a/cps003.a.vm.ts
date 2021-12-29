@@ -2471,11 +2471,7 @@ module cps003.a.vm {
                         setTimeout(() => {
                             let afterProc = cps003.control.COMBOBOX[self.category.catCode() + "_" + replaceValue.targetItem];
                             if (afterProc) {
-                                afterProc(replaced, obj.id, obj).done(res => {
-                                    forEach(res, s => {
-                                        $grid.mGrid("updateCell", s.id, s.item, s.value);
-                                    });
-                                });
+                                afterProc(replaced, obj.id, obj);
                             }
                         }, 1);
                         
