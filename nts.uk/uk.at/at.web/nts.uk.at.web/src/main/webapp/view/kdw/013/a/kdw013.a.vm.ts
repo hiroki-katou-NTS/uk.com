@@ -15,15 +15,15 @@ module nts.uk.ui.at.kdw013.a {
         DECLARE_APPLICATION = 4
 
     };
-    const BREAKTIME_COLOR = '#ff99ff';
-    const { formatTime, setTimeOfDate, getTimeOfDate, getTask, getBackground, getTitles } = share;
-    const { randomId } = nts.uk.util;
+    let BREAKTIME_COLOR = '#ff99ff';
+    let { formatTime, setTimeOfDate, getTimeOfDate, getTask, getBackground, getTitles } = share;
+    let { randomId } = nts.uk.util;
 
-    const DATE_FORMAT = 'YYYY-MM-DD';
-    const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:00.000\\Z';
-	const TIME_FORMAT = 'HH:mm';
+    let DATE_FORMAT = 'YYYY-MM-DD';
+    let DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:00.000\\Z';
+	let TIME_FORMAT = 'HH:mm';
 
-    const API: API = {
+    let API: API = {
         ADD: '/screen/at/kdw013/a/add_confirm',
         // DeleteWorkResultConfirmationCommand
         DELETE: '/screen/at/kdw013/a/delete_confirm',
@@ -56,7 +56,7 @@ module nts.uk.ui.at.kdw013.a {
         UPDATE_TASK_NAME_G: '/screen/at/kdw013/g/update_task_name'
     };
 
-    const initialCache = (): ChangeDateParam => ({
+    let initialCache = (): ChangeDateParam => ({
         displayPeriod: {
             end: '',
             start: ''
@@ -119,18 +119,18 @@ module nts.uk.ui.at.kdw013.a {
     })
     export class KDWToggleBindingHandler implements KnockoutBindingHandler {
         init(element: HTMLButtonElement, valueAccessor: () => KnockoutComputed<boolean>) {
-            const toggler = valueAccessor();
-            const visible = ko.computed({
+            let toggler = valueAccessor();
+            let visible = ko.computed({
                 read: () => {
-                    const visible = ko.unwrap(toggler);
+                    let visible = ko.unwrap(toggler);
 
                     return visible;
                 },
                 disposeWhenNodeIsRemoved: element
             });
-            const disable = ko.computed({
+            let disable = ko.computed({
                 read: () => {
-                    const enable = ko.unwrap(toggler);
+                    let enable = ko.unwrap(toggler);
 
                     return !enable;
                 },
@@ -223,12 +223,12 @@ module nts.uk.ui.at.kdw013.a {
 
         constructor() {
             super();
-            const vm = this;
+            let vm = this;
             let $query = vm.getQuery();
-            const { employee } = vm;
-            const { mode } = $query;
-            const cache: ChangeDateParam & { pair: -1 | 0 | 1 | 2 } = { ...initialCache(), pair: 0 };
-            const sameCache = (params: ChangeDateParam): -1 | 0 | 1 | 2 => {
+            let { employee } = vm;
+            let { mode } = $query;
+            let cache: ChangeDateParam & { pair: -1 | 0 | 1 | 2 } = { ...initialCache(), pair: 0 };
+            let sameCache = (params: ChangeDateParam): -1 | 0 | 1 | 2 => {
             
                 if (cache.refDate !== params.refDate) {
                     if (cache.displayPeriod.end === params.displayPeriod.end) {
@@ -256,7 +256,7 @@ module nts.uk.ui.at.kdw013.a {
 
                 return 0;
             };
-            const updateCache = (params: ChangeDateParam) => {
+            let updateCache = (params: ChangeDateParam) => {
                 cache.displayPeriod.end = params.displayPeriod.end;
                 cache.displayPeriod.start = params.displayPeriod.start;
 
@@ -266,11 +266,11 @@ module nts.uk.ui.at.kdw013.a {
     
             vm.businessHours = ko.computed({
                 read: () => {
-                    const datas = ko.unwrap(vm.$datas);
+                    let datas = ko.unwrap(vm.$datas);
 
                     if (datas) {
 
-                        const { estimateZones } = datas;
+                        let { estimateZones } = datas;
 
                         return _
                             .chain(estimateZones)
@@ -295,7 +295,7 @@ module nts.uk.ui.at.kdw013.a {
             vm.$toggle = {
                 save: ko.computed({
                     read: () => {
-                        const event = ko.unwrap(vm.events);
+                        let event = ko.unwrap(vm.events);
                         
                         if (!vm.dataChanged()) {
                             return false;
@@ -308,7 +308,7 @@ module nts.uk.ui.at.kdw013.a {
                     read: () => {
                         
                         let confirms = _.get(vm.$datas(),'lstComfirmerDto');
-                        const editable = ko.unwrap(vm.editable);
+                        let editable = ko.unwrap(vm.editable);
                         let confimer = _.find(confirms, ['confirmSID',vm.$user.employeeId]);
                         return !editable && !!confimer;
                     }
@@ -322,7 +322,7 @@ module nts.uk.ui.at.kdw013.a {
                         if (_.find(confirms, { confirmSID: vm.$user.employeeId })) {
                             return false;
                         }
-                        const editable = ko.unwrap(vm.editable);
+                        let editable = ko.unwrap(vm.editable);
                         let confimer = _.find(_.get(vm.$datas(),'lstComfirmerDto'), ['confirmSID',vm.$user.employeeId]);
                         return !editable && !confimer;
                     }
@@ -340,10 +340,10 @@ module nts.uk.ui.at.kdw013.a {
 
             ko.computed({
                 read: () => {
-                    const employeeId = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
-                    const date = ko.unwrap(vm.initialDate);
-                    const { start, end } = ko.unwrap(vm.dateRange);
-                    const setting = ko.unwrap(vm.$settings);
+                    let employeeId = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
+                    let date = ko.unwrap(vm.initialDate);
+                    let { start, end } = ko.unwrap(vm.dateRange);
+                    let setting = ko.unwrap(vm.$settings);
 
                     if (!employeeId || !setting) {
                         return;
@@ -352,7 +352,7 @@ module nts.uk.ui.at.kdw013.a {
                     let itemIds = _.map(_.get(setting, 'manHrInputDisplayFormat.displayManHrRecordItems', []), item => { return item.itemId });
 
                     if (!!start && !!end && moment(date).isBetween(start, end, undefined, '[)')) {
-                        const params: ChangeDateParam = {
+                        let params: ChangeDateParam = {
                             employeeId,
                             refDate: moment(date).startOf('day').format(DATE_TIME_FORMAT),
                             displayPeriod: {
@@ -368,9 +368,8 @@ module nts.uk.ui.at.kdw013.a {
                         }
 
                         if (cache.pair <= 0) {
-                            // s.h.i.t
-                            // vm.$datas(null);
-
+                            vm.$datas(null);
+                            
                             vm
                                 .$blockui('grayout')
                                 .then(() => vm.$ajax('at', API.CHANGE_DATE, params))
@@ -388,12 +387,12 @@ module nts.uk.ui.at.kdw013.a {
 
             vm.confirmers = ko.computed({
                 read: () => {
-                    const datas = ko.unwrap(vm.$datas);
-                    const $date = ko.unwrap(vm.initialDate);
-                    const $moment = moment($date).format(DATE_FORMAT);
+                    let datas = ko.unwrap(vm.$datas);
+                    let $date = ko.unwrap(vm.initialDate);
+                    let $moment = moment($date).format(DATE_FORMAT);
 
                     if (datas) {
-                        const { lstComfirmerDto } = datas;
+                        let { lstComfirmerDto } = datas;
 
                         return _
                             .chain(lstComfirmerDto)
@@ -416,11 +415,11 @@ module nts.uk.ui.at.kdw013.a {
     
             vm.breakTime = ko.computed({
                 read: () => {
-                    const datas = ko.unwrap(vm.$datas);
+                    let datas = ko.unwrap(vm.$datas);
 
                     if (datas) {
 
-                        const { estimateZones } = datas;
+                        let { estimateZones } = datas;
 
                         return _
                             .chain(estimateZones)
@@ -440,14 +439,14 @@ module nts.uk.ui.at.kdw013.a {
 
             vm.attendanceTimes = ko.computed({
                 read: () => {
-                    const datas = ko.unwrap(vm.$datas);
-                    const setting = ko.unwrap(vm.$settings);
+                    let datas = ko.unwrap(vm.$datas);
+                    let setting = ko.unwrap(vm.$settings);
                     
-                    const employee = ko.unwrap(vm.employee);
-                    const { start,end } = ko.unwrap(vm.dateRange);
-                    const dateRanges = () => {
-                        const dates: Date[] = [];
-                        const begin = moment(start);
+                    let employee = ko.unwrap(vm.employee);
+                    let { start,end } = ko.unwrap(vm.dateRange);
+                    let dateRanges = () => {
+                        let dates: Date[] = [];
+                        let begin = moment(start);
 
                         while (begin.isBefore(end, 'day')) {
                             dates.push(begin.toDate());
@@ -459,9 +458,11 @@ module nts.uk.ui.at.kdw013.a {
                     };
 
                     // need update by employId if: mode=1
-                    const employeeId = employee || vm.$user.employeeId;
+                    let employeeId = employee || vm.$user.employeeId;
 
                     if (datas) {
+                        
+                        
                         
                       return   _.chain(dateRanges())
                             .map(date => {
@@ -469,7 +470,7 @@ module nts.uk.ui.at.kdw013.a {
                                 let convert = _.find(_.get(datas, 'convertRes', []), cvr => { return moment(cvr.ymd).isSame(moment(date), 'days'); } )
                                 let manHrContents = _.get(convert, 'manHrContents', []);
                                 let attItemName = _.get(setting, 'attItemName', []);
-                                const workTypes = _.get(setting, 'workTypes');
+                                let workTypes = _.get(setting, 'workTypes');
                                 
                                 let wkTypeCd = _.get(_.find(manHrContents, hr => { return hr.itemId == 28 }), 'value');
                                     
@@ -477,7 +478,7 @@ module nts.uk.ui.at.kdw013.a {
                                     
                                     let name = _.get(_.find(workTypes, wt => { return wt.workTypeCode == wkTypeCd }), 'name');
                                     //PC3_2 PC3_3
-                                    events.push({ title: vm.$i18n('KDW013_67'), text: wkTypeCd + ' ' + (name ? name : vm.$i18n('KDW013_40')) });
+                                    events.push({ title: vm.$i18n('KDW013_67'), text: wkTypeCd + ' ' + (name ? name : vm.$i18n('KDW013_40')) , valueType: 0});
                                 }
 
                                 let start = _.get(_.find(manHrContents, hr => { return hr.itemId == 31 }), 'value');
@@ -485,23 +486,23 @@ module nts.uk.ui.at.kdw013.a {
 
                                 if (convert) {
                                     //PC3_4 PC3_5
-                                    events.push({ title: vm.$i18n('KDW013_68'), text: vm.$i18n('KDW013_73', [start ? formatTime(start, 'Time_Short_HM') : '　　', end ? formatTime(end, 'Time_Short_HM') : '']) });
+                                    events.push({ title: vm.$i18n('KDW013_68'), text: vm.$i18n('KDW013_73', [start ? formatTime(start, 'Time_Short_HM') : '　　', end ? formatTime(end, 'Time_Short_HM') : '']), valueType: 0 });
                                 }
 
                                 let rdis = _.sortBy(_.get(setting, 'manHrInputDisplayFormat.recordColumnDisplayItems', []), ['order']);
-                                const gentext = (hr, attItem) => {
+                                let genControl = (hr, attItem) => {
                                     if (!_.isNaN(Number(hr.value)) && hr.valueType == 1) {
-                                        return (formatTime(hr.value, 'Time_Short_HM'));
+                                        return { text: (formatTime(hr.value, 'Time_Short_HM')), type: 0 };
                                     }
-
+                                    //check box
                                     if (_.get(attItem, 'masterType') == 9 && _.get(attItem, 'dailyAttendanceAtr') == 2 && hr.value == 1) {
-                                        return '☑ する'
+                                        return { text: '', type: 3 };
                                     }
                                     if (_.get(attItem, 'masterType') == 9 && _.get(attItem, 'dailyAttendanceAtr') == 2) {
-                                        return '☐ する'
+                                        return { text: '', type: 2 };
                                     }
 
-                                    return hr.value;
+                                    return { text: hr.value, type: 0 };
 
                                 }
                                 _.forEach(rdis, rdi => {
@@ -510,7 +511,8 @@ module nts.uk.ui.at.kdw013.a {
                                     let attItem = _.find(_.get(setting, 'dailyAttendanceItem', []), ati => ati.attendanceItemId == rdi.attendanceItemId);
                                     //PC3_6 PC3_7 ☐ ☑
                                     if (!_.isNil(_.get(hr, 'value'))) {
-                                        events.push({ title: rdi.displayName, text:gentext(hr,attItem), valueType: hr.valueType });
+                                        let control  = genControl(hr,attItem);
+                                        events.push({ title: rdi.displayName, text: control.text, valueType: control.type });
                                     }
 
                                 });
@@ -518,9 +520,13 @@ module nts.uk.ui.at.kdw013.a {
                                 return { date, events };
                             })
                             .value();
+                        
+                         
                     }
-
+                  
                     return [] as calendar.AttendanceTime[];
+                   
+                    
                 }
             }).extend({ rateLimit: 500 });
             let inputDate = ko.unwrap(vm.inputDate);
@@ -597,15 +603,15 @@ module nts.uk.ui.at.kdw013.a {
 
             vm.$settings.subscribe((settings) => computedEvents(ko.unwrap(vm.$datas), settings));
 
-            const computedEvents = (data: SelectTargetEmployeeDto | null, settings: StartProcessDto | null) => {
-                if (cache.pair === -1) {
-                    return;
-                }
-                const { tasks, taskFrameUsageSetting } = settings;
+            let computedEvents = (data: SelectTargetEmployeeDto | null, settings: StartProcessDto | null) => {
+//                if (cache.pair === -1) {
+//                    return;
+//                }
+                let { tasks, taskFrameUsageSetting } = settings;
                 if (data) {
                     let events = [];
 
-                    const {lstIntegrationOfDaily} = data;
+                    let {lstIntegrationOfDaily} = data;
 
                     _.forEach(lstIntegrationOfDaily, ld => {
 
@@ -617,13 +623,13 @@ module nts.uk.ui.at.kdw013.a {
                         if (ko.unwrap(vm.isShowBreakTime)) {
                             _.forEach(_.get(ld, 'breakTime.breakTimeSheets', []), bt => {
 
-                                const businessHours = ko.unwrap(vm.businessHours);
-                                const start = setTimeOfDate(moment(ld.ymd).toDate(), bt.start);
-                                const end = setTimeOfDate(moment(ld.ymd).toDate(), bt.end);
+                                let businessHours = ko.unwrap(vm.businessHours);
+                                let start = setTimeOfDate(moment(ld.ymd).toDate(), bt.start);
+                                let end = setTimeOfDate(moment(ld.ymd).toDate(), bt.end);
 
-                                const bh = _.find(businessHours, bh => bh.dayOfWeek == start.getDay());
-                                const startAsMinites = (moment(start).hour() * 60) + moment(start).minute();
-                                const endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
+                                let bh = _.find(businessHours, bh => bh.dayOfWeek == start.getDay());
+                                let startAsMinites = (moment(start).hour() * 60) + moment(start).minute();
+                                let endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
 
                                 if (startAsMinites >= _.get(bh, 'start', 0) && endAsMinites <= _.get(bh, 'end', 1440)) {
                                     events.push(
@@ -653,10 +659,10 @@ module nts.uk.ui.at.kdw013.a {
                         }
 
                         _.forEach(_.get(hrTask, 'taskBlocks', []), tb => {
-                            const {taskDetails, caltimeSpan} = tb;
-                            const ts = _.find(_.get(ld, 'ouenTimeSheet', []), ot => ot.workNo == _.get(taskDetails[0], 'supNo', null));
-                            const {start, end} = caltimeSpan;
-                            const work = _.get(ts, 'workContent.work');
+                            let {taskDetails, caltimeSpan} = tb;
+                            let ts = _.find(_.get(ld, 'ouenTimeSheet', []), ot => ot.workNo == _.get(taskDetails[0], 'supNo', null));
+                            let {start, end} = caltimeSpan;
+                            let work = _.get(ts, 'workContent.work');
 
 
                             events.push({
@@ -693,7 +699,7 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         getTaskValues(){
-            const vm = this;
+            let vm = this;
                  let items = [];
 
                  _.forEach(_.get(ko.unwrap((vm.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []), function(item) {
@@ -704,7 +710,7 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         reLoad(){
-            const vm = this;
+            let vm = this;
             let inputDate = ko.unwrap(vm.inputDate);
             vm
                 .$blockui('grayout')
@@ -732,7 +738,7 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         mounted() {
-            const vm = this;
+            let vm = this;
 
             _.extend(window, { vm });
         }
@@ -747,23 +753,23 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         equipmentInput(){
-            const vm = this;
+            let vm = this;
             vm.$jump.blank('com', '/view/oew/001/a/index.xhtml');
         }
 
         getChangedDates(dates){
     
             let vm = this;
-            const $events = ko.unwrap(vm.events);
+            let $events = ko.unwrap(vm.events);
            return _.chain(dates).map(date => {
-                const events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'days') });
-                const data = _.find(vm.$datas().dailyManHrTasks, (e) => { return moment(e.date).isSame(date, 'days') });
+                let events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'days') });
+                let data = _.find(vm.$datas().dailyManHrTasks, (e) => { return moment(e.date).isSame(date, 'days') });
 
                 if (events.length != _.size(_.get(data, 'taskBlocks'))) {
                     return { date: date, changed: true };
                 }
                 
-                const isChanged = _.find(events, (e) => { return _.get(e, 'extendedProps.isChanged') });
+                let isChanged = _.find(events, (e) => { return _.get(e, 'extendedProps.isChanged') });
 
                 if (isChanged) {
                     return { date: date, changed: true };
@@ -776,9 +782,9 @@ module nts.uk.ui.at.kdw013.a {
         getManHrlst(dates){
     
             let result = [];
-            const vm = this;
+            let vm = this;
             _.forEach(dates, date => {
-                const eventInday = _.filter(vm.events(), (e) => { return moment(e.start).isSame(date, 'day') });
+                let eventInday = _.filter(vm.events(), (e) => { return moment(e.start).isSame(date, 'day') });
 
                 if (eventInday.length) {
 
@@ -796,8 +802,8 @@ module nts.uk.ui.at.kdw013.a {
                             }
 
                             _.forEach(td.taskItemValues, ti => {
-                                const start = (moment(e.start).hour() * 60) + moment(e.start).minute();
-                                const end = (moment(e.end).hour() * 60) + moment(e.end).minute();
+                                let start = (moment(e.start).hour() * 60) + moment(e.start).minute();
+                                let end = (moment(e.end).hour() * 60) + moment(e.end).minute();
                                 if (ti.itemId == 1) { ti.value = taskDetails.length > 1 ? null : start };
                                 if (ti.itemId == 2) { ti.value = taskDetails.length > 1 ? null : end };
                             });
@@ -815,19 +821,19 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         saveData() {
-            const vm = this;
-            const { events, dateRange } = vm;
-            const { HAND_CORRECTION_MYSELF, HAND_CORRECTION_OTHER } = EditStateSetting;
-            const { start, end } = ko.unwrap(dateRange);
+            let vm = this;
+            let { events, dateRange } = vm;
+            let { HAND_CORRECTION_MYSELF, HAND_CORRECTION_OTHER } = EditStateSetting;
+            let { start, end } = ko.unwrap(dateRange);
 
             if (!start || !end) {
                 return;
             }
 
-            const $events = ko.unwrap(events);
-            const dateRanges = () => {
-                const dates: Date[] = [];
-                const begin = moment(start);
+            let $events = ko.unwrap(events);
+            let dateRanges = () => {
+                let dates: Date[] = [];
+                let begin = moment(start);
 
                 while (begin.isBefore(end, 'day')) {
                     dates.push(begin.toDate());
@@ -862,7 +868,7 @@ module nts.uk.ui.at.kdw013.a {
 
             let integrationOfDailys = vm.createIDaily(dateRanges());
 
-            const command: nts.uk.ui.at.kdw013.RegisterWorkContentCommand = {
+            let command: nts.uk.ui.at.kdw013.RegisterWorkContentCommand = {
                 deleteAttByTimeZones,
                 changedDates,
                 editStateSetting,
@@ -880,7 +886,7 @@ module nts.uk.ui.at.kdw013.a {
                 //作業を登録する
                 .then(() => vm.$ajax('at', API.REGISTER, command))
                 .then((response: RegisterWorkContentDto) => {
-                    const { dataResult, lstOvertimeLeaveTime, alarmMsg_2081 } = response;
+                    let { dataResult, lstOvertimeLeaveTime, alarmMsg_2081 } = response;
 					if(dataResult.errorMap.message){
 						if(_.includes(dataResult.errorMap.message, 'Msg_')){
 							return vm.$dialog.error({ messageId: dataResult.errorMap[0].message });
@@ -914,7 +920,7 @@ module nts.uk.ui.at.kdw013.a {
 					}
                 })
                 .fail((response: ErrorMessage) => {
-                    const { messageId, parameterIds } = response;
+                    let { messageId, parameterIds } = response;
 					if(messageId){
 						return vm.$dialog
                         .error({ messageId, messageParams: parameterIds })
@@ -932,14 +938,14 @@ module nts.uk.ui.at.kdw013.a {
         // 日付を変更する
         // UKDesign.UniversalK.就業.KDW_日別実績.KDW013_工数入力.A:工数入力.メニュー別OCD.日付を変更する
         datesSet(start: Date, end: Date) {
-            const vm = this;
+            let vm = this;
 
             vm.dateRange({ start, end });
         }
 
         over20TaskDays(dates){
-            const vm = this;
-            const data = ko.unwrap(vm.$datas())
+            let vm = this;
+            let data = ko.unwrap(vm.$datas())
             let result = [];
             _.forEach(dates, date => {
                 let eventsInday = _.filter(vm.events(), e => moment(e.start).isSame(moment(date), 'days'));
@@ -956,24 +962,24 @@ module nts.uk.ui.at.kdw013.a {
 
         createDeleteAttByTimeZones(dates){
             let vm = this;
-            const employeeId = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
-            const dailyManHrTasks = _.get(vm.$datas(), 'dailyManHrTasks', []);
+            let employeeId = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
+            let dailyManHrTasks = _.get(vm.$datas(), 'dailyManHrTasks', []);
             
-            const deleteList = [];
+            let deleteList = [];
     
             _.forEach(dates, date => {
                 
-                const hrTask = _.find(dailyManHrTasks, hr => moment(hr.date).isSame(moment(date), 'days'));
-                const id = _.find(_.get(vm.$datas(), 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days'); });
+                let hrTask = _.find(dailyManHrTasks, hr => moment(hr.date).isSame(moment(date), 'days'));
+                let id = _.find(_.get(vm.$datas(), 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days'); });
 
-                const ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
+                let ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
 
-                const taskBlocks = _.get(hrTask, 'taskBlocks', []);
+                let taskBlocks = _.get(hrTask, 'taskBlocks', []);
                 
                 //① 日別実績の工数実績作業
                 let dailyManHrTaskNos = [];
                 for (let i = 0; i < ouenTimeSheet.length; i++) {
-                    const workNo = _.get(ouenTimeSheet[i], 'workNo');
+                    let workNo = _.get(ouenTimeSheet[i], 'workNo');
 
                     if (!_.find(taskBlocks, tb => _.find(tb.taskDetails, ['supNo', workNo]))) {
                        dailyManHrTaskNos.push(workNo);
@@ -1005,15 +1011,15 @@ module nts.uk.ui.at.kdw013.a {
             let result = [];
 
             _.forEach(dates, date => {
-                const lstWorkDetailsParamCommand= []
+                let lstWorkDetailsParamCommand= []
                 
-                const eventHas2Task = _
+                let eventHas2Task = _
                     .chain(vm.events())
                     .filter(({ start }) => moment(start).isSame(moment(date), 'days'))
                     .filter(({ extendedProps }) => _.get(extendedProps, 'taskBlock.taskDetails', []).length > 1).value();
                     
                 _.forEach(eventHas2Task, ({ start, end, extendedProps }) => {
-                    const {
+                    let {
                         taskBlock
                     } = extendedProps;
                     
@@ -1043,7 +1049,7 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         createIDaily(dates){
-            const vm = this;
+            let vm = this;
             let result = [];
 
             let ids = _.get(vm.$datas(), 'lstIntegrationOfDaily', []);
@@ -1051,12 +1057,12 @@ module nts.uk.ui.at.kdw013.a {
             let removeBreakList = vm.removeBreakList;
             _.forEach(dates, date => {
 
-                const id = _.find(ids, id => moment(id.ymd).isSame(moment(date), 'days'));
+                let id = _.find(ids, id => moment(id.ymd).isSame(moment(date), 'days'));
 
                 
                 if (id) {
                         
-                    const id = _.find(ids, id => moment(id.ymd).isSame(moment(date), 'days'));
+                    let id = _.find(ids, id => moment(id.ymd).isSame(moment(date), 'days'));
 
                     if (id) {
                         //mapping break time
@@ -1066,7 +1072,7 @@ module nts.uk.ui.at.kdw013.a {
 
                         if (vm.isShowBreakTime()) {
                               //mapping break time
-                            const breakTimes = _.filter(vm.events(), e => moment(e.start).isSame(date, 'day') && _.get(e, 'extendedProps.isTimeBreak', false) == true);
+                            let breakTimes = _.filter(vm.events(), e => moment(e.start).isSame(date, 'day') && _.get(e, 'extendedProps.isTimeBreak', false) == true);
                             
                             breakTime.breakTimeSheets = _.map(breakTimes, bt => {
 
@@ -1086,13 +1092,13 @@ module nts.uk.ui.at.kdw013.a {
         }
         // 作業実績を確認する
         confirm() {
-            const vm = this;
-            const { $user, $datas, employee, initialDate } = vm;
-            const date = ko.unwrap(initialDate);
-            const employeeId = ko.unwrap(employee);
+            let vm = this;
+            let { $user, $datas, employee, initialDate } = vm;
+            let date = ko.unwrap(initialDate);
+            let employeeId = ko.unwrap(employee);
 
             if (employeeId) {
-                const command: AddWorkRecodConfirmationCommand = {
+                let command: AddWorkRecodConfirmationCommand = {
                     //対象者
                     // get from A2_5 control
                     employeeId,
@@ -1109,7 +1115,7 @@ module nts.uk.ui.at.kdw013.a {
                     // 作業実績を確認する
                     .then(() => vm.$ajax('at', API.ADD, command))
                     .then((lstComfirmerDto: ConfirmerDto[]) => {
-                        const _datas = ko.unwrap($datas);
+                        let _datas = ko.unwrap($datas);
 
                         if (_datas) {
                             _datas.lstComfirmerDto = lstComfirmerDto;
@@ -1128,13 +1134,13 @@ module nts.uk.ui.at.kdw013.a {
 
         // 作業実績の確認を解除する
         removeConfirm() {
-            const vm = this;
-            const { $user, $datas, employee, initialDate } = vm;
-            const date = ko.unwrap(initialDate);
-            const employeeId = ko.unwrap(employee);
+            let vm = this;
+            let { $user, $datas, employee, initialDate } = vm;
+            let date = ko.unwrap(initialDate);
+            let employeeId = ko.unwrap(employee);
 
             if (employeeId) {
-                const command = {
+                let command = {
                     //対象者
                     // get from A2_5 control
                     employeeId,
@@ -1151,7 +1157,7 @@ module nts.uk.ui.at.kdw013.a {
                     // 作業実績の確認を解除する
                     .then(() => vm.$ajax('at', API.DELETE, command))
                     .then((lstComfirmerDto: ConfirmerDto[]) => {
-                        const _datas = ko.unwrap($datas);
+                        let _datas = ko.unwrap($datas);
 
                         if (_datas) {
                             _datas.lstComfirmerDto = lstComfirmerDto;
@@ -1170,7 +1176,7 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         private openDialogCaculationResult(data: OvertimeLeaveTime[]) {
-            const vm = this;
+            let vm = this;
 
             vm.$window
                 .modal('at', '/view/kdw/013/d/index.xhtml', data)
@@ -1179,9 +1185,9 @@ module nts.uk.ui.at.kdw013.a {
 
         // Popup F:
         updateFavName() {
-            const vm = this;
+            let vm = this;
 
-            const updateFavNameCommand: UpdateFavNameCommand = {
+            let updateFavNameCommand: UpdateFavNameCommand = {
                 favId: vm.favoriteTaskItem().favoriteId,
                 favName: vm.favTaskName()
             }
@@ -1208,7 +1214,7 @@ module nts.uk.ui.at.kdw013.a {
 
         }
         reloadTaskFav(){
-            const vm = this;
+            let vm = this;
     
             vm
                 .$blockui('grayout')
@@ -1221,7 +1227,7 @@ module nts.uk.ui.at.kdw013.a {
 
         // Popup G:
         registerOneDayFavTask() {
-            const vm = this;
+            let vm = this;
             let favId = _.get(vm.oneDayFavoriteSet(), 'favId', '');
 
             if (favId =='') {
@@ -1232,9 +1238,9 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         updateOneDayFavName(favTaskId: string) {
-            const vm = this;
+            let vm = this;
 
-            const updateFavNameCommand: UpdateFavNameCommand = {
+            let updateFavNameCommand: UpdateFavNameCommand = {
                 favId: favTaskId,
                 favName: vm.oneDayFavTaskName()
             }
@@ -1262,7 +1268,7 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         reloadOneDayFav(){
-            const vm = this;
+            let vm = this;
     
             vm
                 .$blockui('grayout')
@@ -1274,9 +1280,9 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         addOneDayFavTask(){
-            const vm = this;
+            let vm = this;
 
-            const registerFavoriteForOneDayCommand : RegisterFavoriteForOneDayCommand = {
+            let registerFavoriteForOneDayCommand : RegisterFavoriteForOneDayCommand = {
                 employeeId: vm.$user.employeeId,
                 taskName: vm.oneDayFavTaskName(),
                 contents: ko.unwrap(vm.taskBlocks)
@@ -1364,7 +1370,7 @@ module nts.uk.ui.at.kdw013.a {
             
             let param = {
                 workNo: data.workNo,
-                taskDtos: ko.unwrap(vm.taskDtos),
+                //taskDtos: ko.unwrap(vm.taskDtos),
                 ouenWorkTimes: ko.unwrap(vm.ouenWorkTimes),
                 ouenWorkTimeSheets: ko.unwrap(vm.ouenWorkTimeSheets),
                 taskSettings: ko.unwrap(vm.taskSettings),

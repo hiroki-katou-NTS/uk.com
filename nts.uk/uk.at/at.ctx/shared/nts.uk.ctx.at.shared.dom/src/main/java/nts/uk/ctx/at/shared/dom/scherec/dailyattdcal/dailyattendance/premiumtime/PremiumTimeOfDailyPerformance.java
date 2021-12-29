@@ -25,7 +25,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class PremiumTimeOfDailyPerformance {
 
 	/** 割増時間 **/

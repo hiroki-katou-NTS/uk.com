@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcResultOfAnyItem;
 import nts.uk.shr.com.i18n.TextResource;
@@ -82,13 +83,13 @@ public class CalcResultRange extends DomainObject {
 	 * 上限下限チェック
 	 * @return
 	 */
-	public CalcResultOfAnyItem checkRange(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem) {
+	public CalcResultOfAnyItem checkRange(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem, PerformanceAtr performanceAtr) {
 		if(this.upperLimit.isSET()) {
-			BigDecimal upperValue = getUpperLimitValue(calcResultOfAnyItem, optionalItem);
+			val upperValue = getUpperLimitValue(calcResultOfAnyItem, optionalItem, performanceAtr);
 			calcResultOfAnyItem = calcResultOfAnyItem.reCreateCalcResultOfAnyItem(upperValue, optionalItem.getOptionalItemAtr());
 		}
 		if(this.lowerLimit.isSET()) {
-			BigDecimal lowerValue = getLowerLimitValue(calcResultOfAnyItem, optionalItem);
+			val lowerValue = getLowerLimitValue(calcResultOfAnyItem, optionalItem, performanceAtr);
 			calcResultOfAnyItem = calcResultOfAnyItem.reCreateCalcResultOfAnyItem(lowerValue, optionalItem.getOptionalItemAtr());
 		}
 		return calcResultOfAnyItem;
@@ -101,28 +102,34 @@ public class CalcResultRange extends DomainObject {
 	 * @param optionalItem
 	 * @return
 	 */
-	public BigDecimal getUpperLimitValue(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem) {
+	public Optional<BigDecimal> getUpperLimitValue(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem, PerformanceAtr performanceAtr) {
 		switch(optionalItem.getOptionalItemAtr()) {
 		case TIME:
-			return this.timeRange.map(range -> {
+			if (!this.timeRange.isPresent()) return calcResultOfAnyItem.getTime();
+			
+			return this.timeRange.flatMap(range -> {
 				
 				return getValueOrUpper(() -> calcResultOfAnyItem.getTime(), 
-										() -> range.getUpper(optionalItem.getPerformanceAtr()));
-			}).orElse(BigDecimal.ZERO);
+										() -> range.getUpper(performanceAtr));
+			});
 			
 		case NUMBER:
-			return this.numberRange.map(range -> {
+			if (!this.numberRange.isPresent()) return calcResultOfAnyItem.getCount();
+			
+			return this.numberRange.flatMap(range -> {
 				
 				return getValueOrUpper(() -> calcResultOfAnyItem.getCount(), 
-										() -> range.getUpper(optionalItem.getPerformanceAtr()));
-			}).orElse(BigDecimal.ZERO);
+										() -> range.getUpper(performanceAtr));
+			});
 			
 		case AMOUNT:
-			return this.amountRange.map(range -> {
+			if (!this.amountRange.isPresent()) return calcResultOfAnyItem.getMoney();
+			
+			return this.amountRange.flatMap(range -> {
 				
 				return getValueOrUpper(() -> calcResultOfAnyItem.getMoney(), 
-										() -> range.getUpper(optionalItem.getPerformanceAtr()));
-			}).orElse(BigDecimal.ZERO);
+										() -> range.getUpper(performanceAtr));
+			});
 			
 		default:
 			throw new RuntimeException("unknown value of enum OptionalItemAtr");
@@ -135,56 +142,62 @@ public class CalcResultRange extends DomainObject {
 	 * @param optionalItem
 	 * @return
 	 */
-	public BigDecimal getLowerLimitValue(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem) {
+	public Optional<BigDecimal> getLowerLimitValue(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem, PerformanceAtr performanceAtr) {
 		switch(optionalItem.getOptionalItemAtr()) {
 		case TIME:
-			return this.timeRange.map(range -> {
+			if (!this.timeRange.isPresent()) return calcResultOfAnyItem.getTime();
+			
+			return this.timeRange.flatMap(range -> {
 				
 				return getValueOrLower(() -> calcResultOfAnyItem.getTime(),
-										() -> range.getLower(optionalItem.getPerformanceAtr()));
-			}).orElse(BigDecimal.ZERO);
+										() -> range.getLower(performanceAtr));
+			});
 			
 		case NUMBER:
-			return this.numberRange.map(range -> {
+			if (!this.timeRange.isPresent()) return calcResultOfAnyItem.getCount();
+			
+			return this.numberRange.flatMap(range -> {
 				
 				return getValueOrLower(() -> calcResultOfAnyItem.getCount(),
-										() -> range.getLower(optionalItem.getPerformanceAtr()));
-			}).orElse(BigDecimal.ZERO);
+										() -> range.getLower(performanceAtr));
+			});
 			
 		case AMOUNT:
-			return this.amountRange.map(range -> {
+			if (!this.timeRange.isPresent()) return calcResultOfAnyItem.getMoney();
+			
+			return this.amountRange.flatMap(range -> {
 				
 				return getValueOrLower(() -> calcResultOfAnyItem.getMoney(),
-										() -> range.getLower(optionalItem.getPerformanceAtr()));
-			}).orElse(BigDecimal.ZERO);
+										() -> range.getLower(performanceAtr));
+			});
 			
 		default:
 			throw new RuntimeException("unknown value of enum OptionalItemAtr");
 		}
 	}
 	
-	private BigDecimal getValueOrUpper(Supplier<Optional<BigDecimal>> target, Supplier<Optional<BigDecimal>> limit) {
-		BigDecimal upperLimit = limit.get().orElse(BigDecimal.ZERO);
+	private Optional<BigDecimal> getValueOrUpper(Supplier<Optional<BigDecimal>> target, Supplier<Optional<BigDecimal>> limit) {
+		if (!limit.get().isPresent()) return target.get();
 			
 		return target.get().map(c -> {
 			/** 値 > 上限値　の場合　値←上限値とする。 */
-			if (c.compareTo(upperLimit) > 0) {
-				return upperLimit;
+			if (c.compareTo(limit.get().get()) > 0) {
+				return limit.get().get();
 			}
 			return c;
-		}).orElse(BigDecimal.ZERO);
+		});
 	}
 	
-	private BigDecimal getValueOrLower(Supplier<Optional<BigDecimal>> target, Supplier<Optional<BigDecimal>> limit) {
-		BigDecimal lowerLimit = limit.get().orElse(BigDecimal.ZERO);
+	private Optional<BigDecimal> getValueOrLower(Supplier<Optional<BigDecimal>> target, Supplier<Optional<BigDecimal>> limit) {
+		if (!limit.get().isPresent()) return target.get();
 			
 		return target.get().map(c -> {
 			/** 値 < 下限値　の場合　値←下限値とする。 */
-			if (c.compareTo(lowerLimit) < 0) {
-				return lowerLimit;
+			if (c.compareTo(limit.get().get()) < 0) {
+				return limit.get().get();
 			}
 			return c;
-		}).orElse(BigDecimal.ZERO);
+		});
 	}
 	
 	/**
