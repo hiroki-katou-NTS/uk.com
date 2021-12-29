@@ -27,47 +27,47 @@ public class WorkDaysNumberOnLeaveCountWebService extends WebService {
 
 	@Inject
 	private WorkDaysNumberOnLeaveCountFinder workDaysNumberOnLeaveCountFinder;
-	
+
 	@Inject
 	private RegisterWorkDaysNumberOnLeaveCountCommandHandler registerCommandHandler;
-	
+
 	@Inject
 	private TimeSpecialLeaveSaveCommandHandler saveCommandHandler;
-	
+
 	@Inject
 	private TimeSpecialLeaveManagementSettingFinder timeSpecialLeaveManagementSettingFinder;
-	
+
 	@POST
 	@Path("/get")
 	public WorkDaysNumberOnLeaveCountDto getByCid() {
 		return this.workDaysNumberOnLeaveCountFinder.findByCid();
 	}
-	
+
 	@POST
 	@Path("/register")
 	public void register(RegisterWorkDaysNumberOnLeaveCountCommand command) {
 		this.registerCommandHandler.handle(command);
 	}
-	
-    @POST
-    @Path("/timemanagementdistinct")
-    public List<EnumConstant> findTimeManagementDistinct() {
-        return EnumAdaptor.convertToValueNameList(ManageDistinct.class);
-    }
-    
-    @POST
-    @Path("/timeunit")
-    public List<EnumConstant> findTimeVacationDigestiveUnit() {
-        return EnumAdaptor.convertToValueNameList(TimeDigestiveUnit.class);
-    }
-    
-    @POST
-    @Path("/save")
-    public void save(TimeSpecialLeaveSaveCommand command) {
-        this.saveCommandHandler.handle(command);
-    }
-    
-    @POST
+
+	@POST
+	@Path("/timemanagementdistinct")
+	public List<EnumConstant> findTimeManagementDistinct() {
+		return EnumAdaptor.convertToValueNameList(ManageDistinct.class);
+	}
+
+	@POST
+	@Path("/timeunit")
+	public List<EnumConstant> findTimeVacationDigestiveUnit() {
+		return EnumAdaptor.convertToValueNameList(TimeDigestiveUnit.class);
+	}
+
+	@POST
+	@Path("/save")
+	public void save(TimeSpecialLeaveSaveCommand command) {
+		this.saveCommandHandler.handle(command);
+	}
+
+	@POST
 	@Path("/findAll")
 	public TimeSpecialLeaveManagementSettingDto findAllByCid() {
 		return this.timeSpecialLeaveManagementSettingFinder.findByCid();

@@ -17,8 +17,10 @@ import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvac
 @AllArgsConstructor
 public class TimeSpecialLeaveSaveCommand {
 	
+	/** The time manage type. */
     private Integer timeManageType;
 
+    /** The time unit. */
     private Integer timeUnit;
     
 	public TimeSpecialLeaveManagementSetting toDomain(String companyId) {
