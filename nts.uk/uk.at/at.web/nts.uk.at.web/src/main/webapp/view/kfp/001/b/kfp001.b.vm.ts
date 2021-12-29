@@ -77,6 +77,8 @@ module nts.uk.at.view.kfp001.b {
                         $('#hor-scroll-button-hide').hide();
                         _.defer(() => {
                             $('#hor-scroll-button-hide').show();
+                            // call api load table
+                            self.backStartKFP001B();
                         });
                         $('#NEW_BTN_B1_2').show();
                         $('#DELETE_BTN_B1_3').show();
@@ -169,6 +171,68 @@ module nts.uk.at.view.kfp001.b {
 
                     ko.computed(() => {
 
+                        self.dScreenmodel.listEmp(self.cScreenmodel.selectedEmployee());
+                        self.dScreenmodel.peopleNo(null);
+                        if (_.size(self.cScreenmodel.multiSelectedCode()) >= 418) {
+                            self.dScreenmodel.peopleNo(_.size(self.cScreenmodel.selectedEmployee()));
+                            self.dScreenmodel.peopleCount(nts.uk.resource.getText("KFP001_23", [_.size(self.cScreenmodel.selectedEmployee())]));
+                        } else {
+                            self.dScreenmodel.peopleNo(_.size(self.cScreenmodel.multiSelectedCode()));
+                            self.dScreenmodel.peopleCount(nts.uk.resource.getText("KFP001_23", [_.size(self.cScreenmodel.multiSelectedCode())]));
+                        }
+
+
+                        self.dScreenmodel.listSelect((self.cScreenmodel.multiSelectedCode()));
+                        self.dScreenmodel.aggrFrameCode(self.currentItem().aggrFrameCode());
+                        self.dScreenmodel.optionalAggrName(self.currentItem().optionalAggrName());
+                        self.dScreenmodel.startDate(self.dateValue().startDate);
+                        self.dScreenmodel.endDate(self.dateValue().endDate);
+                        self.dScreenmodel.mode(self.mode());
+                        self.dScreenmodel.executionId(self.aggrId);
+                        self.dScreenmodel.listAggr(self.optionalList());
+                        self.dScreenmodel.presenceOfError(self.status());
+                        self.dScreenmodel.executionStatus(self.preOfError());
+                        if (self.mode() == 1){
+                            self.cScreenmodel.periodStartDate(self.currentItem().startDate());
+                            self.cScreenmodel.periodEndDate(self.currentItem().endDate());
+                        } else {
+                            self.cScreenmodel.periodStartDate(self.dateValue().startDate);
+                            self.cScreenmodel.periodEndDate(self.dateValue().endDate);
+                        }
+
+                    });
+
+                    dfd.resolve();
+                }).fail(function() {
+                    dfd.reject();
+                });
+                return dfd.promise();
+            }
+
+            //Display data in update module when back to screen
+            backStartKFP001B(): JQueryPromise<any> {
+                debugger;
+                var self = this;
+                var dfd = $.Deferred();
+
+                $.when(self.getAllOptionalAggrPeriod()).done(function() {
+                    if (self.items().length > 0) {
+                        self.currentCode(self.currentItem().aggrFrameCode());
+                        self.mode(1);
+                        self.enableText(false);
+                        self.getPeriod();
+                        $('#update-mode').show();
+                        $('#update-mode').focus();
+                        let period = {
+                            periodStartDate: self.currentItem().startDate(),
+                            periodEndDate: self.currentItem().endDate()
+                        }
+                        nts.uk.ui.windows.setShared("KFP001_DATAB", period);
+                    } else {
+                        self.initDataB();
+                    }
+
+                    ko.computed(() => {
                         self.dScreenmodel.listEmp(self.cScreenmodel.selectedEmployee());
                         self.dScreenmodel.peopleNo(null);
                         if (_.size(self.cScreenmodel.multiSelectedCode()) >= 418) {
