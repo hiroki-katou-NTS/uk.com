@@ -131,7 +131,7 @@ public class TimeLeavingWork extends DomainObject{
 				.orElse(null);
 		
 		TimeActualStamp newLeave = leaveStamp
-				.map(le -> isJustEarlyLeave ? le.moveBackStampTime(1) : le)
+				.map(le -> isJustEarlyLeave ? le.moveBackStampTime(-1) : le)
 				.orElse(null);
 		
 		return new TimeLeavingWork(this.workNo, newAttendance , newLeave);
