@@ -143,7 +143,7 @@ public class OverTimeSheet {
 		frameTimeSheets.sort((x, y) -> y.getTimeSheet().getStart().v() -  x.getTimeSheet().getStart().v());
 		
 		//loop
-		frameTimeSheets.forEach(frameSheet -> {
+		frameTimeSheets.stream().filter(x -> x.getWithinStatutryAtr() != StatutoryAtr.DeformationCriterion).forEach(frameSheet -> {
 			// 控除する時間を計算
 			Optional<TimeDeductByPriorAppOutput> frameSheetOpt = lstTimeDeductOut.stream()
 					.filter(frame -> frame.getOverTimeNo().v().intValue() == frameSheet.getFrameTime().getOverWorkFrameNo().v().intValue()).findFirst();
@@ -209,7 +209,8 @@ public class OverTimeSheet {
 		val hol = overTimeOfDaily.clone();
 		hol.getOverTimeWorkFrameTime().forEach(x -> x.cleanTimeAndTransfer());
 		//残業時間帯でループ
-		this.frameTimeSheets.forEach(frameTime -> {
+		this.frameTimeSheets.stream().filter(x -> !x.getWithinStatutryAtr().equals(StatutoryAtr.DeformationCriterion))
+				.forEach(frameTime -> {
 			// 残業時間へ加算
 			val overTime = hol.getOverTimeWorkFrameTime().stream()
 					.filter(x -> x.getOverWorkFrameNo().v() == frameTime.getFrameTime().getOverWorkFrameNo().v()).findFirst();
@@ -304,10 +305,12 @@ public class OverTimeSheet {
 				.collect(Collectors.toList());
 
 		// 代休振替対象となる残業枠NO一覧と一致する時間帯でループする
-		val lstFrameSheetDom = this.frameTimeSheets.stream()
-				.filter(x -> lstFrameUse.stream()
-						.filter(y -> y.getOvertimeWorkFrNo().v().intValue() == x.getFrameTime().getOverWorkFrameNo().v())
-						.findFirst().isPresent())
+		val lstFrameSheetDom = this.frameTimeSheets
+				.stream().filter(
+						x -> x.getWithinStatutryAtr() != StatutoryAtr.DeformationCriterion && lstFrameUse.stream()
+								.filter(y -> y.getOvertimeWorkFrNo().v().intValue() == x.getFrameTime()
+										.getOverWorkFrameNo().v())
+								.findFirst().isPresent())
 				.collect(Collectors.toList());
 
 		// 時間を加算する
@@ -326,9 +329,9 @@ public class OverTimeSheet {
 		//○残業時間帯をソート
 		val lstFrameUse = overTimeFrame.stream().filter(x -> x.getTransferAtr() == NotUseAtr.USE)
 				.collect(Collectors.toList());
-		val lstFrameSheetDom = this.frameTimeSheets.stream()
-				.filter(x -> lstFrameUse.stream()
-						.filter(y -> y.getOvertimeWorkFrNo().v().intValue() == x.getFrameTime().getOverWorkFrameNo().v())
+		val lstFrameSheetDom = this.frameTimeSheets.stream().filter(
+				x -> x.getWithinStatutryAtr() != StatutoryAtr.DeformationCriterion && lstFrameUse.stream().filter(
+						y -> y.getOvertimeWorkFrNo().v().intValue() == x.getFrameTime().getOverWorkFrameNo().v())
 						.findFirst().isPresent())
 				.sorted((x, y) -> {
 					if (timeSeries == TimeSeriesDivision.TIME_SERIES) {
