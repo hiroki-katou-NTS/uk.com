@@ -2442,7 +2442,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
      */
     public void checkLinkingData(WorkType workType, ManageDistinct linkingManagement, List<LeaveComDayOffManagement> leaveComDayOffManas, List<PayoutSubofHDManagement> payoutSubofHDManagements, boolean isEmptyLeaveList, boolean isEmptyPayoutList) {
         // 代休の紐付けをチェックする
-        if (!isEmptyLeaveList && isHolidayWorkType(workType) && leaveComDayOffManas.isEmpty()) {
+        if (!isEmptyLeaveList && isHolidayWorkType(workType) && leaveComDayOffManas.isEmpty() && linkingManagement.equals(ManageDistinct.YES)) {
             throw new BusinessException("Msg_3255");
         }
         
