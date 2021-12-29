@@ -22,7 +22,8 @@ public class TimeSpecialLeaveSaveCommandHandler extends CommandHandler<TimeSpeci
 
 	@Inject
 	private TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository;
-
+	
+	// ドメインモデル「時間特別休暇の管理設定」を取得
 	@Override
 	protected void handle(CommandHandlerContext<TimeSpecialLeaveSaveCommand> context) {
 		String companyId = AppContexts.user().companyId();
