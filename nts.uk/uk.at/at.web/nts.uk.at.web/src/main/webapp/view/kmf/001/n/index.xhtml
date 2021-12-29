@@ -13,6 +13,7 @@
       </script>
       <com:EnumScript>
 				nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct
+        nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit
 			</com:EnumScript>
 			<com:stylefile path="kmf001.n.style.css" />
 			<com:scriptfile path="kmf001.n.vm.js" />
@@ -39,9 +40,9 @@
           <div id="N1_7" class="setting-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF001_357')}</div>
           <div id="N1_8" data-bind="ntsSwitchButton: {
             name: $i18n('KMF001_357'),
-            options: timeManageMentDistinctList,
+            options: manageDistinctList,
             optionsValue: 'value',
-            optionsText: 'localizedName',
+            optionsText: 'name',
             value: timeManageType
           }" tabindex="1"></div>
         </div>
@@ -54,11 +55,11 @@
               optionsValue: 'value',
               visibleItemsCount: 5,
               value: timeUnit,
-              optionsText: 'localizedName',
+              optionsText: 'name',
               editable: false,
               enable:enableTimeSetting,
               columns: [
-                {prop: 'localizedName', length: 10 }
+                {prop: 'name', length: 10 }
               ]}"></div>
         </div>
       </div>
