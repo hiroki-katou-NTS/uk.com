@@ -13,6 +13,7 @@ import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScheFunctionControlDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScheModifyAuthCtrlByPersonDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScheModifyAuthCtrlCommonDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.EmployeeInformationDto;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.GetEmployeeInformationsDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.GetStartupProcessingInformationDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.IndividualDisplayControlDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.TheInitialDisplayDateDto;
@@ -43,6 +44,9 @@ public class GetStartupProcessingInformation {
 	@Inject
 	private ScheFunctionControlRepository scheFunctionControlRepository;
 	
+	@Inject
+	private GetEmployeeInformations getEmployeeInformations;
+	
 	public GetStartupProcessingInformationDto get() {
 		
 		EmployeeInformationDto informationDto = this.employeeInformation.getEmployeeInfo();
@@ -51,7 +55,13 @@ public class GetStartupProcessingInformation {
 		
 		IndividualDisplayControlDto individualDisplayControl = this.getIndividualDisplayControl();
 		
-		return new GetStartupProcessingInformationDto(individualDisplayControl, AppContexts.user().employeeId(), informationDto.getEmployeeCd(), informationDto.getEmployeeName(), ym.getYearMonth());
+		GetEmployeeInformationsDto employeeInfo = getEmployeeInformations.getEmployeeInformations();
+		
+		return new GetStartupProcessingInformationDto(individualDisplayControl, 
+				AppContexts.user().employeeId(), 
+				informationDto.getEmployeeCd(), 
+				informationDto.getEmployeeName(), ym.getYearMonth(),
+				employeeInfo);
 	}
 	
 	/** 個人別の表示制御を取得する */

@@ -10,7 +10,6 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExecutionInfor;
-import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ResultRegisWorkSchedule;
 import nts.uk.ctx.at.shared.app.find.workrule.weekmanage.WeekRuleManagementDto;
 import nts.uk.ctx.at.shared.app.find.workrule.weekmanage.WeekRuleManagementFinder;
 import nts.uk.ctx.at.shared.app.workrule.workinghours.CheckTimeIsIncorrect;
@@ -23,12 +22,14 @@ import nts.uk.screen.at.app.ksu001.processcommon.GetListWorkTypeAvailable;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.CorrectWorkTimeHalfDayKSu002;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.CorrectWorkTimeHalfDayOutput;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetDataDaily;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.GetEmployeeInformations;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetScheduleActualOfWorkInfo002;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetStartupProcessingInformation;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.KSU002Finder;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.ListOfPeriodsClose;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.RegisterWorkSceduleCommandHandler;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.TheInitialDisplayDate;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.GetEmployeeInformationsDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.GetStartupProcessingInformationDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.LegalWorkTimeOfEmployeeDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PlansResultsDto;
@@ -77,6 +78,10 @@ public class Ksu002AWebService extends WebService {
 	
 	@Inject
 	private GetStartupProcessingInformation getStartupProcessingInformation;
+	
+	@Inject
+	private GetEmployeeInformations getEmployeeInformations;
+
 
 	@POST
 	@Path("getListOfPeriodsClose")
@@ -163,5 +168,12 @@ public class Ksu002AWebService extends WebService {
 	@Path("getStartupProcessingInformation")
 	public GetStartupProcessingInformationDto getStartupProcessingInformation() {
 		return this.getStartupProcessingInformation.get();
+	}
+
+	// 社員情報リストを取得する
+	@POST
+	@Path("getEmployeeInformations")
+	public GetEmployeeInformationsDto getEmployeeInformations() {
+		return this.getEmployeeInformations.getEmployeeInformations();
 	}
 }
