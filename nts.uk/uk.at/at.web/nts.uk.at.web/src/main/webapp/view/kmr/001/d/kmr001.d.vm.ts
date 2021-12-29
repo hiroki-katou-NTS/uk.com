@@ -226,7 +226,11 @@ module nts.uk.at.kmr001.d {
                         vm.$blockui("clear");
                         if (vm.selectedHistoryId()) {
                             let preSelectHist = _.find(vm.lstWpkHistory(), h => h.historyId == vm.selectedHistoryId());
-                            let params = preSelectHist.startDate;
+                            let params = {
+								date: preSelectHist.startDate,
+								isLasted: vm.isLatestHistory()
+							};
+										
 							if(_.isEmpty(params)) {
 								vm.$window.close();	
 							} else {

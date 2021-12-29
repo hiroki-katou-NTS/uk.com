@@ -217,7 +217,8 @@ module nts.uk.at.kmr001.c {
             vm.$window.modal('at', PATH.KMR001_D)
                 .then((result: any) => {
 					if(result) {
-						vm.date = result.params;
+						vm.date = result.params.date;
+						vm.isLasted(result.params.isLasted);
 						vm.getBentoMenu();	
 					}
                 }).then(() => {
