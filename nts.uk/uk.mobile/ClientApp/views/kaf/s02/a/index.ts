@@ -724,6 +724,40 @@ export class KafS02AComponent extends KafS00ShrComponent {
             }
         });
 
+        if (!self.mode) {
+            let workHourEditNo = 0;
+            let tempWorkHourEditNo = 0;
+            let supportEditNo = 0;
+
+            self.workHourLst.forEach((item: WorkHour) => {
+                if (item.workHours.start || item.workHours.end) {
+                    workHourEditNo++;
+                }
+            });
+
+            self.tempWorkHourLst.forEach((item: WorkHour) => {
+                if (item.workHours.start || item.workHours.end) {
+                    tempWorkHourEditNo++;
+                }
+            });
+
+            self.supportLst.forEach((item: WorkHour) => {
+                if (item.workHours.start || item.workHours.end) {
+                    supportEditNo++;
+                }
+            });
+
+            if (workHourEditNo > 0 && workHourEditNo <= self.workHourLst.length) {
+                self.workHourLstNumber = workHourEditNo;
+            }
+            if (tempWorkHourEditNo > 0 && tempWorkHourEditNo <= self.tempWorkHourLst.length) {
+                self.tempWorkHourLstNumber = tempWorkHourEditNo;
+            }
+            if (supportEditNo > 0 && supportEditNo <= self.supportLst.length) {
+                self.supportLstNumber = supportEditNo;
+            }
+        }
+
         self.workHourLst = _.sortBy(self.workHourLst, ['frame']);
         self.tempWorkHourLst = _.sortBy(self.tempWorkHourLst, ['frame']);
         self.goOutLst = _.sortBy(self.goOutLst, ['frame']);
