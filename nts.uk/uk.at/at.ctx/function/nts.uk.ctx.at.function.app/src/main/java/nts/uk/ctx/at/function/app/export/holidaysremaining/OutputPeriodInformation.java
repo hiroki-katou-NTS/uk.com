@@ -2,6 +2,8 @@ package nts.uk.ctx.at.function.app.export.holidaysremaining;
 
 
 import lombok.Data;
+
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 
 import java.util.List;
@@ -18,5 +20,6 @@ public class OutputPeriodInformation {
     private Optional<List<PeriodCorrespondingYm>> currentMonthAndFuture;
 
     private Optional<YearMonthPeriod> pastPeriod;
+    private Optional<DatePeriod> currentPeriod;
 
 }
