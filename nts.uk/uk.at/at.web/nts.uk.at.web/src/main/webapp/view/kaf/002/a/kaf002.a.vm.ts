@@ -545,6 +545,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                         dataObject.opEndTime = item.opEndTime;
                         dataObject.opWorkLocationCD = item.opWorkLocationCD;
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        dataObject.workplaceId = item.workplaceId;
                     }
                 });
                 list.push(new GridItem(dataObject, STAMPTYPE.CHEERING));

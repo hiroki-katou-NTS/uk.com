@@ -855,7 +855,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} .label-workplace-id`).remove();
     
                 if (data.workplaceId) {
-                  const wkpName = _.find(self.workplaceNames, wkp => wkp.workplaceId == data.workplaceId)?.wkpName;
+                  const wkpName = _.find(self.workplaceNames, wkp => wkp?.workplaceId == data.workplaceId)?.wkpName;
                   $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} .nts-button-container`).after(() => {
                     return $(`<div class="limited-label label-workplace-id">${wkpName || ""}</div>`);
                   });
@@ -866,7 +866,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} button`).removeAttr("tabindex");
                 $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} .label-work-location`).remove();
                 if (data.workLocationCD) {
-                  const locationName = _.find(self.workLocationNames, lo => lo.workLocationCode == data.workLocationCD)?.workLocationName;
+                  const locationName = _.find(self.workLocationNames, lo => lo?.workLocationCode == data.workLocationCD)?.workLocationName;
                   $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} .nts-button-container`).after(() => {
                     return $(`<div class="limited-label label-work-location">${locationName || ""}</div>`);
                   });

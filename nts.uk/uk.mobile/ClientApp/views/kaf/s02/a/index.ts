@@ -255,7 +255,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
     public bindData(data: any) {
         const self = this;
-
+        self.workLocationNames = data.workLocationNames;
+        self.workplaceNames = data.workplaceNames;
         self.appStampReflectOptional = data.appStampReflectOptional;
         self.appStampSetting = data.appStampSetting;
         self.useCheering = data.useCheering;
@@ -1083,6 +1084,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
             .then((res: any) => {
                 self.appDispInfoStartupOutput = res.data.appDispInfoStartupOutput;
                 let opActualContentDisplayLst = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
+                self.workLocationNames = res.data.workLocationNames;
+                self.workplaceNames = res.data.workplaceNames;
                 if (!_.isEmpty(opActualContentDisplayLst)) {
                     this.bindActualAchive(opActualContentDisplayLst);
                 }
@@ -1181,6 +1184,10 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             this.workHourLst[i].actualHours.applicationAchievementAtr = 1;
                             this.workHourLst[i].actualHours.startTime = item.opStartTime;
                             this.workHourLst[i].actualHours.endTime = item.opEndTime;
+                            if (this.mode) {
+                                this.workHourLst[i].workplaceId = item.workplaceId;
+                                this.workHourLst[i].workLocationCD = item.opWorkLocationCD;
+                            }
                         }
                     }
                 });
@@ -1194,6 +1201,10 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             this.tempWorkHourLst[i].actualHours.applicationAchievementAtr = 1;
                             this.tempWorkHourLst[i].actualHours.startTime = item.opStartTime;
                             this.tempWorkHourLst[i].actualHours.endTime = item.opEndTime;
+                            if (this.mode) {
+                                this.tempWorkHourLst[i].workplaceId = item.workplaceId;
+                                this.tempWorkHourLst[i].workLocationCD = item.opWorkLocationCD;
+                            }
                         }
                     }
                 });
@@ -1259,6 +1270,10 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             this.supportLst[i].actualHours.applicationAchievementAtr = 1;
                             this.supportLst[i].actualHours.startTime = item.opStartTime;
                             this.supportLst[i].actualHours.endTime = item.opEndTime;
+                            if (this.mode) {
+                                this.supportLst[i].workplaceId = item.workplaceId;
+                                this.supportLst[i].workLocationCD = item.opWorkLocationCD;
+                            }
                         }
                     }
                 });
