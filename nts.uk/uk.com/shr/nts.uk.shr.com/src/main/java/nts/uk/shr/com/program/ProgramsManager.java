@@ -4029,6 +4029,16 @@ public class ProgramsManager {
 
 
     /**
+     * KHA002
+     */
+    public static final Program KHA002A = new Program(WebAppId.AT, ProgramIdConsts.KHA002A, "KHA002_1",
+            "/view/kha/002/a/index.xhtml");
+    public static final Program KHA002B = new Program(WebAppId.AT, ProgramIdConsts.KHA002B, "KHA002_2",
+            "/view/kha/002/b/index.xhtml");
+    public static final Program KHA002C = new Program(WebAppId.AT, ProgramIdConsts.KHA002C, "KHA002_3",
+            "/view/kha/002/c/index.xhtml");
+
+    /**
      * KHA003
      */
     public static final Program KHA003A = new Program(WebAppId.AT, ProgramIdConsts.KHA003A, "KHA003_1",
