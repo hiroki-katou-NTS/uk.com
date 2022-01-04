@@ -165,7 +165,7 @@ module nts.uk.at.view.kmr001.b {
 			}
 			if(vm.selectedContent()==ContentChangeDeadline.MODIFIED_FROM_ORDER_DATE) {
 				if(vm.contentChangeDeadlineDayCurrent()==0) {
-					vm.$dialog.error({ messageId: 'Msg_2263' });
+					nts.uk.ui.dialog.caution({ messageId: 'Msg_2263' });
 					return false;
 				}
 			}

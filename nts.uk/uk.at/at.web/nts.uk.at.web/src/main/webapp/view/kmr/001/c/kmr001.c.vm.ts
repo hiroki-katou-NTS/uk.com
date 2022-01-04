@@ -91,58 +91,6 @@ module nts.uk.at.kmr001.c {
             _.extend(window, { vm });
         }
 
-        reloadPage() {
-            const vm = this;
-            vm.$blockui("invisible");
-            //get list bento
-            vm.$ajax(API.GET_ALL, { date: vm.date }).done(dataRes => {
-                let bentoDtos = dataRes.bentoDtos;
-                if (vm.operationDistinction() == 1) {
-                    let array: Array<any> = [];
-                    _.range(1, 41).forEach(item =>
-                        array.push(new ItemBentoByLocation(
-                            item.toString(),
-                            "",
-                            "",
-                        ))
-                    );
-                    bentoDtos.forEach(item => {
-                        vm.listIdBentoMenu.push(item.frameNo);
-                        array.forEach((rc, index) => {
-                            if (item.frameNo == rc.id) {
-                                array[index].locationName = item.workLocationName;
-                                array[index].name = item.bentoName;
-                            }
-                        })
-                    }
-                    );
-                    vm.itemsBento(array);
-                } else {
-                    let array: Array<any> = [];
-                    _.range(1, 41).forEach(item =>
-                        array.push(new ItemBentoByCompany(
-                            item.toString(),
-                            "",
-                        ))
-                    );
-                    bentoDtos.forEach(item => {
-                        vm.listIdBentoMenu.push(item.frameNo);
-                        array.forEach((rc, index) => {
-                            if (item.frameNo == rc.id) {
-                                array[index].name = item.bentoName;
-                            }
-                        })
-                    }
-                    );
-                    vm.itemsBento(array);
-                }
-                vm.listData = [...bentoDtos];
-            }).fail(function (error) {
-                vm.$dialog.error({ messageId: error.messageId });
-            }).always(() => vm.$blockui("clear"));
-
-        }
-
         deleteBento() {
             const vm = this;
             confirm({ messageId: "Msg_18" }).ifYes(() => {
@@ -298,7 +246,7 @@ module nts.uk.at.kmr001.c {
                     } else {
                         vm.model().updateData(
                             '', null,
-                            0,
+                            1,
                             null, null,
                             vm.workLocationList().length > 0 ? vm.workLocationList()[0].id : ''
                         );
@@ -356,7 +304,7 @@ module nts.uk.at.kmr001.c {
 
     class BentoMenuSetting {
         bentoName: KnockoutObservable<string> = ko.observable("");
-        receptionTimezoneNo: KnockoutObservable<number> = ko.observable(0);
+        receptionTimezoneNo: KnockoutObservable<number> = ko.observable(1);
         unitName: KnockoutObservable<string> = ko.observable("");
         price1: KnockoutObservable<number> = ko.observable(null);
         price2: KnockoutObservable<number> = ko.observable(null);
