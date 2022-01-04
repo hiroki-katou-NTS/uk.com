@@ -1389,8 +1389,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                 let endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
                                 
                                 if (startAsMinites >= _.get(bh, 'start', 0) && endAsMinites <= _.get(bh, 'end', 1440)) {
+                                    let id = randomId();
                                     events.push({
-                                        id: randomId(),
+                                        id: id,
                                         title: vm.$i18n('KDW013_79'),
                                         start,
                                         end,
@@ -1399,7 +1400,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                         extendedProps: {
                                             no,
                                             breakTime,
-                                            id: randomId(),
+                                            id: id,
                                             status: 'normal',
                                             isTimeBreak: true,
                                             isChanged: false,
@@ -2822,9 +2823,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     let { start, end, title, backgroundColor, extendedProps, id, borderColor, groupId } = event;
 
                     vm.selectedEvents = [{ start, end }];
-					event.setExtendedProp('isChanged', true);
-                    // update data sources
-                    mutatedEvents();
 
                     // add new event (no save) if new event is dragging
                     if (!title && extendedProps.status === 'new') {
@@ -2846,13 +2844,13 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         //valid another day
                         if (!moment(arg.oldEvent.end).isSame(end, 'days')) {
-                            vm.revertEvent([arg.oldEvent], $caches);
+                            arg.revert();
                             return;
                         }
                         let breakInday = _.filter(events(), e => moment(e.start).isSame(start, 'days') && e.extendedProps.isTimeBreak);
                         let orverideBreak = _.filter(breakInday, br => moment(br.start).isBefore(end) && (br.extendedProps.id != extendedProps.id));
                         if (orverideBreak.length) {
-                            vm.revertEvent([arg.oldEvent], $caches);
+                            arg.revert();
                             return;
                         }
                         
@@ -2862,9 +2860,12 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         let endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
                         if (endAsMinites > _.get(bh, 'end', 1440)){
-                            vm.revertEvent([arg.oldEvent], $caches);
+                            arg.revert();
                             return;
                         }
+                        _.find(vm.calendar.getEvents() , e => e.extendedProps.id == extendedProps.id).setExtendedProp('isChanged', true);
+                        // update data sources
+                        mutatedEvents();
                         return;
                     }
                     
@@ -2912,7 +2913,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                   spaces.push({ start: cEvent.end, end: nEvent.start });
                               
                           }
-                          
+
                           //after get space, create event
                           _.forEach(spaces, ({start,end}) => {
                               vm.calendar
@@ -2930,6 +2931,9 @@ module nts.uk.ui.at.kdw013.calendar {
                       }
 
                   }
+                  _.find(vm.calendar.getEvents() , e => e.extendedProps.id == extendedProps.id).setExtendedProp('isChanged', true);
+                  // update data sources
+                  mutatedEvents();
 				  
                    let tempEs = [...events()];
 
@@ -2953,6 +2957,10 @@ module nts.uk.ui.at.kdw013.calendar {
                             updateEvents();
                         });
                     $caches.new(event);
+                
+                    event.setExtendedProp('isChanged', true);
+                    // update data sources
+                    mutatedEvents();
                 },
                 eventResizeStop: ({ el, event }) => {
                     console.log('stop', event.extendedProps);
