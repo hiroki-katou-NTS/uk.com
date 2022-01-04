@@ -70,50 +70,50 @@ public class RegisterFavoriteTaskServiceTest {
 				new FavoriteTaskName("name"), new ArrayList<>()));
 	}
 
-	@Test
-	public void test1() {
-		List<FavoriteDisplayOrder> displayOrders = new ArrayList<>();
-
-		displayOrders.add(new FavoriteDisplayOrder("favId1", 1));
-		displayOrders.add(new FavoriteDisplayOrder("favId2", 2));
-		Optional<FavoriteTaskDisplayOrder> optdisplayOrder = Optional
-				.of(new FavoriteTaskDisplayOrder("employeeId", displayOrders));
-		
-		List<TaskContent> favoriteContents = new ArrayList<>();
-		favoriteContents.add(new TaskContent(1, new WorkCode("a")));
-		favoriteContents.add(new TaskContent(2, new WorkCode("b")));
-		
-		new Expectations() {
-			{
-				require.getBySameSetting(anyString, new ArrayList<>());
-				result = new ArrayList<>();
-
-				require.get(anyString);
-				result = optdisplayOrder;
-			}
-		};
-		
-		new MockUp<IdentifierUtil>() {
-			@Mock public String randomUniqueId() {
-				return "uniqueFavId";
-			}
-		};
-
-		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
-				favoriteContents);
-
-		result.run();
-		
-		FavoriteTaskItem favoriteTaskItem = new FavoriteTaskItem("employeeId", new FavoriteTaskName("name"), favoriteContents);
-		
-		new Verifications() {{
-			require.insert(favoriteTaskItem);
-			times = 0; // = 1 mới đúng
-			
-			require.update(optdisplayOrder.get());
-			times = 1;
-		}};
-	}
+//	@Test
+//	public void test1() {
+//		List<FavoriteDisplayOrder> displayOrders = new ArrayList<>();
+//
+//		displayOrders.add(new FavoriteDisplayOrder("favId1", 1));
+//		displayOrders.add(new FavoriteDisplayOrder("favId2", 2));
+//		Optional<FavoriteTaskDisplayOrder> optdisplayOrder = Optional
+//				.of(new FavoriteTaskDisplayOrder("employeeId", displayOrders));
+//		
+//		List<TaskContent> favoriteContents = new ArrayList<>();
+//		favoriteContents.add(new TaskContent(1, new WorkCode("a")));
+//		favoriteContents.add(new TaskContent(2, new WorkCode("b")));
+//		
+//		new Expectations() {
+//			{
+//				require.getBySameSetting(anyString, new ArrayList<>());
+//				result = new ArrayList<>();
+//
+//				require.get(anyString);
+//				result = optdisplayOrder;
+//			}
+//		};
+//		
+//		new MockUp<IdentifierUtil>() {
+//			@Mock public String randomUniqueId() {
+//				return "uniqueFavId";
+//			}
+//		};
+//
+//		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
+//				favoriteContents);
+//
+//		result.run();
+//		
+//		FavoriteTaskItem favoriteTaskItem = new FavoriteTaskItem("employeeId", new FavoriteTaskName("name"), favoriteContents);
+//		
+//		new Verifications() {{
+//			require.insert(favoriteTaskItem);
+//			times = 0; // = 1 mới đúng
+//			
+//			require.update(optdisplayOrder.get());
+//			times = 1;
+//		}};
+//	}
 
 	@Test
 	public void test2() {
