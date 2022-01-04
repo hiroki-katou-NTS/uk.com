@@ -1,3 +1,4 @@
+
 module nts.uk.at.view.kmk003.a {
 
     import SimpleWorkTimeSettingDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.SimpleWorkTimeSettingDto;
@@ -20,6 +21,8 @@ module nts.uk.at.view.kmk003.a {
     import FlowWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlowWorkSettingModel;
     import DiffTimeWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeWorkSettingModel;
     import FlexWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexWorkSettingModel;
+    import FlStampReflectTzDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlStampReflectTzDto;
+    import StampReflectTimezoneDto = nts.uk.at.view.kmk003.a.service.model.common.StampReflectTimezoneDto;
     
     import FixedWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FixedWorkSettingSaveCommand;
     import FlowWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlowWorkSettingSaveCommand;
@@ -927,6 +930,22 @@ module nts.uk.at.view.kmk003.a {
                     self.mainSettingModel.isInterlockDialogJ(true);
                     self.mainSettingModel.updateStampValue();
                 }
+                
+                // set FlowStampReflectTzModel
+                const stampReflectTimezones: StampReflectTimezoneDto[] = [];
+                self.mainSettingModel.fixedWorkSetting.lstStampReflectTimezone.forEach(item => {
+                    stampReflectTimezones.push({
+                        workNo: item.workNo(),
+                        classification: item.classification(),
+                        endTime: item.endTime(),
+                        startTime: item.startTime()
+                    });
+                });
+                const flStampReflectTzDto: FlStampReflectTzDto = {
+                    twoTimesWorkReflectBasicTime: 0,
+                    stampReflectTimezones: stampReflectTimezones
+                }
+                self.mainSettingModel.flowWorkSetting.stampReflectTimezone.updateData(flStampReflectTzDto);
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
