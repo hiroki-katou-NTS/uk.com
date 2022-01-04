@@ -3311,7 +3311,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             Double l_13 = leftPublicHolidays.getNumberOfCarryforwards();
             Double l_14 = leftPublicHolidays.getNumberOfUse();
             Double l_15 = leftPublicHolidays.getNumberOfRemaining();
-            if(con_2){
+            if(con_2 && manageHoliday){
                 cells.get(firstRow, 4).setValue(l_12 != null ? df.format(l_12) : "");  // L1_4 特別休暇_使用数日数
                 cells.get(firstRow, 5).setValue(l_13 != null ? df.format(l_14) : "");
 
@@ -3324,7 +3324,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             if (l_13 != null && l_13 < 0) {
                 setForegroundRed(cells.get(firstRow, 5));
             }
-            if(con_3){
+            if(con_3 && manageHoliday){
                 // L1_5 特別休暇_残数日数
                 cells.get(firstRow, 7).setValue(l_15 != null ? df.format(l_15) : "");
             }else {
@@ -3364,7 +3364,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     // 繰越数: 月別休暇残日数
                      Double  numberOfCarryforwards = item.getNumberOfCarryforwards();
                      //L 25
-                    if(con_2){
+                    if(con_2 && manageHoliday){
                         cells.get(firstRow, 10 + totalMonth)
                                 .setValue(numberOfCarryforwards == null || numberOfCarryforwards == 0 ? null : df.format(numberOfCarryforwards));
                     }else {
@@ -3379,7 +3379,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 .setValue(numberOfUse == null || numberOfUse == 0 ? "" : df.format(numberOfUse));
 
                     //L 28
-                    if(con_3){
+                    if(con_3 && manageHoliday){
                         cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth)
                                 .setValue(numberOfRemaining == null ? "" : df.format(numberOfRemaining));
                         if (numberOfRemaining != null && numberOfRemaining < 0) {
@@ -3416,7 +3416,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                      Double  numberOfRemaining = thisMonthFutureSituation.getNumberOfRemaining();
                     if (ym.compareTo(currentMonth) == 0) {
                         //L 25
-                        if(con_2){
+                        if(con_2 && manageHoliday){
                             cells.get(firstRow, 10 + totalMonth)
                                     .setValue(numberOfCarryforwards == null || numberOfCarryforwards == 0 ? null : df.format(numberOfCarryforwards));
                         }else {
@@ -3430,7 +3430,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         cells.get(firstRow + (con_2 ? 2 : 1), 10 + totalMonth)
                                 .setValue(numberOfUse == null || numberOfUse == 0 ? "" : df.format(numberOfUse));
                         //L 28
-                        if(con_3){
+                        if(con_3 && manageHoliday){
                             cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth)
                                     .setValue(numberOfRemaining == null ? "" : df.format(numberOfRemaining));
                             if (numberOfRemaining != null && numberOfRemaining < 0) {
@@ -3441,7 +3441,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         }
                     } else {
                         //L 25
-                        if(con_2){
+                        if(con_2 && manageHoliday){
                             setBackgroundGray( cells.get(firstRow, 10 + totalMonth));
                         }
                         //L 26
@@ -3450,7 +3450,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         cells.get(firstRow + (con_2 ? 2 : 1), 10 + totalMonth)
                                 .setValue(numberOfUse == null || numberOfUse == 0 ? "" : df.format(numberOfUse));
                         //L 28
-                        if(con_3){
+                        if(con_3 && manageHoliday){
                             setBackgroundGray( cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth));
                         }
                     }

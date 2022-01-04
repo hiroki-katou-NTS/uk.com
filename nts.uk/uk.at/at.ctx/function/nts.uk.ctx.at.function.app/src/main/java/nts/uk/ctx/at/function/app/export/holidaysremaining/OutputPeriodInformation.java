@@ -20,6 +20,5 @@ public class OutputPeriodInformation {
     private Optional<List<PeriodCorrespondingYm>> currentMonthAndFuture;
 
     private Optional<YearMonthPeriod> pastPeriod;
-    private Optional<DatePeriod> currentPeriod;
 
 }
