@@ -515,8 +515,12 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let self = this,
                 source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
                 indexBtn: number = indexLinkBtn();
-            if (self.listPageInfo.length == 0)
+            if (self.listPageInfo.length == 0) {
+                __viewContext.viewModel.viewA.userInfor.shiftPalettePageNumberOrg = 1;
+                characteristics.save(self.KEY, __viewContext.viewModel.viewA.userInfor);
                 return;
+            }
+            
             nts.uk.ui.block.grayout();
             let pageNumberSelected = self.listPageInfo[indexBtn].pageNumber;
             let userInfor = __viewContext.viewModel.viewA.userInfor;
