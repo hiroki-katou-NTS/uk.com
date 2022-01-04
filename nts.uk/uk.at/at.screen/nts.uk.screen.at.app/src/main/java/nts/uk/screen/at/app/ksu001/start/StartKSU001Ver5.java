@@ -128,12 +128,12 @@ public class StartKSU001Ver5 {
 			param51.setListSid(listSid);
 			param51.setStartDate(startDate);
 			param51.setEndDate(endDate);
-			param51.setWorkplaceId(resultStep1.targetOrgIdenInfor.workplaceId);
-			param51.setWorkplaceGroupId(resultStep1.targetOrgIdenInfor.workplaceGroupId);
 			param51.setListShiftMasterNotNeedGetNew(new ArrayList<>());
 			param51.setShiftPaletteWantGet(new ShiftPaletteWantGet(param.shiftPalletUnit, param.pageNumberCom, param.pageNumberOrg));
 			param51.setGetActualData(param.getActualData);
-			param51.setUnit(resultStep1.targetOrgIdenInfor.unit);
+			param51.setUnit(targetOrgIdenInfor.getUnit().value);
+			param51.setWorkplaceId(targetOrgIdenInfor.getWorkplaceId().orElse(null));
+			param51.setWorkplaceGroupId(targetOrgIdenInfor.getWorkplaceGroupId().orElse(null));
 			
 			param51.setPersonalCounterOp(StringUtil.isNullOrEmpty(param.personTotalSelected, true) ? (resultStep1.useCategoriesPersonal.isEmpty() ? null : resultStep1.useCategoriesPersonal.get(0).getValue()) : Integer.valueOf(param.personTotalSelected));
 			param51.setWorkplaceCounterOp(StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? (resultStep1.useCategoriesWorkplace.isEmpty() ? null : resultStep1.useCategoriesWorkplace.get(0).getValue()) : Integer.valueOf(param.workplaceSelected));
