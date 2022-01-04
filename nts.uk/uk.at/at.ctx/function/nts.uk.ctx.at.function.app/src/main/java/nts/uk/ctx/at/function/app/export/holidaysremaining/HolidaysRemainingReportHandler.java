@@ -1010,11 +1010,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         //        )).collect(Collectors.toList());
         // 2021.12.24 - 3S - chinh.hm  - issues #122037 - 変更 END
 
-        // 2021.12.29 - 3S - chinh.hm) - issues #121957 - 追加 START
+        // 2021.12.29 - 3S - chinh.hm) - issues #122037 - 追加 START
         if ( hdRemainMer!=null) {
             getSpeHdOfConfMonVer2 = hdRemainMer.getResult263();
         }
-        // 2021.12.29 - 3S - chinh.hm - issues #121957 - 追加 END
+        // 2021.12.29 - 3S - chinh.hm - issues #122037 - 追加 END
 
 
 		////////////////////////////////////////////////////////////////////////////////
