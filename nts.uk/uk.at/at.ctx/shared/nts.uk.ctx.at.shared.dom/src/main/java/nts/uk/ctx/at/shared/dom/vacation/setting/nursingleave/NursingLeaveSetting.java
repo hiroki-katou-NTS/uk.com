@@ -112,6 +112,20 @@ public class NursingLeaveSetting extends AggregateRoot {
 		this.specialHolidayFrame = Optional.empty();
 		this.workAbsence = Optional.empty();
 	}
+	
+	public NursingLeaveSetting(String companyId, ManageDistinct manageType, NursingCategory nursingCategory,
+			MonthDay startMonthDay, List<MaxPersonSetting> maxPersonSetting, Optional<Integer> specialHolidayFrame,
+			Optional<Integer> workAbsence, TimeCareNursingSet timeCareNursingSetting) {
+		super();
+		this.companyId = companyId;
+		this.manageType = manageType;
+		this.nursingCategory = nursingCategory;
+		this.startMonthDay = startMonthDay;
+		this.maxPersonSetting = maxPersonSetting;
+		this.specialHolidayFrame = specialHolidayFrame;
+		this.workAbsence = workAbsence;
+		this.timeCareNursingSetting = timeCareNursingSetting;
+	}
 
 	/**
 	 * ファクトリー

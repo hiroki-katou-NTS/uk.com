@@ -47,6 +47,6 @@ public class TimeSpecialLeaveManagementSettingTest {
 	public void testDailyAttdItemsNotAvailable_isEmpty() {
 		TimeSpecialLeaveManagementSetting setting = TimeSpecialLeaveManagementHelper.createManagementSettingManageDistinctIsYes(ManageDistinct.YES);
 		List<Integer> attendanceItemIds = setting.getDailyAttdItemsNotAvailable();
-		assertThat( attendanceItemIds.isEmpty());
+		assertThat( attendanceItemIds.isEmpty()).isTrue();
 	}
 }

@@ -45,6 +45,10 @@ public class WorkManagementMultipleTest {
 		assertThat( result ).isFalse();
 		
 		// @使用区分 = する
+		new Expectations() {{
+			require.getOptionLicense();
+			result = new OptionLicense() {};
+		}};
 		multiple = WorkManagementMultipleHelper.createWorkManagementMultiple_Use(UseATR.use);
 		result = multiple.checkUseMultiWork(require);
 		assertThat( result ).isTrue();

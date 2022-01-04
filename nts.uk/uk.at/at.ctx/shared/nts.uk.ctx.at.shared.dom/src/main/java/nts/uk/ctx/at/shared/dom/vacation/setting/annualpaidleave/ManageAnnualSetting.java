@@ -45,6 +45,17 @@ public class ManageAnnualSetting extends DomainObject implements Serializable{
 //    private DisplaySetting displaySetting;
 
     /**
+     * 	[C-0]
+     */
+    public ManageAnnualSetting(HalfDayManage halfDayManage, RemainingNumberSetting remainingNumberSetting,
+			YearLyOfNumberDays yearlyOfNumberDays) {
+		super();
+		this.halfDayManage = halfDayManage;
+		this.remainingNumberSetting = remainingNumberSetting;
+		this.yearlyOfNumberDays = yearlyOfNumberDays;
+	}
+    
+    /**
      * [1] 半日回数上限に対応する月次の勤怠項目を取得する
      */
     public List<Integer> getMonthlyAttendanceItemsHalfDayLimit() {

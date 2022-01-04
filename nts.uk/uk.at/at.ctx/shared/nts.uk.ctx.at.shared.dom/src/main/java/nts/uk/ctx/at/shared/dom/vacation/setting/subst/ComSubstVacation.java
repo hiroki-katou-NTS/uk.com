@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
@@ -17,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
  */
 // 振休管理設定
 @Getter
-public class ComSubstVacation extends DomainObject {
+public class ComSubstVacation extends AggregateRoot {
 
 	/** The company id. */
 	// 会社ID

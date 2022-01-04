@@ -26,7 +26,6 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdTime;
  */
 // 年休設定
 @Getter
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, of = { "companyId" })
 public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializable {
 
@@ -114,6 +113,18 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 		// 期限日を返す
 		return deadline;
 	}
+	/**
+	 * [C-0] 年休設定
+	 */
+	public AnnualPaidLeaveSetting(String companyId, AcquisitionSetting acquisitionSetting,
+			ManageDistinct yearManageType, ManageAnnualSetting manageAnnualSetting, TimeAnnualSetting timeSetting) {
+		super();
+		this.companyId = companyId;
+		this.acquisitionSetting = acquisitionSetting;
+		this.yearManageType = yearManageType;
+		this.manageAnnualSetting = manageAnnualSetting;
+		this.timeSetting = timeSetting;
+	}
 	
 	/**
 	 * [1] 年休に対応する日次の勤怠項目を取得する
@@ -179,7 +190,8 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 	private List<Integer> getMonthlyAttendanceItemsNotInclude() {
 		List<Integer> lstId = new ArrayList<>();
 		// 年休に対応する月次の勤怠項目
-		lstId.addAll(this.getMonthlyAttendanceItemsAnnualLeave());
+		lstId.addAll(Arrays.asList(189, 794, 798, 799, 790, 801, 805, 809, 1427, 1428, 1432, 1433, 1780, 1781, 1782,
+				1783, 1784, 1785, 1786, 1787, 1788, 1789));
 		
 		// @年休管理設定.半日回数上限に対応する月次の勤怠項目を取得する()
 		lstId.addAll(manageAnnualSetting.getMonthlyAttendanceItemsHalfDayLimit());

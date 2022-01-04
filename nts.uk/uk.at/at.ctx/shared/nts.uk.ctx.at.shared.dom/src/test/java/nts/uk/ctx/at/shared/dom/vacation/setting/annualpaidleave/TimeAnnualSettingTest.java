@@ -72,25 +72,23 @@ public class TimeAnnualSettingTest {
      */
 	@Test
     public void testMonthlyAttendItemsNotAvailable_notEmpty(){
+		// $時間年休項目 is not empty, $上限項目 is not empty
     	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
     	List<Integer> annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(ManageDistinct.YES);
     	assertThat( annualLeaveItems ).extracting( d -> d)
 		  .containsExactly(1424,1425,1426,1429,1430,1431,1861,1862,1442,1443,1444,1445);
-    }
-	// $時間年休項目 is empty, $上限項目 is empty
-	@Test
-    public void testMonthlyAttendItemsNotAvailable_isEmpty_1(){
-    	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
-    	List<Integer> annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(ManageDistinct.NO);
+    	
+    	
+    	// $時間年休項目 is empty, $上限項目 is empty
+    	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
+    	annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(ManageDistinct.NO);
     	assertThat( annualLeaveItems.isEmpty() );
-    }
-	
-	// $時間年休項目 not empty, $上限項目 is empty
-	@Test
-    public void testMonthlyAttendItemsNotAvailable_isEmpty_2(){
-		TimeAnnualMaxDay annualMaxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_NO(ManageDistinct.NO);
-    	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_UpperLimitItem(ManageDistinct.YES, annualMaxDay);
-    	List<Integer> annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(ManageDistinct.YES);
+    	
+    	
+    	// $時間年休項目 not empty, $上限項目 is empty
+    	TimeAnnualMaxDay annualMaxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_NO(ManageDistinct.NO);
+    	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_UpperLimitItem(ManageDistinct.YES, annualMaxDay);
+    	annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(ManageDistinct.YES);
     	assertThat( annualLeaveItems ).extracting( d -> d)
 		  .containsExactly(1424,1425,1426,1429,1430,1431,1861,1862);
     }
@@ -100,32 +98,24 @@ public class TimeAnnualSettingTest {
      */
 	@Test
     public void testNotIsManageTimeAnnualLeave_fail() {
+		// 管理区分 = 管理しない  && 時間年休管理区分 = 管理しない 
     	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_NO(ManageDistinct.NO);
     	boolean checkManageTime = setting.isManageTimeAnnualLeave(ManageDistinct.NO);
     	assertThat(checkManageTime).isFalse();
-    }
-	
-	@Test
-    public void testNotIsManageTimeAnnualLeave_fail_1() {
-    	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_NO(ManageDistinct.NO);
-    	boolean checkManageTime = setting.isManageTimeAnnualLeave(ManageDistinct.YES);
+    	
+    	// 管理区分 = 管理しない  && 時間年休管理区分 = 管理する
+    	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_NO(ManageDistinct.NO);
+    	checkManageTime = setting.isManageTimeAnnualLeave(ManageDistinct.YES);
     	assertThat(checkManageTime).isFalse();
-    }
-	
-	@Test
-    public void testNotIsManageTimeAnnualLeave_fail_2() {
-    	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
-    	boolean checkManageTime = setting.isManageTimeAnnualLeave(ManageDistinct.NO);
+    	
+    	// 管理区分 = 管理する  && 時間年休管理区分 = 管理しない 
+    	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
+    	checkManageTime = setting.isManageTimeAnnualLeave(ManageDistinct.NO);
     	assertThat(checkManageTime).isFalse();
-    }
-    
-    /**
-     * Test [5] 時間年休を管理するか ManageDistinct Yes
-     */
-	@Test
-    public void testIsManageTimeAnnualLeave() {
-    	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
-    	boolean checkManageTime = setting.isManageTimeAnnualLeave(ManageDistinct.YES);
+    	
+    	// 管理区分 = 管理する  && 時間年休管理区分 = 管理する
+    	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
+    	checkManageTime = setting.isManageTimeAnnualLeave(ManageDistinct.YES);
     	assertThat(checkManageTime).isTrue();
     }
 	

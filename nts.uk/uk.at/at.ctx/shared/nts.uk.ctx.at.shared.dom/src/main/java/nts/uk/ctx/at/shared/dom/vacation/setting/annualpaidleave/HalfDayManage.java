@@ -81,7 +81,7 @@ public class HalfDayManage implements Serializable {
 	 * 	[4] 半日年休を管理するか
 	 */
 	public boolean isManageHalfDayAnnualLeave(ManageDistinct timeManageType) {
-		if (timeManageType == timeManageType.YES && manageType == timeManageType.YES)
+		if (timeManageType == ManageDistinct.YES && manageType == ManageDistinct.YES)
 			return true;
 		return false;
 	}
