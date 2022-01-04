@@ -5,10 +5,12 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt;
 
 /**
@@ -42,7 +44,19 @@ public class ManageAnnualSetting extends DomainObject implements Serializable{
 //    // 表示設定
 //    private DisplaySetting displaySetting;
 
-
+    /**
+     * [1] 半日回数上限に対応する月次の勤怠項目を取得する
+     */
+    public List<Integer> getMonthlyAttendanceItemsHalfDayLimit() {
+    	return halfDayManage.getMonthlyAttendanceItemsCorresHalfDayLimit();
+    }
+    
+    /**
+     * [2] 利用できない月次の勤怠項目を取得する
+     */
+    public List<Integer> getMonthlyAttendanceItems(ManageDistinct timeManageType) {
+    	return halfDayManage.getMonthlyAttendanceItems(timeManageType);
+    }
 
     /**
      * Instantiates a new manage annual setting.

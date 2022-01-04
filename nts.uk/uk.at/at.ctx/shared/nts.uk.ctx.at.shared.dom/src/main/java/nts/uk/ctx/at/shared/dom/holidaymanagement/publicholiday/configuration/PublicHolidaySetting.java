@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -269,6 +270,23 @@ public class PublicHolidaySetting extends AggregateRoot {
 		return offsetsNumber;
 	}
 	
+	/**
+	 * [7] 公休に対応する月次の勤怠項目を取得する
+	 */
+	public List<Integer> getMonthlyAttendanceItemsPublicHolidays() {
+		// 公休に対応する日数の月次の勤怠項目
+		return Arrays.asList(2256, 2257, 2258, 2259, 2260);
+	}
+	
+	/**
+	 * [8] 利用できない月次の勤怠項目を取得する
+	 */
+	public List<Integer> getMonthlyAttendanceItems() {
+		// 公休を管理する == しない
+		if (this.isManagePublicHoliday == 0)
+			return this.getMonthlyAttendanceItemsPublicHolidays();
+		return new ArrayList<>();
+	}
 	
 	/**
 	 * 年度末の期限日を求める
