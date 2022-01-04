@@ -643,7 +643,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					x.dateOfUse = new Date(x.dateOfUse).toISOString();
 					x.outbreakDay = new Date(x.outbreakDay).toISOString();
 					return x;
-				})
+				}), 
+				holidayFlg: false;
 			};
 
 			commandUpdate.application.opAppReason = vm.application().opAppReason();
@@ -686,6 +687,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				if (result) {
 					holidayAppDates = result.holidayDateLst;
 					commandUpdate.holidayAppDates = holidayAppDates;
+					commandUpdate.holidayFlg = result.holidayFlg;
 					// xử lý confirmMsg
 					return vm.handleConfirmMessage(result.confirmMsgLst);
 				}

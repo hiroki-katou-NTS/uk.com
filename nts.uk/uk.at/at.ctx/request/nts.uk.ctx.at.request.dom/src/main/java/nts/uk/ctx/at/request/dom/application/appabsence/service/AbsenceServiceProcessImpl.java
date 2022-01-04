@@ -437,10 +437,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()));
     	result.setHolidayDateLst(holidayDates);
     	
-    	// 取得した「休日の申請日<List>」をチェックする
+    	// 勤務種類コードから休日か判断する
+    	boolean holidayFlg = this.isWorkTypeHoliday(Optional.of(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()));
+    	result.setHolidayFlg(holidayFlg);
+    	
+    	// 取得した「休日の申請日<List>」　と　休日かFlag　をチェックする
         List<GeneralDate> listDates = new DatePeriod(appAbsence.getApplication().getOpAppStartDate().get().getApplicationDate(), 
                 appAbsence.getApplication().getOpAppEndDate().get().getApplicationDate()).datesBetween();
-        if (holidayDates.size() > 0 && listDates.size() == holidayDates.size()) {
+        if (holidayDates.size() > 0 && listDates.size() == holidayDates.size() && !holidayFlg) {
             String dateParam = "";
             for (int i = 0; i < holidayDates.size(); i++) {
                 if (i != holidayDates.size() - 1) {
@@ -1607,10 +1611,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		List<GeneralDate> holidayDates = otherCommonAlgorithm.lstDateIsHoliday(newAbsence.getApplication().getEmployeeID()
 				, new DatePeriod(newAbsence.getOpAppStartDate().get().getApplicationDate(),newAbsence.getOpAppEndDate().get().getApplicationDate())
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get());
-		// 取得した「休日の申請日<List>」をチェックする
+		// 勤務種類コードから休日か判断する
+		boolean holidayFlg = this.isWorkTypeHoliday(Optional.of(newAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()));
+		result.setHolidayFlg(holidayFlg);
+		
+		// 取得した「休日の申請日<List>」　と　休日かFlagをチェックする
         List<GeneralDate> listDates = new DatePeriod(newAbsence.getApplication().getOpAppStartDate().get().getApplicationDate(), 
                 newAbsence.getApplication().getOpAppEndDate().get().getApplicationDate()).datesBetween();
-        if (holidayDates.size() > 0 && listDates.size() == holidayDates.size()) {
+        if (holidayDates.size() > 0 && listDates.size() == holidayDates.size() && !holidayFlg) {
             String dateParam = "";
             for (int i = 0; i < holidayDates.size(); i++) {
                 if (i != holidayDates.size() - 1) {
@@ -1923,7 +1931,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     @Override
     public ProcessResult registerAppAbsence(ApplyForLeave applyForLeave, List<String> appDates,
             List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements,
-            boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalRoot, AppTypeSetting appTypeSetting) {
+            boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalRoot, AppTypeSetting appTypeSetting, boolean holidayFlg) {
         String companyId = AppContexts.user().companyId();
         
         // 年月日Listを作成する
@@ -1939,7 +1947,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                         
                         List<GeneralDate> listHolidayDates = appDates.stream().map(date -> GeneralDate.fromString(date, FORMAT_DATE)).collect(Collectors.toList());
                         
-                        listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
+                        if (!holidayFlg) {
+                            listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
+                        }
 
         // ドメインモデル「休暇申請」を１件INSERTする)
         Application appTemp = applyForLeave.getApplication();
@@ -2147,10 +2157,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 
         result.setHolidayDateLst(holidayDates);
         
+        // 勤務種類コードから休日か判断する
+        boolean holidayFlg = this.isWorkTypeHoliday(Optional.of(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()));
+        result.setHolidayFlg(holidayFlg);
+        
         // 取得した「休日の申請日<List>」をチェックする
         List<GeneralDate> listDates = new DatePeriod(appAbsence.getApplication().getOpAppStartDate().get().getApplicationDate(), 
                 appAbsence.getApplication().getOpAppEndDate().get().getApplicationDate()).datesBetween();
-        if (holidayDates.size() > 0 && listDates.size() == holidayDates.size()) {
+        if (holidayDates.size() > 0 && listDates.size() == holidayDates.size() && !holidayFlg) {
             String dateParam = "";
             for (int i = 0; i < holidayDates.size(); i++) {
                 if (i != holidayDates.size() - 1) {
@@ -2217,7 +2231,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     public ProcessResult updateApplyForLeave(ApplyForLeave applyForLeave, List<String> holidayAppDates,
             List<LeaveComDayOffManagement> leaveComDayOffMana,
             List<PayoutSubofHDManagement> payoutSubofHDManagements,
-            AppDispInfoStartupOutput appDispInfoStartupOutput) {
+            AppDispInfoStartupOutput appDispInfoStartupOutput, boolean holidayFlg) {
         String companyID = AppContexts.user().companyId();
         Application application = applyForLeave.getApplication();
         applicationRepository.update(application);
@@ -2252,7 +2266,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 
         List<GeneralDate> listHolidayDates = holidayAppDates.stream().map(date -> GeneralDate.fromString(date, FORMAT_DATE)).collect(Collectors.toList());
 
-        listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
+        if (!holidayFlg) {
+            listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
+        }
         
         listDates.addAll(holidayLst);
 
@@ -2313,7 +2329,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     @Override
     public ProcessResult registerHolidayDates(String companyID, ApplyForLeave newApplyForLeave,
             ApplyForLeave originApplyForLeave, List<GeneralDate> holidayDates,
-            AppAbsenceStartInfoOutput appAbsenceStartInfoDto) {
+            AppAbsenceStartInfoOutput appAbsenceStartInfoDto, boolean holidayFlg) {
         // 元の休暇申請のステータスを更新する
         originApplyForLeave.getApplication().getReflectionStatus().getListReflectionStatusOfDay().forEach(x -> {
             x.setActualReflectStatus(ReflectedState.CANCELED);
@@ -2340,7 +2356,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 Collections.emptyList(),
                 appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet(),
                 appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get(),
-                appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0));
+                appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0), 
+                holidayFlg);
 
         return processResult;
     }
@@ -2743,5 +2760,41 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         public List<PayoutManagementData> getPayoutMana(String sid) {
             return payoutManagementDataRepo.getSid(AppContexts.user().companyId(), sid);
         }
+    }
+
+    @Override
+    public boolean isWorkTypeHoliday(Optional<String> workTypeCode) {
+        if (!workTypeCode.isPresent()) {
+            return false;
+        }
+        // ドメイン「勤務種類」を取得する
+        Optional<WorkType> workType = workTypeRepository.findByDeprecated(AppContexts.user().companyId(), workTypeCode.get());
+        if (!workType.isPresent()) {
+            return false;
+        }
+        
+        WorkTypeUnit workTypeUnit = workType.get().getDailyWork().getWorkTypeUnit();
+        // １日の勤務をチェックする
+        // １日の勤務.勤務区分＝午前午後
+        if (workTypeUnit.equals(WorkTypeUnit.MonringAndAfternoon)) {
+            /*
+             * ①if　１日の勤務.午前　＝＝　休日　OR　１日の勤務.午後　＝＝　休日　→　休日かFlag　＝　true
+             * ②その他場合　→　休日かFlag　＝　false
+             */
+            if (workType.get().getDailyWork().getMorning().equals(WorkTypeClassification.Holiday) 
+                    || workType.get().getDailyWork().getAfternoon().equals(WorkTypeClassification.Holiday)) {
+                return true;
+            }
+        } else {
+            /*
+             * ①if　１日の勤務.1日　＝＝　休日　→　休日かFlag　＝　true
+             * ②その他場合　→　休日かFlag　＝　false
+             */
+            if (workType.get().getDailyWork().getOneDay().equals(WorkTypeClassification.Holiday)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }
