@@ -16,12 +16,12 @@ import lombok.NoArgsConstructor;
 public class EmployeeInfoDto {
 
 	// 社員ID
-	public String sid;
+	public String id;
 
 	// 社員コード
-	public String employeeCode;
+	public String code;
 
 	// 社員名
-	public String employeeName;
+	public String businessName;
 
 }
