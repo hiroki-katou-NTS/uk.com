@@ -106,12 +106,7 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 		
 		
 			
-		// 7.残業申請・休出時間申請の対象時間を取得する
-
-		List<EncouragedTargetApplication> ots = this.getTargetTime.get(command.getEmployeeId(), command.getChangedDates());
-
-		result.setLstOvertimeLeaveTime(
-				ots.stream().map(x -> EncouragedTargetApplicationDto.fromDomain(x)).collect(Collectors.toList()));
+		// 7.残業申請・休出時間申請の対象時間を取得する bước này phải tách ra một services riêng sau khi đăng kí thành công vì xử lý RegisterTaskTimeGroupCommandHandler là bất đồng bộ
 		
 		// 8. List<残業休出時間>.isPresent check dưới client
 
