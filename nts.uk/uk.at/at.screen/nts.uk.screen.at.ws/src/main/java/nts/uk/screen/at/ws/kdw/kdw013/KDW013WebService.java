@@ -1,6 +1,7 @@
 package nts.uk.screen.at.ws.kdw.kdw013;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -13,7 +14,6 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.AddWorkRecodConfirmationCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmCommand;
-import nts.uk.ctx.at.record.dom.jobmanagement.manhourinput.EncouragedTargetApplication;
 import nts.uk.screen.at.app.kdw013.a.AddWorkRecordConfirmationCommandHandler;
 import nts.uk.screen.at.app.kdw013.a.ChangeFavOneDayDisplayOrder;
 import nts.uk.screen.at.app.kdw013.a.ChangeFavTaskDisplayOrder;
@@ -22,6 +22,7 @@ import nts.uk.screen.at.app.kdw013.a.DeleteOneDayTaskSet;
 import nts.uk.screen.at.app.kdw013.a.DeleteTaskSet;
 import nts.uk.screen.at.app.kdw013.a.DeleteWorkRecordConfirmationCommandHandler;
 import nts.uk.screen.at.app.kdw013.a.EmployeeDisplayInfo;
+import nts.uk.screen.at.app.kdw013.a.EncouragedTargetApplicationDto;
 import nts.uk.screen.at.app.kdw013.a.GetTargetTime;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentCommand;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentDto;
@@ -180,8 +181,8 @@ public class KDW013WebService {
 	// 7.残業申請・休出時間申請の対象時間を取得する
 	@POST
 	@Path("a/get-target-time")
-	public List<EncouragedTargetApplication> getTargetTime(GetTargetTimeCommand command) {
-		return this.getTargetTime.get(command.getEmployeeId(), command.getChangedDates());
+	public List<EncouragedTargetApplicationDto> getTargetTime(GetTargetTimeCommand command) {
+		return this.getTargetTime.get(command.getEmployeeId(), command.getChangedDates()).stream().map(x-> EncouragedTargetApplicationDto.fromDomain(x)).collect(Collectors.toList());
 	}
 
 	// A:1日作業セットを削除する

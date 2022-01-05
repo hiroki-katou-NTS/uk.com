@@ -2957,8 +2957,6 @@ module nts.uk.ui.at.kdw013.calendar {
                             updateEvents();
                         });
                     $caches.new(event);
-                
-                    event.setExtendedProp('isChanged', true);
                     // update data sources
                     mutatedEvents();
                 },
