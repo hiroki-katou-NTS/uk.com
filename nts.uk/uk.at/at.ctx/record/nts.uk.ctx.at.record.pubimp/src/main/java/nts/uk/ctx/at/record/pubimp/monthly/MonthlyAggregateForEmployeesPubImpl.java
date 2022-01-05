@@ -203,6 +203,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpComHisAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -569,6 +570,8 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
 	@Inject
 	private AttendanceItemConvertFactory factory;
+	@Inject
+	private EmpComHisAdapter empComHisAdapter;
 
 	@Override
 	public List<AtomTask> aggregate(CacheCarrier cache, String cid, List<String> sids, boolean canAggrWhenLock) {
@@ -812,7 +815,7 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 					tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo, executionLogRepo,
 					workingConditionRepository, transaction, employmentAdapter, creatingDailyResultsConditionRepo,
 					getPeriodFromPreviousToNextGrantDate, workDaysNumberOnLeaveCountRepo,
-					calculateDailyRecordServiceCenter);
+					calculateDailyRecordServiceCenter, empComHisAdapter);
 			this.cache = cache;
 		}
 
