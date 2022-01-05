@@ -1112,22 +1112,20 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             nursingCareLeaveThisMonthFutureSituationLeft = null;
             // 2022.12.04 - 3S - chinh.hm - issues #122017 - 追加 END
         }
-        // 2021.12.29 - 3S - chinh.hm - issues #121957 - 追加 END
+        // 2021.12.29 - 3S - chinh.hm - issues #119961  - 追加 END
         //========================================
         //公休
         //========================================
-        // 2021.12.30 - 3S - chinh.hm - issues #121957 - 追加 START
+
         // Tồn tại quá khứ.
         if(!lstYrMon.isEmpty()){
             publicHolidayPastSituations = getListPublicHolidayPastSituation(employeeId,lstYrMon);
         }
 
         for (int i = 0; i < correspondingYmList.size(); i++){
-            // 2021.12.29 - 3S - chinh.hm - issues #121957 - 追加 START
             PeriodCorrespondingYm  correspondingYm =    correspondingYmList.get(i);
             YearMonth ym = correspondingYm.getYm();
             List<TempPublicHolidayManagement> tempPublicHolidayManagements = new ArrayList<>();
-            // 2021.12.29 - 3S - chinh.hm - issues #121957 - 追加 END
             AggrResultOfPublicHoliday aggrResultOfPublicHoliday = GetRemainingNumberPublicHolidayService.getPublicHolidayRemNumWithinPeriod(
                     cId,
                     employeeId,
@@ -1166,7 +1164,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 )));
             }
         }
-        // 2021.12.30 - 3S - chinh.hm - issues #121957 - 追加 END
+        // 2021.12.30 - 3S - chinh.hm - issues #119961  - 追加 START
 		////////////////////////////////////////////////////////////////////////////////
 		// RETURN
 		////////////////////////////////////////////////////////////////////////////////
