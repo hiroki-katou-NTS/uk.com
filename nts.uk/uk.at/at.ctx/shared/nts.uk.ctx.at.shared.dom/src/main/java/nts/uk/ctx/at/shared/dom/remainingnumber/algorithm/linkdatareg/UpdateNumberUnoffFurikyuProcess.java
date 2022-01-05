@@ -27,18 +27,23 @@ public class UpdateNumberUnoffFurikyuProcess {
 	public static UpdateNumberUnoffFurikyu processFurikyu(Require require, String sid, List<GeneralDate> lstDate,
 			List<InterimAbsMng> lstAbsMng, List<InterimRecMng> lstRecMng) {
 
+		// $発生の変更要求
+		val changeOccr = createOccrChangeRequest(require, sid, lstDate, lstRecMng);
+
+		// $消化の変更要求
+		val changeDigest = createDigestChangeRequest(require, sid, lstDate, lstAbsMng);
+
 		// $期間
 		DatePeriod period = new DatePeriod(GeneralDate.min(), GeneralDate.max());
-		// $変更後の振休振出情報=
-		AfterChangeHolidayInfoResult afterResult = updateAfterChange(require, sid, period, lstDate, lstRecMng,
-				lstAbsMng);
+		AfterChangeHolidayInfoResult afterResult = GetModifiOutbreakDigest.getAndOffset(require, sid, period,
+				changeDigest, changeOccr);
 		// ＄暫定振出
 		List<InterimRecMng> furisyutsu = updateNumberUnoffOccur(afterResult, lstRecMng);
 
 		// 暫定振休
 		List<InterimAbsMng> furikyu = updateNumberUnoffDigest(afterResult, lstAbsMng);
 
-		return new UpdateNumberUnoffFurikyu(afterResult, furisyutsu, furikyu);
+		return new UpdateNumberUnoffFurikyu(afterResult.getSeqVacInfoList(), furisyutsu, furikyu);
 
 	}
 
@@ -88,20 +93,6 @@ public class UpdateNumberUnoffFurikyuProcess {
 		val lstDigest = lstAbsMng.stream().map(x -> x.convertSeqVacationState()).collect(Collectors.toList());
 		// $消化の変更要求
 		return RequestChangeDigestOccr.createChangeRequestbyDate(lstDate, new VacationDetails(lstDigest));
-
-	}
-
-	// [5] 変更する
-	private static AfterChangeHolidayInfoResult updateAfterChange(Require require, String sid, DatePeriod period,
-			List<GeneralDate> lstDate, List<InterimRecMng> lstRecMng, List<InterimAbsMng> lstAbsMng) {
-
-		// $発生の変更要求
-		val changeOccr = createOccrChangeRequest(require, sid, lstDate, lstRecMng);
-
-		// $消化の変更要求
-		val changeDigest = createDigestChangeRequest(require, sid, lstDate, lstAbsMng);
-
-		return GetModifiOutbreakDigest.getAndOffset(require, sid, period, changeDigest, changeOccr);
 
 	}
 

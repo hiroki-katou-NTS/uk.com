@@ -4,23 +4,23 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.vacationdetail.AfterChangeHolidayDaikyuInfoResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SeqVacationAssociationInfoList;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 
 /**
  * @author thanh_nx
  *
- *         変更後の代休休出情報と暫定データ
+ *         変更後の紐付け情報と代休暫定データ
  */
 @AllArgsConstructor
 @Getter
 public class UpdateNumberUnoffDaikyu {
 
 	/**
-	 * 変更後の代休休出情報
+	 * 	紐付け一覧
 	 */
-	private AfterChangeHolidayDaikyuInfoResult afterResult;
+	private SeqVacationAssociationInfoList seqVacInfoList;
 
 	/**
 	 * 暫定休出

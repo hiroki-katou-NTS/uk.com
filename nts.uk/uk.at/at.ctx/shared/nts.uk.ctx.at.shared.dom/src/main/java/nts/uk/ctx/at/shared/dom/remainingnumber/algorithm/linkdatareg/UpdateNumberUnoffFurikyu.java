@@ -4,23 +4,21 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.vacationdetail.AfterChangeHolidayInfoResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SeqVacationAssociationInfoList;
 
 /**
  * @author thanh_nx
  *
- *         変更後の振休振出情報と暫定データ
+ *         変更後の紐付け情報と振休暫定データ
  */
 @AllArgsConstructor
 @Getter
 public class UpdateNumberUnoffFurikyu {
 
-	/**
-	 * 変更後の振休振出情報
-	 */
-	private AfterChangeHolidayInfoResult afterResult;
+	// 紐付け一覧
+	private final SeqVacationAssociationInfoList seqVacInfoList;
 
 	/**
 	 * 暫定振出

@@ -7,7 +7,6 @@ import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.vacationdetail.AfterChangeHolidayDaikyuInfoResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
@@ -23,35 +22,28 @@ public class UpdateSubstituteHolidayLinkData {
 	public static AtomTask updateProcess(Require require, String sid, List<GeneralDate> lstDate,
 			List<InterimDayOffMng> lstDayoff, List<InterimBreakMng> lstBreakoff) {
 		
+		//$整合後の情報 
 		val updateNumberUnoff = UpdateNumberUnoffDaikyuProcess.processDaikyu(require, sid, lstDate, lstDayoff, lstBreakoff);
-		// $変更後の代休休出情報
-		AfterChangeHolidayDaikyuInfoResult afterResult = updateNumberUnoff.getAfterResult();
-
-		//＄暫定休出
-		List<InterimBreakMng> kyusyutsu = updateNumberUnoff.getKyusyutsu();
-
-		//＄暫定代休 
-		List<InterimDayOffMng> daikyu = updateNumberUnoff.getDaikyu();
 
 		// ＄紐付け情報
-		val linkCouple = afterResult.getSeqVacInfoList().getSeqVacInfoList().stream()
+		val linkCouple = updateNumberUnoff.getSeqVacInfoList().getSeqVacInfoList().stream()
 				.map(x -> new LeaveComDayOffManagement(sid, x)).collect(Collectors.toList());
 		
 		// $暫定休出管理を削除する年月日一覧
-		List<GeneralDate> lstKyusyutsu = kyusyutsu.stream().map(x -> x.getYmd()).filter(x -> !lstDate.contains(x)).collect(Collectors.toList());
+		List<GeneralDate> lstKyusyutsu = updateNumberUnoff.getKyusyutsu().stream().map(x -> x.getYmd()).filter(x -> !lstDate.contains(x)).collect(Collectors.toList());
 		lstKyusyutsu.addAll(lstDate);
 
 		// $暫定代休管理を削除する年月日一覧
-		List<GeneralDate> lstDaikyu = daikyu.stream().map(x -> x.getYmd()).filter(x -> !lstDate.contains(x)).collect(Collectors.toList());
+		List<GeneralDate> lstDaikyu = updateNumberUnoff.getDaikyu().stream().map(x -> x.getYmd()).filter(x -> !lstDate.contains(x)).collect(Collectors.toList());
 		lstDaikyu.addAll(lstDate);
 		DatePeriod period = new DatePeriod(GeneralDate.min(), GeneralDate.max());
 		return AtomTask.of(() -> {
 			require.deleteDayoffLinkWithPeriod(sid, period);
 			require.insertDayOffLinkList(linkCouple);
 			require.deleteBreakoffWithDateList(sid, lstKyusyutsu);
-			require.insertBreakoffMngList(kyusyutsu);
+			require.insertBreakoffMngList(updateNumberUnoff.getKyusyutsu());
 			require.deleteDayoffWithDateList(sid, lstDaikyu);
-			require.insertDayoffList(daikyu);
+			require.insertDayoffList(updateNumberUnoff.getDaikyu());
 		});
 	}
 

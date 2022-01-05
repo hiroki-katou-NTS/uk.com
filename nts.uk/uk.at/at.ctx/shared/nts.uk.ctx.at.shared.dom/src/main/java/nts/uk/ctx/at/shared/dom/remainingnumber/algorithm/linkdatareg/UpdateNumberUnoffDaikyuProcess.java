@@ -19,26 +19,28 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManageme
 /**
  * @author thanh_nx
  *
- *         代休の未相殺数を更新する
+ *         代休の紐付け状態を整合する
  */
 public class UpdateNumberUnoffDaikyuProcess {
 
 	// 代休の未相殺数を更新する
 	public static UpdateNumberUnoffDaikyu processDaikyu(Require require, String sid, List<GeneralDate> lstDate,
 			List<InterimDayOffMng> lstDayoff, List<InterimBreakMng> lstBreakoff) {
-         //$期間 
+		// $発生の変更要求
+		val changeOccr = createOccrChangeRequest(require, sid, lstDate, lstBreakoff);
+		// $消化の変更要求
+		val changeDigest = createDigestChangeRequest(require, sid, lstDate, lstDayoff);
+		//$期間 
 		DatePeriod period = new DatePeriod(GeneralDate.min(), GeneralDate.max());
-		// $変更後の代休休出情報
-		AfterChangeHolidayDaikyuInfoResult afterResult = updateAfterChange(require, sid, period, lstDate, lstBreakoff,
-				lstDayoff);
-
+		AfterChangeHolidayDaikyuInfoResult afterResult = GetCompenChangeOccDigest.getAndOffset(require, sid, period, changeDigest, changeOccr);
+		
 		// ＄暫定休出
 		List<InterimBreakMng> kyusyutsu = updateNumberUnoffOccur(afterResult, lstBreakoff);
 
 		// ＄暫定代休
 		List<InterimDayOffMng> daikyu = updateNumberUnoffDigest(afterResult, lstDayoff);
 		
-		return new UpdateNumberUnoffDaikyu(afterResult, kyusyutsu, daikyu);
+		return new UpdateNumberUnoffDaikyu(afterResult.getSeqVacInfoList(), kyusyutsu, daikyu);
 	}
 
 	// [1] 変更要求と紐付いている暫定データを取得する(発生)
@@ -90,21 +92,7 @@ public class UpdateNumberUnoffDaikyuProcess {
 
 	}
 
-	// [5] 変更する
-	private static AfterChangeHolidayDaikyuInfoResult updateAfterChange(Require require, String sid, DatePeriod period,
-			List<GeneralDate> lstDate, List<InterimBreakMng> lstBreakoff, List<InterimDayOffMng> lstDayoff) {
-
-		// $発生の変更要求
-		val changeOccr = createOccrChangeRequest(require, sid, lstDate, lstBreakoff);
-
-		// $消化の変更要求
-		val changeDigest = createDigestChangeRequest(require, sid, lstDate, lstDayoff);
-
-		return GetCompenChangeOccDigest.getAndOffset(require, sid, period, changeDigest, changeOccr);
-
-	}
-
-	// [6] 発生一覧の未相殺数を更新する
+	// [5] 発生一覧の未相殺数を更新する
 	private static List<InterimBreakMng> updateNumberUnoffOccur(AfterChangeHolidayDaikyuInfoResult afterResult,
 			List<InterimBreakMng> lstBreakoff) {
 		// $変更後の発生一覧
@@ -119,7 +107,7 @@ public class UpdateNumberUnoffDaikyuProcess {
 
 	}
 
-	// [7] 消化一覧の未相殺数を更新する]
+	// [6] 消化一覧の未相殺数を更新する]
 	private static List<InterimDayOffMng> updateNumberUnoffDigest(AfterChangeHolidayDaikyuInfoResult afterResult,
 			List<InterimDayOffMng> lstDayoff) {
 		// $変更後の消化一覧
