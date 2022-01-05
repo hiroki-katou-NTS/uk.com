@@ -54,16 +54,15 @@ public class TimeAnnualSettingTest {
      */
 	@Test
     public void testDailyAttendItemsNotAvailable_ManageDistinct_Yes(){
+		// 時間年休管理区分 = 管理する
     	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting();
     	List<Integer> annualLeaveItems = setting.getDailyAttendItemsNotAvailable(ManageDistinct.YES);
     	assertThat( annualLeaveItems ).extracting( d -> d)
 		  .containsExactly(502,514,595,601,607,613);
-    }
-    
-	@Test
-    public void testDailyAttendItemsNotAvailable_ManageDistinct_No(){
-    	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting();
-    	List<Integer> annualLeaveItems = setting.getDailyAttendItemsNotAvailable(ManageDistinct.NO);
+    	
+    	// 時間年休管理区分 = 管理しない
+    	setting = TimeAnnualSettingHelper.createTimeAnnualSetting();
+    	annualLeaveItems = setting.getDailyAttendItemsNotAvailable(ManageDistinct.NO);
     	assertThat( annualLeaveItems.isEmpty() );
     }
 	
