@@ -74,7 +74,7 @@
 											<button class="button-radius" data-bind="click: decreaseCount, 
 													enable: $parent.modeFuture() &amp;&amp; $parent.canOrder()">-</button>
 										</div>
-										<div style="display: inline-block; vertical-align: middle;">
+										<div style="display: inline-block; vertical-align: middle;" data-bind="attr: { class: 'bento-count-' + frameNo() }">
 											<input style="width: 25px;" data-bind="ntsNumberEditor: {
 												name: '#[KMR002_22]',
 												value: bentoCount,
@@ -132,7 +132,7 @@
 											<button class="button-radius" data-bind="click: decreaseCount, 
 													enable: $parent.modeFuture() &amp;&amp; $parent.canOrder()">-</button>
 										</div>
-										<div style="display: inline-block; vertical-align: middle;">
+										<div style="display: inline-block; vertical-align: middle;" data-bind="attr: { class: 'bento-count-' + frameNo() }">
 											<input style="width: 25px;" data-bind="ntsNumberEditor: {
 												value: bentoCount,
 												constraint: 'BentoReservationCount',

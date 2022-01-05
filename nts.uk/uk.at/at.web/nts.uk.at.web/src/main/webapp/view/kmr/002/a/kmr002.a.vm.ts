@@ -282,6 +282,9 @@ module nts.uk.at.view.kmr002.a.model {
 			this.amount1 = ko.observable(amount1);
 			this.bentoCount = ko.observable(bentoCount);
 			this.unit = ko.observable(unit);
+			this.bentoCount.subscribe(() => {
+				$('.bento-count-' + this.frameNo() + ' input').ntsError('clear');
+			});
 		}
 		
 		increaseCount() {
