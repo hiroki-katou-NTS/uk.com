@@ -165,8 +165,8 @@ public class AcquisitionRule extends DomainObject {
 		}
 		
 		if (!check) {
-			throw new BusinessException("Msg_1687", "Com_CompensationHoliday", "Com_PaidHoliday",
-					"Com_CompensationHoliday");
+		    throw new BusinessException("Msg_1687", "Com_SubstituteHoliday", "Com_PaidHoliday",
+                    "Com_SubstituteHoliday");
 		}
 		
 		check = false;
@@ -189,8 +189,8 @@ public class AcquisitionRule extends DomainObject {
 		}
 		
 		if (!check) {
-			throw new BusinessException("Msg_1687", "Com_SubstituteHoliday", "Com_PaidHoliday",
-					"Com_SubstituteHoliday");
+		    throw new BusinessException("Msg_1687", "Com_CompensationHoliday", "Com_PaidHoliday",
+                    "Com_CompensationHoliday");
 		}
 	}
 	
