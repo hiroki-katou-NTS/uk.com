@@ -305,10 +305,12 @@ public class KrcmtErAlCondition extends ContractUkJpaEntity implements Serializa
 					.collect(Collectors.toList());
 		} else {
 			SingleWorkType wtypeCondition = (SingleWorkType) conditionDomain.getWorkTypeCondition();
-			wtPlanFilterAtr = wtypeCondition.getTargetWorkType().isUse() ? 1 : 0;
-			lstWtPlan = wtypeCondition.getTargetWorkType().getLstWorkType().stream()
-					.map(wtCode -> new KrcmtEralWktpPlan(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v(),companyID)))
-					.collect(Collectors.toList());
+			if(wtypeCondition.getTargetWorkType()!=null){
+				wtPlanFilterAtr = wtypeCondition.getTargetWorkType().isUse() ? 1 : 0;
+				lstWtPlan = wtypeCondition.getTargetWorkType().getLstWorkType().stream()
+						.map(wtCode -> new KrcmtEralWktpPlan(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v(),companyID)))
+						.collect(Collectors.toList());
+			}
 		}
 		// Set worktime condition
 		int workingHoursUseAtr = conditionDomain.getWorkTimeCondition().isUse() ? 1 : 0;
