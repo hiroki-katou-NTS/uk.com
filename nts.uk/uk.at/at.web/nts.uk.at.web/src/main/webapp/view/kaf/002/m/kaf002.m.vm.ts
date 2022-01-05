@@ -191,7 +191,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 	                    self.selectedTemp(STAMPTYPE.CHEERING);
 	                }
 				}
-				
+				self.loadAll();
 
                 
             })
@@ -341,7 +341,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         i.id = indexI + 1;
                         i.index = index;
                         // change text element to know value biding from array
-                        i.changeElement(self.date);
+                        i.changeElement(self.date, self.selectedTab);
 
                         if (ko.toJS(self.isPreAtr)) {
                             //                            self.isVisibleComlumn = false; 
@@ -387,7 +387,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                     i.index = index;
 
                     // change text element to know value biding from array
-                    i.changeElement(self.date);
+                    i.changeElement(self.date, self.selectedTab);
                 });
             });
 
@@ -1004,7 +1004,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         }
 
 
-        public changeElement(date: KnockoutObservable<string>) {
+        public changeElement(date: KnockoutObservable<string>, tab: KnockoutObservable<string>) {
             let self = this;
             let parseTime = nts.uk.time.minutesBased.clock.dayattr;
             let start = _.isNull(self.startTimeActual) ? '--:--' : parseTime.create(self.startTimeActual).shortText;
@@ -1017,16 +1017,16 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '<span style="display: block; text-align: center">' + start + '</span>'
                 + '<div align="center">'
                 + '<input style="width: 90px; text-align: center" data-name="Time Editor" data-bind="'
-                + 'style:{\'background-color\':' + date() + '? ((' + param + '[' + idGetList + '].startTimeActual == null && ' + param + '[' + idGetList + '].endTimeActual == null) ? (' + idGetList + ' === 0 ? \'#ffc0cb\' : ('+ param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\')) : (' + param + '[' + idGetList + '].startTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\')) : \'\'},'
-                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'HolidayAppPrimitiveTime\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameStart +'\'}" />'
+                + 'style:{\'background-color\':' + date() + ' && ' + (tab ? tab() === "tab-1" : false) + '? ((' + param + '[' + idGetList + '].startTimeActual == null && ' + param + '[' + idGetList + '].endTimeActual == null) ? (' + idGetList + ' === 0 ? \'#ffc0cb\' : ('+ param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\')) : (' + param + '[' + idGetList + '].startTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\')) : \'\'},'
+                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameStart +'\'}" />'
                 + '</div>'
                 + '</div>';
             this.endTime = '<div class="endTime" style="display: block; margin: 0px 5px 5px 5px">'
                 + '<span style="display: block; text-align: center">' + end + '</span>'
                 + '<div align="center">'
                 + '<input style="width: 90px; text-align: center" data-name="Time Editor" data-bind="'
-                + 'style:{\'background-color\':' + date() + '? ((' + param + '[' + idGetList + '].startTimeActual == null && ' + param + '[' + idGetList + '].endTimeActual == null) ? (' + idGetList + ' === 0 ? \'#ffc0cb\' : ('+ param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\')) : (' + param + '[' + idGetList + '].endTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\')) : \'\'},'
-                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'HolidayAppPrimitiveTime\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameEnd +'\'}" />'
+                + 'style:{\'background-color\':' + date() + ' && ' + (tab ? tab() === "tab-1" : false) + '? ((' + param + '[' + idGetList + '].startTimeActual == null && ' + param + '[' + idGetList + '].endTimeActual == null) ? (' + idGetList + ' === 0 ? \'#ffc0cb\' : ('+ param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\')) : (' + param + '[' + idGetList + '].endTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\')) : \'\'},'
+                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameEnd +'\'}" />'
                 + '</div>'
                 + '</div>';
 

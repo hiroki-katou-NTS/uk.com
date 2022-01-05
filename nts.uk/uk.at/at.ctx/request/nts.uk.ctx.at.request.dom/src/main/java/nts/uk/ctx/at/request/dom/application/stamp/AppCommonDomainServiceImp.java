@@ -31,6 +31,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Achieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.StampRecordOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimePlaceOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.TrackRecordAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.ErrorStampInfo;
@@ -44,6 +45,12 @@ import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.Suppor
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
+import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AppCommonDomainServiceImp implements AppCommonDomainService{
@@ -80,6 +87,9 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	
 	@Inject
 	private ApplicationRepository appRepo;
+
+	@Inject
+	private WorkTypeRepository workTypeRepository;
 
 	@Override
 	public AppStampOutput getDataCommon(String companyId, Optional<GeneralDate> dates,
@@ -118,6 +128,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		
 //		実績の打刻のチェック
 		StampRecordOutput stampRecordOutput = null;
+		Optional<String> workTypeCd = Optional.empty();
 		Optional<List<ActualContentDisplay>> listActualContentDisplay = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
 		if (listActualContentDisplay.isPresent()) {
 			if (!CollectionUtil.isEmpty(listActualContentDisplay.get())) {
@@ -125,10 +136,14 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 				Optional<AchievementDetail> opAchievementDetail = actualContentDisplay.getOpAchievementDetail();
 				if (opAchievementDetail.isPresent()) {
 					stampRecordOutput = opAchievementDetail.get().getStampRecordOutput();
+					if (opAchievementDetail.get().getTrackRecordAtr().equals(TrackRecordAtr.DAILY_RESULTS)) {
+					    workTypeCd = Optional.ofNullable(opAchievementDetail.get().getWorkTypeCD());
+					}
 				}
 			}
 		}
-		List<ErrorStampInfo> errorStampInfos = this.getErrorStampList(stampRecordOutput);
+		
+		List<ErrorStampInfo> errorStampInfos = this.getErrorStampList(stampRecordOutput, workTypeCd);
 		appStampOutput.setErrorListOptional(Optional.ofNullable(errorStampInfos));
 		
 		// ドメイン「応援の運用設定」を取得する
@@ -231,7 +246,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	}
 
 	@Override
-	public List<ErrorStampInfo> getErrorStampList(StampRecordOutput stampRecordOutput) {
+	public List<ErrorStampInfo> getErrorStampList(StampRecordOutput stampRecordOutput, Optional<String> workTypeCd) {
 //		「打刻エラー情報」＝Empty
 		List<ErrorStampInfo> errorStampInfos = new ArrayList<ErrorStampInfo>();
 		
@@ -309,25 +324,35 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 			extraordinaryTime = stampRecordOutput.getExtraordinaryTime();
 		}
 		
-		this.addErros(errorStampInfos, StampAtrOther.NURSE, nursing);
-		this.addErros(errorStampInfos, StampAtrOther.BREAK, breakTime);
-		this.addErros(errorStampInfos, StampAtrOther.PARENT, parentingTime);
-		this.addErros(errorStampInfos, StampAtrOther.GOOUT_RETURNING, outingTime);
-		this.addErros(errorStampInfos, StampAtrOther.CHEERING, supportTime);
-		this.addErros(errorStampInfos, StampAtrOther.ATTEENDENCE_OR_RETIREMENT, workingTime);
-		this.addErros(errorStampInfos, StampAtrOther.EXTRAORDINARY, extraordinaryTime);
+		this.addErros(errorStampInfos, StampAtrOther.NURSE, nursing, workTypeCd);
+		this.addErros(errorStampInfos, StampAtrOther.BREAK, breakTime, workTypeCd);
+		this.addErros(errorStampInfos, StampAtrOther.PARENT, parentingTime, workTypeCd);
+		this.addErros(errorStampInfos, StampAtrOther.GOOUT_RETURNING, outingTime, workTypeCd);
+		this.addErros(errorStampInfos, StampAtrOther.CHEERING, supportTime, workTypeCd);
+		this.addErros(errorStampInfos, StampAtrOther.ATTEENDENCE_OR_RETIREMENT, workingTime, workTypeCd);
+		this.addErros(errorStampInfos, StampAtrOther.EXTRAORDINARY, extraordinaryTime, workTypeCd);
 		
 		return errorStampInfos;
 	}
 	
-	public void addErros(List<ErrorStampInfo> errorStampInfos, StampAtrOther stampAtr, List<TimePlaceOutput>  list) {
+	public void addErros(List<ErrorStampInfo> errorStampInfos, StampAtrOther stampAtr, List<TimePlaceOutput>  list, Optional<String> workTypeCd) {
 		if (!CollectionUtil.isEmpty(list)) {
 			list.stream().forEach(item -> {
 //				「勤怠時間帯」Listに勤務時間１が存在するのをチェックする
 				if(item.getFrameNo().v() == 1 && stampAtr.value == 0) {
-				    if(!item.getOpStartTime().isPresent()) {
-				        ErrorStampInfo start = new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.START);
-				        errorStampInfos.add(start);
+				    if(!item.getOpStartTime().isPresent() && workTypeCd.isPresent()) {
+				        // 「勤務種類」を取得する
+				        Optional<WorkType> workTypeOpt = workTypeRepository.findNoAbolishByPK(AppContexts.user().companyId(), workTypeCd.get());
+				        if (workTypeOpt.isPresent()) {
+				            DailyWork dailyWork = workTypeOpt.get().getDailyWork();
+				            if ((dailyWork.getWorkTypeUnit().equals(WorkTypeUnit.OneDay) && checkWorkTypeWork(dailyWork.getOneDay())
+				                    || (dailyWork.getWorkTypeUnit().equals(WorkTypeUnit.MonringAndAfternoon) && 
+				                            (checkWorkTypeWork(dailyWork.getMorning()) || checkWorkTypeWork(dailyWork.getAfternoon()))))) {
+				                // 「打刻エラー情報」に「打刻エラー情報」を追加する
+				                ErrorStampInfo start = new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.START);
+				                errorStampInfos.add(start);
+				            }
+				        }
 				    }
 				    if(!item.getOpEndTime().isPresent()) {
 				        ErrorStampInfo end = new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.END);
@@ -587,17 +612,21 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 			
 //			実績の打刻のチェック
 			StampRecordOutput stampRecordOutput = null;
+			Optional<String> workTypeCd = Optional.empty();
 			Optional<List<ActualContentDisplay>> listActualContentDisplay = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
 			if (listActualContentDisplay.isPresent()) {
 				if (!CollectionUtil.isEmpty(listActualContentDisplay.get())) {
 					ActualContentDisplay actualContentDisplay = listActualContentDisplay.get().get(0);
 					Optional<AchievementDetail> opAchievementDetail = actualContentDisplay.getOpAchievementDetail();
 					if (opAchievementDetail.isPresent()) {
-						stampRecordOutput = opAchievementDetail.get().getStampRecordOutput();
-					}
+	                    stampRecordOutput = opAchievementDetail.get().getStampRecordOutput();
+	                    if (opAchievementDetail.get().getTrackRecordAtr().equals(TrackRecordAtr.DAILY_RESULTS)) {
+	                        workTypeCd = Optional.ofNullable(opAchievementDetail.get().getWorkTypeCD());
+	                    }
+	                }
 				}
 			}
-			List<ErrorStampInfo> errorStampInfos = this.getErrorStampList(stampRecordOutput);
+			List<ErrorStampInfo> errorStampInfos = this.getErrorStampList(stampRecordOutput, workTypeCd);
 			if (!CollectionUtil.isEmpty(errorStampInfos)) {
 				appStampOutput.setErrorListOptional(Optional.of(errorStampInfos));
 				
@@ -662,7 +691,16 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		return appStampOutput;
 	}
 	
-	
+	private static boolean checkWorkTypeWork(WorkTypeClassification workTypeAtr) {
+	    if (workTypeAtr.equals(WorkTypeClassification.Attendance) 
+	            || workTypeAtr.equals(WorkTypeClassification.Shooting)
+	            || workTypeAtr.equals(WorkTypeClassification.ContinuousWork) 
+	            || workTypeAtr.equals(WorkTypeClassification.HolidayWork)) {
+	        return true;
+	    }
+	    
+	    return false;
+	}
 	
 
 }
