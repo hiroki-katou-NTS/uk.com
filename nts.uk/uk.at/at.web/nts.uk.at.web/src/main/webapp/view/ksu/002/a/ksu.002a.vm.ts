@@ -247,6 +247,7 @@ module nts.uk.ui.at.ksu002.a {
 			});
 
 			vm.employeeId.subscribe((data: string) => {
+
 				vm.employeeIds([data]);
 				vm.getPlansResultsData(false);
 				// reset memento
