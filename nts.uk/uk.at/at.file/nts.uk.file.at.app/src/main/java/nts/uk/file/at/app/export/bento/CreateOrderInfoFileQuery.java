@@ -159,7 +159,7 @@ public class CreateOrderInfoFileQuery {
                 		.findAny().map(x -> x.getReceptionHours().getReceptionName().v());
                 		
             } else if (ReservationClosingTimeFrame.FRAME2.equals(reservationClosingTimeFrame)) {
-                closingName = reservationSetting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo()==ReservationClosingTimeFrame.FRAME1)
+                closingName = reservationSetting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo()==ReservationClosingTimeFrame.FRAME2)
                 		.findAny().map(x -> x.getReceptionHours().getReceptionName().v());
             }
         }
