@@ -5,17 +5,13 @@
 }
 
 #right-content {
+	padding-top: 25px !important;
 	margin-left: 20px;
 	width: 457px;
 	float: left;
 	padding: 7px;
-	border: 2px solid #B1B1B1;
 	border-radius: 7px;
 	display: block !important;
-}
-
-#A5_2 {
-	margin-left: 10px;
 }
 
 .kmr004-inline{
@@ -29,10 +25,6 @@
 
 .table_content td {
 	padding:5px
-}
-
-#tree-grid {
-	padding-top: 20px;
 }
 
 .table_content td.align-top {

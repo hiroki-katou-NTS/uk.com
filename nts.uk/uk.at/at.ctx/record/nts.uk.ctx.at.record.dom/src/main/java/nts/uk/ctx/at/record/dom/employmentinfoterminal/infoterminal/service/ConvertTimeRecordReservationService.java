@@ -28,7 +28,7 @@ public class ConvertTimeRecordReservationService {
 
 	// 変換する
 	public static Optional<AtomTask> convertData(Require require, EmpInfoTerminalCode empInfoTerCode,
-			ContractCode contractCode, ReservationReceptionData reservReceptData) {
+			ContractCode contractCode, ReservationReceptionData reservReceptData, String companyID) {
 
 		Optional<EmpInfoTerminal> empInfoTerOpt = require.getEmpInfoTerminal(empInfoTerCode, contractCode);
 
@@ -38,11 +38,24 @@ public class ConvertTimeRecordReservationService {
 		try {
 
 			// $就業情報端末.予約(require, @予約受信データ)
+<<<<<<< HEAD
 			AtomTask pairStampAtomTask = empInfoTerOpt.get().createReservRecord(require,
 					reservReceptData);
 //			 if (!canCreateNewData(require, contractCode, reservReceptData)) {
 //			 return Optional.empty();
 //			 }
+=======
+			Pair<StampRecord, AtomTask> pairStampAtomTask = empInfoTerOpt.get().createReservRecord(require,
+					reservReceptData, companyID);
+			 if (!canCreateNewData(require, contractCode, reservReceptData)) {
+			 return Optional.empty();
+			 }
+
+			AtomTask atomTask = AtomTask.of(() -> {
+				require.insert(pairStampAtomTask.getLeft());
+				pairStampAtomTask.getRight().run();
+			});
+>>>>>>> uk/release_pj/lunch_order_1162
 
 //			AtomTask atomTask = AtomTask.of(() -> {
 //				require.insert(pairStampAtomTask.getLeft());

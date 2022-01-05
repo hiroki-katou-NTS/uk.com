@@ -101,9 +101,17 @@ public class EmpInfoTerminal implements DomainAggregate {
 
 
 	// [２] 予約
+<<<<<<< HEAD
 	public AtomTask createReservRecord(ConvertTimeRecordReservationService.Require require,
 			ReservationReceptionData reservReceptData) {
 		return createReserv(require, reservReceptData);
+=======
+	public Pair<StampRecord, AtomTask> createReservRecord(ConvertTimeRecordReservationService.Require require,
+			ReservationReceptionData reservReceptData, String companyID) {
+		StampRecord stampRecord = createStampRecord(reservReceptData);
+		AtomTask createReserv = createReserv(require, reservReceptData, companyID);
+		return Pair.of(stampRecord, createReserv);
+>>>>>>> uk/release_pj/lunch_order_1162
 	}
 
 	// [pvt-2] 予約の打刻記録を作成
@@ -115,12 +123,12 @@ public class EmpInfoTerminal implements DomainAggregate {
 
 	// [pvt-3] 弁当予約を作成
 	private AtomTask createReserv(ConvertTimeRecordReservationService.Require require,
-			ReservationReceptionData reserv) {
+			ReservationReceptionData reserv, String companyID) {
 		Map<Integer, BentoReservationCount> bentoDetails = new HashMap<>();
 		bentoDetails.put(reserv.getBentoFrame(), new BentoReservationCount(Integer.parseInt(reserv.getQuantity())));
 		return BentoReserveService.reserve(require, new ReservationRegisterInfo(reserv.getIdNumber()),
 				new ReservationDate(reserv.getDateTime().toDate(), ReservationClosingTimeFrame.FRAME1),
-				reserv.getDateTime(), bentoDetails, Optional.empty());
+				reserv.getDateTime(), bentoDetails, companyID, Optional.empty());
 	}
 
 	public static class EmpInfoTerminalBuilder {

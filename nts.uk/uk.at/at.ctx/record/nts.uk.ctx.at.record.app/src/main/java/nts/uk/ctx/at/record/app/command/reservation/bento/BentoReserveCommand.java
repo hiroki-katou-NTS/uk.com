@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 
@@ -15,7 +14,7 @@ public class BentoReserveCommand {
 
 	private String workLocationCode;
 
-	private GeneralDate date;
+	private String date;
 
 	private List<BentoReservationDetailCommand> details;
 	
@@ -43,7 +42,9 @@ public class BentoReserveCommand {
 		}
 		
 		public BentoReservationCount getBentoCount() {
-			return new BentoReservationCount(bentoCount);
+			BentoReservationCount bentoReservationCount = new BentoReservationCount(bentoCount);
+			bentoReservationCount.validate();
+			return bentoReservationCount;
 		}
 	}
 	

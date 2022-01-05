@@ -1,14 +1,15 @@
 package nts.uk.screen.at.app.reservation;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.val;
-import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
 
 @Data
 @AllArgsConstructor
@@ -19,6 +20,8 @@ public class BentoJoinReservationSetting {
     public int operationDistinction;
 
     //bentomenu
+    
+    public String historyID;
 
     public GeneralDate startDate;
 
@@ -31,7 +34,7 @@ public class BentoJoinReservationSetting {
     public Integer reservationStartTime1;
 
     //終了
-    public int reservationEndTime1;
+    public Integer reservationEndTime1;
 
     //名前
     public String reservationFrameName2;
@@ -44,39 +47,34 @@ public class BentoJoinReservationSetting {
 
     public List<BentoDto> bentoDtos;
 
-    public static BentoJoinReservationSetting setData(List<BentomenuJoinBentoDto> bentomenuJoinBentoDtos, BentoReservationSettingDto bentoReservationSettingDto){
-        if (bentomenuJoinBentoDtos == null || CollectionUtil.isEmpty(bentomenuJoinBentoDtos)) return null;
-        List<BentoDto> bentoDtos = new ArrayList<>();
+    public static BentoJoinReservationSetting setData(String historyID, List<ReservationRecTimeZone> reservationRecTimeZoneLst, GeneralDate startDate, GeneralDate endDate, List<Bento> menu){
+    	List<BentoDto> bentoDtos = new ArrayList<>();
+		for(Bento bento : menu) {
+			bentoDtos.add(new BentoDto(
+					bento.getFrameNo(), 
+					bento.getName().v(), 
+					bento.getUnit().v(), 
+					bento.getAmount1().v(), 
+					bento.getAmount2().v(), 
+					bento.getReceptionTimezoneNo().value,
+					bento.getWorkLocationCode().map(x -> x.v()).orElse(null), 
+					null));
+		}
+    	
+    	ReservationRecTimeZone frame1 = reservationRecTimeZoneLst.stream().filter(x -> x.getFrameNo()==ReservationClosingTimeFrame.FRAME1).findAny().orElse(null);
+    	ReservationRecTimeZone frame2 = reservationRecTimeZoneLst.stream().filter(x -> x.getFrameNo()==ReservationClosingTimeFrame.FRAME2).findAny().orElse(null);
 
-//        List<BentomenuJoinBentoDto> result = bentoReservationSettingDto.operationDistinction == 0 ?
-//                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode == null).collect(Collectors.toList()) :
-//                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode != null).collect(Collectors.toList());
-
-        for(BentomenuJoinBentoDto x : bentomenuJoinBentoDtos){
-            bentoDtos.add(new BentoDto(
-                    x.getFrameNo(),
-                    x.getBentoName(),
-                    x.getUnitName(),
-                    x.getPrice1(),
-                    x.getPrice2(),
-                    x.isReservationAtr1(),
-                    x.isReservationAtr2(),
-                    x.getWorkLocationCode(),
-                    x.getWorkLocationName()
-            ));
-        }
-
-        val dto = bentomenuJoinBentoDtos.get(0);
         return new BentoJoinReservationSetting(
-                bentoReservationSettingDto.getOperationDistinction(),
-                dto.getStartDate(),
-                dto.getEndDate(),
-                dto.getReservationFrameName1(),
-                dto.getReservationStartTime1(),
-                dto.getReservationEndTime1(),
-                dto.getReservationFrameName2(),
-                dto.getReservationStartTime2(),
-                dto.getReservationEndTime2(),
+        		OperationDistinction.BY_COMPANY.value,
+        		historyID,
+        		startDate,
+        		endDate,
+        		frame1==null ? null : frame1.getReceptionHours().getReceptionName().v(),
+				frame1==null ? null : frame1.getReceptionHours().getStartTime().v(),
+                frame1==null ? null : frame1.getReceptionHours().getEndTime().v(),
+                frame2==null ? null : frame2.getReceptionHours().getReceptionName().v(),
+                frame2==null ? null : frame2.getReceptionHours().getStartTime().v(),
+                frame2==null ? null : frame2.getReceptionHours().getEndTime().v(),
                 bentoDtos
         );
     }

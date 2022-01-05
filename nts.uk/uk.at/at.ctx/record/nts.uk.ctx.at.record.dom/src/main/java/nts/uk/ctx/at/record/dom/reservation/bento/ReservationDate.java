@@ -20,7 +20,7 @@ public class ReservationDate extends ValueObject {
 	private final GeneralDate date;
 	
 	/**
-	 * 締め時刻枠
+	 * 受付時間帯NO
 	 */
 	@Getter
 	private final ReservationClosingTimeFrame closingTimeFrame;

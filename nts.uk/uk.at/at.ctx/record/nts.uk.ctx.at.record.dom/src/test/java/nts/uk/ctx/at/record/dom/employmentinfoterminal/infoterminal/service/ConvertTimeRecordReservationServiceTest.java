@@ -31,7 +31,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.shr.com.net.Ipv4Address;
 
@@ -46,6 +47,8 @@ public class ConvertTimeRecordReservationServiceTest {
 	private static EmpInfoTerminalCode empInfoTerCode;
 
 	private static ContractCode contractCode;
+	
+	private static String companyID;
 
 	@Injectable
 	private ConvertTimeRecordReservationService.Require require;
@@ -54,6 +57,7 @@ public class ConvertTimeRecordReservationServiceTest {
 	public static void setUpBeforeClass() throws Exception {
 		empInfoTerCode = new EmpInfoTerminalCode("1");
 		contractCode = new ContractCode("1");
+		companyID = "000000000000-0001";
 	}
 
 	@Before
@@ -64,7 +68,7 @@ public class ConvertTimeRecordReservationServiceTest {
 	public void testEmpInfoTerNoPresent() {
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
 		Optional<AtomTask> resultActual = ConvertTimeRecordReservationService.convertData(require, empInfoTerCode,
-				contractCode, receptionData);
+				contractCode, receptionData, companyID);
 		assertThat(resultActual).isEqualTo(Optional.empty());
 
 	}
@@ -89,6 +93,7 @@ public class ConvertTimeRecordReservationServiceTest {
 		};
 
 		Optional<AtomTask> resultActual = ConvertTimeRecordReservationService.convertData(require, empInfoTerCode,
+<<<<<<< HEAD
 				contractCode, receptionData);
 //		NtsAssert.atomTask(() -> resultActual.get(), any -> require.getEmpInfoTerminal(any.get(), any.get()));
 	}
@@ -118,10 +123,45 @@ public class ConvertTimeRecordReservationServiceTest {
 //				contractCode, receptionData);
 //		NtsAssert.atomTask(() -> resultActual.get(), any -> require.insert(any.get()));
 //	}
+=======
+				contractCode, receptionData, companyID);
+		assertThat(resultActual).isEqualTo(Optional.empty());
+
+	}
+
+	@Test
+	public void testRegistDoneData() {
+		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
+
+		Optional<EmpInfoTerminal> empInfoTer = Optional
+				.of(new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("AABBCCDD"),
+						new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")),
+						new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
+								.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1)))
+								.build());
+		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
+				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, null, null, null, null, null).build());
+
+		new Expectations() {
+			{
+				require.getEmpInfoTerminal((EmpInfoTerminalCode) any, (ContractCode) any);
+				result = empInfoTer;
+
+				require.getStampRecord(contractCode, (StampNumber) any, (GeneralDateTime) any);
+				result = Optional.empty();
+
+			}
+		};
+
+		Optional<AtomTask> resultActual = ConvertTimeRecordReservationService.convertData(require, empInfoTerCode,
+				contractCode, receptionData, companyID);
+		NtsAssert.atomTask(() -> resultActual.get(), any -> require.insert(any.get()));
+	}
+>>>>>>> uk/release_pj/lunch_order_1162
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testNoFindStampCard(@Mocked BentoMenu menu) {
+	public void testNoFindStampCard(@Mocked BentoMenuHistory menu) {
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
 
 		Optional<EmpInfoTerminal> empInfoTer = Optional
@@ -140,14 +180,15 @@ public class ConvertTimeRecordReservationServiceTest {
 
 				menu.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
 						(Optional<WorkLocationCode>)any,
-						((Map<Integer, BentoReservationCount>) any));
+						((Map<Integer, BentoReservationCount>) any),
+						(ReservationRecTimeZone) any);
 				result = new BusinessException("System error");
 
 			}
 		};
 
 		Optional<AtomTask> resultActual = ConvertTimeRecordReservationService.convertData(require, empInfoTerCode,
-				contractCode, receptionData);
+				contractCode, receptionData, companyID);
 		assertThat(resultActual).isEqualTo(Optional.empty());
 	}
 

@@ -8,81 +8,78 @@
         <ui:composition template="/master/base.xhtml">
             <ui:define name="htmlHead">
                 <com:scriptfile set="IGNITE"/>
+                
                 <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
                 <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
                 <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
                 <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
                 <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
-
                 <com:stylefile path="./kmr003.a.style.css"/>
-
                 <com:scriptfile path="./kmr003.a.vm.js"/>
-                <!--<com:scriptfile path="./kmr003.a.start.js" />-->
-
                 <com:ValidatorScript>
 					nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount
                 </com:ValidatorScript>
-                <com:EnumScript>
-                    nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoReservationSearchConditionDto 
-                </com:EnumScript>
             </ui:define>
 
             <ui:define name="content">
                 <div id="functions-area">
-                    <!--A1_2-->
-                    <button tabindex="1" id="A1_2" class="proceed" data-bind="click: updateReservation, enable: hasData() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KMR003_2')}</button>
-                    <!--A1_3-->
-                    <button tabindex="2" class="danger" data-bind="click: deleteReservation, enable: canDelete() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KMR003_3')}</button>
+                    <!--A1_1-->
+                    <button tabindex="1" id="A1_1" class="proceed" data-bind="click: gotoScreenB, enable: isEnableRegister() &amp;&amp; $root.errors.isEmpty ">#{i18n.getText('KMR003_38')}</button>
                 </div>
                 <div id="contents-area">
                     <div class="kmr003-left-content">
-                        <!--A2_1-->
+                        <!--A5-->
                         <div id="com-ccg001"></div>
                     </div>
                     <div class="kmr003-right-content">
-                        <div id="filter-condition">
-                            <!--A2_3-->
-                            <div id="A2_3" tabindex="3" data-bind="ntsDatePicker: {
-                                name: '#{i18n.getText('KMR003_11')}',
-                                required:true,
-                                value: date,
-                                dateFormat: 'YYYY/MM/DD',
-                                fiscalMonthsMode: true,
-                                showJumpButtons: true
-                            }"></div>
-
-                            <!--A2_5-->
-                            <div id="A2_5" class="content-option" tabindex="4" data-bind="ntsComboBox: {
-                                width: '150px',
-                                name: '#{i18n.getText('KMR003_13')}',
-                                options: searchConditions,
-                                optionsValue: 'value',
-                                visibleItemsCount: 5,
-                                value: searchConditionValue,
-                                optionsText: 'name',
-                                editable: false,
-                                enable: true,
-                                required: true,
-                                columns: [
-                                    { prop: 'name', length: 10 },
-                                ]}"></div>
-
-                            <!--A2_7-->
-                            <div class="content-option cf custom-label" tabindex="5" data-bind="ntsSwitchButton: {
-                                name: '#{i18n.getText('KMR003_14')}',
-                                options: closingTimeFrames,
-                                optionsValue: 'id',
-                                optionsText: 'name',
-                                value: closingTimeFrameValue,
-                                required: true,
-                                enable: true }"></div>
-
-                            <!--A2_10-->
-                            <span id="A2_10" class="content-option label" data-bind="text: closingTimeTime"></span>
-                        </div>
-                        <!--A3_1-->
+                        <!--A2-->
                         <div class="form-group">
                             <div id="grid"></div>
+                        </div>
+                    </div>
+                    <div class="kmr003-left-content" style="margin: 40px;">
+                        <div class="table">
+                            <!-- A3_1 -->
+                            <div class="cell" style="width: 120px;">
+                                <div data-bind="ntsFormLabel: {
+                                    required: true, 
+                                    text: '#{i18n.getText('KMR003_39')}'
+                                }"></div>
+                            </div>
+                            <div class="cell">
+                                <div data-bind="ntsDatePicker: {
+                                    name: '#{i18n.getText('KMR003_39')}',
+                                    required:true,
+                                    value: date,
+                                    dateFormat: 'YYYY/MM/DD',
+                                    fiscalMonthsMode: true,
+                                    showJumpButtons: true
+                                }"></div>
+                            </div>
+                        </div>
+                        <div class="table" style="margin-top: 15px;">
+                            <!-- A4_1 -->
+                            <div class="cell valign-center" style="width: 120px;">
+                                <div data-bind="ntsFormLabel: {
+                                    required: true, 
+                                    text: '#{i18n.getText('KMR003_40')}'
+                                }"></div>
+                            </div>
+                            <!-- A4_2 -->
+                            <div class="cell">
+                                <div data-bind="ntsSwitchButton: {
+                                    name: '#{i18n.getText('KMR003_14')}',
+                                    options: receptionNames,
+                                    optionsValue: 'id',
+                                    optionsText: 'name',
+                                    value: selectedReception,
+                                    required: true,
+                                    enable: true }"></div>
+                            </div>
+                            <!-- A4_3 -->
+                            <div class="cell valign-center">
+                                <div data-bind="text: closingTime" style="margin-left: 15px;"></div>
+                            </div>
                         </div>
                     </div>
                 </div>

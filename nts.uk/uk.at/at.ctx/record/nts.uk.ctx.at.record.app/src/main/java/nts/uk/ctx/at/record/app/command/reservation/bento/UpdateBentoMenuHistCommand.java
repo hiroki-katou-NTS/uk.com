@@ -1,13 +1,18 @@
 package nts.uk.ctx.at.record.app.command.reservation.bento;
 
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
 
 @Getter
 public class UpdateBentoMenuHistCommand {
-    public GeneralDate startDatePerio;
-    public GeneralDate endDatePerio;
-    public String historyId;
+	/**
+	 * 期間
+	 */
+    public String startDatePerio;
+    public String endDatePerio;
+    /**
+     * 元の開始日
+     */
+    public String originalStartDate;
 
 }
 

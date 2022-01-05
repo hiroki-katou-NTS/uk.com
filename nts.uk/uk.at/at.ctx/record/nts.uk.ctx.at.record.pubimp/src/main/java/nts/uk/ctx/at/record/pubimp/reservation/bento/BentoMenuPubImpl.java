@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
 import nts.uk.ctx.at.record.pub.reservation.bento.BentoMenuExport;
 import nts.uk.ctx.at.record.pub.reservation.bento.BentoMenuPub;
 
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.pub.reservation.bento.BentoMenuPub;
 public class BentoMenuPubImpl implements BentoMenuPub {
 
 	@Inject
-	private BentoMenuRepository bentoMenuRepo;
+	private BentoMenuHistRepository bentoMenuRepo;
 	
 	@Override
 	public List<BentoMenuExport> getBentoMenu(String companyID, GeneralDate date) {
@@ -28,9 +28,9 @@ public class BentoMenuPubImpl implements BentoMenuPub {
 										.amount2(b.getAmount2().v())
 										.frameNo(b.getFrameNo())
 										.name(b.getName().v())
-										.reservationTime1Atr(b.isReservationTime1Atr())
-										.reservationTime2Atr(b.isReservationTime2Atr())
 										.unit(b.getUnit().v())
+										.receptionTimezoneNo(b.getReceptionTimezoneNo().value)
+										.workLocationCode(b.getWorkLocationCode().map(x -> x.v()).orElse(null))
 										.build())
 				.collect(Collectors.toList());
 	}

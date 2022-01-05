@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pubimp.role;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -80,7 +81,7 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 						role.getName().v(), role.getAssignAtr().value, role.getEmployeeReferenceRange().value);
 			}).collect(Collectors.toList());
 		}
-		return null;
+		return new ArrayList<RoleExport>();
 	}
 
 	/*

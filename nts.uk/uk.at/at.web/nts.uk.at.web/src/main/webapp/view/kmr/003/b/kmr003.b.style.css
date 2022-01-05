@@ -1,3 +1,31 @@
-#B1_container{
-    margin: auto!important;
+.align-center {
+    vertical-align: middle !important;
+    text-align: center !important;
+}
+
+.header_backgroundcolor {
+    background-color: #CFF1A5 !important;
+    color: #000 !important;
+}
+
+.mgrid .mgrid-header td div {
+    color: #000 !important;
+}
+
+.disable-cell {
+    background-color: #CCC !important;
+}
+
+.remove-border-top {
+    border-top: none !important;
+    border-bottom: none !important;
+}
+
+.remove-border-bottom {
+    border-bottom: none !important;
+}
+
+.padding-3 {
+    padding: 0 3px !important;
+    display: table-cell !important;
 }

@@ -102,14 +102,6 @@
                         <col width="auto" />
                     </colgroup>
                     <tr>
-                        <th colspan="2">
-                            <!--C5_2-->
-                            <span class="label" data-bind="
-									text: $vm.$i18n('KMR001_43')
-								"/>
-                        </th>
-                    </tr>
-                    <tr>
                         <td>
                             <!--C6_1-->
                             <div data-bind="ntsFormLabel: {
@@ -142,17 +134,18 @@
                         </td>
                         <td class="reservation-time">
                             <!--C11_2-->
-                            <div tabindex="7" class="data-control reservationAtr" data-bind="ntsCheckBox: {
-										checked: reservationAtr1,
-										text: vm.reservationFrameName1(),
-										enable: vm.isLasted(),
-								}"/>
+                            <label tabindex="7" style="vertical-align: middle;" class="data-control reservationAtr" data-bind="ntsRadioButton: { 
+                            				checked: receptionTimezoneNo, 
+                            				optionText: vm.reservationFrameName1, 
+                            				option: 1, 
+                            				group: 'abc',
+                            				enable: vm.isLasted() }"></label>
 
                             <!--C11_3-->
-                            <span class="label time-start" data-bind="text: vm.reservationStartTime1 "></span>
+                            <span style="vertical-align: middle;" class="label time-start" data-bind="text: vm.reservationStartTime1 "></span>
                             <!--C11_6-->
-                            <span class="label time-space">~</span>
-                            <span class="label time-end" data-bind="text: vm.reservationEndTime1 "></span>
+                            <span style="vertical-align: middle;" class="label time-space">~</span>
+                            <span style="vertical-align: middle;" class="label time-end" data-bind="text: vm.reservationEndTime1 "></span>
 
                         </td>
                     </tr>
@@ -160,19 +153,25 @@
                         <td/>
                         <td class="reservation-time">
                             <!--C11_4-->
-                            <div tabindex="8" class="data-control" data-bind="ntsCheckBox: {
-										checked: reservationAtr2,
-										text: vm.reservationFrameName2(),
-										enable: vm.isLasted(),
-									}"
-                            />
+                            <label tabindex="8" style="vertical-align: middle;" class="data-control" data-bind="ntsRadioButton: { 
+                            				checked: receptionTimezoneNo, 
+                            				optionText: vm.reservationFrameName2, 
+                            				option: 2, 
+                            				group: 'abc',
+                            				enable: vm.isLasted() }"></label>
 
                             <!--C11_5-->
-                            <span class="label time-start" data-bind="text: vm.reservationStartTime2 "></span>
-                            <span class="label time-space">~</span>
-                            <span class="label time-end" data-bind="text: vm.reservationEndTime2 "></span>
+                            <span style="vertical-align: middle;" class="label time-start" data-bind="text: vm.reservationStartTime2 "></span>
+                            <span style="vertical-align: middle;" class="label time-space">~</span>
+                            <span style="vertical-align: middle;" class="label time-end" data-bind="text: vm.reservationEndTime2 "></span>
 
 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td/>
+                        <td>
+							<div>#{i18n.getText('KMR001_111')}</div>	
                         </td>
                     </tr>
                     <tr>
@@ -219,6 +218,9 @@
 								 enable: vm.isLasted()
 								 }"/>
                         </td>
+                        <td>
+                        	<div style="margin-left: -150px;">#{i18n.getText('KMR001_108')}</div>
+                        </td>
                     </tr>
                     <tr>
                         <td>
@@ -241,6 +243,9 @@
 									name: $vm.$i18n('KMR001_45'),
 									enable: vm.isLasted()
 								}"/>
+                        </td>
+                        <td>
+                        	<div style="margin-left: -150px;">#{i18n.getText('KMR001_109')}</div>
                         </td>
                     </tr>
                 </table>

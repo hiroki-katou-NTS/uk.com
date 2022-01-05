@@ -1,22 +1,27 @@
 package nts.uk.ctx.at.record.infra.entity.reservation.bentomenu;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Getter
 @Setter
@@ -34,24 +39,28 @@ public class KrcmtBentoMenuHist extends ContractUkJpaEntity {
 	
 	@Column(name = "END_YMD")
 	public GeneralDate endDate;
+	
+	@OneToMany(targetEntity = KrcmtBento.class, mappedBy = "krcmtBentoMenuHist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@JoinTable(name = "KRCMT_BENTO")
+	private List<KrcmtBento> krcmtBentoLst;
 
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
-	public static List<KrcmtBentoMenuHist> toEntity(BentoMenuHistory domain){
-		List<KrcmtBentoMenuHist> result = new ArrayList<>();
-		domain.getHistoryItems().forEach((item) -> {
-			result.add((new KrcmtBentoMenuHist(new KrcmtBentoMenuHistPK(domain.companyId,item.identifier()),
-					item.start(),item.end())));
-		});
-		return result;
+	
+	public static KrcmtBentoMenuHist fromDomain(BentoMenuHistory domain) {
+		return new KrcmtBentoMenuHist(
+				new KrcmtBentoMenuHistPK(AppContexts.user().companyId(), domain.getHistoryID()), 
+				domain.getHistoryItem().span().start(), 
+				domain.getHistoryItem().span().end(), 
+				domain.getMenu().stream().map(x -> KrcmtBento.fromDomain(x, domain.getHistoryID())).collect(Collectors.toList()));
 	}
-
-	public KrcmtBentoMenuHist update(DateHistoryItem domain){
-		this.endDate = domain.end();
-		this.startDate = domain.start();
-		return this;
+	
+	public BentoMenuHistory toDomain() {
+		return new BentoMenuHistory(
+				pk.histID, 
+				new DateHistoryItem(pk.histID, new DatePeriod(startDate, endDate)), 
+				krcmtBentoLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
-
 }

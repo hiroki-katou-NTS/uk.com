@@ -495,7 +495,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             if ($("#grid").data("mGrid")) $("#grid").mGrid("destroy");
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 width: '1200px',
-                height: '600px',
+                height: '500px',
                 headerHeight: "45px",
                 subHeight: "140px",
                 subWidth: "100px",

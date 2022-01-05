@@ -25,9 +25,8 @@ public class CreateReseItemSettingCommand {
     // 単位
     private String unit;
 
-    // 締め時刻１で予約可能
-    private boolean canBookClosesingTime1;
-
-    // 締め時刻１で予約可能
-    private boolean canBookClosesingTime2;
+    /**
+	 * 受付時間帯NO
+	 */
+	public int receptionTimezoneNo;
 }
