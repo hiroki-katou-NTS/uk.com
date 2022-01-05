@@ -15,6 +15,7 @@ import javax.persistence.Query;
 import lombok.val;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
@@ -43,7 +44,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			+ " s.pk.cid = :cid AND s.pk.ym >= :minYm AND s.pk.ym < :maxYm"
 			+ " ORDER BY s.pk.ym";
 
-	private static final String GET_EMPLOYEE = " SELECT " + " ROW_NUMBER() OVER( "
+	private static final String GET_EMPLOYEE_SQLSERVER = " SELECT " + " ROW_NUMBER() OVER( "
 			+ " 	PARTITION BY BSYMT_SYAIN.SCD "
 			+ " 	ORDER BY BSYMT_SYAIN.SCD ASC) AS ROW_NUMBER, " 
 			+ " BSYMT_SYAIN.SID, "
@@ -94,6 +95,58 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			+ " WHERE  BSYMT_SYAIN.CID = ? " 
 			+ " AND  BSYMT_SYAIN.DEL_STATUS_ATR = 0 " 
 			+ " ORDER BY BSYMT_SYAIN.SCD ASC ";
+	
+	private static final String GET_EMPLOYEE_POSTGRE = " SELECT " + " ROW_NUMBER() OVER( "
+			+ " 	PARTITION BY BSYMT_SYAIN.SCD "
+			+ " 	ORDER BY BSYMT_SYAIN.SCD ASC) AS ROW_NUMBER, " 
+			+ " BSYMT_SYAIN.SID, "
+			+ " BSYMT_SYAIN.SCD, " 
+			+ " BPSMT_PERSON.BUSINESS_NAME, "
+			+ " KSHMT_LEGALTIME_D_REG_SYA.DAILY_TIME, " 
+			+ " KSHMT_LEGALTIME_D_REG_SYA.WEEKLY_TIME, "
+			+ " KRCMT_CALC_M_SET_REG_SYA.INCLUDE_EXTRA_AGGR, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_LEGAL_AGGR ELSE NULL END) AS INCLUDE_LEGAL_AGGR, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_HOLIDAY_AGGR ELSE NULL END) AS INCLUDE_HOLIDAY_AGGR, "
+			+ " KRCMT_CALC_M_SET_REG_SYA.INCLUDE_EXTRA_OT, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_LEGAL_OT ELSE NULL END) AS INCLUDE_LEGAL_OT, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_HOLIDAY_OT ELSE NULL END) AS INCLUDE_HOLIDAY_OT, "
+			+ " KRCMT_CALC_M_SET_FLE_COM.WITHIN_TIME_USE, " 
+			+ " KRCMT_CALC_M_SET_FLE_SYA.AGGR_METHOD, "
+			+ " KRCMT_CALC_M_SET_FLE_SYA.SETTLE_PERIOD_MON, "
+			+ " KRCMT_CALC_M_SET_FLE_SYA.SETTLE_PERIOD, "
+			+ " KRCMT_CALC_M_SET_FLE_SYA.INCLUDE_HDWK, "
+			+ " KRCMT_CALC_M_SET_FLE_SYA.LEGAL_AGGR_SET, "
+			+ " KRCMT_CALC_M_SET_FLE_SYA.START_MONTH, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_FLE_SYA.AGGR_METHOD = '0' THEN KRCMT_CALC_M_SET_FLE_SYA.INCLUDE_OT ELSE NULL END) AS INCLUDE_OT, "
+			+ " KRCMT_CALC_M_SET_FLE_SYA.INSUFFIC_SET, " 
+			+ " KSHMT_LEGALTIME_D_DEF_SYA.DAILY_TIME AS TRANS_DAILY_TIME, "
+			+ " KSHMT_LEGALTIME_D_DEF_SYA.WEEKLY_TIME AS TRANS_WEEKLY_TIME, "
+			+ " KRCMT_CALC_M_SET_DEF_SYA.STR_MONTH, "
+			+ " KRCMT_CALC_M_SET_DEF_SYA.PERIOD, " 
+			+ " KRCMT_CALC_M_SET_DEF_SYA.REPEAT_ATR, "
+			+ " KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_EXTRA_AGGR AS DEFOR_INCLUDE_EXTRA_AGGR, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_LEGAL_AGGR ELSE NULl END) AS DEFOR_INCLUDE_LEGAL_AGGR, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_HOLIDAY_AGGR ELSE NULl END) AS DEFOR_INCLUDE_HOLIDAY_AGGR, "
+			+ " KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_EXTRA_OT AS DEFOR_INCLUDE_EXTRA_OT, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_LEGAL_OT ELSE NULl END) AS DEFOR_INCLUDE_LEGAL_OT, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_HOLIDAY_OT ELSE NULl END) AS DEFOR_INCLUDE_HOLIDAY_OT "
+			+ " FROM BSYMT_SYAIN"
+			+ " LEFT JOIN KSHMT_LEGALTIME_D_DEF_SYA ON BSYMT_SYAIN.CID = KSHMT_LEGALTIME_D_DEF_SYA.CID "
+			+ "           AND BSYMT_SYAIN.SID = KSHMT_LEGALTIME_D_DEF_SYA.SID "
+			+ " LEFT JOIN KSHMT_LEGALTIME_D_REG_SYA ON BSYMT_SYAIN.CID = KSHMT_LEGALTIME_D_REG_SYA.CID "
+			+ "           AND BSYMT_SYAIN.SID = KSHMT_LEGALTIME_D_REG_SYA.SID "
+			+ " LEFT JOIN KRCMT_CALC_M_SET_DEF_SYA ON BSYMT_SYAIN.CID = KRCMT_CALC_M_SET_DEF_SYA.CID "
+			+ "           AND BSYMT_SYAIN.SID = KRCMT_CALC_M_SET_DEF_SYA.SID "
+			+ " LEFT JOIN KRCMT_CALC_M_SET_FLE_SYA ON BSYMT_SYAIN.CID = KRCMT_CALC_M_SET_FLE_SYA.CID "
+			+ "           AND BSYMT_SYAIN.SID = KRCMT_CALC_M_SET_FLE_SYA.SID "
+			+ " LEFT JOIN KRCMT_CALC_M_SET_REG_SYA ON BSYMT_SYAIN.CID = KRCMT_CALC_M_SET_REG_SYA.CID "
+			+ "           AND BSYMT_SYAIN.SID = KRCMT_CALC_M_SET_REG_SYA.SID "
+			+ " LEFT JOIN BPSMT_PERSON ON BSYMT_SYAIN.PID = BPSMT_PERSON.PID "
+			+ " LEFT JOIN KRCMT_CALC_M_SET_FLE_COM ON  "
+			+ "	BSYMT_SYAIN.CID = KRCMT_CALC_M_SET_FLE_COM.CID "
+			+ " WHERE  BSYMT_SYAIN.CID = ? " 
+			+ " AND BSYMT_SYAIN.DEL_STATUS_ATR = '0' " 
+			+ " ORDER BY BSYMT_SYAIN.SCD ASC ";
 
 	@Override
 	public List<MasterData> getEmployeeData(int startDate, int endDate) {
@@ -110,17 +163,34 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 				.setParameter("maxYm", endDate * 100 + month)
 				.getList();
 		
-		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYEE.toString())) {
-			stmt.setString(1, cid);
-			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
-			
-			result.forEach(i -> {
-				datas.addAll(buildEmployeeRow(i, legalTimes, startDate, endDate, month, startOfWeek));
-			});
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
+			try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYEE_SQLSERVER.toString())) {
+				stmt.setString(1, cid);
+				NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+				
+				result.forEach(i -> {
+					datas.addAll(buildEmployeeRow(i, legalTimes, startDate, endDate, month, startOfWeek));
+				});
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else if (this.database().is(DatabaseProduct.POSTGRESQL)) {
+			try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYEE_POSTGRE.toString())) {
+				stmt.setString(1, cid);
+				NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+				
+				result.forEach(i -> {
+					datas.addAll(buildEmployeeRow(i, legalTimes, startDate, endDate, month, startOfWeek));
+				});
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			throw new RuntimeException("not supported");
 		}
 		return datas;
 	}
