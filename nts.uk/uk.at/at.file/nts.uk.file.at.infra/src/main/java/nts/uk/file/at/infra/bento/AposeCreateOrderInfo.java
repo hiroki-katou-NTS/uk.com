@@ -56,7 +56,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
     private static final String IS_CHECK = TextResource.localize("KMR004_36");
 
     //Work Place
-    private static final String WOKR_PLACE_LABEL = TextResource.localize("Com_Workplace");
+    private static final String WOKR_PLACE_LABEL = "Com_Workplace";
     ////Work Location
     private static final String WOKR_LOCATION_LABEL = TextResource.localize("KMR004_38");
     private static final String NUMBER_FORMAT = "\"¥\"#,##0;[RED]\"¥\"-#,##0";
@@ -374,7 +374,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             cells.get(0, startDataCol).setValue(placeOfWorkInfoDtos.get(0).getPlaceCode());
             cells.get(0, endDataCol).setValue(placeOfWorkInfoDtos.get(0).getPlaceName());
         } else {
-            cells.get(0, labelCol).setValue(WOKR_PLACE_LABEL);
+            cells.get(0, labelCol).setValue(TextResource.localize(WOKR_PLACE_LABEL));
             String value = placeOfWorkInfoDtos.get(0).getPlaceCode() + "　" +
             				placeOfWorkInfoDtos.get(0).getPlaceName();
             if(placeOfWorkInfoDtos.size()>1) {
