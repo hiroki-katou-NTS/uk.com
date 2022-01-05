@@ -64,7 +64,7 @@ public class JpaFixedExtraMonRepository extends JpaRepository implements FixedEx
 	public List<FixedExtraMon> getFixedItem(String anyId, boolean useAtr) {
 		List<FixedExtraMon> data = this.queryProxy().query(SELECT_FROM_FIXED_EXTRA_USEATR,KrcmtFixedExtraMon.class)
 				.setParameter("monAlarmCheckID", anyId)
-				.setParameter("useAtr", useAtr ? 1 : 0)
+				.setParameter("useAtr", useAtr)
 				.getList(c->c.toDomain());
 		return data;
 	}
