@@ -115,7 +115,7 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 		//			speHd.getUseTimes(), speHd.getRemainDays(), speHd.getRemainTimes());
 		//	result263.add(specialHoliday);
 		//}
-		// 2021.12.24 - 3S - chinh.hm  - issues #122037 - 変更 END
+
 		List<SpecialVacationPastSituation> result263 = lstSpeHd.stream().map(e -> new SpecialVacationPastSituation(
 				e.getSid(),
 				e.getYm(),
@@ -125,7 +125,7 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 				e.getAfterRemainDays() == 0 ?e.getBeforeRemainDays() :e.getAfterRemainDays(),
 				e.getAfterRemainTimes() == 0 ?e.getBeforeRemainTimes():e.getAfterRemainTimes()
 		)).collect(Collectors.toList());
-
+		// 2021.12.24 - 3S - chinh.hm  - issues #122037 - 変更 END
 		return new HolidayRemainMerEx(result255, result258, result259, result260, result263);
 	}
 
