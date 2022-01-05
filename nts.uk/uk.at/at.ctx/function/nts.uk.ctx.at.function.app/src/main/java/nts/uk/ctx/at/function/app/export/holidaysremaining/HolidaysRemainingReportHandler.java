@@ -480,9 +480,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         //YearMonthPeriod period = new YearMonthPeriod(startDate.yearMonth(), currentMonth.previousMonth());
         Optional<YearMonthPeriod> pastPeriod = outputPeriodInformation == null ? Optional.empty() : outputPeriodInformation.getPastPeriod();
         //-----------------------------------------------------------------------------------
-        // 2021.12.29 - 3S - chinh.hm - issues #121957 - 追加 START
+        // 2021.12.29 - 3S - chinh.hm - issues #122017 - 追加 START
         if (pastPeriod.isPresent() ) {
-            // 2021.12.29 - 3S - chinh.hm - issues #121957 - 追加 END
+            // 2021.12.29 - 3S - chinh.hm - issues #122017 - 追加 END
             //-----------------------------------------------------------------------------------
              period = pastPeriod.get();
             ////////////////////////////////////////////////////////////////////////////////
@@ -698,7 +698,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 listStatusOfHoliday = hdRemainMer.getResult260();
             }
             // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 END
-            //③－２　Trường hợp 「当月在職状況」== ture　(image)
+            //③－２　Trường hợp 「当月在職状況」== true　
             // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 START
             //　　　　if文追加 {
             if(currentStatus){
@@ -732,7 +732,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                         remainMng.getUnusedDay().v(),
                         remainMng.getRemainDay().v());
             }else {
-                //③－３　Trường hợp「当月在職状況」== false　(image)
+                //③－３　Trường hợp「当月在職状況」== false　
                 // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 START
                 //　　　　}
                 //　　　　else {
