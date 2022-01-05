@@ -171,6 +171,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
       // set visible for flag column
       isVisibleComlumn: boolean = true;
       isPreAtr: KnockoutObservable<boolean> = ko.observable(true);
+      date: KnockoutObservable<string> = ko.observable(null);
       comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
       comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
       // tab visible condition
@@ -270,8 +271,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     self.tabs()[5].visible(reflect.startAndEndSupport === 1 && data.useCheering);
                 
                 } 
-              } 
-           });
+            });
        } 
        
        
@@ -855,6 +855,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             self.approvalReason = params.approvalReason;
             
             self.isPreAtr(self.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr == 0);
+            self.date(self.appDispInfoStartupOutput().appDetailScreenInfo.application.appDate);
             self.dataSourceOb = ko.observableArray( [] );
             self.fetchData();
 
