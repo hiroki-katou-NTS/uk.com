@@ -61,7 +61,7 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 		val dates = beforeModify.getPeriod().join(afterModify.getPeriod()).datesBetween();
 		
 		for (GeneralDate date : dates) {
-			Action action = getAction(beforeModify.getPeriod(), afterModify.getPeriod(), date);
+			Action action = decideAction(beforeModify.getPeriod(), afterModify.getPeriod(), date);
 			
 			switch (action) {
 			case ADD:
@@ -133,87 +133,115 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 		return RegisterResultFromSupportableEmployee.createWithoutError(atomTaskList);
 	}
 	
+	/**
+	 * 追加の応援チケットで応援予定を変更する
+	 * @param require
+	 * @param supportableEmployee 応援可能な社員
+	 * @param addingTicket 追加応援チケット
+	 * @return
+	 */
 	private static RegisterResultFromSupportableEmployee updateSupportScheduleByAddSupportTicket(
 			Require require, SupportableEmployee supportableEmployee, 
 			SupportTicket addingTicket) {
 			
-			boolean isExistWorkSchedule = require.isExistWorkSchedule(addingTicket.getEmployeeId().v(), addingTicket.getDate());
-			
-			if ( !isExistWorkSchedule ) {
-				if ( addingTicket.getSupportType() == SupportType.ALLDAY ) {
-					return RegisterResultFromSupportableEmployee.createEmpty();
-				} else {
-					return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
-							new BusinessException("Msg_2274").getMessage());
-				}
-			}
-			
-			val registerResult = UpdateSupportScheduleBySupportTicket.add(require, addingTicket);
-			if ( registerResult.isHasError() ) {
-				
+		boolean isExistWorkSchedule = require.isExistWorkSchedule(addingTicket.getEmployeeId().v(), addingTicket.getDate());
+		
+		if ( !isExistWorkSchedule ) {
+			if ( addingTicket.getSupportType() == SupportType.ALLDAY ) {
+				return RegisterResultFromSupportableEmployee.createEmpty();
+			} else {
 				return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
-						registerResult.getErrorInformation().get(0).getErrorMessage());
+						new BusinessException("Msg_2274").getMessage());
 			}
+		}
+		
+		val registerResult = UpdateSupportScheduleBySupportTicket.add(require, addingTicket);
+		if ( registerResult.isHasError() ) {
 			
-			return RegisterResultFromSupportableEmployee.createWithoutError( Arrays.asList(registerResult.getAtomTask().get()) );
+			return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
+					registerResult.getErrorInformation().get(0).getErrorMessage());
+		}
+		
+		return RegisterResultFromSupportableEmployee.createWithoutError( Arrays.asList(registerResult.getAtomTask().get()) );
 	}
 	
-	private static RegisterResultFromSupportableEmployee updateSupportScheduleByRemoveSupportTicket(
-			Require require, SupportableEmployee supportableEmployee, 
-			SupportTicket addingTicket) {
-			
-			boolean isExistWorkSchedule = require.isExistWorkSchedule(addingTicket.getEmployeeId().v(), addingTicket.getDate());
-			
-			if ( !isExistWorkSchedule ) {
-				if ( addingTicket.getSupportType() == SupportType.ALLDAY ) {
-					return RegisterResultFromSupportableEmployee.createEmpty();
-				} else {
-					return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
-							new BusinessException("Msg_2274").getMessage());
-				}
-			}
-			
-			val registerResult = UpdateSupportScheduleBySupportTicket.remove(require, addingTicket);
-			if ( registerResult.isHasError() ) {
-				
-				return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
-						registerResult.getErrorInformation().get(0).getErrorMessage());
-			}
-			
-			return RegisterResultFromSupportableEmployee.createWithoutError( Arrays.asList(registerResult.getAtomTask().get()) );
-	}
-	
+	/**
+	 * 修正の応援チケットで応援予定を変更する
+	 * @param require
+	 * @param supportableEmployee 応援可能な社員
+	 * @param ticketBeforeModify 修正前の応援チケット
+	 * @param ticketAfterModify 修正後の応援チケット
+	 * @return
+	 */
 	private static RegisterResultFromSupportableEmployee updateSupportScheduleByModifySupportTicket(
 			Require require, SupportableEmployee supportableEmployee, 
 			SupportTicket ticketBeforeModify,
 			SupportTicket ticketAfterModify) {
 			
-			boolean isExistModifyingWorkSchedule = require.isExistWorkSchedule(ticketAfterModify.getEmployeeId().v(), ticketAfterModify.getDate());
-			
-			if ( !isExistModifyingWorkSchedule ) {
-				if ( ticketAfterModify.getSupportType() == SupportType.ALLDAY ) {
-					return RegisterResultFromSupportableEmployee.createEmpty();
-				} else {
-					return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
-							new BusinessException("Msg_2274").getMessage());
-				}
-			}
-			
-			val modifyingResult = UpdateSupportScheduleBySupportTicket.modify(require, ticketBeforeModify, ticketAfterModify);
-			if ( !modifyingResult.isPresent() ) {
+		boolean isExistModifyingWorkSchedule = require.isExistWorkSchedule(ticketAfterModify.getEmployeeId().v(), ticketAfterModify.getDate());
+		
+		if ( !isExistModifyingWorkSchedule ) {
+			if ( ticketAfterModify.getSupportType() == SupportType.ALLDAY ) {
 				return RegisterResultFromSupportableEmployee.createEmpty();
-			}
-			
-			if ( modifyingResult.get().isHasError() ) {
+			} else {
 				return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
-						modifyingResult.get().getErrorInformation().get(0).getErrorMessage());
+						new BusinessException("Msg_2274").getMessage());
 			}
+		}
+		
+		val modifyingResult = UpdateSupportScheduleBySupportTicket.modify(require, ticketBeforeModify, ticketAfterModify);
+		if ( !modifyingResult.isPresent() ) {
+			return RegisterResultFromSupportableEmployee.createEmpty();
+		}
+		
+		if ( modifyingResult.get().isHasError() ) {
+			return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
+					modifyingResult.get().getErrorInformation().get(0).getErrorMessage());
+		}
+		
+		return RegisterResultFromSupportableEmployee.createWithoutError( Arrays.asList(modifyingResult.get().getAtomTask().get()) );
+	}
+
+	/**
+	 * 削除の応援チケットで応援予定を変更する
+	 * @param require
+	 * @param supportableEmployee 応援可能な社員
+	 * @param removingTicket 削除応援チケット
+	 * @return
+	 */
+	private static RegisterResultFromSupportableEmployee updateSupportScheduleByRemoveSupportTicket(
+			Require require, SupportableEmployee supportableEmployee, 
+			SupportTicket removingTicket) {
 			
-			return RegisterResultFromSupportableEmployee.createWithoutError( Arrays.asList(modifyingResult.get().getAtomTask().get()) );
+		boolean isExistWorkSchedule = require.isExistWorkSchedule(removingTicket.getEmployeeId().v(), removingTicket.getDate());
+		
+		if ( !isExistWorkSchedule ) {
+			if ( removingTicket.getSupportType() == SupportType.ALLDAY ) {
+				return RegisterResultFromSupportableEmployee.createEmpty();
+			} else {
+				return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
+						new BusinessException("Msg_2274").getMessage());
+			}
+		}
+		
+		val registerResult = UpdateSupportScheduleBySupportTicket.remove(require, removingTicket);
+		if ( registerResult.isHasError() ) {
+			
+			return RegisterResultFromSupportableEmployee.createWithError(supportableEmployee, 
+					registerResult.getErrorInformation().get(0).getErrorMessage());
+		}
+		
+		return RegisterResultFromSupportableEmployee.createWithoutError( Arrays.asList(registerResult.getAtomTask().get()) );
 	}
 	
-	
-	private static Action getAction(DatePeriod beforeModify, DatePeriod afterModify, GeneralDate date) {
+	/**
+	 * 操作を判定する
+	 * @param beforeModify 修正前
+	 * @param afterModify 修正後
+	 * @param date 年月日
+	 * @return
+	 */
+	private static Action decideAction(DatePeriod beforeModify, DatePeriod afterModify, GeneralDate date) {
 		
 		if ( beforeModify.contains(date) ) {
 			if ( afterModify.contains(date) ) {
@@ -232,9 +260,13 @@ public class UpdateSupportScheduleFromSupportableEmployee {
 	}
 	
 	private static enum Action {
+		/** 追加 */
 		ADD,
+		/** 修正 */
 		MODIFY,
+		/** 削除 */
 		REMOVE,
+		/** しない */
 		DO_NOTHING
 	}
 	
