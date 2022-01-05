@@ -2,7 +2,7 @@ package nts.uk.ctx.at.function.dom.supportworklist.outputsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import java.util.List;
 
