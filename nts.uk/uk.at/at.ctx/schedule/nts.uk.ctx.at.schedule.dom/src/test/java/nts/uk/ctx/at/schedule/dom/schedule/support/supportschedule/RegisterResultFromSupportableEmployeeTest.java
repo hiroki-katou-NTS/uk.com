@@ -36,5 +36,15 @@ public class RegisterResultFromSupportableEmployeeTest {
 		assertThat( result.getErrorInfo() ).isEmpty();
 		assertThat( result.getAtomTaskList() ).isEqualTo(atomTaskList);
 	}
+	
+	@Test
+	public void testCreateEmpty () {
+		
+		val result = RegisterResultFromSupportableEmployee.createEmpty();
+		
+		assertThat( result.isError() ).isFalse();
+		assertThat( result.getErrorInfo() ).isEmpty();
+		assertThat( result.getAtomTaskList() ).isEmpty();
+	}
 
 }

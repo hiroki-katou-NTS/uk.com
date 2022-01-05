@@ -57,6 +57,10 @@ public class RegisterResultFromSupportableEmployee {
 		return new RegisterResultFromSupportableEmployee(false, Optional.empty(), atomTaskList);
 	}
 	
+	/**
+	 * emptyで作る
+	 * @return
+	 */
 	public static RegisterResultFromSupportableEmployee createEmpty () {
 		
 		return new RegisterResultFromSupportableEmployee(false, Optional.empty(), Collections.emptyList() );
