@@ -135,13 +135,16 @@ public class CreateOrderInfoFileQuery {
         if(frameNo.isPresent()) {
         	bentoReservationLst = bentoReservationLst.stream().map(x -> {
         		List<BentoReservationDetail> bentoReservationDetails = x.getBentoReservationDetails().stream().filter(y -> y.getFrameNo()==frameNo.get()).collect(Collectors.toList());
+        		if(CollectionUtil.isEmpty(bentoReservationDetails)) {
+        			return null;
+        		}
         		return new BentoReservation(
         				x.getRegisterInfor(), 
         				x.getReservationDate(), 
         				x.isOrdered(), 
         				x.getWorkLocationCode(), 
         				bentoReservationDetails);
-        	}).collect(Collectors.toList());
+        	}).filter(x -> x!=null).collect(Collectors.toList());
         }
         if(CollectionUtil.isEmpty(bentoReservationLst)) {
         	throw new BusinessException("Msg_1617");

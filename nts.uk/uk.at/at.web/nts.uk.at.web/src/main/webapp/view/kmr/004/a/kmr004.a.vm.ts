@@ -210,6 +210,18 @@ module nts.uk.at.view.kmr004.a {
 				reservationClosingTimeFrame: vm.model().reservationClosingTimeFrame.peek(),
 				extractionConditionChecked: extractionConditionChecked
 			};
+			if(data.totalExtractCondition==EXTRACT_CONDITION.ALL) {
+				data.totalExtractCondition = ReservationCorrect.ALL_RESERVE;
+			} else if(data.totalExtractCondition==EXTRACT_CONDITION.ALL) {
+				data.totalExtractCondition = ReservationCorrect.ORDER;
+			} else {
+				data.totalExtractCondition = ReservationCorrect.NOT_ORDERING;
+			}
+			if(data.itemExtractCondition==EXTRACT_CONDITION.ALL) {
+				data.itemExtractCondition = ReservationCorrect.ALL_RESERVE;
+			} else {
+				data.itemExtractCondition = ReservationCorrect.ALL_RESERVE;
+			}
 			return data;
 		}
 
@@ -460,6 +472,13 @@ module nts.uk.at.view.kmr004.a {
 		ALL = <number> 4,
 		ORDERED = <number> 1,
 		UN_ORDERED = <number> 2
+	}
+	
+	export enum ReservationCorrect {
+		ALL_RESERVE = 0, //予約した全部
+    	MORE_THAN_2_ITEMS = 1, //１商品２件以上
+    	ORDER = 2, //発注済み
+    	NOT_ORDERING = 3, //未発注
 	}
 
 	class OptionModel {
