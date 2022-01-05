@@ -15,6 +15,7 @@ import javax.persistence.Query;
 import lombok.val;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
@@ -45,7 +46,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 			+ " ORDER BY s.pk.ym";
 	
 	
-	private static final String GET_WORKPLACE;
+	private static final String GET_WORKPLACE_SQLSERVER;
 	  static {
 	      StringBuilder exportSQL = new StringBuilder();
 	     exportSQL.append("  SELECT * FROM ( ");
@@ -105,7 +106,70 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 	     exportSQL.append("            ) TBL  ");
 	     exportSQL.append("             ORDER BY TBL.HIERARCHY_CD ASC");
 
-	     GET_WORKPLACE = exportSQL.toString();
+	     GET_WORKPLACE_SQLSERVER = exportSQL.toString();
+	  }
+	  
+	  private static final String GET_WORKPLACE_POSTGRE;
+	  static {
+	      StringBuilder exportSQL = new StringBuilder();
+	     exportSQL.append("  SELECT * FROM ( ");
+	     exportSQL.append("             SELECT (CASE WHEN BSYMT_WKP_INFO.HIERARCHY_CD IS NOT NULL THEN BSYMT_WKP_INFO.HIERARCHY_CD ELSE '999999999999999999999999999999' END) AS HIERARCHY_CD,  ");
+	     exportSQL.append("             ROW_NUMBER() OVER(PARTITION BY BSYMT_WKP_INFO.WKP_CD ORDER BY (CASE WHEN BSYMT_WKP_INFO.HIERARCHY_CD IS NOT NULL THEN 0 ELSE 1 END),BSYMT_WKP_INFO.HIERARCHY_CD ASC) AS rk2,  ");
+	     exportSQL.append("             BSYMT_WKP_INFO.WKP_ID , BSYMT_WKP_INFO.WKP_CD AS WKPCD,   ");
+	     exportSQL.append("             BSYMT_WKP_INFO.WKP_NAME AS WKP_NAME,   ");
+	     exportSQL.append("             KSHMT_LEGALTIME_D_REG_WKP .DAILY_TIME,   ");
+	     exportSQL.append("             KSHMT_LEGALTIME_D_REG_WKP.WEEKLY_TIME,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_REG_WKP.INCLUDE_EXTRA_AGGR,   ");
+	     exportSQL.append("             (CASE WHEN KRCMT_CALC_M_SET_REG_WKP.INCLUDE_EXTRA_AGGR != '0' THEN KRCMT_CALC_M_SET_REG_WKP.INCLUDE_LEGAL_AGGR ELSE NULL END) AS INCLUDE_LEGAL_AGGR,   ");
+	     exportSQL.append("             (CASE WHEN KRCMT_CALC_M_SET_REG_WKP.INCLUDE_EXTRA_AGGR != '0' THEN KRCMT_CALC_M_SET_REG_WKP.INCLUDE_HOLIDAY_AGGR ELSE NULL END) AS INCLUDE_HOLIDAY_AGGR,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_REG_WKP.INCLUDE_EXTRA_OT,   ");
+	     exportSQL.append("             (CASE WHEN KRCMT_CALC_M_SET_REG_WKP.INCLUDE_EXTRA_OT != '0' THEN KRCMT_CALC_M_SET_REG_WKP.INCLUDE_LEGAL_OT ELSE NULL END) AS INCLUDE_LEGAL_OT,   ");
+	     exportSQL.append("             (CASE WHEN KRCMT_CALC_M_SET_REG_WKP.INCLUDE_EXTRA_OT != '0' THEN KRCMT_CALC_M_SET_REG_WKP.INCLUDE_HOLIDAY_OT ELSE NULL END) AS INCLUDE_HOLIDAY_OT,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_FLE_COM.WITHIN_TIME_USE,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_FLE_WKP.AGGR_METHOD,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_FLE_WKP.SETTLE_PERIOD_MON,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_FLE_WKP.SETTLE_PERIOD,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_FLE_WKP.START_MONTH AS FLEX_START_MONTH,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_FLE_WKP.INCLUDE_HDWK,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_FLE_WKP.LEGAL_AGGR_SET,   ");
+	     exportSQL.append("             (CASE WHEN KRCMT_CALC_M_SET_FLE_WKP.AGGR_METHOD = '0' THEN KRCMT_CALC_M_SET_FLE_WKP.INCLUDE_OT ELSE NULL END) AS INCLUDE_OT,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_FLE_WKP.INSUFFIC_SET,   ");
+	     exportSQL.append("             KSHMT_LEGALTIME_D_DEF_WKP.DAILY_TIME AS LAB_DAILY_TIME,   ");
+	     exportSQL.append("             KSHMT_LEGALTIME_D_DEF_WKP.WEEKLY_TIME AS LAB_WEEKLY_TIME,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_DEF_WKP.STR_MONTH,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_DEF_WKP.PERIOD,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_DEF_WKP.REPEAT_ATR,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_DEF_WKP.INCLUDE_EXTRA_AGGR AS DEFOR_INCLUDE_EXTRA_AGGR,   ");
+	     exportSQL.append("             (CASE WHEN KRCMT_CALC_M_SET_DEF_WKP.INCLUDE_EXTRA_AGGR != '0' THEN KRCMT_CALC_M_SET_DEF_WKP.INCLUDE_LEGAL_AGGR ELSE NULL END) AS DEFOR_INCLUDE_LEGAL_AGGR,   ");
+	     exportSQL.append("             (CASE WHEN KRCMT_CALC_M_SET_DEF_WKP.INCLUDE_EXTRA_AGGR != '0' THEN KRCMT_CALC_M_SET_DEF_WKP.INCLUDE_HOLIDAY_AGGR ELSE NULL END) AS DEFOR_INCLUDE_HOLIDAY_AGGR,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_DEF_WKP.INCLUDE_EXTRA_OT AS DEFOR_INCLUDE_EXTRA_OT,   ");
+	     exportSQL.append("             (CASE WHEN KRCMT_CALC_M_SET_DEF_WKP.INCLUDE_EXTRA_OT != '0' THEN KRCMT_CALC_M_SET_DEF_WKP.INCLUDE_LEGAL_OT ELSE NULL END) AS DEFOR_INCLUDE_LEGAL_OT,   ");
+	     exportSQL.append("             (CASE WHEN KRCMT_CALC_M_SET_DEF_WKP.INCLUDE_EXTRA_OT != '0' THEN KRCMT_CALC_M_SET_DEF_WKP.INCLUDE_HOLIDAY_OT ELSE NULL END) AS DEFOR_INCLUDE_HOLIDAY_OT   ");
+	     exportSQL.append("             FROM BSYMT_WKP_INFO   ");
+	     exportSQL.append("              LEFT JOIN KSHMT_LEGALTIME_D_REG_WKP ON BSYMT_WKP_INFO.CID = KSHMT_LEGALTIME_D_REG_WKP.CID   ");
+	     exportSQL.append("               AND BSYMT_WKP_INFO.WKP_ID = KSHMT_LEGALTIME_D_REG_WKP.WKP_ID    ");
+	     exportSQL.append("              LEFT JOIN KRCMT_CALC_M_SET_DEF_WKP ON BSYMT_WKP_INFO.CID = KRCMT_CALC_M_SET_DEF_WKP.CID   ");
+	     exportSQL.append("               AND BSYMT_WKP_INFO.WKP_ID = KRCMT_CALC_M_SET_DEF_WKP.WKP_ID   ");
+	     exportSQL.append("              LEFT JOIN KRCMT_CALC_M_SET_FLE_WKP ON BSYMT_WKP_INFO.CID = KRCMT_CALC_M_SET_FLE_WKP.CID   ");
+	     exportSQL.append("               AND BSYMT_WKP_INFO.WKP_ID = KRCMT_CALC_M_SET_FLE_WKP.WKP_ID   ");
+	     exportSQL.append("              LEFT JOIN KRCMT_CALC_M_SET_REG_WKP ON BSYMT_WKP_INFO.CID = KRCMT_CALC_M_SET_REG_WKP.CID   ");
+	     exportSQL.append("               AND BSYMT_WKP_INFO.WKP_ID = KRCMT_CALC_M_SET_REG_WKP.WKPID   ");
+	     exportSQL.append("              LEFT JOIN (SELECT *, ROW_NUMBER() OVER ( PARTITION BY CID ORDER BY END_DATE DESC ) AS RN FROM BSYMT_WKP_CONFIG_2) AS BSYMT_WKP_CONFIG  ");
+	     exportSQL.append("             ON BSYMT_WKP_INFO.CID = BSYMT_WKP_CONFIG.CID AND BSYMT_WKP_CONFIG.RN = 1  ");
+	     exportSQL.append("              LEFT JOIN KRCMT_CALC_M_SET_FLE_COM ON BSYMT_WKP_INFO.CID = KRCMT_CALC_M_SET_FLE_COM.CID   ");
+	     exportSQL.append("              LEFT JOIN KSHMT_LEGALTIME_D_DEF_WKP ON BSYMT_WKP_INFO.CID = KSHMT_LEGALTIME_D_DEF_WKP.CID   ");
+	     exportSQL.append("              AND BSYMT_WKP_INFO.WKP_ID = KSHMT_LEGALTIME_D_DEF_WKP.WKP_ID   ");
+	     exportSQL.append("              INNER JOIN BSYMT_WKP_CONFIG_2 ON BSYMT_WKP_INFO.CID = BSYMT_WKP_CONFIG_2.CID   ");
+	     exportSQL.append("               AND BSYMT_WKP_INFO.WKP_HIST_ID = BSYMT_WKP_CONFIG_2.WKP_HIST_ID    ");
+	     exportSQL.append("             WHERE BSYMT_WKP_INFO.CID = ?  ");
+	     exportSQL.append("             AND BSYMT_WKP_CONFIG_2.START_DATE <= ? ::DATE  ");
+	     exportSQL.append("             AND BSYMT_WKP_CONFIG_2.END_DATE >= ? ::DATE  ");
+	     exportSQL.append("             AND BSYMT_WKP_INFO.DELETE_FLAG = '0'  ");
+	     
+	     exportSQL.append("            ) TBL  ");
+	     exportSQL.append("             ORDER BY TBL.HIERARCHY_CD ASC");
+
+	     GET_WORKPLACE_POSTGRE = exportSQL.toString();
 	  }
 
 	  private String getStartOfWeek(String cid) {
@@ -144,22 +208,44 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 				.setParameter("maxYm", endDate * 100 + month)
 				.getList();
 			
-			try (PreparedStatement stmt = this.connection().prepareStatement(GET_WORKPLACE.toString())) {
-				String systemDate = GeneralDate.ymd(startDate, GeneralDate.today().month(), GeneralDate.today().day()).toString("yyyy/MM/dd");
-				
-				stmt.setString(1, cid);
-				stmt.setString(2, systemDate);
-				stmt.setString(3, systemDate);
-				NtsResultSet result = new NtsResultSet(stmt.executeQuery());
-				
-				result.forEach(i -> {
-					datas.addAll(buildWorkPlaceRow(i, legalTimes, startDate, endDate, month, startOfWeek));
+			if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
+				try (PreparedStatement stmt = this.connection().prepareStatement(GET_WORKPLACE_SQLSERVER.toString())) {
+					String systemDate = GeneralDate.ymd(startDate, GeneralDate.today().month(), GeneralDate.today().day()).toString("yyyy/MM/dd");
 					
-				});
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+					stmt.setString(1, cid);
+					stmt.setString(2, systemDate);
+					stmt.setString(3, systemDate);
+					NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+					
+					result.forEach(i -> {
+						datas.addAll(buildWorkPlaceRow(i, legalTimes, startDate, endDate, month, startOfWeek));
+						
+					});
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else if (this.database().is(DatabaseProduct.POSTGRESQL)) {
+				try (PreparedStatement stmt = this.connection().prepareStatement(GET_WORKPLACE_POSTGRE.toString())) {
+					String systemDate = GeneralDate.ymd(startDate, GeneralDate.today().month(), GeneralDate.today().day()).toString("yyyy/MM/dd");
+					
+					stmt.setString(1, cid);
+					stmt.setString(2, systemDate);
+					stmt.setString(3, systemDate);
+					NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+					
+					result.forEach(i -> {
+						datas.addAll(buildWorkPlaceRow(i, legalTimes, startDate, endDate, month, startOfWeek));
+						
+					});
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				throw new RuntimeException("not supported");
 			}
+			
 			return datas;
 		}
 
