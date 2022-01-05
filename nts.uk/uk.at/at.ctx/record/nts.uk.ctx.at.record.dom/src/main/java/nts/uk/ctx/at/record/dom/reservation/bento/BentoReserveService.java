@@ -8,7 +8,6 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 弁当を予約する
@@ -30,9 +29,9 @@ public class BentoReserveService {
 	 * @return
 	 */
 	public static AtomTask reserve(Require require, ReservationRegisterInfo registerInfor, ReservationDate reservationDate, GeneralDateTime dateTime, 
-			Map<Integer, BentoReservationCount> bentoDetails, int frameNo, String companyID, Optional<WorkLocationCode> workLocationCode) {
+			Map<Integer, BentoReservationCount> bentoDetails, String companyID, Optional<WorkLocationCode> workLocationCode) {
 		
-		ReservationRecTimeZone reservationRecTimeZone = require.getReservationSetByOpDistAndFrameNo(companyID, frameNo, 0);
+		ReservationRecTimeZone reservationRecTimeZone = require.getReservationSetByOpDistAndFrameNo(companyID, reservationDate.getClosingTimeFrame().value, 0);
 		
 		if(reservationRecTimeZone==null) {
 			throw new BusinessException("Msg_2285");

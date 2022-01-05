@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.reservation.bento;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -51,8 +52,8 @@ public class UpdateBentoMenuHistCommandHandler extends CommandHandler<UpdateBent
 		}
 
 		@Override
-		public void update(BentoMenuHistory bentoMenuHistory) {
-			bentoMenuHistRepository.update(bentoMenuHistory);
+		public void update(List<BentoMenuHistory> updateBentoMenuHistoryLst) {
+			bentoMenuHistRepository.updateLst(updateBentoMenuHistoryLst);
 			
 		}
     }

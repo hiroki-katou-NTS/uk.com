@@ -37,6 +37,8 @@ public interface BentoMenuHistRepository {
 	// [5]  弁当メニュー履歴を更新する
 	public void update(BentoMenuHistory bentoMenuHistory);
 	
+	public void updateLst(List<BentoMenuHistory> updateBentoMenuHistoryLst);
+	
 	// 	[6]  弁当メニューを追加する
 	public void add(BentoMenuHistory bentoMenuHistory);
 	

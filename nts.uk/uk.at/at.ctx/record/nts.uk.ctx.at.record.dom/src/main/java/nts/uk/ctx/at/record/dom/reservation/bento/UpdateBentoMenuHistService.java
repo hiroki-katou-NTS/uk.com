@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -24,6 +26,7 @@ public class UpdateBentoMenuHistService {
     	// 1: 弁当メニュー履歴を取得
     	Optional<BentoMenuHistory> opBeforeBentoMenuHistory = require.getBentoMenu(companyID, startDate.decrease());
     	Optional<BentoMenuHistory> opBentoMenuHistory = require.getBentoMenu(companyID, period.start().decrease());
+    	List<BentoMenuHistory> updateBentoMenuHistoryLst = new ArrayList<>();
     	
     	return AtomTask.of(() -> {
     		// 1.1: 以前弁当メニュ履歴を更新
@@ -31,19 +34,20 @@ public class UpdateBentoMenuHistService {
     			BentoMenuHistory beforeBentoMenuHistory = opBeforeBentoMenuHistory.get();
     			DatePeriod newPeriod = new DatePeriod(beforeBentoMenuHistory.getHistoryItem().span().start(), period.start().decrease());
     			beforeBentoMenuHistory.getHistoryItem().changeSpan(newPeriod);
-    			require.update(beforeBentoMenuHistory);
+    			updateBentoMenuHistoryLst.add(beforeBentoMenuHistory);
     		}
     		// 2: 最新弁当メニュ履歴を変更
     		BentoMenuHistory bentoMenuHistory = opBentoMenuHistory.get();
     		DatePeriod newPeriod = new DatePeriod(period.start(), bentoMenuHistory.getHistoryItem().span().end());
     		bentoMenuHistory.getHistoryItem().changeSpan(newPeriod);
-    		require.update(bentoMenuHistory);
+    		updateBentoMenuHistoryLst.add(bentoMenuHistory);
+    		require.update(updateBentoMenuHistoryLst);
     	});
     }
     public static interface Require{
     	//【R-1】弁当メニュを取得する
     	Optional<BentoMenuHistory> getBentoMenu(String companyID, GeneralDate date);
         //【R-2】弁当メニュー履歴を更新する
-        void update(BentoMenuHistory bentoMenuHistory);
+        void update(List<BentoMenuHistory> updateBentoMenuHistoryLst);
     }
 }

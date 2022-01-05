@@ -70,7 +70,7 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 
 	@Override
 	public Optional<AtomTask> convertData(String empInfoTerCode, String contractCode,
-			ReservReceptDataExport reservReceptData) {
+			ReservReceptDataExport reservReceptData, String companyID) {
 
 		RequireImpl requireImpl = new RequireImpl("", empInfoTerminalRepository, timeRecordReqSettingRepository,
 				employeeManageRCAdapter, bentoMenuRepository, bentoReservationRepository, stampRecordRepository,
@@ -78,7 +78,8 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 		return ConvertTimeRecordReservationService.convertData(requireImpl, new EmpInfoTerminalCode(empInfoTerCode),
 				new ContractCode(contractCode),
 				new ReservationReceptionData(reservReceptData.getIdNumber(), reservReceptData.getMenu(),
-						reservReceptData.getYmd(), reservReceptData.getTime(), reservReceptData.getQuantity()));
+						reservReceptData.getYmd(), reservReceptData.getTime(), reservReceptData.getQuantity()),
+				companyID);
 	}
 
 	@AllArgsConstructor

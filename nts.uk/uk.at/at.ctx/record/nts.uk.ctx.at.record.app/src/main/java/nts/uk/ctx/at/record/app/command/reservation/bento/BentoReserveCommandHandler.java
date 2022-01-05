@@ -75,7 +75,6 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 						new ReservationDate(date, ReservationClosingTimeFrame.FRAME1), 
 						datetime,
 						command.getFrame1Bentos(),
-						1,
 						companyID,
 						workLocationCode);
 				persist1.run();
@@ -88,7 +87,6 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 						new ReservationDate(date, ReservationClosingTimeFrame.FRAME2), 
 						datetime,
 						command.getFrame2Bentos(),
-						2,
 						companyID,
 						workLocationCode);
 				persist2.run();

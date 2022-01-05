@@ -76,7 +76,7 @@ public class EmpInfoTerminalTest {
 
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
 
-		Pair<StampRecord, AtomTask> resultActual = empInfoTerminal.createReservRecord(require, receptionData);
+		Pair<StampRecord, AtomTask> resultActual = empInfoTerminal.createReservRecord(require, receptionData, "000000000000-0001");
 
 //		BentoMenu menu = new BentoMenu("historyId", Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)),
 //				ClosingTime.UNLIMITED);

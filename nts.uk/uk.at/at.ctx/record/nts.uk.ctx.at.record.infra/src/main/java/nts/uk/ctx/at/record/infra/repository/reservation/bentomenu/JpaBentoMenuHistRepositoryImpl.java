@@ -395,6 +395,11 @@ public class JpaBentoMenuHistRepositoryImpl extends JpaRepository implements Ben
 	}
 	
 	@Override
+	public void updateLst(List<BentoMenuHistory> updateBentoMenuHistoryLst) {
+		commandProxy().updateAll(updateBentoMenuHistoryLst.stream().map(x -> KrcmtBentoMenuHist.fromDomain(x)).collect(Collectors.toList()));
+	}
+	
+	@Override
 	public void add(BentoMenuHistory bentoMenu) {
 		commandProxy().insert(KrcmtBentoMenuHist.fromDomain(bentoMenu));
 	}
@@ -443,4 +448,5 @@ public class JpaBentoMenuHistRepositoryImpl extends JpaRepository implements Ben
 		List<KrcmtBentoMenuHist> krcmtBentoMenuHistLst = convertToEntity(mapLst);
 		return krcmtBentoMenuHistLst.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 	}
+
 }

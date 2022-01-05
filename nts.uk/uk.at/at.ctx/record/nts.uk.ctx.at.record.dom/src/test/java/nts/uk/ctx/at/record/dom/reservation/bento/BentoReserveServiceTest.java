@@ -53,7 +53,7 @@ public class BentoReserveServiceTest {
 		}};
 		
 		NtsAssert.atomTask(
-				() -> BentoReserveService.reserve(require, regInfo, date, now, details, 1, companyID, workLocationCode),
+				() -> BentoReserveService.reserve(require, regInfo, date, now, details, companyID, workLocationCode),
 				any -> require.reserve(any.get()));
 	}
 	
@@ -77,7 +77,7 @@ public class BentoReserveServiceTest {
 			result = null;
 		}};
 		NtsAssert.businessException("Msg_2285", () -> {
-			AtomTask persist = BentoReserveService.reserve(require, regInfo, date, now, details, 1, companyID, workLocationCode);
+			AtomTask persist = BentoReserveService.reserve(require, regInfo, date, now, details, companyID, workLocationCode);
 			persist.run();
 		});
 	}

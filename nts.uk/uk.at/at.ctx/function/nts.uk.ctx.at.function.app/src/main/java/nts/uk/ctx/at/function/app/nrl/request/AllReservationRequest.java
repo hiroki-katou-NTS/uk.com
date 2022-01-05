@@ -18,6 +18,7 @@ import nts.uk.ctx.at.function.app.nrl.xml.Element;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ConvertTimeRecordReservationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ReservReceptDataImport;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author ThanhNX
@@ -36,6 +37,7 @@ public class AllReservationRequest extends NRLRequest<Frame> {
 	 */
 	@Override
 	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
+		String companyID = AppContexts.user().companyId();
 		String payload = context.getEntity().pickItem(Element.PAYLOAD);
 		int length = payload.length();
 		int q = length / DefaultValue.SINGLE_FRAME_LEN_48;
@@ -71,7 +73,7 @@ public class AllReservationRequest extends NRLRequest<Frame> {
 					record.get(FieldName.RSV_MENU), record.get(FieldName.RSV_YMD), record.get(FieldName.RSV_HMS),
 					record.get(FieldName.RSV_QUAN));
 
-			Optional<AtomTask> result = convertTRReservationAdapter.convertData(empInfoTerCode, contractCode, reservData);
+			Optional<AtomTask> result = convertTRReservationAdapter.convertData(empInfoTerCode, contractCode, reservData, companyID);
 			if (result.isPresent())
 				result.get().run();
 		}
