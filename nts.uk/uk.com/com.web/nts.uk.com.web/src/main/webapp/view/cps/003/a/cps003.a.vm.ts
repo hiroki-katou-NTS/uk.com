@@ -2466,7 +2466,17 @@ module cps003.a.vm {
                         return replaceValue.matchValue === value
                             || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value) || value === ""))
                             || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && !find($grid.mGrid("optionsList", obj.id, replaceValue.targetItem), opt => opt.optionValue === value));
-                    }, () => replaceValue.replaceValue, true);
+                    }, (value, obj) => {
+                        let replaced = replaceValue.replaceValue;
+                        setTimeout(() => {
+                            let afterProc = cps003.control.COMBOBOX[self.category.catCode() + "_" + replaceValue.targetItem];
+                            if (afterProc) {
+                                afterProc(replaced, obj.id, obj);
+                            }
+                        }, 1);
+                        
+                        return replaced;
+                    }, true);
                 } else {
                     let replaced = replaceValue.replaceValue, dt = self.dataTypes[replaceValue.targetItem];
                     if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT) {
