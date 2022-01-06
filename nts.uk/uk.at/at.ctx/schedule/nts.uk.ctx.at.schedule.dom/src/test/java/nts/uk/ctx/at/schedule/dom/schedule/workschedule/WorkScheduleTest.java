@@ -1386,155 +1386,6 @@ public class WorkScheduleTest {
 	}
 	
 	@Test
-	public void testCheckWhetherCanUpdateSupportSchedule_employeeIdIsNotMatch() {
-		
-		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
-				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
-				TaskSchedule.createWithEmptyList(), SupportSchedule.createWithEmptyList());
-		
-		SupportTicket ticket = new SupportTicket(new EmployeeId("emp-id-other"), 
-				TargetOrgIdenInfor.creatIdentifiWorkplace("wpl-id"), 
-				SupportType.ALLDAY, 
-				GeneralDate.ymd(2021, 12, 1), 
-				Optional.empty());
-		
-		NtsAssert.businessException( "Msg_3254", () -> 
-			invoke(workSchedule, "checkWhetherCanUpdateSupportSchedule", ticket, false) );
-	}
-	
-	@Test
-	public void testCheckWhetherCanUpdateSupportSchedule_dateIsNotMatch() {
-		
-		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
-				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
-				TaskSchedule.createWithEmptyList(), SupportSchedule.createWithEmptyList());
-		
-		SupportTicket ticket = new SupportTicket(new EmployeeId("emp-id"), 
-				TargetOrgIdenInfor.creatIdentifiWorkplace("wpl-id"), 
-				SupportType.ALLDAY, 
-				GeneralDate.ymd(2021, 12, 15), 
-				Optional.empty());
-		
-		NtsAssert.businessException( "Msg_3254", () -> 
-			invoke(workSchedule, "checkWhetherCanUpdateSupportSchedule", ticket, false) );
-	}
-	
-	@Test
-	public void testCheckWhetherCanUpdateSupportSchedule_confirmed() {
-		
-		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
-				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.CONFIRMED, 
-				TaskSchedule.createWithEmptyList(), SupportSchedule.createWithEmptyList());
-		
-		SupportTicket ticket = new SupportTicket(new EmployeeId("emp-id"), 
-				TargetOrgIdenInfor.creatIdentifiWorkplace("wpl-id"), 
-				SupportType.ALLDAY, 
-				GeneralDate.ymd(2021, 12, 1), 
-				Optional.empty());
-		
-		NtsAssert.businessException( "Msg_2268", () -> 
-			invoke(workSchedule, "checkWhetherCanUpdateSupportSchedule", ticket, false) );
-	}
-	
-	@Test
-	public void testCheckWhetherCanUpdateSupportSchedule_isRemove() {
-		
-		val taskSchedule = TaskSchedule.create( Arrays.asList(
-				new TaskScheduleDetail(
-					new TaskCode("001"), 
-					new TimeSpanForCalc(
-							TimeWithDayAttr.hourMinute(10, 0), 
-							TimeWithDayAttr.hourMinute(11, 0))) )
-					);
-		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
-				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
-				taskSchedule, SupportSchedule.createWithEmptyList());
-		
-		SupportTicket ticket = new SupportTicket(new EmployeeId("emp-id"), 
-				TargetOrgIdenInfor.creatIdentifiWorkplace("wpl-id"), 
-				SupportType.ALLDAY, 
-				GeneralDate.ymd(2021, 12, 1), 
-				Optional.empty());
-		
-		NtsAssert.Invoke.privateMethod(workSchedule, "checkWhetherCanUpdateSupportSchedule", ticket, true);
-	}
-	
-	@Test
-	public void testCheckWhetherCanUpdateSupportSchedule_existTaskSchedule_SupportTypeIsAllDay() {
-		
-		val taskSchedule = TaskSchedule.create( Arrays.asList(
-				new TaskScheduleDetail(
-					new TaskCode("001"), 
-					new TimeSpanForCalc(
-							TimeWithDayAttr.hourMinute(10, 0), 
-							TimeWithDayAttr.hourMinute(11, 0))) )
-					);
-		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
-				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
-				taskSchedule, SupportSchedule.createWithEmptyList());
-		
-		SupportTicket ticket = new SupportTicket(new EmployeeId("emp-id"), 
-				TargetOrgIdenInfor.creatIdentifiWorkplace("wpl-id"), 
-				SupportType.ALLDAY, 
-				GeneralDate.ymd(2021, 12, 1), 
-				Optional.empty());
-		
-		NtsAssert.businessException( "Msg_2271", () -> 
-			invoke(workSchedule, "checkWhetherCanUpdateSupportSchedule", ticket, false) );
-	}
-	
-	@Test
-	public void testCheckWhetherCanUpdateSupportSchedule_existTaskSchedule_SupportTypeIsTimezone_Error() {
-		
-		val taskSchedule = TaskSchedule.create( Arrays.asList(
-				new TaskScheduleDetail(
-					new TaskCode("001"), 
-					new TimeSpanForCalc(
-							TimeWithDayAttr.hourMinute(10, 0), 
-							TimeWithDayAttr.hourMinute(11, 0))) )
-					);
-		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
-				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
-				taskSchedule, SupportSchedule.createWithEmptyList());
-		
-		SupportTicket ticket = new SupportTicket(new EmployeeId("emp-id"), 
-				TargetOrgIdenInfor.creatIdentifiWorkplace("wpl-id"), 
-				SupportType.TIMEZONE, 
-				GeneralDate.ymd(2021, 12, 1), 
-				Optional.of( new TimeSpanForCalc(
-						TimeWithDayAttr.hourMinute(10, 30), 
-						TimeWithDayAttr.hourMinute(11, 30))));
-		
-		NtsAssert.businessException( "Msg_2273", () -> 
-			invoke(workSchedule, "checkWhetherCanUpdateSupportSchedule", ticket, false) );
-	}
-	
-	@Test
-	public void testCheckWhetherCanUpdateSupportSchedule_existTaskSchedule_SupportTypeIsTimezone_OK() {
-		
-		val taskSchedule = TaskSchedule.create( Arrays.asList(
-				new TaskScheduleDetail(
-					new TaskCode("001"), 
-					new TimeSpanForCalc(
-							TimeWithDayAttr.hourMinute(10, 0), 
-							TimeWithDayAttr.hourMinute(11, 0))) )
-					);
-		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
-				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
-				taskSchedule, SupportSchedule.createWithEmptyList());
-		
-		SupportTicket ticket = new SupportTicket(new EmployeeId("emp-id"), 
-				TargetOrgIdenInfor.creatIdentifiWorkplace("wpl-id"), 
-				SupportType.TIMEZONE, 
-				GeneralDate.ymd(2021, 12, 1), 
-				Optional.of( new TimeSpanForCalc(
-						TimeWithDayAttr.hourMinute(11, 0), 
-						TimeWithDayAttr.hourMinute(12, 0))));
-		
-		NtsAssert.Invoke.privateMethod(workSchedule, "checkWhetherCanUpdateSupportSchedule", ticket, false);
-	}
-	
-	@Test
 	public void testCheckConsistencyOfSupportSchedule_notExistSupportSchedule() {
 		
 		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
@@ -1702,7 +1553,7 @@ public class WorkScheduleTest {
 	}
 
 	@Test
-	public void testCreateSupportSchedule_Msg_3254(
+	public void testCreateSupportSchedule_Msg_3254_defer_employee_id (
 			@Injectable TargetOrgIdenInfor recipient) {
 		
 		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
@@ -1718,6 +1569,106 @@ public class WorkScheduleTest {
 						Optional.empty()));
 		
 		NtsAssert.businessException("Msg_3254", () -> {
+			workSchedule.createSupportSchedule(require, supportTickets);
+		});
+	}
+	
+	@Test
+	public void testCreateSupportSchedule_Msg_3254_defer_date (
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
+				TaskSchedule.createWithEmptyList(), SupportSchedule.createWithEmptyList());
+		
+		val supportTickets = Arrays.asList(
+				new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.ALLDAY, 
+						GeneralDate.ymd(2021, 12, 2), 
+						Optional.empty()));
+		
+		NtsAssert.businessException("Msg_3254", () -> {
+			workSchedule.createSupportSchedule(require, supportTickets);
+		});
+	}
+	
+	@Test
+	public void testCreateSupportSchedule_Msg_2268 (
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.CONFIRMED, 
+				TaskSchedule.createWithEmptyList(), SupportSchedule.createWithEmptyList());
+		
+		val supportTickets = Arrays.asList(
+				new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.ALLDAY, 
+						GeneralDate.ymd(2021, 12, 1), 
+						Optional.empty()));
+		
+		NtsAssert.businessException("Msg_2268", () -> {
+			workSchedule.createSupportSchedule(require, supportTickets);
+		});
+	}
+	
+	@Test
+	public void testCreateSupportSchedule_Msg_2271 (
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
+				new TaskSchedule(
+						Arrays.asList(new TaskScheduleDetail(
+								new TaskCode("001"), 
+								new TimeSpanForCalc(
+										TimeWithDayAttr.hourMinute(8, 0), 
+										TimeWithDayAttr.hourMinute(9, 0))))
+						),
+				SupportSchedule.createWithEmptyList());
+		
+		val supportTickets = Arrays.asList(
+				new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.ALLDAY, 
+						GeneralDate.ymd(2021, 12, 1), 
+						Optional.empty()));
+		
+		NtsAssert.businessException("Msg_2271", () -> {
+			workSchedule.createSupportSchedule(require, supportTickets);
+		});
+	}
+	
+	@Test
+	public void testCreateSupportSchedule_Msg_2273 (
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
+				new TaskSchedule(
+						Arrays.asList(new TaskScheduleDetail(
+								new TaskCode("001"), 
+								new TimeSpanForCalc(
+										TimeWithDayAttr.hourMinute(8, 0), 
+										TimeWithDayAttr.hourMinute(9, 0))))
+						),
+				SupportSchedule.createWithEmptyList());
+		
+		val supportTickets = Arrays.asList(
+				new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.TIMEZONE, 
+						GeneralDate.ymd(2021, 12, 1), 
+						Optional.of(new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(8, 30), 
+								TimeWithDayAttr.hourMinute(9, 30)))));
+		
+		NtsAssert.businessException("Msg_2273", () -> {
 			workSchedule.createSupportSchedule(require, supportTickets);
 		});
 	}
@@ -1756,7 +1707,45 @@ public class WorkScheduleTest {
 	}
 	
 	@Test
-	public void testCreateSupportSchedule_Msg_2275(
+	public void testCreateSupportSchedule_supportSchedule_create_error (
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
+				TaskSchedule.createWithEmptyList(), SupportSchedule.createWithEmptyList());
+		
+		val supportTickets = Arrays.asList(
+				new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.TIMEZONE, 
+						GeneralDate.ymd(2021, 12, 1), 
+						Optional.of(new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(9, 0), 
+								TimeWithDayAttr.hourMinute(10, 0)))),
+				new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.TIMEZONE, 
+						GeneralDate.ymd(2021, 12, 1), 
+						Optional.of(new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(9, 30),
+								TimeWithDayAttr.hourMinute(10, 30))))
+				);
+		
+		new Expectations() {{
+			
+			require.getSupportOperationSetting();
+			result = new SupportOperationSetting( true, true, new MaximumNumberOfSupport(5) );
+		}};
+		
+		NtsAssert.businessException("Msg_2278", () -> {
+			workSchedule.createSupportSchedule(require, supportTickets);
+		});
+	}
+	
+	@Test
+	public void testCreateSupportSchedule_checkConsistencyOfSupportSchedule_error(
 			@Injectable TargetOrgIdenInfor recipient) {
 		
 		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
@@ -1855,7 +1844,7 @@ public class WorkScheduleTest {
 	}
 
 	@Test
-	public void testAddSupportSchedule_Msg_3254(
+	public void testAddSupportSchedule_Msg_3254_defer_employee_id(
 			@Injectable TargetOrgIdenInfor recipient) {
 		
 		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
@@ -1873,9 +1862,105 @@ public class WorkScheduleTest {
 			workSchedule.addSupportSchedule(require, ticket);
 		});
 	}
+	
+	@Test
+	public void testAddSupportSchedule_Msg_3254_defer_date(
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
+				TaskSchedule.createWithEmptyList(), SupportSchedule.createWithEmptyList());
+		
+		val ticket = new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.ALLDAY, 
+						GeneralDate.ymd(2021, 12, 2), 
+						Optional.empty());
+		
+		NtsAssert.businessException("Msg_3254", () -> {
+			workSchedule.addSupportSchedule(require, ticket);
+		});
+	}
+	
+	@Test
+	public void testAddSupportSchedule_Msg_2268 (
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.CONFIRMED, 
+				TaskSchedule.createWithEmptyList(), SupportSchedule.createWithEmptyList());
+		
+		val ticket = new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.ALLDAY, 
+						GeneralDate.ymd(2021, 12, 1), 
+						Optional.empty());
+		
+		NtsAssert.businessException("Msg_2268", () -> {
+			workSchedule.addSupportSchedule(require, ticket);
+		});
+	}
+	
+	@Test
+	public void testAddSupportSchedule_Msg_2271 (
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
+				new TaskSchedule(
+						Arrays.asList(new TaskScheduleDetail(
+								new TaskCode("001"), 
+								new TimeSpanForCalc(
+										TimeWithDayAttr.hourMinute(8, 0), 
+										TimeWithDayAttr.hourMinute(9, 0))))
+						), 
+				SupportSchedule.createWithEmptyList());
+		
+		val ticket = new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.ALLDAY, 
+						GeneralDate.ymd(2021, 12, 1), 
+						Optional.empty());
+		
+		NtsAssert.businessException("Msg_2271", () -> {
+			workSchedule.addSupportSchedule(require, ticket);
+		});
+	}
+	
+	@Test
+	public void testAddSupportSchedule_Msg_2273 (
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
+				new TaskSchedule(
+						Arrays.asList(new TaskScheduleDetail(
+								new TaskCode("001"), 
+								new TimeSpanForCalc(
+										TimeWithDayAttr.hourMinute(8, 0), 
+										TimeWithDayAttr.hourMinute(9, 0))))
+						), 
+				SupportSchedule.createWithEmptyList());
+		
+		val ticket = new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.TIMEZONE, 
+						GeneralDate.ymd(2021, 12, 1), 
+						Optional.of(new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(8, 30), 
+								TimeWithDayAttr.hourMinute(9, 30))));
+		
+		NtsAssert.businessException("Msg_2273", () -> {
+			workSchedule.addSupportSchedule(require, ticket);
+		});
+	}
 
 	@Test
-	public void testAddSupportSchedule_Msg_2277(
+	public void testAddSupportSchedule_supportSchedule_add_error(
 			@Injectable TargetOrgIdenInfor recipient) {
 		
 		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
@@ -1903,7 +1988,7 @@ public class WorkScheduleTest {
 	}
 
 	@Test
-	public void testAddSupportSchedule_Msg_2275(
+	public void testAddSupportSchedule_checkConsistencyOfSupportSchedule_error(
 			@Injectable TargetOrgIdenInfor recipient) {
 		
 		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
@@ -1990,7 +2075,7 @@ public class WorkScheduleTest {
 	}
 	
 	@Test
-	public void testModifySupportSchedule_Msg_3254(
+	public void testModifySupportSchedule_Msg_3254_beforeModify_differ_employee_id(
 			@Injectable TargetOrgIdenInfor recipient) {
 		
 		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
@@ -2014,6 +2099,82 @@ public class WorkScheduleTest {
 								TimeWithDayAttr.hourMinute(9, 0), 
 								TimeWithDayAttr.hourMinute(10, 0))));
 		val afterModify = new SupportTicket(
+				new EmployeeId("emp-id"), 
+				recipient, 
+				SupportType.TIMEZONE, 
+				GeneralDate.ymd(2021, 12, 1), 
+				Optional.of(new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(10, 0), 
+						TimeWithDayAttr.hourMinute(11, 0))));
+		
+		NtsAssert.businessException("Msg_3254", () -> {
+			workSchedule.modifySupportSchedule(require, beforeModify, afterModify);
+		});
+	}
+	
+	@Test
+	public void testModifySupportSchedule_Msg_3254_beforeModify_differ_date(
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
+				TaskSchedule.createWithEmptyList(), 
+				new SupportSchedule(Arrays.asList(
+						new SupportScheduleDetail(
+								recipient, 
+								SupportType.TIMEZONE, 
+								Optional.of(new TimeSpanForCalc(
+										TimeWithDayAttr.hourMinute(9, 0), 
+										TimeWithDayAttr.hourMinute(10, 0))))))
+						);
+		
+		val beforeModify = new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.TIMEZONE, 
+						GeneralDate.ymd(2021, 12, 2), 
+						Optional.of(new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(9, 0), 
+								TimeWithDayAttr.hourMinute(10, 0))));
+		val afterModify = new SupportTicket(
+				new EmployeeId("emp-id"), 
+				recipient, 
+				SupportType.TIMEZONE, 
+				GeneralDate.ymd(2021, 12, 1), 
+				Optional.of(new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(10, 0), 
+						TimeWithDayAttr.hourMinute(11, 0))));
+		
+		NtsAssert.businessException("Msg_3254", () -> {
+			workSchedule.modifySupportSchedule(require, beforeModify, afterModify);
+		});
+	}
+	
+	@Test
+	public void testModifySupportSchedule_Msg_3254_afterModify_differ_employee_id(
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
+				TaskSchedule.createWithEmptyList(), 
+				new SupportSchedule(Arrays.asList(
+						new SupportScheduleDetail(
+								recipient, 
+								SupportType.TIMEZONE, 
+								Optional.of(new TimeSpanForCalc(
+										TimeWithDayAttr.hourMinute(9, 0), 
+										TimeWithDayAttr.hourMinute(10, 0))))))
+						);
+		
+		val beforeModify = new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.TIMEZONE, 
+						GeneralDate.ymd(2021, 12, 1), 
+						Optional.of(new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(9, 0), 
+								TimeWithDayAttr.hourMinute(10, 0))));
+		val afterModify = new SupportTicket(
 				new EmployeeId("other-emp-id"), 
 				recipient, 
 				SupportType.TIMEZONE, 
@@ -2026,9 +2187,214 @@ public class WorkScheduleTest {
 			workSchedule.modifySupportSchedule(require, beforeModify, afterModify);
 		});
 	}
+	
+	@Test
+	public void testModifySupportSchedule_Msg_3254_afterModify_differ_date(
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
+				TaskSchedule.createWithEmptyList(), 
+				new SupportSchedule(Arrays.asList(
+						new SupportScheduleDetail(
+								recipient, 
+								SupportType.TIMEZONE, 
+								Optional.of(new TimeSpanForCalc(
+										TimeWithDayAttr.hourMinute(9, 0), 
+										TimeWithDayAttr.hourMinute(10, 0))))))
+						);
+		
+		val beforeModify = new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.TIMEZONE, 
+						GeneralDate.ymd(2021, 12, 1), 
+						Optional.of(new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(9, 0), 
+								TimeWithDayAttr.hourMinute(10, 0))));
+		val afterModify = new SupportTicket(
+				new EmployeeId("emp-id"), 
+				recipient, 
+				SupportType.TIMEZONE, 
+				GeneralDate.ymd(2021, 12, 2), 
+				Optional.of(new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(10, 0), 
+						TimeWithDayAttr.hourMinute(11, 0))));
+		
+		NtsAssert.businessException("Msg_3254", () -> {
+			workSchedule.modifySupportSchedule(require, beforeModify, afterModify);
+		});
+	}
+	
+	@Test
+	public void testModifySupportSchedule_Msg_2268 (
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.CONFIRMED, 
+				TaskSchedule.createWithEmptyList(), 
+				new SupportSchedule(Arrays.asList(
+						new SupportScheduleDetail(
+								recipient, 
+								SupportType.TIMEZONE, 
+								Optional.of(new TimeSpanForCalc(
+										TimeWithDayAttr.hourMinute(9, 0), 
+										TimeWithDayAttr.hourMinute(10, 0))))))
+						);
+		
+		val beforeModify = new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.TIMEZONE, 
+						GeneralDate.ymd(2021, 12, 1), 
+						Optional.of(new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(9, 0), 
+								TimeWithDayAttr.hourMinute(10, 0))));
+		val afterModify = new SupportTicket(
+				new EmployeeId("emp-id"), 
+				recipient, 
+				SupportType.TIMEZONE, 
+				GeneralDate.ymd(2021, 12, 1), 
+				Optional.of(new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(10, 0), 
+						TimeWithDayAttr.hourMinute(11, 0))));
+		
+		NtsAssert.businessException("Msg_2268", () -> {
+			workSchedule.modifySupportSchedule(require, beforeModify, afterModify);
+		});
+	}
+	
+	@Test
+	public void testModifySupportSchedule_Msg_2273_exist_taskSchedule_in_beforeModify (
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
+				new TaskSchedule(Arrays.asList(
+						new TaskScheduleDetail(
+								new TaskCode("001"), 
+								new TimeSpanForCalc(
+										TimeWithDayAttr.hourMinute(9, 0), 
+										TimeWithDayAttr.hourMinute(9, 30))))), 
+				new SupportSchedule(Arrays.asList(
+						new SupportScheduleDetail(
+								recipient, 
+								SupportType.TIMEZONE, 
+								Optional.of(new TimeSpanForCalc(
+										TimeWithDayAttr.hourMinute(9, 0), 
+										TimeWithDayAttr.hourMinute(10, 0))))))
+						);
+		
+		val beforeModify = new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.TIMEZONE, 
+						GeneralDate.ymd(2021, 12, 1), 
+						Optional.of(new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(9, 0), 
+								TimeWithDayAttr.hourMinute(10, 0))));
+		val afterModify = new SupportTicket(
+				new EmployeeId("emp-id"), 
+				recipient, 
+				SupportType.TIMEZONE, 
+				GeneralDate.ymd(2021, 12, 1), 
+				Optional.of(new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(10, 0), 
+						TimeWithDayAttr.hourMinute(11, 0))));
+		
+		NtsAssert.businessException("Msg_2273", () -> {
+			workSchedule.modifySupportSchedule(require, beforeModify, afterModify);
+		});
+	}
+	
+	@Test
+	public void testModifySupportSchedule_Msg_2273_exist_taskSchedule_in_afterModify (
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
+				new TaskSchedule(Arrays.asList(
+						new TaskScheduleDetail(
+								new TaskCode("001"), 
+								new TimeSpanForCalc(
+										TimeWithDayAttr.hourMinute(10, 0), 
+										TimeWithDayAttr.hourMinute(10, 30))))), 
+				new SupportSchedule(Arrays.asList(
+						new SupportScheduleDetail(
+								recipient, 
+								SupportType.TIMEZONE, 
+								Optional.of(new TimeSpanForCalc(
+										TimeWithDayAttr.hourMinute(9, 0), 
+										TimeWithDayAttr.hourMinute(10, 0))))))
+						);
+		
+		val beforeModify = new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.TIMEZONE, 
+						GeneralDate.ymd(2021, 12, 1), 
+						Optional.of(new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(9, 0), 
+								TimeWithDayAttr.hourMinute(10, 0))));
+		val afterModify = new SupportTicket(
+				new EmployeeId("emp-id"), 
+				recipient, 
+				SupportType.TIMEZONE, 
+				GeneralDate.ymd(2021, 12, 1), 
+				Optional.of(new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(10, 0), 
+						TimeWithDayAttr.hourMinute(11, 0))));
+		
+		NtsAssert.businessException("Msg_2273", () -> {
+			workSchedule.modifySupportSchedule(require, beforeModify, afterModify);
+		});
+	}
+	
+	@Test
+	public void testModifySupportSchedule_Msg_2273_exist_taskSchedule_in_both_beforeModify_and_afterModify (
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
+				new TaskSchedule(Arrays.asList(
+						new TaskScheduleDetail(
+								new TaskCode("001"), 
+								new TimeSpanForCalc(
+										TimeWithDayAttr.hourMinute(9, 0), 
+										TimeWithDayAttr.hourMinute(9, 30))))), 
+				new SupportSchedule(Arrays.asList(
+						new SupportScheduleDetail(
+								recipient, 
+								SupportType.TIMEZONE, 
+								Optional.of(new TimeSpanForCalc(
+										TimeWithDayAttr.hourMinute(9, 0), 
+										TimeWithDayAttr.hourMinute(10, 0))))))
+						);
+		
+		val beforeModify = new SupportTicket(
+						new EmployeeId("emp-id"), 
+						recipient, 
+						SupportType.TIMEZONE, 
+						GeneralDate.ymd(2021, 12, 1), 
+						Optional.of(new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(9, 0), 
+								TimeWithDayAttr.hourMinute(10, 0))));
+		val afterModify = new SupportTicket(
+				new EmployeeId("emp-id"), 
+				recipient, 
+				SupportType.TIMEZONE, 
+				GeneralDate.ymd(2021, 12, 1), 
+				Optional.of(new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(9, 0), 
+						TimeWithDayAttr.hourMinute(11, 0))));
+		
+		NtsAssert.businessException("Msg_2273", () -> {
+			workSchedule.modifySupportSchedule(require, beforeModify, afterModify);
+		});
+	}
 
 	@Test
-	public void testModifySupportSchedule_Msg_2278(
+	public void testModifySupportSchedule_supportSchedule_update_error(
 			@Injectable TargetOrgIdenInfor recipient) {
 		
 		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
@@ -2078,7 +2444,7 @@ public class WorkScheduleTest {
 	}
 
 	@Test
-	public void testModifySupportSchedule_Msg_2276(
+	public void testModifySupportSchedule_checkConsistencyOfSupportSchedule_error (
 			@Injectable TargetOrgIdenInfor recipient,
 			@Injectable TimeLeavingOfDailyAttd timeLeaving) {
 		
@@ -2197,7 +2563,7 @@ public class WorkScheduleTest {
 	}
 	
 	@Test
-	public void testRemoveSupportSchedule_Msg_3254(
+	public void testRemoveSupportSchedule_Msg_3254_differ_employee_id(
 			@Injectable TargetOrgIdenInfor recipient) {
 		
 		// Assign
@@ -2216,6 +2582,56 @@ public class WorkScheduleTest {
 				Optional.empty());
 		
 		NtsAssert.businessException("Msg_3254", () -> {
+			workSchedule.removeSupportSchedule(ticket);
+		}); 
+		
+	}
+	
+	@Test
+	public void testRemoveSupportSchedule_Msg_3254_differ_date (
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		// Assign
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.UNSETTLED, 
+				TaskSchedule.createWithEmptyList(), 
+				new SupportSchedule(Arrays.asList(
+						new SupportScheduleDetail(recipient, SupportType.ALLDAY, Optional.empty())
+						)));
+		
+		val ticket = new SupportTicket(
+				new EmployeeId("emp-id"), 
+				recipient, 
+				SupportType.ALLDAY, 
+				GeneralDate.ymd(2021, 12, 2), 
+				Optional.empty());
+		
+		NtsAssert.businessException("Msg_3254", () -> {
+			workSchedule.removeSupportSchedule(ticket);
+		}); 
+		
+	}
+	
+	@Test
+	public void testRemoveSupportSchedule_Msg_2268 (
+			@Injectable TargetOrgIdenInfor recipient) {
+		
+		// Assign
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(
+				"emp-id", GeneralDate.ymd(2021, 12, 1), ConfirmedATR.CONFIRMED, 
+				TaskSchedule.createWithEmptyList(), 
+				new SupportSchedule(Arrays.asList(
+						new SupportScheduleDetail(recipient, SupportType.ALLDAY, Optional.empty())
+						)));
+		
+		val ticket = new SupportTicket(
+				new EmployeeId("emp-id"), 
+				recipient, 
+				SupportType.ALLDAY, 
+				GeneralDate.ymd(2021, 12, 1), 
+				Optional.empty());
+		
+		NtsAssert.businessException("Msg_2268", () -> {
 			workSchedule.removeSupportSchedule(ticket);
 		}); 
 		
