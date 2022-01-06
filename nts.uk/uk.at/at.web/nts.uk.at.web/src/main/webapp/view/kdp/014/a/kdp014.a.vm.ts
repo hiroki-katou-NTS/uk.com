@@ -217,9 +217,7 @@ module nts.uk.at.view.kdp014.a {
           selectType: SelectType.SELECT_BY_SELECTED_CODE,
           selectedCode: vm.selectedEmployeeCode,
           isDialog: false,
-          alreadySettingList: vm.alreadySettingList,
-          maxWidth: 400,
-          maxRows: 15
+          alreadySettingList: vm.alreadySettingList
         };
         $('#kcp005component').ntsListComponent(vm.listComponentOption);
       });
@@ -267,9 +265,7 @@ module nts.uk.at.view.kdp014.a {
           selectType: SelectType.SELECT_BY_SELECTED_CODE,
           selectedCode: vm.selectedEmployeeCode,
           isDialog: false,
-          alreadySettingList: vm.alreadySettingList,
-          maxWidth: 450,
-          maxRows: 20
+          alreadySettingList: vm.alreadySettingList
         };
         $('#kcp005component').ntsListComponent(vm.listComponentOption);
       }).always(() => vm.$blockui("clear"));
