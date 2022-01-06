@@ -1280,9 +1280,7 @@ module cps003.a.vm {
                                 }
                             }
                         } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.RELATE_CATEGORY) {
-                            if (item.itemCode === "IS00301" && (_.isNil(item.value) || item.value === "")) {
-                                record[item.itemCode] = "0.0日";
-                            }
+
                         }
                     });
                     
