@@ -51,22 +51,33 @@ module a11 {
         oldFromOverTimeOneDayTime: KnockoutObservable<number>;
         oldFromOverTimeHalfDayTime: KnockoutObservable<number>;
         oldFromOverTimeCertainTime: KnockoutObservable<number>;
+        checked: KnockoutObservable<boolean>;
+
+        isManageTime: KnockoutObservable<boolean>;
 
         // Simple mode - Data (nothing)
 
         /**
          * Constructor.
          */
-        constructor(isNewMode: KnockoutObservable<boolean>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
+        constructor(isNewMode: KnockoutObservable<boolean>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto, isManageByTime: number) {
             let _self = this;
             _self.isNewMode = isNewMode;
-            _self.isNewMode.subscribe((v) => {
-                // Set default value for switch button
-                if (v) {
-                    if (!nts.uk.util.isNullOrUndefined(_self.workdayOffTimeUseDivision)) _self.workdayOffTimeUseDivision(true);
-                }
-            });
-
+            _self.isManageTime = isManageByTime == 1 ? ko.observable(true) : ko.observable(false);
+            if (isManageByTime == 1) {
+                _self.checked = ko.observable(true);
+                _self.isNewMode.subscribe((v) => {
+                    // Set default value for switch button
+                    if (v) {
+                        if (!nts.uk.util.isNullOrUndefined(_self.workdayOffTimeUseDivision)) _self.workdayOffTimeUseDivision(true);
+                    }
+                });
+            } else {
+                _self.checked = ko.observable(false);
+                    // Set default value for switch button
+                        // Set default value for switch button
+                _self.workdayOffTimeUseDivision = ko.observable(false);
+            }
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
                 // Stop rendering page
@@ -278,16 +289,20 @@ module a11 {
             let model = input.model;
             let settingEnum = input.enum;
 
-            let screenModel = new ScreenModel(input.isNewMode, screenMode, model, settingEnum);
-            $(element).load(webserviceLocator, function () {
-                ko.cleanNode($(element)[0]);
-                ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.startTab(screenMode);
+            nts.uk.at.view.kmk003.a.service.find().done(function(data: any){
+                console.log(data);
+                let isManageTime = data.compensatoryDigestiveTimeUnit.isManageByTime;
+                let screenModel = new ScreenModel(input.isNewMode, screenMode, model, settingEnum, isManageTime);
+                $(element).load(webserviceLocator, function () {
+                    ko.cleanNode($(element)[0]);
+                    ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                    screenModel.startTab(screenMode);
 
-                // update name id for radio
-                $('.inputRadioHol').attr('name', nts.uk.util.randomId() + '_Hol');
-                $('.inputRadioOT').attr('name', nts.uk.util.randomId() + '_Ot');
-            });
+                    // update name id for radio
+                    $('.inputRadioHol').attr('name', nts.uk.util.randomId() + '_Hol');
+                    $('.inputRadioOT').attr('name', nts.uk.util.randomId() + '_Ot');
+                });
+            })
         }
     }
 

@@ -22,7 +22,9 @@ module nts.uk.at.view.kmk003.a {
             saveAsExcel: "at/file/worktime/report/export",
             insertWorkTimeLang: "at/share/worktime/language/insert",
             findByLangId: "at/shared/worktimesetting/findWTLanguageByCidAndLangId",
+            find: 'ctx/at/shared/vacation/setting/compensatoryleave/find',
 			saveBonusPaySetting: "at/share/wtBonusPaySetting/saveSetting"
+
         };
 
         /**
@@ -143,6 +145,9 @@ module nts.uk.at.view.kmk003.a {
                 domainType = domainType + program;
             }
             return nts.uk.request.exportFile(servicePath.saveAsExcel, {programName: domainType, langId: langId });
+        }
+        export function find(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.find);
         }
         
         export module model {
