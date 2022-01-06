@@ -108,6 +108,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             WorksheetCollection worksheets = workbook.getWorksheets();
             // Get first sheet in template
             Worksheet worksheet = worksheets.get(0);
+            worksheet.setName(dataSource.getTitle());
             printHeader(worksheet, dataSource);
             printTemplate(worksheet, dataSource);
             worksheets.setActiveSheetIndex(0);
@@ -124,7 +125,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             removeTemplate(worksheet);
             designer.getDesigner().setWorkbook(workbook);
             designer.processDesigner();
-            designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(REPORT_FILE_NAME)));
+            designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(dataSource.getTitle()+".xlsx")));
 
         } catch (Exception e) {
             throw new RuntimeException(e);

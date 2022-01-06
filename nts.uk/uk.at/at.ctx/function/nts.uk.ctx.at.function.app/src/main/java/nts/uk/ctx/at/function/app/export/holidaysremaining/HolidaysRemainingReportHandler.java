@@ -332,7 +332,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     hdManagement, isSameCurrentMonth.get(),
                     employeeIds, mapEmp,
                     companyCurrent.isPresent() ? companyCurrent.get().getCompanyName() : "",
-                    hdRemainCond.getTitle());
+                    hdManagement.getName().v());
 
             this.reportGenerator.generate(context.getGeneratorContext(), dataSource);
         });
