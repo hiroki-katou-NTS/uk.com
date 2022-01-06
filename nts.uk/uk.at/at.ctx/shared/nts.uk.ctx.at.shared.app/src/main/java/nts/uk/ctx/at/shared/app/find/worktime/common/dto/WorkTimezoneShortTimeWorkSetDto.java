@@ -23,7 +23,7 @@ public class WorkTimezoneShortTimeWorkSetDto implements WorkTimezoneShortTimeWor
 	private boolean childCareWorkUse;
 	
 	/** The rounding setting. */
-	private TimeRoundingSetting roundingSet;
+	private TimeRoundingSettingDto roundingSet;
 
 	/*
 	 * (non-Javadoc)
@@ -57,6 +57,6 @@ public class WorkTimezoneShortTimeWorkSetDto implements WorkTimezoneShortTimeWor
 	 */
 	@Override
 	public void setRoudingSet(TimeRoundingSetting val) {
-		this.roundingSet = val;
+		this.roundingSet = new TimeRoundingSettingDto(val.getRoundingTime().value, val.getRounding().value);
 	}
 }

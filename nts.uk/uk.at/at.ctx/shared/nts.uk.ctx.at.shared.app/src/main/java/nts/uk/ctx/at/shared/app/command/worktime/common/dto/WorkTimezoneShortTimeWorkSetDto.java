@@ -5,7 +5,10 @@
 package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
 import lombok.Value;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeRoundingSettingDto;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSetGetMemento;
 
 /**
@@ -21,7 +24,7 @@ public class WorkTimezoneShortTimeWorkSetDto implements WorkTimezoneShortTimeWor
 	private boolean childCareWorkUse;
 
 	/** The rounding setting. */
-	private TimeRoundingSetting roundingSet;
+	private TimeRoundingSettingDto roundingSet;
 
 	/*
 	 * (non-Javadoc)
@@ -53,6 +56,9 @@ public class WorkTimezoneShortTimeWorkSetDto implements WorkTimezoneShortTimeWor
 	 */
 	@Override
 	public TimeRoundingSetting getRoudingSet() {
-		return this.roundingSet;
+		if (this.roundingSet == null) {
+			return new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
+		} 
+		return new TimeRoundingSetting(this.roundingSet.getRoundingTime(), this.roundingSet.getRounding());
 	}
 }
