@@ -1828,8 +1828,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     events(getEvents().filter(({ extendedProps }) => !!extendedProps.id && extendedProps.status !== 'delete'));
                 }
             };
-            let calWorkTime = (event , oldEvent?) => {
-                //oldEvent là để xử lý cho trường hợp  di chuyển break time
+            let calWorkTimeBreakEvent = (event , oldEvent) => {
                 let tempEs = [...events()];
                 let evns = _.filter(tempEs, e => 
                     moment(e.end).isSame(event.start, 'days')
@@ -1841,16 +1840,14 @@ module nts.uk.ui.at.kdw013.calendar {
                     let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(evn.start), 'days'));
                     let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
                     _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
-                        if (oldEvent) {
-                            let oldStartAsMinites = (moment(oldEvent.start).hour() * 60) + moment(arg.oldEvent.start).minute();
-                            let oldEndAsMinites = (moment(oldEvent.end).hour() * 60) + moment(arg.oldEvent.end).minute();
-                            if (start == oldStartAsMinites && end == oldEndAsMinites) {
-                                goOutBreakTimeLst.push({ start: startAsMinites, end: endAsMinites });
-                            } else {
-                                goOutBreakTimeLst.push({ start, end });
-                            }
+                        let oldStartAsMinites = (moment(oldEvent.start).hour() * 60) + moment(oldEvent.start).minute();
+                        let oldEndAsMinites = (moment(oldEvent.end).hour() * 60) + moment(oldEvent.end).minute();
+                        if (start == oldStartAsMinites && end == oldEndAsMinites) {
+                            let startAsMinites = (moment(event.start).hour() * 60) + moment(event.start).minute();
+                            let endAsMinites = (moment(event.end).hour() * 60) + moment(event.end).minute();
+                            goOutBreakTimeLst.push({ start: startAsMinites, end: endAsMinites });
                         } else {
-                             goOutBreakTimeLst.push({ start, end });
+                            goOutBreakTimeLst.push({ start, end });
                         }
                     });
                     let calParam = { refTimezone, goOutBreakTimeLst };
@@ -1860,7 +1857,26 @@ module nts.uk.ui.at.kdw013.calendar {
                         updateEvents();
                     });
                 });
-            } 
+            }
+
+            let calWorkTime = (event) => {
+                let tempEs = [...events()];
+                let evn = _.find(tempEs, e => e.extendedProps.id == event.id);
+                let it = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
+                let refTimezone = { start: (moment(evn.start).hour() * 60) + moment(evn.start).minute(), end: (moment(evn.end).hour() * 60) + moment(evn.end).minute() };
+                let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(evn.start), 'days'));
+                let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                    goOutBreakTimeLst.push({ start, end });
+                });
+                let calParam = { refTimezone, goOutBreakTimeLst };
+                vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                    it.value = time;
+                    events(tempEs);
+                    updateEvents();
+                });
+            }
+
             let updateEvents = () => {
                 let sltds = vm.selectedEvents;
                 let isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => (formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')) && (formatDate(_.get(e,'end')) === formatDate(_.get(m,'end')) ) ));
@@ -2670,7 +2686,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         mutatedEvents();
                         
                         //cal work time
-                        vm.calWorkTime(event, arg.oldEvent);
+                        calWorkTimeBreakEvent(event, arg.oldEvent);
                         return;
                     }
                     
@@ -2824,7 +2840,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         updateEvents();
                         // cal work Time
                         _.forEach([].concat(arg.oldEvent, relatedEvents), e => {
-                            vm.calWorkTime(e);
+                            calWorkTime(e);
                         }
                                 
                         if (arg.delta.days != 0 && !ko.unwrap<boolean>(dataEvent.shift)) {
@@ -3171,8 +3187,17 @@ module nts.uk.ui.at.kdw013.calendar {
 
                         taskItemValues.push({ itemId: 1, value: startMinutes });
                         taskItemValues.push({ itemId: 2, value: endMinutes });
-                        taskItemValues.push({ itemId: 3, value: endMinutes - startMinutes });
-                        let taskDetails = [{ supNo: _.isEmpty(eventInDay) ? 1 : getFrameNo(eventInDay), taskItemValues }];
+
+                        let refTimezone = { start: startMinutes, end: endMinutes };
+                        let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                        _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                            goOutBreakTimeLst.push({ start, end });
+                        });
+                        
+                        let calParam = { refTimezone, goOutBreakTimeLst };
+                        vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                            taskItemValues.push({ itemId: 3, value: time });
+                            let taskDetails = [{ supNo: _.isEmpty(eventInDay) ? 1 : getFrameNo(eventInDay), taskItemValues }];
                             events.push({
                                 title: getTitles(taskDetails, vm.params.$settings().tasks, vm.params.$settings().taskFrameUsageSetting),
                                 start,
@@ -3189,12 +3214,12 @@ module nts.uk.ui.at.kdw013.calendar {
                                 //社員ID
                                 employeeId: vm.params.employee() || vm.$user.employeeId,
                                 //年月日
-                                period: {  start,  end },
+                                period: { start, end },
                                 //現在の応援勤務枠
-                                frameNos,                                
+                                frameNos,
                                 //工数実績作業ブロック
                                 taskBlock: {
-                                    caltimeSpan: { start,  end },
+                                    caltimeSpan: { start, end },
 
                                     taskDetails
                                 },
@@ -3202,6 +3227,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                 displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
                             } as any
                         });
+                        updateEvents();
+                    });
+                        
                     }else {
                         //drop by day
                         //remove event in day
@@ -3212,7 +3240,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         
                         // add event   
-                        _.each( _.get(extendedProps, 'dropInfo.taskBlockDetailContents', []), task => {
+                        _.each(_.get(extendedProps, 'dropInfo.taskBlockDetailContents', []), task => {
                             let timeStart = moment(start).set('hour', task.startTime / 60).set('minute', task.startTime % 60).toDate();
                             let timeEnd = moment(start).set('hour', task.endTime / 60).set('minute', task.endTime % 60).toDate();
                             let workCDs = _.chain(task.taskContents).map(task => task.taskContent.taskCode).value();
@@ -3225,7 +3253,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             }
                             let taskDetails = []
                             _.forEach(_.get(task, 'taskContents'), tc => {
-                                
+
                                 let taskdetail = _.map(tc.taskContent, tcont => { return { itemId: tcont.itemId, value: tcont.taskCode }; });
                                 taskdetail.push({ itemId: 3, value: tc.attendanceTime });
                                 taskDetails.push({ supNo: tc.frameNo, taskItemValues: taskdetail });
@@ -3237,8 +3265,8 @@ module nts.uk.ui.at.kdw013.calendar {
                             });
                             events.push({
                                 title: getTitles(taskDetails, vm.params.$settings().tasks, vm.params.$settings().taskFrameUsageSetting),
-                                start : timeStart,
-                                end : timeEnd,
+                                start: timeStart,
+                                end: timeEnd,
                                 textColor,
                                 backgroundColor: getBackgroundColor(wg.workCD1, vm.params.$settings().tasks),
                                 extendedProps: {
@@ -3260,16 +3288,15 @@ module nts.uk.ui.at.kdw013.calendar {
                                     caltimeSpan: { start: timeStart, end: timeEnd },
 
                                     taskDetails
-                                },
+                                    },
                                 //作業内容入力ダイアログ表示項目一覧
                                 displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
-                            } as any
-                        });
-                        
+                                } as any
+                            });
                         });
                         updateEvents();
                     }
-                $caches.new(event);
+               
                 },
                 datesSet: ({ start, end }) => {
                     let current = moment().startOf('day');

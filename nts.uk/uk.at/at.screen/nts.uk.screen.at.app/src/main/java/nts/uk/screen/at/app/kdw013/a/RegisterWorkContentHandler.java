@@ -2,7 +2,6 @@ package nts.uk.screen.at.app.kdw013.a;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -11,7 +10,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.jobmanagement.manhourinput.EncouragedTargetApplication;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
@@ -41,9 +39,6 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 
 	@Inject
 	private RegisterTaskTimeGroupCommandHandler handler;
-	
-	@Inject
-	private GetTargetTime getTargetTime;
 
 	@Inject
 	private GetDailyPerformanceData getDailyPerformanceData;
