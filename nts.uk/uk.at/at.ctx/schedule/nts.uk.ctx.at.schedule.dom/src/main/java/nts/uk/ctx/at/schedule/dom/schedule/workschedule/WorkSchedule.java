@@ -506,6 +506,7 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	public void modifySupportSchedule(Require require, SupportTicket beforeModify, SupportTicket afterModify) {
 		
+		this.checkWhetherCanUpdateSupportSchedule(beforeModify, false);
 		this.checkWhetherCanUpdateSupportSchedule(afterModify, false);
 		
 		this.supportSchedule = this.supportSchedule.update(require, beforeModify, afterModify);
