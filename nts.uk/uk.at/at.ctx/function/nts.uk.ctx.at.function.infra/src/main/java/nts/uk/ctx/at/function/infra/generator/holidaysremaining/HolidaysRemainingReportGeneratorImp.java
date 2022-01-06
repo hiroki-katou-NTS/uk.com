@@ -656,9 +656,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                             .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
                             .getUsedNumberAfterGrantOpt().get())
-                    .filter(e->e.getUsedTime().isPresent())
+                    .filter(e->e.getUsedDays().isPresent())
                     .mapToDouble(e -> {
-                                return e.getUsedTime().get().v();
+                                return e.getUsedDays().get().v();
                             }
                     ).boxed().collect(Collectors.toList());;
             Double use_after_grant = !use_after_grants.isEmpty()? use_after_grants.stream().mapToDouble(e->e).sum() : null;
