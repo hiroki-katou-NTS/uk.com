@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeName;
 
 /**
@@ -39,9 +39,9 @@ public class AbsenceFrame extends AggregateRoot{
 	private WorkTypeName absenceFrameName;
 	
 	/**
-	 * 欠勤枠の廃止区分
+	 * 利用区分
 	 */
-	private DeprecateClassification deprecateAbsence;
+	private ManageDistinct deprecateAbsence;
 	
 	/**
 	 * 
@@ -51,7 +51,7 @@ public class AbsenceFrame extends AggregateRoot{
 	 * @param deprecateAbsence
 	 */
 	public AbsenceFrame(String companyId, int absenceFrameNo, WorkTypeName absenceFrameName,
-			DeprecateClassification deprecateAbsence) {
+			ManageDistinct deprecateAbsence) {
 		super();
 		this.companyId = companyId;
 		this.absenceFrameNo = absenceFrameNo;
@@ -131,7 +131,7 @@ public class AbsenceFrame extends AggregateRoot{
 	 * [2] 利用できない月次の勤怠項目を取得する
 	 */
 	public List<Integer> getMonthAttdItems() {
-		if (this.deprecateAbsence == DeprecateClassification.NotDeprecated) // cần QA lại vì ko giống EA
+		if (this.deprecateAbsence == ManageDistinct.NO) // cần QA lại vì ko giống EA
 			return this.getMonthAttdItemsCorrespondAbsenteeism();
 		return new ArrayList<>();
 	}
@@ -150,7 +150,7 @@ public class AbsenceFrame extends AggregateRoot{
 				companyId, 
 				absenceFrameNo, 
 				new WorkTypeName(absenceFrameName), 
-				EnumAdaptor.valueOf(deprecateAbsence, DeprecateClassification.class));
+				EnumAdaptor.valueOf(deprecateAbsence, ManageDistinct.class));
 	}
 
 	/**
@@ -163,6 +163,6 @@ public class AbsenceFrame extends AggregateRoot{
 	 */
 	public static AbsenceFrame createFromJavaType(String companyId, int absenceFrameNo, String absenceFrameName,
 			int deprecateAbsence) {
-		return new AbsenceFrame(companyId, absenceFrameNo, new WorkTypeName(absenceFrameName), EnumAdaptor.valueOf(deprecateAbsence, DeprecateClassification.class));
+		return new AbsenceFrame(companyId, absenceFrameNo, new WorkTypeName(absenceFrameName), EnumAdaptor.valueOf(deprecateAbsence, ManageDistinct.class));
 	}
 }

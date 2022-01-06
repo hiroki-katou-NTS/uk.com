@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeName;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -38,9 +39,9 @@ public class SpecialHolidayFrame extends AggregateRoot{
 	private WorkTypeName SpecialHdFrameName;
 	
 	/**
-	 * 特別休暇枠の廃止区分
+	 * 利用区分
 	 */
-	private DeprecateClassification deprecateSpecialHd;
+	private ManageDistinct deprecateSpecialHd;
 	
 	/**
 	 * するしない区分
@@ -56,7 +57,7 @@ public class SpecialHolidayFrame extends AggregateRoot{
 	 * @param deprecateSpecialHd
 	 */
 	public SpecialHolidayFrame(String companyId, int specialHdFrameNo, WorkTypeName specialHdFrameName,
-			DeprecateClassification deprecateSpecialHd ,NotUseAtr timeMngAtr) {
+			ManageDistinct deprecateSpecialHd ,NotUseAtr timeMngAtr) {
 		super();
 		this.companyId = companyId;
 		this.SpecialHdFrameNo = specialHdFrameNo;
@@ -139,7 +140,7 @@ public class SpecialHolidayFrame extends AggregateRoot{
 	 */
 	public List<Integer> getMonthlyAttendanceItems() {
 		// @利用区分 == しない
-		if (this.deprecateSpecialHd == DeprecateClassification.NotDeprecated) // cần QA lại vì khác với EA
+		if (this.deprecateSpecialHd == ManageDistinct.NO) // cần QA lại vì khác với EA
 			return this.getMonthlyAttendanceItemsSpecialLeave();
 		return new ArrayList<>();
 	}
@@ -157,7 +158,7 @@ public class SpecialHolidayFrame extends AggregateRoot{
 		return new SpecialHolidayFrame(companyId, 
 				specialHdFrameNo,
 				new WorkTypeName(specialHdFrameName), 
-				EnumAdaptor.valueOf(deprecateSpecialHd, DeprecateClassification.class),
+				EnumAdaptor.valueOf(deprecateSpecialHd, ManageDistinct.class),
 				EnumAdaptor.valueOf(timeMngAtr, NotUseAtr.class)
 				);
 	}
@@ -174,7 +175,7 @@ public class SpecialHolidayFrame extends AggregateRoot{
 	public static SpecialHolidayFrame createFromJavaType(String companyId, int specialHdFrameNo, String specialHdFrameName,
 			int deprecateSpecialHd , int timeMngAtr) {
 		return new SpecialHolidayFrame(companyId,
-				specialHdFrameNo, new WorkTypeName(specialHdFrameName), EnumAdaptor.valueOf(deprecateSpecialHd, DeprecateClassification.class),
+				specialHdFrameNo, new WorkTypeName(specialHdFrameName), EnumAdaptor.valueOf(deprecateSpecialHd, ManageDistinct.class),
 				EnumAdaptor.valueOf(timeMngAtr, NotUseAtr.class));
 	}
 }
