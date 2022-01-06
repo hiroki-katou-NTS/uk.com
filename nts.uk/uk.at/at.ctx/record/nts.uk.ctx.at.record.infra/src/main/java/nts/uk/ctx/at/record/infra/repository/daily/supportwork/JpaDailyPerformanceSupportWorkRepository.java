@@ -165,7 +165,8 @@ public class JpaDailyPerformanceSupportWorkRepository extends JpaRepository impl
 
         List<KrcdtDayOuenTimeSheet> ouenTimeSheets = this.queryProxy()
                 .query("select o from KrcdtDayOuenTimeSheet o, KrcdtDayAffInfo i where o.pk.sid = i.krcdtDaiAffiliationInfPK.employeeId and o.pk.ymd = i.krcdtDaiAffiliationInfPK.ymd " +
-                        "and o.companyId = :companyId and o.pk.ymd >= :startDate and o.pk.ymd <= :endDate and o.workLocationCode in :workLocationCodes and o.workLocationCode != i.workplaceID", KrcdtDayOuenTimeSheet.class)
+                        "and o.companyId = :companyId and o.pk.ymd >= :startDate and o.pk.ymd <= :endDate and o.workLocationCode in :workLocationCodes ", KrcdtDayOuenTimeSheet.class)
+//                        "and o.workLocationCode != i.workLocationCode", KrcdtDayOuenTimeSheet.class) TODO: i doesn't have work location code yet
                 .setParameter("companyId", companyId)
                 .setParameter("startDate", period.start())
                 .setParameter("endDate", period.end())
@@ -227,7 +228,8 @@ public class JpaDailyPerformanceSupportWorkRepository extends JpaRepository impl
 
         List<KrcdtDayOuenTimeSheet> ouenTimeSheets = this.queryProxy()
                 .query("select o from KrcdtDayOuenTimeSheet o, KrcdtDayAffInfo i where o.pk.sid = i.krcdtDaiAffiliationInfPK.employeeId and o.pk.ymd = i.krcdtDaiAffiliationInfPK.ymd " +
-                        "and o.companyId = :companyId and o.pk.ymd >= :startDate and o.pk.ymd <= :endDate and i.workplaceID in :workLocationCodes and o.workLocationCode != i.workplaceID", KrcdtDayOuenTimeSheet.class)
+                        "and o.companyId = :companyId and o.pk.ymd >= :startDate and o.pk.ymd <= :endDate ", KrcdtDayOuenTimeSheet.class)
+//                        "and i.workLocationCode in :workLocationCodes and o.workLocationCode != i.workLocationCode", KrcdtDayOuenTimeSheet.class) TODO: i doesn't have work location code yet
                 .setParameter("companyId", companyId)
                 .setParameter("startDate", period.start())
                 .setParameter("endDate", period.end())

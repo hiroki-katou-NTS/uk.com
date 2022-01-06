@@ -132,16 +132,14 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
         String employeeId = ouenWorkTimeSheet.getEmpId();
         GeneralDate date = ouenWorkTimeSheet.getYmd();
         return ouenWorkTimeSheet.getOuenTimeSheet().stream().map(i -> {
-            // 応援勤務枠No = 1
-            // TODO: need confirm
             return this.createSupportWorkDetailForEachFrame(
                     require,
                     employeeId,
                     date,
-                    1,
+                    i.getWorkNo().v(),
                     affiliationInfor.getAffiliationInfor(),
                     i,
-                    ouenWorkTime.getOuenTimes().stream().filter(j -> j.getWorkNo().v() == 1).findFirst().orElse(null),
+                    ouenWorkTime.getOuenTimes().stream().filter(j -> j.getWorkNo().v().intValue() == i.getWorkNo().v().intValue()).findFirst().orElse(null),
                     attendanceItemIds
             );
         }).collect(Collectors.toList());
@@ -171,7 +169,7 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
         String affiliationInformation;
         String workInfor;
         if (aggregationUnit == SupportAggregationUnit.WORK_LOCATION) {
-            affiliationInformation = affiliationInfor.getWplID(); // $所属先情報 = 所属情報.勤務場所
+            affiliationInformation = affiliationInfor.getWplID(); // TODO: $所属先情報 = 所属情報.勤務場所 but doesn't have it yet
             workInfor = ouenWorkTimeSheet.getWorkContent().getWorkplace().getWorkLocationCD().map(PrimitiveValueBase::v).orElse(null);
         } else {
             affiliationInformation = affiliationInfor.getWplID();

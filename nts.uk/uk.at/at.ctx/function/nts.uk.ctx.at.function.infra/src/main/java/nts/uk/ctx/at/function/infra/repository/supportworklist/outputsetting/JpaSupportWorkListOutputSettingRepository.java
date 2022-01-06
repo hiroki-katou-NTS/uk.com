@@ -80,6 +80,7 @@ public class JpaSupportWorkListOutputSettingRepository extends JpaRepository imp
                 .getList();
         return this.queryProxy()
                 .query("select s from KfnmtRptWkSup s where s.pk.companyId = :companyId", KfnmtRptWkSup.class)
+                .setParameter("companyId", companyId)
                 .getList(e -> e.toDomain(items.stream().filter(i -> i.pk.code.equals(e.pk.code)).collect(Collectors.toList())));
     }
 
