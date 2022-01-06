@@ -113,24 +113,23 @@ public class OvertimeLeaveEncourageConfirmationService {
 		// map $.時間帯.開始.時刻
 		// first
 		Optional<TimeWithDayAttr> start = timesheet.getOuenTimeSheet().stream()
-				.sorted((a, b) -> a.getTimeSheet().getStart().get().getTimeWithDay().get().v()
-						.compareTo(b.getTimeSheet().getStart().get().getTimeWithDay().get().v()))
-				.map(m -> m.getTimeSheet().getStart().get().getTimeWithDay()).collect(Collectors.toList()).get(0);
+				.sorted((a, b) -> a.getTimeSheet().getStart().map(s -> s.getTimeWithDay().map(twd-> twd.v()).orElse(0)).orElse(0)
+						.compareTo(b.getTimeSheet().getStart().map(s -> s.getTimeWithDay().map(twd-> twd.v()).orElse(0)).orElse(0)))
+				.map(m -> m.getTimeSheet().getStart().map(s -> s.getTimeWithDay()).orElse(Optional.empty())).collect(Collectors.toList()).get(0);
 
 		// $比較終了 = 日別実績の応援作業別勤怠時間帯.応援時間帯： sort $.時間帯.終了.時刻 ASC
 		// map $.時間帯.終了.時刻
 		// last
 		Optional<TimeWithDayAttr> end = timesheet.getOuenTimeSheet().stream()
-				.sorted((a, b) -> a.getTimeSheet().getEnd().get().getTimeWithDay().get().v()
-						.compareTo(b.getTimeSheet().getEnd().get().getTimeWithDay().get().v()))
-				.map(m -> m.getTimeSheet().getEnd().get().getTimeWithDay()).findFirst().orElse(Optional.empty());
+				.sorted((a, b) -> a.getTimeSheet().getEnd().map(e -> e.getTimeWithDay().map(twd-> twd.v()).orElse(0)).orElse(0)
+						.compareTo(b.getTimeSheet().getEnd().map(e -> e.getTimeWithDay().map(twd-> twd.v()).orElse(0)).orElse(0)))
+				.map(m -> m.getTimeSheet().getEnd().map(e -> e.getTimeWithDay()).orElse(Optional.empty())).findFirst().orElse(Optional.empty());
 
 		// if ($基準開始.isEmpty AND $比較開始.isPresent)
 		// OR ($基準終了.isEmpty AND $比較終了.isPresent)
 		// OR $基準開始 > $比較開始 OR $基準終了 < $比較終了
 		// return true
-		if ((attendance == null && start.isPresent()) || (leaveWork == null && end.isPresent())
-				|| (attendance.v() > start.get().v()) || (leaveWork.v() < end.get().v())) {
+		if ((attendance == null && start.isPresent()) || (leaveWork == null && end.isPresent()) || start.isPresent() && (attendance.v() > start.get().v())  || end.isPresent() && (leaveWork.v() < end.get().v())) {
 			return true;
 		}
 
