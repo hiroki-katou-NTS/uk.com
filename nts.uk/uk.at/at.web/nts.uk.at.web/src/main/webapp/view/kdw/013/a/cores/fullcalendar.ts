@@ -1828,6 +1828,39 @@ module nts.uk.ui.at.kdw013.calendar {
                     events(getEvents().filter(({ extendedProps }) => !!extendedProps.id && extendedProps.status !== 'delete'));
                 }
             };
+            let calWorkTime = (event , oldEvent?) => {
+                //oldEvent là để xử lý cho trường hợp  di chuyển break time
+                let tempEs = [...events()];
+                let evns = _.filter(tempEs, e => 
+                    moment(e.end).isSame(event.start, 'days')
+                    && !e.extendedProps.isTimeBreak);
+
+                _.forEach(evns, evn => {
+                    let it = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
+                    let refTimezone = { start: (moment(evn.start).hour() * 60) + moment(evn.start).minute(), end: (moment(evn.end).hour() * 60) + moment(evn.end).minute() };
+                    let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(evn.start), 'days'));
+                    let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                    _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                        if (oldEvent) {
+                            let oldStartAsMinites = (moment(oldEvent.start).hour() * 60) + moment(arg.oldEvent.start).minute();
+                            let oldEndAsMinites = (moment(oldEvent.end).hour() * 60) + moment(arg.oldEvent.end).minute();
+                            if (start == oldStartAsMinites && end == oldEndAsMinites) {
+                                goOutBreakTimeLst.push({ start: startAsMinites, end: endAsMinites });
+                            } else {
+                                goOutBreakTimeLst.push({ start, end });
+                            }
+                        } else {
+                             goOutBreakTimeLst.push({ start, end });
+                        }
+                    });
+                    let calParam = { refTimezone, goOutBreakTimeLst };
+                    vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                        it.value = time;
+                        events(tempEs);
+                        updateEvents();
+                    });
+                });
+            } 
             let updateEvents = () => {
                 let sltds = vm.selectedEvents;
                 let isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => (formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')) && (formatDate(_.get(e,'end')) === formatDate(_.get(m,'end')) ) ));
@@ -2633,8 +2666,11 @@ module nts.uk.ui.at.kdw013.calendar {
                             vm.revertEvent([arg.oldEvent], $caches);
                             return;
                         }
-                        vm.params.screenA.dataChanged(true);
+                        vm.params.screenA.dataChanged(true);                        
                         mutatedEvents();
+                        
+                        //cal work time
+                        vm.calWorkTime(event, arg.oldEvent);
                         return;
                     }
                     
@@ -2786,6 +2822,11 @@ module nts.uk.ui.at.kdw013.calendar {
                         });
                         events(tempEs);
                         updateEvents();
+                        // cal work Time
+                        _.forEach([].concat(arg.oldEvent, relatedEvents), e => {
+                            vm.calWorkTime(e);
+                        }
+                                
                         if (arg.delta.days != 0 && !ko.unwrap<boolean>(dataEvent.shift)) {
                             _.forEach([].concat(arg.oldEvent, relatedEvents), e => {
 
@@ -2869,12 +2910,12 @@ module nts.uk.ui.at.kdw013.calendar {
                         return;
                     }
                     
-                    
                     //check override
                     
                   let oEvents =  
                   _.chain(events())
                   .filter((evn)=>{ return moment(start).isBefore(evn.start) && moment(evn.end).isSameOrBefore(end); })
+                  .filter((evn)=>{ return !evn.extendedProps.isTimeBreak })
                   .sortBy('end')
                   .value();
                   
