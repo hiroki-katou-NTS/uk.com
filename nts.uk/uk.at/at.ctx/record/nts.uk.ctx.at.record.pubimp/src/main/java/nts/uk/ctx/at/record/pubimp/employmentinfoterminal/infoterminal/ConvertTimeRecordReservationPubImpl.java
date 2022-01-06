@@ -67,13 +67,8 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 			ReservReceptDataExport reservReceptData, String companyID) {
 
 		RequireImpl requireImpl = new RequireImpl("", empInfoTerminalRepository, timeRecordReqSettingRepository,
-<<<<<<< HEAD
 				employeeManageRCAdapter, bentoMenuRepository, bentoReservationRepository,
-				stampCardRepository, executionLog);
-=======
-				employeeManageRCAdapter, bentoMenuRepository, bentoReservationRepository, stampRecordRepository,
 				stampCardRepository, executionLog, reservationSettingRepository);
->>>>>>> uk/release_pj/lunch_order_1162
 		return ConvertTimeRecordReservationService.convertData(requireImpl, new EmpInfoTerminalCode(empInfoTerCode),
 				new ContractCode(contractCode),
 				new ReservationReceptionData(reservReceptData.getIdNumber(), reservReceptData.getMenu(),

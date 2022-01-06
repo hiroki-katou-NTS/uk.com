@@ -16,7 +16,6 @@ import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
@@ -93,8 +92,7 @@ public class ConvertTimeRecordReservationServiceTest {
 		};
 
 		Optional<AtomTask> resultActual = ConvertTimeRecordReservationService.convertData(require, empInfoTerCode,
-<<<<<<< HEAD
-				contractCode, receptionData);
+				contractCode, receptionData, companyID);
 //		NtsAssert.atomTask(() -> resultActual.get(), any -> require.getEmpInfoTerminal(any.get(), any.get()));
 	}
 
@@ -123,41 +121,6 @@ public class ConvertTimeRecordReservationServiceTest {
 //				contractCode, receptionData);
 //		NtsAssert.atomTask(() -> resultActual.get(), any -> require.insert(any.get()));
 //	}
-=======
-				contractCode, receptionData, companyID);
-		assertThat(resultActual).isEqualTo(Optional.empty());
-
-	}
-
-	@Test
-	public void testRegistDoneData() {
-		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
-
-		Optional<EmpInfoTerminal> empInfoTer = Optional
-				.of(new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("AABBCCDD"),
-						new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")),
-						new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
-								.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1)))
-								.build());
-		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, null, null, null, null, null).build());
-
-		new Expectations() {
-			{
-				require.getEmpInfoTerminal((EmpInfoTerminalCode) any, (ContractCode) any);
-				result = empInfoTer;
-
-				require.getStampRecord(contractCode, (StampNumber) any, (GeneralDateTime) any);
-				result = Optional.empty();
-
-			}
-		};
-
-		Optional<AtomTask> resultActual = ConvertTimeRecordReservationService.convertData(require, empInfoTerCode,
-				contractCode, receptionData, companyID);
-		NtsAssert.atomTask(() -> resultActual.get(), any -> require.insert(any.get()));
-	}
->>>>>>> uk/release_pj/lunch_order_1162
 
 	@SuppressWarnings("unchecked")
 	@Test

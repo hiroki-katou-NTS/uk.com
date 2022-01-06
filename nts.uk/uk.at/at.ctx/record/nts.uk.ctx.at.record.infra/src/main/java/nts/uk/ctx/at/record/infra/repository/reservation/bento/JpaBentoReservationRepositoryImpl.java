@@ -5,13 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-<<<<<<< HEAD
-import java.util.List;
-=======
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
->>>>>>> uk/release_pj/lunch_order_1162
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,22 +19,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
-<<<<<<< HEAD
 import nts.arc.layer.infra.data.database.DatabaseProduct;
-=======
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
->>>>>>> uk/release_pj/lunch_order_1162
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
-<<<<<<< HEAD
-=======
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationCorrect;
->>>>>>> uk/release_pj/lunch_order_1162
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
@@ -500,7 +490,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 												(int) y.getValue().get(0).get("MENU_FRAME"),
 												(GeneralDateTime) y.getValue().get(0).get("REGIST_DATETIME")), 
 										(int) y.getValue().get(0).get("QUANTITY"), 
-										(int) y.getValue().get(0).get("AUTO_RESERVATION_ATR"), 
+										(boolean) y.getValue().get(0).get("AUTO_RESERVATION_ATR"), 
 										null);
 							}).collect(Collectors.toList());
 				return new KrcdtReservation(
@@ -510,7 +500,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 						(GeneralDate) x.getValue().get(0).get("RESERVATION_YMD"), 
 						(int) x.getValue().get(0).get("RESERVATION_FRAME"),
 						(String) x.getValue().get(0).get("CARD_NO"),
-						(int) x.getValue().get(0).get("ORDERED"),
+						(boolean) x.getValue().get(0).get("ORDERED"),
 						(String) x.getValue().get(0).get("WORK_LOCATION_CD"),
 						detailLst);
 			}).collect(Collectors.toList());

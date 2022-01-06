@@ -3,8 +3,6 @@
  */
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Optional;
 
 import org.junit.Before;
@@ -18,7 +16,6 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.ConvertTimeRecordReservationService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.net.Ipv4Address;
@@ -60,7 +57,6 @@ public class EmpInfoTerminalTest {
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 	}
 
-<<<<<<< HEAD
 //	@Test
 //	public void testCreateReservRecord() {
 //
@@ -93,42 +89,6 @@ public class EmpInfoTerminalTest {
 ////						any -> require.reserve(any.get()));
 //
 //	}
-=======
-	@Test
-	public void testCreateReservRecord() {
-
-		StampRecord recordExpect = new StampRecord(new ContractCode(""), new StampNumber("1"),
-				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 01), new StampTypeDisplay(""));
-
-		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
-
-		Pair<StampRecord, AtomTask> resultActual = empInfoTerminal.createReservRecord(require, receptionData, "000000000000-0001");
-
-//		BentoMenu menu = new BentoMenu("historyId", Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)),
-//				ClosingTime.UNLIMITED);
-//		ReservationRegisterInfo dummyRegInfo = Helper.Reservation.RegInfo.DUMMY;
-//		ReservationDate todayReserve = Helper.Reservation.Date.of(today());
-//		Map<Integer, BentoReservationCount> details = Collections.singletonMap(1, Helper.count(1));
-		new Expectations() {
-			{
-//				require.getBentoMenu((ReservationDate) any, Optional.empty());
-//				result = menu;
-
-//				require.reserve((BentoReservation) any);
-
-			}
-		};
-
-		assertThatFieldStamp(resultActual.getLeft(), recordExpect);
-
-//		NtsAssert
-//				.atomTask(
-//						() -> BentoReserveService.reserve(require, dummyRegInfo, todayReserve,
-//								GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 01), details),
-//						any -> require.reserve(any.get()));
-
-	}
->>>>>>> uk/release_pj/lunch_order_1162
 
 	@Test
 	public void testCreateStamp() {

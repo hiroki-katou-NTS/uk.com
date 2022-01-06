@@ -101,17 +101,9 @@ public class EmpInfoTerminal implements DomainAggregate {
 
 
 	// [２] 予約
-<<<<<<< HEAD
 	public AtomTask createReservRecord(ConvertTimeRecordReservationService.Require require,
-			ReservationReceptionData reservReceptData) {
-		return createReserv(require, reservReceptData);
-=======
-	public Pair<StampRecord, AtomTask> createReservRecord(ConvertTimeRecordReservationService.Require require,
 			ReservationReceptionData reservReceptData, String companyID) {
-		StampRecord stampRecord = createStampRecord(reservReceptData);
-		AtomTask createReserv = createReserv(require, reservReceptData, companyID);
-		return Pair.of(stampRecord, createReserv);
->>>>>>> uk/release_pj/lunch_order_1162
+		return createReserv(require, reservReceptData, companyID);
 	}
 
 	// [pvt-2] 予約の打刻記録を作成
