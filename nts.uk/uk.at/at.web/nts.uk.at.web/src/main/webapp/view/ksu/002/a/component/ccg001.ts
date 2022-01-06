@@ -64,8 +64,8 @@ module nts.uk.ui.at.ksu002.a {
                     showWorkplace: true, //職場条件
                     showClassification: true, //分類条件
                     showJobTitle: true, //職位条件
-                    showWorktype: false, //勤種条件
-                    isMutipleCheck: true, //選択モード
+                    showWorktype: true, //勤種条件
+                    isMutipleCheck: false, //選択モード
 
                     /**
                     * Self-defined function: Return data from CCG001
