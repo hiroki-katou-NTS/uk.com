@@ -6,6 +6,8 @@ package nts.uk.screen.at.app.ksu001.displayinshift;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -35,6 +37,7 @@ import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPaletteResult;
  * 
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class DisplayInShift {
 	
 	@Inject

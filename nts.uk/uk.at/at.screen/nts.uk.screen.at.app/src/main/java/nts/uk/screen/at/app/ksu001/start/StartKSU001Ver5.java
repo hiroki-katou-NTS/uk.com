@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
@@ -46,6 +48,7 @@ import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
  * path: UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).A：個人スケジュール修正（職場別）.メニュー別OCD.初期起動
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class StartKSU001Ver5 {
 
 	@Inject
