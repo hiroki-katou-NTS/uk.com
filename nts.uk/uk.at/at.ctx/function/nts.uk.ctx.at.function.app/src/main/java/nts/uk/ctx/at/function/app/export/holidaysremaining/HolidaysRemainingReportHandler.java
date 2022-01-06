@@ -583,7 +583,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		////////////////////////////////////////////////////////////////////////////////
 		// 振休
 		////////////////////////////////////////////////////////////////////////////////
-        if (variousVacationControl.isPauseItemHolidaySetting()) {
+        if (variousVacationControl.isPauseItemHolidaySettingCompany()) {
 
 			//========================================
 			// 当月・未来月
