@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.specialholiday;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -153,11 +152,6 @@ public class SpecialHolidayTest {
 			specialHoliday = SpecialHolidayHelper.createSpecialHolidayTest(new SpecialHolidayCode(20));
 			lstId = specialHoliday.getMonthlyAttendanceItems(require);
 			assertThat(lstId).extracting(d -> d).containsExactly(1655, 1656, 1657, 1658, 1659, 1660, 1661, 1662, 1663, 1664, 1665);
-		
-			// 特別休暇コード = 0 :
-			specialHoliday = SpecialHolidayHelper.createSpecialHolidayTest(new SpecialHolidayCode(0));
-			lstId = specialHoliday.getMonthlyAttendanceItems(require);
-			assertThat(lstId.isEmpty()).isTrue();	
 			
 		// ========== Case 2
 			// $時間特別休暇の管理設定.時間休暇消化単位.管理区分 == 管理する
@@ -284,11 +278,6 @@ public class SpecialHolidayTest {
 			specialHoliday = SpecialHolidayHelper.createSpecialHolidayTest(new SpecialHolidayCode(20));
 			lstId = specialHoliday.getMonthlyAttendanceItems(require);
 			assertThat(lstId).extracting(d -> d).containsExactly(1655, 1656, 1657, 1658, 1659, 1660, 1661, 1662, 1663, 1664, 1665);
-			
-			// 特別休暇コード = 0 :
-			specialHoliday = SpecialHolidayHelper.createSpecialHolidayTest(new SpecialHolidayCode(0));
-			lstId = specialHoliday.getMonthlyAttendanceItems(require);
-			assertThat(lstId.isEmpty()).isTrue();
 	}
 	
 	/**
@@ -375,10 +364,6 @@ public class SpecialHolidayTest {
 		// 特別休暇コード = 20 :
 		lstId = SpecialHoliday.getMonthlyAttdItemsCorrespondSpecialHoliday(Arrays.asList(new SpecialHolidayCode(20)));
 		assertThat(lstId).extracting(d -> d).containsExactly(1239,1240,1244,1248,1250,1251,1252,1256,1245,1257, 1655, 1656, 1657, 1658, 1659, 1660, 1661, 1662, 1663, 1664, 1665);
-		
-		// 特別休暇コード = 0 :
-		lstId = SpecialHoliday.getMonthlyAttdItemsCorrespondSpecialHoliday(Arrays.asList(new SpecialHolidayCode(0)));
-		assertThat(lstId.isEmpty()).isTrue();
 		
 		// コードリスト = [1,2] :
 		lstId = SpecialHoliday.getMonthlyAttdItemsCorrespondSpecialHoliday(Arrays.asList(new SpecialHolidayCode(1), new SpecialHolidayCode(2)));

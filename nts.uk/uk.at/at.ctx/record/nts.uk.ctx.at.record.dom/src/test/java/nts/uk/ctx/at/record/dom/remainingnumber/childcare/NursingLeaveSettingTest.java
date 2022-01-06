@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.childcare;
 
+import static nts.arc.time.GeneralDate.ymd;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -15,11 +16,9 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
-import static nts.arc.time.GeneralDate.*;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.CareManagementDate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimitSplit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareTargetChanged;

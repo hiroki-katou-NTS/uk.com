@@ -169,7 +169,7 @@ public class SpecialHoliday extends AggregateRoot {
 				case 19 :
 					lstId.addAll(Arrays.asList(1218,1219,1223,1227,1229,1230,1231,1235,1224,1236));
 					break;
-				case 20 :
+				default :
 					lstId.addAll(Arrays.asList(1239,1240,1244,1248,1250,1251,1252,1256,1245,1257));
 					break;
 			}
@@ -241,7 +241,7 @@ public class SpecialHoliday extends AggregateRoot {
 			case 19 :
 				lstId.addAll(Arrays.asList(1644,1645,1646,1647,1648,1649,1650,1651,1652,1653,1654));	
 				break;
-			case 20 :
+			default :
 				lstId.addAll(Arrays.asList(1655,1656,1657,1658,1659,1660,1661,1662,1663,1664,1665));
 				break;
 			}
