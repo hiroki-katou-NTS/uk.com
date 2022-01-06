@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.val;
@@ -23,10 +24,12 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.Reserv
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveLapsedWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLeaAggrPeriodWork;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
@@ -34,7 +37,9 @@ import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RoundProcessingClassification;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
@@ -120,7 +125,8 @@ public class GetRsvLeaRemNumWithinPeriod {
 				monthlyCalcDailys, rsvGrantRemainingDatas);
 
 		// 積立年休付与を計算
-		List<GrantWork> calcGrant = calcGrant(param.getLapsedAnnualLeaveInfos(), annualLeaveSet, param.getAggrPeriod());
+		List<GrantWork> calcGrant = calcGrant(require, param.getCompanyId(), param.getEmployeeId(),
+				param.getCriteriaDate(), param.getLapsedAnnualLeaveInfos(), annualLeaveSet, param.getAggrPeriod());
 
 		// 積立年休集計期間の作成
 		List<RsvLeaAggrPeriodWork> aggrPeriodWorks = createAggregatePeriod(param.getAggrPeriod(), calcGrant,
@@ -354,7 +360,9 @@ public class GetRsvLeaRemNumWithinPeriod {
 	 *            積立年休上限設定期間WORKリスト
 	 * @return 積立年休付与WORKリスト
 	 */
-	private static List<GrantWork> calcGrant(List<AnnualLeaveInfo> lapsedAnnualLeaveInfos,
+	private static List<GrantWork> calcGrant(RequireM4 require, String companyID,
+			String employeeId,
+			GeneralDate baseDate, List<AnnualLeaveInfo> lapsedAnnualLeaveInfos,
 			AnnualPaidLeaveSetting annualLeaveSet, DatePeriod period) {
 
 		if (lapsedAnnualLeaveInfos.size() <= 0)
@@ -363,18 +371,30 @@ public class GetRsvLeaRemNumWithinPeriod {
 		AnnualLeaveInfo annualLeaveInfo = lapsedAnnualLeaveInfos.get(lapsedAnnualLeaveInfos.size() - 1);
 
 		// 付与残数データを取得
-		Map<GeneralDate, Double> grantTotal = annualLeaveInfo.getGrantRemainingDataList().stream().filter(
+		Function<List<AnnualLeaveGrantRemainingData>, LeaveRemainingNumber> sumData = new Function<List<AnnualLeaveGrantRemainingData>, LeaveRemainingNumber>() {
+			@Override
+			public LeaveRemainingNumber apply(List<AnnualLeaveGrantRemainingData> list) {
+				double days = list.stream().mapToDouble(x -> x.getDetails().getRemainingNumber().getDays().v()).sum();
+				int times = list.stream()
+						.mapToInt(x -> x.getDetails().getRemainingNumber().getMinutes().map(y -> y.v()).orElse(0))
+						.sum();
+				return new LeaveRemainingNumber(days, times);
+			}
+		};
+		
+		Map<GeneralDate, LeaveRemainingNumber> grantTotal = annualLeaveInfo.getGrantRemainingDataList().stream().filter(
 				x -> period.contains(x.getDeadline()) && x.getExpirationStatus() == LeaveExpirationStatus.EXPIRED)
 				.sorted((x, y) -> x.getDeadline().compareTo(y.getDeadline()))
 				.collect(Collectors.groupingBy(x -> x.getDeadline(),
-						Collectors.collectingAndThen(Collectors.toList(), list -> list.stream()
-								.mapToDouble(x -> x.getDetails().getRemainingNumber().getDays().v()).sum())));
+						Collectors.collectingAndThen(Collectors.toList(), list -> sumData.apply(list))));
+		
 
 		List<GrantWork> results = new ArrayList<>();
 		AtomicInteger grantNumber = new AtomicInteger(0);
 		grantTotal.entrySet().stream().forEach(x -> {
 			// 積立年休付与WORKを作成 → 端数処理
-			GrantWork grantWork = GrantWork.of(x.getKey().addDays(1), new LeaveGrantDayNumber(x.getValue()),
+			GrantWork grantWork = GrantWork.of(x.getKey().addDays(1),
+					roundAccuAnnualLeave(require, companyID, employeeId, baseDate, annualLeaveSet, x.getValue()),
 					grantNumber.incrementAndGet());
 
 			// 積立年休付与WORKに追加
@@ -383,6 +403,38 @@ public class GetRsvLeaRemNumWithinPeriod {
 		return results;
 	}
 
+	// 積立年休付与の端数処理
+	private static LeaveGrantDayNumber roundAccuAnnualLeave(RequireM4 require, String companyID,
+			String employeeId,
+			GeneralDate baseDate, AnnualPaidLeaveSetting annualLeaveSet,
+			LeaveRemainingNumber grantDays) {
+		LeaveGrantDayNumber days = new LeaveGrantDayNumber(grantDays.getDays().v());
+
+		if (annualLeaveSet.getManageAnnualSetting()
+				.getHalfDayManage().roundProcesCla == RoundProcessingClassification.TruncateOnDay0) {
+			days = new LeaveGrantDayNumber(Math.floor(days.v()));
+		} else if (annualLeaveSet.getManageAnnualSetting()
+				.getHalfDayManage().roundProcesCla == RoundProcessingClassification.RoundUpToTheDay) {
+			days = new LeaveGrantDayNumber(Math.ceil(days.v()));
+		}
+		
+	    if(!annualLeaveSet.getTimeSetting().isManaged()) {
+	    	return days;
+	    }
+	    
+		val timeSetting = LeaveRemainingNumber.getContractTime(require, companyID, employeeId, baseDate);
+		if (grantDays.getMinutes().isPresent() && timeSetting.isPresent()) {
+			if (annualLeaveSet.getTimeSetting()
+					.getRoundProcessClassific() == TimeAnnualRoundProcesCla.RoundUpToTheDay) {
+				return new LeaveGrantDayNumber(
+						days.v() + Math.floor(Double.valueOf(grantDays.getMinutes().get().v()) / timeSetting.get().v()));
+			} else {
+				return new LeaveGrantDayNumber(
+						days.v() + Math.ceil(Double.valueOf(grantDays.getMinutes().get().v()) / timeSetting.get().v()));
+			}
+		}
+	return days;
+	}
 	/**
 	 * 積立年休集計期間を作成
 	 * 

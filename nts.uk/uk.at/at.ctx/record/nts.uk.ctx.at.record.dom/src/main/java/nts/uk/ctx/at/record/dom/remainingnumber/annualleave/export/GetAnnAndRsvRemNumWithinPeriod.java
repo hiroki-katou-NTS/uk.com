@@ -186,8 +186,7 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 		if (noCheckStartDate.isPresent())
 			noCheckStartDate.get();
 
-		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualOpt
-			= GetAnnLeaRemNumWithinPeriodProc.algorithm(
+		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualOpt = GetAnnLeaRemNumWithinPeriodProc.algorithm(
 				require, cacheCarrier, companyId, employeeId, aggrPeriod,
 				mode, criteriaDate, isCalcAttendanceRate, isOverWrite,
 				tempAnnDataforOverWriteList, prevAnnualLeave,

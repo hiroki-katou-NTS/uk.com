@@ -10,7 +10,6 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
@@ -89,5 +88,10 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
      */
     public Optional<LimitedTimeHdDays> getLimitedTimeHdDays(Optional<LimitedTimeHdDays> fromGrantTableDays){
     	return this.maxYearDayLeave.getLimitedTimeHdDays(fromGrantTableDays);
+    }
+    
+    //時間年休管理
+    public boolean isManaged() {
+    	return this.getTimeManageType() == ManageDistinct.YES;
     }
 }
