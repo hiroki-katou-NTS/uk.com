@@ -54,6 +54,7 @@ module nts.uk.at.kha002.a {
                                 isShowSelectButton: true,
                                 isDialog: false,
                                 maxRows: 15,
+                                tabindex: 4,
                                 restrictionOfReferenceRange: false,
                                 systemType : 2 // 就業
                             });
@@ -61,6 +62,9 @@ module nts.uk.at.kha002.a {
                             // 今回対象外
                         }
                         vm.getAllSettingData(code);
+                        _.defer(() => {
+                            $("#nts-component-tree").focus();
+                        });
                     });
                 } else {
                     vm.$dialog.error({messageId: "Msg_3269"}).then(() => {

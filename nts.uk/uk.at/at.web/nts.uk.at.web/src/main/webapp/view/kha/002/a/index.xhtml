@@ -16,9 +16,9 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1_1-->
-            <button data-bind="enable: true, click: exportExcel">#{i18n.getText('KHA002_10')}</button>
+            <button tabindex="1" data-bind="enable: true, click: exportExcel">#{i18n.getText('KHA002_10')}</button>
             <!--A1_2-->
-            <button data-bind="enable: true, click: exportCsv">#{i18n.getText('KHA002_11')}</button>
+            <button tabindex="2" data-bind="enable: true, click: exportCsv">#{i18n.getText('KHA002_11')}</button>
             <!--A1_3-->
             <button class="pull-right"
                     style="border: none; box-shadow: none; min-width: 30px; padding: 0!important; margin-right: 15px;"
@@ -31,6 +31,7 @@
                 <div class="control-group valign-center">
                     <div style="min-width: 50px;" data-bind="ntsFormLabel: {required: true, text: $i18n('KHA002_13')}"/>
                     <div id="A2_3"
+                         tabindex="3"
                          data-bind="ntsDateRangePicker: {
                                         required: true,
                                         showNextPrevious: true,
@@ -53,6 +54,7 @@
                     <div style="min-width: 90px;" data-bind="ntsFormLabel: {required: true, text: $i18n('KHA002_20')}"/>
                     <div id="A5_2"
                          style="width: 400px;"
+                         tabindex="6"
                          data-bind="ntsComboBox: {
                                     options: layoutSettings,
                                     visibleItemsCount: 15,
@@ -67,7 +69,7 @@
                                         { prop: 'name', length: 14 }
                                     ]}">
                     </div>
-                    <button data-bind="click: openDialogB, visible: __viewContext.user.role.isInCharge.attendance">#{i18n.getText('KHA002_22')}</button>
+                    <button tabindex="7" data-bind="click: openDialogB, visible: __viewContext.user.role.isInCharge.attendance">#{i18n.getText('KHA002_22')}</button>
                 </div>
             </div>
         </div>

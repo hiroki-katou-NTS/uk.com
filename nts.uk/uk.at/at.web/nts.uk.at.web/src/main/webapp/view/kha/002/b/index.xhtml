@@ -23,8 +23,8 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <button data-bind="click: createNewSetting, enable: true">#{i18n.getText('KHA002_40')}</button>
-            <button class="proceed" data-bind="click: registerSetting, enable: true">#{i18n.getText('KHA002_41')}</button>
+            <button data-bind="click: createNewSetting, enable: !!$vm.selectedLayout()">#{i18n.getText('KHA002_40')}</button>
+            <button class="proceed" data-bind="click: registerSetting, enable: $root.errors.isEmpty()">#{i18n.getText('KHA002_41')}</button>
             <button class="danger" data-bind="click: deleteSetting, enable: !!$vm.selectedLayout()">#{i18n.getText('KHA002_42')}</button>
             <button data-bind="click: closeDialog">#{i18n.getText('KHA002_43')}</button>
         </div>
