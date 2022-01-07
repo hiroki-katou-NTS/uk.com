@@ -466,13 +466,13 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		map.put("RESERVATION_YMD", rec.getGeneralDate("RESERVATION_YMD"));
 		map.put("RESERVATION_FRAME", rec.getInt("RESERVATION_FRAME"));
 		map.put("CARD_NO", rec.getString("CARD_NO"));
-		map.put("ORDERED", rec.getInt("ORDERED"));
+		map.put("ORDERED", rec.getBoolean("ORDERED"));
 		map.put("WORK_LOCATION_CD", rec.getString("WORK_LOCATION_CD"));
 		// KRCDT_RESERVATION_DETAIL
 		map.put("MENU_FRAME", rec.getInt("MENU_FRAME"));
 		map.put("REGIST_DATETIME", rec.getGeneralDateTime("REGIST_DATETIME"));
 		map.put("QUANTITY", rec.getInt("QUANTITY"));
-		map.put("AUTO_RESERVATION_ATR", rec.getInt("AUTO_RESERVATION_ATR"));
+		map.put("AUTO_RESERVATION_ATR", rec.getBoolean("AUTO_RESERVATION_ATR"));
 		return map;
 	}
 	
