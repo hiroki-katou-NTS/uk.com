@@ -73,9 +73,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             block.grayout();
             self.component.columns([
-                { headerText: getText("CCG025_3"), prop: 'roleId', width: 50, hidden: true },
-                { headerText: getText("CCG025_3"), prop: 'roleCode', width: 50 },
-                { headerText: getText("CCG025_4"), prop: 'name', width: 205 }
+                { headerText: getText("CAS001_8"), prop: 'roleId', width: 50, hidden: true },
+                { headerText: getText("CAS001_8"), prop: 'roleCode', width: 50 },
+                { headerText: getText("CAS001_9"), prop: 'name', width: 205 }
             ]);
             self.component.startPage().done(() =>{
                 self.personRoleList.removeAll();
