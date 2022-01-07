@@ -1122,7 +1122,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 new: ko.observable(null),
                 drag: ko.observable(null)
             };
-
+            vm.params.screenA.$caches = $caches;
             let $el = $(vm.$el);
             let $dgOne = $el.find('div.fc-oneday-events').get(0);
             let $dgTask = $el.find('div.fc-task-events').get(0);
@@ -3160,6 +3160,8 @@ module nts.uk.ui.at.kdw013.calendar {
                 },
                 eventRemove: ({ event }) => {
                     // remove event from event sources
+                    vm.params.screenA.$caches.new(event);
+                    vm.params.screenA.$caches.new(null);
                     _.forEach(vm.calendar.getEvents(), (e: EventApi) => {
                         if (e.id === event.id) {
                             e.remove();
@@ -3986,6 +3988,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                                     removeList.push({ date: moment(e.start).startOf('day').toDate(), supNos });
                                                 }
                                             }
+                                            vm.params.screenA.$caches.new(e);
+                                            vm.params.screenA.$caches.new(null);
                                         }
 
                                         return canRemove;
