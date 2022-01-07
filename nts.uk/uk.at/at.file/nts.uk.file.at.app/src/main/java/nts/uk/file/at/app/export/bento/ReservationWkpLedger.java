@@ -19,6 +19,11 @@ public class ReservationWkpLedger {
 	 */
 	private String wkpName;
 	
+	/**
+	 * 階層コード
+	 */
+	private String hierarchyCode; 
+	
 	private List<ReservationEmpLedger> empLedgerLst; 
 	
 }
