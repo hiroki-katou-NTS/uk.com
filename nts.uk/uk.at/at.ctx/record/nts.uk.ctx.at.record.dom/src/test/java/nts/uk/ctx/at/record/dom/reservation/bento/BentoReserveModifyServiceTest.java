@@ -35,8 +35,18 @@ public class BentoReserveModifyServiceTest {
 		String companyID = "companyID";
 		val dummyDetails = Collections.singletonMap(1, Helper.count(1));
 		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
+		ReservationDate todayReserve = Helper.Reservation.Date.of(today());
+		BentoMenuHistory menu = new BentoMenuHistory(
+				"historyId",
+				new DateHistoryItem("historyID", new DatePeriod(GeneralDate.today(), GeneralDate.today().increase())),
+				Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)));
 
 		new Expectations() {{
+			require.getReservationSettingByOpDist(companyID, 0);
+			result = Helper.Setting.DUMMY;
+			
+			require.getBentoMenu((ReservationDate) any,workLocationCode);
+			result = Helper.Menu.DUMMY;
 			
 			require.getBefore(
 					Helper.Reservation.RegInfo.DUMMY,
@@ -89,6 +99,7 @@ public class BentoReserveModifyServiceTest {
 			result = menu;
 			
 			require.getBefore(dummyRegInfo, todayReserve);
+			result = Optional.empty();
 		}};
 		
 		NtsAssert.atomTask(
@@ -121,6 +132,9 @@ public class BentoReserveModifyServiceTest {
 				Helper.Reservation.Detail.DUMMY_LIST);
 
 		new Expectations() {{
+			require.getReservationSettingByOpDist(companyID, 0);
+			result = Helper.Setting.DUMMY;
+			
 			require.getBentoMenu(todayReserve,workLocationCode);
 			result = Helper.Menu.DUMMY;
 			
