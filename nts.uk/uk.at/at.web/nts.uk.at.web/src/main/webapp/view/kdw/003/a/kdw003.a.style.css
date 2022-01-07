@@ -52,14 +52,6 @@
 	margin-top: 3px;
 	margin-left: 15px;
 }
-#btnExtraction{
-	font-size: 15px !IMPORTANT;
-    padding: 4px 10px;
-    margin-bottom: 4px;
-    height: 34px !IMPORTANT;
-    width: 200px;
-    box-shadow: 0 4px rgba(0, 0, 0, 0.4);
-}
 
 #gid {
 	margin: 2px 0 0 0px;
@@ -412,10 +404,6 @@
 /* button.auto-height {
     height: 23px !important;
 } */
-button {
-    height: 25px !important;
-    min-width: 10px !important;
-}
 /* .mgrid :not(.mgrid-header) table tr td {
     font-size: 10px !important;
 } */
@@ -428,10 +416,7 @@ button {
 #contents-area * {
     font-size: 0.8rem;
 }
-#functions-area * {
-    font-size: 0.8rem;
-    height: 30px;
-}
+
 table#employ_view tr{
 	height: 25px !important;
 }
@@ -458,14 +443,7 @@ table#employ_view tr{
 .ccg-lbl-vertical {
     font-size: 18pt !important; 
 }
-#functions-area button {
-	margin-left: 4px;
-	margin-right: 4px
-}
-#functions-area button.danger {
-	margin-left: 4px;
-	margin-right: 4px
-}
+
 .nts-datepicker-wrapper .ntsDatepicker {
     width: 72px;
 }
