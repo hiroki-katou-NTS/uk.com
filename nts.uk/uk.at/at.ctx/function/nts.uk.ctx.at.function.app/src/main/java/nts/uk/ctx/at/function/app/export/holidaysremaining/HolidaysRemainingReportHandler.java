@@ -1421,8 +1421,6 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                             pastPeriodByEmployee = new YearMonthPeriod(startYm,pastPeriod.end());
                         }else if(endYm!=null){
                             pastPeriodByEmployee = new YearMonthPeriod(pastPeriod.start(),endYm);
-                        }else {
-                            pastPeriodByEmployee = pastPeriod;
                         }
                     }
                 }else {
