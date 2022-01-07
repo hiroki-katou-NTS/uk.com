@@ -323,21 +323,13 @@ button.nts-switch-button {
    	font-size: $sbfs;
    	padding: $_base_padding_v $_base_padding_h;
    	/* margin-bottom: $_border_bottom_width; */
-  	box-shadow: 0 0 $button-boxshadow-base-color;
    	margin-left: 0px;
    	margin-right: 0px;
 	margin-bottom: 0px;
 	z-index: 1;
 	position: relative;
 
-	&:active {
-		top: 0;
-		box-shadow: 0 0 $button-boxshadow-base-color;
-	}
-
 	&.selected {
-		box-shadow: 0 0 $button-boxshadow-base-color;
-		top: 0;	
 		color: #fff;
 		background-color: #30CC40;
 		border-color: #30CC40;

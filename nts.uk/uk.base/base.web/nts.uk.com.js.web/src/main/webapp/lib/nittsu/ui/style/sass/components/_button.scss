@@ -4,28 +4,24 @@
 @import "../base/_clearfix.scss";
 
 $button-border-color: #999999;
-$button-boxshadow-base-color: rgba(0, 0, 0, 0.4);
 
 $button-normal-base-color: #fff;
-$button-proceed-base-color: #a4eeb0;
-$button-danger-base-color: #fed3c6;
 $button-disabled-base-color: #888888;
 
 %btn-default {
     outline: none;
     cursor: pointer;
-    background-color: #fff;
-    border-color: #eae8f2;
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 2px;
+    font-weight: normal;
+    color: #545454;
+    background-color: #CFCFCF;
+    border-width: 0;
+    border-radius: 5px;
     box-sizing: border-box;
     height: 30px;
     padding: 0 7px;
     margin: 0;
     position: relative;
     vertical-align: bottom;
-    box-shadow: 0 3px 0 -1px #888;
 }
 
 button,
@@ -37,8 +33,8 @@ span.button {
     }
 
     &:disabled {
-        color: #ccc;
-        border-color: #eae8f2e0;
+        color: #E1E1E1 !important;
+        background-color: #fff !important;
         cursor: not-allowed;
     }
 
@@ -129,27 +125,12 @@ span.button {
     &:not(:disabled) {
         &:focus,
         &:hover {
-            background-color: #fbfcff;
+            background-color: #EAE8E8;
         }
     }
 
     &:active {
-        border-color: #eae8f2;
-        background-color: #eae8f2;
-        transform: translateY(4px);
-    }
-
-    &:focus,
-    &:active {
-        border-color: $focused_color;
-        box-shadow: 0 0 0 2px lighten($color: $focused_color, $amount: 30);
-    }
-
-    &:focus {
-        &:not(:active){
-            box-shadow: 0 0 0 2px lighten($color: $focused_color, $amount: 30),
-                        0 3px 0 -1px lighten($color: $focused_color, $amount: 30);
-        }  
+        background-color: #B7B7B7;
     }
 
     &.white {
@@ -165,101 +146,37 @@ span.button {
 
     &.red,
     &.danger {
-        color: #da0d4f;
-        border-color: #da0d4f;
-        box-shadow: 0 3px 0 -1px #9a0c13;
-
-        &:disabled {
-            color: lighten($color: #da0d4f, $amount: 35);
-            border-color: lighten($color: #da0d4f, $amount: 35);
-        }
-
-        &:not(.outline) {
-            background-color: #fcecf1;
-        }
+        color: #fff;
+        background-color: #DB4F51;
 
         &:not(:disabled) {
             &:focus,
             &:hover {
-                background-color: #fcd8dd;
+                background-color: #EF6567;
             }
         }
 
         &:active {
-            background-color: #fca6ab;
+            background-color: #BF4042;
         }
 
-        &:focus,
-        &:active {
-            box-shadow: 0 0 0 2px lighten($color: #da0d4f, $amount: 30);
-        }
-
-        &:focus {
-            &:not(:active){
-                box-shadow: 0 0 0 2px lighten($color: #da0d4f, $amount: 30),
-                            0 3px 0 -1px lighten($color: #da0d4f, $amount: 30);
-            }  
-        }
     }
 
     &.green,
     &.proceed {
-        color: #30cc40;
-        border-color: #30cc40;
-        box-shadow: 0 3px 0 -1px #1a883a;
-
-        &:disabled {
-            color: lighten($color: #30cc40, $amount: 25);
-            border-color: lighten($color: #30cc40, $amount: 30);
-        }
-
-        &:not(.outline) {
-            background-color: rgba(68, 224, 140, 0.1);
-        }
+        color: #fff;
+        background-color: #258F7E;
 
         &:not(:disabled) {
             &:focus,
             &:hover {
-                background-color: rgba(68, 224, 140, 0.2);
+                background-color: #229F8B;
             }
         }
 
         &:active {
             &:not(:disabled) {
-                background-color: rgba(68, 224, 140, 0.6);
-            }
-        }
-
-        &:focus,
-        &:active {
-            box-shadow: 0 0 0 2px lighten($color: #30cc40, $amount: 30);
-        }
-
-        &:focus {
-            &:not(:active){
-                box-shadow: 0 0 0 2px lighten($color: #30cc40, $amount: 30),
-                            0 3px 0 -1px lighten($color: #30cc40, $amount: 30);
-            }  
-        }
-
-        &.solid {
-            color: #fff;
-            background-color: #30cc40;
-
-            &:not(:disabled) {
-                &:focus,
-                &:hover {
-                    background-color: #30b82c;
-                }
-            }
-
-            &:active {
-                background: #169a1c;
-            }
-
-            &:focus,
-            &:active {
-                box-shadow: 0 0 0 2px lighten($color: #169a1c, $amount: 30);
+                background-color: #1D7769;
             }
         }
 
@@ -288,11 +205,6 @@ span.button {
             &.selected {
                 color: #fff;
                 background-color: #30cc40;
-            }
-
-            &:focus,
-            &:active {
-                box-shadow: 0 0 0 2px lighten($color: #30cc40, $amount: 25);
             }
 
             &.icon {
