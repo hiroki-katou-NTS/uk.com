@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveManagementSetting;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -37,12 +38,14 @@ public class KshmtHdspTimeMgt extends ContractUkJpaEntity{
     public TimeSpecialLeaveManagementSetting toDomain() {
         return new TimeSpecialLeaveManagementSetting(
                 companyId,
-                EnumAdaptor.valueOf(useUnit, TimeDigestiveUnit.class),
-                EnumAdaptor.valueOf(managementAtr, ManageDistinct.class)
+                new TimeVacationDigestUnit(EnumAdaptor.valueOf(managementAtr, ManageDistinct.class),
+                		EnumAdaptor.valueOf(useUnit, TimeDigestiveUnit.class))
         );
     }
 
     public static KshmtHdspTimeMgt fromDomain(TimeSpecialLeaveManagementSetting domain) {
-        return new KshmtHdspTimeMgt(domain.getCompanyId(), domain.getManageType().value, domain.getTimeDigestiveUnit().value);
+        return new KshmtHdspTimeMgt(domain.getCompanyId(),
+        		domain.getTimeVacationDigestUnit().getManage().value,
+        		domain.getTimeVacationDigestUnit().getDigestUnit().value);
     }
 }

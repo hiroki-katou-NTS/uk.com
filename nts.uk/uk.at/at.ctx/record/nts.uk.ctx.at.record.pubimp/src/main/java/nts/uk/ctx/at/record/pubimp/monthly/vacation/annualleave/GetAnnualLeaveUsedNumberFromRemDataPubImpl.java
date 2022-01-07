@@ -33,6 +33,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
 public class GetAnnualLeaveUsedNumberFromRemDataPubImpl implements GetAnnualLeaveUsedNumberFromRemDataPub {
@@ -135,6 +137,11 @@ public class GetAnnualLeaveUsedNumberFromRemDataPubImpl implements GetAnnualLeav
 		@Override
 		public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
 			return workingConditionItemRepository.getBySidAndStandardDate(employeeId, baseDate);
+		}
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 
 	}

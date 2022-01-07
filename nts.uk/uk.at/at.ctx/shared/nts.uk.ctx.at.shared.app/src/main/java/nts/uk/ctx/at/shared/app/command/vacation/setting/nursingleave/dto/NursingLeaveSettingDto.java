@@ -13,6 +13,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingGetMemento;
@@ -20,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
@@ -159,16 +159,16 @@ public class NursingLeaveSettingDto {
 		}
 
 		@Override
-		public TimeCareNursingSet getTimeCareNursingSet() {
-			return new TimeCareNursingSet(
-					EnumAdaptor.valueOf(this.setting.timeDigestiveUnit, TimeDigestiveUnit.class),
-					EnumAdaptor.valueOf(this.setting.manageDistinct, ManageDistinct.class ));
-		}
-
-		@Override
 		public List<MaxPersonSetting> getMaxPersonSetting() {
 			 return MaxPersonSetting.getList(new JpaMaxPersonSettingGetMemento(this.setting.nursingNumberLeaveDay,
 	                    this.setting.nursingNumberPerson));
+		}
+
+		@Override
+		public TimeVacationDigestUnit getTimeVacationDigestUnit() {
+			return new TimeVacationDigestUnit(
+					EnumAdaptor.valueOf(this.setting.manageDistinct, ManageDistinct.class),
+					EnumAdaptor.valueOf(this.setting.timeDigestiveUnit, TimeDigestiveUnit.class));
 		}
 
     }

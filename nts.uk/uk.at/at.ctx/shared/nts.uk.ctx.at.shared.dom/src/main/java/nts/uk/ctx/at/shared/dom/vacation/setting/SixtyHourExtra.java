@@ -61,7 +61,10 @@ public enum SixtyHourExtra {
 	
 	/** The twelve month. */
 	// 12ヶ月
-	TWELVE_MONTH(12, "12ヶ月", "12ヶ月");
+	TWELVE_MONTH(12, "12ヶ月", "12ヶ月"),
+	
+	// 年度末
+	YEAR_END(13, "年度末", "年度末");
 
 	/** The value. */
 	public int value;

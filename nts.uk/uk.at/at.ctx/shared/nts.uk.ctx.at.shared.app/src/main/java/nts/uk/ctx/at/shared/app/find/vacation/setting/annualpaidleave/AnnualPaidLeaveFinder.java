@@ -51,7 +51,6 @@ public class AnnualPaidLeaveFinder {
         dto.setAnnualPriority(setting.getAcquisitionSetting().annualPriority.value);
 
         // Manage Annual
-        dto.setAddAttendanceDay(setting.getManageAnnualSetting().isWorkDayCalculate() == true ? 1 : 0);
         //dto.setMaxManageSemiVacation(setting.getManageAnnualSetting().getHalfDayManage().manageType.value);
         if(setting.getManageAnnualSetting().getHalfDayManage().manageType == null){
         	dto.setMaxManageSemiVacation(1);
@@ -85,8 +84,8 @@ public class AnnualPaidLeaveFinder {
         	 dto.setNumberYearRetain(setting.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v());
         }
         // Time Manage
-        dto.setTimeManageType(setting.getTimeSetting().getTimeManageType().value);
-        dto.setTimeUnit(setting.getTimeSetting().getTimeUnit().value);
+        dto.setTimeManageType(setting.getTimeSetting().getTimeVacationDigestUnit().getManage().value);
+        dto.setTimeUnit(setting.getTimeSetting().getTimeVacationDigestUnit().getDigestUnit().value);
         dto.setManageMaxDayVacation(setting.getTimeSetting().getMaxYearDayLeave().manageType.value);
         dto.setReference(setting.getTimeSetting().getMaxYearDayLeave().reference.value);
         dto.setMaxTimeDay(setting.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());

@@ -104,6 +104,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
 public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWorkRecordPub {
@@ -209,7 +210,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	
 	@Override
 	public Pair<RCReflectStatusResultExport, Optional<AtomTask>> process(Object application, GeneralDate date,
-			RCReflectStatusResultExport reflectStatus, GeneralDateTime reflectTime) {
+			RCReflectStatusResultExport reflectStatus, GeneralDateTime reflectTime, String execId) {
 
 		RequireImpl impl = new RequireImpl(AppContexts.user().companyId(), AppContexts.user().contractCode(),
 				stampCardRepository, correctionAttendanceRule, workTypeRepo, workTimeSettingRepository,
@@ -222,7 +223,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository, vacationApplicationReflectRepository, timePriorityRepository,
 				compensLeaveComSetRepository, subLeaveAppReflectRepository, substituteWorkAppReflectRepository,
 				applicationReflectHistoryRepo, getMngInfoFromEmpIDListAdapter, createDailyResults);
-		val result = ReflectApplicationWorkRecord.process(impl , AppContexts.user().companyId(), (ApplicationShare) application, date, convertToDom(reflectStatus), reflectTime);
+		val result = ReflectApplicationWorkRecord.process(impl , AppContexts.user().companyId(), (ApplicationShare) application, date, convertToDom(reflectStatus), reflectTime, execId);
 		return Pair.of(convertToExport(result.getLeft()), result.getRight());
 	}
 
@@ -546,6 +547,16 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
 				WorkInfoOfDailyAttendance workInformation) {
 			return timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
+		}
+		
+		@Override
+		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+			return workTimeSettingRepository.findByCode(cid, workTimeCode);
+		}
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 	}
 }

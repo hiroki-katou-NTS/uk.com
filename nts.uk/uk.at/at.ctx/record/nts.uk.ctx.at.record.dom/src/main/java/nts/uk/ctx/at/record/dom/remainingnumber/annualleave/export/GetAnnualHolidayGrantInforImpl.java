@@ -40,10 +40,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.DailyIn
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpDailyLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -57,6 +57,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 @Stateless
 public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfor{
@@ -348,7 +349,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			if (x.getAnnualHolidayData().isEmpty()) continue;
 			double usedDays = x.getAnnualHolidayData().stream()
 					.filter(c->c.getUsedNumber().isUseDay())
-					.map(c->c.getUsedNumber().getDays().v())
+					.map(c->c.getUsedNumber().getUsedDayNumber().map(mapper->mapper.v()).orElse(0.0))
 					.findFirst().orElse(0.0);
 			if(usedDays <= 0) {
 				continue;
@@ -379,9 +380,11 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 //				annualInterimTmp.setAnnualId(annualInterim.getAnnualId());
 				annualInterimTmp.setWorkTypeCode(annualInterim.getWorkTypeCode());
 
-				val usedNumber = LeaveUsedNumber.of(new LeaveUsedDayNumber(usedDays - i >= 1 ? 1.0 : 0.5),
-						Optional.empty(), Optional.empty(), Optional.empty());
+				val usedNumber = new TempAnnualLeaveUsedNumber(
+						Optional.of(new TmpDailyLeaveUsedDayNumber(usedDays - i >= 1 ? 1.0 : 0.5)),
+						Optional.empty());
 				annualInterimTmp.setUsedNumber(usedNumber);
+
 				flexTmp.getAnnualHolidayData().add(annualInterimTmp);
 
 				lstOutputData.add(new DailyInterimRemainMngDataAndFlg(flexTmp, true));
@@ -601,6 +604,11 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		@Override
 		public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
 			return workingConditionItemRepository.getBySidAndStandardDate(employeeId, baseDate);
+		}
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 
 	}

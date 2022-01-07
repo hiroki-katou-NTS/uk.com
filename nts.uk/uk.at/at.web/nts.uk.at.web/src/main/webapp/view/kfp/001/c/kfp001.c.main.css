@@ -28,6 +28,11 @@
 }
 
 #button-1 {
-	margin-left: 504px;
-	margin-top: 12px;
+	left: 515px;
+	top: 23px;
+}
+
+#button-2 {
+	left: 527px;
+	top: 23px;
 }

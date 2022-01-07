@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -22,7 +23,7 @@ import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childca
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.AnnualHolidayManagementAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -177,16 +178,13 @@ public class DisplayRemainingHolidayNumber {
 		
 		if (output.isYearHolidayManagerFlg()) {
 			//RequestList198
-			ReNumAnnLeaReferenceDateImport remainNum = annLeaveRemainAdapter
-					.getReferDateAnnualLeaveRemainNumber(employeeId, date);
-			int yearHourRemain = 0;
-            for (int i = 0; i < remainNum.getAnnualLeaveGrantExports().size(); i++) {
-                yearHourRemain += remainNum.getAnnualLeaveGrantExports().get(i).getRemainMinutes();
-            }
-			return new YearHolidaySettingDto(output.isYearHolidayManagerFlg(), output.isSuspensionTimeYearFlg(),
-					remainNum.getAnnualLeaveRemainNumberExport() != null
-							? remainNum.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay() : 0,
-					yearHourRemain);
+		    ReNumAnnLeaveImport remainNum = annLeaveRemainAdapter
+					.getReferDateAnnualLeaveRemain(employeeId, date);
+			return new YearHolidaySettingDto(
+			        output.isYearHolidayManagerFlg(), 
+			        output.isSuspensionTimeYearFlg(),
+					remainNum.getRemainingDays(),
+					remainNum.getRemainingTime());
 		} else {
 			return new YearHolidaySettingDto(false, false, null, null);
 		}
@@ -281,7 +279,7 @@ public class DisplayRemainingHolidayNumber {
             // OUTPUT「子の看護残数」をセットする
             childCareVacation = new NursingVacationDto(
                     childCareSettings.isManaged(), 
-                    childCareSettings.getTimeCareNursingSetting().getManageDistinct().equals(ManageDistinct.YES), 
+                    childCareSettings.getTimeVacationDigestUnit().getManage().equals(ManageDistinct.YES), 
                     childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays(), 
                     childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().isPresent() ? 
                             childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().get() : 0);
@@ -307,7 +305,7 @@ public class DisplayRemainingHolidayNumber {
             // OUTPUT「介護残数」をセットする
             longTermCareVacation = new NursingVacationDto(
                     nursingLeaveSetting.isManaged(), 
-                    nursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct().equals(ManageDistinct.YES), 
+                    nursingLeaveSetting.getTimeVacationDigestUnit().getManage().equals(ManageDistinct.YES), 
                     longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays(), 
                     longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().isPresent() ? 
                             longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().get() : 0);

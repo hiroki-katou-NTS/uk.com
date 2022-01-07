@@ -14,6 +14,8 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseTargetCountWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareTargetChanged;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers;
@@ -88,7 +90,8 @@ public class GetCountWithinPeriodTest {
 				new MonthDay(4, 1), //startMonthDay,
 				new ArrayList<>(), //maxPersonSetting,
 				Optional.empty(), //specialHolidayFrame,
-				Optional.empty()); // workAbsence
+				Optional.empty(), // workAbsence
+				new TimeVacationDigestUnit(ManageDistinct.YES, TimeDigestiveUnit.OneHour));
 	}
 
 	// 本年と次回の対象人数

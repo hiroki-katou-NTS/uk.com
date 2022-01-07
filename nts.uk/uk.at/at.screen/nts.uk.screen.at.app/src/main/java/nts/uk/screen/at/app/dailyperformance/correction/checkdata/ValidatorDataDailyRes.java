@@ -18,6 +18,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -29,12 +30,15 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.Ap
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService.Require;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ContinuousHolidayCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlWorkRecordCheckService;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
@@ -50,6 +54,17 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flexshortage.Insu
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flexshortage.InsufficientFlexHolidayMntRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository;
+import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveManagementSetting;
+import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveMngSetRepository;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.FlexShortageRCDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
@@ -88,12 +103,43 @@ public class ValidatorDataDailyRes {
 	
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
+	
+	@Inject
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
+	
+	@Inject
+	private RecordDomRequireService requireService;
+	
+	@Inject
+	private TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepo;
+	
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
+	
+	@Inject
+	private Com60HourVacationRepository com60HourVacationRepo;
+	
+	@Inject
+	private NursingLeaveSettingRepository nursingLeaveSettingRepo;
+	
 
 	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762, 580 };
 	private static final Integer[] CARE = { 763, 764, 765, 766, 586 };
 	private static final Integer[] INPUT_CHECK = { 759, 760, 761, 762, 763, 764, 765, 766, 157, 159, 163, 165, 171, 169,
 			177, 175, 183, 181, 189, 187, 195, 193, 199, 201, 205, 207, 211, 213, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 			17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
+	// 時間年休勤怠項目
+	private static final Integer[] HOURLY_LEAVE = { 502, 514, 539, 540, 595, 601, 607, 613 };
+	// 時間特別休暇勤怠項目
+	private static final Integer[] SPECIAL_TIME_LEAVE = { 504, 516, 543, 1123, 1127, 1131, 1135 };
+	// 時間代休勤怠項目
+	private static final Integer[] TIME_ALLOW = { 505,	517, 541, 542, 597, 603, 609, 615 };
+	// 60H超休勤怠項目目
+	private static final Integer[] SIXTY_HOURS_OT_LEAVE = { 503, 515, 545, 546, 596, 602, 608, 614 };
+	// 子の看護休暇勤怠項目
+	private static final Integer[] CHILD_NURSING_LEAVE = { 1125, 1129, 1133, 1137, 1140, 1142 };
+	// 介護休暇勤怠項目
+	private static final Integer[] NURSING_CARE_LEAVE = { 1126, 1130, 1134, 1138, 1141,1143 };
 
 	public static final Map<Integer, Integer> INPUT_CHECK_MAP = IntStream.range(0, INPUT_CHECK.length).boxed()
 			.collect(Collectors.toMap(x -> INPUT_CHECK[x], x -> x % 2 == 0 ? INPUT_CHECK[x + 1] : INPUT_CHECK[x - 1]));
@@ -102,6 +148,11 @@ public class ValidatorDataDailyRes {
 			458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
 	static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length).boxed()
 			.collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x / 3 + 1));
+	
+	private static final Integer[] INPUT_CHECK_PLUS = { 3, 4, 5, 6, 31, 34, 41, 44, 51, 53, 59, 61, 67, 69, 75, 77, 79, 81, 83, 85, 
+			88, 91, 95, 98, 102, 105, 109, 112, 116, 119, 123, 126, 130, 133, 137, 140, 144, 147, 151, 154, 794, 795, 796, 797 };
+	public static final Map<Integer, Integer> INPUT_CHECK_PLUS_MAP = IntStream.range(0, INPUT_CHECK_PLUS.length).boxed()
+			.collect(Collectors.toMap(x -> INPUT_CHECK_PLUS[x], x -> x % 2 == 0 ? INPUT_CHECK_PLUS[x + 1] : INPUT_CHECK_PLUS[x - 1]));
 	
 	private final static String EMPTY_STRING = "";
 
@@ -173,6 +224,42 @@ public class ValidatorDataDailyRes {
 		return itemCare.isEmpty() ? new ArrayList<>() : itemCare;
 	}
 
+	private List<DPItemValue> hasHourlyLeave(List<DPItemValue> items) {
+		return items.stream()
+				.filter(x -> x.getValue() != null && Arrays.asList(HOURLY_LEAVE).contains(x.getItemId()))
+				.collect(Collectors.toList());
+	}
+	
+	private List<DPItemValue> hasSpecialTimeLeave(List<DPItemValue> items) {
+		return items.stream()
+				.filter(x -> x.getValue() != null && Arrays.asList(SPECIAL_TIME_LEAVE).contains(x.getItemId()))
+				.collect(Collectors.toList());
+	}
+	
+	private List<DPItemValue> hasTimeAllow(List<DPItemValue> items) {
+		return items.stream()
+				.filter(x -> x.getValue() != null && Arrays.asList(TIME_ALLOW).contains(x.getItemId()))
+				.collect(Collectors.toList());
+	}
+	
+	private List<DPItemValue> hasSixtyHoursOt(List<DPItemValue> items) {
+		return items.stream()
+				.filter(x -> x.getValue() != null && Arrays.asList(SIXTY_HOURS_OT_LEAVE).contains(x.getItemId()))
+				.collect(Collectors.toList());
+	}
+	
+	private List<DPItemValue> hasChildNursingLeave(List<DPItemValue> items) {
+		return items.stream()
+				.filter(x -> x.getValue() != null && Arrays.asList(CHILD_NURSING_LEAVE).contains(x.getItemId()))
+				.collect(Collectors.toList());
+	}
+	
+	private List<DPItemValue> hasNursingCareLeave(List<DPItemValue> items) {
+		return items.stream()
+				.filter(x -> x.getValue() != null && Arrays.asList(NURSING_CARE_LEAVE).contains(x.getItemId()))
+				.collect(Collectors.toList());
+	}
+	
 	public List<DPItemValue> checkCareInputData(List<DPItemValue> items) {
 		List<DPItemValue> childCares = hasChildCare(items);
 		List<DPItemValue> cares = hasCare(items);
@@ -290,6 +377,64 @@ public class ValidatorDataDailyRes {
 						x.setMessage("Msg_1400");
 						result.add(x);
 					}
+				}
+			}
+		});
+		return result;
+	}
+	
+	// UKDesign.UniversalK.就業.KDW_日別実績.KDW003_日別実績の修正.A：日別実績の修正_NEW.アルゴリズム.計算、登録.チェック処理.計算前エラーチェック.開始終了時刻順序不正チェック.開始終了時刻順序不正チェック
+	public List<DPItemValue> checkInputDataPlus(List<DPItemValue> items, List<DailyModifyResult> itemValues) {
+		List<DPItemValue> result = new ArrayList<>();
+		// loc chua item can check
+		List<DPItemValue> itemCanCheck = items.stream().filter(x -> INPUT_CHECK_PLUS_MAP.containsKey(x.getItemId()))
+				.collect(Collectors.toList());
+		if (itemCanCheck.isEmpty())
+			return result;
+		Map<Integer, String> itemCheckMap = itemCanCheck.stream()
+				.collect(Collectors.toMap(x -> x.getItemId(), x -> x.getValue() == null ? "" : x.getValue()));
+		List<DPItemValue> itemCheckDBs = new ArrayList<>();
+		// loc nhung thang chi duoc insert 1 trong 1 cap
+		itemCanCheck.forEach(x -> {
+			Integer itemCheck = INPUT_CHECK_PLUS_MAP.get(x.getItemId());
+			if (!itemCheckMap.containsKey(itemCheck)) {
+				itemCheckDBs.add(x);
+			}else {
+				if(itemCheck != null) {
+					 Integer itemId1 = x.getItemId();
+					 Integer itemId2 = INPUT_CHECK_PLUS_MAP.get(itemId1);
+					 String valueItemIdStart = (itemId1 < itemId2) ? x.getValue()
+							: itemCheckMap.get(itemId2);
+					 String valueItemIdEnd = (itemId1 > itemId2) ? x.getValue()
+								: itemCheckMap.get(itemId2);
+					if (Strings.isNotBlank(valueItemIdStart) && Strings.isNotBlank(valueItemIdEnd) && Integer.parseInt(valueItemIdStart) > Integer.parseInt(valueItemIdEnd)) {
+						x.setMessage("Msg_1400");
+						result.add(x);
+					}
+				}
+			}
+		});
+		if (itemCheckDBs.isEmpty())
+			return result;
+
+		if (itemValues.isEmpty())
+			return result;
+		Map<Integer, String> valueGetFromDBMap = itemValues.get(0).getItems().stream()
+				.collect(Collectors.toMap(x -> x.getItemId(), x -> x.getValue() == null ? "" : x.getValue()));
+		itemCheckDBs.stream().forEach(x -> {
+			Integer itemId = INPUT_CHECK_PLUS_MAP.get(x.getItemId()); 
+			if(itemId != null) {
+				 Integer itemId1 = x.getItemId();
+				 Integer itemId2 = INPUT_CHECK_PLUS_MAP.get(itemId1);
+				 String valueItemIdStart = (itemId1 < itemId2) ? x.getValue()
+						: itemCheckMap.containsKey(itemId2) ? itemCheckMap.get(itemId2)
+								: valueGetFromDBMap.get(itemId2);
+				 String valueItemIdEnd = (itemId1 > itemId2) ? x.getValue()
+							: itemCheckMap.containsKey(itemId2) ? itemCheckMap.get(itemId2)
+									: valueGetFromDBMap.get(itemId2);
+				if (Strings.isNotBlank(valueItemIdStart) && Strings.isNotBlank(valueItemIdEnd) && Integer.parseInt(valueItemIdStart) > Integer.parseInt(valueItemIdEnd)) {
+					x.setMessage("Msg_1400");
+					result.add(x);
 				}
 			}
 		});
@@ -474,9 +619,9 @@ public class ValidatorDataDailyRes {
 	 * 計算後エラーチェック
 	 */
 	public Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> errorCheckDivergence(List<IntegrationOfDaily> dailyResults,
-			List<IntegrationOfMonthly> monthlyResults) {
+			List<IntegrationOfMonthly> monthlyResults,Boolean checkUnLock) {
 		Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> resultError = new HashMap<>();
-
+		
 		// 乖離エラーのチェック
 		for (IntegrationOfDaily d : dailyResults) {
 			List<DPItemValue> divergenceErrors = new ArrayList<>();
@@ -731,7 +876,7 @@ public class ValidatorDataDailyRes {
 					if(itemValue != null && itemValue.getValue() != null && !itemValue.getValue().equals("")) {
 						return false;
 					}else {
-						val item = x.getAttendanceItemList().stream().filter(z -> !(z.intValue() == errorSelect.getErrorDisplayItem() && itemValue != null && itemValue.getValue() != null && !itemValue.getValue().equals("")))
+						val item = x.getAttendanceItemList().stream().filter(z -> !(z.equals(errorSelect.getErrorDisplayItem()) && itemValue != null && itemValue.getValue() != null && !itemValue.getValue().equals("")))
 								.collect(Collectors.toList());
 						if(!item.isEmpty()) {
 							x.setAttendanceItemList(item);
@@ -806,4 +951,105 @@ public class ValidatorDataDailyRes {
 		ApprovalConfirmCache cacheNew = new ApprovalConfirmCache(sId,  cacheOld.getEmployeeIds(), cacheOld.getPeriod(), cacheOld.getMode(), confirmResults, approvalResults);
 		cacheOldTemp.checkVer(cacheNew);
 	}
+    
+    /**
+     * ⑧UKDesign.UniversalK.就業.KDW_日別実績.KDW003_日別実績の修正.A：日別実績の修正_NEW.アルゴリズム.計算、登録.チェック処理.計算前エラーチェック.時間休暇の消化単位チェック.時間休暇の消化単位チェック
+     */
+    public List<DPItemValue> timeVacationDigestionUnitCheck(List<DPItemValue> items, List<DailyModifyResult> itemValues) {
+    	String companyId = AppContexts.user().companyId();
+    	String employeeId = AppContexts.user().employeeId();
+    	Require require = requireService.createRequire();
+    	List<DPItemValue> errors = new ArrayList<>();
+    	// 「時間年休勤怠項目」が変更されているかチェックする
+    	List<DPItemValue> hasHourlyLeave = this.hasHourlyLeave(items);
+    	if (!hasHourlyLeave.isEmpty()) {
+    		AnnualPaidLeaveSetting annualPaidLeaveSetting = annualPaidLeaveSettingRepository.findByCompanyId(companyId);
+    		if (annualPaidLeaveSetting != null) {
+    			for (DPItemValue item : hasHourlyLeave) {
+    				boolean checkVacationTimeUnitUsed = annualPaidLeaveSetting.checkVacationTimeUnitUsed(require, new AttendanceTime(Integer.parseInt(item.getValue())));
+    				if (!checkVacationTimeUnitUsed) {
+    					item.setMessage(TextResource.localize("Msg_476", annualPaidLeaveSetting.getTimeSetting().getTimeVacationDigestUnit().getDigestUnit().description));
+    					errors.add(item);
+    				}
+    			}
+    		}
+    	}
+    	
+    	// 「時間特別休暇勤怠項目」が変更されているかチェックする
+    	List<DPItemValue> hasSpecialTimeLeave = this.hasSpecialTimeLeave(items);
+    	if (!hasSpecialTimeLeave.isEmpty()) {
+    		TimeSpecialLeaveManagementSetting timeSpecialLeaveManagementSetting = timeSpecialLeaveMngSetRepo.findByCompany(companyId).orElse(null);
+    		if (timeSpecialLeaveManagementSetting != null) {
+    			for (DPItemValue item : hasSpecialTimeLeave) {
+    				boolean checkVacationTimeUnitUsed = timeSpecialLeaveManagementSetting.checkVacationTimeUnitUsed(require, new AttendanceTime(Integer.parseInt(item.getValue())));
+    				if (!checkVacationTimeUnitUsed) {
+    					item.setMessage(TextResource.localize("Msg_1686", "#KDW003_142", timeSpecialLeaveManagementSetting.getTimeVacationDigestUnit().getDigestUnit().description));
+    					errors.add(item);
+    				}
+    			}
+    		}
+    	}
+    	
+    	// 「時間代休勤怠項目」が変更されているかチェックする
+    	List<DPItemValue> hasTimeAllow = this.hasTimeAllow(items);
+    	if (!hasTimeAllow.isEmpty()) {
+    		CompensatoryLeaveComSetting compLeavCom = compensLeaveComSetRepository.find(companyId);
+    		if (compLeavCom != null) {
+    			for (DPItemValue item : hasTimeAllow) {
+    				boolean checkVacationTimeUnitUsed = compLeavCom.checkVacationTimeUnitUsed(require, companyId, new AttendanceTime(Integer.parseInt(item.getValue())), employeeId, GeneralDate.today());
+    				if (!checkVacationTimeUnitUsed) {
+    					item.setMessage(TextResource.localize("Msg_477", compLeavCom.getTimeVacationDigestUnit().getDigestUnit().description));
+    					errors.add(item);
+    				}
+    			}
+    		}
+    	}
+    	
+    	// 「60H超休勤怠項目目」が変更されているかチェックする
+    	List<DPItemValue> hasSixtyHoursOt = this.hasSixtyHoursOt(items);
+    	if (!hasSixtyHoursOt.isEmpty()) {
+    		Com60HourVacation com60HourVacation = com60HourVacationRepo.findById(companyId).orElse(null);
+    		if (com60HourVacation != null) {
+    			for (DPItemValue item : hasSixtyHoursOt) {
+    				boolean checkVacationTimeUnitUsed = com60HourVacation.checkVacationTimeUnitUsed(require, new AttendanceTime(Integer.parseInt(item.getValue())));
+    				if (!checkVacationTimeUnitUsed) {
+    					item.setMessage(TextResource.localize("Msg_478", com60HourVacation.getTimeVacationDigestUnit().getDigestUnit().description));
+    					errors.add(item);
+    				}
+    			}
+    		}
+    	}
+    	
+    	// 「子の看護休暇勤怠項目」が変更されているかチェックする
+    	List<DPItemValue> hasChildNursingLeave = hasChildNursingLeave(items);
+    	if (!hasChildNursingLeave.isEmpty()) {
+    		NursingLeaveSetting nursingLeaveSet = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, NursingCategory.ChildNursing.value);
+    		if (nursingLeaveSet!= null) {
+    			for (DPItemValue item : hasChildNursingLeave) {
+    				boolean checkVacationTimeUnitUsed = nursingLeaveSet.checkVacationTimeUnitUsed(require, new AttendanceTime(Integer.parseInt(item.getValue())));
+    				if (!checkVacationTimeUnitUsed) {
+    					item.setMessage(TextResource.localize("Msg_1686", "#Com_ChildNurseHoliday", nursingLeaveSet.getTimeVacationDigestUnit().getDigestUnit().description));
+    					errors.add(item);
+    				}
+    			}
+    		}
+    	}
+    	
+    	// 「介護休暇勤怠項目」が変更されているかチェックする
+    	List<DPItemValue> hasNursingCareLeave = hasNursingCareLeave(items);
+    	if (!hasNursingCareLeave.isEmpty()) {
+    		NursingLeaveSetting nursingLeaveSet = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, NursingCategory.Nursing.value);
+    		if (nursingLeaveSet!= null) {
+    			for (DPItemValue item : hasNursingCareLeave) {
+    				boolean checkVacationTimeUnitUsed = nursingLeaveSet.checkVacationTimeUnitUsed(require, new AttendanceTime(Integer.parseInt(item.getValue())));
+    				if (!checkVacationTimeUnitUsed) {
+    					item.setMessage(TextResource.localize("Msg_1686", "#Com_CareHoliday", nursingLeaveSet.getTimeVacationDigestUnit().getDigestUnit().description));
+    					errors.add(item);
+    				}
+    			}
+    		}
+    	}
+    	
+    	return errors;
+    }
 }

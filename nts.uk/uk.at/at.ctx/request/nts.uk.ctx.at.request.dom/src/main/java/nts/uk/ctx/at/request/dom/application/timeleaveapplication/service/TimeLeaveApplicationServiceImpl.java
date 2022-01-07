@@ -17,10 +17,8 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
-import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberChildCareAdapter;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberNursingAdapter;
-import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.AggrResultOfHolidayOver60hImport;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.GetHolidayOver60hRemNumWithinPeriodAdapter;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.specialholiday.GetSpecialRemainingWithinPeriodAdapter;
@@ -30,8 +28,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigest
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.AnnualHolidayManagementAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeDigestAppType;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
@@ -45,7 +42,6 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeSpe
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeSpecialVacationRemaining;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeVacationManagementOutput;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeVacationRemainingOutput;
-import nts.uk.ctx.at.request.dom.workrecord.remainmanagement.InterimRemainDataMngCheckRegisterRequest;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -55,21 +51,14 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.procwithbasedate.NumberConsecutiveVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
@@ -79,11 +68,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
@@ -144,19 +130,10 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
     private AcquisitionRuleRepository acquisitionRuleRepository;
 
     @Inject
-    private OtherCommonAlgorithm otherCommonAlgorithm;
-
-    @Inject
-    private InterimRemainDataMngCheckRegisterRequest interimRemainDataMngCheckRegister;
-
-    @Inject
     private SpecialHolidayRepository specialHolidayRepository;
 
     @Inject
     private CommonAlgorithm commonAlgorithm;
-
-    @Inject
-    private SpecialLeaveGrantRepository specialLeaveGrantRepo;
 
     @Inject
     private ShareEmploymentAdapter shareEmploymentAdapter;
@@ -165,31 +142,13 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
     private EmpEmployeeAdapter empEmployeeAdapter;
 
     @Inject
-    private GrantDateTblRepository grantDateTblRepo;
-
-    @Inject
-    private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
-
-    @Inject
-    private InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
-
-    @Inject
-    private SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
-
-    @Inject
     private GetHolidayOver60hRemNumWithinPeriodAdapter getHolidayOver60hRemNumWithinPeriodAdapter;
 
-    @Inject
-    private GetRemainingNumberChildCareNurseAdapter getRemainingNumberChildCareNurseAdapter;
-    
     @Inject
     private GetRemainingNumberChildCareAdapter getRemainingNumberChildCareAdapter;
     
     @Inject
     private GetRemainingNumberNursingAdapter getRemainingNumberNursingAdapter;
-
-    @Inject
-    private GetRemainingNumberCareAdapter getRemainingNumberCareAdapter;
 
     @Inject
     private WorkingConditionRepository workingConditionRepo;
@@ -279,26 +238,26 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         // ドメインモデル「60H超休管理設定」を取得する
         Com60HourVacation com60HourVacation = com60HourVacationRepo.findById(companyId).orElse(null);
         SupHolidayManagement super60HLeaveMng = new SupHolidayManagement(
-                com60HourVacation == null ? null : com60HourVacation.getSetting().getDigestiveUnit(),
-                com60HourVacation != null && com60HourVacation.isManaged()
+                com60HourVacation == null ? null : com60HourVacation.getTimeVacationDigestUnit().getDigestUnit(),
+                com60HourVacation != null && com60HourVacation.isVacationTimeManage(require)
         );
-
+        
         // ドメインモデル「介護看護休暇設定」を取得する
         List<NursingLeaveSetting> nursingLeaveSettingList = nursingLeaveSettingRepo.findByCompanyId(companyId);
         NursingLeaveSetting careNursingLeaveSetting = nursingLeaveSettingList.stream().filter(i -> i.getNursingCategory() == NursingCategory.Nursing).findFirst().orElse(null);
         NursingLeaveSetting childCareNursingLeaveSetting = nursingLeaveSettingList.stream().filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing).findFirst().orElse(null);
         ChildNursingManagement nursingLeaveMng = new ChildNursingManagement(
-                careNursingLeaveSetting == null ? null : careNursingLeaveSetting.getTimeCareNursingSetting().getTimeDigestiveUnit(),
-                careNursingLeaveSetting != null && careNursingLeaveSetting.isManaged() && careNursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct() == ManageDistinct.YES,
-                childCareNursingLeaveSetting == null ? null : childCareNursingLeaveSetting.getTimeCareNursingSetting().getTimeDigestiveUnit(),
-                childCareNursingLeaveSetting != null && childCareNursingLeaveSetting.isManaged() && childCareNursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct() == ManageDistinct.YES
+                careNursingLeaveSetting == null ? null : careNursingLeaveSetting.getTimeVacationDigestUnit().getDigestUnit(),
+                careNursingLeaveSetting != null && careNursingLeaveSetting.isManageTimeVacation(require),
+                childCareNursingLeaveSetting == null ? null : childCareNursingLeaveSetting.getTimeVacationDigestUnit().getDigestUnit(),
+                childCareNursingLeaveSetting != null && childCareNursingLeaveSetting.isManageTimeVacation(require)
         );
-
+        
         // ドメインモデル「時間特別休暇の管理設定」を取得する
         TimeSpecialLeaveManagementSetting timeSpecialLeaveManagementSetting = timeSpecialLeaveMngSetRepo.findByCompany(companyId).orElse(null);
         TimeSpecialLeaveManagement timeSpecialLeaveMng = new TimeSpecialLeaveManagement(
-                timeSpecialLeaveManagementSetting == null ? null : timeSpecialLeaveManagementSetting.getTimeDigestiveUnit(),
-                timeSpecialLeaveManagementSetting != null && timeSpecialLeaveManagementSetting.getManageType() == ManageDistinct.YES,
+                timeSpecialLeaveManagementSetting == null ? null : timeSpecialLeaveManagementSetting.getTimeVacationDigestUnit().getDigestUnit(),
+                timeSpecialLeaveManagementSetting != null && timeSpecialLeaveManagementSetting.isManageTimeVacation(require),
                 new ArrayList<>()
         );
         if (timeSpecialLeaveMng.isTimeSpecialLeaveManagement()) {
@@ -359,17 +318,9 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
 
         if (timeLeaveManagement.getTimeAnnualLeaveManagement().isTimeAnnualManagement()) {
             // 基準日時点の年休残数を取得する
-            ReNumAnnLeaReferenceDateImport reNumAnnLeave = leaveAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, baseDate);
-            if (reNumAnnLeave != null && reNumAnnLeave.getAnnualLeaveRemainNumberExport() != null) {
-                if (reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay() != null) {
-                    timeLeaveRemaining.setAnnualTimeLeaveRemainingDays(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay());
-                }
-                int yearHourRemain = 0;
-                for (int i = 0; i < reNumAnnLeave.getAnnualLeaveGrantExports().size(); i++) {
-                    yearHourRemain += reNumAnnLeave.getAnnualLeaveGrantExports().get(i).getRemainMinutes();
-                }
-                timeLeaveRemaining.setAnnualTimeLeaveRemainingTime(yearHourRemain);
-            }
+            ReNumAnnLeaveImport reNumAnnLeave = leaveAdapter.getReferDateAnnualLeaveRemain(employeeId, baseDate);
+            timeLeaveRemaining.setAnnualTimeLeaveRemainingDays(reNumAnnLeave.getRemainingDays());
+            timeLeaveRemaining.setAnnualTimeLeaveRemainingTime(reNumAnnLeave.getRemainingTime());
             // [No.210]次回年休付与日を取得する
             List<NextAnnualLeaveGrantImport> nextGrantHolidays = holidayAdapter.acquireNextHolidayGrantDate(companyId, employeeId, baseDate);
 
@@ -544,21 +495,8 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
 //        remainingTimeVacationCheck(companyId, timeLeaveType, timeLeaveApplication);
 
         //時間休暇の消化単位チェック
-        Optional<TimeDigestiveUnit> super60HDigestion = Optional.ofNullable(output.getTimeVacationManagement().getSupHolidayManagement().getSuper60HDigestion());
-        Optional<TimeDigestiveUnit> timeBaseRestingUnit = Optional.ofNullable(output.getTimeVacationManagement().getTimeAllowanceManagement().getTimeBaseRestingUnit());
-        Optional<TimeDigestiveUnit> timeAnnualLeaveUnit = Optional.ofNullable(output.getTimeVacationManagement().getTimeAnnualLeaveManagement().getTimeAnnualLeaveUnit());
-        Optional<TimeDigestiveUnit> timeChildNursing = Optional.ofNullable(output.getTimeVacationManagement().getChildNursingManagement().getTimeChildDigestiveUnit());
-        Optional<TimeDigestiveUnit> timeNursing = Optional.ofNullable(output.getTimeVacationManagement().getChildNursingManagement().getTimeDigestiveUnit());
-        Optional<TimeDigestiveUnit> pendingUnit = Optional.ofNullable(output.getTimeVacationManagement().getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit());
         timeLeaveApplication.getLeaveApplicationDetails().forEach(x -> {
-            commonAlgorithm.vacationDigestionUnitCheck(x.getTimeDigestApplication(),
-                super60HDigestion,
-                timeBaseRestingUnit,
-                timeAnnualLeaveUnit,
-                timeChildNursing,
-                timeNursing,
-                pendingUnit
-            );
+            commonAlgorithm.vacationDigestionUnitCheck(x.getTimeDigestApplication());
         });
 
         // 社員の労働条件を取得する
@@ -724,6 +662,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                     application.getOpAppStartDate().map(ApplicationDate::getApplicationDate),
                     application.getOpAppEndDate().map(ApplicationDate::getApplicationDate),
                     listAppDates,
+                    Optional.empty(),
                     Optional.empty()
             );
         }).collect(Collectors.toList());

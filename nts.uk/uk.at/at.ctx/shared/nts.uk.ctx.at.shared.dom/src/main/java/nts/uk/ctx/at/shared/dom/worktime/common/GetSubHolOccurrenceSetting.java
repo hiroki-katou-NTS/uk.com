@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import java.util.Optional;
 
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -19,9 +20,19 @@ public class GetSubHolOccurrenceSetting {
 
 	public static Optional<SubHolTransferSet> process(Require require, String cid, Optional<String> workTimeCode,
 			CompensatoryOccurrenceDivision originAtr) {
+		
+		//	$代休管理設定
+		val comLeavSet = require.findCompensatoryLeaveComSet(cid);
+		//	if($代休管理設定.is not Present())
+		if (comLeavSet == null)
+			return Optional.empty();
+		if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime) && !comLeavSet.isManagedTime(require)) {
+			return Optional.empty();
+		}
+
 		Optional<WorkTimezoneCommonSet> commonset = Optional.empty();
 		if (workTimeCode.isPresent()) {
-			Optional<WorkTimeSetting> workTimeSet = require.getWorkTime(workTimeCode.get());
+			Optional<WorkTimeSetting> workTimeSet = require.getWorkTime(cid, workTimeCode.get());
 			commonset = workTimeSet.map(x -> {
 				WorkSetting workSetting = x.getWorkSetting(require);
 				if (workSetting instanceof FlowWorkSetting) {
@@ -43,19 +54,16 @@ public class GetSubHolOccurrenceSetting {
 					.filter(x -> x.getOriginAtr() == originAtr).map(x -> x.getSubHolTimeSet()).findFirst();
 		}
 		
-		val comLeavSet = require.findCompensatoryLeaveComSet(cid);
-		if (comLeavSet == null)
-			return Optional.empty();
 		SubHolTransferSet result = comLeavSet.getCompensatoryOccurrenceSetting().stream()
 				.filter(x -> x.getOccurrenceType().value == originAtr.value).map(x -> x.getTransferSetting())
 				.findFirst().orElse(null);
 		return (result != null && result.isUseDivision()) ? Optional.of(result) : Optional.empty();
 	}
 
-	public static interface Require extends WorkTimeSetting.Require{
+	public static interface Require extends WorkTimeSetting.Require, TimeVacationDigestUnit.Require {
 
 		//WorkTimeSettingRepository.findByCode
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode);
+		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode);
 		
 		// CompensLeaveComSetRepository
 		CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId);

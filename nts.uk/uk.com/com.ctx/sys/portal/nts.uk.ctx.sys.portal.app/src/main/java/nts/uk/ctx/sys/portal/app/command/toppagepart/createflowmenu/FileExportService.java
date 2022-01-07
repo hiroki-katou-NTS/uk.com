@@ -8,10 +8,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.shr.infra.file.storage.stream.FileStoragePath;
 import org.apache.commons.io.FileUtils;
 
 import nts.arc.layer.app.file.export.ExportService;
@@ -39,8 +41,6 @@ public class FileExportService extends ExportService<FileExportCommand> {
 	@Inject
 	private StoredFileStreamService fileStreamService;
 
-	public static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
-
 	@Override
 	protected void handle(ExportServiceContext<FileExportCommand> context) {
 		// Get fileGeneratorContext
@@ -51,29 +51,35 @@ public class FileExportService extends ExportService<FileExportCommand> {
 		ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory
 				.createContainer();
 		String fileName = String.format("%s_%s%s.%s", "CCG034", context.getQuery().getFlowMenuCode(),
+
 				GeneralDateTime.now().toString("yyyyMMddhhmmss"), "zip");
 		applicationTemporaryFilesContainer.zipWithName(generator, fileName, false);
 		applicationTemporaryFilesContainer.removeContainer();
 	}
 
-	public ExtractionResponseDto extract(String fileId) throws IOException {
-		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
-		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
-		ExtractStatus status = FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, destinationDirectory);
-		if (!status.equals(ExtractStatus.SUCCESS)) {
-			return null;
-		}
+	public Optional<ExtractionResponseDto> extract(String fileId) throws IOException {
+		try (InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId)) {
+			Path destinationDirectory = Paths.get(new FileStoragePath().getPathOfCurrentTenant().toString() + "//packs" + "//" + fileId);
+			ExtractStatus status = FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, destinationDirectory);
+			if (!status.equals(ExtractStatus.SUCCESS)) {
+				return Optional.empty();
+			}
 
-		File file = destinationDirectory.toFile().listFiles()[0];
-		return new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8),
-				file.getAbsolutePath());
+			File file = destinationDirectory.toFile().listFiles()[0];
+			return Optional.of(new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8),
+					file.getAbsolutePath()));
+		} catch (IOException e) {
+			throw e;
+		} catch (Exception e) {
+			return Optional.empty();
+		}
 	}
 
 	public List<ExtractionResponseDto> extractByListFileId(List<String> lstFileId) throws IOException {
 		List<ExtractionResponseDto> result = new ArrayList<>();
 		for (String fileId : lstFileId) {
 			InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
-			Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
+			Path destinationDirectory = Paths.get(new FileStoragePath().getPathOfCurrentTenant().toString() + "//packs" + "//" + fileId);
 			ExtractStatus status = FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, destinationDirectory);
 			if (!status.equals(ExtractStatus.SUCCESS)) {
 				return new ArrayList<>();
@@ -88,7 +94,7 @@ public class FileExportService extends ExportService<FileExportCommand> {
 
 	public ExtractionResponseDto extractFlowMenu(String fileId) throws IOException {
 		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
-		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
+		Path destinationDirectory = Paths.get(new FileStoragePath().getPathOfCurrentTenant().toString() + "//packs" + "//" + fileId);
 		ExtractStatus status = FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, destinationDirectory);
 		if (!status.equals(ExtractStatus.SUCCESS)) {
 			return null;
