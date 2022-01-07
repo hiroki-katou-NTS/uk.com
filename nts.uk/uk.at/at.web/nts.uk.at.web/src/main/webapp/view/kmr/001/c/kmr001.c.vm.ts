@@ -219,6 +219,8 @@ module nts.uk.at.kmr001.c {
                 vm.itemsBento(array);
 				if(!_.isEmpty(bentoDtos)) {
 					vm.selectedBentoSetting(bentoDtos[0].frameNo);	
+				} else {
+					vm.selectedBentoSetting(vm.itemsBento()[0].id);
 				}
 				if(!_.isEmpty(bentoDtos)) {
 					vm.model().updateData(
@@ -228,6 +230,14 @@ module nts.uk.at.kmr001.c {
 	                    bentoDtos[0].workLocationCode
 	                );
 	                vm.model.valueHasMutated();	
+				} else {
+					vm.model().updateData(
+                        '', null,
+                        1,
+                        null, null,
+                        vm.workLocationList().length > 0 ? vm.workLocationList()[0].id : ''
+                    );
+                    vm.model.valueHasMutated();
 				}
             }).then(() => {
                 vm.selectedBentoSetting.subscribe(data => {

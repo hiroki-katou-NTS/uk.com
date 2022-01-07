@@ -1,6 +1,10 @@
 package nts.uk.file.at.app.export.bento;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
@@ -21,12 +25,14 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoAmountTotal;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoDetailsAmountTotal;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.query.pub.employee.EmployeeInformationExport;
 import nts.uk.query.pub.employee.EmployeeInformationPub;
 import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
@@ -60,6 +66,9 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 
 	@Inject
 	private StampCardRepository stampCardRepository;
+	
+	@Inject
+	private WorkplacePub workplacePub;
 
 	@Override
 	protected void handle(ExportServiceContext<ReservationMonthQuery> context) {
@@ -118,30 +127,35 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		CompanyInfor companyInfo = company.getCurrentCompany().orElseGet(() -> {
 			throw new RuntimeException("System Error: Company Info");
 		});
+		
+		// 7.職場情報を取得
+		List<SWkpHistExport> sWkpHistExportLst = empInfoLst.stream().map(x -> workplacePub.findBySid(x.getEmployeeId(), GeneralDate.today()).get()).collect(Collectors.toList());
 
-		return createDataSource(period, bentoReservationLst, bentoMenu, empInfoLst, companyInfo, stampCardLst, title);
+		return createDataSource(period, bentoReservationLst, bentoMenu, empInfoLst, companyInfo, stampCardLst, title, sWkpHistExportLst);
 	}
 
 	private ReservationMonthDataSource createDataSource(DatePeriod period, List<BentoReservation> bentoReservationLst, BentoMenuHistory bentoMenu,
-			List<EmployeeInformationExport> empInfoLst, CompanyInfor companyInfo, List<StampCard> stampCardLst, String title) {
+			List<EmployeeInformationExport> empInfoLst, CompanyInfor companyInfo, List<StampCard> stampCardLst, String title, List<SWkpHistExport> sWkpHistExportLst) {
 		ReservationMonthDataSource dataSource = new ReservationMonthDataSource();
 		dataSource.setCompanyName(companyInfo.getCompanyName());
 		dataSource.setTitle(title);
 		dataSource.setPeriod(period);
 		Map<WorkplaceExport, List<EmployeeInformationExport>> wkpMap = empInfoLst.stream().collect(Collectors.groupingBy(EmployeeInformationExport::getWorkplace));
 		List<ReservationWkpLedger> reservationWkpLedgerLst = wkpMap.entrySet().stream()
-				.map(x -> createReservationWkpLedger(x, bentoReservationLst, bentoMenu, stampCardLst))
+				.map(x -> createReservationWkpLedger(x, bentoReservationLst, bentoMenu, stampCardLst, sWkpHistExportLst))
 				.filter(x -> !CollectionUtil.isEmpty(x.getEmpLedgerLst()))
 				.collect(Collectors.toList());
+		reservationWkpLedgerLst.sort(Comparator.comparing(ReservationWkpLedger::getHierarchyCode));
 		dataSource.setWkpLedgerLst(reservationWkpLedgerLst);
 		return dataSource;
 	}
 
 	private ReservationWkpLedger createReservationWkpLedger(Entry<WorkplaceExport, List<EmployeeInformationExport>> wkpEntry,
-			List<BentoReservation> bentoReservationLst, BentoMenuHistory bentoMenu, List<StampCard> stampCardLst) {
+			List<BentoReservation> bentoReservationLst, BentoMenuHistory bentoMenu, List<StampCard> stampCardLst, List<SWkpHistExport> sWkpHistExportLst) {
 		ReservationWkpLedger wkpLedger = new ReservationWkpLedger();
 		wkpLedger.setWkpCD(wkpEntry.getKey().getWorkplaceCode());
 		wkpLedger.setWkpName(wkpEntry.getKey().getWorkplaceName());
+		wkpLedger.setHierarchyCode(sWkpHistExportLst.stream().filter(x -> x.getWorkplaceId().equals(wkpEntry.getKey().getWorkplaceId())).findAny().get().getHierarchyCode());
 		Map<String, List<EmployeeInformationExport>> empMap = wkpEntry.getValue().stream().collect(Collectors.groupingBy(EmployeeInformationExport::getEmployeeId));
 		List<ReservationEmpLedger> reservationEmpLedgerLst = empMap.entrySet().stream()
 				.map(x -> createReservationEmpLedger(
@@ -151,6 +165,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 						stampCardLst.stream().filter(y -> y.getEmployeeId().equals(x.getKey())).findAny().get().getStampNumber().toString()))
 				.filter(x -> !CollectionUtil.isEmpty(x.getBentoLedgerLst()))
 				.collect(Collectors.toList());
+		reservationEmpLedgerLst.sort(Comparator.comparing(ReservationEmpLedger::getEmpCD));
 		wkpLedger.setEmpLedgerLst(reservationEmpLedgerLst);
 		return wkpLedger;
 	}

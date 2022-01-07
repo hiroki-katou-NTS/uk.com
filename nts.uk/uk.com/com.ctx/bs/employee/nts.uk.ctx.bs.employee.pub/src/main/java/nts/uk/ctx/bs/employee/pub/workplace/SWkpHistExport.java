@@ -37,6 +37,9 @@ public class SWkpHistExport {
 	/** The wkp display name. */
 	// 職場表示名
 	private String wkpDisplayName;
+	
+	// 階層コード
+	private String hierarchyCode;
 
 	public SWkpHistExport(DatePeriod dateRange, String employeeId, String workplaceId, String workplaceCode,
 							  String workplaceName, String wkpDisplayName) {

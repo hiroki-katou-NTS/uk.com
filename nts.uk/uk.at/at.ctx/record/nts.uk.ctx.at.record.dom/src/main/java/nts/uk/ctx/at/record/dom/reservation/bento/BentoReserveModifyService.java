@@ -9,6 +9,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
 
 /**
  * 自分の弁当予約を修正する
@@ -32,8 +33,15 @@ public class BentoReserveModifyService {
 	public static AtomTask reserve(Require require, ReservationRegisterInfo registerInfor, ReservationDate reservationDate, GeneralDateTime dateTime, 
 			Map<Integer, BentoReservationCount> bentoDetails, int frameNo, String companyID, Optional<WorkLocationCode> workLocationCode) {
 		
-		ReservationRecTimeZone reservationRecTimeZone = require.getReservationSetByOpDistAndFrameNo(companyID, frameNo, 0);
+		ReservationSetting reservationSetting = require.getReservationSettingByOpDist(companyID, 0);
+		if(reservationSetting==null) {
+			throw new BusinessException("Msg_2285");
+		}
+		if(frameNo==2 && !reservationSetting.isReceptionTimeZone2Use()) {
+			return AtomTask.of(() -> {});
+		}
 		
+		ReservationRecTimeZone reservationRecTimeZone = reservationSetting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo().value==frameNo).findAny().orElse(null);
 		if(reservationRecTimeZone==null) {
 			throw new BusinessException("Msg_2285");
 		}
@@ -72,6 +80,6 @@ public class BentoReserveModifyService {
 		
 		void delete(BentoReservation bentoReservation);
 		
-		ReservationRecTimeZone getReservationSetByOpDistAndFrameNo(String companyID, int frameNo, int operationDistinction);
+		ReservationSetting getReservationSettingByOpDist(String companyID, int operationDistinction);
 	}
 }

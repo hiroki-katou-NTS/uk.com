@@ -21,10 +21,10 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveModifyService;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.service.GetStampCardQuery;
@@ -125,9 +125,8 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 		}
 
 		@Override
-		public ReservationRecTimeZone getReservationSetByOpDistAndFrameNo(String companyID, int frameNo,
-				int operationDistinction) {
-			return reservationSettingRepository.getReservationSetByOpDistAndFrameNo(companyID, frameNo, operationDistinction);
+		public ReservationSetting getReservationSettingByOpDist(String companyID, int operationDistinction) {
+			return reservationSettingRepository.getReservationSettingByOpDist(companyID, operationDistinction);
 		}
 		
 	}

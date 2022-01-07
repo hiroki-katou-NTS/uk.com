@@ -82,8 +82,8 @@ public class BentoReserveModifyServiceTest {
 		Map<Integer, BentoReservationCount> details = Collections.singletonMap(1, Helper.count(10));
 		
 		new Expectations() {{
-			require.getReservationSetByOpDistAndFrameNo(companyID, 1, 0);
-			result = Helper.Setting.ReserRecTimeZone.ReserFrame1;
+			require.getReservationSettingByOpDist(companyID, 0);
+			result = Helper.Setting.DUMMY;
 			
 			require.getBentoMenu(todayReserve,workLocationCode);
 			result = menu;
@@ -165,8 +165,8 @@ public class BentoReserveModifyServiceTest {
 				Helper.Reservation.Detail.DUMMY_LIST);
 		
 		new Expectations() {{
-			require.getReservationSetByOpDistAndFrameNo(companyID, 1, 0);
-			result = Helper.Setting.ReserRecTimeZone.ReserFrame1;
+			require.getReservationSettingByOpDist(companyID, 0);
+			result = Helper.Setting.DUMMY;
 			
 			require.getBentoMenu(todayReserve,workLocationCode);
 			result = menu;
@@ -197,7 +197,7 @@ public class BentoReserveModifyServiceTest {
 		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
 
 		new Expectations() {{
-			require.getReservationSetByOpDistAndFrameNo(companyID, 1, 0);
+			require.getReservationSettingByOpDist(companyID, 0);
 			result = null;
 		}};
 		
