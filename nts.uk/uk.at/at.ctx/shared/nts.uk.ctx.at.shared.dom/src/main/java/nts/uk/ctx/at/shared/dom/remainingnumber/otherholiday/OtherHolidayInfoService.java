@@ -541,7 +541,7 @@ public class OtherHolidayInfoService {
 			return result;
 		}
 		DateHistoryItem histItem = workingCond.get().getDateHistoryItem()
-				.get(workingCond.get().getDateHistoryItem().size() - 1);
+				.get(0);
 		Optional<WorkingConditionItem> workingCondItem = workingConditionItemRepository.getBySidAndHistId(sid,
 				histItem.identifier());
 		if (!workingCondItem.isPresent()) {
@@ -604,7 +604,7 @@ public class OtherHolidayInfoService {
 			}
 			
 			DateHistoryItem histItem = workingCondOpt.get().getDateHistoryItem()
-					.get(workingCondOpt.get().getDateHistoryItem().size() - 1);
+					.get(0);
 			histIds.add(histItem.identifier());
 		});
 		
