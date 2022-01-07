@@ -1445,7 +1445,12 @@ module cps003.a.vm {
                                 if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00125")) {
                                     states.push(new State(id, "IS00125", ["mgrid-disable"]));
                                 }
+								
                                 _.remove(states, s => s.rowId === id && (s.columnKey === "IS00126" || s.columnKey === "IS00127"));
+
+								if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00127")) {
+                                    states.push(new State(id, "IS00127", ["mgrid-disable"]));
+                                } 
                             } else if (item.value === "2") {
                                 if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00124")) {
                                     states.push(new State(id, "IS00124", ["mgrid-disable"]));
@@ -1459,7 +1464,15 @@ module cps003.a.vm {
                                 if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00127")) {
                                     states.push(new State(id, "IS00127", ["mgrid-disable"]));
                                 }   
-                            }
+                            } else if (item.value === "4") {
+								_.remove(states, s => s.rowId === id && (s.columnKey === "IS00126" || s.columnKey === "IS00127"));
+								if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00126")) {
+                                    states.push(new State(id, "IS00126", ["mgrid-disable"]));
+                                }
+                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00127")) {
+                                    states.push(new State(id, "IS00127", ["mgrid-disable"]));
+                                }  
+							}
                             break;
                     }
                     break;
