@@ -2,7 +2,12 @@ package smilelinked.cooperationacceptance;
 
 import java.util.List;
 
+/**
+ * Smile連携受入設定Repository
+ *
+ */
 public interface SmileCooperationAcceptanceSettingRepository {
+	
 	/**
 	 * insert(Smile連携受入設定）
 	 * 

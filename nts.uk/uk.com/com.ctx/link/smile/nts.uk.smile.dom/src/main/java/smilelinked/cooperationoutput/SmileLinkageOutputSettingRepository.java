@@ -1,5 +1,9 @@
 package smilelinked.cooperationoutput;
 
+/**
+ * Smile連携出力設定Repository										
+ *
+ */
 public interface SmileLinkageOutputSettingRepository {
 	/**
 	 * insert(Smile連携出力設定）

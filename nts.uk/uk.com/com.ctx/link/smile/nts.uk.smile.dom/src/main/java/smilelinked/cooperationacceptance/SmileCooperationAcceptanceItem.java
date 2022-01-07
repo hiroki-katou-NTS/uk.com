@@ -5,6 +5,7 @@ package smilelinked.cooperationacceptance;
  * 
  */
 public enum SmileCooperationAcceptanceItem {
+	
 	/**
 	 * SMILE_組織情報（職場）
 	 */

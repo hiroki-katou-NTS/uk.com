@@ -1,5 +1,9 @@
 package smilelinked.cooperationoutput;
 
+/**
+ * Smile連携出力区分
+ * 
+ */
 public enum SmileCooperationOutputClassification {
 
 	/** しない */

@@ -2,7 +2,12 @@ package smilelinked.cooperationoutput;
 
 import java.util.List;
 
+/**
+ * 連動支払変換Repository
+ *
+ */
 public interface LinkedPaymentConversionRepository {
+	
 	/**
 	 * insert(連動支払変換）
 	 * 
