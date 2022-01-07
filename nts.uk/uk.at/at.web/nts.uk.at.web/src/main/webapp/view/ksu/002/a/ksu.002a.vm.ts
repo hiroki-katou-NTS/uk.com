@@ -1011,8 +1011,10 @@ function calculateDaysStartEndWeek(start: Date, end: Date, settingDayStart: numb
 	}
 }
 function converNumberToTime(number: number): string {
+	const minute : string = Math.abs(number % 60) > 9 ? Math.abs(number % 60).toString() : '0' + Math.abs(number % 60).toString();
+	
 	if (-60 < number && number < 0) {
-		return ('-' + Math.ceil(number / 60).toString() + ':' + (Math.abs(number % 60) == 0 ? '00' : (Math.abs(number % 60)).toString()));
+		return ('-' + Math.ceil(number / 60).toString() + ':' + (Math.abs(number % 60) == 0 ? '00' : minute));
 	}
-	return (number < 0 ? Math.ceil(number / 60).toString() : Math.floor(number / 60).toString()) + ':' + (Math.abs(number % 60) == 0 ? '00' : (Math.abs(number % 60)).toString());
+	return (number < 0 ? Math.ceil(number / 60).toString() : Math.floor(number / 60).toString()) + ':' + (Math.abs(number % 60) == 0 ? '00' : minute);
 }
