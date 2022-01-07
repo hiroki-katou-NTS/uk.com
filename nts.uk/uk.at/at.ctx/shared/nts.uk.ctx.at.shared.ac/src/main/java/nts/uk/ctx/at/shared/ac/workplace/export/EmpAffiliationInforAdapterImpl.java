@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -19,6 +21,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class EmpAffiliationInforAdapterImpl implements EmpAffiliationInforAdapter{
 
 	@Inject
