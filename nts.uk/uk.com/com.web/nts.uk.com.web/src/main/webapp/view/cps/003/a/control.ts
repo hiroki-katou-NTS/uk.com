@@ -412,7 +412,11 @@ module cps003 {
                 let $grid = $("#grid");   
                 switch (v) {
                     case "0":
+						$grid.mGrid("disableNtsControlAt", id, "IS00127");
+                        $grid.mGrid("clearErrors", [{ id: id, columnKey: "IS00127" }]); 
                     case "1":
+						$grid.mGrid("disableNtsControlAt", id, "IS00127");
+                        $grid.mGrid("clearErrors", [{ id: id, columnKey: "IS00127" }]); 
                     case "2":
                         $grid.mGrid("enableNtsControlAt", id, "IS00124");
                         $grid.mGrid("enableNtsControlAt", id, "IS00125");
