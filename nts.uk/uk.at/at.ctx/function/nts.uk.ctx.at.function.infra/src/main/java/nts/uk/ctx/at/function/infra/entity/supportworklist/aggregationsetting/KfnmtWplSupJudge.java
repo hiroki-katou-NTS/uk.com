@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import java.util.Optional;
 
 @Entity
-@Table(name="KFNMT_WPL_SUP_JUDGE")
+@Table(name="KFNMT_SUP_WK_JUDGE")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KfnmtWplSupJudge extends ContractUkJpaEntity {
