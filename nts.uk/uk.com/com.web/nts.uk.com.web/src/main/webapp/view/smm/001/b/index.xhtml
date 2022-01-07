@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+  <ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+      <com:scriptfile set="IGNITE" />
+      <com:stylefile path="smm001.b.style.css" />
+      <com:scriptfile path="smm001.b.vm.js" />
+      <com:EnumScript>
+        nts.uk.ctx.at.aggregation.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceItem
+      </com:EnumScript>
+
+    </ui:define>
+
+    <ui:define name="content">
+      <div id="contents-area">
+        <div class="smile-div">
+          <p>#{i18n.getText('SMM001_7')}</p>
+          <div data-bind="ntsCheckBox: { checked: checked, enable: enable }">
+            #{i18n.getText('SMM001_8')}
+          </div>
+          <div id="combo-box" data-bind="ntsComboBox: {
+            name: 'List',
+            options: itemList,
+            optionsValue: 'code',
+            visibleItemsCount: 5,
+            value: selectedCode,
+            optionsText: 'name',
+            editable: isEditable,
+            enable: isEnable,
+            columns: [
+              { prop: 'code', length: 4 },
+              { prop: 'name', length: 10 },
+            ]}">
+          </div>
+        </div>
+
+        <div class="smile-div">
+          <div data-bind="ntsCheckBox: { checked: checked, enable: enable }">
+            #{i18n.getText('SMM001_9')}
+          </div>
+          <div>
+            <label
+              data-bind="ntsRadioButton: { checked: selectedValue3, optionText: 'Option 1', option: '1', group: 'abc' }"></label>
+            <label
+              data-bind="ntsRadioButton: { checked: selectedValue3, optionText: 'Option 2', option: '2', group: 'abc' }"></label>
+          </div>
+        </div>
+        <div class="smile-div">
+          <div data-bind="ntsCheckBox: { checked: checked, enable: enable }">
+            #{i18n.getText('SMM001_10')}
+          </div>
+          <div>
+            <label
+              data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 1', option: '1', group: 'abc' }"></label>
+            <label
+              data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 2', option: '2', group: 'abc' }"></label>
+          </div>
+        </div>
+        <div class="smile-div">
+          <div data-bind="ntsCheckBox: { checked: checked, enable: enable }">
+            #{i18n.getText('SMM001_6')}
+          </div>
+          <div>
+            <label
+              data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 1', option: '1', group: 'abc' }"></label>
+            <label
+              data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 2', option: '2', group: 'abc' }"></label>
+          </div>
+        </div>
+        <div class="smile-div">
+          <table>
+            <tr>
+              <td style="padding-bottom: 0px;">
+                <div data-bind="ntsFormLabel: {text: $i18n('KSM008_46')}"></div>
+              </td>
+              <td></td>
+              <td style="padding-bottom: 0px;">
+                <div data-bind="ntsFormLabel: {text: $i18n('KSM008_47'), required: true}"></div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div tabindex="14" id="kcp005-component-left"></div>
+              </td>
+              <td>
+                <div class="ntsMoveDataArea ntsSwapComponent" id="swap-list-move-data">
+                  <div>
+                    <button tabindex="15" id="C11_2" class="move-button move-forward ntsSwap_Component"
+                      data-bind="name: $i18n('KSM008_48'), click: moveItemToRight">
+                      <i class="img-icon icon-next"></i>
+                    </button>
+                  </div>
+                  <div>
+                    <button tabindex="16" id="C11_3" class="move-button move-forward ntsSwap_Component"
+                      data-bind="name: $i18n('KSM008_49'), click: moveItemToLeft">
+                      <i class="img-icon icon-prev"></i>
+                    </button>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div tabindex="17" id="kcp005-component-right"></div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+
+</html>
