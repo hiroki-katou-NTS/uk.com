@@ -1168,77 +1168,148 @@ module nts.uk.ui.at.kdw013.calendar {
             // calculate time on header
             let timesSet: KnockoutObservable<({ date: string | null; value: number | null; })[]> = ko.observable([]);
 
-            ko.computed({
-                read: () => {
-                    let ds = ko.unwrap(datesSet);
-                    let wd = ko.unwrap(firstDay);
-                    let iv = ko.unwrap(initialView);
-                    let evts = ko.unwrap<EventRaw[]>(events);
-                    let cache = ko.unwrap<EventApi>($caches.new);
-                    let { start, end } = cache || { start: null, end: null };
-                    let nkend = moment(start).clone().add(1, 'hour').toDate();
-                    let duration = moment(end || nkend).diff(start, 'minute');
-                    let nday = dayOfView(iv);
-                    
-                    let loaded = vm.params.screenA.loaded;
-                    if (loaded) {
-                        return;
-                    }
-                    if (ds) {
-                        let { start, end } = ds;
 
-                        let first = moment(start);
-                        let diff: number = moment(end).diff(start, 'day');
-                        let mkend = first.clone().add(1, 'hour').toDate();
+            datesSet.subscribe((ds) => { calTimSet(); });
+            firstDay.subscribe((ds) => { calTimSet(); });
+            initialView.subscribe((ds) => { calTimSet(); });
+            events.subscribe((ds) => { calTimSet(); });
+            $caches.new.subscribe((ds) => { calTimSet(); });
+            
+            let calTimSet = () => {
+                let ds = ko.unwrap(datesSet);
+                let wd = ko.unwrap(firstDay);
+                let iv = ko.unwrap(initialView);
+                let evts = ko.unwrap<EventRaw[]>(events);
+                let cache = ko.unwrap<EventApi>($caches.new);
+                let { start, end } = cache || { start: null, end: null };
+                let nkend = moment(start).clone().add(1, 'hour').toDate();
+                let duration = moment(end || nkend).diff(start, 'minute');
+                let nday = dayOfView(iv);
 
-                        let days = _.range(0, diff, 1)
-                            .map(m => {
-                                let date = first.clone().add(m, 'day');
-                                let exists = _.filter([...evts], (d: EventApi) => {
-                                    return !d.allDay &&
-                                        d.display !== 'background' &&
-                                        date.isSame(d.start, 'date');
-                                });
+                let loaded = vm.params.screenA.loaded;
+                if (loaded) {
+                    return;
+                }
+                if (ds) {
+                    let { start, end } = ds;
 
-                                return {
-                                    date: date.format(DATE_FORMAT),
-                                    value: exists.reduce((p, c) => p += moment(c.end || mkend).diff(c.start, 'minute'), date.isSame(nkend, 'date') ? duration : 0)
-                                };
+                    let first = moment(start);
+                    let diff: number = moment(end).diff(start, 'day');
+                    let mkend = first.clone().add(1, 'hour').toDate();
+
+                    let days = _.range(0, diff, 1)
+                        .map(m => {
+                            let date = first.clone().add(m, 'day');
+                            let exists = _.filter([...evts], (d: EventApi) => {
+                                return !d.allDay &&
+                                    d.display !== 'background' &&
+                                    date.isSame(d.start, 'date');
                             });
 
-                        let sow = first.clone().isoWeekday(wd).isSame(start, 'date');
+                            return {
+                                date: date.format(DATE_FORMAT),
+                                value: exists.reduce((p, c) => p += moment(c.end || mkend).diff(c.start, 'minute'), date.isSame(nkend, 'date') ? duration : 0)
+                            };
+                        });
 
-                        while (days.length < nday) {
-                            if (sow) {
-                                days.push({ date: null, value: null });
-                            } else {
-                                days.unshift({ date: null, value: null })
-                            }
+                    let sow = first.clone().isoWeekday(wd).isSame(start, 'date');
+
+                    while (days.length < nday) {
+                        if (sow) {
+                            days.push({ date: null, value: null });
+                        } else {
+                            days.unshift({ date: null, value: null })
                         }
-
-                        timesSet(days);
                     }
 
-                    //timesSet([]);
-                },
-                disposeWhenNodeIsRemoved: $el
-            });
+                    timesSet(days);
+                }
+            }
 
              ko.computed({
                 read: () => {
                     let cache = ko.unwrap<EventApi>($caches.new);
                     let { start, end } = cache || { start: null, end: null };
-                    
-                    let loaded = vm.params.screenA.loaded;
-                    
-                    let el = $(".fc-times[data-date='"+ moment(start).format(DATE_FORMAT) + "']");
-                    
+                    let date = moment(start).format(DATE_FORMAT);
+                    const className = 'wrn-' + date;
+                    let el = $(".fc-times[data-date='"+ date + "']");
+                                        
                     if (el && el.html()) {
-                            el.html(vm.$i18n('KDW013_98'));
+                            let icon = isHasWarning(date) ? `<i class='warningIcon ` + className + `'> </i>` : '';
+                            setTimeout(() => {
+                                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 }, click: () => { OpenIDialog(date); } });
+                                $('.' + className).on('mousedown', () => { regisPopup(date); });
+                            }, 300);
+                            el.html(vm.$i18n('KDW013_98') + icon);
                     }
                 },
                 disposeWhenNodeIsRemoved: $el
             });
+
+             let regisPopup = (date) => {
+                 const className = 'wrn-' + date;
+                 $(".popup-area-i").ntsPopup({
+                     trigger: '.' + className,
+                     position: {
+                         my: "left top",
+                         at: "left bottom",
+                         of: '.' + className
+                     },
+                     showOnStart: false,
+                     dismissible: true
+                 });
+             }
+
+             let OpenIDialog = (date) => {
+                 let vm = this;
+                 let screenA = vm.params.screenA;
+                 let {$settings, $datas} = screenA;
+                 screenA.taskSettings(_.get($settings(), 'taskFrameUsageSetting.frameSettingList', []));
+
+                 let iod = _.find(_.get($datas(), 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days') });
+                 // 作業リスト
+                 screenA.taskDtos($settings().tasks);
+
+                 // 日別勤怠の応援作業時間帯
+                 screenA.ouenWorkTimeSheets(_.get(iod, 'ouenTimeSheet'));
+
+                 // 日別勤怠の応援作業時間
+                 screenA.ouenWorkTimes(_.get(iod, 'ouenTime'));
+
+                 //対象日
+                 screenA.targetDate(moment(date).toDate());
+             }
+            
+             let isHasWarning = (date) => {
+                 let vm = this;
+                 let datas = ko.unwrap(vm.params.screenA.$datas);
+
+                 if (!datas) {
+                     return false;
+                 }
+
+                 let manHrTask = _.find(_.get(datas, 'dailyManHrTasks', []), hr => { return moment(hr.date).isSame(moment(date), 'days'); });
+
+                 let id = _.find(_.get(datas, 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days'); });
+
+                 let ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
+
+                 let taskBlocks = _.get(manHrTask, 'taskBlocks', []);
+
+                 if (!id || !ouenTimeSheet.length) {
+                     return false;
+                 }
+
+                 for (let i = 0; i < ouenTimeSheet.length; i++) {
+                     let workNo = _.get(ouenTimeSheet[i], 'workNo');
+
+                     if (!_.find(taskBlocks, tb => _.find(tb.taskDetails, ['supNo', workNo]))) {
+                         return true;
+                     }
+                 }
+
+                 return false;
+             }
 
             let attendancesSet: KnockoutComputed<({ date: string | null; events: string[]; })[]> = ko.computed({
                 read: () => {
@@ -1828,7 +1899,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     events(getEvents().filter(({ extendedProps }) => !!extendedProps.id && extendedProps.status !== 'delete'));
                 }
             };
-            let calWorkTimeBreakEvent = (event , oldEvent) => {
+            let calWorkTimeBreakEvent = (event) => {
                 let tempEs = [...events()];
                 let evns = _.filter(tempEs, e => 
                     moment(e.end).isSame(event.start, 'days')
@@ -1839,10 +1910,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     let refTimezone = { start: (moment(evn.start).hour() * 60) + moment(evn.start).minute(), end: (moment(evn.end).hour() * 60) + moment(evn.end).minute() };
                     let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(evn.start), 'days'));
                     let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
-                    _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
-                        let oldStartAsMinites = (moment(oldEvent.start).hour() * 60) + moment(oldEvent.start).minute();
-                        let oldEndAsMinites = (moment(oldEvent.end).hour() * 60) + moment(oldEvent.end).minute();
-                        if (start == oldStartAsMinites && end == oldEndAsMinites) {
+                    _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end , no }) => {
+                        if (no == event.extendedProps.no) {
                             let startAsMinites = (moment(event.start).hour() * 60) + moment(event.start).minute();
                             let endAsMinites = (moment(event.end).hour() * 60) + moment(event.end).minute();
                             goOutBreakTimeLst.push({ start: startAsMinites, end: endAsMinites });
@@ -2686,7 +2755,8 @@ module nts.uk.ui.at.kdw013.calendar {
                         mutatedEvents();
                         
                         //cal work time
-                        calWorkTimeBreakEvent(event, arg.oldEvent);
+                        calWorkTimeBreakEvent(event);
+                        $caches.new(event);
                         return;
                     }
                     
@@ -2855,6 +2925,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     removeList.push({ date: moment(arg.oldEvent.start).startOf('day').toDate(), supNos });
                                 }
                             });
+                            $caches.new(arg.oldEvent);
                         }
                 },
                 eventResizeStart: (arg: EventResizeStartArg) => {
