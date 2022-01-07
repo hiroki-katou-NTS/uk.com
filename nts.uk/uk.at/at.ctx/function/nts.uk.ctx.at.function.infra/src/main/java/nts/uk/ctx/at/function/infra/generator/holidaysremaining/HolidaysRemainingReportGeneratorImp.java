@@ -3460,40 +3460,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
         }
 
-        if (employee.getCurrentMonth().isPresent()) {
-            //  Set background
-            for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
-                    dataSource.getEndMonth().yearMonth()); i++) {
-                if (manageHoliday) {
-                    if (dataSource.getStartMonth().addMonths(i).yearMonth().compareTo(currentMonth) > 0) {
 
-                        if (countL == 2) {
-                            setBackgroundGray(cells.get(firstRow, 10 + i));
-                        }
-                        if (countL == 3) {
-                            setBackgroundGray(cells.get(firstRow, 10 + i));
-                            setBackgroundGray(cells.get(firstRow + (con_3 ? 2 : 1), 10 + i));
-                        }
-                        if (countL == 4) {
-                            setBackgroundGray(cells.get(firstRow, 10 + i));
-                            setBackgroundGray(cells.get(firstRow + 1, 10 + i));
-                            setBackgroundGray(cells.get(firstRow + 3, 10 + i));
-                        }
-                    }
-                } else {
-                    if (countL == 2) {
-                        setBackgroundGray(cells.get(firstRow, 10 + i));
-                    }
-                    if (countL == 3) {
-                        setBackgroundGray(cells.get(firstRow, 10 + i));
-                        setBackgroundGray(cells.get(firstRow + (con_3 ? 2 : 1), 10 + i));
-                    }
-                    if (countL == 4) {
-                        setBackgroundGray(cells.get(firstRow, 10 + i));
-                        setBackgroundGray(cells.get(firstRow + 1, 10 + i));
-                        setBackgroundGray(cells.get(firstRow + 3, 10 + i));
-                    }
-                }
+        //  Set background
+        for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
+                dataSource.getEndMonth().yearMonth()); i++) {
+            if (!(con_2 && manageHoliday)) {
+                setBackgroundGray( cells.get(firstRow, 10 + i));
             }
         }
         if (!con_2) {
