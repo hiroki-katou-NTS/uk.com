@@ -28,6 +28,7 @@ module nts.uk.ui.at.ksu002.a {
         tabindex: number = 1;
 
         employeeId: KnockoutObservable<string> = ko.observable(this.$user.employeeId);
+        showError: boolean = false;
 
         constructor(private param: Parameter) {
             super();
@@ -49,31 +50,49 @@ module nts.uk.ui.at.ksu002.a {
             };
 
             vm.selectedItem.subscribe((data: string) => {
-                if (ko.toJS(param.haschange)) {
+                if (ko.toJS(param.haschange) || vm.showError) {
                     vm.$dialog
                         .confirm({ messageId: 'Msg_1732' })
                         .then((v) => {
                             if (v === 'yes') {
                                 vm.employeeId(data);
+                                vm.showError = false;
                             }
                         });
                 } else {
                     vm.employeeId(data);
+                    vm.showError = false;
                 }
             })
 
             vm.employeeInputList.subscribe((data: [EmployeeModel]) => {
-
                 if (data.length > 0) {
-                    $('#emp-component').ntsLoadListComponent(vm.listComponentOption);
-                    const exist = _.find(data, ((item: EmployeeModel) => { return item.id == vm.$user.employeeId }));
-                    if (exist) {
-                        vm.selectedItem(exist.id);
+                    if (ko.toJS(param.haschange)) {
+                        vm.$dialog
+                            .confirm({ messageId: 'Msg_1732' })
+                            .then((v) => {
+                                if (v === 'yes') {
+                                    vm.changeEmployee(data);
+                                    vm.showError = true;
+                                }
+                            });
                     } else {
-                        vm.selectedItem(data[0].id);
+                        vm.changeEmployee(data);
                     }
                 }
             });
+        }
+
+        public changeEmployee(data: [EmployeeModel]) {
+            const vm = this;
+
+            $('#emp-component').ntsLoadListComponent(vm.listComponentOption);
+            const exist = _.find(data, ((item: EmployeeModel) => { return item.id == vm.$user.employeeId }));
+            if (exist) {
+                vm.selectedItem(exist.id);
+            } else {
+                vm.selectedItem(data[0].id);
+            }
         }
     }
 
