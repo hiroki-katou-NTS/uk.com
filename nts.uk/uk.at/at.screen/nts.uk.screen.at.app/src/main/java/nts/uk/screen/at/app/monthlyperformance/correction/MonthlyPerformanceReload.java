@@ -545,7 +545,12 @@ public class MonthlyPerformanceReload {
 							// neu item la thoi gian thi format lai theo dinh dang
 							int minute = 0;
 							if (item.getValue() != null) {
-								minute = Integer.parseInt(item.getValue());
+								if ((item.getValue() instanceof  String) && item.getValue().contains(".")) {
+									minute = Integer.parseInt(item.getValue().substring(0, item.getValue().indexOf(".")));
+								} else {
+									minute = Integer.parseInt(item.getValue());
+								}
+								
 							}
 							int hours = Math.abs(minute) / 60;
 							int minutes = Math.abs(minute) % 60;
