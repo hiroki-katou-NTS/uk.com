@@ -31,7 +31,7 @@ module nts.uk.ui.at.ksu002.a {
                 .ntsGroupComponent({
                     /** Common properties */
                     systemType: 2, //システム区分	
-                    showEmployeeSelection: true,
+                    showEmployeeSelection: false,
                     showQuickSearchTab: true, //クイック検索
                     showAdvancedSearchTab: true,
                     showBaseDate: true, //基準日利用
