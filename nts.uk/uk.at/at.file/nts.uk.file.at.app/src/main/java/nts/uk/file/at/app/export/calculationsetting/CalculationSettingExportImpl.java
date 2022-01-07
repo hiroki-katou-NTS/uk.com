@@ -429,7 +429,7 @@ public class CalculationSettingExportImpl implements MasterListData {
 		Optional<FlexWorkSet> optFlexWorkSet = flexWorkRepo.find(companyId);
         Optional<AggDeformedLaborSetting> optAggSetting = aggSettingRepo.findByCid(companyId);
 		List<MasterData> data = new ArrayList<>();
-        for (int row = 0; row < 47; row++) {
+        for (int row = 0; row < 39; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 5; col++) {
                 String value = "";
@@ -659,70 +659,6 @@ public class CalculationSettingExportImpl implements MasterListData {
                             && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getTreatDeduct().get().getTreatLateEarlyTimeSet().getTreatSet().isInclude())
                         value = workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getTreatDeduct().get().getTreatLateEarlyTimeSet().isEnableSetPerWorkHour() ? "○" : "-";
                 } else if (row == 32) {
-                    if (col == 1) value = TextResource.localize("KMK013_528");
-                    else if (col == 4 && optFlexWorkSet.isPresent()
-                            && optFlexWorkSet.get().getUseFlexWorkSetting() == UseAtr.USE
-                            && workFlexAdditionSet.isPresent())
-                        value = workFlexAdditionSet.get().getAddSetOfWorkingTime().getUseAtr() == NotUseAtr.USE ? "○" : "-";
-                } else if (row == 33) {
-                    if (col == 1) value = TextResource.localize("KMK013_538");
-                    else if (col == 4 && optFlexWorkSet.isPresent()
-                            && optFlexWorkSet.get().getUseFlexWorkSetting() == UseAtr.USE
-                            && workFlexAdditionSet.isPresent())
-                        value = workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME
-                                ? TextResource.localize("KMK013_42")
-                                : TextResource.localize("KMK013_43");
-                } else if (row == 34) {
-                    if (col == 2) value = TextResource.localize("KMK013_523");
-                    else if (col == 4 && optFlexWorkSet.isPresent()
-                            && optFlexWorkSet.get().getUseFlexWorkSetting() == UseAtr.USE
-                            && workFlexAdditionSet.isPresent()
-                            && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME
-                            && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getTreatVacation().isPresent())
-                        value = workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getTreatVacation().get().getAddition() == NotUseAtr.USE ? "○" : "-";
-                } else if (row == 35) {
-                    if (col == 3) value = TextResource.localize("KMK013_531");
-                    else if (col == 4 && optFlexWorkSet.isPresent()
-                            && optFlexWorkSet.get().getUseFlexWorkSetting() == UseAtr.USE
-                            && workFlexAdditionSet.isPresent()
-                            && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME
-                            && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getTreatVacation().isPresent()
-                            && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getTreatVacation().get().getPredeterminedExcessTimeOfFlex().isPresent())
-                        value = TextResource.localize(workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getTreatVacation().get().getPredeterminedExcessTimeOfFlex().get().nameId);
-                } else if (row == 36) {
-                    if (col == 2) value = TextResource.localize("KMK013_524");
-                    else if (col == 4 && optFlexWorkSet.isPresent()
-                            && optFlexWorkSet.get().getUseFlexWorkSetting() == UseAtr.USE
-                            && workFlexAdditionSet.isPresent()
-                            && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME
-                            && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getTreatDeduct().isPresent())
-                        value = workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getTreatDeduct().get().getCalculateIncludCareTime() == NotUseAtr.USE ? "○" : "-";
-                } else if (row == 37) {
-                    if (col == 2) value = TextResource.localize("KMK013_525");
-                    else if (col == 4 && optFlexWorkSet.isPresent()
-                            && optFlexWorkSet.get().getUseFlexWorkSetting() == UseAtr.USE
-                            && workFlexAdditionSet.isPresent()
-                            && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME
-                            && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getTreatDeduct().isPresent())
-                        value = workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getTreatDeduct().get().getCalculateIncludIntervalExemptionTime() == NotUseAtr.USE ? "○" : "-";
-                } else if (row == 38) {
-                    if (col == 2) value = TextResource.localize("KMK013_526");
-                    else if (col == 4 && optFlexWorkSet.isPresent()
-                            && optFlexWorkSet.get().getUseFlexWorkSetting() == UseAtr.USE
-                            && workFlexAdditionSet.isPresent()
-                            && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME
-                            && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getTreatDeduct().isPresent())
-                        value = workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getTreatDeduct().get().getTreatLateEarlyTimeSet().getTreatSet().isInclude() ? "○" : "-";
-                } else if (row == 39) {
-                    if (col == 3) value = TextResource.localize("KMK013_527");
-                    else if (col == 4 && optFlexWorkSet.isPresent()
-                            && optFlexWorkSet.get().getUseFlexWorkSetting() == UseAtr.USE
-                            && workFlexAdditionSet.isPresent()
-                            && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME
-                            && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getTreatDeduct().isPresent()
-                            && workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getTreatDeduct().get().getTreatLateEarlyTimeSet().getTreatSet().isInclude())
-                        value = workFlexAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfPremium().getTreatDeduct().get().getTreatLateEarlyTimeSet().isEnableSetPerWorkHour() ? "○" : "-";
-                } else if (row == 40) {
                     if (col == 0) value = TextResource.localize("KMK013_27");
                     else if (col == 1) value = TextResource.localize("KMK013_541");
                     else if (col == 4 && optAggSetting.isPresent()
@@ -731,7 +667,7 @@ public class CalculationSettingExportImpl implements MasterListData {
                         value = workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME
                                 ? TextResource.localize("KMK013_42")
                                 : TextResource.localize("KMK013_43");
-                } else if (row == 41) {
+                } else if (row == 33) {
                     if (col == 2) value = TextResource.localize("KMK013_523");
                     else if (col == 4 && optAggSetting.isPresent()
                             && optAggSetting.get().getUseDeformedLabor() == UseAtr.USE
@@ -739,7 +675,7 @@ public class CalculationSettingExportImpl implements MasterListData {
                             && workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME
                             && workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getTreatVacation().isPresent())
                         value = workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getTreatVacation().get().getAddition() == NotUseAtr.USE ? "○" : "-";
-                } else if (row == 42) {
+                } else if (row == 34) {
                     if (col == 2) value = TextResource.localize("KMK013_524");
                     else if (col == 4 && optAggSetting.isPresent()
                             && optAggSetting.get().getUseDeformedLabor() == UseAtr.USE
@@ -747,7 +683,7 @@ public class CalculationSettingExportImpl implements MasterListData {
                             && workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME
                             && workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getTreatDeduct().isPresent())
                         value = workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getTreatDeduct().get().getCalculateIncludCareTime() == NotUseAtr.USE ? "○" : "-";
-                } else if (row == 43) {
+                } else if (row == 35) {
                     if (col == 2) value = TextResource.localize("KMK013_525");
                     else if (col == 4 && optAggSetting.isPresent()
                             && optAggSetting.get().getUseDeformedLabor() == UseAtr.USE
@@ -755,7 +691,7 @@ public class CalculationSettingExportImpl implements MasterListData {
                             && workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME
                             && workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getTreatDeduct().isPresent())
                         value = workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getTreatDeduct().get().getCalculateIncludIntervalExemptionTime() == NotUseAtr.USE ? "○" : "-";
-                } else if (row == 44) {
+                } else if (row == 36) {
                     if (col == 2) value = TextResource.localize("KMK013_537");
                     else if (col == 4 && optAggSetting.isPresent()
                             && optAggSetting.get().getUseDeformedLabor() == UseAtr.USE
@@ -764,7 +700,7 @@ public class CalculationSettingExportImpl implements MasterListData {
                             && workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getTreatVacation().isPresent()
                             && workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getTreatVacation().get().getMinusAbsenceTime().isPresent())
                         value = workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getTreatVacation().get().getMinusAbsenceTime().get() == NotUseAtr.USE ? "○" : "-";
-                } else if (row == 45) {
+                } else if (row == 37) {
                     if (col == 2) value = TextResource.localize("KMK013_526");
                     else if (col == 4 && optAggSetting.isPresent()
                             && optAggSetting.get().getUseDeformedLabor() == UseAtr.USE
@@ -772,7 +708,7 @@ public class CalculationSettingExportImpl implements MasterListData {
                             && workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getCalculateActualOperation() == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME
                             && workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getTreatDeduct().isPresent())
                         value = workDeformedLaborAdditionSet.get().getAddSetOfWorkingTime().getAddSetOfWorkTime().getTreatDeduct().get().getTreatLateEarlyTimeSet().getTreatSet().isInclude() ? "○" : "-";
-                } else if (row == 46) {
+                } else if (row == 38) {
                     if (col == 3) value = TextResource.localize("KMK013_527");
                     else if (col == 4 && optAggSetting.isPresent()
                             && optAggSetting.get().getUseDeformedLabor() == UseAtr.USE
