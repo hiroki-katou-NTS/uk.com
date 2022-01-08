@@ -778,6 +778,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         processMapData(data) {
             var self = this;
             let startTime: number = performance.now();
+            let authory: any = _.find(data.authorityDto, (x) => x.functionNo == 37 );
+            let functionNoView: boolean = true; 
+            if(authory) {
+                functionNoView = authory.availability;
+            } else {
+                functionNoView = false;
+            }
+           
             self.closureId = data.closureId;
             //self.lstDomainOld = data.domainOld;
             //self.lstDomainEdit = _.cloneDeep(data.domainOld);
@@ -819,7 +827,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let showCheckbox = _.isEmpty(self.shareObject()) ? data.showPrincipal : data.showSupervisor;
 			let confirmEmployment = data.confirmEmployment ? data.confirmEmployment : false;
             self.showButton(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit, showCheckbox, confirmEmployment));
-			self.showWorkLoad(data.showWorkLoad);
+			self.showWorkLoad(data.showWorkLoad && functionNoView);
             self.hideLock(self.showButton().available12());
             self.showLock(true);
             self.unLock(false);
