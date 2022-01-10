@@ -470,6 +470,13 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
         Optional<List<PeriodCorrespondingYm>> currentMonthAndFuture = outputPeriodInformation == null ?Optional.empty(): outputPeriodInformation.getCurrentMonthAndFuture();
         List<PeriodCorrespondingYm> correspondingYmList = currentMonthAndFuture.orElseGet(ArrayList::new);
+        DatePeriod currentDatePeriod = null;
+        if(!correspondingYmList.isEmpty()){
+            Optional<PeriodCorrespondingYm> optionalYm = correspondingYmList.stream().filter(e->e.getYm().compareTo(closureInforOpt.get().getCurrentMonth()) == 0).findFirst();
+            if(optionalYm.isPresent()){
+                currentDatePeriod = optionalYm.get().getDatePeriod();
+            }
+        }
 		////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////
 		// 過去月
@@ -709,7 +716,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                         //-----------------------------------------------------------------------------------
                         // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
                         //periodDate,
-                        closureInforOpt.get().getPeriod(),
+                        //closureInforOpt.get().getPeriod(),
+                        currentDatePeriod,
                         // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 END
                         //-----------------------------------------------------------------------------------
                         closureInforOpt.get().getPeriod().end(),
@@ -817,7 +825,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 SpecialVacationImportedKdr specialVacationImportedNew = specialLeaveAdapter.get273New(
                         cId,
                         employeeId,
-                        closureInforOpt.get().getPeriod(),
+                        //closureInforOpt.get().getPeriod(),
+                        currentDatePeriod,
                         false,
                         //-----------------------------------------------------------------------------------
                         // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
@@ -893,7 +902,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
                     cId,
                     employeeId,
-                    periodDate,
+                    //periodDate,
+                    currentDatePeriod,
                     false,
                     closureInforOpt.get().getPeriod().end(),
                     false,
@@ -1087,7 +1097,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
                     //periods,
                     //end
-                    closureInforOpt.get().getPeriod(),
+                    //closureInforOpt.get().getPeriod(),
+                    currentDatePeriod,
                     closureInforOpt.get().getPeriod().end()
                     // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 END
                     //-----------------------------------------------------------------------------------
@@ -1100,7 +1111,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
                     //periods,
                     //end
-                    closureInforOpt.get().getPeriod(),
+                    //closureInforOpt.get().getPeriod(),
+                    currentDatePeriod,
                     closureInforOpt.get().getPeriod().end()
                     // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 END
                     //-----------------------------------------------------------------------------------
