@@ -92,7 +92,7 @@ public class DetailLayoutSetting {
      * @return 応援勤務出力データ
      */
     private SupportWorkOutputData createSupportWorkOutputData(SupportWorkOutputDataRequire require, String companyId, Optional<GeneralDate> baseDate, SupportWorkDataImport supportWorkData) {
-        Optional<SupportWorkAggregationSetting> setting = require.get(companyId);
+        Optional<SupportWorkAggregationSetting> setting = require.getSetting(companyId);
         if (!setting.isPresent()) throw new BusinessException("Msg_3263");
         List<Integer> attendanceItemIds = this.detailDisplaySetting.getOutputItems().stream().map(OutputItem::getAttendanceItemId).collect(Collectors.toList());
         List<SupportWorkDetails> supportWorkDetailsList = setting.get().createSupportWorkDetails(

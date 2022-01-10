@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SupportWorkOutputDataRequire {
-    Optional<SupportWorkAggregationSetting> get(String companyId);
+    Optional<SupportWorkAggregationSetting> getSetting(String companyId);
 
     List<DailyAttendanceItemAdapterDto> getDailyAttendanceItems(String companyId, List<Integer> attendanceItemIds);
 
