@@ -162,16 +162,16 @@ public class AcquisitionRule extends DomainObject {
 					check = true;
 				}
 			}
-		}
-		
-		if (!check) {
-		    throw new BusinessException("Msg_1687", "Com_SubstituteHoliday", "Com_PaidHoliday",
-                    "Com_SubstituteHoliday");
+			
+			if (!check) {
+                throw new BusinessException("Msg_1687", "Com_CompensationHoliday", "Com_PaidHoliday",
+                        "Com_CompensationHoliday");
+            }
 		}
 		
 		check = false;
 		//「@年休より優先する休暇．振休を優先」を確認する
-		if(this.annualHoliday.isPriorityPause() && holidayDaysInfo.getManagementSetting().getUseHolidays() == ManageDistinct.YES) {
+		if(this.annualHoliday.isPrioritySubstitute() && holidayDaysInfo.getManagementSetting().getUseHolidays() == ManageDistinct.YES) {
 			//振休残日数をチェックする
 			if (holidayDaysInfo.getWorkType().getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
 				if(holidayDaysInfo.getRemainingVacationDays().getNumberOfDayLeftForHoliday() < holidayDaysInfo.getNumberOfDay() &&
@@ -186,11 +186,11 @@ public class AcquisitionRule extends DomainObject {
 					check = true;
 				}
 			}
-		}
-		
-		if (!check) {
-		    throw new BusinessException("Msg_1687", "Com_CompensationHoliday", "Com_PaidHoliday",
-                    "Com_CompensationHoliday");
+			
+			if (!check) {
+                throw new BusinessException("Msg_1687", "Com_SubstituteHoliday", "Com_PaidHoliday",
+                        "Com_SubstituteHoliday");
+            }
 		}
 	}
 	
