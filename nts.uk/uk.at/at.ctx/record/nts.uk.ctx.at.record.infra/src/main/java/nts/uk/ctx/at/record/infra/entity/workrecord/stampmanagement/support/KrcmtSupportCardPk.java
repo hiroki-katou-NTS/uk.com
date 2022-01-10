@@ -29,6 +29,6 @@ public class KrcmtSupportCardPk  implements Serializable{
 
 	//  カード番号	
 	@Column(name = "SUPPORT_CARD_NO")
-	public int supportCardNo;
+	public String supportCardNo;
 
 }

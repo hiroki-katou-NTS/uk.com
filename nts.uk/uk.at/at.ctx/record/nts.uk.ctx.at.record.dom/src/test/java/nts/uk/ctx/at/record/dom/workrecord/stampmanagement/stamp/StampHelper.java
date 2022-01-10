@@ -42,7 +42,7 @@ public class StampHelper {
 						ChangeCalArt.valueOf(0)),
 				new RefectActualResult(new WorkInformationStamp(Optional.empty(), Optional.empty(),
 						Optional.of(new WorkLocationCD("workLocationCD")), 
-						Optional.of(new SupportCardNumber(9999))),
+						Optional.of(new SupportCardNumber("9999"))),
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
 								new AttendanceTime(0),
@@ -70,7 +70,7 @@ public class StampHelper {
 				new RefectActualResult(
 						new WorkInformationStamp(Optional.empty(), Optional.empty(),
 								Optional.of(new WorkLocationCD("workLocationCD")), 
-										Optional.of(new SupportCardNumber(9999))), 
+										Optional.of(new SupportCardNumber("9999"))), 
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
@@ -97,7 +97,7 @@ public class StampHelper {
 				new RefectActualResult(
 						new WorkInformationStamp(Optional.empty(), Optional.empty(),
 								Optional.of(new WorkLocationCD("workLocationCD")), 
-										Optional.of(new SupportCardNumber(9999))), 
+										Optional.of(new SupportCardNumber("9999"))), 
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
@@ -117,7 +117,7 @@ public class StampHelper {
 						ChangeCalArt.valueOf(0)),
 				new RefectActualResult(new WorkInformationStamp(Optional.empty(), Optional.empty(),
 						Optional.of(new WorkLocationCD("workLocationCD")), 
-								Optional.of(new SupportCardNumber(9999))),
+								Optional.of(new SupportCardNumber("9999"))),
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
 				new ImprintReflectionState(false, Optional.empty()),
@@ -131,7 +131,7 @@ public class StampHelper {
 						ChangeCalArt.valueOf(0)),
 				new RefectActualResult(new WorkInformationStamp(Optional.empty(), Optional.empty(),
 						Optional.of(new WorkLocationCD("workLocationCD")), 
-								Optional.of(new SupportCardNumber(9999))),
+								Optional.of(new SupportCardNumber("9999"))),
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
 				new ImprintReflectionState(false, Optional.empty()),
@@ -164,7 +164,7 @@ public class StampHelper {
 	public static RefectActualResult getRefectActualResultDefault() {
 		return new RefectActualResult(new WorkInformationStamp(Optional.empty(), Optional.empty(),
 				Optional.of(new WorkLocationCD("workLocationCD")), 
-						Optional.of(new SupportCardNumber(9999))),
+						Optional.of(new SupportCardNumber("9999"))),
 				new WorkTimeCode("workTimeCode"),
 				getOvertimeDeclarationDefault());
 	}

@@ -22,13 +22,12 @@ public class SupportCardEdit extends AggregateRoot {
 	// カードを編集する
 	public SupportCardNumber editTheCard(SupportCardNumber editNumber) {
 		int numberOfDigits = 6;
-		if (editNumber.v().toString().length() > numberOfDigits) {
+		if (editNumber.v().length() > numberOfDigits) {
 			new BusinessException("Msg_2130", String.valueOf(numberOfDigits));
 		}
-		return editNumber;
-//		String supportCardNumber = this.editMethod.editCardNumber(String.valueOf(numberOfDigits),
-//				String.valueOf(editNumber.v()));
-//		return new SupportCardNumber(Integer.valueOf(supportCardNumber));
+		String supportCardNumber = this.editMethod.editCardNumber(String.valueOf(numberOfDigits),
+				String.valueOf(editNumber.v()));
+		return new SupportCardNumber(supportCardNumber);
 	}
 
 }

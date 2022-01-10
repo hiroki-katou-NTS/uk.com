@@ -16,7 +16,7 @@ public class SupportCardCommand {
 	private String companyId;
 
 	// 応援カード番号
-	private int supportCardNumber;
+	private String supportCardNumber;
 
 	// 	職場ID
 	private String workplaceId;

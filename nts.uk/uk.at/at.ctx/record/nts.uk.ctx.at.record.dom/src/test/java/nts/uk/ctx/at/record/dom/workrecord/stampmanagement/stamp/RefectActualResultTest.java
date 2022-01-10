@@ -26,7 +26,7 @@ public class RefectActualResultTest {
 
 	@Test
 	public void testRefectActualResult() {
-		Integer cardNumberSupport = 9999;//dummy
+		String cardNumberSupport = "9999";//dummy
 		WorkLocationCD workLocationCD = new WorkLocationCD("workLocationCD");//dummy
 		WorkTimeCode workTimeCode = new WorkTimeCode("workTimeCode");//dummy
 		OvertimeDeclaration overtimeDeclaration = new OvertimeDeclaration(new AttendanceTime(1),//dummy

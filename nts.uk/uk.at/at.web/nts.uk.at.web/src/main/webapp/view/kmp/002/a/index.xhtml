@@ -51,22 +51,14 @@
               <div class="flex valign-center">
                 <div id="A2_11" style="width: 30%" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMP002_6')}</div>
                 <input tabindex="7" id="A2_12"
-                  data-bind="visible: $parent.isFocusInput() === true,
-                    ntsNumberEditor: {
-                      value: supportCardNo,
+                  data-bind="ntsTextEditor: {
                       constraint: 'SupportCardNumber',
+                      value: supportCardNo,
                       required: true,
                       option: { textalign: 'left', width: '60px' }
                     },
-                    hasFocus: $parent.isFocusInput" />
-                <input tabindex="7" id="A2_12"
-                  data-bind="visible: $parent.isFocusInput() === false,
-                    ntsTextEditor: {
-                      value: supportCardNo,
-                      option: { textalign: 'left', width: '60px' }
-                    },
                     disable: $parent.mode() === $parent.NORMAL_MODE,
-                    hasFocus: $parent.isFocusInputText" />
+                    hasFocus: $parent.isFocusInput" />
               </div>
               <div class="flex valign-center" style="margin-top: 20px;">
                 <div id="A2_13" style="width: 30%;" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Company')}</div>

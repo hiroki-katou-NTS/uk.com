@@ -65,7 +65,7 @@ public class EnterStampFromICCardServiceTest {
 		OvertimeDeclaration declaration = new OvertimeDeclaration(new AttendanceTime(1), new AttendanceTime(1));
 		RefectActualResult result = new RefectActualResult(new WorkInformationStamp(Optional.empty(), Optional.empty(),
 				Optional.of(new WorkLocationCD("workLocationCD")), 
-				Optional.of(new SupportCardNumber(9999))),
+				Optional.of(new SupportCardNumber("9999"))),
 				new WorkTimeCode("DUMMY"), declaration);
 		
 		new Expectations() {
@@ -87,7 +87,7 @@ public class EnterStampFromICCardServiceTest {
 		OvertimeDeclaration declaration = new OvertimeDeclaration(new AttendanceTime(1), new AttendanceTime(1));
 		RefectActualResult result = new RefectActualResult(new WorkInformationStamp(Optional.empty(), Optional.empty(),
 				Optional.of(new WorkLocationCD("workLocationCD")), 
-				Optional.of(new SupportCardNumber(9999))),
+				Optional.of(new SupportCardNumber("9999"))),
 				new WorkTimeCode("DUMMY"), declaration);
 		AtomTask atomTask = AtomTask.of(() -> {});// dummy
 

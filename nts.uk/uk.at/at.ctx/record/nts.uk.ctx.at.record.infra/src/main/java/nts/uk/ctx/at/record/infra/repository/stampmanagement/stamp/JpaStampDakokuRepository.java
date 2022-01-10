@@ -158,7 +158,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null,
 				stamp.getImprintReflectionStatus().isReflectedCategory(),
 				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().isPresent())
-						? stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().get().v()
+						? Integer.parseInt(stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().get().v())
 						: null,
 				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent())
 						? stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v()
@@ -207,7 +207,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				entity.workplaceId ==  null ? Optional.empty():Optional.of(entity.workplaceId), 
 				entity.timeRecordCode ==  null ? Optional.empty():Optional.of(new EmpInfoTerminalCode(entity.timeRecordCode)),
 				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
-				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
+				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(String.valueOf(entity.suportCard))));
 		
 		val refectActualResult = new RefectActualResult(workInformationStamp,
 				entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
@@ -229,7 +229,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				entity.workplaceId ==  null ? Optional.empty():Optional.of(entity.workplaceId), 
 				entity.timeRecordCode ==  null ? Optional.empty():Optional.of(new EmpInfoTerminalCode(entity.timeRecordCode)),
 				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
-				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
+				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(String.valueOf(entity.suportCard))));
 		
 		Stamp stamp = new Stamp(new ContractCode(entity.pk.contractCode), new StampNumber(entity.pk.cardNumber),
 				entity.pk.stampDateTime,
@@ -257,7 +257,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				entity.workplaceId ==  null ? Optional.empty():Optional.of(entity.workplaceId), 
 				entity.timeRecordCode ==  null ? Optional.empty():Optional.of(new EmpInfoTerminalCode(entity.timeRecordCode)),
 				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
-				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
+				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(String.valueOf(entity.suportCard))));
 		
 		Stamp stamp =  new Stamp(contractCd, new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 					new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
