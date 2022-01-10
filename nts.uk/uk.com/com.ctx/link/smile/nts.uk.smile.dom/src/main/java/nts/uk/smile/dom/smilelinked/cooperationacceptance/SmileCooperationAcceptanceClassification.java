@@ -1,4 +1,4 @@
-package smilelinked.cooperationacceptance;
+package nts.uk.smile.dom.smilelinked.cooperationacceptance;
 
 /**
  * Smile連携受入区分

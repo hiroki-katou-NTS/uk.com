@@ -1,4 +1,4 @@
-package smilelinked.cooperationoutput;
+package nts.uk.smile.dom.smilelinked.cooperationoutput;
 
 /**
  * Smile連携出力設定Repository										

@@ -38,7 +38,6 @@ module nts.uk.at.view.smm001.a {
     }
 
     setDefault() {
-      const vm = this;
     }
 
     save() {

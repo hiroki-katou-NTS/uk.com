@@ -1,4 +1,4 @@
-package smilelinked.cooperationoutput;
+package nts.uk.smile.dom.smilelinked.cooperationoutput;
 
 import java.util.List;
 
