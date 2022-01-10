@@ -50,20 +50,30 @@ module nts.uk.ui.at.ksu002.a {
             };
 
             vm.selectedItem.subscribe((data: string) => {
-                if (ko.toJS(param.haschange) || vm.showError) {
-                    vm.$dialog
-                        .confirm({ messageId: 'Msg_1732' })
-                        .then((v) => {
-                            if (v === 'yes') {
-                                vm.employeeId(data);
-                                vm.showError = false;
-                            }
-                        });
-                } else {
+                if (vm.showError) {
                     vm.employeeId(data);
                     vm.showError = false;
+                } else {
+                    if (ko.toJS(param.haschange)) {
+                        if(data !== ko.unwrap(vm.employeeId)) {
+                            vm.$dialog
+                            .confirm({ messageId: 'Msg_1732' })
+                            .then((v) => {
+                                if (v === 'yes') {
+                                    vm.employeeId(data);
+                                    vm.showError = false;
+                                } else {
+                                    vm.selectedItem(ko.unwrap(vm.employeeId));
+                                }
+                            });
+                        }
+                    }
+                    else {
+                        vm.employeeId(data);
+                        vm.showError = false;
+                    }
                 }
-            })
+            });
 
             vm.employeeInputList.subscribe((data: [EmployeeModel]) => {
                 if (data.length > 0) {
@@ -73,9 +83,9 @@ module nts.uk.ui.at.ksu002.a {
                             .then((v) => {
                                 if (v === 'yes') {
                                     vm.changeEmployee(data);
-                                    vm.showError = true;
                                 }
                             });
+                        vm.showError = true;
                     } else {
                         vm.changeEmployee(data);
                     }
