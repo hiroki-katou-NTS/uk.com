@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
+/**
+ * Smile連携受入設定								
+ *
+ */
 @Getter
 @AllArgsConstructor
 public class SmileCooperationAcceptanceSetting extends AggregateRoot {
