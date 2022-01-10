@@ -95,8 +95,10 @@ export class KafS05Step2Component extends Vue {
             self.pgName = 'kafs05step1';
         } else if (self.$appContext.getoverTimeClf == 1) {
             self.pgName = 'kafs05step2';
-        } else {
+        } else if (self.$appContext.getoverTimeClf == 2) {
             self.pgName = 'kafs05step3';
+        } else {
+            self.pgName = 'kafs05step4';
         }
         
     }
