@@ -2994,6 +2994,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         _.find(vm.calendar.getEvents() , e => e.extendedProps.id == extendedProps.id).setExtendedProp('isChanged', true);
                         // update data sources
                         mutatedEvents();
+                        $caches.new(event);
                         return;
                     }
                     
