@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.function.dom.processexecution.ExternalAcceptanceConditionCode;
 
 /**
  * Smile連携受入設定								
@@ -27,9 +28,8 @@ public class SmileCooperationAcceptanceSetting extends AggregateRoot {
 	private SmileCooperationAcceptanceClassification cooperationAcceptanceClassification;
 
 	/**
-	 * String ->ExternalAcceptanceConditionCode 外部受入条件コード 
 	 * Name: Smile連携受入条件 
 	 * Type: Optional 外部受入条件コード
 	 */
-	private Optional<String> cooperationAcceptanceConditions;
+	private Optional<ExternalAcceptanceConditionCode> cooperationAcceptanceConditions;
 }

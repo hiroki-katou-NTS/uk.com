@@ -16,4 +16,8 @@ public enum LinkedMonthSettingClassification {
 	private LinkedMonthSettingClassification (int value) {
 		this.value = value;
 	}
+	
+	public static LinkedMonthSettingClassification valueOf(Integer value) {
+		return value == 0 ? CURRENT_MONTH : ONE_MONTH_AGO;
+	}
 }

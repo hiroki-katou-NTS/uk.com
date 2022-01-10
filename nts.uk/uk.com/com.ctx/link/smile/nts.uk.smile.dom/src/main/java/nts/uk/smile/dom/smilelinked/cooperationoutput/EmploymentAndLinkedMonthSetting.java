@@ -4,6 +4,7 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * AR_連動支払変換

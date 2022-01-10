@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.function.dom.processexecution.ExternalOutputConditionCode;
 
 /**
  * Smile連携出力設定
@@ -32,7 +33,6 @@ public class SmileLinkageOutputSetting extends AggregateRoot {
 	/**
 	 * Name: 給与連携条件 
 	 * Type: Optional＜外部出力条件コード＞
-	 * String -> ExternalOutputConditionCode
 	 */
-	private Optional<String> salaryCooperationConditions;
+	private Optional<ExternalOutputConditionCode> salaryCooperationConditions;
 }

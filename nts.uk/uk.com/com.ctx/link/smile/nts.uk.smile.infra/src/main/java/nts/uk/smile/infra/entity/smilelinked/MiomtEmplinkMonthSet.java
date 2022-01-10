@@ -7,9 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /*
  * UKDesign.データベース.ER図.オフィス支援.在席照会.ステータス.OFIDT_PRESENT_STATUS
@@ -19,7 +20,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "MIOMT_EMPLINK_MONTHSET")
-public class MiomtEmplinkMonthSet extends ContractUkJpaEntity implements Serializable {
+@AllArgsConstructor
+public class MiomtEmplinkMonthSet extends UkJpaEntity implements Serializable {
 	/**
 	 * serialVersionUID
 	 */
