@@ -1427,15 +1427,17 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     }
                 }
 
-                if(!(startYm !=null && endYm!= null)){
+                if(startYm ==null || endYm == null){
                     Optional<YearMonthPeriod> pastPeriodOpt = periodInformation.getPastPeriod();
                     if(pastPeriodOpt.isPresent()){
                         val pastPeriod = pastPeriodOpt.get();
                         if(startYm !=null){
                             pastPeriodByEmployee = new YearMonthPeriod(startYm,pastPeriod.end());
-                        }else if(endYm!=null){
+                        }
+                        if(endYm!=null){
                             pastPeriodByEmployee = new YearMonthPeriod(pastPeriod.start(),endYm);
-                        }else {
+                        }
+                        if(startYm ==null & endYm == null){
                             pastPeriodByEmployee = pastPeriod;
                         }
                     }
