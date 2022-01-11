@@ -5,3 +5,7 @@
 .mb-1 {
   margin-bottom: 1rem;
 }
+
+.d-flex .checkbox-wrapper {
+  width: 100px;
+}

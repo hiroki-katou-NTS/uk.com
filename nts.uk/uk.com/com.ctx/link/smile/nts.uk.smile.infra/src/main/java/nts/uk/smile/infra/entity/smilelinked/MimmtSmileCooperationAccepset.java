@@ -8,6 +8,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -20,6 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "MIMMT_SMILE_COOPERATION_ACCEPSET")
+@AllArgsConstructor
 public class MimmtSmileCooperationAccepset extends UkJpaEntity implements Serializable {
 	/**
 	 * serialVersionUID
