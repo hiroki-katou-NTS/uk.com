@@ -59,7 +59,7 @@ public class RetentionYearlySettingTest {
 		// 管理区分  = 管理しない
 		RetentionYearlySetting retentionYearlySetting = RetentionYearlySettingHelper.createRetentionYearlySetting(ManageDistinct.NO);
 		new Expectations() {{
-			require.findByCompanyId();
+			require.findByCid("000000000003-0004");
 			result = leaveSetting;
 		}};
 		List<Integer> lstId = retentionYearlySetting.getMonthlyAttendanceItems(require);
@@ -74,7 +74,7 @@ public class RetentionYearlySettingTest {
 		// 管理区分  = 管理する
 		retentionYearlySetting = RetentionYearlySettingHelper.createRetentionYearlySetting(ManageDistinct.YES);
 		new Expectations() {{
-			require.findByCompanyId();
+			require.findByCid("000000000003-0004");
 			result = leaveSetting2;
 		}};
 		lstId = retentionYearlySetting.getMonthlyAttendanceItems(require);
@@ -94,7 +94,7 @@ public class RetentionYearlySettingTest {
 		// 管理区分  = 管理しない
 		RetentionYearlySetting retentionYearlySetting = RetentionYearlySettingHelper.createRetentionYearlySetting(ManageDistinct.NO);
 		new Expectations() {{
-			require.findByCompanyId();
+			require.findByCid("000000000003-0004");
 			result = leaveSetting;
 		}};
 		boolean result = retentionYearlySetting.isManageRetentionYearly(require);
@@ -109,7 +109,7 @@ public class RetentionYearlySettingTest {
 		// 管理区分  = 管理する
 		retentionYearlySetting = RetentionYearlySettingHelper.createRetentionYearlySetting(ManageDistinct.YES);
 		new Expectations() {{
-			require.findByCompanyId();
+			require.findByCid("000000000003-0004");
 			result = leaveSetting2;
 		}};
 		result = retentionYearlySetting.isManageRetentionYearly(require);
@@ -124,7 +124,7 @@ public class RetentionYearlySettingTest {
 		// 管理区分  = 管理しない
 		retentionYearlySetting = RetentionYearlySettingHelper.createRetentionYearlySetting(ManageDistinct.NO);
 		new Expectations() {{
-			require.findByCompanyId();
+			require.findByCid("000000000003-0004");
 			result = leaveSetting3;
 		}};
 		result = retentionYearlySetting.isManageRetentionYearly(require);
@@ -139,7 +139,7 @@ public class RetentionYearlySettingTest {
 		// 管理区分  = 管理する
 		retentionYearlySetting = RetentionYearlySettingHelper.createRetentionYearlySetting(ManageDistinct.YES);
 		new Expectations() {{
-			require.findByCompanyId();
+			require.findByCid("000000000003-0004");
 			result = leaveSetting4;
 		}};
 		result = retentionYearlySetting.isManageRetentionYearly(require);
@@ -154,7 +154,7 @@ public class RetentionYearlySettingTest {
 		// 管理区分  = 管理する
 		retentionYearlySetting = RetentionYearlySettingHelper.createRetentionYearlySetting(ManageDistinct.YES);
 		new Expectations() {{
-			require.findByCompanyId();
+			require.findByCid("000000000003-0004");
 			result = leaveSetting5;
 		}};
 		result = retentionYearlySetting.isManageRetentionYearly(require);
@@ -169,7 +169,7 @@ public class RetentionYearlySettingTest {
 		// 管理区分  = 管理しない
 		retentionYearlySetting = RetentionYearlySettingHelper.createRetentionYearlySetting(ManageDistinct.NO);
 		new Expectations() {{
-			require.findByCompanyId();
+			require.findByCid("000000000003-0004");
 			result = leaveSetting6;
 		}};
 		result = retentionYearlySetting.isManageRetentionYearly(require);

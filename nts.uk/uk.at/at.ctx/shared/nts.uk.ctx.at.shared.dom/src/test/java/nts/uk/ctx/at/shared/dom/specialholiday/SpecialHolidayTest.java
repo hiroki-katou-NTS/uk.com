@@ -48,7 +48,7 @@ public class SpecialHolidayTest {
 	
 			new Expectations() {
 				{
-					require.findByCompany();
+					require.findByCompany("000000000008-0006");
 					result = timeMana;
 				}
 			};
@@ -162,7 +162,7 @@ public class SpecialHolidayTest {
 
 			new Expectations() {
 				{
-					require.findByCompany();
+					require.findByCompany("000000000008-0006");
 					result = timeMana2;
 				}
 			};
@@ -175,7 +175,7 @@ public class SpecialHolidayTest {
 			// 時間特別休暇の管理設定 = empty
 			new Expectations() {
 				{
-					require.findByCompany();
+					require.findByCompany("000000000008-0006");
 				}
 			};
 

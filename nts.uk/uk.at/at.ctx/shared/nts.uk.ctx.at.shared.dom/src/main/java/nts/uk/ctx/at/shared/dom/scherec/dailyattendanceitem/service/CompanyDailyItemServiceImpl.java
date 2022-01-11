@@ -14,6 +14,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DisplayAndInputControl;
@@ -39,6 +40,9 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 
 	@Inject
 	private AtItemNameAdapter atItemNameAdapter;
+	
+	@Inject
+	private NarrowDownListDailyAttdItemPub pub;
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -74,6 +78,9 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 		if (dailyItem.isEmpty()) {
 			return Collections.emptyList();
 		}
+		
+		val lstId = pub.get(AppContexts.user().companyId(), dailyAttendanceItemIds);
+		
 		// 	勤怠項目に対応する名称を生成する
 		// to ver7
 		List<AttItemName> dailyAttItem = atItemNameAdapter.getNameOfDailyAttendanceItem(dailyItem);

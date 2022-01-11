@@ -69,7 +69,7 @@ public class RetentionYearlySetting extends AggregateRoot {
 	 * [4] 積立年休を管理するか
 	 */
 	public boolean isManageRetentionYearly(Require require) {
-		AnnualPaidLeaveSetting annualPaid = require.findByCompanyId();
+		AnnualPaidLeaveSetting annualPaid = require.findByCid(companyId);
 		if (annualPaid == null || (annualPaid != null && annualPaid.getYearManageType() == ManageDistinct.NO) || managementCategory == ManageDistinct.NO)
 			return false;
 		return true;
@@ -80,7 +80,7 @@ public class RetentionYearlySetting extends AggregateRoot {
 	 */
 	public static interface Require {
 		// AnnualPaidLeaveSettingRepository
-		AnnualPaidLeaveSetting findByCompanyId();
+		AnnualPaidLeaveSetting findByCid(String companyId);
 	}
 	
 	/**

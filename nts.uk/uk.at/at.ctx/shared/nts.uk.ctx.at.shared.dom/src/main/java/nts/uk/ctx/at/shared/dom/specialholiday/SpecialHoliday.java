@@ -84,7 +84,7 @@ public class SpecialHoliday extends AggregateRoot {
 	 * [1] 利用できない月次の勤怠項目を取得する
 	 */
 	public List<Integer> getMonthlyAttendanceItems(Require require){
-		Optional<TimeSpecialLeaveManagementSetting> timeMana =  require.findByCompany();
+		Optional<TimeSpecialLeaveManagementSetting> timeMana =  require.findByCompany(companyId);
 		if (!timeMana.isPresent() || (timeMana.isPresent() && timeMana.get().getManageType() == ManageDistinct.NO)) { // nhờ dev update ver 3 sửa cho điều kiện này khi update tài liệu
 			return SpecialHoliday.getAttendanceItemsTimeSpecialHoliday(Arrays.asList(this.specialHolidayCode));
 		}
@@ -329,6 +329,6 @@ public class SpecialHoliday extends AggregateRoot {
 	 */
 	public static interface Require {
 		// TimeSpecialLeaveMngSetRepository
-		Optional<TimeSpecialLeaveManagementSetting> findByCompany();
+		Optional<TimeSpecialLeaveManagementSetting> findByCompany(String companyId);
 	}
 }
