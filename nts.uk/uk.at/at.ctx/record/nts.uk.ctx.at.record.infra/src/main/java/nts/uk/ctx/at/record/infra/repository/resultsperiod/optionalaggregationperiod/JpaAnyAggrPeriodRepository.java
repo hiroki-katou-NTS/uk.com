@@ -77,12 +77,14 @@ public class JpaAnyAggrPeriodRepository extends JpaRepository implements AnyAggr
 		// Convert data to entity
 		KrcmtOptionalAggrPeriod entity = toEntity(domain);
 		KrcmtOptionalAggrPeriod oldEntity = this.queryProxy().find(entity.getKrcmtOptionalAggrPeriodPK(),
-																   KrcmtOptionalAggrPeriod.class).get();
-		oldEntity.setOptionalAggrName(entity.getOptionalAggrName());
-		oldEntity.setStartDate(entity.getStartDate());
-		oldEntity.setEndDate(entity.getEndDate());
-		// Update entity
-		this.commandProxy().update(entity);
+																   KrcmtOptionalAggrPeriod.class).orElse(null);
+		if (oldEntity != null) {
+			oldEntity.setOptionalAggrName(entity.getOptionalAggrName());
+			oldEntity.setStartDate(entity.getStartDate());
+			oldEntity.setEndDate(entity.getEndDate());
+			// Update entity
+			this.commandProxy().update(entity);
+		}
 	}
 
 	/**

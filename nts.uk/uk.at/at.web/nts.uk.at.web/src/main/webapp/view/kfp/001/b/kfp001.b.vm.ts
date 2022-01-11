@@ -108,7 +108,12 @@ module nts.uk.at.view.kfp001.b {
                     if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
                         self.enableNEW(true);
                         self.enableDEL(true);
-                        self.currentItem(self.findOptional(codeChanged));
+                        if (!_.isNil(self.findOptional(codeChanged))) {
+                          self.currentItem(self.findOptional(codeChanged));
+                        } else {
+                          self.currentItem().startDate(self.dateValue().startDate);
+                          self.currentItem().endDate(self.dateValue().endDate);
+                        }
                         self.currentItemExe(self.findExc(codeChanged))
                         self.getPeriod();
                         self.dateValue({
@@ -183,8 +188,10 @@ module nts.uk.at.view.kfp001.b {
 
 
                         self.dScreenmodel.listSelect((self.cScreenmodel.multiSelectedCode()));
-                        self.dScreenmodel.aggrFrameCode(self.currentItem().aggrFrameCode());
-                        self.dScreenmodel.optionalAggrName(self.currentItem().optionalAggrName());
+                        if (!_.isNil(self.currentItem())) {
+                          self.dScreenmodel.aggrFrameCode(self.currentItem().aggrFrameCode());
+                          self.dScreenmodel.optionalAggrName(self.currentItem().optionalAggrName());
+                        }
                         self.dScreenmodel.startDate(self.dateValue().startDate);
                         self.dScreenmodel.endDate(self.dateValue().endDate);
                         self.dScreenmodel.mode(self.mode());
@@ -211,7 +218,6 @@ module nts.uk.at.view.kfp001.b {
 
             //Display data in update module when back to screen
             backStartKFP001B(): JQueryPromise<any> {
-                debugger;
                 var self = this;
                 var dfd = $.Deferred();
 
@@ -277,13 +283,15 @@ module nts.uk.at.view.kfp001.b {
                 var dfd = $.Deferred();
 
                 $.when(service.findAggrCode(self.currentCode())).done(function(data) {
+                  if (!_.isEmpty(data)) {
                     service.findTargetPeriod(data[0].aggrId).done(function(dataTarget) {
-                        self.aggrId = data[0].aggrId;
-                        self.peopleNo(dataTarget.length);
-                        self.status(data[0].executionStatus);
-                        self.preOfError(data[0].presenceOfError);
-                        self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataTarget.length]));
+                      self.aggrId = data[0].aggrId;
+                      self.peopleNo(dataTarget.length);
+                      self.status(data[0].executionStatus);
+                      self.preOfError(data[0].presenceOfError);
+                      self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataTarget.length]));
                     })
+                  }
                 }).fail(function() {
                     dfd.reject();
                 });;
