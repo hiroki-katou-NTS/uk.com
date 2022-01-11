@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCard;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardEdit;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardEditRepository;
@@ -38,9 +37,6 @@ public class RenewalSupportCardCommandHandler extends CommandHandler<SupportCard
 		
 		// カードを編集する(編集前番号): 応援カード番号
 		Optional<SupportCardEdit> optEdit = this.supportCardEditRepository.get(command.getCompanyId());
-		if (!optEdit.isPresent()) {
-			optEdit = Optional.of(new SupportCardEdit(StampCardEditMethod.PreviousZero));
-		}
 		SupportCardNumber supportCardNumber = optEdit
 				.map(data -> data.editTheCard(new SupportCardNumber(command.getSupportCardNumber())))
 				.orElse(new SupportCardNumber(command.getSupportCardNumber()));

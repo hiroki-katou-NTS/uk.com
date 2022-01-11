@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditMethod;
 
 /**
  * AR: 応援カード 
@@ -33,9 +32,6 @@ public class SupportCard implements DomainAggregate {
 	// [C-1] 応援カード作成する
 	public static SupportCard create(Require require, String cid, SupportCardNumber supportCardNumber, String workplaceId) {
 		Optional<SupportCardEdit> optEdit = require.getSupportCardEditSetting(cid);
-		if (!optEdit.isPresent()) {
-			optEdit = Optional.of(new SupportCardEdit(StampCardEditMethod.PreviousZero));
-		}
 		SupportCardNumber cardNumber = optEdit.map(data -> data.editTheCard(supportCardNumber)).orElse(supportCardNumber);
 		return new SupportCard(cid, cardNumber, workplaceId);
 	}
