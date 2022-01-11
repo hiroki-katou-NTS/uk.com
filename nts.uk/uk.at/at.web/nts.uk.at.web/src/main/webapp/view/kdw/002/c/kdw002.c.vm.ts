@@ -419,6 +419,12 @@ module nts.uk.at.view.kdw002.c {
                             if(attFullData.attendanceItemId == data[i].attendanceItemId){
                                 attFullData.authority = data[i].authority;
                                 break;
+                            } else {
+                                attFullData.authority = {   
+                                                            'toUse' : false,
+                                                            'canBeChangedByOthers' : false,
+                                                            'youCanChangeIt' : false    
+                                                        }
                             }    
                         }
                             
