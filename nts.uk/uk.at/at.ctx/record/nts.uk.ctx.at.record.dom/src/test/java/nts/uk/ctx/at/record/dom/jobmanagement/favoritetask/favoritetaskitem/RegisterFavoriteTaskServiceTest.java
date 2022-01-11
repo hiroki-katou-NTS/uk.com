@@ -11,7 +11,6 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
-import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
@@ -46,8 +45,7 @@ public class RegisterFavoriteTaskServiceTest {
 		};
 
 		NtsAssert.businessException("Msg_2245",
-				() -> RegisterFavoriteTaskService.add(require, "employeeId", 
-						new FavoriteTaskName("name"), contents));
+				() -> RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"), contents));
 	}
 
 	@Test
@@ -65,71 +63,88 @@ public class RegisterFavoriteTaskServiceTest {
 			}
 		};
 
-		NtsAssert.businessException("Msg_2245", 
-				() -> RegisterFavoriteTaskService.add(require, "employeeId",
+		NtsAssert.businessException("Msg_2245", () -> RegisterFavoriteTaskService.add(require, "employeeId",
 				new FavoriteTaskName("name"), new ArrayList<>()));
 	}
 
-//	@Test
-//	public void test1() {
-//		List<FavoriteDisplayOrder> displayOrders = new ArrayList<>();
-//
-//		displayOrders.add(new FavoriteDisplayOrder("favId1", 1));
-//		displayOrders.add(new FavoriteDisplayOrder("favId2", 2));
-//		Optional<FavoriteTaskDisplayOrder> optdisplayOrder = Optional
-//				.of(new FavoriteTaskDisplayOrder("employeeId", displayOrders));
-//		
-//		List<TaskContent> favoriteContents = new ArrayList<>();
-//		favoriteContents.add(new TaskContent(1, new WorkCode("a")));
-//		favoriteContents.add(new TaskContent(2, new WorkCode("b")));
-//		
-//		new Expectations() {
-//			{
-//				require.getBySameSetting(anyString, new ArrayList<>());
-//				result = new ArrayList<>();
-//
-//				require.get(anyString);
-//				result = optdisplayOrder;
-//			}
-//		};
-//		
-//		new MockUp<IdentifierUtil>() {
-//			@Mock public String randomUniqueId() {
-//				return "uniqueFavId";
-//			}
-//		};
-//
-//		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
-//				favoriteContents);
-//
-//		result.run();
-//		
-//		FavoriteTaskItem favoriteTaskItem = new FavoriteTaskItem("employeeId", new FavoriteTaskName("name"), favoriteContents);
-//		
-//		new Verifications() {{
-//			require.insert(favoriteTaskItem);
-//			times = 0; // = 1 mới đúng
-//			
-//			require.update(optdisplayOrder.get());
-//			times = 1;
-//		}};
-//	}
+	@Test
+	public void test1() {
+		List<FavoriteDisplayOrder> displayOrders = new ArrayList<>();
+
+		displayOrders.add(new FavoriteDisplayOrder("favId1", 1));
+		displayOrders.add(new FavoriteDisplayOrder("favId2", 2));
+		Optional<FavoriteTaskDisplayOrder> optdisplayOrder = Optional
+				.of(new FavoriteTaskDisplayOrder("employeeId", displayOrders));
+
+		List<TaskContent> favoriteContents = new ArrayList<>();
+		favoriteContents.add(new TaskContent(1, new WorkCode("a")));
+		favoriteContents.add(new TaskContent(2, new WorkCode("b")));
+
+		new MockUp<IdentifierUtil>() {
+			@Mock
+			public String randomUniqueId() {
+				return "uniqueFavId";
+			}
+		};
+
+		new Expectations() {
+			{
+
+				require.getBySameSetting(anyString, favoriteContents);
+				result = new ArrayList<>();
+
+				require.get(anyString);
+				result = optdisplayOrder;
+
+				require.insert((FavoriteTaskItem) any);
+				times = 1;
+
+				require.insert((FavoriteTaskDisplayOrder) any);
+				times = 0;
+
+				require.update((FavoriteTaskDisplayOrder) any);
+				times = 1;
+			}
+		};
+
+		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
+				favoriteContents);
+
+		result.run();
+
+	}
 
 	@Test
 	public void test2() {
+
+		new MockUp<IdentifierUtil>() {
+			@Mock
+			public String randomUniqueId() {
+				return "uniqueFavId";
+			}
+		};
 
 		new Expectations() {
 			{
 				require.getBySameSetting(anyString, new ArrayList<>());
 				result = new ArrayList<>();
+
+				require.insert((FavoriteTaskItem) any);
+				times = 1;
+
+				require.insert((FavoriteTaskDisplayOrder) any);
+				times = 1;
+
+				require.update((FavoriteTaskDisplayOrder) any);
+				times = 0;
+
 			}
 		};
 
 		AtomTask result = RegisterFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
 				new ArrayList<>());
 
-		NtsAssert.atomTask(() -> result,
-				any -> require.insert(new FavoriteTaskDisplayOrder("employeeId", new ArrayList<>())));
+		result.run();
 
 	}
 

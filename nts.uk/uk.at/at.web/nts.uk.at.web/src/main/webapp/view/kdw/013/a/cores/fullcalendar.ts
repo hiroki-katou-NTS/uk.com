@@ -1122,7 +1122,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 new: ko.observable(null),
                 drag: ko.observable(null)
             };
-
+            vm.params.screenA.$caches = $caches;
             let $el = $(vm.$el);
             let $dgOne = $el.find('div.fc-oneday-events').get(0);
             let $dgTask = $el.find('div.fc-task-events').get(0);
@@ -1168,77 +1168,148 @@ module nts.uk.ui.at.kdw013.calendar {
             // calculate time on header
             let timesSet: KnockoutObservable<({ date: string | null; value: number | null; })[]> = ko.observable([]);
 
-            ko.computed({
-                read: () => {
-                    let ds = ko.unwrap(datesSet);
-                    let wd = ko.unwrap(firstDay);
-                    let iv = ko.unwrap(initialView);
-                    let evts = ko.unwrap<EventRaw[]>(events);
-                    let cache = ko.unwrap<EventApi>($caches.new);
-                    let { start, end } = cache || { start: null, end: null };
-                    let nkend = moment(start).clone().add(1, 'hour').toDate();
-                    let duration = moment(end || nkend).diff(start, 'minute');
-                    let nday = dayOfView(iv);
-                    
-                    let loaded = vm.params.screenA.loaded;
-                    if (loaded) {
-                        return;
-                    }
-                    if (ds) {
-                        let { start, end } = ds;
 
-                        let first = moment(start);
-                        let diff: number = moment(end).diff(start, 'day');
-                        let mkend = first.clone().add(1, 'hour').toDate();
+            datesSet.subscribe((ds) => { calTimSet(); });
+            firstDay.subscribe((ds) => { calTimSet(); });
+            initialView.subscribe((ds) => { calTimSet(); });
+            events.subscribe((ds) => { calTimSet(); });
+            $caches.new.subscribe((ds) => { calTimSet(); });
+            
+            let calTimSet = () => {
+                let ds = ko.unwrap(datesSet);
+                let wd = ko.unwrap(firstDay);
+                let iv = ko.unwrap(initialView);
+                let evts = ko.unwrap<EventRaw[]>(events);
+                let cache = ko.unwrap<EventApi>($caches.new);
+                let { start, end } = cache || { start: null, end: null };
+                let nkend = moment(start).clone().add(1, 'hour').toDate();
+                let duration = moment(end || nkend).diff(start, 'minute');
+                let nday = dayOfView(iv);
 
-                        let days = _.range(0, diff, 1)
-                            .map(m => {
-                                let date = first.clone().add(m, 'day');
-                                let exists = _.filter([...evts], (d: EventApi) => {
-                                    return !d.allDay &&
-                                        d.display !== 'background' &&
-                                        date.isSame(d.start, 'date');
-                                });
+                let loaded = vm.params.screenA.loaded;
+                if (loaded) {
+                    return;
+                }
+                if (ds) {
+                    let { start, end } = ds;
 
-                                return {
-                                    date: date.format(DATE_FORMAT),
-                                    value: exists.reduce((p, c) => p += moment(c.end || mkend).diff(c.start, 'minute'), date.isSame(nkend, 'date') ? duration : 0)
-                                };
+                    let first = moment(start);
+                    let diff: number = moment(end).diff(start, 'day');
+                    let mkend = first.clone().add(1, 'hour').toDate();
+
+                    let days = _.range(0, diff, 1)
+                        .map(m => {
+                            let date = first.clone().add(m, 'day');
+                            let exists = _.filter([...evts], (d: EventApi) => {
+                                return !d.allDay &&
+                                    d.display !== 'background' &&
+                                    date.isSame(d.start, 'date');
                             });
 
-                        let sow = first.clone().isoWeekday(wd).isSame(start, 'date');
+                            return {
+                                date: date.format(DATE_FORMAT),
+                                value: exists.reduce((p, c) => p += moment(c.end || mkend).diff(c.start, 'minute'), date.isSame(nkend, 'date') ? duration : 0)
+                            };
+                        });
 
-                        while (days.length < nday) {
-                            if (sow) {
-                                days.push({ date: null, value: null });
-                            } else {
-                                days.unshift({ date: null, value: null })
-                            }
+                    let sow = first.clone().isoWeekday(wd).isSame(start, 'date');
+
+                    while (days.length < nday) {
+                        if (sow) {
+                            days.push({ date: null, value: null });
+                        } else {
+                            days.unshift({ date: null, value: null })
                         }
-
-                        timesSet(days);
                     }
 
-                    //timesSet([]);
-                },
-                disposeWhenNodeIsRemoved: $el
-            });
+                    timesSet(days);
+                }
+            }
 
              ko.computed({
                 read: () => {
                     let cache = ko.unwrap<EventApi>($caches.new);
                     let { start, end } = cache || { start: null, end: null };
-                    
-                    let loaded = vm.params.screenA.loaded;
-                    
-                    let el = $(".fc-times[data-date='"+ moment(start).format(DATE_FORMAT) + "']");
-                    
+                    let date = moment(start).format(DATE_FORMAT);
+                    const className = 'wrn-' + date;
+                    let el = $(".fc-times[data-date='"+ date + "']");
+                                        
                     if (el && el.html()) {
-                            el.html(vm.$i18n('KDW013_98'));
+                            let icon = isHasWarning(date) ? `<i class='warningIcon ` + className + `'> </i>` : '';
+                            setTimeout(() => {
+                                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 }, click: () => { OpenIDialog(date); } });
+                                $('.' + className).on('mousedown', () => { regisPopup(date); });
+                            }, 300);
+                            el.html(vm.$i18n('KDW013_98') + icon);
                     }
                 },
                 disposeWhenNodeIsRemoved: $el
             });
+
+             let regisPopup = (date) => {
+                 const className = 'wrn-' + date;
+                 $(".popup-area-i").ntsPopup({
+                     trigger: '.' + className,
+                     position: {
+                         my: "left top",
+                         at: "left bottom",
+                         of: '.' + className
+                     },
+                     showOnStart: false,
+                     dismissible: true
+                 });
+             }
+
+             let OpenIDialog = (date) => {
+                 let vm = this;
+                 let screenA = vm.params.screenA;
+                 let {$settings, $datas} = screenA;
+                 screenA.taskSettings(_.get($settings(), 'taskFrameUsageSetting.frameSettingList', []));
+
+                 let iod = _.find(_.get($datas(), 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days') });
+                 // 作業リスト
+                 screenA.taskDtos($settings().tasks);
+
+                 // 日別勤怠の応援作業時間帯
+                 screenA.ouenWorkTimeSheets(_.get(iod, 'ouenTimeSheet'));
+
+                 // 日別勤怠の応援作業時間
+                 screenA.ouenWorkTimes(_.get(iod, 'ouenTime'));
+
+                 //対象日
+                 screenA.targetDate(moment(date).toDate());
+             }
+            
+             let isHasWarning = (date) => {
+                 let vm = this;
+                 let datas = ko.unwrap(vm.params.screenA.$datas);
+
+                 if (!datas) {
+                     return false;
+                 }
+
+                 let manHrTask = _.find(_.get(datas, 'dailyManHrTasks', []), hr => { return moment(hr.date).isSame(moment(date), 'days'); });
+
+                 let id = _.find(_.get(datas, 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days'); });
+
+                 let ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
+
+                 let taskBlocks = _.get(manHrTask, 'taskBlocks', []);
+
+                 if (!id || !ouenTimeSheet.length) {
+                     return false;
+                 }
+
+                 for (let i = 0; i < ouenTimeSheet.length; i++) {
+                     let workNo = _.get(ouenTimeSheet[i], 'workNo');
+
+                     if (!_.find(taskBlocks, tb => _.find(tb.taskDetails, ['supNo', workNo]))) {
+                         return true;
+                     }
+                 }
+
+                 return false;
+             }
 
             let attendancesSet: KnockoutComputed<({ date: string | null; events: string[]; })[]> = ko.computed({
                 read: () => {
@@ -1828,6 +1899,53 @@ module nts.uk.ui.at.kdw013.calendar {
                     events(getEvents().filter(({ extendedProps }) => !!extendedProps.id && extendedProps.status !== 'delete'));
                 }
             };
+            let calWorkTimeBreakEvent = (event) => {
+                let tempEs = [...events()];
+                let evns = _.filter(tempEs, e => 
+                    moment(e.end).isSame(event.start, 'days')
+                    && !e.extendedProps.isTimeBreak);
+
+                _.forEach(evns, evn => {
+                    let it = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
+                    let refTimezone = { start: (moment(evn.start).hour() * 60) + moment(evn.start).minute(), end: (moment(evn.end).hour() * 60) + moment(evn.end).minute() };
+                    let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(evn.start), 'days'));
+                    let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                    _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end , no }) => {
+                        if (no == event.extendedProps.no) {
+                            let startAsMinites = (moment(event.start).hour() * 60) + moment(event.start).minute();
+                            let endAsMinites = (moment(event.end).hour() * 60) + moment(event.end).minute();
+                            goOutBreakTimeLst.push({ start: startAsMinites, end: endAsMinites });
+                        } else {
+                            goOutBreakTimeLst.push({ start, end });
+                        }
+                    });
+                    let calParam = { refTimezone, goOutBreakTimeLst };
+                    vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                        it.value = time;
+                        events(tempEs);
+                        updateEvents();
+                    });
+                });
+            }
+
+            let calWorkTime = (event) => {
+                let tempEs = [...events()];
+                let evn = _.find(tempEs, e => e.extendedProps.id == event.id);
+                let it = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
+                let refTimezone = { start: (moment(evn.start).hour() * 60) + moment(evn.start).minute(), end: (moment(evn.end).hour() * 60) + moment(evn.end).minute() };
+                let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(evn.start), 'days'));
+                let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                    goOutBreakTimeLst.push({ start, end });
+                });
+                let calParam = { refTimezone, goOutBreakTimeLst };
+                vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                    it.value = time;
+                    events(tempEs);
+                    updateEvents();
+                });
+            }
+
             let updateEvents = () => {
                 let sltds = vm.selectedEvents;
                 let isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => (formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')) && (formatDate(_.get(e,'end')) === formatDate(_.get(m,'end')) ) ));
@@ -2633,8 +2751,12 @@ module nts.uk.ui.at.kdw013.calendar {
                             vm.revertEvent([arg.oldEvent], $caches);
                             return;
                         }
-                        vm.params.screenA.dataChanged(true);
+                        vm.params.screenA.dataChanged(true);                        
                         mutatedEvents();
+                        
+                        //cal work time
+                        calWorkTimeBreakEvent(event);
+                        $caches.new(event);
                         return;
                     }
                     
@@ -2786,6 +2908,11 @@ module nts.uk.ui.at.kdw013.calendar {
                         });
                         events(tempEs);
                         updateEvents();
+                        // cal work Time
+                        _.forEach([].concat(arg.oldEvent, relatedEvents), e => {
+                            calWorkTime(e);
+                        }
+                                
                         if (arg.delta.days != 0 && !ko.unwrap<boolean>(dataEvent.shift)) {
                             _.forEach([].concat(arg.oldEvent, relatedEvents), e => {
 
@@ -2798,6 +2925,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     removeList.push({ date: moment(arg.oldEvent.start).startOf('day').toDate(), supNos });
                                 }
                             });
+                            $caches.new(arg.oldEvent);
                         }
                 },
                 eventResizeStart: (arg: EventResizeStartArg) => {
@@ -2866,15 +2994,16 @@ module nts.uk.ui.at.kdw013.calendar {
                         _.find(vm.calendar.getEvents() , e => e.extendedProps.id == extendedProps.id).setExtendedProp('isChanged', true);
                         // update data sources
                         mutatedEvents();
+                        $caches.new(event);
                         return;
                     }
-                    
                     
                     //check override
                     
                   let oEvents =  
                   _.chain(events())
                   .filter((evn)=>{ return moment(start).isBefore(evn.start) && moment(evn.end).isSameOrBefore(end); })
+                  .filter((evn)=>{ return !evn.extendedProps.isTimeBreak })
                   .sortBy('end')
                   .value();
                   
@@ -3032,6 +3161,8 @@ module nts.uk.ui.at.kdw013.calendar {
                 },
                 eventRemove: ({ event }) => {
                     // remove event from event sources
+                    vm.params.screenA.$caches.new(event);
+                    vm.params.screenA.$caches.new(null);
                     _.forEach(vm.calendar.getEvents(), (e: EventApi) => {
                         if (e.id === event.id) {
                             e.remove();
@@ -3130,8 +3261,17 @@ module nts.uk.ui.at.kdw013.calendar {
 
                         taskItemValues.push({ itemId: 1, value: startMinutes });
                         taskItemValues.push({ itemId: 2, value: endMinutes });
-                        taskItemValues.push({ itemId: 3, value: endMinutes - startMinutes });
-                        let taskDetails = [{ supNo: _.isEmpty(eventInDay) ? 1 : getFrameNo(eventInDay), taskItemValues }];
+
+                        let refTimezone = { start: startMinutes, end: endMinutes };
+                        let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                        _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                            goOutBreakTimeLst.push({ start, end });
+                        });
+                        
+                        let calParam = { refTimezone, goOutBreakTimeLst };
+                        vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                            taskItemValues.push({ itemId: 3, value: time });
+                            let taskDetails = [{ supNo: _.isEmpty(eventInDay) ? 1 : getFrameNo(eventInDay), taskItemValues }];
                             events.push({
                                 title: getTitles(taskDetails, vm.params.$settings().tasks, vm.params.$settings().taskFrameUsageSetting),
                                 start,
@@ -3148,12 +3288,12 @@ module nts.uk.ui.at.kdw013.calendar {
                                 //社員ID
                                 employeeId: vm.params.employee() || vm.$user.employeeId,
                                 //年月日
-                                period: {  start,  end },
+                                period: { start, end },
                                 //現在の応援勤務枠
-                                frameNos,                                
+                                frameNos,
                                 //工数実績作業ブロック
                                 taskBlock: {
-                                    caltimeSpan: { start,  end },
+                                    caltimeSpan: { start, end },
 
                                     taskDetails
                                 },
@@ -3161,6 +3301,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                 displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
                             } as any
                         });
+                        updateEvents();
+                    });
+                        
                     }else {
                         //drop by day
                         //remove event in day
@@ -3171,7 +3314,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         
                         // add event   
-                        _.each( _.get(extendedProps, 'dropInfo.taskBlockDetailContents', []), task => {
+                        _.each(_.get(extendedProps, 'dropInfo.taskBlockDetailContents', []), task => {
                             let timeStart = moment(start).set('hour', task.startTime / 60).set('minute', task.startTime % 60).toDate();
                             let timeEnd = moment(start).set('hour', task.endTime / 60).set('minute', task.endTime % 60).toDate();
                             let workCDs = _.chain(task.taskContents).map(task => task.taskContent.taskCode).value();
@@ -3184,7 +3327,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             }
                             let taskDetails = []
                             _.forEach(_.get(task, 'taskContents'), tc => {
-                                
+
                                 let taskdetail = _.map(tc.taskContent, tcont => { return { itemId: tcont.itemId, value: tcont.taskCode }; });
                                 taskdetail.push({ itemId: 3, value: tc.attendanceTime });
                                 taskDetails.push({ supNo: tc.frameNo, taskItemValues: taskdetail });
@@ -3196,8 +3339,8 @@ module nts.uk.ui.at.kdw013.calendar {
                             });
                             events.push({
                                 title: getTitles(taskDetails, vm.params.$settings().tasks, vm.params.$settings().taskFrameUsageSetting),
-                                start : timeStart,
-                                end : timeEnd,
+                                start: timeStart,
+                                end: timeEnd,
                                 textColor,
                                 backgroundColor: getBackgroundColor(wg.workCD1, vm.params.$settings().tasks),
                                 extendedProps: {
@@ -3219,16 +3362,15 @@ module nts.uk.ui.at.kdw013.calendar {
                                     caltimeSpan: { start: timeStart, end: timeEnd },
 
                                     taskDetails
-                                },
+                                    },
                                 //作業内容入力ダイアログ表示項目一覧
                                 displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
-                            } as any
-                        });
-                        
+                                } as any
+                            });
                         });
                         updateEvents();
                     }
-                $caches.new(event);
+               
                 },
                 datesSet: ({ start, end }) => {
                     let current = moment().startOf('day');
@@ -3847,6 +3989,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                                     removeList.push({ date: moment(e.start).startOf('day').toDate(), supNos });
                                                 }
                                             }
+                                            vm.params.screenA.$caches.new(e);
+                                            vm.params.screenA.$caches.new(null);
                                         }
 
                                         return canRemove;

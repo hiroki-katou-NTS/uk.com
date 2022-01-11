@@ -9,10 +9,8 @@ import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteDisplayOrder;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskName;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset.RegisterOneDayFavoriteTaskService.Require;
@@ -42,6 +40,15 @@ public class RegisterOneDayFavoriteTaskServiceTest {
 			{
 				require.get(anyString);
 				result = optdisplayOrder;
+
+				require.insert((OneDayFavoriteSet) any);
+				times = 1;
+
+				require.insert((OneDayFavoriteTaskDisplayOrder) any);
+				times = 0;
+
+				require.update((OneDayFavoriteTaskDisplayOrder) any);
+				times = 1;
 			}
 		};
 
@@ -49,20 +56,6 @@ public class RegisterOneDayFavoriteTaskServiceTest {
 				new ArrayList<>());
 
 		result.run();
-
-		new Verifications() {
-			{
-				require.insert(new OneDayFavoriteSet(anyString, anyString, new FavoriteTaskName(anyString),
-						new ArrayList<>()));
-				times = 0;
-
-				require.insert(new OneDayFavoriteTaskDisplayOrder(anyString, new ArrayList<>()));
-				times = 0;
-
-				require.update(optdisplayOrder.get());
-				times = 1;
-			}
-		};
 
 	}
 
@@ -72,7 +65,21 @@ public class RegisterOneDayFavoriteTaskServiceTest {
 		AtomTask result = RegisterOneDayFavoriteTaskService.add(require, "employeeId", new FavoriteTaskName("name"),
 				new ArrayList<>());
 
-		NtsAssert.atomTask(() -> result,
-				any -> require.insert(new OneDayFavoriteTaskDisplayOrder("employeeId", new ArrayList<>())));
+		new Expectations() {
+			{
+				require.insert((OneDayFavoriteSet) any);
+				times = 1;
+
+				require.insert((OneDayFavoriteTaskDisplayOrder) any);
+				times = 1;
+
+				require.update((OneDayFavoriteTaskDisplayOrder) any);
+				times = 0;
+
+			}
+		};
+
+		result.run();
+
 	}
 }
