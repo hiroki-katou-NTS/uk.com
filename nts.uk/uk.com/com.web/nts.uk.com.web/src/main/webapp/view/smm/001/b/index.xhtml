@@ -3,72 +3,55 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
 
-<!-- <body> -->
-  <!-- <ui:composition template="../../../../master/base.xhtml">
-    <ui:define name="htmlHead">
-      <com:scriptfile set="IGNITE" />
-      <com:stylefile path="smm001.b.style.css" />
-      <com:scriptfile path="smm001.b.vm.js" />
-    </ui:define>
+<div id="contents-area">
+  <div class="smile-div">
+    <p class="ml-1">#{i18n.getText('SMM001_7')}</p>
+    <div class="d-flex mb-1 ml-2">
+      <div data-bind="ntsCheckBox: { checked: checked, enable: enable }">
+        #{i18n.getText('SMM001_8')}
+      </div>
+      <div id="combo-box" data-bind="ntsComboBox: {
+              name: 'List',
+              options: itemList,
+              optionsValue: 'code',
+              visibleItemsCount: 5,
+              value: selectedCode,
+              optionsText: 'name',
+              editable: isEditable,
+              enable: isEnable,
+              columns: [
+                { prop: 'code', length: 4 },
+                { prop: 'name', length: 10 },
+              ]}">
+      </div>
+    </div>
+  </div>
 
-    <ui:define name="content"> -->
-      <div id="contents-area">
-        <div class="smile-div">
-          <p>#{i18n.getText('SMM001_7')}</p>
-          <div data-bind="ntsCheckBox: { checked: checked, enable: enable }">
-            #{i18n.getText('SMM001_8')}
-          </div>
-          <div id="combo-box" data-bind="ntsComboBox: {
-            name: 'List',
-            options: itemList,
-            optionsValue: 'code',
-            visibleItemsCount: 5,
-            value: selectedCode,
-            optionsText: 'name',
-            editable: isEditable,
-            enable: isEnable,
-            columns: [
-              { prop: 'code', length: 4 },
-              { prop: 'name', length: 10 },
-            ]}">
-          </div>
-        </div>
+  <div class="smile-div">
+    <div class="ml-1">
+      #{i18n.getText('SMM001_9')}
+    </div>
+    <div class="ml-2">
+      <label
+        data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 1', option: '1', group: 'abc' }"></label>
+      <label
+        data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 2', option: '2', group: 'abc' }"></label>
+    </div>
+  </div>
+  <div class="smile-div">
+    <div class="ml-1">
+      #{i18n.getText('SMM001_10')}
+    </div>
+    <div class="ml-2">
+      <label
+        data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 1', option: '1', group: 'abc' }"></label>
+      <label
+        data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 2', option: '2', group: 'abc' }"></label>
+    </div>
+  </div>
 
-        <div class="smile-div">
-          <div data-bind="ntsCheckBox: { checked: checked, enable: enable }">
-            #{i18n.getText('SMM001_9')}
-          </div>
-          <div>
-            <label
-              data-bind="ntsRadioButton: { checked: selectedValue3, optionText: 'Option 1', option: '1', group: 'abc' }"></label>
-            <label
-              data-bind="ntsRadioButton: { checked: selectedValue3, optionText: 'Option 2', option: '2', group: 'abc' }"></label>
-          </div>
-        </div>
-        <div class="smile-div">
-          <div data-bind="ntsCheckBox: { checked: checked, enable: enable }">
-            #{i18n.getText('SMM001_10')}
-          </div>
-          <div>
-            <label
-              data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 1', option: '1', group: 'abc' }"></label>
-            <label
-              data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 2', option: '2', group: 'abc' }"></label>
-          </div>
-        </div>
-        <div class="smile-div">
-          <div data-bind="ntsCheckBox: { checked: checked, enable: enable }">
-            #{i18n.getText('SMM001_6')}
-          </div>
-          <div>
-            <label
-              data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 1', option: '1', group: 'abc' }"></label>
-            <label
-              data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 2', option: '2', group: 'abc' }"></label>
-          </div>
-        </div>
-        <div class="smile-div">
-          <!-- <table>
+  <div class="smile-div">
+    <!-- <table>
             <tr>
               <td style="padding-bottom: 0px;">
                 <div data-bind="ntsFormLabel: {text: $i18n('KSM008_46')}"></div>
@@ -103,10 +86,7 @@
               </td>
             </tr>
           </table> -->
-        </div>
-      </div>
-    <!-- </ui:define>
-  </ui:composition> -->
-<!-- </body> -->
+  </div>
+</div>
 
 </html>

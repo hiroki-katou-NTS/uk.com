@@ -20,7 +20,7 @@ module nts.uk.at.view.smm001.a {
     selectedTab: KnockoutObservable<string>;
     checked: KnockoutObservable<boolean>;
     enable: KnockoutObservable<boolean>;
-
+    selectedValue: KnockoutObservable<boolean>;
     itemList: KnockoutObservableArray<ItemModel>;
     selectedCode: KnockoutObservable<string>;
     isEnable: KnockoutObservable<boolean>;
@@ -43,7 +43,7 @@ module nts.uk.at.view.smm001.a {
 
       vm.checked = ko.observable(true);
       vm.enable = ko.observable(true);
-
+      vm.selectedValue = ko.observable(true);
       vm.itemList = ko.observableArray([
         new ItemModel('1', '基本給'),
         new ItemModel('2', '役職手当'),

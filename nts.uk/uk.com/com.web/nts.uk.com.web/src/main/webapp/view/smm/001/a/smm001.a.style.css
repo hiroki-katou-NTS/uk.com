@@ -6,6 +6,22 @@
   margin-bottom: 1rem;
 }
 
+.ml-1 {
+  margin-left: 1rem;
+}
+
+.ml-2 {
+  margin-left: 2rem;
+}
+
 .d-flex .checkbox-wrapper {
   width: 100px;
+}
+
+.smile-div {
+  background: lightyellow;
+  min-height: 50px;
+  width: 500px;
+  margin-top: 25px;
+  border: 1px solid;
 }
