@@ -60,7 +60,6 @@ html {
     overflow: hidden;
     font-family: $font_family;
     font-size: $normal_font_size;
-    font-weight: 500;
 
     body {
         overflow: hidden;
@@ -73,7 +72,6 @@ html {
             font-size: 1rem;
             font-family: $font_family;
             color: $font_color;
-            font-weight: 600;
         }
     }
 }
