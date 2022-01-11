@@ -148,7 +148,7 @@
 	background-color: #CFF1A5;
 	border: 1px solid #CCC;
 	text-align: center;
-	height: 29px;
+	height: 20px;
 	width: auto;
 	padding-left: 2px;
 	padding-right: 2px
@@ -156,7 +156,7 @@
 #fixed-table .ui-widget-body{
 	border: 1px solid #CCC;
 	text-align: right;
-    height: 29px;
+    height: 20px;
 }
 /* #fixed-table .ui-widget-body .text-holiday{ 
 	margin-right: 10px;
@@ -167,17 +167,6 @@
 	padding: 0 2px;
 	/* width: auto;  */
 	/* max-width: 245px; */
-}
-
-#holiday-agree {
-	margin-left: 10px;
-	height: 80px;
-	position: absolute;
-	left: 872px;
-	top: 2px;
-/* 	float: left;
-	margin-top: -24px; */
-	max-width: 460px;
 }
 	
 #fixed-table tr td {
@@ -291,14 +280,14 @@
 	background-color: #CFF1A5;
 	border: 1px solid #CCC;
 	text-align: center;
-	/* height: 29px; */
+	height: 20px;
 	width: 50px;
 }
 
 #agree-table .ui-widget-body {
 	border: 2px solid #CCC;
 	text-align: center;
-	/* height: 29px; */
+	height: 20px;
 }
 
 #agree-table {
@@ -415,6 +404,28 @@
 } 
 #contents-area * {
     font-size: 0.8rem;
+}
+
+#date-extract {
+	display: inline-block;
+}
+
+/* 月次データ */
+#monthly-data-view {
+	margin-top: 10px;
+	width: calc(100% - 700px);
+	overflow-x: scroll;
+}
+
+/* 残数データ */
+#holiday-agree {
+	position: absolute;
+	z-index: 100; /* グリッドの下になってしまうのを回避 */
+	left: calc(100% - 700px);
+	top: 109px;
+	margin-left: 10px;
+	max-width: 460px;
+	height: 80px;
 }
 
 table#employ_view tr{
