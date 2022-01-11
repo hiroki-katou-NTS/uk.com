@@ -581,9 +581,9 @@ module nts.uk.pr.view.kmf001.f {
                         
                         service.update(self.collectData()).done(function() {
                             self.loadSetting().then(function() {
-                                if(self.compenTimeManage() == 1 && self.managementClassification() != 1) {
-                                    // vm.$dialog.info({ messageId: "Msg_3262" }).then(() => nts.uk.ui.dialog.info({ messageId: "Msg_15"}));
-                                  }else nts.uk.ui.dialog.info({ messageId: "Msg_15"});                                  
+                                if(self.compenTimeManage() != 1) {
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_15"}); 
+                                  }                                 
                             });
                         })
                         .fail((err) => {

@@ -182,11 +182,6 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
                 .value(value3.getValue())
                 .style(MasterCellStyle.build().horizontalAlign(value3.getPositon()))
                 .build());
-        data.put(EmployeeSystemImpl.KMF001_209, MasterCellData.builder()
-                .columnId(EmployeeSystemImpl.KMF001_209)
-                .value(value4.getValue())
-                .style(MasterCellStyle.build().horizontalAlign(value4.getPositon()))
-                .build());
         data.put(EmployeeSystemImpl.KMF001_210, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_210)
                 .value(value5.getValue())
