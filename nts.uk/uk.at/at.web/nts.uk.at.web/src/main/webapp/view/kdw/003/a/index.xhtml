@@ -101,54 +101,57 @@
                     </div>
                     <div id="right-content">
                         <div class="valign-center control-group">
-                            <div style="margin-top: -10px; float: left; width: auto;">
-								<div data-bind="stopBinding: true">
+                            <div style="margin-top: -10px;">
+								<div id = "date-extract" style="width: 480px;">
+									<div id="daterangepickererror"
+										data-bind="ntsDateRangePicker: { 
+										required: true, 
+										enable: showDateRange, 
+										showNextPrevious: true, 
+										value: dateRanger, 
+										startName: nts.uk.resource.getText('KDW003_25'),
+										endName: nts.uk.resource.getText('KDW003_26'),
+										maxRange: 'oneMonth'}" />
+										
+									<div id="daterangepicker">
+											<div id="yearMonthPicker" style="top: -9px; height: 27px;" data-bind="ntsDatePicker: { 
+														value: yearMonth,
+														name: '#[KDW003_40]',
+														required: true, 
+														dateFormat: 'yearmonth',
+														showJumpButtons: true,
+														enable: showDateRange,
+														valueFormat: 'YYYYMM'}" />
+											<div id="dislayFormatLbl" data-bind="ntsFormLabel: { required: false}" style="width: 50px ; text-align: right; margin-top: 10px">#{i18n.getText('KDW003_128')}</div>
+											<div  id="dislayFormatLbl" style="vertical-align: middle;  height: 27px;" data-bind="ntsComboBox: {
+													options: actualTimeOptionDisp,
+													optionsValue: 'code',
+													value: actualTimeSelectedCode,
+													optionsText: 'name',
+													enable: showDateRange() &amp;&amp; ko.computed(function() {
+																			        return actualTimeOptionDisp().length  > 1;
+																			    }, this),
+													name:'#[KDW003_128]',
+													columns: [
+														{ prop: 'name', length: 6 },
+													]}">
+											</div>
+									 </div>
+									<div id="cbListDate">
+										<div id="choosenDate"
+											data-bind="ntsDatePicker: {value: selectedDate, 
+											dateFormat: 'YYYY/MM/DD', 
+											showJumpButtons: true,
+											name: nts.uk.resource.getText('KDW003_27'),
+											enable: showDateRange}" />
+									</div>
+								</div>
+								
+                                <button id="btnExtraction" class="proceed large"  data-bind="click: btnExtraction_Click">#{i18n.getText('KDW003_20')}</button>
+                                
+								<div data-bind="stopBinding: true" style="display: inline-block">
                                     <div id="emp-component"></div>
                                 </div>
-								<div id = "date-extract" style="width: 480px; display: inline-flex;">
-											<div id="daterangepickererror"
-												data-bind="ntsDateRangePicker: { 
-												required: true, 
-												enable: showDateRange, 
-												showNextPrevious: true, 
-												value: dateRanger, 
-												startName: nts.uk.resource.getText('KDW003_25'),
-												endName: nts.uk.resource.getText('KDW003_26'),
-												maxRange: 'oneMonth'}" />
-												
-											<div id="daterangepicker">
-													<div id="yearMonthPicker" style="top: -9px; height: 27px;" data-bind="ntsDatePicker: { 
-																value: yearMonth,
-																name: '#[KDW003_40]',
-																required: true, 
-																dateFormat: 'yearmonth',
-																showJumpButtons: true,
-																enable: showDateRange,
-																valueFormat: 'YYYYMM'}" />
-													<div id="dislayFormatLbl" data-bind="ntsFormLabel: { required: false}" style="width: 50px ; text-align: right; margin-top: 10px">#{i18n.getText('KDW003_128')}</div>
-													<div  id="dislayFormatLbl" style="vertical-align: middle;  height: 27px;" data-bind="ntsComboBox: {
-															options: actualTimeOptionDisp,
-															optionsValue: 'code',
-															value: actualTimeSelectedCode,
-															optionsText: 'name',
-															enable: showDateRange() &amp;&amp; ko.computed(function() {
-																					        return actualTimeOptionDisp().length  > 1;
-																					    }, this),
-															name:'#[KDW003_128]',
-															columns: [
-																{ prop: 'name', length: 6 },
-															]}">
-													</div>
-											 </div>
-											<div id="cbListDate">
-												<div id="choosenDate"
-													data-bind="ntsDatePicker: {value: selectedDate, 
-													dateFormat: 'YYYY/MM/DD', 
-													showJumpButtons: true,
-													name: nts.uk.resource.getText('KDW003_27'),
-													enable: showDateRange}" />
-											</div>
-										</div>
 			                    <div id="vacationRemaining-content">
 		                            	<table>
 		                            		<tr>
@@ -179,12 +182,12 @@
 		                            <table id="fixed-table">
 		                                <thead>
 		                                    <tr>
-		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
-		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
-		                                        <th class="ui-widget-header" style="width: 70px;">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
-		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
-		                                        <th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_7',["#Com_ChildNurseHoliday"])}</th>
-		                                        <th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_7',["#Com_CareHoliday"])}</th>
+		                                        <th class="ui-widget-header"><span>#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</span></th>
+		                                        <th class="ui-widget-header"><span>#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</span></th>
+		                                        <th class="ui-widget-header"><span>#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</span></th>
+		                                        <th class="ui-widget-header"><span>#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</span></th>
+		                                        <th class="ui-widget-header"><span>#{i18n.getText('KDW003_7',["#Com_ChildNurseHoliday"])}</span></th>
+		                                        <th class="ui-widget-header"><span>#{i18n.getText('KDW003_7',["#Com_CareHoliday"])}</span></th>
 		                                    </tr>
 		                                </thead>
 		                                <tbody>
@@ -232,9 +235,8 @@
                                            data-bind="visible : fst.showAgreement()">
                                         <thead>
                                             <tr>
-                                                <th class="ui-widget-header"
-                                                    style="width: 70px; height: 29px">#{i18n.getText('KDW003_73')}</th>
-                                                <th class="ui-widget-header" style="width: 70px">#{i18n.getText('KDW003_75')}</th>
+                                                <th class="ui-widget-header"><span>#{i18n.getText('KDW003_73')}</span></th>
+                                                <th class="ui-widget-header"><span>#{i18n.getText('KDW003_75')}</span></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -242,8 +244,7 @@
                                                 <td class="ui-widget-body" id="agree-time"><span
                                                         class="text-holiday" data-bind="text: fst.agreementTime()"></span>
                                                 </td>
-                                                <td class="ui-widget-body" id="agree-excess"
-                                                    style="height: 29px"><span
+                                                <td class="ui-widget-body" id="agree-excess"><span
                                                         data-bind="text: fst.agreementExcess()"></span></td>
                                             </tr>
                                         </tbody>
@@ -253,30 +254,34 @@
                         </div>
                         <div id="content-all-grid" style="clear: both">
                             <div id="content-grid-not">
-                                <button id="btnExtraction" class="proceed large"  data-bind="click: btnExtraction_Click">#{i18n.getText('KDW003_20')}</button>
                                 
                          		<div class="label warning" style="width: 127px; margin-left: 6px; "
                                      data-bind="visible: unLock">#{i18n.getText('KDW003_86')}</div>
-                                <div style="display: inline-block; margin-bottom: 1px;">
-                                <button id="btn-signAll" data-bind="css: {'btn-signAll2' : unLock() == true, 'btn-signAll': unLock() == false} , click: signAll">#{i18n.getText('KDW003_23')}</button>
-                                <button id="btn-releaseAll" data-bind="click: releaseAll">#{i18n.getText('KDW003_71')}</button>
-		                        <button id="btnComfirmAttendance"
-		                                    data-bind="click : referencesActualResult, visible: showButton().available23">#{i18n.getText('KDW003_22')}</button>
-		                         <div id="dislayFormatLblf" style="margin-left: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW003_19')}</div>
-		                          <div id="cbDisplayFormat"
-		                                     data-bind="ntsComboBox: {
-										options: displayFormatOptions,
-										optionsValue: 'code',
-										value: displayFormat,
-										optionsText: 'name',
-										enable: true,
-										columns: [
-											{ prop: 'name', length: 10 },
-										]}"></div>
-                                <button id="btn-legend"
-                                        data-bind="ntsLegendButton: legendOptions">凡例</button>
-                                <button id="btn-saveColumnWidth"
-                                        data-bind="enable: !changeConditionExtract(), click: btnSaveColumnWidth_Click, visible : showButton().available11">#{i18n.getText('KDW003_24')}</button>
+                                
+                            </div>
+                            
+                            <!-- 月次データ -->
+                            <div id="monthly-data-view" style="margin-top: 10px" data-bind="visible: isVisibleMIGrid">
+                                <table id="miGrid"></table>
+                            </div>
+                            
+                            <div id="grid-controls" style="display: inline-block; margin-bottom: 1px;">
+                               	<button id="btn-signAll" data-bind="css: {'btn-signAll2' : unLock() == true, 'btn-signAll': unLock() == false} , click: signAll">#{i18n.getText('KDW003_23')}</button>
+                               	<button id="btn-releaseAll" data-bind="click: releaseAll">#{i18n.getText('KDW003_71')}</button>
+	                        	<button id="btnComfirmAttendance" data-bind="click : referencesActualResult, visible: showButton().available23">#{i18n.getText('KDW003_22')}</button>
+	                         	<div id="dislayFormatLblf" style="margin-left: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW003_19')}</div>
+	                          	<div id="cbDisplayFormat"
+	                                     data-bind="ntsComboBox: {
+									options: displayFormatOptions,
+									optionsValue: 'code',
+									value: displayFormat,
+									optionsText: 'name',
+									enable: true,
+									columns: [
+										{ prop: 'name', length: 10 },
+									]}"></div>
+                               	<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">凡例</button>
+                               	<button id="btn-saveColumnWidth" data-bind="enable: !changeConditionExtract(), click: btnSaveColumnWidth_Click, visible : showButton().available11">#{i18n.getText('KDW003_24')}</button>
                                 <div class="setting-container">
                                     <button id="btn-setting"
                                             data-bind="click: btnSetting_Click , visible:true"><i data-bind="ntsIcon: { no: 5, width: 20, height: 25 }"></i></button>
@@ -302,15 +307,9 @@
 	                                        <br />
 										</div>
                                     </div>
-                                </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 月次データ -->
-                            <div style="margin-top: 10px" data-bind="visible: isVisibleMIGrid">
-                                <table id="miGrid"></table>
-                            </div>
-                            
+                               	</div>
+                           	</div>
+                                
                             <!--  実績グリッド本体 -->
                             <div class="compact-grid grid-container" id="gid">
                                 <div id="dpGrid"></div>

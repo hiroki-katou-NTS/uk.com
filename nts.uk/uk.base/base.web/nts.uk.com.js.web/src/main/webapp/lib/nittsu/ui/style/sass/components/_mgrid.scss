@@ -10,10 +10,12 @@
 	border: 1px solid #DEE2E6;
 }
 .mgrid .mgrid-header td {
-	color: #000;
-	background-color: #FFF; /*#CFF1A5;*/
-	font-weight: bold;
+	color: #fff;
 	text-align: center;
+
+	* {
+		color: #fff;
+	}
 }
 
 .mgrid .mcell {
@@ -53,6 +55,10 @@
 .mgrid .mgrid-fixed:not(.mgrid-header) .mgrid-fixed-table,
 .mgrid .mgrid-free:not(.mgrid-header) .mgrid-free-table {
 	border-left: 1px solid #CCC;
+}
+
+.mgrid .mgrid-free.mgrid-header .mgrid-free-table {
+	color: #fff;
 }
 
 .mgrid .mgrid-fixed-line, .mgrid .mgrid-line {

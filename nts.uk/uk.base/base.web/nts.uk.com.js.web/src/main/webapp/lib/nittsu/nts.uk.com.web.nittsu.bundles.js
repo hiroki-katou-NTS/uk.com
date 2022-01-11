@@ -26291,7 +26291,7 @@ var nts;
                             var tdStyle = "";
                             tdStyle += "; border-width: 1px; overflow: hidden; ";
                             if (self.options.isHeader) {
-                                tdStyle += "word-break: break-all; vertical-align: top;";
+                                tdStyle += "word-break: break-all; vertical-align: middle;";
                             }
                             else {
                                 tdStyle += "white-space: " + ws + ";"; // position: relative;";
@@ -26777,7 +26777,7 @@ var nts;
                             var self = this;
                             var $td = document.createElement("td");
                             $.data($td, lo.VIEW, rowIdx + "-" + cell.key);
-                            var tdStyle = "; border-width: 1px; overflow: hidden; word-break: break-all; vertical-align: top; border-collapse: collapse;";
+                            var tdStyle = "; border-width: 1px; overflow: hidden; word-break: break-all; vertical-align: middle; border-collapse: collapse;";
                             if (!_.isNil(cell.rowspan) && cell.rowspan > 1)
                                 $td.setAttribute("rowspan", cell.rowspan);
                             if (!_.isNil(cell.colspan) && cell.colspan > 1)

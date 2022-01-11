@@ -431,11 +431,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             });
 
-            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 250) + 'px !IMPORTANT');
+            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 330) + 'px !IMPORTANT');
 
             $(window).on('resize', function() {
                 var win = $(this); //this = window
-                $(".grid-container").attr('style', 'height: ' + (win.height() - 250) + 'px !IMPORTANT');
+                $(".grid-container").attr('style', 'height: ' + (win.height() - 330) + 'px !IMPORTANT');
             });
 
             self.dataHoliday.subscribe(val => {
@@ -3960,7 +3960,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 			}
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 subWidth: subWidth,
-                subHeight: '285px',
+                subHeight: '350px',
                 height: (window.screen.availHeight - 240) + "px",
                 headerHeight: '40px',
                 dataSource: self.lstDataSourceLoad,
