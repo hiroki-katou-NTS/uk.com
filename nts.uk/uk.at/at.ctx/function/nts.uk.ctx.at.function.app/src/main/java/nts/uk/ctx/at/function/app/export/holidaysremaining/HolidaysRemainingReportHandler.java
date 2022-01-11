@@ -467,9 +467,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
 		// 画面入力期間From(年月)/01　～　画面入力期間To  (年月)/月末日　★使用禁止
         val datePeriod = new DatePeriod(startDate, endDate);
-
+        // 2021.12.29 - 3S - chinh.hm - issues #122017 - 追加 START
         Optional<List<PeriodCorrespondingYm>> currentMonthAndFuture = outputPeriodInformation == null ?Optional.empty(): outputPeriodInformation.getCurrentMonthAndFuture();
         List<PeriodCorrespondingYm> correspondingYmList = currentMonthAndFuture.orElseGet(ArrayList::new);
+        // 2021.12.29 - 3S - chinh.hm - issues #122017 - 追加 END
         DatePeriod currentDatePeriod = null;
         if(!correspondingYmList.isEmpty() && closureInforOpt.isPresent()){
             Optional<PeriodCorrespondingYm> optionalYm = correspondingYmList.stream().filter(e->e.getYm().compareTo(closureInforOpt.get().getCurrentMonth()) == 0).findFirst();
@@ -704,6 +705,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             if ( hdRemainMer!=null) {
                 listStatusOfHoliday = hdRemainMer.getResult260();
             }
+            //========================================
+            // 現在
+            //========================================
+            // Call RequestList204
             // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 END
             //③－２　Trường hợp 「当月在職状況」== true　
             // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 START
@@ -1307,6 +1312,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         // Lấy thông tin vào công ty・nghỉ việc của  employee
         val listEmpInfo =  personEmpBasicInfoAdapter.getEmployeeBasicInfoExport(Collections.singletonList(sid));
         if(periodInformation!=null){
+            Optional<YearMonthPeriod> pastPeriodOpt = periodInformation.getPastPeriod();
             EmployeeBasicInfoExport employee = listEmpInfo.isEmpty()? null: listEmpInfo.get(0);
             // Đoạn thông tin tháng hiện tại và tương lai của employee.
             List<PeriodCorrespondingYm> currentMonthAndFuture =
@@ -1351,6 +1357,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                             startYm = closurePeriod.getYearMonth();
                         }
                     }else {
+                        //過去：設定なし※クリアする
+                        //当月・未来：＜未来入社＞参照
+                        pastPeriodOpt = Optional.empty();
                         //＜未来入社＞
                         //◆当月・未来[n].年月＜期間(入社時).年月
                         //　　⇒Listから除去する
@@ -1428,7 +1437,6 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 }
 
                 if(startYm ==null || endYm == null){
-                    Optional<YearMonthPeriod> pastPeriodOpt = periodInformation.getPastPeriod();
                     if(pastPeriodOpt.isPresent()){
                         val pastPeriod = pastPeriodOpt.get();
                         if(startYm !=null){
