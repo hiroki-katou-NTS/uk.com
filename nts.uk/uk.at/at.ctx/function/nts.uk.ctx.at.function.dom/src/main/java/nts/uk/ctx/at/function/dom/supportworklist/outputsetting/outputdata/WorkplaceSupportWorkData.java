@@ -28,7 +28,7 @@ public class WorkplaceSupportWorkData {
     /**
      * 応援作業詳細
      */
-    private List<SupportWorkDataOfDay> supportWorkDetails = new ArrayList<>();
+    private List<SupportWorkDataOfDay> supportWorkDetails;
 
     /**
      * 所属合計
