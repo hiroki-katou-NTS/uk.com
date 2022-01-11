@@ -23,7 +23,7 @@
 			<com:scriptfile path="kdl014.a.service.js" />
 			<com:scriptfile path="kdl014.a.vm.js" />
 			<com:scriptfile path="kdl014.a.start.js" />
-			
+
 			<com:EnumScript>
 				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans
 				nts.uk.ctx.at.record.dom.stamp.StampAtr
@@ -32,15 +32,16 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<div style="min-height: 23px; margin-bottom: 20px;">
-					<div data-bind="visible :paramFromParent.mode == 0">
-						<label id="emp-label">#{i18n.getText('KDL014_27')}</label>
-						<label style="margin-left: 20px;" data-bind= "text : empInfoCode"></label>
-						<label style="margin-left: 40px;" data-bind= "text : empInfoName"></label>
+				<com:ko-if bind="paramFromParent.mode == 0">
+					<div style="min-height: 23px; margin-bottom: 20px;">
+						<div data-bind="visible :paramFromParent.mode == 0">
+							<label id="emp-label">#{i18n.getText('KDL014_27')}</label> <label
+								style="margin-left: 20px;" data-bind="text : empInfoCode"></label>
+							<label style="margin-left: 40px;" data-bind="text : empInfoName"></label>
+						</div>
 					</div>
-				</div>
-				<table id="single-list"
-					data-bind="ntsGridList: {								
+					<table id="single-list"
+						data-bind="ntsGridList: {								
 					height: 265,
 					dataSource: empInfomationList,
 					primaryKey: 'code',
@@ -48,12 +49,27 @@
 					multiple: false,
 					value: currentCode,
 					enable: true,
-					rows: 10
+					rows: 12
 				}"></table>
+				</com:ko-if>
+				<com:ko-if bind="paramFromParent.mode == 1">
+				<div style="min-height: 7px; margin-bottom: 5px;"></div>
+					<table id="single-list"
+						data-bind="ntsGridList: {								
+					height: 265,
+					dataSource: empInfomationList,
+					primaryKey: 'code',
+					columns: columns,
+					multiple: false,
+					value: currentCode,
+					enable: true,
+					rows: 13
+				}"></table>
+				</com:ko-if>
 			</div>
-				<div id="functions-area-bottom">
-					<button class="large" id="btnClose" data-bind="click :cancel_Dialog">#{i18n.getText('KDL014_18')}</button>
-				</div>
+			<div id="functions-area-bottom">
+				<button class="large" id="btnClose" data-bind="click :cancel_Dialog">#{i18n.getText('KDL014_18')}</button>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>
