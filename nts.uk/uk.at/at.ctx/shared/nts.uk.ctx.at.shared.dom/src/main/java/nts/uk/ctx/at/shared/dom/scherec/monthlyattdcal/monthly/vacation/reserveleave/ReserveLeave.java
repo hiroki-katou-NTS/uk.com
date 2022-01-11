@@ -73,20 +73,6 @@ public class ReserveLeave implements Cloneable {
 		this.usedNumber = realReserveLeave.getUsedNumber().clone();
 		this.remainingNumberInfo = realReserveLeave.getRemainingNumberInfo().clone();
 
-		// 残数からマイナスを削除
-		if (this.remainingNumberInfo.getRemainingNumber().getTotalRemainingDays().lessThan(0.0)){
-			// 積立年休．使用数からマイナス分を引く
-			double minusDays = this.remainingNumberInfo.getRemainingNumber().getTotalRemainingDays().v();
-			double useDays = this.usedNumber.getUsedDays().v();
-			useDays += minusDays;
-			if (useDays < 0.0) useDays = 0.0;
-			this.usedNumber.setUsedDays(new ReserveLeaveUsedDayNumber(useDays));
-			// 残数．明細．日数　←　0
-			this.remainingNumberInfo.getRemainingNumber().setDaysOfAllDetail(0.0);
-			// 残数．合計残日数　←　0
-			this.remainingNumberInfo.getRemainingNumber().setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
-		}
-
 		// 残数付与前からマイナスを削除
 		if (this.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays().lessThan(0.0)){
 			// 積立年休．使用数（付与前）からマイナス分を引く
@@ -100,21 +86,13 @@ public class ReserveLeave implements Cloneable {
 			// 残数．合計残日数　←　0
 			this.getRemainingNumberInfo().getRemainingNumberBeforeGrant().setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
 		}
-		if (this.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays().lessThan(0.0)){
-			// 積立年休．使用数（付与前）からマイナス分を引く
-			double minusDays = this.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
-			double useDays = this.usedNumber.getUsedDaysBeforeGrant().v();
-			useDays += minusDays;
-			if (useDays < 0.0) useDays = 0.0;
-			this.usedNumber.setUsedDaysBeforeGrant(new ReserveLeaveUsedDayNumber(useDays));
-			// 残数付与前．明細．日数　←　0
-			this.getRemainingNumberInfo().getRemainingNumberBeforeGrant().setDaysOfAllDetail(0.0);
-			// 残数．合計残日数　←　0
-			this.getRemainingNumberInfo().getRemainingNumberBeforeGrant().setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
-		}
 
-		if (!this.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent()) return;
-		if (!this.usedNumber.getUsedDaysAfterGrant().isPresent()) return;
+		if (!this.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent()
+				|| !this.usedNumber.getUsedDaysAfterGrant().isPresent()) {
+			this.usedNumber
+					.setUsedDays(new ReserveLeaveUsedDayNumber(this.getUsedNumber().getUsedDaysBeforeGrant().v()));
+			return;
+		}
 
 		// 残数付与後からマイナスを削除
 		val remainingNumberInfoAfterGrantValue = this.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get();
@@ -131,6 +109,10 @@ public class ReserveLeave implements Cloneable {
 			// 残数．合計残日数　←　0
 			remainingNumberInfoAfterGrantValue.setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
 		}
+		
+		//合計使用数を求める
+		this.usedNumber.setUsedDays(new ReserveLeaveUsedDayNumber(this.getUsedNumber().getUsedDaysBeforeGrant().v()
+				+ this.getUsedNumber().getUsedDaysAfterGrant().map(x -> x.v()).orElse(0.0)));
 	}
 	
 	public void createRemainingNumberFromGrantRemaining(
