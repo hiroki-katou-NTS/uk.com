@@ -470,13 +470,6 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
         Optional<List<PeriodCorrespondingYm>> currentMonthAndFuture = outputPeriodInformation == null ?Optional.empty(): outputPeriodInformation.getCurrentMonthAndFuture();
         List<PeriodCorrespondingYm> correspondingYmList = currentMonthAndFuture.orElseGet(ArrayList::new);
-        DatePeriod currentDatePeriod = null;
-        if(!correspondingYmList.isEmpty()){
-            Optional<PeriodCorrespondingYm> optionalYm = correspondingYmList.stream().filter(e->e.getYm().compareTo(closureInforOpt.get().getCurrentMonth()) == 0).findFirst();
-            if(optionalYm.isPresent()){
-                currentDatePeriod = optionalYm.get().getDatePeriod();
-            }
-        }
 		////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////
 		// 過去月
@@ -716,8 +709,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                         //-----------------------------------------------------------------------------------
                         // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
                         //periodDate,
-                        //closureInforOpt.get().getPeriod(),
-                        currentDatePeriod,
+                        closureInforOpt.get().getPeriod(),
                         // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 END
                         //-----------------------------------------------------------------------------------
                         closureInforOpt.get().getPeriod().end(),
@@ -825,8 +817,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 SpecialVacationImportedKdr specialVacationImportedNew = specialLeaveAdapter.get273New(
                         cId,
                         employeeId,
-                        //closureInforOpt.get().getPeriod(),
-                        currentDatePeriod,
+                        closureInforOpt.get().getPeriod(),
                         false,
                         //-----------------------------------------------------------------------------------
                         // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
@@ -902,8 +893,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
                     cId,
                     employeeId,
-                    //periodDate,
-                    currentDatePeriod,
+                    periodDate,
                     false,
                     closureInforOpt.get().getPeriod().end(),
                     false,
@@ -1097,8 +1087,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
                     //periods,
                     //end
-                    //closureInforOpt.get().getPeriod(),
-                    currentDatePeriod,
+                    closureInforOpt.get().getPeriod(),
                     closureInforOpt.get().getPeriod().end()
                     // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 END
                     //-----------------------------------------------------------------------------------
@@ -1111,8 +1100,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
                     //periods,
                     //end
-                    //closureInforOpt.get().getPeriod(),
-                    currentDatePeriod,
+                    closureInforOpt.get().getPeriod(),
                     closureInforOpt.get().getPeriod().end()
                     // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 END
                     //-----------------------------------------------------------------------------------
@@ -1316,8 +1304,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 Optional<DatePeriod> optionalPeriod = currentPeriod== null ? Optional.empty(): Optional.of(currentPeriod.getDatePeriod());
                 DatePeriod thisMonthPeriod = optionalPeriod.orElse(null);
                 // 当月の在職状況を設定する
+                YearMonthPeriod fromTo = periodInformation.getPeriod();
                 boolean ischeck =  thisMonthPeriod != null && checkStatus(employee,thisMonthPeriod);
-                rs.setCurrentStatus(ischeck);
+                boolean checkCurrent = thisMonthPeriod != null && (thisMonthPeriod.end().yearMonth().greaterThanOrEqualTo(fromTo.start()) &&
+                        thisMonthPeriod.start().yearMonth().lessThanOrEqualTo(fromTo.end()));
+                rs.setCurrentStatus(ischeck && checkCurrent);
                 // 入社年月日
                 GeneralDate entryDate = employee.getEntryDate();
                 // 開始年月日の補正 update ngày bắt đầu.
@@ -1433,6 +1424,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                             pastPeriodByEmployee = new YearMonthPeriod(startYm,pastPeriod.end());
                         }else if(endYm!=null){
                             pastPeriodByEmployee = new YearMonthPeriod(pastPeriod.start(),endYm);
+                        }else {
+                            pastPeriodByEmployee = pastPeriod;
                         }
                     }
                 }else {
