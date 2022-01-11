@@ -17,7 +17,7 @@ public class CreateExOutTextCommandHandler extends AsyncCommandHandler<CreateExO
 	@Override
 	protected void handle(CommandHandlerContext<CreateExOutTextCommand> context) {
 		CreateExOutTextCommand command = context.getCommand();
-		ExOutSetting exOutSetting = new ExOutSetting(command.getConditionSetCd(), command.getUserId(), command.getCategoryId(), command.getStartDate(), command.getEndDate(),
+		ExOutSetting exOutSetting = new ExOutSetting(command.getCompanyId(), command.getConditionSetCd(), command.getUserId(), command.getCategoryId(), command.getStartDate(), command.getEndDate(),
 				command.getReferenceDate(), command.getProcessingId(), command.isStandardType(), command.getSidList());
 		createExOutTextService.start(exOutSetting);
 	}

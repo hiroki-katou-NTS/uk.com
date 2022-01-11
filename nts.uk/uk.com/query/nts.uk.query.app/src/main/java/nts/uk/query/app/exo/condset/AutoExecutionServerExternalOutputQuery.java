@@ -58,7 +58,7 @@ public class AutoExecutionServerExternalOutputQuery {
 				.getStdOutputCondSetById(cid, conditionCd);
 		// 外部出力処理IDを採番する
 		String processingId = execId;
-		ExOutSetting exOutSetting = new ExOutSetting(conditionCd, null, categoryId, period.start(), period.end(),
+		ExOutSetting exOutSetting = new ExOutSetting(cid, conditionCd, null, categoryId, period.start(), period.end(),
 				baseDate, processingId, true, Collections.emptyList());
 		exOutSetting.setExecuteForm(ExecutionForm.AUTOMATIC_EXECUTION);
 		exOutSetting.setCid(cid);

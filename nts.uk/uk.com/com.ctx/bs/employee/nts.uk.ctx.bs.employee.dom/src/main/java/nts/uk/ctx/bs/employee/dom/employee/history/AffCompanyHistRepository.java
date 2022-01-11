@@ -96,4 +96,6 @@ public interface AffCompanyHistRepository {
 	List<AffCompanyHist> getAffComHistOfEmployeeListAndNoBaseDateV3(List<String> sids);
 	/** [4] 期間を指定して社員ID付き履歴項目を取得する **/
 	List<CompanyWithEmployeeID> getHistoryItemByEmpID(List<String> lstEmpId , DatePeriod datePeriod);
+	
+	List<String> getSidItemByCom(String Cid, GeneralDate baseDate);
 }

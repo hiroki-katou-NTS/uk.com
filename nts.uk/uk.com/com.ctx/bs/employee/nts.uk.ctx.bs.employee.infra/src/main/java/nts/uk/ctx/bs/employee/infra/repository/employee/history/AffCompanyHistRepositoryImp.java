@@ -88,6 +88,10 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	
 	private static final String GET_LST_SID_BY_LSTSID_DATEPERIOD = "SELECT DISTINCT af.bsymtAffCompanyHistPk.sId FROM BsymtAffCompanyHist af " 
 			+ " WHERE af.bsymtAffCompanyHistPk.sId IN :employeeIds AND af.startDate <= :endDate AND :startDate <= af.endDate";
+	
+	private static final String SELECT_BY_COM = String.join(" ", "SELECT DISTINCT c.bsymtAffCompanyHistPk.sId FROM BsymtAffCompanyHist c"
+			+ " WHERE c.companyId = :Cid AND c.startDate <= :baseDate AND c.endDate >= :baseDate"
+			+ " ORDER BY c.startDate ");
 
 	@Override
 	public void add(AffCompanyHist domain) {
@@ -842,5 +846,16 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		List<CompanyWithEmployeeID> employeeIds = flatMap.stream().flatMap(x->x.stream()).collect(Collectors.toList());
 		
 		return employeeIds;
+	}
+
+	
+	@Override
+	public List<String> getSidItemByCom(String Cid, GeneralDate baseDate) {
+		List<String> sidList = this.queryProxy()
+				.query(SELECT_BY_COM, String.class).setParameter("Cid", Cid)
+				.setParameter("baseDate", baseDate)
+				.getList();
+
+		return sidList;
 	}
 }
