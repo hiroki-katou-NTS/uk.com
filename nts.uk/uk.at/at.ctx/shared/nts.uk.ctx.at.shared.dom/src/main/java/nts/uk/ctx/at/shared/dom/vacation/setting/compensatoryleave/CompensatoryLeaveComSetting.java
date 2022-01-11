@@ -171,7 +171,7 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 	}
 	
 	/**
-	 * [6] 利用できない日次の勤怠項目を取得する
+	 * [6] 利用できない月次の勤怠項目を取得する
 	 */
 	public List<Integer> getMonthlyAttendanceItems() {
 		if (this.isManagedTime())

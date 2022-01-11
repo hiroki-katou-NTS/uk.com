@@ -78,7 +78,7 @@ public class OutManage extends AggregateRoot{
 	 */
 	public List<Integer> getDaiLyAttendanceIDNotAvailable(){
 		List<Integer> listAttdId = new ArrayList<>();
-		for(int i = 1;i<=this.maxUsage.v();i++) {
+		for(int i = this.maxUsage.v()+1;i<=10;i++) {
 			listAttdId.addAll(this.getDaiLyAttdIdByNo(i));
 		}
 		return listAttdId;
