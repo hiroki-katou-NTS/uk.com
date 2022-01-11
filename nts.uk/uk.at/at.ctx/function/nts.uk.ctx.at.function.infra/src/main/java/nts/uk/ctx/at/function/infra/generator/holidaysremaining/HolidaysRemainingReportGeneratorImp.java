@@ -183,6 +183,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         for (int i = 0; i < empIds.size(); i++) {
             String employeeIds = empIds.get(i);
             HolidaysRemainingEmployee employee = dataSource.getMapEmployees().get(employeeIds);
+            if(employee == null) continue;
             Integer counts = dtoCheck.getCount();
             YearMonth currentMonth = employee.getCurrentMonth().get();
             Integer countBfEmp = dtoCheck.getCountEmployeeBefore();
