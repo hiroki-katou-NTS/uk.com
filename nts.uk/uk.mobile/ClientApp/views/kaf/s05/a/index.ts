@@ -55,7 +55,7 @@ export class KafS05Component extends KafS00ShrComponent {
     @Prop()
     public params: InitParam;
 
-    public get getoverTimeClf(): number {
+    public getoverTimeClf(): number {
         const self = this;
 
         return self.overTimeClf;
