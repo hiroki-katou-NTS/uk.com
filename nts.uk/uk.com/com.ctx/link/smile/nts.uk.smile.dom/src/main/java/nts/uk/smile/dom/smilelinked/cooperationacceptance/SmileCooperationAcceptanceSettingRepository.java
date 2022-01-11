@@ -45,7 +45,7 @@ public interface SmileCooperationAcceptanceSettingRepository {
 	 * 
 	 * @param companyId 契約コード
 	 * @param code      会社ID
-	 * @return
+	 * @return List SM連携受入設定						
 	 */
-	SmileCooperationAcceptanceSetting get(String contractCode, String companyId);
+	List<SmileCooperationAcceptanceSetting> get(String contractCode, String companyId);
 }
