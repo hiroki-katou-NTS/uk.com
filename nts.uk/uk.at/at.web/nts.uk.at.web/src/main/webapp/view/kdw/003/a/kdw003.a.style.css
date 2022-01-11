@@ -33,7 +33,6 @@
 
 .btn-signAll {
 	/* margin: 3px 0 0 200px; */
-	margin-left: 146px;
 }
 
 .btn-signAll2 {
@@ -422,10 +421,13 @@
 	position: absolute;
 	z-index: 100; /* ƒOƒŠƒbƒh‚Ì‰º‚É‚È‚Á‚Ä‚µ‚Ü‚¤‚Ì‚ð‰ñ”ð */
 	left: calc(100% - 700px);
-	top: 109px;
+	top: 57px;
 	margin-left: 10px;
 	max-width: 460px;
 	height: 80px;
+}
+
+#grid-controls {
 }
 
 table#employ_view tr{
