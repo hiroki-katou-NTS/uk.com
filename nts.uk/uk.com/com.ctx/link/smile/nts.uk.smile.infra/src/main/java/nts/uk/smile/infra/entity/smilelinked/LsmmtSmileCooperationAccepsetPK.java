@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class MimmtSmileCooperationAccepsetPK implements Serializable {
+public class LsmmtSmileCooperationAccepsetPK implements Serializable {
 	/**
 	 * serialVersionUID
 	 */

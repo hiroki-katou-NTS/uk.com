@@ -20,9 +20,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "MIOMT_SMILE_LINK_OUTSET")
+@Table(name = "LSMMT_SMILE_LINK_OUTSET")
 @AllArgsConstructor
-public class MiomtSmileLinkOutset extends UkJpaEntity implements Serializable {
+public class LsmmtSmileLinkOutset extends UkJpaEntity implements Serializable {
 	/**
 	 * serialVersionUID
 	 */
@@ -30,7 +30,7 @@ public class MiomtSmileLinkOutset extends UkJpaEntity implements Serializable {
 
 	// Embedded primary key 社員ID
 	@EmbeddedId
-	private MiomtSmileLinkOutsetPK pk;
+	private LsmmtSmileLinkOutsetPK pk;
 
 	// column 給与連携区分
 	@NotNull

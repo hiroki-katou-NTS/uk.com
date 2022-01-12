@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class MiomtSmileLinkOutsetPK implements Serializable {
+public class LsmmtEmplinkMonthSetPK implements Serializable {
 	/**
 	 * serialVersionUID
 	 */
@@ -27,4 +27,14 @@ public class MiomtSmileLinkOutsetPK implements Serializable {
 	@NotNull
 	@Column(name = "CID")
 	private String cid;
+
+	// column 支払コード
+	@NotNull
+	@Column(name = "PAYMENT_CD")
+	private Integer paymentCd;
+
+	// column 選択雇用コード
+	@NotNull
+	@Column(name = "EMP_CD")
+	private String empCd;
 }

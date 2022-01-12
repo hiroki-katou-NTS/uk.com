@@ -14,8 +14,8 @@ import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedMonthSettingClassifi
 import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversion;
 import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversionRepository;
 import nts.uk.smile.dom.smilelinked.cooperationoutput.PaymentCategory;
-import nts.uk.smile.infra.entity.smilelinked.MiomtEmplinkMonthSet;
-import nts.uk.smile.infra.entity.smilelinked.MiomtEmplinkMonthSetPK;
+import nts.uk.smile.infra.entity.smilelinked.LsmmtEmplinkMonthSet;
+import nts.uk.smile.infra.entity.smilelinked.LsmmtEmplinkMonthSetPK;
 
 @Stateless
 public class JpaLinkedPaymentConversionRepository extends JpaRepository implements LinkedPaymentConversionRepository {
@@ -27,18 +27,18 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 			"SELECT m FROM MiomtEmplinkMonthSet m WHERE m.pk.contractCd = :contractCd", "AND m.pk.cid = :cid",
 			"AND m.pk.paymentCd = :paymentCode");
 
-	private List<MiomtEmplinkMonthSet> toEntities(LinkedPaymentConversion domain) {
+	private List<LsmmtEmplinkMonthSet> toEntities(LinkedPaymentConversion domain) {
 		Integer paymentCode = domain.getPaymentCode().value;
 		return domain.getSelectiveEmploymentCodes().stream()
-				.map(data -> new MiomtEmplinkMonthSet(new MiomtEmplinkMonthSetPK(AppContexts.user().contractCode(),
+				.map(data -> new LsmmtEmplinkMonthSet(new LsmmtEmplinkMonthSetPK(AppContexts.user().contractCode(),
 						AppContexts.user().companyId(), paymentCode, data.getScd()),
 						data.getInterlockingMonthAdjustment().value))
 				.collect(Collectors.toList());
 	}
 
-	private List<LinkedPaymentConversion> toDomain(List<MiomtEmplinkMonthSet> entity) {
+	private List<LinkedPaymentConversion> toDomain(List<LsmmtEmplinkMonthSet> entity) {
 		List<LinkedPaymentConversion> linkedPaymentConversions = new ArrayList<LinkedPaymentConversion>();
-		Map<Integer, List<MiomtEmplinkMonthSet>> map = entity.stream()
+		Map<Integer, List<LsmmtEmplinkMonthSet>> map = entity.stream()
 				.collect(Collectors.groupingBy(e -> e.getPk().getPaymentCd()));
 		if (entity.isEmpty()) {
 			return null;
@@ -65,7 +65,7 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 
 	@Override
 	public void update(LinkedPaymentConversion domain) {
-		List<MiomtEmplinkMonthSet> list = this.queryProxy().query(GET_BY_CONTRACT_AND_CID, MiomtEmplinkMonthSet.class)
+		List<LsmmtEmplinkMonthSet> list = this.queryProxy().query(GET_BY_CONTRACT_AND_CID, LsmmtEmplinkMonthSet.class)
 				.setParameter("contractCd", AppContexts.user().contractCode())
 				.setParameter("cid", AppContexts.user().companyId()).setParameter("paymentCd", domain.getPaymentCode())
 				.getList();
@@ -80,7 +80,7 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 
 	@Override
 	public void delete(String contractCode, String companyId) {
-		List<MiomtEmplinkMonthSet> list = this.queryProxy().query(GET_BY_CONTRACT_AND_CID, MiomtEmplinkMonthSet.class)
+		List<LsmmtEmplinkMonthSet> list = this.queryProxy().query(GET_BY_CONTRACT_AND_CID, LsmmtEmplinkMonthSet.class)
 				.setParameter("contractCd", contractCode).setParameter("cid", companyId).getList();
 		if (list.isEmpty()) {
 			return;
@@ -90,8 +90,8 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 
 	@Override
 	public void delete(String contractCode, String companyId, PaymentCategory paymentCode) {
-		List<MiomtEmplinkMonthSet> list = this.queryProxy()
-				.query(GET_BY_CONTRACT_CD_AND_CID_AND_PAYMENT_CD, MiomtEmplinkMonthSet.class)
+		List<LsmmtEmplinkMonthSet> list = this.queryProxy()
+				.query(GET_BY_CONTRACT_CD_AND_CID_AND_PAYMENT_CD, LsmmtEmplinkMonthSet.class)
 				.setParameter("contractCd", contractCode).setParameter("cid", companyId)
 				.setParameter("paymentCd", paymentCode).getList();
 		if (list.isEmpty()) {
@@ -103,7 +103,7 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 	@Override
 	public List<EmploymentAndLinkedMonthSetting> getByPaymentCode(String contractCode, String companyId,
 			PaymentCategory paymentCode) {
-		return this.queryProxy().query(GET_BY_CONTRACT_CD_AND_CID_AND_PAYMENT_CD, MiomtEmplinkMonthSet.class)
+		return this.queryProxy().query(GET_BY_CONTRACT_CD_AND_CID_AND_PAYMENT_CD, LsmmtEmplinkMonthSet.class)
 				.setParameter("contractCd", contractCode).setParameter("cid", companyId)
 				.setParameter("paymentCd", paymentCode).getList(e -> new EmploymentAndLinkedMonthSetting(
 						LinkedMonthSettingClassification.valueOf(e.getMiomtEmplinkMonthSet()), e.getPk().getEmpCd()));
@@ -111,7 +111,7 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 
 	@Override
 	public List<EmploymentAndLinkedMonthSetting> getByPaymentCode(String contractCode, String companyId) {
-		return this.queryProxy().query(GET_BY_CONTRACT_AND_CID, MiomtEmplinkMonthSet.class)
+		return this.queryProxy().query(GET_BY_CONTRACT_AND_CID, LsmmtEmplinkMonthSet.class)
 				.setParameter("contractCd", contractCode).setParameter("cid", companyId)
 				.getList(e -> new EmploymentAndLinkedMonthSetting(
 						LinkedMonthSettingClassification.valueOf(e.getMiomtEmplinkMonthSet()), e.getPk().getEmpCd()));

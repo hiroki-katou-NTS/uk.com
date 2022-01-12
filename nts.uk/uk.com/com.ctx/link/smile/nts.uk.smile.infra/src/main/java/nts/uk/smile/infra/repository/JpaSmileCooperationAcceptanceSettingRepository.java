@@ -14,8 +14,8 @@ import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAccept
 import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceItem;
 import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSetting;
 import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSettingRepository;
-import nts.uk.smile.infra.entity.smilelinked.MimmtSmileCooperationAccepset;
-import nts.uk.smile.infra.entity.smilelinked.MimmtSmileCooperationAccepsetPK;
+import nts.uk.smile.infra.entity.smilelinked.LsmmtSmileCooperationAccepset;
+import nts.uk.smile.infra.entity.smilelinked.LsmmtSmileCooperationAccepsetPK;
 
 @Stateless
 public class JpaSmileCooperationAcceptanceSettingRepository extends JpaRepository
@@ -24,9 +24,9 @@ public class JpaSmileCooperationAcceptanceSettingRepository extends JpaRepositor
 	private static final String GET_BY_CONTRACT_AND_CID = String.join(" ",
 			"SELECT m FROM MimmtSmileCooperationAccepset m WHERE m.pk.contractCd = :contractCd", "AND m.cid = :cid");
 
-	private MimmtSmileCooperationAccepset toEntity(SmileCooperationAcceptanceSetting domain) {
-		MimmtSmileCooperationAccepset data = new MimmtSmileCooperationAccepset(
-				new MimmtSmileCooperationAccepsetPK(AppContexts.user().contractCode(), AppContexts.user().companyId(),
+	private LsmmtSmileCooperationAccepset toEntity(SmileCooperationAcceptanceSetting domain) {
+		LsmmtSmileCooperationAccepset data = new LsmmtSmileCooperationAccepset(
+				new LsmmtSmileCooperationAccepsetPK(AppContexts.user().contractCode(), AppContexts.user().companyId(),
 						domain.getCooperationAcceptance().value),
 				domain.getCooperationAcceptanceClassification() == SmileCooperationAcceptanceClassification.DO,
 				domain.getCooperationAcceptanceConditions().isPresent()
@@ -35,7 +35,7 @@ public class JpaSmileCooperationAcceptanceSettingRepository extends JpaRepositor
 		return data;
 	}
 
-	private SmileCooperationAcceptanceSetting toDomain(MimmtSmileCooperationAccepset entity) {
+	private SmileCooperationAcceptanceSetting toDomain(LsmmtSmileCooperationAccepset entity) {
 		ExternalAcceptanceConditionCode acceptanceConditionCode = null;
 		if (entity.getConditionSetCd() != null) {
 			acceptanceConditionCode = new ExternalAcceptanceConditionCode(entity.getConditionSetCd());
@@ -48,10 +48,10 @@ public class JpaSmileCooperationAcceptanceSettingRepository extends JpaRepositor
 		return domain;
 	}
 
-	private List<MimmtSmileCooperationAccepset> toEntities(List<SmileCooperationAcceptanceSetting> domainList) {
+	private List<LsmmtSmileCooperationAccepset> toEntities(List<SmileCooperationAcceptanceSetting> domainList) {
 		return domainList.stream().map(domain -> {
-			return new MimmtSmileCooperationAccepset(
-					new MimmtSmileCooperationAccepsetPK(AppContexts.user().contractCode(),
+			return new LsmmtSmileCooperationAccepset(
+					new LsmmtSmileCooperationAccepsetPK(AppContexts.user().contractCode(),
 							AppContexts.user().companyId(), domain.getCooperationAcceptance().value),
 					domain.getCooperationAcceptanceClassification() == SmileCooperationAcceptanceClassification.DO,
 					domain.getCooperationAcceptanceConditions().isPresent()
@@ -72,8 +72,8 @@ public class JpaSmileCooperationAcceptanceSettingRepository extends JpaRepositor
 
 	@Override
 	public void delete(String contractCode, String companyId) {
-		List<MimmtSmileCooperationAccepset> list = this.queryProxy()
-				.query(GET_BY_CONTRACT_AND_CID, MimmtSmileCooperationAccepset.class)
+		List<LsmmtSmileCooperationAccepset> list = this.queryProxy()
+				.query(GET_BY_CONTRACT_AND_CID, LsmmtSmileCooperationAccepset.class)
 				.setParameter("contractCd", contractCode).setParameter("cid", companyId).getList();
 		if (!list.isEmpty()) {
 			this.commandProxy().removeAll(list);
@@ -92,7 +92,7 @@ public class JpaSmileCooperationAcceptanceSettingRepository extends JpaRepositor
 
 	@Override
 	public List<SmileCooperationAcceptanceSetting> get(String contractCode, String companyId) {
-		return this.queryProxy().query(GET_BY_CONTRACT_AND_CID, MimmtSmileCooperationAccepset.class)
+		return this.queryProxy().query(GET_BY_CONTRACT_AND_CID, LsmmtSmileCooperationAccepset.class)
 				.setParameter("contractCd", contractCode).setParameter("cid", companyId).getList(this::toDomain);
 	}
 }

@@ -6,7 +6,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,14 +14,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /*
  * UKDesign.データベース.ER図.オフィス支援.在席照会.ステータス.OFIDT_PRESENT_STATUS
- * 在席のステータス
+ * 雇用と連動月設定
  */
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "MIMMT_SMILE_COOPERATION_ACCEPSET")
+@Table(name = "LSMMT_EMPLINK_MONTHSET")
 @AllArgsConstructor
-public class MimmtSmileCooperationAccepset extends UkJpaEntity implements Serializable {
+public class LsmmtEmplinkMonthSet extends UkJpaEntity implements Serializable {
 	/**
 	 * serialVersionUID
 	 */
@@ -30,17 +29,12 @@ public class MimmtSmileCooperationAccepset extends UkJpaEntity implements Serial
 
 	// Embedded primary key 社員ID
 	@EmbeddedId
-	private MimmtSmileCooperationAccepsetPK pk;
+	private LsmmtEmplinkMonthSetPK pk;
 
-	// column Smile連携受入区分
+	// column 連動月調整
 	@NotNull
-	@Column(name = "SMILE_COOPER_ACCEPT_ATR")
-	private Boolean smileCooperAcceptAtr;
-
-	// column Smile連携受入条件
-	@Null
-	@Column(name = "CONDITION_SET_CD")
-	private String conditionSetCd;
+	@Column(name = "MIOMT_EMPLINK_MONTHSET")
+	private Integer miomtEmplinkMonthSet;
 
 	@Override
 	protected Object getKey() {

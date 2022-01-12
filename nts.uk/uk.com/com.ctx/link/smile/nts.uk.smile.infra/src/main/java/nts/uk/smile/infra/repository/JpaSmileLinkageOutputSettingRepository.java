@@ -11,16 +11,16 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileCooperationOutputClassification;
 import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSetting;
 import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingRepository;
-import nts.uk.smile.infra.entity.smilelinked.MiomtSmileLinkOutset;
-import nts.uk.smile.infra.entity.smilelinked.MiomtSmileLinkOutsetPK;
+import nts.uk.smile.infra.entity.smilelinked.LsmmtSmileLinkOutset;
+import nts.uk.smile.infra.entity.smilelinked.LsmmtSmileLinkOutsetPK;
 
 @Stateless
 public class JpaSmileLinkageOutputSettingRepository extends JpaRepository
 		implements SmileLinkageOutputSettingRepository {
 
-	private MiomtSmileLinkOutset toEntity(SmileLinkageOutputSetting domain) {
-		MiomtSmileLinkOutset entity = new MiomtSmileLinkOutset(
-				new MiomtSmileLinkOutsetPK(AppContexts.user().contractCode(), AppContexts.user().companyId()),
+	private LsmmtSmileLinkOutset toEntity(SmileLinkageOutputSetting domain) {
+		LsmmtSmileLinkOutset entity = new LsmmtSmileLinkOutset(
+				new LsmmtSmileLinkOutsetPK(AppContexts.user().contractCode(), AppContexts.user().companyId()),
 				domain.getSalaryCooperationClassification().value,
 				domain.getSalaryCooperationConditions().isPresent() ? domain.getSalaryCooperationConditions().get().v()
 						: null,
@@ -28,7 +28,7 @@ public class JpaSmileLinkageOutputSettingRepository extends JpaRepository
 		return entity;
 	}
 
-	private SmileLinkageOutputSetting toDomain(MiomtSmileLinkOutset entity) {
+	private SmileLinkageOutputSetting toDomain(LsmmtSmileLinkOutset entity) {
 		ExternalOutputConditionCode externalOutputConditionCode = null;
 		if (entity.getSalaryCooperationCond() != null) {
 			externalOutputConditionCode = new ExternalOutputConditionCode(entity.getSalaryCooperationCond());
@@ -53,15 +53,15 @@ public class JpaSmileLinkageOutputSettingRepository extends JpaRepository
 
 	@Override
 	public void delete(String contractCode, String companyId) {
-		MiomtSmileLinkOutsetPK miomtSmileLinkOutsetPK = new MiomtSmileLinkOutsetPK(contractCode, companyId);
-		this.commandProxy().remove(MiomtSmileLinkOutset.class, miomtSmileLinkOutsetPK);
+		LsmmtSmileLinkOutsetPK miomtSmileLinkOutsetPK = new LsmmtSmileLinkOutsetPK(contractCode, companyId);
+		this.commandProxy().remove(LsmmtSmileLinkOutset.class, miomtSmileLinkOutsetPK);
 	}
 
 	@Override
 	public SmileLinkageOutputSetting get(String contractCode, String companyId) {
-		MiomtSmileLinkOutsetPK miomtSmileLinkOutsetPK = new MiomtSmileLinkOutsetPK(contractCode, companyId);
-		Optional<MiomtSmileLinkOutset> optinalMiomtSmileLinkOutset = this.queryProxy().find(miomtSmileLinkOutsetPK,
-				MiomtSmileLinkOutset.class);
+		LsmmtSmileLinkOutsetPK miomtSmileLinkOutsetPK = new LsmmtSmileLinkOutsetPK(contractCode, companyId);
+		Optional<LsmmtSmileLinkOutset> optinalMiomtSmileLinkOutset = this.queryProxy().find(miomtSmileLinkOutsetPK,
+				LsmmtSmileLinkOutset.class);
 		if (optinalMiomtSmileLinkOutset.isPresent()) {
 			return this.toDomain(optinalMiomtSmileLinkOutset.get());
 		}
