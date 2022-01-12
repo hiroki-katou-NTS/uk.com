@@ -48,12 +48,12 @@
 }
 
 .ccg001-btn {
-	background-color: #2ECC71;
+	background-color: #6C6C6C;
 	color: white;
 	cursor: pointer;
 }
 .ccg001-btn:hover {
-	background-color: #2BBF6A;
+	background-color: #8C8C8C;
 }
 .ccg-btn-quick-search {
 	width: 370px;
@@ -95,21 +95,6 @@
 
 .icon-49-workplacechild {
 	background: url(icon/49_WorkplaceChild.png);
-}
-
-.labelBigButton {
-	cursor: pointer;
-	font-size: 14pt;
-	vertical-align: super;
-  color: white !important;
-}
-
-.labelSmallButton {
-	cursor: pointer;
-	font-size: 10pt;
-	vertical-align: super;
-	margin-left: 10px;
-  color: white !important;
 }
 
 .ccg001-content {
@@ -179,13 +164,8 @@
 	width: 40px;
 	cursor: pointer;
 	font-size: 18pt;
-	writing-mode: vertical-lr;
-	-ms-writing-mode: tb-lr;
   color: white !important;
   line-height: 30px;
-}
-.ccg-lbl-search-drawer {
-	height: 96px;
 }
 .ccg-lbl-extract-emp {
 	height: 50px;
@@ -242,8 +222,7 @@
 }
 
 #ccg001-btn-search-drawer {
-	height: 250px;
-	transition: height 100ms ease-in-out;
+	height: 40px;
 }
 
 #sidebar .sidebar-content #ccg001-btn-search-drawer {
