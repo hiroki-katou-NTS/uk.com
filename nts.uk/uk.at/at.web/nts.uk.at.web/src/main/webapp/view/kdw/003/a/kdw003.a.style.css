@@ -11,12 +11,6 @@
 	/* top: -12px; */
 }
 
-#dislayFormatLbl {
-	/* margin-left: 20px; */
-	top: -12px;
-    position: relative;
-}
-
 #right-content {
 	margin-left: 80px;
 	width: auto;
@@ -345,6 +339,21 @@
    /*  height: 10px !important; */
 } 
 
+
+/* “ú•t‘—‚è */
+#daterangepicker .ntsDatepicker {
+	width: 90px;
+	height: 38px;
+	padding: 0;
+	border-width: 0;
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+}
+
+#daterangepicker .label-span {
+}
+
 #date-extract {
 	display: inline-block;
 }
@@ -448,9 +457,6 @@ table#employ_view tr{
 #btn-setting{
 	bottom: -7px;
 }
-/* #dislayFormatLbl{
-	height: 25px;
-} */
 .mgrid .mbutton {
 	height: 20px !important;	
 }
@@ -477,9 +483,6 @@ body {
 .nts-combo-item{
 	width: 103px !important;
 
-}
-.nts-column {
-	font-size: 0.8rem !important;
 }
 
 .ntsDateNextButton  {
