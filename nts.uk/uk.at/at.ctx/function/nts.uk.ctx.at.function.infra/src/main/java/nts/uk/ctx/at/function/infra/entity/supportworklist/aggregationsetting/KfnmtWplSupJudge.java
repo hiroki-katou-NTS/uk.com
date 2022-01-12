@@ -38,7 +38,7 @@ public class KfnmtWplSupJudge extends ContractUkJpaEntity {
     /**
      * 基準職場階層
      */
-    @Column(name = "WPK_HIREARCHY")
+    @Column(name = "WPL_HIREARCHY")
     public Integer standardWorkplaceHierarchy;
 
     @Override
