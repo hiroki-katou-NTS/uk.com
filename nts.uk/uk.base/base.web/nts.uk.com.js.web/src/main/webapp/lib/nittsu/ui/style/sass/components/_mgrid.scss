@@ -1,6 +1,6 @@
 .mgrid :not(.mgrid-header) table tr td { 
     font-size: 14px;
-    font-family: "DroidSansMono", "Meiryo";
+    font-family: $font_family_monospace;
 }
 
 .mgrid {
@@ -277,7 +277,7 @@
 }
 
 .medit-container .medit {
-    font-family: "Meiryo UI"
+    font-family: $font_family
 }
 
 .medit-container .medit::-ms-clear {
@@ -344,7 +344,6 @@
 	overflow: hidden; 
 	/**position: relative;**/ 
 	padding: 0px 2px;
-	font-family: "Meiryo" !important;
     font-size: .9em !important;
     text-align: center;
 }
