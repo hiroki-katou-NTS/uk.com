@@ -91,7 +91,7 @@ public class TimeActualStamp {
 		WorkStamp stamp = new WorkStamp(
 				this.stamp.isPresent() && this.stamp.get().getTimeDay().getTimeWithDay() != null
 						? (this.stamp.get().getTimeDay().getTimeWithDay().isPresent()
-								? this.stamp.get().getTimeDay().getTimeWithDay().get().forwardByMinutes(moveTime)
+								? this.stamp.get().getTimeDay().getTimeWithDay().get().backByMinutes(moveTime)
 								: null)
 						: null,
 				this.stamp.isPresent() && this.stamp.get().getLocationCode().isPresent()
