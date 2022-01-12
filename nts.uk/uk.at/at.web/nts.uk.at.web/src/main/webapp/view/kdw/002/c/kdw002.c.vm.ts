@@ -422,8 +422,8 @@ module nts.uk.at.view.kdw002.c {
                             } else {
                                 attFullData.authority = {   
                                                             'toUse' : false,
-                                                            'canBeChangedByOthers' : false,
-                                                            'youCanChangeIt' : false    
+                                                            // 'canBeChangedByOthers' : false,
+                                                            // 'youCanChangeIt' : false    
                                                         }
                             }    
                         }
