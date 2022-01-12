@@ -138,13 +138,6 @@
     border-color: transparent #ffffdd transparent transparent;
 }
 
-#emp-component{
-	margin-top: -18px;
-	margin-left: -10px;
-	margin-bottom: 12px;
-    width: 800px; 
-    height: 30px !important;
-}
 .ui-iggrid .ui-iggrid-headercaption, .ui-iggrid .ui-iggrid-header, .ui-iggrid .ui-iggrid-toolbar {
     background-color: white;
     border-color: white;
