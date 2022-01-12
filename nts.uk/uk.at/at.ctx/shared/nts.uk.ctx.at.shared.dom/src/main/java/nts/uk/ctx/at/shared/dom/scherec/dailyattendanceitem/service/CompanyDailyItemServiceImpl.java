@@ -15,6 +15,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DisplayAndInputControl;
@@ -78,12 +79,13 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 		if (dailyItem.isEmpty()) {
 			return Collections.emptyList();
 		}
-		
-		val lstId = pub.get(AppContexts.user().companyId(), dailyAttendanceItemIds);
+		List<Integer> lstAtdId = dailyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList());
+		val lstId = pub.get(AppContexts.user().companyId(), lstAtdId);
+		List<DailyAttendanceItem> dailyItemNew = dailyItem.stream().filter(x -> lstId.contains(x.getAttendanceItemId())).collect(Collectors.toList());
 		
 		// 	勤怠項目に対応する名称を生成する
 		// to ver7
-		List<AttItemName> dailyAttItem = atItemNameAdapter.getNameOfDailyAttendanceItem(dailyItem);
+		List<AttItemName> dailyAttItem = atItemNameAdapter.getNameOfDailyAttendanceItem(dailyItemNew);
 		for (AttItemName att : dailyAttItem) {
 			int id = att.getAttendanceItemId();
 			if (authorityMap.containsKey(id)) {

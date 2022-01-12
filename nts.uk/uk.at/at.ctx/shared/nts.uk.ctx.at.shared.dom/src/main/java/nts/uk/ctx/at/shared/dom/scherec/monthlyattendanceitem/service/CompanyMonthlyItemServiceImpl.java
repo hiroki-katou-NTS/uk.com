@@ -76,11 +76,12 @@ public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService 
 		if (monthlyItem.isEmpty()) {
 			return Collections.emptyList();
 		}
-		
-		val lstId = attdItemPub.get(AppContexts.user().companyId(), monthlyAttendanceItemIds);
+		List<Integer> lstAtdId = monthlyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList());
+		val lstId = attdItemPub.get(AppContexts.user().companyId(), lstAtdId);
+		List<MonthlyAttendanceItem> monthlyItemNew = monthlyItem.stream().filter(x -> lstId.contains(x.getAttendanceItemId())).collect(Collectors.toList());
 		// 	勤怠項目に対応する名称を生成する
 		// to ver7
-		List<AttItemName> monthlyAttItem = atItemNameAdapter.getNameOfMonthlyAttendanceItem(monthlyItem);
+		List<AttItemName> monthlyAttItem = atItemNameAdapter.getNameOfMonthlyAttendanceItem(monthlyItemNew);
 		for (AttItemName att : monthlyAttItem) {
 			int id = att.getAttendanceItemId();
 			if (authorityMap.containsKey(id)) {
