@@ -222,10 +222,13 @@ module nts.uk.at.view.kfp001.b {
                 var dfd = $.Deferred();
 
                 $.when(self.getAllOptionalAggrPeriod()).done(function() {
+                    const isItemExist = _.find(self.items(), data => data.aggrFrameCode() === self.currentItem().aggrFrameCode());
                     if (self.items().length > 0) {
                         self.currentCode(self.currentItem().aggrFrameCode());
-                        self.mode(1);
-                        self.enableText(false);
+                        self.mode(!!isItemExist ? 1 : 0);
+                        self.enableNEW(!!isItemExist);
+                        self.enableDEL(!!isItemExist);
+                        self.enableText(!!isItemExist);
                         self.getPeriod();
                         $('#update-mode').show();
                         $('#update-mode').focus();
