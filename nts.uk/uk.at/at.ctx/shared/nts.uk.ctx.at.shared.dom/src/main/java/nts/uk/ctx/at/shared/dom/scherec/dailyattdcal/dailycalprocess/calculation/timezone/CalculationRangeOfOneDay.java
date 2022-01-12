@@ -76,7 +76,6 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWorkTimeCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -431,7 +430,6 @@ public class CalculationRangeOfOneDay {
 			ConditionAtr conditionAtr,
 			DeductionAtr dedAtr,
 			StatutoryAtr statutoryAtr,
-			NotUseAtr canOffset,
 			Optional<WorkTimezoneGoOutSet> goOutSet) {
 		
 		AttendanceTime withinDeduct = AttendanceTime.ZERO;
@@ -441,18 +439,16 @@ public class CalculationRangeOfOneDay {
 		if (statutoryAtr.isStatutory()) {
 			if (this.withinWorkingTimeSheet.isPresent()) {
 				// 就業時間帯から控除時間を取得
-				withinDeduct = this.withinWorkingTimeSheet.get().getDeductionTime(conditionAtr, dedAtr, canOffset, goOutSet);
+				withinDeduct = this.withinWorkingTimeSheet.get().getDeductionTime(conditionAtr, dedAtr, goOutSet);
 			}
 		}
 		// 法定外
 		else if (statutoryAtr.isExcess()) {
 			if (this.outsideWorkTimeSheet.isPresent()) {
 				// 残業時間帯から控除時間を取得
-				overTimeDeduct = this.outsideWorkTimeSheet.get()
-						.getDeductionTimeFromOverTime(conditionAtr, dedAtr, goOutSet, canOffset);
+				overTimeDeduct = this.outsideWorkTimeSheet.get().getDeductionTimeFromOverTime(conditionAtr, dedAtr, goOutSet);
 				// 休出時間帯から控除時間を取得
-				holidayWorkDeduct = this.outsideWorkTimeSheet.get()
-						.getDeductionTimeFromHolidayWork(conditionAtr, dedAtr, goOutSet, canOffset);
+				holidayWorkDeduct = this.outsideWorkTimeSheet.get().getDeductionTimeFromHolidayWork(conditionAtr, dedAtr, goOutSet);
 			}
 		}
 		if(withinDeduct.greaterThan(AttendanceTime.ZERO) && goOutSet.isPresent()) {

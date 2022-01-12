@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -21,6 +22,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 
 	/** 控除相殺時間 */
+	@Setter
 	protected Optional<TimevacationUseTimeOfDaily> deductionOffSetTime = Optional.empty();
 
 	/**

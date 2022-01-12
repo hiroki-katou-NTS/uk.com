@@ -110,7 +110,7 @@ public class WorkTimeAddTimeSetForMonthAggr {
 			return this.lateEarlySet.isIncludeLateEarlyInWorkTime(Optional.of(lateEarlySet));
 		}).orElse(false); 
 		
-		if (isInclude)
+		if (!isInclude)
 			return 0;
 		
 		return daily.getAttendanceTimeOfDailyPerformance().map(at -> {

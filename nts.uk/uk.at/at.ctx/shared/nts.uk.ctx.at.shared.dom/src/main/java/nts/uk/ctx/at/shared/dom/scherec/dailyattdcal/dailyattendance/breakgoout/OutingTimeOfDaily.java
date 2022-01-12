@@ -35,7 +35,6 @@ import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 //import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 
@@ -209,12 +208,11 @@ public class OutingTimeOfDaily {
 		
 		//外出時間の計算
 		OutingTotalTime recordTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet,
-				deductAtr == DeductionAtr.Deduction ? NotUseAtr.NOT_USE : NotUseAtr.USE,
 				commonSetting.map(c -> c.getGoOutSet()));
 
 		//計算外出時間の計算
 		OutingTotalTime calcTotalTime = OutingTotalTime.calcOutingTime(oneDay, deductAtr, reason, outingCalcSet, 
-				NotUseAtr.NOT_USE, commonSetting.map(c -> c.getGoOutSet()));
+				 commonSetting.map(c -> c.getGoOutSet()));
 		
 		return OutingTotalTime.of(
 				TimeWithCalculation.mergeTimeAndCalcTime(recordTotalTime.getTotalTime(), calcTotalTime.getTotalTime()),

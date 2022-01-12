@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
@@ -39,6 +40,8 @@ public class ShortWorkTimeDto implements ItemConst, AttendanceItemDataGate {
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = CHILD_CARE_ATTR)
 	@AttendanceItemValue(type = ValueType.ATTR)
 	private int attr;
+	
+	private int addTime;
 	
 	@Override
 	public Optional<ItemValue> valueOf(String path) {
@@ -151,7 +154,7 @@ public class ShortWorkTimeDto implements ItemConst, AttendanceItemDataGate {
 	@Override
 	public ShortWorkTimeDto clone(){
 		return new ShortWorkTimeDto(totalDeductionTime == null ? null : totalDeductionTime.clone(), 
-				totalTime == null ? null : totalTime.clone(), times,  attr);
+				totalTime == null ? null : totalTime.clone(), times,  attr, addTime);
 	}
 	
 	public static ShortWorkTimeDto toDto(ShortWorkTimeOfDaily domain){
@@ -159,7 +162,8 @@ public class ShortWorkTimeDto implements ItemConst, AttendanceItemDataGate {
 											TotalDeductionTimeDto.getDeductionTime(domain.getTotalDeductionTime()), 
 											TotalDeductionTimeDto.getDeductionTime(domain.getTotalTime()), 
 											domain.getWorkTimes() == null ? null : domain.getWorkTimes().v(), 
-											domain.getChildCareAttribute().value);
+											domain.getChildCareAttribute().value,
+											domain.getAddTime().valueAsMinutes());
 	}
 	
 	public ShortWorkTimeOfDaily toDomain(){
@@ -167,7 +171,8 @@ public class ShortWorkTimeDto implements ItemConst, AttendanceItemDataGate {
 				new WorkTimes(times == null ? 0 : times),
 				createDeductionTime(totalTime),
 				createDeductionTime(totalDeductionTime),
-				attr == ChildCareAtr.CARE.value ? ChildCareAtr.CARE : ChildCareAtr.CHILD_CARE);
+				attr == ChildCareAtr.CARE.value ? ChildCareAtr.CARE : ChildCareAtr.CHILD_CARE,
+				new AttendanceTime(addTime));
 	}
 	
 	public static ShortWorkTimeOfDaily defaultDomain(){

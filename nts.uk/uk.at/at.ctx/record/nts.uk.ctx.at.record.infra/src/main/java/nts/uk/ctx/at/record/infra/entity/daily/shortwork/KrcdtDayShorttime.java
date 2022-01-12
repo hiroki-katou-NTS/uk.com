@@ -167,7 +167,7 @@ public class KrcdtDayShorttime extends ContractUkJpaEntity implements Serializab
 							this.count = workTimes.v() == null ? 0 : workTimes.v();
 						}
 						
-						this.count = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getAddTime().v();
+						this.addTime = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getAddTime().v();
 					}
 				}
 			}

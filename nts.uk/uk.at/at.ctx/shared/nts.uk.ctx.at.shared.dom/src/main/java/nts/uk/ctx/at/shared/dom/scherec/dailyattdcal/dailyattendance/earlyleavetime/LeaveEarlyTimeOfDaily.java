@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateLeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
@@ -131,17 +129,7 @@ public class LeaveEarlyTimeOfDaily {
 		} else {
 			//早退（時間帯から計算）
 			for(TimeLeavingWork work : recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork().getTimeLeavingWorks()) {
-				leaveEarlyTime.add(LeaveEarlyTimeOfDaily.calcLeaveEarlyTime(
-						recordClass.getCalculationRangeOfOneDay(),
-						work.getWorkNo(),
-						recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
-						recordClass.getHolidayCalcMethodSet(),
-						recordClass.getWorkTimezoneCommonSet(),
-						recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()
-								? recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily()
-								: Collections.emptyList(),
-						recordClass.getCompanyCommonSetting().getCompanyHolidayPriorityOrder(),
-						recordClass.getHolidayAddtionSet()));
+				leaveEarlyTime.add(LeaveEarlyTimeOfDaily.calcLeaveEarlyTime(recordClass, work.getWorkNo()));
 			}
 		}
 		return leaveEarlyTime;
@@ -157,18 +145,11 @@ public class LeaveEarlyTimeOfDaily {
 	 * @return 日別実績の早退時間
 	 */
 	public static LeaveEarlyTimeOfDaily calcLeaveEarlyTime(
-			CalculationRangeOfOneDay oneDay,
-			WorkNo workNo,
-			boolean leaveEarly, //日別実績の計算区分.遅刻早退の自動計算設定.早退
-			AddSettingOfWorkingTime holidayCalcMethodSet,
-			Optional<WorkTimezoneCommonSet> commonSetting,
-			List<LeaveEarlyTimeOfDaily> leaveEarlyDailies,
-			CompanyHolidayPriorityOrder companyHolidayPriorityOrder,
-			Optional<HolidayAddtionSet> holidayAddtionSet) {
+			ManageReGetClass recordClass, WorkNo workNo) {
 		
 		//勤務Noに一致する早退時間をListで取得する
-		List<LeaveEarlyTimeSheet> leaveEarlyTimeSheetList = oneDay.getWithinWorkingTimeSheet().isPresent()
-				? oneDay.getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
+		List<LeaveEarlyTimeSheet> leaveEarlyTimeSheetList = recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().isPresent()
+				? recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
 						.map(t -> t.getLeaveEarlyTimeSheet().orElse(null))
 						.filter(t -> t != null && workNo.compareTo(t.getWorkNo()) == 0 && t.getForDeducationTimeSheet().isPresent())
 						.sorted((leaveEarlyTimeSheet1,leaveEarlyTimeSheet2) -> leaveEarlyTimeSheet1.getForDeducationTimeSheet().get().getTimeSheet().getStart().compareTo(
@@ -209,18 +190,19 @@ public class LeaveEarlyTimeOfDaily {
 		
 		// 遅刻早退を就業時間に含めるか判断する　→　控除区分
 		NotUseAtr notDeductLateLeaveEarly = NotUseAtr.NOT_USE;
-		Optional<WorkTimezoneLateEarlySet> lateEarlySet = Optional.empty();
-		if (commonSetting.isPresent()) lateEarlySet = Optional.of(commonSetting.get().getLateEarlySet());
-		if (!holidayCalcMethodSet.isIncludeLateEarlyInWorkTime(PremiumAtr.RegularWork, lateEarlySet)){
+		Optional<WorkTimezoneLateEarlySet> lateEarlySet = recordClass.getWorkTimezoneCommonSet().map(c -> c.getLateEarlySet());
+		if (!recordClass.getHolidayCalcMethodSet().isIncludeLateEarlyInWorkTime(PremiumAtr.RegularWork, lateEarlySet)){
 			notDeductLateLeaveEarly = NotUseAtr.USE;
 		}
+		boolean leaveEarly = recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly();
 		//早退計上時間の計算
 		TimeWithCalculation leaveEarlyTime = leaveEarlyTimeSheet.calcForRecordTime(leaveEarly, true, NotUseAtr.USE);
 		//早退控除時間の計算
 		TimeWithCalculation leaveEarlyDeductionTime = leaveEarlyTimeSheet.calcDedctionTime(leaveEarly,notDeductLateLeaveEarly);
 		//休暇使用時間
-		Optional<TimevacationUseTimeOfDaily> useTime = leaveEarlyDailies.stream()
-				.filter(l -> l.getWorkNo().equals(workNo))
+		Optional<TimevacationUseTimeOfDaily> useTime = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance()
+				.map(c -> c.getLeaveEarlyTimeOfDaily()).orElseGet(() -> new ArrayList<>())
+				.stream().filter(l -> l.getWorkNo().equals(workNo))
 				.map(l -> l.getTimePaidUseTime()).findFirst();
 		
 		/** 〇早退時間を作る */
@@ -231,23 +213,39 @@ public class LeaveEarlyTimeOfDaily {
 				useTime.orElse(TimevacationUseTimeOfDaily.defaultValue()),
 				IntervalExemptionTime.defaultValue());
 		
-		/** 加算時間と相殺休暇使用時間を補正する */
-		leaveEarlyTimeOfDaily.correctAddTimeAndOffsetVacationUseTime(holidayCalcMethodSet, commonSetting, 
-				companyHolidayPriorityOrder, forDeductTimeSheet, holidayAddtionSet);
+		/** 相殺休暇使用時間の計算 */
+		leaveEarlyTimeOfDaily.calcOffsetVacationUseTimeCore(recordClass, leaveEarlyTimeSheet, forDeductTimeSheet);
+		
 		/** 〇早退時間を返す */
 		return leaveEarlyTimeOfDaily;
+	}
+	
+	/** 相殺休暇使用時間の計算 */
+	private void calcOffsetVacationUseTimeCore(ManageReGetClass recordClass, 
+			LeaveEarlyTimeSheet leaveEarlyTimeSheet,
+			LateLeaveEarlyTimeSheet forDeductTimeSheet) {
+		
+		//遅刻控除時間の計算
+		TimeWithCalculation lateDeductionTime = leaveEarlyTimeSheet.calcDedctionTime(
+				recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(), NotUseAtr.USE);
+
+		/** 加算時間と相殺休暇使用時間を補正する */
+		correctAddTimeAndOffsetVacationUseTime(recordClass.getHolidayCalcMethodSet(), 
+				recordClass.getWorkTimezoneCommonSet(), 
+				recordClass.getCompanyCommonSetting().getCompanyHolidayPriorityOrder(), 
+				forDeductTimeSheet, recordClass.getHolidayAddtionSet(), lateDeductionTime.getCalcTime());
 	}
 	
 	/** 加算時間と相殺休暇使用時間を補正する */
 	private void correctAddTimeAndOffsetVacationUseTime(AddSettingOfWorkingTime addSet, 
 			Optional<WorkTimezoneCommonSet> commonSetting, CompanyHolidayPriorityOrder compHolPrioOrder, 
-			LateLeaveEarlyTimeSheet earlySheet, Optional<HolidayAddtionSet> holidayAddtionSet) {
+			LateLeaveEarlyTimeSheet earlySheet, Optional<HolidayAddtionSet> holidayAddtionSet, AttendanceTime leaveEarly) {
 		
 		/** [1] 遅刻早退を就業時間に含めるか判断する */
 		if (addSet.isIncludeLateEarlyInWorkTime(PremiumAtr.RegularWork, commonSetting.map(c -> c.getLateEarlySet()))
 				&& holidayAddtionSet.isPresent()) {
 			
-			if (earlySheet != null) {
+			if (earlySheet != null && this.leaveEarlyDeductionTime.getCalcTime().greaterThan(0)) {
 				
 				/** 相殺時間休暇使用時間の算算 */
 				val offset = earlySheet.calcTotalOffsetTimeVacationUseTime(compHolPrioOrder, this.timePaidUseTime);
@@ -258,13 +256,17 @@ public class LeaveEarlyTimeOfDaily {
 				/** 相殺時間を補正する */
 				addTime.setSpecialHolidayFrameNo(this.timePaidUseTime.getSpecialHolidayFrameNo());
 				this.timeOffsetUseTime = addTime;
-				this.addTime = AttendanceTime.ZERO;
+				
+				/** 加算時間を補正する */
+				this.addTime = new AttendanceTime(this.leaveEarlyDeductionTime.getCalcTime().v() - addTime.totalVacationAddTime());
 				return;
+			}else {
+				
+				/** 加算時間を補正する */
+				this.addTime = new AttendanceTime(leaveEarly.v());
 			}
 		} 
 			
-		/** 加算時間を加算する */
-		this.addTime = this.leaveEarlyDeductionTime.getCalcTime();
 	}
 	
 	/**
