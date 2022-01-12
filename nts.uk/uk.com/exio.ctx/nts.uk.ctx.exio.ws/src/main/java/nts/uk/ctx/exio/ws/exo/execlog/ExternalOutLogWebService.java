@@ -118,6 +118,13 @@ public class ExternalOutLogWebService extends WebService {
 		return this.exterOutExecLogFinder.getExterOutExecLogById(exterOutExecLogProcessId);
 	}
 	
+	@Path("smileGetExterOutExecLog/{exterOutExecLogProcessId}")
+	@POST
+	public String smileGetExterOutExecLog(@PathParam("exterOutExecLogProcessId") String exterOutExecLogProcessId) {
+		String fileId = this.exterOutExecLogFinder.getExterOutExecLogById(exterOutExecLogProcessId).getFileId();
+		return fileId;
+	}
+	
 	/**
 	 * 	アルゴリズム「外部出力エラーログ設定」を実行する.
 	 * @param storeProcessingId the store processing id 外部出力処理ID
