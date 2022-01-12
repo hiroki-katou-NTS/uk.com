@@ -213,6 +213,7 @@ public class DPHeaderDto {
 			dto.attendanceName = TextResource.localize("KDW003_62");
 			dto.inputProcess = null;
 			dto.ntsControl = "Label";
+			dto.displayNumber = item.getDisplayNumber();
 		}
 		return dto;
 	}
