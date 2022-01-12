@@ -51,41 +51,60 @@
   </div>
 
   <div class="smile-div">
-    <!-- <table>
-            <tr>
-              <td style="padding-bottom: 0px;">
-                <div data-bind="ntsFormLabel: {text: $i18n('KSM008_46')}"></div>
-              </td>
-              <td></td>
-              <td style="padding-bottom: 0px;">
-                <div data-bind="ntsFormLabel: {text: $i18n('KSM008_47'), required: true}"></div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div tabindex="14" id="kcp005-component-left"></div>
-              </td>
-              <td>
-                <div class="ntsMoveDataArea ntsSwapComponent" id="swap-list-move-data">
-                  <div>
-                    <button tabindex="15" id="C11_2" class="move-button move-forward ntsSwap_Component"
-                      data-bind="name: $i18n('KSM008_48'), click: moveItemToRight">
-                      <i class="img-icon icon-next"></i>
-                    </button>
-                  </div>
-                  <div>
-                    <button tabindex="16" id="C11_3" class="move-button move-forward ntsSwap_Component"
-                      data-bind="name: $i18n('KSM008_49'), click: moveItemToLeft">
-                      <i class="img-icon icon-prev"></i>
-                    </button>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div tabindex="17" id="kcp005-component-right"></div>
-              </td>
-            </tr>
-          </table> -->
+    <div class="d-flex mb-1 ml-2">
+      <p>
+        #{i18n.getText('SMM001_13')}
+      </p>
+      <div id="combo-box" data-bind="ntsComboBox: {
+              name: 'List',
+              options: itemList,
+              optionsValue: 'code',
+              visibleItemsCount: 5,
+              value: selectedCode,
+              optionsText: 'name',
+              editable: isEditable,
+              enable: isEnable,
+              columns: [
+                { prop: 'code', length: 4 },
+                { prop: 'name', length: 10 },
+              ]}">
+      </div>
+    </div>
+    <table>
+      <tr>
+        <td style="padding-bottom: 0px;">
+          <div data-bind="ntsFormLabel: {text: $i18n('KSM008_46')}"></div>
+        </td>
+        <td></td>
+        <td style="padding-bottom: 0px;">
+          <div data-bind="ntsFormLabel: {text: $i18n('KSM008_47'), required: true}"></div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div tabindex="14" id="kcp005-component-left"></div>
+        </td>
+        <td>
+          <div class="ntsMoveDataArea ntsSwapComponent" id="swap-list-move-data">
+            <div>
+              <button tabindex="15" id="C11_2" class="move-button move-forward ntsSwap_Component"
+                data-bind="name: $i18n('KSM008_48')">
+                <i class="img-icon icon-next"></i>
+              </button>
+            </div>
+            <div>
+              <button tabindex="16" id="C11_3" class="move-button move-forward ntsSwap_Component"
+                data-bind="name: $i18n('KSM008_49')">
+                <i class="img-icon icon-prev"></i>
+              </button>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div tabindex="17" id="kcp005-component-right"></div>
+        </td>
+      </tr>
+    </table>
   </div>
 </div>
 

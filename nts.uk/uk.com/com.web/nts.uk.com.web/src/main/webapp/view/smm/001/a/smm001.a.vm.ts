@@ -26,6 +26,8 @@ module nts.uk.at.view.smm001.a {
     isEnable: KnockoutObservable<boolean>;
     isEditable: KnockoutObservable<boolean>;
     enumSmileCooperationAcceptanceItem: KnockoutObservableArray<any>;
+    enumDoOrDoNot: KnockoutObservableArray<any>;
+    enumDoOrDoNot2: KnockoutObservableArray<any>;
     ORGANIZATION_INFORMATION: KnockoutObservable<string>;
     BASIC_PERSONNEL_INFORMATION: KnockoutObservable<string>;
     JOB_STRUCTURE_INFORMATION: KnockoutObservable<string>;
@@ -59,6 +61,13 @@ module nts.uk.at.view.smm001.a {
 
     setDefault() {
       const vm = this;
+
+      vm.enumDoOrDoNot = ko.observableArray(__viewContext.enums.SmileCooperationOutputClassification);
+      console.log(">>> 1 ", vm.enumDoOrDoNot());
+
+      vm.enumDoOrDoNot2 = ko.observableArray(__viewContext.enums.SmileCooperationAcceptanceClassification);
+      console.log(">>> 2 ", vm.enumDoOrDoNot2());
+
       vm.enumSmileCooperationAcceptanceItem = ko.observableArray(__viewContext.enums.SmileCooperationAcceptanceItem);
       console.log(">>> ", vm.enumSmileCooperationAcceptanceItem());
       vm.ORGANIZATION_INFORMATION = ko.observable(vm.enumSmileCooperationAcceptanceItem()[0].name);
@@ -72,6 +81,14 @@ module nts.uk.at.view.smm001.a {
 
     save() {
       console.log("Hello");
+    }
+
+    moveItemToRight(){
+
+    }
+
+    moveItemToLeft(){
+
     }
 
   }
