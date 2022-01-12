@@ -123,9 +123,14 @@ span.button {
     }
 
     &:not(:disabled) {
-        &:focus,
         &:hover {
             background-color: #EAE8E8;
+        }
+
+        &:focus {
+            outline-style: solid;
+            outline-width: 3px;
+            outline-color: #A3A3A3;
         }
     }
 
@@ -150,9 +155,12 @@ span.button {
         background-color: #DB4F51;
 
         &:not(:disabled) {
-            &:focus,
             &:hover {
                 background-color: #EF6567;
+            }
+
+            &:focus {
+                outline-color: #A73436;
             }
         }
 
@@ -168,9 +176,12 @@ span.button {
         background-color: #258F7E;
 
         &:not(:disabled) {
-            &:focus,
             &:hover {
                 background-color: #229F8B;
+            }
+
+            &:focus {
+                outline-color: #196E60;
             }
         }
 
