@@ -2857,6 +2857,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                     vm.params.screenA.dataChanged(true);
                     $caches.new(event);
+                    $caches.new(null);
                     mutatedEvents();
                     let ids = [].concat(event.id, _.map(arg.relatedEvents, re => re.id));              
 
