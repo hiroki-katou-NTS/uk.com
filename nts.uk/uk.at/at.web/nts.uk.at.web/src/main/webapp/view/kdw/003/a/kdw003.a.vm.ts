@@ -5560,8 +5560,32 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 							break;	
 						}
 					}
+                    
+                    let taskCode = '';
+                    let dataTemp = _.find($("#dpGrid").mGrid("dataSource"), (item: any) => {
+                        return item.id == self.rowId();
+                    });
+
+                    switch (workFrameNoSelection) {
+                        case 1:
+                            taskCode = self.selectedCode() == '' ? '' : self.selectedCode();
+                            break;
+                        case 2:
+                            taskCode =  _.isNil(dataTemp.Code924) ? '' :  dataTemp.Code924;
+                            break;
+                        case 3:
+                            taskCode =  _.isNil(dataTemp.Code925) ? '' :  dataTemp.Code925;
+                            break;
+                        case 4:
+                            taskCode =  _.isNil(dataTemp.Code926) ? '' :  dataTemp.Code926;
+                            break;
+                        case 5:
+                            taskCode =  _.isNil(dataTemp.Code927) ? '' :  dataTemp.Code927;
+                            break;
+                        default: taskCode = '';
+                    }
+                    
                     nts.uk.ui.block.invisible();
-                    let taskCode = self.selectedCode() == '' ? null : self.selectedCode();
                     let paramsKDL012 = {
 						isMultiple: false,
 				        showExpireDate: false,

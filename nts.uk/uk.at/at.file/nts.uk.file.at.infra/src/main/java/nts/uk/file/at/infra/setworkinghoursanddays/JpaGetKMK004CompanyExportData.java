@@ -15,6 +15,7 @@ import javax.persistence.Query;
 import lombok.val;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.YearMonth;
@@ -45,7 +46,7 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 	
 	private static final String GET_EXPORT_MONTH = "SELECT m.MONTH_STR FROM BCMMT_COMPANY m WHERE m.CID = ?cid";
 	
-	private static final String GET_EXPORT_EXCEL = 
+	private static final String GET_EXPORT_EXCEL_SQLSERVER = 
 			" SELECT "
 					+" KSHMT_LEGALTIME_D_REG_COM.DAILY_TIME, KSHMT_LEGALTIME_D_REG_COM.WEEKLY_TIME, "
 					+" KRCMT_CALC_M_SET_REG_COM.INCLUDE_EXTRA_AGGR, "
@@ -80,6 +81,42 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					+" 		INNER JOIN KSHMT_LEGALTIME_D_DEF_COM ON KRCMT_CALC_M_SET_DEF_COM.CID = KSHMT_LEGALTIME_D_DEF_COM.CID "
 					+" 		INNER JOIN KSHMT_LEGALTIME_D_REG_COM ON KRCMT_CALC_M_SET_DEF_COM.CID = KSHMT_LEGALTIME_D_REG_COM.CID "
 					+" WHERE KRCMT_CALC_M_SET_DEF_COM.CID = ? ";
+	
+	private static final String GET_EXPORT_EXCEL_POSTGRE = 
+			" SELECT "
+					+" KSHMT_LEGALTIME_D_REG_COM.DAILY_TIME, KSHMT_LEGALTIME_D_REG_COM.WEEKLY_TIME, "
+					+" KRCMT_CALC_M_SET_REG_COM.INCLUDE_EXTRA_AGGR, "
+					+" (CASE WHEN KRCMT_CALC_M_SET_REG_COM.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_REG_COM.INCLUDE_LEGAL_AGGR ELSE NUll END) AS INCLUDE_LEGAL_AGGR, "
+					+" (CASE WHEN KRCMT_CALC_M_SET_REG_COM.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_REG_COM.INCLUDE_HOLIDAY_AGGR ELSE NUll END) AS INCLUDE_HOLIDAY_AGGR, "
+					+" KRCMT_CALC_M_SET_REG_COM.INCLUDE_EXTRA_OT, "
+					+" (CASE WHEN KRCMT_CALC_M_SET_REG_COM.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_REG_COM.INCLUDE_LEGAL_OT ELSE NUll END) AS INCLUDE_LEGAL_OT, "
+					+" (CASE WHEN KRCMT_CALC_M_SET_REG_COM.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_REG_COM.INCLUDE_HOLIDAY_OT ELSE NUll END) AS INCLUDE_HOLIDAY_OT, "
+					+" KRCMT_CALC_M_SET_FLE_COM.WITHIN_TIME_USE , "
+					+" KRCMT_CALC_M_SET_FLE_COM.AGGR_METHOD, "
+					+" (CASE WHEN KRCMT_CALC_M_SET_FLE_COM.AGGR_METHOD = '0' THEN KRCMT_CALC_M_SET_FLE_COM.INCLUDE_OT ELSE NULL END) AS INCLUDE_OT, "
+					+" KRCMT_CALC_M_SET_FLE_COM.INCLUDE_HDWK, "
+					+" KRCMT_CALC_M_SET_FLE_COM.LEGAL_AGGR_SET, "
+					+" KRCMT_CALC_M_SET_FLE_COM.INSUFFIC_SET, "
+					+" KRCMT_CALC_M_SET_FLE_COM.SETTLE_PERIOD_MON, "
+					+" KRCMT_CALC_M_SET_FLE_COM.SETTLE_PERIOD, "
+					+" KRCMT_CALC_M_SET_FLE_COM.START_MONTH AS FLEX_START_MONTH, "
+					+" KSHMT_LEGALTIME_D_DEF_COM.DAILY_TIME AS REG_DAILY_TIME, "
+					+" KSHMT_LEGALTIME_D_DEF_COM.WEEKLY_TIME AS REG_WEEKLY_TIME, "
+					+" KRCMT_CALC_M_SET_DEF_COM.STR_MONTH, "
+					+" KRCMT_CALC_M_SET_DEF_COM.PERIOD, "
+					+" KRCMT_CALC_M_SET_DEF_COM.REPEAT_ATR, "
+					+" KRCMT_CALC_M_SET_DEF_COM.INCLUDE_EXTRA_AGGR AS DEFOR_INCLUDE_EXTRA_AGGR, "
+					+" (CASE WHEN KRCMT_CALC_M_SET_DEF_COM.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_DEF_COM.INCLUDE_LEGAL_AGGR ELSE NULL END) AS DEFOR_INCLUDE_LEGAL_AGGR, "
+					+" (CASE WHEN KRCMT_CALC_M_SET_DEF_COM.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_DEF_COM.INCLUDE_HOLIDAY_AGGR ELSE NULL END) AS DEFOR_INCLUDE_HOLIDAY_AGGR, "
+					+" KRCMT_CALC_M_SET_DEF_COM.INCLUDE_EXTRA_OT AS DEFOR_INCLUDE_EXTRA_OT, "
+					+" (CASE WHEN KRCMT_CALC_M_SET_DEF_COM.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_DEF_COM.INCLUDE_LEGAL_OT ELSE NULL END) AS DEFOR_INCLUDE_LEGAL_OT, "
+					+" (CASE WHEN KRCMT_CALC_M_SET_DEF_COM.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_DEF_COM.INCLUDE_HOLIDAY_OT ELSE NULL END) AS DEFOR_INCLUDE_HOLIDAY_OT "
+					+" FROM KRCMT_CALC_M_SET_DEF_COM "
+					+" 		INNER JOIN KRCMT_CALC_M_SET_FLE_COM ON KRCMT_CALC_M_SET_DEF_COM.CID = KRCMT_CALC_M_SET_FLE_COM.CID "
+					+" 		INNER JOIN KRCMT_CALC_M_SET_REG_COM ON KRCMT_CALC_M_SET_DEF_COM.CID = KRCMT_CALC_M_SET_REG_COM.CID "
+					+" 		INNER JOIN KSHMT_LEGALTIME_D_DEF_COM ON KRCMT_CALC_M_SET_DEF_COM.CID = KSHMT_LEGALTIME_D_DEF_COM.CID "
+					+" 		INNER JOIN KSHMT_LEGALTIME_D_REG_COM ON KRCMT_CALC_M_SET_DEF_COM.CID = KSHMT_LEGALTIME_D_REG_COM.CID "
+					+" WHERE KRCMT_CALC_M_SET_DEF_COM.CID = ? ";
 
 	@Override
 	public List<MasterData> getCompanyExportData(int startDate, int endDate) {
@@ -95,19 +132,33 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 				.setParameter("minYm", startDate * 100 + month)
 				.setParameter("maxYm", endDate * 100 + month)
 				.getList();
-
-		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EXPORT_EXCEL.toString())) {
-//			stmt.setInt(1, startDate);
-//			stmt.setInt(2, endDate);
-			stmt.setString(1, cid);
-			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
-			
-			result.forEach(i -> {
-				datas.addAll(buildCompanyRow(i, legalTimes, startDate, endDate, month, startOfWeek));
-			});
-		} catch (SQLException e) {
-			e.printStackTrace();
+		
+		if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
+			try (PreparedStatement stmt = this.connection().prepareStatement(GET_EXPORT_EXCEL_SQLSERVER.toString())) {
+				stmt.setString(1, cid);
+				NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+				
+				result.forEach(i -> {
+					datas.addAll(buildCompanyRow(i, legalTimes, startDate, endDate, month, startOfWeek));
+				});
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else if (this.database().is(DatabaseProduct.POSTGRESQL)) {
+			try (PreparedStatement stmt = this.connection().prepareStatement(GET_EXPORT_EXCEL_POSTGRE.toString())) {
+				stmt.setString(1, cid);
+				NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+				
+				result.forEach(i -> {
+					datas.addAll(buildCompanyRow(i, legalTimes, startDate, endDate, month, startOfWeek));
+				});
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			throw new RuntimeException("not supported");
 		}
+
 		return datas;
 	}
 

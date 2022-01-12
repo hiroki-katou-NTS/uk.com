@@ -71,11 +71,28 @@ public class MonthlyCorrectionLogCommandHandler extends CommandHandler<MonthlyCo
 					if (itemOld != null && itemNew != null && (itemNew.getItemId() == itemOld.getItemId())
 							&& (itemNew.getValue() != null && itemOld.getValue() != null)
 							&& !StringUtils.equals(itemNew.getValue(), itemOld.getValue())) {
-						MonthlyCorrectedItem item = new MonthlyCorrectedItem(itemNameMap.get(key), key,
-								itemOld != null ? itemOld.getValue() : null,
-								itemNew != null ? itemNew.getValue() : null, convertType(itemNew.getValueType()),
-								editItems.contains(key) ? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
-						monthTarget.getCorrectedItems().add(item);
+						String oldValue = itemOld.getValue();
+						String newValue = itemNew.getValue();
+						
+						// trường hợp item tính toán old và new đang bị format không giống nhau
+						if (!editItems.contains(key)) {
+							if (oldValue.contains(".") && !newValue.contains(".")) {
+								oldValue = oldValue.substring(0, oldValue.indexOf("."));
+							}
+
+							if (!oldValue.contains(".") && newValue.contains(".")) {
+								newValue = newValue.substring(0, newValue.indexOf("."));
+							}
+						}
+
+						if (!StringUtils.equals(oldValue, newValue)) {
+							MonthlyCorrectedItem item = new MonthlyCorrectedItem(itemNameMap.get(key), key,
+									oldValue,
+									newValue, 
+									convertType(itemNew.getValueType()),
+									editItems.contains(key) ? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
+							monthTarget.getCorrectedItems().add(item);
+						}
 					}
 				});
 				targets.add(monthTarget);

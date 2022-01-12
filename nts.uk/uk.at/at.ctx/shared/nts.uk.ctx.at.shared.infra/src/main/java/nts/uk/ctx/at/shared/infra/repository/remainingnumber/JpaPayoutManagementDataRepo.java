@@ -385,9 +385,8 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 		String updCcd = insCcd;
 		String updScd = insScd;
 		String updPg = insPg;
-		StringBuilder sb = new StringBuilder();
 		boolean isPostgreSQL = this.database().is(DatabaseProduct.POSTGRESQL);
-		domains.parallelStream().forEach(c -> {
+		String query = domains.parallelStream().map(c -> {
 			String sql = INS_SQL;
 			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
@@ -420,10 +419,10 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 			sql = sql.replace("UNUSED_DAYS_VAL", c.getUnUsedDays() == null? "null": "" + c.getUnUsedDays().v() +"");
 			sql = sql.replace("STATE_ATR_VAL", "" + c.getStateAtr().value +"");
 			sql = sql.replace("DATE_VAL", c.getDisapearDate() == null? "null": (c.getDisapearDate().isPresent()? "'"+ c.getDisapearDate().get()+"'": "null"));
-			sb.append(sql);
-		});
+			return sql;
+		}).collect(Collectors.joining());
 
-		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		int records = this.getEntityManager().createNativeQuery(query).executeUpdate();
 		System.out.println(records);
 		
 	}
