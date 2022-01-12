@@ -344,9 +344,6 @@
 .mgrid .mgrid-fixed table tr, .mgrid .mgrid-free table tr {
    /*  height: 10px !important; */
 } 
-#contents-area * {
-    font-size: 0.8rem;
-}
 
 #date-extract {
 	display: inline-block;
@@ -428,12 +425,18 @@
 #grid-controls {
 }
 
+
+/* メインのグリッド */
+.font-smaller * {
+	font-size: 0.8rem !important;
+}
+
+
+
 table#employ_view tr{
 	height: 25px !important;
 }
-#ccg001 * {
-    font-size: 0.8rem;
-}
+
 #cbDisplayFormat{
 	height: 27px;
     bottom: -14px;
