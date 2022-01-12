@@ -54,8 +54,8 @@ public class GetEstimatedTimeZones {
 			 */
 			// get workNo 1
 			al.getAttendanceLeavingWork(1).ifPresent(lw -> {
-				result.setStartTime(new TimeWithDayAttr(lw.getTimespan().start()));
-				result.setEndTime(new TimeWithDayAttr(lw.getTimespan().end()));
+				result.setStartTime( lw.getAttendanceTime().map(x-> new TimeWithDayAttr(x.v())).orElse(null));
+				result.setEndTime(lw.getLeaveTime().map(x-> new TimeWithDayAttr(x.v())).orElse(null));
 			});			
 		});
 		// 2.取得する(社員ID, 年月日) 日別勤怠(Work).社員ID,日別勤怠(Work).年月日 Optional<残業申請>

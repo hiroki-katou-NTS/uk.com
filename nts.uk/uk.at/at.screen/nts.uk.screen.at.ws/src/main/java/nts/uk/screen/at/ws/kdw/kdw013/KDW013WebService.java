@@ -26,6 +26,7 @@ import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentDto;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentHandler;
 import nts.uk.screen.at.app.kdw013.a.StartProcess;
 import nts.uk.screen.at.app.kdw013.a.StartProcessDto;
+import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.screen.at.app.kdw013.a.favorite.oneday.FavOneDayDto;
 import nts.uk.screen.at.app.kdw013.a.favorite.oneday.GetFavOneDay;
 import nts.uk.screen.at.app.kdw013.a.favorite.task.FavTaskDto;
@@ -37,6 +38,11 @@ import nts.uk.screen.at.app.kdw013.command.RegisterFavoriteCommand;
 import nts.uk.screen.at.app.kdw013.command.RegisterFavoriteForOneDayCommand;
 import nts.uk.screen.at.app.kdw013.command.UpdateFavNameCommand;
 import nts.uk.screen.at.app.kdw013.command.UpdateOneDayFavNameCommand;
+import nts.uk.screen.at.app.kdw013.e.GetAvailableWorkingCommand;
+import nts.uk.screen.at.app.kdw013.e.GetWorkDataMasterInforCommand;
+import nts.uk.screen.at.app.kdw013.e.GetWorkDataMasterInforDto;
+import nts.uk.screen.at.app.kdw013.e.SelectTaskItem;
+import nts.uk.screen.at.app.kdw013.e.StartWorkNoTime;
 import nts.uk.screen.at.app.kdw013.e.UpdateAttendanceTimeZoneBySupportWork;
 import nts.uk.screen.at.app.kdw013.e.UpdateAttendanceTimeZoneBySupportWorkCommand;
 import nts.uk.screen.at.app.kdw013.f.AddNewFavoriteTask;
@@ -110,6 +116,12 @@ public class KDW013WebService {
 	
 	@Inject
 	private ChangeFavOneDayDisplayOrder changeFavOneDayOrder;
+	
+	@Inject
+	private StartWorkNoTime startWorkNoTime;
+	
+	@Inject
+	private SelectTaskItem selectTaskItem;
 	
 	@POST
 	@Path("a/get-fav-task")
@@ -236,6 +248,20 @@ public class KDW013WebService {
 	public void updateSupportTimezone(UpdateAttendanceTimeZoneBySupportWorkCommand command) {
 		updateAttendanceTimeZoneBySupportWork.update(command);
 	}
+	
+	// E: 時刻なし作業内容を起動する
+	@POST
+	@Path("e/start_task_content_without_time")
+	public GetWorkDataMasterInforDto startTaskContent(GetWorkDataMasterInforCommand command) {
+		return startWorkNoTime.startWorkNoTime(command);
+	}
+	
+	// E: 作業項目を選択する
+	@POST
+	@Path("e/select_task_item")
+	public SelectTaskItemDto selectTaskItem(GetAvailableWorkingCommand command) {
+		return new SelectTaskItemDto(selectTaskItem.selectTaskItem(command));
+	}
 
 }
 @Getter
@@ -245,4 +271,11 @@ class StartParam {
 	// 基準日
 	private GeneralDate inputDate;
 
+}
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+class SelectTaskItemDto {
+	private List<TaskDto> taskDtos;
 }

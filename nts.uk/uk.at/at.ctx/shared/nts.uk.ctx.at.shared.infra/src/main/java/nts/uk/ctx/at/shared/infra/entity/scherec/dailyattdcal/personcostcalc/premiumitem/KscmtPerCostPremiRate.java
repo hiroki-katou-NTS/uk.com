@@ -38,7 +38,7 @@ public class KscmtPerCostPremiRate extends ContractUkJpaEntity implements Serial
 
 	// 割増時間合計に含める
 	@Column(name = "INCLUDE_TOTAL")
-	public int includeTotal;
+	public boolean includeTotal;
 
     @Override
     protected Object getKey() {
@@ -51,7 +51,7 @@ public class KscmtPerCostPremiRate extends ContractUkJpaEntity implements Serial
                         new KmlspPremiumSetPK(domain.getCompanyID(), histId, e.getID().value),
                         e.getRate().v(),
                         e.getUnitPrice().value,
-                        e.isIncludeTotal() ? 1 : 0
+                        e.isIncludeTotal()
                 )
         ).collect(Collectors.toList());
 
