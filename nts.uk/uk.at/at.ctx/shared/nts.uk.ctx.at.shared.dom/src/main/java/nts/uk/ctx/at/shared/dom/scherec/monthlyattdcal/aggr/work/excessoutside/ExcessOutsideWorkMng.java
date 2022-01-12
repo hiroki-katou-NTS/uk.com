@@ -458,14 +458,10 @@ public class ExcessOutsideWorkMng {
 	 * @param addSet 加算設定
 	 * @param standFlexTime 基準フレックス時間
 	 */
-	public void assignFlexExcessTime(RequireM7 require,
-			DatePeriod datePeriod,
-			FlexAggregateMethod flexAggregateMethod,
-			GeneralDate procDate,
-			FlexMonthWorkTimeAggrSet flexAggrSet,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			FlexTime flexTime, SettingRequiredByFlex setFlex, AddSet addSet,
-			StandardFlexTime standFlexTime){
+	public void assignFlexExcessTime(RequireM7 require, CacheCarrier cacheCarrier, String cid,
+			DatePeriod datePeriod, FlexAggregateMethod flexAggregateMethod, GeneralDate procDate,
+			FlexMonthWorkTimeAggrSet flexAggrSet, AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			FlexTime flexTime, SettingRequiredByFlex setFlex, AddSet addSet, StandardFlexTime standFlexTime) {
 		
 		// 「不足設定．清算期間」を確認する
 		if (flexAggrSet.getInsufficSet().getSettlePeriod() == SettlePeriod.MULTI_MONTHS){
@@ -1346,7 +1342,7 @@ public class ExcessOutsideWorkMng {
 //		YearMonth yearMonthFromCalender(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth);
 	}
 	
-	public static interface RequireM7 extends SettingRequiredByFlex.Require {
+	public static interface RequireM7 extends SettingRequiredByFlex.RequireM1 {
 		
 	}
 }

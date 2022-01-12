@@ -353,7 +353,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 				ConcurrentStopwatches.start("12222.6:超過時間割り当て：");
 				
 				// 時間外超過の時、フレックス超過時間を割り当てる
-				excessOutsideWorkMng.assignFlexExcessTime(require, datePeriod, flexAggregateMethod,
+				excessOutsideWorkMng.assignFlexExcessTime(require, cacheCarrier, companyId, datePeriod, flexAggregateMethod,
 						procDate, this.flexAggrSet, aggregateTotalWorkingTime, this.flexTime,
 						settingsByFlex, addSet, standFlexTime);
 				
