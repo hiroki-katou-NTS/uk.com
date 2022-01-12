@@ -1243,10 +1243,6 @@ module nts.uk.com.view.ccg.share.ccg {
             private fixComponentWidth(): void {
                 let self = this;
                 _.defer(() => {
-                    // update tab 2 width
-                    let totalWidth = 5;
-                    $('#ccg001-tab-content-2').children('div.pull-left.height-maximum').each((i, e) => totalWidth += $(e).outerWidth(true));
-                    $('#ccg001-tab-content-2').outerWidth(totalWidth);
 
                     // Fix component width if screen width is smaller than component
                     const componentWidth = window.innerWidth - $('#ccg001-btn-search-drawer').offset().left;
@@ -2469,7 +2465,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
 
                 <div tabindex="-1" class="tab-content-2 height-maximum" data-bind="visible: showAdvancedSearchTab">
                         <div id="ccg001-tab-content-2" class="height-maximum">
-                            <div class="pull-left height-maximum" style="padding-right: 20px; overflow-y: scroll;">
+                            <div class="ccg001-tab-content-2-filters" style="overflow-y: scroll;">
                                 <div>
                                     <label>`+CCG001TextResource.CCG001_24+`</label>
                                 </div>
@@ -2622,18 +2618,10 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                     </div>
                                 <!-- /ko -->
                             </div>
-                            <div class="pull-left height-maximum margin-left-10 ccg001-table has-state">
-                                <div class="ccg001-cell mid">
-                                    <div id="ccg001-btn-advanced-search" class="ccg001-btn ccg-btn-vertical height-maximum"
-                                        data-bind="attr: {tabindex: ccg001Tabindex}, click: advancedSearchEmployee">
-                                        <div class="ccg001-cell mid">
-                                            <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_25+`</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="ccg001-cell mid">
-                                    <span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
-                                </div>
+                            <div class="footer-button">
+                                <button id="ccg001-btn-advanced-search" class="green" data-bind="attr: {tabindex: ccg001Tabindex}, click: advancedSearchEmployee">
+                                    ${CCG001TextResource.CCG001_25}
+                                </button>
                             </div>
                             
                             <!-- ko if: showEmployeeSelection -->

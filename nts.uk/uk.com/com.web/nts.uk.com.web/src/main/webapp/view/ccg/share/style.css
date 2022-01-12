@@ -24,14 +24,6 @@
 	padding: 0 !important;
 }
 
-.accordion {
-	width: 450px;
-}
-
-.accordion label {
-	cursor: pointer;
-}
-
 #ccg001-part-g {
 	width: 440px;
 	margin-right: 5px;
@@ -261,4 +253,26 @@
   .ccg-lbl-vertical {
     line-height: 23px;
   }
+}
+
+.ccg001-tab-content-2-filters {
+	width: 400px;
+}
+
+.footer-button {
+	position: relative;
+	width: 100%;
+	height: 60px;
+	background-color: #E4E4E4;
+}
+
+.footer-button button {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto 26px auto auto;
+	width: 120px;
+	height: 36px;
 }
