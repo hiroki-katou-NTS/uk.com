@@ -87,14 +87,14 @@ public class ActualWorkingTimeOfDaily {
 		return new ActualWorkingTimeOfDaily(new AttendanceTime(bindDiff),
 				new ConstraintTime(new AttendanceTime(midBind), new AttendanceTime(totalBind)),
 				new AttendanceTime(diffTimeWork), totalWorkTime, new DivergenceTimeOfDaily(),
-				new PremiumTimeOfDailyPerformance());
+				PremiumTimeOfDailyPerformance.createEmpty());
 	}
 
     public static ActualWorkingTimeOfDaily of(TotalWorkingTime totalWorkTime, int midBind, int totalBind, int bindDiff,
             int diffTimeWork, DivergenceTimeOfDaily divTime) {
         return new ActualWorkingTimeOfDaily(new AttendanceTime(bindDiff),
                 new ConstraintTime(new AttendanceTime(midBind), new AttendanceTime(totalBind)),
-                new AttendanceTime(diffTimeWork), totalWorkTime, divTime, new PremiumTimeOfDailyPerformance());
+                new AttendanceTime(diffTimeWork), totalWorkTime, divTime, PremiumTimeOfDailyPerformance.createEmpty());
     }
 
     public static ActualWorkingTimeOfDaily of(TotalWorkingTime totalWorkTime, int midBind, int totalBind, int bindDiff,

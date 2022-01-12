@@ -45,24 +45,25 @@ public class AttendanceByTimezoneDeletionTest {
 		itemIds.add(1);
 		itemIds.add(2);
 		itemIds.add(3);
-		
+
 		new Expectations() {
 			{
 				require.deleteBySupFrameNo(anyString, GeneralDate.today(), SupportFrameNo.of(1));
-				
+
 				require.getAttendanceItemIds(SupportFrameNo.of(1));
 				result = itemIds;
-				
+
 				require.deleteByListItemId(anyString, GeneralDate.today(), itemIds);
 			}
 		};
-		
+
 		AttendanceByTimezoneDeletion deletion = new AttendanceByTimezoneDeletion(SupportFrameNo.of(1),
 				AttendanceDeletionStatusEnum.COMPLETE);
-		
+
 		List<AtomTask> result = deletion.deleteAttendanceInfo(require, "sId", GeneralDate.today());
-		
-		NtsAssert.atomTask(() -> result.get(0), any -> require.deleteBySupFrameNo("sId", GeneralDate.today(), SupportFrameNo.of(1)));
+
+		NtsAssert.atomTask(() -> result.get(0),
+				any -> require.deleteBySupFrameNo("sId", GeneralDate.today(), SupportFrameNo.of(1)));
 		NtsAssert.atomTask(() -> result.get(1), any -> require.deleteByListItemId("sId", GeneralDate.today(), itemIds));
 	}
 
@@ -74,19 +75,11 @@ public class AttendanceByTimezoneDeletionTest {
 		itemIds1.add(1);
 		itemIds1.add(2);
 		itemIds1.add(3);
-		
-		List<Integer> itemIds2 = new ArrayList<>();
-		itemIds2.add(4);
-		itemIds2.add(5);
-		itemIds2.add(6);
 
 		new Expectations() {
 			{
 				require.getAttendanceItemIds(SupportFrameNo.of(1));
 				result = itemIds1;
-				
-				//require.getAttendanceItemIds(SupportFrameNo.of(2));
-				//result = itemIds2;
 			}
 		};
 
@@ -113,7 +106,7 @@ public class AttendanceByTimezoneDeletionTest {
 		assertTrue(actual);
 
 	}
-	
+
 	@Test
 	public void isNeedDeletingAttInfo2() {
 		AttendanceByTimezoneDeletion deletion = new AttendanceByTimezoneDeletion(SupportFrameNo.of(1),
@@ -134,7 +127,7 @@ public class AttendanceByTimezoneDeletionTest {
 		assertTrue(actual);
 
 	}
-	
+
 	@Test
 	public void isNeedDeletingEditedStatus2() {
 		AttendanceByTimezoneDeletion deletion = new AttendanceByTimezoneDeletion(SupportFrameNo.of(1),
