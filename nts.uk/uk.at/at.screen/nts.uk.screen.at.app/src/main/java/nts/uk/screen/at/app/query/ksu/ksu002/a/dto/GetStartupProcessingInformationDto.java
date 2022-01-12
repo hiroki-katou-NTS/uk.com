@@ -19,13 +19,15 @@ public class GetStartupProcessingInformationDto extends IndividualDisplayControl
 	public String employeeCode; // 社員コード
 	public String businessName; // ビジネスネーム
 	public int yearMonth; //年月
+	public GetEmployeeInformationsDto employeeInfos;
 	public GetStartupProcessingInformationDto(IndividualDisplayControlDto individualDisplayControl,
-			String employeeId, String employeeCode, String businessName, int yearMonth) {
+			String employeeId, String employeeCode, String businessName, int yearMonth, GetEmployeeInformationsDto employeeInfos) {
 		super(individualDisplayControl.scheModifyAuthCtrlCommon, individualDisplayControl.scheModifyAuthCtrlByPerson, individualDisplayControl.scheFunctionControl);
 		this.employeeId = employeeId;
 		this.employeeCode = employeeCode;
 		this.businessName = businessName;
 		this.yearMonth = yearMonth;
+		this.employeeInfos = employeeInfos;
 	}
 	
 }
