@@ -2757,6 +2757,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         //cal work time
                         calWorkTimeBreakEvent(event);
                         $caches.new(event);
+                        $caches.new(null);
                         return;
                     }
                     
