@@ -1,14 +1,24 @@
-.mgrid :not(.mgrid-header) table tr td { 
+.mgrid :not(.mgrid-header) table tr {
+
+	&:nth-child(even) {
+		background-color: #F3F3F3;
+	}
+
+	td {
     font-size: 14px;
     font-family: $font_family_monospace;
+		text-align: center;
+	}
 }
 
 .mgrid {
 	position: relative;
 }
+
 .mgrid table th, .mgrid table td {
-	border: 1px solid #DEE2E6;
+	border: 1px solid #fff;
 }
+
 .mgrid .mgrid-header td {
 	color: #fff;
 	font-weight: 200;
@@ -17,9 +27,6 @@
 	* {
 		color: #fff;
 	}
-}
-
-.mgrid .mcell {
 }
 
 .mgrid td.mcell.currency-symbol:before {
@@ -82,10 +89,6 @@
 }
 
 .mgrid table tr td.ui-state-hover {
-	/* background-color: #F5F5DC;
-  	color: #000; */
-  	color: #30CC40;
-  	font-weight: bold;
   	background: linear-gradient(180deg, #dcf2d9, #f0f5f0, #dcf2d9);
   	box-shadow: 0px 6px 6px #c3d5c0;
 }
@@ -258,26 +261,24 @@
 
 .medit-container {
     position: relative;
-    width: 99%;
-    border: 1px solid #AAB7B8;
+		left: 1px;
+    width: calc(100% - 2px);
+    outline: 1px solid #AAB7B8;
     background-color: #fff;
 }
 
 .medit-container .medit {
-    height: 90%;
-    width: 96%;
-    outline: none;
-    border: none;
-	text-align: right;
+  height: 90%;
+	width: 96%;
+  outline: none;
+  border: none;
+	text-align: center;
 	margin: 0% 2%;
+	font-family: $font_family_monospace;
 }
 
 .medit-container .medit.halign-left {
-	text-align: left;
-}
-
-.medit-container .medit {
-    font-family: $font_family
+	text-align: center;
 }
 
 .medit-container .medit::-ms-clear {
