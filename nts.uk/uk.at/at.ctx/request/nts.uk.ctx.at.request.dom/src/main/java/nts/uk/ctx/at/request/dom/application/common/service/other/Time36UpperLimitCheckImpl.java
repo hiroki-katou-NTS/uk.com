@@ -365,13 +365,13 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		if (opAppOverTime.isPresent()) {
 			final val applicationTemp = application;
 			application = (Application)opAppOverTime.map(x -> {
-				x.setApplication(applicationTemp);
+//				x.setApplication(applicationTemp);
 				return x;
 			}).orElse(null);
 		} else if (opAppHolidayWork.isPresent()) {
 			final val applicationTemp = application;
 			application = (Application)opAppHolidayWork.map(x -> {
-				x.setApplication(applicationTemp);
+//				x.setApplication(applicationTemp);
 				return x;
 			}).orElse(null);
 		}
