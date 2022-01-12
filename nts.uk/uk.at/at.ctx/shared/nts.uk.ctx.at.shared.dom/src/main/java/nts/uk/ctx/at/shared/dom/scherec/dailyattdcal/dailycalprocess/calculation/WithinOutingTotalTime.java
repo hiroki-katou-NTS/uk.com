@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 
 /**
@@ -57,16 +56,15 @@ public class WithinOutingTotalTime {
 			CalculationRangeOfOneDay oneDay,
 			DeductionAtr dedAtr,
 			Optional<WorkTimezoneGoOutSet> goOutSet,
-			GoingOutReason reason,
-			NotUseAtr canOffset) {
+			GoingOutReason reason) {
 		
 		ConditionAtr conditionAtr = ConditionAtr.convertFromGoOutReason(reason);	// 控除種別区分
 		
 		// コア内の外出時間の計算
 		FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)oneDay.getWithinWorkingTimeSheet().get();
-		AttendanceTime withinFlex = changedFlexTimeSheet.calcOutingTimeInFlex(true, conditionAtr, dedAtr, goOutSet, canOffset);
+		AttendanceTime withinFlex = changedFlexTimeSheet.calcOutingTimeInFlex(true, conditionAtr, dedAtr, goOutSet);
 		// コア外外出時間の計算
-		AttendanceTime excessFlex = changedFlexTimeSheet.calcOutingTimeInFlex(false, conditionAtr, dedAtr, goOutSet, canOffset);
+		AttendanceTime excessFlex = changedFlexTimeSheet.calcOutingTimeInFlex(false, conditionAtr, dedAtr, goOutSet);
 		// 外出合計時間を返す
 		return WithinOutingTotalTime.of(
 				TimeWithCalculation.sameTime(withinFlex),
@@ -86,13 +84,12 @@ public class WithinOutingTotalTime {
 			CalculationRangeOfOneDay oneDay,
 			DeductionAtr dedAtr,
 			Optional<WorkTimezoneGoOutSet> goOutSet,
-			GoingOutReason reason,
-			NotUseAtr canOffset) {
+			GoingOutReason reason) {
 		
 		// 所定内合計時間の計算
 		TimeWithCalculation withinDedTime = oneDay.getDeductionTime(
 				ConditionAtr.convertFromGoOutReason(reason),
-				dedAtr, StatutoryAtr.Statutory, canOffset, goOutSet);
+				dedAtr, StatutoryAtr.Statutory, goOutSet);
 		// 外出合計時間を返す
 		return WithinOutingTotalTime.of(
 				withinDedTime,

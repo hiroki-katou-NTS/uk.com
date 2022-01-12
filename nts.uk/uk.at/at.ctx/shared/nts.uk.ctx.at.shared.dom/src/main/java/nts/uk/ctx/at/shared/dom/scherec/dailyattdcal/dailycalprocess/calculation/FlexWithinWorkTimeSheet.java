@@ -769,6 +769,57 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		}
 		return TimeWithCalculation.createTimeWithCalculation(AttendanceTime.ZERO, lateTime);
 	}
+
+	/**
+	 * 相殺用遅刻時間の計算
+	 * （コア無しフレックス専用処理） 
+	 * (相殺休暇使用時間の計算専用)
+	 * @param personCommonSetting 社員設定管理
+	 * @param integrationOfDaily 日別実績(WORK)
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param premiumAtr 割増区分
+	 * @param workType 勤務種類
+	 * @param predetermineTimeSet 計算用所定時間設定
+	 * @param autoCalcOfLeaveEarlySetting 遅刻早退の自動計算設定
+	 * @param addSetting 加算設定
+	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @param dailyUnit 法定労働時間
+	 * @param lateEarlyMinusAtr 強制的に遅刻早退控除する
+	 * @param settingOfFlex フレックス勤務の設定
+	 * @return 遅刻時間
+	 */
+	public AttendanceTime calcLateTimeForOffset(
+			ManagePerPersonDailySet personCommonSetting,
+			IntegrationOfDaily integrationOfDaily,
+			Optional<IntegrationOfWorkTime> integrationOfWorkTime,
+			PremiumAtr premiumAtr,
+			WorkType workType,
+			PredetermineTimeSetForCalc predetermineTimeSet,
+			AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
+			AddSetting addSetting,
+			HolidayAddtionSet holidayAddtionSet,
+			DailyUnit dailyUnit,
+			NotUseAtr lateEarlyMinusAtr,
+			Optional<SettingOfFlexWork> settingOfFlex) {
+		
+		// 就業時間帯の共通設定の確認
+		Optional<CoreTimeSetting> coreTimeSettingForCalc = Optional.empty();
+		if (integrationOfWorkTime.isPresent()){
+			coreTimeSettingForCalc = integrationOfWorkTime.get().getCoreTimeSettingForCalc(Optional.of(workType));
+		}
+		
+		// コア無し遅刻時間計算用の就業時間の計算
+		AttendanceTime noCore = this.calcWorkTimeForCalcNoCoreLateTime(
+				personCommonSetting, integrationOfDaily, integrationOfWorkTime, premiumAtr,
+				workType, predetermineTimeSet, autoCalcOfLeaveEarlySetting, addSetting,
+				holidayAddtionSet, dailyUnit, lateEarlyMinusAtr, settingOfFlex);
+		// 遅刻時間の計算　（最低勤務時間　－　就業時間）
+		AttendanceTime result = coreTimeSettingForCalc.get().getMinWorkTime().minusMinutes(noCore.valueAsMinutes());
+		// マイナスの場合は0
+		if (result.valueAsMinutes() < 0) return AttendanceTime.ZERO;
+		// 遅刻時間を返す
+		return result;
+	}
 	
 	/**
 	 * 遅刻時間の計算
@@ -908,15 +959,14 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			boolean isWithin,
 			ConditionAtr conditionAtr,
 			DeductionAtr dedAtr,
-			Optional<WorkTimezoneGoOutSet> goOutSet, NotUseAtr canOffset) {
+			Optional<WorkTimezoneGoOutSet> goOutSet) {
 		
 		// コアタイムとの重複を判断して時間帯を作成
 		List<WithinWorkTimeFrame> targetFrameList = this.createSpanDuplicatedWithCoreTime(isWithin);
 		// 控除時間の計算
 		AttendanceTime goOutTime = ActualWorkTimeSheetListService.calcDeductionTime(
 				conditionAtr, dedAtr, goOutSet,
-				targetFrameList.stream().map(t -> (ActualWorkingTimeSheet)t).collect(Collectors.toList()),
-				canOffset);
+				targetFrameList.stream().map(t -> (ActualWorkingTimeSheet)t).collect(Collectors.toList()));
 		// 外出時間を返す
 		return goOutTime;
 	}

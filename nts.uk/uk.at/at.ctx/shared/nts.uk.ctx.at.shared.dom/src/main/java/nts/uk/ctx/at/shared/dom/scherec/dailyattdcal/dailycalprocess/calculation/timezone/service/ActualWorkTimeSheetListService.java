@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * ドメインサービス：実働時間帯リスト計算
@@ -30,7 +29,7 @@ public class ActualWorkTimeSheetListService {
 			ConditionAtr conditionAtr,
 			DeductionAtr dedAtr,
 			Optional<WorkTimezoneGoOutSet> goOutSet,
-			List<ActualWorkingTimeSheet> actualWorkTimeSheetList, NotUseAtr canOffset) {
+			List<ActualWorkingTimeSheet> actualWorkTimeSheetList) {
 
 		int totalDeductMinutes = 0;		// 控除合計時間
 		// 実働時間帯リストを取得
