@@ -155,9 +155,9 @@ module nts.uk.at.view.kdp.share {
 
 			const data: ButtonSetting = ko.unwrap(valueAccessor());
 
-			const icon = document.createElement('i');
+			//const icon = document.createElement('i');
 
-			ko.applyBindingsToNode(icon, { ntsIcon: { no: getIcon(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay), 'width': '68', 'height': '68' } });
+			//ko.applyBindingsToNode(icon, { ntsIcon: { no: getIcon(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay), 'width': '68', 'height': '68' } });
 
 			const text = document.createElement('div');
 
@@ -168,7 +168,7 @@ module nts.uk.at.view.kdp.share {
 			let btnType = checkType(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay);
 
 			$(element)
-				.append(icon)
+				//.append(icon)
 				.append(text)
 				.css({
 					'color': data.btnTextColor,

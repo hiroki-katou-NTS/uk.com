@@ -282,15 +282,13 @@
 
 .tab-button-panel .grid-container.btn-layout-type-1>div>button {
 	text-align: left;
-	border-radius: 5px;
-	box-shadow: 2px 2px 6px #808080;
-    border-width: 0;
+	border-radius: 10px;
+    border: solid 2px;
 }
 
 .tab-button-panel .grid-container.btn-layout-type-0>div>button {
-	border-radius: 5px;
-	box-shadow: 2px 2px 6px #808080;
-    border-width: 0;
+	border-radius: 10px;
+	border: solid 2px;
 }
 
 .tab-button-panel .grid-container.btn-layout-type-1>div>button>i {
