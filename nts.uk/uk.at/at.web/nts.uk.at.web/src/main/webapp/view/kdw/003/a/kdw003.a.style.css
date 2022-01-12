@@ -2,13 +2,8 @@
 	width: 1200px;
 }
 
-/* #btnComfirmAttendance {
-	vertical-align: text-bottom;
-} */
-
 #btnVacationRemaining {
 	margin-left: 50px;
-	/* top: -12px; */
 }
 
 #right-content {
@@ -16,52 +11,40 @@
 	width: auto;
 }
 
-#cbListDate {
-	/* margin-top: 10px; */
-}
 
 #cbListDate {
 	display: none;
 	margin-top: -6px;
 }
 
-.btn-signAll {
-	/* margin: 3px 0 0 200px; */
-}
 
 .btn-signAll2 {
-	/* margin: 3px 0 0 200px; */
 	margin-left: 10px;
 }
 
 #btn-saveColumnWidth {
-	/* float: right; */
 	margin-top: 3px;
 	margin-left: 15px;
 }
 
 #btn-legend {
-	/* float: left; */
 	margin-top: 3px;
 	margin-left: 15px;
 }
 
 #gid {
 	margin: 2px 0 0 0px;
-/*     margin-top: -6px; */
     height: 700px;
 }
 
 .setting-container {
 	display: inline-block;
 	margin: 3px ;
-	/* position: relative; */
 	margin-left: 15px;
 }
 
 #setting-content {
 	height: 200px;
-	/* width: 290px; */
 	border: 1px solid gray;
 	border-radius: 5px;
 	position: absolute;
@@ -71,8 +54,6 @@
     margin-top: 0px;
 	padding: 15px;
 	visibility: hidden;
-	/* top: -9999px;
-	left: -9999px; */
 }
 
 #cbCursorMoveDirection {
@@ -147,10 +128,6 @@
     top: 93px;
 }
 #content-grid-not{
-/* 	height: 20px ;
-	position: relative;
-	bottom: -30px;
-	margin-right: 300px; */
 	margin-top: -3px;
 	width: 1175px;
 }
@@ -166,9 +143,6 @@
 #right-content {
     margin-left: 80px;
      width: auto;
-}
-.nts-grid-sheet-buttons{
-/* 	margin-top:32px; */
 }
 .right-align {
   text-align: right;
@@ -190,12 +164,10 @@
 	background-color: #CFF1A5;
 	border: 1px solid #CCC;
 	text-align: center;
-	/* height: 29px; */
 }
 #flex-table .ui-widget-body{
 	border: 1px solid #CCC;
 	text-align: right;
-  /*   height: 29px; */
 }
 #flex-table {
 	border: 2px solid #CCC;
@@ -210,22 +182,18 @@
 	width: 180px;}
 	
 .italic-text{
-	/*  font-style: italic; */
 	 font-weight: bold;
 	 background-color: black !important;
 	 color: white !important;
 }
 
 .nts-grid tr td.ui-iggrid-selectedcell.ui-state-hover {
-	/*  font-style: italic; */
 	 background-color: #007fff !important;
 	 color: black !important;
 }
 
 .image-icon{
 	background: url('../a/image/icon.png');
-/* 	display: block;
-    float: left; */
     margin: 3px -3px;
     padding: 9px 19px;
 }
@@ -267,19 +235,6 @@
     display: inline-block;
 }
 
-/* .agree-column {
-	display: table-cell;
-}
-
-.agree-row {
-	display: table;
-	width: 100%; Optional
-	table-layout: fixed; Optional
-	border-spacing: 10px; Optional
-	margin: -10px;
-	width: 608px;
-}
- */
 .Column {
 	display: table-cell;
 }
@@ -297,13 +252,6 @@
     height: 29px;
 }
 
-/* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
-	background-color: #007fff !IMPORTANT;
-} */
-
-/* #contents-area, #function-content {width: 1280px;}
-#left-content{width: 100px; height: 500px; float: left;} */
-
 #functions-area {
     height: auto;}
     
@@ -315,22 +263,6 @@
 	margin: 1px !important;
     margin-left: 12px !important;
 }
-/* #functions-area button {
-	height: 25px !important;
-} */
-/* button next/pre datetime */
-/* button.auto-height {
-    height: 23px !important;
-} */
-/* .mgrid :not(.mgrid-header) table tr td {
-    font-size: 10px !important;
-} */
-/* .mgrid-fixed-table table tr {
-    height: 19px !important;
-} */
-.mgrid .mgrid-fixed table tr, .mgrid .mgrid-free table tr {
-   /*  height: 10px !important; */
-} 
 
 
 /* “ú•t‘—‚è */
@@ -461,10 +393,8 @@ table#employ_view tr{
     width: 72px;
 }
 #content-all-grid{
-	/* top: -25px !IMPORTANT ; */
     position: relative;
     top: -5px;
- /*    padding-top: 10px; */
 }
 #date-extract{
 	padding-top: 2px !important;
