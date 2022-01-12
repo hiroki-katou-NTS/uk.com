@@ -2926,6 +2926,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 }
                             });
                             $caches.new(arg.oldEvent);
+                            $caches.new(null);
                         }
                 },
                 eventResizeStart: (arg: EventResizeStartArg) => {
@@ -2995,6 +2996,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         // update data sources
                         mutatedEvents();
                         $caches.new(event);
+                        $caches.new(null);
                         return;
                     }
                     
@@ -3086,6 +3088,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             updateEvents();
                         });
                     $caches.new(event);
+                    $caches.new(null);
                     // update data sources
                     mutatedEvents();
                 },
