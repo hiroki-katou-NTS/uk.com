@@ -231,7 +231,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			Integer includeExtraOt = convertToPostgre(r, "INCLUDE_EXTRA_OT");
 			Integer startMonth = r.getInt("START_MONTH");
 			Integer selectPeriodMon = r.getInt("SETTLE_PERIOD_MON");
-			Integer aggrMethod = r.getInt("AGGR_METHOD");
+			Integer aggrMethod = convertToPostgre(r, "AGGR_METHOD");
 			Integer strMonth = r.getInt("STR_MONTH");
 			Integer period = r.getInt("PERIOD");
 			Integer repeatAtr = convertToPostgre(r, "REPEAT_ATR");
