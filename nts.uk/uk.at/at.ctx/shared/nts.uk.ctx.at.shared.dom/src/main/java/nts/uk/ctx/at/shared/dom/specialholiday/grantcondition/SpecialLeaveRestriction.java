@@ -244,7 +244,11 @@ public class SpecialLeaveRestriction extends DomainObject {
 		if (!employmentHistory.isPresent()) {
 			return false;
 		} else {
-			if (this.getListEmp() == null && this.getListEmp().isEmpty()) {
+			if (this.getListEmp() == null) {
+				return false;
+			}
+			
+			if (this.getListEmp().isEmpty()) {
 				return false;
 			}
 			
@@ -278,7 +282,11 @@ public class SpecialLeaveRestriction extends DomainObject {
 		}
 		
 		
-        if(this.getListCls() == null && this.getListCls().isEmpty()) {
+        if(this.getListCls() == null) {
+			return false;
+		}
+        
+        if(this.getListCls().isEmpty()) {
 			return false;
 		}
 		

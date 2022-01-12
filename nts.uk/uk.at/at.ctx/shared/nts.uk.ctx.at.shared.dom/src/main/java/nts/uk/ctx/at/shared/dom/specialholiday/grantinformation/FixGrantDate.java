@@ -102,7 +102,7 @@ public class FixGrantDate {
 						grantReferenceDate.get().month(),
 						grantReferenceDate.get().day()));
 			}else{
-				return grantReferenceDate;
+				return Optional.empty();
 			}
 	
 		}

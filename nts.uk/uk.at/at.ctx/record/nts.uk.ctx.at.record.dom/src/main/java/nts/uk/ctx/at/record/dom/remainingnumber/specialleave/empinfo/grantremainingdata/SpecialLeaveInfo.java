@@ -9,13 +9,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveGrantUseDay;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveOverNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestNumber;
@@ -28,11 +26,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialHolidayInterimMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
-import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblReferenceGrant;
-import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
-import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.LimitAccumulationDays;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.LimitCarryoverDays;
 
 /**
@@ -50,7 +46,7 @@ public class SpecialLeaveInfo implements Cloneable {
 	/** 付与残数データ */
 	private List<SpecialLeaveGrantRemainingData> grantRemainingDataList;
 	/** 付与情報 */
-	private Optional<SpecialLeaveGrantUseDay> grantDaysInfo;
+	private Optional<LeaveGrantDayNumber> grantDaysInfo;
 
 	/**
 	 * コンストラクタ
@@ -96,7 +92,7 @@ public class SpecialLeaveInfo implements Cloneable {
 			cloned.grantRemainingDataList.add(grantRemainingData.clone());
 
 		}
-		cloned.grantDaysInfo = this.grantDaysInfo.map(x -> new SpecialLeaveGrantUseDay(x.v()));
+		cloned.grantDaysInfo = this.grantDaysInfo.map(x -> new LeaveGrantDayNumber(x.v()));
 		return cloned;
 	}
 
@@ -324,7 +320,8 @@ public class SpecialLeaveInfo implements Cloneable {
 		grantSpecialHoliday(require, companyId, employeeId, aggregatePeriodWork, specialLeaveCode, baseDate);
 		
 		/** 付与情報を更新 */
-		this.grantDaysInfo = updateGrantDaysInfo(aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant());
+		this.grantDaysInfo = totalGrantDay(aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant()
+				.map(x->x.getGrantDays()));
 
 		/** 付与前付与後を判断する */
 		GrantBeforeAfterAtr grantPeriodAtr = aggregatePeriodWork.judgeGrantPeriodAtr(entryDate);
@@ -437,20 +434,20 @@ public class SpecialLeaveInfo implements Cloneable {
 	}
 	
 	/**
-	 * 付与情報を更新
-	 * @param nextGrant
+	 * 付与日数を合計する
+	 * @param addGrantNumber
 	 * @return
 	 */
-	private Optional<SpecialLeaveGrantUseDay> updateGrantDaysInfo(Optional<NextSpecialLeaveGrant> nextGrant){
-		if(!nextGrant.isPresent()){
+	private Optional<LeaveGrantDayNumber> totalGrantDay(Optional<LeaveGrantDayNumber> addGrantNumber){
+		if(!addGrantNumber.isPresent()){
 			return this.grantDaysInfo;
 		}
 		
-		double grantDay = nextGrant.get().getGrantDays().v();
+		LeaveGrantDayNumber grantDay = addGrantNumber.get();
 		if(this.grantDaysInfo.isPresent()){
-			grantDay += this.grantDaysInfo.get().v();
+			grantDay = new LeaveGrantDayNumber(grantDay.v() + this.grantDaysInfo.get().v());
 		}
-		return Optional.of(new SpecialLeaveGrantUseDay(grantDay));
+		return Optional.of(grantDay);
 		
 	}
 	

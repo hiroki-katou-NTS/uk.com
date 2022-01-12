@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeav
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeavaRemainTime;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveGrantUseDay;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainDay;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUnDigestion;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -108,26 +107,6 @@ public class InPeriodOfSpecialLeaveResultInfor {
 	 * @return 特別休暇月別残数データ
 	 */
 
-//	/**
-//	 * 実特別休暇
-//	 */
-//	private SpecialLeave actualSpecial;
-//	/**
-//	 * 特別休暇
-//	 */
-//	private SpecialLeave specialLeave;
-//	/**
-//	 * 付与区分
-//	 */
-//	private boolean grantAtr;
-//	/**
-//	 * 未消化数
-//	 */
-//	private SpecialLeaveUnDigestion unDegestionNumber;
-//	/**
-//	 * 特別休暇付与情報: 付与日数
-//	 */
-//	private Optional<SpecialLeaveGrantUseDay> grantDays;
 	public SpecialHolidayRemainData createSpecialHolidayRemainData(
 			String employeeId,
 			YearMonth yearMonth,
@@ -180,7 +159,7 @@ public class InPeriodOfSpecialLeaveResultInfor {
 			domain.setGrantAtr(true);
 			// 特別休暇情報（期間終了日の翌日開始時点）．残数．付与情報
 
-			domain.setGrantDays(Optional.of(new SpecialLeaveGrantUseDay(specialLeavResult.getAsOfStartNextDayOfPeriodEnd().getGrantDaysInfo().get().v())));
+			domain.setGrantDays(Optional.of(specialLeavResult.getAsOfStartNextDayOfPeriodEnd().getGrantDaysInfo().get()));
 		}else {
 			//付与区分 ← （特別休暇情報（期間終了日の翌日開始時点）．残数．付与情報が存在しない場合）false
 			domain.setGrantAtr(false);

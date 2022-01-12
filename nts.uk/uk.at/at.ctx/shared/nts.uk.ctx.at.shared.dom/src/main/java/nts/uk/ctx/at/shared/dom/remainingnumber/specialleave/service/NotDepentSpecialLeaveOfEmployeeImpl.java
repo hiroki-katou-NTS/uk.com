@@ -68,11 +68,8 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 			List<SpecialHolidayInfor> specialHolidayInfor = specialHoliday.createNotDepentInfoGrantInfo(
 					param.getCid(), param.getDatePeriod(), new SpecialHolidayCode(param.getSpecialLeaveCode()),
 					param.getSpeGrantDate(), param.getAnnGrantDate(), param.getInputDate(), param.getSpecialSetting(),
-					param.getGrantDays().isPresent()
-							? Optional.of(new GrantNumber(param.getGrantDays().get().intValue())) : Optional.empty(),
-					param.getGrantTableCd().isPresent()
-							? Optional.of(new PerServiceLengthTableCD(param.getGrantTableCd().get()))
-							: Optional.empty(),
+					param.getGrantDays().map(x->new GrantNumber(x.intValue())),
+					param.getGrantTableCd().map(x->new PerServiceLengthTableCD(x)),
 							require, cacheCarrier);
 			
 			Optional<LimitCarryoverDays> limitCarryoverDays = specialHoliday.getGrantRegular()
@@ -81,12 +78,12 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 			
 			if (!specialHolidayInfor.isEmpty()) {
 				return  new InforSpecialLeaveOfEmployee(InforStatus.GRANTED,
-						limitCarryoverDays.isPresent() ? Optional.of(limitCarryoverDays.get().v()) : Optional.empty(),
+						limitCarryoverDays.map(x->x.v()),
 						specialHolidayInfor);
 
 			} else {
 				return  new InforSpecialLeaveOfEmployee(InforStatus.NOTGRANT,
-						limitCarryoverDays.isPresent() ? Optional.of(limitCarryoverDays.get().v()) : Optional.empty(),
+						limitCarryoverDays.map(x->x.v()),
 						new ArrayList<>());
 			}
 	}

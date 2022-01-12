@@ -100,48 +100,41 @@ public class GrantRegular extends DomainObject {
 			CacheCarrier cacheCarrier,
 			NextSpecialHolidayGrantParameter parameter,
 			SpecialLeaveRestriction specialLeaveRestriction){
-		
-		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList
-		= new ArrayList<NextSpecialLeaveGrant>();
-		
+			
 		//期間を補正する
 		parameter.setPeriod(this.correctThePeriod(require, cacheCarrier, parameter));
 		
 		// 取得している「特別休暇．付与情報．付与するタイミングの種類」をチェックする
-		if (this.getTypeTime().equals(TypeTime.GRANT_SPECIFY_DATE)){ // 指定日に付与する
-
+		switch (this.getTypeTime()) {
+		
+		case GRANT_SPECIFY_DATE:// 指定日に付与する
 			// 定期の次回特別休暇付与を求める
-			nextSpecialLeaveGrantList
-				= getSpecialLeaveGrantInfo(
+			return getSpecialLeaveGrantInfo(
 					require,
 					cacheCarrier,
 					parameter,
 					specialLeaveRestriction);
 			
-
-		} else if (this.getTypeTime().equals(TypeTime.GRANT_PERIOD)){ // 期間で付与する
-
+		case GRANT_PERIOD:// 期間で付与する
 			// 定期の次回特別休暇付与を求める
-			nextSpecialLeaveGrantList
-				= getSpecialLeaveGrantInfo(
+			return getSpecialLeaveGrantInfo(
 					require,
 					cacheCarrier,
 					parameter,
 					specialLeaveRestriction);
 			
-
-		} else if (this.getTypeTime().equals(TypeTime.REFER_GRANT_DATE_TBL)){ // 付与テーブルを参照して付与する
-
+		case REFER_GRANT_DATE_TBL:// 付与テーブルを参照して付与する
 			// 付与テーブルの付与日一覧を求める
-			nextSpecialLeaveGrantList
-				= getTableSpecialLeaveGrantInfo(
+			return getTableSpecialLeaveGrantInfo(
 					require,
 					cacheCarrier,
 					parameter,
 					specialLeaveRestriction
 					);
+			
+		default:
+			return new ArrayList<>();
 		}
-		return nextSpecialLeaveGrantList;
 	}
 	
 	
@@ -234,24 +227,17 @@ public class GrantRegular extends DomainObject {
 			Optional<Integer> elapseNo, Optional<ElapseYear> elapseYear)  {
 		switch(this.typeTime) {
 		case GRANT_SPECIFY_DATE:/** 指定日付与 */
-			if (this.getFixGrantDate().isPresent()){
-				return this.getFixGrantDate().get().getDeadLine(grantDate, grantReferenceDate, elapseNo, elapseYear);
-			}
-			break;
+			return this.getFixGrantDate().get().getDeadLine(grantDate, grantReferenceDate, elapseNo, elapseYear);
+			
 		case GRANT_PERIOD: /**期間で付与する*/
-			if(this.getPeriodGrantDate().isPresent()){
-				return this.periodGrantDate.get().getDeadLine(grantDate);
-			}
-			break;
+			return this.periodGrantDate.get().getDeadLine(grantDate);
+			
 		case REFER_GRANT_DATE_TBL: /** 付与テーブルを参照して付与する*/
-			if(this.getGrantPeriodic().isPresent()){
-				return this.getGrantPeriodic().get().calcDeadLine(grantDate, grantReferenceDate, elapseNo, elapseYear);
-			}
-			break;
+			return this.getGrantPeriodic().get().calcDeadLine(grantDate, grantReferenceDate, elapseNo, elapseYear);
+
 		default:
 			throw new RuntimeException();
 		}
-		throw new RuntimeException();
 	}
 	
 	/**
@@ -267,14 +253,10 @@ public class GrantRegular extends DomainObject {
 			NextSpecialHolidayGrantParameter parameter){
 		
 		if (typeTime.equals(TypeTime.GRANT_SPECIFY_DATE)){ // 付与するタイミングの種類 = 指定日で付与する
-			if(this.fixGrantDate.isPresent()){
-				return this.fixGrantDate.get().getGrantDate(require, cacheCarrier, parameter, this.getGrantDate());
-			}
+			return this.getFixGrantDate().get().getGrantDate(require, cacheCarrier, parameter, this.getGrantDate());
 			
 		}else if(typeTime.equals(TypeTime.GRANT_PERIOD)){//付与するタイミングの種類 = 期間で付与する
-			if(this.getPeriodGrantDate().isPresent()){
-				return this.getPeriodGrantDate().get().getPeriodSpecialLeaveGrantInfo(require, cacheCarrier, parameter);
-			}
+			return this.getPeriodGrantDate().get().getPeriodSpecialLeaveGrantInfo(require, cacheCarrier, parameter);
 			
 		}else  if (typeTime.equals(TypeTime.REFER_GRANT_DATE_TBL)){//付与するタイミングの種類 = 付与テーブルを参照して付与する
 			if(this.getGrantDate().isPresent()){
@@ -327,7 +309,7 @@ public class GrantRegular extends DomainObject {
 			SpecialLeaveRestriction specialLeaveRestriction) {
 
 		
-		if(!this.getGrantDate().isPresent() || !this.getGrantPeriodic().isPresent()){
+		if(!this.getGrantDate().isPresent()){
 			return new ArrayList<>();
 		}
 		// 付与基準日を求める
@@ -419,13 +401,10 @@ public class GrantRegular extends DomainObject {
 	 */
 	public Optional<LimitCarryoverDays> getLimitCarryoverDays(){
 		if(this.getTypeTime().equals(TypeTime.GRANT_SPECIFY_DATE)){
-			if(this.fixGrantDate.isPresent()){
-				return this.fixGrantDate.get().getLimitCarryoverDays();
-			}
+			return this.fixGrantDate.get().getLimitCarryoverDays();
+			
 		}else if(this.getTypeTime().equals(TypeTime.REFER_GRANT_DATE_TBL)){
-			if(grantPeriodic.isPresent()){
-				return this.grantPeriodic.get().getLimitCarryoverDays();
-			}
+			return this.grantPeriodic.get().getLimitCarryoverDays();
 		}
 		return Optional.empty();
 	}
