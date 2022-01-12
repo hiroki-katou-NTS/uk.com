@@ -27,7 +27,6 @@ module nts.uk.at.view.smm001.a {
     isEditable: KnockoutObservable<boolean>;
     enumSmileCooperationAcceptanceItem: KnockoutObservableArray<any>;
     enumDoOrDoNot: KnockoutObservableArray<any>;
-    enumDoOrDoNot2: KnockoutObservableArray<any>;
     ORGANIZATION_INFORMATION: KnockoutObservable<string>;
     BASIC_PERSONNEL_INFORMATION: KnockoutObservable<string>;
     JOB_STRUCTURE_INFORMATION: KnockoutObservable<string>;
@@ -35,6 +34,14 @@ module nts.uk.at.view.smm001.a {
     LEAVE_INFORMATION: KnockoutObservable<string>;
     AFFILIATED_MASTER: KnockoutObservable<string>;
     EMPLOYEE_MASTER: KnockoutObservable<string>;
+
+    enumDoOrDoNot2: KnockoutObservableArray<any>;
+    DO_TEXT: KnockoutObservable<string>;
+    DO_NOT_TEXT: KnockoutObservable<string>;
+
+    enumPaymentCategoryList: KnockoutObservableArray<any>;
+
+
     created() {
       const vm = this;
       vm.tabs = ko.observableArray([
@@ -61,13 +68,13 @@ module nts.uk.at.view.smm001.a {
 
     setDefault() {
       const vm = this;
-
-      vm.enumDoOrDoNot = ko.observableArray(__viewContext.enums.SmileCooperationOutputClassification);
-      console.log(">>> 1 ", vm.enumDoOrDoNot());
-
+      // Init Do Or DoNot Enum
       vm.enumDoOrDoNot2 = ko.observableArray(__viewContext.enums.SmileCooperationAcceptanceClassification);
       console.log(">>> 2 ", vm.enumDoOrDoNot2());
+      vm.DO_NOT_TEXT = ko.observable(vm.enumDoOrDoNot2()[0].name);
+      vm.DO_TEXT = ko.observable(vm.enumDoOrDoNot2()[1].name);
 
+      // Init info item
       vm.enumSmileCooperationAcceptanceItem = ko.observableArray(__viewContext.enums.SmileCooperationAcceptanceItem);
       console.log(">>> ", vm.enumSmileCooperationAcceptanceItem());
       vm.ORGANIZATION_INFORMATION = ko.observable(vm.enumSmileCooperationAcceptanceItem()[0].name);
@@ -77,6 +84,10 @@ module nts.uk.at.view.smm001.a {
       vm.LEAVE_INFORMATION = ko.observable(vm.enumSmileCooperationAcceptanceItem()[4].name);
       vm.AFFILIATED_MASTER = ko.observable(vm.enumSmileCooperationAcceptanceItem()[5].name);
       vm.EMPLOYEE_MASTER = ko.observable(vm.enumSmileCooperationAcceptanceItem()[6].name);
+
+      // Init payment category
+      vm.enumPaymentCategoryList = ko.observableArray(__viewContext.enums.PaymentCategory);
+      console.log(">>> 2 ", vm.enumPaymentCategoryList());
     }
 
     save() {

@@ -15,11 +15,11 @@ public enum PaymentCategory {
 
 	public int value;
 
-	public String name;
+	public String nameId;
 
-	private PaymentCategory(int value, String name) {
+	private PaymentCategory(int value, String nameId) {
 		this.value = value;
-		this.name = name;
+		this.nameId = nameId;
 	}
 
 	public static PaymentCategory valueOf(Integer value) {

@@ -7,14 +7,16 @@ package nts.uk.smile.dom.smilelinked.cooperationoutput;
 public enum SmileCooperationOutputClassification {
 
 	/** しない */
-	DO_NOT(0),
+	DO_NOT(0, "しない"),
 
 	/** する */
-	DO(1);
+	DO(1, "する");
 	
 	public int value;
+	public String nameId;
 	
-	private SmileCooperationOutputClassification (int value) {
+	private SmileCooperationOutputClassification (int value, String nameId) {
 		this.value = value;
+		this.nameId = nameId;
 	}
 }

@@ -14,10 +14,9 @@
               name: 'List',
               options: itemList,
               optionsValue: 'code',
-              visibleItemsCount: 5,
+              visibleItemsCount: 3,
               value: selectedCode,
               optionsText: 'name',
-              editable: isEditable,
               enable: isEnable,
               columns: [
                 { prop: 'code', length: 4 },
@@ -33,9 +32,9 @@
     </div>
     <div class="ml-2">
       <label
-        data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 1', option: '1', group: 'abc' }"></label>
+        data-bind="ntsRadioButton: { checked: selectedValue, optionText: DO_TEXT, option: '1', group: 'abc' }"></label>
       <label
-        data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 2', option: '2', group: 'abc' }"></label>
+        data-bind="ntsRadioButton: { checked: selectedValue, optionText: DO_NOT_TEXT, option: '2', group: 'abc' }"></label>
     </div>
   </div>
   <div class="smile-div">
@@ -44,9 +43,9 @@
     </div>
     <div class="ml-2">
       <label
-        data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 1', option: '1', group: 'abc' }"></label>
+        data-bind="ntsRadioButton: { checked: selectedValue, optionText: DO_TEXT, option: '1', group: 'abc' }"></label>
       <label
-        data-bind="ntsRadioButton: { checked: selectedValue, optionText: 'Option 2', option: '2', group: 'abc' }"></label>
+        data-bind="ntsRadioButton: { checked: selectedValue, optionText: DO_NOT_TEXT, option: '2', group: 'abc' }"></label>
     </div>
   </div>
 
@@ -55,14 +54,13 @@
       <p>
         #{i18n.getText('SMM001_13')}
       </p>
-      <div id="combo-box" data-bind="ntsComboBox: {
+      <div class="ml-1" id="combo-box" data-bind="ntsComboBox: {
               name: 'List',
-              options: itemList,
+              options: enumPaymentCategoryList,
               optionsValue: 'code',
               visibleItemsCount: 5,
               value: selectedCode,
               optionsText: 'name',
-              editable: isEditable,
               enable: isEnable,
               columns: [
                 { prop: 'code', length: 4 },

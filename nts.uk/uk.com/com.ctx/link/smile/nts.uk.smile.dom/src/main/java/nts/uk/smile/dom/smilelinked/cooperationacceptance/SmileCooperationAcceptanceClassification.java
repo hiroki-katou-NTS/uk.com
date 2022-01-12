@@ -6,14 +6,16 @@ package nts.uk.smile.dom.smilelinked.cooperationacceptance;
  */
 public enum SmileCooperationAcceptanceClassification {
 	/** しない */
-	DO_NOT(0),
+	DO_NOT(0, "しない"),
 
 	/** する */
-	DO(1);
+	DO(1, "する");
 							
 	public int value;
+	public String nameId;
 	
-	private SmileCooperationAcceptanceClassification (int value) {
+	private SmileCooperationAcceptanceClassification (int value, String nameId) {
 		this.value = value;
+		this.nameId = nameId;
 	}
 }
