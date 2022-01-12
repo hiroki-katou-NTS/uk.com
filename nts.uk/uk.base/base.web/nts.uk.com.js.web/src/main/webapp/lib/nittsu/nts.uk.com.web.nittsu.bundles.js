@@ -18680,9 +18680,9 @@ var nts;
                         var $prevButton, $nextButton;
                         if (jumpButtonsDisplay) {
                             $prevButton = $("<button/>").addClass("ntsDateNextButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
-                                .text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
+                                .text("＜").css("margin-right", "3px").attr("tabIndex", tabIndex);
                             $nextButton = $("<button/>").addClass("ntsDatePrevButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
-                                .text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
+                                .text("＞").css("margin-left", "3px").attr("tabIndex", tabIndex);
                             $input.before($prevButton).after($nextButton);
                         }
                         if (data.dateFormat === "YYYY") {
