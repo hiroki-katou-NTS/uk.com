@@ -572,7 +572,10 @@ module nts.uk.pr.view.kmf001.f {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1942", messageParams: [] });
                       return;
                     }else if(self.compenTimeManage() == 1 && self.managementClassification() != 1) {
-                      nts.uk.ui.dialog.info({ messageId: "Msg_3262" }).then(() => nts.uk.ui.dialog.info({ messageId: "Msg_15"}));
+                      nts.uk.ui.dialog.info({ messageId: "Msg_3262" })
+                        .then(() => {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15"});
+                        });
                     }
                 self.reCallValidate().done(function() {
                     if (!$('.check_error').ntsError('hasError')){

@@ -140,3 +140,7 @@ table#table tr td.title {
 .sidebar-content{
 	min-height: 660px;
 }
+/* .ui-dialog .ui-dialog-content {
+	width: 769px ;
+	word-break: keep-all;
+} */
