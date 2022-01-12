@@ -45,7 +45,6 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 			+ " s.pk.cid = :cid AND s.pk.ym >= :minYm AND s.pk.ym < :maxYm"
 			+ " ORDER BY s.pk.ym";
 	
-	
 	private static final String GET_WORKPLACE_SQLSERVER;
 	  static {
 	      StringBuilder exportSQL = new StringBuilder();
@@ -252,7 +251,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 		private List<MasterData> buildWorkPlaceRow(NtsResultRecord r, List<KshmtLegalTimeMWkp> legals, int startDate, int endDate, int month, String startOfWeek) {
 			List<MasterData> datas = new ArrayList<>();
 
-			Integer refPreTime = r.getInt("WITHIN_TIME_USE");
+			Integer refPreTime = convertToInteger(r, "WITHIN_TIME_USE");
 			String kdp004_401 = I18NText.getText("KMK004_401");
 			
 			for (int y = startDate; y <= endDate; y++) {
@@ -272,16 +271,16 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 						.filter(l -> l.pk.type == LaborWorkTypeAttr.FLEX.value)
 						.findFirst();
 				
-				Integer includeExtraAggr = r.getInt("INCLUDE_EXTRA_AGGR");
-				Integer includeExtraOt = r.getInt("INCLUDE_EXTRA_OT");
+				Integer includeExtraAggr = convertToInteger(r, "INCLUDE_EXTRA_AGGR");
+				Integer includeExtraOt = convertToInteger(r, "INCLUDE_EXTRA_OT");
 				Integer selectPeriodMon = r.getInt("SETTLE_PERIOD_MON");
-				Integer aggrMethod = r.getInt("AGGR_METHOD");
+				Integer aggrMethod = convertToInteger(r, "AGGR_METHOD");
 				Integer strMonth = r.getInt("STR_MONTH");
 				Integer flexStartMonth = r.getInt("FLEX_START_MONTH");
 				Integer period = r.getInt("PERIOD");
-				Integer repeatAtr = r.getInt("REPEAT_ATR");
-				Integer deforIncludeExtraAggr = r.getInt("DEFOR_INCLUDE_EXTRA_AGGR");
-				Integer deforIncludeExtraOt = r.getInt("DEFOR_INCLUDE_EXTRA_OT");
+				Integer repeatAtr = convertToInteger(r, "REPEAT_ATR");
+				Integer deforIncludeExtraAggr = convertToInteger(r, "DEFOR_INCLUDE_EXTRA_AGGR");
+				Integer deforIncludeExtraOt = convertToInteger(r, "DEFOR_INCLUDE_EXTRA_OT");
 				
 				datas.add(buildWorkPlaceARow(
 						//R12_1
@@ -301,15 +300,15 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 						//R12_8
 						KMK004PrintCommon.getExtraType(includeExtraAggr),
 						//R12_9
-						includeExtraAggr == null ? null : includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_LEGAL_AGGR")) : null,
+						includeExtraAggr == null ? null : includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "INCLUDE_LEGAL_AGGR")) : null,
 						//R12_10
-						includeExtraAggr == null ?null : includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_HOLIDAY_AGGR")) : null, 
+						includeExtraAggr == null ?null : includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "INCLUDE_HOLIDAY_AGGR")) : null, 
 						//R12_11
 						KMK004PrintCommon.getExtraType(includeExtraOt),
 						//R12_12
-						includeExtraOt == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_LEGAL_OT")) : null, 
+						includeExtraOt == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "INCLUDE_LEGAL_OT")) : null, 
 						//R12_13		
-						r.getInt("INCLUDE_EXTRA_OT") == null ?null:r.getInt("INCLUDE_EXTRA_OT") != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_HOLIDAY_OT")) : null,
+						r.getInt("INCLUDE_EXTRA_OT") == null ?null:r.getInt("INCLUDE_EXTRA_OT") != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "INCLUDE_HOLIDAY_OT")) : null,
 						//R12_14
 						KMK004PrintCommon.getFlexType(refPreTime),
 						//R12_15
@@ -333,9 +332,9 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 						//R12_24
 						aggrMethod == null ?null: aggrMethod == 0 ? KMK004PrintCommon.getInclude(r.getInt("INCLUDE_OT")) : null,
 						//R12_25
-						KMK004PrintCommon.getInclude(r.getInt("INCLUDE_HDWK")),
+						KMK004PrintCommon.getInclude(convertToInteger(r, "INCLUDE_HDWK")),
 						//R12_26
-						KMK004PrintCommon.getLegal(r.getInt("LEGAL_AGGR_SET")),
+						KMK004PrintCommon.getLegal(convertToInteger(r, "LEGAL_AGGR_SET")),
 						//R12_27
 						((month - 1) % 12 + 1) + kdp004_401,
 						//R12_28
@@ -353,15 +352,15 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 						//R12_34
 						KMK004PrintCommon.getWeeklySurcharge(deforIncludeExtraAggr),
 						//R12_35
-						deforIncludeExtraAggr == null ? null : deforIncludeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_AGGR")) : null,
+						deforIncludeExtraAggr == null ? null : deforIncludeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "DEFOR_INCLUDE_LEGAL_AGGR")) : null,
 						//R12_36
-						deforIncludeExtraAggr == null ? null : deforIncludeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
+						deforIncludeExtraAggr == null ? null : deforIncludeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
 						//R12_37
 						KMK004PrintCommon.getWeeklySurcharge(deforIncludeExtraOt),
 						//R12_38
-						deforIncludeExtraOt == null ? null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_OT")) : null,
+						deforIncludeExtraOt == null ? null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "DEFOR_INCLUDE_LEGAL_OT")) : null,
 						//E12_39
-						deforIncludeExtraOt == null ? null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_OT")): null
+						deforIncludeExtraOt == null ? null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "DEFOR_INCLUDE_HOLIDAY_OT")): null
 						));
 
 //				int nextYm = y *100 + month + 1;
@@ -765,6 +764,20 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 	            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 	            .build());
 			return MasterData.builder().rowData(data).build();
+		}
+		
+		private Integer convertToInteger(NtsResultRecord r, String name) {
+			if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
+				return r.getInt(name);
+			}
+			if (this.database().is(DatabaseProduct.POSTGRESQL)) {
+				Boolean b = r.getBoolean(name);
+				if (b == null) {
+					return null;
+				}
+				return b ? 1 : 0;
+			}
+			return null;
 		}
 
 }
