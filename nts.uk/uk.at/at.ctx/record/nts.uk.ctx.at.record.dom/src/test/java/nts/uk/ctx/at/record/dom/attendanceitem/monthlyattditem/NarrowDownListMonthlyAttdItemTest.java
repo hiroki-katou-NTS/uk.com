@@ -628,6 +628,7 @@ public class NarrowDownListMonthlyAttdItemTest {
 	
 	/**
 	 * test [prv-20] 利用できない公休項目を取得する
+	 * require.公休設定を取得する(会社ID) is empty
 	 */
 	@Test
 	public void testGetPublicHolidaySettingItemNotAvailable_1() {
@@ -644,6 +645,7 @@ public class NarrowDownListMonthlyAttdItemTest {
 	
 	/**
 	 * test [prv-20] 利用できない公休項目を取得する
+	 * require.公休設定を取得する(会社ID) is not empty
 	 */
 	@Test
 	public void testGetPublicHolidaySettingItemNotAvailable_2() {
@@ -730,6 +732,151 @@ public class NarrowDownListMonthlyAttdItemTest {
 							, require,companyId
 						);
 		assertThat(result.containsAll(Arrays.asList(1397, 1849))).isTrue();
+	}
+	
+	/**
+	 * test [1] 絞り込む
+	 * All require is empty
+	 */
+	@Test
+	public void testGet_1() {
+		String companyId = "companyId";
+		List<Integer> listAttdIdInput = Arrays.asList(2256, 2257,1396,1397, 1849);
+		new Expectations() {{
+			//1
+			require.getAllOvertimeWorkFrame(companyId);
+			result = new ArrayList<>();
+			//2
+			require.getAllWorkdayoffFrame(companyId);
+			result = new ArrayList<>();
+			//3
+			require.getAllDivTime(companyId);
+			result = new ArrayList<>();
+			//4,5
+			require.getListBonusPayTimeItem(companyId);
+			//6
+			require.findAllOptionalItem(companyId);
+			result = new ArrayList<>();
+			//7
+			require.findPremiumItemByCompanyID(companyId);
+			result = new ArrayList<>();
+			//8
+			require.findAggDeformedLaborSettingByCid(companyId);
+			//9
+			require.findFlexWorkSet(companyId);
+			//10
+			require.getAllTotalTimes(companyId);
+			result = new ArrayList<>();
+			//11
+			require.reportById(companyId);
+			//12
+			require.findByCompanyId(companyId);
+			result = null;
+			//13
+			require.findRetentionYearlySettingByCompanyId(companyId);
+			//14
+			require.findCompensatoryLeaveComSetting(companyId);
+			result = null;
+			//15
+			require.findComSubstVacationById(companyId);
+			//16
+			require.findSpecialHolidayByCompanyId(companyId);
+			result = new ArrayList<>();
+			//17
+			require.findAllAbsenceFrame(companyId);
+			result = new ArrayList<>();
+			//18
+			require.findAllSpecialHolidayFrame(companyId);
+			result = new ArrayList<>();
+			//19
+			require.findNursingLeaveSetting(companyId);
+			result = new ArrayList<>();
+			//20
+			require.getPublicHolidaySetting(companyId);
+			//21
+			require.findWorkManagementMultiple(companyId);
+			//22
+			require.findTemporaryWorkUseManage(companyId);
+		}};
+		List<Integer>  result = NarrowDownListMonthlyAttdItem.get(require, companyId, listAttdIdInput);
+		assertThat( result )
+		.extracting( d -> d)
+		.containsExactly(2256, 2257,1396,1397, 1849);
+	}
+	
+	/**
+	 * test [1] 絞り込む
+	 *  require 複数回勤務管理を取得する is not empty
+	 *  require 臨時勤務利用管理を取得する is not empty
+	 */
+	@Test
+	public void testGet_2() {
+		String companyId = "companyId";
+		List<Integer> listAttdIdInput = Arrays.asList(2256, 2257,1396,1397, 1849);
+		WorkManagementMultiple workManagementMultiple = WorkManagementMultipleHelper.createWorkManagementMultiple_NotUse(UseATR.notUse);
+		TemporaryWorkUseManage temporaryWorkUseManage = TemporaryWorkUseManageHelper.createTemporaryWorkUseManage_NotUse(nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr.NOTUSE);
+		new Expectations() {{
+			//1
+			require.getAllOvertimeWorkFrame(companyId);
+			result = new ArrayList<>();
+			//2
+			require.getAllWorkdayoffFrame(companyId);
+			result = new ArrayList<>();
+			//3
+			require.getAllDivTime(companyId);
+			result = new ArrayList<>();
+			//4,5
+			require.getListBonusPayTimeItem(companyId);
+			//6
+			require.findAllOptionalItem(companyId);
+			result = new ArrayList<>();
+			//7
+			require.findPremiumItemByCompanyID(companyId);
+			result = new ArrayList<>();
+			//8
+			require.findAggDeformedLaborSettingByCid(companyId);
+			//9
+			require.findFlexWorkSet(companyId);
+			//10
+			require.getAllTotalTimes(companyId);
+			result = new ArrayList<>();
+			//11
+			require.reportById(companyId);
+			//12
+			require.findByCompanyId(companyId);
+			result = null;
+			//13
+			require.findRetentionYearlySettingByCompanyId(companyId);
+			//14
+			require.findCompensatoryLeaveComSetting(companyId);
+			result = null;
+			//15
+			require.findComSubstVacationById(companyId);
+			//16
+			require.findSpecialHolidayByCompanyId(companyId);
+			result = new ArrayList<>();
+			//17
+			require.findAllAbsenceFrame(companyId);
+			result = new ArrayList<>();
+			//18
+			require.findAllSpecialHolidayFrame(companyId);
+			result = new ArrayList<>();
+			//19
+			require.findNursingLeaveSetting(companyId);
+			result = new ArrayList<>();
+			//20
+			require.getPublicHolidaySetting(companyId);
+			//21
+			require.findWorkManagementMultiple(companyId);
+			result = Optional.of(workManagementMultiple);
+			//22
+			require.findTemporaryWorkUseManage(companyId);
+			result = Optional.of(temporaryWorkUseManage);
+		}};
+		List<Integer>  result = NarrowDownListMonthlyAttdItem.get(require, companyId, listAttdIdInput);
+		assertThat( result )
+		.extracting( d -> d)
+		.containsExactly(2256, 2257);
 	}
 
 }

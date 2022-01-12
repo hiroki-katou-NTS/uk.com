@@ -644,7 +644,7 @@ public class NarrowDownListDailyAttdItemTest {
 	@Test
 	public void testGet_1() {
 		String companyId = "companyId";
-		List<Integer> listAttdIdInput = Arrays.asList(5, 6, 40,50, 51, 52);
+		List<Integer> listAttdIdInput = Arrays.asList(1125, 1126,5, 6, 40,50, 51, 52);
 		new Expectations() {{
 			//1
 			require.getSupportOperationSetting( anyString );
@@ -693,17 +693,18 @@ public class NarrowDownListDailyAttdItemTest {
 		List<Integer>  result = NarrowDownListDailyAttdItem.get(require, companyId, listAttdIdInput);
 		assertThat( result )
 		.extracting( d -> d)
-		.containsExactly(5, 6, 40,50, 51, 52);
+		.containsExactly(1125, 1126,5, 6, 40,50, 51, 52);
 	}
 	
 	/**
 	 * test [1] 絞り込む
-	 * require is not empty
+	 *  require 複数回勤務管理を取得する is not empty
+	 *  require 臨時勤務利用管理を取得する is not empty
 	 */
 	@Test
 	public void testGet_2() {
 		String companyId = "companyId";
-		List<Integer> listAttdIdInput = Arrays.asList(5, 6, 40,50, 51, 52);
+		List<Integer> listAttdIdInput = Arrays.asList(1130,1125, 1126,5, 6, 40,50, 51, 52);
 		WorkManagementMultiple workManagementMultiple = WorkManagementMultipleHelper.createWorkManagementMultiple_NotUse(UseATR.notUse);
 		TemporaryWorkUseManage temporaryWorkUseManage = TemporaryWorkUseManageHelper.createTemporaryWorkUseManage_NotUse(nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr.NOTUSE);
 		new Expectations() {{
@@ -754,7 +755,9 @@ public class NarrowDownListDailyAttdItemTest {
 			result = Optional.of(temporaryWorkUseManage);
 		}};
 		List<Integer>  result = NarrowDownListDailyAttdItem.get(require, companyId, listAttdIdInput);
-		assertThat( result ).isEmpty();
+		assertThat( result )
+		.extracting( d -> d)
+		.containsExactly(1130,1125,1126);
 		
 	}
 	
