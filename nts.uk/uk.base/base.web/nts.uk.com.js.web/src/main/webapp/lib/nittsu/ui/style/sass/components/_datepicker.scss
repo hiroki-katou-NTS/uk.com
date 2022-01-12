@@ -144,6 +144,15 @@ body {
         border-right-color: #fff;
       }
     }
+
+    .ntsDateNextButton, .ntsDatePrevButton {
+      color: #9A9A9A;
+      font-size: 18px;
+      
+      &:not(:hover) {
+        background-color: transparent;
+      }
+    }
   }
 }
 
