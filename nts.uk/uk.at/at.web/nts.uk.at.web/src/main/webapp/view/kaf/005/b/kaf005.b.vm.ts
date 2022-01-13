@@ -479,17 +479,18 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                 vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
             }
             vm.multipleOvertimeContents.remove(data);
+            vm.checkMultipleRow();
         }
 
         checkMultipleRow() {
             const vm = this;
             if (vm.multipleOvertimeContents().length > 1) {
                 for (let r = 1; r < vm.multipleOvertimeContents().length; r++) {
+                    vm.$errors('clear', '#A15_3_' + r);
                     if (_.isNumber(vm.multipleOvertimeContents()[r].start())
                         && _.isNumber(vm.multipleOvertimeContents()[r - 1].start())
                         && vm.multipleOvertimeContents()[r].start() < vm.multipleOvertimeContents()[r - 1].start()) {
-                        vm.$errors('clear', '#A15_3_' + r);
-                        vm.$errors('#A15_3_' + r, 'Msg_3281');
+                        vm.$errors('#A15_3_' + r, {messageId: 'Msg_3281', messageParams: [r.toString(), (r + 1).toString()]});
                         break;
                     }
                 }
