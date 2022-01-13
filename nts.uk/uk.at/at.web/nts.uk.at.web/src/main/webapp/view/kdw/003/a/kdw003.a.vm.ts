@@ -4579,7 +4579,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (!self.hasEmployee || self.hasErrorBuss) return;
             let headerText;
             _.each(self.optionalHeader, header => {
-                if (header.headerText != "提出済みの申請" && header.headerText != "申請" && header.headerText != "申請一覧") {
+                if (header.headerText != "申請" && header.headerText != "申請一覧") {
                     if (header.group == undefined && header.group == null) {
                         if (self.showHeaderNumber()) {
 							let id = header.key.substring(1, header.key.length);

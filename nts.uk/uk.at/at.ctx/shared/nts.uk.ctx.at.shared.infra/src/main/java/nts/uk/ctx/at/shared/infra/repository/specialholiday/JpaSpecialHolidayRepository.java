@@ -822,6 +822,9 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 
 		this.getEntityManager().createQuery(DELETE_All_ELAPSE).setParameter("companyID", companyId)
 				.setParameter("specialHolidayCD", specialHolidayCode).executeUpdate();
+		
+		// Fix #122401
+		this.commandProxy().remove(KshmtHdspGrantPeriod.class, new KshmtHdspGrantPeriodPK(companyId, specialHolidayCode));
 
 		/**
 		 * For delete releated domain of KDR001 (team G)

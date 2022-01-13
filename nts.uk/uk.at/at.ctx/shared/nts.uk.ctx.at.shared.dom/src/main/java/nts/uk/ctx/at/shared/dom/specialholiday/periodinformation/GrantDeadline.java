@@ -134,17 +134,17 @@ public class GrantDeadline extends DomainObject {
 	public GeneralDate calcDeadLineNextGrantDate(GeneralDate grantDate, Optional<GeneralDate> grantReferenceDate,
 			Optional<Integer> elapseNo, Optional<ElapseYear> elapseYear) {
 		
-		GeneralDate nextGrantDate = grantDate.addYears(1);
+		Optional<GeneralDate> nextGrantDate = Optional.empty();
 		
 		if(grantReferenceDate.isPresent() && elapseNo.isPresent() && elapseYear.isPresent()){
-			Optional<GeneralDate> nextGrantDateOp = elapseYear.get().getGrantDate(grantReferenceDate.get(), elapseNo.get());
-			
-			if(nextGrantDateOp.isPresent()){
-				nextGrantDate = nextGrantDateOp.get();
-			}	
+			nextGrantDate = elapseYear.get().getGrantDate(grantReferenceDate.get(), elapseNo.get());
 		}
 		
-		return nextGrantDate.addDays(-1);
+		if(!nextGrantDate.isPresent()){
+			nextGrantDate = Optional.of(grantDate.addYears(1));
+		}
+		
+		return nextGrantDate.get().addDays(-1);
 	}
 	
 	/**

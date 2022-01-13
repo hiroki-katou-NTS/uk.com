@@ -183,10 +183,24 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 		return month;
 	}
 	
+	private Integer convertToPostgre(NtsResultRecord r, String name) {
+		if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
+			return r.getInt(name);
+		}
+		if (this.database().is(DatabaseProduct.POSTGRESQL)) {
+			Boolean b = r.getBoolean(name);
+			if (b == null) {
+				return null;
+			}
+			return b ? 1 : 0;
+		}
+		return null;
+	}
+	
 	private List<MasterData> buildCompanyRow(NtsResultRecord r, List<KshmtLegalTimeMCom> legals, int startDate, int endDate, int month, String startOfWeek) {
 		List<MasterData> datas = new ArrayList<>();
 
-		Integer refPreTime = r.getInt("WITHIN_TIME_USE");
+		Integer refPreTime = convertToPostgre(r, "WITHIN_TIME_USE");
 		
 		String kdp004_401 = I18NText.getText("KMK004_401");
 		
@@ -206,15 +220,15 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					.filter(l -> l.pk.type == LaborWorkTypeAttr.FLEX.value)
 					.findFirst();
 			
-			Integer includeExtraAggr = r.getInt("INCLUDE_EXTRA_AGGR");
-			Integer includeExtraOt = r.getInt("INCLUDE_EXTRA_OT");
+			Integer includeExtraAggr = convertToPostgre(r, "INCLUDE_EXTRA_AGGR");
+			Integer includeExtraOt = convertToPostgre(r, "INCLUDE_EXTRA_OT");
 			Integer selectPeriodMon = r.getInt("SETTLE_PERIOD_MON");
 			Integer aggrMethod = r.getInt("AGGR_METHOD");
 			Integer strMonth = r.getInt("STR_MONTH");
 			Integer period = r.getInt("PERIOD");
-			Integer repeatAtr = r.getInt("REPEAT_ATR");
-			Integer deforIncludeExtraAggr = r.getInt("DEFOR_INCLUDE_EXTRA_AGGR");
-			Integer deforIncludeExtraOt = r.getInt("DEFOR_INCLUDE_EXTRA_OT");
+			Integer repeatAtr = convertToPostgre(r, "REPEAT_ATR");
+			Integer deforIncludeExtraAggr = convertToPostgre(r, "DEFOR_INCLUDE_EXTRA_AGGR");
+			Integer deforIncludeExtraOt = convertToPostgre(r, "DEFOR_INCLUDE_EXTRA_OT");
 			
 			datas.add(buildARow(
 					//R8_3
@@ -230,15 +244,15 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					//R8_8
 					KMK004PrintCommon.getExtraType(includeExtraAggr),
 					//R8_9
-					includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_LEGAL_AGGR")) : null,
+					includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_LEGAL_AGGR")) : null,
 					//R8_10
-					includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_HOLIDAY_AGGR")) : null,
+					includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_HOLIDAY_AGGR")) : null,
 					//R8_11
 					KMK004PrintCommon.getExtraType(includeExtraOt),		
 					//R8_12
-					includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_LEGAL_OT")) : null,
+					includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_LEGAL_OT")) : null,
 					//R8_13
-					includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_HOLIDAY_OT")) : null,
+					includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_HOLIDAY_OT")) : null,
 					//R8_14
 					KMK004PrintCommon.getFlexType(refPreTime),
 					//R8_15
@@ -256,15 +270,15 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					//R8_21
 					selectPeriodMon == 2 ? "2ヶ月" : "3ヶ月",
 					//R8_22
-					KMK004PrintCommon.getShortageTime(r.getInt("INSUFFIC_SET")),
+					KMK004PrintCommon.getShortageTime(convertToPostgre(r, "INSUFFIC_SET")),
 					//R8_23
 					KMK004PrintCommon.getAggType(aggrMethod),
 					//R8_24
-					aggrMethod == 0 ? KMK004PrintCommon.getInclude(r.getInt("INCLUDE_OT")) : null,
+					aggrMethod == 0 ? KMK004PrintCommon.getInclude(convertToPostgre(r, "INCLUDE_OT")) : null,
 					//R8_25
-					KMK004PrintCommon.getInclude(r.getInt("INCLUDE_HDWK")),
+					KMK004PrintCommon.getInclude(convertToPostgre(r, "INCLUDE_HDWK")),
 					//R8_26
-					KMK004PrintCommon.getLegal(r.getInt("LEGAL_AGGR_SET")),
+					KMK004PrintCommon.getLegal(convertToPostgre(r, "LEGAL_AGGR_SET")),
 					//R8_27		
 					((month - 1) % 12 + 1) + kdp004_401,
 					//R8_28
@@ -282,15 +296,15 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					//R8_34
 					KMK004PrintCommon.getWeeklySurcharge(deforIncludeExtraAggr),
 					//R8_35
-					deforIncludeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_AGGR")) : null,
+					deforIncludeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_LEGAL_AGGR")) : null,
 					//R8_36
-					deforIncludeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
+					deforIncludeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
 					// R8_37
 					KMK004PrintCommon.getWeeklySurcharge(deforIncludeExtraOt),
 					// R8_38
-					deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_OT")) : null,
+					deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_LEGAL_OT")) : null,
 					// R8_39
-					deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_OT")): null
+					deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_HOLIDAY_OT")): null
 					));
 
 //			int nextYm = y *100 + month + 1;

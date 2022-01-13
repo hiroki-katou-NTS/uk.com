@@ -245,7 +245,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			case GO_RETURN_DIRECTLY_APPLICATION:
 				Optional<GoBackDirectly> goBack = goBackRepo.find(cid, appData.getAppID());
 				goBack.ifPresent(x -> {
-					outData.setWorkTimeCode(x.getDataWork().map(dw -> dw.getWorkTimeCode().v()));
+					outData.setWorkTimeCode(x.getDataWork().map(dw -> dw.getWorkTimeCode() != null ? dw.getWorkTimeCode().v() : null));
 					outData.setWorkTypeCode(x.getDataWork().map(dw -> dw.getWorkTypeCode().v()));
 				});
 				break;

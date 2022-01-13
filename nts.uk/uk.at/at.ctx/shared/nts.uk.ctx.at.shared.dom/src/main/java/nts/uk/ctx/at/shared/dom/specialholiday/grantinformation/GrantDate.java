@@ -51,21 +51,19 @@ public enum GrantDate {
 
 
 		// ドメインモデル「特別休暇．付与情報．付与基準日」をチェックする
-
-		if (this.equals(GrantDate.EMP_GRANT_DATE)){ // 入社日を付与基準日とする
-			
+		switch (this) {
+		case EMP_GRANT_DATE: // 入社日を付与基準日とする
 			return parameter.getEntryDate(require, cacheCarrier);
-
-		} else if (this.equals(GrantDate.GRANT_BASE_HOLIDAY)){ // 年休付与基準日を付与基準日とする
-
+			
+		case GRANT_BASE_HOLIDAY:// 年休付与基準日を付与基準日とする
 			return parameter.getAnnualLeaveGrantDate(require, cacheCarrier);
-
-
-		} else if (this.equals(GrantDate.SPECIAL_LEAVE_DATE)){ // 特別休暇付与基準日を付与基準日とする
-
+			
+		case SPECIAL_LEAVE_DATE:// 特別休暇付与基準日を付与基準日とする
 			return parameter.getSpecialHolidayGrantDate();
+			
+		default:
+			return Optional.empty();
 		}
-		return Optional.empty();
 	}
 	public  static interface Require extends NextSpecialHolidayGrantParameter.Require{
 		

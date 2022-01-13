@@ -195,7 +195,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		}
 		
 		// OUTPUT「利用する残業枠」を更新して返す
-		output.setOverTimeQuotaList(frames);
+		output.setOverTimeQuotaList(frames.stream().sorted(Comparator.comparing(OvertimeWorkFrame::getOvertimeWorkFrNo)).collect(Collectors.toList()));
 		
 		
 		return output;
