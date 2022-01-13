@@ -308,7 +308,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 						//R12_12
 						includeExtraOt == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "INCLUDE_LEGAL_OT")) : null, 
 						//R12_13		
-						r.getInt("INCLUDE_EXTRA_OT") == null ?null:r.getInt("INCLUDE_EXTRA_OT") != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "INCLUDE_HOLIDAY_OT")) : null,
+						convertToInteger(r, "INCLUDE_EXTRA_OT") == null ?null:convertToInteger(r, "INCLUDE_EXTRA_OT") != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "INCLUDE_HOLIDAY_OT")) : null,
 						//R12_14
 						KMK004PrintCommon.getFlexType(refPreTime),
 						//R12_15
@@ -330,7 +330,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 						//R12_23
 						KMK004PrintCommon.getAggType(aggrMethod),
 						//R12_24
-						aggrMethod == null ?null: aggrMethod == 0 ? KMK004PrintCommon.getInclude(r.getInt("INCLUDE_OT")) : null,
+						aggrMethod == null ?null: aggrMethod == 0 ? KMK004PrintCommon.getInclude(convertToInteger(r, "INCLUDE_OT")) : null,
 						//R12_25
 						KMK004PrintCommon.getInclude(convertToInteger(r, "INCLUDE_HDWK")),
 						//R12_26
