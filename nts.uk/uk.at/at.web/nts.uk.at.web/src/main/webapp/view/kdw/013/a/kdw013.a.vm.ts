@@ -786,6 +786,12 @@ module nts.uk.ui.at.kdw013.a {
                     return { date: date, changed: true };
                 }
                
+                let removeBreakDate = _.find(vm.removeBreakList(), ri => moment(ri.date).isSame(moment(date), 'days'));
+               
+                if (removeBreakDate) {
+                    return { date: date, changed: true };
+                }
+               
                return  { date: date, changed: false };
             }).filter(d => { return d.changed }).map(d => moment(d.date).format(DATE_TIME_FORMAT)).value();
         }
@@ -796,8 +802,12 @@ module nts.uk.ui.at.kdw013.a {
             let vm = this;
             _.forEach(dates, date => {
                 let eventInday = _.filter(vm.events(), (e) => { return moment(e.start).isSame(date, 'day') });
+                
+                let removeDate =  _.find(vm.removeList(), ri => moment(ri.date).isSame(moment(date), 'days'));
+               
+                let removeBreakDate = _.find(vm.removeBreakList(), ri => moment(ri.date).isSame(moment(date), 'days'));
 
-                if (eventInday.length) {
+                if (eventInday.length || removeDate || removeBreakDate) {
 
 
                     let listTaskDetails = [];
