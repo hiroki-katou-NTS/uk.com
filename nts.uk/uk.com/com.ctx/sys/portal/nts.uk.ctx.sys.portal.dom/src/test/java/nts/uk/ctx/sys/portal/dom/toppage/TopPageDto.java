@@ -23,6 +23,13 @@ public class TopPageDto implements Toppage.MementoSetter, Toppage.MementoGetter 
 	/** The layout display id. */
 	private int layoutDisp;
 
+	/** 枠レイアウト1 */
+	private Integer frameLayout1;
+	/** 枠レイアウト2 */
+	private Integer frameLayout2;
+	/** 枠レイアウト3 */
+	private Integer frameLayout3;
+	
 
 	@Override
 	public BigDecimal getLayoutDisp() {

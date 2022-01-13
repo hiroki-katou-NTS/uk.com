@@ -21,6 +21,13 @@ public class TopPageNewDto implements Toppage.MementoSetter, Toppage.MementoGett
 
 	/** The layout display id. */
 	private int layoutDisp;
+	
+	/** 枠レイアウト1 */
+	private Integer frameLayout1;
+	/** 枠レイアウト2 */
+	private Integer frameLayout2;
+	/** 枠レイアウト3 */
+	private Integer frameLayout3;
 
 	/**
 	 * From domain.
