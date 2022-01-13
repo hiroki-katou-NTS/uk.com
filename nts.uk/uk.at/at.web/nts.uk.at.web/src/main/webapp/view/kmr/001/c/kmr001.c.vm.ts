@@ -124,7 +124,8 @@ module nts.uk.at.kmr001.c {
                     return;
                 }
                 vm.$blockui("invisible");
-                if (vm.listIdBentoMenu.indexOf(Number(vm.selectedBentoSetting())) < 0) {
+                if (vm.listIdBentoMenu.indexOf(Number(vm.selectedBentoSetting())) < 0 || 
+                        !vm.itemsBento()[vm.listIdBentoMenu.indexOf(Number(vm.selectedBentoSetting()))].name) {
                     const param = {
                         histId: vm.historyID,
                         frameNo: vm.selectedBentoSetting(),
