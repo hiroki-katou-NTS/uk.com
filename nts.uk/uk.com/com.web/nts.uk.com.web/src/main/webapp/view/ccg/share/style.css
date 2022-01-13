@@ -255,8 +255,12 @@
   }
 }
 
-.ccg001-tab-content-2-filters {
+.ccg001-tab-content-filters {
 	width: 400px;
+}
+
+#ccg001-tab-content-3 .ccg001-tab-content-filters {
+	overflow: hidden;
 }
 
 .footer-button {

@@ -2465,7 +2465,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
 
                 <div tabindex="-1" class="tab-content-2 height-maximum" data-bind="visible: showAdvancedSearchTab">
                         <div id="ccg001-tab-content-2" class="height-maximum">
-                            <div class="ccg001-tab-content-2-filters" style="overflow-y: scroll;">
+                            <div class="ccg001-tab-content-filters" style="overflow-y: scroll;">
                                 <div>
                                     <label>`+CCG001TextResource.CCG001_24+`</label>
                                 </div>
@@ -2648,7 +2648,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                         <div class="cf"></div>
                     </div>
             <div id="ccg001-tab-content-3" class="height-maximum">
-                <div id="ccg001-part-g" class="pull-left height-maximum">
+                <div id="ccg001-part-g" class="ccg001-tab-content-filters">
                     <div class="control-group ccg001-control-group">
                         <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_104+`</div>
                         <input class="ccg001-inp" id="ccg001-input-code"
@@ -2658,7 +2658,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                     valueUpdate: 'keypress',
                                     required: false
                                     }" />
-                        <button class="proceed caret-bottom pull-right" id="ccg001-tab3-search-by-code"
+                        <button class="proceed pull-right" id="ccg001-tab3-search-by-code"
                             data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByCode, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
                     </div>
                     <div class="control-group ccg001-control-group">
@@ -2670,7 +2670,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                     valueUpdate: 'keypress',
                                     required: false
                                     }" />
-                        <button class="proceed caret-bottom pull-right" id="ccg001-tab3-search-by-name"
+                        <button class="proceed pull-right" id="ccg001-tab3-search-by-name"
                             data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByName, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
                     </div>
                     <div class="cf control-group ccg001-control-group">
@@ -2683,7 +2683,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                 showNextPrevious: false,
                                 value: entryDateTab3
                                 }"/>
-                        <button class="proceed caret-bottom pull-right" id="search-by-entry-date"
+                        <button class="proceed pull-right" id="search-by-entry-date"
                             data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByEntryDate, enable: isValidEntryDateSearch">`+CCG001TextResource.CCG001_108+`</button>
                     </div>
                     <div class="cf control-group ccg001-control-group">
@@ -2695,24 +2695,15 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                 enable: true,
                                 showNextPrevious: false,
                                 value: retirementDateTab3 }"/>
-                        <button class="proceed caret-bottom pull-right" id="search-by-retirement-date"
+                        <button class="proceed pull-right" id="search-by-retirement-date"
                             data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByRetirementDate, enable: isValidRetirementDateSearch">`+CCG001TextResource.CCG001_108+`</button>
                     </div>
                     <div id="tab3kcp005"></div>
                 </div>
-                <div class="pull-right height-maximum ccg001-table has-state">
-                    <div class="ccg001-cell mid">
-                        <div id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployeesInTab3">
-                            <div class="ccg001-cell mid">
-                                <i class="icon icon-47-white-check-mark icon-ml"></i>
-                                <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_26+`</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ccg001-cell mid">
-                        <span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
-                    </div>
+                <div class="footer-button">
+                    <button id="ccg001-btn-KCP005-apply" class="green" data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployeesInTab3">
+                        ${CCG001TextResource.CCG001_26}
+                    </button>
                 </div>
             </div>
         </div>
