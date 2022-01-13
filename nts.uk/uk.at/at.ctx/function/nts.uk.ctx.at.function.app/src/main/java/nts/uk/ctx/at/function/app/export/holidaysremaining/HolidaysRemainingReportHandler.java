@@ -1290,7 +1290,6 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
         return periodInformationMap;
     }
-
     /**
      * アルゴリズム「社員ごとの出力期間を作成する」を実行する
      */
@@ -1298,23 +1297,24 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             String sid,
             OutputPeriodInformation periodInformation,
             PeriodCorrespondingYm currentPeriod){
-
         YearMonthPeriod pastPeriodByEmployee = null;
         YearMonth startYm = null;
-        YearMonth endYm = null;
+        YearMonth endYm   = null;
         CurrentStatusAndPeriodInformation rs = new CurrentStatusAndPeriodInformation();
-
-        // Lấy thông tin vào công ty・nghỉ việc của  employee
+        //社員の入社・退職情報を取得する
+        //(Lấy thông tin vào công ty・nghỉ việc của employee)
         val listEmpInfo =  personEmpBasicInfoAdapter.getEmployeeBasicInfoExport(Collections.singletonList(sid));
-        if(periodInformation!=null){
-            Optional<YearMonthPeriod> pastPeriodOpt = periodInformation.getPastPeriod();
+        if(periodInformation != null){
             EmployeeBasicInfoExport employee = listEmpInfo.isEmpty()? null: listEmpInfo.get(0);
+            //社員の当月・未来月の期間
             // Đoạn thông tin tháng hiện tại và tương lai của employee.
             List<PeriodCorrespondingYm> currentMonthAndFuture =
-                    periodInformation.getCurrentMonthAndFuture().isPresent()?  periodInformation.getCurrentMonthAndFuture().get() : new ArrayList<>();
+                    periodInformation.getCurrentMonthAndFuture().isPresent()?
+                            periodInformation.getCurrentMonthAndFuture().get() : new ArrayList<>();
             if(employee!=null){
                 Optional<DatePeriod> optionalPeriod = currentPeriod== null ? Optional.empty(): Optional.of(currentPeriod.getDatePeriod());
-                DatePeriod thisMonthPeriod = optionalPeriod.orElse(null);
+                DatePeriod thisMonthPeriod          = optionalPeriod.orElse(null);
+
                 // 当月の在職状況を設定する
                 boolean ischeck =  thisMonthPeriod != null && checkStatus(employee,thisMonthPeriod);
                 rs.setCurrentStatus(ischeck);
@@ -1325,8 +1325,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 // Input: 　  + 社員ID：INPUT.社員ID
                 //          　+ 基準日：社員.入社年月日
                 // Output:　期間(入社時)：OUTPUT.締め期間
-                Optional<ClosurePeriod> optPeriodByEntryDate =
-                        getClosingPeriodOfSpecifiedDate(sid,entryDate);
+                Optional<ClosurePeriod> optPeriodByEntryDate =  getClosingPeriodOfSpecifiedDate(sid,entryDate);
                 if(optPeriodByEntryDate.isPresent()){
                     // 期間(入社時)
                     ClosurePeriod closurePeriod = optPeriodByEntryDate.get();
@@ -1341,17 +1340,21 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                         //　・社員別出力期間.過去が期間(入社時).年月を含む※
                         //　　※開始年月≦期間(入社時).年月≦終了年月
                         Optional<YearMonthPeriod> pastPeriod = periodInformation.getPastPeriod();
-                        boolean condition_2 = pastPeriod.isPresent() &&  pastPeriod.get().start().lessThanOrEqualTo(closurePeriod.getYearMonth())
-                                && closurePeriod.getYearMonth().lessThanOrEqualTo(pastPeriod.get().end());
+                        boolean condition_2 = pastPeriod.isPresent()
+                                &&  pastPeriod.get().start().lessThanOrEqualTo(closurePeriod.getYearMonth())
+                                &&  closurePeriod.getYearMonth().lessThanOrEqualTo(pastPeriod.get().end());
                         if(condition_2){
                             //社員別出力期間を更新する
                             //過去.開始年月　←　期間(入社時).年月
-                            startYm = closurePeriod.getYearMonth();
+                            // 開始年月日の補正 update ngày bắt đầu.
+                          startYm = closurePeriod.getYearMonth();
+                          endYm   = pastPeriod.get().end();
+                          pastPeriodByEmployee = new YearMonthPeriod(startYm, endYm);
+                          periodInformation.setPastPeriod(Optional.of(pastPeriodByEmployee));
                         }
                     }else {
                         //過去：設定なし※クリアする
-                        //当月・未来：＜未来入社＞参照
-                        pastPeriodOpt = Optional.empty();
+                        periodInformation.setPastPeriod(Optional.empty());
                         //＜未来入社＞
                         //◆当月・未来[n].年月＜期間(入社時).年月
                         //　　⇒Listから除去する
@@ -1373,7 +1376,6 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                         }
                     }
                 }
-
                 //終了年月日の補正 - Update ngày kết thúc
                 //Gọi thuật toán アルゴリズム「指定日時点の締め期間を取得する」
                 //＜INPUT＞
@@ -1384,7 +1386,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 // 退職年月日
                 GeneralDate retiredDate = employee.getRetiredDate();
                 Optional<ClosurePeriod> optPeriodByRetiredDate =
-                        getClosingPeriodOfSpecifiedDate(sid,retiredDate);
+                        getClosingPeriodOfSpecifiedDate(sid, retiredDate);
                 if(optPeriodByRetiredDate.isPresent()){
                     val periodByRetiredDate = optPeriodByRetiredDate.get();
                     //＜条件＞
@@ -1397,13 +1399,17 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                         //　・社員別出力期間.過去が期間(退職時).年月を含む※
                         //　　※開始年月≦期間(退職時).年月≦終了年月
                         Optional<YearMonthPeriod> pastPeriod = periodInformation.getPastPeriod();
-                        boolean condition_2 = pastPeriod.isPresent() &&  pastPeriod.get().start().lessThanOrEqualTo(periodByRetiredDate.getYearMonth())
-                                && periodByRetiredDate.getYearMonth().lessThanOrEqualTo(pastPeriod.get().end());
+                        boolean condition_2 = pastPeriod.isPresent()
+                                &&  pastPeriod.get().start().lessThanOrEqualTo(periodByRetiredDate.getYearMonth())
+                                &&  periodByRetiredDate.getYearMonth().lessThanOrEqualTo(pastPeriod.get().end());
                         if(condition_2){
                             //社員別出力期間を更新する
                             //過去.終了年月　←　期間(退職時).年月
-                            //未来・過去：設定なし※クリアする
-                            endYm  = periodByRetiredDate.getYearMonth();
+                            startYm = pastPeriod.get().start();
+                            endYm   = periodByRetiredDate.getYearMonth();
+                            pastPeriodByEmployee = new YearMonthPeriod(startYm, endYm);
+                            periodInformation.setPastPeriod(Optional.of(pastPeriodByEmployee));
+                           //未来・過去：設定なし※クリアする
                             currentMonthAndFuture = new ArrayList<>();
                         }
                     }else {
@@ -1427,31 +1433,13 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                         }
                     }
                 }
-
-                if(startYm ==null || endYm == null){
-                    if(pastPeriodOpt.isPresent()){
-                        val pastPeriod = pastPeriodOpt.get();
-                        if(startYm !=null){
-                            pastPeriodByEmployee = new YearMonthPeriod(startYm,pastPeriod.end());
-                        }
-                        if(endYm!=null){
-                            pastPeriodByEmployee = new YearMonthPeriod(pastPeriod.start(),endYm);
-                        }
-                        if(startYm ==null & endYm == null){
-                            pastPeriodByEmployee = pastPeriod;
-                        }
-                    }
-                }else {
-                    pastPeriodByEmployee =  new YearMonthPeriod(startYm,endYm);
-                }
-                periodInformation.setPastPeriod(pastPeriodByEmployee == null? Optional.empty() : Optional.of(pastPeriodByEmployee));
-
                 periodInformation.setCurrentMonthAndFuture(currentMonthAndFuture.isEmpty() ? Optional.empty() :Optional.of(currentMonthAndFuture));
                 rs.setOutputPeriodInformation(periodInformation);
             }
         }
         return rs;
     }
+
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
         Map<Object, Boolean> seen = new ConcurrentHashMap<>();
         return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
