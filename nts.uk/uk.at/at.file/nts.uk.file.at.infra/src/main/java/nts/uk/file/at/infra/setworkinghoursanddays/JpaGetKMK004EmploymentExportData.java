@@ -271,13 +271,13 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 					//R10_18
 					KMK004PrintCommon.convertTime(flex.map(m -> m.weekAvgTime).orElse(null)),
 					//R12_19
-					KMK004PrintCommon.getSettle(r.getInt("SETTLE_PERIOD")) ,
+					KMK004PrintCommon.getSettle(convertToInteger(r, "SETTLE_PERIOD")) ,
 					//R12_20
 					flexStartMonth == null ? null : flexStartMonth.toString() + "月",
 					//R12_21
 					selectPeriodMon == null ? null : selectPeriodMon == 2 ? "2ヶ月" : "3ヶ月",
 					//R12_22
-					KMK004PrintCommon.getShortageTime(r.getInt("INSUFFIC_SET")), 
+					KMK004PrintCommon.getShortageTime(convertToInteger(r, "INSUFFIC_SET")), 
 					//R12_23
 					KMK004PrintCommon.getAggType(aggrMethod),
 					//R12_24
@@ -285,7 +285,7 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 					//R12_25
 					KMK004PrintCommon.getInclude(convertToInteger(r, "INCLUDE_HDWK")),
 					//R12_26
-					KMK004PrintCommon.getLegal(r.getInt("LEGAL_AGGR_SET")),
+					KMK004PrintCommon.getLegal(convertToInteger(r, "LEGAL_AGGR_SET")),
 					//R12_27
 					((month - 1) % 12 + 1) + kdp004_401,
 					//R12_28
@@ -309,9 +309,9 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 					//R12_37
 					KMK004PrintCommon.getWeeklySurcharge(deforIncludeExtraOt),
 					//R12_38
-					deforIncludeExtraOt == null ? null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_OT")) : null,
+					deforIncludeExtraOt == null ? null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "DEFOR_INCLUDE_LEGAL_OT")) : null,
 					//E12_39
-					deforIncludeExtraOt == null?null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_OT")) : null
+					deforIncludeExtraOt == null?null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "DEFOR_INCLUDE_HOLIDAY_OT")) : null
 					));
 
 //			int nextYm = y *100 + month + 1;
