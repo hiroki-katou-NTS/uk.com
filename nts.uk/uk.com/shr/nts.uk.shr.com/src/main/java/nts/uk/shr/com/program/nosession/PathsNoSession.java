@@ -37,7 +37,8 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/at/record/stamp/.*",
 			"/ctx/cld/.*",
 			"/view-context/user",
-			"/nr/process/.*"
+			"/nr/process/.*",
+			"/exio/exo/.*"
 			);
 
 	public static PathsNoSession WEB_SCREENS = PathsNoSession.define(
