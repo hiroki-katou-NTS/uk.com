@@ -20,10 +20,10 @@ module nts.uk.at.view.kmr002.a.model {
 				if(currentFrame) {
 					let startTime = '',
 						endTime = '';
-					if(currentFrame.receptionHours.startTime) {
+					if(!_.isNil(currentFrame.receptionHours.startTime)) {
 						startTime = nts.uk.time.format.byId("Clock_Short_HM", currentFrame.receptionHours.startTime);
 					}
-					if(currentFrame.receptionHours.endTime) {
+					if(!_.isNil(currentFrame.receptionHours.endTime)) {
 						endTime = nts.uk.time.format.byId("Clock_Short_HM", currentFrame.receptionHours.endTime);
 					}
 					return startTime + getText('KMR002_19') + endTime;
