@@ -123,7 +123,8 @@ public class OvertimeLeaveEncourageConfirmationService {
 		Optional<TimeWithDayAttr> end = timesheet.getOuenTimeSheet().stream()
 				.sorted((a, b) -> a.getTimeSheet().getEnd().map(e -> e.getTimeWithDay().map(twd-> twd.v()).orElse(0)).orElse(0)
 						.compareTo(b.getTimeSheet().getEnd().map(e -> e.getTimeWithDay().map(twd-> twd.v()).orElse(0)).orElse(0)))
-				.map(m -> m.getTimeSheet().getEnd().map(e -> e.getTimeWithDay()).orElse(Optional.empty())).findFirst().orElse(Optional.empty());
+				.map(m -> m.getTimeSheet().getEnd().map(e -> e.getTimeWithDay()).orElse(Optional.empty())).reduce((first, second) -> second)
+				.orElse(Optional.empty());
 
 		// if ($基準開始.isEmpty AND $比較開始.isPresent)
 		// OR ($基準終了.isEmpty AND $比較終了.isPresent)
