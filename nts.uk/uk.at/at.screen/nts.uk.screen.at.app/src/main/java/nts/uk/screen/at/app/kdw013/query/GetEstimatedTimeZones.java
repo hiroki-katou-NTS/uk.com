@@ -43,7 +43,7 @@ public class GetEstimatedTimeZones {
 			 */
 			// get workNo 1
 			al.getAttendanceLeavingWork(1).ifPresent(lw -> {
-				result.setStartTime( lw.getAttendanceTime().map(x-> new TimeWithDayAttr(x.v())).orElse(null));
+				result.setStartTime(lw.getAttendanceTime().map(x-> new TimeWithDayAttr(x.v())).orElse(null));
 				result.setEndTime(lw.getLeaveTime().map(x-> new TimeWithDayAttr(x.v())).orElse(null));
 			});			
 		});
@@ -65,11 +65,16 @@ public class GetEstimatedTimeZones {
 			
 			oApp.getWorkHoursOp().ifPresent(wh -> {
 				wh.stream().mapToInt(x -> x.getTimeZone().getStartTime().v()).min().ifPresent(min -> {
-					result.setStartTime(new TimeWithDayAttr(min));
+					if (min < result.getStartTime().v()) {
+						result.setStartTime(new TimeWithDayAttr(min));
+					}
+					
 				});
 				
 				wh.stream().mapToInt(x -> x.getTimeZone().getEndTime().v()).max().ifPresent(max -> {
-					result.setEndTime(new TimeWithDayAttr(max));
+					if (max > result.getEndTime().v()) {
+						result.setStartTime(new TimeWithDayAttr(max));
+					}
 				});
 				//入力目安時間帯．残業時間帯 = 取得した「残業申請．勤務時間帯．時間帯」をセットする
 				result.setOverTimeZones(wh.stream()
