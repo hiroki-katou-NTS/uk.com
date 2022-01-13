@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.attendanceitem.dailyattditem;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.attendanceitem.dailyattditem.NarrowDownListDailyAttdItem.Require;
@@ -48,8 +49,47 @@ import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepositor
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.license.option.OptionLicense;
 
+@Stateless
 public class NarrowDownListDailyAttdItemImpl implements NarrowDownListDailyAttdItemPub{
 	
+	@Inject 
+	private DivergenceReasonInputMethodRepository divergenceReasonInputMethodRepository;
+	@Inject 
+	private TaskOperationSettingRepository operationSettingRepository;
+	@Inject 
+	private SupportOperationSettingRepository supportOperationSettingRepository;
+	@Inject 
+	private OvertimeWorkFrameRepository overtimeWorkFrameRepository;
+	@Inject 
+	private WorkdayoffFrameRepository workdayoffFrameRepository;
+	@Inject 
+	private DivergenceTimeRepository divergenceTimeRepository;
+	@Inject 
+	private BPTimeItemRepository bPTimeItemRepository;
+	@Inject 
+	private OptionalItemRepository optionalItemRepository;
+	@Inject 
+	private PremiumItemRepository premiumItemRepository;
+	@Inject 
+	private OutManageRepository outManageRepository;
+	@Inject 
+	private AggDeformedLaborSettingRepository aggDeformedLaborSettingRepository;
+	@Inject 
+	private FlexWorkMntSetRepository flexWorkMntSetRepository;
+	@Inject 
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
+	@Inject 
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
+	@Inject 
+	private ComSubstVacationRepository comSubstVacationRepository;
+	@Inject 
+	private TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository;
+	@Inject 
+	private NursingLeaveSettingRepository nursingLeaveSettingRepository;
+	@Inject 
+	private WorkManagementMultipleRepository workManagementMultipleRepository;
+	@Inject 
+	private TemporaryWorkUseManageRepository temporaryWorkUseManageRepository;
 
 	@Override
 	public List<Integer> get(String companyId, List<Integer> listAttdId) {
@@ -57,7 +97,7 @@ public class NarrowDownListDailyAttdItemImpl implements NarrowDownListDailyAttdI
 		return NarrowDownListDailyAttdItem.get(require, companyId, listAttdId);
 	}
 	
-	private static class NarrowDownDailyAttdItemImpl implements NarrowDownListDailyAttdItem.Require {
+	private class NarrowDownDailyAttdItemImpl implements NarrowDownListDailyAttdItem.Require {
 		
 		
 		@Override
@@ -65,155 +105,98 @@ public class NarrowDownListDailyAttdItemImpl implements NarrowDownListDailyAttdI
 			return AppContexts.optionLicense();
 		}
 		
-		@Inject 
-		private DivergenceReasonInputMethodRepository divergenceReasonInputMethodRepository;
-
 		@Override
 		public List<DivergenceReasonInputMethod> getDivergenceReasonInputMethod(String companyId) {
 			return divergenceReasonInputMethodRepository.getAllDivTime(companyId);
 		}
-		
-		@Inject 
-		private TaskOperationSettingRepository operationSettingRepository;
 
 		@Override
 		public Optional<TaskOperationSetting> getTasksOperationSetting(String companyId) {
 			return operationSettingRepository.getTasksOperationSetting(companyId);
 		}
-
-		@Inject 
-		private SupportOperationSettingRepository supportOperationSettingRepository;
+		
 		@Override
 		public Optional<SupportOperationSetting> getSupportOperationSetting(String companyId) {
-			// TODO Auto-generated method stub
 			return supportOperationSettingRepository.getSupportOperationSetting(companyId);
 		}
-
-		@Inject 
-		private OvertimeWorkFrameRepository overtimeWorkFrameRepository;
+		
 		@Override
 		public List<OvertimeWorkFrame> getAllOvertimeWorkFrame(String companyId) {
-			// TODO Auto-generated method stub
 			return overtimeWorkFrameRepository.getAllOvertimeWorkFrame(companyId);
 		}
-
-		@Inject 
-		private WorkdayoffFrameRepository workdayoffFrameRepository;
+		
 		@Override
 		public List<WorkdayoffFrame> getAllWorkdayoffFrame(String companyId) {
-			// TODO Auto-generated method stub
 			return workdayoffFrameRepository.getAllWorkdayoffFrame(companyId);
 		}
-
-		@Inject 
-		private DivergenceTimeRepository divergenceTimeRepository;
+		
 		@Override
 		public List<DivergenceTimeRoot> getAllDivTime(String companyId) {
-			// TODO Auto-generated method stub
 			return divergenceTimeRepository.getAllDivTime(companyId);
 		}
-
-		@Inject 
-		private BPTimeItemRepository bPTimeItemRepository;
+		
 		@Override
 		public List<BonusPayTimeItem> getListBonusPayTimeItem(String companyId) {
-			// TODO Auto-generated method stub
 			return bPTimeItemRepository.getListBonusPayTimeItem(companyId);
 		}
-
-		@Inject 
-		private OptionalItemRepository optionalItemRepository;
+		
 		@Override
 		public List<OptionalItem> findAllOptionalItem(String companyId) {
-			// TODO Auto-generated method stub
 			return optionalItemRepository.findAll(companyId);
 		}
-
-		@Inject 
-		private PremiumItemRepository premiumItemRepository;
+		
 		@Override
 		public List<PremiumItem> findPremiumItemByCompanyID(String companyID) {
-			// TODO Auto-generated method stub
 			return premiumItemRepository.findAllIsUse(companyID);
 		}
-
-		@Inject 
-		private OutManageRepository outManageRepository;
+		
 		@Override
 		public Optional<OutManage> findOutManageByID(String companyID) {
-			// TODO Auto-generated method stub
 			return outManageRepository.findByID(companyID);
 		}
-
-		@Inject 
-		private AggDeformedLaborSettingRepository aggDeformedLaborSettingRepository;
+		
 		@Override
 		public Optional<AggDeformedLaborSetting> findAggDeformedLaborSettingByCid(String companyId) {
-			// TODO Auto-generated method stub
 			return aggDeformedLaborSettingRepository.findByCid(companyId);
 		}
-
-		@Inject 
-		private FlexWorkMntSetRepository flexWorkMntSetRepository;
+		
 		@Override
 		public Optional<FlexWorkSet> findFlexWorkSet(String companyId) {
-			// TODO Auto-generated method stub
 			return flexWorkMntSetRepository.find(companyId);
 		}
-
-		@Inject 
-		private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
+		
 		@Override
 		public AnnualPaidLeaveSetting findByCompanyId(String companyId) {
-			// TODO Auto-generated method stub
 			return annualPaidLeaveSettingRepository.findByCompanyId(companyId);
 		}
-
-		@Inject 
-		private CompensLeaveComSetRepository compensLeaveComSetRepository;
+		
 		@Override
 		public CompensatoryLeaveComSetting findCompensatoryLeaveComSetting(String companyId) {
-			// TODO Auto-generated method stub
 			return compensLeaveComSetRepository.find(companyId);
 		}
-
-		@Inject 
-		private ComSubstVacationRepository comSubstVacationRepository;
+		
 		@Override
 		public Optional<ComSubstVacation> findComSubstVacationById(String companyId) {
-			// TODO Auto-generated method stub
 			return comSubstVacationRepository.findById(companyId);
 		}
-
-		@Inject 
-		private TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository;
+		
 		@Override
 		public Optional<TimeSpecialLeaveManagementSetting> findTimeSpecialLeaveManagementSetting(String companyId) {
-			// TODO Auto-generated method stub
 			return timeSpecialLeaveMngSetRepository.findByCompany(companyId);
 		}
-
-		@Inject 
-		private NursingLeaveSettingRepository nursingLeaveSettingRepository;
+		
 		@Override
 		public List<NursingLeaveSetting> findNursingLeaveSetting(String companyId) {
-			// TODO Auto-generated method stub
 			return nursingLeaveSettingRepository.findByCompanyId(companyId);
 		}
-
-		@Inject 
-		private WorkManagementMultipleRepository workManagementMultipleRepository;
+		
 		@Override
 		public Optional<WorkManagementMultiple> findWorkManagementMultiple(String companyID) {
-			// TODO Auto-generated method stub
 			return workManagementMultipleRepository.findByCode(companyID);
 		}
-
-		@Inject 
-		private TemporaryWorkUseManageRepository temporaryWorkUseManageRepository;
+		
 		@Override
 		public Optional<TemporaryWorkUseManage> findTemporaryWorkUseManage(String companyId) {
-			// TODO Auto-generated method stub
 			return temporaryWorkUseManageRepository.findByCid(companyId);
 		}
 		
