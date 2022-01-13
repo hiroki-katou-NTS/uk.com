@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.MonthVacationGrantDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt;
 /**
@@ -54,5 +55,19 @@ public class HalfDayManage implements Serializable {
 		return this.reference.equals(MaxDayReference.CompanyUniform)
 				? Optional.of(this.maxNumberUniformCompany.toLimitedTimeHdDays()) : fromGrantTableCount;
 	}
-
+	 
+	/**
+	 * 丸め後に値を取得する
+	 */
+	public MonthVacationGrantDay getValueAfterRound(ManageDistinct yearManageType, Double days) {
+		if (!yearManageType.isManaged() || !isManaged()) {
+			return new MonthVacationGrantDay(days);
+		}
+		if (this.roundProcesCla == RoundProcessingClassification.TruncateOnDay0) {
+			return MonthVacationGrantDay.createWithTruncate(days);
+		} else if (this.roundProcesCla == RoundProcessingClassification.RoundUpToTheDay) {
+			return MonthVacationGrantDay.createWithRoundUp(days);
+		}
+		return new MonthVacationGrantDay(days);
+	}
 }

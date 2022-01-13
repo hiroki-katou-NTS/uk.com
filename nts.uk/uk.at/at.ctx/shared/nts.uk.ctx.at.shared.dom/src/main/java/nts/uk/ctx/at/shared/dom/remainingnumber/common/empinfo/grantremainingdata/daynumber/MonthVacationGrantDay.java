@@ -15,4 +15,18 @@ public class MonthVacationGrantDay extends HalfIntegerPrimitiveValue<MonthVacati
 	public MonthVacationGrantDay(Double rawValue) {
 		super(rawValue);
 	}
+	
+	/**
+	 * 0日に切り捨てる
+	 */
+	public static MonthVacationGrantDay createWithTruncate(Double value) {
+		return new MonthVacationGrantDay(Math.floor(value));
+	}
+
+	/**
+	 * 1日に切り上げる
+	 */
+	public static MonthVacationGrantDay createWithRoundUp(Double value) {
+		return new MonthVacationGrantDay(Math.ceil(value));
+	}
 }

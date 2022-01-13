@@ -183,7 +183,7 @@ public class LeaveRemainingNumber {
 
 					// 年休１日に相当する時間年休時間を取得する
 					Optional<LaborContractTime> contractTimeOpt
-						= getContractTime(require, companyId, employeeId, baseDate);
+						= getTimeSetting(require, companyId, employeeId, baseDate);
 
 					// 積み崩し処理を行う
 					if (contractTimeOpt.isPresent()){
@@ -287,7 +287,7 @@ public class LeaveRemainingNumber {
 	 * @param baseDate 基準日
 	 * @return　労働契約時間
 	 */
-	static public Optional<LaborContractTime> getContractTime(
+	static public Optional<LaborContractTime> getTimeSetting(
 		RequireM3 require,
 		String companyID,
 		String employeeId,
@@ -303,7 +303,7 @@ public class LeaveRemainingNumber {
 		TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay
 			= annualPaidLeave.getTimeSetting().getTimeAnnualLeaveTimeDay();
 
-		return timeAnnualLeaveTimeDay.getContractTime(require, employeeId, baseDate);
+		return timeAnnualLeaveTimeDay.getTimeSetting(require, employeeId, baseDate);
 	}
 
 	public static interface RequireM3 extends AbsenceTenProcess.RequireM1,TimeAnnualLeaveTimeDay.Require  {

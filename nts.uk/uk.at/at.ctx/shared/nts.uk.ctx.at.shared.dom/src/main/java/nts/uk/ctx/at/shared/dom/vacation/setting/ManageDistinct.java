@@ -64,4 +64,8 @@ public enum ManageDistinct {
 		// Not found.
 		return null;
 	}
+	
+	public boolean isManaged() {
+		return this == YES;
+	}
 }

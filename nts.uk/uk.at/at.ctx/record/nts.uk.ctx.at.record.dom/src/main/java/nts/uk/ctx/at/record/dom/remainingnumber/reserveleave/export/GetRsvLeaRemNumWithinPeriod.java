@@ -37,9 +37,7 @@ import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RoundProcessingClassification;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
@@ -404,36 +402,22 @@ public class GetRsvLeaRemNumWithinPeriod {
 	}
 
 	// 積立年休付与の端数処理
-	private static LeaveGrantDayNumber roundAccuAnnualLeave(RequireM4 require, String companyID,
-			String employeeId,
-			GeneralDate baseDate, AnnualPaidLeaveSetting annualLeaveSet,
-			LeaveRemainingNumber grantDays) {
+	private static LeaveGrantDayNumber roundAccuAnnualLeave(RequireM4 require, String companyID, String employeeId,
+			GeneralDate baseDate, AnnualPaidLeaveSetting annualLeaveSet, LeaveRemainingNumber grantDays) {
 		LeaveGrantDayNumber days = new LeaveGrantDayNumber(grantDays.getDays().v());
 
-		if (annualLeaveSet.getManageAnnualSetting()
-				.getHalfDayManage().roundProcesCla == RoundProcessingClassification.TruncateOnDay0) {
-			days = new LeaveGrantDayNumber(Math.floor(days.v()));
-		} else if (annualLeaveSet.getManageAnnualSetting()
-				.getHalfDayManage().roundProcesCla == RoundProcessingClassification.RoundUpToTheDay) {
-			days = new LeaveGrantDayNumber(Math.ceil(days.v()));
-		}
-		
-	    if(!annualLeaveSet.getTimeSetting().isManaged()) {
-	    	return days;
-	    }
-	    
-		val timeSetting = LeaveRemainingNumber.getContractTime(require, companyID, employeeId, baseDate);
+		// 半日年休管理の場合、丸め後に値を取得する
+		days = new LeaveGrantDayNumber(annualLeaveSet.getManageAnnualSetting().getHalfDayManage()
+				.getValueAfterRound(annualLeaveSet.getYearManageType(), days.v()).v());
+
+		val timeSetting = LeaveRemainingNumber.getTimeSetting(require, companyID, employeeId, baseDate);
+		// 時間年休管理の場合、丸め後に値を取得する
 		if (grantDays.getMinutes().isPresent() && timeSetting.isPresent()) {
-			if (annualLeaveSet.getTimeSetting()
-					.getRoundProcessClassific() == TimeAnnualRoundProcesCla.RoundUpToTheDay) {
-				return new LeaveGrantDayNumber(
-						days.v() + Math.floor(Double.valueOf(grantDays.getMinutes().get().v()) / timeSetting.get().v()));
-			} else {
-				return new LeaveGrantDayNumber(
-						days.v() + Math.ceil(Double.valueOf(grantDays.getMinutes().get().v()) / timeSetting.get().v()));
-			}
+			return new LeaveGrantDayNumber(days.v() + annualLeaveSet.getTimeSetting()
+					.getValueAfterRound(annualLeaveSet.getYearManageType(), grantDays.getMinutes().get().v(), timeSetting.get().v()).map(x -> x.v())
+					.orElse(0.0));
 		}
-	return days;
+		return days;
 	}
 	/**
 	 * 積立年休集計期間を作成

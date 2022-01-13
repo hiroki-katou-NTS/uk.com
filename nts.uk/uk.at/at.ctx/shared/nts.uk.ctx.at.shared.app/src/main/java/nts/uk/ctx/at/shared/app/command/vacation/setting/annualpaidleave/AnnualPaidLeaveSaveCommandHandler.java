@@ -277,7 +277,7 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setManageMaxDayVacation(ManageDistinct.YES.value);
         command.setReference(MaxDayReference.CompanyUniform.value);
         command.setMaxTimeDay(null);
-        command.setRoundProcessClassific(TimeAnnualRoundProcesCla.TruncateOnDay0.value);
+        command.setRoundProcessClassific(TimeAnnualRoundProcesCla.RoundUpToOneDay.value);
         //
         command.setUniformTime(0);
         command.setContractTimeRound(0);

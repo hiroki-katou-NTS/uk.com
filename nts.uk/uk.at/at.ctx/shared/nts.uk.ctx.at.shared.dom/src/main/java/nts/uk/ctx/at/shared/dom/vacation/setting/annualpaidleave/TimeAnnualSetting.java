@@ -10,6 +10,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.MonthVacationGrantDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
@@ -94,4 +95,19 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     public boolean isManaged() {
     	return this.getTimeManageType() == ManageDistinct.YES;
     }
+    
+	/**
+	 * 丸め後に値を取得する
+	 */
+	public Optional<MonthVacationGrantDay> getValueAfterRound(ManageDistinct yearManageType, int minute, int timeOneHour) {
+		if (!yearManageType.isManaged() || !isManaged()) {
+			return Optional.empty();
+		}
+		if (this.getRoundProcessClassific() == TimeAnnualRoundProcesCla.TruncateOnDay0) {
+			return Optional.of(MonthVacationGrantDay.createWithTruncate(Double.valueOf(minute) / timeOneHour));
+		} else {
+			return Optional.of(MonthVacationGrantDay.createWithRoundUp(Double.valueOf(minute) / timeOneHour));
+		}
+	}
+	
 }
