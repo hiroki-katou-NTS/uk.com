@@ -139,7 +139,11 @@ module nts.uk.at.kmr003.b {
                 }
             }).fail((err) => {
                 if (err) {
-                    vm.$dialog.error({messageId: err.messageId, messageParams: err.parameterIds});
+                    if (err.messageId === "Msg_2256") {
+                        vm.$dialog.info({messageId: err.messageId, messageParams: err.parameterIds});
+                    } else {
+                        vm.$dialog.error({messageId: err.messageId, messageParams: err.parameterIds});
+                    }
                 }
             }).always(() => vm.$blockui('hide'));
         }
