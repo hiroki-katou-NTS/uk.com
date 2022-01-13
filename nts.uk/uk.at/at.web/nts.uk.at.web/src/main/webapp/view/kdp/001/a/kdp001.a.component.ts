@@ -99,19 +99,19 @@ module nts.uk.ui.kdp001.a {
                 ">
                 <button data-bind="attr: { style: btn.style }, click: function() { $component.stamp(btn); }">
                     <!-- ko if: btn.buttonPositionNo == 1 -->
-                        <i data-bind="ntsIcon: { no: 205, width: 85, height: 85 }"></i>
+                    <!--    <i data-bind="ntsIcon: { no: 205, width: 85, height: 85 }"></i> -->
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 2 -->
-                        <i data-bind="ntsIcon: { no: 209, width: 85, height: 85 }"></i>
+                    <!--    <i data-bind="ntsIcon: { no: 209, width: 85, height: 85 }"></i> -->
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 3 -->
-                        <i data-bind="ntsIcon: { no: 212, width: 50, height: 50 }"></i>
+                    <!--    <i data-bind="ntsIcon: { no: 212, width: 50, height: 50 }"></i> -->
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 4 -->
-                        <i data-bind="ntsIcon: { no: 213, width: 50, height: 50 }"></i>
+                    <!--    <i data-bind="ntsIcon: { no: 213, width: 50, height: 50 }"></i> -->
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 1 || btn.buttonPositionNo == 2 -->
@@ -245,9 +245,8 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a.kdp-001-a-btn button {
                     width: 222px;
                     height: 200px;
-                    border-radius: 5px;
-                    box-shadow: 2px 2px 6px #808080;
-                    border-width: 0px;
+                    border-radius: 10px;
+                    border: solid 2px;
                 }
                 .kdp-001-a.kdp-001-a-btn .btn-start-1 {
                     font-size: 25px;

@@ -54,7 +54,7 @@ module nts.uk.at.view.kdp010.i {
 			letterColors: KnockoutObservable<string> = ko.observable('#ffffff');
 
 			// H6_2
-			backgroundColors: KnockoutObservable<string> = ko.observable('#127D09');
+			backgroundColors: KnockoutObservable<string> = ko.observable('#01956A');
 
 			// H7_2
 			optionAudio: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.AudioType);
