@@ -1,5 +1,6 @@
 ﻿$checkbox_border_color: #aaa;
 $checkbox_back_color: #fff;
+$checkbox_box_border: 1px solid $checkbox_border_color;
 $checkbox_border_check_sign: 2px solid #555;
 
 %checkbox_check_sign {
@@ -82,7 +83,7 @@ $checkbox_border_check_sign: 2px solid #555;
 				box-sizing: border-box;
 				display: block;
 				position: absolute;
-				border: 1px solid $checkbox_border_color;
+				border: $checkbox_box_border;
 			}
 
 			&::after {

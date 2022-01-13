@@ -1,3 +1,5 @@
+@import "_radiobox.scss";
+
 .mgrid :not(.mgrid-header) table tr {
 
 	&:nth-child(even) {
@@ -608,24 +610,20 @@
   height: 19px;
   margin: 0px;
   background: transparent;
-  border: 2px solid #2FCC71;
+  border: $checkbox_box_border;
   border-radius: 2px;
   box-sizing: border-box;
 }
 
 .ntsCheckBox span.box:after {
+	@extend %checkbox_check_sign;
   content: '';
   width: 9px;
   height: 5px;
   position: absolute;
-  top: 2px;
-  left: 2px;
-  border: 2px solid #fff;
-  border-top: none;
-  border-right: none;
+  top: 5px;
+  left: 4px;
   opacity: 0;
-  border-radius: 1px;
-  transform: rotate(-59deg);
 }
 
 .ntsCheckBox span.label {
@@ -638,7 +636,7 @@
 }
 
 .ntsCheckBox input[type="checkbox"]:checked + span {
-  background: #30CC40;
+  background: $checkbox_back_color;
 }
 
 .ntsCheckBox input[type="checkbox"]:checked + span:after {
