@@ -79,6 +79,7 @@
 					box-sizing: border-box;
 					display: block;
 					margin-right: 2px;
+					background-color: $checkbox_back_color_off;
 
 					&::after {
 						@extend %checkbox_check_sign;
@@ -91,6 +92,7 @@
 						&::after {
 							content: '';
 						}
+						background-color: $checkbox_back_color_on;
 					}
 
 					.ui-icon {

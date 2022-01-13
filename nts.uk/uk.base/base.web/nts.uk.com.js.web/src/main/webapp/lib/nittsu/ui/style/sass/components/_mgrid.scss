@@ -636,7 +636,7 @@
 }
 
 .ntsCheckBox input[type="checkbox"]:checked + span {
-  background: $checkbox_back_color;
+  background: $checkbox_back_color_on;
 }
 
 .ntsCheckBox input[type="checkbox"]:checked + span:after {

@@ -1,7 +1,8 @@
 ﻿$checkbox_border_color: #aaa;
-$checkbox_back_color: #fff;
+$checkbox_back_color_on: #258F7E;
+$checkbox_back_color_off: #fff;
 $checkbox_box_border: 1px solid $checkbox_border_color;
-$checkbox_border_check_sign: 2px solid #555;
+$checkbox_border_check_sign: 2px solid #fff;
 
 %checkbox_check_sign {
 	box-sizing: border-box;
@@ -84,6 +85,7 @@ $checkbox_border_check_sign: 2px solid #555;
 				display: block;
 				position: absolute;
 				border: $checkbox_box_border;
+				background-color: $checkbox_back_color_off;
 			}
 
 			&::after {
@@ -107,8 +109,8 @@ $checkbox_border_check_sign: 2px solid #555;
 
 		&:checked {
 			& + span {
-				&::after {
-					background: $checkbox_back_color;
+				&::before {
+					background-color: $checkbox_back_color_on;
 				}
 			}
 		}
@@ -147,7 +149,7 @@ $checkbox_border_check_sign: 2px solid #555;
 	input[type="checkbox"] {
 		& + span {
 			&::before {
-				background-color: $checkbox_back_color;
+				background-color: $checkbox_back_color_off;
 			}
 		}
 
