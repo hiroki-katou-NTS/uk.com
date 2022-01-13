@@ -177,8 +177,7 @@ module nts.uk.at.kmr001.c {
         }
 
         getBentoMenu() {
-            const vm = this,
-            currentSelectedSetting = vm.selectedBentoSetting();
+            const vm = this;
             //get list bento
             vm.$ajax(API.GET_ALL, {date: vm.date}).done(dataRes => {
                 vm.$blockui('invisible');
