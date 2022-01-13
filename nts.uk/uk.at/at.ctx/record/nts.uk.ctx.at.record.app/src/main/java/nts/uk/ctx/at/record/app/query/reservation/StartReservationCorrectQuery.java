@@ -105,13 +105,17 @@ public class StartReservationCorrectQuery {
         // 4: 社員IDから打刻カードを取得(List＜社員ID＞=Input．List＜社員ID＞)
         Map<String, StampNumber> stampCards = getStampCardQuery.getStampNumberBy(employeeIds);
         
+        List<ReservationRegisterInfo> listCardNo = stampCards.values().stream().map(card -> new ReservationRegisterInfo(card.v())).collect(Collectors.toList());
         // 5: 予約の修正の抽出条件から弁当予約を取得する(打刻カード番号, 年月日, int, 予約修正抽出条件, 勤務場所コード)
         //      (打刻カード一覧=取得した打刻カード番号, 対象日=Input.発注日, 受付時間帯NO=Input.枠NO, 予約修正抽出条件=Input.抽出条件, 勤務場所コード=Empty)
-        List<BentoReservation> bentoReservations = bentoReservationRepository.findByExtractionCondition(
-                stampCards.values().stream().map(card -> new ReservationRegisterInfo(card.v())).collect(Collectors.toList()), 
-                new DatePeriod(correctionDate, correctionDate), 
-                frameNo, 
-                EnumAdaptor.valueOf(extractCondition, ReservationCorrect.class));
+        List<BentoReservation> bentoReservations = new ArrayList<BentoReservation>();
+        if (!listCardNo.isEmpty()) {
+            bentoReservations = bentoReservationRepository.findByExtractionCondition(
+                    listCardNo, 
+                    new DatePeriod(correctionDate, correctionDate), 
+                    frameNo, 
+                    EnumAdaptor.valueOf(extractCondition, ReservationCorrect.class));
+        }
         if (bentoReservations.isEmpty()) {
             if (setting.getCorrectionContent().getOrderMngAtr().equals(ReservationOrderMngAtr.CANNOT_MANAGE)) {
                 throw new BusinessException("Msg_2256", 
