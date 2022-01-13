@@ -65,15 +65,15 @@ public class GetEstimatedTimeZones {
 			
 			oApp.getWorkHoursOp().ifPresent(wh -> {
 				wh.stream().mapToInt(x -> x.getTimeZone().getStartTime().v()).min().ifPresent(min -> {
-					if (min < result.getStartTime().v()) {
+					if (result.getStartTime() == null || (min < result.getStartTime().v())) {
 						result.setStartTime(new TimeWithDayAttr(min));
 					}
-					
+
 				});
-				
+
 				wh.stream().mapToInt(x -> x.getTimeZone().getEndTime().v()).max().ifPresent(max -> {
-					if (max > result.getEndTime().v()) {
-						result.setStartTime(new TimeWithDayAttr(max));
+					if (result.getEndTime() == null || (max > result.getEndTime().v())) {
+						result.setEndTime(new TimeWithDayAttr(max));
 					}
 				});
 				//入力目安時間帯．残業時間帯 = 取得した「残業申請．勤務時間帯．時間帯」をセットする
