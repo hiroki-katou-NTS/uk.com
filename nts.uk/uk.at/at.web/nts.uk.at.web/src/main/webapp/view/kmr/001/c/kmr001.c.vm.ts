@@ -101,7 +101,7 @@ module nts.uk.at.kmr001.c {
                 };
                 // delete bento
                 vm.$ajax(API.DELETE_BENTO, commandDelete).done(() => {
-                    vm.$dialog.info({ messageId: "Msg_16" }).then(() => vm.getBentoMenu());
+                    vm.$dialog.info({ messageId: "Msg_16" }).then(() => vm.selectedBentoSetting('')).then(() => vm.getBentoMenu());
                 }).fail(function (error) {
                     vm.$dialog.error({ messageId: error.messageId });
                 }).always(() => {
@@ -139,7 +139,7 @@ module nts.uk.at.kmr001.c {
                     //create bento
                     vm.$ajax(API.CREATE_BENTO, param).done(() => {
                         vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
-                        }).then(() => vm.getBentoMenu());
+                        }).then(() => vm.getBentoMenu())
                     }).always(() => vm.$blockui("clear"));
                 } else {
                     const param = {
@@ -154,7 +154,7 @@ module nts.uk.at.kmr001.c {
                     };
                     //update bento
                     vm.$ajax(API.UPDATE_BENTO, param).done(() => {
-                        vm.$dialog.info({ messageId: "Msg_15" }).then(() => vm.getBentoMenu());
+                        vm.$dialog.info({ messageId: "Msg_15" }).then(() => vm.getBentoMenu())
                     }).always(() => vm.$blockui("clear"));
                 }
             })
@@ -177,7 +177,8 @@ module nts.uk.at.kmr001.c {
         }
 
         getBentoMenu() {
-            const vm = this;
+            const vm = this,
+            currentSelectedSetting = vm.selectedBentoSetting();
             //get list bento
             vm.$ajax(API.GET_ALL, {date: vm.date}).done(dataRes => {
                 vm.$blockui('invisible');
@@ -219,16 +220,17 @@ module nts.uk.at.kmr001.c {
                 );
                 vm.itemsBento(array);
 				if(!_.isEmpty(bentoDtos)) {
-					vm.selectedBentoSetting(bentoDtos[0].frameNo);	
+                    if(vm.selectedBentoSetting() === '')
+					    vm.selectedBentoSetting(bentoDtos[0].frameNo);	
 				} else {
 					vm.selectedBentoSetting(vm.itemsBento()[0].id);
 				}
 				if(!_.isEmpty(bentoDtos)) {
 					vm.model().updateData(
-	                    bentoDtos[0].bentoName, bentoDtos[0].unitName,
-	                    bentoDtos[0].receptionTimezoneNo,
-	                    Number(bentoDtos[0].price1), Number(bentoDtos[0].price2),
-	                    bentoDtos[0].workLocationCode
+	                    bentoDtos[Number(vm.selectedBentoSetting()) - 1].bentoName, bentoDtos[Number(vm.selectedBentoSetting()) - 1].unitName,
+	                    bentoDtos[Number(vm.selectedBentoSetting()) - 1].receptionTimezoneNo,
+	                    Number(bentoDtos[Number(vm.selectedBentoSetting()) - 1].price1), Number(bentoDtos[Number(vm.selectedBentoSetting()) - 1].price2),
+	                    bentoDtos[Number(vm.selectedBentoSetting()) - 1].workLocationCode
 	                );
 	                vm.model.valueHasMutated();	
 				} else {
