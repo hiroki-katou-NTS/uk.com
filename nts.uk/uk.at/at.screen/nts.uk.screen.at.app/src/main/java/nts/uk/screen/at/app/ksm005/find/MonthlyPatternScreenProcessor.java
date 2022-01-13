@@ -89,7 +89,7 @@ public class MonthlyPatternScreenProcessor {
             // 2. set WorkStyle
             // 2:出勤・休日系の判定(Require)
             WorkInformation information = new WorkInformation( x.getWorkTypeCode(),x.getWorkingCode());
-            int workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : -1;
+            int workStyle = information.getWorkStyle(require, cid).isPresent() ? information.getWorkStyle(require, cid).get().value : -1;
             int typeColor = getInteger(workStyle);
             x.setTypeColor(typeColor);
 
@@ -111,9 +111,10 @@ public class MonthlyPatternScreenProcessor {
     public WorkStyleDto findDataWorkStype(WorkTypeRequestPrams requestPrams) {
 
         WorkInformation.Require require = new RequireImpl(workTypeRepository);
+        String cid = AppContexts.user().companyId();
 
         WorkInformation information = new WorkInformation(requestPrams.getWorkTypeCode(),requestPrams.getWorkingCode());
-        int workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : -1;
+        int workStyle = information.getWorkStyle(require, cid).isPresent() ? information.getWorkStyle(require, cid).get().value : -1;
         int typeColor = getInteger(workStyle);
         return new WorkStyleDto(requestPrams.getWorkingCode(), requestPrams.getWorkTypeCode(),typeColor);
     }

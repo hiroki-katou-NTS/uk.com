@@ -111,7 +111,8 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 		// 2:not 勤務予定．isEmpty : 時間帯に作業予定を追加する(@Require, 計算用時間帯, 作業コード)
 		if (!lstWorkSchedule.isEmpty()) {
 			for (WorkSchedule item : lstWorkSchedule) {
-				item.addTaskScheduleWithTimeSpan(require, command.timeSpanForCalc, new TaskCode(command.taskCode));
+				item.addTaskScheduleWithTimeSpan(require, AppContexts.user().companyId(),
+						command.timeSpanForCalc, new TaskCode(command.taskCode));
 			}
 		}
 

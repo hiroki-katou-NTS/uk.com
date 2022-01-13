@@ -116,7 +116,7 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 			/** 1.2: [not 勤務予定．isEmpty]:一日中に作業予定を作成する(Require, 作業コード)*/
 			if(optional.isPresent()) {
 				WorkSchedule workSchedule = optional.get();
-				workSchedule.createTaskScheduleForWholeDay(require, new TaskCode(command.getTaskCode()));
+				workSchedule.createTaskScheduleForWholeDay(require, companyId, new TaskCode(command.getTaskCode()));
 				
 				/** 2: persist*/
 				repository.update(workSchedule);

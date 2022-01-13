@@ -43,12 +43,12 @@ public class WorkCycleInfoTest {
 
         new Expectations(WorkInformation.class) {
             {
-                workCycleInfo.getWorkInformation().checkErrorCondition(require);
+                workCycleInfo.getWorkInformation().checkErrorCondition(require, anyString);
                 result = ErrorStatusWorkInfo.NORMAL;
             }
         };
 
-        ErrorStatusWorkInfo result =  workCycleInfo.checkError(require);
+        ErrorStatusWorkInfo result =  workCycleInfo.checkError(require, "cid");
         assertThat(result).isEqualByComparingTo(ErrorStatusWorkInfo.NORMAL);
 
     }

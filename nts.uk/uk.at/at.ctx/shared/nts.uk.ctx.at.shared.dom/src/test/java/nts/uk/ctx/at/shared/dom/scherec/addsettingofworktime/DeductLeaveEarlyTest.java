@@ -16,75 +16,75 @@ public class DeductLeaveEarlyTest {
 	@Test
 	public void isIncludeLateEarly_WorkSet1(){
 	
-		// 就業時間帯の共通設定
+		// 就業時間帯の共通設定　（→　遅刻を含める）
 		WorkTimezoneCommonSet commonSetting = Helper.getCommonSetForLate(true, false);
 		
-		// 遅刻早退を控除する
+		// 遅刻早退を控除する　（→　遅刻を含めない、就業時間帯毎に設定する）
 		TreatLateEarlyTimeSetUnit instance = Helper.getDeductLeaveEarly(false, false, true);
 		
 		// Execute
 		boolean result = instance.isIncludeLateEarlyInWorkTime(Optional.of(commonSetting.getLateEarlySet()));
 		
-		// Assertion
+		// Assertion　（遅刻を含める）
 		assertThat(result).isTrue();
 	}
 
 	@Test
 	public void isIncludeLateLeaveEarly_WorkSet2(){
 		
-		// 就業時間帯の共通設定
+		// 就業時間帯の共通設定　（→　遅刻を含めない）
 		WorkTimezoneCommonSet commonSetting = Helper.getCommonSetForLate(false, false);
 		
-		// 遅刻早退を控除する
+		// 遅刻早退を控除する　（→　遅刻を含める、就業時間帯毎に設定する）
 		TreatLateEarlyTimeSetUnit instance = Helper.getDeductLeaveEarly(true, false, true);
 		
 		// Execute
 		boolean result = instance.isIncludeLateEarlyInWorkTime(Optional.of(commonSetting.getLateEarlySet()));
 		
-		// Assertion
+		// Assertion　（遅刻を含めない）
 		assertThat(result).isFalse();
 	}
 
 	@Test
 	public void isIncludeLateLeaveEarly_WorkSet3(){
 		
-		// 遅刻早退を控除する
+		// 遅刻早退を控除する　（→　遅刻を含める、就業時間帯毎に設定する）
 		TreatLateEarlyTimeSetUnit instance = Helper.getDeductLeaveEarly(true, false, true);
 		
-		// Execute
+		// Execute　（就業時間帯設定なし）
 		boolean result = instance.isIncludeLateEarlyInWorkTime(Optional.empty());
 		
-		// Assertion
+		// Assertion　（遅刻を含めない）
 		assertThat(result).isFalse();
 	}
 
 	@Test
 	public void isIncludeLateLeaveEarly_CalcSet1(){
 		
-		// 遅刻早退を控除する
+		// 遅刻早退を控除する　（→　遅刻を含める、就業時間帯毎に設定しない）
 		TreatLateEarlyTimeSetUnit instance = Helper.getDeductLeaveEarly(true, false, false);
 		
-		// Execute
+		// Execute　（就業時間帯設定なし）
 		boolean result = instance.isIncludeLateEarlyInWorkTime(Optional.empty());
 		
-		// Assertion
-		assertThat(result).isFalse();
+		// Assertion　（遅刻を含める）
+		assertThat(result).isTrue();
 	}
 
 	@Test
 	public void isIncludeLateLeaveEarly_CalcSet2(){
 		
-		// 就業時間帯の共通設定
+		// 就業時間帯の共通設定　（→　遅刻を含める）
 		WorkTimezoneCommonSet commonSetting = Helper.getCommonSetForLate(true, false);
 		
-		// 遅刻早退を控除する
+		// 遅刻早退を控除する　（→　遅刻を含めない、就業時間帯毎に設定しない）
 		TreatLateEarlyTimeSetUnit instance = Helper.getDeductLeaveEarly(false, false, false);
 		
 		// Execute
 		boolean result = instance.isIncludeLateEarlyInWorkTime(Optional.of(commonSetting.getLateEarlySet()));
 		
-		// Assertion
-		assertThat(result).isTrue();
+		// Assertion　（遅刻を含めない）
+		assertThat(result).isFalse();
 	}
 	
 	protected static class Helper {

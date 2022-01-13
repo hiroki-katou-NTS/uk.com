@@ -133,7 +133,7 @@ public class VacationAppReflectOptionTest {
 
 		new Expectations() {
 			{
-				require.workType(anyString, new WorkTypeCode(anyString));
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(WorkType.createSimpleFromJavaType("003", "", "", "", "", 0, 1, // 休日
 						0, 0));
 				;
@@ -182,7 +182,7 @@ public class VacationAppReflectOptionTest {
 				ReflectWorkHourCondition.REFLECT);
 		new Expectations() {
 			{
-				require.workType(anyString, new WorkTypeCode(anyString));
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(WorkType.createSimpleFromJavaType("003", "", "", "", "", 0, 0, // 出勤
 						0, 0));
 				;

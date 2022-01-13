@@ -52,7 +52,7 @@ public class ReflectWorkInformation {
 			}
 			
 			// 勤務情報と始業終業を変更する
-			lstItemId.addAll(dailyApp.getWorkInformation().changeWorkSchedule(require,
+			lstItemId.addAll(dailyApp.getWorkInformation().changeWorkSchedule(require, cid,
 					new WorkInformation(workInfo.getWorkTypeCode().orElse(null), 
 										workInfo.getWorkTimeCode().orElse(null)), 
 					changeWorkType.orElse(false), changeWorkTime.orElse(false)));
@@ -80,7 +80,7 @@ public class ReflectWorkInformation {
 		List<Integer> lstItemId = new ArrayList<>();
 		//所定時間帯を取得する
 		Optional<WorkInfoAndTimeZone> timeZoneOpt = dailyApp.getWorkInformation().getRecordInfo()
-				.getWorkInfoAndTimeZone(require);
+				.getWorkInfoAndTimeZone(require, cid);
 		if (!timeZoneOpt.isPresent()) {
 			// 勤務時刻情報．時刻をクリアー
 			dailyApp.getAttendanceLeave().ifPresent(attLeav -> {

@@ -15,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author thanh_nx
@@ -31,16 +30,14 @@ public class CorrectDailyAttendanceService {
 	}
 
 	// 振休振出として扱う日数を補正する
-	public static WorkInfoOfDailyAttendance correctFurikyu(Require require,
+	public static WorkInfoOfDailyAttendance correctFurikyu(Require require, String companyId,
 			WorkInfoOfDailyAttendance workInformationBefore, WorkInfoOfDailyAttendance workInformationAfter) {
 
 		// 反映前の勤務実績の勤務種類に、[振休]または[振出]が含まれるかのチェック
-		Optional<WorkType> workType = require.workType(
-				AppContexts.user().companyId(),
+		Optional<WorkType> workType = require.workType(companyId,
 				workInformationBefore.getRecordInfo().getWorkTypeCode());
 
-		Optional<WorkType> workTypeAfter = require.workType(
-				AppContexts.user().companyId(),
+		Optional<WorkType> workTypeAfter = require.workType(companyId,
 				workInformationAfter.getRecordInfo().getWorkTypeCode());
 		if (!workType.isPresent() || !workTypeAfter.isPresent()
 				|| (workType.get().getDailyWork().getClassification() != WorkTypeClassification.Shooting

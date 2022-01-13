@@ -45,7 +45,7 @@ public class NumberOfEmployeesByAttributeCountingServiceTest {
 		// Mock: 日別勤怠の勤務情報
 		new MockUp<WorkInfoOfDailyAttendance>() {
 			@Mock
-			public boolean isAttendanceRate(Require require) {
+			public boolean isAttendanceRate(Require require, String companyId) {
 				return ( this.getMockInstance().getRecordInfo() == Helper.WorkInfo.WORKING );
 			}
 		};
@@ -76,7 +76,7 @@ public class NumberOfEmployeesByAttributeCountingServiceTest {
 
 		// Execute
 		val result = NumberOfEmployeesByAttributeCountingService
-						.count(require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, values);
+						.count(require, "cid", AggregationUnitOfEmployeeAttribute.EMPLOYMENT, values);
 
 
 		// Assertion

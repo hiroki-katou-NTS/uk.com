@@ -80,22 +80,25 @@ public class WorkAvailabilityOfOneDay implements DomainAggregate{
 	 * 
 	 * @return 出した勤務希望が休日の種類かどうか
 	 */
-	public boolean isHolidayAvailability(Require require) {
-		return this.workAvailability.isHolidayAvailability(require);
+	public boolean isHolidayAvailability(Require require, String companyId) {
+		return this.workAvailability.isHolidayAvailability(require, companyId);
 	}
 	
 	/**
 	 * 希望に沿っているか
-	 * @param require 
+	 * @param require
+	 * @param companyId 会社ID
 	 * @param workInformation チェックしたい勤務情報
 	 * @param timeZoneList チェックしたい時間帯リスト
 	 * @return
 	 */
-	public boolean isMatchingAvailability(Require require, 
+	public boolean isMatchingAvailability(
+			Require require,
+			String companyId,
 			WorkInformation workInformation, 
 			List<TimeSpanForCalc> timeZoneList) {
 		
-		return this.workAvailability.isMatchingWorkAvailability(require, workInformation, timeZoneList);
+		return this.workAvailability.isMatchingWorkAvailability(require, companyId, workInformation, timeZoneList);
 				
 	}
 	

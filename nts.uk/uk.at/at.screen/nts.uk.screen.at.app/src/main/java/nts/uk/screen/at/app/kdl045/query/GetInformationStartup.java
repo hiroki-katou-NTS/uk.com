@@ -138,7 +138,7 @@ public class GetInformationStartup {
 					workTimeSettingService, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository,
 					flexWorkSettingRepository, predetemineTimeSettingRepository);
 			//2.3 : 
-			Optional<WorkStyle> workStyle = wi.getWorkStyle(requireWorkInfo);
+			Optional<WorkStyle> workStyle = wi.getWorkStyle(requireWorkInfo, companyId);
 			data.setWorkStyle(workStyle.isPresent() ? workStyle.get().value : null);
 		}
 		// 3 : Map<時間休暇種類, 合計使用時間>

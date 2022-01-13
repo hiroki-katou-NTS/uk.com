@@ -100,6 +100,7 @@ public class SubmitWorkRequest extends CommandHandler<SubmitWorkRequestCmd> {
 	protected void handle(CommandHandlerContext<SubmitWorkRequestCmd> context) {
 
 		SubmitWorkRequestCmd command = context.getCommand();
+		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		WorkAvailabilityOfOneDay.Require requireWorkAvailabilityOfOneDay = new RequireWorkAvailabilityOfOneDayImpl(
 				workTypeRepo, workTimeSettingRepository, basicScheduleService, shiftMasterRepo,
@@ -131,7 +132,7 @@ public class SubmitWorkRequest extends CommandHandler<SubmitWorkRequestCmd> {
 				shiftMasterRepo, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository,
 				predetemineTimeSettingRepository);
 		// 2:
-		AtomTask persist = RegisterWorkAvailability.register(requireRegisterWorkAvailability,employeeId,
+		AtomTask persist = RegisterWorkAvailability.register(requireRegisterWorkAvailability,companyId,employeeId,
 				new DatePeriod(GeneralDate.fromString(command.getStartPeriod(), "yyyy/MM/dd"),
 						GeneralDate.fromString(command.getEndPeriod(), "yyyy/MM/dd")), listDomain);
 

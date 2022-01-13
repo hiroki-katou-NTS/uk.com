@@ -87,7 +87,9 @@ public class CreateWorkScheduleShift {
 	public WorkScheduleShiftResult getWorkScheduleShift(
 			Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap,
 			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew) {
-
+		
+		String companyId = AppContexts.user().companyId();
+		
 		// step 1
 		List<WorkInfoOfDailyAttendance>  workInfoOfDailyAttendances = new ArrayList<WorkInfoOfDailyAttendance>();
 		mngStatusAndWScheMap.forEach((k, v) -> {
@@ -137,7 +139,7 @@ public class CreateWorkScheduleShift {
 				WorkInformation.Require require2 = new RequireWorkInforImpl(workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService,fixedWorkSet,flowWorkSet,flexWorkSet, predetemineTimeSet);
 				Optional<WorkStyle> workStyle = Optional.empty();
 				if(workInformation.getWorkTypeCode() != null){
-					workStyle = workInformation.getWorkStyle(require2);
+					workStyle = workInformation.getWorkStyle(require2, companyId);
 				}
 
 				// 3.2.2
@@ -240,7 +242,6 @@ public class CreateWorkScheduleShift {
 
 		// convert list to Map
 		Map<ShiftMaster,Optional<WorkStyle>> mapShiftMasterWithWorkStyle2 = new HashMap<>();
-		String companyId = AppContexts.user().companyId();
 		for (ShiftMasterMapWithWorkStyle obj : listShiftMaster) {
 			ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(new ShiftMasterName(obj.shiftMasterName), new ColorCodeChar6(obj.color),new ColorCodeChar6(obj.color), Optional.of(new Remarks(obj.remark)));
 			//TODO 取り込みコード追加

@@ -232,7 +232,7 @@ public class FlexLegalTimeGetter {
 			// 所定用就業時間帯コードを取得する
 			Optional<WorkingConditionItem> conditionItemOpt = employeeSets.getWorkingConditionItem(baseDate);
 			if (!conditionItemOpt.isPresent()) continue;
-			Optional<WorkTimeCode> workTimeCodeOpt = workInfo.getRecordInfo().getWorkTimeCodeForPred(require, conditionItemOpt.get());
+			Optional<WorkTimeCode> workTimeCodeOpt = workInfo.getRecordInfo().getWorkTimeCodeForPred(require, companySets.getCompanyId(), conditionItemOpt.get());
 			if (!workTimeCodeOpt.isPresent()) continue;
 			WorkTimeCode workTimeCode = workTimeCodeOpt.get();
 			// 日単位の代休控除時間の計算

@@ -49,13 +49,13 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 	@Test
 	public void countingEachAttribute_empty() {
 		//雇用場合
-		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, Collections.emptyList());
+		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, "cid", AggregationUnitOfEmployeeAttribute.EMPLOYMENT, Collections.emptyList());
 		assertThat(result).isEmpty();
 		//分類場合
-		result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, Collections.emptyList());
+		result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, "cid", AggregationUnitOfEmployeeAttribute.CLASSIFICATION, Collections.emptyList());
 		assertThat(result).isEmpty();
 		//職位場合
-		result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, Collections.emptyList());
+		result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, "cid", AggregationUnitOfEmployeeAttribute.JOB_TITLE, Collections.emptyList());
 		assertThat(result).isEmpty();
 	}
 	
@@ -78,13 +78,13 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 
 		new MockUp<NumberOfEmployeesByAttributeCountingService>() {
 			@Mock
-			public Map<String, BigDecimal> count(Require require, AggregationUnitOfEmployeeAttribute unit, List<WorkInfoWithAffiliationInfo> values) {
+			public Map<String, BigDecimal> count(Require require, String companyId, AggregationUnitOfEmployeeAttribute unit, List<WorkInfoWithAffiliationInfo> values) {
 				/** 集計　= empty */
 				return Collections.emptyMap();
 			}
 		};
 
-		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks);
+		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, "cid", AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks);
 
 		assertThat(result).hasSize(2);
 		assertThat(result.keySet())
@@ -134,12 +134,12 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 
 		new MockUp<NumberOfEmployeesByAttributeCountingService>() {
 			@Mock
-			public Map<String, BigDecimal> count(Require require, AggregationUnitOfEmployeeAttribute unit, List<WorkInfoWithAffiliationInfo> values) {
+			public Map<String, BigDecimal> count(Require require, String companyId, AggregationUnitOfEmployeeAttribute unit, List<WorkInfoWithAffiliationInfo> values) {
 				return numberEmpByClsCd; 
 			}
 		};
 		
-		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks);
+		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, "cid", AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks);
 
 		assertThat(result).hasSize(1);
 		
@@ -194,13 +194,13 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 
 		new MockUp<NumberOfEmployeesByAttributeCountingService>() {
 			@Mock
-			public Map<String, BigDecimal> count(Require require, AggregationUnitOfEmployeeAttribute unit, List<WorkInfoWithAffiliationInfo> values) {
+			public Map<String, BigDecimal> count(Require require, String companyId, AggregationUnitOfEmployeeAttribute unit, List<WorkInfoWithAffiliationInfo> values) {
 				return numberEmpByEmplCd;
 								 
 			}
 		};
 		
-		Map<GeneralDate, Map<String, BigDecimal>>  result  = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, dailyWorks);
+		Map<GeneralDate, Map<String, BigDecimal>>  result  = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, "cid", AggregationUnitOfEmployeeAttribute.EMPLOYMENT, dailyWorks);
 		
 		assertThat(result).hasSize(1);
 		assertThat(result.keySet())
@@ -254,12 +254,12 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 
 		new MockUp<NumberOfEmployeesByAttributeCountingService>() {
 			@Mock
-			public Map<String, BigDecimal> count(Require require, AggregationUnitOfEmployeeAttribute unit, List<WorkInfoWithAffiliationInfo> values) {
+			public Map<String, BigDecimal> count(Require require, String companyId, AggregationUnitOfEmployeeAttribute unit, List<WorkInfoWithAffiliationInfo> values) {
 				return numberEmpByJobTilte;
 			}
 		};
 		
-		Map<GeneralDate, Map<String, BigDecimal>> result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks);
+		Map<GeneralDate, Map<String, BigDecimal>> result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, "cid", AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks);
 		
 		assertThat(result).hasSize(1);
 		assertThat(result.keySet())
@@ -295,14 +295,14 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 
 		new Expectations() {
 			{
-				service.count(require, (AggregationUnitOfEmployeeAttribute) any, (List<WorkInfoWithAffiliationInfo> ) any);
+				service.count(require, anyString, (AggregationUnitOfEmployeeAttribute) any, (List<WorkInfoWithAffiliationInfo> ) any);
 				//*　年月日リストは「2021/1/1, 2021/1/2」なので、回数 = 2です。
 				times = 2;
 
 			}
 		};
 		
-		NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks);
+		NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, "cid", AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks);
 		
 	}
 	

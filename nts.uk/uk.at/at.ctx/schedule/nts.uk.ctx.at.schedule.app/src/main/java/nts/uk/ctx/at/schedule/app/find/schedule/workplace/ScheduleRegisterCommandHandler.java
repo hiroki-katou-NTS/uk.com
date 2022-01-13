@@ -221,6 +221,7 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
                 .distinct().sorted().collect(Collectors.toList());
         DatePeriod period = dates.size() > 0 ? new DatePeriod(dates.get(0), dates.get(dates.size() - 1)) : null;
         RequireImp requireImp = new RequireImp(importCodes, employeeList, period);
+        String companyId = AppContexts.user().companyId();
         
         // 1.1: 作る(Require, 社員ID, 年月日, シフトマスタ取り込みコード, boolean)
         ScheduleRegisterDto sr =  command.toDomain();
@@ -228,7 +229,8 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
                 sr.getTargets()
                   .stream()
                   .map(x -> CreateWorkScheduleByImportCode.create(
-                           requireImp, 
+                           requireImp,
+                           companyId,
                             x.getEmployeeId(), 
                             x.getDate(), 
                             x.getImportCode(), 

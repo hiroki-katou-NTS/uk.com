@@ -61,10 +61,13 @@ public class WorkCycle extends AggregateRoot {
     /**
      *
      * @param require
+     * @param companyId
      * @return 	List<勤務情報のエラー状態>
      */
-    public List<ErrorStatusWorkInfo> checkError(WorkInformation.Require require) {
-        val listWorkInfo = this.getInfos().stream().map(i -> i.getWorkInformation().checkErrorCondition(require)).collect(Collectors.toList());
+    public List<ErrorStatusWorkInfo> checkError(WorkInformation.Require require, String companyId) {
+        val listWorkInfo = this.getInfos().stream()
+        		.map(i -> i.getWorkInformation().checkErrorCondition(require, companyId))
+        		.collect(Collectors.toList());
         return listWorkInfo;
     }
 

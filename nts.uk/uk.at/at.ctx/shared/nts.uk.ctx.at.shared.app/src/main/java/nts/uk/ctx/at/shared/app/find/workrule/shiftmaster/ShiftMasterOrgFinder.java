@@ -37,7 +37,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -191,7 +190,7 @@ public class ShiftMasterOrgFinder {
 		WorkInformation information = new WorkInformation("", "");
 
 		WorkInformation.Require require2 = new WorkInfoImpl(workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
-		Optional<WorkInfoAndTimeZone> timeZone = information.getWorkInfoAndTimeZone(require2);
+		Optional<WorkInfoAndTimeZone> timeZone = information.getWorkInfoAndTimeZone(require2, companyId);
 		Optional<WorkInfoTimeZoneTempo> tempo = timeZone.map(x-> WorkInfoTimeZoneTempo.toDto(x));
 		shiftMasterDto =  new OutPutShiftMasterDto(shiftMaster, tempo.isPresent() ? tempo.get() : null);
 		return shiftMasterDto;

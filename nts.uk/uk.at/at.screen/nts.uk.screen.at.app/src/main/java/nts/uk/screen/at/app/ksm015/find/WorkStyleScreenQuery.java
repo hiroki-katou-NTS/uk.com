@@ -33,7 +33,7 @@ public class WorkStyleScreenQuery {
 		//TODO 取り込みコード追加
 		ShiftMaster shiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(dto.getShiftMasterCode()), shiftMasterDisInfor, dto.getWorkTypeCode(), dto.getWorkTimeCode(), Optional.of(new ShiftMasterImportCode(dto.getImportCode())));
 		WorkInformation.Require require = new WorkStyleScreenQueryImpl(workTypeRepository);
-		Integer workStyle = shiftMaster.getWorkStyle(require).get().value;
+		Integer workStyle = shiftMaster.getWorkStyle(require, companyId).get().value;
 		return workStyle;
 	}
 

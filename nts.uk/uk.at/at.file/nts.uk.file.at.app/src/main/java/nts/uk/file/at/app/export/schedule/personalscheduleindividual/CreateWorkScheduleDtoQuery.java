@@ -122,7 +122,7 @@ public class CreateWorkScheduleDtoQuery {
         			return workTypeRepo.findByPK(companyId, workTypeCode.v());
         		}
 
-            });
+            }, companyId);
 
 
             // 勤務種類コード = 日別勤怠(Work)．勤務情報．勤務情報．勤務種類コード

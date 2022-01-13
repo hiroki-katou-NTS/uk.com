@@ -69,6 +69,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	/**
 	 * [C-1] 作る
 	 * @param require
+	 * @param companyId 会社ID
 	 * @param workInfo 勤務情報
 	 * @param calculationState 計算状態
 	 * @param backStraightAtr 直帰区分
@@ -78,6 +79,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	 */
 	public static WorkInfoOfDailyAttendance create(
 			Require require,
+			String companyId,
 			WorkInformation workInfo,
 			CalculationState calculationState,
 			NotUseAttribute backStraightAtr,
@@ -85,7 +87,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 			DayOfWeek dayOfWeek
 			) {
 
-		List<TimeZone> timeZoneList = workInfo.getWorkInfoAndTimeZone(require).map(x -> x.getTimeZones()).orElse(new ArrayList<>());
+		List<TimeZone> timeZoneList = workInfo.getWorkInfoAndTimeZone(require, companyId).map(x -> x.getTimeZones()).orElse(new ArrayList<>());
 		List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 		for ( int index = 0; index < timeZoneList.size(); index++) {
 			scheduleTimeSheets.add(
@@ -144,13 +146,13 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	 * @param require
 	 * @return
 	 */
-	public Optional<WorkStyle> getWorkStyle(Require require){
-		return this.recordInfo.getWorkStyle(require);
+	public Optional<WorkStyle> getWorkStyle(Require require, String companyId){
+		return this.recordInfo.getWorkStyle(require, companyId);
 	}
 
 	// 勤務情報と始業終業を変更する
-	public List<Integer> changeWorkSchedule(Require require, WorkInformation workInfo, boolean changeWorkType,
-			boolean changeWorkTime) {
+	public List<Integer> changeWorkSchedule(Require require, String companyId,
+			WorkInformation workInfo, boolean changeWorkType, boolean changeWorkTime) {
 		List<Integer> lstState = new ArrayList<>();
 		// 勤務情報を変更する
 		WorkTypeCode workTypeCode = this.recordInfo.getWorkTypeCode();
@@ -167,7 +169,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		this.recordInfo = new WorkInformation(workTypeCode, workTimeCode.orElse(null));
 
 		// 所定時間帯を取得する
-		Optional<WorkInfoAndTimeZone> timeZoneOpt = this.recordInfo.getWorkInfoAndTimeZone(require);
+		Optional<WorkInfoAndTimeZone> timeZoneOpt = this.recordInfo.getWorkInfoAndTimeZone(require, companyId);
 
 
 		// 始業終業に取得した所定時間帯をセットする
@@ -192,10 +194,11 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	/**
 	 * 出勤系か
 	 * @param require
+	 * @param companyId
 	 * @return
 	 */
-	public boolean isAttendanceRate(Require require) {
-		return this.recordInfo.isAttendanceRate(require);
+	public boolean isAttendanceRate(Require require, String companyId) {
+		return this.recordInfo.isAttendanceRate(require, companyId);
 	}
 
 	public static interface Require extends WorkInformation.Require {

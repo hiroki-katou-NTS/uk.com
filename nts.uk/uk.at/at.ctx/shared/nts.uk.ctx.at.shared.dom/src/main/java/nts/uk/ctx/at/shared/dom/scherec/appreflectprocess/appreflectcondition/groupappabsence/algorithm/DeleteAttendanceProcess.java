@@ -15,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author thanh_nx
@@ -24,8 +23,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 public class DeleteAttendanceProcess {
 
-	public static DailyAfterAppReflectResult process(Require require, Optional<WorkTypeCode> workTypeCode,
-			DailyRecordOfApplication dailyApp) {
+	public static DailyAfterAppReflectResult process(Require require, String companyId,
+			Optional<WorkTypeCode> workTypeCode, DailyRecordOfApplication dailyApp) {
 
 		List<Integer> itemId = new ArrayList<>();
 		if (!workTypeCode.isPresent()) {
@@ -33,7 +32,7 @@ public class DeleteAttendanceProcess {
 		}
 
 		// 1日半日出勤・1日休日系の判定（休出判定あり）
-		Optional<WorkType> workType = require.workType(AppContexts.user().companyId(), workTypeCode.get());
+		Optional<WorkType> workType = require.workType(companyId, workTypeCode.get());
 		if (!workType.isPresent())
 			return new DailyAfterAppReflectResult(dailyApp, itemId);
 		AttendanceDayAttr dayAttr = workType.get().chechAttendanceDay();

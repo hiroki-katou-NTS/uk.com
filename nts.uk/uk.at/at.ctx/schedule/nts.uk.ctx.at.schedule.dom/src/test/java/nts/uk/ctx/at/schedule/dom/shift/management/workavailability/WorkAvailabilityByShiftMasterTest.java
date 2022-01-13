@@ -60,17 +60,17 @@ public class WorkAvailabilityByShiftMasterTest {
 				val shiftMasterCodes = (List<ShiftMasterCode>) any;
 				
 				require.getShiftMaster(shiftMasterCodes);
-				result= Arrays.asList(shiftMaster1, shiftMaster2);
+				result = Arrays.asList(shiftMaster1, shiftMaster2);
 				
-				shiftMaster1.isAttendanceRate(require);
+				shiftMaster1.isAttendanceRate((WorkInformation.Require)any, anyString);
 				result = true;
 				
-				shiftMaster2.isAttendanceRate(require);
+				shiftMaster2.isAttendanceRate((WorkInformation.Require)any, anyString);
 				result = true;
 			}
 		};
 		
-		assertThat(shiftExp.isHolidayAvailability(require)).isFalse();
+		assertThat(shiftExp.isHolidayAvailability(require, "cid")).isFalse();
 	}
 	
 	/**
@@ -91,15 +91,15 @@ public class WorkAvailabilityByShiftMasterTest {
 				require.getShiftMaster(shiftMasterCodes);
 				result= Arrays.asList(shiftMaster1, shiftMaster2);
 				
-				shiftMaster1.isAttendanceRate(require);
+				shiftMaster1.isAttendanceRate((WorkInformation.Require)any, anyString);
 				result = true;
 				
-				shiftMaster2.isAttendanceRate(require);
+				shiftMaster2.isAttendanceRate((WorkInformation.Require)any, anyString);
 				result = false;
 			}
 		};
 		
-		assertThat(shiftExp.isHolidayAvailability(require)).isTrue();
+		assertThat(shiftExp.isHolidayAvailability(require, "cid")).isTrue();
 	}
 	
 	/**
@@ -118,12 +118,12 @@ public class WorkAvailabilityByShiftMasterTest {
 				require.getShiftMaster((List<ShiftMasterCode>) any);
 				result= Arrays.asList(shiftMaster1, shiftMaster2);
 				
-				shiftMaster1.isAttendanceRate(require);
+				shiftMaster1.isAttendanceRate(require, anyString);
 				result = false;
 			}
 		};
 		
-		assertThat(shiftExp.isHolidayAvailability(require)).isTrue();
+		assertThat(shiftExp.isHolidayAvailability(require, "cid")).isTrue();
 	}
 	
 	@Test
@@ -140,7 +140,7 @@ public class WorkAvailabilityByShiftMasterTest {
             }
         };
         
-        boolean result = shiftExp.isMatchingWorkAvailability(require, workInformation, new ArrayList<>());
+        boolean result = shiftExp.isMatchingWorkAvailability(require, "cid", workInformation, new ArrayList<>());
         
         assertThat(result).isFalse();
 		
@@ -163,7 +163,7 @@ public class WorkAvailabilityByShiftMasterTest {
             }
         };
         
-        boolean result = shiftExp.isMatchingWorkAvailability(require, workInformation, new ArrayList<>());
+        boolean result = shiftExp.isMatchingWorkAvailability(require, "cid", workInformation, new ArrayList<>());
         
         assertThat(result).isFalse();
 	}
@@ -185,7 +185,7 @@ public class WorkAvailabilityByShiftMasterTest {
             }
         };
         
-        boolean result = shiftAvailability.isMatchingWorkAvailability(require, workInformation, new ArrayList<>());
+        boolean result = shiftAvailability.isMatchingWorkAvailability(require, "cid", workInformation, new ArrayList<>());
         
         assertThat(result).isTrue();
 	}

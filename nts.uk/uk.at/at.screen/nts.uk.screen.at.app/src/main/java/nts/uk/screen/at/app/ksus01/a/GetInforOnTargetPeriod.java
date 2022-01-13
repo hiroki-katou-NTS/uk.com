@@ -117,7 +117,7 @@ public class GetInforOnTargetPeriod {
 					currentStart.beforeOrEquals(desiredPeriodWork.end());
 					currentStart = currentStart.increase()) {
 				// 1.1: 取得する(require, 社員ID, 年月日): 希望提出状況
-				DesiredSubmissionStatus status = GetStatusSubmissionWishes.get(getStatusSubmissionWishesRequire, empId, currentStart);    
+				DesiredSubmissionStatus status = GetStatusSubmissionWishes.get(getStatusSubmissionWishesRequire, companyId, empId, currentStart);
 				DesiredSubmissionStatusByDate item = new DesiredSubmissionStatusByDate(currentStart.toString(), status.value);
 				listDesiredSubmissionStatusByDate.add(item);
 			}

@@ -140,12 +140,11 @@ public class WorkMonthlySetting extends AggregateRoot {
 
 	/**
 	 * [1] エラーチェックする
-	 *
-	 * @param require
-	 * @return
+	 * @param require Require
+	 * @param companyId 会社ID
 	 */
-	public void checkForErrors(WorkInformation.Require require) {
-		ErrorStatusWorkInfo errorStatusWorkInfo = this.workInformation.checkErrorCondition(require);
+	public void checkForErrors(WorkInformation.Require require, String companyId) {
+		ErrorStatusWorkInfo errorStatusWorkInfo = this.workInformation.checkErrorCondition(require, companyId);
 		switch (errorStatusWorkInfo){
 			case WORKTYPE_WAS_DELETE:
 				throw new BusinessException("Msg_1608");

@@ -59,8 +59,8 @@ public class MonthlyPatternRegisterCommandHandler extends CommandHandler<Monthly
                 workTimeSettingService, workMonthlySettingRepository);
         // 登録する(Require, 月間パターンの勤務情報, boolean)
         command.getWorkMonthlySetting().forEach((item) -> {
-            Optional<AtomTask> persist = WorkMonthlySettingService.register(require, command.toDomain(item),
-                    command.isOverWrite());
+            Optional<AtomTask> persist = WorkMonthlySettingService.register(require,
+            		AppContexts.user().companyId(), command.toDomain(item), command.isOverWrite());
             persist.ifPresent(atomTask -> transaction.execute(atomTask::run));
         }
         );

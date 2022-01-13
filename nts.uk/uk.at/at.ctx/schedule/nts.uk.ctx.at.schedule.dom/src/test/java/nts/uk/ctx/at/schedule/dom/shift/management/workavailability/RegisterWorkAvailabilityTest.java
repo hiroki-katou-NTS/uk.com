@@ -80,7 +80,7 @@ public class RegisterWorkAvailabilityTest {
 		};
 
 		NtsAssert.businessException("Msg_2049",
-				() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays));
+				() -> RegisterWorkAvailability.register(require, "cid", "sid", this.datePeriod, workOneDays));
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class RegisterWorkAvailabilityTest {
 		};
 
 		NtsAssert.businessException("Msg_2052",
-				() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays));
+				() -> RegisterWorkAvailability.register(require, "cid", "sid", this.datePeriod, workOneDays));
 	}
 	
 	/**
@@ -129,7 +129,7 @@ public class RegisterWorkAvailabilityTest {
 		};
 		
 		NtsAssert.businessException("Msg_2050"
-				,	() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, Collections.emptyList()));
+				,	() -> RegisterWorkAvailability.register(require, "cid", "sid", this.datePeriod, Collections.emptyList()));
 	}
 	
 	/**
@@ -162,7 +162,7 @@ public class RegisterWorkAvailabilityTest {
 					,	Helper.createWorkAvaiOfOneDay(workRequire, GeneralDate.ymd(2021, 02, 17), shiftMasterCode));
 		
 		NtsAssert.businessException("Msg_2050"
-				,	() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays));
+				,	() -> RegisterWorkAvailability.register(require, "cid", "sid", this.datePeriod, workOneDays));
 	}
 	
 	/**
@@ -194,7 +194,7 @@ public class RegisterWorkAvailabilityTest {
 				));
 		
 		NtsAssert.atomTask(
-				() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays),
+				() -> RegisterWorkAvailability.register(require, "cid", "sid", this.datePeriod, workOneDays),
 				any -> require.deleteAllWorkAvailabilityOfOneDay(any.get(), any.get()),
 				any -> require.insertAllWorkAvailabilityOfOneDay(any.get()));
 	}
@@ -222,13 +222,13 @@ public class RegisterWorkAvailabilityTest {
 				setting.isOverDeadline(targetDate);
 				result = false;
 				
-				setting.isOverHolidayMaxDays(require, workOneDays);
+				setting.isOverHolidayMaxDays(require, anyString, workOneDays);
 				result = true;
 			}
 		};
 		
 		NtsAssert.businessException("Msg_2051",
-				() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays));
+				() -> RegisterWorkAvailability.register(require, "cid", "sid", this.datePeriod, workOneDays));
 	}
 	/**
 	 * 締め日: 2021/02/15
@@ -253,13 +253,13 @@ public class RegisterWorkAvailabilityTest {
 				setting.isOverDeadline(targetDate);
 				result = false;
 				
-				setting.isOverHolidayMaxDays(require, workOneDays);
+				setting.isOverHolidayMaxDays(require, anyString, workOneDays);
 				result = false;
 			}
 		};
 		
 		NtsAssert.atomTask(
-				() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays), 
+				() -> RegisterWorkAvailability.register(require, "cid", "sid", this.datePeriod, workOneDays), 
 				any -> require.deleteAllWorkAvailabilityOfOneDay(any.get(), any.get()),
 				any -> require.insertAllWorkAvailabilityOfOneDay(any.get()));
 	}
@@ -295,7 +295,7 @@ public class RegisterWorkAvailabilityTest {
 			}
 		};
 		
-		AtomTask persist = RegisterWorkAvailability.register(require, "sid", datePeriod, workOneDays);
+		AtomTask persist = RegisterWorkAvailability.register(require, "cid", "sid", datePeriod, workOneDays);
 
 		new Verifications() {{
 			require.deleteAllWorkAvailabilityOfOneDay("sid", targetRegister);

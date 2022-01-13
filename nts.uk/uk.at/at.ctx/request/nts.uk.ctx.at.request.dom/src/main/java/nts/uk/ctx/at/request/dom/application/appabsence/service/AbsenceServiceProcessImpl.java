@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -54,7 +53,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInf
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.AnnualHolidayManagementAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaGrantRemainingImport;
@@ -1050,7 +1048,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 //				return workInformation.getPredeterminedTimezone(companyID, workTimeCode, workTypeCode, null);
 			    AbsenceServiceRequireImpl require = new AbsenceServiceRequireImpl(workTypeRepository, workTimeSettingRepository,
 			            basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineRepo);
-			    Optional<WorkInfoAndTimeZone> workInfoOpt =  workInformation.getWorkInfoAndTimeZone(require);
+			    Optional<WorkInfoAndTimeZone> workInfoOpt =  workInformation.getWorkInfoAndTimeZone(require, companyID);
 
 			    return workInfoOpt.isPresent() ? workInfoOpt.get().getTimeZones() : Collections.emptyList();
 			}

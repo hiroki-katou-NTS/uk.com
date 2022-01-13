@@ -101,14 +101,14 @@ public class CorrectionAfterChangeWorkInfo {
 		/** 日別勤怠の何が変更されたか.勤務情報=true　＆＆　日別勤怠の何が変更されたか。勤務予定から移送した値も補正する＝True */
 		if (changeDailyAttendance.workInfo && changeDailyAttendance.correctValCopyFromSche) {
 			/** 始業終業時刻の補正 */
-			domainDaily.setWorkInformation(CorrectStartEndWorkForWorkInfo.correctStartEndWork(require, domainDaily.getWorkInformation(), domainDaily.getEditState()));
+			domainDaily.setWorkInformation(CorrectStartEndWorkForWorkInfo.correctStartEndWork(require, companyId, domainDaily.getWorkInformation(), domainDaily.getEditState()));
 		}
 		
 		//時刻の補正
 		timeCorrectionProcess.process(companyId, workCondition, domainDaily, changeDailyAttendance.getClassification());
 		
 		/** 勤務回数の補正 */
-		AttendanceTimesCorrector.correct(require, domainDaily);
+		AttendanceTimesCorrector.correct(require, companyId, domainDaily);
 		
 		// fix 111738
 		// remove TODO: ドメインモデル「予実反映」を取得 - mock new domain

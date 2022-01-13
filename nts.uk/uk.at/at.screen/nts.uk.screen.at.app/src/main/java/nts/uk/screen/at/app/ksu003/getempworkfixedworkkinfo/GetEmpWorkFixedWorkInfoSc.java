@@ -74,6 +74,7 @@ public class GetEmpWorkFixedWorkInfoSc {
 		EmpWorkFixedWorkInfoDto infoDto = null;
 		EmployeeWorkScheduleDto workScheduleDto = null; // 社員勤務予定
 		FixedWorkInforDto fixedWorkInforDto = null; // 勤務固定情報
+		String companyId = AppContexts.user().companyId();
 		// 1 .create
 		WorkInformation workInformation = new WorkInformation(information.get(0).getWorkTypeCode(), information.get(0).getWorkTimeCode());
 		
@@ -82,7 +83,7 @@ public class GetEmpWorkFixedWorkInfoSc {
 				workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
 		
 		// 3 .勤務情報のエラー状態 <> 正常
-		ErrorStatusWorkInfo errorStatusWorkInfo = workInformation.checkErrorCondition(require);
+		ErrorStatusWorkInfo errorStatusWorkInfo = workInformation.checkErrorCondition(require, AppContexts.user().companyId());
 		String messErr = "";
 		switch (errorStatusWorkInfo) {
 		case WORKTIME_ARE_REQUIRE_NOT_SET:
@@ -118,7 +119,7 @@ public class GetEmpWorkFixedWorkInfoSc {
 		}
 		
 		// 4 .勤務情報と補正済み所定時間帯を取得する(Require)
-		Optional<WorkInfoAndTimeZone> timZone = workInformation.getWorkInfoAndTimeZone(require);
+		Optional<WorkInfoAndTimeZone> timZone = workInformation.getWorkInfoAndTimeZone(require, companyId);
 		
 		// 5 .
 		FixedWorkInformationDto fixedWorkInformationDto = fixedWorkInformation.getFixedWorkInfo(information);

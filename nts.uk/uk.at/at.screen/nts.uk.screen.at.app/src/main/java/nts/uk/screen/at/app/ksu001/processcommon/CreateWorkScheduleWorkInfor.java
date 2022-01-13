@@ -157,7 +157,7 @@ public class CreateWorkScheduleWorkInfor {
 				WorkInformation.Require require2 = new RequireWorkInforImpl(workTypeRepo,workTimeSettingRepo, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
 				Optional<WorkStyle> workStyle = Optional.empty();
 				if (workInformation.getWorkTypeCode() != null) {
-					workStyle = workInformation.getWorkStyle(require2); // workHolidayCls
+					workStyle = workInformation.getWorkStyle(require2, companyId); // workHolidayCls
 				}
 
 				String workTypeCode = workInformation.getWorkTypeCode() == null  ? null : workInformation.getWorkTypeCode().toString();

@@ -53,11 +53,11 @@ public class WorkInfoOfDailyAttendanceTest {
 		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getWorkInfoOfDailyAttendanceDefault();
 		new MockUp<WorkInformation>() {
 			@Mock
-			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require) {
+			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require, String companyId) {
 				return Optional.empty();
 			}
 		};
-		Optional<WorkStyle> workstyle = workInfoOfDailyAttendance.getWorkStyle(require);
+		Optional<WorkStyle> workstyle = workInfoOfDailyAttendance.getWorkStyle(require, "cid");
 		assertThat(workstyle.isPresent()).isFalse();
 	}
 	
@@ -69,11 +69,11 @@ public class WorkInfoOfDailyAttendanceTest {
 		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getWorkInfoOfDailyAttendanceDefault();
 		new MockUp<WorkInformation>() {
 			@Mock
-			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require) {
+			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require, String companyId) {
 				return Optional.of(WorkStyle.ONE_DAY_REST);
 			}
 		};
-		Optional<WorkStyle> workstyle = workInfoOfDailyAttendance.getWorkStyle(require);
+		Optional<WorkStyle> workstyle = workInfoOfDailyAttendance.getWorkStyle(require, "cid");
 		assertThat(workstyle.get().equals(WorkStyle.ONE_DAY_REST)).isTrue();
 	}
 	
@@ -85,11 +85,11 @@ public class WorkInfoOfDailyAttendanceTest {
 		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getWorkInfoOfDailyAttendanceDefault();
 		new MockUp<WorkInformation>() {
 			@Mock
-			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require) {
+			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require, String companyId) {
 				return Optional.of(WorkStyle.MORNING_WORK);
 			}
 		};
-		Optional<WorkStyle> workstyle = workInfoOfDailyAttendance.getWorkStyle(require);
+		Optional<WorkStyle> workstyle = workInfoOfDailyAttendance.getWorkStyle(require, "cid");
 		assertThat(workstyle.get().equals(WorkStyle.MORNING_WORK)).isTrue();
 	}
 	
@@ -101,11 +101,11 @@ public class WorkInfoOfDailyAttendanceTest {
 		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getWorkInfoOfDailyAttendanceDefault();
 		new MockUp<WorkInformation>() {
 			@Mock
-			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require) {
+			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require, String companyId) {
 				return Optional.of(WorkStyle.AFTERNOON_WORK);
 			}
 		};
-		Optional<WorkStyle> workstyle = workInfoOfDailyAttendance.getWorkStyle(require);
+		Optional<WorkStyle> workstyle = workInfoOfDailyAttendance.getWorkStyle(require, "cid");
 		assertThat(workstyle.get().equals(WorkStyle.AFTERNOON_WORK)).isTrue();
 	}
 	
@@ -117,11 +117,11 @@ public class WorkInfoOfDailyAttendanceTest {
 		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getWorkInfoOfDailyAttendanceDefault();
 		new MockUp<WorkInformation>() {
 			@Mock
-			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require) {
+			public Optional<WorkStyle> getWorkStyle(WorkInformation.Require require, String companyId) {
 				return Optional.of(WorkStyle.ONE_DAY_WORK);
 			}
 		};
-		Optional<WorkStyle> workstyle = workInfoOfDailyAttendance.getWorkStyle(require);
+		Optional<WorkStyle> workstyle = workInfoOfDailyAttendance.getWorkStyle(require, "cid");
 		assertThat(workstyle.get().equals(WorkStyle.ONE_DAY_WORK)).isTrue();
 	}
 	
@@ -137,12 +137,13 @@ public class WorkInfoOfDailyAttendanceTest {
 		// Arrange
 		val WorkInfoAndTimeZone = WorkInfoOfDailyAttendanceHelper.createWorkInfoAndTimeZone(Collections.emptyList());
 		new Expectations() { {
-			workInfo.getWorkInfoAndTimeZone(require);
+			workInfo.getWorkInfoAndTimeZone(require, anyString);
 			result = Optional.of(WorkInfoAndTimeZone);
 		}};
 		
 		// Action
-		WorkInfoOfDailyAttendance target = WorkInfoOfDailyAttendance.create(require, 
+		WorkInfoOfDailyAttendance target = WorkInfoOfDailyAttendance.create(require,
+																		"cid",
 																		workInfo, 
 																		calculationState, 
 																		backStraightAtr, 
@@ -175,12 +176,13 @@ public class WorkInfoOfDailyAttendanceTest {
 		val WorkInfoAndTimeZone = WorkInfoOfDailyAttendanceHelper.createWorkInfoAndTimeZone(listTimeZone);
 		
 		new Expectations(workInfo) {{
-			workInfo.getWorkInfoAndTimeZone(require);
+			workInfo.getWorkInfoAndTimeZone(require, anyString);
 			result = Optional.of(WorkInfoAndTimeZone);
 		}};
 		
 		// Action
-		WorkInfoOfDailyAttendance target = WorkInfoOfDailyAttendance.create(require, 
+		WorkInfoOfDailyAttendance target = WorkInfoOfDailyAttendance.create(require,
+																		"cid",
 																		workInfo, 
 																		calculationState, 
 																		backStraightAtr, 
@@ -215,12 +217,12 @@ public class WorkInfoOfDailyAttendanceTest {
 		val workInfoOfDailyAtt = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(workInfo);
 		new Expectations(workInfo) {
 			{
-				workInfo.isAttendanceRate(require);
+				workInfo.isAttendanceRate(require, anyString);
 				result = false;
 			}
 		};
 				
-		assertThat(workInfoOfDailyAtt.isAttendanceRate(require)).isFalse();
+		assertThat(workInfoOfDailyAtt.isAttendanceRate(require, "cid")).isFalse();
 		
 	}
 	
@@ -235,12 +237,12 @@ public class WorkInfoOfDailyAttendanceTest {
 		val workInfoOfDailyAtt = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(workInfo);
 		new Expectations(workInfo) {
 			{
-				workInfo.isAttendanceRate(require);
+				workInfo.isAttendanceRate(require, anyString);
 				result = true;
 			}
 		};
 				
-		assertThat(workInfoOfDailyAtt.isAttendanceRate(require)).isTrue();
+		assertThat(workInfoOfDailyAtt.isAttendanceRate(require, "cid")).isTrue();
 		
 	}
 	
@@ -260,15 +262,15 @@ public class WorkInfoOfDailyAttendanceTest {
 		
 		WorkInfoOfDailyAttendance workInfoDomain = create("001", "001");//前勤務情報と始業終業
 		WorkInformation workInfo = new WorkInformation("002", //勤務種類
-																								"003");//就業時間帯
+														"003");//就業時間帯
 		//①勤務種類を変更する＝true　→勤務情報の勤務種類を変更する
-		workInfoDomain.changeWorkSchedule(require, workInfo, true, false);
+		workInfoDomain.changeWorkSchedule(require, "cid", workInfo, true, false);
 		assertThat(workInfoDomain.getRecordInfo().getWorkTypeCode().v()).isEqualTo("002");
 		assertThat(workInfoDomain.getRecordInfo().getWorkTimeCode().v()).isEqualTo("001");
 		
 		// ①勤務種類を変更する＝true →勤務情報の勤務種類を変更する
 		workInfoDomain = create("001", "001");// 前勤務情報と始業終業
-		workInfoDomain.changeWorkSchedule(require, workInfo, false, true);
+		workInfoDomain.changeWorkSchedule(require, "cid", workInfo, false, true);
 		assertThat(workInfoDomain.getRecordInfo().getWorkTypeCode().v()).isEqualTo("001");
 		assertThat(workInfoDomain.getRecordInfo().getWorkTimeCode().v()).isEqualTo("003");
 		
@@ -296,14 +298,14 @@ public class WorkInfoOfDailyAttendanceTest {
 		
 		new Expectations() {
 			{
-				workInfoDomainMock.getWorkInfoAndTimeZone(require);
+				workInfoDomainMock.getWorkInfoAndTimeZone(require, anyString);
 				result = Optional.of(new WorkInfoAndTimeZone(new WorkType(), Optional.empty(),
 						Arrays.asList(new TimeZone(new TimeWithDayAttr(100), new TimeWithDayAttr(200)), //No1
 												new TimeZone(new TimeWithDayAttr(300), new TimeWithDayAttr(400)))));//No2
 			}
 		};
 		
-		workInfoDomain.changeWorkSchedule(require, workInfo, true, true);
+		workInfoDomain.changeWorkSchedule(require, "cid", workInfo, true, true);
 		
 		assertThat(workInfoDomain.getScheduleTimeSheets())
 				.extracting(x -> x.getWorkNo().v(), x -> x.getAttendance().v(), x -> x.getLeaveWork().v())
