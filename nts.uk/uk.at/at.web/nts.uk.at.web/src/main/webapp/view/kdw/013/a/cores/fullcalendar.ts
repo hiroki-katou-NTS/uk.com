@@ -3966,10 +3966,11 @@ module nts.uk.ui.at.kdw013.calendar {
                             if (selecteds.length) {
                                 dataEvent.delete(true);
                                 let starts = selecteds.map(({ start }) => formatDate(start));
+                                let ends = selecteds.map(({ end }) => formatDate(end));
 
                                 if (ko.isObservable(vm.params.events)) {
                                     vm.params.events.remove((e: EventRaw) => {
-                                        let canRemove = e.editable && starts.indexOf(formatDate(e.start)) !== -1;
+                                        let canRemove = e.editable && starts.indexOf(formatDate(e.start)) !== -1 && ends.indexOf(formatDate(e.end)) !== -1;
                                         
                                         if (canRemove) {
                                             if (e.extendedProps.isTimeBreak) {
