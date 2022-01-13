@@ -211,24 +211,34 @@ public class OvertimeWorkMultipleTimes {
         }
 
         workingHours.forEach(time -> {
-            // check break time at start
-            Optional<TimeSpanForCalc> workTimeNearStart = timeline.stream()
-                    .filter(ot -> time.getTimeZone().getStartTime().lessThanOrEqualTo(ot.getStart())
-                            && time.getTimeZone().getEndTime().greaterThan(ot.getEnd()))
-                    .findFirst();
-            if (workTimeNearStart.isPresent()) {
-                if (time.getTimeZone().getStartTime().lessThan(workTimeNearStart.get().getStart()))
-                    breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), time.getTimeZone().getStartTime(), workTimeNearStart.get().getStart()));
-            }
-            // check break time at end
-            Optional<TimeSpanForCalc> workTimeNearEnd = timeline.stream()
-                    .filter(ot -> time.getTimeZone().getStartTime().lessThan(ot.getStart())
-                            && time.getTimeZone().getEndTime().greaterThanOrEqualTo(ot.getEnd()))
-                    .reduce((first, second) -> second);
-            if (workTimeNearEnd.isPresent()) {
-                if (time.getTimeZone().getEndTime().greaterThan(workTimeNearEnd.get().getEnd()))
-                    breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), workTimeNearEnd.get().getEnd(), time.getTimeZone().getEndTime()));
-            }
+            workingHoursPredetemine.forEach(predTime -> {
+                if (time.getWorkNo().equals(predTime.getWorkNo())) {
+                    if (time.getTimeZone().getStartTime().lessThan(predTime.getTimeZone().getStartTime())) {
+                        Optional<TimeSpanForCalc> overtime = timeline.stream()
+                                .filter(ot -> time.getTimeZone().getStartTime().lessThanOrEqualTo(ot.getStart())
+                                        && time.getTimeZone().getEndTime().greaterThan(ot.getEnd()))
+                                .findFirst();
+                        if (overtime.isPresent()) {
+                            if (time.getTimeZone().getStartTime().lessThan(overtime.get().getStart()))
+                                breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), time.getTimeZone().getStartTime(), overtime.get().getStart()));
+                        } else {
+                            breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), time.getTimeZone().getStartTime(), predTime.getTimeZone().getStartTime()));
+                        }
+                    }
+                    if (time.getTimeZone().getEndTime().greaterThan(predTime.getTimeZone().getEndTime())) {
+                        Optional<TimeSpanForCalc> overtime = timeline.stream()
+                                .filter(ot -> time.getTimeZone().getStartTime().lessThan(ot.getStart())
+                                        && time.getTimeZone().getEndTime().greaterThanOrEqualTo(ot.getEnd()))
+                                .reduce((first, second) -> second);
+                        if (overtime.isPresent()) {
+                            if (time.getTimeZone().getEndTime().greaterThan(overtime.get().getEnd()))
+                                breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), overtime.get().getEnd(), time.getTimeZone().getEndTime()));
+                        } else {
+                            breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), predTime.getTimeZone().getEndTime(), time.getTimeZone().getEndTime()));
+                        }
+                    }
+                }
+            });
         });
 
         breakTimes.sort(Comparator.comparing(BreakTimeSheet::getStartTime));
