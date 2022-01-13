@@ -92,7 +92,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public application: Application = super.createApplicationInsert(AppType.EARLY_LEAVE_CANCEL_APPLICATION);
     public infoOutPut: IInfoOutput = initInfoOutput();
     public paramsAComponent: IParams;
-    public cancelAtr: number;
+    public cancelAtr: number = 0;
     public check: ICheck = {
         cbCancelLate: {
             value: null
@@ -262,13 +262,10 @@ export class KafS04AComponent extends KafS00ShrComponent {
         }
     }
 
-    get showCheckBox() {
+    public get showCheckBox() {
         const vm = this;
-        if (vm.application.prePostAtr == 1 && (vm.cancelAtr == 1 || vm.cancelAtr == 2)) {
-            return true;
-        } else {
-            return false;
-        }
+
+        return vm.application.prePostAtr == 1 && (vm.cancelAtr == 1 || vm.cancelAtr == 2);
     }
 
     public initComponentP1() {

@@ -241,17 +241,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			}
 
 			if (oldData.get().kscdtSchTime != null) {
-				// List<KscdtSchOvertimeWork> overtimeWorks
-				oldData.get().kscdtSchTime.overtimeWorks = removeInsertData(oldData.get().kscdtSchTime.overtimeWorks,
-						newData.kscdtSchTime.overtimeWorks, (x, y) -> {
-							return y.pk.frameNo == x.pk.frameNo;
-						});
-
-				// List<KscdtSchHolidayWork> holidayWorks
-				oldData.get().kscdtSchTime.holidayWorks = removeInsertData(oldData.get().kscdtSchTime.holidayWorks,
-						newData.kscdtSchTime.holidayWorks, (x, y) -> {
-							return y.pk.frameNo == x.pk.frameNo;
-						});
 
 				// List<KscdtSchBonusPay> bonusPays
 				if (!oldData.get().kscdtSchTime.bonusPays.isEmpty()) {
@@ -748,6 +737,18 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			} else {
 				oldData.get().kscdtSchGoingOutTs = newData.kscdtSchGoingOutTs;
 			}
+			
+			// List<KscdtSchOvertimeWork> overtimeWorks
+			oldData.get().kscdtSchTime.overtimeWorks = removeInsertData(oldData.get().kscdtSchTime.overtimeWorks,
+					newData.kscdtSchTime.overtimeWorks, (x, y) -> {
+						return y.pk.frameNo == x.pk.frameNo;
+					});
+
+			// List<KscdtSchHolidayWork> holidayWorks
+			oldData.get().kscdtSchTime.holidayWorks = removeInsertData(oldData.get().kscdtSchTime.holidayWorks,
+					newData.kscdtSchTime.holidayWorks, (x, y) -> {
+						return y.pk.frameNo == x.pk.frameNo;
+					});
 			this.commandProxy().update(oldData.get());
 		}
 	}

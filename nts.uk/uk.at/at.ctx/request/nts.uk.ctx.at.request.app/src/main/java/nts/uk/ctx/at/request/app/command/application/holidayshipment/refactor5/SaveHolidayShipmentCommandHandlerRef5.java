@@ -112,7 +112,8 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 				command.existAbs() ? command.abs.leaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
 				command.isCheckFlag(), 
 				existFlag, 
-				command.getApplicationForHoliday().getWorkTypeList().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+				command.getApplicationForHoliday().getWorkTypeList().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				EnumAdaptor.valueOf(command.getSubstituteManagement(), ManageDistinct.class));
 		
 		//振休振出申請（新規）登録処理 (Xử lý đăng ký application nghỉ bù làm bù (New))
 		//QA: http://192.168.50.4:3000/issues/113451 -> done

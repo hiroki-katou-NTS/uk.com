@@ -173,26 +173,26 @@ public class GetDataWhenChangePage {
 			listShiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceIdUse(1, param.workplaceGroupId );
 		}
 
-		ShiftPaletteOrg shiftPalletsOrg = listShiftPalletsOrg.stream().filter(item -> item.getPage() == param.pageNumberCom).findFirst().get();
+		Optional<ShiftPaletteOrg> shiftPalletsOrg = listShiftPalletsOrg.stream().filter(item -> item.getPage() == param.pageNumberCom).findFirst();
 
 
 		PageInfo pageInfo = null;
 		TargetShiftPalette targetShiftPalette = null;
 
-		if (shiftPalletsOrg == null) {
+		if (!shiftPalletsOrg.isPresent()) {
 			return new GetShiftPalChangePageResult(pageInfo, targetShiftPalette, new ArrayList<>(), new ArrayList<>());
 		}
 
 		List<ShiftPalletsOrgDto> listShiftPalletOrgDto = new ArrayList<>();
-		pageInfo = new PageInfo(shiftPalletsOrg.getPage(), shiftPalletsOrg.getShiftPallet().getDisplayInfor().getShiftPalletName().v());
-		ShiftPalletsOrgDto shiftPalletsOrgDto = new ShiftPalletsOrgDto(shiftPalletsOrg, param.getWorkplaceId());
+		pageInfo = new PageInfo(shiftPalletsOrg.get().getPage(), shiftPalletsOrg.get().getShiftPallet().getDisplayInfor().getShiftPalletName().v());
+		ShiftPalletsOrgDto shiftPalletsOrgDto = new ShiftPalletsOrgDto(shiftPalletsOrg.get(), param.getWorkplaceId());
 		listShiftPalletOrgDto.add(shiftPalletsOrgDto);
 
 
 		targetShiftPalette = new TargetShiftPalette(param.pageNumberOrg, null, listShiftPalletOrgDto);
 
 		// get List ShiftMasterCode
-		List<ShiftPaletteCombinations> combinations = shiftPalletsOrg.getShiftPallet().getCombinations();
+		List<ShiftPaletteCombinations> combinations = shiftPalletsOrg.get().getShiftPallet().getCombinations();
 		List<String> listShiftMasterCodeOfPageSelectd = getListShiftMasterCode(combinations).stream().collect(Collectors.toList());
 
 		return new GetShiftPalChangePageResult(pageInfo, targetShiftPalette, new ArrayList<>(), listShiftMasterCodeOfPageSelectd);

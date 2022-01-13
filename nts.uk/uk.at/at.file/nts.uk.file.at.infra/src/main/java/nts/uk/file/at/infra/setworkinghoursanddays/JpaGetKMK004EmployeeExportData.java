@@ -15,6 +15,7 @@ import javax.persistence.Query;
 import lombok.val;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
@@ -43,7 +44,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			+ " s.pk.cid = :cid AND s.pk.ym >= :minYm AND s.pk.ym < :maxYm"
 			+ " ORDER BY s.pk.ym";
 
-	private static final String GET_EMPLOYEE = " SELECT " + " ROW_NUMBER() OVER( "
+	private static final String GET_EMPLOYEE_SQLSERVER = " SELECT " + " ROW_NUMBER() OVER( "
 			+ " 	PARTITION BY BSYMT_SYAIN.SCD "
 			+ " 	ORDER BY BSYMT_SYAIN.SCD ASC) AS ROW_NUMBER, " 
 			+ " BSYMT_SYAIN.SID, "
@@ -94,6 +95,58 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			+ " WHERE  BSYMT_SYAIN.CID = ? " 
 			+ " AND  BSYMT_SYAIN.DEL_STATUS_ATR = 0 " 
 			+ " ORDER BY BSYMT_SYAIN.SCD ASC ";
+	
+	private static final String GET_EMPLOYEE_POSTGRE = " SELECT " + " ROW_NUMBER() OVER( "
+			+ " 	PARTITION BY BSYMT_SYAIN.SCD "
+			+ " 	ORDER BY BSYMT_SYAIN.SCD ASC) AS ROW_NUMBER, " 
+			+ " BSYMT_SYAIN.SID, "
+			+ " BSYMT_SYAIN.SCD, " 
+			+ " BPSMT_PERSON.BUSINESS_NAME, "
+			+ " KSHMT_LEGALTIME_D_REG_SYA.DAILY_TIME, " 
+			+ " KSHMT_LEGALTIME_D_REG_SYA.WEEKLY_TIME, "
+			+ " KRCMT_CALC_M_SET_REG_SYA.INCLUDE_EXTRA_AGGR, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_LEGAL_AGGR ELSE NULL END) AS INCLUDE_LEGAL_AGGR, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_HOLIDAY_AGGR ELSE NULL END) AS INCLUDE_HOLIDAY_AGGR, "
+			+ " KRCMT_CALC_M_SET_REG_SYA.INCLUDE_EXTRA_OT, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_LEGAL_OT ELSE NULL END) AS INCLUDE_LEGAL_OT, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_REG_SYA.INCLUDE_HOLIDAY_OT ELSE NULL END) AS INCLUDE_HOLIDAY_OT, "
+			+ " KRCMT_CALC_M_SET_FLE_COM.WITHIN_TIME_USE, " 
+			+ " KRCMT_CALC_M_SET_FLE_SYA.AGGR_METHOD, "
+			+ " KRCMT_CALC_M_SET_FLE_SYA.SETTLE_PERIOD_MON, "
+			+ " KRCMT_CALC_M_SET_FLE_SYA.SETTLE_PERIOD, "
+			+ " KRCMT_CALC_M_SET_FLE_SYA.INCLUDE_HDWK, "
+			+ " KRCMT_CALC_M_SET_FLE_SYA.LEGAL_AGGR_SET, "
+			+ " KRCMT_CALC_M_SET_FLE_SYA.START_MONTH, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_FLE_SYA.AGGR_METHOD = '0' THEN KRCMT_CALC_M_SET_FLE_SYA.INCLUDE_OT ELSE NULL END) AS INCLUDE_OT, "
+			+ " KRCMT_CALC_M_SET_FLE_SYA.INSUFFIC_SET, " 
+			+ " KSHMT_LEGALTIME_D_DEF_SYA.DAILY_TIME AS TRANS_DAILY_TIME, "
+			+ " KSHMT_LEGALTIME_D_DEF_SYA.WEEKLY_TIME AS TRANS_WEEKLY_TIME, "
+			+ " KRCMT_CALC_M_SET_DEF_SYA.STR_MONTH, "
+			+ " KRCMT_CALC_M_SET_DEF_SYA.PERIOD, " 
+			+ " KRCMT_CALC_M_SET_DEF_SYA.REPEAT_ATR, "
+			+ " KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_EXTRA_AGGR AS DEFOR_INCLUDE_EXTRA_AGGR, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_LEGAL_AGGR ELSE NULl END) AS DEFOR_INCLUDE_LEGAL_AGGR, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_HOLIDAY_AGGR ELSE NULl END) AS DEFOR_INCLUDE_HOLIDAY_AGGR, "
+			+ " KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_EXTRA_OT AS DEFOR_INCLUDE_EXTRA_OT, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_LEGAL_OT ELSE NULl END) AS DEFOR_INCLUDE_LEGAL_OT, "
+			+ " (CASE WHEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_DEF_SYA.INCLUDE_HOLIDAY_OT ELSE NULl END) AS DEFOR_INCLUDE_HOLIDAY_OT "
+			+ " FROM BSYMT_SYAIN"
+			+ " LEFT JOIN KSHMT_LEGALTIME_D_DEF_SYA ON BSYMT_SYAIN.CID = KSHMT_LEGALTIME_D_DEF_SYA.CID "
+			+ "           AND BSYMT_SYAIN.SID = KSHMT_LEGALTIME_D_DEF_SYA.SID "
+			+ " LEFT JOIN KSHMT_LEGALTIME_D_REG_SYA ON BSYMT_SYAIN.CID = KSHMT_LEGALTIME_D_REG_SYA.CID "
+			+ "           AND BSYMT_SYAIN.SID = KSHMT_LEGALTIME_D_REG_SYA.SID "
+			+ " LEFT JOIN KRCMT_CALC_M_SET_DEF_SYA ON BSYMT_SYAIN.CID = KRCMT_CALC_M_SET_DEF_SYA.CID "
+			+ "           AND BSYMT_SYAIN.SID = KRCMT_CALC_M_SET_DEF_SYA.SID "
+			+ " LEFT JOIN KRCMT_CALC_M_SET_FLE_SYA ON BSYMT_SYAIN.CID = KRCMT_CALC_M_SET_FLE_SYA.CID "
+			+ "           AND BSYMT_SYAIN.SID = KRCMT_CALC_M_SET_FLE_SYA.SID "
+			+ " LEFT JOIN KRCMT_CALC_M_SET_REG_SYA ON BSYMT_SYAIN.CID = KRCMT_CALC_M_SET_REG_SYA.CID "
+			+ "           AND BSYMT_SYAIN.SID = KRCMT_CALC_M_SET_REG_SYA.SID "
+			+ " LEFT JOIN BPSMT_PERSON ON BSYMT_SYAIN.PID = BPSMT_PERSON.PID "
+			+ " LEFT JOIN KRCMT_CALC_M_SET_FLE_COM ON  "
+			+ "	BSYMT_SYAIN.CID = KRCMT_CALC_M_SET_FLE_COM.CID "
+			+ " WHERE  BSYMT_SYAIN.CID = ? " 
+			+ " AND BSYMT_SYAIN.DEL_STATUS_ATR = '0' " 
+			+ " ORDER BY BSYMT_SYAIN.SCD ASC ";
 
 	@Override
 	public List<MasterData> getEmployeeData(int startDate, int endDate) {
@@ -110,26 +163,57 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 				.setParameter("maxYm", endDate * 100 + month)
 				.getList();
 		
-		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYEE.toString())) {
-			stmt.setString(1, cid);
-			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
-			
-			result.forEach(i -> {
-				datas.addAll(buildEmployeeRow(i, legalTimes, startDate, endDate, month, startOfWeek));
-			});
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
+			try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYEE_SQLSERVER.toString())) {
+				stmt.setString(1, cid);
+				NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+				
+				result.forEach(i -> {
+					datas.addAll(buildEmployeeRow(i, legalTimes, startDate, endDate, month, startOfWeek));
+				});
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else if (this.database().is(DatabaseProduct.POSTGRESQL)) {
+			try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYEE_POSTGRE.toString())) {
+				stmt.setString(1, cid);
+				NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+				
+				result.forEach(i -> {
+					datas.addAll(buildEmployeeRow(i, legalTimes, startDate, endDate, month, startOfWeek));
+				});
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			throw new RuntimeException("not supported");
 		}
 		return datas;
+	}
+	
+	private Integer convertToPostgre(NtsResultRecord r, String name) {
+		if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
+			return r.getInt(name);
+		}
+		if (this.database().is(DatabaseProduct.POSTGRESQL)) {
+			Boolean b = r.getBoolean(name);
+			if (b == null) {
+				return null;
+			}
+			return b ? 1 : 0;
+		}
+		return null;
 	}
 
 	private List<MasterData> buildEmployeeRow(NtsResultRecord r, List<KshmtLegalTimeMSya> legals, int startDate,
 			int endDate, int month, String startOfWeek) {
 		List<MasterData> datas = new ArrayList<>();
 
-		Integer refPreTime = r.getInt("WITHIN_TIME_USE");
+		Integer refPreTime = convertToPostgre(r, "WITHIN_TIME_USE");
 		String kdp004_401 = I18NText.getText("KMK004_401");
 
 		for (int y = startDate; y <= endDate; y++) {
@@ -143,16 +227,16 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			val flex = list.stream().filter(l -> l.pk.type == LaborWorkTypeAttr.FLEX.value).findFirst();
 			
 			Integer rowNumber = r.getInt("ROW_NUMBER");
-			Integer includeExtraAggr = r.getInt("INCLUDE_EXTRA_AGGR");
-			Integer includeExtraOt = r.getInt("INCLUDE_EXTRA_OT");
+			Integer includeExtraAggr = convertToPostgre(r, "INCLUDE_EXTRA_AGGR");
+			Integer includeExtraOt = convertToPostgre(r, "INCLUDE_EXTRA_OT");
 			Integer startMonth = r.getInt("START_MONTH");
 			Integer selectPeriodMon = r.getInt("SETTLE_PERIOD_MON");
-			Integer aggrMethod = r.getInt("AGGR_METHOD");
+			Integer aggrMethod = convertToPostgre(r, "AGGR_METHOD");
 			Integer strMonth = r.getInt("STR_MONTH");
 			Integer period = r.getInt("PERIOD");
-			Integer repeatAtr = r.getInt("REPEAT_ATR");
-			Integer deforIncludeExtraAggr = r.getInt("DEFOR_INCLUDE_EXTRA_AGGR");
-			Integer deforIncludeExtraOt = r.getInt("DEFOR_INCLUDE_EXTRA_OT");
+			Integer repeatAtr = convertToPostgre(r, "REPEAT_ATR");
+			Integer deforIncludeExtraAggr = convertToPostgre(r, "DEFOR_INCLUDE_EXTRA_AGGR");
+			Integer deforIncludeExtraOt = convertToPostgre(r, "DEFOR_INCLUDE_EXTRA_OT");
 
 			datas.add(buildEmployeeARow(
 					// R10_1
@@ -172,18 +256,18 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_8
 					KMK004PrintCommon.getExtraType(includeExtraAggr),
 					// R10_9
-					includeExtraAggr == null ? null : includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_LEGAL_AGGR"))
+					includeExtraAggr == null ? null : includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_LEGAL_AGGR"))
 							: null,
 					// R10_10
 					includeExtraAggr == null ? null : includeExtraAggr != 0
-							? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_HOLIDAY_AGGR")) : null,
+							? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_HOLIDAY_AGGR")) : null,
 					// R10_11
 					KMK004PrintCommon.getExtraType(includeExtraOt),
 					// R10_12
-					includeExtraAggr == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_LEGAL_OT"))
+					includeExtraAggr == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_LEGAL_OT"))
 							: null,
 					// R10_13
-					includeExtraAggr == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_HOLIDAY_OT"))
+					includeExtraAggr == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_HOLIDAY_OT"))
 							: null,
 					// R10_14
 					KMK004PrintCommon.getFlexType(refPreTime),
@@ -196,29 +280,29 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_18
 					KMK004PrintCommon.convertTime(flex.map(m -> m.weekAvgTime).orElse(null)),
 					// R10_19
-					KMK004PrintCommon.getSettle(r.getInt("SETTLE_PERIOD")),
+					KMK004PrintCommon.getSettle(convertToPostgre(r, "SETTLE_PERIOD")),
 					// R10_20
 					startMonth == null ? null : startMonth.toString() + "月",
 					// R10_21
 					selectPeriodMon == null ? null : selectPeriodMon == 2 ? "2ヶ月" : "3ヶ月",
 					// R10_22
-					KMK004PrintCommon.getShortageTime(r.getInt("INSUFFIC_SET")),
+					KMK004PrintCommon.getShortageTime(convertToPostgre(r, "INSUFFIC_SET")),
 					// R10_23
 					KMK004PrintCommon.getAggTypeEmployee(aggrMethod == null ? 3 : aggrMethod),
 					// R10_24
-					aggrMethod == null ? null : aggrMethod == 0 ? KMK004PrintCommon.getInclude(r.getInt("INCLUDE_OT")) : null,
+					aggrMethod == null ? null : aggrMethod == 0 ? KMK004PrintCommon.getInclude(convertToPostgre(r, "INCLUDE_OT")) : null,
 					// R10_25
-					KMK004PrintCommon.getInclude(r.getInt("INCLUDE_HDWK")),
+					KMK004PrintCommon.getInclude(convertToPostgre(r, "INCLUDE_HDWK")),
 					// R10_26
-					KMK004PrintCommon.getLegal(r.getInt("LEGAL_AGGR_SET")),
+					KMK004PrintCommon.getLegal(convertToPostgre(r, "LEGAL_AGGR_SET")),
 					// R10_27
 					((month - 1) % 12 + 1) + kdp004_401,
 					// R10_28
 					KMK004PrintCommon.convertTime(defor.map(m -> m.legalTime).orElse(null)),
 					// R10_29
-					KMK004PrintCommon.convertTime(r.getInt("TRANS_DAILY_TIME")),
+					KMK004PrintCommon.convertTime(convertToPostgre(r, "TRANS_DAILY_TIME")),
 					// R10_30
-					KMK004PrintCommon.convertTime(r.getInt("TRANS_WEEKLY_TIME")),
+					KMK004PrintCommon.convertTime(convertToPostgre(r, "TRANS_WEEKLY_TIME")),
 					// R10_31
 					strMonth == null ? null : strMonth + I18NText.getText("KMK004_402"),
 					// R10_32
@@ -229,18 +313,18 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					KMK004PrintCommon.getWeeklySurcharge(deforIncludeExtraAggr),
 					// R10_35
 					deforIncludeExtraAggr == null ? null : deforIncludeExtraAggr != 0
-							? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_AGGR")) : null,
+							? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_LEGAL_AGGR")) : null,
 					// R10_36
 					deforIncludeExtraAggr == null ? null : deforIncludeExtraAggr != 0
-							? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
+							? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
 					// R10_37
 					KMK004PrintCommon.getWeeklySurcharge(deforIncludeExtraOt),
 					// R10_38
 					deforIncludeExtraOt == null ? null : deforIncludeExtraOt != 0
-							? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_OT")) : null,
+							? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_LEGAL_OT")) : null,
 					// R10_39
 					deforIncludeExtraOt == null ? null : deforIncludeExtraOt != 0
-							? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_OT")) : null));
+							? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_HOLIDAY_OT")) : null));
 
 //			int nextYm = ym + 1;
 //			
