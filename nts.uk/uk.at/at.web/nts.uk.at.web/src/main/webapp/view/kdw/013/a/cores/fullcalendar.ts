@@ -1241,6 +1241,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                 $('.' + className).on('mousedown', () => { regisPopup(date); });
                             }, 300);
                             el.html(vm.$i18n('KDW013_98') + icon);
+                        
+                        $caches.new(null);
                     }
                 },
                 disposeWhenNodeIsRemoved: $el
@@ -2713,6 +2715,7 @@ module nts.uk.ui.at.kdw013.calendar {
                      let IEvents = _.chain(events())
                             .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
                             .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
+                            .filter((evn) => { return !_.find(relatedEvents, re => re.extendedProps.id == evn.extendedProps.id) })
                             .sortBy('end')
                             .value();
 
@@ -2848,7 +2851,6 @@ module nts.uk.ui.at.kdw013.calendar {
                                         extendedProps:sEvent.extendedProps
                                     });
                                 $caches.new(newEvent);
-
                             }                            
                         }
                     }
@@ -3162,7 +3164,6 @@ module nts.uk.ui.at.kdw013.calendar {
                 eventRemove: ({ event }) => {
                     // remove event from event sources
                     vm.params.screenA.$caches.new(event);
-                    vm.params.screenA.$caches.new(null);
                     _.forEach(vm.calendar.getEvents(), (e: EventApi) => {
                         if (e.id === event.id) {
                             e.remove();
@@ -3990,7 +3991,6 @@ module nts.uk.ui.at.kdw013.calendar {
                                                 }
                                             }
                                             vm.params.screenA.$caches.new(e);
-                                            vm.params.screenA.$caches.new(null);
                                         }
 
                                         return canRemove;
