@@ -283,7 +283,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                     		vm.multipleOvertimeContents([]);
                                             data.latestMultiOvertimeApp.multipleOvertimeContents.forEach((i: any) => {
                                                 vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
-                                                	() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+                                                	(isStart: boolean) => {
+                                                	    vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+                                                	    if (isStart) vm.checkMultipleRow();
+                                                    },
                                                     i.frameNo,
                                                     i.startTime,
                                                     i.endTime,
@@ -492,7 +495,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                             vm.workInfo().workTime(workTime);
                                         }
                                         vm.multipleOvertimeContents([
-                                            new MultipleOvertimeContent(() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED}, 1)
+                                            new MultipleOvertimeContent(
+                                                (isStart: boolean) => {
+                                                    vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+                                                    if (isStart) vm.checkMultipleRow();
+                                                },
+                                                1
+                                            )
                                         ]);
                                         vm.bindOverTime(vm.dataSource, 1);
                                         vm.bindHolidayTime(vm.dataSource, 1);
@@ -508,7 +517,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					if (loadDataFlag) {
 					    if (vm.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
 					    	vm.multipleOvertimeContents([
-                                new MultipleOvertimeContent(() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED}, 1)
+                                new MultipleOvertimeContent(
+                                    (isStart: boolean) => {
+                                        vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+                                        if (isStart) vm.checkMultipleRow();
+                                    },
+                                    1
+                                )
 							]);
 					        vm.reasonTypeItemLst(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst);
                             let defaultReasonTypeItem: any = _.find(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst, (o) => o.defaultValue);
@@ -628,7 +643,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             vm.multipleOvertimeContents([]);
                             successData.latestMultiOvertimeApp.multipleOvertimeContents.forEach((i: any) => {
                                 vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
-                                    () => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+                                    (isStart: boolean) => {
+                                        vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+                                        if (isStart) vm.checkMultipleRow();
+                                    },
                                     i.frameNo,
                                     i.startTime,
                                     i.endTime,
@@ -668,7 +686,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                 vm.workInfo().workTime(workTime);
                             }
                             vm.multipleOvertimeContents([
-                                new MultipleOvertimeContent(() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED}, 1)
+                                new MultipleOvertimeContent(
+                                    (isStart: boolean) => {
+                                        vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+                                        if (isStart) vm.checkMultipleRow();
+                                    },
+                                    1
+                                )
                             ]);
                         }
 						// 勤務種類リストと就業時間帯リストがない場合エラーを返す
@@ -1091,7 +1115,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							self.multipleOvertimeContents([]);
                             res.latestMultiOvertimeApp.multipleOvertimeContents.forEach((i: any) => {
 								self.multipleOvertimeContents.push(new MultipleOvertimeContent(
-                                    () => {self.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+                                    (isStart: boolean) => {
+                                        self.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+                                        if (isStart) self.checkMultipleRow();
+                                    },
                                     i.frameNo,
                                     i.startTime,
                                     i.endTime,
@@ -1131,7 +1158,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                 self.workInfo().workTime(workTime);
                             }
                             self.multipleOvertimeContents([
-                                new MultipleOvertimeContent(() => {self.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED}, 1)
+                                new MultipleOvertimeContent(
+                                    (isStart: boolean) => {
+                                        self.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+                                        if (isStart) self.checkMultipleRow();
+                                    },
+                                    1
+                                )
 							]);
 						}
 					}
@@ -1429,7 +1462,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 fixedReasonCode = defaultReasonTypeItem.appStandardReasonCD;
             }
 		    vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
-		    	() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+		    	(isStart: boolean) => {
+		    	    vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+		    	    if (isStart) vm.checkMultipleRow();
+                },
 				1,
 				null,
 				null,
@@ -1447,6 +1483,21 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		    	vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
             }
 		    vm.multipleOvertimeContents.remove(data);
+        }
+
+        checkMultipleRow() {
+		    const vm = this;
+		    if (vm.multipleOvertimeContents().length > 1) {
+                for (let r = 1; r < vm.multipleOvertimeContents().length; r++) {
+                    if (_.isNumber(vm.multipleOvertimeContents()[r].start())
+                        && _.isNumber(vm.multipleOvertimeContents()[r - 1].start())
+                        && vm.multipleOvertimeContents()[r].start() < vm.multipleOvertimeContents()[r - 1].start()) {
+                        vm.$errors('clear', '#A15_3_' + r);
+                        vm.$errors('#A15_3_' + r, 'Msg_3281');
+                        break;
+                    }
+                }
+            }
         }
 
 		register() {
@@ -1543,12 +1594,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         if (vm.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
                             let error = false;
                             vm.multipleOvertimeContents().forEach((i, idx) => {
-                                if (!!i.start() && !i.end()) {
+                                if (_.isNumber(i.start()) && !_.isNumber(i.end())) {
                                     vm.$errors('#A15_5_' + idx, 'Msg_307');
                                     error = true;
                                 }
-                                if (!i.start() && !!i.end()) {
+                                if (!_.isNumber(i.start()) && _.isNumber(i.end())) {
                                     vm.$errors('#A15_3_' + idx, 'Msg_307');
+                                    error = true;
+                                }
+                                if (_.isNumber(i.start()) && _.isNumber(i.end()) && i.start() > i.end()) {
+                                    vm.$errors('#A15_5_' + idx, 'Msg_307');
                                     error = true;
                                 }
                             });
@@ -3345,12 +3400,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if (self.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
                 let error = false;
                 self.multipleOvertimeContents().forEach((i, idx) => {
-                    if (!!i.start() && !i.end()) {
+                    if (_.isNumber(i.start()) && !_.isNumber(i.end())) {
                         self.$errors('#A15_5_' + idx, 'Msg_307');
                         error = true;
                     }
-                    if (!i.start() && !!i.end()) {
+                    if (!_.isNumber(i.start()) && _.isNumber(i.end())) {
                         self.$errors('#A15_3_' + idx, 'Msg_307');
+                        error = true;
+                    }
+                    if (_.isNumber(i.start()) && _.isNumber(i.end()) && i.start() > i.end()) {
+                        self.$errors('#A15_5_' + idx, 'Msg_307');
                         error = true;
                     }
                 });

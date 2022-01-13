@@ -226,24 +226,29 @@ public class OvertimeServiceImpl implements OvertimeService {
 		if (overtimeAppAtr == OvertimeAppAtr.MULTIPLE_OVERTIME && dateOp.isPresent()) {
 			List<TimeZoneWithWorkNo> workHourList = new ArrayList<>();
 			for (int i = 0; i < workContent.getTimeZones().size(); i++) {
-				workHourList.add(new TimeZoneWithWorkNo(
-						i + 1,
-						workContent.getTimeZones().get(i).getStart().v(),
-						workContent.getTimeZones().get(i).getEnd().v()
-				));
+				if (workContent.getTimeZones().get(i).getStart() != null
+						&& workContent.getTimeZones().get(i).getEnd() != null) {
+					workHourList.add(new TimeZoneWithWorkNo(
+							i + 1,
+							workContent.getTimeZones().get(i).getStart().v(),
+							workContent.getTimeZones().get(i).getEnd().v()
+					));
+				}
 			}
-			Pair<List<TimeZoneWithWorkNo>, List<BreakTimeSheet>> result = this.getWorkingHoursAndBreakHours(
-					companyId,
-					employeeId,
-					dateOp.get(),
-					overtimeHours,
-					overtimeReasons,
-					workHourList,
-					new WorkInformation(workContent.getWorkTypeCode().orElse(null), workContent.getWorkTimeCode().orElse(null)),
-					opAchievementDetail
-			);
-			workContent.setTimeZones(result.getLeft().stream().map(i -> new TimeZone(i.getTimeZone().getStartTime(), i.getTimeZone().getEndTime())).collect(Collectors.toList()));
-			workContent.setBreakTimes(result.getRight());
+			if (!workHourList.isEmpty()) {
+				Pair<List<TimeZoneWithWorkNo>, List<BreakTimeSheet>> result = this.getWorkingHoursAndBreakHours(
+						companyId,
+						employeeId,
+						dateOp.get(),
+						overtimeHours,
+						overtimeReasons,
+						workHourList,
+						new WorkInformation(workContent.getWorkTypeCode().orElse(null), workContent.getWorkTimeCode().orElse(null)),
+						opAchievementDetail
+				);
+				workContent.setTimeZones(result.getLeft().stream().map(i -> new TimeZone(i.getTimeZone().getStartTime(), i.getTimeZone().getEndTime())).collect(Collectors.toList()));
+				workContent.setBreakTimes(result.getRight());
+			}
 		}
 
 		// 計算処理
@@ -1840,8 +1845,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				companyId,
 				workInformation.getWorkTypeCode(),
 				workInformation.getWorkTimeCode(),
-				workingHours.isEmpty() ? Optional.empty() : Optional.of(workingHours.get(0).getTimeZone().getStartTime()),
-				workingHours.isEmpty() ? Optional.empty() : Optional.of(workingHours.get(0).getTimeZone().getEndTime()),
+				workingHours.isEmpty() ? Optional.empty() : Optional.ofNullable(workingHours.get(0).getTimeZone().getStartTime()),
+				workingHours.isEmpty() ? Optional.empty() : Optional.ofNullable(workingHours.get(0).getTimeZone().getEndTime()),
 				achievementDetail
 		);
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
