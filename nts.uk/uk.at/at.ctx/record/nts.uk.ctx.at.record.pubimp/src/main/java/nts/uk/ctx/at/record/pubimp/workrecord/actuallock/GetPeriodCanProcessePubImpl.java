@@ -8,8 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -112,9 +110,9 @@ public class GetPeriodCanProcessePubImpl implements GetPeriodCanProcessePub {
 		}
 
 		@Override
-		public Closure findClosureById(int closureId) {
+		public Optional<Closure> findClosureById(int closureId) {
 			String companyId = AppContexts.user().companyId();
-			return closureRepository.findById(companyId, closureId).get();
+			return closureRepository.findById(companyId, closureId);
 		}
 
 		@Override
