@@ -209,7 +209,7 @@ public class SupportScheduleDetailTest {
 			val target = new SupportScheduleDetail(
 					TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId" )
 				,	SupportType.TIMEZONE
-				,	Optional.of( Helper.createTimeSpanForCalc( 300, 480 ) )
+				,	Optional.of( Helper.createTimeSpanForCalc( 400, 480 ) )
 			);
 			
 			//Act
