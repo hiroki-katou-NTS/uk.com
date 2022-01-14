@@ -2,15 +2,26 @@
 
 .extable {
 	position: relative;
-}
-.extable table th, .extable table td {
-	border: 1px solid #AAB7B8;
-}
-.extable .xheader {
-  td, th {
-    @extend %ig_table_header_thtd;
+
+  th, td {
+    border: 1px solid #fff;
+  }
+
+  .xheader {
+    td, th {
+      @extend %ig_table_header_thtd;
+    }
+  }
+
+  .ex-body-leftmost, .ex-body-detail {
+    tr {
+      &:nth-child(even) {
+        background-color: #F3F3F3;
+      }
+    }
   }
 }
+
 .extable td.edit-cell {
 	padding: 0px !important;
 }
@@ -30,7 +41,7 @@
 	background-color: #CCC;
 }
 .extable div.xseal, .extable td.xseal {
-	background-color: #DDDDD2;
+	background-color: #CFCFCF;
 }
 .extable div.bg-weekdays, .extable td.bg-weekdays, .xheader td.bg-weekdays {
 }

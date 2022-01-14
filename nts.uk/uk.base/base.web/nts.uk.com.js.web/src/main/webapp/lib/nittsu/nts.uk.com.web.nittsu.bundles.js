@@ -8026,26 +8026,16 @@ var nts;
                         }
                         Painter.prototype.styleInnerCell = function (idx, innerCount) {
                             var self = this;
-                            var divStyle = "", borderStyle = "solid 1px transparent", dashedBorder = "dashed 1px #ABB7B8", incellHeight = (parseInt(self.options.rowHeight) - 2) / self.multilineCountInCell, incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
-                            //                divStyle += `; border-top: ${borderStyle}; border-right: ${borderStyle}`;
-                            if (idx < incellCountInRow * (self.multilineCountInCell - 1)) {
-                                divStyle += "; border-bottom: ".concat(dashedBorder);
-                            }
+                            var divStyle = "", incellHeight = "".concat(parseInt(self.options.rowHeight) / self.multilineCountInCell, "px"), incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
                             var incellRowIdx = Math.floor(idx / incellCountInRow);
                             divStyle += "; top: ".concat(incellRowIdx === 0 ? 0 : incellRowIdx + incellHeight, "px");
-                            if (idx % incellCountInRow === 0) {
-                                //                    divStyle += `; border-left: ${borderStyle}`;
-                            }
-                            else {
-                                divStyle += "; border-left: ".concat(dashedBorder);
-                            }
                             if (incellRowIdx === 0) {
-                                divStyle += "; height: ".concat(incellHeight - 1, "px;");
+                                divStyle += "; height: ".concat(incellHeight, ";");
                             }
                             else {
-                                divStyle += "; height: ".concat(incellHeight - 2, "px;");
+                                divStyle += "; height: ".concat(incellHeight, ";");
                             }
-                            divStyle += "; position: absolute; \n                    left: ".concat((idx - incellRowIdx * incellCountInRow) * (100 / incellCountInRow), "%;  \n                    line-height: ").concat(incellRowIdx === 0 ? (incellHeight - 1) : (incellHeight - 2), "px; \n                    width: calc(").concat(100 / incellCountInRow, "% - 2px); text-align: center;");
+                            divStyle += "; position: absolute; \n                    left: ".concat((idx - incellRowIdx * incellCountInRow) * (100 / incellCountInRow), "%;\n                    line-height: ").concat(incellHeight, ";\n                    width: calc(").concat(100 / incellCountInRow, "%); text-align: center;");
                             return divStyle;
                         };
                         Painter.prototype.cell = function (rData, rowIdx, key) {
