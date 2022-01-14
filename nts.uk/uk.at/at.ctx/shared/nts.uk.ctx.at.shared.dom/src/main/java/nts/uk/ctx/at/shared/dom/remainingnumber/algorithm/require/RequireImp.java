@@ -11,6 +11,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -18,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmployment
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
@@ -51,6 +54,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
 import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
@@ -71,7 +76,11 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularL
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeShaRepo;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeWkp;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeWkpRepo;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
@@ -101,6 +110,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpComHisAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -231,6 +242,11 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	protected RemainCreateInforByRecordData remainCreateInforByRecordData;
 	
+	protected ElapseYearRepository elapseYearRepository;
+	
+	private EmpComHisAdapter empComHisAdapter;
+	
+	private ClosureStatusManagementRepository closureStatusManagementRepo;
 	private CheckCareService checkCareService;
 
 	private WorkingConditionItemService workingConditionItemService;
@@ -269,7 +285,8 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			GrantYearHolidayRepository grantYearHolidayRepo, PayoutSubofHDManaRepository payoutSubofHDManaRepo,
 			LeaveComDayOffManaRepository leaveComDayOffManaRepo, CheckCareService checkChildCareService,
 			WorkingConditionItemService workingConditionItemService, RemainCreateInforByRecordData remainCreateInforByRecordData,
-			SysEmploymentHisAdapter sysEmploymentHisAdapter
+			SysEmploymentHisAdapter sysEmploymentHisAdapter,
+			ElapseYearRepository elapseYearRepository, EmpComHisAdapter empComHisAdapter, ClosureStatusManagementRepository closureStatusManagementRepo
 			) {
 		this.comSubstVacationRepo = comSubstVacationRepo;
 		this.compensLeaveComSetRepo = compensLeaveComSetRepo;
@@ -326,6 +343,9 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		this.workingConditionItemService = workingConditionItemService;
 		this.remainCreateInforByRecordData = remainCreateInforByRecordData;
 		this.sysEmploymentHisAdapter = sysEmploymentHisAdapter;
+		this.elapseYearRepository = elapseYearRepository;
+		this.empComHisAdapter = empComHisAdapter;
+		this.closureStatusManagementRepo = closureStatusManagementRepo;
 	}
 	
 	RequireImpCache cache = new RequireImpCache();
@@ -863,7 +883,6 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
 		return this.workTimeSetting(cid, workTimeCode);
 	}
-
 	@Override
 	public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
 		return this.compensatoryLeaveComSetting(companyId);
@@ -897,15 +916,51 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
 		return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
 	}
-	
+
 	@Override
 	public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId){
 		return Optional.ofNullable(this.compensatoryLeaveComSetting(companyId));
 	}
-	
+
 	@Override
 	public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode){
 		return Optional.ofNullable(this.compensatoryLeaveEmSetting(companyId, employmentCode));
+	}
+	
+	@Override
+	public Optional<ElapseYear> elapseYear(String companyId, int specialHolidayCode) {
+		return this.elapseYearRepository.findByCode(new CompanyId(companyId), new SpecialHolidayCode(specialHolidayCode));
+	}
+
+	@Override
+	public Optional<EmpEnrollPeriodImport> getLatestEnrollmentPeriod(String lstEmpId, DatePeriod datePeriod) {
+		return empComHisAdapter.getLatestEnrollmentPeriod(lstEmpId, datePeriod);
+	}
+
+	@Override
+	public EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId) {
+		return this.empEmployeeAdapter.findByAllInforEmpId(cacheCarrier, empId);
+	}
+
+	@Override
+	public List<SClsHistImport> employeeClassificationHistoires(CacheCarrier cacheCarrier, String companyId,
+			List<String> employeeIds, DatePeriod datePeriod) {
+		return this.empEmployeeAdapter.lstClassByEmployeeId(cacheCarrier, companyId, employeeIds, datePeriod);
+	}
+
+	@Override
+	public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode, String grantDateCode) {
+		return this.grantDateTblRepo.findByCode(companyId, specialHolidayCode, grantDateCode);
+	}
+	
+	@Override
+	public List<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
+		return this.grantDateTblRepo.findBySphdCd(companyId, specialHolidayCode);
+	}
+	
+	@Override
+	public Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId) {
+		return closureStatusManagementRepo.getLatestByEmpId(employeeId);
 	}
 
 }

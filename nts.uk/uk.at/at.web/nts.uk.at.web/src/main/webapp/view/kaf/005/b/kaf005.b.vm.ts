@@ -276,6 +276,76 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						}
 				});
 			});
+
+			vm.workInfo().workHours1.start.subscribe((value) => {
+				if (vm.workInfo().workHours1.end() 
+					&& _.isNumber(value) && _.isNumber(vm.workInfo().workHours1.end())) {
+						if (vm.workInfo().workHours1.end() >= value) {
+							$("#inpEndTime1").ntsError("clear");
+						} 
+						if (value > vm.workInfo().workHours1.end() && !$("#inpEndTime1").ntsError('hasError')) {
+							vm.$errors('#inpEndTime1', 'Msg_307');
+						}
+				}
+			});
+
+			vm.workInfo().workHours1.end.subscribe((value) => {
+				if (vm.workInfo().workHours1.start() && _.isNumber(value) && _.isNumber(vm.workInfo().workHours1.start())) {
+						if (value >= vm.workInfo().workHours1.start()) {
+							$("#inpEndTime1").ntsError("clear");
+						} 
+						if (value < vm.workInfo().workHours1.start() && !$("#inpEndTime1").ntsError('hasError')) {
+							vm.$errors('#inpEndTime1', 'Msg_307');
+						}
+						if ($('#inpStartTime2') && vm.workInfo().workHours2.start() && _.isNumber(vm.workInfo().workHours2.start())) {
+							if (vm.workInfo().workHours2.start() >= value) {
+								$("#inpStartTime2").ntsError("clear");
+							}
+							if (value > vm.workInfo().workHours2.start() && !$("#inpStartTime2").ntsError('hasError')) {
+								vm.$errors('#inpStartTime2', 'Msg_581');
+							}
+						}
+				}
+				if (!_.isNumber(value)) {
+					$("#inpStartTime2").ntsError("clear");
+				}
+			});
+
+			vm.workInfo().workHours2.start.subscribe((value) => {
+				if ($('#inpStartTime2')) {
+					if (vm.workInfo().workHours2.end() && _.isNumber(value) && _.isNumber(vm.workInfo().workHours2.end())) {
+						if (value <= vm.workInfo().workHours2.end()) {
+							$("#inpEndTime2").ntsError("clear");
+						}
+						if (value > vm.workInfo().workHours2.end() && !$("#inpEndTime2").ntsError('hasError')) {
+							vm.$errors('#inpEndTime2', 'Msg_307');
+						}
+					}
+					if (_.isNumber(value) && vm.workInfo().workHours1.end() && _.isNumber(vm.workInfo().workHours1.end())) {
+						if (vm.workInfo().workHours1.end() < value) {
+							$("#inpStartTime2").ntsError("clear");
+						}
+						if (vm.workInfo().workHours1.end() > value && !$("#inpStartTime2").ntsError('hasError')) {
+							vm.$errors('#inpStartTime2', 'Msg_581');
+						}
+					}
+				}
+			});
+			vm.workInfo().workHours2.start.extend({rateLimit: 100});
+
+			vm.workInfo().workHours2.end.subscribe((value) => {
+				if ($('#inpEndTime2')) {
+					if (vm.workInfo().workHours2.start() && _.isNumber(value) && _.isNumber(vm.workInfo().workHours2.start())) {
+						if (vm.workInfo().workHours2.start() <= value) {
+							$("#inpEndTime2").ntsError("clear");
+						}
+						if (value < vm.workInfo().workHours2.start() && !$("#inpEndTime2").ntsError('hasError')) {
+							vm.$errors("#inpEndTime2", 'Msg_307');
+						}
+					}
+				}
+			});
+			vm.workInfo().workHours2.end.extend({rateLimit: 100});
 		}
 
         initAppDetail() {
@@ -480,42 +550,42 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					let end2 = vm.workInfo().workHours2.end();
 					
 					// ・開始時刻1 > 終了時刻1　の場合エラーメッセージ(Msg_307)を表示する
-					if (start1 > end1 && vm.visibleModel.c7()) {
-						vm.$errors('#inpStartTime1', 'Msg_307');
-						vm.$errors('#inpEndTime1', 'Msg_307');
-						return false;
-					}
+					// if (start1 > end1 && vm.visibleModel.c7()) {
+					// 	vm.$errors('#inpStartTime1', 'Msg_307');
+					// 	vm.$errors('#inpEndTime1', 'Msg_307');
+					// 	return false;
+					// }
 					// ・開始時刻2 > 終了時刻2　の場合エラーメッセージ(Msg_307)を表示する
-					if (inpStartTime2 && inpEndTime2 && _.isNumber(start2) && _.isNumber(end2) && vm.visibleModel.c29()) {
-						if (start2 > end2) {
-							vm.$errors('#inpStartTime2', 'Msg_307');
-							vm.$errors('#inpEndTime2', 'Msg_307');
-							return false;
-						}
-					}
+					// if (inpStartTime2 && inpEndTime2 && _.isNumber(start2) && _.isNumber(end2) && vm.visibleModel.c29()) {
+					// 	if (start2 > end2) {
+					// 		vm.$errors('#inpStartTime2', 'Msg_307');
+					// 		vm.$errors('#inpEndTime2', 'Msg_307');
+					// 		return false;
+					// 	}
+					// }
 					
 					// ・終了時刻1 > 開始時刻2　の場合エラーメッセージ(Msg_581)を表示する
-					if (_.isNumber(start2) && inpStartTime2 && vm.visibleModel.c29()) {
-						if (start2 < end1) {
-							vm.$errors('#inpEndTime1', 'Msg_581');
-							vm.$errors('#inpStartTime2', 'Msg_581');
-							return false;
-						}
-					}
+					// if (_.isNumber(start2) && inpStartTime2 && vm.visibleModel.c29()) {
+					// 	if (start2 < end1) {
+					// 		vm.$errors('#inpEndTime1', 'Msg_581');
+					// 		vm.$errors('#inpStartTime2', 'Msg_581');
+					// 		return false;
+					// 	}
+					// }
 					// ・開始時刻2、終了時刻2　の片方しか入力してない場合エラーメッセージ(Msg_307)を表示する
-					if (inpStartTime2 && inpEndTime2 && vm.visibleModel.c7()) {
-						if (!(_.isNumber(start2) && _.isNumber(end2))) {
-							if (!_.isNumber(start2) && _.isNumber(end2)) {
-								vm.$errors('#inpStartTime2', 'Msg_307');
-								return false;								
-							}
-							if (!_.isNumber(end2) && _.isNumber(start2)) {
-								vm.$errors('#inpEndTime2', 'Msg_307');
-								return false;																
-							}
+					// if (inpStartTime2 && inpEndTime2 && vm.visibleModel.c7()) {
+					// 	if (!(_.isNumber(start2) && _.isNumber(end2))) {
+					// 		if (!_.isNumber(start2) && _.isNumber(end2)) {
+					// 			vm.$errors('#inpStartTime2', 'Msg_307');
+					// 			return false;								
+					// 		}
+					// 		if (!_.isNumber(end2) && _.isNumber(start2)) {
+					// 			vm.$errors('#inpEndTime2', 'Msg_307');
+					// 			return false;																
+					// 		}
 							
-						}
-					}
+					// 	}
+					// }
 
                     if (vm.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
                         let error = false;

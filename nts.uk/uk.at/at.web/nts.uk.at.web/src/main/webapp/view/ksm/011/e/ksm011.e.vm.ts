@@ -165,8 +165,7 @@ module nts.uk.at.view.ksm011.e {
 
       vm.getDataCCG025().done(() => { });
       vm.componentViewmodel.currentRoleId.subscribe((roleId: string) => {
-        if (vm.listRole().length <= 0) vm.listRole(vm.componentViewmodel.listRole());
-
+        vm.listRole(vm.componentViewmodel.listRole());
         vm.roleId(roleId);
         vm.findRole(roleId);
       });

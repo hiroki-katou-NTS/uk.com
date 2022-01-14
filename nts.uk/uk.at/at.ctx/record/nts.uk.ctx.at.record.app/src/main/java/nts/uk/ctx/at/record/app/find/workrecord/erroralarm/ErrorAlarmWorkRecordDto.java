@@ -251,9 +251,11 @@ public class ErrorAlarmWorkRecordDto {
 				SingleWorkType wtypeConditionDomain = (SingleWorkType) conditionDomain
 						.getWorkTypeCondition();
 				wtypeConditionDto.setUseAtr(wtypeConditionDomain.isUse());
-				wtypeConditionDto.setPlanFilterAtr(wtypeConditionDomain.getTargetWorkType().isUse());
-				wtypeConditionDto.setPlanLstWorkType(wtypeConditionDomain.getTargetWorkType().getLstWorkType().stream()
-						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
+				if(wtypeConditionDomain.getTargetWorkType()!=null){
+					wtypeConditionDto.setPlanFilterAtr(wtypeConditionDomain.getTargetWorkType().isUse());
+					wtypeConditionDto.setPlanLstWorkType(wtypeConditionDomain.getTargetWorkType().getLstWorkType().stream()
+							.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
+				}
 			}
 			wtypeConditionDto.setComparePlanAndActual(
 					conditionDomain.getWorkTypeCondition().getComparePlanAndActual().value);

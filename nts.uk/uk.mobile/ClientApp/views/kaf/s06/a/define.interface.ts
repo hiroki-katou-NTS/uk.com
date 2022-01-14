@@ -127,6 +127,8 @@ export interface UpdateAppAbsenceMobileCommand {
 
     // 振出振休紐付け管理<List>
     payoutSubofHDManagements: Array<PayoutSubofHDManagementDto>;
+
+    holidayFlg: boolean;
 }
 export interface WorkInformationDto {
     //	勤務種類コード
@@ -230,6 +232,8 @@ export interface RegisterAppAbsenceMobileCommand {
     application: any;
 
     apptypeSetting: any;
+
+    holidayFlg: boolean;
 }
 export interface VacationRequestInfoDto {
     // 休暇申請の種類

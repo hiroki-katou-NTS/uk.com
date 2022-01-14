@@ -642,7 +642,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                                        ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                                        WHERE        @startDate <= SSR.END_DATE " +
 				"                                                        AND          SSR.START_DATE <= @endDate " +
-				"　                                              　　　　　　AND          SSRK.WORKPLACE_ID IN @wkpIDLst " +
+				"                                                     AND          SSRK.WORKPLACE_ID IN @wkpIDLst " +
 				"                                                    ) SKBSYIN " +
 				"                                        INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                                        ON               SKBSYIN.SID = SKR.SID " +
@@ -713,7 +713,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                            ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                            WHERE        @startDate <= SSR.END_DATE " +
 				"                                            AND          SSR.START_DATE <= @endDate " +
-				"                       　          　　　　　　AND          SSRK.WORKPLACE_ID IN @wkpIDLst          " +
+				"                                        AND          SSRK.WORKPLACE_ID IN @wkpIDLst          " +
 				"                                        ) SKBSYIN " +
 				"                                INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                                ON               SKBSYIN.SID = SKR.SID " +
@@ -988,7 +988,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                                  ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                                  WHERE        @startDate <= SSR.END_DATE " +
 				"                                                  AND          SSR.START_DATE <= @endDate " +
-				"　                                  　　　　　　AND          SSRK.WORKPLACE_ID IN @wkpIDLst        " +
+				"                                         AND          SSRK.WORKPLACE_ID IN @wkpIDLst        " +
 				"                                                ) SKBSYIN " +
 				"                                   INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                                   ON               SKBSYIN.SID = SKR.SID " +

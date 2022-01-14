@@ -25,4 +25,9 @@ public class AbsenceCheckRegisterOutput {
 	 */
 	private List<GeneralDate> holidayDateLst;
 	
+	/**
+	 * 申請する勤務種類が休日か
+	 */
+	private boolean holidayFlg;
+	
 }
