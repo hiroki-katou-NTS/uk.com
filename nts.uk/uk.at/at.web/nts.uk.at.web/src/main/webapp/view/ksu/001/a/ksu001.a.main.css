@@ -51,7 +51,8 @@
 }
 
 #extable td, #extable td>* {
-	font-size: 10.5px;
+	font-size: 0.8rem;
+	font-weight: 200;
 }
 
 .xheader *, .ex-body-detail *, .ex-body-vert-sum *, .ex-body-horz-sum *
@@ -59,10 +60,6 @@
 	text-align: center;
 }
 
-
-.ex-header-vert-sum tr:NTH-CHILD(2) {
-	font-size: 90%;
-}
 
 .ml-2 {
 	margin-left: 2px;
