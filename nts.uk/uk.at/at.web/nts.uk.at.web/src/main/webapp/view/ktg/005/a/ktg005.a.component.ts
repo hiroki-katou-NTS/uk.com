@@ -34,7 +34,7 @@ module nts.uk.ui.ktg005.a {
 									click: function() { $component.openScreenB() },
 									visible: employeeCharge
 								">
-								<i data-bind="ntsIcon: { no: 5, width: 25, height: 25 }"></i>
+								<i data-bind="ntsIcon: { no: 4, width: 20, height: 20 }"></i>
 							</button>
 						</th>
 					</tr>
@@ -42,7 +42,7 @@ module nts.uk.ui.ktg005.a {
 			</table>
 		</div>
 		<div class="ktg-005-a ktg005-fontsize ktg005-border" data-bind="widget-content: 100">
-			<div data-bind="with: $component.executionAppResult" style="padding: 0px 40px 0px 30px;">
+			<div data-bind="with: $component.executionAppResult" class="widget-content-list">
 				<table style="width: 100%">
 					<colgroup>
 						<col width="auto" />
@@ -71,7 +71,7 @@ module nts.uk.ui.ktg005.a {
 				padding-left: 5px;
 			}
 			.ktg005-fontsize-larger div.form-label>span.text {
-				font-size: 1.2rem !important;
+				font-size: 1rem !important;
 			}
 			.ktg005-linklabel div.form-label>span.text {
 				color: #0D86D1;
@@ -83,7 +83,6 @@ module nts.uk.ui.ktg005.a {
 			.ktg005-border table tr td,
 			.ktg005-border table tr th {
 				border-width: 0px;
-				border-bottom: 1px solid #BFBFBF;
 			}
 			.ktg-005-a tr:last-child td {
 				border: none !important;

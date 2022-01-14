@@ -150,7 +150,7 @@ module nts.uk.at.view.ktg027.a {
                     top: 0;
                 }
                 .ktg027-fontsize div.form-label>span.text {
-                    font-size: 1.2rem !important;
+                    font-size: 1rem !important;
                 }
                 .ktg-027-a .outside {
                     color: #e05f4e;
