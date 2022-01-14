@@ -39,9 +39,7 @@ public class TopPageNewDto implements Toppage.MementoSetter, Toppage.MementoGett
 	 */
 	public static TopPageNewDto fromDomain(Toppage topPage) {
 		TopPageNewDto topPageDto = new TopPageNewDto();
-		topPageDto.topPageCode = topPage.getTopPageCode().v();
-		topPageDto.topPageName = topPage.getTopPageName().v();
-		topPageDto.layoutDisp = topPage.getLayoutDisp().value;
+		topPage.setMemento(topPageDto);
 		return topPageDto;
 	}
 
