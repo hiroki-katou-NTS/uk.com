@@ -152,37 +152,39 @@
                         </div>
                       </div>
                     </div>
-                    <div class="setting-row" data-bind="with: topPageModel, visible: selectedId() === 3">
-                      <div id="B5_5_1" class="frame-layout-setting mt-20" data-bind="ntsComboBox: {
-                        name: '#[CCG015_119]',
-                        options: $parent.frameLayoutList,
-                        optionsValue: 'code',
-                        optionsText: 'name',
-                        value: frameLayout1,
-                        columns: [
-                          { prop: 'name', length: 10 }
-                        ]
-                      }"></div>
-                      <div id="B5_5_2" class="frame-layout-setting ml-20" data-bind="ntsComboBox: {
-                        name: '#[CCG015_119]',
-                        options: $parent.frameLayoutList,
-                        optionsValue: 'code',
-                        optionsText: 'name',
-                        value: frameLayout2,
-                        columns: [
-                          { prop: 'name', length: 10 }
-                        ]
-                      }"></div>
-                      <div id="B5_5_3" class="frame-layout-setting ml-20" data-bind="ntsComboBox: {
-                        name: '#[CCG015_119]',
-                        options: $parent.frameLayoutList,
-                        optionsValue: 'code',
-                        optionsText: 'name',
-                        value: frameLayout3,
-                        columns: [
-                          { prop: 'name', length: 10 }
-                        ]
-                      }"></div>
+                    <div class="setting-row">
+                      <div data-bind="with: topPageModel, visible: selectedId() === 3">
+                        <div id="B5_5_1" class="frame-layout-setting mt-20" data-bind="ntsComboBox: {
+                          name: '#[CCG015_119]',
+                          options: $parent.frameLayoutList,
+                          optionsValue: 'code',
+                          optionsText: 'name',
+                          value: frameLayout1,
+                          columns: [
+                            { prop: 'name', length: 10 }
+                          ]
+                        }"></div>
+                        <div id="B5_5_2" class="frame-layout-setting ml-20" data-bind="ntsComboBox: {
+                          name: '#[CCG015_119]',
+                          options: $parent.frameLayoutList,
+                          optionsValue: 'code',
+                          optionsText: 'name',
+                          value: frameLayout2,
+                          columns: [
+                            { prop: 'name', length: 10 }
+                          ]
+                        }"></div>
+                        <div id="B5_5_3" class="frame-layout-setting ml-20" data-bind="ntsComboBox: {
+                          name: '#[CCG015_119]',
+                          options: $parent.frameLayoutList,
+                          optionsValue: 'code',
+                          optionsText: 'name',
+                          value: frameLayout3,
+                          columns: [
+                            { prop: 'name', length: 10 }
+                          ]
+                        }"></div>
+                      </div>
                     </div>
                   </td>
                 </tr>

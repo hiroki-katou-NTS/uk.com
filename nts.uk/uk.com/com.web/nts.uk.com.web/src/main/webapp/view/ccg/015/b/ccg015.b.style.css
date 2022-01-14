@@ -239,6 +239,10 @@ margin-top: 20px;
   top: 25%;
 }
 
+.setting-row {
+  min-height: 58px;
+}
+
 #B5_2 {
   display: block;
 }
