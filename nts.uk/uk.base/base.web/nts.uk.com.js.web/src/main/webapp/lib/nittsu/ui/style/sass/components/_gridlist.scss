@@ -1,4 +1,5 @@
 @import "_ignitecommons.scss";
+@import "_radiobox.scss";
 
 .ui-iggrid {
 	@include iggridstyle();
@@ -50,9 +51,7 @@
 
 			th.ui-widget-header {
 				//padding: 5px 0;
-				color: #4A4A58;
 				text-align: center;
-				background-color: transparent;
 				position: relative;
 				box-sizing: border-box;
 
@@ -79,38 +78,21 @@
 					height: 20px;
 					box-sizing: border-box;
 					display: block;
-					background: transparent;
-					border-radius: 2px;
-					border: 2px solid #30CC40;
 					margin-right: 2px;
-
-					&:focus {
-						border-color: #30CC40 !important;
-						box-shadow: 0 0 0 2px lighten($color: #30CC40, $amount: 30);								
-					}
+					background-color: $checkbox_back_color_off;
 
 					&::after {
+						@extend %checkbox_check_sign;
+						position: absolute;
 						top: 4px;
 						left: 3px;
-						width: 11px;
-						height: 6px;
-						transform: rotate(-59deg);
-						box-sizing: border-box;
-						position: absolute;
-						border: 2px solid #fff;
-						border-top: none;
-						border-right: none;
 					}
 
 					&[data-chk="on"] {
-						background-color: #30CC40;
 						&::after {
 							content: '';
 						}
-					}
-
-					&[data-chk="off"] {
-						background-color: transparent;
+						background-color: $checkbox_back_color_on;
 					}
 
 					.ui-icon {
@@ -157,13 +139,10 @@
 				}
 
 				.ui-state-hover {
-					color: #30CC40;
 					background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;					
 				}
 
 				.ui-state-active {
-					font-weight: 700;
-					color: #30CC40;
 					background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;
 					box-shadow: 0px 8px 10px rgba(22, 154, 28, 0.1);
 				}

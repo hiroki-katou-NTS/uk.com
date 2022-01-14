@@ -886,7 +886,6 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // set component height
                 $('#component-ccg001').outerHeight(componentHeight);
-                $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
 
                 // set tab panel height.
                 const tabpanelHeight = componentHeight - $('#ccg001-header').outerHeight(true) - 10;
@@ -1244,10 +1243,6 @@ module nts.uk.com.view.ccg.share.ccg {
             private fixComponentWidth(): void {
                 let self = this;
                 _.defer(() => {
-                    // update tab 2 width
-                    let totalWidth = 5;
-                    $('#ccg001-tab-content-2').children('div.pull-left.height-maximum').each((i, e) => totalWidth += $(e).outerWidth(true));
-                    $('#ccg001-tab-content-2').outerWidth(totalWidth);
 
                     // Fix component width if screen width is smaller than component
                     const componentWidth = window.innerWidth - $('#ccg001-btn-search-drawer').offset().left;
@@ -2420,69 +2415,57 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                 <div tabindex="-1" class="tab-content-1" data-bind="visible: showQuickSearchTab">
                     <!-- ko if: showAllReferableEmployee -->
                         <div id="ccg001-btn-search-all" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
+                            <button class="green flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.ALL_REFERENCE_RANGE+`)}">
-                                <i class="icon ccg001-icon-btn-big icon-28-allemployee"></i>
-                                <label class="labelBigButton">`+CCG001TextResource.CCG001_34+`</label> 
-                            </div>
-                            <span class="ccg001-caret ccg001-caret-quick-big caret-right"></span>
+                                ${CCG001TextResource.CCG001_34}
+                            </button>
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showOnlyMe -->
                         <div id="ccg001-btn-only-me" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
+                            <button class="green flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: searchCurrentLoginEmployee">
-                                <i class="icon ccg001-icon-btn-big icon-26-onlyemployee"></i>
-                                <label class="labelBigButton">`+CCG001TextResource.CCG001_35+`</label> 
-                            </div>
-                            <span class="ccg001-caret ccg001-caret-quick-big caret-right"></span>
+                                ${CCG001TextResource.CCG001_35}
+                            </button>
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showSameDepartment -->
                         <div id="ccg001-btn-same-workplace" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                            <button class="green flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_ONLY+`)}">
-                                <i class="icon ccg001-icon-btn-small icon-48-ofworkplace"></i>
-                                <label class="labelSmallButton">`+CCG001TextResource.CCG001_36+`</label> 
-                            </div>
-                            <span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
+                                ${CCG001TextResource.CCG001_36}
+                            </button>
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showSameDepartmentAndChild -->
                         <div id="ccg001-btn-same-workplace-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                            <button class="green flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES+`)}">
-                                <i class="icon ccg001-icon-btn-small icon-49-workplacechild"></i>
-                                <label class="labelSmallButton">`+CCG001TextResource.CCG001_37+`</label> 
-                            </div>
-                            <span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
+                                ${CCG001TextResource.CCG001_37}
+                            </button>
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showSameWorkplace -->
                         <div id="ccg001-btn-same-workplace" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                            <button class="green flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_ONLY+`)}">
-                                <i class="icon ccg001-icon-btn-small icon-48-ofworkplace"></i>
-                                <label class="labelSmallButton">`+CCG001TextResource.CCG001_38+`</label> 
-                            </div>
-                            <span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
+                                ${CCG001TextResource.CCG001_38}
+                            </button>
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showSameWorkplaceAndChild -->
                         <div id="ccg001-btn-same-workplace-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                            <button class="green flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES+`)}">
-                                <i class="icon ccg001-icon-btn-small icon-49-workplacechild"></i>
-                                <label class="labelSmallButton">`+CCG001TextResource.CCG001_39+`</label> 
-                            </div>
-                            <span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
+                                ${CCG001TextResource.CCG001_39}
+                            </button>
                         </div>
                     <!-- /ko -->
                 </div>
 
                 <div tabindex="-1" class="tab-content-2 height-maximum" data-bind="visible: showAdvancedSearchTab">
                         <div id="ccg001-tab-content-2" class="height-maximum">
-                            <div class="pull-left height-maximum" style="padding-right: 20px; overflow-y: scroll;">
+                            <div class="ccg001-tab-content-filters" style="overflow-y: scroll;">
                                 <div>
                                     <label>`+CCG001TextResource.CCG001_24+`</label>
                                 </div>
@@ -2635,18 +2618,10 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                     </div>
                                 <!-- /ko -->
                             </div>
-                            <div class="pull-left height-maximum margin-left-10 ccg001-table has-state">
-                                <div class="ccg001-cell mid">
-                                    <div id="ccg001-btn-advanced-search" class="ccg001-btn ccg-btn-vertical height-maximum"
-                                        data-bind="attr: {tabindex: ccg001Tabindex}, click: advancedSearchEmployee">
-                                        <div class="ccg001-cell mid">
-                                            <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_25+`</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="ccg001-cell mid">
-                                    <span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
-                                </div>
+                            <div class="footer-button">
+                                <button id="ccg001-btn-advanced-search" class="green" data-bind="attr: {tabindex: ccg001Tabindex}, click: advancedSearchEmployee">
+                                    ${CCG001TextResource.CCG001_25}
+                                </button>
                             </div>
                             
                             <!-- ko if: showEmployeeSelection -->
@@ -2673,7 +2648,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                         <div class="cf"></div>
                     </div>
             <div id="ccg001-tab-content-3" class="height-maximum">
-                <div id="ccg001-part-g" class="pull-left height-maximum">
+                <div id="ccg001-part-g" class="ccg001-tab-content-filters">
                     <div class="control-group ccg001-control-group">
                         <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_104+`</div>
                         <input class="ccg001-inp" id="ccg001-input-code"
@@ -2683,7 +2658,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                     valueUpdate: 'keypress',
                                     required: false
                                     }" />
-                        <button class="proceed caret-bottom pull-right" id="ccg001-tab3-search-by-code"
+                        <button class="proceed pull-right" id="ccg001-tab3-search-by-code"
                             data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByCode, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
                     </div>
                     <div class="control-group ccg001-control-group">
@@ -2695,7 +2670,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                     valueUpdate: 'keypress',
                                     required: false
                                     }" />
-                        <button class="proceed caret-bottom pull-right" id="ccg001-tab3-search-by-name"
+                        <button class="proceed pull-right" id="ccg001-tab3-search-by-name"
                             data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByName, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
                     </div>
                     <div class="cf control-group ccg001-control-group">
@@ -2708,7 +2683,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                 showNextPrevious: false,
                                 value: entryDateTab3
                                 }"/>
-                        <button class="proceed caret-bottom pull-right" id="search-by-entry-date"
+                        <button class="proceed pull-right" id="search-by-entry-date"
                             data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByEntryDate, enable: isValidEntryDateSearch">`+CCG001TextResource.CCG001_108+`</button>
                     </div>
                     <div class="cf control-group ccg001-control-group">
@@ -2720,35 +2695,24 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                 enable: true,
                                 showNextPrevious: false,
                                 value: retirementDateTab3 }"/>
-                        <button class="proceed caret-bottom pull-right" id="search-by-retirement-date"
+                        <button class="proceed pull-right" id="search-by-retirement-date"
                             data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByRetirementDate, enable: isValidRetirementDateSearch">`+CCG001TextResource.CCG001_108+`</button>
                     </div>
                     <div id="tab3kcp005"></div>
                 </div>
-                <div class="pull-right height-maximum ccg001-table has-state">
-                    <div class="ccg001-cell mid">
-                        <div id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployeesInTab3">
-                            <div class="ccg001-cell mid">
-                                <i class="icon icon-47-white-check-mark icon-ml"></i>
-                                <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_26+`</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ccg001-cell mid">
-                        <span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
-                    </div>
+                <div class="footer-button">
+                    <button id="ccg001-btn-KCP005-apply" class="green" data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployeesInTab3">
+                        ${CCG001TextResource.CCG001_26}
+                    </button>
                 </div>
             </div>
         </div>
         </div>
     </div>
     <div id="hor-scroll-button-hide">
-        <span class="position-mid ccg001-caret ccg001-caret-vertical caret-right"></span>
         <div id="ccg001-btn-search-drawer" class="position-mid ccg001-btn ccg-btn-vertical" data-bind="click: showComponent">
             <div class="ccg001-cell mid">
-            <i class="icon icon-01-searchmode icon-ml"></i>
-            <div class="ccg-lbl-vertical ccg-lbl-search-drawer">`+CCG001TextResource.CCG001_21+`</div>
+            <div class="ccg-lbl-vertical ccg-lbl-search-drawer">≫</div>
             </div>
         </div>
     </div>`;

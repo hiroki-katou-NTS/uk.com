@@ -24,14 +24,6 @@
 	padding: 0 !important;
 }
 
-.accordion {
-	width: 450px;
-}
-
-.accordion label {
-	cursor: pointer;
-}
-
 #ccg001-part-g {
 	width: 440px;
 	margin-right: 5px;
@@ -48,12 +40,12 @@
 }
 
 .ccg001-btn {
-	background-color: #2ECC71;
+	background-color: #6C6C6C;
 	color: white;
 	cursor: pointer;
 }
 .ccg001-btn:hover {
-	background-color: #2BBF6A;
+	background-color: #8C8C8C;
 }
 .ccg-btn-quick-search {
 	width: 370px;
@@ -95,21 +87,6 @@
 
 .icon-49-workplacechild {
 	background: url(icon/49_WorkplaceChild.png);
-}
-
-.labelBigButton {
-	cursor: pointer;
-	font-size: 14pt;
-	vertical-align: super;
-  color: white !important;
-}
-
-.labelSmallButton {
-	cursor: pointer;
-	font-size: 10pt;
-	vertical-align: super;
-	margin-left: 10px;
-  color: white !important;
 }
 
 .ccg001-content {
@@ -179,13 +156,8 @@
 	width: 40px;
 	cursor: pointer;
 	font-size: 18pt;
-	writing-mode: vertical-lr;
-	-ms-writing-mode: tb-lr;
   color: white !important;
   line-height: 30px;
-}
-.ccg-lbl-search-drawer {
-	height: 96px;
 }
 .ccg-lbl-extract-emp {
 	height: 50px;
@@ -242,8 +214,7 @@
 }
 
 #ccg001-btn-search-drawer {
-	height: 250px;
-	transition: height 100ms ease-in-out;
+	height: 40px;
 }
 
 #sidebar .sidebar-content #ccg001-btn-search-drawer {
@@ -267,12 +238,7 @@
 #ccgcomponent > div:first-child {
     min-width: 475px;
 }
-.tabs-content {
-  height: 83%;
-}
-#tab-panel {
-  height: 93% !important;
-}
+
 .icon-ml {
   margin-left: 3px;
 }
@@ -282,4 +248,39 @@
   .ccg-lbl-vertical {
     line-height: 23px;
   }
+}
+
+
+#component-ccg001 .tabs-content {
+	padding: 0;
+	border: none;
+	height: calc(100% - 62px); /* tabs height30 + padding15x2 */
+}
+
+.ccg001-tab-content-filters {
+	width: 400px;
+	height: calc(100% - 65px);
+}
+
+#ccg001-tab-content-3 .ccg001-tab-content-filters {
+	overflow: hidden;
+}
+
+.footer-button {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 60px;
+	background-color: #E4E4E4;
+}
+
+.footer-button button {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto 26px auto auto;
+	width: 120px;
+	height: 36px;
 }
