@@ -516,10 +516,10 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			this.fixedReasonCode = ko.observable(fixedReasonCode);
 			this.appReason = ko.observable(appReason);
 			this.start.subscribe(value => {
-				if (sub) sub();
+				if (sub) sub(true);
 			});
             this.end.subscribe(value => {
-				if (sub) sub();
+				if (sub) sub(false);
             });
 		}
 	}
