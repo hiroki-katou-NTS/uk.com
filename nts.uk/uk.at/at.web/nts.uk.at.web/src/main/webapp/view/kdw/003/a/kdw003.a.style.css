@@ -283,6 +283,10 @@
 	overflow-x: scroll;
 }
 
+#monthly-data-view th {
+	color: #000;
+}
+
 /* 残数データ */
 #holiday-agree {
 	position: absolute;
