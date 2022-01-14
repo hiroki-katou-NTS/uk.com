@@ -118,16 +118,16 @@ module nts.uk.at.view.kmr002.a.model {
 							}
 						}
 					}
+				}).then(() => {
+					if(moment(value).isBefore(moment(new Date()).format("YYYY/MM/DD"))) {
+						self.modeFuture(false);
+					} else {
+						self.modeFuture(true);
+					}
+					if(!self.modeFuture()) {
+						error({ messageId: 'Msg_2283' });	
+					}
 				});
-				
-				if(moment(value).isBefore(moment(new Date()).format("YYYY/MM/DD"))) {
-					self.modeFuture(false);
-				} else {
-					self.modeFuture(true);
-				}
-				if(!self.modeFuture()) {
-					error({ messageId: 'Msg_2283' });	
-				}
 			});
 			
 			self.currentFrameNo.subscribe(() => {

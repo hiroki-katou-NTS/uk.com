@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
+import nts.uk.shr.com.i18n.TextResource;
+
 /**
  * @author anhnm
  * 予約修正抽出条件発注無し
@@ -7,9 +9,9 @@ package nts.uk.ctx.at.record.dom.reservation.bento;
  */
 public enum ReservationCorrectNotOrder {
     
-    ALL_RESERVE(0, "予約した全部"),
+    ALL_RESERVE(0, "KMR003_54"),
     
-    MORE_THAN_2_ITEMS(1, "１商品２件以上");
+    MORE_THAN_2_ITEMS(1, "KMR003_55");
     
     public int value;
     
@@ -17,7 +19,7 @@ public enum ReservationCorrectNotOrder {
     
     ReservationCorrectNotOrder(int type,String name){
         this.value = type;
-        this.name = name;
+        this.name = TextResource.localize(name);
     }
 
 }
