@@ -405,7 +405,7 @@ module nts.uk.com.view.ccg015.b {
         selectedId: vm.selectedId(),
       };
       const size = {
-        width: Math.round(Number(window.innerWidth) * 80 / 100),
+        width: Math.round(Number(window.innerWidth) * 90 / 100),
         height: Math.round(Number(window.innerHeight) * 80 / 100),
         resizable: false, 
       }
