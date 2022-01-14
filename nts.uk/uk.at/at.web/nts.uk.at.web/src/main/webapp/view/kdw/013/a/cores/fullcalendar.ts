@@ -2251,7 +2251,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                 },
                 dropAccept: () => !!ko.unwrap(true),
-                dayHeaderContent: (opts: DayHeaderContentArg) => moment(opts.date).format('M/DD(ddd)'),
+                dayHeaderContent: (opts: DayHeaderContentArg) => moment(opts.date).format('M/D(ddd)'),
                 selectAllow: ({ start, end }) => start.getDate() === end.getDate(),
                 slotLabelContent: (opts: SlotLabelContentArg) => {
                     let { milliseconds } = opts.time;
