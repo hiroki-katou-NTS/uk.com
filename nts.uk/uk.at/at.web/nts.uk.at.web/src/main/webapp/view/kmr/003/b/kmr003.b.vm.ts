@@ -138,7 +138,7 @@ module nts.uk.at.kmr003.b {
                         if (res.exceptions[0].messageId === "Msg_2256") {
                             vm.$dialog.info({messageId: res.exceptions[0].messageId, messageParams: res.exceptions[0].params});
                         } else {
-                            vm.$dialog.info({messageId: res.exceptions[0].messageId, messageParams: res.exceptions[0].params});
+                            vm.$dialog.error({messageId: res.exceptions[0].messageId, messageParams: res.exceptions[0].params});
                         }
                         vm.listEmpInfo = res.listEmpInfo;
                         return;
