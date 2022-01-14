@@ -5,7 +5,9 @@
 
 $button-border-color: #999999;
 
-$button-normal-base-color: #fff;
+$button-normal-base-color: #CFCFCF;
+$button-proceed-base-color: #258F7E;
+$button-proceed-focus-outline: darken(saturate($button-proceed-base-color, 3), 8.55); /* #196E60; */
 $button-disabled-base-color: #888888;
 
 %btn-default {
@@ -13,7 +15,7 @@ $button-disabled-base-color: #888888;
     cursor: pointer;
     font-weight: normal;
     color: #545454;
-    background-color: #CFCFCF;
+    background-color: $button-normal-base-color;
     border-width: 0;
     border-radius: 5px;
     box-sizing: border-box;
@@ -173,15 +175,15 @@ span.button {
     &.green,
     &.proceed {
         color: #fff;
-        background-color: #258F7E;
+        background-color: $button-proceed-base-color;
 
         &:not(:disabled) {
             &:hover {
-                background-color: #229F8B;
+                background-color: lighten(saturate($button-proceed-base-color, 7), 3);/*#229F8B*/;
             }
 
             &:focus {
-                outline-color: #196E60;
+                outline-color: $button-proceed-focus-outline;
             }
         }
 

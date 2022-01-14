@@ -262,6 +262,10 @@
 	height: calc(100% - 65px);
 }
 
+#ccg001-tab-content-2 .ccg001-tab-content-filters .switchbox-wrappers > label {
+	
+}
+
 #ccg001-tab-content-3 .ccg001-tab-content-filters {
 	overflow: hidden;
 }
