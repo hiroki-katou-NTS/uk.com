@@ -15,7 +15,7 @@ module nts.uk.at.kmr003.b {
         deleteAll: KnockoutObservable<boolean> = ko.observable(false);
         bentoReservationWithEmp: any[] = [];
         listEmpInfo: any[] = [];
-        condition3: KnockoutObservable<boolean> = ko.observable(false);
+        condition3: KnockoutObservable<boolean> = ko.observable(true);
         condition4: KnockoutObservable<boolean> = ko.observable(false);
         condition5: KnockoutObservable<boolean> = ko.observable(false);
         hasErrorsGrid: KnockoutObservable<boolean> = ko.observable(false);
@@ -134,16 +134,21 @@ module nts.uk.at.kmr003.b {
             vm.$blockui('show');
             vm.$ajax(API.startCorrect, paramStart).done((res) => {
                 if (res) {
+                    if (res.exceptions.length > 0) {
+                        if (res.exceptions[0].messageId === "Msg_2256") {
+                            vm.$dialog.info({messageId: res.exceptions[0].messageId, messageParams: res.exceptions[0].params});
+                        } else {
+                            vm.$dialog.error({messageId: res.exceptions[0].messageId, messageParams: res.exceptions[0].params});
+                        }
+                        vm.listEmpInfo = res.listEmpInfo;
+                        return;
+                    }
                     vm.convertToGridData(res);
                     vm.bindGrid();
                 }
             }).fail((err) => {
                 if (err) {
-                    if (err.messageId === "Msg_2256") {
-                        vm.$dialog.info({messageId: err.messageId, messageParams: err.parameterIds});
-                    } else {
-                        vm.$dialog.error({messageId: err.messageId, messageParams: err.parameterIds});
-                    }
+                    vm.$dialog.error({messageId: err.messageId, messageParams: err.parameterIds});
                 }
             }).always(() => vm.$blockui('hide'));
         }
