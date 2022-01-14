@@ -1,4 +1,4 @@
-package nts.uk.smile.app.smilelinked.ocd.screenquery;
+package nts.uk.screen.com.app.smm.smm001.screenquery;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
