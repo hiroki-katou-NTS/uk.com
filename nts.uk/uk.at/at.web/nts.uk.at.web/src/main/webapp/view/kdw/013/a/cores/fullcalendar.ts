@@ -2726,6 +2726,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                      if ((ovrEvent && !extendedProps.isTimeBreak && !ovrEvent.extendedProps.isTimeBreak)  ||  (extendedProps.isTimeBreak && _.get(ovrEvent,'isTimeBreak',false))) {
                          arg.revert();
+                         updateEvents();
                          return;
                      }
                     
@@ -2734,6 +2735,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (extendedProps.isTimeBreak || relBk) {
                         if (arg.delta.days != 0) {
                             arg.revert();
+                            updateEvents();
                             return;
                         }
                         
@@ -2741,6 +2743,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         let orverideBreak = _.filter(breakInday, br => moment(br.start).isSameOrBefore(start) && moment(br.end).isAfter(start) && (br.extendedProps.id != extendedProps.id));
                         if (orverideBreak.length) {
                             arg.revert();
+                            updateEvents();
                             return;
                         }
                         
@@ -2752,6 +2755,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         let endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
                         if (startAsMinites < _.get(bh, 'start', 0) || endAsMinites > _.get(bh, 'end', 1440) || !moment(start).isSame(end,'days')){
                             arg.revert();
+                            updateEvents();
                             return;
                         }
                         vm.params.screenA.dataChanged(true);                        
@@ -2802,6 +2806,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             if (oEvents.length) {
                                 
                                 arg.revert();
+                                updateEvents();
                                 return;
                             }
                         }
