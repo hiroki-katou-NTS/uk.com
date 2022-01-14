@@ -2144,7 +2144,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 allDaySlot: false,
                 slotEventOverlap: false,
                 eventOverlap: true,
-                selectOverlap: false,
+                selectOverlap: true,
                 eventLimit: true,
                 views: {
                     timeGrid: {
@@ -2573,7 +2573,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             .map(({ start, end }) => ({ startTime: getTimeOfDate(start), endTime: getTimeOfDate(end) }))
                             .value();
 
-                        popupData.excludeTimes(sameDayEvent);
+                        //popupData.excludeTimes(sameDayEvent);
 
                         if (!event.extendedProps.isTimeBreak) {
                             // show popup on edit mode
@@ -2714,8 +2714,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                      let IEvents = _.chain(events())
                             .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
-                            .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
-                            .filter((evn) => { return !_.find(relatedEvents, re => re.extendedProps.id == evn.extendedProps.id) })
+                            .filter((evn) => { return evn.extendedProps.id != id })
+                            .filter((evn) => { return !_.find(relatedEvents, re => re.extendedProps.id == id) })
                             .sortBy('end')
                             .value();
 
@@ -2726,6 +2726,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                      if ((ovrEvent && !extendedProps.isTimeBreak && !ovrEvent.extendedProps.isTimeBreak)  ||  (extendedProps.isTimeBreak && _.get(ovrEvent,'isTimeBreak',false))) {
                          arg.revert();
+                         updateEvents();
                          return;
                      }
                     
@@ -2734,13 +2735,15 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (extendedProps.isTimeBreak || relBk) {
                         if (arg.delta.days != 0) {
                             arg.revert();
+                            updateEvents();
                             return;
                         }
                         
                         let breakInday = _.filter(events(), e => moment(e.start).isSame(start, 'days') && e.extendedProps.isTimeBreak);
                         let orverideBreak = _.filter(breakInday, br => moment(br.start).isSameOrBefore(start) && moment(br.end).isAfter(start) && (br.extendedProps.id != extendedProps.id));
                         if (orverideBreak.length) {
-                            vm.revertEvent([arg.oldEvent], $caches);
+                            arg.revert();
+                            updateEvents();
                             return;
                         }
                         
@@ -2751,7 +2754,8 @@ module nts.uk.ui.at.kdw013.calendar {
                         let startAsMinites = (moment(start).hour() * 60) + moment(start).minute();
                         let endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
                         if (startAsMinites < _.get(bh, 'start', 0) || endAsMinites > _.get(bh, 'end', 1440) || !moment(start).isSame(end,'days')){
-                            vm.revertEvent([arg.oldEvent], $caches);
+                            arg.revert();
+                            updateEvents();
                             return;
                         }
                         vm.params.screenA.dataChanged(true);                        
@@ -2801,7 +2805,8 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             if (oEvents.length) {
                                 
-                                 vm.revertEvent([arg.oldEvent], $caches);
+                                arg.revert();
+                                updateEvents();
                                 return;
                             }
                         }
@@ -3100,10 +3105,14 @@ module nts.uk.ui.at.kdw013.calendar {
                     let startDate = moment(_.get(data, 'workStartDate'));
                     let {lstIntegrationOfDaily} = data;
                     let editableDay =  vm.getEditableDay(start);
-                    if (startDate.isAfter(formatDate(start)) || !editableDay) {
+                    let inDayEvents = _.filter(events(), e => moment(e.start).isSame(moment(start), 'days') && !e.extendedProps.isTimeBreak);
+                    let isDuplicateEvent = _.find(inDayEvents, e => (moment(e.start).isAfter(moment(start)) && moment(e.start).isBefore(moment(end))) || (moment(e.end).isAfter(moment(start)) && moment(e.end).isBefore(moment(end))) );
+                    if (startDate.isAfter(formatDate(start)) || !editableDay || isDuplicateEvent) {
                         vm.calendar.unselect();
                         return;
                     }
+                    
+                    
 
                     // clean selection
                     vm.calendar.unselect();

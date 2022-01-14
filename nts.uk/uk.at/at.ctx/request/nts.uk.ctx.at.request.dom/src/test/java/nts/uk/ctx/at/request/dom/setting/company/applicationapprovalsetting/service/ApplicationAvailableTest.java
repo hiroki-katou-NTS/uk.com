@@ -31,6 +31,7 @@ public class ApplicationAvailableTest {
 	private ApprovalFunctionSet dataTest = new ApprovalFunctionSet(new ArrayList<>());
 	private ApplicationUseSetting itemSuccess = ApplicationUseSetting.createNew(1, 1, "dummy");
 	private ApplicationUseSetting itemFail = ApplicationUseSetting.createNew(0, 2, "dummy");
+	private ApplicationUseSetting itemNotUser = ApplicationUseSetting.createNew(0, 1, "dummy");
 	private ApplicationSetting appSetting = new ApplicationSetting(cid, null, new ArrayList<>(), new ArrayList<>(),
 											new ArrayList<>(), null, new ArrayList<>(), null);
 
@@ -166,5 +167,30 @@ public class ApplicationAvailableTest {
 
 		assertThat(result).isTrue();
 	}
+	
+	// if $申請設定.isPresent()
+		// end result = true
+		// 1 item Fail
+		// 1 item Not user
+		@Test
+		public void test7() {
+
+			dataTest.getAppUseSetLst().add(itemFail);
+			dataTest.getAppUseSetLst().add(itemNotUser);
+
+			new Expectations() {
+				{
+					require.findByCompanyId(anyString);
+					result = Optional.of(appSetting);
+
+					require.getApprovalFunctionSet(cid, sid, date, targetApp);
+					result = dataTest;
+				}
+			};
+
+			boolean result = ApplicationAvailable.get(require, cid, sid, date, targetApp);
+
+			assertThat(result).isFalse();
+		}
 
 }

@@ -130,7 +130,10 @@ public class OvertimeLeaveEncourageConfirmationService {
 		// OR ($基準終了.isEmpty AND $比較終了.isPresent)
 		// OR $基準開始 > $比較開始 OR $基準終了 < $比較終了
 		// return true
-		if ((attendance == null && start.isPresent()) || (leaveWork == null && end.isPresent()) || start.isPresent() && (attendance.v() > start.get().v())  || end.isPresent() && (leaveWork.v() < end.get().v())) {
+		if ((attendance == null && start.isPresent()) 
+				|| (leaveWork == null && end.isPresent()) 
+				|| (start.isPresent() && (attendance.v() > start.get().v()))
+				|| (end.isPresent() && (leaveWork.v() < end.get().v()))) {
 			return true;
 		}
 
