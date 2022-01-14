@@ -2714,8 +2714,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                      let IEvents = _.chain(events())
                             .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
-                            .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
-                            .filter((evn) => { return !_.find(relatedEvents, re => re.extendedProps.id == evn.extendedProps.id) })
+                            .filter((evn) => { return evn.extendedProps.id != id })
+                            .filter((evn) => { return !_.find(relatedEvents, re => re.extendedProps.id == id) })
                             .sortBy('end')
                             .value();
 
