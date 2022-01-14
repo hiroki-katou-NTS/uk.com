@@ -158,7 +158,7 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 
 		TimeSheetOfAttendanceEachOuenSheet timeSheet3 = TimeSheetOfAttendanceEachOuenSheet.create(null,
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(50))),
-				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(60))));
+				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(25))));
 
 		OuenWorkTimeSheetOfDailyAttendance att1 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet1,
 				Optional.empty());
