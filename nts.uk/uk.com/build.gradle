@@ -875,6 +875,9 @@ project (':com.screen:nts.uk.screen.com.app') {
 		compile project (':exio.ctx:nts.uk.ctx.exio.dom')
 		compile project (':exio.ctx:nts.uk.ctx.exio.app')
 		
+		compile project (':com.ctx:link:smile:nts.uk.smile.dom')
+		compile project (':com.ctx:link:smile:nts.uk.smile.app')
+		
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: version
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
