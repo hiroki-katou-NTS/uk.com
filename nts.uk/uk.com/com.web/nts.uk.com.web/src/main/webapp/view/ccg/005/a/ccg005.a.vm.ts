@@ -335,25 +335,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
     .ccg005-fs-biger div.form-label>span.text {
       font-size: 1rem;
     }
-    .widget-container > #ccg005-watching > #ccg005-content table tr td {
-      border-width: 1px !important;
-    } 
-
-    .ccg005-border-groove {
-      border: 1px groove !important;
-    }
-
-    .ccg005-right-unset {
-      border-right: none !important;
-    }
-
-    .ccg005-left-unset {
-      border-left: none !important;
-    }
-
-    .ccg005-bottom-unset {
-      border-bottom: none !important;
-    }
 
     .ccg005-w100 {
       width: 100px;
