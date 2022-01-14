@@ -333,7 +333,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       display: block;
     }
     .ccg005-fs-biger div.form-label>span.text {
-      font-size: 1.2rem;
+      font-size: 1rem;
     }
     .widget-container > #ccg005-watching > #ccg005-content table tr td {
       border-width: 1px !important;
@@ -491,6 +491,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     #A2_3 .ntsDatePickerButton { height: 30px !important; }
+
+	.nts-datepicker-wrapper .ntsDateNextButton,
+	.nts-datepicker-wrapper .ntsDatePrevButton {
+	  padding: 0px 3px;
+	  font-size: 1rem;
+	}
 
   </style>`
   })

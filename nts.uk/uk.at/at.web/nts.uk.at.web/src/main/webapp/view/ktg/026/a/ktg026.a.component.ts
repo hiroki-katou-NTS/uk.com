@@ -437,6 +437,12 @@ module nts.uk.at.view.ktg026.a {
                     background-color: #FF99CC; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
+
+				.ktg-026-a div.nts-datepicker-wrapper .ntsDateNextButton,
+				.ktg-026-a div.nts-datepicker-wrapper .ntsDatePrevButton {
+				  padding: 0px 3px;
+				  font-size: 1rem;
+				}
             </style>
             <style data-bind="html: $component.chartStyle"></style>
         `

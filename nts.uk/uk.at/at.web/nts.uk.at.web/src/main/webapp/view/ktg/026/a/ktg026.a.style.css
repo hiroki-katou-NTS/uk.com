@@ -54,9 +54,3 @@ body {
 #master-wrapper .ktg-026-dialog .widget-content.ui-resizable .ui-resizable-handle {
   display: none !important;
 }
-
-.ktg-026-a div.nts-datepicker-wrapper .ntsDateNextButton,
-.ktg-026-a div.nts-datepicker-wrapper .ntsDatePrevButton {
-  padding: 0px 3px;
-  font-size: 1rem;
-}
