@@ -1057,6 +1057,7 @@ module nts.uk.at.kdp003.a {
 					// login by employeeCode
 					// <mode> 一覧にない社員で打刻する
 					return vm.$window.modal('at', DIALOG.F, {
+						passwordRequired: vm.fingerStampSetting().stampSetting.passwordRequiredArt,
 						mode: 'employee',
 						companyId: data.CID,
 						employee: employee ? { id: employee.employeeId, code: employee.employeeCode, name: employee.employeeName } : null

@@ -1,6 +1,13 @@
 package nts.uk.file.at.infra.vacation.set.subst;
 
-import nts.arc.i18n.I18NText;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.file.at.app.export.vacation.set.EmployeeSystemImpl;
@@ -10,13 +17,6 @@ import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
-
-import javax.ejb.Stateless;
-import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Stateless
 public class JpaEmYearRetenSetRepository  extends JpaRepository implements EmplYearlyRetenSetRepository {
@@ -44,7 +44,7 @@ public class JpaEmYearRetenSetRepository  extends JpaRepository implements EmplY
                     .getList(x -> buildARow(
                             x.getString("EMPCD")
                             ,x.getString("NAME")
-                            ,CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(x.getString("MANAGE_ATR")))
+                            ,CommonTempHolidays.getTextEnumManageDistinct(x.getBoolean("MANAGE_ATR") ? 1 : 0)
                     ));
 
         } catch (Exception e) {
