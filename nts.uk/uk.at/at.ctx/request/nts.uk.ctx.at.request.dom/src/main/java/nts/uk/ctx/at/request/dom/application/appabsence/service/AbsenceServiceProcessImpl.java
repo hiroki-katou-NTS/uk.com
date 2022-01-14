@@ -481,10 +481,11 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     				throw new BusinessException("Msg_1715", empEmployeeAdapter.findByEmpId(appAbsence.getEmployeeID()).getEmployeeName(), checkDate.toString("yyyy/MM/dd"));
     			}
     		}
-    	}else {
-    		//その他場合
-    		throw new BusinessException("Msg_1715", empEmployeeAdapter.findByEmpId(appAbsence.getEmployeeID()).getEmployeeName(), listDatesCheck.get(0).toString("yyyy/MM/dd"));
     	}
+//    	else {
+//    		//その他場合
+//    		throw new BusinessException("Msg_1715", empEmployeeAdapter.findByEmpId(appAbsence.getEmployeeID()).getEmployeeName(), listDatesCheck.get(0).toString("yyyy/MM/dd"));
+//    	}
     	
     	// 申請全般登録時チェック処理
     	TimeDigestionParam timeDigestionParam = new TimeDigestionParam();

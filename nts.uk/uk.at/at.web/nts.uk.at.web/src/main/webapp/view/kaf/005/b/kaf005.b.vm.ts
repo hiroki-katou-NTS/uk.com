@@ -393,7 +393,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                         vm.multipleOvertimeContents([]);
                         res.appOverTime.multipleOvertimeContents.forEach((i: any) => {
                         	vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
-                                () => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+                                () => {
+                                    vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+                                    vm.checkMultipleRow();
+                                },
                                 i.frameNo,
                                 i.startTime,
                                 i.endTime,
@@ -455,7 +458,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                 fixedReasonCode = defaultReasonTypeItem.appStandardReasonCD;
             }
             vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
-                () => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+                () => {
+                    vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+                    vm.checkMultipleRow();
+                },
                 1,
                 null,
                 null,
@@ -473,6 +479,30 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                 vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
             }
             vm.multipleOvertimeContents.remove(data);
+            vm.checkMultipleRow();
+        }
+
+        checkMultipleRow() {
+            const vm = this;
+            vm.multipleOvertimeContents().forEach((i, idx) => {
+                // clear error before check
+                vm.$errors('clear', '#A15_3_' + idx);
+                vm.$errors('clear', '#A15_5_' + idx);
+
+                // check value this row
+                if (_.isNumber(i.start()) && _.isNumber(i.end()) && i.start() > i.end()) {
+                    vm.$errors('#A15_5_' + idx, 'Msg_307');
+                }
+
+                // check value previous row
+                if (idx > 0) {
+                    if (_.isNumber(i.start())
+                        && _.isNumber(vm.multipleOvertimeContents()[idx - 1].end())
+                        && i.start() < vm.multipleOvertimeContents()[idx - 1].end()) {
+                        vm.$errors('#A15_3_' + idx, {messageId: 'Msg_3281', messageParams: [idx.toString(), (idx + 1).toString()]});
+                    }
+                }
+            });
         }
 
 		assignWorkHourAndRest(isChangeDate?: boolean) {
@@ -530,7 +560,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				'#kaf000-a-component3-prePost',
 			 	'#kaf000-a-component5-comboReason',
 				'#inpStartTime1',
-				'#inpEndTime1')
+				'#inpEndTime1',
+                 '.inputTime-kaf005')
             .then((isValid) => {
                 if (isValid) {
 					// validate riêng cho màn hình
@@ -586,21 +617,6 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							
 					// 	}
 					// }
-
-                    if (vm.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
-                        let error = false;
-                        vm.multipleOvertimeContents().forEach((i, idx) => {
-                            if (!!i.start() && !i.end()) {
-                                vm.$errors('#A15_5_' + idx, 'Msg_307');
-                                error = true;
-                            }
-                            if (!i.start() && !!i.end()) {
-                                vm.$errors('#A15_3_' + idx, 'Msg_307');
-                                error = true;
-                            }
-                        });
-                        if (error) return false;
-                    }
 					
 					// wokr type or worktime null
 					if (vm.visibleModel.c7()) {
@@ -1551,21 +1567,6 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		
 		calculate() {
 			const self = this;
-
-            if (self.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
-                let error = false;
-                self.multipleOvertimeContents().forEach((i, idx) => {
-                    if (!!i.start() && !i.end()) {
-                        self.$errors('#A15_5_' + idx, 'Msg_307');
-                        error = true;
-                    }
-                    if (!i.start() && !!i.end()) {
-                        self.$errors('#A15_3_' + idx, 'Msg_307');
-                        error = true;
-                    }
-                });
-                if (error) return;
-            }
 
 			self.$blockui("show");
 			console.log('calculate');
