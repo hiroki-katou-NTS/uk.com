@@ -70,12 +70,12 @@ module nts.uk.com.view.ktg031.a {
                   </td>
                   <td class="border-after"></td>
                   <td class="column-action">
-                    <button style="color: #79E68B; border: 1px solid;" class="small" data-bind="
+                    <button style="border: 1px solid;" class="small" data-bind="
                       visible: isReaded,
                       text: $component.$i18n('KTG031_41'),
                       click: changeReadStatus">
                     </button>
-                    <button style="color: #79E68B; border: 1px solid;" class="small" data-bind="
+                    <button style="border: 1px solid;" class="small" data-bind="
                       visible: !isReaded(),
                       text: $component.$i18n('KTG031_42'),
                       click: changeReadStatus">
