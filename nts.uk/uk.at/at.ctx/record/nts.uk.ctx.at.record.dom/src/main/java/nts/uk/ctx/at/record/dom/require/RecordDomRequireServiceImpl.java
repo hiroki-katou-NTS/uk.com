@@ -2456,7 +2456,6 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 					isCalcAttendanceRate);
 		}
 
-		@Override
 
 		@Override
 		public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
