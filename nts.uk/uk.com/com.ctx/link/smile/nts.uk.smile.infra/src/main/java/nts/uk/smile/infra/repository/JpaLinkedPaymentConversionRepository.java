@@ -110,7 +110,7 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public List<EmploymentAndLinkedMonthSetting> getByPaymentCode(String contractCode, String companyId) {
+	public List<EmploymentAndLinkedMonthSetting> get(String contractCode, String companyId) {
 		return this.queryProxy().query(GET_BY_CONTRACT_AND_CID, LsmmtEmplinkMonthSet.class)
 				.setParameter("contractCd", contractCode).setParameter("cid", companyId)
 				.getList(e -> new EmploymentAndLinkedMonthSetting(

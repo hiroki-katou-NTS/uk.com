@@ -55,5 +55,5 @@ public interface LinkedPaymentConversionRepository {
 	 * @param code      会社ID
 	 * @return
 	 */
-	List<EmploymentAndLinkedMonthSetting> getByPaymentCode(String contractCode, String companyId);
+	List<EmploymentAndLinkedMonthSetting> get(String contractCode, String companyId);
 }

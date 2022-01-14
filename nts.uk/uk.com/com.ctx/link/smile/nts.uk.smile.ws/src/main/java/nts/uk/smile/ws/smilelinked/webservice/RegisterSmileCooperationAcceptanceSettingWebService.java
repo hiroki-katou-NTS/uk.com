@@ -7,16 +7,17 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.DailyRecordOperationFinder;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.DailyRecordOperationDto;
+import nts.uk.smile.app.smilelinked.ocd.screencommand.RegisterSmileCooperationAcceptanceSettingScreenCommand;
 
-@Path("at/record/DailyRecordOperation")
+@Path("at/record/RegisterSmileCooperationAcceptanceSettingWebService")
 @Produces("application/json")
 public class RegisterSmileCooperationAcceptanceSettingWebService {
 	@Inject
-	private DailyRecordOperationFinder dailyRecordOperationFinder;
+	private RegisterSmileCooperationAcceptanceSettingScreenCommand screenQuery;
 
 	@POST
-	@Path("getSettingUnit")
-	public DailyRecordOperationDto getSettingUnit() {
-		return this.dailyRecordOperationFinder.getSettingUnit();
+	@Path("get")
+	public void get() {
+		this.screenQuery.get();
 	}
 }
