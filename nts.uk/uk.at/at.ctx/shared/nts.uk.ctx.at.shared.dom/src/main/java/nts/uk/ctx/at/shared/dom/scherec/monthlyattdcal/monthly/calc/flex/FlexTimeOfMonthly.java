@@ -1748,8 +1748,8 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 								val nextAttendanceTime = nextAttendanceTimeList.get(nextAttendanceTimeList.size() - 1);
 								val nextAggrTime = nextAttendanceTime.getMonthlyCalculation().getAggregateTime();
 								
-								// 「実績から参照」　かつ　翌月の実績から取得出来たら、その計画所定労働時間を採用する
-								nextPredMinutes = nextAggrTime.getPrescribedWorkingTime().getSchedulePrescribedWorkingTime().v();
+								// 「実績から参照」　かつ　翌月の実績から取得出来たら、その実績所定労働時間を採用する
+								nextPredMinutes = nextAggrTime.getPrescribedWorkingTime().getRecordPrescribedWorkingTime().v();
 							}
 						}
 						
