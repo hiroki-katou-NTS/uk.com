@@ -2714,8 +2714,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                      let IEvents = _.chain(events())
                             .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
-                            .filter((evn) => { return evn.extendedProps.id != id })
-                            .filter((evn) => { return !_.find(relatedEvents, re => re.extendedProps.id == id) })
+                            .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
+                            .filter((evn) => { return !_.find(relatedEvents, re => re.extendedProps.id == extendedProps.id) })
                             .sortBy('end')
                             .value();
 
@@ -3004,8 +3004,21 @@ module nts.uk.ui.at.kdw013.calendar {
                         $caches.new(event);
                         return;
                     }
+
+                    let dEvents =
+                        _.chain(events())
+                            .filter((evn) => { return moment(evn.start).isSame(start, 'days') })
+                            .filter((evn) => { return moment(start).isBefore(evn.start) && moment(end).isAfter(evn.start) && moment(end).isSameOrBefore(evn.end) })
+                            .filter((evn) => { return !evn.extendedProps.isTimeBreak })
+                            .sortBy('end')
+                            .value();
+
+                    if (dEvents.length) {
+                        arg.revert();
+                        return;
+                    }
                     
-                    //check override
+                  //check override
                     
                   let oEvents =  
                   _.chain(events())
@@ -3015,6 +3028,8 @@ module nts.uk.ui.at.kdw013.calendar {
                   .value();
                   
                   if (oEvents.length) {
+                      
+                      let setDataEvents = [event];
                       let [first] = oEvents;
                       //set end time for min start event
                       let currentEvent = _.find(vm.calendar.getEvents(), ['extendedProps.id', extendedProps.id]);
@@ -3023,9 +3038,7 @@ module nts.uk.ui.at.kdw013.calendar {
                       let last = _.last(oEvents);
                       //check if end > lastOverridedEvent end
                       if (moment(last.end).isBefore(moment(end))) {
-                          
-                          vm.calendar
-                              .addEvent({
+                          let lEvent = {
                                   id: randomId(),
                                   backgroundColor,
                                   title,
@@ -3034,7 +3047,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                   borderColor,
                                   groupId,
                                   extendedProps
-                              });
+                              };
+                          vm.calendar.addEvent(lEvent);
+                          setDataEvents.push(lEvent);
                       }
 
                       //if oEvents.length >=2, need create event between it 
@@ -3047,14 +3062,12 @@ module nts.uk.ui.at.kdw013.calendar {
                               let nEvent = oEvents[i + 1];
                               if (moment(cEvent.end).isBefore(moment(nEvent.start)))
                                   spaces.push({ start: cEvent.end, end: nEvent.start });
-                              
                           }
 
                           //after get space, create event
                           _.forEach(spaces, ({start,end}) => {
-                              vm.calendar
-                                  .addEvent({
-                                      id: randomId(),
+                              let spaceEvent = {
+                                  id: randomId(),
                                       backgroundColor,
                                       title,
                                       start,
@@ -3062,10 +3075,74 @@ module nts.uk.ui.at.kdw013.calendar {
                                       borderColor,
                                       groupId,
                                       extendedProps
-                                  });
+                              }
+                              vm.calendar.addEvent(spaceEvent);
+                              setDataEvents.push(spaceEvent);
                           });
                       }
+                      mutatedEvents();
+                      let tempEs = [...events()];
 
+                      for (let i = 0; i < setDataEvents.length; i++) {
+                          let getFrameNo = (nos) => {
+                              let vm = this;
+                              let data = ko.unwrap(vm.params.$datas());
+                              let {lstIntegrationOfDaily} = data;
+                              let maxNo = 20;
+                              let resultNo;
+                              for (let i = 1; i <= maxNo; i++) {
+                                  let event = nos.indexOf(i) != -1;
+                                  let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(start).isSame(moment(id.ymd), 'days'); });
+                                  let ouenTime = _.find(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null && ot.workNo == i)
+                                  if (!event && !ouenTime) {
+                                      resultNo = i;
+                                      break;
+                                  }
+                              }
+                              return resultNo;
+                          };
+                          
+                          let cEvent = _.find(tempEs, tempE => tempE.extendedProps.id == setDataEvents[i].id);
+                          cEvent.extendedProps.isChanged = true;
+                          cEvent.extendedProps.taskBlock.caltimeSpan = { start: cEvent.start, end: cEvent.end };
+                          cEvent.extendedProps.period = { start: cEvent.start, end: cEvent.end };
+                          let frameNos = [];
+                          
+                          _.forEach(_.chain(events()).filter((evn) => { return moment(evn.start).isSame(start, 'days') }).value(), e => {
+                              _.forEach(e.extendedProps.taskBlock.taskDetails, td => {
+                                  frameNos.push(td.supNo);
+                              });
+                          });
+                          
+                          
+                          
+                          _.forEach(cEvent.extendedProps.taskBlock.taskDetails, td => {
+                              let newFN = getFrameNo(frameNos);
+                              frameNos.push(newFN);
+                              td.supNo = newFN;
+                          });
+                          
+                          let it = _.find(_.get(cEvent, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
+                          let refTimezone = { start: (moment(cEvent.start).hour() * 60) + moment(cEvent.start).minute(), end: (moment(cEvent.end).hour() * 60) + moment(cEvent.end).minute() };
+                          let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(cEvent.start), 'days'));
+                          let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                          _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                              goOutBreakTimeLst.push({ start, end });
+                          });
+                          let calParam = { refTimezone, goOutBreakTimeLst };
+
+                          vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                              it.value = time;
+                              if (i == setDataEvents.length - 1) {
+                                  events(tempEs);
+                                  updateEvents();
+                              }
+                          });
+                          
+                      }
+                      
+                      
+                      return;
                   }
                   _.find(vm.calendar.getEvents() , e => e.extendedProps.id == extendedProps.id).setExtendedProp('isChanged', true);
                   // update data sources
