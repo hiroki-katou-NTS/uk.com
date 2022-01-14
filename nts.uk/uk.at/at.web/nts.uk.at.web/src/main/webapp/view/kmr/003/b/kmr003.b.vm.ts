@@ -141,7 +141,7 @@ module nts.uk.at.kmr003.b {
                             vm.$dialog.error({messageId: res.exceptions[0].messageId, messageParams: res.exceptions[0].params});
                         }
                         vm.listEmpInfo = res.listEmpInfo;
-                        return;
+                        // return;
                     }
                     vm.convertToGridData(res);
                     vm.bindGrid();
