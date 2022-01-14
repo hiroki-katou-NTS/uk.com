@@ -1,12 +1,5 @@
 package nts.uk.screen.com.ws.smm001;
 
-import lombok.val;
-import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.auth.dom.role.Role;
-import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuSimpleDto;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTies;
-import nts.uk.screen.com.app.find.ccg005.attendance.data.DisplayAttendanceDataDto;
-import nts.uk.screen.com.app.find.webmenu.webmenu.*;
 import nts.uk.screen.com.app.smm.smm001.screencommand.RegisterSmileCooperationAcceptanceSettingScreenCommand;
 import nts.uk.screen.com.app.smm.smm001.screencommand.RegisterSmileCooperationAcceptanceSettingScreenCommandHandle;
 import nts.uk.screen.com.app.smm.smm001.screencommand.RegisterSmileLinkageExternalIOutputScreenCommand;
@@ -71,5 +64,4 @@ public class Smm001WebService {
 	public EmploymentChoiceDto selectAPaymentDateScreenQuery(Integer paymentCode) {
 		return selectAPaymentDateScreenQuery.get(paymentCode);
 	}
-
 }

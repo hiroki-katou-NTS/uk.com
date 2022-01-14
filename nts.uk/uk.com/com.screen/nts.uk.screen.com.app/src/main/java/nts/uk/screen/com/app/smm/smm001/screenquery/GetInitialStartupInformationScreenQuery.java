@@ -8,15 +8,12 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.exio.app.find.exi.condset.StdAcceptCondSetDto;
 import nts.uk.ctx.exio.app.find.exi.condset.StdAcceptCondSetFinder;
-import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
-import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
+//import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.ctx.exio.dom.exi.condset.SystemType;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceClassification;
 import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSetting;
 import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSettingRepository;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSetting;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingRepository;
+//import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingRepository;
 
 /**
  * Smile連携受入外部出設定を登録する
@@ -29,11 +26,11 @@ public class GetInitialStartupInformationScreenQuery {
 	@Inject
 	private SmileCooperationAcceptanceSettingRepository smileCooperationAcceptanceSettingRepository;
 
-	@Inject
-	private SmileLinkageOutputSettingRepository smileLinkageOutputSettingRepository;
-
-	@Inject
-	private StdAcceptCondSetRepository stdAcceptCondSetRepository;
+//	@Inject
+//	private SmileLinkageOutputSettingRepository smileLinkageOutputSettingRepository;
+//
+//	@Inject
+//	private StdAcceptCondSetRepository stdAcceptCondSetRepository;
 	
 	@Inject
 	private StdAcceptCondSetFinder acceptCondSetFinder;

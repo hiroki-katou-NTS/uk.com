@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import nts.uk.ctx.exio.app.find.exi.condset.StdAcceptCondSetDto;
-import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSetting;
 
 /**
  * 起動のOutput
