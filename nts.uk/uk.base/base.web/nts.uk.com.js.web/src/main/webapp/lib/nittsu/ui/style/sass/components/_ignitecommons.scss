@@ -1,3 +1,10 @@
+%ig_table_header_thtd {
+	background-color: #6A6A6A;
+	color: #fff;
+	font-weight: 300;
+}
+
+
 @mixin iggridstyle {
 	table {
 		tr {
@@ -21,12 +28,8 @@
 
 		thead {
 			tr {
-				background-color: #6A6A6A;
-
 				th, td {
-					background-color: transparent; /* jQuery UIの背景色を無効化するため */
-					color: #fff;
-					font-weight: 300;
+					@extend %ig_table_header_thtd;
 				}
 			}
 		}
