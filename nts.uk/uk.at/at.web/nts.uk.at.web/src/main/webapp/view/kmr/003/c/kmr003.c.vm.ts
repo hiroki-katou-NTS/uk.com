@@ -102,6 +102,7 @@ module nts.uk.at.kmr003.c {
                 vm.gridOptions.dataSource.push(item);
             }
 
+            vm.gridOptions.dataSource = _.sortBy(vm.gridOptions.dataSource, ['employeeCode']);
             vm.gridOptions.features.push(columnFixing);
             vm.gridOptions.features.push(headerStyle);
             vm.gridOptions.features.push({ name: 'CellStyles', states: cellStates });

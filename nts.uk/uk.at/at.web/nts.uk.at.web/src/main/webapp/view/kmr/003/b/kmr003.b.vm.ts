@@ -265,7 +265,7 @@ module nts.uk.at.kmr003.b {
                 cellStates.push({ rowId: empId, columnKey: 'deleteFlg', state: ['align-center'] });
                 cellStates.push({ rowId: empId, columnKey: 'ordered', state: ['align-center'] });
             }
-            vm.gridOptions.dataSource = _.sortBy(vm.gridOptions.dataSource, ['employeeId']);
+            vm.gridOptions.dataSource = _.sortBy(vm.gridOptions.dataSource, ['employeeCode']);
             vm.gridOptions.features.push(columnFixing);
             vm.gridOptions.features.push(headerStyle);
             vm.gridOptions.features.push({ name: 'CellStyles', states: cellStates });
