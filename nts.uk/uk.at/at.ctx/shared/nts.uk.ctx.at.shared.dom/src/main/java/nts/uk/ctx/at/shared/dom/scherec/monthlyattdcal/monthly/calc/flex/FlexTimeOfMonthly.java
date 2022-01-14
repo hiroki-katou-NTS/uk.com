@@ -893,7 +893,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		}
 		
 		/** 所定労働時間を集計する */
-		prescribedWorkingTimeMonth =  aggregateTotalWorkingTime.getPrescribedWorkingTime().getTotalSchedulePrescribedWorkingTime(datePeriod);
+		prescribedWorkingTimeMonth =  aggregateTotalWorkingTime.getPrescribedWorkingTime().getTotalRecordPrescribedWorkingTime(datePeriod);
 		
 		/** 代休時間を控除する */
 		val compen =  settingsByFlex.getFlexAggregateMethodMonthly().getCompensatoryTimeSet().getSubtractedTime(
