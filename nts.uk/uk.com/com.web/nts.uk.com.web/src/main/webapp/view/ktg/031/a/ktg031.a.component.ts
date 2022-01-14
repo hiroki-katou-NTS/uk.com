@@ -41,7 +41,7 @@ module nts.uk.com.view.ktg031.a {
               </th>
               <th>
                 <div data-bind="if: $component.isEmployee">
-                  <i class="img-icon" style="vertical-align: middle;" data-bind="ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openDialogSetting"></i>
+                  <i class="img-icon" style="vertical-align: middle;" data-bind="ntsIcon: {no: 4, width: 20, height: 20}, click: $component.openDialogSetting"></i>
                 </div>
               </th>
             </tr>
@@ -95,7 +95,7 @@ module nts.uk.com.view.ktg031.a {
           vertical-align: middle;
         }
         .ktg031-fontsize div.form-label>span.text {
-          font-size: 1.2rem !important;
+          font-size: 1rem !important;
         }
         .border-before,
         .border-after {
@@ -150,7 +150,7 @@ module nts.uk.com.view.ktg031.a {
           justify-content: space-between;
         }
         #ktg031-container .body .body-top-row .body-top-label .label {
-          font-size: 1.2rem;
+          font-size: 1rem;
         }
         #ktg031-container .body .body-top-row .body-top-label .img-icon:hover {
           cursor: pointer;

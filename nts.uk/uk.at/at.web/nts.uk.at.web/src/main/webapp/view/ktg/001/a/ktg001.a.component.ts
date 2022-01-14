@@ -91,7 +91,7 @@ module nts.uk.ui.ktg001.a {
                                         click : $component.setting,
                                         visible: $component.settingIconVisible
                                     ">
-                                    <i data-bind="ntsIcon: { no: 5, width: 25, height: 25 }"></i>
+                                    <i data-bind="ntsIcon: { no: 4, width: 20, height: 20 }"></i>
                                 </button>
                             </th>
                         </tr>
@@ -99,7 +99,7 @@ module nts.uk.ui.ktg001.a {
                 </table>
             </div>
             <div class="ktg-001-a ktg001-fontsize" data-bind="widget-content: 100">
-                <div class="ktg001-border" style="padding: 0px 40px 0px 30px;">
+                <div class="ktg001-border" class="widget-content-list">
                     <table style="width: 100%;">
                         <colgroup>
                             <col width="1%" />
@@ -107,7 +107,7 @@ module nts.uk.ui.ktg001.a {
                         </colgroup>
                         <tbody>
                             <tr data-bind="visible: $component.appRowVisible() || $component.aggrRowVisible()">
-                                <td colspan="3" style="border-bottom: 1px solid #BFBFBF;">
+                                <td colspan="3">
                                     <div class="label font-size-sm" data-bind="text: $i18n('KTG001_13')"></div>
                                 </td>
                             </tr>
@@ -278,7 +278,7 @@ module nts.uk.ui.ktg001.a {
                     border: none !important;
                 }
                 .ktg001-fontsize-larger div.form-label>span.text {
-                    font-size: 1.2rem !important;
+                    font-size: 1rem !important;
                 }
                 .ktg001-fontsize div.form-label>span.text {
                     font-size: 1rem !important;
@@ -432,14 +432,6 @@ module nts.uk.ui.ktg001.a {
                             .removeAttr('data-bind');
                         _.forEach($(".row-show td"), element => $(element).removeClass("ktg001-no-border"));    
                         _.forEach($($(".row-show").last().children()), element => $(element).addClass("ktg001-no-border"));
-						if (vm.aggrRowVisible()) {
-                            $(".row-header").last().children().css('border-bottom', '1px solid #BFBFBF');
-                        } else {
-                            $(".row-header").last().children().css('border-bottom', 'none');
-                        }
-						$(".row-day").last().children().css('border-bottom', '1px solid #BFBFBF');
-						$(".row-month").last().children().css('border-bottom', '1px solid #BFBFBF');
-						$(".row-approval").last().children().css('border-bottom', '1px solid #BFBFBF');
                     });
                 })
                 .always(() => {

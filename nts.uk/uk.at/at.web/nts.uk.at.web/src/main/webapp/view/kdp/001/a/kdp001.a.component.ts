@@ -71,7 +71,7 @@ module nts.uk.ui.kdp001.a {
     @component({
         name: 'kdp-001-a',
         template: `
-            <div class="kdp-001-a widget-title">
+            <div class="kdp-001-a kdp-001-a-title">
                 <div class="text-time" data-bind="i18n: 'KDP001_5', 
                             css: { 'ie': $component.state() === 'IE' , 'not-ie': $component.state() === 'NOT_IE'}"></div>
                 <div class="date" data-bind="date: $component.time.now, format: 'YYYY/MM/DD(ddd)', attr: { style: $component.time.style }"></div>
@@ -214,7 +214,7 @@ module nts.uk.ui.kdp001.a {
                 .not-ie {
                     top: -23px;
                 }
-                .widget-title {
+                .kdp-001-a-title {
                     position: relative;
                     width: 450px;
                     margin: auto;
@@ -230,7 +230,7 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a .text-center {
                     text-align: center;
                 }
-                .kdp-001-a.widget-title th {
+                .kdp-001-a.kdp-001-a-title th {
                     font-size: 16px;
                 }
                 .kdp-001-a.kdp-001-a-msg {
@@ -371,32 +371,32 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a-potal.widget-content table td:not(:last-child) {
                     text-align: center;
                 }
-                .kdp-001-a.widget-title .text-time {
+                .kdp-001-a.kdp-001-a-title .text-time {
                     position: absolute;
                     font-size: 70px;
                     color: #E5F7F9;
                     right: 22px;
                 }
-                .kdp-001-a.widget-title .date {
+                .kdp-001-a.kdp-001-a-title .date {
                     text-align: left;
                     padding-left: 130px;
                     color: #7F7F7F;
                     font-size: 15px;
                 }
-                .kdp-001-a.widget-title .hours-minutes {
+                .kdp-001-a.kdp-001-a-title .hours-minutes {
                     box-sizing: border-box;
                     color: #7F7F7F;
                     font-size: 55px;
                     line-height: 60px;  
                 }
-                .kdp-001-a.widget-title .seconds {
+                .kdp-001-a.kdp-001-a-title .seconds {
                     box-sizing: border-box;
                     font-size: 35px;
                     color: #7F7F7F;
                     position: relative;
                     z-index: 1;
                 }
-                .kdp-001-a.widget-title .button-link {
+                .kdp-001-a.kdp-001-a-title .button-link {
                     text-align: center;
                     padding-left: 340px;
                     padding-bottom: 5px;
@@ -410,7 +410,7 @@ module nts.uk.ui.kdp001.a {
                 .has-info-short {
                     overflow-y: hidden;
                 }
-				.kdp-001-a.widget-title .button-link a {
+				.kdp-001-a.kdp-001-a-title .button-link a {
 					color: #0000EE;
 				}
             </style>

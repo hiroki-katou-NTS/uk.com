@@ -40,7 +40,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </th>
             <th>
               <!-- A1_5 -->
-              <i tabindex=3 style="position: relative; right: 0; top: 5px;" data-bind="visible: $component.inCharge, ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
+              <i tabindex=3 style="position: relative; right: 0; top: 5px;" data-bind="visible: $component.inCharge, ntsIcon: {no: 4, width: 20, height: 20}, click: $component.openScreenCCG005B"></i>
             </th>
           </tr>
         </thead>

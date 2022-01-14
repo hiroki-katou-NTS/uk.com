@@ -363,7 +363,7 @@ module nts.uk.at.view.ktg026.a {
                     font-size: 1rem;
                 }
                 .ktg026-fontsize div.form-label>span.text {
-                    font-size: 1.2rem !important;
+                    font-size: 1rem !important;
                 }
                 .ktg026-hidden {
                     display: none;
