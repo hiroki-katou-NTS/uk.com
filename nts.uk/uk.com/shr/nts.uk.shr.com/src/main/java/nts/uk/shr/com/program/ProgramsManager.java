@@ -2880,6 +2880,12 @@ public class ProgramsManager {
      */
     public static final Program KMR004A = new Program(WebAppId.AT, ProgramIdConsts.KMR004A, "KMR004_40",
             "/view/kmr/004/a/index.xhtml");
+    
+    /**
+     * KMR005
+     */
+    public static final Program KMR005A = new Program(WebAppId.AT, ProgramIdConsts.KMR005A, "KMR005_1",
+            "/view/kmr/005/a/index.xhtml");
 
     /**
      * KWR002
