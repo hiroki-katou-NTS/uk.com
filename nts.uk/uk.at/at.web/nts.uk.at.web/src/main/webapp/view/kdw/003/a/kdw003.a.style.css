@@ -283,10 +283,6 @@
 	overflow-x: scroll;
 }
 
-#monthly-data-view th {
-	color: #000;
-}
-
 /* 残数データ */
 #holiday-agree {
 	position: absolute;
@@ -320,6 +316,7 @@
 #monthly-data-view .ui-iggrid-header,
 #holiday-agree .ui-widget-header {
 	background-color: #fff;
+	color: #000;
 }
 
 #monthly-data-view .ui-iggrid-header .ui-iggrid-headertext,
