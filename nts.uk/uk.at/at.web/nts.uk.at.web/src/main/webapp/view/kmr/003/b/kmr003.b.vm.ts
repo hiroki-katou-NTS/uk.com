@@ -38,16 +38,16 @@ module nts.uk.at.kmr003.b {
 
             if (vm.orderMngAtr()) {
                 let conditions: any[] = [
-                    { 'id': ReservationCorrect.ALL_RESERVE, 'name': '予約した全部' },
-                    { 'id': ReservationCorrect.MORE_THAN_2_ITEMS, 'name': '１商品２件以上' },
-                    { 'id': ReservationCorrect.ORDER, 'name': '発注済み' },
-                    { 'id': ReservationCorrect.NOT_ORDERING, 'name': '未発注' }
+                    { 'id': ReservationCorrect.ALL_RESERVE, 'name': vm.$i18n('KMR003_54') },
+                    { 'id': ReservationCorrect.MORE_THAN_2_ITEMS, 'name': vm.$i18n('KMR003_55') },
+                    { 'id': ReservationCorrect.ORDER, 'name': vm.$i18n('KMR003_56') },
+                    { 'id': ReservationCorrect.NOT_ORDERING, 'name': vm.$i18n('KMR003_57') }
                 ];
                 vm.extractionConditions(conditions);
             } else {
                 let conditions: any[] = [
-                    { 'id': ReservationCorrectNotOrder.ALL_RESERVE, 'name': '予約した全部' },
-                    { 'id': ReservationCorrectNotOrder.MORE_THAN_2_ITEMS, 'name': '１商品２件以上' }
+                    { 'id': ReservationCorrectNotOrder.ALL_RESERVE, 'name': vm.$i18n('KMR003_54') },
+                    { 'id': ReservationCorrectNotOrder.MORE_THAN_2_ITEMS, 'name': vm.$i18n('KMR003_55') }
                 ];
                 vm.extractionConditions(conditions);
             }
