@@ -69,6 +69,7 @@ public class StartReservationCorrectQuery {
      * @return
      */
     public StartReservationCorrectOutput startReservationCorrection(GeneralDate correctionDate, GeneralDate reservationDate, int frameNo, int extractCondition, List<String> employeeIds) {
+        List<RegisterErrorMessage> errorList = new ArrayList<RegisterErrorMessage>();
         
         // 1: get(会社ID=ログイン会社ID): 予約設定
         ReservationSetting setting = reservationSettingRepository.findByCId(AppContexts.user().companyId()).get();
@@ -118,15 +119,15 @@ public class StartReservationCorrectQuery {
         }
         if (bentoReservations.isEmpty()) {
             if (setting.getCorrectionContent().getOrderMngAtr().equals(ReservationOrderMngAtr.CANNOT_MANAGE)) {
-                throw new BusinessException("Msg_2256", 
+                errorList.add(new RegisterErrorMessage("Msg_2256", Arrays.asList(
                         EnumAdaptor.valueOf(extractCondition, ReservationCorrectNotOrder.class).name, 
                         correctionDateParam, 
-                        receptionTimeNameParam);
+                        receptionTimeNameParam)));
             } else {
-                throw new BusinessException("Msg_2256", 
+                errorList.add(new RegisterErrorMessage("Msg_2256", Arrays.asList(
                         EnumAdaptor.valueOf(extractCondition, ReservationCorrect.class).name, 
                         correctionDateParam, 
-                        receptionTimeNameParam);
+                        receptionTimeNameParam)));
             }
         }
         
@@ -160,6 +161,6 @@ public class StartReservationCorrectQuery {
                 listPersonEmp.stream().map(x -> PersonEmpBasicInfoImportDto.fromDomain(x)).collect(Collectors.toList()), 
                 bentoReservationMap, 
                 stampCards.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().v())), 
-                new ArrayList<RegisterErrorMessage>());
+                errorList);
     }
 }
