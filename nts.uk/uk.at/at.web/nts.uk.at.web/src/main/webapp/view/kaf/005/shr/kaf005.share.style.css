@@ -122,12 +122,33 @@ div.form-label.broken {
 	line-height: 40px;
 	margin-left: 20px;
 }
-.headerKAF005{
-	background-color: #CFF1A5;
+
+.nts-fixed-table .nts-fixed-header-container {
+	border-color: #fff !important;
 }
-#fixed-table .nts-editor-wrapped {
-	box-sizing: border-box;
+
+.nts-fixed-table .scroll-header {
+	border-color: #fff !important;
+	background-color: #fff !important;
 }
+
+.nts-fixed-table thead tr th:first-child {
+	background-color: transparent;
+	border: none !important;
+}
+
+.nts-fixed-table .headerKAF005 {
+	background-color: #6A6A6A;
+	color: #fff;
+	text-align: center;
+}
+
+.nts-fixed-table .nts-editor-wrapped input {
+	background-color: transparent;
+	border-color: transparent !important;
+}
+
+
 .right-content {
 	text-align: center !important;
 }
