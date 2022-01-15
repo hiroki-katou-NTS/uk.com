@@ -533,6 +533,10 @@ html {
 	font-weight: 300;
 }
 
+#A3_1 .unit .switchbox-wrappers span {
+	width: 70px;
+}
+
 .date-time{
 	display: inline-block;
     height: 16px;
