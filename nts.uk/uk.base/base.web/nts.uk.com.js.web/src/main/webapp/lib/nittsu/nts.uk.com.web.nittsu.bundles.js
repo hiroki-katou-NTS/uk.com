@@ -53062,7 +53062,6 @@ var nts;
                         else {
                             $('.next-slider').css("visibility", "");
                             $('.next-slider').css("visibility", "hidden");
-                            console.log(lastItemPositionLeft + ' ' + userInfoLeft);
                         }
                     };
                     HeaderViewModel.prototype.hambergerClick = function () {
