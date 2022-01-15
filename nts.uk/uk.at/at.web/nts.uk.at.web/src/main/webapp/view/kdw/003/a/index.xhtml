@@ -83,8 +83,7 @@
                             data-bind="enable: !changeConditionExtract(), click : selectDisplayItem, visible: showButton().available8Authority">#{i18n.getText('KDW003_14')}</button>
                         <button data-bind="enable: !changeConditionExtract(),click : historyModification ,visible: showButton().available22 ">#{i18n.getText('KDW003_15')}</button>
                         <!--click : historyModification , showButton().available22 -->
-                        <button class="danger"
-                                data-bind="enable: !changeConditionExtract(), click: showErrorDialog , visible: showButton().available24">#{i18n.getText('KDW003_16')}</button>
+                        <button data-bind="enable: !changeConditionExtract(), click: showErrorDialog , visible: showButton().available24">#{i18n.getText('KDW003_16')}</button>
                         <button data-bind="visible: false">#{i18n.getText('KDW003_17')}</button>
                         <!-- visible: showButton().available7 -->
                         <button data-bind="enable: !changeConditionExtract(), click : proceedUnLock, visible: showLock() &amp;&amp; hideLock()">#{i18n.getText('KDW003_84')}</button>
