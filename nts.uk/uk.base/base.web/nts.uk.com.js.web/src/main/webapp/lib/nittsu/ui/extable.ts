@@ -9021,18 +9021,6 @@ module nts.uk.ui.exTable {
                     } else if (k === "paddingRight") {
                         text += ("padding-right: " + style[k] + "; ");
                         return;
-                    } else if (k === "borderTop") {
-                        text += ("border-top: " + style[k] + "; ");
-                        return;
-                    } else if (k === "borderBottom") {
-                        text += ("border-bottom: " + style[k] + "; ");
-                        return;
-                    } else if (k === "borderRight") {
-                        text += ("border-right: " + style[k] + "; ");
-                        return;
-                    } else if (k === "borderLeft") {
-                        text += ("border-left: " + style[k] + "; ");
-                        return;
                     }
                     text += k + ": " + style[k] + "; ";
                 });
