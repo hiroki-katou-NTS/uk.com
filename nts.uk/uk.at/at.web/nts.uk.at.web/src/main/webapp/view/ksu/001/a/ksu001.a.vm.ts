@@ -1763,10 +1763,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 
                 if (dateInfo.htmlTooltip != null) {
-                    objDetailHeaderDs['_' + ymd] = "<img class='header-image-event'>";
+                    objDetailHeaderDs['_' + ymd] = "<span class='header-image-event'>●</span>";
                     htmlToolTip.push(new HtmlToolTip('_' + ymd, dateInfo.htmlTooltip));
                 } else {
-                    objDetailHeaderDs['_' + ymd] = "<img class='header-image-no-event'>";
+                    objDetailHeaderDs['_' + ymd] = "<span class='header-image-no-event'>●</span>";
                 }
             });
             
@@ -1863,10 +1863,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let iconEmpPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("7.png").serialize();
                 $('.icon-leftmost').css('background-image', 'url(' + iconEmpPath + ')');
                 // set backgound image icon header
-                let iconEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("120.png").serialize();
-                $('.header-image-event').attr('src', iconEventPath);
-                let iconNoEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("121.png").serialize();
-                $('.header-image-no-event').attr('src', iconNoEventPath);
                 if (self.mode() === UpdateMode.EDIT) {
                     self.bindingEventClickFlower();
                 }
@@ -3769,10 +3765,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
 
                     if (dateInfo.htmlTooltip != null) {
-                        objDetailHeaderDs['_' + ymd] = "<img class='header-image-event'>";
+                        objDetailHeaderDs['_' + ymd] = "<span class='header-image-event'>●</span>";
                         htmlToolTip.push(new HtmlToolTip('_' + ymd, dateInfo.htmlTooltip));
                     } else {
-                        objDetailHeaderDs['_' + ymd] = "<img class='header-image-no-event'>";
+                        objDetailHeaderDs['_' + ymd] = "<span class='header-image-no-event'>●</span>";
                     }
                 });
 

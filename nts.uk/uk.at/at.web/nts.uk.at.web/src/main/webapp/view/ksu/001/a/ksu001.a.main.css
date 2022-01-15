@@ -60,6 +60,22 @@
 	text-align: center;
 }
 
+.xheader tr:nth-child(2) td {
+	background-color: #F3F3F3;
+}
+
+.xheader tr:nth-child(2) td span {
+	font-size: 20px !important;
+	line-height: 20px;
+}
+
+.xheader tr:nth-child(2) td span.header-image-event {
+	color: #258F7E;
+}
+
+.xheader tr:nth-child(2) td span.header-image-no-event {
+	color: #fff;
+}
 
 .ml-2 {
 	margin-left: 2px;
