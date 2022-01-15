@@ -5,7 +5,7 @@ module nts.uk.at.view.kaf000.a.component5.viewmodel {
         template: `
         <div id="kaf000-a-component5">
 			<div class="table" data-bind="if: appReasonCDDisp">
-		        <div class="cell col-1">
+		        <div class="cell cm-column">
 		            <div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: $i18n('KAF000_51')"></div>
 		        </div>
 		        <div class="cell valign-center">
@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf000.a.component5.viewmodel {
 		        </div>
 		    </div>
 		    <div class="table" data-bind="if: appReasonDisp">
-		        <div class="cell col-1">
+		        <div class="cell cm-column">
 		            <div class="cell valign-center" data-bind="ntsFormLabel: {
 		                                    required: appReasonRequired,
 		                                    constraint: 'AppReason',

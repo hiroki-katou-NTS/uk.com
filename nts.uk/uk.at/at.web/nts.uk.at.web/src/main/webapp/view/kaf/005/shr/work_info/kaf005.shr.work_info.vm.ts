@@ -4,14 +4,10 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 <div style="margin-top: -2px" data-bind="if: workInfo">
 
 	<div class="table" data-bind="if : visibleModel.c7()">
-		<div class="cell valign-center" style="width: 120px;">
+		<div class="cell valign-center cm-column">
 			<!--A4_1 勤務種類ラベル-->
 			<div class="valign-center"
-				data-bind="text: $i18n('KAF005_34'), ntsFormLabel:{required: true}"></div>
-			<BR />
-			<!--A4_4 就業時間ラベル-->
-			<div style="padding-top: 10px" class="valign-center"
-				data-bind="text: $i18n('KAF005_35'), ntsFormLabel:{required: true}"></div>
+				data-bind="text: $i18n('KAF005_34') + '・' + $i18n('KAF005_35'), ntsFormLabel:{required: true}"></div>
 		</div>
 		<div class="cell valign-top" data-bind="if: visibleModel.c7()" style="width: 45px;">
 			<!--A4_7 選択ボタン-->
@@ -38,7 +34,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 	<!--勤務時間 1-->
 	<div style="margin-bottom: 10px">
 		<div class="table" style="margin-top: -2px" data-bind="if: visibleModel.c7()">
-			<div style="width: 120px" class="cell valign-top cm-column2">
+			<div class="cell valign-top cm-column">
 				<!--A4_8 勤務時間ラベル-->
 				<div class="lblTitle"
 					data-bind="text: $i18n('KAF005_37'), ntsFormLabel: {required: true}"
@@ -79,7 +75,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 		
 		
 		<div class="table" style="margin-top: 2px" data-bind="if: visibleModel.c29()">
-			<div style="width: 120px" class="cell valign-top cm-column2">
+			<div class="cell valign-top cm-column">
 				<div class="lblTitle"
 					
 					style="margin-right: 6px"></div>
