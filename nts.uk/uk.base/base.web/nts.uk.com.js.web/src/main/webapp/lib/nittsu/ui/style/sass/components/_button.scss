@@ -340,12 +340,9 @@ span.button {
 .sidebar-content-header {
 	font-size: 0;
 	button {
-		margin-left: 15px;
-		min-width: 65px;
-		
-		&.danger {
-			margin-left: 45px;
-			margin-right: 30px;
-		}
+		margin-left: 12px;
+		min-width: 100px;
+        font-size: 13px;
+        line-height: 14px;
 	}
 }
