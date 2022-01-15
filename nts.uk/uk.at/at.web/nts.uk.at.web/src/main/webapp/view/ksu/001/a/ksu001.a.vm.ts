@@ -5903,16 +5903,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.selectedDisplayPeriod(1);
                 $('#A3_2').empty();
             } else if (useDisplayPeriods.length == 1) {
-                self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
+                self.disPeriodSelectionList().push({ id: 1, name: "締日" /*getText("KSU001_39")*/ });
                 if (useDisplayPeriods[0] == 0) {
-                    self.disPeriodSelectionList().push({ id: 2, name: getText("KSU001_40") });
+                    self.disPeriodSelectionList().push({ id: 2, name: "４週" /*getText("KSU001_40")*/ });
                 } else if (useDisplayPeriods[0] == 1) {
-                    self.disPeriodSelectionList().push({ id: 3, name: getText("KSU001_41") });
+                    self.disPeriodSelectionList().push({ id: 3, name: "１ヶ月" /*getText("KSU001_41")*/ });
                 }
             } else if (useDisplayPeriods.length == 2) {
-                self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
-                self.disPeriodSelectionList().push({ id: 2, name: getText("KSU001_40") });
-                self.disPeriodSelectionList().push({ id: 3, name: getText("KSU001_41") });
+                self.disPeriodSelectionList().push({ id: 1, name: "締日" /*getText("KSU001_39")*/ });
+                self.disPeriodSelectionList().push({ id: 2, name: "４週" /*getText("KSU001_40")*/ });
+                self.disPeriodSelectionList().push({ id: 3, name: "１ヶ月" /*getText("KSU001_41")*/ });
             }
 
             // set css lại

@@ -524,14 +524,13 @@ html {
 	height: 31px;
 }
 
-#A3_1_left {
-	float: left;
-	margin-top: 2px;
+#A3_1 div {
+	display: inline-block;
 }
 
-#A3_2 {
-	float: left;
-	margin-left: 5px
+#A3_1 .func-label {
+	font-size: 10px;
+	font-weight: 300;
 }
 
 .date-time{

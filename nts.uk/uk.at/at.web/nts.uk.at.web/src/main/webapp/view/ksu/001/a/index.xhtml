@@ -333,23 +333,28 @@
 							</div>
 							<div id="functon-area-row2-center">
 								<div id="A3_1">
-									<div id="A3_1_left">
-										<button id="prevMonth" tabindex="26" class="size-image-button3"
-											data-bind="click: backMonth, timeClick: -1"><i data-bind="ntsIcon: { no: 57 }"></i> </button>
-										<span id="date-time-prev" class = 'date-time' data-bind="text: dateTimePrev"></span>
-										<span id="special" class = 'date-time'>#{i18n.getText('KSU001_66')}</span> 
-										<span id="date-time-after" class = 'date-time' data-bind="text: dateTimeAfter"></span>
-										<button id="nextMonth" tabindex="27" class="size-image-button3"
-											data-bind="click: nextMonth, timeClick: -1"><i data-bind="ntsIcon: { no: 58 }"></i></button>
+									<div class="unit">
+										<div class="func-label">表示<br/>単位</div>
+										<div class="func-content" tabindex="26"
+											data-bind="ntsSwitchButton: {
+											options: disPeriodSelectionList,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedDisplayPeriod}">
 										</div>
-									<div id="A3_2" tabindex="28" class="cf"
-										data-bind="ntsSwitchButton: {
-										options: disPeriodSelectionList,
-										optionsValue: 'id',
-										optionsText: 'name',
-										value: selectedDisplayPeriod}">
 									</div>
-									<div style="clear: left"></div>
+									<div class="period">
+										<div class="func-label">表示<br/>期間</div>
+										<div class="func-content">
+											<button id="prevMonth" tabindex="27" class="size-image-button3"
+												data-bind="click: backMonth, timeClick: -1">＜</button>
+											<span id="date-time-prev" class = 'date-time' data-bind="text: dateTimePrev"></span>
+											<span id="special" class = 'date-time'>#{i18n.getText('KSU001_66')}</span> 
+											<span id="date-time-after" class = 'date-time' data-bind="text: dateTimeAfter"></span>
+											<button id="nextMonth" tabindex="28" class="size-image-button3"
+												data-bind="click: nextMonth, timeClick: -1">＞</button>
+										</div>
+									</div>
 								</div>
 							</div>
 							<div id="functon-area-row2-right">
