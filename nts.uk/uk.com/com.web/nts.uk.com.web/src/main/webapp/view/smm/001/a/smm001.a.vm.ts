@@ -2,7 +2,10 @@
 
 module nts.uk.at.view.smm001.a {
 
-  import windows = nts.uk.ui.windows;
+  const API = {
+    // <<ScreenQuery>> 初期起動の情報取得する
+    getInitialStartupInformation: 'com/screen/smm001/get-initial-startup-information'
+  };
 
   class ItemModel {
     code: string;
@@ -34,13 +37,10 @@ module nts.uk.at.view.smm001.a {
     LEAVE_INFORMATION: KnockoutObservable<string>;
     AFFILIATED_MASTER: KnockoutObservable<string>;
     EMPLOYEE_MASTER: KnockoutObservable<string>;
-
     enumDoOrDoNot2: KnockoutObservableArray<any>;
     DO_TEXT: KnockoutObservable<string>;
     DO_NOT_TEXT: KnockoutObservable<string>;
-
     enumPaymentCategoryList: KnockoutObservableArray<any>;
-
 
     created() {
       const vm = this;
@@ -61,7 +61,7 @@ module nts.uk.at.view.smm001.a {
 
       vm.selectedCode = ko.observable('1');
       vm.isEnable = ko.observable(true);
-      vm.isEditable = ko.observable(true);
+      vm.isEditable = ko.observable(false);
 
       vm.setDefault();
     }
@@ -88,17 +88,29 @@ module nts.uk.at.view.smm001.a {
       // Init payment category
       vm.enumPaymentCategoryList = ko.observableArray(__viewContext.enums.PaymentCategory);
       console.log(">>> 2 ", vm.enumPaymentCategoryList());
+
+      this.getInitialStartupInformation(null);
+    }
+
+    getInitialStartupInformation(param: any) {
+      const vm = this;
+      vm.$blockui('show');
+      vm.$ajax('com', API.getInitialStartupInformation, param).then((response: any[]) => {
+        if (response) {
+          console.log("response: ", response)
+        }
+      })
     }
 
     save() {
       console.log("Hello");
     }
 
-    moveItemToRight(){
+    moveItemToRight() {
 
     }
 
-    moveItemToLeft(){
+    moveItemToLeft() {
 
     }
 

@@ -1,5 +1,6 @@
 package nts.uk.screen.com.ws.smm001;
 
+import nts.arc.layer.ws.WebService;
 import nts.uk.screen.com.app.smm.smm001.screencommand.RegisterSmileCooperationAcceptanceSettingScreenCommand;
 import nts.uk.screen.com.app.smm.smm001.screencommand.RegisterSmileCooperationAcceptanceSettingScreenCommandHandle;
 import nts.uk.screen.com.app.smm.smm001.screencommand.RegisterSmileLinkageExternalIOutputScreenCommand;
@@ -18,7 +19,7 @@ import javax.ws.rs.Produces;
 
 @Path("com/screen/smm001")
 @Produces("application/json")
-public class Smm001WebService {
+public class Smm001WebService extends WebService{
 	@Inject
 	private RegisterSmileCooperationAcceptanceSettingScreenCommandHandle registerSmileCooperationAcceptanceSettingScreenCommandHandle;
 
@@ -55,7 +56,7 @@ public class Smm001WebService {
 
 	@POST
 	@Path("get-initial-startup-information")
-	public OutputOfStartupDto getInitialStartupInformation(Integer paymentCode) {
+	public OutputOfStartupDto getInitialStartupInformation() {
 		return getInitialStartupInformationScreenQuery.get();
 	}
 

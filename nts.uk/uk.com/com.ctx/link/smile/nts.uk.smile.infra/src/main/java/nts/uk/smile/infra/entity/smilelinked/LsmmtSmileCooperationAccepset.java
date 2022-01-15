@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * 在席のステータス
  */
 @Data
-@Entity
+@Entity(name = "LsmmtSmileCooperationAccepset")
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "LSMMT_SMILE_COOPERATION_ACCEPSET")
 @AllArgsConstructor

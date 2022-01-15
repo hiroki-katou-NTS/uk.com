@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.exio.app.find.exi.condset.StdAcceptCondSetDto;
@@ -16,21 +18,16 @@ import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAccept
 //import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingRepository;
 
 /**
- * Smile連携受入外部出設定を登録する
+ * Smile初期起動の情報取得する
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class GetInitialStartupInformationScreenQuery {
 
 	// Smile連携受入設定
 	@Inject
 	private SmileCooperationAcceptanceSettingRepository smileCooperationAcceptanceSettingRepository;
-
-//	@Inject
-//	private SmileLinkageOutputSettingRepository smileLinkageOutputSettingRepository;
-//
-//	@Inject
-//	private StdAcceptCondSetRepository stdAcceptCondSetRepository;
 	
 	@Inject
 	private StdAcceptCondSetFinder acceptCondSetFinder;
