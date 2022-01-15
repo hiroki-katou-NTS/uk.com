@@ -386,10 +386,6 @@
 	float: right;
 }
 
-#date-time-prev, #date-time-after {
-	font-size: 12.5px !important
-}
-
 #set-work-time {
 	margin-top: 2px
 }
@@ -516,11 +512,9 @@ html {
 }
 
 #A3_1 {
-	background: #edfac2;
+	background-color: #F5F5F5;
 	width: max-content;
 	padding: 5px;
-	border: 1px solid #cccccc;
-	border-radius: 5px;
 	height: 31px;
 }
 
@@ -529,12 +523,33 @@ html {
 }
 
 #A3_1 .func-label {
-	font-size: 10px;
+	font-size: 11px;
+	line-height: 13px;
 	font-weight: 300;
+}
+
+#A3_1 .unit .func-label {
+	margin-left: 10px;
+	margin-right: 6px;
 }
 
 #A3_1 .unit .switchbox-wrappers span {
 	width: 70px;
+}
+
+#A3_1 .period {
+	margin-left: 20px;
+}
+
+#A3_1 .period .func-content span {
+	position: relative;
+	top: -3px;
+	font-size: 15px;
+}
+
+#A3_1 .period button:not(:hover) {
+	color: #9A9A9A;
+	background-color: transparent;
 }
 
 .date-time{
