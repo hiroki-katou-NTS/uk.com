@@ -924,32 +924,23 @@ module nts.uk.ui.exTable {
             
             styleInnerCell(idx: number, innerCount: number) {
                 let self = this;
-                let divStyle = "", borderStyle = "solid 1px transparent", dashedBorder = "dashed 1px #ABB7B8",
-                    incellHeight = (parseInt(self.options.rowHeight) - 2) / self.multilineCountInCell,
+                let divStyle = "",
+                    incellHeight = `${parseInt(self.options.rowHeight) / self.multilineCountInCell}px`,
                     incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
-//                divStyle += `; border-top: ${borderStyle}; border-right: ${borderStyle}`;
-                if (idx < incellCountInRow * (self.multilineCountInCell - 1)) {
-                    divStyle += `; border-bottom: ${dashedBorder}`;
-                }
                 
                 let incellRowIdx = Math.floor(idx / incellCountInRow);
                 divStyle += `; top: ${incellRowIdx === 0 ? 0 : incellRowIdx + incellHeight}px`;
-                if (idx % incellCountInRow === 0) {
-//                    divStyle += `; border-left: ${borderStyle}`;
-                } else {
-                    divStyle += `; border-left: ${dashedBorder}`;
-                }
                 
                 if (incellRowIdx === 0) {
-                    divStyle += `; height: ${incellHeight - 1}px;`;
+                    divStyle += `; height: ${incellHeight};`;
                 } else {
-                    divStyle += `; height: ${incellHeight - 2}px;`;
+                    divStyle += `; height: ${incellHeight};`;
                 }
                 
                 divStyle += `; position: absolute; 
-                    left: ${(idx - incellRowIdx * incellCountInRow) * (100 / incellCountInRow)}%;  
-                    line-height: ${incellRowIdx === 0 ? (incellHeight - 1) : (incellHeight - 2)}px; 
-                    width: calc(${100 / incellCountInRow}% - 2px); text-align: center;`;
+                    left: ${(idx - incellRowIdx * incellCountInRow) * (100 / incellCountInRow)}%;
+                    line-height: ${incellHeight};
+                    width: calc(${100 / incellCountInRow}%); text-align: center;`;
                 return divStyle;
             }
             

@@ -2345,7 +2345,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let leftmostDs = dataBindGrid.leftmostDs;
 
             leftmostColumns = [{
-                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8 +"px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8 +"px",
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
                 headerControl: "link", headerHandler: function() {  }
             }];
@@ -3848,7 +3848,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // update phan leftMost
             let leftmostDs = dataBindGrid.leftmostDs;
             let leftmostColumns = [{
-                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8+"px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8+"px",
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
                 headerControl: "link", headerHandler: function() { alert("Link!"); }
             }];

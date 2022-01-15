@@ -51,7 +51,8 @@
 }
 
 #extable td, #extable td>* {
-	font-size: 10.5px;
+	font-size: 0.8rem;
+	font-weight: 200;
 }
 
 .xheader *, .ex-body-detail *, .ex-body-vert-sum *, .ex-body-horz-sum *
@@ -59,10 +60,6 @@
 	text-align: center;
 }
 
-
-.ex-header-vert-sum tr:NTH-CHILD(2) {
-	font-size: 90%;
-}
 
 .ml-2 {
 	margin-left: 2px;
@@ -479,42 +476,6 @@ tbody a.x-link:hover {
 
 .bg-schedule-specific-date-color-schedule-saturday a{
 	color: #0000ff !important;
-}
-
-.bg-schedule-specific-date-color-schedule-weekdays{
-	background-color: #ffc0cb !important;
-	color: #404040 !important;
-}
-
-.bg-schedule-specific-date-color-schedule-weekdays a{
-	color: #404040 !important;
-}
-
-.bg-schedule-sunday {
-	background-color: #fabf8f;
-	color: #ff0000 !important;
-}
-
-.bg-schedule-sunday a{
-	color: #ff0000 !important;
-}
-
-.bg-schedule-saturday{
-	background-color: #8bd8ff;
-	color: #0000ff !important;
-}
-
-.bg-schedule-saturday a{
-	color: #0000ff !important;
-}
-
-.bg-weekdays{
-	background-color: #D9D9D9;
-	color: #595959 !important;
-}
-
-.bg-weekdays a{
-	color: #595959 !important;
 }
 
 .right-content {
