@@ -470,6 +470,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
     #background-color-holiday {
       background-color: #F2F2F2;
     }
+    
+    #background-color-default {
+      background-color: #fff;
+    }
 
     #A2_3 .ntsDatePickerButton { height: 30px !important; }
 

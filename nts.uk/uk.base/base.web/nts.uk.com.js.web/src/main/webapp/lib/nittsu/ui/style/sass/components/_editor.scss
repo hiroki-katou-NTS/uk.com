@@ -19,11 +19,11 @@ $editor-border-color: #cfd4da;
 				box-shadow: 0 0 0 2px lighten($color: $focused_color, $amount: 30);
 			}
 		
-			&.enterkey {
-				background-image: url('images/icons/enter_mark.png');
-				background-position: right;
-				background-repeat: no-repeat;
-			}
+			//&.enterkey {
+			//	background-image: url('images/icons/enter_mark.png');
+			//	background-position: right;
+			//	background-repeat: no-repeat;
+			//}
 		}
 	}
 
