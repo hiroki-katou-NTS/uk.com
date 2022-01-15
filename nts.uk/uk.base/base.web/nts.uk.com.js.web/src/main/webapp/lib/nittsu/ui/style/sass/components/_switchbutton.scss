@@ -21,6 +21,7 @@
 					line-height: 26px;
 					box-sizing: border-box;
 					border: none;
+					border-radius: 3px;
 					background-color: $button-normal-base-color;
 					text-align: center;
 				}
@@ -29,7 +30,6 @@
 					&+span {
 						z-index: 2;
 						color: #fff;
-						border-radius: 3px;
 						background-color: $button-proceed-base-color;
 					}
 				}
@@ -41,33 +41,6 @@
             outline-style: solid;
             outline-width: 3px;
 						outline-color: $button-proceed-focus-outline;
-					}
-				}
-			}
-
-			&:first-child {
-				input {
-					&+span {
-						border-top-left-radius: 2px;
-						border-bottom-left-radius: 2px;
-					}
-				}
-			}
-
-			&:last-child {
-				input {
-					&+span {
-						border-top-right-radius: 2px;
-						border-bottom-right-radius: 2px;
-					}
-				}
-			}
-
-			&:not(:first-child) {
-
-				input {
-					&+span {
-						margin-left: -1px;
 					}
 				}
 			}
