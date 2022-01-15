@@ -123,13 +123,17 @@ public class OvertimeLeaveEncourageConfirmationService {
 		Optional<TimeWithDayAttr> end = timesheet.getOuenTimeSheet().stream()
 				.sorted((a, b) -> a.getTimeSheet().getEnd().map(e -> e.getTimeWithDay().map(twd-> twd.v()).orElse(0)).orElse(0)
 						.compareTo(b.getTimeSheet().getEnd().map(e -> e.getTimeWithDay().map(twd-> twd.v()).orElse(0)).orElse(0)))
-				.map(m -> m.getTimeSheet().getEnd().map(e -> e.getTimeWithDay()).orElse(Optional.empty())).findFirst().orElse(Optional.empty());
+				.map(m -> m.getTimeSheet().getEnd().map(e -> e.getTimeWithDay()).orElse(Optional.empty())).reduce((first, second) -> second)
+				.orElse(Optional.empty());
 
 		// if ($基準開始.isEmpty AND $比較開始.isPresent)
 		// OR ($基準終了.isEmpty AND $比較終了.isPresent)
 		// OR $基準開始 > $比較開始 OR $基準終了 < $比較終了
 		// return true
-		if ((attendance == null && start.isPresent()) || (leaveWork == null && end.isPresent()) || start.isPresent() && (attendance.v() > start.get().v())  || end.isPresent() && (leaveWork.v() < end.get().v())) {
+		if ((attendance == null && start.isPresent()) 
+				|| (leaveWork == null && end.isPresent()) 
+				|| (start.isPresent() && (attendance.v() > start.get().v()))
+				|| (end.isPresent() && (leaveWork.v() < end.get().v()))) {
 			return true;
 		}
 
