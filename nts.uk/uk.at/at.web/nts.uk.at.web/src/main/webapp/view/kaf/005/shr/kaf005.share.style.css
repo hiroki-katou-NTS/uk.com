@@ -205,3 +205,16 @@ th {
 #kaf005-b .control-group {
 	margin-bottom: 10px !important;
 }
+
+.left-panel > div, .right-panel > div {
+	height: inherit;
+	overflow-y: auto;
+}
+
+.left-panel > div {
+	padding-right: 60px;
+	padding-left: 20px;
+}
+
+.right-panel > div {
+}
