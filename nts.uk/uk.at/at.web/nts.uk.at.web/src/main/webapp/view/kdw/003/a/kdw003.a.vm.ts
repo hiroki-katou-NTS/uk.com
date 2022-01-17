@@ -1359,40 +1359,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.initScreenSPR = 1;
                         self.clickFromExtract = false;
                         self.showTextStyle = false;
-                        if (!self.flagCalculation) {
-                            if (checkDailyChange) {
-                                // self.reloadScreen();
-                                self.loadRowScreen(false, false, onlyCheckBox, errorFlex).done(() =>{
-                                    nts.uk.ui.block.clear();
-                                    if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == "Msg_15" && _.isEmpty(confirmMonth)) {
-                                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                            if (dataAfter.showErrorDialog && dataAfter.errorMap[6] == undefined) self.showErrorDialog();
-                                        });
-                                    }
-                                    if (dataAfter.errorMap[6] != undefined) {
-                                        nts.uk.ui.dialog.info({ messageId: "Msg_1455" }).then(() => {
-                                            if (dataAfter.showErrorDialog) self.showErrorDialog();
-                                        });
-                                    }
-                                });
-                            } else {
-                                self.loadRowScreen(true, false, onlyCheckBox, errorFlex).done(() =>{
-                                    nts.uk.ui.block.clear();
-                                    if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == "Msg_15" && _.isEmpty(confirmMonth)) {
-                                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                            if (dataAfter.showErrorDialog && dataAfter.errorMap[6] == undefined) self.showErrorDialog();
-                                        });
-                                    }
-                                    if (dataAfter.errorMap[6] != undefined) {
-                                        nts.uk.ui.dialog.info({ messageId: "Msg_1455" }).then(() => {
-                                            if (dataAfter.showErrorDialog) self.showErrorDialog();
-                                        });
-                                    }
-                                });
-                                //nts.uk.ui.block.clear();
-                            }
-                        } else {
-                            self.loadRowScreen(false, true, onlyCheckBox, errorFlex).done(() =>{
+                        let onlyCalc:boolean = self.flagCalculation;
+                        let onlyLoadMonth:boolean = !checkDailyChange && !self.flagCalculation;
+                        self.loadRowScreen(onlyLoadMonth, onlyCalc, onlyCheckBox, errorFlex).done(() =>{
                                 nts.uk.ui.block.clear();
                                 if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == "Msg_15" && _.isEmpty(confirmMonth)) {
                                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -1405,7 +1374,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                     });
                                 }
                             });
-                        }
 
 //                        if ((dataAfter.showErrorDialog == null && self.showDialogError) || dataAfter.showErrorDialog) {
 //                            self.showDialogError = true;
