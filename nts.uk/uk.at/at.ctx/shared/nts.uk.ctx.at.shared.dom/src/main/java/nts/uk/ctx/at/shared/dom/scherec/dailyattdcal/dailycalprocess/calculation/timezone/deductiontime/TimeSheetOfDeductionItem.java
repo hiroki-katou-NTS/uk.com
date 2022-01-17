@@ -663,7 +663,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			if(this.getWorkingBreakAtr().isWorking()) {
 				return Optional.empty();
 			}
-			return Optional.of(rounding);
+			return Optional.of(this.rounding);
 		//介護
 		case CHILD_CARE:
 			return getShortTimeRounding(dedAtr, commonSet,rounding);
