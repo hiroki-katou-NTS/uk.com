@@ -1,10 +1,4 @@
 
-th, td {
-	text-align: center !important;
-	height: 33px !important;
-}
-
-
 .control-group.valign-center>* {
 	vertical-align: middle;
 }
@@ -120,32 +114,11 @@ div.form-label.broken {
 	
 }
 
-
-.nts-fixed-table .nts-fixed-header-container {
-	border-color: #fff !important;
-}
-
-.nts-fixed-table .scroll-header {
-	border-color: #fff !important;
-	background-color: #fff !important;
-}
-
-.nts-fixed-table thead tr th:first-child {
-	background-color: transparent;
-	border: none !important;
-}
-
 .nts-fixed-table .headerKAF005 {
 	background-color: #6A6A6A;
 	color: #fff;
 	text-align: center;
 }
-
-.nts-fixed-table .nts-editor-wrapped input {
-	background-color: transparent;
-	border-color: transparent !important;
-}
-
 
 .right-content {
 	text-align: center !important;
@@ -161,10 +134,6 @@ div.form-label.broken {
 }
 .fix-margin-left{
 	margin-left:13px;
-}
-.cm-column {
-	display: inline-block;
-	width: 200px;
 }
 .cm-column2 {
 	width: 145px;
@@ -222,39 +191,5 @@ div.form-label.broken {
 	margin-left: 20px;
 	margin-right: 20px;
 	line-height: 40px;
-}
-
-.left-panel > div {
-	height: inherit;
-	overflow-y: auto;
-	padding-right: 60px;
-	padding-left: 20px;
-}
-
-.left-panel button {
-	min-width: 100px;
-}
-
-.right-panel {
-	overflow-y: auto;
-}
-
-.right-panel .right-panel-block {
-	margin-bottom: 20px;
-}
-
-.right-panel .right-panel-block > .header,
-.right-panel .right-panel-block > .content {
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-.right-panel .right-panel-block > .header {
-	border-bottom: solid 1px #000000;
-	padding-bottom: 5px;
-}
-
-.right-panel .right-panel-block > .content {
-	margin-top: 13px;
 }
 

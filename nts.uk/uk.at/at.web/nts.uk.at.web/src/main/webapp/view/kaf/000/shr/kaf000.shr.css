@@ -1,0 +1,65 @@
+
+th, td {
+	text-align: center !important;
+	height: 33px !important;
+}
+
+
+.nts-fixed-table .nts-fixed-header-container {
+	border-color: #fff !important;
+}
+
+.nts-fixed-table .scroll-header {
+	border-color: #fff !important;
+	background-color: #fff !important;
+}
+
+.nts-fixed-table thead tr th:first-child {
+	background-color: transparent;
+	border: none !important;
+}
+
+.nts-fixed-table .nts-editor-wrapped input {
+	background-color: transparent;
+	border-color: transparent !important;
+}
+
+
+.cm-column {
+	display: inline-block;
+	width: 200px;
+}
+
+.left-panel > div {
+	height: inherit;
+	overflow-y: auto;
+	padding-right: 60px;
+	padding-left: 20px;
+}
+
+.left-panel button {
+	min-width: 100px;
+}
+
+.right-panel {
+	overflow-y: auto;
+}
+
+.right-panel .right-panel-block {
+	margin-bottom: 20px;
+}
+
+.right-panel .right-panel-block > .header,
+.right-panel .right-panel-block > .content {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.right-panel .right-panel-block > .header {
+	border-bottom: solid 1px #000000;
+	padding-bottom: 5px;
+}
+
+.right-panel .right-panel-block > .content {
+	margin-top: 13px;
+}
