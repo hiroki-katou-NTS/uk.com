@@ -259,7 +259,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// サーバ外部出力設定取得
 	private ExOutSettingResult getServerExOutSetting(ExOutSetting exOutSetting) {
-		List<StdOutputCondSet> stdOutputCondSetList = acquisitionExOutSetting.getExOutSetting(null,
+		List<StdOutputCondSet> stdOutputCondSetList = acquisitionExOutSetting.getExOutSetting(exOutSetting.getCompanyId(), null,
 				StandardAtr.STANDARD, exOutSetting.getConditionSetCd());
 
 		if (stdOutputCondSetList.size() == 0)
