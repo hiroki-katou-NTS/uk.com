@@ -195,7 +195,6 @@ public class DailyModifyRCommandFacade {
 		DataResultAfterIU dataResultAfterIU = new DataResultAfterIU();
 		Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> lstResultReturnDailyError = new HashMap<>();
 		boolean hasErrorRow = false;
-		boolean errorMonthAfterCalc = false;
 		boolean flagTempCalc = dataParent.isFlagCalculation();
 		dataParent.setFlagCalculation(false);
 		List<DPItemValue> dataCheck = new ArrayList<>();
@@ -648,7 +647,6 @@ public class DailyModifyRCommandFacade {
 	}
 
 	private void calcMonth(DPItemParent dataParent, Map<Integer, List<DPItemValue>> resultErrorMonth, DataResultAfterIU dataResultAfterIU, UpdateMonthDailyParam monthParam, List<DailyItemValue> dailyItems, List<IntegrationOfDaily> domainDailyNew, List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<EmployeeMonthlyPerError> errorMonthHoliday) {
-		boolean errorMonthAfterCalc;
 		boolean editFlex = (dataParent.getMode() == 0 && dataParent.getMonthValue() != null
 				&& !CollectionUtil.isEmpty(dataParent.getMonthValue().getItems()));
 
@@ -673,7 +671,7 @@ public class DailyModifyRCommandFacade {
 				resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
 			}
 			// 月次登録処理
-			errorMonthAfterCalc = errorMonth.getHasError();
+			boolean errorMonthAfterCalc = errorMonth.getHasError();
 			if (!errorMonthAfterCalc) {
 //							this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
 
