@@ -86,10 +86,16 @@ public class AsposeAppScreenDto {
 		}
 		if(appType.value == 10) {
 		    if (opComplementLeaveApp.isPresent() && opComplementLeaveApp.get().getApplication() != null) {
-		        result = new StringBuilder(opComplementLeaveApp.get().getApplication().getAppDate().getApplicationDate().toString("M/d(E)"))
-		                .append("\n")
-		                .append(result)
-		                .toString();
+		        if (opComplementLeaveApp.get().getComplementLeaveFlg() == 1) {
+		            result = new StringBuilder(result)
+		                    .append("\n")
+		                    .append(opComplementLeaveApp.get().getLinkAppDate().toString("M/d(E)"))
+		                    .toString();
+		        } else 
+		            result = new StringBuilder(opComplementLeaveApp.get().getLinkAppDate().toString("M/d(E)"))
+		            .append("\n")
+		            .append(result)
+		            .toString();
 		    } else {
     			result = new StringBuilder(result).toString();
 		    }
