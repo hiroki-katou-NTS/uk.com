@@ -201,41 +201,7 @@ public class DailyModifyRCommandFacade {
 		// insert flex
 		UpdateMonthDailyParam monthParam = null;
 		if (dataParent.getMonthValue() != null) {
-			val month = dataParent.getMonthValue();
-			if (month != null && month.getItems() != null && !month.getItems().isEmpty()) {
-				Optional<IntegrationOfMonthly> domainMonthOpt = Optional.empty();
-				if(dataParent.getDomainMonthOpt().isPresent()) {
-					MonthlyRecordWorkDto monthDto = dataParent.getDomainMonthOpt().get();
-					MonthlyModifyQuery monthQuery = new MonthlyModifyQuery(month.getItems().stream().map(x -> {
-						return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
-								.valueType(ValueType.valueOf(x.getValueType())).withPath("");
-					}).collect(Collectors.toList()), month.getYearMonth(), month.getEmployeeId(), month.getClosureId(),
-							month.getClosureDate());
-					monthDto = AttendanceItemUtil.fromItemValues(monthDto, monthQuery.getItems(), AttendanceItemType.MONTHLY_ITEM);
-					IntegrationOfMonthly domainMonth = monthDto.toDomain(monthDto.getEmployeeId(),
-							monthDto.getYearMonth(), monthDto.getClosureID(), monthDto.getClosureDate());
-					domainMonth.getAffiliationInfo().ifPresent(d -> {
-						d.setVersion(dataParent.getMonthValue().getVersion());
-					});
-					domainMonth.getAttendanceTime().ifPresent(d -> {
-						d.setVersion(dataParent.getMonthValue().getVersion());
-					});
-					domainMonthOpt = Optional.of(domainMonth);
-				}
-				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
-						month.getClosureId(), month.getClosureDate(), domainMonthOpt,
-						new DatePeriod(dataParent.getDateRange().getStartDate(),
-								dataParent.getDateRange().getEndDate()),
-						month.getRedConditionMessage(), month.getHasFlex(), month.getNeedCallCalc(),
-						dataParent.getMonthValue().getVersion());
-			} else {
-				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
-						month.getClosureId(), month.getClosureDate(), Optional.empty(),
-						new DatePeriod(dataParent.getDateRange().getStartDate(),
-								dataParent.getDateRange().getEndDate()),
-						month.getRedConditionMessage(), month.getHasFlex(), month.getNeedCallCalc(),
-						dataParent.getMonthValue().getVersion());
-			}
+			monthParam = dataParent.createUpdateMonthDailyParam();
 		}
 		
 		dCCalcTimeService.getWplPosId(dataParent.getItemValues()); 
@@ -667,7 +633,7 @@ public class DailyModifyRCommandFacade {
 	public void calclateOnlyMonth(DPItemParent dataParent){
 		UpdateMonthDailyParam monthParam = null;
 		if (dataParent.getMonthValue() != null) {
-			monthParam = dataParent.createMonthParam();
+			monthParam = dataParent.createUpdateMonthDailyParam();
 		}
 
 	}

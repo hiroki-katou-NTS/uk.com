@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
@@ -68,4 +69,8 @@ public class DPItemParent {
 	private ParamCommonAsync paramCommonAsync;
 	
 	private Boolean checkUnLock;
+
+	public UpdateMonthDailyParam createUpdateMonthDailyParam(){
+		return monthValue.createUpdateMonthDailyParam(this.domainMonthOpt, this.dateRange);
+	}
 }
