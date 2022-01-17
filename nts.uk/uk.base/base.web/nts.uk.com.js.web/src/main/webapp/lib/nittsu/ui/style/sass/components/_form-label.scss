@@ -32,7 +32,7 @@ label.form-label {
 
 	&.has-constraint {
 		& > svg {
-			display: inline;
+			display: none; /* UI見直しで一旦非表示 */
 		}
 	}
 }
