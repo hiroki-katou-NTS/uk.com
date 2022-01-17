@@ -186,11 +186,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
       data: any;
       mode: KnockoutObservable<number> = ko.observable(1); // 0 ->a, 1->b, 2->b(view)
       reasonList: Array<GoOutTypeDispControl> = [];
-<<<<<<< HEAD
       maxSupport: number = 0;
-=======
       errorList: KnockoutObservableArray<any> = ko.observableArray([])
->>>>>>> d5cc030d601 (KAF002: Fix bug #119731)
     
     
         bindComment(data: any) {
@@ -260,24 +257,6 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                    });       
                }
            }
-<<<<<<< HEAD
-		_.forEach(self.dataSourceOb()[0], i => {
-			self.bindDataRequest(i, 1);
-		})
-           self.isM(true);
-           self.tabs.subscribe(value => {
-              if (value) {
-                if (data.appStampReflectOptional && self.tabs()) {
-                    let reflect = data.appStampReflectOptional;
-                    self.tabs()[0].visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && data.useTemporary) || self.isAttendence || self.isTemporaryAttendence );
-                    self.tabs()[1].visible(reflect.outingHourse == 1 || self.isOutingHourse);
-                    self.tabs()[2].visible(reflect.breakTime == 1 || self.isBreakTime);
-                    self.tabs()[3].visible(reflect.parentHours == 1 || self.isParentHours);
-                    self.tabs()[4].visible(reflect.nurseTime == 1 || self.isNurseTime);
-                    // not use
-                    self.tabs()[5].visible(reflect.startAndEndSupport === 1 && data.useCheering);
-                
-=======
             _.forEach(self.dataSourceOb()[0], i => {
                 self.bindDataRequest(i, 1);
             })
@@ -292,7 +271,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         self.tabs()[3].visible(reflect.parentHours == 1 || self.isParentHours);
                         self.tabs()[4].visible(reflect.nurseTime == 1 || self.isNurseTime);
                         // not use
-                        self.tabs()[5].visible(false);
+                        self.tabs()[5].visible(reflect.startAndEndSupport === 1 && data.useCheering);
                     
                     } 
                     if (data.appStampOptional) {
@@ -331,7 +310,6 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         }
                         self.tabMs.valueHasMutated();
                     }
->>>>>>> d5cc030d601 (KAF002: Fix bug #119731)
                 } 
             });
        } 
@@ -1016,8 +994,6 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         self.tabs()[5].visible(reflect.startAndEndSupport === 1 && self.data.useCheering);
                     
                     } 
-<<<<<<< HEAD
-=======
 
                     if (self.data.appStampOptional) {
                         if (self.data.appStampOptional.listTimeStampApp) {
@@ -1055,7 +1031,6 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         }
                         self.tabMs.valueHasMutated();
                     }
->>>>>>> d5cc030d601 (KAF002: Fix bug #119731)
                     self.bindComment(self.data);
                     self.printContentOfEachAppDto().opAppStampOutput = res;
                 }).fail(res => {
