@@ -52,6 +52,8 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 	
 	private final static String FIND_CONTRACTCODE_TYPE = "SELECT a FROM KrcmtTimeRecorder a WHERE a.pk.contractCode = :contractCode AND a.type = :type ORDER BY a.pk.timeRecordCode ASC";
 	
+	private final static String FIND_BY_MAC = "select t from KrcmtTimeRecorder t where t.macAddress = :mac";
+	
 	
 	@Override
 	public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
@@ -72,6 +74,13 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 	public Optional<EmpInfoTerminal> getEmpInfoTerWithMac(MacAddress macAdd, ContractCode contractCode) {
 		return this.queryProxy().query(FIND_WITH_MAC, KrcmtTimeRecorder.class).setParameter("mac", macAdd.v())
 				.setParameter("contractCode", contractCode.v()).getList().stream().findFirst().map(x -> toDomain(x));
+	}
+	
+	@Override
+	public Optional<EmpInfoTerminal> getEmpInfoTerByMac(MacAddress macAdd) {
+		return this.queryProxy().query(FIND_BY_MAC, KrcmtTimeRecorder.class)
+					.setParameter("mac", macAdd.v())
+					.getList().stream().findFirst().map(x -> toDomain(x));
 	}
 
 	@Override

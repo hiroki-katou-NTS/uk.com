@@ -97,11 +97,11 @@ public class EmpInfoTerminalUpdateCommandHandler extends CommandHandler<EmpInfoT
 						.empInfoTerMemo(Optional.ofNullable(command.getMemo()).map(e -> new EmpInfoTerMemo(e)))
 						.build();
 
-		// 1: [就業情報端末コード＜＞端末No]: get(MACアドレス):就業情報端末
+		// 1: 　[就業情報端末コード＜＞端末No]: get(MACアドレス):就業情報端末 _#122494
 		Optional<EmpInfoTerminal> empInfoTerminalWithMac = repository
-				.getEmpInfoTerWithMac(new MacAddress(command.getMacAddress()), new ContractCode(contractCode));
+				.getEmpInfoTerByMac(new MacAddress(command.getMacAddress()));
 
-		// 2: [就業情報端末 not empty]:
+		// 2: 　[就業情報端末 not empty]:
 		if (empInfoTerminalWithMac.isPresent()
 			&& !empInfoTerminalWithMac.get().getEmpInfoTerCode().v().equals(command.getEmpInfoTerCode())) {
 			throw new BusinessException("Msg_1931");
@@ -111,7 +111,7 @@ public class EmpInfoTerminalUpdateCommandHandler extends CommandHandler<EmpInfoT
 		Optional<EmpInfoTerminal> empInfoTerminalWithCode = repository.getEmpInfoTerminal(
 				new EmpInfoTerminalCode(command.getEmpInfoTerCode()), new ContractCode(contractCode));
 
-		// 4: [就業情報端末=Empty]:
+		// 4:　[就業情報端末=Empty]:
 		if (!empInfoTerminalWithCode.isPresent()) {
 			throw new BusinessException("Msg_1896");
 		}

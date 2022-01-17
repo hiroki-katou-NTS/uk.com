@@ -26,6 +26,9 @@ public interface EmpInfoTerminalRepository {
 	public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode);
 	
 	public Optional<EmpInfoTerminal> getEmpInfoTerWithMac(MacAddress macAdd, ContractCode contractCode);
+	
+	//	#122494
+	public Optional<EmpInfoTerminal> getEmpInfoTerByMac(MacAddress macAdd);
 
 	public void updateSerialNo(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode,
 			EmpInfoTerSerialNo terSerialNo);

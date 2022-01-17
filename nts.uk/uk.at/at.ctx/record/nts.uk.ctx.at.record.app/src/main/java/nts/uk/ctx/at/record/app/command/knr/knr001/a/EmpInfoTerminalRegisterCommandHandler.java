@@ -99,9 +99,9 @@ public class EmpInfoTerminalRegisterCommandHandler extends CommandHandler<EmpInf
 
 		// 1: get(MACアドレス): 就業情報端末
 		Optional<EmpInfoTerminal> empInfoTerminalWithMac = repository
-				.getEmpInfoTerWithMac(new MacAddress(command.getMacAddress()), new ContractCode(contractCode));
+				.getEmpInfoTerByMac(new MacAddress(command.getMacAddress()));
 		
-		// 2: [就業情報端末 not empty]:()
+		// 2: 　[就業情報端末 not empty]:()
 		if (empInfoTerminalWithMac.isPresent()) {
 			throw new BusinessException("Msg_1931");
 		}
@@ -110,7 +110,7 @@ public class EmpInfoTerminalRegisterCommandHandler extends CommandHandler<EmpInf
 		Optional<EmpInfoTerminal> empInfoTerminalWithCode = repository.getEmpInfoTerminal(
 				new EmpInfoTerminalCode(command.getEmpInfoTerCode()), new ContractCode(contractCode));
 
-		// 4: [就業情報端末　not empty]:()
+		// 4: 　[就業情報端末　not empty]:()
 		if (empInfoTerminalWithCode.isPresent()) {
 			throw new BusinessException("Msg_1895");
 		}
