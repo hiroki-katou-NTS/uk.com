@@ -34,13 +34,13 @@ public class EditSpecialHolidayCommandHandler extends CommandHandlerWithResult<S
 
 		SpecialHoliday domain = command.toDomain(companyId);
 		if ( domain.getGrantRegular().getGrantPeriodic().isPresent() ) {
-			errList.addAll(domain.getGrantRegular().getGrantPeriodic().get().validateInput());
+			errList.addAll(domain.getGrantRegular().getGrantPeriodic().get().getGrantDeadline().validateInput());
 		}
 		errList.addAll(domain.getSpecialLeaveRestriction().validateInput());
 
 		if (errList.isEmpty()) {
 			// call event
-			Optional<SpecialHoliday> oldDomain =  sphdRepo.findByCode(companyId, domain.getSpecialHolidayCode().v());
+			Optional<SpecialHoliday> oldDomain =  sphdRepo.findBySingleCD(companyId, domain.getSpecialHolidayCode().v());
 			if(oldDomain.isPresent()){
 				boolean isNewChanged = isNameChanged(oldDomain.get(),domain);
 

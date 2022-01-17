@@ -160,12 +160,12 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
        isM: KnockoutObservable<boolean> = ko.observable(false);
        // select tab M
        selectedCode: KnockoutObservable<number> = ko.observable(0);
-       tabMs: Array<TabM> = [new TabM(this.$i18n('KAF002_29'), true, true),
+       tabMs: KnockoutObservableArray<TabM> = ko.observableArray([new TabM(this.$i18n('KAF002_29'), true, true),
                               new TabM(this.$i18n('KAF002_31'), true, true),
                               new TabM(this.$i18n('KAF002_76'), true, true),
                               new TabM(this.$i18n('KAF002_32'), true, true),
                               new TabM(this.$i18n('KAF002_33'), true, true),
-                              new TabM(this.$i18n('KAF002_34'), true, true)];
+                              new TabM(this.$i18n('KAF002_34'), true, true)]);
        
     //  ※M2.1_2 = ※M
     //  打刻申請起動時の表示情報.打刻申請設定.取消の機能の使用する　＝　使用する(use)

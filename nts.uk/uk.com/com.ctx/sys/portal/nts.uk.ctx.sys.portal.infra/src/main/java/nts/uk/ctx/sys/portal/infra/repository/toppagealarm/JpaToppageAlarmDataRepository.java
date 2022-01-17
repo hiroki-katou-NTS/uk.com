@@ -211,6 +211,10 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 
 	@Override
 	public void updateAll(List<ToppageAlarmData> domains) {
+		if (domains.isEmpty()) {
+			return;
+		}
+		
 		// Convert data to entity
 		List<SptdtToppageAlarm> entities = domains.stream().map(mapper -> this.toEntityWithIndexNo(mapper)).collect(Collectors.toList());
 		
@@ -256,14 +260,10 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 	}
 	
 	private boolean comparePk(SptdtToppageAlarmPK pk1, SptdtToppageAlarmPK pk2) {
-		if (pk1.getCId().equals(pk2.getCId())
+		return pk1.getCId().equals(pk2.getCId())
 			&& pk1.getAlarmCls().equals(pk2.getAlarmCls()) 
 			&& pk1.getDispSid().equals(pk2.getDispSid())
-			&& pk1.getDispAtr().equals(pk2.getDispAtr())
-			&& pk1.getIndexNo().equals(pk2.getIndexNo())) {
-			return true;
-		}
-		return false;
+			&& pk1.getDispAtr().equals(pk2.getDispAtr());
 	}
 
 	@Override

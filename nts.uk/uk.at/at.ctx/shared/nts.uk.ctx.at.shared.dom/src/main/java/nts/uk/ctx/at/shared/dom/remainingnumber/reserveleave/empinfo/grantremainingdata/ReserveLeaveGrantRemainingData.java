@@ -6,6 +6,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
@@ -29,37 +30,32 @@ public class ReserveLeaveGrantRemainingData extends LeaveGrantRemainingData {
 	 * @return 休暇付与残数データ　
 	 */
 	public static ReserveLeaveGrantRemainingData of(
-			String leavID,
-			String employeeId,
-			GeneralDate grantDate,
-			GeneralDate deadline,
-			LeaveExpirationStatus expirationStatus,
-			GrantRemainRegisterType registerType,
-			LeaveNumberInfo details) {
+			LeaveGrantRemainingData remaingData) {
 
-		ReserveLeaveGrantRemainingData domain = new ReserveLeaveGrantRemainingData();
-		domain.employeeId = employeeId;
-		domain.grantDate = grantDate;
-		domain.deadline = deadline;
-		domain.expirationStatus = expirationStatus;
-		domain.registerType = registerType;
-		domain.details = details;
-		return domain;
+		return new ReserveLeaveGrantRemainingData(
+				remaingData.getLeaveID(),
+				remaingData.getEmployeeId(),
+				remaingData.getGrantDate(),
+				remaingData.getDeadline(),
+				remaingData.getExpirationStatus(),
+				remaingData.getRegisterType(),
+				remaingData.getDetails()
+				);
 	}
 
 	public static ReserveLeaveGrantRemainingData createFromJavaType(String id, String employeeId, GeneralDate grantDate,
 			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, double usedDays,
 			Double overLimitDays, double remainDays) {
 
-		ReserveLeaveGrantRemainingData domain = new ReserveLeaveGrantRemainingData();
-		domain.leaveID = id;
-		domain.employeeId = employeeId;
-		domain.grantDate = grantDate;
-		domain.deadline = deadline;
-		domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
-		domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
-		domain.details = new ReserveLeaveNumberInfo(grantDays, usedDays, overLimitDays, remainDays);
-		return domain;
+		return new ReserveLeaveGrantRemainingData(
+				id,
+				employeeId,
+				grantDate,
+				deadline,
+				EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class),
+				EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class),
+				new ReserveLeaveNumberInfo(grantDays, usedDays, overLimitDays, remainDays)
+				);
 	}
 
 	/**
@@ -72,34 +68,27 @@ public class ReserveLeaveGrantRemainingData extends LeaveGrantRemainingData {
 	public double digest(double usedDays, boolean isForcibly){
 
 		// 「積立年休使用日数」を所得
-		if (usedDays <= 0.0) return 0.0;
-		double remainingDays = usedDays;
+		if (usedDays <= 0.0) 
+			return 0.0;
 
-		// 積立年休残数が足りているかチェック
-		boolean isSubtractRemain = false;
-//		double remainingNumber = this.details.getRemainingNumber().v();
+
 		double remainingNumber = this.details.getRemainingNumber().getDays().v();
-		if (remainingNumber >= remainingDays) isSubtractRemain = true;
-		// 「強制的に消化する」をチェック
-		else if (isForcibly) isSubtractRemain = true;
-
-		if (isSubtractRemain){
+		if (isDigestionable(usedDays,isForcibly)){
 
 			// 積立年休残数から減算
-			double newRemain = remainingNumber - remainingDays;
+			double newRemain = remainingNumber - usedDays;
 			this.details.setRemainingNumber(new LeaveRemainingNumber(newRemain, 0));
 
 			// 積立年休使用数に加算
 //			this.details.addDaysToUsedNumber(remainingDays);
-			this.details.getUsedNumber().add(new LeaveUsedNumber(remainingDays, 0) );
+			this.details.getUsedNumber().add(new LeaveUsedNumber(usedDays, 0) );
 
 			// 積立年休使用残を0にする
-			remainingDays = 0.0;
+			return 0.0;
 		}
 		else {
-
-			// 積立年休使用残から減算
-			remainingDays -= remainingNumber;
+			//積立年休使用残から減算
+			double remainingDays = usedDays - remainingNumber; 
 
 			// 積立年休使用数に加算
 			// this.details.addDaysToUsedNumber(remainingNumber);
@@ -107,10 +96,16 @@ public class ReserveLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
 			// 積立年休残数を0にする
 			this.details.setRemainingNumber(new LeaveRemainingNumber());
+			
+			return remainingDays;
 		}
+	}
 
-		// 積立年休使用残を返す
-		return remainingDays;
+	private boolean isDigestionable(double usedDays, boolean isForcibly) {
+		if (isForcibly)
+			return true;
+
+		return this.details.getRemainingNumber().getDays().greaterThanOrEqualTo(usedDays);
 	}
 
 	public static void validate(ReserveLeaveGrantRemainingData domain) {
@@ -166,5 +161,33 @@ public class ReserveLeaveGrantRemainingData extends LeaveGrantRemainingData {
 		return true;
 	}
 
+	/**
+	 * コンストラクタ
+	 * @param leaveID
+	 * @param employeeId
+	 * @param grantDate
+	 * @param deadline
+	 * @param expirationStatus
+	 * @param grantRemainRegisterType
+	 * @param details
+	 */
+	public ReserveLeaveGrantRemainingData(String leaveID,String employeeId, GeneralDate grantDate, GeneralDate deadline,
+			LeaveExpirationStatus expirationStatus, GrantRemainRegisterType grantRemainRegisterType,LeaveNumberInfo details){
+		super(leaveID, employeeId, grantDate, deadline, expirationStatus,grantRemainRegisterType,details);
+	}
+	
+	/**
+	 * コンストラクタ
+	 * @param employeeId
+	 * @param grantDate
+	 * @param deadline
+	 * @param expirationStatus
+	 * @param grantRemainRegisterType
+	 * @param details
+	 */
+	public ReserveLeaveGrantRemainingData(String employeeId, GeneralDate grantDate, GeneralDate deadline,
+			LeaveExpirationStatus expirationStatus, GrantRemainRegisterType grantRemainRegisterType,LeaveNumberInfo details){
+		super(IdentifierUtil.randomUniqueId(), employeeId, grantDate, deadline, expirationStatus,grantRemainRegisterType,details);
+	}
 
 }

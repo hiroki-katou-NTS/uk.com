@@ -7,12 +7,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.linkdatareg.UpdateNumberUnoffDaikyuProcess;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.linkdatareg.UpdateNumberUnoffFurikyuProcess;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
@@ -89,18 +97,18 @@ public class InterimRemainOffPeriodCreateData {
 
 
 			//アルゴリズム「指定日の暫定残数管理データを作成する」
-			DailyInterimRemainMngData outPutdata = InterimRemainOffDateCreateData.createData(
+			Optional<DailyInterimRemainMngData> outPutdata = InterimRemainOffDateCreateData.createData(
 					require,
 					inputParam.getCid(),
 					inputParam.getSid(),
 					loopDate,
-					inputParam.isDayOffTimeIsUse(),
+					comHolidaySetting.getDayOffSetting().isManagedTime(),
 					dataCreate,
 					comHolidaySetting,
 					employmentHolidaySetting,
 					inputParam.getCallFunction());
-			if(outPutdata != null) {
-				dataOutput.put(loopDate, outPutdata);
+			if(outPutdata.isPresent()) {
+				dataOutput.put(loopDate, outPutdata.get());
 			}
 		}
 
@@ -193,7 +201,7 @@ public class InterimRemainOffPeriodCreateData {
 		//Input「予定」がNULLかどうかチェック
 		if(param.getScheData().isEmpty()) {
 			//(Imported)「残数作成元の勤務予定を取得する」
-			param.setScheData(require.scheRemainCreateInfor(param.getSid(), param.getDateData()));
+			param.setScheData(require.scheRemainCreateInfor(param.getCid(), param.getSid(), param.getDateData()));
 		}
 		//Input「実績」がNULLかどうかチェック
 		if(param.getRecordData().isEmpty()) {
@@ -214,16 +222,73 @@ public class InterimRemainOffPeriodCreateData {
 				param.getDateData(),
 				param.getRecordData(),
 				param.getScheData(),
-				param.getAppData(),
-				param.isDayOffTimeIsUse());
-		return createInterimRemainDataMng(require, cacheCarrier, createDataParam, comHolidaySetting);
+				param.getAppData());
+		Map<GeneralDate, DailyInterimRemainMngData> result = createInterimRemainDataMng(require, cacheCarrier,
+				createDataParam, comHolidaySetting);
+		updateUnoffDaikyuFurikyu(require, param.getSid(), result);
+		return result;
 	}
 
+	// 代休振休の未相殺数を更新する
+	private static void updateUnoffDaikyuFurikyu(RequireM2 require, String sid,
+			Map<GeneralDate, DailyInterimRemainMngData> result) {
+		updateUnoffDaikyu(require, sid, result);
+		updateUnoffFurikyu(require, sid, result);
+	}
+
+	// 代休の未相殺数を更新する
+	private static void updateUnoffDaikyu(RequireM2 require, String sid,
+			Map<GeneralDate, DailyInterimRemainMngData> result) {
+
+		List<InterimDayOffMng> lstDayoff = result.values().stream().flatMap(x -> x.getDayOffData().stream())
+				.collect(Collectors.toList());
+		List<InterimBreakMng> lstBreakoff = result.values().stream().filter(x -> x.getBreakData().isPresent())
+				.map(x -> x.getBreakData().get()).collect(Collectors.toList());
+		List<GeneralDate> lstDate = Stream.concat(lstBreakoff.stream(), lstDayoff.stream()).map(x -> x.getYmd())
+				.distinct().collect(Collectors.toList());
+		val updateDaikyu = UpdateNumberUnoffDaikyuProcess.processDaikyu(require, sid, lstDate, lstDayoff, lstBreakoff);
+		result.forEach((key, value) -> {
+			val kyusyutsu = updateDaikyu.getKyusyutsu().stream().filter(x -> x.getYmd().equals(key)).findFirst();
+			kyusyutsu.ifPresent(x -> {
+				value.setBreakData(kyusyutsu);
+			});
+
+			val daikyu = updateDaikyu.getDaikyu().stream().filter(x -> x.getYmd().equals(key))
+					.collect(Collectors.toList());
+			if (!daikyu.isEmpty()) {
+				value.setDayOffData(daikyu);
+			}
+		});
+	}
+	
+	// 振休の未相殺数を更新する
+	private static void updateUnoffFurikyu(RequireM2 require, String sid,
+			Map<GeneralDate, DailyInterimRemainMngData> result) {
+
+		List<InterimAbsMng> lstAbsMng = result.values().stream().filter(x -> x.getInterimAbsData().isPresent())
+				.map(x -> x.getInterimAbsData().get()).collect(Collectors.toList());
+
+		List<InterimRecMng> lstRecMng = result.values().stream().filter(x -> x.getRecData().isPresent())
+				.map(x -> x.getRecData().get()).collect(Collectors.toList());
+		List<GeneralDate> lstDate = Stream.concat(lstAbsMng.stream(), lstRecMng.stream()).map(x -> x.getYmd())
+				.distinct().collect(Collectors.toList());
+		val updateDaikyu = UpdateNumberUnoffFurikyuProcess.processFurikyu(require, sid, lstDate, lstAbsMng, lstRecMng);
+		result.forEach((key, value) -> {
+			val furisyutsu = updateDaikyu.getFurisyutsu().stream().filter(x -> x.getYmd().equals(key)).findFirst();
+			furisyutsu.ifPresent(x -> {
+				value.setRecData(furisyutsu);
+			});
+
+			val furikyu = updateDaikyu.getFurikyu().stream().filter(x -> x.getYmd().equals(key)).findFirst();
+			furikyu.ifPresent(x -> {
+				value.setInterimAbsData(furikyu);
+			});
+		});
+	}
+	
 	public static interface RequireM4 extends RequireM1, RequireM3, InterimRemainOffDateCreateData.RequireM9 {
 
 		List<SharedSidPeriodDateEmploymentImport> employmentHistory(CacheCarrier cacheCarrier, List<String> sids , DatePeriod datePeriod);
-
-		List<RecordRemainCreateInfor> lstResultFromRecord(String sid, List<DailyResult> dailyResults);
 	}
 
 	public static interface RequireM3 extends WorkTypeIsClosedService.RequireM1 {
@@ -231,8 +296,8 @@ public class InterimRemainOffPeriodCreateData {
 		//Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid,String appID);
 	}
 
-	public static interface RequireM2 extends RequireM4 {
-		List<ScheRemainCreateInfor> scheRemainCreateInfor(String sid, DatePeriod dateData);
+	public static interface RequireM2 extends RequireM4, UpdateNumberUnoffFurikyuProcess.Require, UpdateNumberUnoffDaikyuProcess.Require {
+		List<ScheRemainCreateInfor> scheRemainCreateInfor(String cid, String sid, DatePeriod dateData);
 
 		List<RecordRemainCreateInfor> recordRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData);
 

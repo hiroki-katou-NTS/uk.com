@@ -82,10 +82,10 @@ public class TmpAnnualLeaveMngWork implements Serializable {
 		domain.ymd = tmpAnnLeaMng.getYmd();
 		domain.workTypeCode = tmpAnnLeaMng.getWorkTypeCode().v();
 		/** TODO: tmpAnnLeaMng.getUseNumber().getUsedDays > 1 -> error */
-		
-		domain.usedNumber = new AnnualLeaveUsedNumber(tmpAnnLeaMng.getUsedNumber().getDays().v() , 0, 0d);
+
+		domain.usedNumber = new AnnualLeaveUsedNumber(
+				tmpAnnLeaMng.getUsedNumber().getUsedDayNumber().map(mapper->mapper.v()).orElse(0.0d) , 0, 0d);
 		domain.creatorAtr = tmpAnnLeaMng.getCreatorAtr();
-//		domain.remainAtr = interimRemain.getRemainAtr();
 		return domain;
 	}
 

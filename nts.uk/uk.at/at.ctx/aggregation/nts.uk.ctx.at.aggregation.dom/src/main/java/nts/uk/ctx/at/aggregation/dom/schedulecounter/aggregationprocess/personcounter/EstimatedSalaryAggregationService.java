@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -32,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
  * @author kumiko_otake
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class EstimatedSalaryAggregationService {
 
 	/**
@@ -121,7 +124,7 @@ public class EstimatedSalaryAggregationService {
 				.collect(Collectors.toMap( Map.Entry::getKey, e -> {
 					val stage = EstimatedSalaryAggregationService
 							.getStepOfCriterionAmount( require, e.getKey(), baseDate, isNeedMonthly, e.getValue() );
-					return new EstimatedSalary( e.getValue(), stage.getExceeded(), stage.getBackground() );
+					return new EstimatedSalary( e.getValue(), stage.getCriterionAmount(), stage.getBackground() );
 				} ));
 
 	}

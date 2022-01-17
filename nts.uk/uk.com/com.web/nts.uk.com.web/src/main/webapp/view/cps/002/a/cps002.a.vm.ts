@@ -106,9 +106,15 @@ module cps002.a.vm {
         licenseCheckDipslay: KnockoutObservable<boolean> = ko.observable(true);
         classWarning: KnockoutObservable<string> = ko.observable("");
 
+        isFromCPS018: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor() {
             let self = this,
                 employee = self.currentEmployee();
+            
+            let params = getShared("CPS002A_PARAMS") || { isFromCPS018: false };
+            self.isFromCPS018(params.isFromCPS018);
+            nts.uk.sessionStorage.removeItem(nts.uk.request.STORAGE_KEY_TRANSFER_DATA);
 
             self.createTypeId.subscribe((newValue) => {
                 self.initValueList([]);
@@ -423,6 +429,7 @@ module cps002.a.vm {
 
         start() {
             let self = this;
+            const vm = new ko.ViewModel();
 
             self.currentEmployee().clearData();
 
@@ -436,11 +443,13 @@ module cps002.a.vm {
 
                 self.subContraint.valueHasMutated();
 
-                nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
-                    self.employeeBasicInfo(data);
-                    $('#contents-area').removeClass('hidden');
-                    self.getLayout();
-                });
+                vm.$window.storage('NewEmployeeBasicInfo')
+                    .then((data: any) => {{
+                        // self.employeeBasicInfo(data);
+                        $('#contents-area').removeClass('hidden');
+                        self.getLayout();
+                        self.employeeBasicInfo(data);
+                    }})
             });
         }
 
@@ -527,7 +536,8 @@ module cps002.a.vm {
                     EmployeeCode: employee.employeeCode(),
                     cardNo: employee.cardNo(),
                     LoginId: employee.loginId(),
-                    employeeName: employee.employeeName()
+                    employeeName: employee.employeeName(),
+                    password: employee.password()
                 };
 
             if (!self.isError()) {
@@ -550,6 +560,15 @@ module cps002.a.vm {
                             break;
                         case "Msg_346":
                             $('#cardNumber').ntsError('set', error);
+                            break;
+                        default:
+                            if (error.errors && error.errors.length > 1) {
+                                error.errors.forEach(err => {
+                                    $('#password').ntsError('set', err);
+                                });
+                            } else {
+                                $('#password').ntsError('set', error);
+                            }      
                             break;
                     }
                 });
@@ -1006,7 +1025,7 @@ module cps002.a.vm {
             if (item.dataType === "TIME" && item.saveData.value) {
                 return nts.uk.time.parseTime(item.saveData.value, true).format();
             }
-            
+
             if (item.dataType === "TIMEPOINT" && item.saveData.value) {
                 return window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'](item.saveData.value).fullText;
             }
@@ -1040,7 +1059,7 @@ module cps002.a.vm {
         itemsClassification?: Array<any>;
         classificationItems?: Array<any>;
         standardDate?: string;
-        wrkPlaceStartDate? :string;
+        wrkPlaceStartDate?: string;
     }
 
     class EmpRegHistory {

@@ -14,9 +14,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.xml.security.utils.I18n;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyPerformanceCodeDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
@@ -27,6 +30,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
+import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 /**
  * @author hungnm
@@ -65,6 +70,8 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 	private List<DPDataDto> lstData;
 
 	private List<DailyPerformanceAuthorityDto> authorityDto;
+	
+	private DailyPerformanceCodeDto dailyPerformanceCodeDto;
 
 	private String employmentCode;
 	
@@ -139,6 +146,11 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 	
 	private DPCorrectionMenuDto dPCorrectionMenuDto;
 	
+	// 就業確定の機能制限.就業確定を行う	RestrictConfirmEmployment.confirmEmployment
+	private Boolean confirmEmployment;
+	// 作業運用設定.作業運用方法 && アプリケーションコンテキスト．オプションライセンス．就業．作業・応援管理
+	private boolean showWorkLoad;
+	
 	public DailyPerformanceCorrectionDto() {
 		super();
 		this.lstFixedHeader = DPHeaderDto.GenerateFixedHeader();
@@ -197,7 +209,7 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 //		if (existedCellState.isPresent()) {
 //			existedCellState.get().addState("mgrid-disable");
 //		} else {
-		   if(!header.getKey().equals("Application") && !header.getKey().equals("Submitted") && !header.getKey().equals("ApplicationList")){
+		   if(!header.getKey().equals("Application") && !header.getKey().equals("Submitted") && !header.getKey().equals("ApplicationList") && !header.getAttendanceName().equals(TextResource.localize("KDW003_62"))){
 			int attendanceAtr = mapDP.get(Integer.parseInt(getID(header.getKey()))).getAttendanceAtr();
 			if (attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value) {
 				if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
@@ -282,10 +294,14 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 					// add error alarm to response data
 					if (!data.getError().isEmpty()) {
 						if (!errorType.equals(data.getError()) && !errorType.isEmpty()) {
-							data.setError("ER/AL");
+							data.setError(TextResource.localize("KDW003_129"));
 						}
 					} else {
-						data.setError(errorType);
+						if(errorType.equals("ER")) {
+							data.setError(TextResource.localize("KDW003_130"));
+						} else if(errorType.equals("AL")) {
+							data.setError(TextResource.localize("KDW003_131"));
+						}
 					}
 					// add error alarm cell state
 					error.getAttendanceItemId().stream().forEach(x ->{

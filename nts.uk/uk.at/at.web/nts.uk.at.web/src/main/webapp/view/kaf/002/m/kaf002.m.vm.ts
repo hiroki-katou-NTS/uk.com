@@ -67,7 +67,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
         dataSourceOb: KnockoutObservableArray<any>;
         // set param
-        tabMs: Array<TabM>;
+        tabMs: KnockoutObservableArray<TabM>;
 
         isPreAtr: KnockoutObservable<boolean>;
         date: KnockoutObservable<string>;
@@ -127,19 +127,22 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             let paramTabs = [] as Array<any>;
             self.enableList = [];
             self.isLinkList = [];
-            _.each(self.tabMs, (item, index) => {
+            _.each(self.tabMs(), (item, index) => {
 
-                let paramTab = {
-                    id: 'tab-' + String(index + 1),
-                    title: item.title, content: '.tab-content-' + String(index + 1),
-                    enable: ko.observable(item.enable),
-                    visible: ko.observable(item.visible)
-                };
-                paramTabs.push(paramTab);
-                self.enableList.push(ko.observable(false));
-                self.isLinkList.push(true);
-                nameGridsArray.push('grid' + String(index + 1));
+                if (item.visible()) {
+                    let paramTab = {
+                        id: 'tab-' + String(index + 1), title: item.title, content: '.tab-content-' + String(index + 1), enable: item.enable, visible: item.visible
+                    };
+                    paramTabs.push(paramTab);
+                    self.enableList.push(ko.observable(false));
+                    self.isLinkList.push(true);
+                    nameGridsArray.push('grid' + String(index + 1));
+                }
             });
+            self.tabMs.subscribe((value) => {
+                let tabsFilter = _.filter(paramTabs, (item) => {return item.visible()});
+                if (tabsFilter.length > 0) self.selectedTab(tabsFilter[0].id);
+            })
             self.nameGrids = ko.observableArray(nameGridsArray);
             self.tabs(paramTabs);
             // must assign param.tabs at mounted since tabs is not render
@@ -204,6 +207,10 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.date.subscribe((value) => {
                 self.loadAll();
             })
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/pj/at/release_ver4
 
 
         }
@@ -463,7 +470,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             _.each(self.isLinkList, (i, index) => {
                 if (items[0].index == index) {
                     let paramString = 'enableList[' + String(index) + ']';
-                    headerFlagContent = numberDisable != items.length ? '<div class="ntsCheckbox-002" style="display: block" align="center" data-bind="ntsCheckBox: { checked: ' + paramString + '}">' + self.$i18n('KAF002_72') + '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72') + '</div>';
+                    headerFlagContent = numberDisable != items.length ? '<div class="ntsCheckbox-002" style="display: block" align="center" data-bind="ntsCheckBox: { checked: ' + paramString + ', enable: ' + (self.mode() != 2) + '}">' + self.$i18n('KAF002_72') + '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72') + '</div>';
 
                     const maxLength = type === STAMPTYPE.CHEERING ? 3 : 10;
                     dataSource = items.length >= maxLength && self.isLinkList[index] ? items.slice(0, 3) : items;
@@ -1163,12 +1170,12 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
     }
     export class TabM {
         title?: string;
-        enable: boolean;
-        visible: boolean
+        enable: KnockoutObservable<boolean>;
+        visible: KnockoutObservable<boolean>
         constructor(title: string, enable: boolean, visible: boolean) {
             this.title = title;
-            this.enable = enable;
-            this.visible = visible;
+            this.enable = ko.observable(enable);
+            this.visible = ko.observable(visible);
         }
     }
 

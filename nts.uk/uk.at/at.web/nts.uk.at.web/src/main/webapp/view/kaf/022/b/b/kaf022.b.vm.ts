@@ -24,7 +24,7 @@ module nts.uk.at.view.kaf022.b.viewmodel {
         itemListB30: KnockoutObservableArray<ItemModel> = ko.observableArray([
             {code: 0, name: getText('KAF022_173')},
             {code: 1, name: getText('KAF022_175')},
-            {code: 2, name: getText('KAF022_651')}
+            // {code: 2, name: getText('KAF022_651')}
         ]);
         itemListB26: KnockoutObservableArray<ItemModel> = ko.observableArray([
             {code: 0, name: getText('KAF022_173')},
@@ -196,7 +196,8 @@ module nts.uk.at.view.kaf022.b.viewmodel {
 
         constructor(overtimeAppReflect?: any) {
             this.reflectActualWorkAtr = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectActualWorkAtr : 0);
-            this.reflectWorkInfoAtr = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectWorkInfoAtr : 1);
+            // this.reflectWorkInfoAtr = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectWorkInfoAtr : 1);
+            this.reflectWorkInfoAtr = ko.observable(0);
             this.reflectActualOvertimeHourAtr = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectActualOvertimeHourAtr : 1);
             this.reflectBeforeBreak = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectBeforeBreak : 1);
             this.workReflect = ko.observable(overtimeAppReflect ? overtimeAppReflect.workReflect : 1);

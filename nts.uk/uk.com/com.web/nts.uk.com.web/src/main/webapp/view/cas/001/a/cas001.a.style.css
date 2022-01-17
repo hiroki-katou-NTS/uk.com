@@ -19,7 +19,7 @@
 
 #content-left {
 	width: 310px;
-	height: 520px;
+	height: 593px;
 }
 
 #content-right {
@@ -49,7 +49,7 @@
 }
 
 #content-left>.caret-bottom {
-	margin-left: 80px;
+	margin-left: 113px;
 	font-size: 20px;
 }
 
@@ -212,4 +212,8 @@
 
 #item_role_table_body_virtualContainer {
 	border: 1px solid #999;
+}
+
+#left-bottom .input-wrapper input {
+	width: 207px !important;
 }

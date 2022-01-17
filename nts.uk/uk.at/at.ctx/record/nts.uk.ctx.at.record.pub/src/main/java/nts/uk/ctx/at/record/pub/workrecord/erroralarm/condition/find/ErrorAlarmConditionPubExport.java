@@ -244,9 +244,11 @@ public class ErrorAlarmConditionPubExport {
 				SingleWorkType wtypeConditionDomain = (SingleWorkType) conditionDomain
 						.getWorkTypeCondition();
 				this.workTypeCondition.setUseAtr(wtypeConditionDomain.isUse());
-				this.workTypeCondition.setPlanFilterAtr(wtypeConditionDomain.getTargetWorkType().isUse());
-				this.workTypeCondition.setPlanLstWorkType(wtypeConditionDomain.getTargetWorkType().getLstWorkType().stream()
-						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
+				if(wtypeConditionDomain.getTargetWorkType()!=null){
+					this.workTypeCondition.setPlanFilterAtr(wtypeConditionDomain.getTargetWorkType().isUse());
+					this.workTypeCondition.setPlanLstWorkType(wtypeConditionDomain.getTargetWorkType().getLstWorkType().stream()
+							.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
+				}
 			}
 			//errorAlarmWorkRecordDto.setWorkTypeCondition(wtypeConditionDto);
 			// Set WorkTimeConditionDto

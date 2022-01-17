@@ -26,12 +26,12 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
         // select tab M
         selectedCode: KnockoutObservable<number> = ko.observable(0);
-        tabMs: Array<TabM> = [new TabM(this.$i18n('KAF002_29'), true, true),
+        tabMs: KnockoutObservableArray<TabM> = ko.observableArray([new TabM(this.$i18n('KAF002_29'), true, true),
                           new TabM(this.$i18n('KAF002_31'), true, true),
                           new TabM(this.$i18n('KAF002_76'), true, true),
                           new TabM(this.$i18n('KAF002_32'), true, true),
                           new TabM(this.$i18n('KAF002_33'), true, true),
-                          new TabM(this.$i18n('KAF002_34'), true, true)];
+                          new TabM(this.$i18n('KAF002_34'), true, true)]);
 
         isVisibleComlumn: boolean = true;
         isPreAtr: KnockoutObservable<boolean> = ko.observable(false);
@@ -108,7 +108,11 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 self.bindComment(self.data);
             }
         });
+		let screenCode: number = null;
 		if (!_.isEmpty(params)) {
+			if (!nts.uk.util.isNullOrUndefined(params.screenCode)) {
+				screenCode = params.screenCode;
+			}
 			if (!_.isEmpty(params.employeeIds)) {
 				empLst = params.employeeIds;
 			}
@@ -123,7 +127,13 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 				self.isAgentMode(params.isAgentMode);
 			}
 		}
-        self.loadData(empLst, dateLst, self.appType())
+		let paramKAF000 = { 
+			empLst, 
+			dateLst, 
+			appType: self.appType(),
+			screenCode
+		};
+        self.loadData(paramKAF000)
 		.then((loadDataFlag: any) => {
             // self.appDispInfoStartupOutput.subscribe(value => {
             //     if (value) { 

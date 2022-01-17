@@ -40,22 +40,22 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
     private String companyId;
 
     @Column(name = "STAMP_PLACE_DISP_ATR", nullable = false)
-    private Integer stampPlaceDispAtr;
+    private boolean stampPlaceDispAtr;
 
     @Column(name = "CANCEL_DISP_ATR")
-    private Integer cancelDispAtr;
+    private boolean cancelDispAtr;
 
     @Column(name = "STAMP_OUT_PRI_DISP_ATR")
-    private Integer stampOutPriDispAtr;
+    private boolean stampOutPriDispAtr;
 
     @Column(name = "STAMP_OUT_PUB_DISP_ATR")
-    private Integer stampOutPubDispAtr;
+    private boolean stampOutPubDispAtr;
 
     @Column(name = "STAMP_OUT_COMP_DISP_ATR")
-    private Integer stampOutCompDispAtr;
+    private boolean stampOutCompDispAtr;
 
     @Column(name = "STAMP_OUT_UNION_DISP_ATR")
-    private Integer stampOutUnionDispAtr;
+    private boolean stampOutUnionDispAtr;
 
     @Column(name = "WK_CMT_FONT_COLOR1")
     private String workCmtFontColor1;
@@ -216,7 +216,7 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
     public AppStampSetting toSettingDomain() {
         return new AppStampSetting(
                 companyId,
-                EnumAdaptor.valueOf(cancelDispAtr, UseDivision.class),
+                EnumAdaptor.valueOf(BooleanUtils.toInteger(cancelDispAtr), UseDivision.class),
                 Arrays.asList(
                         new SettingForEachType(
                                 StampAtr.ATTENDANCE_RETIREMENT,
@@ -256,19 +256,19 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
                 ),
                 Arrays.asList(
                         new GoOutTypeDispControl(
-                                EnumAdaptor.valueOf(stampOutPriDispAtr, DisplayAtr.class),
+                                EnumAdaptor.valueOf(BooleanUtils.toInteger(stampOutPriDispAtr), DisplayAtr.class),
                                 GoOutType.PRIVATE
                         ),
                         new GoOutTypeDispControl(
-                                EnumAdaptor.valueOf(stampOutPubDispAtr, DisplayAtr.class),
+                                EnumAdaptor.valueOf(BooleanUtils.toInteger(stampOutPubDispAtr), DisplayAtr.class),
                                 GoOutType.OFFICE
                         ),
                         new GoOutTypeDispControl(
-                                EnumAdaptor.valueOf(stampOutCompDispAtr, DisplayAtr.class),
+                                EnumAdaptor.valueOf(BooleanUtils.toInteger(stampOutCompDispAtr), DisplayAtr.class),
                                 GoOutType.COMPENSATION
                         ),
                         new GoOutTypeDispControl(
-                                EnumAdaptor.valueOf(stampOutUnionDispAtr, DisplayAtr.class),
+                                EnumAdaptor.valueOf(BooleanUtils.toInteger(stampOutUnionDispAtr), DisplayAtr.class),
                                 GoOutType.UNION
                         )
                 ),
@@ -293,22 +293,22 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
     public static KrqmtAppStamp create(String companyId, AppStampSetting setting, StampAppReflect reflect) {
         KrqmtAppStamp entity = new KrqmtAppStamp();
         entity.companyId = companyId;
-        entity.cancelDispAtr = setting.getUseCancelFunction().value;
+        entity.cancelDispAtr = BooleanUtils.toBoolean(setting.getUseCancelFunction().value);
         entity.stampPlaceDispAtr = setting.getUseLocationSelection().value;
         entity.stampWkpDispAtr = setting.getWkpDisAtr().value;
         for (GoOutTypeDispControl t : setting.getGoOutTypeDispControl()) {
             switch (t.getGoOutType()) {
                 case PRIVATE:
-                    entity.stampOutPriDispAtr = t.getDisplay().value;
+                    entity.stampOutPriDispAtr = BooleanUtils.toBoolean(t.getDisplay().value);
                     break;
                 case OFFICE:
-                    entity.stampOutPubDispAtr = t.getDisplay().value;
+                    entity.stampOutPubDispAtr = BooleanUtils.toBoolean(t.getDisplay().value);
                     break;
                 case COMPENSATION:
-                    entity.stampOutCompDispAtr = t.getDisplay().value;
+                    entity.stampOutCompDispAtr = BooleanUtils.toBoolean(t.getDisplay().value);
                     break;
                 case UNION:
-                    entity.stampOutUnionDispAtr = t.getDisplay().value;
+                    entity.stampOutUnionDispAtr = BooleanUtils.toBoolean(t.getDisplay().value);
                     break;
                 default:
                     break;
@@ -387,22 +387,22 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
     }
 
     public void updateSetting(AppStampSetting setting) {
-        cancelDispAtr = setting.getUseCancelFunction().value;
+        cancelDispAtr = BooleanUtils.toBoolean(setting.getUseCancelFunction().value);
         this.stampPlaceDispAtr = setting.getUseLocationSelection().value;
         this.stampWkpDispAtr = setting.getWkpDisAtr().value;
         for (GoOutTypeDispControl t : setting.getGoOutTypeDispControl()) {
             switch (t.getGoOutType()) {
                 case PRIVATE:
-                    stampOutPriDispAtr = t.getDisplay().value;
+                    stampOutPriDispAtr = BooleanUtils.toBoolean(t.getDisplay().value);
                     break;
                 case OFFICE:
-                    stampOutPubDispAtr = t.getDisplay().value;
+                    stampOutPubDispAtr = BooleanUtils.toBoolean(t.getDisplay().value);
                     break;
                 case COMPENSATION:
-                    stampOutCompDispAtr = t.getDisplay().value;
+                    stampOutCompDispAtr = BooleanUtils.toBoolean(t.getDisplay().value);
                     break;
                 case UNION:
-                    stampOutUnionDispAtr = t.getDisplay().value;
+                    stampOutUnionDispAtr = BooleanUtils.toBoolean(t.getDisplay().value);
                     break;
                 default:
                     break;

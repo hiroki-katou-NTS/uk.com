@@ -13,16 +13,13 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.GetMngInfoFromEmpIDListAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
@@ -35,12 +32,10 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CanEngravingUsed;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.MakeUseJudgmentResults;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
@@ -62,9 +57,6 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 	private StampCardRepository stampCardRepo;
 
 	@Inject
-	private StampRecordRepository stampRecordRepo;
-
-	@Inject
 	private StampDakokuRepository stampDakokuRepo;
 
 //	@Inject
@@ -77,9 +69,6 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 	private SettingsUsingEmbossingRepository stampUsageRepo;
 
 	@Inject
-	private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
-
-	@Inject
 	private StampCardEditingRepo stampCardEditRepo;
 
 	@Inject
@@ -89,25 +78,31 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 	private CompanyAdapter companyAdapter;
 	
 	@Inject
+	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
+	
+	@Inject
+	private StampCardRepository stampCardRepository;
+	
+	@Inject
+	private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
+	
+	@Inject
+	private DailyRecordShareFinder dailyRecordShareFinder;
+	
+	@Inject
 	private CreateDailyResults createDailyResults;
 	
 	@Inject
 	private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
 	
-	@Inject
-	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
-	
-	@Inject
-	private DailyRecordShareFinder dailyRecordShareFinder;
-
 	@Override
 	protected void handle(CommandHandlerContext<ConfirmUseOfStampEmbossCommand> context) {
 		String employeeId = AppContexts.user().employeeId();
 
 		StampFunctionAvailableRequiredImpl checkFuncRq = new StampFunctionAvailableRequiredImpl(stampUsageRepo,
-				stampCardRepo, stampRecordRepo, stampDakokuRepo, createDailyResultDomainServiceNew, stampCardEditRepo,
-				sysEmpPub, companyAdapter, createDailyResults, timeReflectFromWorkinfo, temporarilyReflectStampDailyAttd,
-				dailyRecordShareFinder);
+				stampCardRepo, stampDakokuRepo, stampCardEditRepo,
+				sysEmpPub, companyAdapter, temporarilyReflectStampDailyAttd, stampCardRepository,
+				getMngInfoFromEmpIDListAdapter, dailyRecordShareFinder, createDailyResults, timeReflectFromWorkinfo);
 
 		MakeUseJudgmentResults judgmentResults = StampFunctionAvailableService.decide(checkFuncRq, employeeId,
 				StampMeans.INDIVITION);
@@ -146,13 +141,7 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 		private StampCardRepository stampCardRepo;
 
 		@Inject
-		private StampRecordRepository stampRecordRepo;
-
-		@Inject
 		private StampDakokuRepository stampDakokuRepo;
-
-		@Inject
-		private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
 
 		@Inject
 		private StampCardEditingRepo stampCardEditRepo;
@@ -163,13 +152,17 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 		@Inject
 		private CompanyAdapter companyAdapter;
 
-		private CreateDailyResults createDailyResults;
-
-		private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
-
 		private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
 		
+		private StampCardRepository stampCardRepository;
+		
+		private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
+		
 		private DailyRecordShareFinder dailyRecordShareFinder;
+		
+		private CreateDailyResults createDailyResults;
+		
+		private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
 		
 		@Override
 		public List<StampCard> getListStampCard(String sid) {
@@ -202,57 +195,53 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 		}
 
 		@Override
-		public void insert(StampRecord stampRecord) {
-			this.stampRecordRepo.insert(stampRecord);
-
-		}
-
-		@Override
 		public void insert(Stamp stamp) {
 			this.stampDakokuRepo.insert(stamp);
-		}
-
-		@Override
-		public OutputCreateDailyResult createDataNewNotAsync(String employeeId, DatePeriod periodTime,
-				ExecutionAttr executionAttr, String companyId, ExecutionTypeDaily executionType,
-				Optional<EmpCalAndSumExeLog> empCalAndSumExeLog, Optional<Boolean> checkLock) {
-			return createDailyResultDomainServiceNew.createDataNewNotAsync(employeeId, periodTime, executionAttr,
-					companyId, executionType, empCalAndSumExeLog, checkLock);
 		}
 
 		@Override
 		public Optional<StampCard> getByCardNoAndContractCode(String stampNumber, String contractCode) {
 			return this.stampCardRepo.getByCardNoAndContractCode(stampNumber, contractCode);
 		}
+		
+		@Override
+		public Optional<StampCard> getByCardNoAndContractCode(ContractCode contractCode, StampNumber stampNumber) {
+			return stampCardRepository.getByCardNoAndContractCode(stampNumber.v(), contractCode.v());
+		}
 
 		@Override
-		public OutputCreateDailyOneDay createDailyResult(String cid, String employeeId, GeneralDate ymd,
-				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
-				IntegrationOfDaily integrationOfDaily) {
-			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, integrationOfDaily);
+		public List<EmpDataImport> getEmpData(List<String> empIDList) {
+			return getMngInfoFromEmpIDListAdapter.getEmpData(empIDList);
+		}
+
+		@Override
+		public Optional<IntegrationOfDaily> find(String employeeId, GeneralDate date) {
+			return dailyRecordShareFinder.find(employeeId, date);
+		}
+
+		@Override
+		public Optional<OutputCreateDailyOneDay> createDailyResult(String companyId, String employeeId, GeneralDate ymd,
+				ExecutionTypeDaily executionType) {
+			return createDailyResults.createDailyResult(companyId, employeeId, ymd, executionType);
 		}
 
 		@Override
 		public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
 				WorkInfoOfDailyAttendance workInformation) {
-			return this.timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
+			return timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
 		}
 
 		@Override
-		public List<ErrorMessageInfo> reflectStamp(String companyId, Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
-				IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
-			return this.temporarilyReflectStampDailyAttd.reflectStamp(companyId, stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
+		public List<ErrorMessageInfo> reflectStamp(String companyId, Stamp stamp,
+				StampReflectRangeOutput stampReflectRangeOutput, IntegrationOfDaily integrationOfDaily,
+				ChangeDailyAttendance changeDailyAtt) {
+			return temporarilyReflectStampDailyAttd.reflectStamp(companyId, stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
 		}
 		
 		@Override
-		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
-				GeneralDateTime dateTime) {
-			return stampRecordRepo.get(contractCode.v(), stampNumber.v(), dateTime);
-		}
-
-		@Override
-		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date) {
-			return dailyRecordShareFinder.find(employeeId, date);
+		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
+				ChangeClockAtr changeClockArt) {
+			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
 		}
 	}
 

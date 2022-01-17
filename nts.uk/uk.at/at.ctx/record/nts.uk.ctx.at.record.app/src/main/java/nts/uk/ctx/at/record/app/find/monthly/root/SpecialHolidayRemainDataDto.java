@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.specialleave.SpecialLeaveDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.specialleave.SpecialLeaveUnDigestionDataDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
@@ -23,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeave;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveGrantUseDay;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUnDigestion;
 
 @Data
@@ -116,7 +116,7 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED, no,
 				actualSpecial == null ? new SpecialLeave() : actualSpecial.toDomain(), 
 				specialLeave == null ? new SpecialLeave() : specialLeave.toDomain(),
-				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)), grantAtr,
+				Optional.ofNullable(grantDays == null ? null : new LeaveGrantDayNumber(grantDays)), grantAtr,
 				unDigestionData == null ? new SpecialLeaveUnDigestion() : unDigestionData.toDomain());
 	}
 

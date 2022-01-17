@@ -35,7 +35,6 @@ import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ContentApproval;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ParamDayApproval;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
@@ -54,6 +53,7 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamI
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
+import nts.uk.ctx.at.shared.app.command.scherec.monthlyattendanceitem.RegisterPastMonthTotalResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
@@ -185,6 +185,9 @@ public class DailyModifyRCommandFacade {
 	
 	@Inject
 	private DailyCorrectCalcTimeService dCCalcTimeService;
+	
+	@Inject
+	private RegisterPastMonthTotalResult registerPastMonthTotalResult;
 
 	public DataResultAfterIU insertItemDomain(DPItemParent dataParent) {
 		// Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
@@ -422,7 +425,7 @@ public class DailyModifyRCommandFacade {
 				DailyCalcResult daiCalcResult = processDailyCalc.processDailyCalc(
 						new DailyCalcParam(mapSidDate, dataParent.getLstNotFoundWorkType(), resultOlds,
 								dataParent.getDateRange(), dataParent.getDailyEdits(), dataParent.getItemValues()),
-						dailyEdits, dailyOlds, dailyItems, querys, monthParam, dataParent.getShowDialogError(), ExecutionType.NORMAL_EXECUTION);
+						dailyEdits, dailyOlds, dailyItems, querys, monthParam, dataParent.getShowDialogError(), ExecutionType.NORMAL_EXECUTION,dataParent.getCheckUnLock());
 				if (daiCalcResult.getResultUI() == null) {
 					return daiCalcResult.getDataResultAfterIU();
 				}
@@ -514,7 +517,7 @@ public class DailyModifyRCommandFacade {
 
 				if (Thread.currentThread().getName().indexOf("REQUEST:") == 0) {
 					this.executerService
-							.submit(AsyncTask.builder().withContexts().threadName("Daily").build(asyncDaily));
+							.submit(AsyncTask.builder().threadName("Daily").build(asyncDaily));
 				} else {
 					asyncDaily.run();
 				}
@@ -530,38 +533,42 @@ public class DailyModifyRCommandFacade {
 					//// 月別実績の集計
 					DailyCalcResult resultCalcMonth = processMonthlyCalc.processMonthCalc(commandNew, commandOld,
 							domainDailyNew, dailyItems, monthParam, dataParent.getMonthValue(), errorMonthHoliday,
-							dataParent.getDateRange(), dataParent.getMode(), editFlex);
-					RCDailyCorrectionResult resultMonth = resultCalcMonth.getResultUI();
-					ErrorAfterCalcDaily errorMonth = resultCalcMonth.getErrorAfterCheck();
-					// map error holiday into result
-					List<DPItemValue> lstItemErrorMonth = errorMonth.getResultErrorMonth()
-							.get(TypeError.ERROR_MONTH.value);
-					if (lstItemErrorMonth != null) {
-						List<DPItemValue> itemErrorMonth = dataResultAfterIU.getErrorMap()
+							dataParent.getDateRange(), dataParent.getMode(), editFlex,dataParent.getCheckUnLock());
+					
+					if(resultCalcMonth.getErrorAfterCheck() !=null && resultCalcMonth.getListAggregatePastMonthResult().isEmpty()) {
+						ErrorAfterCalcDaily errorMonth = resultCalcMonth.getErrorAfterCheck();
+						// map error holiday into result
+						List<DPItemValue> lstItemErrorMonth = errorMonth.getResultErrorMonth()
 								.get(TypeError.ERROR_MONTH.value);
-						if (itemErrorMonth == null) {
-							// dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value,
-							// lstItemErrorMonth);
-							resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
-						} else {
-							lstItemErrorMonth.addAll(itemErrorMonth);
-							// dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value,
-							// lstItemErrorMonth);
-							resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
+						if (lstItemErrorMonth != null) {
+							List<DPItemValue> itemErrorMonth = dataResultAfterIU.getErrorMap()
+									.get(TypeError.ERROR_MONTH.value);
+							if (itemErrorMonth == null) {
+								// dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value,
+								// lstItemErrorMonth);
+								resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
+							} else {
+								lstItemErrorMonth.addAll(itemErrorMonth);
+								// dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value,
+								// lstItemErrorMonth);
+								resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
+							}
 						}
+						// 月次登録処理
+						errorMonthAfterCalc = errorMonth.getHasError();
+						if (!errorMonthAfterCalc) {
+//							this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
+							
+							dataResultAfterIU.setDomainMonthOpt(Optional.empty());
+						}
+						// dataResultAfterIU.setErrorMap(errorMonth.getResultError());
+						dataResultAfterIU.setFlexShortage(errorMonth.getFlexShortage());
 					}
-					// 月次登録処理
-					errorMonthAfterCalc = errorMonth.getHasError();
-					if (!errorMonthAfterCalc) {
-						this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
-						
-						dataResultAfterIU.setDomainMonthOpt(resultMonth.getLstMonthDomain().isEmpty() ? Optional.empty()
-								: resultMonth.getLstMonthDomain().stream()
-										.map(x -> MonthlyRecordWorkDto.fromDtoWithOptional(x, optionalMaster))
-										.findFirst());
+					
+					//過去月集計結果を登録する
+					if(resultCalcMonth.getErrorAfterCheck() ==null && !resultCalcMonth.getListAggregatePastMonthResult().isEmpty()) {
+						registerPastMonthTotalResult.register(resultCalcMonth.getListAggregatePastMonthResult());
 					}
-					// dataResultAfterIU.setErrorMap(errorMonth.getResultError());
-					dataResultAfterIU.setFlexShortage(errorMonth.getFlexShortage());
 				}
 
 				try {
@@ -774,14 +781,6 @@ public class DailyModifyRCommandFacade {
 			// Acquire closing date corresponding to employee
 			List<IntegrationOfDaily> dailyOfEmp = domainDailyEditAll.stream()
 					.filter(x -> x.getEmployeeId().equals(emp)).collect(Collectors.toList());
-			List<AttendanceTimeOfDailyPerformance> lstAttendanceTimeData = dailyOfEmp.stream()
-					.filter(x -> x.getAttendanceTimeOfDailyPerformance().isPresent())
-					.map(x -> new AttendanceTimeOfDailyPerformance(x.getEmployeeId(),x.getYmd(), x.getAttendanceTimeOfDailyPerformance().get())).collect(Collectors.toList());
-
-			List<WorkInfoOfDailyPerformance> lstWorkInfor = dailyOfEmp.stream()
-					.filter(x -> x.getWorkInformation() != null).map(x -> new WorkInfoOfDailyPerformance(x.getEmployeeId(),x.getYmd(), x.getWorkInformation()))
-					.collect(Collectors.toList()).stream().sorted((x, y) -> x.getYmd().compareTo(y.getYmd()))
-					.collect(Collectors.toList());
 
 			Optional<GeneralDate> date = getClosureStartForEmployee.getDataClosureStart(emp);
 			List<EmployeeMonthlyPerError> lstEmpMonthError = new ArrayList<>();
@@ -790,7 +789,7 @@ public class DailyModifyRCommandFacade {
 					TimeOffRemainErrorInputParam param = new TimeOffRemainErrorInputParam(companyId, emp,
 							new DatePeriod(date.get(), date.get().addYears(1).addDays(-1)),
 							new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), false,
-							lstAttendanceTimeData, lstWorkInfor, month.getAttendanceTime());
+							dailyOfEmp, month.getAttendanceTime());
 					// monthPer.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 					lstEmpMonthError.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 				}
@@ -801,8 +800,8 @@ public class DailyModifyRCommandFacade {
 						: domainMonthNew.get(0).getAttendanceTime();
 				TimeOffRemainErrorInputParam param = new TimeOffRemainErrorInputParam(companyId, emp,
 						new DatePeriod(date.get(), date.get().addYears(1).addDays(-1)),
-						new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), false, lstAttendanceTimeData,
-						lstWorkInfor, optMonthlyData);
+						new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), false,
+						dailyOfEmp, optMonthlyData);
 				lstEmpMonthError.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 				// monthPer.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 			}

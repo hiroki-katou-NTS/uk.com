@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
@@ -44,9 +45,7 @@ public class BreakTimeSheetGetter {
 			ManagePerPersonDailySet personDailySetting,
 			IntegrationOfDaily domainDaily, boolean correctWithEndTime) {
 		
-		if (!domainDaily.getAttendanceLeave().isPresent()) {
-			return new ArrayList<>();
-		}
+
 		
 		val cid = AppContexts.user().companyId();
 		
@@ -68,7 +67,9 @@ public class BreakTimeSheetGetter {
 		if(workTimeSet == null) {
 			return new ArrayList<>();
 		}
-		
+		if (!workTimeSet.isFixBreak(workType) && !domainDaily.getAttendanceLeave().isPresent()) {
+			return new ArrayList<>();
+		}
 		/** 「１日の計算範囲」クラスを作成 */
 		val oneDayCalcRange = require.createOneDayRange(require.predetemineTimeSetting(cid, workTimeSet.getCode().v()), 
 				domainDaily, Optional.of(workTimeSet.getCommonSetting()), 
@@ -96,15 +97,22 @@ public class BreakTimeSheetGetter {
 			}
 			break;
 		case FLOW: /** 流動 */
+			if(workTimeSet.isFixBreak(workType)) {
+				deductionTimeSheet =  oneDayCalcRange.getDeductionTimeSheetOnFixed(workType, workTimeSet, domainDaily,
+						companyCommonSetting, personDailySetting, correctWithEndTime);
+			}
+			else {
+				WithinWorkTimeSheet withinWorkTimeSheet = new WithinWorkTimeSheet(new ArrayList<>(), new ArrayList<>(), 
+						Optional.empty(), Optional.empty());	
+				
+				/** 補正用事前処理 */
+				deductionTimeSheet = oneDayCalcRange.prePocessForFlowCorrect(
+						companyCommonSetting, personDailySetting, workType, workTimeSet, domainDaily, 
+						domainDaily.getAttendanceLeave().get(), 
+						withinWorkTimeSheet, correctWithEndTime);	
+			}
 			
-			WithinWorkTimeSheet withinWorkTimeSheet = new WithinWorkTimeSheet(new ArrayList<>(), new ArrayList<>(), 
-																				Optional.empty(), Optional.empty());
 			
-			/** 補正用事前処理 */
-			deductionTimeSheet = oneDayCalcRange.prePocessForFlowCorrect(
-					companyCommonSetting, personDailySetting, workType, workTimeSet, domainDaily, 
-					domainDaily.getAttendanceLeave().get(), 
-					withinWorkTimeSheet, correctWithEndTime);
 			break;
 		default:
 			
@@ -113,9 +121,12 @@ public class BreakTimeSheetGetter {
 		}
 		
 		/** 休憩時間帯に変換 */ 
-		deductionTimeSheet = deductionTimeSheet.stream().filter(c -> c.getDeductionAtr() == DeductionClassification.BREAK)
+		deductionTimeSheet = deductionTimeSheet.stream()
+				.filter(c -> c.getDeductionAtr() == DeductionClassification.BREAK
+						&& (c.getBreakAtr().isPresent() ? c.getBreakAtr().get() != BreakClassification.BREAK_STAMP
+								: true))
 				.collect(Collectors.toList());
-		
+
 		List<BreakTimeSheet> breakTimeSheet = new ArrayList<>();
 		for(int idx = 0; idx < deductionTimeSheet.size(); idx++) {
 			val dudectionSheet = deductionTimeSheet.get(idx);
@@ -169,7 +180,7 @@ public class BreakTimeSheetGetter {
 		/** 流動休憩用の時間帯作成 */
 		val timeSheet = oneDayCalcRange.provisionalDeterminationOfDeductionTimeSheet(
 				workType, workTime, integrationOfDaily, 
-				oneDayCalcRange.getOneDayOfRange(), attendanceLeave, 
+				oneDayCalcRange.getOneDayOfRange(), Optional.of(attendanceLeave), 
 				oneDayCalcRange.getPredetermineTimeSetForCalc(), lateTimeSheet, correctWithEndTime, Optional.empty(),
 				companyCommonSetting, personDailySetting);
 		

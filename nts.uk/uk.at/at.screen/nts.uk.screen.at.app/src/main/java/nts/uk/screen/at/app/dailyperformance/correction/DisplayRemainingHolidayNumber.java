@@ -1,8 +1,8 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -16,7 +16,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
-import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.TempChildCareNurseManagementImport;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberChildCareAdapter;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberNursingAdapter;
@@ -24,7 +23,7 @@ import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childca
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.AnnualHolidayManagementAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -37,7 +36,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.procwithbasedate.NumberConsecutiveVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
@@ -180,16 +178,13 @@ public class DisplayRemainingHolidayNumber {
 		
 		if (output.isYearHolidayManagerFlg()) {
 			//RequestList198
-			ReNumAnnLeaReferenceDateImport remainNum = annLeaveRemainAdapter
-					.getReferDateAnnualLeaveRemainNumber(employeeId, date);
-			int yearHourRemain = 0;
-            for (int i = 0; i < remainNum.getAnnualLeaveGrantExports().size(); i++) {
-                yearHourRemain += remainNum.getAnnualLeaveGrantExports().get(i).getRemainMinutes();
-            }
-			return new YearHolidaySettingDto(output.isYearHolidayManagerFlg(), output.isSuspensionTimeYearFlg(),
-					remainNum.getAnnualLeaveRemainNumberExport() != null
-							? remainNum.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay() : 0,
-					yearHourRemain);
+		    ReNumAnnLeaveImport remainNum = annLeaveRemainAdapter
+					.getReferDateAnnualLeaveRemain(employeeId, date);
+			return new YearHolidaySettingDto(
+			        output.isYearHolidayManagerFlg(), 
+			        output.isSuspensionTimeYearFlg(),
+					remainNum.getRemainingDays(),
+					remainNum.getRemainingTime());
 		} else {
 			return new YearHolidaySettingDto(false, false, null, null);
 		}

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.converter;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -13,4 +14,8 @@ public interface DailyRecordShareFinder {
 
 	public List<IntegrationOfDaily> findByListEmployeeId(List<String> employeeId,
 			DatePeriod baseDate);
+	
+	public List<IntegrationOfDaily> find(String employeeId, List<GeneralDate> lstDate);
+	
+	public List<IntegrationOfDaily> find(Map<String, List<GeneralDate>> param);
 }
