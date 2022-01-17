@@ -528,7 +528,7 @@ public class DailyModifyRCommandFacade {
 				if (dataParent.getMode() == 0 && monthParam != null && monthParam.getNeedCallCalc() != null
 						&& monthParam.getNeedCallCalc()) {
 
-					DailyCalcResult resultCalcMonth = calcMonth(dataParent, resultErrorMonth, dataResultAfterIU, monthParam, dailyItems, domainDailyNew, commandNew, commandOld, errorMonthHoliday);
+					DailyCalcResult resultCalcMonth = calcMonth(dataParent, monthParam, dailyItems, domainDailyNew, commandNew, commandOld, errorMonthHoliday);
 					List<DPItemValue> lstItemErrorMonth = resultCalcMonth.getListItemErrorMonth();
 
 					if(resultCalcMonth.getErrorAfterCheck() != null && resultCalcMonth.getListAggregatePastMonthResult().isEmpty()) {
@@ -664,8 +664,15 @@ public class DailyModifyRCommandFacade {
 		return dataResultAfterIU;
 	}
 
-	private DailyCalcResult calcMonth(DPItemParent dataParent, Map<Integer, List<DPItemValue>> resultErrorMonth, DataResultAfterIU dataResultAfterIU,
-									  UpdateMonthDailyParam monthParam, List<DailyItemValue> dailyItems,
+	public void calclateOnlyMonth(DPItemParent dataParent){
+		UpdateMonthDailyParam monthParam = null;
+		if (dataParent.getMonthValue() != null) {
+			monthParam = dataParent.createMonthParam();
+		}
+
+	}
+
+	private DailyCalcResult calcMonth(DPItemParent dataParent, UpdateMonthDailyParam monthParam, List<DailyItemValue> dailyItems,
 									  List<IntegrationOfDaily> domainDailyNew, List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld,
 									  List<EmployeeMonthlyPerError> errorMonthHoliday) {
 		boolean editFlex = (dataParent.getMode() == 0 && dataParent.getMonthValue() != null
