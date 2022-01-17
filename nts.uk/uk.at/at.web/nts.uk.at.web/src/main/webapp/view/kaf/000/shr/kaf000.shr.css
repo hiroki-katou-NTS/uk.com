@@ -30,19 +30,36 @@ th, td {
 	width: 200px;
 }
 
-.left-panel > div {
-	height: inherit;
-	overflow-y: auto;
-	padding-right: 60px;
-	padding-left: 20px;
+.two-panel {
+	width: 1330px;
+	height: 100%;
 }
+
+.left-panel {
+	width: calc(100% - 388px);
+	padding-bottom: 5px;
+	height: inherit;
+	overflow-y: auto !important;
+}
+
+.left-panel > .form-header {
+	margin-bottom: 40px;
+}
+
+.left-panel > .form-header #kaf000-a-component6 {
+}
+
+.left-panel > .form-header #kaf000-a-component6 .approver-block {
+	margin-left: 30px;
+}
+	
 
 .left-panel button {
 	min-width: 100px;
 }
 
 .right-panel {
-	overflow-y: auto;
+	overflow-y: auto !important;
 }
 
 .right-panel .right-panel-block {
