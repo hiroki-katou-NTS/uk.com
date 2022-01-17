@@ -1,6 +1,6 @@
 module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 	const template = `
-	<div data-bind="with: $parent">
+	<div id="kaf005-share-work-info" data-bind="with: $parent">
 <div style="margin-top: -2px" data-bind="if: workInfo">
 
 	<div class="table" data-bind="if : visibleModel.c7()">
@@ -9,19 +9,19 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 			<div class="valign-center"
 				data-bind="text: $i18n('KAF005_34') + '・' + $i18n('KAF005_35'), ntsFormLabel:{required: true}"></div>
 		</div>
-		<div class="cell valign-top" data-bind="if: visibleModel.c7()" style="width: 45px;">
+		<div class="cell cell valign-center" data-bind="if: visibleModel.c7()">
 			<!--A4_7 選択ボタン-->
 			<button class="workSelectKAF005"
 				data-bind="enable: !visibleModel.c31() && outputMode(), click : openDialogKdl003, text: $i18n('KAF005_36')"></button>
 		</div>
 		<div class="cell valign-center">
-			<div class="valign-center">
+			<div class="code-name">
 				<!--A4_2 勤務種類コード-->
 				<label class="lblWorkTypeCd" data-bind="text: ko.toJS(workInfo).workType.code"></label>
 				<!--A4_3 勤務種類名称-->
 				<LABEL data-bind="text: ko.toJS(workInfo).workType.name"></LABEL>
 			</div>
-			<div class="valign-center">
+			<div class="code-name">
 				<!--A4_5 就業時間コード-->
 				<label class="lblSiftCd" data-bind="text: ko.toJS(workInfo).workTime.code"></label>
 				<!--A4_6 就業時間名称-->

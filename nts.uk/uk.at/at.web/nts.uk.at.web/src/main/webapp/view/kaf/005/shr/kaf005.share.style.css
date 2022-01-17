@@ -79,11 +79,6 @@ div.form-label.broken {
 	vertical-align: top;
 }
 
-.workSelectKAF005{
-	width: 45px;
-    height: 60px;
-    margin-top: 10px;
-}
 .panel.panel-gray-bg {
     margin-bottom: 15px;
 	min-height: 300px;
@@ -124,11 +119,7 @@ div.form-label.broken {
 .lstApprover {
 	
 }
-/*workType, Sift */
-.lblSiftCd, .lblWorkTypeCd {
-	line-height: 40px;
-	margin-left: 20px;
-}
+
 
 .nts-fixed-table .nts-fixed-header-container {
 	border-color: #fff !important;
@@ -226,11 +217,22 @@ div.form-label.broken {
 	margin-bottom: 10px !important;
 }
 
+#kaf005-share-work-info .code-name {
+	display: inline-block;
+	margin-left: 20px;
+	margin-right: 20px;
+	line-height: 40px;
+}
+
 .left-panel > div {
 	height: inherit;
 	overflow-y: auto;
 	padding-right: 60px;
 	padding-left: 20px;
+}
+
+.left-panel button {
+	min-width: 100px;
 }
 
 .right-panel {
