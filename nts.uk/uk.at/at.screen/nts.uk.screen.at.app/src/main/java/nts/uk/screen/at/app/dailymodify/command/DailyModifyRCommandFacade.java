@@ -665,16 +665,12 @@ public class DailyModifyRCommandFacade {
 			if (lstItemErrorMonth != null) {
 				List<DPItemValue> itemErrorMonth = dataResultAfterIU.getErrorMap()
 						.get(TypeError.ERROR_MONTH.value);
-				if (itemErrorMonth == null) {
-					// dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value,
-					// lstItemErrorMonth);
-					resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
-				} else {
+				if (itemErrorMonth != null) {
 					lstItemErrorMonth.addAll(itemErrorMonth);
-					// dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value,
-					// lstItemErrorMonth);
-					resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
 				}
+				// dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value,
+				// lstItemErrorMonth);
+				resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
 			}
 			// 月次登録処理
 			errorMonthAfterCalc = errorMonth.getHasError();
