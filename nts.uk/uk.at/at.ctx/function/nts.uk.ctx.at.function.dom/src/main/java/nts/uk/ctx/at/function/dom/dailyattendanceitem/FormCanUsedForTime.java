@@ -23,7 +23,9 @@ public enum FormCanUsedForTime {
 	// 勤務台帳
 	WORKBOOK(8),
 	// 年間勤務表（36協定チェックリスト）
-	ANNUAL_ROSTER_36_AGREEMENT(9);
+	ANNUAL_ROSTER_36_AGREEMENT(9),
+	// 応援勤務一覧表
+	WORK_SUPPORT(10);
 
 	public final int value;
 	

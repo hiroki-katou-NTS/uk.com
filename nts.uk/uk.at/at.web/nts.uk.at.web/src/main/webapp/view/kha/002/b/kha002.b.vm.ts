@@ -30,6 +30,9 @@ module nts.uk.at.kha002.b {
                     vm.$blockui("show");
                     vm.$ajax(API.getOne + code).done(setting => {
                         vm.setting.bindData(setting, vm.allItemsBk);
+                        _.defer(() => {
+                            vm.allItems(_.cloneDeep(vm.allItemsBk));
+                        });
                         $("#B3_3").focus();
                     }).fail(error => {
                         vm.$dialog.error(error);
@@ -38,9 +41,11 @@ module nts.uk.at.kha002.b {
                     });
                 } else {
                     vm.setting.bindData(null);
+                    _.defer(() => {
+                        vm.allItems(_.cloneDeep(vm.allItemsBk));
+                    });
                     $("#B3_2").focus();
                 }
-                vm.allItems(_.cloneDeep(vm.allItemsBk));
             });
 
             vm.$ajax(API.getItems).done(items => {

@@ -52,8 +52,7 @@ public class Kha002ScreenQuery {
 
     public List<AttendanceItemDto> getAttendanceItems() {
         String companyId = AppContexts.user().companyId();
-        // TODO: FormCanUsedForTime doesn't have value 10 yet
-        List<Integer> attendanceIdList = attendanceItemNameService.getDailyAttendanceItemsAvaiable(companyId, FormCanUsedForTime.ATTENDANCE_BOOK, TypeOfItem.Daily);
+        List<Integer> attendanceIdList = attendanceItemNameService.getDailyAttendanceItemsAvaiable(companyId, FormCanUsedForTime.WORK_SUPPORT, TypeOfItem.Daily);
         return dailyItemService.getDailyItems(companyId, Optional.empty(), attendanceIdList, null)
                 .stream().map(i -> AttendanceItemDto.builder()
                         .attendanceItemId(i.getAttendanceItemId())
