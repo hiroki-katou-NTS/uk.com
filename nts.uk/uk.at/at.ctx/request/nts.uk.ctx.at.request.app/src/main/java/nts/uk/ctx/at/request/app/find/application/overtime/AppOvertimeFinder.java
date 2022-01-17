@@ -198,7 +198,8 @@ public class AppOvertimeFinder {
 				param.agent,
                 multiOvertime.getOvertimeHours(),
                 multiOvertime.getOvertimeReasons(),
-				opAchievementDetail
+				opAchievementDetail,
+				param.appDispInfoStartupDto.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()
         );
 		
 		return DisplayInfoOverTimeDto.fromDomainCalculation(output);

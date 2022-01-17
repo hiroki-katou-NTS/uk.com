@@ -219,7 +219,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 			Boolean agent,
 			List<OvertimeHour> overtimeHours,
 			List<OvertimeReason> overtimeReasons,
-			Optional<AchievementDetail> opAchievementDetail) {
+			Optional<AchievementDetail> opAchievementDetail,
+			boolean managementMultipleWorkCycles) {
 		DisplayInfoOverTime output = new DisplayInfoOverTime();
 		output.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
 
@@ -244,7 +245,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 						overtimeReasons,
 						workHourList,
 						new WorkInformation(workContent.getWorkTypeCode().orElse(null), workContent.getWorkTimeCode().orElse(null)),
-						opAchievementDetail
+						opAchievementDetail,
+						managementMultipleWorkCycles
 				);
 				workContent.setTimeZones(result.getLeft().stream().map(i -> new TimeZone(i.getTimeZone().getStartTime(), i.getTimeZone().getEndTime())).collect(Collectors.toList()));
 				workContent.setBreakTimes(result.getRight());
@@ -1024,7 +1026,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 					agent,
 					output.getLatestMultipleOvertimeApp().isPresent() && output.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().isPresent() ? output.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().get().getOvertimeHours() : new ArrayList<>(),
 					output.getLatestMultipleOvertimeApp().isPresent() && output.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().isPresent() ? output.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().get().getOvertimeReasons() : new ArrayList<>(),
-					opAchievementDetail
+					opAchievementDetail,
+					appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()
 			);
 			output.setWorkdayoffFrames(temp.getWorkdayoffFrames());
 			output.setCalculationResultOp(temp.getCalculationResultOp());
@@ -1158,7 +1161,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				agent,
 				displayInfoOverTime.getLatestMultipleOvertimeApp().isPresent() && displayInfoOverTime.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().isPresent() ? displayInfoOverTime.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().get().getOvertimeHours() : new ArrayList<>(),
 				displayInfoOverTime.getLatestMultipleOvertimeApp().isPresent() && displayInfoOverTime.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().isPresent() ? displayInfoOverTime.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().get().getOvertimeReasons() : new ArrayList<>(),
-				opAchievementDetail
+				opAchievementDetail,
+				displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()
 		);
 		displayInfoOverTime.setCalculationResultOp(displayInfoOverTimeTemp.getCalculationResultOp());
 		displayInfoOverTime.setWorkdayoffFrames(displayInfoOverTimeTemp.getWorkdayoffFrames());
@@ -1255,7 +1259,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				agent,
 				new ArrayList<>(),
 				new ArrayList<>(),
-				opAchievementDetail
+				opAchievementDetail,
+				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()
 		);
 		displayInfoOverTimeTemp.setAppDispInfoStartup(appDispInfoStartupOutput);
 		InfoWithDateApplication infoWithDateApplication = new InfoWithDateApplication();
@@ -1280,48 +1285,30 @@ public class OvertimeServiceImpl implements OvertimeService {
 			Boolean agent
 			) {
 		DisplayInfoOverTimeMobile output = new DisplayInfoOverTimeMobile();
-
-		// PCのアルゴリズム「01_初期起動の処理」を実行する
-		DisplayInfoOverTime displayInfoOverTime = this.getInitData(
-				companyId,
-				dateOptional,
-				overtimeAppAtr,
-				appDispInfoStartupOutput,
-				Optional.empty(),
-				Optional.empty(),
-				false
-		);
-
-		if (displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().getTimeCalUse() == NotUseAtr.NOT_USE && overtimeAppAtr == OvertimeAppAtr.MULTIPLE_OVERTIME)
-			throw new BusinessException("Msg_3237");
-
+		DisplayInfoOverTime displayInfoOverTime;
 		if (!mode) { // 修正モード
 			// INPUT「残業申請の表示情報」と「残業申請」を返す
 			output.setAppOverTimeOp(appOptional);
 			output.setDisplayInfoOverTime(disOptional.get());
 			return output;
 		}
-
-		output.setDisplayInfoOverTime(displayInfoOverTime);
-
-		Integer prePost = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getPrePostAtr().value;
-		if (overtimeAppAtr == OvertimeAppAtr.MULTIPLE_OVERTIME && dateOptional.isPresent() && employeeIdOptional.isPresent()) {
-			output.setAppOverTimeOp(appOverTimeRepository.findLatestMultipleOvertimeApp(
-					employeeIdOptional.get(),
-					dateOptional.get(),
-					EnumAdaptor.valueOf(prePost, PrePostAtr.class)
-			));
-		}
-
+		// PCのアルゴリズム「01_初期起動の処理」を実行する
+		displayInfoOverTime = this.getInitData(
+				companyId,
+				dateOptional,
+				overtimeAppAtr,
+				appDispInfoStartupOutput,
+				Optional.empty(),
+				Optional.empty(),
+				false);
+		output.setDisplayInfoOverTime(displayInfoOverTime);	
 		return output;
 	}
 
 	@Override
 	public DisplayInfoOverTime changeDateMobile(
 			String companyId,
-			String employeeId,
 			GeneralDate date,
-			PrePostAtr prePostAtr,
 			DisplayInfoOverTime displayInfoOverTime) {
 		
 		List<GeneralDate> dates = new ArrayList<>();
@@ -1339,13 +1326,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		displayInfoOverTime.getAppDispInfoStartup().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		// 申請日に関する情報を取得する
 		commonAlgorithmOverTime.changeApplicationDate(companyId, date, displayInfoOverTime);
-		if (displayInfoOverTime.getOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
-			displayInfoOverTime.setLatestMultipleOvertimeApp(appOverTimeRepository.findLatestMultipleOvertimeApp(
-					employeeId,
-					date,
-					prePostAtr
-			));
-		}
+		
 		return displayInfoOverTime;
 	}
 
@@ -1549,14 +1530,13 @@ public class OvertimeServiceImpl implements OvertimeService {
 					workContent,
 					displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet(),
 					agent,
-					appOverTime.getMultipleTimesOp().isPresent() ? appOverTime.getMultipleTimesOp().get().getOvertimeHours() : new ArrayList<>(),
-					appOverTime.getMultipleTimesOp().isPresent() ? appOverTime.getMultipleTimesOp().get().getOvertimeReasons() : new ArrayList<>(),
-					opAchievementDetail
+					new ArrayList<>(),
+					new ArrayList<>(),
+					opAchievementDetail,
+					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()
 			);
 			displayInfoOverTime.setCalculationResultOp(temp.getCalculationResultOp());
 			displayInfoOverTime.setWorkdayoffFrames(temp.getWorkdayoffFrames());
-			displayInfoOverTime.setCalculatedWorkTimes(temp.getCalculatedWorkTimes());
-			displayInfoOverTime.setCalculatedBreakTimes(temp.getCalculatedBreakTimes());
 		}
 		
 		return displayInfoOverTime;
@@ -1859,7 +1839,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 																							 List<OvertimeReason> overtimeReasons,
 																							 List<TimeZoneWithWorkNo> workingHours,
 																							 WorkInformation workInformation,
-																							 Optional<AchievementDetail> achievementDetail) {
+																							 Optional<AchievementDetail> achievementDetail,
+                                                                                             boolean managementMultipleWorkCycles) {
 		// 複数回残業内容を作成する
 		OvertimeWorkMultipleTimes content = OvertimeWorkMultipleTimes.create(overtimeHours, overtimeReasons);
 
@@ -1904,7 +1885,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				appDate,
 				workInformation,
 				workingHours,
-				breakTimeSheets
+				breakTimeSheets,
+                managementMultipleWorkCycles
 		);
 
 		return Pair.of(workingHours, breakTimes);
