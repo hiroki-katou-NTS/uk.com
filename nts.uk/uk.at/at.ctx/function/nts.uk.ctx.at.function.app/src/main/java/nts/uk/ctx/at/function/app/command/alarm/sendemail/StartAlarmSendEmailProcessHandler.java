@@ -52,7 +52,7 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 		String currentAlarmCode = command.getCurrentAlarmCode();
 
         //ドメインモデル「メールサーバ」を取得する
-        boolean useAuthentication = mailServerAdapter.findBy(companyID);
+        boolean useAuthentication = mailServerAdapter.checkMailServerSet(companyID).isMailServerSet();
         if (!useAuthentication) throw new BusinessException("Msg_2205");
 
         // メール設定(本人宛)：内容メール設定　（条件：アラームリスト実行メール設定．本人管理区分．本人宛メール設定

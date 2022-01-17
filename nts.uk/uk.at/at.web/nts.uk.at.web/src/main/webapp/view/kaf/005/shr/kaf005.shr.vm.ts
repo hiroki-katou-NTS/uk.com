@@ -46,7 +46,8 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 											value: start, 
 											constraint:'TimeWithDayAttr', 
 											enable: ($parent.visibleModel.c7() && $parent.outputMode()),
-											option: {width: '85px', timeWithDay: true}
+											option: {width: '85px', timeWithDay: true},
+											required: ko.computed(function() {return _.isNumber(end())})
                                         }, attr: {id: 'A15_3_' + $index()}" />
 					<span data-bind="text: $parent.$i18n('KAF005_38')" style="padding-left: 10px; padding-right: 10px;"></span>
 					<input class="inputTime-kaf005 right-content" 
@@ -55,7 +56,8 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 											value: end, 
 											constraint:'TimeWithDayAttr', 
 											enable: ($parent.visibleModel.c7() && $parent.outputMode()),
-											option: {width: '85px', timeWithDay: true}
+											option: {width: '85px', timeWithDay: true},
+											required: ko.computed(function() {return _.isNumber(start())})
                                         }, attr: {id: 'A15_5_' + $index()}" />
 					</td>
 					<div class="multiple-reason" style="width: 200px; margin-left: 10px;"

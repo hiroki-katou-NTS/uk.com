@@ -21,13 +21,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialh
 @Data
 public class SpecialLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItemDataGate {
 
-	/** 合計 */
-
-	@AttendanceItemLayout(jpPropertyName = TOTAL, layout = LAYOUT_A)
-	private SpecialLeaveRemainingNumberDto remainingNumber;
-
 	/** 付与前 */
-	// @AttendanceItemLayout(jpPropertyName = GRANT + BEFORE, layout = LAYOUT_B)
+	@AttendanceItemLayout(jpPropertyName = GRANT + BEFORE, layout = LAYOUT_B)
 	private SpecialLeaveRemainingNumberDto remainingNumberBeforeGrant;
 
 	/** 付与後 */
@@ -36,8 +31,7 @@ public class SpecialLeaveRemainingNumberInfoDto implements ItemConst, Attendance
 
 	public static SpecialLeaveRemainingNumberInfoDto from(SpecialLeaveRemainingNumberInfo domain) {
 
-		return new SpecialLeaveRemainingNumberInfoDto(SpecialLeaveRemainingNumberDto.from(domain.getRemainingNumber()),
-														SpecialLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
+		return new SpecialLeaveRemainingNumberInfoDto(SpecialLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
 														SpecialLeaveRemainingNumberDto.from(domain.getRemainingNumberAfterGrantOpt().orElse(null)));
 	}
 
@@ -51,7 +45,6 @@ public class SpecialLeaveRemainingNumberInfoDto implements ItemConst, Attendance
 	public AttendanceItemDataGate newInstanceOf(String path) {
 
 		switch (path) {
-		case TOTAL:
 		case GRANT + BEFORE:
 		case GRANT + AFTER:
 			return new SpecialLeaveRemainingNumberDto();
@@ -64,8 +57,6 @@ public class SpecialLeaveRemainingNumberInfoDto implements ItemConst, Attendance
 	public Optional<AttendanceItemDataGate> get(String path) {
 
 		switch (path) {
-		case TOTAL:
-			return Optional.ofNullable(this.remainingNumber);
 
 		case GRANT + BEFORE:
 			return Optional.ofNullable(this.remainingNumberBeforeGrant);
@@ -82,9 +73,6 @@ public class SpecialLeaveRemainingNumberInfoDto implements ItemConst, Attendance
 	public void set(String path, AttendanceItemDataGate value) {
 
 		switch (path) {
-		case TOTAL:
-			this.remainingNumber = (SpecialLeaveRemainingNumberDto) value;
-			break;
 		case GRANT + BEFORE:
 			this.remainingNumberBeforeGrant = (SpecialLeaveRemainingNumberDto) value;
 			break;
@@ -98,7 +86,6 @@ public class SpecialLeaveRemainingNumberInfoDto implements ItemConst, Attendance
 	@Override
 	public PropType typeOf(String path) {
 		switch (path) {
-		case TOTAL:
 		case GRANT + BEFORE:
 		case GRANT + AFTER:
 			return PropType.OBJECT;

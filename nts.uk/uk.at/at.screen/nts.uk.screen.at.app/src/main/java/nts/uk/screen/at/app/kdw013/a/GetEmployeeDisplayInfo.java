@@ -16,7 +16,10 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ch
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.CheckShortageFlex;
+import nts.uk.screen.at.app.kdw013.query.CalculateTotalWorktimePerDay;
+import nts.uk.screen.at.app.kdw013.query.CalculateTotalWorktimePerDayCommand;
 import nts.uk.screen.at.app.kdw013.query.GetEstimatedTimeZones;
+import nts.uk.screen.at.app.kdw013.query.TotalWorktimeDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -51,6 +54,9 @@ public class GetEmployeeDisplayInfo {
 
 	@Inject
 	private GetLockStatusOfDay getLockStatusOfDay;
+	
+	@Inject
+	private CalculateTotalWorktimePerDay calculateTotalWorktimePerDay;
 
 	/**
 	 * 
@@ -99,7 +105,11 @@ public class GetEmployeeDisplayInfo {
 		List<DailyLock> lockInfos = this.getLockStatusOfDay.get(sid, period);
 
 		result.setLockInfos(lockInfos.stream().map(li -> DailyLockDto.fromDomain(li)).collect(Collectors.toList()));
-
+		// 日ごとの作業合計時間を求める
+		List<TotalWorktimeDto> totalWorktimeDtos = this.calculateTotalWorktimePerDay.calculateTotalWorktimePerDay(
+				new CalculateTotalWorktimePerDayCommand(dailyPerformanceData.getLstIntegrationOfDaily()));
+		result.setTotalWorktimes(totalWorktimeDtos);
+		
 		return result;
 	}
 

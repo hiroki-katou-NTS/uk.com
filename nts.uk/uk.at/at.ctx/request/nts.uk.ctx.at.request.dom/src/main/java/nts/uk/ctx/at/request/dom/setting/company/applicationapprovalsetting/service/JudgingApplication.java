@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -40,7 +41,7 @@ public class JudgingApplication {
 
 		// if $勤務種類.isEmpty
 		// return Optional.Empty
-		if (workType.isPresent()) {
+		if (!workType.isPresent()) {
 			return Optional.empty();
 		}
 
@@ -49,7 +50,7 @@ public class JudgingApplication {
 		if (workType.get().isHolidayWork() || (workType.get().getDailyWork().getWorkTypeUnit().isOneDay()
 				&& workType.get().getDailyWork().getOneDay().isHoliday())) {
 			result = ApplicationTypeShare.HOLIDAY_WORK_APPLICATION;
-		} else if (!workType.get().chechAttendanceDay().isHoliday()) {
+		} else if (workType.get().checkWorkDay().value != WorkStyle.ONE_DAY_REST.value) {
 			result = ApplicationTypeShare.OVER_TIME_APPLICATION;
 		} else {
 			return Optional.empty();

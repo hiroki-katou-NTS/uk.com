@@ -606,12 +606,12 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				application: ko.toJS(vm.appDispInfoStartupOutput().appDetailScreenInfo.application)
 			};
 
-			commandCheckUpdate.appAbsenceStartInfoDto.leaveComDayOffManas = _.map(commandCheckUpdate.appAbsenceStartInfoDto.leaveComDayOffManas, (x: any) => {
+			commandCheckUpdate.appAbsenceStartInfoDto.leaveComDayOffManas = _.map(vm.leaveComDayOffManas(), (x: any) => {
 				x.dateOfUse = new Date(x.dateOfUse).toISOString();
 				x.outbreakDay = new Date(x.outbreakDay).toISOString();
 				return x;
 			});
-			commandCheckUpdate.appAbsenceStartInfoDto.payoutSubofHDManas = _.map(commandCheckUpdate.appAbsenceStartInfoDto.payoutSubofHDManas, (x: any) => {
+			commandCheckUpdate.appAbsenceStartInfoDto.payoutSubofHDManas = _.map(vm.payoutSubofHDManagements(), (x: any) => {
 				x.dateOfUse = new Date(x.dateOfUse).toISOString();
 				x.outbreakDay = new Date(x.outbreakDay).toISOString();
 				return x;
@@ -643,7 +643,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					x.dateOfUse = new Date(x.dateOfUse).toISOString();
 					x.outbreakDay = new Date(x.outbreakDay).toISOString();
 					return x;
-				})
+				}), 
+				holidayFlg: false;
 			};
 
 			commandUpdate.application.opAppReason = vm.application().opAppReason();
@@ -686,6 +687,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				if (result) {
 					holidayAppDates = result.holidayDateLst;
 					commandUpdate.holidayAppDates = holidayAppDates;
+					commandUpdate.holidayFlg = result.holidayFlg;
 					// xử lý confirmMsg
 					return vm.handleConfirmMessage(result.confirmMsgLst);
 				}

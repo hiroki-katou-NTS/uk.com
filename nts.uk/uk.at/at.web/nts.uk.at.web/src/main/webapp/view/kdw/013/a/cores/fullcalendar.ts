@@ -1122,7 +1122,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 new: ko.observable(null),
                 drag: ko.observable(null)
             };
-
+            vm.params.screenA.$caches = $caches;
             let $el = $(vm.$el);
             let $dgOne = $el.find('div.fc-oneday-events').get(0);
             let $dgTask = $el.find('div.fc-task-events').get(0);
@@ -1166,57 +1166,152 @@ module nts.uk.ui.at.kdw013.calendar {
             });
 
             // calculate time on header
-            let timesSet: KnockoutComputed<({ date: string | null; value: number | null; })[]> = ko.computed({
-                read: () => {
-                    let ds = ko.unwrap(datesSet);
-                    let wd = ko.unwrap(firstDay);
-                    let iv = ko.unwrap(initialView);
-                    let evts = ko.unwrap<EventRaw[]>(events);
-                    let cache = ko.unwrap<EventApi>($caches.new);
-                    let { start, end } = cache || { start: null, end: null };
-                    let nkend = moment(start).clone().add(1, 'hour').toDate();
-                    let duration = moment(end || nkend).diff(start, 'minute');
-                    let nday = dayOfView(iv);
+            let timesSet: KnockoutObservable<({ date: string | null; value: number | null; })[]> = ko.observable([]);
 
-                    if (ds) {
-                        let { start, end } = ds;
 
-                        let first = moment(start);
-                        let diff: number = moment(end).diff(start, 'day');
-                        let mkend = first.clone().add(1, 'hour').toDate();
+            datesSet.subscribe((ds) => { calTimSet(); });
+            firstDay.subscribe((ds) => { calTimSet(); });
+            initialView.subscribe((ds) => { calTimSet(); });
+            events.subscribe((ds) => { calTimSet(); });
+            $caches.new.subscribe((ds) => { calTimSet(); });
+            
+            let calTimSet = () => {
+                let ds = ko.unwrap(datesSet);
+                let wd = ko.unwrap(firstDay);
+                let iv = ko.unwrap(initialView);
+                let evts = ko.unwrap<EventRaw[]>(events);
+                let cache = ko.unwrap<EventApi>($caches.new);
+                let { start, end } = cache || { start: null, end: null };
+                let nkend = moment(start).clone().add(1, 'hour').toDate();
+                let duration = moment(end || nkend).diff(start, 'minute');
+                let nday = dayOfView(iv);
 
-                        let days = _.range(0, diff, 1)
-                            .map(m => {
-                                let date = first.clone().add(m, 'day');
-                                let exists = _.filter([...evts], (d: EventApi) => {
-                                    return !d.allDay &&
-                                        d.display !== 'background' &&
-                                        date.isSame(d.start, 'date');
-                                });
+                let loaded = vm.params.screenA.loaded;
+                if (loaded) {
+                    return;
+                }
+                if (ds) {
+                    let { start, end } = ds;
 
-                                return {
-                                    date: date.format(DATE_FORMAT),
-                                    value: exists.reduce((p, c) => p += moment(c.end || mkend).diff(c.start, 'minute'), date.isSame(nkend, 'date') ? duration : 0)
-                                };
+                    let first = moment(start);
+                    let diff: number = moment(end).diff(start, 'day');
+                    let mkend = first.clone().add(1, 'hour').toDate();
+
+                    let days = _.range(0, diff, 1)
+                        .map(m => {
+                            let date = first.clone().add(m, 'day');
+                            let exists = _.filter([...evts], (d: EventApi) => {
+                                return !d.allDay &&
+                                    d.display !== 'background' &&
+                                    date.isSame(d.start, 'date');
                             });
 
-                        let sow = first.clone().isoWeekday(wd).isSame(start, 'date');
+                            return {
+                                date: date.format(DATE_FORMAT),
+                                value: exists.reduce((p, c) => p += moment(c.end || mkend).diff(c.start, 'minute'), date.isSame(nkend, 'date') ? duration : 0)
+                            };
+                        });
 
-                        while (days.length < nday) {
-                            if (sow) {
-                                days.push({ date: null, value: null });
-                            } else {
-                                days.unshift({ date: null, value: null })
-                            }
+                    let sow = first.clone().isoWeekday(wd).isSame(start, 'date');
+
+                    while (days.length < nday) {
+                        if (sow) {
+                            days.push({ date: null, value: null });
+                        } else {
+                            days.unshift({ date: null, value: null })
                         }
-
-                        return days;
                     }
 
-                    return [];
+                    timesSet(days);
+                }
+            }
+
+             ko.computed({
+                read: () => {
+                    let cache = ko.unwrap<EventApi>($caches.new);
+                    let { start, end } = cache || { start: null, end: null };
+                    let date = moment(start).format(DATE_FORMAT);
+                    const className = 'wrn-' + date;
+                    let el = $(".fc-times[data-date='"+ date + "']");
+                                        
+                    if (el && el.html()) {
+                            let icon = isHasWarning(date) ? `<i class='warningIcon ` + className + `'> </i>` : '';
+                            setTimeout(() => {
+                                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 }, click: () => { OpenIDialog(date); } });
+                                $('.' + className).on('mousedown', () => { regisPopup(date); });
+                            }, 300);
+                            el.html(vm.$i18n('KDW013_98') + icon);
+                        
+                        $caches.new(null);
+                    }
                 },
-                disposeWhenNodeIsRemoved: vm.$el
+                disposeWhenNodeIsRemoved: $el
             });
+
+             let regisPopup = (date) => {
+                 const className = 'wrn-' + date;
+                 $(".popup-area-i").ntsPopup({
+                     trigger: '.' + className,
+                     position: {
+                         my: "left top",
+                         at: "left bottom",
+                         of: '.' + className
+                     },
+                     showOnStart: false,
+                     dismissible: true
+                 });
+             }
+
+             let OpenIDialog = (date) => {
+                 let vm = this;
+                 let screenA = vm.params.screenA;
+                 let {$settings, $datas} = screenA;
+                 screenA.taskSettings(_.get($settings(), 'taskFrameUsageSetting.frameSettingList', []));
+
+                 let iod = _.find(_.get($datas(), 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days') });
+                 // 作業リスト
+                 screenA.taskDtos($settings().tasks);
+
+                 // 日別勤怠の応援作業時間帯
+                 screenA.ouenWorkTimeSheets(_.get(iod, 'ouenTimeSheet'));
+
+                 // 日別勤怠の応援作業時間
+                 screenA.ouenWorkTimes(_.get(iod, 'ouenTime'));
+
+                 //対象日
+                 screenA.targetDate(moment(date).toDate());
+             }
+            
+             let isHasWarning = (date) => {
+                 let vm = this;
+                 let datas = ko.unwrap(vm.params.screenA.$datas);
+
+                 if (!datas) {
+                     return false;
+                 }
+
+                 let manHrTask = _.find(_.get(datas, 'dailyManHrTasks', []), hr => { return moment(hr.date).isSame(moment(date), 'days'); });
+
+                 let id = _.find(_.get(datas, 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days'); });
+
+                 let ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
+
+                 let taskBlocks = _.get(manHrTask, 'taskBlocks', []);
+
+                 if (!id || !ouenTimeSheet.length) {
+                     return false;
+                 }
+
+                 for (let i = 0; i < ouenTimeSheet.length; i++) {
+                     let workNo = _.get(ouenTimeSheet[i], 'workNo');
+
+                     if (!_.find(taskBlocks, tb => _.find(tb.taskDetails, ['supNo', workNo]))) {
+                         return true;
+                     }
+                 }
+
+                 return false;
+             }
 
             let attendancesSet: KnockoutComputed<({ date: string | null; events: string[]; })[]> = ko.computed({
                 read: () => {
@@ -1367,8 +1462,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                 let endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
                                 
                                 if (startAsMinites >= _.get(bh, 'start', 0) && endAsMinites <= _.get(bh, 'end', 1440)) {
+                                    let id = randomId();
                                     events.push({
-                                        id: randomId(),
+                                        id: id,
                                         title: vm.$i18n('KDW013_79'),
                                         start,
                                         end,
@@ -1377,7 +1473,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                         extendedProps: {
                                             no,
                                             breakTime,
-                                            id: randomId(),
+                                            id: id,
                                             status: 'normal',
                                             isTimeBreak: true,
                                             isChanged: false,
@@ -1805,6 +1901,53 @@ module nts.uk.ui.at.kdw013.calendar {
                     events(getEvents().filter(({ extendedProps }) => !!extendedProps.id && extendedProps.status !== 'delete'));
                 }
             };
+            let calWorkTimeBreakEvent = (event) => {
+                let tempEs = [...events()];
+                let evns = _.filter(tempEs, e => 
+                    moment(e.end).isSame(event.start, 'days')
+                    && !e.extendedProps.isTimeBreak);
+
+                _.forEach(evns, evn => {
+                    let it = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
+                    let refTimezone = { start: (moment(evn.start).hour() * 60) + moment(evn.start).minute(), end: (moment(evn.end).hour() * 60) + moment(evn.end).minute() };
+                    let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(evn.start), 'days'));
+                    let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                    _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end , no }) => {
+                        if (no == event.extendedProps.no) {
+                            let startAsMinites = (moment(event.start).hour() * 60) + moment(event.start).minute();
+                            let endAsMinites = (moment(event.end).hour() * 60) + moment(event.end).minute();
+                            goOutBreakTimeLst.push({ start: startAsMinites, end: endAsMinites });
+                        } else {
+                            goOutBreakTimeLst.push({ start, end });
+                        }
+                    });
+                    let calParam = { refTimezone, goOutBreakTimeLst };
+                    vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                        it.value = time;
+                        events(tempEs);
+                        updateEvents();
+                    });
+                });
+            }
+
+            let calWorkTime = (event) => {
+                let tempEs = [...events()];
+                let evn = _.find(tempEs, e => e.extendedProps.id == event.id);
+                let it = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
+                let refTimezone = { start: (moment(evn.start).hour() * 60) + moment(evn.start).minute(), end: (moment(evn.end).hour() * 60) + moment(evn.end).minute() };
+                let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(evn.start), 'days'));
+                let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                    goOutBreakTimeLst.push({ start, end });
+                });
+                let calParam = { refTimezone, goOutBreakTimeLst };
+                vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                    it.value = time;
+                    events(tempEs);
+                    updateEvents();
+                });
+            }
+
             let updateEvents = () => {
                 let sltds = vm.selectedEvents;
                 let isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => (formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')) && (formatDate(_.get(e,'end')) === formatDate(_.get(m,'end')) ) ));
@@ -2001,7 +2144,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 allDaySlot: false,
                 slotEventOverlap: false,
                 eventOverlap: true,
-                selectOverlap: false,
+                selectOverlap: true,
                 eventLimit: true,
                 views: {
                     timeGrid: {
@@ -2108,7 +2251,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                 },
                 dropAccept: () => !!ko.unwrap(true),
-                dayHeaderContent: (opts: DayHeaderContentArg) => moment(opts.date).format('DD(ddd)'),
+                dayHeaderContent: (opts: DayHeaderContentArg) => moment(opts.date).format('M/D(ddd)'),
                 selectAllow: ({ start, end }) => start.getDate() === end.getDate(),
                 slotLabelContent: (opts: SlotLabelContentArg) => {
                     let { milliseconds } = opts.time;
@@ -2417,6 +2560,10 @@ module nts.uk.ui.at.kdw013.calendar {
                         if (!event.extendedProps.isTimeBreak) {
                             let frameNos = _.get(_.maxBy(_.filter(events, (e) => (moment(e.start).isSame(moment(event.start), 'days') && !e.extendedProps.isTimeBreak)), function(e) { return _.last(e.extendedProps.taskBlock.taskDetails).supNo; }), 'extendedProps.frameNos', []);
                             event.setExtendedProp('frameNos',frameNos);
+                            let integrationOfDaily = _.find(_.get(data,'lstIntegrationOfDaily',[]),id=> moment(id.ymd).isSame(moment(event.start),'days'));
+                            event.setExtendedProp('outingTime', _.get(integrationOfDaily,'outingTime'));
+                            event.setExtendedProp('breakTime', _.get(integrationOfDaily,'breakTime'));
+                            
                             popupData.event(event);
                         }
                         // update exclude-times
@@ -2426,7 +2573,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             .map(({ start, end }) => ({ startTime: getTimeOfDate(start), endTime: getTimeOfDate(end) }))
                             .value();
 
-                        popupData.excludeTimes(sameDayEvent);
+                        //popupData.excludeTimes(sameDayEvent);
 
                         if (!event.extendedProps.isTimeBreak) {
                             // show popup on edit mode
@@ -2568,6 +2715,7 @@ module nts.uk.ui.at.kdw013.calendar {
                      let IEvents = _.chain(events())
                             .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
                             .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
+                            .filter((evn) => { return !_.find(relatedEvents, re => re.extendedProps.id == extendedProps.id) })
                             .sortBy('end')
                             .value();
 
@@ -2578,6 +2726,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                      if ((ovrEvent && !extendedProps.isTimeBreak && !ovrEvent.extendedProps.isTimeBreak)  ||  (extendedProps.isTimeBreak && _.get(ovrEvent,'isTimeBreak',false))) {
                          arg.revert();
+                         updateEvents();
                          return;
                      }
                     
@@ -2586,13 +2735,15 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (extendedProps.isTimeBreak || relBk) {
                         if (arg.delta.days != 0) {
                             arg.revert();
+                            updateEvents();
                             return;
                         }
                         
                         let breakInday = _.filter(events(), e => moment(e.start).isSame(start, 'days') && e.extendedProps.isTimeBreak);
                         let orverideBreak = _.filter(breakInday, br => moment(br.start).isSameOrBefore(start) && moment(br.end).isAfter(start) && (br.extendedProps.id != extendedProps.id));
                         if (orverideBreak.length) {
-                            vm.revertEvent([arg.oldEvent], $caches);
+                            arg.revert();
+                            updateEvents();
                             return;
                         }
                         
@@ -2603,11 +2754,16 @@ module nts.uk.ui.at.kdw013.calendar {
                         let startAsMinites = (moment(start).hour() * 60) + moment(start).minute();
                         let endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
                         if (startAsMinites < _.get(bh, 'start', 0) || endAsMinites > _.get(bh, 'end', 1440) || !moment(start).isSame(end,'days')){
-                            vm.revertEvent([arg.oldEvent], $caches);
+                            arg.revert();
+                            updateEvents();
                             return;
                         }
-                        vm.params.screenA.dataChanged(true);
+                        vm.params.screenA.dataChanged(true);                        
                         mutatedEvents();
+                        
+                        //cal work time
+                        calWorkTimeBreakEvent(event);
+                        $caches.new(event);
                         return;
                     }
                     
@@ -2649,7 +2805,8 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             if (oEvents.length) {
                                 
-                                 vm.revertEvent([arg.oldEvent], $caches);
+                                arg.revert();
+                                updateEvents();
                                 return;
                             }
                         }
@@ -2699,13 +2856,13 @@ module nts.uk.ui.at.kdw013.calendar {
                                         extendedProps:sEvent.extendedProps
                                     });
                                 $caches.new(newEvent);
-
                             }                            
                         }
                     }
 
                     
                     vm.params.screenA.dataChanged(true);
+                    $caches.new(event);
                     mutatedEvents();
                     let ids = [].concat(event.id, _.map(arg.relatedEvents, re => re.id));              
 
@@ -2758,6 +2915,11 @@ module nts.uk.ui.at.kdw013.calendar {
                         });
                         events(tempEs);
                         updateEvents();
+                        // cal work Time
+                        _.forEach([].concat(arg.oldEvent, relatedEvents), e => {
+                            calWorkTime(e);
+                        }
+                                
                         if (arg.delta.days != 0 && !ko.unwrap<boolean>(dataEvent.shift)) {
                             _.forEach([].concat(arg.oldEvent, relatedEvents), e => {
 
@@ -2770,6 +2932,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     removeList.push({ date: moment(arg.oldEvent.start).startOf('day').toDate(), supNos });
                                 }
                             });
+                            $caches.new(arg.oldEvent);
                         }
                 },
                 eventResizeStart: (arg: EventResizeStartArg) => {
@@ -2795,9 +2958,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     let { start, end, title, backgroundColor, extendedProps, id, borderColor, groupId } = event;
 
                     vm.selectedEvents = [{ start, end }];
-					event.setExtendedProp('isChanged', true);
-                    // update data sources
-                    mutatedEvents();
 
                     // add new event (no save) if new event is dragging
                     if (!title && extendedProps.status === 'new') {
@@ -2819,13 +2979,13 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         //valid another day
                         if (!moment(arg.oldEvent.end).isSame(end, 'days')) {
-                            vm.revertEvent([arg.oldEvent], $caches);
+                            arg.revert();
                             return;
                         }
                         let breakInday = _.filter(events(), e => moment(e.start).isSame(start, 'days') && e.extendedProps.isTimeBreak);
                         let orverideBreak = _.filter(breakInday, br => moment(br.start).isBefore(end) && (br.extendedProps.id != extendedProps.id));
                         if (orverideBreak.length) {
-                            vm.revertEvent([arg.oldEvent], $caches);
+                            arg.revert();
                             return;
                         }
                         
@@ -2835,22 +2995,41 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         let endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
                         if (endAsMinites > _.get(bh, 'end', 1440)){
-                            vm.revertEvent([arg.oldEvent], $caches);
+                            arg.revert();
                             return;
                         }
+                        _.find(vm.calendar.getEvents() , e => e.extendedProps.id == extendedProps.id).setExtendedProp('isChanged', true);
+                        // update data sources
+                        mutatedEvents();
+                        $caches.new(event);
+                        return;
+                    }
+
+                    let dEvents =
+                        _.chain(events())
+                            .filter((evn) => { return moment(evn.start).isSame(start, 'days') })
+                            .filter((evn) => { return moment(start).isBefore(evn.start) && moment(end).isAfter(evn.start) && moment(end).isSameOrBefore(evn.end) })
+                            .filter((evn) => { return !evn.extendedProps.isTimeBreak })
+                            .sortBy('end')
+                            .value();
+
+                    if (dEvents.length) {
+                        arg.revert();
                         return;
                     }
                     
-                    
-                    //check override
+                  //check override
                     
                   let oEvents =  
                   _.chain(events())
                   .filter((evn)=>{ return moment(start).isBefore(evn.start) && moment(evn.end).isSameOrBefore(end); })
+                  .filter((evn)=>{ return !evn.extendedProps.isTimeBreak })
                   .sortBy('end')
                   .value();
                   
                   if (oEvents.length) {
+                      
+                      let setDataEvents = [event];
                       let [first] = oEvents;
                       //set end time for min start event
                       let currentEvent = _.find(vm.calendar.getEvents(), ['extendedProps.id', extendedProps.id]);
@@ -2859,9 +3038,7 @@ module nts.uk.ui.at.kdw013.calendar {
                       let last = _.last(oEvents);
                       //check if end > lastOverridedEvent end
                       if (moment(last.end).isBefore(moment(end))) {
-                          
-                          vm.calendar
-                              .addEvent({
+                          let lEvent = {
                                   id: randomId(),
                                   backgroundColor,
                                   title,
@@ -2870,7 +3047,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                   borderColor,
                                   groupId,
                                   extendedProps
-                              });
+                              };
+                          vm.calendar.addEvent(lEvent);
+                          setDataEvents.push(lEvent);
                       }
 
                       //if oEvents.length >=2, need create event between it 
@@ -2883,14 +3062,12 @@ module nts.uk.ui.at.kdw013.calendar {
                               let nEvent = oEvents[i + 1];
                               if (moment(cEvent.end).isBefore(moment(nEvent.start)))
                                   spaces.push({ start: cEvent.end, end: nEvent.start });
-                              
                           }
-                          
+
                           //after get space, create event
                           _.forEach(spaces, ({start,end}) => {
-                              vm.calendar
-                                  .addEvent({
-                                      id: randomId(),
+                              let spaceEvent = {
+                                  id: randomId(),
                                       backgroundColor,
                                       title,
                                       start,
@@ -2898,23 +3075,103 @@ module nts.uk.ui.at.kdw013.calendar {
                                       borderColor,
                                       groupId,
                                       extendedProps
-                                  });
+                              }
+                              vm.calendar.addEvent(spaceEvent);
+                              setDataEvents.push(spaceEvent);
                           });
                       }
+                      mutatedEvents();
+                      let tempEs = [...events()];
 
+                      for (let i = 0; i < setDataEvents.length; i++) {
+                          let getFrameNo = (nos) => {
+                              let vm = this;
+                              let data = ko.unwrap(vm.params.$datas());
+                              let {lstIntegrationOfDaily} = data;
+                              let maxNo = 20;
+                              let resultNo;
+                              for (let i = 1; i <= maxNo; i++) {
+                                  let event = nos.indexOf(i) != -1;
+                                  let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(start).isSame(moment(id.ymd), 'days'); });
+                                  let ouenTime = _.find(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null && ot.workNo == i)
+                                  if (!event && !ouenTime) {
+                                      resultNo = i;
+                                      break;
+                                  }
+                              }
+                              return resultNo;
+                          };
+                          
+                          let cEvent = _.find(tempEs, tempE => tempE.extendedProps.id == setDataEvents[i].id);
+                          cEvent.extendedProps.isChanged = true;
+                          cEvent.extendedProps.taskBlock.caltimeSpan = { start: cEvent.start, end: cEvent.end };
+                          cEvent.extendedProps.period = { start: cEvent.start, end: cEvent.end };
+                          let frameNos = [];
+                          
+                          _.forEach(_.chain(events()).filter((evn) => { return moment(evn.start).isSame(start, 'days') }).value(), e => {
+                              _.forEach(e.extendedProps.taskBlock.taskDetails, td => {
+                                  frameNos.push(td.supNo);
+                              });
+                          });
+                          
+                          
+                          
+                          _.forEach(cEvent.extendedProps.taskBlock.taskDetails, td => {
+                              let newFN = getFrameNo(frameNos);
+                              frameNos.push(newFN);
+                              td.supNo = newFN;
+                          });
+                          
+                          let it = _.find(_.get(cEvent, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
+                          let refTimezone = { start: (moment(cEvent.start).hour() * 60) + moment(cEvent.start).minute(), end: (moment(cEvent.end).hour() * 60) + moment(cEvent.end).minute() };
+                          let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(cEvent.start), 'days'));
+                          let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                          _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                              goOutBreakTimeLst.push({ start, end });
+                          });
+                          let calParam = { refTimezone, goOutBreakTimeLst };
+
+                          vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                              it.value = time;
+                              if (i == setDataEvents.length - 1) {
+                                  events(tempEs);
+                                  updateEvents();
+                              }
+                          });
+                          
+                      }
+                      
+                      
+                      return;
                   }
+                  _.find(vm.calendar.getEvents() , e => e.extendedProps.id == extendedProps.id).setExtendedProp('isChanged', true);
+                  // update data sources
+                  mutatedEvents();
 				  
                    let tempEs = [...events()];
-                    _.forEach(tempEs, (evn) => {
-                        if (evn.extendedProps.id == extendedProps.id) {
-                            evn.extendedProps.isChanged = true;
-                            evn.extendedProps.taskBlock.caltimeSpan = { start: evn.start, end: evn.end };
-                            evn.extendedProps.period = { start: evn.start, end: evn.end };
-                        };
-                    });
-                    events(tempEs);
-                    updateEvents();
 
+                   let evn = _.find(tempEs, tempE => tempE.extendedProps.id == event.id);
+                    evn.extendedProps.isChanged = true;
+                    evn.extendedProps.taskBlock.caltimeSpan = { start: evn.start, end: evn.end };
+                    evn.extendedProps.period = { start: evn.start, end: evn.end };
+
+                    let it = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
+                    let refTimezone = { start: (moment(start).hour() * 60) + moment(start).minute(), end: (moment(end).hour() * 60) + moment(end).minute() };
+                    let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(event.start), 'days'));
+                    let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                    _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                        goOutBreakTimeLst.push({ start, end });
+                    });
+                    let calParam = { refTimezone, goOutBreakTimeLst };
+                    
+                        vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                            it.value = time;
+                            events(tempEs);
+                            updateEvents();
+                        });
+                    $caches.new(event);
+                    // update data sources
+                    mutatedEvents();
                 },
                 eventResizeStop: ({ el, event }) => {
                     console.log('stop', event.extendedProps);
@@ -2925,10 +3182,14 @@ module nts.uk.ui.at.kdw013.calendar {
                     let startDate = moment(_.get(data, 'workStartDate'));
                     let {lstIntegrationOfDaily} = data;
                     let editableDay =  vm.getEditableDay(start);
-                    if (startDate.isAfter(formatDate(start)) || !editableDay) {
+                    let inDayEvents = _.filter(events(), e => moment(e.start).isSame(moment(start), 'days') && !e.extendedProps.isTimeBreak);
+                    let isDuplicateEvent = _.find(inDayEvents, e => (moment(e.start).isAfter(moment(start)) && moment(e.start).isBefore(moment(end))) || (moment(e.end).isAfter(moment(start)) && moment(e.end).isBefore(moment(end))) );
+                    if (startDate.isAfter(formatDate(start)) || !editableDay || isDuplicateEvent) {
                         vm.calendar.unselect();
                         return;
                     }
+                    
+                    
 
                     // clean selection
                     vm.calendar.unselect();
@@ -2988,6 +3249,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 },
                 eventRemove: ({ event }) => {
                     // remove event from event sources
+                    vm.params.screenA.$caches.new(event);
                     _.forEach(vm.calendar.getEvents(), (e: EventApi) => {
                         if (e.id === event.id) {
                             e.remove();
@@ -3086,8 +3348,17 @@ module nts.uk.ui.at.kdw013.calendar {
 
                         taskItemValues.push({ itemId: 1, value: startMinutes });
                         taskItemValues.push({ itemId: 2, value: endMinutes });
-                        taskItemValues.push({ itemId: 3, value: endMinutes - startMinutes });
-                        let taskDetails = [{ supNo: _.isEmpty(eventInDay) ? 1 : getFrameNo(eventInDay), taskItemValues }];
+
+                        let refTimezone = { start: startMinutes, end: endMinutes };
+                        let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                        _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                            goOutBreakTimeLst.push({ start, end });
+                        });
+                        
+                        let calParam = { refTimezone, goOutBreakTimeLst };
+                        vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                            taskItemValues.push({ itemId: 3, value: time });
+                            let taskDetails = [{ supNo: _.isEmpty(eventInDay) ? 1 : getFrameNo(eventInDay), taskItemValues }];
                             events.push({
                                 title: getTitles(taskDetails, vm.params.$settings().tasks, vm.params.$settings().taskFrameUsageSetting),
                                 start,
@@ -3104,12 +3375,12 @@ module nts.uk.ui.at.kdw013.calendar {
                                 //社員ID
                                 employeeId: vm.params.employee() || vm.$user.employeeId,
                                 //年月日
-                                period: {  start,  end },
+                                period: { start, end },
                                 //現在の応援勤務枠
-                                frameNos,                                
+                                frameNos,
                                 //工数実績作業ブロック
                                 taskBlock: {
-                                    caltimeSpan: { start,  end },
+                                    caltimeSpan: { start, end },
 
                                     taskDetails
                                 },
@@ -3117,6 +3388,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                 displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
                             } as any
                         });
+                        updateEvents();
+                    });
+                        
                     }else {
                         //drop by day
                         //remove event in day
@@ -3127,7 +3401,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         
                         // add event   
-                        _.each( _.get(extendedProps, 'dropInfo.taskBlockDetailContents', []), task => {
+                        _.each(_.get(extendedProps, 'dropInfo.taskBlockDetailContents', []), task => {
                             let timeStart = moment(start).set('hour', task.startTime / 60).set('minute', task.startTime % 60).toDate();
                             let timeEnd = moment(start).set('hour', task.endTime / 60).set('minute', task.endTime % 60).toDate();
                             let workCDs = _.chain(task.taskContents).map(task => task.taskContent.taskCode).value();
@@ -3140,7 +3414,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             }
                             let taskDetails = []
                             _.forEach(_.get(task, 'taskContents'), tc => {
-                                
+
                                 let taskdetail = _.map(tc.taskContent, tcont => { return { itemId: tcont.itemId, value: tcont.taskCode }; });
                                 taskdetail.push({ itemId: 3, value: tc.attendanceTime });
                                 taskDetails.push({ supNo: tc.frameNo, taskItemValues: taskdetail });
@@ -3152,8 +3426,8 @@ module nts.uk.ui.at.kdw013.calendar {
                             });
                             events.push({
                                 title: getTitles(taskDetails, vm.params.$settings().tasks, vm.params.$settings().taskFrameUsageSetting),
-                                start : timeStart,
-                                end : timeEnd,
+                                start: timeStart,
+                                end: timeEnd,
                                 textColor,
                                 backgroundColor: getBackgroundColor(wg.workCD1, vm.params.$settings().tasks),
                                 extendedProps: {
@@ -3175,15 +3449,15 @@ module nts.uk.ui.at.kdw013.calendar {
                                     caltimeSpan: { start: timeStart, end: timeEnd },
 
                                     taskDetails
-                                },
+                                    },
                                 //作業内容入力ダイアログ表示項目一覧
                                 displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
-                            } as any
-                        });
-                        
+                                } as any
+                            });
                         });
                         updateEvents();
                     }
+               
                 },
                 datesSet: ({ start, end }) => {
                     let current = moment().startOf('day');
@@ -3778,10 +4052,11 @@ module nts.uk.ui.at.kdw013.calendar {
                             if (selecteds.length) {
                                 dataEvent.delete(true);
                                 let starts = selecteds.map(({ start }) => formatDate(start));
+                                let ends = selecteds.map(({ end }) => formatDate(end));
 
                                 if (ko.isObservable(vm.params.events)) {
                                     vm.params.events.remove((e: EventRaw) => {
-                                        let canRemove = e.editable && starts.indexOf(formatDate(e.start)) !== -1;
+                                        let canRemove = e.editable && starts.indexOf(formatDate(e.start)) !== -1 && ends.indexOf(formatDate(e.end)) !== -1;
                                         
                                         if (canRemove) {
                                             if (e.extendedProps.isTimeBreak) {
@@ -3802,6 +4077,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                                     removeList.push({ date: moment(e.start).startOf('day').toDate(), supNos });
                                                 }
                                             }
+                                            vm.params.screenA.$caches.new(e);
                                         }
 
                                         return canRemove;

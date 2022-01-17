@@ -30,4 +30,7 @@ public class RegisterHolidayDatesParam {
     
     // 休暇申請起動時の表示情報
     public AppAbsenceStartInfoDto appAbsenceStartInfoDto;
+    
+    // 申請する勤務種類が休日か
+    public boolean holidayFlg;
 }
