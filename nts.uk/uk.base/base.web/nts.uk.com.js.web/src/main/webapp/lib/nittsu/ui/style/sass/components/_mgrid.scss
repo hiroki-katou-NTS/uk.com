@@ -609,10 +609,10 @@
   width: 19px;
   height: 19px;
   margin: 0px;
-  background: transparent;
   border: $checkbox_box_border;
   border-radius: 2px;
   box-sizing: border-box;
+	background-color: $checkbox_back_color_off;
 }
 
 .ntsCheckBox span.box:after {
@@ -633,10 +633,25 @@
 
 .ntsCheckBox input[type="checkbox"] {
   display: none;
-}
 
-.ntsCheckBox input[type="checkbox"]:checked + span {
-  background: $checkbox_back_color_on;
+	&:checked {
+		+ span {
+  		background: $checkbox_back_color_on;
+		}
+
+		&:disabled {
+			+ span {
+				background: $checkbox_back_color_on_disabled;
+			}
+		}
+	}
+
+	&:disabled {
+		+ span {
+  		background: $checkbox_back_color_off_disabled;
+			cursor: not-allowed;
+		}
+	}
 }
 
 .ntsCheckBox input[type="checkbox"]:checked + span:after {
@@ -649,13 +664,8 @@
   opacity: 0.8;
 }
 
-.ntsCheckBox input[type="checkbox"][disabled] + span {
-  background: transparent;
-  border-color: #AAA;
-}
-
 .ntsCheckBox input[type="checkbox"][disabled] + span:after {
-  border-color: #AAA;
+  border-color: #fff;
 }
 
 .ntsCheckBox:focus {
