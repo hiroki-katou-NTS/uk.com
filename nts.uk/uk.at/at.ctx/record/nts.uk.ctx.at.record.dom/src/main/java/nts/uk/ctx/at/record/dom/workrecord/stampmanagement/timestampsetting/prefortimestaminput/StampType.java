@@ -114,9 +114,9 @@ public class StampType implements DomainValue, Cloneable{
 			return TextResource.localize("KDP011_41");
 		}
 		
-		if (this.changeCalArt == ChangeCalArt.BRARK) {
-			return TextResource.localize("KDP011_38");
-		}
+//		if (this.changeCalArt == ChangeCalArt.BRARK) {
+//			return TextResource.localize("KDP011_38");
+//		}
 
 		String stampAtr = this.changeClockArt.nameId;
 
