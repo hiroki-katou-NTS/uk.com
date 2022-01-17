@@ -1,3 +1,5 @@
+@import "_button.scss";
+
 %ig_table_header_thtd {
 	background-color: #6A6A6A;
 	color: #fff;
@@ -62,6 +64,21 @@
 		
 		.ui-iggrid-hiding-indicator, .ui-iggrid-hiding-hiddencolumnindicator {
 			display: none;
+		}
+
+		&.clickable-row {
+			tbody {
+				tr {
+					cursor: pointer;
+
+					&:hover {
+						&:nth-child(odd), &:nth-child(even) {
+							background-color: $button-proceed-base-color;
+							color: #fff;
+						}
+					}
+				}
+			}
 		}
 	}
 }

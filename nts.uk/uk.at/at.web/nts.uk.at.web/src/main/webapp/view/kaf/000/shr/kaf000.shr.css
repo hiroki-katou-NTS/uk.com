@@ -24,6 +24,16 @@ th, td {
 	border-color: transparent !important;
 }
 
+table.left-aligned th,
+table.left-aligned td {
+	text-align: left !important;
+	padding-left: 7px !important;
+	padding-right: 7px !important;
+}
+
+table.left-aligned td:not(:first-child) {
+	padding-left: 20px !important;
+}
 
 .cm-column {
 	display: inline-block;

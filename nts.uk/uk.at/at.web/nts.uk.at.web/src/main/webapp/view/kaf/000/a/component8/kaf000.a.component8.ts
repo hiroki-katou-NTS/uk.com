@@ -12,7 +12,7 @@ module nts.uk.at.view.kaf000.a.component8.viewmodel {
 							<div data-bind="if: $index">
 								<div style="margin-bottom: 10px;"></div>
 							</div>
-							<table>
+							<table class="left-aligned">
 								<tbody>
 									<tr>
 										<td><span data-bind="style: { color: $component.getColor(opAchievementDetail) }, i18n: 'KAF000_55'"></span></td>
