@@ -4,15 +4,13 @@ module nts.uk.at.view.kaf005.shr.header.viewmodel {
 	<!--A2_7 時間外労働ラベル-->
 	<div class="header" data-bind="text: '時間外労働'"></div>
 	<div class="content" data-bind="if: visibleModel.c6()">
-		<div class="cf valign-center"
-			data-bind="style: {padding: '10px 10px 10px 12px'}"
-			style="margin-left: -2px; background: #f8efd4;">
-			<div>
+		<div class="cf valign-center">
+			<div class="ui-iggrid">
 				<table id="kaf005_overtimeAgreement_table">
 					<colgroup>
-						<col width="80px" />
-						<col width="70px" />
-						<col width="70px" />
+						<col width="100px" />
+						<col width="100px" />
+						<col width="100px" />
 						<!--<col width="70px" />-->
 						<!--<col width="70px" />-->
 					</colgroup>
