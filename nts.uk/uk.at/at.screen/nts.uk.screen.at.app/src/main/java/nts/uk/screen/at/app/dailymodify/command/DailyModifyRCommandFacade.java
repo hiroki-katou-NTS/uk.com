@@ -527,7 +527,25 @@ public class DailyModifyRCommandFacade {
 				// 月次集計を実施する必要があるかチェックする
 				if (dataParent.getMode() == 0 && monthParam != null && monthParam.getNeedCallCalc() != null
 						&& monthParam.getNeedCallCalc()) {
-					calcMonth(dataParent, resultErrorMonth, dataResultAfterIU, monthParam, dailyItems, domainDailyNew, commandNew, commandOld, errorMonthHoliday);
+
+					DailyCalcResult resultCalcMonth = calcMonth(dataParent, resultErrorMonth, dataResultAfterIU, monthParam, dailyItems, domainDailyNew, commandNew, commandOld, errorMonthHoliday);
+					List<DPItemValue> lstItemErrorMonth = resultCalcMonth.getListItemErrorMonth();
+
+					if(resultCalcMonth.getErrorAfterCheck() != null && resultCalcMonth.getListAggregatePastMonthResult().isEmpty()) {
+						if(!lstItemErrorMonth.isEmpty()) {
+							resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
+						}
+
+						// 月次登録処理
+						boolean errorMonthAfterCalc = resultCalcMonth.getErrorAfterCheck().getHasError();
+						if (!errorMonthAfterCalc) {
+//							this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
+
+							dataResultAfterIU.setDomainMonthOpt(Optional.empty());
+						}
+						// dataResultAfterIU.setErrorMap(errorMonth.getResultError());
+						dataResultAfterIU.setFlexShortage(resultCalcMonth.getErrorAfterCheck().getFlexShortage());
+					}
 				}
 
 				try {
@@ -646,7 +664,10 @@ public class DailyModifyRCommandFacade {
 		return dataResultAfterIU;
 	}
 
-	private void calcMonth(DPItemParent dataParent, Map<Integer, List<DPItemValue>> resultErrorMonth, DataResultAfterIU dataResultAfterIU, UpdateMonthDailyParam monthParam, List<DailyItemValue> dailyItems, List<IntegrationOfDaily> domainDailyNew, List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<EmployeeMonthlyPerError> errorMonthHoliday) {
+	private DailyCalcResult calcMonth(DPItemParent dataParent, Map<Integer, List<DPItemValue>> resultErrorMonth, DataResultAfterIU dataResultAfterIU,
+									  UpdateMonthDailyParam monthParam, List<DailyItemValue> dailyItems,
+									  List<IntegrationOfDaily> domainDailyNew, List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld,
+									  List<EmployeeMonthlyPerError> errorMonthHoliday) {
 		boolean editFlex = (dataParent.getMode() == 0 && dataParent.getMonthValue() != null
 				&& !CollectionUtil.isEmpty(dataParent.getMonthValue().getItems()));
 
@@ -655,36 +676,12 @@ public class DailyModifyRCommandFacade {
 				domainDailyNew, dailyItems, monthParam, dataParent.getMonthValue(), errorMonthHoliday,
 				dataParent.getDateRange(), dataParent.getMode(), editFlex, dataParent.getCheckUnLock());
 
-		if(resultCalcMonth.getErrorAfterCheck() !=null && resultCalcMonth.getListAggregatePastMonthResult().isEmpty()) {
-			ErrorAfterCalcDaily errorMonth = resultCalcMonth.getErrorAfterCheck();
-			// map error holiday into result
-			List<DPItemValue> lstItemErrorMonth = errorMonth.getResultErrorMonth()
-					.get(TypeError.ERROR_MONTH.value);
-			if (lstItemErrorMonth != null) {
-				List<DPItemValue> itemErrorMonth = dataResultAfterIU.getErrorMap()
-						.get(TypeError.ERROR_MONTH.value);
-				if (itemErrorMonth != null) {
-					lstItemErrorMonth.addAll(itemErrorMonth);
-				}
-				// dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value,
-				// lstItemErrorMonth);
-				resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
-			}
-			// 月次登録処理
-			boolean errorMonthAfterCalc = errorMonth.getHasError();
-			if (!errorMonthAfterCalc) {
-//							this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
-
-				dataResultAfterIU.setDomainMonthOpt(Optional.empty());
-			}
-			// dataResultAfterIU.setErrorMap(errorMonth.getResultError());
-			dataResultAfterIU.setFlexShortage(errorMonth.getFlexShortage());
-		}
-
 		//過去月集計結果を登録する
 		if(resultCalcMonth.getErrorAfterCheck() ==null && !resultCalcMonth.getListAggregatePastMonthResult().isEmpty()) {
 			registerPastMonthTotalResult.register(resultCalcMonth.getListAggregatePastMonthResult());
 		}
+
+		return resultCalcMonth;
 	}
 
 	public void finishDailyRecordRegis(Set<Pair<String, GeneralDate>> updated, List<DailyRecordDto> dailyEdits,
