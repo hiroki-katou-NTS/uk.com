@@ -493,15 +493,6 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                 if (_.isNumber(i.start()) && _.isNumber(i.end()) && i.start() > i.end()) {
                     vm.$errors('#A15_5_' + idx, 'Msg_307');
                 }
-
-                // check value previous row
-                if (idx > 0) {
-                    if (_.isNumber(i.start())
-                        && _.isNumber(vm.multipleOvertimeContents()[idx - 1].end())
-                        && i.start() < vm.multipleOvertimeContents()[idx - 1].end()) {
-                        vm.$errors('#A15_3_' + idx, {messageId: 'Msg_3281', messageParams: [idx.toString(), (idx + 1).toString()]});
-                    }
-                }
             });
         }
 
@@ -1660,7 +1651,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                         if (!_.isEmpty(res.calculatedWorkTimes)) {
                             self.workInfo().workHours1.start(res.calculatedWorkTimes[0].timeZone.startTime);
                             self.workInfo().workHours1.end(res.calculatedWorkTimes[0].timeZone.endTime);
-                            if (res.calculatedWorkTimes.length > 1) {
+                            if (res.calculatedWorkTimes.length > 1 && self.visibleModel.c29()) {
                                 self.workInfo().workHours2.start(res.calculatedWorkTimes[1].timeZone.startTime);
                                 self.workInfo().workHours2.end(res.calculatedWorkTimes[1].timeZone.endTime);
                             } else {
