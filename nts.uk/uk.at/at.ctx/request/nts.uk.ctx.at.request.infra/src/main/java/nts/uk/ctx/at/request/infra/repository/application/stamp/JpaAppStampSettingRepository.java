@@ -59,9 +59,9 @@ public class JpaAppStampSettingRepository extends JpaRepository implements AppSt
 		appStampSetting.setCompanyID(res.getString("CID"));
 		
 		appStampSetting.setUseCancelFunction(EnumAdaptor.valueOf(res.getBoolean("CANCEL_DISP_ATR") ? 1 : 0, UseDivision.class));
-		Integer stampDispAtr = res.getInt("STAMP_PLACE_DISP_ATR");
+		Integer stampDispAtr = res.getBoolean("STAMP_PLACE_DISP_ATR") ? 1 : 0;
 		appStampSetting.setUseLocationSelection(stampDispAtr == null ? NotUseAtr.NOT_USE : EnumAdaptor.valueOf(stampDispAtr, NotUseAtr.class));
-		appStampSetting.setWkpDisAtr(EnumAdaptor.valueOf(res.getInt("STAMP_WKP_DISP_ATR"), NotUseAtr.class));
+		appStampSetting.setWkpDisAtr(EnumAdaptor.valueOf(res.getBoolean("STAMP_WKP_DISP_ATR") ? 1 : 0, NotUseAtr.class));
 		
 		List<SettingForEachType> settingForEachTypeLst = new ArrayList<SettingForEachType>();
 		
