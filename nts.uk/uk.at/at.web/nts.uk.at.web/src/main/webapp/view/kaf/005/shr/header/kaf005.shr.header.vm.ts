@@ -2,7 +2,7 @@ module nts.uk.at.view.kaf005.shr.header.viewmodel {
 	const template = `
 <div class="right-panel-block" data-bind="with: $parent, visible: $parent.visibleModel.c6()">
 	<!--A2_7 時間外労働ラベル-->
-	<div class="header" data-bind="text: $i18n('KAF005_23')"></div>
+	<div class="header" data-bind="text: '時間外労働'"></div>
 	<div class="content" data-bind="if: visibleModel.c6()">
 		<div class="cf valign-center"
 			data-bind="style: {padding: '10px 10px 10px 12px'}"
@@ -23,7 +23,7 @@ module nts.uk.at.view.kaf005.shr.header.viewmodel {
 								data-bind="text: $i18n('KAF005_24')"></th>
 							<!--A2_10  限度ラベル-->
 							<th class="kaf005_overtimeAgreement_header"
-								data-bind="text: $i18n('KAF005_25')"></th>
+								data-bind="text: '36上限時間'"></th>
 							<!--A2_11 実績ラベル-->
 							<th class="kaf005_overtimeAgreement_header"
 								data-bind="text: $i18n('KAF005_26')"></th>

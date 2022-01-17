@@ -5,7 +5,7 @@ module nts.uk.at.view.kaf000.a.component8.viewmodel {
         name: 'kaf000-a-component8',
         template: `
             <div id="kaf000-a-component8" class="right-panel-block">
-				<div class="header" data-bind="i18n: 'KAF000_54'"></div>
+				<div class="header">予定／実績内容</div>
 				<div class="content">
 					<div class="panel panel-frame" data-bind="foreach: actualContentDisplayDtoLst" style="overflow: auto; height: 200px; margin-left: 3px; margin-top: 5px;">
 						<div style="margin-bottom: 10px;">
