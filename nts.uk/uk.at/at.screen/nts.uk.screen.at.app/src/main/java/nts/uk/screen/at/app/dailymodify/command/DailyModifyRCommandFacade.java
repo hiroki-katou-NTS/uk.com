@@ -198,8 +198,6 @@ public class DailyModifyRCommandFacade {
 		boolean errorMonthAfterCalc = false;
 		boolean flagTempCalc = dataParent.isFlagCalculation();
 		dataParent.setFlagCalculation(false);
-		boolean editFlex = (dataParent.getMode() == 0 && dataParent.getMonthValue() != null
-				&& !CollectionUtil.isEmpty(dataParent.getMonthValue().getItems()));
 		List<DPItemValue> dataCheck = new ArrayList<>();
 		// insert flex
 		UpdateMonthDailyParam monthParam = null;
@@ -530,7 +528,7 @@ public class DailyModifyRCommandFacade {
 				// 月次集計を実施する必要があるかチェックする
 				if (dataParent.getMode() == 0 && monthParam != null && monthParam.getNeedCallCalc() != null
 						&& monthParam.getNeedCallCalc()) {
-					calcMonth(dataParent, resultErrorMonth, dataResultAfterIU, editFlex, monthParam, dailyItems, domainDailyNew, commandNew, commandOld, errorMonthHoliday);
+					calcMonth(dataParent, resultErrorMonth, dataResultAfterIU, monthParam, dailyItems, domainDailyNew, commandNew, commandOld, errorMonthHoliday);
 				}
 
 				try {
@@ -622,6 +620,8 @@ public class DailyModifyRCommandFacade {
 				.setErrorMap(ProcessCommonCalc.convertErrorToType(lstResultReturnDailyError, resultErrorMonth));
 
 		// 登録確認メッセージ
+		boolean editFlex = (dataParent.getMode() == 0 && dataParent.getMonthValue() != null
+				&& !CollectionUtil.isEmpty(dataParent.getMonthValue().getItems()));
 		if ((dataResultAfterIU.getErrorMap().isEmpty() && dataResultAfterIU.getErrorMap().values().isEmpty()
 				&& !hasErrorRow
 				&& (dataResultAfterIU.getFlexShortage() == null || (!dataResultAfterIU.getFlexShortage().isError()
@@ -647,8 +647,11 @@ public class DailyModifyRCommandFacade {
 		return dataResultAfterIU;
 	}
 
-	private void calcMonth(DPItemParent dataParent, Map<Integer, List<DPItemValue>> resultErrorMonth, DataResultAfterIU dataResultAfterIU, boolean editFlex, UpdateMonthDailyParam monthParam, List<DailyItemValue> dailyItems, List<IntegrationOfDaily> domainDailyNew, List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<EmployeeMonthlyPerError> errorMonthHoliday) {
+	private void calcMonth(DPItemParent dataParent, Map<Integer, List<DPItemValue>> resultErrorMonth, DataResultAfterIU dataResultAfterIU, UpdateMonthDailyParam monthParam, List<DailyItemValue> dailyItems, List<IntegrationOfDaily> domainDailyNew, List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<EmployeeMonthlyPerError> errorMonthHoliday) {
 		boolean errorMonthAfterCalc;
+		boolean editFlex = (dataParent.getMode() == 0 && dataParent.getMonthValue() != null
+				&& !CollectionUtil.isEmpty(dataParent.getMonthValue().getItems()));
+
 		// 月別実績の集計
 		DailyCalcResult resultCalcMonth = processMonthlyCalc.processMonthCalc(commandNew, commandOld,
 				domainDailyNew, dailyItems, monthParam, dataParent.getMonthValue(), errorMonthHoliday,
