@@ -3317,7 +3317,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 cells.get(firstRow, 4).setValue(l_12 != null ? df.format(l_12) : "");  // L1_4 特別休暇_使用数日数
             }
             if(con_2 && manageHoliday){
-                cells.get(firstRow, 5).setValue(l_13 != null ? df.format(l_14) : "");
+                cells.get(firstRow, 5).setValue(l_13 != null ? df.format(l_13) : "");
             }else {
                 setBackgroundGray(cells.get(firstRow , 5));
             }
