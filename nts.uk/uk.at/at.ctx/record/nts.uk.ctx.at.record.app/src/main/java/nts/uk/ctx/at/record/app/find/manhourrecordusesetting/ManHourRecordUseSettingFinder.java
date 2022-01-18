@@ -181,7 +181,7 @@ public class ManHourRecordUseSettingFinder {
 	public int getArt() {
 		String cId = AppContexts.user().companyId();
 		Optional<ManHrInputUsageSetting> manHrInputUsageSetting = manHrInputUsageSettingRepository.get(cId);
-		return manHrInputUsageSetting.map(m -> m.getUsrAtr().value).orElse(1);
+		return manHrInputUsageSetting.map(m -> m.getUsrAtr().value).orElse(0);
 	}
 
 }
