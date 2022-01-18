@@ -59,15 +59,7 @@ table.left-aligned td:not(:first-child) {
 
 .left-panel > .form-header {
 	margin-bottom: 40px;
-}
-
-.left-panel > .form-header #kaf000-a-component6 {
-}
-
-.left-panel > .form-header #kaf000-a-component6 .approver-block {
-	margin-left: 30px;
-}
-	
+}	
 
 .left-panel button {
 	min-width: 100px;
