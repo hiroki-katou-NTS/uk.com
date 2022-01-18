@@ -104,7 +104,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_40'), ntsFormLabel: {}"></div>
 		</div>
-		<div class="cell table-time">
+		<div class="cell table-time valign-top">
 			<table id="fixed-table">
 				<colgroup>
 					<col width="25px" />
