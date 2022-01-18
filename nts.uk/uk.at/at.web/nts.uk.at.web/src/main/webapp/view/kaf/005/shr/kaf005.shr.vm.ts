@@ -1,6 +1,6 @@
 module nts.uk.at.view.kaf005.shr.viewmodel {
 	const template = `
-<div class="cf" style="margin-top: -2px" data-bind="with: $parent">
+<div class="cf has-row-header" style="margin-top: -2px" data-bind="with: $parent">
 	<!--A15-1 multiple overtime content-->
 	<div class="cf valign-top control-group table" data-bind="if: opOvertimeAppAtr() == 3">
 		<div class="cm-column cell" style="display: inline-block; width: 119px">
