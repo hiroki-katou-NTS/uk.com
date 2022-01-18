@@ -1,9 +1,6 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import org.apache.commons.lang3.tuple.Pair;
@@ -72,5 +69,17 @@ public class DPItemParent {
 
 	public UpdateMonthDailyParam createUpdateMonthDailyParam(){
 		return monthValue.createUpdateMonthDailyParam(this.domainMonthOpt, this.dateRange);
+	}
+
+	public Set<Pair<String, GeneralDate>> pairSidDateCheck() {
+		Set<Pair<String, GeneralDate>> pairSidDateCheck = new HashSet<>();
+		dataCheckSign.stream().forEach(x -> {
+			pairSidDateCheck.add(Pair.of(x.getEmployeeId(), x.getDate()));
+		});
+
+		dataCheckApproval.stream().forEach(x -> {
+			pairSidDateCheck.add(Pair.of(x.getEmployeeId(), x.getDate()));
+		});
+		return pairSidDateCheck;
 	}
 }

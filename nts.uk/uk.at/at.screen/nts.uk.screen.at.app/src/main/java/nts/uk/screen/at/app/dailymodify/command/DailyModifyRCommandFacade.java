@@ -221,15 +221,7 @@ public class DailyModifyRCommandFacade {
 		// map to list result -> check error;
 		List<DailyRecordDto> dailyOlds = new ArrayList<>(), dailyEdits = new ArrayList<>();
 
-		Set<Pair<String, GeneralDate>> pairSidDateCheck = new HashSet<>();
-		dataParent.getDataCheckSign().stream().forEach(x -> {
-			pairSidDateCheck.add(Pair.of(x.getEmployeeId(), x.getDate()));
-		});
-
-		dataParent.getDataCheckApproval().stream().forEach(x -> {
-			pairSidDateCheck.add(Pair.of(x.getEmployeeId(), x.getDate()));
-		});
-		processDto(dailyOlds, dailyEdits, dataParent, querys, mapSidDate, pairSidDateCheck, queryNotChanges);
+		processDto(dailyOlds, dailyEdits, dataParent, querys, mapSidDate, queryNotChanges);
 		// row data will insert
 		Set<Pair<String, GeneralDate>> rowWillInsert = dailyEdits.stream()
 				.map(x -> Pair.of(x.getEmployeeId(), x.getDate())).collect(Collectors.toSet());
@@ -1121,7 +1113,10 @@ public class DailyModifyRCommandFacade {
 
 	public void processDto(List<DailyRecordDto> dailyOlds, List<DailyRecordDto> dailyEdits, DPItemParent dataParent,
 			List<DailyModifyQuery> querys, Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate,
-			Set<Pair<String, GeneralDate>> pairSidDateCheck, List<DailyModifyQuery> queryNotChanges) {
+			List<DailyModifyQuery> queryNotChanges) {
+
+		Set<Pair<String, GeneralDate>> pairSidDateCheck = dataParent.pairSidDateCheck();
+
 		// list cell change by checkbox
 		if (!querys.isEmpty() && !dataParent.isFlagCalculation()) {
 			dailyOlds.addAll(dataParent.getDailyOlds().stream()
