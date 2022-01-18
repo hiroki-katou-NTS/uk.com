@@ -14,7 +14,9 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Exe
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.pub.dailymonthlyprocessing.ExeStateOfCalAndSumExport;
+import nts.uk.ctx.at.record.pub.dailymonthlyprocessing.ExecutionContentExport;
 import nts.uk.ctx.at.record.pub.dailymonthlyprocessing.ExecutionLogExportPub;
+import nts.uk.ctx.at.record.pub.dailymonthlyprocessing.ExecutionTypeExport;
 import nts.uk.ctx.at.record.pub.dailymonthlyprocessing.SetInforReflAprResultExport;
 
 @Stateless
@@ -28,7 +30,15 @@ public class ExecutionLogExportPubImpl implements ExecutionLogExportPub{
 	private TargetPersonRepository targetPerson;
 	@Override
 	public Optional<SetInforReflAprResultExport> optReflectResult(String empCalAndSumExecLogID, int executionContent) {
-		return Optional.empty();
+		Optional<ExecutionLog> optExeLog = logRepo.getByExecutionContent(empCalAndSumExecLogID, executionContent);
+		if(!optExeLog.isPresent()) {
+			return Optional.empty();
+		}
+		ExecutionLog exeLog = optExeLog.get();
+		SetInforReflAprResultExport output = new SetInforReflAprResultExport(EnumAdaptor.valueOf(exeLog.getExecutionContent().value, ExecutionContentExport.class),
+				EnumAdaptor.valueOf(exeLog.getExecutionType().value, ExecutionTypeExport.class),
+				exeLog.getEmpCalAndSumExecLogID());
+		return Optional.of(output);
 	}
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
