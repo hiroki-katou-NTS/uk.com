@@ -206,7 +206,7 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
 
     /** 打刻職場を表示する */
     @Column(name = "STAMP_WKP_DISP_ATR")
-    private Integer stampWkpDispAtr;
+    private boolean stampWkpDispAtr;
 
     @Override
     protected Object getKey() {
@@ -272,8 +272,8 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
                                 GoOutType.UNION
                         )
                 ),
-                EnumAdaptor.valueOf(stampPlaceDispAtr, NotUseAtr.class),
-                EnumAdaptor.valueOf(stampWkpDispAtr, NotUseAtr.class)
+                EnumAdaptor.valueOf(stampPlaceDispAtr ? 1 : 0, NotUseAtr.class),
+                EnumAdaptor.valueOf(stampWkpDispAtr ? 1 : 0, NotUseAtr.class)
         );
     }
 
@@ -294,8 +294,8 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
         KrqmtAppStamp entity = new KrqmtAppStamp();
         entity.companyId = companyId;
         entity.cancelDispAtr = BooleanUtils.toBoolean(setting.getUseCancelFunction().value);
-        entity.stampPlaceDispAtr = setting.getUseLocationSelection().value;
-        entity.stampWkpDispAtr = setting.getWkpDisAtr().value;
+        entity.stampPlaceDispAtr = setting.getUseLocationSelection().equals(NotUseAtr.USE);
+        entity.stampWkpDispAtr = setting.getWkpDisAtr().equals(NotUseAtr.USE);
         for (GoOutTypeDispControl t : setting.getGoOutTypeDispControl()) {
             switch (t.getGoOutType()) {
                 case PRIVATE:
@@ -388,8 +388,8 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
 
     public void updateSetting(AppStampSetting setting) {
         cancelDispAtr = BooleanUtils.toBoolean(setting.getUseCancelFunction().value);
-        this.stampPlaceDispAtr = setting.getUseLocationSelection().value;
-        this.stampWkpDispAtr = setting.getWkpDisAtr().value;
+        this.stampPlaceDispAtr = setting.getUseLocationSelection().equals(NotUseAtr.USE);
+        this.stampWkpDispAtr = setting.getWkpDisAtr().equals(NotUseAtr.USE);
         for (GoOutTypeDispControl t : setting.getGoOutTypeDispControl()) {
             switch (t.getGoOutType()) {
                 case PRIVATE:

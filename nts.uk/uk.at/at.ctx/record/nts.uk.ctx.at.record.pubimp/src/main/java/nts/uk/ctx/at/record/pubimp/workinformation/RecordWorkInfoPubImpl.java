@@ -620,7 +620,7 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 			supports = ouenTimeSheet.stream().map(x -> {
 				SupportTimeSheet supportTimeSheet = new SupportTimeSheet();
 				// 日別実績の応援作業別勤怠時間帯.応援時間帯.応援勤務枠No
-				supportTimeSheet.setFrameNo(x.getWorkNo());
+				supportTimeSheet.setFrameNo(x.getWorkNo().v());
 				
 				Optional<WorkTimeInformation> start = x.getTimeSheet().getStart();
 				if (start.isPresent()) {
