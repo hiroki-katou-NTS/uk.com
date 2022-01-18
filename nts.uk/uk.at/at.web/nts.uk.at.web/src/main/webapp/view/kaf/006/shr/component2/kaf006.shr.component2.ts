@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf006.shr.component2.viewmodel {
         name: 'kaf006-shr-component2',
         template: `
         <div id="kaf006component2">
-            <div class = "table" style="margin: 10px 0;">
+            <div class="table item">
                 <div class="cell cm-column">
                     <div class="cell valign-center" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_15')"></div>
                 </div>

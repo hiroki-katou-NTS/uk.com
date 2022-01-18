@@ -3,46 +3,48 @@ module nts.uk.at.view.kaf000.a.component5.viewmodel {
     @component({
         name: 'kaf000-a-component5',
         template: `
-        <div id="kaf000-a-component5">
-			<div class="table" data-bind="if: appReasonCDDisp">
-		        <div class="cell cm-column">
-		            <div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: $i18n('KAF000_51')"></div>
-		        </div>
-		        <div class="cell valign-center">
-		            <div id="kaf000-a-component5-comboReason" style="width: 472px; margin-bottom: 12px;"
-		                data-bind="ntsComboBox: {
-		            					name: $i18n('KAF000_51'),
-		                                options: reasonTypeItemLst,
-		                                optionsValue: 'appStandardReasonCD',
-		                                optionsText: 'reasonForFixedForm',
-		                                value: opAppStandardReasonCD,
-		                                columns: [{ prop: 'reasonForFixedForm', length: 20 }],
-		                                required: appReasonCDRequired }">
-		            </div>
-		        </div>
-		    </div>
-		    <div class="table" data-bind="if: appReasonDisp">
-		        <div class="cell cm-column">
-		            <div class="cell valign-center" data-bind="ntsFormLabel: {
-		                                    required: appReasonRequired,
-		                                    constraint: 'AppReason',
-		                                    text: $i18n('KAF000_52')
-		                                }"></div>
-		        </div>
-		        <div class="cell valign-center">
-		            <textarea style="height: 80px;" id="kaf000-a-component5-textReason"
-		                data-bind="ntsMultilineEditor: {
-		                            name: $i18n('KAF000_52'),
-		                            value: opAppReason,
-		                            constraint: 'AppReason',
-		                            option: {
-		                                resizeable: false,
-		                                width: '450',
-		                                textalign: 'left'
-		                            },
-		                            required : appReasonRequired }" />
-		        </div>
-		    </div>
+    <div id="kaf000-a-component5">
+			<div data-bind="if: appReasonCDDisp">
+				<div class="table item">
+					<div class="cell cm-column">
+						<div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: $i18n('KAF000_51')"></div>
+					</div>
+					<div class="cell valign-center">
+						<div id="kaf000-a-component5-comboReason" style="width: 472px;"
+									data-bind="ntsComboBox: {
+												name: $i18n('KAF000_51'),
+																	options: reasonTypeItemLst,
+																	optionsValue: 'appStandardReasonCD',
+																	optionsText: 'reasonForFixedForm',
+																	value: opAppStandardReasonCD,
+																	columns: [{ prop: 'reasonForFixedForm', length: 20 }],
+																	required: appReasonCDRequired }">
+						</div>
+					</div>
+				</div>
+				<div class="table item" data-bind="if: appReasonDisp">
+					<div class="cell cm-column">
+						<div class="cell valign-center" data-bind="ntsFormLabel: {
+																		required: appReasonRequired,
+																		constraint: 'AppReason',
+																		text: $i18n('KAF000_52')
+																}"></div>
+					</div>
+					<div class="cell valign-center">
+						<textarea style="height: 80px;" id="kaf000-a-component5-textReason"
+								data-bind="ntsMultilineEditor: {
+														name: $i18n('KAF000_52'),
+														value: opAppReason,
+														constraint: 'AppReason',
+														option: {
+																resizeable: false,
+																width: '450',
+																textalign: 'left'
+														},
+														required : appReasonRequired }" />
+					</div>
+				</div>
+			</div>
 		</div>
         `
     })

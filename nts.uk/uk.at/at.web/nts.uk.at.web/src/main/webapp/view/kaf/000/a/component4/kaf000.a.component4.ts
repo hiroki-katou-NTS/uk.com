@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
         name: 'kaf000-a-component4',
         template: `
             <div id="kaf000-a-component4">
-                <div class="table">
+                <div class="table item">
                     <div class="cell cm-column">
                         <div class="cell valign-center" data-bind="ntsFormLabel:{ required:true }, text: $i18n('KAF000_49')"></div>
                     </div>

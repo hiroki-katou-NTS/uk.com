@@ -41,7 +41,6 @@ table.left-aligned td:not(:first-child) {
 }
 
 .cm-column {
-	display: inline-block;
 	width: 200px;
 }
 
@@ -59,7 +58,12 @@ table.left-aligned td:not(:first-child) {
 
 .left-panel > .form-header {
 	margin-bottom: 40px;
-}	
+}
+
+.left-panel .table.item {
+	margin-bottom: 12px;
+	min-height: 36px;
+}
 
 .left-panel button {
 	min-width: 100px;

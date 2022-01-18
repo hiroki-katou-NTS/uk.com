@@ -1,9 +1,9 @@
 module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 	const template = `
 	<div id="kaf005-share-work-info" data-bind="with: $parent">
-<div style="margin-top: -2px" data-bind="if: workInfo">
+<div data-bind="if: workInfo">
 
-	<div class="table" data-bind="if : visibleModel.c7()">
+	<div class="table item" data-bind="if : visibleModel.c7()">
 		<div class="cell valign-center cm-column">
 			<!--A4_1 勤務種類ラベル-->
 			<div class="valign-center"
@@ -32,8 +32,8 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 
 
 	<!--勤務時間 1-->
-	<div style="margin-bottom: 10px">
-		<div class="table" style="margin-top: -2px" data-bind="if: visibleModel.c7()">
+	<div data-bind="if: visibleModel.c7()">
+		<div class="table item">
 			<div class="cell valign-top cm-column">
 				<!--A4_8 勤務時間ラベル-->
 				<div class="lblTitle"
@@ -41,76 +41,70 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 					></div>
 			</div>
 			<div class="cell valign-center">
-				<div>
-					<!--A4_9 勤務時間From1-->
-					<input 
-						class="inputTime-kaf005 right-content"
-						id="inpStartTime1"
-						data-bind="ntsTimeWithDayEditor: { 
-							name: '#[KAF005_333]',
-							constraint:'TimeWithDayAttr',
-							value: workInfo().workHours1.start,
-							enable: outputMode(),
-							readonly: false,
-							required: true }" />
-					<!--A4_10 ~1-->
-					<label class="valign-center link-label-kaf005"
-						data-bind=", text: $i18n('KAF005_38')"></label>
-				</div>
-			</div>
-			<div class="cell valign-center">
-				<div class="row-cell-margin">
-					<!--A4_11 勤務時間To1-->
-					<input id="inpEndTime1"
-						class="right-content inputTime-kaf005"
-						data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_334]',
-						 constraint:'TimeWithDayAttr',
-						 value: workInfo().workHours1.end,
-						 enable: outputMode(),
-						 readonly: false,
-						 required: true}" />
-				</div>
+				<!--A4_9 勤務時間From1-->
+				<input 
+					class="inputTime-kaf005 right-content"
+					id="inpStartTime1"
+					data-bind="ntsTimeWithDayEditor: { 
+						name: '#[KAF005_333]',
+						constraint:'TimeWithDayAttr',
+						value: workInfo().workHours1.start,
+						enable: outputMode(),
+						readonly: false,
+						required: true }" />
+				<!--A4_10 ~1-->
+				<label class="valign-center link-label-kaf005"
+					data-bind=", text: $i18n('KAF005_38')"></label>
+				<!--A4_11 勤務時間To1-->
+				<input id="inpEndTime1"
+					class="right-content inputTime-kaf005"
+					data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_334]',
+						constraint:'TimeWithDayAttr',
+						value: workInfo().workHours1.end,
+						enable: outputMode(),
+						readonly: false,
+						required: true}" />
 			</div>
 		</div>
 		
 		
-		<div class="table" style="margin-top: 2px" data-bind="if: visibleModel.c29()">
-			<div class="cell valign-top cm-column">
-				<div class="lblTitle"
-					
-					style="margin-right: 6px"></div>
-			</div>
-			<div class="cell valign-center">
-				<div>
-					<!--A4_12 勤務時間From1-->
-					<input
-						style="margin: 0px"
-						class="row-cell-margin inputTime-kaf005 right-content"
-						id="inpStartTime2"
-						data-bind="ntsTimeWithDayEditor: { 
-						name: '#[KAF005_335]',
-						constraint:'TimeWithDayAttr',
-						value: workInfo().workHours2.start,
-						enable: outputMode(),
-						readonly: false,
-						required: false}" />
-					<!--A4_13 ~1-->
-					<label class="valign-center link-label-kaf005"
-						data-bind=", text: $i18n('KAF005_38')"></label>
+		<div data-bind="if: visibleModel.c29()">
+			<div class="table item" data-bind="if: visibleModel.c29()">
+				<div class="cell valign-top cm-column">
+					<div class="lblTitle"></div>
 				</div>
-			</div>
-			<div class="cell valign-center">
-				<div class="row-cell-margin">
-					<!--A4_14 勤務時間To1-->
-					<input id="inpEndTime2"
-						class="right-content inputTime-kaf005"
-						data-bind="ntsTimeWithDayEditor: {
-						name: '#[KAF005_336]',
-						constraint:'TimeWithDayAttr',
-						value: workInfo().workHours2.end,
-						enable: outputMode(),
-						readonly: false,
-						required: false}" />
+				<div class="cell valign-center">
+					<div>
+						<!--A4_12 勤務時間From1-->
+						<input
+							style="margin: 0px"
+							class="row-cell-margin inputTime-kaf005 right-content"
+							id="inpStartTime2"
+							data-bind="ntsTimeWithDayEditor: { 
+							name: '#[KAF005_335]',
+							constraint:'TimeWithDayAttr',
+							value: workInfo().workHours2.start,
+							enable: outputMode(),
+							readonly: false,
+							required: false}" />
+						<!--A4_13 ~1-->
+						<label class="valign-center link-label-kaf005"
+							data-bind=", text: $i18n('KAF005_38')"></label>
+					</div>
+				</div>
+				<div class="cell valign-center">
+					<div class="row-cell-margin">
+						<!--A4_14 勤務時間To1-->
+						<input id="inpEndTime2"
+							class="right-content inputTime-kaf005"
+							data-bind="ntsTimeWithDayEditor: {
+							name: '#[KAF005_336]',
+							constraint:'TimeWithDayAttr',
+							value: workInfo().workHours2.end,
+							enable: outputMode(),
+							readonly: false,
+							required: false}" />
+					</div>
 				</div>
 			</div>
 		</div>

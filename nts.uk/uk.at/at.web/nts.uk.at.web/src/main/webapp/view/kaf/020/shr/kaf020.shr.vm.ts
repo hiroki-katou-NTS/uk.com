@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
         name: 'kaf020-share',
         template: `<!--B2_3-->
             <div id="kaf020-component" data-bind="foreach: applicationContents">
-                <div class="table">
+                <div class="table item">
                     <div class="cell cm-column">
                         <div class="label m1 table-name" data-bind="ntsFormLabel : { text: optionalItemName } "></div>
                     </div>

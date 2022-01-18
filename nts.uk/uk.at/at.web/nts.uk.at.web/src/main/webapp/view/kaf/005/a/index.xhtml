@@ -67,16 +67,14 @@
 					data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div> -->
 				<button class="proceed"
 					data-bind="click: register, enable: $root.errors.isEmpty, text: $vm.$i18n('KAF009_3')"></button>
-				<div
-					data-bind="component: { name: 'kaf000-a-component7',
+				<div data-bind="component: { name: 'kaf000-a-component7',
 											params: {
 												appType: appType,
 												checkBoxValue: isSendMail,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"
-					style="display: inline-block; margin-left: 15px"></div>
+											} }"></div>
 			</div>
-			<div style="display: inline-block; position: absolute; z-index: 10; margin-left: 70px;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
+			<div style="display: inline-block; position: absolute; z-index: 10;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
 			<div id="contents-area" style="background-color: inherit;">
 				<div class="two-panel">
 					<div class="left-panel">
@@ -92,8 +90,7 @@
 															  } }"></div>
 							</div>
 							<div class="cell" style="text-align: right;">
-								<div style="margin-top: 12px"
-									data-bind="component: { name: 'kaf000-a-component6',
+								<div data-bind="component: { name: 'kaf000-a-component6',
 														params: {
 															appType: appType,
 															application: application,
@@ -103,15 +100,13 @@
 							</div>
 						</div>
 
-						<div
-							data-bind="component: { name: 'kaf000-a-component3', 
+						<div data-bind="component: { name: 'kaf000-a-component3', 
 													params: {
 														appType: appType,
 														application: application,
 														appDispInfoStartupOutput: appDispInfoStartupOutput
 													} }"></div>
-						<div style="margin-top: 12px"
-							data-bind="component: { name: 'kaf000-a-component4', 
+						<div  data-bind="component: { name: 'kaf000-a-component4', 
 													params: {
 														appType: appType,
 														application: application,
@@ -120,14 +115,12 @@
 													} }"></div>
 						<!--  share -->
 
-						<div
-							data-bind="component: { name: 'kaf005-share-work-info',
+						<div data-bind="component: { name: 'kaf005-share-work-info',
 										params: {
 											workInfo: workInfo
 										}
 										}"></div>
-						<div
-							data-bind="component: { name: 'kaf005-share',
+						<div data-bind="component: { name: 'kaf005-share',
 														params: {
 															restTime: restTime,
 															holidayTime: holidayTime,
@@ -140,8 +133,7 @@
 
 						<!-- -->
 						<div data-bind="if: opOvertimeAppAtr() != 3">
-							<div style="margin-top: 10px"
-								 data-bind="component: { name: 'kaf000-a-component5',
+							<div data-bind="component: { name: 'kaf000-a-component5',
 													params: {
 														appType: appType,
 														application: application,
