@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /*
@@ -21,6 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "LSMMT_EMPLINK_MONTHSET")
 @AllArgsConstructor
+@NoArgsConstructor
 public class LsmmtEmplinkMonthSet extends UkJpaEntity implements Serializable {
 	/**
 	 * serialVersionUID
