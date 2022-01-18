@@ -494,7 +494,6 @@ public class DailyModifyRCommandFacade {
 							resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
 						}
 
-						// 月次登録処理
 						boolean errorMonthAfterCalc = resultCalcMonth.getErrorAfterCheck().getHasError();
 						if (!errorMonthAfterCalc) {
 //							this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
@@ -622,12 +621,55 @@ public class DailyModifyRCommandFacade {
 		return dataResultAfterIU;
 	}
 
-	public void calclateOnlyMonth(DPItemParent dataParent){
+	/**
+	 * 月別実績の集計（非同期呼び出し用）
+	 * @param dataParent
+	 */
+	public void executeMonthlyAggregate(DPItemParent dataParent){
 		UpdateMonthDailyParam monthParam = null;
 		if (dataParent.getMonthValue() != null) {
 			monthParam = dataParent.createUpdateMonthDailyParam();
 		}
 
+		String sid = AppContexts.user().employeeId();
+		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate = dataParent.getItemValues().stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
+		List<DailyModifyQuery> queries = createQuerys(mapSidDate);
+		List<DailyRecordDto> dailyOlds = new ArrayList<>(), dailyEdits = new ArrayList<>();
+		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateNotChange = dataParent.getItemValues().stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
+		List<DailyModifyQuery> queryNotChanges = createQuerys(mapSidDateNotChange);
+		processDto(dailyOlds, dailyEdits, dataParent, queries, mapSidDate, queryNotChanges);
+		List<DailyRecordWorkCommand> commandNew = ProcessCommonCalc.createCommands(sid, dailyEdits, queries);
+		List<DailyRecordWorkCommand> commandOld = ProcessCommonCalc.createCommands(sid, dailyOlds, queries);
+
+		List<DailyModifyResult> resultOlds = AttendanceItemUtil.toItemValues(dailyOlds).entrySet().stream()
+				.map(dto -> DailyModifyResult.builder().items(dto.getValue()).employeeId(dto.getKey().getEmployeeId())
+						.workingDate(dto.getKey().getDate()).completed())
+				.collect(Collectors.toList());
+		List<DailyItemValue> dailyItems = resultOlds.stream().map(
+						x -> DailyItemValue.build().createEmpAndDate(x.getEmployeeId(), x.getDate()).createItems(x.getItems()))
+				.collect(Collectors.toList());
+
+		//日別実績の計算
+		DailyCalcResult daiCalcResult = processDailyCalc.processDailyCalc(
+				new DailyCalcParam(mapSidDate, dataParent.getLstNotFoundWorkType(), resultOlds,
+						dataParent.getDateRange(), dataParent.getDailyEdits(), dataParent.getItemValues()),
+				dailyEdits, dailyOlds, dailyItems, queries, monthParam, dataParent.getShowDialogError(), ExecutionType.NORMAL_EXECUTION,dataParent.getCheckUnLock());
+
+		ErrorAfterCalcDaily errorCheck = daiCalcResult.getErrorAfterCheck();
+
+		Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> lstResultReturnDailyError = new HashMap<>();
+		lstResultReturnDailyError.putAll(daiCalcResult.getLstResultDaiRowError());
+		lstResultReturnDailyError.putAll(errorCheck.getResultError());
+		dailyItems = dailyItems.stream()
+				.filter(x -> !lstResultReturnDailyError.containsKey(Pair.of(x.getEmployeeId(), x.getDate())))
+				.collect(Collectors.toList());
+
+		List<IntegrationOfDaily> domainDailyNew = dailyEdits.stream()
+				.map(x -> x.toDomain(x.getEmployeeId(), x.getDate())).collect(Collectors.toList());
+
+		calcMonth(dataParent, monthParam, dailyItems, domainDailyNew, commandNew, commandOld, errorCheck.getErrorMonth());
 	}
 
 	private DailyCalcResult calcMonth(DPItemParent dataParent, UpdateMonthDailyParam monthParam, List<DailyItemValue> dailyItems,

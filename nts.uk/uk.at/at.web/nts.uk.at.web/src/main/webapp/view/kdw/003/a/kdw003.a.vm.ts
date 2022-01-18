@@ -1251,6 +1251,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     sprStampSourceInfo.date = self.shareObject().initClock.dateSpr.utc().toISOString();
                 }
             }
+            let execMontlyAggregateAsync = true;
             let dataParent = {
                 itemValues: dataChangeProcess,
                 dataCheckSign: dataCheckSign,
@@ -1270,6 +1271,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dataParent["employeeId"] = dataSource.length > 0 ? dataSource[0].employeeId : null;
                 }
                 dataParent["monthValue"] = self.valueUpdateMonth;
+                if (execMontlyAggregateAsync) {
+                    dataParent["monthValue"].needCallCalc = false;
+                }
                 dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length - 1].dateDetail } : null;
             } else {
                 dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[0].dateDetail } : null;
@@ -1324,7 +1328,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                          self.lstErrorFlex = [];
                     }
 
-                  // list row data error
+                    // list row data error
                     self.lstErrorAfterCalcUpdate;
                     _.each(dataAfter.errorMap, (value, key) => {
                         if (key != "6") {
@@ -1351,8 +1355,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
 
                     });
-                 self.lstErrorAfterCalcUpdate = _.uniqBy(self.lstErrorAfterCalcUpdate, temp => {return temp});
-                   if ((_.isEmpty(dataAfter.errorMap) && dataAfter.errorMap[5] == undefined)) {
+                    self.lstErrorAfterCalcUpdate = _.uniqBy(self.lstErrorAfterCalcUpdate, temp => {return temp});
+                    if ((_.isEmpty(dataAfter.errorMap) && dataAfter.errorMap[5] == undefined)) {
                         if (self.valueUpdateMonth != null || self.valueUpdateMonth != undefined) {
                             self.valueUpdateMonth.items = [];
                         }
@@ -1362,18 +1366,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         let onlyCalc:boolean = self.flagCalculation;
                         let onlyLoadMonth:boolean = !checkDailyChange && !self.flagCalculation;
                         self.loadRowScreen(onlyLoadMonth, onlyCalc, onlyCheckBox, errorFlex).done(() =>{
-                                nts.uk.ui.block.clear();
-                                if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == "Msg_15" && _.isEmpty(confirmMonth)) {
-                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                            if (dataAfter.showErrorDialog && dataAfter.errorMap[6] == undefined) self.showErrorDialog();
-                                        });
-                                }
-                                if (dataAfter.errorMap[6] != undefined) {
-                                    nts.uk.ui.dialog.info({ messageId: "Msg_1455" }).then(() => {
-                                        if (dataAfter.showErrorDialog) self.showErrorDialog();
-                                    });
-                                }
-                            });
+                            nts.uk.ui.block.clear();
+                            if (!_.isEmpty(dataAfter.messageAlert) && dataAfter.messageAlert == "Msg_15" && _.isEmpty(confirmMonth)) {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                    if (dataAfter.showErrorDialog && dataAfter.errorMap[6] == undefined) self.showErrorDialog();
+                                });
+                            }
+                            if (dataAfter.errorMap[6] != undefined) {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_1455" }).then(() => {
+                                    if (dataAfter.showErrorDialog) self.showErrorDialog();
+                                });
+                            }
+                        });
 
 //                        if ((dataAfter.showErrorDialog == null && self.showDialogError) || dataAfter.showErrorDialog) {
 //                            self.showDialogError = true;
@@ -1476,6 +1480,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             self.hasErrorCalc = false;
                         });
                     }
+                    service.execMonthlyAggregate(dataParent).done((task) => {
+                        self.observeExecution(task);
+                    });
                     dfd.resolve(errorNoReload);
                 }).fail((data) => {
                     self.lstErrorFlex = [];
@@ -1499,6 +1506,32 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             return dfd.promise();
             //    }
+        }
+
+        // 処理が終わるまで監視する
+        observeExecution(taskInfo: any) {
+            nts.uk.deferred.repeat(conf => conf
+                .task(() => {
+                    return (<any>nts).uk.request.asyncTask.getInfo(taskInfo.id);
+                })
+                // 完了するまで問い合わせ続ける
+                .while(info => info.pending || info.running)
+                .pause(1000)).done((info: any) => {
+
+                let process = info.taskDatas.find(d => d.key === "process");
+                if (process && process.valueAsString === "failed") {
+                    ui.dialog.alert(info.taskDatas.find(d => d.key === "message").valueAsString);
+                    nts.uk.ui.block.clear();
+                    return;
+                }
+                // if (info.status === "COMPLETED") {
+                //     // 正常に完了していればエラーチェック
+                //     this.loadErrors();
+                // } else {
+                //     this.handleAbort(info);
+                // }
+                nts.uk.ui.block.clear();
+            });
         }
 
         btnCalculation_Click() {
