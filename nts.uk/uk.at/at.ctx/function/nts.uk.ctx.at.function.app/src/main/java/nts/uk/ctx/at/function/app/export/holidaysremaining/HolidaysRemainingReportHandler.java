@@ -1205,7 +1205,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     cId,
                     employeeId,
                     Collections.singletonList(ym),
-                    closureInforOpt.get().getPeriod().end(),
+                    correspondingYm.getDatePeriod().end(),
                     InterimRemainMngMode.OTHER,
                     Optional.of(false),
                     tempPublicHolidayManagements,
