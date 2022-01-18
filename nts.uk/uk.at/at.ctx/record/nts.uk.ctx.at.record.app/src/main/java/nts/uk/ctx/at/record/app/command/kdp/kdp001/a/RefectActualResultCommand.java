@@ -70,7 +70,7 @@ public class RefectActualResultCommand {
 				this.workPlaceId == null ? Optional.empty() : Optional.of(this.workPlaceId), Optional.empty(),
 				this.workLocationCD == null ? Optional.empty() : Optional.of(new WorkLocationCD(this.workLocationCD)),
 				this.cardNumberSupport == null ? Optional.empty()
-						: Optional.of(new SupportCardNumber(Integer.valueOf(this.cardNumberSupport))));
+						: Optional.of(new SupportCardNumber(this.cardNumberSupport)));
 		return new RefectActualResult(workInformationStamp,
 				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null,
 				overtimeDeclaration != null ? overtimeDeclaration.toDomainValue() : null,

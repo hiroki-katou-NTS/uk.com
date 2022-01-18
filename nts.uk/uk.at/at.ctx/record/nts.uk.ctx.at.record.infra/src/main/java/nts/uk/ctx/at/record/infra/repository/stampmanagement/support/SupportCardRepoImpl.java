@@ -27,7 +27,7 @@ public class SupportCardRepoImpl extends JpaRepository implements SupportCardRep
 	private static final String SELECT_BY_SUPPORT_CARD_NO = SELECT_ALL + " WHERE c.pk.supportCardNo = :supportCardNo";
 
 	@Override
-	public Optional<SupportCard> get(String cid, int supportCardNo) {
+	public Optional<SupportCard> get(String cid, String supportCardNo) {
 		KrcmtSupportCard entiti = this.queryProxy().find(new KrcmtSupportCardPk(cid, supportCardNo ),KrcmtSupportCard.class).orElse(null);
 		if(entiti == null)
 			return Optional.empty();
@@ -92,7 +92,7 @@ public class SupportCardRepoImpl extends JpaRepository implements SupportCardRep
 	 * @return the by support card no
 	 */
 	@Override
-	public Optional<SupportCard> getBySupportCardNo(int supportCardNo) {
+	public Optional<SupportCard> getBySupportCardNo(String supportCardNo) {
 		KrcmtSupportCard entiti = this.queryProxy().query(SELECT_BY_SUPPORT_CARD_NO, KrcmtSupportCard.class)
 													.setParameter("supportCardNo", supportCardNo)
 													.getSingleOrNull();
@@ -104,7 +104,7 @@ public class SupportCardRepoImpl extends JpaRepository implements SupportCardRep
 	}
 
 	@Override
-	public void delete(String cid, int supportCardNo) {
+	public void delete(String cid, String supportCardNo) {
 		this.commandProxy().remove(KrcmtSupportCard.class, new KrcmtSupportCardPk(cid, supportCardNo));
 	}
 	

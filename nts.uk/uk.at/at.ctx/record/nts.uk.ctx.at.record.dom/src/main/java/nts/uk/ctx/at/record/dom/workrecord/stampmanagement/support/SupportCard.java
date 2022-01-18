@@ -8,6 +8,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
@@ -32,7 +33,10 @@ public class SupportCard implements DomainAggregate {
 	// [C-1] 応援カード作成する
 	public static SupportCard create(Require require, String cid, SupportCardNumber supportCardNumber, String workplaceId) {
 		Optional<SupportCardEdit> optEdit = require.getSupportCardEditSetting(cid);
-		SupportCardNumber cardNumber = optEdit.map(data -> data.editTheCard(supportCardNumber)).orElse(supportCardNumber);
+		if (!optEdit.isPresent()) {
+			throw new BusinessException("Msg_3282");
+		}
+		SupportCardNumber cardNumber = optEdit.get().editTheCard(supportCardNumber);
 		return new SupportCard(cid, cardNumber, workplaceId);
 	}
 	

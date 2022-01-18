@@ -37,15 +37,16 @@ public class RenewalSupportCardCommandHandler extends CommandHandler<SupportCard
 		
 		// カードを編集する(編集前番号): 応援カード番号
 		Optional<SupportCardEdit> optEdit = this.supportCardEditRepository.get(command.getCompanyId());
-		SupportCardNumber supportCardNumber = optEdit
-				.map(data -> data.editTheCard(new SupportCardNumber(command.getSupportCardNumber())))
-				.orElse(new SupportCardNumber(command.getSupportCardNumber()));
-		
-		// get(応援カード番号, 会社ID): 応援カード
-		Optional<SupportCard> supportCard = this.supportCardRepository.getBySupportCardNo(supportCardNumber.v());
-		supportCard.ifPresent(t -> {
-			t.setWorkplaceId(command.getWorkplaceId());
-			this.supportCardRepository.update(Arrays.asList(t));
+		optEdit.ifPresent(cardEdit -> {
+			SupportCardNumber supportCardNumber = cardEdit
+					.editTheCard(new SupportCardNumber(command.getSupportCardNumber()));
+			
+			// get(応援カード番号, 会社ID): 応援カード
+			Optional<SupportCard> supportCard = this.supportCardRepository.getBySupportCardNo(supportCardNumber.v());
+			supportCard.ifPresent(t -> {
+				t.setWorkplaceId(command.getWorkplaceId());
+				this.supportCardRepository.update(Arrays.asList(t));
+			});
 		});
 	}
 

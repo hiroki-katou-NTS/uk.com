@@ -17,7 +17,7 @@ public class SupportCardDto {
 	private String companyId;
 	
 	// カード番号
-	private int supportCardNumber;
+	private String supportCardNumber;
 	
 	// 	職場ID
 	private String workplaceId;
