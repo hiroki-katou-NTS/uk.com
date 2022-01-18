@@ -283,25 +283,7 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("addAndUpdate")
 	@SuppressWarnings("unchecked")
 	public DataResultAfterIU addAndUpdate(DPItemParent dataParent) {
-		val domain  = session.getAttribute("domainEdits");
-		List<DailyRecordDto> dailyEdits = new ArrayList<>();
-		if(domain == null){
-			dailyEdits = cloneListDto((List<DailyRecordDto>) session.getAttribute("domainOlds"));
-		}else{
-			dailyEdits = (List<DailyRecordDto>) domain;
-		}
-		dataParent.setDailyEdits(dailyEdits);
-		dataParent.setDailyOlds((List<DailyRecordDto>) session.getAttribute("domainOlds"));
-		dataParent.setDailyOldForLog((List<DailyRecordDto>) session.getAttribute("domainOldForLog"));
-		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
-		dataParent.setErrorAllSidDate((Boolean)session.getAttribute("errorAllCalc"));
-		dataParent.setLstSidDateDomainError((List<Pair<String, GeneralDate>>)session.getAttribute("lstSidDateErrorCalc"));
-		dataParent.setApprovalConfirmCache((ApprovalConfirmCache)session.getAttribute("approvalConfirm"));
-		
-		Object objectCacheMonth = session.getAttribute("domainMonths");
-		Optional<MonthlyRecordWorkDto> domainMonthOpt = objectCacheMonth == null ? Optional.empty()
-				: (Optional<MonthlyRecordWorkDto>) objectCacheMonth;
-		dataParent.setDomainMonthOpt(domainMonthOpt);
+		setDataParent(dataParent);
 		DataResultAfterIU dataResultAfterIU =  dailyModifyRCommandFacade.insertItemDomain(dataParent);
 //		//TODO: set cache month
 //		if(dataResultAfterIU.getDomainMonthOpt().isPresent()) {
@@ -316,28 +298,32 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("execMonthlyAggregateAsync")
 	public AsyncTaskInfo execMonthlyAggregateAsync(DPItemParent dataParent){
-		val domain  = session.getAttribute("domainEdits");
+		setDataParent(dataParent);
+		return execMonthlyAggregateHandler.handle(dataParent);
+	}
+
+	private void setDataParent(DPItemParent dataParent) {
+		val domain = session.getAttribute("domainEdits");
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
-		if(domain == null){
+		if (domain == null) {
 			dailyEdits = cloneListDto((List<DailyRecordDto>) session.getAttribute("domainOlds"));
-		}else{
+		} else {
 			dailyEdits = (List<DailyRecordDto>) domain;
 		}
 		dataParent.setDailyEdits(dailyEdits);
 		dataParent.setDailyOlds((List<DailyRecordDto>) session.getAttribute("domainOlds"));
 		dataParent.setDailyOldForLog((List<DailyRecordDto>) session.getAttribute("domainOldForLog"));
 		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
-		dataParent.setErrorAllSidDate((Boolean)session.getAttribute("errorAllCalc"));
-		dataParent.setLstSidDateDomainError((List<Pair<String, GeneralDate>>)session.getAttribute("lstSidDateErrorCalc"));
-		dataParent.setApprovalConfirmCache((ApprovalConfirmCache)session.getAttribute("approvalConfirm"));
+		dataParent.setErrorAllSidDate((Boolean) session.getAttribute("errorAllCalc"));
+		dataParent.setLstSidDateDomainError((List<Pair<String, GeneralDate>>) session.getAttribute("lstSidDateErrorCalc"));
+		dataParent.setApprovalConfirmCache((ApprovalConfirmCache) session.getAttribute("approvalConfirm"));
 
 		Object objectCacheMonth = session.getAttribute("domainMonths");
 		Optional<MonthlyRecordWorkDto> domainMonthOpt = objectCacheMonth == null ? Optional.empty()
 				: (Optional<MonthlyRecordWorkDto>) objectCacheMonth;
 		dataParent.setDomainMonthOpt(domainMonthOpt);
-		return execMonthlyAggregateHandler.handle(dataParent);
 	}
-	
+
 	@POST
 	@Path("insertClosure")
 	public void insertClosure(EmpAndDate empAndDate){
