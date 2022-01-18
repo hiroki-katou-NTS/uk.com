@@ -48,11 +48,12 @@ public class CreateExOutTextWebService extends WebService {
 	@Path("smileCreateExOutText")
 	public JavaTypeResult<String> smileCreateExOutText(SmileCreateExOutTextCommand command) {
 		String processingId = IdentifierUtil.randomUniqueId();
-		GeneralDate startDay = GeneralDate.fromString(command.getStartDate(), "YYYY/MM/DD");
-		GeneralDate endDay = GeneralDate.fromString(command.getEndDate(), "YYYY/MM/DD");
+		GeneralDate startDate = GeneralDate.legacyDate(command.getStartDate());
+		GeneralDate endDate = GeneralDate.legacyDate(command.getStartDate());
 		List<String> listSid = affCompanyHistRepo.getSidItemByCom(command.getCompanyId(), GeneralDate.today());
+		
 		CreateExOutTextCommand outTextCmd = new CreateExOutTextCommand(command.getCompanyId(), command.getConditionSetCd(), "", null, 
-											startDay, endDay, GeneralDate.today(), processingId, true, listSid);
+																	startDate, endDate, GeneralDate.today(), processingId, true, listSid);
 		this.createExOutTextCommandHandler.handle(outTextCmd);
 
 		return new JavaTypeResult<String>(processingId);
