@@ -15,16 +15,8 @@
     text-align: right !important;
 }
 
-#kaf020-component .nts-fixed-body-wrapper {
-    height: auto !important;
-}
-
 #kaf020-component #kaf020-fixed-table .nts-input:not(.checkbox-wrapper) {
     width: 87px;
-}
-
-#kaf020-component .nts-fixed-table .nts-fixed-body-container {
-    border-bottom-width:0;
 }
 
 #kaf020-component .table-name {
