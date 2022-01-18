@@ -36,15 +36,16 @@ public class DailyCalcResult {
 
 		List<DPItemValue> result = new ArrayList<>();
 		List<DPItemValue> lstItemErrorMonth = errorAfterCheck.getResultErrorMonth()
-				.get(TypeError.ERROR_MONTH.value);
-		List<DPItemValue> itemErrorMonth = dataResultAfterIU.getErrorMap()
-				.get(TypeError.ERROR_MONTH.value);
-		if (lstItemErrorMonth != null){
+			.get(TypeError.ERROR_MONTH.value);
+		if (lstItemErrorMonth != null) {
 			result.addAll(lstItemErrorMonth);
+
+			List<DPItemValue> itemErrorMonth = dataResultAfterIU.getErrorMap()
+				.get(TypeError.ERROR_MONTH.value);
+			if (itemErrorMonth != null) {
+				result.addAll(itemErrorMonth);
+			}
 		}
-		if( itemErrorMonth != null) {
-			result.addAll(itemErrorMonth);
-		}
-		return lstItemErrorMonth;
+		return result;
 	}
 }
