@@ -623,7 +623,7 @@ public class NarrowDownListMonthlyAttdItemTest {
 							"getNursingItemNotAvailable"
 							, require,companyId
 						);
-		assertThat(result.containsAll(Arrays.asList(1673, 1674,1279, 1280,1673, 1674,1671, 1672))).isTrue();
+		assertThat(result.containsAll(Arrays.asList(1673, 1674,1279, 1280,1673, 1674,2252, 2253))).isTrue();
 	}
 	
 	/**
