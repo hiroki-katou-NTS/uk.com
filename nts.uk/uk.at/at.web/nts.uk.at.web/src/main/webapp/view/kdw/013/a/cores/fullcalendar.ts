@@ -2569,11 +2569,11 @@ module nts.uk.ui.at.kdw013.calendar {
                         // update exclude-times
                         let sameDayEvent = _
                             .chain(vm.calendar.getEvents())
-                            .filter(({ start, id }) => id !== event.id && moment(start).isSame(event.start, 'day'))
+                            .filter((evn) => evn.id !== event.id && moment(evn.start).isSame(event.start, 'day') && !evn.extendedProps.isTimeBreak)
                             .map(({ start, end }) => ({ startTime: getTimeOfDate(start), endTime: getTimeOfDate(end) }))
                             .value();
 
-                        //popupData.excludeTimes(sameDayEvent);
+                        popupData.excludeTimes(sameDayEvent);
 
                         if (!event.extendedProps.isTimeBreak) {
                             // show popup on edit mode
