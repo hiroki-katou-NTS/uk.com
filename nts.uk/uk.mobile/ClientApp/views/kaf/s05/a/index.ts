@@ -362,6 +362,23 @@ export class KafS05Component extends KafS00ShrComponent {
         return c21_1 && c21_2;
     }
 
+    @Watch('$route.query')
+    public routeQueryWatcher(value) {
+        const vm = this;
+        if (value.overworkatr == 0) {
+            vm.pgName = 'kafs05PgName1';
+            vm.overTimeClf = 0;
+        } else if (value.overworkatr == 1) {
+            vm.pgName = 'kafs05PgName2';
+            vm.overTimeClf = 1;
+        } else if (value.overworkatr == 2) {
+            vm.pgName = 'kafs05PgName3';
+            vm.overTimeClf = 2;
+        } else {
+            vm.pgName = 'kafs05PgName4';
+            vm.overTimeClf = 3;
+        }
+    }
 
     public created() {
         const vm = this;
@@ -390,15 +407,6 @@ export class KafS05Component extends KafS00ShrComponent {
 
         if (_.isNil(vm.overTimeClf)) {
             vm.overTimeClf = 2;
-        }
-        if (vm.overTimeClf == 0) {
-            vm.pgName = 'kafs05PgName1';
-        } else if (vm.overTimeClf == 1) {
-            vm.pgName = 'kafs05PgName2';
-        } else if (vm.overTimeClf == 3) {
-            vm.pgName = 'kafs05PgName4';
-        } else {
-            vm.pgName = 'kafs05PgName3';
         }
 
         if (!vm.modeNew
@@ -1006,15 +1014,7 @@ export class KafS05Component extends KafS00ShrComponent {
                         if (_.isNil(vm.overTimeClf)) {
                             vm.overTimeClf = 2;
                         }
-                        if (vm.overTimeClf == 0) {
-                            vm.pgName = 'kafs05PgName1';
-                        } else if (vm.overTimeClf == 1) {
-                            vm.pgName = 'kafs05PgName2';
-                        } else if (vm.overTimeClf == 3) {
-                            vm.pgName = 'kafs05PgName4';
-                        } else {
-                            vm.pgName = 'kafs05PgName3';
-                        }
+
                         vm.fetchData();
                     });
                 });
@@ -1296,15 +1296,7 @@ export class KafS05Component extends KafS00ShrComponent {
         if (_.isNil(vm.overTimeClf)) {
             vm.overTimeClf = 2;
         }
-        if (vm.overTimeClf == 0) {
-            vm.pgName = 'kafs05PgName1';
-        } else if (vm.overTimeClf == 1) {
-            vm.pgName = 'kafs05PgName2';
-        } else if (vm.overTimeClf == 3) {
-            vm.pgName = 'kafs05PgName4';
-        } else {
-            vm.pgName = 'kafs05PgName3';
-        }
+
         vm.fetchData();
     }
 
@@ -1337,15 +1329,7 @@ export class KafS05Component extends KafS00ShrComponent {
         if (_.isNil(vm.overTimeClf)) {
             vm.overTimeClf = 2;
         }
-        if (vm.overTimeClf == 0) {
-            vm.pgName = 'kafs05PgName1';
-        } else if (vm.overTimeClf == 1) {
-            vm.pgName = 'kafs05PgName2';
-        } else if (vm.overTimeClf == 3) {
-            vm.pgName = 'kafs05PgName4';
-        } else {
-            vm.pgName = 'kafs05PgName3';
-        }
+
         vm.fetchData();
     }
 
