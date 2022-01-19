@@ -41,6 +41,11 @@ public class OutManageTest {
 				122, 123, 1206, 1207, 1226, 1227, 125, 126, 128, 129, 130, 1208, 1209, 1228, 1229, 132, 133, 135, 136,
 				137, 1210, 1211, 1230, 1231, 139, 140, 142, 143, 144, 1212, 1213, 1232, 1233, 146, 147, 149, 150, 151,
 				1214, 1215, 1234, 1235, 153, 154);
+		
+		// 最大使用回数 = 10
+		outManage = new OutManage("companyID", new MaxGoOut(10), GoingOutReason.PRIVATE);
+		listAttdId = outManage.getDaiLyAttendanceIDNotAvailable();
+		assertThat(listAttdId.isEmpty()).isTrue();
 
 	}
 

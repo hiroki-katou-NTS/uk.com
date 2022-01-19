@@ -119,6 +119,43 @@ public class OutsideOTSettingTest {
 		listResult2 = listResult2.stream().distinct().sorted((x, y) -> x.compareTo(y)).collect(Collectors.toList());
 
 		assertThat(listAttdId).isEqualTo(listResult2);
+		
+		// CASE 内訳項目一覧 = empty
+		// 超過時間一覧3
+		List<Overtime> overtimes3 = new ArrayList<>();
+		overtimes3.add(overtimeNo1);
+		overtimes3.add(overtimeNo2);
+		
+		// 内訳項目一覧 = empty
+		List<OutsideOTBRDItem> breakdownItems3 = new ArrayList<>();
+		
+		OutsideOTSetting outsideOTSetting3 = OutsideOTSettingHelper.createOutsideOTSettingDefault(overtimes3,
+				breakdownItems3);
+		listAttdId = outsideOTSetting3.getMonthlyAttendanceIdNotAvailable().stream().sorted((x, y) -> x.compareTo(y))
+				.collect(Collectors.toList());
+		List<Integer> listResult3 = Arrays.asList(536, 537, 538, 539, 540, 541, 542, 543, 544, 545);
+		assertThat(listAttdId).isEqualTo(listResult3);
+		
+		
+		// CASE 超過時間一覧 = empty
+		// 超過時間一覧 = empty
+		List<Overtime> overtimes4 = new ArrayList<>();
+		
+		// 内訳項目一覧4
+		List<OutsideOTBRDItem> breakdownItems4 = new ArrayList<>();
+		
+		// 内訳項目1 : 内訳項目NO = 1 && 使用区分 == しない
+		outsideOTBRDItem1 = OutsideOTBRDItemHelper
+				.createOutsideOTBRDItemByNoAndAtr(BreakdownItemNo.ONE, UseClassification.UseClass_NotUse);
+		breakdownItems4.add(outsideOTBRDItem1);
+		breakdownItems4.add(outsideOTBRDItem2);
+		
+		OutsideOTSetting outsideOTSetting4 = OutsideOTSettingHelper.createOutsideOTSettingDefault(overtimes4,
+				breakdownItems4);
+		listAttdId = outsideOTSetting4.getMonthlyAttendanceIdNotAvailable().stream().sorted((x, y) -> x.compareTo(y))
+				.collect(Collectors.toList());
+		List<Integer> listResult4 = Arrays.asList(536, 546, 556, 566, 576, 2069);
+		assertThat(listAttdId).isEqualTo(listResult4);
 	}
 
 }

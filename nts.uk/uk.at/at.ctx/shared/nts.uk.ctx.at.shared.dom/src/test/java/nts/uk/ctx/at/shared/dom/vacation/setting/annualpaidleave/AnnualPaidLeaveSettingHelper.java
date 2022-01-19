@@ -39,6 +39,13 @@ public class AnnualPaidLeaveSettingHelper {
 		return leaveSetting;
 	}
 	
+	public static AnnualPaidLeaveSetting createAnnualPaidLeaveSetting(TimeAnnualSetting timeSetting, ManageDistinct manageDistinct){
+		AcquisitionSetting acquisitionSetting = new AcquisitionSetting(AnnualPriority.FIFO);
+		AnnualPaidLeaveSetting leaveSetting = new AnnualPaidLeaveSetting("000000000003-0004", acquisitionSetting, 
+				manageDistinct, AnnualPaidLeaveSettingHelper.createManageAnnualSetting(), timeSetting);
+		return leaveSetting;
+	}
+	
 	public static AnnualPaidLeaveSetting createAnnualPaidLeaveSetting(TimeAnnualSetting timeSetting, ManageAnnualSetting annualSetting, ManageDistinct manageDistinct){
 		AcquisitionSetting acquisitionSetting = new AcquisitionSetting(AnnualPriority.FIFO);
 		AnnualPaidLeaveSetting leaveSetting = new AnnualPaidLeaveSetting("000000000003-0004", acquisitionSetting, 
