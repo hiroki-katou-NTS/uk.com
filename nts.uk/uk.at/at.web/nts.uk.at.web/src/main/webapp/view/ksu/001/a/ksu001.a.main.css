@@ -301,6 +301,20 @@
 	font-size: 10px;
 }
 
+#contain-view-right #oViewModel .ui-igcombo {
+	transform: scale(0.9, 0.9);
+}
+
+#contain-view-right #oViewModel #listWorkType .ui-igcombo {
+	position: relative;
+	left: -10px;
+}
+
+#contain-view-right #oViewModel #listWorkTime .ui-igcombo {
+	position: relative;
+	left: -27px;
+}
+
 #functon-area-row2,
 #content-main .main-controls {
 	margin-left: 28px;
@@ -612,10 +626,6 @@ html {
 .background-white {background-color: white}
 .color-default {color : #595959;}
 .bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
-
-table th, table td {
-	padding: 2px 5px;
-}
 
 #functions-area {
 	overflow: unset !important;
