@@ -218,23 +218,5 @@ public class AnnualPaidLeaveSettingTest {
 		// 管理区分 = 管理しない && 管理区分 = 管理する && 時間年休管理区分 = 管理する && 年休管理区分 = 管理する
 		assertThat(lstId.containsAll(lstIdCanGet)).isTrue();
 		
-		// =============CASE 7
-		// 管理区分 = 管理しない
-		timeAnnualMaxDay = AnnualPaidLeaveSettingHelper.createTimeAnnualMaxDay(ManageDistinct.YES);
-		// 管理区分 = 管理する
-		halfDayManage = AnnualPaidLeaveSettingHelper.createHalfDayManage(ManageDistinct.NO);
-		manageAnnualSetting = AnnualPaidLeaveSettingHelper.createManageAnnualSetting(halfDayManage);
-		// 時間年休管理区分 = 管理する
-		timeAnnualSetting = AnnualPaidLeaveSettingHelper.createTimeAnnualSetting(timeAnnualMaxDay, ManageDistinct.YES);
-		// 年休管理区分 = 管理する
-		leaveSetting = AnnualPaidLeaveSettingHelper.createAnnualPaidLeaveSetting(timeAnnualSetting, manageAnnualSetting,
-				ManageDistinct.YES);
-
-		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable();
-		lstIdCanGet = Arrays.asList(189, 794, 798, 799, 790, 801, 805, 809, 1427, 1428, 1432, 1433, 1780, 1781, 1782, 1783, 1784, 
-				1785, 1786, 1787, 1788, 1789, 1434, 1435, 1436, 1437, 1438, 1439, 1440, 1441, 1442, 1443, 1444, 1445);
-
-		// 管理区分 = 管理しない && 管理区分 = 管理する && 時間年休管理区分 = 管理する && 年休管理区分 = 管理する
-		assertThat(lstId.containsAll(lstIdCanGet)).isTrue();
 	}
 }
