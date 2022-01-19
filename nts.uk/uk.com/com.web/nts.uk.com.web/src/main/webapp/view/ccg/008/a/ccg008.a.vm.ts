@@ -78,6 +78,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 					const type: KnockoutObservable<boolean> = allBindingsAccessor.get('type');
 					const tpe = ko.unwrap<boolean>(type);
 					if (!tpe) {
+						element.innerHTML = '';
 						ko.cleanNode(element);
 						const items = valueAccessor();
 						ko.applyBindingsToNode(element, { 'widget-frame': items }, bindingContext);
@@ -108,6 +109,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 			let url = valueAccessor();
 
 			element.classList.add('widget-frame');
+			element.classList.remove('widget-group');
 
 			ko.computed({
 				read: () => {
@@ -457,7 +459,6 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						} else {
 							flowLayout = getFlowMenu(layout1 as FlowMenuOutputCCG008[]);
 							vm.widgetLeft([flowLayout]);
-							vm.widgetLeft.valueHasMutated();
 						}
 
 						if (!!frameLayout2) {
@@ -466,7 +467,6 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						} else {
 							flowLayout = getFlowMenu(layout2 as FlowMenuOutputCCG008[]);
 							vm.widgetCenter([flowLayout]);
-							vm.widgetCenter.valueHasMutated();
 						}
 
 						if (!!frameLayout3) {
@@ -475,7 +475,6 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						} else {
 							flowLayout = getFlowMenu(layout3 as FlowMenuOutputCCG008[]);
 							vm.widgetRight([flowLayout]);
-							vm.widgetRight.valueHasMutated();
 						}
 						break;
 				}
