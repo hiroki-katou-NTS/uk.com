@@ -8,14 +8,11 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.uk.ctx.exio.app.find.exi.condset.StdAcceptCondSetDto;
 import nts.uk.ctx.exio.app.find.exi.condset.StdAcceptCondSetFinder;
-//import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
-import nts.uk.ctx.exio.dom.exi.condset.SystemType;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSetting;
 import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSettingRepository;
-//import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingRepository;
 
 /**
  * Smile初期起動の情報取得する
@@ -31,6 +28,9 @@ public class GetInitialStartupInformationScreenQuery {
 	
 	@Inject
 	private StdAcceptCondSetFinder acceptCondSetFinder;
+	
+	@Inject
+	private ExternalImportSettingRepository externalImportSettingRepository;
 
 	public OutputOfStartupDto get() {
 		/**
@@ -56,13 +56,14 @@ public class GetInitialStartupInformationScreenQuery {
 		 * Return: List＜受入条件設定（定型）＞ - List <Acceptance condition setting
 		 * (standard)>
 		 */
-		Integer sysType = SystemType.ATTENDANCE_SYSTEM.value;
-		List<StdAcceptCondSetDto> stdAcceptCondSetList = this.acceptCondSetFinder
-				.getStdAcceptCondSetBySysType(sysType);
+		List<ExternalImportSettingDto> externalImportSettings = this.externalImportSettingRepository
+				.getDomainBase(companyId).stream().map(e -> new ExternalImportSettingDto(companyId, e.getCode().v(), e.getName().v()))
+				.collect(Collectors.toList());
+		
 		
 		/**
 		 * return SM linkage acceptance setting list, acceptance condition setting list
 		 */
-		return new OutputOfStartupDto(smileCooperationAcceptanceSettingDtos, stdAcceptCondSetList);
+		return new OutputOfStartupDto(smileCooperationAcceptanceSettingDtos, externalImportSettings);
 	}
 }

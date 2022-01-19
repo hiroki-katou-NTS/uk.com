@@ -18,5 +18,5 @@ public class OutputOfStartupDto {
 	private List<SmileCooperationAcceptanceSettingDto> smileCooperationAcceptanceSettings;
 	
 	// Map＜条件設定コード、条件設定名称＞
-	private List<StdAcceptCondSetDto> stdAcceptCondSetDtos;
+	private List<ExternalImportSettingDto> externalImportSettings;
 }

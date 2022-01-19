@@ -21,13 +21,21 @@ module nts.uk.at.view.smm001.a {
   class ViewModel extends ko.ViewModel {
     tabs: KnockoutObservableArray<any>;
     selectedTab: KnockoutObservable<string>;
-    checked: KnockoutObservable<boolean>;
-    enable: KnockoutObservable<boolean>;
+
+    // Start: Init list checkbox
+    checkedOrganizationInformation: KnockoutObservable<boolean> = ko.observable(false);
+    checkedBasicPersonnelInformation: KnockoutObservable<boolean> = ko.observable(false);
+    checkedJobStructureInformation: KnockoutObservable<boolean> = ko.observable(false);
+    checkedAddressInformation: KnockoutObservable<boolean> = ko.observable(false);
+    checkedLeaveInformation: KnockoutObservable<boolean> = ko.observable(false);
+    checkedAffiliatedMaster: KnockoutObservable<boolean> = ko.observable(false);
+    checkedEmployeeMaster: KnockoutObservable<boolean> = ko.observable(false);
+    // End: Init list checkbox
+
     selectedValue: KnockoutObservable<boolean>;
     itemList: KnockoutObservableArray<ItemModel>;
     selectedCode: KnockoutObservable<string>;
     isEnable: KnockoutObservable<boolean>;
-    isEditable: KnockoutObservable<boolean>;
     enumSmileCooperationAcceptanceItem: KnockoutObservableArray<any>;
     enumDoOrDoNot: KnockoutObservableArray<any>;
     ORGANIZATION_INFORMATION: KnockoutObservable<string>;
@@ -50,18 +58,11 @@ module nts.uk.at.view.smm001.a {
       ]);
       vm.selectedTab = ko.observable('tab-1');
 
-      vm.checked = ko.observable(true);
-      vm.enable = ko.observable(true);
       vm.selectedValue = ko.observable(true);
-      vm.itemList = ko.observableArray([
-        new ItemModel('1', '基本給'),
-        new ItemModel('2', '役職手当'),
-        new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
-      ]);
+      vm.itemList = ko.observableArray([]);
 
       vm.selectedCode = ko.observable('1');
       vm.isEnable = ko.observable(true);
-      vm.isEditable = ko.observable(false);
 
       vm.setDefault();
     }
@@ -88,16 +89,18 @@ module nts.uk.at.view.smm001.a {
       // Init payment category
       vm.enumPaymentCategoryList = ko.observableArray(__viewContext.enums.PaymentCategory);
       console.log(">>> 2 ", vm.enumPaymentCategoryList());
-
       this.getInitialStartupInformation(null);
+
     }
 
     getInitialStartupInformation(param: any) {
       const vm = this;
       vm.$blockui('show');
-      vm.$ajax('com', API.getInitialStartupInformation, param).then((response: any[]) => {
+      vm.$ajax('com', API.getInitialStartupInformation, param).then((response: any) => {
         if (response) {
           console.log("response: ", response)
+          const externalImportSettings = response.externalImportSettings;
+          vm.itemList(externalImportSettings);
         }
       })
     }
@@ -107,12 +110,9 @@ module nts.uk.at.view.smm001.a {
     }
 
     moveItemToRight() {
-
     }
 
     moveItemToLeft() {
-
     }
-
   }
 }
