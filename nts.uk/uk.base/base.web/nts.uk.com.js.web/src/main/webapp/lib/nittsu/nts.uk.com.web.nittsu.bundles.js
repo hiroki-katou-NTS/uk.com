@@ -12921,7 +12921,7 @@ var nts;
                      * Fit window height.
                      */
                     function fitWindowHeight($container, wrappers, horzSumExists) {
-                        var height = window.innerHeight - parseInt($.data($container, internal.Y_OCCUPY)) - 100;
+                        var height = window.innerHeight - parseInt($.data($container, internal.Y_OCCUPY)) - 50;
                         var $horzSumHeader, $horzSumBody, decreaseAmt;
                         wrappers = wrappers || selector.queryAll($container, "div[class*='" + BODY_PRF + "']").filter(function (e) {
                             return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM)

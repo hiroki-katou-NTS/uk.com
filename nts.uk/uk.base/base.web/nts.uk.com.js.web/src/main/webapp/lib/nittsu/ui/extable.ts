@@ -5806,7 +5806,7 @@ module nts.uk.ui.exTable {
          * Fit window height.
          */
         export function fitWindowHeight($container: HTMLElement, wrappers: Array<HTMLElement>, horzSumExists: boolean) {
-            let height = window.innerHeight - parseInt($.data($container, internal.Y_OCCUPY)) - 100;
+            let height = window.innerHeight - parseInt($.data($container, internal.Y_OCCUPY)) - 50;
             let $horzSumHeader, $horzSumBody, decreaseAmt; 
             wrappers = wrappers || selector.queryAll($container, "div[class*='" + BODY_PRF + "']").filter(function(e) {
                 return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM)
