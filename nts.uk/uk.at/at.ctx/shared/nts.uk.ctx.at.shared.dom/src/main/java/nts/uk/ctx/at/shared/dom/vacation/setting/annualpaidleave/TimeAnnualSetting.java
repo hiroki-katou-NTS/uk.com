@@ -123,7 +123,7 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
      * [3] 利用できない日次の勤怠項目を取得する
      */
     public List<Integer> getDailyAttendItemsNotAvailable(ManageDistinct distinct){
-    	if (distinct == ManageDistinct.YES) { // nhờ bên NWS update lại hộ mình khi sửa theo tài liệu mới. xin cảm ơn.
+    	if (this.isManageTimeAnnualLeave(distinct)) {
     		return this.getDailyAttdItemsCorrespondAnnualLeave();
     	}
     	return new ArrayList<>();
@@ -134,7 +134,7 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
      */
     public List<Integer> getMonthlyAttendItemsNotAvailable(ManageDistinct distinct){
     	List<Integer> timeAnnualLeaveItems = new ArrayList<>();
-    	if (distinct == ManageDistinct.YES) { // nhờ bên NWS update lại hộ mình khi sửa theo tài liệu mới. xin cảm ơn.
+    	if (this.isManageTimeAnnualLeave(distinct)) {
     		// $時間年休項目
     		timeAnnualLeaveItems.addAll(this.getAttdItemsDoNotIncludeMaximumNumberDays());
     	}
