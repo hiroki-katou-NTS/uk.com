@@ -3003,7 +3003,7 @@ module nts.uk.ui.mgrid {
                 top: top,
                 left: left,
                 width: width,
-                border: "solid 1px #CCC"
+                border: "none"
             };
             
             if (maxWidth) {

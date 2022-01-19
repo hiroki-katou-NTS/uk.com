@@ -28245,7 +28245,7 @@ var nts;
                             top: top,
                             left: left,
                             width: width,
-                            border: "solid 1px #CCC"
+                            border: "none"
                         };
                         if (maxWidth) {
                             style.maxWidth = maxWidth;
