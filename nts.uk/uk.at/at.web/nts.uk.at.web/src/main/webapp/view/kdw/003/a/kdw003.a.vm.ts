@@ -4140,7 +4140,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (id.value != null && cDisplayType == 'Clock') {
                     valueUI = self.convertToHours(Number(id.value))
                 } else if (cDisplayType == 'Currency') {
-                    valueUI = self.convertMoney(id.value, "¥");
+                    valueUI = self.convertMoney(id.value, "");
                 } else {
                     valueUI = id.value;
                 }
@@ -4439,7 +4439,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (header.constraint.cDisplayType != null && header.constraint.cDisplayType != undefined) {
                         if (header.constraint.cDisplayType != "Primitive" && header.constraint.cDisplayType != "Combo") {
                             if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
-                                header["columnCssClass"] = "currency-symbol halign-right";
+                                header["columnCssClass"] = "halign-right";
                                 header.constraint["min"] = header.constraint.min;
                                 header.constraint["max"] = header.constraint.max;
                             } else if (header.constraint.cDisplayType == "Clock") {
