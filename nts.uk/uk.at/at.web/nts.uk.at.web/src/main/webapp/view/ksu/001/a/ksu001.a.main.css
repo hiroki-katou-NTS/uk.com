@@ -347,7 +347,25 @@
 	margin-right: 35px;
 }
 
+#content-main .right-end button {
+	margin-left: 10px;
+	height: 24px;
+	font-size: 11px;
+}
 
+#content-main .right-end #A4,
+#content-main .right-end #A5 {
+	width: 80px;
+}
+
+#content-main .right-end .settingHeightGrid {
+	width: 24px;
+	padding: 2px;
+}
+
+#content-main .right-end .settingHeightGrid:not(:hover) {
+	background-color: transparent;
+}
 
 #set-work-time {
 	margin-top: 2px
@@ -584,13 +602,6 @@ html {
 	width: max-content;
 }
 
-
-.settingHeightGrid {
-	width: 25px;
-	height: 25px;
-	padding-top: 3px;
-    padding-left: 2px;
-}
 
 .background-attendance {background-color: #0000ff !important;}
 .background-holiday {background-color: #ff0000 !important;}
