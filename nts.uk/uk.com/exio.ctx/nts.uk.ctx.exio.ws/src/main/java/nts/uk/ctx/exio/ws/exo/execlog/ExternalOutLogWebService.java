@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.exio.app.command.exo.executionlog.ExOutOpMngCommandDelete;
@@ -118,11 +119,11 @@ public class ExternalOutLogWebService extends WebService {
 		return this.exterOutExecLogFinder.getExterOutExecLogById(exterOutExecLogProcessId);
 	}
 	
-	@Path("smileGetExterOutExecLog/{exterOutExecLogProcessId}")
+	@Path("smileGetExterOutExecLog/{companyId}/{exterOutExecLogProcessId}")
 	@POST
-	public String smileGetExterOutExecLog(@PathParam("exterOutExecLogProcessId") String exterOutExecLogProcessId) {
-		String fileId = this.exterOutExecLogFinder.getExterOutExecLogById(exterOutExecLogProcessId).getFileId();
-		return fileId;
+	public JavaTypeResult<String> smileGetExterOutExecLog(@PathParam("exterOutExecLogProcessId") String exterOutExecLogProcessId, @PathParam("companyId") String companyId) {
+		String fileId = this.exterOutExecLogFinder.getExterOutExecLogByCom(companyId, exterOutExecLogProcessId).getFileId().toString();
+		return new JavaTypeResult<String>(fileId);
 	}
 	
 	/**

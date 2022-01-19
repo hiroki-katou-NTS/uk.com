@@ -20,4 +20,9 @@ public class ExterOutExecLogFinder {
 		return exterOutExecLogRepository.getExterOutExecLogById(companyId, storeProcessingId)
 				.map(item -> ExterOutExecLogDto.fromDomain(item)).orElse(null);
 	}
+	
+	public ExterOutExecLogDto getExterOutExecLogByCom(String cid, String storeProcessingId) {
+		return exterOutExecLogRepository.getExterOutExecLogById(cid, storeProcessingId)
+				.map(item -> ExterOutExecLogDto.fromDomain(item)).orElse(null);
+	}
 }
