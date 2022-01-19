@@ -33,3 +33,9 @@
   これは、項目間の不必要なmarginが追加されてしまう等の問題になる。
   visibleなら問題無い。
   ifを使う場合、margin等のCSSはifを付けた要素の「子要素」に記述すること。
+
+(7) .right-panel-block
+  .right-panel内の各コンポーネント要素にright-panel-blockクラスを付ける。
+  その子要素は、headerクラスとcontentクラスとする。
+  これにより、headerに対して下線が付き、コンポーネント間のmarginが揃う。
+  
