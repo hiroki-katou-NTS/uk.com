@@ -14,6 +14,11 @@ public class ComplementLeaveAppLinkDto {
 	private Integer complementLeaveFlg;
 	
 	/**
+	 * 振休振出同時申請管理
+	 */
+	private AppHdsubRecDto appHdsubRec;
+	
+	/**
 	 * 申請
 	 */
 	private ApplicationDto application;
@@ -31,6 +36,7 @@ public class ComplementLeaveAppLinkDto {
 	public static ComplementLeaveAppLinkDto fromDomain(ComplementLeaveAppLink complementLeaveAppLink) {
 		return new ComplementLeaveAppLinkDto(
 				complementLeaveAppLink.getComplementLeaveFlg(), 
+				complementLeaveAppLink.getAppHdsubRec()==null ? null : AppHdsubRecDto.fromDomain(complementLeaveAppLink.getAppHdsubRec()), 
 				complementLeaveAppLink.getApplication()==null ? null : ApplicationDto.fromDomain(complementLeaveAppLink.getApplication()), 
 				complementLeaveAppLink.getLinkAppID(), 
 				complementLeaveAppLink.getLinkAppDate()==null ? null : complementLeaveAppLink.getLinkAppDate().toString());

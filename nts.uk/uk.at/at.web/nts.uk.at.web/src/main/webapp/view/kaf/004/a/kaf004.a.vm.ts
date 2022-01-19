@@ -433,7 +433,6 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                 }).then((success: any) => {
                     if (success) {
                         vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-							nts.uk.request.ajax("at", API.reflectApp, success.reflectAppIdLst);
 							CommonProcess.handleAfterRegister(success, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                         });
                     }
@@ -486,8 +485,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         initPage: "at/request/application/lateorleaveearly/initPage",
         changeAppDate: "at/request/application/lateorleaveearly/changeAppDate",
         getMsgList: "at/request/application/lateorleaveearly/getMsgList",
-        register: "at/request/application/lateorleaveearly/register",
-		reflectApp: "at/request/application/reflect-app"
+        register: "at/request/application/lateorleaveearly/register"
     };
 
     export class IdItem {

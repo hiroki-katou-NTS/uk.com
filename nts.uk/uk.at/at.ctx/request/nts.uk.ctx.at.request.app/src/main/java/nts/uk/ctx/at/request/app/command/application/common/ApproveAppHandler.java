@@ -4,31 +4,29 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
+import nts.uk.ctx.at.request.dom.application.common.service.application.ApproveAppProcedure;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApproveAppProcedureOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.ApprovalProcessParam;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ProcessApprovalOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRec;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRecRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -40,16 +38,16 @@ public class ApproveAppHandler extends CommandHandlerWithResult<AppDetailBehavio
 	private DetailBeforeUpdate beforeRegisterRepo;
 	
 	@Inject
-	private DetailAfterApproval detailAfterApproval;
-	
-	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithm;
-	
-	@Inject
 	private AppHdsubRecRepository appHdsubRecRepository;
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
+	
+	@Inject
+	private ApproveAppProcedure approveAppProcedure;
+	
+	@Inject
+	private ApplicationSettingRepository applicationSettingRepository;
 
 	@Override
 	protected ApproveProcessResult handle(CommandHandlerContext<AppDetailBehaviorCmd> context) {
@@ -83,9 +81,11 @@ public class ApproveAppHandler extends CommandHandlerWithResult<AppDetailBehavio
 		
         List<Application> appLst = new ArrayList<>();
         appLst.add(application);
+        List<AppHdsubRec> appHdsubRecLst = new ArrayList<>();
         if(application.getAppType()==ApplicationType.COMPLEMENT_LEAVE_APPLICATION && !isFromCMM045) {
         	Optional<AppHdsubRec> appHdsubRec = appHdsubRecRepository.findByAppId(appID);
 			if(appHdsubRec.isPresent()) {
+				appHdsubRecLst.add(appHdsubRec.get());
 				if(appHdsubRec.get().getRecAppID().equals(appID)) {
 					applicationRepository.findByID(appHdsubRec.get().getAbsenceLeaveAppID()).ifPresent(x -> appLst.add(x));
 				} else {
@@ -93,24 +93,16 @@ public class ApproveAppHandler extends CommandHandlerWithResult<AppDetailBehavio
 				}
 			}
         }
-        List<String> approverLst = new ArrayList<>();
-        String applicant = "";
-        for(Application appLoop : appLst) {
-        	//8-2.詳細画面承認後の処理
-            ProcessApprovalOutput processApprovalOutput = detailAfterApproval.doApproval(companyID, appLoop.getAppID(), appLoop, approvalProcessParam, memo);
-            if(Strings.isNotBlank(processApprovalOutput.getAppID())) {
-            	approveProcessResult.getAppIDLst().add(processApprovalOutput.getAppID());
-            }
-            if(Strings.isNotBlank(processApprovalOutput.getReflectAppId())) {
-            	approveProcessResult.getReflectAppIdLst().add(processApprovalOutput.getReflectAppId());
-            }
-            if(!CollectionUtil.isEmpty(processApprovalOutput.getApproverLst())) {
-            	approverLst.addAll(processApprovalOutput.getApproverLst());
-            }
-            if(Strings.isNotBlank(processApprovalOutput.getApplicant())) {
-            	applicant = processApprovalOutput.getApplicant();
-            }
-        }
+        ApplicationSetting applicationSetting = applicationSettingRepository.findByCompanyId(companyID).get();
+        ApproveAppProcedureOutput approveAppProcedureOutput = approveAppProcedure.approveAppProcedure(
+        		companyID, 
+        		appLst, 
+        		appHdsubRecLst, 
+        		AppContexts.user().employeeId(), 
+        		Optional.ofNullable(memo), 
+        		applicationSetting.getAppTypeSettings(), 
+        		false,
+        		false);
         approveProcessResult.setProcessDone(true);
         if(isFromCMM045) {
         	return approveProcessResult;
@@ -120,21 +112,10 @@ public class ApproveAppHandler extends CommandHandlerWithResult<AppDetailBehavio
  		boolean condition = approvalProcessParam.isMailServerSet() && appTypeSetting.isSendMailWhenApproval();
  		if(condition) {
  			approveProcessResult.setAutoSendMail(true);
- 			if(!CollectionUtil.isEmpty(approverLst)) {
- 				// 承認者へ送る（新規登録、更新登録、承認）
- 	 			MailResult approverLstResult = otherCommonAlgorithm.sendMailApproverApprove(approverLst, application);
- 	 			approveProcessResult.getAutoSuccessMail().addAll(approverLstResult.getSuccessList());
-	 			approveProcessResult.getAutoFailMail().addAll(approverLstResult.getFailList());
-	 			approveProcessResult.getAutoFailServer().addAll(approverLstResult.getFailServerList());
- 			}
- 			if(Strings.isNotBlank(applicant)) {
-				// 申請者へ送る（承認）
-	 			MailResult applicantResult = otherCommonAlgorithm.sendMailApplicantApprove(application);
-	 			approveProcessResult.getAutoSuccessMail().addAll(applicantResult.getSuccessList());
-	 			approveProcessResult.getAutoFailMail().addAll(applicantResult.getFailList());
-	 			approveProcessResult.getAutoFailServer().addAll(applicantResult.getFailServerList());
-			}
  		}
+ 		approveProcessResult.setAutoSuccessMail(approveAppProcedureOutput.getSuccessList().stream().distinct().collect(Collectors.toList()));
+ 		approveProcessResult.setAutoFailMail(approveAppProcedureOutput.getFailList().stream().distinct().collect(Collectors.toList()));
+ 		approveProcessResult.setAutoFailServer(approveAppProcedureOutput.getFailServerList().stream().distinct().collect(Collectors.toList()));
  		return approveProcessResult;
 	}
 

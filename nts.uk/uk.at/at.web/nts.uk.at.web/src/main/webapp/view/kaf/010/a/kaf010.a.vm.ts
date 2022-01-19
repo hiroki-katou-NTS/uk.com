@@ -519,7 +519,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						};
 						return vm.$ajax('at', API.register, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
 								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, false, vm.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						});
@@ -649,7 +648,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						};
 						return vm.$ajax('at', API.registerMulti, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
 								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, true, vm.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						});
@@ -1830,8 +1828,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		checkBeforeRegister: "at/request/application/holidaywork/checkBeforeRegister",
 		register: "at/request/application/holidaywork/register",
 		checkBeforeRegisterMulti: "at/request/application/holidaywork/checkBeforeRegisterMulti",
-		registerMulti: "at/request/application/holidaywork/registerMulti",
-		reflectApp: "at/request/application/reflect-app"
+		registerMulti: "at/request/application/holidaywork/registerMulti"
 	}
 	interface AppHdWorkDispInfo {
 		dispFlexTime: boolean;

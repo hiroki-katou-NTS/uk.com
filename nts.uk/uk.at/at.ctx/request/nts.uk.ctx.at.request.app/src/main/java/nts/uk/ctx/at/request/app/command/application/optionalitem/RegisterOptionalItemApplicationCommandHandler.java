@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -25,7 +23,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
+import nts.uk.ctx.at.request.dom.application.common.service.application.ApproveAppProcedure;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApproveAppProcedureOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -34,7 +33,6 @@ import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -51,17 +49,13 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
     private ApplicationApprovalService appRepository;
 
     @Inject
-    private RegisterAtApproveReflectionInfoService registerService;
-
-    @Inject
     private NewAfterRegister newAfterRegister;
 
     @Inject
-    private OptionalItemRepository optionalItemRepository;
-
-    @Inject
     private OptionalItemApplicationQuery optionalItemApplicationQuery;
-
+    
+    @Inject
+	private ApproveAppProcedure approveAppProcedure;
 
     @Override
     protected ProcessResult handle(CommandHandlerContext<RegisterOptionalItemApplicationCommand> commandHandlerContext) {
@@ -116,10 +110,24 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
         List<AnyItemValue> acceptAnyItemValue = domain.getOptionalItems().stream().filter(optionalItem -> optionalItem.getAmount().isPresent() || optionalItem.getTimes().isPresent() || optionalItem.getTime().isPresent()).collect(Collectors.toList());
         domain.setOptionalItems(acceptAnyItemValue);
         repository.save(domain);
-        /**
-         *  2-2.新規画面登録時承認反映情報の整理(register: reflection info setting)
-         */
-        String reflectAppId = registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+        
+        // 申請承認する時の手続き
+ 		List<String> autoSuccessMail = new ArrayList<>();
+ 		List<String> autoFailMail = new ArrayList<>();
+ 		List<String> autoFailServer = new ArrayList<>();
+ 		ApproveAppProcedureOutput approveAppProcedureOutput = approveAppProcedure.approveAppProcedure(
+         		AppContexts.user().companyId(), 
+         		Arrays.asList(application), 
+         		Collections.emptyList(), 
+         		AppContexts.user().employeeId(), 
+         		Optional.empty(), 
+         		appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings(), 
+         		false,
+         		true);
+ 		autoSuccessMail.addAll(approveAppProcedureOutput.getSuccessList().stream().distinct().collect(Collectors.toList()));
+ 		autoFailMail.addAll(approveAppProcedureOutput.getFailList().stream().distinct().collect(Collectors.toList()));
+ 		autoFailServer.addAll(approveAppProcedureOutput.getFailServerList().stream().distinct().collect(Collectors.toList()));
+        
         /**
          * 2-3.新規画面登録後の処理
          * */
@@ -128,9 +136,12 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
                 appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().stream().findFirst().get(),
                 appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet(),
                 false);
-        if(Strings.isNotBlank(reflectAppId)) {
-        	processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
-        }
+        processResult.getAutoSuccessMail().addAll(autoSuccessMail);
+        processResult.getAutoFailMail().addAll(autoFailMail);
+        processResult.getAutoFailServer().addAll(autoFailServer);
+        processResult.setAutoSuccessMail(processResult.getAutoSuccessMail().stream().distinct().collect(Collectors.toList()));
+        processResult.setAutoFailMail(processResult.getAutoFailMail().stream().distinct().collect(Collectors.toList()));
+        processResult.setAutoFailServer(processResult.getAutoFailServer().stream().distinct().collect(Collectors.toList()));
         return processResult;
     }
 

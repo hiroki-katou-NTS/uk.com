@@ -469,7 +469,6 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 mode: self.mode,
             }).then((res: any) => {
                 self.$mask('hide');
-                self.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
                 self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appIDLst[0] });
             }).catch((res: any) => {
                 self.handleErrorMessage(res);
@@ -812,6 +811,5 @@ const API = {
     registerAppGoBackDirect: 'at/request/application/gobackdirectly/registerNewKAF009',
     updateAppWorkChange: 'at/request/application/gobackdirectly/mobile/getAppDataByDate',
     startS09: 'at/request/application/gobackdirectly/mobile/start',
-    updateApp: 'at/request/application/gobackdirectly/updateNewKAF009',
-    reflectApp: 'at/request/application/reflect-app'
+    updateApp: 'at/request/application/gobackdirectly/updateNewKAF009'
 };

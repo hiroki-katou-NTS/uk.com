@@ -260,7 +260,6 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.$ajax('at/request/application/holidayshipment/save', data).then((result) => {
 				vm.$blockui("hide");
 				vm.$dialog.info({messageId: "Msg_15"}).done(() => {
-					nts.uk.request.ajax("at", "at/request/application/reflect-app", result.reflectAppIdLst);
 					CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 				});
 			}).fail((failData) => {

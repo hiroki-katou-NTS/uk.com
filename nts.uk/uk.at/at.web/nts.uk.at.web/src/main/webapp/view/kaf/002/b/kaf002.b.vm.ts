@@ -261,7 +261,6 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             }).then(res => {
                 if (res != undefined) {
                     return self.$dialog.info({ messageId: "Msg_15" }).then(() => {
-						nts.uk.request.ajax("at", API.reflectApp, res.reflectAppIdLst);
                     	return res;
                     } );
                 }
@@ -389,7 +388,6 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             start: "at/request/application/stamp/startStampApp",
             checkRegister: "at/request/application/stamp/checkBeforeRegister",
             register: "at/request/application/stamp/register",
-            getDetail: "at/request/application/stamp/detailAppStamp",
-            reflectApp: "at/request/application/reflect-app"
+            getDetail: "at/request/application/stamp/detailAppStamp"
         }
 }

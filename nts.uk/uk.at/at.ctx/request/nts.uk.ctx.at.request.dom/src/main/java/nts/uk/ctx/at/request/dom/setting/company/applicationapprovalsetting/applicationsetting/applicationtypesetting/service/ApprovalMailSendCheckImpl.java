@@ -38,8 +38,8 @@ public class ApprovalMailSendCheckImpl implements ApprovalMailSendCheck {
 	@Override
 	public List<String> sendMailApprover(AppTypeSetting appTypeSetting, Application application, Integer phaseNumber) {
 		String companyID = AppContexts.user().companyId();
-		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする(check domain 「申請種類別設定」．新規登録時に自動でメールを送信する)
-		if(!appTypeSetting.isSendMailWhenRegister()) {
+		// ドメインモデル「申請種類別設定」．承認処理時に自動でメールを送信するをチェックする
+		if(!appTypeSetting.isSendMailWhenApproval()) {
 			return Collections.emptyList();
 		}
 		// 指定する承認フェーズの承認が完了したか

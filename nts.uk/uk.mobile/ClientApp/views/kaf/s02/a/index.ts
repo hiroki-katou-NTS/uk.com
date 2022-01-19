@@ -1215,7 +1215,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
             .then((result) => {
                 if (result) {
                     console.log(result);
-                    self.$http.post('at', API.reflectApp, result.data.reflectAppIdLst);
                     self.$mask('hide');
                     self.$goto('kafs02a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: result.data.appIDLst[0], modeS02: 0 });
                 }
@@ -1763,6 +1762,5 @@ const API = {
     checkBeforeRegister: 'at/request/application/stamp/checkBeforeRegister',
     checkBeforeUpdate: 'at/request/application/stamp/checkBeforeUpdate',
     register: 'at/request/application/stamp/register',
-    update: 'at/request/application/stamp/updateNew',
-    reflectApp: 'at/request/application/reflect-app'
+    update: 'at/request/application/stamp/updateNew'
 };

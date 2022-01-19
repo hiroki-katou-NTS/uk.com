@@ -13,8 +13,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
         startNew: "at/request/application/timeLeave/init",
         changeAppDate: "at/request/application/timeLeave/changeAppDate",
         checkRegister: "at/request/application/timeLeave/checkBeforeRegister",
-        register: "at/request/application/timeLeave/register",
-		reflectApp: "at/request/application/reflect-app"
+        register: "at/request/application/timeLeave/register"
     };
 
     @bean()
@@ -421,7 +420,6 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     }).done(result => {
                         if (result != undefined) {
                             vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-								nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
                             	CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode());
                             });
                         }
