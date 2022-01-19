@@ -43,8 +43,7 @@
 	background-color : '' ; color : '';
 }
 
-.btnControlSelected{background-color : #007fff !important; color : #ffffff !important}
-.btnControlUnSelected{background-color : #ffffff !important; color : #000000 !important}
+.btnControlSelected{background-color : #258F7E !important; color : #ffffff !important}
 
 #functon-area-row2 *, #contain-view-right * {
 	vertical-align: middle;
