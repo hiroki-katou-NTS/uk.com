@@ -180,7 +180,11 @@ module nts.uk.at.kmr001.d {
                             vm.created(vm.params).done(() => {
                                 vm.selectedHistoryId(historyId);
                                 vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    vm.focusUi(data);
+                                    let params = {
+                                        date: data.startDate,
+                                        isLasted: true
+                                    };
+                                    vm.$window.close({params});
                                 });
                             });
                         }).fail((error) => {
@@ -195,7 +199,11 @@ module nts.uk.at.kmr001.d {
                             vm.created(vm.params).done(() => {
                                 vm.selectedHistoryId(historyId);
                                 vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    vm.focusUi(data);
+                                    let params = {
+                                        date: data.startDate,
+                                        isLasted: true
+                                    };
+                                    vm.$window.close({params});
                                 });
                             });
                         }).fail((error) => {
