@@ -65,8 +65,8 @@ public class CreateWorkMaxTimeZoneTest {
 				converter.setData((IntegrationOfDaily) any).toDomain();
 				result = dailyApp.getDomain();
 
-				require.calculateForRecord((CalculateOption) any, (List<IntegrationOfDaily>) any,
-						(Optional<ManagePerCompanySet>) any, (ExecutionType) any);
+				require.calculateForRecordSchedule((CalculateOption) any, (List<IntegrationOfDaily>) any,
+						(Optional<ManagePerCompanySet>) any);
 				result = Arrays.asList(ReflectApplicationHelper.afterCalc(dailyApp.getDomain(), 0, 240));
 			}
 		};

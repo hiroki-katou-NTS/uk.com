@@ -31,7 +31,6 @@ public interface CalculateDailyRecordServiceCenter{//
 	public List<IntegrationOfDaily> calculatePassCompanySetting(CalculateOption calcOption, List<IntegrationOfDaily> integrationOfDaily,Optional<ManagePerCompanySet> companySet,ExecutionType reCalcAtr);
 	
 	//計算(就業計算と集計用)
-	@SuppressWarnings("rawtypes")
 	public ManageProcessAndCalcStateResult calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,List<ClosureStatusManagement> closureList,ExecutionType reCalcAtr, String empCalAndSumExecLogID);
 	
 	//エラーチェック
@@ -42,5 +41,9 @@ public interface CalculateDailyRecordServiceCenter{//
 
 	//計算(スケジュールからの窓口)
 	List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet);
+	
+	// 実績計算
+	List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption, List<IntegrationOfDaily> integrationOfDaily,
+			Optional<ManagePerCompanySet> companySet);
 	
 }

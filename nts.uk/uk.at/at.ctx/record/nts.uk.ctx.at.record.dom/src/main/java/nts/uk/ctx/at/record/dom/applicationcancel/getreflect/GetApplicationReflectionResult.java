@@ -45,7 +45,7 @@ public class GetApplicationReflectionResult {
 
 		// 日別実績の修正からの計算
 		List<IntegrationOfDaily> lstDailyCalc = require.calculateForRecord(CalculateOption.asDefault(),
-				Arrays.asList(dailyCorrect), Optional.empty(), ExecutionType.NORMAL_EXECUTION);
+				Arrays.asList(dailyCorrect), Optional.empty());
 
 		// 日別勤怠(work)を日別実績に変換する
 		return lstDailyCalc.stream().findFirst();
@@ -62,8 +62,7 @@ public class GetApplicationReflectionResult {
 
 		// CalculateDailyRecordServiceCenter
 		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
-				ExecutionType reCalcAtr);
+				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet);
 
 	}
 

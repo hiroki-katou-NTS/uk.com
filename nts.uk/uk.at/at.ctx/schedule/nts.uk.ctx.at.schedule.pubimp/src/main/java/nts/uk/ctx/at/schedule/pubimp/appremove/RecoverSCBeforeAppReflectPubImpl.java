@@ -37,7 +37,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.al
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateDailyRecordServiceCenterNew;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -145,10 +144,10 @@ public class RecoverSCBeforeAppReflectPubImpl implements RecoverSCBeforeAppRefle
 		}
 
 		@Override
-		public List<IntegrationOfDaily> calculateForSchedule(ExecutionType type,
+		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily) {
-			return calculateDailyRecordServiceCenter.calculatePassCompanySetting(CalculateOption.asDefault(),
-					integrationOfDaily, type);
+			return calculateDailyRecordServiceCenter.calculateForSchedule(CalculateOption.asDefault(),
+					integrationOfDaily);
 		}
 
 		@Override
