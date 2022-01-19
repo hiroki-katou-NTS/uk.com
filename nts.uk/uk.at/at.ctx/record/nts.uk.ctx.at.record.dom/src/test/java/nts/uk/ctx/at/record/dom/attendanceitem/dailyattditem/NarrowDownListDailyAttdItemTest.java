@@ -757,7 +757,7 @@ public class NarrowDownListDailyAttdItemTest {
 		List<Integer>  result = NarrowDownListDailyAttdItem.get(require, companyId, listAttdIdInput);
 		assertThat( result )
 		.extracting( d -> d)
-		.containsExactly(1130,1125,1126);
+		.containsExactly(1125,1126);
 		
 	}
 	
