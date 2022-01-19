@@ -28,7 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttd
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 //import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
-//import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
+//import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority; 会社の日次項目を取得する
 
 @Stateless
 public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {

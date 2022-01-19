@@ -137,7 +137,7 @@ public class NarrowDownListDailyAttdItemImpl implements NarrowDownListDailyAttdI
 		
 		@Override
 		public List<BonusPayTimeItem> getListBonusPayTimeItem(String companyId) {
-			return bPTimeItemRepository.getListBonusPayTimeItem(companyId);
+			return bPTimeItemRepository.getListBonusPayTimeByCid(companyId);
 		}
 		
 		@Override
@@ -147,7 +147,7 @@ public class NarrowDownListDailyAttdItemImpl implements NarrowDownListDailyAttdI
 		
 		@Override
 		public List<PremiumItem> findPremiumItemByCompanyID(String companyID) {
-			return premiumItemRepository.findAllIsUse(companyID);
+			return premiumItemRepository.findByCompanyID(companyID);
 		}
 		
 		@Override

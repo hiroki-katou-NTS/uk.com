@@ -26,6 +26,9 @@ public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItem
 			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId "
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 0 "
 			+ " ORDER BY c.kbpstBonusPayTimeItemPK.timeItemNo  ASC ";
+	private static final String SELECT_BPTIMEITEM_ONLY_BY_COMPANYID = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
+			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId "
+			+ " ORDER BY c.kbpstBonusPayTimeItemPK.timeItemNo  ASC ";
 	private static final String SELECT_BPTIMEITEM_INUSE_BY_COMPANYID = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
 			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId "
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 0 " + " AND c.useAtr = 1 "
@@ -56,6 +59,13 @@ public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItem
 			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId"
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemNo IN :timeItemNos "
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 1 ";
+	
+	 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+		@Override
+		public List<BonusPayTimeItem> getListBonusPayTimeByCid(String companyId) {
+			return this.queryProxy().query(SELECT_BPTIMEITEM_ONLY_BY_COMPANYID, KbpstBonusPayTimeItem.class)
+					.setParameter("companyId", companyId).getList(x -> this.toBonusPayTimeItemDomain(x));
+		}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override

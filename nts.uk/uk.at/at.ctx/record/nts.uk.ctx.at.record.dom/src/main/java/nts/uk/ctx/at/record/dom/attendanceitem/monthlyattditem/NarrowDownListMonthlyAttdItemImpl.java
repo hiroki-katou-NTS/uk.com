@@ -147,7 +147,7 @@ public class NarrowDownListMonthlyAttdItemImpl implements NarrowDownListMonthlyA
 
 		@Override
 		public List<BonusPayTimeItem> getListBonusPayTimeItem(String companyId) {
-			return bPTimeItemRepository.getListBonusPayTimeItem(companyId);
+			return bPTimeItemRepository.getListBonusPayTimeByCid(companyId);
 		}
 
 		@Override
@@ -157,7 +157,7 @@ public class NarrowDownListMonthlyAttdItemImpl implements NarrowDownListMonthlyA
 
 		@Override
 		public List<PremiumItem> findPremiumItemByCompanyID(String companyID) {
-			return premiumItemRepository.findAllIsUse(companyID);
+			return premiumItemRepository.findByCompanyID(companyID);
 		}
 
 		@Override
@@ -203,7 +203,7 @@ public class NarrowDownListMonthlyAttdItemImpl implements NarrowDownListMonthlyA
 		
 		@Override
 		public List<AbsenceFrame> findAllAbsenceFrame(String companyId) {
-			return absenceFrameRepository.findAbsenceFrame(companyId);
+			return absenceFrameRepository.findAll(companyId);
 		}
 		
 		@Override
@@ -228,7 +228,7 @@ public class NarrowDownListMonthlyAttdItemImpl implements NarrowDownListMonthlyA
 		
 		@Override
 		public Optional<OutsideOTSetting> reportById(String companyId) {
-			return outsideOTSettingRepository.findById(companyId);
+			return outsideOTSettingRepository.reportById(companyId);
 		}
 		
 		@Override
