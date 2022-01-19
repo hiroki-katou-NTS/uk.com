@@ -47,10 +47,12 @@ public class RegisterSmileCooperationAcceptanceSettingScreenCommandHandle extend
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
 		List<SmileCooperationAcceptanceSetting> acceptanceSettings = smileCooperationAcceptanceSettingRepository.get(contractCode, companyId);
+		List<SmileCooperationAcceptanceSetting> newSmileCooperationAcceptanceSettings = command.convertScreenCommandToListSetting();
 		if(acceptanceSettings.isEmpty()) {
-			smileCooperationAcceptanceSettingRepository.insertAll(acceptanceSettings);
+			
+			smileCooperationAcceptanceSettingRepository.insertAll(newSmileCooperationAcceptanceSettings);
 		} else {
-			smileCooperationAcceptanceSettingRepository.updateAll(acceptanceSettings);
+			smileCooperationAcceptanceSettingRepository.updateAll(newSmileCooperationAcceptanceSettings);
 		}
 		
 		/**

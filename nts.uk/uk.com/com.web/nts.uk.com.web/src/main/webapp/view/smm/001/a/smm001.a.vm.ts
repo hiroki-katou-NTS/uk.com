@@ -32,9 +32,18 @@ module nts.uk.at.view.smm001.a {
     checkedEmployeeMaster: KnockoutObservable<boolean> = ko.observable(false);
     // End: Init list checkbox
 
+    // Start: Selected select option => choose value
+    selectedOrganizationInformation: KnockoutObservable<string> = ko.observable(null);
+    selectedBasicPersonnelInformation: KnockoutObservable<string> = ko.observable(null);
+    selectedJobStructureInformation: KnockoutObservable<string> = ko.observable(null);
+    selectedAddressInformation: KnockoutObservable<string> = ko.observable(null);
+    selectedLeaveInformation: KnockoutObservable<string> = ko.observable(null);
+    selectedAffiliatedMaster: KnockoutObservable<string> = ko.observable(null);
+    selectedEmployeeMaster: KnockoutObservable<string> = ko.observable(null);
+    // End: Selected select option => choose value
+
     selectedValue: KnockoutObservable<boolean>;
     itemList: KnockoutObservableArray<ItemModel>;
-    selectedCode: KnockoutObservable<string>;
     isEnable: KnockoutObservable<boolean>;
     enumSmileCooperationAcceptanceItem: KnockoutObservableArray<any>;
     enumDoOrDoNot: KnockoutObservableArray<any>;
@@ -61,7 +70,6 @@ module nts.uk.at.view.smm001.a {
       vm.selectedValue = ko.observable(true);
       vm.itemList = ko.observableArray([]);
 
-      vm.selectedCode = ko.observable('1');
       vm.isEnable = ko.observable(true);
 
       vm.setDefault();
@@ -101,6 +109,10 @@ module nts.uk.at.view.smm001.a {
           console.log("response: ", response)
           const externalImportSettings = response.externalImportSettings;
           vm.itemList(externalImportSettings);
+          vm.itemList().unshift({
+            code: '0',
+            name: ''
+          })
         }
       })
     }
