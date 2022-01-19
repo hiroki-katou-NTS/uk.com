@@ -155,22 +155,8 @@
 	width: 9%;
 }
 
-#group-bt {
-	float: left;
-	width: 134px;
-	border-right: 2px solid #ccc;
-	height: fit-content;
-	margin-top: 3px;
-}
-
 .size-image-button1 {
 	background-size: 20px 20px !important;
-}
-
-.size-image-button2 {
-	background-size: 24px 24px !important;
-	height: 27px !important;;
-	width: 27px;
 }
 
 .size-image-button3 {
@@ -270,57 +256,6 @@
 	background-color: #FF7F27
 }
 
-#paste {
-	white-space: normal;
-	width: 38px;
-	height: 38px;
-	font-size: 10px !important;
-}
-
-#coppy {
-	width: 38px;
-	height: 38px;
-	font-size: 10px !important;
-	margin-left: 3px;
-	margin-right: 3px;
-	padding-left: 2px;
-}
-
-#input {
-	white-space: normal;
-	width: 38px;
-	height: 38px;
-	font-size: 10px !important;
-}
-
-#undo {
-	margin-top: 6px;
-	width: 38px;
-	height: 38px !important; 
-	background-color: #ffffff;
-}
-
-#undo[disabled] {
-    background-color: #d9d9d9 !important;
-    cursor: default;
-    color: #888888;
-}
-
-#redo {
-	margin-top: 6px;
-	width: 38px;
-	height: 38px !important; 
-	background-color: #ffffff;
-	margin-left: 3px;
-	margin-right: 3px;
-}
-
-#redo[disabled] {
-    background-color: #d9d9d9 !important;
-    cursor: default;
-    color: #888888;
-}
-
 #A4_4 > button.nts-switch-button{
 	width: 50px;
 }
@@ -330,7 +265,7 @@
 }
 
 #contain-view-left{
-	margin-left: 27px;
+	margin-left: 0 !important;
 	margin-top: 14px;
     width: fit-content;
     height: fit-content;
@@ -338,53 +273,82 @@
     float: left;
 }
 
-#contain-view-right {
+#A3_1, #contain-view-right {
+	background-color: #F5F5F5;
+}
+
+#contain-view-right > div {
 	display: inline-block;
-	margin-top: 5px;
-	margin-left: 10px;
-	border: 1px solid #cccccc;
-	background: rgb(219, 238, 244);
-	padding: 5px;
-	width: 1085px;
-	height: 92px;
-	border-radius: 5px;
+}
+
+#contain-view-right #group-bt button {
+	width: 44px;
+	height: 44px;
+	font-weight: 200;
+	line-height: 13px;
+}
+
+#contain-view-right #group-bt button * {
+	font-size: 11px;
+}
+
+#contain-view-right #group-bt #coppy {
+	line-height: 11px;
+}
+
+#contain-view-right #group-bt #coppy span {
+	position: relative;
+	left: -1px;
+	font-size: 10px;
+}
+
+#functon-area-row2,
+#content-main .main-controls {
+	margin-left: 28px;
 }
 
 #functon-area-row2 {
-	height: 45px;
-	margin-left: 27px;
-	margin-top: 3px;
-	padding-bottom: 2px;
-	border-bottom: 1px solid #B1B1B1;
-	white-space: nowrap;
-	width: 1190px;
-	float: left;
+	margin-bottom: 12px;
 }
 
 #functon-area-row2-left {
 	width: 570px;
-	margin-top: 5px;
-	height: 45px;
 	display: inline-block;
-	float: left;
 }
 
 #functon-area-row2-center {
 	width: fit-content;
-	height: 45px;
 	display: inline-block;
-	margin-bottom: 4px;
-	float: left;
 }
 
 #functon-area-row2-right {
-	margin-top: 5px;
 	width: fit-content;
 	margin-left: 57px;
-	height: 45px;
 	display: inline-block;
-	float: right;
 }
+
+
+
+#contain-view-right {
+	padding: 5px;
+}
+
+#content-main .main-controls {
+	margin-bottom: 10px;
+}
+
+#content-main .main-controls > div {
+	display: inline-block;
+}
+
+#content-main .right-end {
+	float: right;
+	height: 40px;
+	margin-top: -40px;
+	margin-right: 35px;
+}
+
+
 
 #set-work-time {
 	margin-top: 2px
@@ -512,7 +476,6 @@ html {
 }
 
 #A3_1 {
-	background-color: #F5F5F5;
 	width: max-content;
 	padding: 5px;
 	height: 31px;
@@ -620,12 +583,8 @@ html {
 
 #btnControlLeftRight {
 	width: max-content;
-	height: 18px;
 }
 
-#A5 {
-	width: 30px;
-}
 
 .settingHeightGrid {
 	width: 25px;

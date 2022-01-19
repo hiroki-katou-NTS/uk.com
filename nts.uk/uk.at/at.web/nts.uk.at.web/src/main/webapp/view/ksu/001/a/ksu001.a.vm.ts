@@ -5804,8 +5804,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // btn A6_1, A6_2 職2    
             if (funcNo2_WorkPlace == false) {
                 $('#contain-view-left').empty();
-                $('#contain-view-left').css('margin-left', '16px');
-                $('#contain-view-right').css('width', '1177px');
             }
 
             // 職13
