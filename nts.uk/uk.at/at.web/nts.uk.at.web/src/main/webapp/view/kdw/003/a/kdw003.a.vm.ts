@@ -3,6 +3,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getText = nts.uk.resource.getText;
     import character = nts.uk.characteristics;
+    import execMonthlyAggregate = nts.uk.at.view.kdw003.a.service.execMonthlyAggregate;
     let __viewContext: any = window["__viewContext"] || {};
     export interface EmployeeSearchDto {
         employeeId: string;
@@ -1377,6 +1378,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                     if (dataAfter.showErrorDialog) self.showErrorDialog();
                                 });
                             }
+
+                            self.execMonthlyAggregate(execMontlyAggregateAsync, dataParent);
                         });
 
 //                        if ((dataAfter.showErrorDialog == null && self.showDialogError) || dataAfter.showErrorDialog) {
@@ -1478,11 +1481,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 }
                             }
                             self.hasErrorCalc = false;
+
+                            self.execMonthlyAggregate(execMontlyAggregateAsync, dataParent);
                         });
                     }
-                    service.execMonthlyAggregate(dataParent).done((task) => {
-                        self.observeExecution(task);
-                    });
+
                     dfd.resolve(errorNoReload);
                 }).fail((data) => {
                     self.lstErrorFlex = [];
@@ -1508,8 +1511,21 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             //    }
         }
 
+        execMonthlyAggregate(execMontlyAggregateAsync:boolean, dataParent:any){
+            var self = this;
+            // レスポンス対応　月別集計処理だけ非同期で実行する
+            if (execMontlyAggregateAsync) {
+                $('#miGrid').addClass('processing');
+                service.execMonthlyAggregate(dataParent).done((task) => {
+                    $("#miGrid").block({message:"",fadeIn:200,css:{ width: '220px', 'line-height': '32px' }});
+                    self.observeExecution(task);
+                });
+            }
+        }
+
         // 処理が終わるまで監視する
         observeExecution(taskInfo: any) {
+            let self = this;
             nts.uk.deferred.repeat(conf => conf
                 .task(() => {
                     return (<any>nts).uk.request.asyncTask.getInfo(taskInfo.id);
@@ -1521,16 +1537,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let process = info.taskDatas.find(d => d.key === "process");
                 if (process && process.valueAsString === "failed") {
                     ui.dialog.alert(info.taskDatas.find(d => d.key === "message").valueAsString);
-                    nts.uk.ui.block.clear();
+                    $('#miGrid').removeClass('processing');
+                    $("#miGrid").unblock({fadeIn:200});
                     return;
                 }
-                // if (info.status === "COMPLETED") {
-                //     // 正常に完了していればエラーチェック
-                //     this.loadErrors();
-                // } else {
-                //     this.handleAbort(info);
-                // }
-                nts.uk.ui.block.clear();
+                // todo: 非同期処理終わった後のエラー処理どうする？
+                $('#miGrid').removeClass('processing');
+                $("#miGrid").unblock({fadeIn:200});
+                //self.reloadScreen();
             });
         }
 
