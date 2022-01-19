@@ -59,11 +59,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 														application: application,
 														appDispInfoStartupOutput: appDispInfoStartupOutput
 													} }"
-							style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -15px"></div>
-
-
-
-						<div style="margin-top: -10px">
+							style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
 
 						<div data-bind="component: { name: 'kaf005-share-work-info', 
 									params: {
@@ -81,7 +77,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 										}
 						
 									}"></div>
-						</div>
+
 						<div data-bind="if: opOvertimeAppAtr() != 3">
 							<div style="margin-top: 11px"
 								data-bind="component: { name: 'kaf000-b-component7', 

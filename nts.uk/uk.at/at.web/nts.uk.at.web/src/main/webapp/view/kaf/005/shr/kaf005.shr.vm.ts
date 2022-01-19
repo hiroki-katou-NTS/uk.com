@@ -100,11 +100,11 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 	
 	<div class="table item" data-bind="visible: visibleModel.c7()">
 		<!--A5_1 休憩時間ラベル-->
-		<div class="cell cm-column">
+		<div class="cell cm-column valign-top">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_40'), ntsFormLabel: {}"></div>
 		</div>
-		<div class="cell table-time valign-top">
+		<div class="cell table-time">
 			<table id="fixed-table">
 				<colgroup>
 					<col width="25px" />
@@ -163,7 +163,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 	<!-- over time hours -->
 	<div class="table item" data-bind="visible: true">
 		<!--A6_1 残業時間ラベル-->
-		<div class="cell cm-column">
+		<div class="cell cm-column valign-top">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_50'), ntsFormLabel: {required: true}"></div>
 		</div>

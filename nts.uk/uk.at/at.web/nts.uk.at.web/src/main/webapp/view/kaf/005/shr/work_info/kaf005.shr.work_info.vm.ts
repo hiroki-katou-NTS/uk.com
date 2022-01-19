@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 <div data-bind="if: workInfo">
 
 	<div class="table item" data-bind="if : visibleModel.c7()">
-		<div class="cell valign-center cm-column">
+		<div class="cell cm-column">
 			<!--A4_1 勤務種類ラベル-->
 			<div class="valign-center"
 				data-bind="text: $i18n('KAF005_34') + '・' + $i18n('KAF005_35'), ntsFormLabel:{required: true}"></div>
@@ -34,7 +34,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 	<!--勤務時間 1-->
 	<div data-bind="if: visibleModel.c7()">
 		<div class="table item">
-			<div class="cell valign-top cm-column">
+			<div class="cell cm-column">
 				<!--A4_8 勤務時間ラベル-->
 				<div class="lblTitle"
 					data-bind="text: $i18n('KAF005_37'), ntsFormLabel: {required: true}"

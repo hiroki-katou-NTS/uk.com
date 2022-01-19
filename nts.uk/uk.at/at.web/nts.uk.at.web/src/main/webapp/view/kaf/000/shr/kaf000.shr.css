@@ -40,10 +40,6 @@ table.left-aligned td:not(:first-child) {
 	padding-left: 20px !important;
 }
 
-.cm-column {
-	width: 200px;
-}
-
 .two-panel {
 	width: 1330px;
 	height: 100%;
@@ -62,7 +58,18 @@ table.left-aligned td:not(:first-child) {
 
 .left-panel .table.item {
 	margin-bottom: 12px;
-	min-height: 36px;
+	min-height: 45px;
+}
+
+.left-panel .table.item .cm-column {
+	vertical-align: middle; /* ’Pˆês€–Ú‚Ímiddle‚Ì‚Ü‚Ü‚Å‚¢‚¢‚ªAc‚É’·‚¢€–Ú‚Ítop‚É‚·‚é‚±‚Æ */
+	width: 200px;
+}
+
+.left-panel .table.item .cm-column.valign-top {
+	vertical-align: top;
+	position: relative;
+	top: 3px;
 }
 
 .left-panel button {
