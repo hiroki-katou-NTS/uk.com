@@ -64,7 +64,7 @@ public class TimeAnnualMaxDay implements Serializable {
 	 * [2] 利用できない月次の勤怠項目を取得する
 	 */
 	public List<Integer> getMonthAttendItemsNotAvailable(ManageDistinct manageType, ManageDistinct timeManageType) {
-		if (this.isManageMaximumNumberDays(manageType, timeManageType)) { 
+		if (!this.isManageMaximumNumberDays(manageType, timeManageType)) { 
 			return this.acquiremonthAttendItemMaximumNumberDaysAnnualLeave();
 		}
 		return new ArrayList<>();
