@@ -21,7 +21,7 @@ module nts.uk.ui.koExtentions {
                 const width: string = ko.unwrap(data.width) || "100%";
                 const height: string = ko.unwrap(data.height) || "100%";
 
-                const iconFileName = iconNo + ".png";
+                const iconFileName = iconNo + ".svg";
                 const iconPath = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
                     .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
