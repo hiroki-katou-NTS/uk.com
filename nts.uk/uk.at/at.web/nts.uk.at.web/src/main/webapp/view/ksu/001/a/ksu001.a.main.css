@@ -276,8 +276,16 @@
 	background-color: #F5F5F5;
 }
 
+#contain-view-right {
+	padding: 5px 0 5px 15px;
+}
+
 #contain-view-right > div {
 	display: inline-block;
+}
+
+#contain-view-right #group-bt {
+	margin-right: 20px;
 }
 
 #contain-view-right #group-bt button {
@@ -285,6 +293,7 @@
 	height: 44px;
 	font-weight: 200;
 	line-height: 13px;
+	margin-right: 10px;
 }
 
 #contain-view-right #group-bt button * {
@@ -301,17 +310,23 @@
 	font-size: 10px;
 }
 
+#contain-view-right #oViewModel td:first-child * {
+	font-size: 13px;
+}
+
 #contain-view-right #oViewModel .ui-igcombo {
 	transform: scale(0.9, 0.9);
 }
 
 #contain-view-right #oViewModel #listWorkType .ui-igcombo {
-	position: relative;
 	left: -10px;
 }
 
+#contain-view-right #oViewModel #listWorkTime {
+	margin-right: -18px;
+}
+
 #contain-view-right #oViewModel #listWorkTime .ui-igcombo {
-	position: relative;
 	left: -27px;
 }
 
@@ -341,10 +356,6 @@
 }
 
 
-
-#contain-view-right {
-	padding: 5px;
-}
 
 #content-main .main-controls {
 	margin-bottom: 10px;
