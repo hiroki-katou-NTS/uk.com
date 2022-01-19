@@ -22,7 +22,7 @@ public class JpaSmileCooperationAcceptanceSettingRepository extends JpaRepositor
 		implements SmileCooperationAcceptanceSettingRepository {
 
 	private static final String GET_BY_CONTRACT_AND_CID = String.join(" ",
-			"SELECT m FROM LsmmtSmileCooperationAccepset m WHERE m.pk.contractCd = :contractCd", "AND m.cid = :cid");
+			"SELECT m FROM LsmmtSmileCooperationAccepset m WHERE m.pk.contractCd = :contractCd", "AND m.pk.cid = :cid");
 
 	private LsmmtSmileCooperationAccepset toEntity(SmileCooperationAcceptanceSetting domain) {
 		LsmmtSmileCooperationAccepset data = new LsmmtSmileCooperationAccepset(

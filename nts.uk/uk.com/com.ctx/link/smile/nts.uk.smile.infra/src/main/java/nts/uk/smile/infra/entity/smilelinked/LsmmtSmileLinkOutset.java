@@ -11,6 +11,7 @@ import javax.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /*
@@ -22,6 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "LSMMT_SMILE_LINK_OUTSET")
 @AllArgsConstructor
+@NoArgsConstructor
 public class LsmmtSmileLinkOutset extends UkJpaEntity implements Serializable {
 	/**
 	 * serialVersionUID
