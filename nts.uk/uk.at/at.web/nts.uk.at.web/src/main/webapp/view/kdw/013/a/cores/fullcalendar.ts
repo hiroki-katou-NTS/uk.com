@@ -4343,7 +4343,10 @@ module nts.uk.ui.at.kdw013.calendar {
                         }
                         if(result === 'save'){
                               // trigger update from parent view
+                              
                               mutated.valueHasMutated();
+                              vm.params.screenA.$caches.new(data());
+                              vm.params.screenA.$caches.new(null);
                         }
                     
                     })
