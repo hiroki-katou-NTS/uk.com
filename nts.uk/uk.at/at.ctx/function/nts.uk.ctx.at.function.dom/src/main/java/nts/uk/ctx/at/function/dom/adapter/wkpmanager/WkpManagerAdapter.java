@@ -15,4 +15,5 @@ public interface WkpManagerAdapter {
 
     List<WkpManagerImport> findByWkpIdsAndDate(List<String> wkpIds, GeneralDate baseDate);
 
+    List<String> getEmpOfWkpManager(String workplaceId, GeneralDate referenceDate);
 }

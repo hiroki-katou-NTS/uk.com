@@ -4,6 +4,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerImport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
+import nts.uk.ctx.sys.auth.pub.employee.EmployeePublisher;
 import nts.uk.ctx.sys.auth.pub.wkpmanager.WorkplaceManagerPub;
 
 import javax.ejb.Stateless;
@@ -15,6 +16,9 @@ import java.util.stream.Collectors;
 public class WkpManagerAdapterImpl implements WkpManagerAdapter {
     @Inject
     private WorkplaceManagerPub workplaceManagerPub;
+
+    @Inject
+    private EmployeePublisher employeePublisher;
 
     @Override
     public List<WkpManagerImport> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate) {
@@ -36,5 +40,10 @@ public class WkpManagerAdapterImpl implements WkpManagerAdapter {
                         x.getWorkplaceId(),
                         x.getHistoryPeriod()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getEmpOfWkpManager(String workplaceId, GeneralDate referenceDate) {
+        return employeePublisher.getListEmployeeId(workplaceId, referenceDate);
     }
 }

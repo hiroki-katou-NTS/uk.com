@@ -11,4 +11,5 @@ public class MailExportRolesDto {
 	private String roleId;
 	private String roleName;
 	private Integer employeeReferenceRange;
+	private Integer assignAtr;
 }

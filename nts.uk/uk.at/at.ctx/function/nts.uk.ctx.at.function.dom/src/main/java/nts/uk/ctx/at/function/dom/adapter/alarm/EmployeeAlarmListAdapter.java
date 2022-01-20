@@ -5,5 +5,5 @@ import nts.arc.time.GeneralDate;
 import java.util.List;
 
 public interface EmployeeAlarmListAdapter {
-    List<String> getListEmployeeId(String workplaceId, GeneralDate referenceDate);
+    List<String> getListEmployeeId(String cid, GeneralDate referenceDate);
 }
