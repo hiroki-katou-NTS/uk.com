@@ -34,11 +34,6 @@ button.nts-switch-button {
     padding: 5px;
 }
 
-#kaf006-b tr> th, #kaf006-b tr> td {
-    text-align: center !important;
-    border: 1px solid black !important;
-}
-
 #kaf006component2 label.radio-wrapper span {
     width: 92px;
     text-align: center;

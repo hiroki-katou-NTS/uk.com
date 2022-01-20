@@ -1,152 +1,163 @@
 <div id="kaf006-b">
-    <div id="contents-area" style="background-color: inherit; height: calc(100vh - 137px);">
-        <div class="two-panel" style="height: 100%; width: 1260px">
-            <div class="left-panel" style="width: calc(1260px - 388px); padding-bottom: 5px; height: inherit;">
-                <div style="border: 1px solid #CCC; height: inherit; background-color: #fff; padding: 0 10px; overflow-y: auto; overflow-x: hidden;">
-                    <div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
-                        <div class="cell" style="vertical-align: middle;">
-                            <div data-bind="component: { name: 'kaf000-b-component4',
+	<div id="contents-area"
+		style="background-color: inherit; height: calc(100vh - 137px);">
+		<div class="two-panel">
+			<div class="left-panel">
+				<div class="table form-header">
+					<div class="cell" style="vertical-align: middle;">
+						<div
+							data-bind="component: { name: 'kaf000-b-component4',
+                                            params: {
+                                                appType: appType,
+                                                application: application,
+                                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                                            } }"></div>
+					</div>
+					<div class="cell"
+						style="text-align: right; vertical-align: middle;">
+						<div
+							data-bind="component: { name: 'kaf000-b-component8', 
+                                            params: {
+                                                appType: appType,
+                                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                                            } }"></div>
+					</div>
+				</div>
+				<div
+					data-bind="component: { name: 'kaf000-b-component2', 
+										params: {
+											appType: appType,
+											appDispInfoStartupOutput: appDispInfoStartupOutput
+										} }"></div>
+				<div
+					data-bind="component: { name: 'kaf000-b-component5', 
+                                            params: {
+                                                appType: appType,
+                                                application: application,
+                                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                                            } }"></div>
+				<div>
+					<div
+						data-bind="component: { name: 'kaf000-b-component6', 
+                        params: {
+                            appType: appType,
+                            application: application,
+                            appDispInfoStartupOutput: appDispInfoStartupOutput,
+                            from006: true
+                        } }"></div>
+					<div data-bind="visible: condition31() && updateMode()">
+						<button data-bind="text: $i18n('KAF006_86'), click: openKAF006C"></button>
+					</div>
+					<span style="vertical-align: middle;"
+						data-bind="visible: condition32, text: dateBeforeChange"></span>
+				</div>
+				<div>
+					<div class="mv-13"
+						data-bind="component: { name: 'kaf006-shr-component2', 
                                                 params: {
                                                     appType: appType,
                                                     application: application,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput,
+                                                    hdAppSet: hdAppSet,
+                                                    selectedType: selectedType
                                                 } }"></div>
-                        </div>
-                        <div class="cell" style="text-align: right; vertical-align: middle;">
-                               <div data-bind="component: { name: 'kaf000-b-component8', 
-                                                params: {
-                                                    appType: appType,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-                        </div>
-                    </div>
-                    <div data-bind="component: { name: 'kaf000-b-component2', 
-														params: {
-															appType: appType,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-                    <div data-bind="component: { name: 'kaf000-b-component5', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: application,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }" style="margin-bottom: -18px;"></div>
-                    <div style="width: fit-content; display: inline-block; vertical-align: middle; margin-bottom: -6px; margin-top: 10px;">
-                        <div data-bind="component: { name: 'kaf000-b-component6', 
-                            params: {
-                                appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: appDispInfoStartupOutput,
-                                from006: true
-                            } }" style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
-                        <div style="width: fit-content; display: inline-block; vertical-align: middle;">
-                            <button data-bind="visible: condition31() && updateMode(), text: $i18n('KAF006_86'), click: openKAF006C"></button>
-                        </div>
-                        <span style="vertical-align: middle;" data-bind="visible: condition32, text: dateBeforeChange"></span>
-                    </div>
-                    <div>
-                        <div class="mv-13" data-bind="component: { name: 'kaf006-shr-component2', 
-                                                    params: {
-                                                        appType: appType,
-                                                        application: application,
-                                                        appDispInfoStartupOutput: appDispInfoStartupOutput,
-                                                        hdAppSet: hdAppSet,
-                                                        selectedType: selectedType
-                                                    } }"></div>
-                        <div class="mv-13" id="work-type-div" style="margin: 10px 0;">
-                            <div class="table">
-                                <div class="cell col-1 valign-center">
-                                    <div class="cell valign-center required" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_16')"></div>
-                                </div>
-                                <div class="cell">
-                                    <div id="work-type-combobox" style="vertical-align: bottom;" data-bind="ntsComboBox: {
-                                        name: $i18n('KAF006_16'),
-                                        options: workTypeLst,
-                                        optionsValue: 'workTypeCode',
-                                        optionsText: 'name',
-                                        value: selectedWorkTypeCD,
-                                        required: true,
-                                        enable: updateMode
-                                    }"></div>
-                                </div>
-                            </div>
-                        </div>
-                                                                                
-                        <div class="mv-13"
-                            data-bind="component: { name: 'kaf006-shr-tab1', 
-                                                                                params: {
-                                                                                    isChangeWorkHour: isChangeWorkHour,
-                                                                                    appType: appType,
-                                                                                    application: application
-                                                                                } }, 
-                                                                                visible: selectedType() === 0 || selectedType() === 2 || selectedType() === 4 || selectedType() === 5">
-                        </div>
-                        <div class="mv-13"
-                            data-bind="component: { name: 'kaf006-shr-tab2', 
-                                                                                params: {
-                                                                                    isChangeWorkHour: isChangeWorkHour,
-                                                                                    appType: appType,
-                                                                                    application: application,
-                                                                                    over60H: over60H,
-                                                                                    timeOff: timeOff,
-                                                                                    annualTime: annualTime,
-                                                                                    childNursing: childNursing,
-                                                                                    nursing: nursing
-                                                                                } }, 
-                                                                                visible: selectedType() === 6">
-                        </div>
-                        <div class="mv-13"
-                            data-bind="component: { name: 'kaf006-shr-tab3', 
-                                                                                params: {
-                                                                                    isChangeWorkHour: isChangeWorkHour,
-                                                                                    appType: appType,
-                                                                                    application: application,
-                                                                                    dateSpecHdRelationLst: dateSpecHdRelationLst,
-                                                                                    selectedDateSpec: selectedDateSpec,
-                                                                                    relationshipReason: relationshipReason
-                                                                                } }, 
-                                                                                visible: selectedType() === 3">
-                        </div>
-                        <div class="mv-13"
-                            data-bind="component: { name: 'kaf006-shr-tab4', 
-                                                                                params: {
-                                                                                    isChangeWorkHour: isChangeWorkHour,
-                                                                                    appType: appType,
-                                                                                    application: application
-                                                                                } }, 
-                                                                                visible: selectedType() === 1">
-                        </div>
-                    </div>
-                    <div class="mv-13" data-bind="component: { name: 'kaf000-b-component7', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: application,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-                </div>
-            </div>
-            <div class="right-panel" style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
-                <div style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden;">
-                    <div data-bind="component: { name: 'kaf000-b-component1',
-                            params: {
-                                appType: appType,
-                                appDispInfoStartupOutput: appDispInfoStartupOutput	
-                            } }"></div>
-                    <div data-bind="component: { name: 'kaf006-shr-component1',
-                            params: {
-                                appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                            } }"></div>
-                    <div data-bind="component: { name: 'kaf000-b-component9',
-                            params: {
-                                appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-                            } }"></div>
+					<div class="mv-13" id="work-type-div">
+						<div class="table item">
+							<div class="cell cm-column">
+								<div class="required"
+									data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_16')"></div>
+							</div>
+							<div class="cell">
+								<div id="work-type-combobox" style="vertical-align: bottom;"
+									data-bind="ntsComboBox: {
+                                    name: $i18n('KAF006_16'),
+                                    options: workTypeLst,
+                                    optionsValue: 'workTypeCode',
+                                    optionsText: 'name',
+                                    value: selectedWorkTypeCD,
+                                    required: true,
+                                    enable: updateMode
+                                }"></div>
+							</div>
+						</div>
+					</div>
 
-                </div>
-            </div>
-        </div>
-    </div>
+					<div class="mv-13"
+						data-bind="component: { name: 'kaf006-shr-tab1', 
+                                                                            params: {
+                                                                                isChangeWorkHour: isChangeWorkHour,
+                                                                                appType: appType,
+                                                                                application: application
+                                                                            } }, 
+                                                                            visible: selectedType() === 0 || selectedType() === 2 || selectedType() === 4 || selectedType() === 5">
+					</div>
+					<div class="mv-13"
+						data-bind="component: { name: 'kaf006-shr-tab2', 
+                                                                            params: {
+                                                                                isChangeWorkHour: isChangeWorkHour,
+                                                                                appType: appType,
+                                                                                application: application,
+                                                                                over60H: over60H,
+                                                                                timeOff: timeOff,
+                                                                                annualTime: annualTime,
+                                                                                childNursing: childNursing,
+                                                                                nursing: nursing
+                                                                            } }, 
+                                                                            visible: selectedType() === 6">
+					</div>
+					<div class="mv-13"
+						data-bind="component: { name: 'kaf006-shr-tab3', 
+                                                                            params: {
+                                                                                isChangeWorkHour: isChangeWorkHour,
+                                                                                appType: appType,
+                                                                                application: application,
+                                                                                dateSpecHdRelationLst: dateSpecHdRelationLst,
+                                                                                selectedDateSpec: selectedDateSpec,
+                                                                                relationshipReason: relationshipReason
+                                                                            } }, 
+                                                                            visible: selectedType() === 3">
+					</div>
+					<div class="mv-13"
+						data-bind="component: { name: 'kaf006-shr-tab4', 
+                                                                            params: {
+                                                                                isChangeWorkHour: isChangeWorkHour,
+                                                                                appType: appType,
+                                                                                application: application
+                                                                            } }, 
+                                                                            visible: selectedType() === 1">
+					</div>
+				</div>
+				<div class="mv-13"
+					data-bind="component: { name: 'kaf000-b-component7', 
+                                            params: {
+                                                appType: appType,
+                                                application: application,
+                                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                                            } }"></div>
+			</div>
+			<div class="right-panel">
+				<div
+					data-bind="component: { name: 'kaf000-b-component1',
+                        params: {
+                            appType: appType,
+                            appDispInfoStartupOutput: appDispInfoStartupOutput	
+                        } }"></div>
+				<div
+					data-bind="component: { name: 'kaf006-shr-component1',
+                        params: {
+                            appType: appType,
+                            application: application,
+                            appDispInfoStartupOutput: appDispInfoStartupOutput
+                        } }"></div>
+				<div
+					data-bind="component: { name: 'kaf000-b-component9',
+                        params: {
+                            appType: appType,
+                            application: application,
+                            appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
+                        } }"></div>
+
+			</div>
+		</div>
+	</div>
 </div>
