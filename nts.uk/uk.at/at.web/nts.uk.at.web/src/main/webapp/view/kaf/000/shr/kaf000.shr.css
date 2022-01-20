@@ -56,6 +56,25 @@ table.left-aligned td:not(:first-child) {
 	margin-bottom: 40px;
 }
 
+.left-panel > .form-header > .cell {
+	vertical-align: middle;
+}
+
+.left-panel > .form-header .approver-block {
+	text-align: left;
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 30px;
+}
+
+.left-panel > .form-header .approver-block > div:first-child {
+	margin-bottom: 2px;
+}
+
+.left-panel > .form-header .approver-block > div:first-child * {
+	font-size: 12px;
+}
+
 .left-panel .table.item {
 	margin-bottom: 12px;
 	min-height: 45px;
