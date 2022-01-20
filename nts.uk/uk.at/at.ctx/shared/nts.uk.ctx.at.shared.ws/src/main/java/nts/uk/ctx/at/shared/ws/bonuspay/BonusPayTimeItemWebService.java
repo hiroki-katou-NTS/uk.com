@@ -12,13 +12,16 @@ import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemAddCommand;
 import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemAddCommandHandler;
 import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemUpdateCommand;
 import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemUpdateCommandhandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.item.BPItemAddCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.item.BPItemUpdateCommand;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemDto;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemFinder;
+import nts.uk.ctx.at.shared.app.find.bonuspay.item.BPItemArt;
 
 @Path("at/share/bonusPayTimeItem")
 @Produces("application/json")
 public class BonusPayTimeItemWebService extends WebService {
-	
+
 	@Inject
 	private BPTimeItemAddCommandHandler bpTimeItemAddCommandHandler;
 	@Inject
@@ -30,24 +33,24 @@ public class BonusPayTimeItemWebService extends WebService {
 	@Path("checkInit")
 	public int checkInit() {
 		return this.bpTimeItemFinder.checkInit();
-	}	
+	}
 
 	@POST
 	@Path("getListBonusPayTimeItem")
 	public List<BPTimeItemDto> getListBonusPayTimeItem() {
 		return this.bpTimeItemFinder.getListBonusPayTimeItem();
-	}	
+	}
 
 	@POST
 	@Path("getListBonusPayTimeItemInUse")
 	public List<BPTimeItemDto> getListBonusPayTimeItemInUse() {
 		return this.bpTimeItemFinder.getListBonusPayTimeItemInUse();
 	}
-	
+
 	@POST
 	@Path("checkUseArt")
-	public void checkUseArt(List<Boolean> lstuseArt){
-		this.bpTimeItemFinder.checkUseArt(lstuseArt);
+	public void checkUseArt(BPItemArt arts){
+		this.bpTimeItemUpdateCommandhandler.checkUseArt(arts);
 	}
 
 	@POST
@@ -62,29 +65,31 @@ public class BonusPayTimeItemWebService extends WebService {
 		return this.bpTimeItemFinder.getListSpecialBonusPayTimeItemInUse();
 	}
 
-	// cann't find this Path in UI 
+	// cann't find this Path in UI
 //	@POST
 //	@Path("getBonusPayTimeItem/{timeItemId}")
 //	public BPTimeItemDto getBonusPayTimeItem(@PathParam("timeItemId") String timeItemId){
 //		return this.bpTimeItemFinder.getBonusPayTimeItem(timeItemId);
 //	}
-	
-	// cann't find this Path in UI 
+
+	// cann't find this Path in UI
 //	@POST
 //	@Path("getSpecialBonusPayTimeItem/{timeItemNo}")
 //	public BPTimeItemDto getSpecialBonusPayTimeItem(@PathParam("timeItemId") String timeItemId){
 //		return this.bpTimeItemFinder.getSpecialBonusPayTimeItem(timeItemId);
 //	}
-	
+
 	@POST
 	@Path("addListBonusPayTimeItem")
-	public void addListBonusPayTimeItem(List<BPTimeItemAddCommand> lstTimeItem) {
-		this.bpTimeItemAddCommandHandler.handle(lstTimeItem);
+	public void addListBonusPayTimeItem(BPItemAddCommand commands) {
+		this.bpTimeItemAddCommandHandler.handle(commands.bonusPayTimeItemListCommand);
+		this.bpTimeItemAddCommandHandler.handle(commands.bonusPayTimeItemSpecListCommand);
 	}
 
 	@POST
 	@Path("updateListBonusPayTimeItem")
-	public void updateListBonusPayTimeItem(List<BPTimeItemUpdateCommand> lstTimeItem) {
-		this.bpTimeItemUpdateCommandhandler.handle(lstTimeItem);
+	public void updateListBonusPayTimeItem(BPItemUpdateCommand commands) {
+		this.bpTimeItemUpdateCommandhandler.handle(commands.bonusPayTimeItemListCommand);
+		this.bpTimeItemUpdateCommandhandler.handle(commands.bonusPayTimeItemSpecListCommand);
 	}
 }

@@ -6,27 +6,30 @@ module nts.uk.at.view.kmk005.b {
             addListBonusPayTimeItem:"at/share/bonusPayTimeItem/addListBonusPayTimeItem",
             updateListBonusPayTimeItem:"at/share/bonusPayTimeItem/updateListBonusPayTimeItem",
             checkUseArt:"at/share/bonusPayTimeItem/checkUseArt"
-            
+
         }
-          export function checkUseArt(lstUseArt) {
-             return nts.uk.request.ajax(paths.checkUseArt,lstUseArt);
+          export function checkUseArt(lstUseArt,lstUseSpecArt) {
+          	 var art = {lstUseArt:lstUseArt,lstUseSpecArt:lstUseSpecArt}
+             return nts.uk.request.ajax(paths.checkUseArt,art);
         }
-        
+
         export function getListSpecialBonusPayTimeItem(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getListSpecialBonusPayTimeItem);
         }
-        
-        export function addListBonusPayTimeItem(command): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.addListBonusPayTimeItem,command);
+
+        export function addListBonusPayTimeItem(bonusPayTimeItemListCommand,bonusPayTimeItemSpecListCommand): JQueryPromise<any> {
+        	var commands = {bonusPayTimeItemListCommand:bonusPayTimeItemListCommand,bonusPayTimeItemSpecListCommand:bonusPayTimeItemSpecListCommand};
+            return nts.uk.request.ajax(paths.addListBonusPayTimeItem,commands);
         }
-        
-        export function updateListBonusPayTimeItem(command): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.updateListBonusPayTimeItem,command);
+
+        export function updateListBonusPayTimeItem(bonusPayTimeItemListCommand,bonusPayTimeItemSpecListCommand): JQueryPromise<any> {
+        	var commands = {bonusPayTimeItemListCommand:bonusPayTimeItemListCommand,bonusPayTimeItemSpecListCommand:bonusPayTimeItemSpecListCommand};
+            return nts.uk.request.ajax(paths.updateListBonusPayTimeItem,commands);
         }
-        
+
          export function getListBonusPTimeItem(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getListBonusPayTimeItem);
         }
-        
+
     }
 }

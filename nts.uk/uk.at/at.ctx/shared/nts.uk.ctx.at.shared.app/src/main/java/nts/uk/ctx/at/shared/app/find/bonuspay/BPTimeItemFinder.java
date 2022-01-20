@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.app.find.bonuspay.item.BPItemArt;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.shr.com.context.AppContexts;
@@ -51,7 +52,7 @@ public class BPTimeItemFinder {
 
 	public BPTimeItemDto getBonusPayTimeItem(BigDecimal timeItemNo) {
 		String companyId = AppContexts.user().companyId();
-		
+
 		Optional<BonusPayTimeItem> bonusPayTimeItem = this.bpTimeItemRepository.getBonusPayTimeItem(companyId, timeItemNo);
 		if(bonusPayTimeItem.isPresent()){
 			return this.toBPTimeItemDto(
@@ -59,23 +60,6 @@ public class BPTimeItemFinder {
 		}
 		return null;
 	}
-	
-	public void checkUseArt(List<Boolean> lstuseArt){
-		boolean checkUseExist = false;
-		
-		for (Boolean useArt : lstuseArt) {
-			if(useArt){
-				checkUseExist=useArt;
-			}
-		}
-		if(!checkUseExist){
-			throw new BusinessException("Msg_131");
-		}
-		
-	}
-	
-	
-	
 
 	public BPTimeItemDto getSpecialBonusPayTimeItem(BigDecimal timeItemNo) {
 		String companyId = AppContexts.user().companyId();
@@ -85,7 +69,7 @@ public class BPTimeItemFinder {
 					bonusPayTimeItem.get());
 		}
 		return null;
-		
+
 	}
 
 	private BPTimeItemDto toBPTimeItemDto(BonusPayTimeItem bonusPayTimeItem) {

@@ -4,14 +4,14 @@ module nts.uk.at.view.kmk005.b {
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
             timeItemSpecList: KnockoutObservableArray<TimeItem>;
-            timeItemList: KnockoutObservableArray<TimeItem>;            
-            
+            timeItemList: KnockoutObservableArray<TimeItem>;
+
             /** Bonus pay time */
             useAtr1: KnockoutObservable<number> = ko.observable(0);
             timeItemId1: KnockoutObservable<string> = ko.observable('');
             timeItemName1: KnockoutObservable<string> = ko.observable('');
             isRequired1: KnockoutObservable<boolean> = ko.observable(false);
-            
+
             useAtr2: KnockoutObservable<number> = ko.observable(0);
             timeItemId2 : KnockoutObservable<string> = ko.observable('');
             timeItemName2 : KnockoutObservable<string> = ko.observable('');
@@ -62,47 +62,47 @@ module nts.uk.at.view.kmk005.b {
              timeItemSpecId1: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName1: KnockoutObservable<string> = ko.observable('');
              isSpecRequired1: KnockoutObservable<boolean> = ko.observable(false);
-             
+
              useSpecAtr2: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId2: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName2: KnockoutObservable<string> = ko.observable('');
              isSpecRequired2: KnockoutObservable<boolean> = ko.observable(false);
- 
+
              useSpecAtr3: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId3: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName3: KnockoutObservable<string> = ko.observable('');
              isSpecRequired3: KnockoutObservable<boolean> = ko.observable(false);
- 
+
              useSpecAtr4: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId4: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName4: KnockoutObservable<string> = ko.observable('');
              isSpecRequired4: KnockoutObservable<boolean> = ko.observable(false);
- 
+
              useSpecAtr5: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId5: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName5: KnockoutObservable<string> = ko.observable('');
              isSpecRequired5: KnockoutObservable<boolean> = ko.observable(false);
- 
+
              useSpecAtr6: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId6: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName6: KnockoutObservable<string> = ko.observable('');
              isSpecRequired6: KnockoutObservable<boolean> = ko.observable(false);
- 
+
              useSpecAtr7: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId7: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName7: KnockoutObservable<string> = ko.observable('');
              isSpecRequired7: KnockoutObservable<boolean> = ko.observable(false);
- 
+
              useSpecAtr8: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId8: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName8: KnockoutObservable<string> = ko.observable('');
              isSpecRequired8: KnockoutObservable<boolean> = ko.observable(false);
- 
+
              useSpecAtr9: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId9: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName9: KnockoutObservable<string> = ko.observable('');
              isSpecRequired9: KnockoutObservable<boolean> = ko.observable(false);
- 
+
              useSpecAtr10: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId10: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName10: KnockoutObservable<string> = ko.observable('');
@@ -385,13 +385,13 @@ module nts.uk.at.view.kmk005.b {
                                 self.timeItemName10(item[i].timeItemName);
                                 self.timeItemId10(item[i].timeItemId);
                                 self.isRequired10(item[i].useAtr == 1);
-                            }                                
-                        }                        
+                            }
+                        }
                         $($(".itemName[disabled!='disabled']")[0]).focus();
                     }
                 });
 
-                service.getListSpecialBonusPayTimeItem().done(function(item: Array<any>) {                    
+                service.getListSpecialBonusPayTimeItem().done(function(item: Array<any>) {
                     if(!_.isUndefined(item) || !_.isEmpty(item)) {
                         for (let i = 0; i < item.length; i++){
                             if(i == 0) {
@@ -462,8 +462,8 @@ module nts.uk.at.view.kmk005.b {
                                 self.timeItemSpecName10(item[i].timeItemName);
                                 self.timeItemSpecId10(item[i].timeItemId);
                                 self.isSpecRequired10(item[i].useAtr == 1);
-                            }                                
-                        }                        
+                            }
+                        }
                     }
                 });
                 dfd.resolve();
@@ -488,9 +488,9 @@ module nts.uk.at.view.kmk005.b {
                     lstUseArt.push(self.useAtr7() == 1 ? true : false);
                     lstUseArt.push(self.useAtr8() == 1 ? true : false);
                     lstUseArt.push(self.useAtr9() == 1 ? true : false);
-                    lstUseArt.push(self.useAtr10() == 1 ? true : false);                    
+                    lstUseArt.push(self.useAtr10() == 1 ? true : false);
 
-                    bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName1(), useAtr: self.useAtr1(),timeItemNo: 1, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });                    
+                    bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName1(), useAtr: self.useAtr1(),timeItemNo: 1, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
                     bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName2(), useAtr: self.useAtr2(),timeItemNo: 2, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
                     bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName3(), useAtr: self.useAtr3(),timeItemNo: 3, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
                     bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName4(), useAtr: self.useAtr4(),timeItemNo: 4, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
@@ -500,7 +500,7 @@ module nts.uk.at.view.kmk005.b {
                     bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName8(), useAtr: self.useAtr8(),timeItemNo: 8, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
                     bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName9(), useAtr: self.useAtr9(),timeItemNo: 9, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
                     bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName10(), useAtr: self.useAtr10(),timeItemNo: 10, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
-                   
+
                     lstUseSpecArt.push(self.useSpecAtr1() == 1 ? true : false);
                     lstUseSpecArt.push(self.useSpecAtr2() == 1 ? true : false);
                     lstUseSpecArt.push(self.useSpecAtr3() == 1 ? true : false);
@@ -510,9 +510,9 @@ module nts.uk.at.view.kmk005.b {
                     lstUseSpecArt.push(self.useSpecAtr7() == 1 ? true : false);
                     lstUseSpecArt.push(self.useSpecAtr8() == 1 ? true : false);
                     lstUseSpecArt.push(self.useSpecAtr9() == 1 ? true : false);
-                    lstUseSpecArt.push(self.useSpecAtr10() == 1 ? true : false);                    
+                    lstUseSpecArt.push(self.useSpecAtr10() == 1 ? true : false);
 
-                    bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName1(), useAtr: self.useSpecAtr1(),timeItemNo: 1, timeItemTypeAtr: 1 });                    
+                    bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName1(), useAtr: self.useSpecAtr1(),timeItemNo: 1, timeItemTypeAtr: 1 });
                     bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName2(), useAtr: self.useSpecAtr2(),timeItemNo: 2, timeItemTypeAtr: 1 });
                     bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName3(), useAtr: self.useSpecAtr3(),timeItemNo: 3, timeItemTypeAtr: 1 });
                     bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName4(), useAtr: self.useSpecAtr4(),timeItemNo: 4, timeItemTypeAtr: 1 });
@@ -524,35 +524,21 @@ module nts.uk.at.view.kmk005.b {
                     bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName10(), useAtr: self.useSpecAtr10(),timeItemNo: 10, timeItemTypeAtr: 1 });
 
 
-                    service.checkUseArt(lstUseArt).done(function() {
+                    service.checkUseArt(lstUseArt,lstUseSpecArt).done(function() {
                         service.getListBonusPTimeItem().done(function(res: Array<any>) {
                             if (res === undefined || res.length == 0) {
-                                service.addListBonusPayTimeItem(bonusPayTimeItemListCommand);
+                                service.addListBonusPayTimeItem(bonusPayTimeItemListCommand,bonusPayTimeItemSpecListCommand);
                             } else {
-                                service.updateListBonusPayTimeItem(bonusPayTimeItemListCommand);
+                                service.updateListBonusPayTimeItem(bonusPayTimeItemListCommand,bonusPayTimeItemSpecListCommand);
                             }
                             self.closeDialog();
                         })
 
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                    });
-
-                    service.checkUseArt(lstUseSpecArt).done(function() {
-                        service.getListSpecialBonusPayTimeItem().done(function(res: Array<any>) {
-                            if (res === undefined || res.length == 0) {
-                                service.addListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
-                            } else {
-                                service.updateListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
-                            }
-                            self.closeDialog();
-                        })
-
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    }).fail(function(res){
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId});
                     });
                 }
-            }           
+            }
 
             /**
              * close dialog and do nothing
@@ -568,7 +554,7 @@ module nts.uk.at.view.kmk005.b {
             timeItemNo: KnockoutObservable<number>;
             timeItemTypeAtr: KnockoutObservable<number>;
             timeItemId: KnockoutObservable<string>;
-            constructor(timeItemName: string, useAtr: number, timeItemNo: number, 
+            constructor(timeItemName: string, useAtr: number, timeItemNo: number,
                         timeItemTypeAtr: number, timeItemId: string) {
                 var self = this;
                 self.timeItemName = ko.observable(timeItemName);
