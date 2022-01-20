@@ -79,9 +79,9 @@ module nts.uk.com.view.ccg015.b {
       vm.button2Text = ko.computed(() => vm.selectedId() === LayoutType.LAYOUT_TYPE_2 ? vm.$i18n("CCG015_59") : 
         (vm.selectedId() === LayoutType.LAYOUT_TYPE_3 ? vm.getLayoutName(vm.topPageModel().frameLayout2()) : vm.$i18n("CCG015_60")));
       vm.button3Text = ko.computed(() => vm.getLayoutName(vm.topPageModel().frameLayout3()));
-      vm.layoutPos1 = ko.computed(() => vm.getLayoutPos(vm.selectedId() === 3 ? vm.topPageModel().frameLayout1() : 1));
-      vm.layoutPos2 = ko.computed(() => vm.getLayoutPos(vm.selectedId() === 3 ? vm.topPageModel().frameLayout2() : 0));
-      vm.layoutPos3 = ko.computed(() => vm.getLayoutPos(vm.selectedId() === 3 ? vm.topPageModel().frameLayout3() : 2));
+      vm.layoutPos1 = ko.computed(() => vm.getLayoutPos(vm.topPageModel().frameLayout1()));
+      vm.layoutPos2 = ko.computed(() => vm.getLayoutPos(vm.topPageModel().frameLayout2()));
+      vm.layoutPos3 = ko.computed(() => vm.getLayoutPos(vm.topPageModel().frameLayout3()));
       vm.displaySizeText1 = ko.computed(() => vm.selectedId() === LayoutType.LAYOUT_TYPE_2
         || (vm.selectedId() === LayoutType.LAYOUT_TYPE_3 && vm.topPageModel().frameLayout1() !== 0));
       vm.displaySizeText2 = ko.computed(() => vm.selectedId() === LayoutType.LAYOUT_TYPE_1
@@ -144,6 +144,11 @@ module nts.uk.com.view.ccg015.b {
             vm.isDisableNewBtn(false);
             vm.toppageSelectedCode(selectedCode || lstSort[0].code);
             vm.topPageModel().topPageName(selectToppage?.name)
+            if (vm.selectedId() !== 3) {
+              vm.topPageModel().frameLayout1(1);
+              vm.topPageModel().frameLayout2(0);
+              vm.topPageModel().frameLayout3(2);
+            }
             $("#inp_name").focus();
           } else {
             vm.listTopPage([]);
@@ -165,9 +170,9 @@ module nts.uk.com.view.ccg015.b {
       vm.topPageModel().topPageCode(data.topPageCode);
       vm.topPageModel().topPageName(data.topPageName);
       vm.topPageModel().layoutDisp(data.layoutDisp);
-      vm.topPageModel().frameLayout1(data.frameLayout1 ?? 1);
-      vm.topPageModel().frameLayout2(data.frameLayout2 ?? 0);
-      vm.topPageModel().frameLayout3(data.frameLayout3 ?? 2);
+      vm.topPageModel().frameLayout1(data.layoutDisp === 3 ? (data.frameLayout1 ?? 1) : 1);
+      vm.topPageModel().frameLayout2(data.layoutDisp === 3 ? (data.frameLayout2 ?? 0) : 0);
+      vm.topPageModel().frameLayout3(data.layoutDisp === 3 ? (data.frameLayout3 ?? 2) : 2);
       vm.selectedId(data.layoutDisp);
     }
 
