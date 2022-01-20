@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.shared.app.find.workrule.shiftmaster;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 
 /**
@@ -8,6 +10,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
  *
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class WorkTimeSettingDto {
 	
 	private String workTimeCode;
@@ -18,8 +22,8 @@ public class WorkTimeSettingDto {
 		this.workTimeName = domain.getWorkTimeDisplayName().getWorkTimeName().v();
 	}
 	
-	public WorkTimeSettingDto (String workTimeCode, String workTimeName) {
-		this.workTimeCode = workTimeCode;
-		this.workTimeName = workTimeName;
-	}
+//	public WorkTimeSettingDto (String workTimeCode, String workTimeName) {
+//		this.workTimeCode = workTimeCode;
+//		this.workTimeName = workTimeName;
+//	}
 }
