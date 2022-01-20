@@ -223,27 +223,33 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                     .map(i -> i.getWorkInformation().getWorkTypeCode().v())
                     .distinct()
                     .collect(Collectors.toList());
-            // ドメインモデル「勤務種類」を取得する
             Map<String, WorkType> mapWorkCds = wkTypeRepo.getPossibleWorkType(companyId, cds).stream().collect(Collectors.toMap(i -> i.getWorkTypeCode().v(), i -> i));
-            businessTripWorkTypes = businessTrip.get().getInfos().stream().map(i -> new BusinessTripWorkTypes(
-                    i.getDate(),
-                    mapWorkCds.get(i.getWorkInformation().getWorkTypeCode().v())
-            )).collect(Collectors.toList());
+            businessTripWorkTypes = businessTrip.get().getInfos().stream().map(i -> {
+                // ドメインモデル「勤務種類」を取得する
+                WorkType workType = mapWorkCds.get(i.getWorkInformation().getWorkTypeCode().v());
+             // ドメインモデル「就業時間帯の設定」を取得する
+                WorkTimeSetting workTimeSetting = null;
+                
+                if (i.getWorkInformation().getWorkTimeCodeNotNull().isPresent()) {
+                    if (appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent()
+                            && appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get().stream()
+                            .filter(x -> x.getWorktimeCode().v().equals(i.getWorkInformation().getWorkTimeCode().v()))
+                            .findFirst().isPresent()) {
+                        workTimeSetting = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get().stream()
+                                .filter(x -> x.getWorktimeCode().v().equals(i.getWorkInformation().getWorkTimeCode().v()))
+                                .findFirst().get();
+                    } else {
+                        workTimeSetting = wkTimeRepo.findByCode(companyId, i.getWorkInformation().getWorkTimeCode().v()).orElse(null);
+                    }
+                }
+                
+                return new BusinessTripWorkTypes(
+                        i.getDate(), 
+                        workType, 
+                        workTimeSetting);
+            }).collect(Collectors.toList());
+            
         }
-        List<WorkTimeSetting> workTimeSettings = new ArrayList<>();
-        if (appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent()) {
-            workTimeSettings = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get();
-        } else {
-            if (businessTrip.isPresent()) {
-                List<String> cds = businessTrip.get().getInfos().stream()
-                        .map(i -> i.getWorkInformation().getWorkTimeCode().v())
-                        .distinct()
-                        .collect(Collectors.toList());
-                // ドメインモデル「就業時間帯の設定」を取得する
-                workTimeSettings = wkTimeRepo.findByCodes(companyId, cds);
-            }
-        }
-        appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setOpWorkTimeLst(Optional.of(workTimeSettings));
         output.setAppDispInfoStartup(appDispInfoStartupOutput);
         output.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
         output.setWorkDayCds(Optional.of(workDays));
@@ -506,7 +512,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             Optional<WorkType> getWorkTypeInfo = wkTypeRepo.findByPK(cid, checkInputCode.getCode());
             if (infoOutput.getWorkTypeAfterChange().isPresent()) {
                 // 変更後勤務種類にセット
-                BusinessTripWorkTypes itemAfterChange = new BusinessTripWorkTypes(inputDate, getWorkTypeInfo.get());
+                BusinessTripWorkTypes itemAfterChange = new BusinessTripWorkTypes(inputDate, getWorkTypeInfo.get(), null);
                 if (infoOutput.getWorkTypeAfterChange().get().contains(itemAfterChange)) {
                     int index = infoOutput.getWorkTypeAfterChange().get().indexOf(itemAfterChange);
                     infoOutput.getWorkTypeAfterChange().get().set(index, itemAfterChange);
