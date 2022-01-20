@@ -1116,8 +1116,10 @@ module nts.uk.ui.at.kdw013.c {
 				let range = _.find(taskItemValues, i => i.itemId == 3);
 				start.value = vm.caltimeSpanView.start() ;
 				end.value = vm.caltimeSpanView.end();
-                let tr = nts.uk.time.parseTime(vm.caltimeSpanView.range().replace('作業時間 ', ''));
-                range.value = (tr.hours * 60) + tr.minutes;
+                if (vm.taskDetailsView().length == 1) {
+                    let tr = nts.uk.time.parseTime(vm.caltimeSpanView.range().replace('作業時間 ', ''));
+                    range.value = (tr.hours * 60) + tr.minutes;
+                }
                 taskDetails.push({supNo: task.supNo, taskItemValues: taskItemValues});
             });
             return {
