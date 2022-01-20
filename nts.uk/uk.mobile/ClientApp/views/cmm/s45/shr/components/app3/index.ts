@@ -77,6 +77,7 @@ export class CmmS45ComponentsApp3Component extends Vue {
                 vm.table = res.data.businessTripDto.tripInfos.map((item: any) => {
                     const workTime = res.data.businessTripInfoOutputDto.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst.find((i: any) => i.worktimeCode == item.wkTimeCd);
                     const workType = res.data.businessTripInfoOutputDto.infoBeforeChange.find((i: any) => i.date == item.date).workTypeDto;
+                    const timeInfoTmp = res.data.businessTripInfoOutputDto.infoBeforeChange.find((i: any) => i.date == item.date && i.workTimeSetting && item.wkTimeCd == i.workTimeSetting.workTimeCode);
                     
                     return {
                         date: item.date,
@@ -85,7 +86,7 @@ export class CmmS45ComponentsApp3Component extends Vue {
                         startWorkTime: item.startWorkTime,
                         endWorkTime: item.endWorkTime,
                         workTypeName: workType.name,
-                        workTimeName: workTime ? workTime.workTimeDisplayName.workTimeName : null
+                        workTimeName: workTime ? workTime.workTimeDisplayName.workTimeName : (timeInfoTmp ? timeInfoTmp.workTimeSetting.workTimeName : null)
                     };
                 });
                 vm.params.appDetail = res.data;
