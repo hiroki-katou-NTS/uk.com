@@ -44,6 +44,7 @@ import nts.uk.screen.at.app.ksu001.start.ExternalBudgetMapDtoList;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class GetAggregatedInfoFinder {
 
 	@Inject

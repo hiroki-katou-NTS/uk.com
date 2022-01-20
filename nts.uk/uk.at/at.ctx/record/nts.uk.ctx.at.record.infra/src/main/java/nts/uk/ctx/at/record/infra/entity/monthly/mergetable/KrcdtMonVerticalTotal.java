@@ -2283,7 +2283,7 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 	private BreakTimeOfMonthly breakTime() {
 		
 		return BreakTimeOfMonthly.of(
-				new AttendanceTimesMonth(this.breakTime), 
+				new AttendanceTimesMonth(this.breakTimes), 
 				new AttendanceTimeMonth(this.breakTime),
 				new AttendanceTimeMonth(this.breakWithinTime), 
 				new AttendanceTimeMonth(this.breakWithinDeducTime),
