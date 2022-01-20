@@ -114,12 +114,12 @@ public class WorkAvailabilityOfOneDayTest {
 		
 		new Expectations(workAvailability.getWorkAvailability()) {
             {
-            	workAvailability.getWorkAvailability().isHolidayAvailability(require);
+            	workAvailability.getWorkAvailability().isHolidayAvailability(require, anyString);
             	result = true;
             }
         };
         
-        boolean result = workAvailability.isHolidayAvailability(require);
+        boolean result = workAvailability.isHolidayAvailability(require, "cid");
         
         assertThat(result).isTrue();
 	}
@@ -131,12 +131,12 @@ public class WorkAvailabilityOfOneDayTest {
 		
 		new Expectations(workAvailability.getWorkAvailability()) {
             {
-            	workAvailability.getWorkAvailability().isHolidayAvailability(require);
+            	workAvailability.getWorkAvailability().isHolidayAvailability(require, anyString);
             	result = false;
             }
         };
         
-        boolean result = workAvailability.isHolidayAvailability(require);
+        boolean result = workAvailability.isHolidayAvailability(require, "cid");
         
         assertThat(result).isFalse();
 	}
@@ -153,12 +153,12 @@ public class WorkAvailabilityOfOneDayTest {
 		
 		new Expectations(workAvailability.getWorkAvailability()) {
             {
-            	workAvailability.getWorkAvailability().isMatchingWorkAvailability(require, workInformation, new ArrayList<TimeSpanForCalc>());
+            	workAvailability.getWorkAvailability().isMatchingWorkAvailability(require, anyString, workInformation, new ArrayList<TimeSpanForCalc>());
             	result = true;
             }
         };
         
-        boolean result = workAvailability.isMatchingAvailability(require, workInformation, Collections.emptyList());
+        boolean result = workAvailability.isMatchingAvailability(require, "cid", workInformation, Collections.emptyList());
         
         assertThat(result).isTrue();
 	}
@@ -176,12 +176,12 @@ public class WorkAvailabilityOfOneDayTest {
 		new Expectations(workAvailability.getWorkAvailability()) {
             {
             	workAvailability.getWorkAvailability()
-            		.isMatchingWorkAvailability(require, workInformation, new ArrayList<TimeSpanForCalc>());
+            		.isMatchingWorkAvailability(require, anyString, workInformation, new ArrayList<TimeSpanForCalc>());
             	result = false;
             }
         };
         
-        boolean result = workAvailability.isMatchingAvailability(require, workInformation, Collections.emptyList());
+        boolean result = workAvailability.isMatchingAvailability(require, "cid", workInformation, Collections.emptyList());
         
         assertThat(result).isFalse();
 	}

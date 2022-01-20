@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.assertj.core.groups.Tuple;
 import org.junit.Test;
@@ -288,7 +289,7 @@ public class FlexWorkSettingTest {
 		new Expectations() {
 			{
 				require.predetemineTimeSetting(anyString, (WorkTimeCode) any);
-				result = predTimeStg;
+				result = Optional.of(predTimeStg);
 			}
 		};
 
@@ -349,7 +350,7 @@ public class FlexWorkSettingTest {
 		new Expectations() {
 			{
 				require.predetemineTimeSetting(anyString, (WorkTimeCode) any);
-				result = predTimeStg;
+				result = Optional.of(predTimeStg);
 			}
 		};
 
@@ -404,7 +405,7 @@ public class FlexWorkSettingTest {
 		new Expectations() {
 			{
 				require.predetemineTimeSetting(anyString, (WorkTimeCode)any);
-				result = instance;
+				result = Optional.of(instance);
 			}
 		};
 

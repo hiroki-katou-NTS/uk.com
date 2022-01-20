@@ -105,7 +105,7 @@ public class RegisterWorkScheduleAllDayCommandHandler extends CommandHandler<Reg
 		//2: not Optional<勤務予定>.isEmpty : 一日中に作業予定を作成する(Require, 作業コード)
 		if (!lstWorkSchedule.isEmpty()) {
 			for (WorkSchedule item : lstWorkSchedule) {
-				item.createTaskScheduleForWholeDay(require,  new TaskCode(command.taskCode));
+				item.createTaskScheduleForWholeDay(require, AppContexts.user().companyId(), new TaskCode(command.taskCode));
 			}
 		}
 	}

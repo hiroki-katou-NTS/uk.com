@@ -99,7 +99,7 @@ public class ScreenQueryAggregateNumberPeople {
 			// 1.1: 雇用別に集計する(Require, List<日別勤怠(Work)>)
 			
 			Map<GeneralDate, Map<EmploymentCode, BigDecimal>> countEachEpl 
-				= CountNumberOfPeopleByAttributeService.countingEachEmployments(require, dailyWorks);
+				= CountNumberOfPeopleByAttributeService.countingEachEmployments(require, companyId, dailyWorks);
 			
 			List<String> empCodes = countEachEpl.entrySet()
 						.stream()
@@ -152,7 +152,7 @@ public class ScreenQueryAggregateNumberPeople {
 		} else if (workplaceCounterOp == WorkplaceCounterCategory.CLASSIFICATION_PEOPLE) { // 職場計カテゴリ == 分類人数
 			//2.1:  分類別に集計する(Require, List<日別勤怠(Work)>)
 			Map<GeneralDate, Map<ClassificationCode, BigDecimal>> countEachClassification = 
-					CountNumberOfPeopleByAttributeService.countingEachClassification(require, dailyWorks);
+					CountNumberOfPeopleByAttributeService.countingEachClassification(require, companyId, dailyWorks);
 			//2.2: <call>
 			List<Classification> classifications = classificationRepository.getClassificationByCodes(
 					companyId, 
@@ -194,7 +194,7 @@ public class ScreenQueryAggregateNumberPeople {
 		} else if (workplaceCounterOp == WorkplaceCounterCategory.POSITION_PEOPLE) { // 職場計カテゴリ == 職位人数
 			// 3.1: 職位別に集計する(Require, List<日別勤怠(Work)>)
 			Map<GeneralDate, Map<String, BigDecimal>> countEachJob =
-					CountNumberOfPeopleByAttributeService.countingEachJobTitle(require, dailyWorks);
+					CountNumberOfPeopleByAttributeService.countingEachJobTitle(require, companyId, dailyWorks);
 			
 			// 3.2: <call>
 			List<JobTitleInfo> jobTitleInfos = 

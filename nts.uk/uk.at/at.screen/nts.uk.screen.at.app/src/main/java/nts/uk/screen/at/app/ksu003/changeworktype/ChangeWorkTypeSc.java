@@ -69,7 +69,7 @@ public class ChangeWorkTypeSc {
 				workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
 		
 		// 2 .出勤・休日系の判定(Require)
-		Optional<WorkStyle> workStyle = workInformation.getWorkStyle(impl);
+		Optional<WorkStyle> workStyle = workInformation.getWorkStyle(impl, companyId);
 		
 		// 3 .get(会社ID、勤務種類コード):勤務種類
 		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, information.getWorkTypeCode().v());

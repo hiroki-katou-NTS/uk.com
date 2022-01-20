@@ -137,7 +137,7 @@ public class GetInforOnTargetDate {
     	if (workHolidayAtr != WorkStyle.ONE_DAY_REST.value) {
 
     		// [出勤休日区分＜＞休日]: 取得する（require, 社員ID, 基準日）：　List<社員ID>
-    		List<String> listEmpId = GetWorkTogetherEmpOnDayBySpecEmpService.get(require, sid, baseDate);
+    		List<String> listEmpId = GetWorkTogetherEmpOnDayBySpecEmpService.get(require, companyId, sid, baseDate);
 
     		// 2: [出勤休日区分＜＞休日]: <<create>>
     		EmployeeInformationQuery params =  EmployeeInformationQuery.builder()
@@ -195,9 +195,9 @@ public class GetInforOnTargetDate {
 
     			listShiftMaster.forEach(e -> {
 
-    				Optional<WorkInfoAndTimeZone> workInfoAndTimeZone = e.getWorkInfoAndTimeZone(require);
+    				Optional<WorkInfoAndTimeZone> workInfoAndTimeZone = e.getWorkInfoAndTimeZone(require, companyId);
 
-    				Optional<WorkStyle> workStyle = e.getWorkStyle(require);
+    				Optional<WorkStyle> workStyle = e.getWorkStyle(require, companyId);
 
     				if (workInfoAndTimeZone.isPresent()) {
 

@@ -127,7 +127,7 @@ public class AddWorkScheduleCommandHandler extends CommandHandler<AddWorkSchedul
 				
 				TaskSchedule newTaskSchedule = TaskSchedule.create(details);
 				// 1.4:Optional<勤務予定>．isPresent : 作業予定を入れ替える(@Require, 作業予定)
-				workSchedule.get().updateTaskSchedule(require, newTaskSchedule);
+				workSchedule.get().updateTaskSchedule(require, AppContexts.user().companyId(), newTaskSchedule);
 				lstWorkSchedule.add(workSchedule.get());
 				// 2
 			}

@@ -260,13 +260,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//勤務種類の取得
 		Optional<WorkType> workType = this.getWorkTypeFromShareContainer(
 				companyCommonSetting.getShareContainer(),
-				AppContexts.user().companyId(),
+				companyCommonSetting.getCompanyId(),
 				clonedIntegrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		
 		//統合就業時間帯の作成
 		Optional<IntegrationOfWorkTime> integrationOfWorkTime = this.createIntegrationOfWorkTime(
 				companyCommonSetting.getShareContainer(),
-				AppContexts.user().companyId(),
+				companyCommonSetting.getCompanyId(),
 				personCommonSetting,
 				clonedIntegrationOfDaily.getWorkInformation());
 		
@@ -350,6 +350,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			Optional<IntegrationOfWorkTime> integrationOfWorkTime,
 			Optional<SchedulePerformance> schedulePerformance) {
 	
+		String companyId = companyCommonSetting.getCompanyId();
+		
 		// 休暇加算時間設定
 		Optional<HolidayAddtionSet> holidayAddtionSetting = companyCommonSetting.getHolidayAdditionPerCompany();
 		// 休暇加算設定が取得できなかった時のエラー
@@ -364,7 +366,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 		// 所定用就業時間帯コードを取得する
 		Optional<WorkTimeCode> workTimeCode = integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCodeForPred(
-				personCommonSetting.getRequire(), personCommonSetting.getPersonInfo());
+				personCommonSetting.getRequire(), companyId, personCommonSetting.getPersonInfo());
 
 		/* 就業時間帯勤務区分 */
 		// 1日休日の場合、就業時間帯コードはnullであるので、
@@ -423,9 +425,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						integrationOfWorkTime.get().getFlexWorkSetting().get().getCommonSetting().getHolidayCalculation()));
 				
 				/* 前日の勤務情報取得 */
-				val yesterDayForFlex = getWorkTypeByWorkInfo(yesterDayInfo, workType.get(), shareContainer);
+				val yesterDayForFlex = getWorkTypeByWorkInfo(companyId, yesterDayInfo, workType.get(), shareContainer);
 				/* 翌日の勤務情報取得 */
-				val tomorrowForFlex = getWorkTypeByWorkInfo(tomorrowDayInfo, workType.get(), shareContainer);
+				val tomorrowForFlex = getWorkTypeByWorkInfo(companyId, tomorrowDayInfo, workType.get(), shareContainer);
 				// 前日と翌日の勤務
 				PreviousAndNextDaily previousAndNextDailyForFlex = new PreviousAndNextDaily(yesterDayForFlex, tomorrowForFlex, yesterInfo, tommorowInfo);
 				
@@ -463,9 +465,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				ootsukaFixedWorkSet = integrationOfWorkTime.get().getFixedWorkSetting().get().getCalculationSetting();
 
 				/* 前日の勤務情報取得 */
-				val yesterDayForFixed = getWorkTypeByWorkInfo(yesterDayInfo, workType.get(), shareContainer);
+				val yesterDayForFixed = getWorkTypeByWorkInfo(companyId, yesterDayInfo, workType.get(), shareContainer);
 				/* 翌日の勤務情報取得 */
-				val tomorrowForFixed = getWorkTypeByWorkInfo(tomorrowDayInfo, workType.get(), shareContainer);
+				val tomorrowForFixed = getWorkTypeByWorkInfo(companyId, tomorrowDayInfo, workType.get(), shareContainer);
 				// 前日と翌日の勤務
 				PreviousAndNextDaily previousAndNextDailyForFix = new PreviousAndNextDaily(yesterDayForFixed, tomorrowForFixed, yesterInfo, tommorowInfo);
 				
@@ -495,9 +497,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					return Optional.empty();
 				
 				/* 前日の勤務情報取得 */
-				val yesterDayForFlow = getWorkTypeByWorkInfo(yesterDayInfo, workType.get(), shareContainer);
+				val yesterDayForFlow = getWorkTypeByWorkInfo(companyId, yesterDayInfo, workType.get(), shareContainer);
 				/* 翌日の勤務情報取得 */
-				val tomorrowForFlow = getWorkTypeByWorkInfo(tomorrowDayInfo, workType.get(), shareContainer);
+				val tomorrowForFlow = getWorkTypeByWorkInfo(companyId, tomorrowDayInfo, workType.get(), shareContainer);
 				// 前日と翌日の勤務
 				PreviousAndNextDaily previousAndNextDailyFlow = new PreviousAndNextDaily(yesterDayForFlow, tomorrowForFlow, yesterInfo, tommorowInfo);
 				
@@ -556,7 +558,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			DailyRecordToAttendanceItemConverter converter,
 			DeclareTimezoneResult declareResult) {
 		
-		String companyId = AppContexts.user().companyId();
+		String companyId = recordReGetClass.getCompanyCommonSetting().getCompanyId();
 		GeneralDate targetDate = recordReGetClass.getIntegrationOfDaily().getYmd();
 
 		// フレックス勤務の設定
@@ -592,8 +594,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				flexCalcMethod, eachCompanyTimeSet, divergenceTimeList,
 				optionalCalculateOfTotalConstraintTime.get(), scheduleReGetClass, recordReGetClass,
 				recordReGetClass.getPersonDailySetting().getPersonInfo(),
-				getPredByPersonInfo(recordReGetClass.getPersonDailySetting().getPersonInfo().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode(),
-						recordReGetClass.getCompanyCommonSetting().getShareContainer(), workType.get()),
+				getPredByPersonInfo(
+						companyId,
+						recordReGetClass.getPersonDailySetting().getPersonInfo().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode(),
+						recordReGetClass.getCompanyCommonSetting().getShareContainer(),
+						workType.get()),
 				converter, recordReGetClass.getCompanyCommonSetting(),
 				decisionWorkTimeCode(recordReGetClass.getIntegrationOfDaily().getWorkInformation(), recordReGetClass.getPersonDailySetting(), workType),
 				declareResult));
@@ -602,15 +607,17 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		return recordReGetClass.getIntegrationOfDaily();
 	}
 	
-	private Optional<PredetermineTimeSetForCalc> getPredByPersonInfo(Optional<WorkTimeCode> workTimeCode,
-			MasterShareContainer<String> shareContainer, WorkType workType) {
+	private Optional<PredetermineTimeSetForCalc> getPredByPersonInfo(
+			String companyId,
+			Optional<WorkTimeCode> workTimeCode,
+			MasterShareContainer<String> shareContainer,
+			WorkType workType) {
 		if (!workTimeCode.isPresent())
 			return Optional.empty();
 		// val predSetting =
 		// predetemineTimeSetRepository.findByWorkTimeCode(AppContexts.user().companyId(),
 		// workTimeCode.get().toString());
-		val predSetting = getPredetermineTimeSetFromShareContainer(shareContainer, AppContexts.user().companyId(),
-				workTimeCode.get().toString());
+		val predSetting = getPredetermineTimeSetFromShareContainer(shareContainer, companyId, workTimeCode.get().toString());
 		if (!predSetting.isPresent())
 			return Optional.empty();
 		return Optional.of(PredetermineTimeSetForCalc.convertFromAggregatePremiumTime(predSetting.get(), workType));
@@ -727,13 +734,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//勤務種類の取得
 		Optional<WorkType> workType = this.getWorkTypeFromShareContainer(
 				companyCommonSetting.getShareContainer(),
-				AppContexts.user().companyId(),
+				companyCommonSetting.getCompanyId(),
 				afterScheduleIntegration.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		
 		//統合就業時間帯の作成
 		Optional<IntegrationOfWorkTime> integrationOfWorkTime = this.createIntegrationOfWorkTime(
 				companyCommonSetting.getShareContainer(),
-				AppContexts.user().companyId(),
+				companyCommonSetting.getCompanyId(),
 				personCommonSetting,
 				afterScheduleIntegration.getWorkInformation());
 
@@ -920,7 +927,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personCommonSetting) {
 		
-		String companyId = AppContexts.user().companyId();
+		String companyId = companyCommonSetting.getCompanyId();
 		String employeeId = integrationOfDaily.getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getYmd();
 		// 「所属雇用履歴」を取得する
@@ -947,7 +954,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if (integrationOfDaily != null ) {
 			// 所定用就業時間帯コードを取得する
 			Optional<WorkTimeCode> workTimeCode = integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCodeForPred(
-					personCommonSetting.getRequire(), personCommonSetting.getPersonInfo());
+					personCommonSetting.getRequire(), companyId, personCommonSetting.getPersonInfo());
 			if (workTimeCode.isPresent()) {
 				workTime = getWorkTimeSettingFromShareContainer(shareContainer, companyId, workTimeCode.get().v());
 				predSet = getPredetermineTimeSetFromShareContainer(shareContainer, companyId, workTimeCode.get().v());
@@ -999,15 +1006,17 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		return calcResultIntegrationOfDaily;
 	}
 
-	private WorkType getWorkTypeByWorkInfo(Optional<WorkInfoOfDailyPerformance> otherDayWorkInfo, WorkType nowWorkType,
+	private WorkType getWorkTypeByWorkInfo(
+			String companyId,
+			Optional<WorkInfoOfDailyPerformance> otherDayWorkInfo,
+			WorkType nowWorkType,
 			MasterShareContainer<String> shareContainer) {
 		if (otherDayWorkInfo.isPresent()) {
 			WorkTypeCode workTypeCode = otherDayWorkInfo.get().getWorkInformation().getRecordInfo().getWorkTypeCode();
 			String typeCode = workTypeCode.v().toString();
 			// val findedWorkType =
 			// this.workTypeRepository.findByPK(AppContexts.user().companyId(), typeCode);
-			val findedWorkType = getWorkTypeFromShareContainer(shareContainer, AppContexts.user().companyId(),
-					typeCode);
+			val findedWorkType = getWorkTypeFromShareContainer(shareContainer, companyId, typeCode);
 			val useWorkType = findedWorkType.orElse(nowWorkType);
 			return useWorkType;
 		} else {
@@ -1215,7 +1224,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		// 所定用就業時間帯コードを取得する
 		Optional<WorkTimeCode> workTimeCode = workInfo.getRecordInfo().getWorkTimeCodeForPred(
-				personCommonSetting.getRequire(), personCommonSetting.getPersonInfo());
+				personCommonSetting.getRequire(), companyId, personCommonSetting.getPersonInfo());
 		
 		/* 就業時間帯勤務区分 */
 		// 1日休日の場合、就業時間帯コードはnullであるので、
@@ -1277,7 +1286,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		DeclareSet declareSet = companyCommonSetting.getDeclareSet().get();
 		if (declareSet.getUsageAtr() == NotUseAtr.NOT_USE) return result;
 		
-		String companyId = AppContexts.user().companyId();					// 会社ID
+		String companyId = companyCommonSetting.getCompanyId();				// 会社ID
 		WorkType workType = workTypeOpt.get();								// 勤務種類
 		WorkTimeCode workTimeCode = integrationOfWorkTime.get().getCode();	// 就業時間帯コード
 		

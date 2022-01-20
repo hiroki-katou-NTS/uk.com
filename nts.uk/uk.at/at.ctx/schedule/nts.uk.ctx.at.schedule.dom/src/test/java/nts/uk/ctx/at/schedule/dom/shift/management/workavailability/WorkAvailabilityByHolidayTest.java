@@ -39,7 +39,7 @@ public class WorkAvailabilityByHolidayTest {
 	
 	@Test
 	public void testIsHolidayAvailability() {
-		assertThat(new WorkAvailabilityByHoliday().isHolidayAvailability(require)).isTrue();
+		assertThat(new WorkAvailabilityByHoliday().isHolidayAvailability(require, "cid")).isTrue();
 	}
 	
 	@Test
@@ -49,12 +49,12 @@ public class WorkAvailabilityByHolidayTest {
 		
 		new Expectations(workInformation) {
             {
-            	workInformation.getWorkStyle(require);
+            	workInformation.getWorkStyle(require, anyString);
             	result = Optional.empty();
             }
         };
         
-        boolean result = new WorkAvailabilityByHoliday().isMatchingWorkAvailability(require, workInformation, new ArrayList<>());
+        boolean result = new WorkAvailabilityByHoliday().isMatchingWorkAvailability(require, "cid", workInformation, new ArrayList<>());
         assertThat(result).isFalse();
 		
 	}
@@ -66,12 +66,12 @@ public class WorkAvailabilityByHolidayTest {
 		
 		new Expectations(workInformation) {
             {
-            	workInformation.getWorkStyle(require);
+            	workInformation.getWorkStyle(require, anyString);
             	result = Optional.of(WorkStyle.ONE_DAY_WORK);
             }
         };
         
-        boolean result = new WorkAvailabilityByHoliday().isMatchingWorkAvailability(require, workInformation, new ArrayList<>());
+        boolean result = new WorkAvailabilityByHoliday().isMatchingWorkAvailability(require, "cid", workInformation, new ArrayList<>());
         assertThat(result).isFalse();
 		
 	}
@@ -83,12 +83,12 @@ public class WorkAvailabilityByHolidayTest {
 		
 		new Expectations(workInformation) {
             {
-            	workInformation.getWorkStyle(require);
+            	workInformation.getWorkStyle(require, anyString);
             	result = Optional.of(WorkStyle.ONE_DAY_REST);
             }
         };
         
-        boolean result = new WorkAvailabilityByHoliday().isMatchingWorkAvailability(require, workInformation, new ArrayList<>());
+        boolean result = new WorkAvailabilityByHoliday().isMatchingWorkAvailability(require, "cid", workInformation, new ArrayList<>());
         assertThat(result).isTrue();
 		
 	}

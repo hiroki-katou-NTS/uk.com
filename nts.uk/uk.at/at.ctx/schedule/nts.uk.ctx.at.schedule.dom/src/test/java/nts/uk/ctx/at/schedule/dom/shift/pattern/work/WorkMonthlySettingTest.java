@@ -37,7 +37,7 @@ public class WorkMonthlySettingTest {
 
         }};
         NtsAssert.businessException("Msg_1608", () -> {
-                workMonthlySetting.checkForErrors(require);
+                workMonthlySetting.checkForErrors(require, CID);
             }
         );
     }
@@ -60,7 +60,7 @@ public class WorkMonthlySettingTest {
 
         }};
         NtsAssert.businessException("Msg_435", () -> {
-                    workMonthlySetting.checkForErrors(require);
+                    workMonthlySetting.checkForErrors(require, CID);
                 }
         );
     }
@@ -84,7 +84,7 @@ public class WorkMonthlySettingTest {
             result = Optional.empty();
         }};
         NtsAssert.businessException("Msg_1609", () -> {
-                    workMonthlySetting.checkForErrors(require);
+                    workMonthlySetting.checkForErrors(require, CID);
                 }
         );
     }
@@ -106,7 +106,7 @@ public class WorkMonthlySettingTest {
 
         }};
         NtsAssert.businessException("Msg_434", () -> {
-                    workMonthlySetting.checkForErrors(require);
+                    workMonthlySetting.checkForErrors(require, CID);
                 }
         );
     }
@@ -129,7 +129,7 @@ public class WorkMonthlySettingTest {
             require.workTimeSetting(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getWorkInformation().getWorkTimeCode());
             result = Optional.of(new WorkTimeSetting());
         }};
-        workMonthlySetting.checkForErrors(require);
+        workMonthlySetting.checkForErrors(require, CID);
     }
 
     @Test

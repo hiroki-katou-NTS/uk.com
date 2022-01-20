@@ -176,7 +176,8 @@ public class ScreenQueryWorkPlaceCheckFile {
         long startImport = System.currentTimeMillis();
         System.out.println("Start import");
         CapturedRawData rawData = data.toDomain();
-        ImportResult importResult = WorkScheduleImportService.importFrom( new RequireImp( rawData ), rawData );
+        ImportResult importResult = WorkScheduleImportService.importFrom( new RequireImp( rawData ), rawData,
+        		AppContexts.user().companyId());
         long endImport = System.currentTimeMillis();
         System.out.println("Time Import File: " + (endImport - startImport));
 

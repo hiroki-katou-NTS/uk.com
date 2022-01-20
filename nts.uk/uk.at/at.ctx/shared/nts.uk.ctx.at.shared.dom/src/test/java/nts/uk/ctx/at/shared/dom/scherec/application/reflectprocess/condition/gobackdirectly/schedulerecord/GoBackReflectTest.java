@@ -56,7 +56,7 @@ public class GoBackReflectTest {
 		GoBackReflect reflect = new GoBackReflect("", ApplicationStatus.DO_NOT_REFLECT_1);
 		new Expectations() {
 			{
-				require.workType(anyString, new WorkTypeCode(anyString));
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkTypeReflect());
 			}
 		};
@@ -74,7 +74,7 @@ public class GoBackReflectTest {
 		GoBackReflect reflect2 = new GoBackReflect("", ApplicationStatus.DO_REFLECT);
 		new Expectations() {
 			{
-				require.workType(anyString, new WorkTypeCode(anyString));
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkTypeReflect());
 			}
 		};
@@ -120,7 +120,7 @@ public class GoBackReflectTest {
 		GoBackReflect reflect2 = new GoBackReflect("", ApplicationStatus.DO_REFLECT);
 		new Expectations() {
 			{
-				require.workType(anyString, new WorkTypeCode(anyString));
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(createWorkTypeNoReflect());
 			}
 		};

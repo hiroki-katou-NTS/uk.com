@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.ksu003.start;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -154,7 +153,7 @@ public class GetFixedWorkInformation {
 				// 1.7
 				TimeZoneDto startTimeRange1 = null, endTimeRange1 = null, startTimeRange2 = null, endTimeRange2 = null;
 					// 1.7.1 休憩時間帯を取得する(Require):Optional<休憩時間>
-					Optional<BreakTimeZone> brkTime = workInformation.getBreakTimeZone(impl);
+					Optional<BreakTimeZone> brkTime = workInformation.getBreakTimeZone(impl, cid);
 					List<TimeSpanForCalcDto> calcDto = brkTime.get().getBreakTimes().stream()
 							.map(y -> new TimeSpanForCalcDto(y.getStart().v(), y.getEnd().v()))
 							.collect(Collectors.toList());
@@ -162,7 +161,7 @@ public class GetFixedWorkInformation {
 					breakTime = new BreakTimeKdl045Dto(brkTime.get().isFixed(), calcDto);
 
 					// 1.7.2 変更可能な勤務時間帯を取得する(Require)
-					lstNo = workInformation.getChangeableWorkingTimezones(impl);
+					lstNo = workInformation.getChangeableWorkingTimezones(impl, cid);
 
 					// List<勤務NOごとの変更可能な勤務時間帯>.isEmpty
 //					if (lstNo.isEmpty()) {

@@ -81,7 +81,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		MakeShiftMasterService.Require createRequired = new MakeShiftMasterRequireImpl(shiftMasterRepo, basicScheduleService, workTypeRepo, workTimeSettingRepository, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository);
 		UpdateShiftMasterService.Require updateRequired = new UpdateShiftMasterRequireImpl(shiftMasterRepo, basicScheduleService, workTypeRepo, workTimeSettingRepository, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository);
 		ShiftMaster dom = cmd.toDomain();
-		dom.checkError(createRequired);
+		dom.checkError(createRequired, companyId);
 
 		AtomTask persist;
 
@@ -96,6 +96,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 						);
 		} else {
 			persist = UpdateShiftMasterService.update(updateRequired
+							, companyId
 							, new ShiftMasterCode(cmd.getShiftMasterCode())
 							, dom.getDisplayInfor()
 							, new WorkInformation(cmd.getWorkTypeCd(), cmd.getWorkTimeSetCd())

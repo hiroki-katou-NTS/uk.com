@@ -29,7 +29,7 @@ public class RegisterWorkCycleService {
         if (isNewMode && require.exists(workCycle.getCid(), workCycle.getCode().v())) {
             throw new BusinessException("Msg_3");
         }
-        val listErrorStatus =  workCycle.checkError(require);
+        val listErrorStatus =  workCycle.checkError(require, workCycle.getCid());
         if(listErrorStatus.stream().filter(i -> i.value != ErrorStatusWorkInfo.NORMAL.value).findAny().isPresent()) {
             return new WorkCycleCreateResult(listErrorStatus);
         }

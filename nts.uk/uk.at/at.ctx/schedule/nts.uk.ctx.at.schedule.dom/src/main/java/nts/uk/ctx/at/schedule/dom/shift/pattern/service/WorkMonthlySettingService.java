@@ -14,9 +14,9 @@ import java.util.Optional;
 @Stateless
 public class WorkMonthlySettingService {
 
-    public static Optional<AtomTask> register(Require require, WorkMonthlySetting workMonthlySetting, Boolean isOverwrite) {
+    public static Optional<AtomTask> register(Require require, String companyId, WorkMonthlySetting workMonthlySetting, Boolean isOverwrite) {
 
-        workMonthlySetting.checkForErrors(require);
+        workMonthlySetting.checkForErrors(require, companyId);
         if (require.checkRegister(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk())) {
             if (isOverwrite) {
                 return Optional.of(AtomTask.of(() -> {

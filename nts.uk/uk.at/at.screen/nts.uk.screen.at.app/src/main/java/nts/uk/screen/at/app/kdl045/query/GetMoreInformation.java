@@ -79,12 +79,12 @@ public class GetMoreInformation {
 		
 		WorkInformation wi = new WorkInformation(workType, workTimeCode);
 		//1 
-		Optional<WorkStyle> workStyle =  wi.getWorkStyle(requireWorkInfo);
+		Optional<WorkStyle> workStyle =  wi.getWorkStyle(requireWorkInfo, companyId);
 		Integer style = workStyle.isPresent()?workStyle.get().value: null;
 		data.setWorkStyle(style);
 		if(workStyle.isPresent() && workStyle.get() != WorkStyle.ONE_DAY_REST) {
 			//2.1 :休憩時間帯を取得する (require: Require): Optional<休憩時間>
-			Optional<BreakTimeZone> optBreakTimeZone = wi.getBreakTimeZone(requireWorkInfo);
+			Optional<BreakTimeZone> optBreakTimeZone = wi.getBreakTimeZone(requireWorkInfo, companyId);
 			if(optBreakTimeZone.isPresent()) {
 				data.setBreakTime(BreakTimeKdl045Dto.convertToBreakTimeZone(optBreakTimeZone.get()));
 			}

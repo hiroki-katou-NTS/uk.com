@@ -423,12 +423,12 @@ public class TimeLeavingOfDailyAttdTest {
 		// Arrange
 		new Expectations() { {
 			
-			workInformation.getWorkInfoAndTimeZone(require);
+			workInformation.getWorkInfoAndTimeZone(require, anyString);
 			// result = empty
 			
 		}};
 		
-		NtsAssert.systemError( () -> TimeLeavingOfDailyAttd.createByPredetermineZone(require, workInformation));
+		NtsAssert.systemError( () -> TimeLeavingOfDailyAttd.createByPredetermineZone(require, "cid", workInformation));
 	}
 	
 	@Test
@@ -453,7 +453,7 @@ public class TimeLeavingOfDailyAttdTest {
 		// Expectation
 		new Expectations(TimeLeavingWork.class) { {
 			
-			workInformation.getWorkInfoAndTimeZone(require);
+			workInformation.getWorkInfoAndTimeZone(require, anyString);
 			result = Optional.of(workInforAndTimezone);
 			
 			TimeLeavingWork.createFromTimeSpan(new WorkNo(1), (TimeSpanForCalc) any);
@@ -464,7 +464,7 @@ public class TimeLeavingOfDailyAttdTest {
 		}};
 		
 		// Action
-		TimeLeavingOfDailyAttd target = TimeLeavingOfDailyAttd.createByPredetermineZone(require, workInformation);
+		TimeLeavingOfDailyAttd target = TimeLeavingOfDailyAttd.createByPredetermineZone(require, "cid", workInformation);
 		
 		// Assert
 		assertThat(target.getWorkTimes().v()).isEqualTo( timeZoneList.size() );

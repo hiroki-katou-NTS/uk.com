@@ -34,6 +34,9 @@ import nts.uk.ctx.at.shared.dom.workrule.specific.UpperLimitTotalWorkingHour;
  */
 @Getter
 public class ManagePerCompanySet {
+	
+	/** 会社ID */
+	String companyId;
 
 	//会社別の休暇加算設定
 	Optional<HolidayAddtionSet> holidayAdditionPerCompany;
@@ -102,6 +105,7 @@ public class ManagePerCompanySet {
 	CompanyHolidayPriorityOrder companyHolidayPriorityOrder;
 	
 	public ManagePerCompanySet(
+			String companyId,
 			Optional<HolidayAddtionSet> holidayAdditionPerCompany,
 			Optional<CalculateOfTotalConstraintTime> calculateOfTotalCons,
 			CompensatoryLeaveComSetting compensatoryLeaveComSet,
@@ -125,6 +129,7 @@ public class ManagePerCompanySet {
 			CompanyHolidayPriorityOrder companyHolidayPriorityOrder) {
 		
 		super();
+		this.companyId = companyId;
 		this.holidayAdditionPerCompany = holidayAdditionPerCompany;
 		this.calculateOfTotalCons = calculateOfTotalCons;
 		this.compensatoryLeaveComSet = compensatoryLeaveComSet;

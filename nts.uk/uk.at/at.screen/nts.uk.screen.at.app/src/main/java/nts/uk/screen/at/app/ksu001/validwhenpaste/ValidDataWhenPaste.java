@@ -59,9 +59,10 @@ public class ValidDataWhenPaste {
 	public boolean valid(List<ValidDataWhenPasteParam> param) {
 		boolean result = true;
 		WorkInformation.Require require = new RequireWorkInforImpl(workTypeRepo, workTimeSettingRepository, workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
+		String companyId = AppContexts.user().companyId();
 		for (int i = 0; i < param.size(); i++) {
 			WorkInformation workInformation = new WorkInformation(param.get(i).workTypeCode, param.get(i).workTimeCode);
-			result = workInformation.checkNormalCondition(require);
+			result = workInformation.checkNormalCondition(require, companyId);
 			if (result == false) {
 				throw new BusinessException("Msg_1728");
 			}

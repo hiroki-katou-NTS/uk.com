@@ -44,8 +44,8 @@ public class WorkCycleInfo extends ValueObject {
      * @param require
      * @return 	勤務情報のエラー状態
      */
-    public ErrorStatusWorkInfo checkError(WorkInformation.Require require) {
-        return workInformation.checkErrorCondition(require);
+    public ErrorStatusWorkInfo checkError(WorkInformation.Require require, String companyId) {
+        return workInformation.checkErrorCondition(require, companyId);
     }
 
 }

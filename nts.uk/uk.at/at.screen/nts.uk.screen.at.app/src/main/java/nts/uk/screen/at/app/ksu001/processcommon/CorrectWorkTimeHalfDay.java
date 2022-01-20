@@ -53,13 +53,14 @@ public class CorrectWorkTimeHalfDay {
 	private PredetemineTimeSettingRepository predetemineTimeSet;
 	
 	public WorkInfoAndTimeZone handle(CorrectWorkTimeHalfDayParam param) {
+		String companyId = AppContexts.user().companyId();
 		// step 1 
 		WorkInformation workInformation = new WorkInformation(param.worktypeCode, param.worktimeCode);
 				
 		// step 2 call 勤務情報と補正済み所定時間帯を取得する(Require)
 		RequireWorkInforImpl requireWorkInforImpl = new RequireWorkInforImpl(workTypeRepo, workTimeSettingRepository,
 				basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
-		Optional<WorkInfoAndTimeZone> rs = workInformation.getWorkInfoAndTimeZone(requireWorkInforImpl);
+		Optional<WorkInfoAndTimeZone> rs = workInformation.getWorkInfoAndTimeZone(requireWorkInforImpl, companyId);
 		
 		return rs.isPresent() ? rs.get() : null;
 	}

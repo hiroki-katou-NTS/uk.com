@@ -94,7 +94,7 @@ public class ReflectApplicationWorkSchedule {
 				dailyRecordApp.getDomain(), changeAtt);
 
 		// 振休振出として扱う日数を補正する
-		WorkInfoOfDailyAttendance workInfoAfter = CorrectDailyAttendanceService.correctFurikyu(require,
+		WorkInfoOfDailyAttendance workInfoAfter = CorrectDailyAttendanceService.correctFurikyu(require, companyId,
 				domainBeforeReflect.getWorkInformation(), domainCorrect.getWorkInformation());
 		domainCorrect.setWorkInformation(workInfoAfter);
 		dailyRecordApp.setDomain(domainCorrect);

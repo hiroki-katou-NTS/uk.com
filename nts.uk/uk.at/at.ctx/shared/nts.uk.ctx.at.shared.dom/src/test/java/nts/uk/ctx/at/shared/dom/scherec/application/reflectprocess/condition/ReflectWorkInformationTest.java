@@ -57,7 +57,7 @@ public class ReflectWorkInformationTest {
 			{
 				new MockUp<WorkInformation>() {
 					@Mock
-					public Optional<WorkInfoAndTimeZone> getWorkInfoAndTimeZone(Require require) {
+					public Optional<WorkInfoAndTimeZone> getWorkInfoAndTimeZone(Require require, String companyId) {
 						return Optional.of(ReflectApplicationHelper.createPredeteTimeSet(510, // 所定時間設定.時間帯.開始
 								1080, // 所定時間設定.時間帯. 終了
 								1));// 所定時間設定.時間帯.勤務NO
@@ -113,7 +113,7 @@ public class ReflectWorkInformationTest {
 
 				new MockUp<WorkInformation>() {
 					@Mock
-					public Optional<WorkInfoAndTimeZone> getWorkInfoAndTimeZone(Require require) {
+					public Optional<WorkInfoAndTimeZone> getWorkInfoAndTimeZone(Require require, String companyId) {
 						return Optional.of(ReflectApplicationHelper.createPredeteTimeSet(510, // 所定時間設定.時間帯.開始
 								1080, // 所定時間設定.時間帯. 終了
 								1));// 所定時間設定.時間帯.勤務NO
@@ -166,7 +166,7 @@ public class ReflectWorkInformationTest {
 			{
 				new MockUp<WorkInformation>() {
 					@Mock
-					public Optional<WorkInfoAndTimeZone> getWorkInfoAndTimeZone(Require require) {
+					public Optional<WorkInfoAndTimeZone> getWorkInfoAndTimeZone(Require require, String companyId) {
 						return Optional.of(ReflectApplicationHelper.createPredeteTimeSet(510, // 所定時間設定.時間帯.開始
 								1080, // 所定時間設定.時間帯. 終了
 								1));// 所定時間設定.時間帯.勤務NO
@@ -215,7 +215,7 @@ public class ReflectWorkInformationTest {
 		//②所定時間がない→出退勤に反映
 		new Expectations() {
 			{
-				recordInfo.getWorkInfoAndTimeZone(require);
+				recordInfo.getWorkInfoAndTimeZone(require, anyString);
 				result = Optional.of(ReflectApplicationHelper.createPredeteTimeSet(510, // 所定時間設定.時間帯.開始
 						1080, // 所定時間設定.時間帯. 終了
 						1));// 所定時間設定.時間帯.勤務NO
@@ -241,7 +241,7 @@ public class ReflectWorkInformationTest {
 		//①所定時間がない→出退勤のクリアー
 		new Expectations() {
 			{
-				recordInfo.getWorkInfoAndTimeZone(require);
+				recordInfo.getWorkInfoAndTimeZone(require, anyString);
 				result = Optional.empty();
 
 			}

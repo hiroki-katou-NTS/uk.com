@@ -106,6 +106,7 @@ public class CheckEmpAttendanceSystem {
 		// flowWorkSet, flexWorkSet, predetemineTimeSet);
 		Require require = new Require(workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSet,
 				flowWorkSet, flexWorkSet, predetemineTimeSet);
+		String companyId = AppContexts.user().companyId();
 		// 1: 取得する(Require, List<社員ID>, 期間) Return Map<社員の予定管理状態,
 		// Optional<勤務予定>>
 		RequireImpl requireImpl = new RequireImpl(lstEmpId, datePeriod);
@@ -117,7 +118,7 @@ public class CheckEmpAttendanceSystem {
 
 		mngStatusAndWScheMap.forEach((k, v) -> {
 			if (v.isPresent()) {
-				if (v.get().getWorkInfo().isAttendanceRate(require)) {
+				if (v.get().getWorkInfo().isAttendanceRate(require, companyId)) {
 					listSid.add(v.get().getEmployeeID());
 				}
 			}

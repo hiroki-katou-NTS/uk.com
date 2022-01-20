@@ -119,7 +119,7 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 			if(optional.isPresent()) {
 				WorkSchedule workSchedule = optional.get();				
 				workSchedule
-						.addTaskScheduleWithTimeSpan(require,
+						.addTaskScheduleWithTimeSpan(require, companyId,
 								new TimeSpanForCalc(new TimeWithDayAttr(command.getStartTime()), new TimeWithDayAttr(command.getEndTime())),
 													new TaskCode(command.getTaskCode()));
 				

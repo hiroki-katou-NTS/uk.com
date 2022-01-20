@@ -108,7 +108,8 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 		
 		val optionalItems = optionalItemRepository.findAll(companyId);
 		val usageSetting = usageUnitSettingRepository.findByCompany(companyId);
-		return new ManagePerCompanySet(holidayAddtionRepository.findByCId(companyId),
+		return new ManagePerCompanySet(companyId,
+									   holidayAddtionRepository.findByCId(companyId),
 									   specificWorkRuleRepository.findCalcMethodByCid(companyId),
 									   compensLeaveComSetRepository.find(companyId),
 									   divergenceTimeRepository.getAllDivTime(companyId),

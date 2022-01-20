@@ -47,7 +47,7 @@ public class MakeShiftMasterService {
 
 		// 作成→エラーチェック
 		val shiftMater = ShiftMaster.create(companyId, shiftMasterCode, displayInfor, workTypeCd, workTimeCd, importCode);
-		shiftMater.checkError(require);
+		shiftMater.checkError(require, companyId);
 
 
 		// 重複チェック：勤務種類＋就業時間帯

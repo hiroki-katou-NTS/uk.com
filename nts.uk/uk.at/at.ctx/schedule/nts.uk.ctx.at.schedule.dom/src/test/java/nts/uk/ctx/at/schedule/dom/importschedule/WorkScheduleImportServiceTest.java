@@ -374,7 +374,7 @@ public class WorkScheduleImportServiceTest {
 		}};
 		// シフトマスタの状態
 		new MockUp<WorkInformation> () {
-			@Mock public boolean checkNormalCondition(@SuppressWarnings("unused") WorkInformation.Require require) {
+			@Mock public boolean checkNormalCondition(@SuppressWarnings("unused") WorkInformation.Require require, String companyId) {
 				return shiftMasterMap.get(this.getMockInstance());
 			}
 		};
@@ -383,7 +383,7 @@ public class WorkScheduleImportServiceTest {
 		/* 実行 */
 		ImportResult result = NtsAssert.Invoke.staticMethod( WorkScheduleImportService.class
 			, "checkForContentIntegrity"
-				, require, interimResult
+				, require, "cid", interimResult
 		);
 
 
@@ -533,7 +533,7 @@ public class WorkScheduleImportServiceTest {
 			// 実行
 			ImportResult result = NtsAssert.Invoke.staticMethod(
 					WorkScheduleImportService.class, "checkForContentIntegrity"
-						, require, interimResult
+						, require, "cid", interimResult
 			);
 			// 検証
 			assertThat( result ).isEqualTo( interimResult );
@@ -709,7 +709,7 @@ public class WorkScheduleImportServiceTest {
 		}};
 		// シフトマスタの状態をチェックする
 		new MockUp<WorkInformation>() {
-			@Mock public boolean checkNormalCondition(@SuppressWarnings("unused") WorkInformation.Require require) {
+			@Mock public boolean checkNormalCondition(@SuppressWarnings("unused") WorkInformation.Require require, String companyId) {
 				return shiftMasterMap.get(this.getMockInstance());
 			}
 		};
@@ -743,7 +743,7 @@ public class WorkScheduleImportServiceTest {
 		/** 実行 **/
 		// 実行
 		val rawDataOfCells = importSeeds.stream().map( ExpectImportFromRawData::getAsCapturedRaw ).collect(Collectors.toList());
-		val result = WorkScheduleImportService.importFrom( require, new CapturedRawData( rawDataOfCells, orderedEmployeeCodes ) );
+		val result = WorkScheduleImportService.importFrom( require, new CapturedRawData( rawDataOfCells, orderedEmployeeCodes ), "cid" );
 
 
 		/** 検証 **/
