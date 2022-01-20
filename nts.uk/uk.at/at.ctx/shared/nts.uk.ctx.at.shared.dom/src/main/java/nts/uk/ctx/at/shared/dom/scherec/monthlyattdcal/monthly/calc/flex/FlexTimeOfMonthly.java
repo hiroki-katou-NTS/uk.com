@@ -353,7 +353,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 				// 時間外超過の時、フレックス超過時間を割り当てる
 				excessOutsideWorkMng.assignFlexExcessTime(require, cacheCarrier, datePeriod, flexAggregateMethod,
 						procDate, this.flexAggrSet, aggregateTotalWorkingTime, this.flexTime,
-						settingsByFlex, addSet, standFlexTime);
+						settingsByFlex, addSet, standFlexTime, monthlyCalcDailys);
 				
 				ConcurrentStopwatches.stop("12222.6:超過時間割り当て：");
 			}
@@ -952,19 +952,22 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 
 		/** 基準時間をセットする */
 		flexTimeCurrentMonth.setStandardTime(new AttendanceTimeMonth(compLeaveAfterDeduct.valueAsMinutes()));
-		/** フレックス時間をセットする */
-		flexTimeCurrentMonth.getFlexTime().setFlex(TimeMonthWithCalculationAndMinus.ofSameTime(flexTime));
+		
 
 		// 繰越時間相殺前を求める
-		val carryforwardTimeBeforeOffset = flexTargetTime.minusMinutes(compLeaveAfterDeduct.valueAsMinutes());
+//		val carryforwardTimeBeforeOffset = flexTargetTime.minusMinutes(compLeaveAfterDeduct.valueAsMinutes());
 		
-		if (carryforwardTimeBeforeOffset.greaterThan(0)) {
+		if (flexTime > 0) {
 
 			// フレックス超過の処理をする
-			this.flexExcessPrinciple(require, cacheCarrier, carryforwardTimeBeforeOffset, compLeaveAfterDeduct,
+			this.flexExcessPrinciple(require, cacheCarrier, new AttendanceTimeMonthWithMinus(flexTime), compLeaveAfterDeduct,
 					companyId, employeeId, yearMonth, datePeriod, aggregateAtr, companySets, employeeSets, settingsByFlex,
 					aggregateTotalWorkingTime, closureId, closureDate, monthlyCalculatingDailys, flexTimeCurrentMonth.getFlexTime(), 
 					this.flexExcessTime, this.flexCarryforwardTime, flexTimeCurrentMonth);
+		} else {
+
+			/** フレックス時間をセットする */
+			flexTimeCurrentMonth.getFlexTime().setFlex(TimeMonthWithCalculationAndMinus.ofSameTime(flexTime));
 		}
 	}
 	
@@ -2121,6 +2124,12 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	 * @return 総労働対象時間
 	 */
 	public AttendanceTimeMonth getTotalWorkingTargetTime(){
+		
+		if (this.flexAggrSet.isMultiMonthSettlePeriod()) { 
+			int flexTime = this.flexTime.getFlexTimeCurrentMonth().getFlexTime().getFlexTime().getTime().valueAsMinutes() 
+							+ this.flexTime.getFlexTimeCurrentMonth().getExcessWeekAveTime().valueAsMinutes();
+			return new AttendanceTimeMonth(flexTime);
+		}
 		
 		return new AttendanceTimeMonth(this.flexExcessTime.v() +
 				this.flexCarryforwardTime.getFlexCarryforwardWorkTime().v());
