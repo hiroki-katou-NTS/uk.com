@@ -61,13 +61,17 @@ table.left-aligned td:not(:first-child) {
 	min-height: 45px;
 }
 
-.left-panel .table.item .cm-column {
-	vertical-align: middle; /* 単一行項目はmiddleのままでいいが、縦に長い項目はtopにすること */
+.left-panel .table.item > .cm-column {
 	width: 200px;
 }
 
-.left-panel .table.item .cm-column.valign-top {
-	vertical-align: top;
+.left-panel .table.item > .cm-column:not(.valign-top),
+.left-panel .table.item > .cell:nth-child(2):not(.valign-top) {
+	vertical-align: middle; /* 単一行項目はmiddleのままでいいが、縦に長い項目はtopにすること */
+}
+
+.left-panel .table.item > .cm-column.valign-top,
+.left-panel .table.item > .cell:nth-child(2).valign-top {
 	position: relative;
 	top: 3px;
 }
