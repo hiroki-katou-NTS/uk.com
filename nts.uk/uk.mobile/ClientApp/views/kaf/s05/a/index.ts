@@ -55,7 +55,7 @@ export class KafS05Component extends KafS00ShrComponent {
     @Prop()
     public params: InitParam;
 
-    public get getoverTimeClf(): number {
+    public getoverTimeClf(): number {
         const self = this;
 
         return self.overTimeClf;
@@ -363,7 +363,23 @@ export class KafS05Component extends KafS00ShrComponent {
     }
 
 
-
+    @Watch('$route.query')
+    public routeQueryWatcher(value) {
+        const vm = this;
+        if (value.overworkatr == 0) {
+            vm.pgName = 'kafs05step1';
+            vm.overTimeClf = 0;
+        } else if (value.overworkatr == 1) {
+            vm.pgName = 'kafs05step2';
+            vm.overTimeClf = 1;
+        } else if (value.overworkatr == 2) {
+            vm.pgName = 'kafs05step3';
+            vm.overTimeClf = 2;
+        } else {
+            vm.pgName = 'kafs05step4';
+            vm.overTimeClf = 3;
+        }    
+    }
 
     public created() {
         const vm = this;

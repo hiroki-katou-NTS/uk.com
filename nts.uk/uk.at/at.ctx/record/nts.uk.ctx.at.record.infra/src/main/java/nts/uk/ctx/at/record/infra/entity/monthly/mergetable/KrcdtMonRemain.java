@@ -24,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
@@ -89,7 +88,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reservel
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeavaRemainTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeave;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveGrantUseDay;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainDay;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingNumberInfo;
@@ -1673,7 +1671,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 
 		// 年休：残数
 		val normalR = domain.getAnnualLeave();
-		val normalRemain = normalR.getRemainingNumberInfo().getRemainingNumber();
 		val normalRemainBefore = normalR.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
 		val normalRemainAfterOpt = normalR.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
 
@@ -1691,7 +1688,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 
 		// 実年休：残数
 		val realR = domain.getRealAnnualLeave();
-		val realRemain = realR.getRemainingNumberInfo().getRemainingNumber();
 		val realRemainBefore = realR.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
 		val realRemainAfterOpt = realR.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
 
@@ -3338,7 +3334,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				new SpecialLeaveUnDigestion(
 						new SpecialLeaveRemainDay(notUseDays),
 						Optional.ofNullable(notUseMinutes == null ? null : new SpecialLeavaRemainTime(notUseMinutes))),
-				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)));
+				Optional.ofNullable(grantDays == null ? null : new LeaveGrantDayNumber(grantDays)));
 	}
 
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData1(){

@@ -63,7 +63,8 @@ public interface OvertimeService {
 			Boolean agent,
 			List<OvertimeHour> overtimeHours,
 			List<OvertimeReason> overtimeReasons,
-			Optional<AchievementDetail> opAchievementDetail
+			Optional<AchievementDetail> opAchievementDetail,
+			boolean managementMultipleWorkCycles
 	);
 	/**
 	 * Refactor5 19_計算処理
@@ -468,6 +469,7 @@ public interface OvertimeService {
 			List<OvertimeReason> overtimeReasons,
 			List<TimeZoneWithWorkNo> workingHours,
 			WorkInformation workInformation,
-			Optional<AchievementDetail> achievementDetail
+			Optional<AchievementDetail> achievementDetail,
+			boolean managementMultipleWorkCycles
 	);
 }

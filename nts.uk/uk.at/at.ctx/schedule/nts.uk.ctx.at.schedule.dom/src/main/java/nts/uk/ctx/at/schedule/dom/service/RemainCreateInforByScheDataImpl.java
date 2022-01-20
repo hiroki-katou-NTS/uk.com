@@ -86,7 +86,7 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 		DatePeriod period = new DatePeriod(dates.stream().min(Comparator.comparing(GeneralDate::date)).get(),
 				dates.stream().max(Comparator.comparing(GeneralDate::date)).get());
 		// 勤務予定を取得する
-		List<WorkSchedule> sches = this.workScheRepo.getListBySid(sid, period);
+		List<WorkSchedule> sches = this.workScheRepo.getListBySidJpa(sid, period);
 		// (Imported)「残数作成元の勤務予定を取得する」
 		// 残数作成元情報を返す
 		RequireImpl impl = new RequireImpl(cid);

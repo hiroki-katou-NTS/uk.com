@@ -54,8 +54,7 @@ public class IntegrationOfDailyDto {
 	// 日別実績の外出時間帯 (old)
 //		private Optional<OutingTimeOfDailyPerformance> outingTime;
 	// 外出時間帯: 日別勤怠の外出時間帯
-
-	//private OutingTimeOfDailyAttdDto outingTime;
+	private OutingTimeOfDailyAttdDto outingTime;
 
 	// 日別実績の短時間勤務時間帯 (old)
 //		private Optional<ShortTimeOfDailyPerformance> shortTime;
@@ -125,7 +124,7 @@ public class IntegrationOfDailyDto {
 		result.setCalAttr(CalAttrOfDailyAttdDto.fromDomain(domain.getCalAttr()));
 //		result.setAttendanceLeave(TimeLeavingOfDailyAttdDto.fromDomain(domain.getAttendanceLeave()));
 		result.setBreakTime(BreakTimeOfDailyAttdDto.fromDomain(domain.getBreakTime()));
-//		result.setOutingTime(OutingTimeOfDailyAttdDto.fromDomain(domain.getOutingTime()));
+		result.setOutingTime(OutingTimeOfDailyAttdDto.fromDomain(domain.getOutingTime()));
 //		result.setShortTime(ShortTimeOfDailyAttdDto.fromDomain(domain.getShortTime()));
 //		result.setTempTime(TemporaryTimeOfDailyAttdDto.fromDomain(domain.getTempTime()));
 //		result.setAttendanceLeavingGate(AttendanceLeavingGateOfDailyAttdDto.fromDomain(domain.getAttendanceLeavingGate()));

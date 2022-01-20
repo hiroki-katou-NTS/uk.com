@@ -128,7 +128,8 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 				displayInforWhenStarting.existAbs() ? displayInforWhenStarting.abs.leaveComDayOffMana.stream().map(c -> c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
 				false,
 				true, 
-				listWorkTypes);
+				listWorkTypes, 
+				EnumAdaptor.valueOf(displayInforWhenStarting.getSubstituteManagement(), ManageDistinct.class));
 		return abs;
 	}
 	

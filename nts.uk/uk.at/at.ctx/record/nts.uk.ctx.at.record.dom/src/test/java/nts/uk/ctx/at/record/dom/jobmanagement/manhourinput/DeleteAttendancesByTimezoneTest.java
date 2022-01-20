@@ -52,6 +52,8 @@ public class DeleteAttendancesByTimezoneTest {
 		
 		List<AtomTask> result = deletion.deleteAttendance(require);
 		
+		List<Integer> itemIds = new ArrayList<>();
+		
 		for (AtomTask persist : result) {
 			persist.run();
 		}
@@ -62,6 +64,9 @@ public class DeleteAttendancesByTimezoneTest {
 			
 			require.deleteBySupFrameNo("sId", GeneralDate.today(), SupportFrameNo.of(2));
 			times = 0;
+			
+			require.deleteByListItemId("sId", GeneralDate.today(), itemIds);
+			times = 1;
 		}};
 		
 	}
