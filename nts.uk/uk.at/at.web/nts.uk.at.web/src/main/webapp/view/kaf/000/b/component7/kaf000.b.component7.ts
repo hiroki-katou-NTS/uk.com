@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
 			    <div class="cell cm-column valign-top">
 			      <div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: '理由'"></div>
 					</div>
-					<div class="cell">
+					<div class="cell valign-top">
 						<div class="combo-reason-wrapper">
 							<div id="combo-box" style="width: 472px" data-bind="ntsComboBox: {
 														name: $i18n('KAF000_51'),
