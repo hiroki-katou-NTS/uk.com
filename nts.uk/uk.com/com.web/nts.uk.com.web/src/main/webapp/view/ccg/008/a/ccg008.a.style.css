@@ -61,6 +61,11 @@
   height: 100% !important;
 }
 
+#contents-area > div.widget-home.layout-type-3 {
+  display: flex;
+  justify-content: center;
+}
+
 #contents-area > div.widget-home.layout-type-null > div.widget-left,
 #contents-area > div.widget-home.layout-type-0 > div.widget-left,
 #contents-area > div.widget-home.layout-type-1 > div.widget-left {
