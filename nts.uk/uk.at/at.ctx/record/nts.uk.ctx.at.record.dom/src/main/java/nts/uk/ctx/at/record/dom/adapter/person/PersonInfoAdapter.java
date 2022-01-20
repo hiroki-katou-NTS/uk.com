@@ -33,5 +33,7 @@ public interface PersonInfoAdapter {
 	 * @return the list person info
 	 */
 	List<EmpBasicInfoImport> getListPersonInfo(List<String> listSid);
+	
+	EmpBasicInfoImport getEmpBasicInfoImport(String sID);
 
 }
