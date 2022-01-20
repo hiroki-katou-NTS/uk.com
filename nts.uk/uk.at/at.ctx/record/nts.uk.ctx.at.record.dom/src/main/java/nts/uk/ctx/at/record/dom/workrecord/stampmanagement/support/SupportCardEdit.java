@@ -23,7 +23,7 @@ public class SupportCardEdit extends AggregateRoot {
 	public SupportCardNumber editTheCard(SupportCardNumber editNumber) {
 		int numberOfDigits = 6;
 		if (editNumber.v().length() > numberOfDigits) {
-			new BusinessException("Msg_2130", String.valueOf(numberOfDigits));
+			throw new BusinessException("Msg_2130", String.valueOf(numberOfDigits));
 		}
 		String supportCardNumber = this.editMethod.editCardNumber(String.valueOf(numberOfDigits),
 				String.valueOf(editNumber.v()));

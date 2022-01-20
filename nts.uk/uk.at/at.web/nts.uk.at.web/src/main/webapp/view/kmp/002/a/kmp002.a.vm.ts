@@ -216,7 +216,7 @@ module nts.uk.at.view.kmp002.a {
     register() {
       const vm = this;
       if (vm.supportCard().workplaceId === '') {
-        vm.$dialog.error({ messageId: "Msg_2130" });
+        vm.$dialog.error({ messageId: "Msg_3302" });
         return;
       }
       if (vm.mode() === vm.NEW_MODE) {
@@ -233,7 +233,7 @@ module nts.uk.at.view.kmp002.a {
             vm.supportCard(supportCard);
             vm.performInitialStartup(false, true);
           }).fail((err) => {
-            vm.$dialog.error({ messageId: err.messageId });
+            vm.$dialog.error({ messageId: err.messageId, messageParams: err.parameterIds });
           }).always(() => vm.$blockui("clear"));
         return;
       } else {
