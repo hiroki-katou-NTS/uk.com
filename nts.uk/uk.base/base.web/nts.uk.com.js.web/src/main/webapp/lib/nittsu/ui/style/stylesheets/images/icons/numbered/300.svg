@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 26.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;}
+	.st1{display:inline;}
+	.st2{fill:#FFFFFF;}
+	.st3{fill:#DB4F51;}
+	.st4{display:inline;fill:#DB4F51;}
+	.st5{font-family:'UDShinGoNTPro-Medium-90ms-RKSJ-H';}
+	.st6{font-size:286.3701px;}
+	.st7{fill:#258F7E;}
+	.st8{display:inline;fill:#258F7E;}
+	.st9{font-family:'UDShinGoNTPro-DeBold-90ms-RKSJ-H';}
+	.st10{fill:#6A6A6A;}
+	.st11{display:inline;fill:#6A6A6A;}
+	.st12{fill:#EA5514;}
+	.st13{display:inline;fill:#EA5514;}
+</style>
+<g id="レイヤー_1" class="st0">
+	<g class="st1">
+		<circle class="st2" cx="200" cy="200" r="190"/>
+		<path class="st3" d="M200,20c48.1,0,93.3,18.7,127.3,52.7S380,151.9,380,200s-18.7,93.3-52.7,127.3S248.1,380,200,380
+			s-93.3-18.7-127.3-52.7S20,248.1,20,200s18.7-93.3,52.7-127.3S151.9,20,200,20 M200,0C89.5,0,0,89.5,0,200s89.5,200,200,200
+			s200-89.5,200-200S310.5,0,200,0L200,0z"/>
+	</g>
+	<text transform="matrix(1 0 0 1 57.6299 319.5295)" class="st4 st5 st6">否</text>
+</g>
+<g id="レイヤー_2" class="st0">
+	<g class="st1">
+		<path class="st7" d="M200,20c48.1,0,93.3,18.7,127.3,52.7S380,151.9,380,200s-18.7,93.3-52.7,127.3S248.1,380,200,380
+			s-93.3-18.7-127.3-52.7S20,248.1,20,200s18.7-93.3,52.7-127.3S151.9,20,200,20 M200,0C89.5,0,0,89.5,0,200s89.5,200,200,200
+			s200-89.5,200-200S310.5,0,200,0L200,0z"/>
+	</g>
+	<text transform="matrix(1 0 0 1 57.6299 312.5287)" class="st8 st5 st6">済</text>
+</g>
+<g id="レイヤー_2のコピー">
+	<g>
+		<path d="M200,20c48.1,0,93.3,18.7,127.3,52.7S380,151.9,380,200s-18.7,93.3-52.7,127.3S248.1,380,200,380s-93.3-18.7-127.3-52.7
+			S20,248.1,20,200s18.7-93.3,52.7-127.3S151.9,20,200,20 M200,0C89.5,0,0,89.5,0,200s89.5,200,200,200s200-89.5,200-200
+			S310.5,0,200,0L200,0z"/>
+	</g>
+	<text transform="matrix(1 0 0 1 57.6299 312.5287)" class="st9 st6">未</text>
+</g>
+<g id="レイヤー_2のコピー_2" class="st0">
+	<g class="st1">
+		<path class="st10" d="M200,20c48.1,0,93.3,18.7,127.3,52.7S380,151.9,380,200s-18.7,93.3-52.7,127.3S248.1,380,200,380
+			s-93.3-18.7-127.3-52.7S20,248.1,20,200s18.7-93.3,52.7-127.3S151.9,20,200,20 M200,0C89.5,0,0,89.5,0,200s89.5,200,200,200
+			s200-89.5,200-200S310.5,0,200,0L200,0z"/>
+	</g>
+	<text transform="matrix(1 0 0 1 57.6299 312.5287)" class="st11 st9 st6">戻</text>
+</g>
+<g id="レイヤー_2のコピー_3" class="st0">
+	<g class="st1">
+		<path class="st12" d="M200,20c48.1,0,93.3,18.7,127.3,52.7S380,151.9,380,200s-18.7,93.3-52.7,127.3S248.1,380,200,380
+			s-93.3-18.7-127.3-52.7S20,248.1,20,200s18.7-93.3,52.7-127.3S151.9,20,200,20 M200,0C89.5,0,0,89.5,0,200s89.5,200,200,200
+			s200-89.5,200-200S310.5,0,200,0L200,0z"/>
+	</g>
+	<text transform="matrix(1 0 0 1 57.6299 312.5287)" class="st13 st9 st6">取</text>
+</g>
+</svg>

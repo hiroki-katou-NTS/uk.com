@@ -65,14 +65,24 @@ table.left-aligned td:not(:first-child) {
 	display: inline-block;
 	vertical-align: top;
 	margin-left: 30px;
+	width: 112px;
 }
 
 .left-panel > .form-header .approver-block > div:first-child {
-	margin-bottom: 2px;
 }
 
 .left-panel > .form-header .approver-block > div:first-child * {
 	font-size: 12px;
+}
+
+.left-panel > .form-header .approver-block > div:first-child > .cell {
+	vertical-align: middle;
+}
+
+.left-panel > .form-header .approver-block > div:first-child .status-icon {
+	width: 24px;
+	height: 24px;
+	padding-left: 4px
 }
 
 .left-panel .table.item {

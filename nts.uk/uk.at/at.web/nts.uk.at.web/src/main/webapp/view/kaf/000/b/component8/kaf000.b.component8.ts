@@ -6,18 +6,20 @@ module nts.uk.at.view.kaf000.b.component8.viewmodel {
             <div id="kaf000-b-component8" data-bind="click: openApproverDetail">
 				<div style="display: inline-block;" data-bind="if: approvalRootStateShort().length != 0">
 					<div data-bind="foreach: approvalRootStateShort" style="padding-top: 5px;">
-						<div class="approver-block" style="width: 112px;">
-							<div style="height: 24px;">
-								<div class="limited-label" style="vertical-align: middle;" data-bind="ntsFormLabel:{}, text: $component.getApproverLabel($index())"></div>
-							</div>
-							<div style="min-width: 112px;">
-								<div class="limited-label" style="vertical-align: middle;" data-bind="text: $data.approverName"></div>
-							</div>
-							<div data-bind="if: $data.representerName()" style="min-width: 112px;">
-								<div class="limited-label" style="vertical-align: middle;" data-bind="text: '(' + $data.representerName() + ')'"></div>
+						<div class="approver-block">
+							<div class="table">
+								<div class="cell">
+									<div class="limited-label" data-bind="ntsFormLabel:{}, text: $component.getApproverLabel($index())"></div>
+								</div>
+								<div class="cell status-icon">
+									<i data-bind="ntsIcon: { no: $component.getApprovalIconNo($data.approvalAtrValue()) }"></i>
+								</div>
 							</div>
 							<div>
-								<div class="limited-label" style="vertical-align: middle;" data-bind="style: { 'color': $component.getApprovalColor($data.approvalAtrValue()) }, text: $data.approvalAtrName"></div>
+								<div class="limited-label" style="vertical-align: middle;" data-bind="text: $data.approverName"></div>
+							</div>
+							<div data-bind="if: $data.representerName()">
+								<div class="limited-label" style="vertical-align: middle;" data-bind="text: '(' + $data.representerName() + ')'"></div>
 							</div>
 							<div data-bind="if: $data.approvalReason">
 								<div class="limited-label" style="vertical-align: middle;" data-bind="text: $data.approvalReason"></div>
@@ -108,6 +110,10 @@ module nts.uk.at.view.kaf000.b.component8.viewmodel {
 			}
 		}
 		
+		getApprovalIconNo(approvalAtrValue: number) {
+			return 300 + approvalAtrValue;
+		}
+		
 		getApprovalColor(approvalAtrValue: number) {
 			switch(approvalAtrValue) {
 				case 1: return '#BFEA60';
@@ -117,7 +123,7 @@ module nts.uk.at.view.kaf000.b.component8.viewmodel {
 				default: return '';
 			}
 		}
-    }
+  }
 
 	class ApproverInforShort {
 		
