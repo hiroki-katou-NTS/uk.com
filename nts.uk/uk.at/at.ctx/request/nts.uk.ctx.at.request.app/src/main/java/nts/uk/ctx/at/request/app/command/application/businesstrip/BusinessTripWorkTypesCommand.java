@@ -5,9 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripWorkTypes;
-import nts.uk.ctx.at.shared.app.command.worktime.worktimeset.dto.WorkTimeSettingDto;
+import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.WorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 
 @Data
 @AllArgsConstructor
@@ -24,7 +23,7 @@ public class BusinessTripWorkTypesCommand {
         return new BusinessTripWorkTypes(
                 GeneralDate.fromString(this.date, "yyyy/MM/dd"),
                 this.workTypeDto == null ? null : this.workTypeDto.toDomain(), 
-                workTimeSetting == null ? null : new WorkTimeSetting(workTimeSetting)
+                null
         );
     }
 
