@@ -928,6 +928,12 @@ module nts.uk.ui.at.kdw013.c {
 			return totalTime;
 		}
     
+        totalWorkTime():number{
+            let vm = this;
+            let tr = nts.uk.time.parseTime(vm.taskBlocks.caltimeSpanView.range().replace('作業時間 ', ''));
+            return (tr.hours * 60) + tr.minutes;
+        }
+    
         save() {
             const vm = this;
             const { params } = vm;
@@ -942,11 +948,10 @@ module nts.uk.ui.at.kdw013.c {
                 .then(() => nts.uk.ui.errors.hasError())
                 .then((invalid: boolean) => {
                     if (!invalid) {
-                        //đoạn code này không còn ý nghĩa nữa, comment vào
-//						if(vm.sumTotalTime() > (vm.taskBlocks.caltimeSpanView.end() - vm.taskBlocks.caltimeSpanView.start())){
-//							error({ messageId: "Msg_2230"});
-//							return;
-//						}
+                        if (vm.sumTotalTime() > vm.totalWorkTime()) {
+                            error({ messageId: "Msg_2230" });
+                            return;
+                        }
                         if (event) {
                             const { start } = event;
                             const tr = vm.taskBlocks.caltimeSpanView;
