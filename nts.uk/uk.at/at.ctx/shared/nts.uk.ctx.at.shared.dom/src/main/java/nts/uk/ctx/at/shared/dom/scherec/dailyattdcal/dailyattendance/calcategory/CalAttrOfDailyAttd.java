@@ -87,7 +87,7 @@ public class CalAttrOfDailyAttd implements DomainObject {
 	 */
 	public static CalAttrOfDailyAttd createAllCalculate() {
 		AutoCalFlexOvertimeSetting flexExcessTime = new AutoCalFlexOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS));
-		AutoCalRaisingSalarySetting rasingSalarySetting = new AutoCalRaisingSalarySetting(false, false);
+		AutoCalRaisingSalarySetting rasingSalarySetting = new AutoCalRaisingSalarySetting(true, true);
 		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS), new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS));
 		AutoCalOvertimeSetting overtimeSetting = new AutoCalOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS), 
 				new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS), 
