@@ -1,8 +1,10 @@
 package nts.uk.screen.com.app.smm.smm001.screencommand;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import nts.arc.enums.EnumAdaptor;
 import lombok.Getter;
@@ -31,31 +33,21 @@ public class RegisterSmileCooperationAcceptanceSettingScreenCommand {
 	private String selectedAffiliatedMaster;
 	private String selectedEmployeeMaster;
 
+	private List<Integer> listCheckedCheckbox = Arrays.asList(checkedOrganizationInformation,
+			checkedBasicPersonnelInformation, checkedJobStructureInformation, checkedAddressInformation,
+			checkedLeaveInformation, checkedAffiliatedMaster, checkedEmployeeMaster);
+
+	private List<String> listSelectedComboboxValue = Arrays.asList(selectedOrganizationInformation,
+			selectedBasicPersonnelInformation, selectedJobStructureInformation, selectedAddressInformation,
+			selectedLeaveInformation, selectedAffiliatedMaster, selectedEmployeeMaster);
+
 	public List<SmileCooperationAcceptanceSetting> convertScreenCommandToListSetting() {
 		List<SmileCooperationAcceptanceSetting> list = new ArrayList<>();
-		list.add(this.createNewObjectSmileCooperationAcceptanceSetting(
-				SmileCooperationAcceptanceItem.ORGANIZATION_INFORMATION, checkedOrganizationInformation,
-				selectedOrganizationInformation));
-		list.add(this.createNewObjectSmileCooperationAcceptanceSetting(
-				SmileCooperationAcceptanceItem.BASIC_PERSONNEL_INFORMATION, checkedBasicPersonnelInformation,
-				selectedOrganizationInformation));
-		list.add(this.createNewObjectSmileCooperationAcceptanceSetting(
-				SmileCooperationAcceptanceItem.JOB_STRUCTURE_INFORMATION, checkedJobStructureInformation,
-				selectedJobStructureInformation));
-		list.add(this.createNewObjectSmileCooperationAcceptanceSetting(
-				SmileCooperationAcceptanceItem.ADDRESS_INFORMATION, checkedAddressInformation,
-				selectedAddressInformation));
-		list.add(this.createNewObjectSmileCooperationAcceptanceSetting(
-				SmileCooperationAcceptanceItem.LEAVE_INFORMATION, checkedLeaveInformation,
-				selectedLeaveInformation));
-		list.add(this.createNewObjectSmileCooperationAcceptanceSetting(
-				SmileCooperationAcceptanceItem.AFFILIATED_MASTER, checkedAffiliatedMaster,
-				selectedAffiliatedMaster));
-		list.add(this.createNewObjectSmileCooperationAcceptanceSetting(
-				SmileCooperationAcceptanceItem.EMPLOYEE_MASTER, checkedEmployeeMaster,
-				selectedEmployeeMaster));
+		IntStream.range(0, SmileCooperationAcceptanceItem.lookup.size())
+				.forEach(index -> list.add(this.createNewObjectSmileCooperationAcceptanceSetting(
+						SmileCooperationAcceptanceItem.lookup.get(index), listCheckedCheckbox.get(index),
+						listSelectedComboboxValue.get(index))));
 		return list;
-
 	}
 
 	public SmileCooperationAcceptanceSetting createNewObjectSmileCooperationAcceptanceSetting(

@@ -4,7 +4,8 @@ module nts.uk.at.view.smm001.a {
 
   const API = {
     // <<ScreenQuery>> 初期起動の情報取得する
-    getInitialStartupInformation: 'com/screen/smm001/get-initial-startup-information'
+    getInitialStartupInformation: 'com/screen/smm001/get-initial-startup-information',
+    registerSmileCooperationAcceptanceSetting: 'com/screen/smm001/register-smile-cooperation-acceptance-setting'
   };
 
   class ItemModel {
@@ -58,6 +59,9 @@ module nts.uk.at.view.smm001.a {
     DO_TEXT: KnockoutObservable<string>;
     DO_NOT_TEXT: KnockoutObservable<string>;
     enumPaymentCategoryList: KnockoutObservableArray<any>;
+
+    ENUM_IS_CHECKED = 1;
+    ENUM_IS_NOT_CHECKED = 0;
 
     created() {
       const vm = this;
@@ -119,6 +123,37 @@ module nts.uk.at.view.smm001.a {
 
     save() {
       console.log("Hello");
+      const vm = this;
+      vm.$blockui('show');
+      const command = {
+        paymentCode: 1,
+        checkedOrganizationInformation:
+          vm.checkedOrganizationInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+        checkedBasicPersonnelInformation:
+          vm.checkedOrganizationInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+        checkedJobStructureInformation:
+          vm.checkedJobStructureInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+        checkedAddressInformation: vm.checkedAddressInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+        checkedLeaveInformation: vm.checkedLeaveInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+        checkedAffiliatedMaster: vm.checkedAffiliatedMaster() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+        checkedEmployeeMaster: vm.checkedEmployeeMaster() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+
+        selectedOrganizationInformation: vm.selectedOrganizationInformation(),
+        selectedBasicPersonnelInformation: vm.selectedBasicPersonnelInformation(),
+        selectedJobStructureInformation: vm.selectedJobStructureInformation(),
+        selectedAddressInformation: vm.selectedAddressInformation(),
+        selectedLeaveInformation: vm.selectedLeaveInformation(),
+        selectedAffiliatedMaster: vm.selectedAffiliatedMaster(),
+        selectedEmployeeMaster: vm.selectedEmployeeMaster(),
+      };
+      vm.$ajax('com', API.registerSmileCooperationAcceptanceSetting, command)
+        .then((res: any) => {
+          if (res) {
+            console.log(">>>>>", res)
+          }
+        }).fail((err) => {
+          vm.$dialog.error(err);
+        }).always(() => vm.$blockui('clear'));
     }
 
     moveItemToRight() {

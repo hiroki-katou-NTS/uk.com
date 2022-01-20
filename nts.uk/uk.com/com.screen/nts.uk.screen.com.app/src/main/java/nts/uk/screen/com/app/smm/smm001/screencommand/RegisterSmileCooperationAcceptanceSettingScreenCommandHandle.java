@@ -49,7 +49,6 @@ public class RegisterSmileCooperationAcceptanceSettingScreenCommandHandle extend
 		List<SmileCooperationAcceptanceSetting> acceptanceSettings = smileCooperationAcceptanceSettingRepository.get(contractCode, companyId);
 		List<SmileCooperationAcceptanceSetting> newSmileCooperationAcceptanceSettings = command.convertScreenCommandToListSetting();
 		if(acceptanceSettings.isEmpty()) {
-			
 			smileCooperationAcceptanceSettingRepository.insertAll(newSmileCooperationAcceptanceSettings);
 		} else {
 			smileCooperationAcceptanceSettingRepository.updateAll(newSmileCooperationAcceptanceSettings);

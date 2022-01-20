@@ -1,5 +1,8 @@
 package nts.uk.smile.dom.smilelinked.cooperationacceptance;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Smile連携受入項目
  * 
@@ -48,4 +51,15 @@ public enum SmileCooperationAcceptanceItem {
 		this.value = value;
 		this.nameId = nameId;
 	}
+	
+    public int getValue() {
+    	return this.value;
+    }
+	
+    public static final List<SmileCooperationAcceptanceItem> lookup = new ArrayList<SmileCooperationAcceptanceItem>();
+    static {
+        for (SmileCooperationAcceptanceItem e : SmileCooperationAcceptanceItem.values()) {
+            lookup.add(e);
+        }
+    }
 }
