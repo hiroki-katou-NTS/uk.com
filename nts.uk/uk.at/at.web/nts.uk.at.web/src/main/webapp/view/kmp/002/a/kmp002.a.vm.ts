@@ -324,10 +324,10 @@ module nts.uk.at.view.kmp002.a {
           const workplaceId = vm.supportCard().workplaceId;
           const workplaceCode = vm.supportCard().workplaceCode;
           let workplaceName = '';
-          if (data) {
+          if (data && data.workplaceName !== "コード削除済") {
             workplaceName = data.workplaceName;
           } else {
-            workplaceName = param.baseDate + ' 時点の名称なし';
+            workplaceName = vm.$i18n("KMP002_14", [param.baseDate]);
           }
           vm.supportCard(new SupportCardDto(supportCardNo, supportCardNo, supportCardNumber, companyId, companyCode, companyName, workplaceId, workplaceCode, workplaceName));
         }).always(() => vm.$blockui("clear"));
