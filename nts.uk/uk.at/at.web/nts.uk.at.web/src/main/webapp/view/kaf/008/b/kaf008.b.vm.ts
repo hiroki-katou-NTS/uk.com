@@ -112,7 +112,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                             });
                             if (wkTimeInfo.length == 0) {
                                 wkTimeInfo = _.filter(infoBeforeChange, (item: any) => {
-                                    return detail.date === item.date && detail.wkTimeCd === item.workTimeSetting.workTimeCode;
+                                    return detail.date === item.date && item.workTimeSetting && detail.wkTimeCd === item.workTimeSetting.workTimeCode;
                                 })
                             }
                             if (wkTimeInfo.length != 0 && wkTimeInfo[0].workTimeDisplayName) {
