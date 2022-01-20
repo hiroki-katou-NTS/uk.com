@@ -63,6 +63,11 @@ public class UpdateAgentCommandHandler extends CommandHandler<AgentCommandBase> 
 		//期間のチェック
 		agentApprSv.checkPeriodRegAgent(agentInfor, false);
 		
+		//対象者=代行依頼者であるかチェックする
+		if(agentInfor.getAgentSid1().equals(employeeId)) {
+			throw new BusinessException("Msg_3291");
+		}
+		
 		//update agent
 		agentRepository.update(agentInfor);
 	}

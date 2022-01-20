@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.workflow.dom.agent.Agent;
@@ -55,6 +56,11 @@ public class AddAgentCommandHandler extends CommandHandlerWithResult<AgentComman
 		agentInfor.checkAgentRequest();
 		//期間のチェック
 		agentApprSv.checkPeriodRegAgent(agentInfor, true);
+		
+		//対象者=代行依頼者であるかチェックする
+		if(agentInfor.getAgentSid1().equals(employeeId)) {
+			throw new BusinessException("Msg_3291");
+		}
 		
 		//ドメインモデル「代行承認」を登録する
 		agentRepository.add(agentInfor);
