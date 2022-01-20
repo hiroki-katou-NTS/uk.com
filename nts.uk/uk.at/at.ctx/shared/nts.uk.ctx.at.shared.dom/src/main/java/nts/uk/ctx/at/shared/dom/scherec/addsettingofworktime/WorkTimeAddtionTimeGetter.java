@@ -27,7 +27,7 @@ public class WorkTimeAddtionTimeGetter {
 		val holidayAddtionSet = require.holidayAddtionSet(cid);
 		
 		/** 休暇加算時間設定に加算設定を上書きする */
-		val holAddSet = addSet.flatMap(as -> holidayAddtionSet.map(has -> new HolidayAddtionSet(cid, 
+		val holAddSet = holidayAddtionSet.flatMap(has -> addSet.map(as -> new HolidayAddtionSet(cid, 
 												has.getReference(), 
 												new LeaveSetAdded(as.isAnnualLeave() ? NotUseAtr.USE : NotUseAtr.NOT_USE, 
 																	as.isRetentionYearly() ? NotUseAtr.USE : NotUseAtr.NOT_USE, 

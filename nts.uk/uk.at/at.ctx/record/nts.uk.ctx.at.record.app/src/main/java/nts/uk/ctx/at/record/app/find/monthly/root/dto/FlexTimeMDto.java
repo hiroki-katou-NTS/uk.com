@@ -59,8 +59,8 @@ public class FlexTimeMDto implements ItemConst, AttendanceItemDataGate {
 		switch (path) {
 		case CUR_MONTH:
 			return new FlexCurrentMonthDto();
-		case TIME:
-			return new TimeMonthWithCalculationDto();
+		case FLEX:
+			return new FlexTotalTimeDto();
 		default:
 			return null;
 		}
@@ -71,7 +71,7 @@ public class FlexTimeMDto implements ItemConst, AttendanceItemDataGate {
 		switch (path) {
 		case CUR_MONTH:
 			return Optional.ofNullable(currentMonth);
-		case TIME:
+		case FLEX:
 			return Optional.ofNullable(flexTime);
 		default:
 			return Optional.empty();

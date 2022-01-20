@@ -409,22 +409,26 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 	
 	private void correctItems(List<ItemValue> attendanceItemValues, MonthlyRecordToAttendanceItemConverter converter) {
 		
-		val alterItemIds = attendanceItemValues.stream().map(c -> {
+		val alterItemMap = attendanceItemValues.stream().collect(Collectors.toMap(c -> c.getItemId(), c -> {
+			if (c.getItemId() == AttendanceItemOfMonthly.FLEX_TIME.value) 
+				return AttendanceItemOfMonthly.CUR_MONTH_FLEX_TIME_OT.value;
 			if (c.getItemId() == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value) 
-				return AttendanceItemOfMonthly.CUR_MONTH_FLEX_LEGAL_TIME.value;
+				return AttendanceItemOfMonthly.CUR_MONTH_FLEX_LEGAL_TIME_OT.value;
 			if (c.getItemId() == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value) 
-				return AttendanceItemOfMonthly.CUR_MONTH_FLEX_ILLEGAL_TIME.value;
+				return AttendanceItemOfMonthly.CUR_MONTH_FLEX_ILLEGAL_TIME_OT.value;
 			if (c.getItemId() == AttendanceItemOfMonthly.MONTHLY_TOTAL_PREMIUM_TIME.value) 
 				return AttendanceItemOfMonthly.DEFOR_PERIOD_CARRY_TIME.value;
 			return 0;
-		}).filter(c -> c > 0).collect(Collectors.toList());
+		}));
+		
+		val alterItemIds = alterItemMap.values().stream().filter(c -> c > 0).collect(Collectors.toList());
 		
 		if (!alterItemIds.isEmpty()) {
 			
 			val alterItems = converter.convert(alterItemIds);
 			
 			alterItems.stream().forEach(c -> {
-				attendanceItemValues.stream().filter(i -> i.getItemId() == c.getItemId())
+				attendanceItemValues.stream().filter(i -> alterItemMap.get(i.getItemId()) == c.getItemId())
 									.findFirst().ifPresent(ai -> {
 					ai.value(c.value());
 				});
