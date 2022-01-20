@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -124,6 +125,7 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
         String inputSid = appDispInfoStartupOutput.getAppDetailScreenInfo().get().getApplication().getEnteredPersonID();
         String cid = AppContexts.user().companyId();
         List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(inputSid));
+        BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
         if (businessTrip.getInfos().isEmpty()) {
             throw new BusinessException("Msg_1703");
@@ -163,8 +165,11 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
             );
             
             // 勤務種類により出退勤時刻をチェックする
-            businessTripService.checkTimeByWorkType(i.getDate(), wkTypeCd, workTimeStart, workTimeEnd);
+            exceptions.addMessage(businessTripService.checkTimeByWorkType(i.getDate(), wkTypeCd, workTimeStart, workTimeEnd).cloneExceptions());
         });
-
+        
+        if (exceptions.getMessageId().size() > 0) {
+            throw exceptions;
+        }
     }
 }

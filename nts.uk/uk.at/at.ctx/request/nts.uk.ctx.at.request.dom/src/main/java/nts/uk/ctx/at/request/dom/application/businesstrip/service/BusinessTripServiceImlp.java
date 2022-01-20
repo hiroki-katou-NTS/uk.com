@@ -437,6 +437,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         String sid = AppContexts.user().employeeId();
         String cid = AppContexts.user().companyId();
         List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
+        BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
         // loop 年月日　in　期間
         infos.forEach(i -> {
@@ -486,9 +487,12 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             );
             
             // 勤務種類により出退勤時刻をチェックする
-            this.checkTimeByWorkType(i.getDate(), wkTypeCd, workTimeStart, workTimeEnd);
-
+            exceptions.addMessage(this.checkTimeByWorkType(i.getDate(), wkTypeCd, workTimeStart, workTimeEnd).cloneExceptions());
         });
+        
+        if (exceptions.getMessageId().size() > 0) {
+            throw exceptions;
+        }
     }
 
     @Override
@@ -884,14 +888,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     }
 
     @Override
-    public void checkTimeByWorkType(GeneralDate date, String workTypeCode, Integer startTime,
+    public BundledBusinessException checkTimeByWorkType(GeneralDate date, String workTypeCode, Integer startTime,
             Integer endTime) {
         BundledBusinessException exceptions = BundledBusinessException.newInstance();
         // 「勤務種類」を取得する
         Optional<WorkType> wkTypeOpt = wkTypeRepo.findByPK(AppContexts.user().companyId(), workTypeCode);
         
         if (!wkTypeOpt.isPresent()) {
-            return;
+            return exceptions;
         }
         
         // 分類を判断する
@@ -912,9 +916,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             }
         }
         
-        if (exceptions.getMessageId().size() > 0) {
-            throw exceptions;
-        }
+        return exceptions;
     }
     
     private boolean isWorkingType(WorkType workType) {
