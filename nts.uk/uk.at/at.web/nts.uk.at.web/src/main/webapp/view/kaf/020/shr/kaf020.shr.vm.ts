@@ -4,10 +4,10 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
         template: `<!--B2_3-->
             <div id="kaf020-component" data-bind="foreach: applicationContents">
                 <div class="table item">
-                    <div class="cell cm-column">
+                    <div class="cell cm-column valign-top">
                         <div class="label m1 table-name" data-bind="ntsFormLabel : { text: optionalItemName } "></div>
                     </div>
-                    <div class="cell">
+                    <div class="cell valign-top">
                         <div class="input">
                             <!--B4_2-->
                             <!--time-->
