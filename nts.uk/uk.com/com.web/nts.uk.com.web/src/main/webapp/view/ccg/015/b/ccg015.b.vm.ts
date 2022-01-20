@@ -79,9 +79,9 @@ module nts.uk.com.view.ccg015.b {
       vm.button2Text = ko.computed(() => vm.selectedId() === LayoutType.LAYOUT_TYPE_2 ? vm.$i18n("CCG015_59") : 
         (vm.selectedId() === LayoutType.LAYOUT_TYPE_3 ? vm.getLayoutName(vm.topPageModel().frameLayout2()) : vm.$i18n("CCG015_60")));
       vm.button3Text = ko.computed(() => vm.getLayoutName(vm.topPageModel().frameLayout3()));
-      vm.layoutPos1 = ko.computed(() => vm.getLayoutPos(vm.topPageModel().frameLayout1()));
-      vm.layoutPos2 = ko.computed(() => vm.getLayoutPos(vm.topPageModel().frameLayout2()));
-      vm.layoutPos3 = ko.computed(() => vm.getLayoutPos(vm.topPageModel().frameLayout3()));
+      vm.layoutPos1 = ko.computed(() => vm.getLayoutPos(vm.selectedId() === 3 ? vm.topPageModel().frameLayout1() : 1));
+      vm.layoutPos2 = ko.computed(() => vm.getLayoutPos(vm.selectedId() === 3 ? vm.topPageModel().frameLayout2() : 0));
+      vm.layoutPos3 = ko.computed(() => vm.getLayoutPos(vm.selectedId() === 3 ? vm.topPageModel().frameLayout3() : 2));
       vm.displaySizeText1 = ko.computed(() => vm.selectedId() === LayoutType.LAYOUT_TYPE_2
         || (vm.selectedId() === LayoutType.LAYOUT_TYPE_3 && vm.topPageModel().frameLayout1() !== 0));
       vm.displaySizeText2 = ko.computed(() => vm.selectedId() === LayoutType.LAYOUT_TYPE_1
