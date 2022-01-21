@@ -4,7 +4,6 @@ module nts.uk.at.view.kdp.share {
 
 	const template = `
 		<div class="time">
-			<div class="text-time" data-bind="i18n: 'KDP001_5'"></div>
 			<div class="date" data-bind="clock-day: time, setting: settings"></div>
 			<div class="hour-second" >
 				<span class="hour" data-bind="date: time, format: 'HH:mm', style:{
