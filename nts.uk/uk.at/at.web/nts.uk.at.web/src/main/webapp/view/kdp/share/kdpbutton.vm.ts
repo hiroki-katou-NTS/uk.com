@@ -116,7 +116,7 @@ interface StampToSuppress {
 
 ko.components.register('stamp-layout-button', {
 	viewModel: nts.uk.at.view.kdp.share.StampButtonLayOut, template: `
-    <div data-bind="visible: buttonSettings().length > 0">
+    aaaaa<div data-bind="visible: buttonSettings().length > 0">
         
         <div data-bind="visible: buttonLayoutType() != 1">
             <div class="btn-grid-container cf" data-bind="foreach: buttonSettings">

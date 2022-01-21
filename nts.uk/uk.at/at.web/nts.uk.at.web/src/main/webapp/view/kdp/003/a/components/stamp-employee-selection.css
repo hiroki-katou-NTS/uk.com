@@ -1,8 +1,7 @@
 #stamp-employee-selection {
 	padding: 10px;
-	min-width: 260px;
+	width: 260px;
 	box-sizing: border-box;
-	background-color: #E2EFDA;
 }
 
 #stamp-employee-selection .ntsControl.nts-datepicker-wrapper,

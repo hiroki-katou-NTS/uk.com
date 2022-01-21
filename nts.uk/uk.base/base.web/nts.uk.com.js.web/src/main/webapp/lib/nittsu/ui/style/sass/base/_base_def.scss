@@ -53,6 +53,13 @@ $focused_color: #0096f2;
     src: url(./font/NotoSansCJKjp-Bold.woff) format('woff');
 }
 
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 700;
+    src: url(./font/Quicksand-Bold.ttf) format('truetype');
+}
+
 /* IE */
 @font-face {
     font-family: 'DroidSansMono';

@@ -255,27 +255,6 @@ module nts.uk.at.kdp003.a {
 			// 		}
 			// 	})
 			// 	.trigger('resize');
-			
-			var paramSize = 0;
-			
-			setInterval(function () {
-
-				const grid = $grid.get(0);
-
-				if (grid && $grid.data('igGrid')) {
-					
-					var bottomMasterWrapper = $('#contents-area')[0].getBoundingClientRect().bottom;
-			        var topGridEmployee = $('.list-employee')[0].getBoundingClientRect().top;
-			        var param = bottomMasterWrapper - topGridEmployee - 20;
-					if (param < 45) param = 45;
-
-					if (paramSize !== param) {
-						paramSize = param;
-						$grid.igGrid('option', 'height', param + 'px');
-						$grid.data("height", param + 'px');
-					}
-				}
-			}, 100);
 
 		}
 
