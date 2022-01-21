@@ -2631,33 +2631,33 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                     </div>
             <div id="ccg001-tab-content-3" class="height-maximum">
                 <div id="ccg001-part-g" class="ccg001-tab-content-filters">
-                    <div class="control-group ccg001-control-group">
+                    <div class="ccg001-control-group">
                         <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_104+`</div>
-                        <input class="ccg001-inp" id="ccg001-input-code"
+                        <input class="ccg001-inp fit-to-right" id="ccg001-input-code"
                                     data-bind="attr: {tabindex: ccg001Tabindex}, ntsTextEditor: {
                                     name: '#[CCG001_106]',
                                     value: inputCodeTab3,
                                     valueUpdate: 'keypress',
                                     required: false
                                     }" />
-                        <button class="proceed pull-right" id="ccg001-tab3-search-by-code"
+                        <button class="proceed fit-to-left fit-to-editor" id="ccg001-tab3-search-by-code"
                             data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByCode, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
                     </div>
-                    <div class="control-group ccg001-control-group">
+                    <div class="ccg001-control-group">
                         <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_105+`</div>
-                        <input class="ccg001-inp" id="ccg001-inp-name"
+                        <input class="ccg001-inp fit-to-right" id="ccg001-inp-name"
                                     data-bind="attr: {tabindex: ccg001Tabindex}, ntsTextEditor: {
                                     name: '#[CCG001_107]',
                                     value: inputNameTab3,
                                     valueUpdate: 'keypress',
                                     required: false
                                     }" />
-                        <button class="proceed pull-right" id="ccg001-tab3-search-by-name"
+                        <button class="proceed fit-to-left fit-to-editor" id="ccg001-tab3-search-by-name"
                             data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByName, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
                     </div>
-                    <div class="cf control-group ccg001-control-group">
-                        <div class="pull-left" data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_98+`</div>
-                        <div id="ccg001-date-entry" class="ccg001-date-range pull-left"
+                    <div class="ccg001-control-group">
+                        <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_98+`</div>
+                        <div id="ccg001-date-entry" class="ccg001-date-range fit-to-right"
                             data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
                                 name: '#[CCG001_100]',
                                 required: false,
@@ -2665,19 +2665,19 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                 showNextPrevious: false,
                                 value: entryDateTab3
                                 }"/>
-                        <button class="proceed pull-right" id="search-by-entry-date"
+                        <button class="proceed fit-to-left fit-to-editor" id="search-by-entry-date"
                             data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByEntryDate, enable: isValidEntryDateSearch">`+CCG001TextResource.CCG001_108+`</button>
                     </div>
-                    <div class="cf control-group ccg001-control-group">
-                        <div class="pull-left" data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_99+`</div>
-                        <div id="ccg001-date-retirement" class="ccg001-date-range pull-left"
+                    <div class="ccg001-control-group">
+                        <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_99+`</div>
+                        <div id="ccg001-date-retirement" class="ccg001-date-range fit-to-right"
                             data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
                                 name: '#[CCG001_100]',
                                 required: false,
                                 enable: true,
                                 showNextPrevious: false,
                                 value: retirementDateTab3 }"/>
-                        <button class="proceed pull-right" id="search-by-retirement-date"
+                        <button class="proceed fit-to-left fit-to-editor" id="search-by-retirement-date"
                             data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByRetirementDate, enable: isValidRetirementDateSearch">`+CCG001TextResource.CCG001_108+`</button>
                     </div>
                     <div id="tab3kcp005"></div>

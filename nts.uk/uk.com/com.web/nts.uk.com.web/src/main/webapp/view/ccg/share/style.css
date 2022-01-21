@@ -24,17 +24,6 @@
 	padding: 0 !important;
 }
 
-#ccg001-part-g {
-	width: 440px;
-	margin-right: 5px;
-	padding-right: 5px;
-	overflow: auto;
-}
-
-#ccg001-part-g .form-label{
-	width: 120px;
-}
-
 .ccg001-inp {
 	width: 216px;
 }
@@ -89,13 +78,6 @@
 	background: url(icon/49_WorkplaceChild.png);
 }
 
-.ccg001-control-group {
-	margin-left: 5px;
-}
-.ccg001-date-range {
-	margin-left: 5px;
-	margin-right: 5px;
-}
 .ccg001-label {
 	width: 85px;
 }
@@ -229,7 +211,7 @@
 }
 
 
-.ccg001-content {
+#component-ccg001 .ccg001-content {
 	background-color: #fff;
 	overflow: hidden;
 	height: calc(100% - 15px);
@@ -238,16 +220,16 @@
 	padding-top: 15px;
 }
 
-.ccg001-content #ccg001-header {
+#component-ccg001 button.fit-to-editor {
+	min-width: 70px;
+}
+
+#component-ccg001 #ccg001-header {
 	padding: 20px 20px 0 20px;
 }
 
-.ccg001-content #ccg001-header > div {
+#component-ccg001 #ccg001-header > div {
 	display: inline-block;
-}
-
-.ccg001-content #ccg001-header #ccg001-btn-apply-search-condition {
-	width: 70px;
 }
 
 #component-ccg001 .tabs-content {
@@ -256,19 +238,34 @@
 	height: calc(100% - 102px); /* tabs height30 + padding15x2 + padding20x2 */
 }
 
-.ccg001-content .ccg001-tab-content-filters {
+#component-ccg001 .ccg001-tab-content-filters {
 	padding: 20px;
-	width: 400px;
 	height: calc(100% - 65px); /* 65px: same as setComponentHeight in ccg.vm.ts */
 }
 
-#ccg001-tab-content-2 .ccg001-tab-content-filters .switchbox-wrappers > label span {
+#component-ccg001 #ccg001-tab-content-2 {
+	width: 440px;
+}
+
+#component-ccg001 #ccg001-tab-content-2 .ccg001-tab-content-filters .switchbox-wrappers > label span {
 	width: 65px;
+}
+
+#component-ccg001 #ccg001-tab-content-3 {
 }
 
 #ccg001-tab-content-3 .ccg001-tab-content-filters {
 	overflow: hidden;
 }
+
+#ccg001-tab-content-3 .ccg001-tab-content-filters .ccg001-control-group {
+	margin-bottom: 18px;
+}
+
+#ccg001-tab-content-3 .ccg001-tab-content-filters .ccg001-control-group .form-label{
+	width: 103px;
+}
+
 
 .footer-button {
 	position: relative;
