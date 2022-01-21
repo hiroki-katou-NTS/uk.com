@@ -481,26 +481,23 @@ public class ExcessOutsideWorkMng {
 		val targetFlexExcessTime = this.askTargetFlexExcessTime(
 				new DatePeriod(datePeriod.start(), procDate), aggregateTotalWorkingTime, flexTime, addSet);
 		
+		/** 法定労働時間を取得する（フレックス用） */
+		val newPrescibed = setFlex.getFlexStatutoryLaborTime(require, cacheCarrier, true, this.yearMonth, cid, this.employmentCd,
+								this.employeeId, procDate, Optional.of(datePeriod), this.closureId, this.closureDate, 
+								Optional.of(aggregateTotalWorkingTime), this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values())
+				.map(c -> new AttendanceTimeMonth(c.getStatutorySetting().valueAsMinutes())) 
+				.orElseGet(() -> new AttendanceTimeMonth(0));
+		
 		// 法定内フレックス時間を含めるか判断する
 		AttendanceTimeMonthWithMinus excessTimeUntilDay = new AttendanceTimeMonthWithMinus(0);
 		if (ExcessOutsideWorkMng.isIncludeLegalFlexTime(this.companySets.getOutsideOTBDItems())){
 			
-			/** 按分した週、月の法定労働時間を取得(フレックス用) */
-			val newPrescibed = setFlex.getPrescribedWorkingTimeMonth(require, yearMonth, datePeriod, closureId,
-					Optional.of(aggregateTotalWorkingTime.getVacationUseTime().getCompensatoryLeave()),
-					this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values());
-			
 			// 法定内フレックスを含んで当日までの超過時間を求める
 			excessTimeUntilDay = this.askExcessTimeUntilDayIncludeLegalFlex(targetFlexExcessTime, procDate, newPrescibed);
 		} else {
-
-			/** 按分した週、月の法定労働時間を取得(フレックス用) */
-			val newStatutory = setFlex.getStatutoryWorkingTimeMonth(require, yearMonth, datePeriod, closureId,
-					Optional.of(aggregateTotalWorkingTime.getVacationUseTime().getCompensatoryLeave()),
-					this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values());
 			
 			// 法定外フレックスのみで当日までの超過時間を求める
-			excessTimeUntilDay = this.askExcessTimeUntilDayOnlyillegalFlex(targetFlexExcessTime, procDate, newStatutory);
+			excessTimeUntilDay = this.askExcessTimeUntilDayOnlyillegalFlex(targetFlexExcessTime, procDate, newPrescibed);
 		}
 
 		// 前日までの超過時間を求める
