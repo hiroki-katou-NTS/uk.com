@@ -1541,10 +1541,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#miGrid").unblock({fadeIn:200});
                     return;
                 }
-                // todo: 非同期処理終わった後のエラー処理どうする？
                 $('#miGrid').removeClass('processing');
                 $("#miGrid").unblock({fadeIn:200});
-                //self.reloadScreen();
+                self.reloadScreen();
             });
         }
 
