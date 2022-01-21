@@ -146,17 +146,6 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
                 e.printStackTrace();
                 System.out.println("Exception: "+ e.getMessage());
             }
-
-//            this.getEntityManager().createQuery(REMOVE_EXTRACT_RESULT)
-//                    .setParameter("cid", cid)
-//                    .setParameter("sid", x.sid)
-//                    .setParameter("category", x.category)
-//                    .setParameter("code", x.alarmCheckCode)
-//                    .setParameter("checkType", x.checkAtr)
-//                    .setParameter("no", x.conditionNo)
-//                    .setParameter("startDate", x.startDate)
-//                    .executeUpdate();
-//            this.getEntityManager().flush();
         }
     }
 
@@ -199,5 +188,32 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
             throw new RuntimeException(ex);
         }
         return results;
+    }
+
+    @Override
+    public void onlyDeleteParent(String cid, String patternCode, String runCode) {
+        String query = "DELETE FROM KFNDT_PERSIS_ALARM_EXT WHERE CID = ? AND PATTERN_CODE = ? AND AUTORUN_CODE = ? ";
+        PreparedStatement ps = null;
+        try {
+            ps = this.connection().prepareStatement(query);
+            ps.setString(1, cid);
+            ps.setString(2, patternCode);
+            ps.setString(3, runCode);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Exception: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Optional<PersistenceAlarmListExtractResult> getAlarm(String companyId, String patternCode, String runCode) {
+        String sql = "select distinct a from KfndtPersisAlarmExt a join a.extractResults b where a.pk.cid = :companyId and a.patternCode = :patternCode and a.autoRunCode = :runCode";
+
+        return this.queryProxy().query(sql, KfndtPersisAlarmExt.class)
+                .setParameter("companyId", companyId)
+                .setParameter("patternCode", patternCode)
+                .setParameter("runCode", runCode)
+                .getSingle(KfndtPersisAlarmExt::toDomain);
     }
 }

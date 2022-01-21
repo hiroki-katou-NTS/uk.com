@@ -38,20 +38,11 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
     @Inject
     private MailServerAdapter mailServerAdapter;
 
-//    @Inject
-//    private WkpManagerAdapter wkpManagerAdapter;
-
     @Inject
     private WorkplaceSendEmailService workplaceSendEmailService;
 
     @Inject
     private AlarmListExecutionMailSettingRepository executionMailSettingRepository;
-
-//    @Inject
-//    private AlarmMailSendingRoleRepository sendingRoleRepository;
-//
-//    @Inject
-//    private RoleAdaptor roleAdaptor;
 
     @Inject
     private CreateErrorInfo createErrorInfo;
@@ -65,17 +56,11 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
     @Inject
     private EmployeeAlarmListAdapter employeeAlarmListAdapter;
 
-//    @Inject
-//    private RoleExportRpAdapter roleExportRpAdapter;
-
     @Inject
     private WkpManagerAdapter workplaceAdapter;
 
     @Inject
     private AlarmMailSettingsAdapter mailAdapter;
-
-//    @Inject
-//    private AdministratorReceiveAlarmMailAdapter adminReceiveAlarmMailAdapter;
 
     @Inject
     private AlarmMailSendingRoleRepository alarmMailSendingRoleRepo;
@@ -110,32 +95,6 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         if (isNotHaveMailSetting(exMailListNormal)) {
             throw new BusinessException("Msg_1169");
         }
-
-//        // ドメインモデル「アラームメール送信ロール」を取得する
-//        val sendingRole = sendingRoleRepository.find(companyId, IndividualWkpClassification.WORKPLACE.value);
-//        //        //取得したMap＜職場ID、List＜管理者ID＞＞をループする
-//        List<String> empIdList = new ArrayList<>();
-//        Map<String, List<String>> managerIdMap = new HashMap<>();
-//        //[ロール設定=true]
-////        if (sendingRole.isPresent() && sendingRole.get().isRoleSetting()) {
-//            managerIdMap = angAnAdministrator(command.getWorkplaceIds(), executeDate, sendingRole, companyId);
-//
-//            //取得したアラームメール送信ロール．マスタチェック結果を就業担当へ送信をチェックする
-//            if (sendingRole.get().isSendResult()) {
-//                //アラームリスト抽出結果にカテゴリ「マスタチェック（基本）のデータがあるかチェック
-//                boolean isExtractData = command.listValueExtractAlarmDto
-//                        .stream()
-//                        .anyMatch(x -> x.getCategory() == WorkplaceCategory.MASTER_CHECK_BASIC.value);
-//
-//                if (isExtractData) {
-//                    for (String wolPlaceId : command.getWorkplaceIds()) {
-//                        val empList = employeeAlarmListAdapter.getListEmployeeId(wolPlaceId, GeneralDate.today());
-//                        if (!empList.isEmpty())
-//                            empIdList.addAll(empList);
-//                    }
-//                }
-//            }
-//        }
 
         Map<String, List<String>> managerOfEmployeeMap = ManagerOfWorkplaceService.get(
                 new ManagerOfWorkplaceService.Require() {
@@ -222,12 +181,12 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
 
         //管理者未設定職場リスト：取得した管理者未設定職場リスト
         List<String> unsetList = new ArrayList<>();
-        for (Map.Entry<String, List<String>> target : managerOfEmployeeMap.entrySet()) {
-            val extractAlarmDto = command.listValueExtractAlarmDto.stream()
-                    .filter(x -> x.getWorkplaceID().equals(target.getKey()))
-                    .findFirst();
-            extractAlarmDto.ifPresent(valueExtract -> unsetList.add(valueExtract.getWorkplaceID()));
-        }
+//        for (Map.Entry<String, List<String>> target : managerOfEmployeeMap.entrySet()) {
+//            val extractAlarmDto = command.listValueExtractAlarmDto.stream()
+//                    .filter(x -> x.getWorkplaceID().equals(target.getKey()))
+//                    .findFirst();
+//            extractAlarmDto.ifPresent(valueExtract -> unsetList.add(valueExtract.getWorkplaceID()));
+//        }
 
         //アルゴリズム「メール送信のエラー情報を作成する」を実行する
         OutputErrorInfo outputErrorInfo = createErrorInfo.getErrorInfo(GeneralDate.today(), personError, managerErrorList, unsetList);
@@ -241,103 +200,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         return errorInfo;
     }
 
-//    private boolean isRoleValid(Optional<AlarmMailSendingRole> mailSendingRole, Optional<MailExportRolesDto> roleOpt, String roleId) {
-//        if (!mailSendingRole.isPresent() || !roleOpt.isPresent()) return false;
-////		・ループ中のロールID　は取得した「アラームメール送信ロール」のロールIDに存在する
-////		AND
-////		・ループ中のロールIDはドメインモデル「ロール」に参照範囲　！＝　自分のみ
-//        val condition1 = mailSendingRole.get().getRoleIds().contains(roleId);
-//        val condition2 = roleOpt.get().getEmployeeReferenceRange() != EmployeeReferenceRange.ONLY_MYSELF.value;
-//
-//        return condition1 && condition2;
-//    }
-//
-//    private boolean isCategoryMatch(List<String> workplaceIds, String wkpId) {
-//        return workplaceIds.stream().anyMatch(y -> y.equals(wkpId));
-//    }
-//
-//    private boolean isRoleExistInAlarmMail(Optional<AlarmMailSendingRole> alarmMailSendingRole, String role) {
-//        if (!alarmMailSendingRole.isPresent()) {
-//            return false;
-//        }
-//        return alarmMailSendingRole.get().getRoleIds().stream().anyMatch(x -> x == role);
-//    }
-//
-//    //社員IDListから就業ロールIDを取得
-//    private Map<String, String> roleIdWorkDomService(List<String> empIdList) {
-//        Map<String, String> map = new HashMap<>();
-//        for (String empId : empIdList) {
-//            //社員IDからユーザIDを取得する
-//            val userId = userEmployeeAdapter.getUserIDByEmpID(empId);
-//            if (userId.isPresent()) {
-//                //ユーザIDからロールセットを取得する
-//                val role = roleAdapter.getRoleSetFromUserId(userId.get(), GeneralDate.today());
-//                if (role.isPresent() && StringUtils.isNotEmpty(role.get().getEmploymentRoleId())) {
-//                    map.put(empId, role.get().getEmploymentRoleId());
-//                }
-//            }
-//        }
-//        return map;
-//    }
-
     private boolean isNotHaveMailSetting(Optional<AlarmListExecutionMailSetting> mailSetting) {
         return !mailSetting.isPresent() || !(mailSetting.get().getContentMailSettings().isPresent());
     }
-
-//    private Map<String, List<String>> angAnAdministrator(List<String> worplaceIdList, GeneralDate executeDate,
-//                                                         Optional<AlarmMailSendingRole> roleMailSettingOpt, String cid) {
-//        // 管理者を取得する。[RQ.727]
-//        Map<String, List<String>> adminReceiveAlarmMailMap =  adminReceiveAlarmMailAdapter.getAdminReceiveAlarmMailByWorkplaceIds(worplaceIdList);
-//
-//        Map<String, List<String>> managerMap = new HashMap<>();  // Map<ManagerId, List<WorkplaceId>>
-//        for (val entry : adminReceiveAlarmMailMap.entrySet()) {
-//            List<String> workplaceIds = new ArrayList<>();
-//            workplaceIds.add(entry.getKey());
-//            entry.getValue().forEach(managerId -> {
-//                if (!managerMap.containsKey(managerId)) {
-//                    managerMap.put(managerId, workplaceIds);
-//                } else {
-//                    workplaceIds.addAll(managerMap.get(managerId));
-//                    managerMap.put(managerId, workplaceIds.stream().distinct().collect(Collectors.toList()));
-//                }
-//            });
-//        }
-//
-//        // ドメインモデル「ロール」を取得
-//        val roleList = mailAdapter.findByCompanyId(cid);
-//
-//        if (roleMailSettingOpt.isPresent() && roleMailSettingOpt.get().isRoleSetting()) {
-//            Iterator<Map.Entry<String, List<String>>> itr = managerMap.entrySet().iterator();
-//            while(itr.hasNext()) {
-//                Map.Entry<String, List<String>> item = itr.next();
-//                Map<String, String> empRoleMap = GetRoleWorkByEmployeeService.get(
-//                        new GetRoleWorkByEmployeeService.Require() {
-//                            @Override
-//                            public Optional<String> getUserIDByEmpID(String employeeID) {
-//                                return userEmployeeAdapter.getUserIDByEmpID(employeeID);
-//                            }
-//
-//                            @Override
-//                            public Optional<RoleSetExportDto> getRoleSetFromUserId(String userId, GeneralDate baseDate) {
-//                                return roleAdapter.getRoleSetFromUserId(userId, baseDate);
-//                            }
-//                        },
-//                        Collections.singletonList(item.getKey()),
-//                        executeDate
-//                );
-//
-//                if (empRoleMap.isEmpty()) {
-//                    itr.remove();
-//                } else {
-//                    for (Map.Entry<String, String> entry : empRoleMap.entrySet()) {
-//                        if (!roleMailSettingOpt.get().getRoleIds().contains(entry.getValue())){
-//                            itr.remove();
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        return managerMap;
-//    }
 }

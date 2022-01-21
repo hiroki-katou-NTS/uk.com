@@ -70,7 +70,7 @@ public class ManagerOfWorkplaceService {
                     // 取得した「アラームメール送信ロール」をチェック
                     if (alarmMailSendRole.isPresent() && alarmMailSendRole.get().isRoleSetting()) {
                         // 設定ないロールを消す: ロールID　NOT IN　アラームメール送信ロール．ロールID
-                        if (!alarmMailSendRole.get().getRoleIds().contains(item.getValue()) && !isRemoved) {
+                        if (roleOpt.isPresent() && !alarmMailSendRole.get().getRoleIds().contains(roleOpt.get().getRoleId()) && !isRemoved) {
                             itr.remove();
                         }
                     }

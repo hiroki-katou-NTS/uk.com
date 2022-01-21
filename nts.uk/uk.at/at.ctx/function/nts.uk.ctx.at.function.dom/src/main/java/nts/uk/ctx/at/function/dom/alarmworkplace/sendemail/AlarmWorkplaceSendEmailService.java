@@ -157,18 +157,6 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
                     ))
                     .collect(Collectors.toList());
 
-//            List<ValueExtractAlarmManualDto> data = new ArrayList<>();
-//
-//            for (String workPlaceId : target.getValue()) {
-//                List<ValueExtractAlarmManualDto> dataFilter = listValueExtractAlarmDto
-//                        .stream()
-//                        .filter(x -> x.getWorkplaceID().equals(workPlaceId))
-//                        .collect(Collectors.toList());
-//                data.addAll(dataFilter);
-//            }
-//            data.sort(Comparator.comparing(ValueExtractAlarmManualDto::getWorkplaceCode));
-
-//            List<ValueExtractAlarmDto> listDto = mapDataToExtract(lstExtractData);
             for (String administratorId : entry.getValue()) {
                 try {
                     boolean isSuccess = this.sendMail(companyId,
@@ -195,18 +183,9 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
                             sendErrorAdminMap.put(workplaceId, combinedList);
                         }
 
-//                        for (String wkpId : entry.getValue()) {
-//                            if (!sendErrorAdminMap.containsKey(wkpId)) {
-//                                sendErrorAdminMap.put(wkpId, errorsAdmin);
-//                            } else {
-//                                List<String> empError = sendErrorAdminMap.getOrDefault(wkpId, Collections.emptyList());
-//                                empError.addAll(errorsAdmin);
-//                                sendErrorAdminMap.put(wkpId, empError.stream().distinct().collect(Collectors.toList()));
-//                            }
-//                        }
                         System.out.println("Send mail failed with ID: " + administratorId);
                     } else {
-                        System.out.println("success send email with ID: " + administratorId);
+                        System.out.println("send email success with ID: " + administratorId);
                     }
                 } catch (SendMailFailedException e) {
                     throw e;
@@ -276,29 +255,6 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
         }
         return errorsPerson;
     }
-
-//    /**
-//     * 職場IDによってアラーム抽出結果と管理送信対象をマッピングする。
-//     *
-//     * @param administratorTarget
-//     * @param listValueExtractAlarmDto
-//     * @return Map＜アラーム抽出結果、List＜管理者ID＞＞
-//     */
-//    private Map<ValueExtractAlarmDto, List<String>> mapAlarmExtractionResult(Map<String, List<String>> administratorTarget,
-//                                                                             List<ValueExtractAlarmDto> listValueExtractAlarmDto) {
-//        Map<ValueExtractAlarmDto, List<String>> filerMap = new HashMap<>();
-//
-//        for (Map.Entry<String, List<String>> target : administratorTarget.entrySet()) {
-//            val extractAlarmDto = listValueExtractAlarmDto.stream()
-//                    .filter(x -> x.getWorkplaceID().trim().equals(target.getKey().trim()))
-//                    .findFirst();
-//            if (extractAlarmDto.isPresent()) {
-//                filerMap.put(extractAlarmDto.get(), target.getValue());
-//            }
-//        }
-//
-//        return filerMap;
-//    }
 
     /**
      * 対象者にメールを送信する

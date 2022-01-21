@@ -130,6 +130,7 @@ public class AlarmSendEmailService implements SendEmailService {
 						useAuthentication, mailSettingAdmin, senderAddress);
 				if (!isSuccess) {
 					errors.add(entry.getKey());
+					System.out.println("send mail failed with SID: " + entry.getKey());
 				}
 			} catch (SendMailFailedException e) {
 				throw e;
@@ -146,93 +147,6 @@ public class AlarmSendEmailService implements SendEmailService {
 		}
 		return errorInfo;
 	}
-
-//	/**
-//	 * ロールにより管理対象者を調整
-//	 * @param cid 会社ID
-//	 * @param managerTargetList List＜管理者に送信する社員＞：List＜職場ID、社員ID＞
-//	 * @param alarmExeMailSetting List＜アラームリスト実行メール設定＞
-//	 * @return Map＜管理者ID、List＜対象者ID＞＞
-//	 */
-//	private Map<String, List<String>> adjustManagerByRole(String cid, List<ManagerTagetDto> managerTargetList,
-//														  List<AlarmListExecutionMailSetting> alarmExeMailSetting, GeneralDate executeDate) {
-//		if (CollectionUtil.isEmpty(managerTargetList)) return Collections.emptyMap();
-//
-//		// 管理者宛メール設定を探す
-//		val alarmMailSettingAdmin = alarmExeMailSetting.stream().filter(x -> x.getPersonalManagerClassify().value ==
-//				PersonalManagerClassification.EMAIL_SETTING_FOR_ADMIN.value).findFirst();
-//		// 探した「アラームリスト実行メール設定」をチェック
-//		if (!alarmMailSettingAdmin.isPresent() || !alarmMailSettingAdmin.get().getContentMailSettings().isPresent()) {
-//			throw new BusinessException("Msg_2206");
-//		}
-//
-//		// 職場管理者を取得 [RQ.727] :
-//        val wkpIds = managerTargetList.stream().map(ManagerTagetDto::getWorkplaceID).distinct().collect(Collectors.toList());
-//        // Map <WorkplaceID, List<ManagerID>>
-//        Map<String, List<String>> adminReceiveAlarmMailMap = adminiReceiveAlarmMailAdapter.getAdminReceiveAlarmMailByWorkplaceIds(wkpIds);
-//
-//        // Map＜管理者ID、List＜対象者ID＞＞にデータを追加
-//        Map<String, List<String>> managerMap = new HashMap<>();    // Map<ManagerID, List<TargetPersonID>>
-//        adminReceiveAlarmMailMap.forEach((workplaceId, managerIds) -> {
-//            val personIdList = managerTargetList.stream().filter(x -> x.getWorkplaceID().equals(workplaceId)).map(ManagerTagetDto::getEmployeeID).collect(Collectors.toList());
-//			managerIds.forEach(managerId -> {
-//                if (!personIdList.isEmpty()) {
-//                    managerMap.put(managerId, personIdList);
-//                }
-//            });
-//        });
-//
-//		// ドメインモデル「ロール」を取得
-//		val roleList = mailAdapter.findByCompanyId(cid);
-//
-//		// ドメインモデル「アラームメール送信ロール」を取得する
-//		val mailSendingRole = alarmMailSendingRoleRepo.find(cid, IndividualWkpClassification.INDIVIDUAL.value);
-//
-//		if (mailSendingRole.isPresent() && mailSendingRole.get().isRoleSetting()) {
-//			Iterator<Map.Entry<String, List<String>>> itr = managerMap.entrySet().iterator();
-//			while(itr.hasNext()) {
-//				Map.Entry<String, List<String>> item = itr.next();
-//				Map<String, String> empRoleMap = GetRoleWorkByEmployeeService.get(
-//						new GetRoleWorkByEmployeeService.Require() {
-//							@Override
-//							public Optional<String> getUserIDByEmpID(String employeeID) {
-//								return userEmployeeAdapter.getUserIDByEmpID(employeeID);
-//							}
-//
-//							@Override
-//							public Optional<RoleSetExportDto> getRoleSetFromUserId(String userId, GeneralDate baseDate) {
-//								return roleAdapter.getRoleSetFromUserId(userId, baseDate);
-//							}
-//						},
-//						Collections.singletonList(item.getKey()),
-//						executeDate
-//				);
-//
-//				if (empRoleMap.isEmpty()) {
-//					itr.remove();
-//				} else {
-//					for (Map.Entry<String, String> entry : empRoleMap.entrySet()) {
-//					    if (!mailSendingRole.get().getRoleIds().contains(entry.getValue())){
-//                            itr.remove();
-//                        }
-//					}
-//				}
-//			}
-//		}
-//
-//		return managerMap;
-//	}
-//
-//	private boolean isRoleValid(Optional<AlarmMailSendingRole> mailSendingRole, Optional<MailExportRolesDto> roleOpt, String roleId) {
-//		if (!mailSendingRole.isPresent() || !roleOpt.isPresent()) return false;
-////		・ループ中のロールID　は取得した「アラームメール送信ロール」のロールIDに存在する
-////		AND
-////		・ループ中のロールIDはドメインモデル「ロール」に参照範囲　！＝　自分のみ
-//		val condition1 = mailSendingRole.get().getRoleIds().contains(roleId);
-//		val condition2 = roleOpt.get().getEmployeeReferenceRange() != EmployeeReferenceRange.ONLY_MYSELF.value;
-//
-//		return condition1 && condition2;
-//	}
 
 	/**
 	 * ロールにより管理対象者を調整
