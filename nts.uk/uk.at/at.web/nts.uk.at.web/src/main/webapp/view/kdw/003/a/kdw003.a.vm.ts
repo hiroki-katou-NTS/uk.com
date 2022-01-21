@@ -1372,14 +1372,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                     if (dataAfter.showErrorDialog && dataAfter.errorMap[6] == undefined) self.showErrorDialog();
                                 });
+                                self.execMonthlyAggregate(execMontlyAggregateAsync, dataParent);
                             }
                             if (dataAfter.errorMap[6] != undefined) {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_1455" }).then(() => {
                                     if (dataAfter.showErrorDialog) self.showErrorDialog();
                                 });
                             }
-
-                            self.execMonthlyAggregate(execMontlyAggregateAsync, dataParent);
                         });
 
 //                        if ((dataAfter.showErrorDialog == null && self.showDialogError) || dataAfter.showErrorDialog) {
@@ -1461,6 +1460,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                         if (dataAfter.showErrorDialog) self.showErrorDialog();
                                     });
                                 }
+                                self.execMonthlyAggregate(execMontlyAggregateAsync, dataParent);
                             } else {
                                 let errorShowMessage = (errorAll || errorFlex || self.hasErrorCalc);
                                 if (errorShowMessage && errorReleaseCheckbox) {
@@ -1481,8 +1481,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 }
                             }
                             self.hasErrorCalc = false;
-
-                            self.execMonthlyAggregate(execMontlyAggregateAsync, dataParent);
                         });
                     }
 
@@ -1549,7 +1547,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $("#miGrid").unblock({fadeIn:200});
                 $('#agree-table').removeClass('processing');
                 $('#agree-table').unblock({fadeIn:200});
-                self.reloadScreen();
+                self.loadRowScreen(true, false, false, false);
             });
         }
 
@@ -2134,7 +2132,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.block.clear();
                     return dfd.resolve();
                 }else if(onlyLoadMonth && errorFlex == true){
-                     return dfd.resolve();
+                    return dfd.resolve();
                 }
                 self.showTighProcess(data.showTighProcess);
                 self.indentityMonth(data.indentityMonthResult);
