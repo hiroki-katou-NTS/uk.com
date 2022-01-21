@@ -50,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTCalMed
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryLaborDivisionService;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -484,9 +485,7 @@ public class ExcessOutsideWorkMng {
 		/** 法定労働時間を取得する（フレックス用） */
 		val newPrescibed = setFlex.getFlexStatutoryLaborTime(require, cacheCarrier, true, this.yearMonth, cid, this.employmentCd,
 								this.employeeId, procDate, Optional.of(datePeriod), this.closureId, this.closureDate, 
-								Optional.of(aggregateTotalWorkingTime), this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values())
-				.map(c -> new AttendanceTimeMonth(c.getStatutorySetting().valueAsMinutes())) 
-				.orElseGet(() -> new AttendanceTimeMonth(0));
+								Optional.of(aggregateTotalWorkingTime), this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values());
 		
 		// 法定内フレックス時間を含めるか判断する
 		AttendanceTimeMonthWithMinus excessTimeUntilDay = new AttendanceTimeMonthWithMinus(0);
@@ -725,7 +724,7 @@ public class ExcessOutsideWorkMng {
 	private AttendanceTimeMonthWithMinus askExcessTimeUntilDayOnlyillegalFlex(
 			AttendanceTimeMonthWithMinus targetFlexExcessTime,
 			GeneralDate procDate,
-			AttendanceTimeMonth statutoryWorkingTimeMonth){
+			Optional<MonthlyFlexStatutoryLaborTime> statutoryWorkingTimeMonth){
 		
 		AttendanceTimeMonthWithMinus excessTimeUntilDay = new AttendanceTimeMonthWithMinus(0);
 
@@ -736,7 +735,7 @@ public class ExcessOutsideWorkMng {
 		val compensatoryLeaveTime = compensatoryLeave.getTotalUseTime(targetPeriod);
 		
 		// 法定労働時間から代休分を引く
-		int afterDeduction = statutoryWorkingTimeMonth.v() - compensatoryLeaveTime.v();
+		int afterDeduction = statutoryWorkingTimeMonth.map(c -> c.getStatutorySetting().valueAsMinutes()).orElse(0) - compensatoryLeaveTime.v();
 		if (afterDeduction < 0) afterDeduction = 0;
 		
 		// 当日までの超過時間を求める
@@ -755,7 +754,7 @@ public class ExcessOutsideWorkMng {
 	private AttendanceTimeMonthWithMinus askExcessTimeUntilDayIncludeLegalFlex(
 			AttendanceTimeMonthWithMinus targetFlexExcessTime,
 			GeneralDate procDate,
-			AttendanceTimeMonth prescribedWorkingTimeMonth){
+			Optional<MonthlyFlexStatutoryLaborTime> prescribedWorkingTimeMonth){
 		
 		AttendanceTimeMonthWithMinus excessTimeUntilDay = new AttendanceTimeMonthWithMinus(0);
 
@@ -766,7 +765,7 @@ public class ExcessOutsideWorkMng {
 		val compensatoryLeaveTime = compensatoryLeave.getTotalUseTime(targetPeriod);
 		
 		// 所定労働時間から代休分を引く
-		int afterDeduction = prescribedWorkingTimeMonth.v() - compensatoryLeaveTime.v();
+		int afterDeduction = prescribedWorkingTimeMonth.map(c -> c.getSpecifiedSetting().valueAsMinutes()).orElse(0) - compensatoryLeaveTime.v();
 		if (afterDeduction < 0) afterDeduction = 0;
 		
 		// 当日までの超過時間を求める
