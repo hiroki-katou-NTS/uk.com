@@ -1,5 +1,7 @@
 @import "_button.scss";
 
+$hover_row_back_color: #DDE4E9;
+
 %ig_table_header_thtd {
 	background-color: #6A6A6A;
 	color: #fff;
@@ -102,7 +104,7 @@
 		&, &.ui-state-focus, &.ui-ig-altrecord.ui-state-focus {
 			td, th {
 				&.ui-state-hover {
-					background: #DDE4E9;
+					background: $hover_row_back_color;
 				}
 			}
 				

@@ -1,10 +1,12 @@
+@import "_ignitecommons.scss";
+
 .nts-fixed-table  {
 	
 	table.fixed-table {
 		width: 100%;
 		table-layout: fixed;
 		border-collapse: separate;
-		
+
 		> tbody > tr > td,
 		> tbody > tr > th,
 		> thead > tr > td,
@@ -24,7 +26,7 @@
 		
 		> tbody > tr:hover > td,
 		> tbody > tr:hover > th {
-			background-color: #C5F1F7;
+			background-color: $hover_row_back_color;
 		}
 		
 		tbody  td:last-child {
