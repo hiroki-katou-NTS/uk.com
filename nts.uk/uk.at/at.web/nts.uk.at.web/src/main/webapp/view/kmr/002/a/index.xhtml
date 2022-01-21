@@ -21,8 +21,7 @@
 			<div id="functions-area">
 				<button class="proceed large"
 					data-bind="click: register, enable: modeFuture() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KMR002_16')}</button>
-				<button class="large"
-					data-bind="click: print, enable: $root.errors.isEmpty">#{i18n.getText('KMR002_4')}</button>
+				<a style="margin-left: 300px;" class="goout" data-bind="ntsLinkButton: { action: toKMR005 }">#{i18n.getText('KMR002_4')}</a>
 			</div>
 			<div id="contents-area">
 				<div class="table" style="margin-left: 15px; margin-bottom: 10px;">

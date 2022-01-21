@@ -8,11 +8,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
+import nts.uk.ctx.at.record.app.query.reservation.ReservationExportDto;
+import nts.uk.ctx.at.record.app.query.reservation.ReservationExportParam;
 import nts.uk.ctx.at.record.app.query.reservation.ReservationExportQuery;
 import nts.uk.file.at.app.export.bento.ReservationMonthExportService;
 import nts.uk.file.at.app.export.bento.ReservationMonthQuery;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Path("bento/report")
 @Produces("application/json")
@@ -33,10 +34,10 @@ public class BentoReportWebService {
 	@Path("reservation/data")
 	public ExportServiceResult printData() {
 		String title = "月間予約台帳";
-		DatePeriod datePeriol = reservationExportQuery.startup();
+		ReservationExportDto reservationExportDto = reservationExportQuery.startup(new ReservationExportParam(null, null));
 		ReservationMonthQuery query = new ReservationMonthQuery(
 						Arrays.asList(AppContexts.user().employeeId()), title,
-						datePeriol.start().toString(), datePeriol.end().toString(), false);
+						reservationExportDto.getStartDate(), reservationExportDto.getEndDate(), false);
 		return reservationMonthExportService.start(query);
 	}
 	

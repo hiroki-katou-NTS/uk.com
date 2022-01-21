@@ -264,10 +264,14 @@ module nts.uk.at.view.kmr002.a.model {
 				});
 			}	
 		}
-		
-		print(): void {
-            nts.uk.request.jump("at", "/view/kmr/005/a/index.xhtml");
-        }
+
+		toKMR005() {
+			const self = this;
+			nts.uk.request.jump("/view/kmr/005/a/index.xhtml", { 
+				yearMonth: moment(self.date()).utc().format("YYYY/MM"),
+				employeeID: __viewContext.user.employeeId 
+			});
+		}
     }
 
 	export class Bento {

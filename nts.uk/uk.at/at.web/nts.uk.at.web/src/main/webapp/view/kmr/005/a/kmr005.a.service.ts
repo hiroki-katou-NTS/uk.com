@@ -6,8 +6,8 @@ module nts.uk.at.view.kmr005.a.service {
         exportFile: "bento/report/reservation/month"
     }
     
-    export function startup(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.startup);
+    export function startup(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.startup, param);
     }
         
     export function exportFile(param: any): JQueryPromise<any> {
