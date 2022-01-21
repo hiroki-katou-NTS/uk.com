@@ -13,6 +13,10 @@ $editor-border-color: #cfd4da;
 			border-radius: 3px;
 			overflow: visible;
 			font-size: 13px;
+
+			&.fit-to-right {
+				border-radius: 3px 0 0 3px;
+			}
 			
 			&:focus {
 				border-color: $focused_color;

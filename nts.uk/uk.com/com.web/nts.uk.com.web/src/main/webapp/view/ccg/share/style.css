@@ -89,15 +89,6 @@
 	background: url(icon/49_WorkplaceChild.png);
 }
 
-.ccg001-content {
-	background-color: #F2F2F2;
-	overflow: hidden;
-	height: calc(100% - 15px);
-	border-top-right-radius: 5px;
-	border-bottom-right-radius: 5px;
-	padding-top: 15px;
-}
-
 .ccg001-control-group {
 	margin-left: 5px;
 }
@@ -114,10 +105,6 @@
 
 .ccg-tabpanel #tab-3{
 	width: 520px;
-}
-
-.ccg-tabpanel > div {
-	background-color: white !important;
 }
 
 #component-ccg001 {
@@ -179,11 +166,6 @@
 #hor-scroll-button-hide > .ccg001-caret-vertical:after {
 	margin-left: 55px;
 }
-#ccg001-btn-apply-search-condition {
-	margin-bottom: 14px;
-	margin-left: 10px;
-	margin-right: 10px;
-}
 .margin-left-10 {
 	margin-left: 10px;
 }
@@ -192,10 +174,6 @@
 	top: 50%;
 	transform: translate(0, -50%);
 	z-index: 997;
-}
-.ccg-tabpanel {
-	background-color: #F2F2F2;
-	border-radius: 5px;
 }
 .height-maximum {
 	height: 100%;
@@ -251,15 +229,37 @@
 }
 
 
+.ccg001-content {
+	background-color: #fff;
+	overflow: hidden;
+	height: calc(100% - 15px);
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	padding-top: 15px;
+}
+
+.ccg001-content #ccg001-header {
+	padding: 20px 20px 0 20px;
+}
+
+.ccg001-content #ccg001-header > div {
+	display: inline-block;
+}
+
+.ccg001-content #ccg001-header #ccg001-btn-apply-search-condition {
+	width: 70px;
+}
+
 #component-ccg001 .tabs-content {
 	padding: 0;
 	border: none;
-	height: calc(100% - 62px); /* tabs height30 + padding15x2 */
+	height: calc(100% - 102px); /* tabs height30 + padding15x2 + padding20x2 */
 }
 
-.ccg001-tab-content-filters {
+.ccg001-content .ccg001-tab-content-filters {
+	padding: 20px;
 	width: 400px;
-	height: calc(100% - 65px);
+	height: calc(100% - 65px); /* 65px: same as setComponentHeight in ccg.vm.ts */
 }
 
 #ccg001-tab-content-2 .ccg001-tab-content-filters .switchbox-wrappers > label span {
@@ -271,8 +271,7 @@
 }
 
 .footer-button {
-	position: absolute;
-	bottom: 0;
+	position: relative;
 	width: 100%;
 	height: 60px;
 	background-color: #E4E4E4;

@@ -24,6 +24,14 @@ $button-disabled-base-color: #888888;
     margin: 0;
     position: relative;
     vertical-align: bottom;
+
+    &.fit-to-left {
+        border-radius: 0 5px 5px 0;
+
+        &.fit-to-editor {
+            height: 32px;
+        }
+    }
 }
 
 button,
