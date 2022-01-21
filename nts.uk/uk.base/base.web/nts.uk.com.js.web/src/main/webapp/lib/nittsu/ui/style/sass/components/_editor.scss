@@ -15,7 +15,8 @@ $editor-border-color: #cfd4da;
 			font-size: 13px;
 
 			&.fit-to-right {
-				border-radius: 3px 0 0 3px;
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
 			}
 			
 			&:focus {
