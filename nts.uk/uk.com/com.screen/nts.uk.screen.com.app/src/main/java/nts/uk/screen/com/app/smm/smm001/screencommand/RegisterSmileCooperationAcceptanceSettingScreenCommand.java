@@ -33,15 +33,19 @@ public class RegisterSmileCooperationAcceptanceSettingScreenCommand {
 	private String selectedAffiliatedMaster;
 	private String selectedEmployeeMaster;
 
-	private List<Integer> listCheckedCheckbox = Arrays.asList(checkedOrganizationInformation,
-			checkedBasicPersonnelInformation, checkedJobStructureInformation, checkedAddressInformation,
-			checkedLeaveInformation, checkedAffiliatedMaster, checkedEmployeeMaster);
+	private List<Integer> listCheckedCheckbox;
 
-	private List<String> listSelectedComboboxValue = Arrays.asList(selectedOrganizationInformation,
-			selectedBasicPersonnelInformation, selectedJobStructureInformation, selectedAddressInformation,
-			selectedLeaveInformation, selectedAffiliatedMaster, selectedEmployeeMaster);
+	private List<String> listSelectedComboboxValue;
 
 	public List<SmileCooperationAcceptanceSetting> convertScreenCommandToListSetting() {
+		listCheckedCheckbox = Arrays.asList(checkedOrganizationInformation,
+				checkedBasicPersonnelInformation, checkedJobStructureInformation, checkedAddressInformation,
+				checkedLeaveInformation, checkedAffiliatedMaster, checkedEmployeeMaster);
+		
+		listSelectedComboboxValue = Arrays.asList(selectedOrganizationInformation,
+				selectedBasicPersonnelInformation, selectedJobStructureInformation, selectedAddressInformation,
+				selectedLeaveInformation, selectedAffiliatedMaster, selectedEmployeeMaster);
+
 		List<SmileCooperationAcceptanceSetting> list = new ArrayList<>();
 		IntStream.range(0, SmileCooperationAcceptanceItem.lookup.size())
 				.forEach(index -> list.add(this.createNewObjectSmileCooperationAcceptanceSetting(
@@ -55,6 +59,6 @@ public class RegisterSmileCooperationAcceptanceSettingScreenCommand {
 		return new SmileCooperationAcceptanceSetting(item,
 				EnumAdaptor.valueOf(checkedItem, SmileCooperationAcceptanceClassification.class),
 				selectedCode == null ? Optional.empty()
-						: Optional.of(new ExternalAcceptanceConditionCode(selectedOrganizationInformation)));
+						: Optional.of(new ExternalAcceptanceConditionCode(selectedCode)));
 	}
 }

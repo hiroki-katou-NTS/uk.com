@@ -40,7 +40,6 @@ public class LsmmtSmileCooperationAccepset extends UkJpaEntity implements Serial
 	private Boolean smileCooperAcceptAtr;
 
 	// column Smile連携受入条件
-	@Null
 	@Column(name = "CONDITION_SET_CD")
 	private String conditionSetCd;
 

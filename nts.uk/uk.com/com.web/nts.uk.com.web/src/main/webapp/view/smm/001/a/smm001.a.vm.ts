@@ -102,7 +102,6 @@ module nts.uk.at.view.smm001.a {
       vm.enumPaymentCategoryList = ko.observableArray(__viewContext.enums.PaymentCategory);
       console.log(">>> 2 ", vm.enumPaymentCategoryList());
       this.getInitialStartupInformation(null);
-
     }
 
     getInitialStartupInformation(param: any) {
@@ -111,18 +110,82 @@ module nts.uk.at.view.smm001.a {
       vm.$ajax('com', API.getInitialStartupInformation, param).then((response: any) => {
         if (response) {
           console.log("response: ", response)
+          // Get list data select option a screen
           const externalImportSettings = response.externalImportSettings;
-          vm.itemList(externalImportSettings);
-          vm.itemList().unshift({
+          vm.itemList().push({
             code: '0',
             name: ''
           })
+          if (!_.isEmpty(externalImportSettings)) {
+            vm.itemList().push(...externalImportSettings);
+          } else { // when externalImportSettings empty
+            vm.$dialog.info({ messageId: "Msg_3249" });
+          }
+          let smileCooperationAcceptanceSettings = response.smileCooperationAcceptanceSettings;
+          if (!_.isEmpty(smileCooperationAcceptanceSettings)) {
+            smileCooperationAcceptanceSettings = _.sortBy(
+              smileCooperationAcceptanceSettings, ["cooperationAcceptance"]
+            );
+            this.mappingDataAfterGetInitAScreen(smileCooperationAcceptanceSettings)
+          }
         }
       })
     }
 
+    mappingDataAfterGetInitAScreen(smileCooperationAcceptanceSettings: any) {
+      const vm = this;
+      vm.checkedOrganizationInformation(smileCooperationAcceptanceSettings[0].cooperationAcceptanceClassification == 1)
+      vm.selectedOrganizationInformation(smileCooperationAcceptanceSettings[0].cooperationAcceptanceConditions)
+
+      vm.checkedBasicPersonnelInformation(smileCooperationAcceptanceSettings[1].cooperationAcceptanceClassification == 1)
+      vm.selectedBasicPersonnelInformation(smileCooperationAcceptanceSettings[1].cooperationAcceptanceConditions)
+
+      vm.checkedJobStructureInformation(smileCooperationAcceptanceSettings[2].cooperationAcceptanceClassification == 1)
+      vm.selectedJobStructureInformation(smileCooperationAcceptanceSettings[2].cooperationAcceptanceConditions)
+
+      vm.checkedAddressInformation(smileCooperationAcceptanceSettings[3].cooperationAcceptanceClassification == 1)
+      vm.selectedAddressInformation(smileCooperationAcceptanceSettings[3].cooperationAcceptanceConditions)
+
+      vm.checkedLeaveInformation(smileCooperationAcceptanceSettings[4].cooperationAcceptanceClassification == 1)
+      vm.selectedLeaveInformation(smileCooperationAcceptanceSettings[4].cooperationAcceptanceConditions)
+
+      vm.checkedAffiliatedMaster(smileCooperationAcceptanceSettings[5].cooperationAcceptanceClassification == 1)
+      vm.selectedAffiliatedMaster(smileCooperationAcceptanceSettings[5].cooperationAcceptanceConditions)
+
+      vm.checkedEmployeeMaster(smileCooperationAcceptanceSettings[6].cooperationAcceptanceClassification == 1)
+      vm.selectedEmployeeMaster(smileCooperationAcceptanceSettings[6].cooperationAcceptanceConditions)
+    }
+
+    validateBeforeSave() {
+      const vm = this;
+      if (vm.checkedOrganizationInformation() && vm.selectedOrganizationInformation().code === '0') {
+        return false;
+      }
+      if (vm.checkedBasicPersonnelInformation() && vm.selectedBasicPersonnelInformation().code === '0') {
+        return false;
+      }
+      if (vm.checkedJobStructureInformation() && vm.selectedJobStructureInformation().code === '0') {
+        return false;
+      }
+      if (vm.checkedAddressInformation() && vm.selectedAddressInformation().code === '0') {
+        return false;
+      }
+      if (vm.checkedLeaveInformation() && vm.selectedLeaveInformation().code === '0') {
+        return false;
+      }
+      if (vm.checkedAffiliatedMaster() && vm.selectedAffiliatedMaster().code === '0') {
+        return false;
+      }
+      if (vm.checkedEmployeeMaster() && vm.selectedEmployeeMaster().code === '0') {
+        return false;
+      }
+      return true;
+    }
+
     save() {
-      console.log("Hello");
+      if (this.validateBeforeSave() === false) {
+        return;
+      }
       const vm = this;
       vm.$blockui('show');
       const command = {
@@ -149,7 +212,7 @@ module nts.uk.at.view.smm001.a {
       vm.$ajax('com', API.registerSmileCooperationAcceptanceSetting, command)
         .then((res: any) => {
           if (res) {
-            console.log(">>>>>", res)
+            vm.$dialog.info({ messageId: "Msg_15" });
           }
         }).fail((err) => {
           vm.$dialog.error(err);

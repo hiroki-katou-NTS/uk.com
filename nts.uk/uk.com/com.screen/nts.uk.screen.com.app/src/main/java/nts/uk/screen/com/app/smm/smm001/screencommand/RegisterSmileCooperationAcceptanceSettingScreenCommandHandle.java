@@ -53,34 +53,34 @@ public class RegisterSmileCooperationAcceptanceSettingScreenCommandHandle extend
 		} else {
 			smileCooperationAcceptanceSettingRepository.updateAll(newSmileCooperationAcceptanceSettings);
 		}
-		
-		/**
-		 * Object＜Smile連携出力設定＞	
-		 * 
-		 */
-		SmileLinkageOutputSetting smileLinkageOutputSetting = smileLinkageOutputSettingRepository.get(contractCode, companyId);
-		
-		if(smileLinkageOutputSetting == null) {
-			smileLinkageOutputSettingRepository.insert(smileLinkageOutputSetting);
-		} else {
-			smileLinkageOutputSettingRepository.update(smileLinkageOutputSetting);
-		}
-		
-		/**
-		 * 支払コードを指定して連動支払変換を取得する
-		 * 契約コード、会社ID、支払コード
-		 */
-		PaymentCategory paymentCategory = EnumAdaptor.valueOf(command.getPaymentCode(), PaymentCategory.class);
-		List<EmploymentAndLinkedMonthSetting> employmentAndLinkedMonthSettings = linkedPaymentConversionRepository.getByPaymentCode(contractCode, companyId, paymentCategory);
-	
-		LinkedPaymentConversion domain = new LinkedPaymentConversion(
-				paymentCategory,
-				employmentAndLinkedMonthSettings
-		);
-		if (!employmentAndLinkedMonthSettings.isEmpty()) {
-			linkedPaymentConversionRepository.update(domain);
-		} else {
-			linkedPaymentConversionRepository.insert(domain);
-		}
+//		
+//		/**
+//		 * Object＜Smile連携出力設定＞	
+//		 * 
+//		 */
+//		SmileLinkageOutputSetting smileLinkageOutputSetting = smileLinkageOutputSettingRepository.get(contractCode, companyId);
+//		
+//		if(smileLinkageOutputSetting == null) {
+//			smileLinkageOutputSettingRepository.insert(smileLinkageOutputSetting);
+//		} else {
+//			smileLinkageOutputSettingRepository.update(smileLinkageOutputSetting);
+//		}
+//		
+//		/**
+//		 * 支払コードを指定して連動支払変換を取得する
+//		 * 契約コード、会社ID、支払コード
+//		 */
+//		PaymentCategory paymentCategory = EnumAdaptor.valueOf(command.getPaymentCode(), PaymentCategory.class);
+//		List<EmploymentAndLinkedMonthSetting> employmentAndLinkedMonthSettings = linkedPaymentConversionRepository.getByPaymentCode(contractCode, companyId, paymentCategory);
+//	
+//		LinkedPaymentConversion domain = new LinkedPaymentConversion(
+//				paymentCategory,
+//				employmentAndLinkedMonthSettings
+//		);
+//		if (!employmentAndLinkedMonthSettings.isEmpty()) {
+//			linkedPaymentConversionRepository.update(domain);
+//		} else {
+//			linkedPaymentConversionRepository.insert(domain);
+//		}
 	}
 }
