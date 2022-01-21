@@ -207,11 +207,6 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.date.subscribe((value) => {
                 self.loadAll();
             })
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/pj/at/release_ver4
-
 
         }
 
@@ -299,7 +294,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
               self.workLocationNames = param.workLocationNames;
               self.workplaceNames = param.workplaceNames;
             });
-			self.selectedTab(_.find(self.tabs(), item => item.visible())[0].id)
+			self.selectedTab(_.find(self.tabs(), item => item.visible())?.id)
 
         }
         loadAll() {
@@ -587,35 +582,41 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 optionGrid.columns.pop();
             }
 
+            
 
             if (type == STAMPTYPE.GOOUT_RETURNING) {
                 if ($('#' + id).length) {
+                    ko.cleanNode($('#' + id)[0]);
                     $('#' + id).ntsGrid(option2);
                 }
-            } else if (type === STAMPTYPE.ATTENDENCE) {
+            } else if (type === STAMPTYPE.ATTENDENCE || type === STAMPTYPE.CHEERING) {
                 if ($('#' + id).length) {
+                    ko.cleanNode($('#' + id)[0]);
+                    _.forEach($('.btn_workplace'), e => ko.cleanNode(e));
+                    _.forEach($('.btn_workplace').children(), e => ko.cleanNode(e));
+                    _.forEach($('.btn_worklocation'), e => ko.cleanNode(e));
+                    _.forEach($('.btn_worklocation').children(), e => ko.cleanNode(e));
                     $('#' + id).ntsGrid(self.getAtdOrCheeringGrid(isChrome, dataSource, headerFlagContent, statesTable));
-                }
-            } else if (type === STAMPTYPE.CHEERING) {
-                if ($('#' + id).length) {
-                    $('#' + id).ntsGrid(self.getAtdOrCheeringGrid(isChrome, dataSource, headerFlagContent, statesTable));
-                    
-                    if (self.kaf002Data && self.kaf002Data.maxOfCheer && self.kaf002Data.maxOfCheer > 3 && self.isLinkList[items[0].index]) {
-                        const $expandRow = $('<tr id="trLinkCheer">');
-                        const $firstCol = $('<td class="titleColor" style="height: 50px; background-color: #CFF1A5">');
-                        const $secondCol = $('<td colspan="5">');
-                        const $secondCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">');
-                        const $secondCol__div__link = $(`<a style="color: blue; text-decoration: underline">${self.$i18n('KAF002_85', [self.kaf002Data.maxOfCheer])}</a>`)
-                        $secondCol__div__link.click(() => self.doSomething(self.dataSource[items[0].index]));
-                        $secondCol__div.append($secondCol__div__link);
-                        $secondCol.append($secondCol__div);
-                        $expandRow.append($firstCol);
-                        $expandRow.append($secondCol);
-                        $('#' + id).append($expandRow);
+
+                    if (type === STAMPTYPE.CHEERING) {
+                        if (self.kaf002Data && self.kaf002Data.maxOfCheer && self.kaf002Data.maxOfCheer > 3 && self.isLinkList[items[0].index]) {
+                            const $expandRow = $('<tr id="trLinkCheer">');
+                            const $firstCol = $('<td class="titleColor" style="height: 50px; background-color: #CFF1A5">');
+                            const $secondCol = $('<td colspan="5">');
+                            const $secondCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">');
+                            const $secondCol__div__link = $(`<a style="color: blue; text-decoration: underline">${self.$i18n('KAF002_85', [self.kaf002Data.maxOfCheer])}</a>`)
+                            $secondCol__div__link.click(() => self.doSomething(self.dataSource[items[0].index]));
+                            $secondCol__div.append($secondCol__div__link);
+                            $secondCol.append($secondCol__div);
+                            $expandRow.append($firstCol);
+                            $expandRow.append($secondCol);
+                            $('#' + id).append($expandRow);
+                        }
                     }
                 }
             } else {
                 if ($('#' + id).length) {
+                    ko.cleanNode($('#' + id)[0]);
                     $('#' + id).ntsGrid(optionGrid);
                 }
             }
