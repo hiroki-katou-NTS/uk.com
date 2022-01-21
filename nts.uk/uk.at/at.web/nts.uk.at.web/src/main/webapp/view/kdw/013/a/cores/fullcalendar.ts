@@ -2716,10 +2716,10 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                     //check override events
                     
-                     let IEvents = _.chain(events())
+                     let IEvents = _.chain(vm.calendar.getEvents())
                             .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
-                            .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
-                            .filter((evn) => { return !_.find(relatedEvents, re => re.extendedProps.id == extendedProps.id) })
+                            .filter((evn) => { return evn.id != id })
+                            .filter((evn) => { return !_.find(relatedEvents, re => re.id == evn.id) })
                             .sortBy('end')
                             .value();
 
