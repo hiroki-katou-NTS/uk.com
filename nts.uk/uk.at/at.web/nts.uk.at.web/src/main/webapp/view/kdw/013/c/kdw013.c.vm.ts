@@ -948,7 +948,7 @@ module nts.uk.ui.at.kdw013.c {
                 .then(() => nts.uk.ui.errors.hasError())
                 .then((invalid: boolean) => {
                     if (!invalid) {
-                        if (vm.sumTotalTime() > vm.totalWorkTime()) {
+                        if (vm.taskBlocks.taskDetailsView().length > 1 && vm.sumTotalTime() > vm.totalWorkTime()) {
                             error({ messageId: "Msg_2230" });
                             return;
                         }
