@@ -2397,23 +2397,23 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                 <div tabindex="-1" class="tab-content-1" data-bind="visible: showQuickSearchTab">
                     <!-- ko if: showAllReferableEmployee -->
                         <div id="ccg001-btn-search-all" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <button class="green flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
+                            <button class="green valign-center ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.ALL_REFERENCE_RANGE+`)}">
-                                ${CCG001TextResource.CCG001_34}
+                                すべての社員
                             </button>
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showOnlyMe -->
                         <div id="ccg001-btn-only-me" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <button class="green flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
+                            <button class="green valign-center ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: searchCurrentLoginEmployee">
-                                ${CCG001TextResource.CCG001_35}
+                                自分のみ
                             </button>
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showSameDepartment -->
                         <div id="ccg001-btn-same-workplace" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <button class="green flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                            <button class="green valign-center ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_ONLY+`)}">
                                 ${CCG001TextResource.CCG001_36}
                             </button>
@@ -2421,7 +2421,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                     <!-- /ko -->
                     <!-- ko if: showSameDepartmentAndChild -->
                         <div id="ccg001-btn-same-workplace-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <button class="green flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                            <button class="green valign-center ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES+`)}">
                                 ${CCG001TextResource.CCG001_37}
                             </button>
@@ -2429,17 +2429,17 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                     <!-- /ko -->
                     <!-- ko if: showSameWorkplace -->
                         <div id="ccg001-btn-same-workplace" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <button class="green flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                            <button class="green valign-center ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_ONLY+`)}">
-                                ${CCG001TextResource.CCG001_38}
+                                同じ職場
                             </button>
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showSameWorkplaceAndChild -->
                         <div id="ccg001-btn-same-workplace-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-                            <button class="green flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                            <button class="green valign-center ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES+`)}">
-                                ${CCG001TextResource.CCG001_39}
+                                同じ職場とその配下
                             </button>
                         </div>
                     <!-- /ko -->
@@ -2692,11 +2692,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
         </div>
     </div>
     <div id="hor-scroll-button-hide">
-        <div id="ccg001-btn-search-drawer" class="position-mid ccg001-btn ccg-btn-vertical" data-bind="click: showComponent">
-            <div class="ccg001-cell mid">
-            <div class="ccg-lbl-vertical ccg-lbl-search-drawer">≫</div>
-            </div>
-        </div>
+        <div id="ccg001-btn-search-drawer" class="ccg001-btn" data-bind="click: showComponent">≫</div>
     </div>`;
     }
 }

@@ -36,13 +36,6 @@
 .ccg001-btn:hover {
 	background-color: #8C8C8C;
 }
-.ccg-btn-quick-search {
-	width: 370px;
-	padding-left: 8px;
-	border-radius: 5px;
-	display: inline-block;
-	margin-bottom: 8px;
-}
 
 .btn_big {
 	padding-top: 5px;
@@ -121,13 +114,6 @@
 	background-size: 30px 30px;
 }
 
-.ccg-lbl-vertical {
-	width: 40px;
-	cursor: pointer;
-	font-size: 18pt;
-  color: white !important;
-  line-height: 30px;
-}
 .ccg-lbl-extract-emp {
 	height: 50px;
 }
@@ -174,7 +160,15 @@
 }
 
 #ccg001-btn-search-drawer {
-	height: 40px;
+	position: fixed;
+	top: 30%;
+	left: 0;
+	padding-left: 8px;
+	height: 35px;
+	width: 30px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	font-size: 16pt;
 }
 
 #sidebar .sidebar-content #ccg001-btn-search-drawer {
@@ -238,13 +232,30 @@
 	height: calc(100% - 102px); /* tabs height30 + padding15x2 + padding20x2 */
 }
 
+#component-ccg001 .tab-content-1,
+#component-ccg001 #ccg001-tab-content-2,
+#component-ccg001 #ccg001-tab-content-3 {
+	width: 500px;
+}
+
+#component-ccg001 .tab-content-1 {
+}
+
+#component-ccg001 .tab-content-1 .btn-quick-search {
+	margin: 20px;
+}
+
+#component-ccg001 .tab-content-1 .btn-quick-search .ccg-btn-quick-search {
+	width: 250px;
+	text-align: center;
+}
+
 #component-ccg001 .ccg001-tab-content-filters {
 	padding: 20px;
 	height: calc(100% - 65px); /* 65px: same as setComponentHeight in ccg.vm.ts */
 }
 
 #component-ccg001 #ccg001-tab-content-2 {
-	width: 475px;
 }
 
 #component-ccg001 #ccg001-tab-content-2 .ccg001-tab-content-filters .switchbox-wrappers > label span {
