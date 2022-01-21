@@ -15,12 +15,6 @@
 	}
 
 	&.ui-iggrid {
-		outline: none;
-		border-radius: 2px;
-		border: 1px solid #EAE8F2 !important;
-		//border-top: 3px solid #CFF1A5 !important;
-		// conflict with set option size of igGrid
-		// height: auto !important;
 
 		&:focus {
 			border-color: $focused_color !important;
@@ -28,14 +22,14 @@
 		}
 
 		table {
-			&.ui-iggrid-headertable {
-				//line-height: 1.6;
+			&.ui-iggrid-headertable, &.ui-iggrid-table {
+				tr {
+					height: 30px;
+				}
 			}
-			
-			.ui-iggrid-tablebody {
-				td {
-					height: 21px;
-				}	
+
+			&.ui-widget-header {
+				background-color: #fff;
 			}
 		
 			th,
@@ -43,10 +37,6 @@
 				padding: 0;
 				outline: none;
 				border: 1px solid transparent;				
-			}
-
-			col[data-role="rs"] {
-				min-width: 25px;
 			}
 
 			th.ui-widget-header {
@@ -69,6 +59,20 @@
 				}
 			}
 
+			
+			col[data-role="rs"],
+			th.ui-iggrid-rowselector-header,
+			th.ui-iggrid-rowselector-class {
+				width: 40px !important;
+			}
+
+			th {
+				&.ui-iggrid-rowselector-header,
+				&.ui-iggrid-rowselector-class {
+					text-align: center;
+				}
+			}
+			
 			th,
 			td {
 				.ui-igcheckbox-normal {
@@ -78,7 +82,8 @@
 					height: 20px;
 					box-sizing: border-box;
 					display: block;
-					margin-right: 2px;
+					margin-left: 10px;
+					margin-right: 10px;
 					background-color: $checkbox_back_color_off;
 
 					&::after {
@@ -103,7 +108,6 @@
 
 			div.ui-widget-header {
 				width: 100% !important;
-				border-bottom: 1px solid #EAE8F2 !important;
 			}
 
 			.ui-iggrid-record {
@@ -139,12 +143,10 @@
 				}
 
 				.ui-state-hover {
-					background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;					
+					background: #DDE4E9;					
 				}
 
 				.ui-state-active {
-					background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;
-					box-shadow: 0px 8px 10px rgba(22, 154, 28, 0.1);
 				}
 			}
 

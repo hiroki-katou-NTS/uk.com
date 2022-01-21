@@ -85,6 +85,7 @@
 
 @mixin iggridrowselector {
 	table tr {
+
 		
 		.ui-state-highlight {
 			border-color: #CCC;
@@ -94,14 +95,14 @@
 		}
 		
 		.ui-state-active {
-			background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;
-			box-shadow: 0px 8px 10px rgba(22, 154, 28, 0.1);
+			background: inherit;
+			box-shadow: inherit;
 		}
 		
 		&, &.ui-state-focus, &.ui-ig-altrecord.ui-state-focus {
 			td, th {
 				&.ui-state-hover {
-					background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;			
+					background: #DDE4E9;
 				}
 			}
 				
