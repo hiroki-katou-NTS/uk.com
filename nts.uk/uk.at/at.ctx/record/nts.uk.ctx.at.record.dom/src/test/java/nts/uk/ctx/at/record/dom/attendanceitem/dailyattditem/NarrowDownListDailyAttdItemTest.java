@@ -63,7 +63,6 @@ import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvac
 import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageHelper;
-import nts.uk.shr.com.license.option.OptionLicense;
 
 @RunWith(JMockit.class)
 public class NarrowDownListDailyAttdItemTest {
@@ -82,10 +81,6 @@ public class NarrowDownListDailyAttdItemTest {
 		new Expectations() {{
 			require.getSupportOperationSetting( anyString );
 			result = Optional.of(domain);
-			
-			require.getOptionLicense();
-			result = new OptionLicense() {
-			};
 		}};
 		List<Integer>  result = NtsAssert.Invoke.privateMethod(new NarrowDownListDailyAttdItem(),
 							"getSupportWorkItemNotAvailable"
@@ -190,17 +185,25 @@ public class NarrowDownListDailyAttdItemTest {
 		String companyId = "companyId";
 		DivergenceTimeRoot divergenceTimeRoot1 = DivergenceTimeRootHelper.createDivergenceTimeRootByNoAndUseAtr(1, DivergenceTimeUseSet.NOT_USE);
 		DivergenceTimeRoot divergenceTimeRoot2 = DivergenceTimeRootHelper.createDivergenceTimeRootByNoAndUseAtr(2, DivergenceTimeUseSet.NOT_USE);
+		DivergenceTimeRoot divergenceTimeRoot3 = DivergenceTimeRootHelper.createDivergenceTimeRootByNoAndUseAtr(3, DivergenceTimeUseSet.USE);
+		DivergenceTimeRoot divergenceTimeRoot4 = DivergenceTimeRootHelper.createDivergenceTimeRootByNoAndUseAtr(4, DivergenceTimeUseSet.USE);
 		List<DivergenceTimeRoot> listDivergenceTimeRoot = new ArrayList<>();
 		listDivergenceTimeRoot.add(divergenceTimeRoot1);
 		listDivergenceTimeRoot.add(divergenceTimeRoot2);
+		listDivergenceTimeRoot.add(divergenceTimeRoot3);
+		listDivergenceTimeRoot.add(divergenceTimeRoot4);
 		
-		DivergenceReasonInputMethod divergenceReasonInputMethod1 = DivergenceReasonInputMethodHelper.createByNoAndUseAtr(1, true, true);
-		DivergenceReasonInputMethod divergenceReasonInputMethod3 = DivergenceReasonInputMethodHelper.createByNoAndUseAtr(3, true, true);
+		DivergenceReasonInputMethod divergenceReasonInputMethod1 = DivergenceReasonInputMethodHelper.createByNoAndUseAtr(1, false, false);
+		DivergenceReasonInputMethod divergenceReasonInputMethod2 = DivergenceReasonInputMethodHelper.createByNoAndUseAtr(2, true, true);
+		DivergenceReasonInputMethod divergenceReasonInputMethod3 = DivergenceReasonInputMethodHelper.createByNoAndUseAtr(3, false, false);
 		DivergenceReasonInputMethod divergenceReasonInputMethod4 = DivergenceReasonInputMethodHelper.createByNoAndUseAtr(4, true, true);
+		DivergenceReasonInputMethod divergenceReasonInputMethod5 = DivergenceReasonInputMethodHelper.createByNoAndUseAtr(5, false, false);
 		List<DivergenceReasonInputMethod> listDivergenceReasonInputMethod = new ArrayList<>();
 		listDivergenceReasonInputMethod.add(divergenceReasonInputMethod1);
+		listDivergenceReasonInputMethod.add(divergenceReasonInputMethod2);
 		listDivergenceReasonInputMethod.add(divergenceReasonInputMethod3);
 		listDivergenceReasonInputMethod.add(divergenceReasonInputMethod4);
+		listDivergenceReasonInputMethod.add(divergenceReasonInputMethod5);
 		new Expectations() {{
 			require.getAllDivTime(companyId);
 			result = listDivergenceTimeRoot;
@@ -212,8 +215,12 @@ public class NarrowDownListDailyAttdItemTest {
 							"getUnusableDivergenceItemNotAvailable"
 							, require,companyId
 						);
-		assertThat(result.containsAll(Arrays.asList(436,437,441,442,438,439))).isTrue();
-		assertThat(result.containsAll(Arrays.asList(443,444))).isFalse();
+		assertThat(result.containsAll(Arrays.asList(436,437,441,442,
+				438,439,//no 1
+				443,444,//no 2
+				448,449))).isTrue();// no3
+		//no 4,no5 not contain
+		assertThat(result.containsAll(Arrays.asList(453,454,458,459))).isFalse();
 	}
 	
 	/**

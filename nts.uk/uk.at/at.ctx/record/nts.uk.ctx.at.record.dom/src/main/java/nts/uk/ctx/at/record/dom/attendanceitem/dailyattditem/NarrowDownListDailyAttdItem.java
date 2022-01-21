@@ -67,7 +67,7 @@ public class NarrowDownListDailyAttdItem {
 	 */
 	private static List<Integer> getSupportWorkItemNotAvailable(Require require, String companyId) {
 		Optional<SupportOperationSetting> supportOperationSetting = require.getSupportOperationSetting(companyId);
-		if (supportOperationSetting.isPresent() && supportOperationSetting.get().canUsedSupport(require)) {
+		if (supportOperationSetting.isPresent()) {
 			return supportOperationSetting.get().getDaiLyAttendanceIdNotAvailable(require);
 		}
 		Optional<TaskOperationSetting> taskOperationSetting = require.getTasksOperationSetting(companyId);
