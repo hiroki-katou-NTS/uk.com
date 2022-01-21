@@ -497,11 +497,13 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             //Map<YearMonth, List<RemainMerge>> mapRemainMer = repoRemainMer.findBySidsAndYrMons(employeeId, lstYrMon);
             //  2022.01.04 - - 3S - chinh.hm - issues #122037 - 追加 END
         }
+
         ////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////
         // 現在、当月・未来月
         ////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////
+
 
 
        ////////////////////////////////////////////////////////////////////////////////
@@ -519,8 +521,6 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             }
         }
         ////////////////////////////////////////////////////////////////////////////////
-
-
 
         // Mer RQ265,268,269,363,364,369
         boolean call265 = variousVacationControl.isAnnualHolidaySetting();		//[旧番号]	年休　　(現在)
@@ -727,19 +727,19 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             //③－２　Trường hợp 「当月在職状況」== true　
             // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 START
             //　　　　if文追加 {
+
             // 2022.01.17 - inaguma #122461 CHANGE START
            //if(currentStatus){
            if(currentStatus && currentPeriodDate!=null){
            // 2022.01.17 - inaguma #122461 CHANGE END
 
-
+               // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 END
                 val param = new AbsRecMngInPeriodRefactParamInput(
                         cId,
                         employeeId,
                         //-----------------------------------------------------------------------------------
                         // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
                         //periodDate,
-
 
                         // 2022.01.17 - inaguma #122461 CHANGE START
                         //closureInforOpt.get().getPeriod(),
