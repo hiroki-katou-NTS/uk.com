@@ -55,23 +55,25 @@ public class TimeAnnualSettingTest {
 		// 時間年休管理設定.時間年休管理区分 = 管理する && 時間年休管理区分 = 管理する
     	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
     	List<Integer> annualLeaveItems = setting.getDailyAttendItemsNotAvailable(ManageDistinct.YES);
-    	assertThat( annualLeaveItems ).extracting( d -> d)
-		  .containsExactly(502,514,595,601,607,613);
+    	assertThat( annualLeaveItems.isEmpty() );
     	
     	// 時間年休管理設定.時間年休管理区分 = 管理しない && 時間年休管理区分 = 管理する
     	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.NO);
     	annualLeaveItems = setting.getDailyAttendItemsNotAvailable(ManageDistinct.YES);
-    	assertThat( annualLeaveItems.isEmpty() );
+    	assertThat( annualLeaveItems ).extracting( d -> d)
+		  .containsExactly(502,514,595,601,607,613);
     	
     	// 時間年休管理設定.時間年休管理区分 = 管理する && 時間年休管理区分 = 管理しない
     	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.NO);
     	annualLeaveItems = setting.getDailyAttendItemsNotAvailable(ManageDistinct.NO);
-    	assertThat( annualLeaveItems.isEmpty() );
+    	assertThat( annualLeaveItems ).extracting( d -> d)
+		  .containsExactly(502,514,595,601,607,613);
     	
     	// 時間年休管理設定.時間年休管理区分 = 管理する && 時間年休管理区分 = 管理しない
     	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
     	annualLeaveItems = setting.getDailyAttendItemsNotAvailable(ManageDistinct.NO);
-    	assertThat( annualLeaveItems.isEmpty() );
+    	assertThat( annualLeaveItems ).extracting( d -> d)
+		  .containsExactly(502,514,595,601,607,613);
     }
 	
 	 /**
@@ -79,25 +81,25 @@ public class TimeAnnualSettingTest {
      */
 	@Test
     public void testMonthlyAttendItemsNotAvailable_notEmpty(){
-		// $時間年休項目 is not empty, $上限項目 is empty
-    	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
+		// $時間年休項目 is empty, $上限項目 is empty
+		TimeAnnualMaxDay annualMaxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_YES(ManageDistinct.YES);
+    	TimeAnnualSetting setting = TimeAnnualSettingHelper.createTimeAnnualSetting_UpperLimitItem(ManageDistinct.YES, annualMaxDay);
     	List<Integer> annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(ManageDistinct.YES);
-    	assertThat( annualLeaveItems ).extracting( d -> d)
-		  .containsExactly(1424, 1425, 1426, 1429, 1430, 1431, 1861, 1862);
+    	assertThat( annualLeaveItems.isEmpty() );
     	
-    	// $時間年休項目 is empty, $上限項目 is not empty
-    	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_ManageDistinct_YES(ManageDistinct.YES);
-    	annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(ManageDistinct.NO);
-    	assertThat( annualLeaveItems ).extracting( d -> d)
-		  .containsExactly(1442, 1443, 1444, 1445);
-    	
-    	// $時間年休項目 not empty, $上限項目 is not empty
-    	TimeAnnualMaxDay annualMaxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_NO(ManageDistinct.NO);
+    	// $時間年休項目 is not empty, $上限項目 is not empty
+    	annualMaxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_YES(ManageDistinct.YES);
     	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_UpperLimitItem(ManageDistinct.YES, annualMaxDay);
-    	annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(ManageDistinct.YES);
+    	annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(ManageDistinct.NO);
     	assertThat( annualLeaveItems ).extracting( d -> d)
 		  .containsExactly(1424, 1425, 1426, 1429, 1430, 1431, 1861, 1862, 1442, 1443, 1444, 1445);
     	
+    	// $時間年休項目 is empty, $上限項目 is not empty
+    	annualMaxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_NO(ManageDistinct.NO);
+    	setting = TimeAnnualSettingHelper.createTimeAnnualSetting_UpperLimitItem(ManageDistinct.YES, annualMaxDay);
+    	annualLeaveItems = setting.getMonthlyAttendItemsNotAvailable(ManageDistinct.YES);
+    	assertThat( annualLeaveItems ).extracting( d -> d)
+		  .containsExactly(1442, 1443, 1444, 1445);
     }
 
 	 /**
