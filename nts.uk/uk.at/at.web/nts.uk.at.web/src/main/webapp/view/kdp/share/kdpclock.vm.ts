@@ -8,7 +8,7 @@ module nts.uk.at.view.kdp.share {
 			<div class="hour-second" >
 				<span class="hour" data-bind="date: time, format: 'HH:mm', style:{
 					'color': ko.toJS(settings).textColor}"></span>
-				<span class="second" data-bind="date: time, format: ':ss', style:{
+				<span class="second" data-bind="date: time, format: ' ss', style:{
 					'color': ko.toJS(settings).textColor}"></span>
 			</div>
 		</div>
@@ -18,7 +18,7 @@ module nts.uk.at.view.kdp.share {
 				position: relative;
 			}
 			.time-container .time {
-				width: 300px;
+				width: 270px;
 				margin: auto;
 				position: relative;
 			}
@@ -29,9 +29,20 @@ module nts.uk.at.view.kdp.share {
 				font-size: 85px;
 				color: white;
 			}
+			
 			.time-container .time .date {
-				font-size: 15px;
+				text-align: center;
 			}
+			
+			.time-container .time .date .ymd {
+				font-size: 32px;
+			}
+			
+			.time-container .time .date .ddd {
+				font-size: 26px;
+				font-family: "Noto Sans JP" !important;
+			}
+
 			.time-container .time .hour-second {
 				padding-top: 10px;
 			}
@@ -45,6 +56,7 @@ module nts.uk.at.view.kdp.share {
 				font-size: 50px;
 				line-height: 50px;
 				position: relative;
+				left: 16px;
 				z-index: 1;
 			}
 			.time-container .button-group {
@@ -79,7 +91,12 @@ module nts.uk.at.view.kdp.share {
 			const time = valueAccessor();
 			const setting = allBindingAccessor.get('setting');
 
-			ko.applyBindingsToNode(element, { date: time, format: 'YYYY/MM/DD(ddd)', style: { color: ko.unwrap(setting).textColor } });
+			const $elem = $(element);
+			const $ymd = $("<span>").addClass("ymd").appendTo($elem);
+			const $ddd = $("<span>").addClass("ddd").appendTo($elem);
+
+			ko.applyBindingsToNode($ymd[0], { date: time, format: `YYYY/MM/DD`, style: { color: ko.unwrap(setting).textColor } });
+			ko.applyBindingsToNode($ddd[0], { date: time, format: `（ddd）`, style: { color: ko.unwrap(setting).textColor } });
 
 			element.removeAttribute('data-bind');
 		}

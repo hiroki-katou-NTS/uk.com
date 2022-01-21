@@ -21,6 +21,11 @@
 	width: 500px;
 }
 
+.kdp-003-a .control-panel > .time-stamp .time * {
+	font-family: Quicksand !important;
+	font-weight: bold;
+}
+
 .kdp-003-a .control-panel:not(.has-time-sheet) .time-sheet {
 	display: none;
 }
