@@ -1516,8 +1516,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             // レスポンス対応　月別集計処理だけ非同期で実行する
             if (execMontlyAggregateAsync) {
                 $('#miGrid').addClass('processing');
+                $('#agree-table').addClass('processing');
                 service.execMonthlyAggregate(dataParent).done((task) => {
-                    $("#miGrid").block({message:"",fadeIn:200,css:{ width: '220px', 'line-height': '32px' }});
+                    $('#miGrid').block({message:"",fadeIn:200,css:{ width: '220px', 'line-height': '32px' }});
+                    $('#agree-table').block({message:"",fadeIn:200,css:{ width: '220px', 'line-height': '32px' }});
                     self.observeExecution(task);
                 });
             }
@@ -1539,10 +1541,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     ui.dialog.alert(info.taskDatas.find(d => d.key === "message").valueAsString);
                     $('#miGrid').removeClass('processing');
                     $("#miGrid").unblock({fadeIn:200});
+                    $('#agree-table').removeClass('processing');
+                    $('#agree-table').unblock({fadeIn:200});
                     return;
                 }
                 $('#miGrid').removeClass('processing');
                 $("#miGrid").unblock({fadeIn:200});
+                $('#agree-table').removeClass('processing');
+                $('#agree-table').unblock({fadeIn:200});
                 self.reloadScreen();
             });
         }
