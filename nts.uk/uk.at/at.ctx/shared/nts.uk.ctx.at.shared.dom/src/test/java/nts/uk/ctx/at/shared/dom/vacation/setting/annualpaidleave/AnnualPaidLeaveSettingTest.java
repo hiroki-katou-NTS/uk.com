@@ -106,8 +106,8 @@ public class AnnualPaidLeaveSettingTest {
 				.createAnnualPaidLeaveSetting(timeAnnualSetting, manageAnnualSetting, ManageDistinct.NO);
 
 		List<Integer> lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable();
-		List<Integer> lstIdCanGet = Arrays.asList(189, 794, 798, 799, 790, 801, 805, 809, 1427, 1428, 1432, 1433, 1780,
-				1781, 1782, 1783, 1784, 1785, 1786, 1787, 1788, 1789, 1434, 1435, 1436, 1437, 1438, 1439, 1440, 1441);
+		List<Integer> lstIdCanGet = Arrays.asList(189, 794, 798, 799, 790, 801, 805, 809, 1427, 1428, 1432, 1433, 1780, 1781, 1782, 1783, 1784, 1785, 
+				1786, 1787, 1788, 1789, 1434, 1435, 1436, 1437, 1438, 1439, 1440, 1441, 1424, 1425, 1426, 1429, 1430, 1431, 1861, 1862, 1442, 1443, 1444, 1445);
 		
 		// 管理区分 = 管理しない && 管理区分 = 管理しない && 時間年休管理区分 = 管理しない && 年休管理区分 = 管理しない
 		assertThat(lstId.containsAll(lstIdCanGet)).isTrue();

@@ -87,6 +87,8 @@ public class SupportOperationSettingTest {
 		listAttdId = instance.getDaiLyAttendanceIdNotAvailable(require);
 		assertThat(listAttdId.containsAll(Arrays.asList(1071, 1072, 1073, 1074, 1075, 1076, 1077, 1078, 1079, 1080, 
 				1081, 2590, 1091, 2610, 1101, 2630, 1111, 2650))).isTrue();
+		
+		assertThat(listAttdId.containsAll(Arrays.asList(2191, 2211, 2231, 2192, 2212, 2232))).isFalse();
 	}
 
 	/**
