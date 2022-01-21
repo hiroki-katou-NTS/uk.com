@@ -91,18 +91,12 @@
 	margin-top: 5px;
 }
 
-.btn-emoji {
+.btn-emoji, .btn-happy {
 	margin-left: 5px;
 	border: none;
 	background-color: transparent;
 	box-shadow: 0 0px rgb(0 0 0 / 40%);
-}
-
-.btn-happy {
-	margin-left: 5px;
-	border: none;
-	background-color: transparent;
-	box-shadow: 0 0px rgb(0 0 0 / 40%);
+	min-width: 0 !important; /* function-area‚Ìƒ{ƒ^ƒ“‚É‘Î‚·‚émin-width‚ð–³Œø‰» */
 }
 
 .nts-gridlist.ui-iggrid {
