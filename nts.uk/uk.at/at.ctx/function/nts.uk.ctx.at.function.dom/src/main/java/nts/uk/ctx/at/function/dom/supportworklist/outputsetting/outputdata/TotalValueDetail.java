@@ -6,6 +6,7 @@ import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapterDto;
 import nts.uk.ctx.at.function.dom.supportworklist.aggregationsetting.SupportWorkDetails;
 import nts.uk.ctx.at.function.dom.supportworklist.outputsetting.SupportWorkOutputDataRequire;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +66,9 @@ public class TotalValueDetail {
         Map<Integer, List<ItemValue>> groupedDetails = details.stream().collect(Collectors.groupingBy(ItemValue::getItemId));
         totalItems.forEach(i -> {
             List<ItemValue> d = groupedDetails.get(i);
+            ValueType valueType = d.isEmpty() ? ValueType.TIME : d.get(0).getValueType();
             int totalValue = d.stream().map(ii -> Integer.valueOf(ii.getValue())).collect(Collectors.summingInt(Integer::intValue));
-            result.add(ItemValue.builder().itemId(i).value(totalValue));
+            result.add(ItemValue.builder().itemId(i).value(totalValue).valueType(valueType));
         });
         return result;
     }

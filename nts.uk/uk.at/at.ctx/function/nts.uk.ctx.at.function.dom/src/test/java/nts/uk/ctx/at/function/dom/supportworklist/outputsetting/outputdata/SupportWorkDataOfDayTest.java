@@ -26,10 +26,8 @@ public class SupportWorkDataOfDayTest {
                 "000000000003-0001",
                 GeneralDate.today(),
                 Arrays.asList(SupportWorkDetails.create(
-                        require,
                         "000000000003-0001",
                         GeneralDate.today(),
-                        1,
                         "workplace-id-0001",
                         "0001",
                         Arrays.asList(1, 2, 3),
@@ -49,10 +47,8 @@ public class SupportWorkDataOfDayTest {
                 "000000000003-0001",
                 GeneralDate.today(),
                 Arrays.asList(SupportWorkDetails.create(
-                        require,
                         "000000000003-0001",
                         GeneralDate.today(),
-                        1,
                         "workplace-id-0001",
                         "0001",
                         Arrays.asList(1, 2, 3),
@@ -72,10 +68,8 @@ public class SupportWorkDataOfDayTest {
                 "000000000003-0001",
                 GeneralDate.today(),
                 Arrays.asList(SupportWorkDetails.create(
-                        require,
                         "000000000003-0001",
                         GeneralDate.today(),
-                        1,
                         "workplace-id-0001",
                         "0001",
                         Arrays.asList(1, 2, 3),

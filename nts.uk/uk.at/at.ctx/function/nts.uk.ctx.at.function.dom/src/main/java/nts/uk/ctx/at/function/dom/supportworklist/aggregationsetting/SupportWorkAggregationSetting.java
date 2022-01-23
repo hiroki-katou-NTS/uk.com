@@ -58,7 +58,7 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
                                                              Optional<GeneralDate> baseDate,
                                                              SupportWorkDataImport supportWorkData,
                                                              List<Integer> attendanceItemIds) {
-        List<SupportWorkDetails> supportWorkDetailsList = this.createSupportWorkDetails(require, supportWorkData, attendanceItemIds);
+        List<SupportWorkDetails> supportWorkDetailsList = this.createSupportWorkDetails(supportWorkData, attendanceItemIds);
         return this.determineSupportWork(require, companyId, baseDate, supportWorkDetailsList);
     }
 
@@ -68,8 +68,7 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
      * @param attendanceItemIds List<勤怠項目ID>
      * @return 応援勤務明細一覧
      */
-    private List<SupportWorkDetails> createSupportWorkDetails(SupportWorkOutputDataRequire require,
-                                                              SupportWorkDataImport supportWorkData,
+    private List<SupportWorkDetails> createSupportWorkDetails(SupportWorkDataImport supportWorkData,
                                                               List<Integer> attendanceItemIds) {
         Map<String, List<AffiliationInforOfDailyPerforImport>> affiliationInfoMap = supportWorkData.getAffiliationInforList().stream().collect(Collectors.groupingBy(AffiliationInforOfDailyPerforImport::getEmployeeId));
         Map<String, List<OuenWorkTimeSheetOfDailyImport>> ouenWorkTimeSheetOfDailyMap = supportWorkData.getOuenWorkTimeSheetOfDailyList().stream().collect(Collectors.groupingBy(OuenWorkTimeSheetOfDailyImport::getEmpId));
@@ -77,7 +76,6 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
         List<SupportWorkDetails> result = new ArrayList<>();
         ouenWorkTimeSheetOfDailyMap.entrySet().forEach(e -> {
             result.addAll(this.createSupportWorkDetailsForEachEmployee(
-                    require,
                     affiliationInfoMap.getOrDefault(e.getKey(), new ArrayList<>()),
                     e.getValue(),
                     ouenWorkTimeOfDailyMap.getOrDefault(e.getKey(), new ArrayList<>()),
@@ -96,7 +94,6 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
      * @return 応援勤務明細一覧
      */
     private List<SupportWorkDetails> createSupportWorkDetailsForEachEmployee(
-            SupportWorkOutputDataRequire require,
             List<AffiliationInforOfDailyPerforImport> affiliationInforList,
             List<OuenWorkTimeSheetOfDailyImport> ouenWorkTimeSheetOfDailyList,
             List<OuenWorkTimeOfDailyImport> ouenWorkTimeOfDailyList,
@@ -104,7 +101,6 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
         List<SupportWorkDetails> result = new ArrayList<>();
         ouenWorkTimeSheetOfDailyList.forEach(i -> {
             result.addAll(this.createOneDaySupportWorkDetails(
-                    require,
                     affiliationInforList.stream().filter(a -> a.getYmd().equals(i.getYmd())).findFirst().orElse(null),
                     i,
                     ouenWorkTimeOfDailyList.stream().filter(o -> o.getYmd().equals(i.getYmd())).findFirst().orElse(null),
@@ -123,7 +119,6 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
      * @return 応援勤務明細一覧
      */
     private List<SupportWorkDetails> createOneDaySupportWorkDetails(
-            SupportWorkOutputDataRequire require,
             AffiliationInforOfDailyPerforImport affiliationInfor,
             OuenWorkTimeSheetOfDailyImport ouenWorkTimeSheet,
             OuenWorkTimeOfDailyImport ouenWorkTime,
@@ -131,25 +126,20 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
     ) {
         String employeeId = ouenWorkTimeSheet.getEmpId();
         GeneralDate date = ouenWorkTimeSheet.getYmd();
-        return ouenWorkTimeSheet.getOuenTimeSheet().stream().map(i -> {
-            return this.createSupportWorkDetailForEachFrame(
-                    require,
-                    employeeId,
-                    date,
-                    i.getWorkNo().v(),
-                    affiliationInfor.getAffiliationInfor(),
-                    i,
-                    ouenWorkTime.getOuenTimes().stream().filter(j -> j.getWorkNo().v().intValue() == i.getWorkNo().v().intValue()).findFirst().orElse(null),
-                    attendanceItemIds
-            );
-        }).collect(Collectors.toList());
+        return ouenWorkTimeSheet.getOuenTimeSheet().stream().map(i -> this.createSupportWorkDetailForEachFrame(
+                employeeId,
+                date,
+                affiliationInfor.getAffiliationInfor(),
+                i,
+                ouenWorkTime.getOuenTimes().stream().filter(j -> j.getWorkNo().v().intValue() == i.getWorkNo().v().intValue()).findFirst().orElse(null),
+                attendanceItemIds
+        )).collect(Collectors.toList());
     }
 
     /**
      * [prv-4] 応援勤務枠ごとの応援勤務明細を作成する
      * @param employeeId
      * @param date
-     * @param supportWorkFrameNo
      * @param affiliationInfor
      * @param ouenWorkTimeSheet
      * @param ouenWorkTime
@@ -157,10 +147,8 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
      * @return 応援勤務明細
      */
     private SupportWorkDetails createSupportWorkDetailForEachFrame(
-            SupportWorkOutputDataRequire require,
             String employeeId,
             GeneralDate date,
-            int supportWorkFrameNo,
             AffiliationInforOfDailyAttd affiliationInfor,
             OuenWorkTimeSheetOfDailyAttendance ouenWorkTimeSheet,
             OuenWorkTimeOfDailyAttendance ouenWorkTime,
@@ -176,10 +164,8 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
             workInfor = ouenWorkTimeSheet.getWorkContent().getWorkplace().getWorkplaceId().v();
         }
         return SupportWorkDetails.create(
-                require,
                 employeeId,
                 date,
-                supportWorkFrameNo,
                 affiliationInformation,
                 workInfor,
                 attendanceItemIds,
@@ -241,8 +227,8 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
         supportWorkDetails.forEach(i -> {
             String affiliationHierarchyCode = workplaceInfos.stream().filter(w -> w.getWorkplaceId().equals(i.getAffiliationInfo())).map(w -> w.getHierarchyCode()).findFirst().orElse("");
             String workHierarchyCode = workplaceInfos.stream().filter(w -> w.getWorkplaceId().equals(i.getWorkInfo())).map(w -> w.getHierarchyCode()).findFirst().orElse("");
-            String affiliationHierarchy = affiliationHierarchyCode.substring(0, supportJudgmentHierarchy);
-            String workHierarchy = workHierarchyCode.substring(0, supportJudgmentHierarchy);
+            String affiliationHierarchy = affiliationHierarchyCode.isEmpty() ? affiliationHierarchyCode : affiliationHierarchyCode.substring(0, supportJudgmentHierarchy);
+            String workHierarchy = workHierarchyCode.isEmpty() ? workHierarchyCode : workHierarchyCode.substring(0, supportJudgmentHierarchy);
             if (!affiliationHierarchy.equals(workHierarchy)) {
                 i.setSupportWork(true);
             }

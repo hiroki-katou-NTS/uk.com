@@ -5,25 +5,12 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.function.dom.adapter.supportworkdata.AffiliationInforOfDailyPerforImport;
-import nts.uk.ctx.at.function.dom.adapter.supportworkdata.OuenWorkTimeOfDailyImport;
-import nts.uk.ctx.at.function.dom.adapter.supportworkdata.OuenWorkTimeSheetOfDailyImport;
-import nts.uk.ctx.at.function.dom.adapter.supportworkdata.SupportWorkDataImport;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
+import nts.uk.ctx.at.function.dom.supportworklist.SupportWorkDataImportHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,42 +31,7 @@ public class EmployeeExtractConditionTest {
 
         new Expectations() {{
             require.getSupportWorkDataForWorkingEmployeeByWorkplace(companyId, period, workplaceIds);
-            result = new SupportWorkDataImport(
-                    Arrays.asList(new OuenWorkTimeOfDailyImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            new ArrayList<>()
-                    )),
-                    Arrays.asList(new OuenWorkTimeSheetOfDailyImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            Arrays.asList(new OuenWorkTimeSheetOfDailyAttendance(
-                                    new SupportFrameNo(1),
-                                    WorkContent.create(
-                                            WorkplaceOfWorkEachOuen.create(
-                                                    new WorkplaceId(workplaceId),
-                                                    null
-                                            ),
-                                            Optional.empty(),
-                                            Optional.empty()
-                                    ),
-                                    null,
-                                    Optional.empty()
-                            ))
-                    )),
-                    Arrays.asList(new AffiliationInforOfDailyPerforImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            new AffiliationInforOfDailyAttd(
-                                    null, // employmentCode
-                                    null, // jobTitleId
-                                    workplaceId, // workplaceId
-                                    null, // classificationCode
-                                    Optional.empty(), // businessTypeCode
-                                    Optional.empty() //bonusPaySettingCode
-                            )
-                    ))
-            );
+            result = SupportWorkDataImportHelper.createDataImport(employeeId, workplaceId, "0001", workplaceId, "0001");
         }};
 
         assertThat(cnd.getSupportWorkDataByWorkplace(
@@ -102,42 +54,7 @@ public class EmployeeExtractConditionTest {
 
         new Expectations() {{
             require.getSupportWorkDataForEmployeeGoToSupportByWorkplace(companyId, period, workplaceIds);
-            result = new SupportWorkDataImport(
-                    Arrays.asList(new OuenWorkTimeOfDailyImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            new ArrayList<>()
-                    )),
-                    Arrays.asList(new OuenWorkTimeSheetOfDailyImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            Arrays.asList(new OuenWorkTimeSheetOfDailyAttendance(
-                                    new SupportFrameNo(1),
-                                    WorkContent.create(
-                                            WorkplaceOfWorkEachOuen.create(
-                                                    new WorkplaceId(workplaceId),
-                                                    null
-                                            ),
-                                            Optional.empty(),
-                                            Optional.empty()
-                                    ),
-                                    null,
-                                    Optional.empty()
-                            ))
-                    )),
-                    Arrays.asList(new AffiliationInforOfDailyPerforImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            new AffiliationInforOfDailyAttd(
-                                    null, // employmentCode
-                                    null, // jobTitleId
-                                    workplaceId, // workplaceId
-                                    null, // classificationCode
-                                    Optional.empty(), // businessTypeCode
-                                    Optional.empty() //bonusPaySettingCode
-                            )
-                    ))
-            );
+            result = SupportWorkDataImportHelper.createDataImport(employeeId, workplaceId, "0001", workplaceId, "0001");
         }};
 
         assertThat(cnd.getSupportWorkDataByWorkplace(
@@ -160,42 +77,7 @@ public class EmployeeExtractConditionTest {
 
         new Expectations() {{
             require.getSupportWorkDataForEmployeeComeToSupportByWorkplace(companyId, period, workplaceIds);
-            result = new SupportWorkDataImport(
-                    Arrays.asList(new OuenWorkTimeOfDailyImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            new ArrayList<>()
-                    )),
-                    Arrays.asList(new OuenWorkTimeSheetOfDailyImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            Arrays.asList(new OuenWorkTimeSheetOfDailyAttendance(
-                                    new SupportFrameNo(1),
-                                    WorkContent.create(
-                                            WorkplaceOfWorkEachOuen.create(
-                                                    new WorkplaceId(workplaceId),
-                                                    null
-                                            ),
-                                            Optional.empty(),
-                                            Optional.empty()
-                                    ),
-                                    null,
-                                    Optional.empty()
-                            ))
-                    )),
-                    Arrays.asList(new AffiliationInforOfDailyPerforImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            new AffiliationInforOfDailyAttd(
-                                    null, // employmentCode
-                                    null, // jobTitleId
-                                    workplaceId, // workplaceId
-                                    null, // classificationCode
-                                    Optional.empty(), // businessTypeCode
-                                    Optional.empty() //bonusPaySettingCode
-                            )
-                    ))
-            );
+            result = SupportWorkDataImportHelper.createDataImport(employeeId, workplaceId, "0001", workplaceId, "0001");
         }};
 
         assertThat(cnd.getSupportWorkDataByWorkplace(
@@ -218,42 +100,7 @@ public class EmployeeExtractConditionTest {
 
         new Expectations() {{
             require.getSupportWorkDataForWorkingEmployeeByWorkLocation(companyId, period, workLocationCodes);
-            result = new SupportWorkDataImport(
-                    Arrays.asList(new OuenWorkTimeOfDailyImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            new ArrayList<>()
-                    )),
-                    Arrays.asList(new OuenWorkTimeSheetOfDailyImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            Arrays.asList(new OuenWorkTimeSheetOfDailyAttendance(
-                                    new SupportFrameNo(1),
-                                    WorkContent.create(
-                                            WorkplaceOfWorkEachOuen.create(
-                                                    new WorkplaceId(""),
-                                                    new WorkLocationCD(workLocationCode)
-                                            ),
-                                            Optional.empty(),
-                                            Optional.empty()
-                                    ),
-                                    null,
-                                    Optional.empty()
-                            ))
-                    )),
-                    Arrays.asList(new AffiliationInforOfDailyPerforImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            new AffiliationInforOfDailyAttd(
-                                    null, // employmentCode
-                                    null, // jobTitleId
-                                    "", // workplaceId
-                                    null, // classificationCode
-                                    Optional.empty(), // businessTypeCode
-                                    Optional.empty() //bonusPaySettingCode
-                            )
-                    ))
-            );
+            result = SupportWorkDataImportHelper.createDataImport(employeeId, "", workLocationCode, "", null);
         }};
 
         assertThat(cnd.getSupportWorkDataByWorkLocations(
@@ -276,42 +123,7 @@ public class EmployeeExtractConditionTest {
 
         new Expectations() {{
             require.getSupportWorkDataForEmployeeGoToSupportByWorkLocation(companyId, period, workLocationCodes);
-            result = new SupportWorkDataImport(
-                    Arrays.asList(new OuenWorkTimeOfDailyImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            new ArrayList<>()
-                    )),
-                    Arrays.asList(new OuenWorkTimeSheetOfDailyImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            Arrays.asList(new OuenWorkTimeSheetOfDailyAttendance(
-                                    new SupportFrameNo(1),
-                                    WorkContent.create(
-                                            WorkplaceOfWorkEachOuen.create(
-                                                    new WorkplaceId(""),
-                                                    new WorkLocationCD(workLocationCode)
-                                            ),
-                                            Optional.empty(),
-                                            Optional.empty()
-                                    ),
-                                    null,
-                                    Optional.empty()
-                            ))
-                    )),
-                    Arrays.asList(new AffiliationInforOfDailyPerforImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            new AffiliationInforOfDailyAttd(
-                                    null, // employmentCode
-                                    null, // jobTitleId
-                                    "", // workplaceId
-                                    null, // classificationCode
-                                    Optional.empty(), // businessTypeCode
-                                    Optional.empty() //bonusPaySettingCode
-                            )
-                    ))
-            );
+            result = SupportWorkDataImportHelper.createDataImport(employeeId, "", workLocationCode, "", null);
         }};
 
         assertThat(cnd.getSupportWorkDataByWorkLocations(
@@ -334,42 +146,7 @@ public class EmployeeExtractConditionTest {
 
         new Expectations() {{
             require.getSupportWorkDataForEmployeeComeToSupportByWorkLocation(companyId, period, workLocationCodes);
-            result = new SupportWorkDataImport(
-                    Arrays.asList(new OuenWorkTimeOfDailyImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            new ArrayList<>()
-                    )),
-                    Arrays.asList(new OuenWorkTimeSheetOfDailyImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            Arrays.asList(new OuenWorkTimeSheetOfDailyAttendance(
-                                    new SupportFrameNo(1),
-                                    WorkContent.create(
-                                            WorkplaceOfWorkEachOuen.create(
-                                                    new WorkplaceId(""),
-                                                    new WorkLocationCD(workLocationCode)
-                                            ),
-                                            Optional.empty(),
-                                            Optional.empty()
-                                    ),
-                                    null,
-                                    Optional.empty()
-                            ))
-                    )),
-                    Arrays.asList(new AffiliationInforOfDailyPerforImport(
-                            employeeId,
-                            GeneralDate.today(),
-                            new AffiliationInforOfDailyAttd(
-                                    null, // employmentCode
-                                    null, // jobTitleId
-                                    "", // workplaceId
-                                    null, // classificationCode
-                                    Optional.empty(), // businessTypeCode
-                                    Optional.empty() //bonusPaySettingCode
-                            )
-                    ))
-            );
+            result = SupportWorkDataImportHelper.createDataImport(employeeId, "", workLocationCode, "", null);
         }};
 
         assertThat(cnd.getSupportWorkDataByWorkLocations(

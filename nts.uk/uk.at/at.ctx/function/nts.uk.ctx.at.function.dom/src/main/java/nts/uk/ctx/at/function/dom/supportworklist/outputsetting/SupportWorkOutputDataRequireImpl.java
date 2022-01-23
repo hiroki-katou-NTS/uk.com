@@ -11,8 +11,6 @@ import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.supportworklist.aggregationsetting.SupportWorkAggregationSetting;
 import nts.uk.ctx.at.function.dom.supportworklist.aggregationsetting.SupportWorkAggregationSettingRepository;
-import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +21,6 @@ public class SupportWorkOutputDataRequireImpl implements SupportWorkOutputDataRe
     private DailyAttendanceItemAdapter dailyAttendanceItemAdapter;
     private WorkplaceAdapter workplaceAdapter;
     private SupportWorkDataAdapter supportWorkDataAdapter;
-    private AttendanceItemConvertFactory attendanceItemConvertFactory;
 
     @Override
     public Optional<SupportWorkAggregationSetting> getSetting(String companyId) {
@@ -38,11 +35,6 @@ public class SupportWorkOutputDataRequireImpl implements SupportWorkOutputDataRe
     @Override
     public List<WorkPlaceInforExport> getWorkplaceInfos(String companyId, List<String> workplaceIds, GeneralDate baseDate) {
         return workplaceAdapter.getWorkplaceInforByWkpIds(companyId, workplaceIds, baseDate);
-    }
-
-    @Override
-    public DailyRecordToAttendanceItemConverter createDailyConverter() {
-        return attendanceItemConvertFactory.createDailyConverter();
     }
 
     @Override

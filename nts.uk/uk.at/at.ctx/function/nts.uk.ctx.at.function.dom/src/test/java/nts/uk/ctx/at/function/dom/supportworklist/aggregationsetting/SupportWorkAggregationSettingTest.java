@@ -5,21 +5,12 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.function.dom.adapter.supportworkdata.AffiliationInforOfDailyPerforImport;
-import nts.uk.ctx.at.function.dom.adapter.supportworkdata.OuenWorkTimeOfDailyImport;
-import nts.uk.ctx.at.function.dom.adapter.supportworkdata.OuenWorkTimeSheetOfDailyImport;
-import nts.uk.ctx.at.function.dom.adapter.supportworkdata.SupportWorkDataImport;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
+import nts.uk.ctx.at.function.dom.supportworklist.SupportWorkDataImportHelper;
 import nts.uk.ctx.at.function.dom.supportworklist.outputsetting.SupportWorkOutputDataRequire;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.*;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -63,42 +54,7 @@ public class SupportWorkAggregationSettingTest {
                 require,
                 companyId,
                 Optional.empty(),
-                new SupportWorkDataImport(
-                        Arrays.asList(new OuenWorkTimeOfDailyImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                new ArrayList<>()
-                        )),
-                        Arrays.asList(new OuenWorkTimeSheetOfDailyImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                Arrays.asList(new OuenWorkTimeSheetOfDailyAttendance(
-                                        new SupportFrameNo(1),
-                                        WorkContent.create(
-                                                WorkplaceOfWorkEachOuen.create(
-                                                        new WorkplaceId(workplaceId),
-                                                        null
-                                                ),
-                                                Optional.empty(),
-                                                Optional.empty()
-                                        ),
-                                        null,
-                                        Optional.empty()
-                                ))
-                        )),
-                        Arrays.asList(new AffiliationInforOfDailyPerforImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                new AffiliationInforOfDailyAttd(
-                                        null, // employmentCode
-                                        null, // jobTitleId
-                                        workplaceId, // workplaceId
-                                        null, // classificationCode
-                                        Optional.empty(), // businessTypeCode
-                                        Optional.empty() //bonusPaySettingCode
-                                )
-                        ))
-                ),
+                SupportWorkDataImportHelper.createDataImport(employeeId, workplaceId, "0001", workplaceId, "0001"),
                 Arrays.asList(1, 2, 3)
         );
 
@@ -128,42 +84,7 @@ public class SupportWorkAggregationSettingTest {
                 require,
                 companyId,
                 Optional.empty(),
-                new SupportWorkDataImport(
-                        Arrays.asList(new OuenWorkTimeOfDailyImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                new ArrayList<>()
-                        )),
-                        Arrays.asList(new OuenWorkTimeSheetOfDailyImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                Arrays.asList(new OuenWorkTimeSheetOfDailyAttendance(
-                                        new SupportFrameNo(1),
-                                        WorkContent.create(
-                                                WorkplaceOfWorkEachOuen.create(
-                                                        new WorkplaceId(workplaceId2),
-                                                        null
-                                                ),
-                                                Optional.empty(),
-                                                Optional.empty()
-                                        ),
-                                        null,
-                                        Optional.empty()
-                                ))
-                        )),
-                        Arrays.asList(new AffiliationInforOfDailyPerforImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                new AffiliationInforOfDailyAttd(
-                                        null, // employmentCode
-                                        null, // jobTitleId
-                                        workplaceId, // workplaceId
-                                        null, // classificationCode
-                                        Optional.empty(), // businessTypeCode
-                                        Optional.empty() //bonusPaySettingCode
-                                )
-                        ))
-                ),
+                SupportWorkDataImportHelper.createDataImport(employeeId, workplaceId, "0001", workplaceId2, "0002"),
                 Arrays.asList(1, 2, 3)
         );
 
@@ -181,6 +102,7 @@ public class SupportWorkAggregationSettingTest {
         String companyId = "000000000003-0001";
         String employeeId = "employee-id-0001";
         String workplaceId = "workplace-id-0001";
+        String workplaceId2 = "workplace-id-0002";
 
         SupportWorkAggregationSetting setting = new SupportWorkAggregationSetting(
                 SupportAggregationUnit.WORKPLACE,
@@ -189,58 +111,34 @@ public class SupportWorkAggregationSettingTest {
         );
 
         new Expectations() {{
-            require.getWorkplaceInfos(companyId, Arrays.asList(workplaceId, workplaceId), GeneralDate.today());
-            result = Arrays.asList(new WorkPlaceInforExport(
-                    workplaceId,
-                    "001001001",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-            ));
+            require.getWorkplaceInfos(companyId, Arrays.asList(workplaceId2, workplaceId), GeneralDate.today());
+            result = Arrays.asList(
+                    new WorkPlaceInforExport(
+                            workplaceId,
+                            "001001001",
+                            "",
+                            "",
+                            "",
+                            "",
+                            ""
+                    ),
+                    new WorkPlaceInforExport(
+                            workplaceId2,
+                            "001001002",
+                            "",
+                            "",
+                            "",
+                            "",
+                            ""
+                    )
+            );
         }};
 
         List<SupportWorkDetails> details = setting.createSupportWorkDetails(
                 require,
                 companyId,
                 Optional.empty(),
-                new SupportWorkDataImport(
-                        Arrays.asList(new OuenWorkTimeOfDailyImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                new ArrayList<>()
-                        )),
-                        Arrays.asList(new OuenWorkTimeSheetOfDailyImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                Arrays.asList(new OuenWorkTimeSheetOfDailyAttendance(
-                                        new SupportFrameNo(1),
-                                        WorkContent.create(
-                                                WorkplaceOfWorkEachOuen.create(
-                                                        new WorkplaceId(workplaceId),
-                                                        null
-                                                ),
-                                                Optional.empty(),
-                                                Optional.empty()
-                                        ),
-                                        null,
-                                        Optional.empty()
-                                ))
-                        )),
-                        Arrays.asList(new AffiliationInforOfDailyPerforImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                new AffiliationInforOfDailyAttd(
-                                        null, // employmentCode
-                                        null, // jobTitleId
-                                        workplaceId, // workplaceId
-                                        null, // classificationCode
-                                        Optional.empty(), // businessTypeCode
-                                        Optional.empty() //bonusPaySettingCode
-                                )
-                        ))
-                ),
+                SupportWorkDataImportHelper.createDataImport(employeeId, workplaceId, "0001", workplaceId2, "0002"),
                 Arrays.asList(1, 2, 3)
         );
 
@@ -291,42 +189,7 @@ public class SupportWorkAggregationSettingTest {
                 require,
                 companyId,
                 Optional.empty(),
-                new SupportWorkDataImport(
-                        Arrays.asList(new OuenWorkTimeOfDailyImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                new ArrayList<>()
-                        )),
-                        Arrays.asList(new OuenWorkTimeSheetOfDailyImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                Arrays.asList(new OuenWorkTimeSheetOfDailyAttendance(
-                                        new SupportFrameNo(1),
-                                        WorkContent.create(
-                                                WorkplaceOfWorkEachOuen.create(
-                                                        new WorkplaceId(workplaceId2),
-                                                        null
-                                                ),
-                                                Optional.empty(),
-                                                Optional.empty()
-                                        ),
-                                        null,
-                                        Optional.empty()
-                                ))
-                        )),
-                        Arrays.asList(new AffiliationInforOfDailyPerforImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                new AffiliationInforOfDailyAttd(
-                                        null, // employmentCode
-                                        null, // jobTitleId
-                                        workplaceId, // workplaceId
-                                        null, // classificationCode
-                                        Optional.empty(), // businessTypeCode
-                                        Optional.empty() //bonusPaySettingCode
-                                )
-                        ))
-                ),
+                SupportWorkDataImportHelper.createDataImport(employeeId, workplaceId2, "0002", workplaceId, "0001"),
                 Arrays.asList(1, 2, 3)
         );
 
@@ -354,41 +217,12 @@ public class SupportWorkAggregationSettingTest {
                 require,
                 companyId,
                 Optional.empty(),
-                new SupportWorkDataImport(
-                        Arrays.asList(new OuenWorkTimeOfDailyImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                new ArrayList<>()
-                        )),
-                        Arrays.asList(new OuenWorkTimeSheetOfDailyImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                Arrays.asList(new OuenWorkTimeSheetOfDailyAttendance(
-                                        new SupportFrameNo(1),
-                                        WorkContent.create(
-                                                WorkplaceOfWorkEachOuen.create(
-                                                        new WorkplaceId(workplaceId),
-                                                        new WorkLocationCD(workplaceId)
-                                                ),
-                                                Optional.empty(),
-                                                Optional.empty()
-                                        ),
-                                        null,
-                                        Optional.empty()
-                                ))
-                        )),
-                        Arrays.asList(new AffiliationInforOfDailyPerforImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                new AffiliationInforOfDailyAttd(
-                                        null, // employmentCode
-                                        null, // jobTitleId
-                                        workplaceId, // workplaceId
-                                        null, // classificationCode
-                                        Optional.empty(), // businessTypeCode
-                                        Optional.empty() //bonusPaySettingCode
-                                )
-                        ))
+                SupportWorkDataImportHelper.createDataImport(
+                        employeeId,
+                        workplaceId,
+                        "0001",
+                        "0001", // TODO: $所属先情報 = 所属情報.勤務場所 but doesn't have it yet
+                        "0001"
                 ),
                 Arrays.asList(1, 2, 3)
         );
@@ -417,42 +251,7 @@ public class SupportWorkAggregationSettingTest {
                 require,
                 companyId,
                 Optional.empty(),
-                new SupportWorkDataImport(
-                        Arrays.asList(new OuenWorkTimeOfDailyImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                new ArrayList<>()
-                        )),
-                        Arrays.asList(new OuenWorkTimeSheetOfDailyImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                Arrays.asList(new OuenWorkTimeSheetOfDailyAttendance(
-                                        new SupportFrameNo(1),
-                                        WorkContent.create(
-                                                WorkplaceOfWorkEachOuen.create(
-                                                        new WorkplaceId(workplaceId),
-                                                        new WorkLocationCD("0001")
-                                                ),
-                                                Optional.empty(),
-                                                Optional.empty()
-                                        ),
-                                        null,
-                                        Optional.empty()
-                                ))
-                        )),
-                        Arrays.asList(new AffiliationInforOfDailyPerforImport(
-                                employeeId,
-                                GeneralDate.today(),
-                                new AffiliationInforOfDailyAttd(
-                                        null, // employmentCode
-                                        null, // jobTitleId
-                                        workplaceId, // workplaceId
-                                        null, // classificationCode
-                                        Optional.empty(), // businessTypeCode
-                                        Optional.empty() //bonusPaySettingCode
-                                )
-                        ))
-                ),
+                SupportWorkDataImportHelper.createDataImport(employeeId, workplaceId, "0001", workplaceId, "0001"),
                 Arrays.asList(1, 2, 3)
         );
 
