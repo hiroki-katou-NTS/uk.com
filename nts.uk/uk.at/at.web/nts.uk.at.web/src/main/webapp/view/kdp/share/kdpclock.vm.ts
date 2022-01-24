@@ -23,13 +23,6 @@ module nts.uk.at.view.kdp.share {
 				position: relative;
 				white-space: nowrap;
 			}
-			.time-container .time .text-time {
-				position: absolute;
-				top: -23px;
-				right: -94px;
-				font-size: 85px;
-				color: white;
-			}
 			
 			.time-container .time .date {
 				text-align: center;
