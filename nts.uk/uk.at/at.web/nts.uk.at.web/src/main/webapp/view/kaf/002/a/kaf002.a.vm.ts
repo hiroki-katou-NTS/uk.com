@@ -160,12 +160,13 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                     recorderFlag: false,
                 }
 
-                self.$blockui('show');
                 self.$ajax(API.changeAppDate, command).done((res) => {
                     if (res) {
                         // console.log(res);
                         self.errorList(res.errorListOptional);
                         self.changeDate();
+                        // Trigger event: Binding actual workplace and location
+                        $('#componentM').trigger('bindingActualWkpLocation', [res]);
                     }
                 }).fail((err) => {
                     if (err) {
@@ -208,18 +209,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             self.showError(res);
         }).always(() => {
             self.$blockui('hide');
-        });
-
-        self.application().appDate.subscribe((value) => {
-            if (!value) return;
-            let command = {
-                appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
-                recoderFlag: RECORD_FLAG_STAMP,
-                companyId: self.$user.companyId
-            };
-            self.$ajax(API.start, command).done((res: any) => {
-                $('#componentM').trigger('changeAppDate', [res]);
-            });
         });
         // do not have actual data, or date is not selected
         self.initData();
@@ -265,15 +254,14 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
            if (value) {
              if (data.appStampReflectOptional && self.tabs()) {
                  let reflect = data.appStampReflectOptional;
-//                 打刻申請起動時の表示情報.打刻申請の反映.出退勤を反映する　＝　する || 「打刻申請起動時の表示情報.打刻申請の反映.臨時出退勤を反映する　＝　true　AND　打刻申請起動時の表示情報.臨時勤務利用　＝　true」
-                
-                 self.tabs()[0].visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && data.useTemporary) );
-                 self.tabs()[1].visible(reflect.outingHourse == 1);
-                 self.tabs()[2].visible(reflect.breakTime == 1);
-                 self.tabs()[3].visible(reflect.parentHours == 1);
-                 self.tabs()[4].visible(reflect.nurseTime == 1);
-                 self.tabs()[5].visible(reflect.startAndEndSupport === 1 && data.useCheering);
-             
+                _.forEach(self.tabs(), tab => {
+                    if (tab.id === 'tab-1') tab.visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && data.useTemporary));
+                    if (tab.id === 'tab-2') tab.visible(reflect.outingHourse == 1);
+                    if (tab.id === 'tab-3') tab.visible(reflect.outingHourse == 1);
+                    if (tab.id === 'tab-4') tab.visible(reflect.parentHours == 1);
+                    if (tab.id === 'tab-5') tab.visible(reflect.nurseTime == 1);
+                    if (tab.id === 'tab-6') tab.visible(reflect.startAndEndSupport === 1 && data.useCheering);
+                });
              } 
            } 
         });

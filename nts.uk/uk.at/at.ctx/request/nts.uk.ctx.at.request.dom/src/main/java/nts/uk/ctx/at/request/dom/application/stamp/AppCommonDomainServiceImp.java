@@ -196,6 +196,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	 * @param workLocationCds 勤務場所コード
 	 * @return the list
 	 */
+	@Override
 	public WkpWorkLocationName findWkpAndWorkLocationName(boolean isGetWorkPlaceName
 												 , boolean isGetWorkLocationName
 												 , List<WorkplaceId> workPlaceIds

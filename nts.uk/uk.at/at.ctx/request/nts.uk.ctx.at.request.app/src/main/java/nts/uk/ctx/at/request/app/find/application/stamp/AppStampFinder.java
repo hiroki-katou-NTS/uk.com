@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.request.app.find.application.stamp;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,15 +29,20 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.Con
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.StampRecordOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimePlaceOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TrackRecordAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppCommonDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.stamp.WkpWorkLocationName;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.ErrorStampInfo;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * 
  * @author hoangnd
@@ -143,9 +151,9 @@ public class AppStampFinder {
 		        Optional.empty());
 		appStampOutput.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		
+		StampRecordOutput stampRecordOutput = null;
 		if(!changeDateParam.isRecorderFlag()) {
 //		実績の打刻のチェック
-		    StampRecordOutput stampRecordOutput = null;
 		    Optional<String> workTypeCd = Optional.empty();
 		    Optional<List<ActualContentDisplay>> listActualContentDisplay = appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
 		    if (listActualContentDisplay.isPresent()) {
@@ -164,11 +172,39 @@ public class AppStampFinder {
 		    appStampOutput.setErrorListOptional(Optional.ofNullable(listErrorStampInfo));
 		}
 		
+		if (appStampOutput.isUseCheering()) {
+			List<String> workLocationCDs = stampRecordOutput != null 
+					? Stream.of(stampRecordOutput.getWorkingTime()
+													 	   , stampRecordOutput.getExtraordinaryTime()
+													 	   , stampRecordOutput.getSupportTime())
+													.flatMap(Collection::stream)
+													.map(t -> t.getOpWorkLocationCD().orElse(null))
+													.filter(Objects::nonNull)
+													.map(WorkLocationCD::v)
+													.collect(Collectors.toList())
+					: Collections.emptyList();
+			                    					  
+			List<WorkplaceId> workplaceIds = stampRecordOutput != null 
+					? Stream.of(stampRecordOutput.getWorkingTime()
+										 	   		 , stampRecordOutput.getExtraordinaryTime()
+										 	   		 , stampRecordOutput.getSupportTime())
+													.flatMap(Collection::stream)
+													.map(TimePlaceOutput::getWorkplaceId)
+													.filter(Objects::nonNull)
+													.collect(Collectors.toList())
+					: Collections.emptyList(); 
+			// 職場名・場所名を取得する
+			WkpWorkLocationName wkpWorkLocationName = appCommonStampDomainService.findWkpAndWorkLocationName(
+					appStampOutput.getAppStampSetting().getWkpDisAtr() == NotUseAtr.USE,
+					appStampOutput.getAppStampSetting().getUseLocationSelection() == NotUseAtr.USE,
+					workplaceIds, workLocationCDs,
+					dates.isEmpty() ? GeneralDate.today() : dates.get(0));
+			
+			appStampOutput.setWorkplaceNames(wkpWorkLocationName.getWorkplaceNames());
+			appStampOutput.setWorkLocationNames(wkpWorkLocationName.getWorkLocationNames());
+		}
+		
 		return AppStampOutputDto.fromDomain(appStampOutput);
 	}
-	
-	
-	
-	
 	
 }

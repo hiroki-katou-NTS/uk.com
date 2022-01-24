@@ -206,7 +206,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
             self.date.subscribe((value) => {
                 self.loadAll();
-            })
+            });
 
         }
 
@@ -289,12 +289,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             // change tabs by root component
             self.tabsTemp(self.tabs());
             self.loadAll();
-            $('#kaf002TabPanel').parent().on('changeAppDate', (_, param) => {
-              if (!param) return;
-              self.workLocationNames = param.workLocationNames;
-              self.workplaceNames = param.workplaceNames;
-            });
-			self.selectedTab(_.find(self.tabs(), item => item.visible())?.id)
+			self.selectedTab(_.find(self.tabs(), item => item.visible()).id);
 
         }
         loadAll() {
@@ -586,12 +581,10 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
             if (type == STAMPTYPE.GOOUT_RETURNING) {
                 if ($('#' + id).length) {
-                    ko.cleanNode($('#' + id)[0]);
                     $('#' + id).ntsGrid(option2);
                 }
             } else if (type === STAMPTYPE.ATTENDENCE || type === STAMPTYPE.CHEERING) {
                 if ($('#' + id).length) {
-                    ko.cleanNode($('#' + id)[0]);
                     _.forEach($('.btn_workplace'), e => ko.cleanNode(e));
                     _.forEach($('.btn_workplace').children(), e => ko.cleanNode(e));
                     _.forEach($('.btn_worklocation'), e => ko.cleanNode(e));
@@ -660,6 +653,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             
             let moreRow = document.getElementById('moreRow' + String(items[0].index));
             if (moreRow && self.isLinkList[items[0].index]) {
+                ko.cleanNode(moreRow);
                 ko.applyBindings(self, moreRow);
             }
             
@@ -863,12 +857,11 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             if (type === STAMPTYPE.ATTENDENCE) gridId = 1;
             else if (type === STAMPTYPE.CHEERING) gridId = 6;
             else return;
-            if (self.isPreAtr()) return;
             const setActualData = () => {
               $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} button`).ready(() => {
                 $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} button`).removeAttr("tabindex");
                 $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} .label-workplace-id`).remove();
-    
+                
                 if (data.workplaceId) {
                   const wkpName = _.find(self.workplaceNames, wkp => wkp?.workplaceId == data.workplaceId)?.wkpName;
                   $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} .nts-button-container`).after(() => {
@@ -876,7 +869,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                   });
                 }
               });
-            
+              
               $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} button`).ready(() => {
                 $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} button`).removeAttr("tabindex");
                 $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} .label-work-location`).remove();
@@ -888,13 +881,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 }
               });
             };
-            setActualData();
-            $('#kaf002TabPanel').parent().on('changeAppDate', (_, param) => {
-              if (!param) return;
+            $('#kaf002TabPanel').parent().on('bindingActualWkpLocation', (_, param) => {
               self.workLocationNames = param.workLocationNames;
               self.workplaceNames = param.workplaceNames;
               setActualData();
             });
+            if (self.isPreAtr()) return;
+            setActualData();
         }
     }
 
