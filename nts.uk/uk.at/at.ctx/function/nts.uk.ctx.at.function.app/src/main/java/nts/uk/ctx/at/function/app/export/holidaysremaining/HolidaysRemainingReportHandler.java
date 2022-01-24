@@ -1191,11 +1191,12 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         //========================================
         //公休
         //========================================
-
+        // 2022.01.24 - 3S - chinh.hm  - issues #122620  - 変更 START
         // Tồn tại quá khứ.
-        if(!lstYrMon.isEmpty()){
-            publicHolidayPastSituations = getListPublicHolidayPastSituation(employeeId,lstYrMon);
+        if(hdRemainMer!=null){
+            publicHolidayPastSituations = hdRemainMer.getResult262();
         }
+        // 2022.01.24 - 3S - chinh.hm  - issues #122620  - 変更 END
 
         for (int i = 0; i < correspondingYmList.size(); i++){
             PeriodCorrespondingYm  correspondingYm =    correspondingYmList.get(i);
@@ -1546,56 +1547,4 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         }
         return exist;
     }
-    // RQ : 262 - 公休の月別利用状況(過去月)を取得する
-    private List<PublicHolidayPastSituation> getListPublicHolidayPastSituation(String sid, List<YearMonth> yearMonths){
-        List<PublicHolidayPastSituation> listOuput = new ArrayList<>();
-        Map<YearMonth, List<RemainMerge>> mapRemainMer = repoRemainMer.findBySidsAndYrMons(sid, yearMonths);
-        for (Map.Entry<YearMonth, List<RemainMerge>> entry : mapRemainMer.entrySet()) {
-            List<RemainMerge> remainMergeList =
-                    new ArrayList<>(entry.getValue());
-            YearMonth ym = entry.getKey();
-            val output = new PublicHolidayPastSituation(
-                    entry.getKey(),
-                    null,
-                    null,
-                    null,
-                    null
-            );
-            for (int i = 0; i < remainMergeList.size(); i++) {
-                RemainMerge rmm = remainMergeList.get(i);
-                PublicHolidayRemNumEachMonth publicHolidayRemNumEachMonth = rmm.getMonPublicHoliday();
-                AnnLeaRemNumEachMonth annLeaRemNumEachMonth = rmm.getAnnLeaRemNumEachMonth();
-                DatePeriod closurePeriod = annLeaRemNumEachMonth.getClosurePeriod();
-
-
-                // 繰越数←公休月別残数データ.繰越数 - numberOfCarryforwards
-                // 付与数←公休月別残数データ.公休日数 - numberOfGrants
-                // 使用数←公休月別残数データ.取得数 - numberOfUse
-                // 残数　←公休月別残数データ.翌月繰越数- numberOfRemaining
-                val numberOfCarryforwards = publicHolidayRemNumEachMonth.getCarryForwardNumber();
-                val numberOfGrants = publicHolidayRemNumEachMonth.getPublicHolidayday();
-                val numberOfUse = publicHolidayRemNumEachMonth.getNumberOfAcquisitions();
-                val numberOfRemaining = publicHolidayRemNumEachMonth.getNumberCarriedOverToTheNextMonth();
-                /**    終了年月日 */
-                GeneralDate endDate = closurePeriod.end();
-                GeneralDate endDateRemainingMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
-
-                output.setNumberOfGrants((output.getNumberOfGrants() == null ? 0 : output.getNumberOfGrants()) +
-                        ( numberOfGrants== null ? 0 : numberOfGrants.v()));
-                output.setNumberOfUse((output.getNumberOfUse() == null ? 0 : output.getNumberOfUse()) +
-                        (numberOfUse == null ? 0 : numberOfUse.v()));
-
-                 // ※公休月別残数データ．残数に限り、合算せずに締め期間．終了日が遅い方のみ保持する
-                if (endDate.afterOrEquals(endDateRemainingMax)) {
-                    output.setNumberOfRemaining(numberOfRemaining == null ? null : numberOfRemaining.v());
-                }else {
-                    //※公休月別残数データ．繰越数に限り、合算せずに締め期間．終了日が早い方のみ保持する
-                    output.setNumberOfCarryforwards(numberOfCarryforwards == null ? null: numberOfCarryforwards.v());
-                }
-            }
-            listOuput.add(output);
-        }
-        return listOuput;
-    }
-
 }

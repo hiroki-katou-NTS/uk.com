@@ -16,6 +16,7 @@ import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReservedYearHolidayImport
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.RsvLeaUsedCurrentMonImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.CurrentHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
+import nts.uk.ctx.at.function.dom.holidaysremaining.report.PublicHolidayPastSituation;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.SpecialVacationPastSituation;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.AbsenceleaveCurrentMonthOfEmployee;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.MonthlyAbsenceleaveRemainExport;
@@ -40,6 +41,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.Remai
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicholiday.PublicHolidayRemNumEachMonth;
+
 @Stateless
 public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 
@@ -115,7 +119,7 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 		//			speHd.getUseTimes(), speHd.getRemainDays(), speHd.getRemainTimes());
 		//	result263.add(specialHoliday);
 		//}
-
+		// 2021.12.24 - 3S - chinh.hm  - issues #122037 - 変更 END
 		List<SpecialVacationPastSituation> result263 = lstSpeHd.stream().map(e -> new SpecialVacationPastSituation(
 				e.getSid(),
 				e.getYm(),
@@ -125,8 +129,10 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 				e.getAfterRemainDays() == 0 ?e.getBeforeRemainDays() :e.getAfterRemainDays(),
 				e.getAfterRemainTimes() == 0 ?e.getBeforeRemainTimes():e.getAfterRemainTimes()
 		)).collect(Collectors.toList());
-		// 2021.12.24 - 3S - chinh.hm  - issues #122037 - 変更 END
-		return new HolidayRemainMerEx(result255, result258, result259, result260, result263);
+		// 2022.01.24 - 3S - chinh.hm  - issues #122620  - 変更 START
+		List<PublicHolidayPastSituation> result262  = getListPublicHolidayPastSituation(mapRemainMer);
+		// 2022.01.24 - 3S - chinh.hm  - issues #122620  - 変更 END
+		return new HolidayRemainMerEx(result255, result258, result259, result260, result263,result262);
 	}
 
 	@Override
@@ -282,5 +288,55 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
         })
 				.collect(Collectors.toList());
 		return lsRs;
+	}
+	// RQ : 262 - 公休の月別利用状況(過去月)を取得する
+	private List<PublicHolidayPastSituation> getListPublicHolidayPastSituation(Map<YearMonth, List<RemainMerge>> mapRemainMer){
+		List<PublicHolidayPastSituation> listOuput = new ArrayList<>();
+		for (Map.Entry<YearMonth, List<RemainMerge>> entry : mapRemainMer.entrySet()) {
+			List<RemainMerge> remainMergeList =
+					new ArrayList<>(entry.getValue());
+			YearMonth ym = entry.getKey();
+			val output = new PublicHolidayPastSituation(
+					entry.getKey(),
+					null,
+					null,
+					null,
+					null
+			);
+			for (int i = 0; i < remainMergeList.size(); i++) {
+				RemainMerge rmm = remainMergeList.get(i);
+				PublicHolidayRemNumEachMonth publicHolidayRemNumEachMonth = rmm.getMonPublicHoliday();
+				AnnLeaRemNumEachMonth annLeaRemNumEachMonth = rmm.getAnnLeaRemNumEachMonth();
+				DatePeriod closurePeriod = annLeaRemNumEachMonth.getClosurePeriod();
+
+
+				// 繰越数←公休月別残数データ.繰越数 - numberOfCarryforwards
+				// 付与数←公休月別残数データ.公休日数 - numberOfGrants
+				// 使用数←公休月別残数データ.取得数 - numberOfUse
+				// 残数　←公休月別残数データ.翌月繰越数- numberOfRemaining
+				val numberOfCarryforwards = publicHolidayRemNumEachMonth.getCarryForwardNumber();
+				val numberOfGrants = publicHolidayRemNumEachMonth.getPublicHolidayday();
+				val numberOfUse = publicHolidayRemNumEachMonth.getNumberOfAcquisitions();
+				val numberOfRemaining = publicHolidayRemNumEachMonth.getNumberCarriedOverToTheNextMonth();
+				/**    終了年月日 */
+				GeneralDate endDate = closurePeriod.end();
+				GeneralDate endDateRemainingMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
+
+				output.setNumberOfGrants((output.getNumberOfGrants() == null ? 0 : output.getNumberOfGrants()) +
+						( numberOfGrants== null ? 0 : numberOfGrants.v()));
+				output.setNumberOfUse((output.getNumberOfUse() == null ? 0 : output.getNumberOfUse()) +
+						(numberOfUse == null ? 0 : numberOfUse.v()));
+
+				// ※公休月別残数データ．残数に限り、合算せずに締め期間．終了日が遅い方のみ保持する
+				if (endDate.afterOrEquals(endDateRemainingMax)) {
+					output.setNumberOfRemaining(numberOfRemaining == null ? null : numberOfRemaining.v());
+				}else {
+					//※公休月別残数データ．繰越数に限り、合算せずに締め期間．終了日が早い方のみ保持する
+					output.setNumberOfCarryforwards(numberOfCarryforwards == null ? null: numberOfCarryforwards.v());
+				}
+			}
+			listOuput.add(output);
+		}
+		return listOuput;
 	}
 }
