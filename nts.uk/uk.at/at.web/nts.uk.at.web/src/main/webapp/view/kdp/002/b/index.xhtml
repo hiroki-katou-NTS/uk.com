@@ -28,7 +28,10 @@
 				<div id="right-area">
 					<div id="right-area">
 						<div style="text-align: center;" class="title">
-							<div class="date" data-bind="date: $vm.time.now, format: 'YYYY/MM/DD(ddd)'"></div>
+							<div class="date">
+								<span class="ymd" data-bind="date: $vm.time.now, format: 'YYYY/MM/DD'"></span>
+								<span class="ddd" data-bind="date: $vm.time.now, format: '（ddd）'"></span>
+							</div>
 							<div class="time" data-bind="text: $vm.stampTime"></div>
 							<div class="commuting" data-bind="text: currentStampData().stampArtName"></div>
 						</div>

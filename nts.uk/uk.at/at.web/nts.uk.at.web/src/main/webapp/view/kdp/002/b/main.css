@@ -49,6 +49,14 @@
 	min-height: 22px;
 }
 
+.title * {
+	font-family: Quicksand !important;
+}
+
+.title .date .ddd {
+	font-family: "Noto Sans JP" !important;
+}
+
 .title .time {
 	font-size: 35px;
 	font-weight: bold;
@@ -96,7 +104,7 @@
 	border: none;
 	background-color: transparent;
 	box-shadow: 0 0px rgb(0 0 0 / 40%);
-	min-width: 0 !important; /* function-area‚Ìƒ{ƒ^ƒ“‚É‘Î‚·‚émin-width‚ð–³Œø‰» */
+	min-width: 0 !important; /* function-areaï¿½Ìƒ{ï¿½^ï¿½ï¿½ï¿½É‘Î‚ï¿½ï¿½ï¿½min-widthï¿½ð–³Œï¿½ï¿½ï¿½ */
 }
 
 .nts-gridlist.ui-iggrid {
