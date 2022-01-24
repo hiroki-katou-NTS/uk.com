@@ -19,8 +19,10 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getpe
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.IgnoreFlagDuringLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 
 @RunWith(JMockit.class)
 public class ClosingGetUnlockedPeriodTest {
@@ -104,11 +106,12 @@ public class ClosingGetUnlockedPeriodTest {
 		assertThat(result.get(0).end()).isEqualTo(period.end());
 
 	}
+	
 
 	/**
 	 * ignoreFlagDuringLock != IgnoreFlagDuringLock.CAL_DURING_LOCK
 	 * Requireで締めIDを取得する not empty 
-	 * Requireで「当月の実績ロック」を取得する not empty
+	 * require.findClosureById(anyInt); empty
 	 */
 	@Test
 	public void test_get_4() {
@@ -119,7 +122,6 @@ public class ClosingGetUnlockedPeriodTest {
 		ClosureEmployment closureEmployment = new ClosureEmployment("companyId", employmentCode, 1);
 		
 		ActualLock actualLock = new ActualLock("companyId", ClosureId.RegularEmployee, LockStatus.LOCK, LockStatus.LOCK);
-		DatePeriod periodClosure = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 31));
 
 		new Expectations() {
 			{
@@ -129,6 +131,48 @@ public class ClosingGetUnlockedPeriodTest {
 				require.findById(anyInt);
 				result = Optional.of(actualLock);
 				
+				require.findClosureById(anyInt);
+			}
+		};
+		List<DatePeriod> result = ClosingGetUnlockedPeriod.get(require, period, employmentCode, ignoreFlagDuringLock,
+				achievementAtr);
+	
+		assertThat(result).isEmpty();
+
+	}
+
+
+	/**
+	 * ignoreFlagDuringLock != IgnoreFlagDuringLock.CAL_DURING_LOCK
+	 * Requireで締めIDを取得する not empty 
+	 * require.findClosureById(anyInt); not empty
+	 * Requireで「当月の実績ロック」を取得する not empty
+	 */
+	@Test
+	public void test_get_5() {
+		DatePeriod period = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 15)); // dummy
+		String employmentCode = "employmentCode";// dummy
+		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CANNOT_CAL_LOCK;
+		AchievementAtr achievementAtr = AchievementAtr.DAILY;// dummy
+		ClosureEmployment closureEmployment = new ClosureEmployment("companyId", employmentCode, 1);
+		
+		ActualLock actualLock = new ActualLock("companyId", ClosureId.RegularEmployee, LockStatus.LOCK, LockStatus.LOCK);
+		DatePeriod periodClosure = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 31));
+
+		Closure closure = new Closure(ClosureId.ClosureFive); 
+		CurrentMonth closureMonth = new CurrentMonth(202110);
+		closure.setCurrentMonth(closureMonth);
+		new Expectations() {
+			{
+				require.findByEmploymentCD(anyString);
+				result = Optional.of(closureEmployment);
+
+				require.findById(anyInt);
+				result = Optional.of(actualLock);
+				
+				require.findClosureById(anyInt);
+				result = Optional.of(closure);
+				
 				require.getClosurePeriod(anyInt, (YearMonth)any);
 				result = periodClosure;
 			}
@@ -136,8 +180,8 @@ public class ClosingGetUnlockedPeriodTest {
 		List<DatePeriod> result = ClosingGetUnlockedPeriod.get(require, period, employmentCode, ignoreFlagDuringLock,
 				achievementAtr);
 	
-		assertThat(result.get(0).start()).isEqualTo(GeneralDate.ymd(2021, 02, 1));
-		assertThat(result.get(0).end()).isEqualTo(GeneralDate.ymd(2021, 02, 15));
+        assertThat(result.get(0).start()).isEqualTo(GeneralDate.ymd(2021, 01, 31));
+        assertThat(result.get(0).end()).isEqualTo(GeneralDate.ymd(2021, 02, 15));
 
 	}
 

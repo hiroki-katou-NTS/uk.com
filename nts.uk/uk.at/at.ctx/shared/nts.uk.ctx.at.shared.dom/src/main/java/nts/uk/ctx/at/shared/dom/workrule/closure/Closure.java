@@ -397,6 +397,10 @@ public class Closure extends AggregateRoot {
 		this.closureId = closureId;
 	}
 	
+	public void setCurrentMonth(CurrentMonth cm) {
+		this.closureMonth = cm;
+	}
+	
 	/**
 	 * 締め開始日と締め日を取得する
 	 * @return
