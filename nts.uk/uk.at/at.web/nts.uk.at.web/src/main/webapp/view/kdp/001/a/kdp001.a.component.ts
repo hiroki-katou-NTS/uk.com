@@ -72,8 +72,6 @@ module nts.uk.ui.kdp001.a {
         name: 'kdp-001-a',
         template: `
             <div class="kdp-001-a kdp-001-a-title">
-                <div class="text-time" data-bind="i18n: 'KDP001_5', 
-                            css: { 'ie': $component.state() === 'IE' , 'not-ie': $component.state() === 'NOT_IE'}"></div>
                 <div class="date" data-bind="date: $component.time.now, format: 'YYYY/MM/DD(ddd)', attr: { style: $component.time.style }"></div>
                 <div>
                     <span class="hours-minutes" data-bind="date: $component.time.now, format: 'HH:mm',attr: { style: $component.time.style }"></span>
@@ -208,12 +206,6 @@ module nts.uk.ui.kdp001.a {
                 <!-- /ko -->
             <!-- /ko -->
             <style rel="stylesheet">
-                .ie {
-                    top: -15px;
-                }
-                .not-ie {
-                    top: -23px;
-                }
                 .kdp-001-a-title {
                     position: relative;
                     width: 450px;
@@ -370,12 +362,6 @@ module nts.uk.ui.kdp001.a {
                 }
                 .kdp-001-a-potal.widget-content table td:not(:last-child) {
                     text-align: center;
-                }
-                .kdp-001-a.kdp-001-a-title .text-time {
-                    position: absolute;
-                    font-size: 70px;
-                    color: #E5F7F9;
-                    right: 22px;
                 }
                 .kdp-001-a.kdp-001-a-title .date {
                     text-align: left;
