@@ -201,9 +201,8 @@ module nts.uk.at.view.smm001.a {
       };
       vm.$ajax('com', API.registerSmileCooperationAcceptanceSetting, command)
         .then((res: any) => {
-          if (res) {
+            console.log(res);
             vm.$dialog.info({ messageId: "Msg_15" });
-          }
         }).fail((err) => {
           vm.$dialog.error(err);
         }).always(() => vm.$blockui('clear'));
