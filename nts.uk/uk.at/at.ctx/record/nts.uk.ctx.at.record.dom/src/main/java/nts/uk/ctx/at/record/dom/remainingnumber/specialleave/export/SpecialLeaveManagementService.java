@@ -114,7 +114,7 @@ public class SpecialLeaveManagementService {
 		// 特別休暇集計期間でループ
 		for (val aggregatePeriodWork : aggregateWork){
 
-			// 特休の消滅・付与・消化
+			// 特休の付与・消化
 			outputData = specialLeaveInfo.lapsedGrantDigest(
 					require,
 					param.getCid(),
@@ -126,6 +126,10 @@ public class SpecialLeaveManagementService {
 					outputData,
 					param.getBaseDate()
 					);
+			
+			//消滅処理
+			outputData = specialLeaveInfo.lapsedProcess(aggregatePeriodWork, outputData, 
+					aggregatePeriodWork.judgeNextGrantPeriodAtr(aggregateWork, employee.getEntryDate()));
 		}
 
 		// 【渡すパラメータ】 特別休暇情報　←　特別休暇の集計結果．特別休暇情報（期間終了日時点）

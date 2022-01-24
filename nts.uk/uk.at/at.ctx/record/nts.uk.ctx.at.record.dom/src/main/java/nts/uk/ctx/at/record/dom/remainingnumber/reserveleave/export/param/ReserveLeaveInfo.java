@@ -140,7 +140,7 @@ public class ReserveLeaveInfo implements Cloneable {
 	}
 
 	/**
-	 * 積立年休の消滅・付与・消化
+	 * 積立年休の付与・消化
 	 * 
 	 * @param companyId
 	 *            会社ID
@@ -203,9 +203,6 @@ public class ReserveLeaveInfo implements Cloneable {
 			this.ymd = aggrPeriodWork.getPeriod().end();
 		}
 
-		// 消滅処理
-		aggrResult = this.lapsedProcess(aggrPeriodWork, aggrResult);
-
 		// 「積立年休の集計結果」を返す
 		return aggrResult;
 	}
@@ -231,8 +228,8 @@ public class ReserveLeaveInfo implements Cloneable {
 	 *            積立年休の集計結果
 	 * @return 積立年休の集計結果
 	 */
-	private AggrResultOfReserveLeave lapsedProcess(RsvLeaAggrPeriodWork aggrPeriodWork,
-			AggrResultOfReserveLeave aggrResult) {
+	public AggrResultOfReserveLeave lapsedProcess(RsvLeaAggrPeriodWork aggrPeriodWork,
+			AggrResultOfReserveLeave aggrResult, GrantBeforeAfterAtr grantPeriodAtr) {
 
 		// 消滅フラグを取得
 		if (!aggrPeriodWork.getLapsedAtr().isLapsedAtr())
@@ -261,8 +258,6 @@ public class ReserveLeaveInfo implements Cloneable {
 			targetUndigestNumber.addDays(remainingNumber.getDays().v());
 		}
 
-		// 付与前付与後を判断する
-		GrantBeforeAfterAtr grantPeriodAtr = aggrPeriodWork.getGrantWork().judgeGrantPeriodAtr();
 
 		// 積立年休情報残数を更新
 		this.updateRemainingNumber(grantPeriodAtr);

@@ -110,7 +110,7 @@ public class SpecialLeaveInfo implements Cloneable {
 
 
 	/**
-	 * 特休の消滅・付与・消化
+	 * 特休の付与・消化
 	 * @param require
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
@@ -152,9 +152,6 @@ public class SpecialLeaveInfo implements Cloneable {
 
 		/** 終了時点更新処理 */
 		updateEnd(specialLeaveAggregatePeriodWork, aggrResult);
-
-		/** ○消滅処理 */
-		aggrResult = this.lapsedProcess(specialLeaveAggregatePeriodWork, aggrResult, entryDate);
 
 		/** 「特休の集計結果」を返す */
 		return aggrResult;
@@ -217,13 +214,13 @@ public class SpecialLeaveInfo implements Cloneable {
 	 * 消滅処理
 	 * @param aggregatePeriodWork 処理中の特休集計期間WORK
 	 * @param aggrResult 特休の集計結果
-	 * @param entryDate 入社日
+	 * @param grantPeriodAtr 	付与前、付与後の区分
 	 * @return 特休の集計結果
 	 */
-	private InPeriodOfSpecialLeaveResultInfor lapsedProcess(
+	public InPeriodOfSpecialLeaveResultInfor lapsedProcess(
 			SpecialLeaveAggregatePeriodWork aggregatePeriodWork,
 			InPeriodOfSpecialLeaveResultInfor aggrResult,
-			GeneralDate entryDate){
+			GrantBeforeAfterAtr grantPeriodAtr){
 
 		// 消滅フラグを取得
 		if (!aggregatePeriodWork.getLapsedWork().isLapsedAtr()) return aggrResult;
@@ -231,9 +228,6 @@ public class SpecialLeaveInfo implements Cloneable {
 		/** 特別休暇を消滅させる */
 		this.decreaseSpecicalHoliday(aggregatePeriodWork);
 
-		// 付与前付与後を判断する
-		GrantBeforeAfterAtr grantPeriodAtr
-			= aggregatePeriodWork.judgeGrantPeriodAtr(entryDate);
 		
 		// 特別休暇情報残数を更新
 		this.updateRemainingNumber(grantPeriodAtr);

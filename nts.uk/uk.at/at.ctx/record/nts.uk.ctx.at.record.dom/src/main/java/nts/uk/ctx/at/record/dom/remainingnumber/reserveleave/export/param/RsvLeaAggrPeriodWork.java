@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -71,4 +72,16 @@ public class RsvLeaAggrPeriodWork {
 		return domain;
 	}
 
+	/**
+	 * 次の期間の付与前後を判断
+	 * @param periodWorkList
+	 * @return
+	 */
+	public GrantBeforeAfterAtr judgeNextGrantPeriodAtr(List<RsvLeaAggrPeriodWork> periodWorkList){
+		if(this.endWork.judgeNextPeriodEndAtr() || (periodWorkList.size()-1) < (periodWorkList.indexOf(this)+1)){
+			return this.getGrantWork().judgeGrantPeriodAtr();
+		}
+		
+		return  periodWorkList.get(periodWorkList.indexOf(this)+1).getGrantWork().judgeGrantPeriodAtr();
+	}
 }

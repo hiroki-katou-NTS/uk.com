@@ -134,10 +134,15 @@ public class GetRsvLeaRemNumWithinPeriod {
 		
 		for (val aggrPeriodWork : aggrPeriodWorks) {
 
-			// 積立年休の消滅・付与・消化
+			// 積立年休の付与・消化
 			aggrResult = reserveLeaveInfo.lapsedGrantDigest(require, cacheCarrier, companyId, employeeId,
 					aggrPeriodWork, tmpReserveLeaveMngs, aggrResult, annualLeaveSet, retentionYearlySet,
 					emptYearlyRetentionSetMap, limit);
+			
+			//消滅処理
+			aggrResult = reserveLeaveInfo.lapsedProcess(aggrPeriodWork, aggrResult,
+					aggrPeriodWork.judgeNextGrantPeriodAtr(aggrPeriodWorks));
+			
 		}
 
 		// 【渡すパラメータ】 積休情報 ← 積休の集計結果．積休情報（期間終了日時点）

@@ -36,4 +36,12 @@ public class AnnualNextDayAfterPeriodEndWork {
 		domain.nextPeriodEndAtr = nextPeriodEndAtr;
 		return domain;
 	}
+	
+	/**
+	 * 終了日の翌日の期間か
+	 * @return
+	 */
+	public boolean judgeNextPeriodEndAtr(){
+		return this.isNextPeriodEndAtr();
+	}
 }

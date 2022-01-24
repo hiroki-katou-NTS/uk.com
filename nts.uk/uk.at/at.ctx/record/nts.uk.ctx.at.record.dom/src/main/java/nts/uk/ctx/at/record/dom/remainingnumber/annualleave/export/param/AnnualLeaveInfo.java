@@ -58,7 +58,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	/** 使用時間 */
 	private UsedMinutes usedTime;
 	/** 年休設定 */
-	private AnnualPaidLeaveSetting annualPaidLeaveSet;
+	private Optional<AnnualPaidLeaveSetting> annualPaidLeaveSet;
 
 	/**
 	 * コンストラクタ
@@ -72,7 +72,7 @@ public class AnnualLeaveInfo implements Cloneable {
 		this.grantInfo = Optional.empty();
 		this.usedDays = new AnnualLeaveUsedDayNumber(0.0);
 		this.usedTime = new UsedMinutes(0);
-		this.annualPaidLeaveSet = null;
+		this.annualPaidLeaveSet = Optional.empty();
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	}
 
 	/**
-	 * 年休の消滅・付与・消化
+	 * 年休の付与・消化
 	 * 
 	 * @param require
 	 * @param companyId
@@ -210,7 +210,7 @@ public class AnnualLeaveInfo implements Cloneable {
 			String employeeId, AggregatePeriodWork aggregatePeriodWork, List<TempAnnualLeaveMngs> tempAnnualLeaveMngs,
 			AggrResultOfAnnualLeave aggrResult, AnnualPaidLeaveSetting annualPaidLeaveSet) {
 
-		this.annualPaidLeaveSet = annualPaidLeaveSet;
+		this.annualPaidLeaveSet = Optional.of(annualPaidLeaveSet);
 
 		this.ymd = aggregatePeriodWork.getPeriod().end();
 
@@ -230,8 +230,6 @@ public class AnnualLeaveInfo implements Cloneable {
 		// 終了時点更新処理
 		this.updateProcessEnd(companyId, employeeId, aggregatePeriodWork, aggrResult, lstError);
 
-		// ○消滅処理
-		aggrResult = this.lapsedProcess(aggregatePeriodWork, aggrResult);
 		// ○「年休の集計結果」を返す
 
 		return aggrResult;
@@ -259,8 +257,8 @@ public class AnnualLeaveInfo implements Cloneable {
 	 *            年休の集計結果
 	 * @return 年休の集計結果
 	 */
-	private AggrResultOfAnnualLeave lapsedProcess(AggregatePeriodWork aggregatePeriodWork,
-			AggrResultOfAnnualLeave aggrResult) {
+	public AggrResultOfAnnualLeave lapsedProcess(AggregatePeriodWork aggregatePeriodWork,
+			AggrResultOfAnnualLeave aggrResult, GrantBeforeAfterAtr grantAtr) {
 
 		// 消滅フラグを取得
 		if (!aggregatePeriodWork.getLapsedAtr().isLapsedAtr())
@@ -270,7 +268,7 @@ public class AnnualLeaveInfo implements Cloneable {
 		extinguishAnnualLeave(aggregatePeriodWork);
 
 		// 年休情報残数を更新
-		this.updateRemainingNumber(aggregatePeriodWork.getGrantWork().getGrantPeriodAtr(),
+		this.updateRemainingNumber(grantAtr,
 				aggregatePeriodWork.getPeriod().end());
 
 		// 年休情報を「年休の集計結果．年休情報（消滅）」に追加
@@ -387,6 +385,9 @@ public class AnnualLeaveInfo implements Cloneable {
 		if (aggregatePeriodWork.getEndWork().isNextPeriodEndAtr()) {
 			return aggrResult;
 		}
+		if(!this.annualPaidLeaveSet.isPresent()){
+			return aggrResult;
+		}
 
 		// 「暫定年休管理データリスト」を取得する
 		tempAnnualLeaveMngs.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
@@ -415,7 +416,7 @@ public class AnnualLeaveInfo implements Cloneable {
 			}
 
 			// 取得設定をチェック
-			if (this.annualPaidLeaveSet.getAcquisitionSetting().annualPriority == AnnualPriority.FIFO) {
+			if (this.annualPaidLeaveSet.get().getAcquisitionSetting().annualPriority == AnnualPriority.FIFO) {
 
 				// 当年付与分から消化する （付与日 降順(DESC)）
 				targetRemainingDatas.sort((a, b) -> -a.getGrantDate().compareTo(b.getGrantDate()));

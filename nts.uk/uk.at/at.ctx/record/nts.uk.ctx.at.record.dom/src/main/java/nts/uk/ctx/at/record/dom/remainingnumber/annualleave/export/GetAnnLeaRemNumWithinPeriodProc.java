@@ -330,12 +330,18 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		for (val aggregatePeriodWork : aggregateWork){
 
-			// 年休の消滅・付与・消化
+			// 年休の付与・消化
 			aggrResult = annualLeaveInfo.lapsedGrantDigest(
 					require, companyId, employeeId, aggregatePeriodWork,
 					tempAnnualLeaveMngs, aggrResult, annualLeaveSet);
+			
+			//消滅処理
+			aggrResult = annualLeaveInfo.lapsedProcess(aggregatePeriodWork, aggrResult,
+					aggregatePeriodWork.judgeNextGrantPeriodAtr(aggregateWork));
 		}
 
+		
+		
 		// 【渡すパラメータ】 年休情報　←　年休の集計結果．年休情報（期間終了日時点）
 		AnnualLeaveInfo annualLeaveInfoEnd = aggrResult.getAsOfPeriodEnd();
 
