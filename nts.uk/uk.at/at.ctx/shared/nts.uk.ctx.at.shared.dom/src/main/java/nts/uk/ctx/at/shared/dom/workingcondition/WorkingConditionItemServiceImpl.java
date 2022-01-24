@@ -15,6 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -91,15 +92,15 @@ public class WorkingConditionItemServiceImpl implements WorkingConditionItemServ
 			// get Working Condition Item
 			WorkingConditionItem domain = optWorkingCondItem.get();
 			// ドメインモデル「個人勤務日区分別勤務」を取得する (Lấy 「個人勤務日区分別勤務」)
-			PersonalWorkCategory workTime = domain.getWorkCategory().getWorkTime();
+			Optional<WorkTimeCode> workTime = domain.getWorkCategory().getWorkTime().getHolidayWork().getWorkTimeCode();
 			WorkTypeByIndividualWorkDay workType = domain.getWorkCategory().getWorkType();
 			
-			if (workTime == null || workType == null) {
+			if (!workTime.isPresent() || workType == null) {
 				return Optional.empty();
 			}
 			//個人情報の平日出勤時勤務情報を取得する
 			//終了状態：平日時出勤情報を返す
-			return Optional.of(new WorkInformation(workType.getWeekdayTimeWTypeCode(), workTime.getWeekdayTime().getWorkTimeCode().orElse(null)));
+			return Optional.of(new WorkInformation(workType.getWeekdayTimeWTypeCode().v(), workTime.get().v()));
 		}
 		// 休日出勤時の勤務情報を取得する
 		Optional<WorkInformation> data = getHolidayWorkSchedule(companyId, employeeId, baseDate, workTypeCode);
