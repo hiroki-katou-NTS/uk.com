@@ -7,17 +7,17 @@
   <div class="smile-div">
     <p class="ml-1">#{i18n.getText('SMM001_7')}</p>
     <div class="d-flex mb-1 ml-2">
-      <div data-bind="ntsCheckBox: { checked: false, enable: true }">
+      <div data-bind="ntsCheckBox: { checked: salaryCooperationClassification, enable: true }">
         #{i18n.getText('SMM001_8')}
       </div>
       <div id="combo-box" data-bind="ntsComboBox: {
               name: 'List',
-              options: itemList,
+              options: itemListCndSet,
               optionsValue: 'code',
               visibleItemsCount: 3,
-              value: selectedCode,
+              value: salaryCooperationConditions,
               optionsText: 'name',
-              enable: isEnable, 
+              enable: salaryCooperationClassification,
               columns: [
                 { prop: 'code', length: 4 },
                 { prop: 'name', length: 10 },
@@ -32,9 +32,9 @@
     </div>
     <div class="ml-2">
       <label
-        data-bind="ntsRadioButton: { checked: selectedValue, optionText: DO_TEXT, option: '1', group: 'abc' }"></label>
+        data-bind="ntsRadioButton: { checked: monthlyLockClassification, optionText: DO_TEXT, option: true, group: 'lockClassification' }"></label>
       <label
-        data-bind="ntsRadioButton: { checked: selectedValue, optionText: DO_NOT_TEXT, option: '2', group: 'abc' }"></label>
+        data-bind="ntsRadioButton: { checked: monthlyLockClassification, optionText: DO_NOT_TEXT, option: false, group: 'lockClassification' }"></label>
     </div>
   </div>
   <div class="smile-div">
@@ -43,9 +43,9 @@
     </div>
     <div class="ml-2">
       <label
-        data-bind="ntsRadioButton: { checked: selectedValue, optionText: DO_TEXT, option: '1', group: 'abc' }"></label>
+        data-bind="ntsRadioButton: { checked: monthlyApprovalCategory, optionText: DO_TEXT, option: true, group: 'approvalCategory' }"></label>
       <label
-        data-bind="ntsRadioButton: { checked: selectedValue, optionText: DO_NOT_TEXT, option: '2', group: 'abc' }"></label>
+        data-bind="ntsRadioButton: { checked: monthlyApprovalCategory, optionText: DO_NOT_TEXT, option: false, group: 'approvalCategory' }"></label>
     </div>
   </div>
 
@@ -61,7 +61,7 @@
               visibleItemsCount: 5,
               value: selectedCode,
               optionsText: 'name',
-              enable: isEnable,
+              enable: true,
               columns: [
                 { prop: 'code', length: 4 },
                 { prop: 'name', length: 10 },

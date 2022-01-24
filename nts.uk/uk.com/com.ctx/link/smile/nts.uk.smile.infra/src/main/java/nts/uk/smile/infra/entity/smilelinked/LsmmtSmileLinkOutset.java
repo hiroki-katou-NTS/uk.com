@@ -40,7 +40,6 @@ public class LsmmtSmileLinkOutset extends UkJpaEntity implements Serializable {
 	private Integer salaryCooperationtAtr;
 
 	// column 給与連携条件
-	@Null
 	@Column(name = "SALARY_COOPERATION_COND")
 	private String salaryCooperationCond;
 

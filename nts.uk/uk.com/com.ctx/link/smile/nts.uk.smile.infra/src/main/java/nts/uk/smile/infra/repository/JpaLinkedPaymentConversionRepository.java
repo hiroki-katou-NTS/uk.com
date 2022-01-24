@@ -21,7 +21,7 @@ import nts.uk.smile.infra.entity.smilelinked.LsmmtEmplinkMonthSetPK;
 public class JpaLinkedPaymentConversionRepository extends JpaRepository implements LinkedPaymentConversionRepository {
 
 	private static final String GET_BY_CONTRACT_AND_CID = String.join(" ",
-			"SELECT m FROM LsmmtEmplinkMonthSet m WHERE m.pk.contractCd = :contractCd", "AND m.cid = :cid");
+			"SELECT m FROM LsmmtEmplinkMonthSet m WHERE m.pk.contractCd = :contractCd", "AND m.pk.cid = :cid");
 
 	private static final String GET_BY_CONTRACT_CD_AND_CID_AND_PAYMENT_CD = String.join(" ",
 			"SELECT m FROM LsmmtEmplinkMonthSet m WHERE m.pk.contractCd = :contractCd", "AND m.pk.cid = :cid",

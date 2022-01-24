@@ -91,17 +91,17 @@ module nts.uk.at.view.smm001.a {
       vm.AFFILIATED_MASTER = ko.observable(vm.enumSmileCooperationAcceptanceItem()[5].name);
       vm.EMPLOYEE_MASTER = ko.observable(vm.enumSmileCooperationAcceptanceItem()[6].name);
 
-      this.getInitialStartupInformation(null);
+      vm.getInitialStartupInformation();
     }
 
-    getInitialStartupInformation(param: any) {
+    getInitialStartupInformation() {
       const vm = this;
       vm.$blockui('show');
       vm.itemList().push({
         code: '0',
         name: ''
       })
-      vm.$ajax('com', API.getInitialStartupInformation, param).then((response: any) => {
+      vm.$ajax('com', API.getInitialStartupInformation).then((response: any) => {
         if (response) {
           console.log("response: ", response)
           // Get list data select option a screen
@@ -116,7 +116,7 @@ module nts.uk.at.view.smm001.a {
             smileCooperationAcceptanceSettings = _.sortBy(
               smileCooperationAcceptanceSettings, ["cooperationAcceptance"]
             );
-            this.mappingDataAfterGetInitAScreen(smileCooperationAcceptanceSettings)
+            vm.mappingDataAfterGetInitAScreen(smileCooperationAcceptanceSettings)
           }
         }
       })
