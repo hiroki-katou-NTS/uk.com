@@ -16,6 +16,59 @@ module nts.uk.at.view.ccg005.a.screenModel {
   };
   const ID_AVATAR_CHANGE = 'ccg005-avatar-change';
 
+  
+  enum StartMode {
+    WORKPLACE = 0,
+    DEPARTMENT = 1
+  }
+
+  enum SystemType {
+    PERSONAL_INFORMATION = 1,
+    EMPLOYMENT = 2,
+    SALARY = 3,
+    HUMAN_RESOURCES = 4,
+    ADMINISTRATOR = 5
+  }
+
+  enum EmojiType {
+    WEARY = 0, // どんより: アイコン#189
+    SAD = 1, // ゆううつ: アイコン#188
+    AVERAGE = 2, // 普通: アイコン#187
+    GOOD = 3, // ぼちぼち: アイコン#186
+    HAPPY = 4 // いい感じ: アイコン#185
+  }
+
+  enum Emoji {
+    WEARY = 189, // どんより: アイコン#189
+    SAD = 188, // ゆううつ: アイコン#188
+    AVERAGE = 187, // 普通: アイコン#187
+    GOOD = 186, // ぼちぼち: アイコン#186
+    HAPPY = 185 // いい感じ: アイコン#185
+  }
+
+  enum StatusClassfication {
+    NOT_PRESENT = 0, // 未出社: アイコン#199
+    PRESENT = 1, // 在席: アイコン#195
+    GO_OUT = 2, // 外出: アイコン#191
+    GO_HOME = 3, // 帰宅: アイコン#196
+    HOLIDAY = 4 // 休み: アイコン#197
+  }
+
+  enum StatusClassficationIcon {
+    NOT_PRESENT = 199, // 未出社: アイコン#199
+    PRESENT = 195, // 在席: アイコン#195
+    GO_OUT = 191, // 外出: アイコン#191
+    GO_HOME = 196, // 帰宅: アイコン#196
+    HOLIDAY = 197 // 休み: アイコン#197
+  }
+
+  // 表示色区分
+  enum DisplayColor {
+    ACHIEVEMENT = 0, // 実績色
+    SCHEDULED = 1, // 予定色
+    ALARM = 2 // アラーム色
+  }
+
   @component({
     name: 'ccg005-component',
     template: 
@@ -40,7 +93,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </th>
             <th>
               <!-- A1_5 -->
-              <i tabindex=3 style="position: relative; right: 0; top: 5px;" data-bind="visible: $component.inCharge, ntsIcon: {no: 4, width: 20, height: 20}, click: $component.openScreenCCG005B"></i>
+              <button tabindex=3 style="position: relative; right: 0; top: 5px;" data-bind="visible: $component.inCharge, click: $component.openScreenCCG005B">
+                <i data-bind="ntsIcon: {no: 5, width: 20, height: 20}"></i>
+              </div>
             </th>
           </tr>
         </thead>
@@ -96,7 +151,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 <i tabindex=5 class="ccg005-status-img-A1_7"
                   data-bind="ntsIcon: { no: $component.activityStatusIcon(), width: 20, height: 20 }, visible: $component.isBaseDate"></i>
                 <i
-                  data-bind="click: $component.openFutureScreenCCG005E.bind($component, true, '', '') ,ntsIcon: { no: 191, width: 20, height: 20 }, visible: $component.isAfter"></i>
+                  data-bind="click: $component.openFutureScreenCCG005E.bind($component, true, '', '') ,ntsIcon: { no: ${StatusClassficationIcon.GO_OUT}, width: 20, height: 20 }, visible: $component.isAfter"></i>
               </td>
             </tr>
           </table>
@@ -179,7 +234,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                     <i tabindex=15 class="ccg005-status-img"
                       data-bind="click: $component.initPopupInList.bind($component, $index, sid, businessName), ntsIcon: {no: activityStatusIconNo, width: 20, height: 20}, visible: $component.isBaseDate"></i>
                     <i
-                      data-bind="click: $component.openFutureScreenCCG005E.bind($component, false, sid, businessName) ,ntsIcon: { no: 191, width: 20, height: 20 }, visible: $component.isAfter"></i>
+                      data-bind="click: $component.openFutureScreenCCG005E.bind($component, false, sid, businessName) ,ntsIcon: { no: ${StatusClassficationIcon.GO_OUT}, width: 20, height: 20 }, visible: $component.isAfter"></i>
                   </span>
                 </td>
                 <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
@@ -275,23 +330,23 @@ module nts.uk.at.view.ccg005.a.screenModel {
   <!-- A1_7 & A4_7 Popup -->
   <div id="ccg005-status-popup">
     <table>
-      <tr style="height: 30px" data-bind="click: $component.registerAttendanceStatus.bind($component, 0, 196)">
+      <tr style="height: 30px" data-bind="click: $component.registerAttendanceStatus.bind($component, 0, ${StatusClassficationIcon.NOT_PRESENT})">
         <td class="ccg005-bottom-unset">
           <i data-bind="visible: $component.visibleNotPresent(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
         </td>
         <!-- A1_7.1 -->
         <td class="ccg005-bottom-unset">
-          <i data-bind="ntsIcon: {no: 196, width: 20, height: 20}"></i>
+          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.NOT_PRESENT}, width: 20, height: 20}"></i>
         </td>
         <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_43'"></td>
       </tr>
-      <tr style="height: 30px" data-bind="click: $component.registerAttendanceStatus.bind($component, 1, 195)">
+      <tr style="height: 30px" data-bind="click: $component.registerAttendanceStatus.bind($component, 1, ${StatusClassficationIcon.PRESENT})">
         <td class="ccg005-bottom-unset">
           <i data-bind="visible: $component.visiblePresent(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
         </td>
         <!-- A1_7.2 -->
         <td class="ccg005-bottom-unset">
-          <i data-bind="ntsIcon: {no: 195, width: 20, height: 20}"></i>
+          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.PRESENT}, width: 20, height: 20}"></i>
         </td>
         <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_22'"></td>
       </tr>
@@ -301,27 +356,27 @@ module nts.uk.at.view.ccg005.a.screenModel {
         </td>
         <!-- A1_7.3 -->
         <td class="ccg005-bottom-unset">
-          <i data-bind="ntsIcon: {no: 191, width: 20, height: 20}"></i>
+          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.GO_OUT}, width: 20, height: 20}"></i>
         </td>
         <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_39'"></td>
       </tr>
-      <tr style="height: 30px" data-bind="click: $component.registerAttendanceStatus.bind($component,3, 196)">
+      <tr style="height: 30px" data-bind="click: $component.registerAttendanceStatus.bind($component,3, ${StatusClassficationIcon.GO_HOME})">
         <td class="ccg005-bottom-unset">
           <i data-bind="visible: $component.visibleGoHome(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
         </td>
         <!-- A1_7.4 -->
         <td class="ccg005-bottom-unset">
-          <i data-bind="ntsIcon: {no: 196, width: 20, height: 20}"></i>
+          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.GO_HOME}, width: 20, height: 20}"></i>
         </td>
         <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_44'"></td>
       </tr>
-      <tr style="height: 30px" data-bind="click: $component.registerAttendanceStatus.bind($component, 4, 197)">
+      <tr style="height: 30px" data-bind="click: $component.registerAttendanceStatus.bind($component, 4, ${StatusClassficationIcon.HOLIDAY})">
         <td class="ccg005-bottom-unset">
           <i data-bind="visible: $component.visibleHoliday(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
         </td>
         <!-- A1_7.5 -->
         <td class="ccg005-bottom-unset">
-          <i data-bind="ntsIcon: {no: 197, width: 20, height: 20}"></i>
+          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.HOLIDAY}, width: 20, height: 20}"></i>
         </td>
         <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_40'"></td>
       </tr>
@@ -1053,7 +1108,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       $('#ccg005-status-popup').ntsPopup('hide');
       vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams()).then((x: Boolean) => {
         if (x) {
-          vm.registerAttendanceStatus(2, 191);
+          vm.registerAttendanceStatus(2, StatusClassficationIcon.GO_OUT);
           vm.contentSelected(1);
         }
         vm.dataToDisplay();
@@ -1080,7 +1135,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       }
       vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams()).then((x: Boolean) => {
         if (x) {
-          vm.registerAttendanceStatus(2, 191);
+          vm.registerAttendanceStatus(2, StatusClassficationIcon.GO_OUT);
         }
       });
     }
@@ -1412,58 +1467,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
         + "_companyId_" + __viewContext.user.companyId
         + "_userId_" + __viewContext.user.employeeId);
     }
-  }
-
-  enum StartMode {
-    WORKPLACE = 0,
-    DEPARTMENT = 1
-  }
-
-  enum SystemType {
-    PERSONAL_INFORMATION = 1,
-    EMPLOYMENT = 2,
-    SALARY = 3,
-    HUMAN_RESOURCES = 4,
-    ADMINISTRATOR = 5
-  }
-
-  enum EmojiType {
-    WEARY = 0, // どんより: アイコン#189
-    SAD = 1, // ゆううつ: アイコン#188
-    AVERAGE = 2, // 普通: アイコン#187
-    GOOD = 3, // ぼちぼち: アイコン#186
-    HAPPY = 4 // いい感じ: アイコン#185
-  }
-
-  enum Emoji {
-    WEARY = 189, // どんより: アイコン#189
-    SAD = 188, // ゆううつ: アイコン#188
-    AVERAGE = 187, // 普通: アイコン#187
-    GOOD = 186, // ぼちぼち: アイコン#186
-    HAPPY = 185 // いい感じ: アイコン#185
-  }
-
-  enum StatusClassfication {
-    NOT_PRESENT = 0, // 未出社: アイコン#196
-    PRESENT = 1, // 在席: アイコン#195
-    GO_OUT = 2, // 外出: アイコン#191
-    GO_HOME = 3, // 帰宅: アイコン#196
-    HOLIDAY = 4 // 休み: アイコン#197
-  }
-
-  enum StatusClassficationIcon {
-    NOT_PRESENT = 196, // 未出社: アイコン#196
-    PRESENT = 195, // 在席: アイコン#195
-    GO_OUT = 191, // 外出: アイコン#191
-    GO_HOME = 196, // 帰宅: アイコン#196
-    HOLIDAY = 197 // 休み: アイコン#197
-  }
-
-  // 表示色区分
-  enum DisplayColor {
-    ACHIEVEMENT = 0, // 実績色
-    SCHEDULED = 1, // 予定色
-    ALARM = 2 // アラーム色
   }
 
   class FavoriteSpecifyData {
