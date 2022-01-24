@@ -13,6 +13,7 @@ import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportAdapter;
 import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportDto;
 import nts.uk.ctx.at.function.dom.adapter.user.UserEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerAdapter;
+import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerImport;
 import nts.uk.ctx.at.function.dom.alarm.createerrorinfo.CreateErrorInfo;
 import nts.uk.ctx.at.function.dom.alarm.createerrorinfo.OutputErrorInfo;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
@@ -125,8 +126,8 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                     }
 
                     @Override
-                    public List<String> getEmpOfWkpManager(String workplaceId, GeneralDate referenceDate) {
-                        return workplaceAdapter.getEmpOfWkpManager(workplaceId, referenceDate);
+                    public List<WkpManagerImport> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate) {
+                        return workplaceAdapter.findByPeriodAndBaseDate(wkpId, baseDate);
                     }
                 },
                 companyId, command.getWorkplaceIds(),

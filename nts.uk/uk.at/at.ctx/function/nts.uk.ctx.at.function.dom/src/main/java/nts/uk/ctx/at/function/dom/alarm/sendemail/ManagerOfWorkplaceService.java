@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.alarm.sendemail;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.alarm.MailExportRolesDto;
+import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerImport;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRole;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.IndividualWkpClassification;
 
@@ -46,8 +47,9 @@ public class ManagerOfWorkplaceService {
             List<String> managerIds = new ArrayList<>();
             // ②取得したList＜職場ID＞をループする
             for (String workplaceIdUpper : workplaceIdUppers) {
-                // [No.XXX]職場から職場管理者社員を取得する: No.218
-                List<String> administratorOfWorkplaces = require.getEmpOfWkpManager(workplaceIdUpper, systemDate);
+                // [No.XXX]職場から職場管理者社員を取得する:
+                List<WkpManagerImport> wkpManagerList = require.findByPeriodAndBaseDate(workplaceIdUpper, systemDate);
+                List<String> administratorOfWorkplaces = wkpManagerList.stream().map(WkpManagerImport::getEmployeeId).collect(Collectors.toList());
 
                 // 社員IDListから就業ロールIDを取得 : Map <EmployeeID, RoleID>
                 Map<String, String> administratorRoleMap = GetRoleWorkByEmployeeService.get(require, administratorOfWorkplaces, systemDate);
@@ -99,7 +101,7 @@ public class ManagerOfWorkplaceService {
 
         List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId);
 
-        List<String> getEmpOfWkpManager(String workplaceId, GeneralDate referenceDate);
+        List<WkpManagerImport> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate);
     }
 
 }
