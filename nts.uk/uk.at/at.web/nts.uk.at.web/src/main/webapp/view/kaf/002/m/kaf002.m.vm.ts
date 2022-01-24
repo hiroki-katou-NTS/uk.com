@@ -79,7 +79,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 		    comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
         comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
 
-        appDate: KnockoutObservable<any>;
+        appDate: KnockoutObservable<any> = ko.observable('');
         kaf002Data: any;
         workLocationNames: any[] = [];
         workplaceNames: any[] = [];
@@ -87,7 +87,6 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         created(params: any) {
 
             const self = this;
-
             self.appDate = params.appDate;
             self.kaf002Data = params.kaf002Data;
 			const comment1 = params.comment1 as KnockoutObservable<Comment>;
