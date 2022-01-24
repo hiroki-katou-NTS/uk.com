@@ -55,7 +55,7 @@ public class AggregatePremiumTimeDto implements ItemConst, AttendanceItemDataGat
 		case TIME:
 			return Optional.of(ItemValue.builder().value(time).valueType(ValueType.TIME));
 		case AMOUNT:
-			return Optional.of(ItemValue.builder().value(amount).valueType(ValueType.TIME));
+			return Optional.of(ItemValue.builder().value(amount).valueType(ValueType.AMOUNT_LONG));
 		default:
 			return AttendanceItemDataGate.super.valueOf(path);
 		}
