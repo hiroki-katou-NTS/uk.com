@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.Console;
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,7 +59,7 @@ public class AnnualPaidLeaveSettingTest {
 		AnnualPaidLeaveSetting leaveSetting = AnnualPaidLeaveSettingHelper
 				.createAnnualPaidLeaveSetting(timeAnnualSetting, ManageDistinct.NO);
 		List<Integer> lstId = leaveSetting.getDailyAttendanceItemsNotAvailable();
-		assertThat(lstId).extracting(d -> d).containsExactly(539, 540);
+		assertThat(lstId).extracting(d -> d).containsExactly(539, 540,502,514,595,601,607,613);
 		
 	// Case 2
 		// 時間年休の上限日数.管理区分 = 管理する
@@ -72,7 +71,7 @@ public class AnnualPaidLeaveSettingTest {
 		leaveSetting = AnnualPaidLeaveSettingHelper
 				.createAnnualPaidLeaveSetting(timeAnnualSetting, ManageDistinct.YES);
 		lstId = leaveSetting.getDailyAttendanceItemsNotAvailable();
-		assertThat(lstId).extracting(d -> d).containsExactly(502, 514, 595, 601, 607, 613);
+		assertThat(lstId.isEmpty()).isTrue();
 		
 	// Case 3
 		// 時間年休の上限日数.管理区分 = 管理しない
@@ -84,7 +83,7 @@ public class AnnualPaidLeaveSettingTest {
 		leaveSetting = AnnualPaidLeaveSettingHelper
 				.createAnnualPaidLeaveSetting(timeAnnualSetting, ManageDistinct.YES);
 		lstId = leaveSetting.getDailyAttendanceItemsNotAvailable();
-		assertThat(lstId.isEmpty()).isTrue();
+		assertThat(lstId).extracting(d -> d).containsExactly(502, 514, 595, 601, 607, 613);
 	}
 
 	/**
@@ -176,8 +175,7 @@ public class AnnualPaidLeaveSettingTest {
 				ManageDistinct.YES);
 
 		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable();
-		lstIdCanGet = Arrays.asList(1434, 1435, 1436, 1437, 1438, 1439, 1440, 1441, 1424, 1425, 1426, 1429, 1430, 1431,
-				1861, 1862);
+		lstIdCanGet = Arrays.asList(1434, 1435, 1436, 1437, 1438, 1439, 1440, 1441);
 
 		// 管理区分 = 管理する && 管理区分 = 管理しない && 時間年休管理区分 = 管理する && 年休管理区分 = 管理する
 		assertThat(lstId.containsAll(lstIdCanGet)).isTrue();
@@ -195,10 +193,9 @@ public class AnnualPaidLeaveSettingTest {
 				ManageDistinct.YES);
 
 		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable();
-		lstIdCanGet = Arrays.asList(1424, 1425, 1426, 1429, 1430, 1431, 1861, 1862);
 
 		// 管理区分 = 管理する && 管理区分 = 管理する && 時間年休管理区分 = 管理する && 年休管理区分 = 管理する
-		assertThat(lstId.containsAll(lstIdCanGet)).isTrue();
+		assertThat(lstId.isEmpty()).isTrue();
 		
 		// =============CASE 7
 		// 管理区分 = 管理しない
@@ -213,7 +210,7 @@ public class AnnualPaidLeaveSettingTest {
 				ManageDistinct.YES);
 
 		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable();
-		lstIdCanGet = Arrays.asList(1424, 1425, 1426, 1429, 1430, 1431, 1861, 1862, 1442, 1443, 1444, 1445);
+		lstIdCanGet = Arrays.asList(1442, 1443, 1444, 1445);
 
 		// 管理区分 = 管理しない && 管理区分 = 管理する && 時間年休管理区分 = 管理する && 年休管理区分 = 管理する
 		assertThat(lstId.containsAll(lstIdCanGet)).isTrue();

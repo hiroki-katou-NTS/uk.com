@@ -38,32 +38,32 @@ public class TimeAnnualMaxDayTest {
 		// 時間年休の上限日数.管理区分 = 管理しない, 年休設定.年休管理区分 = 管理しない, 時間年休管理設定.時間年休管理区分 = 管理しない
 		TimeAnnualMaxDay maxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_NO(ManageDistinct.NO);
 		List<Integer> lstResult = maxDay.getMonthAttendItemsNotAvailable(ManageDistinct.NO, ManageDistinct.NO);
-		assertThat(lstResult.isEmpty()).isTrue();
+		assertThat(lstResult.containsAll(Arrays.asList(1442, 1443, 1444, 1445)));
 
 		// 時間年休の上限日数.管理区分 = 管理しない, 年休設定.年休管理区分 = 管理する, 時間年休管理設定.時間年休管理区分 = 管理しない
 		maxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_NO(ManageDistinct.NO);
 		lstResult = maxDay.getMonthAttendItemsNotAvailable(ManageDistinct.YES, ManageDistinct.NO);
-		assertThat(lstResult.isEmpty()).isTrue();
+		assertThat(lstResult.containsAll(Arrays.asList(1442, 1443, 1444, 1445)));
 
 		// 時間年休の上限日数.管理区分 = 管理しない, 年休設定.年休管理区分 = 管理しない, 時間年休管理設定.時間年休管理区分 = 管理する
 		maxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_NO(ManageDistinct.NO);
 		lstResult = maxDay.getMonthAttendItemsNotAvailable(ManageDistinct.NO, ManageDistinct.YES);
-		assertThat(lstResult.isEmpty()).isTrue();
+		assertThat(lstResult.containsAll(Arrays.asList(1442, 1443, 1444, 1445)));
 
 		// 時間年休の上限日数.管理区分 = 管理する, 年休設定.年休管理区分 = 管理しない, 時間年休管理設定.時間年休管理区分 = 管理する
 		maxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_YES(ManageDistinct.YES);
 		lstResult = maxDay.getMonthAttendItemsNotAvailable(ManageDistinct.NO, ManageDistinct.YES);
-		assertThat(lstResult.isEmpty()).isTrue();
+		assertThat(lstResult.containsAll(Arrays.asList(1442, 1443, 1444, 1445)));
 
 		// 時間年休の上限日数.管理区分 = 管理する, 年休設定.年休管理区分 = 管理する, 時間年休管理設定.時間年休管理区分 = 管理しない
 		maxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_YES(ManageDistinct.YES);
 		lstResult = maxDay.getMonthAttendItemsNotAvailable(ManageDistinct.YES, ManageDistinct.NO);
-		assertThat(lstResult.isEmpty()).isTrue();
+		assertThat(lstResult.containsAll(Arrays.asList(1442, 1443, 1444, 1445)));
 
 		// 時間年休の上限日数.管理区分 = 管理する, 年休設定.年休管理区分 = 管理する, 時間年休管理設定.時間年休管理区分 = 管理する
 		maxDay = TimeAnnualMaxDayHelper.createTimeAnnualMaxDay_ManageDistinct_YES(ManageDistinct.YES);
 		lstResult = maxDay.getMonthAttendItemsNotAvailable(ManageDistinct.YES, ManageDistinct.YES);
-		assertThat(lstResult.containsAll(Arrays.asList(1442, 1443)));
+		assertThat(lstResult.isEmpty()).isTrue();
 	}
 
 	/**
