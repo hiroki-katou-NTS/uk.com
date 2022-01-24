@@ -44,7 +44,7 @@ public class GetManagerOfEmpSendAlarmMailIndividual {
 
             for (String managerId : entry.getValue()) {
                 // 絞り込んだ対象者一覧を調整
-                val condition1 = (sendPerson.isPresent() && sendPerson.get()) || employeeTargetIds.contains(managerId);
+                val condition1 = (!sendPerson.isPresent() || sendPerson.get()) || employeeTargetIds.contains(managerId);
                 // OR　Input．List＜本人送信対象＞にInput．管理者IDを存在する AND 絞り込んだ対象者一覧にループ中の管理者IDを存在する
                 val condition2 = targetPersonList.contains(managerId);
 
