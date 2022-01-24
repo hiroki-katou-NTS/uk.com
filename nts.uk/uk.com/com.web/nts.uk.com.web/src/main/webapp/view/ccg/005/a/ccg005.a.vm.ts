@@ -474,9 +474,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
     #CCG005_no_avatar {
       display: flex;
       align-items: center;
-      background-color: #eeeeee;
-      color: blue;
-      border: 1px solid #333688;
+      background-color: #cfcfcf;
+      color: #545454;
+      border: 1px solid #cfcfcf;
       border-radius: 50%;
       width: 40px;
       height: 40px;
@@ -486,9 +486,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
       cursor: pointer;
       display: flex;
       align-items: center;
-      background-color: #eeeeee;
-      color: blue;
-      border: 1px solid #333688;
+      background-color: #cfcfcf;
+      color: #545454;
+      border: 1px solid #cfcfcf;
       border-radius: 50%;
       width: 30px;
       height: 30px;
