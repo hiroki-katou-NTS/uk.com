@@ -516,15 +516,15 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     #background-color-present {
-      background-color: #DDFFDD;
+      background-color: #A5C9C1;
     }
 
     #background-color-go-out {
-      background-color: #FFE1E1;
+      background-color: #FFE5E5;
     }
 
     #background-color-holiday {
-      background-color: #F2F2F2;
+      background-color: #e0e0e0;
     }
     
     #background-color-default {
@@ -545,7 +545,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     padding: 0;
     font-size: 11px;
   }
-  
+
   .ccg005-pagination-btn:not(:hover) {
     background-color: transparent;
   }
