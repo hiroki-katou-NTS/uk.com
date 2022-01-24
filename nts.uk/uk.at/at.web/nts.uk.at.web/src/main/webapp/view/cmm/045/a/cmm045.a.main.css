@@ -98,12 +98,16 @@
 }
 
 #app-grid-container th {
-	font-weight: bold;
 	text-align: center;
+	height: 30px;
 }
 
+#app-grid td.details,
 #app-grid td.appStatus,
-#app-grid td.displayAppStatus {
+#app-grid td.displayAppStatus,
+#app-grid td.prePostAtr,
+#app-grid td.appDate,
+#app-grid td.inputDate {
 	text-align: center;
 }
 
