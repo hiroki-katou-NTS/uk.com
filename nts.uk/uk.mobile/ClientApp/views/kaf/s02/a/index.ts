@@ -1205,11 +1205,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             this.workHourLst[i].actualHours.applicationAchievementAtr = 1;
                             this.workHourLst[i].actualHours.startTime = item.opStartTime;
                             this.workHourLst[i].actualHours.endTime = item.opEndTime;
-                            if (this.mode) {
-                                this.workHourLst[i].workplaceId = item.workplaceId;
-                                this.workHourLst[i].workLocationCD = item.opWorkLocationCD;
-                                setActualWkpLocation(this.workHourLst[i], this.workHourLst[i].workplaceId, this.workHourLst[i].workLocationCD);
-                            }
+                            if (this.mode) setActualWkpLocation(this.workHourLst[i], item.workplaceId, item.workLocationCD);
                         }
                     }
                 });
@@ -1223,11 +1219,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             this.tempWorkHourLst[i].actualHours.applicationAchievementAtr = 1;
                             this.tempWorkHourLst[i].actualHours.startTime = item.opStartTime;
                             this.tempWorkHourLst[i].actualHours.endTime = item.opEndTime;
-                            if (this.mode) {
-                                this.tempWorkHourLst[i].workplaceId = item.workplaceId;
-                                this.tempWorkHourLst[i].workLocationCD = item.opWorkLocationCD;
-                                setActualWkpLocation(this.tempWorkHourLst[i], this.tempWorkHourLst[i].workplaceId, this.tempWorkHourLst[i].workLocationCD);
-                            }
+                            if (this.mode) setActualWkpLocation(this.tempWorkHourLst[i], item.workplaceId, item.workLocationCD);
                         }
                     }
                 });
@@ -1293,11 +1285,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             this.supportLst[i].actualHours.applicationAchievementAtr = 1;
                             this.supportLst[i].actualHours.startTime = item.opStartTime;
                             this.supportLst[i].actualHours.endTime = item.opEndTime;
-                            if (this.mode) {
-                                this.supportLst[i].workplaceId = item.workplaceId;
-                                this.supportLst[i].workLocationCD = item.opWorkLocationCD;
-                                setActualWkpLocation(this.supportLst[i], this.supportLst[i].workplaceId, this.supportLst[i].workLocationCD);
-                            }
+                            if (this.mode) setActualWkpLocation(this.supportLst[i], item.workplaceId, item.opWorkLocationCD);
                         }
                     }
                 });
