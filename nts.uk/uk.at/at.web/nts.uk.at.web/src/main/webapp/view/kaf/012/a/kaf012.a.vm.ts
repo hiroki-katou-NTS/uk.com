@@ -164,7 +164,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 vm.applyTimeData()[4].timeZones.forEach(tz => {
                     tz.startTime(null);
                     tz.endTime(null);
-                    tz.appTimeType(GoingOutReason.PRIVATE);
+                    // tz.appTimeType(GoingOutReason.PRIVATE);
                 });
                 let maxWorkNoHasData = 3;
                 const outingTimes = value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];

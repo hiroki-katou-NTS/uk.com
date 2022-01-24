@@ -195,7 +195,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		}
 		
 		// OUTPUT「利用する残業枠」を更新して返す
-		output.setOverTimeQuotaList(frames);
+		output.setOverTimeQuotaList(frames.stream().sorted(Comparator.comparing(OvertimeWorkFrame::getOvertimeWorkFrNo)).collect(Collectors.toList()));
 		
 		
 		return output;
@@ -525,7 +525,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 					  .collect(Collectors.toList());
 			output.setTimeZones(timeZones);
 			// 勤務時間外の休憩時間を除く
-			output = this.createBreakTime(startTimeOp, endTimeOp, output);
+			// output = this.createBreakTime(startTimeOp, endTimeOp, output);
 		}
 		// 「開始時刻」の昇順にソートする(in excel)
 		output.setTimeZones(output.getTimeZones().stream().sorted(Comparator.comparing(DeductionTime::getStart)).collect(Collectors.toList()));

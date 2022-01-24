@@ -13,9 +13,10 @@ module nts.uk.com.view.kfp001.h.viewmodel {
         listData: KnockoutObservableArray<DataModel>;
         selectedData: KnockoutObservable<any>;
         
-        constructor() {
+        constructor(period: any) {
             var self = this;
-            self.periodValue = ko.observable({startDate: moment.utc().subtract(1, "y").add(1, "d").format("YYYY/MM/DD"), endDate: moment.utc().format("YYYY/MM/DD")});
+            period != undefined ? self.periodValue = ko.observable({startDate: moment.utc(period.startDate, "YYYY/MM/DD").format("YYYY-MM-DD"), endDate: moment.utc(period.endDate, "YYYY/MM/DD").format("YYYY-MM-DD")})
+            : self.periodValue = ko.observable({startDate: moment.utc().subtract(1, "y").add(1, "d").format("YYYY/MM/DD"), endDate: moment.utc().format("YYYY/MM/DD")});
             self.listData = ko.observableArray([]);
             self.selectedData = ko.observable(null);
         }
@@ -48,6 +49,14 @@ module nts.uk.com.view.kfp001.h.viewmodel {
         search() {
             let self = this;
             self.startPage();
+
+            var screenModel = new viewmodel.ScreenModel(self.periodValue());
+            screenModel.startPage().done(function () {
+                __viewContext.bind(screenModel);
+                screenModel.bindLinkClick();
+                $(".ntsStartDatePicker").focus();
+                $('#list_container').attr('tabindex', '4');
+            });
         }
         
         private closeDialog() {

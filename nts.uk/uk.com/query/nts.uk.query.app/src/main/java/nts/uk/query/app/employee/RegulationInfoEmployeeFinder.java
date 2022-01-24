@@ -63,7 +63,7 @@ public class RegulationInfoEmployeeFinder {
 	/** The work place adapter. */
 	@Inject
 	private RoleWorkPlaceAdapter workPlaceAdapter;
-
+	
 	/** The emp auth adapter. */
 	@Inject
 	private EmployeeAuthAdapter empAuthAdapter;
@@ -334,9 +334,9 @@ public class RegulationInfoEmployeeFinder {
 	private void changeListWorkplaces(RegulationInfoEmpQueryDto queryParam) {
 		// get List Workplace
 		GeneralDate date = GeneralDate.fromString(queryParam.getBaseDate(), "yyyy-MM-dd");
-		List<String> wkplist = this.workPlaceAdapter.getWorkPlaceIdByEmployeeReferenceRange(date,
-				queryParam.getReferenceRange());
-
+		
+		List<String> wkplist = this.workPlaceAdapter.findWorkPlaceIdByRoleId(queryParam.getSystemType(), date, queryParam.getReferenceRange());
+		
 		// check param filterByWorkplace
 		if (queryParam.getFilterByWorkplace()) {
 			// merge list workplaces

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
@@ -120,9 +121,12 @@ public class BreakTimeSheetGetter {
 		}
 		
 		/** 休憩時間帯に変換 */ 
-		deductionTimeSheet = deductionTimeSheet.stream().filter(c -> c.getDeductionAtr() == DeductionClassification.BREAK)
+		deductionTimeSheet = deductionTimeSheet.stream()
+				.filter(c -> c.getDeductionAtr() == DeductionClassification.BREAK
+						&& (c.getBreakAtr().isPresent() ? c.getBreakAtr().get() != BreakClassification.BREAK_STAMP
+								: true))
 				.collect(Collectors.toList());
-		
+
 		List<BreakTimeSheet> breakTimeSheet = new ArrayList<>();
 		for(int idx = 0; idx < deductionTimeSheet.size(); idx++) {
 			val dudectionSheet = deductionTimeSheet.get(idx);

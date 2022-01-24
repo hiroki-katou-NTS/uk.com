@@ -55,10 +55,10 @@ public class JpaAcquisitionRuleExRepository extends JpaRepository implements Acq
             return buildMasterListData();
         } else {
             /*※1*/
-            boolean checkIsManger = rs.getString("MANAGE_ATR").equals("1");
+            boolean checkIsManger = rs.getBoolean("MANAGE_ATR");
             if (checkIsManger == false) {
                 // Row 1
-                datas.add(toData(I18NText.getText("KMF001_168"), "", "",CommonTempHolidays.getSettingDistinct(Integer.valueOf(rs.getString("MANAGE_ATR")))));
+                datas.add(toData(I18NText.getText("KMF001_168"), "", "",CommonTempHolidays.getSettingDistinct(rs.getBoolean("MANAGE_ATR") ? 1 : 0)));
                 // Row 2
                 datas.add(toData("", I18NText.getText("KMF001_169"), I18NText.getText("KMF001_170"), null));
                 // Row 3
@@ -68,7 +68,7 @@ public class JpaAcquisitionRuleExRepository extends JpaRepository implements Acq
             }
             else {
                 // Row 1
-                datas.add(toData(I18NText.getText("KMF001_168"), "", "", CommonTempHolidays.getSettingDistinct(Integer.valueOf(rs.getString("MANAGE_ATR")))));
+                datas.add(toData(I18NText.getText("KMF001_168"), "", "", CommonTempHolidays.getSettingDistinct(rs.getBoolean("MANAGE_ATR") ? 1 : 0)));
                 // Row 2
                 datas.add(toData("", I18NText.getText("KMF001_169"), I18NText.getText("KMF001_170"), fillValue(rs.getString("COMPENSATORY_DAY_OFF"))));
                 // Row 3

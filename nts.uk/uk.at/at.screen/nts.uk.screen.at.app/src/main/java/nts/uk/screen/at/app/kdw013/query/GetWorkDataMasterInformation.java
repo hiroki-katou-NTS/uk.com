@@ -175,6 +175,8 @@ public class GetWorkDataMasterInformation {
     			taskSupInfoChoicesDetails.stream().map(c-> new TaskSupInfoChoicesDetailDto(c)).collect(Collectors.toList()), 
     			manHourRecordItems.stream().map(c-> new ManHourRecordItemDto(c)).collect(Collectors.toList()),
     			manHourRecordAttendanceItem.attendanceItems, manHourRecordAttendanceItem.manHourRecordAndAttendanceItemLink);
+    	
+    	
     			
     }
     
