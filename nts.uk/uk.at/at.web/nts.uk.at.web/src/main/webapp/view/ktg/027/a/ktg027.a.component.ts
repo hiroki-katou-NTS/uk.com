@@ -166,9 +166,9 @@ module nts.uk.at.view.ktg027.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="20%" />
-                            <col width="20%" />
-                            <col width="15%" />
+                            <col width="23%" />
+                            <col width="18%" />
+                            <col width="14%" />
                             <col width="45%" />
                         </colgroup>
                         <head>
@@ -239,7 +239,7 @@ module nts.uk.at.view.ktg027.a {
                     overflow: hidden;
                 }
                 .ktg027-employee-name {
-                    flex: 4;
+                    flex: 5;
                     line-height: 25px;
                     padding-left: 5px;
                 }
@@ -314,7 +314,7 @@ module nts.uk.at.view.ktg027.a {
                     overflow: hidden;
                 }
                 .ktg-027-a.widget-content.ui-resizable td[rowspan] canvas {
-                    width: 200px !important;
+                    width: 175px !important;
                 }
                 .ktg-027-a.widget-content.ui-resizable.widget-fixed {
                     padding-bottom: 0px;
