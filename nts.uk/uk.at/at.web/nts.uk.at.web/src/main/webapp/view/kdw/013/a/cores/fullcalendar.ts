@@ -1875,7 +1875,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 taskItemValues: _.map(td.taskItemValues, tiv => { return { itemId: tiv.itemId, value: tiv.value } }),
                                 supNo: td.supNo
                             };
-                        })
+                        });
                     }
                 }
             }
@@ -1908,18 +1908,40 @@ module nts.uk.ui.at.kdw013.calendar {
                     && !e.extendedProps.isTimeBreak);
 
                 _.forEach(evns, evn => {
+                    if (_.get(evn, 'extendedProps.taskBlock.taskDetails', []).length == 1) {
+                        let it = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
+                        let refTimezone = { start: (moment(evn.start).hour() * 60) + moment(evn.start).minute(), end: (moment(evn.end).hour() * 60) + moment(evn.end).minute() };
+                        let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(evn.start), 'days'));
+                        let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                        _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end, no }) => {
+                            if (no == event.extendedProps.no) {
+                                let startAsMinites = (moment(event.start).hour() * 60) + moment(event.start).minute();
+                                let endAsMinites = (moment(event.end).hour() * 60) + moment(event.end).minute();
+                                goOutBreakTimeLst.push({ start: startAsMinites, end: endAsMinites });
+                            } else {
+                                goOutBreakTimeLst.push({ start, end });
+                            }
+                        });
+                        let calParam = { refTimezone, goOutBreakTimeLst };
+                        vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                            it.value = time;
+                            events(tempEs);
+                            updateEvents();
+                        });
+                    }
+                });
+            }
+
+            let calWorkTime = (event) => {
+                let tempEs = [...events()];
+                let evn = _.find(tempEs, e => e.extendedProps.id == event.id);
+                if (_.get(evn, 'extendedProps.taskBlock.taskDetails', []).length == 1) {
                     let it = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
                     let refTimezone = { start: (moment(evn.start).hour() * 60) + moment(evn.start).minute(), end: (moment(evn.end).hour() * 60) + moment(evn.end).minute() };
                     let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(evn.start), 'days'));
                     let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
-                    _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end , no }) => {
-                        if (no == event.extendedProps.no) {
-                            let startAsMinites = (moment(event.start).hour() * 60) + moment(event.start).minute();
-                            let endAsMinites = (moment(event.end).hour() * 60) + moment(event.end).minute();
-                            goOutBreakTimeLst.push({ start: startAsMinites, end: endAsMinites });
-                        } else {
-                            goOutBreakTimeLst.push({ start, end });
-                        }
+                    _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                        goOutBreakTimeLst.push({ start, end });
                     });
                     let calParam = { refTimezone, goOutBreakTimeLst };
                     vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
@@ -1927,25 +1949,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         events(tempEs);
                         updateEvents();
                     });
-                });
-            }
-
-            let calWorkTime = (event) => {
-                let tempEs = [...events()];
-                let evn = _.find(tempEs, e => e.extendedProps.id == event.id);
-                let it = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
-                let refTimezone = { start: (moment(evn.start).hour() * 60) + moment(evn.start).minute(), end: (moment(evn.end).hour() * 60) + moment(evn.end).minute() };
-                let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(evn.start), 'days'));
-                let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
-                _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
-                    goOutBreakTimeLst.push({ start, end });
-                });
-                let calParam = { refTimezone, goOutBreakTimeLst };
-                vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
-                    it.value = time;
-                    events(tempEs);
-                    updateEvents();
-                });
+                }
             }
 
             let updateEvents = () => {
@@ -2569,11 +2573,11 @@ module nts.uk.ui.at.kdw013.calendar {
                         // update exclude-times
                         let sameDayEvent = _
                             .chain(vm.calendar.getEvents())
-                            .filter(({ start, id }) => id !== event.id && moment(start).isSame(event.start, 'day'))
+                            .filter((evn) => evn.id !== event.id && moment(evn.start).isSame(event.start, 'day') && !evn.extendedProps.isTimeBreak)
                             .map(({ start, end }) => ({ startTime: getTimeOfDate(start), endTime: getTimeOfDate(end) }))
                             .value();
 
-                        //popupData.excludeTimes(sameDayEvent);
+                        popupData.excludeTimes(sameDayEvent);
 
                         if (!event.extendedProps.isTimeBreak) {
                             // show popup on edit mode
@@ -2712,10 +2716,10 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                     //check override events
                     
-                     let IEvents = _.chain(events())
+                     let IEvents = _.chain(vm.calendar.getEvents())
                             .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
-                            .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
-                            .filter((evn) => { return !_.find(relatedEvents, re => re.extendedProps.id == extendedProps.id) })
+                            .filter((evn) => { return evn.id != id })
+                            .filter((evn) => { return !_.find(relatedEvents, re => re.id == evn.id) })
                             .sortBy('end')
                             .value();
 
@@ -2875,7 +2879,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             for (let i = 1; i <= maxNo; i++) {
                                 let event = _.find(events, e => _.find(_.get(e, 'extendedProps.taskBlock.taskDetails', []), ['supNo', i]));
                                 let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(start).isSame(moment(id.ymd), 'days'); });
-                                let ouenTime = _.find(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null && ot.workNo == i)
+                                let ouenTime = _.find(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot =>  ot.workNo == i)
                                 if (!event && !ouenTime) {
                                     resultNos.push(i);
                                 }
@@ -2896,8 +2900,11 @@ module nts.uk.ui.at.kdw013.calendar {
                             let startMinutes = (moment(evn.start).hour() * 60) + moment(evn.start).minute();
                             let endMinutes = (moment(evn.end).hour() * 60) + moment(evn.end).minute();
                             _.forEach(tds, td => {
-                                td.supNo = frameNos[0];
-                                frameNos.shift();
+                                if (ko.unwrap<boolean>(dataEvent.shift)) {
+                                    td.supNo = frameNos[0];
+
+                                    frameNos.shift();
+                                }
                                 _.forEach(td.taskItemValues, tiv => {
                                     if (tiv.itemId == 1) {
                                         tiv.value = startMinutes;
@@ -2918,8 +2925,9 @@ module nts.uk.ui.at.kdw013.calendar {
                         // cal work Time
                         _.forEach([].concat(arg.oldEvent, relatedEvents), e => {
                             calWorkTime(e);
-                        });
-                        if(arg.delta.days != 0 && !ko.unwrap(dataEvent.shift) ) {
+                        }
+                                
+                        if (arg.delta.days != 0 && !ko.unwrap<boolean>(dataEvent.shift)) {
                             _.forEach([].concat(arg.oldEvent, relatedEvents), e => {
 
                                 let removeList = vm.params.screenA.removeList;
@@ -3092,7 +3100,7 @@ module nts.uk.ui.at.kdw013.calendar {
                               for (let i = 1; i <= maxNo; i++) {
                                   let event = nos.indexOf(i) != -1;
                                   let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(start).isSame(moment(id.ymd), 'days'); });
-                                  let ouenTime = _.find(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null && ot.workNo == i)
+                                  let ouenTime = _.find(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.workNo == i)
                                   if (!event && !ouenTime) {
                                       resultNo = i;
                                       break;
@@ -3105,40 +3113,48 @@ module nts.uk.ui.at.kdw013.calendar {
                           cEvent.extendedProps.isChanged = true;
                           cEvent.extendedProps.taskBlock.caltimeSpan = { start: cEvent.start, end: cEvent.end };
                           cEvent.extendedProps.period = { start: cEvent.start, end: cEvent.end };
-                          if (i != 0) {
-                              let frameNos = [];
-
-                              _.forEach(_.chain(events()).filter((evn) => { return moment(evn.start).isSame(start, 'days') }).value(), e => {
-                                  _.forEach(e.extendedProps.taskBlock.taskDetails, td => {
-                                      frameNos.push(td.supNo);
-                                  });
+                          let frameNos = [];
+                          
+                          _.forEach(_.chain(events()).filter((evn) => { return moment(evn.start).isSame(start, 'days') }).value(), e => {
+                              _.forEach(e.extendedProps.taskBlock.taskDetails, td => {
+                                  frameNos.push(td.supNo);
                               });
-
-
-
-                              _.forEach(cEvent.extendedProps.taskBlock.taskDetails, td => {
+                          });
+                          
+                          
+                          
+                          _.forEach(cEvent.extendedProps.taskBlock.taskDetails, td => {
+                              if (i != 0) {
                                   let newFN = getFrameNo(frameNos);
                                   frameNos.push(newFN);
                                   td.supNo = newFN;
-                              });
-                          }
-                          let it = _.find(_.get(cEvent, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
-                          let refTimezone = { start: (moment(cEvent.start).hour() * 60) + moment(cEvent.start).minute(), end: (moment(cEvent.end).hour() * 60) + moment(cEvent.end).minute() };
-                          let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(cEvent.start), 'days'));
-                          let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
-                          _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
-                              goOutBreakTimeLst.push({ start, end });
-                          });
-                          let calParam = { refTimezone, goOutBreakTimeLst };
-
-                          vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
-                              it.value = time;
-                              if (i == setDataEvents.length - 1) {
-                                  events(tempEs);
-                                  updateEvents();
                               }
                           });
-                          
+                          let startItem = _.find(_.get(cEvent, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 1);
+                          let endItem = _.find(_.get(cEvent, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 2);
+                          startItem.value = (moment(cEvent.start).hour() * 60) + moment(cEvent.start).minute();
+                          endItem.value = (moment(cEvent.end).hour() * 60) + moment(cEvent.end).minute();
+                          if (_.get(cEvent, 'extendedProps.taskBlock.taskDetails', []).length == 1) {
+                              let it = _.find(_.get(cEvent, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
+                              let refTimezone = { start: startItem.value, end:  endItem.value };
+                              let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(cEvent.start), 'days'));
+                              let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                              _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                                  goOutBreakTimeLst.push({ start, end });
+                              });
+                              let calParam = { refTimezone, goOutBreakTimeLst };
+
+                              vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
+                                  it.value = time;
+                                  if (i == setDataEvents.length - 1) {
+                                      events(tempEs);
+                                      updateEvents();
+                                  }
+                              });
+                          } else {
+                              events(tempEs);
+                              updateEvents();
+                          }
                       }
                       
                       
@@ -3154,21 +3170,29 @@ module nts.uk.ui.at.kdw013.calendar {
                     evn.extendedProps.isChanged = true;
                     evn.extendedProps.taskBlock.caltimeSpan = { start: evn.start, end: evn.end };
                     evn.extendedProps.period = { start: evn.start, end: evn.end };
+                    let startItem = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 1);
+                    let endItem = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 2);
+                    startItem.value = (moment(start).hour() * 60) + moment(start).minute();
+                    endItem.value = (moment(end).hour() * 60) + moment(end).minute();
+                    if (_.get(evn, 'extendedProps.taskBlock.taskDetails', []).length == 1) {
+                        let it = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
+                        let refTimezone = { start: startItem.value, end: endItem.value };
+                        let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(event.start), 'days'));
+                        let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                        _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                            goOutBreakTimeLst.push({ start, end });
+                        });
+                        let calParam = { refTimezone, goOutBreakTimeLst };
 
-                    let it = _.find(_.get(evn, 'extendedProps.taskBlock.taskDetails', [])[0].taskItemValues, item => item.itemId == 3);
-                    let refTimezone = { start: (moment(start).hour() * 60) + moment(start).minute(), end: (moment(end).hour() * 60) + moment(end).minute() };
-                    let integrationOfDaily = _.find(_.get(ko.unwrap(vm.params.$datas), 'lstIntegrationOfDaily', []), id => moment(id.ymd).isSame(moment(event.start), 'days'));
-                    let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
-                    _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
-                        goOutBreakTimeLst.push({ start, end });
-                    });
-                    let calParam = { refTimezone, goOutBreakTimeLst };
-                    
                         vm.$ajax('at', '/screen/at/kdw013/common/calculate-work-time', calParam).done((time) => {
                             it.value = time;
                             events(tempEs);
                             updateEvents();
                         });
+                    } else {
+                        events(tempEs);
+                        updateEvents();
+                    }
                     $caches.new(event);
                     // update data sources
                     mutatedEvents();
@@ -4343,7 +4367,11 @@ module nts.uk.ui.at.kdw013.calendar {
                         }
                         if(result === 'save'){
                               // trigger update from parent view
-                              mutated.valueHasMutated();
+                            if (data().extendedProps.isChanged) {
+                                mutated.valueHasMutated();
+                                vm.params.screenA.$caches.new(data());
+                                vm.params.screenA.$caches.new(null);
+                            }
                         }
                     
                     })

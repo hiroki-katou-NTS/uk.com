@@ -928,6 +928,12 @@ module nts.uk.ui.at.kdw013.c {
 			return totalTime;
 		}
     
+        totalWorkTime():number{
+            let vm = this;
+            let tr = nts.uk.time.parseTime(vm.taskBlocks.caltimeSpanView.range().replace('作業時間 ', ''));
+            return (tr.hours * 60) + tr.minutes;
+        }
+    
         save() {
             const vm = this;
             const { params } = vm;
@@ -942,10 +948,10 @@ module nts.uk.ui.at.kdw013.c {
                 .then(() => nts.uk.ui.errors.hasError())
                 .then((invalid: boolean) => {
                     if (!invalid) {
-						if(vm.sumTotalTime() > (vm.taskBlocks.caltimeSpanView.end() - vm.taskBlocks.caltimeSpanView.start())){
-							error({ messageId: "Msg_2230"});
-							return;
-						}
+                        if (vm.taskBlocks.taskDetailsView().length > 1 && vm.sumTotalTime() > vm.totalWorkTime()) {
+                            error({ messageId: "Msg_2230" });
+                            return;
+                        }
                         if (event) {
                             const { start } = event;
                             const tr = vm.taskBlocks.caltimeSpanView;
@@ -1115,11 +1121,10 @@ module nts.uk.ui.at.kdw013.c {
 				let range = _.find(taskItemValues, i => i.itemId == 3);
 				start.value = vm.caltimeSpanView.start() ;
 				end.value = vm.caltimeSpanView.end();
-				if(range.value == null){
+                if (vm.taskDetailsView().length == 1) {
                     let tr = nts.uk.time.parseTime(vm.caltimeSpanView.range().replace('作業時間 ', ''));
-                    
                     range.value = (tr.hours * 60) + tr.minutes;
-				}
+                }
                 taskDetails.push({supNo: task.supNo, taskItemValues: taskItemValues});
             });
             return {
