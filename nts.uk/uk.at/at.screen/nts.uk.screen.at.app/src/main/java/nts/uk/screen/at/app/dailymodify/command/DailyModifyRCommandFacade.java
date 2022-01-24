@@ -195,50 +195,13 @@ public class DailyModifyRCommandFacade {
 		DataResultAfterIU dataResultAfterIU = new DataResultAfterIU();
 		Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> lstResultReturnDailyError = new HashMap<>();
 		boolean hasErrorRow = false;
-		boolean errorMonthAfterCalc = false;
 		boolean flagTempCalc = dataParent.isFlagCalculation();
 		dataParent.setFlagCalculation(false);
-		boolean editFlex = (dataParent.getMode() == 0 && dataParent.getMonthValue() != null
-				&& !CollectionUtil.isEmpty(dataParent.getMonthValue().getItems()));
 		List<DPItemValue> dataCheck = new ArrayList<>();
 		// insert flex
 		UpdateMonthDailyParam monthParam = null;
 		if (dataParent.getMonthValue() != null) {
-			val month = dataParent.getMonthValue();
-			if (month != null && month.getItems() != null && !month.getItems().isEmpty()) {
-				Optional<IntegrationOfMonthly> domainMonthOpt = Optional.empty();
-				if(dataParent.getDomainMonthOpt().isPresent()) {
-					MonthlyRecordWorkDto monthDto = dataParent.getDomainMonthOpt().get();
-					MonthlyModifyQuery monthQuery = new MonthlyModifyQuery(month.getItems().stream().map(x -> {
-						return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
-								.valueType(ValueType.valueOf(x.getValueType())).withPath("");
-					}).collect(Collectors.toList()), month.getYearMonth(), month.getEmployeeId(), month.getClosureId(),
-							month.getClosureDate());
-					monthDto = AttendanceItemUtil.fromItemValues(monthDto, monthQuery.getItems(), AttendanceItemType.MONTHLY_ITEM);
-					IntegrationOfMonthly domainMonth = monthDto.toDomain(monthDto.getEmployeeId(),
-							monthDto.getYearMonth(), monthDto.getClosureID(), monthDto.getClosureDate());
-					domainMonth.getAffiliationInfo().ifPresent(d -> {
-						d.setVersion(dataParent.getMonthValue().getVersion());
-					});
-					domainMonth.getAttendanceTime().ifPresent(d -> {
-						d.setVersion(dataParent.getMonthValue().getVersion());
-					});
-					domainMonthOpt = Optional.of(domainMonth);
-				}
-				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
-						month.getClosureId(), month.getClosureDate(), domainMonthOpt,
-						new DatePeriod(dataParent.getDateRange().getStartDate(),
-								dataParent.getDateRange().getEndDate()),
-						month.getRedConditionMessage(), month.getHasFlex(), month.getNeedCallCalc(),
-						dataParent.getMonthValue().getVersion());
-			} else {
-				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
-						month.getClosureId(), month.getClosureDate(), Optional.empty(),
-						new DatePeriod(dataParent.getDateRange().getStartDate(),
-								dataParent.getDateRange().getEndDate()),
-						month.getRedConditionMessage(), month.getHasFlex(), month.getNeedCallCalc(),
-						dataParent.getMonthValue().getVersion());
-			}
+			monthParam = dataParent.createUpdateMonthDailyParam();
 		}
 		
 		dCCalcTimeService.getWplPosId(dataParent.getItemValues()); 
@@ -258,15 +221,7 @@ public class DailyModifyRCommandFacade {
 		// map to list result -> check error;
 		List<DailyRecordDto> dailyOlds = new ArrayList<>(), dailyEdits = new ArrayList<>();
 
-		Set<Pair<String, GeneralDate>> pairSidDateCheck = new HashSet<>();
-		dataParent.getDataCheckSign().stream().forEach(x -> {
-			pairSidDateCheck.add(Pair.of(x.getEmployeeId(), x.getDate()));
-		});
-
-		dataParent.getDataCheckApproval().stream().forEach(x -> {
-			pairSidDateCheck.add(Pair.of(x.getEmployeeId(), x.getDate()));
-		});
-		processDto(dailyOlds, dailyEdits, dataParent, querys, mapSidDate, pairSidDateCheck, queryNotChanges);
+		processDto(dailyOlds, dailyEdits, dataParent, querys, mapSidDate, queryNotChanges);
 		// row data will insert
 		Set<Pair<String, GeneralDate>> rowWillInsert = dailyEdits.stream()
 				.map(x -> Pair.of(x.getEmployeeId(), x.getDate())).collect(Collectors.toSet());
@@ -530,44 +485,23 @@ public class DailyModifyRCommandFacade {
 				// 月次集計を実施する必要があるかチェックする
 				if (dataParent.getMode() == 0 && monthParam != null && monthParam.getNeedCallCalc() != null
 						&& monthParam.getNeedCallCalc()) {
-					//// 月別実績の集計
-					DailyCalcResult resultCalcMonth = processMonthlyCalc.processMonthCalc(commandNew, commandOld,
-							domainDailyNew, dailyItems, monthParam, dataParent.getMonthValue(), errorMonthHoliday,
-							dataParent.getDateRange(), dataParent.getMode(), editFlex,dataParent.getCheckUnLock());
-					
-					if(resultCalcMonth.getErrorAfterCheck() !=null && resultCalcMonth.getListAggregatePastMonthResult().isEmpty()) {
-						ErrorAfterCalcDaily errorMonth = resultCalcMonth.getErrorAfterCheck();
-						// map error holiday into result
-						List<DPItemValue> lstItemErrorMonth = errorMonth.getResultErrorMonth()
-								.get(TypeError.ERROR_MONTH.value);
-						if (lstItemErrorMonth != null) {
-							List<DPItemValue> itemErrorMonth = dataResultAfterIU.getErrorMap()
-									.get(TypeError.ERROR_MONTH.value);
-							if (itemErrorMonth == null) {
-								// dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value,
-								// lstItemErrorMonth);
-								resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
-							} else {
-								lstItemErrorMonth.addAll(itemErrorMonth);
-								// dataResultAfterIU.getErrorMap().put(TypeError.ERROR_MONTH.value,
-								// lstItemErrorMonth);
-								resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
-							}
+
+					DailyCalcResult resultCalcMonth = calcMonth(dataParent, monthParam);
+					List<DPItemValue> lstItemErrorMonth = resultCalcMonth.getListItemErrorMonth();
+
+					if(resultCalcMonth.getErrorAfterCheck() != null && resultCalcMonth.getListAggregatePastMonthResult().isEmpty()) {
+						if(!lstItemErrorMonth.isEmpty()) {
+							resultErrorMonth.put(TypeError.ERROR_MONTH.value, lstItemErrorMonth);
 						}
-						// 月次登録処理
-						errorMonthAfterCalc = errorMonth.getHasError();
+
+						boolean errorMonthAfterCalc = resultCalcMonth.getErrorAfterCheck().getHasError();
 						if (!errorMonthAfterCalc) {
 //							this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
-							
+
 							dataResultAfterIU.setDomainMonthOpt(Optional.empty());
 						}
 						// dataResultAfterIU.setErrorMap(errorMonth.getResultError());
-						dataResultAfterIU.setFlexShortage(errorMonth.getFlexShortage());
-					}
-					
-					//過去月集計結果を登録する
-					if(resultCalcMonth.getErrorAfterCheck() ==null && !resultCalcMonth.getListAggregatePastMonthResult().isEmpty()) {
-						registerPastMonthTotalResult.register(resultCalcMonth.getListAggregatePastMonthResult());
+						dataResultAfterIU.setFlexShortage(resultCalcMonth.getErrorAfterCheck().getFlexShortage());
 					}
 				}
 
@@ -660,6 +594,8 @@ public class DailyModifyRCommandFacade {
 				.setErrorMap(ProcessCommonCalc.convertErrorToType(lstResultReturnDailyError, resultErrorMonth));
 
 		// 登録確認メッセージ
+		boolean editFlex = (dataParent.getMode() == 0 && dataParent.getMonthValue() != null
+				&& !CollectionUtil.isEmpty(dataParent.getMonthValue().getItems()));
 		if ((dataResultAfterIU.getErrorMap().isEmpty() && dataResultAfterIU.getErrorMap().values().isEmpty()
 				&& !hasErrorRow
 				&& (dataResultAfterIU.getFlexShortage() == null || (!dataResultAfterIU.getFlexShortage().isError()
@@ -683,6 +619,32 @@ public class DailyModifyRCommandFacade {
 		empSidUpdate.addAll(updated);
 		dataResultAfterIU.setLstSidDateDomainError(new ArrayList<>(empSidUpdate));
 		return dataResultAfterIU;
+	}
+
+	/**
+	 * 月別実績の集計（非同期呼び出し用）
+	 * @param dataParent
+	 */
+	public void executeMonthlyAggregate(DPItemParent dataParent){
+		UpdateMonthDailyParam monthParam = dataParent.createUpdateMonthDailyParam();
+		calcMonth(dataParent, monthParam);
+	}
+
+	private DailyCalcResult calcMonth(DPItemParent dataParent, UpdateMonthDailyParam monthParam) {
+		boolean editFlex = (dataParent.getMode() == 0 && dataParent.getMonthValue() != null
+				&& !CollectionUtil.isEmpty(dataParent.getMonthValue().getItems()));
+
+		// 月別実績の集計
+		DailyCalcResult resultCalcMonth = processMonthlyCalc.processMonthCalc(new ArrayList<>(), new ArrayList<>(),
+				new ArrayList<>(), new ArrayList<>(), monthParam, dataParent.getMonthValue(), new ArrayList<>(),
+				dataParent.getDateRange(), dataParent.getMode(), editFlex, dataParent.getCheckUnLock());
+
+		//過去月集計結果を登録する
+		if(resultCalcMonth.getErrorAfterCheck() ==null && !resultCalcMonth.getListAggregatePastMonthResult().isEmpty()) {
+			registerPastMonthTotalResult.register(resultCalcMonth.getListAggregatePastMonthResult());
+		}
+
+		return resultCalcMonth;
 	}
 
 	public void finishDailyRecordRegis(Set<Pair<String, GeneralDate>> updated, List<DailyRecordDto> dailyEdits,
@@ -1149,7 +1111,10 @@ public class DailyModifyRCommandFacade {
 
 	public void processDto(List<DailyRecordDto> dailyOlds, List<DailyRecordDto> dailyEdits, DPItemParent dataParent,
 			List<DailyModifyQuery> querys, Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate,
-			Set<Pair<String, GeneralDate>> pairSidDateCheck, List<DailyModifyQuery> queryNotChanges) {
+			List<DailyModifyQuery> queryNotChanges) {
+
+		Set<Pair<String, GeneralDate>> pairSidDateCheck = dataParent.pairSidDateCheck();
+
 		// list cell change by checkbox
 		if (!querys.isEmpty() && !dataParent.isFlagCalculation()) {
 			dailyOlds.addAll(dataParent.getDailyOlds().stream()

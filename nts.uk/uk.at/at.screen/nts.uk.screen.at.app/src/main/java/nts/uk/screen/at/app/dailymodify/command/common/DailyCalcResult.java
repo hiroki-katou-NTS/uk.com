@@ -1,10 +1,9 @@
 package nts.uk.screen.at.app.dailymodify.command.common;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
@@ -29,4 +28,24 @@ public class DailyCalcResult {
 	private Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> lstResultDaiRowError = new HashMap<>();
 	
 	private List<AggregatePastMonthResult> listAggregatePastMonthResult = new ArrayList<>();
+
+	public List<DPItemValue> getListItemErrorMonth(){
+		if(this.errorAfterCheck == null || !this.listAggregatePastMonthResult.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		List<DPItemValue> result = new ArrayList<>();
+		List<DPItemValue> lstItemErrorMonth = errorAfterCheck.getResultErrorMonth()
+			.get(TypeError.ERROR_MONTH.value);
+		if (lstItemErrorMonth != null) {
+			result.addAll(lstItemErrorMonth);
+
+			List<DPItemValue> itemErrorMonth = dataResultAfterIU.getErrorMap()
+				.get(TypeError.ERROR_MONTH.value);
+			if (itemErrorMonth != null) {
+				result.addAll(itemErrorMonth);
+			}
+		}
+		return result;
+	}
 }
