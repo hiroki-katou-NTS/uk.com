@@ -1,7 +1,7 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 
 module nts.uk.at.view.smm001.a {
-
+  import ScreenModelB = b.ScreenModelB;
   const API = {
     // <<ScreenQuery>> 初期起動の情報取得する
     getInitialStartupInformation: 'com/screen/smm001/get-initial-startup-information',
@@ -19,7 +19,9 @@ module nts.uk.at.view.smm001.a {
   }
 
   @bean()
-  class ViewModel extends ko.ViewModel {
+  export class ScreenModelA extends ko.ViewModel {
+    screenB: ScreenModelB = new ScreenModelB();
+
     tabs: KnockoutObservableArray<any>;
     selectedTab: KnockoutObservable<string>;
 
@@ -55,10 +57,6 @@ module nts.uk.at.view.smm001.a {
     LEAVE_INFORMATION: KnockoutObservable<string>;
     AFFILIATED_MASTER: KnockoutObservable<string>;
     EMPLOYEE_MASTER: KnockoutObservable<string>;
-    enumDoOrDoNot2: KnockoutObservableArray<any>;
-    DO_TEXT: KnockoutObservable<string>;
-    DO_NOT_TEXT: KnockoutObservable<string>;
-    enumPaymentCategoryList: KnockoutObservableArray<any>;
 
     ENUM_IS_CHECKED = 1;
     ENUM_IS_NOT_CHECKED = 0;
@@ -81,11 +79,6 @@ module nts.uk.at.view.smm001.a {
 
     setDefault() {
       const vm = this;
-      // Init Do Or DoNot Enum
-      vm.enumDoOrDoNot2 = ko.observableArray(__viewContext.enums.SmileCooperationAcceptanceClassification);
-      console.log(">>> 2 ", vm.enumDoOrDoNot2());
-      vm.DO_NOT_TEXT = ko.observable(vm.enumDoOrDoNot2()[0].name);
-      vm.DO_TEXT = ko.observable(vm.enumDoOrDoNot2()[1].name);
 
       // Init info item
       vm.enumSmileCooperationAcceptanceItem = ko.observableArray(__viewContext.enums.SmileCooperationAcceptanceItem);
@@ -98,9 +91,6 @@ module nts.uk.at.view.smm001.a {
       vm.AFFILIATED_MASTER = ko.observable(vm.enumSmileCooperationAcceptanceItem()[5].name);
       vm.EMPLOYEE_MASTER = ko.observable(vm.enumSmileCooperationAcceptanceItem()[6].name);
 
-      // Init payment category
-      vm.enumPaymentCategoryList = ko.observableArray(__viewContext.enums.PaymentCategory);
-      console.log(">>> 2 ", vm.enumPaymentCategoryList());
       this.getInitialStartupInformation(null);
     }
 
@@ -182,7 +172,7 @@ module nts.uk.at.view.smm001.a {
       return true;
     }
 
-    save() {
+    saveSmile() {
       if (this.validateBeforeSave() === false) {
         return;
       }

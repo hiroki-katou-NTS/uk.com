@@ -8,9 +8,9 @@
     <ui:define name="htmlHead">
       <com:scriptfile set="IGNITE" />
       <com:stylefile path="smm001.a.style.css" />
+      <com:scriptfile path="../b/smm001.b.vm.js" />
       <com:scriptfile path="smm001.a.vm.js" />
-      <!-- <com:scriptfile path="../b/smm001.b.vm.js" /> -->
-      <com:stylefile path="smm001.b.style.css" />
+      <!-- <com:stylefile path="smm001.b.style.css" /> -->
       <com:EnumScript>
         nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceItem
         nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceClassification
@@ -22,7 +22,7 @@
     <ui:define name="content">
       <div id="functions-area">
         <!--A1-->
-        <button class="proceed" tabindex="1" data-bind="click: save">
+        <button class="proceed" tabindex="1" data-bind="click: saveSmile">
           #{i18n.getText('SMM001_2')}
         </button>
       </div>
@@ -156,8 +156,8 @@
               </div>
             </div>
           </div>
-          <div class="tab-content-2">
-            <!-- <ui:include src="../b/index.xhtml" /> -->
+          <div class="tab-content-2" data-bind="with: screenB">
+            <ui:include src="../b/index.xhtml" />
           </div>
         </div>
       </div>
