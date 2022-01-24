@@ -450,7 +450,7 @@ public class KTG027QueryProcessor {
 		// List＜管理期間の36協定時間＞
 		AcquisitionOfOvertimeHoursOfEmployeesDto result = AcquisitionOfOvertimeHoursOfEmployeesDto.builder()
 				.personalInformationOfSubordinateEmployees(listPersonEmp)
-				.OvertimeOfSubordinateEmployees(listAgreementTimeDetail)
+				.overtimeOfSubordinateEmployees(listAgreementTimeDetail)
 				.upperLimit(upperLimit)
 				.build();
 
