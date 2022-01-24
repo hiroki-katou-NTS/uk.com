@@ -212,7 +212,7 @@ module nts.uk.at.view.kmr004.a {
 			};
 			if(data.totalExtractCondition==EXTRACT_CONDITION.ALL) {
 				data.totalExtractCondition = ReservationCorrect.ALL_RESERVE;
-			} else if(data.totalExtractCondition==EXTRACT_CONDITION.ALL) {
+			} else if(data.totalExtractCondition==EXTRACT_CONDITION.ORDERED) {
 				data.totalExtractCondition = ReservationCorrect.ORDER;
 			} else {
 				data.totalExtractCondition = ReservationCorrect.NOT_ORDERING;

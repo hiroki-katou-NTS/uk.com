@@ -31,7 +31,6 @@ import nts.uk.ctx.at.record.app.find.reservation.bento.dto.TotalOrderInfoDto;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationSearchCondition;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationCorrect;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
@@ -102,7 +101,7 @@ public class CreateOrderInfoFileQuery {
 
     public OrderInfoDto createOrderInfoFileQuery(DatePeriod period, List<String> workplaceId,
                                                  List<String> workLocationCodes, Optional<ReservationCorrect> totalExtractCondition,
-                                                 Optional<BentoReservationSearchCondition> itemExtractCondition, Optional<Integer> frameNo, Optional<String> totalTitle,
+                                                 Optional<ReservationCorrect> itemExtractCondition, Optional<Integer> frameNo, Optional<String> totalTitle,
                                                  Optional<String> detailTitle, ReservationClosingTimeFrame reservationClosingTimeFrame){
         if (!totalTitle.isPresent() & !detailTitle.isPresent())
             throw new BusinessException("Msg_1642");
@@ -130,7 +129,8 @@ public class CreateOrderInfoFileQuery {
         List<ReservationRegisterInfo> reservationRegisterInfoLst = new ArrayList<>(map.values()).stream().map(ReservationRegisterInfo::new).collect(Collectors.toList());
         //5.
         List<BentoReservation> bentoReservationLst = bentoReservationRepository.findByExtractionCondition(
-        		reservationRegisterInfoLst, period, reservationClosingTimeFrame.value, totalExtractCondition.orElse(ReservationCorrect.ALL_RESERVE));
+        		reservationRegisterInfoLst, period, reservationClosingTimeFrame.value, 
+        		totalTitle.isPresent() ? totalExtractCondition.orElse(ReservationCorrect.ALL_RESERVE) : itemExtractCondition.orElse(ReservationCorrect.ALL_RESERVE));
         //5.1
         if(frameNo.isPresent()) {
         	bentoReservationLst = bentoReservationLst.stream().map(x -> {

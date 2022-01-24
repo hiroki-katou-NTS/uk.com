@@ -43,8 +43,8 @@ public class CreateOrderInfoDataSource {
     public OrderInfoDto getGeneratorData(CreateOrderInfoFileQuery createOrderInfoFileQuery, BentoMakeOrderCommandHandler commandHandler){
         Optional<ReservationCorrect> totalExtractCondition = this.getTotalExtractCondition() > -1
                 ?  Optional.of(EnumAdaptor.valueOf(this.getTotalExtractCondition(), ReservationCorrect.class)) : Optional.empty();
-        Optional<BentoReservationSearchCondition> itemExtractCondition = this.getItemExtractCondition() > -1
-                ?  Optional.of(EnumAdaptor.valueOf(this.getItemExtractCondition(), BentoReservationSearchCondition.class)) : Optional.empty();
+        Optional<ReservationCorrect> itemExtractCondition = this.getItemExtractCondition() > -1
+                ?  Optional.of(EnumAdaptor.valueOf(this.getItemExtractCondition(), ReservationCorrect.class)) : Optional.empty();
         Optional<Integer> frameNo = this.getFrameNo() > -1 ? Optional.of(this.getFrameNo()) : Optional.empty();
         Optional<String> totalTitle = this.getTotalTitle() == null | "".equals(this.getTotalTitle())
                 ? Optional.empty() : Optional.of(this.getTotalTitle());
