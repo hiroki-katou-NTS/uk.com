@@ -133,8 +133,8 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 	public void check2() {
 		List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 
-		ScheduleTimeSheet ts1 = new ScheduleTimeSheet(1, 50, 20);
-		ScheduleTimeSheet ts2 = new ScheduleTimeSheet(2, 30, 40);
+		ScheduleTimeSheet ts1 = new ScheduleTimeSheet(1, 50, 30);
+		ScheduleTimeSheet ts2 = new ScheduleTimeSheet(2, 30, 60);
 
 		scheduleTimeSheets.add(ts1);
 		scheduleTimeSheets.add(ts2);
@@ -150,7 +150,7 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 
 		TimeSheetOfAttendanceEachOuenSheet timeSheet1 = TimeSheetOfAttendanceEachOuenSheet.create(null,
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(40))),
-				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(70))));
+				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(20))));
 
 		TimeSheetOfAttendanceEachOuenSheet timeSheet2 = TimeSheetOfAttendanceEachOuenSheet.create(null,
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(15))),
@@ -158,7 +158,7 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 
 		TimeSheetOfAttendanceEachOuenSheet timeSheet3 = TimeSheetOfAttendanceEachOuenSheet.create(null,
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(50))),
-				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(60))));
+				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(25))));
 
 		OuenWorkTimeSheetOfDailyAttendance att1 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet1,
 				Optional.empty());
@@ -220,9 +220,9 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 	public void check3() {
 		List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 
-		ScheduleTimeSheet ts1 = new ScheduleTimeSheet(1, 50, 20);
+		ScheduleTimeSheet ts1 = new ScheduleTimeSheet(1, 50, 25);
 		ts1.setAttendance(null);
-		ScheduleTimeSheet ts2 = new ScheduleTimeSheet(2, 30, 40);
+		ScheduleTimeSheet ts2 = new ScheduleTimeSheet(2, 30, 45);
 
 		scheduleTimeSheets.add(ts1);
 		scheduleTimeSheets.add(ts2);
@@ -238,7 +238,7 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 
 		TimeSheetOfAttendanceEachOuenSheet timeSheet1 = TimeSheetOfAttendanceEachOuenSheet.create(null,
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(60))),
-				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(70))));
+				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(20))));
 
 		TimeSheetOfAttendanceEachOuenSheet timeSheet2 = TimeSheetOfAttendanceEachOuenSheet.create(null,
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(55))),
@@ -246,7 +246,7 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 
 		TimeSheetOfAttendanceEachOuenSheet timeSheet3 = TimeSheetOfAttendanceEachOuenSheet.create(null,
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(50))),
-				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(60))));
+				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(15))));
 
 		OuenWorkTimeSheetOfDailyAttendance att1 = new OuenWorkTimeSheetOfDailyAttendance(null, null, timeSheet1,
 				Optional.empty());
@@ -464,12 +464,15 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 
 	// $処理日リスト is not empty
 	// if [prv-1] 申請を促す必要か($対象勤務情報,$対象応援作業) is false
+	// ($基準開始.isEmpty AND $比較開始.isPresent) is false
+	// ($基準終了.isEmpty AND $比較終了.isPresent) is false
+	// $基準開始 > $比較開始  is false
 	// $基準終了 < $比較終了 is false
 	@Test
 	public void check6() {
 		List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 
-		ScheduleTimeSheet ts1 = new ScheduleTimeSheet(1, 5, 20);
+		ScheduleTimeSheet ts1 = new ScheduleTimeSheet(1, 14, 70);
 		ScheduleTimeSheet ts2 = new ScheduleTimeSheet(2, 3, 40);
 
 		scheduleTimeSheets.add(ts1);
@@ -486,7 +489,7 @@ public class OvertimeLeaveEncourageConfirmationServiceTest {
 
 		TimeSheetOfAttendanceEachOuenSheet timeSheet1 = TimeSheetOfAttendanceEachOuenSheet.create(null,
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(40))),
-				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(70))));
+				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(10))));
 
 		TimeSheetOfAttendanceEachOuenSheet timeSheet2 = TimeSheetOfAttendanceEachOuenSheet.create(null,
 				Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(15))),

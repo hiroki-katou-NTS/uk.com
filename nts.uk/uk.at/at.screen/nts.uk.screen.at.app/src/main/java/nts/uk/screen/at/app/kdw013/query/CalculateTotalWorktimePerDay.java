@@ -67,11 +67,12 @@ public class CalculateTotalWorktimePerDay {
 								.min().getAsInt();
 
 				// 基準時間帯．終了時刻 = 処理中の「日別勤怠(Work)．応援時間帯．時間帯．終了．時刻」の一番小さい時刻を利用する
+				//lấy lớn nhất, không phải nhỏ nhất, tài liệu mô tả sai
 				Integer end = daily.getOuenTimeSheet().isEmpty() ? 0
 						: daily.getOuenTimeSheet().stream()
 								.mapToInt(m -> m.getTimeSheet().getEnd()
 										.map(s -> s.getTimeWithDay().map(td -> td.v()).orElse(0)).orElse(0))
-								.min().getAsInt();
+								.max().getAsInt();
 
 				// 基準時間帯
 				TimeSpanForCalc refTimezone = new TimeSpanForCalc(new TimeWithDayAttr(start), new TimeWithDayAttr(end));
