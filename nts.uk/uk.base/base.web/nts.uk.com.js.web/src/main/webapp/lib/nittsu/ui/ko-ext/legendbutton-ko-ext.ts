@@ -11,7 +11,7 @@ module nts.uk.ui.koExtentions {
             let data = valueAccessor();
             let $container = $(element);
             
-            $container.text("■ " + toBeResource.legendExample);
+            $container.text(toBeResource.legendExample);
             
             $container.click(() => {
                 showLegendPanel($container, data);

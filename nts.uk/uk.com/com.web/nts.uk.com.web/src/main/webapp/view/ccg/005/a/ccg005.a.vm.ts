@@ -73,7 +73,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     name: 'ccg005-component',
     template: 
     `
-    <div class="widget-title">
+    <div class="widget-title ccg005-a-component">
       <table style="width: 100%;">
         <colgroup>
           <col width="auto" />
@@ -88,14 +88,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </th>
             <th>
               <!-- A2_1 -->
-              <button tabindex=11 id="ccg005-legends" style="margin-left: 5px;"
-                data-bind="visible: $component.isBaseDate, ntsLegendButton: legendOptions"></button>
+              <button tabindex=11 id="ccg005-legends" data-bind="visible: $component.isBaseDate, ntsLegendButton: legendOptions"></button>
             </th>
             <th>
               <!-- A1_5 -->
-              <button tabindex=3 style="position: relative; right: 0; top: 5px;" data-bind="visible: $component.inCharge, click: $component.openScreenCCG005B">
-                <i data-bind="ntsIcon: {no: 5, width: 20, height: 20}"></i>
-              </div>
+              <button tabindex=3 id="ccg005-setting" data-bind="visible: $component.inCharge, click: $component.openScreenCCG005B">設定</button>
             </th>
           </tr>
         </thead>
@@ -259,14 +256,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td class="ccg005-bottom-unset">
                 <div class="ccg005-pagination ccg005-flex">
                   <!-- A5_1 -->
-                  <i tabindex=16 class="ccg005-pagination-btn"
-                    data-bind="ntsIcon: {no: 193, width: 15, height: 20}, click: $component.previousPage"></i>
+                  <button tabindex=16 class="ccg005-pagination-btn" data-bind="click: $component.previousPage">＜</button>
                   <!-- A5_2 -->
                   <span style="white-space: nowrap; width: auto; text-align: center;"
                     data-bind="text: $component.paginationText()"></span>
                   <!-- A5_3 -->
-                  <i tabindex=17 class="ccg005-pagination-btn"
-                    data-bind="ntsIcon: {no: 192, width: 15, height: 20}, click: $component.nextPage"></i>
+                  <button tabindex=17 class="ccg005-pagination-btn" data-bind="click: $component.nextPage">＞</button>
                 </div>
               </td>
               <td class="ccg005-bottom-unset" style="width: 100%">
@@ -384,6 +379,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
   </div>
   <!--------------------------------------- CSS --------------------------------------->
   <style>
+    .ccg005-a-component button {
+      height: 23px;
+      width: 80px;
+      margin-right: 10px;
+    }
+
     .ccg005-block {
       display: block;
     }
@@ -537,6 +538,17 @@ module nts.uk.at.view.ccg005.a.screenModel {
 	  padding: 0px 3px;
 	  font-size: 1rem;
 	}
+
+  .ccg005-pagination-btn {
+    width: 24px;
+    height: 21px;
+    padding: 0;
+    font-size: 11px;
+  }
+  
+  .ccg005-pagination-btn:not(:hover) {
+    background-color: transparent;
+  }
 
   </style>`
   })

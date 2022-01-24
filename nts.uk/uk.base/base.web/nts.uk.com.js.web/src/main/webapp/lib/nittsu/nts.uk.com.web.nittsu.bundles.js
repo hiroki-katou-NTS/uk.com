@@ -24969,7 +24969,7 @@ var nts;
                     NtsLegentButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var $container = $(element);
-                        $container.text("■ " + ui.toBeResource.legendExample);
+                        $container.text(ui.toBeResource.legendExample);
                         $container.click(function () {
                             showLegendPanel($container, data);
                         });
