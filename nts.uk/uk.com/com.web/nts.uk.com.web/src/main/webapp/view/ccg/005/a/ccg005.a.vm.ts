@@ -338,7 +338,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         <td class="ccg005-bottom-unset">
           <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.NOT_PRESENT}, width: 20, height: 20}"></i>
         </td>
-        <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_43'"></td>
+        <td class="ccg005-bottom-unset">出社前</td>
       </tr>
       <tr style="height: 30px" data-bind="click: $component.registerAttendanceStatus.bind($component, 1, ${StatusClassficationIcon.PRESENT})">
         <td class="ccg005-bottom-unset">
