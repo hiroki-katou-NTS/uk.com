@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
-import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
@@ -71,14 +70,11 @@ public class CreateSupportWorkListFileQuery {
     @Inject
     private WorkLocationRepository workLocationRepository;
 
-    @Inject
-    private AttendanceItemConvertFactory attendanceItemConvertFactory;
-
     public SupportWorkListDataSource create(SupportWorkListQuery query) {
         String cid = AppContexts.user().companyId();
         String contractCd = AppContexts.user().contractCode();
         val require = new SupportWorkOutputDataRequireImpl(supportWorkAggregationSettingRepo, dailyAttendanceItemAdapter,
-                workplaceAdapter, supportWorkDataAdapter, attendanceItemConvertFactory );
+                workplaceAdapter, supportWorkDataAdapter);
 
         /**get(ログイン会社ID、応援勤務表コード)*/
         val supportWorkOutSettingOpt = supportWorkListOutSetRepo.get(cid, new SupportWorkOutputCode(query.getSupportWorkCode()));
