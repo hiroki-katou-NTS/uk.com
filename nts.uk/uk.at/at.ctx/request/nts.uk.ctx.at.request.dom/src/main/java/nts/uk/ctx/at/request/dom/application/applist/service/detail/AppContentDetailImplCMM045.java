@@ -765,7 +765,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		if(opAbsenceLeaveApp.isPresent()) {
 			AbsenceLeaveApp absenceLeaveApp = opAbsenceLeaveApp.get();
 			if(screenAtr==ScreenAtr.KAF018) {
-				return new LinkComplementLeaveOutput(null, null, absenceLeaveApp, null);
+				return new LinkComplementLeaveOutput(null, null, null, absenceLeaveApp, null);
 			}
 			// ドメインモデル「振休振出同時申請管理」を取得 (Lấy domail model 「CompltLeaveSimMng」
 			Optional<AppHdsubRec> opCompltLeaveSimMng = compltLeaveSimMngRepository.findByAbsID(appID).filter(x -> x.getSyncing()==SyncState.SYNCHRONIZING);
@@ -779,7 +779,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			// ドメインモデル「振出申請」を取得 (Lấy domain model 「振出申請」)
 			RecruitmentApp recruitmentApp = recruitmentAppRepository.findByID(appID).get();
 			if(screenAtr==ScreenAtr.KAF018) {
-				return new LinkComplementLeaveOutput(null, null, null, recruitmentApp);
+				return new LinkComplementLeaveOutput(null, null, null, null, recruitmentApp);
 			}
 			// ドメインモデル「振休振出同時申請管理」を取得 (Lấy domail model 「CompltLeaveSimMng」
 			Optional<AppHdsubRec> opCompltLeaveSimMng = compltLeaveSimMngRepository.findByRecID(appID).filter(x -> x.getSyncing()==SyncState.SYNCHRONIZING);

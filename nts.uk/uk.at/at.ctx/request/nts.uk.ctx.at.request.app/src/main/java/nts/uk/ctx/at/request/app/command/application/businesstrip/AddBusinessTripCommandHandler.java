@@ -96,6 +96,9 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
                         .getAppDispInfoWithDateOutput()
                         .getOpListApprovalPhaseState()
                         .get() : null);
+        
+        // ドメインモデル「出張申請」を追加する
+        this.businessTripRepository.add(businessTrip);
 
         // 申請承認する時の手続き
         List<String> autoSuccessMail = new ArrayList<>();
@@ -114,8 +117,7 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
 		autoFailMail.addAll(approveAppProcedureOutput.getFailList().stream().distinct().collect(Collectors.toList()));
 		autoFailServer.addAll(approveAppProcedureOutput.getFailServerList().stream().distinct().collect(Collectors.toList()));
 
-        // ドメインモデル「出張申請」を追加する
-        this.businessTripRepository.add(businessTrip);
+        
 
 
         // アルゴリズム「出張申請暫定残数を更新する」を実行する
