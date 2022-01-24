@@ -34,8 +34,6 @@
 }
 
 #contents-area > div.widget-home {
-  border: 2px solid #b1b1b1;
-  border-radius: 7px;
   box-sizing: border-box;
   overflow: hidden;
   height: 100%;
