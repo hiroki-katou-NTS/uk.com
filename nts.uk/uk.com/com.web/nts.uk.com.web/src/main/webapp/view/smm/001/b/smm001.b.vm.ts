@@ -4,7 +4,8 @@ module nts.uk.at.view.smm001.b {
 
   const API = {
     // <<ScreenQuery>> 初期起動の情報取得する
-    getInitialStartupInformation: 'com/screen/smm001/get-initial-startup-information'
+    getInitialStartupInformation: 'com/screen/smm001/get-initial-startup-information',
+    getInformationOnExternal: 'com/screen/smm001/get-information-on-external'
   };
 
   class ItemModel {
@@ -19,7 +20,7 @@ module nts.uk.at.view.smm001.b {
   @bean()
   export class ScreenModelB extends ko.ViewModel {
     selectedCode: KnockoutObservable<string> = ko.observable();
-    isEnable: KnockoutObservable<boolean> = ko.observable(false);
+    isEnable: KnockoutObservable<boolean> = ko.observable(true);
     itemList: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedValue: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -28,7 +29,6 @@ module nts.uk.at.view.smm001.b {
     DO_NOT_TEXT: KnockoutObservable<string>;
 
     enumPaymentCategoryList: KnockoutObservableArray<any>;
-
 
     constructor() {
       super();
@@ -47,6 +47,19 @@ module nts.uk.at.view.smm001.b {
       // Init payment category
       vm.enumPaymentCategoryList = ko.observableArray(__viewContext.enums.PaymentCategory);
       console.log(">>> 2 ", vm.enumPaymentCategoryList());
+
+      vm.getInformationOnExternal();
+    }
+
+    getInformationOnExternal() {
+      const vm = this;
+      vm.$blockui('show');
+      vm.$ajax('com', API.getInformationOnExternal).then((response: any) => {
+        if (response) {
+          console.log("response >>>: ", response)
+
+        }
+      })
     }
 
     moveItemToRight() {

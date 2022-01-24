@@ -29,6 +29,9 @@
       <div id="contents-area">
         <div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
           <div class="tab-content-1">
+            <p class="mb-1">
+              #{i18n.getText('SMM001_5')}
+            </p>
             <div class="d-flex mb-1">
               <div data-bind="ntsCheckBox: { checked: checkedOrganizationInformation, enable: true, text: ORGANIZATION_INFORMATION}">
               </div>

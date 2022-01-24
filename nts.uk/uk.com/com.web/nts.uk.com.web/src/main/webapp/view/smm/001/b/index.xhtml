@@ -7,7 +7,7 @@
   <div class="smile-div">
     <p class="ml-1">#{i18n.getText('SMM001_7')}</p>
     <div class="d-flex mb-1 ml-2">
-      <div data-bind="ntsCheckBox: { checked: false, enable: false }">
+      <div data-bind="ntsCheckBox: { checked: false, enable: true }">
         #{i18n.getText('SMM001_8')}
       </div>
       <div id="combo-box" data-bind="ntsComboBox: {
@@ -17,7 +17,7 @@
               visibleItemsCount: 3,
               value: selectedCode,
               optionsText: 'name',
-              enable: isEnable,
+              enable: isEnable, 
               columns: [
                 { prop: 'code', length: 4 },
                 { prop: 'name', length: 10 },

@@ -97,15 +97,15 @@ module nts.uk.at.view.smm001.a {
     getInitialStartupInformation(param: any) {
       const vm = this;
       vm.$blockui('show');
+      vm.itemList().push({
+        code: '0',
+        name: ''
+      })
       vm.$ajax('com', API.getInitialStartupInformation, param).then((response: any) => {
         if (response) {
           console.log("response: ", response)
           // Get list data select option a screen
           const externalImportSettings = response.externalImportSettings;
-          vm.itemList().push({
-            code: '0',
-            name: ''
-          })
           if (!_.isEmpty(externalImportSettings)) {
             vm.itemList().push(...externalImportSettings);
           } else { // when externalImportSettings empty
@@ -148,35 +148,24 @@ module nts.uk.at.view.smm001.a {
 
     validateBeforeSave() {
       const vm = this;
-      if (vm.checkedOrganizationInformation() && vm.selectedOrganizationInformation().code === '0') {
-        return false;
-      }
-      if (vm.checkedBasicPersonnelInformation() && vm.selectedBasicPersonnelInformation().code === '0') {
-        return false;
-      }
-      if (vm.checkedJobStructureInformation() && vm.selectedJobStructureInformation().code === '0') {
-        return false;
-      }
-      if (vm.checkedAddressInformation() && vm.selectedAddressInformation().code === '0') {
-        return false;
-      }
-      if (vm.checkedLeaveInformation() && vm.selectedLeaveInformation().code === '0') {
-        return false;
-      }
-      if (vm.checkedAffiliatedMaster() && vm.selectedAffiliatedMaster().code === '0') {
-        return false;
-      }
-      if (vm.checkedEmployeeMaster() && vm.selectedEmployeeMaster().code === '0') {
+      if (vm.checkedOrganizationInformation() && vm.selectedOrganizationInformation() === '0'
+        || vm.checkedBasicPersonnelInformation() && vm.selectedBasicPersonnelInformation() === '0'
+        || vm.checkedJobStructureInformation() && vm.selectedJobStructureInformation() === '0'
+        || vm.checkedAddressInformation() && vm.selectedAddressInformation() === '0'
+        || vm.checkedLeaveInformation() && vm.selectedLeaveInformation() === '0'
+        || vm.checkedAffiliatedMaster() && vm.selectedAffiliatedMaster() === '0'
+        || vm.checkedEmployeeMaster() && vm.selectedEmployeeMaster() === '0') {
         return false;
       }
       return true;
     }
 
     saveSmile() {
+      const vm = this;
       if (this.validateBeforeSave() === false) {
+        vm.$dialog.info({ messageId: "Msg_3250" });
         return;
       }
-      const vm = this;
       vm.$blockui('show');
       const command = {
         paymentCode: 1,
@@ -201,8 +190,8 @@ module nts.uk.at.view.smm001.a {
       };
       vm.$ajax('com', API.registerSmileCooperationAcceptanceSetting, command)
         .then((res: any) => {
-            console.log(res);
-            vm.$dialog.info({ messageId: "Msg_15" });
+          console.log(res);
+          vm.$dialog.info({ messageId: "Msg_15" });
         }).fail((err) => {
           vm.$dialog.error(err);
         }).always(() => vm.$blockui('clear'));
