@@ -179,7 +179,6 @@ module cmm045.a.viewmodel {
             window.onresize = function(event: any) {
 				if(self.mode()==1) {
 					character.restore('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj: any) => {
-						$('#status-div').width(955);
 						if(window.innerWidth-90 < 965) {
 							$('.nts-fixed-header-container .fixed-table').width(920);
 							$('.nts-fixed-header-wrapper').width(937);
@@ -235,7 +234,6 @@ module cmm045.a.viewmodel {
 	                });
 	            } else {
 					character.restore('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj: any) => {
-						$('#status-div').width(880);
 		                if(window.innerWidth-90 < 880) {
 							$('.nts-fixed-header-container .fixed-table').width(845);
 							$('.nts-fixed-header-wrapper').width(862);

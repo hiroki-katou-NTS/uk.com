@@ -1,12 +1,35 @@
 
+#approval-count {
+	margin-bottom: 20px;
+}
+
+#approval-count > div > .item {
+	display: inline-block;
+}
+
+#approval-count > div > .item > div {
+	display: inline-block;
+}
+
+#approval-count > div > .item:not(:first-child) {
+	margin-left: 14px;
+}
+
 #filter-controls {
 	background-color: #F5F5F5;
-	width: 800px;
 	padding: 20px;
+	display: inline-block;
 }
 
 #filter-controls .status-filters {
-	
+}
+
+#filter-controls .status-filters .checkbox-wrappers {
+	display: inline-block;
+}
+
+#filter-controls .status-filters .filter-label {
+	margin-right: 20px;
 }
 
 #filter-controls .main-filters {
