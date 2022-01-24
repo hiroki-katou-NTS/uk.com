@@ -590,6 +590,10 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 				
 				// フレックス不足の処理をする　（便宜上）
 				this.flexShortageForConvenience(carryforwardTimeBeforeOffset);
+				
+				// フレックス繰越不可時間を求める
+				this.askNotCarryforwardTime(require, cacheCarrier, companyId, employeeId, yearMonth, datePeriod, closureId,
+						companySets, employeeSets, settingsByFlex);
 			}
 		}
 		else{

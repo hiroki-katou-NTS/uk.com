@@ -54,7 +54,8 @@ public class IntegrationOfMonthlyGetterImpl implements IntegrationOfMonthlyGette
 		val remarks = remarksMonthlyRecordRepo.find(sid, ym, closureId, closureDate);
 		val editState = rditStateOfMonthlyPerRepo.findByClosure(sid, ym, closureId, closureDate);
 		
-		return new IntegrationOfMonthly(time.flatMap(c -> c.getAttendanceTime()), time.flatMap(c -> c.getAffiliation()), 
+		return new IntegrationOfMonthly(sid, ym, closureId, closureDate,
+				time.flatMap(c -> c.getAttendanceTime()), time.flatMap(c -> c.getAffiliation()), 
 				anyItem, agreementTime, remain.map(c -> c.getAnnLeaRemNumEachMonth()), remain.map(c -> c.getRsvLeaRemNumEachMonth()),
 				remain.map(c -> c.getAbsenceLeaveRemainData()), remain.map(c -> c.getMonthlyDayoffRemainData()), 
 				remain.map(c -> c.getSpecialHolidayRemainData()).orElse(new ArrayList<>()), weekTime, new ArrayList<>(), 

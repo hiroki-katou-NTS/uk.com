@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
@@ -22,6 +23,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicho
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 月別実績(Work)
@@ -31,6 +34,15 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWe
 @Setter
 @AllArgsConstructor
 public class IntegrationOfMonthly {
+
+	/** 社員ID */
+	private final String employeeId;
+	/** 年月 */
+	private final YearMonth yearMonth;
+	/** 締めID */
+	private final ClosureId closureId;
+	/** 締め日付 */
+	private final ClosureDate closureDate;
 
 	/** 月別実績の勤怠時間 */
 	private Optional<AttendanceTimeOfMonthly> attendanceTime;
@@ -65,7 +77,12 @@ public class IntegrationOfMonthly {
 	/** 月別実績の編集状態 */
 	private List<EditStateOfMonthlyPerformance> editState;
 	
-	public IntegrationOfMonthly(){
+	public IntegrationOfMonthly(String employeeId, YearMonth yearMonth, 
+			ClosureId closureId, ClosureDate closureDate) {
+		this.employeeId = employeeId;
+		this.yearMonth = yearMonth;
+		this.closureId = closureId;
+		this.closureDate = closureDate;
 		this.attendanceTime = Optional.empty();
 		this.affiliationInfo = Optional.empty();
 		this.anyItemList = new ArrayList<>();
@@ -99,7 +116,8 @@ public class IntegrationOfMonthly {
 	 * @param care 介護休暇月別残数データ
 	 * @param childCare 子の看護月別残数データ
 	 */
-	public IntegrationOfMonthly(
+	public IntegrationOfMonthly(String employeeId, YearMonth yearMonth, 
+			ClosureId closureId, ClosureDate closureDate,
 			Optional<AttendanceTimeOfMonthly> attendanceTime,
 			Optional<AffiliationInfoOfMonthly> affiliationInfo,
 			List<AnyItemOfMonthly> anyItemList,
@@ -113,7 +131,11 @@ public class IntegrationOfMonthly {
 			Optional<CareRemNumEachMonth> care,
 			Optional<ChildcareRemNumEachMonth> childCare,
 			Optional<PublicHolidayRemNumEachMonth> publicHoliday){
-	
+
+		this.employeeId = employeeId;
+		this.yearMonth = yearMonth;
+		this.closureId = closureId;
+		this.closureDate = closureDate;
 		this.attendanceTime = attendanceTime;
 		this.affiliationInfo = affiliationInfo;
 		this.anyItemList = anyItemList;
