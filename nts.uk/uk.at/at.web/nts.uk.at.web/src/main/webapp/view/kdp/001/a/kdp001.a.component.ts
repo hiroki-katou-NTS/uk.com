@@ -72,10 +72,15 @@ module nts.uk.ui.kdp001.a {
         name: 'kdp-001-a',
         template: `
             <div class="kdp-001-a kdp-001-a-title">
-                <div class="date" data-bind="date: $component.time.now, format: 'YYYY/MM/DD(ddd)', attr: { style: $component.time.style }"></div>
-                <div>
-                    <span class="hours-minutes" data-bind="date: $component.time.now, format: 'HH:mm',attr: { style: $component.time.style }"></span>
-                    <span class="seconds" data-bind="date: $component.time.now, format: ':ss', attr: { style: $component.time.style }"></span>
+                <div class="time">
+                    <div class="date">
+                        <span class="ymd" data-bind="date: $component.time.now, format: 'YYYY/MM/DD', attr: { style: $component.time.style }"></span>
+                        <span class="ddd" data-bind="date: $component.time.now, format: '（ddd）', attr: { style: $component.time.style }"></span>
+                    </div>
+                    <div class="hour-second">
+                        <span class="hour" data-bind="date: $component.time.now, format: 'HH:mm',attr: { style: $component.time.style }"></span>
+                        <span class="second" data-bind="date: $component.time.now, format: 'ss', attr: { style: $component.time.style }"></span>
+                    </div>
                 </div>
                 <!-- ko if: $component.useTopMenuLink -->
                     <div style="color: blue !important;" data-bind="if: modeA" class="button-link">
@@ -206,12 +211,6 @@ module nts.uk.ui.kdp001.a {
                 <!-- /ko -->
             <!-- /ko -->
             <style rel="stylesheet">
-                .kdp-001-a-title {
-                    position: relative;
-                    width: 450px;
-                    margin: auto;
-                    text-align: center;
-                }
                 .kdp-001-a .text-left {
                     text-align: left;
                 }
@@ -221,9 +220,6 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a.text-center,
                 .kdp-001-a .text-center {
                     text-align: center;
-                }
-                .kdp-001-a.kdp-001-a-title th {
-                    font-size: 16px;
                 }
                 .kdp-001-a.kdp-001-a-msg {
                     padding: 10px 0px;
@@ -363,26 +359,54 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a-potal.widget-content table td:not(:last-child) {
                     text-align: center;
                 }
-                .kdp-001-a.kdp-001-a-title .date {
-                    text-align: left;
-                    padding-left: 130px;
-                    color: #7F7F7F;
-                    font-size: 15px;
+                
+                .kdp-001-a-title {
+                    position: relative;
                 }
-                .kdp-001-a.kdp-001-a-title .hours-minutes {
-                    box-sizing: border-box;
-                    color: #7F7F7F;
-                    font-size: 55px;
-                    line-height: 60px;  
+                .kdp-001-a-title .time {
+                    width: 270px;
+                    margin: auto;
+                    position: relative;
+                    white-space: nowrap;
                 }
-                .kdp-001-a.kdp-001-a-title .seconds {
-                    box-sizing: border-box;
-                    font-size: 35px;
-                    color: #7F7F7F;
+
+                .kdp-001-a-title .time * {
+                    font-family: Quicksand !important;
+                    font-weight: bold;
+                }
+                
+                .kdp-001-a-title .time .date {
+                    text-align: center;
+                }
+                
+                .kdp-001-a-title .time .date .ymd {
+                    font-size: 32px;
+                }
+                
+                .kdp-001-a-title .time .date .ddd {
+                    font-size: 26px;
+                    font-family: "Noto Sans JP" !important;
+                }
+
+                .kdp-001-a-title .time .hour-second {
+                    padding-top: 10px;
+                }
+
+                .kdp-001-a-title .time .hour-second .hour {
                     position: relative;
                     z-index: 1;
+                    font-size: 80px;
+                    line-height: 80px;
                 }
-                .kdp-001-a.kdp-001-a-title .button-link {
+
+                .kdp-001-a-title .time .hour-second .second {
+                    font-size: 50px;
+                    line-height: 50px;
+                    position: relative;
+                    left: 16px;
+                    z-index: 1;
+                }
+                .kdp-001-a-title .button-link {
                     text-align: center;
                     padding-left: 340px;
                     padding-bottom: 5px;
