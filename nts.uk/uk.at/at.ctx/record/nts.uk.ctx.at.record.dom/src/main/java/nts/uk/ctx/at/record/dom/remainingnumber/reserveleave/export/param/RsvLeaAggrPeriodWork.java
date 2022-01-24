@@ -77,8 +77,8 @@ public class RsvLeaAggrPeriodWork {
 	 * @param periodWorkList
 	 * @return
 	 */
-	public GrantBeforeAfterAtr judgeNextGrantPeriodAtr(List<RsvLeaAggrPeriodWork> periodWorkList){
-		if(this.endWork.judgeNextPeriodEndAtr() || (periodWorkList.size()-1) < (periodWorkList.indexOf(this)+1)){
+	public GrantBeforeAfterAtr isNextGrantPeriodAtr(List<RsvLeaAggrPeriodWork> periodWorkList){
+		if(this.endWork.isNextPeriodEndAtr()){
 			return this.getGrantWork().judgeGrantPeriodAtr();
 		}
 		

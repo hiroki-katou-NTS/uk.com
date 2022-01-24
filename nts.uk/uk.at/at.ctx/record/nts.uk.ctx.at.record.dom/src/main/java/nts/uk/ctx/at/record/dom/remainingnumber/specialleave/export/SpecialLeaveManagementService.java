@@ -129,7 +129,7 @@ public class SpecialLeaveManagementService {
 			
 			//消滅処理
 			outputData = specialLeaveInfo.lapsedProcess(aggregatePeriodWork, outputData, 
-					aggregatePeriodWork.judgeNextGrantPeriodAtr(aggregateWork, employee.getEntryDate()));
+					aggregatePeriodWork.isNextGrantPeriodAtr(aggregateWork, employee.getEntryDate()));
 		}
 
 		// 【渡すパラメータ】 特別休暇情報　←　特別休暇の集計結果．特別休暇情報（期間終了日時点）

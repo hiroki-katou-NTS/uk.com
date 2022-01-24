@@ -56,8 +56,8 @@ public class AggregatePeriodWork {
 	 * @param periodWorkList
 	 * @return
 	 */
-	public GrantBeforeAfterAtr judgeNextGrantPeriodAtr(List<AggregatePeriodWork> periodWorkList){
-		if(this.endWork.judgeNextPeriodEndAtr() || (periodWorkList.size()-1) < (periodWorkList.indexOf(this)+1)){
+	public GrantBeforeAfterAtr isNextGrantPeriodAtr(List<AggregatePeriodWork> periodWorkList){
+		if(this.endWork.isNextPeriodEndAtr()){
 			return this.getGrantWork().judgeGrantPeriodAtr();
 		}
 		

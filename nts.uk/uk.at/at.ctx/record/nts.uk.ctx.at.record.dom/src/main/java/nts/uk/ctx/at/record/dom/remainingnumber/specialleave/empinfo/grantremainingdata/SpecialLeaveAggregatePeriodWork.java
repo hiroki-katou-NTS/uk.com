@@ -97,9 +97,9 @@ public class SpecialLeaveAggregatePeriodWork {
 	 * @param entryDate
 	 * @return
 	 */
-	public GrantBeforeAfterAtr judgeNextGrantPeriodAtr(List<SpecialLeaveAggregatePeriodWork> periodWorkList,
+	public GrantBeforeAfterAtr isNextGrantPeriodAtr(List<SpecialLeaveAggregatePeriodWork> periodWorkList,
 			GeneralDate entryDate){
-		if(this.endDay.judgeNextPeriodEndAtr() || (periodWorkList.size()-1) < (periodWorkList.indexOf(this)+1)){
+		if(this.endDay.isNextPeriodEndAtr()){
 			return this.judgeGrantPeriodAtr(entryDate);
 		}
 		

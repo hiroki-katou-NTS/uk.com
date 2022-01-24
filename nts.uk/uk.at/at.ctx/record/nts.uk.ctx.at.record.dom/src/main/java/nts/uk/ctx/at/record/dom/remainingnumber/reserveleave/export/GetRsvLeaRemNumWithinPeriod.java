@@ -141,7 +141,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 			
 			//消滅処理
 			aggrResult = reserveLeaveInfo.lapsedProcess(aggrPeriodWork, aggrResult,
-					aggrPeriodWork.judgeNextGrantPeriodAtr(aggrPeriodWorks));
+					aggrPeriodWork.isNextGrantPeriodAtr(aggrPeriodWorks));
 			
 		}
 

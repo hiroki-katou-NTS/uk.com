@@ -337,7 +337,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			
 			//消滅処理
 			aggrResult = annualLeaveInfo.lapsedProcess(aggregatePeriodWork, aggrResult,
-					aggregatePeriodWork.judgeNextGrantPeriodAtr(aggregateWork));
+					aggregatePeriodWork.isNextGrantPeriodAtr(aggregateWork));
 		}
 
 		
