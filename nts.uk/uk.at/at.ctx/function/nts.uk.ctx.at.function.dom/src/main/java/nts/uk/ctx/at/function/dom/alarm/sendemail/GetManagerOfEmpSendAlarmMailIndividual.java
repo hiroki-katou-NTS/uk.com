@@ -54,11 +54,13 @@ public class GetManagerOfEmpSendAlarmMailIndividual {
                 }
 
                 // Map＜管理者ID、List＜対象者ID＞＞に追加
-                if (!managerOfEmployeeMap.containsKey(managerId)) {
-                    managerOfEmployeeMap.put(managerId, targetPersonList);
-                } else {
-                    val combinedList = Stream.of(managerOfEmployeeMap.get(managerId), targetPersonList).flatMap(Collection::stream).distinct().collect(Collectors.toList());
-                    managerOfEmployeeMap.put(managerId, combinedList);
+                if (!targetPersonList.isEmpty()) {
+                    if (!managerOfEmployeeMap.containsKey(managerId)) {
+                        managerOfEmployeeMap.put(managerId, targetPersonList);
+                    } else {
+                        val combinedList = Stream.of(managerOfEmployeeMap.get(managerId), targetPersonList).flatMap(Collection::stream).distinct().collect(Collectors.toList());
+                        managerOfEmployeeMap.put(managerId, combinedList);
+                    }
                 }
             }
         }
