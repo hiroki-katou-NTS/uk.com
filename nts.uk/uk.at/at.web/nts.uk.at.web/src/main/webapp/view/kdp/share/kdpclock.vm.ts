@@ -21,6 +21,7 @@ module nts.uk.at.view.kdp.share {
 				width: 270px;
 				margin: auto;
 				position: relative;
+				white-space: nowrap;
 			}
 			.time-container .time .text-time {
 				position: absolute;
