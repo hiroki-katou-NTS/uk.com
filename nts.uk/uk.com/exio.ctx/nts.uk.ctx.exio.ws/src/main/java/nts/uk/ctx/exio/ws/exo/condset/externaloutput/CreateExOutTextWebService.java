@@ -1,7 +1,8 @@
 package nts.uk.ctx.exio.ws.exo.condset.externaloutput;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -19,6 +20,12 @@ import nts.uk.ctx.exio.app.command.exo.createexouttext.CreateExOutTextCommandHan
 import nts.uk.ctx.exio.app.command.exo.createexouttext.SmileCreateExOutTextCommand;
 import nts.uk.ctx.exio.app.find.exo.exoutsummarysetting.ExOutSummarySettingDto;
 import nts.uk.ctx.exio.app.find.exo.exoutsummarysetting.ExOutSummarySettingFinder;
+import nts.uk.ctx.exio.app.find.exo.exoutsummarysetting.OutConditionSetDto;
+import nts.uk.ctx.exio.app.find.exo.exoutsummarysetting.SmileGetSettingDto;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("exio/exo/condset")
@@ -32,6 +39,12 @@ public class CreateExOutTextWebService extends WebService {
 
 	@Inject
 	private AffCompanyHistRepository affCompanyHistRepo;
+	
+	@Inject
+	private StdOutputCondSetRepository stdOutputCondSetRepository;
+	
+	@Inject
+	private StandardOutputItemRepository standardOutputItemRepository;
 	
 	@POST
 	@Path("createExOutText")
@@ -65,5 +78,21 @@ public class CreateExOutTextWebService extends WebService {
 	@Path("getExOutSummarySetting/{conditionSetCd}")
 	public ExOutSummarySettingDto getExOutSummarySetting(@PathParam("conditionSetCd") String conditionSetCd){
 		return exOutSummarySettingFinder.getExOutSummarySetting(conditionSetCd);
+	}
+	
+	
+	@POST
+	@Path("getExOutSummarySetting/{cid}/{conditionSetCd}")
+	public SmileGetSettingDto getExOutSetting(@PathParam("cid") String cid, @PathParam("conditionSetCd") String conditionSetCd){
+		Optional<StdOutputCondSet> condSet = stdOutputCondSetRepository.getStdOutputCondSetById(cid, conditionSetCd);
+		
+		if(!condSet.isPresent()) 
+			return new SmileGetSettingDto(false, null);
+		
+		List<StandardOutputItem> item = standardOutputItemRepository.getStdOutItemByCidAndSetCd(cid, conditionSetCd);
+		return new SmileGetSettingDto(true, new OutConditionSetDto(condSet.get().getConditionSetName().v(), condSet.get().getConditionOutputName().value, 
+																condSet.get().getItemOutputName().value, condSet.get().getDelimiter().value, condSet.get().getStringFormat().value,
+																item.stream().map(x -> x.getOutputItemCode().v()).collect(Collectors.toList())
+															));
 	}
 }
