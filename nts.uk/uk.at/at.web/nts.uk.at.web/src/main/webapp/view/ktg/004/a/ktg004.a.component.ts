@@ -45,9 +45,7 @@ module nts.uk.ui.ktg004.a {
                         </th>
                         <!-- A1_2 -->
                         <th data-bind="if: $component.detailedWorkStatusSettings">
-                            <button class="icon ktg004-no-border" data-bind="click: $component.setting">
-                                <i data-bind="ntsIcon: { no: 4, width: 20, height: 20 }"></i>
-                            </button>
+                            <button class="ktg004-no-border" data-bind="click: $component.setting">設定</button>
                         </th>
                     </thead>
                 </table>

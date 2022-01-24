@@ -30,12 +30,10 @@ module nts.uk.ui.ktg005.a {
 						</th>
 						<th>
 							<!-- A1_4 -->
-							<button class="icon ktg001-no-border" data-bind="
+							<button class="ktg001-no-border" data-bind="
 									click: function() { $component.openScreenB() },
 									visible: employeeCharge
-								">
-								<i data-bind="ntsIcon: { no: 4, width: 20, height: 20 }"></i>
-							</button>
+								">設定</button>
 						</th>
 					</tr>
 				</thead>

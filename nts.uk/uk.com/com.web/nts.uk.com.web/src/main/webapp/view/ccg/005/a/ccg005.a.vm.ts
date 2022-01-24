@@ -381,8 +381,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
   <style>
     .ccg005-a-component button {
       height: 23px;
-      width: 80px;
+      width: 60px;
       margin-right: 10px;
+      font-size: 13px;
     }
 
     .ccg005-block {

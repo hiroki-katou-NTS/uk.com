@@ -65,12 +65,11 @@
                 }
             }
 
-            button.icon {
-                width: 41px;
-                height: 30px;
-                margin: auto;
-                display: block;
-                background-color: inherit;
+            > button {
+                height: 23px;
+                width: 60px;
+                margin-right: 10px;
+                font-size: 13px;
             }
 
             &:not(:first-child) {

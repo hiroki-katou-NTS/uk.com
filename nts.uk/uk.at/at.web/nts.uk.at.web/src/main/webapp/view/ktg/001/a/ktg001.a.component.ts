@@ -87,12 +87,9 @@ module nts.uk.ui.ktg001.a {
                             </th>
                             <th>
                                 <!-- A1_2 -->
-                                <button class="icon ktg001-no-border" data-bind="
+                                <button class="ktg001-no-border" data-bind="
                                         click : $component.setting,
-                                        visible: $component.settingIconVisible
-                                    ">
-                                    <i data-bind="ntsIcon: { no: 4, width: 20, height: 20 }"></i>
-                                </button>
+                                        visible: $component.settingIconVisible">設定</button>
                             </th>
                         </tr>
                     </thead>

@@ -40,9 +40,7 @@ module nts.uk.com.view.ktg031.a {
                   ]}"></div>
               </th>
               <th>
-                <div data-bind="if: $component.isEmployee">
-                  <i class="img-icon" style="vertical-align: middle;" data-bind="ntsIcon: {no: 4, width: 20, height: 20}, click: $component.openDialogSetting"></i>
-                </div>
+                <button data-bind="visible: $component.isEmployee, click: $component.openDialogSetting">設定</button>
               </th>
             </tr>
           </thead>
