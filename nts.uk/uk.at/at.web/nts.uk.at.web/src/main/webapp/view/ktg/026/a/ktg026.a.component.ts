@@ -527,10 +527,10 @@ module nts.uk.at.view.ktg026.a {
                 + '<div style="color: #{colorCode};" data-bind="ntsFormLabel: { required: false }">#{labelText}</div>'
                 + '</div>'
             };
-            
-            const startScreen = () => {
             vm.isDialog = param && !!param.mode;
             vm.dialogParam = vm.isDialog ? param : null;
+            
+            const startScreen = () => {
             const { $user, cache } = vm;
             const { employeeId } = vm.isDialog ? vm.dialogParam:  $user;
             // 1: 従業員参照モード 2: 上長参照モード
