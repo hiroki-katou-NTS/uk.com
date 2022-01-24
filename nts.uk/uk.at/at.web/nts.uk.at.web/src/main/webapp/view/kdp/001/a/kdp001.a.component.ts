@@ -322,7 +322,6 @@ module nts.uk.ui.kdp001.a {
                     text-align: center;
                 }
                 .kdp-001-a-potal.widget-content {
-                    border: 1px solid #b1b1b1;
                     max-height: 149px;
                     width: 448px;
                     margin: 5px auto 20px auto;
