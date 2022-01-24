@@ -283,6 +283,14 @@
 	overflow-x: scroll;
 }
 
+#monthly-data-view #miGrid_fixedContainerScroller {
+	display: none;
+}
+
+#monthly-data-view #miGrid_scroll {
+	overflow: hidden !important;
+}
+
 /* 残数データ */
 #holiday-agree {
 	position: absolute;
