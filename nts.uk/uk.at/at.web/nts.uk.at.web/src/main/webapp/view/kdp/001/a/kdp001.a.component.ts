@@ -118,31 +118,11 @@ module nts.uk.ui.kdp001.a {
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 1 || btn.buttonPositionNo == 2 -->
-                        <!-- ko if: btn.buttonName.length <= 8 -->
-                            <div class="btn-start-1"
-                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length > 8 -->
-                            <!-- ko if: btn.buttonName.length <= 15 -->
-                                <div class="btn-start-2"
-                                    data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                            <!-- /ko -->
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length > 15 -->
-                            <div class="btn-start-5"
-                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                        <!-- /ko -->
+                        <div data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 3 || btn.buttonPositionNo == 4 -->
-                        <!-- ko if: btn.buttonName.length <= 8 -->
-                            <div class="btn-start-3"
-                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length > 8 -->
-                            <div class="btn-start-4"
-                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                        <!-- /ko -->
+                        <div data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                     <!-- /ko -->
                 </button>
             </div>
@@ -229,12 +209,7 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a.kdp-001-a-btn{
                     width: 450px;
                     margin: auto;
-                }
-                .kdp-001-a.kdp-001-a-btn button {
-                    width: 222px;
-                    height: 200px;
-                    border-radius: 10px;
-                    border: solid 2px;
+                    margin-bottom: 20px;
                 }
                 .kdp-001-a.kdp-001-a-btn .btn-start-1 {
                     font-size: 25px;
@@ -277,16 +252,39 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a.kdp-001-a-btn1 .btn-end {
                     font-size: 20px;
                 }
-                .kdp-001-a.kdp-001-a-btn button:nth-child(3) {
-                    margin-top: 5px;
-                    width: 222px;
-                    height: 100px;
+
+                .kdp-001-a.kdp-001-a-btn button {
+                    width: 208px;
+                    border-radius: 10px;
+                    border: solid 2px;
                 }
+
+                .kdp-001-a.kdp-001-a-btn button:nth-child(1),
+                .kdp-001-a.kdp-001-a-btn button:nth-child(2) {
+                    height: 113px;
+                }
+
+                .kdp-001-a.kdp-001-a-btn button:nth-child(1) *,
+                .kdp-001-a.kdp-001-a-btn button:nth-child(2) * {
+                    font-size: 34px;
+                }
+
+                .kdp-001-a.kdp-001-a-btn button:nth-child(3),
                 .kdp-001-a.kdp-001-a-btn button:nth-child(4) {
-                    margin-top: 5px;
-                    width: 222px;
-                    height: 100px;
+                    margin-top: 18px;
+                    height: 72px;
                 }
+
+                .kdp-001-a.kdp-001-a-btn button:nth-child(3) *,
+                .kdp-001-a.kdp-001-a-btn button:nth-child(4) * {
+                    font-size: 24px;
+                }
+
+                .kdp-001-a.kdp-001-a-btn button:nth-child(1),
+                .kdp-001-a.kdp-001-a-btn button:nth-child(3) {
+                    margin-right: 30px;
+                }
+
                 .kdp-001-a.widget-content {
                     border: 1px solid #b1b1b1;
                     max-height: 143px;
@@ -327,7 +325,7 @@ module nts.uk.ui.kdp001.a {
                     border: 1px solid #b1b1b1;
                     max-height: 149px;
                     width: 448px;
-                    margin: 5px auto;
+                    margin: 5px auto 20px auto;
                     border-radius: 3px;
                 }
                 .kdp-001-a-potal.widget-content table {
@@ -362,7 +360,9 @@ module nts.uk.ui.kdp001.a {
                 
                 .kdp-001-a-title {
                     position: relative;
+                    margin-bottom: 20px;
                 }
+
                 .kdp-001-a-title .time {
                     width: 270px;
                     margin: auto;
