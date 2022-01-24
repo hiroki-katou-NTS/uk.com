@@ -21,6 +21,13 @@ public class TopPageNewDto implements Toppage.MementoSetter, Toppage.MementoGett
 
 	/** The layout display id. */
 	private int layoutDisp;
+	
+	/** 枠レイアウト1 */
+	private Integer frameLayout1;
+	/** 枠レイアウト2 */
+	private Integer frameLayout2;
+	/** 枠レイアウト3 */
+	private Integer frameLayout3;
 
 	/**
 	 * From domain.
@@ -32,9 +39,7 @@ public class TopPageNewDto implements Toppage.MementoSetter, Toppage.MementoGett
 	 */
 	public static TopPageNewDto fromDomain(Toppage topPage) {
 		TopPageNewDto topPageDto = new TopPageNewDto();
-		topPageDto.topPageCode = topPage.getTopPageCode().v();
-		topPageDto.topPageName = topPage.getTopPageName().v();
-		topPageDto.layoutDisp = topPage.getLayoutDisp().value;
+		topPage.setMemento(topPageDto);
 		return topPageDto;
 	}
 
