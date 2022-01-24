@@ -4,7 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.subst;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
@@ -13,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
  */
 // 振休管理設定
 @Getter
-public class ComSubstVacation extends DomainObject {
+public class ComSubstVacation extends AggregateRoot {
 
 	/** The company id. */
 	// 会社ID
@@ -52,6 +57,42 @@ public class ComSubstVacation extends DomainObject {
 		this.manageDistinct = manageDistinct;
 		this.linkingManagementATR = linkingManagementATR;
 		
+	}
+	
+	/**
+	 * 	[1] 振休に対応する日次の勤怠項目を取得する
+	 */
+	public List<Integer> getDailyAttendanceItemsHolidays() {
+		// 振休に対応する日次の勤怠項目
+		return Arrays.asList(1144);
+	}
+	
+	/**
+	 * 	[2] 振休に対応する月次の勤怠項目を取得する
+	 */
+	public List<Integer> getMonthlyAttendanceItemsHolidays() {
+		// 振休に対応する月次の勤怠項目
+		return Arrays.asList(1270, 1271, 1272, 1273, 1274, 1801, 2194);
+	}
+
+	/**
+	 * 	[3] 利用できない日次の勤怠項目を取得する
+	 */
+	public List<Integer> getDailyAttendanceItems() {
+		// @管理区分 == 管理しない
+		if ( this.manageDistinct == ManageDistinct.NO)
+			return this.getDailyAttendanceItemsHolidays();
+		return new ArrayList<>();
+	}
+	
+	/**
+	 * 	[4] 利用できない月次の勤怠項目を取得する
+	 */
+	public List<Integer> getMonthlyAttendanceItems() {
+		// @管理区分 == 管理しない
+		if ( this.manageDistinct == ManageDistinct.NO)
+			return this.getMonthlyAttendanceItemsHolidays();
+		return new ArrayList<>();
 	}
 
 	// =================== Memento State Support Method ===================

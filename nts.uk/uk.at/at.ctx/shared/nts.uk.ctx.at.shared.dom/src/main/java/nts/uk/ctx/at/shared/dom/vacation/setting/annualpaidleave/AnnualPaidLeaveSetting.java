@@ -5,6 +5,9 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -23,7 +26,6 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdTime;
  */
 // 年休設定
 @Getter
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, of = { "companyId" })
 public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializable {
 
@@ -111,6 +113,96 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 		// 期限日を返す
 		return deadline;
 	}
+	/**
+	 * [C-0] 年休設定
+	 */
+	public AnnualPaidLeaveSetting(String companyId, AcquisitionSetting acquisitionSetting,
+			ManageDistinct yearManageType, ManageAnnualSetting manageAnnualSetting, TimeAnnualSetting timeSetting) {
+		super();
+		this.companyId = companyId;
+		this.acquisitionSetting = acquisitionSetting;
+		this.yearManageType = yearManageType;
+		this.manageAnnualSetting = manageAnnualSetting;
+		this.timeSetting = timeSetting;
+	}
+	
+	/**
+	 * [1] 年休に対応する日次の勤怠項目を取得する
+	 */
+	public List<Integer> getDailyAttendanceItemsAnnualLeave() {
+		List<Integer> lstId = new ArrayList<>();
+		// 年休に対応する日次の勤怠項目
+		lstId.addAll(Arrays.asList(539, 540));
+		// @時間年休管理設定.時間年休に対応する日次の勤怠項目を取得する()
+		lstId.addAll(timeSetting.getDailyAttdItemsCorrespondAnnualLeave());
+		return lstId;
+	}
+	
+	/**
+	 * [2] 年休に対応する月次の勤怠項目を取得する
+	 */
+	public List<Integer> getMonthlyAttendanceItemsAnnualLeave() {
+		List<Integer> lstId = new ArrayList<>();
+		// [prv-1] 使用数を含まない年休に対応する月次の勤怠項目を取得する	
+		lstId.addAll(this.getMonthlyAttendanceItemsNotInclude());
+		
+		// 常に表示する年休の月次の勤怠項目
+		lstId.addAll(Arrays.asList(185, 789, 800));
+		return lstId;
+	}
+	
+	/**
+	 * [3] 利用できない日次の勤怠項目を取得する
+	 */
+	public List<Integer> getDailyAttendanceItemsNotAvailable() {
+		List<Integer> lstId = new ArrayList<>();
+		if (this.yearManageType == ManageDistinct.NO)
+			// 年休に対応する日次の勤怠項目
+			lstId.addAll(Arrays.asList(539, 540));
+		
+		lstId.addAll(timeSetting.getDailyAttendItemsNotAvailable(yearManageType));
+		
+		return lstId;
+	}
+	
+	/**
+	 * [4] 利用できない月次の勤怠項目を取得する
+	 */
+	public List<Integer> getMonthlyAttendanceItemsNotAvailable() {
+		List<Integer> lstId = new ArrayList<>();
+		if (this.yearManageType == ManageDistinct.NO)
+			// 年休に対応する月次の勤怠項目
+			lstId.addAll(Arrays.asList(189, 794, 798, 799, 790, 801, 805, 809, 1427, 1428, 1432, 1433, 1780, 1781, 1782,
+					1783, 1784, 1785, 1786, 1787, 1788, 1789));
+		
+		// $半日年休 
+		lstId.addAll(manageAnnualSetting.getMonthlyAttendanceItems(yearManageType));
+		
+		// $時間年休
+		lstId.addAll(timeSetting.getMonthlyAttendItemsNotAvailable(yearManageType));
+				
+		return lstId;
+	}
+	
+	/**
+	 * [prv-1] 使用数を含まない年休に対応する月次の勤怠項目を取得する
+	 */
+	private List<Integer> getMonthlyAttendanceItemsNotInclude() {
+		List<Integer> lstId = new ArrayList<>();
+		// 年休に対応する月次の勤怠項目
+		lstId.addAll(Arrays.asList(189, 794, 798, 799, 790, 801, 805, 809, 1427, 1428, 1432, 1433, 1780, 1781, 1782,
+				1783, 1784, 1785, 1786, 1787, 1788, 1789));
+		
+		// @年休管理設定.半日回数上限に対応する月次の勤怠項目を取得する()
+		lstId.addAll(manageAnnualSetting.getMonthlyAttendanceItemsHalfDayLimit());
+		
+		// @時間年休管理設定.時間年休に対応する月次の勤怠項目を取得する()
+		lstId.addAll(timeSetting.acquireMonthAttdItemsHourlyAnnualLeave());
+		
+		return lstId;
+	}
+	
+	
 	/**
 	 * [6]時間年休上限日数を取得する
 	 * @param fromGrantTableDays

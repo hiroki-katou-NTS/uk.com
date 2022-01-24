@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.optitem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +100,76 @@ public class OptionalItemTest {
 		assertThat(dataResult.isCheckResult()).isFalse();
 		assertThat(dataResult.getErrorContent().get(0)).isEqualTo("10分の単位で入力してください。");
 		assertThat(dataResult.getErrorContent().get(1)).isEqualTo("70.0以上の値で入力してください。");
+	}
+	
+	/**
+	 * test [1] 任意項目に対応する日次の勤怠項目を取得する
+	 */
+	@Test
+	public void testGetDaiLyAttendanceIdByNo() {
+		OptionalItem optionalItem = null;
+		//任意項目NO 1~100
+		for(int i = 1;i<=100;i++) {
+			List<Integer> listAttdId = new ArrayList<>();
+			optionalItem = OptionalItemHelper.createOptionalItemByNoAndUseAtr(i, OptionalItemUsageAtr.USE);
+			listAttdId  = optionalItem.getDaiLyAttendanceIdByNo();
+			assertThat( listAttdId )
+			.extracting( d -> d)
+			.containsExactly(i+640);
+		}
+	}
+
+	/**
+	 * test [2] 任意項目に対応する月次の勤怠項目を取得する
+	 */
+	@Test
+	public void testGetMonthlyAttendanceIdByNo() {
+		OptionalItem optionalItem = null;
+		//任意項目NO 1~100
+		for(int i = 1;i<=100;i++) {
+			List<Integer> listAttdId = new ArrayList<>();
+			optionalItem = OptionalItemHelper.createOptionalItemByNoAndUseAtr(i, OptionalItemUsageAtr.USE);
+			listAttdId  = optionalItem.getMonthlyAttendanceIdByNo();
+			assertThat( listAttdId )
+			.extracting( d -> d)
+			.containsExactly(i+588);
+		}
+	}
+	
+	/**
+	 * test [3] 利用できない日次の勤怠項目を取得する
+	 */
+	@Test
+	public void testGetDailyAttendanceIdNotAvailable() {
+		List<Integer> listAttdId = new ArrayList<>();
+		//任意項目NO 1 && 任意項目利用区分 == 利用しない
+		OptionalItem optionalItem = OptionalItemHelper.createOptionalItemByNoAndUseAtr(1, OptionalItemUsageAtr.NOT_USE);
+		listAttdId  = optionalItem.getDailyAttendanceIdNotAvailable();
+		assertThat( listAttdId )
+		.extracting( d -> d)
+		.containsExactly(641);
+		//任意項目NO 1 && 任意項目利用区分 != 利用しない
+		optionalItem = OptionalItemHelper.createOptionalItemByNoAndUseAtr(1, OptionalItemUsageAtr.USE);
+		listAttdId  = optionalItem.getDailyAttendanceIdNotAvailable();
+		assertThat( listAttdId ).isEmpty();
+	}
+	
+	/**
+	 * test [4] 利用できない月次の勤怠項目を取得する
+	 */
+	@Test
+	public void testGetMonthlyAttendanceIdNotAvailable() {
+		List<Integer> listAttdId = new ArrayList<>();
+		//任意項目NO 1 && 任意項目利用区分 == 利用しない
+		OptionalItem optionalItem = OptionalItemHelper.createOptionalItemByNoAndUseAtr(1, OptionalItemUsageAtr.NOT_USE);
+		listAttdId  = optionalItem.getMonthlyAttendanceIdNotAvailable();
+		assertThat( listAttdId )
+		.extracting( d -> d)
+		.containsExactly(589);
+		//任意項目NO 1 && 任意項目利用区分 != 利用しない
+		optionalItem = OptionalItemHelper.createOptionalItemByNoAndUseAtr(1, OptionalItemUsageAtr.USE);
+		listAttdId  = optionalItem.getMonthlyAttendanceIdNotAvailable();
+		assertThat( listAttdId ).isEmpty();
 	}
 
 }

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.totaltimes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -272,4 +274,39 @@ public class TotalTimes extends AggregateRoot {
 	public static interface RequireM1 extends TotalCondition.RequireM1, RequireM2 {
 		
 	}
+	
+	/**
+	 * 	[1] 回数集計に対応する月次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getMonthlyAttendanceId() {
+		return Arrays.asList(this.totalCountNo + 475, this.totalCountNo + 505);
+	}
+	
+	/**
+	 * 	[2] 利用できない月次の勤怠項目を取得する
+	 * @return
+	 */
+	public List<Integer> getMonthlyAttendanceIdNotAvailable() {
+		if(this.useAtr == UseAtr.NotUse ) {
+			return this.getMonthlyAttendanceId();
+		}
+		return new ArrayList<>();
+	}
+
+	public TotalTimes(String companyId, Integer totalCountNo, UseAtr useAtr, TotalTimesName totalTimesName,
+			TotalTimesABName totalTimesABName, SummaryAtr summaryAtr, TotalCondition totalCondition,
+			SummaryList summaryList, CountAtr countAtr) {
+		super();
+		this.companyId = companyId;
+		this.totalCountNo = totalCountNo;
+		this.useAtr = useAtr;
+		this.totalTimesName = totalTimesName;
+		this.totalTimesABName = totalTimesABName;
+		this.summaryAtr = summaryAtr;
+		this.totalCondition = totalCondition;
+		this.summaryList = summaryList;
+		this.countAtr = countAtr;
+	}
+	
 }
