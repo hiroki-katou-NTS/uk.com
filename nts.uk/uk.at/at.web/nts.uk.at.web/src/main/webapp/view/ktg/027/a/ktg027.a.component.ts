@@ -166,8 +166,8 @@ module nts.uk.at.view.ktg027.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="23%" />
-                            <col width="18%" />
+                            <col width="25%" />
+                            <col width="16%" />
                             <col width="14%" />
                             <col width="45%" />
                         </colgroup>
@@ -239,13 +239,14 @@ module nts.uk.at.view.ktg027.a {
                     overflow: hidden;
                 }
                 .ktg027-employee-name {
-                    flex: 5;
+                    flex: 6.5;
                     line-height: 25px;
                     padding-left: 5px;
                 }
                 .ktg027-ot-time {
-                    flex: 4;
+                    flex: 3.5;
                     line-height: 25px;
+                    padding-right: 5px;
                 }
                 .ktg027-remain-time {
                     flex: 3;
