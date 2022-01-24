@@ -1084,8 +1084,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
             .then((res: any) => {
                 self.appDispInfoStartupOutput = res.data.appDispInfoStartupOutput;
                 let opActualContentDisplayLst = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
-                self.workLocationNames = res.data.workLocationNames;
-                self.workplaceNames = res.data.workplaceNames;
+                self.workLocationNames = res.data.workLocationNames || [];
+                self.workplaceNames = res.data.workplaceNames || [];
                 if (!_.isEmpty(opActualContentDisplayLst)) {
                     this.bindActualAchive(opActualContentDisplayLst);
                 }
@@ -1176,6 +1176,27 @@ export class KafS02AComponent extends KafS00ShrComponent {
             self.actualNursingTime = actualNursingTime;
             self.actualParentingTime = actualParentingTime;
 
+            const setActualWkpLocation = (item, wkpId, locationCD) => {
+                const workplace = self.workplaceNames.find((wkp) => wkp && wkp.workplaceId === wkpId);
+                const workLocation = self.workLocationNames.find((location) => location && location.workLocationCode === locationCD);
+                if (workplace && self.application.prePostAtr) {
+                    item.workplaceCD = workplace.wkpCode;
+                    item.workplaceName = workplace.wkpName;
+                    item.workplaceId = workplace.workplaceId;
+                } else {
+                    item.workplaceCD = null;
+                    item.workplaceName = self.$i18n('KAFS02_40');
+                    item.workplaceId = null;
+                }
+    
+                if (workLocation && self.application.prePostAtr) {
+                    item.workLocationCD = workLocation.workLocationCode;
+                    item.workLocationName = workLocation.workLocationName;
+                } else {
+                    item.workLocationCD = null;
+                    item.workLocationName = self.$i18n('KAFS02_41');
+                }
+            };
             // working hour
             if (!_.isEmpty(actualWorkingTime)) {
                 actualWorkingTime.forEach((item) => {
@@ -1187,6 +1208,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             if (this.mode) {
                                 this.workHourLst[i].workplaceId = item.workplaceId;
                                 this.workHourLst[i].workLocationCD = item.opWorkLocationCD;
+                                setActualWkpLocation(this.workHourLst[i], this.workHourLst[i].workplaceId, this.workHourLst[i].workLocationCD);
                             }
                         }
                     }
@@ -1204,6 +1226,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             if (this.mode) {
                                 this.tempWorkHourLst[i].workplaceId = item.workplaceId;
                                 this.tempWorkHourLst[i].workLocationCD = item.opWorkLocationCD;
+                                setActualWkpLocation(this.tempWorkHourLst[i], this.tempWorkHourLst[i].workplaceId, this.tempWorkHourLst[i].workLocationCD);
                             }
                         }
                     }
@@ -1273,6 +1296,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             if (this.mode) {
                                 this.supportLst[i].workplaceId = item.workplaceId;
                                 this.supportLst[i].workLocationCD = item.opWorkLocationCD;
+                                setActualWkpLocation(this.supportLst[i], this.supportLst[i].workplaceId, this.supportLst[i].workLocationCD);
                             }
                         }
                     }
@@ -2113,6 +2137,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
     public kaf000BChangePrePost(prePostAtr) {
         const self = this;
         self.application.prePostAtr = prePostAtr;
+        let opActualContentDisplayLst = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
+        if (_.isEmpty(opActualContentDisplayLst)) return;
+        self.bindActualAchive(opActualContentDisplayLst);
     }
 
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {

@@ -110,7 +110,7 @@ public class CollectAchievementImpl implements CollectAchievement {
 		/**
 		 * 応援時間帯
 		 */
-		List<TimePlaceOutput> supportTime;
+		List<TimePlaceOutput> supportTime = this.createTimePlace(5);
 		
 		/**
 		 * 育児時間帯
@@ -127,7 +127,7 @@ public class CollectAchievementImpl implements CollectAchievement {
 				breakTime,
 				workingTime,
 				outingTime,
-				null,
+				supportTime,
 				parentingTime,
 				extraordinaryTime);
 	}
