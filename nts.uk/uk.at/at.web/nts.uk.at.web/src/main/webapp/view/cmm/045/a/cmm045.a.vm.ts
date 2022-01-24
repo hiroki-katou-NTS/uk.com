@@ -76,13 +76,13 @@ module cmm045.a.viewmodel {
                 position: {
                     my: "left bottom",
                     at: "right top",
-                    of: ".hyperlink"
+                    of: "#search-option"
                 },
                 showOnStart: false,
                 dismissible: false
             });
 
-            $("a.hyperlink").click(() => {
+            $("#search-option").click(() => {
             	$(".popup-panel-cmm045").ntsPopup("toggle");
 				$(".popup-panel-cmm045").css('top', '215px');
             });
@@ -91,7 +91,7 @@ module cmm045.a.viewmodel {
                 let control = $(".popup-panel-cmm045");
                 if (!$(e.target).is(control)
                     && control.has(e.target).length === 0
-                    && !$(e.target).is($(".hyperlink"))) {
+                    && !$(e.target).is($("#search-option"))) {
                     $(".popup-panel-cmm045").ntsPopup("hide");
                 }
             });
@@ -181,7 +181,6 @@ module cmm045.a.viewmodel {
 					character.restore('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj: any) => {
 						$('#status-div').width(955);
 						if(window.innerWidth-90 < 965) {
-							$('#app-resize').width(920);
 							$('.nts-fixed-header-container .fixed-table').width(920);
 							$('.nts-fixed-header-wrapper').width(937);
 							$('.nts-fixed-header-container').width(920);
@@ -191,7 +190,6 @@ module cmm045.a.viewmodel {
 							$('.nts-fixed-body-container').width(937);
 							$('.nts-fixed-body-container').css('max-width', 953);
 						} else {
-							$('#app-resize').width(window.innerWidth-134);
 							$('.nts-fixed-header-container .fixed-table').width(window.innerWidth-134);
 							$('.nts-fixed-header-wrapper').width(window.innerWidth-117);
 							$('.nts-fixed-header-container').width(window.innerWidth-134);
@@ -239,7 +237,6 @@ module cmm045.a.viewmodel {
 					character.restore('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj: any) => {
 						$('#status-div').width(880);
 		                if(window.innerWidth-90 < 880) {
-							$('#app-resize').width(845);
 							$('.nts-fixed-header-container .fixed-table').width(845);
 							$('.nts-fixed-header-wrapper').width(862);
 							$('.nts-fixed-header-container').width(845);
@@ -249,7 +246,6 @@ module cmm045.a.viewmodel {
 							$('.nts-fixed-body-container').width(862);
 							$('.nts-fixed-body-container').css('max-width', 878);
 						} else {
-							$('#app-resize').width(window.innerWidth-129);
 							$('.nts-fixed-header-container .fixed-table').width(window.innerWidth-129);
 							$('.nts-fixed-header-wrapper').width(window.innerWidth-112);
 							$('.nts-fixed-header-container').width(window.innerWidth-129);
@@ -837,8 +833,6 @@ module cmm045.a.viewmodel {
                     $container.find(".nts-fixed-body-container table"));
             }
 
-            // $("#app-resize").css("width", options.width - 20);
-
             this.loadGridData(options.columns);
 
             $container.show();
@@ -1084,7 +1078,6 @@ module cmm045.a.viewmodel {
                     columns: columns.filter(c => c.hidden !== true),
                 });
 
-                $("#app-resize").css("width", widthAuto);
             });
 
         }
@@ -1250,7 +1243,6 @@ module cmm045.a.viewmodel {
                     columns: columns.filter(c => c.hidden !== true)
                 },self.useApprovalFunction());
 
-                $("#app-resize").css("width", widthAuto);
             });
 
         }

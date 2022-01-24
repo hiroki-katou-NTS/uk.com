@@ -1,3 +1,39 @@
+
+#filter-controls {
+	background-color: #F5F5F5;
+	width: 800px;
+	padding: 20px;
+}
+
+#filter-controls .status-filters {
+	
+}
+
+#filter-controls .main-filters {
+	
+}
+
+#filter-controls .main-filters div {
+	vertical-align: middle;
+}
+
+#filter-controls .main-filters .item {
+	display: inline-block;
+}
+
+#filter-controls .main-filters .item:not(:first-child) {
+	margin-left: 25px;
+}
+
+#filter-controls .main-filters .item > div {
+	display: inline-block;
+}
+
+#filter-controls #search-option,
+#filter-controls #execute-search {
+	width: 120px;
+}
+
 .unapprovalCell {
 	background-color: #ffffff;
 }
@@ -31,17 +67,21 @@
 }
 
 #app-grid-container {
-	margin-left: 20px;
 	user-select: none;
 	-ms-user-select: none;
 }
 
 #app-grid-container.with-ccg001 {
-	margin-left: 90px;
 }
 
 #app-resize.with-ccg001 {
-	margin-left: 90px;
+	margin-top: -20px;
+}
+
+#app-resize #save-column-width {
+	float: right;
+	margin-bottom: 10px;
+	margin-right: 49px;
 }
 
 #app-grid-container .nts-fixed-header-container,
@@ -131,7 +171,6 @@
 	margin-top: -24px !important;
 }
 .app-left {
-	margin-left: 71px !important;
 }
 #grid1_virtualContainer {
 	border:1px solid #dddddd
@@ -140,7 +179,7 @@
 	border:1px solid #dddddd
 }
 #content-area{
-	overflow: auto;
+	padding: 20px 20px 20px 60px;
 }
 html {
     overflow: auto;
