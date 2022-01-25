@@ -18,6 +18,8 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.AsyncTask;
+import nts.arc.task.tran.AtomTask;
+import nts.arc.task.tran.TransactionService;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -67,6 +69,9 @@ public class ApproveAppProcedure {
 	
 	@Inject
 	private MonthAggrForEmpsAdaptor monthAggrForEmpsAdaptor;
+	
+	@Inject
+    private TransactionService transaction;
 	
 	/**
 	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.アルゴリズム.申請承認する時の手続き.申請承認する時の手続き
@@ -138,7 +143,8 @@ public class ApproveAppProcedure {
 		if(!CollectionUtil.isEmpty(applicantLst)) {
 			CacheCarrier carrier = new CacheCarrier();
 			// 社員の月別実績を集計する
-			monthAggrForEmpsAdaptor.aggregate(carrier, companyID, applicantLst, false);
+			List<AtomTask> listAtomTask = monthAggrForEmpsAdaptor.aggregate(carrier, companyID, applicantLst, false);
+			listAtomTask.forEach(x -> transaction.execute(x));
 		}
 		// 取得した内容を返す
 		return new ApproveAppProcedureOutput(
