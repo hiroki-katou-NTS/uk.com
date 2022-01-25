@@ -203,16 +203,15 @@
 						<label>#{i18n.getText('KAF000_63')}</label>
 					</div>
 				</div>
-			</div>
-			<div style="display: inline-block; position: absolute; left: 60px; z-index: 10;">
-				<a class="goback link-button" data-bind="click: backtoCMM045">#{i18n.getText('KAF000_14')}</a>
-			</div>
-			<div style="display: inline-block; margin-left: 5px; margin-right: 5px; position: absolute; left: 180px; z-index: 10;">
+
+				<button class="goback" data-bind="click: backtoCMM045">申請一覧</button>
 				<!-- B1_2 -->
-				<button data-bind="click: back, enable: $vm.enableBack" style="width: 27px;">◀</button>
+				<button data-bind="click: back, enable: $vm.enableBack">前頁</button>
 				<!-- B1_3 -->
-				<button data-bind="click: next, enable: $vm.enableNext" style="width: 27px;">▶</button>
+				<button data-bind="click: next, enable: $vm.enableNext">次頁</button>
+
 			</div>
+			
 			<div>
 				<div data-bind="if: currentApp()=='sample'">
 					<div data-bind="if: ko.unwrap(appType) != null">

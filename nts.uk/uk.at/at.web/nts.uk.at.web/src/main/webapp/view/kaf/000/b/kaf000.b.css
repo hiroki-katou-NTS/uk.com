@@ -1,12 +1,5 @@
-.kaf000-function-btn {
-	margin-left: 0.1vw !important;
-	margin-right: 0px !important;
-}
 .controlButtonCell_kaf000 {
 	display: inline-block;
-}
-.controlButtonCell_kaf000 button {
-	margin-right: 8px !important;
 }
 .kaf000-function-div-update{
 	margin-left: calc(10vw - 102px);
@@ -24,7 +17,3 @@
 	padding: 5px;
 }
 
-.goback {
-	background-color: #f1fdfb;
-	height: 30px !important;
-}
