@@ -61,7 +61,7 @@ public class ManagerOfWorkplaceService {
 
                     val roleOpt = roleList.stream().filter(x -> x.getRoleId().equals(item.getValue())).findFirst();
                     boolean isRemoved = false;
-                    if (roleOpt.isPresent()) {  //RoleAtr.INCHARGE = 0; EmployeeReferenceRange.DEPARTMENT_AND_CHILD = 3; EmployeeReferenceRange.DEPARTMENT_ONLY = 2
+                    if (roleOpt.isPresent()) {  //RoleAtr.INCHARGE = 0; EmployeeReferenceRange.ONLY_MYSELF = 3; EmployeeReferenceRange.DEPARTMENT_ONLY = 2
                         if (roleOpt.get().getAssignAtr() == 0 || roleOpt.get().getEmployeeReferenceRange() == 3 ||
                                 (!workplaceId.equals(workplaceIdUpper) && roleOpt.get().getEmployeeReferenceRange() == 2)) {
                             itr.remove();
