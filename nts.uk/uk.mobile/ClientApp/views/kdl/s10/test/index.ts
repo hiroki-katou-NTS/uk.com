@@ -14,7 +14,9 @@ import * as _ from 'lodash';
 })
 export class KdlS10TestComponent extends Vue {
     public title: string = 'KdlS10Test';
+    public isAddNone = 1;
     public data = {
+        isShowNoSelectRow: false,
         selectedCode: '',
         selectedName: ''
     };
