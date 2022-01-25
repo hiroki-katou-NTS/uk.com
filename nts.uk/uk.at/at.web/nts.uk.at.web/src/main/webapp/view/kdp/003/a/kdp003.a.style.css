@@ -30,6 +30,13 @@
 	display: none;
 }
 
+.kdp-003-a .time-sheet .nts-datepicker-wrapper input {
+	border-radius: 0;
+    background-color: #6A6A6A;
+    color: #fff;
+    border: none;
+}
+
 .kdp-003-a #stamp-input {
 }
 

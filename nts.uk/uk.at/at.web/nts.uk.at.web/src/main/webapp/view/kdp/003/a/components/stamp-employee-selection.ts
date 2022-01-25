@@ -4,7 +4,7 @@ module nts.uk.at.kdp003.a {
 	const stampEmployeeSelectionTemplate = `
 		<div data-bind="ntsDatePicker: { value: $component.options.baseDate }"></div>
 		<div class="button-group-filter" data-bind="foreach: buttons">
-			<button class="small filter" data-bind="
+			<button class="filter" data-bind="
 					i18n: text, 
 					css: { 'extend': width === 2, selected: ko.toJS($component.button) === text },
 					click: function() { $component.button(text); }
