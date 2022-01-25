@@ -1,5 +1,4 @@
 package nts.uk.ctx.at.record.dom.require;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,7 +22,6 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationAdapter;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
@@ -447,7 +445,7 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 				ComRegulaMonthActCalSetRepo comRegulaMonthActCalSetRepo, ShaDeforLaborMonthActCalSetRepo shaDeforLaborMonthActCalSetRepo, ShaRegulaMonthActCalSetRepo shaRegulaMonthActCalSetRepo, WkpDeforLaborMonthActCalSetRepo wkpDeforLaborMonthActCalSetRepo,
 				WkpRegulaMonthActCalSetRepo wkpRegulaMonthActCalSetRepo, MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo, VerticalTotalMethodOfMonthlyRepository verticalTotalMethodOfMonthlyRepo, StampCardRepository stampCardRepo,
 				BentoReservationRepository bentoReservationRepo, BentoMenuRepository bentoMenuRepo, IntegrationOfDailyGetter integrationOfDailyGetter, WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter,
-				GetProcessingDate getProcessingDate, ElapseYearRepository elapseYearRepo,SyCompanyRecordAdapter syCompanyRecordAdapter, DailySnapshotWorkAdapter snapshotAdapter,
+				GetProcessingDate getProcessingDate, ElapseYearRepository elapseYearRepository, SyCompanyRecordAdapter syCompanyRecordAdapter, DailySnapshotWorkAdapter snapshotAdapter,
 				SuperHD60HConMedRepository superHD60HConMedRepo, MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber, PayoutSubofHDManaRepository payoutSubofHDManaRepo,
 				LeaveComDayOffManaRepository leaveComDayOffManaRepo,CheckCareService checkChildCareService,WorkingConditionItemService workingConditionItemService, PublicHolidaySettingRepository publicHolidaySettingRepo, 
 				PublicHolidayManagementUsageUnitRepository publicHolidayManagementUsageUnitRepo, CompanyMonthDaySettingRepository companyMonthDaySettingRepo, TempPublicHolidayManagementRepository tempPublicHolidayManagementRepo,
@@ -467,7 +465,8 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 					retentionYearlySettingRepo, annualPaidLeaveSettingRepo, outsideOTSettingRepo, workdayoffFrameRepo, yearHolidayRepo, usageUnitSettingRepo,
 					regularLaborTimeComRepo, deforLaborTimeComRepo, regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo, deforLaborTimeEmpRepo,
 					regularLaborTimeShaRepo, deforLaborTimeShaRepo, sharedAffWorkPlaceHisAdapter, lengthServiceRepo, grantYearHolidayRepo, payoutSubofHDManaRepo,
-					leaveComDayOffManaRepo, checkChildCareService, workingConditionItemService, remainCreateInforByRecordData, sysEmploymentHisAdapter);
+					leaveComDayOffManaRepo, checkChildCareService, workingConditionItemService, remainCreateInforByRecordData, sysEmploymentHisAdapter,
+					elapseYearRepository, empComHisAdapter, closureStatusManagementRepo);
 
 			this.tmpResereLeaveMngRepo = tmpResereLeaveMngRepo;
 			this.sysEmploymentHisAdapter = sysEmploymentHisAdapter;
@@ -583,7 +582,7 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 			this.snapshotAdapter = snapshotAdapter;
 			this.superHD60HConMedRepo = superHD60HConMedRepo;
 			this.monthlyAggregationRemainingNumber = monthlyAggregationRemainingNumber;
-			this.elapseYearRepository = elapseYearRepo;
+			this.elapseYearRepository = elapseYearRepository;
 			this.leaveComDayOffManaRepo = leaveComDayOffManaRepo;
 			this.payoutSubofHDManaRepo = payoutSubofHDManaRepo;
 			this.publicHolidaySettingRepo = publicHolidaySettingRepo;
@@ -1373,15 +1372,6 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		}
 
 		@Override
-		public Optional<PredetemineTimeSetting> predetemineTimeSetByWorkTimeCode(String companyId,
-				String workTimeCode) {
-			if(!cache.getPredetemineTimeSettingMap().containsKey(workTimeCode)) {
-				cache.getPredetemineTimeSettingMap().put(workTimeCode, predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode));
-			}
-			return cache.getPredetemineTimeSettingMap().get(workTimeCode);
-		}
-
-		@Override
 		public DailyRecordToAttendanceItemConverter createDailyConverter() {
 			return converterFactory.createDailyConverter();
 		}
@@ -2025,6 +2015,7 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public List<OuenWorkTimeOfDailyAttendance> ouenWorkTimeOfDailyAttendance(String empId, GeneralDate ymd) {
+			/** TODO: 渡邉さんの指示で応援系のデータ取得を一旦廃止しました。*/
 //			Optional<OuenWorkTimeOfDaily> daily = ouenWorkTimeOfDailyRepo.find(empId, ymd);
 //			if(!daily.isPresent()) {
 //				return new ArrayList<>();
@@ -2036,6 +2027,7 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		@Override
 		public List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheetOfDailyAttendance(String empId,
 				GeneralDate ymd) {
+			/** TODO: 渡邉さんの指示で応援系のデータ取得を一旦廃止しました。*/
 //			OuenWorkTimeSheetOfDaily domain =  ouenWorkTimeSheetOfDailyRepo.find(empId, ymd);
 //			if(domain == null)
 //				return new ArrayList<>();
@@ -2204,24 +2196,6 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 				cache.getEmpDeforLaborMonthActCalSetMap().put(empCode, empDeforLaborMonthActCalSetRepo.find(cid, empCode));
 			}
 			return cache.getEmpDeforLaborMonthActCalSetMap().get(empCode);
-		}
-
-		@Override
-		public Optional<WkpFlexMonthActCalSet> monthFlexCalcSetByWorkplace(
-				String cid, String wkpId) {
-			if(!cache.getWkpFlexMonthActCalSetMap().containsKey(wkpId)) {
-				cache.getWkpFlexMonthActCalSetMap().put(wkpId, wkpFlexMonthActCalSetRepo.find(cid, wkpId));
-			}
-			return cache.getWkpFlexMonthActCalSetMap().get(wkpId);
-		}
-
-		@Override
-		public Optional<EmpFlexMonthActCalSet> monthFlexCalcSetByEmployment(
-				String cid, String empCode) {
-			if(!cache.getEmpFlexMonthActCalSetMap().containsKey(empCode)) {
-				cache.getEmpFlexMonthActCalSetMap().put(empCode, empFlexMonthActCalSetRepo.find(cid, empCode));
-			}
-			return cache.getEmpFlexMonthActCalSetMap().get(empCode);
 		}
 
 		@Override
@@ -2651,42 +2625,6 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 			return cache.getHolidayAddtionSetCache();
 		}
 
-//		@Override
-//		public Optional<HolidayAddtionSet> holidayAddtionSet(String cid) {
-//			return holidayAddtionRepo.findByCId(cid);
-//		}
-
-		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
-			if(!cache.getWorkTimeSettingMap().containsKey(workTimeCode)){
-				cache.getWorkTimeSettingMap().put(workTimeCode, this.workTimeSetting(cid, workTimeCode));
-			}
-			return cache.getWorkTimeSettingMap().get(workTimeCode);
-		}
-
-		@Override
-		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
-			if(cache.getCompensatoryLeaveComSettingCache() == null){
-				cache.setCompensatoryLeaveComSettingCache(this.compensatoryLeaveComSetting(companyId));
-			}
-			return cache.getCompensatoryLeaveComSettingCache();
-		}
-
-		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			return this.fixedWorkSetting(AppContexts.user().companyId(), code.v()).get();
-		}
-
-		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			return this.flowWorkSetting(AppContexts.user().companyId(), code.v()).get();
-		}
-
-		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			return this.flexWorkSetting(AppContexts.user().companyId(), code.v()).get();
-		}
-		
 		@Override
 		public Optional<PublicHolidaySetting> publicHolidaySetting(String companyID){
 			if(!cache.getPublicHolidaySettingCache().isPresent()){
@@ -3112,11 +3050,6 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		}
 
 		@Override
-		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
-			return this.predetemineTimeSetByWorkTimeCode(companyId, workTimeCode);
-		}
-
-		@Override
 		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
 				ExecutionType reCalcAtr) {
@@ -3125,21 +3058,21 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<WkpFlexMonthActCalSet> wkpFlexMonthActCalSet(String cid, String wkpId) {
-			if(wkpFlexMonthActCalSetMap.containsKey(wkpId)) {
-				return wkpFlexMonthActCalSetMap.get(wkpId);
+			if(cache.wkpFlexMonthActCalSetMap.containsKey(wkpId)) {
+				return cache.wkpFlexMonthActCalSetMap.get(wkpId);
 			}
 			Optional<WkpFlexMonthActCalSet> item = wkpFlexMonthActCalSetRepo.find(cid, wkpId);
-			wkpFlexMonthActCalSetMap.put(wkpId, item);
+			cache.wkpFlexMonthActCalSetMap.put(wkpId, item);
 			return item;
 		}
 
 		@Override
 		public Optional<EmpFlexMonthActCalSet> empFlexMonthActCalSet(String cid, String empCode) {
-			if(empFlexMonthActCalSetMap.containsKey(empCode)) {
-				return empFlexMonthActCalSetMap.get(empCode);
+			if(cache.empFlexMonthActCalSetMap.containsKey(empCode)) {
+				return cache.empFlexMonthActCalSetMap.get(empCode);
 			}
 			Optional<EmpFlexMonthActCalSet> item = empFlexMonthActCalSetRepo.find(cid, empCode);
-			empFlexMonthActCalSetMap.put(empCode, item);
+			cache.empFlexMonthActCalSetMap.put(empCode, item);
 			return item;
 		}
 
@@ -3170,25 +3103,17 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
-			if(predetemineTimeSettingMap.containsKey(workTimeCode.v())) {
-				return predetemineTimeSettingMap.get(workTimeCode.v());
+			if(cache.predetemineTimeSettingMap.containsKey(workTimeCode.v())) {
+				return cache.predetemineTimeSettingMap.get(workTimeCode.v());
 			}
 			Optional<PredetemineTimeSetting> item = predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode.v());
-			predetemineTimeSettingMap.put(workTimeCode.v(), item);
+			cache.predetemineTimeSettingMap.put(workTimeCode.v(), item);
 			return item;
 		}
 
 		@Override
 		public Optional<FlexSet> flexSet(String companyId) {
 			return flexSetRepo.findByCId(companyId);
-		}
-
-		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			if(!cache.getWorkTypeMap().containsKey(workTypeCd)){
-				cache.getWorkTypeMap().put(workTypeCd, workTypeRepo.findByPK( AppContexts.user().companyId(), workTypeCd));
-			}
-			return cache.getWorkTypeMap().get(workTypeCd);
 		}
 
 		@Override

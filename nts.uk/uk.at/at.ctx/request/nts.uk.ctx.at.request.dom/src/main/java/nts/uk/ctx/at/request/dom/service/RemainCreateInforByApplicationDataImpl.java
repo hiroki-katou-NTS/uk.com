@@ -370,7 +370,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 					sid, outData.getAppDate(), outData.getAppId());
 			if(domainDailySche.isPresent()) {
 				if(outData.getWorkTypeCode().isPresent()) {
-					WorkInfoOfDailyAttendance workAfter = CorrectDailyAttendanceService.correctFurikyu(impl, domainDailySche.get().getWorkInformation(),
+					WorkInfoOfDailyAttendance workAfter = CorrectDailyAttendanceService.correctFurikyu(impl, cid, domainDailySche.get().getWorkInformation(),
 							new WorkInfoOfDailyAttendance(
 									new WorkInformation(outData.getWorkTypeCode().get(),
 											outData.getWorkTimeCode().orElse(null)),

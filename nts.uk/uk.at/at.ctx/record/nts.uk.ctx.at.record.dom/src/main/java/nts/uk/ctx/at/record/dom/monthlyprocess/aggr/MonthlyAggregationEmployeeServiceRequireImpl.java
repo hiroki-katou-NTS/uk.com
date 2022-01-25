@@ -18,14 +18,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHour;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UnitAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -504,11 +502,6 @@ public class MonthlyAggregationEmployeeServiceRequireImpl implements AggregateMo
 			boolean isCalcAttendanceRate) {
 		return require.aggregation(cacheCarrier, period, companyId, employeeId, yearMonth, closureId, closureDate, 
 				companySets, employeeSets, monthlyCalculatingDailys, interimRemainMngMode, isCalcAttendanceRate);
-	}
-
-	@Override
-	public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UnitAtr use) {
-		return require.specialLeaveBasicInfo(sid, spLeaveCD, use);
 	}
 
 	@Override

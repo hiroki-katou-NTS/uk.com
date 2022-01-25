@@ -927,4 +927,14 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId) {
 		return closureStatusManagementRepo.getLatestByEmpId(employeeId);
 	}
+
+	@Override
+	public CompensatoryLeaveEmSetting findComLeavEmpSet(String companyId, String employmentCode) {
+		return this.compensatoryLeaveEmSetting(companyId, employmentCode).orElse(null);
+	}
+
+	@Override
+	public CompensatoryLeaveComSetting findComLeavComSet(String companyId) {
+		return this.compensatoryLeaveComSetting(companyId).orElse(null);
+	}
 }
