@@ -53,25 +53,15 @@ module nts.uk.at.view.kdp.share {
 				left: 16px;
 				z-index: 1;
 			}
+
 			.time-container .button-group {
 				position: absolute;
-				right: 0px;
-				padding-right: 7px;
-				bottom: 0px;
+				bottom: -55px;
+				right: 15px;
 			}
-			.time-container .button-group .btn-setting {
-				display: block;
-				margin-left: 18px;
-				margin-bottom: 60px;
-				border: 0;
-				height: 38px;
-				width: 38px;
-				background-color: transparent;
-				box-shadow: none;
-			}
-
-			.time-container .button-group .btn-link {
-				color: #0000EE;
+			.time-container .button-group button {
+				width: 80px;
+				margin-left: 10px;
 			}
 		</style>
 	`;
@@ -127,7 +117,7 @@ module nts.uk.at.view.kdp.share {
 			if (setting) {
 				const button = $('<button>', { class: 'btn-setting' }).get(0);
 
-				ko.applyBindingsToNode(button, { icon: 5, click: setting.click });
+				ko.applyBindingsToNode(button, { text: "設定", click: setting.click });
 
 				ko.computed({
 					read: () => {
@@ -144,7 +134,7 @@ module nts.uk.at.view.kdp.share {
 			}
 
 			if (company) {
-				const button = $('<a>', { href: '#', class: 'btn-link' }).get(0);
+				const button = $('<button>', { class: 'btn-link' }).get(0);
 
 				ko.applyBindingsToNode(button, { i18n: 'KDP003_2', click: company.click });
 
