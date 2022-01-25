@@ -57,6 +57,37 @@
 	width: 120px;
 }
 
+.popup-panel-cmm045 {
+	display: inline-block;
+	padding: 10px 20px !important;
+}
+
+.popup-panel-cmm045 .row:not(:first-child) {
+	margin-top: 20px;
+}
+
+.popup-panel-cmm045 .row > div {
+	display: inline-block;
+}
+
+.popup-panel-cmm045 .row .row-header {
+	width: 80px;
+}
+
+.popup-panel-cmm045 .row .row-content {
+	width: 400px;
+}
+
+.popup-panel-cmm045 .checkbox-wrappers {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+.popup-panel-cmm045 .checkbox-wrappers .checkbox-wrapper span {
+	width: 140px;
+}
+
 .unapprovalCell {
 	background-color: #ffffff;
 }

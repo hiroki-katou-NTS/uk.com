@@ -147,35 +147,26 @@
 
 				<!-- Popup Area -->
 				<div class="popup-panel popup-panel-cmm045">
-					<table>
-						<tr>
-							<td style="padding-bottom: 10px;">#{i18n.getText('CMM045_91')}</td>
-							<td style="padding-bottom: 10px;">#{i18n.getText('CMM045_94')}</td>
-						</tr>
-						<tr>
-							<td style="vertical-align: top; padding-right: 15px;">
-								<div
-									data-bind="ntsCheckBox: { text: '#{i18n.getText('CMM045_92')}', checked: isBeforeCheck }">
-								</div>
-								<div style="display: block;"
-									data-bind="ntsCheckBox: { text: '#{i18n.getText('CMM045_93')}', checked: isAfterCheck }">
-								</div>
-							</td>
-							<td>
-								<table id="multi-list" data-bind="ntsGridList: {
-									columns: ko.observableArray([
-						                { headerText: 'appType', key: 'appType', width: 50, hidden: true},
-						                { headerText: '#{i18n.getText('CMM045_94')}', key: 'appName', width: 190 },
-						            ]),
-									multiple: true,
-									options: itemApplication,
-									optionsValue: 'appType',
-									value: selectedAppId,
-									rows: 14
-								}"></table>
-							</td>
-						</tr>
-					</table>
+					
+					<div class="row">
+						<div class="row-header">区分</div>
+						<div class="row-content">
+							<div data-bind="ntsCheckBox: { text: '#{i18n.getText('CMM045_92')}', checked: isBeforeCheck }"></div>
+							<div data-bind="ntsCheckBox: { text: '#{i18n.getText('CMM045_93')}', checked: isAfterCheck }"></div>
+						</div>
+					</div>
+
+					<div class="row app-type">
+						<div class="row-header">申請種類</div>
+						<div class="row-content">
+							<div data-bind="ntsMultiCheckBox: {
+								options: itemApplication,
+								optionsValue: 'appType',
+								optionsText: 'appName',
+								value: selectedAppId }"></div>
+						</div>
+					</div>
+
 				</div>
 			</div>
 		</ui:define>
