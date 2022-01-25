@@ -17,6 +17,7 @@ import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAccept
 public class RegisterSmileCooperationAcceptanceSettingScreenCommand {
 	private Integer paymentCode;
 
+	// Start: Variable at a screen
 	private Integer checkedOrganizationInformation;
 	private Integer checkedBasicPersonnelInformation;
 	private Integer checkedJobStructureInformation;
@@ -36,6 +37,14 @@ public class RegisterSmileCooperationAcceptanceSettingScreenCommand {
 	private List<Integer> listCheckedCheckbox;
 
 	private List<String> listSelectedComboboxValue;
+	// End: Variable at a screen
+
+	// Start: Variable at b screen
+	private Integer salaryCooperationClassification;
+	private Integer monthlyLockClassification;
+	private Integer monthlyApprovalCategory;
+	private String salaryCooperationConditions;
+	// End: Variable at b screen
 
 	public List<SmileCooperationAcceptanceSetting> convertScreenCommandToListSetting() {
 		listCheckedCheckbox = Arrays.asList(checkedOrganizationInformation,

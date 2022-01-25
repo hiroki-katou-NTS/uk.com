@@ -1,11 +1,9 @@
-/// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
-
 module nts.uk.at.view.smm001.b {
-
   const API = {
     // <<ScreenQuery>> 初期起動の情報取得する
     getInitialStartupInformation: 'com/screen/smm001/get-initial-startup-information',
     getInformationOnExternal: 'com/screen/smm001/get-information-on-external',
+    registerSmileLinkageExternalOutput: 'com/screen/smm001/register-smile-linkage-external-output'
   };
 
   class ItemModel {
@@ -17,9 +15,9 @@ module nts.uk.at.view.smm001.b {
       this.name = name;
     }
   }
-  @bean()
+
   export class ScreenModelB extends ko.ViewModel {
-    selectedCode: KnockoutObservable<string> = ko.observable();
+    selectedCode: KnockoutObservable<number> = ko.observable(1);
     itemListCndSet: KnockoutObservableArray<any> = ko.observableArray([]);
 
     enumDoOrDoNot2: KnockoutObservableArray<any>;
@@ -28,13 +26,13 @@ module nts.uk.at.view.smm001.b {
 
     // Start: Init b screen
     salaryCooperationClassification: KnockoutObservable<boolean> = ko.observable(false);
-    monthlyLockClassification: KnockoutObservable<boolean> = ko.observable(false);
-    monthlyApprovalCategory: KnockoutObservable<boolean> = ko.observable(false);
+    monthlyLockClassification: KnockoutObservable<number> = ko.observable(0);
+    monthlyApprovalCategory: KnockoutObservable<number> = ko.observable(0);
     salaryCooperationConditions: KnockoutObservable<string> = ko.observable();
     // End: Init b screen
 
-    ENUM_IS_CHECKED = true;
-    ENUM_IS_NOT_CHECKED = false;
+    ENUM_IS_CHECKED = 1;
+    ENUM_IS_NOT_CHECKED = 0;
     enumPaymentCategoryList: KnockoutObservableArray<any>;
 
     constructor() {
@@ -52,36 +50,63 @@ module nts.uk.at.view.smm001.b {
 
       // Init payment category
       vm.enumPaymentCategoryList = ko.observableArray(__viewContext.enums.PaymentCategory);
-
+      
       vm.getInformationOnExternal();
     }
 
     getInformationOnExternal() {
       const vm = this;
       vm.$blockui('show');
-      vm.itemListCndSet().push({
+      let finalArray = [{
         code: '0',
         name: ''
-      })
+      }];
       vm.$ajax('com', API.getInformationOnExternal).then((response: any) => {
         if (response) {
           console.log("response >>>: ", response)
           const smileLinkageOutputSetting = response.smileLinkageOutputSetting;
-          vm.salaryCooperationClassification(smileLinkageOutputSetting.salaryCooperationClassification);
-
-          vm.monthlyLockClassification(smileLinkageOutputSetting.monthlyLockClassification === 0);
-          vm.monthlyApprovalCategory(smileLinkageOutputSetting.monthlyApprovalCategory === 0);
+          vm.salaryCooperationClassification(smileLinkageOutputSetting.salaryCooperationClassification === 1);
+          vm.monthlyLockClassification(smileLinkageOutputSetting.monthlyLockClassification);
+          vm.monthlyApprovalCategory(smileLinkageOutputSetting.monthlyApprovalCategory);
           vm.salaryCooperationConditions(smileLinkageOutputSetting.salaryCooperationConditions);
           const stdOutputCondSetDtos = response.stdOutputCondSetDtos;
-          const finalArray = stdOutputCondSetDtos.map((obj: any) => {
-            return {
+          stdOutputCondSetDtos.forEach((obj: any) => {
+            finalArray.push({
               code: obj.conditionSetCode,
               name: obj.conditionSetName
-            };
+            });
           });
-          vm.itemListCndSet().push(...finalArray);
+          vm.itemListCndSet(finalArray);
         }
       })
+    }
+
+    validateBeforeSave() {
+      const vm = this;
+      return !(vm.salaryCooperationClassification() && vm.salaryCooperationConditions() === '0');
+    }
+
+    saveCommandBScreen() {
+      const vm = this;
+      if (this.validateBeforeSave() === false) {
+        vm.$dialog.info({ messageId: "Msg_3250" });
+        return;
+      }
+      vm.$blockui('show');
+      const command = {
+        paymentCode: 1,
+        salaryCooperationClassification: vm.salaryCooperationClassification() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+        monthlyLockClassification: vm.monthlyLockClassification() == 1 ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+        monthlyApprovalCategory: vm.monthlyApprovalCategory() == 0 ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+        salaryCooperationConditions: vm.salaryCooperationConditions()
+      };
+      vm.$ajax('com', API.registerSmileLinkageExternalOutput, command)
+        .then((res: any) => {
+          console.log(res);
+          vm.$dialog.info({ messageId: "Msg_15" });
+        }).fail((err) => {
+          vm.$dialog.error(err);
+        }).always(() => vm.$blockui('clear'));
     }
 
     moveItemToRight() {

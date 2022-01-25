@@ -216,6 +216,8 @@ module nts.uk.at.view.smm001.a {
         }).fail((err) => {
           vm.$dialog.error(err);
         }).always(() => vm.$blockui('clear'));
+
+        vm.screenB.saveCommandBScreen();
     }
   }
 }

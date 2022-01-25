@@ -32,9 +32,9 @@
     </div>
     <div class="ml-2">
       <label
-        data-bind="ntsRadioButton: { checked: monthlyLockClassification, optionText: DO_TEXT, option: true, group: 'lockClassification' }"></label>
+        data-bind="ntsRadioButton: { checked: monthlyLockClassification, optionText: DO_TEXT, checkedValue: 1, group: 'lockClassification' }"></label>
       <label
-        data-bind="ntsRadioButton: { checked: monthlyLockClassification, optionText: DO_NOT_TEXT, option: false, group: 'lockClassification' }"></label>
+        data-bind="ntsRadioButton: { checked: monthlyLockClassification, optionText: DO_NOT_TEXT, checkedValue: 0, group: 'lockClassification' }"></label>
     </div>
   </div>
   <div class="smile-div">
@@ -43,9 +43,9 @@
     </div>
     <div class="ml-2">
       <label
-        data-bind="ntsRadioButton: { checked: monthlyApprovalCategory, optionText: DO_TEXT, option: true, group: 'approvalCategory' }"></label>
+        data-bind="ntsRadioButton: { checked: monthlyApprovalCategory, optionText: DO_TEXT, checkedValue: 1, group: 'approvalCategory' }"></label>
       <label
-        data-bind="ntsRadioButton: { checked: monthlyApprovalCategory, optionText: DO_NOT_TEXT, option: false, group: 'approvalCategory' }"></label>
+        data-bind="ntsRadioButton: { checked: monthlyApprovalCategory, optionText: DO_NOT_TEXT, checkedValue: 0, group: 'approvalCategory' }"></label>
     </div>
   </div>
 
@@ -57,7 +57,7 @@
       <div class="ml-1" id="combo-box" data-bind="ntsComboBox: {
               name: 'List',
               options: enumPaymentCategoryList,
-              optionsValue: 'code',
+              optionsValue: 'value',
               visibleItemsCount: 5,
               value: selectedCode,
               optionsText: 'name',

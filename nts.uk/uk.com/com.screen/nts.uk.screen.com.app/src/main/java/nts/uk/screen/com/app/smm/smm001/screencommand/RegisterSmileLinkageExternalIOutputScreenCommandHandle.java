@@ -9,6 +9,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSetting;
 import nts.uk.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSetting;
 import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversion;
 import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversionRepository;
@@ -43,25 +44,27 @@ public class RegisterSmileLinkageExternalIOutputScreenCommandHandle
 		String companyId = AppContexts.user().companyId();
 		SmileLinkageOutputSetting smileLinkageOutputSetting = smileLinkageOutputSettingRepository.get(contractCode,
 				companyId);
+		SmileLinkageOutputSetting newSmileLinkageOutputSetting = command.convertScreenCommandToEntity();
+
 		if (smileLinkageOutputSetting == null) {
-			smileLinkageOutputSettingRepository.insert(smileLinkageOutputSetting);
+			smileLinkageOutputSettingRepository.insert(newSmileLinkageOutputSetting);
 		} else {
-			smileLinkageOutputSettingRepository.update(smileLinkageOutputSetting);
+			smileLinkageOutputSettingRepository.update(newSmileLinkageOutputSetting);
 		}
 
-		/**
-		 * 支払コードを指定して連動支払変換を取得する 契約コード、会社ID、支払コード
-		 */
-		PaymentCategory paymentCategory = EnumAdaptor.valueOf(command.getPaymentCode(), PaymentCategory.class);
-		List<EmploymentAndLinkedMonthSetting> employmentAndLinkedMonthSettings = linkedPaymentConversionRepository
-				.getByPaymentCode(contractCode, companyId, paymentCategory);
-
-		LinkedPaymentConversion domain = new LinkedPaymentConversion(paymentCategory, employmentAndLinkedMonthSettings);
-		if (!employmentAndLinkedMonthSettings.isEmpty()) {
-			linkedPaymentConversionRepository.update(domain);
-		} else {
-			linkedPaymentConversionRepository.insert(domain);
-		}
+//		/**
+//		 * 支払コードを指定して連動支払変換を取得する 契約コード、会社ID、支払コード
+//		 */
+//		PaymentCategory paymentCategory = EnumAdaptor.valueOf(command.getPaymentCode(), PaymentCategory.class);
+//		List<EmploymentAndLinkedMonthSetting> employmentAndLinkedMonthSettings = linkedPaymentConversionRepository
+//				.getByPaymentCode(contractCode, companyId, paymentCategory);
+//
+//		LinkedPaymentConversion domain = new LinkedPaymentConversion(paymentCategory, employmentAndLinkedMonthSettings);
+//		if (!employmentAndLinkedMonthSettings.isEmpty()) {
+//			linkedPaymentConversionRepository.update(domain);
+//		} else {
+//			linkedPaymentConversionRepository.insert(domain);
+//		}
 
 	}
 }
