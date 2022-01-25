@@ -89,7 +89,8 @@ public class CorrectionContent extends DomainObject {
      * @return 修正できるならTrue
      */
     public boolean canChangeReservationFromOrderDate(GeneralDate orderDate) {
-    	return GeneralDate.today().compareTo(orderDate) <= this.contentChangeDeadlineDay.value;
+    	return 0 <= orderDate.compareTo(GeneralDate.today()) && 
+    			orderDate.compareTo(GeneralDate.today()) <= this.contentChangeDeadlineDay.value;
     }
     
     /**
@@ -101,7 +102,8 @@ public class CorrectionContent extends DomainObject {
      * @return 修正できるならTrue
      */
     public boolean canChangeReservationDuringTime(ClockHourMinute reservationTime, int frameNo, GeneralDate orderDate, ReservationRecTimeZone reservationRecTimeZone) {
-    	return reservationRecTimeZone.canMakeReservation(
+    	return orderDate.equals(GeneralDate.today()) &&
+    			reservationRecTimeZone.canMakeReservation(
     			EnumAdaptor.valueOf(frameNo, ReservationClosingTimeFrame.class), 
     			orderDate, 
     			reservationTime);
