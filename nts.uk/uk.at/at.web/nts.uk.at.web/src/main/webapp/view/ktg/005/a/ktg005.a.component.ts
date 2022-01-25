@@ -66,7 +66,6 @@ module nts.uk.ui.ktg005.a {
 			}
 			.ktg005-fontsize div.form-label>span.text {
 				font-size: 1rem !important;
-				padding-left: 5px;
 			}
 			.ktg005-fontsize-larger div.form-label>span.text {
 				font-size: 1rem !important;

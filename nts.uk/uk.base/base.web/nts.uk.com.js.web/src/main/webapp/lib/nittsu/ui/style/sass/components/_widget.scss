@@ -16,22 +16,23 @@
 
     table {
         width: 100%;
-        border-width: 0px;
+        border-width: 0;
 
         tr:nth-child(2n) {
             background-color: #f3f3f3;
         }
         tr {
             height: 30px;
-            border-width: 0px;
+
+            td, th {
+                border-width: 0;
+            }
 
             td {
-                border-width: 0px;
+                padding: 2px 13px;
             }
 
             th {
-                border-width: 0px;
-
                 &:first-child {
                     padding-left: 3px;
                 }
@@ -109,7 +110,6 @@
             box-sizing: border-box;
 
             &:not(.ui-resizable-s) {
-                padding: 0 10px;
                 width: 100%;
                 height: 100%;
                 overflow-y: auto;

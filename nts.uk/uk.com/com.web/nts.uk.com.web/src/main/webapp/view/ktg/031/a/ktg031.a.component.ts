@@ -128,7 +128,6 @@ module nts.uk.com.view.ktg031.a {
           background-color: #689f38;
         }
         #ktg031-container .body {
-          padding: 5px;
           box-sizing: border-box;
           width: 100%;
           display: flex;
@@ -157,7 +156,6 @@ module nts.uk.com.view.ktg031.a {
           height: 100%;
           margin-top: 5px;
           overflow-y: auto;
-          border: 1px solid #C6C6D1;
         }
         #ktg031-container .body .table-container #ktg031-grid {
           width: 100%;
