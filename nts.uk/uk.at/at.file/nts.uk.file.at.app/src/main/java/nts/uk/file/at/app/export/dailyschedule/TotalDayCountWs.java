@@ -310,15 +310,15 @@ public class TotalDayCountWs {
 			} else {
 				boolean isEnableLeaveCountMorning = allowedWorkTypes.contains(dailyWork.getMorning());
 				boolean isEnableLeaveCountAfternoon = allowedWorkTypes.contains(dailyWork.getAfternoon());
-				boolean isCounting = this.isCountingForNonDetermined(dayType,
+				boolean isCountingMorning = this.isCountingForNonDetermined(dayType,
 						optWorkType.get().getWorkTypeSetByAtr(WorkAtr.Monring).orElse(null),
 						WorkTypeUnit.MonringAndAfternoon, dailyWork.getMorning(), isAnnPaidLeave, isRetenYearly,
-						isEnableLeaveCountMorning)
-						|| this.isCountingForNonDetermined(dayType,
-								optWorkType.get().getWorkTypeSetByAtr(WorkAtr.Afternoon).orElse(null),
-								WorkTypeUnit.MonringAndAfternoon, dailyWork.getAfternoon(), isAnnPaidLeave,
-								isRetenYearly, isEnableLeaveCountAfternoon);
-				return isCounting ? 0.5d : 0d;
+						isEnableLeaveCountMorning);
+				boolean isCountingAfternoon = this.isCountingForNonDetermined(dayType,
+						optWorkType.get().getWorkTypeSetByAtr(WorkAtr.Afternoon).orElse(null),
+						WorkTypeUnit.MonringAndAfternoon, dailyWork.getAfternoon(), isAnnPaidLeave, isRetenYearly,
+						isEnableLeaveCountAfternoon);
+				return (isCountingMorning ? 0.5d : 0d) + (isCountingAfternoon ? 0.5d : 0d);
 			}
 		}
 		return 0d;
@@ -331,17 +331,23 @@ public class TotalDayCountWs {
 		}
 		switch (workTypeCls) {
 		case AnnualHoliday:
-			return isAnnPaidLeave && isEnableLeaveCount;
+			if (dayType.equals(DayType.ATTENDANCE)) {
+				return isAnnPaidLeave && isEnableLeaveCount;
+			}
 		case YearlyReserved:
-			return isAnnPaidLeave && isRetenYearly && isEnableLeaveCount;
+			if (dayType.equals(DayType.ATTENDANCE)) {
+				return isAnnPaidLeave && isRetenYearly && isEnableLeaveCount;
+			}
 		case SpecialHoliday:
-			return isEnableLeaveCount;
+			if (dayType.equals(DayType.ATTENDANCE)) {
+				return isEnableLeaveCount;
+			}
 		case Holiday:
-			if (workTypeUnit.equals(WorkTypeUnit.MonringAndAfternoon)) {
+			if (dayType.equals(DayType.HOLIDAY) && workTypeUnit.equals(WorkTypeUnit.MonringAndAfternoon)) {
 				return workTypeSet.getCountHodiday().isCheck();
 			}
 		case HolidayWork:
-			if (workTypeUnit.equals(WorkTypeUnit.MonringAndAfternoon)) {
+			if (dayType.equals(DayType.OFF_WORK) && workTypeUnit.equals(WorkTypeUnit.MonringAndAfternoon)) {
 				return false;
 			}
 		default: 
