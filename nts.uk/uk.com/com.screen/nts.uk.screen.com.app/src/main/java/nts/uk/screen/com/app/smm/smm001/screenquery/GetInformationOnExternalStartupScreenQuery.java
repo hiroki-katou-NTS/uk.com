@@ -9,6 +9,8 @@ import javax.inject.Inject;
 //import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSetting;
 import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversionRepository;
@@ -30,6 +32,8 @@ public class GetInformationOnExternalStartupScreenQuery {
 
 	@Inject
 	private EmploymentRepository employmentRepository;
+	
+	@Inject StdOutputCondSetRepository condSetRepository; 
 
 	public InitialStartupOutputDto get(Integer paymentCode) {
 		/**
@@ -40,17 +44,27 @@ public class GetInformationOnExternalStartupScreenQuery {
 		String companyId = AppContexts.user().companyId();
 		SmileLinkageOutputSetting smileLinkageOutputSetting = smileLinkageOutputSettingRepository.get(contractCode,
 				companyId);
-		SmileLinkageOutputSettingDto smileLinkageOutputSettingDto = new SmileLinkageOutputSettingDto(
-				smileLinkageOutputSetting.getSalaryCooperationClassification().value,
-				smileLinkageOutputSetting.getMonthlyLockClassification().value,
-				smileLinkageOutputSetting.getMonthlyApprovalCategory().value,
-				smileLinkageOutputSetting.getSalaryCooperationConditions().isPresent()
-						? smileLinkageOutputSetting.getSalaryCooperationConditions().get().v()
-						: null);
+		SmileLinkageOutputSettingDto smileLinkageOutputSettingDto = new SmileLinkageOutputSettingDto();
+		if (smileLinkageOutputSetting != null) {
+			smileLinkageOutputSettingDto = new SmileLinkageOutputSettingDto(
+					smileLinkageOutputSetting.getSalaryCooperationClassification().value,
+					smileLinkageOutputSetting.getMonthlyLockClassification().value,
+					smileLinkageOutputSetting.getMonthlyApprovalCategory().value,
+					smileLinkageOutputSetting.getSalaryCooperationConditions().isPresent()
+							? smileLinkageOutputSetting.getSalaryCooperationConditions().get().v()
+							: null);
+		}
 
 		/**
 		 * Function: 会社IDを指定して連動支払変換を取得する Input: 契約コード、会社ID Return: List＜出力条件設定（定型）＞
 		 */
+		List<StdOutputCondSet> outputConditionSettings = condSetRepository.getStdOutCondSetByCid(companyId);
+		List<StdOutputCondSetDto> stdOutputCondSetDtos = outputConditionSettings
+				.stream()
+				.map(e -> new StdOutputCondSetDto(e.getConditionSetCode().v(), e.getConditionSetName().v()))
+				.collect(Collectors.toList());
+		
+		
 		List<EmploymentAndLinkedMonthSetting> listStandardOutputConditionSetting = linkedPaymentConversionRepository
 				.get(contractCode, companyId);
 		List<EmploymentAndLinkedMonthSettingDto> listStandardOutputConditionSettingDtos = listStandardOutputConditionSetting
@@ -73,6 +87,6 @@ public class GetInformationOnExternalStartupScreenQuery {
 //		EmploymentChoiceDto employmentChoiceDto = selectAPaymentDateScreenQuery.get(paymentCode);
 
 		return new InitialStartupOutputDto(smileLinkageOutputSettingDto, listStandardOutputConditionSettingDtos,
-				employmentDtos);
+				employmentDtos, stdOutputCondSetDtos);
 	}
 }

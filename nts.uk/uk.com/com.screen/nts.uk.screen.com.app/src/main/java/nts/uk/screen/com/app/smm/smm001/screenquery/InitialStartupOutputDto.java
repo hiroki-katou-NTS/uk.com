@@ -16,4 +16,6 @@ public class InitialStartupOutputDto {
 	
 	// List＜雇用コード、雇用名称＞
 	private List<EmploymentDto> employmentDtos;
+	
+	private List<StdOutputCondSetDto> stdOutputCondSetDtos;
 }

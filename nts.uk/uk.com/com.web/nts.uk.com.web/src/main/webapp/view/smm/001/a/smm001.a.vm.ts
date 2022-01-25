@@ -94,6 +94,14 @@ module nts.uk.at.view.smm001.a {
       vm.getInitialStartupInformation();
     }
 
+    validateIfElementSelectedNotContainInArray(possible: any, selected: any) {
+      const possibleCode = possible.map((e:any) => e.cooperationAcceptanceConditions);
+      const unchosen = selected.filter((itm: any) => {
+        return possibleCode.includes(itm) == false;
+      });
+      return unchosen.length > 0;
+    }
+
     getInitialStartupInformation() {
       const vm = this;
       vm.$blockui('show');
@@ -116,7 +124,20 @@ module nts.uk.at.view.smm001.a {
             smileCooperationAcceptanceSettings = _.sortBy(
               smileCooperationAcceptanceSettings, ["cooperationAcceptance"]
             );
-            vm.mappingDataAfterGetInitAScreen(smileCooperationAcceptanceSettings)
+            vm.mappingDataAfterGetInitAScreen(smileCooperationAcceptanceSettings);
+            // Check logic after mapping data to validate exist in select option
+            const listValueSelected = [
+              vm.selectedOrganizationInformation(),
+              vm.selectedBasicPersonnelInformation(),
+              vm.selectedJobStructureInformation(),
+              vm.selectedAddressInformation(),
+              vm.selectedLeaveInformation(),
+              vm.selectedAffiliatedMaster(),
+              vm.selectedEmployeeMaster(),
+            ];
+            if (vm.validateIfElementSelectedNotContainInArray(smileCooperationAcceptanceSettings, listValueSelected)) {
+              vm.$dialog.info({ messageId: "Msg_3265" });
+            }
           }
         }
       })
@@ -195,12 +216,6 @@ module nts.uk.at.view.smm001.a {
         }).fail((err) => {
           vm.$dialog.error(err);
         }).always(() => vm.$blockui('clear'));
-    }
-
-    moveItemToRight() {
-    }
-
-    moveItemToLeft() {
     }
   }
 }
