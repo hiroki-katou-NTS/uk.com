@@ -442,7 +442,12 @@ public class MonthlyAggregationEmployeeServiceRequireImpl implements AggregateMo
 		val monthlys = aggrMonthly.stream().filter(m -> m.getEmployeeId().equals(employeeId) &&
 					m.getYearMonth().equals(yearMonth) && m.getAttendanceTime().isPresent())
 			.map(m -> m.getAttendanceTime().get()).collect(Collectors.toList());
-		return monthlys.isEmpty() ? require.attendanceTimeOfMonthly(employeeId, yearMonth) : monthlys; 
+		val dbMonthly = require.attendanceTimeOfMonthly(employeeId, yearMonth);
+		
+		dbMonthly.removeIf(c -> monthlys.stream().anyMatch(m -> m.getClosureId().equals(c.getClosureId()) &&
+															m.getClosureDate().equals(c.getClosureDate())));
+		dbMonthly.addAll(monthlys);
+		return dbMonthly; 
 	}
 
 	@Override
