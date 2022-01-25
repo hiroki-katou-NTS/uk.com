@@ -16,10 +16,6 @@
         font-size: 0.8rem;
         padding: 0.2rem 0.4rem;
     }
-    
-    &-success {
-        background-color: $primary !important;
-    }
 
     &-secondary {
         border-color: darken($secondary, 20%);
