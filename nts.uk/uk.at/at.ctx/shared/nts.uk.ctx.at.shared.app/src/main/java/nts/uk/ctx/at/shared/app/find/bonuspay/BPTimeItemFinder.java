@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.app.find.bonuspay.item.BPItemArt;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.shr.com.context.AppContexts;
@@ -59,15 +60,21 @@ public class BPTimeItemFinder {
 		}
 		return null;
 	}
-	
-	public void checkUseArt(List<Boolean> lstuseArt){
+
+	public void checkUseArt(BPItemArt arts){
 		boolean checkUseExist = false;
-		
-		for (Boolean useArt : lstuseArt) {
+
+		for (Boolean useArt : arts.lstUseArt) {
 			if(useArt){
 				checkUseExist=useArt;
 			}
 		}
+		for (Boolean useArt : arts.lstUseSpecArt) {
+			if(useArt){
+				checkUseExist=useArt;
+			}
+		}
+
 		if(!checkUseExist){
 			throw new BusinessException("Msg_131");
 		}
