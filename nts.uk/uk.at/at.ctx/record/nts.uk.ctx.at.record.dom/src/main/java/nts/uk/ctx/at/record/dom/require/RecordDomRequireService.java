@@ -212,6 +212,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpComHisAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -589,6 +590,8 @@ public class RecordDomRequireService {
 	private WorkDeformedLaborAdditionSetRepository workDeformedLaborAdditionSetRepo;
 	@Inject
 	private FlexSetRepository flexSetRepo;
+	@Inject
+	private EmpComHisAdapter empComHisAdapter;
   
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2, CalcAnnLeaAttendanceRate.RequireM3,
 		GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1, CalcNextAnnLeaGrantInfo.RequireM1, GetNextAnnualLeaveGrantProcKdm002.RequireM1,
@@ -638,6 +641,6 @@ public class RecordDomRequireService {
 				childCareUsedNumberRepo, careUsedNumberRepo, childCareLeaveRemInfoRepo, careLeaveRemainingInfoRepo, tempChildCareManagementRepo, tempCareManagementRepo, 
 				nursingLeaveSettingRepo,executionLogRepo,workingConditionRepository, transaction, employmentAdapter, creatingDailyResultsConditionRepo, 
 				getPeriodFromPreviousToNextGrantDate, workDaysNumberOnLeaveCountRepo, calculateDailyRecordServiceCenter, workRegularAdditionSetRepo, addSetManageWorkHourRepo, 
-				workFlexAdditionSetRepo, workDeformedLaborAdditionSetRepo, flexSetRepo);
+				workFlexAdditionSetRepo, workDeformedLaborAdditionSetRepo, flexSetRepo, empComHisAdapter);
 	}
 }

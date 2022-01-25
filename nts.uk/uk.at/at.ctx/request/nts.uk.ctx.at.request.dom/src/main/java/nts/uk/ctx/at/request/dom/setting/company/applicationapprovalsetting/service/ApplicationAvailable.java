@@ -1,18 +1,16 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 
 /**
  * DS: 申請を利用できるか
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.設定.会社別.申請承認設定.アルゴリズム.勤務種類から促す申請を判断する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.設定.会社別.申請承認設定.アルゴリズム.申請を利用できるか
  * 
  * @author chungnt
  *
@@ -57,11 +55,11 @@ public class ApplicationAvailable {
 
 		// $.利用区分 = $申請承認設定.申請利用設定：$.申請種類 == INPUT「申請種類」
 		// map $.利用区分
-		List<ApplicationUseSetting> applicationUseSettings = approvalFunctionSet.getAppUseSetLst().stream()
-				.filter(m -> m.getAppType().value == appType.value).collect(Collectors.toList());
+		UseDivision useDivision = approvalFunctionSet.getAppUseSetLst().stream()
+				.filter(m -> m.getAppType().value == appType.value).findFirst().map(m -> m.getUseDivision()).orElse(UseDivision.NOT_USE);
 
 		// return $利用区分 == 利用する ? true ： false
-		return applicationUseSettings.isEmpty() ? false : true;
+		return useDivision.equals(UseDivision.TO_USE);
 	}
 
 	public static interface Require {

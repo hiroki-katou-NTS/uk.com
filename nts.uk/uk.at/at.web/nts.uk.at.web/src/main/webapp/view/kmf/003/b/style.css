@@ -170,3 +170,8 @@ td.input-units {
 .nts-combo-item .nts-column {
 	margin-right: 30px !important;
 }
+
+.fixed-table .ui-widget-header {
+  white-space: pre-wrap !important;
+  line-break: strict;
+}

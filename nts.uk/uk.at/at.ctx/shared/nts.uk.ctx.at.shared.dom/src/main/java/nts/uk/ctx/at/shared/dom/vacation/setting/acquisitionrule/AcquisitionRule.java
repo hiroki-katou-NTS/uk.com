@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.EqualsAndHashCode;
@@ -14,6 +15,8 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDigestApplicationShare;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 
 /**
  * The Class AcquisitionRule.
@@ -115,4 +118,80 @@ public class AcquisitionRule extends DomainObject {
 	        throw new BusinessException("Msg_1687", "Com_CompensationHoliday", "Com_PaidHoliday", "Com_CompensationHoliday");
 	    }
 	}
+	
+	/**
+	 * 休暇の優先順をチェックする
+	 * @param HolidayDaysInfo
+	 */
+	public void checkVacationPriorities(HolidayDaysInfo holidayDaysInfo) {
+		if(this.category ==SettingDistinct.NO) {
+			return ;
+		}
+		//代休の使い日数
+		double numberOfDaySubHoliday = 0.0;
+		//振休の使い日数
+		double numberOfDayHoliday = 0.0;
+
+		//使い日数を作成する
+		if (holidayDaysInfo.getWorkType().getDailyWork().getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon) {
+			if (holidayDaysInfo.getWorkType().getDailyWork().getMorning() == WorkTypeClassification.SubstituteHoliday
+					|| holidayDaysInfo.getWorkType().getDailyWork()
+							.getAfternoon() == WorkTypeClassification.SubstituteHoliday) {
+				numberOfDaySubHoliday = 0.5*holidayDaysInfo.getNumberOfDay();
+
+			} 
+			if (holidayDaysInfo.getWorkType().getDailyWork().getMorning() == WorkTypeClassification.Pause
+					|| holidayDaysInfo.getWorkType().getDailyWork().getAfternoon() == WorkTypeClassification.Pause) {
+				numberOfDayHoliday = 0.5 * holidayDaysInfo.getNumberOfDay();
+			}
+		}
+		
+		boolean check = false;
+		//「@年休より優先する休暇．代休を優先」を確認する
+		if(this.annualHoliday.isPriorityPause() && holidayDaysInfo.getManagementSetting().getUseSubHolidays() == ManageDistinct.YES) {
+			if (holidayDaysInfo.getWorkType().getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+				if(holidayDaysInfo.getRemainingVacationDays().getNumberOfDayLeft() < holidayDaysInfo.getNumberOfDay() &&
+						holidayDaysInfo.getRemainingVacationDays().getNumberOfDayLeft() < 1.0) {
+					check = true;
+				}
+			} else {
+				if (holidayDaysInfo.getRemainingVacationDays().getNumberOfDayLeft()
+						- numberOfDaySubHoliday <holidayDaysInfo.getNumberOfDay()
+						&&holidayDaysInfo.getRemainingVacationDays().getNumberOfDayLeft()
+								- numberOfDaySubHoliday < 1.0) {
+					check = true;
+				}
+			}
+			
+			if (!check) {
+                throw new BusinessException("Msg_1687", "Com_CompensationHoliday", "Com_PaidHoliday",
+                        "Com_CompensationHoliday");
+            }
+		}
+		
+		check = false;
+		//「@年休より優先する休暇．振休を優先」を確認する
+		if(this.annualHoliday.isPrioritySubstitute() && holidayDaysInfo.getManagementSetting().getUseHolidays() == ManageDistinct.YES) {
+			//振休残日数をチェックする
+			if (holidayDaysInfo.getWorkType().getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+				if(holidayDaysInfo.getRemainingVacationDays().getNumberOfDayLeftForHoliday() < holidayDaysInfo.getNumberOfDay() &&
+						holidayDaysInfo.getRemainingVacationDays().getNumberOfDayLeftForHoliday() < 1.0) {
+					check = true;
+				}
+			} else {
+				if (holidayDaysInfo.getRemainingVacationDays().getNumberOfDayLeftForHoliday()
+						- numberOfDayHoliday < holidayDaysInfo.getNumberOfDay()
+						&& holidayDaysInfo.getRemainingVacationDays().getNumberOfDayLeftForHoliday()
+								- numberOfDayHoliday < 1.0) {
+					check = true;
+				}
+			}
+			
+			if (!check) {
+                throw new BusinessException("Msg_1687", "Com_SubstituteHoliday", "Com_PaidHoliday",
+                        "Com_SubstituteHoliday");
+            }
+		}
+	}
+	
 }

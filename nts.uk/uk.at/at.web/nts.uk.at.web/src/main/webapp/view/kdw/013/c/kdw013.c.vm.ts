@@ -113,6 +113,7 @@ module nts.uk.ui.at.kdw013.c {
     const API: API = {
         START: '/screen/at/kdw013/common/start',
         SELECT: '/screen/at/kdw013/c/select',
+        CALWKTIME: '/screen/at/kdw013/common/calculate-work-time',
 		START_F: '',
         ADD_FAV_TASK_F: ''
     };
@@ -659,12 +660,21 @@ module nts.uk.ui.at.kdw013.c {
 		}
 
         calTimeRange(): void{
-			let vm = this;
-			const start = vm.taskBlocks.caltimeSpanView.start();
-    		const end = vm.taskBlocks.caltimeSpanView.end();
-			if(_.isNumber(start) && _.isNumber(end) && end > start){
-				vm.taskBlocks.caltimeSpanView.range(getText('KDW013_25') + ' '+ number2String(end - start));
-			}
+            let vm = this;
+            const start = vm.taskBlocks.caltimeSpanView.start();
+            const end = vm.taskBlocks.caltimeSpanView.end();
+            let refTimezone = { start, end };
+            let { extendedProps } = ko.unwrap(vm.params.data);
+            let goOutBreakTimeLst = _.map(_.get(extendedProps, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+            _.forEach(_.get(extendedProps, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                goOutBreakTimeLst.push({ start, end });
+            });
+            let calParam = { refTimezone, goOutBreakTimeLst };
+            if(_.isNumber(start) && _.isNumber(end) && end > start){
+                ajax('at', API.CALWKTIME, calParam).done((time) => {
+                    vm.taskBlocks.caltimeSpanView.range(getText('KDW013_25') + ' ' + number2String(time));
+                });
+            }
 		}
 
         validateRange(selector: JQuery, startOrEnd: JQuery){
@@ -740,7 +750,7 @@ module nts.uk.ui.at.kdw013.c {
 					setTimeout(() => {
 						jQuery('button.btn-error.small.danger').appendTo('.edit-event .functional td>span');
 					}, 500);
-                    const {extendedProps, start} = event as any as calendar.EventRaw;
+                    const {extendedProps, start, end} = event as any as calendar.EventRaw;
                     let {displayManHrRecordItems, taskBlock, employeeId} = extendedProps;
 					vm.frameNos(extendedProps.frameNos);
 					if(taskBlock.taskDetails[0].supNo == null){
@@ -779,6 +789,16 @@ module nts.uk.ui.at.kdw013.c {
 							vm.updatePopupSize();
 							custominePositionCombo();
 						}, 150);
+                        let refTimezone = { start: (moment(start).hour() * 60) + moment(start).minute(), end: (moment(end).hour() * 60) + moment(end).minute() };
+                        let goOutBreakTimeLst = _.map(_.get(extendedProps, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
+                        _.forEach(_.get(extendedProps, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
+                            goOutBreakTimeLst.push({ start, end });
+                        });
+                        let calparam = {refTimezone, goOutBreakTimeLst};
+                        ajax('at', API.CALWKTIME, calparam).done((time) => {
+                            vm.taskBlocks.caltimeSpanView.range(getText('KDW013_25') + ' '+ number2String(time));
+                        });
+                       
 					});
 				}
 			});
@@ -908,6 +928,12 @@ module nts.uk.ui.at.kdw013.c {
 			return totalTime;
 		}
     
+        totalWorkTime():number{
+            let vm = this;
+            let tr = nts.uk.time.parseTime(vm.taskBlocks.caltimeSpanView.range().replace('作業時間 ', ''));
+            return (tr.hours * 60) + tr.minutes;
+        }
+    
         save() {
             const vm = this;
             const { params } = vm;
@@ -922,10 +948,10 @@ module nts.uk.ui.at.kdw013.c {
                 .then(() => nts.uk.ui.errors.hasError())
                 .then((invalid: boolean) => {
                     if (!invalid) {
-						if(vm.sumTotalTime() > (vm.taskBlocks.caltimeSpanView.end() - vm.taskBlocks.caltimeSpanView.start())){
-							error({ messageId: "Msg_2230"});
-							return;
-						}
+                        if (vm.taskBlocks.taskDetailsView().length > 1 && vm.sumTotalTime() > vm.totalWorkTime()) {
+                            error({ messageId: "Msg_2230" });
+                            return;
+                        }
                         if (event) {
                             const { start } = event;
                             const tr = vm.taskBlocks.caltimeSpanView;
@@ -1095,9 +1121,10 @@ module nts.uk.ui.at.kdw013.c {
 				let range = _.find(taskItemValues, i => i.itemId == 3);
 				start.value = vm.caltimeSpanView.start() ;
 				end.value = vm.caltimeSpanView.end();
-				if(range.value == null){
-					range.value = vm.caltimeSpanView.end() - vm.caltimeSpanView.start();
-				}
+                if (vm.taskDetailsView().length == 1) {
+                    let tr = nts.uk.time.parseTime(vm.caltimeSpanView.range().replace('作業時間 ', ''));
+                    range.value = (tr.hours * 60) + tr.minutes;
+                }
                 taskDetails.push({supNo: task.supNo, taskItemValues: taskItemValues});
             });
             return {

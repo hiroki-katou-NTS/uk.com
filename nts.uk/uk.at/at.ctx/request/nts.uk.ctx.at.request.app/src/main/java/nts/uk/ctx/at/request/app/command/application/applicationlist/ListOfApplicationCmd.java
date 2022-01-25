@@ -171,7 +171,13 @@ public class ListOfApplicationCmd {
 		lstApp.setOpApprovalFrameStatus(opApprovalFrameStatus == null ? Optional.empty() : Optional.of(opApprovalFrameStatus));
 		lstApp.setOpComplementLeaveApp(opComplementLeaveApp == null ? Optional.empty() : Optional.of(opComplementLeaveApp.toDomain()));
 		lstApp.setOpAppStartDate(opAppStartDate == null ? Optional.empty() : Optional.of(GeneralDate.fromString(opAppStartDate, "yyyy/MM/dd")));
-		lstApp.setOpAppTypeDisplay(opAppTypeDisplay == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opAppTypeDisplay, ApplicationTypeDisplay.class)));
+		lstApp.setOpAppTypeDisplay(opAppTypeDisplay == null
+				? Optional.empty() :
+				(appType == ApplicationType.OVER_TIME_APPLICATION.value
+						? Optional.of(EnumAdaptor.valueOf(opAppTypeDisplay, ApplicationTypeDisplay.class))
+						: Optional.of(opAppTypeDisplay == 0 ? ApplicationTypeDisplay.STAMP_ADDITIONAL : ApplicationTypeDisplay.STAMP_ONLINE_RECORD)
+				)
+		);
 		lstApp.setOpAppEndDate(opAppEndDate == null ? Optional.empty() : Optional.of(GeneralDate.fromString(opAppEndDate, "yyyy/MM/dd")));
 		lstApp.setOpAppStandardReason(opAppStandardReason == null ? Optional.empty() : Optional.of(opAppStandardReason));
 		lstApp.setOpEntererName(opEntererName == null ? Optional.empty() : Optional.of(opEntererName));

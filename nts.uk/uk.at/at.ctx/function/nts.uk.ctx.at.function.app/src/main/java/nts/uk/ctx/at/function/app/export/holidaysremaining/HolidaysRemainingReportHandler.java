@@ -332,7 +332,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     hdManagement, isSameCurrentMonth.get(),
                     employeeIds, mapEmp,
                     companyCurrent.isPresent() ? companyCurrent.get().getCompanyName() : "",
-                    hdRemainCond.getTitle());
+                    hdManagement.getName().v());
 
             this.reportGenerator.generate(context.getGeneratorContext(), dataSource);
         });
@@ -583,7 +583,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		////////////////////////////////////////////////////////////////////////////////
 		// 振休
 		////////////////////////////////////////////////////////////////////////////////
-        if (variousVacationControl.isPauseItemHolidaySetting()) {
+        if (variousVacationControl.isPauseItemHolidaySettingCompany()) {
 
 			//========================================
 			// 当月・未来月

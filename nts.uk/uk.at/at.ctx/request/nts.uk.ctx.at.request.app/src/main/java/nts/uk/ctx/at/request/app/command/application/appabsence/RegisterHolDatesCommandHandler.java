@@ -62,7 +62,8 @@ public class RegisterHolDatesCommandHandler extends CommandHandlerWithResult<Reg
                 newApplyForLeave, 
                 oldApplyForLeave, 
                 command.getHolidayDates().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList()), 
-                command.getAppAbsenceStartInfoDto().toDomain(companyID));
+                command.getAppAbsenceStartInfoDto().toDomain(companyID), 
+                command.isHolidayFlg());
     }
 
 }

@@ -171,8 +171,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 				} else if (referenceRange == EmployeeReferenceRange.ONLY_MYSELF && roleType == RoleType.EMPLOYMENT.value) {
 					
 					//指定社員の職場管理者の職場リストを取得する（配下含む）
-					//[RQ613]指定社員の職場管理者の職場リストを取得する（配下含む）
-					List<String> subListWorkPlace = workplaceListPub.getWorkplaceId(GeneralDate.today(), employeeIDLogin);
+					List<String> subListWorkPlace = workplaceManagerRepository.findListWkpManagerByEmpIdAndBaseDate(employeeIDLogin, referenceDate).stream().map(c->c.getWorkplaceId()).collect(Collectors.toList());
 					
 					// 社員ID（List）と基準日から所属職場IDを取得 Lay request 227
 					List<AffiliationWorkplace> lisAfiliationWorkplace = workplaceAdapter.findByListEmpIDAndDate(sID, GeneralDate.today());
@@ -193,7 +192,8 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 					if (roleType == RoleType.EMPLOYMENT.value) {
 						// 指定社員の職場管理者の職場リストを取得する（配下含む）
 						// [RQ613]指定社員の職場管理者の職場リストを取得する（配下含む）
-						subListWorkPlace.addAll(workplaceListPub.getWorkplaceId(GeneralDate.today(), employeeIDLogin));
+						//subListWorkPlace.addAll(workplaceListPub.getWorkplaceId(GeneralDate.today(), employeeIDLogin));
+						subListWorkPlace.addAll(workplaceManagerRepository.findListWkpManagerByEmpIdAndBaseDate(employeeIDLogin, referenceDate).stream().map(c->c.getWorkplaceId()).collect(Collectors.toList()));
 					}
 					// imported（権限管理）「所属職場履歴」を取得する
 					// (Lấy imported（権限管理）「所属職場履歴」) Lay RequestList No.30

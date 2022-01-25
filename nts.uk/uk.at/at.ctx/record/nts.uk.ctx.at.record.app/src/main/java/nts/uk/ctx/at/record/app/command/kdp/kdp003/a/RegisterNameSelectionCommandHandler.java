@@ -463,9 +463,9 @@ public class RegisterNameSelectionCommandHandler
 		}
 
 		@Override
-		public Closure findClosureById(int closureId) {
+		public Optional<Closure> findClosureById(int closureId) {
 			String companyId = AppContexts.user().companyId();
-		return closureRepo.findById(companyId, closureId).get();
+		return closureRepo.findById(companyId, closureId);
 		}
 
 		@Override

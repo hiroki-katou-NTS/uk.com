@@ -351,7 +351,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 				ConcurrentStopwatches.start("12222.6:超過時間割り当て：");
 				
 				// 時間外超過の時、フレックス超過時間を割り当てる
-				excessOutsideWorkMng.assignFlexExcessTime(require, cacheCarrier, datePeriod, flexAggregateMethod,
+				excessOutsideWorkMng.assignFlexExcessTime(require, cacheCarrier, companyId, datePeriod, flexAggregateMethod,
 						procDate, this.flexAggrSet, aggregateTotalWorkingTime, this.flexTime,
 						settingsByFlex, addSet, standFlexTime, monthlyCalcDailys);
 				
@@ -2129,12 +2129,21 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	 */
 	public AttendanceTimeMonth getTotalWorkingTargetTime(){
 		
+		/** ○「集計方法」を確認する */
+		if (this.flexAggrSet.getAggrMethod() == FlexAggregateMethod.FOR_CONVENIENCE) { /** 便宜上集計 */
+			
+			/** 日単位のフレックス超過時間を合計する */
+			return this.flexTime.getPlusFlexTime();
+		}
+
 		if (this.flexAggrSet.isMultiMonthSettlePeriod()) { 
 			int flexTime = this.flexTime.getFlexTimeCurrentMonth().getFlexTime().getFlexTime().getTime().valueAsMinutes() 
 							+ this.flexTime.getFlexTimeCurrentMonth().getExcessWeekAveTime().valueAsMinutes();
 			return new AttendanceTimeMonth(flexTime);
 		}
 		
+		/** 原則集計 */
+		/** 総労働対象時間を計算する  */
 		return new AttendanceTimeMonth(this.flexExcessTime.v() +
 				this.flexCarryforwardTime.getFlexCarryforwardWorkTime().v());
 	}
