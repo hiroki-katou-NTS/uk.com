@@ -8,8 +8,9 @@ module nts.uk.at.view.kmk005.b {
             checkUseArt:"at/share/bonusPayTimeItem/checkUseArt"
             
         }
-          export function checkUseArt(lstUseArt) {
-             return nts.uk.request.ajax(paths.checkUseArt,lstUseArt);
+          export function checkUseArt(lstUseArt,lstUseSpecArt) {
+              var arts = {lstUseArt:lstUseArt,lstUseSpecArt:lstUseSpecArt}
+             return nts.uk.request.ajax(paths.checkUseArt,arts);
         }
         
         export function getListSpecialBonusPayTimeItem(): JQueryPromise<any> {

@@ -6,6 +6,8 @@ module nts.uk.at.view.kmk005.b {
             timeItemSpecList: KnockoutObservableArray<TimeItem>;
             timeItemList: KnockoutObservableArray<TimeItem>;            
             
+            timeItemList: KnockoutObservableArray<TimeItem>;
+
             /** Bonus pay time */
             useAtr1: KnockoutObservable<number> = ko.observable(0);
             timeItemId1: KnockoutObservable<string> = ko.observable('');
@@ -479,54 +481,38 @@ module nts.uk.at.view.kmk005.b {
                 if (!nts.uk.ui.errors.hasError()) {
                     let bonusPayTimeItemListCommand: Array<any> = [], bonusPayTimeItemSpecListCommand: Array<any> = [],
                          lstUseArt: Array<boolean> = [], lstUseSpecArt: Array<boolean> = [];
-                    lstUseArt.push(self.useAtr1() == 1 ? true : false);
-                    lstUseArt.push(self.useAtr2() == 1 ? true : false);
-                    lstUseArt.push(self.useAtr3() == 1 ? true : false);
-                    lstUseArt.push(self.useAtr4() == 1 ? true : false);
-                    lstUseArt.push(self.useAtr5() == 1 ? true : false);
-                    lstUseArt.push(self.useAtr6() == 1 ? true : false);
-                    lstUseArt.push(self.useAtr7() == 1 ? true : false);
-                    lstUseArt.push(self.useAtr8() == 1 ? true : false);
-                    lstUseArt.push(self.useAtr9() == 1 ? true : false);
-                    lstUseArt.push(self.useAtr10() == 1 ? true : false);                    
 
-                    bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName1(), useAtr: self.useAtr1(),timeItemNo: 1, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });                    
-                    bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName2(), useAtr: self.useAtr2(),timeItemNo: 2, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
-                    bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName3(), useAtr: self.useAtr3(),timeItemNo: 3, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
-                    bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName4(), useAtr: self.useAtr4(),timeItemNo: 4, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
-                    bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName5(), useAtr: self.useAtr5(),timeItemNo: 5, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
-                    bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName6(), useAtr: self.useAtr6(),timeItemNo: 6, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
-                    bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName7(), useAtr: self.useAtr7(),timeItemNo: 7, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
-                    bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName8(), useAtr: self.useAtr8(),timeItemNo: 8, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
-                    bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName9(), useAtr: self.useAtr9(),timeItemNo: 9, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
-                    bonusPayTimeItemListCommand.push({ timeItemName:self.timeItemName10(), useAtr: self.useAtr10(),timeItemNo: 10, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() });
-                   
-                    lstUseSpecArt.push(self.useSpecAtr1() == 1 ? true : false);
-                    lstUseSpecArt.push(self.useSpecAtr2() == 1 ? true : false);
-                    lstUseSpecArt.push(self.useSpecAtr3() == 1 ? true : false);
-                    lstUseSpecArt.push(self.useSpecAtr4() == 1 ? true : false);
-                    lstUseSpecArt.push(self.useSpecAtr5() == 1 ? true : false);
-                    lstUseSpecArt.push(self.useSpecAtr6() == 1 ? true : false);
-                    lstUseSpecArt.push(self.useSpecAtr7() == 1 ? true : false);
-                    lstUseSpecArt.push(self.useSpecAtr8() == 1 ? true : false);
-                    lstUseSpecArt.push(self.useSpecAtr9() == 1 ? true : false);
-                    lstUseSpecArt.push(self.useSpecAtr10() == 1 ? true : false);                    
+                    bonusPayTimeItemListCommand.push(
+                        { timeItemName:self.timeItemName1(), useAtr: self.useAtr1(),timeItemNo: 1, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() },
+                        { timeItemName:self.timeItemName2(), useAtr: self.useAtr2(),timeItemNo: 2, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() },
+                        { timeItemName:self.timeItemName3(), useAtr: self.useAtr3(),timeItemNo: 3, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() },
+                        { timeItemName:self.timeItemName4(), useAtr: self.useAtr4(),timeItemNo: 4, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() },
+                        { timeItemName:self.timeItemName5(), useAtr: self.useAtr5(),timeItemNo: 5, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() },
+                        { timeItemName:self.timeItemName6(), useAtr: self.useAtr6(),timeItemNo: 6, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() },
+                        { timeItemName:self.timeItemName7(), useAtr: self.useAtr7(),timeItemNo: 7, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() },
+                        { timeItemName:self.timeItemName8(), useAtr: self.useAtr8(),timeItemNo: 8, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() },
+                        { timeItemName:self.timeItemName9(), useAtr: self.useAtr9(),timeItemNo: 9, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() },
+                        { timeItemName:self.timeItemName10(), useAtr: self.useAtr10(),timeItemNo: 10, timeItemTypeAtr: 0, timeItemId:self.timeItemId1() }
+                    );
+                    lstUseArt = _.map(bonusPayTimeItemListCommand, (data) => data.useAtr == 1 ? true:false);
 
-                    bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName1(), useAtr: self.useSpecAtr1(),timeItemNo: 1, timeItemTypeAtr: 1 });                    
-                    bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName2(), useAtr: self.useSpecAtr2(),timeItemNo: 2, timeItemTypeAtr: 1 });
-                    bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName3(), useAtr: self.useSpecAtr3(),timeItemNo: 3, timeItemTypeAtr: 1 });
-                    bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName4(), useAtr: self.useSpecAtr4(),timeItemNo: 4, timeItemTypeAtr: 1 });
-                    bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName5(), useAtr: self.useSpecAtr5(),timeItemNo: 5, timeItemTypeAtr: 1 });
-                    bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName6(), useAtr: self.useSpecAtr6(),timeItemNo: 6, timeItemTypeAtr: 1 });
-                    bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName7(), useAtr: self.useSpecAtr7(),timeItemNo: 7, timeItemTypeAtr: 1 });
-                    bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName8(), useAtr: self.useSpecAtr8(),timeItemNo: 8, timeItemTypeAtr: 1 });
-                    bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName9(), useAtr: self.useSpecAtr9(),timeItemNo: 9, timeItemTypeAtr: 1 });
-                    bonusPayTimeItemSpecListCommand.push({ timeItemName:self.timeItemSpecName10(), useAtr: self.useSpecAtr10(),timeItemNo: 10, timeItemTypeAtr: 1 });
+                    bonusPayTimeItemSpecListCommand.push(
+                        { timeItemName:self.timeItemSpecName1(), useAtr: self.useSpecAtr1(),timeItemNo: 1, timeItemTypeAtr: 1 },
+                        { timeItemName:self.timeItemSpecName2(), useAtr: self.useSpecAtr2(),timeItemNo: 2, timeItemTypeAtr: 1 },
+                        { timeItemName:self.timeItemSpecName3(), useAtr: self.useSpecAtr3(),timeItemNo: 3, timeItemTypeAtr: 1 },
+                        { timeItemName:self.timeItemSpecName4(), useAtr: self.useSpecAtr4(),timeItemNo: 4, timeItemTypeAtr: 1 },
+                        { timeItemName:self.timeItemSpecName5(), useAtr: self.useSpecAtr5(),timeItemNo: 5, timeItemTypeAtr: 1 },
+                        { timeItemName:self.timeItemSpecName6(), useAtr: self.useSpecAtr6(),timeItemNo: 6, timeItemTypeAtr: 1 },
+                        { timeItemName:self.timeItemSpecName7(), useAtr: self.useSpecAtr7(),timeItemNo: 7, timeItemTypeAtr: 1 },
+                        { timeItemName:self.timeItemSpecName8(), useAtr: self.useSpecAtr8(),timeItemNo: 8, timeItemTypeAtr: 1 },
+                        { timeItemName:self.timeItemSpecName9(), useAtr: self.useSpecAtr9(),timeItemNo: 9, timeItemTypeAtr: 1 },
+                        { timeItemName:self.timeItemSpecName10(), useAtr: self.useSpecAtr10(),timeItemNo: 10, timeItemTypeAtr: 1 }
+                    );
+                    lstUseSpecArt = _.map(bonusPayTimeItemSpecListCommand, (data) => data.useAtr == 1 ? true:false);
 
-
-                    service.checkUseArt(lstUseArt).done(function() {
+                    service.checkUseArt(lstUseArt,lstUseSpecArt).done(function() {
                         service.getListBonusPTimeItem().done(function(res: Array<any>) {
-                            if (res === undefined || res.length == 0) {
+                            if (_.isEmpty(res)) {
                                 service.addListBonusPayTimeItem(bonusPayTimeItemListCommand);
                             } else {
                                 service.updateListBonusPayTimeItem(bonusPayTimeItemListCommand);
@@ -534,13 +520,8 @@ module nts.uk.at.view.kmk005.b {
                             self.closeDialog();
                         })
 
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                    });
-
-                    service.checkUseArt(lstUseSpecArt).done(function() {
                         service.getListSpecialBonusPayTimeItem().done(function(res: Array<any>) {
-                            if (res === undefined || res.length == 0) {
+                            if (_.isEmpty(res)) {
                                 service.addListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
                             } else {
                                 service.updateListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
