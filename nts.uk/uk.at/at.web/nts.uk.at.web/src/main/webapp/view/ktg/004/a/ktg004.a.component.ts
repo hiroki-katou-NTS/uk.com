@@ -91,15 +91,12 @@ module nts.uk.ui.ktg004.a {
 		                                <div style="position: relative; width: 50%">
 		                                    <div data-bind="if: row.btn" style="float: left; position: relative;">
 		                                        <!-- A2_2 -->
-		                                        <button class="icon ktg004-no-border" data-bind="
-		                                            click: function() { $component.openKDW003() },
-		                                            ntsIcon: { no: 201, width: 25, height: 28 },
-		                                            enable: row.canClick">
+		                                        <button class="signal-button ktg004-no-border" data-bind="
+                                                        click: function() { $component.openKDW003() },
+                                                        enable: row.canClick">
+                                                    <i data-bind="visible: !row.canClick, ntsIcon: { no: 305 }"></i>
+                                                    <i data-bind="visible: row.canClick, ntsIcon: { no: 306 }"></i>
 		                                        </button>
-		                                        <!-- A2_3 -->
-		                                        <i style="position: absolute; left: 13px; bottom: 0px; cursor: pointer;"
-		                                            data-bind="visible: row.canClick, ntsIcon: { no: 165, width: 13, height: 13 }, click: function() { $component.openKDW003() }">
-		                                        </i>
 		                                    </div>
 		                                    <div data-bind="ntsFormLabel: { required: false, text: row.name }"></div>
 		                                </div>
@@ -129,15 +126,12 @@ module nts.uk.ui.ktg004.a {
 		                                <div style="position: relative; width: 50%">
 		                                    <div data-bind="if: row.btn" style="float: left; position: relative;">
 		                                        <!-- A2_2 -->
-		                                        <button class="icon ktg004-no-border" data-bind="
-		                                            click: function() { $component.openKDW003() },
-		                                            ntsIcon: { no: 201, width: 25, height: 28 },
-		                                            enable: row.canClick">
+		                                        <button class="signal-button ktg004-no-border" data-bind="
+                                                        click: function() { $component.openKDW003() },
+                                                        enable: row.canClick">
+                                                    <i data-bind="visible: !row.canClick, ntsIcon: { no: 305 }"></i>
+                                                    <i data-bind="visible: row.canClick, ntsIcon: { no: 306 }"></i>
 		                                        </button>
-		                                        <!-- A2_3 -->
-		                                        <i style="position: absolute; left: 13px; bottom: 0px; cursor: pointer;"
-		                                            data-bind="visible: row.canClick, ntsIcon: { no: 165, width: 13, height: 13 }, click: function() { $component.openKDW003() }">
-		                                        </i>
 		                                    </div>
 		                                    <div data-bind="ntsFormLabel: { required: false, text: row.name }"></div>
 		                                </div>
