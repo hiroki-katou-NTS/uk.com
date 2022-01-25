@@ -165,16 +165,16 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         val _hdManagement = hdFinder.findByLayOutId(hdRemainCond.getLayOutId());
         _hdManagement.ifPresent((HolidaysRemainingManagement hdManagement) -> {
 
-			// 社員範囲選択画面で指定した締めID(0～5)　★使用禁止
-			// 締めIDを(1～5)にする
+            // 社員範囲選択画面で指定した締めID(0～5)　★使用禁止
+            // 締めIDを(1～5)にする
             int closureId = hdRemainCond.getClosureId();
             // ※該当の締めIDが「0：全締め」のときは、「1締め（締めID＝1）」とする
             if (closureId == 0) {
                 closureId = 1;
             }
 
-			//(誤) アルゴリズム「指定した年月の期間をすべて取得する」を実行する
-			//(正) 指定した締めIDのドメインモデル「締め」を取得する
+            //(誤) アルゴリズム「指定した年月の期間をすべて取得する」を実行する
+            //(正) 指定した締めIDのドメインモデル「締め」を取得する
             Optional<Closure> closureOpt = closureRepository.findById(cId, closureId);
             if (!closureOpt.isPresent()) {
                 return;
@@ -216,7 +216,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 throw new BusinessException("Msg_885");
             }
 
-			// 休暇設定画面で設定した各休暇の「管理区分」を取得する
+            // 休暇設定画面で設定した各休暇の「管理区分」を取得する
             val varVacaCtr = varVacaCtrSv.getVariousVacationControl();
 
             // ドメインモデル「締め」(社員範囲選択)より当月、締め期間、締め日(日付)を求める　★使用禁止
@@ -271,20 +271,22 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             MutableValue<YearMonth> currentMonthOfFirstEmp = new MutableValue<>();
             Map<String, HolidaysRemainingEmployee> mapTmp = Collections
                     .synchronizedMap(new HashMap<String, HolidaysRemainingEmployee>());
+
             // 休暇残数管理表の作成
+
             // 2021.12.29 - 3S - chinh.hm  - #121957 追加 START
             YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(startDate.yearMonth(),endDate.yearMonth());
             String companyId = AppContexts.user().companyId();
             UseClassification useClassification = UseClassification.UseClass_Use;
+
             // ドメインモデル「締め」を取得する(get domain[closure])
             List<Closure> closureList = closureRepository.findAllActive(companyId, useClassification);
             Map<Integer,OutputPeriodForClosingDto> periodInformationMap = createOutputPeriodForClosing(yearMonthPeriod,closureList);
-
             //2021.12.29 - 3S - chinh.hm  - # 121957 追加  END
 
-			////////////////////////////////////////////////////////////////////////////////
-			// 社員のループSTART
-			////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////
+            // 社員のループSTART
+            ////////////////////////////////////////////////////////////////////////////////
             parallel.forEach(listEmployeeInformationImport, emp -> {
                 String wpCode = emp.getWorkplace() != null ? emp.getWorkplace().getWorkplaceCode() : "";
                 String wpName = emp.getWorkplace() != null ? emp.getWorkplace().getWorkplaceName() : TextResource.localize("KDR001_55");
@@ -310,11 +312,12 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 // 2021.12.06 - 3S - chinh.hm  - issues #121626- 追加 END
                 //-----------------------------------------------------------------------------------
 
-	       		// 当月
+                // 当月
                 Optional<YearMonth> currentMonth = hdRemainManageFinder.getCurrentMonth(
                         cId,
                         emp.getEmployeeId(),
                         baseDate);
+
                 //アルゴリズム「社員ごとの出力期間を作成する」を実行する
                 //(Thực hiện thuật toán 「Tạo export period của từng employee])
                 OutputPeriodForClosingDto outputPeriodInformation = periodInformationMap.getOrDefault(empClosureId,null);
@@ -322,9 +325,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 OutputPeriodInformation information = outputPeriodInformation == null ? null : outputPeriodInformation.getPeriodInformation();
                 CurrentStatusAndPeriodInformation currentStatusAndPeriod =
                         createExportPeriodForEmployee(emp.getEmployeeId(),information,currentPeriod);
-                 boolean currentStatus = currentStatusAndPeriod != null && currentStatusAndPeriod.isCurrentStatus();
-                 OutputPeriodInformation periodInformation = currentStatusAndPeriod == null ? null : currentStatusAndPeriod.getOutputPeriodInformation();
-				// 赤丸？
+                boolean currentStatus = currentStatusAndPeriod != null && currentStatusAndPeriod.isCurrentStatus();
+                OutputPeriodInformation periodInformation = currentStatusAndPeriod == null ? null : currentStatusAndPeriod.getOutputPeriodInformation();
+
+                // 赤丸？
                 if (isFirstEmployee.get()) {
                     isFirstEmployee.set(false);
                     currentMonthOfFirstEmp.set(currentMonth.orElse(null));
@@ -334,22 +338,22 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     }
                 }
 
-				////////////////////////////////////////////////////////////////////////////////
-	        	// 「休暇残数管理表の作成」
-				////////////////////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////////////////////
+                // 「休暇残数管理表の作成」
+                ////////////////////////////////////////////////////////////////////////////////
                 HolidayRemainingInfor holidayRemainingInfor = this.getHolidayRemainingInfor(
                         varVacaCtr,				// 各休暇の管理区分
                         closureInforOpt,		// (2021.12.06)着目社員の「締め期間」などの情報
                         emp.getEmployeeId(),	// 社員ID
-                        baseDate,				// システム日付
+                        baseDate,				// 処理基準日
                         startDate,				// 画面入力期間From(年月)/01
                         endDate,				// 画面入力期間To  (年月)/月末日
                         // 2022.01.04 - 3S - chinh.hm - issues #122017 - 追加 START
-                        periodInformation, // 出力期間情報
-                        currentStatus // 当月在職状況
+                        periodInformation,		// 出力期間情報
+                        currentStatus			// 当月在職状況
                         // 2022.01.04 - 3S - chinh.hm - issues #122017 - 追加 END
-
                 );
+
                 mapTmp.put(emp.getEmployeeId(),
                         new HolidaysRemainingEmployee(
                                 emp.getEmployeeId(),
@@ -365,9 +369,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                                 currentMonth,
                                 holidayRemainingInfor));
             });
-			////////////////////////////////////////////////////////////////////////////////
-			// 社員のループEND
-			////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////
+            // 社員のループEND
+            ////////////////////////////////////////////////////////////////////////////////
 
             Map<String, HolidaysRemainingEmployee> mapEmp = new HashMap<>(mapTmp);
             Optional<CompanyInfor> companyCurrent = this.companyRepo.getCurrentCompany();
@@ -386,18 +390,18 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         });
     }
 
-	////////////////////////////////////////////////////////////////////////////////
-	// 「休暇残数管理表の作成」
-	////////////////////////////////////////////////////////////////////////////////
-    private HolidayRemainingInfor getHolidayRemainingInfor(VariousVacationControl variousVacationControl,	// 各休暇の管理区分
-                                                           Optional<ClosureInfo> closureInforOpt,			// (2021.12.06)着目社員の「締め期間」などの情報
-                                                           String employeeId,								// 社員ID
-                                                           GeneralDate baseDate,							// システム日付
-                                                           GeneralDate startDate,							// 画面入力期間From(年月)/01
-                                                           GeneralDate endDate,								// 画面入力期間To  (年月)/月末日
+    ////////////////////////////////////////////////////////////////////////////////
+    // 「休暇残数管理表の作成」
+    ////////////////////////////////////////////////////////////////////////////////
+    private HolidayRemainingInfor getHolidayRemainingInfor(VariousVacationControl	variousVacationControl,		// 各休暇の管理区分
+                                                           Optional<ClosureInfo>	closureInforOpt,			// (2021.12.06)着目社員の「締め期間」などの情報
+                                                           String					employeeId,					// 社員ID
+                                                           GeneralDate				baseDate,					// 処理基準日
+                                                           GeneralDate				startDate,					// 画面入力期間From(年月)/01
+                                                           GeneralDate				endDate,					// 画面入力期間To  (年月)/月末日
                                                            // 2022.01.04 - 3S - chinh.hm - issues #122017 - 追加 START
-                                                           OutputPeriodInformation outputPeriodInformation,// 出力期間情報
-                                                           boolean currentStatus // 当月在職状況
+                                                           OutputPeriodInformation	outputPeriodInformation,	// 出力期間情報
+                                                           boolean 					currentStatus				// 当月在職状況
                                                            // 2022.01.04 - 3S - chinh.hm - issues #122017 - 追加 end)
     )
     {
@@ -461,42 +465,55 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             return null;
         }
 
-		// 処理年月
+        // 処理年月
         YearMonth currentMonth = closureInforOpt.get().getCurrentMonth();
         val cId = AppContexts.user().companyId();
 
-		// 画面入力期間From(年月)/01　～　画面入力期間To  (年月)/月末日　★使用禁止
+        // 画面入力期間From(年月)/01　～　画面入力期間To  (年月)/月末日　★使用禁止
         val datePeriod = new DatePeriod(startDate, endDate);
+
         // 2021.12.29 - 3S - chinh.hm - issues #122017 - 追加 START
         Optional<List<PeriodCorrespondingYm>> currentMonthAndFuture = outputPeriodInformation == null ?Optional.empty(): outputPeriodInformation.getCurrentMonthAndFuture();
-        List<PeriodCorrespondingYm> correspondingYmList = currentMonthAndFuture.orElseGet(ArrayList::new);
+        List<PeriodCorrespondingYm>           correspondingYmList   = currentMonthAndFuture.orElseGet(ArrayList::new);
         // 2021.12.29 - 3S - chinh.hm - issues #122017 - 追加 END
-		////////////////////////////////////////////////////////////////////////////////
-		////////////////////////////////////////////////////////////////////////////////
-		// 過去月
-		////////////////////////////////////////////////////////////////////////////////
-		////////////////////////////////////////////////////////////////////////////////
 
-		// 過去月の開始年月と終了年月
+
+
+        ////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        // 過去月
+        ////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+
+
+
+        // 過去月の開始年月と終了年月
         //YearMonthPeriod period = new YearMonthPeriod(startDate.yearMonth(), currentMonth.previousMonth());
         Optional<YearMonthPeriod> pastPeriod = outputPeriodInformation == null ? Optional.empty() : outputPeriodInformation.getPastPeriod();
+
         //-----------------------------------------------------------------------------------
         // 2021.12.29 - 3S - chinh.hm - issues #122017 - 追加 START
         if (pastPeriod.isPresent() ) {
             // 2021.12.29 - 3S - chinh.hm - issues #122017 - 追加 END
             //-----------------------------------------------------------------------------------
-             period = pastPeriod.get();
+
+            period = pastPeriod.get();
+
             ////////////////////////////////////////////////////////////////////////////////
             // 過去月の月別残数データを取得する
             ////////////////////////////////////////////////////////////////////////////////
             // Mer RQ255,258,259,260,263
-             hdRemainMer = hdRemainAdapter.getRemainMer(employeeId, period);
+            hdRemainMer = hdRemainAdapter.getRemainMer(employeeId, period);
+
             // 過去月の年月のリスト作成
-             lstYrMon = ConvertHelper.yearMonthsBetween(period);
+            lstYrMon = ConvertHelper.yearMonthsBetween(period);
+
             // 2022.01.04 - 3S - chinh.hm - issues #122037 - 追加 START
             //Map<YearMonth, List<RemainMerge>> mapRemainMer = repoRemainMer.findBySidsAndYrMons(employeeId, lstYrMon);
             //  2022.01.04 - - 3S - chinh.hm - issues #122037 - 追加 END
         }
+
+
 
         ////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////
@@ -506,13 +523,13 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
 
 
-       ////////////////////////////////////////////////////////////////////////////////
-       // 「現在の状況」の期間を設定する
-       ////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        // 「現在の状況」の期間を設定する
+        ////////////////////////////////////////////////////////////////////////////////
         DatePeriod currentPeriodDate = null;
-       for (int i = 0; i < correspondingYmList.size(); i++){						// <List>当月・未来
+        for (int i = 0; i < correspondingYmList.size(); i++){						// <List>当月・未来
             PeriodCorrespondingYm   correspondingYm = correspondingYmList.get(i);	// 当月・未来
-           YearMonth ym          = correspondingYm.getYm();						    // 　年月
+            YearMonth ym          = correspondingYm.getYm();						    // 　年月
 
             if(currentMonth.compareTo(ym) == 0){									// 締め当月 == 当月・未来の年月
                 currentPeriodDate = correspondingYm.getDatePeriod();	            // 　期間
@@ -532,20 +549,20 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 && currentMonth.compareTo(endDate.yearMonth()) <= 0;
         boolean call369 = variousVacationControl.isAnnualHolidaySetting();		//			年休　　(次回年休付与日)
 
-		////////////////////////////////////////////////////////////////////////////////
-	    // 現在、当月・未来月のデータを取得する(363は不要かも…)
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        // 現在、当月・未来月のデータを取得する(363は不要かも…)
+        ////////////////////////////////////////////////////////////////////////////////
         CheckCallRequest check = new CheckCallRequest(call265, call268, call269, call363, call364, call369);
         HdRemainDetailMerEx remainDel = hdRemainAdapter.getRemainDetailMer(
-        								employeeId,
-        								currentMonth,
-        								baseDate,
-										new DatePeriod(startDate, endDate),
-										check);
+                employeeId,
+                currentMonth,
+                baseDate,
+                new DatePeriod(startDate, endDate),
+                check);
 
-		////////////////////////////////////////////////////////////////////////////////
-		// 年休
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        // 年休
+        ////////////////////////////////////////////////////////////////////////////////
         if (variousVacationControl.isAnnualHolidaySetting()) {
 
             // Call RequestList369					// 次回年休付与日
@@ -566,23 +583,24 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 listAnnualLeaveUsage = hdRemainMer.getResult255();
             }
             // 2021.12.29 - 3S - chinh.hm - issues #122017 - 追加 END
+
             // Call RequestList363					// 月別利用状況(当月・未来月),現在の状況
             if (currentMonth.compareTo(endDate.yearMonth()) <= 0) {
-				////////////////////////////////////////////////////////////////////////////////
-			    // 現在、当月・未来月のデータを取得する(363専用)
-				////////////////////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////////////////////
+                // 現在、当月・未来月のデータを取得する(363専用)
+                ////////////////////////////////////////////////////////////////////////////////
                 //listAnnLeaveUsageStatusOfThisMonth = remainDel.getResult363();
                 getRs363 = hdRemainAdapter.getRs363(employeeId, 						// 社員ID
-                									currentMonth, 						// 当月
-                									baseDate,							// システム日付
-                									new DatePeriod(startDate, endDate), // 画面入力期間From(年月)/01　～　画面入力期間To  (年月)/月末日
-                									true);								//
+                        currentMonth, 						// 当月
+                        baseDate,							// 処理基準日
+                        new DatePeriod(startDate, endDate), // 画面入力期間From(年月)/01　～　画面入力期間To  (年月)/月末日
+                        true);								//
             }
         }
 
-		////////////////////////////////////////////////////////////////////////////////
-		// 積立年休
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        // 積立年休
+        ////////////////////////////////////////////////////////////////////////////////
         if (variousVacationControl.isYearlyReservedSetting()) {
             // Call RequestList268						// 現在の状況
             reserveHoliday = remainDel.getResult268();
@@ -597,51 +615,52 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 listRsvLeaUsedCurrentMon = remainDel.getResult364();
             }
         }
-		////////////////////////////////////////////////////////////////////////////////
-		// 代休
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        // 代休
+        ////////////////////////////////////////////////////////////////////////////////
         if (variousVacationControl.isSubstituteHolidaySetting()) {
-			//========================================
-			// 当月・未来月
-			//========================================
+            //========================================
+            // 当月・未来月
+            //========================================
             // Call RequestList269
             //for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
-                //GeneralDate end = GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
-                //DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1),
-                //        endDate.before(end) ? endDate : end);
-                //BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
-                //        cId, employeeId,
-                //       periodDate,
-                //        false,
-                //        closureInforOpt.get().getPeriod().end(),
-                //        false,
-                //        new ArrayList<>(),
-                //        Optional.empty(),
-                //        Optional.empty(),
-                //        new ArrayList<>(),
-                //        new ArrayList<>(),
-                //        Optional.empty(), new FixedManagementDataMonth());
-                //SubstituteHolidayAggrResult currentHoliday = NumberRemainVacationLeaveRangeQuery
-                //        .getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
+            //GeneralDate end = GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
+            //DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1),
+            //        endDate.before(end) ? endDate : end);
+            //BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
+            //        cId, employeeId,
+            //       periodDate,
+            //        false,
+            //        closureInforOpt.get().getPeriod().end(),
+            //        false,
+            //        new ArrayList<>(),
+            //        Optional.empty(),
+            //        Optional.empty(),
+            //        new ArrayList<>(),
+            //        new ArrayList<>(),
+            //        Optional.empty(), new FixedManagementDataMonth());
+            //SubstituteHolidayAggrResult currentHoliday = NumberRemainVacationLeaveRangeQuery
+            //        .getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
 
-                //listCurrentHoliday.add(new CurrentHolidayImported(s, currentHoliday.getCarryoverDay().v(),
-                //        currentHoliday.getOccurrenceDay().v(), currentHoliday.getDayUse().v(),
-                //        currentHoliday.getUnusedDay().v(), currentHoliday.getRemainDay().v()));
+            //listCurrentHoliday.add(new CurrentHolidayImported(s, currentHoliday.getCarryoverDay().v(),
+            //        currentHoliday.getOccurrenceDay().v(), currentHoliday.getDayUse().v(),
+            //        currentHoliday.getUnusedDay().v(), currentHoliday.getRemainDay().v()));
             //}
 
-			//========================================
-			// 過去月
-			//========================================
+            //========================================
+            // 過去月
+            //========================================
             // Call RequestList259 ver2 - hoatt
             // 2021.12.29 - 3S - chinh.hm) - issues #122017 - 追加 START
             if ( hdRemainMer!=null) {
                 listStatusHoliday = hdRemainMer.getResult259();
             }
             // 2021.12.29 - 3S - chinh.hm - issues #122017 - 追加 END
-			//========================================
-			// 現在
-			//========================================
-			// Call RequestList269
+
+            //========================================
+            // 現在
+            //========================================
+            // Call RequestList269
             //DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
             //BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
             //        cId, employeeId,
@@ -656,7 +675,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             //        new ArrayList<>(),
             //        Optional.empty(), new FixedManagementDataMonth());
             //SubstituteHolidayAggrResult currentHoliday = NumberRemainVacationLeaveRangeQuery
-             //       .getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
+            //       .getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
             //currentHolidayLeft = new CurrentHolidayImported(
             //        currentMonth,
             //        currentHoliday.getCarryoverDay().v(),
@@ -668,26 +687,26 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
 
 
-		////////////////////////////////////////////////////////////////////////////////
-		// 振休
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        // 振休
+        ////////////////////////////////////////////////////////////////////////////////
         if (variousVacationControl.isPauseItemHolidaySetting()) {
 
-			//========================================
-			// 当月・未来月
-			//========================================
-			// Call RequestList204
+            //========================================
+            // 当月・未来月
+            //========================================
+            // Call RequestList204
             for (int i = 0; i < correspondingYmList.size(); i++){
-            // 2021.12.29 - 3S - chinh.hm - issues #121957 - 追加 START
-            PeriodCorrespondingYm  correspondingYm =    correspondingYmList.get(i);
-            DatePeriod periodDate = correspondingYm.getDatePeriod();
-            YearMonth ym = correspondingYm.getYm();
-            // 2021.12.29 - 3S - chinh.hm - issues #121957 - 追加 END
-            if(periodDate == null) continue;
-            val mngParam = new AbsRecMngInPeriodRefactParamInput(
-                		cId,
-                		employeeId,
-                		periodDate,
+                // 2021.12.29 - 3S - chinh.hm - issues #121957 - 追加 START
+                PeriodCorrespondingYm  correspondingYm =    correspondingYmList.get(i);
+                DatePeriod periodDate = correspondingYm.getDatePeriod();
+                YearMonth ym = correspondingYm.getYm();
+                // 2021.12.29 - 3S - chinh.hm - issues #121957 - 追加 END
+                if(periodDate == null) continue;
+                val mngParam = new AbsRecMngInPeriodRefactParamInput(
+                        cId,
+                        employeeId,
+                        periodDate,
                         closureInforOpt.get().getPeriod().end(),
                         false,
                         false,
@@ -709,9 +728,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                                 remainMng.getUnusedDay().v(),
                                 remainMng.getRemainDay().v()));
             }
-			//========================================
-			// 過去月
-			//========================================
+
+            //========================================
+            // 過去月
+            //========================================
             // Call RequestList260 ver2 - hoatt
             // 2021.12.29 - 3S - chinh.hm) - issues #122017  - 追加 START
             if ( hdRemainMer!=null) {
@@ -729,11 +749,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             //　　　　if文追加 {
 
             // 2022.01.17 - inaguma #122461 CHANGE START
-           //if(currentStatus){
-           if(currentStatus && currentPeriodDate!=null){
-           // 2022.01.17 - inaguma #122461 CHANGE END
+            //if(currentStatus){
+            if(currentStatus && currentPeriodDate!=null){
+                // 2022.01.17 - inaguma #122461 CHANGE END
 
-               // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 END
+                // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 END
                 val param = new AbsRecMngInPeriodRefactParamInput(
                         cId,
                         employeeId,
@@ -777,71 +797,72 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 END
             }
         }
-		////////////////////////////////////////////////////////////////////////////////
-		// 特別休暇
-		////////////////////////////////////////////////////////////////////////////////
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // 特別休暇
+        ////////////////////////////////////////////////////////////////////////////////
         // hoatt
         //Map<Integer, SpecialVacationImported> mapSpecVaca = new HashMap<>();
         //Map<YearMonth, Map<Integer, SpecialVacationImported>> lstMapSPVaCurrMon = new HashMap<>();// key
         //Map<Integer, List<SpecialHolidayImported>> mapSpeHd = new HashMap<>();
         Map<Integer, SpecialVacationImportedKdr> map273New = new HashMap<>();
         Map<YearMonth, Map<Integer, SpecialVacationImportedKdr>> lstMap273CurrMon = new HashMap<>();// key
-		//========================================
-		// 当月・未来月
-		//========================================
+        //========================================
+        // 当月・未来月
+        //========================================
         // Call RequestList273
         for (int i = 0; i < correspondingYmList.size(); i++){
-                //Map<Integer, SpecialVacationImported> mapSPVaCurrMon = new HashMap<>();
-                Map<Integer, SpecialVacationImportedKdr> mapSP273CurrMon = new HashMap<>();
+            //Map<Integer, SpecialVacationImported> mapSPVaCurrMon = new HashMap<>();
+            Map<Integer, SpecialVacationImportedKdr> mapSP273CurrMon = new HashMap<>();
             // 2021.12.29 - 3S - chinh.hm - issues #121957 - 追加 START
             PeriodCorrespondingYm  correspondingYm =    correspondingYmList.get(i);
             DatePeriod periodDate = correspondingYm.getDatePeriod();
             YearMonth ym = correspondingYm.getYm();
             // 2021.12.29 - 3S - chinh.hm - issues #121957 - 追加 END
-                for (SpecialHoliday specialHolidayDto : variousVacationControl.getListSpecialHoliday()) {// sphdCd
-                    int sphdCode = specialHolidayDto.getSpecialHolidayCode().v();
-                    //YearMonth ymEnd = ym.addMonths(1);
-                    //SpecialVacationImported spVaImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
-                    //        employeeId,
-                    //        new DatePeriod(GeneralDate.ymd(ym.year(), ym.month(), 1),
-                    //                GeneralDate.ymd(ymEnd.year(), ymEnd.month(), 1).addDays(-1)),
-                    //        false, baseDate, sphdCode, false);
+            for (SpecialHoliday specialHolidayDto : variousVacationControl.getListSpecialHoliday()) {// sphdCd
+                int sphdCode = specialHolidayDto.getSpecialHolidayCode().v();
+                //YearMonth ymEnd = ym.addMonths(1);
+                //SpecialVacationImported spVaImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
+                //        employeeId,
+                //        new DatePeriod(GeneralDate.ymd(ym.year(), ym.month(), 1),
+                //                GeneralDate.ymd(ymEnd.year(), ymEnd.month(), 1).addDays(-1)),
+                //        false, baseDate, sphdCode, false);
 
-					// ↓　New RQ273
-                    SpecialVacationImportedKdr spVaImportedNew = specialLeaveAdapter.get273New(
-                    		cId,
-                            employeeId,
-                            // 2021.12.29 - 3S - chinh.hm - issues #121957 - 変更 START
-                            periodDate,
-                            // 2021.12.29 - 3S - chinh.hm - issues #121957 - 変更 END
-                            false,
-             				//-----------------------------------------------------------------------------------
-             				// 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
-                            //baseDate,
-                            closureInforOpt.get().getPeriod().end(),
-             				// 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 END
-             				//-----------------------------------------------------------------------------------
-                            sphdCode,
-                            false);
+                // ↓　New RQ273
+                SpecialVacationImportedKdr spVaImportedNew = specialLeaveAdapter.get273New(
+                        cId,
+                        employeeId,
+                        // 2021.12.29 - 3S - chinh.hm - issues #121957 - 変更 START
+                        periodDate,
+                        // 2021.12.29 - 3S - chinh.hm - issues #121957 - 変更 END
+                        false,
+                        //-----------------------------------------------------------------------------------
+                        // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
+                        //baseDate,
+                        closureInforOpt.get().getPeriod().end(),
+                        // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 END
+                        //-----------------------------------------------------------------------------------
+                        sphdCode,
+                        false);
 
-                    //mapSPVaCurrMon.put(sphdCode, spVaImported);
-                    mapSP273CurrMon.put(sphdCode, spVaImportedNew);
-                }
-                //lstMapSPVaCurrMon.put(ym, mapSPVaCurrMon);
-                lstMap273CurrMon.put(ym, mapSP273CurrMon);
+                //mapSPVaCurrMon.put(sphdCode, spVaImported);
+                mapSP273CurrMon.put(sphdCode, spVaImportedNew);
             }
+            //lstMapSPVaCurrMon.put(ym, mapSPVaCurrMon);
+            lstMap273CurrMon.put(ym, mapSP273CurrMon);
+        }
 
-		//========================================
-		// 現在
-		//========================================
+        //========================================
+        // 現在
+        //========================================
         // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 START
 
-      // 2022.01.17 - inaguma #122461 CHANGE START
-      //if(currentStatus){
-      if(currentStatus && currentPeriodDate!=null){
-      // 2022.01.17 - inaguma #122461 CHANGE END
+        // 2022.01.17 - inaguma #122461 CHANGE START
+        //if(currentStatus){
+        if(currentStatus && currentPeriodDate!=null){
+            // 2022.01.17 - inaguma #122461 CHANGE END
 
-        // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 END
+            // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 END
             for (SpecialHoliday specialHolidayDto : variousVacationControl.getListSpecialHoliday()) {
                 int sphdCode = specialHolidayDto.getSpecialHolidayCode().v();
                 // Call RequestList273
@@ -881,10 +902,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             // 2022.01.04 - 3S - chinh.hm - issues #122017 - 追加 START
             map273New = new HashMap<>();
             // 2022.12.04 - 3S - chinh.hm - issues #122017 - 追加 END
-         }
-		////////////////////////////////////////////////////////////////////////////////
-		// 子の看護
-		////////////////////////////////////////////////////////////////////////////////
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // 子の看護
+        ////////////////////////////////////////////////////////////////////////////////
         //if (variousVacationControl.isChildNursingSetting()) {
         //    // Call RequestList206
         //    childNursingLeave = childNursingAdapter.getChildNursingLeaveCurrentSituation(
@@ -893,9 +915,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         //            datePeriod);
         //}
 
-		////////////////////////////////////////////////////////////////////////////////
-		// 介護
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        // 介護
+        ////////////////////////////////////////////////////////////////////////////////
         //if (variousVacationControl.isNursingCareSetting()) {
         //    // Call RequestList207
         //    nursingLeave = nursingLeaveAdapter.getNursingLeaveCurrentSituation(
@@ -904,34 +926,34 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         //            datePeriod);
         //}
 
-		////////////////////////////////////////////////////////////////////////////////
-		////////////////////////////////////////////////////////////////////////////////
-		////////////////////////////////////////////////////////////////////////////////
-		// ここからも引き続きデータ取得メソッド呼出、return値への項目移送を実施している
-		////////////////////////////////////////////////////////////////////////////////
-		////////////////////////////////////////////////////////////////////////////////
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        // ここからも引き続きデータ取得メソッド呼出、return値への項目移送を実施している
+        ////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
 
 
-		////////////////////////////////////////////////////////////////////////////////
-		// 代休
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        // 代休
+        ////////////////////////////////////////////////////////////////////////////////
 
         val rq = requireService.createRequire();
         // 期間内の休出代休残数を取得する
 
-		//========================================
-		// 現在
-		//========================================
-		// RequestList203
+        //========================================
+        // 現在
+        //========================================
+        // RequestList203
         // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 START
 
         // 2022.01.17 - inaguma #122461 CHANGE START
-      //if(currentStatus){
-     if(currentStatus && currentPeriodDate!=null){
-      // 2022.01.17 - inaguma #122461 CHANGE END
+        //if(currentStatus){
+        if(currentStatus && currentPeriodDate!=null){
+            // 2022.01.17 - inaguma #122461 CHANGE END
 
-        // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 END
+            // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 END
             //-----------------------------------------------------------------------------------
             // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
             //DatePeriod periodDate = new DatePeriod(
@@ -946,8 +968,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     employeeId,
 
                     // 2022.01.17 - inaguma #122461 CHANGE START
-                                        //periodDate,
-                                       currentPeriodDate,
+                    //periodDate,
+                    currentPeriodDate,
                     // 2022.01.17 - inaguma #122461 CHANGE END
 
                     false,
@@ -966,9 +988,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             substituteHolidayAggrResult = null;
             // 2022.12.04 - 3S - chinh.hm - issues #122017 - 追加 END
         }
-		//========================================
-		// 当月・未来月
-		//========================================
+
+        //========================================
+        // 当月・未来月
+        //========================================
         // RequestList203
         for (int i = 0; i < correspondingYmList.size(); i++){
             // 2021.12.29 - 3S - chinh.hm - issues #121957 - 追加 START
@@ -995,9 +1018,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
         }
 
-		////////////////////////////////////////////////////////////////////////////////
-		// 振休
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        // 振休
+        ////////////////////////////////////////////////////////////////////////////////
 //        CompenLeaveAggrResult subVaca = null;
 //        if (closureInforOpt.isPresent()) {
 //            val param = new AbsRecMngInPeriodRefactParamInput(
@@ -1020,13 +1043,13 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
 
 
-		////////////////////////////////////////////////////////////////////////////////
-		// 60H超休
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        // 60H超休
+        ////////////////////////////////////////////////////////////////////////////////
 
-		//========================================
-		// 60H超休の検証は後日実施
-		//========================================
+        //========================================
+        // 60H超休の検証は後日実施
+        //========================================
 
         // [RQ677]期間中の60H超休残数を取得する
         AggrResultOfHolidayOver60hImport aggrResultOfHolidayOver60h = this.getHolidayOver60hRemNumWithinPeriodAdapter.algorithm(
@@ -1040,16 +1063,15 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 Optional.empty()
         );
 
-		////////////////////////////////////////////////////////////////////////////////
-		// 特別休暇
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        // 特別休暇
+        ////////////////////////////////////////////////////////////////////////////////
 
-		//========================================
-		// 過去月
-		//========================================
+        //========================================
+        // 過去月
+        //========================================
 
-
-		// Call RequestList263
+        // Call RequestList263
         //-----------------------------------------------------------------------------------
         // 2021.12.24 - 3S - chinh.hm  - issues #122037 - 変更 START
         //getSpeHdOfConfMonVer2 =
@@ -1073,14 +1095,14 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         // 2021.12.29 - 3S - chinh.hm - issues #122037 - 追加 END
 
 
-		////////////////////////////////////////////////////////////////////////////////
-		// 子の看護
-		// 介護
-		////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
+        // 子の看護
+        // 介護
+        ////////////////////////////////////////////////////////////////////////////////
 
-		//========================================
-		// 過去月
-		//========================================
+        //========================================
+        // 過去月
+        //========================================
         // 2021.12.29 - 3S - chinh.hm) - issues #121957 - 追加 START
         if(!lstYrMon.isEmpty()){
             // RQ 342
@@ -1090,9 +1112,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         }
         // 2021.12.29 - 3S - chinh.hm) - issues #121957 - 追加 END
 
-		//========================================
-		// 当月・未来月
-		//========================================
+        //========================================
+        // 当月・未来月
+        //========================================
 
         for (int i = 0; i < correspondingYmList.size(); i++){
 
@@ -1103,43 +1125,43 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             // 2021.12.29 - 3S - chinh.hm - issues #121957 - 追加 END
             // RQ206(改)
             childCareRemNumWithinPeriodRight.add(
-            				getRemainingNumberChildCareNurseAdapter.getChildCareRemNumWithinPeriod(
-	                            cId,
-	                            employeeId,
-	                            periods,
-                                ym,
-        						//-----------------------------------------------------------------------------------
-        						// 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
-	                            //end)
-	                            closureInforOpt.get().getPeriod().end())
-        						// 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 END
-        						//-----------------------------------------------------------------------------------
-	                        );
-			// RQ207(改)
+                    getRemainingNumberChildCareNurseAdapter.getChildCareRemNumWithinPeriod(
+                            cId,
+                            employeeId,
+                            periods,
+                            ym,
+                            //-----------------------------------------------------------------------------------
+                            // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
+                            //end)
+                            closureInforOpt.get().getPeriod().end())
+                    // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 END
+                    //-----------------------------------------------------------------------------------
+            );
+            // RQ207(改)
             nursingCareLeaveThisMonthFutureSituationRight.add(
-            				getRemainingNumberChildCareNurseAdapter.getNursingCareLeaveThisMonthFutureSituation(
-                            	cId,
-                            	employeeId,
-                            	periods,
-                                ym,
-        						//-----------------------------------------------------------------------------------
-        						// 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
-	                            //end)
-	                            closureInforOpt.get().getPeriod().end())
-        						// 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 END
-        						//-----------------------------------------------------------------------------------
-                            );
+                    getRemainingNumberChildCareNurseAdapter.getNursingCareLeaveThisMonthFutureSituation(
+                            cId,
+                            employeeId,
+                            periods,
+                            ym,
+                            //-----------------------------------------------------------------------------------
+                            // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 START
+                            //end)
+                            closureInforOpt.get().getPeriod().end())
+                    // 2021.12.06 - 3S - chinh.hm  - issues #120916- 変更 END
+                    //-----------------------------------------------------------------------------------
+            );
 
         }
-		//========================================
-		// 現在
-		//========================================
+        //========================================
+        // 現在
+        //========================================
         // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 START
 
         // 2022.01.17 - inaguma #122461 CHANGE START
-      //if(currentStatus){
-      if(currentStatus && currentPeriodDate!=null){
-      // 2022.01.17 - inaguma #122461 CHANGE END
+        //if(currentStatus){
+        if(currentStatus && currentPeriodDate!=null){
+            // 2022.01.17 - inaguma #122461 CHANGE END
 
             // 2021.12.29 - 3S - chinh.hm - issues #122017  - 追加 END
             // RQ206(改)
@@ -1152,7 +1174,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     //end
 
                     // 2022.01.17 - inaguma #122461 CHANGE START
-                                        //closureInforOpt.get().getPeriod(),
+                    //closureInforOpt.get().getPeriod(),
                     currentPeriodDate,
                     // 2022.01.17 - inaguma #122461 CHANGE END
 
@@ -1172,7 +1194,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
                     // 2022.01.17 - inaguma #122461 CHANGE START
                     //closureInforOpt.get().getPeriod(),
-                     currentPeriodDate,
+                    currentPeriodDate,
                     // 2022.01.17 - inaguma #122461 CHANGE END
 
                     closureInforOpt.get().getCurrentMonth(),
@@ -1188,8 +1210,15 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             // 2022.12.04 - 3S - chinh.hm - issues #122017 - 追加 END
         }
         // 2021.12.29 - 3S - chinh.hm - issues #119961  - 追加 END
+
+
+        // 2021.12.30 - 3S - chinh.hm - issues #119961  - 追加 START
+        ////////////////////////////////////////////////////////////////////////////////
+        // 公休
+        ////////////////////////////////////////////////////////////////////////////////
+
         //========================================
-        //公休
+        // 過去月
         //========================================
         // 2022.01.24 - 3S - chinh.hm  - issues #122620  - 変更 START
         // Tồn tại quá khứ.
@@ -1198,6 +1227,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         }
         // 2022.01.24 - 3S - chinh.hm  - issues #122620  - 変更 END
 
+
+        //========================================
+        // 現在、当月・未来月
+        //========================================
         for (int i = 0; i < correspondingYmList.size(); i++){
             PeriodCorrespondingYm  correspondingYm =    correspondingYmList.get(i);
             YearMonth ym = correspondingYm.getYm();
@@ -1217,9 +1250,13 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             );
             PublicHolidayRemNumEachMonth publicLeaRemNum =
                     aggrResultOfPublicHoliday.createPublicHolidayRemainData(
-                    employeeId, ym, closureInforOpt.get().getClosureId(), closureInforOpt.get().getClosureDate()
+                            employeeId, ym, closureInforOpt.get().getClosureId(), closureInforOpt.get().getClosureDate()
                     );
+
             if(publicLeaRemNum!=null){
+                //========================================
+                // 現在
+                //========================================
                 if(currentStatus) {
                     if(ym.equals(currentMonth)){
                         leftPublicHolidays = new FutureSituationOfTheMonthPublicHoliday(
@@ -1231,6 +1268,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                         );
                     }
                 }
+                //========================================
+                // 当月・未来月
+                //========================================
                 rightPublicHolidays.add(( new FutureSituationOfTheMonthPublicHoliday(
                         ym,
                         publicLeaRemNum.getCarryForwardNumber().v(),
@@ -1240,10 +1280,12 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 )));
             }
         }
-        // 2021.12.30 - 3S - chinh.hm - issues #119961  - 追加 START
-		////////////////////////////////////////////////////////////////////////////////
-		// RETURN
-		////////////////////////////////////////////////////////////////////////////////
+        // 2021.12.30 - 3S - chinh.hm - issues #119961  - 追加 END
+
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // RETURN
+        ////////////////////////////////////////////////////////////////////////////////
         return new HolidayRemainingInfor(
                 grantDate,
                 listAnnLeaGrantNumber,
@@ -1291,67 +1333,67 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         Map<Integer,OutputPeriodForClosingDto> periodInformationMap = new HashMap<>();
 
         if(closureList.isEmpty()) return periodInformationMap;
-            closureList.forEach(closure->{
-                OutputPeriodForClosingDto result = new OutputPeriodForClosingDto();
-                YearMonthPeriod pastPeriod = null;
-                List<PeriodCorrespondingYm> correspondingYmList = new ArrayList<>();
-                //Current month;
-                YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
-                //<締め>のアルゴリズム「当月の期間を算出する」を実行する
-                DatePeriod datePeriod = ClosureService.getClosurePeriod(closure, processingYm);
-                PeriodCorrespondingYm currentMonthPeriod = new PeriodCorrespondingYm(processingYm,datePeriod);
-                result.setCurrentPeriod(currentMonthPeriod);
-                // 出力期間情報を作成する
-                // 出力期間を設定する
-                // Input : 出力期間：INPUT.出力期間
-                // 過去の期間 - Past period
-                // 出力期間に過去が含まれるかをチェックする
-                // INPUT.出力期間.開始年月＜当月期間.年月
-                if (outPutPeriod.start().lessThan(currentMonthPeriod.getYm())) {
-                    YearMonth start = outPutPeriod.start();
-                    YearMonth end = null;
-                    if (outPutPeriod.end().lessThanOrEqualTo(currentMonthPeriod.getYm())) {
-                        end = outPutPeriod.end();
-                    } else {
-                        end = currentMonthPeriod.getYm();
-                    }
-                    pastPeriod = new YearMonthPeriod(start, end);
+        closureList.forEach(closure->{
+            OutputPeriodForClosingDto result = new OutputPeriodForClosingDto();
+            YearMonthPeriod pastPeriod = null;
+            List<PeriodCorrespondingYm> correspondingYmList = new ArrayList<>();
+            //Current month;
+            YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
+            //<締め>のアルゴリズム「当月の期間を算出する」を実行する
+            DatePeriod datePeriod = ClosureService.getClosurePeriod(closure, processingYm);
+            PeriodCorrespondingYm currentMonthPeriod = new PeriodCorrespondingYm(processingYm,datePeriod);
+            result.setCurrentPeriod(currentMonthPeriod);
+            // 出力期間情報を作成する
+            // 出力期間を設定する
+            // Input : 出力期間：INPUT.出力期間
+            // 過去の期間 - Past period
+            // 出力期間に過去が含まれるかをチェックする
+            // INPUT.出力期間.開始年月＜当月期間.年月
+            if (outPutPeriod.start().lessThan(currentMonthPeriod.getYm())) {
+                YearMonth start = outPutPeriod.start();
+                YearMonth end = null;
+                if (outPutPeriod.end().lessThanOrEqualTo(currentMonthPeriod.getYm())) {
+                    end = outPutPeriod.end();
+                } else {
+                    end = currentMonthPeriod.getYm();
                 }
-                //INPUT.出力期間.開始年月≧当月期間.年月
-                //当月および未来の期間 - The current and future period
-                //出力期間に当月以降が含まれるかをチェックする
+                pastPeriod = new YearMonthPeriod(start, end);
+            }
+            //INPUT.出力期間.開始年月≧当月期間.年月
+            //当月および未来の期間 - The current and future period
+            //出力期間に当月以降が含まれるかをチェックする
 
-                //出力期間に当月以降が含まれるかをチェックする
-                //当月期間.年月≦INPUT.出力期間.終了年月
-                if (currentMonthPeriod.getYm().lessThanOrEqualTo(outPutPeriod.end())) {
-                    YearMonth end = outPutPeriod.end();
-                    YearMonth start = null;
-                    if (currentMonthPeriod.getYm().lessThanOrEqualTo(outPutPeriod.start())) {
-                        start = outPutPeriod.start();
-                    } else {
-                        start = currentMonthPeriod.getYm();
-                    }
-                    if (start != null) {
-                        YearMonthPeriod ymCurrentAndFuture = new YearMonthPeriod(start, end);
-                        List<YearMonth> yearMonthList = ymCurrentAndFuture.yearMonthsBetween();
-                        for (val ym : yearMonthList) {
-                            //<締め>のアルゴリズム「指定した年月の期間をすべて取得する」を実行する
-                            List<DatePeriod> lstDatePeriod = closure.getPeriodByYearMonth(ym);
-                            correspondingYmList.add(new PeriodCorrespondingYm(
-                                    ym,
-                                    lstDatePeriod.isEmpty() ? null : lstDatePeriod.get(0)
-                            ));
-                        }
+            //出力期間に当月以降が含まれるかをチェックする
+            //当月期間.年月≦INPUT.出力期間.終了年月
+            if (currentMonthPeriod.getYm().lessThanOrEqualTo(outPutPeriod.end())) {
+                YearMonth end = outPutPeriod.end();
+                YearMonth start = null;
+                if (currentMonthPeriod.getYm().lessThanOrEqualTo(outPutPeriod.start())) {
+                    start = outPutPeriod.start();
+                } else {
+                    start = currentMonthPeriod.getYm();
+                }
+                if (start != null) {
+                    YearMonthPeriod ymCurrentAndFuture = new YearMonthPeriod(start, end);
+                    List<YearMonth> yearMonthList = ymCurrentAndFuture.yearMonthsBetween();
+                    for (val ym : yearMonthList) {
+                        //<締め>のアルゴリズム「指定した年月の期間をすべて取得する」を実行する
+                        List<DatePeriod> lstDatePeriod = closure.getPeriodByYearMonth(ym);
+                        correspondingYmList.add(new PeriodCorrespondingYm(
+                                ym,
+                                lstDatePeriod.isEmpty() ? null : lstDatePeriod.get(0)
+                        ));
                     }
                 }
+            }
 
-                OutputPeriodInformation information = new OutputPeriodInformation();
-                information.setPastPeriod(pastPeriod == null ? Optional.empty() : Optional.of(pastPeriod));
-                information.setCurrentMonthAndFuture(correspondingYmList.isEmpty() ? Optional.empty() : Optional.of(correspondingYmList));
-                information.setPeriod(outPutPeriod);
-                result.setPeriodInformation(information);
-                periodInformationMap.put(closure.getClosureId().value,result);
-            });
+            OutputPeriodInformation information = new OutputPeriodInformation();
+            information.setPastPeriod(pastPeriod == null ? Optional.empty() : Optional.of(pastPeriod));
+            information.setCurrentMonthAndFuture(correspondingYmList.isEmpty() ? Optional.empty() : Optional.of(correspondingYmList));
+            information.setPeriod(outPutPeriod);
+            result.setPeriodInformation(information);
+            periodInformationMap.put(closure.getClosureId().value,result);
+        });
 
         return periodInformationMap;
     }
@@ -1412,10 +1454,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                             //社員別出力期間を更新する
                             //過去.開始年月　←　期間(入社時).年月
                             // 開始年月日の補正 update ngày bắt đầu.
-                          startYm = closurePeriod.getYearMonth();
-                          endYm   = pastPeriod.get().end();
-                          pastPeriodByEmployee = new YearMonthPeriod(startYm, endYm);
-                          periodInformation.setPastPeriod(Optional.of(pastPeriodByEmployee));
+                            startYm = closurePeriod.getYearMonth();
+                            endYm   = pastPeriod.get().end();
+                            pastPeriodByEmployee = new YearMonthPeriod(startYm, endYm);
+                            periodInformation.setPastPeriod(Optional.of(pastPeriodByEmployee));
                         }
                     }else {
                         //過去：設定なし※クリアする
@@ -1474,7 +1516,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                             endYm   = periodByRetiredDate.getYearMonth();
                             pastPeriodByEmployee = new YearMonthPeriod(startYm, endYm);
                             periodInformation.setPastPeriod(Optional.of(pastPeriodByEmployee));
-                           //未来・過去：設定なし※クリアする
+                            //未来・過去：設定なし※クリアする
                             currentMonthAndFuture = new ArrayList<>();
                         }
                     }else {
