@@ -94,9 +94,9 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 if (!vacationControl || vacationControl.nursingCareSetting == false) {
                     $('#rowNursingCareHoliday').addClass("hidden");
                 }
-                // if (!vacationControl || vacationControl.publicHolidaySetting == false) {
-                //     $('#publicHolidaySetting').addClass("hidden");
-                // }
+                 if (!vacationControl || vacationControl.publicHolidaySetting == false) {
+                     $('#publicHolidaySetting').addClass("hidden");
+                 }
                 if (!vacationControl || vacationControl.com60HourVacationSetting == false) {
                     $('#rowHD60HItemCheck').addClass("hidden");
                 }
@@ -203,11 +203,11 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             if (!vacationControl || vacationControl.nursingCareSetting == false) {
                 self.currentHoliday().nursingLeave(false);
             }
-            // if (!vacationControl || vacationControl.publicHolidaySetting == false) {
-            //     self.currentHoliday().outputItemsHolidays(false);
-            //     self.currentHoliday().outputHolidayForward(false);
-            //     self.currentHoliday().monthlyPublic(false);
-            // }
+             if (!vacationControl || vacationControl.publicHolidaySetting == false) {
+                 self.currentHoliday().outputItemsHolidays(false);
+                 self.currentHoliday().outputHolidayForward(false);
+                 self.currentHoliday().monthlyPublic(false);
+             }
             if (!vacationControl || vacationControl.listSpecialHoliday.length == 0) {
                 self.currentHoliday().listSpecialHoliday([]);
             }
@@ -369,11 +369,11 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 }
 
 
-                // if (!vacationControl || vacationControl.publicHolidaySetting == false) {
-                //     self.currentHoliday().outputItemsHolidays(false);
-                //     self.currentHoliday().outputHolidayForward(false);
-                //     self.currentHoliday().monthlyPublic(false);
-                // }
+                 if (!vacationControl || vacationControl.publicHolidaySetting == false) {
+                     self.currentHoliday().outputItemsHolidays(false);
+                     self.currentHoliday().outputHolidayForward(false);
+                     self.currentHoliday().monthlyPublic(false);
+                 }
                 if (self.isNewMode()) {
 
                     // create new holiday

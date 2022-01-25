@@ -3251,7 +3251,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         val listItemsOutput = dataSource.getHolidaysRemainingManagement().getListItemsOutput();
         val manageHoliday = dataSource.getVariousVacationControl().isPublicHolidaySetting();
         val hdRemainingInfor = dataSource.getMapEmployees().get(employee.getEmployeeId()).getHolidayRemainingInfor();
-        if (hdRemainingInfor == null) {
+        if (hdRemainingInfor == null ||!manageHoliday) {
             dtoCheck.setFirstRow(firstRow);
             return dtoCheck;
         }
@@ -3313,10 +3313,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             Double l_13 = leftPublicHolidays.getNumberOfCarryforwards();
             Double l_14 = leftPublicHolidays.getNumberOfUse();
             Double l_15 = leftPublicHolidays.getNumberOfRemaining();
-            if(manageHoliday){
-                cells.get(firstRow, 4).setValue(l_12 != null ? df.format(l_12) : "");  // L1_4 特別休暇_使用数日数
-            }
-            if(con_2 && manageHoliday){
+            cells.get(firstRow, 4).setValue(l_12 != null ? df.format(l_12) : "");  // L1_4 特別休暇_使用数日数
+            if(con_2){
                 cells.get(firstRow, 5).setValue(l_13 != null ? df.format(l_13) : "");
             }else {
                 setBackgroundGray(cells.get(firstRow , 5));
@@ -3326,7 +3324,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             if (l_13 != null && l_13 < 0) {
                 setForegroundRed(cells.get(firstRow, 5));
             }
-            if(con_3 && manageHoliday){
+            if(con_3){
                 // L1_5 特別休暇_残数日数
                 cells.get(firstRow, 7).setValue(l_15 != null ? df.format(l_15) : "");
             }else {
@@ -3366,22 +3364,20 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     // 繰越数: 月別休暇残日数
                     Double  numberOfCarryforwards = item.getNumberOfCarryforwards();
 
-                    if(manageHoliday){
-                        //L 25
-                        if(con_2){
-                            cells.get(firstRow, 10 + totalMonth)
-                                    .setValue(numberOfCarryforwards == null || numberOfCarryforwards == 0 ? null : df.format(numberOfCarryforwards));
-                        }
-                        //L 26
-                        cells.get(firstRow + (con_2 ? 1 : 0), 10 + totalMonth)
-                                .setValue(numberOfGrants == null || numberOfGrants == 0 ? "" : df.format(numberOfGrants));
-                        if(con_3){
-                            //L 28
-                            cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth)
-                                    .setValue(numberOfRemaining == null ? "" : df.format(numberOfRemaining));
-                            if (numberOfRemaining != null && numberOfRemaining < 0) {
-                                setForegroundRed(cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth));
-                            }
+                    //L 25
+                    if(con_2){
+                        cells.get(firstRow, 10 + totalMonth)
+                                .setValue(numberOfCarryforwards == null || numberOfCarryforwards == 0 ? null : df.format(numberOfCarryforwards));
+                    }
+                    //L 26
+                    cells.get(firstRow + (con_2 ? 1 : 0), 10 + totalMonth)
+                            .setValue(numberOfGrants == null || numberOfGrants == 0 ? "" : df.format(numberOfGrants));
+                    if(con_3){
+                        //L 28
+                        cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth)
+                                .setValue(numberOfRemaining == null ? "" : df.format(numberOfRemaining));
+                        if (numberOfRemaining != null && numberOfRemaining < 0) {
+                            setForegroundRed(cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth));
                         }
                     }
                     //L 27
@@ -3414,22 +3410,20 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     // 公休残数　←[*1]．公休繰越情報．翌月繰越数
                     Double  numberOfRemaining = thisMonthFutureSituation.getNumberOfRemaining();
                     if (ym.compareTo(currentMonth) == 0) {
-                        if(manageHoliday){
-                            //L 25
-                            if(con_2){
-                                cells.get(firstRow, 10 + totalMonth)
-                                        .setValue(numberOfCarryforwards == null || numberOfCarryforwards == 0 ? null : df.format(numberOfCarryforwards));
-                            }
-                            //L 26
-                            cells.get(firstRow + (con_2 ? 1 : 0), 10 + totalMonth)
-                                    .setValue(numberOfGrants == null || numberOfGrants == 0 ? "" : df.format(numberOfGrants));
-                            if(con_3){
-                                //L 28
-                                cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth)
-                                        .setValue(numberOfRemaining == null ? "" : df.format(numberOfRemaining));
-                                if (numberOfRemaining != null && numberOfRemaining < 0) {
-                                    setForegroundRed(cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth));
-                                }
+                        //L 25
+                        if(con_2){
+                            cells.get(firstRow, 10 + totalMonth)
+                                    .setValue(numberOfCarryforwards == null || numberOfCarryforwards == 0 ? null : df.format(numberOfCarryforwards));
+                        }
+                        //L 26
+                        cells.get(firstRow + (con_2 ? 1 : 0), 10 + totalMonth)
+                                .setValue(numberOfGrants == null || numberOfGrants == 0 ? "" : df.format(numberOfGrants));
+                        if(con_3){
+                            //L 28
+                            cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth)
+                                    .setValue(numberOfRemaining == null ? "" : df.format(numberOfRemaining));
+                            if (numberOfRemaining != null && numberOfRemaining < 0) {
+                                setForegroundRed(cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth));
                             }
                         }
                         //L 27
@@ -3437,17 +3431,15 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 .setValue(numberOfUse == null || numberOfUse == 0 ? "" : df.format(numberOfUse));
                     } else {
 
-                        if(manageHoliday){
-                            //L 25
-                            setBackgroundGray( cells.get(firstRow, 10 + totalMonth));
-                            //L 26
-                            if(con_2){
-                                setBackgroundGray(cells.get(firstRow + 1, 10 + totalMonth));
-                            }
-                            //L 28
-                            if(con_3 ){
-                                setBackgroundGray( cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth));
-                            }
+                        //L 25
+                        setBackgroundGray( cells.get(firstRow, 10 + totalMonth));
+                        //L 26
+                        if(con_2){
+                            setBackgroundGray(cells.get(firstRow + 1, 10 + totalMonth));
+                        }
+                        //L 28
+                        if(con_3 ){
+                            setBackgroundGray( cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth));
                         }
                         //L 27
                         cells.get(firstRow + (con_2 ? 2 : 1), 10 + totalMonth)
@@ -3456,28 +3448,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 }
             }
         }
-        for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
-                dataSource.getEndMonth().yearMonth()); i++) {
-            if(!manageHoliday){
-                setBackgroundGray( cells.get(firstRow , 10 + i));
-                if(con_2){
-                    setBackgroundGray( cells.get(firstRow + 1, 10 + i));
-                }
 
-                if(con_3){
-                    setBackgroundGray( cells.get(firstRow + (con_2 ? 3 : 2),10 + i));
-                }
-            }
-        }
         if (!con_2) {
             setBackgroundGray(cells.get(firstRow, 5));
         }
         if (!con_3) {
-            setBackgroundGray(cells.get(firstRow, 7));
-        }
-        if (!manageHoliday) {
-            setBackgroundGray(cells.get(firstRow, 4));
-            setBackgroundGray(cells.get(firstRow, 5));
             setBackgroundGray(cells.get(firstRow, 7));
         }
 
