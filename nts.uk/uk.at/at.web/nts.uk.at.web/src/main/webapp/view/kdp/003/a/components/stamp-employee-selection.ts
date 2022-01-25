@@ -198,11 +198,11 @@ module nts.uk.at.kdp003.a {
 
 			$grid
 				.igGrid({
-					showHeader: false,
+					showHeader: true,
 					columns: [
 						{ headerText: "", key: "employeeId", dataType: "string", hidden: true },
-						{ headerText: "", key: "employeeCode", width: '80px', dataType: "string" },
-						{ headerText: "", key: "employeeName", dataType: "string" }
+						{ headerText: "コード", key: "employeeCode", width: '80px', dataType: "string" },
+						{ headerText: "氏名", key: "employeeName", dataType: "string" }
 					],
 					features: [
 						{

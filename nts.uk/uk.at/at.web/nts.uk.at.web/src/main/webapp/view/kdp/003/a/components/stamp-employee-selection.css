@@ -72,27 +72,30 @@
 	background-color: #c5f1f7;
 }
 
-
-#stamp-employee-selection .list-group .list-employee {
-	border-top: 1px solid #ccc;
-}
-
-#stamp-employee-selection .list-group .ui-iggrid table tr {
-	height: 45px;
-}
-
 #stamp-emplouee-selection .ui-tooltip-content {
     text-overflow: ellipsis;
     white-space: nowrap;
     min-width: 200px	
 }
 
+#stamp-employee-selection .list-group .ui-iggrid table tr {
+	height: 45px;
+	outline: none !important;
+}
+
 #stamp-employee-selection .list-group .ui-iggrid table tr td {
-	border: 1px solid transparent;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-#stamp-employee-selection .list-group .ui-iggrid table tr:not(:first-child) td {
-	border-top: 1px solid #ccc;
+#stamp-employee-selection .list-group .ui-iggrid table tr th,
+#stamp-employee-selection .list-group .ui-iggrid table tr td {
+	border: none !important;
+	padding-left: 8px;
+}
+
+#stamp-employee-selection .list-group .ui-iggrid table tr td.ui-state-active {
+	background-color: #01956A;
+	color: #fff;
+	font-weight: normal;
 }
