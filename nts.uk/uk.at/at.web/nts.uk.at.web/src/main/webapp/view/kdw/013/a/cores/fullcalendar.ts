@@ -158,8 +158,6 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-sidebar .fc-events>ul,
         .fc-container .fc-sidebar .fc-employees>ul {
-            border: 1px solid #ccc;
-            border-radius: 3px;
             height: 112px;
         }
         .fc-container .fc-sidebar .fc-employees>ul.list-employee {
@@ -245,8 +243,6 @@ module nts.uk.ui.at.kdw013.calendar {
             z-index: 2;
         }
         .fc-container .fc-button-group button:not(:last-child) {
-            border-top-right-radius: 0px;
-            border-bottom-right-radius: 0px;
         }
         .fc-container .fc-button-group>.nts-datepicker-wrapper>input.nts-input {
             width: 110px;
