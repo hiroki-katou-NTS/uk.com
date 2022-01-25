@@ -324,7 +324,7 @@ module nts.uk.at.view.kmp002.a {
           const workplaceId = vm.supportCard().workplaceId;
           const workplaceCode = vm.supportCard().workplaceCode;
           let workplaceName = '';
-          if (data && data.workplaceName !== "コード削除済") {
+          if (data && data.workplaceName !== "コード削除済" && data.workplaceName !== "マスタ未登録") {
             workplaceName = data.workplaceName;
           } else {
             workplaceName = vm.$i18n("KMP002_14", [param.baseDate]);
