@@ -14,4 +14,6 @@ public class YearAndEmpOtHoursDto {
 	/** 36協定超過情報 */
 	int agreeInfo;
 	
+	List<UpperLimitTimeDto> upperLimit;
+	
 }
