@@ -121,7 +121,7 @@ module nts.uk.ui.ktg001.a {
                                 </td>
                                 <td style="padding-left: 5px;">
                                     <!-- A2_1 -->
-                                    <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_1') }"></div>
+                                    <div data-bind="ntsFormLabel: { required: false, text: '未処理の申請' }"></div>
                                 </td>
                                 <td style="padding-left: 5px;">
                                     <div data-bind="text: ''"></div>
@@ -140,7 +140,7 @@ module nts.uk.ui.ktg001.a {
                                 </td>
                                 <td style="padding-left: 5px;" colspan="2">
                                     <!-- A5_1 -->
-                                    <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_4') }"></div>
+                                    <div data-bind="ntsFormLabel: { required: false, text: '未処理の36協定時間申請' }"></div>
                                 </td>
                             </tr>
                             <tr class='row-approval' data-bind="
@@ -193,7 +193,7 @@ module nts.uk.ui.ktg001.a {
                                     <!-- ko if: day.closureId == 1 -->
                                         <td style="padding-left: 5px;">
                                             <!-- A3_1 -->
-											<div class="ktg001-form-label" data-bind= "i18n: 'KTG001_2'"></div>
+											<div class="ktg001-form-label" data-bind= "text: '未処理の日別実績'"></div>
                                         </td>
                                     <!-- /ko -->
                                     <!-- ko if: day.closureId != 1 -->
@@ -223,7 +223,7 @@ module nts.uk.ui.ktg001.a {
                                     <!-- ko if: month.closureId == 1 -->
                                         <td style="padding-left: 5px;">
                                             <!-- A4_1 -->
-                                            <div class="ktg001-form-label" data-bind="i18n: 'KTG001_3'"></div>
+                                            <div class="ktg001-form-label" data-bind="text: '未処理の月別実績'"></div>
                                          </td>
                                     <!-- /ko -->
                                     <!-- ko if: month.closureId != 1 -->

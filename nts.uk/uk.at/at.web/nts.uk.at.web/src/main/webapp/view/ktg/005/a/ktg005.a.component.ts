@@ -174,15 +174,15 @@ module nts.uk.ui.ktg005.a {
 
 			switch (itemType) {
 				case NumberOfApprovedCases:
-					return vm.$i18n('KTG005_3');
+					return "承認済み";
 				case NumberOfUnApprovedCases:
-					return vm.$i18n('KTG005_4');
+					return "未承認";
 				case NumberOfDenial:
-					return vm.$i18n('KTG005_5');
+					return "否認";
 				case NumberOfRemand:
-					return vm.$i18n('KTG005_2');
+					return "差し戻し";
 				case ApplicationDeadlineForThisMonth:
-					return vm.$i18n('KTG005_6');
+					return "締め切り日（今月）";
 				default:
 					return '';
 			}
