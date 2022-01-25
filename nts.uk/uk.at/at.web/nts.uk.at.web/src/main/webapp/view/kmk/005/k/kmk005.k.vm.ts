@@ -188,7 +188,7 @@ module nts.uk.at.view.kmk005.k {
                     let data = getShared('KDL007_VALUES');
                     if (data && data.selecteds.length) {
                         model.bpsc(data.selecteds[0]);
-                        if(data.selecteds[0]!=null&&data.selecteds[0]!=''){
+                        if(!(_.isEmpty(data.selecteds[0]))){
                         service.getBonusPaySettingByCode(data.selecteds[0])
                             .done(x => {
                                 if (x) {
