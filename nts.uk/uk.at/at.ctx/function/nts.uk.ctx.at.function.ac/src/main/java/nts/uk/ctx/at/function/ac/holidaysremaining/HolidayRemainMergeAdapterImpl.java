@@ -130,6 +130,7 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 				e.getAfterRemainTimes() == 0 ?e.getBeforeRemainTimes():e.getAfterRemainTimes()
 		)).collect(Collectors.toList());
 		// 2022.01.24 - 3S - chinh.hm  - issues #122620  - 変更 START
+		// 262 - 公休の月別利用状況(過去月)を取得する
 		List<PublicHolidayPastSituation> result262  = getListPublicHolidayPastSituation(mapRemainMer);
 		// 2022.01.24 - 3S - chinh.hm  - issues #122620  - 変更 END
 		return new HolidayRemainMerEx(result255, result258, result259, result260, result263,result262);
