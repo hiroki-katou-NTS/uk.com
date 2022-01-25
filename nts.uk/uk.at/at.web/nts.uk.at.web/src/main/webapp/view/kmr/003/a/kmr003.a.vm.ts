@@ -94,7 +94,7 @@ module nts.uk.at.kmr003.a {
             const vm = this;
             vm.empSearchItems.subscribe((value) => {
                 if (value) {
-                    vm.employeeList(_.map(vm.empSearchItems(), x => {return { id: x.employeeId, code: x.employeeCode, name: x.employeeName, workplaceName: x.affiliationName  }}));
+                    vm.employeeList(_.map(vm.empSearchItems(), x => {return { id: x.employeeId, code: x.employeeCode, name: x.employeeName, affiliationName: x.affiliationName  }}));
                 }
             })
             $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption);
