@@ -686,7 +686,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     && self.showSameDepartmentAndChild;
 
                 self.showSameWorkplace = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
-                    self.showSameWorkplace;
+                    self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF && self.showSameWorkplace;
                 self.showSameWorkplaceAndChild = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
                     (self.referenceRange == EmployeeReferenceRange.ALL_REFERENCE_RANGE
                         || self.referenceRange == EmployeeReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES)
@@ -714,7 +714,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let dfd = $.Deferred<void>();
                 let self = this,
                     isCheckForAdvancedSearch = self.showAdvancedSearchTab && self.systemType === ConfigEnumSystemType.EMPLOYMENT && self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF,
-                    isCheckForAllReferable = self.showAllReferableEmployee && self.systemType === ConfigEnumSystemType.EMPLOYMENT && self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF;
+                    isCheckForAllReferable = self.showAllReferableEmployee && self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF;
                   
                 if (isCheckForAdvancedSearch || isCheckForAllReferable) {
                     service.getCanManageWpkForLoginUser().done(manageWkp => {
@@ -740,8 +740,6 @@ module nts.uk.com.view.ccg.share.ccg {
                         if (self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF && _.isEmpty(manageWkp)) {
                             self.showAdvancedSearchTab = false;
                         }
-                    } else {
-                        self.showAdvancedSearchTab = false;    
                     }
                 }
             }
@@ -758,6 +756,13 @@ module nts.uk.com.view.ccg.share.ccg {
                             self.showAdvancedSearchTab = false;
 							self.showAllReferableEmployee = false;
 							self.showSameDepartment = false;
+							self.showSameWorkplace = false;
+                        }
+						if (self.systemType !== ConfigEnumSystemType.EMPLOYMENT 
+                            && self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF 
+                            && !_.isEmpty(manageWkp)) {
+                            self.showAdvancedSearchTab = false;
+							self.showAllReferableEmployee = false;
 							self.showSameWorkplace = false;
                         }
                     }    
@@ -1960,7 +1965,7 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * search Employee by Reference range
              */
-            public searchEmployeeByReferenceRange(referenceRange: SearchReferenceRange): void {
+            public searchEmployeeByReferenceRange(referenceRange: number): void {
                 var self = this;
                 self.queryParam.referenceRange = referenceRange;
                 self.quickSearchEmployee();

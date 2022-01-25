@@ -40,4 +40,10 @@ public class DailyRecordShareFinderImpl implements DailyRecordShareFinder {
 		return listDailyResult.stream().map(x -> x.toDomain(x.getEmployeeId(), x.getDate())).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<IntegrationOfDaily> find(Map<String, List<GeneralDate>> param) {
+		List<DailyRecordDto> listDailyResult = finder.find(param);
+		return listDailyResult.stream().map(x -> x.toDomain(x.getEmployeeId(), x.getDate())).collect(Collectors.toList());
+	}
+
 }
