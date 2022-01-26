@@ -515,7 +515,14 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		});
 		
 		List<OuenWorkTimeSheetOfDaily> domains = new ArrayList<>();
-		domains.add(toDomain(timeSheets));
+		dates.forEach(date -> {
+			List<KrcdtDayOuenTimeSheet> entitisByDate = timeSheets.stream().filter(i -> i.pk.ymd.equals(date))
+					.collect(Collectors.toList());
+			if (!entitisByDate.isEmpty()) {
+				domains.add(toDomain(entitisByDate));
+			}
+		});
+		
 		
 		return domains;
 	}

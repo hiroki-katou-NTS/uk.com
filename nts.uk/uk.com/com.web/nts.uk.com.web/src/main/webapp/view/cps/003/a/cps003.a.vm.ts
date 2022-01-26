@@ -1280,9 +1280,7 @@ module cps003.a.vm {
                                 }
                             }
                         } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.RELATE_CATEGORY) {
-                            if (item.itemCode === "IS00301" && (_.isNil(item.value) || item.value === "")) {
-                                record[item.itemCode] = "0.0日";
-                            }
+
                         }
                     });
                     
@@ -1447,21 +1445,35 @@ module cps003.a.vm {
                                 if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00125")) {
                                     states.push(new State(id, "IS00125", ["mgrid-disable"]));
                                 }
+								
                                 _.remove(states, s => s.rowId === id && (s.columnKey === "IS00126" || s.columnKey === "IS00127"));
+
+								if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00127")) {
+                                    states.push(new State(id, "IS00127", ["mgrid-disable"]));
+                                } 
                             } else if (item.value === "2") {
+	
                                 if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00124")) {
                                     states.push(new State(id, "IS00124", ["mgrid-disable"]));
                                 }
+
                                 if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00125")) {
                                     states.push(new State(id, "IS00125", ["mgrid-disable"]));
                                 }
-                                if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00126")) {
+								
+								if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00127")) {
+                                    states.push(new State(id, "IS00127", ["mgrid-disable"]));
+                                }
+
+                            } else if (item.value === "4") {
+								_.remove(states, s => s.rowId === id && (s.columnKey === "IS00126" || s.columnKey === "IS00127"));
+								if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00126")) {
                                     states.push(new State(id, "IS00126", ["mgrid-disable"]));
                                 }
                                 if (!_.find(states, s => s.rowId === id && s.columnKey === "IS00127")) {
                                     states.push(new State(id, "IS00127", ["mgrid-disable"]));
-                                }   
-                            }
+                                }  
+							}
                             break;
                     }
                     break;
@@ -2466,7 +2478,17 @@ module cps003.a.vm {
                         return replaceValue.matchValue === value
                             || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && (_.isNil(value) || value === ""))
                             || ((_.isNil(replaceValue.matchValue) || replaceValue.matchValue === "") && !find($grid.mGrid("optionsList", obj.id, replaceValue.targetItem), opt => opt.optionValue === value));
-                    }, () => replaceValue.replaceValue, true);
+                    }, (value, obj) => {
+                        let replaced = replaceValue.replaceValue;
+                        setTimeout(() => {
+                            let afterProc = cps003.control.COMBOBOX[self.category.catCode() + "_" + replaceValue.targetItem];
+                            if (afterProc) {
+                                afterProc(replaced, obj.id, obj);
+                            }
+                        }, 1);
+                        
+                        return replaced;
+                    }, true);
                 } else {
                     let replaced = replaceValue.replaceValue, dt = self.dataTypes[replaceValue.targetItem];
                     if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT) {

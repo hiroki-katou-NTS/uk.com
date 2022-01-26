@@ -50,7 +50,6 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchLeaveEa
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchLeaveEarlyPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchOvertimeWork;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchOvertimeWorkPK;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchLeaveEarly;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchPremium;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchPremiumPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTime;
@@ -113,6 +112,16 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	public List<WorkSchedule> getListBySid(String sid, DatePeriod period) {
 
 		return this.getList(Arrays.asList(sid), period);
+	}
+	
+	private static final String SELECT_BY_LIST_KEY = "SELECT c FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND ( c.pk.ymd between :startDate AND :endDate ) ";
+
+	@Override
+	public List<WorkSchedule> getListBySidJpa(String sid, DatePeriod period) {
+		return this.queryProxy().query(SELECT_BY_LIST_KEY, KscdtSchBasicInfo.class).setParameter("employeeID", sid)
+				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList().stream()
+				.map(x -> x.toDomain(x.pk.sid, x.pk.ymd)).collect(Collectors.toList());
+
 	}
 
 	@Override
@@ -227,21 +236,11 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				oldData.get().kscdtSchTime.absenceTime = newData.kscdtSchTime.absenceTime;
 				oldData.get().kscdtSchTime.vacationAddTime = newData.kscdtSchTime.vacationAddTime;
 				oldData.get().kscdtSchTime.staggeredWhTime = newData.kscdtSchTime.staggeredWhTime;
-				
+				oldData.get().kscdtSchTime.premiumWorkTimeTotal = newData.kscdtSchTime.premiumWorkTimeTotal;
+				oldData.get().kscdtSchTime.premiumAmountTotal = newData.kscdtSchTime.premiumAmountTotal;
 			}
 
 			if (oldData.get().kscdtSchTime != null) {
-				// List<KscdtSchOvertimeWork> overtimeWorks
-				oldData.get().kscdtSchTime.overtimeWorks = removeInsertData(oldData.get().kscdtSchTime.overtimeWorks,
-						newData.kscdtSchTime.overtimeWorks, (x, y) -> {
-							return y.pk.frameNo == x.pk.frameNo;
-						});
-
-				// List<KscdtSchHolidayWork> holidayWorks
-				oldData.get().kscdtSchTime.holidayWorks = removeInsertData(oldData.get().kscdtSchTime.holidayWorks,
-						newData.kscdtSchTime.holidayWorks, (x, y) -> {
-							return y.pk.frameNo == x.pk.frameNo;
-						});
 
 				// List<KscdtSchBonusPay> bonusPays
 				if (!oldData.get().kscdtSchTime.bonusPays.isEmpty()) {
@@ -738,6 +737,18 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			} else {
 				oldData.get().kscdtSchGoingOutTs = newData.kscdtSchGoingOutTs;
 			}
+			
+			// List<KscdtSchOvertimeWork> overtimeWorks
+			oldData.get().kscdtSchTime.overtimeWorks = removeInsertData(oldData.get().kscdtSchTime.overtimeWorks,
+					newData.kscdtSchTime.overtimeWorks, (x, y) -> {
+						return y.pk.frameNo == x.pk.frameNo;
+					});
+
+			// List<KscdtSchHolidayWork> holidayWorks
+			oldData.get().kscdtSchTime.holidayWorks = removeInsertData(oldData.get().kscdtSchTime.holidayWorks,
+					newData.kscdtSchTime.holidayWorks, (x, y) -> {
+						return y.pk.frameNo == x.pk.frameNo;
+					});
 			this.commandProxy().update(oldData.get());
 		}
 	}

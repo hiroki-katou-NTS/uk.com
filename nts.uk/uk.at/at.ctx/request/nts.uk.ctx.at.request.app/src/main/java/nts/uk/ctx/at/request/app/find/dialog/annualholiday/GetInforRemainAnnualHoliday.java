@@ -15,6 +15,8 @@ import nts.uk.ctx.at.request.dom.application.annualholiday.AnnualLeaveRemainingN
 import nts.uk.ctx.at.request.dom.application.annualholiday.GetPeriodPrvNextGrantDateAdapter;
 import nts.uk.ctx.at.request.dom.application.annualholiday.GrantPeriodDto;
 import nts.uk.ctx.at.request.dom.application.annualholiday.ReNumAnnLeaReferenceDateExport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.AnnualHolidayManagementAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
@@ -45,6 +47,9 @@ public class GetInforRemainAnnualHoliday {
 	@Inject
 	private AdjustRemainingNumberInformation numberInformation;
 	
+	@Inject
+	private AnnualHolidayManagementAdapter holidayAdapter;
+	
 	public InforAnnualHolidaysAccHolidayDto getGetInforRemainAnnualHoliday(GeneralDate baseDate, String sID) {
 		val require = requireService.createRequire();
 		String cId = AppContexts.user().companyId();
@@ -68,6 +73,8 @@ public class GetInforRemainAnnualHoliday {
 			// 残数情報を調整 
 			accHolidayDto = numberInformation.adjustRemainingNumberInformation(reNumAnnLeave, annualHd.isSuspensionTimeYearFlg());
 			
+			List<NextAnnualLeaveGrantImport> lstGrantImports = holidayAdapter.acquireNextHolidayGrantDate(cId, sID, baseDate);
+			
 			// 指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
 			Optional<GrantPeriodDto> periodGrantDate = dateAdapter.getPeriodYMDGrant(cId, sID, GeneralDate.today(), null, Optional.empty());
 			// getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(cid, employeeId, designatedDate, null, null).map(GrantPeriodDto::getPeriod);
@@ -79,11 +86,15 @@ public class GetInforRemainAnnualHoliday {
 				
 				// ・年休・積休残数詳細情報DTO．時間年休の年間上限終了日　＝　取得した期間．終了日
 				accHolidayDto.setAnnLimitEnd(periodGrantDate.get().getPeriod().end().toString());
-				
-				// ・年休・積休残数詳細情報DTO．次回付与予定日　＝　取得した期間．開始日
-				if (periodGrantDate.get().getNextGrantDate().isPresent())
-				accHolidayDto.setNextScheDate(TextResource.localize("KDL020_67", periodGrantDate.get().getNextGrantDate().get().toString(), this.getDayOfJapan(periodGrantDate.get().getNextGrantDate().get().dayOfWeek())));
 			}
+			
+			// ・年休・積休残数詳細情報DTO．次回付与予定日　＝　取得した期間．開始日
+			// 
+			if (!lstGrantImports.isEmpty())
+			accHolidayDto.setNextScheDate(TextResource.localize("KDL020_67", lstGrantImports.get(0).getGrantDate().toString(), 
+					this.getDayOfJapan(lstGrantImports.get(0).getGrantDate().dayOfWeek()), 
+					lstGrantImports.get(0).getGrantDays().toString()));
+			
 			// 年休消化一覧を取得
 			annuaAccumulatedHoliday = annualLeave.getListAnnualLeave(sID);
 		}

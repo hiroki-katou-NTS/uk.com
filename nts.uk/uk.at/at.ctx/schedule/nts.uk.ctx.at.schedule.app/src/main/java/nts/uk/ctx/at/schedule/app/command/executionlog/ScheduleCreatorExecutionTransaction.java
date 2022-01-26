@@ -1469,7 +1469,7 @@ public class ScheduleCreatorExecutionTransaction {
 								dateInPeriod, creator, workdayDivision, workplaceHistItem,
 								workdayDivisions.getWorkplaceIds(),
 								optWorkplaceHistItem.getWorkplaceItems().get(0).getWorkplaceId(), null);
-						if (basicWorkSettings.isPresent()) {
+						if (!basicWorkSettings.isPresent()) {
 							ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization, command.getExecutionId()
 									, creator.getEmployeeId(), dateInPeriod, "Msg_589");
 							settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));
@@ -1518,7 +1518,7 @@ public class ScheduleCreatorExecutionTransaction {
 								dateInPeriod, creator, workdayDivision, workplaceHistItem, new ArrayList<>(), null,
 								optClassificationHistItem.get().getClassificationItems().get(0)
 										.getClassificationCode());
-						if (basicWorkSettings.isPresent()) {
+						if (!basicWorkSettings.isPresent()) {
 							ScheduleErrorLog scheduleErrorLog = ScheduleErrorLog.createErrorLog(internationalization, command.getExecutionId()
 									, creator.getEmployeeId(), dateInPeriod, "Msg_589");
 							settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));

@@ -21,10 +21,16 @@ public class AbsenceCheckRegisterDto {
 	 */
 	public List<String> holidayDateLst;
 	
+	/**
+	 * 申請する勤務種類が休日か
+	 */
+	public boolean holidayFlg;
+	
 	public static AbsenceCheckRegisterDto fromDomain(AbsenceCheckRegisterOutput absenceCheckRegisterOutput) {
 		AbsenceCheckRegisterDto result = new AbsenceCheckRegisterDto();
 		result.confirmMsgLst = absenceCheckRegisterOutput.getConfirmMsgLst();
 		result.holidayDateLst = absenceCheckRegisterOutput.getHolidayDateLst().stream().map(x -> x.toString("yyyy/MM/dd")).collect(Collectors.toList());
+		result.holidayFlg = absenceCheckRegisterOutput.isHolidayFlg();
 		return result;
 	}
 }

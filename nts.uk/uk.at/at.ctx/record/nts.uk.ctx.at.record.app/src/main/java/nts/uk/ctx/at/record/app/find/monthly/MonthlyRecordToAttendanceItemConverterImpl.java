@@ -66,19 +66,21 @@ public class MonthlyRecordToAttendanceItemConverterImpl  extends AttendanceItemC
 	@Override
 	
 	public IntegrationOfMonthly toDomain() {
-		return new IntegrationOfMonthly(toAttendanceTime(), 
-										toAffiliation(), 
-										toAnyItems(), 
-										toAgreementTime(), 
-										toAnnLeave(),
-										toRsvLeave(),
-										toAbsenceLeave(), 
-										toDayOff(), 
-										toSpecialHoliday(),
-										toRemarks(),
-										toMonCareHd(), 
-										toMonChildHd(),
-										toMonPublicHoliday());
+		return new IntegrationOfMonthly(employeeId, yearMonth, closureId,
+				closureDateDto == null ? null : closureDateDto.toDomain(), 
+				toAttendanceTime(), 
+				toAffiliation(), 
+				toAnyItems(), 
+				toAgreementTime(), 
+				toAnnLeave(),
+				toRsvLeave(),
+				toAbsenceLeave(), 
+				toDayOff(), 
+				toSpecialHoliday(),
+				toRemarks(),
+				toMonCareHd(), 
+				toMonChildHd(),
+				toMonPublicHoliday());
 	}
 	
 	@Override

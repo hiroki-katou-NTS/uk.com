@@ -14,10 +14,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-
 import nts.uk.ctx.at.auth.dom.adapter.login.IGetInfoForLogin;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
@@ -480,9 +478,9 @@ public class RegisterFingerStampCommandHandler
 		}
 
 		@Override
-		public Closure findClosureById(int closureId) {
+		public Optional<Closure> findClosureById(int closureId) {
 			String companyId = AppContexts.user().companyId();
-		return closureRepo.findById(companyId, closureId).get();
+		return closureRepo.findById(companyId, closureId);
 		}
 
 		@Override

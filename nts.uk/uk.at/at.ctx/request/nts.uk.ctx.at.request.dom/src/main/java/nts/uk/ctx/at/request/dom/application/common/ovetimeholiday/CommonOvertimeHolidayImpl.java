@@ -31,7 +31,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.busin
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AgreementTimeService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.Time36UpperLimitCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.OverTimeWorkHoursOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
@@ -43,7 +42,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.WeekdayHolidayClas
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.Time36AgreeCheckRegister;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneService;
 import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneSharedOutPut;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -52,8 +50,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeI
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
-import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
-import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
@@ -97,9 +93,6 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
-
-	@Inject
-	private Time36UpperLimitCheck time36UpperLimitCheck;
 	
 	@Inject
 	private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
@@ -111,7 +104,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	// 休憩時間帯を取得する
 	public List<DeductionTime> getBreakTimes(String companyID, String workTypeCode, String workTimeCode, 
 			Optional<TimeWithDayAttr> opStartTime, Optional<TimeWithDayAttr> opEndTime) {
-		List<DeductionTime> result = new ArrayList<>();
+		// List<DeductionTime> result = new ArrayList<>();
 		// 1日半日出勤・1日休日系の判定
 		WorkStyle workStyle = this.basicService.checkWorkDay(companyID, workTypeCode);
 		// 平日か休日か判断する
@@ -125,28 +118,29 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 				return o1.getStart().v().compareTo(o2.getStart().v());
 			}
 		});
-		// Input．開始時刻とInput．終了時刻をチェック
-		if(!opStartTime.isPresent() || !opEndTime.isPresent()){
-			return breakTimeZoneSharedOutPut.getLstTimezone();
-		}
-		for(DeductionTime deductionTime : breakTimeZoneSharedOutPut.getLstTimezone()){
-			// 状態区分　＝　「重複の判断処理」を実行
-			TimeWithDayAttr startTime = opStartTime.get();
-			TimeWithDayAttr endTime = opEndTime.get();
-			TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(endTime, startTime);
-			TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(deductionTime.getEnd(), deductionTime.getStart());
-			// アルゴリズム「時刻入力期間重複チェック」を実行する
-			DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
-					.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
-			// 重複状態区分チェック
-			DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
-					.checkStateAtr(duplicateStateAtr);
-			// 取得した状態区分をチェック
-			if(duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING){
-				result.add(deductionTime);
-			}
-		}
-		return result;
+		return breakTimeZoneSharedOutPut.getLstTimezone();
+//		// Input．開始時刻とInput．終了時刻をチェック
+//		if(!opStartTime.isPresent() || !opEndTime.isPresent()){
+//			return breakTimeZoneSharedOutPut.getLstTimezone();
+//		}
+//		for(DeductionTime deductionTime : breakTimeZoneSharedOutPut.getLstTimezone()){
+//			// 状態区分　＝　「重複の判断処理」を実行
+//			TimeWithDayAttr startTime = opStartTime.get();
+//			TimeWithDayAttr endTime = opEndTime.get();
+//			TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(endTime, startTime);
+//			TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(deductionTime.getEnd(), deductionTime.getStart());
+//			// アルゴリズム「時刻入力期間重複チェック」を実行する
+//			DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
+//					.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
+//			// 重複状態区分チェック
+//			DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
+//					.checkStateAtr(duplicateStateAtr);
+//			// 取得した状態区分をチェック
+//			if(duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING){
+//				result.add(deductionTime);
+//			}
+//		}
+//		return result;
 	}
 
 	private WeekdayHolidayClassification checkHolidayOrNot(String workTypeCd) {
