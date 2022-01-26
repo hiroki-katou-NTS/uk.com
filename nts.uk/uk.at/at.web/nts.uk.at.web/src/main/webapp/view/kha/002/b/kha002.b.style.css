@@ -5,3 +5,7 @@
 #swap-list_container {
     display: inline-block;
 }
+
+#B2_1 tr {
+    height: 24px;
+}
