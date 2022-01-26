@@ -324,6 +324,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
         }
         if (!dataSource.isLinking()) {
             cells.deleteColumn(7);
+            cells.hideColumn(18);
         }
         // remove template rows
         cells.deleteRows(row, TEMPLATE_ROWS);

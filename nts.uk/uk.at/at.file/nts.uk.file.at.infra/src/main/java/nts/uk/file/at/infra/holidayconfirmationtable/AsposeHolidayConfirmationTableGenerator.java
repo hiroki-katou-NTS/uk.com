@@ -281,6 +281,7 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
         }
         if (!dataSource.isLinking()) {
             cells.deleteColumn(COLUMN_LINK);
+            cells.hideColumn(18);
         }
 
         // remove template rows
