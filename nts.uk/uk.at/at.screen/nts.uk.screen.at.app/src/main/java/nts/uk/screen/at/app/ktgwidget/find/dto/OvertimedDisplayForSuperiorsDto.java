@@ -29,4 +29,6 @@ public class OvertimedDisplayForSuperiorsDto {
 	//	翌月の締め情報
 	private CurrentClosingPeriodExport closingInformationForNextMonth;
 	
+	private List<UpperLimitTimeDto> upperLimit;
+	
 }

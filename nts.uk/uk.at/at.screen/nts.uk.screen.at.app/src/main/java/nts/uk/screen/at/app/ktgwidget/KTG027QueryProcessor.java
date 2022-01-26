@@ -28,6 +28,7 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.cl
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementDomainService;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.CurrentClosingPeriodExport;
@@ -37,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSettingForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -55,6 +57,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeList36;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHours;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHoursDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimedDisplayForSuperiorsDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.UpperLimitTimeDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -341,6 +344,7 @@ public class KTG027QueryProcessor {
 			result.setPersonalInformationOfSubordinateEmployees(
 				acquisitionOfOvertimeHoursOfEmployeesDto.getPersonalInformationOfSubordinateEmployees()
 			);
+			result.setUpperLimit(acquisitionOfOvertimeHoursOfEmployeesDto.getUpperLimit());
 
 		} else {
 
@@ -372,6 +376,7 @@ public class KTG027QueryProcessor {
 			result.setPersonalInformationOfSubordinateEmployees(
 				acquisitionOfOvertimeHoursOfEmployeesDto.getPersonalInformationOfSubordinateEmployees()
 			);
+			result.setUpperLimit(acquisitionOfOvertimeHoursOfEmployeesDto.getUpperLimit());
 		}
 
 		return result;
@@ -430,12 +435,24 @@ public class KTG027QueryProcessor {
 				, targetDate
 				, referencePeriod);
 
+		// 年月ごとの36協定時間（上限時間）を取得する
+		Map<String, BasicAgreementSettingForCalc> basicAgreementSettings = AgreementDomainService.getBasicSetClones(requireService.createRequire(),
+				AppContexts.user().companyId(), lstEmployeeId, GeneralDate.today(), targetDate);
+		
+		List<UpperLimitTimeDto> upperLimit = new ArrayList<UpperLimitTimeDto>();
+		basicAgreementSettings.forEach((k, v) -> {
+			upperLimit.add(new UpperLimitTimeDto(k, targetDate.v(), v.getBasicSetting().getOneMonth().getBasic().getUpperLimit().v()));
+		});
+		
+		
 		// OUTPUT：
 		// List＜個人社員基本情報＞
 		// List＜管理期間の36協定時間＞
 		AcquisitionOfOvertimeHoursOfEmployeesDto result = AcquisitionOfOvertimeHoursOfEmployeesDto.builder()
 				.personalInformationOfSubordinateEmployees(listPersonEmp)
-				.overtimeOfSubordinateEmployees(listAgreementTimeDetail).build();
+				.overtimeOfSubordinateEmployees(listAgreementTimeDetail)
+				.upperLimit(upperLimit)
+				.build();
 
 		return result;
 	}

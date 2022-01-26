@@ -167,17 +167,23 @@ module nts.uk.at.view.ktg027.a {
                     <table>
                         <colgroup>
                             <col width="25%" />
-                            <col width="17%" />
-                            <col width="58%" />
+                            <col width="16%" />
+                            <col width="14%" />
+                            <col width="45%" />
                         </colgroup>
                         <head>
                             <tr>
                                 <th class="text-center">
                                     <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('Com_Person') }"></div>
                                 </th>
-                                <th class="text-center" style="white-space: nowrap;">
+                                <th class="text-right" style="white-space: nowrap;">
                                     <div style="padding-right: 0;" data-bind="
                                         ntsFormLabel: { required: false, text: $component.$i18n('KTG027_4') }">
+                                    </div>
+                                </th>
+                                <th class="text-right" style="white-space: nowrap; padding-right: 5px;">
+                                    <div style="padding-right: 0;" data-bind="
+                                        ntsFormLabel: { required: false, text: $component.$i18n('KTG027_17') }">
                                     </div>
                                 </th>
                                 <td style="padding-left: 10px;" rowspan="1">
@@ -192,22 +198,24 @@ module nts.uk.at.view.ktg027.a {
                 <div id="ktg027-display-data" style="padding-bottom: 0">
                     <table>
                         <colgroup>
-                            <col width="42%" />
-                            <col width="58%" />
+                            <col width="55%" />
+                            <col width="45%" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr style="height: 35px;">
                                 <td>
-                                    <div class="text-underline limited-label" data-bind="
-                                        text: row.businessName,
-                                        click: function() { $component.openKTG026(row) }"
-                                        style="float:left; width: 60%; padding-left: 5px;">
-                                    </div>
-                                    <div class="text-right text-underline" data-bind="
-                                        time: row.time.tt,
-                                        click: function() { $component.openKDW003(row) },
-                                        css: row.state"
-                                        style="height: 25px; padding-right: 5px;">
+                                    <div style="display: flex;">
+                                        <div style="color: inherit;" class="text-underline limited-label ktg027-employee-name" data-bind="
+                                            text: row.businessName,
+                                            click: function() { $component.openKTG026(row) },
+                                            css: row.state">
+                                        </div>
+                                        <div class="text-right text-underline ktg027-ot-time" data-bind="
+                                            time: row.time.tt,
+                                            click: function() { $component.openKDW003(row) },
+                                            css: row.state">
+                                        </div>
+                                        <div style="cursor: default;" class="text-right ktg027-remain-time" data-bind="time: row.time.rm, css: row.state"></div>
                                     </div>
                                 </td>
                                 <td style="padding-left: 10px;" data-bind="ktg-chart: $component.dataTable"></td>
@@ -229,6 +237,21 @@ module nts.uk.at.view.ktg027.a {
                 }
                 #ktg027-display-data {
                     overflow: hidden;
+                }
+                .ktg027-employee-name {
+                    flex: 6.5;
+                    line-height: 25px;
+                    padding-left: 5px;
+                }
+                .ktg027-ot-time {
+                    flex: 3.5;
+                    line-height: 25px;
+                    padding-right: 5px;
+                }
+                .ktg027-remain-time {
+                    flex: 3;
+                    padding-right: 5px;
+                    line-height: 25px;
                 }
                 .text-underline {
                     text-decoration: underline;
@@ -292,7 +315,7 @@ module nts.uk.at.view.ktg027.a {
                     overflow: hidden;
                 }
                 .ktg-027-a.widget-content.ui-resizable td[rowspan] canvas {
-                    width: 230px !important;
+                    width: 175px !important;
                 }
                 .ktg-027-a.widget-content.ui-resizable.widget-fixed {
                     padding-bottom: 0px;
@@ -347,6 +370,7 @@ module nts.uk.at.view.ktg027.a {
         employees: KnockoutObservableArray<PersonalInfo> = ko.observableArray([]);
         overtimeSubor: KnockoutObservableArray<OvertimeSubordinate> = ko.observableArray([]);
         personalSubor: KnockoutObservableArray<PersonalInfoSubordinate> = ko.observableArray([]);
+        upperLimit: UpperLimit[] = [];
 
         dataTable!: KnockoutComputed<any[]>;
         chartStyle!: KnockoutComputed<string>;
@@ -368,6 +392,15 @@ module nts.uk.at.view.ktg027.a {
                     const employees = ko.unwrap<PersonalInfo[]>(vm.employees);
                     const overtimeSubor = ko.unwrap<OvertimeSubordinate[]>(vm.overtimeSubor);
                     const personalSubor = ko.unwrap<PersonalInfoSubordinate[]>(vm.personalSubor);
+                    
+                    const findRemainTime = (sid: string, total: number) => {
+                    const limit = _.find(vm.upperLimit, x => x.sid === sid);
+                        if (!limit || limit.time - total < 0) {
+                            return 0;
+                        }
+                        // 36協定基本設定 - 従業員用の時間外時間表示．対象社員の各月の時間外時間．対象年月の時間外時間．36協定対象時間．対象時間
+                        return limit.time - total;
+                    };
 
                     return _
                         .chain(employees)
@@ -391,13 +424,14 @@ module nts.uk.at.view.ktg027.a {
                                     time: {
                                         tt: at.agreementTime || 0,
                                         ot: Math.min(6000, at.agreementTime),
-                                        wh: at.agreementTime >= 6000 ? 0 : Math.max((am.agreementTime || 0) - (at.agreementTime || 0), 0)
+                                        wh: at.agreementTime >= 6000 ? 0 : Math.max((am.agreementTime || 0) - (at.agreementTime || 0), 0),
+                                        rm: findRemainTime(emp.employeeId, at.agreementTime || 0)
                                     },
                                     state: timeStyle(state)
                                 });
                             }
 
-                            return _.extend(emp, { time: { tt: 0, ot: 0, wh: 0 }, state: 'a' });
+                            return _.extend(emp, { time: { tt: 0, ot: 0, wh: 0, rm: 0 }, state: 'a' });
                         })
                         // trigger rerender table & chart
                         .filter(() => employees.length && overtimeSubor.length && personalSubor.length)
@@ -458,7 +492,7 @@ module nts.uk.at.view.ktg027.a {
                 .$blockui('invisibleView')
                 .then(() => vm.$ajax('at', API.GET_DATA_INIT, bodyParams))
                 .then((response: DataInit) => {
-                    const { closureId, personalInformationOfSubordinateEmployees, closingInformationForCurrentMonth, closingInformationForNextMonth, overtimeOfSubordinateEmployees } = response;
+                    const { closureId, personalInformationOfSubordinateEmployees, closingInformationForCurrentMonth, closingInformationForNextMonth, overtimeOfSubordinateEmployees, upperLimit } = response;
 
                     vm.employees(personalInformationOfSubordinateEmployees);
 
@@ -473,7 +507,7 @@ module nts.uk.at.view.ktg027.a {
                                         target: ym
                                     });
                                     if (vm.firstLoad && !vm.isRefresh) {
-                                        vm.loadData(ym, closureId, {overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees});
+                                        vm.loadData(ym, closureId, {overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees, upperLimit});
                                         vm.firstLoad = false;
                                     } else {
                                         vm.isRefresh = false;
@@ -542,8 +576,8 @@ module nts.uk.at.view.ktg027.a {
         private loadData(ym: string, closureId: number, overtimeParam?: OverTimeResponse) {
             const vm = this;
 			if(overtimeParam) {
-				const { overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees } = overtimeParam;
-	
+				const { overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees, upperLimit } = overtimeParam;
+                vm.upperLimit = upperLimit;
                 vm.overtimeSubor(overtimeOfSubordinateEmployees);
                 vm.personalSubor(personalInformationOfSubordinateEmployees);
 				vm.$blockui('clearView')
@@ -551,6 +585,7 @@ module nts.uk.at.view.ktg027.a {
 	            const { CHANGE_DATE: getDataWhenChangeDate } = API;
 	
 	            if (ym) {
+                    vm.upperLimit = [];
 	                vm.overtimeSubor([]);
 	                vm.personalSubor([]);
 	
@@ -558,8 +593,9 @@ module nts.uk.at.view.ktg027.a {
 	                    .$blockui('invisibleView')
 	                    .then(() => vm.$ajax('at', `${getDataWhenChangeDate}/${closureId}/${ym}`))
 	                    .then((overtime: OverTimeResponse) => {
-	                        const { overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees } = overtime;
+	                        const { overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees, upperLimit } = overtime;
 	
+                            vm.upperLimit = upperLimit;
 	                        vm.overtimeSubor(overtimeOfSubordinateEmployees);
 	                        vm.personalSubor(personalInformationOfSubordinateEmployees);
 	                    })
@@ -622,6 +658,7 @@ module nts.uk.at.view.ktg027.a {
         closingInformationForNextMonth: ClosingInfor | null;
         personalInformationOfSubordinateEmployees: PersonalInfo[];
 		overtimeOfSubordinateEmployees: OvertimeSubordinate[];
+        upperLimit: UpperLimit[];
     }
 
     interface ClosingInfor {
@@ -644,7 +681,15 @@ module nts.uk.at.view.ktg027.a {
     interface OverTimeResponse {
         personalInformationOfSubordinateEmployees: PersonalInfoSubordinate[];
         overtimeOfSubordinateEmployees: OvertimeSubordinate[];
+        upperLimit: UpperLimit[];
     }
+
+    interface UpperLimit {
+        sid: string;
+        yearMonth: number;
+        time: number;
+    }
+
 
     interface PersonalInfoSubordinate {
         personId: string;
