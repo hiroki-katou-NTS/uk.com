@@ -21,7 +21,15 @@
 .smile-div {
   background: lightyellow;
   min-height: 50px;
-  width: 500px;
+  width: 720px;
   margin-top: 25px;
   border: 1px solid;
+}
+
+#component-left {
+  padding-right: 3px !important;
+}
+
+#component-right {
+  padding-left: 3px !important;
 }

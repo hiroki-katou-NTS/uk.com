@@ -11,17 +11,17 @@
         #{i18n.getText('SMM001_8')}
       </div>
       <div id="combo-box" data-bind="ntsComboBox: {
-              name: 'List',
-              options: itemListCndSet,
-              optionsValue: 'code',
-              visibleItemsCount: 3,
-              value: salaryCooperationConditions,
-              optionsText: 'name',
-              enable: salaryCooperationClassification,
-              columns: [
-                { prop: 'code', length: 4 },
-                { prop: 'name', length: 10 },
-              ]}">
+        name: 'List',
+        options: itemListCndSet,
+        optionsValue: 'code',
+        visibleItemsCount: 3,
+        value: salaryCooperationConditions,
+        optionsText: 'name',
+        enable: salaryCooperationClassification,
+        columns: [
+          { prop: 'code', length: 4 },
+          { prop: 'name', length: 10 },
+        ]}">
       </div>
     </div>
   </div>
@@ -80,7 +80,21 @@
       </tr>
       <tr>
         <td>
-          <div tabindex="14" id="kcp005-component-left"></div>
+          <div tabindex="14" id="component-left">
+            <table id="grid-component-left" style="white-space: nowrap;" data-bind="ntsGridList: {
+              dataSource: employmentDtos,
+              primaryKey: 'employmentCode',
+              columns: [
+                { headerText: '#{i18n.getText('SMM001_14')}', key: 'employmentCode', width: 50 },
+                { headerText: '#{i18n.getText('SMM001_15')}', key: 'employmentName', width: 100 }
+              ],
+              deleteOptions : {visible : false},
+              multiple: true,
+              rows: 10,
+              value: currentCode
+              }">
+            </table>
+          </div>
         </td>
         <td>
           <div class="ntsMoveDataArea ntsSwapComponent" id="swap-list-move-data">
@@ -99,7 +113,18 @@
           </div>
         </td>
         <td>
-          <div tabindex="17" id="kcp005-component-right"></div>
+          <div tabindex="17" id="component-right">
+            <table id="grid-component-right" style="white-space: nowrap;" data-bind="ntsGridList: {
+              dataSource: employmentDtos,
+              primaryKey: 'employmentCode',
+              columns: columnEmp,
+              deleteOptions : {visible : false},
+              multiple: true,
+              rows: 10,
+              value: currentCode
+              }">
+            </table>
+          </div>
         </td>
       </tr>
     </table>

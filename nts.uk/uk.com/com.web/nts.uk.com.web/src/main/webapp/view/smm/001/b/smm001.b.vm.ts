@@ -16,6 +16,16 @@ module nts.uk.at.view.smm001.b {
     }
   }
 
+  class GridItem {
+    code: string
+    name: string;
+
+    constructor(code: string, name: string) {
+      this.code = code;
+      this.name = name;
+    }
+  }
+
   export class ScreenModelB extends ko.ViewModel {
     selectedCode: KnockoutObservable<number> = ko.observable(1);
     itemListCndSet: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -29,11 +39,17 @@ module nts.uk.at.view.smm001.b {
     monthlyLockClassification: KnockoutObservable<number> = ko.observable(0);
     monthlyApprovalCategory: KnockoutObservable<number> = ko.observable(0);
     salaryCooperationConditions: KnockoutObservable<string> = ko.observable();
+
+    employmentDtos: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     // End: Init b screen
 
     ENUM_IS_CHECKED = 1;
     ENUM_IS_NOT_CHECKED = 0;
     enumPaymentCategoryList: KnockoutObservableArray<any>;
+
+    currentCode: KnockoutObservableArray<GridItem> = ko.observableArray([]);
+
+    columnEmp: KnockoutObservableArray<any> = ko.observableArray([]);
 
     constructor() {
       super();
@@ -50,8 +66,30 @@ module nts.uk.at.view.smm001.b {
 
       // Init payment category
       vm.enumPaymentCategoryList = ko.observableArray(__viewContext.enums.PaymentCategory);
-      
+
       vm.getInformationOnExternal();
+
+      vm.columnEmp([
+        { headerText: nts.uk.resource.getText("SMM001_14"), key: 'employmentCode', width: 50 },
+        { headerText: nts.uk.resource.getText("SMM001_15"), key: 'employmentName', width: 100 },
+        {
+          headerText: nts.uk.resource.getText("SMM001_16"),
+          key: 'employment',
+          width: 250,
+          template: `
+            <div style="display: flex">
+              <input type="radio" id="DO_TEXT" value="1">
+              <label for="html">DO_TEXT</label>
+              <input type="radio" id="DO_NOT_TEXT" value="0">
+              <label for="css">DO_NOT_TEXT</label>
+            </div>
+            <label
+              data-bind="ntsRadioButton: { checked: monthlyLockClassification, optionText: DO_TEXT, checkedValue: 1, group: 'lockClassification' }"></label>
+            <label
+              data-bind="ntsRadioButton: { checked: monthlyLockClassification, optionText: DO_NOT_TEXT, checkedValue: 0, group: 'lockClassification' }"></label>
+            `
+        }
+      ])
     }
 
     getInformationOnExternal() {
@@ -77,6 +115,8 @@ module nts.uk.at.view.smm001.b {
             });
           });
           vm.itemListCndSet(finalArray);
+          const employmentDtos = response.employmentDtos;
+          vm.employmentDtos(employmentDtos)
         }
       })
     }
