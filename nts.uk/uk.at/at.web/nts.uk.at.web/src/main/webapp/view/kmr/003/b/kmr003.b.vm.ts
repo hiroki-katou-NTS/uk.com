@@ -438,9 +438,9 @@ module nts.uk.at.kmr003.b {
                                         details.push(_.filter(listBentoReservationDetail, (x: any) => x.frameNo == frame)[0]);
                                     } 
                                     // record is edited
-                                    else if ((row[bento] && _.filter(listBentoReservationDetail, (x: any) => x.frameNo == frame)[0].bentoCount != row[bento])) {
+                                    else if ((row[bento] && _.filter(listBentoReservationDetail, (x: any) => x.frameNo == frame)[0].bentoCount != row[bento] && !_.isEmpty(row[bento].toString().trim()))) {
                                         let detail = _.filter(listBentoReservationDetail, (x: any) => x.frameNo == frame)[0];
-                                        detail.bentoCount = row[bento];
+                                        detail.bentoCount = row[bento].toString().trim();
                                         detail.dateTime = moment().format('YYYY/MM/DD HH:mm:ss');
     
                                         details.push(detail);
@@ -450,10 +450,10 @@ module nts.uk.at.kmr003.b {
                                         // not add to list details
                                     }
                                 } else {
-                                    if (row[bento]) {
+                                    if (row[bento] && !_.isEmpty(row[bento].toString().trim())) {
                                         details.push({ 
                                             frameNo: parseInt(frame),
-                                            bentoCount: row[bento], 
+                                            bentoCount: row[bento].toString().trim(), 
                                             dateTime: moment().format('YYYY/MM/DD HH:mm:ss'), 
                                             autoReservation: false,
                                          });

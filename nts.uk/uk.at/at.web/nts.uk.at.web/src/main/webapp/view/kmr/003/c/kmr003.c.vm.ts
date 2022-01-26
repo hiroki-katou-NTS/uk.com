@@ -171,10 +171,10 @@ module nts.uk.at.kmr003.c {
                     if (_.startsWith(item, 'bento')) {
                         let frame = item.substring(5);
 
-                        if (item) {
+                        if (item && row[item] && !_.isEmpty(row[item].trim())) {
                             let detail = {
                                 frameNo: frame, 
-                                bentoCount: row[item], 
+                                bentoCount: row[item].toString().trim(), 
                                 dateTime: moment().format("YYYY/MM/DD HH:mm:ss"), 
                                 autoReservation: false
                             }
