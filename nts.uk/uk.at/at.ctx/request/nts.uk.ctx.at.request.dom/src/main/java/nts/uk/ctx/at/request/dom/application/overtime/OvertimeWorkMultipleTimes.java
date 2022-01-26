@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.com.time.TimeZone;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -44,14 +45,24 @@ public class OvertimeWorkMultipleTimes {
      * @return 複数回残業内容
      */
     public static OvertimeWorkMultipleTimes create(List<OvertimeHour> overtimeHours, List<OvertimeReason> overtimeReasons) {
+        overtimeHours.sort(Comparator.comparing(i -> i.getOvertimeHours().getStart()));
         for (int i = 0; i < overtimeHours.size() - 1; i++) {
             if (overtimeHours.get(i).getOvertimeHours().getDuplicatedWith(overtimeHours.get(i + 1).getOvertimeHours()).isPresent()) {
                 throw new BusinessException("Msg_3238");
             }
         }
-        overtimeHours.sort(Comparator.comparing(OvertimeHour::getOvertimeNumber));
-        overtimeReasons.sort(Comparator.comparing(OvertimeReason::getOvertimeNumber));
-        return new OvertimeWorkMultipleTimes(overtimeHours, overtimeReasons);
+
+        List<OvertimeHour> newOvertimeHours = new ArrayList<>();
+        List<OvertimeReason> newOvertimeReasons = new ArrayList<>();
+        for (int i = 0; i < overtimeHours.size(); i++) {
+            OvertimeHour overtimeHour = overtimeHours.get(i);
+            OvertimeNumber overtimeNumber = new OvertimeNumber(i + 1);
+            newOvertimeHours.add(new OvertimeHour(overtimeNumber, overtimeHour.getOvertimeHours()));
+            overtimeReasons.stream().filter(r -> r.getOvertimeNumber().equals(overtimeHour.getOvertimeNumber())).findFirst().ifPresent(reason -> {
+                newOvertimeReasons.add(new OvertimeReason(overtimeNumber, reason.getFixedReasonCode(), reason.getApplyReason()));
+            });
+        }
+        return new OvertimeWorkMultipleTimes(newOvertimeHours, newOvertimeReasons);
     }
 
     /**
@@ -130,22 +141,23 @@ public class OvertimeWorkMultipleTimes {
                                                                GeneralDate date,
                                                                WorkInformation workInfo,
                                                                List<TimeZoneWithWorkNo> workingHours,
-                                                               List<BreakTimeSheet> breakTimes) {
-        List<TimeZoneWithWorkNo> workingHoursPredetemine = new ArrayList<>(workingHours);
+                                                               List<BreakTimeSheet> breakTimes,
+                                                               boolean managementMultipleWorkCycles) {
+        List<TimeZoneWithWorkNo> predeterminedWorkingHours = workingHours;
         if (workInfo.getWorkTimeCodeNotNull().isPresent()) {
             Optional<PredetemineTimeSetting> predTimeSet = require.getPredetemineTimeSetting(companyId, workInfo.getWorkTimeCode().v());
             if (predTimeSet.isPresent()) {
-                workingHoursPredetemine = predTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone()
-                        .stream().filter(i -> i.isUsed())
+                predeterminedWorkingHours = predTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone()
+                        .stream().filter(i -> i.isUsed() && (i.getWorkNo() == 1 || managementMultipleWorkCycles))
                         .map(i -> new TimeZoneWithWorkNo(i.getWorkNo(), i.getStart().v(), i.getEnd().v()))
                         .collect(Collectors.toList());
             }
             Optional<WorkTimeSetting> workTimeSetting = require.getWorkTimeSetting(companyId, workInfo.getWorkTimeCode().v());
             if (workTimeSetting.isPresent() && workTimeSetting.get().getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
-                breakTimes = this.getFlowWorkBreakTime(require, companyId, employeeId, date, workInfo, predTimeSet, new ArrayList<>(workingHours));
+                breakTimes = this.getFlowWorkBreakTime(require, employeeId, date, workInfo, predTimeSet, workingHours);
             }
         }
-        List<BreakTimeSheet> result = this.calculateNewBreakTimes(breakTimes, workingHoursPredetemine, workingHours);
+        List<BreakTimeSheet> result = this.calculateNewBreakTimes(breakTimes, predeterminedWorkingHours, workingHours);
         if (result.size() > 10) throw new BusinessException("Msg_3236");
         return result;
     }
@@ -153,7 +165,6 @@ public class OvertimeWorkMultipleTimes {
     /**
      * 流動勤務で 休憩時間帯を取得する
      * @param require
-     * @param companyId 会社ID
      * @param employeeId 申請者ID
      * @param date 年月日
      * @param workInfo 勤務情報
@@ -162,19 +173,30 @@ public class OvertimeWorkMultipleTimes {
      * @return 休憩時間帯List
      */
     private List<BreakTimeSheet> getFlowWorkBreakTime(Require require,
-                                                      String companyId,
                                                       String employeeId,
                                                       GeneralDate date,
                                                       WorkInformation workInfo,
                                                       Optional<PredetemineTimeSetting> predTimeSet,
                                                       List<TimeZoneWithWorkNo> workingHours) {
-        predTimeSet.ifPresent(predetemineTimeSetting -> workingHours.get(workingHours.size() - 1).getTimeZone().setEndTime(predetemineTimeSetting.getEndDateClock()));
+        List<TimeZoneWithWorkNo> tmpWorkingHours = new ArrayList<>();
+        workingHours.forEach(wh -> {
+            if (wh.getWorkNo().v() == workingHours.size() && predTimeSet.isPresent()) {
+                tmpWorkingHours.add(new TimeZoneWithWorkNo(
+                        wh.getWorkNo().v(),
+                        wh.getTimeZone().getStartTime().v(),
+                        predTimeSet.get().getEndDateClock().v()
+                ));
+            } else {
+                tmpWorkingHours.add(wh);
+            }
+        });
+
         CalculationParams params = new CalculationParams(
                 employeeId,
                 date,
                 workInfo.getWorkTypeCode(),
                 workInfo.getWorkTimeCode(),
-                workingHours,
+                tmpWorkingHours,
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList()
@@ -186,60 +208,47 @@ public class OvertimeWorkMultipleTimes {
     /**
      * 休憩時間帯Newを判断する
      * @param breakTimes 休憩時間帯List
-     * @param workingHoursPredetemine 勤務時間List（所定）
+     * @param predeterminedWorkingHours 勤務時間List（所定）
      * @param workingHours 勤務時間List（整理後）
      * @return 休憩時間帯List
      */
-    private List<BreakTimeSheet> calculateNewBreakTimes(List<BreakTimeSheet> breakTimes, List<TimeZoneWithWorkNo> workingHoursPredetemine, List<TimeZoneWithWorkNo> workingHours) {
+    private List<BreakTimeSheet> calculateNewBreakTimes(List<BreakTimeSheet> breakTimes, List<TimeZoneWithWorkNo> predeterminedWorkingHours, List<TimeZoneWithWorkNo> workingHours) {
         // ①休憩時間帯List(所定)
         // ②「勤務時間と残業時刻」の間隔は「休憩時間」になる（仕事なし）
         // ③２つ別の残業の間隔は「休憩時間」になる　（仕事なし）
         // ④休憩時間帯が軒並の場合、１つに合同する
         // ⑤休憩時間帯(所定）と残業時間帯が重複の場合、休憩時間帯が優先
+        // ⑥勤務時間(所定）と勤務時間（整理）の間に残業時間ない場合、休憩時間になる
 
-        List<TimeSpanForCalc> timeline = new ArrayList<>();
-        timeline.addAll(workingHoursPredetemine.stream().map(i -> new TimeSpanForCalc(i.getTimeZone().getStartTime(), i.getTimeZone().getEndTime())).collect(Collectors.toList()));
-        timeline.addAll(overtimeHours.stream().map(OvertimeHour::getOvertimeHours).collect(Collectors.toList()));
-        timeline.sort(Comparator.comparing(TimeSpanForCalc::getStart));
-
-        for (int i = 0; i < timeline.size() - 1; i++) {
-            TimeSpanForCalc a = timeline.get(i);
-            TimeSpanForCalc b = timeline.get(i + 1);
-            if (a.getEnd().lessThan(b.getStart())) {
-                breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), a.getEnd(), b.getStart()));
+        List<TimeSpanForCalc> timeLine = new ArrayList<>();
+        timeLine.addAll(predeterminedWorkingHours.stream().map(i -> new TimeSpanForCalc(i.getTimeZone().getStartTime(), i.getTimeZone().getEndTime())).collect(Collectors.toList()));
+        this.overtimeHours.forEach(ot -> {
+            if (timeLine.stream().noneMatch(t -> t.contains(ot.getOvertimeHours()))) {
+                timeLine.add(ot.getOvertimeHours());
             }
+        });
+        timeLine.sort(Comparator.comparing(TimeSpanForCalc::getStart));
+
+        if (!timeLine.isEmpty()) {
+            new TimeSpanForCalc(timeLine.get(0).getStart(), timeLine.get(timeLine.size() - 1).getEnd())
+                    .getNotDuplicatedWith(timeLine).forEach(bt -> {
+                        breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), bt.getStart(), bt.getEnd()));
+                    });
         }
 
-        workingHours.forEach(time -> {
-            workingHoursPredetemine.forEach(predTime -> {
-                if (time.getWorkNo().equals(predTime.getWorkNo())) {
-                    if (time.getTimeZone().getStartTime().lessThan(predTime.getTimeZone().getStartTime())) {
-                        Optional<TimeSpanForCalc> overtime = timeline.stream()
-                                .filter(ot -> time.getTimeZone().getStartTime().lessThanOrEqualTo(ot.getStart())
-                                        && time.getTimeZone().getEndTime().greaterThan(ot.getEnd()))
-                                .findFirst();
-                        if (overtime.isPresent()) {
-                            if (time.getTimeZone().getStartTime().lessThan(overtime.get().getStart()))
-                                breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), time.getTimeZone().getStartTime(), overtime.get().getStart()));
-                        } else {
-                            breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), time.getTimeZone().getStartTime(), predTime.getTimeZone().getStartTime()));
-                        }
-                    }
-                    if (time.getTimeZone().getEndTime().greaterThan(predTime.getTimeZone().getEndTime())) {
-                        Optional<TimeSpanForCalc> overtime = timeline.stream()
-                                .filter(ot -> time.getTimeZone().getStartTime().lessThan(ot.getStart())
-                                        && time.getTimeZone().getEndTime().greaterThanOrEqualTo(ot.getEnd()))
-                                .reduce((first, second) -> second);
-                        if (overtime.isPresent()) {
-                            if (time.getTimeZone().getEndTime().greaterThan(overtime.get().getEnd()))
-                                breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), overtime.get().getEnd(), time.getTimeZone().getEndTime()));
-                        } else {
-                            breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), predTime.getTimeZone().getEndTime(), time.getTimeZone().getEndTime()));
-                        }
-                    }
-                }
-            });
+        TimeZone workingTime = new TimeZone(null, null);
+        workingHours.forEach(wh -> {
+            if (workingTime.getStartTime() == null || workingTime.getStartTime().greaterThan(wh.getTimeZone().getStartTime())) {
+                workingTime.setStartTime(wh.getTimeZone().getStartTime());
+            }
+            if (workingTime.getEndTime() == null || workingTime.getEndTime().lessThan(wh.getTimeZone().getEndTime())) {
+                workingTime.setEndTime(wh.getTimeZone().getEndTime());
+            }
         });
+        new TimeSpanForCalc(workingTime.getStartTime(), workingTime.getEndTime())
+                .getNotDuplicatedWith(timeLine).forEach(bt -> {
+                    breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), bt.getStart(), bt.getEnd()));
+                });
 
         breakTimes.sort(Comparator.comparing(BreakTimeSheet::getStartTime));
 
