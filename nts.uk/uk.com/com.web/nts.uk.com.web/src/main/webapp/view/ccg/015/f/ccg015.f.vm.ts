@@ -50,6 +50,9 @@ module nts.uk.com.view.ccg015.f {
       if (_.isEmpty(data.listLayout[0]) && _.isEmpty(data.listLayout[1]) && _.isEmpty(data.listLayout[2]) && _.isNil(data.urlLayout1)) {
         vm.isNoContent(true);
       }
+      if (_.isEmpty(data.listLayout[0]) && _.isNil(data.urlLayout1)) {
+        vm.isNoContentLayout1(true);
+      }
       if(_.isEmpty(data.listLayout[1]) && _.isNil(data.urlLayout1)) {
         vm.isNoContentLayout2(true);
       }
