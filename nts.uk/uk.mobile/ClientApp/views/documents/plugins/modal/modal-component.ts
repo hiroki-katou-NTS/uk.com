@@ -4,7 +4,7 @@ import { component, Prop } from '@app/core/component';
 @component({
     template: `<div class="modal-component">
         <div class="modal-header rounded-0 d-block p-0 mb-2">
-            <div class="uk-bg-teal p-2 row m-0">
+            <div class=" p-2 row m-0">
                 <h4 class="modal-title text-white col-4 p-0">
                     <i class="fas fa-angle-left mr-1"></i>
                     <span>dialog</span>
