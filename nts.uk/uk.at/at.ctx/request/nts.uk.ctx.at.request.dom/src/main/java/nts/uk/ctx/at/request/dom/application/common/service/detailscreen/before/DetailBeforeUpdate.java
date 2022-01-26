@@ -35,6 +35,9 @@ public interface DetailBeforeUpdate {
 	 * 1.排他チェック
 	 */
 	public void exclusiveCheck(String companyID, String appID, int version);
+	
+	public String exclusiveCheckLogic(String companyID, String appID, int version);
+	
 	/**
 	 * 4-1.詳細画面登録前の処理 (CMM045)
 	 * @param companyID 会社ID 

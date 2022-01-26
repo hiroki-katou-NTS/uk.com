@@ -176,16 +176,15 @@ public class ApproveAppProcedure {
 	 */
 	public ApproveAppOutput approveApp(String companyID, Application app, String approverID, String approvalComment, boolean errorCheckFlg, boolean isInsert) {
 		if(!isInsert) {
-			try {
-				// 「1.排他チェック」を実施する
-				detailBeforeUpdate.exclusiveCheck(companyID, app.getAppID(), app.getVersion());
-			} catch (BusinessException e) {
+			// 「1.排他チェック」を実施する
+			String exclusiveCheck = detailBeforeUpdate.exclusiveCheckLogic(companyID, app.getAppID(), app.getVersion());
+			if(Strings.isNotBlank(exclusiveCheck)) {
 				if(errorCheckFlg) {
 					// OUTPUTを返す
 					return new ApproveAppOutput(false, true, Optional.empty(), Optional.empty());
 				}
 				// エラーメッセージを表示して処理終了する
-				throw new BusinessException(e.getMessageId());
+				throw new BusinessException(exclusiveCheck);
 			}
 		}
 		// 2.承認する(ApproveService)

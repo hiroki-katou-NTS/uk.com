@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -202,13 +204,21 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	 * 1.排他チェック
 	 */
 	public void exclusiveCheck(String companyID, String appID, int version) {
+		String exclusiveCheckResult = exclusiveCheckLogic(companyID, appID, version);
+		if(Strings.isNotBlank(exclusiveCheckResult)) {
+			throw new BusinessException(exclusiveCheckResult);
+		}
+	}
+	
+	public String exclusiveCheckLogic(String companyID, String appID, int version) {
 		if (applicationRepository.findByID(companyID, appID).isPresent()) {
 			Application application = applicationRepository.findByID(companyID, appID).get();
 			if (application.getVersion() != version) {
-				throw new BusinessException("Msg_197");
+				return "Msg_197";
 			}
+			return "";
 		} else {
-			throw new BusinessException("Msg_198");
+			return "Msg_198";
 		}
 	}
 
