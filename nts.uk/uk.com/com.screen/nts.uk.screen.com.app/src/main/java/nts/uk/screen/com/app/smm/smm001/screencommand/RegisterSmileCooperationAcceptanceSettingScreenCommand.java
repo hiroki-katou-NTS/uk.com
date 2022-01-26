@@ -39,13 +39,6 @@ public class RegisterSmileCooperationAcceptanceSettingScreenCommand {
 	private List<String> listSelectedComboboxValue;
 	// End: Variable at a screen
 
-	// Start: Variable at b screen
-	private Integer salaryCooperationClassification;
-	private Integer monthlyLockClassification;
-	private Integer monthlyApprovalCategory;
-	private String salaryCooperationConditions;
-	// End: Variable at b screen
-
 	public List<SmileCooperationAcceptanceSetting> convertScreenCommandToListSetting() {
 		listCheckedCheckbox = Arrays.asList(checkedOrganizationInformation,
 				checkedBasicPersonnelInformation, checkedJobStructureInformation, checkedAddressInformation,

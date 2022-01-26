@@ -1,6 +1,6 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 
-module nts.uk.at.view.smm001.a {
+module nts.uk.com.view.smm001.a {
   import ScreenModelB = b.ScreenModelB;
   const API = {
     // <<ScreenQuery>> 初期起動の情報取得する
@@ -80,9 +80,8 @@ module nts.uk.at.view.smm001.a {
     setDefault() {
       const vm = this;
 
-      // Init info item
+      // Start: Init info 7 item
       vm.enumSmileCooperationAcceptanceItem = ko.observableArray(__viewContext.enums.SmileCooperationAcceptanceItem);
-      console.log(">>> ", vm.enumSmileCooperationAcceptanceItem());
       vm.ORGANIZATION_INFORMATION = ko.observable(vm.enumSmileCooperationAcceptanceItem()[0].name);
       vm.BASIC_PERSONNEL_INFORMATION = ko.observable(vm.enumSmileCooperationAcceptanceItem()[1].name);
       vm.JOB_STRUCTURE_INFORMATION = ko.observable(vm.enumSmileCooperationAcceptanceItem()[2].name);
@@ -90,10 +89,16 @@ module nts.uk.at.view.smm001.a {
       vm.LEAVE_INFORMATION = ko.observable(vm.enumSmileCooperationAcceptanceItem()[4].name);
       vm.AFFILIATED_MASTER = ko.observable(vm.enumSmileCooperationAcceptanceItem()[5].name);
       vm.EMPLOYEE_MASTER = ko.observable(vm.enumSmileCooperationAcceptanceItem()[6].name);
-
+      // End: Init info 7 item
       vm.getInitialStartupInformation();
     }
 
+    /**
+     * Check has element in
+     * @param possible List data get from api
+     * @param selected List data selected in screen
+     * @returns
+     */
     validateIfElementSelectedNotContainInArray(possible: any, selected: any) {
       const possibleCode = possible.map((e:any) => e.cooperationAcceptanceConditions);
       const unchosen = selected.filter((itm: any) => {
@@ -102,16 +107,16 @@ module nts.uk.at.view.smm001.a {
       return unchosen.length > 0;
     }
 
+    // Data when init screen
     getInitialStartupInformation() {
       const vm = this;
-      vm.$blockui('show');
+      vm.$blockui('grayout');
       vm.itemList().push({
         code: '0',
         name: ''
       })
       vm.$ajax('com', API.getInitialStartupInformation).then((response: any) => {
         if (response) {
-          console.log("response: ", response)
           // Get list data select option a screen
           const externalImportSettings = response.externalImportSettings;
           if (!_.isEmpty(externalImportSettings)) {
@@ -143,6 +148,10 @@ module nts.uk.at.view.smm001.a {
       })
     }
 
+    /**
+     * return data from list smile
+     * @param smileCooperationAcceptanceSettings
+     */
     mappingDataAfterGetInitAScreen(smileCooperationAcceptanceSettings: any) {
       const vm = this;
       vm.checkedOrganizationInformation(smileCooperationAcceptanceSettings[0].cooperationAcceptanceClassification == 1)
@@ -187,7 +196,7 @@ module nts.uk.at.view.smm001.a {
         vm.$dialog.info({ messageId: "Msg_3250" });
         return;
       }
-      vm.$blockui('show');
+      vm.$blockui('grayout');
       const command = {
         paymentCode: 1,
         checkedOrganizationInformation:
@@ -211,7 +220,6 @@ module nts.uk.at.view.smm001.a {
       };
       vm.$ajax('com', API.registerSmileCooperationAcceptanceSetting, command)
         .then((res: any) => {
-          console.log(res);
           vm.$dialog.info({ messageId: "Msg_15" });
         }).fail((err) => {
           vm.$dialog.error(err);

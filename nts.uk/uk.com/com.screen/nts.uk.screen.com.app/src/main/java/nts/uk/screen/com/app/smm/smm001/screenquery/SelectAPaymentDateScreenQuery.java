@@ -3,6 +3,8 @@ package nts.uk.screen.com.app.smm.smm001.screenquery;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -11,6 +13,12 @@ import nts.uk.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSe
 import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversionRepository;
 import nts.uk.smile.dom.smilelinked.cooperationoutput.PaymentCategory;
 
+/**
+ *  * UKDesign.UniversalK.就業.SMM_Smile連携.SMM001_SMILE連携外部受入出力_詳細設定.B:SMILE連携外部出力詳細設定.支払日を選択する
+ * @author user
+ *
+ */
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class SelectAPaymentDateScreenQuery {
 

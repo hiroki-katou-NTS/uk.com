@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 //import nts.arc.enums.EnumAdaptor;
@@ -18,6 +20,12 @@ import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversionRep
 import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSetting;
 import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingRepository;
 
+/**
+ * UKDesign.UniversalK.就業.SMM_Smile連携.SMM001_SMILE連携外部受入出力_詳細設定.B:SMILE連携外部出力詳細設定.外部出起動の情報取得する
+ * @author user
+ *
+ */
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class GetInformationOnExternalStartupScreenQuery {
 

@@ -3,6 +3,8 @@ package nts.uk.screen.com.app.smm.smm001.screencommand;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -22,8 +24,9 @@ import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingR
  * Smile連携受入外部出設定を登録する
  *
  */
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
-public class RegisterSmileCooperationAcceptanceSettingScreenCommandHandle extends CommandHandler<RegisterSmileCooperationAcceptanceSettingScreenCommand> {
+public class RegisterSmileCooperationAcceptanceSettingScreenCommandHandler extends CommandHandler<RegisterSmileCooperationAcceptanceSettingScreenCommand> {
 
 	// Smile連携受入設定
 	@Inject
@@ -38,7 +41,6 @@ public class RegisterSmileCooperationAcceptanceSettingScreenCommandHandle extend
 	@Override
 	protected void handle(CommandHandlerContext<RegisterSmileCooperationAcceptanceSettingScreenCommand> context) {
 		RegisterSmileCooperationAcceptanceSettingScreenCommand command = context.getCommand();
-		// TODO Auto-generated method stub
 		/**
 		 * Function: 会社IDを指定してSM連携受入設定を取得する - Specify the company ID to get the SM linkage acceptance settings
 		 * Param: 契約コード、会社ID -Contract code, company ID

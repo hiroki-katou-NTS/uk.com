@@ -22,7 +22,7 @@
     <ui:define name="content">
       <div id="functions-area">
         <!--A1-->
-        <button class="proceed" tabindex="1" data-bind="click: saveSmile">
+        <button class="proceed" tabindex="3" data-bind="click: saveSmile">
           #{i18n.getText('SMM001_2')}
         </button>
       </div>
@@ -36,7 +36,7 @@
               <div data-bind="ntsCheckBox: { checked: checkedOrganizationInformation, enable: true, text: ORGANIZATION_INFORMATION}">
               </div>
               <div id="combo-box" data-bind="ntsComboBox: {
-                name: '#[SMM001_6]]',
+                name: '#[SMM001_6]',
                 options: itemList,
                 optionsValue: 'code',
                 visibleItemsCount: 5,

@@ -2,9 +2,9 @@ package nts.uk.screen.com.ws.smm001;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.com.app.smm.smm001.screencommand.RegisterSmileCooperationAcceptanceSettingScreenCommand;
-import nts.uk.screen.com.app.smm.smm001.screencommand.RegisterSmileCooperationAcceptanceSettingScreenCommandHandle;
+import nts.uk.screen.com.app.smm.smm001.screencommand.RegisterSmileCooperationAcceptanceSettingScreenCommandHandler;
 import nts.uk.screen.com.app.smm.smm001.screencommand.RegisterSmileLinkageExternalIOutputScreenCommand;
-import nts.uk.screen.com.app.smm.smm001.screencommand.RegisterSmileLinkageExternalIOutputScreenCommandHandle;
+import nts.uk.screen.com.app.smm.smm001.screencommand.RegisterSmileLinkageExternalIOutputScreenCommandHandler;
 import nts.uk.screen.com.app.smm.smm001.screenquery.EmploymentChoiceDto;
 import nts.uk.screen.com.app.smm.smm001.screenquery.GetInformationOnExternalStartupScreenQuery;
 import nts.uk.screen.com.app.smm.smm001.screenquery.GetInitialStartupInformationScreenQuery;
@@ -15,16 +15,17 @@ import nts.uk.screen.com.app.smm.smm001.screenquery.SelectAPaymentDateScreenQuer
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 @Path("com/screen/smm001")
 @Produces("application/json")
 public class Smm001WebService extends WebService{
 	@Inject
-	private RegisterSmileCooperationAcceptanceSettingScreenCommandHandle registerSmileCooperationAcceptanceSettingScreenCommandHandle;
+	private RegisterSmileCooperationAcceptanceSettingScreenCommandHandler registerSmileCooperationAcceptanceSettingScreenCommandHandle;
 
 	@Inject
-	private RegisterSmileLinkageExternalIOutputScreenCommandHandle registerSmileLinkageExternalIOutputScreenCommandHandle;
+	private RegisterSmileLinkageExternalIOutputScreenCommandHandler registerSmileLinkageExternalIOutputScreenCommandHandle;
 
 	@Inject
 	private GetInformationOnExternalStartupScreenQuery getInformationOnExternalStartupScreenQuery;
@@ -49,8 +50,8 @@ public class Smm001WebService extends WebService{
 	}
 
 	@POST
-	@Path("get-information-on-external")
-	public InitialStartupOutputDto getInformationOnExternal(Integer paymentCode) {
+	@Path("get-information-on-external/{paymentCode}")
+	public InitialStartupOutputDto getInformationOnExternal(@PathParam("paymentCode") Integer paymentCode) {
 		return getInformationOnExternalStartupScreenQuery.get(paymentCode);
 	}
 
