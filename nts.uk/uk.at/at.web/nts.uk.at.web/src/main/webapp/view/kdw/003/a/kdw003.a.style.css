@@ -257,6 +257,34 @@
     margin-left: 12px !important;
 }
 
+#extraction-controls {
+	display: flex;
+}
+
+#extraction-controls > div {
+	height: 42px;
+	margin: 0 10px 0 0;
+}
+
+#extraction-controls > div > div {
+	display: flex;
+	justify-content: center;
+  	align-items: center;
+  	height: 100%;
+}
+
+#extraction-controls > div > div > * {
+	display: block;
+}
+
+#extraction-controls #daterangepicker span.label-span {
+	position: relative;
+	top: -2px;
+}
+#extraction-controls #daterangepicker #dislayFormatLbl {
+	top: -3px;
+}
+
 
 /* 日付送り */
 #daterangepicker .ntsDatepicker {
@@ -270,10 +298,6 @@
 }
 
 #daterangepicker .label-span {
-}
-
-#date-extract {
-	display: inline-block;
 }
 
 /* 月次データ */
@@ -390,11 +414,6 @@ table#employ_view tr{
     position: relative;
     top: -5px;
 }
-#date-extract{
-	padding-top: 2px !important;
-    height: 42px;
-}
-
 
 .ntsDateNextButton  {
 	margin-bottom: 4px !important;
@@ -414,12 +433,7 @@ table#employ_view tr{
 	width: 150px !important;
 }
 
-.control-group {
-    margin-bottom: 20px;
-}
-
 #btnExtraction {
 	height: 30px;
 	width: 100px;
-    margin-bottom: 5px;
 }

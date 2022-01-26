@@ -99,83 +99,94 @@
                         <div id="ccg001"></div>
                     </div>
                     <div id="right-content">
-                        <div class="valign-center control-group">
-                            <div style="margin-top: -10px;">
+                        <div class="control-group">
+                            <div id="extraction-controls">
 								<div id = "date-extract" style="width: 480px;">
-									<div id="daterangepickererror"
-										data-bind="ntsDateRangePicker: { 
-										required: true, 
-										enable: showDateRange, 
-										showNextPrevious: true, 
-										value: dateRanger, 
-										startName: nts.uk.resource.getText('KDW003_25'),
-										endName: nts.uk.resource.getText('KDW003_26'),
-										maxRange: 'oneMonth'}" />
-										
-									<div id="daterangepicker">
-											<div id="yearMonthPicker" data-bind="ntsDatePicker: { 
-														value: yearMonth,
-														name: '#[KDW003_40]',
-														required: true, 
-														dateFormat: 'yearmonth',
-														showJumpButtons: true,
-														enable: showDateRange,
-														valueFormat: 'YYYYMM'}" />
-											<span class="label-span">#{i18n.getText('KDW003_128')}</span>
-											<div id="dislayFormatLbl" style="vertical-align: middle;" data-bind="ntsComboBox: {
-													options: actualTimeOptionDisp,
-													optionsValue: 'code',
-													value: actualTimeSelectedCode,
-													optionsText: 'name',
-													enable: showDateRange() &amp;&amp; ko.computed(function() {
-																			        return actualTimeOptionDisp().length  > 1;
-																			    }, this),
-													name:'#[KDW003_128]',
-													columns: [
-														{ prop: 'name', length: 6 },
-													]}">
+									<div>
+										<div>
+											<div id="daterangepickererror"
+												data-bind="ntsDateRangePicker: { 
+												required: true, 
+												enable: showDateRange, 
+												showNextPrevious: true, 
+												value: dateRanger, 
+												startName: nts.uk.resource.getText('KDW003_25'),
+												endName: nts.uk.resource.getText('KDW003_26'),
+												maxRange: 'oneMonth'}" />
+												
+											<div id="daterangepicker">
+													<div id="yearMonthPicker" data-bind="ntsDatePicker: { 
+																value: yearMonth,
+																name: '#[KDW003_40]',
+																required: true, 
+																dateFormat: 'yearmonth',
+																showJumpButtons: true,
+																enable: showDateRange,
+																valueFormat: 'YYYYMM'}" />
+													<span class="label-span">#{i18n.getText('KDW003_128')}</span>
+													<div id="dislayFormatLbl" style="vertical-align: middle;" data-bind="ntsComboBox: {
+															options: actualTimeOptionDisp,
+															optionsValue: 'code',
+															value: actualTimeSelectedCode,
+															optionsText: 'name',
+															enable: showDateRange() &amp;&amp; ko.computed(function() {
+																					        return actualTimeOptionDisp().length  > 1;
+																					    }, this),
+															name:'#[KDW003_128]',
+															columns: [
+																{ prop: 'name', length: 6 },
+															]}">
+													</div>
+											 </div>
+											<div id="cbListDate">
+												<div id="choosenDate"
+													data-bind="ntsDatePicker: {value: selectedDate, 
+													dateFormat: 'YYYY/MM/DD', 
+													showJumpButtons: true,
+													name: nts.uk.resource.getText('KDW003_27'),
+													enable: showDateRange}" />
 											</div>
-									 </div>
-									<div id="cbListDate">
-										<div id="choosenDate"
-											data-bind="ntsDatePicker: {value: selectedDate, 
-											dateFormat: 'YYYY/MM/DD', 
-											showJumpButtons: true,
-											name: nts.uk.resource.getText('KDW003_27'),
-											enable: showDateRange}" />
+										</div>
 									</div>
 								</div>
 								
-                                <button id="btnExtraction" class="proceed large"  data-bind="click: btnExtraction_Click">#{i18n.getText('KDW003_20')}</button>
-                                
-								<div data-bind="stopBinding: true" style="display: inline-block">
-                                    <div id="emp-component"></div>
+								<div>
+									<div>
+                                		<button id="btnExtraction" class="proceed large"  data-bind="click: btnExtraction_Click">#{i18n.getText('KDW003_20')}</button>
+                                	</div>
                                 </div>
-			                    <div id="vacationRemaining-content">
-		                            	<table>
-		                            		<tr>
-		                            			<td>
-		                            				<button data-bind="visible: referenceVacation().compensLeave(), click: openKDL005Dialog">#{i18n.getText('Com_CompensationHoliday')}</button>
-		                            			</td>
-		                            			<td>
-		                            				<button data-bind="visible: referenceVacation().yearHoliday20(), click: openKDL020Dialog">#{i18n.getText('Com_PaidHoliday')}</button>
-		                            			</td>
-		                            			<td>
-		                            				<button data-bind="visible: referenceVacation().com60HVacation()">#{i18n.getText('Com_ExsessHoliday')}</button>
-		                            			</td>
-		                            		</tr>
-		                            		<tr>
-		                            			<td>
-		                            				<button data-bind="visible: referenceVacation().substVacation(), click: openKDL009Dialog">#{i18n.getText('Com_SubstituteHoliday')}</button>
-		                            			</td>
-		                            			<td>
-		                            				<button data-bind="visible: referenceVacation().yearHoliday19(), click: openkdl029Dialog">#{i18n.getText('Com_FundedPaidHoliday')}</button>
-		                            			</td>
-		                            			<td></td>
-		                            		</tr>
-		                            	</table>
-		                            </div>
+                                
+								<div data-bind="stopBinding: true">
+									<div>
+                                    	<div id="emp-component"></div>
+                                    </div>
+                                </div>
+			                    
                             </div>
+                            <div id="vacationRemaining-content">
+	                           	<table>
+	                           		<tr>
+	                           			<td>
+	                           				<button data-bind="visible: referenceVacation().compensLeave(), click: openKDL005Dialog">#{i18n.getText('Com_CompensationHoliday')}</button>
+	                           			</td>
+	                           			<td>
+	                           				<button data-bind="visible: referenceVacation().yearHoliday20(), click: openKDL020Dialog">#{i18n.getText('Com_PaidHoliday')}</button>
+	                           			</td>
+	                           			<td>
+	                           				<button data-bind="visible: referenceVacation().com60HVacation()">#{i18n.getText('Com_ExsessHoliday')}</button>
+	                           			</td>
+	                           		</tr>
+	                           		<tr>
+	                           			<td>
+	                           				<button data-bind="visible: referenceVacation().substVacation(), click: openKDL009Dialog">#{i18n.getText('Com_SubstituteHoliday')}</button>
+	                           			</td>
+	                           			<td>
+	                           				<button data-bind="visible: referenceVacation().yearHoliday19(), click: openkdl029Dialog">#{i18n.getText('Com_FundedPaidHoliday')}</button>
+	                           			</td>
+	                           			<td></td>
+	                           		</tr>
+	                           	</table>
+		                    </div>
                             <div id="holiday-agree" class="agree-row font-smaller" >
 	                            <div id="numberHoliday" style="float: left; margin-right: 5px ; max-width: 375px">
 		                            <table id="fixed-table">
