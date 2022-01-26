@@ -69,7 +69,7 @@ public class CorrectionContentTest {
 		GeneralDate reservationDate = GeneralDate.today();
 		ClockHourMinute reservationTime = new ClockHourMinute(500);
 		int frameNo = 1;
-		GeneralDate orderDate = GeneralDate.today().addDays(-1); 
+		GeneralDate orderDate = GeneralDate.today(); 
 		ReservationRecTimeZone reservationRecTimeZone = Helper.Setting.ReserRecTimeZone.ReserFrame1; 
 		assertThat(correctionContent.canChangeReservationDetail(reservationDate, reservationTime, frameNo, orderDate, reservationRecTimeZone)).isEqualTo(true);
 	}
@@ -149,7 +149,7 @@ public class CorrectionContentTest {
 	@Test
 	public void changeReservationFromOrderDate_success() {
 		CorrectionContent correctionContent = Helper.Setting.CorrecContent.createByChangeDeadlineDay(ContentChangeDeadlineDay.TWO);
-		GeneralDate orderDate = GeneralDate.today().addDays(-2);
+		GeneralDate orderDate = GeneralDate.today().addDays(2);
 		assertThat(correctionContent.canChangeReservationFromOrderDate(orderDate)).isEqualTo(true);
 	}
 	
