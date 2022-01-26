@@ -38,7 +38,8 @@ public class TotalValueDetailTest {
         String companyId = "000000000000-0001";
         List<Integer> attendanceItemIds = Arrays.asList(929, 930, 1305, 1306, 1309, 1336, 2191);
         SupportWorkDetails supportWorkDetail1 = SupportWorkDetailsHelper.createDetailData("employee-id-0001", GeneralDate.today(), attendanceItemIds);
-        SupportWorkDetails supportWorkDetail11 = SupportWorkDetailsHelper.createDetailData("employee-id-0001", GeneralDate.today().addDays(1), attendanceItemIds);
+        SupportWorkDetails supportWorkDetail11 = SupportWorkDetailsHelper.createDetailData("employee-id-0001", GeneralDate.today(), attendanceItemIds);
+        SupportWorkDetails supportWorkDetail12 = SupportWorkDetailsHelper.createDetailData("employee-id-0001", GeneralDate.today().addDays(1), attendanceItemIds);
         SupportWorkDetails supportWorkDetail2 = SupportWorkDetailsHelper.createDetailData("employee-id-0002", GeneralDate.today(), attendanceItemIds);
 
         new Expectations() {{
@@ -57,11 +58,11 @@ public class TotalValueDetailTest {
         TotalValueDetail totalValueDetail = TotalValueDetail.create(
                 require,
                 companyId,
-                Arrays.asList(supportWorkDetail1, supportWorkDetail2, supportWorkDetail11)
+                Arrays.asList(supportWorkDetail1, supportWorkDetail2, supportWorkDetail11, supportWorkDetail12)
         );
 
         assertThat(totalValueDetail.getPeopleCount()).isEqualTo(2);
-        assertThat((Integer) totalValueDetail.getItemValues().get(0).value()).isEqualTo(1500);
-        assertThat((Integer) totalValueDetail.getItemValues().get(1).value()).isEqualTo(1800);
+        assertThat((Integer) totalValueDetail.getItemValues().get(0).value()).isEqualTo(2000);
+        assertThat((Integer) totalValueDetail.getItemValues().get(1).value()).isEqualTo(2400);
     }
 }
