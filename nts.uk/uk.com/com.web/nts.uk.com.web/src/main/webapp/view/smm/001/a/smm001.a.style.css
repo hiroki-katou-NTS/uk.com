@@ -34,6 +34,10 @@
   padding-left: 3px !important;
 }
 
+#component-right .ui-iggrid-scrolldiv tbody {
+  line-height: 0px !important;
+}
+
 .mt-3px {
   margin-top: 3px;
 }
