@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.supportworklist.outputsetting.outputdata;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.supportworklist.SupportWorkDetailsHelper;
 import nts.uk.ctx.at.function.dom.supportworklist.aggregationsetting.SupportWorkDetails;
 import nts.uk.ctx.at.function.dom.supportworklist.outputsetting.SupportWorkOutputDataRequire;
@@ -27,7 +28,7 @@ public class WorkplaceSupportWorkDataTest {
                 require,
                 "000000000003-0001",
                 "workplace-id-0001",
-                Arrays.asList(SupportWorkDetailsHelper.createDetailData("", Arrays.asList(930))),
+                Arrays.asList(SupportWorkDetailsHelper.createDetailData("", GeneralDate.today(), Arrays.asList(930))),
                 new WorkplaceTotalDisplaySetting(
                         NotUseAtr.NOT_USE,
                         NotUseAtr.NOT_USE,
@@ -42,9 +43,9 @@ public class WorkplaceSupportWorkDataTest {
     @Test
     public void testNotDisplayTotalOneDay() {
         List<Integer> attendanceItemIds = Arrays.asList(929, 930, 1305, 1306, 1309, 1336, 2191);
-        SupportWorkDetails supportWorkDetail1 = SupportWorkDetailsHelper.createDetailData("employee-id-0001", attendanceItemIds);
+        SupportWorkDetails supportWorkDetail1 = SupportWorkDetailsHelper.createDetailData("employee-id-0001", GeneralDate.today(), attendanceItemIds);
         supportWorkDetail1.setSupportWork(true);
-        SupportWorkDetails supportWorkDetail2 = SupportWorkDetailsHelper.createDetailData("employee-id-0002", attendanceItemIds);
+        SupportWorkDetails supportWorkDetail2 = SupportWorkDetailsHelper.createDetailData("employee-id-0002", GeneralDate.today(), attendanceItemIds);
 
         WorkplaceSupportWorkData data = new WorkplaceSupportWorkData(
                 require,
@@ -69,9 +70,9 @@ public class WorkplaceSupportWorkDataTest {
     @Test
     public void testNotDisplaySupportDetail() {
         List<Integer> attendanceItemIds = Arrays.asList(929, 930, 1305, 1306, 1309, 1336, 2191);
-        SupportWorkDetails supportWorkDetail1 = SupportWorkDetailsHelper.createDetailData("employee-id-0001", attendanceItemIds);
+        SupportWorkDetails supportWorkDetail1 = SupportWorkDetailsHelper.createDetailData("employee-id-0001", GeneralDate.today(), attendanceItemIds);
         supportWorkDetail1.setSupportWork(true);
-        SupportWorkDetails supportWorkDetail2 = SupportWorkDetailsHelper.createDetailData("employee-id-0002", attendanceItemIds);
+        SupportWorkDetails supportWorkDetail2 = SupportWorkDetailsHelper.createDetailData("employee-id-0002", GeneralDate.today(), attendanceItemIds);
 
         WorkplaceSupportWorkData data = new WorkplaceSupportWorkData(
                 require,
@@ -96,9 +97,9 @@ public class WorkplaceSupportWorkDataTest {
     @Test
     public void testNotDisplaySupportWorkplace() {
         List<Integer> attendanceItemIds = Arrays.asList(929, 930, 1305, 1306, 1309, 1336, 2191);
-        SupportWorkDetails supportWorkDetail1 = SupportWorkDetailsHelper.createDetailData("employee-id-0001", attendanceItemIds);
+        SupportWorkDetails supportWorkDetail1 = SupportWorkDetailsHelper.createDetailData("employee-id-0001", GeneralDate.today(), attendanceItemIds);
         supportWorkDetail1.setSupportWork(true);
-        SupportWorkDetails supportWorkDetail2 = SupportWorkDetailsHelper.createDetailData("employee-id-0002", attendanceItemIds);
+        SupportWorkDetails supportWorkDetail2 = SupportWorkDetailsHelper.createDetailData("employee-id-0002", GeneralDate.today(), attendanceItemIds);
 
         WorkplaceSupportWorkData data = new WorkplaceSupportWorkData(
                 require,
@@ -123,9 +124,9 @@ public class WorkplaceSupportWorkDataTest {
     @Test
     public void testNotDisplayWorkplaceTotal() {
         List<Integer> attendanceItemIds = Arrays.asList(929, 930, 1305, 1306, 1309, 1336, 2191);
-        SupportWorkDetails supportWorkDetail1 = SupportWorkDetailsHelper.createDetailData("employee-id-0001", attendanceItemIds);
+        SupportWorkDetails supportWorkDetail1 = SupportWorkDetailsHelper.createDetailData("employee-id-0001", GeneralDate.today(), attendanceItemIds);
         supportWorkDetail1.setSupportWork(true);
-        SupportWorkDetails supportWorkDetail2 = SupportWorkDetailsHelper.createDetailData("employee-id-0002", attendanceItemIds);
+        SupportWorkDetails supportWorkDetail2 = SupportWorkDetailsHelper.createDetailData("employee-id-0002", GeneralDate.today(), attendanceItemIds);
 
         WorkplaceSupportWorkData data = new WorkplaceSupportWorkData(
                 require,

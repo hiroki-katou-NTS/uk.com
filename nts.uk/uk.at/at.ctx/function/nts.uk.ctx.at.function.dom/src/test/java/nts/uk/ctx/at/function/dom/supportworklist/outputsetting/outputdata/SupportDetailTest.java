@@ -23,7 +23,7 @@ public class SupportDetailTest {
                 require,
                 "000000000003-0001",
                 "0001",
-                Arrays.asList(SupportWorkDetailsHelper.createDetailData("", Arrays.asList(930)))
+                Arrays.asList(SupportWorkDetailsHelper.createDetailData("", GeneralDate.today(), Arrays.asList(930)))
         );
 
         NtsAssert.invokeGetters(detail);

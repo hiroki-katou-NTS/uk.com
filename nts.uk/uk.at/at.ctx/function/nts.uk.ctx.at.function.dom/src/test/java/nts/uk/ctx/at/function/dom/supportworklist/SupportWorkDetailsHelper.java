@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class SupportWorkDetailsHelper {
-    public static SupportWorkDetails createDetailData(String employeeId, List<Integer> attendanceItemIds) {
+    public static SupportWorkDetails createDetailData(String employeeId, GeneralDate date, List<Integer> attendanceItemIds) {
         return SupportWorkDetails.create(
                 employeeId,
-                GeneralDate.today(),
+                date,
                 "affiliationInfo",
                 "workInfo",
                 attendanceItemIds,
@@ -43,28 +43,28 @@ public class SupportWorkDetailsHelper {
                         ),
                         TimeSheetOfAttendanceEachOuenSheet.create(
                                 new WorkNo(1),
-                                Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(200))),
-                                Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(500)))
+                                Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(100))),
+                                Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(200)))
                         ),
                         Optional.empty()
                 ),
                 OuenWorkTimeOfDailyAttendance.create(
                         new SupportFrameNo(1),
                         OuenAttendanceTimeEachTimeSheet.create(
-                                new AttendanceTime(100),
-                                new AttendanceTime(100),
-                                new AttendanceTime(100),
+                                new AttendanceTime(300),
+                                new AttendanceTime(400),
+                                new AttendanceTime(500),
                                 null,
                                 null,
                                 PremiumTimeOfDailyPerformance.createEmpty()
                         ),
                         OuenMovementTimeEachTimeSheet.create(
-                                new AttendanceTime(100),
-                                new AttendanceTime(100),
-                                new AttendanceTime(100),
+                                new AttendanceTime(600),
+                                new AttendanceTime(700),
+                                new AttendanceTime(800),
                                 null
                         ),
-                        new AttendanceAmountDaily(200)
+                        new AttendanceAmountDaily(900)
                 )
         );
     }
