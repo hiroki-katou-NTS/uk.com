@@ -42,13 +42,13 @@ public class TotalValueDetailTest {
         new Expectations() {{
             require.getDailyAttendanceItems(companyId, attendanceItemIds);
             result = Arrays.asList(
-                    new DailyAttendanceItemAdapterDto(companyId, 929, "name929", 1, 1, 3, 1, ""),
-                    new DailyAttendanceItemAdapterDto(companyId, 930, "name930", 1, 1, 3, 1, ""),
-                    new DailyAttendanceItemAdapterDto(companyId, 1305, "name1305", 1, 1, 3, 1, ""),
+                    new DailyAttendanceItemAdapterDto(companyId, 929, "name929", 1, 1, 0, 1, ""),
+                    new DailyAttendanceItemAdapterDto(companyId, 930, "name930", 1, 1, 1, 1, ""),
+                    new DailyAttendanceItemAdapterDto(companyId, 1305, "name1305", 1, 1, 2, 1, ""),
                     new DailyAttendanceItemAdapterDto(companyId, 1306, "name1306", 1, 1, 3, 1, ""),
-                    new DailyAttendanceItemAdapterDto(companyId, 1309, "name1309", 1, 1, 3, 1, ""),
-                    new DailyAttendanceItemAdapterDto(companyId, 1336, "name1336", 1, 1, 3, 1, ""),
-                    new DailyAttendanceItemAdapterDto(companyId, 2191, "name2191", 1, 1, 3, 1, "")
+                    new DailyAttendanceItemAdapterDto(companyId, 1309, "name1309", 1, 1, 4, 1, ""),
+                    new DailyAttendanceItemAdapterDto(companyId, 1336, "name1336", 1, 1, 5, 1, ""),
+                    new DailyAttendanceItemAdapterDto(companyId, 2191, "name2191", 1, 1, 6, 1, "")
             );
         }};
 
@@ -59,12 +59,7 @@ public class TotalValueDetailTest {
         );
 
         assertThat(totalValueDetail.getPeopleCount()).isEqualTo(2);
-        assertThat((Integer) totalValueDetail.getItemValues().get(0).value()).isEqualTo(400);
-        assertThat((Integer) totalValueDetail.getItemValues().get(1).value()).isEqualTo(1000);
-        assertThat((Integer) totalValueDetail.getItemValues().get(2).value()).isEqualTo(200);
-        assertThat((Integer) totalValueDetail.getItemValues().get(3).value()).isEqualTo(200);
-        assertThat((Integer) totalValueDetail.getItemValues().get(4).value()).isEqualTo(400);
-        assertThat((Integer) totalValueDetail.getItemValues().get(5).value()).isEqualTo(200);
-        assertThat((Integer) totalValueDetail.getItemValues().get(6).value()).isEqualTo(0);
+        assertThat((Integer) totalValueDetail.getItemValues().get(0).value()).isEqualTo(200);
+        assertThat((Integer) totalValueDetail.getItemValues().get(1).value()).isEqualTo(200);
     }
 }

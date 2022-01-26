@@ -116,28 +116,28 @@ public class SupportWorkDetailsTest {
                         ),
                         TimeSheetOfAttendanceEachOuenSheet.create(
                                 new WorkNo(1),
-                                Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(200))),
-                                Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(500)))
+                                Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(100))),
+                                Optional.of(new WorkTimeInformation(null, new TimeWithDayAttr(200)))
                         ),
                         Optional.empty()
                 ),
                 OuenWorkTimeOfDailyAttendance.create(
                         new SupportFrameNo(1),
                         OuenAttendanceTimeEachTimeSheet.create(
-                                new AttendanceTime(100),
-                                new AttendanceTime(100),
-                                new AttendanceTime(100),
+                                new AttendanceTime(300),
+                                new AttendanceTime(400),
+                                new AttendanceTime(500),
                                 null,
                                 null,
                                 PremiumTimeOfDailyPerformance.createEmpty()
                         ),
                         OuenMovementTimeEachTimeSheet.create(
-                                new AttendanceTime(100),
-                                new AttendanceTime(100),
-                                new AttendanceTime(100),
+                                new AttendanceTime(600),
+                                new AttendanceTime(700),
+                                new AttendanceTime(800),
                                 null
                         ),
-                        new AttendanceAmountDaily(200)
+                        new AttendanceAmountDaily(900)
                 )
         );
 
@@ -147,12 +147,12 @@ public class SupportWorkDetailsTest {
         assertThat((String)detail.getItemList().get(2).value()).isEqualTo("WKCD3");
         assertThat((String)detail.getItemList().get(3).value()).isEqualTo("WKCD4");
         assertThat((String)detail.getItemList().get(4).value()).isEqualTo("WKCD5");
-        assertThat((Integer) detail.getItemList().get(5).value()).isEqualTo(200);
-        assertThat((Integer)detail.getItemList().get(6).value()).isEqualTo(500);
-        assertThat((Integer)detail.getItemList().get(7).value()).isEqualTo(100);
-        assertThat((Integer)detail.getItemList().get(8).value()).isEqualTo(100);
-        assertThat((Integer)detail.getItemList().get(9).value()).isEqualTo(200);
-        assertThat((Integer)detail.getItemList().get(10).value()).isEqualTo(100);
+        assertThat((Integer) detail.getItemList().get(5).value()).isEqualTo(100);
+        assertThat((Integer)detail.getItemList().get(6).value()).isEqualTo(200);
+        assertThat((Integer)detail.getItemList().get(7).value()).isEqualTo(300);
+        assertThat((Integer)detail.getItemList().get(8).value()).isEqualTo(500);
+        assertThat((Integer)detail.getItemList().get(9).value()).isEqualTo(900);
+        assertThat((Integer)detail.getItemList().get(10).value()).isEqualTo(600);
         assertThat((Integer)detail.getItemList().get(11).value()).isEqualTo(0);
     }
 }
