@@ -101,6 +101,7 @@ import nts.uk.ctx.at.shared.dom.worktype.service.HolidayAtrOutput;
 import nts.uk.ctx.at.shared.dom.worktype.service.JudgmentOneDayHoliday;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
@@ -921,7 +922,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			if (timeSpecialLeaveMngSet == null || !timeSpecialLeaveMngSet.checkVacationTimeUnitUsed(require, timeSpecialVacation)) {
 				// エラーメッセージ(Msg_1686)を表示する
 				throw new BusinessException("Msg_1686",
-						"#KAFS12_46",
+						TextResource.localize("KAFS12_46"),
 						timeSpecialLeaveMngSet.getTimeVacationDigestUnit().getDigestUnit().description);
 			}
 		}
@@ -934,7 +935,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			if (nursingLeaveSet!= null && !nursingLeaveSet.checkVacationTimeUnitUsed(require, childTime)) {
 				// エラーメッセージ(Msg_1686)を表示する
 				throw new BusinessException("Msg_1686",
-						"#Com_ChildNurseHoliday",
+						TextResource.localize("Com_ChildNurseHoliday"),
 						nursingLeaveSet.getTimeVacationDigestUnit().getDigestUnit().description);
 			}
 		}
@@ -947,7 +948,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			if (nursingLeaveSet != null && !nursingLeaveSet.checkVacationTimeUnitUsed(require, nursingTime)) {
 				// エラーメッセージ(Msg_1686)を表示する
 				throw new BusinessException("Msg_1686",
-						"#Com_CareHoliday",
+						TextResource.localize("Com_CareHoliday"),
 						nursingLeaveSet.getTimeVacationDigestUnit().getDigestUnit().description);
 			}
 		}
