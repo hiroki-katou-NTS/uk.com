@@ -44,12 +44,9 @@
             v-click:500="() => stampClick(button)"
             class="btn-block btn-stamp btn btn-secondary btn-kdps01a "
           >
-            <img v-bind:src="'/nts.uk.mobile.web/dist/resources/' + button.icon" height="50" width="50"/> 
-            <br>
             <div
                v-bind:style="{
-              'font-size': button.buttonDisSet.buttonNameSet.buttonName.length > 8 ? '15px' : '20px',
-              'height': button.buttonDisSet.buttonNameSet.buttonName.length > 8 ? '29px': 'unset'
+              'font-size': button.buttonDisSet.buttonNameSet.buttonName.length > 8 ? '20px' : '30px'
              
             }"
             >{{ button.buttonDisSet.buttonNameSet.buttonName }}</div>
