@@ -9,14 +9,13 @@
       v-html="textComment"
     ></div>
     <div class="pl-5 pt-2 pr-2" style="position: relative;" >
-      <div class="clearfix" v-bind:style="{color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor}">
+      <div class="clearfix">
         <span id="date">
           {{ $dt.now | date("YYYY/MM/DD（ddd）") }}
         </span>
-        <span class="text-time">Time</span>
       </div>
     </div>
-     <div class="pl-4 lh-1" v-bind:style="{color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor}">
+     <div class="pl-4 lh-1">
           <span id="time">{{ $dt.now | date("HH:mm") }}</span>
           <span class="second">:{{ $dt.now | date("ss") }}</span>
       </div>
