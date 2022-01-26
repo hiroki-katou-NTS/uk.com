@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -171,15 +170,8 @@ public class ScreenQueryPlanAndActual {
 		private Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
-				Set<DateHistoryCache.Entry<EmploymentPeriodImported>> s = v.stream()
-						.map(i->new DateHistoryCache.Entry<EmploymentPeriodImported>(
-								new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end()),
-								new EmploymentPeriodImported(
-										i.getEmpID(),
-										new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end()),
-										i.getEmploymentCd(),
-										i.getOtpSalarySegment()))).collect(Collectors.toSet()) ;
-				rs.put(k, s.stream().collect(Collectors.toList()));
+				List<DateHistoryCache.Entry<EmploymentPeriodImported>> s = v.stream().map(i->new DateHistoryCache.Entry<EmploymentPeriodImported>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
+				rs.put(k, s);
 			});
 			return rs;
 		}
@@ -187,11 +179,8 @@ public class ScreenQueryPlanAndActual {
 		private Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>>  createEntries3(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
-				Set<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>> s = v.stream()
-						.map(i->new DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>(
-								new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end()),
-								new EmployeeLeaveJobPeriodImport(i.getEmpID(), new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end())))).collect(Collectors.toSet()) ;
-				rs.put(k, s.stream().collect(Collectors.toList()));
+				List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
+				rs.put(k, s);
 			});
 			return rs;
 		}
@@ -199,14 +188,8 @@ public class ScreenQueryPlanAndActual {
 		private Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
-				Set<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>> s = v.stream()
-						.map(i->new DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>(
-								new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end()),
-								new EmpLeaveWorkPeriodImport(
-										i.getEmpID(), 
-										i.getTempAbsenceFrNo(), 
-										new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end())))).collect(Collectors.toSet()) ;
-				rs.put(k, s.stream().collect(Collectors.toList()));
+				List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
+				rs.put(k, s);
 			});
 			return rs;
 		}
@@ -311,15 +294,8 @@ public class ScreenQueryPlanAndActual {
 		private Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
-				Set<DateHistoryCache.Entry<EmploymentPeriodImported>> s = v.stream()
-						.map(i->new DateHistoryCache.Entry<EmploymentPeriodImported>(
-								new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end()),
-								new EmploymentPeriodImported(
-										i.getEmpID(),
-										new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end()),
-										i.getEmploymentCd(),
-										i.getOtpSalarySegment()))).collect(Collectors.toSet()) ;
-				rs.put(k, s.stream().collect(Collectors.toList()));
+				List<DateHistoryCache.Entry<EmploymentPeriodImported>> s = v.stream().map(i->new DateHistoryCache.Entry<EmploymentPeriodImported>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
+				rs.put(k, s);
 			});
 			return rs;
 		}
@@ -327,11 +303,8 @@ public class ScreenQueryPlanAndActual {
 		private Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>>  createEntries3(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
-				Set<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>> s = v.stream()
-						.map(i->new DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>(
-								new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end()),
-								new EmployeeLeaveJobPeriodImport(i.getEmpID(), new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end())))).collect(Collectors.toSet()) ;
-				rs.put(k, s.stream().collect(Collectors.toList()));
+				List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
+				rs.put(k, s);
 			});
 			return rs;
 		}
@@ -339,14 +312,8 @@ public class ScreenQueryPlanAndActual {
 		private Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
-				Set<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>> s = v.stream()
-						.map(i->new DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>(
-								new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end()),
-								new EmpLeaveWorkPeriodImport(
-										i.getEmpID(), 
-										i.getTempAbsenceFrNo(), 
-										new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end())))).collect(Collectors.toSet()) ;
-				rs.put(k, s.stream().collect(Collectors.toList()));
+				List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
+				rs.put(k, s);
 			});
 			return rs;
 		}
