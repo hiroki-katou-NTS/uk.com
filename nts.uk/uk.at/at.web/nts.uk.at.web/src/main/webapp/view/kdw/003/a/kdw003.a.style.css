@@ -296,7 +296,7 @@
 	position: absolute;
 	z-index: 100; /* ƒOƒŠƒbƒh‚Ì‰º‚É‚È‚Á‚Ä‚µ‚Ü‚¤‚Ì‚ð‰ñ”ð */
 	left: calc(100% - 800px);
-	top: 59px;
+	top: 72px;
 	margin-left: 10px;
 	max-width: 460px;
 	height: 80px;
@@ -374,13 +374,11 @@ table#employ_view tr{
 }
 
 #cbDisplayFormat{
-	height: 27px;
-    bottom: -14px;
+	height: 32px;
+    bottom: -10px;
     width: 110px;
 }
-#dislayFormatLblf{
-    bottom: -7px;
-}
+
 #btn-setting{
 	bottom: -7px;
 }
@@ -408,8 +406,20 @@ table#employ_view tr{
 
 #wkp_title_text-emp-component {
 	width: 180px !important;
+    margin-top: 20px;
+	
 }
 
 #wkp_text-emp-component {
 	width: 150px !important;
+}
+
+.control-group {
+    margin-bottom: 20px;
+}
+
+#btnExtraction {
+	height: 30px;
+	width: 100px;
+    margin-bottom: 5px;
 }
