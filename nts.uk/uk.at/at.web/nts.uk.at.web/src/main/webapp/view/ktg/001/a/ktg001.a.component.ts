@@ -129,7 +129,7 @@ module nts.uk.ui.ktg001.a {
                             <tr class='row-approval' data-bind="css: $component.aggrRowVisible() ? 'row-show' : '', visible: $component.aggrRowVisible">
                                 <td class="text-center" style="position: relative;">
                                     <!-- A5_2 -->
-                                    <button class="ktg001-no-border" data-bind="
+                                    <button class="ktg001-no-border signal-button" data-bind="
                                             click: $component.aggrementApproval,
                                             enable: $component.aggrIconVisible">
                                         <i data-bind="visible: !($component.aggrIconVisible()), ntsIcon: { no: 305 }"></i>
@@ -180,7 +180,7 @@ module nts.uk.ui.ktg001.a {
                                 <tr class='row-day' data-bind="css: $component.dayRowVisible() ? 'row-show' : '', visible: $component.dayRowVisible">
                                     <td class="" style="position: relative;">
                                         <!-- A3_2 -->
-                                        <button class="ktg001-no-border" data-bind="
+                                        <button class="ktg001-no-border signal-button" data-bind="
                                                 click: function() { $component.dayPerformanceConfirm(day.closureId, day.yearMonth) },
                                                 enable: day.displayAtr">
                                             <i data-bind="visible: !day.displayAtr, ntsIcon: { no: 305 }"></i>
