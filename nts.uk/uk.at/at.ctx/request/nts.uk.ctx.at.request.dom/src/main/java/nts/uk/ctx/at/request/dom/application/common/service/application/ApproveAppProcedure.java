@@ -123,6 +123,26 @@ public class ApproveAppProcedure {
 				successList.addAll(mailResult.getSuccessList());
 			}
 		}
+		AsyncTask task = AsyncTask.builder().keepsTrack(false).threadName(this.getClass().getName() + ".reflect-app: ")
+				.build(() -> {
+					this.procedureAfterApprove(appCompleteApproveLst, companyID);
+				});
+		this.executerService.submit(task);
+		
+		// 取得した内容を返す
+		return new ApproveAppProcedureOutput(
+				failList.stream().distinct().collect(Collectors.toList()), 
+				approveFailLst.stream().distinct().collect(Collectors.toList()), 
+				failServerList.stream().distinct().collect(Collectors.toList()), 
+				successList.stream().distinct().collect(Collectors.toList()));
+	}
+	
+	/**
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.アルゴリズム.申請を承認後の手続き.申請を承認後の手続き
+	 * @param appCompleteApproveLst 申請リスト：List<申請>
+	 * @param companyID
+	 */
+	public void procedureAfterApprove(List<Application> appCompleteApproveLst, String companyID) {
 		// 承認完了フラグがtrueになっている申請をグループする
 		Map<String, List<Application>> empAppMap = appCompleteApproveLst.stream().collect(Collectors.groupingBy(x -> x.getEmployeeID()));
 		for(Entry<String, List<Application>> empApp : empAppMap.entrySet()) {
@@ -131,12 +151,8 @@ public class ApproveAppProcedure {
 			GeneralDate minStartDate = appByEmpLst.stream().map(x -> x.getOpAppStartDate().get().getApplicationDate()).sorted().findFirst().get();
 			GeneralDate maxEndDate = appByEmpLst.stream().map(x -> x.getOpAppEndDate().get().getApplicationDate()).sorted(Comparator.reverseOrder()).findFirst().get();
 			// 社員の申請を反映
-			AsyncTask task = AsyncTask.builder().keepsTrack(false).threadName(this.getClass().getName() + ".reflect-app: ")
-					.build(() -> {
-						appReflectManager.reflectAppOfAppDate(IdentifierUtil.randomUniqueId(), empApp.getKey(), ExecutionTypeExImport.RERUN,
+			appReflectManager.reflectAppOfAppDate(IdentifierUtil.randomUniqueId(), empApp.getKey(), ExecutionTypeExImport.RERUN,
 								new DatePeriod(minStartDate, maxEndDate));
-					});
-			this.executerService.submit(task);
 		}
 		// 「対象社員リスト」から「月次集計社員リスト」を作成する
 		List<String> applicantLst = empAppMap.keySet().stream().collect(Collectors.toList());
@@ -146,12 +162,6 @@ public class ApproveAppProcedure {
 			List<AtomTask> listAtomTask = monthAggrForEmpsAdaptor.aggregate(carrier, companyID, applicantLst, false);
 			listAtomTask.forEach(x -> transaction.execute(x));
 		}
-		// 取得した内容を返す
-		return new ApproveAppProcedureOutput(
-				failList.stream().distinct().collect(Collectors.toList()), 
-				approveFailLst.stream().distinct().collect(Collectors.toList()), 
-				failServerList.stream().distinct().collect(Collectors.toList()), 
-				successList.stream().distinct().collect(Collectors.toList()));
 	}
 	
 	/**
