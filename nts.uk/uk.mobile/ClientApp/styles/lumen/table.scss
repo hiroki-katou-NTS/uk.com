@@ -20,17 +20,16 @@
         }
     }
 
+    thead tr th,
+    tbody tr td {
+        border: none;
+    }
+
     th, td {
         padding: 3px;
     }
 
     &.table-striped {
-        border: none !important;
-
-        th, td {
-            border: none !important;
-        }
-
         tbody {
             tr {
                 &:nth-of-type(odd) {
