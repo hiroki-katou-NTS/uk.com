@@ -61,7 +61,7 @@ public class TotalValueDetailTest {
                 Arrays.asList(supportWorkDetail1, supportWorkDetail2, supportWorkDetail11, supportWorkDetail12)
         );
 
-        assertThat(totalValueDetail.getPeopleCount()).isEqualTo(2);
+        assertThat(totalValueDetail.getPeopleCount()).isEqualTo(3);
         assertThat((Integer) totalValueDetail.getItemValues().get(0).value()).isEqualTo(2000);
         assertThat((Integer) totalValueDetail.getItemValues().get(1).value()).isEqualTo(2400);
     }

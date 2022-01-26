@@ -7,6 +7,7 @@ import nts.uk.ctx.at.function.dom.supportworklist.aggregationsetting.SupportWork
 import nts.uk.ctx.at.function.dom.supportworklist.outputsetting.SupportWorkOutputDataRequire;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public class TotalValueDetail {
      * @return int
      */
     private static int countPeople(List<SupportWorkDetails> supportWorkDetails) {
-        return supportWorkDetails.stream().collect(Collectors.groupingBy(SupportWorkDetails::getEmployeeId)).size();
+        return supportWorkDetails.stream().collect(Collectors.groupingBy(i -> Pair.of(i.getEmployeeId(), i.getDate()))).size();
     }
 
 }
