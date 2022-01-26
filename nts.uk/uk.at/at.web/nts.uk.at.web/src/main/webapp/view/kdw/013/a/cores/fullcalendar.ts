@@ -250,7 +250,7 @@ module nts.uk.ui.at.kdw013.calendar {
             border-radius: 0px;
         }
         .fc-container .fc-header-toolbar .fc-settings-button {
-            width: 34px;
+            width: 60px;
         }
         .fc-settings-button {
             margin-top: 2px;
@@ -2456,7 +2456,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     let setting = $('.fc-settings-button').get(0);
 
                                     if (setting) {
-                                        ko.applyBindingsToNode(setting, { icon: 3, size: '20px' }, vm);
+                                        ko.applyBindingsToNode(setting, { text: "設定" }, vm);
                                     }
                                 })
                                 .then(() => {
