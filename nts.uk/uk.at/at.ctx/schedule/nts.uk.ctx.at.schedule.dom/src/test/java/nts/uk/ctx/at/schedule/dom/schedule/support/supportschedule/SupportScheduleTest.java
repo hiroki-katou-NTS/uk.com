@@ -104,6 +104,11 @@ public class SupportScheduleTest {
 				,	@Injectable SupportScheduleDetail detail3
 				,	@Injectable SupportScheduleDetail detail4) {
 			
+			val supportSetting = new SupportOperationSetting(
+					true, true //dummy
+				,	new MaximumNumberOfSupport(3)//一日の最大応援回数 = 3
+					);
+			
 			new Expectations() {{
 				
 				require.getSupportOperationSetting();
@@ -112,7 +117,7 @@ public class SupportScheduleTest {
 			}};
 			
 			NtsAssert.businessException("Msg_2315",
-					() -> SupportSchedule.create(require, Arrays.asList(detail1, detail2, detail3, detail4))
+					() -> SupportSchedule.create(require, Arrays.asList(detail1, detail2, detail3, detail4))//詳細リスト.size() = 4
 				);
 		}
 
@@ -140,7 +145,7 @@ public class SupportScheduleTest {
 	
 		/**
 		 * Target	: create
-		 * Input	: 応援時間帯が重複する。		
+		 * Input	: 応援時間帯が重複する
 		 * Output	: Msg_2278
 		 */
 		@Test
