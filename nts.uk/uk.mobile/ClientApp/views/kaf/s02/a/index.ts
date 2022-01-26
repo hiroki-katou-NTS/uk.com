@@ -1205,7 +1205,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             this.workHourLst[i].actualHours.applicationAchievementAtr = 1;
                             this.workHourLst[i].actualHours.startTime = item.opStartTime;
                             this.workHourLst[i].actualHours.endTime = item.opEndTime;
-                            if (this.mode) setActualWkpLocation(this.workHourLst[i], item.workplaceId, item.workLocationCD);
+                            if (this.mode) {
+                                setActualWkpLocation(this.workHourLst[i], item.workplaceId, item.workLocationCD);
+                            }
                         }
                     }
                 });
@@ -1219,7 +1221,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             this.tempWorkHourLst[i].actualHours.applicationAchievementAtr = 1;
                             this.tempWorkHourLst[i].actualHours.startTime = item.opStartTime;
                             this.tempWorkHourLst[i].actualHours.endTime = item.opEndTime;
-                            if (this.mode) setActualWkpLocation(this.tempWorkHourLst[i], item.workplaceId, item.workLocationCD);
+                            if (this.mode) {
+                                setActualWkpLocation(this.tempWorkHourLst[i], item.workplaceId, item.workLocationCD);
+                            }
                         }
                     }
                 });
@@ -1285,7 +1289,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                             this.supportLst[i].actualHours.applicationAchievementAtr = 1;
                             this.supportLst[i].actualHours.startTime = item.opStartTime;
                             this.supportLst[i].actualHours.endTime = item.opEndTime;
-                            if (this.mode) setActualWkpLocation(this.supportLst[i], item.workplaceId, item.opWorkLocationCD);
+                            if (this.mode) {
+                                setActualWkpLocation(this.supportLst[i], item.workplaceId, item.opWorkLocationCD);
+                            }
                         }
                     }
                 });
@@ -2126,7 +2132,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
         const self = this;
         self.application.prePostAtr = prePostAtr;
         let opActualContentDisplayLst = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
-        if (_.isEmpty(opActualContentDisplayLst)) return;
+        if (_.isEmpty(opActualContentDisplayLst)) {
+            return;
+        }
         self.bindActualAchive(opActualContentDisplayLst);
     }
 
