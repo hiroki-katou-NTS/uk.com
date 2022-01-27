@@ -64,6 +64,7 @@
 #contents-area > div.widget-home.layout-type-3 {
   display: flex;
   justify-content: center;
+  overflow: auto;
 }
 
 #contents-area > div.widget-home.layout-type-null > div.widget-left,
