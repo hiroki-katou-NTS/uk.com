@@ -318,7 +318,7 @@
 /* 残数データ */
 #holiday-agree {
 	position: absolute;
-	z-index: 100; /* グリッドの下になってしまうのを回避 */
+	z-index: 1; /* グリッドの下になってしまうのを回避 */
 	left: calc(100% - 800px);
 	top: 72px;
 	margin-left: 10px;
