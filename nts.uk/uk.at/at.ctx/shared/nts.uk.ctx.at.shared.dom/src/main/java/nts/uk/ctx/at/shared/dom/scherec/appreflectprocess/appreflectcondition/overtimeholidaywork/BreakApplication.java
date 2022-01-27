@@ -50,6 +50,18 @@ public class BreakApplication {
 			DailyRecordOfApplication dailyApp) {
 
 		List<Integer> lstId = new ArrayList<Integer>();
+		
+		//古い休憩時間帯枠NOと休憩時間帯をクリアする
+		dailyApp.getBreakTime().getBreakTimeSheets().removeIf(x -> {
+			if(breakTimeOp.stream()
+					.noneMatch(y -> y.getWorkNo().v().intValue() == x.getBreakFrameNo().v().intValue())) {
+				lstId.add(CancelAppStamp.createItemId(157, x.getBreakFrameNo().v(), 6));
+				lstId.add(CancelAppStamp.createItemId(159, x.getBreakFrameNo().v(), 6));
+				return true;
+			}else {
+				return false;
+			}
+		});
 
 		// [input.休憩時間帯(List）]でループ
 		breakTimeOp.stream().forEach(breakTime -> {
