@@ -177,7 +177,7 @@ public class KTG026QueryProcessor {
 
 		// パラメータ「年月」の月と起算月を比較 The month of the parameter "year-month" and the starting
 		// month are compared
-		if (yearMonth.month() < (agreeOpSet.getStartingMonth().value + 1)) { // パラメータ「年月」の月 ＜ 起算月 の場合
+		if (yearMonth.month() < (agreeOpSet.getStartingMonth().value)) { // パラメータ「年月」の月 ＜ 起算月 の場合
 			// パラメータ「年月」の年を-1年する Make the year of the parameter "year-month" -1 year
 			year = new Year(yearMonth.year() - 1);
 		}
