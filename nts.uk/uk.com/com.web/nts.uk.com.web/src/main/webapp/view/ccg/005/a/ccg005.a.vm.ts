@@ -146,9 +146,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td class="ccg005-bottom-unset">
                 <!-- A1_7 -->
                 <i tabindex=5 class="ccg005-status-img-A1_7"
-                  data-bind="ntsIcon: { no: $component.activityStatusIcon(), width: 20, height: 20 }, visible: $component.isBaseDate"></i>
+                  data-bind="ntsIcon: { no: $component.activityStatusIcon() }, visible: $component.isBaseDate"></i>
                 <i
-                  data-bind="click: $component.openFutureScreenCCG005E.bind($component, true, '', '') ,ntsIcon: { no: ${StatusClassficationIcon.GO_OUT}, width: 20, height: 20 }, visible: $component.isAfter"></i>
+                  data-bind="click: $component.openFutureScreenCCG005E.bind($component, true, '', '') ,ntsIcon: { no: ${StatusClassficationIcon.GO_OUT} }, visible: $component.isAfter"></i>
               </td>
             </tr>
           </table>
@@ -229,9 +229,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   <!-- A4_7 -->
                   <span class="ccg005-flex">
                     <i tabindex=15 class="ccg005-status-img"
-                      data-bind="click: $component.initPopupInList.bind($component, $index, sid, businessName), ntsIcon: {no: activityStatusIconNo, width: 20, height: 20}, visible: $component.isBaseDate"></i>
+                      data-bind="click: $component.initPopupInList.bind($component, $index, sid, businessName), ntsIcon: {no: activityStatusIconNo }, visible: $component.isBaseDate"></i>
                     <i
-                      data-bind="click: $component.openFutureScreenCCG005E.bind($component, false, sid, businessName) ,ntsIcon: { no: ${StatusClassficationIcon.GO_OUT}, width: 20, height: 20 }, visible: $component.isAfter"></i>
+                      data-bind="click: $component.openFutureScreenCCG005E.bind($component, false, sid, businessName) ,ntsIcon: { no: ${StatusClassficationIcon.GO_OUT} }, visible: $component.isAfter"></i>
                   </span>
                 </td>
                 <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
@@ -331,7 +331,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         </td>
         <!-- A1_7.1 -->
         <td class="ccg005-bottom-unset">
-          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.NOT_PRESENT}, width: 20, height: 20}"></i>
+          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.NOT_PRESENT} }"></i>
         </td>
         <td class="ccg005-bottom-unset">出社前</td>
       </tr>
@@ -341,7 +341,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         </td>
         <!-- A1_7.2 -->
         <td class="ccg005-bottom-unset">
-          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.PRESENT}, width: 20, height: 20}"></i>
+          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.PRESENT} }"></i>
         </td>
         <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_22'"></td>
       </tr>
@@ -351,7 +351,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         </td>
         <!-- A1_7.3 -->
         <td class="ccg005-bottom-unset">
-          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.GO_OUT}, width: 20, height: 20}"></i>
+          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.GO_OUT} }"></i>
         </td>
         <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_39'"></td>
       </tr>
@@ -361,7 +361,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         </td>
         <!-- A1_7.4 -->
         <td class="ccg005-bottom-unset">
-          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.GO_HOME}, width: 20, height: 20}"></i>
+          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.GO_HOME} }"></i>
         </td>
         <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_44'"></td>
       </tr>
@@ -371,7 +371,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         </td>
         <!-- A1_7.5 -->
         <td class="ccg005-bottom-unset">
-          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.HOLIDAY}, width: 20, height: 20}"></i>
+          <i data-bind="ntsIcon: {no: ${StatusClassficationIcon.HOLIDAY} }"></i>
         </td>
         <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_40'"></td>
       </tr>
@@ -551,6 +551,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
     background-color: transparent;
   }
 
+  .ccg005-status-img-A1_7,
+  #ccg005-status-popup i,
+  .ccg005-status-img {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
   </style>`
   })
 
@@ -663,7 +670,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         reloadAvatar = setTimeout(() => { vm.bindingLoopData(); }, 1);
       });
 
-      (ko.bindingHandlers.ntsIcon as any).init($('.ccg005-status-img-A1_7'), () => ({ no: vm.activityStatusIcon(), width: 20, height: 20 }));
+      (ko.bindingHandlers.ntsIcon as any).init($('.ccg005-status-img-A1_7'), () => ({ no: vm.activityStatusIcon() }));
 
       //focus
       $("#ccg005-selected-date").focus();
@@ -947,7 +954,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
         //handle status icon
         const element = $('.ccg005-status-img')[index];
-        (ko.bindingHandlers.ntsIcon as any).init(element, () => ({ no: vm.initActivityStatus(item.status), width: 20, height: 20 }));
+        (ko.bindingHandlers.ntsIcon as any).init(element, () => ({ no: vm.initActivityStatus(item.status) }));
       });
     }
 
@@ -1216,7 +1223,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       }
       //binding activity
       const element = $('.ccg005-status-img-A1_7');
-      (ko.bindingHandlers.ntsIcon as any).init(element, () => ({ no: vm.initActivityStatus(atdInfo.activityStatusDto), width: 20, height: 20 }));
+      (ko.bindingHandlers.ntsIcon as any).init(element, () => ({ no: vm.initActivityStatus(atdInfo.activityStatusDto) }));
 
       // A1_4
       if (atdInfo.commentDto) {
@@ -1439,9 +1446,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
           if (vm.indexUpdateItem() > -1) {
             //This case for now
             const element = $('.ccg005-status-img')[vm.indexUpdateItem()];
-            (ko.bindingHandlers.ntsIcon as any).init(element, () => ({ no: activityStatusIcon, width: 20, height: 20 }));
+            (ko.bindingHandlers.ntsIcon as any).init(element, () => ({ no: activityStatusIcon }));
           } else {
-            (ko.bindingHandlers.ntsIcon as any).init($('.ccg005-status-img-A1_7'), () => ({ no: activityStatusIcon, width: 20, height: 20 }));
+            (ko.bindingHandlers.ntsIcon as any).init($('.ccg005-status-img-A1_7'), () => ({ no: activityStatusIcon }));
           }
         }
       });

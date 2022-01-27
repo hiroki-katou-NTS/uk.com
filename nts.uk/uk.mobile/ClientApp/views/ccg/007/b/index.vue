@@ -2,7 +2,7 @@
     <div id="login" class="pt-5">
         <div class="row justify-content-md-center">
             <div class="col-lg-4 col-md-6">
-                <div class="text-center page-title">UniversalK</div>
+                <div class="text-center page-title"></div>
                 <fieldset class="login-form mt-5">
                     <nts-dropdown
                         id="companyCode"

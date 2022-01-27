@@ -2,7 +2,7 @@
   <div class="kafs08d">
     <!-- custom modal-header -->
     <div class="modal-header rounded-0 d-block p-0">
-      <div class="uk-bg-teal p-2">
+      <div class=" p-2">
         <h4 class="modal-title text-white">
           <i class="fas fa-angle-double-left mr-1" v-on:click="$close"></i>
           <span>{{ '戻る' | i18n }}</span>

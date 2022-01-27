@@ -78,7 +78,7 @@ export class ModalComponent extends Vue {
 **Một số sample `modal-header`**
 > Đây là modal-header mặc định, nếu developer không tự khai báo, kiban sẽ hiển thị dialog header mặc định như ví dụ dưới đây.
 <div class="modal-header rounded-0 d-block p-0 mb-2">
-    <div class="uk-bg-teal p-2">
+    <div class=" p-2">
         <h4 class="modal-title text-white">
             <i class="fas fa-angle-left mr-1"></i>
             <span>dialog</span>
@@ -88,7 +88,7 @@ export class ModalComponent extends Vue {
 
 ```html
 <div class="modal-header rounded-0 d-block p-0">
-    <div class="uk-bg-teal p-2">
+    <div class=" p-2">
         <h4 class="modal-title text-white">
             <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
             <span>{{ 'dialog' | i18n }}</span>
@@ -99,7 +99,7 @@ export class ModalComponent extends Vue {
 > modal-header có searchbox
 
 <div class="modal-header rounded-0 d-block p-0 mb-2">
-    <div class="uk-bg-teal p-2">
+    <div class=" p-2">
         <h4 class="modal-title text-white">
             <i class="fas fa-angle-left mr-1"></i>
             <span>dialog</span>
@@ -120,7 +120,7 @@ export class ModalComponent extends Vue {
 
 ```html
 <div class="modal-header rounded-0 d-block p-0">
-    <div class="uk-bg-teal p-2">
+    <div class=" p-2">
         <h4 class="modal-title text-white">
             <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
             <span>{{ 'dialog' | i18n }}</span>
@@ -134,7 +134,7 @@ export class ModalComponent extends Vue {
 ```
 > modal-header có menu
 <div class="modal-header rounded-0 d-block p-0 mb-2">
-    <div class="uk-bg-teal p-2 row m-0">
+    <div class=" p-2 row m-0">
         <h4 class="modal-title text-white col-4 p-0">
             <i class="fas fa-angle-left mr-1"></i>
             <span>dialog</span>
@@ -156,7 +156,7 @@ export class ModalComponent extends Vue {
 
 ```html
 <div class="modal-header rounded-0 d-block p-0 mb-2">
-    <div class="uk-bg-teal p-2 row m-0">
+    <div class=" p-2 row m-0">
         <h4 class="modal-title text-white col-4 p-0">
             <i class="fas fa-angle-left mr-1"></i>
             <span>dialog</span>

@@ -17,6 +17,11 @@
         padding: 0.2rem 0.4rem;
     }
 
+    &-info {
+        background-color: #CFCFCF !important;
+        color: #000 !important;
+    }
+
     &-secondary {
         border-color: darken($secondary, 20%);
         &.focus,

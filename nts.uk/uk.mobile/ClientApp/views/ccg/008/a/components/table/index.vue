@@ -27,7 +27,7 @@
         </tr>
       </thead>
       <!-- with header -->
-      <tbody v-if="configs.headers" class="tbody-border">
+      <tbody v-if="configs.headers">
         <tr
           v-for="(item, index) in configs.items"
           :class="item._rowClass ? item._rowClass : configs.rowClass"

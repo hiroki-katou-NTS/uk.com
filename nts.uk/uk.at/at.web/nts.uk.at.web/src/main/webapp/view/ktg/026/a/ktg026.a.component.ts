@@ -67,7 +67,7 @@ module nts.uk.at.view.ktg026.a {
                     color: '#BFBFBF',
                     z: 1,
                     borderDash: [3, 2],
-                    zeroLineColor: 'rgba(0, 0, 0, 0)'
+                   //zeroLineColor: 'rgba(0, 0, 0, 0)'
                 }
             }],
             yAxes: [{
@@ -305,8 +305,8 @@ module nts.uk.at.view.ktg026.a {
                     <table>
                         <colgroup>
                             <col width="25%" />
-                            <col width="20%" />
-                            <col width="55%" />
+                            <col width="17%" />
+                            <col width="58%" />
                         </colgroup>
                         <head>
                             <tr>
@@ -330,8 +330,8 @@ module nts.uk.at.view.ktg026.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="45%" />
-                            <col width="55%" />
+                            <col width="42%" />
+                            <col width="58%" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr style="height: 35px;">

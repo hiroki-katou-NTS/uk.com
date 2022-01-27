@@ -5,7 +5,7 @@
   $element-margin: 20px;
   .section {
     padding: 10px 0px 10px 0px;
-    border-bottom: 1px solid #F2F2F2;
+
     .control-label{
       margin: 0rem 0rem 0.3rem 0rem;
     }
@@ -84,12 +84,6 @@
 
   // time status
   .time-status-wrapper {
-
-    > .control-label {
-      background-color: $header-gray;
-      color: #fff;
-    }
-
     .time-status-table {
       tr:nth-child(odd) {
         background-color: #E0F59E;
