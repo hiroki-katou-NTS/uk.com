@@ -811,7 +811,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         if (workTypeUnit.equals(WorkTypeUnit.OneDay)) {
             // 勤務種類.1日の勤務.1日をチェック（※勤務種類の判断条件参照）
             if (isWorkTypeWork(workType.getDailyWork().getOneDay())) {
-                // 取得した「所定時間設定」の「1日の勤務時間範囲」を実施
+                // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
                 List<TimezoneUse> timesOneday = predetemineTimeSetting.get().getTimezoneByAmPmAtr(AmPmAtr.ONE_DAY);
                 if (timesOneday.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
                     output.setStartTime1(timesOneday.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
@@ -824,11 +824,11 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 }
             }
         } else if (workTypeUnit.equals(WorkTypeUnit.MonringAndAfternoon)) {
-            // 勤務種類.1日の勤務.午前をチェック
-            // 勤務種類.1日の勤務.午後をチェック
             if ((isWorkTypeHoliday(workType.getDailyWork().getMorning()) && isWorkTypeWork(workType.getDailyWork().getAfternoon())) || 
                     (isWorkTypeWork(workType.getDailyWork().getMorning()))) {
+                // 勤務種類.1日の勤務.午前をチェック
                 if (isWorkTypeWork(workType.getDailyWork().getMorning()) && isWorkTypeHoliday(workType.getDailyWork().getAfternoon())) {
+                    // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
                     List<TimezoneUse> timesMorning = predetemineTimeSetting.get().getTimezoneByAmPmAtr(AmPmAtr.AM);
                     if (timesMorning.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
                         output.setStartTime1(timesMorning.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
@@ -840,7 +840,9 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                         output.setEndTime2(timesMorning.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
                     }
                 }
+                // 勤務種類.1日の勤務.午後をチェック
                 if (isWorkTypeHoliday(workType.getDailyWork().getMorning()) && isWorkTypeWork(workType.getDailyWork().getAfternoon())) {
+                    // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
                     List<TimezoneUse> timesAfternoon = predetemineTimeSetting.get().getTimezoneByAmPmAtr(AmPmAtr.PM);
                     if (timesAfternoon.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
                         output.setStartTime1(timesAfternoon.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
