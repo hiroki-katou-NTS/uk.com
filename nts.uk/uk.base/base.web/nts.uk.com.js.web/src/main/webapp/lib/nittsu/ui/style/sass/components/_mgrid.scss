@@ -1,4 +1,5 @@
 @import "_radiobox.scss";
+@import "_button.scss";
 
 .mgrid :not(.mgrid-header) table tr {
 
@@ -453,36 +454,26 @@
 	margin: 0.1em;
 	padding-right: 8px;
 	padding-left: 8px;
-	border-radius: 2px;
+	border-radius: 0 0 5px 5px;
 	width: 80px;
-	background-color: #ffffff;
+	background-color: $button-normal-base-color;
+	box-shadow: none !important;
+	font-weight: normal;
 }
 
 .mgrid-sheet-button:not(.ui-state-active):hover {
 	border-color: #ccc;
-	background-color: #F9FBF9; /*#ededed;*/
+	background-color: $button-normal-base-hover-color;
 }
 
 .mgrid-sheet-button:not(.ui-state-active) {
-	color: #939191;
+	color: #fff;
 }
 
 .mgrid-sheet-button.ui-state-active {
 	border-width: 0px;
-	background-color: #c0f5ec;
-	color: #000;
-	box-shadow: 0px 8px 12px rgba(199, 255, 241, 0.6);
-}
-
-.mgrid-sheet-button.ui-state-active:after {
-	content: "";
-  	position: absolute;
-    width: 20px;
-    height: 3px;
-    top: 30px;
-    margin-left: 30px;
-    background: #30CC40;
-    display: block;
+	background-color: $button-proceed-base-color;
+	color: #fff;
 }
 
 .mgrid-sheet-scrollbar {
