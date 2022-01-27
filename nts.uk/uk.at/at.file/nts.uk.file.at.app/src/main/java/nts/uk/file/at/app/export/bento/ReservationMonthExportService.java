@@ -89,6 +89,8 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		String companyID = AppContexts.user().companyId();
 
 		List<StampCard> stampCardLst = stampCardRepository.getLstStampCardByLstSidAndContractCd(empLst, AppContexts.user().contractCode());
+		// 2.1 対象社員リストを調整
+		List<String> stampCardEmpLst = stampCardLst.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
 
 		// get*(対象社員リスト,期間,注文済み)
 		List<BentoReservation> bentoReservationLst = bentoReservationRepository.findByOrderedPeriodEmpLst(
@@ -108,7 +110,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		List<String> sortEmpLst = regulationInfoEmployeeAdapter.sortEmployee(companyID, empLst, 2, null, 1,
 				GeneralDateTime.fromString(period.end().toString("yyyy/MM/dd") + " 00:00", "yyyy/MM/dd HH:mm"));
 		*/
-		List<String> sortEmpLst = empLst;
+		List<String> sortEmpLst = stampCardEmpLst;
 		// <<Public>> 社員の情報を取得する
 		List<EmployeeInformationExport> empInfoLst = employeeInformationPub.find(
 				EmployeeInformationQueryDto
