@@ -166,7 +166,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           <div style="right: 0; position: absolute; display: flex; align-items: center;">
             <!-- A3_2 -->
             <i tabindex=9 id="ccg005-star-img" style="margin-right: 5px;"
-              data-bind="ntsIcon: {no: 184, width: 20, height: 20}"></i>
+              data-bind="ntsIcon: {no: 184, width: 20, height: 20, extension: 'png' }"></i>
             <!-- A3_1 -->
             <div tabindex=10 data-bind="ntsComboBox: {
                   width: '160px',
