@@ -111,6 +111,7 @@ table.left-aligned td:not(:first-child) {
 
 .left-panel button.proceed.x-large{
 	width:	192px;
+	margin-left: 200px;
 }
 
 .right-panel {
