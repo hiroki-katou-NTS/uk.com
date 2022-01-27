@@ -50823,7 +50823,8 @@ var nts;
                             var iconNo = ko.unwrap(data.no);
                             var width = ko.unwrap(data.width) || "100%";
                             var height = ko.unwrap(data.height) || "100%";
-                            var iconFileName = iconNo + ".svg";
+                            var extension = ko.unwrap(data.extension) || "svg";
+                            var iconFileName = iconNo + "." + extension;
                             var iconPath = nts.uk.request.location.siteRoot
                                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
                                 .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
