@@ -1,5 +1,5 @@
 #component-employee-list {
-	margin-left: 90px;
+	margin-left: 20px;
 }
 
 .pattern-group td {
@@ -43,4 +43,12 @@
 
 #right-content > table .scroll-header.nts-fixed-header {
   height: 26px !important;
+}
+
+.fixed-table {
+	height: 40px;
+}
+
+.ui-widget-body {
+	height: 40px;
 }
