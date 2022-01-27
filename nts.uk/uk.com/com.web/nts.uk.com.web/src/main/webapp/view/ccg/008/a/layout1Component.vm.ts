@@ -10,7 +10,7 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
             <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: $component.urlIframe1}"></iframe>
           </div>
           <!-- ko if: $component.isFlowmenu() -->
-            <div data-bind="foreach: $component.lstHtml" style="display: flex; place-content: center;">
+            <div data-bind="foreach: $component.lstHtml" style="display: flex;">
               <div data-bind="html: html" id="F1-frame" ></div>
             </div>
           <!-- /ko -->  
