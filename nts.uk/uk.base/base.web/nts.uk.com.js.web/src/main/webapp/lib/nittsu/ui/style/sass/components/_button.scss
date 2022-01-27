@@ -6,7 +6,9 @@
 $button-border-color: #999999;
 
 $button-normal-base-color: #CFCFCF;
+$button-normal-base-hover-color: #EAE8E8;
 $button-proceed-base-color: #258F7E;
+$button-proceed-base-hover-color: #229F8B;
 $button-proceed-focus-outline: darken(saturate($button-proceed-base-color, 3), 8.55); /* #196E60; */
 $button-disabled-base-color: #888888;
 
@@ -135,7 +137,7 @@ span.button {
 
     &:not(:disabled) {
         &:hover {
-            background-color: #EAE8E8;
+            background-color: $button-normal-base-hover-color;
         }
 
         &:focus {
@@ -188,7 +190,7 @@ span.button {
 
         &:not(:disabled) {
             &:hover {
-                background-color: lighten(saturate($button-proceed-base-color, 7), 3);/*#229F8B*/;
+                background-color: $button-proceed-base-hover-color;
             }
 
             &:focus {

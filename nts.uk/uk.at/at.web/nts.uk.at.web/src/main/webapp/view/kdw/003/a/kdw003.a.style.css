@@ -22,25 +22,12 @@
 	margin-left: 10px;
 }
 
-#btn-saveColumnWidth {
-	margin-top: 3px;
-	margin-left: 15px;
-}
-
-#btn-legend {
-	margin-top: 3px;
-	margin-left: 15px;
-}
-
 #gid {
 	margin: 2px 0 0 0px;
     height: 700px;
 }
 
 .setting-container {
-	display: inline-block;
-	margin: 3px ;
-	margin-left: 15px;
 }
 
 #setting-content {
@@ -318,9 +305,9 @@
 /* 残数データ */
 #holiday-agree {
 	position: absolute;
-	z-index: 100; /* グリッドの下になってしまうのを回避 */
+	z-index: 1; /* グリッドの下になってしまうのを回避 */
 	left: calc(100% - 800px);
-	top: 72px;
+	top: 70px;
 	margin-left: 10px;
 	max-width: 460px;
 	height: 80px;
@@ -383,8 +370,14 @@
 
 
 #grid-controls {
+	display: flex;
+	align-items: center;
+	margin: 5px 0;
 }
 
+#grid-controls > * {
+	margin-right: 12px;
+}
 
 /* メインのグリッド */
 .font-smaller * {
@@ -398,14 +391,19 @@ table#employ_view tr{
 }
 
 #cbDisplayFormat{
-	height: 32px;
-    bottom: -10px;
     width: 110px;
+    transform: scale(0.86);
 }
 
-#btn-setting{
-	bottom: -7px;
+#btn-setting {
+	width: 25px;
+	height: 25px;
 }
+
+#btn-setting:not(:hover) {
+	background-color: transparent;
+}
+
 .mgrid .mbutton {
 	height: 20px !important;	
 }
