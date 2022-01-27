@@ -61,7 +61,7 @@
                     </div>
                 </fieldset>
                 <div class="text-right mt-3">
-                    <label class="badge badge-pill badge-primary"> {{ 'CCGS07_7' | i18n(model.ver) }} </label>
+                    <label> {{ model.ver }} </label>
                 </div>
             </div>
         </div>
