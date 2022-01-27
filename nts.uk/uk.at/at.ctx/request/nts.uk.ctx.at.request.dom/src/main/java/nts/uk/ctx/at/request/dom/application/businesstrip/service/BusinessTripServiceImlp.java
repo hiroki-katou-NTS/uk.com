@@ -52,8 +52,10 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.busi
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -809,15 +811,16 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         if (workTypeUnit.equals(WorkTypeUnit.OneDay)) {
             // 勤務種類.1日の勤務.1日をチェック（※勤務種類の判断条件参照）
             if (isWorkTypeWork(workType.getDailyWork().getOneDay())) {
-                // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
-                List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone();
-                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
-                    output.setStartTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
-                    output.setEndTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getEnd().v()));
+                // 取得した「所定時間設定」の「1日の勤務時間範囲」を実施
+                List<TimezoneUse> timesOneday = predetemineTimeSetting.get().getTimezoneByAmPmAtr(AmPmAtr.ONE_DAY);
+                if (timesOneday.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
+                    output.setStartTime1(timesOneday.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
+                    output.setEndTime1(timesOneday.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getEnd().v()));
                 }
-                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().isPresent()) {
-                    output.setStartTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getStart().v()));
-                    output.setEndTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
+                
+                if (timesOneday.stream().filter(x -> x.getWorkNo() == 2).findFirst().isPresent()) {
+                    output.setStartTime2(timesOneday.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getStart().v()));
+                    output.setEndTime2(timesOneday.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
                 }
             }
         } else if (workTypeUnit.equals(WorkTypeUnit.MonringAndAfternoon)) {
@@ -825,15 +828,29 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             // 勤務種類.1日の勤務.午後をチェック
             if ((isWorkTypeHoliday(workType.getDailyWork().getMorning()) && isWorkTypeWork(workType.getDailyWork().getAfternoon())) || 
                     (isWorkTypeWork(workType.getDailyWork().getMorning()))) {
-                // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
-                List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone();
-                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
-                    output.setStartTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
-                    output.setEndTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getEnd().v()));
+                if (isWorkTypeWork(workType.getDailyWork().getMorning()) && isWorkTypeHoliday(workType.getDailyWork().getAfternoon())) {
+                    List<TimezoneUse> timesMorning = predetemineTimeSetting.get().getTimezoneByAmPmAtr(AmPmAtr.AM);
+                    if (timesMorning.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
+                        output.setStartTime1(timesMorning.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
+                        output.setEndTime1(timesMorning.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getEnd().v()));
+                    }
+                    
+                    if (timesMorning.stream().filter(x -> x.getWorkNo() == 2).findFirst().isPresent()) {
+                        output.setStartTime2(timesMorning.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getStart().v()));
+                        output.setEndTime2(timesMorning.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
+                    }
                 }
-                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().isPresent()) {
-                    output.setStartTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getStart().v()));
-                    output.setEndTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
+                if (isWorkTypeHoliday(workType.getDailyWork().getMorning()) && isWorkTypeWork(workType.getDailyWork().getAfternoon())) {
+                    List<TimezoneUse> timesAfternoon = predetemineTimeSetting.get().getTimezoneByAmPmAtr(AmPmAtr.PM);
+                    if (timesAfternoon.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
+                        output.setStartTime1(timesAfternoon.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
+                        output.setEndTime1(timesAfternoon.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getEnd().v()));
+                    }
+                    
+                    if (timesAfternoon.stream().filter(x -> x.getWorkNo() == 2).findFirst().isPresent()) {
+                        output.setStartTime2(timesAfternoon.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getStart().v()));
+                        output.setEndTime2(timesAfternoon.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
+                    }
                 }
             }
         }
