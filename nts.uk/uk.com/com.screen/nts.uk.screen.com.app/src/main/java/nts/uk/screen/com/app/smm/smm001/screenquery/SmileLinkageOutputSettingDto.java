@@ -1,11 +1,10 @@
 package nts.uk.screen.com.app.smm.smm001.screenquery;
 
 import lombok.AllArgsConstructor;
-
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class SmileLinkageOutputSettingDto {

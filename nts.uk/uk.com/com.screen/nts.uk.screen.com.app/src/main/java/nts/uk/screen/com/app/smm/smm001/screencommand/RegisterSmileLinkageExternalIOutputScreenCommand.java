@@ -1,9 +1,15 @@
 package nts.uk.screen.com.app.smm.smm001.screencommand;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.ctx.at.function.dom.processexecution.ExternalOutputConditionCode;
+import nts.uk.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSetting;
+import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedMonthSettingClassification;
+import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversion;
+import nts.uk.smile.dom.smilelinked.cooperationoutput.PaymentCategory;
 import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileCooperationOutputClassification;
 import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSetting;
 import nts.arc.enums.EnumAdaptor;
@@ -11,6 +17,8 @@ import nts.arc.enums.EnumAdaptor;
 @Getter
 public class RegisterSmileLinkageExternalIOutputScreenCommand {
 	private Integer paymentCode;
+
+	private List<EmploymentAndLinkedMonthSettingDto> rightEmployments;
 
 	// Start: Variable at b screen
 	private Integer salaryCooperationClassification;
@@ -29,6 +37,23 @@ public class RegisterSmileLinkageExternalIOutputScreenCommand {
 				EnumAdaptor.valueOf(monthlyLockClassification, SmileCooperationOutputClassification.class),
 				EnumAdaptor.valueOf(monthlyApprovalCategory, SmileCooperationOutputClassification.class),
 				Optional.ofNullable(externalOutputConditionCode));
+		return domain;
+	}
+
+	public LinkedPaymentConversion convertScreenCommandToLinkedPaymentConversion() {
+		LinkedPaymentConversion domain = null;
+		List<EmploymentAndLinkedMonthSetting> selectiveEmploymentCodes = new ArrayList<>();
+		if(!rightEmployments.isEmpty()) {
+			rightEmployments.forEach(e -> {
+				selectiveEmploymentCodes.add(new EmploymentAndLinkedMonthSetting(
+					EnumAdaptor.valueOf(e.getInterlockingMonthAdjustment(), LinkedMonthSettingClassification.class),
+					e.getScd()
+				));
+			});
+		}
+		domain = new LinkedPaymentConversion(
+				EnumAdaptor.valueOf(paymentCode, PaymentCategory.class), 
+				selectiveEmploymentCodes);
 		return domain;
 	}
 

@@ -10,18 +10,18 @@ module nts.uk.com.view.smm001.b {
     code: string
     name: string;
     empMonth: string
-    checked: KnockoutObservable<boolean> = ko.observable(false);
+    checked: KnockoutObservable<number> = ko.observable(1);
 
     constructor(code: string, name: string, doText: string, doNotText: string) {
       this.code = code;
       this.name = name;
       this.empMonth =
-      `
+        `
       <div class="flex" style="height: 25px">
         <label class="radio-emp"
-          data-bind="ntsRadioButton: { checked: ${this.checked()}, optionText: '${doText}', checkedValue: 1, group: 'lockClassification' }"></label>
+          data-bind="ntsRadioButton: { checked: ${this.checked()}, optionText: '${doText}', checkedValue: 1, group: 'lockClassification-${this.code}' }"></label>
         <label class="radio-emp"
-          data-bind="ntsRadioButton: { checked: ${this.checked()}, optionText: '${doNotText}', checkedValue: 0, group: 'lockClassification' }"></label>
+          data-bind="ntsRadioButton: { checked: ${this.checked()}, optionText: '${doNotText}', checkedValue: 0, group: 'lockClassification-${this.code}' }"></label>
       </div>
       `
     }
@@ -157,14 +157,30 @@ module nts.uk.com.view.smm001.b {
         salaryCooperationClassification: vm.salaryCooperationClassification() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
         monthlyLockClassification: vm.monthlyLockClassification() == 1 ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
         monthlyApprovalCategory: vm.monthlyApprovalCategory() == 0 ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
-        salaryCooperationConditions: vm.salaryCooperationConditions()
+        salaryCooperationConditions: vm.salaryCooperationConditions(),
+        rightEmployments: vm.convertToRightEmploymentsList()
       };
+
+      console.log(">>>>>", vm.rightEmployments());
+
       vm.$ajax('com', API.registerSmileLinkageExternalOutput, command)
         .then((res: any) => {
           vm.$dialog.info({ messageId: "Msg_15" });
         }).fail((err) => {
           vm.$dialog.error(err);
         }).always(() => vm.$blockui('clear'));
+    }
+
+    convertToRightEmploymentsList() {
+      const vm = this;
+      let rightEmployments: any = [];
+      vm.rightEmployments().forEach((e: any) => {
+        rightEmployments.push({
+          interlockingMonthAdjustment: e.checked(),
+          scd: e.code
+        })
+      });
+      return rightEmployments;
     }
 
     moveItemToRight() {
@@ -179,7 +195,7 @@ module nts.uk.com.view.smm001.b {
 
     moveItemToLeft() {
       const vm = this;
-      const filterEmp: GridItem[] = _.filter(vm.rightEmployments(), (item: any) => _.includes(vm.rightEmployments(), item.code));
+      const filterEmp: GridItem[] = _.filter(vm.rightEmployments(), (item: any) => _.includes(vm.currentCodeRight(), item.code));
       _.remove(vm.rightEmployments(), (item: any) => _.includes(vm.currentCodeRight(), item.code));
       vm.employmentDtos().push(...filterEmp);
       vm.employmentDtos.valueHasMutated();

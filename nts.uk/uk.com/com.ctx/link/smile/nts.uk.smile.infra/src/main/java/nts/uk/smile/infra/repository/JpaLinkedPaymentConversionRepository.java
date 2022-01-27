@@ -25,7 +25,7 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 
 	private static final String GET_BY_CONTRACT_CD_AND_CID_AND_PAYMENT_CD = String.join(" ",
 			"SELECT m FROM LsmmtEmplinkMonthSet m WHERE m.pk.contractCd = :contractCd", "AND m.pk.cid = :cid",
-			"AND m.pk.paymentCd = :paymentCode");
+			"AND m.pk.paymentCd = :paymentCd");
 
 	private List<LsmmtEmplinkMonthSet> toEntities(LinkedPaymentConversion domain) {
 		Integer paymentCode = domain.getPaymentCode().value;
@@ -65,9 +65,9 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 
 	@Override
 	public void update(LinkedPaymentConversion domain) {
-		List<LsmmtEmplinkMonthSet> list = this.queryProxy().query(GET_BY_CONTRACT_AND_CID, LsmmtEmplinkMonthSet.class)
+		List<LsmmtEmplinkMonthSet> list = this.queryProxy().query(GET_BY_CONTRACT_CD_AND_CID_AND_PAYMENT_CD, LsmmtEmplinkMonthSet.class)
 				.setParameter("contractCd", AppContexts.user().contractCode())
-				.setParameter("cid", AppContexts.user().companyId()).setParameter("paymentCd", domain.getPaymentCode())
+				.setParameter("cid", AppContexts.user().companyId()).setParameter("paymentCd", domain.getPaymentCode().value)
 				.getList();
 		if (list.isEmpty()) {
 			return;
@@ -93,7 +93,7 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 		List<LsmmtEmplinkMonthSet> list = this.queryProxy()
 				.query(GET_BY_CONTRACT_CD_AND_CID_AND_PAYMENT_CD, LsmmtEmplinkMonthSet.class)
 				.setParameter("contractCd", contractCode).setParameter("cid", companyId)
-				.setParameter("paymentCd", paymentCode).getList();
+				.setParameter("paymentCd", paymentCode.value).getList();
 		if (list.isEmpty()) {
 			return;
 		}
@@ -105,7 +105,7 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 			PaymentCategory paymentCode) {
 		return this.queryProxy().query(GET_BY_CONTRACT_CD_AND_CID_AND_PAYMENT_CD, LsmmtEmplinkMonthSet.class)
 				.setParameter("contractCd", contractCode).setParameter("cid", companyId)
-				.setParameter("paymentCd", paymentCode).getList(e -> new EmploymentAndLinkedMonthSetting(
+				.setParameter("paymentCd", paymentCode.value).getList(e -> new EmploymentAndLinkedMonthSetting(
 						LinkedMonthSettingClassification.valueOf(e.getMiomtEmplinkMonthSet()), e.getPk().getEmpCd()));
 	}
 

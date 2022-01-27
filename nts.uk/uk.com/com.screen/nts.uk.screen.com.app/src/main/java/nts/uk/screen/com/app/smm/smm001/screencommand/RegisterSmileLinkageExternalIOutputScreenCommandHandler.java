@@ -59,11 +59,11 @@ public class RegisterSmileLinkageExternalIOutputScreenCommandHandler
 		List<EmploymentAndLinkedMonthSetting> employmentAndLinkedMonthSettings = linkedPaymentConversionRepository
 				.getByPaymentCode(contractCode, companyId, paymentCategory);
 
-		LinkedPaymentConversion domain = new LinkedPaymentConversion(paymentCategory, employmentAndLinkedMonthSettings);
+		LinkedPaymentConversion newLinkedPaymentConversion = command.convertScreenCommandToLinkedPaymentConversion();
 		if (!employmentAndLinkedMonthSettings.isEmpty()) {
-			linkedPaymentConversionRepository.update(domain);
+			linkedPaymentConversionRepository.update(newLinkedPaymentConversion);
 		} else {
-			linkedPaymentConversionRepository.insert(domain);
+			linkedPaymentConversionRepository.insert(newLinkedPaymentConversion);
 		}
 
 	}

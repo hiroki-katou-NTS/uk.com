@@ -15,7 +15,6 @@ import nts.uk.screen.com.app.smm.smm001.screenquery.SelectAPaymentDateScreenQuer
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 @Path("com/screen/smm001")
@@ -50,8 +49,8 @@ public class Smm001WebService extends WebService{
 	}
 
 	@POST
-	@Path("get-information-on-external/{paymentCode}")
-	public InitialStartupOutputDto getInformationOnExternal(@PathParam("paymentCode") Integer paymentCode) {
+	@Path("get-information-on-external")
+	public InitialStartupOutputDto getInformationOnExternal(Integer paymentCode) {
 		return getInformationOnExternalStartupScreenQuery.get(paymentCode);
 	}
 
