@@ -109,6 +109,10 @@ table.left-aligned td:not(:first-child) {
 	min-width: 100px;
 }
 
+.left-panel button.proceed.x-large{
+	width:	192px;
+}
+
 .right-panel {
 	overflow-y: auto !important;
 }
