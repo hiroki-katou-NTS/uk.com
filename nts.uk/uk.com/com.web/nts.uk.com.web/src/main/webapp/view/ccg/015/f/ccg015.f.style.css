@@ -41,8 +41,11 @@ div[class^="contents_"].with-widget {
   width: 100%;
 }
 
-#F1-frame {
+#F1-frame > #frameF1 {
   position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
 }
 
 .contents_layout ::after {
