@@ -456,6 +456,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						if (!!frameLayout1) {
 							const firstWidgets = layoutToWidget(layout1 as WidgetSettingDto[]);
 							vm.widgetLeft(firstWidgets);
+							$('.widget-left').wrapAll('<div style="display: flex;"></div>');
 						} else {
 							flowLayout = getFlowMenu(layout1 as FlowMenuOutputCCG008[]);
 							vm.widgetLeft([flowLayout]);
@@ -464,6 +465,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						if (!!frameLayout2) {
 							const secondWidgets = layoutToWidget(layout2 as WidgetSettingDto[]);
 							vm.widgetCenter(secondWidgets);
+							$('.widget-center').wrapAll('<div style="display: flex;"></div>');
 						} else {
 							flowLayout = getFlowMenu(layout2 as FlowMenuOutputCCG008[]);
 							vm.widgetCenter([flowLayout]);
@@ -472,6 +474,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						if (!!frameLayout3) {
 							const thirdWidgets = layoutToWidget(layout3 as WidgetSettingDto[]);
 							vm.widgetRight(thirdWidgets);
+							$('.widget-right').wrapAll('<div style="display: flex;"></div>');
 						} else {
 							flowLayout = getFlowMenu(layout3 as FlowMenuOutputCCG008[]);
 							vm.widgetRight([flowLayout]);

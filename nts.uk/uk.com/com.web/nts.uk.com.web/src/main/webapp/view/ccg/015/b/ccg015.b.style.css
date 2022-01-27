@@ -278,3 +278,7 @@ margin-top: 20px;
 #B5_4_8 {
   left: 76%;
 }
+
+.button-fix > * {
+  color: inherit;
+}
