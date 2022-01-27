@@ -7,7 +7,7 @@ import 'moment/locale/vi';
 const style = dom.create('style', {
     type: 'text/css',
     rel: 'stylesheet',
-    text: 'body { font-family: "Meiryo UI"; }'
+    text: 'body { font-family: "sans-serif"; }'
 });
 
 const resources: {
