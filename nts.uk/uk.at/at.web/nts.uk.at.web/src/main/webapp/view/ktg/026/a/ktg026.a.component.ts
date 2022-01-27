@@ -411,12 +411,12 @@ module nts.uk.at.view.ktg026.a {
                 }
                 /* 限度アラーム時間超過 */
                 .ktg-026-a.widget-content.ui-resizable table tr td div.exceeding-limit-alarm {
-                    background-color: #FFFF99; /* 36協定アラーム */
-                    color: #FF9900; /* 36協定アラーム文字 */
+                    background-color: #F4D35E; /* 36協定アラーム */
+                    color: #000000; /* 36協定アラーム文字 */
                 }
                 /* 限度エラー時間超過 */
                 .ktg-026-a.widget-content.ui-resizable table tr td div.exceeding-limit-error {
-                    background-color: #FF99CC; /* 36協定エラー */
+                    background-color: #DB4F51; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
                 /* 限度アラーム時間超過（特例あり） */
@@ -429,12 +429,12 @@ module nts.uk.at.view.ktg026.a {
                 }
                 /* 特例限度アラーム時間超過 */
                 .ktg-026-a.widget-content.ui-resizable table tr td div.special-exceeded-limit-alarm  {
-                    background-color: #FFFF99; /* 36協定アラーム */
-                    color: #FF9900; /* 36協定アラーム文字 */
+                    background-color: #F4D35E; /* 36協定アラーム */
+                    color: #000000; /* 36協定アラーム文字 */
                 }
                 /* 特例限度エラー時間超過 */
                 .ktg-026-a.widget-content.ui-resizable table tr td div.special-exceeded-limit-error {
-                    background-color: #FF99CC; /* 36協定エラー */
+                    background-color: #DB4F51; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
 
@@ -506,8 +506,8 @@ module nts.uk.at.view.ktg026.a {
             const vm = this;
             vm.legendOptions = {
                 items: [
-                    { colorCode: '#99FF66', labelText: vm.$i18n('KTG026_2') },
-                    { colorCode: '#00CC00', labelText: vm.$i18n('KTG026_3') },
+                    { colorCode: '#fff768', labelText: vm.$i18n('KTG026_2') },
+                    { colorCode: '#A5C9C1', labelText: vm.$i18n('KTG026_3') },
                 ],
                 template :
                 '<div class="legend-item-label">'
