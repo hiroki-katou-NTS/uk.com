@@ -51,7 +51,7 @@
             </div>
             <div class="right-panel" data-bind="with: supportCard">
               <div class="flex valign-center">
-                <div id="A2_11" style="width: 30%" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMP002_6')}</div>
+                <div id="A2_11" style="width: 30%" data-bind="ntsFormLabel: {required: true, constraint: 'SupportCardNumber'}">#{i18n.getText('KMP002_6')}</div>
                 <input tabindex="7" id="A2_12"
                   data-bind="ntsTextEditor: {
                       name: '#[KMP002_6]',
