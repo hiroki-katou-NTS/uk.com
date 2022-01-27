@@ -34,6 +34,7 @@ import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripWorkTypes;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementEarly;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -736,32 +737,59 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                     // 対象項目いずれかが未登録の場合
                     Optional<Integer> opWorkTime = optAchievementDetail.get().getOpWorkTime();
                     Optional<Integer> opLeaveTime = optAchievementDetail.get().getOpLeaveTime();
+                    Optional<Integer> opWorkTime2 = optAchievementDetail.get().getOpWorkTime2();
+                    Optional<Integer> opDepartureTime2 = optAchievementDetail.get().getOpDepartureTime2();
                     String workTimeCd = optAchievementDetail.get().getWorkTimeCD();
                     if (!opWorkTime.isPresent() || !opLeaveTime.isPresent()) {
-                        // アルゴリズム「出張申請就業時刻を取得する」を実行する
-                        WorkType workType = result.getWorkTypeBeforeChange().isPresent() ? 
-                                result.getWorkTypeBeforeChange().get().stream()
-                                .filter(x -> x.getDate().equals(opActualContentDisplayLst.get().get(index).getDate()))
-                                .map(x -> x.getWorkType())
-                                .findFirst().orElse(null) : null;
-                        WorkTimeGetOuput workTimeGetOutput = getWorkTimeBusinessTrip(workType, workTimeCd, workingHours);
-                        if (!workTimeGetOutput.getWorkingHours().isEmpty()) {
-                            workingHours = workTimeGetOutput.getWorkingHours();
-                        }
-                        // 未登録の対象項目に値をセットする
+                        // 実績詳細遅刻早退実績の時刻を取得してセットする
+                        AchievementEarly achievementEarly = optAchievementDetail.get().getAchievementEarly();
                         if (!opWorkTime.isPresent()) {
-                            optAchievementDetail.get().setOpWorkTime(workTimeGetOutput.getStartTime1());
+                            opWorkTime = achievementEarly.getScheAttendanceTime1().map(x -> x.v());
                         }
                         if (!opLeaveTime.isPresent()) {
-                            optAchievementDetail.get().setOpLeaveTime(workTimeGetOutput.getEndTime1());
+                            opLeaveTime = achievementEarly.getScheDepartureTime1().map(x -> x.v());
                         }
-                        if (!optAchievementDetail.get().getOpWorkTime2().isPresent()) {
-                            optAchievementDetail.get().setOpWorkTime2(workTimeGetOutput.getStartTime2());
+                        if (!opWorkTime2.isPresent()) {
+                            opWorkTime2 = achievementEarly.getScheAttendanceTime2().map(x -> x.v());
                         }
-                        if (!optAchievementDetail.get().getOpDepartureTime2().isPresent()) {
-                            optAchievementDetail.get().setOpDepartureTime2(workTimeGetOutput.getEndTime2());
+                        if (!opDepartureTime2.isPresent()) {
+                            opDepartureTime2 = achievementEarly.getScheDepartureTime2().map(x -> x.v());
                         }
+                        
+                        // 対象項目いずれかが未登録の場合
+                        if (!opWorkTime.isPresent() || !opLeaveTime.isPresent()) {
+                            // アルゴリズム「出張申請就業時刻を取得する」を実行する
+                            WorkType workType = result.getWorkTypeBeforeChange().isPresent() ? 
+                                    result.getWorkTypeBeforeChange().get().stream()
+                                    .filter(x -> x.getDate().equals(opActualContentDisplayLst.get().get(index).getDate()))
+                                    .map(x -> x.getWorkType())
+                                    .findFirst().orElse(null) : null;
+                            
+                            WorkTimeGetOuput workTimeGetOutput = getWorkTimeBusinessTrip(workType, workTimeCd, workingHours);
+                            if (!workTimeGetOutput.getWorkingHours().isEmpty()) {
+                                workingHours = workTimeGetOutput.getWorkingHours();
+                            }
+                            // 未登録の対象項目に値をセットする
+                            if (!opWorkTime.isPresent()) {
+                                opWorkTime = workTimeGetOutput.getStartTime1();
+                            }
+                            if (!opLeaveTime.isPresent()) {
+                                opLeaveTime = workTimeGetOutput.getEndTime1();
+                            }
+                            if (!optAchievementDetail.get().getOpWorkTime2().isPresent()) {
+                                opWorkTime2 = workTimeGetOutput.getStartTime2();
+                            }
+                            if (!optAchievementDetail.get().getOpDepartureTime2().isPresent()) {
+                                opDepartureTime2 = workTimeGetOutput.getEndTime2();
+                            }
+                        }
+                        
                     }
+                    
+                    optAchievementDetail.get().setOpWorkTime(opWorkTime);
+                    optAchievementDetail.get().setOpLeaveTime(opLeaveTime);
+                    optAchievementDetail.get().setOpWorkTime2(opWorkTime2);
+                    optAchievementDetail.get().setOpDepartureTime2(opDepartureTime2);
                     
                     if (workTimeCd == null) {
                         optAchievementDetail.get().setOpWorkTime(Optional.empty());
