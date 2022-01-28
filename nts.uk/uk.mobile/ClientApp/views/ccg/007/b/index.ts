@@ -59,6 +59,12 @@ export class Ccg007BComponent extends CCG007Login {
                     self.checkEmpCodeAndCompany();
                 });
             } else {
+
+                const contract = storage.local.getItem('contract') as any;
+                if (contract && contract.password === '') {
+                    localStorage.clear();
+                }
+
                 if (!_.isNil(self.params.contractCode)) {
                     self.contractCode = self.params.contractCode;
                     self.contractPass = self.params.contractPass;
