@@ -91,7 +91,7 @@ public class CreateSupportWorkListFileQuery {
         }
 
         /**応援勤務出力データ＝0件*/
-        if (supportWorkOutputData == null)
+        if (supportWorkOutputData == null || supportWorkOutputData.getSupportWorkDataList().isEmpty())
             throw new BusinessException("Msg_2155");
 
         /**勤怠項目内容の取得*/

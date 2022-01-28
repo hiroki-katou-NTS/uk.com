@@ -2,7 +2,8 @@ module nts.uk.at.kha002.a {
     const API = {
         init: "at/screen/kha002/a/init",
         getSetting: "at/function/supportworklist/aggregationsetting/get",
-        getAllOutputSettings: "at/function/supportworklist/outputsetting/all"
+        getAllOutputSettings: "at/function/supportworklist/outputsetting/all",
+        exportFile: "at/function/kha/002/report/export"
     };
 
     const KEY = "KHA002Data";
@@ -57,14 +58,13 @@ module nts.uk.at.kha002.a {
                                 tabindex: 4,
                                 restrictionOfReferenceRange: false,
                                 systemType : 2 // 就業
+                            }).then(() => {
+                                $('#A3_3').focusTreeGridComponent();
                             });
                         } else {
                             // 今回対象外
                         }
                         vm.getAllSettingData(code);
-                        _.defer(() => {
-                            $("#nts-component-tree").focus();
-                        });
                     });
                 } else {
                     vm.$dialog.error({messageId: "Msg_3269"}).then(() => {
@@ -104,21 +104,113 @@ module nts.uk.at.kha002.a {
             });
         }
 
+        private getListWorkplaces(wkps: Array<any>) {
+            let result: Array<any> = wkps;
+            result.forEach(wkp => {
+                if (!_.isEmpty(wkp.children)) {
+                    result = result.concat(this.getListWorkplaces(wkp.children));
+                }
+            });
+            return result;
+        }
+
         exportExcel() {
             const vm = this;
-            nts.uk.characteristics.save(KEY, {
-                code: vm.selectedLayout(),
-                workplaceIds: vm.selectedWorkplaces(),
-                workLocationCodes: vm.selectedWorkLocations()
+            vm.$validate().then(valid => {
+                if (valid) {
+                    vm.$blockui("show");
+                    const allItems = vm.aggregateUnit() == AggregateUnit.WORKPLACE
+                        ? vm.getListWorkplaces($('#A3_3').getDataList())
+                        : []; // 今回対象外
+                    const exportQuery = {
+                        aggregationUnit: vm.aggregateUnit(),
+                        supportWorkCode: vm.selectedLayout(),
+                        periodStart: new Date(vm.dateValue().startDate).toISOString(),
+                        periodEnd: new Date(vm.dateValue().endDate).toISOString(),
+                        workplaceIds: vm.selectedWorkplaces(),
+                        baseDate: vm.aggregateUnit() == AggregateUnit.WORKPLACE ? moment(vm.baseDate()).format("YYYY/MM/DD") : null,
+                        workLocationCodes: vm.selectedWorkLocations(),
+                        headerInfos: [{
+                            firstLineCode: vm.aggregateUnit() == AggregateUnit.WORKPLACE
+                                ? (vm.selectedWorkplaces().length > 0 ? _.find(allItems, i => i.id == vm.selectedWorkplaces()[0]).code : null)
+                                : null, // 今回対象外
+                            firstLineName: vm.aggregateUnit() == AggregateUnit.WORKPLACE
+                                ? (vm.selectedWorkplaces().length > 0 ? _.find(allItems, i => i.id == vm.selectedWorkplaces()[0]).name : null)
+                                : null, // 今回対象外
+                            lastLineCode: vm.aggregateUnit() == AggregateUnit.WORKPLACE
+                                ? (vm.selectedWorkplaces().length > 0 ? _.find(allItems, i => i.id == vm.selectedWorkplaces()[vm.selectedWorkplaces().length - 1]).code : null)
+                                : null, // 今回対象外
+                            lastLineName: vm.aggregateUnit() == AggregateUnit.WORKPLACE
+                                ? (vm.selectedWorkplaces().length > 0 ? _.find(allItems, i => i.id == vm.selectedWorkplaces()[vm.selectedWorkplaces().length - 1]).name : null)
+                                : null, // 今回対象外
+                            numberOfSelect: vm.aggregateUnit() == AggregateUnit.WORKPLACE
+                                ? vm.selectedWorkplaces().length
+                                : vm.selectedWorkLocations().length
+                        }],
+                        exportCsv: false
+                    };
+                    nts.uk.request.exportFile(API.exportFile, exportQuery).done(() => {
+                        nts.uk.characteristics.save(KEY, {
+                            code: vm.selectedLayout(),
+                            workplaceIds: vm.selectedWorkplaces(),
+                            workLocationCodes: vm.selectedWorkLocations()
+                        });
+                    }).fail(function (error) {
+                        vm.$dialog.error(error);
+                    }).always(function () {
+                        vm.$blockui("hide");
+                    });
+                }
             });
         }
 
         exportCsv() {
             const vm = this;
-            nts.uk.characteristics.save(KEY, {
-                code: vm.selectedLayout(),
-                workplaceIds: vm.selectedWorkplaces(),
-                workLocationCodes: []
+            vm.$validate().then(valid => {
+                if (valid) {
+                    vm.$blockui("show");
+                    const allItems = vm.aggregateUnit() == AggregateUnit.WORKPLACE
+                        ? vm.getListWorkplaces($('#A3_3').getDataList())
+                        : []; // 今回対象外
+                    const exportQuery = {
+                        aggregationUnit: vm.aggregateUnit(),
+                        supportWorkCode: vm.selectedLayout(),
+                        periodStart: new Date(vm.dateValue().startDate).toISOString(),
+                        periodEnd: new Date(vm.dateValue().endDate).toISOString(),
+                        workplaceIds: vm.selectedWorkplaces(),
+                        baseDate: vm.aggregateUnit() == AggregateUnit.WORKPLACE ? moment(vm.baseDate()).format("YYYY/MM/DD") : null,
+                        workLocationCodes: vm.selectedWorkLocations(),
+                        headerInfos: [{
+                            firstLineCode: vm.aggregateUnit() == AggregateUnit.WORKPLACE
+                                ? (vm.selectedWorkplaces().length > 0 ? _.find(allItems, i => i.id == vm.selectedWorkplaces()[0]).code : null)
+                                : null, // 今回対象外
+                            firstLineName: vm.aggregateUnit() == AggregateUnit.WORKPLACE
+                                ? (vm.selectedWorkplaces().length > 0 ? _.find(allItems, i => i.id == vm.selectedWorkplaces()[0]).name : null)
+                                : null, // 今回対象外
+                            lastLineCode: vm.aggregateUnit() == AggregateUnit.WORKPLACE
+                                ? (vm.selectedWorkplaces().length > 0 ? _.find(allItems, i => i.id == vm.selectedWorkplaces()[vm.selectedWorkplaces().length - 1]).code : null)
+                                : null, // 今回対象外
+                            lastLineName: vm.aggregateUnit() == AggregateUnit.WORKPLACE
+                                ? (vm.selectedWorkplaces().length > 0 ? _.find(allItems, i => i.id == vm.selectedWorkplaces()[vm.selectedWorkplaces().length - 1]).name : null)
+                                : null, // 今回対象外
+                            numberOfSelect: vm.aggregateUnit() == AggregateUnit.WORKPLACE
+                                ? vm.selectedWorkplaces().length
+                                : vm.selectedWorkLocations().length
+                        }],
+                        exportCsv: true
+                    };
+                    nts.uk.request.exportFile(API.exportFile, exportQuery).done(() => {
+                        nts.uk.characteristics.save(KEY, {
+                            code: vm.selectedLayout(),
+                            workplaceIds: vm.selectedWorkplaces(),
+                            workLocationCodes: vm.selectedWorkLocations()
+                        });
+                    }).fail(function (error) {
+                        vm.$dialog.error(error);
+                    }).always(function () {
+                        vm.$blockui("hide");
+                    });
+                }
             });
         }
 
