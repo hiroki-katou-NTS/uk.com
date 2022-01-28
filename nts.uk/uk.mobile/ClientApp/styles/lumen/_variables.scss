@@ -3,15 +3,15 @@
 //$enable-rounded: false !default;
 //$enable-shadows: false !default;
 
-$primary: #258F7E !default;
+$primary: #01956A !default;
 $info: #33b5e5 !default;
 //$secondary: #a6c !default;
-$success: #258F7E !default;
+$success: $primary !default;
 $danger: #ff3547 !default;
 $warning: #fb3 !default;
 
 $default: #2bbbad !default;
 
-$bg-menu-color: #01956A;
+$bg-menu-color: $primary;
 $color-required: #FFD966;
 $header-gray: #6a6a6a;
