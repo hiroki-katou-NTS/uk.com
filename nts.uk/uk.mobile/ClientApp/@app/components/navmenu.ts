@@ -36,7 +36,7 @@ const _NavMenu = Vue.observable({
             <div class="div-ccgs08" @click="showCcg003()">
                 <img :src="'/nts.uk.mobile.web/dist/resources/' + (isNewNotice ? 165 : 164) + '.svg'" class="img-notice">
             </div>
-            <button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>
+            <!--<button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>-->
         </div>
         <transition name="collapse-long" v-on:before-enter="beforeEnter" v-on:after-leave="afterLeave">
             <div ref="nav" class="collapse navbar-collapse" v-show="show">
