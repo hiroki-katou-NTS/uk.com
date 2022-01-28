@@ -72,9 +72,9 @@ module nts.uk.at.view.ktg027.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="25%" />
-                            <col width="17%" />
-                            <col width="58%" />
+                            <col width="100px" />
+                            <col width="100px" />
+                            <col width="250px" />
                         </colgroup>
                         <head>
                             <tr>
@@ -98,8 +98,8 @@ module nts.uk.at.view.ktg027.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="42%" />
-                            <col width="58%" />
+                            <col width="200px" />
+                            <col width="250px" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr style="height: 35px;">
@@ -200,7 +200,7 @@ module nts.uk.at.view.ktg027.a {
                     margin-top: -1px;
                 }
                 .widget-container.has-scroll .ktg-027-a.scroll-padding {
-                    padding-right: 17px;
+                    padding-right: 10px;
                 }
                 /* 限度アラーム時間超過 */
                 .ktg-027-a.widget-content.ui-resizable .exceeding-limit-alarm {
