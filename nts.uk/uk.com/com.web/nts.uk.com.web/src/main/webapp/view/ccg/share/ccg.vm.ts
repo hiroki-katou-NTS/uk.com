@@ -2697,7 +2697,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
         </div>
     </div>
     <div id="hor-scroll-button-hide">
-        <div id="ccg001-btn-search-drawer" class="ccg001-btn" data-bind="click: showComponent">≫</div>
+        <div id="ccg001-btn-search-drawer" class="ccg001-btn" data-bind="click: showComponent"><span>〉</span><span>〉</span></div>
     </div>`;
     }
 }
