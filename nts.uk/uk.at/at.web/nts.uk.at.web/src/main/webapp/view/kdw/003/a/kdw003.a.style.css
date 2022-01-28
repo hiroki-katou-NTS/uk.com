@@ -435,3 +435,9 @@ table#employ_view tr{
 	height: 30px;
 	width: 100px;
 }
+
+.hyperlink,
+.mgrid .mlink-button {
+	text-decoration: none !important;
+	color: #793c21 !important;
+}
