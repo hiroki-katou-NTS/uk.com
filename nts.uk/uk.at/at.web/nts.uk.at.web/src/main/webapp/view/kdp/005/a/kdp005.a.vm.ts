@@ -34,7 +34,8 @@ module nts.uk.at.view.kdp005.a {
 		const API = {
 			NOTICE: 'at/record/stamp/notice/getStampInputSetting',
 			GET_LOCATION: 'at/record/stamp/employment_system/get_location_stamp_input',
-			SETTING_STAMP_COMMON: 'at/record/stamp/settings_stamp_common'
+			SETTING_STAMP_COMMON: 'at/record/stamp/settings_stamp_common',
+			getContractCode: "at/record/stamp/finger/get-contractCode"
 		};
 
 		export class ScreenModel {
@@ -128,11 +129,15 @@ module nts.uk.at.view.kdp005.a {
 					.then((data: boolean) => {
 						// Step2: 契約コードに関するlocalstrageに登録する
 						if (!data) {
-							self.saveDefault = true;
-							vm.$window.storage("contractInfo", {
-								contractCode: "000000000000",
-								contractPassword: null
-							}).then(() => self.startScreen().then(() => dfd.resolve()));
+							vm.$ajax('at', API.getContractCode)
+								.then((data: any) => {
+									self.saveDefault = true;
+									vm.$window.storage("contractInfo", {
+										contractCode: data.code,
+										contractPassword: ''
+									})
+									.done(() => self.startScreen().then(() => dfd.resolve()));
+								});
 						} else {
 							// Step3: テナント認証する
 							vm.$window.storage("contractInfo")
@@ -262,7 +267,7 @@ module nts.uk.at.view.kdp005.a {
 				const vm = new ko.ViewModel();
 				vm.$date.interval(100);
 				setTimeout(() => {
-					vm.$date.interval( param * 60000);
+					vm.$date.interval(param * 60000);
 				}, 1000);
 				if (param > 0) {
 					setInterval(() => {
@@ -812,7 +817,7 @@ module nts.uk.at.view.kdp005.a {
 				setShared("screenB", {
 					screen: "KDP005"
 				});
-				vm.$window.modal('/view/kdp/002/b/index.xhtml', {stampTime: stampTime}).then(() => {
+				vm.$window.modal('/view/kdp/002/b/index.xhtml', { stampTime: stampTime }).then(() => {
 					self.openKDP002T(button, layout);
 				});
 			}

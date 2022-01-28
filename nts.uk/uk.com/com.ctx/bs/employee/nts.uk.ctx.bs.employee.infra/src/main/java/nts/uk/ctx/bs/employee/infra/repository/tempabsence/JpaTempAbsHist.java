@@ -713,7 +713,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 					.filter(predicate -> predicate.getHistoryId().equals(item.identifier())).findFirst();
 
 			// if $履歴項目.isEmpty()
-			TimeoffLeaveRecordWithPeriod recordWithPeriod = new TimeoffLeaveRecordWithPeriod(datePeriod,
+			TimeoffLeaveRecordWithPeriod recordWithPeriod = new TimeoffLeaveRecordWithPeriod(item.span(),
 						tempAbsenceHis.isPresent() ? tempAbsenceHis.get() : null);
 			result.add(recordWithPeriod);
 		}

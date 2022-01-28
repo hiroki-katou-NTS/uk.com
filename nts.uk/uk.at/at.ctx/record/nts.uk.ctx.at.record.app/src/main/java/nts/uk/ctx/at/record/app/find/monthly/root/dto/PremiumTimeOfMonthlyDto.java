@@ -72,7 +72,7 @@ public class PremiumTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGat
 	public Optional<ItemValue> valueOf(String path) {
 		switch (path) {
 		case PREMIUM + TOTAL:
-			return Optional.of(ItemValue.builder().value(premiumAmountTotal).valueType(ValueType.AMOUNT_NUM));
+			return Optional.of(ItemValue.builder().value(premiumAmountTotal).valueType(ValueType.AMOUNT_LONG));
 		default:
 			break;
 		}
@@ -83,7 +83,7 @@ public class PremiumTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGat
 	public void set(String path, ItemValue value) {
 		switch (path) {
 		case PREMIUM + TOTAL:
-			premiumAmountTotal = value.valueOrDefault(0); break;
+			premiumAmountTotal = value.valueOrDefault(0l); break;
 		default:
 			break;
 		}

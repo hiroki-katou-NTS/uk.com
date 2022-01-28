@@ -143,7 +143,7 @@ public class OvertimeWorkMultipleTimes {
                                                                List<TimeZoneWithWorkNo> workingHours,
                                                                List<BreakTimeSheet> breakTimes,
                                                                boolean managementMultipleWorkCycles) {
-        List<TimeZoneWithWorkNo> predeterminedWorkingHours = new ArrayList<>(workingHours);
+        List<TimeZoneWithWorkNo> predeterminedWorkingHours = workingHours;
         if (workInfo.getWorkTimeCodeNotNull().isPresent()) {
             Optional<PredetemineTimeSetting> predTimeSet = require.getPredetemineTimeSetting(companyId, workInfo.getWorkTimeCode().v());
             if (predTimeSet.isPresent()) {
@@ -154,7 +154,7 @@ public class OvertimeWorkMultipleTimes {
             }
             Optional<WorkTimeSetting> workTimeSetting = require.getWorkTimeSetting(companyId, workInfo.getWorkTimeCode().v());
             if (workTimeSetting.isPresent() && workTimeSetting.get().getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
-                breakTimes = this.getFlowWorkBreakTime(require, employeeId, date, workInfo, predTimeSet, new ArrayList<>(workingHours));
+                breakTimes = this.getFlowWorkBreakTime(require, employeeId, date, workInfo, predTimeSet, workingHours);
             }
         }
         List<BreakTimeSheet> result = this.calculateNewBreakTimes(breakTimes, predeterminedWorkingHours, workingHours);
@@ -178,13 +178,25 @@ public class OvertimeWorkMultipleTimes {
                                                       WorkInformation workInfo,
                                                       Optional<PredetemineTimeSetting> predTimeSet,
                                                       List<TimeZoneWithWorkNo> workingHours) {
-        predTimeSet.ifPresent(predetemineTimeSetting -> workingHours.get(workingHours.size() - 1).getTimeZone().setEndTime(predetemineTimeSetting.getEndDateClock()));
+        List<TimeZoneWithWorkNo> tmpWorkingHours = new ArrayList<>();
+        workingHours.forEach(wh -> {
+            if (wh.getWorkNo().v() == workingHours.size() && predTimeSet.isPresent()) {
+                tmpWorkingHours.add(new TimeZoneWithWorkNo(
+                        wh.getWorkNo().v(),
+                        wh.getTimeZone().getStartTime().v(),
+                        predTimeSet.get().getEndDateClock().v()
+                ));
+            } else {
+                tmpWorkingHours.add(wh);
+            }
+        });
+
         CalculationParams params = new CalculationParams(
                 employeeId,
                 date,
                 workInfo.getWorkTypeCode(),
                 workInfo.getWorkTimeCode(),
-                workingHours,
+                tmpWorkingHours,
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList()
