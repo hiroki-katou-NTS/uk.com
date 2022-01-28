@@ -67,7 +67,6 @@ module nts.uk.at.view.ktg026.a {
                     color: '#BFBFBF',
                     z: 1,
                     borderDash: [3, 2],
-                   //zeroLineColor: 'rgba(0, 0, 0, 0)'
                 }
             }],
             yAxes: [{
@@ -304,9 +303,9 @@ module nts.uk.at.view.ktg026.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="25%" />
-                            <col width="17%" />
-                            <col width="58%" />
+                            <col width="100px" />
+                            <col width="100px" />
+                            <col width="250px" />
                         </colgroup>
                         <head>
                             <tr>
@@ -330,8 +329,8 @@ module nts.uk.at.view.ktg026.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="42%" />
-                            <col width="58%" />
+                            <col width="200px" />
+                            <col width="250px" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr style="height: 35px;">
@@ -407,7 +406,7 @@ module nts.uk.at.view.ktg026.a {
                     margin-top: -1px;
                 }
                 .widget-container.has-scroll .ktg-026-a.scroll-padding {
-                    padding-right: 17px !important;
+                    padding-right: 10px !important;
                 }
                 /* 限度アラーム時間超過 */
                 .ktg-026-a.widget-content.ui-resizable table tr td div.exceeding-limit-alarm {
