@@ -490,12 +490,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             self.legendOptions = {
                 items: [
-                    { colorCode: '#94B7FE', labelText: '手修正（本人）' },
-                    { colorCode: '#CEE6FF', labelText: '手修正（他人）' },
-                    { colorCode: '#BFEA60', labelText: '申請反映' },
-                    { colorCode: '#F69164', labelText: '計算値' },
-                    { colorCode: '#FD4D4D', labelText: getText("KDW003_44") },
-                    { colorCode: '#F6F636', labelText: getText("KDW003_45") },
+                    { colorCode: '#BFC5FF', labelText: '手修正（本人）' },
+                    { colorCode: '#C1E6FE', labelText: '手修正（他人）' },
+                    { colorCode: '#CBF3D2', labelText: '申請反映' },
+                    { colorCode: '#F9D4A9', labelText: '計算値' },
+                    { colorCode: '#FFE5E5', labelText: getText("KDW003_44") },
+                    { colorCode: '#FFF1BF', labelText: getText("KDW003_45") },
                 ]
             };
         }
