@@ -1,3 +1,5 @@
+@import "color.scss";
+
 .card {
     &-label {
         border-radius: 0;
@@ -16,6 +18,15 @@
                     top: 0;
                     font-size: 100%;
                     font-weight: 500;
+
+                    &.badge-warning {
+                        color: $uk-color-warn !important;
+                        background-color: inherit !important;
+                    }
+
+                    &.badge-info {
+                        display: none;
+                    }
                 }
             }
             &-body {
@@ -24,4 +35,6 @@
             }
         }
     }
+
+    
 }
