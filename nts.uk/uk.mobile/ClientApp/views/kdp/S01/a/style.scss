@@ -1,9 +1,10 @@
 .btn-stamp,
 .div-btn-stamp {
-  height: 100px;
-}
-#date {
-  font-size: 0.75rem;
+
+  button {
+    height: 100px;
+    margin-bottom: 20px !important;
+  }
 }
 
 #time {
@@ -16,16 +17,10 @@
 
 .blue-link {
   cursor: pointer;
-	color: rgb(37, 37, 238) !important;
-	text-decoration: underline;
+	color: #793c21 !important;
   text-align: right;
   padding-right: 10px;
   padding-bottom: 20px;
-}
-
-.blue-link:hover {
-	cursor: pointer;
-	color: rgb(0, 0, 255) !important;
 }
 
 .row {

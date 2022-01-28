@@ -15,22 +15,14 @@
         </span>
       </div>
     </div>
-     <div class="pl-4 lh-1">
-          <span id="time">{{ $dt.now | date("HH:mm") }}</span>
-          <span class="second">:{{ $dt.now | date("ss") }}</span>
-      </div>
-        <div
-          v-on:click="openDialogS"
-          type="text"
-          class="pr-4 blue-link"
-        >
-          {{ "KDPS01_25" | i18n }}
-        </div>
-
-    <div class="px-3">
+    <div class="pl-4 lh-1">
+      <span id="time">{{ $dt.now | date("HH:mm") }}</span>
+      <span class="second">:{{ $dt.now | date("ss") }}</span>
+    </div>
+    <div class="px-3 mt-5">
       <div class="row">
         <div
-          class="col-6 mb-2 px-2 div-btn-stamp"
+          class="col-6 div-btn-stamp"
           v-for="button in setting.buttons"
           v-bind:key="button.buttonPositionNo"
         >
@@ -53,6 +45,11 @@
           </button>
         </div>
       </div>
+    </div>
+    <div
+      v-on:click="openDialogS"
+      type="text"
+      class="pr-4 blue-link">{{ "KDPS01_25" | i18n }}
     </div>
   </div>
 </template>
