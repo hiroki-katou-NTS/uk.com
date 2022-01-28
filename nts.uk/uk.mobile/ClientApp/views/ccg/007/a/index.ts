@@ -42,17 +42,17 @@ export class Ccg007AComponent extends Vue {
                 vm.model.contractCode = contract.code;
                 vm.model.password = contract.password;
                 vm.$goto('ccg007b');
-            } else {
-                vm.$http.post('at', servicePath.getIsCloud)
-                    .done((data: boolean) => {
-                        if (!data) {
-                            vm.$http.post('at', servicePath.getIsCloud)
-                            .done((contact: any) => {
-                                storage.local.setItem('contract', { code: contact.code, password: '' });
-                                vm.$goto('ccg007b');
-                            })
-                        }
-                    })
+            }
+            if (contract == null) {
+
+                vm.$http.post('at', servicePath.getIsCloud).then((response: any) => {
+                    if (!response.data) {
+                        vm.$http.post('at', servicePath.getContractCode).then((response: any) => {
+                            storage.local.setItem('contract', { code: response.data.code, password: '' });
+                            vm.$goto('ccg007b');
+                        });
+                    }
+                });
             }
         });
     }
@@ -85,6 +85,6 @@ export class Ccg007AComponent extends Vue {
 
 const servicePath = {
     submitcontract: 'ctx/sys/gateway/login/submitcontract',
-    getIsCloud: "at/record/stamp/finger/get-isCloud",
-	getContractCode: "at/record/stamp/finger/get-contractCode"
+    getIsCloud: 'at/record/stamp/finger/get-isCloud',
+    getContractCode: 'at/record/stamp/finger/get-contractCode'
 };
