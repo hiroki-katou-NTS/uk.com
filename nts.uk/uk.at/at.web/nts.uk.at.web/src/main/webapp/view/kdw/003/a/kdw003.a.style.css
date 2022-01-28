@@ -379,6 +379,10 @@
 	margin-right: 12px;
 }
 
+#grid-controls > button {
+	width: 95px;
+}
+
 /* メインのグリッド */
 .font-smaller * {
 	font-size: 0.8rem !important;
