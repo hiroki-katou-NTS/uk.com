@@ -801,7 +801,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.itemInputName = data.lstControlDisplayItem.itemInputName;
             self.dataAll(data);
             self.itemValueAll(data.itemValues);
-            self.comment(data.comment != null ? '■ ' + data.comment : null);
+            self.comment(data.comment != null ? data.comment : null);
 			if(data.lstControlDisplayItem.formatCode !=  null){
            	 	self.formatCodes(data.lstControlDisplayItem.formatCode);
 			}
