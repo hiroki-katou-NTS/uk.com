@@ -459,6 +459,7 @@
 	border-radius: 0 0 5px 5px;
 	width: 80px;
 	background-color: $button-normal-base-color;
+	color: $button-normal-base-font-color;
 	box-shadow: none !important;
 	font-weight: normal;
 }
@@ -466,10 +467,6 @@
 .mgrid-sheet-button:not(.ui-state-active):hover {
 	border-color: #ccc;
 	background-color: $button-normal-base-hover-color;
-}
-
-.mgrid-sheet-button:not(.ui-state-active) {
-	color: #fff;
 }
 
 .mgrid-sheet-button.ui-state-active {

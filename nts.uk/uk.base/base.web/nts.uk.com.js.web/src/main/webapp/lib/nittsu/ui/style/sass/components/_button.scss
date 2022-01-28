@@ -7,6 +7,7 @@ $button-border-color: #999999;
 
 $button-normal-base-color: #CFCFCF;
 $button-normal-base-hover-color: #EAE8E8;
+$button-normal-base-font-color: #545454;
 $button-proceed-base-color: #01956A;
 $button-proceed-base-hover-color: #229F8B;
 $button-proceed-focus-outline: darken(saturate($button-proceed-base-color, 3), 8.55); /* #196E60; */
@@ -16,7 +17,7 @@ $button-disabled-base-color: #888888;
     outline: none;
     cursor: pointer;
     font-weight: normal;
-    color: #545454;
+    color: $button-normal-base-font-color;
     background-color: $button-normal-base-color;
     border-width: 0;
     border-radius: 5px;
