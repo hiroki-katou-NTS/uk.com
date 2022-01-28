@@ -46,11 +46,14 @@ export class Ccg007BComponent extends CCG007Login {
 
     public created() {
         let self = this;
-
+        // オンプレミスかをチェックする
         self.$http.post('at', API.getIsCloud).then((response: any) => {
             if (!response.data) {
+                // 契約コードに関するlocalstrageに登録する
                 self.$http.post('at', API.getContractCode).then((response: any) => {
                     storage.local.setItem('contract', { code: response.data.code, password: '' });
+
+                    // Start Activity.
                     self.contractCode = response.data.code;
                     self.contractPass = '';
                     self.checkEmpCodeAndCompany();
