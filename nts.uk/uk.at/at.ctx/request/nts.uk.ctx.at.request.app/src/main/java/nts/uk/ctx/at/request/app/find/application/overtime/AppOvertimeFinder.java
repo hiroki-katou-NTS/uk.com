@@ -303,9 +303,7 @@ public class AppOvertimeFinder {
 		}
 		DisplayInfoOverTime output = overtimeService.changeDateMobile(
 				param.companyId,
-				param.employeeId,
 				date,
-				EnumAdaptor.valueOf(param.prePostAtr, PrePostAtr.class),
 				param.displayInfoOverTime.toDomain());
 		return DisplayInfoOverTimeDto.fromDomain(output);
 	}
