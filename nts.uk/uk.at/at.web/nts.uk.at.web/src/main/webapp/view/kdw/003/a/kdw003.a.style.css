@@ -184,12 +184,18 @@
 	background-color: #EB9152;
 }
 
-.state-alarm {
+.state-alarm > span {
 	background-color: #F6F636;
+	width: calc(100% - 10px);
+    display: block;
+    margin-left: 5px;
 }
 
-.state-error {
+.state-error > span {
 	background-color: #FD4D4D;
+	width: calc(100% - 10px);
+    display: block;
+    margin-left: 5px;
 }
 
 .text-alarm{
