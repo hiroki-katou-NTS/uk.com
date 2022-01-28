@@ -13,6 +13,14 @@
       border-bottom: none;
     }
   }
+
+  .notice-wrapper {
+    .content {
+      button {
+        background-color: inherit;
+      }
+    }
+  }
   
   // top alert
   .top-alert-wrapper {
