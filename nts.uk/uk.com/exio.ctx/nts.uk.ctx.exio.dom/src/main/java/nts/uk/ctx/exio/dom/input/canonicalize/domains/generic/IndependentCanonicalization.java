@@ -114,7 +114,10 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	 * @param context 
 	 * @param targertResult
 	 */
-	protected IntermediateResult canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, IntermediateResult targertResult) {
+	protected IntermediateResult canonicalizeExtends(
+				DomainCanonicalization.RequireCanonicalize require, 
+				ExecutionContext context, 
+				IntermediateResult targertResult) {
 		return targertResult;
 	}
 

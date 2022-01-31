@@ -1,14 +1,18 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
-import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
-import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 
-public class TaskChildCanonicalization implements DomainCanonicalization{
+
+public class TaskChildCanonicalization extends IndependentCanonicalization{
 
 	@Override
 	public ItemNoMap getItemNoMap() {
@@ -21,62 +25,40 @@ public class TaskChildCanonicalization implements DomainCanonicalization{
 		public static final int 子作業コード = 3;
 	}
 
+
 	@Override
-	public void canonicalize(RequireCanonicalize require, ExecutionContext context) {
-		// TODO Auto-generated method stub
+	protected String getParentTableName() {
+		return "KSRMT_TASK_CHILD";
+	}
+
+	@Override
+	protected List<String> getChildTableNames() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	protected List<DomainDataColumn> getDomainDataKeys() {
+		return Arrays.asList(DomainDataColumn.CID, 
+				new DomainDataColumn("作業枠No", DataType.INT),
+				new DomainDataColumn("作業コード", DataType.STRING),
+				new DomainDataColumn("子作業コード", DataType.STRING));
+	}
+	
+	@Override
+	protected IntermediateResult canonicalizeExtends(
+			DomainCanonicalization.RequireCanonicalize require, 
+			ExecutionContext context, 
+			IntermediateResult targetResult) {
 		
+		checkFrameNoOver4(require, context, targetResult);
+		return targetResult;
 	}
 
-	@Override
-	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
-		return source;
+	private void checkFrameNoOver4(
+			DomainCanonicalization.RequireCanonicalize require,
+			ExecutionContext context, IntermediateResult targetResult) {
+		if(targetResult.getItemByNo(Items.作業枠No).get().getInt().intValue() > 4) {
+			require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), "作業枠No４以下のデータしか受入れられません。"));
+		}
 	}
-
-	@Override
-	public AtomTask adjust(RequireAdjsut require, ExecutionContext context, List<AnyRecordToChange> recordsToChange,
-			List<AnyRecordToDelete> recordsToDelete) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-
-//	
-//	@Override
-//	protected List<DomainDataColumn> getDomainDataKeys() {
-//		return Arrays.asList(DomainDataColumn.CID, 
-//				new DomainDataColumn("作業枠No", DataType.INT),
-//				new DomainDataColumn("作業コード", DataType.STRING),
-//				new DomainDataColumn("子作業コード", DataType.STRING));
-//	}
-//	
-//	@Override
-//	protected String getParentTableName() {
-//		return "KSRMT_TASK_CHILD";
-//	}
-//
-//	@Override
-//	protected List<String> getChildTableNames() {
-//		return Collections.emptyList();
-//	}
-//	
-//    @Override
-//    protected IntermediateResult canonicalizeExtends(IntermediateResult targetResult) {
-//
-//    	if(targetResult.getItemByNo(Items.作業枠NO).get().getInt().intValue())
-//        return replaceColorCode(targetResult, frameNo);
-//    }
-//  private IntermediateResult replaceChildTask(IntermediateResult targetResult, int frameNo) {
-//  if(frameNo == 5) {
-//      return targetResult.addCanonicalized(CanonicalItemList.of(new DataItemList(Arrays.asList(
-//              new DataItem(Items.子作業1作業コード, null),
-//              new DataItem(Items.子作業2作業コード, null),
-//              new DataItem(Items.子作業3作業コード, null),
-//              new DataItem(Items.子作業4作業コード, null),
-//              new DataItem(Items.子作業5作業コード, null)))));
-//  }
-//  return targetResult;
-//}
-
-
 }
