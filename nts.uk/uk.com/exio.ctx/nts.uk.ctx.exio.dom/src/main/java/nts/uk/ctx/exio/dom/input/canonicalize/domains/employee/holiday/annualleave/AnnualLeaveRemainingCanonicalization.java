@@ -104,7 +104,7 @@ public class AnnualLeaveRemainingCanonicalization extends IndependentCanonicaliz
 	}
 
 	@Override
-	protected IntermediateResult canonicalizeExtends(RequireCanonicalize require, IntermediateResult targertResult) {
+	protected IntermediateResult canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, IntermediateResult targertResult) {
 		return addFixedItems(targertResult);
 	}
 

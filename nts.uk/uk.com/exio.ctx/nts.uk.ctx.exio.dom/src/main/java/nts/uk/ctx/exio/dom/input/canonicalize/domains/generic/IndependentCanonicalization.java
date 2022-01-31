@@ -113,7 +113,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	 * @param require 
 	 * @param targertResult
 	 */
-	protected IntermediateResult canonicalizeExtends(RequireCanonicalize require, IntermediateResult targertResult) {
+	protected IntermediateResult canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, IntermediateResult targertResult) {
 		return targertResult;
 	}
 
