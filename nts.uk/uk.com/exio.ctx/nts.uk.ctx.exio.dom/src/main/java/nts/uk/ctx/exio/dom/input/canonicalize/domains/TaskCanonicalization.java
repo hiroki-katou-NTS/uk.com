@@ -5,10 +5,13 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.val;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 
 public class TaskCanonicalization extends IndependentCanonicalization{
@@ -52,14 +55,29 @@ public class TaskCanonicalization extends IndependentCanonicalization{
     }
 
     @Override
-    protected IntermediateResult canonicalizeExtends(RequireCanonicalize require, IntermediateResult targetResult) {
+    protected IntermediateResult canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, IntermediateResult targetResult) {
+    	
+    	checkRevisedData(require, context, targetResult);
 
-        val frameNo = targetResult.getItemByNo(Items.作業枠NO).get().getInt().intValue();
-        //枠ごとの作業色チェック
-        return replaceColorCode(targetResult, frameNo);
+        return replaceColorCode(targetResult);
     }
 
-    private IntermediateResult replaceColorCode(IntermediateResult targetResult, int frameNo) {
+    /**
+     * 開始日・終了日が逆転してないかチェッ
+ * @param context ク
+     */
+    private void checkRevisedData(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context,  IntermediateResult targetResult) {
+    	val period = new DatePeriod(targetResult.getItemByNo(Items.開始日).get().getDate(),
+    							    					targetResult.getItemByNo(Items.終了日).get().getDate());
+    	if(period.isReversed()) {
+    		require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), "開始日より終了日が未来にあります。"));    		
+    	}
+	}
+
+	private IntermediateResult replaceColorCode(IntermediateResult targetResult) {
+		
+        val frameNo = targetResult.getItemByNo(Items.作業枠NO).get().getInt().intValue();
+        
         if(frameNo == 1) {
         	targetResult.optionalItem(new CanonicalItem(Items.カラーコード, "#000000"));
         }
