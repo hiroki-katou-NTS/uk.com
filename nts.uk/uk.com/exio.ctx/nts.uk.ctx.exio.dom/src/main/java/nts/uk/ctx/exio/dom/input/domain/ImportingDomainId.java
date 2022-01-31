@@ -26,6 +26,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.S
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantSettingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.stock.StockHolidayRemainingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.WorkplaceCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.StampCanonicalization;
 
 /**
  * 受入グループID
@@ -96,6 +97,9 @@ public enum ImportingDomainId {
 	
 	/** 休出管理データ */
 	HOLIDAY_WORK(121, HolidayWorkCanonicalization::new),
+
+	/** 打刻データ */
+	STAMP(130, StampCanonicalization::new),
 	
 	;
 	
