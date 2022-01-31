@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Dedu
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTotalTimeForFluidCalc.DeductionTotalTimeLocal;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
@@ -800,7 +801,13 @@ public class DeductionTimeSheet {
 		val startBreakTime = getStartBreakTime(lateTimeSheet, workTime, oneDayOfRange, workType,
 				timeLeave, calcRange, dailyRecord, predetermineForCalc);
 		
-		val fluidCalc = new DeductionTotalTimeForFluidCalc(startBreakTime);
+		/**  外出の合計を取得 */
+		AttendanceTime totalOutTime = new AttendanceTime(correctedDeductionTimeSheet.stream()
+				.filter(d -> d.getDeductionAtr().isGoOut() || d.getDeductionAtr().isBreak() || d.getWorkingBreakAtr().isWorking())
+				.map(d -> d.calcTotalTime())
+				.collect(Collectors.summingInt(d -> d.valueAsMinutes())));
+		
+		val fluidCalc = new DeductionTotalTimeForFluidCalc(startBreakTime, new DeductionTotalTimeLocal(AttendanceTime.ZERO, totalOutTime));
 		
 		val restTimeSheet = flowRestTimeSheet.stream().map(ts -> {
 			
