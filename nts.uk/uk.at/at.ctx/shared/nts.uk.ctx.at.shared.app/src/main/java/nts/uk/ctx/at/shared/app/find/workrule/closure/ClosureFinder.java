@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 //import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 //import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDto;
@@ -23,6 +24,9 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryMasterDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureIdNameDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresInfoDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.SmileClosureTime;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.SmileEmpClosure;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 //import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresDto;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -35,7 +39,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 //import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ClosureFinder.
@@ -379,5 +382,29 @@ public class ClosureFinder {
 
 		return null;
 
+	}
+	
+	// closures Information
+	public List<ClosuresInfoDto> findClosureByCid(String companyId) {
+
+		List<Closure> closureOpt = repository.findAll(companyId);
+		List<ClosuresInfoDto> listClosures = closureOpt.stream().map(x -> ClosuresInfoDto.fromDomain(x)).collect(Collectors.toList());
+
+		return listClosures;
+
+	}
+	
+	public List<SmileEmpClosure> getEmpCloSmile(String companyId){
+		List<ClosureEmployment> empClo = closureEmpRepo.findAllByCid(companyId);
+		return empClo.stream().map(x -> new SmileEmpClosure(x.getEmploymentCD(), x.getClosureId())).collect(Collectors.toList());
+	}
+	
+	public SmileClosureTime getTimeSmile(String companyId, int closureId, int startYM){
+		Optional<ClosureHistory> closureTime = repository.findById(companyId, closureId, startYM);
+		if (closureTime.isPresent())
+			return new SmileClosureTime(closureTime.get().getCompanyId().toString(), closureTime.get().getClosureId().value, 
+					closureTime.get().getClosureName().v(), closureTime.get().getEndYearMonth().v(), closureTime.get().getClosureYMD(),
+					closureTime.get().getStartYearMonth().v());
+		return null;
 	}
 }

@@ -39,4 +39,10 @@ public class CompanyNewWs extends WebService {
 	public CompanyInforDto find(@PathParam("companyId") String companyId) {
 		return this.finderComFinder.find(companyId);
 	}
+	
+	@POST
+	@Path("checkcom/{companyId}")
+	public boolean checkCom(@PathParam("companyId") String companyId) {
+		return this.finderComFinder.companyCheck(companyId);
+	}
 }

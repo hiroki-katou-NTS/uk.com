@@ -40,12 +40,6 @@ public class CreateExOutTextWebService extends WebService {
 	@Inject
 	private AffCompanyHistRepository affCompanyHistRepo;
 	
-	@Inject
-	private StdOutputCondSetRepository stdOutputCondSetRepository;
-	
-	@Inject
-	private StandardOutputItemRepository standardOutputItemRepository;
-	
 	@POST
 	@Path("createExOutText")
 	public JavaTypeResult<String> createExOutText(CreateExOutTextCommand command) {
@@ -84,15 +78,6 @@ public class CreateExOutTextWebService extends WebService {
 	@POST
 	@Path("getExOutSummarySetting/{cid}/{conditionSetCd}")
 	public SmileGetSettingDto getExOutSetting(@PathParam("cid") String cid, @PathParam("conditionSetCd") String conditionSetCd){
-		Optional<StdOutputCondSet> condSet = stdOutputCondSetRepository.getStdOutputCondSetById(cid, conditionSetCd);
-		
-		if(!condSet.isPresent()) 
-			return new SmileGetSettingDto(false, null);
-		
-		List<StandardOutputItem> item = standardOutputItemRepository.getStdOutItemByCidAndSetCd(cid, conditionSetCd);
-		return new SmileGetSettingDto(true, new OutConditionSetDto(condSet.get().getConditionSetName().v(), condSet.get().getConditionOutputName().value, 
-																condSet.get().getItemOutputName().value, condSet.get().getDelimiter().value, condSet.get().getStringFormat().value,
-																item.stream().map(x -> x.getOutputItemCode().v()).collect(Collectors.toList())
-															));
+		return exOutSummarySettingFinder.getExOutSetting(cid, conditionSetCd);
 	}
 }

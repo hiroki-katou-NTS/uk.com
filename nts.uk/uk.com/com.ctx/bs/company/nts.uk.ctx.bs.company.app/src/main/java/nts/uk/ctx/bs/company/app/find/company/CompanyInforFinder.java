@@ -12,7 +12,10 @@ import javax.ejb.Stateless;
  */
 import javax.inject.Inject;
 
+import com.aspose.pdf.Option;
+
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
+import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
@@ -85,5 +88,15 @@ public class CompanyInforFinder {
 					x.getTaxNo().isPresent() ? x.getTaxNo().get().v() : null, 
 					fromDomainAdd(x.getAddInfor()));
 		}).orElse(null);
+	}
+	
+	/**
+	 * Check the validity of company ID
+	 */
+	public boolean companyCheck(String companyId) {
+		Optional<Company> com = this.comRep.getComanyInfoByCid(companyId);
+		if(com.isPresent() && com.get().getCompanyId() != null)
+			return true;
+		return false;
 	}
 }
