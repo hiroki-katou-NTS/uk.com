@@ -4,12 +4,11 @@
       padding: 0.25rem;
 
       &, * {
-        color: #fff !important;
-        background-color: #6a6a6a !important;
+        background-color: #f3f3f3 !important;
       }
 
       &:before {
-        color: #fff;
+        color: $dark;
         content: "\f078";
         font-family: "Font Awesome 5 Free";
         font-weight: 600;
