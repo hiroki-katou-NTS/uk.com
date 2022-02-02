@@ -8,7 +8,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 
 /**
- *正準化の中間結果が持ってる開始日・終了日を期間に正準化する 
  *開始日・終了日を期間に正準化する 
  */
 @AllArgsConstructor
