@@ -772,9 +772,6 @@ public class CreateWorkScheduleTest {
 				
 				WorkSchedule.createByHandCorrectionWithWorkInformation(require, employeeId, date, workInformation);
 				result = workSchedule;
-				
-				require.getSupportOperationSetting();
-				result = new SupportOperationSetting(true, true, new MaximumNumberOfSupport(5));
 			}};
 			
 			ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(

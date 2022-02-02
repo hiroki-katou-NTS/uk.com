@@ -1696,11 +1696,6 @@ public class WorkScheduleTest {
 						Optional.empty())
 				);
 		
-		new Expectations() {{
-			require.getSupportOperationSetting();
-			result = new SupportOperationSetting( true, true, new MaximumNumberOfSupport(5) );
-		}};
-		
 		NtsAssert.businessException("Msg_2277", () -> {
 			workSchedule.createSupportSchedule(require, supportTickets);
 		});
@@ -1976,11 +1971,6 @@ public class WorkScheduleTest {
 								SupportType.ALLDAY, 
 								GeneralDate.ymd(2021, 12, 1), 
 								Optional.empty());
-		
-		new Expectations() {{
-			require.getSupportOperationSetting();
-			result = new SupportOperationSetting( true, true, new MaximumNumberOfSupport(5) );
-		}};
 		
 		NtsAssert.businessException("Msg_2277", () -> {
 			workSchedule.addSupportSchedule(require, supportTicket);
