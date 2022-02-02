@@ -17,7 +17,11 @@ public class ExcecuteImportService {
 	
 	private FileUploader fileUploader;
 
-	public ExcecuteImportService () {
+	private String filePath;
+
+	public ExcecuteImportService (String filePath)
+	{
+		this.filePath = filePath;
 		this.fileUploader = new FileUploader();
 	}
 
@@ -25,7 +29,11 @@ public class ExcecuteImportService {
 		LogManager.init();
 		
 		// 設定ファイルの読み込み
-		String settingFilePath = ExiClientProperty.getProperty(ExiClientProperty.SETTING_FILE_PATH);
+		String settingFilePath =
+			(this.filePath == null || this.filePath.isEmpty())
+				? ExiClientProperty.getProperty(ExiClientProperty.SETTING_FILE_PATH)
+				: this.filePath;
+
 		Map<String, String> settings = readSetting(settingFilePath);
 		
 		settings.keySet().stream().forEach(settingCode -> {
