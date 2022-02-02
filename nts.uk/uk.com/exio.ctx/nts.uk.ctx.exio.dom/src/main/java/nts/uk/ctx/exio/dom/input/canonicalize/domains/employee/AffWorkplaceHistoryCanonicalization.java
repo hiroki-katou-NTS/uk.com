@@ -24,7 +24,7 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonica
 		
 	public AffWorkplaceHistoryCanonicalization() {
 		super(HistoryType.PERSISTENERESIDENT);
-		workplaceCodeCanonicalization = new WorkplaceCodeCanonicalization(this.getItemNoMap());
+		workplaceCodeCanonicalization = new WorkplaceCodeCanonicalization();
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonica
 		for (val container : targetContainers) {
 			IntermediateResult interm = container.getInterm();
 			
-			workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo())
+			workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo(), Items.開始日, Items.職場コード, Items.WORKPLACE_ID)
 					.ifRight(canonicalized -> results.add(new Container(canonicalized, container.getAddingHistoryItem())))
 					.ifLeft(error -> require.add(ExternalImportError.of(context.getDomainId(), error)));
 		}
