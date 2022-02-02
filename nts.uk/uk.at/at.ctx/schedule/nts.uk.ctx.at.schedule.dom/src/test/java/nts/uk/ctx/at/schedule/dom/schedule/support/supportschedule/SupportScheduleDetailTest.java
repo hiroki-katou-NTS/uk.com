@@ -40,9 +40,10 @@ public class SupportScheduleDetailTest {
 	
 	/**
 	 * Target	: equal
+	 * pattern	: 終日応援予定
 	 */
 	@Test
-	public void testEquals() {
+	public void testEquals_case_allDay() {
 		
 		val object = new SupportScheduleDetail(
 					TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId")
@@ -53,9 +54,9 @@ public class SupportScheduleDetailTest {
 		//True:すべて同じ値
 		{
 			val target = new SupportScheduleDetail(
-					object.getSupportDestination()
-				,	object.getSupportType()
-				,	object.getTimeSpan()
+					TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId")
+				,	SupportType.ALLDAY
+				,	Optional.empty()
 			);
 			
 			assertThat( object.equals( target ) ).isTrue();
@@ -65,8 +66,8 @@ public class SupportScheduleDetailTest {
 		{
 			val target = new SupportScheduleDetail(
 					TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId")
-				,	object.getSupportType()
-				,	object.getTimeSpan()
+				,	SupportType.ALLDAY
+				,	Optional.empty()
 			);
 			
 			assertThat( object.equals( target ) ).isFalse();
@@ -76,9 +77,9 @@ public class SupportScheduleDetailTest {
 		// False: 応援形式
 		{
 			val target = new SupportScheduleDetail(
-					object.getSupportDestination()
+					TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId")
 				,	SupportType.TIMEZONE
-				,	object.getTimeSpan()
+				,	Optional.empty()
 			);
 			
 			assertThat( object.equals( target ) ).isFalse();
@@ -88,9 +89,70 @@ public class SupportScheduleDetailTest {
 		// False: 時間帯
 		{
 			val target = new SupportScheduleDetail(
-					object.getSupportDestination()
-				,	object.getSupportType()
-				,	Optional.of( new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 10,  0 ), TimeWithDayAttr.hourMinute( 11,  0 ) ) )
+					TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId")
+				,	SupportType.ALLDAY
+				,	Optional.of( new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 10,  0 ), TimeWithDayAttr.hourMinute( 11, 0 ) ) )
+			);
+			
+			assertThat( object.equals( target ) ).isFalse();
+			
+		}
+	}
+	
+	/**
+	 * Target	: equal
+	 * pattern	: 時間帯応援予定
+	 */
+	@Test
+	public void testEquals_case_timezone() {
+		
+		val object = new SupportScheduleDetail(
+					TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId")
+				,	SupportType.TIMEZONE
+				,	Optional.of( new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 10,  0 ), TimeWithDayAttr.hourMinute( 11, 0 ) ) )
+			);
+		
+		//True:すべて同じ値
+		{
+			val target = new SupportScheduleDetail(
+					TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId")
+				,	SupportType.TIMEZONE
+				,	Optional.of( new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 10,  0 ), TimeWithDayAttr.hourMinute( 11, 0 ) ) )
+			);
+			
+			assertThat( object.equals( target ) ).isTrue();
+		}
+		
+		// False: 応援先
+		{
+			val target = new SupportScheduleDetail(
+					TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId")
+				,	SupportType.TIMEZONE
+				,	Optional.of( new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 10,  0 ), TimeWithDayAttr.hourMinute( 11, 0 ) ) )
+			);
+			
+			assertThat( object.equals( target ) ).isFalse();
+			
+		}
+		
+		// False: 応援形式
+		{
+			val target = new SupportScheduleDetail(
+					TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId")
+				,	SupportType.ALLDAY
+				,	Optional.of( new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 10,  0 ), TimeWithDayAttr.hourMinute( 11, 0 ) ) )
+			);
+			
+			assertThat( object.equals( target ) ).isFalse();
+			
+		}
+		
+		// False: 時間帯
+		{
+			val target = new SupportScheduleDetail(
+					TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId")
+				,	SupportType.TIMEZONE
+				,	Optional.of( new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 7,  0 ), TimeWithDayAttr.hourMinute( 8, 0 ) ) )
 			);
 			
 			assertThat( object.equals( target ) ).isFalse();
@@ -184,53 +246,74 @@ public class SupportScheduleDetailTest {
 	 */
 	@Test
 	public void testDoesItFitInTheSpecifiedTimeSpan_case_timezone() {
-		val specifiedTimeSpans = Arrays.asList( 
-				Helper.createTimeSpanForCalc( 360, 480 )
-			,	Helper.createTimeSpanForCalc( 720, 800 ) );
-		
-		// 同じ時間帯
-		{
-			val target = new SupportScheduleDetail(
-					TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId" )
-				,	SupportType.TIMEZONE
-				,	Optional.of( Helper.createTimeSpanForCalc( 360, 480 ) )
-			);
-			
-			//Act
-			val result = target.doesItFitInTheSpecifiedTimeSpan( specifiedTimeSpans );
-			
-			//Assert
-			assertThat( result ).isTrue();
-			
-		}
-		
-		// 包含
-		{
-			val target = new SupportScheduleDetail(
-					TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId" )
-				,	SupportType.TIMEZONE
-				,	Optional.of( Helper.createTimeSpanForCalc( 400, 480 ) )
-			);
-			
-			//Act
-			val result = target.doesItFitInTheSpecifiedTimeSpan( specifiedTimeSpans );
-			
-			//Assert
-			assertThat( result ).isTrue();
-			
-		}
-
 		/**
-		 *  	<-------------->
-		 *  						<-------------->
+		 * 同じ時間帯
+		 *				<------->
+		 *				<------->				<-------->
 		 */
-		// 時間帯違う
 		{
 			val target = new SupportScheduleDetail(
 					TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId" )
 				,	SupportType.TIMEZONE
-				,	Optional.of( Helper.createTimeSpanForCalc( 200, 300 ) )
+				,	Optional.of( new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 8, 30 ), TimeWithDayAttr.hourMinute( 12, 00 ) ) )
 			);
+			
+			val specifiedTimeSpans = Arrays.asList( 
+					new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 8, 30 ), TimeWithDayAttr.hourMinute( 12, 00 ) )
+				,	new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 13, 00 ), TimeWithDayAttr.hourMinute( 17, 30 ) )
+					);
+			
+			//Act
+			val result = target.doesItFitInTheSpecifiedTimeSpan( specifiedTimeSpans );
+			
+			//Assert
+			assertThat( result ).isTrue();
+			
+		}
+		
+		/**
+		 * 包含
+						<------->
+					<----------->	<-------->
+		 * 
+		 */
+		{
+			val target = new SupportScheduleDetail(
+					TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId" )
+				,	SupportType.TIMEZONE
+				,	Optional.of( new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 8, 30 ), TimeWithDayAttr.hourMinute( 17, 30 ) ) )
+			);
+			
+			val specifiedTimeSpans = Arrays.asList( 
+					new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 8, 0 ), TimeWithDayAttr.hourMinute( 18, 0 ) )
+				,	new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 18,30 ), TimeWithDayAttr.hourMinute( 20, 0 ) ));
+			
+			//Act
+			val result = target.doesItFitInTheSpecifiedTimeSpan( specifiedTimeSpans );
+			
+			//Assert
+			assertThat( result ).isTrue();
+			
+		}
+		
+		// 
+
+		
+		/**
+		 * 時間帯違う
+						<------------------->
+			<----------->					<-------->
+		 */
+		{
+			val target = new SupportScheduleDetail(
+					TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId" )
+				,	SupportType.TIMEZONE
+				,	Optional.of( new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 8, 30 ), TimeWithDayAttr.hourMinute( 17, 30 ) ) )
+			);
+			
+			val specifiedTimeSpans = Arrays.asList( 
+					new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 7, 0 ), TimeWithDayAttr.hourMinute( 8, 30 ) )
+				,	new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 18, 0 ), TimeWithDayAttr.hourMinute( 20, 0 ) ));
 			
 			//Act
 			val result = target.doesItFitInTheSpecifiedTimeSpan( specifiedTimeSpans );
@@ -241,17 +324,20 @@ public class SupportScheduleDetailTest {
 		}
 		
 		/**
-		 *  	<-------------->
-		 *  				<-------------->
+		 * 包含ない
+		 *  		<-------------->
+		 *  <-------------->	<-------------->
 		 */
-		// 包含ない
 		{
 			val target = new SupportScheduleDetail(
 					TargetOrgIdenInfor.creatIdentifiWorkplace( "workplaceId" )
 				,	SupportType.TIMEZONE
-				,	Optional.of( Helper.createTimeSpanForCalc( 300, 400 ) )
+				,	Optional.of( new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 8, 30 ), TimeWithDayAttr.hourMinute( 12, 00 ) ) )
 			);
 			
+			val specifiedTimeSpans = Arrays.asList( 
+					new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 8, 0 ), TimeWithDayAttr.hourMinute( 10, 0 ) )
+				,	new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 11, 0 ), TimeWithDayAttr.hourMinute( 12, 0 ) ));
 			//Act
 			val result = target.doesItFitInTheSpecifiedTimeSpan( specifiedTimeSpans );
 			
@@ -260,18 +346,4 @@ public class SupportScheduleDetailTest {
 			
 		}
 	}
-	
-	public static class Helper{
-		
-		/**
-		 * 計算用時間帯を作る
-		 * @param startTime 開始
-		 * @param endTime 終了
-		 * @return
-		 */
-		public static TimeSpanForCalc createTimeSpanForCalc( int startTime, int endTime ) {
-			return new TimeSpanForCalc(new TimeWithDayAttr( startTime ), new TimeWithDayAttr( endTime ) );
-		}
-	}
-
 }

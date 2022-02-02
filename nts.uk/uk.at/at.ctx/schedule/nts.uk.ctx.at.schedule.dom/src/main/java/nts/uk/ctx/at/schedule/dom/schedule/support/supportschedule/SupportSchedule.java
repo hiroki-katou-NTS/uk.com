@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Value;
 import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
@@ -21,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.Suppor
  * @author dan_pv
  */
 @Value
-public class SupportSchedule {
+public class SupportSchedule implements DomainValue{
 	
 	/**
 	 * 詳細リスト
@@ -48,11 +49,6 @@ public class SupportSchedule {
 			return SupportSchedule.createWithEmptyList();
 		}
 		
-		Integer maxSupportTimes = require.getSupportOperationSetting().getMaxNumberOfSupportOfDay().v();
-		if ( details.size() > maxSupportTimes ) {
-			throw new BusinessException("Msg_2315");
-		}
-		
 		boolean haveFullDaySupport = details.stream()
 				.anyMatch( detail -> detail.getSupportType() == SupportType.ALLDAY );
 		if ( haveFullDaySupport ) {
@@ -63,6 +59,11 @@ public class SupportSchedule {
 			}
 			
 			return new SupportSchedule(details);
+		}
+		
+		Integer maxSupportTimes = require.getSupportOperationSetting().getMaxNumberOfSupportOfDay().v();
+		if ( details.size() > maxSupportTimes ) {
+			throw new BusinessException("Msg_2315");
 		}
 		
 		TimeSpanSupportScheduleDetailList detailList = TimeSpanSupportScheduleDetailList.create(details);

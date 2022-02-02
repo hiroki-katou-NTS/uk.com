@@ -104,6 +104,11 @@ public class SupportScheduleTest {
 				,	@Injectable SupportScheduleDetail detail3
 				,	@Injectable SupportScheduleDetail detail4) {
 			
+			val supportSetting = new SupportOperationSetting(
+					true, true //dummy
+				,	new MaximumNumberOfSupport(3)//一日の最大応援回数 = 3
+					);
+			
 			new Expectations() {{
 				
 				require.getSupportOperationSetting();
@@ -112,7 +117,7 @@ public class SupportScheduleTest {
 			}};
 			
 			NtsAssert.businessException("Msg_2315",
-					() -> SupportSchedule.create(require, Arrays.asList(detail1, detail2, detail3, detail4))
+					() -> SupportSchedule.create(require, Arrays.asList(detail1, detail2, detail3, detail4))//詳細リスト.size() = 4
 				);
 		}
 
@@ -133,13 +138,6 @@ public class SupportScheduleTest {
 				,	Helper.createSupportScheduleDetail(SupportType.TIMEZONE, Optional.of(time2))
 					);
 			
-			new Expectations() {{
-				
-				require.getSupportOperationSetting();
-				result = supportSetting;
-				
-			}};
-			
 			NtsAssert.businessException("Msg_2277",
 					() -> SupportSchedule.create(require, details)
 				);
@@ -147,7 +145,7 @@ public class SupportScheduleTest {
 	
 		/**
 		 * Target	: create
-		 * Input	: 応援時間帯が重複する。		
+		 * Input	: 応援時間帯が重複する
 		 * Output	: Msg_2278
 		 */
 		@Test
@@ -216,12 +214,13 @@ public class SupportScheduleTest {
 			assertThat(result.getDetails())
 			.extracting(
 					d -> d.getSupportDestination()
+				,	d -> d.getSupportType()
 				,	d -> d.getTimeSpan().get().getStart()
 				,	d -> d.getTimeSpan().get().getEnd())
 			.containsExactly(
-					tuple(supportDestination2, TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(9, 0))
-				,	tuple(supportDestination1, TimeWithDayAttr.hourMinute(9, 0), TimeWithDayAttr.hourMinute(10, 0))
-				,	tuple(supportDestination3, TimeWithDayAttr.hourMinute(10, 0), TimeWithDayAttr.hourMinute(11, 0))
+					tuple(supportDestination2, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(9, 0))
+				,	tuple(supportDestination1, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(9, 0), TimeWithDayAttr.hourMinute(10, 0))
+				,	tuple(supportDestination3, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(10, 0), TimeWithDayAttr.hourMinute(11, 0))
 					);
 		}
 		
@@ -271,42 +270,32 @@ public class SupportScheduleTest {
 			assertThat(result.getDetails())
 			.extracting(
 					d -> d.getSupportDestination()
+				,	d -> d.getSupportType()
 				,	d -> d.getTimeSpan().get().getStart()
 				,	d -> d.getTimeSpan().get().getEnd())
 			.containsExactly(
-					tuple(recipient1, TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(9, 0))
-				,	tuple(recipient2, TimeWithDayAttr.hourMinute(9, 0), TimeWithDayAttr.hourMinute(10, 0))
-				,	tuple(recipient3, TimeWithDayAttr.hourMinute(10, 0), TimeWithDayAttr.hourMinute(11, 0))
+					tuple(recipient1, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(9, 0))
+				,	tuple(recipient2, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(9, 0), TimeWithDayAttr.hourMinute(10, 0))
+				,	tuple(recipient3, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(10, 0), TimeWithDayAttr.hourMinute(11, 0))
 					);
 		}
 		
 		@Test
 		public void testCreateFromSupportTicketList_case_allday(@Injectable TargetOrgIdenInfor recipient1) {
 			
-			val supportSetting = new SupportOperationSetting(
-					true, true //dummy
-				,	new MaximumNumberOfSupport(3)//一日の最大応援回数
-					);
-			
 			List<SupportTicket> supportTickets = new ArrayList<>(Arrays.asList(
 					Helper.createSupportTicket(recipient1, SupportType.ALLDAY , Optional.empty())
 					));
-			
-			new Expectations() {{
-				
-				require.getSupportOperationSetting();
-				result = supportSetting;
-				
-			}};
 			
 			val result = SupportSchedule.createFromSupportTicketList(require, supportTickets);
 			
 			assertThat(result.getDetails())
 			.extracting(
 					d -> d.getSupportDestination()
+				,	d -> d.getSupportType()
 				,	d -> d.getTimeSpan())
 			.containsExactly(
-					tuple(recipient1, Optional.empty())
+					tuple(recipient1, SupportType.ALLDAY, Optional.empty())
 					);
 		}
 	}
@@ -316,25 +305,10 @@ public class SupportScheduleTest {
 		@Injectable
 		private SupportSchedule.Require require;
 		
-		SupportOperationSetting supportSetting;
-		
-		@Before
-		public void initData() {
-			
-			supportSetting = new SupportOperationSetting(
-					true, true //dummy
-				,	new MaximumNumberOfSupport(3)//一日の最大応援回数
-					);
-			
-			new Expectations() {{
-				
-				require.getSupportOperationSetting();
-				result = supportSetting;
-				
-			}};
-			
-		}
-		
+		/**
+		 * target : add
+		 * pattern: 時間帯応援予定
+		 */
 		@Test
 		public void testAdd_case_timezone(
 					@Injectable TargetOrgIdenInfor supportDestination1
@@ -353,10 +327,24 @@ public class SupportScheduleTest {
 												TimeWithDayAttr.hourMinute(9, 0))))
 					));
 			
+			val supportSetting = new SupportOperationSetting(
+					true, true //dummy
+				,	new MaximumNumberOfSupport(5)//一日の最大応援回数
+					);
+			
+			new Expectations() {{
+				
+				require.getSupportOperationSetting();
+				result = supportSetting;
+				
+			}};
+			
+			//応援予定 = 時間帯応援予定
 			val supportSchedule = SupportSchedule.create(require, details);
 			
-			//全部時間帯応援を追加して、成功
+			//時間帯応援予定のチケットを追加する → OK
 			{
+				//時間帯応援予定のチケット: 11:00~12:00
 				val ticket = Helper.createSupportTicket(recipient1, SupportType.TIMEZONE , Optional.of(
 						new TimeSpanForCalc(
 								TimeWithDayAttr.hourMinute(11, 0)
@@ -368,17 +356,41 @@ public class SupportScheduleTest {
 				assertThat(result.getDetails())
 				.extracting(
 						d -> d.getSupportDestination()
+					,	d -> d.getSupportType()
 					,	d -> d.getTimeSpan().get().getStart()
 					,	d -> d.getTimeSpan().get().getEnd())
 				.containsExactly(
-						tuple(supportDestination2, TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(9, 0))
-					,	tuple(supportDestination1, TimeWithDayAttr.hourMinute(9, 0), TimeWithDayAttr.hourMinute(10, 0))
-					,	tuple(recipient1, TimeWithDayAttr.hourMinute(11, 0), TimeWithDayAttr.hourMinute(12, 0))
+						tuple(supportDestination2, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(9, 0))
+					,	tuple(supportDestination1, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(9, 0), TimeWithDayAttr.hourMinute(10, 0))
+					,	tuple(recipient1, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(11, 0), TimeWithDayAttr.hourMinute(12, 0))
 						);
 			}
 			
-			//時間帯応援が存在して、終日を追加, Msg_2277が発生
 			{
+				//時間帯応援予定のチケット: 7:00~8:00
+				val ticket = Helper.createSupportTicket(recipient1, SupportType.TIMEZONE , Optional.of(
+						new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(7, 0)
+							,	TimeWithDayAttr.hourMinute(8, 0))));
+				//act
+				val result = supportSchedule.add(require, ticket);
+				
+				//assert
+				assertThat(result.getDetails())
+				.extracting(
+						d -> d.getSupportDestination()
+					,	d -> d.getSupportType()
+					,	d -> d.getTimeSpan().get().getStart()
+					,	d -> d.getTimeSpan().get().getEnd())
+				.containsExactly(
+						tuple(recipient1, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(7, 0), TimeWithDayAttr.hourMinute(8, 0))	
+					,	tuple(supportDestination2, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(9, 0))
+					,	tuple(supportDestination1, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(9, 0), TimeWithDayAttr.hourMinute(10, 0))
+						);
+			}
+			//終日応援予定のチケットを追加する → NG
+			{
+				//終日援予定のチケット
 				val ticket = Helper.createSupportTicket(recipient1, SupportType.ALLDAY , Optional.empty());
 				
 				//assert
@@ -386,21 +398,69 @@ public class SupportScheduleTest {
 						() -> supportSchedule.add(require, ticket)
 					);
 			}
-
 		}
 		
+		/**
+		 * target : add
+		 * pattern: 終日応援予定
+		 */
 		@Test
 		public void testAdd_case_allDay(
 					@Injectable TargetOrgIdenInfor supportDestination1
 				,	@Injectable TargetOrgIdenInfor supportDestination2
 				,	@Injectable TargetOrgIdenInfor recipient1
+				,	@Injectable TimeSpanForCalc timeSpan
 				) {
 			
-			val ticket = Helper.createSupportTicket(recipient1, SupportType.ALLDAY , Optional.empty());
+			//応援予定 = 終日応援予定
+			val supportSchedule = SupportSchedule.create(require, Arrays.asList(
+					new SupportScheduleDetail (supportDestination1, SupportType.ALLDAY,	Optional.empty())
+					));
 			
-			// 詳細リスト = empty
+			//終日応援予定のチケットを追加する → NG
 			{
-				val supportSchedule = SupportSchedule.create(require, Collections.emptyList());
+				//終日応援予定のチケット
+				val ticket = Helper.createSupportTicket(recipient1, SupportType.ALLDAY , Optional.empty());
+				
+				//act
+				NtsAssert.businessException("Msg_2277",
+						() -> supportSchedule.add(require, ticket)
+					);
+			}
+			
+			//時間帯応援予定のチケットを追加する → NG
+			{
+				//時間帯応援予定のチケット
+				val ticket = Helper.createSupportTicket(recipient1, SupportType.TIMEZONE , Optional.of(
+						new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(11, 0)
+							,	TimeWithDayAttr.hourMinute(12, 0))));
+				
+				//act
+				NtsAssert.businessException("Msg_2277",
+						() -> supportSchedule.add(require, ticket)
+					);
+			}
+		}
+		
+		/**
+		 * target : add
+		 * pattern: 応援予定がempty
+		 */
+		@Test
+		public void testAdd_case_empty(	
+					@Injectable TargetOrgIdenInfor supportDestination1
+				,	@Injectable TargetOrgIdenInfor supportDestination2
+				,	@Injectable TargetOrgIdenInfor recipient1
+				,	@Injectable TimeSpanForCalc timeSpan) {
+			
+			//応援予定がempty
+			val supportSchedule = SupportSchedule.createWithEmptyList();
+			
+			// 終日応援予定のチケットを追加する -> OK
+			{	
+				//終日応援予定
+				val ticket = Helper.createSupportTicket(recipient1, SupportType.ALLDAY , Optional.empty());
 				
 				//act
 				val result = supportSchedule.add(require, ticket);
@@ -409,27 +469,49 @@ public class SupportScheduleTest {
 				assertThat(result.getDetails())
 				.extracting(
 						d -> d.getSupportDestination()
+					,	d -> d.getSupportType()
 					,	d -> d.getTimeSpan())
 				.containsExactly(
-						tuple(recipient1, Optional.empty())
+						tuple(recipient1, SupportType.ALLDAY, Optional.empty())
 						);
 				
 			}
 			
-			// 詳細リスト not empty
+			// 時間帯応援予定のチケットを追加する-> OK
 			{
-				val supportSchedule = SupportSchedule.create(require, Arrays.asList(
-						new SupportScheduleDetail (supportDestination1, SupportType.ALLDAY,	Optional.empty())
-						));
+				//時間帯応援予定
+				val ticket = Helper.createSupportTicket(recipient1, SupportType.TIMEZONE , Optional.of(
+						new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(11, 0)
+							,	TimeWithDayAttr.hourMinute(12, 0))));
+				
+				val supportSetting = new SupportOperationSetting(
+						true, true //dummy
+					,	new MaximumNumberOfSupport(5)//一日の最大応援回数
+						);
+				
+				new Expectations() {{
+					
+					require.getSupportOperationSetting();
+					result = supportSetting;
+					
+				}};
 				
 				//act
-				NtsAssert.businessException("Msg_2277",
-						() -> supportSchedule.add(require, ticket)
-					);
+				val result = supportSchedule.add(require, ticket);
+				
+				//assert
+				assertThat(result.getDetails())
+				.extracting(
+						d -> d.getSupportDestination()
+					,	d -> d.getSupportType()
+					,	d -> d.getTimeSpan().get().getStart()
+					,	d -> d.getTimeSpan().get().getEnd())
+				.containsExactly(
+						tuple(recipient1, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(11, 0), TimeWithDayAttr.hourMinute(12, 0))
+						);
 			}
-
 		}
-		
 	}
 	
 	public static class SupportSchedule_update{
@@ -494,12 +576,13 @@ public class SupportScheduleTest {
 			assertThat(result.getDetails())
 			.extracting(
 					d -> d.getSupportDestination()
+				,	d -> d.getSupportType()
 				,	d -> d.getTimeSpan().get().getStart()
 				,	d -> d.getTimeSpan().get().getEnd())
 			.containsExactly(
-					tuple(supportDestination2, TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(9, 0))
-				,	tuple(supportDestination1, TimeWithDayAttr.hourMinute(9, 30), TimeWithDayAttr.hourMinute(10, 0))
-				,	tuple(supportDestination3, TimeWithDayAttr.hourMinute(10, 0), TimeWithDayAttr.hourMinute(11, 0))
+					tuple(supportDestination2, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(9, 0))
+				,	tuple(supportDestination1, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(9, 30), TimeWithDayAttr.hourMinute(10, 0))
+				,	tuple(supportDestination3, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(10, 0), TimeWithDayAttr.hourMinute(11, 0))
 					);
 		}
 	}
@@ -532,18 +615,6 @@ public class SupportScheduleTest {
 		 */
 		@Test
 		public void testGetSupportType_case_allday(@Injectable TargetOrgIdenInfor supportDestination) {
-			
-			val supportSetting = new SupportOperationSetting(
-					true, true //dummy
-				,	new MaximumNumberOfSupport(5)//一日の最大応援回数
-					);
-			
-			new Expectations() {{
-				
-				require.getSupportOperationSetting();
-				result = supportSetting;
-				
-			}};
 			
 			val supportSche = SupportSchedule.create(require, Arrays.asList(
 					new SupportScheduleDetail (supportDestination, SupportType.ALLDAY, Optional.empty())));
@@ -606,13 +677,7 @@ public class SupportScheduleTest {
 					true, true //dummy
 				,	new MaximumNumberOfSupport(5)//一日の最大応援回数
 					);
-			
-			new Expectations() {{
-				
-				require.getSupportOperationSetting();
-				result = supportSetting;
-				
-			}};
+
 		}
 		/**
 		 * Target	: getSupportTimeSpanList
@@ -621,7 +686,7 @@ public class SupportScheduleTest {
 		 */
 		@Test
 		public void testGetSupportTimeSpanList_case_allDay(@Injectable TargetOrgIdenInfor supportDestination) {
-			
+			//応援予定 = 終日
 			val supportSche = SupportSchedule.create(require, Arrays.asList(
 					new SupportScheduleDetail (supportDestination, SupportType.ALLDAY, Optional.empty())));
 			
@@ -630,7 +695,6 @@ public class SupportScheduleTest {
 			
 			//assert
 			assertThat(result).isEmpty();
-			
 		}
 		
 		/**
@@ -639,6 +703,13 @@ public class SupportScheduleTest {
 		 */
 		@Test
 		public void testGetSupportTimeSpanList_case_timezone() {
+			
+			new Expectations() {{
+				
+				require.getSupportOperationSetting();
+				result = supportSetting;
+				
+			}};
 			
 			val supportSche = SupportSchedule.create(require, Arrays.asList(
 						Helper.createSupportScheDetailTimeZone(
@@ -660,6 +731,23 @@ public class SupportScheduleTest {
 					);
 		}
 		
+		/**
+		 * Target	: getSupportTimeSpanList
+		 * input	: 応援予定の詳細リスト = empty
+		 */
+		@Test
+		public void testGetSupportTimeSpanList_case_empty() {
+			
+			//応援予定 の詳細リスト = empty
+			val supportSche = SupportSchedule.createWithEmptyList();
+			
+			//act
+			val result = supportSche.getSupportTimeSpanList();
+			
+			//assert
+			assertThat(result).isEmpty();
+		}
+		
 	}
 	
 	public static class SupportSchedule_remove{
@@ -675,13 +763,6 @@ public class SupportScheduleTest {
 					true, true //dummy
 				,	new MaximumNumberOfSupport(5)//一日の最大応援回数
 					);
-			
-			new Expectations() {{
-				
-				require.getSupportOperationSetting();
-				result = supportSetting;
-				
-			}};
 		}
 		
 		@Test
@@ -710,6 +791,14 @@ public class SupportScheduleTest {
 												TimeWithDayAttr.hourMinute(10, 0), 
 												TimeWithDayAttr.hourMinute(11, 0))))
 					));
+			
+			new Expectations() {{
+				
+				require.getSupportOperationSetting();
+				result = supportSetting;
+				
+			}};
+			
 			val supportSche = SupportSchedule.create(require, details);
 			
 			//act
@@ -719,11 +808,12 @@ public class SupportScheduleTest {
 			assertThat(result.getDetails())
 			.extracting(
 					d -> d.getSupportDestination()
+				,	d -> d.getSupportType()
 				,	d -> d.getTimeSpan().get().getStart()
 				,	d -> d.getTimeSpan().get().getEnd())
 			.containsExactly(
-					tuple(supportDestination, TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(9, 0))
-				,	tuple(supportDestination, TimeWithDayAttr.hourMinute(10, 0), TimeWithDayAttr.hourMinute(11, 0))
+					tuple(supportDestination, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(9, 0))
+				,	tuple(supportDestination, SupportType.TIMEZONE, TimeWithDayAttr.hourMinute(10, 0), TimeWithDayAttr.hourMinute(11, 0))
 					);
 		}
 		
