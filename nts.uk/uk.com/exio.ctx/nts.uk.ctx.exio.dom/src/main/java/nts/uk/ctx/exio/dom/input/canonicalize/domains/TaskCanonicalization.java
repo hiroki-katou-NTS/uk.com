@@ -5,15 +5,18 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.val;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.DatePeriodCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 
+/**
+ * 作業の正準化
+ */
 public class TaskCanonicalization extends IndependentCanonicalization{
 
     @Override
@@ -49,29 +52,24 @@ public class TaskCanonicalization extends IndependentCanonicalization{
 
     @Override
     protected List<DomainDataColumn> getDomainDataKeys() {
-        return Arrays.asList(DomainDataColumn.CID,
+        return Arrays.asList( 
                                         new DomainDataColumn("作業コード", DataType.STRING),
                                         new DomainDataColumn("作業枠NO", DataType.INT));
     }
 
     @Override
     protected IntermediateResult canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, IntermediateResult targetResult) {
-    	
-    	checkRevisedData(require, context, targetResult);
-
+    	checkReversedDate(require, context, targetResult);
         return replaceColorCode(targetResult);
     }
 
     /**
-     * 開始日・終了日が逆転してないかチェッ
- * @param context ク
+     * 開始日・終了日が逆転してないかチェック
      */
-    private void checkRevisedData(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context,  IntermediateResult targetResult) {
-    	val period = new DatePeriod(targetResult.getItemByNo(Items.開始日).get().getDate(),
-    							    					targetResult.getItemByNo(Items.終了日).get().getDate());
-    	if(period.isReversed()) {
-    		require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), "開始日より終了日が未来にあります。"));    		
-    	}
+    private void checkReversedDate(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context,  IntermediateResult targetResult) {
+    	new DatePeriodCanonicalization(Items.開始日,Items.終了日)
+    				.getPeriod(targetResult)
+    				.ifLeft(e -> require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), e.toString())));
 	}
 
 	private IntermediateResult replaceColorCode(IntermediateResult targetResult) {
@@ -79,7 +77,7 @@ public class TaskCanonicalization extends IndependentCanonicalization{
         val frameNo = targetResult.getItemByNo(Items.作業枠NO).get().getInt().intValue();
         
         if(frameNo == 1) {
-        	targetResult.optionalItem(new CanonicalItem(Items.カラーコード, "#000000"));
+        	return targetResult.optionalItem(new CanonicalItem(Items.カラーコード, "#000000"));
         }
         //枠No1以外はカラーコードは空
         return targetResult.addCanonicalized(new CanonicalItem(Items.カラーコード, null));
