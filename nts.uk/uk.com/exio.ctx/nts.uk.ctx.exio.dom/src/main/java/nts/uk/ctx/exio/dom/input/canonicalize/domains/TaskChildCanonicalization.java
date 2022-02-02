@@ -38,7 +38,8 @@ public class TaskChildCanonicalization extends IndependentCanonicalization{
 
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.CID, 
+		return Arrays.asList(
+				DomainDataColumn.CID, 
 				new DomainDataColumn("作業枠No", DataType.INT),
 				new DomainDataColumn("作業コード", DataType.STRING),
 				new DomainDataColumn("子作業コード", DataType.STRING));
@@ -58,7 +59,7 @@ public class TaskChildCanonicalization extends IndependentCanonicalization{
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context, IntermediateResult targetResult) {
 		if(targetResult.getItemByNo(Items.作業枠No).get().getInt().intValue() > 4) {
-			require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), "作業枠No４以下のデータしか受入れられません。"));
+			require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), "作業枠No5に対して下位作業は設定できません。"));
 		}
 	}
 }
