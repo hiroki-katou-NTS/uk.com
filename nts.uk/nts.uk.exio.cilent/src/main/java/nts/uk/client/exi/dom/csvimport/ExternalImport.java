@@ -34,7 +34,9 @@ public class ExternalImport {
 	private String employeeCode;
 	private String password;
 
-	public ExternalImport(String settingCode) {
+	private boolean continueFlg;
+
+	public ExternalImport(String settingCode, boolean continueFlg) {
 		this.serverUrl = ExiClientProperty.getProperty(ExiClientProperty.UK_SERVER_URL);
 		
     	this.constractCode = ExiClientProperty.getProperty(ExiClientProperty.UK_CONTRACT_CODE);
@@ -44,14 +46,18 @@ public class ExternalImport {
 
     	this.employeeCode = ExiClientProperty.getProperty(ExiClientProperty.UK_LOGIN_EMPLOYEE_CODE);
 		this.password = ExiClientProperty.getProperty(ExiClientProperty.UK_LOGIN_PASSWORD);
+
+		this.continueFlg = continueFlg;
 	}
 
 	public boolean doWork(String fileId) {
 
 		try {
 			CallWebServiceResult result = login();
-			prepare(fileId, result.setCookies);
-			execute(result.setCookies);
+			boolean preparaResult = prepare(fileId, result.setCookies);
+			if(continueFlg || preparaResult) {
+				execute(result.setCookies);
+			}
 		}
 		catch (Exception e){
 			System.out.println(EOL);
@@ -75,7 +81,7 @@ public class ExternalImport {
 			return callWebService(url, json);
 	}
 
-	private void prepare(String fileId, List<String> cookieList) throws IOException, InterruptedException {
+	private boolean prepare(String fileId, List<String> cookieList) throws IOException, InterruptedException {
 		LogManager.out("外部受入 事前チェック -- 開始 --");
 
 	    String json = "{"
@@ -84,16 +90,18 @@ public class ExternalImport {
 			+ "}";
 	    
 		URL url = new URL(serverUrl + SERVICE_URL_PREPARE);
-		CallWebServiceResult result = callWebService(url, json, cookieList);
+		CallWebServiceResult wsResult = callWebService(url, json, cookieList);
 		
-		String taskId = (String) result.jsonAsyncTaskInfo.get("id");
-		if ((boolean) result.jsonAsyncTaskInfo.get("running")) {
+		String taskId = (String) wsResult.jsonAsyncTaskInfo.get("id");
+		if ((boolean) wsResult.jsonAsyncTaskInfo.get("running")) {
 			awaitComplated(cookieList, taskId);
 		}
 
-		checkErrorMessage("受入準備",cookieList);
+		boolean result = checkErrorMessage("受入準備",cookieList);
 		
 		LogManager.out("外部受入 事前チェック -- 終了 --");
+
+		return result;
 	}
 
 	private void execute(List<String> cookieList) throws IOException, InterruptedException {
@@ -200,7 +208,7 @@ public class ExternalImport {
 		}
 	}
 
-	private void checkErrorMessage(String processName, List<String> cookieList) throws IOException {
+	private boolean checkErrorMessage(String processName, List<String> cookieList) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		int errorsCount = 1;
 		for (int requestCount = 1;; requestCount++) {
@@ -215,6 +223,10 @@ public class ExternalImport {
 		if(sb.length()>0) {
 			String errorMessage = processName + "が完了しましたが、以下のエラーが発生しています。\r\n" + sb.toString();
 			LogManager.err(errorMessage);
+
+			return false;
 		}
+
+		return true;
 	}
 }

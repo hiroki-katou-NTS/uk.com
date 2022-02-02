@@ -13,13 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -46,8 +40,14 @@ public class FileUploader {
 				return str.endsWith("csv");	// 拡張子csvでフィルタ
 			}
 		};
-		
-		List<Path> filePathList = Arrays.stream(csvFolder.listFiles(filter))
+
+		File[] csvFiles = csvFolder.listFiles(filter);
+		if(csvFiles == null) {
+			LogManager.err("指定フォルダ内にcsvファイルが見つかりません。:" + csvFolder.getPath() + "\r\n");
+			return Collections.emptyList();
+		}
+
+		List<Path> filePathList = Arrays.stream(csvFiles)
 			.map(f -> Paths.get(f.getPath()))
 			.collect(Collectors.toList());
 
