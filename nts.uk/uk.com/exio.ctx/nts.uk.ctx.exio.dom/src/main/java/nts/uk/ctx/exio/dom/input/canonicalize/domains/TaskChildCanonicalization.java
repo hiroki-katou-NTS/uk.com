@@ -20,7 +20,7 @@ public class TaskChildCanonicalization extends IndependentCanonicalization{
 	}
 
 	public static class Items {
-		public static final int 作業枠No = 1;
+		public static final int 作業枠NO = 1;
 		public static final int 作業コード = 2;
 		public static final int 子作業コード = 3;
 	}
@@ -40,7 +40,7 @@ public class TaskChildCanonicalization extends IndependentCanonicalization{
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(
 				DomainDataColumn.CID, 
-				new DomainDataColumn("作業枠No", DataType.INT),
+				new DomainDataColumn("作業枠NO", DataType.INT),
 				new DomainDataColumn("作業コード", DataType.STRING),
 				new DomainDataColumn("子作業コード", DataType.STRING));
 	}
@@ -58,7 +58,7 @@ public class TaskChildCanonicalization extends IndependentCanonicalization{
 	private void checkFrameNoOver4(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context, IntermediateResult targetResult) {
-		if(targetResult.getItemByNo(Items.作業枠No).get().getInt().intValue() > 4) {
+		if(targetResult.getItemByNo(Items.作業枠NO).get().getInt().intValue() > 4) {
 			require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), "作業枠No5に対して下位作業は設定できません。"));
 		}
 	}
