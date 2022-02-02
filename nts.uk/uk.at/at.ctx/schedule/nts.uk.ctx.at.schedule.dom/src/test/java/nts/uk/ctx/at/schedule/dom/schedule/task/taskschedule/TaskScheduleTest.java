@@ -622,7 +622,7 @@ public class TaskScheduleTest {
 		}
 		
 		@Test
-		public void test_removeAll() {
+		public void test_removeAll_case1() {
 			
 			TimeSpanForCalc timeSpan = new TimeSpanForCalc(
 					TimeWithDayAttr.hourMinute(8, 0),
@@ -634,11 +634,44 @@ public class TaskScheduleTest {
 		}
 		
 		@Test
-		public void test_removePartly() {
+		public void test_removeAll_case2() {
+			
+			TimeSpanForCalc timeSpan = new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(7, 0),
+					TimeWithDayAttr.hourMinute(12, 0) );
+			
+			TaskSchedule result = target.removeTaskScheduleDetailIn(timeSpan);
+			
+			assertThat(result.getDetails()).isEmpty();
+		}
+		
+		@Test
+		public void test_removePartly_case1() {
 			
 			TimeSpanForCalc timeSpan = new TimeSpanForCalc(
 					TimeWithDayAttr.hourMinute(8, 0), 
 					TimeWithDayAttr.hourMinute(9, 0) );
+			
+			TaskSchedule result = target.removeTaskScheduleDetailIn(timeSpan);
+			
+			assertThat(result.getDetails())
+				.extracting(
+						e -> e.getTaskCode().v(),
+						e -> e.getTimeSpan().getStart().rawHour(),
+						e -> e.getTimeSpan().getStart().minute(),
+						e -> e.getTimeSpan().getEnd().rawHour(),
+						e -> e.getTimeSpan().getEnd().minute()
+						)
+				.containsExactly(
+						tuple("002", 10, 0, 11, 0) );
+		}
+		
+		@Test
+		public void test_removePartly_case2() {
+			
+			TimeSpanForCalc timeSpan = new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(8, 30), 
+					TimeWithDayAttr.hourMinute(9, 30) );
 			
 			TaskSchedule result = target.removeTaskScheduleDetailIn(timeSpan);
 			
