@@ -200,7 +200,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 				value = stringified.asString();
 				break;
 			case INT:
-				value = stringified.asInteger();
+				value = stringified.asLong();
 				break;
 			case REAL:
 				value = stringified.asBigDecimal();
