@@ -92,8 +92,7 @@ public class GrantListOfTaskScheduleTest {
 								Optional.empty())
 						)));
 		
-		new Expectations( workSchedule1, workSchedule2 ) {{
-			
+		new Expectations(workSchedule1, workSchedule2) {{
 			require.getWorkSchedule( (List<String>) any, (GeneralDate) any);
 			result = Arrays.asList(workSchedule1, workSchedule2);
 			
@@ -109,6 +108,12 @@ public class GrantListOfTaskScheduleTest {
 		assertThat(result.size()).isEqualTo(2);
 
 		new Verifications() {{
+			workSchedule1.createTaskScheduleForWholeDay(require, (TaskCode) any);
+			times = 1;
+			
+			workSchedule2.createTaskScheduleForWholeDay(require, (TaskCode) any);
+			times = 1;
+			
 			require.updateWorkSchedule( (WorkSchedule) any);
 			times = 0;  // まだ呼ばれていない
 		}};
@@ -167,6 +172,12 @@ public class GrantListOfTaskScheduleTest {
 		assertThat(result.size()).isEqualTo(2);
 
 		new Verifications() {{
+			workSchedule1.addTaskScheduleWithTimeSpan(require, (TimeSpanForCalc) any, (TaskCode) any);
+			times = 1;
+			
+			workSchedule2.addTaskScheduleWithTimeSpan(require, (TimeSpanForCalc) any, (TaskCode) any);
+			times = 1;
+			
 			require.updateWorkSchedule( (WorkSchedule) any);
 			times = 0;  // まだ呼ばれていない
 		}};

@@ -11,6 +11,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
+import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -48,10 +49,16 @@ public class UpdateSupportScheduleFromSupportableEmployeeTest {
 		val supportableEmployee = SupportableEmployee.createAsTimezone(new EmployeeId(employeeId), recipient, date, timespan);
 		
 		new Expectations() {{
-			
 			require.isExistWorkSchedule(employeeId, date);
 			result = false;
 		}};
+		
+		new MockUp<BusinessException>() {
+			@Mock public String getMessage() {
+				return this.getMockInstance().getMessageId().equals("Msg_2274")
+						? "msg_2274 content" : "other message";
+			}
+		};
 		
 		val result = UpdateSupportScheduleFromSupportableEmployee.add(require, supportableEmployee);
 		
@@ -59,7 +66,7 @@ public class UpdateSupportScheduleFromSupportableEmployeeTest {
 		assertThat(result.getAtomTaskList()).isEmpty();
 		
 		assertThat(result.getErrorInfo().get().getSupportableEmployee()).isEqualTo(supportableEmployee);
-		assertThat(result.getErrorInfo().get().getErrorMessage()).isEqualTo("Msg_2274"); // Msg_2274の内容を取得できなければ、Msg_2274コードを返すから
+		assertThat(result.getErrorInfo().get().getErrorMessage()).isEqualTo("msg_2274 content");
 	}
 	
 	/**
@@ -299,10 +306,16 @@ public class UpdateSupportScheduleFromSupportableEmployeeTest {
 		val supportableEmployee = SupportableEmployee.createAsTimezone(new EmployeeId(employeeId), recipient, date, timespan);
 		
 		new Expectations() {{
-			
 			require.isExistWorkSchedule(employeeId, date);
 			result = false;
 		}};
+		
+		new MockUp<BusinessException>() {
+			@Mock public String getMessage() {
+				return this.getMockInstance().getMessageId().equals("Msg_2274")
+						? "msg_2274 content" : "other message";
+			}
+		};
 		
 		val result = UpdateSupportScheduleFromSupportableEmployee.remove(require, supportableEmployee);
 		
@@ -310,7 +323,7 @@ public class UpdateSupportScheduleFromSupportableEmployeeTest {
 		assertThat(result.getAtomTaskList()).isEmpty();
 		
 		assertThat(result.getErrorInfo().get().getSupportableEmployee()).isEqualTo(supportableEmployee);
-		assertThat(result.getErrorInfo().get().getErrorMessage()).isEqualTo("Msg_2274");// Msg_2274の内容を取得できなければ、Msg_2274コードを返すから
+		assertThat(result.getErrorInfo().get().getErrorMessage()).isEqualTo("msg_2274 content");
 	}
 	
 	/**
@@ -538,8 +551,6 @@ public class UpdateSupportScheduleFromSupportableEmployeeTest {
 	@Test
 	public void testModify_timeZone_Msg_2274(
 			@Injectable TargetOrgIdenInfor recipient) {
-		
-		
 		String employeeId = "emp-id";
 		GeneralDate date = GeneralDate.ymd(2021, 12, 1);
 		TimeSpanForCalc timespan = new TimeSpanForCalc(
@@ -550,7 +561,6 @@ public class UpdateSupportScheduleFromSupportableEmployeeTest {
 				new EmployeeId(employeeId), recipient, date, timespan);
 		
 		new Expectations() {{
-			
 			require.getSupportableEmployee(afterModify.getId());
 			result = Optional.of( new SupportableEmployee(
 					afterModify.getId(), 
@@ -562,8 +572,14 @@ public class UpdateSupportScheduleFromSupportableEmployeeTest {
 			
 			require.isExistWorkSchedule(employeeId, date);
 			result = false;
-			
 		}};
+		
+		new MockUp<BusinessException>() {
+			@Mock public String getMessage() {
+				return this.getMockInstance().getMessageId().equals("Msg_2274")
+						? "msg_2274 content" : "other message";
+			}
+		};
 		
 		val result = UpdateSupportScheduleFromSupportableEmployee.modify(require, afterModify);
 		
@@ -571,7 +587,7 @@ public class UpdateSupportScheduleFromSupportableEmployeeTest {
 		assertThat(result.getAtomTaskList()).isEmpty();
 		
 		assertThat(result.getErrorInfo().get().getSupportableEmployee()).isEqualTo(afterModify);
-		assertThat(result.getErrorInfo().get().getErrorMessage()).isEqualTo("Msg_2274");// Msg_2274の内容を取得できなければ、Msg_2274コードを返すから
+		assertThat(result.getErrorInfo().get().getErrorMessage()).isEqualTo("msg_2274 content");
 	}
 	
 	/**
