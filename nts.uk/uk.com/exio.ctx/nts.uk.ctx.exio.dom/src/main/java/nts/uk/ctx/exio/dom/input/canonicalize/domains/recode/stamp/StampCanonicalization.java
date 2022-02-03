@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp;
+﻿package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
@@ -130,6 +130,15 @@ public class StampCanonicalization implements DomainCanonicalization {
 			// 永続化
 			require.save(context, interm.complete());
 		});
+	}
+
+	/**
+	 * E版での処理拡張用
+	 * @param interm
+	 * @return
+	 */
+	protected IntermediateResult preCanonicalize(IntermediateResult interm) {
+		return interm;
 	}
 
 	/**

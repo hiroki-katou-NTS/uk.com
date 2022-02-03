@@ -133,7 +133,13 @@ public class TransferCanonicalData {
 	private static ConversionSource getConversionSource(Require require, ExecutionContext context) {
 		
 		val importingDomain = require.getImportingDomain(context.getDomainId());
-		val base = require.getConversionSource(importingDomain.getName());
+
+		String imporingDomainName = importingDomain.getName();
+		if (context.getDomainId() == ImportingDomainId.STAMP_ENTERPRISE) {
+			imporingDomainName = require.getImportingDomain(ImportingDomainId.STAMP).getName();
+		}
+
+		val base = require.getConversionSource(imporingDomainName);
 		
 		val tableName = new WorkspaceTableName(context);
 		
