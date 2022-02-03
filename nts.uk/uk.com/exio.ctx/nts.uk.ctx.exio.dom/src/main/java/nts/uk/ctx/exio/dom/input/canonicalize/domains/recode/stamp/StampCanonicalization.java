@@ -163,9 +163,6 @@ public class StampCanonicalization implements DomainCanonicalization {
 		if(!interm.getItemByNo(Items.勤務種類を半休に変更する).isPresent()) {
 			interm = interm.addCanonicalized(CanonicalItem.of(Items.勤務種類を半休に変更する, 0));
 		}
-		if(!interm.getItemByNo(Items.時刻変更区分).isPresent()) {
-			interm = interm.addCanonicalized(CanonicalItem.of(Items.時刻変更区分, 7));
-		}
 		return interm;
 	}
 
