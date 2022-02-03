@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
