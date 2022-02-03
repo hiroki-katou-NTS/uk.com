@@ -92,6 +92,7 @@ public class StampCanonicalization implements DomainCanonicalization {
 			importingKeys.add(key);
 
 			IntermediateResult interm = IntermediateResult.create(revisedData);
+			interm = preCanonicalize(interm);
 
 			// 職場コードの正準化
 			if(interm.getItemByNo(Items.職場コード).isPresent()) {
