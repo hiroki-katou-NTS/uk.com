@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.pv;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
@@ -9,24 +9,20 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 import java.io.Serializable;
 
 /**
- * 就業時間帯コード(Enterprise)
+ * E版打刻データ就業時間帯コード
  * Enterprise仕様のデータ型
  * Enterpriseでは、EMPTYを"000"として保持しているため
- *
  */
 @StringMaxLength(3)
 @StringCharType(CharType.ALPHA_NUMERIC)
 @ZeroPaddedCode
-public class WorkTimeCodeForEnterprise  extends CodePrimitiveValue<WorkTimeCodeForEnterprise> implements Serializable {
+public class EnterpriseStampDataWorkTimeCode extends CodePrimitiveValue<EnterpriseStampDataWorkTimeCode> implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-
-	public WorkTimeCodeForEnterprise(String rawValue) {
+	public EnterpriseStampDataWorkTimeCode(String rawValue) {
 		super(rawValue);
 	}
 
 	public boolean isEmpty(){
-		// "000"の場合はempty扱い
-		return this.equals("000");
+		return v().equals("000");
 	}
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.pv;
 
 
 import nts.arc.primitive.StringPrimitiveValue;
@@ -7,32 +7,28 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * 応援カード番号(Enterprise)
+ * E版打刻データ応援カード番号
  * Enterprise仕様のデータ型
  * Enterpriseでは、EMPTYを"      "(半角スペース6桁)として保持しているため
- *
  */
 @StringMaxLength(6)
 @StringCharType(CharType.NUMERIC)
-public class SupportCardNumberForEnterprise extends StringPrimitiveValue<SupportCardNumberForEnterprise> {
+public class EnterpriseStampDataSupportCardNumber extends StringPrimitiveValue<EnterpriseStampDataSupportCardNumber> {
 
-	public SupportCardNumberForEnterprise(String rawValue) {
+	public EnterpriseStampDataSupportCardNumber(String rawValue) {
 		super(rawValue);
 	}
 
-	private static final long serialVersionUID = 1L;
-
 	@Override
 	public void validate() {
-		// 半角スペース6桁の場合はempty扱いのため検証不要
-		if(this.equals("      ")) {
+		// emptyの場合は検証不要
+		if(this.isEmpty()) {
 			return;
 		}
 		super.validate();
 	}
 
 	public boolean isEmpty(){
-		// 半角スペース6桁の場合はempty扱い
-		return this.equals("      ");
+		return v().equals("      ");
 	}
 }
