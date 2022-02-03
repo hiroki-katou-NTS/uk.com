@@ -84,22 +84,20 @@ public class StampCanonicalization implements DomainCanonicalization {
 
 		CanonicalizeUtil.forEachRow(require, context, revisedData -> {
 
-			KeyValues key = getPrimaryKeys(revisedData, workspace);
-			if (importingKeys.contains(key)) {
-				require.add(ExternalImportError.record(revisedData.getRowNo(), context.getDomainId(), "受入データの中にキーの重複があります。"));
-				return;
-			}
-			importingKeys.add(key);
-
 			IntermediateResult interm = IntermediateResult.create(revisedData);
+
 			interm = preCanonicalize(interm);
 
 			// 職場コードの正準化
-			if(interm.getItemByNo(Items.職場コード).isPresent()) {
+			val optWkpCdItem = interm.getItemByNo(Items.職場コード);
+			if(optWkpCdItem.isPresent() && !optWkpCdItem.get().isNull()) {
 				val wkpCanoItems = new CanonicalItemList();
 				workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo(), Items.年月日, Items.職場コード, Items.職場ID)
-						.ifLeft(error -> require.add(ExternalImportError.of(context.getDomainId(), error)))
-						.ifRight(canonicalized -> wkpCanoItems.addItem(canonicalized.getItemByNo(Items.職場ID).get()));
+						.ifRight(canonicalized -> wkpCanoItems.addItem(canonicalized.getItemByNo(Items.職場ID).get()))
+						.ifLeft(error -> {
+							require.add(ExternalImportError.of(context.getDomainId(), error));
+							return;
+						});
 				interm = interm.addCanonicalized(wkpCanoItems);
 			}
 
@@ -111,6 +109,14 @@ public class StampCanonicalization implements DomainCanonicalization {
 
 			// 固定値の追加
 			interm = setFixedItems(interm);
+
+			// キー重複チェック
+			KeyValues key = getPrimaryKeys(interm, workspace);
+			if (importingKeys.contains(key)) {
+				require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), "受入データの中にキーの重複があります。"));
+				return;
+			}
+			importingKeys.add(key);
 
 			// 	制約のチェック
 			val errorList = checkConstraints(interm);
@@ -148,19 +154,19 @@ public class StampCanonicalization implements DomainCanonicalization {
 	 * @return
 	 */
 	private static IntermediateResult setDefaultItems(IntermediateResult interm) {
-		if(!interm.getItemByNo(Items.認証方法).isPresent()) {
+		if(interm.getItemByNo(Items.認証方法).get().isNull()) {
 			interm = interm.addCanonicalized(CanonicalItem.of(Items.認証方法, 3));
 		}
-		if(!interm.getItemByNo(Items.打刻手段).isPresent()) {
+		if(interm.getItemByNo(Items.打刻手段).get().isNull()) {
 			interm = interm.addCanonicalized(CanonicalItem.of(Items.打刻手段, 7));
 		}
-		if(!interm.getItemByNo(Items.計算区分変更対象).isPresent()) {
+		if(interm.getItemByNo(Items.計算区分変更対象).get().isNull()) {
 			interm = interm.addCanonicalized(CanonicalItem.of(Items.計算区分変更対象, 0));
 		}
-		if(!interm.getItemByNo(Items.所定時刻セット区分).isPresent()) {
+		if(interm.getItemByNo(Items.所定時刻セット区分).get().isNull()) {
 			interm = interm.addCanonicalized(CanonicalItem.of(Items.所定時刻セット区分, 0));
 		}
-		if(!interm.getItemByNo(Items.勤務種類を半休に変更する).isPresent()) {
+		if(interm.getItemByNo(Items.勤務種類を半休に変更する).get().isNull()) {
 			interm = interm.addCanonicalized(CanonicalItem.of(Items.勤務種類を半休に変更する, 0));
 		}
 		return interm;
@@ -190,11 +196,17 @@ public class StampCanonicalization implements DomainCanonicalization {
 		return errorList;
 	}
 
-	private KeyValues getPrimaryKeys(RevisedDataRecord record, DomainWorkspace workspace) {
+	/**
+	 * 主キー項目の値の取得
+	 * @param interm
+	 * @param workspace
+	 * @return
+	 */
+	private KeyValues getPrimaryKeys(IntermediateResult interm, DomainWorkspace workspace) {
 		return workspace.getItemsPk().stream()
 				.map(k -> k.getItemNo())
 				.collect(toList()).stream()
-				.map(itemNo -> record.getItemByNo(itemNo).get())
+				.map(itemNo -> interm.getItemByNo(itemNo).get())
 				.map(item -> item.getValue())
 				.collect(Collectors.collectingAndThen(toList(), KeyValues::new));
 	}

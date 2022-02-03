@@ -38,8 +38,9 @@ public class DateTimeCanonicalization {
 
 		// 秒の既定値は0
 		int second = 0;
-		if(interm.getItemByNo(itemNoSecond).isPresent()) {
-			second = (int) (long) interm.getItemByNo(itemNoSecond).get().getInt();
+		val optSecondItem = interm.getItemByNo(itemNoSecond);
+		if(optSecondItem.isPresent()) {
+			second = optSecondItem.get().getValue() != null ? (int) (long) optSecondItem.get().getInt() : 0;
 		}
 
 		int hour = time / 60;
