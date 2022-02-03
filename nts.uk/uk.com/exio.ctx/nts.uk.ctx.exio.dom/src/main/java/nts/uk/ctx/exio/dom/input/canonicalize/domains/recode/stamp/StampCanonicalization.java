@@ -92,6 +92,7 @@ public class StampCanonicalization implements DomainCanonicalization {
 			importingKeys.add(key);
 
 			IntermediateResult interm = IntermediateResult.create(revisedData);
+			interm = preCanonicalize(interm);
 
 			// 職場コードの正準化
 			val wkpCanoItems = new CanonicalItemList();
@@ -132,6 +133,15 @@ public class StampCanonicalization implements DomainCanonicalization {
 			// 永続化
 			require.save(context, interm.complete());
 		});
+	}
+
+	/**
+	 * E版での処理拡張用
+	 * @param interm
+	 * @return
+	 */
+	protected IntermediateResult preCanonicalize(IntermediateResult interm) {
+		return interm;
 	}
 
 	private static CanonicalItemList getFixedItems() {
