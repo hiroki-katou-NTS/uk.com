@@ -30,7 +30,7 @@ public class DateTimeCanonicalization {
 			IntermediateResult interm,
 			int itemNoDate,
 			int itemNoTime,
-			Optional<Integer> itemNoSecond,
+			int itemNoSecond,
 			int itemNoDateTime) {
 
 		val date = interm.getItemByNo(itemNoDate).get().getDate();
@@ -38,8 +38,8 @@ public class DateTimeCanonicalization {
 
 		// 秒の既定値は0
 		int second = 0;
-		if(itemNoSecond.isPresent()) {
-			second = (int) (long) interm.getItemByNo(itemNoSecond.get()).get().getInt();
+		if(interm.getItemByNo(itemNoSecond).isPresent()) {
+			second = (int) (long) interm.getItemByNo(itemNoSecond).get().getInt();
 		}
 
 		int hour = time / 60;

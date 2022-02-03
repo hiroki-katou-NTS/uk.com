@@ -94,24 +94,22 @@ public class StampCanonicalization implements DomainCanonicalization {
 			IntermediateResult interm = IntermediateResult.create(revisedData);
 
 			// 職場コードの正準化
-			val wkpCanoItems = new CanonicalItemList();
-			workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo(), Items.年月日, Items.職場コード, Items.職場ID)
-					.ifLeft(error -> require.add(ExternalImportError.of(context.getDomainId(), error)))
-					.ifRight(canonicalized -> {
-						wkpCanoItems.addItem(canonicalized.getItemByNo(Items.職場ID).get());
-					});
-			interm = interm.addCanonicalized(wkpCanoItems);
-
-			// 打刻日時の正準化(年月日時分秒→日時)
-			interm = interm.addCanonicalized(dateTimeCanonicalization.canonicalize(require, interm, Items.年月日, Items.時分, Optional.of(Items.秒), Items.打刻日時).getItems());
-
-			// 時刻変更区分の既定値のセット
-			if(!interm.getItemByNo(Items.時刻変更区分).isPresent()) {
-				interm = interm.addCanonicalized(CanonicalItem.of(Items.時刻変更区分, 7));
+			if(interm.getItemByNo(Items.職場コード).isPresent()) {
+				val wkpCanoItems = new CanonicalItemList();
+				workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo(), Items.年月日, Items.職場コード, Items.職場ID)
+						.ifLeft(error -> require.add(ExternalImportError.of(context.getDomainId(), error)))
+						.ifRight(canonicalized -> wkpCanoItems.addItem(canonicalized.getItemByNo(Items.職場ID).get()));
+				interm = interm.addCanonicalized(wkpCanoItems);
 			}
 
+			// 打刻日時の正準化(年月日時分秒→日時)
+			interm = interm.addCanonicalized(dateTimeCanonicalization.canonicalize(require, interm, Items.年月日, Items.時分, Items.秒, Items.打刻日時).getItems());
+
+			// 既定値の追加
+			interm = setDefaultItems(interm);
+
 			// 固定値の追加
-			interm = interm.addCanonicalized(getFixedItems());
+			interm = setFixedItems(interm);
 
 			// 	制約のチェック
 			val errorList = checkConstraints(interm);
@@ -134,11 +132,43 @@ public class StampCanonicalization implements DomainCanonicalization {
 		});
 	}
 
-	private static CanonicalItemList getFixedItems() {
-		return new CanonicalItemList()
-				.add(Items.反映済み区分, 0);
+	/**
+	 * 既定値のセット
+	 * @param interm
+	 * @return
+	 */
+	private static IntermediateResult setDefaultItems(IntermediateResult interm) {
+		if(!interm.getItemByNo(Items.認証方法).isPresent()) {
+			interm = interm.addCanonicalized(CanonicalItem.of(Items.認証方法, 3));
+		}
+		if(!interm.getItemByNo(Items.打刻手段).isPresent()) {
+			interm = interm.addCanonicalized(CanonicalItem.of(Items.打刻手段, 7));
+		}
+		if(!interm.getItemByNo(Items.計算区分変更対象).isPresent()) {
+			interm = interm.addCanonicalized(CanonicalItem.of(Items.計算区分変更対象, 0));
+		}
+		if(!interm.getItemByNo(Items.所定時刻セット区分).isPresent()) {
+			interm = interm.addCanonicalized(CanonicalItem.of(Items.所定時刻セット区分, 0));
+		}
+		if(!interm.getItemByNo(Items.勤務種類を半休に変更する).isPresent()) {
+			interm = interm.addCanonicalized(CanonicalItem.of(Items.勤務種類を半休に変更する, 0));
+		}
+		if(!interm.getItemByNo(Items.時刻変更区分).isPresent()) {
+			interm = interm.addCanonicalized(CanonicalItem.of(Items.時刻変更区分, 7));
+		}
+		return interm;
 	}
 
+	/**
+	 * 固定値のセット
+	 * @param interm
+	 * @return
+	 */
+	private static IntermediateResult setFixedItems(IntermediateResult interm) {
+		val fixedItems = new CanonicalItemList()
+				.add(Items.反映済み区分, 0);
+		return interm.addCanonicalized(fixedItems);
+	}
 
 	/**
 	 * 制約のチェック
@@ -177,6 +207,7 @@ public class StampCanonicalization implements DomainCanonicalization {
 		if (!recordsToChange.isEmpty()) {
 			throw new RuntimeException("既存データの変更はありえない");
 		}
+		// INSERTのみのため補正処理は不要
 		return AtomTask.none();
 	}
 }
