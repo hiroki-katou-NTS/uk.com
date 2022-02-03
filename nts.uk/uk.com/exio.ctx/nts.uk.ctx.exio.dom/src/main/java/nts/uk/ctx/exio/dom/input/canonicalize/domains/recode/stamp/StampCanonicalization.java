@@ -190,8 +190,11 @@ public class StampCanonicalization implements DomainCanonicalization {
 	 */
 	private static List<RecordError> checkConstraints(IntermediateResult interm){
 		val errorList = new ArrayList<RecordError>();
-		if(interm.getItemByNo(Items.時刻変更区分).get().equals(4)){
-			errorList.add(RecordError.record(interm.getRowNo(), "「時刻変更区分」が”4：外出”の場合、「外出区分」を受け入れる必要があります。"));
+		// 「時刻変更区分」が「4：外出」の場合、「外出区分」はEmptyでないこと
+		if(interm.getItemByNo(Items.時刻変更区分).get().getInt() == 4){
+			if(interm.getItemByNo(Items.外出区分).get().isNull()) {
+				errorList.add(RecordError.record(interm.getRowNo(), "「時刻変更区分」が「4：外出」の場合、「外出区分」を受け入れる必要があります。"));
+			}
 		}
 		return errorList;
 	}
