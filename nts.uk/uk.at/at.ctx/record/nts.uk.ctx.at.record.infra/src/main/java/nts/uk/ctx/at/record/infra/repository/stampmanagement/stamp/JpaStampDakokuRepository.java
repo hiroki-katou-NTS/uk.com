@@ -400,7 +400,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				+ " and s.pk.changeClockArt = :changeClockArt ";
 		return this.queryProxy().query(query, KrcdtStamp.class)
 				.setParameter("contractCode", contractCode)
-				.setParameter("cardNumbers", stampNumber)
+				.setParameter("cardNumber", stampNumber)
 				.setParameter("stampDateTime", stampDateTime)
 				.setParameter("changeClockArt", changeClockArt)
 				.getSingle().map(x -> toDomain(x));
