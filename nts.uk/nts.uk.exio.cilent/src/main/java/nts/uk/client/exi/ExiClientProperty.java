@@ -8,7 +8,6 @@ import java.util.Properties;
 
 public class ExiClientProperty {
     public static final String LOG_FILE_PATH = "LogFile";
-	public static final String SETTING_FILE_PATH = "SettingFile";
 
 	public static final String UK_SERVER_URL = "UkServerUrl";
 
@@ -26,7 +25,8 @@ public class ExiClientProperty {
         try {
             properties.load(Files.newBufferedReader(Paths.get(INIT_FILE_PATH), StandardCharsets.UTF_8));
         } catch (IOException e) {
-            System.err.println(String.format("ファイルの読み込みに失敗しました。ファイル名:%s", INIT_FILE_PATH));
+            System.err.println(String.format("設定ファイルの読み込みに失敗しました。ファイル名:%s", INIT_FILE_PATH));
+            throw new ExceptionInInitializerError(e);
         }
     }
 

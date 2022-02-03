@@ -33,13 +33,13 @@ public class ExcecuteImportService {
 	public void doWork() {
 		LogManager.init();
 		
-		// 設定ファイルの読み込み
-		String settingFilePath =
-			(this.filePath == null || this.filePath.isEmpty())
-				? ExiClientProperty.getProperty(ExiClientProperty.SETTING_FILE_PATH)
-				: this.filePath;
+//		// 設定ファイルから取り込み対象リストのパスを読み込み
+//		String targetListFilePath =
+//			(this.filePath == null || this.filePath.isEmpty())
+//				? ExiClientProperty.getProperty(ExiClientProperty.SETTING_FILE_PATH)
+//				: this.filePath;
 
-		List<Map<String, String>> targetList = readTargetList(settingFilePath);
+		List<Map<String, String>> targetList = readTargetList(this.filePath);
 
 		targetList.stream().forEach(target -> {
 			String settingCode = target.get(MAPKEY_SETTING_CODE);
@@ -61,9 +61,9 @@ public class ExcecuteImportService {
 		});
 	}
 
-	private List<Map<String, String>> readTargetList(String settingFilePath) {
+	private List<Map<String, String>> readTargetList(String targetListFilePath) {
 		List<Map<String, String>> result = new ArrayList<>();
-		try (FileInputStream fs = new FileInputStream(settingFilePath);
+		try (FileInputStream fs = new FileInputStream(targetListFilePath);
 				InputStreamReader sr = new InputStreamReader(fs);
 				BufferedReader br = new BufferedReader(sr)) {
 			String line = br.readLine();
@@ -71,12 +71,12 @@ public class ExcecuteImportService {
 				String[] param = line.split(",");
 				if (param.length == 3) {
 					Map<String, String> map = new HashMap<>();
-					map.put(MAPKEY_SETTING_CODE, param[0]);
-					map.put(MAPKEY_CSV_FILEPATH, param[1]);
-					map.put(MAPKEY_CONTINUE_FLG, param[2]);
+					map.put(MAPKEY_SETTING_CODE, param[0].trim());
+					map.put(MAPKEY_CSV_FILEPATH, param[1].trim());
+					map.put(MAPKEY_CONTINUE_FLG, param[2].trim());
 					result.add(map);
 				} else {
-					throw new IOException("[" + (result.size() + 1) + "]行目の設定ファイルの項目数が不正です。[正常:3、入力:" + param.length + "]");
+					throw new IOException("[" + (result.size() + 1) + "]行目の取り込み対象リストの項目数が不正です。[正常:3、入力:" + param.length + "]");
 				}
 				line = br.readLine();
 			}

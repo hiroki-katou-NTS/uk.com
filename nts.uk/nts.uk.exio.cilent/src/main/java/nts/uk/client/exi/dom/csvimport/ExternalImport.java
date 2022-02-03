@@ -82,7 +82,7 @@ public class ExternalImport {
 	}
 
 	private boolean prepare(String fileId, List<String> cookieList) throws IOException, InterruptedException {
-		LogManager.out("外部受入 事前チェック -- 開始 --");
+		LogManager.out("ExternalImport.prepare start");
 
 	    String json = "{"
 				+ "\"settingCode\": \"" + this.settingCode + "\","
@@ -99,13 +99,13 @@ public class ExternalImport {
 
 		boolean result = checkErrorMessage("受入準備",cookieList);
 		
-		LogManager.out("外部受入 事前チェック -- 終了 --");
+		LogManager.out("ExternalImport.prepare end");
 
 		return result;
 	}
 
 	private void execute(List<String> cookieList) throws IOException, InterruptedException {
-		LogManager.out("外部受入 実行 -- 開始 --");
+		LogManager.out("ExternalImport.execute start");
 
 	    String json = "{"
 				+ "\"settingCode\": \"" + this.settingCode + "\""
@@ -122,7 +122,7 @@ public class ExternalImport {
 
 		checkErrorMessage("受入実行", cookieList);
 		
-		LogManager.out("外部受入 実行 -- 終了 --");
+		LogManager.out("ExternalImport.execute end");
 	}
 
 	private void awaitComplated(List<String> cookieList, String taskId) throws IOException, InterruptedException {
