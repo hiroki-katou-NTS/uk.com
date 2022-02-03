@@ -9,6 +9,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
+import java.util.Optional;
+
 /**
  * 年月日と時刻を日時に正準化する
  * CSVの1項目で日時を表現しようとすると仕様が複雑化するので、日時項目は年月日と時刻に分けて受け入れる想定
@@ -16,25 +18,6 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 @Value
 @AllArgsConstructor
 public class DateTimeCanonicalization {
-
-	/** 年月日の項目No */
-	final int itemNoDate;
-
-	/** 時刻の項目No */
-	final int itemNoTime;
-
-	/** 秒の項目No */
-	final int itemNoSecond;
-
-	/** 日時の項目No */
-	final int itemNoDateTime;
-
-	public DateTimeCanonicalization(DomainWorkspace workspace) {
-		itemNoDate = workspace.getItemByName("年月日").getItemNo();
-		itemNoTime = workspace.getItemByName("時分").getItemNo();
-		itemNoSecond = workspace.getItemByName("秒").getItemNo();
-		itemNoDateTime = workspace.getItemByName("日時").getItemNo();
-	}
 
 	/**
 	 * 渡された編集済みデータを正準化する
@@ -44,11 +27,20 @@ public class DateTimeCanonicalization {
 	 */
 	public IntermediateResult canonicalize(
 			CanonicalizationMethodRequire require,
-			IntermediateResult interm) {
+			IntermediateResult interm,
+			int itemNoDate,
+			int itemNoTime,
+			Optional<Integer> itemNoSecond,
+			int itemNoDateTime) {
 
 		val date = interm.getItemByNo(itemNoDate).get().getDate();
 		int time = (int) (long) interm.getItemByNo(itemNoTime).get().getInt();
-		int second = (int) (long) interm.getItemByNo(itemNoSecond).get().getInt();
+
+		// 秒の既定値は0
+		int second = 0;
+		if(itemNoSecond.isPresent()) {
+			second = (int) (long) interm.getItemByNo(itemNoSecond.get()).get().getInt();
+		}
 
 		int hour = time / 60;
 		int minute = time % 60;

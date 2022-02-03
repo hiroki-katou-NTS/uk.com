@@ -32,10 +32,10 @@ public class WorkplaceCodeCanonicalization {
 	 */
 	public Either<RecordError, IntermediateResult> canonicalize(Require require,
 			IntermediateResult interm,
+			int csvRowNo,
 			int itemNoReferenceDate,
 			int itemNoWorkplaceCode,
-			int itemNoWorkplaceId,
-			int csvRowNo) {
+			int itemNoWorkplaceId) {
 		String workplaceCode = interm.getItemByNo(itemNoWorkplaceCode).get().getString();
 		GeneralDate startDate = interm.getItemByNo(itemNoReferenceDate).get().getDate();
 
