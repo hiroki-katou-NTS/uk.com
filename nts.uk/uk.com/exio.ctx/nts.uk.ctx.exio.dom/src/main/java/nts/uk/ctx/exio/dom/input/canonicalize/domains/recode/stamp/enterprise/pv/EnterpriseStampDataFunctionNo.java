@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.pv;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
