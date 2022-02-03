@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import nts.arc.primitive.PrimitiveValueConstraintException;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
