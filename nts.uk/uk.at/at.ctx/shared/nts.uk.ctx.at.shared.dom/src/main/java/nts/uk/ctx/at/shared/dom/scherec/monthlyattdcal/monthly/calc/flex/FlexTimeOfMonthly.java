@@ -581,12 +581,18 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			
 			// フレックス時間を取得する　→　繰越時間相殺前に入れる
 			val carryforwardTimeBeforeOffset = this.flexTime.getTimeSeriesTotalFlexTime(datePeriod, false);
+			
+			/** ○所定労働時間を基準時間に入れる */
+			val standardTime = aggregateTotalWorkingTime.getPrescribedWorkingTime().getTotalRecordPrescribedWorkingTime(datePeriod);
+			this.flexTime.getFlexTimeCurrentMonth().setStandardTime(standardTime);
 			if (carryforwardTimeBeforeOffset.greaterThan(0)){
 				
 				// フレックス超過の処理をする　（便宜上）
-				this.flexExcessForConvenience(carryforwardTimeBeforeOffset);
-			}
-			else {
+				this.flexExcessForConvenience(require, cacheCarrier, carryforwardTimeBeforeOffset, 
+						companyId, employeeId, yearMonth, datePeriod, aggregateAtr, companySets, employeeSets, settingsByFlex,
+						aggregateTotalWorkingTime, closureId, closureDate, monthlyCalculatingDailys, this.flexTime.getFlexTime(),
+						this.flexTime.getFlexTimeCurrentMonth());
+			} else {
 				
 				// フレックス不足の処理をする　（便宜上）
 				this.flexShortageForConvenience(carryforwardTimeBeforeOffset);
@@ -624,7 +630,13 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	 * フレックス超過の処理をする　（便宜上）
 	 * @param carryforwardTimeBeforeOffset 繰越時間相殺前
 	 */
-	private void flexExcessForConvenience(AttendanceTimeMonthWithMinus carryforwardTimeBeforeOffset){
+	private void flexExcessForConvenience(RequireM4 require, CacheCarrier cacheCarrier, 
+			AttendanceTimeMonthWithMinus carryforwardTimeBeforeOffset,
+			String companyId, String employeeId, YearMonth yearMonth, DatePeriod datePeriod, MonthlyAggregateAtr aggregateAtr,
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, SettingRequiredByFlex settingsByFlex,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime, ClosureId closureId, ClosureDate closureDate, 
+			MonthlyCalculatingDailys monthlyCalculatingDailys, FlexTimeTotalTimeMonth flexTime,
+			FlexTimeCurrentMonth flexTimeCurrentMonth) {
 
 		// フレックス繰越時間を取得する
 		AttendanceTimeMonthWithMinus carryforwardTime = this.flexCarryforwardTime.getFlexCarryforwardTime();
@@ -648,13 +660,18 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			val difference = carryforwardTimeBeforeOffset.minusMinutes(carryforwardTime.v());
 			this.flexExcessTime = this.flexExcessTime.addMinutes(difference.v());
 			this.flexTime.getFlexTime().addFlexTime(difference);
+
+			// 法定内・法定外フレックス時間を求める
+			this.calcLegalFlexTime(require, cacheCarrier, companyId, employeeId, yearMonth, datePeriod,
+					aggregateAtr, flexTime.getFlexTime().getTime(),companySets, employeeSets, settingsByFlex, 
+					aggregateTotalWorkingTime, closureId, closureDate, monthlyCalculatingDailys, flexTime,
+					flexTimeCurrentMonth);
 			
 			// 法定外フレックス時間にフレックス時間をセットする
-			this.flexTime.getFlexTime().allFlexAsIllegal(new AttendanceTimeMonth(
-					this.flexTime.getFlexTime().getFlexTime().getTime().valueAsMinutes()));
+//			this.flexTime.getFlexTime().allFlexAsIllegal(new AttendanceTimeMonth(
+//					this.flexTime.getFlexTime().getFlexTime().getTime().valueAsMinutes()));
 //			this.flexTime.setLegalFlexTime(new AttendanceTimeMonthWithMinus(0));
-		}
-		else {
+		} else {
 			
 			// 繰越時間相殺前をフレックス繰越勤務時間に加算する
 			this.flexCarryforwardTime.setFlexCarryforwardWorkTime(
@@ -871,7 +888,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 				flexTimeCurrentMonth = this.flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth();
 			}
 			// フレックス超過の処理をする
-			this.flexExcessTime = this.flexExcessPrinciple(require, cacheCarrier, carryforwardTimeBeforeOffset, compLeaveAfterDeduct,
+			this.flexExcessTime = this.flexExcessPrinciple(require, cacheCarrier, carryforwardTimeBeforeOffset,
 					companyId, employeeId, yearMonth, datePeriod, aggregateAtr, companySets, employeeSets, settingsByFlex,
 					aggregateTotalWorkingTime, closureId, closureDate, monthlyCalculatingDailys, this.flexTime.getFlexTime(), 
 					this.flexExcessTime, this.flexCarryforwardTime, flexTimeCurrentMonth);
@@ -964,7 +981,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		if (flexTime > 0) {
 
 			// フレックス超過の処理をする
-			this.flexExcessPrinciple(require, cacheCarrier, new AttendanceTimeMonthWithMinus(flexTime), compLeaveAfterDeduct,
+			this.flexExcessPrinciple(require, cacheCarrier, new AttendanceTimeMonthWithMinus(flexTime),
 					companyId, employeeId, yearMonth, datePeriod, aggregateAtr, companySets, employeeSets, settingsByFlex,
 					aggregateTotalWorkingTime, closureId, closureDate, monthlyCalculatingDailys, flexTimeCurrentMonth.getFlexTime(), 
 					this.flexExcessTime, this.flexCarryforwardTime, flexTimeCurrentMonth);
@@ -1168,7 +1185,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	 * フレックス超過の処理をする　（原則）
 	 */
 	private AttendanceTimeMonth flexExcessPrinciple(RequireM4 require, CacheCarrier cacheCarrier, 
-			AttendanceTimeMonthWithMinus carryforwardTimeBeforeOffset, AttendanceTimeMonth compensatoryLeaveAfterDudection,
+			AttendanceTimeMonthWithMinus carryforwardTimeBeforeOffset,
 			String companyId, String employeeId, YearMonth yearMonth, DatePeriod datePeriod, MonthlyAggregateAtr aggregateAtr,
 			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, SettingRequiredByFlex settingsByFlex,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime, ClosureId closureId, ClosureDate closureDate, 
@@ -1803,11 +1820,11 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			MonAggrEmployeeSettings employeeSets, SettingRequiredByFlex settingsByFlex, 
 			AggregateTotalWorkingTime aggregateTotalWorkingTime, MonthlyCalculatingDailys monthlyCalculatingDailys){
 		
-		val flexAggrSet = settingsByFlex.getFlexAggrSet();
+//		val flexAggrSet = settingsByFlex.getFlexAggrSet();
 		int afterSettleMinutes = flexTimeAfterSettle.v();	// 清算後フレックス時間（分）
 		
 		// 「集計方法」を確認する
-		if (flexAggrSet.getAggrMethod() == FlexAggregateMethod.PRINCIPLE){
+//		if (flexAggrSet.getAggrMethod() == FlexAggregateMethod.PRINCIPLE){
 			
 			// 「清算後フレックス時間」を確認する
 			if (afterSettleMinutes > 0){
@@ -1825,18 +1842,18 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 						aggregateTotalWorkingTime, closureId, closureDate, monthlyCalculatingDailys, this.flexTime.getFlexTime(),
 						this.flexTime.getFlexTimeCurrentMonth());
 				
-				return;
+//				return;
 			}
-		}
+//		}
 		
 		// フレックス時間　←　清算後フレックス時間
-		this.flexTime.getFlexTime().setFlex(new TimeMonthWithCalculationAndMinus(
-				new AttendanceTimeMonthWithMinus(afterSettleMinutes),
-				this.flexTime.getFlexTime().getFlexTime().getCalcTime()));
-		this.flexTime.getFlexTime().setFlexLegal(new AttendanceTimeMonth(0));
-		this.flexTime.getFlexTime().setFlexIllegal(new AttendanceTimeMonth(afterSettleMinutes));
-		this.flexShortageTime = new AttendanceTimeMonth(0);
-		this.flexExcessTime = new AttendanceTimeMonth(afterSettleMinutes);
+//		this.flexTime.getFlexTime().setFlex(new TimeMonthWithCalculationAndMinus(
+//				new AttendanceTimeMonthWithMinus(afterSettleMinutes),
+//				this.flexTime.getFlexTime().getFlexTime().getCalcTime()));
+//		this.flexTime.getFlexTime().setFlexLegal(new AttendanceTimeMonth(0));
+//		this.flexTime.getFlexTime().setFlexIllegal(new AttendanceTimeMonth(afterSettleMinutes));
+//		this.flexShortageTime = new AttendanceTimeMonth(0);
+//		this.flexExcessTime = new AttendanceTimeMonth(afterSettleMinutes);
 	}
 	
 	/**
