@@ -1907,13 +1907,15 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 				val flexShortage = this.flexTime.getMinusFlexTime(); 
 				
 				/** ○就業時間←就業合計時間　+ フレックス不足時間 */
-				return Optional.of(workTime.addMinutes(flexShortage.valueAsMinutes() * -1));
+				aggregateTotalWorkingTime.getWorkTime().setWorkTime(workTime.addMinutes(flexShortage.valueAsMinutes() * -1));
+			} else {
+
+				/** 日単位のフレックス超過時間を合計する */
+				val flexOver = this.flexTime.getPlusFlexTime();
+				
+				/** ○就業時間←就業合計時間　+　フレックス超過時間 */
+				aggregateTotalWorkingTime.getWorkTime().setWorkTime(workTime.addMinutes(flexOver.valueAsMinutes()));
 			}
-			/** 日単位のフレックス超過時間を合計する */
-			val flexOver = this.flexTime.getPlusFlexTime();
-			
-			/** ○就業時間←就業合計時間　+　フレックス超過時間 */
-			return Optional.of(workTime.addMinutes(flexOver.valueAsMinutes()));
 		}
 	}
 	
