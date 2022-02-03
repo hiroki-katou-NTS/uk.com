@@ -1898,6 +1898,22 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			/** 就業時間の合計処理 */
 			/** ○就業時間←就業合計時間 */
 			aggregateTotalWorkingTime.getWorkTime().totalizeWorkTime(datePeriod);
+			val workTime = aggregateTotalWorkingTime.getWorkTime().getWorkTime();
+			
+			/** フレックス時間発生するかを確認する */
+			if (this.checkIsFlexTimeOccur(settingsByFlex.getFlexAggrSet())) {
+				
+				/** 日単位のフレックス不足時間を合計する */
+				val flexShortage = this.flexTime.getMinusFlexTime(); 
+				
+				/** ○就業時間←就業合計時間　+ フレックス不足時間 */
+				return Optional.of(workTime.addMinutes(flexShortage.valueAsMinutes() * -1));
+			}
+			/** 日単位のフレックス超過時間を合計する */
+			val flexOver = this.flexTime.getPlusFlexTime();
+			
+			/** ○就業時間←就業合計時間　+　フレックス超過時間 */
+			return Optional.of(workTime.addMinutes(flexOver.valueAsMinutes()));
 		}
 	}
 	
