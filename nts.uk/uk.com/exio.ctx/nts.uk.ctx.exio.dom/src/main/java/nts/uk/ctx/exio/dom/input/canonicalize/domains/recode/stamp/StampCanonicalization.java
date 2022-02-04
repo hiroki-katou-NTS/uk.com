@@ -31,8 +31,11 @@ public class StampCanonicalization implements DomainCanonicalization {
 
 	private final WorkplaceCodeCanonicalization workplaceCodeCanonicalization;
 
+	private final DateTimeCanonicalization dateTimeCanonicalization;
+
 	public StampCanonicalization() {
 		workplaceCodeCanonicalization = new WorkplaceCodeCanonicalization(Items.年月日, Items.職場コード, Items.職場ID);
+		dateTimeCanonicalization = new DateTimeCanonicalization(Items.年月日, Items.時分, Items.秒, Items.打刻日時);
 	}
 
 	@Override
@@ -75,7 +78,6 @@ public class StampCanonicalization implements DomainCanonicalization {
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 
-		val workspace = require.getDomainWorkspace(context.getDomainId());
 		List<IntermediateResult> revisedRecords = require.getAllRevisedDataRecords(context).stream()
 				.map(r -> IntermediateResult.create(r))
 				.collect(toList());
@@ -84,7 +86,7 @@ public class StampCanonicalization implements DomainCanonicalization {
 			return;
 		}
 
-		val dateTimeCanonicalization = new DateTimeCanonicalization();
+		val workspace = require.getDomainWorkspace(context.getDomainId());
 
 		// 受入データ内の重複チェック
 		Set<KeyValues> importingKeys = new HashSet<>();
@@ -105,7 +107,8 @@ public class StampCanonicalization implements DomainCanonicalization {
 			}
 
 			// 打刻日時の正準化(年月日時分秒→日時)
-			interm = interm.addCanonicalized(dateTimeCanonicalization.canonicalize(require, interm, Items.年月日, Items.時分, Items.秒, Items.打刻日時).getItems());
+			val dateTimeCanoItem = dateTimeCanonicalization.canonicalize(require, interm).getItemByNo(Items.打刻日時).get();
+			interm = interm.addCanonicalized(dateTimeCanoItem);
 
 			// 既定値の追加
 			interm = setDefaultItems(interm);
