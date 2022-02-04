@@ -2,11 +2,14 @@ package nts.uk.ctx.exio.infra.repository.input.workspace;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.val;
@@ -43,8 +46,8 @@ public class WorkspaceSql {
 	private final DatabaseProduct database;	//this.database().product();
 
 	static final Column ROW_NO = new Column("ROW_NO", new DataTypeConfiguration(DataType.INT, 10,0), "rowno", true);
-	static final Column CONTRACT_CD = new Column("CONTRACT_CD", new DataTypeConfiguration(DataType.STRING, 12,0), "contract", false);
-	static final Column CID = new Column("CID", new DataTypeConfiguration(DataType.STRING, 17,0), "cid", false);
+	static final Column CONTRACT_CD = new Column("CONTRACT_CD", new DataTypeConfiguration(DataType.STRING, 12,0), "9999", false);
+	static final Column CID = new Column("CID", new DataTypeConfiguration(DataType.STRING, 17,0), "9998", false);
 
 	public static WorkspaceSql create(Require require, ExecutionContext context, JdbcProxy jdbcProxy, DatabaseProduct database) {
 
@@ -97,32 +100,45 @@ public class WorkspaceSql {
 	protected List<Column> allWorkspaceTableColumns() {
 		List<Column> result = new ArrayList<>();
 		result.add(ROW_NO);
-		result.add(CONTRACT_CD);
-		result.add(CID);
 		for (WorkspaceItem item : workspace.getAllItemsSortedByItemNo()){
-			if(CONTRACT_CD.name.equals(item.getName()) || CID.name.equals(item.getName())) break;
 			result.add(new Column(item.getName(), item.getDataTypeConfig(), "@" + Insert.paramItem(item.getItemNo()), false));
 		}
 		return result;
 	}
 	
 	static class CommonColumns {
-		static final List<String> LIST = Arrays.asList(ROW_NO.paramName, CONTRACT_CD.paramName, CID.paramName);
+		static final List<String> NothingItemNoList = Arrays.asList(ROW_NO.paramName);
+		static final List<String> HasItemNoList = Arrays.asList(CONTRACT_CD.paramName, CID.paramName);
 		
 		static String sqlParams() {
-			return LIST.stream()
+			return NothingItemNoList.stream()
 					.map(paramName -> "@" + paramName)
 					.collect(Collectors.joining(","));
 		}
 		
 		static void setParams(NtsStatement statement, int rowNo, ExecutionContext context) {
 			
+			//項目Noを持たず、列が自動生成される者たち
 			statement.paramInt(ROW_NO.paramName, rowNo);
 			
+			//項目Noを持つので列は生成される者たち
 			String companyId = context.getCompanyId();
 			String contractCode = CompanyId.getContractCodeOf(companyId);
-			statement.paramString(CONTRACT_CD.paramName, contractCode);
-			statement.paramString(CID.paramName, companyId);
+			statement.paramString("p"+CONTRACT_CD.paramName, contractCode);
+			statement.paramString("p"+CID.paramName, companyId);
+		}
+
+		/**
+		 * 項目Noが割り振られている共通列を取り除く 
+		 */
+		static List<WorkspaceItem> removeCommonColumns(List<WorkspaceItem> allItemsSortedByItemNo) {
+			val commonColumnsMinItemNo = HasItemNoList.stream()
+							.map(item -> Integer.valueOf(item))
+							.min((first, second) -> Integer.compare(first, second))
+							.get();
+			return allItemsSortedByItemNo.stream()
+							.filter(item -> item.getItemNo() < commonColumnsMinItemNo)
+							.collect(Collectors.toList());
 		}
 	}
 	
@@ -164,18 +180,21 @@ public class WorkspaceSql {
 
 		/*
 		 * VALUES句の列順は、項目No順にテーブルが作られるという仕様を前提とする。
-		 * ただし先頭はROW_NO, CONTRACT_CD, CID列で固定。
+		 * ただし先頭はROW_NO列で固定。
 		 */
 		String sql = Insert.createInsertSql(tableName, workspace, allWorkspaceTableColumns());
 		
 		val statement = jdbcProxy.query(sql);
 		
+//		CommonColumns.setParams(statement, rowNo);
 		CommonColumns.setParams(statement, rowNo, context);
+		val domainsItemsSortedByItemNo = CommonColumns.removeCommonColumns(workspace.getAllItemsSortedByItemNo());
 		
-		for (val workspaceItem : workspace.getAllItemsSortedByItemNo()) {
+		
+		for (val workspaceItem : domainsItemsSortedByItemNo) {
 			val dataType = workspaceItem.getDataTypeConfig();
 			Object itemValue = itemValueGetter.apply(workspaceItem.getItemNo());
-			Insert.setParam(dataType, itemValue, statement, workspaceItem);
+			Insert.setParam(dataType, itemValue, statement, workspaceItem,context);
 		}
 		
 		statement.execute();
@@ -204,7 +223,9 @@ public class WorkspaceSql {
 				DataTypeConfiguration dataType,
 				Object value,
 				NtsStatement statement,
-				WorkspaceItem workspaceItem) {
+				WorkspaceItem workspaceItem,
+				ExecutionContext context
+				) {
 			
 			String param = paramItem(workspaceItem.getItemNo());
 			

@@ -15,8 +15,8 @@ public class KeyValues {
 		return values.get(index);
 	}
 	
-	public int getInt(int index) {
-		return (int) values.get(index);
+	public Long getInt(int index) {
+		return (Long) values.get(index);
 	}
 	
 	public BigDecimal getBigDecimal(int index) {

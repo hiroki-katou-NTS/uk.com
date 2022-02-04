@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import lombok.val;
@@ -104,10 +105,10 @@ public class AnnualLeaveRemainingCanonicalization extends IndependentCanonicaliz
 	}
 
 	@Override
-	protected IntermediateResult canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, 
+	protected Optional<IntermediateResult> canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, 
 																						ExecutionContext context, 
 																						IntermediateResult targertResult) {
-		return addFixedItems(targertResult);
+		return Optional.of(addFixedItems(targertResult));
 	}
 
 	/**

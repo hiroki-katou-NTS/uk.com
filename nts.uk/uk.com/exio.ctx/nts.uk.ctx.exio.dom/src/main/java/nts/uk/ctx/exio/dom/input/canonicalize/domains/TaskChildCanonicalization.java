@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
@@ -20,7 +21,7 @@ public class TaskChildCanonicalization extends IndependentCanonicalization{
 	}
 
 	public static class Items {
-		public static final int 作業枠No = 1;
+		public static final int 作業枠NO = 1;
 		public static final int 作業コード = 2;
 		public static final int 子作業コード = 3;
 	}
@@ -38,27 +39,32 @@ public class TaskChildCanonicalization extends IndependentCanonicalization{
 
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.CID, 
-				new DomainDataColumn("作業枠No", DataType.INT),
-				new DomainDataColumn("作業コード", DataType.STRING),
-				new DomainDataColumn("子作業コード", DataType.STRING));
+		return Arrays.asList(
+				new DomainDataColumn("FRAME_NO", DataType.INT),
+				new DomainDataColumn("CD", DataType.STRING),
+				new DomainDataColumn("CHILD_CD", DataType.STRING),
+				DomainDataColumn.CID);
 	}
 	
 	@Override
-	protected IntermediateResult canonicalizeExtends(
+	protected Optional<IntermediateResult> canonicalizeExtends(
 			DomainCanonicalization.RequireCanonicalize require, 
 			ExecutionContext context, 
 			IntermediateResult targetResult) {
 		
-		checkFrameNoOver4(require, context, targetResult);
-		return targetResult;
+		if(checkFrameNoOver4(require, context, targetResult)) {;
+			return Optional.empty();
+		}
+		return Optional.of(targetResult);
 	}
 
-	private void checkFrameNoOver4(
+	private boolean checkFrameNoOver4(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context, IntermediateResult targetResult) {
-		if(targetResult.getItemByNo(Items.作業枠No).get().getInt().intValue() > 4) {
-			require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), "作業枠No４以下のデータしか受入れられません。"));
+		if(targetResult.getItemByNo(Items.作業枠NO).get().getInt().intValue() > 4) {
+			require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), "作業枠No5に対して下位作業は設定できません。"));
+			return true;
 		}
+		return false;
 	}
 }
