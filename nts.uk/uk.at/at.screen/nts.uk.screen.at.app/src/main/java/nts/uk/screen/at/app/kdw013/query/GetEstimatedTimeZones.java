@@ -5,12 +5,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -23,12 +18,6 @@ public class GetEstimatedTimeZones {
 	
 	@Inject
 	private GetLastOverTimeApplication getLastOverTimeApplication;
-	
-	@Inject
-	private BasicScheduleService basicScheduleService;
-	
-	@Inject
-	private PredetemineTimeSettingRepository predTimeSetRepo;
 	/**
 	 * 
 	 * @param inteDaiy 日別勤怠(Work)
@@ -54,8 +43,8 @@ public class GetEstimatedTimeZones {
 			 */
 			// get workNo 1
 			al.getAttendanceLeavingWork(1).ifPresent(lw -> {
-				result.setStartTime(new TimeWithDayAttr(lw.getTimespan().start()));
-				result.setEndTime(new TimeWithDayAttr(lw.getTimespan().end()));
+				result.setStartTime(lw.getAttendanceTime().map(x-> new TimeWithDayAttr(x.v())).orElse(null));
+				result.setEndTime(lw.getLeaveTime().map(x-> new TimeWithDayAttr(x.v())).orElse(null));
 			});			
 		});
 		// 2.取得する(社員ID, 年月日) 日別勤怠(Work).社員ID,日別勤怠(Work).年月日 Optional<残業申請>
@@ -76,11 +65,16 @@ public class GetEstimatedTimeZones {
 			
 			oApp.getWorkHoursOp().ifPresent(wh -> {
 				wh.stream().mapToInt(x -> x.getTimeZone().getStartTime().v()).min().ifPresent(min -> {
-					result.setStartTime(new TimeWithDayAttr(min));
+					if (result.getStartTime() == null || (min < result.getStartTime().v())) {
+						result.setStartTime(new TimeWithDayAttr(min));
+					}
+
 				});
-				
+
 				wh.stream().mapToInt(x -> x.getTimeZone().getEndTime().v()).max().ifPresent(max -> {
-					result.setEndTime(new TimeWithDayAttr(max));
+					if (result.getEndTime() == null || (max > result.getEndTime().v())) {
+						result.setEndTime(new TimeWithDayAttr(max));
+					}
 				});
 				//入力目安時間帯．残業時間帯 = 取得した「残業申請．勤務時間帯．時間帯」をセットする
 				result.setOverTimeZones(wh.stream()
@@ -95,59 +89,19 @@ public class GetEstimatedTimeZones {
 		//(求めた「開始時刻」.isEmpty OR 求めた「終了時刻」.isEmpty) AND 「日別勤怠(Work)．勤務情報．勤務情報．就業時間帯コード」.isPresent
 		
 		if (result.getStartTime() == null || result.getEndTime() == null) {
-			inteDaiy.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().ifPresent(wtCd -> {
-				// ・勤務種類コード = INPUT「日別勤怠(Work)．勤務情報．勤務情報．勤務種類コード」
-				String workTypeCode = inteDaiy.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
+			//日別勤怠(Work)．勤務情報．始業終業時間帯
+			//勤務NO = 1
+			inteDaiy.getWorkInformation().getScheduleTimeSheets().stream().filter(x -> x.getWorkNo().v() == 1)
+					.findFirst().ifPresent(ts -> {
+						if (result.getStartTime() == null) {
+							result.setStartTime(ts.getAttendance());
+						}
 
-				// 3. call
-				WorkStyle wkStyle = this.basicScheduleService.checkWorkDay(workTypeCode);
+						if (result.getEndTime() == null) {
+							result.setEndTime(ts.getLeaveWork());
+						}
 
-				// 出勤休日区分 <> １日休日系
-				if (wkStyle != null && !wkStyle.equals(WorkStyle.ONE_DAY_REST)) {
-					// 4. 取得する(就業時間帯コード)
-					this.predTimeSetRepo.findByWorkTimeCode(AppContexts.user().companyId(), wtCd.v())
-							.ifPresent(predSet -> {
-								// 5. 所定時間設定.isPresent
-								// 午前午後区分に応じた所定時間帯(午前午後区分) List<計算用時間帯>
-								/**
-								 * ※取得した「出勤休日区分」に応じて「午前午後区分」を渡す
-								 * 「出勤休日区分」= 午前出勤系 ⇒ 「午前午後区分」= 午前
-								 * 「出勤休日区分」= 午後出勤系 ⇒ 「午前午後区分」= 午後
-								 * 「出勤休日区分」= １日出勤系 ⇒ 「午前午後区分」= 1日
-								 */
-								AmPmAtr atr = null;
-
-								switch (wkStyle) {
-								case ONE_DAY_WORK:
-									atr = AmPmAtr.ONE_DAY;
-									break;
-								case MORNING_WORK:
-									atr = AmPmAtr.AM;
-									break;
-								case AFTERNOON_WORK:
-									atr = AmPmAtr.PM;
-									break;
-								}
-								
-								
-								if (result.getStartTime() == null) {
-									predSet.getTimezoneByAmPmAtr(atr).stream().mapToInt(x -> x.getStart().v()).min()
-											.ifPresent(x -> {
-												result.setStartTime(new TimeWithDayAttr(x));
-											});
-								}
-
-								if (result.getEndTime() == null) {
-									predSet.getTimezoneByAmPmAtr(atr).stream().mapToInt(x -> x.getEnd().v()).max()
-											.ifPresent(x -> {
-												result.setEndTime(new TimeWithDayAttr(x));
-											});
-
-								}
-							});
-				}
-			});
-
+					});
 		}
 		
 		return result;

@@ -6,10 +6,8 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.TotalUnit;
-import nts.uk.screen.at.app.kha003.ManHourSummaryTableFormatDto;
-import nts.uk.screen.at.app.kha003.SummaryItemDetailDto;
-import nts.uk.screen.at.app.kha003.SummaryItemDto;
-import nts.uk.screen.at.app.kha003.VerticalValueDailyDto;
+import nts.uk.screen.at.app.kha003.*;
+import nts.uk.screen.at.app.kha003.a.ManHoursListScreenQuery;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.csv.CSVFileData;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
@@ -36,6 +34,9 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
     private static final String TOTAL = "KHA003_100";
 
     private static final String FILE_EXTENSION = ".csv";
+
+    @Inject
+    private ManHoursListScreenQuery manHoursListScreenQuery;
 
     @Override
     protected void handle(ExportServiceContext<ManHourDataSummaryQuery> exportServiceContext) {
@@ -209,6 +210,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
      */
     private List<String> createTextHeader(ManHourDataSummaryQuery query, boolean isDispTotal, String dateRange) {
         val formatSetting = query.getSummaryTableFormat();
+        List<TaskFrameSettingDto> taskFrameSettings = manHoursListScreenQuery.getManHoursList().getTaskFrameSettings();
         List<String> lstHeader = new ArrayList<>();
         // Sort before adding
         val sortedList = formatSetting.getSummaryItems().stream().sorted(Comparator.comparing(SummaryItemDto::getHierarchicalOrder)).collect(Collectors.toList());
@@ -221,7 +223,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
             } else {
                 lstHeader.add(TextResource.localize(getCodeHeader(i + 1)));
             }
-            lstHeader.add(item.getItemTypeName());
+            lstHeader.add(this.mapTaskNameByType(item, taskFrameSettings));
         }
 
         // Add date/yearMonth list to header
@@ -235,6 +237,25 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
             lstHeader.add(TextResource.localize(HORIZONTAL_TOTAL));
         }
         return lstHeader;
+    }
+
+    @SuppressWarnings("Duplicates")
+    private String mapTaskNameByType(SummaryItemDto item, List<TaskFrameSettingDto> taskFrameSettings) {
+        if (taskFrameSettings.isEmpty()) return item.getItemTypeName();
+        switch (item.getItemType()) {
+            case 3:
+                return taskFrameSettings.stream().filter(x -> x.getTaskFrameNo() == 1).map(TaskFrameSettingDto::getTaskFrameName).findFirst().orElse(item.getItemTypeName());
+            case 4:
+                return taskFrameSettings.stream().filter(x -> x.getTaskFrameNo() == 2).map(TaskFrameSettingDto::getTaskFrameName).findFirst().orElse(item.getItemTypeName());
+            case 5:
+                return taskFrameSettings.stream().filter(x -> x.getTaskFrameNo() == 3).map(TaskFrameSettingDto::getTaskFrameName).findFirst().orElse(item.getItemTypeName());
+            case 6:
+                return taskFrameSettings.stream().filter(x -> x.getTaskFrameNo() == 4).map(TaskFrameSettingDto::getTaskFrameName).findFirst().orElse(item.getItemTypeName());
+            case 7:
+                return taskFrameSettings.stream().filter(x -> x.getTaskFrameNo() == 5).map(TaskFrameSettingDto::getTaskFrameName).findFirst().orElse(item.getItemTypeName());
+            default:
+                return item.getItemTypeName();
+        }
     }
 
     private String removeComma(String total){

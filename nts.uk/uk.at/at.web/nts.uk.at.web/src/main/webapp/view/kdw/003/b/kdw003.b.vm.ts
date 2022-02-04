@@ -278,11 +278,12 @@ module nts.uk.at.view.kdw003.b {
                 let screen = nts.uk.ui.windows.getShared("shareToKdw003a");
                 if (screen == undefined) screen = 1905;
                 let transfer = {
-                    appDate: dataShare.date,
+                    baseDate: dataShare.date,
                     uiType: 1,
                     employeeIDs: [],
                     stampRequestMode: 1,
-                    screenMode: 0
+                    screenMode: 0,
+					screenCode: 0
                 };
 				
 				var vmNew = new ko.ViewModel();
@@ -315,7 +316,7 @@ module nts.uk.at.view.kdw003.b {
 
                     case 5:
                         //KAF008-出張申請 
-                        vmNew.$jump.blank("/view/kaf/008/b/index.xhtml", transfer);
+                        vmNew.$jump.blank("/view/kaf/008/a/index.xhtml", transfer);
                         break;
 
                     case 6:
@@ -370,7 +371,7 @@ module nts.uk.at.view.kdw003.b {
 
                     case 14:
                         //申請一覧
-                        vmNew.$jump.blank("/view/cmm/045/a/index.xhtml", transfer);
+                        vmNew.$jump.blank("at", "/view/cmm/045/a/index.xhtml?a=0");
                         break;
                     default:
                         break;

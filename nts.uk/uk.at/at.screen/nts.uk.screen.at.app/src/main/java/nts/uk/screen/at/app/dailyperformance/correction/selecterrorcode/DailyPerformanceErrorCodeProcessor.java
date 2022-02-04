@@ -306,13 +306,10 @@ public class DailyPerformanceErrorCodeProcessor {
 				screenDto.setCellSate(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
 			}
 			// map name submitted into cell
+			String appNameLst = "";
 			if (appMapDateSid.containsKey(data.getEmployeeId() + "|" + data.getDate())) {
-				data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED,
-						appMapDateSid.get(data.getEmployeeId() + "|" + data.getDate()), "", ""));
-			} else {
-				data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
+				appNameLst = appMapDateSid.get(data.getEmployeeId() + "|" + data.getDate());
 			}
-			data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
 			data.addCellData(new DPCellDataDto(LOCK_APPLICATION, "", "", ""));
 			data.addCellData(new DPCellDataDto(LOCK_APPLICATION_LIST, "", "", ""));
 			//set checkbox sign
@@ -365,7 +362,7 @@ public class DailyPerformanceErrorCodeProcessor {
 				Optional<TaskItem> opTaskItem = dailyProcessor.getTaskItemByEmpDate(taskInitialSelHistLst, data.getEmployeeId(), data.getDate());
 				Optional<DailyRecordDto> opDailyRecordDto = screenDto.getDomainOld().stream().filter(x -> x.getEmployeeId().equals(data.getEmployeeId()) && x.getDate().equals(data.getDate())).findAny();
 				dailyProcessor.processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem,
-						mapGetName, codeNameReasonMap, codeNameTaskMap, itemValueMap, data, lockDaykWpl, dailyRecEditSetsMap, null, opTaskItem, opDailyRecordDto);
+						mapGetName, codeNameReasonMap, codeNameTaskMap, itemValueMap, data, lockDaykWpl, dailyRecEditSetsMap, null, opTaskItem, opDailyRecordDto, appNameLst);
 				lstData.add(data);
 				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
 						.filter(w -> w.getEmployeeId().equals(data.getEmployeeId())

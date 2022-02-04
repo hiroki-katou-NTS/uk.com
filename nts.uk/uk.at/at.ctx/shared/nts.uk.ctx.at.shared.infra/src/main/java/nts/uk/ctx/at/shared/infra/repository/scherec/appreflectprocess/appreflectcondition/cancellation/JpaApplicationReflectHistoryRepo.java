@@ -100,7 +100,7 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 			ScheduleRecordClassifi classification, boolean flgRemove, GeneralDateTime reflectionTime) {
 		List<ApplicationReflectHistory> lstResult = new NtsStatement(FIND_AFTER_MAX, this.jdbcProxy())
 				.paramString("SID", sid).paramDate("YMD", baseDate).paramInt("ATR", classification.value)
-				.paramInt("DELETE_ATR", flgRemove ? 1 : 0).paramString("REFLECT_TIME", reflectionTime.toString())
+				.paramInt("DELETE_ATR", flgRemove ? 1 : 0).paramDateTime("REFLECT_TIME", reflectionTime)
 				.getList(x -> toDomain(x));
 		return lstResult.stream().collect(Collectors.toMap(x -> getKey(x), x -> x, (x, y) -> {
 			x.getLstAttBeforeAppReflect().addAll(y.getLstAttBeforeAppReflect());
@@ -149,7 +149,7 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 			ScheduleRecordClassifi classification, boolean flgRemove, GeneralDateTime reflectionTime) {
 		List<ApplicationReflectHistory> lstResult = new NtsStatement(FIND_APP_REF, this.jdbcProxy())
 				.paramString("SID", sid).paramDate("YMD", baseDate).paramInt("ATR", classification.value)
-				.paramInt("DELETE_ATR", flgRemove ? 1 : 0).paramString("REFLECT_TIME", reflectionTime.toString())
+				.paramInt("DELETE_ATR", flgRemove ? 1 : 0).paramDateTime("REFLECT_TIME", reflectionTime)
 				.getList(x -> toDomain(x));
 		return groupSameKey(lstResult, true);
 	}

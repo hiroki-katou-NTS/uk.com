@@ -24,6 +24,7 @@ module nts.uk.at.kdp003.a {
 		STAMP_SETTING_COMMON: 'at/record/stamp/settings_stamp_common',
 		getEmployeeWorkByStamping: 'at/record/stamp/employee_work_by_stamping',
 		getIsCloud: "at/record/stamp/finger/get-isCloud",
+		getContractCode: "at/record/stamp/finger/get-contractCode",
 		getAuthenticate: "at/record/stamp/finger/get-authenticate"
 
 	};
@@ -118,10 +119,17 @@ module nts.uk.at.kdp003.a {
 				.then((data: boolean) => {
 					// Step2: 契約コードに関するlocalstrageに登録する
 					if (!data) {
-						vm.$window.storage("contractInfo", {
-							contractCode: "000000000000",
-							contractPassword: null
-						}).then(() => vm.getDataStartScreen());
+						vm.$ajax('at', API.getContractCode)
+							.then((data: any) => {
+								vm.$window.storage("contractInfo", {
+									contractCode: data.code,
+									contractPassword: ""
+								})
+								.done(() => {
+									vm.contractCode = data.code;
+								})
+								.done(() => vm.getDataStartScreen());
+							});
 					} else {
 						// Step3: テナント認証する
 						vm.$window.storage("contractInfo")
@@ -731,7 +739,10 @@ module nts.uk.at.kdp003.a {
 							const { nameSelectArt } = stampSetting;
 
 							// update interval for display datetime
-							vm.$date.interval(stampSetting.correctionInterval * 60000);
+							vm.$date.interval(100);
+							setTimeout(() => {
+								vm.$date.interval(stampSetting.correctionInterval * 60000);
+							}, 1000);
 
 							// clear message and show screen
 							vm.message(null);
@@ -1054,6 +1065,7 @@ module nts.uk.at.kdp003.a {
 					// login by employeeCode
 					// <mode> 一覧にない社員で打刻する
 					return vm.$window.modal('at', DIALOG.F, {
+						passwordRequired: vm.fingerStampSetting().stampSetting.passwordRequiredArt,
 						mode: 'employee',
 						companyId: data.CID,
 						employee: employee ? { id: employee.employeeId, code: employee.employeeCode, name: employee.employeeName } : null
@@ -1079,9 +1091,9 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			const { buttonPage, employeeData } = vm;
 			const { selectedId, employees, nameSelectArt } = ko.toJS(employeeData) as EmployeeListData;
-			let stampTime = moment(new Date()).format("HH:mm");
-			let stampDateTime = moment(new Date()).format();
-			
+			let stampTime = moment(vm.$date.now()).format("HH:mm");
+			let stampDateTime = moment(vm.$date.now()).format();
+
 			const reloadSetting = () =>
 				$.Deferred()
 					.resolve(true)
@@ -1216,7 +1228,7 @@ module nts.uk.at.kdp003.a {
 																							return storage('resultDisplayTime', resultDisplayTime)
 																								.then(() => storage('infoEmpToScreenB', employeeInfo))
 																								.then(() => storage('screenB', { screen: "KDP003" }))
-																								.then(() => modal('at', DIALOG.KDP002_B, {stampTime: stampTime })) as JQueryPromise<any>;
+																								.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime })) as JQueryPromise<any>;
 																						}
 																					})
 																						.fail((message: BussinessException) => {
@@ -1259,7 +1271,7 @@ module nts.uk.at.kdp003.a {
 																					return storage('resultDisplayTime', resultDisplayTime)
 																						.then(() => storage('infoEmpToScreenB', employeeInfo))
 																						.then(() => storage('screenB', { screen: "KDP003" }))
-																						.then(() => modal('at', DIALOG.KDP002_B, {stampTime: stampTime })) as JQueryPromise<any>;
+																						.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime })) as JQueryPromise<any>;
 																				}
 																			}).fail((message: BussinessException) => {
 																				const { messageId, parameterIds } = message;
@@ -1310,7 +1322,7 @@ module nts.uk.at.kdp003.a {
 																			return storage('resultDisplayTime', resultDisplayTime)
 																				.then(() => storage('infoEmpToScreenB', employeeInfo))
 																				.then(() => storage('screenB', { screen: "KDP003" }))
-																				.then(() => modal('at', DIALOG.KDP002_B, {stampTime: stampTime })) as JQueryPromise<any>;
+																				.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime })) as JQueryPromise<any>;
 																		}
 																	})
 																		.fail((message: BussinessException) => {
@@ -1354,7 +1366,7 @@ module nts.uk.at.kdp003.a {
 																	return storage('resultDisplayTime', resultDisplayTime)
 																		.then(() => storage('infoEmpToScreenB', employeeInfo))
 																		.then(() => storage('screenB', { screen: "KDP003" }))
-																		.then(() => modal('at', DIALOG.KDP002_B, {stampTime: stampTime })) as JQueryPromise<any>;
+																		.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime })) as JQueryPromise<any>;
 																}
 															}).fail((message: BussinessException) => {
 																const { messageId, parameterIds } = message;
@@ -1407,7 +1419,7 @@ module nts.uk.at.kdp003.a {
 																				return storage('resultDisplayTime', resultDisplayTime)
 																					.then(() => storage('infoEmpToScreenB', employeeInfo))
 																					.then(() => storage('screenB', { screen: "KDP003" }))
-																					.then(() => modal('at', DIALOG.KDP002_B, {stampTime: stampTime })) as JQueryPromise<any>;
+																					.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime })) as JQueryPromise<any>;
 																			}
 																		})
 																			.fail((message: BussinessException) => {
@@ -1454,7 +1466,7 @@ module nts.uk.at.kdp003.a {
 																			return storage('resultDisplayTime', resultDisplayTime)
 																				.then(() => storage('infoEmpToScreenB', employeeInfo))
 																				.then(() => storage('screenB', { screen: "KDP003" }))
-																				.then(() => modal('at', DIALOG.KDP002_B, {stampTime: stampTime })) as JQueryPromise<any>;
+																				.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime })) as JQueryPromise<any>;
 																		}
 																	})
 																	.fail((message: BussinessException) => {

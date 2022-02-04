@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
@@ -174,7 +173,7 @@ public class OuenTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 			case TIME:
 				return Optional.of(ItemValue.builder().value(time).valueType(ValueType.TIME));
 			case AMOUNT:
-				return Optional.of(ItemValue.builder().value(amount).valueType(ValueType.AMOUNT_NUM));
+				return Optional.of(ItemValue.builder().value(amount).valueType(ValueType.AMOUNT_LONG));
 			default:
 				return Optional.empty();
 			}
@@ -187,7 +186,7 @@ public class OuenTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 				this.time = value.valueOrDefault(0);
 				break;
 			case AMOUNT:
-				this.amount = value.valueOrDefault(0);
+				this.amount = value.valueOrDefault(0l);
 				break;
 			default:
 				break;

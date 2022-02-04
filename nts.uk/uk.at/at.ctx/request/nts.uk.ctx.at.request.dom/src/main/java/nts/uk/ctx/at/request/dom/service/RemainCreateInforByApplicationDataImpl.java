@@ -245,7 +245,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			case GO_RETURN_DIRECTLY_APPLICATION:
 				Optional<GoBackDirectly> goBack = goBackRepo.find(cid, appData.getAppID());
 				goBack.ifPresent(x -> {
-					outData.setWorkTimeCode(x.getDataWork().map(dw -> dw.getWorkTimeCode().v()));
+					outData.setWorkTimeCode(x.getDataWork().map(dw -> dw.getWorkTimeCode() != null ? dw.getWorkTimeCode().v() : null));
 					outData.setWorkTypeCode(x.getDataWork().map(dw -> dw.getWorkTypeCode().v()));
 				});
 				break;
@@ -366,22 +366,22 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			}
 			
 			//予定or実績への全ての申請反映結果を取得
-//			Optional<IntegrationOfDaily> domainDailySche = ObtainAllAppReflecResultInScheduleRecord.getData(impl, cid,
-//					sid, outData.getAppDate(), outData.getAppId());
-//			if(domainDailySche.isPresent()) {
-//				if(outData.getWorkTypeCode().isPresent()) {
-//					WorkInfoOfDailyAttendance workAfter = CorrectDailyAttendanceService.correctFurikyu(impl, domainDailySche.get().getWorkInformation(),
-//							new WorkInfoOfDailyAttendance(
-//									new WorkInformation(outData.getWorkTypeCode().get(),
-//											outData.getWorkTimeCode().orElse(null)),
-//									domainDailySche.get().getWorkInformation().getCalculationState(),
-//									domainDailySche.get().getWorkInformation().getGoStraightAtr(),
-//									domainDailySche.get().getWorkInformation().getBackStraightAtr(),
-//									domainDailySche.get().getWorkInformation().getDayOfWeek(),
-//									domainDailySche.get().getWorkInformation().getScheduleTimeSheets(), Optional.empty()));
-//					outData.setNumberOfDaySusp(workAfter.getNumberDaySuspension());
-//				}
-//			}
+			Optional<IntegrationOfDaily> domainDailySche = ObtainAllAppReflecResultInScheduleRecord.getData(impl, cid,
+					sid, outData.getAppDate(), outData.getAppId());
+			if(domainDailySche.isPresent()) {
+				if(outData.getWorkTypeCode().isPresent()) {
+					WorkInfoOfDailyAttendance workAfter = CorrectDailyAttendanceService.correctFurikyu(impl, domainDailySche.get().getWorkInformation(),
+							new WorkInfoOfDailyAttendance(
+									new WorkInformation(outData.getWorkTypeCode().get(),
+											outData.getWorkTimeCode().orElse(null)),
+									domainDailySche.get().getWorkInformation().getCalculationState(),
+									domainDailySche.get().getWorkInformation().getGoStraightAtr(),
+									domainDailySche.get().getWorkInformation().getBackStraightAtr(),
+									domainDailySche.get().getWorkInformation().getDayOfWeek(),
+									domainDailySche.get().getWorkInformation().getScheduleTimeSheets(), Optional.empty()));
+					outData.setNumberOfDaySusp(workAfter.getNumberDaySuspension());
+				}
+			}
 			lstOutputData.add(outData);
 		});
 		return lstOutputData;
