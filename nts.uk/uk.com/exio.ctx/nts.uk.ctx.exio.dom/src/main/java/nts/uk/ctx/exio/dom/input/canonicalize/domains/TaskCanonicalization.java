@@ -26,8 +26,8 @@ public class TaskCanonicalization extends IndependentCanonicalization{
     }
     
     public static class Items {
-        public static final int 作業コード = 1;
-        public static final int 作業枠NO = 2;
+    	public static final int 作業枠NO = 1;
+        public static final int 作業コード = 2;
         public static final int 作業名称 = 3;
         public static final int 作業略名 = 4;
         public static final int 開始日 = 5;
