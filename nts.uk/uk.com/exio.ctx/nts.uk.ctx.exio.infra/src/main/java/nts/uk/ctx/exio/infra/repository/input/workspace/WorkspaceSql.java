@@ -138,6 +138,7 @@ public class WorkspaceSql {
 							.get();
 			return allItemsSortedByItemNo.stream()
 							.filter(item -> item.getItemNo() < commonColumnsMinItemNo)
+							.sorted((first, second) -> Integer.compare(first.getItemNo() ,second.getItemNo()))
 							.collect(Collectors.toList());
 		}
 	}
