@@ -119,9 +119,9 @@ public class StampCanonicalization implements DomainCanonicalization {
 			importingKeys.add(key);
 
 			// 	制約のチェック
-			val errorList = checkConstraints(interm);
-			if(errorList.size() > 0){
-				errorList.forEach(e -> require.add(ExternalImportError.record(revisedData.getRowNo(), context.getDomainId(), e.getMessage())));
+			val optError = checkConstraints(interm);
+			if(optError.isPresent()){
+				require.add(ExternalImportError.record(revisedData.getRowNo(), context.getDomainId(), optError.get().getMessage()));
 				return;
 			}
 
@@ -174,15 +174,14 @@ public class StampCanonicalization implements DomainCanonicalization {
 	 * @param interm
 	 * @return
 	 */
-	private static List<RecordError> checkConstraints(IntermediateResult interm){
-		val errorList = new ArrayList<RecordError>();
+	private static Optional<RecordError> checkConstraints(IntermediateResult interm){
 		// 「時刻変更区分」が「4：外出」の場合、「外出区分」はEmptyでないこと
 		if(interm.getItemByNo(Items.時刻変更区分).get().getInt() == 4){
 			if(interm.getItemByNo(Items.外出区分).get().isNull()) {
-				errorList.add(RecordError.record(interm.getRowNo(), "「時刻変更区分」が「4：外出」の場合、「外出区分」を受け入れる必要があります。"));
+				return Optional.of(RecordError.record(interm.getRowNo(), "「時刻変更区分」が「4：外出」の場合、「外出区分」を受け入れる必要があります。"));
 			}
 		}
-		return errorList;
+		return Optional.empty();
 	}
 
 	/**
