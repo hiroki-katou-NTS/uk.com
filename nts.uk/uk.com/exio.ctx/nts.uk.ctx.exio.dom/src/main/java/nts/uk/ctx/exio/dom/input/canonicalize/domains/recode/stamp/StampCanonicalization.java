@@ -76,6 +76,13 @@ public class StampCanonicalization implements DomainCanonicalization {
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 
 		val workspace = require.getDomainWorkspace(context.getDomainId());
+		List<IntermediateResult> revisedRecords = require.getAllRevisedDataRecords(context).stream()
+				.map(r -> IntermediateResult.create(r))
+				.collect(toList());
+
+		if (revisedRecords.isEmpty()) {
+			return;
+		}
 
 		val dateTimeCanonicalization = new DateTimeCanonicalization();
 
