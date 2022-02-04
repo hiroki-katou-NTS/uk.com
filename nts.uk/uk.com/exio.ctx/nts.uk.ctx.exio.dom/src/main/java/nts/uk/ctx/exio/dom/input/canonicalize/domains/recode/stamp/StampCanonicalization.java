@@ -96,15 +96,11 @@ public class StampCanonicalization implements DomainCanonicalization {
 			interm = preCanonicalize(interm);
 
 			// 職場コードの正準化
-			val optWkpCdItem = interm.getItemByNo(Items.職場コード);
-			if(optWkpCdItem.isPresent() && !optWkpCdItem.get().isNull()) {
+			if(interm.isImporting(Items.職場コード)) {
 				val wkpCanoItems = new CanonicalItemList();
 				workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo())
 						.ifRight(canonicalized -> wkpCanoItems.addItem(canonicalized.getItemByNo(Items.職場ID).get()))
-						.ifLeft(error -> {
-							require.add(ExternalImportError.of(context.getDomainId(), error));
-							return;
-						});
+						.ifLeft(error -> require.add(ExternalImportError.of(context.getDomainId(), error)));
 				interm = interm.addCanonicalized(wkpCanoItems);
 			}
 
