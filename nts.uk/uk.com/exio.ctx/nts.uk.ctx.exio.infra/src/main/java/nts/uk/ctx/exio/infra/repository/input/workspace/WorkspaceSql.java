@@ -187,10 +187,8 @@ public class WorkspaceSql {
 		
 		val statement = jdbcProxy.query(sql);
 		
-//		CommonColumns.setParams(statement, rowNo);
 		CommonColumns.setParams(statement, rowNo, context);
 		val domainsItemsSortedByItemNo = CommonColumns.removeCommonColumns(workspace.getAllItemsSortedByItemNo());
-		
 		
 		for (val workspaceItem : domainsItemsSortedByItemNo) {
 			val dataType = workspaceItem.getDataTypeConfig();
