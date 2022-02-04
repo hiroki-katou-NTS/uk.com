@@ -11,10 +11,13 @@ import javax.inject.Inject;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
@@ -356,8 +359,8 @@ public class ExternalImportPrepareRequire {
 		}
 
 		@Override
-		public Optional<Stamp> getStamp(String cardNumber, GeneralDateTime stampDateTime, int changeClockArt) {
-			return stampDakokuRepo.get(contractCode, cardNumber, stampDateTime, changeClockArt);
+		public boolean existsStamp(String cardNumber, GeneralDateTime stampDateTime, int changeClockArt) {
+			return stampDakokuRepo.existsStamp(new ContractCode(contractCode), new StampNumber(cardNumber), stampDateTime, ChangeClockAtr.valueOf(changeClockArt));
 		}
 	}
 }

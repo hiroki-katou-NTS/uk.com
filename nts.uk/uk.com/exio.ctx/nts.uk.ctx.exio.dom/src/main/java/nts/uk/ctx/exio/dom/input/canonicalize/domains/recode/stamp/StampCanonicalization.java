@@ -126,11 +126,7 @@ public class StampCanonicalization implements DomainCanonicalization {
 			}
 
 			// 既存データが存在する場合受け入れない
-			if(require.getStamp(
-							interm.getItemByNo(Items.カードNO).get().toString(),
-							interm.getItemByNo(Items.打刻日時).get().getDateTime(),
-							interm.getItemByNo(Items.時刻変更区分).get().getJavaInt())
-					.isPresent()){
+			if(existsStamp(require, interm)){
 				return;
 			}
 
@@ -197,6 +193,19 @@ public class StampCanonicalization implements DomainCanonicalization {
 			}
 		}
 		return errorList;
+	}
+
+	/**
+	 * 既存データが存在するかチェックする
+	 * @param require
+	 * @param interm
+	 * @return
+	 */
+	private boolean existsStamp(RequireCanonicalize require, IntermediateResult interm){
+		return require.existsStamp(
+				interm.getItemByNo(Items.カードNO).get().toString(),
+				interm.getItemByNo(Items.打刻日時).get().getDateTime(),
+				interm.getItemByNo(Items.時刻変更区分).get().getJavaInt());
 	}
 
 	/**
