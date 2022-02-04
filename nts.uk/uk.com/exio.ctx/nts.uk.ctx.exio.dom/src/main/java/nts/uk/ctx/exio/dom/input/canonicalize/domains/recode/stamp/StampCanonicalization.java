@@ -203,7 +203,7 @@ public class StampCanonicalization implements DomainCanonicalization {
 	 * @param workspace
 	 * @return
 	 */
-	private KeyValues getPrimaryKeys(IntermediateResult interm, DomainWorkspace workspace) {
+	private static KeyValues getPrimaryKeys(IntermediateResult interm, DomainWorkspace workspace) {
 		return workspace.getItemsPk().stream()
 				.map(k -> k.getItemNo())
 				.collect(toList()).stream()
