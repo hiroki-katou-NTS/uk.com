@@ -13,10 +13,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSetting;
-import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSettingRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSetting;
+import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSettingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
@@ -49,8 +49,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.operationsettings.TaskOperationSettingRepository;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -76,10 +77,17 @@ public class SupportWorkReflection {
 	
 	@Inject
 	private StampDakokuRepository stampRepo;
+	
+	@Inject 
+	private SupportOperationSettingRepository supportOperationSettingRepo;
 
 	public ReflectionAtr supportWorkReflect(String cid, SupportParam param, IntegrationOfDaily integrationOfDaily,
 			StampReflectRangeOutput stampReflectRangeOutput) {
 		
+		/** 応援の運用設定を取得する */
+		val spOpSet = supportOperationSettingRepo.get(cid);
+		if (!spOpSet.isUsed()) return ReflectionAtr.REFLECT_FAIL;;
+			
 		/** 工数入力の利用設定を取得する */
 		val manHrInputUsageSet = manHrInputUsageSettingRepo.get(cid);
 		
@@ -98,7 +106,7 @@ public class SupportWorkReflection {
 
 		// 打刻データが応援開始・終了反映時間内かの確認を行う
 		boolean startAtr = this.checkStarEndSupport(param.getTimeDay(), stampReflectRangeOutput);
-		if (true || !startAtr) { /** TODO：　一旦動かないようにする、タスクデモで参照するように　*/
+		if (!startAtr) {
 			// 反映状態＝反映失敗を返す
 			return ReflectionAtr.REFLECT_FAIL;
 		}
@@ -137,8 +145,8 @@ public class SupportWorkReflection {
 				.supportDataAutoSetMerged(correctSupportData.getInformationWork(), correctSupportData.getAttendance());
 
 		// 最大応援回数を補正する - 補正済みの応援データ一覧 - chỉnh sửa số lần support tối đa
-		List<OuenWorkTimeSheetOfDailyAttendance> lstCorrectMaximum = this.correctMaximumCheering(judgmentSupport,
-				dataAutoSet);
+		List<OuenWorkTimeSheetOfDailyAttendance> lstCorrectMaximum = this.correctMaximumCheering(
+				spOpSet.getMaxNumberOfSupportOfDay(), dataAutoSet);
 
 		// 応援項目の編集状態補正する - chỉnh sửa trạng thái edit của support
 		this.correctEditStatusSupportItem(integrationOfDaily, lstCorrectMaximum, lstOuenBefore);
@@ -668,10 +676,10 @@ public class SupportWorkReflection {
 	 * @return
 	 */
 	public List<OuenWorkTimeSheetOfDailyAttendance> correctMaximumCheering(
-			JudgmentCriteriaSameStampOfSupport judgmentSupport, List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSet) {
+			MaximumNumberOfSupport supportMaxFrame, List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSet) {
 		List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSetNew = new ArrayList<>();
 		// パラメータ。応援データ一覧のsizeを確認する
-		if (dataAutoSet.size() <= 1 || dataAutoSet.size() <= (judgmentSupport == null ? 0 : judgmentSupport.getSupportMaxFrame().v())) {
+		if (dataAutoSet.size() <= 1 || dataAutoSet.size() <= supportMaxFrame.v()) {
 			// １以下の場合 - パラメータ。応援データ一覧を返す
 			return dataAutoSet;
 		} else {
@@ -681,9 +689,8 @@ public class SupportWorkReflection {
 			// パラメータ。応援データ一覧の先頭の応援データを取得する
 			OuenWorkTimeSheetOfDailyAttendance firstData = dataAutoSet.get(0);
 			// 最大応援回数で補正する
-			dataAutoSetNew = this.correctWithMaxNumberCheers(judgmentSupport != null && judgmentSupport.getSupportMaxFrame() != null 
-					? judgmentSupport.getSupportMaxFrame().v() - 1 : 0, dataAutoSet);
-			if (judgmentSupport!=null && judgmentSupport.getSupportMaxFrame().v() == 1) {
+			dataAutoSetNew = this.correctWithMaxNumberCheers(supportMaxFrame.v() - 1, dataAutoSet);
+			if (supportMaxFrame.v() == 1) {
 				// 最後の退勤の応援データを補正する
 				if(lastData.getTimeSheet().getStart().isPresent() && lastData.getTimeSheet().getEnd().isPresent()) {
 					lastData.getTimeSheet()
@@ -695,7 +702,7 @@ public class SupportWorkReflection {
 				}
 			}
 			
-			if (judgmentSupport != null && judgmentSupport.getSupportMaxFrame().v() >= 2) {
+			if (supportMaxFrame.v() >= 2) {
 				// 補正で使う応援データを探す
 				Optional<WorkTimeInformation> endOuenLast = dataAutoSetNew.get(dataAutoSetNew.size() - 1).getTimeSheet().getEnd();
 				

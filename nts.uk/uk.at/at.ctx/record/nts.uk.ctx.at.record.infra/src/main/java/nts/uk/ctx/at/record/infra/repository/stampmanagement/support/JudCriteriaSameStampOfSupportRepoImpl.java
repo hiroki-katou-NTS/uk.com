@@ -12,7 +12,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSa
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudgmentCriteriaSameStampOfSupport;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.RangeRegardedSupportStamp;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportStampSet;
-import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
 
 /**
  * 応援の同一打刻の判断基準Repository 
@@ -40,7 +39,6 @@ public class JudCriteriaSameStampOfSupportRepoImpl extends JpaRepository impleme
 			KrcmtSupportStampSet entiti = this.queryProxy().find(dm.getCid().toString(),KrcmtSupportStampSet.class).orElse(null);
 			if(entiti != null){
 				entiti.sameStampRanceInMinutes = dm.getSameStampRanceInMinutes().v();
-				entiti.supportMaxFrame = dm.getSupportMaxFrame().v();
 				commandProxy().update(entiti);
 			}
 		});
@@ -65,8 +63,7 @@ public class JudCriteriaSameStampOfSupportRepoImpl extends JpaRepository impleme
 	}
 	
 	private JudgmentCriteriaSameStampOfSupport toDomain(KrcmtSupportStampSet entity) {
-		JudgmentCriteriaSameStampOfSupport dm = new JudgmentCriteriaSameStampOfSupport(entity.cid, new RangeRegardedSupportStamp(entity.sameStampRanceInMinutes), new MaximumNumberOfSupport(entity.supportMaxFrame));
-		return dm;
+		return new JudgmentCriteriaSameStampOfSupport(entity.cid, new RangeRegardedSupportStamp(entity.sameStampRanceInMinutes));
 	}
 
 }
