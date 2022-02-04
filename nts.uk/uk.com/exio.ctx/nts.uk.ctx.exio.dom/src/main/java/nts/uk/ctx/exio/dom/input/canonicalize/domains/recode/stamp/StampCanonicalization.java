@@ -32,7 +32,7 @@ public class StampCanonicalization implements DomainCanonicalization {
 	private final WorkplaceCodeCanonicalization workplaceCodeCanonicalization;
 
 	public StampCanonicalization() {
-		workplaceCodeCanonicalization = new WorkplaceCodeCanonicalization();
+		workplaceCodeCanonicalization = new WorkplaceCodeCanonicalization(Items.年月日, Items.職場コード, Items.職場ID);
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class StampCanonicalization implements DomainCanonicalization {
 			val optWkpCdItem = interm.getItemByNo(Items.職場コード);
 			if(optWkpCdItem.isPresent() && !optWkpCdItem.get().isNull()) {
 				val wkpCanoItems = new CanonicalItemList();
-				workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo(), Items.年月日, Items.職場コード, Items.職場ID)
+				workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo())
 						.ifRight(canonicalized -> wkpCanoItems.addItem(canonicalized.getItemByNo(Items.職場ID).get()))
 						.ifLeft(error -> {
 							require.add(ExternalImportError.of(context.getDomainId(), error));
