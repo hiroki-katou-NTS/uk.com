@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 
@@ -26,7 +27,12 @@ public class CreateWorkScheduleByShift {
 	 * @param shiftMasterCode シフトマスタコード
 	 * @return
 	 */
-	public static ResultOfRegisteringWorkSchedule create(Require require, String employeeId, GeneralDate date, ShiftMasterCode shiftMasterCode) {
+	public static ResultOfRegisteringWorkSchedule create(
+			Require require, 
+			String employeeId, 
+			GeneralDate date, 
+			ShiftMasterCode shiftMasterCode, 
+			List<SupportTicket> supportTicketList) {
 		Optional<ShiftMaster> shiftMaster = require.getShiftMaster(shiftMasterCode);
 		
 		if (! shiftMaster.isPresent()) {
@@ -38,7 +44,7 @@ public class CreateWorkScheduleByShift {
 		}
 		
 		return CreateWorkSchedule.create(require, employeeId, date, shiftMaster.get(), false, new ArrayList<>(), 
-				Collections.emptyList(), new HashMap<>()); // TODO vn-team is going to udpate
+				supportTicketList, new HashMap<>());
 	}
 	
 	public static interface Require extends CreateWorkSchedule.Require {

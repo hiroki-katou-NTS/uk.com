@@ -5,6 +5,7 @@ package nts.uk.ctx.at.schedule.app.command.schedule.workschedule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -155,7 +156,9 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 			// loop:年月日 in 年月日リスト
 			for (WorkScheduleSaveCommand<T> data : scheduleOfEmps) {
 				// step 1.1
-				ResultOfRegisteringWorkSchedule rsOfRegisteringWorkSchedule = CreateWorkScheduleByShift.create(requireImpl, sid, data.ymd, new ShiftMasterCode(data.shiftCode));
+				ResultOfRegisteringWorkSchedule rsOfRegisteringWorkSchedule = CreateWorkScheduleByShift.create(
+						requireImpl, sid, data.ymd, new ShiftMasterCode(data.shiftCode),
+						Collections.emptyList()); // TODO developers are going to update
 				
 				lstRsOfRegisWorkSchedule.add(rsOfRegisteringWorkSchedule);
 			}
