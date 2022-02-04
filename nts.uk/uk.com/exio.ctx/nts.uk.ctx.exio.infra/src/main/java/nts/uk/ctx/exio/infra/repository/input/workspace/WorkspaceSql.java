@@ -194,7 +194,7 @@ public class WorkspaceSql {
 		for (val workspaceItem : domainsItemsSortedByItemNo) {
 			val dataType = workspaceItem.getDataTypeConfig();
 			Object itemValue = itemValueGetter.apply(workspaceItem.getItemNo());
-			Insert.setParam(dataType, itemValue, statement, workspaceItem,context);
+			Insert.setParam(dataType, itemValue, statement, workspaceItem);
 		}
 		
 		statement.execute();
@@ -223,8 +223,7 @@ public class WorkspaceSql {
 				DataTypeConfiguration dataType,
 				Object value,
 				NtsStatement statement,
-				WorkspaceItem workspaceItem,
-				ExecutionContext context
+				WorkspaceItem workspaceItem
 				) {
 			
 			String param = paramItem(workspaceItem.getItemNo());
