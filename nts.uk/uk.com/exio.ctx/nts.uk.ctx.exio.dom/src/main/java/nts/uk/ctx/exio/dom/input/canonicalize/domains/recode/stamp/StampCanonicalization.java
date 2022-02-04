@@ -213,9 +213,8 @@ public class StampCanonicalization implements DomainCanonicalization {
 				.collect(Collectors.collectingAndThen(toList(), KeyValues::new));
 	}
 
-	public static interface RequireCanonicalize  {
-
-		Optional<Stamp> getStamp(String cardNumber, GeneralDateTime stampDateTime, int changeClockArt);
+	public interface RequireCanonicalize  {
+		boolean existsStamp(String cardNumber, GeneralDateTime stampDateTime, int changeClockArt);
 	}
 
 	@Override
