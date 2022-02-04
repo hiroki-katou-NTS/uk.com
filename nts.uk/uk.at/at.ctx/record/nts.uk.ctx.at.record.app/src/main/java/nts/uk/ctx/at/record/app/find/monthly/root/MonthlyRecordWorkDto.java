@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialHolidayRemainDataDtoWrap;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
@@ -26,7 +27,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absencel
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildcareRemNumEachMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicholiday.PublicHolidayRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
@@ -97,6 +97,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_CHILD_CARE_HD_REMAIN_NAME, layout = MONTHLY_CHILD_CARE_HD_REMAIN_CODE)
 	private MonthlyChildCareHdRemainDto childCare;
 	/** 公休月別残数データ*/
+	@AttendanceItemLayout(jpPropertyName = MONTHLY_PUBLIC_HOLIDAYREMAIN_NAME, layout = MONTHLY_PUBLIC_HOLIDAYREMAIN_CODE)
 	private MonthlyPublicHolidayRemainDto publicHoliday;
 	
 	/** 管理期間の36協定時間: 管理期間の36協定時間 */
@@ -329,6 +330,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			return Optional.ofNullable(this.childCare);
 		case AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME:
 			return Optional.ofNullable(this.agreementTime);
+		case MONTHLY_PUBLIC_HOLIDAYREMAIN_NAME:
+			return Optional.ofNullable(this.publicHoliday);
 		default:
 			return Optional.empty();
 		}
@@ -374,6 +377,9 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		case AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME:
 			this.agreementTime = (AgreementTimeOfManagePeriodDto) value;
 			break;
+		case MONTHLY_PUBLIC_HOLIDAYREMAIN_NAME:
+			this.publicHoliday = (MonthlyPublicHolidayRemainDto) value;
+			break;
 		default:
 			break;
 		}
@@ -406,6 +412,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			return new MonthlyChildCareHdRemainDto();
 		case AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME:
 			return new AgreementTimeOfManagePeriodDto();
+		case MONTHLY_PUBLIC_HOLIDAYREMAIN_NAME:
+			return new MonthlyPublicHolidayRemainDto();
 		default:
 			return null;
 		}

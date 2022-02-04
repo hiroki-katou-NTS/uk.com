@@ -11,7 +11,7 @@
 }
 
 .em_display {
-	width: 120px;
+	width: 140px;
 }
 
 .wkp_title_text {
@@ -77,4 +77,8 @@ td.employment-tdpad {
 
 .kcp009-display-content {
   display: table-cell;
+}
+
+.over_text .limited-label {
+    display: block !important;
 }

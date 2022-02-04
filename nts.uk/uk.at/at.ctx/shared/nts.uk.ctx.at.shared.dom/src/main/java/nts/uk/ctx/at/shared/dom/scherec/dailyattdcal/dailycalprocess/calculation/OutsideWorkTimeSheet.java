@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -14,7 +15,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 就業時間外時間帯
@@ -145,10 +148,10 @@ public class OutsideWorkTimeSheet {
 	 * @return 控除時間
 	 */
 	public AttendanceTime getDeductionTimeFromOverTime(
-			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr) {
+			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr, NotUseAtr canOffset) {
 		
 		if (this.overTimeWorkSheet.isPresent()){
-			return this.overTimeWorkSheet.get().getDeductionTime(conditionAtr, dedAtr, roundAtr);
+			return this.overTimeWorkSheet.get().getDeductionTime(conditionAtr, dedAtr, roundAtr, canOffset);
 		}
 		return new AttendanceTime(0);
 	}
@@ -161,10 +164,10 @@ public class OutsideWorkTimeSheet {
 	 * @return 控除時間
 	 */
 	public AttendanceTime getDeductionTimeFromHolidayWork(
-			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr) {
+			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr, NotUseAtr canOffset) {
 		
 		if(this.holidayWorkTimeSheet.isPresent()) {
-			return this.holidayWorkTimeSheet.get().getDeductionTime(conditionAtr, dedAtr, roundAtr);
+			return this.holidayWorkTimeSheet.get().getDeductionTime(conditionAtr, dedAtr, roundAtr, canOffset);
 		}
 		return new AttendanceTime(0);
 	}
@@ -208,6 +211,7 @@ public class OutsideWorkTimeSheet {
 	 * @param deductTimeSheet 控除時間帯
 	 * @param createdWithinWorkTimeSheet 就業時間内時間帯
 	 * @param previousAndNextDaily 前日と翌日の勤務
+	 * @param timeLeavingOfDaily 日別勤怠の出退勤
 	 * @return 就業時間外時間帯
 	 */
 	public static OutsideWorkTimeSheet createOverTimeAsFlow(
@@ -219,7 +223,8 @@ public class OutsideWorkTimeSheet {
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			DeductionTimeSheet deductTimeSheet,
 			WithinWorkTimeSheet createdWithinWorkTimeSheet,
-			PreviousAndNextDaily previousAndNextDaily) {
+			PreviousAndNextDaily previousAndNextDaily,
+			TimeLeavingOfDailyAttd timeLeavingOfDaily) {
 		
 		Optional<OverTimeSheet> overTimeSheet = OverTimeSheet.createAsFlow(
 				companyCommonSetting,
@@ -229,7 +234,8 @@ public class OutsideWorkTimeSheet {
 				integrationOfDaily,
 				predetermineTimeSetForCalc,
 				deductTimeSheet,
-				createdWithinWorkTimeSheet);
+				createdWithinWorkTimeSheet,
+				timeLeavingOfDaily);
 		
 		if(!overTimeSheet.isPresent())
 			return new OutsideWorkTimeSheet(Optional.empty(), Optional.empty());
@@ -298,5 +304,19 @@ public class OutsideWorkTimeSheet {
 		return new OutsideWorkTimeSheet(
 				Optional.of(new OverTimeSheet(overDayEnd.getOverTimeList())),
 				Optional.of(new HolidayWorkTimeSheet(overDayEnd.getHolList())));
+	}
+	
+	/**
+	 * 重複する時間帯で作り直す
+	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 就業時間外時間帯
+	 */
+	public OutsideWorkTimeSheet recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		//残業時間帯を重複する時間帯で作り直す
+		Optional<OverTimeSheet> overTime = this.overTimeWorkSheet.flatMap(o -> o.recreateWithDuplicate(timeSpan, commonSet));
+		//休出時間帯を重複する時間帯で作り直す
+		Optional<HolidayWorkTimeSheet> holidayWorkTime = this.holidayWorkTimeSheet.flatMap(h -> h.recreateWithDuplicate(timeSpan, commonSet));
+		return new OutsideWorkTimeSheet(overTime, holidayWorkTime);
 	}
 }

@@ -30,6 +30,8 @@ public interface AnnLeaGrantRemDataRepository {
 	
 	void update(AnnualLeaveGrantRemainingData data);
 	
+	void updateWithGrantDate(AnnualLeaveGrantRemainingData data);
+	
 	void delete(String employeeID, GeneralDate grantDate);
 	
 	void deleteAfterDate(String employeeId, GeneralDate date);

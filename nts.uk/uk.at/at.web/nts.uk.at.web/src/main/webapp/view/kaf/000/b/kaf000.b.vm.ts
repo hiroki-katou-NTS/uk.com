@@ -76,6 +76,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         enableCancelButton: KnockoutObservable<boolean> = ko.observable(true);
 		displayCancelLabel: KnockoutObservable<boolean> = ko.observable(false);
 
+        displayPrintButton: KnockoutObservable<boolean> = ko.observable(true);
+
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
 
         childUpdateEvent: () => any;
@@ -103,7 +105,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
                 eventUpdate: function(a: any) { vm.getChildUpdateEvent.apply(vm, [a]) },
 				eventReload: function(a: any) { vm.getChildReloadEvent.apply(vm, [a]) },
-            }
+				displayPrintButton: vm.displayPrintButton // temporary for kaf005 only
+            };
 			
 			vm.$blockui("show");
 			vm.$ajax(API.getAppNameInAppList).then((data) => {
@@ -118,6 +121,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             vm.$ajax(`${API.getDetailPC}/${vm.currentApp()}`).done((successData: any) => {
             	vm.approvalReason("");
                 vm.appType(successData.appDetailScreenInfo.application.appType);
+                if (vm.appType() != AppType.OVER_TIME_APPLICATION) vm.displayPrintButton(true);
 				vm.application().appType = vm.appType();
                 vm.application().appID(successData.appDetailScreenInfo.application.appID);
 		        vm.application().opAppReason(successData.appDetailScreenInfo.application.opAppReason);
@@ -138,10 +142,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 						let condition = o.appType==vm.appType();
 						if(vm.appType() == 7) {
 							if(vm.application().opStampRequestMode()==0) {
-								condition = condition && o.opApplicationTypeDisplay==3;
+								condition = condition && o.opApplicationTypeDisplay==0;
 								opString = "C";
 							} else {
-								condition = condition && o.opApplicationTypeDisplay==4;
+								condition = condition && o.opApplicationTypeDisplay==1;
 								opString = "D";
 							}
 						}
@@ -151,9 +155,28 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 						return condition;
 					});
 				if(appNameInfo) {
-					$('.pg-name > span').text(appNameInfo.appName);
+					$('#pg-disp-name').text(appNameInfo.appName);
+					$('#pg-id').text(appNameInfo.opProgramID + opString);
+					if($('#pg-id').length == 0) {
+						let $el = $("#pg-disp-name");
+			            let pgid = "<span id='pg-id'>" + appNameInfo.opProgramID + opString + "</span>";
+			            let pgidcaret = "<div id='pg-id-caret'></div>"
+			            $("body").append(pgid);
+			            $("body").append(pgidcaret);
+			
+			            $el.mouseenter((e) => {
+			                let top = $el.offset().top + 23;
+			                let left = $el.offset().left + 5;
+			                $("#pg-id").css({"visibility": "visible", "top": top + "px", "left" : left + "px", "z-index" : "1000"});
+			                $("#pg-id-caret").css({"visibility": "visible", "top": top + "px", "left" : left + "px", "z-index" : "1000"});
+			            });
+			            $el.mouseleave((e) => {
+			                $("#pg-id").css({"visibility": "hidden", "top": "0px", "left" : "0px", "z-index" : "-1"});
+			                $("#pg-id-caret").css({"visibility": "hidden", "top": "0px", "left" : "0px", "z-index" : "-1"});
+			            });
+					}
 				} else {
-					$('.pg-name > span').text("");
+					$('#pg-disp-name').text("");
 				}
                 vm.setControlButton(
                     successData.appDetailScreenInfo.user,
@@ -162,7 +185,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     successData.appDetailScreenInfo.authorizableFlags,
                     successData.appDetailScreenInfo.alternateExpiration,
                     loginFlg,
-					successData.appDetailScreenInfo.pastApp);
+					successData.appDetailScreenInfo.pastApp
+				);
 				if(_.isFunction(vm.childReloadEvent)) {
 	                vm.childReloadEvent();
 	            }
@@ -415,7 +439,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let command = {
             	appIDLst: [vm.currentApp()],
 				isMultiMode: false,
-				appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
+				appDispInfoStartupOutput: vm.appDispInfoStartupOutput(), 
+
             };
             nts.uk.ui.windows.setShared("KDL030_PARAM", command);
             nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml");
@@ -426,8 +451,22 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             vm.$blockui("show");
             vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
                 if (result === 'yes') {
+					let hdsubRecLinkData: any = null
+					if(vm.childParam.appType() == AppType.COMPLEMENT_LEAVE_APPLICATION && vm.kaf011BViewModel().appCombinaSelected() == 0){
+						hdsubRecLinkData = {
+							absId: vm.kaf011BViewModel().displayInforWhenStarting().abs.application.appID, 
+							recId: vm.kaf011BViewModel().displayInforWhenStarting().rec.application.appID,
+							linkApp: vm.kaf011BViewModel().application().appID() == vm.kaf011BViewModel().displayInforWhenStarting().abs.application.appID 
+								? vm.kaf011BViewModel().displayInforWhenStarting().rec.application : vm.kaf011BViewModel().displayInforWhenStarting().abs.application
+						}
+						// hdsubRecLinkData.linkApp.inputDate = moment().format('YYYY/MM/DD HH:mm:ss');
+					}	
+
 					let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
-		            	command = { appDispInfoStartupOutput };
+		            	command = { 
+							appDispInfoStartupOutput: appDispInfoStartupOutput, 
+							hdsubRecLinkData: hdsubRecLinkData
+						 };
                     return vm.$ajax(API.deleteapp, command);
                 }
             }).done((successData: any) => {
@@ -475,6 +514,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         handlerExecuteErrorMsg(res: any) {
             const vm = this;
+            if (!_.isEmpty(res.errors)) return; // bundle business exceptions from kaf020
             switch(res.messageId) {
             case "Msg_426":
                 vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
@@ -503,9 +543,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 		            });
                 });
                 break;
-            case "Msg_1692":
-            case "Msg_1693":
-                break;
+            // case "Msg_1692":
+            // case "Msg_1693":
+            //     break;
 			case "Msg_1691":
 			case 'Msg_235':
 			case 'Msg_391':
@@ -570,7 +610,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 				if(obj.appListAtr==1) {
 					param = 1;
 				}
-				vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
+				vm.$jump("at", "/view/cmm/045/a/index.xhtml");
             });
 		}
 
@@ -594,9 +634,28 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			const vm = this;
 			let appNameInfo = _.find(vm.appNameList, (o: any) => vm.appType() == 0 && o.opApplicationTypeDisplay==overtimeAtr);
 			if(appNameInfo) {
-				$('.pg-name > span').text(appNameInfo.appName);
+				$('#pg-disp-name').text(appNameInfo.appName);
+				$('#pg-id').text(appNameInfo.opProgramID + "B");
+				if($('#pg-id').length == 0) {
+					let $el = $("#pg-disp-name");
+		            let pgid = "<span id='pg-id'>" + appNameInfo.opProgramID + "B" + "</span>";
+		            let pgidcaret = "<div id='pg-id-caret'></div>"
+		            $("body").append(pgid);
+		            $("body").append(pgidcaret);
+		
+		            $el.mouseenter((e) => {
+		                let top = $el.offset().top + 23;
+		                let left = $el.offset().left + 5;
+		                $("#pg-id").css({"visibility": "visible", "top": top + "px", "left" : left + "px", "z-index" : "1000"});
+		                $("#pg-id-caret").css({"visibility": "visible", "top": top + "px", "left" : left + "px", "z-index" : "1000"});
+		            });
+		            $el.mouseleave((e) => {
+		                $("#pg-id").css({"visibility": "hidden", "top": "0px", "left" : "0px", "z-index" : "-1"});
+		                $("#pg-id-caret").css({"visibility": "hidden", "top": "0px", "left" : "0px", "z-index" : "-1"});
+		            });
+				}
 			} else {
-				$('.pg-name > span').text("");
+				$('#pg-disp-name').text("");
 			}
 		}
     }

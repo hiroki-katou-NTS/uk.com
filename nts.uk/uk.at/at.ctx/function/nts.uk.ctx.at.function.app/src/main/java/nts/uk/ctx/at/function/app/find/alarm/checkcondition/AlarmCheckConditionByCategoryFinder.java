@@ -326,7 +326,7 @@ public class AlarmCheckConditionByCategoryFinder {
 					importData.getFixedExtraItemMonNo(),
 					 lstFixedExtraMonFunImport.stream().filter(x -> x.getFixedExtraItemMonNo() == importData.getFixedExtraItemMonNo()).findFirst().isPresent() ? 
 							 lstFixedExtraMonFunImport.stream().filter(x -> x.getFixedExtraItemMonNo() == importData.getFixedExtraItemMonNo()).findFirst().get().isUseAtr() : false,
-					importData.getMessage()
+					lstFixedExtraMonFunImport.stream().filter(x -> x.getFixedExtraItemMonNo() == importData.getFixedExtraItemMonNo()).findFirst().map(FixedExtraMonFunImport::getMessage).orElse(importData.getMessage())
 					)).collect(Collectors.toList());
 			/*
 			 * listFixedExtraMonFun =

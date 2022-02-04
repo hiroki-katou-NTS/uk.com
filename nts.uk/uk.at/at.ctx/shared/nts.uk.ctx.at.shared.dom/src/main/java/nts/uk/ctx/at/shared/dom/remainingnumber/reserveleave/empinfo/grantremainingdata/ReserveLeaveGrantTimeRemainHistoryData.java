@@ -16,15 +16,9 @@ public class ReserveLeaveGrantTimeRemainHistoryData extends ReserveLeaveGrantRem
 	private GeneralDate grantProcessDate;
 
 	public ReserveLeaveGrantTimeRemainHistoryData(ReserveLeaveGrantRemainingData data, GeneralDate grantProcessDate) {
-		super();
-		this.leaveID = data.getLeaveID();
-		this.employeeId = data.getEmployeeId();
+		super(data.getLeaveID(), data.getEmployeeId(), data.getGrantDate(), data.getDeadline(),
+				data.getExpirationStatus(), data.getRegisterType(), data.getDetails());
 		this.grantProcessDate = grantProcessDate;
-		this.grantDate = data.getGrantDate();
-		this.deadline = data.getDeadline();
-		this.expirationStatus = data.getExpirationStatus();
-		this.registerType = data.getRegisterType();
-		this.details = data.getDetails();
 	}
 
 }

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
+import mockit.integration.junit4.JMockit;
 import org.junit.Test;
 
 import mockit.Expectations;
@@ -14,7 +15,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterHelper;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import org.junit.runner.RunWith;
 
+@RunWith(JMockit.class)
 public class AggregationUnitOfWorkMethodTest {
 	
 	@Injectable
@@ -24,7 +27,7 @@ public class AggregationUnitOfWorkMethodTest {
 	public void testGetWorkMethod_WorkTime_empty() {
 		
 		WorkInformation workInfo = new WorkInformation(new WorkTypeCode("work-type-code"), null );
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getData(workInfo);
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(workInfo);
 		
 		Optional<String> result = AggregationUnitOfWorkMethod.WORK_TIME.getWorkMethod(require, workInfoOfDailyAttendance);
 		
@@ -36,7 +39,7 @@ public class AggregationUnitOfWorkMethodTest {
 	public void testGetWorkMethod_WorkTime_isPresent() {
 		
 		WorkInformation workInfo = new WorkInformation(new WorkTypeCode("work-type-code"), new WorkTimeCode("work-time-code") );
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getData(workInfo);
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(workInfo);
 		
 		Optional<String> result = AggregationUnitOfWorkMethod.WORK_TIME.getWorkMethod(require, workInfoOfDailyAttendance);
 		
@@ -48,7 +51,7 @@ public class AggregationUnitOfWorkMethodTest {
 	public void testGetWorkMethod_Shift_empty() {
 		
 		WorkInformation workInfo = new WorkInformation(new WorkTypeCode("work-type-code"), null );
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getData(workInfo);
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(workInfo);
 		
 		new Expectations() {{
 			require.getShiftMaster(workInfo);
@@ -65,11 +68,11 @@ public class AggregationUnitOfWorkMethodTest {
 	public void testGetWorkMethod_Shift_isPresent() {
 		
 		WorkInformation workInfo = new WorkInformation(new WorkTypeCode("work-type-code"), null );
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getData(workInfo);
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(workInfo);
 		
 		new Expectations() {{
 			require.getShiftMaster(workInfo);
-			result = Optional.of( ShiftMasterHelper.createShiftMasterWithCode("shift-code") );
+			result = Optional.of( ShiftMasterHelper.createDummyWithCode("shift-code") );
 		}};
 		
 		Optional<String> result = AggregationUnitOfWorkMethod.SHIFT.getWorkMethod(require, workInfoOfDailyAttendance);

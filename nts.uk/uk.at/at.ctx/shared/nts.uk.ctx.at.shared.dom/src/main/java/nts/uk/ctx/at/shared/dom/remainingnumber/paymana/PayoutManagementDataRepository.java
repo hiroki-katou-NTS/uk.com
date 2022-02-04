@@ -117,7 +117,4 @@ public interface PayoutManagementDataRepository {
 	List<PayoutManagementData> getByListId(List<String> payoutIds);
 	
 	List<PayoutManagementData> getByIdAndUnUse(String cid, String sid, GeneralDate expiredDate, double unUse);
-	
-	/** 当月以降の管理データを削除 */
-	void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target);
 }

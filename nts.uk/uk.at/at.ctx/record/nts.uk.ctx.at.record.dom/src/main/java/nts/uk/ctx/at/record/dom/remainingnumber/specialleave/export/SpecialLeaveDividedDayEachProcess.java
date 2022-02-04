@@ -3,10 +3,10 @@ package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.NextDayAfterPeriodEndWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveLapsedWork;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 
 /**
  * 処理単位分割日
@@ -26,7 +26,7 @@ public class SpecialLeaveDividedDayEachProcess {
 	/** 付与（付与情報WORK） */
 	private SpecialLeaveGrantWork grantWork;
 	/** 付与前か付与後か */
-	private GrantPeriodAtr grantPeriodAtr;
+	private GrantBeforeAfterAtr grantPeriodAtr;
 
 //	/** 次回年休付与 */
 //	private Optional<NextSpecialLeaveGrant> nextSpecialLeaveGrant;
@@ -47,7 +47,7 @@ public class SpecialLeaveDividedDayEachProcess {
 		this.ymd = ymd;
 		this.grantWork = new SpecialLeaveGrantWork();
 //		this.nextSpecialLeaveGrant = Optional.empty();
-		this.grantPeriodAtr = GrantPeriodAtr.BEFORE_GRANT;
+		this.grantPeriodAtr = GrantBeforeAfterAtr.BEFORE_GRANT;
 	}
 
 //	/**

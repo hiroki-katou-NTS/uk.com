@@ -20,6 +20,7 @@ import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceInfoImport;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
+import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
@@ -42,8 +43,8 @@ public class RoleWorkplaceIDFinder {
 	
 	
 	/** The workplace manager repository. */
-//	@Inject
-//	private WorkplaceManagerRepository workplaceManagerRepository;
+	@Inject
+	private WorkplaceManagerRepository workplaceManagerRepository;
 
 	/**
 	 * ロールIDから参照可能な職場リストを取得する
@@ -51,7 +52,7 @@ public class RoleWorkplaceIDFinder {
 	 * @param systemType the system type
 	 * @return the list
 	 */
-	public WorkplaceIdDto findListWokplaceId(Integer systemType, GeneralDate referenceDate) {
+	public WorkplaceIdDto findListWokplaceId(Integer systemType, GeneralDate referenceDate, Optional<Integer> employeeReferenceRange) {
 		String companyId = AppContexts.user().companyId();
 		if (systemType == SystemType.ADMINISTRATOR.value) {//システム＝管理者の場合
 			WorkplaceIdDto workplaceIdDto = new WorkplaceIdDto();
@@ -71,14 +72,18 @@ public class RoleWorkplaceIDFinder {
 
 		// if role is present
 		if (opRole.isPresent()) {
-			if (opRole.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
+			
+			EmployeeReferenceRange range = opRole.get().getEmployeeReferenceRange();
+			if(employeeReferenceRange.isPresent() && employeeReferenceRange.get() > range.value) {
+				range = EmployeeReferenceRange.valueOf(employeeReferenceRange.get());
+			}
+			if (range == EmployeeReferenceRange.ALL_EMPLOYEE) {
 				listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, referenceDate)
 						.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
 				workplaceIdDto.setListWorkplaceIds(listWkpId);
 				workplaceIdDto.setIsAllEmp(true);
 			} else {
-				
-				listWkpId = this.findListWkpIdByOtherCase(referenceDate, opRole.get().getEmployeeReferenceRange(), Optional.of(systemType == SystemType.EMPLOYMENT.value));
+				listWkpId = this.findListWkpIdByOtherCase(referenceDate, range, Optional.of(systemType == SystemType.EMPLOYMENT.value));
 				workplaceIdDto.setListWorkplaceIds(listWkpId);
 				workplaceIdDto.setIsAllEmp(false);
 			}
@@ -109,8 +114,8 @@ public class RoleWorkplaceIDFinder {
 			return workplaceAdapter.findListWkpIdByBaseDate(referenceDate);
 		}else {
 			if(isWkplManager.isPresent() && isWkplManager.get()) {
-				//[RQ613]指定社員の職場管理者の職場リストを取得する（配下含む）
-				listWkpId.addAll(workplaceAdapter.getWorkplaceId(referenceDate, employeeId));
+				//ドメインモデル「職場管理者」を取得する
+				listWkpId.addAll(workplaceManagerRepository.findListWkpManagerByEmpIdAndBaseDate(employeeId, referenceDate).stream().map(c->c.getWorkplaceId()).collect(Collectors.toList()));
 			}
 					
 			// requestList #30 NEW

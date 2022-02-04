@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -12,9 +11,9 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 
 @Getter
-@NoArgsConstructor
 // domain name CS00037: 年休付与残数データ
 public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
@@ -28,24 +27,24 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
 			Integer grantMinutes, double usedDays, Integer usedMinutes, Double stowageDays, double remainDays,
 			Integer remainMinutes, double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays) {
 
-			AnnualLeaveGrantRemainingData domain = new AnnualLeaveGrantRemainingData();
-			domain.leaveID = annLeavID;
-			domain.employeeId = employeeId;
-			domain.grantDate = grantDate;
-			domain.deadline = deadline;
-			domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
-			domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
-
-			domain.details = new AnnualLeaveNumberInfo(grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
-					remainDays, remainMinutes, usedPercent);
-
-			if (prescribedDays != null && deductedDays != null && workingDays != null) {
-				domain.annualLeaveConditionInfo = Optional
-						.of(AnnualLeaveConditionInfo.createFromJavaType(prescribedDays, deductedDays, workingDays));
-			} else {
-				domain.annualLeaveConditionInfo = Optional.empty();
-			}
-			return domain;
+		
+		Optional<AnnualLeaveConditionInfo> conditionInfo = Optional.empty();
+		if (prescribedDays != null && deductedDays != null && workingDays != null) {
+			conditionInfo = Optional
+					.of(AnnualLeaveConditionInfo.createFromJavaType(prescribedDays, deductedDays, workingDays));
+		}
+		
+		return new AnnualLeaveGrantRemainingData(
+				annLeavID,
+				employeeId,
+				grantDate,
+				deadline,
+				EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class),
+				EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class),
+				new AnnualLeaveNumberInfo(grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
+						remainDays, remainMinutes, usedPercent),
+				conditionInfo
+				);
 	}
 
 	public void updateData(GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType,
@@ -60,102 +59,24 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
 				remainDays, remainMinutes, usedPercent);
 
 	}
-	/**
-	 * ファクトリー
-	 * @param annualLeaveConditionInfo　年休付与条件情報
-	 * @return AnnualLeaveGrantRemainingData
-	*/
-	public static AnnualLeaveGrantRemainingData of(
-			Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo) {
-
-		AnnualLeaveGrantRemainingData domain = new AnnualLeaveGrantRemainingData();
-		domain.annualLeaveConditionInfo = annualLeaveConditionInfo;
-		return domain;
-	}
-
 
 	/**
 	 * 年休付与残数履歴データを年休付与残数データに変換
-	 * @param history 年休付与残数履歴データ
+	 * 
+	 * @param history
+	 *            年休付与残数履歴データ
 	 * @return 年休付与残数データ
 	 */
 	// 2019.3.3 ADD shuichi_ishida
 	public static AnnualLeaveGrantRemainingData createFromHistory(AnnualLeaveRemainingHistory history) {
-
-		AnnualLeaveGrantRemainingData domain = new AnnualLeaveGrantRemainingData();
-		domain.leaveID = IdentifierUtil.randomUniqueId();
-		domain.employeeId = history.getEmployeeId();
-		domain.grantDate = history.getGrantDate();
-		domain.deadline = history.getDeadline();
-		domain.expirationStatus = EnumAdaptor.valueOf(history.getExpirationStatus().value, LeaveExpirationStatus.class);
-		domain.registerType = EnumAdaptor.valueOf(history.getRegisterType().value, GrantRemainRegisterType.class);
-		domain.details = history.getDetails();
-		domain.annualLeaveConditionInfo = history.getAnnualLeaveConditionInfo();
-		return domain;
+		return new AnnualLeaveGrantRemainingData(history);
 	}
 
-//	/**
-//	 * 年休を指定日数消化する
-//	 * @param usedDays 年休使用日数
-//	 * @param isForcibly 強制的に消化するか
-//	 * @return 年休使用残
-//	 */
-//	// 2018.4.23 add shuichi_ishida
-//	public double digest(double usedDays, boolean isForcibly){
-//
-//		// 「年休使用日数」を所得
-//		if (usedDays <= 0.0) return 0.0;
-//		double remainingDays = usedDays;
-//
-//		// 年休残数が足りているかチェック
-//		boolean isSubtractRemain = false;
-//		val remainingNumber = this.details.getRemainingNumber();
-//		if (remainingNumber.getDays().v().doubleValue() >= remainingDays) isSubtractRemain = true;
-//		// 「強制的に消化する」をチェック
-//		else if (isForcibly) isSubtractRemain = true;
-//
-//		if (isSubtractRemain){
-//
-//			// 年休残数から減算
-//			double newRemain = remainingNumber.getDays().v() - remainingDays;
-//			this.details.setRemainingNumber(AnnualLeaveRemainingNumber.createFromJavaType(newRemain, null));
-//
-//			// 年休使用数に加算
-//			double newUsed = this.details.getUsedNumber().getDays().v() + remainingDays;
-//			Double stowageDays = null;
-//			if (this.details.getUsedNumber().getStowageDays().isPresent()){
-//				stowageDays = this.details.getUsedNumber().getStowageDays().get().v();
-//			}
-//			this.details.setUsedNumber(AnnualLeaveUsedNumber.createFromJavaType(newUsed, null, stowageDays));
-//
-//			// 年休使用残を0にする
-//			remainingDays = 0.0;
-//		}
-//		else {
-//
-//			// 年休使用残から減算
-//			remainingDays -= remainingNumber.getDays().v();
-//
-//			// 年休使用数に加算
-//			double newUsed = this.details.getUsedNumber().getDays().v() + remainingNumber.getDays().v();
-//			Double stowageDays = null;
-//			if (this.details.getUsedNumber().getStowageDays().isPresent()){
-//				stowageDays = this.details.getUsedNumber().getStowageDays().get().v();
-//			}
-//			this.details.setUsedNumber(AnnualLeaveUsedNumber.createFromJavaType(newUsed, null, stowageDays));
-//
-//			// 年休残数を0にする
-//			this.details.setRemainingNumber(AnnualLeaveRemainingNumber.createFromJavaType(0.0, null));
-//		}
-//
-//		// 年休使用残を返す
-//		return remainingDays;
-//	}
-
-	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
-			BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays, String grantDateItemName, String deadlineDateItemName) {
+	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate, BigDecimal grantDays,
+			BigDecimal usedDays, BigDecimal remainDays, String grantDateItemName, String deadlineDateItemName) {
 		boolean isNull = validate(grantDate, deadlineDate, grantDays, usedDays, remainDays);
-		if(isNull == false) return isNull;
+		if (isNull == false)
+			return isNull;
 		if (grantDays != null || usedDays != null || remainDays != null) {
 			if (deadlineDate == null || grantDate == null) {
 				if (grantDate == null) {
@@ -180,31 +101,96 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
 		}
 		return isNull;
 	}
-	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate, BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays) {
+
+	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate, BigDecimal grantDays,
+			BigDecimal usedDays, BigDecimal remainDays) {
 		if (grantDate == null && deadlineDate == null && grantDays == null && usedDays == null && remainDays == null)
 			return false;
 		return true;
 	}
 
+
 	/**
-	 * コンストラクタ
-	 * @param employeeId // 社員ID
-	 * @param grantDate	// 付与日
-	 * @param deadline	// 期限日
-	 * @param expirationStatus //　期限切れ状態
-	 * @param grantRemainRegisterType // 登録種別
-	 * @param annualLeaveNumberInfo //　明細
+	 * 
+	 * @param employeeId  社員ID
+	 * @param grantDate 付与日
+	 * @param deadline 期限日
+	 * @param expirationStatus 期限切れ状態
+	 * @param grantRemainRegisterType  登録種別
+	 * @param annualLeaveNumberInfo 明細
 	 */
-	public AnnualLeaveGrantRemainingData(
-			String employeeId, GeneralDate grantDate, GeneralDate deadline,
-			LeaveExpirationStatus expirationStatus,
-			GrantRemainRegisterType grantRemainRegisterType,
-			AnnualLeaveNumberInfo annualLeaveNumberInfo) {
-		this.employeeId = employeeId;
-		this.grantDate = grantDate;
-		this.deadline = deadline;
-		this.expirationStatus = expirationStatus;
-		this.registerType = grantRemainRegisterType;
-		this.details = annualLeaveNumberInfo;
+	public AnnualLeaveGrantRemainingData(String employeeId, GeneralDate grantDate, GeneralDate deadline,
+			LeaveExpirationStatus expirationStatus, GrantRemainRegisterType grantRemainRegisterType,
+			LeaveNumberInfo annualLeaveNumberInfo) {
+		super(IdentifierUtil.randomUniqueId(), employeeId, grantDate, deadline, expirationStatus,
+				grantRemainRegisterType, annualLeaveNumberInfo);
+		this.annualLeaveConditionInfo = Optional.empty();
+	}
+
+	/**
+	 * 
+	 * @param leaveID ID
+	 * @param employeeId  社員ID
+	 * @param grantDate 付与日
+	 * @param deadline 期限日
+	 * @param expirationStatus 期限切れ状態
+	 * @param grantRemainRegisterType  登録種別
+	 * @param annualLeaveNumberInfo 明細
+	 * @param annualLeaveConditionInfo 年休付与条件情報
+	 */
+	public AnnualLeaveGrantRemainingData(String leaveID, String employeeId, GeneralDate grantDate, GeneralDate deadline,
+			LeaveExpirationStatus expirationStatus, GrantRemainRegisterType grantRemainRegisterType,
+			LeaveNumberInfo annualLeaveNumberInfo, Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo) {
+		super(leaveID, employeeId, grantDate, deadline, expirationStatus, grantRemainRegisterType,
+				annualLeaveNumberInfo);
+		this.annualLeaveConditionInfo = annualLeaveConditionInfo;
+	}
+	
+	
+	/**
+	 * 
+	 * @param remaingData 休暇付与残数データ
+	 * @return
+	 */
+	public static AnnualLeaveGrantRemainingData of(LeaveGrantRemainingData remaingData){
+		return new AnnualLeaveGrantRemainingData(
+				remaingData.getLeaveID(),
+				remaingData.getEmployeeId(),
+				remaingData.getGrantDate(),
+				remaingData.getDeadline(),
+				remaingData.getExpirationStatus(),
+				remaingData.getRegisterType(),
+				remaingData.getDetails(),
+				Optional.empty());
+	}
+	
+
+	/**
+	 * 
+	 * @param employeeId  社員ID
+	 * @param grantDate 付与日
+	 * @param deadline 期限日
+	 * @param expirationStatus 期限切れ状態
+	 * @param grantRemainRegisterType  登録種別
+	 * @param annualLeaveNumberInfo 明細
+	 * @param annualLeaveConditionInfo 年休付与条件情報
+	 */
+	public AnnualLeaveGrantRemainingData(String employeeId, GeneralDate grantDate, GeneralDate deadline,
+			LeaveExpirationStatus expirationStatus, GrantRemainRegisterType grantRemainRegisterType,
+			AnnualLeaveNumberInfo annualLeaveNumberInfo, Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo) {
+
+		super(IdentifierUtil.randomUniqueId(), employeeId, grantDate, deadline, expirationStatus,
+				grantRemainRegisterType, annualLeaveNumberInfo);
+		this.annualLeaveConditionInfo = annualLeaveConditionInfo;
+	}
+
+	/**
+	 * 年休付与残数データ
+	 * @param data
+	 */
+	public AnnualLeaveGrantRemainingData(AnnualLeaveGrantRemainingData data) {
+		super(data.getLeaveID(), data.getEmployeeId(), data.getGrantDate(), data.getDeadline(),
+				data.getExpirationStatus(), data.getRegisterType(), data.getDetails().clone());
+		this.annualLeaveConditionInfo = data.getAnnualLeaveConditionInfo();
 	}
 }

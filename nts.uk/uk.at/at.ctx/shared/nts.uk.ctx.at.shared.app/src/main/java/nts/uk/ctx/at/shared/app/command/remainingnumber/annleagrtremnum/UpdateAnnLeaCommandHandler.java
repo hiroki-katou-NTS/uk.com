@@ -48,7 +48,7 @@ public class UpdateAnnLeaCommandHandler extends CommandHandler<AnnLeaGrantRemnNu
 				command.getUsedDays(), command.getUsedMinutes(), null, command.getRemainingDays(),
 				command.getRemainingMinutes(), 0d);
 
-		annLeaRepo.update(data);
+		annLeaRepo.updateWithGrantDate(data);
 	}
 
 }

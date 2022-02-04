@@ -16,6 +16,7 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
@@ -69,20 +70,21 @@ public class GetTempAnnualLeaveMngsFromUsedNumberServiceTest {
 
 		val expect = tempAnnualLeaveMngs();
 		assertThat(tempAnn.get(0).getYmd()).isEqualTo(expect.get(0).getYmd());
-		assertThat(tempAnn.get(0).getUsedNumber().getDays()).isEqualTo(expect.get(0).getUsedNumber().getDays());
-		assertThat(tempAnn.get(0).getUsedNumber().getMinutes()).isEqualTo(expect.get(0).getUsedNumber().getMinutes());
+
+		assertThat(tempAnn.get(0).getUsedNumber().getUsedDayNumber()).isEqualTo(expect.get(0).getUsedNumber().getUsedDayNumber());
+		assertThat(tempAnn.get(0).getUsedNumber().getUsedTime()).isEqualTo(expect.get(0).getUsedNumber().getUsedTime());
 
 		assertThat(tempAnn.get(1).getYmd()).isEqualTo(expect.get(1).getYmd());
-		assertThat(tempAnn.get(1).getUsedNumber().getDays()).isEqualTo(expect.get(1).getUsedNumber().getDays());
-		assertThat(tempAnn.get(1).getUsedNumber().getMinutes()).isEqualTo(expect.get(1).getUsedNumber().getMinutes());
+		assertThat(tempAnn.get(1).getUsedNumber().getUsedDayNumber()).isEqualTo(expect.get(1).getUsedNumber().getUsedDayNumber());
+		assertThat(tempAnn.get(1).getUsedNumber().getUsedTime()).isEqualTo(expect.get(1).getUsedNumber().getUsedTime());
 
 		assertThat(tempAnn.get(2).getYmd()).isEqualTo(expect.get(2).getYmd());
-		assertThat(tempAnn.get(2).getUsedNumber().getDays()).isEqualTo(expect.get(2).getUsedNumber().getDays());
-		assertThat(tempAnn.get(2).getUsedNumber().getMinutes()).isEqualTo(expect.get(2).getUsedNumber().getMinutes());
+		assertThat(tempAnn.get(2).getUsedNumber().getUsedDayNumber()).isEqualTo(expect.get(2).getUsedNumber().getUsedDayNumber());
+		assertThat(tempAnn.get(2).getUsedNumber().getUsedTime()).isEqualTo(expect.get(2).getUsedNumber().getUsedTime());
 
 		assertThat(tempAnn.get(3).getYmd()).isEqualTo(expect.get(3).getYmd());
-		assertThat(tempAnn.get(3).getUsedNumber().getDays()).isEqualTo(expect.get(3).getUsedNumber().getDays());
-		assertThat(tempAnn.get(3).getUsedNumber().getMinutes()).isEqualTo(expect.get(3).getUsedNumber().getMinutes());
+		assertThat(tempAnn.get(3).getUsedNumber().getUsedDayNumber()).isEqualTo(expect.get(3).getUsedNumber().getUsedDayNumber());
+		assertThat(tempAnn.get(3).getUsedNumber().getUsedTime()).isEqualTo(expect.get(3).getUsedNumber().getUsedTime());
 
 		// 消化
 		val digestion = GetAnnualLeaveUsedNumberFromRemDataService.getAnnualLeaveGrantRemainingData(companyId, employeeId, remainingData, usedNumber, require);
@@ -121,8 +123,8 @@ public class GetTempAnnualLeaveMngsFromUsedNumberServiceTest {
 
 		val expect = tempAnnualLeaveMngs2();
 		assertThat(tempAnn.get(0).getYmd()).isEqualTo(expect.get(0).getYmd());
-		assertThat(tempAnn.get(0).getUsedNumber().getDays()).isEqualTo(expect.get(0).getUsedNumber().getDays());
-		assertThat(tempAnn.get(0).getUsedNumber().getMinutes()).isEqualTo(expect.get(0).getUsedNumber().getMinutes());
+		assertThat(tempAnn.get(0).getUsedNumber().getUsedDayNumber()).isEqualTo(expect.get(0).getUsedNumber().getUsedDayNumber());
+		assertThat(tempAnn.get(0).getUsedNumber().getUsedTime()).isEqualTo(expect.get(0).getUsedNumber().getUsedTime());
 
 		// 消化
 		val digestion = GetAnnualLeaveUsedNumberFromRemDataService.getAnnualLeaveGrantRemainingData(companyId, employeeId, remainingData, usedNumber, require);
@@ -162,16 +164,16 @@ public class GetTempAnnualLeaveMngsFromUsedNumberServiceTest {
 
 		val expect = tempAnnualLeaveMngs3();
 		assertThat(tempAnn.get(0).getYmd()).isEqualTo(expect.get(0).getYmd());
-		assertThat(tempAnn.get(0).getUsedNumber().getDays()).isEqualTo(expect.get(0).getUsedNumber().getDays());
-		assertThat(tempAnn.get(0).getUsedNumber().getMinutes()).isEqualTo(expect.get(0).getUsedNumber().getMinutes());
+		assertThat(tempAnn.get(0).getUsedNumber().getUsedDayNumber()).isEqualTo(expect.get(0).getUsedNumber().getUsedDayNumber());
+		assertThat(tempAnn.get(0).getUsedNumber().getUsedTime()).isEqualTo(expect.get(0).getUsedNumber().getUsedTime());
 
 		assertThat(tempAnn.get(1).getYmd()).isEqualTo(expect.get(1).getYmd());
-		assertThat(tempAnn.get(1).getUsedNumber().getDays()).isEqualTo(expect.get(1).getUsedNumber().getDays());
-		assertThat(tempAnn.get(1).getUsedNumber().getMinutes()).isEqualTo(expect.get(1).getUsedNumber().getMinutes());
+		assertThat(tempAnn.get(1).getUsedNumber().getUsedDayNumber()).isEqualTo(expect.get(1).getUsedNumber().getUsedDayNumber());
+		assertThat(tempAnn.get(1).getUsedNumber().getUsedTime()).isEqualTo(expect.get(1).getUsedNumber().getUsedTime());
 
 		assertThat(tempAnn.get(2).getYmd()).isEqualTo(expect.get(2).getYmd());
-		assertThat(tempAnn.get(2).getUsedNumber().getDays()).isEqualTo(expect.get(2).getUsedNumber().getDays());
-		assertThat(tempAnn.get(2).getUsedNumber().getMinutes()).isEqualTo(expect.get(2).getUsedNumber().getMinutes());
+		assertThat(tempAnn.get(2).getUsedNumber().getUsedDayNumber()).isEqualTo(expect.get(2).getUsedNumber().getUsedDayNumber());
+		assertThat(tempAnn.get(2).getUsedNumber().getUsedTime()).isEqualTo(expect.get(2).getUsedNumber().getUsedTime());
 
 		// 消化
 		val digestion = GetAnnualLeaveUsedNumberFromRemDataService.getAnnualLeaveGrantRemainingData(companyId, employeeId, remainingData, usedNumber, require);
@@ -211,8 +213,8 @@ public class GetTempAnnualLeaveMngsFromUsedNumberServiceTest {
 
 		val expect = tempAnnualLeaveMngs1();
 		assertThat(tempAnn.get(0).getYmd()).isEqualTo(expect.get(0).getYmd());
-		assertThat(tempAnn.get(0).getUsedNumber().getDays()).isEqualTo(expect.get(0).getUsedNumber().getDays());
-		assertThat(tempAnn.get(0).getUsedNumber().getMinutes()).isEqualTo(expect.get(0).getUsedNumber().getMinutes());
+		assertThat(tempAnn.get(0).getUsedNumber().getUsedDayNumber()).isEqualTo(expect.get(0).getUsedNumber().getUsedDayNumber());
+		assertThat(tempAnn.get(0).getUsedNumber().getUsedTime()).isEqualTo(expect.get(0).getUsedNumber().getUsedTime());
 
 		// 消化
 		val digestion = GetAnnualLeaveUsedNumberFromRemDataService.getAnnualLeaveGrantRemainingData(companyId, employeeId, remainingData, usedNumber, require);
@@ -251,7 +253,7 @@ public class GetTempAnnualLeaveMngsFromUsedNumberServiceTest {
 	private List<LeaveGrantRemainingData> leaveGrantRemainingData(double days, Integer minutes, double usedays, Integer useminutes, double stowageDays, double numberOverDays, double remdays, Integer remminutes, Integer timeOver, BigDecimal usedPercent) {
 		List<LeaveGrantRemainingData> list = new ArrayList<>();
 		list.add(
-				LeaveGrantRemainingData.of("0001", "900001",GeneralDate.ymd(2020, 10, 16) , GeneralDate.ymd(2020, 10, 16), LeaveExpirationStatus.AVAILABLE, GrantRemainRegisterType.MONTH_CLOSE,
+				LeaveGrantRemainingData.of( "900001",GeneralDate.ymd(2020, 10, 16) , GeneralDate.ymd(2020, 10, 16), LeaveExpirationStatus.AVAILABLE, GrantRemainRegisterType.MONTH_CLOSE,
 						details(days, minutes, usedays, useminutes, stowageDays, numberOverDays, remdays, remminutes, timeOver, usedPercent)));
 		return list;
 	}
@@ -272,28 +274,28 @@ public class GetTempAnnualLeaveMngsFromUsedNumberServiceTest {
 	// 暫定年休管理データ
 	private List<TempAnnualLeaveMngs> tempAnnualLeaveMngs(){
 		return Arrays.asList(
-				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 16), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new LeaveUsedNumber(1.0, null , null, null, null), Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK))) ),
-				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 17), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new LeaveUsedNumber(1.0, null , null, null, null), Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK))) ),
-				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 18), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new LeaveUsedNumber(1.0, null , null, null, null), Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK))) ),
-				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 19), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new LeaveUsedNumber(0.0, 120 , null, null, null), Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))) );
+				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 16), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new TempAnnualLeaveUsedNumber(1.0, null), Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK))) ),
+				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 17), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new TempAnnualLeaveUsedNumber(1.0, null), Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK))) ),
+				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 18), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new TempAnnualLeaveUsedNumber(1.0, null), Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK))) ),
+				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 19), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new TempAnnualLeaveUsedNumber(null, 120), Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))) );
 	}
 
 	// 暫定年休管理データ
 	private List<TempAnnualLeaveMngs> tempAnnualLeaveMngs1(){
 		return Arrays.asList(
-				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 16), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new LeaveUsedNumber(1.0, null , null, null, null),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))));
+				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 16), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new TempAnnualLeaveUsedNumber(1.0, null),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))));
 	}
 
 	// 暫定年休管理データ
 	private List<TempAnnualLeaveMngs> tempAnnualLeaveMngs2(){
 		return Arrays.asList(
-				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 16), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new LeaveUsedNumber(0.5, null , null, null, null),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))));
+				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 16), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new TempAnnualLeaveUsedNumber(0.5, null),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))));
 	}
 	// 暫定年休管理データ
 	private List<TempAnnualLeaveMngs> tempAnnualLeaveMngs3(){
 		return Arrays.asList(
-				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 16), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new LeaveUsedNumber(1, null , null, null, null),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))),
-				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 16), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new LeaveUsedNumber(0.5, null , null, null, null),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))),
-				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 17), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new LeaveUsedNumber(0, 60, null, null, null),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))));
+				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 16), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new TempAnnualLeaveUsedNumber(1.0, null),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))),
+				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 16), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new TempAnnualLeaveUsedNumber(0.5, null),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))),
+				TempAnnualLeaveMngs.of("000001","900001", GeneralDate.ymd(2020, 10, 17), CreateAtr.RECORD, RemainType.ANNUAL, RemainAtr.SINGLE, new WorkTypeCode("1"), new TempAnnualLeaveUsedNumber(null, 60),  Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.of(AppTimeType.OFFWORK)))));
 	}
 }

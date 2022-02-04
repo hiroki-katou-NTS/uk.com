@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRe
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -75,7 +76,8 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 	public ProcessResult register(DisplayInforWhenStarting command, GeneralDate appDateNew, String appReason, Integer appStandardReasonCD){
 		String companyId = AppContexts.user().companyId();
 		
-		AbsenceLeaveApp absNew = this.errorCheckWhenChangingHolidays(companyId, command, appDateNew, appReason, appStandardReasonCD);
+		AbsenceLeaveApp absNew = this.errorCheckWhenChangingHolidays(companyId, command, appDateNew, appReason, appStandardReasonCD, 
+		        command.getApplicationForHoliday().getWorkTypeList().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 		
 		ProcessResult processResult = this.registerProcess(companyId, command, absNew);
 		
@@ -92,7 +94,7 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 	 * @param appReason 申請理由_NEW
 	 * @param appStandardReasonCD 定型理由コード_NEW
 	 */
-	public AbsenceLeaveApp errorCheckWhenChangingHolidays(String companyId, DisplayInforWhenStarting displayInforWhenStarting, GeneralDate appDate, String appReason, Integer appStandardReasonCD) {
+	public AbsenceLeaveApp errorCheckWhenChangingHolidays(String companyId, DisplayInforWhenStarting displayInforWhenStarting, GeneralDate appDate, String appReason, Integer appStandardReasonCD, List<WorkType> listWorkTypes) {
 		//「INPUT．振休日_NEW = INPUT．振休振出申請起動時の表示情報．申請表示情報．申請詳細画面情報．申請(振休)．申請日」がtrue
 		if(appDate.equals(displayInforWhenStarting.abs.application.toDomain().getAppDate().getApplicationDate())) {
 			throw new BusinessException("Msg_1683");
@@ -122,9 +124,12 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()), 
 				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()), 
 				displayInforWhenStarting.appDispInfoStartup.toDomain(), 
-				displayInforWhenStarting.existAbs() ? displayInforWhenStarting.abs.payoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
+				displayInforWhenStarting.existAbs() ? displayInforWhenStarting.abs.payoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(),
+				displayInforWhenStarting.existAbs() ? displayInforWhenStarting.abs.leaveComDayOffMana.stream().map(c -> c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
 				false,
-				true);
+				true, 
+				listWorkTypes, 
+				EnumAdaptor.valueOf(displayInforWhenStarting.getSubstituteManagement(), ManageDistinct.class));
 		return abs;
 	}
 	
@@ -136,6 +141,7 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 	 */
 	public ProcessResult registerProcess(String companyId, DisplayInforWhenStarting displayInforWhenStarting, AbsenceLeaveApp absNew) {
 		Optional<AbsenceLeaveApp> absOld = absenceLeaveAppRepository.findByAppId(displayInforWhenStarting.abs.application.getAppID());
+		LinkingManagementInforDto linkingManagementInfor = null;
 		// 申請の組み合わせをチェックする
 		if (displayInforWhenStarting.existRec()) {
 			Optional<RecruitmentApp> rec = recruitmentAppRepository.findByAppId(displayInforWhenStarting.rec.application.getAppID());
@@ -148,6 +154,9 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 				x.setActualReflectStatus(ReflectedState.CANCELED);
 			});
 			applicationRepository.update(absOld.get().getApplication());
+			//振出振休紐付け管理を作り直す
+	        linkingManagementInfor = this.recreateTheTieUpManagement(absNew.getAppDate().getApplicationDate(), displayInforWhenStarting.substituteManagement, displayInforWhenStarting.holidayManage, displayInforWhenStarting.abs.leaveComDayOffMana, displayInforWhenStarting.abs.payoutSubofHDManagements);
+	        
 			// 暫定データの登録
 			interimRemainDataMngRegisterDateChange.registerDateChange(
 					companyId, 
@@ -159,6 +168,9 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 				x.setActualReflectStatus(ReflectedState.CANCELED);
 			});
 			applicationRepository.update(absOld.get().getApplication());
+			//振出振休紐付け管理を作り直す
+	        linkingManagementInfor = this.recreateTheTieUpManagement(absNew.getAppDate().getApplicationDate(), displayInforWhenStarting.substituteManagement, displayInforWhenStarting.holidayManage, displayInforWhenStarting.abs.leaveComDayOffMana, displayInforWhenStarting.abs.payoutSubofHDManagements);
+	        
 			// 暫定データの登録
 			interimRemainDataMngRegisterDateChange.registerDateChange(
 					companyId, 
@@ -167,7 +179,7 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 		}
 		
 		//振出振休紐付け管理を作り直す
-		LinkingManagementInforDto linkingManagementInfor = this.recreateTheTieUpManagement(absNew.getAppDate().getApplicationDate(), displayInforWhenStarting.substituteManagement, displayInforWhenStarting.holidayManage, displayInforWhenStarting.abs.leaveComDayOffMana, displayInforWhenStarting.abs.payoutSubofHDManagements);
+//		LinkingManagementInforDto linkingManagementInfor = this.recreateTheTieUpManagement(absNew.getAppDate().getApplicationDate(), displayInforWhenStarting.substituteManagement, displayInforWhenStarting.holidayManage, displayInforWhenStarting.abs.leaveComDayOffMana, displayInforWhenStarting.abs.payoutSubofHDManagements);
 		
 		Optional<RecruitmentAppCmd> recNew = displayInforWhenStarting.existRec()?Optional.of(displayInforWhenStarting.rec):Optional.empty();
 		recNew.ifPresent(c->c.applicationInsert = new ApplicationInsertCmd(c.application.toDomain()));

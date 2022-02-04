@@ -26,7 +26,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
@@ -97,8 +97,8 @@ public class ReflectApplicationWorkRecordTest {
 
 		};
 
-		val actualResult = ReflectApplicationWorkRecord.process(require, appImg,
-				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW);
+		val actualResult = ReflectApplicationWorkRecord.process(require, "", appImg,
+				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW, "1");
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
 
@@ -135,7 +135,7 @@ public class ReflectApplicationWorkRecordTest {
 				result = Optional.of(ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD).getDomain());
 				
 				// 「[RQ667]申請反映後の日別勤怠(work）を作成する（勤務実績）」のテスト呼び出す
-				RCCreateDailyAfterApplicationeReflect.process(require, (ApplicationShare) any,
+				RCCreateDailyAfterApplicationeReflect.process(require, "", (ApplicationShare) any,
 						(DailyRecordOfApplication) any, (GeneralDate) any);
 				times = 1;
 
@@ -143,9 +143,8 @@ public class ReflectApplicationWorkRecordTest {
 
 		};
 
-		val actualResult = ReflectApplicationWorkRecord.process(require, appImg,
-				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW);
-
+		val actualResult = ReflectApplicationWorkRecord.process(require, "", appImg,
+				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW, "1");
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
 
 		NtsAssert.atomTask(() -> actualResult.getRight().get(), any -> require.addAllDomain(any.get(), true));
@@ -160,9 +159,8 @@ public class ReflectApplicationWorkRecordTest {
 						StampMeans.NAME_SELECTION), /// 打刻する方法. 打刻手段
 				new StampType(false, GoingOutReason.valueOf(1), // 外出理由
 						SetPreClockArt.NONE, // 所定時刻セット区分
-						ChangeClockArt.GOING_TO_WORK, // 時刻変更区分
+						ChangeClockAtr.GOING_TO_WORK, // 時刻変更区分
 						ChangeCalArt.NONE), // 計算区分変更対象
-				new RefectActualResult( null, null, null), Optional.empty(),
-				"DUMMY");
+				new RefectActualResult( null, null, null, null), Optional.empty());
 	}
 }

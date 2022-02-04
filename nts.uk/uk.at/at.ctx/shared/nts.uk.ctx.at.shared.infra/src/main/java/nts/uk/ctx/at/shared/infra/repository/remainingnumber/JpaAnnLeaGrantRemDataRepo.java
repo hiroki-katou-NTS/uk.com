@@ -113,6 +113,25 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	@Override
 	public void update(AnnualLeaveGrantRemainingData data) {
 		if (data != null) {
+			List<KRcmtAnnLeaRemain> entityOpts = this.queryProxy().query(CHECK_UNIQUE_SID_GRANTDATE_FOR_ADD, KRcmtAnnLeaRemain.class)
+			.setParameter("employeeId", data.getEmployeeId())
+			.setParameter("grantDate", data.getGrantDate()).getList();
+			
+			if (!entityOpts.isEmpty()) {
+				KRcmtAnnLeaRemain entity = entityOpts.stream().findFirst().get();
+				updateValue(entity, data);
+				this.commandProxy().update(entity);
+			}
+		}
+	}
+	
+	
+	@Override
+	/*
+	 * CPS001から呼ばれる専用　付与日変更する時だけこのメソッドを使用すること
+	 */
+	public void updateWithGrantDate(AnnualLeaveGrantRemainingData data) {
+		if (data != null) {
 			Optional<KRcmtAnnLeaRemain> entityOpt = this.queryProxy().find(data.getLeaveID(),KRcmtAnnLeaRemain.class);
 			if (entityOpt.isPresent()) {
 				KRcmtAnnLeaRemain entity = entityOpt.get();
@@ -199,6 +218,9 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 
 	@Override
 	public List<AnnualLeaveGrantRemainingData> checkConditionUniqueForAdd(String employeeId, GeneralDate grantDate) {
+		if (grantDate == null) {
+			return Collections.emptyList();
+		}
 		return this.queryProxy().query(CHECK_UNIQUE_SID_GRANTDATE_FOR_ADD, KRcmtAnnLeaRemain.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("grantDate", grantDate).getList(e -> toDomain(e));

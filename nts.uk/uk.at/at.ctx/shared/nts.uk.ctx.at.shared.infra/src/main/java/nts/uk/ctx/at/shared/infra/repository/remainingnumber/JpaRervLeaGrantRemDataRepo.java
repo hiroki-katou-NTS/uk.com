@@ -19,7 +19,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveNumberInfo;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.resvlea.KrcmtReverseLeaRemain;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -30,9 +29,9 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 
 	private static final String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 1 ORDER BY a.grantDate desc";
 
-	private static final String DELETE_AFTER_QUERY = "DELETE FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId and a.grantDate > :startDate";
-
 	private static final String SEL_REM_BY_SID_AND_GRANT_DATE = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId AND a.grantDate = :grantDate AND a.rvsLeaId !=:rvsLeaId";
+
+	private static final String QUERY_WITH_EMP_ID_AND_GRANT_DATE = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId AND a.grantDate = :grantDate ";
 
 	@Override
 	public List<ReserveLeaveGrantRemainingData> find(String employeeId) {
@@ -79,10 +78,26 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 
 	@Override
 	public void update(ReserveLeaveGrantRemainingData data) {
-		Optional<KrcmtReverseLeaRemain> entityOpt = this.queryProxy().find(data.getLeaveID(),
-				KrcmtReverseLeaRemain.class);
-		if (entityOpt.isPresent()) {
-			KrcmtReverseLeaRemain entity = entityOpt.get();
+		List<KrcmtReverseLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID_AND_GRANT_DATE, KrcmtReverseLeaRemain.class)
+				.setParameter("employeeId", data.getEmployeeId())
+				.setParameter("grantDate", data.getGrantDate())
+				.getList();
+		
+		if (!entities.isEmpty()) {
+			KrcmtReverseLeaRemain entity = entities.stream().findFirst().get();
+			updateDetail(entity, data);
+			this.commandProxy().update(entity);
+		}
+	}
+	
+	@Override
+	/*
+	 * CPS001から呼ばれる専用　付与日変更する時だけこのメソッドを使用すること
+	 */
+	public void updateWithGrantDate(ReserveLeaveGrantRemainingData data) {
+        Optional<KrcmtReverseLeaRemain> entityOpt = this.queryProxy().find(data.getLeaveID(),KrcmtReverseLeaRemain.class);
+        if (entityOpt.isPresent()) {
+                    KrcmtReverseLeaRemain entity = entityOpt.get();
 			updateDetail(entity, data);
 			this.commandProxy().update(entity);
 		}
@@ -113,12 +128,6 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 		String sql = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId AND a.grantDate = :grantDate";
 		return this.queryProxy().query(sql, KrcmtReverseLeaRemain.class).setParameter("employeeId", employeeId)
 				.setParameter("grantDate", grantDate).getList(e -> toDomain(e));
-	}
-
-	@Override
-	public void deleteAfterDate(String employeeId, GeneralDate date) {
-		this.getEntityManager().createQuery(DELETE_AFTER_QUERY).setParameter("employeeId", employeeId)
-				.setParameter("startDate", date);
 	}
 
 	@Override

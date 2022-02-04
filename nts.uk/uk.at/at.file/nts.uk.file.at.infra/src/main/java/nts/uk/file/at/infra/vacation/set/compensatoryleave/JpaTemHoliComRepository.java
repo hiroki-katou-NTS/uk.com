@@ -103,7 +103,7 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
         /*※10_01*/
         boolean isNotOccurrOTTimeAtr = !isOccurrOTTimeAtr;
         /*A15_1*/
-        String isManagementOfHolidays = CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString("MANAGE_ATR")));
+        String isManagementOfHolidays = CommonTempHolidays.getTextEnumManageDistinct(rs.getBoolean("MANAGE_ATR") ? 1 : 0);
         /*A15_2*/
         String subExpDateColumn = isManagement ? CommonTempHolidays.getTextEnumExpirationTime(Integer.valueOf(rs.getString("EXPIRATION_USE_SET"))) : null;
         /*A15_3*/

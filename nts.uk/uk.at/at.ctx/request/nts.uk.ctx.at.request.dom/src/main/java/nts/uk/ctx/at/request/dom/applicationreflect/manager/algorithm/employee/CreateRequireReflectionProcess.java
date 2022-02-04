@@ -14,8 +14,12 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.adapter.workrecod.actuallock.GetPeriodCanProcesseAdapter;
+import nts.uk.ctx.at.request.dom.adapter.workrecod.actuallock.dto.AchievementAtrImport;
+import nts.uk.ctx.at.request.dom.adapter.workrecod.actuallock.dto.IgnoreFlagDuringLockImport;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.DetermineActualResultLockAdapter;
@@ -28,6 +32,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.workrecord.id
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.reflect.ReflectApplicationWorkScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.BasicScheduleConfirmImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExeConditionRepository;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
@@ -78,13 +83,16 @@ public class CreateRequireReflectionProcess {
 
 	@Inject
 	private ReasonApplicationDailyResultRepo reasonApplicationDailyResultRepo;
+	
+	@Inject
+	private GetPeriodCanProcesseAdapter getPeriodCanProcesseAdapter;
 
 	public RequireImpl createImpl() {
 		return new RequireImpl(AppContexts.user().companyId(), eflectApplicationWorkScheduleAdapter,
 				scBasicScheduleAdapter, identificationAdapter, determineActualResultLockAdapter, employeeRequestAdapter,
 				workFixedAdapter, reflectApplicationWorkRecordAdapter, createEditStatusHistAppReasonAdapter,
 				closureEmploymentRepository, appReflectExeConditionRepository,
-				reasonApplicationDailyResultRepo);
+				reasonApplicationDailyResultRepo, getPeriodCanProcesseAdapter);
 	}
 
 	@AllArgsConstructor
@@ -115,12 +123,14 @@ public class CreateRequireReflectionProcess {
 		private final AppReflectExeConditionRepository appReflectExeConditionRepository;
 
 		private final ReasonApplicationDailyResultRepo reasonApplicationDailyResultRepo;
+		
+		private final GetPeriodCanProcesseAdapter getPeriodCanProcesseAdapter;
 
 		@Override
 		public Pair<ReflectStatusResult, AtomTask> process(ApplicationShare application,
-				GeneralDate date, ReflectStatusResult reflectStatus, int preAppWorkScheReflectAttr) {
+				GeneralDate date, ReflectStatusResult reflectStatus, int preAppWorkScheReflectAttr, String execId) {
 			return eflectApplicationWorkScheduleAdapter.process(application, date, reflectStatus,
-					preAppWorkScheReflectAttr);
+					preAppWorkScheReflectAttr, execId);
 		}
 
 		@Override
@@ -155,8 +165,8 @@ public class CreateRequireReflectionProcess {
 
 		@Override
 		public Pair<ReflectStatusResult, Optional<AtomTask>> processWork(ApplicationShare application,
-				GeneralDate date, ReflectStatusResult reflectStatus, GeneralDateTime reflectTime) {
-			return reflectApplicationWorkRecordAdapter.process(application, date, reflectStatus, reflectTime);
+				GeneralDate date, ReflectStatusResult reflectStatus, GeneralDateTime reflectTime, String execId) {
+			return reflectApplicationWorkRecordAdapter.process(application, date, reflectStatus, reflectTime, execId);
 		}
 
 		@Override
@@ -173,8 +183,8 @@ public class CreateRequireReflectionProcess {
 
 		@Override
 		public void processCreateHist(String employeeId, GeneralDate date, String appId,
-				ScheduleRecordClassifi classification, Map<Integer, String> mapValue, GeneralDateTime reflectTime) {
-			createEditStatusHistAppReasonAdapter.process(employeeId, date, appId, classification, mapValue, reflectTime);
+				ScheduleRecordClassifi classification, Map<Integer, String> mapValue, GeneralDateTime reflectTime, String execId, ReflectedState reflectStatus) {
+			createEditStatusHistAppReasonAdapter.process(employeeId, date, appId, classification, mapValue, reflectTime, execId, reflectStatus);
 		}
 
 		@Override
@@ -197,6 +207,13 @@ public class CreateRequireReflectionProcess {
 		@Override
 		public Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD) {
 			return closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
+		}
+
+		@Override
+		public List<DatePeriod> getPeriodProcess(String employeeId, DatePeriod period,
+				List<EmploymentHistoryImported> listEmploymentHis, IgnoreFlagDuringLockImport ignoreFlagDuringLock,
+				AchievementAtrImport achievementAtr) {
+			return getPeriodCanProcesseAdapter.get(employeeId, period, listEmploymentHis, ignoreFlagDuringLock, achievementAtr);
 		}
 
 	}

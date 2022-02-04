@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
@@ -80,12 +79,8 @@ public class CompensatoryHolidayProcess {
 		String companyId = AppContexts.user().companyId();
 
 		return AtomTask.of(() -> {})
-				/** アルゴリズム「当月以降の休出管理データを削除」を実行する */
-				.then(() -> require.deleteLeaveManagementDataAfter(empId, false, period.getPeriod().start()))
 				/** アルゴリズム「休出管理データの更新」を実行する */
 				.then(updateLeaveMngData(require, companyId, vacationDetails.getLstAcctAbsenDetail()))
-				/** アルゴリズム「当月以降の代休管理データを削除」を実行する */
-				.then(() -> require.deleteCompensatoryDayOffManaDataAfter(empId, false, period.getPeriod().start()))
 				/** アルゴリズム「代休管理データの更新」を実行する */
 				.then(updateCompensatoryDayData(require, companyId, vacationDetails.getLstAcctAbsenDetail()));
 	}
@@ -198,9 +193,6 @@ public class CompensatoryHolidayProcess {
 
 	public static interface RequireM5 extends RequireM2, RequireM4 {
 
-		void deleteLeaveManagementDataAfter(String sid, boolean unknownDateFlag, GeneralDate target);
-
-		void deleteCompensatoryDayOffManaDataAfter(String sid, boolean unknownDateFlag, GeneralDate target);
 	}
 
 	public static interface RequireM2 {

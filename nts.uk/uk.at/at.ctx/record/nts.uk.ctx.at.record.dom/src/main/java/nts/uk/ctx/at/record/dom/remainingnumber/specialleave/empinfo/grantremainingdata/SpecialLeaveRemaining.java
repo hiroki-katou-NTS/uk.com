@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeavaRemainTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingDetail;
@@ -17,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialh
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
 
 /**
- * 特別休暇残数情報
+ * 特別休暇情報残数
  * @author shuichu_ishida
  */
 @Getter
@@ -77,17 +78,17 @@ public class SpecialLeaveRemaining implements Cloneable {
 	}
 
 	/**
-	 * 特休付与情報を更新
+	 * 特休休暇情報残数を更新
 	 * @param remainingDataList 特休付与残数データリスト
-	 * @param afterGrantAtr 付与後フラグ
+	 * @param grantPeriodAtr 付与前付与後
 	 */
 	public void updateRemainingNumber(
 			List<SpecialLeaveGrantRemainingData> remainingDataList,
-			boolean afterGrantAtr){
+			GrantBeforeAfterAtr grantPeriodAtr){
 
 		// 特別休暇付与残数データから実特別休暇の特別休暇残数を作成
 		this.specialLeaveWithMinus.createRemainingNumberFromGrantRemaining(
-				remainingDataList, afterGrantAtr);
+				remainingDataList, grantPeriodAtr);
 
 		// 特別休暇付与残数データから特別休暇の特別休暇残数を作成
 		// 特休（マイナスなし）を特休（マイナスあり）で上書き　＆　特休からマイナスを削除
@@ -101,15 +102,9 @@ public class SpecialLeaveRemaining implements Cloneable {
 	private SpecialLeave updateRemainingNumberNoMinus(SpecialLeave specialLeaveWithMinus){
 
 		// 特休（マイナスなし）を特休（マイナスあり）で上書き
-		SpecialLeave specialLeaveNoMinus = this.specialLeaveWithMinus.clone();
+		SpecialLeave specialLeaveNoMinus = specialLeaveWithMinus.clone();
 
-		// 特休からマイナスを削除
-		// 「特別休暇．残数」「特別休暇．残数付与前」「特別休暇．残数付与後」をそれぞれ処理
-
-		// 残数
-		updateRemainingNumberWithMinusToNoMinus(
-				specialLeaveNoMinus.getRemainingNumberInfo().getRemainingNumber(),
-				specialLeaveNoMinus.getUsedNumberInfo().getUsedNumber());
+		// 「残数．付与前」「残数．付与後」をそれぞれ処理
 
 		// 残数付与前
 		updateRemainingNumberWithMinusToNoMinus(
@@ -124,6 +119,9 @@ public class SpecialLeaveRemaining implements Cloneable {
 				specialLeaveNoMinus.getUsedNumberInfo().getUsedNumberAfterGrantOpt().get());
 		}
 
+		// 特別休暇(マイナスなし)．使用数．合計　←特別休暇(マイナスなし)．使用数．付与前 + 特別休暇(マイナスなし)．使用数.  付与後
+		specialLeaveNoMinus.getUsedNumberInfo().setTotal();
+
 		return specialLeaveNoMinus;
 	}
 
@@ -136,9 +134,9 @@ public class SpecialLeaveRemaining implements Cloneable {
 			SpecialLeaveRemainingNumber specialLeaveRemainingNumber,
 			SpecialLeaveUseNumber specialLeaveUseNumber){
 
-		// パラメータ「特別休暇残数．合計残日数」と「特別休暇残数．合計残時間」をチェック
+		// 処理中の「日数」と「時間」をチェック
 
-		// 合計残日数<0　or 合計残時間 < 0
+		// 日数<0　or 時間 < 0
 		double remainDays = specialLeaveRemainingNumber.getDayNumberOfRemain().v();
 		int remainTimes = 0;
 		if ( specialLeaveRemainingNumber.getTimeOfRemain().isPresent() ){
@@ -171,10 +169,10 @@ public class SpecialLeaveRemaining implements Cloneable {
 				c.setTime(Optional.of(new TimeOfRemain(0)));
 			});
 
-			// 特別休暇．残数．合計残日数←0
+			// 処理中の残数．日数←0
 			specialLeaveRemainingNumber.setDayNumberOfRemain(new DayNumberOfRemain(0.0));
 
-			// 特別休暇．残数．合計残時間←0
+			// 処理中の残数．時間←0
 			specialLeaveRemainingNumber.setTimeOfRemain(Optional.of(new TimeOfRemain(0)));
 		}
 	}

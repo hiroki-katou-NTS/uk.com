@@ -13,6 +13,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.ExcessLeaveInfo;
@@ -21,8 +23,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.publicholiday.PublicHolidayRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.publicholiday.PublicHolidayRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
@@ -61,7 +61,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 public class OtherHolidayInfoService {
 
 	@Inject
-	private PublicHolidayRemainRepository publicHolidayRemainRepository;
+	private PublicHolidayCarryForwardDataRepository publicHolidayCarryForwardDataRepository;
 
 	@Inject
 	private ExcessLeaveInfoRepository excessLeaveInfoRepository;
@@ -107,13 +107,13 @@ public class OtherHolidayInfoService {
 	private static final BigDecimal ONE = new BigDecimal(1);
 	private static final BigDecimal AHALF = new BigDecimal(0.5);
 
-	public void addOtherHolidayInfo(String cid, PublicHolidayRemain pubHD, ExcessLeaveInfo exLeav,
+	public void addOtherHolidayInfo(String cid, PublicHolidayCarryForwardData pubHD, ExcessLeaveInfo exLeav,
 			BigDecimal remainNumber, BigDecimal remainLeft) {
 
-		publicHolidayRemainRepository.add(pubHD);
+		publicHolidayCarryForwardDataRepository.persistAndUpdate(pubHD);
 		excessLeaveInfoRepository.add(exLeav);
 
-		String sid = pubHD.getSID();
+		String sid = pubHD.getEmployeeId();
 		
 		// Item IS00366
 		if (checkEnableLeaveMan(sid)) {
@@ -133,7 +133,7 @@ public class OtherHolidayInfoService {
 	
 	public void addOtherHolidayInfo(String cid, Map<String, OtherHolidayInfoInter> otherHolidayInfos) {
 		List<ExcessLeaveInfo> exLeavLst = new ArrayList<ExcessLeaveInfo>();
-		List<PublicHolidayRemain> pubHDLst  = new ArrayList<PublicHolidayRemain>();
+		List<PublicHolidayCarryForwardData> pubHDLst  = new ArrayList<PublicHolidayCarryForwardData>();
 		Map<String, BigDecimal> remainLeftMap = new HashMap<>();
 		Map<String, BigDecimal> remainNumberMap = new HashMap<>();
        
@@ -145,7 +145,7 @@ public class OtherHolidayInfoService {
         });
         
         excessLeaveInfoRepository.addAll(exLeavLst);
-		publicHolidayRemainRepository.addAll(pubHDLst);
+        publicHolidayCarryForwardDataRepository.addAll(pubHDLst);
 		
 		Map<String, Boolean> checkEnableLeaveMap = checkEnableLeaveMan(new ArrayList<>(otherHolidayInfos.keySet()));
 		Map<String, Boolean> checkEnablePayoutMaP = checkEnablePayout(new ArrayList<>(otherHolidayInfos.keySet()));
@@ -438,8 +438,8 @@ public class OtherHolidayInfoService {
 			// TODO QA
 			DesignatedTime commonSet = commonSetMap.get(c.getKey());
 			String newID = null;
-			int aDay = commonSet.getOneDayTime().v();
-			int aHalf = commonSet.getHalfDayTime().v();
+			int aDay = commonSet == null ? 0 : commonSet.getOneDayTime().v();
+			int aHalf = commonSet == null ? 0 : commonSet.getHalfDayTime().v();
 			while (remainNumberTpm.compareTo(ZERO) > 0) {
 				newID = IdentifierUtil.randomUniqueId();
 				if (remainNumberTpm.compareTo(ONE) >= 0) {
@@ -541,7 +541,7 @@ public class OtherHolidayInfoService {
 			return result;
 		}
 		DateHistoryItem histItem = workingCond.get().getDateHistoryItem()
-				.get(workingCond.get().getDateHistoryItem().size() - 1);
+				.get(0);
 		Optional<WorkingConditionItem> workingCondItem = workingConditionItemRepository.getBySidAndHistId(sid,
 				histItem.identifier());
 		if (!workingCondItem.isPresent()) {
@@ -561,7 +561,7 @@ public class OtherHolidayInfoService {
 
 		// Flexible time
 		if (workTimeSet.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
-			getFlexTime(cid, workTimeCD.get().v());
+			return getFlexTime(cid, workTimeCD.get().v());
 		} else {
 			switch (workTimeSet.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
@@ -604,7 +604,7 @@ public class OtherHolidayInfoService {
 			}
 			
 			DateHistoryItem histItem = workingCondOpt.get().getDateHistoryItem()
-					.get(workingCondOpt.get().getDateHistoryItem().size() - 1);
+					.get(0);
 			histIds.add(histItem.identifier());
 		});
 		
@@ -665,8 +665,9 @@ public class OtherHolidayInfoService {
 			Map<String, DesignatedTime> flexDesignatedTime = getFlexTime(cid, flexFilterTimes);
 			workTimes.entrySet().stream().forEach(c ->{
 				DesignatedTime flexTime = flexDesignatedTime.get(c.getValue());
-				result.put(c.getKey(), flexTime);
-				
+				if (flexTime != null) {
+					result.put(c.getKey(), flexTime);
+				}
 			});
 		}
 		
@@ -675,8 +676,9 @@ public class OtherHolidayInfoService {
 			Map<String, DesignatedTime> fixedFilterWork = getFixedWork(cid, fixedFilterWorks);
 			workTimes.entrySet().stream().forEach(c ->{
 				DesignatedTime fixedWork = fixedFilterWork.get(c.getValue());
-				result.put(c.getKey(), fixedWork);
-				
+				if (fixedWork != null) {
+					result.put(c.getKey(), fixedWork);
+				}
 			});
 		}
 		
@@ -685,8 +687,9 @@ public class OtherHolidayInfoService {
 			Map<String, DesignatedTime> flowFilterWork = getFlowWork(cid, flowFilterWorks);
 			workTimes.entrySet().stream().forEach(c ->{
 				DesignatedTime flowWork = flowFilterWork.get(c.getValue());
-				result.put(c.getKey(), flowWork);
-				
+				if (flowWork != null) {
+					result.put(c.getKey(), flowWork);
+				}
 			});
 		}
 		
@@ -694,8 +697,10 @@ public class OtherHolidayInfoService {
 			List<String> diffTimeFilterWorks = diffTimeWorks.stream().distinct().collect(Collectors.toList());
 			Map<String, DesignatedTime> diffTimeWorksMap = getDiffTimeWork(cid, diffTimeFilterWorks);
 			workTimes.entrySet().stream().forEach(c ->{
-				DesignatedTime flowWork = diffTimeWorksMap.get(c.getValue());
-				result.put(c.getKey(), flowWork);
+				DesignatedTime diffTimeWork = diffTimeWorksMap.get(c.getValue());
+				if (diffTimeWork != null) {
+					result.put(c.getKey(), diffTimeWork);
+				}
 			});
 		}
 		
@@ -1024,7 +1029,7 @@ public class OtherHolidayInfoService {
 	public void updateOtherHolidayInfo(String cid, Map<String, OtherHolidayInfoInter> otherHolidayInfos) {
 
 		List<ExcessLeaveInfo> exLeavLst = new ArrayList<ExcessLeaveInfo>();
-		List<PublicHolidayRemain> pubHDLst  = new ArrayList<PublicHolidayRemain>();
+		List<PublicHolidayCarryForwardData> pubHDLst  = new ArrayList<PublicHolidayCarryForwardData>();
 		Map<String, BigDecimal> remainLeftMap = new HashMap<>();
 		Map<String, BigDecimal> remainNumberMap = new HashMap<>();
        
@@ -1036,7 +1041,7 @@ public class OtherHolidayInfoService {
         });
         
         excessLeaveInfoRepository.updateAll(exLeavLst);
-		publicHolidayRemainRepository.updateAll(pubHDLst);
+		publicHolidayCarryForwardDataRepository.updateAll(pubHDLst);
 		
 		Map<String, Boolean> checkEnableLeaveMap = checkEnableLeaveMan(new ArrayList<>(otherHolidayInfos.keySet()));
 		Map<String, Boolean> checkEnablePayoutMaP = checkEnablePayout(new ArrayList<>(otherHolidayInfos.keySet()));
@@ -1077,13 +1082,13 @@ public class OtherHolidayInfoService {
 
 	}
 	
-	public void updateOtherHolidayInfo(String cid, PublicHolidayRemain pubHD, ExcessLeaveInfo exLeav,
+	public void updateOtherHolidayInfo(String cid, PublicHolidayCarryForwardData pubHD, ExcessLeaveInfo exLeav,
 			BigDecimal remainNumber, BigDecimal remainLeft) {
 
-		publicHolidayRemainRepository.update(pubHD);
+		publicHolidayCarryForwardDataRepository.persistAndUpdate(pubHD);
 		excessLeaveInfoRepository.update(exLeav);
 
-		String sid = pubHD.getSID();
+		String sid = pubHD.getEmployeeId();
 		// Item IS00366
 		if (checkEnableLeaveMan(sid)) {
 			if (remainNumber != null) {

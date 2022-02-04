@@ -7,6 +7,7 @@ module nts.uk.at.view.kdw003.a.service {
         findCodeName: "screen/at/correctionofdailyperformance/findCodeName",
         findAllCodeName: "screen/at/correctionofdailyperformance/findAllCodeName",
         addAndUpdate: "screen/at/correctionofdailyperformance/addAndUpdate",
+        execMonthlyAggregate: "screen/at/correctionofdailyperformance/execMonthlyAggregateAsync",
         getApplication: "screen/at/correctionofdailyperformance/getApplication",
         addClosure: "screen/at/correctionofdailyperformance/insertClosure",
         releaseClosure: "screen/at/correctionofdailyperformance/releaseClosure",
@@ -21,7 +22,8 @@ module nts.uk.at.view.kdw003.a.service {
         lock: 'screen/at/correctionofdailyperformance/lock',
         loadMonth: "screen/at/correctionofdailyperformance/loadMonth",
         initParam: "screen/at/correctionofdailyperformance/initParam",
-        genDate: "screen/at/correctionofdailyperformance/gendate"
+        genDate: "screen/at/correctionofdailyperformance/gendate", 
+        findWplIDByCode: "screen/at/correctionofdailyperformance/findWplIDByCode"
     }
 
     export function startScreen(param) {
@@ -48,8 +50,16 @@ module nts.uk.at.view.kdw003.a.service {
         return nts.uk.request.ajax(paths.findAllCodeName, param);
     }
 
+    export function findWplIDByCode(param) {
+        return nts.uk.request.ajax(paths.findWplIDByCode, param);
+    }
+
     export function addAndUpdate(param) {
         return nts.uk.request.ajax(paths.addAndUpdate, param);
+    }
+
+    export function execMonthlyAggregate(param) {
+        return nts.uk.request.ajax(paths.execMonthlyAggregate, param);
     }
 
     export function getApplication() {
@@ -80,8 +90,8 @@ module nts.uk.at.view.kdw003.a.service {
         return nts.uk.request.ajax(paths.getNameMonthlyAttItem, data);
     }
 
-    export function searchEmployee(employeeId: string) {
-        return nts.uk.request.ajax(paths.searchEmployee + "/" + employeeId);
+    export function searchEmployee(employeeCode: string) {
+        return nts.uk.request.ajax(paths.searchEmployee + "/" + employeeCode);
     }
 
     export function calcTime(param: any) {
