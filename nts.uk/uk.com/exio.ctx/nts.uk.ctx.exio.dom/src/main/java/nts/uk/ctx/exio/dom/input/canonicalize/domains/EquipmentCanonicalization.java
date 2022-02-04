@@ -3,12 +3,14 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.DatePeriodCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
@@ -46,19 +48,23 @@ public class EquipmentCanonicalization extends IndependentCanonicalization{
 	}
 
 	@Override
-	protected IntermediateResult canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, 
+	protected Optional<IntermediateResult> canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, 
 			ExecutionContext context, 
 			IntermediateResult targetResult) {
-		checkRevisedDate(require, context, targetResult);
-		return targetResult;
+		if(checkRevisedDate(require, context, targetResult)) {
+			return Optional.empty();
+		}
+		return Optional.of(targetResult);
 	}
 	
-	private void checkRevisedDate(DomainCanonicalization.RequireCanonicalize require,
+	private boolean checkRevisedDate(DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context, IntermediateResult targetResult) {
-		val period = new DatePeriod(targetResult.getItemByNo(Items.開始日).get().getDate(), 
-													   targetResult.getItemByNo(Items.終了日).get().getDate());
-		if(period.isReversed()) {
-			require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), "開始日と終了日が逆転しています。"));
+    	val result = new DatePeriodCanonicalization(Items.開始日,Items.終了日)
+					.getPeriod(targetResult);
+		if(result.isLeft()) {
+			require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), result.getLeft().getText()));
+			return true;
 		}
+		return false;
 	}
 }
