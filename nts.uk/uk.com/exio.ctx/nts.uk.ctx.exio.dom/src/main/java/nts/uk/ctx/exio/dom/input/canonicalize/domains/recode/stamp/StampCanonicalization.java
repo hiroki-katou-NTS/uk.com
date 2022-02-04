@@ -150,21 +150,11 @@ public class StampCanonicalization implements DomainCanonicalization {
 	 * @return
 	 */
 	private static IntermediateResult setDefaultItems(IntermediateResult interm) {
-		if(interm.getItemByNo(Items.認証方法).get().isNull()) {
-			interm = interm.addCanonicalized(CanonicalItem.of(Items.認証方法, 3));
-		}
-		if(interm.getItemByNo(Items.打刻手段).get().isNull()) {
-			interm = interm.addCanonicalized(CanonicalItem.of(Items.打刻手段, 7));
-		}
-		if(interm.getItemByNo(Items.計算区分変更対象).get().isNull()) {
-			interm = interm.addCanonicalized(CanonicalItem.of(Items.計算区分変更対象, 0));
-		}
-		if(interm.getItemByNo(Items.所定時刻セット区分).get().isNull()) {
-			interm = interm.addCanonicalized(CanonicalItem.of(Items.所定時刻セット区分, 0));
-		}
-		if(interm.getItemByNo(Items.勤務種類を半休に変更する).get().isNull()) {
-			interm = interm.addCanonicalized(CanonicalItem.of(Items.勤務種類を半休に変更する, 0));
-		}
+		interm.optionalItem(CanonicalItem.of(Items.認証方法, 3));
+		interm.optionalItem(CanonicalItem.of(Items.打刻手段, 7));
+		interm.optionalItem(CanonicalItem.of(Items.計算区分変更対象, 0));
+		interm.optionalItem(CanonicalItem.of(Items.所定時刻セット区分, 0));
+		interm.optionalItem(CanonicalItem.of(Items.勤務種類を半休に変更する, 0));
 		return interm;
 	}
 
