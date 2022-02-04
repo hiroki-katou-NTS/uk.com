@@ -4,8 +4,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import lombok.val;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 
 public class EquipmentCanonicalization extends IndependentCanonicalization{
@@ -37,7 +42,23 @@ public class EquipmentCanonicalization extends IndependentCanonicalization{
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(DomainDataColumn.CID, 
-									new DomainDataColumn("設備コード", DataType.STRING));
+								new DomainDataColumn("設備コード", DataType.STRING));
 	}
 
+	@Override
+	protected IntermediateResult canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, 
+			ExecutionContext context, 
+			IntermediateResult targetResult) {
+		checkRevisedDate(require, context, targetResult);
+		return targetResult;
+	}
+	
+	private void checkRevisedDate(DomainCanonicalization.RequireCanonicalize require,
+			ExecutionContext context, IntermediateResult targetResult) {
+		val period = new DatePeriod(targetResult.getItemByNo(Items.開始日).get().getDate(), 
+													   targetResult.getItemByNo(Items.終了日).get().getDate());
+		if(period.isReversed()) {
+			require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), "開始日と終了日が逆転しています。"));
+		}
+	}
 }

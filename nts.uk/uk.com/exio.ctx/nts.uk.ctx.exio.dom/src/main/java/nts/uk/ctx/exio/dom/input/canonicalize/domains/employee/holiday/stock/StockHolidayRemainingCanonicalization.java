@@ -101,7 +101,9 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 	}
 
 	@Override
-	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
+	protected IntermediateResult canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, 
+																						ExecutionContext context, 
+																						IntermediateResult targertResult) {
 		return addFixedItems(targertResult);
 	}
 	
