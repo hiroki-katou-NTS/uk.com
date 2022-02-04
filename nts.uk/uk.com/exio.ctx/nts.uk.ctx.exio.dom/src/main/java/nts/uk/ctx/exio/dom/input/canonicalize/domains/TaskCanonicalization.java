@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
@@ -52,24 +53,30 @@ public class TaskCanonicalization extends IndependentCanonicalization{
 
     @Override
     protected List<DomainDataColumn> getDomainDataKeys() {
-        return Arrays.asList(DomainDataColumn.CID, 
-                                         new DomainDataColumn("作業コード", DataType.STRING),
-                                         new DomainDataColumn("作業枠NO", DataType.INT));
+        return Arrays.asList(new DomainDataColumn("FRAME_NO", DataType.INT),
+                						new DomainDataColumn("CD", DataType.STRING),
+                                         DomainDataColumn.CID);
     }
 
     @Override
-    protected IntermediateResult canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, IntermediateResult targetResult) {
-    	checkReversedDate(require, context, targetResult);
-        return replaceColorCode(targetResult);
+    protected Optional<IntermediateResult> canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, IntermediateResult targetResult) {
+    	if(checkReversedDate(require, context, targetResult)) {
+    		return Optional.empty();
+    	}
+        return Optional.of(replaceColorCode(targetResult));
     }
 
     /**
      * 開始日・終了日が逆転してないかチェック
      */
-    private void checkReversedDate(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context,  IntermediateResult targetResult) {
-    	new DatePeriodCanonicalization(Items.開始日,Items.終了日)
-    				.getPeriod(targetResult)
-    				.ifLeft(e -> require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), e.toString())));
+    private boolean checkReversedDate(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context,  IntermediateResult targetResult) {
+    	val result = new DatePeriodCanonicalization(Items.開始日,Items.終了日)
+    				.getPeriod(targetResult);
+    	if(result.isLeft()) {
+    		require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), result.getLeft().getText()));
+    		return true;
+    	}
+    	return false;
 	}
 
 	private IntermediateResult replaceColorCode(IntermediateResult targetResult) {

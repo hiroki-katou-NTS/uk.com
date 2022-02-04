@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
@@ -46,20 +47,24 @@ public class TaskChildCanonicalization extends IndependentCanonicalization{
 	}
 	
 	@Override
-	protected IntermediateResult canonicalizeExtends(
+	protected Optional<IntermediateResult> canonicalizeExtends(
 			DomainCanonicalization.RequireCanonicalize require, 
 			ExecutionContext context, 
 			IntermediateResult targetResult) {
 		
-		checkFrameNoOver4(require, context, targetResult);
-		return targetResult;
+		if(checkFrameNoOver4(require, context, targetResult)) {;
+			return Optional.empty();
+		}
+		return Optional.of(targetResult);
 	}
 
-	private void checkFrameNoOver4(
+	private boolean checkFrameNoOver4(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context, IntermediateResult targetResult) {
 		if(targetResult.getItemByNo(Items.作業枠NO).get().getInt().intValue() > 4) {
 			require.add(ExternalImportError.record(targetResult.getRowNo(), context.getDomainId(), "作業枠No5に対して下位作業は設定できません。"));
+			return true;
 		}
+		return false;
 	}
 }

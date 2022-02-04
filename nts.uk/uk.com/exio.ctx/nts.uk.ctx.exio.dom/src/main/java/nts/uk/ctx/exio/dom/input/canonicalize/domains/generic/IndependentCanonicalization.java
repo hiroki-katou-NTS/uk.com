@@ -6,6 +6,7 @@ import static nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -105,7 +106,10 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			require.save(context, toDelete(context, workspace, keyValues));
 		}
 		
-		require.save(context, canonicalizeExtends(require, context, intermResult).complete());
+		//追加の正規化処理やって、データを登録したくない場合はOptional.empty
+		canonicalizeExtends(require, context, intermResult).ifPresent(interm ->{
+			require.save(context, interm.complete());
+		});
 	}
 	
 	/**
@@ -114,11 +118,11 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	 * @param context 
 	 * @param targertResult
 	 */
-	protected IntermediateResult canonicalizeExtends(
+	protected Optional<IntermediateResult> canonicalizeExtends(
 				DomainCanonicalization.RequireCanonicalize require, 
 				ExecutionContext context, 
 				IntermediateResult targertResult) {
-		return targertResult;
+		return Optional.of(targertResult);
 	}
 
 	private AnyRecordToDelete toDelete(
