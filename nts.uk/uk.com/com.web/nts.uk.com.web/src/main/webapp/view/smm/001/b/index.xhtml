@@ -71,11 +71,11 @@
     <table class="ml-10px mb-10px">
       <tr>
         <td style="padding-bottom: 0px;">
-          <div data-bind="ntsFormLabel: {text: $i18n('KSM008_46')}"></div>
+          <div data-bind="ntsFormLabel: {text: $i18n('SMM001_11')}"></div>
         </td>
         <td></td>
         <td style="padding-bottom: 0px;">
-          <div data-bind="ntsFormLabel: {text: $i18n('KSM008_47'), required: true}"></div>
+          <div data-bind="ntsFormLabel: {text: $i18n('SMM001_12')}"></div>
         </td>
       </tr>
       <tr>
@@ -100,13 +100,13 @@
           <div class="ntsMoveDataArea ntsSwapComponent" id="swap-list-move-data">
             <div>
               <button tabindex="15" id="C11_2" class="move-button move-forward ntsSwap_Component"
-                data-bind="name: $i18n('KSM008_48'), click: moveItemToRight">
+                data-bind="name: $i18n('KSM008_48'), click: moveItemToRight, disable: isDisableLeftButton">
                 <i class="img-icon icon-next"></i>
               </button>
             </div>
             <div>
               <button tabindex="16" id="C11_3" class="move-button move-forward ntsSwap_Component"
-                data-bind="name: $i18n('KSM008_49'), click: moveItemToLeft">
+                data-bind="name: $i18n('KSM008_49'), click: moveItemToLeft, disable: isDisableRightButton">
                 <i class="img-icon icon-prev"></i>
               </button>
             </div>

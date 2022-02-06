@@ -12,16 +12,16 @@ module nts.uk.com.view.smm001.b {
     empMonth: string
     checked: KnockoutObservable<number> = ko.observable(1);
 
-    constructor(code: string, name: string, doText: string, doNotText: string) {
+    constructor(code: string, name: string, currentMonth: string, lastMonth: string) {
       this.code = code;
       this.name = name;
       this.empMonth =
         `
       <div class="flex" style="height: 25px">
         <label class="radio-emp"
-          data-bind="ntsRadioButton: { checked: ${this.checked()}, optionText: '${doText}', checkedValue: 1, group: 'lockClassification-${this.code}' }"></label>
+          data-bind="ntsRadioButton: { checked: ${this.checked()}, optionText: '${currentMonth}', checkedValue: 1, group: 'lockClassification-${this.code}' }"></label>
         <label class="radio-emp"
-          data-bind="ntsRadioButton: { checked: ${this.checked()}, optionText: '${doNotText}', checkedValue: 0, group: 'lockClassification-${this.code}' }"></label>
+          data-bind="ntsRadioButton: { checked: ${this.checked()}, optionText: '${lastMonth}', checkedValue: 0, group: 'lockClassification-${this.code}' }"></label>
       </div>
       `
     }
@@ -31,7 +31,7 @@ module nts.uk.com.view.smm001.b {
     paymentCode: KnockoutObservable<number> = ko.observable(1);
     itemListCndSet: KnockoutObservableArray<any> = ko.observableArray([]);
 
-    enumDoOrDoNot2: KnockoutObservableArray<any>;
+    enumDoOrDoNotArray: KnockoutObservableArray<any>;
     DO_TEXT: KnockoutObservable<string>;
     DO_NOT_TEXT: KnockoutObservable<string>;
 
@@ -43,11 +43,18 @@ module nts.uk.com.view.smm001.b {
 
     employmentDtos: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     rightEmployments: KnockoutObservableArray<GridItem> = ko.observableArray([]);
+    isDisableRightButton: KnockoutObservable<boolean> = ko.observable(false); // Check disable button when list is empty
+    isDisableLeftButton: KnockoutObservable<boolean> = ko.observable(false); // Check disable button when list is empty
+
     // End: Init b screen
 
     ENUM_IS_CHECKED = 1;
     ENUM_IS_NOT_CHECKED = 0;
     enumPaymentCategoryList: KnockoutObservableArray<any>;
+    enumLinkedMonthSettingClassification: KnockoutObservableArray<any>;
+    CURRENT_MONTH_TEXT: KnockoutObservable<string>;
+    LAST_MONTH_TEXT: KnockoutObservable<string>;
+
     currentCode: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     currentCodeRight: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     columnEmp: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -76,9 +83,12 @@ module nts.uk.com.view.smm001.b {
     setDefault() {
       const vm = this;
       // Init Do Or DoNot Enum
-      vm.enumDoOrDoNot2 = ko.observableArray(__viewContext.enums.SmileCooperationAcceptanceClassification);
-      vm.DO_NOT_TEXT = ko.observable(vm.enumDoOrDoNot2()[0].name);
-      vm.DO_TEXT = ko.observable(vm.enumDoOrDoNot2()[1].name);
+      vm.enumDoOrDoNotArray = ko.observableArray(__viewContext.enums.SmileCooperationAcceptanceClassification);
+      vm.enumLinkedMonthSettingClassification = ko.observableArray(__viewContext.enums.LinkedMonthSettingClassification);
+      vm.CURRENT_MONTH_TEXT = ko.observable(vm.enumLinkedMonthSettingClassification()[0].name);
+      vm.LAST_MONTH_TEXT = ko.observable(vm.enumLinkedMonthSettingClassification()[1].name);
+      vm.DO_NOT_TEXT = ko.observable(vm.enumDoOrDoNotArray()[0].name);
+      vm.DO_TEXT = ko.observable(vm.enumDoOrDoNotArray()[1].name);
 
       // Init payment category
       vm.enumPaymentCategoryList = ko.observableArray(__viewContext.enums.PaymentCategory);
@@ -94,6 +104,10 @@ module nts.uk.com.view.smm001.b {
           width: 250
         }
       ]);
+      // Check status of button
+      // vm.isDisableRightButton(_.isEmpty(vm.rightEmployments()));
+      // vm.isDisableLeftButton(_.isEmpty(vm.employmentDtos()));
+
     }
 
     reloadRightGrid() {
@@ -132,7 +146,7 @@ module nts.uk.com.view.smm001.b {
           });
           vm.itemListCndSet(finalArray);
           const employmentDtos = _.map(response.employmentDtos, (item: any) =>
-            new GridItem(item.employmentCode, item.employmentName, vm.DO_TEXT(), vm.DO_NOT_TEXT())
+            new GridItem(item.employmentCode, item.employmentName, vm.CURRENT_MONTH_TEXT(), vm.LAST_MONTH_TEXT())
           );
           vm.employmentDtos(employmentDtos);
           vm.reloadRightGrid();
@@ -148,7 +162,7 @@ module nts.uk.com.view.smm001.b {
     saveCommandBScreen() {
       const vm = this;
       if (this.validateBeforeSave() === false) {
-        vm.$dialog.info({ messageId: "Msg_3250" });
+        vm.$dialog.info({ messageId: "Msg_3252" });
         return;
       }
       vm.$blockui('grayout');
