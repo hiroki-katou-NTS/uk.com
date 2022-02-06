@@ -43,8 +43,8 @@ public class EquipmentCanonicalization extends IndependentCanonicalization{
 
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.CID, 
-								new DomainDataColumn("設備コード", DataType.STRING));
+		return Arrays.asList(DomainDataColumn.CID,
+								new DomainDataColumn("CODE", DataType.STRING));
 	}
 
 	@Override

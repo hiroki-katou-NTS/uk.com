@@ -33,7 +33,7 @@ public class EquipmentClassiicationCanonicalization extends IndependentCanonical
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(new DomainDataColumn("CONTRACT_CD", DataType.STRING),
-										 new DomainDataColumn("設備分類コード", DataType.STRING)
+										 new DomainDataColumn("CODE", DataType.STRING)
 				);
 	}
 }
