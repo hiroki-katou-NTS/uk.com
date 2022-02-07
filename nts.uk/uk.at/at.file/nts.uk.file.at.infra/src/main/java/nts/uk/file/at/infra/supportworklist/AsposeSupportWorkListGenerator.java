@@ -72,6 +72,10 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 reportContext.saveAsCSV(this.createNewFile(context, this.getReportName(dataSource.getSupportWorkOutputSetting().getName().v() + CSV_EXT)));
             } else {
                 worksheet.setViewType(ViewType.PAGE_LAYOUT_VIEW);
+                worksheet.getCells().setStandardWidth(12);
+                worksheet.getCells().setColumnWidth(0, 9);
+                worksheet.getCells().setColumnWidth(1, 13.5);
+                worksheet.getCells().setColumnWidth(2, 13.5);
                 reportContext.saveAsExcel(this.createNewFile(context, this.getReportName(dataSource.getSupportWorkOutputSetting().getName().v() + EXCEL_EXT)));
             }
         } catch (Exception e) {
@@ -104,7 +108,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         val headerInfo = dataSource.getLstHeaderInfo().get(0);
         Cells cells = worksheet.getCells();
         // B2_1
-        cells.get(0, 0).setValue(getText("KHA002_103")); // TODO: design missing
+        cells.get(0, 0).setValue(getText("KAF002_81") + "　：");
         this.setBasicStyle(cells.get(0, 0), false);
         cells.get(0, 1).setValue(headerInfo.getFirstLineCode() + SPACE + headerInfo.getFirstLineName() + getText("KHA002_100") +
                 headerInfo.getLastLineCode() + SPACE + headerInfo.getLastLineName()
@@ -188,17 +192,17 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                         int startColumnOfC6 = 3;
                         for (OutputItem outputItem : outputItems) {
                             // If the "AttendanceItemID" is 928 or less, find the work name from the "Value".
-                            if (outputItem.getAttendanceItemId() <= 928) {
-                                cells.get(startRow, startColumnOfC6).setValue(this.getWorkName(outputItem.getAttendanceItemId(), dataSource.getWorkList1(), dataSource.getWorkList2(),
-                                        dataSource.getWorkList3(), dataSource.getWorkList4(), dataSource.getWorkList5()));
-                                this.setDetailStyle(cells.get(startRow, startColumnOfC6), isEventLine, true, k == 0, k == dataOfDay.getSupportWorkDetailsList().size(), false, false);
-                            } else {   // If the "AttendanceItemID" is 929 or higher, set the "Value" in Excel as it is.
+//                            if (outputItem.getAttendanceItemId() <= 928) {
+//                                cells.get(startRow, startColumnOfC6).setValue(this.getWorkName(outputItem.getAttendanceItemId(), dataSource.getWorkList1(), dataSource.getWorkList2(),
+//                                        dataSource.getWorkList3(), dataSource.getWorkList4(), dataSource.getWorkList5()));
+//                                this.setDetailStyle(cells.get(startRow, startColumnOfC6), isEventLine, true, k == 0, k == dataOfDay.getSupportWorkDetailsList().size(), false, false);
+//                            } else {   // If the "AttendanceItemID" is 929 or higher, set the "Value" in Excel as it is.
                                 Optional<ItemValue> itemValue = detail.getItemList().stream().filter(item -> item.getItemId() == outputItem.getAttendanceItemId()).findFirst();
                                 if (itemValue.isPresent()) {
                                     cells.get(startRow, startColumnOfC6).setValue(this.formatValue(itemValue.get().getValue(), itemValue.get().getValueType()));
                                     this.setDetailStyle(cells.get(startRow, startColumnOfC6), isEventLine, false, k == 0, k == dataOfDay.getSupportWorkDetailsList().size(), false, false);
                                 }
-                            }
+//                            }
 
                             // next column
                             startColumnOfC6 += 1;
@@ -217,14 +221,21 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
 
                 /** Daily total */
                 if (wkpTotalDisplaySetting.getDisplayOneDayTotal() == NotUseAtr.USE) {
-                    // C7_1
-                    cells.get(startRow, 0).setValue(getText("KHA002_110"));
-                    this.setTotalStyle(cells.get(startRow, 0), true, false, true, true);
+//                    // C7_1
+//                    cells.get(startRow, 0).setValue(getText("KHA002_110"));
+//                    cells.merge(startRow, 1, 1, 2);
+//                    this.setTotalStyle(cells.get(startRow, 0), true, false, true, true);
 
                     // C7_1_2
                     if (displaySetting.getDisplayDetail() == NotUseAtr.NOT_USE) {
-                        cells.get(startRow, 1).setValue(dataOfDay.getDate().toString("MM/dd"));
+                        cells.get(startRow, 0).setValue(getText("KHA002_110") + dataOfDay.getDate().toString("MM/dd"));
+                    } else {
+                        // C7_1
+                        cells.get(startRow, 0).setValue(getText("KHA002_110"));
                     }
+                    cells.merge(startRow, 0, 1, 2);
+                    this.setTotalStyle(cells.get(startRow, 0), true, false, true, true);
+
                     this.setTotalStyle(cells.get(startRow, 1), false, false, true, true);
                     this.setTotalStyle(cells.get(startRow, 2), false, false, true, true);
 
@@ -345,7 +356,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         if (grandTotalDisplay.getDisplayGrandTotal() == NotUseAtr.USE) {
             // C12_1_2
             cells.get(startRow, 0).setValue(getText("KHA002_111"));
-            this.setTotalStyle(cells.get(startRow, 0), true, false, true, false);
+            this.setTotalStyle(cells.get(startRow, 0), true, false, true, true);
             this.setTotalStyle(cells.get(startRow, 1), false, false, true, false);
             this.setTotalStyle(cells.get(startRow, 2), false, false, true, false);
             // C12_2_2 ~
@@ -363,7 +374,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 val total = totalOpt.get().getItemValues().stream()
                         .filter(x -> x.getItemId() == item.getAttendanceItemId()).findFirst();
                 if (total.isPresent()) {
-                    cells.get(startRow, startColumn).setValue(getText(this.formatValue(total.get().getValue(), total.get().getValueType())));
+                    cells.get(startRow, startColumn).putValue(this.formatValue(total.get().getValue(), total.get().getValueType()), true);
                 }
             }
             if (item.getAttendanceItemId() <= 928)
@@ -373,7 +384,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             startColumn += 1;
         }
         if (totalOpt.isPresent()) {
-            cells.get(startRow, startColumn).setValue(getText(this.formatValue(String.valueOf(totalOpt.get().getPeopleCount()), ValueType.TIME)));
+            cells.get(startRow, startColumn).putValue(this.formatValue(String.valueOf(totalOpt.get().getPeopleCount()), ValueType.AMOUNT), true);
         }
         this.setTotalStyle(cells.get(startRow, startColumn), false, true, isFillBgColor, false);
     }

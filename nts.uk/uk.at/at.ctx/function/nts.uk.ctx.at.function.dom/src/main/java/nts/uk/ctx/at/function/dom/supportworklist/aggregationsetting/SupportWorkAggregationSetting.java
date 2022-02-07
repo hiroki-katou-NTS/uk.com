@@ -131,7 +131,7 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
                 date,
                 affiliationInfor.getAffiliationInfor(),
                 i,
-                ouenWorkTime.getOuenTimes().stream().filter(j -> j.getWorkNo().v().intValue() == i.getWorkNo().v().intValue()).findFirst().orElse(null),
+                ouenWorkTime != null ? ouenWorkTime.getOuenTimes().stream().filter(j -> j.getWorkNo().v().intValue() == i.getWorkNo().v().intValue()).findFirst().orElse(null) : null,
                 attendanceItemIds
         )).collect(Collectors.toList());
     }

@@ -273,9 +273,15 @@ public class JpaDailyPerformanceSupportWorkRepository extends JpaRepository impl
                     ))
                     .collect(Collectors.toList()));
 
-            ouenWorkTimeOfDailyList.addAll(ouenWorkTimeOfDailyRepo.find(employeeIds, period));
+            List<OuenWorkTimeOfDaily> ouenWorkTimeOfDailies = ouenWorkTimeOfDailyRepo.find(employeeIds, period);
+            if (!ouenWorkTimeOfDailies.isEmpty()) {
+                ouenWorkTimeOfDailyList.addAll(ouenWorkTimeOfDailies);
+            }
 
-            affiliationInforList.addAll(affiliationInforOfDailyPerforRepo.finds(employeeIds, period));
+            List<AffiliationInforOfDailyPerfor> affInforOfDailyPerfors = affiliationInforOfDailyPerforRepo.finds(employeeIds, period);
+            if (!affInforOfDailyPerfors.isEmpty()) {
+                affiliationInforList.addAll(affInforOfDailyPerfors);
+            }
         }
     }
 
