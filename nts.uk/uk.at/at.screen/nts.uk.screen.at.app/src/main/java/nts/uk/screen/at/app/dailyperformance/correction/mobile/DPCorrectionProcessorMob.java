@@ -878,7 +878,7 @@ public class DPCorrectionProcessorMob {
 		if (disItem.getLstBusinessTypeCode().size() > 0) {
 			// set header access modifier
 			// only user are login can edit or others can edit
-			result.setColumnsAccessModifier(disItem.getLstBusinessTypeCode());
+			result.setColumnsAccessModifier(disItem.getLstBusinessTypeCode(), mapDP);
 		}
 		// }
 		for (DPHeaderDto key : result.getLstHeader()) {

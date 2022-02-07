@@ -209,7 +209,8 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 //		if (existedCellState.isPresent()) {
 //			existedCellState.get().addState("mgrid-disable");
 //		} else {
-		   if(!header.getKey().equals("Application") && !header.getKey().equals("Submitted") && !header.getKey().equals("ApplicationList") && !header.getAttendanceName().equals(TextResource.localize("KDW003_62"))){
+		 
+		if(!header.getKey().equals("Application") && !header.getKey().equals("Submitted") && !header.getKey().equals("ApplicationList") && !header.getAttendanceName().equals(TextResource.localize("KDW003_62"))){
 			int attendanceAtr = mapDP.get(Integer.parseInt(getID(header.getKey()))).getAttendanceAtr();
 			if (attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value) {
 				if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
@@ -225,7 +226,10 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 				this.mapCellState.put("_" + data.getId()+ "|" + header.getKey(), new DPCellStateDto("_" + data.getId(), header.getKey(), toList("mgrid-disable")));
 				 lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), header.getKey()));
 			}
-		   }
+		} else {
+			this.mapCellState.put("_" + data.getId()+ "|" + header.getKey(), new DPCellStateDto("_" + data.getId(), header.getKey(), toList("mgrid-disable")));
+			lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), header.getKey()));
+		}
 //		}
 	}
 
