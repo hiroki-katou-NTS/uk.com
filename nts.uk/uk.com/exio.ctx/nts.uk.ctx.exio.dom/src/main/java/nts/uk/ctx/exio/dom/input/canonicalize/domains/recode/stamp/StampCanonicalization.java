@@ -3,7 +3,6 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
@@ -19,11 +18,9 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -117,7 +114,7 @@ public class StampCanonicalization implements DomainCanonicalization {
 			interm = setFixedItems(interm);
 
 			// キー重複チェック
-			KeyValues key = getPrimaryKeys(interm, workspace);
+			KeyValues key = KeyValues.create(interm, workspace.getPkItemNos());
 			if (importingKeys.contains(key)) {
 				require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), "受入データの中にキーの重複があります。"));
 				return;
@@ -201,21 +198,6 @@ public class StampCanonicalization implements DomainCanonicalization {
 				interm.getItemByNo(Items.カードNO).get().toString(),
 				interm.getItemByNo(Items.打刻日時).get().getDateTime(),
 				interm.getItemByNo(Items.時刻変更区分).get().getJavaInt());
-	}
-
-	/**
-	 * 主キー項目の値の取得
-	 * @param interm
-	 * @param workspace
-	 * @return
-	 */
-	private static KeyValues getPrimaryKeys(IntermediateResult interm, DomainWorkspace workspace) {
-		return workspace.getItemsPk().stream()
-				.map(k -> k.getItemNo())
-				.collect(toList()).stream()
-				.map(itemNo -> interm.getItemByNo(itemNo).get())
-				.map(item -> item.getValue())
-				.collect(Collectors.collectingAndThen(toList(), KeyValues::new));
 	}
 
 	public interface RequireCanonicalize  {
