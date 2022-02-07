@@ -5,16 +5,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.PeriodAfterDivision;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.GetPeriodExcluseEntryRetireTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
+
+import javax.inject.Inject;
 
 public class FindAnnLeaUsedDaysFromPreviousToNextGrantDate {
 
@@ -26,8 +32,9 @@ public class FindAnnLeaUsedDaysFromPreviousToNextGrantDate {
 	 * @param cacheCarrier
 	 * @return
 	 */
+
 	public static AnnualLeaveUsedDayNumber findUsedDays(String employeeId, GeneralDate criteriaDate,
-			Require require, CacheCarrier cacheCarrier){
+			Require require, CacheCarrier cacheCarrier, EmployeeImport employee){
 		
 		String companyId = AppContexts.user().companyId();
 		//指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
@@ -36,14 +43,24 @@ public class FindAnnLeaUsedDaysFromPreviousToNextGrantDate {
 		if(!GrantPeriod.isPresent()){
 			return new AnnualLeaveUsedDayNumber(0.0);
 		}
-		
+		// 2022.02.07 - 3S - chinh.hm  - issues #122665- 追加 START
+		//入社前、退職後を期間から除く
+		DatePeriod  datePeriod = GrantPeriod.get().getPeriod();
+		DatePeriod exclusedPeriod = GetPeriodExcluseEntryRetireTime
+				.getPeriodExcluseEntryRetireTime(new GetPeriodExcluseEntryRetireTime.Require() {
+					@Override
+					public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
+						return employee;
+					}
+				}, cacheCarrier , employeeId, datePeriod).orElse(null);
+		// 2022.02.07 - 3S - chinh.hm  - issues #122665- 追加 END
 		//期間を当月以前と以降に分ける。
 		PeriodAfterDivision periodAfterDivision = divisionThePeriodTheCurrentMonth(employeeId,criteriaDate,
-				GrantPeriod.get().getPeriod(),require, cacheCarrier);
+				exclusedPeriod,require, cacheCarrier);
 		
 		//当月以前の使用日数を計算
 		AnnualLeaveUsedDayNumber beforeUsedDays = calcUsedDaysBeforeTheCurrentMonth(employeeId, criteriaDate,
-				periodAfterDivision.getPeriodBeforeTheMonth(),  GrantPeriod.get().getPeriod(), require, cacheCarrier);
+				periodAfterDivision.getPeriodBeforeTheMonth(),  exclusedPeriod, require, cacheCarrier);
 		
 		//当月以降の使用数を計算
 		AnnualLeaveUsedDayNumber afterUsedDays = calcUsedDaysAfterTheCurrentMonth(employeeId, 
