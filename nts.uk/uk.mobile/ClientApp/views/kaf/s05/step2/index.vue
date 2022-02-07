@@ -212,12 +212,12 @@
         class="btn btn-block btn-primary btn-lg"
         v-on:click="$appContext.register"
       >
-        {{($appContext.modeNew ? 'KAFS05_11' : 'KAFS05_18') | i18n}}
+        {{($appContext.modeNew ? '申請' : '修正')}}
       </button>
       <!-- A2_C1_2 -->
       <button
         type="button"
-        class="btn btn-block btn-secondary"
+        class="btn btn-block btn-secondary back"
         v-on:click="backStep1"
       >
         {{ "KAFS05_12" | i18n }}

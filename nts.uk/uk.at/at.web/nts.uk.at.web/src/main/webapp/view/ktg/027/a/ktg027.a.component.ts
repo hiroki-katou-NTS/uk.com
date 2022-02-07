@@ -72,9 +72,9 @@ module nts.uk.at.view.ktg027.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="25%" />
-                            <col width="17%" />
-                            <col width="58%" />
+                            <col width="100px" />
+                            <col width="100px" />
+                            <col width="250px" />
                         </colgroup>
                         <head>
                             <tr>
@@ -98,8 +98,8 @@ module nts.uk.at.view.ktg027.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="42%" />
-                            <col width="58%" />
+                            <col width="200px" />
+                            <col width="250px" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr style="height: 35px;">
@@ -150,7 +150,7 @@ module nts.uk.at.view.ktg027.a {
                     top: 0;
                 }
                 .ktg027-fontsize div.form-label>span.text {
-                    font-size: 1.2rem !important;
+                    font-size: 1rem !important;
                 }
                 .ktg-027-a .outside {
                     color: #e05f4e;
@@ -200,16 +200,16 @@ module nts.uk.at.view.ktg027.a {
                     margin-top: -1px;
                 }
                 .widget-container.has-scroll .ktg-027-a.scroll-padding {
-                    padding-right: 17px;
+                    padding-right: 10px;
                 }
                 /* 限度アラーム時間超過 */
                 .ktg-027-a.widget-content.ui-resizable .exceeding-limit-alarm {
-                    background-color: #FFFF99; /* 36協定アラーム */
-                    color: #FF9900; /* 36協定アラーム文字 */
+                    background-color: #F4D35E; /* 36協定アラーム */
+                    color: #000000; /* 36協定アラーム文字 */
                 }
                 /* 限度エラー時間超過 */
                 .ktg-027-a.widget-content.ui-resizable .exceeding-limit-error {
-                    background-color: #FF99CC; /* 36協定エラー */
+                    background-color: #DB4F51; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
                 /* 限度アラーム時間超過（特例あり） */
@@ -222,12 +222,12 @@ module nts.uk.at.view.ktg027.a {
                 }
                 /* 特例限度アラーム時間超過 */
                 .ktg-027-a.widget-content.ui-resizable .special-exceeded-limit-alarm  {
-                    background-color: #FFFF99; /* 36協定アラーム */
-                    color: #FF9900; /* 36協定アラーム文字 */
+                    background-color: #F4D35E; /* 36協定アラーム */
+                    color: #000000; /* 36協定アラーム文字 */
                 }
                 /* 特例限度エラー時間超過 */
                 .ktg-027-a.widget-content.ui-resizable .special-exceeded-limit-error {
-                    background-color: #FF99CC; /* 36協定エラー */
+                    background-color: #DB4F51; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
             </style>
@@ -331,8 +331,8 @@ module nts.uk.at.view.ktg027.a {
             const vm = this;
             vm.legendOptions = {
                 items: [
-                    { colorCode: '#99FF66', labelText: vm.$i18n('KTG027_2') },
-                    { colorCode: '#00CC00', labelText: vm.$i18n('KTG027_3') },
+                    { colorCode: '#fff768', labelText: vm.$i18n('KTG027_2') },
+                    { colorCode: '#A5C9C1', labelText: vm.$i18n('KTG027_3') },
                 ],
                 template :
                 '<div class="legend-item-label">'
