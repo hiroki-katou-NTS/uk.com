@@ -192,17 +192,17 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                         int startColumnOfC6 = 3;
                         for (OutputItem outputItem : outputItems) {
                             // If the "AttendanceItemID" is 928 or less, find the work name from the "Value".
-//                            if (outputItem.getAttendanceItemId() <= 928) {
-//                                cells.get(startRow, startColumnOfC6).setValue(this.getWorkName(outputItem.getAttendanceItemId(), dataSource.getWorkList1(), dataSource.getWorkList2(),
-//                                        dataSource.getWorkList3(), dataSource.getWorkList4(), dataSource.getWorkList5()));
-//                                this.setDetailStyle(cells.get(startRow, startColumnOfC6), isEventLine, true, k == 0, k == dataOfDay.getSupportWorkDetailsList().size(), false, false);
-//                            } else {   // If the "AttendanceItemID" is 929 or higher, set the "Value" in Excel as it is.
+                            if (outputItem.getAttendanceItemId() <= 928) {
+                                cells.get(startRow, startColumnOfC6).setValue(this.getWorkName(outputItem.getAttendanceItemId(), dataSource.getWorkList1(), dataSource.getWorkList2(),
+                                        dataSource.getWorkList3(), dataSource.getWorkList4(), dataSource.getWorkList5()));
+                                this.setDetailStyle(cells.get(startRow, startColumnOfC6), isEventLine, true, k == 0, k == dataOfDay.getSupportWorkDetailsList().size(), false, false);
+                            } else {   // If the "AttendanceItemID" is 929 or higher, set the "Value" in Excel as it is.
                                 Optional<ItemValue> itemValue = detail.getItemList().stream().filter(item -> item.getItemId() == outputItem.getAttendanceItemId()).findFirst();
                                 if (itemValue.isPresent()) {
                                     cells.get(startRow, startColumnOfC6).setValue(this.formatValue(itemValue.get().getValue(), itemValue.get().getValueType()));
                                     this.setDetailStyle(cells.get(startRow, startColumnOfC6), isEventLine, false, k == 0, k == dataOfDay.getSupportWorkDetailsList().size(), false, false);
                                 }
-//                            }
+                            }
 
                             // next column
                             startColumnOfC6 += 1;
