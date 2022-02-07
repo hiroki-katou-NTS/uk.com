@@ -26,11 +26,11 @@ export class KafS05Step3Component extends Vue {
 
     public created() {
         const self = this;
-        if (self.$appContext.getoverTimeClf == 0) {
+        if (self.$appContext.overTimeClf == 0) {
             self.pgName = 'kafs05PgName1';
-        } else if (self.$appContext.getoverTimeClf == 1) {
+        } else if (self.$appContext.overTimeClf == 1) {
             self.pgName = 'kafs05PgName2';
-        } else if (self.$appContext.getoverTimeClf == 3) {
+        } else if (self.$appContext.overTimeClf == 3) {
             self.pgName = 'kafs05PgName4';
         } else {
             self.pgName = 'kafs05PgName3';

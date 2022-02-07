@@ -1514,8 +1514,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 					workContent,
 					displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet(),
 					agent,
-					new ArrayList<>(),
-					new ArrayList<>(),
+					appOverTime.getMultipleTimesOp().map(OvertimeWorkMultipleTimes::getOvertimeHours).orElse(new ArrayList<>()),
+					appOverTime.getMultipleTimesOp().map(OvertimeWorkMultipleTimes::getOvertimeReasons).orElse(new ArrayList<>()),
 					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()
 			);
 			displayInfoOverTime.setCalculationResultOp(temp.getCalculationResultOp());

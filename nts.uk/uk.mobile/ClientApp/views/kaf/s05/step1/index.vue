@@ -99,7 +99,7 @@
     </div>
 
     <!-- Multi overtime A1_B7-->
-    <div v-if="$appContext.getoverTimeClf == 3" class="card card-label">
+    <div v-if="$appContext.overTimeClf == 3" class="card card-label">
       <!--A1_B7_1-->
       <div class="card-header uk-bg-accordion mt-2 mb-n2 multi-overtime-contents">
         <span>{{ "KAFS05_92" | i18n }}</span>
@@ -168,7 +168,7 @@
           <div class="card-body">
             <nts-time-range-input
               class="mb-1"
-              v-bind:disabled="$appContext.getoverTimeClf == 3"
+              v-bind:disabled="$appContext.overTimeClf == 3"
               v-model="item.valueHours"
             />
           </div>

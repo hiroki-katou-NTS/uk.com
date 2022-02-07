@@ -7,6 +7,7 @@ import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/
 import { TimeZoneWithWorkNo, MultiOverTime, BreakTime, TimeZoneNew, WorkHoursDto, AppOverTime, InfoWithDateApplication , DisplayInfoOverTime, TimeZone, ParamBreakTime, BreakTimeZoneSetting} from '../a/define.interface';
 import { KafS05Component} from '../a/index';
 import { KafS05MultiComponent} from '../multiContent/index';
+
 @component({
     name: 'kafs05step1',
     route: '/kaf/s05/step1',
@@ -34,15 +35,18 @@ import { KafS05MultiComponent} from '../multiContent/index';
     }
 })
 export class KafS05Step1Component extends Vue {
-    public title: string = 'KafS05Step1';
-
     public workInfo: WorkInfo = {} as WorkInfo;
 
     public workHours1: ValueTime = null;
 
     public workHours2?: ValueTime = null;
 
-    public multiOverTimes: Array<MultiOverTime> = [];
+    public multiOverTimes: Array<MultiOverTime> = [{
+        frameNo: 1,
+        valueHours: {start: null, end: null},
+        fixedReasonCode: null,
+        appReason: ''
+    }];
 
     public breakTimes: Array<BreakTime> = [];
 
@@ -101,16 +105,6 @@ export class KafS05Step1Component extends Vue {
 
     public created() {
         const self = this;
-
-        if (self.$appContext.getoverTimeClf == 0) {
-            self.pgName = 'kafs05PgName1';
-        } else if (self.$appContext.getoverTimeClf == 1) {
-            self.pgName = 'kafs05PgName2';
-        } else if (self.$appContext.getoverTimeClf == 3) {
-            self.pgName = 'kafs05PgName4';
-        } else {
-            self.pgName = 'kafs05PgName3';
-        }
         self.loadData();     
     }
 
@@ -308,9 +302,9 @@ export class KafS05Step1Component extends Vue {
         } else {
             self.createWorkInfo();
             self.createBreakTime();
-            if (self.$appContext.getoverTimeClf == 3) {
+            if (self.$appContext.overTimeClf == 3) {
                 self.multiOverTimes = [{
-                    frameNo: self.multiOverTimes.length + 1,
+                    frameNo: 1,
                     valueHours: {start: null, end: null},
                     fixedReasonCode: null,
                     appReason: ''
@@ -327,9 +321,9 @@ export class KafS05Step1Component extends Vue {
         self.createBreakTime(_.get(displayInfoOverTime, 'infoWithDateApplicationOp.breakTime.timeZones'));
         // load work hours
         self.createWorkHours(true);
-        if (self.$appContext.getoverTimeClf == 3) {
+        if (self.$appContext.overTimeClf == 3) {
             self.multiOverTimes = [{
-                frameNo: self.multiOverTimes.length + 1,
+                frameNo: 1,
                 valueHours: {start: null, end: null},
                 fixedReasonCode: null,
                 appReason: ''
@@ -358,7 +352,7 @@ export class KafS05Step1Component extends Vue {
         self.workHours1 = (_.isNumber(workHours1.start) || _.isNumber(workHours1.end)) ?  workHours1 : null;
         self.workHours2 = (_.isNumber(workHours2.start) || _.isNumber(workHours2.end)) ?  workHours2 : null;
 
-        if (self.$appContext.getoverTimeClf == 3) {
+        if (self.$appContext.overTimeClf == 3) {
             self.multiOverTimes = latestMultiOvertimeApp.multipleOvertimeContents.map((item) => ({
                 frameNo: item.frameNo,
                 valueHours: {start: item.startTime, end: item.endTime},

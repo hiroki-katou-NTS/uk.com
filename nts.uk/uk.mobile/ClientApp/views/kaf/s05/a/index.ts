@@ -34,8 +34,6 @@ import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 export class KafS05Component extends KafS00ShrComponent {
 
     private numb: number = 1;
-    public text1: string = null;
-    public text2: string = 'step2';
     public isValidateAll: boolean = true;
     public user: any = null;
     public modeNew: boolean = true;
@@ -55,33 +53,12 @@ export class KafS05Component extends KafS00ShrComponent {
     @Prop()
     public params: InitParam;
 
-    public get getoverTimeClf(): number {
-        const self = this;
-
-        return self.overTimeClf;
-    }
-
-    // @Watch('numb', {deep: true})
-    // public changeoverTimeClf(data: any) {
-    //     const self = this;
-
-    //     if (self.numb == 1) {
-    //         self.pgName = 'kafs05step1';
-    //     } else if (self.numb == 2) {
-    //         self.pgName = 'kafs05step2';
-    //     } else {
-    //         self.pgName = 'kafs05step3';
-    //     }
-    // }
-   
-
     public get step() {
-
         const self = this;
-        
 
         return `step_${self.numb}`;
     }
+
     public get overTimeWorkHoursDto(): OverTimeWorkHoursDto {
         const self = this;
         let model = self.model as Model;
@@ -371,13 +348,22 @@ export class KafS05Component extends KafS00ShrComponent {
         } else if (value.overworkatr == 1) {
             vm.pgName = 'kafs05PgName2';
             vm.overTimeClf = 1;
-        } else if (value.overworkatr == 2) {
-            vm.pgName = 'kafs05PgName3';
-            vm.overTimeClf = 2;
-        } else {
+        } else if (value.overworkatr == 3) {
             vm.pgName = 'kafs05PgName4';
             vm.overTimeClf = 3;
+        } else {
+            vm.pgName = 'kafs05PgName3';
+            vm.overTimeClf = 2;
         }
+
+        let step1 = vm.$refs.step1 as KafS05Step1Component;
+        step1.multiOverTimes = [{
+            frameNo: 1,
+            valueHours: {start: null, end: null},
+            fixedReasonCode: null,
+            appReason: ''
+        }];
+        step1.$forceUpdate();
     }
 
     public created() {
@@ -402,11 +388,7 @@ export class KafS05Component extends KafS00ShrComponent {
                 vm.overTimeClf = 2;
             }
         } else {
-            vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf');
-        }
-
-        if (_.isNil(vm.overTimeClf)) {
-            vm.overTimeClf = 2;
+            vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf') || 2;
         }
 
         if (!vm.modeNew
@@ -427,19 +409,7 @@ export class KafS05Component extends KafS00ShrComponent {
         if (!vm.modeNew) {
             vm.date = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
         }
-        if (vm.modeNew) {
-            if (vm.$route.query.overworkatr == '0') {
-                vm.overTimeClf = 0;
-            } else if (vm.$route.query.overworkatr == '1') {
-                vm.overTimeClf = 1;
-            } else if (vm.$route.query.overworkatr == '3') {
-                vm.overTimeClf = 3;
-            } else {
-                vm.overTimeClf = 2;
-            }
-        } else {
-            vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf') || 2;
-        }
+
         if (vm.modeNew) {
             vm.application = vm.createApplicationInsert(AppType.OVER_TIME_APPLICATION);
             vm.application.employeeIDLst = _.get(vm.params, 'employeeID') ? [_.get(vm.params, 'employeeID')] : [];
@@ -599,7 +569,7 @@ export class KafS05Component extends KafS00ShrComponent {
     public kaf000BChangePrePost(prePostAtr) {
         const self = this;
         self.application.prePostAtr = prePostAtr;
-        if (self.getoverTimeClf == 3 && self.date && self.modeNew) {
+        if (self.overTimeClf == 3 && self.date && self.modeNew) {
             self.$mask('show');
             self.$http.post('at', API.getLatestMultiApp, {
                 employeeId: !_.isEmpty(self.application.employeeIDLst) ? self.application.employeeIDLst[0] : self.user.employeeId,
@@ -702,7 +672,7 @@ export class KafS05Component extends KafS00ShrComponent {
                     }
                 });
             }
-            if (self.getoverTimeClf == 3) {
+            if (self.overTimeClf == 3) {
                 appOverTimeInsert.multipleOvertimeContents = step1.multiOverTimes
                     .filter((item) => item.valueHours && (!!item.valueHours.start || !!item.valueHours.end))
                     .map((item, index) => ({
@@ -1281,21 +1251,6 @@ export class KafS05Component extends KafS00ShrComponent {
         model.displayInfoOverTime = res.appDetail.displayInfoOverTime as DisplayInfoOverTime;
         vm.appDispInfoStartupOutput = res.appDispInfoStartupOutput;
         vm.model = model;
-
-        if (vm.modeNew) {
-            if (vm.$route.query.overworkatr == '0') {
-                vm.overTimeClf = 0;
-            } else if (vm.$route.query.overworkatr == '1') {
-                vm.overTimeClf = 1;
-            } else {
-                vm.overTimeClf = 2;
-            }
-        } else {
-            vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf');
-        }
-        if (_.isNil(vm.overTimeClf)) {
-            vm.overTimeClf = 2;
-        }
 
         vm.fetchData();
     }
