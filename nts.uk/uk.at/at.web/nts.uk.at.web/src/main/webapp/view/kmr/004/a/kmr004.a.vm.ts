@@ -138,6 +138,8 @@ module nts.uk.at.view.kmr004.a {
 			if(data.orderMngAtr) {
 				totalOptions.push({id: EXTRACT_CONDITION.ORDERED, name: vm.$i18n('KMR004_18')});
 				totalOptions.push({id: EXTRACT_CONDITION.UN_ORDERED, name: vm.$i18n('KMR004_19')});
+			} else {
+				vm.model().totalExtractCondition(EXTRACT_CONDITION.ALL);
 			}
 			vm.orderMngAtr(data.orderMngAtr);
 			vm.totalOptions(totalOptions);
