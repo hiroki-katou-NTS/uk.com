@@ -107,8 +107,7 @@ public class StampCanonicalization implements DomainCanonicalization {
 			}
 
 			// 打刻日時の正準化(年月日時分秒→日時)
-			val dateTimeCanoItem = dateTimeCanonicalization.canonicalize(require, interm).getItemByNo(Items.打刻日時).get();
-			interm = interm.addCanonicalized(dateTimeCanoItem);
+			interm = dateTimeCanonicalization.canonicalize(require, interm);
 
 			// 既定値の追加
 			interm = setDefaultItems(interm);
