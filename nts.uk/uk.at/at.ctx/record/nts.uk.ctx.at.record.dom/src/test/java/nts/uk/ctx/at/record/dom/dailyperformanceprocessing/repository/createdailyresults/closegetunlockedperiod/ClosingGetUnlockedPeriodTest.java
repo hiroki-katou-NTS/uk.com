@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdai
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +20,14 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getpe
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.IgnoreFlagDuringLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMemento;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 
 @RunWith(JMockit.class)
 public class ClosingGetUnlockedPeriodTest {
@@ -131,6 +138,30 @@ public class ClosingGetUnlockedPeriodTest {
 				
 				require.getClosurePeriod(anyInt, (YearMonth)any);
 				result = periodClosure;
+				
+				require.findClosureById(anyInt);
+				result = Optional.of(new Closure(new ClosureGetMemento() {
+					@Override
+					public UseClassification getUseClassification() {
+						return UseClassification.UseClass_Use;
+					}
+					@Override
+					public CompanyId getCompanyId() {
+						return new CompanyId("1");
+					}
+					@Override
+					public CurrentMonth getClosureMonth() {
+						return new CurrentMonth(1);
+					}
+					@Override
+					public ClosureId getClosureId() {
+						return ClosureId.RegularEmployee;
+					}
+					@Override
+					public List<ClosureHistory> getClosureHistories() {
+						return new ArrayList<>();
+					}
+				}));
 			}
 		};
 		List<DatePeriod> result = ClosingGetUnlockedPeriod.get(require, period, employmentCode, ignoreFlagDuringLock,
