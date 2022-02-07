@@ -114,7 +114,10 @@ public class AsposeCellsReportContext implements AutoCloseable {
 	
 	public void saveAsPdf(OutputStream outputStream) {
 		try {
-			this.workbook.save(outputStream, SaveFormat.PDF);
+			TxtSaveOptions opts = new TxtSaveOptions(SaveFormat.PDF);
+			opts.setEncoding(Encoding.getUTF8());
+			// this.workbook.save(outputStream, opts);
+			this.workbook.save(outputStream, opts);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
