@@ -39,14 +39,10 @@ public class DateTimeCanonicalization {
 		int time = (int) (long) interm.getItemByNo(itemNoTime).get().getInt();
 
 		// 秒の既定値は0
-		int second = 0;
-		second = interm.getItemByNo(itemNoSecond)
+		int second = interm.getItemByNo(itemNoSecond)
+				.filter(item -> item.getValue() != null)
 				.map(item -> item.getJavaInt())
-				.filter(s -> s.equals(1)).get();
-		val optSecondItem = interm.getItemByNo(itemNoSecond);
-		if(optSecondItem.isPresent()) {
-			second = optSecondItem.get().getValue() != null ? (int) (long) optSecondItem.get().getInt() : 0;
-		}
+				.orElse(0);
 
 		int hour = time / 60;
 		int minute = time % 60;
