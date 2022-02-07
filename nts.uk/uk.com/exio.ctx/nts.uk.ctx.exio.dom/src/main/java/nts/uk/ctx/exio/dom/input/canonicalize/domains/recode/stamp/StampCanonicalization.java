@@ -156,12 +156,12 @@ public class StampCanonicalization implements DomainCanonicalization {
 	 * @return
 	 */
 	private static IntermediateResult setDefaultItems(IntermediateResult interm) {
-		interm.optionalItem(CanonicalItem.of(Items.認証方法, 3));
-		interm.optionalItem(CanonicalItem.of(Items.打刻手段, 7));
-		interm.optionalItem(CanonicalItem.of(Items.計算区分変更対象, 0));
-		interm.optionalItem(CanonicalItem.of(Items.所定時刻セット区分, 0));
-		interm.optionalItem(CanonicalItem.of(Items.勤務種類を半休に変更する, 0));
-		return interm;
+		return interm
+				.optionalItem(CanonicalItem.of(Items.認証方法, 3))
+				.optionalItem(CanonicalItem.of(Items.打刻手段, 7))
+				.optionalItem(CanonicalItem.of(Items.計算区分変更対象, 0))
+				.optionalItem(CanonicalItem.of(Items.所定時刻セット区分, 0))
+				.optionalItem(CanonicalItem.of(Items.勤務種類を半休に変更する, 0));
 	}
 
 	/**
