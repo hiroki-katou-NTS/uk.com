@@ -624,8 +624,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                             const $firstCol = $('<td class="titleColor" style="height: 50px; background-color: #CFF1A5">');
                             const $secondCol = $('<td colspan="5">');
                             const $secondCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">');
-                            const $secondCol__div__link = $(`<a style="color: blue; text-decoration: underline">${self.$i18n('KAF002_85', [self.kaf002Data.maxOfCheer])}</a>`)
-                            $secondCol__div__link.click(() => self.doSomething(self.dataSource[items[0].index]));
+                            const $secondCol__div__link = $(`<a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[${items[0].index}])">${self.$i18n('KAF002_85', [self.kaf002Data.maxOfCheer])}</a>`)
                             $secondCol__div.append($secondCol__div__link);
                             $secondCol.append($secondCol__div);
                             $expandRow.append($firstCol);
