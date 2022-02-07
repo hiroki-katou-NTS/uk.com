@@ -26,6 +26,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.S
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantSettingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.stock.StockHolidayRemainingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.WorkplaceCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskChildCanonicalization;
 
 /**
  * 受入グループID
@@ -36,6 +38,12 @@ public enum ImportingDomainId {
 	
 	/** 職場マスタ */
 	WORKPLACE(13, WorkplaceCanonicalization::new),
+	
+	/** 作業マスタ */
+	TASK(30, TaskCanonicalization::new),
+
+	/** 下位作業マスタ */
+	TASK_CHILD(31, TaskChildCanonicalization::new),
 	
 	/** 個人基本情報 */
 	EMPLOYEE_BASIC(100, EmployeeBasicCanonicalization::new),
