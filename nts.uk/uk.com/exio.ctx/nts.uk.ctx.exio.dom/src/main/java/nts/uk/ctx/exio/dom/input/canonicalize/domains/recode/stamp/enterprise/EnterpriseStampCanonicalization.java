@@ -1,6 +1,12 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise;
 
 import lombok.val;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.StampCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.pv.EnterpriseStampDataFunctionNo;
@@ -9,6 +15,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.pv
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
+
+import java.util.Optional;
 
 public class EnterpriseStampCanonicalization extends StampCanonicalization {
 
@@ -59,13 +67,13 @@ public class EnterpriseStampCanonicalization extends StampCanonicalization {
         val ファンクションNO = new EnterpriseStampDataFunctionNo(interm.getItemByNo(Items.ファンクションNO).get().getJavaInt());
         val 端末区分 = new EnterpriseStampDataTerminalAttr(interm.getItemByNo(Items.端末区分).get().getString());
 
-        val 時刻変更区分 = 打刻区分.toChangeCalAtr();
-        val 計算区分変更対象 = 打刻区分.toChangeCalAtr();
-        val 勤務種類を半休に変更する = 打刻区分.isHalfDay();
-        val 所定時刻セット区分 = 打刻区分.toSetPreClockAtr(ファンクションNO);
-        val 外出区分 = 打刻区分.toGoOutReason(ファンクションNO);
-        val 認証方法 = 端末区分.toAuthMethod();
-        val 打刻手段 = 端末区分.toStampMeans();
+        ChangeClockAtr 時刻変更区分 = 打刻区分.toChangeClockAtr();
+        ChangeCalArt 計算区分変更対象 = 打刻区分.toChangeCalAtr();
+        boolean 勤務種類を半休に変更する = 打刻区分.isHalfDay();
+        SetPreClockArt 所定時刻セット区分 = 打刻区分.toSetPreClockAtr(ファンクションNO);
+        Optional<GoingOutReason> 外出区分 = 打刻区分.toGoOutReason(ファンクションNO);
+        AuthcMethod 認証方法 = 端末区分.toAuthMethod();
+        StampMeans 打刻手段 = 端末区分.toStampMeans();
 
         interm = interm.addCanonicalized(new CanonicalItemList()
                 .add(Items.時刻変更区分, 時刻変更区分.value)
