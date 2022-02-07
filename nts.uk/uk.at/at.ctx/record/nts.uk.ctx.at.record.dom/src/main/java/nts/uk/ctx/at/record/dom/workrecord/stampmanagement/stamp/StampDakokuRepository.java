@@ -65,8 +65,6 @@ public interface StampDakokuRepository {
 
 	public Optional<Stamp> get(String contractCode, StampNumber stampNumber);
 
-	public Optional<Stamp> get(String contractCode, String stampNumber, GeneralDateTime stampDateTime, int changeClockArt);
-
 	//[6] exists(契約コード,打刻カード番号, 打刻日時,時刻変更区分)
 	public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
 							   ChangeClockAtr changeClockArt) ;

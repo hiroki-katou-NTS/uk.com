@@ -18,6 +18,14 @@ import java.util.Optional;
 @Value
 @AllArgsConstructor
 public class DateTimeCanonicalization {
+	/** 年月日の項目No*/
+	private final int itemNoDate;
+	/** 時分の項目No*/
+	private final int itemNoTime;
+	/** 秒の項目No*/
+	private final int itemNoSecond;
+	/** 日時の項目No*/
+	private final int itemNoDateTime;
 
 	/**
 	 * 渡された編集済みデータを正準化する
@@ -25,19 +33,16 @@ public class DateTimeCanonicalization {
 	 * @param interm
 	 * @return
 	 */
-	public IntermediateResult canonicalize(
-			CanonicalizationMethodRequire require,
-			IntermediateResult interm,
-			int itemNoDate,
-			int itemNoTime,
-			int itemNoSecond,
-			int itemNoDateTime) {
+	public IntermediateResult canonicalize(CanonicalizationMethodRequire require, IntermediateResult interm) {
 
 		val date = interm.getItemByNo(itemNoDate).get().getDate();
 		int time = (int) (long) interm.getItemByNo(itemNoTime).get().getInt();
 
 		// 秒の既定値は0
 		int second = 0;
+		second = interm.getItemByNo(itemNoSecond)
+				.map(item -> item.getJavaInt())
+				.filter(s -> s.equals(1)).get();
 		val optSecondItem = interm.getItemByNo(itemNoSecond);
 		if(optSecondItem.isPresent()) {
 			second = optSecondItem.get().getValue() != null ? (int) (long) optSecondItem.get().getInt() : 0;

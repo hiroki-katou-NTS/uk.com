@@ -19,23 +19,21 @@ import nts.gul.util.Either;
 @Value
 @AllArgsConstructor
 public class WorkplaceCodeCanonicalization {
+	/** 基準日の項目No*/
+	private final int itemNoReferenceDate;
+	/** 職場コードの項目No*/
+	private final int itemNoWorkplaceCode;
+	/** 職場IDの項目No*/
+	private final int itemNoWorkplaceId;
 
 	/**
 	 * 渡された編集済みデータを正準化する
 	 * @param require
 	 * @param interm
-	 * @param itemNoReferenceDate
-	 * @param itemNoWorkplaceCode
-	 * @param itemNoWorkplaceId
 	 * @param csvRowNo
 	 * @return
 	 */
-	public Either<RecordError, IntermediateResult> canonicalize(Require require,
-			IntermediateResult interm,
-			int csvRowNo,
-			int itemNoReferenceDate,
-			int itemNoWorkplaceCode,
-			int itemNoWorkplaceId) {
+	public Either<RecordError, IntermediateResult> canonicalize(Require require, IntermediateResult interm, int csvRowNo) {
 		String workplaceCode = interm.getItemByNo(itemNoWorkplaceCode).get().getString();
 		GeneralDate startDate = interm.getItemByNo(itemNoReferenceDate).get().getDate();
 

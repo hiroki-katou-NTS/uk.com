@@ -392,21 +392,6 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 	}
 
 	@Override
-	public Optional<Stamp> get(String contractCode, String stampNumber, GeneralDateTime stampDateTime, int changeClockArt) {
-		val query 	= "select s from KrcdtStamp s "
-				+ " where s.pk.contractCode = :contractCode"
-				+ " and s.pk.cardNumber =  :cardNumber "
-				+ " and s.pk.stampDateTime = :stampDateTime "
-				+ " and s.pk.changeClockArt = :changeClockArt ";
-		return this.queryProxy().query(query, KrcdtStamp.class)
-				.setParameter("contractCode", contractCode)
-				.setParameter("cardNumber", stampNumber)
-				.setParameter("stampDateTime", stampDateTime)
-				.setParameter("changeClockArt", changeClockArt)
-				.getSingle().map(x -> toDomain(x));
-	}
-
-	@Override
 	public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
 							   ChangeClockAtr changeClockArt) {
 		return this.queryProxy()

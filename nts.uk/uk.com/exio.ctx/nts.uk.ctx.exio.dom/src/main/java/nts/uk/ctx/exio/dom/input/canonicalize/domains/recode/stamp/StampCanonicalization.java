@@ -31,8 +31,11 @@ public class StampCanonicalization implements DomainCanonicalization {
 
 	private final WorkplaceCodeCanonicalization workplaceCodeCanonicalization;
 
+	private final DateTimeCanonicalization dateTimeCanonicalization;
+
 	public StampCanonicalization() {
-		workplaceCodeCanonicalization = new WorkplaceCodeCanonicalization();
+		workplaceCodeCanonicalization = new WorkplaceCodeCanonicalization(Items.年月日, Items.職場コード, Items.職場ID);
+		dateTimeCanonicalization = new DateTimeCanonicalization(Items.年月日, Items.時分, Items.秒, Items.打刻日時);
 	}
 
 	@Override
@@ -75,9 +78,15 @@ public class StampCanonicalization implements DomainCanonicalization {
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 
-		val workspace = require.getDomainWorkspace(context.getDomainId());
+		List<IntermediateResult> revisedRecords = require.getAllRevisedDataRecords(context).stream()
+				.map(r -> IntermediateResult.create(r))
+				.collect(toList());
 
-		val dateTimeCanonicalization = new DateTimeCanonicalization();
+		if (revisedRecords.isEmpty()) {
+			return;
+		}
+
+		val workspace = require.getDomainWorkspace(context.getDomainId());
 
 		// 受入データ内の重複チェック
 		Set<KeyValues> importingKeys = new HashSet<>();
@@ -89,20 +98,17 @@ public class StampCanonicalization implements DomainCanonicalization {
 			interm = preCanonicalize(interm);
 
 			// 職場コードの正準化
-			val optWkpCdItem = interm.getItemByNo(Items.職場コード);
-			if(optWkpCdItem.isPresent() && !optWkpCdItem.get().isNull()) {
+			if(interm.isImporting(Items.職場コード)) {
 				val wkpCanoItems = new CanonicalItemList();
-				workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo(), Items.年月日, Items.職場コード, Items.職場ID)
+				workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo())
 						.ifRight(canonicalized -> wkpCanoItems.addItem(canonicalized.getItemByNo(Items.職場ID).get()))
-						.ifLeft(error -> {
-							require.add(ExternalImportError.of(context.getDomainId(), error));
-							return;
-						});
+						.ifLeft(error -> require.add(ExternalImportError.of(context.getDomainId(), error)));
 				interm = interm.addCanonicalized(wkpCanoItems);
 			}
 
 			// 打刻日時の正準化(年月日時分秒→日時)
-			interm = interm.addCanonicalized(dateTimeCanonicalization.canonicalize(require, interm, Items.年月日, Items.時分, Items.秒, Items.打刻日時).getItems());
+			val dateTimeCanoItem = dateTimeCanonicalization.canonicalize(require, interm).getItemByNo(Items.打刻日時).get();
+			interm = interm.addCanonicalized(dateTimeCanoItem);
 
 			// 既定値の追加
 			interm = setDefaultItems(interm);
@@ -119,18 +125,14 @@ public class StampCanonicalization implements DomainCanonicalization {
 			importingKeys.add(key);
 
 			// 	制約のチェック
-			val errorList = checkConstraints(interm);
-			if(errorList.size() > 0){
-				errorList.forEach(e -> require.add(ExternalImportError.record(revisedData.getRowNo(), context.getDomainId(), e.getMessage())));
+			val optError = checkConstraints(interm);
+			if(optError.isPresent()){
+				require.add(ExternalImportError.record(revisedData.getRowNo(), context.getDomainId(), optError.get().getMessage()));
 				return;
 			}
 
 			// 既存データが存在する場合受け入れない
-			if(require.getStamp(
-							interm.getItemByNo(Items.カードNO).get().toString(),
-							interm.getItemByNo(Items.打刻日時).get().getDateTime(),
-							interm.getItemByNo(Items.時刻変更区分).get().getJavaInt())
-					.isPresent()){
+			if(existsStamp(require, interm)){
 				return;
 			}
 
@@ -154,21 +156,11 @@ public class StampCanonicalization implements DomainCanonicalization {
 	 * @return
 	 */
 	private static IntermediateResult setDefaultItems(IntermediateResult interm) {
-		if(interm.getItemByNo(Items.認証方法).get().isNull()) {
-			interm = interm.addCanonicalized(CanonicalItem.of(Items.認証方法, 3));
-		}
-		if(interm.getItemByNo(Items.打刻手段).get().isNull()) {
-			interm = interm.addCanonicalized(CanonicalItem.of(Items.打刻手段, 7));
-		}
-		if(interm.getItemByNo(Items.計算区分変更対象).get().isNull()) {
-			interm = interm.addCanonicalized(CanonicalItem.of(Items.計算区分変更対象, 0));
-		}
-		if(interm.getItemByNo(Items.所定時刻セット区分).get().isNull()) {
-			interm = interm.addCanonicalized(CanonicalItem.of(Items.所定時刻セット区分, 0));
-		}
-		if(interm.getItemByNo(Items.勤務種類を半休に変更する).get().isNull()) {
-			interm = interm.addCanonicalized(CanonicalItem.of(Items.勤務種類を半休に変更する, 0));
-		}
+		interm.optionalItem(CanonicalItem.of(Items.認証方法, 3));
+		interm.optionalItem(CanonicalItem.of(Items.打刻手段, 7));
+		interm.optionalItem(CanonicalItem.of(Items.計算区分変更対象, 0));
+		interm.optionalItem(CanonicalItem.of(Items.所定時刻セット区分, 0));
+		interm.optionalItem(CanonicalItem.of(Items.勤務種類を半休に変更する, 0));
 		return interm;
 	}
 
@@ -188,15 +180,27 @@ public class StampCanonicalization implements DomainCanonicalization {
 	 * @param interm
 	 * @return
 	 */
-	private static List<RecordError> checkConstraints(IntermediateResult interm){
-		val errorList = new ArrayList<RecordError>();
+	private static Optional<RecordError> checkConstraints(IntermediateResult interm){
 		// 「時刻変更区分」が「4：外出」の場合、「外出区分」はEmptyでないこと
 		if(interm.getItemByNo(Items.時刻変更区分).get().getInt() == 4){
 			if(interm.getItemByNo(Items.外出区分).get().isNull()) {
-				errorList.add(RecordError.record(interm.getRowNo(), "「時刻変更区分」が「4：外出」の場合、「外出区分」を受け入れる必要があります。"));
+				return Optional.of(RecordError.record(interm.getRowNo(), "「時刻変更区分」が「4：外出」の場合、「外出区分」を受け入れる必要があります。"));
 			}
 		}
-		return errorList;
+		return Optional.empty();
+	}
+
+	/**
+	 * 既存データが存在するかチェックする
+	 * @param require
+	 * @param interm
+	 * @return
+	 */
+	private boolean existsStamp(RequireCanonicalize require, IntermediateResult interm){
+		return require.existsStamp(
+				interm.getItemByNo(Items.カードNO).get().toString(),
+				interm.getItemByNo(Items.打刻日時).get().getDateTime(),
+				interm.getItemByNo(Items.時刻変更区分).get().getJavaInt());
 	}
 
 	/**
@@ -205,7 +209,7 @@ public class StampCanonicalization implements DomainCanonicalization {
 	 * @param workspace
 	 * @return
 	 */
-	private KeyValues getPrimaryKeys(IntermediateResult interm, DomainWorkspace workspace) {
+	private static KeyValues getPrimaryKeys(IntermediateResult interm, DomainWorkspace workspace) {
 		return workspace.getItemsPk().stream()
 				.map(k -> k.getItemNo())
 				.collect(toList()).stream()
@@ -214,9 +218,8 @@ public class StampCanonicalization implements DomainCanonicalization {
 				.collect(Collectors.collectingAndThen(toList(), KeyValues::new));
 	}
 
-	public static interface RequireCanonicalize  {
-
-		Optional<Stamp> getStamp(String cardNumber, GeneralDateTime stampDateTime, int changeClockArt);
+	public interface RequireCanonicalize  {
+		boolean existsStamp(String cardNumber, GeneralDateTime stampDateTime, int changeClockArt);
 	}
 
 	@Override
