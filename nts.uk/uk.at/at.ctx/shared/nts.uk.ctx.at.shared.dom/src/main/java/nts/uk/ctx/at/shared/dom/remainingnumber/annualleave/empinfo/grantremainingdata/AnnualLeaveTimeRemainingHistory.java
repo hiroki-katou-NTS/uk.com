@@ -15,15 +15,8 @@ public class AnnualLeaveTimeRemainingHistory extends AnnualLeaveGrantRemainingDa
 	private GeneralDate grantProcessDate;
 
 	public AnnualLeaveTimeRemainingHistory(AnnualLeaveGrantRemainingData data, GeneralDate grantProcessDate) {
-		this.leaveID = data.getLeaveID();
-		this.employeeId = data.getEmployeeId();
+		super(data);
 		this.grantProcessDate = grantProcessDate;
-		this.grantDate = data.getGrantDate();
-		this.deadline = data.getDeadline();
-		this.expirationStatus = data.getExpirationStatus();
-		this.registerType = data.getRegisterType();
-		this.details = (AnnualLeaveNumberInfo) data.getDetails();
-		this.annualLeaveConditionInfo = data.getAnnualLeaveConditionInfo();
 	}
 
 }

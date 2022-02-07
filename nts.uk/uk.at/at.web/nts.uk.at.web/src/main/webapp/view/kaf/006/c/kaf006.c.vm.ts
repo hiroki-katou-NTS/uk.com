@@ -230,7 +230,8 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                     newApplyForLeave: vm.applyForleave,
                     originApplyForLeave: vm.applyForleave, 
                     holidayDates: holidayAppDates,
-                    appAbsenceStartInfoDto: vm.appAbsenceStartInfoOutput
+                    appAbsenceStartInfoDto: vm.appAbsenceStartInfoOutput, 
+                    holidayFlg: false
                 };
                 commandCheck.newApplyForLeave.vacationInfo.info.datePeriod = {
                     startDate: vm.application.opAppStartDate,
@@ -250,6 +251,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                     if (success) {
                         holidayAppDates = success.holidayDateLst;
                         commandRegister.holidayDates = holidayAppDates;
+                        commandRegister.holidayFlg = success.holidayFlg;
                         // xử lý confirmMsg
                         return vm.handleConfirmMessage(success.confirmMsgLst);
                     }

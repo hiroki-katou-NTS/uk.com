@@ -6,6 +6,7 @@ package nts.uk.ctx.at.record.dom.workrecord.actuallock;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -136,14 +137,15 @@ public class ActualLock extends AggregateRoot {
 			return listPeriod;
 		}
 		//	val $締め = require.締めを取得する(@締めID);
-		Closure closure = require.findClosureById(this.closureId.value);
+		Optional<Closure> closure = require.findClosureById(this.closureId.value);
+		if(!closure.isPresent()){
+			return new ArrayList<>();
+		}
 		//	val $締め期間 = require.指定した年月の期間を算出する(@締めID、$締め。当月);
-		DatePeriod periodClosure = require.getClosurePeriod(this.closureId.value, closure.getClosureMonth().getProcessingYm());
+		DatePeriod periodClosure = require.getClosurePeriod(this.closureId.value, closure.get().getClosureMonth().getProcessingYm());
 		GeneralDate startPeriodClosure = periodClosure.start().addDays(-1);
 		GeneralDate endPeriodClosure = periodClosure.end().addDays(1);
-		period.subtract(new DatePeriod(startPeriodClosure, endPeriodClosure));
-		listPeriod.add(period);
-		return listPeriod;
+		return period.subtract(new DatePeriod(startPeriodClosure, endPeriodClosure));
 	}
 
 	public static interface Require {
@@ -156,7 +158,7 @@ public class ActualLock extends AggregateRoot {
 		 */
 		DatePeriod getClosurePeriod(int closureId, YearMonth processYm);
 		
-		Closure findClosureById(int closureId);
+		Optional<Closure> findClosureById(int closureId);
 	}
 
 	public ActualLock(String companyId, ClosureId closureId, LockStatus dailyLockState, LockStatus monthlyLockState) {

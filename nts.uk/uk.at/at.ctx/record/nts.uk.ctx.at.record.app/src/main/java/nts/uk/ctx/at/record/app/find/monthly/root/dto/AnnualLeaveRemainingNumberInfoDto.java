@@ -18,9 +18,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 @AllArgsConstructor
 public class AnnualLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItemDataGate {
 
-	/** 合計 */
-	@AttendanceItemLayout(jpPropertyName = TOTAL, layout = LAYOUT_A)
-	private CommonLeaveRemainingNumberDto remainingNumber;
 
 	/** 付与前 */
 	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
@@ -31,21 +28,18 @@ public class AnnualLeaveRemainingNumberInfoDto implements ItemConst, AttendanceI
 	private CommonLeaveRemainingNumberDto after;
 
 	public static AnnualLeaveRemainingNumberInfoDto from(AnnualLeaveRemainingNumberInfo domain) {
-		return new AnnualLeaveRemainingNumberInfoDto(CommonLeaveRemainingNumberDto.from(domain.getRemainingNumber()),
-														CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
+		return new AnnualLeaveRemainingNumberInfoDto(CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
 														CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberAfterGrantOpt().orElse(null)));
 	}
 
 	public AnnualLeaveRemainingNumberInfo toDomain() {
-		return new AnnualLeaveRemainingNumberInfo(remainingNumber == null ? new AnnualLeaveRemainingNumber() : remainingNumber.toDomain(),
-													before == null ? new AnnualLeaveRemainingNumber() : before.toDomain(),
+		return new AnnualLeaveRemainingNumberInfo(before == null ? new AnnualLeaveRemainingNumber() : before.toDomain(),
 													after == null ? Optional.empty() : Optional.of(after.toDomain()));
 	}
-	
+
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
 		switch (path) {
-		case TOTAL:
 		case BEFORE:
 		case AFTER:
 			return new CommonLeaveRemainingNumberDto();
@@ -57,8 +51,6 @@ public class AnnualLeaveRemainingNumberInfoDto implements ItemConst, AttendanceI
 	@Override
 	public Optional<AttendanceItemDataGate> get(String path) {
 		switch (path) {
-		case TOTAL:
-			return Optional.ofNullable(remainingNumber);
 		case BEFORE:
 			return Optional.ofNullable(before);
 		case AFTER:
@@ -66,14 +58,12 @@ public class AnnualLeaveRemainingNumberInfoDto implements ItemConst, AttendanceI
 		default:
 			return AttendanceItemDataGate.super.get(path);
 		}
-	
+
 	}
 
 	@Override
 	public void set(String path, AttendanceItemDataGate value) {
 		switch (path) {
-		case TOTAL:
-			remainingNumber = (CommonLeaveRemainingNumberDto) value; break;
 		case BEFORE:
 			before = (CommonLeaveRemainingNumberDto) value; break;
 		case AFTER:

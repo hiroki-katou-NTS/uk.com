@@ -43,10 +43,14 @@ module nts.uk.at.view.kaf012.a.viewmodel {
 				}
 			}
 			let empLst: Array<string> = [],
-				dateLst: Array<string> = [];
+				dateLst: Array<string> = [],
+				screenCode: number = null;
             vm.isSendMail = ko.observable(false);
             vm.application = ko.observable(new Application(vm.appType()));
 			if (!_.isEmpty(params)) {
+				if (!nts.uk.util.isNullOrUndefined(params.screenCode)) {
+					screenCode = params.screenCode;
+				}
 				if (!_.isEmpty(params.employeeIds)) {
 					empLst = params.employeeIds;
 				}
@@ -66,8 +70,14 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 vm.applyTimeData.push(new DataModel(i, vm.reflectSetting, vm.appDispInfoStartupOutput, vm.application));
             }
             vm.specialLeaveFrame = ko.observable(null);
+			let paramKAF000 = {
+				empLst, 
+				dateLst, 
+				appType: vm.appType(),
+				screenCode	
+			};
             vm.$blockui("show");
-            vm.loadData(empLst, dateLst, vm.appType())
+            vm.loadData(paramKAF000)
             .then((loadDataFlag: any) => {
                 if(loadDataFlag) {
 					vm.application().employeeIDLst(empLst);
@@ -154,7 +164,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 vm.applyTimeData()[4].timeZones.forEach(tz => {
                     tz.startTime(null);
                     tz.endTime(null);
-                    tz.appTimeType(GoingOutReason.PRIVATE);
+                    // tz.appTimeType(GoingOutReason.PRIVATE);
                 });
                 let maxWorkNoHasData = 3;
                 const outingTimes = value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
@@ -242,6 +252,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
         register() {
             const vm = this;
             const details: Array<any> = [];
+            let errors: any[] = [];
             vm.applyTimeData().forEach((row : DataModel) => {
                 if (row.display()) {
                     if (row.appTimeType < 4) {
@@ -260,15 +271,19 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             || applyTime.careAppTime > 0
                             || applyTime.super60AppTime > 0
                             || applyTime.specialAppTime > 0) {
-                            details.push({
-                                appTimeType: row.appTimeType,
-                                timeZones: [{
-                                    workNo: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
-                                    startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.scheduledTime() : row.timeZones[0].startTime(),
-                                    endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZones[0].startTime() : row.scheduledTime(),
-                                }],
-                                applyTime: applyTime
-                            });
+                                let detail = {
+                                    appTimeType: row.appTimeType,
+                                    timeZones: [{
+                                        workNo: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
+                                        startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.scheduledTime() : row.timeZones[0].startTime(),
+                                        endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZones[0].startTime() : row.scheduledTime(),
+                                    }],
+                                    applyTime: applyTime
+                                }
+                                if (_.filter(detail.timeZones, timeZone => timeZone.endTime && timeZone.startTime).length === 0) {
+                                    detail.timeZones = [];
+                                }
+                                details.push(detail);
                         }
                     } else {
                         const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == GoingOutReason.PRIVATE && z.enableInput() && (!!z.startTime() || !!z.endTime()));
@@ -281,6 +296,26 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             specialAppTime: vm.leaveType() == LeaveType.SPECIAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].specialAppTime() : 0,
                             specialLeaveFrameNo: vm.leaveType() == LeaveType.SPECIAL || (vm.leaveType() == LeaveType.COMBINATION && row.applyTime[0].specialAppTime() > 0) ? vm.specialLeaveFrame() : null,
                         };
+                        _.forEach(privateTimeZones, (privateTimeZone: any) => {
+                            if ((privateTimeZone.startTime() && !privateTimeZone.endTime()) || (!privateTimeZone.startTime() && privateTimeZone.endTime())) {
+                                if (_.filter(errors, { 'messageId': 'Msg_2294' }).length == 0) {
+                                    errors.push({
+                                        message: this.$i18n.message('Msg_2294'), 
+                                        messageId: 'Msg_2294',
+                                        supplements: {}
+                                    })
+                                }
+                            }
+                            if ((privateTimeZone.startTime() && privateTimeZone.endTime()) && (privateTimeZone.startTime() > privateTimeZone.endTime())) {
+                                if (_.filter(errors, { 'messageId': 'Msg_857' }).length == 0) {
+                                    errors.push({ 
+                                        message: this.$i18n.message('Msg_857'), 
+                                        messageId: 'Msg_857', 
+                                        supplements: {}
+                                     })
+                                }
+                            }
+                        });
                         if (privateApplyTime.substituteAppTime > 0
                             || privateApplyTime.annualAppTime > 0
                             || privateApplyTime.childCareAppTime > 0
@@ -303,6 +338,26 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             specialAppTime: vm.leaveType() == LeaveType.SPECIAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].specialAppTime() : 0,
                             specialLeaveFrameNo: vm.leaveType() == LeaveType.SPECIAL || (vm.leaveType() == LeaveType.COMBINATION && row.applyTime[1].specialAppTime() > 0) ? vm.specialLeaveFrame() : null,
                         };
+                        _.forEach(unionTimeZones, (unionTimeZone: any) => {
+                            if ((unionTimeZone.startTime() && !unionTimeZone.endTime()) || (!unionTimeZone.startTime() && unionTimeZone.endTime())) {
+                                if (_.filter(errors, { 'messageId': 'Msg_2294' }).length == 0) {
+                                    errors.push({
+                                        message: this.$i18n.message('Msg_2294'), 
+                                        messageId: 'Msg_2294',
+                                        supplements: {}
+                                    })
+                                }
+                            }
+                            if ((unionTimeZone.startTime() && unionTimeZone.endTime()) && (unionTimeZone.startTime() > unionTimeZone.endTime())) {
+                                if (_.filter(errors, { 'messageId': 'Msg_857' }).length == 0) {
+                                    errors.push({ 
+                                        message: this.$i18n.message('Msg_857'), 
+                                        messageId: 'Msg_857', 
+                                        supplements: {}
+                                     })
+                                }
+                            }
+                        });
                         if (unionApplyTime.substituteAppTime > 0
                             || unionApplyTime.annualAppTime > 0
                             || unionApplyTime.childCareAppTime > 0
@@ -318,6 +373,11 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     }
                 }
             });
+
+            if (errors.length > 0) {
+                nts.uk.ui.dialog.bundledErrors({ errors: errors });
+                return;
+            }
 
             vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason').then(isValid => {
                 if (isValid && !nts.uk.ui.errors.hasError()) {
@@ -345,6 +405,8 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             },
                             agentMode: vm.isAgentMode()
                         };
+                        params.applicationNew.employeeID = _.isEmpty(vm.application().employeeIDLst()) ? null : vm.application().employeeIDLst()[0];
+                        params.applicationNew.enteredPerson = vm.$user.employeeId;
                         params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
                         params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
                         return vm.$ajax(API.checkRegister, params);

@@ -23,17 +23,10 @@ public class AnnualLeaveRemainingHistory extends AnnualLeaveGrantRemainingData{
 	private ClosureDate closureDate;
 
 	public AnnualLeaveRemainingHistory(AnnualLeaveGrantRemainingData data, YearMonth yearMonth, ClosureId clousureId, ClosureDate closureDate) {
-		this.leaveID = data.getLeaveID();
-		this.employeeId = data.getEmployeeId();
+		super(data);
 		this.yearMonth = yearMonth;
 		this.closureId = clousureId;
 		this.closureDate = closureDate;
-		this.grantDate = data.getGrantDate();
-		this.deadline = data.getDeadline();
-		this.expirationStatus = data.getExpirationStatus();
-		this.registerType = data.getRegisterType();
-		this.details = (AnnualLeaveNumberInfo) data.getDetails();
-		this.annualLeaveConditionInfo = data.getAnnualLeaveConditionInfo();
 	}
 
 }

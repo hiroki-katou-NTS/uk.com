@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.An
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.CalYearOffWorkAttendRate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
@@ -148,7 +149,7 @@ public class RCAnnualHolidayManagementImpl implements RCAnnualHolidayManagement 
 		// 次回年休付与時点出勤率を返す
 		result = new AttendRateAtNextHoliday(
 				nextAnnualLeaveGrant.getGrantDate(),
-				!nextAnnualLeaveGrant.getGrantDays().isPresent() ? new GrantDays(0d) : nextAnnualLeaveGrant.getGrantDays().get(),
+				!nextAnnualLeaveGrant.getGrantDays().isPresent() ? new LeaveGrantDayNumber(0d) : nextAnnualLeaveGrant.getGrantDays().get(),
 				new AttendanceRate(attendanceRate),
 				new AttendanceDaysMonth(attendanceDays),
 				new AttendanceDaysMonth(predeterminedDays),

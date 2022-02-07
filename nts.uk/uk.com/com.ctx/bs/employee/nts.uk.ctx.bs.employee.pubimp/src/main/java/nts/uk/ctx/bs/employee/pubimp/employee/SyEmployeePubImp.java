@@ -61,6 +61,7 @@ import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.JobClassification;
 import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
+import nts.uk.ctx.bs.employee.pub.employee.PersonalEmployeeInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.PersonInfoJhn001Export;
 import nts.uk.ctx.bs.employee.pub.employee.ResultRequest596Export;
 import nts.uk.ctx.bs.employee.pub.employee.ResultRequest600Export;
@@ -135,6 +136,9 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	
 	@Inject
 	private IPersonInfoPub personInfoPub;
+
+	@Inject
+	private EmployeeDataMngInfoRepository getEmpDataMngRepo;
 	
 	/*
 	 * (non-Javadoc)
@@ -348,6 +352,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			}
 
 			Optional<AffCompanyHistItem> affCompanyHistItem = mapAffComHistItem.get(employee.getEmployeeId());
+			if (affCompanyHistItem == null) affCompanyHistItem = Optional.empty();
 
 			if (affCompanyHistItem.isPresent()) {
 				result.setEntryDate(affCompanyHistItem.get().getDatePeriod().start());
@@ -438,6 +443,13 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	public Optional<EmployeeDataMngInfoExport> getSdataMngInfoByEmployeeCode(String companyId, String employeeCode) {
 		return sDataMngInfoRepo.findByEmployeCD(employeeCode, companyId)
 				.map(e -> toExport(e));
+	}
+
+	@Override
+	public List<EmployeeDataMngInfoExport> findSdataMngInfoByEmployeeCodes(String companyId, List<String> employeeCodes) {
+		return sDataMngInfoRepo.findByListEmployeeCode(companyId, employeeCodes)
+				.stream()
+				.map(e -> toExport(e)).collect(Collectors.toList());
 	}
 	
 	private static EmployeeDataMngInfoExport toExport(EmployeeDataMngInfo mngInfo) {
@@ -1136,6 +1148,12 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId);
 //		this.personRepository.getByPersonId(emp.getPersonId());
 		Optional<Person> getByPersonId(String personId);
+
+		// 	[2] 個人リストを取得する
+		List<Person> getIndividualList(List<String> personIdList);
+
+		//  [3] 個人IDリストから社員を取得する
+		List<EmployeeDataMngInfo> getListEmployeeDataInfo(List<String> personIdList);
 	}
 
 	@RequiredArgsConstructor
@@ -1165,6 +1183,44 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return personRepository.getByPersonId(personId);
 		}
 
-	}
+		@Override
+		public List<Person> getIndividualList(List<String> personIdList) {
+			return personRepository.getPersonByPersonIds(personIdList);
+		}
 
+		@Override
+		public List<EmployeeDataMngInfo> getListEmployeeDataInfo(List<String> personIdList) {
+			return getEmpDataMngRepo.getByPersonIdList(personIdList);
+		}
+	}
+	@Override
+	public List<PersonalEmployeeInfoExport> getPersonEmployeeInfosByPersonId(List<String> personIds) {
+		List<PersonalEmployeeInfoExport> rs = new ArrayList<>();
+		val cacheCarrier = new CacheCarrier();
+		val require = new RequireImpl(cacheCarrier);
+		val listPerSon = require.getIndividualList(personIds);
+		val listEmployeeData = require.getListEmployeeDataInfo(personIds);
+		for (val per:listPerSon) {
+			val employeeInfos = listEmployeeData.stream()
+					.filter(e->e.getPersonId().equals(per.getPersonId()))
+					.map(e->new  EmployeeDataMngInfoExport(
+						e.getCompanyId(),
+						e.getPersonId(),
+						e.getEmployeeId(),
+						e.getEmployeeCode().v(),
+						e.getDeletedStatus().value,
+						e.getDeleteDateTemporary(),
+							e.getRemoveReason()!=null?e.getRemoveReason().v():"",
+							e.getExternalCode()!=null?e.getExternalCode().v():""
+					))
+					.collect(Collectors.toList());
+			rs.add( new PersonalEmployeeInfoExport(
+					per.getPersonId(),
+					per.getPersonNameGroup().getPersonName().getFullName().v(),
+					per.getPersonNameGroup().getBusinessName().v(),
+					employeeInfos
+			));
+		}
+		return rs;
+	}
 }

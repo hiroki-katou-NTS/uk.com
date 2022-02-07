@@ -111,3 +111,48 @@ table#grid tbody td:nth-child(1) {
 html {
     overflow: hidden;
 }
+.column-style {
+	position: relative;
+}
+
+/* thay đổi màu check box */
+input[type="checkbox"]:checked {
+  background: #30cc40;
+  color: white;
+}
+
+input[type="checkbox"]:disabled {
+  background: gray;
+  color: white;
+  border: none;
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  background: white;
+  height: 16px;
+  width: 16px;
+  color: white;
+  border: 1px solid #30cc40;
+}
+
+input[type="checkbox"]:after {
+  content: ' ';
+  position: relative;
+  left: 40%;
+  top: 20%;
+  width: 15%;
+  height: 40%;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(50deg);
+  display: none;
+}
+
+input[type="checkbox"]:checked:after {
+  display: block;
+}

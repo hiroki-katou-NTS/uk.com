@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
@@ -180,7 +179,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public AbsenceCheckRegisterOutput checkBeforeRegister(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
-			ApplyForLeave appAbsence, boolean agentAtr);
+			ApplyForLeave appAbsence, boolean agentAtr, boolean isEmptyLeaveList, boolean isEmptyPayoutList);
 
 	/**
 	 * 申請日の矛盾チェック
@@ -351,7 +350,7 @@ public interface AbsenceServiceProcess {
 	 * @param mailServerSet
 	 * @param approvalRoot
 	 */
-	public ProcessResult registerAppAbsence(ApplyForLeave applyForLeave, List<String> appDates, List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements, boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalRoot, AppTypeSetting applicationSetting);
+	public ProcessResult registerAppAbsence(ApplyForLeave applyForLeave, List<String> appDates, List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements, boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalRoot, AppTypeSetting applicationSetting, boolean holidayFlg);
 
 
 	/**
@@ -383,7 +382,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public AbsenceCheckRegisterOutput checkBeforeUpdate(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
-            ApplyForLeave appAbsence, boolean agentAtr);
+            ApplyForLeave appAbsence, boolean agentAtr, boolean isEmptyLeaveList, boolean isEmptyPayoutList);
 
 
     /**
@@ -427,7 +426,7 @@ public interface AbsenceServiceProcess {
             List<String> holidayAppDates,
             List<LeaveComDayOffManagement> leaveComDayOffMana,
             List<PayoutSubofHDManagement> payoutSubofHDManagements,
-            AppDispInfoStartupOutput appDispInfoStartupOutput);
+            AppDispInfoStartupOutput appDispInfoStartupOutput, boolean holidayFlg);
 
     /**
             *  代休日を変更する
@@ -446,7 +445,7 @@ public interface AbsenceServiceProcess {
      * @param holidayDates
      * @param appAbsenceStartInfoDto
      */
-    public ProcessResult registerHolidayDates(String companyID, ApplyForLeave newApplyForLeave, ApplyForLeave originApplyForLeave, List<GeneralDate> holidayDates, AppAbsenceStartInfoOutput appAbsenceStartInfoDto);
+    public ProcessResult registerHolidayDates(String companyID, ApplyForLeave newApplyForLeave, ApplyForLeave originApplyForLeave, List<GeneralDate> holidayDates, AppAbsenceStartInfoOutput appAbsenceStartInfoDto, boolean holidayFlg);
 
     /**
      * UKDesign.UniversalK.就業.KAF_申請.KAF011_振休振出申請.振休振出申請共通アルゴリズム.勤務種類・就業時間帯関連.勤務時間初期値の取得.勤務時間初期値の取得
@@ -473,4 +472,10 @@ public interface AbsenceServiceProcess {
      * @param vacationType
      */
 //    public void checkRemainVacation(String companyID, ApplyForLeave application, GeneralDate date, HolidayAppType vacationType, Optional<TimeDigestApplication> timeDigestApplication);
+    
+    /**
+     * @param workTypeCode 勤務種類コード
+     * @return 休日かFlag（boolean）
+     */
+    public boolean isWorkTypeHoliday(Optional<String> workTypeCode);
 }

@@ -170,12 +170,14 @@ public class MPHeaderDto {
 			// dto.setNtsControl("TextEditorNumberSeparated");
 			//dto.setConstraint(new Constraint("Currency", false, ""));
 			dto.setGrant(true);
-			if (maiDto.getPrimitive() != null && maiDto.getPrimitive() == 54) {
-				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999", "999999"));
+			if (maiDto.getPrimitive() != null && maiDto.getPrimitive() == 65) {
+				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-99999999999", "99999999999"));
 			} else if (maiDto.getPrimitive() != null && maiDto.getPrimitive() == 55) {
 				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999999", "999999999"));
+			} else if (maiDto.getPrimitive() != null && maiDto.getPrimitive() == 67) {
+				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("0", "99999999"));
 			} else {
-				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999999", "999999999"));
+				dto.setConstraint(new Constraint("Currency", false, ""));
 			}
 		} else if(attendanceAtr == MonthlyAttendanceItemAtr.CODE.value){
 			List<MPHeaderDto> groups = new ArrayList<>();

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 
 /**
  * 処理単位分割日
@@ -20,7 +20,7 @@ public class DividedDayEachProcess {
 	/** 付与（付与情報WORK） */
 	private AnnualLeaveGrantWork grantWork;
 	/** 付与前か付与後か */
-	private GrantPeriodAtr grantPeriodAtr;
+	private GrantBeforeAfterAtr grantPeriodAtr;
 
 //	/** 次回年休付与 */
 //	private Optional<NextSpecialLeaveGrant> nextSpecialLeaveGrant;
@@ -41,7 +41,7 @@ public class DividedDayEachProcess {
 		this.ymd = ymd;
 		this.grantWork = new AnnualLeaveGrantWork();
 //		this.nextSpecialLeaveGrant = Optional.empty();
-		this.grantPeriodAtr = GrantPeriodAtr.BEFORE_GRANT;
+		this.grantPeriodAtr = GrantBeforeAfterAtr.BEFORE_GRANT;
 	}
 	
 }

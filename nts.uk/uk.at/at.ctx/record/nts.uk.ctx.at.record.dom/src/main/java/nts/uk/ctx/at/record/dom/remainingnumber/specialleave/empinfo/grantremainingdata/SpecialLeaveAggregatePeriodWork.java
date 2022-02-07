@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 
 /**
  * 特別休暇集計期間WORK
@@ -23,7 +25,7 @@ public class SpecialLeaveAggregatePeriodWork {
 	/** 付与（付与情報WORK） */
 	private SpecialLeaveGrantWork grantWork;
 	/** 付与前か付与後か */
-	private GrantPeriodAtr grantPeriodAtr;
+	private GrantBeforeAfterAtr grantPeriodAtr;
 
 	/**
 	 * コンストラクタ
@@ -33,7 +35,7 @@ public class SpecialLeaveAggregatePeriodWork {
 		this.endDay = new NextDayAfterPeriodEndWork();
 		this.lapsedWork = new SpecialLeaveLapsedWork();
 		this.grantWork = new SpecialLeaveGrantWork();
-		this.grantPeriodAtr = GrantPeriodAtr.BEFORE_GRANT;
+		this.grantPeriodAtr = GrantBeforeAfterAtr.BEFORE_GRANT;
 	}
 
 	public SpecialLeaveAggregatePeriodWork(DatePeriod period) {
@@ -41,7 +43,7 @@ public class SpecialLeaveAggregatePeriodWork {
 		this.endDay = new NextDayAfterPeriodEndWork();
 		this.lapsedWork = new SpecialLeaveLapsedWork();
 		this.grantWork = new SpecialLeaveGrantWork();
-		this.grantPeriodAtr = GrantPeriodAtr.BEFORE_GRANT;
+		this.grantPeriodAtr = GrantBeforeAfterAtr.BEFORE_GRANT;
 	}
 
 	/**
@@ -57,7 +59,7 @@ public class SpecialLeaveAggregatePeriodWork {
 			NextDayAfterPeriodEndWork endDay,
 			SpecialLeaveLapsedWork lapsedAtr,
 			SpecialLeaveGrantWork grantWork,
-			GrantPeriodAtr grantPeriodAtr){
+			GrantBeforeAfterAtr grantPeriodAtr){
 
 		SpecialLeaveAggregatePeriodWork domain = new SpecialLeaveAggregatePeriodWork();
 		domain.period = period;
@@ -66,5 +68,24 @@ public class SpecialLeaveAggregatePeriodWork {
 		domain.grantWork = grantWork;
 		domain.grantPeriodAtr = grantPeriodAtr;
 		return domain;
+	}
+
+	/**
+	 * 付与前付与後を判断
+	 * @param entryDate 入社日
+	 * @return 付与前か付与後か
+	 */
+	public GrantBeforeAfterAtr judgeGrantPeriodAtr(GeneralDate entryDate) {
+		
+		if ( grantWork.getTypeTime().isPresent() ){
+			
+			// 付与するタイミングの種類　==　期間で付与する and @期間．開始日 == 入社日						
+			if ( grantWork.getTypeTime().get().equals(TypeTime.GRANT_PERIOD)
+					&& this.period.start().equals(entryDate)){
+				return GrantBeforeAfterAtr.BEFORE_GRANT;				
+			}
+		}
+		
+		return this.getGrantPeriodAtr();
 	}
 }

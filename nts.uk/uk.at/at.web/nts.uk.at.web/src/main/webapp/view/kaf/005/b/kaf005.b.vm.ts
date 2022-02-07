@@ -4,6 +4,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	import OverTime = nts.uk.at.view.kaf005.shr.viewmodel.OverTime;
 	import HolidayTime = nts.uk.at.view.kaf005.shr.viewmodel.HolidayTime;
 	import RestTime = nts.uk.at.view.kaf005.shr.viewmodel.RestTime;
+	import MultipleOvertimeContent = nts.uk.at.view.kaf005.shr.viewmodel.MultipleOvertimeContent;
 	import WorkHours = nts.uk.at.view.kaf005.shr.work_info.viewmodel.WorkHours;
 	import Work = nts.uk.at.view.kaf005.shr.work_info.viewmodel.Work;
 	import WorkInfo = nts.uk.at.view.kaf005.shr.work_info.viewmodel.WorkInfo;
@@ -17,10 +18,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		<div id="kaf005-b">
 			<div id="contents-area"
 				style="background-color: inherit; height: calc(100vh - 137px);">
-				<div class="two-panel" style="height: 100%; width: 1260px">
+				<div class="two-panel" style="height: 100%;" data-bind="style: {width: opOvertimeAppAtr() == 3 &amp;&amp; appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason &amp;&amp; appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason ? '1344px' : '1260px'}">
 					<div class="left-panel"
-						style="width: calc(1260px - 388px); height: inherit; padding-bottom: 5px;">
-						<div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px; overflow-x: hidden"> 
+						style="width: calc(100% - 388px); height: inherit; padding-bottom: 5px;">
+						<div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px;"> 
 							<div class="table"
 								style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 								<div class="cell" style="vertical-align: middle;">
@@ -83,29 +84,20 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 											}
 							
 										}"></div>
-
-
 							</div>
-
-
-
-
-
-
-							<div style="margin-top: 11px"
-								data-bind="component: { name: 'kaf000-b-component7', 
+							<div data-bind="if: opOvertimeAppAtr() != 3">
+								<div style="margin-top: 11px"
+									data-bind="component: { name: 'kaf000-b-component7', 
 														params: {
 															appType: appType,
 															application: application,
 															appDispInfoStartupOutput: appDispInfoStartupOutput
 														} }"></div>
-														
-														
-														
-						<div data-bind="component: { name: 'kaf005-share-footer'}"></div>
+							</div>										
+							<div data-bind="component: { name: 'kaf005-share-footer'}"></div>
 						
-						<div style="padding-top: 30px;">
-										
+							<div style="padding-top: 30px;">
+											
 							</div>                          
 						</div>
 					</div>
@@ -186,7 +178,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		titleLabelInput1: KnockoutObservable<String>;
 		titleLabel2: KnockoutObservable<String>;
 		titleLabelInput2: KnockoutObservable<String>;
-		
+
+        opOvertimeAppAtr: KnockoutObservable<number> = ko.observable(0);
+
+        multipleOvertimeContents: KnockoutObservableArray<MultipleOvertimeContent> = ko.observableArray([]);
+        reasonTypeItemLst: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        displayPrintButton: KnockoutObservable<boolean>;
 		
 		setTitleLabel() {
 			const vm = this;
@@ -196,7 +194,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				const param = vm.messageInfos()[0].titleDrop();
 				
 				return vm.$i18n('KAF005_90', [param]);
-			})
+			});
 			vm.titleLabelInput1 = ko.computed(() => {
 				if (_.isEmpty( vm.messageInfos())) return '';
 				const param = vm.messageInfos()[0].titleInput();
@@ -243,6 +241,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             vm.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
             vm.approvalReason = params.approvalReason;
 			vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
+			vm.displayPrintButton = params.displayPrintButton;
             // gui event con ra viewmodel cha
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
             // luôn là component
@@ -257,36 +256,96 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			vm.$nextTick(() => {
 				document.getElementById('inpStartTime1').addEventListener('focusout', () => {
 					if (_.isNumber(vm.workInfo().workHours1.start()) && _.isNumber(vm.workInfo().workHours1.end())) {
-							
-							
 							vm.getBreakTimes();
 						}
-				})
-				
+				});
 				document.getElementById('inpEndTime1').addEventListener('focusout', () => {
 					if (_.isNumber(vm.workInfo().workHours1.start()) && _.isNumber(vm.workInfo().workHours1.end())) {
-							
-							
 							vm.getBreakTimes();
 						}
-				})
+				});
 				document.getElementById('inpStartTime2').addEventListener('focusout', () => {
 					if (_.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end())) {
-							
-							
 							vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
 						}
-				})
+				});
 				
 				document.getElementById('inpEndTime2').addEventListener('focusout', () => {
 					if (_.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end())) {
-							
-							
 							vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
 						}
-				})
-				
-			})
+				});
+			});
+
+			vm.workInfo().workHours1.start.subscribe((value) => {
+				if (vm.workInfo().workHours1.end() 
+					&& _.isNumber(value) && _.isNumber(vm.workInfo().workHours1.end())) {
+						if (vm.workInfo().workHours1.end() >= value) {
+							$("#inpEndTime1").ntsError("clear");
+						} 
+						if (value > vm.workInfo().workHours1.end() && !$("#inpEndTime1").ntsError('hasError')) {
+							vm.$errors('#inpEndTime1', 'Msg_307');
+						}
+				}
+			});
+
+			vm.workInfo().workHours1.end.subscribe((value) => {
+				if (vm.workInfo().workHours1.start() && _.isNumber(value) && _.isNumber(vm.workInfo().workHours1.start())) {
+						if (value >= vm.workInfo().workHours1.start()) {
+							$("#inpEndTime1").ntsError("clear");
+						} 
+						if (value < vm.workInfo().workHours1.start() && !$("#inpEndTime1").ntsError('hasError')) {
+							vm.$errors('#inpEndTime1', 'Msg_307');
+						}
+						if ($('#inpStartTime2') && vm.workInfo().workHours2.start() && _.isNumber(vm.workInfo().workHours2.start())) {
+							if (vm.workInfo().workHours2.start() >= value) {
+								$("#inpStartTime2").ntsError("clear");
+							}
+							if (value > vm.workInfo().workHours2.start() && !$("#inpStartTime2").ntsError('hasError')) {
+								vm.$errors('#inpStartTime2', 'Msg_581');
+							}
+						}
+				}
+				if (!_.isNumber(value)) {
+					$("#inpStartTime2").ntsError("clear");
+				}
+			});
+
+			vm.workInfo().workHours2.start.subscribe((value) => {
+				if ($('#inpStartTime2')) {
+					if (vm.workInfo().workHours2.end() && _.isNumber(value) && _.isNumber(vm.workInfo().workHours2.end())) {
+						if (value <= vm.workInfo().workHours2.end()) {
+							$("#inpEndTime2").ntsError("clear");
+						}
+						if (value > vm.workInfo().workHours2.end() && !$("#inpEndTime2").ntsError('hasError')) {
+							vm.$errors('#inpEndTime2', 'Msg_307');
+						}
+					}
+					if (_.isNumber(value) && vm.workInfo().workHours1.end() && _.isNumber(vm.workInfo().workHours1.end())) {
+						if (vm.workInfo().workHours1.end() < value) {
+							$("#inpStartTime2").ntsError("clear");
+						}
+						if (vm.workInfo().workHours1.end() > value && !$("#inpStartTime2").ntsError('hasError')) {
+							vm.$errors('#inpStartTime2', 'Msg_581');
+						}
+					}
+				}
+			});
+			vm.workInfo().workHours2.start.extend({rateLimit: 100});
+
+			vm.workInfo().workHours2.end.subscribe((value) => {
+				if ($('#inpEndTime2')) {
+					if (vm.workInfo().workHours2.start() && _.isNumber(value) && _.isNumber(vm.workInfo().workHours2.start())) {
+						if (vm.workInfo().workHours2.start() <= value) {
+							$("#inpEndTime2").ntsError("clear");
+						}
+						if (value < vm.workInfo().workHours2.start() && !$("#inpEndTime2").ntsError('hasError')) {
+							vm.$errors("#inpEndTime2", 'Msg_307');
+						}
+					}
+				}
+			});
+			vm.workInfo().workHours2.end.extend({rateLimit: 100});
 		}
 
         initAppDetail() {
@@ -301,6 +360,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             return vm.$ajax(API.initAppDetail, command)
             .done(res => {
                 if (res) {
+                	vm.opOvertimeAppAtr(res.displayInfoOverTime.overtimeAppAtr);
+                	vm.displayPrintButton(vm.opOvertimeAppAtr() != OvertimeAppAtr.MULTIPLE_OVERTIME);
                     vm.printContentOfEachAppDto().opDetailOutput = res;
 					vm.appOverTime = res.appOverTime;
 					ko.contextFor(vm.$el).$vm.getAppNameForAppOverTime(vm.appOverTime.overTimeClf);
@@ -314,6 +375,37 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					vm.bindMessageInfo(vm.dataSource);
 					vm.assginTimeTemp();
 					vm.assignWorkHourAndRest();
+
+                    if (vm.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
+                        vm.reasonTypeItemLst(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst);
+                        let defaultReasonTypeItem: any = _.find(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst, (o) => o.defaultValue);
+                        if(_.isUndefined(defaultReasonTypeItem)) {
+                            let dataLst = [{
+                                appStandardReasonCD: '',
+                                displayOrder: 0,
+                                defaultValue: false,
+                                reasonForFixedForm: vm.$i18n('KAFS00_23'),
+                            }];
+                            vm.reasonTypeItemLst(_.concat(dataLst, vm.reasonTypeItemLst()));
+                        }
+                    }
+					if (!_.isEmpty(res.appOverTime.multipleOvertimeContents)) {
+                        vm.multipleOvertimeContents([]);
+                        res.appOverTime.multipleOvertimeContents.forEach((i: any) => {
+                        	vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
+                                () => {
+                                    vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+                                    vm.checkMultipleRow();
+                                },
+                                i.frameNo,
+                                i.startTime,
+                                i.endTime,
+                                i.fixedReasonCode,
+                                i.appReason
+                            ));
+						});
+					}
+
 					// assign mode can be editd or displayed
 					vm.outputMode(vm.dataSource.appDispInfoStartup.appDetailScreenInfo.outputMode == 1);
 					if (vm.isStart) {
@@ -355,6 +447,53 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				vm.isStart = true;
             	vm.initAppDetail();
             }
+        }
+
+        addMultipleRow() {
+            const vm = this;
+            $("#A15_9").ntsError("clear");
+            let fixedReasonCode = null;
+            let defaultReasonTypeItem: any = _.find(vm.reasonTypeItemLst(), (o) => o.defaultValue);
+            if(!_.isUndefined(defaultReasonTypeItem)) {
+                fixedReasonCode = defaultReasonTypeItem.appStandardReasonCD;
+            }
+            vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
+                () => {
+                    vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+                    vm.checkMultipleRow();
+                },
+                1,
+                null,
+                null,
+                fixedReasonCode,
+                null
+            ));
+        }
+
+        removeMultipleRow(data: MultipleOvertimeContent, $element: any) {
+            const vm = this;
+            if ($($element.parentElement).ntsError("hasError")) {
+                $($element.parentElement).find("input").ntsError("clear");
+            }
+            if (!!data.start() || !!data.end()) {
+                vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+            }
+            vm.multipleOvertimeContents.remove(data);
+            vm.checkMultipleRow();
+        }
+
+        checkMultipleRow() {
+            const vm = this;
+            vm.multipleOvertimeContents().forEach((i, idx) => {
+                // clear error before check
+                vm.$errors('clear', '#A15_3_' + idx);
+                vm.$errors('clear', '#A15_5_' + idx);
+
+                // check value this row
+                if (_.isNumber(i.start()) && _.isNumber(i.end()) && i.start() > i.end()) {
+                    vm.$errors('#A15_5_' + idx, 'Msg_307');
+                }
+            });
         }
 
 		assignWorkHourAndRest(isChangeDate?: boolean) {
@@ -412,11 +551,12 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				'#kaf000-a-component3-prePost',
 			 	'#kaf000-a-component5-comboReason',
 				'#inpStartTime1',
-				'#inpEndTime1')
+				'#inpEndTime1',
+                 '.inputTime-kaf005')
             .then((isValid) => {
                 if (isValid) {
 					// validate riêng cho màn hình
-                    return true;
+                    return vm.$validate('.inputTime', '.multiple-reason:not([style*="display: none"])');
                 }
             })
 			.then((result) => {
@@ -432,42 +572,42 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					let end2 = vm.workInfo().workHours2.end();
 					
 					// ・開始時刻1 > 終了時刻1　の場合エラーメッセージ(Msg_307)を表示する
-					if (start1 > end1 && vm.visibleModel.c7()) {
-						vm.$errors('#inpStartTime1', 'Msg_307');
-						vm.$errors('#inpEndTime1', 'Msg_307');
-						return false;
-					}
+					// if (start1 > end1 && vm.visibleModel.c7()) {
+					// 	vm.$errors('#inpStartTime1', 'Msg_307');
+					// 	vm.$errors('#inpEndTime1', 'Msg_307');
+					// 	return false;
+					// }
 					// ・開始時刻2 > 終了時刻2　の場合エラーメッセージ(Msg_307)を表示する
-					if (inpStartTime2 && inpEndTime2 && _.isNumber(start2) && _.isNumber(end2) && vm.visibleModel.c29()) {
-						if (start2 > end2) {
-							vm.$errors('#inpStartTime2', 'Msg_307');
-							vm.$errors('#inpEndTime2', 'Msg_307');
-							return false;
-						}
-					}
+					// if (inpStartTime2 && inpEndTime2 && _.isNumber(start2) && _.isNumber(end2) && vm.visibleModel.c29()) {
+					// 	if (start2 > end2) {
+					// 		vm.$errors('#inpStartTime2', 'Msg_307');
+					// 		vm.$errors('#inpEndTime2', 'Msg_307');
+					// 		return false;
+					// 	}
+					// }
 					
 					// ・終了時刻1 > 開始時刻2　の場合エラーメッセージ(Msg_581)を表示する
-					if (_.isNumber(start2) && inpStartTime2 && vm.visibleModel.c29()) {
-						if (start2 < end1) {
-							vm.$errors('#inpEndTime1', 'Msg_581');
-							vm.$errors('#inpStartTime2', 'Msg_581');
-							return false;
-						}
-					}
+					// if (_.isNumber(start2) && inpStartTime2 && vm.visibleModel.c29()) {
+					// 	if (start2 < end1) {
+					// 		vm.$errors('#inpEndTime1', 'Msg_581');
+					// 		vm.$errors('#inpStartTime2', 'Msg_581');
+					// 		return false;
+					// 	}
+					// }
 					// ・開始時刻2、終了時刻2　の片方しか入力してない場合エラーメッセージ(Msg_307)を表示する
-					if (inpStartTime2 && inpEndTime2 && vm.visibleModel.c7()) {
-						if (!(_.isNumber(start2) && _.isNumber(end2))) {
-							if (!_.isNumber(start2) && _.isNumber(end2)) {
-								vm.$errors('#inpStartTime2', 'Msg_307');
-								return false;								
-							}
-							if (!_.isNumber(end2) && _.isNumber(start2)) {
-								vm.$errors('#inpEndTime2', 'Msg_307');
-								return false;																
-							}
+					// if (inpStartTime2 && inpEndTime2 && vm.visibleModel.c7()) {
+					// 	if (!(_.isNumber(start2) && _.isNumber(end2))) {
+					// 		if (!_.isNumber(start2) && _.isNumber(end2)) {
+					// 			vm.$errors('#inpStartTime2', 'Msg_307');
+					// 			return false;								
+					// 		}
+					// 		if (!_.isNumber(end2) && _.isNumber(start2)) {
+					// 			vm.$errors('#inpEndTime2', 'Msg_307');
+					// 			return false;																
+					// 		}
 							
-						}
-					}
+					// 	}
+					// }
 					
 					// wokr type or worktime null
 					if (vm.visibleModel.c7()) {
@@ -510,7 +650,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					commandUpdate.appDispInfoStartupDto = vm.dataSource.appDispInfoStartup;
 					if (!_.isNil(appOverTimeTemp)) {
 							appOverTimeTemp.application = applicationTemp.application;
-							commandUpdate.appOverTime = appOverTimeTemp;							
+							appOverTimeTemp.multipleOvertimeContents = applicationTemp.multipleOvertimeContents;
+							commandUpdate.appOverTime = appOverTimeTemp;
 					} else {
 						commandUpdate.appOverTime = applicationTemp;
 					}
@@ -559,6 +700,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				})
 				return $.Deferred().resolve(false);	
 			}
+            if (failData.messageId == "Msg_3248") {
+                if (_.isEmpty(vm.multipleOvertimeContents()))
+                    vm.$errors("#A15_9", "Msg_3248");
+                else
+                    vm.$errors("#A15_3_0", "Msg_3248");
+                return $.Deferred().resolve(false);
+            }
 			if(
 				failData.messageId == "Msg_750"
 			||	failData.messageId == "Msg_1654"
@@ -572,6 +720,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			||	failData.messageId == "Msg_1536"
 			||	failData.messageId == "Msg_1537"
 			||	failData.messageId == "Msg_1538"
+			||  failData.messageId == "Msg_3238"
 				) {
 				return vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
 				.then(() => {
@@ -642,6 +791,16 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					_.remove(appOverTime.workHoursOp, (i) => i.workNo == 2);
 				}
 			}
+
+            appOverTime.multipleOvertimeContents = vm.multipleOvertimeContents()
+                .filter(i => !!i.start() && !!i.end())
+                .map((i, idx) => ({
+                    frameNo: idx + 1,
+                    startTime: i.start(),
+                    endTime: i.end(),
+                    fixedReasonCode: i.fixedReasonCode(),
+                    appReason: i.appReason()
+                }));
 			
 			// A5 ---
 			let restTime = vm.restTime() as Array<RestTime>;
@@ -1398,8 +1557,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		}
 		
 		calculate() {
-			
 			const self = this;
+
 			self.$blockui("show");
 			console.log('calculate');
 			let command = {} as ParamCalculationCMD;
@@ -1469,6 +1628,17 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			});
 			workContent.breakTimes = breakTimeSheetArray;
 			command.workContent = workContent;
+            command.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
+            command.multipleOvertimeContents = self.multipleOvertimeContents()
+                .filter(i => !!i.start() && !!i.end())
+                .map((i, idx) => ({
+                    frameNo: idx + 1,
+                    startTime: i.start(),
+                    endTime: i.end(),
+                    fixedReasonCode: i.fixedReasonCode(),
+                    appReason: i.appReason()
+                }));
+            command.overtimeAtr = self.opOvertimeAppAtr();
 			self.$ajax(API.calculate, command)
 				.done((res: DisplayInfoOverTime) => {
 					if (res) {
@@ -1477,7 +1647,31 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						self.dataSource.calculatedFlag = res.calculatedFlag;
 						self.isCalculation = true;
 						self.createVisibleModel(self.dataSource);
-						self.bindOverTime(self.dataSource, 1);
+
+                        if (!_.isEmpty(res.calculatedWorkTimes)) {
+                            self.workInfo().workHours1.start(res.calculatedWorkTimes[0].timeZone.startTime);
+                            self.workInfo().workHours1.end(res.calculatedWorkTimes[0].timeZone.endTime);
+                            if (res.calculatedWorkTimes.length > 1 && self.visibleModel.c29()) {
+                                self.workInfo().workHours2.start(res.calculatedWorkTimes[1].timeZone.startTime);
+                                self.workInfo().workHours2.end(res.calculatedWorkTimes[1].timeZone.endTime);
+                            } else {
+                                self.workInfo().workHours2.start(null);
+                                self.workInfo().workHours2.end(null);
+                            }
+                        }
+                        const calculatedBreakTimes = res.calculatedBreakTimes || [];
+                        self.restTime().forEach(i => {
+                            const t = _.find(calculatedBreakTimes, (o: any) => Number(o.workNo) == Number(i.frameNo));
+                            if (t) {
+                                i.start(t.timeZone.startTime);
+                                i.end(t.timeZone.endTime);
+                            } else {
+                                i.start(null);
+                                i.end(null);
+                            }
+                        });
+
+                        self.bindOverTime(self.dataSource, 1);
 						self.bindHolidayTime(self.dataSource, 1);
 						self.assginTimeTemp();
 						self.assignWorkHourAndRest();
@@ -1528,14 +1722,16 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				let breakTime = infoWithDateApplication.breakTime;
 				if (!_.isNil(breakTime)) {
 					if (!_.isEmpty(breakTime.timeZones)) {
-						_.forEach(breakTime.timeZones, (item: TimeZone, index) => {
-							if (Number(index) < 10) {
-								let restItem = restTimeArray[index] as RestTime;
-								restItem.start(item.start);
-								restItem.end(item.end);
+						_.forEach(restTimeArray, (item, index) => {
+							let findItem = breakTime.timeZones[index];
+							if(findItem) {
+								item.start(findItem.start);
+								item.end(findItem.end);
+							} else {
+								item.start(null);
+								item.end(null);
 							}
-						})
-
+						});
 					} else {
 						_.forEach(self.restTime(), (item: RestTime) => {
 							item.start(null);
@@ -3384,13 +3580,12 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		status: number;
 	}
 	enum OvertimeAppAtr {
-
 		EARLY_OVERTIME,
 		NORMAL_OVERTIME,
-		EARLY_NORMAL_OVERTIME
+		EARLY_NORMAL_OVERTIME,
+		MULTIPLE_OVERTIME
 	}
 	export enum AttendanceType {
-
 		NORMALOVERTIME,
 		BREAKTIME,
 		BONUSPAYTIME,
@@ -3402,11 +3597,6 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		MIDDLE_HOLIDAY_HOLIDAY,
 		FLEX_OVERTIME,
 		MIDNIGHT_OUTSIDE
-		
-		
-		
-		
-		
 	}
 
 	export interface FirstParam { // start param

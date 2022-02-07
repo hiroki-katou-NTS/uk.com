@@ -25,6 +25,9 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import java.io.Serializable;
 
 /**
@@ -139,7 +142,7 @@ public class Ksrmt36AgrMgtWkp extends ContractUkJpaEntity implements Serializabl
     public static Ksrmt36AgrMgtWkp toEntity(AgreementTimeOfWorkPlace domain) {
         val cid = AppContexts.user().companyId();
         return new Ksrmt36AgrMgtWkp(
-                new Ksrmt36AgrMgtWkpPk(domain.getWorkplaceId(), domain.getLaborSystemAtr().value),
+                new Ksrmt36AgrMgtWkpPk(domain.getWorkplaceId(), BooleanUtils.toBoolean(domain.getLaborSystemAtr().value)),
                 cid,
                 // basicMAllTime ->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
                 domain.getSetting().getOneMonth().getBasic().getErAlTime().getAlarm().v(),
@@ -187,16 +190,16 @@ public class Ksrmt36AgrMgtWkp extends ContractUkJpaEntity implements Serializabl
 
     public static AgreementTimeOfWorkPlace toDomain(Ksrmt36AgrMgtWkp entity) {
         val workplaceId = entity.getKsrmt36AgrMgtWkpPk().workplaceId;
-        val laborSystemAtr = EnumAdaptor.valueOf(entity.getKsrmt36AgrMgtWkpPk().getLaborSystemAtr(), LaborSystemtAtr.class);
+        val laborSystemAtr = EnumAdaptor.valueOf(BooleanUtils.toInteger(entity.getKsrmt36AgrMgtWkpPk().isLaborSystemAtr()), LaborSystemtAtr.class);
 
         val erAlTime =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getBasicMArlTime()), new AgreementOneMonthTime((int) entity.getBasicMAllTime()));
         val upperLimit = new AgreementOneMonthTime((int) entity.getBasicMLimitTime());
 
-        val basic =  OneMonthTime.of(erAlTime, upperLimit);
+        val basic =  OneMonthTime.createWithCheck(erAlTime, upperLimit);
 
         val erAlTimeSp =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getSpMErTime()), new AgreementOneMonthTime((int) entity.getSpMAlTime()));
         val upperLimitSp = new AgreementOneMonthTime((int) entity.getSpMLimitTime());
-        val specConditionLimit =  OneMonthTime.of(erAlTimeSp, upperLimitSp);
+        val specConditionLimit =  OneMonthTime.createWithCheck(erAlTimeSp, upperLimitSp);
 
         val oneMonth = new AgreementOneMonth(basic, specConditionLimit);
 
@@ -206,7 +209,7 @@ public class Ksrmt36AgrMgtWkp extends ContractUkJpaEntity implements Serializabl
 
         val upperLimitSpY = new AgreementOneYearTime((int) entity.getSpYLimitTime());
 
-        val specConditionLimitY =  OneYearTime.of(erAlTimeSpY, upperLimitSpY);
+        val specConditionLimitY =  OneYearTime.createWithCheck(erAlTimeSpY, upperLimitSpY);
         val oneYear = new AgreementOneYear(basicY, specConditionLimitY);
 
         val multiMonthAvg =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getMultiMAvgErTime())

@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt;
 
 /**
  * 半日年休上限回数
@@ -26,4 +27,9 @@ public class AnnualNumberDay extends IntegerPrimitiveValue<AnnualNumberDay> impl
     public AnnualNumberDay(Integer rawValue) {
         super(rawValue);
     }
+    
+    public LimitedHalfHdCnt toLimitedTimeHdDays(){
+    	return new LimitedHalfHdCnt(this.v());
+    }
+   
 }

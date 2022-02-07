@@ -23,11 +23,9 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveOverNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.KrcmtSpecialLeaveReam;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcdtHdWorkMng;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -42,6 +40,9 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	private static final String GET_ALL_BY_SID_SPECIALCODE_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode AND a.expStatus = :expStatus order by a.grantDate";
 	private static final String GET_ALL_BY_SID_AND_GRANT_DATE = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :sid AND a.grantDate =:grantDate AND a.specialLeaID !=:specialLeaID AND a.specialLeaCode =:specialLeaCode";
+	private static final String GET_BY_SID_SPECIALCODE_GRANT_DATE = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :sid AND a.specialLeaCode =:specialLeaCode AND a.grantDate =:grantDate";
+
+	
 	@Override
 	public List<SpecialLeaveGrantRemainingData> getAll(String employeeId, int specialCode) {
 		List<KrcmtSpecialLeaveReam> entities = this.queryProxy()
@@ -84,6 +85,26 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	@Override
 	public void update(SpecialLeaveGrantRemainingData data) {
 		if (data != null) {
+			List<KrcmtSpecialLeaveReam> entities = this.queryProxy()
+					.query(GET_BY_SID_SPECIALCODE_GRANT_DATE, KrcmtSpecialLeaveReam.class)
+					.setParameter("sid", data.getEmployeeId())
+					.setParameter("specialLeaCode", data.getSpecialLeaveCode())
+					.setParameter("grantDate", data.getGrantDate()).getList();
+
+			if (!entities.isEmpty()) {
+				KrcmtSpecialLeaveReam entity = entities.stream().findFirst().get();
+				updateDetail(entity, data);
+				this.commandProxy().update(entity);
+			}
+		}
+	}
+	
+	@Override
+	/*
+	 * CPS001から呼ばれる専用　付与日変更する時だけこのメソッドを使用すること
+	 */
+	public void updateWithGrantDate(SpecialLeaveGrantRemainingData data) {
+		if (data != null) {
 			Optional<KrcmtSpecialLeaveReam> entityOpt = this.queryProxy().find(data.getLeaveID(),
 					KrcmtSpecialLeaveReam.class);
 			if (entityOpt.isPresent()) {
@@ -108,7 +129,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	public void deleteAfter(String sid, int specialCode, GeneralDate target) {
 
 		this.getEntityManager().createQuery("DELETE FROM KrcmtSpecialLeaveReam d WHERE d.employeeId = :sid "
-				+ " AND d.specialLeaCode = :specialCode AND d.grantDate >= :targetDate", KrcdtHdWorkMng.class)
+				+ " AND d.specialLeaCode = :specialCode AND d.grantDate >= :targetDate", KrcmtSpecialLeaveReam.class)
 		.setParameter("sid", sid)
 		.setParameter("specialCode", specialCode)
 		.setParameter("targetDate", target)

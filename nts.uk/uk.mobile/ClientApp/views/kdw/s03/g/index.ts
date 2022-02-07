@@ -25,6 +25,7 @@ export class KdwS03GComponent extends Vue {
         manageCompensatory: false,
         compensatoryRemain: 0,
         compensatoryRemainTime: 0,
+        manageTimeOff: false,
         manageSubStitute: false,
         substituteRemain: 0,
         nextGrantDate: null,
@@ -45,6 +46,9 @@ export class KdwS03GComponent extends Vue {
     };
     public empName: string = '';
     public time36Display: boolean = false;
+    public time36CssAgree: any;
+    public time36CssFrequency: any;
+   
 
     public created() {
         let self = this;
@@ -69,6 +73,7 @@ export class KdwS03GComponent extends Vue {
                 manageCompensatory: data.compensatoryLeave.manageCompenLeave,
                 compensatoryRemain: _.isNull(data.compensatoryLeave.compenLeaveRemain) ? 0 : data.compensatoryLeave.compenLeaveRemain,
                 compensatoryRemainTime: _.isNull(data.compensatoryLeave.timeRemain) ? 0 : data.compensatoryLeave.timeRemain,
+                manageTimeOff: data.compensatoryLeave.manageTimeOff,
                 manageSubStitute: data.substitutionLeave.manageAtr,
                 substituteRemain: data.substitutionLeave.holidayRemain,
                 nextGrantDate: data.nextGrantDate,
@@ -102,17 +107,74 @@ export class KdwS03GComponent extends Vue {
                     maxExcessNumber: time.maxNumber || 0,
                     showAgreement: time.showAgreement
                 };
+
+                self.processState(time.cssAgree, time.cssFrequency);
             }).catch(() => {
                 self.$mask('hide');
             });
         }
     }
 
+    public processState(cssAgree: any, cssFrequency: any) {
+        let self = this;
+        let isError: boolean, isException: boolean, isAlarm: boolean, 
+            isErrorFre: boolean, isAlarmFre: boolean, isSpecial: boolean;    
+
+        cssAgree === 'state-exception' ? isException = true : isException = false;
+        cssAgree === 'state-error text-error' ? isError = true : isError = false;
+        cssAgree === 'state-alarm text-alarm' ? isAlarm = true : isAlarm = false;
+        cssAgree === 'state-ex-special text-ex-special' ? isSpecial = true : isSpecial = false;
+        self.time36CssAgree = {
+            'state-exception' : isException,
+            'state-error' : isError,	
+            'state-alarm' : isAlarm,
+            'state-ex-special': isSpecial,	
+            'text-error' : isError,
+            'text-alarm' : isAlarm,
+            'text-ex-special': isSpecial,
+        };
+       
+        cssFrequency === 'state-error text-error' ? isErrorFre = true : isErrorFre = false;
+        cssFrequency === 'state-alarm text-alarm' ? isAlarmFre = true : isAlarmFre = false;
+        self.time36CssFrequency = {                    
+            'state-error' : isErrorFre,	
+            'state-alarm' : isAlarmFre,	
+            'text-error' : isErrorFre,
+            'text-alarm' : isAlarmFre,
+        };
+    }
+
     get nextGrantDateStr() {
         const vm = this;
 
-        return (_.isNull(vm.remainNumber.nextGrantDate) ? '' : vm.$dt(vm.remainNumber.nextGrantDate, 'YYYY/MM/DD')) + 
+        return (_.isNull(vm.remainNumber.nextGrantDate) ? '' : vm.$dt(vm.remainNumber.nextGrantDate, 'YYYY/MM/DD')) + '　' +
                 (_.isNull(vm.remainNumber.grantDays) ? 0 : vm.remainNumber.grantDays) + '日';
+    }
+
+    public formathmm(value) {
+        let absValue = Math.abs(value),
+            hour = Math.floor(absValue / 60),
+            minute = Math.floor(absValue % 60);
+        if (value < 0) {
+            return '-' + (hour.toString() + ':' + _.padStart(minute.toString(), 2, '0'));
+        } else {
+            return hour.toString() + ':' + _.padStart(minute.toString(), 2, '0');
+        }
+    }
+
+    public getFormatTime(time) {
+        const self = this;
+
+        if (time) {
+            let timeStr: string = self.$dt.timedr(time);
+            if (timeStr.startsWith('0')) {
+                return timeStr.substr(1, timeStr.length);
+            } else {
+                return timeStr;
+            }
+        }
+
+        return '0:00';
     }
 }
 const servicePath = {
@@ -127,7 +189,8 @@ interface IRemainNumber {
     reserveRemain: number;//積立年休残数						
     manageCompensatory: boolean;//代休管理する
     compensatoryRemain: number;//代休残数
-    compensatoryRemainTime: number; // 時間代休残数				
+    compensatoryRemainTime: number; // 時間代休残数	
+    manageTimeOff: boolean;			
     manageSubStitute: boolean;//振休管理する
     substituteRemain: number;//振休残数						
     nextGrantDate: Date;//次回付与日

@@ -16,10 +16,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reservel
 @AllArgsConstructor
 public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItemDataGate {
 
-	/** 合計残日数 */
-	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
-	private RsvLeaveRemainingNumberDto totalRemainingDays;
-
 	/** 付与前 */
 	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private RsvLeaveRemainingNumberDto before;
@@ -31,7 +27,7 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItem
 	public static RsvLeaveRemainingNumberInfoDto from(ReserveLeaveRemainingInfo domain) {
 
 		return domain == null ? null
-				: new RsvLeaveRemainingNumberInfoDto(RsvLeaveRemainingNumberDto.from(domain.getRemainingNumber()),
+				: new RsvLeaveRemainingNumberInfoDto(
 						RsvLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
 						domain.getRemainingNumberAfterGrantOpt().map(c -> RsvLeaveRemainingNumberDto.from(c))
 								.orElse(null));
@@ -39,14 +35,13 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItem
 
 	public ReserveLeaveRemainingInfo toReserveDomain() {
 
-		return ReserveLeaveRemainingInfo.of(totalRemainingDays.toReserveDomain(), before.toReserveDomain(),
+		return ReserveLeaveRemainingInfo.of(before.toReserveDomain(),
 				Optional.ofNullable(after == null ? null : after.toReserveDomain()));
 	}
 
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
 		switch (path) {
-		case DAYS:
 		case BEFORE:
 		case AFTER:
 			return new RsvLeaveRemainingNumberDto();
@@ -59,8 +54,6 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItem
 	@Override
 	public Optional<AttendanceItemDataGate> get(String path) {
 		switch (path) {
-		case DAYS:
-			return Optional.ofNullable(totalRemainingDays);
 		case BEFORE:
 			return Optional.ofNullable(before);
 		case AFTER:
@@ -74,7 +67,6 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItem
 	@Override
 	public PropType typeOf(String path) {
 		switch (path) {
-		case DAYS:
 		case BEFORE:
 		case AFTER:
 			return PropType.OBJECT;
@@ -86,9 +78,6 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItem
 	@Override
 	public void set(String path, AttendanceItemDataGate value) {
 		switch (path) {
-		case DAYS:
-			totalRemainingDays = (RsvLeaveRemainingNumberDto) value;
-			break;
 		case BEFORE:
 			before = (RsvLeaveRemainingNumberDto) value;
 			break;
