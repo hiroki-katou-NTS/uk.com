@@ -20,10 +20,11 @@ module nts.uk.com.view.smm001.a {
 
   @bean()
   export class ScreenModelA extends ko.ViewModel {
+    // Start: Init tabs and screen
     screenB: ScreenModelB = new ScreenModelB();
-
     tabs: KnockoutObservableArray<any>;
     selectedTab: KnockoutObservable<string>;
+    // End: Init tabs and screen
 
     // Start: Init list checkbox
     checkedOrganizationInformation: KnockoutObservable<boolean> = ko.observable(false);
@@ -45,9 +46,13 @@ module nts.uk.com.view.smm001.a {
     selectedEmployeeMaster: KnockoutObservable<string> = ko.observable(null);
     // End: Selected select option => choose value
 
+    // Start: Init one list
     selectedValue: KnockoutObservable<boolean>;
     itemList: KnockoutObservableArray<ItemModel>;
     isEnable: KnockoutObservable<boolean>;
+    // End: Init one list
+
+    // Start: Init enum
     enumSmileCooperationAcceptanceItem: KnockoutObservableArray<any>;
     enumDoOrDoNot: KnockoutObservableArray<any>;
     ORGANIZATION_INFORMATION: KnockoutObservable<string>;
@@ -57,29 +62,25 @@ module nts.uk.com.view.smm001.a {
     LEAVE_INFORMATION: KnockoutObservable<string>;
     AFFILIATED_MASTER: KnockoutObservable<string>;
     EMPLOYEE_MASTER: KnockoutObservable<string>;
-
     ENUM_IS_CHECKED = 1;
     ENUM_IS_NOT_CHECKED = 0;
+    // End: Init enum
 
     created() {
+      const vm = this;
+      vm.setDefault();
+    }
+
+    setDefault() {
       const vm = this;
       vm.tabs = ko.observableArray([
         { id: 'tab-1', title: vm.$i18n('SMM001_3'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
         { id: 'tab-2', title: vm.$i18n('SMM001_4'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
       ]);
       vm.selectedTab = ko.observable('tab-1');
-
       vm.selectedValue = ko.observable(true);
       vm.itemList = ko.observableArray([]);
-
       vm.isEnable = ko.observable(true);
-
-      vm.setDefault();
-    }
-
-    setDefault() {
-      const vm = this;
-
       // Start: Init info 7 item
       vm.enumSmileCooperationAcceptanceItem = ko.observableArray(__viewContext.enums.SmileCooperationAcceptanceItem);
       vm.ORGANIZATION_INFORMATION = ko.observable(vm.enumSmileCooperationAcceptanceItem()[0].name);
@@ -100,7 +101,7 @@ module nts.uk.com.view.smm001.a {
      * @returns
      */
     validateIfElementSelectedNotContainInArray(possible: any, selected: any) {
-      const possibleCode = possible.map((e:any) => e.cooperationAcceptanceConditions);
+      const possibleCode = possible.map((e: any) => e.cooperationAcceptanceConditions);
       const unchosen = selected.filter((itm: any) => {
         return possibleCode.includes(itm) == false;
       });
@@ -111,10 +112,12 @@ module nts.uk.com.view.smm001.a {
     getInitialStartupInformation() {
       const vm = this;
       vm.$blockui('grayout');
+      // Init item list with one item has code = 0
       vm.itemList().push({
         code: '0',
         name: ''
       })
+      // Call API at screen A
       vm.$ajax('com', API.getInitialStartupInformation).then((response: any) => {
         if (response) {
           // Get list data select option a screen
@@ -192,16 +195,13 @@ module nts.uk.com.view.smm001.a {
 
     setDefaultBeforeSave() {
       const vm = this;
-      // if (vm.checkedOrganizationInformation() && vm.selectedOrganizationInformation() === '0'
-      //   || vm.checkedBasicPersonnelInformation() && vm.selectedBasicPersonnelInformation() === '0'
-      //   || vm.checkedJobStructureInformation() && vm.selectedJobStructureInformation() === '0'
-      //   || vm.checkedAddressInformation() && vm.selectedAddressInformation() === '0'
-      //   || vm.checkedLeaveInformation() && vm.selectedLeaveInformation() === '0'
-      //   || vm.checkedAffiliatedMaster() && vm.selectedAffiliatedMaster() === '0'
-      //   || vm.checkedEmployeeMaster() && vm.selectedEmployeeMaster() === '0') {
-      //   return false;
-      // }
-      // return true;
+      if (!vm.checkedOrganizationInformation()) { vm.selectedOrganizationInformation('0') }
+      if (!vm.checkedBasicPersonnelInformation()) { vm.selectedBasicPersonnelInformation('0') }
+      if (!vm.checkedJobStructureInformation()) { vm.selectedJobStructureInformation('0') }
+      if (!vm.checkedAddressInformation()) { vm.selectedAddressInformation('0') }
+      if (!vm.checkedLeaveInformation()) { vm.selectedLeaveInformation('0') }
+      if (!vm.checkedAffiliatedMaster()) { vm.selectedAffiliatedMaster('0') }
+      if (!vm.checkedEmployeeMaster()) { vm.selectedEmployeeMaster('0') }
     }
 
     saveSmile() {
@@ -210,6 +210,7 @@ module nts.uk.com.view.smm001.a {
         vm.$dialog.info({ messageId: "Msg_3250" });
         return;
       }
+      vm.setDefaultBeforeSave();
       vm.$blockui('grayout');
       const command = {
         paymentCode: 1,
@@ -233,13 +234,13 @@ module nts.uk.com.view.smm001.a {
         selectedEmployeeMaster: vm.selectedEmployeeMaster(),
       };
       vm.$ajax('com', API.registerSmileCooperationAcceptanceSetting, command)
-        .then((res: any) => {
+        .then(() => {
           vm.$dialog.info({ messageId: "Msg_15" });
         }).fail((err) => {
           vm.$dialog.error(err);
         }).always(() => vm.$blockui('clear'));
 
-        vm.screenB.saveCommandBScreen();
+      vm.screenB.saveCommandBScreen();
     }
   }
 }
