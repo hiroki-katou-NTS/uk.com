@@ -21,17 +21,17 @@
 .smile-div {
   background: lightyellow;
   min-height: 50px;
-  width: 740px;
+  width: 900px;
   margin-top: 25px;
   border: 1px solid;
 }
 
 #component-left {
-  padding-right: 3px !important;
+  padding-right: 8px !important;
 }
 
 #component-right {
-  padding-left: 3px !important;
+  padding-left: 8px !important;
 }
 
 #component-right .ui-iggrid-scrolldiv tbody {

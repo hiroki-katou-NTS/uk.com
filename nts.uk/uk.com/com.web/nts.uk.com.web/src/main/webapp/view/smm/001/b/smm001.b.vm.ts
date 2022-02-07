@@ -101,7 +101,7 @@ module nts.uk.com.view.smm001.b {
           headerText: nts.uk.resource.getText("SMM001_16"),
           key: 'empMonth',
           dataType: 'string',
-          width: 250
+          width: 400
         }
       ]);
       // Check status of button

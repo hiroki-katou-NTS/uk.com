@@ -1,6 +1,7 @@
 package nts.uk.smile.infra.entity.smilelinked;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
