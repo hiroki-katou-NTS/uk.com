@@ -3,27 +3,57 @@ module nts.uk.com.view.smm001.b {
     // <<ScreenQuery>> 初期起動の情報取得する
     getInitialStartupInformation: 'com/screen/smm001/get-initial-startup-information',
     getInformationOnExternal: 'com/screen/smm001/get-information-on-external',
-    registerSmileLinkageExternalOutput: 'com/screen/smm001/register-smile-linkage-external-output'
+    registerSmileLinkageExternalOutput: 'com/screen/smm001/register-smile-linkage-external-output',
+    selectListPaymentDate: 'com/screen/smm001/select-list-payment-date',
+    selectAPaymentDate: 'com/screen/smm001/select-a-payment-date'
+
   };
 
   class GridItem {
     code: string
     name: string;
     empMonth: string
-    checked: KnockoutObservable<number> = ko.observable(1);
+    checked: KnockoutObservable<number> = ko.observable(0);
+    index: number = 0;
+    currentMonth: string = '';
+    lastMonth: string = '';
 
-    constructor(code: string, name: string, currentMonth: string, lastMonth: string) {
-      this.code = code;
-      this.name = name;
-      this.empMonth =
-        `
+    constructor(code: string, name: string, currentMonth: string, lastMonth: string, checkedString?: number, index?: number) {
+      const vm = this;
+      vm.checked(checkedString);
+      vm.code = code;
+      vm.name = name;
+      vm.index = index;
+      vm.currentMonth = currentMonth;
+      vm.lastMonth = lastMonth;
+
+      vm.empMonth =
+      `
       <div class="flex" style="height: 25px">
         <label class="radio-emp"
-          data-bind="ntsRadioButton: { checked: ${this.checked()}, optionText: '${currentMonth}', checkedValue: 1, group: 'lockClassification-${this.code}' }"></label>
+          data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${currentMonth}', checkedValue: 0, group: 'lockClassification-${vm.code}' }"></label>
         <label class="radio-emp"
-          data-bind="ntsRadioButton: { checked: ${this.checked()}, optionText: '${lastMonth}', checkedValue: 0, group: 'lockClassification-${this.code}' }"></label>
+          data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${lastMonth}', checkedValue: 1, group: 'lockClassification-${vm.code}' }"></label>
       </div>
+      `;
+    }
+
+    updateEmpMonth() {
+      const vm = this;
+      vm.empMonth =
       `
+      <div class="flex" style="height: 25px">
+        <label class="radio-emp"
+          data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${vm.currentMonth}', checkedValue: 0, group: 'lockClassification-${vm.code}' }"></label>
+        <label class="radio-emp"
+          data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${vm.lastMonth}', checkedValue: 1, group: 'lockClassification-${vm.code}' }"></label>
+      </div>
+      `;
+    }
+
+    defaultSelect() {
+      const vm = this;
+      vm.checked(0);
     }
   }
 
@@ -43,8 +73,13 @@ module nts.uk.com.view.smm001.b {
 
     employmentDtos: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     rightEmployments: KnockoutObservableArray<GridItem> = ko.observableArray([]);
-    isDisableRightButton: KnockoutObservable<boolean> = ko.observable(false); // Check disable button when list is empty
-    isDisableLeftButton: KnockoutObservable<boolean> = ko.observable(false); // Check disable button when list is empty
+    isDisableRightButton: KnockoutComputed<boolean> = ko.computed(() => {
+      // Check status of button
+      return _.isEmpty(this.rightEmployments());
+    }); // Check disable button when list is empty
+    isDisableLeftButton: KnockoutComputed<boolean> = ko.computed(() => {
+      return _.isEmpty(this.employmentDtos());
+    }); // Check disable button when list is empty
 
     // End: Init b screen
 
@@ -58,22 +93,47 @@ module nts.uk.com.view.smm001.b {
     currentCode: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     currentCodeRight: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     columnEmp: KnockoutObservableArray<any> = ko.observableArray([]);
-
+    employmentListWithSpecifiedCompany: KnockoutObservableArray<any> = ko.observableArray([]);
+    empListTemp: any = [];
     constructor() {
       super();
       const vm = this;
       vm.setDefault();
       vm.onChangePaymentCode();
+      vm.paymentCode.valueHasMutated();
     }
 
     onChangePaymentCode() {
       const vm = this;
       vm.paymentCode.subscribe(value => {
-        vm
-          .$blockui('grayout')
-          .then(() => vm.$ajax('com', API.getInformationOnExternal, { paymentCode: value }))
+        vm.rightEmployments([]);
+        console.log(value);
+        const number = value;
+        vm.$blockui('grayout')
+          .then(() => vm.$ajax('com', `${API.selectAPaymentDate}/${number}`))
           .then(response => {
+            const filterEmp = _.orderBy(response.employmentListWithSpecifiedCompany, ['scd'], ['asc']);
+            if (_.isEmpty(filterEmp)) {
+              vm.rightEmployments([]);
+              vm.employmentDtos.valueHasMutated();
+              vm.rightEmployments.valueHasMutated();
+              vm.reloadRightGrid();
+              return;
+            }
 
+            const employmentDtos = _.map(filterEmp, (item: any, index: number) =>
+              new GridItem(item.scd, _.find(vm.empListTemp, (e: any) => {
+                return (e.employmentCode === item.scd);
+              }).employmentName,
+              vm.CURRENT_MONTH_TEXT(),
+              vm.LAST_MONTH_TEXT(),
+              item.interlockingMonthAdjustment === 'CURRENT_MONTH' ? 0 : 1,
+              index)
+            );
+            vm.rightEmployments().push(...employmentDtos);
+            vm.employmentDtos.valueHasMutated();
+            vm.rightEmployments.valueHasMutated();
+            vm.reloadRightGrid();
           })
           .fail(error => vm.$dialog.error(error))
           .always(() => vm.$blockui('clear'));
@@ -104,10 +164,6 @@ module nts.uk.com.view.smm001.b {
           width: 400
         }
       ]);
-      // Check status of button
-      // vm.isDisableRightButton(_.isEmpty(vm.rightEmployments()));
-      // vm.isDisableLeftButton(_.isEmpty(vm.employmentDtos()));
-
     }
 
     reloadRightGrid() {
@@ -145,13 +201,55 @@ module nts.uk.com.view.smm001.b {
             });
           });
           vm.itemListCndSet(finalArray);
-          const employmentDtos = _.map(response.employmentDtos, (item: any) =>
-            new GridItem(item.employmentCode, item.employmentName, vm.CURRENT_MONTH_TEXT(), vm.LAST_MONTH_TEXT())
-          );
-          vm.employmentDtos(employmentDtos);
+          vm.empListTemp = [...response.employmentDtos];
+          vm.initGetAllListEmpByListPaymentCode(response.employmentDtos);
           vm.reloadRightGrid();
         }
       })
+    }
+
+    /**
+     * initGetAllListEmpByListPaymentCode
+     */
+    initGetAllListEmpByListPaymentCode(empList: any) {
+      const vm = this;
+      const listPaymentCode = vm.enumPaymentCategoryList().map(e => e.value);
+      vm.$ajax('com', API.selectListPaymentDate, listPaymentCode)
+        .then((res: any) => {
+          console.log("res", res);
+          let listEmploymentListWithSpecifiedCompany: any[] = [];
+          res.forEach((e: any) => {
+            listEmploymentListWithSpecifiedCompany.push(...e.employmentListWithSpecifiedCompany);
+          });
+          vm.employmentListWithSpecifiedCompany(vm.unique(listEmploymentListWithSpecifiedCompany));
+          const oldEmp = [...empList];
+          // After get by list selected code
+          const unchosen = vm.getListElementSelectedNotContainInArray(oldEmp, vm.employmentListWithSpecifiedCompany());
+          const employmentDtos = _.map(unchosen, (item: any) =>
+            new GridItem(item.employmentCode, item.employmentName, vm.CURRENT_MONTH_TEXT(), vm.LAST_MONTH_TEXT())
+          );
+          vm.employmentDtos(employmentDtos);
+        }).fail((err) => {
+          vm.$dialog.error(err);
+        }).always(() => vm.$blockui('clear'));
+    }
+
+    getListElementSelectedNotContainInArray(possible: any, selected: any) {
+      const listScd = selected.map((e: any) => e.scd);
+      const unchosen = possible.filter((itm: any) => {
+        return listScd.includes(itm.employmentCode) == false;
+      });
+      return unchosen;
+    }
+
+    unique(arr: any[]) {
+      let newArr: any = [];
+      for (var i = 0; i < arr.length; i++) {
+        if (!newArr.includes(arr[i])) {
+          newArr.push(arr[i])
+        }
+      }
+      return newArr
     }
 
     validateBeforeSave() {
@@ -200,20 +298,40 @@ module nts.uk.com.view.smm001.b {
     moveItemToRight() {
       const vm = this;
       const filterEmp: GridItem[] = _.filter(vm.employmentDtos(), (item: any) => _.includes(vm.currentCode(), item.code));
+      _.map(filterEmp, emp => emp.defaultSelect());
+
       _.remove(vm.employmentDtos(), (item: any) => _.includes(vm.currentCode(), item.code));
-      vm.rightEmployments().push(...filterEmp);
+      let rightEmployments = _.cloneDeep(vm.rightEmployments());
+      rightEmployments.push(...filterEmp);
+      rightEmployments = _.orderBy(rightEmployments, ['code'], ['asc']);
+      vm.employmentDtos(_.orderBy(vm.employmentDtos(), ['code'], ['asc']));
+
+      _.map(rightEmployments, (item, index) => {
+        item.index = index;
+        item.updateEmpMonth();
+      });
+      vm.rightEmployments(rightEmployments);
       vm.employmentDtos.valueHasMutated();
-      vm.rightEmployments.valueHasMutated();
       vm.reloadRightGrid();
     }
 
     moveItemToLeft() {
       const vm = this;
       const filterEmp: GridItem[] = _.filter(vm.rightEmployments(), (item: any) => _.includes(vm.currentCodeRight(), item.code));
-      _.remove(vm.rightEmployments(), (item: any) => _.includes(vm.currentCodeRight(), item.code));
-      vm.employmentDtos().push(...filterEmp);
-      vm.employmentDtos.valueHasMutated();
-      vm.rightEmployments.valueHasMutated();
+      let employmentDtos = _.cloneDeep(vm.employmentDtos());
+      let rightEmployments = _.cloneDeep(vm.rightEmployments());
+      _.remove(rightEmployments, (item: any) => _.includes(vm.currentCodeRight(), item.code));
+      employmentDtos.push(...filterEmp);
+
+      employmentDtos = _.orderBy(employmentDtos, ['code'], ['asc']);
+      rightEmployments = _.orderBy(rightEmployments, ['code'], ['asc']);
+      _.map(rightEmployments, (item, index) => {
+        item.index = index;
+        item.updateEmpMonth();
+      });
+
+      vm.employmentDtos(employmentDtos);
+      vm.rightEmployments(rightEmployments);
       vm.reloadRightGrid();
     }
   }

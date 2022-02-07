@@ -74,6 +74,7 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 		}
 		// Before update => delete all
 		this.commandProxy().removeAll(list);
+		this.getEntityManager().flush();
 		// Insert new entity
 		this.commandProxy().insertAll(this.toEntities(domain));
 	}

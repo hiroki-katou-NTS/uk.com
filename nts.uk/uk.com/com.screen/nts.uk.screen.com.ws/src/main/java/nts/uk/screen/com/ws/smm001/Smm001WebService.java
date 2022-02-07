@@ -12,9 +12,13 @@ import nts.uk.screen.com.app.smm.smm001.screenquery.InitialStartupOutputDto;
 import nts.uk.screen.com.app.smm.smm001.screenquery.OutputOfStartupDto;
 import nts.uk.screen.com.app.smm.smm001.screenquery.SelectAPaymentDateScreenQuery;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 @Path("com/screen/smm001")
@@ -61,8 +65,16 @@ public class Smm001WebService extends WebService{
 	}
 
 	@POST
-	@Path("select-a-payment-date")
-	public EmploymentChoiceDto selectAPaymentDateScreenQuery(Integer paymentCode) {
+	@Path("select-a-payment-date/{paymentCode}")
+	public EmploymentChoiceDto selectAPaymentDateScreenQuery(@PathParam("paymentCode") Integer paymentCode) {
 		return selectAPaymentDateScreenQuery.get(paymentCode);
+	}
+	
+	@POST
+	@Path("select-list-payment-date")
+	public List<EmploymentChoiceDto> selectListPaymentDateScreenQuery(List<Integer> paymentCode) {
+		return paymentCode.stream().map(e -> {
+			return selectAPaymentDateScreenQuery.get(e);
+		}).collect(Collectors.toList());
 	}
 }

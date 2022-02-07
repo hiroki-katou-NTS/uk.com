@@ -190,6 +190,20 @@ module nts.uk.com.view.smm001.a {
       return true;
     }
 
+    setDefaultBeforeSave() {
+      const vm = this;
+      // if (vm.checkedOrganizationInformation() && vm.selectedOrganizationInformation() === '0'
+      //   || vm.checkedBasicPersonnelInformation() && vm.selectedBasicPersonnelInformation() === '0'
+      //   || vm.checkedJobStructureInformation() && vm.selectedJobStructureInformation() === '0'
+      //   || vm.checkedAddressInformation() && vm.selectedAddressInformation() === '0'
+      //   || vm.checkedLeaveInformation() && vm.selectedLeaveInformation() === '0'
+      //   || vm.checkedAffiliatedMaster() && vm.selectedAffiliatedMaster() === '0'
+      //   || vm.checkedEmployeeMaster() && vm.selectedEmployeeMaster() === '0') {
+      //   return false;
+      // }
+      // return true;
+    }
+
     saveSmile() {
       const vm = this;
       if (this.validateBeforeSave() === false) {
