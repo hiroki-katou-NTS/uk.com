@@ -6,6 +6,7 @@ import static nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import lombok.val;
@@ -99,15 +100,23 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			require.save(context, toDelete(context, workspace, keyValues));
 		}
 		
-		require.save(context, canonicalizeExtends(intermResult).complete());
+		//追加の正規化処理やって、データを登録したくない場合はOptional.empty
+		canonicalizeExtends(require, context, intermResult).ifPresent(interm ->{
+			require.save(context, interm.complete());
+		});
 	}
 	
 	/**
 	 * 追加の正準化処理が必要ならoverrideすること
+	 * @param require 
+	 * @param context 
 	 * @param targertResult
 	 */
-	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
-		return targertResult;
+	protected Optional<IntermediateResult> canonicalizeExtends(
+				DomainCanonicalization.RequireCanonicalize require, 
+				ExecutionContext context, 
+				IntermediateResult targertResult) {
+		return Optional.of(targertResult);
 	}
 
 	private AnyRecordToDelete toDelete(
@@ -189,7 +198,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 				value = stringified.asString();
 				break;
 			case INT:
-				value = stringified.asInteger();
+				value = stringified.asLong();
 				break;
 			case REAL:
 				value = stringified.asBigDecimal();
