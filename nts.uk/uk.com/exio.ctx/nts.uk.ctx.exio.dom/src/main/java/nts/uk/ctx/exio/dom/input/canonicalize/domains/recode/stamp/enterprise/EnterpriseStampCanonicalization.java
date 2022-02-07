@@ -6,6 +6,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.StampCanonica
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.pv.EnterpriseStampDataFunctionNo;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.pv.EnterpriseStampDataStampAttr;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.pv.EnterpriseStampDataTerminalAttr;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 
@@ -71,9 +72,12 @@ public class EnterpriseStampCanonicalization extends StampCanonicalization {
                 .add(Items.計算区分変更対象, 計算区分変更対象.value)
                 .add(Items.勤務種類を半休に変更する, 勤務種類を半休に変更する ? 1 : 0)
                 .add(Items.所定時刻セット区分, 所定時刻セット区分.value)
-                .add(Items.外出区分, 外出区分.map(e -> e.value).orElse(null))
                 .add(Items.認証方法, 認証方法.value)
                 .add(Items.打刻手段, 打刻手段.value));
+
+        if (外出区分.isPresent()) {
+            interm = interm.addCanonicalized(CanonicalItem.of(Items.外出区分, 外出区分.get().value));
+        }
 
         return interm;
     }
