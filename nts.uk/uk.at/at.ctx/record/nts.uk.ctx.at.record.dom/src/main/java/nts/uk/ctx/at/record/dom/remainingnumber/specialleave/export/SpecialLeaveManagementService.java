@@ -781,10 +781,9 @@ public class SpecialLeaveManagementService {
 				lstOutput.removeIf(x -> param.getIsOverWritePeriod().get().contains(x.getYmd()));
 
 				// 上書き用データがある時、追加する
-				// パラメータの「暫定管理データ」をループ
-				for (InterimSpecialHolidayMng interimRemain : param.getInterimSpecialData()) {
-					lstOutput.add(interimRemain);
-				}
+				lstOutput.addAll(param.getInterimSpecialData().stream()
+						.filter(x -> x.getSpecialHolidayCode() == param.getSpecialLeaveCode())
+						.collect(Collectors.toList()));
 			}
 		}
 
