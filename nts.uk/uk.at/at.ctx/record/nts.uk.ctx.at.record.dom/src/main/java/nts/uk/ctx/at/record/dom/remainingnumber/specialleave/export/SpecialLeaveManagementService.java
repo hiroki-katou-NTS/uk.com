@@ -777,10 +777,11 @@ public class SpecialLeaveManagementService {
 		if(param.isOverwriteFlg()) {
 			if(param.getIsOverWritePeriod().isPresent()){
 
+				//パラメータ「List<上書き用の暫定管理データ>」を特別休暇暫定管理データに追加する
 				//上書き対象期間内の暫定特休管理データを削除
 				lstOutput.removeIf(x -> param.getIsOverWritePeriod().get().contains(x.getYmd()));
 
-				// 上書き用データがある時、追加する
+				// 特別休暇コードがパラメータ「特別休暇コード」と一致する上書き暫定データを全て追加
 				lstOutput.addAll(param.getInterimSpecialData().stream()
 						.filter(x -> x.getSpecialHolidayCode() == param.getSpecialLeaveCode())
 						.collect(Collectors.toList()));
