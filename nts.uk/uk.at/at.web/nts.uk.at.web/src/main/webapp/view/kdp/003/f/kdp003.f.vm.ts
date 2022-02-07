@@ -487,11 +487,11 @@ module nts.uk.at.kdp003.f {
 				return vm.$dialog.error(message);
 			}
 
-			// if (passwordRequired === false) {
-			// 	_.omit(model, ['password']);
-			// 	// note: メニュー別OCD内の記述を移送表に追加する
-			// 	model.passwordInvalid = true;
-			// }
+			if (passwordRequired === false) {
+			 	_.omit(model, ['password']);
+			 	// note: メニュー別OCD内の記述を移送表に追加する
+			 	model.passwordInvalid = true;
+			 }
 
 			if (passwordRequired) {
 				vm.$validate()
@@ -617,7 +617,6 @@ module nts.uk.at.kdp003.f {
 								.then(() => vm.$ajax('com', api, submitData))
 								.fail((data: TimeStampLoginData) => {
 									if (data.msgErrorId !== null) {
-										console.log(data);
 										dataResultLogin = data;
 										vm.$dialog.error({ messageId: data.messageId, message: data.message });
 										showDialogError = true;

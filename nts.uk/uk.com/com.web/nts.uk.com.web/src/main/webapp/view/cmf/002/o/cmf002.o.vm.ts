@@ -407,7 +407,14 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let conditionSetCd = self.selectedConditionCd();
             let userId = "";
             let startDate = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").toISOString();
-            let endDate = moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD").toISOString();
+            let lastDayOfMonth = "";
+            let endDate = "";
+            if(self.show61YmPeriod()||self.show81YmPeriod()){
+                endDate = moment.utc(moment(self.periodDateValue().endDate, "YYYY/MM/DD").endOf('month')).startOf('day').toISOString();
+            }
+            else{
+                endDate = moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD").toISOString();
+            }
             let referenceDate = self.referenceDate();
             let standardType = true;
             let sidList = self.dataEmployeeId;

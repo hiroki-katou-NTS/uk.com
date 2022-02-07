@@ -2379,7 +2379,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 																						entity.bindDiffTime,
 																						entity.diffTimeWorkTime,
 																						divergence,
-																						entity.krcdtDayPremiumTime == null ? new PremiumTimeOfDailyPerformance() : entity.krcdtDayPremiumTime.toDomain());
+																						entity.krcdtDayPremiumTime == null ? PremiumTimeOfDailyPerformance.createEmpty() : entity.krcdtDayPremiumTime.toDomain());
 		
 		AttendanceTimeOfDailyPerformance domain = new AttendanceTimeOfDailyPerformance(entity.krcdtDayTimePK.employeeID,
 																					   entity.krcdtDayTimePK.generalDate,

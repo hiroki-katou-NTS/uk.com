@@ -46,14 +46,15 @@ public class DeleteFavoriteTaskServiceTest {
 		};
 		AtomTask result = DeleteFavoriteTaskService.create(require, employeeId, favoriteId);
 		
-		new Verifications() {{
-			require.update(object);
-			times = 0;
-		}};
-		
 		result.run();
 		
 		new Verifications() {{
+			require.delete(employeeId, favoriteId);
+			times = 1;
+			
+			require.delete(employeeId);
+			times = 0;
+			
 			require.update(object);
 			times = 1;
 		}};
@@ -75,18 +76,19 @@ public class DeleteFavoriteTaskServiceTest {
 				result = Optional.of(object1);
 			}
 		};
+		
 		AtomTask result = DeleteFavoriteTaskService.create(require, employeeId, favoriteId);
-		
-		new Verifications() {{
-			require.delete(employeeId);
-			times = 0;
-		}};
-		
 		result.run();
 		
 		new Verifications() {{
+			require.delete(employeeId, favoriteId);
+			times = 1;
+			
 			require.delete(employeeId);
 			times = 1;
+			
+			require.update(object1);
+			times = 0;
 		}};
 	}
 	
@@ -104,16 +106,14 @@ public class DeleteFavoriteTaskServiceTest {
 		};
 		AtomTask result = DeleteFavoriteTaskService.create(require, employeeId, favoriteId);
 		
-		new Verifications() {{
-			require.delete(employeeId, favoriteId);
-			times = 0;
-		}};
-		
 		result.run();
 		
 		new Verifications() {{
 			require.delete(employeeId, favoriteId);
 			times = 1;
+			
+			require.delete(employeeId);
+			times = 0;
 		}};
 	}
 }

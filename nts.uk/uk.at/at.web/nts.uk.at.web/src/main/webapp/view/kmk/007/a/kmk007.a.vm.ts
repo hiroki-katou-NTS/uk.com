@@ -166,8 +166,11 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 }
              });
 
+            let lastOneDayCls: WorkTypeCls = null;
             self.currentWorkType().oneDayCls.subscribe(function(newOneDayCls) {
-                self.checkCalculatorMethod(newOneDayCls);
+                if (lastOneDayCls !== newOneDayCls) {
+                    self.checkCalculatorMethod(newOneDayCls);
+                }
 
                 if (newOneDayCls == self.currentOneDayCls() && !self.isCreated()) {
                     self.setWorkTypeSet(self.currentWorkType().oneDay(), ko.toJS(self.currentOneDay()));
@@ -183,6 +186,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 } else {
                   self.itemCalculatorMethod.remove(self.optionalItemCalculationMethod);
                 }
+
+                lastOneDayCls = newOneDayCls;
             });
 
             self.currentWorkType().morningCls.subscribe(function(newOneDayCls) {
@@ -260,6 +265,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                         self.currentAfternoonCls(itemWorkType.afternoonCls);
 
                         let cwt = self.currentWorkType();
+                        
                         {
                             cwt.workTypeCode(itemWorkType.workTypeCode);
                             cwt.name(itemWorkType.name);
@@ -271,8 +277,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                             cwt.abolishAtr(itemWorkType.abolishAtr);
                             cwt.memo(itemWorkType.memo);
                             cwt.workAtr(itemWorkType.workAtr);
-                            cwt.calculatorMethod(itemWorkType.calculatorMethod);
+                            // cwt.calculatorMethod(itemWorkType.calculatorMethod);
                         }
+                        
                         if (cwt.workAtr() === 0) {
                           cwt.oneDayCls(itemWorkType.oneDayCls);
                           cwt.oneDayCls.valueHasMutated();
@@ -285,7 +292,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                           self.setWorkTypeSet(cwt.morning(), itemWorkType.morning);
                           self.setWorkTypeSet(cwt.afternoon(), itemWorkType.afternoon);
                         }
-                        
+                        cwt.calculatorMethod(itemWorkType.calculatorMethod);
                     });
                 } else {
                     self.isCreated(true);
@@ -300,6 +307,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             });
 
             self.currentWorkType().oneDay().closeAtr.subscribe((value) => {
+                if (self.currentWorkType().oneDayCls() !== WorkTypeCls.Closure) return;
                 self.setCalculatorMethod();
             });
         }
@@ -344,9 +352,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             const legalCloseAtr = self.itemCloseAtr().filter((item) => item.name === nts.uk.resource.getText('Enum_CloseAtr_PRENATAL') ||
                 item.name === nts.uk.resource.getText('Enum_CloseAtr_POSTPARTUM') || item.name === nts.uk.resource.getText('Enum_CloseAtr_CHILD_CARE') ||
                 item.name === nts.uk.resource.getText('Enum_CloseAtr_CARE'));
-            if (self.currentCode()) {
-                return;
-            }
+            
             if (legalCloseAtr.some((item) => item.code === self.currentWorkType().oneDay().closeAtr())) {
                 self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
                 self.enableMethod(false);
@@ -542,7 +548,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
          * Check Calculator Method based on work type cls
          */
         private checkCalculatorMethod(workTypeSetCode: number): void {
-          console.log("TING")
             let self = this;
             if (self.langId() != 'ja') {
                 self.enableMethod(false);
@@ -592,7 +597,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.enableMethod(true);
                     self.setCalculatorMethod();
                 }
-
             }
         }
 

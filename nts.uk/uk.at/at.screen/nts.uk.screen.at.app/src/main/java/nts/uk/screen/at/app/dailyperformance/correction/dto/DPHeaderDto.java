@@ -208,13 +208,19 @@ public class DPHeaderDto {
 			dto.setGrant(true);
 			dto.setColumnCssClass("halign-right");
 			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
+		} else if (attendanceAtr == DailyAttendanceAtr.Application.value) {
+			dto.headerText = TextResource.localize("KDW003_62");
+			dto.attendanceName = TextResource.localize("KDW003_62");
+			dto.inputProcess = null;
+			dto.ntsControl = "Label";
+			dto.displayNumber = item.getDisplayNumber();
 		}
 		return dto;
 	}
 
 	public static DPHeaderDto addHeaderApplication(String key, Map<Integer, DPAttendanceItemControl> mapColor) {
 		val colorHeader = setColorHeadeAppSubAppList(key, mapColor);
-		return new DPHeaderDto(TextResource.localize("KDW003_63"), TextResource.localize("KDW003_63"), "Application", "String", "90px", colorHeader, false, "Button",
+		return new DPHeaderDto(TextResource.localize("KDW003_63"), TextResource.localize("KDW003_63"), "Application", "String", "44px", colorHeader, false, "Button",
 				false, false, "center-align", null, "");
 	}
 
@@ -242,6 +248,9 @@ public class DPHeaderDto {
 	}
 
 	public void setHeaderText(DPAttendanceItem param) {
+		if(param.getAttendanceAtr() == DailyAttendanceAtr.Application.value) {
+			return;
+		}
 		this.displayNumber = param.getDisplayNumber();
 		
 		String displayText = Strings.isNotBlank(param.getName()) ? param.getName() : param.getDisplayName();

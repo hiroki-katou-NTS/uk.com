@@ -832,7 +832,7 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         const self = this;
         let breakTime = [] as Array<BreakTime>;
         let countBreakTime = 0;
-        _.range(1, 10)
+        _.range(1, 11)
         .forEach((index: number) => {
             let result = _.findLast(_.get(self.dataOutput, 'appOverTime.breakTimeOp'), (i: TimeZoneWithWorkNo) => i.workNo == index) as any;
             let findResult = _.get(result, 'timeZone') as TimeZoneNew;
