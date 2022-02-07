@@ -53,11 +53,14 @@ public class FindAnnLeaUsedDaysFromPreviousToNextGrantDate {
 						return employee;
 					}
 				}, cacheCarrier , employeeId, datePeriod).orElse(null);
+		if(exclusedPeriod == null){
+			return new AnnualLeaveUsedDayNumber(0.0);
+		}
 		// 2022.02.07 - 3S - chinh.hm  - issues #122665- 追加 END
 		//期間を当月以前と以降に分ける。
 		PeriodAfterDivision periodAfterDivision = divisionThePeriodTheCurrentMonth(employeeId,criteriaDate,
 				exclusedPeriod,require, cacheCarrier);
-		
+
 		//当月以前の使用日数を計算
 		AnnualLeaveUsedDayNumber beforeUsedDays = calcUsedDaysBeforeTheCurrentMonth(employeeId, criteriaDate,
 				periodAfterDivision.getPeriodBeforeTheMonth(),  exclusedPeriod, require, cacheCarrier);
