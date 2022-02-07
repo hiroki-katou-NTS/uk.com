@@ -155,7 +155,14 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 							$('#kaf002TabPanel').width(580)							
 					}
                     else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
-                        $('#kaf002TabPanel').width(900);
+                        let totalWidth = 900;
+                        if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
+                            totalWidth = totalWidth - 230;
+                        }
+                        if (self.kaf002Data && self.kaf002Data.appStampSetting.useLocationSelection == 0) {
+                            totalWidth = totalWidth - 230;
+                        }
+                        $('#kaf002TabPanel').width(totalWidth);
                     }
                     else {
                         $('#kaf002TabPanel').width(450)							
@@ -166,7 +173,14 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 							$('#kaf002TabPanel').width(680)							
 					}
                     else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
-                        $('#kaf002TabPanel').width(1000);
+                        let totalWidth = 1000;
+                        if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
+                            totalWidth = totalWidth - 230;
+                        }
+                        if (self.kaf002Data && self.kaf002Data.appStampSetting.useLocationSelection == 0) {
+                            totalWidth = totalWidth - 230;
+                        }
+                        $('#kaf002TabPanel').width(totalWidth);
                     }
                     else {
 							$('#kaf002TabPanel').width(550)							
@@ -298,7 +312,14 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 						$('#kaf002TabPanel').width(580)							
 				}
                 else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
-                    $('#kaf002TabPanel').width(900);
+                    let totalWidth = 900;
+                    if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
+                        totalWidth = totalWidth - 230;
+                    }
+                    if (self.kaf002Data && self.kaf002Data.appStampSetting.useLocationSelection == 0) {
+                        totalWidth = totalWidth - 230;
+                    }
+                    $('#kaf002TabPanel').width(totalWidth);
                 }
                 else {
 						$('#kaf002TabPanel').width(450)							
@@ -309,7 +330,14 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 						$('#kaf002TabPanel').width(680)							
 				}
                 else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
-                    $('#kaf002TabPanel').width(1000);
+                    let totalWidth = 1000;
+                    if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
+                        totalWidth = totalWidth - 230;
+                    }
+                    if (self.kaf002Data && self.kaf002Data.appStampSetting.useLocationSelection == 0) {
+                        totalWidth = totalWidth - 230;
+                    }
+                    $('#kaf002TabPanel').width(totalWidth);
                 }
                 else {
 						$('#kaf002TabPanel').width(550)							
