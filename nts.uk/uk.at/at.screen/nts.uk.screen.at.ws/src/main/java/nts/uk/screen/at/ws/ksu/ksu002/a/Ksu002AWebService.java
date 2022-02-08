@@ -38,6 +38,7 @@ import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.SystemDateDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.ListOfPeriodsCloseInput;
+import nts.uk.shr.com.context.AppContexts;
 
 @Path("screen/ksu/ksu002/")
 @Produces("application/json")
@@ -88,7 +89,10 @@ public class Ksu002AWebService extends WebService {
 	public SystemDateDto getListOfPeriodsClose(ListOfPeriodsCloseInput param) {
 		if (param == null) {
 			int ym = theInitialDisplayDate.getInitialDisplayDate().getYearMonth();
-			param = new ListOfPeriodsCloseInput(YearMonth.of(ym));
+			param = new ListOfPeriodsCloseInput(YearMonth.of(ym), AppContexts.user().employeeId());
+		}else if (param.yearMonth == null) {
+			int ym = theInitialDisplayDate.getInitialDisplayDate().getYearMonth();
+			param = new ListOfPeriodsCloseInput(YearMonth.of(ym), param.sid);
 		}
 
 		return this.listOfPeriodsClose.get(param);
