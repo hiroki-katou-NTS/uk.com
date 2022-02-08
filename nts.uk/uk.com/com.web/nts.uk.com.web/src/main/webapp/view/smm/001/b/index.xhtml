@@ -14,7 +14,7 @@
         name: '#[SMM001_7]',
         options: itemListCndSet,
         optionsValue: 'code',
-        visibleItemsCount: 3,
+        visibleItemsCount: 5,
         value: salaryCooperationConditions,
         optionsText: 'name',
         enable: salaryCooperationClassification,
@@ -50,7 +50,7 @@
   </div>
 
   <div class="smile-div">
-    <div class="d-flex mb-1 ml-2 mt-3px">
+    <div class="d-flex al-c ml-2 mt-3px">
       <p>
         #{i18n.getText('SMM001_13')}
       </p>
@@ -58,7 +58,7 @@
               name: '#[SMM001_13]',
               options: enumPaymentCategoryList,
               optionsValue: 'value',
-              visibleItemsCount: 5,
+              visibleItemsCount: 3,
               value: paymentCode,
               optionsText: 'name',
               enable: true,
@@ -90,7 +90,7 @@
                 ],
                 deleteOptions : {visible : false},
                 multiple: true,
-                rows: 10,
+                rows: 5,
                 value: currentCode
               }">
             </table>
@@ -120,7 +120,7 @@
               columns: columnEmp,
               deleteOptions : {visible : false},
               multiple: true,
-              rows: 10,
+              rows: 5,
               value: currentCodeRight
               }">
             </table>

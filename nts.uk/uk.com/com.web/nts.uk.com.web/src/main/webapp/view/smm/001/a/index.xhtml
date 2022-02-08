@@ -28,16 +28,19 @@
       </div>
       <div id="contents-area">
         <!--A3-->
-        <div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+        <div id="tab-panel tab-panel-smile" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
           <!--A3_1-->
           <div class="tab-content-1">
+            <!--A2_1-->
             <p class="mb-1">
               #{i18n.getText('SMM001_5')}
             </p>
             <div class="d-flex mb-1">
+              <!--A2_2-->
               <div
                 data-bind="ntsCheckBox: { checked: checkedOrganizationInformation, enable: true, text: ORGANIZATION_INFORMATION}">
               </div>
+              <!--A2_3-->
               <div class="combo-box-info" data-bind="ntsComboBox: {
                 name: '#[SMM001_6]',
                 options: itemList,

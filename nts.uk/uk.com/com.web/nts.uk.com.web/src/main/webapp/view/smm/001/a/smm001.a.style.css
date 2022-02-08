@@ -1,5 +1,13 @@
-.d-flex{
+.d-flex {
   display: flex;
+}
+
+#tab-panel-smile .tabs-panel.vertical>.tabs-content, .tabs-panel.vertical-link>.tabs-content, .tabs-panel.horizontal>.tabs-content {
+  padding: 0px 10px !important;
+}
+
+.al-c {
+  align-items: center;
 }
 
 .mb-1 {
@@ -23,10 +31,9 @@
 }
 
 .smile-div {
-  /* background: lightyellow; */
   min-height: 50px;
   width: 1100px;
-  margin-top: 25px;
+  margin-top: 10px;
   border: 1px solid;
 }
 
@@ -35,7 +42,7 @@
 }
 
 .combo-box-payment-category {
-  width: 100px !important;
+  width: 70px !important;
 }
 
 #component-left {
