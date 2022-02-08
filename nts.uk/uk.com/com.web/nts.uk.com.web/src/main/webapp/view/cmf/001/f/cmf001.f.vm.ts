@@ -224,30 +224,31 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			}
 		}
 
-		canSave = ko.computed(() => !nts.uk.ui.errors.hasError() );
+		canSave = ko.computed(() =>
+			!nts.uk.ui.errors.hasError() && this.selectedDomainId != null);
 	
 		save(){
 			let self = this;
 			self.checkError();
-			if(!nts.uk.ui.errors.hasError()){
-				let domains = $.map(self.layout(), l =>{
-					return {
-						itemNo: l.itemNo,
-						isFixedValue: l.isFixedValue,
-						csvItemNo: l.selectedCsvItemNo,
-						fixedValue: l.fixedValue
-					}
-				});
-				let saveContents = {
-					code: self.settingCode,
-					domainId: self.selectedDomainId(),
-					items: domains
-				};
-				ajax("screen/com/cmf/cmf001/f/save", saveContents).done(() => {
-					info(nts.uk.resource.getMessage("Msg_15", []));
-					self.reloadPage();
-	            });
-			}
+			if(nts.uk.ui.errors.hasError()) return;
+
+			let domains = $.map(self.layout(), l =>{
+				return {
+					itemNo: l.itemNo,
+					isFixedValue: l.isFixedValue,
+					csvItemNo: l.selectedCsvItemNo,
+					fixedValue: l.fixedValue
+				}
+			});
+			let saveContents = {
+				code: self.settingCode,
+				domainId: self.selectedDomainId(),
+				items: domains
+			};
+			ajax("screen/com/cmf/cmf001/f/save", saveContents).done(() => {
+				info(nts.uk.resource.getMessage("Msg_15", []));
+				self.reloadPage();
+			});
 		}
 
 		uploadCsv() {
@@ -272,10 +273,9 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				itemNoList: []};
 			ajax("com", "screen/com/cmf/cmf001/b/get/layout", condition)
 			.done((itemNoList: number[]) => {
-				self.domainInfoList.push(new DomainInfo(self.importDomain(), itemNoList), false);
+				self.domainInfoList.push(new DomainInfo(self.importDomain(), itemNoList, false));
 				self.selectedDomainId(self.importDomain());
 				self.importDomain(null);
-
 			});
 		}
 		
