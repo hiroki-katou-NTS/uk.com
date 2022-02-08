@@ -94,8 +94,7 @@ public class StampCanonicalization implements DomainCanonicalization {
 			interm = preCanonicalize(interm);
 
 			// 職場コードの正準化
-			if(interm.isImporting(Items.職場コード)) {
-				if(!interm.getItemByNo(Items.職場コード).get().isEmpty()) {
+			if(interm.isImporting(Items.職場コード) && interm.getItemByNo(Items.職場コード).get().isEmpty()) {
 					val either = workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo());
 					if (either.isLeft()) {
 						require.add(ExternalImportError.of(context.getDomainId(), either.getLeft()));
@@ -103,7 +102,6 @@ public class StampCanonicalization implements DomainCanonicalization {
 					}
 					interm = either.getRight();
 				}
-			}
 
 			// 打刻日時の正準化(年月日時分秒→日時)
 			interm = dateTimeCanonicalization.canonicalize(require, interm);
