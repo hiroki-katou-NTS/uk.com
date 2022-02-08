@@ -19,6 +19,8 @@ import nts.uk.ctx.at.request.dom.adapter.OneDayAttendanceTimeTempCalcAdapter;
 import nts.uk.ctx.at.request.dom.application.overtime.*;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -183,7 +185,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSetRepo;
-	
+
+	@Inject
+	private ICorrectionAttendanceRule correctionAttendanceRule;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -1859,6 +1863,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 					@Override
 					public Optional<PredetemineTimeSetting> getPredetemineTimeSetting(String companyId, String workTimeCode) {
 						return predetemineTimeSetRepo.findByWorkTimeCode(companyId, workTimeCode);
+					}
+					@Override
+					public IntegrationOfDaily process(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
+						return correctionAttendanceRule.process(domainDaily, changeAtt);
 					}
 				},
 				companyId,
