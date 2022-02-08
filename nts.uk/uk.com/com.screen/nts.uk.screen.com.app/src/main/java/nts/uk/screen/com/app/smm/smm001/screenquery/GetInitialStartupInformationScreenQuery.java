@@ -8,7 +8,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.uk.ctx.exio.app.find.exi.condset.StdAcceptCondSetFinder;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSetting;
@@ -25,9 +24,6 @@ public class GetInitialStartupInformationScreenQuery {
 	// Smile連携受入設定
 	@Inject
 	private SmileCooperationAcceptanceSettingRepository smileCooperationAcceptanceSettingRepository;
-	
-	@Inject
-	private StdAcceptCondSetFinder acceptCondSetFinder;
 	
 	@Inject
 	private ExternalImportSettingRepository externalImportSettingRepository;
@@ -59,7 +55,6 @@ public class GetInitialStartupInformationScreenQuery {
 		List<ExternalImportSettingDto> externalImportSettings = this.externalImportSettingRepository
 				.getDomainBase(companyId).stream().map(e -> new ExternalImportSettingDto(companyId, e.getCode().v(), e.getName().v()))
 				.collect(Collectors.toList());
-		
 		
 		/**
 		 * return SM linkage acceptance setting list, acceptance condition setting list

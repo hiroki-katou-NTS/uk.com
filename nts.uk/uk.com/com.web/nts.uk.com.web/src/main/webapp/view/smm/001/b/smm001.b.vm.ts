@@ -58,19 +58,16 @@ module nts.uk.com.view.smm001.b {
   }
 
   export class ScreenModelB extends ko.ViewModel {
+    // Start: Init b screen
     paymentCode: KnockoutObservable<number> = ko.observable(1);
     itemListCndSet: KnockoutObservableArray<any> = ko.observableArray([]);
-
     enumDoOrDoNotArray: KnockoutObservableArray<any>;
     DO_TEXT: KnockoutObservable<string>;
     DO_NOT_TEXT: KnockoutObservable<string>;
-
-    // Start: Init b screen
     salaryCooperationClassification: KnockoutObservable<boolean> = ko.observable(false);
     monthlyLockClassification: KnockoutObservable<number> = ko.observable(0);
     monthlyApprovalCategory: KnockoutObservable<number> = ko.observable(0);
     salaryCooperationConditions: KnockoutObservable<string> = ko.observable('0');
-
     employmentDtos: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     rightEmployments: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     isDisableRightButton: KnockoutComputed<boolean> = ko.computed(() => {
@@ -80,21 +77,19 @@ module nts.uk.com.view.smm001.b {
     isDisableLeftButton: KnockoutComputed<boolean> = ko.computed(() => {
       return _.isEmpty(this.employmentDtos());
     }); // Check disable button when list is empty
-
-    // End: Init b screen
-
     ENUM_IS_CHECKED = 1;
     ENUM_IS_NOT_CHECKED = 0;
     enumPaymentCategoryList: KnockoutObservableArray<any>;
     enumLinkedMonthSettingClassification: KnockoutObservableArray<any>;
     CURRENT_MONTH_TEXT: KnockoutObservable<string>;
     LAST_MONTH_TEXT: KnockoutObservable<string>;
-
     currentCode: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     currentCodeRight: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     columnEmp: KnockoutObservableArray<any> = ko.observableArray([]);
     employmentListWithSpecifiedCompany: KnockoutObservableArray<any> = ko.observableArray([]);
     empListTemp: any = [];
+    // End: Init b screen
+
     constructor() {
       super();
       const vm = this;
@@ -107,7 +102,6 @@ module nts.uk.com.view.smm001.b {
       const emp = _.find(empListTemp, (e: any) => {
         return (e.employmentCode === scd);
       })
-      console.log("emp ", emp);
       return _.isUndefined(emp) ? nts.uk.resource.getText("SMM001_17") : emp.employmentName;
     }
 
@@ -115,10 +109,8 @@ module nts.uk.com.view.smm001.b {
       const vm = this;
       vm.paymentCode.subscribe(value => {
         vm.rightEmployments([]);
-        console.log(value);
-        const number = value;
         vm.$blockui('grayout')
-          .then(() => vm.$ajax('com', `${API.selectAPaymentDate}/${number}`))
+          .then(() => vm.$ajax('com', `${API.selectAPaymentDate}/${value}`))
           .then(response => {
             const filterEmp = _.orderBy(response.employmentListWithSpecifiedCompany, ['scd'], ['asc']);
             if (_.isEmpty(filterEmp)) {
@@ -154,7 +146,6 @@ module nts.uk.com.view.smm001.b {
       vm.LAST_MONTH_TEXT = ko.observable(vm.enumLinkedMonthSettingClassification()[1].name);
       vm.DO_NOT_TEXT = ko.observable(vm.enumDoOrDoNotArray()[0].name);
       vm.DO_TEXT = ko.observable(vm.enumDoOrDoNotArray()[1].name);
-
       // Init payment category
       vm.enumPaymentCategoryList = ko.observableArray(__viewContext.enums.PaymentCategory);
       vm.getInformationOnExternal();
@@ -192,7 +183,7 @@ module nts.uk.com.view.smm001.b {
         if (response) {
           // After has response - Process for setting behind
           const stdOutputCondSetDtos = response.stdOutputCondSetDtos;
-          if (stdOutputCondSetDtos === null || stdOutputCondSetDtos.length == 0) {
+          if (stdOutputCondSetDtos === null || stdOutputCondSetDtos.length === 0) {
             vm.$dialog.info({ messageId: "Msg_3266" });
           }
           stdOutputCondSetDtos.forEach((obj: any) => {
@@ -206,7 +197,6 @@ module nts.uk.com.view.smm001.b {
           vm.salaryCooperationClassification(smileLinkageOutputSetting.salaryCooperationClassification === 1);
           const value = _.cloneDeep(smileLinkageOutputSetting.salaryCooperationConditions);
           vm.salaryCooperationConditions(value);
-
           vm.monthlyLockClassification(smileLinkageOutputSetting.monthlyLockClassification);
           vm.monthlyApprovalCategory(smileLinkageOutputSetting.monthlyApprovalCategory);
           // After has response - Process for setting after
@@ -268,7 +258,7 @@ module nts.uk.com.view.smm001.b {
       return true;
     }
 
-    saveCommandBScreen() {
+    registerRegisterSmileLinkageExternalIOutput() {
       const vm = this;
       if (this.validateBeforeSave() === false) {
         vm.$dialog.info({ messageId: "Msg_3252" });
@@ -307,13 +297,11 @@ module nts.uk.com.view.smm001.b {
       const vm = this;
       const filterEmp: GridItem[] = _.filter(vm.employmentDtos(), (item: any) => _.includes(vm.currentCode(), item.code));
       _.map(filterEmp, emp => emp.defaultSelect());
-
       _.remove(vm.employmentDtos(), (item: any) => _.includes(vm.currentCode(), item.code));
       let rightEmployments = _.cloneDeep(vm.rightEmployments());
       rightEmployments.push(...filterEmp);
       rightEmployments = _.orderBy(rightEmployments, ['code'], ['asc']);
       vm.employmentDtos(_.orderBy(vm.employmentDtos(), ['code'], ['asc']));
-
       _.map(rightEmployments, (item, index) => {
         item.index = index;
         item.updateEmpMonth();
@@ -330,14 +318,12 @@ module nts.uk.com.view.smm001.b {
       let rightEmployments = _.cloneDeep(vm.rightEmployments());
       _.remove(rightEmployments, (item: any) => _.includes(vm.currentCodeRight(), item.code));
       employmentDtos.push(...filterEmp);
-
       employmentDtos = _.orderBy(employmentDtos, ['code'], ['asc']);
       rightEmployments = _.orderBy(rightEmployments, ['code'], ['asc']);
       _.map(rightEmployments, (item, index) => {
         item.index = index;
         item.updateEmpMonth();
       });
-
       vm.employmentDtos(employmentDtos);
       vm.rightEmployments(rightEmployments);
       vm.reloadRightGrid();

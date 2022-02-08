@@ -15,9 +15,6 @@ import nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAccept
 
 @Getter
 public class RegisterSmileCooperationAcceptanceSettingScreenCommand {
-	private Integer paymentCode;
-
-	// Start: Variable at a screen
 	private Integer checkedOrganizationInformation;
 	private Integer checkedBasicPersonnelInformation;
 	private Integer checkedJobStructureInformation;
@@ -25,7 +22,6 @@ public class RegisterSmileCooperationAcceptanceSettingScreenCommand {
 	private Integer checkedLeaveInformation;
 	private Integer checkedAffiliatedMaster;
 	private Integer checkedEmployeeMaster;
-
 	private String selectedOrganizationInformation;
 	private String selectedBasicPersonnelInformation;
 	private String selectedJobStructureInformation;
@@ -33,27 +29,24 @@ public class RegisterSmileCooperationAcceptanceSettingScreenCommand {
 	private String selectedLeaveInformation;
 	private String selectedAffiliatedMaster;
 	private String selectedEmployeeMaster;
-
 	private List<Integer> listCheckedCheckbox;
-
 	private List<String> listSelectedComboboxValue;
-	// End: Variable at a screen
 
 	public List<SmileCooperationAcceptanceSetting> convertScreenCommandToListSetting() {
-		listCheckedCheckbox = Arrays.asList(checkedOrganizationInformation,
-				checkedBasicPersonnelInformation, checkedJobStructureInformation, checkedAddressInformation,
-				checkedLeaveInformation, checkedAffiliatedMaster, checkedEmployeeMaster);
-		
-		listSelectedComboboxValue = Arrays.asList(selectedOrganizationInformation,
-				selectedBasicPersonnelInformation, selectedJobStructureInformation, selectedAddressInformation,
-				selectedLeaveInformation, selectedAffiliatedMaster, selectedEmployeeMaster);
+		listCheckedCheckbox = Arrays.asList(checkedOrganizationInformation, checkedBasicPersonnelInformation,
+				checkedJobStructureInformation, checkedAddressInformation, checkedLeaveInformation,
+				checkedAffiliatedMaster, checkedEmployeeMaster);
 
-		List<SmileCooperationAcceptanceSetting> list = new ArrayList<>();
-		IntStream.range(0, SmileCooperationAcceptanceItem.lookup.size())
-				.forEach(index -> list.add(this.createNewObjectSmileCooperationAcceptanceSetting(
+		listSelectedComboboxValue = Arrays.asList(selectedOrganizationInformation, selectedBasicPersonnelInformation,
+				selectedJobStructureInformation, selectedAddressInformation, selectedLeaveInformation,
+				selectedAffiliatedMaster, selectedEmployeeMaster);
+
+		List<SmileCooperationAcceptanceSetting> smileCooperationAcceptanceSettings = new ArrayList<>();
+		IntStream.range(0, SmileCooperationAcceptanceItem.lookup.size()).forEach(
+				index -> smileCooperationAcceptanceSettings.add(this.createNewObjectSmileCooperationAcceptanceSetting(
 						SmileCooperationAcceptanceItem.lookup.get(index), listCheckedCheckbox.get(index),
 						listSelectedComboboxValue.get(index))));
-		return list;
+		return smileCooperationAcceptanceSettings;
 	}
 
 	public SmileCooperationAcceptanceSetting createNewObjectSmileCooperationAcceptanceSetting(

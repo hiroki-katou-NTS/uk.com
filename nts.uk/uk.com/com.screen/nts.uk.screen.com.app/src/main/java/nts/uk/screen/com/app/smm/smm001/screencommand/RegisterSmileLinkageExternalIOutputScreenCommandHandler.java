@@ -20,11 +20,10 @@ import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingR
 
 /**
  * SMILE連携外部出力を登録する
- * @author user
  *
  */
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class RegisterSmileLinkageExternalIOutputScreenCommandHandler
 		extends CommandHandler<RegisterSmileLinkageExternalIOutputScreenCommand> {
 
@@ -65,6 +64,5 @@ public class RegisterSmileLinkageExternalIOutputScreenCommandHandler
 		} else {
 			linkedPaymentConversionRepository.insert(newLinkedPaymentConversion);
 		}
-
 	}
 }

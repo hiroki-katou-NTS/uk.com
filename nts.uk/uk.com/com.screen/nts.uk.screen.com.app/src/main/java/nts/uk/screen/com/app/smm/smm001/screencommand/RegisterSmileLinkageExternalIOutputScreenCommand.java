@@ -17,15 +17,11 @@ import nts.arc.enums.EnumAdaptor;
 @Getter
 public class RegisterSmileLinkageExternalIOutputScreenCommand {
 	private Integer paymentCode;
-
 	private List<EmploymentAndLinkedMonthSettingDto> rightEmployments;
-
-	// Start: Variable at b screen
 	private Integer salaryCooperationClassification;
 	private Integer monthlyLockClassification;
 	private Integer monthlyApprovalCategory;
 	private String salaryCooperationConditions;
-	// End: Variable at b screen
 
 	public SmileLinkageOutputSetting convertScreenCommandToEntity() {
 		ExternalOutputConditionCode externalOutputConditionCode = null;
@@ -43,16 +39,14 @@ public class RegisterSmileLinkageExternalIOutputScreenCommand {
 	public LinkedPaymentConversion convertScreenCommandToLinkedPaymentConversion() {
 		LinkedPaymentConversion domain = null;
 		List<EmploymentAndLinkedMonthSetting> selectiveEmploymentCodes = new ArrayList<>();
-		if(!rightEmployments.isEmpty()) {
+		if (!rightEmployments.isEmpty()) {
 			rightEmployments.forEach(e -> {
 				selectiveEmploymentCodes.add(new EmploymentAndLinkedMonthSetting(
-					EnumAdaptor.valueOf(e.getInterlockingMonthAdjustment(), LinkedMonthSettingClassification.class),
-					e.getScd()
-				));
+						EnumAdaptor.valueOf(e.getInterlockingMonthAdjustment(), LinkedMonthSettingClassification.class),
+						e.getScd()));
 			});
 		}
-		domain = new LinkedPaymentConversion(
-				EnumAdaptor.valueOf(paymentCode, PaymentCategory.class), 
+		domain = new LinkedPaymentConversion(EnumAdaptor.valueOf(paymentCode, PaymentCategory.class),
 				selectiveEmploymentCodes);
 		return domain;
 	}

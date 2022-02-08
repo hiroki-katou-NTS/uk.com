@@ -159,28 +159,23 @@ module nts.uk.com.view.smm001.a {
       const vm = this;
       vm.checkedOrganizationInformation(smileCooperationAcceptanceSettings[0].cooperationAcceptanceClassification == 1)
       vm.selectedOrganizationInformation(smileCooperationAcceptanceSettings[0].cooperationAcceptanceConditions)
-
       vm.checkedBasicPersonnelInformation(smileCooperationAcceptanceSettings[1].cooperationAcceptanceClassification == 1)
       vm.selectedBasicPersonnelInformation(smileCooperationAcceptanceSettings[1].cooperationAcceptanceConditions)
-
       vm.checkedJobStructureInformation(smileCooperationAcceptanceSettings[2].cooperationAcceptanceClassification == 1)
       vm.selectedJobStructureInformation(smileCooperationAcceptanceSettings[2].cooperationAcceptanceConditions)
-
       vm.checkedAddressInformation(smileCooperationAcceptanceSettings[3].cooperationAcceptanceClassification == 1)
       vm.selectedAddressInformation(smileCooperationAcceptanceSettings[3].cooperationAcceptanceConditions)
-
       vm.checkedLeaveInformation(smileCooperationAcceptanceSettings[4].cooperationAcceptanceClassification == 1)
       vm.selectedLeaveInformation(smileCooperationAcceptanceSettings[4].cooperationAcceptanceConditions)
-
       vm.checkedAffiliatedMaster(smileCooperationAcceptanceSettings[5].cooperationAcceptanceClassification == 1)
       vm.selectedAffiliatedMaster(smileCooperationAcceptanceSettings[5].cooperationAcceptanceConditions)
-
       vm.checkedEmployeeMaster(smileCooperationAcceptanceSettings[6].cooperationAcceptanceClassification == 1)
       vm.selectedEmployeeMaster(smileCooperationAcceptanceSettings[6].cooperationAcceptanceConditions)
     }
 
     validateBeforeSave() {
       const vm = this;
+      // If checkbox is checked and select option set code = 0 => false
       if (vm.checkedOrganizationInformation() && vm.selectedOrganizationInformation() === '0'
         || vm.checkedBasicPersonnelInformation() && vm.selectedBasicPersonnelInformation() === '0'
         || vm.checkedJobStructureInformation() && vm.selectedJobStructureInformation() === '0'
@@ -204,7 +199,19 @@ module nts.uk.com.view.smm001.a {
       if (!vm.checkedEmployeeMaster()) { vm.selectedEmployeeMaster('0') }
     }
 
-    saveSmile() {
+    /**
+     * Event when clicked save button
+     */
+    registerSmileSetting() {
+      const vm = this;
+      vm.registerSmileCooperationAcceptanceSetting();
+      vm.screenB.registerRegisterSmileLinkageExternalIOutput();
+    }
+
+    /**
+     * save at A Screen
+     */
+    registerSmileCooperationAcceptanceSetting() {
       const vm = this;
       if (this.validateBeforeSave() === false) {
         vm.$dialog.info({ messageId: "Msg_3250" });
@@ -212,8 +219,8 @@ module nts.uk.com.view.smm001.a {
       }
       vm.setDefaultBeforeSave();
       vm.$blockui('grayout');
+      // Start: Init json body
       const command = {
-        paymentCode: 1,
         checkedOrganizationInformation:
           vm.checkedOrganizationInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
         checkedBasicPersonnelInformation:
@@ -224,7 +231,6 @@ module nts.uk.com.view.smm001.a {
         checkedLeaveInformation: vm.checkedLeaveInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
         checkedAffiliatedMaster: vm.checkedAffiliatedMaster() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
         checkedEmployeeMaster: vm.checkedEmployeeMaster() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
-
         selectedOrganizationInformation: vm.selectedOrganizationInformation(),
         selectedBasicPersonnelInformation: vm.selectedBasicPersonnelInformation(),
         selectedJobStructureInformation: vm.selectedJobStructureInformation(),
@@ -233,13 +239,16 @@ module nts.uk.com.view.smm001.a {
         selectedAffiliatedMaster: vm.selectedAffiliatedMaster(),
         selectedEmployeeMaster: vm.selectedEmployeeMaster(),
       };
+      // End: Init json body
+
+      // Start: Process send request
       vm.$ajax('com', API.registerSmileCooperationAcceptanceSetting, command)
         .then(() => {
           vm.$dialog.info({ messageId: "Msg_15" });
         }).fail((err) => {
           vm.$dialog.error(err);
         }).always(() => vm.$blockui('clear'));
-      vm.screenB.saveCommandBScreen();
+      // End: Process send request
     }
   }
 }

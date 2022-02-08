@@ -1,8 +1,6 @@
 package nts.uk.smile.infra.repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -36,27 +34,27 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 				.collect(Collectors.toList());
 	}
 
-	private List<LinkedPaymentConversion> toDomain(List<LsmmtEmplinkMonthSet> entity) {
-		List<LinkedPaymentConversion> linkedPaymentConversions = new ArrayList<LinkedPaymentConversion>();
-		Map<Integer, List<LsmmtEmplinkMonthSet>> map = entity.stream()
-				.collect(Collectors.groupingBy(e -> e.getPk().getPaymentCd()));
-		if (entity.isEmpty()) {
-			return null;
-		}
-		map.keySet().forEach(k -> {
-			List<EmploymentAndLinkedMonthSetting> monthSettings = new ArrayList<EmploymentAndLinkedMonthSetting>();
-			map.get(k).forEach(m -> {
-				EmploymentAndLinkedMonthSetting employmentAndLinkedMonthSetting = new EmploymentAndLinkedMonthSetting(
-						LinkedMonthSettingClassification.valueOf(m.getMiomtEmplinkMonthSet()), m.getPk().getEmpCd());
-				monthSettings.add(employmentAndLinkedMonthSetting);
-			});
-			PaymentCategory paymentCategory = PaymentCategory.valueOf(entity.get(0).getPk().getPaymentCd());
-			LinkedPaymentConversion linkedPaymentConversion = new LinkedPaymentConversion(paymentCategory,
-					monthSettings);
-			linkedPaymentConversions.add(linkedPaymentConversion);
-		});
-		return linkedPaymentConversions;
-	}
+//	private List<LinkedPaymentConversion> toDomain(List<LsmmtEmplinkMonthSet> entity) {
+//		List<LinkedPaymentConversion> linkedPaymentConversions = new ArrayList<LinkedPaymentConversion>();
+//		Map<Integer, List<LsmmtEmplinkMonthSet>> map = entity.stream()
+//				.collect(Collectors.groupingBy(e -> e.getPk().getPaymentCd()));
+//		if (entity.isEmpty()) {
+//			return null;
+//		}
+//		map.keySet().forEach(k -> {
+//			List<EmploymentAndLinkedMonthSetting> monthSettings = new ArrayList<EmploymentAndLinkedMonthSetting>();
+//			map.get(k).forEach(m -> {
+//				EmploymentAndLinkedMonthSetting employmentAndLinkedMonthSetting = new EmploymentAndLinkedMonthSetting(
+//						LinkedMonthSettingClassification.valueOf(m.getMiomtEmplinkMonthSet()), m.getPk().getEmpCd());
+//				monthSettings.add(employmentAndLinkedMonthSetting);
+//			});
+//			PaymentCategory paymentCategory = PaymentCategory.valueOf(entity.get(0).getPk().getPaymentCd());
+//			LinkedPaymentConversion linkedPaymentConversion = new LinkedPaymentConversion(paymentCategory,
+//					monthSettings);
+//			linkedPaymentConversions.add(linkedPaymentConversion);
+//		});
+//		return linkedPaymentConversions;
+//	}
 
 	@Override
 	public void insert(LinkedPaymentConversion domain) {
@@ -65,15 +63,16 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 
 	@Override
 	public void update(LinkedPaymentConversion domain) {
-		List<LsmmtEmplinkMonthSet> list = this.queryProxy().query(GET_BY_CONTRACT_CD_AND_CID_AND_PAYMENT_CD, LsmmtEmplinkMonthSet.class)
+		List<LsmmtEmplinkMonthSet> emplinkMonthSets = this.queryProxy()
+				.query(GET_BY_CONTRACT_CD_AND_CID_AND_PAYMENT_CD, LsmmtEmplinkMonthSet.class)
 				.setParameter("contractCd", AppContexts.user().contractCode())
-				.setParameter("cid", AppContexts.user().companyId()).setParameter("paymentCd", domain.getPaymentCode().value)
-				.getList();
-		if (list.isEmpty()) {
+				.setParameter("cid", AppContexts.user().companyId())
+				.setParameter("paymentCd", domain.getPaymentCode().value).getList();
+		if (emplinkMonthSets.isEmpty()) {
 			return;
 		}
 		// Before update => delete all
-		this.commandProxy().removeAll(list);
+		this.commandProxy().removeAll(emplinkMonthSets);
 		this.getEntityManager().flush();
 		// Insert new entity
 		this.commandProxy().insertAll(this.toEntities(domain));
@@ -81,12 +80,13 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 
 	@Override
 	public void delete(String contractCode, String companyId) {
-		List<LsmmtEmplinkMonthSet> list = this.queryProxy().query(GET_BY_CONTRACT_AND_CID, LsmmtEmplinkMonthSet.class)
-				.setParameter("contractCd", contractCode).setParameter("cid", companyId).getList();
-		if (list.isEmpty()) {
+		List<LsmmtEmplinkMonthSet> lsmmtEmplinkMonthSets = this.queryProxy()
+				.query(GET_BY_CONTRACT_AND_CID, LsmmtEmplinkMonthSet.class).setParameter("contractCd", contractCode)
+				.setParameter("cid", companyId).getList();
+		if (lsmmtEmplinkMonthSets.isEmpty()) {
 			return;
 		}
-		this.commandProxy().removeAll(list);
+		this.commandProxy().removeAll(lsmmtEmplinkMonthSets);
 	}
 
 	@Override

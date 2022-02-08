@@ -22,15 +22,11 @@ import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingR
 
 /**
  * UKDesign.UniversalK.就業.SMM_Smile連携.SMM001_SMILE連携外部受入出力_詳細設定.B:SMILE連携外部出力詳細設定.外部出起動の情報取得する
- * @author user
  *
  */
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class GetInformationOnExternalStartupScreenQuery {
-
-//	@Inject
-//	private SelectAPaymentDateScreenQuery selectAPaymentDateScreenQuery;
 
 	@Inject
 	private SmileLinkageOutputSettingRepository smileLinkageOutputSettingRepository;
@@ -40,8 +36,9 @@ public class GetInformationOnExternalStartupScreenQuery {
 
 	@Inject
 	private EmploymentRepository employmentRepository;
-	
-	@Inject StdOutputCondSetRepository condSetRepository; 
+
+	@Inject
+	StdOutputCondSetRepository condSetRepository;
 
 	public InitialStartupOutputDto get(Integer paymentCode) {
 		/**
@@ -67,12 +64,10 @@ public class GetInformationOnExternalStartupScreenQuery {
 		 * Function: 会社IDを指定して連動支払変換を取得する Input: 契約コード、会社ID Return: List＜出力条件設定（定型）＞
 		 */
 		List<StdOutputCondSet> outputConditionSettings = condSetRepository.getStdOutCondSetByCid(companyId);
-		List<StdOutputCondSetDto> stdOutputCondSetDtos = outputConditionSettings
-				.stream()
+		List<StdOutputCondSetDto> stdOutputCondSetDtos = outputConditionSettings.stream()
 				.map(e -> new StdOutputCondSetDto(e.getConditionSetCode().v(), e.getConditionSetName().v()))
 				.collect(Collectors.toList());
-		
-		
+
 		List<EmploymentAndLinkedMonthSetting> listStandardOutputConditionSetting = linkedPaymentConversionRepository
 				.get(contractCode, companyId);
 		List<EmploymentAndLinkedMonthSettingDto> listStandardOutputConditionSettingDtos = listStandardOutputConditionSetting
@@ -87,13 +82,6 @@ public class GetInformationOnExternalStartupScreenQuery {
 		List<EmploymentDto> employmentDtos = employments.stream()
 				.map(e -> new EmploymentDto(e.getEmploymentCode().v(), e.getEmploymentName().v()))
 				.collect(Collectors.toList());
-
-//		/**
-//		 * Function 雇用を取得する(契約コード, 会社ID, int) Return List＜雇用選択DTO＞
-//		 */
-//		PaymentCategory paymentCategory = EnumAdaptor.valueOf(paymentCode, PaymentCategory.class);
-//		EmploymentChoiceDto employmentChoiceDto = selectAPaymentDateScreenQuery.get(paymentCode);
-
 		return new InitialStartupOutputDto(smileLinkageOutputSettingDto, listStandardOutputConditionSettingDtos,
 				employmentDtos, stdOutputCondSetDtos);
 	}

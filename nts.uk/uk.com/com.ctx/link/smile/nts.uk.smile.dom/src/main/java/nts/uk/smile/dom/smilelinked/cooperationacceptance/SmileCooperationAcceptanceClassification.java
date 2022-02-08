@@ -10,11 +10,11 @@ public enum SmileCooperationAcceptanceClassification {
 
 	/** する */
 	DO(1, "する");
-							
+
 	public int value;
 	public String nameId;
-	
-	private SmileCooperationAcceptanceClassification (int value, String nameId) {
+
+	private SmileCooperationAcceptanceClassification(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
 	}

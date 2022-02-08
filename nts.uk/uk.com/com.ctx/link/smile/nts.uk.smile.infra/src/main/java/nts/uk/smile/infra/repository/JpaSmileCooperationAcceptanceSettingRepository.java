@@ -25,14 +25,14 @@ public class JpaSmileCooperationAcceptanceSettingRepository extends JpaRepositor
 			"SELECT m FROM LsmmtSmileCooperationAccepset m WHERE m.pk.contractCd = :contractCd", "AND m.pk.cid = :cid");
 
 	private LsmmtSmileCooperationAccepset toEntity(SmileCooperationAcceptanceSetting domain) {
-		LsmmtSmileCooperationAccepset data = new LsmmtSmileCooperationAccepset(
+		LsmmtSmileCooperationAccepset lsmmtSmileCooperationAccepset = new LsmmtSmileCooperationAccepset(
 				new LsmmtSmileCooperationAccepsetPK(AppContexts.user().contractCode(), AppContexts.user().companyId(),
 						domain.getCooperationAcceptance().value),
 				domain.getCooperationAcceptanceClassification() == SmileCooperationAcceptanceClassification.DO,
 				domain.getCooperationAcceptanceConditions().isPresent()
 						? domain.getCooperationAcceptanceConditions().get().v()
 						: null);
-		return data;
+		return lsmmtSmileCooperationAccepset;
 	}
 
 	private SmileCooperationAcceptanceSetting toDomain(LsmmtSmileCooperationAccepset entity) {
@@ -72,11 +72,11 @@ public class JpaSmileCooperationAcceptanceSettingRepository extends JpaRepositor
 
 	@Override
 	public void delete(String contractCode, String companyId) {
-		List<LsmmtSmileCooperationAccepset> list = this.queryProxy()
+		List<LsmmtSmileCooperationAccepset> lsmmtSmileCooperationAccepsets = this.queryProxy()
 				.query(GET_BY_CONTRACT_AND_CID, LsmmtSmileCooperationAccepset.class)
 				.setParameter("contractCd", contractCode).setParameter("cid", companyId).getList();
-		if (!list.isEmpty()) {
-			this.commandProxy().removeAll(list);
+		if (!lsmmtSmileCooperationAccepsets.isEmpty()) {
+			this.commandProxy().removeAll(lsmmtSmileCooperationAccepsets);
 		}
 	}
 
