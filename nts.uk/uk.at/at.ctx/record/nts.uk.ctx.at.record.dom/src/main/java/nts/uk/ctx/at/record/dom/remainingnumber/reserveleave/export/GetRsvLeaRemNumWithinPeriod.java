@@ -413,7 +413,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 		// 時間年休管理の場合、積立年休の付与数を取得する
 		if (grantDays.getMinutes().isPresent() && contractTime.isPresent()) {
 			return new LeaveGrantDayNumber(days.v()
-					+ annualLeaveSet.getValueAfterRound(grantDays.getMinutes().get().v(), contractTime.get().v())
+					+ annualLeaveSet.getAnnualLeavGrant(grantDays.getMinutes().get().v(), contractTime.get().v())
 							.map(x -> x.v()).orElse(0.0));
 		}
 		return days;
