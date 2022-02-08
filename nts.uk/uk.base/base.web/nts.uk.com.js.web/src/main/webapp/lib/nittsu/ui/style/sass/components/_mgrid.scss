@@ -1,22 +1,35 @@
-.mgrid :not(.mgrid-header) table tr td { 
+@import "_radiobox.scss";
+@import "_button.scss";
+
+.mgrid :not(.mgrid-header) table tr {
+
+	&:nth-child(even) {
+		background-color: #F3F3F3;
+	}
+
+	td {
     font-size: 14px;
-    font-family: "DroidSansMono", "Meiryo";
+    font-family: $font_family_monospace;
+		text-align: center;
+	}
 }
 
 .mgrid {
 	position: relative;
 }
+
 .mgrid table th, .mgrid table td {
-	border: 1px solid #DEE2E6;
-}
-.mgrid .mgrid-header td {
-	color: #000;
-	background-color: #FFF; /*#CFF1A5;*/
-	font-weight: bold;
-	text-align: center;
+	border: 1px solid #fff;
 }
 
-.mgrid .mcell {
+.mgrid .mgrid-header td {
+	color: #fff;
+	font-weight: 200;
+	text-align: center;
+
+	* {
+		color: #fff;
+	}
 }
 
 .mgrid td.mcell.currency-symbol:before {
@@ -55,6 +68,10 @@
 	border-left: 1px solid #CCC;
 }
 
+.mgrid .mgrid-free.mgrid-header .mgrid-free-table {
+	color: #fff;
+}
+
 .mgrid .mgrid-fixed-line, .mgrid .mgrid-line {
 	position: absolute;
 	cursor: ew-resize;
@@ -75,12 +92,7 @@
 }
 
 .mgrid table tr td.ui-state-hover {
-	/* background-color: #F5F5DC;
-  	color: #000; */
-  	color: #30CC40;
-  	font-weight: bold;
-  	background: linear-gradient(180deg, #dcf2d9, #f0f5f0, #dcf2d9);
-  	box-shadow: 0px 6px 6px #c3d5c0;
+  	background-color: #99aea9;
 }
 
 .mgrid table tr td.mgrid-hide .ntsCheckBox {
@@ -97,27 +109,27 @@
 }
 
 .mgrid table tr td.mgrid-reflect {
-	background: #BFEA60;
+	background: #CBF3D2;
 }
 
 .mgrid table tr td.mgrid-manual-edit-other {
-	background: #CEE6FF;
+	background: #C1E6FE;
 }
 
 .mgrid table tr td.mgrid-manual-edit-target {
-	background: #94B7FE;
+	background: #BFC5FF;
 }
 
 .mgrid table tr td.mgrid-calc {
-	background: #F69164;
+	background: #F9D4A9;
 }
 
 .mgrid table tr td.mgrid-alarm {
-	background: #F6F636;
+	background: #FFF1BF;
 }
 
 .mgrid table tr td.mgrid-error {
-	background: #FD4D4D;
+	background: #FFE5E5;
 }
 
 .mgrid table tr td.cell-selected:not(.nts-control) {
@@ -251,26 +263,24 @@
 
 .medit-container {
     position: relative;
-    width: 99%;
-    border: 1px solid #AAB7B8;
+		left: 1px;
+    width: calc(100% - 2px);
+    outline: 1px solid #AAB7B8;
     background-color: #fff;
 }
 
 .medit-container .medit {
-    height: 90%;
-    width: 96%;
-    outline: none;
-    border: none;
-	text-align: right;
+  height: 90%;
+	width: 96%;
+  outline: none;
+  border: none;
+	text-align: center;
 	margin: 0% 2%;
+	font-family: $font_family_monospace;
 }
 
 .medit-container .medit.halign-left {
-	text-align: left;
-}
-
-.medit-container .medit {
-    font-family: "Meiryo UI"
+	text-align: center;
 }
 
 .medit-container .medit::-ms-clear {
@@ -337,7 +347,6 @@
 	overflow: hidden; 
 	/**position: relative;**/ 
 	padding: 0px 2px;
-	font-family: "Meiryo" !important;
     font-size: .9em !important;
     text-align: center;
 }
@@ -417,7 +426,7 @@
 }
 
 .mgrid-sheet {
-	background-color: #f1fdfb;
+	padding-top: 5px;
 }
 
 .mgrid-sheet-nav {
@@ -447,36 +456,23 @@
 	margin: 0.1em;
 	padding-right: 8px;
 	padding-left: 8px;
-	border-radius: 2px;
+	border-radius: 0 0 5px 5px;
 	width: 80px;
-	background-color: #ffffff;
+	background-color: $button-normal-base-color;
+	color: $button-normal-base-font-color;
+	box-shadow: none !important;
+	font-weight: normal;
 }
 
 .mgrid-sheet-button:not(.ui-state-active):hover {
 	border-color: #ccc;
-	background-color: #F9FBF9; /*#ededed;*/
-}
-
-.mgrid-sheet-button:not(.ui-state-active) {
-	color: #939191;
+	background-color: $button-normal-base-hover-color;
 }
 
 .mgrid-sheet-button.ui-state-active {
 	border-width: 0px;
-	background-color: #c0f5ec;
-	color: #000;
-	box-shadow: 0px 8px 12px rgba(199, 255, 241, 0.6);
-}
-
-.mgrid-sheet-button.ui-state-active:after {
-	content: "";
-  	position: absolute;
-    width: 20px;
-    height: 3px;
-    top: 30px;
-    margin-left: 30px;
-    background: #30CC40;
-    display: block;
+	background-color: $button-proceed-base-color;
+	color: #fff;
 }
 
 .mgrid-sheet-scrollbar {
@@ -603,25 +599,21 @@
   width: 19px;
   height: 19px;
   margin: 0px;
-  background: transparent;
-  border: 2px solid #2FCC71;
+  border: $checkbox_box_border;
   border-radius: 2px;
   box-sizing: border-box;
+	background-color: $checkbox_back_color_off;
 }
 
 .ntsCheckBox span.box:after {
+	@extend %checkbox_check_sign;
   content: '';
   width: 9px;
   height: 5px;
   position: absolute;
-  top: 2px;
-  left: 2px;
-  border: 2px solid #fff;
-  border-top: none;
-  border-right: none;
+  top: 5px;
+  left: 4px;
   opacity: 0;
-  border-radius: 1px;
-  transform: rotate(-59deg);
 }
 
 .ntsCheckBox span.label {
@@ -631,10 +623,25 @@
 
 .ntsCheckBox input[type="checkbox"] {
   display: none;
-}
 
-.ntsCheckBox input[type="checkbox"]:checked + span {
-  background: #30CC40;
+	&:checked {
+		+ span {
+  		background: $checkbox_back_color_on;
+		}
+
+		&:disabled {
+			+ span {
+				background: $checkbox_back_color_on_disabled;
+			}
+		}
+	}
+
+	&:disabled {
+		+ span {
+  		background: $checkbox_back_color_off_disabled;
+			cursor: not-allowed;
+		}
+	}
 }
 
 .ntsCheckBox input[type="checkbox"]:checked + span:after {
@@ -647,13 +654,8 @@
   opacity: 0.8;
 }
 
-.ntsCheckBox input[type="checkbox"][disabled] + span {
-  background: transparent;
-  border-color: #AAA;
-}
-
 .ntsCheckBox input[type="checkbox"][disabled] + span:after {
-  border-color: #AAA;
+  border-color: #fff;
 }
 
 .ntsCheckBox:focus {

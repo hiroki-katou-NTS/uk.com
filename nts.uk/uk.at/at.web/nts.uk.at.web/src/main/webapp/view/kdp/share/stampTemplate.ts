@@ -11,6 +11,10 @@ module nts.uk.at.view.kdp010 {
 		1: not set Audio
 	return ButtonSettings refer numberTemplate
 	*/
+	const STAMP_BUTTON_COLOR_GO = "#ffffff";
+	const STAMP_BUTTON_BG_COLOR_GO = "#01956A";
+	const STAMP_BUTTON_COLOR_BACK = "#01956A";
+	const STAMP_BUTTON_BG_COLOR_BACK = "#ffffff";
 	export const GetStampTemplate = (numberTemplate: number, mode?: number):any =>{
 		if(mode == undefined || mode == null) mode = 1;
 		if(numberTemplate == 1){
@@ -31,8 +35,8 @@ module nts.uk.at.view.kdp010 {
 					buttonDisSet: {
 						buttonNameSet: {
 							buttonName: getText("KDP010_250"), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							textColor: STAMP_BUTTON_COLOR_GO},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_GO},
 					audioType: mode == 0 ? 1 : 0
 				},{
 					buttonPositionNo: 2,
@@ -49,9 +53,9 @@ module nts.uk.at.view.kdp010 {
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
-							buttonName: getText("KDP010_254"), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							buttonName: getText("KDP010_254"),
+							textColor: STAMP_BUTTON_COLOR_BACK},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_BACK},
 					audioType: mode == 0 ? 2 : 0
 				},{
 					buttonPositionNo: 3,
@@ -69,8 +73,8 @@ module nts.uk.at.view.kdp010 {
 					buttonDisSet: {
 						buttonNameSet: {
 							buttonName: getText("KDP010_251"), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							textColor: STAMP_BUTTON_COLOR_GO},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_GO},
 					audioType: 0
 				},{
 					buttonPositionNo: 4,
@@ -87,9 +91,9 @@ module nts.uk.at.view.kdp010 {
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
-							buttonName: getText("KDP010_255"), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							buttonName: getText("KDP010_255"),
+							textColor: STAMP_BUTTON_COLOR_BACK},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_BACK},
 					audioType: 0
 				},{
 					buttonPositionNo: 5,
@@ -107,8 +111,8 @@ module nts.uk.at.view.kdp010 {
 					buttonDisSet: {
 						buttonNameSet: {
 							buttonName: getText("KDP010_257"), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							textColor: STAMP_BUTTON_COLOR_GO},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_GO},
 					audioType: 0
 				},{
 					buttonPositionNo: 6,
@@ -125,9 +129,9 @@ module nts.uk.at.view.kdp010 {
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
-							buttonName: getText("KDP010_258"), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							buttonName: getText("KDP010_258"),
+							textColor: STAMP_BUTTON_COLOR_BACK},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_BACK},
 					audioType: 0
 				}
 			];
@@ -149,8 +153,8 @@ module nts.uk.at.view.kdp010 {
 					buttonDisSet: {
 						buttonNameSet: {
 							buttonName: getText("KDP010_273"), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							textColor: STAMP_BUTTON_COLOR_GO},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_GO},
 					audioType: mode == 0 ? 1 : 0
 				},{
 					buttonPositionNo: 2,
@@ -167,9 +171,9 @@ module nts.uk.at.view.kdp010 {
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
-							buttonName: getText("KDP010_274"), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							buttonName: getText("KDP010_274"),
+							textColor: STAMP_BUTTON_COLOR_BACK},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_BACK},
 					audioType: mode == 0 ? 2 : 0
 				},{
 					buttonPositionNo: 5,
@@ -187,8 +191,8 @@ module nts.uk.at.view.kdp010 {
 					buttonDisSet: {
 						buttonNameSet: {
 							buttonName: getText("KDP010_257"), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							textColor: STAMP_BUTTON_COLOR_GO},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_GO},
 					audioType: 0
 				},{
 					buttonPositionNo: 6,
@@ -205,9 +209,9 @@ module nts.uk.at.view.kdp010 {
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
-							buttonName: getText("KDP010_258"), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							buttonName: getText("KDP010_258"),
+							textColor: STAMP_BUTTON_COLOR_BACK},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_BACK},
 					audioType: 0
 				}
 			];			
@@ -229,8 +233,8 @@ module nts.uk.at.view.kdp010 {
 					buttonDisSet: {
 						buttonNameSet: {
 							buttonName: getText("KDP010_273"), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							textColor: STAMP_BUTTON_COLOR_GO},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_GO},
 					audioType: mode == 0 ? 1 : 0
 				},{
 					buttonPositionNo: 2,
@@ -247,9 +251,9 @@ module nts.uk.at.view.kdp010 {
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
-							buttonName: getText("KDP010_274"), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							buttonName: getText("KDP010_274"),
+							textColor: STAMP_BUTTON_COLOR_BACK},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_BACK},
 					audioType: mode == 0 ? 2 : 0
 				},{
 					buttonPositionNo: 6,
@@ -266,9 +270,9 @@ module nts.uk.at.view.kdp010 {
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
-							buttonName: getText("KDP010_275",["{#Com_Workplace}"]), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							buttonName: getText("KDP010_275",["{#Com_Workplace}"]),
+							textColor: STAMP_BUTTON_COLOR_BACK},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_BACK},
 					audioType: 0
 				}
 			];
@@ -290,8 +294,8 @@ module nts.uk.at.view.kdp010 {
 					buttonDisSet: {
 						buttonNameSet: {
 							buttonName: getText("KDP010_250"), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							textColor: STAMP_BUTTON_COLOR_GO},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_GO},
 					audioType: mode == 0 ? 1 : 0
 				},{
 					buttonPositionNo: 2,
@@ -308,9 +312,9 @@ module nts.uk.at.view.kdp010 {
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
-							buttonName: getText("KDP010_274"), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							buttonName: getText("KDP010_274"),
+							textColor: STAMP_BUTTON_COLOR_BACK},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_BACK},
 					audioType: mode == 0 ? 2 : 0
 				},{
 					buttonPositionNo: 6,
@@ -327,9 +331,9 @@ module nts.uk.at.view.kdp010 {
 					supportWplSet: 1,
 					buttonDisSet: {
 						buttonNameSet: {
-							buttonName: getText("KDP010_276",["{#Com_Workplace}"]), 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
+							buttonName: getText("KDP010_276",["{#Com_Workplace}"]),
+							textColor: STAMP_BUTTON_COLOR_BACK},
+						backGroundColor: STAMP_BUTTON_BG_COLOR_BACK},
 					audioType: 0
 				}
 			];
