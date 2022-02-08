@@ -1,8 +1,14 @@
 __viewContext.ready(function() {
     //debugger;
-    var url_string = window.location.href;
-    var urlID = _.split(url_string, '=')[1];
-    var server_path = nts.uk.text.format("/ctx/sys/gateway/url/execution/{0}", urlID); 
+    let url_string = window.location.search.substring(1).split('&');
+    let urlParams : StringKeyValue = {};
+    for(let i=0; url_string[i]; i++) {
+        let k : string[] = url_string[i].split('=');
+        urlParams[k[0]] = k[1];
+    }
+    let urlID = urlParams.id;
+    let tcd = urlParams.tcd;
+    let server_path = nts.uk.text.format("/ctx/sys/gateway/url/{0}/{1}", tcd, urlID);
     nts.uk.request.ajax("com", server_path).done((success) => {
         //Doi ung password policy
         if(!nts.uk.util.isNullOrUndefined(success.changePw.successMsg)&&!nts.uk.util.isNullOrEmpty(success.changePw.successMsg)){
@@ -28,6 +34,10 @@ __viewContext.ready(function() {
         }
     });
 });
+
+interface StringKeyValue {
+    [key: string]: string;
+}
 
 function loginDone(success, urlID) {
     let changePw = success.changePw;
