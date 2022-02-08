@@ -228,8 +228,8 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
         supportWorkDetails.forEach(i -> {
             String affiliationHierarchyCode = workplaceInfos.stream().filter(w -> w.getWorkplaceId().equals(i.getAffiliationInfo())).map(w -> w.getHierarchyCode()).findFirst().orElse("");
             String workHierarchyCode = workplaceInfos.stream().filter(w -> w.getWorkplaceId().equals(i.getWorkInfo())).map(w -> w.getHierarchyCode()).findFirst().orElse("");
-            String affiliationHierarchy = affiliationHierarchyCode.isEmpty() ? affiliationHierarchyCode : StringUtils.leftPad(affiliationHierarchyCode, supportJudgmentHierarchy, "0").substring(0, supportJudgmentHierarchy);
-            String workHierarchy = workHierarchyCode.isEmpty() ? workHierarchyCode : StringUtils.leftPad(workHierarchyCode, supportJudgmentHierarchy, "0").substring(0, supportJudgmentHierarchy);
+            String affiliationHierarchy = affiliationHierarchyCode.isEmpty() ? affiliationHierarchyCode : StringUtils.rightPad(affiliationHierarchyCode, supportJudgmentHierarchy, "0").substring(0, supportJudgmentHierarchy);
+            String workHierarchy = workHierarchyCode.isEmpty() ? workHierarchyCode : StringUtils.rightPad(workHierarchyCode, supportJudgmentHierarchy, "0").substring(0, supportJudgmentHierarchy);
             if (!affiliationHierarchy.equals(workHierarchy)) {
                 i.setSupportWork(true);
             }
