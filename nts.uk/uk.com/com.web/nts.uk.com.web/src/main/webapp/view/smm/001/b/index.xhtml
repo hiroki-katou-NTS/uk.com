@@ -6,11 +6,11 @@
 <div>
   <div class="smile-div">
     <p class="ml-1">#{i18n.getText('SMM001_7')}</p>
-    <div class="d-flex mb-1 ml-2">
+    <div class="d-flex mb-5px ml-2">
       <div data-bind="ntsCheckBox: { checked: salaryCooperationClassification, enable: true }">
         #{i18n.getText('SMM001_8')}
       </div>
-      <div id="combo-box" data-bind="ntsComboBox: {
+      <div class="combo-box-info" data-bind="ntsComboBox: {
         name: '#[SMM001_7]',
         options: itemListCndSet,
         optionsValue: 'code',
@@ -54,7 +54,7 @@
       <p>
         #{i18n.getText('SMM001_13')}
       </p>
-      <div class="ml-1" id="combo-box" data-bind="ntsComboBox: {
+      <div class="ml-1 combo-box-payment-category" data-bind="ntsComboBox: {
               name: '#[SMM001_13]',
               options: enumPaymentCategoryList,
               optionsValue: 'value',
@@ -86,7 +86,7 @@
                 primaryKey: 'code',
                 columns: [
                   { headerText: '#{i18n.getText('SMM001_14')}', key: 'code', width: 50 },
-                  { headerText: '#{i18n.getText('SMM001_15')}', key: 'name', width: 100 }
+                  { headerText: '#{i18n.getText('SMM001_15')}', key: 'name', width: 200 }
                 ],
                 deleteOptions : {visible : false},
                 multiple: true,

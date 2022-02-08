@@ -207,7 +207,7 @@ module nts.uk.com.view.smm001.a {
     saveSmile() {
       const vm = this;
       if (this.validateBeforeSave() === false) {
-        vm.$dialog.info({ messageId: "Msg_3250" });
+        vm.$dialog.info({ messageId: "Msg_3250" });                                 thnt
         return;
       }
       vm.setDefaultBeforeSave();

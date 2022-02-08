@@ -156,7 +156,7 @@ module nts.uk.com.view.smm001.b {
 
       vm.columnEmp([
         { headerText: nts.uk.resource.getText("SMM001_14"), key: 'code', width: 50 },
-        { headerText: nts.uk.resource.getText("SMM001_15"), key: 'name', width: 100 },
+        { headerText: nts.uk.resource.getText("SMM001_15"), key: 'name', width: 200 },
         {
           headerText: nts.uk.resource.getText("SMM001_16"),
           key: 'empMonth',

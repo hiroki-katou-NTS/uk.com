@@ -10,6 +10,10 @@
   margin-left: 1rem;
 }
 
+.mb-5px {
+  margin-bottom: 5px;
+}
+
 .ml-2 {
   margin-left: 2rem;
 }
@@ -19,11 +23,19 @@
 }
 
 .smile-div {
-  background: lightyellow;
+  /* background: lightyellow; */
   min-height: 50px;
-  width: 900px;
+  width: 1100px;
   margin-top: 25px;
   border: 1px solid;
+}
+
+.combo-box-info {
+  width: 300px !important;
+}
+
+.combo-box-payment-category {
+  width: 100px !important;
 }
 
 #component-left {

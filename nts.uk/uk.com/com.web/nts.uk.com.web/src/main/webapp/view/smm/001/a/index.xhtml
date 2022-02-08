@@ -10,7 +10,6 @@
       <com:stylefile path="smm001.a.style.css" />
       <com:scriptfile path="../b/smm001.b.vm.js" />
       <com:scriptfile path="smm001.a.vm.js" />
-      <!-- <com:stylefile path="smm001.b.style.css" /> -->
       <com:EnumScript>
         nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceItem
         nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceClassification
@@ -28,15 +27,18 @@
         </button>
       </div>
       <div id="contents-area">
+        <!--A3-->
         <div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+          <!--A3_1-->
           <div class="tab-content-1">
             <p class="mb-1">
               #{i18n.getText('SMM001_5')}
             </p>
             <div class="d-flex mb-1">
-              <div data-bind="ntsCheckBox: { checked: checkedOrganizationInformation, enable: true, text: ORGANIZATION_INFORMATION}">
+              <div
+                data-bind="ntsCheckBox: { checked: checkedOrganizationInformation, enable: true, text: ORGANIZATION_INFORMATION}">
               </div>
-              <div id="combo-box" data-bind="ntsComboBox: {
+              <div class="combo-box-info" data-bind="ntsComboBox: {
                 name: '#[SMM001_6]',
                 options: itemList,
                 optionsValue: 'code',
@@ -52,9 +54,10 @@
               </div>
             </div>
             <div class="d-flex mb-1">
-              <div data-bind="ntsCheckBox: { checked: checkedBasicPersonnelInformation, enable: true, text: BASIC_PERSONNEL_INFORMATION }">
+              <div
+                data-bind="ntsCheckBox: { checked: checkedBasicPersonnelInformation, enable: true, text: BASIC_PERSONNEL_INFORMATION }">
               </div>
-              <div id="combo-box" data-bind="ntsComboBox: {
+              <div class="combo-box-info" data-bind="ntsComboBox: {
                 name: 'List',
                 options: itemList,
                 optionsValue: 'code',
@@ -70,9 +73,10 @@
               </div>
             </div>
             <div class="d-flex mb-1">
-              <div data-bind="ntsCheckBox: { checked: checkedJobStructureInformation, enable: true, text: JOB_STRUCTURE_INFORMATION }">
+              <div
+                data-bind="ntsCheckBox: { checked: checkedJobStructureInformation, enable: true, text: JOB_STRUCTURE_INFORMATION }">
               </div>
-              <div id="combo-box" data-bind="ntsComboBox: {
+              <div class="combo-box-info" data-bind="ntsComboBox: {
                 name: 'List',
                 options: itemList,
                 optionsValue: 'code',
@@ -88,9 +92,10 @@
               </div>
             </div>
             <div class="d-flex mb-1">
-              <div data-bind="ntsCheckBox: { checked: checkedAddressInformation, enable: true, text: ADDRESS_INFORMATION }">
+              <div
+                data-bind="ntsCheckBox: { checked: checkedAddressInformation, enable: true, text: ADDRESS_INFORMATION }">
               </div>
-              <div id="combo-box" data-bind="ntsComboBox: {
+              <div class="combo-box-info" data-bind="ntsComboBox: {
                 name: 'List',
                 options: itemList,
                 optionsValue: 'code',
@@ -108,7 +113,7 @@
             <div class="d-flex mb-1">
               <div data-bind="ntsCheckBox: { checked: checkedLeaveInformation, enable: true, text: LEAVE_INFORMATION }">
               </div>
-              <div id="combo-box" data-bind="ntsComboBox: {
+              <div class="combo-box-info" data-bind="ntsComboBox: {
                 name: 'List',
                 options: itemList,
                 optionsValue: 'code',
@@ -126,7 +131,7 @@
             <div class="d-flex mb-1">
               <div data-bind="ntsCheckBox: { checked: checkedAffiliatedMaster, enable: true, text: AFFILIATED_MASTER }">
               </div>
-              <div id="combo-box" data-bind="ntsComboBox: {
+              <div class="combo-box-info" data-bind="ntsComboBox: {
                 name: 'List',
                 options: itemList,
                 optionsValue: 'code',
@@ -144,7 +149,7 @@
             <div class="d-flex mb-1">
               <div data-bind="ntsCheckBox: { checked: checkedEmployeeMaster, enable: true, text: EMPLOYEE_MASTER }">
               </div>
-              <div id="combo-box" data-bind="ntsComboBox: {
+              <div class="combo-box-info" data-bind="ntsComboBox: {
                 name: 'List',
                 options: itemList,
                 optionsValue: 'code',
@@ -160,6 +165,7 @@
               </div>
             </div>
           </div>
+          <!--A3_2-->
           <div class="tab-content-2" data-bind="with: screenB">
             <ui:include src="../b/index.xhtml" />
           </div>
