@@ -95,12 +95,14 @@ public class StampCanonicalization implements DomainCanonicalization {
 
 			// 職場コードの正準化
 			if(interm.isImporting(Items.職場コード)) {
-				val either = workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo());
-				if (either.isLeft()) {
-					require.add(ExternalImportError.of(context.getDomainId(), either.getLeft()));
-					return;
+				if(!interm.getItemByNo(Items.職場コード).get().isEmpty()) {
+					val either = workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo());
+					if (either.isLeft()) {
+						require.add(ExternalImportError.of(context.getDomainId(), either.getLeft()));
+						return;
+					}
+					interm = either.getRight();
 				}
-				interm = either.getRight();
 			}
 
 			// 打刻日時の正準化(年月日時分秒→日時)
