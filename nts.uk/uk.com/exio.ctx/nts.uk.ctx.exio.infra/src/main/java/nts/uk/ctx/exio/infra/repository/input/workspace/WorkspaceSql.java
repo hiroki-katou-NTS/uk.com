@@ -228,12 +228,11 @@ public class WorkspaceSql {
 			String param = paramItem(workspaceItem.getItemNo());
 			
 			try {
-				if(dataType.getType() == DataType.BOOLEAN){
-					// bool型への暫定対応　本来はItemTypeにBOOLEANを追加すべきだが、一旦ここで変換して回避
-					dataType.getType().setParam(statement, param, Objects.equals(value,1));
-				} else{
-					dataType.getType().setParam(statement, param, value);
+				if(dataType.getType() == DataType.BOOLEAN && value != null && value.getClass() == Long.class){
+					// 編集済データをINSERTする際はBoolean型の項目であっても数値でくるので、変換が必要
+					value = Objects.equals(value,Long.valueOf(1));
 				}
+				dataType.getType().setParam(statement, param, value);
 			} catch (Exception ex) {
 				throw new RuntimeException("パラメータ設定に失敗：" + value + ", " + dataType + ", " + workspaceItem, ex);
 			}
