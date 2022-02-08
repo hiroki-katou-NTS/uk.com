@@ -161,7 +161,7 @@ DOMAIN_ID,ITEM_NO,ITEM_NAME,ITEM_TYPE,REQUIRED,IS_PRIMARYKEY,CHECK_METHOD,FQN
 116,3,"特別休暇管理",1,true,false,2,"nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr"
 116,4,"特別休暇付与基準日",3,true,false,,"nts.arc.time.GeneralDate"
 117,1,"社員コード",0,false,true,1,"nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode"
-117,2,"特別休暇コード",1,false,true,1,"nts.uk.ctx.at.shared.dom.remainingnumber.base.SpecialVacationCD"
+117,2,"特別休暇コード",1,false,true,1,"nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode"
 117,3,"特別休暇付与日",3,false,true,,"nts.arc.time.GeneralDate"
 117,4,"特別休暇期限日",3,true,false,,"nts.arc.time.GeneralDate"
 117,5,"特別休暇期限切れ状態",1,true,false,2,"nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus"
