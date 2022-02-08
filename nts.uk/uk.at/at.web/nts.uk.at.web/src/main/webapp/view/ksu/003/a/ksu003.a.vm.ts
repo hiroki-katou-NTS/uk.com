@@ -3411,12 +3411,30 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		gcResize(fixedGc: any, e: any, datafilter: any, i: any, type: string, checkType: number) {
 			let self = this;
 			if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed == 1) return;
-			if (_.isEmpty($("#extable-ksu003").data("errors")))
-				self.enableSave(true);
 			let param = checkType == 0 ? e.detail : e,
 				coreTimes = _.filter(fixedGc, (x: any) => { return x.type == "CoreTime" }), coreTime: any = [],
 				breakTimes = _.filter(self.breakChangeCore, (x: any) => { return x.type == "BreakTime" }), breakT: any = [],
 				indexBrStart = -1, indexBrEnd = -1, checkCore = 0, checkCore2 = 0, lstBrCoreStart: any = [], lstBrCoreEnd: any = [];
+			if (_.isEmpty($("#extable-ksu003").data("errors"))) {
+				let checkReturn = true;
+				if (_.includes(type, "lgc")) {
+					if ((param[2] == true && fixedGc[0].options.start != param[0] && param[2] == true && fixedGc[0].options.end == param[1]) ||
+					(param[2] == false && fixedGc[0].options.start == param[0] && param[2] == false && fixedGc[0].options.end != param[1])){
+						self.enableSave(true);
+						checkReturn = false;
+					}
+				} 
+				
+				if (_.includes(type, "rgc") && fixedGc[1].type === fixedGc[0].type) {
+					if ((param[2] == true && fixedGc[1].options.start != param[0] && param[2] == true && fixedGc[1].options.end == param[1]) ||
+					(param[2] == false && fixedGc[1].options.start == param[0] && param[2] == false && fixedGc[1].options.end != param[1])){
+						self.enableSave(true);
+						checkReturn = false;
+					}
+				} 
+				
+				if (checkReturn == true) return;
+			}
 			if (coreTimes.length > 0) {
 				coreTime = _.filter(coreTimes, (x: any) => { return _.includes(_.isNil(e.target) ? type + i : e.target.id, x.options.parent) });
 
@@ -3819,8 +3837,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					resizeFinished: (b: any, e: any, p: any) => {
 						if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed == 1) return;
 
-						if (_.isEmpty($("#extable-ksu003").data("errors")))
-							self.enableSave(true);
+						if (_.isEmpty($("#extable-ksu003").data("errors"))){
+							self.enableSave(true);	
+						}
 						self.checkDragDrop = false;
 						let param: any = [];
 						param.push(b);
@@ -4354,6 +4373,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		public nextDay() {
 			let self = this, checkSort = $("#extable-ksu003").exTable('updatedCells');
+			checkSort = _.filter(checkSort, (x: any) => { return x.value !== "なし" && x.columnKey !== "worktimeName"});
 			if (checkSort.length > 0 || self.enableSave() == true) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 					self.saveData(1).done(() => {
@@ -4388,6 +4408,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			block.grayout();
 			let self = this, i = 7, nextDay: any = moment(moment(self.targetDate()).add(7, 'd').format('YYYY/MM/DD')),
 				checkSort = $("#extable-ksu003").exTable('updatedCells');
+				checkSort = _.filter(checkSort, (x: any) => { return x.value !== "なし" && x.columnKey !== "worktimeName"});
 			if (checkSort.length > 0 || self.enableSave() == true) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 					self.saveData(1).done(() => {
@@ -4424,6 +4445,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		public prevDay() {
 			let self = this, checkSort = $("#extable-ksu003").exTable('updatedCells');
+			checkSort = _.filter(checkSort, (x: any) => { return x.value !== "なし" && x.columnKey !== "worktimeName"});
 			if (checkSort.length > 0 || self.enableSave() == true) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 					self.saveData(1).done(() => {
@@ -4457,6 +4479,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let self = this, i = 7;
 			let prvDay: any = moment(moment(self.targetDate()).subtract(7, 'd').format('YYYY/MM/DD'));
 			let checkSort = $("#extable-ksu003").exTable('updatedCells');
+			checkSort = _.filter(checkSort, (x: any) => { return x.value !== "なし" && x.columnKey !== "worktimeName"});
 			if (checkSort.length > 0 || self.enableSave() == true) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 					self.saveData(1).done(() => {
