@@ -14,6 +14,7 @@ import nts.uk.ctx.at.function.dom.supportworklist.outputsetting.SupportWorkOutpu
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -227,8 +228,8 @@ public class SupportWorkAggregationSetting extends AggregateRoot {
         supportWorkDetails.forEach(i -> {
             String affiliationHierarchyCode = workplaceInfos.stream().filter(w -> w.getWorkplaceId().equals(i.getAffiliationInfo())).map(w -> w.getHierarchyCode()).findFirst().orElse("");
             String workHierarchyCode = workplaceInfos.stream().filter(w -> w.getWorkplaceId().equals(i.getWorkInfo())).map(w -> w.getHierarchyCode()).findFirst().orElse("");
-            String affiliationHierarchy = affiliationHierarchyCode.isEmpty() ? affiliationHierarchyCode : affiliationHierarchyCode.substring(0, supportJudgmentHierarchy);
-            String workHierarchy = workHierarchyCode.isEmpty() ? workHierarchyCode : workHierarchyCode.substring(0, supportJudgmentHierarchy);
+            String affiliationHierarchy = affiliationHierarchyCode.isEmpty() ? affiliationHierarchyCode : StringUtils.leftPad(affiliationHierarchyCode, supportJudgmentHierarchy, "0").substring(0, supportJudgmentHierarchy);
+            String workHierarchy = workHierarchyCode.isEmpty() ? workHierarchyCode : StringUtils.leftPad(workHierarchyCode, supportJudgmentHierarchy, "0").substring(0, supportJudgmentHierarchy);
             if (!affiliationHierarchy.equals(workHierarchy)) {
                 i.setSupportWork(true);
             }
