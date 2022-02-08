@@ -73,7 +73,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             } else {
                 worksheet.setViewType(ViewType.PAGE_LAYOUT_VIEW);
                 worksheet.getCells().setStandardWidth(12);
-                worksheet.getCells().setColumnWidth(0, 9);
+                worksheet.getCells().setColumnWidth(0, 11);
                 worksheet.getCells().setColumnWidth(1, 13.5);
                 worksheet.getCells().setColumnWidth(2, 13.5);
                 reportContext.saveAsExcel(this.createNewFile(context, this.getReportName(dataSource.getSupportWorkOutputSetting().getName().v() + EXCEL_EXT)));
