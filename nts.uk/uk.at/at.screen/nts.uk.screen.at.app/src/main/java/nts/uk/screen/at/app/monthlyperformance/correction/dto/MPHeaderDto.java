@@ -159,7 +159,7 @@ public class MPHeaderDto {
 			MonthlyAttendanceItemDto maiDto) {
 		String key = mergeString(ADD_CHARACTER, String.valueOf(item.getId()));
 		String width = String.valueOf(item.getColumnWidth() == null ? 100 : item.getColumnWidth()) + PX;
-		MPHeaderDto dto = new MPHeaderDto("", key, "String", width, "#CFF1A5", false, "", false, false);
+		MPHeaderDto dto = new MPHeaderDto("", key, "String", width, "#6A6A6A", false, "", false, false);
 		// set constraint
 		// if (maiDto != null && maiDto.getPrimitive() != null) {
 		// dto.setConstraint(new Constraint("Primitive", false,

@@ -158,8 +158,6 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-sidebar .fc-events>ul,
         .fc-container .fc-sidebar .fc-employees>ul {
-            border: 1px solid #ccc;
-            border-radius: 3px;
             height: 112px;
         }
         .fc-container .fc-sidebar .fc-employees>ul.list-employee {
@@ -245,8 +243,6 @@ module nts.uk.ui.at.kdw013.calendar {
             z-index: 2;
         }
         .fc-container .fc-button-group button:not(:last-child) {
-            border-top-right-radius: 0px;
-            border-bottom-right-radius: 0px;
         }
         .fc-container .fc-button-group>.nts-datepicker-wrapper>input.nts-input {
             width: 110px;
@@ -254,7 +250,7 @@ module nts.uk.ui.at.kdw013.calendar {
             border-radius: 0px;
         }
         .fc-container .fc-header-toolbar .fc-settings-button {
-            width: 34px;
+            width: 60px;
         }
         .fc-settings-button {
             margin-top: 2px;
@@ -2329,7 +2325,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         let className = 'fav-' + $(arg.el).find('.fc-scrollgrid-sync-inner').parent().attr('data-date');
                         
                             $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i class='favIcon ` + className + `' ></i>`);
-                            setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 229, size: '16px', width: 16, height: 16 } }); }, 300);
+                            setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 229, size: '16px', width: 16, height: 16, extension: "png" } }); }, 300);
                     }
                 }
                 ,
@@ -2464,7 +2460,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     let setting = $('.fc-settings-button').get(0);
 
                                     if (setting) {
-                                        ko.applyBindingsToNode(setting, { icon: 3, size: '20px' }, vm);
+                                        ko.applyBindingsToNode(setting, { text: "設定" }, vm);
                                     }
                                 })
                                 .then(() => {
