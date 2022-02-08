@@ -119,8 +119,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		dataToAb: any = {};
 
 		modes = ko.observableArray(["normal", "paste", "pasteFlex"].map(c => ({ code: c, name: c })));
-
-        taskId = null;
+		checkOpenKdl003 : any = 0;
+        taskId : any = null;
         
 		constructor(data: any) {
 			let self = this;
@@ -1947,6 +1947,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					name: "Click",
 					handler: function(ui: any) {
 						if (ui.columnKey == "worktypeName" || ui.columnKey == "worktimeName") {
+							if(self.checkOpenKdl003 > 0) return;
+							
 							self.openKdl003Dialog($("#extable-ksu003").exTable('dataSource', 'middle').body[ui.rowIdx].worktimeCode,
 								$("#extable-ksu003").exTable('dataSource', 'middle').body[ui.rowIdx].worktypeCode, self.lstEmpId[ui.rowIdx].empId, ui.columnKey == "worktypeName" ? "WorkTypeName" : "WorkTimeName");
 						}
@@ -4958,7 +4960,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				block.clear();
 				return;
 			}
-
+			self.checkOpenKdl003 = 1;
 			let checkOpen = _.filter(self.disableDs, (x: any) => { return x.empId === empId });
 			let checkOpen2: any = [];
 			if (type === "WorkTypeName")
@@ -4980,6 +4982,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 				setShared('paramKsu003Kdl003', param);
 				nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(() => {
+					self.checkOpenKdl003 = 0;
 					model.removeError(css.cssWorkType, css.cssWorkTime, css.cssWorkTypeName, css.cssWorkTName, css.cssStartTime1, css.cssEndTime1, css.cssStartTime2, css.cssEndTime2, 1);
 					model.removeError(css.cssWorkType, css.cssWorkTime, css.cssWorkTypeName, css.cssWorkTName, css.cssStartTime1, css.cssEndTime1, css.cssStartTime2, css.cssEndTime2, 0);
 					_.remove($("#extable-ksu003").data("errors"), { rowIndex: lineNo })
