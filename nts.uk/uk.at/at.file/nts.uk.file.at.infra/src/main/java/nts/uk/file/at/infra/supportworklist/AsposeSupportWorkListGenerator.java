@@ -63,7 +63,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             worksheet.setName(dataSource.getSupportWorkOutputSetting().getName().v());
             worksheet.setGridlinesVisible(false);
             this.printHeader(worksheet, dataSource);
-            this.printContent(worksheet, dataSource);
+            this.printContent(worksheet, dataSource, exportCsv);
             this.pageBreakSetting(worksheet, dataSource);
             reportContext.processDesigner();
             this.pageSetting(worksheet, dataSource);
@@ -143,7 +143,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         maxColumnInHeader = nextColumn + 1;
     }
 
-    private void printContent(Worksheet worksheet, SupportWorkListDataSource dataSource) {
+    private void printContent(Worksheet worksheet, SupportWorkListDataSource dataSource, boolean isCsv) {
         val detailLayoutSetting = dataSource.getSupportWorkOutputSetting().getDetailLayoutSetting();
         val displaySetting = detailLayoutSetting.getDetailDisplaySetting();
         val outputItems = displaySetting.getOutputItems().stream().sorted(Comparator.comparing(OutputItem::getDisplayOrder)).collect(Collectors.toList());
@@ -161,12 +161,13 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             // C5_2
             cells.get(startRow, 1).setValue(this.getWorkplaceInfo(dataSource.getAggregationUnit(), dataSource.getWorkplaceInfoList(), workDataByWkp.getWorkplace(), true));
             this.setBasicStyle(cells.get(startRow, 1), false);
-            cells.merge(startRow, 1, 1, this.maxColumnInHeader);
+            cells.merge(startRow, 1, 1, this.maxColumnInHeader, true);
             startRow += 1;
 
             boolean isEventLine = false;
-            for (int j = 0; j < workDataByWkp.getSupportWorkDetails().size(); j++) {  // loop day
-                SupportWorkDataOfDay dataOfDay = workDataByWkp.getSupportWorkDetails().get(j);
+            val detailSorted = workDataByWkp.getSupportWorkDetails().stream().sorted(Comparator.comparing(SupportWorkDataOfDay::getDate)).collect(Collectors.toList());
+            for (int j = 0; j < detailSorted.size(); j++) {  // loop day
+                SupportWorkDataOfDay dataOfDay = detailSorted.get(j);
 
                 if (displaySetting.getDisplayDetail() == NotUseAtr.USE) {
                     // C6_1
@@ -199,7 +200,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                             } else {   // If the "AttendanceItemID" is 929 or higher, set the "Value" in Excel as it is.
                                 Optional<ItemValue> itemValue = detail.getItemList().stream().filter(item -> item.getItemId() == outputItem.getAttendanceItemId()).findFirst();
                                 if (itemValue.isPresent()) {
-                                    cells.get(startRow, startColumnOfC6).setValue(this.formatValue(itemValue.get().getValue(), itemValue.get().getValueType()));
+                                    cells.get(startRow, startColumnOfC6).setValue(this.formatValue(itemValue.get().getValue(), itemValue.get().getValueType(), isCsv));
                                     this.setDetailStyle(cells.get(startRow, startColumnOfC6), isEventLine, false, k == 0, k == dataOfDay.getSupportWorkDetailsList().size(), false, false);
                                 }
                             }
@@ -212,7 +213,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                         isEventLine = !isEventLine;
                     } // end loop detail
 
-                    cells.merge(rowStartMerge, 0, dataOfDay.getSupportWorkDetailsList().size(), 1);
+                    cells.merge(rowStartMerge, 0, dataOfDay.getSupportWorkDetailsList().size(), 1, true);
                     Cell cellDate = cells.get(rowStartMerge, 0);
                     Style styleDate = cellDate.getStyle();
                     styleDate.setVerticalAlignment(TextAlignmentType.TOP);
@@ -221,19 +222,14 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
 
                 /** Daily total */
                 if (wkpTotalDisplaySetting.getDisplayOneDayTotal() == NotUseAtr.USE) {
-//                    // C7_1
-//                    cells.get(startRow, 0).setValue(getText("KHA002_110"));
-//                    cells.merge(startRow, 1, 1, 2);
-//                    this.setTotalStyle(cells.get(startRow, 0), true, false, true, true);
-
                     // C7_1_2
                     if (displaySetting.getDisplayDetail() == NotUseAtr.NOT_USE) {
-                        cells.get(startRow, 0).setValue(getText("KHA002_110") + dataOfDay.getDate().toString("MM/dd"));
+                        cells.get(startRow, 0).setValue(getText("KHA002_110") + SPACE + dataOfDay.getDate().toString("MM/dd"));
                     } else {
                         // C7_1
                         cells.get(startRow, 0).setValue(getText("KHA002_110"));
                     }
-                    cells.merge(startRow, 0, 1, 2);
+                    cells.merge(startRow, 0, 1, 2, true);
                     this.setTotalStyle(cells.get(startRow, 0), true, false, true, true);
 
                     this.setTotalStyle(cells.get(startRow, 1), false, false, true, true);
@@ -241,7 +237,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
 
                     // C7_2 ~ C7_9
                     int startColumnOfC7 = 3;
-                    this.printTotal(cells, outputItems, dataOfDay.getTotalDetailOfDay(), startRow, startColumnOfC7, true);
+                    this.printTotal(cells, outputItems, dataOfDay.getTotalDetailOfDay(), startRow, startColumnOfC7, true, isCsv);
 
                     startRow += 1; // next row
                 }
@@ -260,7 +256,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                     this.setTotalStyle(cells.get(startRow, 2), false, false, false, true);
 
                     // C8_2 ~ C8_9
-                    this.printTotal(cells, outputItems, workDataByWkp.getTotalAffiliation(), startRow, 3, false);
+                    this.printTotal(cells, outputItems, workDataByWkp.getTotalAffiliation(), startRow, 3, false, isCsv);
                     startRow += 1;  // next row
                 }
 
@@ -273,7 +269,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                     this.setTotalStyle(cells.get(startRow, 1), false, false, false, true);
                     this.setTotalStyle(cells.get(startRow, 2), false, false, false, true);
                     // C8_2_2 ~ C8_2_9
-                    this.printTotal(cells, outputItems, workDataByWkp.getTotalSupport(), startRow, 3, false);
+                    this.printTotal(cells, outputItems, workDataByWkp.getTotalSupport(), startRow, 3, false, isCsv);
                     startRow += 1;
                 }
             }
@@ -292,7 +288,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                             cells.get(startRow, 2).setValue(getText(wkpInfo.get().getWorkplaceName()));
                             this.setTotalStyle(cells.get(startRow, 2), true, false, false, true);
                             // C9_2 ~
-                            this.printTotal(cells, outputItems, Optional.of(sp.getTotalValueDetail()), startRow, 3, false);
+                            this.printTotal(cells, outputItems, Optional.of(sp.getTotalValueDetail()), startRow, 3, false, isCsv);
                         }
                     }
 //                    for (int g = 0; g <= maxColumnInHeader; g++) {
@@ -312,7 +308,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 this.setTotalStyle(cells.get(startRow, 1), false, false, true, true);
                 this.setTotalStyle(cells.get(startRow, 2), false, false, true, true);
                 // C10_2 ~ C10_9
-                this.printTotal(cells, outputItems, workDataByWkp.getTotalWorkplace(), startRow, 3, true);
+                this.printTotal(cells, outputItems, workDataByWkp.getTotalWorkplace(), startRow, 3, true, isCsv);
                 startRow += 1;
             }
         } // end loop workplace
@@ -328,7 +324,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 this.setTotalStyle(cells.get(startRow, 2), false, false, false, true);
 
                 // C11_2 ~ C11_9
-                this.printTotal(cells, outputItems, dataSource.getSupportWorkOutputData().getTotalAffiliation(), startRow, 3, false);
+                this.printTotal(cells, outputItems, dataSource.getSupportWorkOutputData().getTotalAffiliation(), startRow, 3, false, isCsv);
 //                for (int m = 0; m <= maxColumnInHeader; m++) {
 //                    Style style = cells.get(startRow, m).getStyle();
 //                    style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.DOTTED);
@@ -347,7 +343,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 this.setTotalStyle(cells.get(startRow, 2), false, false, false, true);
 
                 // C11_2_2 ~ C11_2_2
-                this.printTotal(cells, outputItems, dataSource.getSupportWorkOutputData().getTotalSupport(), startRow, 3, false);
+                this.printTotal(cells, outputItems, dataSource.getSupportWorkOutputData().getTotalSupport(), startRow, 3, false, isCsv);
                 startRow += 1;
             }
         }
@@ -360,21 +356,22 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             this.setTotalStyle(cells.get(startRow, 1), false, false, true, false);
             this.setTotalStyle(cells.get(startRow, 2), false, false, true, false);
             // C12_2_2 ~
-            this.printTotal(cells, outputItems, dataSource.getSupportWorkOutputData().getGrandTotal(), startRow, 3, true);
+            this.printTotal(cells, outputItems, dataSource.getSupportWorkOutputData().getGrandTotal(), startRow, 3, true, isCsv);
         }
     }
 
     private void pageBreakSetting(Worksheet worksheet, SupportWorkListDataSource dataSource) {
-
+        Cells cells = worksheet.getCells();
+        HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
     }
 
-    private void printTotal(Cells cells, List<OutputItem> outputItems, Optional<TotalValueDetail> totalOpt, int startRow, int startColumn, boolean isFillBgColor) {
+    private void printTotal(Cells cells, List<OutputItem> outputItems, Optional<TotalValueDetail> totalOpt, int startRow, int startColumn, boolean isFillBgColor, boolean isCsv) {
         for (OutputItem item : outputItems) {
             if (totalOpt.isPresent()) {
                 val total = totalOpt.get().getItemValues().stream()
                         .filter(x -> x.getItemId() == item.getAttendanceItemId()).findFirst();
                 if (total.isPresent()) {
-                    cells.get(startRow, startColumn).putValue(this.formatValue(total.get().getValue(), total.get().getValueType()), true);
+                    cells.get(startRow, startColumn).putValue(this.formatValue(total.get().getValue(), item.getAttendanceItemId() == 1309 ? ValueType.AMOUNT : ValueType.TIME, isCsv), false);
                 }
             }
             if (item.getAttendanceItemId() <= 928)
@@ -384,7 +381,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             startColumn += 1;
         }
         if (totalOpt.isPresent()) {
-            cells.get(startRow, startColumn).putValue(this.formatValue(String.valueOf(totalOpt.get().getPeopleCount()), ValueType.AMOUNT), true);
+            cells.get(startRow, startColumn).putValue(this.formatValue(String.valueOf(totalOpt.get().getPeopleCount()), ValueType.AMOUNT, isCsv), true);
         }
         this.setTotalStyle(cells.get(startRow, startColumn), false, true, isFillBgColor, false);
     }
@@ -460,31 +457,23 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         return (hour < 10 ? "0" + hour : hour) + ":" + (minute < 10 ? "0" + minute : minute);
     }
 
-    private String formatValue(String value, ValueType type) {
+    private String formatValue(String value, ValueType type, boolean isCsv) {
         if (StringUtils.isEmpty(value)) return Strings.EMPTY;
 
         String targetValue = null;
         switch (type) {
-//            case DECIMAL:
-//                BigDecimal decimaValue = new BigDecimal(value);
-//                decimaValue = decimaValue.divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
-//                targetValue = String.valueOf(decimaValue.doubleValue());
-//                break;
-//            case HEXA_DECIMAL:
-//                BigDecimal decimalValue = new BigDecimal(value);
-//                BigDecimal intValue = decimalValue.divideToIntegralValue(BigDecimal.valueOf(60));
-//                BigDecimal remainValue = decimalValue.subtract(intValue.multiply(BigDecimal.valueOf(60)));
-//                val valueStr = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00), 2, RoundingMode.HALF_UP)).toPlainString();
-//                targetValue = valueStr.replace(".", ":");
-//                break;
             case TIME:
                 Integer srcValueT = Integer.valueOf(value);
                 targetValue = convertNumberToTime(srcValueT);
                 break;
             case AMOUNT:
+                if (isCsv){
+                    targetValue = value;
+                    break;
+                }
                 Double srcValueA = Double.valueOf(value);
                 DecimalFormat df = new DecimalFormat("#,###");
-                targetValue = df.format(srcValueA);
+                targetValue = df.format(srcValueA).replace(".", ",");
                 break;
         }
 
@@ -501,8 +490,6 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             style.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOTTED);
         }
         cell.setStyle(style);
-
-        // TODO: number format, right justified: https://docs.aspose.com/cells/java/data-formatting/#DataFormatting-SettingDisplayFormatofNumbers&DatesforRows&Columns
     }
 
     private void setDetailStyle(Cell cell, boolean isEvenLine, boolean isLeftAlignment, boolean firstRow, boolean lastRow, boolean firstColumn, boolean lastColumn) {
