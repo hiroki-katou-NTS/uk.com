@@ -43,8 +43,9 @@ import java.util.stream.Collectors;
 public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator implements SupportWorkListGenerator {
     private static final String CSV_EXT = ".csv";
     private static final String EXCEL_EXT = ".xlsx";
-    private static final int MAX_ROW_IN_PAGE = 68;
-    private static final int MAX_ROW_HEADER_IN_PAGE = 8;
+    private static final int MAX_ROW_IN_PAGE = 40;
+    private static final int MAX_ROW_TITLE_IN_PAGE = 2;
+    private static final int MAX_ROW_HEADER_IN_PAGE = 1;
     private static final int MAX_EMPLOYEE_PER_PAGE = 30;
     private final String SPACE = "　";
     private final String EMPTY = "";
@@ -76,6 +77,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 worksheet.getCells().setColumnWidth(0, 11);
                 worksheet.getCells().setColumnWidth(1, 13.5);
                 worksheet.getCells().setColumnWidth(2, 13.5);
+                worksheet.getCells().setColumnWidth(maxColumnInHeader, 11);
                 reportContext.saveAsExcel(this.createNewFile(context, this.getReportName(dataSource.getSupportWorkOutputSetting().getName().v() + EXCEL_EXT)));
             }
         } catch (Exception e) {
@@ -101,7 +103,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         pageSetup.setHeader(1, "&16&\"" + FONT_NAME + ",Bold\"" + dataSource.getSupportWorkOutputSetting().getName());
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm", Locale.JAPAN);
         pageSetup.setHeader(2, "&9&\"" + FONT_NAME + "\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
-        pageSetup.setPrintTitleRows("$1:$2");
+//        pageSetup.setPrintTitleRows("$3");
     }
 
     private void printHeader(Worksheet worksheet, SupportWorkListDataSource dataSource) {
@@ -150,6 +152,11 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         val wkpTotalDisplaySetting = dataSource.getSupportWorkOutputSetting().getDetailLayoutSetting().getWorkplaceTotalDisplaySetting();
         val grandTotalDisplay = detailLayoutSetting.getGrandTotalDisplaySetting();
 
+        boolean isPageBreak = detailLayoutSetting.getPageBreak().isUse();
+        HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
+        int pageIndex = 0;
+        int itemPerPage = 0;
+
         Cells cells = worksheet.getCells();
         int startRow = 3;
         val supportWorkDataList = dataSource.getSupportWorkOutputData().getSupportWorkDataList();
@@ -163,6 +170,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             this.setBasicStyle(cells.get(startRow, 1), false);
             cells.merge(startRow, 1, 1, this.maxColumnInHeader, true);
             startRow += 1;
+            itemPerPage += 1;
 
             boolean isEventLine = false;
             val detailSorted = workDataByWkp.getSupportWorkDetails().stream().sorted(Comparator.comparing(SupportWorkDataOfDay::getDate)).collect(Collectors.toList());
@@ -210,6 +218,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                         }
                         this.setDetailStyle(cells.get(startRow, startColumnOfC6), isEventLine, false, k == 0, k == dataOfDay.getSupportWorkDetailsList().size(), false, true);
                         startRow += 1;  // next row
+                        itemPerPage += 1;
                         isEventLine = !isEventLine;
                     } // end loop detail
 
@@ -240,8 +249,30 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                     this.printTotal(cells, outputItems, dataOfDay.getTotalDetailOfDay(), startRow, startColumnOfC7, true, isCsv);
 
                     startRow += 1; // next row
+                    itemPerPage += 1;
                 }
 
+                if (isPageBreak) {
+                    if (itemPerPage == MAX_ROW_IN_PAGE) {
+                        hPageBreaks.add(startRow);
+                        this.setBorderBottom(cells, startRow);
+                        pageIndex += 1;
+                        itemPerPage = 0;
+                    }
+//                    if (pageIndex <= 0) {
+//                        if (startRow - 2 >= MAX_ROW_IN_PAGE - (MAX_ROW_HEADER_IN_PAGE + MAX_ROW_TITLE_IN_PAGE)) {
+//                            hPageBreaks.add(startRow);
+//                            this.setBorderBottom(cells, startRow);
+//                            pageIndex += 1;
+//                        }
+//                    } else {
+//                        if (startRow - 2 - (pageIndex * MAX_ROW_IN_PAGE) >= MAX_ROW_IN_PAGE - MAX_ROW_HEADER_IN_PAGE) {
+//                            hPageBreaks.add(startRow);
+//                            this.setBorderBottom(cells, startRow);
+//                            pageIndex += 1;
+//                        }
+//                    }
+                }
 
             } // end loop day
 
@@ -258,6 +289,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                     // C8_2 ~ C8_9
                     this.printTotal(cells, outputItems, workDataByWkp.getTotalAffiliation(), startRow, 3, false, isCsv);
                     startRow += 1;  // next row
+                    itemPerPage += 1;
                 }
 
                 if (detailLayoutSetting.getExtractCondition() == EmployeeExtractCondition.EXTRACT_ALL_WORKING_EMPLOYEES
@@ -271,6 +303,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                     // C8_2_2 ~ C8_2_9
                     this.printTotal(cells, outputItems, workDataByWkp.getTotalSupport(), startRow, 3, false, isCsv);
                     startRow += 1;
+                    itemPerPage += 1;
                 }
             }
 
@@ -291,12 +324,8 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                             this.printTotal(cells, outputItems, Optional.of(sp.getTotalValueDetail()), startRow, 3, false, isCsv);
                         }
                     }
-//                    for (int g = 0; g <= maxColumnInHeader; g++) {
-//                        Style style = cells.get(startRow, g).getStyle();
-//                        style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.DOTTED);
-//                        cells.get(startRow, g).setStyle(style);
-//                    }
                     startRow += 1;  // next row
+                    itemPerPage += 1;
                 }
             }
 
@@ -310,10 +339,20 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 // C10_2 ~ C10_9
                 this.printTotal(cells, outputItems, workDataByWkp.getTotalWorkplace(), startRow, 3, true, isCsv);
                 startRow += 1;
+                itemPerPage += 1;
+            }
+
+            // page break by workplace
+            if (isPageBreak) {
+                if (i != supportWorkDataList.size() - 1 || supportWorkDataList.size() > 1) {
+                    hPageBreaks.add(startRow);
+                    this.setBorderBottom(cells, startRow);
+                    pageIndex += 1;
+                }
             }
         } // end loop workplace
 
-        if (grandTotalDisplay.getDisplayWorkplaceSupportMeter() == NotUseAtr.USE) {
+        if (grandTotalDisplay.getDisplayWorkplaceSupportMeter().isUse()) {
             /** affiliation work total all */
             if (detailLayoutSetting.getExtractCondition() == EmployeeExtractCondition.EXTRACT_ALL_WORKING_EMPLOYEES
                     || detailLayoutSetting.getExtractCondition() == EmployeeExtractCondition.EXTRACT_EMPLOYEES_GO_TO_SUPPORT) {
@@ -325,12 +364,8 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
 
                 // C11_2 ~ C11_9
                 this.printTotal(cells, outputItems, dataSource.getSupportWorkOutputData().getTotalAffiliation(), startRow, 3, false, isCsv);
-//                for (int m = 0; m <= maxColumnInHeader; m++) {
-//                    Style style = cells.get(startRow, m).getStyle();
-//                    style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.DOTTED);
-//                    cells.get(startRow, m).setStyle(style);
-//                }
                 startRow += 1;
+                itemPerPage += 1;
             }
 
             if (detailLayoutSetting.getExtractCondition() == EmployeeExtractCondition.EXTRACT_ALL_WORKING_EMPLOYEES
@@ -345,6 +380,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 // C11_2_2 ~ C11_2_2
                 this.printTotal(cells, outputItems, dataSource.getSupportWorkOutputData().getTotalSupport(), startRow, 3, false, isCsv);
                 startRow += 1;
+                itemPerPage += 1;
             }
         }
 
@@ -522,6 +558,15 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             style.setForegroundColor(Color.fromArgb(221, 235, 247));
 
         cell.setStyle(style);
+    }
+
+    private void setBorderBottom(Cells cells, int row){
+        for (int c = 0; c <= maxColumnInHeader; c++) {
+            Style style = cells.get(row - 1, c).getStyle();
+            style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.THICK);
+//            style.setForegroundColor(Color.fromArgb(255, 0, 0));
+            cells.get(row, c).setStyle(style);
+        }
     }
 
     private void setHeaderStyle(Cell cell, boolean firstColumn, boolean lastColumn) {
