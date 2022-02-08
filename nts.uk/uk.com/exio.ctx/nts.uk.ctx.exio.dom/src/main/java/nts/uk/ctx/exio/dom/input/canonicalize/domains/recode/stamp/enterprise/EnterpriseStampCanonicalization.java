@@ -16,6 +16,9 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class EnterpriseStampCanonicalization extends StampCanonicalization {
@@ -85,6 +88,35 @@ public class EnterpriseStampCanonicalization extends StampCanonicalization {
 
         if (外出区分.isPresent()) {
             interm = interm.addCanonicalized(CanonicalItem.of(Items.外出区分, 外出区分.get().value));
+        }
+
+        // Empty扱いとなる値
+        for (val e : EMPTY_VALUES.entrySet()) {
+            interm = canonicalizeEmpty(interm, e.getKey(), e.getValue());
+        }
+
+        return interm;
+    }
+
+    private static final Map<Integer, Object> EMPTY_VALUES;
+    static {
+        EMPTY_VALUES = new HashMap<>();
+        EMPTY_VALUES.put(Items.勤務場所コード, "0000");
+        EMPTY_VALUES.put(Items.就業時間帯コード, "000");
+        EMPTY_VALUES.put(Items.応援カードNO, "    ");
+        EMPTY_VALUES.put(Items.時間外時間, -1);
+        EMPTY_VALUES.put(Items.時間外深夜時間, -1);
+    }
+
+    private static IntermediateResult canonicalizeEmpty(IntermediateResult interm, int itemNo, Object emptyValue) {
+
+        if (!interm.isImporting(itemNo)) {
+            return interm;
+        }
+
+        Object value = interm.getItemByNo(itemNo).map(item -> item.getValue()).orElse(null);
+        if (Objects.equals(value, emptyValue)) {
+            return interm.addCanonicalized(CanonicalItem.nullValue(itemNo));
         }
 
         return interm;
