@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.exio.app.find.exi.condset.StdAcceptCondSetDto;
 
 /**
  * 起動のOutput

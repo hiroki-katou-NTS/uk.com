@@ -28,7 +28,7 @@ module nts.uk.com.view.smm001.b {
       vm.lastMonth = lastMonth;
 
       vm.empMonth =
-      `
+        `
       <div class="flex" style="height: 25px">
         <label class="radio-emp"
           data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${currentMonth}', checkedValue: 0, group: 'lockClassification-${vm.code}' }"></label>
@@ -41,7 +41,7 @@ module nts.uk.com.view.smm001.b {
     updateEmpMonth() {
       const vm = this;
       vm.empMonth =
-      `
+        `
       <div class="flex" style="height: 25px">
         <label class="radio-emp"
           data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${vm.currentMonth}', checkedValue: 0, group: 'lockClassification-${vm.code}' }"></label>
@@ -69,7 +69,7 @@ module nts.uk.com.view.smm001.b {
     salaryCooperationClassification: KnockoutObservable<boolean> = ko.observable(false);
     monthlyLockClassification: KnockoutObservable<number> = ko.observable(0);
     monthlyApprovalCategory: KnockoutObservable<number> = ko.observable(0);
-    salaryCooperationConditions: KnockoutObservable<string> = ko.observable("");
+    salaryCooperationConditions: KnockoutObservable<string> = ko.observable('0');
 
     employmentDtos: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     rightEmployments: KnockoutObservableArray<GridItem> = ko.observableArray([]);
@@ -103,6 +103,14 @@ module nts.uk.com.view.smm001.b {
       vm.paymentCode.valueHasMutated();
     }
 
+    findEmp(empListTemp: any, scd: any) {
+      const emp = _.find(empListTemp, (e: any) => {
+        return (e.employmentCode === scd);
+      })
+      console.log("emp ", emp);
+      return _.isUndefined(emp) ? nts.uk.resource.getText("SMM001_17") : emp.employmentName;
+    }
+
     onChangePaymentCode() {
       const vm = this;
       vm.paymentCode.subscribe(value => {
@@ -120,15 +128,12 @@ module nts.uk.com.view.smm001.b {
               vm.reloadRightGrid();
               return;
             }
-
             const employmentDtos = _.map(filterEmp, (item: any, index: number) =>
-              new GridItem(item.scd, _.find(vm.empListTemp, (e: any) => {
-                return (e.employmentCode === item.scd);
-              }).employmentName,
-              vm.CURRENT_MONTH_TEXT(),
-              vm.LAST_MONTH_TEXT(),
-              item.interlockingMonthAdjustment === 'CURRENT_MONTH' ? 0 : 1,
-              index)
+              new GridItem(item.scd, vm.findEmp(vm.empListTemp, item.scd),
+                vm.CURRENT_MONTH_TEXT(),
+                vm.LAST_MONTH_TEXT(),
+                item.interlockingMonthAdjustment === 'CURRENT_MONTH' ? 0 : 1,
+                index)
             );
             vm.rightEmployments().push(...employmentDtos);
             vm.employmentDtos.valueHasMutated();
@@ -186,14 +191,10 @@ module nts.uk.com.view.smm001.b {
       vm.$ajax('com', API.getInformationOnExternal).then((response: any) => {
         if (response) {
           // After has response - Process for setting behind
-          const smileLinkageOutputSetting = response.smileLinkageOutputSetting;
-          vm.salaryCooperationClassification(smileLinkageOutputSetting.salaryCooperationClassification === 1);
-          vm.salaryCooperationConditions = ko.observable(smileLinkageOutputSetting.salaryCooperationConditions);
-
-          vm.monthlyLockClassification(smileLinkageOutputSetting.monthlyLockClassification);
-          vm.monthlyApprovalCategory(smileLinkageOutputSetting.monthlyApprovalCategory);
-          // After has response - Process for setting after
           const stdOutputCondSetDtos = response.stdOutputCondSetDtos;
+          if (stdOutputCondSetDtos === null || stdOutputCondSetDtos.length == 0) {
+            vm.$dialog.info({ messageId: "Msg_3266" });
+          }
           stdOutputCondSetDtos.forEach((obj: any) => {
             finalArray.push({
               code: obj.conditionSetCode,
@@ -201,6 +202,14 @@ module nts.uk.com.view.smm001.b {
             });
           });
           vm.itemListCndSet(finalArray);
+          const smileLinkageOutputSetting = response.smileLinkageOutputSetting;
+          vm.salaryCooperationClassification(smileLinkageOutputSetting.salaryCooperationClassification === 1);
+          const value = _.cloneDeep(smileLinkageOutputSetting.salaryCooperationConditions);
+          vm.salaryCooperationConditions(value);
+
+          vm.monthlyLockClassification(smileLinkageOutputSetting.monthlyLockClassification);
+          vm.monthlyApprovalCategory(smileLinkageOutputSetting.monthlyApprovalCategory);
+          // After has response - Process for setting after
           vm.empListTemp = [...response.employmentDtos];
           vm.initGetAllListEmpByListPaymentCode(response.employmentDtos);
           vm.reloadRightGrid();
@@ -216,7 +225,6 @@ module nts.uk.com.view.smm001.b {
       const listPaymentCode = vm.enumPaymentCategoryList().map(e => e.value);
       vm.$ajax('com', API.selectListPaymentDate, listPaymentCode)
         .then((res: any) => {
-          console.log("res", res);
           let listEmploymentListWithSpecifiedCompany: any[] = [];
           res.forEach((e: any) => {
             listEmploymentListWithSpecifiedCompany.push(...e.employmentListWithSpecifiedCompany);
@@ -254,33 +262,33 @@ module nts.uk.com.view.smm001.b {
 
     validateBeforeSave() {
       const vm = this;
-      return !(vm.salaryCooperationClassification() && vm.salaryCooperationConditions() === '0');
+      if (vm.salaryCooperationClassification() && vm.salaryCooperationConditions() === '0') {
+        return false;
+      }
+      return true;
     }
 
     saveCommandBScreen() {
       const vm = this;
       if (this.validateBeforeSave() === false) {
         vm.$dialog.info({ messageId: "Msg_3252" });
-        return;
+      } else {
+        vm.$blockui('grayout');
+        const command = {
+          paymentCode: vm.paymentCode(),
+          salaryCooperationClassification: vm.salaryCooperationClassification() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+          monthlyLockClassification: vm.monthlyLockClassification() == 1 ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+          monthlyApprovalCategory: vm.monthlyApprovalCategory() == 1 ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+          salaryCooperationConditions: vm.salaryCooperationConditions(),
+          rightEmployments: vm.convertToRightEmploymentsList()
+        };
+        vm.$ajax('com', API.registerSmileLinkageExternalOutput, command)
+          .then((res: any) => {
+            vm.$dialog.info({ messageId: "Msg_15" });
+          }).fail((err) => {
+            vm.$dialog.error(err);
+          }).always(() => vm.$blockui('clear'));
       }
-      vm.$blockui('grayout');
-      const command = {
-        paymentCode: vm.paymentCode(),
-        salaryCooperationClassification: vm.salaryCooperationClassification() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
-        monthlyLockClassification: vm.monthlyLockClassification() == 1 ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
-        monthlyApprovalCategory: vm.monthlyApprovalCategory() == 0 ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
-        salaryCooperationConditions: vm.salaryCooperationConditions(),
-        rightEmployments: vm.convertToRightEmploymentsList()
-      };
-
-      console.log(">>>>>", vm.rightEmployments());
-
-      vm.$ajax('com', API.registerSmileLinkageExternalOutput, command)
-        .then((res: any) => {
-          vm.$dialog.info({ messageId: "Msg_15" });
-        }).fail((err) => {
-          vm.$dialog.error(err);
-        }).always(() => vm.$blockui('clear'));
     }
 
     convertToRightEmploymentsList() {
