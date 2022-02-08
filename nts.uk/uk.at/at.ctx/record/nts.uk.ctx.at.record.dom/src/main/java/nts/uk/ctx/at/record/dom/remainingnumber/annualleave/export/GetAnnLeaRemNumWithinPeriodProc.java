@@ -251,7 +251,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		
 		// １日に相当する契約時間を取得する
 		Optional<LaborContractTime> laborContractTimeOpt
-			= LeaveRemainingNumber.getTimeSetting(require, companyId, employeeId, criteriaDate);
+			= LeaveRemainingNumber.getContractTime(require, companyId, employeeId, criteriaDate);
 
 		// 勤務実績によって次回年休付与を更新
 		for (val nextAnnualGrantList : nextAnnualLeaveGrantList){

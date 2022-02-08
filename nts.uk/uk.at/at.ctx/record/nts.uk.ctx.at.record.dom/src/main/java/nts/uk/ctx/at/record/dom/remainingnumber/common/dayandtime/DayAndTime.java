@@ -93,7 +93,7 @@ public class DayAndTime {
 
 		// 積み崩しが必要か
 		// １日に相当する契約時間を取得する
-		Optional<LaborContractTime> contractTime = LeaveRemainingNumber.getTimeSetting(require, companyId, employeeId, criteriaDate);
+		Optional<LaborContractTime> contractTime = LeaveRemainingNumber.getContractTime(require, companyId, employeeId, criteriaDate);
 
 		if(!contractTime.isPresent()){
 			contractTime = Optional.of(new LaborContractTime(0));

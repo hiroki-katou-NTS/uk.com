@@ -99,7 +99,7 @@ public class ChildCareNurseUsedNumber implements Cloneable{
 //		LaborContractTime contractTime = require.contractTime(companyId, employeeId, criteriaDate);
 
 		// 「年休１日に相当する時間年休時間を取得する」を取得する
-		 Optional<LaborContractTime> contractTime = LeaveRemainingNumber.getTimeSetting(require, companyId, employeeId, criteriaDate);
+		 Optional<LaborContractTime> contractTime = LeaveRemainingNumber.getContractTime(require, companyId, employeeId, criteriaDate);
 
 		return usedDayfromUsedTime(contractTime);
 	}

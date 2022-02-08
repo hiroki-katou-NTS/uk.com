@@ -406,16 +406,15 @@ public class GetRsvLeaRemNumWithinPeriod {
 			GeneralDate baseDate, AnnualPaidLeaveSetting annualLeaveSet, LeaveRemainingNumber grantDays) {
 		LeaveGrantDayNumber days = new LeaveGrantDayNumber(grantDays.getDays().v());
 
-		// 半日年休管理の場合、丸め後に値を取得する
-		days = new LeaveGrantDayNumber(annualLeaveSet.getManageAnnualSetting().getHalfDayManage()
-				.getValueAfterRound(annualLeaveSet.getYearManageType(), days.v()).v());
+		// 半日年休管理の場合、積立年休の付与数を取得する
+		days = new LeaveGrantDayNumber(annualLeaveSet.getAnnualLeavGrant(days.v()).v());
 
-		val timeSetting = LeaveRemainingNumber.getTimeSetting(require, companyID, employeeId, baseDate);
-		// 時間年休管理の場合、丸め後に値を取得する
-		if (grantDays.getMinutes().isPresent() && timeSetting.isPresent()) {
-			return new LeaveGrantDayNumber(days.v() + annualLeaveSet.getTimeSetting()
-					.getValueAfterRound(annualLeaveSet.getYearManageType(), grantDays.getMinutes().get().v(), timeSetting.get().v()).map(x -> x.v())
-					.orElse(0.0));
+		val contractTime = LeaveRemainingNumber.getContractTime(require, companyID, employeeId, baseDate);
+		// 時間年休管理の場合、積立年休の付与数を取得する
+		if (grantDays.getMinutes().isPresent() && contractTime.isPresent()) {
+			return new LeaveGrantDayNumber(days.v()
+					+ annualLeaveSet.getValueAfterRound(grantDays.getMinutes().get().v(), contractTime.get().v())
+							.map(x -> x.v()).orElse(0.0));
 		}
 		return days;
 	}

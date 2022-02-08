@@ -97,9 +97,9 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     }
     
 	/**
-	 * 丸め後に値を取得する
+	 * 積立年休の付与数を取得する
 	 */
-	public Optional<MonthVacationGrantDay> getValueAfterRound(ManageDistinct yearManageType, int minute, int timeOneHour) {
+    protected Optional<MonthVacationGrantDay> getValueAfterRound(ManageDistinct yearManageType, int minute, int timeOneHour) {
 		if (!yearManageType.isManaged() || !isManaged()) {
 			return Optional.empty();
 		}

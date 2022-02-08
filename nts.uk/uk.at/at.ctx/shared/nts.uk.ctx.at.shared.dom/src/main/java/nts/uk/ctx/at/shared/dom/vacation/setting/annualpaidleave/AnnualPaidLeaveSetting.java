@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.MonthVacationGrantDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt;
@@ -152,4 +153,18 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 
 	}
 
+	/**
+	 * 積立年休の付与数を取得する
+	 */
+	public MonthVacationGrantDay getAnnualLeavGrant(Double days) {
+		return this.getManageAnnualSetting().getHalfDayManage()
+				.getAnnualLeavGrant(this.yearManageType, days);
+	}
+	
+	/**
+	 * 積立年休の付与数を取得する
+	 */
+	public Optional<MonthVacationGrantDay> getValueAfterRound(int minute, int timeOneHour) {
+		return this.getTimeSetting().getValueAfterRound(this.yearManageType, minute, timeOneHour);
+	}
 }
