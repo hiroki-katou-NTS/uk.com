@@ -207,7 +207,7 @@ module nts.uk.com.view.smm001.a {
     saveSmile() {
       const vm = this;
       if (this.validateBeforeSave() === false) {
-        vm.$dialog.info({ messageId: "Msg_3250" });                                 thnt
+        vm.$dialog.info({ messageId: "Msg_3250" });
         return;
       }
       vm.setDefaultBeforeSave();
@@ -239,7 +239,6 @@ module nts.uk.com.view.smm001.a {
         }).fail((err) => {
           vm.$dialog.error(err);
         }).always(() => vm.$blockui('clear'));
-
       vm.screenB.saveCommandBScreen();
     }
   }
