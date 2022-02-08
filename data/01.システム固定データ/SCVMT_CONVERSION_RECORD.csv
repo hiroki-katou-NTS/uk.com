@@ -1,9 +1,12 @@
 ﻿CATEGORY_NAME,TARGET_TBL_NAME,RECORD_NO,SOURCE_ID,EXPLANATION,WHERE_CONDITION,REMOVE_DUPLICATE
 "カードNO","KRCMT_STAMP_CARD",1,"1b4ac422-22f8-4107-801a-d0da10541622","","",true
+"下位作業マスタ","KSRMT_TASK_CHILD",1,"97cb613b-815b-49ed-a1c2-eede0214df51","","",true
 "代休管理データ","KRCDT_HD_COM_MNG",1,"2faf6ed6-d354-4265-a16a-f214e729294e","",,true
 "休出管理データ","KRCDT_HD_WORK_MNG",1,"ed466f3c-e274-474a-aaa7-bdee6415d2b1","",,false
 "休職休業履歴","BSYMT_TEMP_ABS_HIST",1,"cf9b1cb1-5559-4a16-95c3-dffefab8123c","",,false
 "休職休業履歴","BSYMT_TEMP_ABS_HIST_ITEM",1,"cf9b1cb1-5559-4a16-95c3-dffefab8123c","",,false
+"作業マスタ","KSRMT_TASK_CHILD",1,"d40c4e62-48a3-46d4-8037-126baff5eea4","","",true
+"作業マスタ","KSRMT_TASK_MASTER",1,"d40c4e62-48a3-46d4-8037-126baff5eea4","","",true
 "個人基本情報","BPSMT_PERSON",1,"e00c2748-5a9e-4ea3-8225-f3993833ba7a","",,true
 "個人基本情報","BSYMT_SYAIN",1,"e00c2748-5a9e-4ea3-8225-f3993833ba7a","",,true
 "個人基本情報","SACMT_USER",1,"e00c2748-5a9e-4ea3-8225-f3993833ba7a","",,true
@@ -37,6 +40,7 @@
 "所属職場履歴","BSYMT_AFF_WKP_HIST_ITEM",1,"a03d27aa-cd07-4a23-b01b-36702fe2d0ff","",,true
 "所属雇用履歴","BSYMT_AFF_EMP_HIST",1,"a2da9a97-1263-46e6-b620-e8301fdc3327","","",true
 "所属雇用履歴","BSYMT_AFF_EMP_HIST_ITEM",1,"a2da9a97-1263-46e6-b620-e8301fdc3327","","",true
+"打刻データ","KRCDT_STAMP",1,"da03c02b-3bf1-4067-94fe-b905f52a6431","","",true
 "振休管理データ","KRCDT_HD_SUB_MNG",1,"8ce1c670-6766-4ae0-8401-d73fe1d2f041","",,false
 "振出管理データ","KRCDT_PAYOUT_MNG",1,"40db3534-47bb-4cc9-a7e8-3bbb2c68ab83","","",true
 "特別休暇付与残数データ","KRCDT_HD_SP_REMAIN",1,"997d14ef-4489-4f8c-9350-182d84778c2f","",,false
@@ -49,3 +53,5 @@
 "積立休暇付与残数データ","KRCDT_HDSTK_REM",1,"8944b23c-0c77-474b-a03a-1d1686a552fe","",,true
 "職場マスタ","BSYMT_WKP_CONFIG_2",1,"8e2c3182-e4bd-4d4b-9b35-afb8eec509de","","",true
 "職場マスタ","BSYMT_WKP_INFO",1,"8e2c3182-e4bd-4d4b-9b35-afb8eec509de","","",true
+"設備マスタ","OFIDT_EQUIPMENT",1,"5394007d-42bc-451c-bbe0-c0479be44759","","",true
+"設備分類マスタ","OFIDT_EQUIPMENT_CLS",1,"2ec30cfc-3d1e-479d-8f4f-53fb6ff6d1bc","","",true
