@@ -910,6 +910,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             $('#kaf002TabPanel').parent().on('bindingActualWkpLocation', (_, param) => {
               self.workLocationNames = param.workLocationNames;
               self.workplaceNames = param.workplaceNames;
+              if (self.isPreAtr()) return;
               setActualData();
             });
             if (self.isPreAtr()) return;
