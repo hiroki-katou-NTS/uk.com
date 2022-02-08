@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,20 +51,43 @@ public class WorkTimeAddTimeSetForMonthAggr {
 		
 		String cid = AppContexts.user().companyId();
 		
-		/** 休暇加算時間を取得する */
-		val vacationTime = calcVacationAddTime(require, cid, dailies, addSet).valueAsMinutes();
-		
-		/** 欠勤加算時間を取得する */
-		val absenceTime = calcAbsenceAddTime(dailies).valueAsMinutes();
-		
-		/** 短時間勤務加算時間を取得する */
-		val shortTime = calcShortTimeAddTime(dailies).valueAsMinutes();
-		
-		/** 遅刻・早退加算時間を取得する */
-		val lateEarlyTime = calcLateEarlyAddTime(require, cid, dailies).valueAsMinutes();
+		int addTime = dailies.stream().filter(d -> d.getAttendanceTimeOfDailyPerformance().isPresent()).mapToInt(r -> {
+			
+			val d = r.getAttendanceTimeOfDailyPerformance().get();
+			val record = Collections.singletonList(r);
+			
+			/** 休暇加算時間を取得する */
+			val vacationTime = calcVacationAddTime(require, cid, record, addSet).valueAsMinutes();
+			
+			/** 欠勤加算時間を取得する */
+			val absenceTime = calcAbsenceAddTime(record).valueAsMinutes();
+			
+			/** 短時間勤務加算時間を取得する */
+			val shortTime = calcShortTimeAddTime(record).valueAsMinutes();
+			
+			/** 遅刻・早退加算時間を取得する */
+			val lateEarlyTime = calcLateEarlyAddTime(require, cid, record).valueAsMinutes();
+			
+			/**　取得できた時間をすべて合計するする */
+			val sum = vacationTime + absenceTime + shortTime + lateEarlyTime;
+			
+			/** 実働就業時間 */
+			val actualWorkTime = d.getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getActualWorkTime();
+			/** 所定労働時間 */
+			val prescribedLaborTime = d.getWorkScheduleTimeOfDaily().getRecordPrescribedLaborTime();
+			
+			/** 所定労働時間超えたかを確認する */
+			if (sum + actualWorkTime.valueAsMinutes() < prescribedLaborTime.valueAsMinutes())
+				
+				/** 加算時間　✙=　一日加算合計時間 */
+				return sum;
+			
+			/** 加算時間　✙=　日別勤怠の勤怠時間．予定時間．実績所定労働時間　－　日別勤怠の勤怠時間．勤務時間．総労働時間．所定内時間実働就業時間 */
+			return prescribedLaborTime.valueAsMinutes() - actualWorkTime.valueAsMinutes();
+		}).sum();
 		
 		/** 取得できた時間をすべて加算する */
-		return new AttendanceTimeMonth(vacationTime + absenceTime + shortTime + lateEarlyTime);
+		return new AttendanceTimeMonth(addTime);
 	}
 	
 	/** 欠勤加算時間を取得する */
