@@ -103,9 +103,9 @@ public class EnterpriseStampCanonicalization extends StampCanonicalization {
         EMPTY_VALUES = new HashMap<>();
         EMPTY_VALUES.put(Items.勤務場所コード, "0000");
         EMPTY_VALUES.put(Items.就業時間帯コード, "000");
-        EMPTY_VALUES.put(Items.応援カードNO, "    ");
-        EMPTY_VALUES.put(Items.時間外時間, -1);
-        EMPTY_VALUES.put(Items.時間外深夜時間, -1);
+        EMPTY_VALUES.put(Items.応援カードNO, "      ");
+        EMPTY_VALUES.put(Items.時間外時間, -1l);
+        EMPTY_VALUES.put(Items.時間外深夜時間, -1l);
     }
 
     private static IntermediateResult canonicalizeEmpty(IntermediateResult interm, int itemNo, Object emptyValue) {
