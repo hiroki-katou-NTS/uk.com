@@ -68,7 +68,7 @@ public class TotalValueDetail {
         totalItems.forEach(i -> {
             List<ItemValue> d = groupedDetails.get(i);
             ValueType valueType = d.isEmpty() ? ValueType.TIME : d.get(0).getValueType();
-            int totalValue = d.stream().map(ii -> Integer.valueOf(ii.getValue())).collect(Collectors.summingInt(Integer::intValue));
+            int totalValue = d.stream().filter(ii -> ii.getValue() != null).map(ii -> Integer.valueOf(ii.getValue())).collect(Collectors.summingInt(Integer::intValue));
             result.add(ItemValue.builder().itemId(i).value(totalValue).valueType(valueType));
         });
         return result;
