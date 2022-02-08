@@ -9,3 +9,15 @@
 #B2_1 tr {
     height: 24px;
 }
+
+.checkbox-area {
+    width: 498px;
+}
+
+.checkbox-area .checkbox-wrapper:nth-child(1) {
+    width: 126px;
+}
+
+.checkbox-area .checkbox-wrapper:nth-child(2) {
+    width: 126px;
+}
