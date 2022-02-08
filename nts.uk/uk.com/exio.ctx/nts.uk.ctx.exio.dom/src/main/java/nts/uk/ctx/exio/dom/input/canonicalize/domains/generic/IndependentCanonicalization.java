@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
@@ -69,11 +68,8 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	 * Record(CSV行番号, 編集済みの項目List)のListの方からworkspaceの項目Noに一致しているやつの値を取る 
 	 */
 	protected KeyValues getPrimaryKeys(RevisedDataRecord record, DomainWorkspace workspace) {
-		
-		return getPrimaryKeyItemNos(workspace).stream()
-				.map(itemNo -> record.getItemByNo(itemNo).get())
-				.map(item -> item.getValue())
-				.collect(Collectors.collectingAndThen(toList(), KeyValues::new));
+		val itemNos = getPrimaryKeyItemNos(workspace);
+		return KeyValues.create(IntermediateResult.create(record), itemNos);
 	}
 	
 	/**
@@ -81,9 +77,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	 * @return
 	 */
 	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return workspace.getItemsPk().stream()
-				.map(k -> k.getItemNo())
-				.collect(toList());
+		return workspace.getPkItemNos();
 	}
 
 	protected void canonicalize(
