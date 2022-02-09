@@ -1174,7 +1174,7 @@ module nts.uk.com.view.ccg.share.ccg {
              * Calculate KCP005 rows
              */
             private calculateKcp005Rows(marginHeight: number): number {
-                const tabContentHeight = parseInt(document.querySelector('.ccg-tabpanel #ccg001-tab-content-3').style.height);
+                const tabContentHeight = $("#component-ccg001 .tabs-content").height();
                 const heightPerRow = 24;
                 return (tabContentHeight - marginHeight) / heightPerRow;
             }
@@ -1183,7 +1183,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 if (self.showAdvancedSearchTab && self.showEmployeeSelection) {
-                    const Kcp005MarginHeight = 70;
+                    const Kcp005MarginHeight = 95;
 
                     // set KCP005 options
                     self.employeeinfo = {
