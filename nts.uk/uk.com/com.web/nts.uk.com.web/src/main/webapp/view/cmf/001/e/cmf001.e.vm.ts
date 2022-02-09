@@ -89,6 +89,7 @@ module nts.uk.com.view.cmf001.e.viewmodel {
 			self.selectedCode("");
 			self.setInfo(SettingInfo.new());
 			self.isNewMode(true);
+			self.csvFileName(null);
 		}
 	
 		updateMode(){
