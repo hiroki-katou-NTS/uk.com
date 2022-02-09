@@ -246,7 +246,7 @@ module nts.uk.ui.koExtentions {
             
             $input.attr("placeholder", placeHolder);
             $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
-            $input.outerWidth($container.outerWidth(true) - minusWidth);　
+            $input.outerWidth($container.outerWidth(true) - minusWidth + 8);　
             
             let primaryKey = ko.unwrap(data.targetKey);
             let searchObject = new SearchPub(primaryKey, searchMode, dataSource, fields, childField);

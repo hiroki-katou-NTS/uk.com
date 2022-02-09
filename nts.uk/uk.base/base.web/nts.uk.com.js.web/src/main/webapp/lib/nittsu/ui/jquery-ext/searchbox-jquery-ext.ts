@@ -203,7 +203,7 @@ module nts.uk.ui.jqueryExtentions {
             
             $input.attr("placeholder", placeHolder);
             $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
-            $input.outerWidth($container.outerWidth(true) - minusWidth);　
+            $input.outerWidth($container.outerWidth(true) - minusWidth + 8);　
             
             let primaryKey = options.targetKey;
             let searchObject = new koExtentions.SearchPub(primaryKey, searchMode, dataSource, fields, childField);
