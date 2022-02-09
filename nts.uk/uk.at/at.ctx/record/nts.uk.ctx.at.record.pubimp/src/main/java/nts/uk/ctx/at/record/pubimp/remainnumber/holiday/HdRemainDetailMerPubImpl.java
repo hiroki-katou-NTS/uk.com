@@ -98,12 +98,12 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 			companySets = new MonAggrCompanySettings();
 			AnnualPaidLeaveSetting annualLeaveSet = annualPaidLeaveSet.findByCompanyId(companyId);
 			Optional<GrantHdTblSet> grantHdTblSetOpt = Optional.empty();
-			Optional<List<LengthServiceTbl>> lengthServiceTblsOpt = Optional.empty();
+			Optional<LengthServiceTbl> lengthServiceTblsOpt = Optional.empty();
 			String grantTableCode = "";
 			if(annualLeaveEmpBasicInfoOpt.isPresent()) {
 				grantTableCode = annualLeaveEmpBasicInfoOpt.get().getGrantRule().getGrantTableCode().v();
 				grantHdTblSetOpt = yearHolidayRepo.findByCode(companyId, grantTableCode);
-				lengthServiceTblsOpt = Optional.ofNullable(this.lengthServiceRepo.findByCode(companyId, grantTableCode));
+				lengthServiceTblsOpt = Optional.ofNullable(this.lengthServiceRepo.findByCode(companyId, grantTableCode).orElse(null));
 			}
 			companySets.setAnnualLeaveSet(annualLeaveSet);
 			ConcurrentMap<String, GrantHdTblSet> grantHdTblSetMap = new ConcurrentHashMap<>();
@@ -111,7 +111,7 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 				grantHdTblSetMap.put(grantTableCode, grantHdTblSetOpt.get());
 			}
 			companySets.setGrantHdTblSetMap(grantHdTblSetMap);
-			ConcurrentMap<String, List<LengthServiceTbl>> lengthServiceTblListMap = new ConcurrentHashMap<>();
+			ConcurrentMap<String,LengthServiceTbl> lengthServiceTblListMap = new ConcurrentHashMap<>();
 			if(lengthServiceTblsOpt.isPresent()){
 				lengthServiceTblListMap.put(grantTableCode, lengthServiceTblsOpt.get());
 			}

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantReferenceDate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantSimultaneity;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfService;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.StandardCalculation;
@@ -82,7 +83,7 @@ public class YearHolidayRepositoryClass {
 				List<GrantHdTbl> listYearHoliday5 = new ArrayList<>();
 				
 				//conditionNo
-				List<LengthServiceTbl> listFindByCode = lengthServiceRepository.findByCode(companyId,dataYearHolidayCode);
+				LengthServiceTbl listFindByCode = lengthServiceRepository.findByCode(companyId,dataYearHolidayCode).orElse(null);
 
 				int listGrantCondition1 = listGrantConditionCha.get(0).getConditionNo();
 				listYearHoliday = grantYearHolidayRepository
@@ -380,10 +381,10 @@ public class YearHolidayRepositoryClass {
 	                        }
 	                        
 	                        data.put("付与回 10", i+1);
-	                        
-	                        if(listFindByCode.size()==0 || listYearHoliday.size()== 0){
+
+	                        if(listFindByCode.getLengthOfService().size()==0 || listYearHoliday.size()== 0){
 	                        }else{
-	                        	LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+	                        	LengthOfService dataFindByCode = listFindByCode.getLengthOfService().get(i);
 	                            data.put("勤続年数年 11", dataFindByCode.getYear()+""+TextResource.localize("KMF003_41"));
 	                        	data.put("勤続年数月 12", dataFindByCode.getMonth()+""+TextResource.localize("KMF003_76"));
 	     						data.put("付与日数 13", listYearHoliday.get(0).getGrantDays()+""+TextResource.localize("KMF003_77"));
@@ -402,17 +403,17 @@ public class YearHolidayRepositoryClass {
 	     		
 	                    		// kiem tra cot thu 3 co check hay ko? 
 	                    		if(c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE){
-	                    			if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
+	                    			if(listFindByCode.getLengthOfService().get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
 	                					data.put("基準日 16", "入社日");
 	                				}else{
-	                					data.put("基準日 16", "年休付与基準日 ");                    				
+	                					data.put("基準日 16", "年休付与基準日 ");
 	                				}
 	                    			data.put("一斉付与 17", "");
-	                    			
+
 	                    			// neu check thu kt dk 16, 17 , 18
 	                    		}else{
-	                    			if(listFindByCode.get(i).getAllowStatus() == GrantSimultaneity.NOT_USE){
-	                    				if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
+	                    			if(listFindByCode.getLengthOfService().get(i).getAllowStatus() == GrantSimultaneity.NOT_USE){
+	                    				if(listFindByCode.getLengthOfService().get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
 	                    					data.put("基準日 16", "入社日");
 	                    				}else{
 	                    					data.put("基準日 16", "年休付与基準日");                    				
@@ -445,10 +446,10 @@ public class YearHolidayRepositoryClass {
 	                    			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValue()+""+TextResource.localize("KMF003_77"));
 	                    			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValue().v()-1+""+TextResource.localize("KMF003_77"));
 	                    		}
-	                    		
+
 	                    		//22
 	                    		if(listYearHoliday2.size() !=0){
-	                    			LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+	                    			LengthOfService dataFindByCode = listFindByCode.getLengthOfService().get(i);
 	                    			// 21
 		                            data.put("付与回 21", i+1);
 	                    			//code  enable: false
@@ -499,10 +500,10 @@ public class YearHolidayRepositoryClass {
 	                    			}
 	                    		}
 	                        	// 30
-	                        	
+
 	                        	if(listYearHoliday3.size() !=0){
 	                        		data.put("付与回 30", i+1);
-	                        		LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+	                        		LengthOfService dataFindByCode = listFindByCode.getLengthOfService().get(i);
 	                    			data.put("勤続年数年 31",dataFindByCode.getYear()+"年");
 	                        		data.put("勤続年数月 32",dataFindByCode.getMonth()+"ヶ月");
 	                        		
@@ -558,7 +559,7 @@ public class YearHolidayRepositoryClass {
 	                        	}
 	                        	if(listYearHoliday4.size() !=0){
 	                        		data.put("付与回 39", i+1);
-	                        		LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+	                        		LengthOfService dataFindByCode = listFindByCode.getLengthOfService().get(i);
 	                        		data.put("勤続年数年 40", dataFindByCode.getYear()+"年");
 	                        		data.put("勤続年数月 41", dataFindByCode.getMonth()+"ヶ月");
 	                        		
@@ -605,7 +606,7 @@ public class YearHolidayRepositoryClass {
 	                    			}else{
 	                    				data.put("上限５ 47", c.getGrantConditions().get(3).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
 	                    			}
-	                    			
+
 	                    		}else{
 	                    			data.put("基準設定下限５ 46", c.getGrantConditions().get(4).getConditionValue()+TextResource.localize("KMF003_77"));
 	                    			if(c.getGrantConditions().get(3).getUseConditionAtr() == UseConditionAtr.NOT_USE){
@@ -624,7 +625,7 @@ public class YearHolidayRepositoryClass {
 	                    		}
 	                        	if(listYearHoliday5.size() !=0){
 	                        		data.put("付与回 48", i+1);
-	                        		LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+	                        		LengthOfService dataFindByCode = listFindByCode.getLengthOfService().get(i);
 	                        		data.put("勤続年数年 49", dataFindByCode.getYear()+"年");
 	                        		data.put("勤続年数月  50", dataFindByCode.getMonth()+"ヶ月");
 //	                        		data.put("勤続年数年 49", "");
@@ -657,10 +658,10 @@ public class YearHolidayRepositoryClass {
 	                        data.put("上限 9", "");
 	                        data.put("付与回 10", i+1);
 	                        data.put("備考 54","");
-	                        
+
 	                        // su ly 11
-	                        if (i < listFindByCode.size()) {
-	                               LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+	                        if (i < listFindByCode.getLengthOfService().size()) {
+	                               LengthOfService dataFindByCode = listFindByCode.getLengthOfService().get(i);
 	                               data.put("勤続年数年 11", dataFindByCode.getYear() + TextResource.localize("KMF003_41"));
 	                               data.put("勤続年数月 12", dataFindByCode.getMonth() + TextResource.localize("KMF003_76"));
 	                               data.put("付与日数 13", listYearHoliday.get(i).getGrantDays()+""+TextResource.localize("KMF003_77"));
@@ -715,7 +716,7 @@ public class YearHolidayRepositoryClass {
 	                        if(i<listYearHoliday2.size()){
 								if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.USE){
 									data.put("付与回 21", i + 1);
-									LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+									LengthOfService dataFindByCode = listFindByCode.getLengthOfService().get(i);
 	                    			data.put("勤続年数年 22",dataFindByCode.getYear()+"年");
 	                        		data.put("勤続年数月 23",dataFindByCode.getMonth()+"ヶ月");
 //									data.put("勤続年数年 22", "");
@@ -751,7 +752,7 @@ public class YearHolidayRepositoryClass {
 	                		if(i<listYearHoliday3.size()){
 								if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.USE){
 									data.put("付与回 30", i+1);
-									LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+									LengthOfService dataFindByCode = listFindByCode.getLengthOfService().get(i);
 	                    			data.put("勤続年数年 31",dataFindByCode.getYear()+"年");
 	                        		data.put("勤続年数月 32",dataFindByCode.getMonth()+"ヶ月");
 //									data.put("勤続年数年 31","");
@@ -781,11 +782,11 @@ public class YearHolidayRepositoryClass {
 	                		data.put("基準設定４ 36", "");
 	                    	data.put("基準設定下限４ 37", "");
 	                    	data.put("上限４ 38", "");
-	                		
+
 	                		if(i<listYearHoliday4.size()){
 								if(c.getGrantConditions().get(3).getUseConditionAtr() == UseConditionAtr.USE){
 									data.put("付与回 39", i+1);
-									LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+									LengthOfService dataFindByCode = listFindByCode.getLengthOfService().get(i);
 	                    			data.put("勤続年数年 40",dataFindByCode.getYear()+"年");
 	                        		data.put("勤続年数月 41",dataFindByCode.getMonth()+"ヶ月");
 									
@@ -821,7 +822,7 @@ public class YearHolidayRepositoryClass {
 	                		if(i<listYearHoliday5.size()){
 								if(c.getGrantConditions().get(4).getUseConditionAtr() == UseConditionAtr.USE){
 	                        		data.put("付与回 48", i+1);
-	                        		LengthServiceTbl dataFindByCode = listFindByCode.get(i);
+	                        		LengthOfService dataFindByCode = listFindByCode.getLengthOfService().get(i);
 	                        		data.put("勤続年数年 49", dataFindByCode.getYear()+"年");
 	                        		data.put("勤続年数月  50", dataFindByCode.getMonth()+"ヶ月");
 	                        		

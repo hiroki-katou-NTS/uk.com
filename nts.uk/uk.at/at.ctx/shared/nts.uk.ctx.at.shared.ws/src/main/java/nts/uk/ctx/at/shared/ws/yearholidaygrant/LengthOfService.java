@@ -37,7 +37,7 @@ public class LengthOfService extends WebService {
 	@POST
 	@Path("findByCode/{yearHolidayCode}")
 	public List<LengthOfServiceTblDto> findByCode(@PathParam("yearHolidayCode") String yearHolidayCode){
-		return this.find.findByCode(yearHolidayCode);
+		return this.find.findByCode(yearHolidayCode).orElse(null);
 	}
 	
 	/**

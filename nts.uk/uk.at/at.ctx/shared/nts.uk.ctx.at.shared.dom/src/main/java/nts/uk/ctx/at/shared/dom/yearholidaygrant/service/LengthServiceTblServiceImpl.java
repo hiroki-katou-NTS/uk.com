@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantReferenceDate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantSimultaneity;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfService;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,14 +29,14 @@ public class LengthServiceTblServiceImpl implements LengthServiceTblService {
 		List<NextAnnualLeaveGrant> dataResult = new ArrayList<>();
 		
 		// 勤続年数を取得
-		List<LengthServiceTbl> lengthServiceTbl = lengthServiceRepository.findByCode(companyId, yearHolidayCode);
-		
-		if(lengthServiceTbl.size() > 0) {
+		LengthServiceTbl lengthServiceTbl = lengthServiceRepository.findByCode(companyId, yearHolidayCode).orElse(null);
+
+		if(lengthServiceTbl.getLengthOfService().size() > 0) {
 			// 勤続年数でループ
-			for(int i = 0; i < lengthServiceTbl.size(); i++){
+			for(int i = 0; i < lengthServiceTbl.getLengthOfService().size(); i++){
 				// 勤続年数から付与日を計算
-				NextAnnualLeaveGrant nextAnnualLeaveGrant = grantDateCalYearsService(lengthServiceTbl.get(i), entryDate, standardDate, simultaneousGrandMD, null);
-				
+				NextAnnualLeaveGrant nextAnnualLeaveGrant = grantDateCalYearsService(lengthServiceTbl.getLengthOfService().get(i), entryDate, standardDate, simultaneousGrandMD, null);
+
 				// 前回付与日←次回年休付与．付与年月日
 				GeneralDate lastGrantDate = nextAnnualLeaveGrant.grantDate;
 				
@@ -78,7 +79,7 @@ public class LengthServiceTblServiceImpl implements LengthServiceTblService {
 	 * @param lastGrantDate
 	 * @return
 	 */
-	public NextAnnualLeaveGrant grantDateCalYearsService(LengthServiceTbl data, GeneralDate entryDate, GeneralDate standardDate, 
+	public NextAnnualLeaveGrant grantDateCalYearsService(LengthOfService data, GeneralDate entryDate, GeneralDate standardDate,
 			Optional<GeneralDate> simultaneousGrandMD, Optional<GeneralDate> lastGrantDate) {
 		GeneralDate refDate = GeneralDate.today();
 		GeneralDate lastDate = GeneralDate.today();

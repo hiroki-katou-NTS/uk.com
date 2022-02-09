@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -38,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfService;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 
@@ -170,12 +173,13 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 		
 		// 勤続年数テーブル
 		val yearHolidayCodes = new ArrayList<String>();
-		
-		List<LengthServiceTbl> lengthServiceTblList = new ArrayList<LengthServiceTbl>();
+
+		List<LengthOfService> lengthServiceTblList = new ArrayList<LengthOfService>();
 		for(String companyId: companyIds){
-			List<LengthServiceTbl> lengthServiceTblListTmp
-				= lengthServiceRepository.findByCompanyId(companyId);
-			
+			List<LengthOfService> lengthServiceTblListTmp
+				= lengthServiceRepository.findByCompanyId(companyId)
+				.stream().flatMap(c->c.getLengthOfService().stream()).collect(Collectors.toList());
+
 			lengthServiceTblList.addAll(lengthServiceTblListTmp);
 		}
 		toBinaryMap.put(LengthServiceTbl.class.toString(), lengthServiceTblList);

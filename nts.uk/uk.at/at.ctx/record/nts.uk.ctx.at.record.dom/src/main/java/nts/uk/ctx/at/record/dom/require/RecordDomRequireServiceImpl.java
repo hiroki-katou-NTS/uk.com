@@ -1231,7 +1231,7 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		}
 
 		@Override
-		public Map<String, List<LengthServiceTbl>> lengthServiceTbl(String companyId, List<String> yearHolidayCode) {
+		public List<LengthServiceTbl> lengthServiceTbl(String companyId, List<String> yearHolidayCode) {
 			return lengthServiceRepo.findByCode(companyId, yearHolidayCode);
 		}
 
