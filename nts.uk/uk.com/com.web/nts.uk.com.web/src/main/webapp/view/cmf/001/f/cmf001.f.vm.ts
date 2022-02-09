@@ -57,16 +57,16 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			
 			var params = __viewContext.transferred.get();
 			self.settingCode = params.settingCode;
-
-			self.startPage();
 			
 			self.selectedDomainId.subscribe(() => {
 				self.selectedDomain();
 			})
 
-			if (params.domainId !== undefined){
-				self.selectedDomainId(params.domainId);
-			}
+			self.startPage().done(() => {
+				if (params.domainId !== undefined) {
+					self.selectedDomainId(params.domainId);
+				}
+			});
 		}
 
 		selectedDomain(){
@@ -101,11 +101,13 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				if (self.domainList() !== null && self.domainList().length !== 0) {
 					self.selectedDomainId(self.domainList()[0].domainId);
 				}
+				
+				self.$grid = $("#grid");
+				self.initGrid();
+
+				dfd.resolve();
 			});
 			
-			self.$grid = $("#grid");
-			self.initGrid();
-		      
 			return dfd.promise();
 		}
 
