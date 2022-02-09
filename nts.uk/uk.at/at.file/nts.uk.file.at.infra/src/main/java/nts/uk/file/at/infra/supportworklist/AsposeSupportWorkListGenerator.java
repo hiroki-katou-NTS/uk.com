@@ -109,16 +109,16 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         Cells cells = worksheet.getCells();
         // B2_1
         cells.get(0, 0).setValue(getText("KAF002_81") + "　：");
-        this.setBasicStyle(cells.get(0, 0), false);
+        this.setBasicStyle(cells.get(0, 0), false, false);
         cells.get(0, 1).setValue(headerInfo.getFirstLineCode() + SPACE + headerInfo.getFirstLineName() + getText("KHA002_100") +
                 headerInfo.getLastLineCode() + SPACE + headerInfo.getLastLineName()
                 + TextResource.localize(dataSource.getAggregationUnit() == SupportAggregationUnit.WORKPLACE.value ? "KHA002_101" : "KHA002_102", String.valueOf(headerInfo.getNumberOfSelect())));
-        this.setBasicStyle(cells.get(0, 1), false);
+        this.setBasicStyle(cells.get(0, 1), false, false);
         // B3_1
         cells.get(1, 0).setValue(getText("KHA002_103"));
-        this.setBasicStyle(cells.get(1, 0), false);
+        this.setBasicStyle(cells.get(1, 0), false, false);
         cells.get(1, 1).setValue(dataSource.getPeriod().start().toString("yyyy/MM/dd") + getText("KHA002_104") + dataSource.getPeriod().end().toString("yyyy/MM/dd"));
-        this.setBasicStyle(cells.get(1, 1), false);
+        this.setBasicStyle(cells.get(1, 1), false, false);
         // B4_1
         cells.get(2, 0).setValue(getText("KHA002_105"));
         // B4_2
@@ -162,10 +162,10 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             WorkplaceSupportWorkData workDataByWkp = supportWorkDataList.get(i);
             // C5_1
             cells.get(startRow, 0).setValue(this.getNameC51(dataSource));
-            this.setBasicStyle(cells.get(startRow, 0), true);
+            this.setBasicStyle(cells.get(startRow, 0), true, true);
             // C5_2
             cells.get(startRow, 1).setValue(this.getWorkplaceInfo(dataSource.getAggregationUnit(), dataSource.getWorkplaceInfoList(), workDataByWkp.getWorkplace(), true));
-            this.setBasicStyle(cells.get(startRow, 1), false);
+            this.setBasicStyle(cells.get(startRow, 1), false, true);
             cells.merge(startRow, 1, 1, this.maxColumnInHeader - 1, true);
             startRow += 1;
             itemPerPage += 1;
@@ -230,12 +230,12 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 /** Daily total */
                 if (wkpTotalDisplaySetting.getDisplayOneDayTotal() == NotUseAtr.USE) {
                     // C7_1_2
-                    if (displaySetting.getDisplayDetail() == NotUseAtr.NOT_USE) {
+//                    if (displaySetting.getDisplayDetail() == NotUseAtr.NOT_USE) {
                         cells.get(startRow, 0).setValue(getText("KHA002_110") + SPACE + dataOfDay.getDate().toString("MM/dd"));
-                    } else {
+//                    } else {
                         // C7_1
-                        cells.get(startRow, 0).setValue(getText("KHA002_110"));
-                    }
+//                        cells.get(startRow, 0).setValue(getText("KHA002_110"));
+//                    }
                     cells.merge(startRow, 0, 1, 2, true);
                     this.setTotalStyle(cells.get(startRow, 0), true, false, true, true);
 
@@ -251,10 +251,10 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 }
 
                 if (isPageBreak) {
-                    if (itemPerPage >= MAX_ROW_IN_PAGE) {
+                    if (itemPerPage >= 27) {
                         hPageBreaks.add(startRow);
                         for (int c = 0; c < maxColumnInHeader; c++) {
-                            this.setBorderBottom(cells.get(startRow, c));
+                            this.setBorderBottom(cells.get(startRow - 1, c));
                         }
                         pageIndex += 1;
                         itemPerPage = 0;
@@ -299,8 +299,8 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             if (wkpTotalDisplaySetting.getDisplaySupportDetail() == NotUseAtr.USE) {
                 this.setTotalStyle(cells.get(startRow, 0), true, false, false, true);
                 this.setTotalStyle(cells.get(startRow, 1), false, false, false, true);
-//            val supportWkpDetail = workDataByWkp.getSupportDetails().stream().sorted(Comparator.comparing(SupportDetail::getSupportDestination)).collect(Collectors.toList());
-                for (SupportDetail sp : workDataByWkp.getSupportDetails()) {
+                List<SupportDetail> supportWkpDetail = workDataByWkp.getSupportDetails().stream().sorted(Comparator.comparing(SupportDetail::getSupportDestination)).collect(Collectors.toList());
+                for (SupportDetail sp : supportWkpDetail) {
                     if (dataSource.getAggregationUnit() == SupportAggregationUnit.WORKPLACE.value) {
                         val wkpInfo = dataSource.getWorkplaceInfoList().stream().filter(x -> x.getWorkplaceId().equals(sp.getSupportDestination())).findFirst();
                         if (wkpInfo.isPresent()) {
@@ -331,10 +331,10 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
 
             // page break by workplace
             if (isPageBreak) {
-                if (supportWorkDataList.size() > 1) { //i != supportWorkDataList.size() - 1 ||
+                if (supportWorkDataList.size() > 1 && i != supportWorkDataList.size() - 1) {
                     hPageBreaks.add(startRow);
                     for (int c = 0; c < maxColumnInHeader; c++) {
-                        this.setBorderBottom(cells.get(startRow, c));
+                        this.setBorderBottom(cells.get(startRow - 1, c));
                     }
                     pageIndex += 1;
                     itemPerPage = 0;
@@ -407,7 +407,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             startColumn += 1;
         }
         if (totalOpt.isPresent()) {
-            cells.get(startRow, startColumn).putValue(this.formatValue(String.valueOf(totalOpt.get().getPeopleCount()), ValueType.AMOUNT, isCsv), true);
+            cells.get(startRow, startColumn).putValue(String.valueOf(totalOpt.get().getPeopleCount()), true);
         }
         this.setTotalStyle(cells.get(startRow, startColumn), false, true, isFillBgColor, false);
     }
@@ -487,12 +487,13 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         if (StringUtils.isEmpty(value)) return Strings.EMPTY;
 
         String targetValue = null;
-        switch (type) {
-            case TIME:
+        switch (type.value) {
+            case 1:
+            case 15:
                 Integer srcValueT = Integer.valueOf(value);
                 targetValue = convertNumberToTime(srcValueT);
                 break;
-            case AMOUNT:
+            case 16:
                 if (isCsv){
                     targetValue = value;
                     break;
@@ -506,12 +507,18 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         return targetValue;
     }
 
-    private void setBasicStyle(Cell cell, boolean rightBorder) {
+    private void setBasicStyle(Cell cell, boolean rightBorder, boolean topBotBorder) {
         Style style = new Style();
         style.setHorizontalAlignment(TextAlignmentType.LEFT);
         style.setVerticalAlignment(TextAlignmentType.TOP);
         style.getFont().setName(FONT_NAME);
         style.getFont().setSize(FONT_SIZE);
+
+        if (topBotBorder) {
+            style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.THIN);
+            style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.THIN);
+        }
+
         if (rightBorder) {
             style.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOTTED);
         }
@@ -553,8 +560,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
     private void setBorderBottom(Cell cell) {
         Style style = cell.getStyle();
         Border border = style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER);
-        border.setLineStyle(CellBorderType.THICK);
-        border.setColor(Color.getRed());
+        border.setLineStyle(CellBorderType.THIN);
         cell.setStyle(style);
     }
 
