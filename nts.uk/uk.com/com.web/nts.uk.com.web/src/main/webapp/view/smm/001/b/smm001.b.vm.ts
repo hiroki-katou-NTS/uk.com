@@ -68,6 +68,7 @@ module nts.uk.com.view.smm001.b {
     monthlyLockClassification: KnockoutObservable<number> = ko.observable(0);
     monthlyApprovalCategory: KnockoutObservable<number> = ko.observable(0);
     salaryCooperationConditions: KnockoutObservable<string> = ko.observable('0');
+    tempEmploymentDtos: GridItem[] = [];
     employmentDtos: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     rightEmployments: KnockoutObservableArray<GridItem> = ko.observableArray([]);
     isDisableRightButton: KnockoutComputed<boolean> = ko.computed(() => {
@@ -114,6 +115,7 @@ module nts.uk.com.view.smm001.b {
           .then(() => vm.$ajax('com', `${API.selectAPaymentDate}/${value}`))
           .then(response => {
             const filterEmp = _.orderBy(response.employmentListWithSpecifiedCompany, ['scd'], ['asc']);
+            vm.employmentDtos(_.cloneDeep(vm.tempEmploymentDtos));
             if (_.isEmpty(filterEmp)) {
               vm.rightEmployments([]);
               vm.employmentDtos.valueHasMutated();
@@ -235,6 +237,7 @@ module nts.uk.com.view.smm001.b {
             new GridItem(item.employmentCode, item.employmentName, vm.CURRENT_MONTH_TEXT(), vm.LAST_MONTH_TEXT())
           );
           vm.employmentDtos(employmentDtos);
+          vm.tempEmploymentDtos = _.cloneDeep(vm.employmentDtos());
         }).fail((err) => {
           vm.$dialog.error(err);
         }).always(() => vm.$blockui('clear'));
@@ -284,6 +287,7 @@ module nts.uk.com.view.smm001.b {
         vm.$ajax('com', API.registerSmileLinkageExternalOutput, command)
           .then((res: any) => {
             //vm.$dialog.info({ messageId: "Msg_15" });
+            vm.tempEmploymentDtos = _.cloneDeep(vm.employmentDtos());
             vm.resB("Msg_15");
           }).fail((err) => {
             vm.$dialog.error(err);
