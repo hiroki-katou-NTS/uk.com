@@ -146,7 +146,7 @@ module nts.uk.at.view.ktg027.a {
                             <th class="ktg027-fontsize">
                                 <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG027_5') }"></div>
                             </th>
-                            <th style="padding-right: 5px;">
+                            <th>
                                 <div id="ktg027-datepick" data-bind="ntsDatePicker: {
                                     name: $component.$i18n('KTG027_1'),
                                     value: $component.targetYear,
