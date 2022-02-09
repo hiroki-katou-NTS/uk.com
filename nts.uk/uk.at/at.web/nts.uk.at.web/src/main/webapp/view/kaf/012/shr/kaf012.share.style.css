@@ -46,7 +46,7 @@
 }
 
 #kaf012-input-table th, #kaf012-input-table td, #kaf012-calc-table th, #kaf012-calc-table td {
-	border: solid 1px #000;
+	border: solid 1px #fff;
 	padding: 5px;
 }
 
@@ -125,4 +125,7 @@
 	width: 120px;
 }
 
-
+.bg-gray {
+	background-color: #6A6A6A;
+    color: #fff;
+}

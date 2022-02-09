@@ -96,7 +96,7 @@ table.left-aligned td:not(:first-child) {
 
 .left-panel .table.item > .cm-column:not(.valign-top),
 .left-panel .table.item > .cell:nth-child(2):not(.valign-top) {
-	vertical-align: middle; /* ’Pˆês€–Ú‚Ímiddle‚Ì‚Ü‚Ü‚Å‚¢‚¢‚ªAc‚É’·‚¢€–Ú‚Ítop‚É‚·‚é‚±‚Æ */
+	vertical-align: middle; /* ï¿½Pï¿½ï¿½sï¿½ï¿½ï¿½Ú‚ï¿½middleï¿½Ì‚Ü‚Ü‚Å‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½cï¿½É’ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú‚ï¿½topï¿½É‚ï¿½ï¿½é‚±ï¿½ï¿½ */
 }
 
 .left-panel .table.item > .cm-column.valign-top,
@@ -105,7 +105,7 @@ table.left-aligned td:not(:first-child) {
 	top: 3px;
 }
 
-.left-panel button {
+.left-panel {
 	min-width: 100px;
 }
 

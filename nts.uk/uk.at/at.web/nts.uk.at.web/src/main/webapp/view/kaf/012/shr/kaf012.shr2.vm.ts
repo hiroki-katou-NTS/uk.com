@@ -47,14 +47,14 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                             <tr data-bind="if: leaveType() == 6">
                                 <th style="border: 0; padding-bottom: 6px" colspan="2"/>
                             </tr>
-                            <tr class="bg-green">
-                                <th>
+                            <tr class="bg-gray">
+                                <th style="background-color: #fff;">
                                 <th data-bind="text: $i18n('KAF012_7')"/>
                             </tr>
                         </thead>
                         <tbody data-bind="foreach: applyTimeData">
                             <tr data-bind="if: display, attr: {height: !display() ? '0' : appTimeType < 4 ? '85px' : displayShowMore() ? '192px' : '464px'}">
-                                <td class="bg-green" data-bind="text: appTimeTypeName"/>
+                                <td class="bg-gray" data-bind="text: appTimeTypeName"/>
                                 <td style="vertical-align: baseline">
                                     <div class="control-group valign-center">
                                         <span data-bind="text: scheduledTimeLabel"/>
@@ -143,28 +143,28 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                         <thead>
                             <tr data-bind="if: leaveType() == 6">
                                 <th style="border: 0;"/>
-                                <th colspan="6" class="bg-green" data-bind="text: $i18n('KAF012_8')"/>
+                                <th colspan="6" class="bg-gray" data-bind="text: $i18n('KAF012_8')"/>
                             </tr>
                             <tr>
                                 <th class="bg-yellow" data-bind="css: {hidden: leaveType() != 6}">
                                     <span data-bind="text: $i18n('KAF012_40')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 0 &amp;&amp; leaveType() != 6) &#124;&#124; !displaySubCol()}">
+                                <th class="bg-gray" data-bind="css: {hidden: (leaveType() != 0 &amp;&amp; leaveType() != 6) &#124;&#124; !displaySubCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('KAF012_3') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 1 &amp;&amp; leaveType() != 6) &#124;&#124; !displayAnnCol()}">
+                                <th class="bg-gray" data-bind="css: {hidden: (leaveType() != 1 &amp;&amp; leaveType() != 6) &#124;&#124; !displayAnnCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('KAF012_4') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 2 &amp;&amp; leaveType() != 6) &#124;&#124; !displayChiCol()}">
+                                <th class="bg-gray" data-bind="css: {hidden: (leaveType() != 2 &amp;&amp; leaveType() != 6) &#124;&#124; !displayChiCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('Com_ChildNurseHoliday') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 3 &amp;&amp; leaveType() != 6) &#124;&#124; !displayCarCol()}">
+                                <th class="bg-gray" data-bind="css: {hidden: (leaveType() != 3 &amp;&amp; leaveType() != 6) &#124;&#124; !displayCarCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('Com_CareHoliday') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 4 &amp;&amp; leaveType() != 6) &#124;&#124; !display60hCol()}">
+                                <th class="bg-gray" data-bind="css: {hidden: (leaveType() != 4 &amp;&amp; leaveType() != 6) &#124;&#124; !display60hCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('Com_ExsessHoliday') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 5 &amp;&amp; leaveType() != 6) &#124;&#124; !displaySpeCol()}">
+                                <th class="bg-gray" data-bind="css: {hidden: (leaveType() != 5 &amp;&amp; leaveType() != 6) &#124;&#124; !displaySpeCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('KAF012_46') : $i18n('KAF012_8')"/>
                                 </th>
                             </tr>
