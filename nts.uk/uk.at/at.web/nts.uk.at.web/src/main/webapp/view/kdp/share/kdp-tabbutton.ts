@@ -12,7 +12,7 @@ module nts.uk.at.view.kdp.share {
 				css: 'btn-layout-type-' + group.pageLayout.buttonLayoutType,
 				style: {padding: ko.toJS($component.currentTab).pageNo === group.pageLayout.pageNo ? '': '0'}">
 				<!-- ko foreach: _.chunk(ko.unwrap(group.pageLayout.buttonSettings), 2) -->
-				<div data-bind="foreach: $data" class="cf">
+				<div class="buttons-row" data-bind="foreach: $data">
 					<button class="stamp-rec-btn"
 						data-bind="
 							btn-setting: $data,
@@ -155,9 +155,9 @@ module nts.uk.at.view.kdp.share {
 
 			const data: ButtonSetting = ko.unwrap(valueAccessor());
 
-			const icon = document.createElement('i');
+			//const icon = document.createElement('i');
 
-			ko.applyBindingsToNode(icon, { ntsIcon: { no: getIcon(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay), 'width': '68', 'height': '68' } });
+			//ko.applyBindingsToNode(icon, { ntsIcon: { no: getIcon(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay), 'width': '68', 'height': '68' } });
 
 			const text = document.createElement('div');
 
@@ -168,7 +168,7 @@ module nts.uk.at.view.kdp.share {
 			let btnType = checkType(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay);
 
 			$(element)
-				.append(icon)
+				//.append(icon)
 				.append(text)
 				.css({
 					'color': data.btnTextColor,
@@ -614,9 +614,9 @@ module nts.uk.at.view.kdp.share {
 		let text = element.innerText.replace(/(\r\n|\n|\r)/gm,"");
 		if(text.length < 9){
 			if(type == 0 && $(element).parentsUntil($('.btn-layout-type-0')).length === 1) {
-				element.style.fontSize = '26px';	
+				element.style.fontSize = '34px';	
 			}else{
-				element.style.fontSize = '20px';
+				element.style.fontSize = '24px';
 			}
 			return;
 		}
@@ -631,7 +631,7 @@ module nts.uk.at.view.kdp.share {
 		element.style.fontSize = fontSize + 'px';
 	}
 	let changeHeightBtn = function(check :boolean){
-		$('.btn-layout-type-0>div:first-child button').css({'height':$('.btn-layout-type-0>div:first-child button').width() - (check ? 10 : 0) +'px'});
-		$('.btn-layout-type-0>div:not(:first-child) button').css({'height':$('.btn-layout-type-0>div:not(:first-child) button').width()/2.3 - (check ? 5 : 0) + 'px'});
+		$('.btn-layout-type-0>div:first-child button').css({'height':$('.btn-layout-type-0>div:first-child button').width() / 1.8 - (check ? 10 : 0) +'px'});
+		$('.btn-layout-type-0>div:not(:first-child) button').css({'height':$('.btn-layout-type-0>div:not(:first-child) button').width()/2.8 - (check ? 5 : 0) + 'px'});
 	}
 }

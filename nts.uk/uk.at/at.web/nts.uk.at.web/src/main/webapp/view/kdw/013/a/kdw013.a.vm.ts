@@ -376,7 +376,8 @@ module nts.uk.ui.at.kdw013.a {
                             vm
                                 .$blockui('grayout')
                                 .then(() => vm.$ajax('at', API.CHANGE_DATE, params))
-                                .then((data: ChangeDateDto) => {
+                                .fail((error) => { vm.$dialog.error({ messageId: error.messageId }) })
+                                .done((data: ChangeDateDto) => {
                                     vm.$datas(data);
                                     vm.dataChanged(false);
                                     vm.removeList([]);

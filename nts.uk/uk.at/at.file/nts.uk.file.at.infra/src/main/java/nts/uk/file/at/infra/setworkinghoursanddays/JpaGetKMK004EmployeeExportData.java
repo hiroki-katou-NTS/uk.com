@@ -18,6 +18,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshmtLegalTimeMSya;
@@ -41,7 +43,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 	private static final String GET_EXPORT_MONTH = "SELECT m.MONTH_STR FROM BCMMT_COMPANY m WHERE m.CID = ?cid";
 
 	private static final String LEGAL_TIME_SYA = "SELECT s FROM KshmtLegalTimeMSya s WHERE "
-			+ " s.pk.cid = :cid AND s.pk.ym >= :minYm AND s.pk.ym < :maxYm"
+			+ " s.pk.cid = :cid AND s.pk.ym IN :yms"
 			+ " ORDER BY s.pk.ym";
 
 	private static final String GET_EMPLOYEE_SQLSERVER = " SELECT " + " ROW_NUMBER() OVER( "
@@ -154,13 +156,16 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 		List<MasterData> datas = new ArrayList<>();
 
 		int month = this.month();
-
-		String startOfWeek = getStartOfWeek(cid);
 		
+		YearMonthPeriod ymPeriod = new YearMonthPeriod(YearMonth.of(startDate, month),
+				YearMonth.of(endDate, month).nextYear().previousMonth());
+		String startOfWeek = getStartOfWeek(cid);
+
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_SYA, KshmtLegalTimeMSya.class)
 				.setParameter("cid", cid)
-				.setParameter("minYm", startDate * 100 + month)
-				.setParameter("maxYm", endDate * 100 + month)
+				.setParameter("yms",
+						ymPeriod.yearMonthsBetween().stream().map(x -> x.v().toString()).collect(Collectors.toList()))
+				// .setParameter("end",endYM)
 				.getList();
 		
 		if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
@@ -220,12 +225,18 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			String sid = r.getString("SID");
 			int ym = y * 100 + month;
 
-			val list = legals.stream().filter(l -> l.pk.ym == ym && l.pk.sid.equals(sid)).collect(Collectors.toList());
-			
-			val normal = list.stream().filter(l -> l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value).findFirst();
-			val defor = list.stream().filter(l -> l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value).findFirst();
-			val flex = list.stream().filter(l -> l.pk.type == LaborWorkTypeAttr.FLEX.value).findFirst();
-			
+			val normal = legals.stream().filter(
+					l -> l.pk.ym == ym && l.pk.sid.equals(sid) && l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value)
+					.findFirst();
+
+			val defor = legals.stream().filter(l -> {
+				return l.pk.ym == ym && l.pk.sid.equals(sid) && l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value;
+			}).findFirst();
+
+			val flex = legals.stream()
+					.filter(l -> l.pk.ym == ym && l.pk.sid.equals(sid) && l.pk.type == LaborWorkTypeAttr.FLEX.value)
+					.findFirst();
+
 			Integer rowNumber = r.getInt("ROW_NUMBER");
 			Integer includeExtraAggr = convertToPostgre(r, "INCLUDE_EXTRA_AGGR");
 			Integer includeExtraOt = convertToPostgre(r, "INCLUDE_EXTRA_OT");
@@ -248,7 +259,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_4
 					((month - 1) % 12 + 1) + kdp004_401,
 					// R10_5
-					KMK004PrintCommon.convertTime(normal.map(m -> m.legalTime).orElse(null)),
+					KMK004PrintCommon.convertTime(normal.isPresent() ? normal.get().legalTime : null),
 					// R10_6
 					KMK004PrintCommon.convertTime(r.getInt("DAILY_TIME")),
 					// R10_7
@@ -256,29 +267,25 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_8
 					KMK004PrintCommon.getExtraType(includeExtraAggr),
 					// R10_9
-					includeExtraAggr == null ? null : includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_LEGAL_AGGR"))
-							: null,
+					includeExtraAggr == null ? null : includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_LEGAL_AGGR")) : null,
 					// R10_10
-					includeExtraAggr == null ? null : includeExtraAggr != 0
-							? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_HOLIDAY_AGGR")) : null,
+					includeExtraAggr == null ? null : includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_HOLIDAY_AGGR")) : null,
 					// R10_11
 					KMK004PrintCommon.getExtraType(includeExtraOt),
 					// R10_12
-					includeExtraAggr == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_LEGAL_OT"))
-							: null,
+					includeExtraAggr == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_LEGAL_OT")) : null,
 					// R10_13
-					includeExtraAggr == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_HOLIDAY_OT"))
-							: null,
+					includeExtraAggr == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "INCLUDE_HOLIDAY_OT")) : null,
 					// R10_14
 					KMK004PrintCommon.getFlexType(refPreTime),
 					// R10_15
 					((month - 1) % 12 + 1) + kdp004_401,
 					// R10_16
-					KMK004PrintCommon.convertTime(refPreTime == 0?null:flex.map(m -> m.withinTime).orElse(null)),
+					KMK004PrintCommon.convertTime(refPreTime == 0 ? null : flex.isPresent() ? flex.get().withinTime : null),
 					// R10_17
-					KMK004PrintCommon.convertTime(flex.map(m -> m.legalTime).orElse(null)),
+					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().legalTime : null),
 					// R10_18
-					KMK004PrintCommon.convertTime(flex.map(m -> m.weekAvgTime).orElse(null)),
+					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().weekAvgTime : null),
 					// R10_19
 					KMK004PrintCommon.getSettle(convertToPostgre(r, "SETTLE_PERIOD")),
 					// R10_20
@@ -290,7 +297,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_23
 					KMK004PrintCommon.getAggTypeEmployee(aggrMethod == null ? 3 : aggrMethod),
 					// R10_24
-					aggrMethod == null ? null : aggrMethod == 0 ? KMK004PrintCommon.getInclude(convertToPostgre(r, "INCLUDE_OT")) : null,
+					aggrMethod == null ? null: aggrMethod == 0 ? KMK004PrintCommon.getInclude(convertToPostgre(r, "INCLUDE_OT")) : null,
 					// R10_25
 					KMK004PrintCommon.getInclude(convertToPostgre(r, "INCLUDE_HDWK")),
 					// R10_26
@@ -298,11 +305,11 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_27
 					((month - 1) % 12 + 1) + kdp004_401,
 					// R10_28
-					KMK004PrintCommon.convertTime(defor.map(m -> m.legalTime).orElse(null)),
+					KMK004PrintCommon.convertTime(defor.isPresent() ? defor.get().legalTime : null),
 					// R10_29
-					KMK004PrintCommon.convertTime(convertToPostgre(r, "TRANS_DAILY_TIME")),
+					KMK004PrintCommon.convertTime(r.getInt("TRANS_DAILY_TIME")),
 					// R10_30
-					KMK004PrintCommon.convertTime(convertToPostgre(r, "TRANS_WEEKLY_TIME")),
+					KMK004PrintCommon.convertTime(r.getInt("TRANS_WEEKLY_TIME")),
 					// R10_31
 					strMonth == null ? null : strMonth + I18NText.getText("KMK004_402"),
 					// R10_32
@@ -312,142 +319,230 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_34
 					KMK004PrintCommon.getWeeklySurcharge(deforIncludeExtraAggr),
 					// R10_35
-					deforIncludeExtraAggr == null ? null : deforIncludeExtraAggr != 0
-							? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_LEGAL_AGGR")) : null,
+					deforIncludeExtraAggr == null ? null : deforIncludeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_LEGAL_AGGR")) : null,
 					// R10_36
-					deforIncludeExtraAggr == null ? null : deforIncludeExtraAggr != 0
-							? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
+					deforIncludeExtraAggr == null ? null : deforIncludeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
 					// R10_37
 					KMK004PrintCommon.getWeeklySurcharge(deforIncludeExtraOt),
 					// R10_38
-					deforIncludeExtraOt == null ? null : deforIncludeExtraOt != 0
-							? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_LEGAL_OT")) : null,
+					deforIncludeExtraOt == null ? null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_LEGAL_OT")) : null,
 					// R10_39
-					deforIncludeExtraOt == null ? null : deforIncludeExtraOt != 0
-							? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_HOLIDAY_OT")) : null));
+					deforIncludeExtraOt == null ? null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToPostgre(r, "DEFOR_INCLUDE_HOLIDAY_OT")) : null));
 
-//			int nextYm = ym + 1;
-//			
-//			val listNextYear = legals.stream().filter(l -> l.pk.ym == nextYm && l.pk.sid.equals(sid)).collect(Collectors.toList());
-//			
-//			val normalN = listNextYear.stream().filter(l -> l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value).findFirst();
-//			val deforN = listNextYear.stream().filter(l -> l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value).findFirst();
-//			val flexN = listNextYear.stream().filter(l -> l.pk.type == LaborWorkTypeAttr.FLEX.value).findFirst();
-//			
-////			 buil arow = month + 1
-//			 datas.add(buildEmployeeARowChild(
-//			 // R10_4
-//			 ((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
-//			 // R10_5
-//			 KMK004PrintCommon.convertTime(normalN.isPresent() ? normalN.get().legalTime : null),
-//			 // R10_15
-//			 ((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
-//			 // R10_16
-//			 KMK004PrintCommon.convertTime(refPreTime == 0?null:flexN.isPresent() ? flexN.get().withinTime : null),
-//			 // R10_17
-//			 KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().legalTime : null),
-//			 // R10_18
-//			 KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().weekAvgTime : null),
-//			 // R10_27
-//			 ((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
-//			 // R10_28
-//			 KMK004PrintCommon.convertTime(deforN.isPresent() ? deforN.get().legalTime : null)));
+			int nextYm = y * 100 + month + 1;
+			val normalN = legals.stream().filter(l -> l.pk.ym == nextYm && l.pk.sid.equals(sid)
+					&& l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value).findFirst();
+			val deforN = legals.stream().filter(
+					l -> l.pk.ym == nextYm && l.pk.sid.equals(sid) && l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value)
+					.findFirst();
+			val flexN = legals.stream()
+					.filter(l -> l.pk.ym == nextYm && l.pk.sid.equals(sid) && l.pk.type == LaborWorkTypeAttr.FLEX.value)
+					.findFirst();
 			
-			 for (int i = 1; i < 12; i++) {
-				int nm = month + i;
-				int m = nm > 12 ? nm % 12 : nm;
-				int currentYm = (y + nm> 12? nm / 12 : 0) * 100 + m;
-				
-				val listC = legals.stream().filter(l -> l.pk.ym == currentYm && l.pk.sid.equals(sid)).collect(Collectors.toList());
-				
-				val normalC = listC.stream().filter(l -> l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value).findFirst();
-				val deforC = listC.stream().filter(l -> l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value).findFirst();
-				val flexC = listC.stream().filter(l -> l.pk.type == LaborWorkTypeAttr.FLEX.value).findFirst();
-				
-				datas.add(buildEmployeeARow(	 
-					// R10_1
-					null,
-					// R10_2
-					null,
-					// R10_3
-					null,
+			// buil arow = month + 1
+			datas.add(buildEmployeeARowChild(
 					// R10_4
-					(m) + kdp004_401,
+					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
 					// R10_5
-					KMK004PrintCommon.convertTime(normalC.map(l -> l.legalTime).orElse(null)),
-					// R10_6
-					null,
-					// R10_7
-					null,
-					// R10_8
-					null,
-					// R10_9
-					null,
-					// R10_10
-					null,
-					// R10_11
-					null,
-					// R10_12
-					null,
-					// R10_13
-					null,
-					// R10_14
-					null,
+					KMK004PrintCommon.convertTime(normalN.isPresent() ? normalN.get().legalTime : null),
 					// R10_15
-					(m) + kdp004_401,
+					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
 					// R10_16
-					KMK004PrintCommon.convertTime(refPreTime == 0?null:flexC.map(f -> f.withinTime).orElse(null)),
+					KMK004PrintCommon
+							.convertTime(refPreTime == 0 ? null : flexN.isPresent() ? flexN.get().withinTime : null),
 					// R10_17
-					KMK004PrintCommon.convertTime(flexC.map(f -> f.legalTime).orElse(null)),
+					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().legalTime : null),
 					// R10_18
-					KMK004PrintCommon.convertTime(flexC.map(f -> f.weekAvgTime).orElse(null)),
-					// R10_19
-					null,
-					// R10_20
-					null,
-					// R10_21
-					null,
-					// R10_22
-					null,
-					// R10_23
-					null,
-					// R10_24
-					null,
-					// R10_25
-					null,
-					// R10_26
-					null,
+					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().weekAvgTime : null),
 					// R10_27
-					(m) + kdp004_401,
+					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
 					// R10_28
-					KMK004PrintCommon.convertTime(deforC.map(f -> f.legalTime).orElse(null)),
-					// R10_29
-					null,
-					// R10_30
-					null,
-					// R10_31
-					null,
-					// R10_32
-					null,
-					// R10_33
-					null,
-					// R10_34
-					null,
-					// R10_35
-					null,
-					// R10_36
-					null,
-					// R10_37
-					null,
-					// R10_38
-					null,
-					// R10_39
-					null));
-			 }
+					KMK004PrintCommon.convertTime(deforN.isPresent() ? deforN.get().legalTime : null)));
+
+			for (int i = 1; i < 11; i++) {
+				int m = (month + i) % 12 + 1;
+				int currentYm = y * 100 + ((month + i) / 12) * 100 + m;
+				val normalC = legals.stream().filter(l -> l.pk.ym == currentYm && l.pk.sid.equals(sid)
+						&& l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value).findFirst();
+				val deforC = legals.stream().filter(l -> l.pk.ym == currentYm && l.pk.sid.equals(sid)
+						&& l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value).findFirst();
+				val flexC = legals.stream().filter(
+						l -> l.pk.ym == currentYm && l.pk.sid.equals(sid) && l.pk.type == LaborWorkTypeAttr.FLEX.value)
+						.findFirst();
+				datas.add(buildEmployeeARow(
+
+						// R10_1
+						null,
+						// R10_2
+						null,
+						// R10_3
+						null,
+						// R10_4
+						(m) + I18NText.getText("KMK004_401"),
+						// R10_5
+						KMK004PrintCommon.convertTime(normalC.isPresent() ? normalC.get().legalTime : null),
+						// R10_6
+						null,
+						// R10_7
+						null,
+						// R10_8
+						null,
+						// R10_9
+						null,
+						// R10_10
+						null,
+						// R10_11
+						null,
+						// R10_12
+						null,
+						// R10_13
+						null,
+						// R10_14
+						null,
+						// R10_15
+						(m) + I18NText.getText("KMK004_401"),
+						// R10_16
+						KMK004PrintCommon.convertTime(
+								refPreTime == 0 ? null : flexC.isPresent() ? flexC.get().withinTime : null),
+						// R10_17
+						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().legalTime : null),
+						// R10_18
+						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().weekAvgTime : null),
+						// R10_19
+						null,
+						// R10_20
+						null,
+						// R10_21
+						null,
+						// R10_22
+						null,
+						// R10_23
+						null,
+						// R10_24
+						null,
+						// R10_25
+						null,
+						// R10_26
+						null,
+						// R10_27
+						(m) + I18NText.getText("KMK004_401"),
+						// R10_28
+						KMK004PrintCommon.convertTime(deforC.isPresent() ? deforC.get().legalTime : null),
+						// R10_29
+						null,
+						// R10_30
+						null,
+						// R10_31
+						null,
+						// R10_32
+						null,
+						// R10_33
+						null,
+						// R10_34
+						null,
+						// R10_35
+						null,
+						// R10_36
+						null,
+						// R10_37
+						null,
+						// R10_38
+						null,
+						// R10_39
+						null));
+			}
 		}
 		return datas;
 	}
 	
+	private MasterData buildEmployeeARowChild(String value4, String value5,
+			 String value15, String value16, String value17,
+			 String value18, String value27, String value28) {
+	
+	 Map<String, MasterCellData> data = new HashMap<>();
+	 
+	 data.put(EmployeeColumn.KMK004_183, MasterCellData.builder().columnId(EmployeeColumn.KMK004_183).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_184, MasterCellData.builder().columnId(EmployeeColumn.KMK004_184).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_372, MasterCellData.builder().columnId(EmployeeColumn.KMK004_372).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		data.put(EmployeeColumn.KMK004_373, MasterCellData.builder().columnId(EmployeeColumn.KMK004_373).value(value4)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		data.put(EmployeeColumn.KMK004_374, MasterCellData.builder().columnId(EmployeeColumn.KMK004_374).value(value5)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		data.put(EmployeeColumn.KMK004_375, MasterCellData.builder().columnId(EmployeeColumn.KMK004_375).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		data.put(EmployeeColumn.KMK004_376, MasterCellData.builder().columnId(EmployeeColumn.KMK004_376).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		data.put(EmployeeColumn.KMK004_377, MasterCellData.builder().columnId(EmployeeColumn.KMK004_377).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_378, MasterCellData.builder().columnId(EmployeeColumn.KMK004_378).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_379, MasterCellData.builder().columnId(EmployeeColumn.KMK004_379).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_380, MasterCellData.builder().columnId(EmployeeColumn.KMK004_380).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_381, MasterCellData.builder().columnId(EmployeeColumn.KMK004_381).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_382, MasterCellData.builder().columnId(EmployeeColumn.KMK004_382).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_383, MasterCellData.builder().columnId(EmployeeColumn.KMK004_383).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_384, MasterCellData.builder().columnId(EmployeeColumn.KMK004_384).value(value15)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		data.put(EmployeeColumn.KMK004_385, MasterCellData.builder().columnId(EmployeeColumn.KMK004_385).value(value16)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		data.put(EmployeeColumn.KMK004_386, MasterCellData.builder().columnId(EmployeeColumn.KMK004_386).value(value17)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		data.put(EmployeeColumn.KMK004_387, MasterCellData.builder().columnId(EmployeeColumn.KMK004_387).value(value18)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		data.put(EmployeeColumn.KMK004_388, MasterCellData.builder().columnId(EmployeeColumn.KMK004_388).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_389, MasterCellData.builder().columnId(EmployeeColumn.KMK004_389).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_390, MasterCellData.builder().columnId(EmployeeColumn.KMK004_390).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_391, MasterCellData.builder().columnId(EmployeeColumn.KMK004_391).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_392, MasterCellData.builder().columnId(EmployeeColumn.KMK004_392).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_393, MasterCellData.builder().columnId(EmployeeColumn.KMK004_393).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_394, MasterCellData.builder().columnId(EmployeeColumn.KMK004_394).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_395, MasterCellData.builder().columnId(EmployeeColumn.KMK004_395).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_396, MasterCellData.builder().columnId(EmployeeColumn.KMK004_396).value(value27)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		data.put(EmployeeColumn.KMK004_397, MasterCellData.builder().columnId(EmployeeColumn.KMK004_397).value(value28)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		data.put(EmployeeColumn.KMK004_375_1, MasterCellData.builder().columnId(EmployeeColumn.KMK004_375_1).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		data.put(EmployeeColumn.KMK004_376_1, MasterCellData.builder().columnId(EmployeeColumn.KMK004_376_1).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
+		data.put(EmployeeColumn.KMK004_398, MasterCellData.builder().columnId(EmployeeColumn.KMK004_398).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_399, MasterCellData.builder().columnId(EmployeeColumn.KMK004_399).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_400, MasterCellData.builder().columnId(EmployeeColumn.KMK004_400).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_377_1, MasterCellData.builder().columnId(EmployeeColumn.KMK004_377_1).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_378_1, MasterCellData.builder().columnId(EmployeeColumn.KMK004_378_1).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_379_1, MasterCellData.builder().columnId(EmployeeColumn.KMK004_379_1).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_380_1, MasterCellData.builder().columnId(EmployeeColumn.KMK004_380_1).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_381_1, MasterCellData.builder().columnId(EmployeeColumn.KMK004_381_1).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmployeeColumn.KMK004_382_1, MasterCellData.builder().columnId(EmployeeColumn.KMK004_382_1).value(null)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+	
+	
+	 return MasterData.builder().rowData(data).build();
+	 }
 	
 	private MasterData buildEmployeeARow(String R10_1, String R10_2, String R10_3, String R10_4, String R10_5,
 			String R10_6, String R10_7, String R10_8, String R10_9, String R10_10, String R10_11, String R10_12,

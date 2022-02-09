@@ -128,22 +128,22 @@ public class StampTypeTest {
 	 * setPreClockArt == SetPreClockArt.NONE
 	 * changeCalArt == ChangeCalArt.BRARK
 	 */
-	@Test
-	public void testCreateStampTypeDisplay_4(@Mocked final TextResource tr) {
-		new Expectations() {
-            {
-            	TextResource.localize("KDP011_38");
-            	result =  "KDP011_38";
-            }
-        };
-		StampType stampType = StampHelper.getStampTypeHaveInput(
-        		true, //dummy
-        		GoingOutReason.valueOf(1), //dummy
-        		SetPreClockArt.valueOf(0),
-        		ChangeClockAtr.valueOf(3), //dummy
-        		ChangeCalArt.valueOf(3));
-		assertThat(stampType.createStampTypeDisplay()).isEqualTo(TextResource.localize("KDP011_38"));
-	}
+//	@Test
+//	public void testCreateStampTypeDisplay_4(@Mocked final TextResource tr) {
+//		new Expectations() {
+//            {
+//            	TextResource.localize("KDP011_38");
+//            	result =  "KDP011_38";
+//            }
+//        };
+//		StampType stampType = StampHelper.getStampTypeHaveInput(
+//        		true, //dummy
+//        		GoingOutReason.valueOf(1), //dummy
+//        		SetPreClockArt.valueOf(0),
+//        		ChangeClockAtr.valueOf(3), //dummy
+//        		ChangeCalArt.valueOf(3));
+//		assertThat(stampType.createStampTypeDisplay()).isEqualTo(TextResource.localize("KDP011_38"));
+//	}
 	
 	/**
 	 * setPreClockArt == SetPreClockArt.NONE

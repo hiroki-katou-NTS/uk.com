@@ -457,7 +457,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.actualTimeSelectedDat(data.selectedActualTime);
                 self.initActualTime();
                 //comment
-                self.comment(data.comment ? '■ ' + data.comment : null);
+                self.comment(data.comment ? data.comment : null);
                 /*********************************
                  * Grid data
                  *********************************/
