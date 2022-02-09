@@ -773,48 +773,41 @@ public class DeductionTimeSheet {
 			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personCommonSetting) {
 		
-		/** ○計算範囲の取得 */
-		
 		/** △控除時間帯の取得 */
 		if (!dailyRecord.getAttendanceLeave().isPresent()) return Collections.emptyList();
-		val deductionTimeSheet = collectDeductionTimesForCorrect(deductionAtr, workType, workTime,
-				dailyRecord, oneDayOfRange, dailyRecord.getAttendanceLeave(),
-				companyCommonSetting, personCommonSetting);
+		//流動休憩以外の控除時間帯を取得する
+		val correctedDeductionTimeSheet = getDeductionForFluidBreak(
+				deductionAtr,
+				workType,
+				workTime,
+				dailyRecord,
+				oneDayOfRange,
+				dailyRecord.getAttendanceLeave(),
+				companyCommonSetting,
+				personCommonSetting);
 		
-		/** パラメータ。勤務間を控除時間帯に入れる */
-//		betweenWorkTimeSheets.ifPresent(c -> deductionTimeSheet.add(c));
-		
-		/** △控除時間帯同士の重複部分を補正 */
-		val correctedDeductionTimeSheet = new DeductionTimeSheetAdjustDuplicationTime(deductionTimeSheet).reCreate(
-												workTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
-												workTime.getRestClockManageAtr(),
-												FluidFixedAtr.of(workTime.getFlowWorkRestTimezone(workType)),
-												workTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeDailyAtr());
+		//流動休憩作成情報を取得する
+		val fluidCalc = getDeductionTotalTimeForFluidCalc(
+				calcRange,
+				dailyRecord,
+				workType, 
+				workTime,
+				lateTimeSheet, 
+				oneDayOfRange,
+				predetermineForCalc,
+				correctedDeductionTimeSheet);
 		
 		/** ○流動休憩時間帯を取得 */
 		val flowRestTimeSheet = workTime.getFlowWorkRestTimezone(workType)
 										.map(c -> c.getFlowRestTimezone().getFlowRestSet(oneDayOfRange, predetermineForCalc))
 										.orElseGet(() -> new ArrayList<>());
 		
-		/** △休憩計算開始時刻を取得 */
-		val timeLeave = calcRange.getAttendanceLeavingWork().getAttendanceLeavingWork(1);
-		val startBreakTime = getStartBreakTime(lateTimeSheet, workTime, oneDayOfRange, workType,
-				timeLeave, calcRange, dailyRecord, predetermineForCalc);
-		
-		/**  外出の合計を取得 */
-		AttendanceTime totalOutTime = new AttendanceTime(correctedDeductionTimeSheet.stream()
-				.filter(d -> d.getDeductionAtr().isGoOut() || d.getDeductionAtr().isBreak() || d.getWorkingBreakAtr().isWorking())
-				.map(d -> d.calcTotalTime())
-				.collect(Collectors.summingInt(d -> d.valueAsMinutes())));
-		
-		val fluidCalc = new DeductionTotalTimeForFluidCalc(startBreakTime, new DeductionTotalTimeLocal(AttendanceTime.ZERO, totalOutTime));
-		
 		val restTimeSheet = flowRestTimeSheet.stream().map(ts -> {
 			
 			/** △流動休憩時間帯の作成 */
 			return fluidCalc.createDeductionFluidRestTime(deductionAtr, calcRange.getAttendanceLeavingWork(),
 							fluidCalc.getBreakStartTime(), ts, fluidCalc.getDeductionTotal(), 
-							correctedDeductionTimeSheet, workTime, workType, startBreakTime, 
+							correctedDeductionTimeSheet, workTime, workType, fluidCalc.getBreakStartTime(), 
 							correctWithEndTime, betweenWorkTimeSheets);
 		}).flatMap(List::stream).collect(Collectors.toList());
 		
@@ -826,6 +819,74 @@ public class DeductionTimeSheet {
 		
 		/** 控除時間帯(List)を返す */
 		return correctedDeductionTimeSheet;
+	}
+	
+	/**
+	 * 控除時間帯を取得する（流動休憩用）
+	 * @param dedAtr
+	 * @param workType
+	 * @param workTime
+	 * @param dailyRecord
+	 * @param oneDayOfRange
+	 * @param attendanceLeaveWork
+	 * @param companyCommonSetting
+	 * @param personCommonSetting
+	 * @return 控除時間帯
+	 */
+	private static List<TimeSheetOfDeductionItem> getDeductionForFluidBreak(
+			DeductionAtr dedAtr,
+			WorkType workType,
+			IntegrationOfWorkTime workTime,
+			IntegrationOfDaily dailyRecord,
+			TimeSpanForDailyCalc oneDayOfRange,
+			Optional<TimeLeavingOfDailyAttd> attendanceLeaveWork,
+			ManagePerCompanySet companyCommonSetting,
+			ManagePerPersonDailySet personCommonSetting){
+		List<TimeSheetOfDeductionItem> deductionTimeSheet = collectDeductionTimesForCorrect(dedAtr, workType, workTime,
+				dailyRecord, oneDayOfRange, attendanceLeaveWork,
+				companyCommonSetting, personCommonSetting);
+		
+		/** △控除時間帯同士の重複部分を補正 */
+		return new DeductionTimeSheetAdjustDuplicationTime(deductionTimeSheet).reCreate(
+				workTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
+				workTime.getRestClockManageAtr(),
+				FluidFixedAtr.of(workTime.getFlowWorkRestTimezone(workType)),
+				workTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeDailyAtr());
+	}
+	
+	/**
+	 * 流動休憩作成情報を取得する
+	 * @param lateTimeSheet
+	 * @param workTime
+	 * @param oneDayOfRange
+	 * @param workType
+	 * @param calcRange
+	 * @param integrationOfDaily
+	 * @param predetermineTimeSet
+	 * @param deductionItems
+	 * @return 流動休憩作成情報
+	 */
+	private static DeductionTotalTimeForFluidCalc getDeductionTotalTimeForFluidCalc(
+			CalculationRangeOfOneDay calcRange,
+			IntegrationOfDaily integrationOfDaily,
+			WorkType workType, 
+			IntegrationOfWorkTime workTime,
+			List<LateTimeSheet> lateTimeSheet,
+			TimeSpanForDailyCalc oneDayOfRange,
+			PredetermineTimeSetForCalc predetermineTimeSet,
+			List<TimeSheetOfDeductionItem> deductionItems) {
+		/** 休憩計算開始時刻を取得 */
+		Optional<TimeLeavingWork> timeLeave = calcRange.getAttendanceLeavingWork().getAttendanceLeavingWork(1);
+		TimeWithDayAttr startBreakTime = getStartBreakTime(lateTimeSheet, workTime, oneDayOfRange, workType,
+				timeLeave, calcRange, integrationOfDaily, predetermineTimeSet);
+		
+		/** 外出の合計を取得 */
+		AttendanceTime totalOutTime = new AttendanceTime(deductionItems.stream()
+				.filter(d -> d.getDeductionAtr().isGoOut() || d.getDeductionAtr().isBreak() || d.getWorkingBreakAtr().isWorking())
+				.map(d -> d.calcTotalTime())
+				.collect(Collectors.summingInt(d -> d.valueAsMinutes())));
+		
+		return new DeductionTotalTimeForFluidCalc(startBreakTime, new DeductionTotalTimeLocal(AttendanceTime.ZERO, totalOutTime));
 	}
 
 	/** △休憩計算開始時刻を取得 */
