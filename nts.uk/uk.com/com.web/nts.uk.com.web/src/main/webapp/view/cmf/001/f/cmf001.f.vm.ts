@@ -57,16 +57,16 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			
 			var params = __viewContext.transferred.get();
 			self.settingCode = params.settingCode;
-
-			self.startPage();
 			
 			self.selectedDomainId.subscribe(() => {
 				self.selectedDomain();
 			})
 
-			if (params.domainId !== undefined){
-				self.selectedDomainId(params.domainId);
-			}
+			self.startPage().done(() => {
+				if (params.domainId !== undefined) {
+					self.selectedDomainId(params.domainId);
+				}
+			});
 		}
 
 		selectedDomain(){
@@ -101,11 +101,13 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				if (self.domainList() !== null && self.domainList().length !== 0) {
 					self.selectedDomainId(self.domainList()[0].domainId);
 				}
+				
+				self.$grid = $("#grid");
+				self.initGrid();
+
+				dfd.resolve();
 			});
 			
-			self.$grid = $("#grid");
-			self.initGrid();
-		      
 			return dfd.promise();
 		}
 
@@ -133,9 +135,9 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				self.domainInfoList(importDomainInfoList);
 				
 				let csvItem = $.map(res.csvItems, function(value, index) {
-					return new CsvItem(index + 1, value);
+					return new CsvItem(index + 1, value.name, value.sampleData);
 				});
-				csvItem.unshift(new CsvItem(null, ''));
+				csvItem.unshift(new CsvItem(null, '', ''));
 				self.csvItemOption=ko.observableArray(csvItem);
 
 				dfd.resolve();
@@ -157,32 +159,36 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			}
 			
 			self.$grid.ntsGrid({
-				height: '300px',
+				height: '600px',
 				dataSource: self.layout(),
 		        primaryKey: 'itemNo',
 		        rowVirtualization: true,
 		        virtualization: true,
 		        virtualizationMode: 'continuous',
 		        columns: [
-					{ headerText: "削除", 				key: "required", 			dataType: 'boolean',	width: 50, formatter: deleteButton},
-					{ headerText: "NO", 					key: "itemNo", 				dataType: 'number',	width: 50, 	hidden: true },
-					{ headerText: "名称", 				key: "name", 				dataType: 'string',		width: 250},
-					{ headerText: "受入元", 				key: "isFixedValue",		dataType: 'number',	width: 130, ntsControl: 'SwitchButtons'},
+					{ headerText: "削除", 			key: "required", 			dataType: 'boolean',width: 50, formatter: deleteButton},
+					{ headerText: "NO", 			key: "itemNo", 				dataType: 'number',	width: 50, 	hidden: true },
+					{ headerText: "名称", 			key: "name", 				dataType: 'string',	width: 250},
+					{ headerText: "受入元", 			key: "isFixedValue",		dataType: 'number',	width: 130, ntsControl: 'SwitchButtons'},
 					{ headerText: "CSVヘッダ名", 	key: "selectedCsvItemNo",	dataType: 'number',	width: 220, ntsControl: 'Combobox' },
-					{ headerText: "サンプルデータ", 				key: "csvData", 				dataType: 'string',		width: 120	}
+<<<<<<< HEAD
+					{ headerText: "サンプルデータ", 	key: "csvData",				dataType: 'string',	width: 120	}
+=======
+					{ headerText: "サンプルデータ", 				key: "csvData", 				dataType: 'string',		width: 400	}
+>>>>>>> 840749a5569c09e6a71476b2915a95eac2e659fd
 				],
 		        features: [
-		          {
-		          },
+					{
+					},
 		        ],
 		        ntsControls: [
-		          {
-			            name: 'SwitchButtons',
-			            options: [{ value:0, text: 'CSV' },{ value:1, text: '固定値' }],
-                        optionsValue: 'value',
-                        optionsText: 'text',
-                        controlType: 'SwitchButtons',
-                        enable: true 
+					{
+						name: 'SwitchButtons',
+						options: [{ value:0, text: 'CSV' },{ value:1, text: '固定値' }],
+						optionsValue: 'value',
+						optionsText: 'text',
+						controlType: 'SwitchButtons',
+						enable: true
 		          },
 		          {
 		            name: 'Combobox',
@@ -195,9 +201,9 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		            dropDownAttachedToBody: false,
 		        	selectFirstIfNull: false,
 		            enable: true
-		          }
+					}
 		        ]
-		      });
+		    });
 		}
 		
 		removeItem(target: number){
@@ -432,10 +438,12 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 	export class CsvItem {
 	    no: number;
 	    name: string;
+		sampleData: string;
 	
-	    constructor(no: number, name: string) {
+	    constructor(no: number, name: string, sampleData: string) {
 	        this.no = no;
 	        this.name = name;
+			this.sampleData = sampleData;
 	    }
 	}
 }

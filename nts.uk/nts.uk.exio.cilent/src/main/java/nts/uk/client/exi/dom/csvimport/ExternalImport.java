@@ -93,7 +93,8 @@ public class ExternalImport {
 		CallWebServiceResult wsResult = callWebService(url, json, cookieList);
 		
 		String taskId = (String) wsResult.jsonAsyncTaskInfo.get("id");
-		if ((boolean) wsResult.jsonAsyncTaskInfo.get("running")) {
+		if ((boolean) wsResult.jsonAsyncTaskInfo.get("pending")
+				|| (boolean) wsResult.jsonAsyncTaskInfo.get("running")) {
 			awaitComplated(cookieList, taskId);
 		}
 
@@ -116,7 +117,8 @@ public class ExternalImport {
 
 		String taskId = (String) result.jsonAsyncTaskInfo.get("id");
 
-		if ((boolean) result.jsonAsyncTaskInfo.get("running")) {
+		if ((boolean) result.jsonAsyncTaskInfo.get("pending")
+				|| (boolean) result.jsonAsyncTaskInfo.get("running")) {
 			awaitComplated(cookieList, taskId);
 		}
 
@@ -130,7 +132,8 @@ public class ExternalImport {
 		CallWebServiceResult result;
 		while(true) {
 			result = callWebService(checkAsyncTaskUrl, "", cookieList);
-			if ((boolean) result.jsonAsyncTaskInfo.get("running") == false) {
+			if ((boolean) result.jsonAsyncTaskInfo.get("pending") == false
+					&& (boolean) result.jsonAsyncTaskInfo.get("running") == false) {
 				break;
 			}
 			Thread.sleep(1000);
