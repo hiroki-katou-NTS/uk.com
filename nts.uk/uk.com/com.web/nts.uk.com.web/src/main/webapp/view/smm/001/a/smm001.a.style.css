@@ -68,3 +68,15 @@
 .mb-10px {
   margin-bottom: 10px;
 }
+
+.group-check-lock-classification .radio-wrapper input[type="radio"]+span::before {
+  top: 1px !important;
+}
+
+.group-check-lock-classification .radio-wrapper input[type="radio"]+span::after {
+  top: 5px !important;
+}
+
+.group-check-lock-classification .radio-wrapper input[type="radio"]+span {
+  line-height: 15px !important;
+}

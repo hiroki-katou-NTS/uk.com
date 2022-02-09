@@ -29,26 +29,26 @@ module nts.uk.com.view.smm001.b {
 
       vm.empMonth =
         `
-      <div class="flex" style="height: 25px">
-        <label class="radio-emp"
-          data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${currentMonth}', checkedValue: 0, group: 'lockClassification-${vm.code}' }"></label>
-        <label class="radio-emp"
-          data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${lastMonth}', checkedValue: 1, group: 'lockClassification-${vm.code}' }"></label>
-      </div>
-      `;
+          <div class="flex group-check-lock-classification" style="height: 22px">
+            <label class="radio-emp"
+              data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${currentMonth}', checkedValue: 0, group: 'lockClassification-${vm.code}' }"></label>
+            <label class="radio-emp"
+              data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${lastMonth}', checkedValue: 1, group: 'lockClassification-${vm.code}' }"></label>
+          </div>
+        `;
     }
 
     updateEmpMonth() {
       const vm = this;
       vm.empMonth =
         `
-      <div class="flex" style="height: 25px">
-        <label class="radio-emp"
-          data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${vm.currentMonth}', checkedValue: 0, group: 'lockClassification-${vm.code}' }"></label>
-        <label class="radio-emp"
-          data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${vm.lastMonth}', checkedValue: 1, group: 'lockClassification-${vm.code}' }"></label>
-      </div>
-      `;
+          <div class="flex group-check-lock-classification" style="height: 22px">
+            <label class="radio-emp"
+              data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${vm.currentMonth}', checkedValue: 0, group: 'lockClassification-${vm.code}' }"></label>
+            <label class="radio-emp"
+              data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${vm.lastMonth}', checkedValue: 1, group: 'lockClassification-${vm.code}' }"></label>
+          </div>
+        `;
     }
 
     defaultSelect() {
@@ -201,7 +201,7 @@ module nts.uk.com.view.smm001.b {
           const existCondSetDto = _.find(stdOutputCondSetDtos, (e: any) => {
             return (e.conditionSetCode === value);
           })
-          if(!isNullOrEmpty && _.isUndefined(existCondSetDto)){
+          if (!isNullOrEmpty && vm.salaryCooperationClassification() === true && _.isUndefined(existCondSetDto)) {
             vm.$dialog.info({ messageId: "Msg_3266" });
           }
           vm.salaryCooperationConditions(value);
