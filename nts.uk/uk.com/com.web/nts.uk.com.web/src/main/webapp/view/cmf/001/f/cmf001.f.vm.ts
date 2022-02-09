@@ -157,7 +157,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			}
 			
 			self.$grid.ntsGrid({
-				height: '300px',
+				height: '600px',
 				dataSource: self.layout(),
 		        primaryKey: 'itemNo',
 		        rowVirtualization: true,
@@ -169,7 +169,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 					{ headerText: "名称", 				key: "name", 				dataType: 'string',		width: 250},
 					{ headerText: "受入元", 				key: "isFixedValue",		dataType: 'number',	width: 130, ntsControl: 'SwitchButtons'},
 					{ headerText: "CSVヘッダ名", 	key: "selectedCsvItemNo",	dataType: 'number',	width: 220, ntsControl: 'Combobox' },
-					{ headerText: "サンプルデータ", 				key: "csvData", 				dataType: 'string',		width: 120	}
+					{ headerText: "サンプルデータ", 				key: "csvData", 				dataType: 'string',		width: 400	}
 				],
 		        features: [
 		          {
