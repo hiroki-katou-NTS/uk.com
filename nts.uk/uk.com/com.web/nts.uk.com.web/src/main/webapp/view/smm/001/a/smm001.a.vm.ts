@@ -194,16 +194,16 @@ module nts.uk.com.view.smm001.a {
       return true;
     }
 
-    setDefaultBeforeSave() {
-      const vm = this;
-      if (!vm.checkedOrganizationInformation()) { vm.selectedOrganizationInformation('0') }
-      if (!vm.checkedBasicPersonnelInformation()) { vm.selectedBasicPersonnelInformation('0') }
-      if (!vm.checkedJobStructureInformation()) { vm.selectedJobStructureInformation('0') }
-      if (!vm.checkedAddressInformation()) { vm.selectedAddressInformation('0') }
-      if (!vm.checkedLeaveInformation()) { vm.selectedLeaveInformation('0') }
-      if (!vm.checkedAffiliatedMaster()) { vm.selectedAffiliatedMaster('0') }
-      if (!vm.checkedEmployeeMaster()) { vm.selectedEmployeeMaster('0') }
-    }
+    // setDefaultBeforeSave() {
+    //   const vm = this;
+    //   if (!vm.checkedOrganizationInformation()) { vm.selectedOrganizationInformation('0') }
+    //   if (!vm.checkedBasicPersonnelInformation()) { vm.selectedBasicPersonnelInformation('0') }
+    //   if (!vm.checkedJobStructureInformation()) { vm.selectedJobStructureInformation('0') }
+    //   if (!vm.checkedAddressInformation()) { vm.selectedAddressInformation('0') }
+    //   if (!vm.checkedLeaveInformation()) { vm.selectedLeaveInformation('0') }
+    //   if (!vm.checkedAffiliatedMaster()) { vm.selectedAffiliatedMaster('0') }
+    //   if (!vm.checkedEmployeeMaster()) { vm.selectedEmployeeMaster('0') }
+    // }
 
     /**
      * Event when clicked save button
@@ -230,43 +230,44 @@ module nts.uk.com.view.smm001.a {
     registerSmileCooperationAcceptanceSetting(): any {
       const vm = this;
       if (this.validateBeforeSave() === false) {
+        vm.resA(null)
         vm.$dialog.info({ messageId: "Msg_3250" });
         return;
-      }
-      vm.setDefaultBeforeSave();
-      vm.$blockui('grayout');
-      // Start: Init json body
-      const command = {
-        checkedOrganizationInformation:
-          vm.checkedOrganizationInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
-        checkedBasicPersonnelInformation:
-          vm.checkedBasicPersonnelInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
-        checkedJobStructureInformation:
-          vm.checkedJobStructureInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
-        checkedAddressInformation: vm.checkedAddressInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
-        checkedLeaveInformation: vm.checkedLeaveInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
-        checkedAffiliatedMaster: vm.checkedAffiliatedMaster() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
-        checkedEmployeeMaster: vm.checkedEmployeeMaster() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
-        selectedOrganizationInformation: vm.selectedOrganizationInformation(),
-        selectedBasicPersonnelInformation: vm.selectedBasicPersonnelInformation(),
-        selectedJobStructureInformation: vm.selectedJobStructureInformation(),
-        selectedAddressInformation: vm.selectedAddressInformation(),
-        selectedLeaveInformation: vm.selectedLeaveInformation(),
-        selectedAffiliatedMaster: vm.selectedAffiliatedMaster(),
-        selectedEmployeeMaster: vm.selectedEmployeeMaster(),
-      };
-      // End: Init json body
+      } else {
+        // vm.setDefaultBeforeSave();
+        vm.$blockui('grayout');
+        // Start: Init json body
+        const command = {
+          checkedOrganizationInformation:
+            vm.checkedOrganizationInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+          checkedBasicPersonnelInformation:
+            vm.checkedBasicPersonnelInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+          checkedJobStructureInformation:
+            vm.checkedJobStructureInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+          checkedAddressInformation: vm.checkedAddressInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+          checkedLeaveInformation: vm.checkedLeaveInformation() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+          checkedAffiliatedMaster: vm.checkedAffiliatedMaster() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+          checkedEmployeeMaster: vm.checkedEmployeeMaster() ? vm.ENUM_IS_CHECKED : vm.ENUM_IS_NOT_CHECKED,
+          selectedOrganizationInformation: vm.selectedOrganizationInformation(),
+          selectedBasicPersonnelInformation: vm.selectedBasicPersonnelInformation(),
+          selectedJobStructureInformation: vm.selectedJobStructureInformation(),
+          selectedAddressInformation: vm.selectedAddressInformation(),
+          selectedLeaveInformation: vm.selectedLeaveInformation(),
+          selectedAffiliatedMaster: vm.selectedAffiliatedMaster(),
+          selectedEmployeeMaster: vm.selectedEmployeeMaster(),
+        };
+        // End: Init json body
 
-      // Start: Process send request
-      vm.$ajax('com', API.registerSmileCooperationAcceptanceSetting, command)
-        .then(() => {
-          //vm.$dialog.info({ messageId: "Msg_15" });
-          vm.resA("Msg_15");
-        }).fail((err) => {
-          vm.$dialog.error(err);
-        }).always(() => vm.$blockui('clear'));
-      // End: Process send request
-      return null;
+        // Start: Process send request
+        vm.$ajax('com', API.registerSmileCooperationAcceptanceSetting, command)
+          .then(() => {
+            //vm.$dialog.info({ messageId: "Msg_15" });
+            vm.resA("Msg_15");
+          }).fail((err) => {
+            vm.$dialog.error(err);
+          }).always(() => vm.$blockui('clear'));
+        // End: Process send request
+      }
     }
   }
 }

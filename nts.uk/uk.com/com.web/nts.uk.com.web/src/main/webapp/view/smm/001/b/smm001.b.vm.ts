@@ -269,6 +269,7 @@ module nts.uk.com.view.smm001.b {
     registerRegisterSmileLinkageExternalIOutput(): any {
       const vm = this;
       if (this.validateBeforeSave() === false) {
+        vm.resB("");
         vm.$dialog.info({ messageId: "Msg_3252" });
       } else {
         vm.$blockui('grayout');
