@@ -64,6 +64,7 @@ module nts.uk.com.view.smm001.a {
     EMPLOYEE_MASTER: KnockoutObservable<string>;
     ENUM_IS_CHECKED = 1;
     ENUM_IS_NOT_CHECKED = 0;
+    resA: KnockoutObservable<string> = ko.observable("");
     // End: Init enum
 
     created() {
@@ -72,8 +73,8 @@ module nts.uk.com.view.smm001.a {
     }
 
     mounted() {
-			$('#checkbox_A2_2 input:not(:disabled)').focus();
-		}
+      $('#checkbox_A2_2 input:not(:disabled)').focus();
+    }
 
     setDefault() {
       const vm = this;
@@ -153,7 +154,7 @@ module nts.uk.com.view.smm001.a {
           }
         }
       })
-      .always(() => $('#checkbox_A2_2 input:not(:disabled)').focus());
+        .always(() => $('#checkbox_A2_2 input:not(:disabled)').focus());
     }
 
     /**
@@ -211,12 +212,22 @@ module nts.uk.com.view.smm001.a {
       const vm = this;
       vm.registerSmileCooperationAcceptanceSetting();
       vm.screenB.registerRegisterSmileLinkageExternalIOutput();
+      vm.resA.valueHasMutated();
+      vm.screenB.resB.valueHasMutated();
+      setTimeout(() => {
+        if (
+          vm.resA() == "Msg_15" &&
+          vm.screenB.resB() == "Msg_15"
+        ) {
+          vm.$dialog.info({ messageId: "Msg_15" });
+        }
+      }, 500)
     }
 
     /**
      * save at A Screen
      */
-    registerSmileCooperationAcceptanceSetting() {
+    registerSmileCooperationAcceptanceSetting(): any {
       const vm = this;
       if (this.validateBeforeSave() === false) {
         vm.$dialog.info({ messageId: "Msg_3250" });
@@ -249,11 +260,13 @@ module nts.uk.com.view.smm001.a {
       // Start: Process send request
       vm.$ajax('com', API.registerSmileCooperationAcceptanceSetting, command)
         .then(() => {
-          vm.$dialog.info({ messageId: "Msg_15" });
+          //vm.$dialog.info({ messageId: "Msg_15" });
+          vm.resA("Msg_15");
         }).fail((err) => {
           vm.$dialog.error(err);
         }).always(() => vm.$blockui('clear'));
       // End: Process send request
+      return null;
     }
   }
 }

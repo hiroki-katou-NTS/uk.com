@@ -88,6 +88,7 @@ module nts.uk.com.view.smm001.b {
     columnEmp: KnockoutObservableArray<any> = ko.observableArray([]);
     employmentListWithSpecifiedCompany: KnockoutObservableArray<any> = ko.observableArray([]);
     empListTemp: any = [];
+    resB: KnockoutObservable<string> = ko.observable("");
     // End: Init b screen
 
     constructor() {
@@ -183,7 +184,8 @@ module nts.uk.com.view.smm001.b {
         if (response) {
           // After has response - Process for setting behind
           const stdOutputCondSetDtos = response.stdOutputCondSetDtos;
-          if (stdOutputCondSetDtos === null || stdOutputCondSetDtos.length === 0) {
+          const isNullOrEmpty = stdOutputCondSetDtos === null || stdOutputCondSetDtos.length === 0;
+          if (isNullOrEmpty) {
             vm.$dialog.info({ messageId: "Msg_3270" });
           }
           stdOutputCondSetDtos.forEach((obj: any) => {
@@ -199,7 +201,7 @@ module nts.uk.com.view.smm001.b {
           const existCondSetDto = _.find(stdOutputCondSetDtos, (e: any) => {
             return (e.conditionSetCode === value);
           })
-          if(_.isUndefined(existCondSetDto)){
+          if(!isNullOrEmpty && _.isUndefined(existCondSetDto)){
             vm.$dialog.info({ messageId: "Msg_3266" });
           }
           vm.salaryCooperationConditions(value);
@@ -264,7 +266,7 @@ module nts.uk.com.view.smm001.b {
       return true;
     }
 
-    registerRegisterSmileLinkageExternalIOutput() {
+    registerRegisterSmileLinkageExternalIOutput(): any {
       const vm = this;
       if (this.validateBeforeSave() === false) {
         vm.$dialog.info({ messageId: "Msg_3252" });
@@ -280,7 +282,8 @@ module nts.uk.com.view.smm001.b {
         };
         vm.$ajax('com', API.registerSmileLinkageExternalOutput, command)
           .then((res: any) => {
-            vm.$dialog.info({ messageId: "Msg_15" });
+            //vm.$dialog.info({ messageId: "Msg_15" });
+            vm.resB("Msg_15");
           }).fail((err) => {
             vm.$dialog.error(err);
           }).always(() => vm.$blockui('clear'));
