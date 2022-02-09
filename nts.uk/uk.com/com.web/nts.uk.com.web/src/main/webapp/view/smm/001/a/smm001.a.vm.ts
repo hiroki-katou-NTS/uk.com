@@ -139,15 +139,7 @@ module nts.uk.com.view.smm001.a {
             );
             vm.mappingDataAfterGetInitAScreen(smileCooperationAcceptanceSettings);
             // Check logic after mapping data to validate exist in select option
-            const listValueSelected = [
-              vm.selectedOrganizationInformation(),
-              vm.selectedBasicPersonnelInformation(),
-              vm.selectedJobStructureInformation(),
-              vm.selectedAddressInformation(),
-              vm.selectedLeaveInformation(),
-              vm.selectedAffiliatedMaster(),
-              vm.selectedEmployeeMaster(),
-            ];
+            const listValueSelected = vm.addListValueSelected();
             if (vm.validateIfElementSelectedNotContainInArray(smileCooperationAcceptanceSettings, listValueSelected)) {
               vm.$dialog.info({ messageId: "Msg_3265" });
             }
@@ -192,6 +184,19 @@ module nts.uk.com.view.smm001.a {
         return false;
       }
       return true;
+    }
+
+    addListValueSelected() {
+      let listValueSelected = [];
+      const vm = this;
+      if (vm.checkedOrganizationInformation()) { listValueSelected.push(vm.selectedOrganizationInformation()) }
+      if (vm.checkedBasicPersonnelInformation()) { listValueSelected.push(vm.selectedBasicPersonnelInformation()) }
+      if (vm.checkedJobStructureInformation()) { listValueSelected.push(vm.selectedJobStructureInformation()) }
+      if (vm.checkedAddressInformation()) { listValueSelected.push(vm.selectedAddressInformation()) }
+      if (vm.checkedLeaveInformation()) { listValueSelected.push(vm.selectedLeaveInformation()) }
+      if (vm.checkedAffiliatedMaster()) { listValueSelected.push(vm.selectedAffiliatedMaster()) }
+      if (vm.checkedEmployeeMaster()) { listValueSelected.push(vm.selectedEmployeeMaster()) }
+      return listValueSelected;
     }
 
     // setDefaultBeforeSave() {
@@ -265,7 +270,10 @@ module nts.uk.com.view.smm001.a {
             vm.resA("Msg_15");
           }).fail((err) => {
             vm.$dialog.error(err);
-          }).always(() => vm.$blockui('clear'));
+          }).always(() => {
+            vm.$blockui('clear');
+            $('#checkbox_A2_2 input:not(:disabled)').focus();
+          });
         // End: Process send request
       }
     }

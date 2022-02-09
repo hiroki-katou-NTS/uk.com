@@ -6,7 +6,6 @@ module nts.uk.com.view.smm001.b {
     registerSmileLinkageExternalOutput: 'com/screen/smm001/register-smile-linkage-external-output',
     selectListPaymentDate: 'com/screen/smm001/select-list-payment-date',
     selectAPaymentDate: 'com/screen/smm001/select-a-payment-date'
-
   };
 
   class GridItem {
