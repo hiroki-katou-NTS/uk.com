@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 	import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
 
 	const template = `
-	<div class="container cf" data-bind="with: $parent">
+	<div class="container cf has-row-header" data-bind="with: $parent">
 	<div class="cf valign-top control-group" data-bind="visible: restTimeTableVisible2()">
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
@@ -57,8 +57,9 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 	</div>
 
 	<!-- calculate button A5_8-->
-	<div style="margin-bottom: 20px; margin-top: 13px;" data-bind="visible: restTimeTableVisible2()">
-		<button style="width: 100px; margin-left: 200px" data-bind="text: $i18n('KAF010_43'), click: calculate, enable: mode() != 3" class="caret-bottom caret-inline" ></button>
+	<div style="margin-bottom: 20px; margin-top: 12px;" data-bind="visible: restTimeTableVisible2()">
+		<div class="cm-column" style="display: inline-block; width: 100px"></div>
+		<button style="width: 100px; margin-left: 16px" data-bind="text: $i18n('KAF010_43'), click: calculate, enable: mode() != 3" ></button>
 	</div>
 
 	<!-- holiday time -->

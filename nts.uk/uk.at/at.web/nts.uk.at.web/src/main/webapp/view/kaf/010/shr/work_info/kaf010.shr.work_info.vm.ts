@@ -34,7 +34,7 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 		</div>
 
 		<!--勤務時間 1-->
-		<div style="margin-top: 2px">
+		<div style="margin-top: 12px">
 			<div class="table">
 				<div style="width: 120px; margin-right: 0px !important" class="cell valign-top cm-column2">
 					<!--A4_8 勤務時間ラベル-->
