@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -167,10 +168,13 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	@Override
 	public List<PayoutSubofHDManagement> getByListOccDate(String sid, List<GeneralDate> lstDate) {
 		List<PayoutSubofHDManagement> result = new ArrayList<PayoutSubofHDManagement>();
+		lstDate = lstDate.stream().filter(Objects::nonNull).collect(Collectors.toList());
 		if (!lstDate.isEmpty()) {
 			result = this.queryProxy().query(GET_BY_LIST_OCC_DATE, KrcmtPayoutSubOfHDMana.class)
 						.setParameter("sid", sid)
-						.setParameter("lstDate", lstDate)
+						.setParameter("lstDate", lstDate.stream()
+								.map(GeneralDate::toLocalDate)
+								.collect(Collectors.toList()))
 						.getList(item -> toDomain(item));
 		}
 		return result;
