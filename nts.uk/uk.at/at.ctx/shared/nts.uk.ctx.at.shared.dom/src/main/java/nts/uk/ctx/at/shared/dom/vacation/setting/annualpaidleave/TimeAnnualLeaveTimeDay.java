@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 /**
@@ -54,7 +53,7 @@ public class TimeAnnualLeaveTimeDay {
 		}
 	}
 	
-	public static interface Require extends AbsenceTenProcess.RequireM1 {
+	public static interface Require {
 
 		// 労働条件取得
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
