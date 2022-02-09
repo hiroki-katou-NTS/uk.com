@@ -137,6 +137,7 @@ module nts.uk.at.view.kdl047.test.screenModel {
 
   export class AttendanceItemShare {
     // タイトル行
+    // Test
     titleLine: any = {};
     // 項目名行
     itemNameLine: any = {};
