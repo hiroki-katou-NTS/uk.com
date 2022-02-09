@@ -250,6 +250,9 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			self.checkError();
 			if(nts.uk.ui.errors.hasError()) return;
 
+			var info = $.grep(self.domainInfoList(), function (di) {
+				return di.domainId == self.selectedDomainId();
+			});
 			let domains = $.map(self.layout(), l =>{
 				return {
 					itemNo: l.itemNo,
@@ -264,6 +267,8 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				items: domains
 			};
 			ajax("screen/com/cmf/cmf001/f/save", saveContents).done(() => {
+				info[0].resistered = true;
+				self.canEditDetail(true);
 				dfd.resolve();
 			});
 
