@@ -151,35 +151,35 @@ public class SupportWorkDetails {
                 case 1305:
                     itemValue = ItemValue.builder()
                             .itemId(itemId)
-                            .value(ouenWorkTimeOfDaily.getWorkTime().getTotalTime().v())
+                            .value(ouenWorkTimeOfDaily == null ? null : ouenWorkTimeOfDaily.getWorkTime().getTotalTime().v())
                             .valueType(ValueType.TIME)
                             .completed();
                     break;
                 case 1306:
                     itemValue = ItemValue.builder()
                             .itemId(itemId)
-                            .value(ouenWorkTimeOfDaily.getWorkTime().getWithinTime().v())
+                            .value(ouenWorkTimeOfDaily == null ? null : ouenWorkTimeOfDaily.getWorkTime().getWithinTime().v())
                             .valueType(ValueType.TIME)
                             .completed();
                     break;
                 case 1309:
                     itemValue = ItemValue.builder()
                             .itemId(itemId)
-                            .value(ouenWorkTimeOfDaily.getAmount().v())
+                            .value(ouenWorkTimeOfDaily == null ? null : ouenWorkTimeOfDaily.getAmount().v())
                             .valueType(ValueType.AMOUNT_NUM)
                             .completed();
                     break;
                 case 1336:
                     itemValue = ItemValue.builder()
                             .itemId(itemId)
-                            .value(ouenWorkTimeOfDaily.getMoveTime().getTotalMoveTime().v())
+                            .value(ouenWorkTimeOfDaily == null ? null : ouenWorkTimeOfDaily.getMoveTime().getTotalMoveTime().v())
                             .valueType(ValueType.TIME)
                             .completed();
                     break;
                 case 2191:
                     itemValue = ItemValue.builder()
                             .itemId(itemId)
-                            .value(ouenWorkTimeOfDaily.getWorkTime().getPremiumTime().getTotalWorkingTime().v())
+                            .value(ouenWorkTimeOfDaily == null ? null : ouenWorkTimeOfDaily.getWorkTime().getPremiumTime().getTotalWorkingTime().v())
                             .valueType(ValueType.TIME)
                             .completed();
                     break;

@@ -27,8 +27,6 @@ import org.apache.logging.log4j.util.Strings;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -43,7 +41,7 @@ import java.util.stream.Collectors;
 public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator implements SupportWorkListGenerator {
     private static final String CSV_EXT = ".csv";
     private static final String EXCEL_EXT = ".xlsx";
-    private static final int MAX_ROW_IN_PAGE = 40;
+    private static final int MAX_ROW_IN_PAGE = 27;
     private static final int MAX_ROW_TITLE_IN_PAGE = 2;
     private static final int MAX_ROW_HEADER_IN_PAGE = 1;
     private static final int MAX_EMPLOYEE_PER_PAGE = 30;
@@ -65,7 +63,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             worksheet.setGridlinesVisible(false);
             this.printHeader(worksheet, dataSource);
             this.printContent(worksheet, dataSource, exportCsv);
-            this.pageBreakSetting(worksheet, dataSource);
+//            this.pageBreakSetting(worksheet, dataSource);
             reportContext.processDesigner();
             this.pageSetting(worksheet, dataSource);
 
@@ -74,10 +72,10 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             } else {
                 worksheet.setViewType(ViewType.PAGE_LAYOUT_VIEW);
                 worksheet.getCells().setStandardWidth(12);
-                worksheet.getCells().setColumnWidth(0, 11);
-                worksheet.getCells().setColumnWidth(1, 13.5);
-                worksheet.getCells().setColumnWidth(2, 13.5);
-                worksheet.getCells().setColumnWidth(maxColumnInHeader, 11);
+                worksheet.getCells().setColumnWidth(0, 10);
+                worksheet.getCells().setColumnWidth(1, 14);
+                worksheet.getCells().setColumnWidth(2, 14);
+                worksheet.getCells().setColumnWidth(maxColumnInHeader - 1, 9);
                 reportContext.saveAsExcel(this.createNewFile(context, this.getReportName(dataSource.getSupportWorkOutputSetting().getName().v() + EXCEL_EXT)));
             }
         } catch (Exception e) {
@@ -92,13 +90,13 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         pageSetup.setFitToPagesTall(0);
         pageSetup.setFitToPagesWide(1);
-        pageSetup.setTopMarginInch(0.98);
-        pageSetup.setBottomMarginInch(0.39);
-        pageSetup.setLeftMarginInch(0.39);
-        pageSetup.setRightMarginInch(0.39);
-        pageSetup.setHeaderMarginInch(0.39);
-        pageSetup.setFooterMarginInch(0.31);
-        pageSetup.setCenterHorizontally(true);
+        pageSetup.setTopMarginInch(2.5);
+        pageSetup.setBottomMarginInch(1);
+        pageSetup.setLeftMarginInch(1);
+        pageSetup.setRightMarginInch(1);
+        pageSetup.setHeaderMarginInch(1);
+        pageSetup.setFooterMarginInch(0.8);
+//        pageSetup.setCenterHorizontally(true);
         pageSetup.setHeader(0, "&9&\"" + FONT_NAME + "\"" + companyName);
         pageSetup.setHeader(1, "&16&\"" + FONT_NAME + ",Bold\"" + dataSource.getSupportWorkOutputSetting().getName());
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm", Locale.JAPAN);
@@ -168,7 +166,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
             // C5_2
             cells.get(startRow, 1).setValue(this.getWorkplaceInfo(dataSource.getAggregationUnit(), dataSource.getWorkplaceInfoList(), workDataByWkp.getWorkplace(), true));
             this.setBasicStyle(cells.get(startRow, 1), false);
-            cells.merge(startRow, 1, 1, this.maxColumnInHeader, true);
+            cells.merge(startRow, 1, 1, this.maxColumnInHeader - 1, true);
             startRow += 1;
             itemPerPage += 1;
 
@@ -253,25 +251,14 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 }
 
                 if (isPageBreak) {
-                    if (itemPerPage == MAX_ROW_IN_PAGE) {
+                    if (itemPerPage >= MAX_ROW_IN_PAGE) {
                         hPageBreaks.add(startRow);
-                        this.setBorderBottom(cells, startRow);
+                        for (int c = 0; c < maxColumnInHeader; c++) {
+                            this.setBorderBottom(cells.get(startRow, c));
+                        }
                         pageIndex += 1;
                         itemPerPage = 0;
                     }
-//                    if (pageIndex <= 0) {
-//                        if (startRow - 2 >= MAX_ROW_IN_PAGE - (MAX_ROW_HEADER_IN_PAGE + MAX_ROW_TITLE_IN_PAGE)) {
-//                            hPageBreaks.add(startRow);
-//                            this.setBorderBottom(cells, startRow);
-//                            pageIndex += 1;
-//                        }
-//                    } else {
-//                        if (startRow - 2 - (pageIndex * MAX_ROW_IN_PAGE) >= MAX_ROW_IN_PAGE - MAX_ROW_HEADER_IN_PAGE) {
-//                            hPageBreaks.add(startRow);
-//                            this.setBorderBottom(cells, startRow);
-//                            pageIndex += 1;
-//                        }
-//                    }
                 }
 
             } // end loop day
@@ -344,10 +331,13 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
 
             // page break by workplace
             if (isPageBreak) {
-                if (i != supportWorkDataList.size() - 1 || supportWorkDataList.size() > 1) {
+                if (supportWorkDataList.size() > 1) { //i != supportWorkDataList.size() - 1 ||
                     hPageBreaks.add(startRow);
-                    this.setBorderBottom(cells, startRow);
+                    for (int c = 0; c < maxColumnInHeader; c++) {
+                        this.setBorderBottom(cells.get(startRow, c));
+                    }
                     pageIndex += 1;
+                    itemPerPage = 0;
                 }
             }
         } // end loop workplace
@@ -560,19 +550,18 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         cell.setStyle(style);
     }
 
-    private void setBorderBottom(Cells cells, int row){
-        for (int c = 0; c <= maxColumnInHeader; c++) {
-            Style style = cells.get(row - 1, c).getStyle();
-            style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.THICK);
-//            style.setForegroundColor(Color.fromArgb(255, 0, 0));
-            cells.get(row, c).setStyle(style);
-        }
+    private void setBorderBottom(Cell cell) {
+        Style style = cell.getStyle();
+        Border border = style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER);
+        border.setLineStyle(CellBorderType.THICK);
+        border.setColor(Color.getRed());
+        cell.setStyle(style);
     }
 
     private void setHeaderStyle(Cell cell, boolean firstColumn, boolean lastColumn) {
         Style style = this.commonStyle();
-        style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.THICK);
-        style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.THICK);
+        style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.MEDIUM);
+        style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.MEDIUM);
         style.setForegroundColor(Color.fromArgb(155, 194, 230));
         if (firstColumn) {
             style.getBorders().getByBorderType(BorderType.LEFT_BORDER).setLineStyle(CellBorderType.NONE);
