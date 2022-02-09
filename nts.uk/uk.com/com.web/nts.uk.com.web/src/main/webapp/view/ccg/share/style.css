@@ -272,6 +272,16 @@
 #component-ccg001 #ccg001-tab-content-2 {
 }
 
+#component-ccg001 #ccg001-tab-content-2.withEmployeeFilter {
+	width: 900px;
+	display: flex;
+}
+
+#component-ccg001 #ccg001-tab-content-2.withEmployeeFilter .conditions-filter,
+#component-ccg001 #ccg001-tab-content-2.withEmployeeFilter .employees-filter {
+	width: 50%;
+}
+
 #component-ccg001 #ccg001-tab-content-2 .ccg001-tab-content-filters .switchbox-wrappers > label span {
 	width: 65px;
 }
