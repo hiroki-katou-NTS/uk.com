@@ -186,12 +186,9 @@
 }
 
 #sidebar .sidebar-content #ccg001-btn-search-drawer {
-	border-left: 8px solid #2ECC71;	
+	left: 121px;
 }
 
-#sidebar .sidebar-content #ccg001-btn-search-drawer:hover {
-	border-left-color: #2BBF6A;
-}
 .has-state.disabled .ccg001-btn {
 	background-color: #b0d3b5;
 	color: #888888;
