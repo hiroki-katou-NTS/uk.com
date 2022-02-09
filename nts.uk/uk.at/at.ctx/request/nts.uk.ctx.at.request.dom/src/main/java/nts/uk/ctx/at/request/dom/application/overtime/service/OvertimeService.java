@@ -63,7 +63,6 @@ public interface OvertimeService {
 			Boolean agent,
 			List<OvertimeHour> overtimeHours,
 			List<OvertimeReason> overtimeReasons,
-			Optional<AchievementDetail> opAchievementDetail,
 			boolean managementMultipleWorkCycles
 	);
 	/**
@@ -458,7 +457,7 @@ public interface OvertimeService {
 	 * @param overtimeReasons
 	 * @param workingHours
 	 * @param workInformation
-	 * @param achievementDetail
+	 * @param managementMultipleWorkCycles
 	 * @return
 	 */
 	Pair<List<TimeZoneWithWorkNo>, List<BreakTimeSheet>> getWorkingHoursAndBreakHours(
@@ -469,7 +468,6 @@ public interface OvertimeService {
 			List<OvertimeReason> overtimeReasons,
 			List<TimeZoneWithWorkNo> workingHours,
 			WorkInformation workInformation,
-			Optional<AchievementDetail> achievementDetail,
 			boolean managementMultipleWorkCycles
 	);
 }

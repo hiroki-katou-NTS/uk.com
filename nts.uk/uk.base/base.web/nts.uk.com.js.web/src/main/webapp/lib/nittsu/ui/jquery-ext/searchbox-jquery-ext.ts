@@ -164,8 +164,8 @@ module nts.uk.ui.jqueryExtentions {
             
             let tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
             $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
-            $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span><i id='search-icon' class='img-icon'></i></div>");  
-            $container.append("<div class='input-wrapper'><button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button></div>"); 
+            $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor fit-to-right ntsSearchBox_Component' type='text' /></span><i id='search-icon' class='img-icon'></i></div>");  
+            $container.append("<div class='input-wrapper'><button class='search-btn fit-to-left fit-to-editor ntsSearchBox_Component'>" + searchText + "</button></div>"); 
             
             if (!nts.uk.util.isNullOrEmpty(label)) {
                 var $formLabel = $("<div>", { text: label });
