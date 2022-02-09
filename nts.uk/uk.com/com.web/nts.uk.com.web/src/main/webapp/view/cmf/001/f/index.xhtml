@@ -35,7 +35,7 @@
 							name: '受入ドメイン', 
 							options: $root.content.importDomainOption,
 							optionsValue: 'value',
-							visibleItemsCount: 10,
+							visibleItemsCount: 20,
 							optionsText: 'name',
 							selectFirstIfNull: false,
 							value: importDomain,
@@ -43,7 +43,7 @@
 						<button class="normal" id="bntAddImportDomain" data-bind="click: addImportDomain, text: '追加'"></button>
 						<button class="normal" id="bntDelImportDomain" data-bind="click: deleteImportDomain, text: '削除'"></button>
 						<table id="domain-list" data-bind="ntsGridList: {
-							height: '300px',
+							height: '600px',
 							dataSource: domainList,
 							primaryKey: 'domainId',
 							columns: domainListColumns,

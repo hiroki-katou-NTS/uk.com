@@ -57,16 +57,16 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			
 			var params = __viewContext.transferred.get();
 			self.settingCode = params.settingCode;
-
-			self.startPage();
 			
 			self.selectedDomainId.subscribe(() => {
 				self.selectedDomain();
 			})
 
-			if (params.domainId !== undefined){
-				self.selectedDomainId(params.domainId);
-			}
+			self.startPage().done(() => {
+				if (params.domainId !== undefined) {
+					self.selectedDomainId(params.domainId);
+				}
+			});
 		}
 
 		selectedDomain(){
@@ -101,11 +101,13 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				if (self.domainList() !== null && self.domainList().length !== 0) {
 					self.selectedDomainId(self.domainList()[0].domainId);
 				}
+				
+				self.$grid = $("#grid");
+				self.initGrid();
+
+				dfd.resolve();
 			});
 			
-			self.$grid = $("#grid");
-			self.initGrid();
-		      
 			return dfd.promise();
 		}
 
@@ -157,7 +159,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			}
 			
 			self.$grid.ntsGrid({
-				height: '300px',
+				height: '600px',
 				dataSource: self.layout(),
 		        primaryKey: 'itemNo',
 		        rowVirtualization: true,
@@ -169,7 +171,11 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 					{ headerText: "名称", 			key: "name", 				dataType: 'string',	width: 250},
 					{ headerText: "受入元", 			key: "isFixedValue",		dataType: 'number',	width: 130, ntsControl: 'SwitchButtons'},
 					{ headerText: "CSVヘッダ名", 	key: "selectedCsvItemNo",	dataType: 'number',	width: 220, ntsControl: 'Combobox' },
+<<<<<<< HEAD
 					{ headerText: "サンプルデータ", 	key: "csvData",				dataType: 'string',	width: 120	}
+=======
+					{ headerText: "サンプルデータ", 				key: "csvData", 				dataType: 'string',		width: 400	}
+>>>>>>> 840749a5569c09e6a71476b2915a95eac2e659fd
 				],
 		        features: [
 					{
