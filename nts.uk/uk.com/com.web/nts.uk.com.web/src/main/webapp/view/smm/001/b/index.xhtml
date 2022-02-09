@@ -7,10 +7,10 @@
   <div class="smile-div">
     <p class="ml-1">#{i18n.getText('SMM001_7')}</p>
     <div class="d-flex mb-5px ml-2">
-      <div data-bind="ntsCheckBox: { checked: salaryCooperationClassification, enable: true }">
+      <div tabindex="18" data-bind="ntsCheckBox: { checked: salaryCooperationClassification, enable: true }">
         #{i18n.getText('SMM001_8')}
       </div>
-      <div class="combo-box-info" data-bind="ntsComboBox: {
+      <div tabindex="19" class="combo-box-info" data-bind="ntsComboBox: {
         name: '#[SMM001_7]',
         options: itemListCndSet,
         optionsValue: 'code',
@@ -31,9 +31,9 @@
       #{i18n.getText('SMM001_9')}
     </div>
     <div class="ml-2">
-      <label
+      <label tabindex="20"
         data-bind="ntsRadioButton: { checked: monthlyLockClassification, optionText: DO_TEXT, checkedValue: 1, group: 'lockClassification' }"></label>
-      <label
+      <label tabindex="21"
         data-bind="ntsRadioButton: { checked: monthlyLockClassification, optionText: DO_NOT_TEXT, checkedValue: 0, group: 'lockClassification' }"></label>
     </div>
   </div>
@@ -42,9 +42,9 @@
       #{i18n.getText('SMM001_10')}
     </div>
     <div class="ml-2">
-      <label
+      <label tabindex="23"
         data-bind="ntsRadioButton: { checked: monthlyApprovalCategory, optionText: DO_TEXT, checkedValue: 1, group: 'approvalCategory' }"></label>
-      <label
+      <label tabindex="24"
         data-bind="ntsRadioButton: { checked: monthlyApprovalCategory, optionText: DO_NOT_TEXT, checkedValue: 0, group: 'approvalCategory' }"></label>
     </div>
   </div>
@@ -54,7 +54,7 @@
       <p>
         #{i18n.getText('SMM001_13')}
       </p>
-      <div class="ml-1 combo-box-payment-category" data-bind="ntsComboBox: {
+      <div tabindex="26" class="ml-1 combo-box-payment-category" data-bind="ntsComboBox: {
               name: '#[SMM001_13]',
               options: enumPaymentCategoryList,
               optionsValue: 'value',
@@ -80,7 +80,7 @@
       </tr>
       <tr>
         <td>
-          <div tabindex="14" id="component-left">
+          <div tabindex="27" id="component-left">
             <table id="grid-component-left" style="white-space: nowrap;" data-bind="ntsGridList: {
                 dataSource: employmentDtos,
                 primaryKey: 'code',
@@ -99,13 +99,13 @@
         <td>
           <div class="ntsMoveDataArea ntsSwapComponent" id="swap-list-move-data">
             <div>
-              <button tabindex="15" id="C11_2" class="move-button move-forward ntsSwap_Component"
+              <button tabindex="28" id="C11_2" class="move-button move-forward ntsSwap_Component"
                 data-bind="name: $i18n('KSM008_48'), click: moveItemToRight, disable: isDisableLeftButton">
                 <i class="img-icon icon-next"></i>
               </button>
             </div>
             <div>
-              <button tabindex="16" id="C11_3" class="move-button move-forward ntsSwap_Component"
+              <button tabindex="29" id="C11_3" class="move-button move-forward ntsSwap_Component"
                 data-bind="name: $i18n('KSM008_49'), click: moveItemToLeft, disable: isDisableRightButton">
                 <i class="img-icon icon-prev"></i>
               </button>
@@ -113,7 +113,7 @@
           </div>
         </td>
         <td>
-          <div tabindex="17" id="component-right">
+          <div tabindex="30" id="component-right">
             <table id="grid-component-right" style="white-space: nowrap;" data-bind="ntsGridList: {
               dataSource: rightEmployments,
               primaryKey: 'code',

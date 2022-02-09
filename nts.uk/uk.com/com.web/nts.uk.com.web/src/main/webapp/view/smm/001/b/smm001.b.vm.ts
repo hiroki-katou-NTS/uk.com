@@ -184,7 +184,7 @@ module nts.uk.com.view.smm001.b {
           // After has response - Process for setting behind
           const stdOutputCondSetDtos = response.stdOutputCondSetDtos;
           if (stdOutputCondSetDtos === null || stdOutputCondSetDtos.length === 0) {
-            vm.$dialog.info({ messageId: "Msg_3266" });
+            vm.$dialog.info({ messageId: "Msg_3270" });
           }
           stdOutputCondSetDtos.forEach((obj: any) => {
             finalArray.push({
@@ -196,6 +196,12 @@ module nts.uk.com.view.smm001.b {
           const smileLinkageOutputSetting = response.smileLinkageOutputSetting;
           vm.salaryCooperationClassification(smileLinkageOutputSetting.salaryCooperationClassification === 1);
           const value = _.cloneDeep(smileLinkageOutputSetting.salaryCooperationConditions);
+          const existCondSetDto = _.find(stdOutputCondSetDtos, (e: any) => {
+            return (e.conditionSetCode === value);
+          })
+          if(_.isUndefined(existCondSetDto)){
+            vm.$dialog.info({ messageId: "Msg_3266" });
+          }
           vm.salaryCooperationConditions(value);
           vm.monthlyLockClassification(smileLinkageOutputSetting.monthlyLockClassification);
           vm.monthlyApprovalCategory(smileLinkageOutputSetting.monthlyApprovalCategory);

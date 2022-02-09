@@ -53,7 +53,7 @@
   padding-left: 8px !important;
 }
 
-#component-right .ui-iggrid-scrolldiv tbody {
+#component-right .ui-iggrid table tr {
   line-height: 0px !important;
 }
 

@@ -71,6 +71,10 @@ module nts.uk.com.view.smm001.a {
       vm.setDefault();
     }
 
+    mounted() {
+			$('#checkbox_A2_2 input:not(:disabled)').focus();
+		}
+
     setDefault() {
       const vm = this;
       vm.tabs = ko.observableArray([
@@ -149,6 +153,7 @@ module nts.uk.com.view.smm001.a {
           }
         }
       })
+      .always(() => $('#checkbox_A2_2 input:not(:disabled)').focus());
     }
 
     /**
