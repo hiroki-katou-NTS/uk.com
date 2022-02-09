@@ -1061,8 +1061,7 @@ public class ToppageStartupProcessMobFinder {
 			List<Application> listApplication = applicationRepository.findByListID(cid, listApplicationID);
 			/* 「申請」．申請種類＝Input．申請種類 & 「申請」．実績反映状態<>差し戻し に該当する申請が存在するかチェックする */
 			List<Application> listApplicationFilter = listApplication.stream()
-					.filter(c -> (c.getAppType() == ApplicationType.OVER_TIME_APPLICATION)
-							&& c.getAppReflectedState() != ReflectedState.REMAND)
+					.filter(c -> c.getAppReflectedState() != ReflectedState.REMAND && c.getAppReflectedState() != ReflectedState.CANCELED)
 					.collect(Collectors.toList());
 			if (listApplicationFilter.isEmpty()) {
 				return false;
