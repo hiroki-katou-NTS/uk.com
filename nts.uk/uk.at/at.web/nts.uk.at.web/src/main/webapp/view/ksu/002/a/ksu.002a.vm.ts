@@ -546,6 +546,7 @@ module nts.uk.ui.at.ksu002.a {
 
 
 			let shareData = {
+				employeeId: ko.unwrap(vm.employeeId),
 				startDate: moment(begin).format('YYYY/MM/DD'),//対象期間開始日
 				endDate: moment(finish).format('YYYY/MM/DD'),//対象期間終了日
 				employeeCode: employeeCode,//社員コード
