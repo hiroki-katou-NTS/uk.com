@@ -272,6 +272,11 @@
 #component-ccg001 #ccg001-tab-content-2 {
 }
 
+#component-ccg001 #ccg001-tab-content-2 .conditions-filter,
+#component-ccg001 #ccg001-tab-content-2 .employees-filter {
+	height: 100%;
+}
+
 #component-ccg001 #ccg001-tab-content-2.withEmployeeFilter {
 	width: 900px;
 	display: flex;
