@@ -60,33 +60,37 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 
 			self.startPage();
 			
-			self.selectedDomainId.subscribe((value) => {
-				if (value) {
-					var info = $.grep(self.domainInfoList(), function (di) {
-						return di.domainId == self.selectedDomainId();
-					});
-					if (info.length !== 0){
-						self.setDomain(info[0]);
-						self.canEditDetail(info[0].resistered);
-						return;
-					}
-				}
-				self.layoutItemNoList([]);
-				self.canEditDetail(false);
+			self.selectedDomainId.subscribe(() => {
+				self.selectedDomain();
 			})
-	
-			self.layoutItemNoList.subscribe((value) => {
-				self.setLayout(value);
-			})
-			
+
 			if (params.domainId !== undefined){
 				self.selectedDomainId(params.domainId);
 			}
 		}
-		
-		setDomain(info: DomainInfo) {
-			let self = this;
-			self.layoutItemNoList(info.itemNoList);
+
+		selectedDomain(){
+			var self = this;
+			if (self.selectedDomainId()) {
+				var info = $.grep(self.domainInfoList(), function (di) {
+					return di.domainId == self.selectedDomainId();
+				});
+				if (info.length !== 0){
+					self.layoutItemNoList(info[0].itemNoList);
+					self.canEditDetail(info[0].resistered);
+
+					if(!info[0].resistered){
+						self.setLayout(self.layoutItemNoList()).done(()=>{
+							self.save();
+						})
+					}
+
+					return self.setLayout(self.layoutItemNoList());
+				}
+			}
+			self.layoutItemNoList([]);
+			self.canEditDetail(false);
+			return self.setLayout(self.layoutItemNoList());
 		}
 
 		startPage(){
@@ -210,6 +214,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 
 		setLayout(itemNoList: number[]){
 			let self = this;
+			let dfd = $.Deferred();
 			if(itemNoList.length > 0){
 				let condition = {
 					settingCode: self.settingCode,
@@ -218,17 +223,30 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				ajax("screen/com/cmf/cmf001/f/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
 					self.layout(layoutItems);
 					self.initGrid();
+					dfd.resolve();
 				});
 			}else{
 				self.layout([]);
 			}
+
+			return dfd.promise();
 		}
 
 		canSave = ko.computed(() =>
-			!nts.uk.ui.errors.hasError() && this.selectedDomainId != null);
-	
-		save(){
+			!nts.uk.ui.errors.hasError() && this.selectedDomainId() != null);
+
+		clickSave(){
 			let self = this;
+			self.save().done(() => {
+				info(nts.uk.resource.getMessage("Msg_15", []));
+				self.reloadPage();
+			});
+		}
+
+		save() {
+			let self = this;
+			let dfd = $.Deferred();
+
 			self.checkError();
 			if(nts.uk.ui.errors.hasError()) return;
 
@@ -246,9 +264,10 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				items: domains
 			};
 			ajax("screen/com/cmf/cmf001/f/save", saveContents).done(() => {
-				info(nts.uk.resource.getMessage("Msg_15", []));
-				self.reloadPage();
+				dfd.resolve();
 			});
+
+			return dfd.promise();
 		}
 
 		uploadCsv() {
@@ -273,9 +292,11 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				itemNoList: []};
 			ajax("com", "screen/com/cmf/cmf001/b/get/layout", condition)
 			.done((itemNoList: number[]) => {
-				self.domainInfoList.push(new DomainInfo(self.importDomain(), itemNoList, false));
-				self.selectedDomainId(self.importDomain());
+				let domainInfo = new DomainInfo(self.importDomain(), itemNoList, false);
+				self.domainInfoList.push(domainInfo);
 				self.importDomain(null);
+				self.selectedDomainId(domainInfo.domainId);
+				// self.selectedDomain();
 			});
 		}
 		
