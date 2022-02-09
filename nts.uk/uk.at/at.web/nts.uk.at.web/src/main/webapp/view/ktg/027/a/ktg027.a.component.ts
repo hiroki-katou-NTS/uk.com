@@ -33,7 +33,7 @@ module nts.uk.at.view.ktg027.a {
             const $prevButton = $('<button/>');
             const $prevIcon = $('<i/>');
             $prevIcon.appendTo($prevButton);
-            ko.applyBindingsToNode($prevIcon[0], { ntsIcon: { no: 193, width: 15, height: 20 } }, bindingContext);
+            ko.applyBindingsToNode($prevIcon[0], { ntsIcon: { no: 193, width: 15, height: 20, extension: 'png' } }, bindingContext);
             $prevButton.appendTo(element);
             
             const $pageText = $('<span/>');
@@ -42,7 +42,7 @@ module nts.uk.at.view.ktg027.a {
             const $nextButton = $('<button/>');
             const $nextIcon = $('<i/>');
             $nextIcon.appendTo($nextButton);
-            ko.applyBindingsToNode($nextIcon[0], { ntsIcon: { no: 192, width: 15, height: 20 } }, bindingContext);
+            ko.applyBindingsToNode($nextIcon[0], { ntsIcon: { no: 192, width: 15, height: 20, extension: 'png' } }, bindingContext);
             $nextButton.appendTo(element);
 
             const cssBtn = { 
@@ -475,8 +475,8 @@ module nts.uk.at.view.ktg027.a {
             const vm = this;
             vm.legendOptions = {
                 items: [
-                    { colorCode: '#fff768', labelText: vm.$i18n('KTG027_2') },
-                    { colorCode: '#A5C9C1', labelText: vm.$i18n('KTG027_3') },
+                    { colorCode: '#99FF66', labelText: vm.$i18n('KTG027_2') },
+                    { colorCode: '#00CC00', labelText: vm.$i18n('KTG027_3') },
                 ],
                 template :
                 '<div class="legend-item-label">'
