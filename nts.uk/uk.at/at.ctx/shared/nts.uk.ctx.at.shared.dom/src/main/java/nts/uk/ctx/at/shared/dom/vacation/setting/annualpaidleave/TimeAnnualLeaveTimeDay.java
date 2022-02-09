@@ -27,7 +27,7 @@ public class TimeAnnualLeaveTimeDay {
 	/* 契約時間丸め */
 	private Optional<ContractTimeRound> contractTimeRound;
 	
-	public Optional<LaborContractTime> getTimeSetting(Require require, String employeeId, GeneralDate baseDate){
+	public Optional<LaborContractTime> getContractTime(Require require, String employeeId, GeneralDate baseDate){
 		// 会社一律で設定されているとき
 		if ( this.getTimeOfDayReference().equals(DayTimeAnnualLeave.Company_wide_Uniform)){
 

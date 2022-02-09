@@ -303,7 +303,7 @@ public class LeaveRemainingNumber {
 		TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay
 			= annualPaidLeave.getTimeSetting().getTimeAnnualLeaveTimeDay();
 
-		return timeAnnualLeaveTimeDay.getTimeSetting(require, employeeId, baseDate);
+		return timeAnnualLeaveTimeDay.getContractTime(require, employeeId, baseDate);
 	}
 
 	public static interface RequireM3 extends AbsenceTenProcess.RequireM1,TimeAnnualLeaveTimeDay.Require  {
