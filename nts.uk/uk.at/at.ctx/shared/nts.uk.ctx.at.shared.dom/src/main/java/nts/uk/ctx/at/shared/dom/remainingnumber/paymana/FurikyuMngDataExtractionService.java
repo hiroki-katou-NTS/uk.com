@@ -340,7 +340,9 @@ public class FurikyuMngDataExtractionService {
 							.filter(data -> data.getAssocialInfo().getDateOfUse().equals(useDate))
 							.findFirst();
 					Optional<GeneralDate> digestionDay = optPayoutSub.map(data -> data.getAssocialInfo().getDateOfUse());
-					Optional<Double> digestionDays = optPayoutSub.map(data -> data.getAssocialInfo().getDayNumberUsed().v());
+					Optional<Double> digestionDays = !optInterimDayOff.isPresent() 
+							? optPayoutSub.map(data -> data.getAssocialInfo().getDayNumberUsed().v())
+							: Optional.empty();
 					Optional<String> digestionId = Optional.of(optSubstitution.map(data -> data.getSubOfHDID())
 							.orElse(optInterimDayOff.map(data -> data.getRemainManaID()).orElse(null)));
 					// 残数データ情報を作成
