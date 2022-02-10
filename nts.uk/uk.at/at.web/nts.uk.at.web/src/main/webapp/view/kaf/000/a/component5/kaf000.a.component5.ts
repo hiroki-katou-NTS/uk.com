@@ -6,7 +6,7 @@ module nts.uk.at.view.kaf000.a.component5.viewmodel {
     <div id="kaf000-a-component5">
 			<div data-bind="if: appReasonCDDisp">
 				<div class="table item">
-					<div class="cell cm-column valign-top">
+					<div class="cell cm-column2 valign-top" style="width: 120px;">
 						<div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: '理由'"></div>
 					</div>
 					<div class="cell valign-top">
