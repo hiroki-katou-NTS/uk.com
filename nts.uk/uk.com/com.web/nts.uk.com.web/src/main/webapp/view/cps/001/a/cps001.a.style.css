@@ -31,7 +31,7 @@
 #contents-area>.left-area,
 #contents-area>*>.left-area {
 	width: 280px;
-	margin-left: 23px;
+	margin-left: 30px;
 }
 
 #contents-area>.right-area,
@@ -135,4 +135,8 @@
 
 #lefttabs .tabs-list:empty {
 	padding: 0px !important;
+}
+.tabs-panel.has-content {
+    width: 270px;
+    overflow: hidden;
 }
