@@ -1,4 +1,22 @@
-﻿.radio-wrapper,
+﻿$checkbox_border_color: #aaa;
+$checkbox_back_color_on: #258F7E;
+$checkbox_back_color_off: #fff;
+$checkbox_back_color_on_disabled: #aaa;
+$checkbox_back_color_off_disabled: #d5d5d5;
+$checkbox_box_border: 1px solid $checkbox_border_color;
+$checkbox_border_check_sign: 2px solid #fff;
+
+%checkbox_check_sign {
+	box-sizing: border-box;
+	width: 11px;
+	height: 6px;
+	transform: rotate(-59deg);
+	border: $checkbox_border_check_sign;
+	border-top: none;
+	border-right: none;
+}
+
+.radio-wrapper,
 .checkbox-wrapper {
 	&s {
 		outline: none;
@@ -68,8 +86,8 @@
 				box-sizing: border-box;
 				display: block;
 				position: absolute;
-				background: transparent;
-				border: 1px solid #30cc40;
+				border: $checkbox_box_border;
+				background-color: $checkbox_back_color_off;
 			}
 
 			&::after {
@@ -80,22 +98,21 @@
 				left: 7px;
 				width: 12px;
 				height: 12px;
-				background-color: transparent;
 			}
 		}
 
 		&:focus {
 			& + span {
 				&::before {
-					box-shadow: 0 0 0 2px lighten($color: #30cc40, $amount: 25);
+					box-shadow: 0 0 0 2px lighten($color: $checkbox_border_color, $amount: 25);
 				}
 			}
 		}
 
 		&:checked {
 			& + span {
-				&::after {
-					background: #30cc40;
+				&::before {
+					background-color: $checkbox_back_color_on;
 				}
 			}
 		}
@@ -107,13 +124,14 @@
 
 				&::before {
 					border-color: #aaa;
+					background-color: $checkbox_back_color_off_disabled;
 				}
 			}
 
 			&:checked {
 				& + span {
-					&::after {
-						background-color: #aaa;
+					&::before {
+						background-color: $checkbox_back_color_on_disabled;
 					}
 				}
 			}
@@ -134,27 +152,16 @@
 	input[type="checkbox"] {
 		& + span {
 			&::before {
-				border-width: 2px;
-				border-radius: 2px;
-			}
-			&::after {
-				top: 11px;
-				left: 7px;
-				width: 11px;
-				height: 6px;
-				transform: rotate(-59deg);
+				background-color: $checkbox_back_color_off;
 			}
 		}
 
 		&:checked {
 			& + span {
-				&::before {
-					background-color: #30cc40;
-				}
 				&::after {
-					border: 2px solid #fff;
-					border-top: none;
-					border-right: none;
+					@extend %checkbox_check_sign;
+					top: 11px;
+					left: 7px;
 				}
 			}
 		}
@@ -172,9 +179,6 @@
 			&:checked {
 				& + span {
 					&::before,
-					&::after {
-						background-color: #aaa;
-					}
 					&::after {
 						border-color: #fff;
 					}

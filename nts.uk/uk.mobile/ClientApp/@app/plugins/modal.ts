@@ -244,7 +244,7 @@ const modal = {
                                         <div class="modal-dialog" v-bind:class="$class">
                                             <div class="modal-content uk-bg-silver">
                                                 <template v-if="hasTitle">
-                                                    <div class="modal-header uk-bg-teal rounded-0" v-bind:key="hasTitle">
+                                                    <div class="modal-header rounded-0" v-bind:key="hasTitle">
                                                         <h4 class="modal-title text-white">
                                                             <template v-if="brsize">
                                                                 <i class="fas fa-angle-left mr-1" v-on:click="show = false" v-bind:key="'mobilesize'"></i>

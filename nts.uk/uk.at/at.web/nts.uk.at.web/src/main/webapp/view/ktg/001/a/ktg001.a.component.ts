@@ -87,19 +87,16 @@ module nts.uk.ui.ktg001.a {
                             </th>
                             <th>
                                 <!-- A1_2 -->
-                                <button class="icon ktg001-no-border" data-bind="
+                                <button class="ktg001-no-border" data-bind="
                                         click : $component.setting,
-                                        visible: $component.settingIconVisible
-                                    ">
-                                    <i data-bind="ntsIcon: { no: 5, width: 25, height: 25 }"></i>
-                                </button>
+                                        visible: $component.settingIconVisible">設定</button>
                             </th>
                         </tr>
                     </thead>
                 </table>
             </div>
             <div class="ktg-001-a ktg001-fontsize" data-bind="widget-content: 100">
-                <div class="ktg001-border" style="padding: 0px 40px 0px 30px;">
+                <div class="ktg001-border" class="widget-content-list">
                     <table style="width: 100%;">
                         <colgroup>
                             <col width="1%" />
@@ -107,24 +104,23 @@ module nts.uk.ui.ktg001.a {
                         </colgroup>
                         <tbody>
                             <tr data-bind="visible: $component.appRowVisible() || $component.aggrRowVisible()">
-                                <td colspan="3" style="border-bottom: 1px solid #BFBFBF;">
+                                <td colspan="3">
                                     <div class="label font-size-sm" data-bind="text: $i18n('KTG001_13')"></div>
                                 </td>
                             </tr>
                             <tr class='row-header' data-bind="css: $component.appRowVisible() ? 'row-show' : '', visible: $component.appRowVisible">
                                 <td class="text-center" style="position: relative;">
                                     <!-- A2_2 -->
-                                    <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
+                                    <button class="ktg001-no-border signal-button" data-bind="
                                             enable: $component.appIconVisible,
                                             click: $component.applicationList">
+                                        <i data-bind="visible: !($component.appIconVisible()), ntsIcon: { no: 305 }"></i>
+                                        <i data-bind="visible: $component.appIconVisible, ntsIcon: { no: 306 }"></i>
                                     </button>
-                                    <!-- A2_3 -->
-                                    <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
-                                        data-bind="visible: $component.appIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }, click: $component.applicationList""></i>
                                 </td>
                                 <td style="padding-left: 5px;">
                                     <!-- A2_1 -->
-                                    <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_1') }"></div>
+                                    <div data-bind="ntsFormLabel: { required: false, text: '未処理の申請' }"></div>
                                 </td>
                                 <td style="padding-left: 5px;">
                                     <div data-bind="text: ''"></div>
@@ -133,17 +129,16 @@ module nts.uk.ui.ktg001.a {
                             <tr class='row-approval' data-bind="css: $component.aggrRowVisible() ? 'row-show' : '', visible: $component.aggrRowVisible">
                                 <td class="text-center" style="position: relative;">
                                     <!-- A5_2 -->
-                                    <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
-                                        click: $component.aggrementApproval,
-                                        enable: $component.aggrIconVisible">
+                                    <button class="ktg001-no-border signal-button" data-bind="
+                                            click: $component.aggrementApproval,
+                                            enable: $component.aggrIconVisible">
+                                        <i data-bind="visible: !($component.aggrIconVisible()), ntsIcon: { no: 305 }"></i>
+                                        <i data-bind="visible: $component.aggrIconVisible, ntsIcon: { no: 306 }"></i>
                                     </button>
-                                    <!-- A5_3 -->
-                                    <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
-                                        data-bind="visible: $component.aggrIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }, click: $component.aggrementApproval"></i>
                                 </td>
                                 <td style="padding-left: 5px;" colspan="2">
                                     <!-- A5_1 -->
-                                    <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_4') }"></div>
+                                    <div data-bind="ntsFormLabel: { required: false, text: '未処理の36協定時間申請' }"></div>
                                 </td>
                             </tr>
                             <tr class='row-approval' data-bind="
@@ -185,18 +180,17 @@ module nts.uk.ui.ktg001.a {
                                 <tr class='row-day' data-bind="css: $component.dayRowVisible() ? 'row-show' : '', visible: $component.dayRowVisible">
                                     <td class="" style="position: relative;">
                                         <!-- A3_2 -->
-                                        <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
-                                            click: function() { $component.dayPerformanceConfirm(day.closureId, day.yearMonth) },
-                                            enable: day.displayAtr">
+                                        <button class="ktg001-no-border signal-button" data-bind="
+                                                click: function() { $component.dayPerformanceConfirm(day.closureId, day.yearMonth) },
+                                                enable: day.displayAtr">
+                                            <i data-bind="visible: !day.displayAtr, ntsIcon: { no: 305 }"></i>
+                                            <i data-bind="visible: day.displayAtr, ntsIcon: { no: 306 }"></i>
                                         </button>
-                                        <!-- A3_3 -->
-                                        <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
-                                            data-bind="visible: day.displayAtr, ntsIcon: { no: 165, width: 13, height: 13 }, click: function() { $component.dayPerformanceConfirm(day.closureId, day.yearMonth) }"></i>
                                     </td>
                                     <!-- ko if: day.closureId == 1 -->
                                         <td style="padding-left: 5px;">
                                             <!-- A3_1 -->
-											<div class="ktg001-form-label" data-bind= "i18n: 'KTG001_2'"></div>
+											<div class="ktg001-form-label" data-bind= "text: '未処理の日別実績'"></div>
                                         </td>
                                     <!-- /ko -->
                                     <!-- ko if: day.closureId != 1 -->
@@ -215,18 +209,17 @@ module nts.uk.ui.ktg001.a {
                                 <tr class='row-month' data-bind="css: $component.monRowVisible() ? 'row-show' : '', visible: $component.monRowVisible">
                                     <td class="text-center" style="position: relative;">
                                         <!-- A4_2 -->
-                                        <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
-                                            click: function() { $component.monPerformanceConfirm(month.closureId, month.yearMonth) },
-                                            enable: month.displayAtr">
+                                        <button class="ktg001-no-border signal-button" data-bind="
+                                                click: function() { $component.monPerformanceConfirm(month.closureId, month.yearMonth) },
+                                                enable: month.displayAtr">
+                                            <i data-bind="visible: !month.displayAtr, ntsIcon: { no: 305 }"></i>
+                                            <i data-bind="visible: month.displayAtr, ntsIcon: { no: 306 }"></i>
                                         </button>
-                                        <!-- A4_3 -->
-                                        <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
-                                            data-bind="visible: month.displayAtr, ntsIcon: { no: 165, width: 13, height: 13 }, click: function() { $component.monPerformanceConfirm(month.closureId, month.yearMonth) }"></i>
                                     </td>
                                     <!-- ko if: month.closureId == 1 -->
                                         <td style="padding-left: 5px;">
                                             <!-- A4_1 -->
-                                            <div class="ktg001-form-label" data-bind="i18n: 'KTG001_3'"></div>
+                                            <div class="ktg001-form-label" data-bind="text: '未処理の月別実績'"></div>
                                          </td>
                                     <!-- /ko -->
                                     <!-- ko if: month.closureId != 1 -->
@@ -278,7 +271,7 @@ module nts.uk.ui.ktg001.a {
                     border: none !important;
                 }
                 .ktg001-fontsize-larger div.form-label>span.text {
-                    font-size: 1.2rem !important;
+                    font-size: 1rem !important;
                 }
                 .ktg001-fontsize div.form-label>span.text {
                     font-size: 1rem !important;
@@ -288,6 +281,23 @@ module nts.uk.ui.ktg001.a {
                     border-width: 0px;
                     border-bottom: none;
 			    }
+
+                .signal-button {
+                    width: 20px;
+                    height: 20px;
+                    padding: 0;
+                }
+
+                .signal-button:not(:hover),
+                .signal-button:hover:disabled {
+                    background-color: transparent !important;
+                }
+
+                .signal-button .img-icon {
+                    width: 100%;
+                    height: 100%;
+                }
+
 				.row-show button {
 				    box-shadow: none;
 				}
@@ -432,14 +442,6 @@ module nts.uk.ui.ktg001.a {
                             .removeAttr('data-bind');
                         _.forEach($(".row-show td"), element => $(element).removeClass("ktg001-no-border"));    
                         _.forEach($($(".row-show").last().children()), element => $(element).addClass("ktg001-no-border"));
-						if (vm.aggrRowVisible()) {
-                            $(".row-header").last().children().css('border-bottom', '1px solid #BFBFBF');
-                        } else {
-                            $(".row-header").last().children().css('border-bottom', 'none');
-                        }
-						$(".row-day").last().children().css('border-bottom', '1px solid #BFBFBF');
-						$(".row-month").last().children().css('border-bottom', '1px solid #BFBFBF');
-						$(".row-approval").last().children().css('border-bottom', '1px solid #BFBFBF');
                     });
                 })
                 .always(() => {

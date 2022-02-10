@@ -43,15 +43,15 @@
 	background-color : '' ; color : '';
 }
 
-.btnControlSelected{background-color : #007fff !important; color : #ffffff !important}
-.btnControlUnSelected{background-color : #ffffff !important; color : #000000 !important}
+.btnControlSelected{background-color : #258F7E !important; color : #ffffff !important}
 
 #functon-area-row2 *, #contain-view-right * {
 	vertical-align: middle;
 }
 
 #extable td, #extable td>* {
-	font-size: 10.5px;
+	font-size: 0.8rem;
+	font-weight: 200;
 }
 
 .xheader *, .ex-body-detail *, .ex-body-vert-sum *, .ex-body-horz-sum *
@@ -59,9 +59,21 @@
 	text-align: center;
 }
 
+.xheader tr:nth-child(2) td {
+	background-color: #F3F3F3;
+}
 
-.ex-header-vert-sum tr:NTH-CHILD(2) {
-	font-size: 90%;
+.xheader tr:nth-child(2) td span {
+	font-size: 20px !important;
+	line-height: 20px;
+}
+
+.xheader tr:nth-child(2) td span.header-image-event {
+	color: #258F7E;
+}
+
+.xheader tr:nth-child(2) td span.header-image-no-event {
+	color: #fff;
 }
 
 .ml-2 {
@@ -142,22 +154,8 @@
 	width: 9%;
 }
 
-#group-bt {
-	float: left;
-	width: 134px;
-	border-right: 2px solid #ccc;
-	height: fit-content;
-	margin-top: 3px;
-}
-
 .size-image-button1 {
 	background-size: 20px 20px !important;
-}
-
-.size-image-button2 {
-	background-size: 24px 24px !important;
-	height: 27px !important;;
-	width: 27px;
 }
 
 .size-image-button3 {
@@ -257,57 +255,6 @@
 	background-color: #FF7F27
 }
 
-#paste {
-	white-space: normal;
-	width: 38px;
-	height: 38px;
-	font-size: 10px !important;
-}
-
-#coppy {
-	width: 38px;
-	height: 38px;
-	font-size: 10px !important;
-	margin-left: 3px;
-	margin-right: 3px;
-	padding-left: 2px;
-}
-
-#input {
-	white-space: normal;
-	width: 38px;
-	height: 38px;
-	font-size: 10px !important;
-}
-
-#undo {
-	margin-top: 6px;
-	width: 38px;
-	height: 38px !important; 
-	background-color: #ffffff;
-}
-
-#undo[disabled] {
-    background-color: #d9d9d9 !important;
-    cursor: default;
-    color: #888888;
-}
-
-#redo {
-	margin-top: 6px;
-	width: 38px;
-	height: 38px !important; 
-	background-color: #ffffff;
-	margin-left: 3px;
-	margin-right: 3px;
-}
-
-#redo[disabled] {
-    background-color: #d9d9d9 !important;
-    cursor: default;
-    color: #888888;
-}
-
 #A4_4 > button.nts-switch-button{
 	width: 50px;
 }
@@ -317,7 +264,7 @@
 }
 
 #contain-view-left{
-	margin-left: 27px;
+	margin-left: 0 !important;
 	margin-top: 14px;
     width: fit-content;
     height: fit-content;
@@ -325,56 +272,124 @@
     float: left;
 }
 
+#A3_1, #contain-view-right {
+	background-color: #F5F5F5;
+}
+
 #contain-view-right {
+	padding: 5px 0 5px 15px;
+}
+
+#contain-view-right > div {
 	display: inline-block;
-	margin-top: 5px;
-	margin-left: 10px;
-	border: 1px solid #cccccc;
-	background: rgb(219, 238, 244);
-	padding: 5px;
-	width: 1085px;
-	height: 92px;
-	border-radius: 5px;
+}
+
+#contain-view-right #group-bt {
+	margin-right: 20px;
+}
+
+#contain-view-right #group-bt button {
+	width: 44px;
+	height: 44px;
+	font-weight: 200;
+	line-height: 13px;
+	margin-right: 10px;
+}
+
+#contain-view-right #group-bt button * {
+	font-size: 11px;
+}
+
+#contain-view-right #group-bt #coppy {
+	line-height: 11px;
+}
+
+#contain-view-right #group-bt #coppy span {
+	position: relative;
+	left: -1px;
+	font-size: 10px;
+}
+
+#contain-view-right #oViewModel td:first-child * {
+	font-size: 13px;
+}
+
+#contain-view-right #oViewModel .ui-igcombo {
+	transform: scale(0.9, 0.9);
+}
+
+#contain-view-right #oViewModel #listWorkType .ui-igcombo {
+	left: -10px;
+}
+
+#contain-view-right #oViewModel #listWorkTime {
+	margin-right: -18px;
+}
+
+#contain-view-right #oViewModel #listWorkTime .ui-igcombo {
+	left: -27px;
+}
+
+#functon-area-row2,
+#content-main .main-controls {
+	margin-left: 28px;
 }
 
 #functon-area-row2 {
-	height: 45px;
-	margin-left: 27px;
-	margin-top: 3px;
-	padding-bottom: 2px;
-	border-bottom: 1px solid #B1B1B1;
-	white-space: nowrap;
-	width: 1190px;
-	float: left;
+	margin-bottom: 12px;
 }
 
 #functon-area-row2-left {
 	width: 570px;
-	margin-top: 5px;
-	height: 45px;
 	display: inline-block;
-	float: left;
 }
 
 #functon-area-row2-center {
 	width: fit-content;
-	height: 45px;
 	display: inline-block;
-	margin-bottom: 4px;
-	float: left;
 }
 
 #functon-area-row2-right {
-	margin-top: 5px;
 	width: fit-content;
 	margin-left: 57px;
-	height: 45px;
 	display: inline-block;
-	float: right;
 }
 
-#date-time-prev, #date-time-after {
-	font-size: 12.5px !important
+
+
+#content-main .main-controls {
+	margin-bottom: 10px;
+}
+
+#content-main .main-controls > div {
+	display: inline-block;
+}
+
+#content-main .right-end {
+	float: right;
+	height: 40px;
+	margin-top: -40px;
+	margin-right: 35px;
+}
+
+#content-main .right-end button {
+	margin-left: 10px;
+	height: 24px;
+	font-size: 11px;
+}
+
+#content-main .right-end #A4,
+#content-main .right-end #A5 {
+	width: 80px;
+}
+
+#content-main .right-end .settingHeightGrid {
+	width: 24px;
+	padding: 2px;
+}
+
+#content-main .right-end .settingHeightGrid:not(:hover) {
+	background-color: transparent;
 }
 
 #set-work-time {
@@ -481,42 +496,6 @@ tbody a.x-link:hover {
 	color: #0000ff !important;
 }
 
-.bg-schedule-specific-date-color-schedule-weekdays{
-	background-color: #ffc0cb !important;
-	color: #404040 !important;
-}
-
-.bg-schedule-specific-date-color-schedule-weekdays a{
-	color: #404040 !important;
-}
-
-.bg-schedule-sunday {
-	background-color: #fabf8f;
-	color: #ff0000 !important;
-}
-
-.bg-schedule-sunday a{
-	color: #ff0000 !important;
-}
-
-.bg-schedule-saturday{
-	background-color: #8bd8ff;
-	color: #0000ff !important;
-}
-
-.bg-schedule-saturday a{
-	color: #0000ff !important;
-}
-
-.bg-weekdays{
-	background-color: #D9D9D9;
-	color: #595959 !important;
-}
-
-.bg-weekdays a{
-	color: #595959 !important;
-}
-
 .right-content {
 	height: calc(100% - 80px);
 	width: fit-content;
@@ -539,22 +518,43 @@ html {
 }
 
 #A3_1 {
-	background: #edfac2;
 	width: max-content;
 	padding: 5px;
-	border: 1px solid #cccccc;
-	border-radius: 5px;
 	height: 31px;
 }
 
-#A3_1_left {
-	float: left;
-	margin-top: 2px;
+#A3_1 div {
+	display: inline-block;
 }
 
-#A3_2 {
-	float: left;
-	margin-left: 5px
+#A3_1 .func-label {
+	font-size: 11px;
+	line-height: 13px;
+	font-weight: 300;
+}
+
+#A3_1 .unit .func-label {
+	margin-left: 10px;
+	margin-right: 6px;
+}
+
+#A3_1 .unit .switchbox-wrappers span {
+	width: 70px;
+}
+
+#A3_1 .period {
+	margin-left: 20px;
+}
+
+#A3_1 .period .func-content span {
+	position: relative;
+	top: -3px;
+	font-size: 15px;
+}
+
+#A3_1 .period button:not(:hover) {
+	color: #9A9A9A;
+	background-color: transparent;
 }
 
 .date-time{
@@ -625,19 +625,8 @@ html {
 
 #btnControlLeftRight {
 	width: max-content;
-	height: 18px;
 }
 
-#A5 {
-	width: 30px;
-}
-
-.settingHeightGrid {
-	width: 25px;
-	height: 25px;
-	padding-top: 3px;
-    padding-left: 2px;
-}
 
 .background-attendance {background-color: #0000ff !important;}
 .background-holiday {background-color: #ff0000 !important;}
@@ -648,10 +637,6 @@ html {
 .background-white {background-color: white}
 .color-default {color : #595959;}
 .bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
-
-table th, table td {
-	padding: 2px 5px;
-}
 
 #functions-area {
 	overflow: unset !important;

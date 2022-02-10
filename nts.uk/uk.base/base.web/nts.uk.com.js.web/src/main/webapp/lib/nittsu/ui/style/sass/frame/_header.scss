@@ -44,7 +44,7 @@ div#master-wrapper {
 
 	&>div#header {
 		position: relative;
-		background-color: #127D09;
+		background-color: #01956A;
 		height: $header_height;
 		border-bottom: solid 1px #B1B1B1;
 
@@ -87,7 +87,7 @@ div#master-wrapper {
 
 							&.selected {
 								color: #fff;
-								background-color: #30CC40;
+								background-color: #01956A;
 
 								&:hover {
 									color: #000;
@@ -201,7 +201,7 @@ div#master-wrapper {
 									overflow: hidden;
 									height: 1px;
 									box-sizing: border-box;
-									border-bottom: 1px solid #2B2E44;
+									border-bottom: 1px solid #909090;
 								}
 
 								&:not(.divider) {
@@ -296,12 +296,12 @@ div#master-wrapper {
 			position: absolute;
 			right: 0;
 			top: 0;
-			background-color: #127D09;
+			background-color: #01956A;
 			
 			&>div.menu-groups {
 				padding-left: 0px;
 				padding-right: 60px;
-				// background-color: #127D09;
+				// background-color: #01956A;
 
 				&+div.avatar {
 					position: absolute;
