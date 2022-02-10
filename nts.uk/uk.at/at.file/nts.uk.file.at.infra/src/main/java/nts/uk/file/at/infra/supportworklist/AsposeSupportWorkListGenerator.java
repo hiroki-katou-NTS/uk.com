@@ -189,13 +189,13 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                         // C6_2
                         val empInfo = dataSource.getEmployeeInfoList().stream().filter(emp -> emp.getSid().equals(detail.getEmployeeId())).findFirst();
                         cells.get(startRow, 1).setValue(empInfo.isPresent() ? empInfo.get().getEmployeeName() : EMPTY);
-                        this.setDetailStyle(cells.get(startRow, 1), isEventLine, true, k == 0, k == dataOfDay.getSupportWorkDetailsList().size() - 1, false, false);
+                        this.setDetailStyle(cells.get(startRow, 1), isEventLine, true, k == 0, false, false, false);
 
                         // C6_3
                         if (detail.isSupportWork()) {
                             cells.get(startRow, 2).setValue(this.getWorkplaceInfo(dataSource.getAggregationUnit(), dataSource.getWorkplaceInfoList(), detail.getAffiliationInfo(), false));
                         }
-                        this.setDetailStyle(cells.get(startRow, 2), isEventLine, true, k == 0, k == dataOfDay.getSupportWorkDetailsList().size() - 1, false, false);
+                        this.setDetailStyle(cells.get(startRow, 2), isEventLine, true, k == 0, false, false, false);
 
                         // C6_4 ~ C6_9
                         int startColumnOfC6 = 3;
