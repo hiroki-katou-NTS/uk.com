@@ -172,9 +172,7 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 		if (!lstDate.isEmpty()) {
 			result = this.queryProxy().query(GET_BY_LIST_OCC_DATE, KrcmtPayoutSubOfHDMana.class)
 						.setParameter("sid", sid)
-						.setParameter("lstDate", lstDate.stream()
-								.map(GeneralDate::toLocalDate)
-								.collect(Collectors.toList()))
+						.setParameter("lstDate", lstDate)
 						.getList(item -> toDomain(item));
 		}
 		return result;
