@@ -4,7 +4,7 @@ module nts.uk.at.view.kdp.share {
 	const tabButtonTempate = `
 		<!-- ko if: ko.unwrap($component.filteredTabs).length -->
 			<div data-bind="ntsTabPanel: { dataSource: $component.filteredTabs, active: $component.selected },
-			css: { 'has-info': ko.unwrap($component.filteredTabs).length == 1}"></div>
+			css: { 'has-info-kdp': ko.unwrap($component.filteredTabs).length == 1}"></div>
 		<div id="stampBtnContainer" data-bind="foreach: { data: $component.filteredTabs, as: 'group' }">
 			<div class="grid-container" data-bind="
 				if: ko.toJS($component.currentTab).pageNo === group.pageLayout.pageNo,
@@ -28,7 +28,7 @@ module nts.uk.at.view.kdp.share {
 		#stamp-desc div {
 			font-size: 2.5vmin;
 		}
-		.has-info {
+		.has-info-kdp {
 			visibility: hidden;
 		}
 	</style>
