@@ -49,7 +49,7 @@ public class WorkTimeInformationDto implements ItemConst, AttendanceItemDataGate
 	public void set(String path, ItemValue value) {
 		switch (path) {
 		case CLOCK:
-			this.timeWithDay = value.valueOrDefault(0);
+			this.timeWithDay = value.value();
 			break;
 		default:
 			break;

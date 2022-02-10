@@ -9,11 +9,11 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
         name: 'kaf000-a-component4',
         template: `
             <div id="kaf000-a-component4">
-                <div class="table">
-                    <div class="cell col-1">
+                <div class="table item">
+                    <div class="cell cm-column valign-center">
                         <div class="cell valign-center" data-bind="ntsFormLabel:{ required:true }, text: $i18n('KAF000_49')"></div>
                     </div>
-                    <div class="cell valign-top">
+                    <div class="cell valign-center">
                         <div class="table">
                             <div class="cell valign-top" data-bind="if: dispCheckBox">
                                 <div style="margin-left: -3px" data-bind="i18n: 'KAF000_50', ntsCheckBox: { checked: checkBoxValue }"></div>

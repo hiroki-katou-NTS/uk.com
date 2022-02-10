@@ -194,14 +194,15 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	public void addAll(List<SpecialLeaveBasicInfo> domains) {
 		String INS_SQL = "INSERT INTO KRCMT_HDSP_BASIC (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
-				+ " SID, SPECIAL_LEAVE_CD, CID, USE_ATR, APPLICATION_SET, GRANT_DATE, GRANTED_DAYS, GRANT_TABLE)"
+				+ " SID, SPECIAL_LEAVE_CD, CONTRACT_CD, CID, USE_ATR, APPLICATION_SET, GRANT_DATE, GRANTED_DAYS, GRANT_TABLE)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-				+ " SID_VAL, SPECIAL_LEAVE_CD_VAL, CID_VAL, "
+				+ " SID_VAL, SPECIAL_LEAVE_CD_VAL, CONTRACT_CD_VAL, CID_VAL, "
 				+ " USE_ATR_VAL, APPLICATION_SET_VAL, GRANT_DATE_VAL, GRANTED_DAYS_VAL, GRANT_TABLE_VAL); ";
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
+		String contractCd = AppContexts.user().contractCode();
 		
 		String updCcd = insCcd;
 		String updScd = insScd;
@@ -221,6 +222,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 
 			sql = sql.replace("SID_VAL", "'" + c.getSID() + "'");
 			sql = sql.replace("SPECIAL_LEAVE_CD_VAL", "" + c.getSpecialLeaveCode().v()+ "");
+			sql = sql.replace("CONTRACT_CD_VAL", "'" + contractCd + "'");
 			sql = sql.replace("CID_VAL", "'" + c.getCID() + "'");
 			
 			sql = sql.replace("USE_ATR_VAL", "" + c.getUsed().value+ "");

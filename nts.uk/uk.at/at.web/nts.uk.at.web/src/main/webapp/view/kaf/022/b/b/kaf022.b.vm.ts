@@ -24,7 +24,7 @@ module nts.uk.at.view.kaf022.b.viewmodel {
         itemListB30: KnockoutObservableArray<ItemModel> = ko.observableArray([
             {code: 0, name: getText('KAF022_173')},
             {code: 1, name: getText('KAF022_175')},
-            {code: 2, name: getText('KAF022_651')}
+            // {code: 2, name: getText('KAF022_651')}
         ]);
         itemListB26: KnockoutObservableArray<ItemModel> = ko.observableArray([
             {code: 0, name: getText('KAF022_173')},

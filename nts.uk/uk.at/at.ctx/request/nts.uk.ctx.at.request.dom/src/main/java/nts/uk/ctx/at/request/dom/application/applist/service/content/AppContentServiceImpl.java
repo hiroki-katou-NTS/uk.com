@@ -1275,15 +1275,15 @@ public class AppContentServiceImpl implements AppContentService {
 			Optional<AppOverTime> apOptional = appOverTimeRepo.find(companyId, application.getAppID());
 			if (apOptional.isPresent()) {
 				// 申請種類表示＝残業申請.残業区分
-				 return result = Optional.of(EnumAdaptor.valueOf(apOptional.get().getOverTimeClf().value, ApplicationTypeDisplay.class));				
+				 return Optional.of(EnumAdaptor.valueOf(apOptional.get().getOverTimeClf().value, ApplicationTypeDisplay.class));
 			}
 		} else if (application.getAppType() == ApplicationType.STAMP_APPLICATION) {
 			// 申請.打刻申請モードをチェック
 			if (application.getOpStampRequestMode().isPresent()) {
 				if (application.getOpStampRequestMode().get() == StampRequestMode.STAMP_ADDITIONAL) {
-					return result = Optional.of(ApplicationTypeDisplay.STAMP_ADDITIONAL);
+					return Optional.of(ApplicationTypeDisplay.STAMP_ADDITIONAL);
 				} else {
-					return result = Optional.of(ApplicationTypeDisplay.STAMP_ONLINE_RECORD);
+					return Optional.of(ApplicationTypeDisplay.STAMP_ONLINE_RECORD);
 				}
 			}
 		}

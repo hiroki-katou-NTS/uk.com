@@ -83,6 +83,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Regi
 		        command.getPayoutSubofHDManagements().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 		        command.isMailServerSet(),
 		        command.getApprovalRoot().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
-		        command.getApptypeSetting().toDomain());
+		        command.getApptypeSetting().toDomain(), 
+		        command.isHolidayFlg());
 	}
 }

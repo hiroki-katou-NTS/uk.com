@@ -104,6 +104,7 @@ public class DeductionTotalTimeForFluidCalc {
 													workTime.getFlowWorkRestSettingDetail().get().getFlowRestSetting().getUseStampCalcMethod(),
 													goOutGetStartTime, deductTimeSheet);
 				if(!subtractedBreakTime.isPresent()) {
+					this.breakStartTime = breakTimeSheet.getTimeSheet().getStart();
 					continue;//相殺した結果、休憩が無くなった場合
 				}
 			}

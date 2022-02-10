@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.DailyLock;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.IGetDailyLock;
@@ -45,6 +46,10 @@ public class GetLockStatusOfDay {
 		period.datesBetween().forEach(date -> {
 			// 社員と基準日から所属職場履歴項目を取得する
 			AffWorkplaceHistoryItem affItem = this.scWorkplaceAdapter.getAffWkpHistItemByEmpDate(sId, date);
+			// 所属職場履歴項目.isEmpty
+			if (affItem == null) {
+				throw new BusinessException("Msg_427");
+			}
 			// 社員に対応する処理締めを取得する
 			this.closureEmploymentService.findClosureByEmployee(sId, date).ifPresent(c -> {
 				// 日の実績の状況を取得する

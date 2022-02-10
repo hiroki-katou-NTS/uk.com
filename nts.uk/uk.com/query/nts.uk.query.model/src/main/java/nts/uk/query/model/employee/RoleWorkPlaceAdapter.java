@@ -29,4 +29,6 @@ public interface RoleWorkPlaceAdapter {
 	 * @return the string
 	 */
 	String findRoleIdBySystemType(Integer systemType);
+	
+	List<String> findWorkPlaceIdByRoleId(Integer systemType, GeneralDate baseDate, Integer employeeReferenceRange);
 }

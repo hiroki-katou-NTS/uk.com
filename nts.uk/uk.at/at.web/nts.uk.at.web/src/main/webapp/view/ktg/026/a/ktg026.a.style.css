@@ -47,8 +47,8 @@ body {
 }
 
 #master-wrapper .ktg-026-dialog .ktg-026-a.widget-content.ui-resizable:not(.widget-fixed) {
-  height: 195px !important;
-  min-height: 195px !important;
+  height: 205px !important;
+  min-height: 205px !important;
 }
 
 #master-wrapper .ktg-026-dialog .widget-content.ui-resizable .ui-resizable-handle {

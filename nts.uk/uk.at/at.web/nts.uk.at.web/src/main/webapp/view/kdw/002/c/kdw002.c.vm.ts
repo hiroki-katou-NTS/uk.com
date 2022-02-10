@@ -288,7 +288,7 @@ module nts.uk.at.view.kdw002.c {
                                         
                                     });
                                 }).always(() => {
-                                    //nts.uk.ui.block.clear();
+                                    nts.uk.ui.block.clear();
                                 });
                             }                               
                         });
@@ -316,7 +316,7 @@ module nts.uk.at.view.kdw002.c {
 
                                     });
                                 }).always(() => {
-                                    //nts.uk.ui.block.clear();
+                                    nts.uk.ui.block.clear();
                                 });
                             }                              
                         });
@@ -385,11 +385,21 @@ module nts.uk.at.view.kdw002.c {
                     let listDefault: Array<DisplayAndInputControl> = [];
                     self.listAttFullDataClone(_.cloneDeep(self.listAttFullData()));
                     _.each(self.listAttFullDataClone(), attFullData => {
+                        let canToUse: boolean = false;
                         for(let i=0;i<data.length;i++){
                             if(attFullData.attendanceItemId == data[i].attendanceItemId){
                                 attFullData.authority = data[i].authority; 
+                                canToUse = true;
                                 break;
                             }    
+                        }
+
+                        if(!canToUse) {
+                            attFullData.authority = {   
+                                'toUse' : false,
+                                'canBeChangedByOthers' : false,
+                                'youCanChangeIt' : false    
+                            }
                         }
                         listDefault.push(DisplayAndInputControl.fromApp(attFullData));
                     });
@@ -405,7 +415,7 @@ module nts.uk.at.view.kdw002.c {
             //get monthly Attd Item By Role ID
             getMonthlyAttdItemByRoleID(roleID: string) {
                 let self = this;
-                let dfd = $.Deferred();
+                let dfd = $.Deferred();                
                 service.getMontlyAttItemNew(roleID).done(function(data) {
                     if (nts.uk.util.isNullOrUndefined(data) || data.length <= 0 || data.every((att: any) => att.authority == null)) {
                         self.isNewMode(true);
@@ -415,13 +425,21 @@ module nts.uk.at.view.kdw002.c {
                     let listDefault: Array<DisplayAndInputControl> = [];
                     self.listAttFullDataClone(_.cloneDeep(self.listAttFullData()));
                     _.each(self.listAttFullDataClone(), attFullData => {
+                        let canToUse: boolean = false;
                         for(let i=0;i<data.length;i++){
                             if(attFullData.attendanceItemId == data[i].attendanceItemId){
                                 attFullData.authority = data[i].authority;
+                                canToUse = true;
                                 break;
-                            }    
+                            } 
                         }
-                            
+                        if(!canToUse) {
+                            attFullData.authority = {   
+                                'toUse' : false,
+                                'canBeChangedByOthers' : false,
+                                'youCanChangeIt' : false    
+                            }
+                        }
                         listDefault.push(DisplayAndInputControl.fromApp(attFullData));
                     });
                     self.dailyServiceTypeControl(

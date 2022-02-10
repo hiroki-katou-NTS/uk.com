@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriod;
 import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriod.RequireM1;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ManageDeadline;
@@ -95,7 +96,8 @@ public class PreRegistrationErrorCheck {
 	        List<ActualContentDisplay> opActualContentDisplayLst, 
 	        EmployeeInfoImport employeeInfo, String employmentCode, 
 	        Optional<WorkInformationForApplicationDto> absWorkInformationForApp, Optional<WorkInformationForApplicationDto> recWorkInformationForApp, 
-	        List<PayoutSubofHDManagement> payoutSubofHDManagements, List<LeaveComDayOffManagement> leaveComDayOffManagements, boolean checkFlag, List<WorkType> listWorkTypes) {
+	        List<PayoutSubofHDManagement> payoutSubofHDManagements, List<LeaveComDayOffManagement> leaveComDayOffManagements, boolean checkFlag, 
+	        List<WorkType> listWorkTypes, ManageDistinct substituteManagement) {
 		//アルゴリズム「事前条件チェック」を実行する
 		this.preconditionCheck(abs, rec, absWorkInformationForApp, recWorkInformationForApp);
 		
@@ -139,7 +141,7 @@ public class PreRegistrationErrorCheck {
 		                        new ArrayList<LeaveComDayOffManaDto>()));
 		                
 		                // データがある　AND　INPUT.振休申請.休出代休紐付け管理がEmpty 
-		                if (!output.getHolidayWorkInfoList().isEmpty() && leaveComDayOffManagements.isEmpty()) {
+		                if (!output.getHolidayWorkInfoList().isEmpty() && leaveComDayOffManagements.isEmpty() && substituteManagement.equals(ManageDistinct.YES)) {
 		                    throw new BusinessException("Msg_3255");
 		                }
 		            }

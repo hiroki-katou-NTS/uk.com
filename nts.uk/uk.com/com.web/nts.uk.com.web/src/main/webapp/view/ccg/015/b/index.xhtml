@@ -86,53 +86,105 @@
                   </td>
                   <!-- B5_2 -->
                   <td class="inline-row w-100 pad-left-20" id="B5_2">
-                    <div class="inline-row">
-                      <!-- B5_2_1 -->
-                      <div id="B5_2_1" class="cell" tabIndex="-1" data-bind="ntsRadioButton: {
-                        option: itemList()[0],
-                        optionValue: 'code',
-                        optionText: 'name',
-                        checked: selectedId,
-                        group: 'enumOption'}">
+                    <div class="setting-row">
+                      <div class="inline-row">
+                        <!-- B5_2_1 -->
+                        <div id="B5_2_1" class="cell" tabIndex="-1" data-bind="ntsRadioButton: {
+                          option: itemList()[0],
+                          optionValue: 'code',
+                          optionText: 'name',
+                          checked: selectedId,
+                          group: 'enumOption'}">
+                        </div>
+                        <div class="ccg015-image-holder">
+                          <!-- B5_3_1 -->
+                          <img src="../resource/CCG015_1.png" alt="" width="90" height="50" id="B5_3_1" />
+                          <label id="B5_4_1">#{i18n.getText('CCG015_115')}</label>
+                        </div>
                       </div>
-                      <!-- B5_3_1 -->
-                      <img src="../resource/CCG015_1.png" alt="" width="90" height="50" id="B5_3_1" />
+                      <div class="inline-row ml-20">
+                        <!-- B5_2_2 -->
+                        <div id="B5_2_2" class="cell" tabIndex="-1" data-bind="ntsRadioButton: {
+                          option: itemList()[1],
+                          optionValue: 'code',
+                          optionText: 'name',
+                          checked: selectedId,
+                          group: 'enumOption'}">
+                        </div>
+                        <div class="ccg015-image-holder">
+                          <!-- B5_3_2 -->
+                          <img src="../resource/CCG015_2.png" alt="" width="90" height="50" id="B5_3_2" />
+                          <label id="B5_4_2">#{i18n.getText('CCG015_115')}</label>
+                          <label id="B5_4_3">#{i18n.getText('CCG015_116')}</label>
+                        </div>
+                      </div>
+                      <div class="inline-row ml-20">
+                        <!-- B5_2_3 -->
+                        <div id="B5_2_3" class="cell" tabIndex="-1" data-bind="ntsRadioButton: {
+                          option: itemList()[2],
+                          optionValue: 'code',
+                          optionText: 'name',
+                          checked: selectedId,
+                          group: 'enumOption'}">
+                        </div>
+                        <div class="ccg015-image-holder">
+                          <!-- B5_3_3 -->
+                          <img src="../resource/CCG015_3.png" alt="" width="90" height="50" id="B5_3_3" />
+                          <label id="B5_4_4">#{i18n.getText('CCG015_116')}</label>
+                          <label id="B5_4_5">#{i18n.getText('CCG015_115')}</label>
+                        </div>
+                      </div>
+                      <div class="inline-row ml-20">
+                        <!-- B5_2_4 -->
+                        <div id="B5_2_4" class="cell" tabIndex="-1" data-bind="ntsRadioButton: {
+                          option: itemList()[3],
+                          optionValue: 'code',
+                          optionText: 'name',
+                          checked: selectedId,
+                          group: 'enumOption'}">
+                        </div>
+                        <div class="ccg015-image-holder">
+                          <!-- B5_3_4 -->
+                          <img src="../resource/CCG015_4.png" alt="" width="90" height="50" id="B5_3_4" />
+                          <label id="B5_4_6" data-bind="text: layoutPos1"></label>
+                          <label id="B5_4_7" data-bind="text: layoutPos2"></label>
+                          <label id="B5_4_8" data-bind="text: layoutPos3"></label>
+                        </div>
+                      </div>
                     </div>
-                    <div class="inline-row ml-20">
-                      <!-- B5_2_2 -->
-                      <div id="B5_2_2" class="cell" tabIndex="-1" data-bind="ntsRadioButton: {
-                        option: itemList()[1],
-                        optionValue: 'code',
-                        optionText: 'name',
-                        checked: selectedId,
-                        group: 'enumOption'}">
+                    <div class="setting-row">
+                      <div data-bind="with: topPageModel, visible: selectedId() === 3">
+                        <div id="B5_5_1" class="frame-layout-setting mt-20" data-bind="ntsComboBox: {
+                          name: '#[CCG015_119]',
+                          options: $parent.frameLayoutList,
+                          optionsValue: 'code',
+                          optionsText: 'name',
+                          value: frameLayout1,
+                          columns: [
+                            { prop: 'name', length: 10 }
+                          ]
+                        }"></div>
+                        <div id="B5_5_2" class="frame-layout-setting ml-20" data-bind="ntsComboBox: {
+                          name: '#[CCG015_119]',
+                          options: $parent.frameLayoutList,
+                          optionsValue: 'code',
+                          optionsText: 'name',
+                          value: frameLayout2,
+                          columns: [
+                            { prop: 'name', length: 10 }
+                          ]
+                        }"></div>
+                        <div id="B5_5_3" class="frame-layout-setting ml-20" data-bind="ntsComboBox: {
+                          name: '#[CCG015_119]',
+                          options: $parent.frameLayoutList,
+                          optionsValue: 'code',
+                          optionsText: 'name',
+                          value: frameLayout3,
+                          columns: [
+                            { prop: 'name', length: 10 }
+                          ]
+                        }"></div>
                       </div>
-                      <!-- B5_3_2 -->
-                      <img src="../resource/CCG015_2.png" alt="" width="90" height="50" id="B5_3_2" />
-                    </div>
-                    <div class="inline-row ml-20">
-                      <!-- B5_2_3 -->
-                      <div id="B5_2_3" class="cell" tabIndex="-1" data-bind="ntsRadioButton: {
-                        option: itemList()[2],
-                        optionValue: 'code',
-                        optionText: 'name',
-                        checked: selectedId,
-                        group: 'enumOption'}">
-                      </div>
-                      <!-- B5_3_3 -->
-                      <img src="../resource/CCG015_3.png" alt="" width="90" height="50" id="B5_3_3" />
-                    </div>
-                    <div class="inline-row ml-20">
-                      <!-- B5_2_4 -->
-                      <div id="B5_2_4" class="cell" tabIndex="-1" data-bind="ntsRadioButton: {
-                        option: itemList()[3],
-                        optionValue: 'code',
-                        optionText: 'name',
-                        checked: selectedId,
-                        group: 'enumOption'}">
-                      </div>
-                      <!-- B5_3_4 -->
-                      <img src="../resource/CCG015_4.png" alt="" width="90" height="50" id="B5_3_4" />
                     </div>
                   </td>
                 </tr>
@@ -150,21 +202,24 @@
                         <!-- B6_2 -->
                         <button class="button-fix" id="B6_2" data-bind="click: openDialogButton1, disable: isDisableButton">
                           <i data-bind="ntsIcon: { no: 176, width: 20, height: 20 }" class="plus-icon mr-5"></i>
-                          <label id="btn-1" data-bind="text: button1Text"></label>
+                          <span id="btn-1" data-bind="text: button1Text, disable: isDisableButton,
+                            style: { width: topPageModel().frameLayout1() === 0 ? '145px' : '125px' }"></span>
                         </button>
                       </com:ko-if>
                       <com:ko-if bind="isVisiableButton2()">
                         <!-- B6_3 -->
                         <button class="ml-20 button-fix" id="B6_3" data-bind="click: openDialogButton2, disable: isDisableButton">
                           <i data-bind="ntsIcon: { no: 176, width: 20, height: 20 }" class="plus-icon mr-5"></i>
-                          <label id="btn-2" data-bind="text: button2Text"></label>
+                          <span id="btn-2" data-bind="text: button2Text, disable: isDisableButton,
+                            style: { width: topPageModel().frameLayout2() === 0 ? '145px' : '125px' }"></span>
                         </button>
                       </com:ko-if>
                       <com:ko-if bind="isVisiableButton3()">
                         <!-- B6_4 -->
                         <button class="ml-20 button-fix" id="B6_4" data-bind="click: openDialogButton3, disable: isDisableButton">
                           <i data-bind="ntsIcon: { no: 176, width: 20, height: 20 }" class="plus-icon mr-5"></i>
-                          <label id="btn-3">#{i18n.getText('CCG015_61')}</label>
+                          <span id="btn-3" data-bind="text: button3Text, disable: isDisableButton,
+                            style: { width: topPageModel().frameLayout3() === 0 ? '145px' : '125px' }"></span>
                         </button>
                       </com:ko-if>
                     </div>
@@ -179,11 +234,17 @@
                   <td class="inline-row w-100 pad-left-20">
                     <div class="inline-row">
                       <!-- B7_1 -->
-                      <span class="fix-span-62" id="B7_1" data-bind="text: text1"></span>
+                      <div class="fix-span-62" id="B7_1">
+                        <span data-bind="text: sizeText, visible: displaySizeText1"></span>
+                      </div>
                       <!-- B7_2 -->
-                      <span class="fix-span-62 ml-20" id="B7_2" data-bind="text: text2"></span>
+                      <div class="fix-span-62 ml-20" id="B7_2">
+                        <span data-bind="text: sizeText, visible: displaySizeText2"></span>
+                      </div>
                       <!-- B7_3 -->
-                      <span class="fix-span-62 ml-20" id="B7_3" data-bind="text: text3"></span>
+                      <div class="fix-span-62 ml-20" id="B7_3">
+                        <span data-bind="text: sizeText, visible: displaySizeText3"></span>
+                      </div>
                     </div>
                   </td>
                 </tr>
