@@ -20,6 +20,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.task.AsyncTaskInfo;
+import nts.uk.screen.at.app.dailymodify.command.*;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
@@ -38,9 +40,6 @@ import nts.uk.ctx.bs.employee.dom.employee.service.SearchEmployeeService;
 import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeSearchData;
 import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeSearchDto;
 
-import nts.uk.screen.at.app.dailymodify.command.DailyCalculationRCommandFacade;
-import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
-import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DisplayRemainingHolidayNumber;
@@ -179,6 +178,9 @@ public class DailyPerformanceCorrectionWebService {
 
 	@Inject
 	private SearchEmployeeService searchEmployeeService;
+
+	@Inject
+	private AsyncExecuteMonthlyAggregateCommandHandler execMonthlyAggregateHandler;
 	
 	@POST
 	@Path("startScreen")
@@ -281,25 +283,7 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("addAndUpdate")
 	@SuppressWarnings("unchecked")
 	public DataResultAfterIU addAndUpdate(DPItemParent dataParent) {
-		val domain  = session.getAttribute("domainEdits");
-		List<DailyRecordDto> dailyEdits = new ArrayList<>();
-		if(domain == null){
-			dailyEdits = cloneListDto((List<DailyRecordDto>) session.getAttribute("domainOlds"));
-		}else{
-			dailyEdits = (List<DailyRecordDto>) domain;
-		}
-		dataParent.setDailyEdits(dailyEdits);
-		dataParent.setDailyOlds((List<DailyRecordDto>) session.getAttribute("domainOlds"));
-		dataParent.setDailyOldForLog((List<DailyRecordDto>) session.getAttribute("domainOldForLog"));
-		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
-		dataParent.setErrorAllSidDate((Boolean)session.getAttribute("errorAllCalc"));
-		dataParent.setLstSidDateDomainError((List<Pair<String, GeneralDate>>)session.getAttribute("lstSidDateErrorCalc"));
-		dataParent.setApprovalConfirmCache((ApprovalConfirmCache)session.getAttribute("approvalConfirm"));
-		
-		Object objectCacheMonth = session.getAttribute("domainMonths");
-		Optional<MonthlyRecordWorkDto> domainMonthOpt = objectCacheMonth == null ? Optional.empty()
-				: (Optional<MonthlyRecordWorkDto>) objectCacheMonth;
-		dataParent.setDomainMonthOpt(domainMonthOpt);
+		setDataParent(dataParent);
 		DataResultAfterIU dataResultAfterIU =  dailyModifyRCommandFacade.insertItemDomain(dataParent);
 //		//TODO: set cache month
 //		if(dataResultAfterIU.getDomainMonthOpt().isPresent()) {
@@ -310,7 +294,36 @@ public class DailyPerformanceCorrectionWebService {
 		session.setAttribute("errorAllCalc", dataResultAfterIU.isErrorAllSidDate());
 		return dataResultAfterIU;
 	}
-	
+
+	@POST
+	@Path("execMonthlyAggregateAsync")
+	public AsyncTaskInfo execMonthlyAggregateAsync(DPItemParent dataParent){
+		setDataParent(dataParent);
+		return execMonthlyAggregateHandler.handle(dataParent);
+	}
+
+	private void setDataParent(DPItemParent dataParent) {
+		val domain = session.getAttribute("domainEdits");
+		List<DailyRecordDto> dailyEdits = new ArrayList<>();
+		if (domain == null) {
+			dailyEdits = cloneListDto((List<DailyRecordDto>) session.getAttribute("domainOlds"));
+		} else {
+			dailyEdits = (List<DailyRecordDto>) domain;
+		}
+		dataParent.setDailyEdits(dailyEdits);
+		dataParent.setDailyOlds((List<DailyRecordDto>) session.getAttribute("domainOlds"));
+		dataParent.setDailyOldForLog((List<DailyRecordDto>) session.getAttribute("domainOldForLog"));
+		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
+		dataParent.setErrorAllSidDate((Boolean) session.getAttribute("errorAllCalc"));
+		dataParent.setLstSidDateDomainError((List<Pair<String, GeneralDate>>) session.getAttribute("lstSidDateErrorCalc"));
+		dataParent.setApprovalConfirmCache((ApprovalConfirmCache) session.getAttribute("approvalConfirm"));
+
+		Object objectCacheMonth = session.getAttribute("domainMonths");
+		Optional<MonthlyRecordWorkDto> domainMonthOpt = objectCacheMonth == null ? Optional.empty()
+				: (Optional<MonthlyRecordWorkDto>) objectCacheMonth;
+		dataParent.setDomainMonthOpt(domainMonthOpt);
+	}
+
 	@POST
 	@Path("insertClosure")
 	public void insertClosure(EmpAndDate empAndDate){

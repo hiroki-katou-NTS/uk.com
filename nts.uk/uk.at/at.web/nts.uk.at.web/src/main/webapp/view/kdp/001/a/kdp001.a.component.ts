@@ -71,13 +71,16 @@ module nts.uk.ui.kdp001.a {
     @component({
         name: 'kdp-001-a',
         template: `
-            <div class="kdp-001-a widget-title">
-                <div class="text-time" data-bind="i18n: 'KDP001_5', 
-                            css: { 'ie': $component.state() === 'IE' , 'not-ie': $component.state() === 'NOT_IE'}"></div>
-                <div class="date" data-bind="date: $component.time.now, format: 'YYYY/MM/DD(ddd)', attr: { style: $component.time.style }"></div>
-                <div>
-                    <span class="hours-minutes" data-bind="date: $component.time.now, format: 'HH:mm',attr: { style: $component.time.style }"></span>
-                    <span class="seconds" data-bind="date: $component.time.now, format: ':ss', attr: { style: $component.time.style }"></span>
+            <div class="kdp-001-a kdp-001-a-title">
+                <div class="time">
+                    <div class="date">
+                        <span class="ymd" data-bind="date: $component.time.now, format: 'YYYY/MM/DD', attr: { style: $component.time.style }"></span>
+                        <span class="ddd" data-bind="date: $component.time.now, format: '（ddd）', attr: { style: $component.time.style }"></span>
+                    </div>
+                    <div class="hour-second">
+                        <span class="hour" data-bind="date: $component.time.now, format: 'HH:mm',attr: { style: $component.time.style }"></span>
+                        <span class="second" data-bind="date: $component.time.now, format: 'ss', attr: { style: $component.time.style }"></span>
+                    </div>
                 </div>
                 <!-- ko if: $component.useTopMenuLink -->
                     <div style="color: blue !important;" data-bind="if: modeA" class="button-link">
@@ -99,47 +102,27 @@ module nts.uk.ui.kdp001.a {
                 ">
                 <button data-bind="attr: { style: btn.style }, click: function() { $component.stamp(btn); }">
                     <!-- ko if: btn.buttonPositionNo == 1 -->
-                        <i data-bind="ntsIcon: { no: 205, width: 85, height: 85 }"></i>
+                    <!--    <i data-bind="ntsIcon: { no: 205, width: 85, height: 85 }"></i> -->
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 2 -->
-                        <i data-bind="ntsIcon: { no: 209, width: 85, height: 85 }"></i>
+                    <!--    <i data-bind="ntsIcon: { no: 209, width: 85, height: 85 }"></i> -->
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 3 -->
-                        <i data-bind="ntsIcon: { no: 212, width: 50, height: 50 }"></i>
+                    <!--    <i data-bind="ntsIcon: { no: 212, width: 50, height: 50 }"></i> -->
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 4 -->
-                        <i data-bind="ntsIcon: { no: 213, width: 50, height: 50 }"></i>
+                    <!--    <i data-bind="ntsIcon: { no: 213, width: 50, height: 50 }"></i> -->
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 1 || btn.buttonPositionNo == 2 -->
-                        <!-- ko if: btn.buttonName.length <= 8 -->
-                            <div class="btn-start-1"
-                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length > 8 -->
-                            <!-- ko if: btn.buttonName.length <= 15 -->
-                                <div class="btn-start-2"
-                                    data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                            <!-- /ko -->
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length > 15 -->
-                            <div class="btn-start-5"
-                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                        <!-- /ko -->
+                        <div data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                     <!-- /ko -->
 
                     <!-- ko if: btn.buttonPositionNo == 3 || btn.buttonPositionNo == 4 -->
-                        <!-- ko if: btn.buttonName.length <= 8 -->
-                            <div class="btn-start-3"
-                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                        <!-- /ko -->
-                        <!-- ko if: btn.buttonName.length > 8 -->
-                            <div class="btn-start-4"
-                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                        <!-- /ko -->
+                        <div data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                     <!-- /ko -->
                 </button>
             </div>
@@ -208,18 +191,6 @@ module nts.uk.ui.kdp001.a {
                 <!-- /ko -->
             <!-- /ko -->
             <style rel="stylesheet">
-                .ie {
-                    top: -15px;
-                }
-                .not-ie {
-                    top: -23px;
-                }
-                .widget-title {
-                    position: relative;
-                    width: 450px;
-                    margin: auto;
-                    text-align: center;
-                }
                 .kdp-001-a .text-left {
                     text-align: left;
                 }
@@ -230,9 +201,6 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a .text-center {
                     text-align: center;
                 }
-                .kdp-001-a.widget-title th {
-                    font-size: 16px;
-                }
                 .kdp-001-a.kdp-001-a-msg {
                     padding: 10px 0px;
                     width: 450px;
@@ -241,13 +209,7 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a.kdp-001-a-btn{
                     width: 450px;
                     margin: auto;
-                }
-                .kdp-001-a.kdp-001-a-btn button {
-                    width: 222px;
-                    height: 200px;
-                    border-radius: 5px;
-                    box-shadow: 2px 2px 6px #808080;
-                    border-width: 0px;
+                    margin-bottom: 20px;
                 }
                 .kdp-001-a.kdp-001-a-btn .btn-start-1 {
                     font-size: 25px;
@@ -290,16 +252,39 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a.kdp-001-a-btn1 .btn-end {
                     font-size: 20px;
                 }
-                .kdp-001-a.kdp-001-a-btn button:nth-child(3) {
-                    margin-top: 5px;
-                    width: 222px;
-                    height: 100px;
+
+                .kdp-001-a.kdp-001-a-btn button {
+                    width: 208px;
+                    border-radius: 10px;
+                    border: solid 2px;
                 }
+
+                .kdp-001-a.kdp-001-a-btn button:nth-child(1),
+                .kdp-001-a.kdp-001-a-btn button:nth-child(2) {
+                    height: 113px;
+                }
+
+                .kdp-001-a.kdp-001-a-btn button:nth-child(1) *,
+                .kdp-001-a.kdp-001-a-btn button:nth-child(2) * {
+                    font-size: 34px;
+                }
+
+                .kdp-001-a.kdp-001-a-btn button:nth-child(3),
                 .kdp-001-a.kdp-001-a-btn button:nth-child(4) {
-                    margin-top: 5px;
-                    width: 222px;
-                    height: 100px;
+                    margin-top: 18px;
+                    height: 72px;
                 }
+
+                .kdp-001-a.kdp-001-a-btn button:nth-child(3) *,
+                .kdp-001-a.kdp-001-a-btn button:nth-child(4) * {
+                    font-size: 24px;
+                }
+
+                .kdp-001-a.kdp-001-a-btn button:nth-child(1),
+                .kdp-001-a.kdp-001-a-btn button:nth-child(3) {
+                    margin-right: 30px;
+                }
+
                 .kdp-001-a.widget-content {
                     border: 1px solid #b1b1b1;
                     max-height: 143px;
@@ -337,11 +322,11 @@ module nts.uk.ui.kdp001.a {
                     text-align: center;
                 }
                 .kdp-001-a-potal.widget-content {
-                    border: 1px solid #b1b1b1;
                     max-height: 149px;
                     width: 448px;
-                    margin: 5px auto;
+                    margin: 5px auto 20px auto;
                     border-radius: 3px;
+                    position: inherit;
                 }
                 .kdp-001-a-potal.widget-content table {
                     width: 100%;
@@ -372,32 +357,56 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a-potal.widget-content table td:not(:last-child) {
                     text-align: center;
                 }
-                .kdp-001-a.widget-title .text-time {
-                    position: absolute;
-                    font-size: 70px;
-                    color: #E5F7F9;
-                    right: 22px;
+                
+                .kdp-001-a-title {
+                    position: relative;
+                    margin-bottom: 20px;
                 }
-                .kdp-001-a.widget-title .date {
-                    text-align: left;
-                    padding-left: 130px;
-                    color: #7F7F7F;
-                    font-size: 15px;
+
+                .kdp-001-a-title .time {
+                    width: 270px;
+                    margin: auto;
+                    position: relative;
+                    white-space: nowrap;
                 }
-                .kdp-001-a.widget-title .hours-minutes {
-                    box-sizing: border-box;
-                    color: #7F7F7F;
-                    font-size: 55px;
-                    line-height: 60px;  
+
+                .kdp-001-a-title .time * {
+                    font-family: Quicksand !important;
+                    font-weight: bold;
                 }
-                .kdp-001-a.widget-title .seconds {
-                    box-sizing: border-box;
-                    font-size: 35px;
-                    color: #7F7F7F;
+                
+                .kdp-001-a-title .time .date {
+                    text-align: center;
+                }
+                
+                .kdp-001-a-title .time .date .ymd {
+                    font-size: 32px;
+                }
+                
+                .kdp-001-a-title .time .date .ddd {
+                    font-size: 26px;
+                    font-family: "Noto Sans JP" !important;
+                }
+
+                .kdp-001-a-title .time .hour-second {
+                    padding-top: 10px;
+                }
+
+                .kdp-001-a-title .time .hour-second .hour {
                     position: relative;
                     z-index: 1;
+                    font-size: 80px;
+                    line-height: 80px;
                 }
-                .kdp-001-a.widget-title .button-link {
+
+                .kdp-001-a-title .time .hour-second .second {
+                    font-size: 50px;
+                    line-height: 50px;
+                    position: relative;
+                    left: 16px;
+                    z-index: 1;
+                }
+                .kdp-001-a-title .button-link {
                     text-align: center;
                     padding-left: 340px;
                     padding-bottom: 5px;
@@ -411,7 +420,7 @@ module nts.uk.ui.kdp001.a {
                 .has-info-short {
                     overflow-y: hidden;
                 }
-				.kdp-001-a.widget-title .button-link a {
+				.kdp-001-a.kdp-001-a-title .button-link a {
 					color: #0000EE;
 				}
             </style>

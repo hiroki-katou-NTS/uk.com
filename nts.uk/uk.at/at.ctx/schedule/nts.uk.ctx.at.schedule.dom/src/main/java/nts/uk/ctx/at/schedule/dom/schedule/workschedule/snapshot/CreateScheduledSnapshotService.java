@@ -43,7 +43,8 @@ public class CreateScheduledSnapshotService {
 		/** 所定時間を計算 */
 		return totalWorkTime.getWithinStatutoryTimeOfDaily().getActualWorkTime()
 				.addMinutes(breakTimeUse.valueAsMinutes())
-				.addMinutes(timeBreakUse);
+				.addMinutes(timeBreakUse)
+				.addMinutes(totalWorkTime.getWithinStatutoryTimeOfDaily().getWithinPrescribedPremiumTime().v().intValue());
 	}
 	
 	/** 使用時間の合計を計算 */

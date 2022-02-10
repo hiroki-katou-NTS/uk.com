@@ -8026,26 +8026,16 @@ var nts;
                         }
                         Painter.prototype.styleInnerCell = function (idx, innerCount) {
                             var self = this;
-                            var divStyle = "", borderStyle = "solid 1px transparent", dashedBorder = "dashed 1px #ABB7B8", incellHeight = (parseInt(self.options.rowHeight) - 2) / self.multilineCountInCell, incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
-                            //                divStyle += `; border-top: ${borderStyle}; border-right: ${borderStyle}`;
-                            if (idx < incellCountInRow * (self.multilineCountInCell - 1)) {
-                                divStyle += "; border-bottom: ".concat(dashedBorder);
-                            }
+                            var divStyle = "", incellHeight = "".concat(parseInt(self.options.rowHeight) / self.multilineCountInCell, "px"), incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
                             var incellRowIdx = Math.floor(idx / incellCountInRow);
                             divStyle += "; top: ".concat(incellRowIdx === 0 ? 0 : incellRowIdx + incellHeight, "px");
-                            if (idx % incellCountInRow === 0) {
-                                //                    divStyle += `; border-left: ${borderStyle}`;
-                            }
-                            else {
-                                divStyle += "; border-left: ".concat(dashedBorder);
-                            }
                             if (incellRowIdx === 0) {
-                                divStyle += "; height: ".concat(incellHeight - 1, "px;");
+                                divStyle += "; height: ".concat(incellHeight, ";");
                             }
                             else {
-                                divStyle += "; height: ".concat(incellHeight - 2, "px;");
+                                divStyle += "; height: ".concat(incellHeight, ";");
                             }
-                            divStyle += "; position: absolute; \n                    left: ".concat((idx - incellRowIdx * incellCountInRow) * (100 / incellCountInRow), "%;  \n                    line-height: ").concat(incellRowIdx === 0 ? (incellHeight - 1) : (incellHeight - 2), "px; \n                    width: calc(").concat(100 / incellCountInRow, "% - 2px); text-align: center;");
+                            divStyle += "; position: absolute; \n                    left: ".concat((idx - incellRowIdx * incellCountInRow) * (100 / incellCountInRow), "%;\n                    line-height: ").concat(incellHeight, ";\n                    width: calc(").concat(100 / incellCountInRow, "%); text-align: center;");
                             return divStyle;
                         };
                         Painter.prototype.cell = function (rData, rowIdx, key) {
@@ -12931,7 +12921,7 @@ var nts;
                      * Fit window height.
                      */
                     function fitWindowHeight($container, wrappers, horzSumExists) {
-                        var height = window.innerHeight - parseInt($.data($container, internal.Y_OCCUPY)) - 100;
+                        var height = window.innerHeight - parseInt($.data($container, internal.Y_OCCUPY)) - 50;
                         var $horzSumHeader, $horzSumBody, decreaseAmt;
                         wrappers = wrappers || selector.queryAll($container, "div[class*='" + BODY_PRF + "']").filter(function (e) {
                             return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM)
@@ -16139,22 +16129,6 @@ var nts;
                                     text += ("padding-right: " + style[k] + "; ");
                                     return;
                                 }
-                                else if (k === "borderTop") {
-                                    text += ("border-top: " + style[k] + "; ");
-                                    return;
-                                }
-                                else if (k === "borderBottom") {
-                                    text += ("border-bottom: " + style[k] + "; ");
-                                    return;
-                                }
-                                else if (k === "borderRight") {
-                                    text += ("border-right: " + style[k] + "; ");
-                                    return;
-                                }
-                                else if (k === "borderLeft") {
-                                    text += ("border-left: " + style[k] + "; ");
-                                    return;
-                                }
                                 text += k + ": " + style[k] + "; ";
                             });
                             this.elements.forEach(function (e) {
@@ -18680,9 +18654,9 @@ var nts;
                         var $prevButton, $nextButton;
                         if (jumpButtonsDisplay) {
                             $prevButton = $("<button/>").addClass("ntsDateNextButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
-                                .text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
+                                .text("＜").css("margin-right", "3px").attr("tabIndex", tabIndex);
                             $nextButton = $("<button/>").addClass("ntsDatePrevButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
-                                .text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
+                                .text("＞").css("margin-left", "3px").attr("tabIndex", tabIndex);
                             $input.before($prevButton).after($nextButton);
                         }
                         if (data.dateFormat === "YYYY") {
@@ -22667,9 +22641,9 @@ var nts;
                         var $container = $(element);
                         var tabIndex = _.isEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
                         $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
-                        $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span></div>");
+                        $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor fit-to-right ntsSearchBox_Component' type='text' /></span></div>");
                         $container.find('.input-wrapper').append("<i id='search-icon' class='img-icon'></i>");
-                        $container.append("<div class='input-wrapper'><button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button></div>");
+                        $container.append("<div class='input-wrapper'><button class='search-btn fit-to-left fit-to-editor ntsSearchBox_Component'>" + searchText + "</button></div>");
                         if (!_.isEmpty(label)) {
                             var $formLabel = $("<div>", { text: label });
                             $formLabel.prependTo($container);
@@ -24995,7 +24969,7 @@ var nts;
                     NtsLegentButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var $container = $(element);
-                        $container.text("■ " + ui.toBeResource.legendExample);
+                        $container.text(ui.toBeResource.legendExample);
                         $container.click(function () {
                             showLegendPanel($container, data);
                         });
@@ -26291,7 +26265,7 @@ var nts;
                             var tdStyle = "";
                             tdStyle += "; border-width: 1px; overflow: hidden; ";
                             if (self.options.isHeader) {
-                                tdStyle += "word-break: break-all; vertical-align: top;";
+                                tdStyle += "word-break: break-all; vertical-align: middle;";
                             }
                             else {
                                 tdStyle += "white-space: " + ws + ";"; // position: relative;";
@@ -26777,7 +26751,7 @@ var nts;
                             var self = this;
                             var $td = document.createElement("td");
                             $.data($td, lo.VIEW, rowIdx + "-" + cell.key);
-                            var tdStyle = "; border-width: 1px; overflow: hidden; word-break: break-all; vertical-align: top; border-collapse: collapse;";
+                            var tdStyle = "; border-width: 1px; overflow: hidden; word-break: break-all; vertical-align: middle; border-collapse: collapse;";
                             if (!_.isNil(cell.rowspan) && cell.rowspan > 1)
                                 $td.setAttribute("rowspan", cell.rowspan);
                             if (!_.isNil(cell.colspan) && cell.colspan > 1)
@@ -28271,7 +28245,7 @@ var nts;
                             top: top,
                             left: left,
                             width: width,
-                            border: "solid 1px #CCC"
+                            border: "none"
                         };
                         if (maxWidth) {
                             style.maxWidth = maxWidth;
@@ -47705,8 +47679,8 @@ var nts;
                         }
                         var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
                         $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
-                        $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span><i id='search-icon' class='img-icon'></i></div>");
-                        $container.append("<div class='input-wrapper'><button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button></div>");
+                        $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor fit-to-right ntsSearchBox_Component' type='text' /></span><i id='search-icon' class='img-icon'></i></div>");
+                        $container.append("<div class='input-wrapper'><button class='search-btn fit-to-left fit-to-editor ntsSearchBox_Component'>" + searchText + "</button></div>");
                         if (!nts.uk.util.isNullOrEmpty(label)) {
                             var $formLabel = $("<div>", { text: label });
                             $formLabel.prependTo($container);
@@ -50849,7 +50823,8 @@ var nts;
                             var iconNo = ko.unwrap(data.no);
                             var width = ko.unwrap(data.width) || "100%";
                             var height = ko.unwrap(data.height) || "100%";
-                            var iconFileName = iconNo + ".png";
+                            var extension = ko.unwrap(data.extension) || "svg";
+                            var iconFileName = iconNo + "." + extension;
                             var iconPath = nts.uk.request.location.siteRoot
                                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
                                 .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
@@ -53088,7 +53063,6 @@ var nts;
                         else {
                             $('.next-slider').css("visibility", "");
                             $('.next-slider').css("visibility", "hidden");
-                            console.log(lastItemPositionLeft + ' ' + userInfoLeft);
                         }
                     };
                     HeaderViewModel.prototype.hambergerClick = function () {

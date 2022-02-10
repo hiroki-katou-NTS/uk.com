@@ -285,9 +285,10 @@ public class MonAggrEmployeeSettings {
 						}
 						// 次の履歴へ
 						if (wkpCriteria.afterOrEquals(GeneralDate.max())) break;
-						wkpCriteria = wkpCriteria.addDays(1);
 					}
+					wkpCriteria = wkpCriteria.addDays(1);
 				}
+				else break;
 			}
 		}
 		// 社員別通常勤務労働時間

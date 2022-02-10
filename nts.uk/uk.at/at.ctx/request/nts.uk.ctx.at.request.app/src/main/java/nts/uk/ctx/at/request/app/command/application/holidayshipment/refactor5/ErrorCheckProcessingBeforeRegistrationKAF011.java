@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeUseInfor;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -67,7 +68,7 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 	        List<MsgErrorOutput> msgErrorLst, List<ActualContentDisplay> opActualContentDisplayLst, 
 	        AppDispInfoStartupOutput appDispInfoStartup, List<PayoutSubofHDManagement> payoutSubofHDManagements, 
 	        List<LeaveComDayOffManagement> leaveComDayOffManagements, 
-	        boolean checkFlag, boolean existFlag, List<WorkType> listWorkTypes) {
+	        boolean checkFlag, boolean existFlag, List<WorkType> listWorkTypes, ManageDistinct substituteManagement) {
 		
 		//登録前エラーチェック（新規）(Check error trước khi đăng ký (New)
 		this.PreRegistrationErrorCheck.errorCheck(companyId, abs, rec, 
@@ -79,7 +80,8 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 												payoutSubofHDManagements, 
 												leaveComDayOffManagements, 
 												checkFlag, 
-												listWorkTypes);
+												listWorkTypes, 
+												substituteManagement);
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
 //		this.checkForInsufficientNumberOfHolidays(companyId, appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), abs, rec);
 		

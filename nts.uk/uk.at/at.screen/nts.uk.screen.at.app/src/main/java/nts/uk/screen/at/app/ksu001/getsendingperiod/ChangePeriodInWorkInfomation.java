@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -31,6 +33,7 @@ import nts.uk.screen.at.app.ksu001.scheduleactualworkinfo.ScheduleActualOfWorkOu
  * 表示期間を変更する（勤務情報）
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ChangePeriodInWorkInfomation {
 	
 	@Inject
@@ -41,9 +44,6 @@ public class ChangePeriodInWorkInfomation {
 	
 	@Inject
 	private GetScheduleActualOfWorkInfo getScheduleActualOfWorkInfo;
-	
-	
-	
 	
 	public ChangePeriodInWorkInfoResult getData(ChangePeriodInWorkInfoParam param) {
 		

@@ -37,7 +37,7 @@ public class WorkAmountOfMonthlyDto implements ItemConst, AttendanceItemDataGate
 	public Optional<ItemValue> valueOf(String path) {
 		switch (path) {
 		case WORK_TIME:
-			return Optional.of(ItemValue.builder().value(workTimeAmount).valueType(ValueType.AMOUNT_NUM));
+			return Optional.of(ItemValue.builder().value(workTimeAmount).valueType(ValueType.AMOUNT_LONG));
 		default:
 			break;
 		}
@@ -59,7 +59,7 @@ public class WorkAmountOfMonthlyDto implements ItemConst, AttendanceItemDataGate
 	public void set(String path, ItemValue value) {
 		switch (path) {
 		case WORK_TIME:
-			workTimeAmount = value.valueOrDefault(0); break;
+			workTimeAmount = value.valueOrDefault(0l); break;
 		default:
 			break;
 		}
