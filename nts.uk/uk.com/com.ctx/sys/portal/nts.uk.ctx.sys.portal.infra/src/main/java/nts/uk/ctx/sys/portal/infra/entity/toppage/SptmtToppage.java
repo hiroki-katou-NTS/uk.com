@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.portal.infra.entity.toppage;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -39,6 +40,18 @@ public class SptmtToppage extends ContractUkJpaEntity
 	
 	@Column(name = "LAYOUT_DISP")
 	private BigDecimal layoutDisp;
+	
+	@Basic(optional = true)
+	@Column(name = "FRAME_LAYOUT_1")
+	private Integer frameLayout1;
+	
+	@Basic(optional = true)
+	@Column(name = "FRAME_LAYOUT_2")
+	private Integer frameLayout2;
+	
+	@Basic(optional = true)
+	@Column(name = "FRAME_LAYOUT_3")
+	private Integer frameLayout3;
 
 	@Override
 	protected Object getKey() {

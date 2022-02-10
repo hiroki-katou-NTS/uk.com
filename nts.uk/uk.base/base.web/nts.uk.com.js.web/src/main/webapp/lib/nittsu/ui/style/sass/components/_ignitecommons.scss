@@ -1,31 +1,54 @@
+@import "_button.scss";
+
+$hover_row_back_color: #eeeedf;
+
+%ig_table_header_thtd {
+	background-color: #6A6A6A;
+	color: #fff;
+	font-weight: 300;
+}
+
+
 @mixin iggridstyle {
 	table {
 		tr {
-			&, &.ui-state-focus, &.ui-ig-altrecord.ui-state-focus {
-				th.ui-widget-header {
-					color: $font_color;
-					background-color: #CFF1A5;
-				}
-			}
-			
 			td, th {
 			    font: {
 			        size: $normal_font_size;
 			        family: $font_family_monospace;
 			    }
+
+					// jQueryUIの無効化
+					&.ui-state-active, &.ui-widget-content &.ui-state-active, &.ui-widget-header &.ui-state-active {
+						color: #333333;
+					}
 			    
 			    &, &.ui-iggrid-header, &.ui-state-hover, &.ui-state-active, &.ui-state-focus, &.ui-state-active.ui-state-focus {
 			    	padding: 0 2px;
-			    	border: 1px solid #CCC;
+			    	border: 1px solid #fff;
 			    }
 			}
 		}
-		thead tr {
-			background-color: #CFF1A5;
+
+		thead {
+			tr {
+				th, td {
+					@extend %ig_table_header_thtd;
+				}
+			}
 		}
-		tr{
-			background-color: #FFFFFF;
+
+		tbody {
+			tr {
+				&:nth-child(odd) {
+					background-color: #FCFCFC;
+				}
+				&:nth-child(even) {
+					background-color: #F3F3F3;
+				}
+			}
 		}
+
 		.ui-ig-altrecord {
 			background-color: #FFFFFF;
 		}
@@ -44,11 +67,27 @@
 		.ui-iggrid-hiding-indicator, .ui-iggrid-hiding-hiddencolumnindicator {
 			display: none;
 		}
+
+		&.clickable-row {
+			tbody {
+				tr {
+					cursor: pointer;
+
+					&:hover {
+						&:nth-child(odd), &:nth-child(even) {
+							background-color: $button-proceed-base-color;
+							color: #fff;
+						}
+					}
+				}
+			}
+		}
 	}
 }
 
 @mixin iggridrowselector {
 	table tr {
+
 		
 		.ui-state-highlight {
 			border-color: #CCC;
@@ -58,17 +97,14 @@
 		}
 		
 		.ui-state-active {
-			font-weight: 700;
-			color: #30CC40;
-			background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;
-			box-shadow: 0px 8px 10px rgba(22, 154, 28, 0.1);
+			background: inherit;
+			box-shadow: inherit;
 		}
 		
 		&, &.ui-state-focus, &.ui-ig-altrecord.ui-state-focus {
 			td, th {
 				&.ui-state-hover {
-					color: #30CC40;
-					background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;			
+					background: $hover_row_back_color;
 				}
 			}
 				
@@ -77,9 +113,4 @@
 			}
 		}	
 	}
-}
-
-.ui-iggrid-table {
-	/* for IE */
-	background-color: #F3F3F3 !important;
 }
