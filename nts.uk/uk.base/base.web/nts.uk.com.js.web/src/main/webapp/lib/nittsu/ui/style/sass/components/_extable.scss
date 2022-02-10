@@ -1,5 +1,7 @@
 @import "_ignitecommons.scss";
 
+$hl_back_color: #eeeedf;
+
 .extable {
 	position: relative;
 
@@ -15,9 +17,23 @@
     }
   }
 
+  td {
+    &.highlight, div.highlight {
+      background-color: $hl_back_color !important;
+    }
+
+    div.highlight.xseal {
+      background-color: darken($hl_back_color, 10%) !important;
+    }
+  }
+
   .xheader {
     td, th {
       @extend %ig_table_header_thtd;
+
+      &.highlight {
+        background-color: desaturate(darken($hl_back_color, 50%), 5%) !important;
+      }
     }
   }
 
@@ -25,6 +41,10 @@
     tr {
       &:nth-child(even) {
         background-color: #F3F3F3;
+
+        .highlight:not(.xseal) {
+          background-color: darken($hl_back_color, 3%) !important;
+        }
       }
     }
   }
@@ -65,9 +85,6 @@
 }
 .extable div.bg-schedule-that-day, .extable td.bg-schedule-that-day, .xheader td.bg-schedule-that-day {
     background-color: #ffff00;
-}
-.extable div.highlight, .extable td.highlight, .xheader td.highlight {
-	background-color: #FFFFCC !important;
 }
 .extable td.ex-round-go {
 	cursor: pointer;
