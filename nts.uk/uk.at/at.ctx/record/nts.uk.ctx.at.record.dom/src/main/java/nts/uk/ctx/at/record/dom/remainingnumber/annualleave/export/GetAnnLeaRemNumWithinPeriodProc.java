@@ -18,6 +18,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWorkList;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveLapsedWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.DividedDayEachProcess;
@@ -320,7 +321,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 
 		// 年休集計期間を作成
-		List<AggregatePeriodWork> aggregateWork = createAggregatePeriod(
+		AggregatePeriodWorkList periodWorkList = createAggregatePeriod(
 				nextAnnualLeaveGrantList, period.get(), annualLeaveInfo.getGrantRemainingDataList());
 
 		// 暫定年休管理データを取得する
@@ -328,16 +329,12 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				require, employeeId, aggrPeriod, mode,
 				isOverWriteOpt, forOverWriteListOpt,isOverWritePeriod);
 
-		for (val aggregatePeriodWork : aggregateWork){
+		for (val aggregatePeriodWork : periodWorkList.getPeriodWorkList()){
 
-			// 年休の付与・消化
-			aggrResult = annualLeaveInfo.lapsedGrantDigest(
-					require, companyId, employeeId, aggregatePeriodWork,
-					tempAnnualLeaveMngs, aggrResult, annualLeaveSet);
-			
-			//消滅処理
-			aggrResult = annualLeaveInfo.lapsedProcess(aggregatePeriodWork, aggrResult,
-					aggregatePeriodWork.isNextGrantPeriodAtr(aggregateWork));
+			//残数処理
+			aggrResult = annualLeaveInfo.remainNumberProcess(require, companyId, employeeId, periodWorkList,
+					aggregatePeriodWork, tempAnnualLeaveMngs, aggrResult, annualLeaveSet);
+
 		}
 
 		
@@ -396,8 +393,6 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			Optional<List<TempAnnualLeaveMngs>> forOverWriteListOpt,
 			Optional<DatePeriod> isOverWritePeriod){
 
-		AnnualLeaveInfo emptyInfo = new AnnualLeaveInfo();
-		emptyInfo.setYmd(aggrPeriod.start());
 
 		// 集計開始日時点の前回の年休の集計結果が存在するかチェック
 		// パラメータ「集計開始日」とパラメータ「前回の年休の集計結果．年休情報(期間終了日の翌日開始時点)．年月日」を比較
@@ -672,7 +667,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	 * @param nextAnnualLeaveGrantList 次回年休付与リスト
 	 * @return 年休集計期間WORKリスト
 	 */
-	private static List<AggregatePeriodWork> createAggregatePeriod(List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList,
+	private static AggregatePeriodWorkList createAggregatePeriod(List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList,
 			DatePeriod aggrPeriod, List<AnnualLeaveGrantRemainingData> grantRemainingDatas){
 
 		List<AggregatePeriodWork> aggregatePeriodWorks = new ArrayList<>();
@@ -791,7 +786,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				work.getEndWork().setNextPeriodEndAtr(true);
 		}
 
-		return aggregatePeriodWorks;
+		return new AggregatePeriodWorkList(aggregatePeriodWorks);
 	}
 
 	/**

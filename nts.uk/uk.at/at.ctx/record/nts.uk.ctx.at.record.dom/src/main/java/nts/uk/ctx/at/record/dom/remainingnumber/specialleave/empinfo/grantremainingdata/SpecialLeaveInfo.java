@@ -105,8 +105,42 @@ public class SpecialLeaveInfo implements Cloneable {
 				this.getGrantRemainingDataList(), grantPeriodAtr);
 	}
 
-//	List<SpecialLeaveGrantRemaining> remainingDataList,
-//	boolean afterGrantAtr){
+
+	/**
+	 * 残数処理
+	 * @param require
+	 * @param companyId
+	 * @param employeeId
+	 * @param periodWorkList
+	 * @param specialLeaveAggregatePeriodWork
+	 * @param specialHolidayInterimMngData
+	 * @param specialLeaveCode
+	 * @param entryDate
+	 * @param aggrResult
+	 * @param baseDate
+	 * @return
+	 */
+	public InPeriodOfSpecialLeaveResultInfor remainNumberProcess(SpecialLeaveManagementService.RequireM5 require,
+			String companyId, String employeeId,
+			SpecialLeaveAggregatePeriodWorkList periodWorkList,
+			SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork,
+			SpecialHolidayInterimMngData specialHolidayInterimMngData,
+			InPeriodOfSpecialLeaveResultInfor aggrResult,
+			int specialLeaveCode, GeneralDate entryDate,
+			GeneralDate baseDate){
+		
+		// 特休の付与・消化
+		aggrResult = lapsedGrantDigest(require, companyId, employeeId, specialLeaveAggregatePeriodWork,
+				specialHolidayInterimMngData, specialLeaveCode, entryDate, aggrResult, baseDate);
+		
+		//消滅処理
+		aggrResult = lapsedProcess(specialLeaveAggregatePeriodWork, aggrResult, 
+				periodWorkList.isNextGrantPeriodAtr(specialLeaveAggregatePeriodWork, entryDate));
+		
+		
+		
+		return aggrResult;
+	}
 
 
 	/**
@@ -116,14 +150,12 @@ public class SpecialLeaveInfo implements Cloneable {
 	 * @param employeeId 社員ID
 	 * @param specialLeaveAggregatePeriodWork 処理中の特休集計期間WORK
 	 * @param interimSpecialHolidayMng 暫定特休管理データ
-//	 * @param isGetNextMonthData 翌月管理データ取得フラグ
-//	 * @param isCalcAttendanceRate 出勤率計算フラグ
 	 * @param specialLeaveCode 特別休暇コード
 	 * @param entryDate 入社日
 	 * 	@param aggrResult 特休の集計結果
 	 * @return 特休の集計結果
 	 */
-	public InPeriodOfSpecialLeaveResultInfor lapsedGrantDigest(
+	private InPeriodOfSpecialLeaveResultInfor lapsedGrantDigest(
 			SpecialLeaveManagementService.RequireM5 require,
 			String companyId, String employeeId,
 			SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork,
@@ -217,7 +249,7 @@ public class SpecialLeaveInfo implements Cloneable {
 	 * @param grantPeriodAtr 	付与前、付与後の区分
 	 * @return 特休の集計結果
 	 */
-	public InPeriodOfSpecialLeaveResultInfor lapsedProcess(
+	private InPeriodOfSpecialLeaveResultInfor lapsedProcess(
 			SpecialLeaveAggregatePeriodWork aggregatePeriodWork,
 			InPeriodOfSpecialLeaveResultInfor aggrResult,
 			GrantBeforeAfterAtr grantPeriodAtr){

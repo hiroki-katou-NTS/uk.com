@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.NextRe
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveLapsedWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLeaAggrPeriodWork;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLeaAggrPeriodWorkList;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
@@ -123,7 +124,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 		List<GrantWork> calcGrant = calcGrant(param.getLapsedAnnualLeaveInfos(), annualLeaveSet, param.getAggrPeriod());
 
 		// 積立年休集計期間の作成
-		List<RsvLeaAggrPeriodWork> aggrPeriodWorks = createAggregatePeriod(param.getAggrPeriod(), calcGrant,
+		RsvLeaAggrPeriodWorkList periodWorkList = createAggregatePeriod(param.getAggrPeriod(), calcGrant,
 				rsvGrantRemainingDatas);
 
 		// 暫定積立年休管理データを取得する
@@ -132,16 +133,10 @@ public class GetRsvLeaRemNumWithinPeriod {
 		// 上限設定の期間を計算
 		UpperLimitSetting limit = calcMaxSettingPeriod(require, cacheCarrier, param.getCompanyId(), retentionYearlySet);
 		
-		for (val aggrPeriodWork : aggrPeriodWorks) {
-
-			// 積立年休の付与・消化
-			aggrResult = reserveLeaveInfo.lapsedGrantDigest(require, cacheCarrier, companyId, employeeId,
-					aggrPeriodWork, tmpReserveLeaveMngs, aggrResult, annualLeaveSet, retentionYearlySet,
-					emptYearlyRetentionSetMap, limit);
-			
-			//消滅処理
-			aggrResult = reserveLeaveInfo.lapsedProcess(aggrPeriodWork, aggrResult,
-					aggrPeriodWork.isNextGrantPeriodAtr(aggrPeriodWorks));
+		for (val aggrPeriodWork : periodWorkList.getPeriodWorkList()) {
+			//残数処理
+			aggrResult = reserveLeaveInfo.remainNumberProcess(require, cacheCarrier, companyId, employeeId,
+					periodWorkList, aggrPeriodWork, tmpReserveLeaveMngs, aggrResult, annualLeaveSet, limit);
 			
 		}
 
@@ -401,7 +396,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 	 *            付与残数データリスト
 	 * @return 積立年休集計期間WORKリスト
 	 */
-	private static List<RsvLeaAggrPeriodWork> createAggregatePeriod(DatePeriod period,
+	private static RsvLeaAggrPeriodWorkList createAggregatePeriod(DatePeriod period,
 			List<GrantWork> nextReserveLeaveGrantList, List<ReserveLeaveGrantRemainingData> grantRemainingDataList) {
 
 		List<RsvLeaAggrPeriodWork> results = new ArrayList<>();
@@ -508,7 +503,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 		}
 
 		// 積立年休集計期間WORKリストを返す
-		return results;
+		return new RsvLeaAggrPeriodWorkList(results);
 	}
 
 	/**

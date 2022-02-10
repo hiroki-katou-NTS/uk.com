@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -89,20 +87,5 @@ public class SpecialLeaveAggregatePeriodWork {
 		}
 		
 		return this.getGrantPeriodAtr();
-	}
-	
-	/**
-	 * 次の期間の付与前後を判断
-	 * @param periodWorkList
-	 * @param entryDate
-	 * @return
-	 */
-	public GrantBeforeAfterAtr isNextGrantPeriodAtr(List<SpecialLeaveAggregatePeriodWork> periodWorkList,
-			GeneralDate entryDate){
-		if(this.endDay.isNextPeriodEndAtr()){
-			return this.judgeGrantPeriodAtr(entryDate);
-		}
-		
-		return periodWorkList.get(periodWorkList.indexOf(this)+1).judgeGrantPeriodAtr(entryDate);
 	}
 }

@@ -215,19 +215,14 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 		CheckCallRQ check = new CheckCallRQ(false, false, false, checkCall363, false, false);
 		HdRemainDetailMer data = hdMerPub.getHdRemainDetailMer(employeeId, currentMonth, baseDate, period, check);
 		List<AggrResultOfAnnualLeaveEachMonth> lst363 = data.getResult363();
-		List<AggrResultOfAnnualLeaveEachMonthKdr> lsRs = lst363.stream()
-				.filter(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getAnnualPaidLeaveSet().isPresent())
-				.filter(e -> e.getAggrResultOfAnnualLeave().getAsOfStartNextDayOfPeriodEnd().getAnnualPaidLeaveSet().isPresent())
-				.map(e->
+		List<AggrResultOfAnnualLeaveEachMonthKdr> lsRs = lst363.stream().map(e->
         {
             val aggrResultOfAnnualLeaveAsOfStart =  e.getAggrResultOfAnnualLeave().getAsOfGrant();
             val aggrResultOfAnnualLeaveAsLased =  e.getAggrResultOfAnnualLeave().getLapsed();
             List<AnnualLeaveInfoKdr> asOfGrant = Collections.emptyList();
             List<AnnualLeaveInfoKdr> lapsed = Collections.emptyList();
             if(aggrResultOfAnnualLeaveAsOfStart.isPresent()){
-                asOfGrant=   e.getAggrResultOfAnnualLeave().getAsOfGrant().get().stream()
-                		.filter(i -> i.getAnnualPaidLeaveSet().isPresent())
-                		.map(
+                asOfGrant=   e.getAggrResultOfAnnualLeave().getAsOfGrant().get().stream().map(
                         i -> new AnnualLeaveInfoKdr(
                                 i.getYmd(),
                                 new AnnualLeaveRemainingKdr(
@@ -249,9 +244,7 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
                 ).collect(Collectors.toList());
             }
             if(aggrResultOfAnnualLeaveAsLased.isPresent()){
-                lapsed =  aggrResultOfAnnualLeaveAsLased.get().stream()
-                		.filter(i -> i.getAnnualPaidLeaveSet().isPresent())
-                		.map(
+                lapsed =  aggrResultOfAnnualLeaveAsLased.get().stream().map(
                         i -> new AnnualLeaveInfoKdr(
                                 i.getYmd(),
                                 new AnnualLeaveRemainingKdr(

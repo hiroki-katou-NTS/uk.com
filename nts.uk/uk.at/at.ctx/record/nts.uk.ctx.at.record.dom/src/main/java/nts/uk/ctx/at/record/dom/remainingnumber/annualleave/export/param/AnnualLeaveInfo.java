@@ -185,6 +185,40 @@ public class AnnualLeaveInfo implements Cloneable {
 	}
 
 	/**
+	 * 残数処理
+	 * @param require
+	 * @param companyId
+	 * @param employeeId
+	 * @param periodWorkList
+	 * @param aggregatePeriodWork
+	 * @param tempAnnualLeaveMngs
+	 * @param aggrResult
+	 * @param annualPaidLeaveSet
+	 * @return
+	 */
+	public AggrResultOfAnnualLeave remainNumberProcess(LeaveRemainingNumber.RequireM3 require, String companyId,
+			String employeeId, AggregatePeriodWorkList periodWorkList, AggregatePeriodWork aggregatePeriodWork, 
+			List<TempAnnualLeaveMngs> tempAnnualLeaveMngs,AggrResultOfAnnualLeave aggrResult, 
+			AnnualPaidLeaveSetting annualPaidLeaveSet){
+		
+		//年休設定をセット
+		this.annualPaidLeaveSet = Optional.of(annualPaidLeaveSet);
+		
+		// 年休の付与・消化
+		aggrResult = lapsedGrantDigest(
+				require, companyId, employeeId, aggregatePeriodWork,
+				tempAnnualLeaveMngs, aggrResult);
+					
+		//消滅処理
+		aggrResult = lapsedProcess(aggregatePeriodWork, aggrResult,
+				periodWorkList.isNextGrantPeriodAtr(aggregatePeriodWork));
+		
+		return aggrResult;
+	}
+	
+	
+	
+	/**
 	 * 年休の付与・消化
 	 * 
 	 * @param require
@@ -206,11 +240,10 @@ public class AnnualLeaveInfo implements Cloneable {
 	 *            年休設定
 	 * @return 年休の集計結果
 	 */
-	public AggrResultOfAnnualLeave lapsedGrantDigest(LeaveRemainingNumber.RequireM3 require, String companyId,
+	private AggrResultOfAnnualLeave lapsedGrantDigest(LeaveRemainingNumber.RequireM3 require, String companyId,
 			String employeeId, AggregatePeriodWork aggregatePeriodWork, List<TempAnnualLeaveMngs> tempAnnualLeaveMngs,
-			AggrResultOfAnnualLeave aggrResult, AnnualPaidLeaveSetting annualPaidLeaveSet) {
+			AggrResultOfAnnualLeave aggrResult) {
 
-		this.annualPaidLeaveSet = Optional.of(annualPaidLeaveSet);
 
 		this.ymd = aggregatePeriodWork.getPeriod().end();
 
@@ -257,7 +290,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	 *            年休の集計結果
 	 * @return 年休の集計結果
 	 */
-	public AggrResultOfAnnualLeave lapsedProcess(AggregatePeriodWork aggregatePeriodWork,
+	private AggrResultOfAnnualLeave lapsedProcess(AggregatePeriodWork aggregatePeriodWork,
 			AggrResultOfAnnualLeave aggrResult, GrantBeforeAfterAtr grantAtr) {
 
 		// 消滅フラグを取得
@@ -385,9 +418,7 @@ public class AnnualLeaveInfo implements Cloneable {
 		if (aggregatePeriodWork.getEndWork().isNextPeriodEndAtr()) {
 			return aggrResult;
 		}
-		if(!this.annualPaidLeaveSet.isPresent()){
-			return aggrResult;
-		}
+
 
 		// 「暫定年休管理データリスト」を取得する
 		tempAnnualLeaveMngs.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
