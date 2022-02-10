@@ -22637,7 +22637,7 @@ var nts;
                         var tabIndex = _.isEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
                         $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
                         $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor fit-to-right ntsSearchBox_Component' type='text' /></span></div>");
-                        $container.find('.input-wrapper').append("<i id='search-icon' class='img-icon'></i>");
+                        // $container.find('.input-wrapper').append("<i id='search-icon' class='img-icon'></i>");
                         $container.append("<div class='input-wrapper'><button class='search-btn fit-to-left fit-to-editor ntsSearchBox_Component'>" + searchText + "</button></div>");
                         if (!_.isEmpty(label)) {
                             var $formLabel = $("<div>", { text: label });
@@ -22671,7 +22671,8 @@ var nts;
                         }
                         $input.attr("placeholder", placeHolder);
                         $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
-                        $input.outerWidth($container.outerWidth(true) - minusWidth);
+                        $input.outerWidth($container.outerWidth(true) - minusWidth - 6);
+                        $input.css('margin-right', '6px');
                         var primaryKey = ko.unwrap(data.targetKey);
                         var searchObject = new SearchPub(primaryKey, searchMode, dataSource, fields, childField);
                         $container.data("searchObject", searchObject);
@@ -47708,7 +47709,8 @@ var nts;
                         }
                         $input.attr("placeholder", placeHolder);
                         $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
-                        $input.outerWidth($container.outerWidth(true) - minusWidth);
+                        $input.outerWidth($container.outerWidth(true) - minusWidth - 6);
+                        $input.css('margin-right', '6px');
                         var primaryKey = options.targetKey;
                         var searchObject = new ui_22.koExtentions.SearchPub(primaryKey, searchMode, dataSource, fields, childField);
                         $container.data("searchObject", searchObject);
