@@ -7,24 +7,20 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 				<!--A4_1 勤務種類ラベル-->
 				<div class="valign-center"
 					data-bind="text: $i18n('KAF010_34'), ntsFormLabel:{required: true}"></div>
-				<BR />
-				<!--A4_4 就業時間ラベル-->
-				<div class="valign-center" style="padding-top: 10px"
-					data-bind="text: $i18n('KAF010_35'), ntsFormLabel:{required: true}"></div>
 			</div>
-			<div class="cell valign-top" data-bind="if: true" style="width: 45px;">
+			<div class="cell valign-top" data-bind="if: true" style="width: 45px; vertical-align: middle;">
 				<!--A4_7 選択ボタン-->
 				<button tabindex="7" class="workSelectKAF010"
 				data-bind="enable: mode() != 3, click : openDialogKdl003, text: $i18n('KAF010_36')"></button>
 			</div>
 			<div class="cell valign-center">
-				<div class="valign-center">
+				<div class="code-name">
 					<!--A4_2 勤務種類コード-->
 					<label class="lblWorkTypeCd" data-bind="text: ko.toJS(workInfo).workType.code"></label>
 					<!--A4_3 勤務種類名称-->
 					<LABEL data-bind="text: ko.toJS(workInfo).workType.name"></LABEL>
 				</div>
-				<div class="valign-center">
+				<div class="code-name">
 					<!--A4_5 就業時間コード-->
 					<label class="lblSiftCd" data-bind="text: ko.toJS(workInfo).workTime.code"></label>
 					<!--A4_6 就業時間名称-->

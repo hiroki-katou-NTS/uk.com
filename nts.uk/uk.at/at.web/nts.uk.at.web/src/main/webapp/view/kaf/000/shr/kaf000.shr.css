@@ -46,7 +46,7 @@ table.left-aligned td:not(:first-child) {
 }
 
 .left-panel {
-	width: calc(100% - 388px);
+	width: calc(100% - 348px);
 	padding-bottom: 5px;
 	height: inherit;
 	overflow-y: auto !important;
@@ -105,7 +105,7 @@ table.left-aligned td:not(:first-child) {
 	top: 3px;
 }
 
-.left-panel {
+.left-panel button{
 	min-width: 100px;
 }
 

@@ -5,3 +5,7 @@ button.nts-switch-button {
 #A1 {
     margin-right: 10px;
 }
+
+span.text {
+    font-size: 0.9rem;
+}

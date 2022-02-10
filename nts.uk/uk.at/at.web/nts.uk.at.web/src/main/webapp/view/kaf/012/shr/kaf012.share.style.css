@@ -129,3 +129,7 @@
 	background-color: #6A6A6A;
     color: #fff;
 }
+
+.button-min-width{
+	min-width: auto !important;
+}
