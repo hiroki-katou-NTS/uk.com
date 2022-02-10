@@ -973,22 +973,20 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 
 		/** 基準時間をセットする */
 		flexTimeCurrentMonth.setStandardTime(new AttendanceTimeMonth(compLeaveAfterDeduct.valueAsMinutes()));
-		
 
-		// 繰越時間相殺前を求める
-//		val carryforwardTimeBeforeOffset = flexTargetTime.minusMinutes(compLeaveAfterDeduct.valueAsMinutes());
+		/** フレックス時間をセットする */
+		flexTimeCurrentMonth.getFlexTime().setFlex(new TimeMonthWithCalculationAndMinus(
+															new AttendanceTimeMonthWithMinus(flexTime), 
+															new AttendanceTimeMonthWithMinus(0)));
 		
 		if (flexTime > 0) {
+			
+			// 法定内・法定外フレックス時間を求める
+			this.calcLegalFlexTime(require, cacheCarrier, companyId, employeeId, yearMonth, datePeriod,
+					aggregateAtr, flexTimeCurrentMonth.getFlexTime().getFlexTime().getTime(),companySets,
+					employeeSets, settingsByFlex, aggregateTotalWorkingTime, closureId, closureDate, 
+					monthlyCalculatingDailys, flexTimeCurrentMonth.getFlexTime(), flexTimeCurrentMonth);
 
-			// フレックス超過の処理をする
-			this.flexExcessPrinciple(require, cacheCarrier, new AttendanceTimeMonthWithMinus(flexTime),
-					companyId, employeeId, yearMonth, datePeriod, aggregateAtr, companySets, employeeSets, settingsByFlex,
-					aggregateTotalWorkingTime, closureId, closureDate, monthlyCalculatingDailys, flexTimeCurrentMonth.getFlexTime(), 
-					this.flexExcessTime, this.flexCarryforwardTime, flexTimeCurrentMonth);
-		} else {
-
-			/** フレックス時間をセットする */
-			flexTimeCurrentMonth.getFlexTime().setFlex(TimeMonthWithCalculationAndMinus.ofSameTime(flexTime));
 		}
 	}
 	
@@ -1654,6 +1652,10 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 						int nextStatMinutes = flexStatTime.getStatutorySetting().v();	// 翌月法定
 						int nextPredMinutes = flexStatTime.getSpecifiedSetting().v();	// 翌月所定
 						
+						/** 翌月の所定と法定の差　＝　EMPTYの時 →　「フレックス不足時間(丸め後)　≦　翌月の所定と法定の差」と同様にする*/
+						if (nextStatMinutes == 0) 
+							return;
+						
 						// 「フレックス勤務所定労働時間取得．参照先」を確認する
 						if (!companySets.getComFlexSetOpt().map(c -> c.isWithinTimeUsageAttr()).orElseThrow(() -> new BusinessException("Msg_2242"))){	// 実績から参照
 								
@@ -1678,7 +1680,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		}
 		
 		// フレックス繰越不可時間を計算する
-		if (flexShortageMinutes > diffNextMonth){
+		if (flexShortageMinutes > diffNextMonth) {
 			this.flexCarryforwardTime.setFlexNotCarryforwardTime(new AttendanceTimeMonth(
 					flexShortageMinutes - diffNextMonth));
 		}
