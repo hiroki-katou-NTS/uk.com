@@ -1,6 +1,6 @@
 @import "_ignitecommons.scss";
 
-$hl_back_color: #eeeedf;
+$hl_back_color: $hover_row_back_color;
 
 .extable {
 	position: relative;
