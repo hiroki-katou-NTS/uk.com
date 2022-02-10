@@ -171,11 +171,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 					{ headerText: "名称", 			key: "name", 				dataType: 'string',	width: 250},
 					{ headerText: "受入元", 			key: "isFixedValue",		dataType: 'number',	width: 130, ntsControl: 'SwitchButtons'},
 					{ headerText: "CSVヘッダ名", 	key: "selectedCsvItemNo",	dataType: 'number',	width: 220, ntsControl: 'Combobox' },
-<<<<<<< HEAD
-					{ headerText: "サンプルデータ", 	key: "csvData",				dataType: 'string',	width: 120	}
-=======
 					{ headerText: "サンプルデータ", 				key: "csvData", 				dataType: 'string',		width: 400	}
->>>>>>> 840749a5569c09e6a71476b2915a95eac2e659fd
 				],
 		        features: [
 					{
