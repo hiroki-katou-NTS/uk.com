@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.SpecBonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.StaggerDiductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
@@ -420,7 +421,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 			}
 
 			//終了時間の判断
-			TimeWithDayAttr endTime = reCreateSiteiTimeFromStartTime(transTime,overTimeWorkFrameTimeSheetList.get(number));
+			TimeWithDayAttr endTime = overTimeWorkFrameTimeSheetList.get(number).reCreateSiteiTimeFromStartTime(transTime, goOutSet);
 			
 			/*ここで分割*/
 			overTimeWorkFrameTimeSheetList = correctTimeSpan(overTimeWorkFrameTimeSheetList.get(number).splitTimeSpan(endTime,statutoryOverFrames),overTimeWorkFrameTimeSheetList,number);
@@ -433,10 +434,12 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 	/**
 	 * 開始から指定時間経過後の終了時刻を取得
 	 * @param transTime
+	 * @param goOutSet
 	 * @return
 	 */
-	public static TimeWithDayAttr reCreateSiteiTimeFromStartTime(AttendanceTime transTime,OverTimeFrameTimeSheetForCalc overTimeWork) {
-		return overTimeWork.reCreateTreatAsSiteiTimeEnd(transTime,overTimeWork).orElse(overTimeWork.timeSheet).getEnd();
+	public TimeWithDayAttr reCreateSiteiTimeFromStartTime(AttendanceTime transTime, WorkTimezoneGoOutSet goOutSet) {
+		TimeWithDayAttr minusTime = new TimeWithDayAttr(this.calcTime(Optional.of(goOutSet)).valueAsMinutes() - transTime.valueAsMinutes());
+		return this.contractTimeSheet(minusTime).orElse(this.timeSheet).getEnd();
 	}
 	
 	/**
@@ -665,23 +668,24 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 	 * @return 残業枠時間帯(WORK)
 	 */
 	public static OverTimeFrameTimeSheetForCalc createAsFlow(
+			ManagePerPersonDailySet personDailySetting,
 			FlowWorkSetting flowWorkSetting,
 			FlowOTTimezone processingFlowOTTimezone,
 			DeductionTimeSheet deductTimeSheet,
 			List<TimeSheetOfDeductionItem> itemsWithinCalc,
 			TimeWithDayAttr overTimeStartTime,
 			TimeWithDayAttr leaveStampTime,
-			Optional<BonusPaySetting> bonusPaySetting,
 			Optional<SpecificDateAttrOfDailyAttd> specDateAttr,
 			MidNightTimeSheet midNightTimeSheet) {
 		
 		// 終了時刻の計算
 		TimeWithDayAttr endTime = OverTimeFrameTimeSheetForCalc.calcEndTimeForFlow(
 				processingFlowOTTimezone,
-				flowWorkSetting.getHalfDayWorkTimezone().getWorkTimeZone().getLstOTTimezone(),
+				flowWorkSetting,
 				itemsWithinCalc,
 				overTimeStartTime,
-				leaveStampTime);
+				leaveStampTime,
+				personDailySetting.getAddSetting().getVacationCalcMethodSet());
 		// 残業枠時間を作成
 		OverTimeFrameTime frameTime = new OverTimeFrameTime(
 				new OverTimeFrameNo(processingFlowOTTimezone.getOTFrameNo().v().intValue()),
@@ -709,7 +713,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 		overTimeFrame.registDeductionList(ActualWorkTimeSheetAtr.OverTimeWork, deductTimeSheet,
 				Optional.of(flowWorkSetting.getCommonSetting()));
 		// 加給時間帯を作成
-		overTimeFrame.createBonusPayTimeSheet(bonusPaySetting, specDateAttr, deductTimeSheet);
+		overTimeFrame.createBonusPayTimeSheet(personDailySetting.getBonusPaySetting(), specDateAttr, deductTimeSheet);
 		// 深夜時間帯を作成
 		overTimeFrame.createMidNightTimeSheet(
 				midNightTimeSheet, Optional.of(flowWorkSetting.getCommonSetting()), deductTimeSheet);
@@ -728,12 +732,13 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 	 */
 	private static TimeWithDayAttr calcEndTimeForFlow(
 			FlowOTTimezone processingFlowOTTimezone,
-			List<FlowOTTimezone> lstOTTimezone,
+			FlowWorkSetting flowWorkSetting,
 			List<TimeSheetOfDeductionItem> timeSheetOfDeductionItems,
 			TimeWithDayAttr overTimeStartTime,
-			TimeWithDayAttr leaveStampTime) {
+			TimeWithDayAttr leaveStampTime,
+			HolidayCalcMethodSet holidaySet) {
 		
-		Optional<FlowOTTimezone> plusOneFlowOTTimezone = lstOTTimezone.stream()
+		Optional<FlowOTTimezone> plusOneFlowOTTimezone = flowWorkSetting.getHalfDayWorkTimezone().getWorkTimeZone().getLstOTTimezone().stream()
 				.filter(timezone -> timezone.getWorktimeNo().equals(processingFlowOTTimezone.getWorktimeNo()+1))
 				.findFirst();
 		
@@ -747,13 +752,13 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 			//残業枠時間から終了時刻を計算する
 			endTime = overTimeStartTime.forwardByMinutes(overTimeFrameTime.valueAsMinutes());
 			
+			//控除時間帯分、終了時刻をズラす
 			TimeSpanForDailyCalc timeSpan = new TimeSpanForDailyCalc(overTimeStartTime, endTime);
-			
-			//控除時間分、終了時刻をズラす
-			endTime = timeSpan.forwardByDeductionTime(timeSheetOfDeductionItems);
+			StaggerDiductionTimeSheet forward = new StaggerDiductionTimeSheet(timeSpan, processingFlowOTTimezone.getFlowTimeSetting().getRounding(), timeSheetOfDeductionItems);
+			endTime = forward.getForwardEnd(ActualWorkTimeSheetAtr.OverTimeWork, flowWorkSetting.getCommonSetting(), holidaySet);
 			
 			//間にinput.退勤時刻があるか確認、input.退勤時刻に置き換え
-			if(timeSpan.contains(leaveStampTime)) endTime = leaveStampTime;
+			if(timeSpan.shiftOnlyEnd(endTime).contains(leaveStampTime)) endTime = leaveStampTime;
 		}
 		else {
 			endTime = leaveStampTime;

@@ -9,6 +9,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidaywork
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.StaggerDiductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
@@ -251,12 +253,12 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 	 * @return 計算用休出枠時間帯
 	 */
 	public static HolidayWorkFrameTimeSheetForCalc createAsFlow(
+			ManagePerPersonDailySet personDailySetting,
 			WorkType todayWorkType,
 			FlowWorkSetting flowWorkSetting,
 			DeductionTimeSheet deductTimeSheet,
 			List<TimeSheetOfDeductionItem> itemsWithinCalc,
 			TimeSpanForDailyCalc holidayStartEnd,
-			Optional<BonusPaySetting> bonusPaySetting,
 			Optional<SpecificDateAttrOfDailyAttd> specDateAttr,
 			MidNightTimeSheet midNightTimeSheet,
 			FlowWorkHolidayTimeZone processingTimezone) {
@@ -264,9 +266,10 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 		// 就業時間帯の休出設定を取得　～　終了時刻の計算
 		TimeWithDayAttr endTime = HolidayWorkFrameTimeSheetForCalc.calcEndTimeForFlow(
 				processingTimezone,
-				flowWorkSetting.getOffdayWorkTimezone().getLstWorkTimezone(),
+				flowWorkSetting,
 				itemsWithinCalc,
-				holidayStartEnd);
+				holidayStartEnd,
+				personDailySetting.getAddSetting().getVacationCalcMethodSet());
 		// 法定区分を取得
 		HolidayAtr holidayAtr = todayWorkType.getWorkTypeSetList().get(0).getHolidayAtr();
 		// 休出枠Noをセット
@@ -294,7 +297,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 		holidayWorkFrameTimeSheet.registDeductionList(ActualWorkTimeSheetAtr.HolidayWork, deductTimeSheet,
 				Optional.of(flowWorkSetting.getCommonSetting()));
 		// 加給時間帯を作成
-		holidayWorkFrameTimeSheet.createBonusPayTimeSheet(bonusPaySetting, specDateAttr, deductTimeSheet);
+		holidayWorkFrameTimeSheet.createBonusPayTimeSheet(personDailySetting.getBonusPaySetting(), specDateAttr, deductTimeSheet);
 		// 深夜時間帯を作成
 		holidayWorkFrameTimeSheet.createMidNightTimeSheet(
 				midNightTimeSheet, Optional.of(flowWorkSetting.getCommonSetting()), deductTimeSheet);
@@ -313,11 +316,12 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 	 */
 	private static TimeWithDayAttr calcEndTimeForFlow(
 			FlowWorkHolidayTimeZone processingHolidayTimeZone,
-			List<FlowWorkHolidayTimeZone> holidayTimezones,
+			FlowWorkSetting flowWorkSetting,
 			List<TimeSheetOfDeductionItem> timeSheetOfDeductionItems,
-			TimeSpanForDailyCalc holidayStartEnd) {
+			TimeSpanForDailyCalc holidayStartEnd,
+			HolidayCalcMethodSet holidaySet) {
 		
-		Optional<FlowWorkHolidayTimeZone> plusOneHolidayTimezone = holidayTimezones.stream()
+		Optional<FlowWorkHolidayTimeZone> plusOneHolidayTimezone = flowWorkSetting.getOffdayWorkTimezone().getLstWorkTimezone().stream()
 				.filter(timezone -> timezone.getWorktimeNo().equals(processingHolidayTimeZone.getWorktimeNo()+1))
 				.findFirst();
 		
@@ -334,7 +338,8 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 			TimeSpanForDailyCalc timeSpan = new TimeSpanForDailyCalc(holidayStartEnd.getStart(), endTime);
 			
 			//控除時間分、終了時刻をズラす
-			endTime = timeSpan.forwardByDeductionTime(timeSheetOfDeductionItems);
+			StaggerDiductionTimeSheet forward = new StaggerDiductionTimeSheet(timeSpan, processingHolidayTimeZone.getFlowTimeSetting().getRounding(), timeSheetOfDeductionItems);
+			endTime = forward.getForwardEnd(ActualWorkTimeSheetAtr.HolidayWork, flowWorkSetting.getCommonSetting(), holidaySet);
 			
 			//間にinput.退勤時刻があるか確認、input.退勤時刻に置き換え
 			if(timeSpan.contains(holidayStartEnd.getEnd())) endTime = holidayStartEnd.getEnd();

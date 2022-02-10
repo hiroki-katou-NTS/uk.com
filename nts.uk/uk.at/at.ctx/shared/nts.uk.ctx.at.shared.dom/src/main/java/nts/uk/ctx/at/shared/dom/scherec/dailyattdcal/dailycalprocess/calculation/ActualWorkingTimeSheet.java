@@ -7,10 +7,12 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
@@ -29,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
@@ -464,6 +467,39 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child, goOutSet).valueAsMinutes());
 		//介護
 		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care, goOutSet).valueAsMinutes());
+		return result;
+	}
+	
+	/**
+	 * 控除時間の計算
+	 * @param holidayCalcMethodSet
+	 * @param premiumAtr
+	 * @param goOutSet
+	 * @return 控除時間
+	 */
+	public AttendanceTime calcDeductionTime(HolidayCalcMethodSet holidayCalcMethodSet, PremiumAtr premiumAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
+		AttendanceTime result = new AttendanceTime(0);
+		//休憩
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.BREAK, goOutSet).valueAsMinutes());
+		//外出(私用)
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.PrivateGoOut, goOutSet).valueAsMinutes());
+		//外出(組合)
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.UnionGoOut, goOutSet).valueAsMinutes());
+		//短時間
+		AttendanceTime shortTime = new AttendanceTime(0);
+		//介護
+		AttendanceTime careTime = new AttendanceTime(0);
+		//短時間勤務を控除するか判断
+		if(premiumAtr.isRegularWork() && !holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().isCalculateIncludCareTime()) {
+			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child, goOutSet);
+			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care, goOutSet);
+		}
+		if(premiumAtr.isPremium() && !holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().isCalculateIncludCareTime()) {
+			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child, goOutSet);
+			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care, goOutSet);
+		}
+		result = result.addMinutes(shortTime.valueAsMinutes());
+		result = result.addMinutes(careTime.valueAsMinutes());
 		return result;
 	}
 }
