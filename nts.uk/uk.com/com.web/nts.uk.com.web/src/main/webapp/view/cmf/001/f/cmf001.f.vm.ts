@@ -228,12 +228,14 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 					itemNoList: itemNoList};
 				ajax("screen/com/cmf/cmf001/f/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
 					self.layout(layoutItems);
+					self.initGrid();
+					dfd.resolve();
 				});
 			}else{
 				self.layout([]);
-			}
 			self.initGrid();
 			dfd.resolve();
+			}
 			return dfd.promise();
 		}
 
