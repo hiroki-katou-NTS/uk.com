@@ -233,8 +233,8 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				});
 			}else{
 				self.layout([]);
-			self.initGrid();
-			dfd.resolve();
+				self.initGrid();
+				dfd.resolve();
 			}
 			return dfd.promise();
 		}
@@ -345,6 +345,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 					let ItemNoList: string[] = getShared('CMF001DOutput')
 					console.log("closed: " + ItemNoList)
 					ko.utils.arrayPushAll(self.layoutItemNoList, ItemNoList.map(n => Number(n)));
+					self.setLayout(self.layoutItemNoList());
 				}
 			});
 		}
