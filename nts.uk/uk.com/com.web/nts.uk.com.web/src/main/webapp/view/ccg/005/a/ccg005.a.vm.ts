@@ -769,7 +769,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     private initResizeable(vm: any) {
-      $('.widget-container .widget-content.ui-resizable')
+      $('.widget-container .widget-content.ui-resizable#ccg005-watching')
         .on('wg.resize', () => {
           vm.onResizeable(vm);
         });
