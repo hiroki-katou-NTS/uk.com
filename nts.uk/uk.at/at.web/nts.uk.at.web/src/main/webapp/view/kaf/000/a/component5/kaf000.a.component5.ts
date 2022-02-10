@@ -4,13 +4,12 @@ module nts.uk.at.view.kaf000.a.component5.viewmodel {
         name: 'kaf000-a-component5',
         template: `
     <div id="kaf000-a-component5">
-			<div data-bind="if: appReasonCDDisp">
 				<div class="table item">
 					<div class="cell cm-column valign-top">
 						<div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: '理由'"></div>
 					</div>
 					<div class="cell valign-top">
-						<div class="combo-reason-wrapper">
+						<div data-bind="if: appReasonCDDisp" class="combo-reason-wrapper">
 							<div id="kaf000-a-component5-comboReason" style="width: 472px;"
 										data-bind="ntsComboBox: {
 													name: $i18n('KAF000_51'),
@@ -21,7 +20,7 @@ module nts.uk.at.view.kaf000.a.component5.viewmodel {
 																		columns: [{ prop: 'reasonForFixedForm', length: 20 }],
 																		required: appReasonCDRequired }"></div>
 						</div>
-						<div class="text-reason-wrapper">
+						<div data-bind="if: appReasonDisp" class="text-reason-wrapper">
 							<textarea style="height: 80px;" id="kaf000-a-component5-textReason"
 									data-bind="ntsMultilineEditor: {
 															name: $i18n('KAF000_52'),
@@ -36,7 +35,6 @@ module nts.uk.at.view.kaf000.a.component5.viewmodel {
 						</div>
 					</div>
 				</div>
-			</div>
 		</div>
         `
     })
