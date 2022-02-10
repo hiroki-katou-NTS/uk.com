@@ -38,165 +38,86 @@
 				<!-- Mode Application -->
 				<!-- CCG_001 -->
 				<div id="ccgcomponent"></div>
-				<div id="status-div" style="margin-top: 12px; margin-left: 90px; display:none" data-bind="visible: true">
+				<div id="status-div">
 					<!-- A3 -->
-					<div style="width: 150px; display: inline-block; float: left" data-bind="visible: mode()==1">
-						<div data-bind="with: approvalCount" class="table-number">
-							<table>
-								<colgroup>
-									<col width="100px" />
-									<col width="*" />
-								</colgroup>
-								<tr>
-									<td>
-										<div>#{i18n.getText('CMM045_12')}</div>
-									</td>
-									<!-- A3_1 -->
-									<td>
-										<div data-bind="text: unApprovalNumber"></div>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<div>#{i18n.getText('CMM045_13')}</div>
-									</td>
-									<!-- A3_2 -->
-									<td>
-										<div data-bind="text: approvalNumber"></div>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<div>#{i18n.getText('CMM045_14')}</div>
-									</td>
-									<!-- A3_3 -->
-									<td>
-										<div data-bind="text: approvalAgentNumber"></div>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<div>#{i18n.getText('CMM045_15')}</div>
-									</td>
-									<!-- A3_4 -->
-									<td>
-										<div data-bind="text: cancelNumber"></div>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<div>#{i18n.getText('CMM045_16')}</div>
-									</td>
-									<!-- A3_5 -->
-									<td>
-										<div data-bind="text: remandNumner"></div>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<div>#{i18n.getText('CMM045_17')}</div>
-									</td>
-									<!-- A3_6 -->
-									<td>
-										<div data-bind="text: denialNumber"></div>
-									</td>
-								</tr>
-							</table>
+					
+					<div id="approval-count" class="item" data-bind="visible: mode()==1">
+						<div data-bind="with: approvalCount">
+							<div class="item">処理件数</div>
+							<div class="item">
+								<div>未承認</div>
+								<div data-bind="text: unApprovalNumber"></div>
+							</div>
+							<div class="item">
+								<div>承認</div>
+								<div data-bind="text: approvalNumber"></div>
+							</div>
+							<div class="item">
+								<div>否認</div>
+								<div data-bind="text: approvalAgentNumber"></div>
+							</div>
+							<div class="item">
+								<div>代行承認</div>
+								<div data-bind="text: cancelNumber"></div>
+							</div>
+							<div class="item">
+								<div>差戻</div>
+								<div data-bind="text: remandNumner"></div>
+							</div>
+							<div class="item">
+								<div>取消</div>
+								<div data-bind="text: denialNumber"></div>
+							</div>
 						</div>
 					</div>
-					<div style="width: 670px; padding: 10px; border:1px solid #AAAAAA; display: inline-block;"
-						data-bind="css: {'app-left': mode()==0}">
-						<!-- A2: Switch button -->
-						<!-- delete - ver35 -->
-						<!-- <div data-bind = "visible: mode()==1">
-							<div tabindex = "3"  data-bind="ntsSwitchButton: {
-								options: roundingRules,
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: selectedRuleCode,
-								enable: true }"></div>
-						</div> -->
-						<!-- A4_1 -->
-						<table>
-							<colgroup>
-								<col width="100px" />
-								<col width="*" />
-							</colgroup>
-							<tr data-bind="visible: mode()==1" style="height: 30px">
-								<td>
-									<div>#{i18n.getText('CMM045_19')}</div>
-								</td>
-								<td>
-									<!-- A4_1 -->
-									<div style="width: 450px; margin-left: -200px;" tabindex="4" data-bind="ntsMultiCheckBox: {
-									options: itemList,
-									optionsValue: 'id',
-									optionsText: 'name',
-									value: selectedIds,
-									enable: true}"></div>
-								</td>
-							</tr>
-							<tr>
-								<td class="grid-text-label" style="width: 325px; display: flex">
-									<span class="grid-text-label">#{i18n.getText('CMM045_29')}</span>
-									<div style="margin-left: 25px" id="daterangepicker"
-										 tabindex="5" data-bind="ntsDateRangePicker:
+							
+					<div id="filter-controls" data-bind="css: {'app-left': mode()==0}">
+						
+						<div class="main-filters">
+							<div class="item">
+								<div class="filter-label">#{i18n.getText('CMM045_29')}</div>
+								<div id="daterangepicker" tabindex="5" data-bind="ntsDateRangePicker:
 									{required: false,
 									enable: true,
 									name: '#{i18n.getText('CMM045_29')}',
 									showNextPrevious: false,
 									value: dateValue}"></div>
-								</td >
-								<td class="grid-text-label" style="width: 275px">
-									<label class="grid-text-label"
-										style="display: inline-block;">#{i18n.getText('CMM045_81')}</label>
-									<div id="combo-box" style="display: inline-block; margin-left: 20px;" tabindex="7"
-										data-bind="ntsComboBox: {
-										name:'#{i18n.getText('CMM045_81')}',
-										width: 150,
-										options: ko.observableArray([
-							                { orderCD: 0, orderName: '#{i18n.getText('CMM045_82')}' },
-							                { orderCD: 1, orderName: '#{i18n.getText('CMM045_83')}' },
-							                { orderCD: 2, orderName: '#{i18n.getText('CMM045_84')}' },
-							            ]),
-										optionsValue: 'orderCD',
-										value: orderCD,
-										optionsText: 'orderName',
-										enable: true }"></div>
-									<!-- A4_3_4: button 検索 -->
-									<div style=" margin-left: 115px;"><a
-											style="background-color: #ffff; margin-right: 50px"
-											class="hyperlink">#{i18n.getText("CMM045_87")}</a></div>
-								</td>
-								<td>
-									<com:ko-if bind="mode() == 0">
-										<button tabindex="6" data-bind="click: findByPeriod"
-											style="width: 70px; height: 70px;">#{i18n.getText('CMM045_32')}</button>
-									</com:ko-if>
-									<com:ko-if bind="mode() == 1">
-										<button tabindex="6" data-bind="click: findByPeriod"
-												style="width: 70px; height: 70px; margin-top: -50px">#{i18n.getText('CMM045_32')}</button>
-									</com:ko-if>
-								</td>
-							</tr>
-							<!-- <tr> -->
-							<!-- A4_4: label 申請種類 -->
-							<!-- <td><div>#{i18n.getText('CMM045_33')}</div></td>
-							<td>
-								<div id="combo-box" style = "display: inline-block;"
-									tabindex="7"  data-bind="ntsComboBox: {
-										options: itemApplication,
-										optionsValue: 'appId',
-										value: selectedCode,
-										optionsText: 'appName',
-										enable: true,
-										columns: [{ prop: 'appName'}]}"></div>
-								 -->
-							<!-- A4_4_2 -->
-							<!-- <div id = "A4_4_2">#{i18n.getText('CMM045_35')}</div>
-							</td>
-						</tr> -->
-						</table>
+							</div>
+							
+							<div class="item">
+								<div class="filter-label">#{i18n.getText('CMM045_81')}</div>
+								<div id="combo-box" tabindex="7" data-bind="ntsComboBox: {
+									name:'#{i18n.getText('CMM045_81')}',
+									width: 150,
+									options: ko.observableArray([
+						                { orderCD: 0, orderName: '#{i18n.getText('CMM045_82')}' },
+						                { orderCD: 1, orderName: '#{i18n.getText('CMM045_83')}' },
+						                { orderCD: 2, orderName: '#{i18n.getText('CMM045_84')}' },
+						            ]),
+									optionsValue: 'orderCD',
+									value: orderCD,
+									optionsText: 'orderName',
+									enable: true }"></div>
+							</div>
+							
+							<div class="item status-filters" data-bind="visible: mode()==1">
+								<!-- A4_1 -->
+								<div tabindex="4" data-bind="ntsMultiCheckBox: {
+								options: itemList,
+								optionsValue: 'id',
+								optionsText: 'name',
+								value: selectedIds,
+								enable: true}"></div>
+							</div>
+							
+							<div class="item">
+								<button id="search-option">#{i18n.getText("CMM045_87")}</button>
+							</div>
+							
+							<div class="item">
+								<button id="execute-search" class="proceed" tabindex="6" data-bind="click: findByPeriod">抽出</button>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -205,7 +126,7 @@
 						<span style="color: #BFEA60">■</span>
 						<span data-bind="text: '#{i18n.getText('CMM045_89')}'"></span>
 					</div>
-					<button data-bind="click: saveContentWidth" style="float: right; margin-bottom: 10px;">#{i18n.getText('CMM045_88')}</button>
+					<button id="save-column-width" data-bind="click: saveContentWidth">#{i18n.getText('CMM045_88')}</button>
 					<span data-bind="text: '#{i18n.getText('CMM045_90')}', visible: isLimit500()" style="color: #FF0000; float: right; margin: 10px"></span>
 				</div>
 
@@ -226,35 +147,26 @@
 
 				<!-- Popup Area -->
 				<div class="popup-panel popup-panel-cmm045">
-					<table>
-						<tr>
-							<td style="padding-bottom: 10px;">#{i18n.getText('CMM045_91')}</td>
-							<td style="padding-bottom: 10px;">#{i18n.getText('CMM045_94')}</td>
-						</tr>
-						<tr>
-							<td style="vertical-align: top; padding-right: 15px;">
-								<div
-									data-bind="ntsCheckBox: { text: '#{i18n.getText('CMM045_92')}', checked: isBeforeCheck }">
-								</div>
-								<div style="display: block;"
-									data-bind="ntsCheckBox: { text: '#{i18n.getText('CMM045_93')}', checked: isAfterCheck }">
-								</div>
-							</td>
-							<td>
-								<table id="multi-list" data-bind="ntsGridList: {
-									columns: ko.observableArray([
-						                { headerText: 'appType', key: 'appType', width: 50, hidden: true},
-						                { headerText: '#{i18n.getText('CMM045_94')}', key: 'appName', width: 190 },
-						            ]),
-									multiple: true,
-									options: itemApplication,
-									optionsValue: 'appType',
-									value: selectedAppId,
-									rows: 14
-								}"></table>
-							</td>
-						</tr>
-					</table>
+					
+					<div class="row">
+						<div class="row-header">区分</div>
+						<div class="row-content">
+							<div data-bind="ntsCheckBox: { text: '#{i18n.getText('CMM045_92')}', checked: isBeforeCheck }"></div>
+							<div data-bind="ntsCheckBox: { text: '#{i18n.getText('CMM045_93')}', checked: isAfterCheck }"></div>
+						</div>
+					</div>
+
+					<div class="row app-type">
+						<div class="row-header">申請種類</div>
+						<div class="row-content">
+							<div data-bind="ntsMultiCheckBox: {
+								options: itemApplication,
+								optionsValue: 'appType',
+								optionsText: 'appName',
+								value: selectedAppId }"></div>
+						</div>
+					</div>
+
 				</div>
 			</div>
 		</ui:define>

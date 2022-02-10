@@ -3,7 +3,7 @@
     <div v-if="params">
         <table class="overtime-list table table-sm mb-0" style="text-align: center">
             <thead class="thead-light">
-                <tr class="table-light">
+                <tr class="">
                     <td>{{'KAFS00_30' | i18n}}</td>
                     <td>{{'KAFS00_31' | i18n}}</td>
                     <td>{{'KAFS00_26' | i18n}}</td>

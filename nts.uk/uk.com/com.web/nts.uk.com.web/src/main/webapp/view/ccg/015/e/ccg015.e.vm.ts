@@ -135,11 +135,7 @@ module nts.uk.com.view.ccg015.e {
         if (params.topPageModel && params.topPageModel.topPageCode) {
           vm.topPageCode(params.topPageModel.topPageCode);
         }
-        if (params.frame === 2) {
-          vm.layoutNo(1);
-        } else if (params.frame === 3) {
-          vm.layoutNo(2);
-        }
+        vm.layoutNo(params.frame - 1);
       }
       const layoutRquest = {
         topPageCode: vm.topPageCode(),

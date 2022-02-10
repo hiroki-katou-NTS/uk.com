@@ -1,13 +1,7 @@
-#kaf000-a-component8 {
-	padding-left: 15px;
-	padding-right: 15px;
+#kaf000-a-component8 tr > td:nth-child(1) {
+	width: 90px;
 }
 
-#kaf000-a-component8 .column1 {
-	width: 105px;
-	border-right: 2px solid #B1B1B1;
-}
-
-#kaf000-a-component8 .column2 {
-	padding-left: 15px;
+#kaf000-a-component8 tr > td:nth-child(2) {
+	width: 200px;
 }
