@@ -49,6 +49,14 @@
 	min-height: 22px;
 }
 
+.title * {
+	font-family: Quicksand !important;
+}
+
+.title .date .ddd {
+	font-family: "Noto Sans JP" !important;
+}
+
 .title .time {
 	font-size: 35px;
 	font-weight: bold;
@@ -91,18 +99,12 @@
 	margin-top: 5px;
 }
 
-.btn-emoji {
+.btn-emoji, .btn-happy {
 	margin-left: 5px;
 	border: none;
 	background-color: transparent;
 	box-shadow: 0 0px rgb(0 0 0 / 40%);
-}
-
-.btn-happy {
-	margin-left: 5px;
-	border: none;
-	background-color: transparent;
-	box-shadow: 0 0px rgb(0 0 0 / 40%);
+	min-width: 0 !important; /* function-area�̃{�^���ɑ΂���min-width�𖳌��� */
 }
 
 .nts-gridlist.ui-iggrid {

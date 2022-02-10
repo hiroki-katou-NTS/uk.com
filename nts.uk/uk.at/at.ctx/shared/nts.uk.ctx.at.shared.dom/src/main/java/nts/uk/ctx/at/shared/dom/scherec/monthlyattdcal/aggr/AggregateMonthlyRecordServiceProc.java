@@ -869,8 +869,6 @@ public class AggregateMonthlyRecordServiceProc {
 				MonthlyCalculatingDailys monthlyCalculatingDailys,
 				InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate);
 
-		/** 特別休暇基本情報 */
-		Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UnitAtr use);
 
 		/** 締め状態管理 */
 		Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId);

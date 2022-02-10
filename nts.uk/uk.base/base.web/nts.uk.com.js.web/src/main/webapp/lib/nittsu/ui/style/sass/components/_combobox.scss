@@ -28,6 +28,7 @@
 		&.ui-state-active {
 			border-color: $focused_color;
 			box-shadow: 0 0 0 2px lighten($color: $focused_color, $amount: 30);
+			font-weight: normal;
 
 			&:focus {
 				border-color: #0096f2;
@@ -93,12 +94,14 @@
 	}
 
 	.ui-igcombo-listitem {
+		color: #000;
+		font-weight: normal;
+		
 		&.ui-state-default {
 			background-color: #fbfcff;
-
-			&.ui-state-active {
-				background-color: #30cc40;
-			}
+		}
+		&.ui-state-active {
+			background-color: #99aea9;
 		}
 	}
 

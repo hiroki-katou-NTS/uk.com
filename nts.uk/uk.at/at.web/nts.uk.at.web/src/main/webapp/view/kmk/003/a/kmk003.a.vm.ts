@@ -1260,11 +1260,14 @@ module nts.uk.at.view.kmk003.a {
 
                 //afternoon
                 workTimezones
-                    .filter(w => w.timezone.start() >= afterStart)
+                    .filter(w => w.timezone.end() >= afterStart)
                     .map(w => {
                         let dto = w.toDto();
+                        dto.timezone.start = afterStart;
                         dto.employmentTimeFrameNo = afternoonNo++;
-                        afternoonTimes.push(dto);
+                        if (_.filter(afternoonTimes, (time: any) => {return time.timezone.start === dto.timezone.start && time.timezone.end === dto.timezone.end;}).length == 0) {
+                            afternoonTimes.push(dto);
+                        }
                     })
 
                 return {

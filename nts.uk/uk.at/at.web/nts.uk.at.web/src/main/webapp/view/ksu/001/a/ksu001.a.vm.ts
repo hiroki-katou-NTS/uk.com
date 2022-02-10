@@ -1763,10 +1763,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 
                 if (dateInfo.htmlTooltip != null) {
-                    objDetailHeaderDs['_' + ymd] = "<img class='header-image-event'>";
+                    objDetailHeaderDs['_' + ymd] = "<span class='header-image-event'>●</span>";
                     htmlToolTip.push(new HtmlToolTip('_' + ymd, dateInfo.htmlTooltip));
                 } else {
-                    objDetailHeaderDs['_' + ymd] = "<img class='header-image-no-event'>";
+                    objDetailHeaderDs['_' + ymd] = "<span class='header-image-no-event'>●</span>";
                 }
             });
             
@@ -1863,10 +1863,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let iconEmpPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("7.png").serialize();
                 $('.icon-leftmost').css('background-image', 'url(' + iconEmpPath + ')');
                 // set backgound image icon header
-                let iconEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("120.png").serialize();
-                $('.header-image-event').attr('src', iconEventPath);
-                let iconNoEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("121.png").serialize();
-                $('.header-image-no-event').attr('src', iconNoEventPath);
                 if (self.mode() === UpdateMode.EDIT) {
                     self.bindingEventClickFlower();
                 }
@@ -2345,7 +2341,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let leftmostDs = dataBindGrid.leftmostDs;
 
             leftmostColumns = [{
-                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8 +"px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8 +"px",
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
                 headerControl: "link", headerHandler: function() {  }
             }];
@@ -3769,10 +3765,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
 
                     if (dateInfo.htmlTooltip != null) {
-                        objDetailHeaderDs['_' + ymd] = "<img class='header-image-event'>";
+                        objDetailHeaderDs['_' + ymd] = "<span class='header-image-event'>●</span>";
                         htmlToolTip.push(new HtmlToolTip('_' + ymd, dateInfo.htmlTooltip));
                     } else {
-                        objDetailHeaderDs['_' + ymd] = "<img class='header-image-no-event'>";
+                        objDetailHeaderDs['_' + ymd] = "<span class='header-image-no-event'>●</span>";
                     }
                 });
 
@@ -3848,7 +3844,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // update phan leftMost
             let leftmostDs = dataBindGrid.leftmostDs;
             let leftmostColumns = [{
-                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8+"px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8+"px",
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
                 headerControl: "link", headerHandler: function() { alert("Link!"); }
             }];
@@ -5808,8 +5804,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // btn A6_1, A6_2 職2    
             if (funcNo2_WorkPlace == false) {
                 $('#contain-view-left').empty();
-                $('#contain-view-left').css('margin-left', '16px');
-                $('#contain-view-right').css('width', '1177px');
             }
 
             // 職13
@@ -5907,16 +5901,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.selectedDisplayPeriod(1);
                 $('#A3_2').empty();
             } else if (useDisplayPeriods.length == 1) {
-                self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
+                self.disPeriodSelectionList().push({ id: 1, name: "締日" /*getText("KSU001_39")*/ });
                 if (useDisplayPeriods[0] == 0) {
-                    self.disPeriodSelectionList().push({ id: 2, name: getText("KSU001_40") });
+                    self.disPeriodSelectionList().push({ id: 2, name: "４週" /*getText("KSU001_40")*/ });
                 } else if (useDisplayPeriods[0] == 1) {
-                    self.disPeriodSelectionList().push({ id: 3, name: getText("KSU001_41") });
+                    self.disPeriodSelectionList().push({ id: 3, name: "１ヶ月" /*getText("KSU001_41")*/ });
                 }
             } else if (useDisplayPeriods.length == 2) {
-                self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
-                self.disPeriodSelectionList().push({ id: 2, name: getText("KSU001_40") });
-                self.disPeriodSelectionList().push({ id: 3, name: getText("KSU001_41") });
+                self.disPeriodSelectionList().push({ id: 1, name: "締日" /*getText("KSU001_39")*/ });
+                self.disPeriodSelectionList().push({ id: 2, name: "４週" /*getText("KSU001_40")*/ });
+                self.disPeriodSelectionList().push({ id: 3, name: "１ヶ月" /*getText("KSU001_41")*/ });
             }
 
             // set css lại

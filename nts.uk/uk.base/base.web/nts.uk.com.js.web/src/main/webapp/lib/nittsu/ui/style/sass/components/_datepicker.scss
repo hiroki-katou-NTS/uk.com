@@ -144,6 +144,15 @@ body {
         border-right-color: #fff;
       }
     }
+
+    .ntsDateNextButton, .ntsDatePrevButton {
+      color: #9A9A9A;
+      font-size: 18px;
+      
+      &:not(:hover) {
+        background-color: transparent;
+      }
+    }
   }
 }
 
@@ -436,4 +445,11 @@ body {
       }
     }
   }  
+
+  &.fit-to-right {
+    .ntsEndDatePicker {
+      border-top-right-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
+    }
+  }
 }
