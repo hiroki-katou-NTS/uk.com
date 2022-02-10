@@ -186,12 +186,9 @@
 }
 
 #sidebar .sidebar-content #ccg001-btn-search-drawer {
-	border-left: 8px solid #2ECC71;	
+	left: 121px;
 }
 
-#sidebar .sidebar-content #ccg001-btn-search-drawer:hover {
-	border-left-color: #2BBF6A;
-}
 .has-state.disabled .ccg001-btn {
 	background-color: #b0d3b5;
 	color: #888888;
@@ -270,6 +267,22 @@
 }
 
 #component-ccg001 #ccg001-tab-content-2 {
+}
+
+#component-ccg001 #ccg001-tab-content-2 .conditions-filter,
+#component-ccg001 #ccg001-tab-content-2 .employees-filter {
+	height: 100%;
+}
+
+#component-ccg001 #ccg001-tab-content-2.withEmployeeFilter {
+	width: 900px;
+	display: flex;
+}
+
+#component-ccg001 #ccg001-tab-content-2.withEmployeeFilter .conditions-filter {
+	width: 600px;
+}
+#component-ccg001 #ccg001-tab-content-2.withEmployeeFilter .employees-filter {
 }
 
 #component-ccg001 #ccg001-tab-content-2 .ccg001-tab-content-filters .switchbox-wrappers > label span {
