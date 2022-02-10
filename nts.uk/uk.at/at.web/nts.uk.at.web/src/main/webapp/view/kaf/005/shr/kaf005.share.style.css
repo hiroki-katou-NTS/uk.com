@@ -1,3 +1,4 @@
+
 .control-group.valign-center>* {
 	vertical-align: middle;
 }
@@ -72,11 +73,6 @@ div.form-label.broken {
 	vertical-align: top;
 }
 
-.workSelectKAF005{
-	width: 45px;
-    height: 60px;
-    margin-top: 10px;
-}
 .panel.panel-gray-bg {
     margin-bottom: 15px;
 	min-height: 300px;
@@ -97,13 +93,6 @@ div.form-label.broken {
 	margin-left: 30px;
 }
 
-.lblTitle {
-	color: #808080;
-    line-height: 32px;
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 500
-}
 
 .btnSendMail {
 	margin-left: 15px;
@@ -124,17 +113,7 @@ div.form-label.broken {
 .lstApprover {
 	
 }
-/*workType, Sift */
-.lblSiftCd, .lblWorkTypeCd {
-	line-height: 40px;
-	margin-left: 20px;
-}
-.headerKAF005{
-	background-color: #CFF1A5;
-}
-#fixed-table .nts-editor-wrapped {
-	box-sizing: border-box;
-}
+
 .right-content {
 	text-align: center !important;
 }
@@ -143,16 +122,12 @@ div.form-label.broken {
 }
 .table-time{
 	display: inline-block;
-	margin-left: 15px;
 }
 .table-time-1{
 	display: inline-block;
 }
 .fix-margin-left{
 	margin-left:13px;
-}
-.cm-column {
-	width: 130px;
 }
 .cm-column2 {
 	width: 145px;
@@ -175,11 +150,6 @@ div.form-label.broken {
 	text-align: center;
 	height: 20px;
 }
-#kaf005_overtimeAgreement_table td, #kaf005_overtimeAgreement_table th {
-	height: 20px;	
-	text-align: center;
-	border: 1px solid #CCC;
-}
 #overtime-container .nts-fixed-body-container.ui-iggrid {
 	overflow: hidden;		
 }
@@ -198,9 +168,6 @@ div.form-label.broken {
 .holidayTime2 .nts-fixed-body-wrapper {
 	height: 96px !important;
 }
-th {
-	text-align: center !important;
-}
 #kaf005-footer {
 	margin-top: 8px;
 }
@@ -212,3 +179,11 @@ th {
 #kaf005-b .control-group {
 	margin-bottom: 10px !important;
 }
+
+#kaf005-share-work-info .code-name {
+	display: inline-block;
+	margin-left: 20px;
+	margin-right: 20px;
+	line-height: 40px;
+}
+
