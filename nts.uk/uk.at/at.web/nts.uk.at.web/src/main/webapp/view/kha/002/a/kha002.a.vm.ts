@@ -97,7 +97,6 @@ module nts.uk.at.kha002.a {
                         vm.selectedLayout() == settings[0].code ? vm.selectedLayout.valueHasMutated() : vm.selectedLayout(settings[0].code);
                     }
                 }
-                console.log("--------SEND FROM KHA002A SCREEN. This is testing source code-------")
             }).fail(error => {
                 vm.$dialog.error(error);
             }).always(() => {
