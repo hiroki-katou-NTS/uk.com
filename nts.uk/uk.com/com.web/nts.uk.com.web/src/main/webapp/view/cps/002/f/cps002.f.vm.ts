@@ -32,7 +32,7 @@ module cps002.f.vm {
 
             self.columnPerInfoItemDef = ko.observableArray([
                 { headerText: "", key: 'id', width: 45, hidden: true },
-                { headerText: nts.uk.resource.getText("CPS002_75"), key: 'itemName', width: 250 }
+                { headerText: nts.uk.resource.getText("CPS002_75"), key: 'itemName', width: 270 }
             ]);
 
 
