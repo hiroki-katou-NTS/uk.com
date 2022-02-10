@@ -30,9 +30,7 @@ public class ExcecuteImportService {
 		this.fileUploader = new FileUploader();
 	}
 
-	public void doWork() {
-		LogManager.init();
-		
+	public void doWork() {		
 //		// 設定ファイルから取り込み対象リストのパスを読み込み
 //		String targetListFilePath =
 //			(this.filePath == null || this.filePath.isEmpty())
