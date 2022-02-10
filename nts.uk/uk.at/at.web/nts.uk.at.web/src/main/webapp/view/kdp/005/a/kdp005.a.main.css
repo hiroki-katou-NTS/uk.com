@@ -111,4 +111,7 @@ html {
 .pageComent {
 	word-break: break-all !important;
 	white-space: pre-wrap !important;
+	position: absolute;
+    bottom: 30px;
+    right: 30px;
 }

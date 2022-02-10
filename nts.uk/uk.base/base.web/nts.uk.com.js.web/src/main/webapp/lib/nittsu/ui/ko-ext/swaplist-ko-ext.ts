@@ -129,7 +129,7 @@ module nts.uk.ui.koExtentions {
                 if(showSearchBox.showRight){
                     var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
                     
-                    $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH).css({position: "absolute", right: 0});
+                    $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH - 7).css({position: "absolute", right: 0});
                     
                     initSearchArea($searchRightContainer, "highlight", data.rightSearchBoxText || defaultSearchText);
                     $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
