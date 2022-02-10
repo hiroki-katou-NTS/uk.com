@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf000.a.component5.viewmodel {
         name: 'kaf000-a-component5',
         template: `
     <div id="kaf000-a-component5">
-				<div class="table item">
+				<div class="table item" data-bind="if: appReasonCDDisp || appReasonDisp">
 					<div class="cell cm-column2 valign-top" style="width: 120px;">
 						<div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: '理由'"></div>
 					</div>

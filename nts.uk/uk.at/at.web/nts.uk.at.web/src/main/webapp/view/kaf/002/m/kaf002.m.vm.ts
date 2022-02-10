@@ -263,7 +263,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             // change tabs by root component
             self.tabsTemp(self.tabs());
             self.loadAll();
-			self.selectedTab(_.find(self.tabs(), item => item.visible())[0].id)
+			self.selectedTab(_.find(self.tabs(), item => item.visible()).id)
 
         }
         loadAll() {
