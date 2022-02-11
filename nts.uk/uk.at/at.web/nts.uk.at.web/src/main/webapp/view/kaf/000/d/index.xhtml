@@ -23,7 +23,7 @@
 	                <div id="listApproverRootState" class="table" data-bind="if: approvalRootState().length != 0">
 	                	<table class="table-phase">
 	                		<tbody>
-			                    <tr class="bg-green">
+			                    <tr class="bg-gray">
 			                        <th style="width: 81px;"></th>
 			                        <th style="width: 73px;"></th>
 			                        <th style="width: 275px;" data-bind="text: $i18n('KAF000_3')"></th>
@@ -41,11 +41,11 @@
 				                        <tr>
 				                            <com:ko bind="$vm.isFirstIndexFrame(loopPhase, loopFrame, loopApprover)" tag="if">
 				                                <td data-bind="attr: {rowspan: ko.pureComputed(function() { return $vm.frameCount(loopPhase.listApprovalFrame())}) }" 
-				                                style="width: 81px;" class="bg-green">
+				                                style="width: 81px;" class="bg-gray">
 				                                	<p style="height: 25px;" data-bind="text: $vm.getPhaseLabel(loopPhase.phaseOrder())"></p>
 				                                </td>
 				                            </com:ko>
-				                            <td style="width: 73px;" class="bg-green">
+				                            <td style="width: 73px;" class="bg-gray">
 				                                <p style="height: 25px;" data-bind="text: $vm.getApproverLabelByIndex()"></p>
 				                           	</td>
 				                            <td style="width: 275px;">
