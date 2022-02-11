@@ -382,7 +382,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             			placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceCode() + "　" +
             			placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceName();
             }		
-            cells.get(0, startDataCol).setValue(value);
+            // cells.get(0, startDataCol).setValue(value);
         }
     }
 
