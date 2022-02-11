@@ -96,7 +96,7 @@ module nts.uk.at.view.ksu001.k.b {
             ]);
             self.workSelected = ko.observable(0);
 
-            $("#fixed-table").ntsFixedTable({ height: 196 });
+            $("#fixed-table").ntsFixedTable({ height: 191 });
 
             self.scheduleTableOutputSetting().shiftBackgroundColor.subscribe((value)=>{
                 self.displayShiftBackgroundColor(value);
