@@ -1,12 +1,14 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.history.HistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.history.HistoryItem;
 
 @Getter
 @Setter
@@ -17,8 +19,21 @@ public class EmploymentAppHistoryItem extends HistoryItem<DatePeriod, GeneralDat
 	/** 履歴ID */
 	private String historyId;
 
-	/** 所属期間 */
+	/** 期間 */
 	private DatePeriod datePeriod;
+	
+	/** 承認ID */
+	private String approvalId;
+	
+	/**
+	 * [C-1] 期間で作成する
+	 * @param datePeriod 期間
+	 */
+	public EmploymentAppHistoryItem(DatePeriod datePeriod) {
+		this.datePeriod = datePeriod;
+		this.historyId = UUID.randomUUID().toString();
+		this.approvalId = UUID.randomUUID().toString();
+	}
 
 	@Override
 	public DatePeriod span() {

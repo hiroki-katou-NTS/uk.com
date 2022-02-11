@@ -1,13 +1,14 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
 /**
  * 承認ルート
  * @author hoatt
@@ -32,6 +33,28 @@ public class ApprovalRoot implements UnduplicatableHistory<EmploymentAppHistoryI
 	private Integer noticeId;
 	/**各業務エベントID*/
 	private String busEventId;
+	
+	/**
+	 * [C-1] 就業システムで 期間と種類により作成する
+	 * @param datePeriod 期間
+	 * @param employmentRootAtr 承認ルート区分
+	 * @param applicationType 申請種類
+	 * @param confirmationRootType 確認ルート種類
+	 */
+	public ApprovalRoot(DatePeriod datePeriod,
+			EmploymentRootAtr employmentRootAtr,
+			ApplicationType applicationType,
+			ConfirmationRootType confirmationRootType) {
+		EmploymentAppHistoryItem historyItem = new EmploymentAppHistoryItem(datePeriod);
+		
+		this.sysAtr = SystemAtr.WORK;
+		this.employmentRootAtr = employmentRootAtr;
+		this.applicationType = applicationType;
+		this.confirmationRootType = confirmationRootType;
+		this.noticeId = null;
+		this.busEventId = null;
+		this.historyItems = Arrays.asList(historyItem);
+	}
 	
 	public static boolean checkValidate(String startDate, String endDate){
 		if(startDate.compareTo(endDate) <= 0){

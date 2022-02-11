@@ -14,6 +14,8 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
@@ -788,6 +790,88 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				.paramInt("rootAtr", lstRootAtr)
 			.getList(x -> convertNtsResult(x));
 		return lstResult;
+	}
+
+	@Override
+	public List<PersonApprovalRoot> getPersonApprovalRoots(String cid, String sid, GeneralDate baseDate,
+			List<ApplicationType> appTypes, List<ConfirmationRootType> confirmationRootTypes) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<?> getApprovalSettingByEmployees(String cid, List<String> sids, GeneralDate baseDate,
+			SystemAtr sysAtr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PersonApprovalRoot> getPsRootBySidAndApprovals(String cid, String sid, List<String> approvalIds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PersonApprovalRoot> getHistWithStartAfterBaseDate(String cid, String sid, GeneralDate baseDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteHistFromApprovals(List<String> approvalIds) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<PersonApprovalRoot> getPreviousHistory(String cid, String sid, GeneralDate baseDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PersonApprovalRoot> getHistWithEndAfterBaseDate(String cid, String sid, GeneralDate baseDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<?> getHistIncludeBaseDate(String cid, String sid, GeneralDate baseDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PersonApprovalRoot> getEmpHistWithStartAfterBaseDate(String cid, List<String> sids,
+			GeneralDate baseDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PersonApprovalRoot> getAllEmpHist(String cid, String sid, SystemAtr systemAtr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<GeneralDate> getStartOfLastestHist(String cid, String sid, SystemAtr systemAtr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<PersonApprovalRoot> GetSmallestHistFromBaseDate(String cid, String sid, GeneralDate baseDate,
+			List<ApplicationType> appTypes, List<ConfirmationRootType> confirmTypes) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PersonApprovalRoot> getHistFromBaseDate(String cid, String sid, GeneralDate baseDate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
