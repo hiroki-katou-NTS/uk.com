@@ -136,3 +136,7 @@ table.left-aligned td:not(:first-child) {
 .right-panel .right-panel-block > .content {
 	margin-top: 13px;
 }
+
+span.text {
+    font-size: 0.9rem;
+}
