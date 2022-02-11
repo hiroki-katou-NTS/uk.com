@@ -378,7 +378,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             String value = placeOfWorkInfoDtos.get(0).getPlaceCode() + "　" +
             				placeOfWorkInfoDtos.get(0).getPlaceName();
             if(placeOfWorkInfoDtos.size()>1) {
-            	value = value + " " + TextResource.localize("CAS014_38") + " " +
+            	value = value + " ～ " +
             			placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceCode() + "　" +
             			placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceName();
             }		
