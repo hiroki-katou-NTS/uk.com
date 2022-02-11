@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -32,10 +34,13 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprova
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class JpaApprovalPhaseRepository extends JpaRepository implements ApprovalPhaseRepository{
 	
 	private static final String SELECT_FROM_APPHASE = "SELECT c FROM WwfmtApprovalPhase c"
 			+ " WHERE c.wwfmtApprovalPhasePK.approvalId = :approvalId";
+	private static final String SELECT_FROM_APPHASE_BY_LIST_ID = "SELECT c FROM WwfmtApprovalPhase c"
+			+ " WHERE c.wwfmtApprovalPhasePK.approvalId IN :approvalIds";
 	private static final String SELECT_APPHASE = SELECT_FROM_APPHASE
 			+ " AND c.wwfmtApprovalPhasePK.phaseOrder = :phaseOrder";
 	private static final String DELETE_APHASE_BY_APPROVALID = "DELETE from WwfmtApprovalPhase c "
@@ -55,6 +60,15 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 				.setParameter("approvalId", approvalId)
 				.getList(c->toDomainApPhase(c));
 	}
+
+	@Override
+	public List<ApprovalPhase> getAllApprovalPhaseByListId(List<String> approvalIds) {
+		if (CollectionUtil.isEmpty(approvalIds)) return new ArrayList<>();
+		return this.queryProxy().query(SELECT_FROM_APPHASE_BY_LIST_ID,WwfmtApprovalPhase.class)
+				.setParameter("approvalIds", approvalIds)
+				.getList(c->toDomainApPhase(c));
+	}
+
 	/**
 	 * get Approval Phase by Code
 	 * @param companyId
