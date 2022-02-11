@@ -161,8 +161,8 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         for (int i = 0; i < supportWorkDataList.size(); i++) {   // loop for each workplace
             WorkplaceSupportWorkData workDataByWkp = supportWorkDataList.get(i);
             // C5_1
-            cells.get(startRow, 0).setValue(this.getNameC51(dataSource));
-            this.setBasicStyle(cells.get(startRow, 0), true, i == 0, supportWorkDataList.size() > 1 && i > 0);
+            cells.get(startRow, 0).setValue(this.getNameC51(dataSource) + "　：");
+            this.setBasicStyle(cells.get(startRow, 0), false, i == 0, supportWorkDataList.size() > 1 && i > 0);
             // C5_2
             cells.get(startRow, 1).setValue(this.getWorkplaceInfo(dataSource.getAggregationUnit(), dataSource.getWorkplaceInfoList(), workDataByWkp.getWorkplace(), true));
             for (int v = 1; v < maxColumnInHeader; v++) {
@@ -409,7 +409,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 val total = totalOpt.get().getItemValues().stream()
                         .filter(x -> x.getItemId() == item.getAttendanceItemId()).findFirst();
                 if (total.isPresent()) {
-                    cells.get(startRow, startColumn).putValue(this.formatValue(total.get().getValue(), item.getAttendanceItemId() == 1309 ? ValueType.AMOUNT : ValueType.TIME, isCsv), false);
+                    cells.get(startRow, startColumn).putValue(this.formatValue(total.get().getValue(), item.getAttendanceItemId() == 1309 ? ValueType.AMOUNT_NUM : total.get().getValueType(), isCsv), false);
                 }
             }
             if (item.getAttendanceItemId() <= 928)
@@ -430,7 +430,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 val total = totalOpt.get().getItemValues().stream()
                         .filter(x -> x.getItemId() == item.getAttendanceItemId()).findFirst();
                 if (total.isPresent()) {
-                    cells.get(startRow, startColumn).putValue(this.formatValue(total.get().getValue(), item.getAttendanceItemId() == 1309 ? ValueType.AMOUNT : ValueType.TIME, isCsv), false);
+                    cells.get(startRow, startColumn).putValue(this.formatValue(total.get().getValue(), item.getAttendanceItemId() == 1309 ? ValueType.AMOUNT_NUM : total.get().getValueType(), isCsv), false);
                 }
             }
             if (item.getAttendanceItemId() <= 928)
