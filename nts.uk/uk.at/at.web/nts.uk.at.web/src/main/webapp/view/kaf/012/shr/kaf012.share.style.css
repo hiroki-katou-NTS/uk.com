@@ -67,9 +67,10 @@
 	vertical-align: top;
 }
 
-/*#time-calc-button {*/
-    /*height: 200px;*/
-/*}*/
+#time-calc-button {
+    background-color: #CFCFCF;
+	color: #545454;
+}
 
 #time-calc-button.caret-right::after {
 	left: 105%;
