@@ -10,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.opetaionsettings.OperationMode;
 /**
  * 個人別承認ルート
  * @author hoatt

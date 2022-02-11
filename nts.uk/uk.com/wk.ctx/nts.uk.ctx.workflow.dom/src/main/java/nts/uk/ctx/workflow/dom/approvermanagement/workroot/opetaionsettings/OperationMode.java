@@ -1,4 +1,4 @@
-package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
+package nts.uk.ctx.workflow.dom.approvermanagement.workroot.opetaionsettings;
 
 import lombok.AllArgsConstructor;
 
