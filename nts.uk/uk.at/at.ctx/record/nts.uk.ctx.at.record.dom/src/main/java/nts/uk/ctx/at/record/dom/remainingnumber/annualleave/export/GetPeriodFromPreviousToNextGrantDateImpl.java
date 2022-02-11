@@ -103,31 +103,32 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 		if(!lstAnnGrantNotDate.isEmpty()) {
 			DatePeriod period = new DatePeriod(employeeInfor.getEntryDate(), lstAnnGrantNotDate.get(0).getGrantDate().addYears(1));
 			//入社年月日～次回年休付与日までの年休付与日を全て取得
-			lstAnnGrantDate = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier, cid, 
+			lstAnnGrantDate = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier, cid,
 					sid, Optional.of(period));
 		}
 		lstAnnGrantDate.addAll(lstAnnGrantNotDate);
 		if(lstAnnGrantNotDate.isEmpty() || lstAnnGrantDate.isEmpty()) {
 			return Optional.empty();
-		}	
+		}
 		lstAnnGrantDate = lstAnnGrantDate.stream().sorted((a,b) -> a.getGrantDate().compareTo(b.getGrantDate())).collect(Collectors.toList());
 		// 対象期間区分をチェックする - Check the target period classification
 		// 対象期間区分=null or 現在 or 過去の場合 - Target period classification = null or present or past . CURRENT: 0 , PAST: 2
-		if(periodOutput == null || periodOutput == CURRENT || periodOutput == PAST)  {	
+		if(periodOutput == null || periodOutput == CURRENT || periodOutput == PAST)  {
 			//INPUT．指定年月日から一番近い付与日を取得
 			Optional<GeneralDate> nextDay = lstAnnGrantDate.stream().map(NextAnnualLeaveGrant::getGrantDate)
 					.filter(date -> date.after(ymd))
 					.min(GeneralDate::compareTo);
-			// 2022.02.07 - 3S - chinh.hm  - issues #122665- 追加 START
 			// 取得した付与日の１つ前を取得
-			//期間．開始日が空(null or empty)の場合、期間．開始日←入社年月日
-			//期間．終了日が空(null or empty)の場合、期間．終了日←退職年月日
 			GeneralDate preDay = lstAnnGrantDate.stream().map(NextAnnualLeaveGrant::getGrantDate)
 					.filter(date -> date.before(ymd))
 					.max(GeneralDate::compareTo)
-			// 取得できない場合
-			// 前回付与日←入社日
+					// 取得できない場合
+					// 前回付与日←入社日
 					.orElse(employeeInfor.getEntryDate());
+			// 2022.02.07 - 3S - chinh.hm  - issues #122665- 追加   START
+			// 取得した付与日の１つ前を取得
+			//期間．開始日が空(null or empty)の場合、期間．開始日←入社年月日
+			//期間．終了日が空(null or empty)の場合、期間．終了日←退職年月日
 			GeneralDate end = null;
 			if(nextDay.isPresent()){
 				end = nextDay.get().addDays(-1);
@@ -135,7 +136,10 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 				end = employeeInfor.getRetiredDate();
 			}
 			return  Optional.of(new GrantPeriodDto(new DatePeriod(preDay,end),nextDay));
-			// 2022.02.07 - 3S - chinh.hm  - issues #122665- 追加 END
+			// 2022.02.07 - 3S - chinh.hm  - issues #122665- 追加   END
+			// 2022.02.07 - 3S - chinh.hm  - issues #122665- 削除   START
+			// return nextDay.map(end -> new GrantPeriodDto(new DatePeriod(preDay, end.addDays(-1)), nextDay));
+			// 2022.02.07 - 3S - chinh.hm  - issues #122665- 削除   END
 		} else {
 			// 対象期間区分=１年経過時点の場合 ( AFTER_1_YEAR )
 			// １年経過用期間(From-To)内に存在する年休付与日を取得する（複数ある場合は、一番大きな付与日を取得する）
@@ -146,16 +150,16 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 			List<GeneralDate> lstGrantDate = grantDateList.stream()
 					.filter(date -> date.afterOrEquals(fromTo.get().start()) && date.beforeOrEquals(fromTo.get().end()))
 					.collect(Collectors.toList());
-			// 2022.02.07 - 3S - chinh.hm  - issues #122665- 追加 START
+			// 2022.02.07 - 3S - chinh.hm  - issues #122665- 追加  START
 			Optional<GeneralDate> nextGrantDate = Optional.empty();
 			GeneralDate start = null;
 			GeneralDate end = null;
-			if(lstGrantDate.isEmpty()) {
+			if (lstGrantDate.isEmpty()) {
 				//期間．開始日が空(null or empty)の場合、期間．開始日←入社年月日
 				//期間．終了日が空(null or empty)の場合、期間．終了日←退職年月日
 				start = employeeInfor.getEntryDate();
-				end =  employeeInfor.getRetiredDate();
-			}else {
+				end = employeeInfor.getRetiredDate();
+			} else {
 				// (if there are multiple, obtain the largest grant date)
 				// 期間．終了日← 前回年休付与日＋１年 ー　1日
 				start = lstGrantDate.stream().max(GeneralDate::compareTo).get();
@@ -166,11 +170,26 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 				nextGrantDate = Optional.of(grantDateList.get(++index));
 			}
 			// 取得した「前回付与日」(A)の次の年休付与日を取得する
-			return Optional.of(new GrantPeriodDto(new DatePeriod(start,end),nextGrantDate));
-			// 2022.02.07 - 3S - chinh.hm  - issues #122665- 追加 END
+			return Optional.of(new GrantPeriodDto(new DatePeriod(start, end), nextGrantDate));
+			// 2022.02.07 - 3S - chinh.hm  - issues #122665- 追加  END
+			// 2022.02.07 - 3S - chinh.hm - issues #122665- 削除 START
+			//if(lstGrantDate.isEmpty()) {
+			//	return Optional.empty();
+			//}
+			// (if there are multiple, obtain the largest grant date)
+			// 期間．終了日← 前回年休付与日＋１年 ー　1日
+			//Optional<GeneralDate> startDate = lstGrantDate.stream().max(GeneralDate::compareTo);
+			// 取得した「前回付与日」(A)の次の年休付与日を取得する
+			//return startDate.map(start -> {
+			//	Optional<GeneralDate> nextGrantDate = Optional.empty();
+			//	int index = grantDateList.indexOf(start);
+			//	if (index < grantDateList.size()) {
+			//		nextGrantDate = Optional.of(grantDateList.get(++index));
+			//	return new GrantPeriodDto(new DatePeriod(start, start.addYears(1).addDays(-1)), nextGrantDate);
+			//);
+			// 2022.02.07 - 3S - chinh.hm - issues #122665- 削除 END
 		}
 	}
-	
 	@Override
 	public Optional<GrantPeriodDto> getPeriodAfterOneYear(String cid, String sid, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo) {
 		//指定した年月日を基準に、前回付与日から次回付与日までの期間を取得

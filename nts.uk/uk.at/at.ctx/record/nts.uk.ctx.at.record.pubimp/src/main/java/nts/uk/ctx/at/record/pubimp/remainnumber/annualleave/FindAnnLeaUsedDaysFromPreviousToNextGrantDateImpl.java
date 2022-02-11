@@ -27,10 +27,13 @@ public class FindAnnLeaUsedDaysFromPreviousToNextGrantDateImpl implements FindAn
 		val cacheCarrier = new CacheCarrier();
 		// 2022.02.07 - 3S - chinh.hm  - issues #122665- 追加 START
 		val employee = employeeAdapter.findByEmpIdRequire(cacheCarrier,employeeId);
-		
-		return FindAnnLeaUsedDaysFromPreviousToNextGrantDate.findUsedDays( employeeId,  criteriaDate,
-				 require,  cacheCarrier, employee);
 		// 2022.02.07 - 3S - chinh.hm  - issues #122665- 追加 END
-	}
 
+		// 2022.02.07 - 3S - chinh.hm  - issues #122665- 変更 START
+		//return FindAnnLeaUsedDaysFromPreviousToNextGrantDate.findUsedDays( employeeId,  criteriaDate,
+		//		 require,  cacheCarrier);
+		return FindAnnLeaUsedDaysFromPreviousToNextGrantDate.findUsedDays( employeeId,  criteriaDate,
+				require,  cacheCarrier,employee);
+		// 2022.02.07 - 3S - chinh.hm  - issues #122665- 変更  END
+	}
 }

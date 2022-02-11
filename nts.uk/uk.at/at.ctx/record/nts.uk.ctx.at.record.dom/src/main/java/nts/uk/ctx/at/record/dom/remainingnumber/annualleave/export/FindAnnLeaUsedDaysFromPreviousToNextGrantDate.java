@@ -32,10 +32,12 @@ public class FindAnnLeaUsedDaysFromPreviousToNextGrantDate {
 	 * @param cacheCarrier
 	 * @return
 	 */
-
+	// 2022.02.07 - 3S - chinh.hm - issues #122665- 変更 START
+	//public static AnnualLeaveUsedDayNumber findUsedDays(String employeeId, GeneralDate criteriaDate,
+	//		Require require, CacheCarrier cacheCarrier){
 	public static AnnualLeaveUsedDayNumber findUsedDays(String employeeId, GeneralDate criteriaDate,
-			Require require, CacheCarrier cacheCarrier, EmployeeImport employee){
-		
+				Require require, CacheCarrier cacheCarrier, EmployeeImport employee){
+	// 2022.02.07 - 3S - chinh.hm - issues #122665- 変更 END
 		String companyId = AppContexts.user().companyId();
 		//指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
 		Optional<GrantPeriodDto> GrantPeriod = require.getPeriodYMDGrant(companyId,employeeId,criteriaDate, null, Optional.empty());
@@ -58,18 +60,23 @@ public class FindAnnLeaUsedDaysFromPreviousToNextGrantDate {
 		}
 		// 2022.02.07 - 3S - chinh.hm  - issues #122665- 追加 END
 		//期間を当月以前と以降に分ける。
+		// 2022.02.07 - 3S - chinh.hm - issues #122665- 変更 START
+		//PeriodAfterDivision periodAfterDivision = divisionThePeriodTheCurrentMonth(employeeId,criteriaDate,
+		//		GrantPeriod.get().getPeriod(),require, cacheCarrier);
 		PeriodAfterDivision periodAfterDivision = divisionThePeriodTheCurrentMonth(employeeId,criteriaDate,
 				exclusedPeriod,require, cacheCarrier);
-
+		// 2022.02.07 - 3S - chinh.hm - issues #122665- 変更 END
 		//当月以前の使用日数を計算
+		// 2022.02.07 - 3S - chinh.hm - issues #122665- 変更 START
+		//AnnualLeaveUsedDayNumber beforeUsedDays = calcUsedDaysBeforeTheCurrentMonth(employeeId, criteriaDate,
+		//		GrantPeriod.get().getPeriod(),  GrantPeriod.get().getPeriod(), require, cacheCarrier);
 		AnnualLeaveUsedDayNumber beforeUsedDays = calcUsedDaysBeforeTheCurrentMonth(employeeId, criteriaDate,
-				periodAfterDivision.getPeriodBeforeTheMonth(),  exclusedPeriod, require, cacheCarrier);
-		
-		//当月以降の使用数を計算
+				exclusedPeriod,  GrantPeriod.get().getPeriod(), require, cacheCarrier);
+		// 2022.02.07 - 3S - chinh.hm - issues #122665- 変更 END
+
 		AnnualLeaveUsedDayNumber afterUsedDays = calcUsedDaysAfterTheCurrentMonth(employeeId, 
 				periodAfterDivision.getPeriodAfterTheMonth(), require, cacheCarrier);
-		
-		
+
 		return new AnnualLeaveUsedDayNumber(beforeUsedDays.v() + afterUsedDays.v());
 	}
 	
