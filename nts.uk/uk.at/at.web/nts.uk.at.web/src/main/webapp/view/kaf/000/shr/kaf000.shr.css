@@ -68,12 +68,9 @@ table.left-aligned td:not(:first-child) {
 	/* width: 112px; */
 }
 
-.left-panel > .form-header .approver-block > div:first-child {
-}
-
-.left-panel > .form-header .approver-block > div:first-child * {
+/* .left-panel > .form-header .approver-block > div:first-child * {
 	font-size: 12px;
-}
+} */
 
 .left-panel > .form-header .approver-block > div:first-child > .cell {
 	vertical-align: middle;
