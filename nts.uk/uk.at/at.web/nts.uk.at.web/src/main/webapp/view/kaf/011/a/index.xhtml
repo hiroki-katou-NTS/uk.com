@@ -72,7 +72,7 @@
 												checkBoxValue: isSendMail,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"
-					style="display: inline-block;"></div>
+					style="display: inline-block; margin-left: 15px;"></div>
 			</div>
 			<div style="display: inline-block; position: absolute; z-index: 10; margin-left: 70px;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
 			<div id="contents-area" class="kaf011"
@@ -80,12 +80,7 @@
 				<div class="two-panel" style="height: 100%; width: 1260px">
 					<div class="left-panel"
 						style="width: calc(1260px - 388px); padding-bottom: 5px;">
-						<div
-							style="height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px; overflow-x: hidden">
-
-
-							<div class="table"
-								style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
+							<div class="table form-header">
 								<div class="cell" style="vertical-align: middle;">
 									<div
 										data-bind="component: { name: 'kaf000-a-component2',
@@ -97,7 +92,7 @@
 						                                          } }"></div>
 								</div>
 								<div class="cell" style="text-align: right;">
-									<div style="display: inline-block; margin-top: 12px"
+									<div
 										data-bind="component: { name: 'kaf000-a-component6', 
 															params: {
 																appType: appType,
@@ -155,45 +150,39 @@
 										style="display: inline-block;"></div>
 								</div>
 							</div>
-
-
-						</div>
 					</div>
 					<div class="right-panel"
 						style="width: 388px; padding-bottom: 5px; padding-right: 0px">
-						<div style="height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden;">
+						<div
+							data-bind="component: { name: 'kaf000-a-component1', 
+													params: {
+														appType: appType,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
+						<div class="remainDay" style="margin: 0 25px; padding-top: 20px; padding-bottom: 15px; border-bottom: 2px solid #B1B1B1; min-height: 100px">
+							<div data-bind="foreach: remainDayList">
+								<div
+									style="padding-bottom: 10px; display: block;">
+									<div style="display: block; font-weight: bold" data-bind="text: label"></div>
+									<div class="panel panel-frame"
+											style="display: block; padding: 8px 16px; margin-top: 12px;">
+										<div style="display: inline;" data-bind="text: name"></div>
 
-							<div
-								data-bind="component: { name: 'kaf000-a-component1', 
-														params: {
-															appType: appType,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-							<div class="remainDay" style="margin: 0 25px; padding-top: 20px; padding-bottom: 15px; border-bottom: 2px solid #B1B1B1; min-height: 100px">
-								<div data-bind="foreach: remainDayList">
-									<div
-										style="padding-bottom: 10px; display: block;">
-										<div style="display: block; font-weight: bold" data-bind="text: label"></div>
-										<div class="panel panel-frame"
-											 style="display: block; padding: 8px 16px; margin-top: 12px;">
-											<div style="display: inline;" data-bind="text: name"></div>
-
-											<div style="display: inline; float: right;"><a class="hyperlink"
-																						   data-bind="click: $parent.openKDL009, text: content"></a>
-											</div>
+										<div style="display: inline; float: right;"><a class="hyperlink"
+																						data-bind="click: $parent.openKDL009, text: content"></a>
 										</div>
 									</div>
-
 								</div>
+
 							</div>
-							<div
-								data-bind="component: { name: 'kaf000-a-component8',
-														params: {
-															appType: appType,
-															application: applicationCommon,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
 						</div>
+						<div
+							data-bind="component: { name: 'kaf000-a-component8',
+													params: {
+														appType: appType,
+														application: applicationCommon,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
 					</div>
 
 
