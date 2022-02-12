@@ -4042,6 +4042,12 @@ public class ProgramsManager {
     public static final Program KHA003E = new Program(WebAppId.AT, ProgramIdConsts.KHA003E, "KHA003_5",
             "/view/kha/003/e/index.xhtml");
 
+    /** KHA001 */
+    public static final Program KHA001A = new Program(WebAppId.AT
+            , ProgramIdConsts.KHA001A
+            , "KHA001_50"
+            , "/view/kha/001/a/index.xhtml");
+
     public static final Program OEM001A = new Program(WebAppId.COM, ProgramIdConsts.OEM001A, "OEM001_1",
             "/view/oem/001/a/index.xhtml");
     
