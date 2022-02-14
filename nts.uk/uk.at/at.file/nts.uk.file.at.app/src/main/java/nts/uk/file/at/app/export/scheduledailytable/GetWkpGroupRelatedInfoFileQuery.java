@@ -1,5 +1,17 @@
 package nts.uk.file.at.app.export.scheduledailytable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -20,12 +32,15 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.*;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferBySpecOrganizationService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassifiCode;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.EmployeeSearchCallSystemType;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.RegulationInfoEmpQuery;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
 import nts.uk.ctx.sys.auth.dom.algorithm.AcquireUserIDFromEmpIDService;
@@ -33,17 +48,6 @@ import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
 import nts.uk.query.pub.employee.RegulationInfoEmployeeExport;
 import nts.uk.query.pub.employee.RegulationInfoEmployeePub;
 import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * 職場グループの関係情報を取得する
@@ -98,19 +102,24 @@ public class GetWkpGroupRelatedInfoFileQuery {
 
         TargetOrgIdenInfor targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(workplaceGroup.getWorkplaceGroupId());
 
-        List<String> employeeIds = GetEmpCanReferBySpecOrganizationService.getListEmpID(
-                new GetEmpCanReferBySpecOrganizationService.Require() {
+        List<String> employeeIds = GetEmpCanReferService.getByOrg(
+                new GetEmpCanReferService.Require() {
                     @Override
-                    public List<String> getReferableEmp(GeneralDate date, String empId, String workplaceGroupID) {
-                        return workplaceGroupAdapter.getReferableEmp(date, empId, workplaceGroupID);
+                    public List<String> getEmpCanReferByWorkplaceGroup(String empId, GeneralDate date, DatePeriod period, String workplaceGroupID) {
+                        return workplaceGroupAdapter.getReferableEmp(empId, date, period, workplaceGroupID);
+                    }
+					@Override
+					public List<String> getAllEmpCanReferByWorkplaceGroup(String empId, GeneralDate date, DatePeriod period) {
+						// TODO 自動生成されたメソッド・スタブ
+						return null;
+					}
+                    @Override
+                    public List<String> sortEmployee(List<String> employeeIdList, EmployeeSearchCallSystemType systemType, Integer sortOrderNo, GeneralDate date, Integer nameType) {
+                        return regulInfoEmployeeAdap.sortEmployee(companyId, employeeIdList, systemType.value, sortOrderNo, nameType, GeneralDateTime.fromString(date.toString() + " 00:00", "yyyy/MM/dd HH:mm"));
                     }
                     @Override
-                    public List<String> sortEmployee(List<String> lstmployeeId, Integer sysAtr, Integer sortOrderNo, GeneralDate referenceDate, Integer nameType) {
-                        return regulInfoEmployeeAdap.sortEmployee(companyId, lstmployeeId, sysAtr, sortOrderNo, nameType, GeneralDateTime.fromString(referenceDate.toString() + " 00:00", "yyyy/MM/dd HH:mm"));
-                    }
-                    @Override
-                    public String getRoleID(GeneralDate date, String employId) {
-                        Optional<String> userID = acquireUserIDFromEmpIDService.getUserIDByEmpID(employId);
+                    public String getRoleID() {
+                        Optional<String> userID = acquireUserIDFromEmpIDService.getUserIDByEmpID(AppContexts.user().employeeId());
                         if (!userID.isPresent()) {
                             return null;
                         }
@@ -121,8 +130,8 @@ public class GetWkpGroupRelatedInfoFileQuery {
                     public List<String> searchEmployee(RegulationInfoEmpQuery regulationInfoEmpQuery, String roleId) {
                         EmployeeSearchQueryDto query = EmployeeSearchQueryDto.builder()
                                 .baseDate(GeneralDateTime.fromString(regulationInfoEmpQuery.getBaseDate().toString() + " 00:00", "yyyy/MM/dd HH:mm"))
-                                .referenceRange(regulationInfoEmpQuery.getReferenceRange())
-                                .systemType(regulationInfoEmpQuery.getSystemType())
+                                .referenceRange(regulationInfoEmpQuery.getReferenceRange().value)
+                                .systemType(regulationInfoEmpQuery.getSystemType().value)
                                 .filterByWorkplace(regulationInfoEmpQuery.getFilterByWorkplace())
                                 .workplaceCodes(regulationInfoEmpQuery.getWorkplaceIds())
                                 .filterByEmployment(false)
@@ -154,8 +163,9 @@ public class GetWkpGroupRelatedInfoFileQuery {
                         return data.stream().map(RegulationInfoEmployeeExport::getEmployeeId).collect(Collectors.toList());
                     }
                 },
-                period.end(),
                 AppContexts.user().employeeId(),
+                period.end(),
+                period,
                 targetOrg
         );
 

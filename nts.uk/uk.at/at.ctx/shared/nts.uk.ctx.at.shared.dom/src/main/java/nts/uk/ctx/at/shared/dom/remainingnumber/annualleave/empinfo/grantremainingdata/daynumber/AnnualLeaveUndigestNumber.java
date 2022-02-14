@@ -1,11 +1,17 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestTime;
 
 /**
  * 年休未消化数
@@ -16,15 +22,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 @Setter
 public class AnnualLeaveUndigestNumber extends LeaveUndigestNumber {
 
-//	/**
-//	 * 日数
-//	 */
-//	private AnnualLeaveUndigestDayNumber days;
-//
-//	/**
-//	 * 時間
-//	 */
-//	private Optional<AnnualLeaveUndigestTime> minutes;
+
 
 	public AnnualLeaveUndigestNumber() {
 		super();
@@ -34,6 +32,11 @@ public class AnnualLeaveUndigestNumber extends LeaveUndigestNumber {
 		// super(days, minutes);
 		this.days = new AnnualLeaveUndigestDayNumber(days);
 		this.minutes = minutes != null ? Optional.of(new AnnualLeaveUndigestTime(minutes)) : Optional.empty();
+	}
+	
+	private AnnualLeaveUndigestNumber(LeaveUndigestDayNumber days, Optional<LeaveUndigestTime> minutes) {
+		this.days = days;
+		this.minutes = minutes;
 	}
 
 	public static AnnualLeaveUndigestNumber createFromJavaType(double days, Integer minutes) {
@@ -58,4 +61,24 @@ public class AnnualLeaveUndigestNumber extends LeaveUndigestNumber {
 		return cloned;
 	}
 
+	//[1]計算する
+	public AnnualLeaveUndigestNumber calcUndigestNumber(List<AnnualLeaveGrantRemainingData> remainingDataList, GeneralDate endDay){
+		List<AnnualLeaveGrantRemainingData> expiredList = remainingDataList.stream()
+				.filter(x -> x.getDeadline().beforeOrEquals(endDay) && 
+						x.getExpirationStatus() == LeaveExpirationStatus.EXPIRED &&
+						!(x.isDummyData()))
+				.collect(Collectors.toList());
+		
+		LeaveUndigestDayNumber day = new LeaveUndigestDayNumber(expiredList.stream()
+								.mapToDouble(x -> x.getDetails().getRemainingNumber().getDays().v())
+								.sum());
+		LeaveUndigestTime time = new LeaveUndigestTime(expiredList.stream()
+								.mapToInt(x -> 
+								x.getDetails().getRemainingNumber().getMinutes().isPresent()?
+										x.getDetails().getRemainingNumber().getMinutes().get().v() : 0)
+								.sum());
+		
+		return new AnnualLeaveUndigestNumber(day,Optional.of(time));
+		
+	}
 }

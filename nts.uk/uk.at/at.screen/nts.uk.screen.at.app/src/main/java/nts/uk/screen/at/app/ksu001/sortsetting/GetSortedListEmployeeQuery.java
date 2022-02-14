@@ -41,7 +41,6 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.Emp
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.GetEmpLicenseClassificationService;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
@@ -129,10 +128,15 @@ public class GetSortedListEmployeeQuery {
 		empLicenseClassifications = GetEmpLicenseClassificationService.get(getEmpLicenseClassificationImpl, date,
 				lstEmpId);
 		List<EmpLicenseClassificationDto> lstEmpLicenseClassificationDto = empLicenseClassifications.stream()
-				.map(x -> new EmpLicenseClassificationDto(x.getEmpID(),
-						x.getOptLicenseClassification().isPresent()
-								? LicenseClassification.valueOf(x.getOptLicenseClassification().get().value).name : ""))
-				.collect(Collectors.toList());
+				.map(x -> {
+					
+					if ( !x.getOptLicenseClassification().isPresent() ) {
+						return new EmpLicenseClassificationDto(x.getEmpID(), "");
+					}
+					
+					String licenseName = EnumAdaptor.convertToValueName(x.getOptLicenseClassification().get()).getLocalizedName();
+					return new EmpLicenseClassificationDto(x.getEmpID(), licenseName);
+				}).collect(Collectors.toList());
 		// 4: call <get> <<Public>> 社員の情報を取得する
 		// <<Public>> 社員の情報を取得する
 		List<EmployeeInformationExport> empInfoLst = employeeInformationPub

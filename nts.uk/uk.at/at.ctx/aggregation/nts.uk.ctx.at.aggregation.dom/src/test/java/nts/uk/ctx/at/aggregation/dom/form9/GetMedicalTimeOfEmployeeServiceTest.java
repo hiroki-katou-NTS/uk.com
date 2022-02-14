@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,17 +29,17 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 
 @RunWith(JMockit.class)
 public class GetMedicalTimeOfEmployeeServiceTest {
-	
+
 	@Injectable
 	private GetMedicalTimeOfEmployeeService.Require require;
-	
+
 	/**
 	 * Target	: get
 	 * Pattern	: 取得対象＝予定
 	 */
 	@Test
 	public void testGet_schedule_only() {
-		
+
 		//取得対象＝予定
 		val acquireTarget = ScheRecGettingAtr.ONLY_SCHEDULE;
 		// 社員IDリスト
@@ -48,7 +47,7 @@ public class GetMedicalTimeOfEmployeeServiceTest {
 					new EmployeeId("sid_1")
 				,	new EmployeeId("sid_2")
 				,	new EmployeeId("sid_3"));
-		
+
 		// 期待値：予定
 		val empIdsHasData = Arrays.asList(
 				new EmployeeId("sid_1")
@@ -66,19 +65,19 @@ public class GetMedicalTimeOfEmployeeServiceTest {
 				// 予定：2021/09/01～2021/09/05
 				put( acquireTarget, Helper.createDlyAtdList(empIdsHasData, period));
 			}
-			
+
 		};
-		
+
 		new Expectations(DailyAttendanceGettingService.class) {
 			{
 				DailyAttendanceGettingService.get(require, empIds, period, acquireTarget);
 				result = scheduleDatas;
 			}
 		};
-		
+
 		//Act
 		val result = GetMedicalTimeOfEmployeeService.get(require, empIds, period, acquireTarget);
-		
+
 		//Assert
 		assertThat( result.entrySet() )
 		.extracting(	c -> c.getKey().getEmployeeId()
@@ -97,7 +96,7 @@ public class GetMedicalTimeOfEmployeeServiceTest {
 					,	tuple( "sid_2", GeneralDate.ymd( 2021, 9, 5), ScheRecAtr.SCHEDULE )
 						);
 	}
-	
+
 	/**
 	 * Target	: get
 	 * Pattern	: 取得対象＝実績
@@ -106,24 +105,24 @@ public class GetMedicalTimeOfEmployeeServiceTest {
 	public void testGet_record_only() {
 		//取得対象＝実績
 		val acquireTarget = ScheRecGettingAtr.ONLY_RECORD;
-		
+
 		// 社員IDリスト
 		val empIds = Arrays.asList(
 					new EmployeeId("sid_1")
 				,	new EmployeeId("sid_2")
 				,	new EmployeeId("sid_3"));
-		
+
 		// 期待値：実績
 		val empIdsHasData = Arrays.asList(
 				new EmployeeId("sid_1")
 			,	new EmployeeId("sid_3"));
-		
+
 		// 期間
 		val period = new DatePeriod( GeneralDate.ymd( 2021, 9, 1 ), GeneralDate.ymd( 2021, 9, 5 ) );
-		
+
 		//期間に実績がある
 		val recordPeriod = new DatePeriod( GeneralDate.ymd( 2021, 9, 1 ), GeneralDate.ymd( 2021, 9, 3 ) );
-		
+
 		val recordDatas = new HashMap<ScheRecGettingAtr, List<IntegrationOfDaily>>() {
 			/** serialVersionUID **/
 			private static final long serialVersionUID = 1L;
@@ -132,17 +131,17 @@ public class GetMedicalTimeOfEmployeeServiceTest {
 				put( acquireTarget, Helper.createDlyAtdList(empIdsHasData, recordPeriod) );
 			}
 		};
-		
+
 		new Expectations( DailyAttendanceGettingService.class ) {
 			{
 				DailyAttendanceGettingService.get(require, empIds, period, acquireTarget);
 				result = recordDatas;
 			}
 		};
-		
+
 		//Act
 		val result = GetMedicalTimeOfEmployeeService.get(require, empIds, period, acquireTarget);
-		
+
 		//Assert
 		assertThat( result.entrySet() )
 		.extracting(	c -> c.getKey().getEmployeeId()
@@ -157,7 +156,7 @@ public class GetMedicalTimeOfEmployeeServiceTest {
 					,	tuple( "sid_3", GeneralDate.ymd( 2021, 9, 3), ScheRecAtr.RECORD )
 						);
 	}
-	
+
 	/**
 	 * Target	: get
 	 * Pattern	: 取得対象＝予定・実績
@@ -166,55 +165,55 @@ public class GetMedicalTimeOfEmployeeServiceTest {
 	public void testGet_scheduleWithRecord() {
 		//取得対象＝実績
 		val acquireTarget = ScheRecGettingAtr.SCHEDULE_WITH_RECORD;
-		
+
 		// 社員IDリスト
 		val empIds = Arrays.asList(
 					new EmployeeId("sid_1")
 				,	new EmployeeId("sid_2")
 				,	new EmployeeId("sid_3"));
-		
+
 		// 期待値：実績
 		val empIdsHasData = Arrays.asList(
 				new EmployeeId("sid_1")
 			,	new EmployeeId("sid_2"));
-		
+
 		// 期間
 		val period = new DatePeriod( GeneralDate.ymd( 2021, 9, 1 ), GeneralDate.ymd( 2021, 9, 5 ));
-		
+
 		//期間予定
 		val schedulePeriod = new DatePeriod( GeneralDate.ymd( 2021, 9, 1 ), GeneralDate.ymd( 2021, 9, 5 ));
-		
+
 		//期間実績
 		val recordPeriod = new DatePeriod( GeneralDate.ymd( 2021, 9, 1 ), GeneralDate.ymd( 2021, 9, 3 ));
-		
+
 		//期間予定・実績
 		val recordSchedulePeriod = new DatePeriod( GeneralDate.ymd( 2021, 9, 1 ), GeneralDate.ymd( 2021, 9, 5 ));
-		
+
 		val scheduleWithRecordDatas = new HashMap<ScheRecGettingAtr, List<IntegrationOfDaily>>() {
 			/** serialVersionUID **/
 			private static final long serialVersionUID = 1L;
 			{
 				// 予定：2021/09/01 ～ 2021/09/05
 				put( ScheRecGettingAtr.ONLY_SCHEDULE, Helper.createDlyAtdList(empIdsHasData, schedulePeriod ) );
-				
+
 				// 実績：2021/09/01 ～ 2021/09/03
 				put( ScheRecGettingAtr.ONLY_RECORD, Helper.createDlyAtdList(empIdsHasData, recordPeriod ) );
-				
+
 				// 予定＋実績：2021/09/01 ～ 2021/09/05
 				put( ScheRecGettingAtr.SCHEDULE_WITH_RECORD, Helper.createDlyAtdList(empIdsHasData, recordSchedulePeriod ) );
 			}
 		};
-		
+
 		new Expectations(DailyAttendanceGettingService.class) {
 			{
 				DailyAttendanceGettingService.get(require, empIds, period, acquireTarget);
 				result = scheduleWithRecordDatas;
 			}
 		};
-		
+
 		//Act
 		val result = GetMedicalTimeOfEmployeeService.get(require, empIds, period, acquireTarget);
-		
+
 		//Assert
 		assertThat( result.entrySet() )
 		.extracting(	c -> c.getKey().getEmployeeId()
@@ -233,12 +232,12 @@ public class GetMedicalTimeOfEmployeeServiceTest {
 					,	tuple( "sid_2", GeneralDate.ymd( 2021, 9, 5), ScheRecAtr.SCHEDULE )
 				);
 	}
-	
+
 	private static class Helper{
-		
+
 		@Injectable
 		private static WorkInfoOfDailyAttendance workInfo;
-		
+
 		/**
 		 * 日別勤怠(Work)リストを作成する
 		 * @param empIds 作成対象の社員IDリスト
@@ -253,7 +252,7 @@ public class GetMedicalTimeOfEmployeeServiceTest {
 								.map( date -> createDailyWorks( empId.v(), date ) );
 					}).collect(Collectors.toList());
 		}
-		
+
 		/**
 		 * 日別実績(Work)を作る
 		 * @param sid 社員ID
@@ -278,12 +277,15 @@ public class GetMedicalTimeOfEmployeeServiceTest {
 					,	Collections.emptyList()
 					,	Optional.empty()
 					,	Collections.emptyList()
-					,	Optional.empty());
+					,	Collections.emptyList()
+					,	Collections.emptyList()
+					,	Optional.empty()
+				);
 		}
 	}
-	
-	
-	
 
-	
+
+
+
+
 }

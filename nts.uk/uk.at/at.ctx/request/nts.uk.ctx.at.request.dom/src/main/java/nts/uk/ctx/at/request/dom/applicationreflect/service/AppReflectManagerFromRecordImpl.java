@@ -23,6 +23,7 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -124,6 +125,8 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		//処理した社員の実行状況を「完了」にする
 		return ProcessStateReflect.SUCCESS;
 	}
+	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public void reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod,
 			ExecutionTypeExImport refAppResult) {
@@ -155,11 +158,13 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		
 		this.reflectAppOfAppDate(workId, sid, refAppResult, dateProcess);
 	}
+	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public void reflectAppOfAppDate(String workId, String sid, ExecutionTypeExImport refAppResult,
 			DatePeriod appDatePeriod) {
 		
-		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(AppContexts.user().companyId(), sid, GeneralDate.today());
+		List<SEmpHistImport> sEmpHistImport = employeeAdapter.getEmpHist(AppContexts.user().companyId(), sid);
 		
 		List<Application> lstApp = this.getApps(sid, appDatePeriod, refAppResult);
 		
@@ -323,6 +328,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		return t -> seen.add(keyExtractor.apply(t));
 	}
 
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessStateReflect reflectAppOfEmployeeTotal(String workId, String sid, DatePeriod datePeriod) {
 		Optional<ExeStateOfCalAndSumImport> optState = execuLog.executionStatus(workId);
@@ -339,6 +345,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		return ProcessStateReflect.SUCCESS;
 	}
 
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public void reflectApplication(List<String> lstID) {
 		List<Application> lstApplication = repoApp.findByListID(AppContexts.user().companyId(), lstID);
@@ -350,7 +357,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 					: app.getAppDate().getApplicationDate();
 			GeneralDate endDate = app.getOpAppEndDate().isPresent() ? app.getOpAppEndDate().get().getApplicationDate()
 					: app.getAppDate().getApplicationDate();
-			this.reflectAppOfAppDate("", app.getEmployeeID(), ExecutionTypeExImport.RERUN,
+			this.reflectAppOfAppDate(IdentifierUtil.randomUniqueId(), app.getEmployeeID(), ExecutionTypeExImport.RERUN,
 					new DatePeriod(startDate, endDate));
 		});
 	}

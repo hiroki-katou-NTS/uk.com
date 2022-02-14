@@ -23,6 +23,9 @@ import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.update.UpdateStampC
 import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.AddEmpMedicalWorkCommand;
 import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.UpdateEmpMedicalWorkCommand;
 import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.DeleteEmpMedicalWorkCommand;
+import nts.uk.ctx.at.shared.app.command.dailyattdcal.empunitpricehistory.AddEmployeeUnitPriceCommand;
+import nts.uk.ctx.at.shared.app.command.dailyattdcal.empunitpricehistory.UpdateEmployeeUnitPriceCommand;
+import nts.uk.ctx.at.shared.app.command.dailyattdcal.empunitpricehistory.DeleteEmployeeUnitPriceCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.AddAnnLeaGrantRemnNumPeregCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.AddAnnuaLeaveCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.DeleteAnnuaLeaveCommand;
@@ -135,6 +138,7 @@ import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphe
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.AddEmpSocialInsGradeInforCommand;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.DeleteEmpSocialInsGradeInforCommand;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.UpdateEmpSocialInsGradeInforCommand;
+import nts.uk.ctx.sys.gateway.app.command.login.password.userpassword.UpdateEmpLoginPasswordCommand;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
@@ -335,6 +339,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			// CS00092
 			new TypeLiteral<PeregAddCommandHandler<AddEmpSocialInsGradeInforCommand>>() {
 			},
+			// CS00097 単価
+			new TypeLiteral<PeregAddCommandHandler<AddEmployeeUnitPriceCommand>>() {
+			},
 			// CS00098 医療
 			new TypeLiteral<PeregAddCommandHandler<AddEmpMedicalWorkCommand>>() {
 			}
@@ -467,10 +474,16 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			// CS00092
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmpSocialInsGradeInforCommand>>() {
 			},
+			// CS00097 単価
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeUnitPriceCommand>>() {
+			},
 			// CS00098 医療
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmpMedicalWorkCommand>>() {
+			},
+			// CS00100 パスワード
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmpLoginPasswordCommand>>() {
 			}
-
+			
 	);
 	
 	
@@ -528,6 +541,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			},
 			// CS00092
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmpSocialInsGradeInforCommand>>() {
+			},
+			// CS00097 単価
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmployeeUnitPriceCommand>>() {
 			},
 			// CS00098 医療
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmpMedicalWorkCommand>>() {

@@ -4,7 +4,7 @@ module nts.uk.at.kdp003.a {
 	const stampEmployeeSelectionTemplate = `
 		<div data-bind="ntsDatePicker: { value: $component.options.baseDate }"></div>
 		<div class="button-group-filter" data-bind="foreach: buttons">
-			<button class="small filter" data-bind="
+			<button class="filter" data-bind="
 					i18n: text, 
 					css: { 'extend': width === 2, selected: ko.toJS($component.button) === text },
 					click: function() { $component.button(text); }
@@ -12,7 +12,7 @@ module nts.uk.at.kdp003.a {
 		</div>
 		<div class="list-group">
 			<button class="check-out-of-list" data-bind="
-					i18n: '一覧にない社員で打刻する',
+					i18n: 'KDP003_112',
 					click: loginEmployeeNotInList,
 					css: { 
 						'active': ko.toJS(options.selectedId) === null
@@ -198,11 +198,11 @@ module nts.uk.at.kdp003.a {
 
 			$grid
 				.igGrid({
-					showHeader: false,
+					showHeader: true,
 					columns: [
 						{ headerText: "", key: "employeeId", dataType: "string", hidden: true },
-						{ headerText: "", key: "employeeCode", width: '80px', dataType: "string" },
-						{ headerText: "", key: "employeeName", dataType: "string" }
+						{ headerText: "コード", key: "employeeCode", width: '80px', dataType: "string" },
+						{ headerText: "氏名", key: "employeeName", dataType: "string" }
 					],
 					features: [
 						{
@@ -255,27 +255,6 @@ module nts.uk.at.kdp003.a {
 			// 		}
 			// 	})
 			// 	.trigger('resize');
-			
-			var paramSize = 0;
-			
-			setInterval(function () {
-
-				const grid = $grid.get(0);
-
-				if (grid && $grid.data('igGrid')) {
-					
-					var bottomMasterWrapper = $('#contents-area')[0].getBoundingClientRect().bottom;
-			        var topGridEmployee = $('.list-employee')[0].getBoundingClientRect().top;
-			        var param = bottomMasterWrapper - topGridEmployee - 20;
-					if (param < 45) param = 45;
-
-					if (paramSize !== param) {
-						paramSize = param;
-						$grid.igGrid('option', 'height', param + 'px');
-						$grid.data("height", param + 'px');
-					}
-				}
-			}, 100);
 
 		}
 

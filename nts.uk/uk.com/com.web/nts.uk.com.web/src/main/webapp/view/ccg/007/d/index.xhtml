@@ -16,9 +16,10 @@
 				<div class="login-form" data-bind="visible: displayLogin">
 					<table>
 						<tr>
-							<td></td>
-							<td class="align_center">
-								<img src="kin.gif" />
+							<td class="align_center" colspan="2">
+								<img id="logo" src="logo.png" />
+								<hr/>
+								<label>#{i18n.getText('CCG007_3')}</label>
 							</td>
 						</tr>
 						<tr>
@@ -73,23 +74,21 @@
 							</td>
 						</tr>
 						<tr>
-							<td></td>
-							<td>
+							<td colspan="2">
 								<button tabindex="5" id="login-btn" data-bind="i18n: 'CCG007_3', click: $vm.submitLogin"
 									class="full_width proceed large">
 								</button>
 							</td>
 						</tr>
-						<!-- <tr>
-							<td></td>
-							<td class="align_center">
+						<tr>
+							<td class="align_center" colspan="2">
 								<a tabindex="6" data-bind="
 										i18n: 'CCG007_6',
 										click: $vm.OpenDialogG
 									" class="hyperlink"></a>
 							</td>
 						</tr>
-						<tr>
+						<!-- <tr>
 							<td></td>
 							<td class="pad_5" style="padding-left: 10px"><button tabindex="5" id="login-btn"
 									data-bind="click: SamlLogin" class="full_width proceed large">
@@ -100,7 +99,7 @@
 					</table>
 				</div>
 			</div>
-			<div id="ver" style="position: fixed; right: 10px; bottom: 10px; color: red;"></div>
+			<div id="ver" style="position: fixed; right: 10px; bottom: 10px;"></div>
 		</ui:define>
 	</ui:composition>
 </body>

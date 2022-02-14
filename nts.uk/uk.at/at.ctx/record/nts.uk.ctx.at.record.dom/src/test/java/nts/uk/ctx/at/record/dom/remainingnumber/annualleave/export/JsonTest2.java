@@ -37,6 +37,7 @@ import nts.gul.serialize.json.JsonMapping;
 
 import lombok.val;
 import lombok.experimental.var;
+import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveConditionInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistoryTest;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
@@ -68,7 +69,7 @@ public class JsonTest2 {
 						4.5, 4.5, 4.5, 4.5);
 			
 			AnnualLeaveConditionInfo aAnnualLeaveConditionInfo = new AnnualLeaveConditionInfo();
-			aAnnualLeaveConditionInfo.setPrescribedDays(new YearDayNumber(1.1));
+			aAnnualLeaveConditionInfo.setPrescribedDays(new YearlyDays(1.1));
 			aAnnualLeaveRemainingHistoryTest.setAnnualLeaveConditionInfo(
 					Optional.of(aAnnualLeaveConditionInfo));
 					

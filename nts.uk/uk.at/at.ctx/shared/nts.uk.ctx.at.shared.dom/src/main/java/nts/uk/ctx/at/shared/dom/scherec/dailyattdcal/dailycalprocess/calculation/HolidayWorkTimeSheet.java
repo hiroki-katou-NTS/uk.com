@@ -12,8 +12,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BPTimeItemSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
@@ -33,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.TimeSeriesDivision;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.ActualWorkTimeSheetListService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
@@ -41,12 +39,14 @@ import nts.uk.ctx.at.shared.dom.worktime.common.GetSubHolOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -422,14 +422,24 @@ public class HolidayWorkTimeSheet{
 
 	// 時間帯毎の時間から休出枠毎の時間を集計
 	public List<HolidayWorkFrameTime> aggregateTimeForHol(HolidayWorkTimeOfDaily holidayOfDaily) {
-		val hol = holidayOfDaily.clone();
-		//clean time old
-		hol.getHolidayWorkFrameTime().forEach(x -> x.cleanTimeAndTransfer());
+		List<HolidayWorkFrameTime> result = new ArrayList<>();
 		// 休出時間帯でループ
 		this.workHolidayTime.forEach(frameTime -> {
-			// 休出時間へ加算
-			val holTime = hol.getHolidayWorkFrameTime().stream()
+			//結果から取得した休出時間
+			val holTime = result.stream()
 					.filter(x -> x.getHolidayFrameNo().v().intValue() == frameTime.getFrameTime().getHolidayFrameNo().v().intValue()).findFirst();
+			//日別勤怠から取得した休出時間
+			Optional<HolidayWorkFrameTime> daily = holidayOfDaily.getHolidayWorkFrameTime().stream()
+					.filter(h -> h.getHolidayFrameNo().v() == frameTime.getFrameTime().getHolidayFrameNo().v())
+					.findFirst();
+			if(!holTime.isPresent()) {
+				result.add(new HolidayWorkFrameTime(
+						new HolidayWorkFrameNo(frameTime.getFrameTime().getHolidayFrameNo().v()),
+						frameTime.getFrameTime().getHolidayWorkTime().isPresent() ? Finally.of(frameTime.getFrameTime().getHolidayWorkTime().get().clone()) : Finally.empty(),
+						frameTime.getFrameTime().getTransferTime().isPresent() ? Finally.of(frameTime.getFrameTime().getTransferTime().get().clone()) : Finally.empty(),
+						daily.map(d -> d.getBeforeApplicationTime()).orElse(Finally.of(AttendanceTime.ZERO))));
+				return;
+			}
 			holTime.ifPresent(data -> {
 				// B休出時間+=A.休出時間
 				if (data.getHolidayWorkTime().isPresent()
@@ -443,10 +453,8 @@ public class HolidayWorkTimeSheet{
 				}
 			});
 		});
-
 		// 休出枠時間を返す
-
-		return hol.getHolidayWorkFrameTime();
+		return result;
 	}
 	
 	/**
@@ -532,10 +540,10 @@ public class HolidayWorkTimeSheet{
 	 * @return 控除時間
 	 */
 	public AttendanceTime getDeductionTime(
-			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr) {
+			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr, NotUseAtr canOffset) {
 		
 		return ActualWorkTimeSheetListService.calcDeductionTime(conditionAtr, dedAtr, roundAtr,
-				this.workHolidayTime.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()));
+				this.workHolidayTime.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()), canOffset);
 	}
 	
 	/**
@@ -552,21 +560,15 @@ public class HolidayWorkTimeSheet{
 	
 	/**
 	 * 休出時間帯に入っている加給時間の計算
-	 * @param raisingAutoCalcSet 加給の自動計算設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
-	 * @param bonusPayAtr 加給区分
+	 * @param bpTimeItemSets 加給自動計算設定
 	 * @param calcAtrOfDaily 日別実績の計算区分
 	 * @return 加給時間(List)
 	 */
-	public List<BonusPayTime> calcBonusPayTimeInHolidayWorkTime(
-			AutoCalRaisingSalarySetting raisingAutoCalcSet,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			BonusPayAtr bonusPayAtr,
-			CalAttrOfDailyAttd calcAtrOfDaily) {
+	public List<BonusPayTime> calcBonusPayTimeInHolidayWorkTime(List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily) {
 		
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(HolidayWorkFrameTimeSheetForCalc timeFrame : workHolidayTime) {
-			bonusPayList.addAll(timeFrame.calcBonusPay(ActualWorkTimeSheetAtr.HolidayWork,raisingAutoCalcSet,bonusPayAutoCalcSet,calcAtrOfDaily,bonusPayAtr));
+			bonusPayList.addAll(timeFrame.calcBonusPay(ActualWorkTimeSheetAtr.HolidayWork, bpTimeItemSets, calcAtrOfDaily));
 		}
 		//同じNo同士はここで加算し、Listのサイズを減らす
 		return sumBonusPayTime(bonusPayList);
@@ -574,21 +576,15 @@ public class HolidayWorkTimeSheet{
 	
 	/**
 	 * 休出時間帯に入っている特定加給時間の計算
-	 * @param raisingAutoCalcSet 加給の自動計算設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
-	 * @param bonusPayAtr 加給区分
+	 * @param bpTimeItemSets 加給自動計算設定
 	 * @param calcAtrOfDaily 日別実績の計算区分
 	 * @return 特定加給時間(List)
 	 */
-	public List<BonusPayTime> calcSpecBonusPayTimeInHolidayWorkTime(
-			AutoCalRaisingSalarySetting raisingAutoCalcSet,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			BonusPayAtr bonusPayAtr,
-			CalAttrOfDailyAttd calcAtrOfDaily) {
+	public List<BonusPayTime> calcSpecBonusPayTimeInHolidayWorkTime(List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily) {
 		
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(HolidayWorkFrameTimeSheetForCalc timeFrame : workHolidayTime) {
-			bonusPayList.addAll(timeFrame.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.HolidayWork,raisingAutoCalcSet,bonusPayAutoCalcSet,calcAtrOfDaily,bonusPayAtr));
+			bonusPayList.addAll(timeFrame.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.HolidayWork, bpTimeItemSets, calcAtrOfDaily));
 		}
 		//同じNo同士はここで加算し、Listのサイズを減らす
 		return sumBonusPayTime(bonusPayList);
@@ -960,5 +956,27 @@ public class HolidayWorkTimeSheet{
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 重複する時間帯で作り直す
+	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 休日出勤時間帯
+	 */
+	public Optional<HolidayWorkTimeSheet> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		List<HolidayWorkFrameTimeSheetForCalc> duplicate = this.workHolidayTime.stream()
+				.filter(t -> t.getTimeSheet().checkDuplication(timeSpan).isDuplicated())
+				.collect(Collectors.toList());
+		
+		List<HolidayWorkFrameTimeSheetForCalc> recreated = duplicate.stream()
+					.map(f -> f.recreateWithDuplicate(timeSpan, commonSet))
+					.filter(f -> f.isPresent())
+					.map(f -> f.get())
+					.collect(Collectors.toList());
+		if(recreated.isEmpty()) {
+			Optional.empty();
+		}
+		return Optional.of(new HolidayWorkTimeSheet(recreated));
 	}
 }

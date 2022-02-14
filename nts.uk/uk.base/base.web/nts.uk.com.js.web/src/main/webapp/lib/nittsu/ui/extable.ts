@@ -924,32 +924,23 @@ module nts.uk.ui.exTable {
             
             styleInnerCell(idx: number, innerCount: number) {
                 let self = this;
-                let divStyle = "", borderStyle = "solid 1px transparent", dashedBorder = "dashed 1px #ABB7B8",
-                    incellHeight = (parseInt(self.options.rowHeight) - 2) / self.multilineCountInCell,
+                let divStyle = "",
+                    incellHeight = `${parseInt(self.options.rowHeight) / self.multilineCountInCell}px`,
                     incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
-//                divStyle += `; border-top: ${borderStyle}; border-right: ${borderStyle}`;
-                if (idx < incellCountInRow * (self.multilineCountInCell - 1)) {
-                    divStyle += `; border-bottom: ${dashedBorder}`;
-                }
                 
                 let incellRowIdx = Math.floor(idx / incellCountInRow);
                 divStyle += `; top: ${incellRowIdx === 0 ? 0 : incellRowIdx + incellHeight}px`;
-                if (idx % incellCountInRow === 0) {
-//                    divStyle += `; border-left: ${borderStyle}`;
-                } else {
-                    divStyle += `; border-left: ${dashedBorder}`;
-                }
                 
                 if (incellRowIdx === 0) {
-                    divStyle += `; height: ${incellHeight - 1}px;`;
+                    divStyle += `; height: ${incellHeight};`;
                 } else {
-                    divStyle += `; height: ${incellHeight - 2}px;`;
+                    divStyle += `; height: ${incellHeight};`;
                 }
                 
                 divStyle += `; position: absolute; 
-                    left: ${(idx - incellRowIdx * incellCountInRow) * (100 / incellCountInRow)}%;  
-                    line-height: ${incellRowIdx === 0 ? (incellHeight - 1) : (incellHeight - 2)}px; 
-                    width: calc(${100 / incellCountInRow}% - 2px); text-align: center;`;
+                    left: ${(idx - incellRowIdx * incellCountInRow) * (100 / incellCountInRow)}%;
+                    line-height: ${incellHeight};
+                    width: calc(${100 / incellCountInRow}%); text-align: center;`;
                 return divStyle;
             }
             
@@ -2368,7 +2359,7 @@ module nts.uk.ui.exTable {
                 let disable = $.data(self.$container, internal.DISABLE);
                 if (!disable) return;
                 self.eachKey(disable, obj => obj.columnKey, obj => !obj.uiReflected, ($cell, obj) => {
-                    helper.markCellWith(style.SEAL_CLS, $cell);
+                    helper.markCellWith(style.SEAL_CLS, $cell, obj.innerIdx);
                     obj.uiReflected = true;
                 });
             }
@@ -2387,9 +2378,13 @@ module nts.uk.ui.exTable {
                         let $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                         if ($childCells && $childCells.length > 0) {
                             if (makeup.textColor) {
-                                _.forEach($childCells, c => {
-                                    c.style.color = makeup.textColor;
-                                });
+                                if (_.isNil(obj.innerIdx) || obj.innerIdx === -1) {
+                                    _.forEach($childCells, c => {
+                                        c.style.color = makeup.textColor;
+                                    });
+                                } else if ($childCells.length > obj.innerIdx) {
+                                    $childCells[obj.innerIdx].style.color = makeup.textColor;
+                                }
                             } else helper.addClass($childCells, makeup.class);
                         } else if (makeup.textColor) {  // Don't set textColor
                             $cell.style.color = makeup.textColor;
@@ -3166,6 +3161,8 @@ module nts.uk.ui.exTable {
                 exTable[f].dataSource[ui.rowIndex][ui.columnKey][field] = ui.value;
                 return { updateTarget: updateTarget, value: oldVal };
             }
+            
+            exTable[f].dataSource[ui.rowIndex][ui.columnKey][field] = ui.value;
             return null;
         }
         
@@ -5809,7 +5806,7 @@ module nts.uk.ui.exTable {
          * Fit window height.
          */
         export function fitWindowHeight($container: HTMLElement, wrappers: Array<HTMLElement>, horzSumExists: boolean) {
-            let height = window.innerHeight - parseInt($.data($container, internal.Y_OCCUPY)) - 100;
+            let height = window.innerHeight - parseInt($.data($container, internal.Y_OCCUPY)) - 50;
             let $horzSumHeader, $horzSumBody, decreaseAmt; 
             wrappers = wrappers || selector.queryAll($container, "div[class*='" + BODY_PRF + "']").filter(function(e) {
                 return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM)
@@ -9023,18 +9020,6 @@ module nts.uk.ui.exTable {
                         return;
                     } else if (k === "paddingRight") {
                         text += ("padding-right: " + style[k] + "; ");
-                        return;
-                    } else if (k === "borderTop") {
-                        text += ("border-top: " + style[k] + "; ");
-                        return;
-                    } else if (k === "borderBottom") {
-                        text += ("border-bottom: " + style[k] + "; ");
-                        return;
-                    } else if (k === "borderRight") {
-                        text += ("border-right: " + style[k] + "; ");
-                        return;
-                    } else if (k === "borderLeft") {
-                        text += ("border-left: " + style[k] + "; ");
                         return;
                     }
                     text += k + ": " + style[k] + "; ";

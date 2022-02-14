@@ -1,7 +1,5 @@
 package nts.uk.ctx.bs.employee.pub.workplace.history;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +16,7 @@ public class WorkplaceHistoryItemExport {
 	
 	private String  workplaceId;
 
-	private String  normalWorkplaceId;
+//	private String  normalWorkplaceId;
 
-	private Optional<String> workLocationCode;
+//	private Optional<String> workLocationCode;
 }

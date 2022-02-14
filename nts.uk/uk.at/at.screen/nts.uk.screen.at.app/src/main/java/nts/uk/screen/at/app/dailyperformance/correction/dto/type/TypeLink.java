@@ -27,16 +27,21 @@ public enum TypeLink {
 	REMARKS(12,"備考"),
 
 	TIME_LIMIT(13,"時間外の上限設定理由"),
-	
+
 	BUSINESS_TYPE(14,"勤務種別"),
-	
+
 	WORK(15, "作業"),
-	
+
 	ADDITION(16, "加給"),
 	
 	NURSE_LICENSE_CLS(17,"看護免許区分"),
-	
-	WKP_GROUP(18,"職場グループ");
+
+	WKP_GROUP(18,"職場グループ"),
+
+	WORK_SUP_OPTION(19,"作業補足選択肢"),
+
+	;
+
 
 	/** The value. */
 	public int value;

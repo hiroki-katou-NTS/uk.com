@@ -14,14 +14,14 @@ module nts.uk.com.view.ccg020.a {
     isDisplayNewNotice: 'sys/portal/notice/is-new-notice',
     checkSearchManual: 'sys/portal/generalsearch/check-search-manual'
   };
-
+  
   @component({
     name: 'ccg020-component',
     template: `<div id="ccg020"><div id="search-bar" class="cf">
     <ccg003-component></ccg003-component>
     <div id="ccg002-panel" class="panel ccg002-panel">
-      <i id="search-icon" data-bind="ntsIcon: { no: 1, width: 22, height: 25 }" class="img-icon"></i>
-      <i id="ccg002-arrow-icon" data-bind="ntsIcon: { no: 135, width: 10, height: 23 }"></i>
+      <i id="search-icon" data-bind="ntsIcon: { no: 1 }" class="img-icon"></i>
+      <!-- <i id="ccg002-arrow-icon" data-bind="ntsIcon: { no: 135, width: 10, height: 23 }"></i> -->
     </div>
     <!-- This input is CCG002 -->
     <input id="search-input" autocomplete="off" data-bind="ntsTextEditor: {
@@ -30,7 +30,7 @@ module nts.uk.com.view.ccg020.a {
       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
         textmode: 'text',
         width: '162px',
-        placeholder: searchPlaceholder
+        placeholder: '画面 or マニュアル'
       }))
     },
     click: eventClickSearch" />

@@ -18,6 +18,8 @@ import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.add.AddStampCardCom
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.update.UpdateStampCardCommand;
 import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.AddEmpMedicalWorkCommand;
 import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.UpdateEmpMedicalWorkCommand;
+import nts.uk.ctx.at.shared.app.command.dailyattdcal.empunitpricehistory.AddEmployeeUnitPriceCommand;
+import nts.uk.ctx.at.shared.app.command.dailyattdcal.empunitpricehistory.UpdateEmployeeUnitPriceCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.AddAnnLeaGrantRemnNumPeregCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.AddAnnuaLeaveCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.UpdateAnnuaLeaveCommand;
@@ -112,6 +114,7 @@ import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphe
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.UpdateEmpHealInsQualifiInfoCommand;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.AddEmpSocialInsGradeInforCommand;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.UpdateEmpSocialInsGradeInforCommand;
+import nts.uk.ctx.sys.gateway.app.command.login.password.userpassword.UpdateEmpLoginPasswordCommand;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregListCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
@@ -242,6 +245,8 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregAddListCommandHandler<AddEmpHealInsQualifiInfoCommand>>(){},
 			// CS00092 社員社会保険等級情報
 			new TypeLiteral<PeregAddListCommandHandler<AddEmpSocialInsGradeInforCommand>>(){},
+			// CS00097 単価
+			new TypeLiteral<PeregAddListCommandHandler<AddEmployeeUnitPriceCommand>>(){},
 			// CS00098 医療
 			new TypeLiteral<PeregAddListCommandHandler<AddEmpMedicalWorkCommand>>(){}
 			);
@@ -327,8 +332,14 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpCorpHealthOffHisCommand>>(){},
 			//CS00082 社員健康保険資格情報
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpHealInsQualifiInfoCommand>>(){},
+			//CS00092 社員社会保険等級情報
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpSocialInsGradeInforCommand>>(){},
+			//CS00097 単価
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmployeeUnitPriceCommand>>(){},
 			// CS00098 医療
-			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpMedicalWorkCommand>>(){}
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpMedicalWorkCommand>>(){},
+			//CS00100 パスワード
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpLoginPasswordCommand>>(){}
 			);
 	
 	@Override

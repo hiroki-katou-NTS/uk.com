@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.OptionalUtil;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferBySpecOrganizationService;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
@@ -25,27 +26,27 @@ public class GetForm9OutputEmployeeInfoService {
 	 */
 	public static Form9OutputEmployeeInfoList get(Require require, String workplaceGroupId, GeneralDate ymd) {
 		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(workplaceGroupId);
-		
-		List<String> employeeIds = GetEmpCanReferBySpecOrganizationService.getListEmpID(require, ymd
-				,	require.getLoginEmployeeId()
-				,	targetOrgIdenInfor);
-		
+
+		List<String> employeeIds = GetEmpCanReferService.getByOrg(
+					require, require.getLoginEmployeeId(), ymd, DatePeriod.oneDay(ymd), targetOrgIdenInfor
+				);
+
 		List<String> sortedEmployeeIds = SortByForm9Service.sort(require, ymd, employeeIds);
-		
+
 		List<Form9OutputEmployeeInfo> employeeInfoResults = sortedEmployeeIds.stream()
 				.map(sid -> Form9OutputEmployeeInfo.create(require, ymd, sid))
 				.flatMap(OptionalUtil::stream)
 				.collect(Collectors.toList());
-		
+
 		return new Form9OutputEmployeeInfoList(employeeInfoResults);
 	}
-	
-	
-	public static interface Require extends		GetEmpCanReferBySpecOrganizationService.Require
+
+
+	public static interface Require extends		GetEmpCanReferService.Require
 											,	SortByForm9Service.Require
 											,	Form9OutputEmployeeInfo.Require{
 		/** ログイン社員IDを取得する */
 		String getLoginEmployeeId();
-		
+
 	}
 }

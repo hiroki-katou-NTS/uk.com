@@ -2,9 +2,7 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.OptimisticLockException;
@@ -27,15 +25,12 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdail
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.closegetunlockedperiod.ClosingGetUnlockedPeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
-import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
@@ -69,11 +64,11 @@ public class MonthlyAggregationEmployeeService {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static AggregationResult aggregate(RequireM1 require, CacheCarrier cacheCarrier,
-			AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
-			GeneralDate criteriaDate, String empCalAndSumExecLogID, ExecutionType executionType) {
+			Optional<AsyncCommandHandlerContext> asyncContext, String companyId, String employeeId,
+			GeneralDate criteriaDate, String empCalAndSumExecLogID, ExecutionType executionType,
+			Optional<Boolean> canAggrWhenLock) {
 
 		ProcessState status = ProcessState.SUCCESS;
-		val dataSetter = asyncContext.getDataSetter();
 
 		// 月別集計で必要な会社別設定を取得する
 		val companySets = MonAggrCompanySettings.loadSettings(require, companyId);
@@ -86,11 +81,12 @@ public class MonthlyAggregationEmployeeService {
 			}
 
 			return AggregationResult.build(status).newAtomTask(
-					errorProc(require, dataSetter, employeeId, empCalAndSumExecLogID, criteriaDate, errorInfoList));
+					errorProc(require, asyncContext.map(c -> c.getDataSetter()), 
+							employeeId, empCalAndSumExecLogID, criteriaDate, errorInfoList));
 		}
 
 		val aggrStatus = aggregate(require, cacheCarrier, asyncContext, companyId, employeeId, criteriaDate,
-				empCalAndSumExecLogID, executionType, companySets);
+				empCalAndSumExecLogID, executionType, companySets, canAggrWhenLock);
 
 		return aggrStatus;
 	}
@@ -108,12 +104,12 @@ public class MonthlyAggregationEmployeeService {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static AggregationResult aggregate(RequireM1 require, CacheCarrier cacheCarrier,
-			AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
+			Optional<AsyncCommandHandlerContext> asyncContext, String companyId, String employeeId,
 			GeneralDate criteriaDate, String empCalAndSumExecLogID, ExecutionType executionType,
-			MonAggrCompanySettings companySets) {
+			MonAggrCompanySettings companySets, Optional<Boolean> canAggrWhenLock) {
 
 		MonthlyAggrEmpServiceValue status = new MonthlyAggrEmpServiceValue();
-		val dataSetter = asyncContext.getDataSetter();
+		val dataSetter = asyncContext.map(c -> c.getDataSetter());
 
 		// 前回集計結果を初期化する
 		Optional<AbsRecRemainMngOfInPeriod> prevAbsRecResultOpt = Optional.empty();
@@ -158,7 +154,8 @@ public class MonthlyAggregationEmployeeService {
 				errorInfoList.add(new MonthlyAggregationErrorInfo(errorInfo.getKey(), errorInfo.getValue()));
 			}
 			return AggregationResult.build(status)
-					.newAtomTask(errorProc(require, dataSetter, employeeId, empCalAndSumExecLogID, criteriaDate, errorInfoList));
+					.newAtomTask(errorProc(require, dataSetter, employeeId, empCalAndSumExecLogID,
+											criteriaDate, errorInfoList));
 		}
 
 		ConcurrentStopwatches.stop("11000:集計期間の判断：");
@@ -167,20 +164,18 @@ public class MonthlyAggregationEmployeeService {
 		
 		//get ロック中の計算/集計できるか
 		Optional<ExecutionLog> executionLog = require.getByExecutionContent(empCalAndSumExecLogID, ExecutionContent.MONTHLY_AGGREGATION.value);
-		IgnoreFlagDuringLock ignoreFlagDuringLock = (executionLog.isPresent()
-				&& executionLog.get().getIsCalWhenLock() != null && executionLog.get().getIsCalWhenLock().booleanValue()
-						? IgnoreFlagDuringLock.CAN_CAL_LOCK
-						: IgnoreFlagDuringLock.CANNOT_CAL_LOCK);
 		
-		List<BsEmploymentHistoryImport> employments = employeeSets.getEmployments();
+		IgnoreFlagDuringLock ignoreFlagDuringLock = executionLog.flatMap(c -> c.getIsCalWhenLock())
+				.map(c -> c ? IgnoreFlagDuringLock.CAN_CAL_LOCK : IgnoreFlagDuringLock.CANNOT_CAL_LOCK)
+				.orElse(IgnoreFlagDuringLock.CANNOT_CAL_LOCK);
+
+//		List<BsEmploymentHistoryImport> employments = employeeSets.getEmployments();
 		
 		for (val aggrPeriod : aggrPeriods){
 			val yearMonth = aggrPeriod.getYearMonth();
 			val closureId = aggrPeriod.getClosureId();
 			val closureDate = aggrPeriod.getClosureDate();
 			val datePeriod = aggrPeriod.getPeriod();
-			//get employmentCode
-			String employmentCode = employments.stream().filter(x->x.getPeriod().contains(datePeriod.start())).findFirst().get().getEmploymentCode();
 			//ConcurrentStopwatches.start("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 
 			// 中断依頼が出されているかチェックする
@@ -191,11 +186,11 @@ public class MonthlyAggregationEmployeeService {
 
 			// 「就業計算と集計実行ログ」を取得し、実行状況を確認する
 			val exeLogOpt = require.calAndSumExeLog(empCalAndSumExecLogID);
-			if (!exeLogOpt.isPresent()){
-				status.setState(ProcessState.INTERRUPTION);
-				return AggregationResult.build(status);
-			}
-			if (exeLogOpt.get().getExecutionStatus().isPresent()){
+//			if (!exeLogOpt.isPresent()){
+//				status.setState(ProcessState.INTERRUPTION);
+//				return AggregationResult.build(status);
+//			}
+			if (exeLogOpt.isPresent() && exeLogOpt.get().getExecutionStatus().isPresent()){
 				val executionStatus = exeLogOpt.get().getExecutionStatus().get();
 				if (executionStatus == ExeStateOfCalAndSum.START_INTERRUPTION){
 					status.setState(ProcessState.INTERRUPTION);
@@ -204,7 +199,7 @@ public class MonthlyAggregationEmployeeService {
 			}
 			
 			//実績締めロックされない期間を取得する
-			List<DatePeriod> listPeriod = ClosingGetUnlockedPeriod.get(require, datePeriod, employmentCode, ignoreFlagDuringLock, AchievementAtr.MONTHLY);
+			List<DatePeriod> listPeriod = ClosingGetUnlockedPeriod.get(require, datePeriod, closureId.value, ignoreFlagDuringLock, AchievementAtr.MONTHLY);
 			if(listPeriod.isEmpty()) {
 				continue;
 			}
@@ -213,7 +208,7 @@ public class MonthlyAggregationEmployeeService {
 				if (executionType == ExecutionType.RERUN){
 	
 					// 編集状態を削除
-					atomTasks.add(AtomTask.of(() -> require.removeMonthEditState(employeeId, yearMonth, closureId, closureDate)));
+					require.transaction(AtomTask.of(() -> require.removeMonthEditState(employeeId, yearMonth, closureId, closureDate)));
 				}
 	
 				// 残数処理を行う必要があるかどうか判断　（Redmine#107271、EA#3434）
@@ -378,14 +373,14 @@ public class MonthlyAggregationEmployeeService {
 	 * @param errorInfoList エラー情報リスト
 	 */
 	private static AtomTask errorProc(RequireM2 require,
-			TaskDataSetter dataSetter,
+			Optional<TaskDataSetter> dataSetter,
 			String employeeId,
 			String empCalAndSumExecLogID,
 			GeneralDate outYmd,
 			List<MonthlyAggregationErrorInfo> errorInfoList){
 
 		// 「エラーあり」に更新
-		dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.HAS_ERROR.nameId);
+		dataSetter.ifPresent(ds -> ds.updateData("monthlyAggregateHasError", ErrorPresent.HAS_ERROR.nameId));
 
 		// エラー出力
 		errorInfoList.sort((a, b) -> a.getResourceId().compareTo(b.getResourceId()));
@@ -464,6 +459,7 @@ public class MonthlyAggregationEmployeeService {
 
 		void removeMonthEditState(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 
+		void transaction(AtomTask task);
 	}
 
 	public static interface RequireM3 {

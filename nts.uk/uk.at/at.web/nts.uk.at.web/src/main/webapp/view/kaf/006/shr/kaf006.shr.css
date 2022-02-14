@@ -34,11 +34,6 @@ button.nts-switch-button {
     padding: 5px;
 }
 
-#kaf006-b tr> th, #kaf006-b tr> td {
-    text-align: center !important;
-    border: 1px solid black !important;
-}
-
 #kaf006component2 label.radio-wrapper span {
     width: 92px;
     text-align: center;
@@ -58,13 +53,6 @@ button.nts-switch-button {
     float: left;
     width: fit-content !important;
     margin: 0 10px;
-}
-
-.space-between-table {
-	margin: 10px 5px 0 5px;
-	padding: 5px 20px;
-	border: 2px #B1B1B1 solid;
-	border-radius: 7px;
 }
 
 #kaf006-shr-component1 .space-between-table .row-underline {

@@ -1,6 +1,35 @@
 package nts.uk.file.at.infra.form9;
 
-import com.aspose.cells.*;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.aspose.cells.BackgroundType;
+import com.aspose.cells.Cell;
+import com.aspose.cells.Cells;
+import com.aspose.cells.CellsHelper;
+import com.aspose.cells.Color;
+import com.aspose.cells.PageSetup;
+import com.aspose.cells.Style;
+import com.aspose.cells.TextAlignmentType;
+import com.aspose.cells.Workbook;
+import com.aspose.cells.Worksheet;
+import com.aspose.cells.WorksheetCollection;
+
 import lombok.val;
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -12,7 +41,12 @@ import nts.arc.time.calendar.DayOfWeek;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.clock.ClockHourMinute;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecAtr;
-import nts.uk.ctx.at.aggregation.dom.form9.*;
+import nts.uk.ctx.at.aggregation.dom.form9.Form9Cover;
+import nts.uk.ctx.at.aggregation.dom.form9.Form9OutputEmployeeInfo;
+import nts.uk.ctx.at.aggregation.dom.form9.Form9OutputMedicalTime;
+import nts.uk.ctx.at.aggregation.dom.form9.Form9TimeRoundingSetting;
+import nts.uk.ctx.at.aggregation.dom.form9.MedicalTimeOfEmployee;
+import nts.uk.ctx.at.aggregation.dom.form9.RoundingUnit;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
@@ -27,18 +61,6 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Stateless
 public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGenerator implements Form9ExcelByFormatExportGenerator {
@@ -289,7 +311,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
 
             if (columnC11.isPresent()) {
                 val cellIndex = this.getCellIndex(columnC11.get().v() + rowC1);
-                cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(empInfo.getLicense().name);
+                cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(empInfo.getLicense().nameId);
                 setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
             }
 

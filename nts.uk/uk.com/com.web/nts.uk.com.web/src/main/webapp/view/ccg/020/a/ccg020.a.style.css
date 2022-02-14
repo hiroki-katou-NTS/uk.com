@@ -1,6 +1,6 @@
 #ccg020 {
   height: 30px;
-  width: 250px;
+  width: 240px;
   position: relative;
 }
 #message {
@@ -19,7 +19,7 @@
 }
 #search-bar {
   display: inline-block;
-  width: 250px;
+  width: 240px;
 }
 #search-bar button.search-btn.caret-bottom.ntsSearchBox_Component {
   display: none;
@@ -29,12 +29,9 @@
   color: black;
 }
 #search-icon {
-  background-color: #127D09;
-  top: 0px;
+  top: 6px;
   position: absolute;
   cursor: pointer;
-  right: 15px;
-  top: 3px;
 }
 .result-search {
   display: block !important;
@@ -161,16 +158,17 @@ div#user-image {
   cursor: pointer;
 }
 #ccg020 #search-input {
-  width: 162px !important;
-  height: 18px;
-  top: 0;
   position: absolute;
-  left: 30px;
+  top: 6px;
+  left: 22px;
+  width: 162px !important;
+  height: 12px;
+  border-radius: 14px;
   border: none !important;
 }
+
 .ccg002-panel {
-  background: white;
-  width: 40px;
+  width: 30px;
   height: 30px;
   position: absolute !important;
   right: 0;

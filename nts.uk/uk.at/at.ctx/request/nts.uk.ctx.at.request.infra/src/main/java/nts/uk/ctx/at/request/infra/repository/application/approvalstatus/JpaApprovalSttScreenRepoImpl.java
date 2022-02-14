@@ -221,7 +221,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                               AND     SGJFOD.RECORD_DATE <= MIDFOD.END_DATE " +
 				"                               AND     SGJFOD.APP_PHASE_ATR  IN  ('0','3') " +
 				"                               UNION ALL " +
-				"                               SELECT         SGJKN.EMPLOYEE_ID,SGJKN.RECORD_DATE,ISNULL(SYNZMF.APP_PHASE_ATR,'0') as NONAPP " +
+				"                               SELECT         SGJKN.EMPLOYEE_ID,SGJKN.RECORD_DATE,COALESCE(SYNZMF.APP_PHASE_ATR,'0') as NONAPP " +
 				"                               FROM          (     SELECT MIDFOD.EMPLOYEE_ID,SGJT.RECORD_DATE,SGJT.ROOT_ID,MIDFOD.FINF " +
 				"                                                           FROM   ( " +
 				"                                                                         SELECT     SNRMID.EMPLOYEE_ID,MAX(SNFMID.PHASE_ORDER) as FINF,SNRMID.START_DATE,SNRMID.END_DATE " +
@@ -410,7 +410,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                    WHERE   MIDFOD.FINF  = SGJFOD.PHASE_ORDER " +
 				"                                    AND     SGJFOD.APP_PHASE_ATR IN ('0','3') " +
 				"                                    UNION ALL " +
-				"                                    SELECT      SGJKN.EMPLOYEE_ID,SGJKN.RECORD_DATE,ISNULL(SYNZMF.APP_PHASE_ATR,'0') as NONAPP " +
+				"                                    SELECT      SGJKN.EMPLOYEE_ID,SGJKN.RECORD_DATE,COALESCE(SYNZMF.APP_PHASE_ATR,'0') as NONAPP " +
 				"                                    FROM        ( " +
 				"                                                                    SELECT  MIDFOD.EMPLOYEE_ID,SGJT.RECORD_DATE,SGJT.ROOT_ID,MIDFOD.FINF " +
 				"                                                                    FROM        (   SELECT     SNRMID.EMPLOYEE_ID,MAX(SNFMID.PHASE_ORDER) as FINF " +
@@ -642,7 +642,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                                        ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                                        WHERE        @startDate <= SSR.END_DATE " +
 				"                                                        AND          SSR.START_DATE <= @endDate " +
-				"　                                              　　　　　　AND          SSRK.WORKPLACE_ID IN @wkpIDLst " +
+				"                                                     AND          SSRK.WORKPLACE_ID IN @wkpIDLst " +
 				"                                                    ) SKBSYIN " +
 				"                                        INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                                        ON               SKBSYIN.SID = SKR.SID " +
@@ -713,7 +713,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                            ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                            WHERE        @startDate <= SSR.END_DATE " +
 				"                                            AND          SSR.START_DATE <= @endDate " +
-				"                       　          　　　　　　AND          SSRK.WORKPLACE_ID IN @wkpIDLst          " +
+				"                                        AND          SSRK.WORKPLACE_ID IN @wkpIDLst          " +
 				"                                        ) SKBSYIN " +
 				"                                INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                                ON               SKBSYIN.SID = SKR.SID " +
@@ -760,7 +760,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"AND SGJFOD.RECORD_DATE <= MIDFOD.END_DATE " +
 				"AND SGJFOD.APP_PHASE_ATR  IN ('0','3') " +
 				"UNION ALL " +
-				"SELECT SGJKN.EMPLOYEE_ID,SGJKN.RECORD_DATE,ISNULL(SYNZMF.APP_PHASE_ATR,'0') as NONAPP " +
+				"SELECT SGJKN.EMPLOYEE_ID,SGJKN.RECORD_DATE,COALESCE(SYNZMF.APP_PHASE_ATR,'0') as NONAPP " +
 				"FROM          ( SELECT MIDFOD.EMPLOYEE_ID,SGJT.RECORD_DATE,SGJT.ROOT_ID,MIDFOD.FINF " +
 				"FROM      ( " +
 				"        SELECT SNRMID.EMPLOYEE_ID,MAX(SNFMID.PHASE_ORDER) as FINF,SNRMID.START_DATE,SNRMID.END_DATE " +
@@ -932,7 +932,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                    WHERE   MIDFOD.FINF  = SGJFOD.PHASE_ORDER " +
 				"                    AND        SGJFOD.APP_PHASE_ATR IN ('0','3') " +
 				"                    UNION ALL " +
-				"                    SELECT      SGJKN.EMPLOYEE_ID,SGJKN.RECORD_DATE,ISNULL(SYNZMF.APP_PHASE_ATR,'0') as NONAPP " +
+				"                    SELECT      SGJKN.EMPLOYEE_ID,SGJKN.RECORD_DATE,COALESCE(SYNZMF.APP_PHASE_ATR,'0') as NONAPP " +
 				"                    FROM        ( " +
 				"                                                    SELECT  MIDFOD.EMPLOYEE_ID,SGJT.RECORD_DATE,SGJT.ROOT_ID,MIDFOD.FINF " +
 				"                                                    FROM        (   SELECT     SNRMID.EMPLOYEE_ID,MAX(SNFMID.PHASE_ORDER) as FINF " +
@@ -988,7 +988,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                                  ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"                                                  WHERE        @startDate <= SSR.END_DATE " +
 				"                                                  AND          SSR.START_DATE <= @endDate " +
-				"　                                  　　　　　　AND          SSRK.WORKPLACE_ID IN @wkpIDLst        " +
+				"                                         AND          SSRK.WORKPLACE_ID IN @wkpIDLst        " +
 				"                                                ) SKBSYIN " +
 				"                                   INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"                                   ON               SKBSYIN.SID = SKR.SID " +

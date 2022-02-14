@@ -1,4 +1,98 @@
 module nts.uk.at.view.ktg027.a {
+
+    @handler({
+        bindingName: 'ktg027-pagination',
+        validatable: true,
+        virtual: false
+    })
+    export class Ktg0267ChartBindingHandler implements KnockoutBindingHandler {
+        init(element: HTMLTableCellElement, valueAccessor: () => {
+                total: KnockoutObservable<number>,
+                perpage: KnockoutObservable<number>,
+                page: KnockoutObservable<number>,
+            },
+            allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; }
+        {
+            element.removeAttribute('data-bind');
+            element.style.display = 'flex';
+
+            if (element.tagName !== 'SECTION') {
+                element.innerText = 'This binding work with only [SECTION] tag.';
+                return { controlsDescendantBindings: false };
+            }
+
+            const { total, perpage, page } = valueAccessor();
+            const firstPage: KnockoutObservable<number> = ko.observable(1);
+            //default is 1, will change with other properties
+            const lastPage: KnockoutObservable<number> = ko.observable(1);
+
+            if (total() <= 0) total(0);
+            if (perpage() <= 0) perpage(0);
+            if (page() <= 0) page(1); // page number start from 1
+
+            const $prevButton = $('<button/>');
+            const $prevIcon = $('<i/>');
+            $prevIcon.appendTo($prevButton);
+            ko.applyBindingsToNode($prevIcon[0], { ntsIcon: { no: 193, width: 15, height: 20 } }, bindingContext);
+            $prevButton.appendTo(element);
+            
+            const $pageText = $('<span/>');
+            $pageText.appendTo(element);
+            
+            const $nextButton = $('<button/>');
+            const $nextIcon = $('<i/>');
+            $nextIcon.appendTo($nextButton);
+            ko.applyBindingsToNode($nextIcon[0], { ntsIcon: { no: 192, width: 15, height: 20 } }, bindingContext);
+            $nextButton.appendTo(element);
+
+            const cssBtn = { 
+                'border': 'none',
+                'width': '20px',
+                'height': '20px',
+                'padding': 0,
+                'box-shadow': 'none',
+            };
+
+            $prevButton.css(cssBtn);
+            $nextButton.css(cssBtn);
+
+            $prevButton.click(() => {
+                if (page() > firstPage()) page(page() - 1);
+            });
+            $nextButton.click(() => {
+                if (page() < lastPage()) page(page() + 1);
+            });
+
+            // Resizing, perpage'll change => page turn back 1
+            perpage.subscribe(() => page(1));
+
+            ko.computed({
+                read: () => {
+                    if (!total() || !perpage()) $pageText.text('0-0/0');
+                    else {
+                        const pageIndex = page() - 1;
+                        let start = pageIndex * perpage() + 1;
+                        let end = pageIndex * (perpage()) + perpage();
+                        if (start > total()) start = total();
+                        if (end > total()) end = total();
+                        $pageText.text(`${start}-${end}/${total()}`);
+
+                        lastPage(_.ceil(total()/perpage()));
+
+                        if (page() === firstPage()) $prevButton.attr({ 'disabled': true });
+                        else $prevButton.removeAttr('disabled');
+
+                        if (page() === lastPage()) $nextButton.attr({ 'disabled': true });
+                        else $nextButton.removeAttr('disabled');
+                    }
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            return { controlsDescendantBindings: true };
+        }
+    }
+
     const API = {
         CHANGE_DATE: "/screen/at/overtimehours/onChangeDate",
         GET_DATA_INIT: "/screen/at/overtimehours/getOvertimedDisplayForSuperiorsDto",
@@ -28,6 +122,10 @@ module nts.uk.at.view.ktg027.a {
 
         if (state === 7) {
             return 'special-exceeding-limit';
+        }
+
+        if (state === 8) {
+            return 'bg-exceed-special-upperlimit color-exceed-special-upperlimit';
         }
 
         return '';
@@ -69,17 +167,23 @@ module nts.uk.at.view.ktg027.a {
                     <table>
                         <colgroup>
                             <col width="25%" />
-                            <col width="17%" />
-                            <col width="58%" />
+                            <col width="16%" />
+                            <col width="14%" />
+                            <col width="45%" />
                         </colgroup>
                         <head>
                             <tr>
                                 <th class="text-center">
                                     <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('Com_Person') }"></div>
                                 </th>
-                                <th class="text-center" style="white-space: nowrap;">
+                                <th class="text-right" style="white-space: nowrap;">
                                     <div style="padding-right: 0;" data-bind="
                                         ntsFormLabel: { required: false, text: $component.$i18n('KTG027_4') }">
+                                    </div>
+                                </th>
+                                <th class="text-right" style="white-space: nowrap; padding-right: 5px;">
+                                    <div style="padding-right: 0;" data-bind="
+                                        ntsFormLabel: { required: false, text: $component.$i18n('KTG027_17') }">
                                     </div>
                                 </th>
                                 <td style="padding-left: 10px;" rowspan="1">
@@ -90,26 +194,28 @@ module nts.uk.at.view.ktg027.a {
                     </table>
                 </div>
             </div>
-            <div class="ktg-027-a" data-bind="widget-content: 110, default: 425">
-                <div>
+            <div class="ktg-027-a paging-area" data-bind="widget-content: 110, default: 425" style="padding-bottom: 30px">
+                <div id="ktg027-display-data" style="padding-bottom: 0">
                     <table>
                         <colgroup>
-                            <col width="42%" />
-                            <col width="58%" />
+                            <col width="55%" />
+                            <col width="45%" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr style="height: 35px;">
                                 <td>
-                                    <div class="text-underline limited-label" data-bind="
-                                        text: row.businessName,
-                                        click: function() { $component.openKTG026(row) }"
-                                        style="float:left; width: 60%; padding-left: 5px;">
-                                    </div>
-                                    <div class="text-right text-underline" data-bind="
-                                        time: row.time.tt,
-                                        click: function() { $component.openKDW003(row) },
-                                        css: row.state"
-                                        style="height: 25px; padding-right: 5px;">
+                                    <div style="display: flex;">
+                                        <div style="color: inherit;" class="text-underline limited-label ktg027-employee-name" data-bind="
+                                            text: row.businessName,
+                                            click: function() { $component.openKTG026(row) },
+                                            css: row.state">
+                                        </div>
+                                        <div class="text-right text-underline ktg027-ot-time" data-bind="
+                                            time: row.time.tt,
+                                            click: function() { $component.openKDW003(row) },
+                                            css: row.state">
+                                        </div>
+                                        <div style="cursor: default;" class="text-right ktg027-remain-time" data-bind="time: row.time.rm, css: row.state"></div>
                                     </div>
                                 </td>
                                 <td style="padding-left: 10px;" data-bind="ktg-chart: $component.dataTable"></td>
@@ -117,8 +223,36 @@ module nts.uk.at.view.ktg027.a {
                         </tbody>
                     </table>
                 </div>
+                <section id="ktg027-pagination" data-bind="ktg027-pagination: {
+                    total: total,
+                    perpage: perpage,
+                    page: page,
+                }"></section>
             </div>
             <style>
+                #ktg027-pagination {
+                    position: absolute;
+                    bottom: 10px;
+                    left: 10px;
+                }
+                #ktg027-display-data {
+                    overflow: hidden;
+                }
+                .ktg027-employee-name {
+                    flex: 6.5;
+                    line-height: 25px;
+                    padding-left: 5px;
+                }
+                .ktg027-ot-time {
+                    flex: 3.5;
+                    line-height: 25px;
+                    padding-right: 5px;
+                }
+                .ktg027-remain-time {
+                    flex: 3;
+                    padding-right: 5px;
+                    line-height: 25px;
+                }
                 .text-underline {
                     text-decoration: underline;
                 }
@@ -146,7 +280,7 @@ module nts.uk.at.view.ktg027.a {
                     top: 0;
                 }
                 .ktg027-fontsize div.form-label>span.text {
-                    font-size: 1.2rem !important;
+                    font-size: 1rem !important;
                 }
                 .ktg-027-a .outside {
                     color: #e05f4e;
@@ -181,7 +315,7 @@ module nts.uk.at.view.ktg027.a {
                     overflow: hidden;
                 }
                 .ktg-027-a.widget-content.ui-resizable td[rowspan] canvas {
-                    width: 230px !important;
+                    width: 175px !important;
                 }
                 .ktg-027-a.widget-content.ui-resizable.widget-fixed {
                     padding-bottom: 0px;
@@ -195,17 +329,14 @@ module nts.uk.at.view.ktg027.a {
                 .widget-container.ie .ktg-027-a.widget-content.ui-resizable td[rowspan] canvas {
                     margin-top: -1px;
                 }
-                .widget-container.has-scroll .ktg-027-a.scroll-padding {
-                    padding-right: 17px;
-                }
                 /* 限度アラーム時間超過 */
                 .ktg-027-a.widget-content.ui-resizable .exceeding-limit-alarm {
-                    background-color: #FFFF99; /* 36協定アラーム */
-                    color: #FF9900; /* 36協定アラーム文字 */
+                    background-color: #F4D35E; /* 36協定アラーム */
+                    color: #000000; /* 36協定アラーム文字 */
                 }
                 /* 限度エラー時間超過 */
                 .ktg-027-a.widget-content.ui-resizable .exceeding-limit-error {
-                    background-color: #FF99CC; /* 36協定エラー */
+                    background-color: #DB4F51; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
                 /* 限度アラーム時間超過（特例あり） */
@@ -218,12 +349,12 @@ module nts.uk.at.view.ktg027.a {
                 }
                 /* 特例限度アラーム時間超過 */
                 .ktg-027-a.widget-content.ui-resizable .special-exceeded-limit-alarm  {
-                    background-color: #FFFF99; /* 36協定アラーム */
-                    color: #FF9900; /* 36協定アラーム文字 */
+                    background-color: #F4D35E; /* 36協定アラーム */
+                    color: #000000; /* 36協定アラーム文字 */
                 }
                 /* 特例限度エラー時間超過 */
                 .ktg-027-a.widget-content.ui-resizable .special-exceeded-limit-error {
-                    background-color: #FF99CC; /* 36協定エラー */
+                    background-color: #DB4F51; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
             </style>
@@ -239,23 +370,21 @@ module nts.uk.at.view.ktg027.a {
         employees: KnockoutObservableArray<PersonalInfo> = ko.observableArray([]);
         overtimeSubor: KnockoutObservableArray<OvertimeSubordinate> = ko.observableArray([]);
         personalSubor: KnockoutObservableArray<PersonalInfoSubordinate> = ko.observableArray([]);
+        upperLimit: UpperLimit[] = [];
 
         dataTable!: KnockoutComputed<any[]>;
         chartStyle!: KnockoutComputed<string>;
         legendOptions: any;
-		firstLoad: boolean = true; 
+		firstLoad: boolean = true;
+        cache: any;
+        isRefresh: boolean = false;
 
-        constructor(private cache: { currentOrNextMonth: 1 | 2; }) {
+        total: KnockoutObservable<number> = ko.observable(0);
+        perpage: KnockoutObservable<number> = ko.observable(0);
+        page: KnockoutObservable<number> = ko.observable(0);
+
+        constructor() {
             super();
-
-            if (!this.cache) {
-                this.cache = { currentOrNextMonth: 1 };
-            } else {
-                if (typeof this.cache.currentOrNextMonth === 'undefined') {
-                    this.cache.currentOrNextMonth = 1;
-                }
-            }
-
             const vm = this;
 
             vm.dataTable = ko.computed({
@@ -263,6 +392,15 @@ module nts.uk.at.view.ktg027.a {
                     const employees = ko.unwrap<PersonalInfo[]>(vm.employees);
                     const overtimeSubor = ko.unwrap<OvertimeSubordinate[]>(vm.overtimeSubor);
                     const personalSubor = ko.unwrap<PersonalInfoSubordinate[]>(vm.personalSubor);
+                    
+                    const findRemainTime = (sid: string, total: number) => {
+                    const limit = _.find(vm.upperLimit, x => x.sid === sid);
+                        if (!limit || limit.time - total < 0) {
+                            return 0;
+                        }
+                        // 36協定基本設定 - 従業員用の時間外時間表示．対象社員の各月の時間外時間．対象年月の時間外時間．36協定対象時間．対象時間
+                        return limit.time - total;
+                    };
 
                     return _
                         .chain(employees)
@@ -286,16 +424,18 @@ module nts.uk.at.view.ktg027.a {
                                     time: {
                                         tt: at.agreementTime || 0,
                                         ot: Math.min(6000, at.agreementTime),
-                                        wh: at.agreementTime >= 6000 ? 0 : Math.max((am.agreementTime || 0) - (at.agreementTime || 0), 0)
+                                        wh: at.agreementTime >= 6000 ? 0 : Math.max((am.agreementTime || 0) - (at.agreementTime || 0), 0),
+                                        rm: findRemainTime(emp.employeeId, at.agreementTime || 0)
                                     },
                                     state: timeStyle(state)
                                 });
                             }
 
-                            return _.extend(emp, { time: { tt: 0, ot: 0, wh: 0 }, state: 'a' });
+                            return _.extend(emp, { time: { tt: 0, ot: 0, wh: 0, rm: 0 }, state: 'a' });
                         })
                         // trigger rerender table & chart
                         .filter(() => employees.length && overtimeSubor.length && personalSubor.length)
+                        .orderBy([(emp: any) => emp.time.ot], ['desc'])
                         .value();
                 }
             });
@@ -326,18 +466,17 @@ module nts.uk.at.view.ktg027.a {
                             });
 
                         $(vm.$el).find('[data-bind]').removeAttr('data-bind');
-                    })
+                    });
+                    vm.total(vm.dataTable().length);
                 });
         }
 
         created() {
             const vm = this;
-            const { cache } = vm;
-
             vm.legendOptions = {
                 items: [
-                    { colorCode: '#99FF66', labelText: vm.$i18n('KTG027_2') },
-                    { colorCode: '#00CC00', labelText: vm.$i18n('KTG027_3') },
+                    { colorCode: '#fff768', labelText: vm.$i18n('KTG027_2') },
+                    { colorCode: '#A5C9C1', labelText: vm.$i18n('KTG027_3') },
                 ],
                 template :
                 '<div class="legend-item-label">'
@@ -345,11 +484,15 @@ module nts.uk.at.view.ktg027.a {
                 + '</div>'
             };
 
+            const startScreen = () => {
+            
+            const { closureId, currentOrNextMonth, endDate, processDate, startDate } = vm.cache;
+            const bodyParams = { closingId: closureId, currentOrNextMonth, startDate, endDate, processingYm: processDate };
             vm
                 .$blockui('invisibleView')
-                .then(() => vm.$ajax('at', `${API.GET_DATA_INIT}/${cache.currentOrNextMonth}`))
+                .then(() => vm.$ajax('at', API.GET_DATA_INIT, bodyParams))
                 .then((response: DataInit) => {
-                    const { closureId, personalInformationOfSubordinateEmployees, closingInformationForCurrentMonth, closingInformationForNextMonth, overtimeOfSubordinateEmployees } = response;
+                    const { closureId, personalInformationOfSubordinateEmployees, closingInformationForCurrentMonth, closingInformationForNextMonth, overtimeOfSubordinateEmployees, upperLimit } = response;
 
                     vm.employees(personalInformationOfSubordinateEmployees);
 
@@ -359,22 +502,24 @@ module nts.uk.at.view.ktg027.a {
                                 if (!valid || _.isEmpty(ym)) return;
 
                                 if (typeof ym === 'string') {
-                                    vm.$window.storage('KTG027_TARGET', {
+                                    vm.$window.storage('KTG027_INITIAL_DATA', {
                                         isRefresh: false,
                                         target: ym
                                     });
-									if(vm.firstLoad){
-										vm.loadData(ym, closureId, {overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees});
-										vm.firstLoad = false;										
-									}else{
-										vm.loadData(ym, closureId);	
-									}
+                                    if (vm.firstLoad && !vm.isRefresh) {
+                                        vm.loadData(ym, closureId, {overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees, upperLimit});
+                                        vm.firstLoad = false;
+                                    } else {
+                                        vm.isRefresh = false;
+                                        vm.loadData(ym, closureId);	
+                                    }
                                 }
                             });
                         });
 
-                    vm.$window.storage('KTG027_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
-                        if (rs && rs.isRefresh) {
+                    vm.$window.storage('KTG027_INITIAL_DATA').then((rs: {isRefresh: boolean, target: any}) => {
+                        if (rs && rs.isRefresh && rs.target) {
+                            vm.isRefresh = true;
                             vm.targetYear(rs.target);
                             return;
                         }
@@ -392,17 +537,47 @@ module nts.uk.at.view.ktg027.a {
                         vm.targetYear(`${processingYm}`);
                     });
                 })
+                .then(() => vm.initResize())
                 .fail((message: { messageId: string }) => {
                     vm.$dialog.error(message).then(() => vm.$blockui('clearView'));
                 });
+            }
+            
+
+            // Rq609 is called here, by cache of ccg008
+            vm.$window.storage('cache')
+                .then(obj => vm.cache = obj)
+                .then(() => startScreen());
+        }
+
+        initResize() {
+            const vm = this;
+            const $widgetContent = $('.widget-content.ui-resizable.ktg-027-a.paging-area');
+            const $displayData = $('#ktg027-display-data');
+            // displayMissing is created to display data fully at last page
+            const $displayMissing = $('<div/>');
+            $displayMissing.appendTo($displayData);
+            const rowHeight = 35;
+            $widgetContent.on('wg.resize', () => {
+                const widgetContentHeight = $widgetContent.height();
+                vm.perpage(_.floor(widgetContentHeight/35));
+                $displayData.height(rowHeight * vm.perpage());
+
+                const lastpage = _.ceil(vm.total()/vm.perpage());
+                // missing data to display fully last page
+                const missingDataNo = vm.perpage() * (lastpage + 1) - vm.total();
+                $displayMissing.css({ 'padding-bottom': missingDataNo * rowHeight });
+            });
+            // When page changed, scroll to position of page
+            vm.page.subscribe(value => $displayData.scrollTop(rowHeight * vm.perpage() * (value - 1)));
         }
 
         // load data by change ym
         private loadData(ym: string, closureId: number, overtimeParam?: OverTimeResponse) {
             const vm = this;
 			if(overtimeParam) {
-				const { overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees } = overtimeParam;
-	
+				const { overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees, upperLimit } = overtimeParam;
+                vm.upperLimit = upperLimit;
                 vm.overtimeSubor(overtimeOfSubordinateEmployees);
                 vm.personalSubor(personalInformationOfSubordinateEmployees);
 				vm.$blockui('clearView')
@@ -410,6 +585,7 @@ module nts.uk.at.view.ktg027.a {
 	            const { CHANGE_DATE: getDataWhenChangeDate } = API;
 	
 	            if (ym) {
+                    vm.upperLimit = [];
 	                vm.overtimeSubor([]);
 	                vm.personalSubor([]);
 	
@@ -417,8 +593,9 @@ module nts.uk.at.view.ktg027.a {
 	                    .$blockui('invisibleView')
 	                    .then(() => vm.$ajax('at', `${getDataWhenChangeDate}/${closureId}/${ym}`))
 	                    .then((overtime: OverTimeResponse) => {
-	                        const { overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees } = overtime;
+	                        const { overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees, upperLimit } = overtime;
 	
+                            vm.upperLimit = upperLimit;
 	                        vm.overtimeSubor(overtimeOfSubordinateEmployees);
 	                        vm.personalSubor(personalInformationOfSubordinateEmployees);
 	                    })
@@ -446,16 +623,25 @@ module nts.uk.at.view.ktg027.a {
             const vm = this;
             const { $user } = vm;
             let paramKDW003 = {
-                lstEmployeeShare: item.employeeId,
-                errorRefStartAtr: false,
-                changePeriodAtr: true,
-                screenMode: "Normal",
-                displayFormat: "individual",
-                initClock: "",
+                initParam: {
+                    errorRefStartAtr: false,
+                    changePeriodAtr: true,
+                    screenMode: 0, //normal
+                    lstEmployee: [item.employeeId],
+                    transitionDesScreen: '',
+                    yearMonth: vm.targetYear(),
+                },
+                extractionParam: {
+                    displayFormat: 0, //individual
+                    startDate: vm.targetYear(),
+                    endDate: vm.targetYear(),
+                    dateTarget: vm.targetYear(),
+                    lstExtractedEmployee: [item.employeeId],
+                    individualTarget: item.employeeId,
+
+                },
             };
-            vm.$window
-                .shared('KDW003_PARAM', paramKDW003)
-                .then(() => vm.$jump('at', "/view/kdw/003/a/index.xhtml"));
+            vm.$jump('at', "/view/kdw/003/a/index.xhtml", paramKDW003);
         }
 
         destroyed() {
@@ -472,6 +658,7 @@ module nts.uk.at.view.ktg027.a {
         closingInformationForNextMonth: ClosingInfor | null;
         personalInformationOfSubordinateEmployees: PersonalInfo[];
 		overtimeOfSubordinateEmployees: OvertimeSubordinate[];
+        upperLimit: UpperLimit[];
     }
 
     interface ClosingInfor {
@@ -494,7 +681,15 @@ module nts.uk.at.view.ktg027.a {
     interface OverTimeResponse {
         personalInformationOfSubordinateEmployees: PersonalInfoSubordinate[];
         overtimeOfSubordinateEmployees: OvertimeSubordinate[];
+        upperLimit: UpperLimit[];
     }
+
+    interface UpperLimit {
+        sid: string;
+        yearMonth: number;
+        time: number;
+    }
+
 
     interface PersonalInfoSubordinate {
         personId: string;

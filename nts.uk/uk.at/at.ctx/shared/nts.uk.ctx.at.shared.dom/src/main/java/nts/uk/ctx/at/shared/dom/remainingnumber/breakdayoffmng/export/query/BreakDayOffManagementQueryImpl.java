@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBr
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.export.ClosureRemainPeriodOutputData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.export.RemainManagementExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -133,7 +134,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	public InterimRemainAggregateOutputData aggregatedDayoffCurrentMonth(String employeeId, DatePeriod dateData, InterimRemainAggregateOutputData dataOut) {
 		String companyId = AppContexts.user().companyId();
 		//アルゴリズム「月初の代休残数を取得」を実行する
-		double dayOffRemainBeginMonths = this.getDayOffRemainOfBeginMonth(companyId, employeeId);
+		double dayOffRemainBeginMonths = this.getDayOffRemainOfBeginMonth(companyId, employeeId).v();
 		dataOut.setMonthStartRemain(dayOffRemainBeginMonths);
 		//アルゴリズム「期間内の代休消滅数合計を取得」を実行する
 		double unUseDays = this.totalExtinctionRemainOfInPeriod(employeeId, dateData);
@@ -460,7 +461,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		return outputData;
 	}
 	@Override
-	public double getDayOffRemainOfBeginMonth(String cid, String sid) {
+	public LeaveRemainingDayNumber getDayOffRemainOfBeginMonth(String cid, String sid) {
 		//ドメインモデル「休出管理データ」を取得
 		List<LeaveManagementData> lstLeaveData = leaveManaDataRepo.getBySidWithsubHDAtr(cid, sid, DigestionAtr.UNUSED.value);
 		Double unUseDays = (double) 0;
@@ -476,7 +477,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			unOffSet += leaveDayOffData.getRemainDays().v();
 		}
 		//代休発生数合計－代休使用数合計を返す
-		return unUseDays - unOffSet;
+		return new LeaveRemainingDayNumber(unUseDays - unOffSet);
 	}
 	@Override
 	public double totalExtinctionRemainOfInPeriod(String sid, DatePeriod dateData) {

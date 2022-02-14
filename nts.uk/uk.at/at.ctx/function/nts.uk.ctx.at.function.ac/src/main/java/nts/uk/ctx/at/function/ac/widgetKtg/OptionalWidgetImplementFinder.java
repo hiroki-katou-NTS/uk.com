@@ -16,7 +16,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveGrantImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveManageInforImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberImport;
-import nts.uk.ctx.at.function.dom.adapter.widgetKtg.ApplicationTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AttendanceTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyExcessTotalTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyLateAndLeaveEarlyTimeImport;
@@ -161,7 +160,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public NumAnnLeaReferenceDateImport getReferDateAnnualLeaveRemainNumber(String employeeID, GeneralDate date) {
 		ReNumAnnLeaReferenceDateExport reNumAnnLeaReferenceDateExport = annLeaveRemainNumberPub.getReferDateAnnualLeaveRemainNumber(employeeID, date);
-		AnnualLeaveRemainingNumberExport remainNumber = reNumAnnLeaReferenceDateExport.getAnnualLeaveRemainNumberExport();
+		AnnualLeaveRemainingNumberExport remainNumber = reNumAnnLeaReferenceDateExport.getAnnualLeaveRemainNumberExport().getRemainNumberWithMinusExport();
 		List<AnnualLeaveGrantExport> AnnualLeaveGrant = reNumAnnLeaReferenceDateExport.getAnnualLeaveGrantExports();
 		List<AnnualLeaveManageInforExport> annualLeaveManageInforExports = reNumAnnLeaReferenceDateExport.getAnnualLeaveManageInforExports();
 		AnnualLeaveRemainingNumberImport annualLeaveRemainNumberImport = null;
@@ -169,16 +168,16 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 			annualLeaveRemainNumberImport = new AnnualLeaveRemainingNumberImport(0.0, 0, 0, 0, 0.0, 0, 0, 0, 0.0,0.0);
 		}else {
 			annualLeaveRemainNumberImport = new AnnualLeaveRemainingNumberImport(
-																				remainNumber.getAnnualLeaveGrantDay(),
-																				remainNumber.getAnnualLeaveGrantTime(),
-																				remainNumber.getNumberOfRemainGrant(),
-																				remainNumber.getTimeAnnualLeaveWithMinusGrant(),
+																				remainNumber.getAnnualLeaveGrantPreDay(),
+																				remainNumber.getAnnualLeaveGrantPreTime(),
+																				remainNumber.getNumberOfRemainGrantPre(),
+																				remainNumber.getTimeAnnualLeaveGrantPre(),
 																				remainNumber.getAnnualLeaveGrantPostDay(),
 																				remainNumber.getAnnualLeaveGrantPostTime(),
 																				remainNumber.getNumberOfRemainGrantPost(),
-																				remainNumber.getTimeAnnualLeaveWithMinusGrantPost(),
-																				remainNumber.getAttendanceRate(),
-																				remainNumber.getWorkingDays());
+																				remainNumber.getTimeAnnualLeaveGrantPost(),
+																				reNumAnnLeaReferenceDateExport.getAttendanceRate(),
+																				reNumAnnLeaReferenceDateExport.getWorkingDays());
 		}
 		List<AnnualLeaveGrantImport> annualLeaveGrantImport = AnnualLeaveGrant.stream().map(c->new AnnualLeaveGrantImport(c.getGrantDate(), c.getGrantNumber(), c.getDaysUsedNo(), c.getUsedMinutes(), c.getRemainDays(), c.getRemainMinutes(), c.getDeadline())).collect(Collectors.toList());
 		List<AnnualLeaveManageInforImport> annualLeaveManageInforImport = annualLeaveManageInforExports.stream().map(c->new AnnualLeaveManageInforImport(c.getYmd(), c.getDaysUsedNo(), c.getUsedMinutes(), c.getScheduleRecordAtr())).collect(Collectors.toList());

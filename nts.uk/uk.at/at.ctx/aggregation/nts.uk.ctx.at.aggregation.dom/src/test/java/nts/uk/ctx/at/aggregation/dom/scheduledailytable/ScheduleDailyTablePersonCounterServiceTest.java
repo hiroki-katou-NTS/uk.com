@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.aggregation.dom.scheduledailytable;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -46,7 +45,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 	public void testAggregateByScheRecAt_case_Record(
 				@Injectable List<IntegrationOfDaily> dailyWorks
 			,	@Injectable List<Integer> personalCounter) {
-		
+
 		Map<EmployeeId, Map<Integer, BigDecimal>> totalNoTimeResult = new HashMap<EmployeeId, Map<Integer, BigDecimal>>() {
 			private static final long serialVersionUID = 1L;
 			{
@@ -60,7 +59,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 								put(4, BigDecimal.valueOf(20));
 								put(6, BigDecimal.valueOf(60));
 						}});
-				
+
 				//	社員2
 				//	- No: 2, 値: 30
 				//	- No: 4, 値: 45
@@ -71,7 +70,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 								put( 4, BigDecimal.valueOf(45) );
 								put( 6, BigDecimal.valueOf(40) );
 						}});
-				
+
 				//	社員3
 				//	- No: 2, 値: 60
 				//	- No: 4, 値: 40
@@ -83,22 +82,22 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 							put( 6, BigDecimal.valueOf(20) );
 						}});
 			}};
-		
+
 		new Expectations(TotalTimesCounterService.class) {
 			{
 				TotalTimesCounterService.countingNumberOfTotalTimeByEmployee(require, personalCounter, dailyWorks);
 				result = totalNoTimeResult;
 			}
-			
+
 		};
-		
+
 		//Act
 		List<PersonCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
 					ScheduleDailyTablePersonCounterService.class
 				,	"aggregateByScheRecAtr", require
 				,	ScheRecAtr.RECORD//実績
 				,	personalCounter, dailyWorks);
-		
+
 		//Assert
 		assertThat(result)
 				.extracting(	d -> d.getSid().v()
@@ -118,7 +117,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 				);
 
 	}
-	
+
 	/**
 	 * target:	予実区分によって集計する
 	 * pattern:	印刷対象 = 予定
@@ -127,7 +126,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 	public void testAggregateByScheRecAt_case_schedule(
 				@Injectable List<IntegrationOfDaily> dailyWorks
 			,	@Injectable List<Integer> personalCounter) {
-		
+
 		Map<EmployeeId, Map<Integer, BigDecimal>> totalNoTimeResult = new HashMap<EmployeeId, Map<Integer, BigDecimal>>() {
 			private static final long serialVersionUID = 1L;
 			{
@@ -145,7 +144,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 								put(15, BigDecimal.valueOf(27));
 								put(18, BigDecimal.valueOf(18));
 						}});
-				
+
 				//	社員2
 				//	- No: 5, 値: 25
 				//	- No: 9, 値: 29
@@ -160,13 +159,13 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 								put( 15, BigDecimal.valueOf(26) );
 								put( 18, BigDecimal.valueOf(28) );
 						}});
-				
+
 				//	社員3
 				//	- No: 5, 値: 52
 				//	- No: 9, 値: 92
 				//	- No: 11, 値: 12
 				//	- No: 15, 値: 62
-				//	- No: 18, 値: 82	
+				//	- No: 18, 値: 82
 				put(	new EmployeeId("sid_3")
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
 								put( 5, BigDecimal.valueOf(52) );
@@ -176,22 +175,22 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 								put( 18, BigDecimal.valueOf(82) );
 						}});
 			}};
-		
+
 		new Expectations(TotalTimesCounterService.class) {
 			{
 				TotalTimesCounterService.countingNumberOfTotalTimeByEmployee(require, personalCounter, dailyWorks);
 				result = totalNoTimeResult;
 			}
-			
+
 		};
-		
+
 		//Act
 		List<PersonCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
 					ScheduleDailyTablePersonCounterService.class
 				,	"aggregateByScheRecAtr", require
 				,	ScheRecAtr.SCHEDULE//予定
 				,	personalCounter, dailyWorks);
-	
+
 		//Assert
 		assertThat(result)
 				.extracting(	d -> d.getSid().v()
@@ -214,17 +213,17 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 					,	tuple("sid_3", ScheRecAtr.SCHEDULE, 11, BigDecimal.valueOf(12))
 					,	tuple("sid_3", ScheRecAtr.SCHEDULE, 15, BigDecimal.valueOf(62))
 					,	tuple("sid_3", ScheRecAtr.SCHEDULE, 18, BigDecimal.valueOf(82))
-				);			
+				);
 
 	}
-	
+
 	/**
 	 * target:	集計する
 	 * pattern:	印刷対象 = 予定のみ
 	 */
 	@Test
 	public void testAggregate_case_schedule(@Injectable List<Integer> personalCounter) {
-		
+
 		List<IntegrationOfDaily> dailyWorks = Arrays.asList(
 				Helper.createDailyWorks("sid_1")//社員1
 			,	Helper.createDailyWorks("sid_2")//社員2
@@ -236,7 +235,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 				//	- No: 1, 値: 111
 				//	- No: 3, 値: 33
 				//	- No: 5, 値: 15
-				//	- No: 7, 値: 37	
+				//	- No: 7, 値: 37
 				//	- No: 9, 値: 29
 				//	- No: 11, 値: 66
 				put(	new EmployeeId("sid_1")
@@ -248,7 +247,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 								put(9, BigDecimal.valueOf(29));
 								put(11, BigDecimal.valueOf(66));
 						}});
-				
+
 				//	社員2
 				//	- No: 1, 値: 201
 				//	- No: 3, 値: 203
@@ -271,21 +270,21 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 			{
 				TotalTimesCounterService.countingNumberOfTotalTimeByEmployee( require, personalCounter, dailyWorks );
 				result = totalNoTimeResult;
-				
+
 			}
 		};
-		
+
 		Map< ScheRecGettingAtr, List< IntegrationOfDaily >> dailyMap =  new HashMap< ScheRecGettingAtr, List<IntegrationOfDaily>>() {
 			private static final long serialVersionUID = 1L;
 			{
 				put( ScheRecGettingAtr.ONLY_SCHEDULE, dailyWorks );
 			}
 		};
-		
+
 		//Act
 		List< PersonCounterTimesNumberCounterResult > result = ScheduleDailyTablePersonCounterService
 				.aggregate( require, ScheRecGettingAtr.ONLY_SCHEDULE, personalCounter, dailyMap );
-		
+
 		//Assert
 		assertThat(result)
 				.extracting(	d -> d.getSid().v()
@@ -299,7 +298,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 					,	tuple("sid_1", ScheRecAtr.SCHEDULE, 7, BigDecimal.valueOf(37))
 					,	tuple("sid_1", ScheRecAtr.SCHEDULE, 9, BigDecimal.valueOf(29))
 					,	tuple("sid_1", ScheRecAtr.SCHEDULE, 11, BigDecimal.valueOf(66))
-					
+
 					,	tuple("sid_2", ScheRecAtr.SCHEDULE, 1, BigDecimal.valueOf(201))
 					,	tuple("sid_2", ScheRecAtr.SCHEDULE, 3, BigDecimal.valueOf(203))
 					,	tuple("sid_2", ScheRecAtr.SCHEDULE, 5, BigDecimal.valueOf(105))
@@ -315,19 +314,19 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 	 */
 	@Test
 	public void testAggregate_case_record(@Injectable List<Integer> personalCounter) {
-		
+
 		List<IntegrationOfDaily> dailyWorks = Arrays.asList(
 				Helper.createDailyWorks("sid_1")//社員1
 			,	Helper.createDailyWorks("sid_2")//社員2
 		);
-		
+
 		Map< ScheRecGettingAtr, List< IntegrationOfDaily >> dailyMap =  new HashMap< ScheRecGettingAtr, List<IntegrationOfDaily>>() {
 			private static final long serialVersionUID = 1L;
 			{
 				put( ScheRecGettingAtr.ONLY_RECORD, dailyWorks );
 			}
 		};
-		
+
 		Map<EmployeeId, Map<Integer, BigDecimal>> totalNoTimeResult = new HashMap<EmployeeId, Map<Integer, BigDecimal>>() {
 			private static final long serialVersionUID = 1L;
 			{
@@ -347,7 +346,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 								put(26, BigDecimal.valueOf(326));
 								put(30, BigDecimal.valueOf(330));
 						}});
-				
+
 				//	社員2
 				//	- No: 1, 値: 502
 				//	- No: 5, 値 : 515
@@ -370,14 +369,14 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 			{
 				TotalTimesCounterService.countingNumberOfTotalTimeByEmployee( require, personalCounter, dailyWorks );
 				result = totalNoTimeResult;
-				
+
 			}
 		};
-		
+
 		//Act
 		List< PersonCounterTimesNumberCounterResult > result = ScheduleDailyTablePersonCounterService
 				.aggregate( require, ScheRecGettingAtr.ONLY_RECORD, personalCounter, dailyMap );
-		
+
 		//Assert
 		assertThat(result)
 				.extracting(	d -> d.getSid().v()
@@ -399,7 +398,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 					,	tuple("sid_2", ScheRecAtr.RECORD, 30, BigDecimal.valueOf(468))
 				);
 	}
-	
+
 	/**
 	 * target:	集計する
 	 * pattern:	印刷対象 = 予定・実績
@@ -416,18 +415,18 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 			,	Helper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 01, 8) )
 			,	Helper.createDailyWorks("sid_3", GeneralDate.ymd(2021, 01, 8) )
 		);
-		
+
 		List<IntegrationOfDaily> dailyWorks_record = Arrays.asList(
 				Helper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 01, 8) )
 			,	Helper.createDailyWorks("sid_3", GeneralDate.ymd(2021, 01, 8) )
 		);
-		
+
 		List<IntegrationOfDaily> dailyWorks_scheAndRecord = Arrays.asList(
 				Helper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 01, 8) )
 			,	Helper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 01, 8) )
 			,	Helper.createDailyWorks("sid_3", GeneralDate.ymd(2021, 01, 8) )
 		);
-		
+
 		Map< ScheRecGettingAtr, List< IntegrationOfDaily >> dailyMap =  new HashMap< ScheRecGettingAtr, List<IntegrationOfDaily>>() {
 			private static final long serialVersionUID = 1L;
 			{
@@ -436,7 +435,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 				put( ScheRecGettingAtr.SCHEDULE_WITH_RECORD, dailyWorks_scheAndRecord );
 			}
 		};
-		
+
 		//予定集計結果の社員1, 社員2, 社員3
 		Map<EmployeeId, Map<Integer, BigDecimal>> totalNoTimeScheResult = new HashMap<EmployeeId, Map<Integer, BigDecimal>>() {
 			private static final long serialVersionUID = 1L;
@@ -451,7 +450,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 								put(2, BigDecimal.valueOf(330));
 								put(3, BigDecimal.valueOf(440));
 						}});
-				
+
 				//	社員2
 				//	- No: 1, 値: 250
 				//	- No: 2, 値: 168
@@ -462,7 +461,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 								put(2, BigDecimal.valueOf(168));
 								put(3, BigDecimal.valueOf(145));
 						}});
-				
+
 				//	社員3
 				//	- No: 1, 値: 12
 				//	- No: 2, 値: 36
@@ -472,13 +471,13 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 								put(1, BigDecimal.valueOf(12));
 								put(2, BigDecimal.valueOf(36));
 								put(3, BigDecimal.valueOf(53));
-						}});					
+						}});
 			}};
-		
+
 		//実績集計結果の社員2, 社員3
 		Map<EmployeeId, Map<Integer, BigDecimal>> totalNoTimeRecResult = new HashMap<EmployeeId, Map<Integer, BigDecimal>>() {
 			private static final long serialVersionUID = 1L;
-			{				
+			{
 				//	社員2
 				//	- No: 1, 値: 269
 				//	- No: 2, 値 : 281
@@ -489,7 +488,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 								put(2, BigDecimal.valueOf(281));
 								put(3, BigDecimal.valueOf(345));
 						}});
-				
+
 				//	社員3
 				//	- No: 1, 値 : 227
 				//	- No: 2, 値: 326
@@ -499,27 +498,27 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 								put(1, BigDecimal.valueOf(227));
 								put(2, BigDecimal.valueOf(326));
 								put(3, BigDecimal.valueOf(523));
-						}});				
+						}});
 			}};
-			
-			
+
+
 			new Expectations(TotalTimesCounterService.class) {
 				{
 					//予定
 					TotalTimesCounterService.countingNumberOfTotalTimeByEmployee( require, personalCounter, dailyWork_schedule );
 					result = totalNoTimeScheResult;
-					
+
 					//実績
 					TotalTimesCounterService.countingNumberOfTotalTimeByEmployee( require, personalCounter, dailyWorks_record );
 					result = totalNoTimeRecResult;
-					
+
 				}
 			};
-			
+
 			//Act
 			List< PersonCounterTimesNumberCounterResult > result = ScheduleDailyTablePersonCounterService
 					.aggregate( require, ScheRecGettingAtr.SCHEDULE_WITH_RECORD, personalCounter, dailyMap );
-			
+
 			//Assert
 			assertThat(result)
 					.extracting(	d -> d.getSid().v()
@@ -544,12 +543,12 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 						,	tuple("sid_3", ScheRecAtr.RECORD, 3, BigDecimal.valueOf(523))
 					);
 	}
-	
-	
+
+
 	public static class Helper {
 		@Injectable
 		private static WorkInfoOfDailyAttendance workInformation;
-		
+
 		@Injectable
 		private static GeneralDate date;
 		/**
@@ -559,6 +558,35 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 		 * @return
 		 */
 		public static IntegrationOfDaily createDailyWorks(String sid, GeneralDate ymd) {
+			return new IntegrationOfDaily(
+					 	sid, ymd, workInformation
+					,	CalAttrOfDailyAttd.defaultData()
+					,	null
+					,	Optional.empty()
+					,	Collections.emptyList()
+					,	Optional.empty()
+					,	new BreakTimeOfDailyAttd(Collections.emptyList())
+					,	Optional.empty()
+					,	Optional.empty()
+					,	Optional.empty()
+					,	Optional.empty()
+					,	Optional.empty()
+					,	Optional.empty()
+					,	Collections.emptyList()
+					,	Optional.empty()
+					,	Collections.emptyList()
+					,	Collections.emptyList()
+					,	Collections.emptyList()
+					,	Optional.empty()
+				);
+		}
+
+		/**
+		 * 日別実績(Work)を作る
+		 * @param sid 社員ID
+		 * @return
+		 */
+		public static IntegrationOfDaily createDailyWorks(String sid) {
 			return new IntegrationOfDaily(
 					 	sid, date, workInformation
 					,	CalAttrOfDailyAttd.defaultData()
@@ -576,33 +604,10 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 					,	Collections.emptyList()
 					,	Optional.empty()
 					,	Collections.emptyList()
-					,	Optional.empty());
-		}
-		
-		/**
-		 * 日別実績(Work)を作る
-		 * @param sid 社員ID
-		 * @return
-		 */
-		public static IntegrationOfDaily createDailyWorks(String sid) {
-			return new IntegrationOfDaily(
-					  sid, date, workInformation
-					, CalAttrOfDailyAttd.defaultData()
-					, null
-					, Optional.empty()
-					, Collections.emptyList()
-					, Optional.empty()
-					, new BreakTimeOfDailyAttd(Collections.emptyList())
-					, Optional.empty()
-					, Optional.empty()
-					, Optional.empty()
-					, Optional.empty()
-					, Optional.empty()
-					, Optional.empty()
-					, Collections.emptyList()
-					, Optional.empty()
-					, Collections.emptyList()
-					, Optional.empty());
+					,	Collections.emptyList()
+					,	Collections.emptyList()
+					,	Optional.empty()
+				);
 		}
 	}
 }

@@ -2,19 +2,8 @@
 	width: 1200px;
 }
 
-/* #btnComfirmAttendance {
-	vertical-align: text-bottom;
-} */
-
 #btnVacationRemaining {
 	margin-left: 50px;
-	/* top: -12px; */
-}
-
-#dislayFormatLbl {
-	/* margin-left: 20px; */
-	top: -12px;
-    position: relative;
 }
 
 #right-content {
@@ -22,61 +11,27 @@
 	width: auto;
 }
 
-#cbListDate {
-	/* margin-top: 10px; */
-}
 
 #cbListDate {
 	display: none;
 	margin-top: -6px;
 }
 
-.btn-signAll {
-	/* margin: 3px 0 0 200px; */
-	margin-left: 146px;
-}
 
 .btn-signAll2 {
-	/* margin: 3px 0 0 200px; */
 	margin-left: 10px;
-}
-
-#btn-saveColumnWidth {
-	/* float: right; */
-	margin-top: 3px;
-	margin-left: 15px;
-}
-
-#btn-legend {
-	/* float: left; */
-	margin-top: 3px;
-	margin-left: 15px;
-}
-#btnExtraction{
-	font-size: 15px !IMPORTANT;
-    padding: 4px 10px;
-    margin-bottom: 4px;
-    height: 34px !IMPORTANT;
-    width: 200px;
-    box-shadow: 0 4px rgba(0, 0, 0, 0.4);
 }
 
 #gid {
 	margin: 2px 0 0 0px;
-/*     margin-top: -6px; */
     height: 700px;
 }
 
 .setting-container {
-	display: inline-block;
-	margin: 3px ;
-	/* position: relative; */
-	margin-left: 15px;
 }
 
 #setting-content {
 	height: 200px;
-	/* width: 290px; */
 	border: 1px solid gray;
 	border-radius: 5px;
 	position: absolute;
@@ -86,8 +41,6 @@
     margin-top: 0px;
 	padding: 15px;
 	visibility: hidden;
-	/* top: -9999px;
-	left: -9999px; */
 }
 
 #cbCursorMoveDirection {
@@ -152,85 +105,23 @@
     border-style: solid;
     border-color: transparent #ffffdd transparent transparent;
 }
-#fixed-table .ui-widget-header{
-	background-color: #CFF1A5;
-	border: 1px solid #CCC;
-	text-align: center;
-	height: 29px;
-	width: auto;
-	padding-left: 2px;
-	padding-right: 2px
-}
-#fixed-table .ui-widget-body{
-	border: 1px solid #CCC;
-	text-align: right;
-    height: 29px;
-}
-/* #fixed-table .ui-widget-body .text-holiday{ 
-	margin-right: 10px;
-} */
-#fixed-table {
-	border: 2px solid #CCC;
-	text-align: center;
-	padding: 0 2px;
-	/* width: auto;  */
-	/* max-width: 245px; */
-}
 
-#holiday-agree {
-	margin-left: 10px;
-	height: 80px;
-	position: absolute;
-	left: 872px;
-	top: 2px;
-/* 	float: left;
-	margin-top: -24px; */
-	max-width: 460px;
-}
-	
-#fixed-table tr td {
-	border: none !important;
-	border-right: 1px solid #CCC !important;
-}
-
-#emp-component{
-	margin-top: -18px;
-	margin-left: -10px;
-	margin-bottom: 12px;
-    width: 800px; 
-    height: 30px !important;
-}
-.ui-iggrid .ui-iggrid-headercaption, .ui-iggrid .ui-iggrid-header, .ui-iggrid .ui-iggrid-toolbar {
-    background-color: white;
-    border-color: white;
-}
 #content-grid{
     position: absolute;
     top: 93px;
 }
 #content-grid-not{
-/* 	height: 20px ;
-	position: relative;
-	bottom: -30px;
-	margin-right: 300px; */
 	margin-top: -3px;
 	width: 1175px;
 }
-.ui-iggrid-results{
-	background-color: #e9e9e9;
-    bottom: -9px;
-    position: relative;
-    right: -7px;
-}
+
 .nts-grid-wrapper table tr td.ui-state-hover, .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover,  .nts-grid  tr.ui-ig-altrecord td.ui-state-hover{
 	background-color: #f5f5dc ;
 }
+
 #right-content {
     margin-left: 80px;
      width: auto;
-}
-.nts-grid-sheet-buttons{
-/* 	margin-top:32px; */
 }
 .right-align {
   text-align: right;
@@ -252,12 +143,10 @@
 	background-color: #CFF1A5;
 	border: 1px solid #CCC;
 	text-align: center;
-	/* height: 29px; */
 }
 #flex-table .ui-widget-body{
 	border: 1px solid #CCC;
 	text-align: right;
-  /*   height: 29px; */
 }
 #flex-table {
 	border: 2px solid #CCC;
@@ -272,22 +161,18 @@
 	width: 180px;}
 	
 .italic-text{
-	/*  font-style: italic; */
 	 font-weight: bold;
 	 background-color: black !important;
 	 color: white !important;
 }
 
 .nts-grid tr td.ui-iggrid-selectedcell.ui-state-hover {
-	/*  font-style: italic; */
 	 background-color: #007fff !important;
 	 color: black !important;
 }
 
 .image-icon{
 	background: url('../a/image/icon.png');
-/* 	display: block;
-    float: left; */
     margin: 3px -3px;
     padding: 9px 19px;
 }
@@ -295,44 +180,22 @@
 	background-color: #CCC;
 }
 
-#agree-table .ui-widget-header {
-	background-color: #CFF1A5;
-	border: 1px solid #CCC;
-	text-align: center;
-	/* height: 29px; */
-	width: 50px;
-}
-
-#agree-table .ui-widget-body {
-	border: 2px solid #CCC;
-	text-align: center;
-	/* height: 29px; */
-}
-
-#agree-table {
-	border: 2px solid #CCC;
-	text-align: center;
-	padding: 0 2px;
-	/* margin-top: 10px; */
-	/* width: 400px; */
-}
-
-#agree-time, #agree-excess {
-	height: inherit;
-	text-align: center;
-	border: 1px solid #CCC;
-}
-
 .state-exception {
 	background-color: #EB9152;
 }
 
-.state-alarm {
+.state-alarm > span {
 	background-color: #F6F636;
+	width: calc(100% - 10px);
+    display: block;
+    margin-left: 5px;
 }
 
-.state-error {
+.state-error > span {
 	background-color: #FD4D4D;
+	width: calc(100% - 10px);
+    display: block;
+    margin-left: 5px;
 }
 
 .text-alarm{
@@ -357,19 +220,6 @@
     display: inline-block;
 }
 
-/* .agree-column {
-	display: table-cell;
-}
-
-.agree-row {
-	display: table;
-	width: 100%; Optional
-	table-layout: fixed; Optional
-	border-spacing: 10px; Optional
-	margin: -10px;
-	width: 608px;
-}
- */
 .Column {
 	display: table-cell;
 }
@@ -387,15 +237,9 @@
     height: 29px;
 }
 
-/* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
-	background-color: #007fff !IMPORTANT;
-} */
-
-/* #contents-area, #function-content {width: 1280px;}
-#left-content{width: 100px; height: 500px; float: left;} */
-
 #functions-area {
-    height: auto;}
+    height: auto;
+}
     
 #contents-area {
     /* margin-top: -15px; */
@@ -405,92 +249,178 @@
 	margin: 1px !important;
     margin-left: 12px !important;
 }
-/* #functions-area button {
-	height: 25px !important;
-} */
-/* button next/pre datetime */
-/* button.auto-height {
-    height: 23px !important;
-} */
-button {
-    height: 25px !important;
-    min-width: 10px !important;
+
+#extraction-controls {
+	display: flex;
 }
-/* .mgrid :not(.mgrid-header) table tr td {
-    font-size: 10px !important;
-} */
-/* .mgrid-fixed-table table tr {
-    height: 19px !important;
-} */
-.mgrid .mgrid-fixed table tr, .mgrid .mgrid-free table tr {
-   /*  height: 10px !important; */
-} 
-#contents-area * {
-    font-size: 0.8rem;
+
+#extraction-controls > div {
+	height: 42px;
+	margin: 0 10px 0 0;
 }
-#functions-area * {
-    font-size: 0.8rem;
-    height: 30px;
+
+#extraction-controls > div > div {
+	display: flex;
+	justify-content: center;
+  	align-items: center;
+  	height: 100%;
 }
+
+#extraction-controls > div > div > * {
+	display: block;
+}
+
+#extraction-controls #daterangepicker span.label-span {
+	position: relative;
+	top: -2px;
+}
+#extraction-controls #daterangepicker #dislayFormatLbl {
+	top: -3px;
+}
+
+
+/* 日付送り */
+#daterangepicker .ntsDatepicker {
+	width: 90px;
+	height: 38px;
+	padding: 0;
+	border-width: 0;
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+}
+
+#daterangepicker .label-span {
+}
+
+/* 月次データ */
+#monthly-data-view {
+	margin-top: 10px;
+	width: calc(100% - 800px);
+	overflow-x: scroll;
+}
+
+#monthly-data-view #miGrid_fixedContainerScroller {
+	display: none;
+}
+
+#monthly-data-view #miGrid_scroll {
+	overflow: hidden !important;
+}
+
+/* 残数データ */
+#holiday-agree {
+	position: absolute;
+	z-index: 1; /* グリッドの下になってしまうのを回避 */
+	left: calc(100% - 800px);
+	top: 70px;
+	margin-left: 10px;
+	max-width: 460px;
+	height: 80px;
+}
+
+
+#holiday-agree th, #holiday-agree td,
+#agree-table th, agree-table td {
+	font-weight: normal;
+	width: 100px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+#monthly-data-view .ui-iggrid-header,
+#monthly-data-view .ui-iggrid table tr td,
+#holiday-agree .ui-widget-header,
+#holiday-agree .ui-widget-body,
+#agree-table th,
+#agree-table td {
+	border-width: 0;
+	text-align: center;
+}
+
+#monthly-data-view .ui-iggrid-header,
+#holiday-agree .ui-widget-header {
+	background-color: #fff;
+	color: #000;
+}
+
+#monthly-data-view .ui-iggrid-header .ui-iggrid-headertext,
+#holiday-agree th span,
+#agree-table th span {
+	display: block;
+	margin-left: 5px;
+	margin-right: 5px;
+	border-style: solid;
+	border-width: 0 0 1px 0;
+	font-weight: normal;
+}
+
+#monthly-data-view .ui-iggrid-header .ui-iggrid-headertext {
+	border-color: #01956A;
+}
+
+#holiday-agree th span {
+	border-color: #406158;
+}
+
+#agree-table th span {
+	border-color: #DB4F51;
+}
+
+#monthly-data-view .ui-iggrid-fixedcontainer-left {
+	border-right-width: 0 !important;
+}
+
+#monthly-data-view .ui-iggrid table tr td {
+}
+
+
+#grid-controls {
+	display: flex;
+	align-items: center;
+	margin: 5px 0;
+}
+
+#grid-controls > * {
+	margin-right: 12px;
+}
+
+#grid-controls > button {
+	width: 95px;
+}
+
+/* メインのグリッド */
+.font-smaller * {
+	font-size: 0.8rem !important;
+}
+
+
+
 table#employ_view tr{
 	height: 25px !important;
 }
-#ccg001 * {
-    font-size: 0.8rem;
-}
+
 #cbDisplayFormat{
-	height: 27px;
-    bottom: -14px;
     width: 110px;
+    transform: scale(0.86);
 }
-#dislayFormatLblf{
-    bottom: -7px;
-}
-#btn-setting{
-	bottom: -7px;
-}
-/* #dislayFormatLbl{
+
+#btn-setting {
+	width: 25px;
 	height: 25px;
-} */
+}
+
+#btn-setting:not(:hover) {
+	background-color: transparent;
+}
+
 .mgrid .mbutton {
 	height: 20px !important;	
 }
-.ccg-lbl-vertical {
-    font-size: 18pt !important; 
-}
-#functions-area button {
-	margin-left: 4px;
-	margin-right: 4px
-}
-#functions-area button.danger {
-	margin-left: 4px;
-	margin-right: 4px
-}
-.nts-datepicker-wrapper .ntsDatepicker {
-    width: 72px;
-}
-.btn_show_list {
-    width: 50px !important;
-}
+
 #content-all-grid{
-	/* top: -25px !IMPORTANT ; */
     position: relative;
     top: -5px;
- /*    padding-top: 10px; */
-}
-#date-extract{
-	padding-top: 2px !important;
-    height: 42px;
-}
-body {
-	-ms-overflow-x: hidden;
-}
-.nts-combo-item{
-	width: 103px !important;
-
-}
-.nts-column {
-	font-size: 0.8rem !important;
 }
 
 .ntsDateNextButton  {
@@ -503,8 +433,21 @@ body {
 
 #wkp_title_text-emp-component {
 	width: 180px !important;
+    margin-top: 20px;
+	
 }
 
 #wkp_text-emp-component {
 	width: 150px !important;
+}
+
+#btnExtraction {
+	height: 30px;
+	width: 100px;
+}
+
+.hyperlink,
+.mgrid .mlink-button {
+	text-decoration: none !important;
+	color: #8d7565 !important;
 }

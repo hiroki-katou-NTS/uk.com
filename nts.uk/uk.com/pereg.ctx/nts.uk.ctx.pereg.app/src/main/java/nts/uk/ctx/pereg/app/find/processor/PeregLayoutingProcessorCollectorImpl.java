@@ -14,6 +14,7 @@ import find.person.info.PersonDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype.BusinessTypeDto;
 import nts.uk.ctx.at.record.app.find.stamp.card.stampcard.PeregStampCardDto;
 import nts.uk.ctx.at.shared.app.find.employeeworkway.medicalworkstyle.EmpMedicalWorkDto;
+import nts.uk.ctx.at.shared.app.find.dailyattdcal.empunitpricehistory.EmployeeUnitPriceDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.annualleave.AnnualLeaveDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave10informationDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave11informationDto;
@@ -72,6 +73,7 @@ import nts.uk.ctx.pereg.app.find.employment.history.EmploymentHistoryDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHisDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpHealInsQualifiInfoDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeInforDto;
+import nts.uk.ctx.sys.gateway.app.find.login.password.userpassword.PeregLoginPasswordDto;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 
 @Stateless
@@ -267,8 +269,14 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00092
 			new TypeLiteral<PeregFinder<EmpSocialInsGradeInforDto>>() {
 			},
+			// CS00097 単価
+			new TypeLiteral<PeregFinder<EmployeeUnitPriceDto>>() {
+			},
 			// CS00098 医療
 			new TypeLiteral<PeregFinder<EmpMedicalWorkDto>>() {
+			},
+			// CS00100 パスワード
+			new TypeLiteral<PeregFinder<PeregLoginPasswordDto>>() {
 			}
 	);
 

@@ -993,8 +993,10 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	public void calcTotalWorkingTime() {
 
 		this.totalWorkingTime = new AttendanceTimeMonth(this.aggregateTime.getTotalWorkingTargetTime().v()
-				+ this.actualWorkingTime.getTotalWorkingTargetTime().v()
-				+ this.flexTime.getTotalWorkingTargetTime().v());
+				+ this.actualWorkingTime.getTotalWorkingTargetTime().v());
+		
+		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK) 
+			this.totalWorkingTime = this.totalWorkingTime.addMinutes(this.flexTime.getTotalWorkingTargetTime().v());
 	}
 	
 	/**
@@ -1130,6 +1132,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	
 	@Getter
 	@AllArgsConstructor
+	/** 36協定時間集計結果*/
 	public static class AgreementTimeResult {
 		
 		private List<MonthlyAggregationErrorInfo> error = new ArrayList<>();

@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
@@ -100,7 +101,7 @@ public interface BreakDayOffManagementQuery {
 	 * @param sid
 	 * @return
 	 */
-	public double getDayOffRemainOfBeginMonth(String cid, String sid);
+	public LeaveRemainingDayNumber getDayOffRemainOfBeginMonth(String cid, String sid);
 	/**
 	 * 期間内の代休消滅数合計を取得
 	 * @param sid

@@ -14,6 +14,8 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		getLoginUser: "screen/com/ccg008/get-user"
 	};
 
+	const TOPPAGE_STORAGE_KEY = ['KTG001_INITIAL_DATA', 'KTG004_YM_PARAM'];
+
 	const getWidgetName = (type: number) => {
 		switch (type) {
 			case 0:
@@ -52,7 +54,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		virtual: false
 	})
 	export class WidgetGroupBindingHandler implements KnockoutBindingHandler {
-		init = (element: HTMLElement, valueAccessor: () => KnockoutObservableArray<WIDGET>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
+		init = (element: HTMLElement, valueAccessor: () => KnockoutObservableArray<WIDGET | LAYOUT_DATA>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
 			element.removeAttribute('data-bind');
 
 			if (element.tagName !== 'DIV') {
@@ -61,12 +63,29 @@ module nts.uk.com.view.ccg008.a.screenModel {
 				return;
 			}
 
+			const type: KnockoutObservable<boolean> = allBindingsAccessor.get('type');
 			const items = valueAccessor();
 
-			element.classList.add('widget-group');
-			element.innerHTML = '<div data-bind="widget: { name: wg.name, params: wg.params }"></div>';
+			const tpe = ko.unwrap<boolean>(type);
+			if (tpe) {
+				element.classList.add('widget-group');
+				element.innerHTML = '<div data-bind="widget: { name: wg.name, params: wg.params }"></div>';
+				ko.applyBindingsToNode(element, { foreach: { data: items, as: 'wg' } }, bindingContext);
+			}
 
-			ko.applyBindingsToNode(element, { foreach: { data: items, as: 'wg' } }, bindingContext);
+			ko.computed({
+				read: () => {
+					const type: KnockoutObservable<boolean> = allBindingsAccessor.get('type');
+					const tpe = ko.unwrap<boolean>(type);
+					if (!tpe) {
+						element.innerHTML = '';
+						ko.cleanNode(element);
+						const items = valueAccessor();
+						ko.applyBindingsToNode(element, { 'widget-frame': items }, bindingContext);
+					}
+				},
+				disposeWhenNodeIsRemoved: element
+			});
 
 			return { controlsDescendantBindings: true };
 		}
@@ -78,7 +97,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		virtual: false
 	})
 	export class WidgetFrameBindingHandler implements KnockoutBindingHandler {
-		init = (element: HTMLElement, valueAccessor: () => KnockoutObservable<LAYOUT_DATA>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
+		init = (element: HTMLElement, valueAccessor: () => KnockoutObservableArray<LAYOUT_DATA>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
 			element.removeAttribute('data-bind');
 
 			if (element.tagName !== 'DIV') {
@@ -87,13 +106,18 @@ module nts.uk.com.view.ccg008.a.screenModel {
 				return;
 			}
 
-			const url = valueAccessor();
+			let url = valueAccessor();
 
 			element.classList.add('widget-frame');
+			element.classList.remove('widget-group');
 
 			ko.computed({
 				read: () => {
-					const src = ko.unwrap<LAYOUT_DATA>(url);
+					let srcArr = ko.unwrap(url);
+					let src;
+					if (_.isArray(srcArr) && srcArr[0]) {
+						src = srcArr[0];
+					}
 
 					if (!src) {
 						element.innerHTML = '';
@@ -109,12 +133,13 @@ module nts.uk.com.view.ccg008.a.screenModel {
                     .then((res: { htmlContent: string; }) => {
                       const frame = document.createElement('iframe');
   
-                      $('.widget-center').append(frame);
+                      $(element).append(frame);
 
                       const doc = frame.contentDocument || frame.contentWindow.document;
   
                       doc.body.innerHTML = res.htmlContent;
 											doc.body.setAttribute('style', 'overflow: auto; position: relative;');
+                      nts.uk.com.view.ccg034.share.model.customload.loadLimitedLabelForIframe();
                     });
                 } else {
                   element.innerHTML = `<iframe src="${ntsFile.liveViewUrl(fileId, 'index.htm')}"></iframe>`;
@@ -133,30 +158,21 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 	@bean()
 	export class ViewModel extends ko.ViewModel {
-		dateSwitch: KnockoutObservableArray<any> = ko.observableArray([]);
-
 		closureId: KnockoutObservable<number> = ko.observable(1);
-
 		lstClosure: KnockoutObservableArray<ItemCbbModel> = ko.observableArray([]);
 		reloadInterval: KnockoutObservable<number> = ko.observable(0);
 		paramWidgetLayout2: KnockoutObservableArray<WidgetSettingDto> = ko.observableArray([]);
 		paramWidgetLayout3: KnockoutObservableArray<WidgetSettingDto> = ko.observableArray([]);
 		paramIframe1: KnockoutObservable<DisplayInTopPage> = ko.observable();
 		topPageSetting: any;
-
-		isShowSwitch: KnockoutObservable<boolean> = ko.observable(false);
-		isShowButtonRefresh: KnockoutObservable<boolean> = ko.observable(false);
-		isShowButtonSetting: KnockoutObservable<boolean> = ko.observable(false);
-
 		dataToppage: KnockoutObservable<DataTopPage> = ko.observable(null);
-
-		currentOrNextMonth: KnockoutObservable<null | 1 | 2> = ko.observable(null);
 		layoutDisplayType: KnockoutObservable<LAYOUT_DISPLAY_TYPE> = ko.observable(null);
-
-		widgetLeft: KnockoutObservableArray<WIDGET> = ko.observableArray([]);
-		widgetCenter: KnockoutObservable<LAYOUT_DATA> = ko.observable(null);
-		widgetRight: KnockoutObservableArray<WIDGET> = ko.observableArray([]);
-
+		widgetLeft: KnockoutObservableArray<WIDGET | LAYOUT_DATA> = ko.observableArray([]);
+		isWidgetLeft: KnockoutObservable<boolean> = ko.observable(true);
+		widgetCenter: KnockoutObservableArray<LAYOUT_DATA | WIDGET> = ko.observableArray([]);
+		isWidgetCenter: KnockoutObservable<boolean> = ko.observable(true);
+		widgetRight: KnockoutObservableArray<WIDGET | LAYOUT_DATA> = ko.observableArray([]);
+		isWidgetRight: KnockoutObservable<boolean> = ko.observable(true);
 		classLayoutName!: KnockoutComputed<string>;
     startDateInClosure: KnockoutObservable<string> = ko.observable(''); 
     startDate : KnockoutObservable<string> = ko.observable('');
@@ -170,13 +186,15 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 		constructor() {
 			super();
-
 			const vm = this;
 
-			vm.dateSwitch([
-				{ code: 1, name: vm.$i18n("CCG008_14") },
-				{ code: 2, name: vm.$i18n("CCG008_15") }
-			]);
+			const fromScreen = __viewContext.transferred.value;
+			if (fromScreen && fromScreen.screen && fromScreen.screen === 'login') {
+				// Remove all cache of KTG001 AND KTG004 Widget
+				_.forEach(TOPPAGE_STORAGE_KEY, key => vm.$window.storage(key, null));
+				// Clear fromScreen
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+			}
 
 			vm.classLayoutName = ko.computed({
 				read: () => {
@@ -186,38 +204,25 @@ module nts.uk.com.view.ccg008.a.screenModel {
 				}
 			});
 
-			vm.currentOrNextMonth
-				.subscribe(function (currentOrNextMonth: 1 | 2) {
-					if (currentOrNextMonth) {
-						const closureId = ko.unwrap<number>(vm.closureId);
-
-						vm.$window
-							.storage('cache', {
-								closureId,
-								currentOrNextMonth
-							})
-							.then((cache: any) => vm.$window.shared('cache', cache));
-
-              const dataProcess = currentOrNextMonth && currentOrNextMonth == 1
-								? parseInt(vm.startDateInClosure())
-								: parseInt(moment.utc(vm.startDateInClosure(), 'YYYYMM').add(1, 'M').format('YYYYMM'));
-              const params: any = {
-                closureId:  closureId,
-                processDate : dataProcess
-              };
-              vm.$ajax("com", API.getClosure, params).then((data:any) => {
-                vm.startDate(moment.utc(data.startDate).format('MM/DD'));
-                vm.endDate(moment.utc(data.endDate).format('MM/DD'));
-              })
+			const refreshLayout = () => {
+					const restoreKtg026 = vm.$window.storage('KTG026_INITIAL_DATA').then((rs: {isRefresh: boolean, target: any}) => {
+						if (rs) {
+							rs.isRefresh = true;
+							vm.$window.storage('KTG026_INITIAL_DATA', rs);
+						}
+					});
+					const restoreKtg027 = vm.$window.storage('KTG027_INITIAL_DATA').then((rs: {isRefresh: boolean, target: any}) => {
+						if (rs) {
+							rs.isRefresh = true;
+							vm.$window.storage('KTG027_INITIAL_DATA', rs);
+						}
+					});
+				-
+					$.when(restoreKtg026, restoreKtg027).then(() => {
 						vm.callApiTopPage();
-					}
-				});
-
-			vm.closureId
-				.subscribe(function (value) {
-					vm.currentOrNextMonth.valueHasMutated();
-				});
-
+					})
+				}
+			
 			vm.reloadInterval
 				.subscribe((data: any) => {
 					const minutes = vm.getMinutes(data);
@@ -227,18 +232,21 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 					if (data !== 0) {
 						vm.reload = setInterval(() => {
-							if (vm.paramWidgetLayout2().length > 0 || vm.paramWidgetLayout3().length > 0) {
-								vm.callApiTopPage();
+							const widgetLeft = vm.widgetLeft();
+							const widgetRight = vm.widgetRight();
+							if (vm.isWidgetLeft() && vm.widgetLeft().length > 0) {
+								vm.widgetLeft([]);
+								vm.widgetLeft(widgetLeft);
+							}
+							if (vm.isWidgetCenter() && vm.widgetLeft().length > 0) {
+								vm.widgetCenter([]);
+								vm.widgetCenter(widgetLeft);
+							}
+							if (vm.isWidgetRight() && vm.widgetRight().length > 0) {
+								vm.widgetRight([]);
+								vm.widgetRight(widgetRight);
 							}
 						}, miliSeconds);
-					}
-				});
-
-			// fix bug when not show currentOrNextMonth button
-			vm.isShowSwitch
-				.subscribe((s: boolean) => {
-					if (!s) {
-						vm.callApiTopPage();
 					}
 				});
 		}
@@ -261,11 +269,6 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						if (setting.reloadInterval) {
 							vm.reloadInterval(setting.reloadInterval);
 						}
-
-						if (user) {
-							vm.isShowButtonSetting(true);
-						}
-
 						vm.topPageSetting = setting;
 					}
 
@@ -280,33 +283,17 @@ module nts.uk.com.view.ccg008.a.screenModel {
                       .storage('cache')
                       .then((obj: any) => {
                         if (obj) {
-                          const { switchingDate } = vm.topPageSetting;
-                          const endDate = moment.utc(obj.endDate, D_FORMAT).add(switchingDate, 'day').startOf('day');
-    
-                          if (endDate.isBefore(moment().startOf('day'))) {
-                            vm.currentOrNextMonth(2);
-    
-                            obj.currentOrNextMonth = 2;
-                          } else {
-                            vm.currentOrNextMonth(1);
-                          }
-    
                           vm.closureId(obj.closureId);
-    
                           vm.$window.shared('cache', obj);
                         } else {
                           vm.closureId(1);
-                          vm.currentOrNextMonth(null);
                         }
                       });
                       vm.dataToppage(null);
-                      vm.startDateInClosure(cache.startDate);
-                      const dataProcess = vm.currentOrNextMonth() && vm.currentOrNextMonth() == 1
-												? parseInt(vm.startDateInClosure())
-												: parseInt(moment.utc(vm.startDateInClosure(), 'YYYYMM').add(1, 'M').format('YYYYMM'));
+                      vm.startDateInClosure(cache.processDate);
                       const params: any = {
                         closureId:  cache.closureId,
-                        processDate : dataProcess
+                        processDate : parseInt(vm.startDateInClosure())
                       };
                       vm.$ajax("com", API.getClosure, params).then((data:any) => {
                         vm.startDate(moment.utc(data.startDate).format('MM/DD'));
@@ -317,15 +304,11 @@ module nts.uk.com.view.ccg008.a.screenModel {
                     vm.$window.storage("cache").then((obj: any) => {
                       console.log(obj);
                       vm.dataToppage(null);
-                      vm.startDateInClosure(cache.startDate);
+                      vm.startDateInClosure(cache.processDate);
                       vm.closureId(obj.closureId);
-                      vm.currentOrNextMonth(obj.currentOrNextMonth);
-                      const dataProcess = vm.currentOrNextMonth() && vm.currentOrNextMonth() == 1
-												? parseInt(vm.startDateInClosure())
-												: parseInt(moment.utc(vm.startDateInClosure(), 'YYYYMM').add(1, 'M').format('YYYYMM'));
                       const params: any = {
                         closureId:  cache.closureId,
-                        processDate : dataProcess
+                        processDate : parseInt(vm.startDateInClosure())
                       };
                       vm.$ajax("com", API.getClosure, params).then((data:any) => {
                         vm.startDate(moment.utc(data.startDate).format('MM/DD'));
@@ -334,8 +317,6 @@ module nts.uk.com.view.ccg008.a.screenModel {
                  })
             }
           } 
-          
-					
 				})
 				.always(() => vm.$blockui("clear"));
 
@@ -343,6 +324,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 		mounted() {
 			const vm = this;
+			vm.callApiTopPage();
 
 			$(vm.$el)
 				.removeAttr('data-bind')
@@ -362,7 +344,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 			// clear widget data
 			vm.widgetLeft([]);
-			vm.widgetCenter(null);
+			// vm.widgetCenter(null);
 			vm.widgetRight([]);
 
 			vm
@@ -385,7 +367,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 		getToppage(data: DataTopPage, screen: string = 'other') {
 			const vm = this;
-			const { topPageSetting, closureId, currentOrNextMonth } = vm;
+			const { topPageSetting, closureId } = vm;
 			const { displayTopPage, standardMenu } = data;
 
 			const loadWidget = () => {
@@ -393,9 +375,14 @@ module nts.uk.com.view.ccg008.a.screenModel {
 					return;
 				}
 
-				const { layout1, layout2, layout3, urlLayout1, layoutDisplayType } = displayTopPage;
+				const { urlLayout1, layoutDisplayType, topPage, listLayout } = displayTopPage;
 
-				const layout2Widget = (settings: WidgetSettingDto[]) => {
+				const layout1 = listLayout[0];
+				const layout2 = listLayout[1];
+				const layout3 = listLayout[2];
+				vm.layoutDisplayType(layoutDisplayType);
+
+				const layoutToWidget = (settings: WidgetSettingDto[]) => {
 					return _
 						.chain(settings)
 						.orderBy(['order', 'asc'])
@@ -403,68 +390,98 @@ module nts.uk.com.view.ccg008.a.screenModel {
 							name: getWidgetName(widgetType),
 							params: {
 								closureId: ko.unwrap<number>(closureId),
-								currentOrNextMonth: ko.unwrap<1 | 2>(currentOrNextMonth) || 1
 							}
 						}))
 						.value();
 				};
 
-				if (urlLayout1) {
-					vm.widgetCenter(urlLayout1);
-				} else {
-					if (layout1) {
-						const [first] = layout1;
-
+				const getFlowMenu = (layout: any) => {
+					if (urlLayout1) {
+						return urlLayout1;
+					}
+					if (layout) {
+						const [first] = layout;
 						if (first) {
-							vm.widgetCenter(first);
+							return first as FlowMenuOutputCCG008;
 						}
 					}
-				}
+					return null;
+				};
 
 				switch (layoutDisplayType) {
 					default:
 					case 0:
-						// clear widgets
+						vm.isWidgetLeft(false);
+						vm.isWidgetCenter(false);
+						vm.isWidgetRight(false);
+						// clear widgets left and right
 						vm.widgetLeft([]);
 						vm.widgetRight([]);
+
+						// set flow menu by first layout
+						vm.widgetCenter([getFlowMenu(layout1)])
 						break;
 					case 1:
+						vm.isWidgetLeft(false);
+						vm.isWidgetCenter(false);
+						vm.isWidgetRight(true);
 						// clear widget of left group
 						vm.widgetLeft([]);
-
-						const rightWidgets = layout2Widget(layout2);
-
+						const rightWidgets = layoutToWidget(layout2 as WidgetSettingDto[]);
 						vm.widgetRight(rightWidgets);
+
+						// set flow menu by first layout
+						vm.widgetCenter([getFlowMenu(layout1)])
 						break;
 					case 2:
-						const leftWidgets = layout2Widget(layout2);
-
+						vm.isWidgetLeft(!!true);
+						vm.isWidgetCenter(false);
+						vm.isWidgetRight(false);
+						const leftWidgets = layoutToWidget(layout1 as WidgetSettingDto[]);
 						vm.widgetLeft(leftWidgets);
-
 						// clear widget of right group
 						vm.widgetRight([]);
+
+						// set flow menu by second layout
+						vm.widgetCenter([getFlowMenu(layout2)])
 						break;
 					case 3:
-						const firstWidgets = layout2Widget(layout2);
-						const thirstWidgets = layout2Widget(layout3);
+						const { frameLayout1, frameLayout2, frameLayout3 } = topPage;
+						vm.isWidgetLeft(!!frameLayout1);
+						vm.isWidgetCenter(!!frameLayout2);
+						vm.isWidgetRight(!!frameLayout3);
 
-						vm.widgetLeft(firstWidgets);
-						vm.widgetRight(thirstWidgets);
+						let flowLayout: LAYOUT_DATA;
+
+						if (!!frameLayout1) {
+							const firstWidgets = layoutToWidget(layout1 as WidgetSettingDto[]);
+							vm.widgetLeft(firstWidgets);
+							$('.widget-left').wrapAll('<div style="display: flex;"></div>');
+						} else {
+							flowLayout = getFlowMenu(layout1 as FlowMenuOutputCCG008[]);
+							vm.widgetLeft([flowLayout]);
+						}
+
+						if (!!frameLayout2) {
+							const secondWidgets = layoutToWidget(layout2 as WidgetSettingDto[]);
+							vm.widgetCenter(secondWidgets);
+							$('.widget-center').wrapAll('<div style="display: flex;"></div>');
+						} else {
+							flowLayout = getFlowMenu(layout2 as FlowMenuOutputCCG008[]);
+							vm.widgetCenter([flowLayout]);
+						}
+
+						if (!!frameLayout3) {
+							const thirdWidgets = layoutToWidget(layout3 as WidgetSettingDto[]);
+							vm.widgetRight(thirdWidgets);
+							$('.widget-right').wrapAll('<div style="display: flex;"></div>');
+						} else {
+							flowLayout = getFlowMenu(layout3 as FlowMenuOutputCCG008[]);
+							vm.widgetRight([flowLayout]);
+						}
 						break;
 				}
 
-				let showSwitchLayout2: any[] = [];
-				let showSwitchLayout3: any[] = [];
-				if (layout2) {
-					showSwitchLayout2 = _.filter(layout2, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
-				}
-
-				if (layout3) {
-					showSwitchLayout3 = _.filter(layout3, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
-					const showClosure = _.filter(layout3, ({ widgetType }) => widgetType === 1);
-				}
-
-				vm.isShowSwitch(!_.isEmpty(showSwitchLayout2) || !_.isEmpty(showSwitchLayout3));
 				const setScrollTop = setInterval(() => {
 					if ($('.widget-container').length === vm.widgetLeft().length + vm.widgetRight().length){
 						$('.widget-group').scrollTop(0);
@@ -511,47 +528,14 @@ module nts.uk.com.view.ccg008.a.screenModel {
 			}
 
 			if (displayTopPage) {
-				const { layout2, layoutDisplayType } = displayTopPage;
+				const { layoutDisplayType } = displayTopPage;
 
 				vm.layoutDisplayType(layoutDisplayType);
-				vm.isShowButtonRefresh(layoutDisplayType !== 0 && !!layout2.length);
 			}
-		}
-
-		openScreenE() {
-			const vm = this;
-			const interval = ko.unwrap<number>(vm.reloadInterval);
-
-			vm.$window
-				.shared('DataFromScreenA', interval)
-				.then(() => vm.$window.modal('com', '/view/ccg/008/e/index.xhtml'))
-				.then(() => vm.$window.shared('DataFromScreenE'))
-				.then((value: number) => vm.reloadInterval(value))
-				.then(() => vm.$window.shared('DataFromScreenE', null));
 		}
 
 		getMinutes(value: number) {
 			return [0, 1, 5, 10, 20, 30, 40, 50, 60][value] || 0;
-		}
-
-		refreshLayout() {
-			const vm = this;
-			const restoreKtg026 = vm.$window.storage('KTG026_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
-				if (rs) {
-					rs.isRefresh = true;
-					vm.$window.storage('KTG026_TARGET', rs);
-				}
-			});
-			const restoreKtg027 = vm.$window.storage('KTG027_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
-				if (rs) {
-					rs.isRefresh = true;
-					vm.$window.storage('KTG027_TARGET', rs);
-				}
-			});
-
-			$.when(restoreKtg026, restoreKtg027).then(() => {
-				vm.callApiTopPage();
-			})
 		}
 	}
 
@@ -574,14 +558,23 @@ module nts.uk.com.view.ccg008.a.screenModel {
 	}
 
 	export class DisplayInTopPage {
-		layout1: Array<FlowMenuOutputCCG008>;
-		layout2: Array<WidgetSettingDto>;
-		layout3: Array<WidgetSettingDto>;
 		urlLayout1: string;
 		layoutDisplayType: LAYOUT_DISPLAY_TYPE;
+		listLayout: (FlowMenuOutputCCG008[] | WidgetSettingDto[])[];
+		topPage: TopPage;
 		constructor(init?: Partial<DisplayInTopPage>) {
 			$.extend(this, init);
 		}
+	}
+
+	interface TopPage {
+		cid: string;
+		topPageCode: string;
+		topPageName: string;
+		layoutDisp: number;
+		frameLayout1: number;
+		frameLayout2: number;
+		frameLayout3: number;
 	}
 
 	export class WidgetSettingDto {

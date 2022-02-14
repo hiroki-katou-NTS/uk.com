@@ -1,22 +1,17 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.application.*;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
@@ -37,6 +32,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -192,6 +188,12 @@ public class CollectAchievementImpl implements CollectAchievement {
 					scBasicScheduleImport.getScheduleStartClock2(),
 					scBasicScheduleImport.getScheduleEndClock1(),
 					scBasicScheduleImport.getScheduleEndClock2());
+			breakTimeSheets = scBasicScheduleImport.getListBreakTimeSheetExports().stream().map(x -> {
+			    return new BreakTimeSheet(
+			            new BreakFrameNo(x.getBreakFrameNo()), 
+			            new TimeWithDayAttr(x.getStartTime()), 
+			            new TimeWithDayAttr(x.getEndTime()));
+			}).collect(Collectors.toList());
 		} else {//取得件数＝1件(số data lấy được = 1)
 			// 実績スケ区分＝日別実績 (Phân loại thực tế = Thực tế hàng ngày )
 			trackRecordAtr = TrackRecordAtr.DAILY_RESULTS;
@@ -399,9 +401,29 @@ public class CollectAchievementImpl implements CollectAchievement {
 	}
 
 	@Override
-	public List<PreAppContentDisplay> getPreAppContents(String companyID, String employeeID, List<GeneralDate> dateLst,
-			ApplicationType appType) {
+	public List<PreAppContentDisplay> getPreAppContents(String companyID, String employeeID, List<GeneralDate> dateLst, ApplicationType appType, Optional<OvertimeAppAtr> opOvertimeAppAtr) {
 		List<PreAppContentDisplay> result = new ArrayList<>();
+		if (appType == ApplicationType.OVER_TIME_APPLICATION && opOvertimeAppAtr.isPresent() && opOvertimeAppAtr.get() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
+			List<Application> applications = applicationRepository.getByListDateReflectType2(
+					employeeID,
+					dateLst,
+					Arrays.asList(ApplicationType.OVER_TIME_APPLICATION.value),
+					Arrays.asList(ReflectedState.NOTREFLECTED.value, ReflectedState.WAITREFLECTION.value, ReflectedState.REFLECTED.value)
+			).stream().filter(a -> a.getPrePostAtr() == PrePostAtr.PREDICT).collect(Collectors.toList());
+			Map<String, AppOverTime> appOverTimes = appOverTimeRepository.getHashMapByID(companyID, applications.stream().map(Application::getAppID).collect(Collectors.toList()));
+			for (int i = applications.size() - 1; i >= 0; i--) {
+				AppOverTime appOverTime = appOverTimes.get(applications.get(i).getAppID());
+				if (appOverTime != null && appOverTime.getOverTimeClf() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
+					result.add(new PreAppContentDisplay(
+							applications.get(i).getAppDate().getApplicationDate(),
+							Optional.of(appOverTime),
+							Optional.empty()
+					));
+					break;
+				}
+			}
+			return result;
+		}
 		// INPUT．申請対象日リストをチェックする
 		if(CollectionUtil.isEmpty(dateLst)) {
 			return Collections.emptyList();

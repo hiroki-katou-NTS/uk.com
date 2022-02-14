@@ -177,38 +177,38 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		if(param.isPostOutput()) {
 			prePostAtrLst.add(PrePostAtr.POSTERIOR);
 		}
-		if(condition) {
+		if (condition) {
 			// ドメインモデル「申請」を取得する
 			List<ApplicationType> allAppTypeLst = new ArrayList<>();
-			for(ApplicationType appType : ApplicationType.values()) {
-				if(appType==ApplicationType.STAMP_APPLICATION) {
+			for (ApplicationType appType : ApplicationType.values()) {
+				if (appType == ApplicationType.STAMP_APPLICATION) {
 					continue;
 				}
-				if(appType==ApplicationType.OVER_TIME_APPLICATION) {
+				if (appType == ApplicationType.OVER_TIME_APPLICATION) {
 					continue;
 				}
 				allAppTypeLst.add(appType);
-			} 
+			}
 			List<StampRequestMode> stampRequestModeLst = new ArrayList<>();
-			for(StampRequestMode stampRequestMode : StampRequestMode.values()) {
+			for (StampRequestMode stampRequestMode : StampRequestMode.values()) {
 				stampRequestModeLst.add(stampRequestMode);
 			}
 			List<OvertimeAppAtr> overtimeAppAtrLst = new ArrayList<>();
-			for(OvertimeAppAtr overtimeAppAtr : OvertimeAppAtr.values()) {
+			for (OvertimeAppAtr overtimeAppAtr : OvertimeAppAtr.values()) {
 				overtimeAppAtrLst.add(overtimeAppAtr);
 			}
-			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(), 
+			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(),
 					allAppTypeLst, prePostAtrLst, stampRequestModeLst, overtimeAppAtrLst);
 		} else {
 			// ドメインモデル「申請」を取得する
 			List<ApplicationType> appTypeLst = param.getOpListOfAppTypes().map(x -> {
-				return x.stream().filter(y -> y.isChoice() && y.getAppType()!=ApplicationType.STAMP_APPLICATION && y.getAppType()!=ApplicationType.OVER_TIME_APPLICATION)
+				return x.stream().filter(y -> y.isChoice() && y.getAppType() != ApplicationType.STAMP_APPLICATION && y.getAppType() != ApplicationType.OVER_TIME_APPLICATION)
 						.map(y -> y.getAppType()).collect(Collectors.toList());
 			}).orElse(Collections.emptyList());
 			List<StampRequestMode> stampRequestModeLst = param.getOpListOfAppTypes().map(x -> {
-				return x.stream().filter(y -> y.isChoice() && y.getAppType()==ApplicationType.STAMP_APPLICATION)
+				return x.stream().filter(y -> y.isChoice() && y.getAppType() == ApplicationType.STAMP_APPLICATION)
 						.map(y -> {
-							if(y.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.STAMP_ADDITIONAL) {
+							if (y.getOpApplicationTypeDisplay().get().value == ApplicationTypeDisplay.STAMP_ADDITIONAL.value) {
 								return StampRequestMode.STAMP_ADDITIONAL;
 							} else {
 								return StampRequestMode.STAMP_ONLINE_RECORD;
@@ -216,18 +216,20 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						}).collect(Collectors.toList());
 			}).orElse(Collections.emptyList());
 			List<OvertimeAppAtr> overtimeAppAtrLst = param.getOpListOfAppTypes().map(x -> {
-				return x.stream().filter(y -> y.isChoice() && y.getAppType()==ApplicationType.OVER_TIME_APPLICATION)
+				return x.stream().filter(y -> y.isChoice() && y.getAppType() == ApplicationType.OVER_TIME_APPLICATION)
 						.map(y -> {
-							if(y.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.EARLY_OVERTIME) {
+							if (y.getOpApplicationTypeDisplay().get().value == ApplicationTypeDisplay.EARLY_OVERTIME.value) {
 								return OvertimeAppAtr.EARLY_OVERTIME;
-							} else if(y.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.NORMAL_OVERTIME) {
+							} else if (y.getOpApplicationTypeDisplay().get().value == ApplicationTypeDisplay.NORMAL_OVERTIME.value) {
 								return OvertimeAppAtr.NORMAL_OVERTIME;
-							} else {
+							} else if (y.getOpApplicationTypeDisplay().get().value == ApplicationTypeDisplay.OVERTIME_MULTIPLE_TIME.value)
+								return OvertimeAppAtr.MULTIPLE_OVERTIME;
+							else {
 								return OvertimeAppAtr.EARLY_NORMAL_OVERTIME;
 							}
 						}).collect(Collectors.toList());
 			}).orElse(Collections.emptyList());
-			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(), 
+			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(),
 					appTypeLst, prePostAtrLst, stampRequestModeLst, overtimeAppAtrLst);
 		}
 		// 承認ルートの内容取得
@@ -461,9 +463,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					.map(y -> y.getAppType().value).collect(Collectors.toList());
 		}).orElse(Collections.emptyList());
 		List<StampRequestMode> stampRequestModeLst = param.getOpListOfAppTypes().map(x -> {
-			return x.stream().filter(y -> y.isChoice() && y.getAppType()==ApplicationType.STAMP_APPLICATION)
+			return x.stream().filter(y -> y.isChoice() && y.getAppType() == ApplicationType.STAMP_APPLICATION)
 					.map(y -> {
-						if(y.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.STAMP_ADDITIONAL) {
+						if(y.getOpApplicationTypeDisplay().get().value == ApplicationTypeDisplay.STAMP_ADDITIONAL.value) {
 							return StampRequestMode.STAMP_ADDITIONAL;
 						} else {
 							return StampRequestMode.STAMP_ONLINE_RECORD;
@@ -471,13 +473,15 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					}).collect(Collectors.toList());
 		}).orElse(Collections.emptyList());
 		List<OvertimeAppAtr> overtimeAppAtrLst = param.getOpListOfAppTypes().map(x -> {
-			return x.stream().filter(y -> y.isChoice() && y.getAppType()==ApplicationType.OVER_TIME_APPLICATION)
+			return x.stream().filter(y -> y.isChoice() && y.getAppType() == ApplicationType.OVER_TIME_APPLICATION)
 					.map(y -> {
-						if(y.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.EARLY_OVERTIME) {
+						if(y.getOpApplicationTypeDisplay().get().value == ApplicationTypeDisplay.EARLY_OVERTIME.value) {
 							return OvertimeAppAtr.EARLY_OVERTIME;
-						} else if(y.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.NORMAL_OVERTIME) {
+						} else if(y.getOpApplicationTypeDisplay().get().value == ApplicationTypeDisplay.NORMAL_OVERTIME.value) {
 							return OvertimeAppAtr.NORMAL_OVERTIME;
-						} else {
+						}else if(y.getOpApplicationTypeDisplay().get().value == ApplicationTypeDisplay.OVERTIME_MULTIPLE_TIME.value)
+							return OvertimeAppAtr.MULTIPLE_OVERTIME;
+						else {
 							return OvertimeAppAtr.EARLY_NORMAL_OVERTIME;
 						}
 					}).collect(Collectors.toList());

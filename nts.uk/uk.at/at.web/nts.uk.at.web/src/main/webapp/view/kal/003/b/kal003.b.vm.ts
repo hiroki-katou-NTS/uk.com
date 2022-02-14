@@ -105,6 +105,14 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     // change select item check
                     self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                         errors.clearAll();
+                        self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual(0);
+                        self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().comparePlanAndActual(0);
+                        if (itemCheck == 5) {
+                            self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual(1);
+                        }
+                        if (itemCheck == 6) {
+                            self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().comparePlanAndActual(1); 
+                        }
                         //fix bug 100145
                         self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType([]);
                         self.comparisonRange().minAmountOfMoneyValue(null);
@@ -160,6 +168,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.modeScreen(1);
                     //monthly
                     self.listEnumRoleType = ko.observableArray(__viewContext.enums.TypeMonCheckItem);
+                    // Update ticket #122513, #122544
+                    _.remove(self.listEnumRoleType(), function (n) {
+                        return _.isEqual(n.value, 3) || _.isEqual(n.value, 6) || _.isEqual(n.value, 8);
+                    });
 //                    self.listTypeCheckVacation = ko.observableArray(__viewContext.enums.TypeCheckVacation);
                     self.listTypeCheckVacation = ko.observableArray([
                         new sharemodel.ItemModel(0, resource.getText('KAL003_112')),
@@ -502,10 +514,12 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.listTypeCheckWorkRecordMultipleMonths(self.getLocalizedNameForEnum(listTypeCheckWorkRecordMultipleMonth));
                     self.listRangeCompareTypes(self.getLocalizedNameForEnum(lstRangeCompareType));
                     self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listTypeCheckWorkRecord));
-                    //remove 3 enum : 4 5 6 as required ( ohashi)
-                    // _.remove(self.listTypeCheckWorkRecords(), function(n) {
-                    //     return (n.value == 5 || n.value == 6 || n.value == 4);
-                    // });
+                    // Update ticket #122513
+                    if (self.category() == sharemodel.CATEGORY.DAILY) {
+                        _.remove(self.listTypeCheckWorkRecords(), function (n) {
+                            return _.isEqual(n.value, 7);
+                        });
+                    }
                     let listTargetRangeWithName = self.getLocalizedNameForEnum(listTargetSelectionRange);
                     self.itemListTargetSelectionRange_BA1_5(listTargetRangeWithName);
                     self.itemListTargetServiceType_BA1_2(self.getLocalizedNameForEnum(listTargetServiceType));
@@ -593,10 +607,17 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         listRangeCompareType: Array<model.EnumModel>,
                         listSpecialCode) => {
                 self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listMonCheckItemType));
+                // Update ticket #122513 , #122544
+                _.remove(self.listTypeCheckWorkRecords(), function (n) {
+                    return _.isEqual(n.value, 0) || _.isEqual(n.value, 3);
+                });
                 self.listCheckTimeType(self.getLocalizedNameForEnum(listTypeOfContrast));
-               
                 self.listTypeOfContrast(self.getLocalizedNameForEnum(listTypeOfContrast));
                 self.listTypeOfDays(self.getLocalizedNameForEnum(listTypeOfDays));
+                // Update ticket #122513
+                _.remove(self.listTypeOfDays(), function (n) {
+                    return _.isEqual(n.value, 3) || _.isEqual(n.value, 6) || _.isEqual(n.value, 7);
+                });
                 self.listTypeOfTime(self.getLocalizedNameForEnum(listTypeOfTime));
                 self.listTypeOfVacations(self.getLocalizedNameForEnum(listTypeOfVacations));
                        
@@ -2260,7 +2281,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 || ( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN], operator) == -1
                     && minValue > maxValue ))
             {
-                $(el).ntsError('set', { messageId: "Msg_927" });
+                $(el).ntsError('set', { messageId: "Msg_836" });
             }
             return;
         }

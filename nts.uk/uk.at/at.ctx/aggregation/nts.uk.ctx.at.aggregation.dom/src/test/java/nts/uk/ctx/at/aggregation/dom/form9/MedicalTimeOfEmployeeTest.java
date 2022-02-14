@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -27,7 +27,7 @@ public class MedicalTimeOfEmployeeTest {
 			@Injectable Form9OutputMedicalTime dayShiftHours
 		,	@Injectable Form9OutputMedicalTime nightShiftHours
 		,	@Injectable Form9OutputMedicalTime totalNightShiftHours) {
-		
+
 		val empMedicalTime = new MedicalTimeOfEmployee(
 					"employeeId"
 				,	GeneralDate.ymd(2021, 01, 01)
@@ -36,43 +36,43 @@ public class MedicalTimeOfEmployeeTest {
 				,	nightShiftHours
 				,	totalNightShiftHours
 					);
-		
+
 		NtsAssert.invokeGetters( empMedicalTime );
-		
+
 	}
-	
+
 	@Test
 	public void testCreate() {
-		
+
 		val dailyWork = Helper.createDailyWorks( "sid1", GeneralDate.ymd(2021, 01, 01) );
-		
+
 		//Act
 		val empMedicalTime = MedicalTimeOfEmployee.create( dailyWork, ScheRecAtr.RECORD );
-		
+
 		//Assert
 		assertThat( empMedicalTime.getEmployeeId() ).isEqualTo( "sid1" );
 		assertThat( empMedicalTime.getYmd() ).isEqualTo( GeneralDate.ymd(2021, 01, 01) );
 		assertThat( empMedicalTime.getScheRecAtr() ).isEqualTo( ScheRecAtr.RECORD );
-		
+
 		/** 日勤時間 **/
 		assertThat( empMedicalTime.getDayShiftHours().getTime().v() ).isEqualTo( 480 );
 		assertThat( empMedicalTime.getDayShiftHours().isDeductionDateFromDeliveryTime() ).isTrue();
-		
+
 		/** 夜勤時間 **/
 		assertThat( empMedicalTime.getNightShiftHours().getTime().v() ).isEqualTo( 480 );
 		assertThat( empMedicalTime.getNightShiftHours().isDeductionDateFromDeliveryTime() ).isTrue();
-		
+
 		/** 総夜勤時間 **/
 		assertThat( empMedicalTime.getTotalNightShiftHours().getTime().v() ).isEqualTo( 480 );
 		assertThat( empMedicalTime.getTotalNightShiftHours().isDeductionDateFromDeliveryTime() ).isTrue();
-		
+
 	}
-	
+
 	private static class Helper {
-		
+
 		@Injectable
 		private static WorkInfoOfDailyAttendance workInfo;
-		
+
 		/**
 		 * 日別実績(Work)を作る
 		 * @param sid 社員ID
@@ -97,8 +97,11 @@ public class MedicalTimeOfEmployeeTest {
 					,	Collections.emptyList()
 					,	Optional.empty()
 					,	Collections.emptyList()
-					,	Optional.empty());
+					,	Collections.emptyList()
+					,	Collections.emptyList()
+					,	Optional.empty()
+				);
 		}
 	}
-	
+
 }

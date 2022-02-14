@@ -36,7 +36,7 @@ public class DeleteSpecialHolidayCommandHandler extends CommandHandler<SpecialHo
 		String companyId = AppContexts.user().companyId();
 		Integer sHECD = command.getSpecialHolidayCode();
 		// call event
-		Optional<SpecialHoliday> oldDomain =  sphdRepo.findByCode(companyId, sHECD);
+		Optional<SpecialHoliday> oldDomain =  sphdRepo.findBySingleCD(companyId, sHECD);
 		if(oldDomain.isPresent()){
 			SpecialHolidayDomainEvent sHC = SpecialHolidayDomainEvent.createFromDomain(false,oldDomain.get());
 			sHC.toBePublished();

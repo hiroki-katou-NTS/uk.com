@@ -9,6 +9,7 @@ import lombok.val;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeItemSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.shorttimework.CalcOfShortTimeWorkRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOTRepository;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
@@ -49,9 +51,9 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 	//乖離
 	@Inject 
 	private DivergenceTimeRepository divergenceTimeRepository;
-	//加給設定の利用単位
+	//加給自動計算設定
 	@Inject
-	private BPUnitUseSettingRepository bPUnitUseSettingRepository; 
+	private BPTimeItemSettingRepository bPTimeItemSettingRepository;
 	//0時跨ぎ
 	@Inject
 	private ZeroTimeRepository zeroTimeRepository;
@@ -90,6 +92,11 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 	@Inject
 	private OvertimeWorkFrameRepository overtimeFrameRepository;
 	
+	@Inject
+	/** 人件費計算設定 */
+	private PersonCostCalculationRepository personCostCalculationRepository;
+	
+	
 //	@Inject
 //	private EmployeeWtSettingRepository employeeWtSettingRepository;
 	
@@ -111,12 +118,13 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 									  compensLeaveComSetRepository.find(companyId),
 									  divergenceTimeRepository.getAllDivTime(companyId),
 //									  errorAlerms,
-									  bPUnitUseSettingRepository.getSetting(companyId),
+									  bPTimeItemSettingRepository.getListAllSetting(companyId),
 									  optionalItems,
 									  formulaRepository.find(companyId),
 									  formulaOrderRepository.findAll(companyId),
 									  empConditionRepository.findAll(companyId, optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList())),
 									  zeroTimeRepository.findByCId(companyId),
+									  personCostCalculationRepository.getHistAnPerCost(companyId),
 									  specificWorkRuleRepository.findUpperLimitWkHourByCid(companyId),
 									  usageSetting,
 									// 深夜時間帯(2019.3.31時点ではNotマスタ参照で動作している)

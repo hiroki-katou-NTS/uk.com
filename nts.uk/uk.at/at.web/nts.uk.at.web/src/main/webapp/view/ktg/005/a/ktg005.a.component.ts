@@ -30,19 +30,17 @@ module nts.uk.ui.ktg005.a {
 						</th>
 						<th>
 							<!-- A1_4 -->
-							<button class="icon ktg001-no-border" data-bind="
+							<button class="ktg001-no-border" data-bind="
 									click: function() { $component.openScreenB() },
 									visible: employeeCharge
-								">
-								<i data-bind="ntsIcon: { no: 5, width: 25, height: 25 }"></i>
-							</button>
+								">設定</button>
 						</th>
 					</tr>
 				</thead>
 			</table>
 		</div>
 		<div class="ktg-005-a ktg005-fontsize ktg005-border" data-bind="widget-content: 100">
-			<div data-bind="with: $component.executionAppResult" style="padding: 0px 40px 0px 30px;">
+			<div data-bind="with: $component.executionAppResult" class="widget-content-list">
 				<table style="width: 100%">
 					<colgroup>
 						<col width="auto" />
@@ -68,10 +66,9 @@ module nts.uk.ui.ktg005.a {
 			}
 			.ktg005-fontsize div.form-label>span.text {
 				font-size: 1rem !important;
-				padding-left: 5px;
 			}
 			.ktg005-fontsize-larger div.form-label>span.text {
-				font-size: 1.2rem !important;
+				font-size: 1rem !important;
 			}
 			.ktg005-linklabel div.form-label>span.text {
 				color: #0D86D1;
@@ -83,7 +80,6 @@ module nts.uk.ui.ktg005.a {
 			.ktg005-border table tr td,
 			.ktg005-border table tr th {
 				border-width: 0px;
-				border-bottom: 1px solid #BFBFBF;
 			}
 			.ktg-005-a tr:last-child td {
 				border: none !important;
@@ -106,18 +102,14 @@ module nts.uk.ui.ktg005.a {
 			employeeCharge: false
 		});
 
-		constructor(private params: { currentOrNextMonth: 1 | 2, closureId: number }) {
-			super();
-		}
 
 		created() {
 			const vm = this;
-			const { params } = vm;
 			const { employeeId, companyId } = vm.$user;
 			const topPagePartCode = $(location).attr('search').split('=')[1];
 
 			vm.$blockui('invisibleView')
-				.then(() => vm.$ajax('at', REST_API.startScreenA, vm.params))
+				.then(() => vm.$ajax('at', REST_API.startScreenA))
 				.then((setting: IExecutionAppResult) => {
 					setting.appSettings = _
 						.chain(setting.appSettings)
@@ -182,15 +174,15 @@ module nts.uk.ui.ktg005.a {
 
 			switch (itemType) {
 				case NumberOfApprovedCases:
-					return vm.$i18n('KTG005_3');
+					return "承認済み";
 				case NumberOfUnApprovedCases:
-					return vm.$i18n('KTG005_4');
+					return "未承認";
 				case NumberOfDenial:
-					return vm.$i18n('KTG005_5');
+					return "否認";
 				case NumberOfRemand:
-					return vm.$i18n('KTG005_2');
+					return "差し戻し";
 				case ApplicationDeadlineForThisMonth:
-					return vm.$i18n('KTG005_6');
+					return "締め切り日（今月）";
 				default:
 					return '';
 			}

@@ -7,14 +7,14 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
 	            <div id="kaf000-a-component6" data-bind="click: openApproverDetail">
 					<div style="display: inline-block;" data-bind="if: approvalRootStateShort().length != 0 && approvalRootDisp">
 						<div data-bind="foreach: approvalRootStateShort" style="padding-top: 5px;">
-							<div class="approver-block" style="width: 112px;">
-								<div style="height: 24px;">
+							<div class="approver-block">
+								<div>
 									<div class="limited-label" style="vertical-align: middle;" data-bind="ntsFormLabel:{}, text: $component.getApproverLabel($index())"></div>
 								</div>
-								<div style="min-width: 112px;">
+								<div>
 									<div class="limited-label" style="vertical-align: middle;" data-bind="text: $data.approverName"></div>
 								</div>
-								<div data-bind="if: $data.representerName()" style="min-width: 112px;">
+								<div data-bind="if: $data.representerName()">
 									<div class="limited-label" style="vertical-align: middle;" data-bind="text: '(' + $data.representerName() + ')'"></div>
 								</div>
 							</div>
@@ -48,9 +48,13 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
 				let approvalRootStateShort = [],
 					listPhase: any = value.appDispInfoWithDateOutput.opListApprovalPhaseState;
 				for(let phase of listPhase) {
-					for(let frame of phase.listApprovalFrame) {
-						for(let approver of frame.listApprover) {
-							approvalRootStateShort.push(new ApproverInforShort(approver.approverName, approver.representerName));
+					if(_.isEmpty(_.flatMap(phase.listApprovalFrame, frame => frame.listApprover))) {
+						approvalRootStateShort.push(new ApproverInforShort('', ''));	
+					} else {
+						for(let frame of phase.listApprovalFrame) {
+							for(let approver of frame.listApprover) {
+								approvalRootStateShort.push(new ApproverInforShort(approver.approverName, approver.representerName));
+							}
 						}
 					}
 				}

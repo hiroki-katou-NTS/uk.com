@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,7 +18,10 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
@@ -49,6 +54,9 @@ public class FurikyuMngDataExtractionService {
 	
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
+	
+	@Inject
+	private InterimRecAbasMngRepository interimRecAbasMngRepository;
 	
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
@@ -144,9 +152,10 @@ public class FurikyuMngDataExtractionService {
 				return itemData;
 			}).collect(Collectors.toList());
 			
+			double remainingDays = lstDataRemainDto.stream().mapToDouble(RemainInfoDto::getDayLetf).sum();
 			DisplayRemainingNumberDataInformation result = DisplayRemainingNumberDataInformation.builder()
 					.employeeId(empId)
-					.totalRemainingNumber(0d)
+					.totalRemainingNumber(remainingDays)
 					.expirationDate(manageSetting.getSubstVacationSetting() == null
 						? null
 						: manageSetting.getSubstVacationSetting().getExpirationDate().value)
@@ -295,6 +304,7 @@ public class FurikyuMngDataExtractionService {
 			List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout,
 			String empId,
 			GeneralDate startDate) {
+		String cid = AppContexts.user().companyId();
 		// List＜残数データ情報＞を作成
 		List<RemainInfoData> lstRemainInfoData = new ArrayList<RemainInfoData>();
 		Integer mergeCell = 0;
@@ -306,34 +316,44 @@ public class FurikyuMngDataExtractionService {
 					.collect(Collectors.toList());
 			// 	絞り込みした「振出振休紐付け管理」をチェック
 			if (!listPayoutSub.isEmpty()) {
-				List<GeneralDate> lstDateOfUse = listPayoutSub.stream().map(x -> {
-					return x.getAssocialInfo().getDateOfUse();
-				}).collect(Collectors.toList());
+				GeneralDate useDate = listPayoutSub.stream()
+						.map(x -> x.getAssocialInfo().getDateOfUse())
+						.filter(Objects::nonNull).findFirst().orElse(null);
 				// Input．List＜振休管理データ＞を絞り込み
-				 List<SubstitutionOfHDManagementData> listSubstitution = substitutionOfHDManagementData.stream()
-						.filter(item -> lstDateOfUse.contains(item.getHolidayDate().getDayoffDate().orElse(null)))
-						.collect(Collectors.toList());
-				if (listSubstitution.isEmpty() && !lstDateOfUse.isEmpty()) {
+				Optional<SubstitutionOfHDManagementData> optSubstitution = substitutionOfHDManagementData.stream()
+						.filter(item -> item.getHolidayDate().getDayoffDate()
+								.map(date -> date.equals(useDate)).orElse(false))
+						.findFirst();
+				Optional<InterimAbsMng> optInterimDayOff = Optional.empty();
+				if (!optSubstitution.isPresent()) {
 					// Step ドメインモデル「振休管理データ」を取得
-					listSubstitution = substitutionOfHDManaDataRepository
-							.getBySidListHoliday(AppContexts.user().companyId(), empId, lstDateOfUse);
+					optSubstitution = this.substitutionOfHDManaDataRepository
+							.find(cid, empId, useDate);
+					// 取得した振休管理データをチェック
+					if (!optSubstitution.isPresent()) {
+						// ドメイン「暫定振休管理データ」を取得
+						optInterimDayOff = this.interimRecAbasMngRepository.getAbsBySidDateList(empId, Arrays.asList(useDate))
+								.stream().findFirst();
+					}
 				}
-				for (SubstitutionOfHDManagementData item : listSubstitution) {
+				if (optSubstitution.isPresent() || optInterimDayOff.isPresent()) {
+					Optional<PayoutSubofHDManagement> optPayoutSub = listPayoutSub.stream()
+							.filter(data -> data.getAssocialInfo().getDateOfUse().equals(useDate))
+							.findFirst();
+					Optional<GeneralDate> digestionDay = optPayoutSub.map(data -> data.getAssocialInfo().getDateOfUse());
+					Optional<Double> digestionDays = optPayoutSub.map(data -> data.getAssocialInfo().getDayNumberUsed().v());
+					Optional<String> digestionId = Optional.of(optSubstitution.map(data -> data.getSubOfHDID())
+							.orElse(optInterimDayOff.map(data -> data.getRemainManaID()).orElse(null)));
 					// 残数データ情報を作成
 					RemainInfoData itemRemainInfo = RemainInfoData.builder()
 							.accrualDate(itemPayout.getPayoutDate().getDayoffDate())
 							.deadLine(Optional.of(itemPayout.getExpiredDate()))
 							.occurrenceDay(Optional.of(itemPayout.getOccurredDays().v()))
-							.digestionDay(item.getHolidayDate().getDayoffDate())
-							.digestionDays(Optional.of(listPayoutSub.stream()
-									.filter(x -> x.getAssocialInfo().getOutbreakDay()
-											.equals(itemPayout.getPayoutDate().getDayoffDate().get())
-											&& x.getAssocialInfo().getDateOfUse().equals(item.getHolidayDate().getDayoffDate().get()))
-									.findFirst()
-									.map(x -> x.getAssocialInfo().getDayNumberUsed().v()).orElse(null)))
+							.digestionDay(digestionDay)
+							.digestionDays(digestionDays)
 							.legalDistinction(Optional.of(itemPayout.getLawAtr().value))
 							.occurrenceId(Optional.of(itemPayout.getPayoutId()))
-							.digestionId(Optional.of(item.getSubOfHDID()))
+							.digestionId(digestionId)
 							.dayLetf(itemPayout.getExpiredDate().afterOrEquals(startDate)
 									? itemPayout.getUnUsedDays().v()
 									: 0.0)
@@ -349,8 +369,8 @@ public class FurikyuMngDataExtractionService {
 				// Input．List<振出振休紐付け管理＞に絞り込みした「振出振休紐付け管理」を除く
 				payoutSubofHDManagementLinkToPayout.removeIf(x -> listPayoutSub.contains(x));
 				// Input．List＜振休管理データ＞に絞り込みした「振休管理データ」を除く
-				final List<SubstitutionOfHDManagementData> listCopy = listSubstitution;
-				substitutionOfHDManagementData.removeIf(y -> listCopy.contains(y));
+				SubstitutionOfHDManagementData subs = optSubstitution.orElse(null);
+				substitutionOfHDManagementData.removeIf(y -> y.equals(subs));
 			} else {
 				// 残数データ情報を作成
 				RemainInfoData itemRemainInfo = RemainInfoData.builder()
@@ -415,7 +435,7 @@ public class FurikyuMngDataExtractionService {
 						.digestionDay(itemSubstitution.getHolidayDate().getDayoffDate())
 						.digestionDays(Optional.of(itemSubstitution.getRequiredDays().v()))
 						.legalDistinction(Optional.empty()).occurrenceId(Optional.empty())
-						.digestionId(Optional.of(itemSubstitution.getSubOfHDID())).dayLetf(0.0).usedDay(0.0).usedTime(0)
+						.digestionId(Optional.of(itemSubstitution.getSubOfHDID())).dayLetf(-1.0).usedDay(0.0).usedTime(0)
 						.occurrenceHour(Optional.empty()).digestionTimes(Optional.empty())
 						.remainingHours(Optional.empty()).mergeCell(mergeCell).build();
 				// List＜残数データ情報＞に作成した残数データ情報を追加

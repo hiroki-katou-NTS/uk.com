@@ -16,6 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
@@ -25,6 +26,8 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KshdtInterimHdpaid;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KshdtInterimHdpaidPK;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpDailyLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpDailyLeaveUsedTime;
 
 @Stateless
 public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements TmpAnnualHolidayMngRepository{
@@ -36,9 +39,12 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 				EnumAdaptor.valueOf(creatorAtr, CreateAtr.class),
 				RemainType.ANNUAL,
 				new WorkTypeCode(workTypeCode),
-				new LeaveUsedNumber(useDays, useTime),
-				Optional.ofNullable(DigestionHourlyTimeType.of(timeDigestAtr == 1, 
-				timeHdType == 0 ? Optional.empty():
+				new TempAnnualLeaveUsedNumber(
+						Optional.of(new TmpDailyLeaveUsedDayNumber(useDays)),
+						useTime == null ? Optional.empty() : Optional.of(new TmpDailyLeaveUsedTime(useTime))),
+				Optional.ofNullable(DigestionHourlyTimeType.of(
+						timeDigestAtr == 1,
+						timeHdType == 0 ? Optional.empty():
 						Optional.ofNullable(EnumAdaptor.valueOf(timeHdType - 1, AppTimeType.class)))));
 	}
 

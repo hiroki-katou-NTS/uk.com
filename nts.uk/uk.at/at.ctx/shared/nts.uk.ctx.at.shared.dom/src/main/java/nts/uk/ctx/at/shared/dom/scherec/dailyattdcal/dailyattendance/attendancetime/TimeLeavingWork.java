@@ -218,7 +218,12 @@ public class TimeLeavingWork extends DomainObject{
 	 * @return 退勤時刻（丸め無し）
 	 */
 	public Optional<TimeWithDayAttr> getLeaveTime() {
+		Optional<TimeWithDayAttr> result = getStampOfLeave().flatMap(c -> c.getTimeDay().getTimeWithDay());
 		return getStampOfLeave().flatMap(c -> c.getTimeDay().getTimeWithDay());
+	}
+	
+	public boolean existsTimeWithDay() {
+		return this.getAttendanceTime().isPresent() || this.getLeaveTime().isPresent();
 	}
 	
 	//NOとデフォルトを作成する
