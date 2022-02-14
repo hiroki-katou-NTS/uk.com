@@ -78,7 +78,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 					}"></div>
 						</div>
 
-						<div class="blockSecond">
+						<div class="blockSecond" style="padding-bottom: 5px">
 							<input class="inputBlockSecond" id="inputTimeKAF002"
 								data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {	name: $i18n('KAF002_79'), value: time, required: true, inputFormat: 'time', constraint: 'SampleTimeDuration', mode: 'time'
 													}" />
