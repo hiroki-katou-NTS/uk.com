@@ -17,29 +17,26 @@
 	padding-bottom: 20px;
 }
 
-.import-creation {
-	background-image: url("../resource/外部受入A1.jpg");
+#buttonImport {
 	background-size: 100%;
-	height: 254px;
-	width: 257px;
+	width: 260px;
+	height: 80px;
 	background-repeat: no-repeat;
 	margin-left: 20px;
 }
 
-.setting-creation {
-	background-image: url("../resource/外部受入A2.jpg");
+#buttonSettingB,#buttonSettingE {
 	background-size: 100%;
-	height: 254px;
-	width: 264px;
+	width: 260px;
+	height: 80px;
 	background-repeat: no-repeat;
 	margin-left: 20px;
 }
 
 .history-reference {
-	background-image: url("../resource/外部受入A3.jpg");
 	background-size: 100%;
-	width: 286px;
-	height: 109px;
+	width: 260px;
+	height: 80px;
 	background-repeat: no-repeat;
 	margin-left: 20px;
 }

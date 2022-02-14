@@ -1,0 +1,52 @@
+2022/1/19 UI見直しでのCSSの使い方
+
+各画面で個別にCSSが適用されていたものを多少リファクタし、共通化している（十分ではないが）。
+１月のUI見直しではKAF005残業申請・KAF006休暇申請・KAF020任意項目申請の3画面のみ対応しているので、
+他の画面の対応時にやるべきことが分かるよう、メモを残しておく。
+
+(1) 個別のmarginを削除
+  各画面や各コンポーネントで個別につけているmarginはだいたい削除する。
+  特にborder-topとborder-bottomはほぼ全て削除していい。
+  代わりに、以下のクラスをつけていけば、ちゃんとキレイになるはず。
+  一旦全て削除して、以下のクラスを付けた後、必要な部分だけもう一度marginを付け足すくらいでいいと思う。
+
+  .two-panel/.left-panel/.right-panel要素についているstyleは全て削除する。
+  
+(2) .form-header
+  申請者名、承認者名が並ぶブロックに、form-headerクラスをつける。
+  この要素は、.left-panel要素の直下に配置する。
+
+(3) .table.item
+  画面内の入力項目のブロックそれぞれに対して、tableクラスとitemクラスを付ける。
+  これで項目同士の縦のmargin(top/bottom)がきれいに揃うはず。
+
+(4) .cell
+  .table.itemの中では、項目のラベル（左側）と入力欄（右側）にそれぞれcellクラスを付ける。
+
+(5) .cm-column
+  .table.item直下にある項目のラベル要素には、cellクラスに加えてcm-columnクラスも付ける。
+  他のクラスは付けない（col-1とかついていたりする）。
+  これでラベルと入力欄の横の位置が揃うはず。
+
+(6) .valign-topと.valign-center
+  .table.itemの直下にあるラベル要素と入力欄要素（いずれも.cell）には、valign-centerクラスと同じvertical-align: middleが設定されている。
+  入力項目が小さい（単一行）場合は、このままで良い。
+  入力項目が大きい（テーブルなど）場合は、cm-columnに加えてvalign-topクラスを付けること。
+
+(7) .has-row-header
+  データ行の一列目を行のヘッダとする（残業申請の残業１～１０のように）場合、
+  そのfixed-tableを含む親要素にhas-row-headerクラスを付ける。
+  そうすると、自動的に行ヘッダの色がつく。
+
+(8) marginを持つ要素に対するknockoutのifとvisible
+  visibleの場合は、条件に該当しないとdisplay: noneで要素ごと描画されない。
+  ifの場合は、条件に該当しないとコンテンツが消えるが要素自体は残る。
+  つまり、ifを指定した要素のmarginがある場合、「何もないけどmarginだけある」という状態になる。
+  これは、項目間の不必要なmarginが追加されてしまう等の問題になる。
+  visibleなら問題無い。
+  ifを使う場合、margin等のCSSはifを付けた要素の「子要素」に記述すること。
+
+(9) .right-panel-block
+  .right-panel内の各コンポーネント要素にright-panel-blockクラスを付ける。
+  その子要素は、headerクラスとcontentクラスとする。
+  これにより、headerに対して下線が付き、コンポーネント間のmarginが揃う。

@@ -693,7 +693,6 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             }
             switch (attendanceItem) {
                 case SHIFT:
-                    if (leaveBlank) break;
                     Optional<ShiftMaster> shiftMaster = attendanceInfo.get().getShiftMaster(require);
                     if (shiftMaster.isPresent()) {
                         value = shiftMaster.get().getDisplayInfor().getName().v();

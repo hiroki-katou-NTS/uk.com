@@ -28,6 +28,8 @@ import nts.uk.shr.com.i18n.TextResource;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DPHeaderDto {
+	
+	private static final String HEADER_COLOR = "#6A6A6A";
 
 	private String headerText;
 	
@@ -111,8 +113,8 @@ public class DPHeaderDto {
 		val keyId = getCode(key);
 		val colorHeader = mapColor.get(Integer.parseInt(keyId));
 		DPHeaderDto dto = new DPHeaderDto("", "", key, "String", width,
-				colorHeader == null ? "#CFF1A5"
-						: colorHeader.getHeaderBackgroundColor().isEmpty() ? "#CFF1A5"
+				colorHeader == null ? HEADER_COLOR
+						: colorHeader.getHeaderBackgroundColor().isEmpty() ? HEADER_COLOR
 								: colorHeader.getHeaderBackgroundColor(),
 				false, "", false, false, "center-align", inputProcess(Integer.parseInt(keyId)), "");
 		// optionalRepo.findByListNos(companyId, optionalitemNos)
@@ -239,7 +241,7 @@ public class DPHeaderDto {
 	private static String setColorHeadeAppSubAppList(String key, Map<Integer, DPAttendanceItemControl> mapColor) {
 		val keyId = getCode(key);
 		val colorHeader = mapColor.get(Integer.parseInt(keyId));
-		val color = colorHeader == null ? "#CFF1A5" : colorHeader.getHeaderBackgroundColor().isEmpty() ? "#CFF1A5" : colorHeader.getHeaderBackgroundColor();
+		val color = colorHeader == null ? HEADER_COLOR : colorHeader.getHeaderBackgroundColor().isEmpty() ? HEADER_COLOR : colorHeader.getHeaderBackgroundColor();
 		return color;
 	}
 
@@ -272,20 +274,21 @@ public class DPHeaderDto {
 
 	public static List<DPHeaderDto> GenerateFixedHeader() {
 		List<DPHeaderDto> lstHeader = new ArrayList<>();
-		lstHeader.add(new DPHeaderDto("ID", "ID", "id", "String", "30px", "#CFF1A5", true, "Label", true, true, "center-align", null, ""));
-		lstHeader.add(new DPHeaderDto("状<br/>態", "状<br/>態", "state", "String", "30px", "#CFF1A5", false, "FlexImage", true, true, "center-align", null, ""));
-		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_129"), TextResource.localize("KDW003_129"), "error", "String", "60px", "#CFF1A5", false, "Label", 
+		
+		lstHeader.add(new DPHeaderDto("ID", "ID", "id", "String", "30px", HEADER_COLOR, true, "Label", true, true, "center-align", null, ""));
+		lstHeader.add(new DPHeaderDto("状<br/>態", "状<br/>態", "state", "String", "30px", HEADER_COLOR, false, "FlexImage", true, true, "center-align", null, ""));
+		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_129"), TextResource.localize("KDW003_129"), "error", "String", "60px", HEADER_COLOR, false, "Label", 
 				true, true, "center-align", null, ""));
-		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_41"), TextResource.localize("KDW003_41"), "date", "String", "70px", "#CFF1A5", false, "Label",
+		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_41"), TextResource.localize("KDW003_41"), "date", "String", "70px", HEADER_COLOR, false, "Label",
 				true, true, "center-align", null, ""));
-		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_42"), TextResource.localize("KDW003_42"), "sign", "boolean", "35px", "#CFF1A5", false,
+		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_42"), TextResource.localize("KDW003_42"), "sign", "boolean", "35px", HEADER_COLOR, false,
 				"Checkbox", true, true, "center-align", null, ""));
-		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_32"), TextResource.localize("KDW003_32"), "employeeCode", "String", "87px", "#CFF1A5", false,
+		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_32"), TextResource.localize("KDW003_32"), "employeeCode", "String", "87px", HEADER_COLOR, false,
 				"Label", true, true, "center-align", null, ""));
-		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_33"), TextResource.localize("KDW003_33"), "employeeName", "String", "162px", "#CFF1A5", false,
+		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_33"), TextResource.localize("KDW003_33"), "employeeName", "String", "162px", HEADER_COLOR, false,
 				"Label", true, true, "center-align", null, ""));
-		lstHeader.add(new DPHeaderDto("", "", "picture-person", "String", "35px", "", false, "Image", true, true, "center-align", null, "#CFF1A5"));
-		lstHeader.add(new DPHeaderDto(TextResource.localize("承認"), TextResource.localize("承認"), "approval", "boolean", "35px", "#CFF1A5", false, "Checkbox",
+		lstHeader.add(new DPHeaderDto("", "", "picture-person", "String", "35px", "", false, "Image", true, true, "center-align", null, HEADER_COLOR));
+		lstHeader.add(new DPHeaderDto(TextResource.localize("承認"), TextResource.localize("承認"), "approval", "boolean", "35px", HEADER_COLOR, false, "Checkbox",
 				true, true, "center-align", null, ""));
 		return lstHeader;
 	}
