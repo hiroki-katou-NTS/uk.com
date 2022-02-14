@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
@@ -42,9 +43,15 @@ public class CreatePersonalApprovalRootDomainService {
 		ApprovalRootInformation approvalRootInfo = param.getApprovalRootInfo();
 		List<ApproverInformation> approvalPhases = param.getApprovalPhases();
 		// 個人別承認ルートを作成する
-
-		// TODO
-		return null;
+		PersonApprovalRoot personApprovalRoot = new PersonApprovalRoot(cid, sid, approvalRootInfo.getDatePeriod(),
+				approvalRootInfo.getEmploymentRootAtr(), approvalRootInfo.getApplicationType().orElse(null),
+				approvalRootInfo.getConfirmationRootType().orElse(null));
+		String approvalId = personApprovalRoot.getApprovalId();
+		//承認フェーズを作成する
+		List<ApprovalPhase> phases = approvalPhases.stream()
+				.map(data -> ApprovalPhase.createSimpleFromJavaType(approvalId, data.getPhaseOrder(), data.getApproverId()))
+				.collect(Collectors.toList());
+		return new ApprovalSettingInformation(phases, personApprovalRoot);
 	}
 
 	public interface Require {

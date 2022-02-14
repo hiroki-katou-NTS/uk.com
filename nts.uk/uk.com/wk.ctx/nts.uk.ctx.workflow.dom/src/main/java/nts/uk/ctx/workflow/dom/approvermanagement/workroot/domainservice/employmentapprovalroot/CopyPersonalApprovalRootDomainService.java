@@ -32,8 +32,8 @@ public class CopyPersonalApprovalRootDomainService {
 		// ①複写元さんの履歴を取得する
 		List<ApprovalSettingInformation> sourceInfos = require.getApprovalInfos(cid, sourceSid, baseDate);
 		// ②承認者設定パラメータを作成する
-		List<ApprovalSettingParam> params = sourceInfos.stream()
-				.map(ApprovalSettingInformation::getPersonApprovalRoot).map(data -> {
+		List<ApprovalSettingParam> params = sourceInfos.stream().map(ApprovalSettingInformation::getPersonApprovalRoot)
+				.map(data -> {
 					Optional<EmploymentAppHistoryItem> histItem = data.getApprRoot().getHistoryItems().stream()
 							.findFirst();
 					ApprovalRootInformation approvalRootInfo = new ApprovalRootInformation(
@@ -43,14 +43,14 @@ public class CopyPersonalApprovalRootDomainService {
 							Optional.ofNullable(data.getApprRoot().getConfirmationRootType()));
 					List<ApproverInformation> approvalPhases = sourceInfos.stream()
 							.map(ApprovalSettingInformation::getApprovalPhases).flatMap(List::stream)
-							.filter(x -> x.getApprovalId()
-									.equals(histItem.map(EmploymentAppHistoryItem::getApprovalId).orElse(null)))
+							.filter(x -> x.getApprovalId().equals(data.getApprovalId()))
 							.map(x -> new ApproverInformation(x.getPhaseOrder(), x.getApprovalId()))
 							.collect(Collectors.toList());
 					return new ApprovalSettingParam(approvalPhases, approvalRootInfo);
 				}).collect(Collectors.toList());
 		// ③複写先の履歴を登録する
-		return AtomTask.of(() -> CreateSelfApprovalRootDomainService.register(require, cid, targetSid, baseDate, params)); 
+		return AtomTask
+				.of(() -> CreateSelfApprovalRootDomainService.register(require, cid, targetSid, baseDate, params));
 	}
 
 	public interface Require extends CreateSelfApprovalRootDomainService.Require {

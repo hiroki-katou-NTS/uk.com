@@ -11,7 +11,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalSettingInformation;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentAppHistoryItem;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.opetaionsettings.ApproverOperationSettings;
 
@@ -51,10 +50,8 @@ public class GetSelfApprovalSettingsDomainService {
 						confirmationRootTypes);
 			}
 		}
-		List<String> approverIds = personApprovalRoots
-				.stream().map(data -> data.getApprRoot().getHistoryItems().stream()
-						.map(EmploymentAppHistoryItem::getApprovalId).collect(Collectors.toList()))
-				.flatMap(List::stream).distinct().collect(Collectors.toList());
+		List<String> approverIds = personApprovalRoots.stream().map(data -> data.getApprovalId()).distinct()
+				.collect(Collectors.toList());
 		List<ApprovalPhase> approvalPhases = require.getApprovalPhases(approverIds);
 		List<ApprovalPhase> approvalPhasesFiltered = approvalPhases;
 
@@ -67,8 +64,7 @@ public class GetSelfApprovalSettingsDomainService {
 
 		// create List<承認者設定情報>
 		return personApprovalRoots.stream()
-				.map(data -> new ApprovalSettingInformation(approvalPhaseMap.get(data.getApprRoot().getHistoryItems()
-						.stream().findFirst().map(EmploymentAppHistoryItem::getApprovalId).orElse(null)), data))
+				.map(data -> new ApprovalSettingInformation(approvalPhaseMap.get(data.getApprovalId()), data))
 				.collect(Collectors.toList());
 	}
 

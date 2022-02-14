@@ -2,13 +2,11 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employ
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentAppHistoryItem;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 
 /**
@@ -29,9 +27,8 @@ public class UpdateApprovalRootHistoryDomainService {
 		// 基準日後の開始日がある履歴を削除する（開始日＞＝基準日）
 		List<PersonApprovalRoot> personApprovalRoots = require.getHistoryWithStartDate(sid, baseDate);
 		List<String> approverIds = personApprovalRoots.stream()
-				.map(data -> data.getApprRoot().getHistoryItems().stream().map(EmploymentAppHistoryItem::getApprovalId)
-						.collect(Collectors.toList()))
-				.flatMap(List::stream).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+				.map(PersonApprovalRoot::getApprovalId)
+				.distinct().collect(Collectors.toList());
 		if (!approverIds.isEmpty()) {
 			atomTasks.add(AtomTask.of(() -> require.deletePersonApprovalRoots(approverIds)));
 		}
