@@ -18,5 +18,10 @@ public class ApproverRegisterSet {
 	// 職場単位
 	private UseClassification workplaceUnit;
 	// 社員単位
-	private UseClassification employeeUnit;	
+	private UseClassification employeeUnit;
+	
+	public static ApproverRegisterSet createForEmployee() {
+		return new ApproverRegisterSet(UseClassification.DO_NOT_USE, UseClassification.DO_NOT_USE,
+				UseClassification.DO_USE);
+	}
 }
