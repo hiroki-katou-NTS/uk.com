@@ -76,9 +76,11 @@ public enum TimeBase60Delimiter {
 			target = PaddingMethod.ZERO_BEFORE.complement(target, 4);
 		}
 		
+		int minutePartIndex = target.length() - 2;
+		
 		return convert(
-				target.substring(0, 2),
-				target.substring(2));
+				target.substring(0, minutePartIndex),
+				target.substring(minutePartIndex));
 	}
 	
 	// 区切り文字あり
