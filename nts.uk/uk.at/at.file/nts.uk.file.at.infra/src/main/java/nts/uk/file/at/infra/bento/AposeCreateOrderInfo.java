@@ -486,9 +486,15 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
                 GeneralDate start = detailInfo.getReservationDate();
                 String timezone = detailInfo.getClosingTimeName();
                 startIndex = setRowReservationDate(cells, tempSheet, startIndex, 1, start.toString("yyyy/MM/dd (E)") + " " + timezone);
-                for (BentoReservedInfoDto item : detailInfo.getBentoReservedInfoDtos())
-                    startIndex = handleBodyDetailFormat(worksheet, item, startIndex, cells, orderInfoExportData.isBreakPage(), tempSheet, orderInfoExportData.getOutputExt());
-
+                for(int i = 0; i < detailInfo.getBentoReservedInfoDtos().size(); i++) {
+                	BentoReservedInfoDto item = detailInfo.getBentoReservedInfoDtos().get(i);
+                	if(i == detailInfo.getBentoReservedInfoDtos().size() - 1) {
+                		startIndex = handleBodyDetailFormat(worksheet, item, startIndex, cells, false, tempSheet, orderInfoExportData.getOutputExt());
+                	} else {
+                		startIndex = handleBodyDetailFormat(worksheet, item, startIndex, cells, orderInfoExportData.isBreakPage(), tempSheet, orderInfoExportData.getOutputExt());
+                	}
+                }
+                
 				page++;
             }
             printArea.append("M"+(startIndex-1));
