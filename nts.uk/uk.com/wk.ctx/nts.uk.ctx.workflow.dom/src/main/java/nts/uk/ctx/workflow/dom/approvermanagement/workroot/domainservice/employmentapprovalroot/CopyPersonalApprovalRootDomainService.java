@@ -59,6 +59,6 @@ public class CopyPersonalApprovalRootDomainService {
 		List<ApprovalSettingInformation> getApprovalInfos(String cid, String sid, GeneralDate baseDate);
 
 		// [R-2]承認IDListから承認フェーズ取得する
-		List<ApprovalPhase> getApprovalPhases(String cid, List<String> approverIds);
+		List<ApprovalPhase> getApprovalPhases(String cid, List<String> approvalIds);
 	}
 }
