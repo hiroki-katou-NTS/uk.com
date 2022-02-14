@@ -343,7 +343,12 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                     pageIndex += 1;
                     itemPerPage = 0;
                 }
+            } else {
+                for (int c = 0; c < maxColumnInHeader; c++) {
+                    this.setBorder(cells.get(startRow - 1, c), true, false);
+                }
             }
+
         } // end loop workplace
 
         if (grandTotalDisplay.getDisplayWorkplaceSupportMeter().isUse()) {
