@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -221,6 +222,8 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	public List<LeaveComDayOffManagement> getByListOccDigestDate(String sid, List<GeneralDate> lstOccDate, List<GeneralDate> lstDigestDate) {
 		String query = "";
 		List<KrcmtLeaveDayOffMana> lstEntity = new ArrayList<KrcmtLeaveDayOffMana>();
+		lstOccDate = lstOccDate.stream().filter(Objects::nonNull).collect(Collectors.toList());
+		lstDigestDate = lstDigestDate.stream().filter(Objects::nonNull).collect(Collectors.toList());
 		if (!lstOccDate.isEmpty() && !lstDigestDate.isEmpty()) {
 			query = String.join(" ", QUERY_BY_SID,
 					"AND (lc.krcmtLeaveDayOffManaPK.occDate IN :lstOccDate",
