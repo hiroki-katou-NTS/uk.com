@@ -244,4 +244,19 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 							browsingPhase, EnumAdaptor.valueOf(phaseAtr, ApprovalAtr.class), approvers);
 				}).collect(Collectors.toList());
 	}
+	@Override
+	public List<ApprovalPhase> getFromApprovalIds(String cid, List<String> approvalIds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void deleteByApprovalIds(List<String> approvalIds) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void insertAll(List<ApprovalPhase> approvalPhases) {
+		// TODO Auto-generated method stub
+		
+	}
 }
