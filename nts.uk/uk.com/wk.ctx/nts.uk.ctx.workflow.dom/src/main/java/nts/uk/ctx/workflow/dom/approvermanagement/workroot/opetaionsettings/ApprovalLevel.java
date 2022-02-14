@@ -2,6 +2,9 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.opetaionsettings;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * 承認レベル
+ */
 @AllArgsConstructor
 public enum ApprovalLevel {
 			

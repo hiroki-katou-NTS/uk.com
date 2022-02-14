@@ -10,6 +10,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.history.HistoryItem;
 
+/**
+ * 承認ルート履歴
+ */
 @Getter
 @Setter
 @NoArgsConstructor

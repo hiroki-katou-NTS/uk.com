@@ -6,6 +6,9 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * 承認レベル数
+ */
 @AllArgsConstructor
 public enum ApprovalLevelNo {
 	
