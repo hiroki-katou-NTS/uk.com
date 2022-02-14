@@ -231,15 +231,8 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
 
                 /** Daily total */
                 if (wkpTotalDisplaySetting.getDisplayOneDayTotal() == NotUseAtr.USE) {
-                    // C7_1_2
-//                    if (displaySetting.getDisplayDetail() == NotUseAtr.NOT_USE) {
-//                        cells.get(startRow, 0).setValue(getText("KHA002_110") + SPACE + dataOfDay.getDate().toString("MM/dd"));
-//                    } else {
-                        // C7_1
-//                        cells.get(startRow, 0).setValue(getText("KHA002_110"));
-//                    }
                     cells.get(startRow, 0).setValue(getText("KHA002_110"));
-                    cells.get(startRow, 1).setValue(getText(dataOfDay.getDate().toString("MM/dd")));
+                    cells.get(startRow, 1).setValue(dataOfDay.getDate().toString("MM/dd"));
                     this.setTotalStyle(cells.get(startRow, 0), true, true, true, true,false);
                     this.setTotalStyle(cells.get(startRow, 1), true, false, true, true, false);
                     this.setTotalStyle(cells.get(startRow, 2), false, false, true, true, false);
@@ -309,11 +302,11 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                         val wkpInfo = dataSource.getWorkplaceInfoList().stream().filter(x -> x.getWorkplaceId().equals(sp.getSupportDestination())).findFirst();
                         if (wkpInfo.isPresent()) {
                             // C9_1
-                            cells.get(startRow, 2).setValue(getText(wkpInfo.get().getWorkplaceName()));
+                            cells.get(startRow, 2).setValue(wkpInfo.get().getWorkplaceName());
                             this.setTotalStyleCustom(cells.get(startRow, 2), true, false, true, false, false, false);
-                            // C9_2 ~
-                            this.printTotalCustom(cells, outputItems, Optional.of(sp.getTotalValueDetail()), startRow, 3, isCsv, false, false, false);
                         }
+                        // C9_2 ~
+                        this.printTotalCustom(cells, outputItems, Optional.of(sp.getTotalValueDetail()), startRow, 3, isCsv, false, false, false);
                     }
                     startRow += 1;  // next row
                     itemPerPage += 1;
@@ -363,7 +356,7 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
                 this.setTotalStyleCustom(cells.get(startRow, 2), false, false, true, false, false, true);
 
                 // C11_2 ~ C11_9
-                this.printTotalCustom(cells, outputItems, dataSource.getSupportWorkOutputData().getTotalSupport(), startRow, 3, isCsv, false, false, true);
+                this.printTotalCustom(cells, outputItems, dataSource.getSupportWorkOutputData().getTotalAffiliation(), startRow, 3, isCsv, false, false, true);
                 startRow += 1;
                 itemPerPage += 1;
             }
