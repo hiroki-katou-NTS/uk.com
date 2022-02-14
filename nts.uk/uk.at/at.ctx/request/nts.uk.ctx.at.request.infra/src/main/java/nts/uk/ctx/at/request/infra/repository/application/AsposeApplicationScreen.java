@@ -143,10 +143,10 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 			ListOfApplication appContent = appLst.getAppLst().get(i - 3);
 			if (appContent.getOpBackgroundColor().isPresent()) {
 			    if (appContent.getOpBackgroundColor().get().equals("bg-workinh-result-excess")) {
-			        this.backgroundColor(cellF, 255, 255, 0);
+			        this.backgroundColor(cellF, 255, 192, 203);
 			    }
 			    if (appContent.getOpBackgroundColor().get().equals("bg-pre-application-excess")) {
-			        this.backgroundColor(cellF, 255, 192, 203);
+			        this.backgroundColor(cellF, 255, 255, 0);
 			    }
 			}
 			
