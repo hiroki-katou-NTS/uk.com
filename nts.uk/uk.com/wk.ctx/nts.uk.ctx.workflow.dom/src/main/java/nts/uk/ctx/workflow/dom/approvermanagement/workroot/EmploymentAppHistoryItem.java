@@ -25,9 +25,6 @@ public class EmploymentAppHistoryItem extends HistoryItem<DatePeriod, GeneralDat
 	/** 期間 */
 	private DatePeriod datePeriod;
 	
-	/** 承認ID */
-	private String approvalId;
-	
 	/**
 	 * [C-1] 期間で作成する
 	 * @param datePeriod 期間
@@ -35,7 +32,6 @@ public class EmploymentAppHistoryItem extends HistoryItem<DatePeriod, GeneralDat
 	public EmploymentAppHistoryItem(DatePeriod datePeriod) {
 		this.datePeriod = datePeriod;
 		this.historyId = UUID.randomUUID().toString();
-		this.approvalId = UUID.randomUUID().toString();
 	}
 
 	@Override
