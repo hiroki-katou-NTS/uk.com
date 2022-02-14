@@ -49,7 +49,7 @@ public class SettingTypeUsed extends ValueObject {
 	 * @param confirmRootType 確認ルート種類
 	 */
 	public SettingTypeUsed(ConfirmationRootType confirmType) {
-		this.employmentRootAtr = EmploymentRootAtr.APPLICATION;
+		this.employmentRootAtr = EmploymentRootAtr.CONFIRMATION;
 		this.applicationType = Optional.empty();
 		this.confirmRootType = Optional.ofNullable(confirmType);
 		this.notUseAtr = NotUseAtr.NOT_USE;
