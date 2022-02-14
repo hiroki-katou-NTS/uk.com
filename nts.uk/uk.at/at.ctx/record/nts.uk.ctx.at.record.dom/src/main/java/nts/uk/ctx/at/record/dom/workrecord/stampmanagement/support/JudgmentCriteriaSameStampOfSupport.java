@@ -5,6 +5,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
