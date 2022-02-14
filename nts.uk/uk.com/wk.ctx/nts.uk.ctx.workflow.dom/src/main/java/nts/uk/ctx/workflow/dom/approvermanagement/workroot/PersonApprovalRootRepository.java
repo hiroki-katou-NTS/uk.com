@@ -145,10 +145,17 @@ public interface PersonApprovalRootRepository {
 	 * [15] 期間から履歴を取得する
 	 * @param cid 会社ID
 	 * @param sid 社員ID
-	 * @param baseDate 期間
+	 * @param period 期間
 	 * @return 個人別承認ルート	
 	 */
-	List<PersonApprovalRoot> getHistFromBaseDate(String cid, String sid, GeneralDate baseDate);
+	List<PersonApprovalRoot> getHistFromBaseDate(String cid, String sid, DatePeriod period);
+	
+	/**
+	 * [16]個人別承認ルートと承認フェーズを insertする(個人別承認ルート,List<承認フェーズ>)	
+	 * @param personApprovalRoot
+	 * @param approvalPhases
+	 */
+	void insertPersonApprovalRootAndPhases(PersonApprovalRoot personApprovalRoot, List<ApprovalPhase> approvalPhases);
 	
 	/**
 	 * get all Person Approval Root
