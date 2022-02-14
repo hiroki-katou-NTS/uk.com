@@ -162,7 +162,7 @@ module nts.uk.at.kaf021.b {
 
             // B3_15
             columns.push({
-                headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '360px',
+                headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '335px',
                 constraint: {
                     primitiveValue: 'ReasonsForAgreement',
                     required: true
