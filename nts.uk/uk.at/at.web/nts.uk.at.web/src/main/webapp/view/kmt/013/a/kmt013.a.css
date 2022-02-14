@@ -1,0 +1,33 @@
+.fixed-flex-layout-left {
+    padding-top: 15px;
+    padding-left: 15px;
+}
+
+.fixed-flex-layout-right {
+    padding-top: 15px;
+}
+
+.icon.icon-searchbox {
+    margin: 0;
+}
+
+#kcp017-switch {
+    background-color: #ffffff;
+    border: solid 1px #000000;
+    border-radius: 4px;
+}
+
+.switchbox-wrappers.radio-wrappers label input+span {
+    border-radius: 5px;
+}
+
+#A1_1, #A1_2, #A1_3, #A4_2, #A4_3 {
+    /*color: #000000;*/
+    border-color: #000000;
+    box-shadow: 0 3px 0 -1px #888;
+}
+
+#A4_1 {
+    border-left:5px solid #FAC002;
+    padding-left: 5px;
+}
