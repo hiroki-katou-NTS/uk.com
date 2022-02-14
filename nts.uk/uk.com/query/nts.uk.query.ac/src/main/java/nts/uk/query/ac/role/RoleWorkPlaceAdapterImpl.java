@@ -5,6 +5,7 @@
 package nts.uk.query.ac.role;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -37,6 +38,11 @@ public class RoleWorkPlaceAdapterImpl implements RoleWorkPlaceAdapter {
 	@Override
 	public String findRoleIdBySystemType(Integer systemType) {
 		return this.roleExportRepo.findRoleIdBySystemType(systemType);
+	}
+
+	@Override
+	public List<String> findWorkPlaceIdByRoleId(Integer systemType, GeneralDate baseDate, Integer employeeReferenceRange) {
+		return roleExportRepo.findWorkPlaceIdByRoleId(systemType, baseDate, Optional.of(employeeReferenceRange)).getListWorkplaceIds();
 	}
 
 }

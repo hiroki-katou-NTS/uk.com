@@ -553,7 +553,6 @@ module nts.uk.ui.header {
             } else {
                 $('.next-slider').css("visibility", "");
                 $('.next-slider').css("visibility", "hidden");
-                console.log(lastItemPositionLeft + ' ' + userInfoLeft)
             }
         }
 

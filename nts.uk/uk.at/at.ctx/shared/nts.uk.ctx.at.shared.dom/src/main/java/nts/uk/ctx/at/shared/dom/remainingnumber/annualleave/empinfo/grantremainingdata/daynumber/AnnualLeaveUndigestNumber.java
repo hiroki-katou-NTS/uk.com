@@ -64,7 +64,7 @@ public class AnnualLeaveUndigestNumber extends LeaveUndigestNumber {
 	//[1]計算する
 	public AnnualLeaveUndigestNumber calcUndigestNumber(List<AnnualLeaveGrantRemainingData> remainingDataList, GeneralDate endDay){
 		List<AnnualLeaveGrantRemainingData> expiredList = remainingDataList.stream()
-				.filter(x -> x.getDeadline().afterOrEquals(endDay) && 
+				.filter(x -> x.getDeadline().beforeOrEquals(endDay) && 
 						x.getExpirationStatus() == LeaveExpirationStatus.EXPIRED &&
 						!(x.isDummyData()))
 				.collect(Collectors.toList());

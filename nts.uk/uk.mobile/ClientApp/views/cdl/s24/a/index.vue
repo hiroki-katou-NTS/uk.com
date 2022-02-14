@@ -1,7 +1,7 @@
 <template>
   <div class="modal-body p-0">
     <div class="modal-header rounded-0 d-block p-0">
-      <div class="uk-bg-teal p-2">
+      <div class=" p-2">
         <h4 class="modal-title text-white" v-on:click="$close('back')">       
             <i class="fas fa-angle-double-left mr-1" ></i>
             <span>{{ 'CDLS24_2' | i18n }}</span>        

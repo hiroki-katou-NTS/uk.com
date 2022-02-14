@@ -265,9 +265,10 @@ public class ExtraHolidayManagementService {
 					.build())
 				.collect(Collectors.toList());
 		// 「表示残数データ情報」を作成 Tạo "Thông tin dữ liệu còn lại hiển thị"
+		double remainingDays = lstDataRemainDto.stream().mapToDouble(RemainInfoDto::getDayLetf).sum();
 		DisplayRemainingNumberDataInformation result = DisplayRemainingNumberDataInformation.builder()
 				.employeeId(employeeId)
-				.totalRemainingNumber(0d)
+				.totalRemainingNumber(remainingDays)
 				.dispExpiredDate(compLeavCom != null
 					? compLeavCom.getCompensatoryAcquisitionUse().getExpirationTime().description
 					: null)
@@ -472,7 +473,7 @@ public class ExtraHolidayManagementService {
 						.digestionTimes(Optional.of(cdomdData.getRequiredTimes().v()))
 						.occurrenceId(Optional.empty())
 						.digestionId(Optional.of(cdomdData.getComDayOffID()))
-						.dayLetf(0d)
+						.dayLetf(-1d)
 						.remainingHours(Optional.of(0))
 						.usedDay(0d)
 						.usedTime(0)

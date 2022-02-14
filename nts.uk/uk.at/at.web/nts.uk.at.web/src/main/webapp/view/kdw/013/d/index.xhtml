@@ -30,11 +30,11 @@
 						<tr>
 							<td data-bind="text:$data.date "></td>
 							<td data-bind="text:$data.description "></td>
-							<com:ko-if bind="$data.overtimeLeaveAtr == 0">
+							<com:ko-if bind="$data.appType == 0">
 								<td><a class="btn-jump" tabindex = "1"
 									data-bind="ntsLinkButton: { action: $parent.jump.bind( {overtimeLeaveAtr:0 ,date:$data.date }) },text: '#{i18n.getText('KDW013_35')}'"></a></td>
 							</com:ko-if>
-							<com:ko-if bind="$data.overtimeLeaveAtr == 1">
+							<com:ko-if bind="$data.appType == 6">
 								<td><a class="btn-jump" tabindex = "1"
 									data-bind="ntsLinkButton: { action: $parent.jump.bind({overtimeLeaveAtr:1 ,date:$data.date }) },text: '#{i18n.getText('KDW013_36')}'"></a></td>
 							</com:ko-if>
