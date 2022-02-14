@@ -15,7 +15,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
             <div class="table mv-13" data-bind="visible: $parent.condition11">
                 <div class="cell col-1"></div>
                 <div class="cell">
-                    <div>
+                    <div style="padding-botom: 10px">
                         <div class="cell col-1">
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_19')"></div>
                         </div>
@@ -24,7 +24,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                         </div>
                         <div class="cell valign-center" data-bind="text: $parent.selectedWorkTimeDisp"></div>
                     </div>
-                    <div style="padding-top: 10px;">
+                    <div style="padding-bottom: 10px;">
                         <div class="cell col-1">
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_22')"></div>
                         </div>
