@@ -3368,7 +3368,9 @@ module nts.uk.ui.at.kdw013.calendar {
 
                         taskItemValues.push({ itemId: 1, value: startMinutes });
                         taskItemValues.push({ itemId: 2, value: endMinutes });
-
+                        //set optional item -  vì set theo dag task favorite chỉ set được start,end,CD1 ->CD5 nên không có thông tin của optional item. Cần phải add lại ở đoạn này
+                        taskItemValues.push(...vm.getTaskValues());
+                        
                         let refTimezone = { start: startMinutes, end: endMinutes };
                         let goOutBreakTimeLst = _.map(_.get(integrationOfDaily, 'outingTime.outingTimeSheets', []), outS => { return { start: _.get(outS, 'goOut.timeDay.timeWithDay'), end: _.get(outS, 'comeBack.timeDay.timeWithDay') } });
                         _.forEach(_.get(integrationOfDaily, 'breakTime.breakTimeSheets', []), ({ start, end }) => {
@@ -3435,9 +3437,10 @@ module nts.uk.ui.at.kdw013.calendar {
                             let taskDetails = []
                             _.forEach(_.get(task, 'taskContents'), tc => {
 
-                                let taskdetail = _.map(tc.taskContent, tcont => { return { itemId: tcont.itemId, value: tcont.taskCode }; });
-                                taskdetail.push({ itemId: 3, value: tc.attendanceTime });
-                                taskDetails.push({ supNo: tc.frameNo, taskItemValues: taskdetail });
+                                let taskItemValues = _.map(tc.taskContent, tcont => { return { itemId: tcont.itemId, value: tcont.taskCode }; });
+                                taskItemValues.push({ itemId: 3, value: tc.attendanceTime });
+                                taskItemValues.push(...vm.getTaskValues());
+                                taskDetails.push({ supNo: tc.frameNo, taskItemValues });
                             });
                             //map item start , end between
                             _.forEach(taskDetails, td => {
