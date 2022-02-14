@@ -28,7 +28,7 @@ module nts.uk.com.view.smm001.b {
 
       vm.empMonth =
         `
-          <div class="flex group-check-lock-classification" style="height: 22px">
+          <div class="flex group-check-lock-classification">
             <label class="radio-emp"
               data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${currentMonth}', checkedValue: 0, group: 'lockClassification-${vm.code}' }"></label>
             <label class="radio-emp"
@@ -41,7 +41,7 @@ module nts.uk.com.view.smm001.b {
       const vm = this;
       vm.empMonth =
         `
-          <div class="flex group-check-lock-classification" style="height: 22px">
+          <div class="flex group-check-lock-classification">
             <label class="radio-emp"
               data-bind="ntsRadioButton: { checked: rightEmployments()[${vm.index}].checked, optionText: '${vm.currentMonth}', checkedValue: 0, group: 'lockClassification-${vm.code}' }"></label>
             <label class="radio-emp"

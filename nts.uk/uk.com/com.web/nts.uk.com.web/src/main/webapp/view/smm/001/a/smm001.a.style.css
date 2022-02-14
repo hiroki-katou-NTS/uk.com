@@ -69,6 +69,10 @@
   margin-bottom: 10px;
 }
 
+.group-check-lock-classification {
+  height: 22px;
+}
+
 .group-check-lock-classification .radio-wrapper input[type="radio"]+span::before {
   top: 1px !important;
 }
