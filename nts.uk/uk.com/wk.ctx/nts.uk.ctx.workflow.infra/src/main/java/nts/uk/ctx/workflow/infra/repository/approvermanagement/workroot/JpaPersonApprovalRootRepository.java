@@ -15,7 +15,7 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverSettingInformation;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalSettingInformation;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
@@ -801,7 +801,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	}
 
 	@Override
-	public List<ApproverSettingInformation> getApprovalSettingByEmployees(String cid, List<String> sids, GeneralDate baseDate,
+	public List<ApprovalSettingInformation> getApprovalSettingByEmployees(String cid, List<String> sids, GeneralDate baseDate,
 			SystemAtr sysAtr) {
 		// TODO Auto-generated method stub
 		return null;
@@ -838,7 +838,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	}
 
 	@Override
-	public List<ApproverSettingInformation> getHistIncludeBaseDate(String cid, String sid, GeneralDate baseDate) {
+	public List<ApprovalSettingInformation> getHistIncludeBaseDate(String cid, String sid, GeneralDate baseDate) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -50,7 +50,7 @@ public interface PersonApprovalRootRepository {
 	 * @param sysAtr システム区分
 	 * @return 承認者設定情報
 	 */
-	List<ApproverSettingInformation> getApprovalSettingByEmployees(String cid, List<String> sids, GeneralDate baseDate, SystemAtr sysAtr);
+	List<ApprovalSettingInformation> getApprovalSettingByEmployees(String cid, List<String> sids, GeneralDate baseDate, SystemAtr sysAtr);
 
 	/**
 	 * [5] 社員ID、承認IDListから承認ルート設定を取得する
@@ -101,7 +101,7 @@ public interface PersonApprovalRootRepository {
 	 * @param baseDate 基準日
 	 * @return 承認者設定情報List	
 	 */
-	List<ApproverSettingInformation> getHistIncludeBaseDate(String cid, String sid, GeneralDate baseDate);
+	List<ApprovalSettingInformation> getHistIncludeBaseDate(String cid, String sid, GeneralDate baseDate);
 	
 	/**
 	 * [11] 開始日が基準日より後の社員履歴を取得する

@@ -1,5 +1,7 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +14,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApproverSettingInformation {
+public class ApprovalSettingInformation {
 	
 	/** 承認フェーズ */
-	private ApprovalPhase approvalPhase;
+	private List<ApprovalPhase> approvalPhases;
 	
 	/** 承認ルート */
 	private PersonApprovalRoot personApprovalRoot;

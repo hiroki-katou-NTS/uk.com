@@ -1,11 +1,11 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.opetaionsettings;
 
-import lombok.Getter;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
@@ -17,7 +17,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
  * @author NWS-DungDV
  *
  */
-@Getter
+@Data
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 public class ApproverOperationSettings extends AggregateRoot {
 	
@@ -107,7 +108,7 @@ public class ApproverOperationSettings extends AggregateRoot {
 	/**
 	 * [2] 利用する申請を取得する
 	 */
-	List<ApplicationType> getApplicationToUse() {
+	public List<ApplicationType> getApplicationToUse() {
 		return this.settingTypeUseds.stream()
 				.map(x -> x.determineAppTypeIsUsed().orElse(null))
 				.collect(Collectors.toList());
@@ -117,7 +118,7 @@ public class ApproverOperationSettings extends AggregateRoot {
 	/**
 	 * [3] 利用する確認を取得する
 	 */
-	List<ConfirmationRootType> getConfirmationToUse() {
+	public List<ConfirmationRootType> getConfirmationToUse() {
 		return this.settingTypeUseds.stream()
 				.map(x -> x.determineConfirmRootTypeIsUsed().orElse(null))
 				.collect(Collectors.toList());
