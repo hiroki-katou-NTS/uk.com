@@ -1,5 +1,13 @@
 package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import lombok.val;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -9,14 +17,6 @@ import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.AppointmentDto;
-import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 予定を取得する
@@ -47,8 +47,8 @@ public class GetAnAppointmentQuery {
      * @param isTotalDisplay
      * @return AppointmentDto
      */
-    public AppointmentDto get(DatePeriod period, int startDate, boolean isTotalDisplay) {
-        String employeeId = AppContexts.user().employeeId();
+    public AppointmentDto get(DatePeriod period, int startDate, boolean isTotalDisplay, String sid) {
+        String employeeId = sid;
         //1.
         //取得期間と週合計期間リストを取得する
         val aqDatePeriodList = periodListQuery.get(period, startDate);

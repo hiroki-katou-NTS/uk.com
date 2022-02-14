@@ -264,7 +264,7 @@ module nts.uk.ui.at.ksu002.a {
 
 			vm.yearMonth
 				.subscribe((ym: string) => {
-					const cmd = { yearMonth: Number(ym) };
+					const cmd = { yearMonth: Number(ym), sid: ko.unwrap(vm.params.employeeId) };
 					const hasChange = ko.unwrap(vm.params.hasChange);
 
 					// first load
@@ -301,7 +301,7 @@ module nts.uk.ui.at.ksu002.a {
 
 			vm.params.employeeId.subscribe((sid: any) => {
 				if (sid !== cache.employeeId) {
-					vm.$ajax('at', API.BASE_DATE, { yearMonth: Number(ko.unwrap(vm.yearMonth)) })
+					vm.$ajax('at', API.BASE_DATE, { yearMonth: Number(ko.unwrap(vm.yearMonth)), sid: ko.unwrap(vm.params.employeeId) })
 						.then(proccesPeriod)
 						.fail(processExceps);
 					cache.employeeId = sid;

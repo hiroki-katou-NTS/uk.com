@@ -546,6 +546,7 @@ module nts.uk.ui.at.ksu002.a {
 
 
 			let shareData = {
+				employeeId: ko.unwrap(vm.employeeId),
 				startDate: moment(begin).format('YYYY/MM/DD'),//対象期間開始日
 				endDate: moment(finish).format('YYYY/MM/DD'),//対象期間終了日
 				employeeCode: employeeCode,//社員コード
@@ -817,29 +818,31 @@ module nts.uk.ui.at.ksu002.a {
 		private compare(cloned: DayData, current: DayDataRawObsv) {
 			const { state } = current.data;
 			const changed: DayData = ko.toJS(current);
+			const vm = this;
+			let changeState = ko.unwrap(vm.employeeId) === vm.$user.employeeId ? EDIT_STATE.HAND_CORRECTION_MYSELF : EDIT_STATE.HAND_CORRECTION_OTHER;
 
 			if (changed.data.wtype.code !== cloned.data.wtype.code) {
-				state.wtype(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.wtype(changeState);
 				// if change time code, change all state
-				state.wtime(EDIT_STATE.HAND_CORRECTION_MYSELF);
-				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
-				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.wtime(changeState);
+				state.value.begin(changeState);
+				state.value.finish(changeState);
 			}
 
 			if (changed.data.wtime.code !== cloned.data.wtime.code) {
-				state.wtime(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.wtime(changeState);
 				// if change time code, change all state
-				state.wtype(EDIT_STATE.HAND_CORRECTION_MYSELF);
-				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
-				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.wtype(changeState);
+				state.value.begin(changeState);
+				state.value.finish(changeState);
 			}
 
 			if (changed.data.value.begin !== cloned.data.value.begin) {
-				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.value.begin(changeState);
 			}
 
 			if (changed.data.value.finish !== cloned.data.value.finish) {
-				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.value.finish(changeState);
 			}
 		}
 	}
