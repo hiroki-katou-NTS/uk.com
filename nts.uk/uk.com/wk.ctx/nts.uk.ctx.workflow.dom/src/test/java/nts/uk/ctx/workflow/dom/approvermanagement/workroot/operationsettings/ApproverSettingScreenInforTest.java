@@ -1,4 +1,4 @@
-package nts.uk.ctx.workflow.dom.approvermanagement.workroot.opetaionsettings;
+package nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

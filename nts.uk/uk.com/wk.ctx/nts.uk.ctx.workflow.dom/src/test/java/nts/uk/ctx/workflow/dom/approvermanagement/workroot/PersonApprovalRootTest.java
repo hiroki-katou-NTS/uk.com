@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.opetaionsettings.OperationMode;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.OperationMode;
 
 public class PersonApprovalRootTest {
 

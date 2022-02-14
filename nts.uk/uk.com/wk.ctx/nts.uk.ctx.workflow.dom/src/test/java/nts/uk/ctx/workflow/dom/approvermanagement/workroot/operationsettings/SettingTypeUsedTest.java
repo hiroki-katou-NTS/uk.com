@@ -1,4 +1,4 @@
-package nts.uk.ctx.workflow.dom.approvermanagement.workroot.opetaionsettings;
+package nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.junit.Test;
 
 import lombok.val;

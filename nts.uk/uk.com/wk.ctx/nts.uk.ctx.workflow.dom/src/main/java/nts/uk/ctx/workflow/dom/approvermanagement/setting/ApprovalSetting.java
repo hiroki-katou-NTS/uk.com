@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.opetaionsettings.OperationMode;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.OperationMode;
 
 /**
  * 承認設定

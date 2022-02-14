@@ -7,9 +7,9 @@ import java.util.Optional;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.opetaionsettings.ApproverOperationSettings;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.opetaionsettings.ItemNameInformation;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.opetaionsettings.OperationMode;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ApproverOperationSettings;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ItemNameInformation;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.OperationMode;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.承認者管理.就業人事申請承認ルート.自分の承認者の運用設定.運用モードを設定する

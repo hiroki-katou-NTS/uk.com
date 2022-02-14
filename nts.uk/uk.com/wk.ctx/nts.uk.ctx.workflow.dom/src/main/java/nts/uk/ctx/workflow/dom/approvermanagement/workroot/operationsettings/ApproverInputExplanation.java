@@ -1,4 +1,4 @@
-package nts.uk.ctx.workflow.dom.approvermanagement.workroot.opetaionsettings;
+package nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

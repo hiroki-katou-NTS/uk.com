@@ -1,4 +1,4 @@
-package nts.uk.ctx.workflow.dom.approvermanagement.workroot.opetaionsettings;
+package nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings;
 
 import java.util.List;
 import java.util.stream.Collectors;
