@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import lombok.val;
@@ -80,10 +81,10 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 	}
 	
 	@Override
-	protected IntermediateResult canonicalizeExtends(
+	protected Optional<IntermediateResult> canonicalizeExtends(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context, IntermediateResult interm) {
-		return interm;
+		return Optional.of(interm);
 	}
 	
 	private static CanonicalItemList getFixedItems() {

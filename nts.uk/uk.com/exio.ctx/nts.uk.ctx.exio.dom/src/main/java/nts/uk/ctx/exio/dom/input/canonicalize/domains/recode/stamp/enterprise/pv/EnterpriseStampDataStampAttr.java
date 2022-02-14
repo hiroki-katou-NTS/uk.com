@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.pv;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.primitive.PrimitiveValueConstraintException;
@@ -76,7 +76,7 @@ public class EnterpriseStampDataStampAttr extends StringPrimitiveValue<Enterpris
         if (functionNo.v() == 99) {
             switch (this.v()) {
                 case "A": return SetPreClockArt.DIRECT;
-                case "B": return SetPreClockArt.BOUNCE;
+                case "G": return SetPreClockArt.BOUNCE;
             }
         }
 
@@ -123,7 +123,7 @@ public class EnterpriseStampDataStampAttr extends StringPrimitiveValue<Enterpris
         MAP.put("4", new Converted(ChangeClockAtr.GOING_TO_WORK, ChangeCalArt.NONE, true));
         MAP.put("5", new Converted(ChangeClockAtr.GOING_TO_WORK, ChangeCalArt.FIX, false));
         MAP.put("6", new Converted(ChangeClockAtr.START_OF_SUPPORT, ChangeCalArt.BRARK, false));
-        MAP.put("7", new Converted(ChangeClockAtr.WORKING_OUT, ChangeCalArt.NONE, false));
+        MAP.put("7", new Converted(ChangeClockAtr.TEMPORARY_WORK, ChangeCalArt.NONE, false));
         MAP.put("8", new Converted(ChangeClockAtr.START_OF_SUPPORT, ChangeCalArt.EARLY_APPEARANCE, false));
         MAP.put("9", new Converted(ChangeClockAtr.TEMPORARY_LEAVING, ChangeCalArt.NONE, false));
         MAP.put("ｱ", new Converted(ChangeClockAtr.OVER_TIME, ChangeCalArt.NONE, false));
