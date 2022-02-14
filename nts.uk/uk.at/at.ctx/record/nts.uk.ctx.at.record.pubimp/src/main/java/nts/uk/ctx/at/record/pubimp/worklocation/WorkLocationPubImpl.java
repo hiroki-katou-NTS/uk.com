@@ -31,9 +31,13 @@ public class WorkLocationPubImpl implements WorkLocationPub {
 	 * @return
 	 */
 	public WorkLocationPubExport convertToExport(WorkLocation workLocation) {
-		return new WorkLocationPubExport(workLocation.getContractCode().v(), workLocation.getWorkLocationCD().v(),
-				workLocation.getWorkLocationName().v(), workLocation.getStampRange().getRadius().value,
-				workLocation.getStampRange().getGeoCoordinate().getLatitude(), workLocation.getStampRange().getGeoCoordinate().getLongitude());
+		return new WorkLocationPubExport(
+				workLocation.getContractCode().v(),
+				workLocation.getWorkLocationCD().v(),
+				workLocation.getWorkLocationName().v(),
+				workLocation.getStampRange().isPresent() ? workLocation.getStampRange().get().getRadius().value : null,
+				workLocation.getStampRange().isPresent() ? workLocation.getStampRange().get().getGeoCoordinate().getLatitude() : null,
+				workLocation.getStampRange().isPresent() ? workLocation.getStampRange().get().getGeoCoordinate().getLongitude() : null);
 	}
 
 	@Override
@@ -47,9 +51,13 @@ public class WorkLocationPubImpl implements WorkLocationPub {
 	public List<WorkLocationPubExport> findAll(String companyId) {
 		String contractCode = AppContexts.user().contractCode();
 		return workRepository.findAll(contractCode).stream().map(w -> 
-					WorkLocationPubExport.createSimpleFromJavaType(w.getContractCode().v(), w.getWorkLocationCD().v(), 
-						w.getWorkLocationName().v(), w.getStampRange().getRadius().value,
-						w.getStampRange().getGeoCoordinate().getLatitude(), w.getStampRange().getGeoCoordinate().getLongitude()))
+					WorkLocationPubExport.createSimpleFromJavaType(
+							w.getContractCode().v(),
+							w.getWorkLocationCD().v(),
+							w.getWorkLocationName().v(),
+							w.getStampRange().isPresent() ? w.getStampRange().get().getRadius().value : null,
+							w.getStampRange().isPresent() ? w.getStampRange().get().getGeoCoordinate().getLatitude() : null,
+							w.getStampRange().isPresent() ? w.getStampRange().get().getGeoCoordinate().getLongitude() : null))
 				.collect(Collectors.toList());
 	}
 }
