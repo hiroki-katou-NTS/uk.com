@@ -342,10 +342,12 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 					} else {
 						timeStampAppEnum = TimeStampAppEnum.CHEERING;
 					}
+					
+					Integer supportWorkNo = krqdtAppStamp.supportWorkNo;
 					DestinationTimeApp destinationTimeAppEnd = new DestinationTimeApp(timeStampAppEnum, stampFrameNo,
-							StartEndClassification.END, Optional.empty());
+							StartEndClassification.END, supportWorkNo == null ? Optional.empty() : Optional.of(new WorkNo(supportWorkNo)));
 					DestinationTimeApp destinationTimeAppStart = new DestinationTimeApp(timeStampAppEnum, stampFrameNo,
-							StartEndClassification.START, Optional.empty());
+							StartEndClassification.START, supportWorkNo == null ? Optional.empty() : Optional.of(new WorkNo(supportWorkNo)));
 					if (startCancelAtr != null) {
 						if (startCancelAtr == 1) {
 							listDestinationTimeApp.add(destinationTimeAppStart);
