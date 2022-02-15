@@ -52,20 +52,44 @@ public class JpaSupportableEmployeeRepository extends JpaRepository implements S
         builderString.append(" WHERE a.employeeId IN =:employeeIds ");
         SELECT_BY_SIDS = builderString.toString();
 
+        //$期間.開始日 between 期間.開始日 and 期間.終了日
+        //|| $.期間.終了日 between 期間.開始日 and 期間.終了日
+        //|| 期間.開始日 between $.期間.開始日 and $.期間.終了日
+        //|| 期間.終了日 between $.期間.開始日 and $.期間.終了日
         builderString = new StringBuilder();
         builderString.append(" SELECT ");
         builderString.append(" FROM KshdtSupportTableEmployee a ");
         builderString.append(" WHERE a.employeeId  =:employeeId ");
-        builderString.append(" AND a.startDate  >= :startDate ");
-        builderString.append(" AND a.endDate  <= :endDate ");
+        builderString.append(" AND ");
+        builderString.append(" (( a.startDate  >= :startDate ");
+        builderString.append(" AND a.startDate  <= :endDate )");
+        builderString.append(" OR  " );
+        builderString.append("( a.endDate  >= :startDate  ");
+        builderString.append(" AND  a.endDate  <= :endDate )");
+        builderString.append(" OR  " );
+        builderString.append(" ( a.startDate  <= :startDate ");
+        builderString.append(" AND a.endDate  >= :startDate )");
+        builderString.append(" OR  " );
+        builderString.append("( a.startDate  <= :endDate  ");
+        builderString.append(" AND  a.endDate  >= :endDate ))");
         SELECT_BY_SID_AND_DATEPERIOD = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append(" SELECT ");
         builderString.append(" FROM KshdtSupportTableEmployee a ");
         builderString.append(" WHERE a.employeeId IN  =:employeeIds ");
-        builderString.append(" AND a.startDate  >= :startDate ");
-        builderString.append(" AND a.endDate  <= :endDate ");
+        builderString.append(" AND ");
+        builderString.append(" (( a.startDate  >= :startDate ");
+        builderString.append(" AND a.startDate  <= :endDate )");
+        builderString.append(" OR  " );
+        builderString.append("( a.endDate  >= :startDate  ");
+        builderString.append(" AND  a.endDate  <= :endDate )");
+        builderString.append(" OR  " );
+        builderString.append(" ( a.startDate  <= :startDate ");
+        builderString.append(" AND a.endDate  >= :startDate )");
+        builderString.append(" OR  " );
+        builderString.append("( a.startDate  <= :endDate  ");
+        builderString.append(" AND  a.endDate  >= :endDate ))");
         SELECT_BY_SIDS_AND_DATEPERIOD = builderString.toString();
 
         builderString = new StringBuilder();
@@ -73,9 +97,18 @@ public class JpaSupportableEmployeeRepository extends JpaRepository implements S
         builderString.append(" FROM KshdtSupportTableEmployee a ");
         builderString.append(" WHERE a.recipientTargetUnit   =:recipientTargetUnit ");
         builderString.append(" WHERE a.recipientTargetId   =:recipientTargetId ");
-        builderString.append(" AND a.startDate  >= :startDate ");
-        builderString.append(" AND a.startDate  >= :startDate ");
-        builderString.append(" AND a.endDate  <= :endDate ");
+        builderString.append(" AND ");
+        builderString.append(" (( a.startDate  >= :startDate ");
+        builderString.append(" AND a.startDate  <= :endDate )");
+        builderString.append(" OR  " );
+        builderString.append("( a.endDate  >= :startDate  ");
+        builderString.append(" AND  a.endDate  <= :endDate )");
+        builderString.append(" OR  " );
+        builderString.append(" ( a.startDate  <= :startDate ");
+        builderString.append(" AND a.endDate  >= :startDate )");
+        builderString.append(" OR  " );
+        builderString.append("( a.startDate  <= :endDate  ");
+        builderString.append(" AND  a.endDate  >= :endDate ))");
         SELECT_BY_RECIPIENT_AND_DATEPERIOD = builderString.toString();
     }
 
@@ -146,7 +179,7 @@ public class JpaSupportableEmployeeRepository extends JpaRepository implements S
         return this.queryProxy().query(SELECT_BY_SID_AND_DATEPERIOD, KshdtSupportTableEmployee.class)
                 .setParameter("employeeId", employeeId.v())
                 .setParameter("startDate", period.start())
-                .setParameter("employeeId", period.end())
+                .setParameter("endDate", period.end())
                 .getList(this::toDomain);
     }
 
@@ -158,7 +191,7 @@ public class JpaSupportableEmployeeRepository extends JpaRepository implements S
             resultList.addAll(this.queryProxy().query(SELECT_BY_SIDS_AND_DATEPERIOD, KshdtSupportTableEmployee.class)
                     .setParameter("employeeIds", subList)
                     .setParameter("startDate", period.start())
-                    .setParameter("employeeId", period.end())
+                    .setParameter("endDate", period.end())
                     .getList(this::toDomain));
         });
         return resultList;
@@ -174,7 +207,7 @@ public class JpaSupportableEmployeeRepository extends JpaRepository implements S
                 .setParameter("recipientTargetUnit", unit)
                 .setParameter("recipientTargetId", isWPLGroup ? workplaceGroupId : workplaceId)
                 .setParameter("startDate", period.start())
-                .setParameter("employeeId", period.end())
+                .setParameter("endDate", period.end())
                 .getList(this::toDomain);
     }
 
