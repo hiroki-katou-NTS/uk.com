@@ -73,7 +73,7 @@ public class GetAnAppointmentQuery {
         //4.
         List<WeeklyAgreegateResult> agreegateResults = Collections.emptyList();
         if (isTotalDisplay) {
-            agreegateResults = aggregatedDataQuery.get(aqDatePeriodList.getPeriodItem(), dailyAttendance, Collections.emptyList());
+            agreegateResults = aggregatedDataQuery.get(aqDatePeriodList.getPeriodItem(), dailyAttendance, Collections.emptyList(), employeeId);
         }
         return new AppointmentDto(
                 workInforDtoList,
