@@ -24,8 +24,6 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Interface CopyHandler.
  */
-@Setter
-@Getter
 public class DataCopyHandler {
 
     /**
@@ -63,19 +61,19 @@ public class DataCopyHandler {
     /**
      * The entity manager.
      */
-    protected EntityManager entityManager;
+    private EntityManager entityManager;
     /**
      * The copy method.
      */
-    protected CopyMethod copyMethod;
+    private CopyMethod copyMethod;
     /**
      * The contract code.
      */
-    protected String contractCode;
+    private String contractCode;
     /**
      * The company Id.
      */
-    protected String companyId;
+    private String companyId;
     /**
      * The lít key.
      */
@@ -295,15 +293,15 @@ public class DataCopyHandler {
 
         public DataCopyHandler build() {
             DataCopyHandler dataCopyHandler = new DataCopyHandler();
-            dataCopyHandler.setEntityManager(entityManager);
-            dataCopyHandler.setCopyMethod(copyMethod);
-            dataCopyHandler.setContractCode(contractCode);
-            dataCopyHandler.setCompanyId(companyId);
-            dataCopyHandler.setTableName(tableName);
-            dataCopyHandler.setKeys(keys);
-            dataCopyHandler.setSelectQuery(selectQuery);
-            dataCopyHandler.setDeleteQuery(deleteQuery);
-            dataCopyHandler.setOnlyCid(isOnlyCid);
+            dataCopyHandler.entityManager = entityManager;
+            dataCopyHandler.copyMethod = copyMethod;
+            dataCopyHandler.contractCode = contractCode;
+            dataCopyHandler.companyId = companyId;
+            dataCopyHandler.tableName = tableName;
+            dataCopyHandler.keys = keys;
+
+            dataCopyHandler.deleteQuery = deleteQuery;
+            dataCopyHandler.isOnlyCid = isOnlyCid;
             return dataCopyHandler;
         }
     }
