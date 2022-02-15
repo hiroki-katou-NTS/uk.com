@@ -11,6 +11,9 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import lombok.RequiredArgsConstructor;
+import nts.uk.shr.com.company.CompanyId;
+import nts.uk.shr.com.tenant.TenantCode;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
@@ -24,6 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Interface CopyHandler.
  */
+@RequiredArgsConstructor
 public class DataCopyHandler {
 
     /**
@@ -61,39 +65,39 @@ public class DataCopyHandler {
     /**
      * The entity manager.
      */
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
     /**
      * The copy method.
      */
-    private CopyMethod copyMethod;
+    private final CopyMethod copyMethod;
     /**
      * The contract code.
      */
-    private String contractCode;
+    private final TenantCode contractCode;
     /**
      * The company Id.
      */
-    private String companyId;
+    private final CompanyId companyId;
     /**
      * The lít key.
      */
-    private List<String> keys = new ArrayList<>();
+    private final List<String> keys;
     /**
      * The table Name.
      */
-    private String tableName;
+    private final String tableName;
     /**
      * The select by cid query.
      */
-    private String selectQuery;
+    private final String selectQuery;
     /**
      * The delete by cid query.
      */
-    private String deleteQuery;
+    private final String deleteQuery;
     /**
      *
      */
-    private boolean isOnlyCid;
+    private final boolean isOnlyCid;
     /**
      * Do copy.
      */
@@ -112,14 +116,14 @@ public class DataCopyHandler {
 
         // 既存データをSELECT
         Query selectQueryTarget = this.entityManager.createNativeQuery(this.selectQuery)
-        		.setParameter(1, this.companyId);
+        		.setParameter(1, this.companyId.getValue());
         List<Object> oldDatas = selectQueryTarget.getResultList();
 
         switch (copyMethod) {
             case REPLACE_ALL:
             	// 既存データをDELETE（会社IDのみ指定で全削除）
                 Query dq = this.entityManager.createNativeQuery(this.deleteQuery)
-                		.setParameter(1, this.companyId);
+                		.setParameter(1, this.companyId.getValue());
                 dq.executeUpdate();
             case DO_NOTHING:
                 if(copyMethod != CopyMethod.REPLACE_ALL && !oldDatas.isEmpty()){
@@ -164,9 +168,9 @@ public class DataCopyHandler {
                     StringJoiner joiner = new StringJoiner(",");
                     for (int k = SOURCE_START_COLUMN; k < rowData.length - keyCheck; k++) {
                         if (rowData[SOURCE_COLUMN_CID].equals(rowData[k])) {
-                            rowData[k] = companyId;
+                            rowData[k] = companyId.getValue();
                         } else if (rowData[SOURCE_COLUMN_CONTRACT_CD].equals(rowData[k])) {
-                            rowData[k] = contractCode;;
+                            rowData[k] = contractCode.getValue();
                         } else if (k == INS_DATE_COLL || k == UDP_DATE_COLL) {
                             rowData[k] = Timestamp.valueOf(GeneralDateTime.now().localDateTime());
                         } else if (k == INS_CCD_COLL || k == UDP_CCD_COLL) {
@@ -224,8 +228,8 @@ public class DataCopyHandler {
     public static final class DataCopyHandlerBuilder {
         EntityManager entityManager;
         protected CopyMethod copyMethod;
-        protected String contractCode;
-        protected String companyId;
+        protected TenantCode contractCode;
+        protected CompanyId companyId;
         private List<String> keys = new ArrayList<>();
         private String tableName;
         private boolean condKey = false;
@@ -252,8 +256,8 @@ public class DataCopyHandler {
         }
 
         public DataCopyHandlerBuilder withCompanyId(String contractCode, String companyId) {
-        	this.contractCode = contractCode;
-            this.companyId = companyId;
+        	this.contractCode = new TenantCode(contractCode);
+            this.companyId = new CompanyId(companyId);
             return this;
         }
 
@@ -292,16 +296,16 @@ public class DataCopyHandler {
         }
 
         public DataCopyHandler build() {
-            DataCopyHandler dataCopyHandler = new DataCopyHandler();
-            dataCopyHandler.entityManager = entityManager;
-            dataCopyHandler.copyMethod = copyMethod;
-            dataCopyHandler.contractCode = contractCode;
-            dataCopyHandler.companyId = companyId;
-            dataCopyHandler.tableName = tableName;
-            dataCopyHandler.keys = keys;
-
-            dataCopyHandler.deleteQuery = deleteQuery;
-            dataCopyHandler.isOnlyCid = isOnlyCid;
+            DataCopyHandler dataCopyHandler = new DataCopyHandler(
+                    entityManager,
+                    copyMethod,
+                    contractCode,
+                    companyId,
+                    keys,
+                    tableName,
+                    selectQuery,
+                    deleteQuery,
+                    isOnlyCid);
             return dataCopyHandler;
         }
     }

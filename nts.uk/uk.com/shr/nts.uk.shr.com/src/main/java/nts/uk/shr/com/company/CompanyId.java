@@ -1,6 +1,11 @@
 package nts.uk.shr.com.company;
 
+import lombok.Value;
+
+@Value
 public class CompanyId {
+
+	String value;
 	
 	public static String create(String tenantCode, String companyCode) {
 		return tenantCode + "-" + companyCode;
