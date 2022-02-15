@@ -79,9 +79,9 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 		
 		return new KrcmtWorkLocation(new KwlmtWorkLocationPK(workLocation.getContractCode().v(), workLocation.getWorkLocationCD().v()),
 				workLocation.getWorkLocationName().v(),
-				workLocation.getStampRange().isPresent() ? workLocation.getStampRange().get().getRadius().value : null,
-				workLocation.getStampRange().isPresent() ? workLocation.getStampRange().get().getGeoCoordinate().getLatitude() : null,
-				workLocation.getStampRange().isPresent() ? workLocation.getStampRange().get().getGeoCoordinate().getLongitude() : null,
+				workLocation.getStampRange().map(s -> s.getRadius().value).orElse(null),
+				workLocation.getStampRange().map(s -> s.getGeoCoordinate().getLatitude()).orElse(null),
+				workLocation.getStampRange().map(s -> s.getGeoCoordinate().getLongitude()).orElse(null),
 				workLocation.getWorkplace().isPresent() ? KrcmtWorkplacePossible.toEntiy(
 						workLocation.getContractCode().v(),
 						workLocation.getWorkLocationCD().v(),

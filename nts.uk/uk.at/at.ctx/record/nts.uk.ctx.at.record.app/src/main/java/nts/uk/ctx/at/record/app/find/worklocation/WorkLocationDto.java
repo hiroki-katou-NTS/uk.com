@@ -44,9 +44,9 @@ public class WorkLocationDto {
 				domain.getContractCode().v(),
 				domain.getWorkLocationCD().v(),
 				domain.getWorkLocationName().v(),
-				domain.getStampRange().isPresent() ? domain.getStampRange().get().getRadius().value : null,
-				domain.getStampRange().isPresent() ? domain.getStampRange().get().getGeoCoordinate().getLatitude() : null,
-				domain.getStampRange().isPresent() ? domain.getStampRange().get().getGeoCoordinate().getLongitude() : null,
+				domain.getStampRange().map(s -> s.getRadius().value).orElse(null),
+				domain.getStampRange().map(s -> s.getGeoCoordinate().getLatitude()).orElse(null),
+				domain.getStampRange().map(s -> s.getGeoCoordinate().getLongitude()).orElse(null),
 				domain.getListIPAddress().stream().map(c->new Ipv4AddressDto(c)).collect(Collectors.toList()),
 				domain.getWorkplace().map(c->WorkplacePossibleCmd.toDto(c)).orElse(null));
 	}

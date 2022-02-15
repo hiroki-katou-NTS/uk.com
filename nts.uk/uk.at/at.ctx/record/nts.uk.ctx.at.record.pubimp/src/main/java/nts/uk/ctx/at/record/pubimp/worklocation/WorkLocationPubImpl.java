@@ -35,9 +35,9 @@ public class WorkLocationPubImpl implements WorkLocationPub {
 				workLocation.getContractCode().v(),
 				workLocation.getWorkLocationCD().v(),
 				workLocation.getWorkLocationName().v(),
-				workLocation.getStampRange().isPresent() ? workLocation.getStampRange().get().getRadius().value : null,
-				workLocation.getStampRange().isPresent() ? workLocation.getStampRange().get().getGeoCoordinate().getLatitude() : null,
-				workLocation.getStampRange().isPresent() ? workLocation.getStampRange().get().getGeoCoordinate().getLongitude() : null);
+				workLocation.getStampRange().map(s -> s.getRadius().value).orElse(null),
+				workLocation.getStampRange().map(s -> s.getGeoCoordinate().getLatitude()).orElse(null),
+				workLocation.getStampRange().map(s -> s.getGeoCoordinate().getLongitude()).orElse(null));
 	}
 
 	@Override
@@ -55,9 +55,9 @@ public class WorkLocationPubImpl implements WorkLocationPub {
 							w.getContractCode().v(),
 							w.getWorkLocationCD().v(),
 							w.getWorkLocationName().v(),
-							w.getStampRange().isPresent() ? w.getStampRange().get().getRadius().value : null,
-							w.getStampRange().isPresent() ? w.getStampRange().get().getGeoCoordinate().getLatitude() : null,
-							w.getStampRange().isPresent() ? w.getStampRange().get().getGeoCoordinate().getLongitude() : null))
+							w.getStampRange().map(s -> s.getRadius().value).orElse(null),
+							w.getStampRange().map(s -> s.getGeoCoordinate().getLatitude()).orElse(null),
+							w.getStampRange().map(s -> s.getGeoCoordinate().getLongitude()).orElse(null)))
 				.collect(Collectors.toList());
 	}
 }

@@ -45,10 +45,7 @@ public class WorkLocation extends AggregateRoot {
 	 * @return
 	 */
 	public boolean canStamptedByMobile(GeoCoordinate geoCoordinate) {
-		if(stampRange.isPresent()){
-			return this.stampRange.get().checkWithinStampRange(geoCoordinate);
-		}
-		return true;
+		return this.stampRange.map(s -> s.checkWithinStampRange(geoCoordinate)).orElse(true);
 	}
 
 	public WorkLocation(ContractCode contractCode, WorkLocationCD workLocationCD, WorkLocationName workLocationName,
