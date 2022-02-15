@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.FlexTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.CalcFlexOfNoWorkingDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.CalcMethodOfNoWorkingDay;
@@ -243,6 +244,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		StatutoryWorkingTime houtei = this.calcStatutoryTime(
 				personCommonSetting.getRequire(),
 				integrationOfDaily.getYmd(),
+				integrationOfDaily.getWorkInformation(),
 				workType,
 				settingOfFlex,
 				Optional.of(predetermineTimeSet),
@@ -318,6 +320,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * フレックス計算用の法定労働時間を取得
 	 * @param require Require
 	 * @param baseDate 基準日
+	 * @param workInfo 日別勤怠の勤務情報
 	 * @param workType 勤務種類
 	 * @param settingOfFlex フレックス勤務の設定
 	 * @param predetermineTimeSet 計算用所定時間設定
@@ -329,6 +332,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	private StatutoryWorkingTime calcStatutoryTime(
 			Require require,
 			GeneralDate baseDate,
+			WorkInfoOfDailyAttendance workInfo,
 			WorkType workType,
 			SettingOfFlexWork settingOfFlex,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSet,
@@ -341,7 +345,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				predetermineTimeSet.get().getAdditionSet().getPredTime().getOneDay() : new AttendanceTime(0);
 		// 所定労働時間から控除する時間を計算
 		StatutoryDeductionForFlex deductionTime = this.calcDeductTime(require,
-				baseDate, workType, settingOfFlex, predetermineTimeSet, conditionItem, addSetting);
+				baseDate, workInfo, workType, settingOfFlex, predetermineTimeSet, conditionItem, addSetting);
 		// 所定時間を計算する
 		int actualMinutes = predetermineTime.valueAsMinutes() - deductionTime.getForActualWork().valueAsMinutes();
 		int premiumMinutes = predetermineTime.valueAsMinutes() - deductionTime.getForPremium().valueAsMinutes();
@@ -353,6 +357,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * 控除する時間を計算
 	 * @param require Require
 	 * @param baseDate 基準日
+	 * @param workInfo 日別勤怠の勤務情報
 	 * @param workType 勤務種類
 	 * @param settingOfFlex フレックス勤務の設定
 	 * @param predetermineTimeSet 計算用所定時間設定
@@ -363,6 +368,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	private StatutoryDeductionForFlex calcDeductTime(
 			Require require,
 			GeneralDate baseDate,
+			WorkInfoOfDailyAttendance workInfo,
 			WorkType workType,
 			SettingOfFlexWork settingOfFlex,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSet,
@@ -373,16 +379,16 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		
 		// 休日控除時間の計算
 		result.add(this.calcDeductHoliday(require, WorkTypeClassification.Holiday,
-				baseDate, workType, settingOfFlex, predetermineTimeSet, conditionItem));
+				baseDate, workInfo, workType, settingOfFlex, predetermineTimeSet, conditionItem));
 		// 休日控除時間の計算（振休）
 		result.add(this.calcDeductHoliday(require, WorkTypeClassification.Pause,
-				baseDate, workType, settingOfFlex, predetermineTimeSet, conditionItem));
+				baseDate, workInfo, workType, settingOfFlex, predetermineTimeSet, conditionItem));
 		// 代休控除時間の計算
 		result.add(this.calcDeductCompLeave(require,
-				baseDate, workType, settingOfFlex, predetermineTimeSet, conditionItem));
+				baseDate, workInfo, workType, settingOfFlex, predetermineTimeSet, conditionItem));
 		// 欠勤控除時間の計算
 		result.add(this.calcDeductAbsence(require,
-				baseDate, workType, predetermineTimeSet, conditionItem, addSetting));
+				baseDate, workInfo, workType, predetermineTimeSet, conditionItem, addSetting));
 		// 所定労働控除時間を返す
 		return result;
 	}
@@ -392,6 +398,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * @param require Require
 	 * @param workTypeClass 勤務種類の分類
 	 * @param baseDate 基準日
+	 * @param workInfo 日別勤怠の勤務情報
 	 * @param workType 勤務種類
 	 * @param settingOfFlex フレックス勤務の設定
 	 * @param predetermineTimeSet 計算用所定時間設定
@@ -402,6 +409,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			Require require,
 			WorkTypeClassification workTypeClass,
 			GeneralDate baseDate,
+			WorkInfoOfDailyAttendance workInfo,
 			WorkType workType,
 			SettingOfFlexWork settingOfFlex,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSet,
@@ -412,6 +420,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				require,
 				conditionItem.getEmployeeId(),
 				baseDate,
+				workInfo,
 				workTypeClass.convertVacationCategory(),
 				predetermineTimeSet,
 				Optional.empty());
@@ -428,6 +437,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * 代休控除時間の計算
 	 * @param require Require
 	 * @param baseDate 基準日
+	 * @param workInfo 日別勤怠の勤務情報
 	 * @param workType 勤務種類
 	 * @param settingOfFlex フレックス勤務の設定
 	 * @param predetermineTimeSet 計算用所定時間設定
@@ -437,6 +447,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	private DeductTimeEachSet calcDeductCompLeave(
 			Require require,
 			GeneralDate baseDate,
+			WorkInfoOfDailyAttendance workInfo,
 			WorkType workType,
 			SettingOfFlexWork settingOfFlex,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSet,
@@ -444,7 +455,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 
 		// 日単位の代休控除時間の計算
 		DeductTimeEachSet deductTime = this.calcDeductCompLeaveOfDay(
-				require, baseDate, workType, settingOfFlex, predetermineTimeSet, conditionItem);
+				require, baseDate, workInfo, workType, settingOfFlex, predetermineTimeSet, conditionItem);
 		// 時間単位の代休控除時間の計算
 		deductTime.add(this.calcDeductCompLeaveOfTime(settingOfFlex));
 		// 設定別控除時間を返す
@@ -455,6 +466,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * 日単位の代休控除時間の計算
 	 * @param require Require
 	 * @param baseDate 基準日
+	 * @param workInfo 日別勤怠の勤務情報
 	 * @param workType 勤務種類
 	 * @param settingOfFlex フレックス勤務の設定
 	 * @param predetermineTimeSet 計算用所定時間設定
@@ -464,6 +476,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	private DeductTimeEachSet calcDeductCompLeaveOfDay(
 			Require require,
 			GeneralDate baseDate,
+			WorkInfoOfDailyAttendance workInfo,
 			WorkType workType,
 			SettingOfFlexWork settingOfFlex,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSet,
@@ -474,6 +487,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				require,
 				conditionItem.getEmployeeId(),
 				baseDate,
+				workInfo,
 				VacationCategory.SubstituteHoliday,
 				predetermineTimeSet,
 				Optional.empty());
@@ -521,6 +535,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	private AttendanceTime calcDeductAbsence(
 			Require require,
 			GeneralDate baseDate,
+			WorkInfoOfDailyAttendance workInfo,
 			WorkType workType,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSet,
 			WorkingConditionItem  conditionItem,
@@ -535,6 +550,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				require,
 				conditionItem.getEmployeeId(),
 				baseDate,
+				workInfo,
 				workType,
 				VacationCategory.Absence,
 				predetermineTimeSet,

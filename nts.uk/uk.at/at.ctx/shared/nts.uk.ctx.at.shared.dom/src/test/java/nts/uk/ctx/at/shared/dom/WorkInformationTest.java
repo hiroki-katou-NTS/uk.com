@@ -1332,4 +1332,15 @@ public class WorkInformationTest {
 		assertThat(target.isBackStraight(require, "cid")).isTrue();
 	}
 	
+	@Test
+	public void testExsistsWorkTime_true() {
+		WorkInformation target = new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("001"));
+		assertThat(target.exsistsWorkTime()).isTrue();
+	}
+	
+	@Test
+	public void testExsistsWorkTime_false() {
+		WorkInformation target = new WorkInformation(new WorkTypeCode("001"), null);
+		assertThat(target.exsistsWorkTime()).isFalse();
+	}
 }

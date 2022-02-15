@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.*;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.VacationAddTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -69,7 +70,7 @@ public class VacationClass {
 			IntegrationOfDaily integrationOfDaily) {
 
 		//欠勤使用時間
-		AttendanceTime absenceUseTime = vacationTimeOfCalcDaily(require, employeeId, baseDate, workType,
+		AttendanceTime absenceUseTime = vacationTimeOfCalcDaily(require, employeeId, baseDate, integrationOfDaily.getWorkInformation(), workType,
 				VacationCategory.Absence, predetermineTimeSet, holidayAddtionSet);
 		AbsenceOfDaily absenceOfDaily = new AbsenceOfDaily(absenceUseTime);
 
@@ -78,7 +79,7 @@ public class VacationClass {
 		TimeDigestOfDaily timeDigestOfDaily = new TimeDigestOfDaily(timeDigest, new AttendanceTime(0));
 
 		//積立年休使用時間
-		AttendanceTime yearlyReservedTime = vacationTimeOfCalcDaily(require, employeeId, baseDate, workType,
+		AttendanceTime yearlyReservedTime = vacationTimeOfCalcDaily(require, employeeId, baseDate, integrationOfDaily.getWorkInformation(), workType,
 				VacationCategory.YearlyReserved, predetermineTimeSet, holidayAddtionSet);
 		YearlyReservedOfDaily yearlyReservedOfDaily = new YearlyReservedOfDaily(yearlyReservedTime);
 
@@ -87,7 +88,7 @@ public class VacationClass {
 		AttendanceTime substDigestTime = AttendanceTime.ZERO;
 		{
 			// 日数単位の休暇時間計算
-			AttendanceTime substDay = vacationTimeOfCalcDaily(require, employeeId, baseDate, workType,
+			AttendanceTime substDay = vacationTimeOfCalcDaily(require, employeeId, baseDate, integrationOfDaily.getWorkInformation(), workType,
 					VacationCategory.SubstituteHoliday, predetermineTimeSet, holidayAddtionSet);
 			// 合計時間代休使用時間を取得
 			AttendanceTime substTime = AttendanceTime.ZERO;
@@ -104,7 +105,7 @@ public class VacationClass {
 		AttendanceTime overDigestTime = AttendanceTime.ZERO;
 		{
 			// 日数単位の休暇時間計算
-			AttendanceTime overDay = vacationTimeOfCalcDaily(require, employeeId, baseDate, workType,
+			AttendanceTime overDay = vacationTimeOfCalcDaily(require, employeeId, baseDate, integrationOfDaily.getWorkInformation(), workType,
 					VacationCategory.TimeDigestVacation, predetermineTimeSet, holidayAddtionSet);
 			// 合計超過有給使用時間を取得
 			AttendanceTime overTime = AttendanceTime.ZERO;
@@ -120,7 +121,7 @@ public class VacationClass {
 		AttendanceTime specialUseTime = AttendanceTime.ZERO;
 		{
 			// 日数単位の休暇時間計算
-			AttendanceTime spacialDay = vacationTimeOfCalcDaily(require, employeeId, baseDate, workType,
+			AttendanceTime spacialDay = vacationTimeOfCalcDaily(require, employeeId, baseDate, integrationOfDaily.getWorkInformation(), workType,
 					VacationCategory.SpecialHoliday, predetermineTimeSet, holidayAddtionSet);
 			// 合計特別休暇使用時間を取得
 			AttendanceTime specialTime = AttendanceTime.ZERO;
@@ -136,7 +137,7 @@ public class VacationClass {
 		AttendanceTime annualDigestTime = AttendanceTime.ZERO;
 		{
 			// 日数単位の休暇時間計算
-			AttendanceTime annualDay = vacationTimeOfCalcDaily(require, employeeId, baseDate, workType,
+			AttendanceTime annualDay = vacationTimeOfCalcDaily(require, employeeId, baseDate, integrationOfDaily.getWorkInformation(), workType,
 					VacationCategory.AnnualHoliday, predetermineTimeSet, holidayAddtionSet);
 			// 合計時間年休使用時間を取得
 			AttendanceTime annualTime = AttendanceTime.ZERO;
@@ -149,7 +150,7 @@ public class VacationClass {
 		AnnualOfDaily annualOfDaily = new AnnualOfDaily(annualUseTime, annualDigestTime);
 		
 		//振休使用時間の計算
-		AttendanceTime transferHolidayUseTime = vacationTimeOfCalcDaily(require, employeeId, baseDate, workType,
+		AttendanceTime transferHolidayUseTime = vacationTimeOfCalcDaily(require, employeeId, baseDate, integrationOfDaily.getWorkInformation(), workType,
 				VacationCategory.Pause, predetermineTimeSet, holidayAddtionSet);
 		TransferHolidayOfDaily transferHolidayOfDaily =new TransferHolidayOfDaily(transferHolidayUseTime);		
 
@@ -162,6 +163,7 @@ public class VacationClass {
 	 * @param require Require
 	 * @param employeeId 社員ID
 	 * @param baseDate 基準日
+	 * @param workInfo 日別勤怠の勤務情報
 	 * @param workType 勤務種類
 	 * @param vacationCategory 休暇種類
 	 * @param predetermineTimeSet 計算用所定時間設定
@@ -172,6 +174,7 @@ public class VacationClass {
 			Require require,
 			String employeeId,
 			GeneralDate baseDate,
+			WorkInfoOfDailyAttendance workInfo,
 			WorkType workType,
 			VacationCategory vacationCategory,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSet,
@@ -179,7 +182,7 @@ public class VacationClass {
 
 		// 所定時間の内訳を取得
 		BreakDownTimeDay breakDown = getBreakDownOfPredTime(
-				require, employeeId, baseDate, vacationCategory, predetermineTimeSet, holidayAddtionSet);
+				require, employeeId, baseDate, workInfo, vacationCategory, predetermineTimeSet, holidayAddtionSet);
 		// 指定の分類の1日午前午後区分を取得
 		Optional<WorkAtr> workAtr = workType.getWorkAtr(vacationCategory.convertWorkTypeClassification());
 		// 取得
@@ -194,6 +197,7 @@ public class VacationClass {
 	 * @param require Require
 	 * @param employeeId 社員ID
 	 * @param baseDate 基準日
+	 * @param workInfo 日別勤怠の勤務情報
 	 * @param vacationCategory 休暇種類
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @param holidayAddtionSet 休暇加算時間設定
@@ -203,6 +207,7 @@ public class VacationClass {
 			Require require,
 			String employeeId,
 			GeneralDate baseDate,
+			WorkInfoOfDailyAttendance workInfo,
 			VacationCategory vacationCategory,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSet,
 			Optional<HolidayAddtionSet> holidayAddtionSet){
@@ -215,11 +220,7 @@ public class VacationClass {
 			// 休暇加算時間設定を確認
 			if (holidayAddtionSet.isPresent()){
 				// 休暇加算時間の設定の取得
-				Optional<WorkTimeCode> workTimeCode = Optional.empty();
-				if (predetermineTimeSet.isPresent()){
-					workTimeCode = Optional.of(predetermineTimeSet.get().getWorkTimeCode());
-				}
-				result = getVacationAddSet(require, employeeId, workTimeCode, baseDate,
+				result = getVacationAddSet(require, employeeId, workInfo, baseDate,
 						holidayAddtionSet.get(), vacationCategory);
 			}
 			break;
@@ -238,7 +239,7 @@ public class VacationClass {
 	 * 休暇加算時間の設定の取得
 	 * @param require Require
 	 * @param employeeId 社員ID
-	 * @param workTimeCode 就業時間帯コード
+	 * @param workInfo 日別勤怠の勤務情報
 	 * @param baseDate 基準日
 	 * @param holidayAddtionSet 休暇加算時間設定
 	 * @param vacationCategory 休暇種類
@@ -247,7 +248,7 @@ public class VacationClass {
 	public static BreakDownTimeDay getVacationAddSet(
 			Require require,
 			String employeeId,
-			Optional<WorkTimeCode> workTimeCode,
+			WorkInfoOfDailyAttendance workInfo,
 			GeneralDate baseDate,
 			HolidayAddtionSet holidayAddtionSet,
 			VacationCategory vacationCategory) {
@@ -256,7 +257,7 @@ public class VacationClass {
 
 		// 休暇加算時間の取得
 		result = holidayAddtionSet.getReference().getVacationAddTime(require,
-				AppContexts.user().companyId(), employeeId, workTimeCode, baseDate);
+				AppContexts.user().companyId(), employeeId, workInfo.getRecordInfo(), baseDate);
 		// 休暇種類を確認
 		switch (vacationCategory){
 		case AnnualHoliday:
@@ -294,7 +295,7 @@ public class VacationClass {
 	 * @param employeeId 社員ID
 	 * @param baseDate 基準日
 	 * @param workType 勤務種類
-	 * @param workTimeCode 就業時間帯コード
+	 * @param workInfo 日別勤怠の勤務情報
 	 * @param addSetting 加算設定
 	 * @param holidayAddtionSet 休暇加算時間設定
 	 * @return 休暇加算時間
@@ -305,7 +306,7 @@ public class VacationClass {
 			String employeeId,
 			GeneralDate baseDate,
 			WorkType workType,
-			Optional<WorkTimeCode> workTimeCode,
+			WorkInfoOfDailyAttendance workInfo,
 			AddSetting addSetting,
 			Optional<HolidayAddtionSet> holidayAddtionSet) {
 		
@@ -318,7 +319,7 @@ public class VacationClass {
 		}
 		// 加算時間の設定を取得
 		BreakDownTimeDay breakdownTimeDay = holidayAddtionSet.get().getReference().getVacationAddTime(
-				require, AppContexts.user().companyId(), employeeId, workTimeCode, baseDate);
+				require, AppContexts.user().companyId(), employeeId, workInfo.getRecordInfo(), baseDate);
 		// 労働時間の加算設定を確認する
 		AddSettingOfWorkingTime holidayCalcMethodSet = addSetting.getAddSetOfWorkingTime();
 		// 休暇加算時間を加算するかどうか判断

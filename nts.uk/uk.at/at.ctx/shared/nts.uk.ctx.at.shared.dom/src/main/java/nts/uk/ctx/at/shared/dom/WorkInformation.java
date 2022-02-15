@@ -448,6 +448,14 @@ public class WorkInformation implements Serializable{
 		return workConditionItem.getWorkCategory().getWorkInformationWorkDay().getWorkTimeCodeNotNull();
 	}
 	
+	/**
+	 * 就業時間帯が存在するか
+	 * @return 就業時間帯が存在する
+	 */
+	public boolean exsistsWorkTime() {
+		return this.workTimeCode.isPresent();
+	}
+	
 	public static interface Require extends WorkTimeSetting.Require, WorkSetting.Require, WorkType.Require
 	{
 		/**
