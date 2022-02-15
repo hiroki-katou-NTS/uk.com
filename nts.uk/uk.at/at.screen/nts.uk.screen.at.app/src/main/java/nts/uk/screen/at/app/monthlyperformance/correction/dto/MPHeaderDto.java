@@ -159,7 +159,7 @@ public class MPHeaderDto {
 			MonthlyAttendanceItemDto maiDto) {
 		String key = mergeString(ADD_CHARACTER, String.valueOf(item.getId()));
 		String width = String.valueOf(item.getColumnWidth() == null ? 100 : item.getColumnWidth()) + PX;
-		MPHeaderDto dto = new MPHeaderDto("", key, "String", width, "#CFF1A5", false, "", false, false);
+		MPHeaderDto dto = new MPHeaderDto("", key, "String", width, "#6A6A6A", false, "", false, false);
 		// set constraint
 		// if (maiDto != null && maiDto.getPrimitive() != null) {
 		// dto.setConstraint(new Constraint("Primitive", false,
@@ -170,12 +170,14 @@ public class MPHeaderDto {
 			// dto.setNtsControl("TextEditorNumberSeparated");
 			//dto.setConstraint(new Constraint("Currency", false, ""));
 			dto.setGrant(true);
-			if (maiDto.getPrimitive() != null && maiDto.getPrimitive() == 54) {
-				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999", "999999"));
+			if (maiDto.getPrimitive() != null && maiDto.getPrimitive() == 65) {
+				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-99999999999", "99999999999"));
 			} else if (maiDto.getPrimitive() != null && maiDto.getPrimitive() == 55) {
 				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999999", "999999999"));
+			} else if (maiDto.getPrimitive() != null && maiDto.getPrimitive() == 67) {
+				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("0", "99999999"));
 			} else {
-				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999999", "999999999"));
+				dto.setConstraint(new Constraint("Currency", false, ""));
 			}
 		} else if(attendanceAtr == MonthlyAttendanceItemAtr.CODE.value){
 			List<MPHeaderDto> groups = new ArrayList<>();

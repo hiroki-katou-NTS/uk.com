@@ -184,7 +184,7 @@
             <span
               v-on:click="addBreakHour"
               class="fas fa-2x fa-plus-circle"
-              style="color: #33b5e5"
+              style="color: #6A6A6A"
             ></span>
           </div>
         </div>
@@ -199,7 +199,7 @@
           class="btn btn-block btn-success btn-lg text-center"
           v-on:click="$appContext.toStep(2)"
         >
-          {{ ($appContext.c3 ? 'KAFS05_16' : 'KAFS05_17') | i18n}}
+          {{ 'KAFS05_17' | i18n}}
         </button>
       </div> 
 
