@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor;
+package nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.importeddto;
 
 import lombok.Value;
 
@@ -12,10 +12,10 @@ import lombok.Value;
 public class EmployeeCodeAndDisplayNameImport {
 	/** 社員ID **/
 	private String employeeId;
-	
+
 	/** 社員コード **/
 	private String employeeCode;
-	
+
 	/** ビジネスネーム **/
 	private String businessName;
 

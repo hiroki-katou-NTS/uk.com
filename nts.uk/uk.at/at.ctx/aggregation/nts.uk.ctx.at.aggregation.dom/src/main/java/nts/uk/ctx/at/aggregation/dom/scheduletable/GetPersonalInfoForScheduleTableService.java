@@ -76,12 +76,13 @@ public class GetPersonalInfoForScheduleTableService {
 			GeneralDate baseDate,
 			List<ScheduleTablePersonalInfoItem> personalItemList) {
 
-		EmployeeInfoWantToBeGet param = new EmployeeInfoWantToBeGet(
-				false,
-				false,
-				personalItemList.contains(ScheduleTablePersonalInfoItem.JOBTITLE),
-				personalItemList.contains(ScheduleTablePersonalInfoItem.EMPLOYMENT),
-				personalItemList.contains(ScheduleTablePersonalInfoItem.CLASSIFICATION));
+		EmployeeInfoWantToBeGet param = EmployeeInfoWantToBeGet.builder()
+				.isGetWorkplace(false)
+				.isGetDepartment(false)
+				.isGetJobTitle(personalItemList.contains(ScheduleTablePersonalInfoItem.JOBTITLE))
+				.isGetEmployment(personalItemList.contains(ScheduleTablePersonalInfoItem.EMPLOYMENT))
+				.isGetClassification(personalItemList.contains(ScheduleTablePersonalInfoItem.CLASSIFICATION))
+				.build();
 
 		return require.getEmployeeInfo(employeeIds, baseDate, param);
 	}

@@ -42,7 +42,7 @@ public class GetPersonalInfoForScheduleTableServiceTest {
 
 		// Arrange
 		new Expectations() {{
-			require.getEmployeeInfo(employeeIds, date, new EmployeeInfoWantToBeGet(false, false, false, false, false));
+			require.getEmployeeInfo(employeeIds, date, EmployeeInfoWantToBeGet.builder().build());
 			result = Arrays.asList(
 					new EmployeeInfoImported("employee-id1", "employee-code1", "business-name1", "business-name-kana1",
 							Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()),
@@ -80,7 +80,13 @@ public class GetPersonalInfoForScheduleTableServiceTest {
 		// Arrange
 		new Expectations(GetEmpLicenseClassificationService.class, EnumAdaptor.class) {{
 
-			require.getEmployeeInfo(employeeIds, date, new EmployeeInfoWantToBeGet(false, false, true, true, true));
+			require.getEmployeeInfo(employeeIds, date
+					, EmployeeInfoWantToBeGet.builder()
+							.isGetJobTitle(true)
+							.isGetEmployment(true)
+							.isGetClassification(true)
+							.build()
+					);
 			result = Arrays.asList(
 					new EmployeeInfoImported("employee-id1", "employee-code1", "business-name1", "business-name-kana1",
 							Optional.empty(), // 職場

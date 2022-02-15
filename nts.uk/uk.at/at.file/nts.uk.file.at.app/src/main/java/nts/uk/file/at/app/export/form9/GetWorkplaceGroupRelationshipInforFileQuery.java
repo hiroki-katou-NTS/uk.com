@@ -1,6 +1,7 @@
 package nts.uk.file.at.app.export.form9;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,8 +36,8 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.Nur
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.EmployeeCodeAndDisplayNameImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.EmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.importeddto.EmployeeCodeAndDisplayNameImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.EmployeeSearchCallSystemType;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.RegulationInfoEmpQuery;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
@@ -155,7 +156,9 @@ public class GetWorkplaceGroupRelationshipInforFileQuery {
 
         @Override
         public Optional<EmployeeCodeAndDisplayNameImport> getPersonEmployeeBasicInfo(String employeeId) {
-            return employeeShareAdap.getEmployeeCodeAndNameByEmployeeId(employeeId);
+        	return this.employeeShareAdap.getEmployeeCodeAndDisplayNameImportByEmployeeIds(Arrays.asList(employeeId)).stream()
+        			.filter( e -> e.getEmployeeCode().equals(employeeId) )
+        			.findFirst();
         }
 
         @Override
