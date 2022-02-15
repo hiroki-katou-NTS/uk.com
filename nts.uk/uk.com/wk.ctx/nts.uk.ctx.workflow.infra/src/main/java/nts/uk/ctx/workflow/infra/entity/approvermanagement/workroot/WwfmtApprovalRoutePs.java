@@ -53,7 +53,7 @@ public class WwfmtApprovalRoutePs extends ContractUkJpaEntity implements Seriali
 	public String busEventId;
 	/**運用モード*/
 	@Column(name = "OPE_MODE")
-	public String opeMode;
+	public Integer opeMode;
 	
 	@Override
 	protected Object getKey() {

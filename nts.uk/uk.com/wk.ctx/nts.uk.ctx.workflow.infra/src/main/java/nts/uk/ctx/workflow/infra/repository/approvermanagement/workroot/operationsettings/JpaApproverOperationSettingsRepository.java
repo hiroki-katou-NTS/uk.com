@@ -100,7 +100,7 @@ public class JpaApproverOperationSettingsRepository extends JpaRepository implem
 		
 		List<SettingTypeUsed> settingTypeUseds = entity.wwfmtApproverAppUses.stream()
 				.map(x -> {
-					EmploymentRootAtr employmentRootAtr = EmploymentRootAtr.APPLICATION;
+					EmploymentRootAtr employmentRootAtr = EmploymentRootAtr.COMMON;
 					ConfirmationRootType confirmRootType = null;
 					if (entity.confDayUse == 1 || entity.confMonthUse == 1) {
 						employmentRootAtr = EmploymentRootAtr.CONFIRMATION;

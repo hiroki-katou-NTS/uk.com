@@ -85,6 +85,7 @@ public class PersonApprovalRoot extends AggregateRoot{
 		this.employeeId = employeeId;
 		this.apprRoot = approvalRoot;
 		this.operationMode = OperationMode.SUPERIORS_EMPLOYEE;
+		
 	}
 	
 	public static PersonApprovalRoot convert(String companyId,
@@ -94,10 +95,13 @@ public class PersonApprovalRoot extends AggregateRoot{
 			Integer applicationType,
 			GeneralDate startDate,
 			GeneralDate endDate,
-			// String branchId,
-			// String anyItemApplicationId,
 			Integer confirmationRootType,
-			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
+			int employmentRootAtr,
+			int sysAtr,
+			Integer noticeId,
+			String busEventId,
+			Integer opeMode) {
+		OperationMode operationMode = EnumAdaptor.valueOf(opeMode, OperationMode.class);
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
 		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate));
 		employmentAppHistorys.add(employmentAppHistory);
@@ -112,7 +116,7 @@ public class PersonApprovalRoot extends AggregateRoot{
 					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
 					// anyItemApplicationId,
 					noticeId, busEventId),
-			OperationMode.PERSON_IN_CHARGE);
+			operationMode);
 	}
 	public static PersonApprovalRoot updateEdate(PersonApprovalRoot psApprovalRoot, String eDate){
 		PersonApprovalRoot ps = psApprovalRoot;

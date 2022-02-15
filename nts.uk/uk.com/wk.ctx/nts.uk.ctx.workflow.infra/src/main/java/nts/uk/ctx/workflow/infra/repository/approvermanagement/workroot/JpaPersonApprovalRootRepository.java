@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 
@@ -15,13 +16,16 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalSettingInformation;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtAppover;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalPhase;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalRoutePs;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtPsApprovalRootPK;
 /**
@@ -545,7 +549,8 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				entity.employmentRootAtr,
 				entity.sysAtr,
 				entity.noticeId,
-				entity.busEventId);
+				entity.busEventId,
+				entity.opeMode);
 		return domain;
 	}
 	/**
@@ -796,15 +801,103 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	@Override
 	public List<PersonApprovalRoot> getPersonApprovalRoots(String cid, String sid, GeneralDate baseDate,
 			List<ApplicationType> appTypes, List<ConfirmationRootType> confirmationRootTypes) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<Integer> intAppTypes = appTypes.stream().map(x -> x.value).collect(Collectors.toList());
+		List<Integer> intConfirmationRootTypes = appTypes.stream().map(x -> x.value).collect(Collectors.toList());
+		String queryString = "SELECT m FROM WwfmtApprovalRoutePs m"
+				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
+				+ " AND m.wwfmtPsApprovalRootPK.employeeId = :sid"
+				+ " AND m.startDate <= :baseDate"
+				+ " AND m.endDate >= :baseDate"
+				+ " AND m.sysAtr = 0"
+				+ " AND m.opeMode = 1";
+		
+		List<WwfmtApprovalRoutePs> entities = this.queryProxy().query(queryString, WwfmtApprovalRoutePs.class)
+				.setParameter("cid", cid)
+				.setParameter("sid", sid)
+				.setParameter("baseDate", baseDate)
+				.getList();
+		
+		return entities.stream()
+				.filter(m -> {
+					if (m.employmentRootAtr == 0) {
+						return true;
+					}
+					if (m.employmentRootAtr == 1 && intAppTypes.contains(m.applicationType)) {
+						return true;
+					}
+					if (m.employmentRootAtr == 2 && intConfirmationRootTypes.contains(m.confirmationRootType)) {
+						return true;
+					}
+					return false;
+				})
+				.map(m -> toDomainPsApR(m))
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<ApprovalSettingInformation> getApprovalSettingByEmployees(String cid, List<String> sids, GeneralDate baseDate,
 			SystemAtr sysAtr) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<ApprovalSettingInformation> results = new ArrayList<ApprovalSettingInformation>();
+		String rootQuery = "SELECT m FROM WwfmtApprovalRoutePs m"
+				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
+				+ " m.wwfmtPsApprovalRootPK.employeeId IN :sids"
+				+ " AND m.startDate <= :baseDate"
+				+ " AND m.endDate >= :baseDate"
+				+ " AND m.sysAtr = :sysAtr";
+		String phaseQuery = "SELECT phase FROM WwfmtApprovalPhase phase"
+				+ " WHERE phase.wwfmtApprovalPhasePK.approvalId IN :approvalIds";
+		
+		List<WwfmtApprovalRoutePs> rootEntities = this.queryProxy()
+				.query(rootQuery, WwfmtApprovalRoutePs.class)
+				.setParameter("cid", cid)
+				.setParameter("sids", sids)
+				.setParameter("baseDate", baseDate)
+				.setParameter("sysAtr", sysAtr.value)
+				.getList();
+		if (rootEntities.isEmpty()) {
+			return results;
+		}
+		
+		List<String> approvalIds = rootEntities.stream()
+				.map(x -> x.wwfmtPsApprovalRootPK.approvalId)
+				.collect(Collectors.toList());
+		List<WwfmtApprovalPhase> phaseEntities = this.queryProxy()
+				.query(phaseQuery, WwfmtApprovalPhase.class)
+				.setParameter("approvalIds", approvalIds)
+				.getList();
+		
+		results = rootEntities.stream()
+				.map(root -> {
+					List<WwfmtApprovalPhase> phases = phaseEntities.stream()
+							.filter(x -> x.wwfmtApprovalPhasePK.approvalId == root.wwfmtPsApprovalRootPK.approvalId)
+							.collect(Collectors.toList());
+					return this.createApprovalSettingInfoFromEntities(root, phases);
+				})
+				.collect(Collectors.toList());
+		return results;
+	}
+	
+	private ApprovalSettingInformation createApprovalSettingInfoFromEntities(WwfmtApprovalRoutePs root, List<WwfmtApprovalPhase> phases) {
+		List<ApprovalPhase> approvalPhases = phases.stream().map(this::toDomainApPhase).collect(Collectors.toList());
+		return new ApprovalSettingInformation(approvalPhases, toDomainPsApR(root)) ;
+	}
+	
+	private ApprovalPhase toDomainApPhase(WwfmtApprovalPhase entity){
+		List<Approver> lstApprover = new ArrayList<>();
+		for(WwfmtAppover approver: entity.wwfmtAppovers) {
+			lstApprover.add(approver.toDomainApprover());
+		}
+		
+		val domain = ApprovalPhase.createSimpleFromJavaType(
+				entity.wwfmtApprovalPhasePK.approvalId,
+				entity.wwfmtApprovalPhasePK.phaseOrder,
+				entity.approvalForm,
+				entity.browsingPhase,
+				entity.approvalAtr,
+				lstApprover);
+		return domain;
 	}
 
 	@Override
@@ -870,9 +963,18 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	}
 
 	@Override
-	public List<PersonApprovalRoot> getHistFromBaseDate(String cid, String sid, GeneralDate baseDate) {
+	public List<PersonApprovalRoot> getHistFromBaseDate(String cid, String sid, DatePeriod period) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void insertPersonApprovalRootAndPhases(PersonApprovalRoot personApprovalRoot,
+			List<ApprovalPhase> approvalPhases) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 	
 }
