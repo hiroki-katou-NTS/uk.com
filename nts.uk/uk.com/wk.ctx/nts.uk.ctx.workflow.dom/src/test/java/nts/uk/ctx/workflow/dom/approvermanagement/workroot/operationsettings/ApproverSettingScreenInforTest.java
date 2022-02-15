@@ -46,8 +46,8 @@ public class ApproverSettingScreenInforTest {
 		assertThat(domain.getThirdItemName().get()).isEqualTo(expItemNameInformation.getThirdItemName());
 		assertThat(domain.getFourthItemName().get()).isEqualTo(expItemNameInformation.getFourthItemName());
 		assertThat(domain.getFifthItemName().get()).isEqualTo(expItemNameInformation.getFifthItemName());
-		assertThat(domain.getApproverInputExplanation()).isEmpty();
-		assertThat(domain.getApproverInputCareful()).isEmpty();
+		assertThat(domain.getProcessMemo()).isEmpty();
+		assertThat(domain.getAttentionMemo()).isEmpty();
 	}
 	
 }

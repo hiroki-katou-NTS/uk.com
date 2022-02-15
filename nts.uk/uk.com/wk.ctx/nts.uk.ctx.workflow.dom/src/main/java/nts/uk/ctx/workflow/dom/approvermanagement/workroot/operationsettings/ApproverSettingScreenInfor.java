@@ -32,10 +32,10 @@ public class ApproverSettingScreenInfor extends ValueObject {
 	private Optional<ApproverItemName> fifthItemName;
 	
 	/** 手順の説明 */
-	private Optional<ApproverInputExplanation> approverInputExplanation;
+	private Optional<ApproverInputExplanation> processMemo;
 	
 	/** 表示する注意内容 */
-	private Optional<ApproverInputCareful> approverInputCareful;
+	private Optional<ApproverInputCareful> attentionMemo;
 	
 	/**
 	 * [C-1] 項目の名称情報で作成する
@@ -47,8 +47,8 @@ public class ApproverSettingScreenInfor extends ValueObject {
 		this.thirdItemName = Optional.ofNullable(itemNameInformation.getThirdItemName());
 		this.fourthItemName = Optional.ofNullable(itemNameInformation.getFourthItemName());
 		this.fifthItemName = Optional.ofNullable(itemNameInformation.getFifthItemName());
-		this.approverInputExplanation = Optional.empty();
-		this.approverInputCareful = Optional.empty();
+		this.processMemo = Optional.empty();
+		this.attentionMemo = Optional.empty();
 	}
 	
 }
