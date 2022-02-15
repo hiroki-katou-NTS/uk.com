@@ -355,6 +355,7 @@ public class TotalWorkingTime {
 				employeeId,
 				ymd,
 				workType,
+				workTimeCode,
 				predetermineTimeSet,
 				holidayAddtionSet,
 				integrationOfDaily);

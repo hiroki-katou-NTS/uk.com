@@ -217,7 +217,7 @@ public class WorkTimeAddTimeSetForMonthAggr {
 		
 		/** １日の時間内訳の取得 */
 		val breakdown = addSet.getReference().getVacationAddTime(require, cid, daily.getEmployeeId(), 
-							daily.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull(), daily.getYmd());
+							daily.getWorkInformation().getRecordInfo(), daily.getYmd());
 		
 		/** 各休暇の時間消化休暇使用時間を取得 */
 		/** TODO: 時間消化休暇使用まだ対応しないため一旦保留*/

@@ -630,8 +630,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		}
 
 		int vacationAddMinutes = 0;
-		// 就業時間帯コードの確認
-		Optional<WorkTimeCode> workTimeCode = integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull();
 		// 休暇加算時間を計算
 		VacationAddTime vacationAddTime = VacationClass.calcVacationAddTime(
 				personCommonSetting.getRequire(),
@@ -639,7 +637,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				conditionItem.getEmployeeId(),
 				integrationOfDaily.getYmd(),
 				workType,
-				workTimeCode,
+				integrationOfDaily.getWorkInformation(),
 				addSetting,
 				Optional.of(holidayAddtionSet));
 		vacationAddMinutes += vacationAddTime.calcTotaladdVacationAddTime();
@@ -1074,7 +1072,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					personDailySetting.getPersonInfo().getEmployeeId(),
 					integrationOfDaily.getYmd(),
 					workType,
-					Optional.of(integrationOfWorkTime.getCode()),
+					integrationOfDaily.getWorkInformation(),
 					personDailySetting.getAddSetting(),
 					holidayAdditionSet);
 			int totalVacationAddMinutes = vacationAddTime.calcTotaladdVacationAddTime();

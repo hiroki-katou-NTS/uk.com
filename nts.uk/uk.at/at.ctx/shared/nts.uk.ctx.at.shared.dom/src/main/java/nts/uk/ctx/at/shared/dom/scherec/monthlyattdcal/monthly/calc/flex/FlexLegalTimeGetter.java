@@ -237,7 +237,7 @@ public class FlexLegalTimeGetter {
 			WorkTimeCode workTimeCode = workTimeCodeOpt.get();
 			// 日単位の代休控除時間の計算
 			result.add(calcCompLeaveDeductTimeEachDay(require, companySets, settingsByFlex,
-					employeeSets.getEmployeeId(), baseDate, workType, workTimeCode));
+					employeeSets.getEmployeeId(), baseDate, workInfo, workType, workTimeCode));
 			// 時間単位の代休控除時間の計算
 			result.add(calcCompLeaveDeductTimeEachTime(settingsByFlex, attendanceTime));
 		}
@@ -252,19 +252,20 @@ public class FlexLegalTimeGetter {
 	 * @param settingsByFlex フレックス勤務が必要とする設定
 	 * @param employeeId 社員ID
 	 * @param baseDate 基準日
+	 * @param workInfo 日別勤怠の勤務情報
 	 * @param workType 勤務種類
 	 * @param workTimeCode 就業時間帯コード
 	 * @return 代休控除時間
 	 */
 	private static CompLeaveDeductTime calcCompLeaveDeductTimeEachDay(RequireM1 require, MonAggrCompanySettings companySets,
-			SettingRequiredByFlex settingsByFlex, String employeeId, GeneralDate baseDate, WorkType workType, WorkTimeCode workTimeCode){
+			SettingRequiredByFlex settingsByFlex, String employeeId, GeneralDate baseDate, WorkInfoOfDailyAttendance workInfo, WorkType workType, WorkTimeCode workTimeCode){
 		
 		// 所定時間設定を取得
 		PredetemineTimeSetting predTimeSet = companySets.getPredetemineTimeSetMap(require, workTimeCode.v());
 		if (predTimeSet == null) return new CompLeaveDeductTime();
 		PredetermineTimeSetForCalc predetermineTimeSet = PredetermineTimeSetForCalc.convertMastarToCalc(predTimeSet);
 		// 所定時間の内訳を取得
-		BreakDownTimeDay breakDown = VacationClass.getBreakDownOfPredTime(require, employeeId, baseDate,
+		BreakDownTimeDay breakDown = VacationClass.getBreakDownOfPredTime(require, employeeId, baseDate, workInfo,
 				VacationCategory.SubstituteHoliday, Optional.of(predetermineTimeSet), Optional.empty());
 		// 日単位の所定控除時間の計算
 		AttendanceTime forActual = settingsByFlex.getDailyCalcSetOfFlex().getCompLeave().calcDeductPredTimeOfDay(

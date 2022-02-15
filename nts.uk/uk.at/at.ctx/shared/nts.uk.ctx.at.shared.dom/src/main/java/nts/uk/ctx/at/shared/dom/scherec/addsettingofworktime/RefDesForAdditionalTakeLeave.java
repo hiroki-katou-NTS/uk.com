@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -39,16 +40,16 @@ public class RefDesForAdditionalTakeLeave {
 
     /** 休暇加算時間の取得 */
     public BreakDownTimeDay getVacationAddTime(Require require, String cid, String sid,
-    		Optional<WorkTimeCode> workTimeCode, GeneralDate baseDate) {
+    		WorkInformation recordInfo, GeneralDate baseDate) {
     	
     	/** 参照先を確認 */
     	if (this.referenceSet != VacationAdditionTimeRef.REFER_PERSONAL_SET) {
     		
     		/** 就業時間帯コードOptional．emptyチェック */
-    		if (workTimeCode.isPresent()) {
+    		if (recordInfo.exsistsWorkTime()) {
 
     		    /** 所定時間を取得する */
-    			return getVacationAddTimeFromWorkTime(require, cid, workTimeCode);
+    			return getVacationAddTimeFromWorkTime(require, cid, recordInfo.getWorkTimeCodeNotNull());
     		}
     		
     		/** 参照先設定で分岐 */
