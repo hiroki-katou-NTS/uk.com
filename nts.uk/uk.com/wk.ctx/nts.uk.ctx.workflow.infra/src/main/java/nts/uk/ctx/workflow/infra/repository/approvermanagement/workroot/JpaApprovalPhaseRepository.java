@@ -24,6 +24,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.FullJoinWwfmtApprovalPhase;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtAppover;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtAppoverPK;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalPhase;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalPhasePK;
 /**
@@ -42,6 +43,8 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 			+ " WHERE c.wwfmtApprovalPhasePK.approvalId = :approvalId";
 	private static final String SELECT_FIRST_APPHASE = SELECT_FROM_APPHASE
 			+ " AND c.wwfmtApprovalPhasePK.phaseOrder = 1";
+	private static final String GET_FROM_APPROVAL_IDS = "SELECT m FROM WwfmtApprovalPhase m"
+			+ " WHERE m.wwfmtApprovalPhasePK.approvalId IN :approvalIds";
 
 	/**
 	 * get All Approval Phase by Code
@@ -191,6 +194,36 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		entity.approvalAtr = domain.getApprovalAtr().value;
 		return entity;
 	}
+	
+	/**
+	 * Convert ApprovalPhase to entity WwfmtApprovalPhase and WwfmtAppover
+	 */
+	private WwfmtApprovalPhase toEntity(ApprovalPhase domain) {
+		WwfmtApprovalPhase entity = new WwfmtApprovalPhase();
+		entity.wwfmtApprovalPhasePK = new WwfmtApprovalPhasePK(domain.getApprovalId(), domain.getPhaseOrder());
+		entity.approvalForm = domain.getApprovalForm().value;
+		entity.browsingPhase = domain.getBrowsingPhase();
+		entity.approvalAtr = domain.getApprovalAtr().value;
+		
+		List<WwfmtAppover> wwfmtAppovers = domain.getApprovers().stream()
+				.map(x -> this.toEntityApprover(domain.getApprovalId(), domain.getPhaseOrder(), x))
+				.collect(Collectors.toList());
+		entity.wwfmtAppovers = wwfmtAppovers;
+		return entity;
+	}
+	
+	/**
+	 * Convert Approver to WwfmtAppover
+	 */
+	private WwfmtAppover toEntityApprover(String approvalId, int phaseOrder, Approver domain) {
+		val entity = new WwfmtAppover();
+		entity.wwfmtAppoverPK = new WwfmtAppoverPK(approvalId, phaseOrder, domain.getApproverOrder());
+		entity.jobGCD = domain.getJobGCD();
+		entity.employeeId = domain.getEmployeeId();
+		entity.confirmPerson = domain.getConfirmPerson().value;
+		entity.specWkpId = domain.getSpecWkpId();
+		return entity;
+	}
 
 	@Override
 	public Optional<ApprovalPhase> getApprovalFirstPhase(String approvalId) {
@@ -244,19 +277,40 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 							browsingPhase, EnumAdaptor.valueOf(phaseAtr, ApprovalAtr.class), approvers);
 				}).collect(Collectors.toList());
 	}
+	
 	@Override
 	public List<ApprovalPhase> getFromApprovalIds(String cid, List<String> approvalIds) {
-		// TODO Auto-generated method stub
-		return null;
+		if (approvalIds.isEmpty()) {
+			return new ArrayList<ApprovalPhase>();
+		}
+		
+		return this.queryProxy()
+				.query(GET_FROM_APPROVAL_IDS, WwfmtApprovalPhase.class)
+				.setParameter("approvalIds", approvalIds)
+				.getList(this::toDomainApPhase);
 	}
+	
 	@Override
 	public void deleteByApprovalIds(List<String> approvalIds) {
-		// TODO Auto-generated method stub
+		if (approvalIds.isEmpty()) {
+			return;
+		}
+		
+		List<WwfmtApprovalPhase> entities = this.queryProxy()
+				.query(GET_FROM_APPROVAL_IDS, WwfmtApprovalPhase.class)
+				.setParameter("approvalIds", approvalIds)
+				.getList();
+		
+		this.commandProxy().removeAll(entities);
 		
 	}
+	
 	@Override
 	public void insertAll(List<ApprovalPhase> approvalPhases) {
-		// TODO Auto-generated method stub
+		List<WwfmtApprovalPhase> entities = approvalPhases.stream()
+				.map(x -> toEntity(x))
+				.collect(Collectors.toList());
 		
+		this.commandProxy().insertAll(entities);
 	}
 }
