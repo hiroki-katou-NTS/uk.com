@@ -40,9 +40,7 @@ module nts.uk.com.view.ktg031.a {
                   ]}"></div>
               </th>
               <th>
-                <div data-bind="if: $component.isEmployee">
-                  <i class="img-icon" style="vertical-align: middle;" data-bind="ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openDialogSetting"></i>
-                </div>
+                <button data-bind="visible: $component.isEmployee, click: $component.openDialogSetting">設定</button>
               </th>
             </tr>
           </thead>
@@ -70,12 +68,12 @@ module nts.uk.com.view.ktg031.a {
                   </td>
                   <td class="border-after"></td>
                   <td class="column-action">
-                    <button style="color: #79E68B; border: 1px solid;" class="small" data-bind="
+                    <button style="border: 1px solid;" class="small" data-bind="
                       visible: isReaded,
                       text: $component.$i18n('KTG031_41'),
                       click: changeReadStatus">
                     </button>
-                    <button style="color: #79E68B; border: 1px solid;" class="small" data-bind="
+                    <button style="border: 1px solid;" class="small" data-bind="
                       visible: !isReaded(),
                       text: $component.$i18n('KTG031_42'),
                       click: changeReadStatus">
@@ -95,7 +93,7 @@ module nts.uk.com.view.ktg031.a {
           vertical-align: middle;
         }
         .ktg031-fontsize div.form-label>span.text {
-          font-size: 1.2rem !important;
+          font-size: 1rem !important;
         }
         .border-before,
         .border-after {
@@ -130,7 +128,6 @@ module nts.uk.com.view.ktg031.a {
           background-color: #689f38;
         }
         #ktg031-container .body {
-          padding: 5px;
           box-sizing: border-box;
           width: 100%;
           display: flex;
@@ -150,7 +147,7 @@ module nts.uk.com.view.ktg031.a {
           justify-content: space-between;
         }
         #ktg031-container .body .body-top-row .body-top-label .label {
-          font-size: 1.2rem;
+          font-size: 1rem;
         }
         #ktg031-container .body .body-top-row .body-top-label .img-icon:hover {
           cursor: pointer;
@@ -159,7 +156,6 @@ module nts.uk.com.view.ktg031.a {
           height: 100%;
           margin-top: 5px;
           overflow-y: auto;
-          border: 1px solid #C6C6D1;
         }
         #ktg031-container .body .table-container #ktg031-grid {
           width: 100%;

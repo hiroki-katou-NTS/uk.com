@@ -43,16 +43,23 @@ public class GetLockStatusOfDay {
 		List<DailyLock> result = new ArrayList<>();
 		// 対象期間をループする
 		period.datesBetween().forEach(date -> {
+			
 			// 社員と基準日から所属職場履歴項目を取得する
 			AffWorkplaceHistoryItem affItem = this.scWorkplaceAdapter.getAffWkpHistItemByEmpDate(sId, date);
-			// 社員に対応する処理締めを取得する
-			this.closureEmploymentService.findClosureByEmployee(sId, date).ifPresent(c -> {
-				// 日の実績の状況を取得する
-				DailyLock dailyLock = this.iGetDailyLock
-						.getDailyLock(new StatusActualDay(sId, date, affItem.getWorkplaceId(), c.getClosureId().value));
+			// 所属職場履歴項目.isEmpty
+			if (affItem == null) {
+				result.add(DailyLock.createLockData(sId, date));
+			} else {
+				// 社員に対応する処理締めを取得する
+				this.closureEmploymentService.findClosureByEmployee(sId, date).ifPresent(c -> {
+					// 日の実績の状況を取得する
+					DailyLock 	dailyLock = this.iGetDailyLock.getDailyLock(
+							new StatusActualDay(sId, date, affItem.getWorkplaceId(), c.getClosureId().value));
 
-				result.add(dailyLock);
-			});
+					result.add(dailyLock);
+				});
+
+			}
 
 		});
 

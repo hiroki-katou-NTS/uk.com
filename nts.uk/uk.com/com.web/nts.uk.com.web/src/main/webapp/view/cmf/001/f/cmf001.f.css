@@ -76,3 +76,7 @@ span.limited-label {
   padding: 6px 10px;
   margin-left: 5px;
 }
+
+.fixed-flex-layout-right .compact-grid .ui-igcombo-wrapper {
+  height: 27px;
+}

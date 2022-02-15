@@ -57,7 +57,7 @@ public class JpaRetenYearlySetRepository extends JpaRepository implements RetenY
                                 return buildARow();
                             }
                             return buildARow(
-                                    CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(x.getString("MANAGEMENT_YEARLY_ATR")))
+                                    CommonTempHolidays.getTextEnumManageDistinct(x.getBoolean("MANAGEMENT_YEARLY_ATR") ? 1 : 0)
                                     , x.getString("NUMBER_OF_YEAR") + I18NText.getText("KMF001_198")
                                     , x.getString("MAX_NUMBER_OF_DAYS") + I18NText.getText("KMF001_197")
                                     , isCounting

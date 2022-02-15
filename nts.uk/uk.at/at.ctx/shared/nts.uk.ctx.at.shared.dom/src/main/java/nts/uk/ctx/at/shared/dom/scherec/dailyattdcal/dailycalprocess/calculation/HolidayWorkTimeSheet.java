@@ -422,14 +422,24 @@ public class HolidayWorkTimeSheet{
 
 	// 時間帯毎の時間から休出枠毎の時間を集計
 	public List<HolidayWorkFrameTime> aggregateTimeForHol(HolidayWorkTimeOfDaily holidayOfDaily) {
-		val hol = holidayOfDaily.clone();
-		//clean time old
-		hol.getHolidayWorkFrameTime().forEach(x -> x.cleanTimeAndTransfer());
+		List<HolidayWorkFrameTime> result = new ArrayList<>();
 		// 休出時間帯でループ
 		this.workHolidayTime.forEach(frameTime -> {
-			// 休出時間へ加算
-			val holTime = hol.getHolidayWorkFrameTime().stream()
+			//結果から取得した休出時間
+			val holTime = result.stream()
 					.filter(x -> x.getHolidayFrameNo().v().intValue() == frameTime.getFrameTime().getHolidayFrameNo().v().intValue()).findFirst();
+			//日別勤怠から取得した休出時間
+			Optional<HolidayWorkFrameTime> daily = holidayOfDaily.getHolidayWorkFrameTime().stream()
+					.filter(h -> h.getHolidayFrameNo().v() == frameTime.getFrameTime().getHolidayFrameNo().v())
+					.findFirst();
+			if(!holTime.isPresent()) {
+				result.add(new HolidayWorkFrameTime(
+						new HolidayWorkFrameNo(frameTime.getFrameTime().getHolidayFrameNo().v()),
+						frameTime.getFrameTime().getHolidayWorkTime().isPresent() ? Finally.of(frameTime.getFrameTime().getHolidayWorkTime().get().clone()) : Finally.empty(),
+						frameTime.getFrameTime().getTransferTime().isPresent() ? Finally.of(frameTime.getFrameTime().getTransferTime().get().clone()) : Finally.empty(),
+						daily.map(d -> d.getBeforeApplicationTime()).orElse(Finally.of(AttendanceTime.ZERO))));
+				return;
+			}
 			holTime.ifPresent(data -> {
 				// B休出時間+=A.休出時間
 				if (data.getHolidayWorkTime().isPresent()
@@ -443,10 +453,8 @@ public class HolidayWorkTimeSheet{
 				}
 			});
 		});
-
 		// 休出枠時間を返す
-
-		return hol.getHolidayWorkFrameTime();
+		return result;
 	}
 	
 	/**

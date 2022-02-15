@@ -37,4 +37,6 @@ public class RegisterAppAbsenceMobileCommand {
     private ApplicationInsertCmd application;
     
     private AppTypeSettingCommand apptypeSetting;
+    
+    private boolean holidayFlg;
 }
