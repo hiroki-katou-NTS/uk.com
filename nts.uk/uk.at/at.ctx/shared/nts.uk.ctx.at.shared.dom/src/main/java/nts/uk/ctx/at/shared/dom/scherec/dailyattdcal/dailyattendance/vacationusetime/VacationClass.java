@@ -163,8 +163,8 @@ public class VacationClass {
 	 * @param require Require
 	 * @param employeeId 社員ID
 	 * @param baseDate 基準日
-	 * @param workType 勤務種類
 	 * @param workInfo 日別勤怠の勤務情報
+	 * @param workType 勤務種類
 	 * @param vacationCategory 休暇種類
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @param holidayAddtionSet 休暇加算時間設定
