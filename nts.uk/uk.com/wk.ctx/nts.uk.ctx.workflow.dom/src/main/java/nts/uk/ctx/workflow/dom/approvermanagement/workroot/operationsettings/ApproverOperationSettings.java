@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
@@ -17,8 +17,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
  * @author NWS-DungDV
  *
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
 @AllArgsConstructor
 public class ApproverOperationSettings extends AggregateRoot {
 	
@@ -40,39 +40,37 @@ public class ApproverOperationSettings extends AggregateRoot {
 	 * @param itemNameInformation 項目の名称情報
 	 * @return true|false
 	 */
-	public boolean isItemNameInforMatchLevel(ApprovalLevelNo approvalLevelNo, ItemNameInformation itemNameInformation) {
-		boolean isMatch = false;
-		switch (approvalLevelNo) {
-		case ONE_LEVEL:
-			isMatch = itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty();
-			break;
-		case TWO_LEVEL:
-			isMatch = (itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty())
-					&& (itemNameInformation.getSecondItemName() != null && !itemNameInformation.getSecondItemName().v().isEmpty());
-			break;
-		case THREE_LEVEL:
-			isMatch = (itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty())
-					&& (itemNameInformation.getSecondItemName() != null && !itemNameInformation.getSecondItemName().v().isEmpty())
-					&& (itemNameInformation.getThirdItemName() != null && !itemNameInformation.getThirdItemName().v().isEmpty());
-			break;
-		case FOUR_LEVEL:
-			isMatch = (itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty())
-					&& (itemNameInformation.getSecondItemName() != null && !itemNameInformation.getSecondItemName().v().isEmpty())
-					&& (itemNameInformation.getThirdItemName() != null && !itemNameInformation.getThirdItemName().v().isEmpty())
-					&& (itemNameInformation.getFourthItemName() != null && !itemNameInformation.getFourthItemName().v().isEmpty());
-			break;
-		case FIVE_LEVEL:
-			isMatch = (itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty())
-					&& (itemNameInformation.getSecondItemName() != null && !itemNameInformation.getSecondItemName().v().isEmpty())
-					&& (itemNameInformation.getThirdItemName() != null && !itemNameInformation.getThirdItemName().v().isEmpty())
-					&& (itemNameInformation.getFourthItemName() != null && !itemNameInformation.getFourthItemName().v().isEmpty())
-					&& (itemNameInformation.getFifthItemName() != null && !itemNameInformation.getFifthItemName().v().isEmpty());
-			break;
-		default:
-			break;
+	private boolean isItemNameInforMatchLevel(ApprovalLevelNo approvalLevelNo, ItemNameInformation itemNameInformation) {
+		if (approvalLevelNo == ApprovalLevelNo.ONE_LEVEL) {
+			return itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty();
 		}
 		
-		return isMatch;
+		if (approvalLevelNo == ApprovalLevelNo.TWO_LEVEL) {
+			return (itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty())
+				&& (itemNameInformation.getSecondItemName() != null && !itemNameInformation.getSecondItemName().v().isEmpty());
+		}
+		
+		if (approvalLevelNo == ApprovalLevelNo.THREE_LEVEL) {
+			return (itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty())
+				&& (itemNameInformation.getSecondItemName() != null && !itemNameInformation.getSecondItemName().v().isEmpty())
+				&& (itemNameInformation.getThirdItemName() != null && !itemNameInformation.getThirdItemName().v().isEmpty());
+		}
+
+		if (approvalLevelNo == ApprovalLevelNo.FOUR_LEVEL) {
+			return (itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty())
+				&& (itemNameInformation.getSecondItemName() != null && !itemNameInformation.getSecondItemName().v().isEmpty())
+				&& (itemNameInformation.getThirdItemName() != null && !itemNameInformation.getThirdItemName().v().isEmpty())
+				&& (itemNameInformation.getFourthItemName() != null && !itemNameInformation.getFourthItemName().v().isEmpty());
+		}
+
+		if (approvalLevelNo == ApprovalLevelNo.FIVE_LEVEL) {
+			return (itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty())
+				&& (itemNameInformation.getSecondItemName() != null && !itemNameInformation.getSecondItemName().v().isEmpty())
+				&& (itemNameInformation.getThirdItemName() != null && !itemNameInformation.getThirdItemName().v().isEmpty())
+				&& (itemNameInformation.getFourthItemName() != null && !itemNameInformation.getFourthItemName().v().isEmpty())
+				&& (itemNameInformation.getFifthItemName() != null && !itemNameInformation.getFifthItemName().v().isEmpty());
+		}
+		return false;
 	}
 	
 	/**
@@ -81,7 +79,7 @@ public class ApproverOperationSettings extends AggregateRoot {
 	 * @param itemNameInformation 項目の名称情報
 	 */
 	public ApproverOperationSettings(OperationMode operationMode, ItemNameInformation itemNameInformation) {
-		if (!this.isItemNameInforMatchLevel(approvalLevelNo, itemNameInformation)) {
+		if (!this.isItemNameInforMatchLevel(ApprovalLevelNo.FIVE_LEVEL, itemNameInformation)) {
 			throw new BusinessException("Msg_3311");
 		}
 		
