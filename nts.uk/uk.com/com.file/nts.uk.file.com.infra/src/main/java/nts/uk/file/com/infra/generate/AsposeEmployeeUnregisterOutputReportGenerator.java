@@ -23,6 +23,7 @@ import nts.uk.file.com.app.EmployeeUnregisterOutputDataSoure;
 import nts.uk.file.com.app.EmployeeUnregisterOutputGenerator;
 import nts.uk.query.model.employee.EmployeeInformation;
 import nts.uk.query.model.workplace.WorkplaceInfoImport;
+import nts.uk.query.model.workplace.WorkplaceModel;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -87,7 +88,7 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
         Map<String, EmployeeInformation> employeeInformationMap = dataSource.getEmployeeInfors().stream().collect(Collectors.toMap(EmployeeInformation::getEmployeeId, Function.identity()));
 
         Map<String, List<EmployeeUnregisterOutput>> mapByWkp = dataSource.getEmployeeUnregisterOutputLst().stream()
-                .collect(Collectors.groupingBy(i -> employeeInformationMap.get(i.getEmployeeId()).getWorkplace().get().getWorkplaceCode()));
+                .collect(Collectors.groupingBy(i -> employeeInformationMap.get(i.getEmployeeId()).getWorkplace().map(WorkplaceModel::getWorkplaceCode).orElse("")));
         mapByWkp.entrySet().stream().sorted(Comparator.comparing(e -> e.getKey())).forEach(entry1 -> {
             style.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOTTED);
             style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.THIN);
@@ -95,7 +96,7 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
             cells.get(row.get(), 0).setValue(entry1.getKey());
             cells.get(row.get(), 0).setStyle(style);
 
-            cells.get(row.get(), 1).setValue(employeeInformationMap.get(entry1.getValue().get(0).getEmployeeId()).getWorkplace().get().getWorkplaceName());
+            cells.get(row.get(), 1).setValue(employeeInformationMap.get(entry1.getValue().get(0).getEmployeeId()).getWorkplace().map(WorkplaceModel::getWorkplaceName).orElse(""));
             cells.get(row.get(), 1).setStyle(style);
 
             Map<String, List<EmployeeUnregisterOutput>> mapByEmp = entry1.getValue().stream().collect(Collectors.groupingBy(i -> employeeInformationMap.get(i.getEmployeeId()).getEmployeeCode()));
