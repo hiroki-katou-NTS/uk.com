@@ -34,6 +34,12 @@ public class ApprovalSetting extends AggregateRoot {
 		return new ApprovalSetting(companyId, approverRegsterSet, prinFlg);
 	}
 
+	/**
+	 * [C-1] 社員単位だけ利用するで作成する
+	 * 	
+	 * @param cid	会社ID
+	 * @return 承認設定
+	 */
 	public static ApprovalSetting createForEmployee(String cid) {
 		// $承認単位の利用設定 ＝ 承認者の登録設定#社員単位だけ利用するで作成する()
 		ApproverRegisterSet approverRegisterSet = ApproverRegisterSet.createForEmployee();
@@ -48,7 +54,7 @@ public class ApprovalSetting extends AggregateRoot {
 	public void changeUnit(OperationMode operationMode) {
 		// if 運用モード == 「上長・社員が行う」
 		if (operationMode.equals(OperationMode.SUPERIORS_EMPLOYEE)) {
-			// @承認単位の利用設定　＝　承認者の登録設定#社員単位だけ利用するで作成する()
+			// @承認単位の利用設定 ＝ 承認者の登録設定#社員単位だけ利用するで作成する()
 			this.approverRegsterSet = ApproverRegisterSet.createForEmployee();
 		}
 	}
