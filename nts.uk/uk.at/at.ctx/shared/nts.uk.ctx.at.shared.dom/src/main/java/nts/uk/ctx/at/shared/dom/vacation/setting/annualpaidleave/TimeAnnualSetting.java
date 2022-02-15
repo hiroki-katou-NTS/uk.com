@@ -99,14 +99,17 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
 	/**
 	 * 積立年休の付与数を取得する
 	 */
-    protected Optional<MonthVacationGrantDay> getAnnualLeavGrant(ManageDistinct yearManageType, int minute, int timeOneHour) {
+    protected Optional<MonthVacationGrantDay> getAnnualLeavGrant(ManageDistinct yearManageType, int timeRemain, int timeAnnualLeavOneDay) {
 		if (!yearManageType.isManaged() || !isManaged()) {
 			return Optional.empty();
 		}
+		if(timeAnnualLeavOneDay == 0) {
+			return Optional.empty();
+		}
 		if (this.getRoundProcessClassific() == TimeAnnualRoundProcesCla.TruncateOnDay0) {
-			return Optional.of(MonthVacationGrantDay.createWithTruncate(Double.valueOf(minute) / timeOneHour));
+			return Optional.of(MonthVacationGrantDay.createWithTruncate(Double.valueOf(timeRemain) / timeAnnualLeavOneDay));
 		} else {
-			return Optional.of(MonthVacationGrantDay.createWithRoundUp(Double.valueOf(minute) / timeOneHour));
+			return Optional.of(MonthVacationGrantDay.createWithRoundUp(Double.valueOf(timeRemain) / timeAnnualLeavOneDay));
 		}
 	}
 	

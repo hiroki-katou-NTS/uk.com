@@ -156,15 +156,15 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 	/**
 	 * 積立年休の付与数を取得する
 	 */
-	public MonthVacationGrantDay getAnnualLeavGrant(Double days) {
+	public MonthVacationGrantDay getAnnualLeavGrant(Double dayRemains) {
 		return this.getManageAnnualSetting().getHalfDayManage()
-				.getAnnualLeavGrant(this.yearManageType, days);
+				.getAnnualLeavGrant(this.yearManageType, dayRemains);
 	}
 	
 	/**
 	 * 積立年休の付与数を取得する
 	 */
-	public Optional<MonthVacationGrantDay> getAnnualLeavGrant(int minute, int timeOneHour) {
-		return this.getTimeSetting().getAnnualLeavGrant(this.yearManageType, minute, timeOneHour);
+	public Optional<MonthVacationGrantDay> getAnnualLeavGrant(int timeRemain, int timeAnnualLeavOneDay) {
+		return this.getTimeSetting().getAnnualLeavGrant(this.yearManageType, timeRemain, timeAnnualLeavOneDay);
 	}
 }

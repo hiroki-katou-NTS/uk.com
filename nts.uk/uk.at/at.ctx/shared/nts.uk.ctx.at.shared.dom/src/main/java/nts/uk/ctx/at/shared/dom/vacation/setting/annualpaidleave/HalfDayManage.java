@@ -59,15 +59,15 @@ public class HalfDayManage implements Serializable {
 	/**
 	 * 積立年休の付与数を取得する
 	 */
-	protected MonthVacationGrantDay getAnnualLeavGrant(ManageDistinct yearManageType, Double days) {
+	protected MonthVacationGrantDay getAnnualLeavGrant(ManageDistinct yearManageType, Double dayRemains) {
 		if (!yearManageType.isManaged()) {
-			return new MonthVacationGrantDay(days);
+			return new MonthVacationGrantDay(0.0);
 		}
 		if (this.roundProcesCla == RoundProcessingClassification.TruncateOnDay0) {
-			return MonthVacationGrantDay.createWithTruncate(days);
+			return MonthVacationGrantDay.createWithTruncate(dayRemains);
 		} else if (this.roundProcesCla == RoundProcessingClassification.RoundUpToTheDay) {
-			return MonthVacationGrantDay.createWithRoundUp(days);
+			return MonthVacationGrantDay.createWithRoundUp(dayRemains);
 		}
-		return new MonthVacationGrantDay(days);
+		return new MonthVacationGrantDay(0.0);
 	}
 }
