@@ -1,17 +1,10 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-
 module nts.uk.at.view.kmt013.a {
     import flat = nts.uk.util.flatArray;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import modal = nts.uk.ui.windows.sub.modal;
+    import modeless = nts.uk.ui.windows.sub.modeless;
     const PATH = {
-        init: 'at/shared/scherec/workmanagement/work/kmt001/init',
-        saveRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/register',
-        updateRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/update',
-        deleteRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/delete',
-        // getRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/find',
-        getTaskList: 'at/shared/scherec/taskmanagement/task/kmt009/getlist',
         getAllSetWkps: "at/shared/scherec/taskmanagement/task/kmt010/getAlreadySetWkps",
     };
 
@@ -45,8 +38,7 @@ module nts.uk.at.view.kmt013.a {
         a4_1: KnockoutObservable<string> = ko.observable(null);
 
         updateMode: KnockoutObservable<boolean>;
-        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
-        multiSelectedId: KnockoutObservable<any> = ko.observable(null);
+        isA5Checked: KnockoutObservable<boolean>;
 
         created(params: any) {
             const vm = this;
@@ -78,14 +70,24 @@ module nts.uk.at.view.kmt013.a {
             vm.a4_1 = ko.observable(vm.$i18n('応援可能') + vm.$i18n('Com_Workplace') + vm.$i18n('リスト'));
 
             vm.updateMode = ko.computed(() => {
-                return vm.alreadySettingList().map(i => i.workplaceId).indexOf(vm.multiSelectedId()) >= 0;
+                if (vm.isWorkplaceGroupMode()) {
+                    return vm.alreadySettingWorkplaceGroups().map(i => i.workplaceId).indexOf(vm.selectedWkpGroupId()) >= 0;
+                }
+                return vm.alreadySettingWorkplaces().map(i => i.workplaceId).indexOf(vm.selectedWkpId()) >= 0;
             });
+
+            vm.isA5Checked = ko.computed(() => {
+                return vm.currentCodeList().length > 0;
+            })
+
         }
 
         mounted() {
             const vm = this;
+            $("#A4_2").focus();
 
             $('#kcp017-switch input').change(() => {
+                $("#A4_2").focus();
                 let isWplGrMode = $('#kcp017-switch input')[1].getAttribute('checked') == 'checked';
                 vm.isWorkplaceGroupMode(isWplGrMode);
                 if (isWplGrMode) {
@@ -123,21 +125,14 @@ module nts.uk.at.view.kmt013.a {
                 vm.selectedWkpGroup(result);
                 vm.isWorkplaceGroupMode() && vm.a3_2(result.workplaceGroupName);
             });
-
         }
 
-        fn1st() {
-            console.log('1st');
-        }
-
-        fn2nd() {
+        registerSupport() {
             const vm = this;
-            console.log('2nd')
         }
 
-        fn3rd() {
-            // const vm = this;
-            console.log('3rd')
+        deleteSupport() {
+            const vm = this;
         }
 
         getAlreadySettingList() {
@@ -145,7 +140,6 @@ module nts.uk.at.view.kmt013.a {
             vm.$blockui("show");
             vm.$ajax(PATH.getAllSetWkps).done((data: Array<string>) => {
                 console.log(data)
-                // vm.alreadySettingList(data.map(id => ({workplaceId: id, isAlreadySetting: true})));
                 vm.alreadySettingWorkplaces(data.map(id => ({workplaceId: id, isAlreadySetting: true})))
             }).fail(error => {
                 vm.$dialog.error(error);
@@ -157,20 +151,38 @@ module nts.uk.at.view.kmt013.a {
         openDialogCDL023() {
             const vm = this;
             let params: IObjectDuplication = {
-                code: vm.selectedWkpGroup().workplaceGroupCode,
-                name: vm.selectedWkpGroup().workplaceGroupName,
+                code: vm.selectedWkp().workplaceCode,
+                name: vm.selectedWkp().workplaceName,
                 targetType: TargetType.WORKPLACE,
-                baseDate: moment('YYYY/MM/DD').toDate(),
-                itemListSetting: vm.alreadySettingList().map(w => w.workplaceId),
+                baseDate: new Date(),
+                itemListSetting: vm.alreadySettingWorkplaces().map(w => w.workplaceId),
             };
+
+            if (vm.isWorkplaceGroupMode()) {
+                params.code = vm.selectedWkpGroup().workplaceGroupCode;
+                params.name = vm.selectedWkpGroup().workplaceGroupName;
+                params.itemListSetting = vm.alreadySettingWorkplaceGroups().map(w => w.workplaceId);
+            }
 
             setShared("CDL023Input", params);
             // open dialog
             modal('com', 'view/cdl/023/a/index.xhtml').onClosed(() => {
                 console.log('closed')
                 let lstSelection: Array<string> = getShared("CDL023Output");
-                let data = getShared("CDL023Output");
-                console.log(data)
+                if (!_.isEmpty(lstSelection)) {
+                    console.log('not empty')
+                } else {
+                    console.log('empty')
+                }
+
+                // open B modeless
+                // vm.$window.modeless('at', '/view/kmt/013/b/index.xhtml', lstSelection).then((result: any) => {
+                //     // business code when modal closed
+                // });
+
+                modeless('/view/kmt/013/b/index.xhtml', {lstSelection}).onClosed(() => {
+                    // business code when modal closed
+                });
             });
         }
 
@@ -203,6 +215,11 @@ module nts.uk.at.view.kmt013.a {
 
         openDialogCDL014() {
             console.log('Open CDL014 Dialog')
+        }
+
+        a4_3BtnClick() {
+            const vm = this;
+            console.log('a4_3 click')
         }
 
     }
