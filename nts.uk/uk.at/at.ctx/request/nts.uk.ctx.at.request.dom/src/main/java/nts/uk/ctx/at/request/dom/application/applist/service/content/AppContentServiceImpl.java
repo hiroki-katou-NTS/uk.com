@@ -661,8 +661,14 @@ public class AppContentServiceImpl implements AppContentService {
 						frameAtr = approver.getApprovalAtr();
 						isBreak = true;
 						listOfApp.setOpApprovalFrameStatus(Optional.of(frameAtr.value));
-						// 反映状態　＝　反映状態（承認一覧モード）//Trạng thái phản ánh= trạng thái phản ánh(mode danh sách approve)
-						reflectedStateString = this.getReflectStatusApprovalListMode(reflectedState, phaseAtr, frameAtr, device);
+						// 取得した承認枠．承認者．承認区分＝未承認　AND　反映状態＝取消済
+						if(frameAtr==ApprovalBehaviorAtrImport_New.UNAPPROVED && reflectedState==ReflectedState.CANCELED) {
+							// 申請内容＝-1　をセットする
+							listOfApp.setAppContent("-1");
+						} else {
+							// 反映状態　＝　反映状態（承認一覧モード）//Trạng thái phản ánh= trạng thái phản ánh(mode danh sách approve)
+							reflectedStateString = this.getReflectStatusApprovalListMode(reflectedState, phaseAtr, frameAtr, device);
+						}
 					}
 				}
 			}

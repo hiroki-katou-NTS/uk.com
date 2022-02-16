@@ -34,6 +34,7 @@ import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripWorkTypes;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementEarly;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -52,8 +53,10 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.busi
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -223,27 +226,33 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                     .map(i -> i.getWorkInformation().getWorkTypeCode().v())
                     .distinct()
                     .collect(Collectors.toList());
-            // ドメインモデル「勤務種類」を取得する
             Map<String, WorkType> mapWorkCds = wkTypeRepo.getPossibleWorkType(companyId, cds).stream().collect(Collectors.toMap(i -> i.getWorkTypeCode().v(), i -> i));
-            businessTripWorkTypes = businessTrip.get().getInfos().stream().map(i -> new BusinessTripWorkTypes(
-                    i.getDate(),
-                    mapWorkCds.get(i.getWorkInformation().getWorkTypeCode().v())
-            )).collect(Collectors.toList());
+            businessTripWorkTypes = businessTrip.get().getInfos().stream().map(i -> {
+                // ドメインモデル「勤務種類」を取得する
+                WorkType workType = mapWorkCds.get(i.getWorkInformation().getWorkTypeCode().v());
+             // ドメインモデル「就業時間帯の設定」を取得する
+                WorkTimeSetting workTimeSetting = null;
+                
+                if (i.getWorkInformation().getWorkTimeCodeNotNull().isPresent()) {
+                    if (appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent()
+                            && appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get().stream()
+                            .filter(x -> x.getWorktimeCode().v().equals(i.getWorkInformation().getWorkTimeCode().v()))
+                            .findFirst().isPresent()) {
+                        workTimeSetting = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get().stream()
+                                .filter(x -> x.getWorktimeCode().v().equals(i.getWorkInformation().getWorkTimeCode().v()))
+                                .findFirst().get();
+                    } else {
+                        workTimeSetting = wkTimeRepo.findByCode(companyId, i.getWorkInformation().getWorkTimeCode().v()).orElse(null);
+                    }
+                }
+                
+                return new BusinessTripWorkTypes(
+                        i.getDate(), 
+                        workType, 
+                        workTimeSetting);
+            }).collect(Collectors.toList());
+            
         }
-        List<WorkTimeSetting> workTimeSettings = new ArrayList<>();
-        if (appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent()) {
-            workTimeSettings = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get();
-        } else {
-            if (businessTrip.isPresent()) {
-                List<String> cds = businessTrip.get().getInfos().stream()
-                        .map(i -> i.getWorkInformation().getWorkTimeCode().v())
-                        .distinct()
-                        .collect(Collectors.toList());
-                // ドメインモデル「就業時間帯の設定」を取得する
-                workTimeSettings = wkTimeRepo.findByCodes(companyId, cds);
-            }
-        }
-        appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setOpWorkTimeLst(Optional.of(workTimeSettings));
         output.setAppDispInfoStartup(appDispInfoStartupOutput);
         output.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
         output.setWorkDayCds(Optional.of(workDays));
@@ -506,7 +515,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             Optional<WorkType> getWorkTypeInfo = wkTypeRepo.findByPK(cid, checkInputCode.getCode());
             if (infoOutput.getWorkTypeAfterChange().isPresent()) {
                 // 変更後勤務種類にセット
-                BusinessTripWorkTypes itemAfterChange = new BusinessTripWorkTypes(inputDate, getWorkTypeInfo.get());
+                BusinessTripWorkTypes itemAfterChange = new BusinessTripWorkTypes(inputDate, getWorkTypeInfo.get(), null);
                 if (infoOutput.getWorkTypeAfterChange().get().contains(itemAfterChange)) {
                     int index = infoOutput.getWorkTypeAfterChange().get().indexOf(itemAfterChange);
                     infoOutput.getWorkTypeAfterChange().get().set(index, itemAfterChange);
@@ -734,32 +743,59 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                     // 対象項目いずれかが未登録の場合
                     Optional<Integer> opWorkTime = optAchievementDetail.get().getOpWorkTime();
                     Optional<Integer> opLeaveTime = optAchievementDetail.get().getOpLeaveTime();
+                    Optional<Integer> opWorkTime2 = optAchievementDetail.get().getOpWorkTime2();
+                    Optional<Integer> opDepartureTime2 = optAchievementDetail.get().getOpDepartureTime2();
                     String workTimeCd = optAchievementDetail.get().getWorkTimeCD();
                     if (!opWorkTime.isPresent() || !opLeaveTime.isPresent()) {
-                        // アルゴリズム「出張申請就業時刻を取得する」を実行する
-                        WorkType workType = result.getWorkTypeBeforeChange().isPresent() ? 
-                                result.getWorkTypeBeforeChange().get().stream()
-                                .filter(x -> x.getDate().equals(opActualContentDisplayLst.get().get(index).getDate()))
-                                .map(x -> x.getWorkType())
-                                .findFirst().orElse(null) : null;
-                        WorkTimeGetOuput workTimeGetOutput = getWorkTimeBusinessTrip(workType, workTimeCd, workingHours);
-                        if (!workTimeGetOutput.getWorkingHours().isEmpty()) {
-                            workingHours = workTimeGetOutput.getWorkingHours();
-                        }
-                        // 未登録の対象項目に値をセットする
+                        // 実績詳細遅刻早退実績の時刻を取得してセットする
+                        AchievementEarly achievementEarly = optAchievementDetail.get().getAchievementEarly();
                         if (!opWorkTime.isPresent()) {
-                            optAchievementDetail.get().setOpWorkTime(workTimeGetOutput.getStartTime1());
+                            opWorkTime = achievementEarly.getScheAttendanceTime1().map(x -> x.v());
                         }
                         if (!opLeaveTime.isPresent()) {
-                            optAchievementDetail.get().setOpLeaveTime(workTimeGetOutput.getEndTime1());
+                            opLeaveTime = achievementEarly.getScheDepartureTime1().map(x -> x.v());
                         }
-                        if (!optAchievementDetail.get().getOpWorkTime2().isPresent()) {
-                            optAchievementDetail.get().setOpWorkTime2(workTimeGetOutput.getStartTime2());
+                        if (!opWorkTime2.isPresent()) {
+                            opWorkTime2 = achievementEarly.getScheAttendanceTime2().map(x -> x.v());
                         }
-                        if (!optAchievementDetail.get().getOpDepartureTime2().isPresent()) {
-                            optAchievementDetail.get().setOpDepartureTime2(workTimeGetOutput.getEndTime2());
+                        if (!opDepartureTime2.isPresent()) {
+                            opDepartureTime2 = achievementEarly.getScheDepartureTime2().map(x -> x.v());
                         }
+                        
+                        // 対象項目いずれかが未登録の場合
+                        if (!opWorkTime.isPresent() || !opLeaveTime.isPresent()) {
+                            // アルゴリズム「出張申請就業時刻を取得する」を実行する
+                            WorkType workType = result.getWorkTypeBeforeChange().isPresent() ? 
+                                    result.getWorkTypeBeforeChange().get().stream()
+                                    .filter(x -> x.getDate().equals(opActualContentDisplayLst.get().get(index).getDate()))
+                                    .map(x -> x.getWorkType())
+                                    .findFirst().orElse(null) : null;
+                            
+                            WorkTimeGetOuput workTimeGetOutput = getWorkTimeBusinessTrip(workType, workTimeCd, workingHours);
+                            if (!workTimeGetOutput.getWorkingHours().isEmpty()) {
+                                workingHours = workTimeGetOutput.getWorkingHours();
+                            }
+                            // 未登録の対象項目に値をセットする
+                            if (!opWorkTime.isPresent()) {
+                                opWorkTime = workTimeGetOutput.getStartTime1();
+                            }
+                            if (!opLeaveTime.isPresent()) {
+                                opLeaveTime = workTimeGetOutput.getEndTime1();
+                            }
+                            if (!optAchievementDetail.get().getOpWorkTime2().isPresent()) {
+                                opWorkTime2 = workTimeGetOutput.getStartTime2();
+                            }
+                            if (!optAchievementDetail.get().getOpDepartureTime2().isPresent()) {
+                                opDepartureTime2 = workTimeGetOutput.getEndTime2();
+                            }
+                        }
+                        
                     }
+                    
+                    optAchievementDetail.get().setOpWorkTime(opWorkTime);
+                    optAchievementDetail.get().setOpLeaveTime(opLeaveTime);
+                    optAchievementDetail.get().setOpWorkTime2(opWorkTime2);
+                    optAchievementDetail.get().setOpDepartureTime2(opDepartureTime2);
                     
                     if (workTimeCd == null) {
                         optAchievementDetail.get().setOpWorkTime(Optional.empty());
@@ -810,30 +846,47 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             // 勤務種類.1日の勤務.1日をチェック（※勤務種類の判断条件参照）
             if (isWorkTypeWork(workType.getDailyWork().getOneDay())) {
                 // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
-                List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone();
-                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
-                    output.setStartTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
-                    output.setEndTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getEnd().v()));
+                List<TimezoneUse> timesOneday = predetemineTimeSetting.get().getTimezoneByAmPmAtr(AmPmAtr.ONE_DAY);
+                if (timesOneday.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
+                    output.setStartTime1(timesOneday.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
+                    output.setEndTime1(timesOneday.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getEnd().v()));
                 }
-                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().isPresent()) {
-                    output.setStartTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getStart().v()));
-                    output.setEndTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
+                
+                if (timesOneday.stream().filter(x -> x.getWorkNo() == 2).findFirst().isPresent()) {
+                    output.setStartTime2(timesOneday.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getStart().v()));
+                    output.setEndTime2(timesOneday.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
                 }
             }
         } else if (workTypeUnit.equals(WorkTypeUnit.MonringAndAfternoon)) {
-            // 勤務種類.1日の勤務.午前をチェック
-            // 勤務種類.1日の勤務.午後をチェック
             if ((isWorkTypeHoliday(workType.getDailyWork().getMorning()) && isWorkTypeWork(workType.getDailyWork().getAfternoon())) || 
                     (isWorkTypeWork(workType.getDailyWork().getMorning()))) {
-                // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
-                List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone();
-                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
-                    output.setStartTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
-                    output.setEndTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getEnd().v()));
+                // 勤務種類.1日の勤務.午前をチェック
+                if (isWorkTypeWork(workType.getDailyWork().getMorning()) && isWorkTypeHoliday(workType.getDailyWork().getAfternoon())) {
+                    // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
+                    List<TimezoneUse> timesMorning = predetemineTimeSetting.get().getTimezoneByAmPmAtr(AmPmAtr.AM);
+                    if (timesMorning.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
+                        output.setStartTime1(timesMorning.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
+                        output.setEndTime1(timesMorning.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getEnd().v()));
+                    }
+                    
+                    if (timesMorning.stream().filter(x -> x.getWorkNo() == 2).findFirst().isPresent()) {
+                        output.setStartTime2(timesMorning.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getStart().v()));
+                        output.setEndTime2(timesMorning.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
+                    }
                 }
-                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().isPresent()) {
-                    output.setStartTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getStart().v()));
-                    output.setEndTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
+                // 勤務種類.1日の勤務.午後をチェック
+                if (isWorkTypeHoliday(workType.getDailyWork().getMorning()) && isWorkTypeWork(workType.getDailyWork().getAfternoon())) {
+                    // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
+                    List<TimezoneUse> timesAfternoon = predetemineTimeSetting.get().getTimezoneByAmPmAtr(AmPmAtr.PM);
+                    if (timesAfternoon.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
+                        output.setStartTime1(timesAfternoon.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
+                        output.setEndTime1(timesAfternoon.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getEnd().v()));
+                    }
+                    
+                    if (timesAfternoon.stream().filter(x -> x.getWorkNo() == 2).findFirst().isPresent()) {
+                        output.setStartTime2(timesAfternoon.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getStart().v()));
+                        output.setEndTime2(timesAfternoon.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
+                    }
                 }
             }
         }

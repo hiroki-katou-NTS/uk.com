@@ -19,13 +19,16 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
+import nts.arc.layer.dom.objecttype.DomainObject;
 
 /**
  * CSVファイル情報
  */
 @Getter
 @RequiredArgsConstructor
-public class ExternalImportCsvFileInfo {
+public class ExternalImportCsvFileInfo implements DomainObject {
 	
 	/** CSVの項目名取得行 */
 	private final ExternalImportRowNumber itemNameRowNumber;
@@ -35,6 +38,18 @@ public class ExternalImportCsvFileInfo {
 	
 	/** ベースのCSVファイルID */
 	private final Optional<String> baseCsvFileId;
+
+	@Override
+	public void validate() {
+		
+		DomainObject.super.validate();
+		
+		if (!(itemNameRowNumber.v() < importStartRowNumber.v())) {
+			throw new BusinessException(new RawErrorMessage(
+					"項目名の行 [" + itemNameRowNumber.v() + "] は、"
+					+ "受入開始行 [" + importStartRowNumber.v() + "] よりも小さい値を指定してください。"));
+		}
+	}
 	
 	public void parse(InputStream csvFileStream, Consumer<CsvRecord> readRecords) {
 

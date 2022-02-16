@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class FileUploader {
 	private static final String SERVICE_URL = "/nts.uk.com.web/webapi/ntscommons/arc/filegate/upload";
 
 	public List<StoredFileInfo> doWork(String csvFolderPath) {
-		LogManager.out("ファイルのアップロード -- 開始 --");
+		LogManager.out("FileUploader.doWork start:[" + csvFolderPath + "]");
 		
 		File csvFolder = new File(csvFolderPath);
 		FilenameFilter filter = new FilenameFilter() {
@@ -46,8 +47,14 @@ public class FileUploader {
 				return str.endsWith("csv");	// 拡張子csvでフィルタ
 			}
 		};
-		
-		List<Path> filePathList = Arrays.stream(csvFolder.listFiles(filter))
+
+		File[] csvFiles = csvFolder.listFiles(filter);
+		if(csvFiles == null) {
+			LogManager.err("指定フォルダ内にcsvファイルが見つかりません。[" + csvFolder.getPath() + "]");
+			return Collections.emptyList();
+		}
+
+		List<Path> filePathList = Arrays.stream(csvFiles)
 			.map(f -> Paths.get(f.getPath()))
 			.collect(Collectors.toList());
 
@@ -63,7 +70,7 @@ public class FileUploader {
 			};
 		}
 		
-		LogManager.out("ファイルのアップロード -- 終了 -- [正常:" + infoList.size() + "件、エラー:" + errorCount + "件]");
+		LogManager.out("FileUploader.doWork end:[success:" + infoList.size() + " error:" + errorCount + "]");
 
 		return infoList;
 	}
@@ -73,9 +80,7 @@ public class FileUploader {
 		try {
 			retult = callUploadApi(pathToSource, stereotype, fileType);
 		} catch (IOException e) {
-			LogManager.err("\r\n");
-			LogManager.err("ファイルアップロードに失敗しました。\r\n" + pathToSource.toFile().getPath() + "\r\n");
-			LogManager.err(e);
+			LogManager.err("ファイルアップロードに失敗しました。[" + pathToSource.toFile().getPath() + "] " + e);
 			return Optional.empty();
 		}
 
@@ -172,7 +177,7 @@ public class FileUploader {
 			}
 			
 			if(status != 200) {
-				String errorMessage = "ERROR" + status + "](" + url.toString() + "):"
+				String errorMessage = "ERROR[" + status + "](" + url.toString() + "):"
 						+ httpConn.getResponseMessage()
 						+ (!responce.toString().isEmpty() ? "\r\n" + responce.toString() : "");
 					throw new RuntimeException(errorMessage);
