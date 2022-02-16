@@ -7,7 +7,10 @@
 	<!-- <com:stylefile path="../../sample/catalog/catalog.css" /> -->
 	<com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
 
+
+
 	<div data-bind="attr: {id: componentWrapperId}">
+
 		<div class="kcp009-root">
 		
 			<button class="switch-target" data-bind="click: previousEmp, enable: isActivePreviousBtn(), attr: {tabindex: tabIndex, id: 'prev-btn-' + prefix()}">＜</button>
@@ -24,23 +27,20 @@
 			
 			<div class="number-of-people" data-bind="visible: isDisplayNumberOfEmployee, text: selectedNumberOfPeople"></div>
 			
-			<!--
-			<div data-bind="visible: isDisplayNumberOfEmployee">
-				<input type="search" class="search-input" data-bind="ntsTextEditor: {
-									value: keySearch,
-									name: '#[KCP009_2]',
-									option: {enable: true}
-								}, 
-								attr: {
-									tabindex: tabIndex,
-									id: 'search-input-'+ prefix()
-								}, 
-								valueUpdate: 'afterkeydown'
-								"/>
-			</div>
-			-->
-			
 			<button class="btn_show_list" data-bind="text: targetBtnText, attr: {tabindex: tabIndex, id: 'btn_show_list-' + prefix()}"></button>
+			
+			<input type="search" class="search-input" data-bind="ntsTextEditor: {
+								value: keySearch,
+								name: '#[KCP009_2]',
+								option: {enable: true}
+							}, 
+							attr: {
+								tabindex: tabIndex,
+								id: 'search-input-'+ prefix()
+							}, 
+							valueUpdate: 'afterkeydown',
+							visible: isDisplayNumberOfEmployee
+							"/>
 			
 			<button class="switch-target" data-bind="click: nextEmp, enable: isActiveNextBtn(), attr: {tabindex: tabIndex, id: 'next-btn-' + prefix()}">＞</button>
 						

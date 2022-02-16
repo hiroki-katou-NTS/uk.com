@@ -50,7 +50,7 @@ allprojects {
 
 	task upver (type: Copy, dependsOn: ['compileJava', 'jar']) {
         from "build/libs"
-		localRepo = "$rootDir/../uk.repo"
+		into localRepo
         include "nts*.jar"
         exclude "nts*web.jar"
 	}

@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -282,8 +283,8 @@ public class ConfirmStatusActualDayChange {
 			}
 			List<ApplicationRecordImport> lstAppRecord = confirmInfoResult.getLstApplication();
 			lstAppRecord.forEach(x -> {
-				boolean disable = (x.getReflectState() == ReflectedStateRecord.NOTREFLECTED.value
-						|| x.getReflectState() == ReflectedStateRecord.REMAND.value)
+				boolean disable = (x.getReflectState() == ReflectedStateShare.NOTREFLECTED.value
+						|| x.getReflectState() == ReflectedStateShare.REMAND.value)
 						&& x.getAppType() != nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.OVER_TIME_APPLICATION.value;
 				if (disable)
 					result.add(Pair.of(x.getEmployeeID(), x.getAppDate()));
