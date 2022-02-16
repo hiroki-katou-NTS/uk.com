@@ -16,6 +16,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -69,6 +70,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -444,6 +446,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         String sid = AppContexts.user().employeeId();
         String cid = AppContexts.user().companyId();
         List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
+        BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
         // loop 年月日　in　期間
         infos.forEach(i -> {
@@ -493,9 +496,12 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             );
             
             // 勤務種類により出退勤時刻をチェックする
-            this.checkTimeByWorkType(i.getDate(), wkTypeCd, workTimeStart, workTimeEnd);
-
+            exceptions.addMessage(this.checkTimeByWorkType(i.getDate(), wkTypeCd, workTimeStart, workTimeEnd).cloneExceptions());
         });
+        
+        if (exceptions.getMessageId().size() > 0) {
+            throw exceptions;
+        }
     }
 
     @Override
@@ -935,13 +941,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     }
 
     @Override
-    public void checkTimeByWorkType(GeneralDate date, String workTypeCode, Integer startTime,
+    public BundledBusinessException checkTimeByWorkType(GeneralDate date, String workTypeCode, Integer startTime,
             Integer endTime) {
+        BundledBusinessException exceptions = BundledBusinessException.newInstance();
         // 「勤務種類」を取得する
         Optional<WorkType> wkTypeOpt = wkTypeRepo.findByPK(AppContexts.user().companyId(), workTypeCode);
         
         if (!wkTypeOpt.isPresent()) {
-            return;
+            return exceptions;
         }
         
         // 分類を判断する
@@ -950,13 +957,19 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         // 分類と出勤時刻・退勤時刻をチェックする
         if (isWorkingType) {
             if (startTime == null && endTime == null) {
-                throw new BusinessException("Msg_2301", date.toString());
+                exceptions.addMessage(new BusinessException("Msg_2301", date.toString(), TextResource.localize("KAF008_29")));
+                exceptions.addMessage(new BusinessException("Msg_2301", date.toString(), TextResource.localize("KAF008_30")));
             }
         } else {
-            if (startTime != null || endTime != null) {
-                throw new BusinessException("Msg_2302", date.toString());
+            if (startTime != null) {
+                exceptions.addMessage(new BusinessException("Msg_2302", date.toString(), TextResource.localize("KAF008_29")));
+            }
+            if (endTime != null) {
+                exceptions.addMessage(new BusinessException("Msg_2302", date.toString(), TextResource.localize("KAF008_30")));
             }
         }
+        
+        return exceptions;
     }
     
     private boolean isWorkingType(WorkType workType) {
