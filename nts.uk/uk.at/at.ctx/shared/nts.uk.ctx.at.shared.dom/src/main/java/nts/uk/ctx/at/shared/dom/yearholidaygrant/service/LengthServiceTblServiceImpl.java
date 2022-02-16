@@ -29,49 +29,50 @@ public class LengthServiceTblServiceImpl implements LengthServiceTblService {
 		List<NextAnnualLeaveGrant> dataResult = new ArrayList<>();
 		
 		// 勤続年数を取得
-		LengthServiceTbl lengthServiceTbl = lengthServiceRepository.findByCode(companyId, yearHolidayCode).orElse(null);
+		if(lengthServiceRepository.findByCode(companyId, yearHolidayCode).isPresent()) {
+			LengthServiceTbl lengthServiceTbl = lengthServiceRepository.findByCode(companyId, yearHolidayCode).get();
 
-		if(lengthServiceTbl.getLengthOfService().size() > 0) {
-			// 勤続年数でループ
-			for(int i = 0; i < lengthServiceTbl.getLengthOfService().size(); i++){
-				// 勤続年数から付与日を計算
-				NextAnnualLeaveGrant nextAnnualLeaveGrant = grantDateCalYearsService(lengthServiceTbl.getLengthOfService().get(i), entryDate, standardDate, simultaneousGrandMD, null);
 
-				// 前回付与日←次回年休付与．付与年月日
-				GeneralDate lastGrantDate = nextAnnualLeaveGrant.grantDate;
-				
-				// 期間中の年休付与かチェック
-				StatusResult status = checkOnAnnualHolidaysDuringThePeriod(period, lastGrantDate);
-				
-				// 期間より前
-				if(status == StatusResult.BEFORE_PERIOD) {
-					continue;
-				}
-				
-				// 期間内
-				if(status == StatusResult.WITHIN_PERIOD) {
-					// パラメータ「単一日フラグ」をチェック
-					if(singleDayFlag != null && singleDayFlag.isPresent() || singleDayFlag.get()) {
-						// 「次回年休付与」を「次回年休付与List」に追加
+			if(lengthServiceTbl.getLengthOfServicesSize() > 0) {
+				// 勤続年数でループ
+				for(int i = 0; i < lengthServiceTbl.getLengthOfServicesSize(); i++){
+					// 勤続年数から付与日を計算
+					NextAnnualLeaveGrant nextAnnualLeaveGrant = grantDateCalYearsService(lengthServiceTbl.getALengthOfService(i), entryDate, standardDate, simultaneousGrandMD, null);
+
+					// 前回付与日←次回年休付与．付与年月日
+					GeneralDate lastGrantDate = nextAnnualLeaveGrant.grantDate;
+
+					// 期間中の年休付与かチェック
+					StatusResult status = checkOnAnnualHolidaysDuringThePeriod(period, lastGrantDate);
+
+					// 期間より前
+					if(status == StatusResult.BEFORE_PERIOD) {
+						continue;
+					}
+
+					// 期間内
+					if(status == StatusResult.WITHIN_PERIOD) {
+						// パラメータ「単一日フラグ」をチェック
+						if(singleDayFlag != null && singleDayFlag.isPresent() || singleDayFlag.get()) {
+							// 「次回年休付与」を「次回年休付与List」に追加
+							dataResult.add(nextAnnualLeaveGrant);
+						}
+					}
+
+					// 期間より後
+					if(status == StatusResult.AFTER_PERIOD) {
 						dataResult.add(nextAnnualLeaveGrant);
 					}
 				}
-
-				// 期間より後
-				if(status == StatusResult.AFTER_PERIOD) {
-					dataResult.add(nextAnnualLeaveGrant);
-				}
+				return dataResult;
 			}
-			
-			return dataResult;
 		}
-		
 		return Collections.emptyList();
 	}
 
 	/**
 	 * 勤続年数から付与日を計算
-	 * 
+	 *
 	 * @param data
 	 * @param entryDate
 	 * @param standardDate

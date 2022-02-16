@@ -128,21 +128,21 @@ public class GetNextAnnualLeaveGrantProc {
 			simultaneousGrantMDOpt = Optional.of(grantHdTblSet.getSimultaneousGrandMonthDays());
 		}
 
-		LengthServiceTbl lengthServiceTbl;
 		// 「勤続年数テーブル」を取得する
 		Optional<LengthServiceTbl> lengthServiceTblOpt = Optional.empty();
 		if (lengthServiceTblParam.isPresent()){
 			lengthServiceTblOpt = lengthServiceTblParam;
 		}
 		else {
-			lengthServiceTblOpt = Optional.ofNullable(require.lengthServiceTbl(companyId, grantTableCode));
+			lengthServiceTblOpt = require.lengthServiceTbl(companyId, grantTableCode);
 		}
-		if (lengthServiceTblOpt.orElse(null).getLengthOfService().size() <= 0) return nextAnnualLeaveGrantList;
-
+		if(lengthServiceTblOpt.isPresent()) {
+			if (lengthServiceTblOpt.get().getLengthOfServices().size() <= 0) return nextAnnualLeaveGrantList;
+		}
 		// 期間内に該当する付与年月日をListで取得
 		GetNextAnnualLeaveGrantProcKdm002.calcAnnualLeaveGrantDate(
 				require, companyId,
-				entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTblOpt.orElse(null).getLengthOfService(),
+				entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTblOpt.isPresent() ? Optional.of(lengthServiceTblOpt.get().getLengthOfServices()):Optional.empty(),
 				period, isSingleDay, nextAnnualLeaveGrantList);
 
 		// １日に相当する契約時間を取得する
@@ -193,7 +193,7 @@ public class GetNextAnnualLeaveGrantProc {
 
 		Optional<GrantHdTblSet> grantHdTblSet(String companyId, String yearHolidayCode);
 
-		LengthServiceTbl lengthServiceTbl(String companyId, String yearHolidayCode);
+		Optional<LengthServiceTbl> lengthServiceTbl(String companyId, String yearHolidayCode);
 
 		Optional<GrantHdTbl> grantHdTbl(String companyId, int conditionNo, String yearHolidayCode, int grantNum);
 

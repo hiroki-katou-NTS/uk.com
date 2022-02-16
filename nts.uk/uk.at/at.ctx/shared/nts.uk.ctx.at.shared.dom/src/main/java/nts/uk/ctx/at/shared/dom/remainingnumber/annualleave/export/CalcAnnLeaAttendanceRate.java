@@ -120,7 +120,7 @@ public class CalcAnnLeaAttendanceRate {
 		if (lengthServiceTblParam.isPresent()) {
 			lengthServiceTblOpt = lengthServiceTblParam;
 		} else {
-			lengthServiceTblOpt = Optional.ofNullable(require.lengthServiceTbl(companyId, grantTableCode));
+			lengthServiceTblOpt = require.lengthServiceTbl(companyId, grantTableCode);
 		}
 		if (!lengthServiceTblOpt.isPresent()) return Optional.empty();
 		val lengthServiceTbl = lengthServiceTblOpt.get();
@@ -358,7 +358,7 @@ public class CalcAnnLeaAttendanceRate {
 
 		Optional<GrantHdTblSet> grantHdTblSet(String companyId, String yearHolidayCode);
 
-		LengthServiceTbl lengthServiceTbl(String companyId, String yearHolidayCode);
+		Optional<LengthServiceTbl> lengthServiceTbl(String companyId, String yearHolidayCode);
 	}
 
 	public static interface RequireM3 extends RequireM1 {

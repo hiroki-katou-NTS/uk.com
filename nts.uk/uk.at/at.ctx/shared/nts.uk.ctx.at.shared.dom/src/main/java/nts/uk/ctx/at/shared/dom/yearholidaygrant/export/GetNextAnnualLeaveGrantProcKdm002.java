@@ -83,14 +83,14 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 			if (grantHdTblSet.getUseSimultaneousGrant() == UseSimultaneousGrant.USE) {
 				simultaneousGrantMDOpt = Optional.of(grantHdTblSet.getSimultaneousGrandMonthDays());
 			}
-			// 「勤続年数テーブル」を取得する
-			List<LengthOfService> lengthServiceTbls = lengthServiceTblMap.stream().flatMap(c->c.getLengthOfService().stream()).collect(Collectors.toList());
-			if (lengthServiceTbls.size() <= 0) {
+			// 「勤続年数」リストを取得する
+			List<LengthOfService> lengthOfServices = lengthServiceTblMap.stream().flatMap(c->c.getLengthOfServices().stream()).collect(Collectors.toList());
+			if (lengthOfServices.size() <= 0) {
 				result.put(empId, nextAnnualLeaveGrantList);
 				continue;
 			}
 			// 年休付与年月日を計算
-			calcAnnualLeaveGrantDate(require, companyId, entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTbls, period,
+			calcAnnualLeaveGrantDate(require, companyId, entryDate, criteriaDate, simultaneousGrantMDOpt, Optional.of(lengthOfServices), period,
 					isSingleDay, nextAnnualLeaveGrantList);
 			for (val nextAnnualLeaveGrant : nextAnnualLeaveGrantList) {
 				// 付与回数をもとに年休付与テーブルを取得
@@ -116,7 +116,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 	 * @param entryDate 入社年月日
 	 * @param criteriaDate 年休付与基準日
 	 * @param simultaneousGrantMDOpt 一斉付与年月
-	 * @param lengthServiceTbls 勤続年数テーブルリスト
+	 * @param lengthOfServices 勤続年数リスト
 	 * @param period 期間
 	 * @param isSingleDay 単一日フラグ
 	 * @param nextAnnualLeaveGrantList 次回年休付与リスト
@@ -125,93 +125,97 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 			GetNextAnnualLeaveGrantProc.RequireM1 require,
 			String companyId,
 			GeneralDate entryDate, GeneralDate criteriaDate,
-			Optional<Integer> simultaneousGrantMDOpt, List<LengthOfService> lengthServiceTbls, DatePeriod period,
+			Optional<Integer> simultaneousGrantMDOpt, Optional<List<LengthOfService>> lengthOfServices, DatePeriod period,
 			boolean isSingleDay, List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList) {
 
 		GeneralDate previousDate = null;
-		for (LengthOfService lengthServiceTbl : lengthServiceTbls) {
+		if(lengthOfServices.isPresent()) {
 
-			// 付与日を計算
-			val nextAnnualLeaveGrant = calcGrantDate(require, companyId, lengthServiceTbl, Optional.empty(),
-					entryDate, criteriaDate, simultaneousGrantMDOpt, previousDate);
+			for (LengthOfService lengthServiceTbl : lengthOfServices.get()) {
 
-			// 次回付与日が前回付与日を超えているかどうかチェック
-			boolean isExceed = true;
-			if (previousDate != null) {
-				if (nextAnnualLeaveGrant.getGrantDate().beforeOrEquals(previousDate)) {
-					isExceed = false;
+				// 付与日を計算
+				val nextAnnualLeaveGrant = calcGrantDate(require, companyId, lengthServiceTbl, Optional.empty(),
+						entryDate, criteriaDate, simultaneousGrantMDOpt, previousDate);
+
+				// 次回付与日が前回付与日を超えているかどうかチェック
+				boolean isExceed = true;
+				if (previousDate != null) {
+					if (nextAnnualLeaveGrant.getGrantDate().beforeOrEquals(previousDate)) {
+						isExceed = false;
+					}
+				}
+				if (isExceed == true) {
+
+					// 期間中の年休付与かチェック
+					val grantDate = nextAnnualLeaveGrant.getGrantDate();
+					if (grantDate.after(period.end())) {
+						// 期間より後
+						return;
+					}
+					else if (period.contains(grantDate)) {
+						// 期間内
+
+						// 「次回年休付与リスト」に追加
+						nextAnnualLeaveGrantList.add(nextAnnualLeaveGrant);
+
+						// 「単一日フラグ」をチェック
+						if (isSingleDay) return;
+					}
+
+					// 前回付与日 ← 次回年休付与．付与年月日
+					if (previousDate == null) {
+						previousDate = nextAnnualLeaveGrant.getGrantDate();
+					}
+					else if (previousDate.before(nextAnnualLeaveGrant.getGrantDate())) {
+						previousDate = nextAnnualLeaveGrant.getGrantDate();
+					}
 				}
 			}
-			if (isExceed == true) {
 
-				// 期間中の年休付与かチェック
-				val grantDate = nextAnnualLeaveGrant.getGrantDate();
-				if (grantDate.after(period.end())) {
-					// 期間より後
-					return;
-				}
-				else if (period.contains(grantDate)) {
-					// 期間内
 
-					// 「次回年休付与リスト」に追加
-					nextAnnualLeaveGrantList.add(nextAnnualLeaveGrant);
+			// 勤続年数データの最終データの年数に+1しながら、付与日を求める （上限 99 年）
+			val lastLengthServiceTbl = lengthOfServices.get().get(lengthOfServices.get().size() - 1);
+			Integer calcYears = lastLengthServiceTbl.getGrantNum().v();
+			while (calcYears < 100) {
 
-					// 「単一日フラグ」をチェック
-					if (isSingleDay) return;
-				}
+				// 付与日を計算
+				val nextAnnualLeaveGrant = calcGrantDate(require, companyId, lastLengthServiceTbl, Optional.of(calcYears),
+						entryDate, criteriaDate, simultaneousGrantMDOpt, previousDate);
 
-				// 前回付与日 ← 次回年休付与．付与年月日
-				if (previousDate == null) {
-					previousDate = nextAnnualLeaveGrant.getGrantDate();
+				// 次回付与日が前回付与日を超えているかどうかチェック
+				boolean isExceed = true;
+				if (previousDate != null) {
+					if (nextAnnualLeaveGrant.getGrantDate().beforeOrEquals(previousDate)) {
+						isExceed = false;
+					}
 				}
-				else if (previousDate.before(nextAnnualLeaveGrant.getGrantDate())) {
-					previousDate = nextAnnualLeaveGrant.getGrantDate();
+				if (isExceed == true) {
+
+					// 期間中の年休付与かチェック
+					val grantDate = nextAnnualLeaveGrant.getGrantDate();
+					if (grantDate.after(period.end())) {
+						// 期間より後
+						return;
+					}
+					else if (period.contains(grantDate)) {
+						// 期間内
+
+						// 「次回年休付与リスト」に追加
+						nextAnnualLeaveGrantList.add(nextAnnualLeaveGrant);
+
+						// 「単一日フラグ」をチェック
+						if (isSingleDay) return;
+					}
+
+					// 前回付与日 ← 次回年休付与．付与年月日
+					if (previousDate == null) {
+						previousDate = nextAnnualLeaveGrant.getGrantDate();
+					}
+					else if (previousDate.before(nextAnnualLeaveGrant.getGrantDate())) {
+						previousDate = nextAnnualLeaveGrant.getGrantDate();
+					}
 				}
-			}
 		}
-
-		// 勤続年数データの最終データの年数に+1しながら、付与日を求める （上限 99 年）
-		val lastLengthServiceTbl = lengthServiceTbls.get(lengthServiceTbls.size() - 1);
-		Integer calcYears = lastLengthServiceTbl.getGrantNum().v();
-		while (calcYears < 100) {
-
-			// 付与日を計算
-			val nextAnnualLeaveGrant = calcGrantDate(require, companyId, lastLengthServiceTbl, Optional.of(calcYears),
-					entryDate, criteriaDate, simultaneousGrantMDOpt, previousDate);
-
-			// 次回付与日が前回付与日を超えているかどうかチェック
-			boolean isExceed = true;
-			if (previousDate != null) {
-				if (nextAnnualLeaveGrant.getGrantDate().beforeOrEquals(previousDate)) {
-					isExceed = false;
-				}
-			}
-			if (isExceed == true) {
-
-				// 期間中の年休付与かチェック
-				val grantDate = nextAnnualLeaveGrant.getGrantDate();
-				if (grantDate.after(period.end())) {
-					// 期間より後
-					return;
-				}
-				else if (period.contains(grantDate)) {
-					// 期間内
-
-					// 「次回年休付与リスト」に追加
-					nextAnnualLeaveGrantList.add(nextAnnualLeaveGrant);
-
-					// 「単一日フラグ」をチェック
-					if (isSingleDay) return;
-				}
-
-				// 前回付与日 ← 次回年休付与．付与年月日
-				if (previousDate == null) {
-					previousDate = nextAnnualLeaveGrant.getGrantDate();
-				}
-				else if (previousDate.before(nextAnnualLeaveGrant.getGrantDate())) {
-					previousDate = nextAnnualLeaveGrant.getGrantDate();
-				}
-			}
 
 			// 処理中の年数を+1して再度ループ
 			calcYears++;

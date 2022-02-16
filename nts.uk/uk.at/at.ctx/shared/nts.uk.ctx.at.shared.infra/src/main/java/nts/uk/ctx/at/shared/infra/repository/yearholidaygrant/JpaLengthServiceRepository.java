@@ -53,7 +53,7 @@ public class JpaLengthServiceRepository extends JpaRepository implements LengthS
 		String companyId = domain.getCompanyId();
 		String code = domain.getYearHolidayCode().toString();
 
-		return domain.getLengthOfService().stream().map(c -> toEntityOneRecord(companyId, code, c))
+		return domain.getLengthOfServices().stream().map(c -> toEntityOneRecord(companyId, code, c))
 				.collect(Collectors.toList());
 	}
 

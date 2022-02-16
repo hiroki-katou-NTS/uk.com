@@ -224,7 +224,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		// 年休付与テーブル設定、勤続年数テーブル　取得
 		Optional<GrantHdTblSet> grantHdTblSetOpt = require.grantHdTblSet(companyId, grantTableCode);
-		Optional<LengthServiceTbl> lengthServiceTblsOpt = Optional.ofNullable(require.lengthServiceTbl(companyId, grantTableCode));
+		Optional<LengthServiceTbl> lengthServiceTblsOpt = require.lengthServiceTbl(companyId, grantTableCode);
 
 
 

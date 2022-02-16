@@ -29,15 +29,12 @@ public class LengthOfServiceTblFinder {
 	 *
 	 * @return the list
 	 */
-	public Optional<List<LengthOfServiceTblDto>> findByCode(String yearHolidayCode) {
+	public List<LengthOfServiceTblDto> findByCode(String yearHolidayCode) {
 		// user contexts
 		String companyId = AppContexts.user().companyId();
-		if( this.lengthServiceRepository.findByCode(companyId, yearHolidayCode).isPresent()) {
-			List<LengthOfService> lengthOfService = this.lengthServiceRepository.findByCode(companyId, yearHolidayCode).orElse(null).getLengthOfService();
-			return Optional.of(lengthOfService.stream().map(c->LengthOfServiceTblDto.fromDomain(companyId, yearHolidayCode, c)).collect(Collectors.toList()));
-		}else {
-			return Optional.empty();
-		}
+		List<LengthOfService> lengthOfService = this.lengthServiceRepository.findByCode(companyId, yearHolidayCode).get().getLengthOfServices();
+		return lengthOfService.stream().map(c->LengthOfServiceTblDto.fromDomain(companyId, yearHolidayCode, c)).collect(Collectors.toList());
+
 
 
 

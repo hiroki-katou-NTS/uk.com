@@ -34,7 +34,7 @@ public class LengthServiceTbl extends AggregateRoot implements Serializable{
 	private YearHolidayCode yearHolidayCode;
 
 //	勤続年数
-	private List<LengthOfService> lengthOfService;
+	private List<LengthOfService> lengthOfServices;
 
 //	private GeneralDate grantDate;
 
@@ -43,11 +43,11 @@ public class LengthServiceTbl extends AggregateRoot implements Serializable{
 	 *
 	 * @param grantHolidayList
 	 */
-	public static void validateInput(List<LengthOfService> lengthOfService) {
+	public static void validateInput(List<LengthOfService> lengthOfServices) {
 		// 重複した勤続年数の登録不可
 		List<YearMonthHoliday> yearMonthHoliday = new ArrayList<>();
-		for (int i = 0; i < lengthOfService.size(); i++) {
-			LengthOfService currentCondition = lengthOfService.get(i);
+		for (int i = 0; i < lengthOfServices.size(); i++) {
+			LengthOfService currentCondition = lengthOfServices.get(i);
 
 			// 年数が入力されており、月数が未入力の場合「X年0ヶ月」として登録する
 			if (currentCondition.getYear() != null && currentCondition.getMonth() == null) {
@@ -89,7 +89,7 @@ public class LengthServiceTbl extends AggregateRoot implements Serializable{
 			}
 
 			// 勤続年数は上から昇順になっていること
-			int firstValueYear = lengthOfService.get(i - 1).getYear().v();
+			int firstValueYear = lengthOfServices.get(i - 1).getYear().v();
 			int secondValueYear = currentCondition.getYear().v();
 			if (firstValueYear > secondValueYear) {
 				throw new BusinessException("Msg_269");
@@ -98,23 +98,13 @@ public class LengthServiceTbl extends AggregateRoot implements Serializable{
 
 	}
 
-//	public static LengthServiceTbl createFromJavaType(String companyId, String yearHolidayCode, int grantNum,
-//			List<LengthOfService>lengthOfSrvices) {
-//		LengthOfService lengthOfService = new LengthOfService(new GrantNum(grantNum),
-//				EnumAdaptor.valueOf(allowStatus, GrantSimultaneity.class),
-//				EnumAdaptor.valueOf(standGrantDay, GrantReferenceDate.class),
-//				year == null ? null : new LimitedTimeHdDays(year), month == null ? null : new Month(month));
-//		return new LengthServiceTbl(companyId, new YearHolidayCode(yearHolidayCode), lengthOfService);
-//	}
-
-
 
 	public LengthServiceTbl(String companyId, YearHolidayCode yearHolidayCode, GrantNum grantNum,
-			List<LengthOfService> lengthOfService) {
+			List<LengthOfService> lengthOfServices) {
 
 		this.companyId = companyId;
 		this.yearHolidayCode = yearHolidayCode;
-		this.lengthOfService = lengthOfService;
+		this.lengthOfServices = lengthOfServices;
 	}
 
 	/**
@@ -122,8 +112,16 @@ public class LengthServiceTbl extends AggregateRoot implements Serializable{
 	 *
 	 */
 	public LengthOfService getLengthServiceByGrantNumber(GrantNum number) {
-		return this.getLengthOfService().stream().filter(c -> c.getGrantNum().equals(number)).findFirst()
-				.orElse(this.getLengthOfService().get(this.getLengthOfService().size() - 1));
+		return this.getLengthOfServices().stream().filter(c -> c.getGrantNum().equals(number)).findFirst()
+				.orElse(this.getLengthOfServices().get(this.getLengthOfServices().size() - 1));
+	}
+
+	public int getLengthOfServicesSize() {
+		return this.lengthOfServices.size();
+	}
+
+	public LengthOfService getALengthOfService(int num) {
+		return this.lengthOfServices.get(num);
 	}
 
 }
