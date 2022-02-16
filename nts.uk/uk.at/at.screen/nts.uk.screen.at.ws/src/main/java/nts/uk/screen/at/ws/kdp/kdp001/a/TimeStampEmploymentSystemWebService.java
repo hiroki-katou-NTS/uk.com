@@ -21,6 +21,7 @@ import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplayListStampForStampInput;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplaySuppressStampButtonInStampInput;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.GetSettingStampInput;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.SettingPotalStampInputDto;
+import nts.uk.screen.at.app.query.kdp.kdp001.a.SettingPotalStampInputParam;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.DailyAttdErrorInfoDto;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.GetOmissionContentsFinder;
 
@@ -81,9 +82,8 @@ public class TimeStampEmploymentSystemWebService extends WebService {
 	 */
 	@POST
 	@Path("get_setting_stamp_input")
-	public SettingPotalStampInputDto getSettingStampInput() {
-
-		return this.getSettingStampInput.getSettingPotalStampInput();
+	public SettingPotalStampInputDto getSettingStampInput(SettingPotalStampInputParam param) {
+		return this.getSettingStampInput.getSettingPotalStampInput(param);
 	}
 
 	/**
