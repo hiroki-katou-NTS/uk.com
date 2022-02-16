@@ -37,4 +37,6 @@ public class EmployeesOvertimeDisplayDto {
 	/** 表示する年 */
 	private int displayYear;
 	
+	private List<UpperLimitTimeDto> upperLimit;
+	
 }

@@ -2068,8 +2068,8 @@ module nts.uk.com.view.ccg034.d {
             .css({
               'font-size': `${partDataLinkModel.fontSize}px`,
               'font-weight': partDataLinkModel.isBold ? 'bold' : 'normal',
-              'color': '#0066CC',
-              'text-decoration': 'underline',
+              'color': '#8d7565',
+              'text-decoration': 'none',
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
@@ -2098,8 +2098,8 @@ module nts.uk.com.view.ccg034.d {
             .css({
               'font-size': `${partDataAttachmentModel.fontSize}px`,
               'font-weight': partDataAttachmentModel.isBold ? 'bold' : 'normal',
-              'color': '#0066CC',
-              'text-decoration': 'underline',
+              'color': '#8d7565',
+              'text-decoration': 'none',
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")

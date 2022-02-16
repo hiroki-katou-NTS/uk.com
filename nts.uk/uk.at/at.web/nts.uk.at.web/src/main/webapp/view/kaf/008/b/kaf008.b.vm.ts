@@ -91,6 +91,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                     let eachDetail: Array<any> = _.map(businessTripContent.tripInfos, function (detail: any) {
                         const workInfo = res.businessTripInfoOutputDto.infoBeforeChange;
                         const timeInfo = res.businessTripInfoOutputDto.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
+                        const infoBeforeChange = res.businessTripInfoOutputDto.infoBeforeChange;
                         let workName = "";
                         let timeName = "";
 
@@ -109,8 +110,15 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                             let wkTimeInfo = _.filter(ko.toJS(timeInfo), function (item: any) {
                                 return item.worktimeCode == detail.wkTimeCd;
                             });
+                            if (wkTimeInfo.length == 0) {
+                                wkTimeInfo = _.filter(infoBeforeChange, (item: any) => {
+                                    return detail.date === item.date && item.workTimeSetting && detail.wkTimeCd === item.workTimeSetting.workTimeCode;
+                                })
+                            }
                             if (wkTimeInfo.length != 0 && wkTimeInfo[0].workTimeDisplayName) {
                                 timeName = wkTimeInfo[0].workTimeDisplayName.workTimeName;
+                            } else if (wkTimeInfo.length != 0 && wkTimeInfo[0].workTimeSetting.workTimeName) {
+                                timeName = wkTimeInfo[0].workTimeSetting.workTimeName;
                             } else {
                                 timeName = !detail.wkTimeCd ? "" : "マスタ未登録";
                             }

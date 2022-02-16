@@ -1,6 +1,10 @@
 package nts.uk.ctx.sys.assist.infra.repository.datarestoration;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -15,7 +19,16 @@ public class JpaTableColumnNameNativeQueryRepositoryImpl extends JpaRepository
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getTableColumnName(String tableName) {
-		return this.getEntityManager().createNativeQuery(GET_COLUMN_QUERY).setParameter("tableName", tableName)
-				.getResultList();
+		Connection connection = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String dbType = connection.getMetaData().getDatabaseProductName();
+			if (dbType.equals("PostgreSQL")) {
+				tableName = tableName.toLowerCase();
+			}
+			return (List<String>) this.getEntityManager().createNativeQuery(GET_COLUMN_QUERY).setParameter("tableName", tableName)
+					.getResultList().stream().map(data -> String.valueOf(data).toUpperCase()).collect(Collectors.toList());
+		} catch (SQLException e) {
+			return Collections.emptyList();
+		}
 	}
 }

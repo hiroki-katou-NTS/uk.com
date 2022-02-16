@@ -163,7 +163,7 @@
             <span
               v-on:click="addBreakHour"
               class="fas fa-2x fa-plus-circle"
-              style="color: #6CC0E5"
+              style="color: #6A6A6A"
             ></span>
           </div>
         </div>

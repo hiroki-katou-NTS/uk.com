@@ -54,7 +54,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		virtual: false
 	})
 	export class WidgetGroupBindingHandler implements KnockoutBindingHandler {
-		init = (element: HTMLElement, valueAccessor: () => KnockoutObservableArray<WIDGET>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
+		init = (element: HTMLElement, valueAccessor: () => KnockoutObservableArray<WIDGET | LAYOUT_DATA>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
 			element.removeAttribute('data-bind');
 
 			if (element.tagName !== 'DIV') {
@@ -63,12 +63,29 @@ module nts.uk.com.view.ccg008.a.screenModel {
 				return;
 			}
 
+			const type: KnockoutObservable<boolean> = allBindingsAccessor.get('type');
 			const items = valueAccessor();
 
-			element.classList.add('widget-group');
-			element.innerHTML = '<div data-bind="widget: { name: wg.name, params: wg.params }"></div>';
+			const tpe = ko.unwrap<boolean>(type);
+			if (tpe) {
+				element.classList.add('widget-group');
+				element.innerHTML = '<div data-bind="widget: { name: wg.name, params: wg.params }"></div>';
+				ko.applyBindingsToNode(element, { foreach: { data: items, as: 'wg' } }, bindingContext);
+			}
 
-			ko.applyBindingsToNode(element, { foreach: { data: items, as: 'wg' } }, bindingContext);
+			ko.computed({
+				read: () => {
+					const type: KnockoutObservable<boolean> = allBindingsAccessor.get('type');
+					const tpe = ko.unwrap<boolean>(type);
+					if (!tpe) {
+						element.innerHTML = '';
+						ko.cleanNode(element);
+						const items = valueAccessor();
+						ko.applyBindingsToNode(element, { 'widget-frame': items }, bindingContext);
+					}
+				},
+				disposeWhenNodeIsRemoved: element
+			});
 
 			return { controlsDescendantBindings: true };
 		}
@@ -80,7 +97,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		virtual: false
 	})
 	export class WidgetFrameBindingHandler implements KnockoutBindingHandler {
-		init = (element: HTMLElement, valueAccessor: () => KnockoutObservable<LAYOUT_DATA>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
+		init = (element: HTMLElement, valueAccessor: () => KnockoutObservableArray<LAYOUT_DATA>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
 			element.removeAttribute('data-bind');
 
 			if (element.tagName !== 'DIV') {
@@ -89,13 +106,18 @@ module nts.uk.com.view.ccg008.a.screenModel {
 				return;
 			}
 
-			const url = valueAccessor();
+			let url = valueAccessor();
 
 			element.classList.add('widget-frame');
+			element.classList.remove('widget-group');
 
 			ko.computed({
 				read: () => {
-					const src = ko.unwrap<LAYOUT_DATA>(url);
+					let srcArr = ko.unwrap(url);
+					let src;
+					if (_.isArray(srcArr) && srcArr[0]) {
+						src = srcArr[0];
+					}
 
 					if (!src) {
 						element.innerHTML = '';
@@ -111,7 +133,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
                     .then((res: { htmlContent: string; }) => {
                       const frame = document.createElement('iframe');
   
-                      $('.widget-center').append(frame);
+                      $(element).append(frame);
 
                       const doc = frame.contentDocument || frame.contentWindow.document;
   
@@ -145,9 +167,12 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		topPageSetting: any;
 		dataToppage: KnockoutObservable<DataTopPage> = ko.observable(null);
 		layoutDisplayType: KnockoutObservable<LAYOUT_DISPLAY_TYPE> = ko.observable(null);
-		widgetLeft: KnockoutObservableArray<WIDGET> = ko.observableArray([]);
-		widgetCenter: KnockoutObservable<LAYOUT_DATA> = ko.observable(null);
-		widgetRight: KnockoutObservableArray<WIDGET> = ko.observableArray([]);
+		widgetLeft: KnockoutObservableArray<WIDGET | LAYOUT_DATA> = ko.observableArray([]);
+		isWidgetLeft: KnockoutObservable<boolean> = ko.observable(true);
+		widgetCenter: KnockoutObservableArray<LAYOUT_DATA | WIDGET> = ko.observableArray([]);
+		isWidgetCenter: KnockoutObservable<boolean> = ko.observable(true);
+		widgetRight: KnockoutObservableArray<WIDGET | LAYOUT_DATA> = ko.observableArray([]);
+		isWidgetRight: KnockoutObservable<boolean> = ko.observable(true);
 		classLayoutName!: KnockoutComputed<string>;
     startDateInClosure: KnockoutObservable<string> = ko.observable(''); 
     startDate : KnockoutObservable<string> = ko.observable('');
@@ -209,11 +234,15 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						vm.reload = setInterval(() => {
 							const widgetLeft = vm.widgetLeft();
 							const widgetRight = vm.widgetRight();
-							if (vm.widgetLeft().length > 0) {
+							if (vm.isWidgetLeft() && vm.widgetLeft().length > 0) {
 								vm.widgetLeft([]);
 								vm.widgetLeft(widgetLeft);
 							}
-							if (vm.widgetRight().length > 0) {
+							if (vm.isWidgetCenter() && vm.widgetLeft().length > 0) {
+								vm.widgetCenter([]);
+								vm.widgetCenter(widgetLeft);
+							}
+							if (vm.isWidgetRight() && vm.widgetRight().length > 0) {
 								vm.widgetRight([]);
 								vm.widgetRight(widgetRight);
 							}
@@ -346,9 +375,14 @@ module nts.uk.com.view.ccg008.a.screenModel {
 					return;
 				}
 
-				const { layout1, layout2, layout3, urlLayout1, layoutDisplayType } = displayTopPage;
+				const { urlLayout1, layoutDisplayType, topPage, listLayout } = displayTopPage;
 
-				const layout2Widget = (settings: WidgetSettingDto[]) => {
+				const layout1 = listLayout[0];
+				const layout2 = listLayout[1];
+				const layout3 = listLayout[2];
+				vm.layoutDisplayType(layoutDisplayType);
+
+				const layoutToWidget = (settings: WidgetSettingDto[]) => {
 					return _
 						.chain(settings)
 						.orderBy(['order', 'asc'])
@@ -361,59 +395,91 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						.value();
 				};
 
-				if (urlLayout1) {
-					vm.widgetCenter(urlLayout1);
-				} else {
-					if (layout1) {
-						const [first] = layout1;
-
+				const getFlowMenu = (layout: any) => {
+					if (urlLayout1) {
+						return urlLayout1;
+					}
+					if (layout) {
+						const [first] = layout;
 						if (first) {
-							vm.widgetCenter(first);
+							return first as FlowMenuOutputCCG008;
 						}
 					}
-				}
+					return null;
+				};
 
 				switch (layoutDisplayType) {
 					default:
 					case 0:
-						// clear widgets
+						vm.isWidgetLeft(false);
+						vm.isWidgetCenter(false);
+						vm.isWidgetRight(false);
+						// clear widgets left and right
 						vm.widgetLeft([]);
 						vm.widgetRight([]);
+
+						// set flow menu by first layout
+						vm.widgetCenter([getFlowMenu(layout1)])
 						break;
 					case 1:
+						vm.isWidgetLeft(false);
+						vm.isWidgetCenter(false);
+						vm.isWidgetRight(true);
 						// clear widget of left group
 						vm.widgetLeft([]);
-
-						const rightWidgets = layout2Widget(layout2);
-
+						const rightWidgets = layoutToWidget(layout2 as WidgetSettingDto[]);
 						vm.widgetRight(rightWidgets);
+
+						// set flow menu by first layout
+						vm.widgetCenter([getFlowMenu(layout1)])
 						break;
 					case 2:
-						const leftWidgets = layout2Widget(layout2);
-
+						vm.isWidgetLeft(!!true);
+						vm.isWidgetCenter(false);
+						vm.isWidgetRight(false);
+						const leftWidgets = layoutToWidget(layout1 as WidgetSettingDto[]);
 						vm.widgetLeft(leftWidgets);
-
 						// clear widget of right group
 						vm.widgetRight([]);
+
+						// set flow menu by second layout
+						vm.widgetCenter([getFlowMenu(layout2)])
 						break;
 					case 3:
-						const firstWidgets = layout2Widget(layout2);
-						const thirstWidgets = layout2Widget(layout3);
+						const { frameLayout1, frameLayout2, frameLayout3 } = topPage;
+						vm.isWidgetLeft(!!frameLayout1);
+						vm.isWidgetCenter(!!frameLayout2);
+						vm.isWidgetRight(!!frameLayout3);
 
-						vm.widgetLeft(firstWidgets);
-						vm.widgetRight(thirstWidgets);
+						let flowLayout: LAYOUT_DATA;
+
+						if (!!frameLayout1) {
+							const firstWidgets = layoutToWidget(layout1 as WidgetSettingDto[]);
+							vm.widgetLeft(firstWidgets);
+							$('.widget-left').wrapAll('<div style="display: flex;"></div>');
+						} else {
+							flowLayout = getFlowMenu(layout1 as FlowMenuOutputCCG008[]);
+							vm.widgetLeft([flowLayout]);
+						}
+
+						if (!!frameLayout2) {
+							const secondWidgets = layoutToWidget(layout2 as WidgetSettingDto[]);
+							vm.widgetCenter(secondWidgets);
+							$('.widget-center').wrapAll('<div style="display: flex;"></div>');
+						} else {
+							flowLayout = getFlowMenu(layout2 as FlowMenuOutputCCG008[]);
+							vm.widgetCenter([flowLayout]);
+						}
+
+						if (!!frameLayout3) {
+							const thirdWidgets = layoutToWidget(layout3 as WidgetSettingDto[]);
+							vm.widgetRight(thirdWidgets);
+							$('.widget-right').wrapAll('<div style="display: flex;"></div>');
+						} else {
+							flowLayout = getFlowMenu(layout3 as FlowMenuOutputCCG008[]);
+							vm.widgetRight([flowLayout]);
+						}
 						break;
-				}
-
-				let showSwitchLayout2: any[] = [];
-				let showSwitchLayout3: any[] = [];
-				if (layout2) {
-					showSwitchLayout2 = _.filter(layout2, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
-				}
-
-				if (layout3) {
-					showSwitchLayout3 = _.filter(layout3, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
-					const showClosure = _.filter(layout3, ({ widgetType }) => widgetType === 1);
 				}
 
 				const setScrollTop = setInterval(() => {
@@ -462,7 +528,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 			}
 
 			if (displayTopPage) {
-				const { layout2, layoutDisplayType } = displayTopPage;
+				const { layoutDisplayType } = displayTopPage;
 
 				vm.layoutDisplayType(layoutDisplayType);
 			}
@@ -492,14 +558,23 @@ module nts.uk.com.view.ccg008.a.screenModel {
 	}
 
 	export class DisplayInTopPage {
-		layout1: Array<FlowMenuOutputCCG008>;
-		layout2: Array<WidgetSettingDto>;
-		layout3: Array<WidgetSettingDto>;
 		urlLayout1: string;
 		layoutDisplayType: LAYOUT_DISPLAY_TYPE;
+		listLayout: (FlowMenuOutputCCG008[] | WidgetSettingDto[])[];
+		topPage: TopPage;
 		constructor(init?: Partial<DisplayInTopPage>) {
 			$.extend(this, init);
 		}
+	}
+
+	interface TopPage {
+		cid: string;
+		topPageCode: string;
+		topPageName: string;
+		layoutDisp: number;
+		frameLayout1: number;
+		frameLayout2: number;
+		frameLayout3: number;
 	}
 
 	export class WidgetSettingDto {

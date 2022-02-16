@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.calendar.DateInMonth;
@@ -26,6 +28,7 @@ import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.ScreenQueryP
  * ScreenQuery : 予定・実績を勤務情報で取得する
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class GetScheduleActualOfWorkInfo {
 	
 	

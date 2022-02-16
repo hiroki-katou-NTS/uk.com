@@ -1,3 +1,93 @@
+
+#approval-count {
+	margin-bottom: 20px;
+}
+
+#approval-count > div > .item {
+	display: inline-block;
+}
+
+#approval-count > div > .item > div {
+	display: inline-block;
+}
+
+#approval-count > div > .item:not(:first-child) {
+	margin-left: 14px;
+}
+
+#filter-controls {
+	background-color: #F5F5F5;
+	padding: 20px;
+	display: inline-block;
+}
+
+#filter-controls .status-filters {
+}
+
+#filter-controls .status-filters .checkbox-wrappers {
+	display: inline-block;
+}
+
+#filter-controls .status-filters .filter-label {
+	margin-right: 20px;
+}
+
+#filter-controls .main-filters {
+	
+}
+
+#filter-controls .main-filters div {
+	vertical-align: middle;
+}
+
+#filter-controls .main-filters .item {
+	display: inline-block;
+}
+
+#filter-controls .main-filters .item:not(:first-child) {
+	margin-left: 25px;
+}
+
+#filter-controls .main-filters .item > div {
+	display: inline-block;
+}
+
+#filter-controls #search-option,
+#filter-controls #execute-search {
+	width: 120px;
+}
+
+.popup-panel-cmm045 {
+	display: inline-block;
+	padding: 10px 20px !important;
+}
+
+.popup-panel-cmm045 .row:not(:first-child) {
+	margin-top: 20px;
+}
+
+.popup-panel-cmm045 .row > div {
+	display: inline-block;
+}
+
+.popup-panel-cmm045 .row .row-header {
+	width: 80px;
+}
+
+.popup-panel-cmm045 .row .row-content {
+	width: 400px;
+}
+
+.popup-panel-cmm045 .checkbox-wrappers {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+.popup-panel-cmm045 .checkbox-wrappers .checkbox-wrapper span {
+	width: 140px;
+}
+
 .unapprovalCell {
 	background-color: #ffffff;
 }
@@ -31,17 +121,21 @@
 }
 
 #app-grid-container {
-	margin-left: 20px;
 	user-select: none;
 	-ms-user-select: none;
 }
 
 #app-grid-container.with-ccg001 {
-	margin-left: 90px;
 }
 
 #app-resize.with-ccg001 {
-	margin-left: 90px;
+	margin-top: -20px;
+}
+
+#app-resize #save-column-width {
+	float: right;
+	margin-bottom: 10px;
+	margin-right: 49px;
 }
 
 #app-grid-container .nts-fixed-header-container,
@@ -58,12 +152,16 @@
 }
 
 #app-grid-container th {
-	font-weight: bold;
 	text-align: center;
+	height: 30px;
 }
 
+#app-grid td.details,
 #app-grid td.appStatus,
-#app-grid td.displayAppStatus {
+#app-grid td.displayAppStatus,
+#app-grid td.prePostAtr,
+#app-grid td.appDate,
+#app-grid td.inputDate {
 	text-align: center;
 }
 
@@ -131,7 +229,6 @@
 	margin-top: -24px !important;
 }
 .app-left {
-	margin-left: 71px !important;
 }
 #grid1_virtualContainer {
 	border:1px solid #dddddd
@@ -140,7 +237,7 @@
 	border:1px solid #dddddd
 }
 #content-area{
-	overflow: auto;
+	padding: 20px 20px 20px 60px;
 }
 html {
     overflow: auto;

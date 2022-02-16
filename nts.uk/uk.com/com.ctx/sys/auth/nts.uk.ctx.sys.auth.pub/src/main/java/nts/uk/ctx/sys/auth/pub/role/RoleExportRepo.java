@@ -42,7 +42,7 @@ public interface RoleExportRepo {
 	 * @param baseDate the base date
 	 * @return the workplace id export
 	 */
-	WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType, GeneralDate baseDate);
+	WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType, GeneralDate baseDate, Optional<Integer> employeeReferenceRange);
 	
  	/**
 	 * Find by id.

@@ -15,8 +15,11 @@ import javax.persistence.Query;
 import lombok.val;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegalTimeMEmp;
@@ -40,10 +43,10 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 	private static final String GET_EXPORT_MONTH = "SELECT m.MONTH_STR FROM BCMMT_COMPANY m WHERE m.CID = ?cid";
 	
 	private static final String LEGAL_TIME_EMP = "SELECT s FROM KshmtLegalTimeMEmp s WHERE "
-			+ " s.pk.cid = :cid AND s.pk.ym >= :minYm AND s.pk.ym < :maxYm"
+			+ " s.pk.cid = :cid AND s.pk.ym IN :yms"
 			+ " ORDER BY s.pk.ym";	
 	
-	private static final String GET_EMPLOYMENT = "SELECT "
+	private static final String GET_EMPLOYMENT_SQLSERVER = "SELECT "
 											+" ROW_NUMBER() OVER(PARTITION BY BSYMT_EMPLOYMENT.CODE ORDER BY IIF(BSYMT_EMPLOYMENT.NAME IS NOT NULL,0,1), BSYMT_EMPLOYMENT.CODE ASC) AS ROW_NUMBER_CODE, "
 											+" BSYMT_EMPLOYMENT.CODE AS CODE,  "
 											+" IIF(BSYMT_EMPLOYMENT.NAME IS NOT NULL, BSYMT_EMPLOYMENT.NAME, 'マスタ未登録') AS NAME, "
@@ -89,29 +92,91 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 											+"            AND BSYMT_EMPLOYMENT.CODE = KRCMT_CALC_M_SET_REG_EMP.EMP_CD"
 											+" WHERE BSYMT_EMPLOYMENT.CID = ? "
 											+" ORDER BY IIF(BSYMT_EMPLOYMENT.NAME IS NOT NULL,0,1), BSYMT_EMPLOYMENT.CODE ";
+	
+	private static final String GET_EMPLOYMENT_POSTGRE = "SELECT "
+			+" ROW_NUMBER() OVER(PARTITION BY BSYMT_EMPLOYMENT.CODE ORDER BY (CASE WHEN BSYMT_EMPLOYMENT.NAME IS NOT NULL THEN 0 ELSE 1 END), BSYMT_EMPLOYMENT.CODE ASC) AS ROW_NUMBER_CODE, "
+			+" BSYMT_EMPLOYMENT.CODE AS CODE,  "
+			+" (CASE WHEN BSYMT_EMPLOYMENT.NAME IS NOT NULL THEN BSYMT_EMPLOYMENT.NAME ELSE 'マスタ未登録' END) AS NAME, "
+			+" KSHMT_LEGALTIME_D_REG_EMP.DAILY_TIME, "
+			+" KSHMT_LEGALTIME_D_REG_EMP.WEEKLY_TIME, "
+			+" KRCMT_CALC_M_SET_REG_EMP.INCLUDE_EXTRA_AGGR AS INCLUDE_EXTRA_AGGR, "
+			+" (CASE WHEN KRCMT_CALC_M_SET_REG_EMP.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_REG_EMP.INCLUDE_LEGAL_AGGR ELSE NUll END) AS INCLUDE_LEGAL_AGGR, "
+			+" (CASE WHEN KRCMT_CALC_M_SET_REG_EMP.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_REG_EMP.INCLUDE_HOLIDAY_AGGR ELSE NUll END) AS INCLUDE_HOLIDAY_AGGR, "
+			+" KRCMT_CALC_M_SET_REG_EMP.INCLUDE_EXTRA_OT, "
+			+" (CASE WHEN KRCMT_CALC_M_SET_REG_EMP.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_REG_EMP.INCLUDE_LEGAL_OT ELSE NUll END) AS INCLUDE_LEGAL_OT, "
+			+" (CASE WHEN KRCMT_CALC_M_SET_REG_EMP.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_REG_EMP.INCLUDE_HOLIDAY_OT ELSE NUll END) AS INCLUDE_HOLIDAY_OT, "
+			+ "KRCMT_CALC_M_SET_FLE_COM.WITHIN_TIME_USE, "
+			+" KRCMT_CALC_M_SET_FLE_EMP.AGGR_METHOD, "
+			+" KRCMT_CALC_M_SET_FLE_EMP.SETTLE_PERIOD_MON, "
+			+" KRCMT_CALC_M_SET_FLE_EMP.SETTLE_PERIOD, "
+			+" KRCMT_CALC_M_SET_FLE_EMP.START_MONTH AS FLEX_START_MONTH, "
+			+" KRCMT_CALC_M_SET_FLE_EMP.INCLUDE_HDWK, "
+			+" KRCMT_CALC_M_SET_FLE_EMP.LEGAL_AGGR_SET, "
+			+" (CASE WHEN KRCMT_CALC_M_SET_FLE_EMP.AGGR_METHOD = '0' THEN KRCMT_CALC_M_SET_FLE_EMP.INCLUDE_OT ELSE NULL END) AS INCLUDE_OT, "
+			+" KRCMT_CALC_M_SET_FLE_EMP.INSUFFIC_SET, "
+			+" KSHMT_LEGALTIME_D_DEF_EMP.DAILY_TIME AS LAR_DAILY_TIME, "
+			+" KSHMT_LEGALTIME_D_DEF_EMP.WEEKLY_TIME AS LAR_WEEKLY_TIME, "
+			+" KRCMT_CALC_M_SET_DEF_EMP.STR_MONTH, "
+			+" KRCMT_CALC_M_SET_DEF_EMP.PERIOD, "
+			+" KRCMT_CALC_M_SET_DEF_EMP.REPEAT_ATR, "
+			+" KRCMT_CALC_M_SET_DEF_EMP.INCLUDE_EXTRA_AGGR AS DEFOR_INCLUDE_EXTRA_AGGR, "
+			+" (CASE WHEN KRCMT_CALC_M_SET_DEF_EMP.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_DEF_EMP.INCLUDE_LEGAL_AGGR ELSE NUll END) AS DEFOR_INCLUDE_LEGAL_AGGR, "
+			+" (CASE WHEN KRCMT_CALC_M_SET_DEF_EMP.INCLUDE_EXTRA_AGGR = '1' THEN KRCMT_CALC_M_SET_DEF_EMP.INCLUDE_HOLIDAY_AGGR ELSE NUll END) AS DEFOR_INCLUDE_HOLIDAY_AGGR, "
+			+" KRCMT_CALC_M_SET_DEF_EMP.INCLUDE_EXTRA_OT AS DEFOR_INCLUDE_EXTRA_OT, "
+			+" (CASE WHEN KRCMT_CALC_M_SET_DEF_EMP.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_DEF_EMP.INCLUDE_LEGAL_OT ELSE NUll END) AS DEFOR_INCLUDE_LEGAL_OT, "
+			+" (CASE WHEN KRCMT_CALC_M_SET_DEF_EMP.INCLUDE_EXTRA_OT = '1' THEN KRCMT_CALC_M_SET_DEF_EMP.INCLUDE_HOLIDAY_OT ELSE NUll END) AS DEFOR_INCLUDE_HOLIDAY_OT "
+			+" 	FROM BSYMT_EMPLOYMENT "
+			+" LEFT JOIN KSHMT_LEGALTIME_D_REG_EMP ON BSYMT_EMPLOYMENT.CID = KSHMT_LEGALTIME_D_REG_EMP.CID " 
+			+"            AND BSYMT_EMPLOYMENT.CODE = KSHMT_LEGALTIME_D_REG_EMP.EMP_CD  		" 
+			+" LEFT JOIN KSHMT_LEGALTIME_D_DEF_EMP ON BSYMT_EMPLOYMENT.CID = KSHMT_LEGALTIME_D_DEF_EMP.CID  " 
+			+"            AND BSYMT_EMPLOYMENT.CODE = KSHMT_LEGALTIME_D_DEF_EMP.EMP_CD  		" 
+			+" LEFT JOIN KRCMT_CALC_M_SET_FLE_COM ON BSYMT_EMPLOYMENT.CID = KRCMT_CALC_M_SET_FLE_COM.CID  "
+			+" LEFT JOIN KRCMT_CALC_M_SET_DEF_EMP ON BSYMT_EMPLOYMENT.CID = KRCMT_CALC_M_SET_DEF_EMP.CID  "
+			+"            AND BSYMT_EMPLOYMENT.CODE = KRCMT_CALC_M_SET_DEF_EMP.EMP_CD  		"
+			+" LEFT JOIN KRCMT_CALC_M_SET_FLE_EMP ON BSYMT_EMPLOYMENT.CID = KRCMT_CALC_M_SET_FLE_EMP.CID  "
+			+"            AND BSYMT_EMPLOYMENT.CODE = KRCMT_CALC_M_SET_FLE_EMP.EMP_CD  		"
+			+" LEFT JOIN KRCMT_CALC_M_SET_REG_EMP ON BSYMT_EMPLOYMENT.CID = KRCMT_CALC_M_SET_REG_EMP.CID  "
+			+"            AND BSYMT_EMPLOYMENT.CODE = KRCMT_CALC_M_SET_REG_EMP.EMP_CD"
+			+" WHERE BSYMT_EMPLOYMENT.CID = ? "
+			+" ORDER BY (CASE WHEN BSYMT_EMPLOYMENT.NAME IS NOT NULL THEN 0 ELSE 1 END), BSYMT_EMPLOYMENT.CODE ";
 	@Override
 	public List<MasterData> getEmploymentExportData(int startDate, int endDate) {
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		int month = this.month();
 
+		YearMonthPeriod ymPeriod = new YearMonthPeriod(YearMonth.of(startDate, month), YearMonth.of(endDate, month).nextYear().previousMonth());
 		String startOfWeek = getStartOfWeek(cid);
 
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_EMP, KshmtLegalTimeMEmp.class)
 				.setParameter("cid", cid)
-				.setParameter("minYm", startDate * 100 + month)
-				.setParameter("maxYm", endDate * 100 + month)
+				.setParameter("yms", ymPeriod.yearMonthsBetween().stream().map(x -> x.v().toString()).collect(Collectors.toList()))
 				.getList();
 			
-		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYMENT.toString())) {
-			stmt.setString(1, cid);
-			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
-			
-			result.forEach(i -> {
-				datas.addAll(buildEmploymentRow(i, legalTimes, startDate, endDate, month, startOfWeek));
-			});
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
+			try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYMENT_SQLSERVER.toString())) {
+				stmt.setString(1, cid);
+				NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+				
+				result.forEach(i -> {
+					datas.addAll(buildEmploymentRow(i, legalTimes, startDate, endDate, month, startOfWeek));
+				});
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else if (this.database().is(DatabaseProduct.POSTGRESQL)) {
+			try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYMENT_POSTGRE.toString())) {
+				stmt.setString(1, cid);
+				NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+				
+				result.forEach(i -> {
+					datas.addAll(buildEmploymentRow(i, legalTimes, startDate, endDate, month, startOfWeek));
+				});
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			throw new RuntimeException("not supported");
 		}
 		return datas;
 	}
@@ -140,7 +205,7 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 	private List<MasterData> buildEmploymentRow(NtsResultRecord r, List<KshmtLegalTimeMEmp> legals, int startDate, int endDate, int month, String startOfWeek) {
 		List<MasterData> datas = new ArrayList<>();
 
-		Integer refPreTime = r.getInt("WITHIN_TIME_USE");
+		Integer refPreTime = convertToInteger(r, "WITHIN_TIME_USE");
 		String kdp004_401 = I18NText.getText("KMK004_401");
 		
 		for (int y = startDate; y <= endDate; y++) {
@@ -159,16 +224,16 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 					.filter(l -> l.pk.type == LaborWorkTypeAttr.FLEX.value)
 					.findFirst();
 			
-			Integer includeExtraAggr = r.getInt("INCLUDE_EXTRA_AGGR");
-			Integer includeExtraOt = r.getInt("INCLUDE_EXTRA_OT");
+			Integer includeExtraAggr = convertToInteger(r, "INCLUDE_EXTRA_AGGR");
+			Integer includeExtraOt = convertToInteger(r, "INCLUDE_EXTRA_OT");
 			Integer selectPeriodMon = r.getInt("SETTLE_PERIOD_MON");
-			Integer aggrMethod = r.getInt("AGGR_METHOD");
+			Integer aggrMethod = convertToInteger(r, "AGGR_METHOD");
 			Integer strMonth = r.getInt("STR_MONTH");
 			Integer flexStartMonth = r.getInt("FLEX_START_MONTH");
 			Integer period = r.getInt("PERIOD");
-			Integer repeatAtr = r.getInt("REPEAT_ATR");
-			Integer deforIncludeExtraAggr = r.getInt("DEFOR_INCLUDE_EXTRA_AGGR");
-			Integer deforIncludeExtraOt = r.getInt("DEFOR_INCLUDE_EXTRA_OT");
+			Integer repeatAtr = convertToInteger(r, "REPEAT_ATR");
+			Integer deforIncludeExtraAggr = convertToInteger(r, "DEFOR_INCLUDE_EXTRA_AGGR");
+			Integer deforIncludeExtraOt = convertToInteger(r, "DEFOR_INCLUDE_EXTRA_OT");
 			
 			datas.add(buildEmploymentARow(
 					//R12_1
@@ -188,15 +253,15 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 					//R12_8
 					KMK004PrintCommon.getExtraType(includeExtraAggr),
 					//R12_9
-					includeExtraAggr == null ? null : includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_LEGAL_AGGR")) : null,
+					includeExtraAggr == null ? null : includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "INCLUDE_LEGAL_AGGR")) : null,
 					//R12_10
-					includeExtraAggr == null ? null: includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_HOLIDAY_AGGR")) : null, 
+					includeExtraAggr == null ? null: includeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "INCLUDE_HOLIDAY_AGGR")) : null, 
 					//R12_11
 					KMK004PrintCommon.getExtraType(includeExtraOt),
 					//R12_12
-					includeExtraOt == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_LEGAL_OT")) : null, 
+					includeExtraOt == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "INCLUDE_LEGAL_OT")) : null, 
 					//R12_13		
-					includeExtraOt == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_HOLIDAY_OT")) : null,
+					includeExtraOt == null ? null : includeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "INCLUDE_HOLIDAY_OT")) : null,
 					//R12_14
 					KMK004PrintCommon.getFlexType(refPreTime),
 					//R12_15
@@ -208,21 +273,21 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 					//R10_18
 					KMK004PrintCommon.convertTime(flex.map(m -> m.weekAvgTime).orElse(null)),
 					//R12_19
-					KMK004PrintCommon.getSettle(r.getInt("SETTLE_PERIOD")) ,
+					KMK004PrintCommon.getSettle(convertToInteger(r, "SETTLE_PERIOD")) ,
 					//R12_20
 					flexStartMonth == null ? null : flexStartMonth.toString() + "月",
 					//R12_21
 					selectPeriodMon == null ? null : selectPeriodMon == 2 ? "2ヶ月" : "3ヶ月",
 					//R12_22
-					KMK004PrintCommon.getShortageTime(r.getInt("INSUFFIC_SET")), 
+					KMK004PrintCommon.getShortageTime(convertToInteger(r, "INSUFFIC_SET")), 
 					//R12_23
 					KMK004PrintCommon.getAggType(aggrMethod),
 					//R12_24
-					aggrMethod == null ? null : aggrMethod == 0 ? KMK004PrintCommon.getInclude(r.getInt("INCLUDE_OT")) : null,
+					aggrMethod == null ? null : aggrMethod == 0 ? KMK004PrintCommon.getInclude(convertToInteger(r, "INCLUDE_OT")) : null,
 					//R12_25
-					KMK004PrintCommon.getInclude(r.getInt("INCLUDE_HDWK")),
+					KMK004PrintCommon.getInclude(convertToInteger(r, "INCLUDE_HDWK")),
 					//R12_26
-					KMK004PrintCommon.getLegal(r.getInt("LEGAL_AGGR_SET")),
+					KMK004PrintCommon.getLegal(convertToInteger(r, "LEGAL_AGGR_SET")),
 					//R12_27
 					((month - 1) % 12 + 1) + kdp004_401,
 					//R12_28
@@ -240,209 +305,196 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 					//R12_34
 					KMK004PrintCommon.getWeeklySurcharge(deforIncludeExtraAggr),
 					//R12_35
-					deforIncludeExtraAggr == null ? null : deforIncludeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_AGGR")) : null,
+					deforIncludeExtraAggr == null ? null : deforIncludeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "DEFOR_INCLUDE_LEGAL_AGGR")) : null,
 					//R12_36
-					deforIncludeExtraAggr == null ? null : deforIncludeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
+					deforIncludeExtraAggr == null ? null : deforIncludeExtraAggr != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
 					//R12_37
 					KMK004PrintCommon.getWeeklySurcharge(deforIncludeExtraOt),
 					//R12_38
-					deforIncludeExtraOt == null ? null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_OT")) : null,
+					deforIncludeExtraOt == null ? null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "DEFOR_INCLUDE_LEGAL_OT")) : null,
 					//E12_39
-					deforIncludeExtraOt == null?null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_OT")): null
+					deforIncludeExtraOt == null?null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "DEFOR_INCLUDE_HOLIDAY_OT")) : null
 					));
 
-//			int nextYm = y *100 + month + 1;
-//			
-//			
-//			val normalN = legals.stream()
-//					.filter(l -> l.pk.ym == nextYm && l.pk.empCD.equals(employmentCode) && l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value)
-//					.findFirst();
-//			val deforN = legals.stream()
-//					.filter(l -> l.pk.ym == nextYm && l.pk.empCD.equals(employmentCode) && l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value)
-//					.findFirst();
-//			val flexN = legals.stream()
-//					.filter(l -> l.pk.ym == nextYm && l.pk.empCD.equals(employmentCode) && l.pk.type == LaborWorkTypeAttr.FLEX.value)
-//					.findFirst();
-//			// buil arow = month + 1
-//			datas.add(buildEmploymentARow(
-//					//R12_1
-//					 null,
-//					//R12_2
-//					null,
-//					//R12_3
-//					null,
-//					//R12_4
-//					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"), 
-//					//R12_5
-//					KMK004PrintCommon.convertTime(normalN.isPresent() ? normalN.get().legalTime : null),
-//					//R12_6
-//					null,
-//					//R12_7
-//					null,
-//					//R12_8
-//					null,
-//					//R12_9
-//					null, 
-//					//R12_10
-//					null, 
-//					//R12_11
-//					null,
-//					//R12_12
-//					null, 
-//					//R12_13		
-//					null,
-//					//R12_14
-//					null,
-//					//R12_15
-//					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
-//					//R12_16 
-//					KMK004PrintCommon.convertTime(refPreTime == 0? null :flexN.isPresent() ? flexN.get().withinTime : null),
-//					//R12_17
-//					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().legalTime : null),
-//					//R10_18
-//					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().weekAvgTime : null),
-//					//R12_19
-//					null,
-//					//R12_20
-//					null,
-//					//R12_21
-//					null,
-//					//R12_22
-//					null, 
-//					//R12_23
-//					null,
-//					//R12_24
-//					null,
-//					//R12_25
-//					null,
-//					//R12_26
-//					null,
-//					//R12_27
-//					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
-//					//R12_28
-//					KMK004PrintCommon.convertTime(deforN.isPresent() ? deforN.get().legalTime : null),
-//					//R12_29
-//					null, 
-//					//R12_30
-//					null,
-//					//R12_31
-//					null,
-//					//R12_32
-//					null,
-//					//R12_33
-//					null,
-//					//R12_34
-//					null,
-//					//R12_35
-//					null,
-//					//R12_36
-//					null,
-//					//R12_37
-//					null,
-//					//R12_38
-//					null,
-//					//R12_39
-//					null
-//					));
+			int nextYm = y * 100 + month + 1;
+			val normalN = legals.stream().filter(l -> l.pk.ym == nextYm && l.pk.empCD.equals(employmentCode)
+					&& l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value).findFirst();
+			val deforN = legals.stream().filter(l -> l.pk.ym == nextYm && l.pk.empCD.equals(employmentCode)
+					&& l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value).findFirst();
+			val flexN = legals.stream().filter(l -> l.pk.ym == nextYm && l.pk.empCD.equals(employmentCode)
+					&& l.pk.type == LaborWorkTypeAttr.FLEX.value).findFirst();
+			// buil arow = month + 1
+			datas.add(buildEmploymentARow(
+					// R12_1
+					null,
+					// R12_2
+					null,
+					// R12_3
+					null,
+					// R12_4
+					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
+					// R12_5
+					KMK004PrintCommon.convertTime(normalN.isPresent() ? normalN.get().legalTime : null),
+					// R12_6
+					null,
+					// R12_7
+					null,
+					// R12_8
+					null,
+					// R12_9
+					null,
+					// R12_10
+					null,
+					// R12_11
+					null,
+					// R12_12
+					null,
+					// R12_13
+					null,
+					// R12_14
+					null,
+					// R12_15
+					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
+					// R12_16
+					KMK004PrintCommon
+							.convertTime(refPreTime == 0 ? null : flexN.isPresent() ? flexN.get().withinTime : null),
+					// R12_17
+					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().legalTime : null),
+					// R10_18
+					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().weekAvgTime : null),
+					// R12_19
+					null,
+					// R12_20
+					null,
+					// R12_21
+					null,
+					// R12_22
+					null,
+					// R12_23
+					null,
+					// R12_24
+					null,
+					// R12_25
+					null,
+					// R12_26
+					null,
+					// R12_27
+					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
+					// R12_28
+					KMK004PrintCommon.convertTime(deforN.isPresent() ? deforN.get().legalTime : null),
+					// R12_29
+					null,
+					// R12_30
+					null,
+					// R12_31
+					null,
+					// R12_32
+					null,
+					// R12_33
+					null,
+					// R12_34
+					null,
+					// R12_35
+					null,
+					// R12_36
+					null,
+					// R12_37
+					null,
+					// R12_38
+					null,
+					// R12_39
+					null));
 			
 			// buil month remain
-			for (int i = 1; i < 12; i++) {
-				int nm = month + i;
-				int m = nm > 12 ? nm % 12 : nm;
-				int currentYm = (y + nm> 12? nm / 12 : 0) * 100 + m;
-				
-				val listC = legals.stream()
-						.filter(l -> l.pk.ym == currentYm && l.pk.empCD.equals(employmentCode)).collect(Collectors.toList());
-				
-				val normalC = listC.stream()
-						.filter(l -> l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value)
-						.findFirst();
-				val deforC = listC.stream()
-						.filter(l -> l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value)
-						.findFirst();
-				val flexC = listC.stream()
-						.filter(l -> l.pk.type == LaborWorkTypeAttr.FLEX.value)
-						.findFirst();
+			for (int i = 1; i < 11; i++) {
+				int m = (month + i) % 12 + 1;
+				int currentYm = y * 100 + ((month + i) / 12) * 100 + m;
+				val normalC = legals.stream().filter(l -> l.pk.ym == currentYm && l.pk.empCD.equals(employmentCode)
+						&& l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value).findFirst();
+				val deforC = legals.stream().filter(l -> l.pk.ym == currentYm && l.pk.empCD.equals(employmentCode)
+						&& l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value).findFirst();
+				val flexC = legals.stream().filter(l -> l.pk.ym == currentYm && l.pk.empCD.equals(employmentCode)
+						&& l.pk.type == LaborWorkTypeAttr.FLEX.value).findFirst();
 				datas.add(buildEmploymentARow(
-						//R12_1
-						 null,
-						//R12_2
+						// R12_1
 						null,
-						//R12_3
+						// R12_2
 						null,
-						//R12_4
-						(m) + kdp004_401, 
-						//R12_5
-						KMK004PrintCommon.convertTime(normalC.map(f -> f.legalTime).orElse(null)),
-						//R12_6
+						// R12_3
 						null,
-						//R12_7
+						// R12_4
+						(m) + I18NText.getText("KMK004_401"),
+						// R12_5
+						KMK004PrintCommon.convertTime(normalC.isPresent() ? normalC.get().legalTime : null),
+						// R12_6
 						null,
-						//R12_8
+						// R12_7
 						null,
-						//R12_9
-						null, 
-						//R12_10
-						null, 
-						//R12_11
+						// R12_8
 						null,
-						//R12_12
-						null, 
-						//R12_13		
+						// R12_9
 						null,
-						//R12_14
+						// R12_10
 						null,
-						//R12_15
-						(m) + kdp004_401,
-						//R12_16 
-						KMK004PrintCommon.convertTime(refPreTime == 0? null :flexC.map(f -> f.withinTime).orElse(null)),
-						//R12_17
-						KMK004PrintCommon.convertTime(flexC.map(f -> f.legalTime).orElse(null)),
-						//R10_18
-						KMK004PrintCommon.convertTime(flexC.map(f -> f.weekAvgTime).orElse(null)),
-						//R12_19
+						// R12_11
 						null,
-						//R12_20
+						// R12_12
 						null,
-						//R12_21
+						// R12_13
 						null,
-						//R12_22
-						null, 
-						//R12_23
+						// R12_14
 						null,
-						//R12_24
+						// R12_15
+						(m) + I18NText.getText("KMK004_401"),
+						// R12_16
+						KMK004PrintCommon.convertTime(
+								refPreTime == 0 ? null : flexC.isPresent() ? flexC.get().withinTime : null),
+						// R12_17
+						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().legalTime : null),
+						// R10_18
+						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().weekAvgTime : null),
+						// R12_19
 						null,
-						//R12_25
+						// R12_20
 						null,
-						//R12_26
+						// R12_21
 						null,
-						//R12_27
-						(m) + kdp004_401,
-						//R12_28
-						KMK004PrintCommon.convertTime(deforC.map(f -> f.legalTime).orElse(null)),
-						//R12_29
-						null, 
-						//R12_30
+						// R12_22
 						null,
-						//R12_31
+						// R12_23
 						null,
-						//R12_32
+						// R12_24
 						null,
-						//R12_33
+						// R12_25
 						null,
-						//R12_34
+						// R12_26
 						null,
-						//R12_35
+						// R12_27
+						(m) + I18NText.getText("KMK004_401"),
+						// R12_28
+						KMK004PrintCommon.convertTime(deforC.isPresent() ? deforC.get().legalTime : null),
+						// R12_29
 						null,
-						//R12_36
+						// R12_30
 						null,
-						//R12_37
+						// R12_31
 						null,
-						//R12_38
+						// R12_32
 						null,
-						//R12_39
-						null
-						));
+						// R12_33
+						null,
+						// R12_34
+						null,
+						// R12_35
+						null,
+						// R12_36
+						null,
+						// R12_37
+						null,
+						// R12_38
+						null,
+						// R12_39
+						null));
 			}
 		}
 		return datas;
@@ -657,5 +709,17 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 		return MasterData.builder().rowData(data).build();
 	}
 	
-
+	private Integer convertToInteger(NtsResultRecord r, String name) {
+		if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
+			return r.getInt(name);
+		}
+		if (this.database().is(DatabaseProduct.POSTGRESQL)) {
+			Boolean b = r.getBoolean(name);
+			if (b == null) {
+				return null;
+			}
+			return b ? 1 : 0;
+		}
+		return null;
+	} 
 }

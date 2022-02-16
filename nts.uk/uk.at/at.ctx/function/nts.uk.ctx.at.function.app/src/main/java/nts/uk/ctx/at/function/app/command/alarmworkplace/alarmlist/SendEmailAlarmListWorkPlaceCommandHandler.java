@@ -137,7 +137,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
 //        }
 
         //ドメインモデル「メールサーバ」を取得する
-        boolean useAuthentication = mailServerAdapter.findBy(companyId);
+        boolean useAuthentication = mailServerAdapter.checkMailServerSet(companyId).isMailServerSet();
         if (!useAuthentication) {
             throw new BusinessException("Msg_2205");
         }
@@ -169,10 +169,6 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                     useAuthentication
             );
         }
-
-//        if (!personError.isEmpty() || !managerErrorList.isEmpty()) {
-//            return TextResource.localize("Msg_965");
-//        }
 
         //管理者未設定職場リスト：取得した管理者未設定職場リスト
         List<String> unsetList = new ArrayList<>();

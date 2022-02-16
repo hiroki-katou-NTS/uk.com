@@ -17,7 +17,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 public class RegisterWorkContentDto {
 
 	// List<残業休出時間>
-	private List<OvertimeLeaveTimeDto> lstOvertimeLeaveTime;
+	private List<EncouragedTargetApplicationDto> lstOvertimeLeaveTime;
 	
 	private DataResultAfterIU dataResult;
 	

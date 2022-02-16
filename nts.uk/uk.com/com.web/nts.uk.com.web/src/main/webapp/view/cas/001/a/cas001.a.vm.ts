@@ -56,10 +56,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
         });
         listRole: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
         ctgColumns: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: 'コード', key: 'categoryId', width: 205, hidden: true },
-            { headerText: getText('CAS001_11'), key: 'categoryName', width: 170 },
+            { headerText: 'コード', key: 'categoryId', width: 225, hidden: true },
+            { headerText: getText('CAS001_11'), key: 'categoryName', width: 190 },
             {
-                headerText: getText('CAS001_69'), key: 'setting', width: 80, formatter: makeIcon
+                headerText: getText('CAS001_69'), key: 'setting', width: 105, formatter: makeIcon
             }
         ]);
         isFromCPS018: KnockoutObservable<boolean> = ko.observable(false);
@@ -72,11 +72,11 @@ module nts.uk.com.view.cas001.a.viewmodel {
             nts.uk.sessionStorage.removeItem(nts.uk.request.STORAGE_KEY_TRANSFER_DATA);
 
             block.grayout();
-            self.component.columns([
-                { headerText: getText("CCG025_3"), prop: 'roleId', width: 50, hidden: true },
-                { headerText: getText("CCG025_3"), prop: 'roleCode', width: 50 },
-                { headerText: getText("CCG025_4"), prop: 'name', width: 205 }
-            ]);
+            /*self.component.columns([
+                { headerText: getText("CAS001_8"), prop: 'roleId', width: 50, hidden: true },
+                { headerText: getText("CAS001_8"), prop: 'roleCode', width: 50 },
+                { headerText: getText("CAS001_9"), prop: 'name', width: 205 }
+            ]);*/
             self.component.startPage().done(() =>{
                 self.personRoleList.removeAll();
                 self.personRoleList(_.map(self.component.listRole(), (x: any) => new PersonRole(x)));

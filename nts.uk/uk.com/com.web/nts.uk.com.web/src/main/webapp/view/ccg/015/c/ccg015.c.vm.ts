@@ -17,6 +17,9 @@ module nts.uk.pr.view.ccg015.c {
     newTopPageName: KnockoutObservable<string> = ko.observable("");
     isDuplicateCode: KnockoutObservable<boolean> = ko.observable(false);
     check: KnockoutObservable<boolean> = ko.observable(false);
+    frameLayout1: KnockoutObservable<number> = ko.observable(1);
+    frameLayout2: KnockoutObservable<number> = ko.observable(0);
+    frameLayout3: KnockoutObservable<number> = ko.observable(2);
 
     created(params: any) {
       const vm = this;
@@ -28,6 +31,11 @@ module nts.uk.pr.view.ccg015.c {
       }
       if (params && params.layoutDisp) {
         vm.parentLayoutId(params.layoutDisp);
+      }
+      if (params) {
+        vm.frameLayout1(params.frameLayout1 ?? 1);
+        vm.frameLayout2(params.frameLayout2 ?? 0);
+        vm.frameLayout3(params.frameLayout3 ?? 2);
       }
     }
 
@@ -46,6 +54,9 @@ module nts.uk.pr.view.ccg015.c {
         topPageCode: vm.newTopPageCode(),
         topPageName: vm.newTopPageName(),
         layoutDisp: vm.parentLayoutId(),
+        frameLayout1: vm.frameLayout1(),
+        frameLayout2: vm.frameLayout2(),
+        frameLayout3: vm.frameLayout3(),
         isCheckOverwrite: vm.check(),
         copyCode: vm.parentTopPageCode(),
       });
@@ -68,6 +79,9 @@ module nts.uk.pr.view.ccg015.c {
     topPageCode: string;
     topPageName: string;
     layoutDisp: number;
+    frameLayout1: number;
+    frameLayout2: number;
+    frameLayout3: number;
     isCheckOverwrite: boolean;
     copyCode: string;
 
