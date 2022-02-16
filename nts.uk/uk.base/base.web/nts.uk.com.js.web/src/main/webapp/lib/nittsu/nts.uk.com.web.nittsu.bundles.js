@@ -21201,7 +21201,7 @@ var nts;
                     }
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
-                        var ROW_HEIGHT = 24;
+                        var ROW_HEIGHT = 30;
                         var DIFF_NUMBER = 2;
                         var $grid = $(element).addClass("nts-gridlist");
                         var gridId = $grid.attr('id');
@@ -21225,7 +21225,7 @@ var nts;
                         $grid.data("selectionDisables", selectionDisables);
                         $grid.data("initValue", value);
                         if (data.multiple) {
-                            ROW_HEIGHT = 24;
+                            ROW_HEIGHT = 30;
                             // Internet Explorer 6-11
                             var _document = document;
                             var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
