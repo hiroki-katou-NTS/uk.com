@@ -815,7 +815,8 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		Optional<WorkTimeDailyAtr> workDailyAtr = (scheRegetManage.getWorkTimeSetting() != null && scheRegetManage.getWorkTimeSetting().isPresent()) ? Optional.of(scheRegetManage.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr()) : Optional.empty();
 		TotalWorkingTime totalWorkingTime = TotalWorkingTime.createAllZEROInstance();
 		Optional<PredetermineTimeSetForCalc> schePreTimeSet = Optional.empty();
-		if(!scheRegetManage.getIntegrationOfWorkTime().isPresent() && recordReGetClass.getIntegrationOfWorkTime().isPresent()) {
+		if((!scheRegetManage.getIntegrationOfWorkTime().isPresent() || scheRegetManage.getCalculationRangeOfOneDay().getAttendanceLeavingWork().getTimeLeavingWorks().isEmpty())
+				&& recordReGetClass.getIntegrationOfWorkTime().isPresent()) {
 			return new WorkScheduleTimeOfDaily(WorkScheduleTime.defaultValue(), actualPredWorkTime);
 		}
 		totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(scheRegetManage,
