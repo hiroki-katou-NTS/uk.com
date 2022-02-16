@@ -1,7 +1,6 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
