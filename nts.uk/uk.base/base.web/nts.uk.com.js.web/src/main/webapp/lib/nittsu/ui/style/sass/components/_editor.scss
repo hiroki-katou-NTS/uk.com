@@ -13,17 +13,22 @@ $editor-border-color: #cfd4da;
 			border-radius: 3px;
 			overflow: visible;
 			font-size: 13px;
+
+			&.fit-to-right {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+			}
 			
 			&:focus {
 				border-color: $focused_color;
 				box-shadow: 0 0 0 2px lighten($color: $focused_color, $amount: 30);
 			}
 		
-			&.enterkey {
-				background-image: url('images/icons/enter_mark.png');
-				background-position: right;
-				background-repeat: no-repeat;
-			}
+			//&.enterkey {
+			//	background-image: url('images/icons/enter_mark.png');
+			//	background-position: right;
+			//	background-repeat: no-repeat;
+			//}
 		}
 	}
 

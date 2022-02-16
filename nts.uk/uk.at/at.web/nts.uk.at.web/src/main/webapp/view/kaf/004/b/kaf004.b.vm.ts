@@ -175,6 +175,10 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             vm.workManagement.leaveTime(null);
             vm.workManagement.workTime2(null);
             vm.workManagement.leaveTime2(null);
+            vm.delete1(false);
+            vm.delete2(false);
+            vm.delete3(false);
+            vm.delete4(false);
             vm.outputMode(vm.appDispInfoStartupOutput().appDetailScreenInfo.outputMode);
 
             vm.managementMultipleWorkCycles(params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles);

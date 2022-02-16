@@ -134,7 +134,7 @@ public interface AppContentDetailCMM045 {
 	 * @param companyID
 	 * @return
 	 */
-	public LinkComplementLeaveOutput getLinkComplementLeave(String appID, List<WorkType> workTypeLst, String companyID);
+	public LinkComplementLeaveOutput getLinkComplementLeave(String appID, List<WorkType> workTypeLst, String companyID, ScreenAtr screenAtr);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.各申請データを作成.申請一覧リスト取得休暇.申請一覧リスト取得休暇

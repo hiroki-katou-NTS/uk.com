@@ -816,27 +816,28 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		TotalWorkingTime totalWorkingTime = TotalWorkingTime.createAllZEROInstance();
 		Optional<PredetermineTimeSetForCalc> schePreTimeSet = Optional.empty();
 		if(!scheRegetManage.getIntegrationOfWorkTime().isPresent() && recordReGetClass.getIntegrationOfWorkTime().isPresent()) {
-			totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(scheRegetManage,
-																   vacationClass, 
-																   scheRegetManage.getWorkType().get(), 
-																   workDailyAtr, //就業時間帯依存
-																   flexCalcMethod, //詳細が決まってなさそう(2018.6.21)
-																   eachCompanyTimeSet, //会社共通 
-																   conditionItem,
-																   predetermineTimeSetByPersonInfo,
-																   recordWorkTimeCode,
-																   new DeclareTimezoneResult());
-			scheTotalTime = totalWorkingTime.getTotalTime();
-			if(totalWorkingTime.getWithinStatutoryTimeOfDaily() != null)
-				scheWithinTotalTime = totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime();
-			int overWorkTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTotalFrameTime().v():0;
-			overWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTransTotalFrameTime().v():0;
-			int holidayWorkTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTotalFrameTime().v():0;
-			holidayWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTransTotalFrameTime().v():0;
-			scheExcessTotalTime = new AttendanceTime(overWorkTime + holidayWorkTime);
-			//計画所定時間の計算
-			schePreTimeSet = Optional.of(scheRegetManage.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc());
+			return new WorkScheduleTimeOfDaily(WorkScheduleTime.defaultValue(), actualPredWorkTime);
 		}
+		totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(scheRegetManage,
+															   vacationClass, 
+															   scheRegetManage.getWorkType().get(), 
+															   workDailyAtr, //就業時間帯依存
+															   flexCalcMethod, //詳細が決まってなさそう(2018.6.21)
+															   eachCompanyTimeSet, //会社共通 
+															   conditionItem,
+															   predetermineTimeSetByPersonInfo,
+															   recordWorkTimeCode,
+															   new DeclareTimezoneResult());
+		scheTotalTime = totalWorkingTime.getTotalTime();
+		if(totalWorkingTime.getWithinStatutoryTimeOfDaily() != null)
+			scheWithinTotalTime = totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime();
+		int overWorkTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTotalFrameTime().v():0;
+		overWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTransTotalFrameTime().v():0;
+		int holidayWorkTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTotalFrameTime().v():0;
+		holidayWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTransTotalFrameTime().v():0;
+		scheExcessTotalTime = new AttendanceTime(overWorkTime + holidayWorkTime);
+		//計画所定時間の計算
+		schePreTimeSet = Optional.of(scheRegetManage.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc());
 		return new WorkScheduleTimeOfDaily(new WorkScheduleTime(scheTotalTime,scheExcessTotalTime,scheWithinTotalTime), actualPredWorkTime);
 	}
 

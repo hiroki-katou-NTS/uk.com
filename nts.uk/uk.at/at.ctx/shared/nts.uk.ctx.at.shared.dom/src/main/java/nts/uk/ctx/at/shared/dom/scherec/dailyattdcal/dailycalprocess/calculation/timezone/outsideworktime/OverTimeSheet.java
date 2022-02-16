@@ -206,26 +206,34 @@ public class OverTimeSheet {
 	
 	//時間帯毎の時間から残業枠毎の時間を集計
 	public  List<OverTimeFrameTime> aggregateTimeForOvertime(OverTimeOfDaily overTimeOfDaily) {
-		val hol = overTimeOfDaily.clone();
-		hol.getOverTimeWorkFrameTime().forEach(x -> x.cleanTimeAndTransfer());
+		List<OverTimeFrameTime> result = new ArrayList<>();
 		//残業時間帯でループ
-		this.frameTimeSheets.stream().filter(x -> !x.getWithinStatutryAtr().equals(StatutoryAtr.DeformationCriterion))
-				.forEach(frameTime -> {
-			// 残業時間へ加算
-			val overTime = hol.getOverTimeWorkFrameTime().stream()
+		this.frameTimeSheets.stream().filter(x -> !x.getWithinStatutryAtr().equals(StatutoryAtr.DeformationCriterion)).forEach(frameTime -> {
+			//結果から取得した残業時間
+			Optional<OverTimeFrameTime> overTime = result.stream()
 					.filter(x -> x.getOverWorkFrameNo().v() == frameTime.getFrameTime().getOverWorkFrameNo().v()).findFirst();
+			//日別勤怠から取得した残業時間
+			Optional<OverTimeFrameTime> daily = overTimeOfDaily.getOverTimeWorkFrameTime().stream()
+					.filter(o -> o.getOverWorkFrameNo().v() == frameTime.getFrameTime().getOverWorkFrameNo().v())
+					.findFirst();
+			if(!overTime.isPresent()) {
+				result.add(new OverTimeFrameTime(
+						new OverTimeFrameNo(frameTime.getFrameTime().getOverWorkFrameNo().v()),
+						frameTime.getFrameTime().getOverTimeWork().clone(),
+						frameTime.getFrameTime().getTransferTime().clone(),
+						daily.map(d -> new AttendanceTime(d.getBeforeApplicationTime().valueAsMinutes())).orElse(AttendanceTime.ZERO),
+						daily.map(d -> new AttendanceTime(d.getOrderTime().valueAsMinutes())).orElse(AttendanceTime.ZERO)));
+				return;
+			}
 			overTime.ifPresent(data -> {
 				//B.残業時間+=A.残業時間
 				data.getOverTimeWork().addMinutesNotReturn(frameTime.getFrameTime().getOverTimeWork());
 				//B.振替時間+=A.振替時間
 				data.getTransferTime().addMinutesNotReturn(frameTime.getFrameTime().getTransferTime());
-				
 			});
 		});
-	
 		//残業枠時間を返す
-		
-		return hol.getOverTimeWorkFrameTime();
+		return result;
 	}
 	
 	/**

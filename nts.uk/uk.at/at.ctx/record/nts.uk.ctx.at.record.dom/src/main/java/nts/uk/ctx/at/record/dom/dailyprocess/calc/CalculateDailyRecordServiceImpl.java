@@ -313,7 +313,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				personCommonSetting,
 				schedule.get().getWorkType(),
 				schedule.get().getIntegrationOfWorkTime(),
-				integrationOfDaily);
+				this.createScheduleTimeSheet(converter.setData(integrationOfDaily).toDomain()));
 		
 		ManageReGetClass recordManageReGetClass = new ManageReGetClass(
 				record.get(),
