@@ -139,7 +139,7 @@ public interface PersonApprovalRootRepository {
 	 * @param confirmTypes 確認ルート種類List
 	 * @return 個人別承認ルート
 	 */
-	Optional<PersonApprovalRoot> GetSmallestHistFromBaseDate(String cid, String sid, GeneralDate baseDate, List<ApplicationType> appTypes, List<ConfirmationRootType> confirmTypes);
+	Optional<PersonApprovalRoot> getSmallestHistFromBaseDate(String cid, String sid, GeneralDate baseDate, List<ApplicationType> appTypes, List<ConfirmationRootType> confirmTypes);
 
 	/**
 	 * [15] 期間から履歴を取得する
