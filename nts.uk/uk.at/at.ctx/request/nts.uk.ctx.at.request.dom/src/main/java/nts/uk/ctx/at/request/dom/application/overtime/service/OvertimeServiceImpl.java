@@ -1299,12 +1299,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Override
 	public DisplayInfoOverTime changeDateMobile(
 			String companyId,
+			String employeeId,
 			GeneralDate date,
+            PrePostAtr prePostAtr,
 			DisplayInfoOverTime displayInfoOverTime) {
 		
 		List<GeneralDate> dates = new ArrayList<>();
-		dates.add(date);
-		
+		if (date != null) dates.add(date);
+
 		// 申請表示情報(基準日関係あり)を取得する
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithmImpl.getAppDispInfoWithDate(
 				companyId,
@@ -1317,7 +1319,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 		displayInfoOverTime.getAppDispInfoStartup().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		// 申請日に関する情報を取得する
 		commonAlgorithmOverTime.changeApplicationDate(companyId, date, displayInfoOverTime);
-		
+        if (displayInfoOverTime.getOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME && date != null) {
+            Optional<AppOverTime> app = appOverTimeRepository.findLatestMultipleOvertimeApp(employeeId, date, prePostAtr);
+            displayInfoOverTime.setLatestMultipleOvertimeApp(app);
+        }
 		return displayInfoOverTime;
 	}
 
@@ -1524,6 +1529,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 			);
 			displayInfoOverTime.setCalculationResultOp(temp.getCalculationResultOp());
 			displayInfoOverTime.setWorkdayoffFrames(temp.getWorkdayoffFrames());
+			displayInfoOverTime.setCalculatedWorkTimes(temp.getCalculatedWorkTimes());
+            displayInfoOverTime.setCalculatedBreakTimes(temp.getCalculatedBreakTimes());
 		}
 		
 		return displayInfoOverTime;

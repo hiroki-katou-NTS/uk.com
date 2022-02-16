@@ -331,7 +331,9 @@ public interface OvertimeService {
 	 */
 	public DisplayInfoOverTime changeDateMobile(
 			String companyId,
+			String employeeId,
 			GeneralDate date,
+			PrePostAtr prePostAtr,
 			DisplayInfoOverTime displayInfoOverTime
 	);
 	/**
