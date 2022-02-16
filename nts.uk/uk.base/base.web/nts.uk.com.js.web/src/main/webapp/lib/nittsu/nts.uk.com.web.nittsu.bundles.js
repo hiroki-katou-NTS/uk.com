@@ -21200,8 +21200,8 @@ var nts;
                     function NtsGridListBindingHandler() {
                     }
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var HEADER_HEIGHT = 27;
-                        var ROW_HEIGHT = 24;
+                        var HEADER_HEIGHT = 30;
+                        var ROW_HEIGHT = 30;
                         var DIFF_NUMBER = 2;
                         var $grid = $(element).addClass("nts-gridlist");
                         var gridId = $grid.attr('id');
@@ -21225,7 +21225,7 @@ var nts;
                         $grid.data("selectionDisables", selectionDisables);
                         $grid.data("initValue", value);
                         if (data.multiple) {
-                            ROW_HEIGHT = 24;
+                            ROW_HEIGHT = 30;
                             // Internet Explorer 6-11
                             var _document = document;
                             var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
@@ -21243,7 +21243,7 @@ var nts;
                                 name: 'RowSelectors',
                                 enableCheckBoxes: data.multiple,
                                 enableRowNumbering: false,
-                                rowSelectorColumnWidth: 25
+                                rowSelectorColumnWidth: 40
                             });
                         }
                         if (columnResize) {
@@ -40598,8 +40598,8 @@ var nts;
                         if (typeof options === "string") {
                             return delegateMethod($grid, options, arguments[1]);
                         }
-                        var HEADER_HEIGHT = 27;
-                        var ROW_HEIGHT = 23;
+                        var HEADER_HEIGHT = 30;
+                        var ROW_HEIGHT = 30;
                         var DIFF_NUMBER = 2;
                         $grid.addClass("nts-gridlist");
                         var gridId = $grid.attr('id');
@@ -40620,7 +40620,7 @@ var nts;
                         $grid.data("selectionDisables", selectionDisables);
                         $grid.data("initValue", value);
                         if (options.multiple) {
-                            ROW_HEIGHT = 24;
+                            ROW_HEIGHT = 30;
                             // Internet Explorer 6-11
                             var _document = document;
                             var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
@@ -40638,7 +40638,7 @@ var nts;
                                 name: 'RowSelectors',
                                 enableCheckBoxes: options.multiple,
                                 enableRowNumbering: false,
-                                rowSelectorColumnWidth: 25
+                                rowSelectorColumnWidth: 40
                             });
                         }
                         if (columnResize) {
