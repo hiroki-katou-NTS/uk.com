@@ -266,3 +266,6 @@ abbr[title] {
 .selectionName {
 	width: 180px;
 }
+#functions-area button{
+	min-width: 60px;
+}
