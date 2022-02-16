@@ -1,8 +1,27 @@
-#kaf012-share-component1 {
+/* #kaf012-share-component1 {
 	width: auto;
 	margin-top: 20px;
 	margin-left: 15px;
 	margin-right: 15px;
+} */
+
+#kaf012-share-component1 .space-between-table .row-underline {
+	border-bottom: solid #B1B1B1 1px;
+	height: auto;
+	padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#kaf012-share-component1 .space-between-table .row-underline:last-child {
+	border-bottom: none;
+}
+
+#kaf012-share-component1 .space-between-table .row-underline .form-label, a {
+	height: 25px;
+}
+
+#kaf012-share-component1 .space-between-table .row-underline  a {
+	margin-top: 5px;
 }
 
 #remaining-table, #kaf012-input-table, #kaf012-calc-table {
