@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -317,6 +318,7 @@ public class ApproverOperationSettingsTest {
 		assertThat(domain.getApprovalLevelNo()).isEqualTo(ApprovalLevelNo.FIVE_LEVEL);
 		assertThat(domain.getApproverSettingScreenInfor()).isEqualToComparingFieldByField(expApproverSettingScreenInfor);
 		assertThat(domain.getSettingTypeUseds()).hasSameSizeAs(expSettingTypes);
+		
 		for (int i = 0; i< domain.getSettingTypeUseds().size(); i++) {
 			assertThat(domain.getSettingTypeUseds().get(i)).isEqualToComparingFieldByField(expSettingTypes.get(i));
 		}
@@ -345,9 +347,10 @@ public class ApproverOperationSettingsTest {
 	
 	/**
 	 * Test [2] 利用する申請を取得する
+	 * Case 1: 申請種類が利用するか判断する is present
 	 */
 	@Test
-	public void testGetApplicationToUse() {
+	public void testGetApplicationToUse1() {
 		List<SettingTypeUsed> settingTypeUseds = new ArrayList<SettingTypeUsed>();
 		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithApplicationAndUse(ApplicationType.ANNUAL_HOLIDAY_APPLICATION));
 		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithApplicationAndUse(ApplicationType.ABSENCE_APPLICATION));
@@ -361,15 +364,70 @@ public class ApproverOperationSettingsTest {
 		
 		List<ApplicationType> actual = domain.getApplicationToUse();
 		
-		assertThat(actual).hasSize(2);
-		assertThat(actual).contains(ApplicationType.ANNUAL_HOLIDAY_APPLICATION, ApplicationType.ABSENCE_APPLICATION);
+		assertThat(actual)
+			.extracting(d -> d)
+			.containsExactly(
+					ApplicationType.ANNUAL_HOLIDAY_APPLICATION,
+					ApplicationType.ABSENCE_APPLICATION);
+	}
+	
+	/**
+	 * Test [2] 利用する申請を取得する
+	 * Case 2: 申請種類が利用するか判断する is empty
+	 */
+	@Test
+	public void testGetApplicationToUse2() {
+		List<SettingTypeUsed> settingTypeUseds = new ArrayList<SettingTypeUsed>();
+		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithApplicationAndUse(ApplicationType.ANNUAL_HOLIDAY_APPLICATION));
+		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithAnyAndUse(ApplicationType.ABSENCE_APPLICATION));
+	
+		ApproverOperationSettings domain = new ApproverOperationSettings(
+				OperationMode.SUPERIORS_EMPLOYEE,
+				ApprovalLevelNo.FIVE_LEVEL,
+				new ArrayList<SettingTypeUsed>(),
+				null);
+		domain.setSettingTypeUseds(settingTypeUseds);
+		
+		List<ApplicationType> actual = domain.getApplicationToUse();
+		
+		assertThat(actual)
+			.extracting(d -> d)
+			.containsExactly(
+					ApplicationType.ANNUAL_HOLIDAY_APPLICATION);
 	}
 	
 	/**
 	 * Test [3] 利用する確認を取得する
+	 * Case 1: 確認ルート種類が利用するか判断する is present
 	 */
 	@Test
-	public void testGetConfirmationToUse() {
+	public void testGetConfirmationToUse1() {
+		List<SettingTypeUsed> settingTypeUseds = new ArrayList<SettingTypeUsed>();
+		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithConfirmAndUse(ConfirmationRootType.DAILY_CONFIRMATION));
+		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithConfirmAndUse(ConfirmationRootType.MONTHLY_CONFIRMATION));
+		
+		ApproverOperationSettings domain = new ApproverOperationSettings(
+				OperationMode.SUPERIORS_EMPLOYEE,
+				ApprovalLevelNo.FIVE_LEVEL,
+				new ArrayList<SettingTypeUsed>(),
+				null);
+		domain.setSettingTypeUseds(settingTypeUseds);
+		
+		List<ConfirmationRootType> actual = domain.getConfirmationToUse();
+		
+		assertThat(actual)
+			.extracting(d -> d)
+			.containsExactly(
+					ConfirmationRootType.DAILY_CONFIRMATION,
+					ConfirmationRootType.MONTHLY_CONFIRMATION);
+	}
+	
+	/**
+	 * Test [3] 利用する確認を取得する
+	 * Case 2: 確認ルート種類が利用するか判断する is empty
+	 */
+	@Test
+	public void testGetConfirmationToUse2() {
 		List<SettingTypeUsed> settingTypeUseds = new ArrayList<SettingTypeUsed>();
 		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithConfirmAndUse(ConfirmationRootType.DAILY_CONFIRMATION));
 		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithConfirmAndNotUse(ConfirmationRootType.DAILY_CONFIRMATION));
@@ -383,8 +441,9 @@ public class ApproverOperationSettingsTest {
 		
 		List<ConfirmationRootType> actual = domain.getConfirmationToUse();
 		
-		assertThat(actual).hasSize(2);
-		assertThat(actual).contains(null, ConfirmationRootType.DAILY_CONFIRMATION);
+		assertThat(actual)
+		.extracting(d -> d)
+		.containsExactly(ConfirmationRootType.DAILY_CONFIRMATION);
 	}
 
 }

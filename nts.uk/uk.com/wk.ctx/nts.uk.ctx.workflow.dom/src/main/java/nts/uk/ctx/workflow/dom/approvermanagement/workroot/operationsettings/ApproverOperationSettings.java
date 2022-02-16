@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -109,6 +110,7 @@ public class ApproverOperationSettings extends AggregateRoot {
 	public List<ApplicationType> getApplicationToUse() {
 		return this.settingTypeUseds.stream()
 				.map(x -> x.determineAppTypeIsUsed().orElse(null))
+				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 			
 	}
@@ -119,6 +121,7 @@ public class ApproverOperationSettings extends AggregateRoot {
 	public List<ConfirmationRootType> getConfirmationToUse() {
 		return this.settingTypeUseds.stream()
 				.map(x -> x.determineConfirmRootTypeIsUsed().orElse(null))
+				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 	}
 }
