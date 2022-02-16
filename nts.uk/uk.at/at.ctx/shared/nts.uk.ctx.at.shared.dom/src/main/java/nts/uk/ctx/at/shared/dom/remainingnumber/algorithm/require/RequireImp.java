@@ -134,6 +134,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @AllArgsConstructor
 public class RequireImp implements RemainNumberTempRequireService.Require {
@@ -961,6 +962,11 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	@Override
 	public Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId) {
 		return closureStatusManagementRepo.getLatestByEmpId(employeeId);
+	}
+
+	@Override
+	public OptionLicense getOptionLicense() {
+		return AppContexts.optionLicense();
 	}
 
 	@Override

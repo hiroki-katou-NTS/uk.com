@@ -72,6 +72,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
@@ -140,6 +141,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHolidayInfo;
 import nts.uk.screen.at.app.ktgwidget.ktg004.VacationSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 /**
  * @author hieult
@@ -1285,5 +1287,25 @@ public class ToppageStartupProcessMobFinder {
                 String employeeId, GeneralDate baseDate) {
             return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
         }
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
+		}
+
+		@Override
+		public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+			return Optional.empty();
+		}
+
+		@Override
+		public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId) {
+			return Optional.ofNullable(this.compensLeaveComSetRepo.find(companyId));
+		}
+
+		@Override
+		public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode) {
+			return Optional.ofNullable(this.compensLeaveEmSetRepo.find(companyId, employmentCode));
+		}
     }
 }
