@@ -137,6 +137,17 @@ public class TimeLeavingWork extends DomainObject{
 		return new TimeLeavingWork(this.workNo, newAttendance , newLeave);
 	}
 
+	// ジャスト遅刻・早退の設定を見てジャスト遅刻補正をする
+	public TimeLeavingWork correctJustTimeStamp(boolean isJustTimeLateAttendance, boolean isJustEarlyLeave) {
+
+		TimeActualStamp newAttendance = attendanceStamp
+				.map(at -> isJustTimeLateAttendance ? at.moveBackStampTime(1) : at).orElse(null);
+
+		TimeActualStamp newLeave = leaveStamp.map(le -> isJustEarlyLeave ? le.moveAheadStampTime(1) : le).orElse(null);
+
+		return new TimeLeavingWork(this.workNo, newAttendance, newLeave);
+	}
+	
 	public void setTimeLeavingWork(WorkNo workNo, Optional<TimeActualStamp> attendanceStamp, Optional<TimeActualStamp> leaveStamp){
 		this.workNo = workNo;
 		this.attendanceStamp = attendanceStamp;

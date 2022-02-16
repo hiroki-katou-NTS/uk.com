@@ -88,7 +88,15 @@ public class RoundingTime {
 		return newAttendanceLeave;
 	}
 
-
+   //ジャスト遅刻補正をする
+	public List<TimeLeavingWork> justTimeCorrectionStamp(List<TimeLeavingWork> timeLeavingWorks) {
+		List<TimeLeavingWork> newAttendanceLeave = new ArrayList<>();
+		for(TimeLeavingWork timeLeavingWork:timeLeavingWorks) {
+			newAttendanceLeave.add(timeLeavingWork.correctJustTimeStamp(this.isAttendance(), this.isleaveWork()));
+		}
+		return newAttendanceLeave;
+	}
+	
 	/*
 	 * 出退勤時刻を丸める
 	 */
