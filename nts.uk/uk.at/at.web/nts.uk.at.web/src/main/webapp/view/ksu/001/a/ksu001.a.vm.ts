@@ -1821,7 +1821,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.keyGrid = empLogin[0].sid;
                 self.rowIndexOfEmpLogin = _.indexOf(detailContentDs, empLogin[0]);
             } else {
-                self.keyGrid = '0';
+                self.keyGrid = 'NOTEXISTS';
                 self.rowIndexOfEmpLogin = 0;
             }
             return result;
