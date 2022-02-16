@@ -18,7 +18,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<div style="display: inline-block; text-align: center;"
 						data-bind="if: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1, 
 									style: {
-											width: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? '200px' : '0',
+											width: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? '185px' : '0',
 											marginLeft: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? '10px' : '0'
 									}">
 						<div data-bind="ntsFormLabel: {
@@ -29,7 +29,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<div style="display: inline-block; text-align: center;"
 							data-bind="if: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1,
 										style: {
-											width: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? '200px' : '0',
+											width: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? '185px' : '0',
 											marginLeft: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? '10px' : '0'
 									}">
 						<div data-bind="ntsFormLabel: {
@@ -61,7 +61,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 												required: ko.computed(function() {return _.isNumber(start())})
 																					}, attr: {id: 'A15_5_' + $index()}" />
 						</td>
-						<div class="multiple-reason" style="width: 200px; margin-left: 10px;"
+						<div class="multiple-reason" style="width: 185px; margin-left: 10px;"
 							data-bind="ntsComboBox: {
 											name: $parent.$i18n('KAF005_87'),
 											options: $parent.reasonTypeItemLst,
@@ -81,7 +81,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 												constraint: 'AppReason',
 												enable: ($parent.visibleModel.c7() && $parent.outputMode()),            
 												required: ko.computed(function() { return (!!start() || !!end()) && $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting && $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason; }),
-												option: {width: '200'}          
+												option: {width: '185'}          
 										},
 										visible: $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1"/>
 						<button style="min-width: 30px; border: none; box-shadow: none; padding: 5px; background: none;" data-bind="click: $parent.removeMultipleRow.bind($parent, $data, $element), enable: ($parent.visibleModel.c7() && $parent.outputMode())">
