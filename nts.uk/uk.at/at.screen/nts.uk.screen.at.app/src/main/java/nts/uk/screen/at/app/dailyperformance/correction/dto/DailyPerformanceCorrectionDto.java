@@ -151,6 +151,9 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 	// 作業運用設定.作業運用方法 && アプリケーションコンテキスト．オプションライセンス．就業．作業・応援管理
 	private boolean showWorkLoad;
 	
+	// param session 
+	private DataSessionDto dataSessionDto;
+	
 	public DailyPerformanceCorrectionDto() {
 		super();
 		this.lstFixedHeader = DPHeaderDto.GenerateFixedHeader();
