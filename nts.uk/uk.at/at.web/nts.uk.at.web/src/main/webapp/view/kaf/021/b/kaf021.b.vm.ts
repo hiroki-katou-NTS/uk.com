@@ -204,9 +204,9 @@ module nts.uk.at.kaf021.b {
                 { key: "monthAverage5Str", colors: ['padding-10', 'break-jp-cell', "#6A6A6A"] },
                 { key: "monthAverage6Str", colors: ['padding-10', 'break-jp-cell', "#6A6A6A"] },
                 { key: "exceededNumber", colors: ['padding-5', "#6A6A6A"] },
-                { key: vm.getCurrentMaxKey(), colors: ['#F8EFD4'] },
-                { key: "newMax", colors: ['#F8EFD4'] },
-                { key: "reason", colors: ['#F8EFD4'] },
+                { key: vm.getCurrentMaxKey(), colors: ['#daa520'] },
+                { key: "newMax", colors: ['#daa520'] },
+                { key: "reason", colors: ['#daa520'] },
             ]
         }
 
