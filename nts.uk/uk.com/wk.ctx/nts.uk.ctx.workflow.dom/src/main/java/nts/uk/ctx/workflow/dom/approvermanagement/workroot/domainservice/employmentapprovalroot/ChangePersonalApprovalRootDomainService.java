@@ -44,7 +44,7 @@ public class ChangePersonalApprovalRootDomainService {
 		return atomTasks;
 	}
 
-	public interface Require extends CreateEmployeeInterimDataDomainService.Require {
+	public interface Require {
 		// [R-1]期間から履歴を取得する
 		List<PersonApprovalRoot> getPersonApprovalRoots(String cid, String sid, DatePeriod period);
 

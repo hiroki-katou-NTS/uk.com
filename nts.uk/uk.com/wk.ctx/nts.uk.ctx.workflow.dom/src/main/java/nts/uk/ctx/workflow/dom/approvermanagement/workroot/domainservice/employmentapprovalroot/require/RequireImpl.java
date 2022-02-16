@@ -102,7 +102,7 @@ public class RequireImpl implements Require {
 	public Optional<PersonApprovalRoot> getSmallestHistFromBaseDate(String sid, GeneralDate baseDate,
 			List<ApplicationType> appTypes, List<ConfirmationRootType> confirmTypes) {
 		String cid = AppContexts.user().companyId();
-		return this.personApprovalRootRepository.GetSmallestHistFromBaseDate(cid, sid, baseDate, appTypes, confirmTypes);
+		return this.personApprovalRootRepository.getSmallestHistFromBaseDate(cid, sid, baseDate, appTypes, confirmTypes);
 	}
 
 	@Override

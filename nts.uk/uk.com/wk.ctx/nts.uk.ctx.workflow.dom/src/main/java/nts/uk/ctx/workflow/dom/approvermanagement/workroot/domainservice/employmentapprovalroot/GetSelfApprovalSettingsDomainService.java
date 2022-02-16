@@ -53,13 +53,12 @@ public class GetSelfApprovalSettingsDomainService {
 		List<String> approverIds = personApprovalRoots.stream().map(data -> data.getApprovalId()).distinct()
 				.collect(Collectors.toList());
 		List<ApprovalPhase> approvalPhases = require.getApprovalPhases(approverIds);
-		List<ApprovalPhase> approvalPhasesFiltered = approvalPhases;
 
 		// 承認フェーズListを整理する
 		if (optOperationSetting.isPresent()) {
-			approvalPhasesFiltered = optOperationSetting.get().organizeApprovalPhaseToBeUsed(approvalPhases);
+			approvalPhases = optOperationSetting.get().organizeApprovalPhaseToBeUsed(approvalPhases);
 		}
-		Map<String, List<ApprovalPhase>> approvalPhaseMap = approvalPhasesFiltered.stream()
+		Map<String, List<ApprovalPhase>> approvalPhaseMap = approvalPhases.stream()
 				.collect(Collectors.groupingBy(ApprovalPhase::getApprovalId));
 
 		// create List<承認者設定情報>

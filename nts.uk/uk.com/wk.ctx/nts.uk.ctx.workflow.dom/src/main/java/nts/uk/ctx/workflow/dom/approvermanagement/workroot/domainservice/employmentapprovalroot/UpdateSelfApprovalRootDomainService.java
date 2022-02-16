@@ -6,7 +6,6 @@ import java.util.List;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.ChangePersonalApprovalRootDomainService.Require;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.param.ApprovalSettingParam;
 
 /**
@@ -34,5 +33,10 @@ public class UpdateSelfApprovalRootDomainService {
 			CreateEmployeeInterimDataDomainService.create(require, cid, sid, period.start());
 		}
 		return atomTasks;
+	}
+
+	public interface Require
+			extends CreateEmployeeInterimDataDomainService.Require, ChangePersonalApprovalRootDomainService.Require {
+
 	}
 }

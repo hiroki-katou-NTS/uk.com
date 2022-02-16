@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employ
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
@@ -26,10 +27,11 @@ public class CreateSelfApprovalRootDomainService {
 			List<ApprovalSettingParam> params) {
 		List<AtomTask> atomTasks = new ArrayList<>();
 		// 個人別承認ルートを追加時の既存履歴を補正する
-		atomTasks.add(AtomTask.of(() -> UpdateApprovalRootHistoryDomainService.register(require, sid, baseDate)));
+		atomTasks.addAll(UpdateApprovalRootHistoryDomainService.register(require, sid, baseDate));
 		// 個人別承認ルートを登録する
-		params.forEach(param -> atomTasks.add(AtomTask
-				.of(() -> CreatePersonalApprovalRootDomainService.createAndRegister(require, cid, sid, param))));
+		atomTasks.addAll(params.stream()
+				.map(param -> CreatePersonalApprovalRootDomainService.createAndRegister(require, cid, sid, param))
+				.collect(Collectors.toList()));
 		// 指定社員の中間データを作成する
 		if (baseDate.beforeOrEquals(GeneralDate.today())) {
 			CreateEmployeeInterimDataDomainService.create(require, cid, sid, baseDate);
