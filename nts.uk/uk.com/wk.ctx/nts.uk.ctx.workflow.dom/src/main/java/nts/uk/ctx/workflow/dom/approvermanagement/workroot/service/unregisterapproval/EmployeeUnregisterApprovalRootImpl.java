@@ -11,6 +11,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -51,6 +52,8 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 	private ApprovalPhaseRepository repoAppPhase;
 	@Inject
 	private ApprovalSettingService approvalSettingService;
+	@Inject
+	private ManagedParallelWithContext parallel;
 	
 	@Override
 	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate, int sysAtr,
@@ -97,7 +100,7 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 					.collect(Collectors.toList()));
 		}
 
-		lstEmps.forEach(employee -> {
+		parallel.forEach(lstEmps, employee -> {
 			if(sysAtr == SystemAtr.WORK.value) { // システム区分　＝　就業
 				// <<Enum>>申請種類　　　　　でループする
 				for (ApplicationType appType : ApplicationType.values()) {
