@@ -18,7 +18,7 @@
         <div id="contents-area">
             <div class="kmt013-b-content">
                 <div>
-                    <label>#{i18n.getText('KMT013_11')}</label>
+                    <label data-bind="text: $vm.$i18n('KMT013_11')"/>
                 </div>
                 <table id="single-list" data-bind="ntsGridList: {
                     height: 470,
@@ -32,11 +32,12 @@
                     features: [],
                     multiple: false,
                     value: currentCode,
+                    enable: false,
                 }"></table>
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button id="B3_btn" class="large" data-bind="click: closeModal">#{i18n.getText('KMT013_14')}</button>
+            <button id="B3_btn" class="large" data-bind="text: $vm.$i18n('KMT013_14'),click: closeModal"/>
         </div>
 
     </ui:define>

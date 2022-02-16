@@ -8,15 +8,20 @@ module nts.uk.at.view.kmt013.b {
     @bean()
     class ViewModel extends ko.ViewModel {
 
-        param: any;
+        param: KnockoutObservableArray<string> = ko.observableArray([]);
         items: KnockoutObservableArray<ItemModel>;
         currentCode: KnockoutObservable<any>;
         count: number = 100;
 
+        constructor(params: any) {
+            // data transfer from parent view call modal
+            super();
+        }
+
         created(params: any) {
             const vm = this;
-            // vm.param = params;
-            console.log(params)
+            $("#B3_btn").focus();
+            vm.param(params);
             vm.items = ko.observableArray([]);
             // for(let i = 1; i < 30; i++) {
             //     vm.items.push(new ItemModel('0000000000' + i, '基本給'));
@@ -31,15 +36,9 @@ module nts.uk.at.view.kmt013.b {
 
         closeModal() {
             const vm = this;
-            vm.$window.close({
-                // data return to parent
-            });
+            console.log(vm.param());
+            vm.$window.close();
         }
-    }
-
-    class PARAM {
-        public title: string = '';
-        public lstSelected: Array<string> = [];
     }
 
     class ItemModel {

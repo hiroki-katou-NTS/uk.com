@@ -21,7 +21,7 @@
             <button id="A1_1" tabindex="1" class="proceed" data-bind="text: $vm.$i18n('KMT013_2'), click: registerSupport"/>
             <button id="A1_2" tabindex="2" class="danger"
                     data-bind="text: $vm.$i18n('KMT013_3'), click: deleteSupport, enable: updateMode()"/>
-            <button id="A1_3" tabindex="3" data-bind="text: $vm.$i18n('KMT013_4'), click: openDialogCDL023, enable: updateMode()"/>
+            <button id="A1_3" tabindex="3" data-bind="text: $vm.$i18n('KMT013_4'), click: openDialogCDL023, visible: !isWorkplaceGroupMode(), enable: updateMode()"/>
         </div>
         <div id="contents-area" class="fixed-flex-layout">
             <!--<div class="fixed-flex-layout-left caret-right caret-background deprecate">-->
@@ -47,25 +47,26 @@
             </div>
             <div class="fixed-flex-layout-right">
                 <div>
-                    <span id="A3_1" class="label" data-bind="{ text: a3_1() }"></span>
-                    <span id="A3_2" class="label" data-bind="{ text: a3_2() }"></span>
+                    <span id="A3_1" class="label" data-bind="{ text: a3_1Txt() }"/>
+                    <span id="A3_2" class="label" data-bind="{ text: a3_2Txt() }"/>
                 </div>
                 <div id="A3_3"><hr/></div>
                 <div>
-                    <label id="A4_1" data-bind="{ text: a4_1() }"></label>
+                    <label id="A4_1" data-bind="{ text: a4_1Txt() }"/>
                 </div>
                 <div id="functions-area-right" style="margin-top: 5px">
-                    <button id="A4_2" tabindex="5" data-bind="text: $vm.$i18n('KMT013_6') , click: a4_2BtnClick"/>
-                    <button id="A4_3" tabindex="6" class="danger" data-bind="text: $vm.$i18n('KMT013_3'), click: a4_3BtnClick, enable: isA5Checked()"/>
+                    <button id="A4_2" tabindex="5" data-bind="text: $vm.$i18n('KMT013_6') , click: a4_2BtnClick, enable: isA2NotEmpty()"/>
+                    <button id="A4_3" tabindex="6" class="danger" data-bind="text: $vm.$i18n('KMT013_3'), click: a4_3BtnClick, enable: enableA43Btn()"/>
                 </div>
                 <div>
                     <table id="multi-list" data-bind="ntsGridList: {
                         height: 380,
                         options: items,
-                        optionsValue: 'code',
+                        optionsValue: 'id',
                         columns: ko.observableArray([
-                            { headerText: $i18n('KMT013_7'), key: 'code', width: 190 },
-                            { headerText: $i18n('KMT013_8'), key: 'name', width: 132, columnCssClass: 'limited-label', formatter: _.escape  }
+                            { headerText: 'ID', key: 'id', width: 0, hidden: true },
+                            { headerText: $i18n('KMT013_7'), key: 'code' },
+                            { headerText: $i18n('KMT013_8'), key: 'name' }
                         ]),
                         multiple: true,
                         value: currentCodeList
