@@ -15,6 +15,7 @@ public class CheckApprovalOperation {
 			if (approvalSetting.getSupervisorConfirmErrorAtr().value == ConfirmationOfManagerOrYouself.CAN_CHECK.value) {
 				return Optional.of(ConfirmationOfManagerOrYouself.CAN_CHECK);
 			}
+			return Optional.of(ConfirmationOfManagerOrYouself.CAN_NOT_CHECK);
 		}
 		return Optional.empty();
 //			} else {

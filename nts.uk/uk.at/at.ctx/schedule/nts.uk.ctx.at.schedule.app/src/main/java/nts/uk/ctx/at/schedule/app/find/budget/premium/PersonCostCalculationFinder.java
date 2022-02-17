@@ -184,6 +184,9 @@ public class PersonCostCalculationFinder {
     }
 
     public List<AttendanceNamePriniumDto> atNames(List<Integer> dailyAttendanceItemIds) {
+        if (dailyAttendanceItemIds == null || dailyAttendanceItemIds.isEmpty()){
+            return new ArrayList<>();
+        }
         List<AttendanceNamePriniumDto> data = atName.getDailyAttendanceItemName(dailyAttendanceItemIds);
         return data;
     }

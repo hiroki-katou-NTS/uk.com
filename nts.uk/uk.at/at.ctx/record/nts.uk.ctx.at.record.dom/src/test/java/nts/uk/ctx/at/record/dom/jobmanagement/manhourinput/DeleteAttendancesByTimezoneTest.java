@@ -46,28 +46,13 @@ public class DeleteAttendancesByTimezoneTest {
 		
 		List<AttendanceByTimezoneDeletion> attendanceDeletionLst = new ArrayList<>();
 		attendanceDeletionLst.add(new AttendanceByTimezoneDeletion(SupportFrameNo.of(1), AttendanceDeletionStatusEnum.COMPLETE));
-		attendanceDeletionLst.add(new AttendanceByTimezoneDeletion(SupportFrameNo.of(1), AttendanceDeletionStatusEnum.OVERWRITE));
+		attendanceDeletionLst.add(new AttendanceByTimezoneDeletion(SupportFrameNo.of(2), AttendanceDeletionStatusEnum.OVERWRITE));
 		
 		DeleteAttendancesByTimezone deletion = new DeleteAttendancesByTimezone("sId", GeneralDate.today(), attendanceDeletionLst);
 		
 		List<AtomTask> result = deletion.deleteAttendance(require);
 		
 		List<Integer> itemIds = new ArrayList<>();
-		
-		new Expectations() {
-			{
-				require.deleteBySupFrameNo(anyString, GeneralDate.today(), SupportFrameNo.of(1));
-			}
-		};
-		
-		
-		new Verifications() {{
-			require.deleteBySupFrameNo("sId", GeneralDate.today(), SupportFrameNo.of(1));
-			times = 0;
-			
-			require.deleteByListItemId("sId", GeneralDate.today(), itemIds);
-			times = 0;
-		}};
 		
 		for (AtomTask persist : result) {
 			persist.run();
@@ -76,6 +61,9 @@ public class DeleteAttendancesByTimezoneTest {
 		new Verifications() {{
 			require.deleteBySupFrameNo("sId", GeneralDate.today(), SupportFrameNo.of(1));
 			times = 1;
+			
+			require.deleteBySupFrameNo("sId", GeneralDate.today(), SupportFrameNo.of(2));
+			times = 0;
 			
 			require.deleteByListItemId("sId", GeneralDate.today(), itemIds);
 			times = 1;
@@ -101,24 +89,24 @@ public class DeleteAttendancesByTimezoneTest {
 		public void getAttendanceItems1() {
 			List<AttendanceByTimezoneDeletion> attendanceDeletionLst = new ArrayList<>();
 			attendanceDeletionLst.add(new AttendanceByTimezoneDeletion(SupportFrameNo.of(1), AttendanceDeletionStatusEnum.COMPLETE));
-			attendanceDeletionLst.add(new AttendanceByTimezoneDeletion(SupportFrameNo.of(1), AttendanceDeletionStatusEnum.OVERWRITE));
+			attendanceDeletionLst.add(new AttendanceByTimezoneDeletion(SupportFrameNo.of(2), AttendanceDeletionStatusEnum.OVERWRITE));
 			
 			DeleteAttendancesByTimezone deletion = new DeleteAttendancesByTimezone("sId", GeneralDate.today(), attendanceDeletionLst);
 			
-			List<Integer> itemIds = new ArrayList<>();
-			itemIds.add(1);
-			itemIds.add(2);
+			List<Integer> itemIds1 = new ArrayList<>();
+			itemIds1.add(1);
+			itemIds1.add(2);
 			
 			new Expectations() {
 				{
-					require.getAttendanceItemIds(SupportFrameNo.of(1));
-					result = itemIds;
+					require.getAttendanceItemIds(SupportFrameNo.of(2));
+					result = itemIds1;
 				}
 			};
 			
 			List<Integer> result = deletion.getAttendanceItems(require);
 			
-			assertThat(result).isEqualTo(itemIds);
+			assertThat(result).isEqualTo(itemIds1);
 			
 		}
 		

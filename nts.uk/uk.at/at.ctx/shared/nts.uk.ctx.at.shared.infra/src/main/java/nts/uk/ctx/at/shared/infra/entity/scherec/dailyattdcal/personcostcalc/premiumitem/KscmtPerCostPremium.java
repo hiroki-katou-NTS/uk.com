@@ -36,7 +36,7 @@ public class KscmtPerCostPremium extends ContractUkJpaEntity {
                                     e.getCompanyID(),
                                     histId,
                                     e.getID().value,
-                                    i
+                                    i.toString()
                             )
                     )).collect(Collectors.toList()));
                 }

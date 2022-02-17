@@ -207,8 +207,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             ]);
 
             self.genderOptions = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText('KMF004_55') },
-                { code: '2', name: nts.uk.resource.getText('KMF004_56') }
+                { code: 1, name: nts.uk.resource.getText('KMF004_55') },
+                { code: 2, name: nts.uk.resource.getText('KMF004_56') }
             ]);
 
 

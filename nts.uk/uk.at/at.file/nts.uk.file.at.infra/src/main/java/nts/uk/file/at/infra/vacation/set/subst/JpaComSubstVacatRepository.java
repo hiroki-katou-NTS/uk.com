@@ -52,9 +52,9 @@ public class JpaComSubstVacatRepository extends JpaRepository implements ComSubs
     private List<MasterData> buildMasterListData(NtsResultSet.NtsResultRecord rs) {
         List<MasterData> datas = new ArrayList<>();
         /*※13*/
-        boolean checkIsManager = rs.getString("MANAGE_ATR").equals("1");
+        boolean checkIsManager = rs.getBoolean("MANAGE_ATR");
         datas.add(buildARow(
-                getTextEnumManageDistinct(Integer.valueOf(rs.getString("MANAGE_ATR"))),
+                getTextEnumManageDistinct(rs.getBoolean("MANAGE_ATR") ? 1 : 0),
                 checkIsManager ? getTextEnumExpirationTime(Integer.valueOf(rs.getString("EXPIRATION_DATE_SET"))) : null,
                 checkIsManager ? getTextEnumApplyPermission(Integer.valueOf(rs.getString("ALLOW_PREPAID_LEAVE"))) : null,
         		checkIsManager ? Integer.valueOf(rs.getString("EXP_DATE_MNG_METHOD")) == 1?I18NText.getText("Enum_TermManagement_MANAGE_BASED_ON_THE_DATE"):I18NText.getText("Enum_TermManagement_MANAGE_BY_TIGHTENING"):null,

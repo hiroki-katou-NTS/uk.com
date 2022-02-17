@@ -295,7 +295,6 @@ public class OptionalItem extends AggregateRoot {
     /**
      * 計算処理
      * @param companyId 会社ID
-     * @param optionalItem 任意項目
      * @param formulaList 計算式リスト
      * @param formulaOrderList 計算式の並び順リスト
      * @param dailyRecordDto 日次データ
@@ -303,11 +302,11 @@ public class OptionalItem extends AggregateRoot {
      * @return 任意項目の計算結果
      */
     public CalcResultOfAnyItem caluculationFormula(String companyId,
-    												OptionalItem optionalItem,
     												List<Formula> formulaList,
     												List<FormulaDispOrder> formulaOrderList,
     												Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto,
-    												Optional<MonthlyRecordToAttendanceItemConverter> monthlyRecordDto) {
+    												Optional<MonthlyRecordToAttendanceItemConverter> monthlyRecordDto,
+    												PerformanceAtr performanceAtr) {
 	
 		//2019/8/9 UPD shuichi_ishida Redmine #108654　（記号順でなく、並び順でソート）
 		//任意項目計算式を記号の昇順でソート
@@ -335,7 +334,7 @@ public class OptionalItem extends AggregateRoot {
         List<ResultOfCalcFormula> calcResultAnyItem = new ArrayList<>();
         //計算式分ループ
         for(Formula formula : formulaList) {
-            calcResultAnyItem.add(formula.dicisionCalc(optionalItem, performanceAtr, calcResultAnyItem, dailyRecordDto, monthlyRecordDto));
+            calcResultAnyItem.add(formula.dicisionCalc(this, performanceAtr, calcResultAnyItem, dailyRecordDto, monthlyRecordDto));
         }
         //Listが空だった場合
         if(calcResultAnyItem.isEmpty()) {
@@ -351,15 +350,8 @@ public class OptionalItem extends AggregateRoot {
 				   											 resultOfCalcFormula.getCount(),
 				   											 resultOfCalcFormula.getTime(),
 				   											 resultOfCalcFormula.getMoney());
-        //小数点以下存在すればif内へ
-        //countの少数点以下の桁数を取得
-//    	int decimalCount = getPrecision(result.getCount().get());
-//        if(decimalCount > 0) {
-//        	result = result.reCreateCalcResultOfAnyItem(controlCountValue(result.getCount().get(),decimalCount), OptionalItemAtr.NUMBER);
-//        }
-        
         //上限下限チェック
-        result = this.inputControlSetting.getCalcResultRange().checkRange(result, this);
+        result = this.inputControlSetting.getCalcResultRange().checkRange(result, this, performanceAtr);
         
         return result;
     }

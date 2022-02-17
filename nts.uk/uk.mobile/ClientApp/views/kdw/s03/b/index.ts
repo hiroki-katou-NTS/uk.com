@@ -808,7 +808,7 @@ export class KdwS03BComponent extends Vue {
         let selectedCD = self.screenData[0][key];
         let keyList = _.keys(WORK_FRAME_MAP);
         let dateParam15: any = null, taskFrameNo: any = null;
-       
+        
         dateParam15 =  moment(self.params.date).format('YYYY/MM/DD');       
         for (let itemTaskKey in keyList) {
             if (_.includes(_.get(WORK_FRAME_MAP, keyList[itemTaskKey]), parseInt(self.getAttendanceItem(key).id))) {
@@ -816,6 +816,33 @@ export class KdwS03BComponent extends Vue {
                 break;	
             }
         }
+
+        let taskCode = '';       
+        switch (taskFrameNo) {
+            case 1:
+            case 2:
+                let key2 = 'A924';
+                let dataTemp2 = self.screenData[0][key2];
+                taskCode = _.isNil(dataTemp2) ? '' : dataTemp2;
+                break;
+            case 3:
+                let key3 = 'A925';
+                let dataTemp3 = self.screenData[0][key3];
+                taskCode = _.isNil(dataTemp3) ? '' : dataTemp3;
+                break;
+            case 4:
+                let key4 = 'A926';
+                let dataTemp4 = self.screenData[0][key4];
+                taskCode = _.isNil(dataTemp4) ? '' : dataTemp4;
+                break;
+            case 5:
+                let key5 = 'A927';
+                let dataTemp5 = self.screenData[0][key5];
+                taskCode = _.isNil(dataTemp5) ? '' : dataTemp5;
+                break;
+            default: taskCode = '';
+        }
+
         self.$modal(
             'kdls12a',
             {
@@ -824,7 +851,9 @@ export class KdwS03BComponent extends Vue {
                 showExpireDate: false,
                 baseDate: dateParam15,
                 taskFrameNo,
-                selectionCodeList: [selectedCD]
+                selectionCodeList: [selectedCD],
+                sid: self.params.employeeID,
+                taskCode
             }
         ).then((data: any) => {
             if (data) {

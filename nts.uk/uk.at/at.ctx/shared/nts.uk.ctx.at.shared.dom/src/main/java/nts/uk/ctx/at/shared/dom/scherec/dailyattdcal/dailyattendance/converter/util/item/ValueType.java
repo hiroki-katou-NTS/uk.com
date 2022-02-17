@@ -17,7 +17,8 @@ public enum ValueType {
 	AMOUNT(13, "AMOUNT", "金額"),
 	NUMBER(14, "NUMBER", "数"),
 	TIME_WITH_DAY(15, "TIME_WITH_DAY", "時刻（日区分付き）"),
-	AMOUNT_NUM(16, "AMOUNT", "金額");
+	AMOUNT_NUM(16, "AMOUNT", "金額"),
+	AMOUNT_LONG(17, "AMOUNT", "金額");
 
 	public final int value;
 	public final String name;
@@ -37,6 +38,14 @@ public enum ValueType {
 		return TIME.equals(this) || CLOCK.equals(this) || ATTR.equals(this)
 				|| NUMBER.equals(this) || COUNT.equals(this) || TIME_WITH_DAY.equals(this)
 				|| AMOUNT_NUM.equals(this);
+	}
+	
+	/**
+	 * LONGであるか判定する
+	 * @return　LONGである
+	 */
+	public boolean isLong() {
+		return AMOUNT_LONG.equals(this);
 	}
 	
 	/**

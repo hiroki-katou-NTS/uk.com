@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -31,6 +33,7 @@ import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftDataResul
  * 表示期間を変更する（シフト）
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ChangePeriodInShift {
 	
 	@Inject

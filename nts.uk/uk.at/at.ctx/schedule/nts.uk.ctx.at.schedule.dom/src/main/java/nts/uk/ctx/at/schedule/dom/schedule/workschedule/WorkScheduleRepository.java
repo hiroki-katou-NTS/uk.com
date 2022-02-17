@@ -34,11 +34,21 @@ public interface WorkScheduleRepository {
 
 	/**
 	 * 社員の期間分の勤務予定を取得する
+	 * 	JDBCを使います。
 	 * @param sid 社員ID
 	 * @param period 期間
 	 * @return 勤務予定(List)
 	 */
 	List<WorkSchedule> getListBySid(String sid, DatePeriod period);
+	
+	/**
+	 * 社員の期間分の勤務予定を取得する
+	 * JPAを使います。
+	 * @param sid 社員ID
+	 * @param period 期間
+	 * @return 勤務予定(List)
+	 */
+	List<WorkSchedule> getListBySidJpa(String sid, DatePeriod period);
 
 	void updateConfirmedState(WorkSchedule workSchedule);
 

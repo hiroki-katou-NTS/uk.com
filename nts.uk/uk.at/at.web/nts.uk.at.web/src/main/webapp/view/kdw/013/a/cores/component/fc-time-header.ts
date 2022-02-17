@@ -4,7 +4,7 @@ module nts.uk.ui.at.kdw013.timeheader {
         template:
         `<td data-bind="i18n: 'KDW013_25'"></td>
                 <!-- ko foreach: { data: $component.params.timesSet, as: 'time' } -->
-                    <td class="fc-day" style='position: relative;' data-bind="html: $component.formatTime(time), attr: { 'data-date': time.date }"></td>
+                    <td class="fc-day fc-times" style='position: relative;' data-bind="html: $component.formatTime(time), attr: { 'data-date': time.date }"></td>
                 <!-- /ko -->
                 <style rel="stylesheet">
                     .warningIcon {
@@ -117,15 +117,8 @@ module nts.uk.ui.at.kdw013.timeheader {
         getTimeString(date){
             const vm = this;
             const datas = ko.unwrap(vm.params.screenA.$datas);
-            let convert = _.find(_.get(datas, 'convertRes', []), cvr => { return moment(cvr.ymd).isSame(moment(date), 'days'); });
-            let listItems = [1305, 1349, 1393, 1437, 1481, 1525, 1569, 1613, 1657, 1701, 1745, 1789, 1833, 1877, 1921, 1965, 2009, 2053, 2097, 2141];
-            let sumList = [];
-            _.forEach(_.get(convert, 'manHrContents', []), hrc => {
-                if (listItems.indexOf(hrc.itemId) != -1 && !!hrc.value) {
-                    sumList.push(hrc.value);
-                }
-            });
-            return _.sum(_.map(sumList, s => Number(s)));
+            let totalWorktimes = _.filter(_.get(datas, 'totalWorktimes', []), twt => { return moment(twt.date).isSame(moment(date), 'days'); });
+            return _.sum(_.map(totalWorktimes, t => Number(t.taskTime)));
         }
         
         isNoCvrTaskList(date) {
@@ -137,27 +130,27 @@ module nts.uk.ui.at.kdw013.timeheader {
         }
         
         isHasWarning(date) {
-            const vm = this;
-            const datas = ko.unwrap(vm.params.screenA.$datas);
+            let vm = this;
+            let datas = ko.unwrap(vm.params.screenA.$datas);
 
             if (!datas) {
                 return false;
             }
 
-            const manHrTask = _.find(_.get(datas, 'dailyManHrTasks', []), hr => { return moment(hr.date).isSame(moment(date), 'days'); });
+            let manHrTask = _.find(_.get(datas, 'dailyManHrTasks', []), hr => { return moment(hr.date).isSame(moment(date), 'days'); });
 
-            const id = _.find(_.get(datas, 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days'); });
+            let id = _.find(_.get(datas, 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days'); });
 
-            const ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
+            let ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
 
-            const taskBlocks = _.get(manHrTask, 'taskBlocks', []);
+            let taskBlocks = _.get(manHrTask, 'taskBlocks', []);
 
             if (!id || !ouenTimeSheet.length) {
                 return false;
             }
 
             for (let i = 0; i < ouenTimeSheet.length; i++) {
-                const workNo = _.get(ouenTimeSheet[i], 'workNo');
+                let workNo = _.get(ouenTimeSheet[i], 'workNo');
                 
                 if (!_.find(taskBlocks, tb => _.find(tb.taskDetails, ['supNo', workNo]))) {
                     return true;
