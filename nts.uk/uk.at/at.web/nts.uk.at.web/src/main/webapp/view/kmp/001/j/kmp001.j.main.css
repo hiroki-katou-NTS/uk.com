@@ -1,0 +1,20 @@
+#radioGroup {
+	width: 300px;
+}
+
+.sizeInput {
+	width: 15px;
+}
+
+.labelJ2 {
+	width: 180px;
+	vertical-align: baseline;
+}
+
+#labelJ2_18 {
+    padding-top: 10px;
+}
+
+#right-side {
+	vertical-align: baseline;
+}

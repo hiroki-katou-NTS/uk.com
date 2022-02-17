@@ -169,7 +169,7 @@ module nts.uk.at.view.kdp010.i {
 				self.showSelectedAudio(self.dataShare.fromScreen === 'A');
 				self.buttonPositionNo(self.dataShare.buttonPositionNo);
 				if (self.dataShare.dataShare != undefined) {
-					let data = self.dataShare.dataShare.lstButtonSet ? self.dataShare.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataShare.buttonPositionNo)[0] : self.dataShare.dataShare;
+					let data = self.dataSlhare.dataShare.lstButtonSet ? self.dataShare.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataShare.buttonPositionNo)[0] : self.dataShare.dataShare;
 					if (data) {
 						self.checkGoOut(1);
 						self.letterColors(data.buttonDisSet.buttonNameSet.textColor);

@@ -208,17 +208,17 @@ export class KdpS01AComponent extends Vue {
                         displayBackGroundColor: ''
                     },
                     usrArt: 1,
-                    buttonType: null,
+                    stampType: null,
                     icon:'',
                     taskChoiceArt: 0
                 };
             
             if (button) {
-                let btnType = vm.checkType(button.buttonType.stampType == null ? null : button.buttonType.stampType.changeClockArt, 
-                    button.buttonType.stampType == null ? null : button.buttonType.stampType.changeCalArt, 
-                    button.buttonType.stampType == null ? null : button.buttonType.stampType.setPreClockArt, 
-                    button.buttonType.stampType == null ? null : button.buttonType.stampType.changeHalfDay, 
-                    button.buttonType.reservationArt);
+                let btnType = vm.checkType(button.stampType == null ? null : button.stampType.changeClockArt, 
+                    button.stampType == null ? null : button.stampType.changeCalArt, 
+                    button.stampType == null ? null : button.stampType.setPreClockArt, 
+                    button.stampType == null ? null : button.stampType.changeHalfDay, 0
+                    );
                 
                 // 応援利用＝Trueの場合				
                 if (vm.settingStampCommon.supportUse === true && _.includes ([14, 15, 16, 17, 18], btnType)) {
@@ -239,11 +239,11 @@ export class KdpS01AComponent extends Vue {
                     buttonSetting = button;
                 }
 
-                buttonSetting.icon = vm.getIcon(button.buttonType.stampType == null ? null : button.buttonType.stampType.changeClockArt, 
-                    button.buttonType.stampType == null ? null : button.buttonType.stampType.changeCalArt, 
-                    button.buttonType.stampType == null ? null : button.buttonType.stampType.setPreClockArt, 
-                    button.buttonType.stampType == null ? null : button.buttonType.stampType.changeHalfDay, 
-                    button.buttonType.reservationArt) + '.png';
+                buttonSetting.icon = vm.getIcon(button.stampType == null ? null : button.stampType.changeClockArt, 
+                    button.stampType == null ? null : button.stampType.changeCalArt, 
+                    button.stampType == null ? null : button.stampType.setPreClockArt,
+                    button.stampType == null ? null : button.stampType.changeHalfDay, 
+                    0) + '.png';
                 buttonSetting.taskChoiceArt = button.taskChoiceArt;
                 }
             vm.setBtnColor(buttonSetting, stampToSuppress);

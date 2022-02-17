@@ -1558,6 +1558,7 @@ module nts.uk.at.kdp003.a {
 	}
 
 	interface StampSetting {
+        authcMethod: any;
 		authcFailCnt: number;
 		backGroundColor: string;
 		buttonEmphasisArt: boolean;
