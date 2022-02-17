@@ -66,7 +66,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                                         </td>
                                         <td>
                                             <div class="div_line A10_D3" data-bind="if: $parent.enableInput()">
-                                                <a tab-index="8" class="hyperlink" data-bind="text: wkTypeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
+                                                <a tab-index="8" class="hyperlink" style="color: #000" data-bind="text: wkTypeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
                                             </div>
                                             <div class="div_line A10_D3" data-bind="if: !$parent.enableInput()">
                                                 <span tab-index="8" data-bind="text: wkTypeName"></span>
@@ -84,7 +84,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                                         </td>
                                         <td>
                                             <div class="div_line A10_D5" data-bind="if: $parent.enableInput()">
-                                                <a tab-index="10" class="hyperlink" data-bind="text: wkTimeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
+                                                <a tab-index="10" class="hyperlink" style="color: #000" data-bind="text: wkTimeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
                                             </div>
                                             <div class="div_line A10_D5" data-bind="if: !$parent.enableInput()">
                                                 <span tab-index="10" data-bind="text: wkTimeName"></span>

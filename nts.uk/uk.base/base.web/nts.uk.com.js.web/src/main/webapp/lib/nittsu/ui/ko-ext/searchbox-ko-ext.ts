@@ -208,7 +208,7 @@ module nts.uk.ui.koExtentions {
             let tabIndex = _.isEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
             $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
             $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor fit-to-right ntsSearchBox_Component' type='text' /></span></div>");  
-            $container.find('.input-wrapper').append("<i id='search-icon' class='img-icon'></i>");
+            // $container.find('.input-wrapper').append("<i id='search-icon' class='img-icon'></i>");
             $container.append("<div class='input-wrapper'><button class='search-btn fit-to-left fit-to-editor ntsSearchBox_Component'>" + searchText + "</button></div>"); 
             
             if(!_.isEmpty(label)){
@@ -246,7 +246,8 @@ module nts.uk.ui.koExtentions {
             
             $input.attr("placeholder", placeHolder);
             $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
-            $input.outerWidth($container.outerWidth(true) - minusWidth + 8);　
+            $input.outerWidth($container.outerWidth(true) - minusWidth - 6);
+            $input.css('margin-right', '6px');　
             
             let primaryKey = ko.unwrap(data.targetKey);
             let searchObject = new SearchPub(primaryKey, searchMode, dataSource, fields, childField);
