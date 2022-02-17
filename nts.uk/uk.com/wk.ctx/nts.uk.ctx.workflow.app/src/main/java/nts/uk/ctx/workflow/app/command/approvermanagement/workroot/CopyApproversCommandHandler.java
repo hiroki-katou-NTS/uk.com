@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.CopyPersonalApprovalRootDomainService;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.require.RequireService;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.require.RequireService.Require;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -22,10 +23,11 @@ import nts.uk.shr.com.context.AppContexts;
 public class CopyApproversCommandHandler extends CommandHandler<CopyApproversCommand> {
 
 	@Inject
-	private Require require;
+	private RequireService requireService;
 
 	@Override
 	protected void handle(CommandHandlerContext<CopyApproversCommand> context) {
+		Require require = requireService.createRequire();
 		String cid = AppContexts.user().companyId();
 		CopyApproversCommand command = context.getCommand();
 		// 1. 複写する(Require, 社員ID, 社員ID, 年月日)

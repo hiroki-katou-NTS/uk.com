@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.UpdateSelfApprovalRootDomainService;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.require.RequireService;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.require.RequireService.Require;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -23,11 +24,12 @@ import nts.uk.shr.com.context.AppContexts;
 public class UpdateSelfApproverCommandHandler extends CommandHandler<UpdateSelfApproverCommand> {
 
 	@Inject
-	private Require require;
-
+	private RequireService requireService;
+	
 	@Override
 	protected void handle(CommandHandlerContext<UpdateSelfApproverCommand> context) {
 		String cid = AppContexts.user().companyId();
+		Require require = requireService.createRequire();
 		UpdateSelfApproverCommand command = context.getCommand();
 
 		// 1. 変更登録する(Require, 会社ID, 社員ID, 期間, 承認者設定パラメータ)
