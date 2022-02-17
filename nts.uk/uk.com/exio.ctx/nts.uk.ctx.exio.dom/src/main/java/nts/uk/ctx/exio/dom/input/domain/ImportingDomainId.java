@@ -32,6 +32,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.StampCanonica
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.EnterpriseStampCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskChildCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.task.TaskAssignEmpCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.task.TaskAssignWkpCanonicalization;
 
 /**
  * 受入グループID
@@ -120,6 +122,12 @@ public enum ImportingDomainId {
 
 	/** 打刻データE版 */
 	STAMP_ENTERPRISE(131, EnterpriseStampCanonicalization::new),
+
+	/** 職場別作業の絞込 */
+	TASK_ASSIGN_WORKPLACE(143, TaskAssignWkpCanonicalization::new),
+
+	/** 社員別作業の絞込 */
+	TASK_ASSIGN_EMPLOYEE(144, TaskAssignEmpCanonicalization::new),
 	
 	;
 	

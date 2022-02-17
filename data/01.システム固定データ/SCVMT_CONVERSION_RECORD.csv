@@ -50,8 +50,10 @@
 "短時間勤務","KSHMT_SHORTTIME_TS",2,"d5c3b896-6fa1-44d5-9045-cba334fecd54","勤務回数２用","短時間2開始時刻 IS NOT NULL",false
 "社員の年休付与設定","KRCMT_HDPAID_BASIC",1,"e1a0369f-c882-4edc-b566-0622214dd035","",,true
 "社員の特別休暇付与設定","KRCMT_HDSP_BASIC",1,"0e12f3f7-5d56-4180-ab3b-88d1805f99b5","",,true
+"社員別作業の絞込","KSRMT_TASK_ASSIGN_SYA",1,"854e7916-50bf-4165-a19d-3f860b010384","","",1
 "積立休暇付与残数データ","KRCDT_HDSTK_REM",1,"8944b23c-0c77-474b-a03a-1d1686a552fe","",,true
 "職場マスタ","BSYMT_WKP_CONFIG_2",1,"8e2c3182-e4bd-4d4b-9b35-afb8eec509de","","",true
 "職場マスタ","BSYMT_WKP_INFO",1,"8e2c3182-e4bd-4d4b-9b35-afb8eec509de","","",true
+"職場別作業の絞込","KSRMT_TASK_ASSIGN_WKP",1,"66cbfbbb-2d02-42f2-85d0-4b23156e6fd9","","",1
 "設備マスタ","OFIDT_EQUIPMENT",1,"5394007d-42bc-451c-bbe0-c0479be44759","","",true
 "設備分類マスタ","OFIDT_EQUIPMENT_CLS",1,"2ec30cfc-3d1e-479d-8f4f-53fb6ff6d1bc","","",true
