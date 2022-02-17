@@ -15,6 +15,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class SettingsStampCommonDto {
 	
+	// 応援利用
+	public boolean supportUse;
+	
 	//臨時利用
 	public boolean temporaryUse;
 	
@@ -24,4 +27,6 @@ public class SettingsStampCommonDto {
 	// 入退門管理追加
 	// public boolean manageEntryExit;
 	public boolean entranceExitUse;
+	
+	
 }
