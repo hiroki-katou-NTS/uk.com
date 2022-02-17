@@ -76,6 +76,10 @@ label {
 	width: 85px;
 }
 
+.switchbox-wrappers > label.radio-wrapper.nts-input {
+  width: auto !important;
+}
+
 .A10-left{
 	width: 30px;
 	/* display: flex; */

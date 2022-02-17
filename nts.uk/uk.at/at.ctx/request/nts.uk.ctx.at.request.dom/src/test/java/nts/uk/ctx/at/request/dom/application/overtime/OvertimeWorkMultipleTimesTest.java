@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -366,6 +367,31 @@ public class OvertimeWorkMultipleTimesTest {
                         null,
                         null
                 ));
+
+                require.process((IntegrationOfDaily) any, (ChangeDailyAttendance) any);
+                result = new IntegrationOfDaily(
+                        "",
+                        GeneralDate.today(),
+                        null,
+                        null,
+                        null,
+                        Optional.empty(),
+                        new ArrayList<>(),
+                        Optional.empty(),
+                        new BreakTimeOfDailyAttd(breakTimes),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        new ArrayList<>(),
+                        Optional.empty(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        Optional.empty()
+                );
 
                 require.tempCalculateOneDayAttendanceTime(calculationParams);
                 result = new IntegrationOfDaily(
