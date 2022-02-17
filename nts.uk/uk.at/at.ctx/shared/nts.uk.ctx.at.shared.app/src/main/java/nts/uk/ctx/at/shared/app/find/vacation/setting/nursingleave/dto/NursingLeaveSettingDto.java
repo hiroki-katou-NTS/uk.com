@@ -9,10 +9,10 @@ import java.util.Optional;
 
 import lombok.Builder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 @Builder
@@ -138,13 +138,6 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 	}
 
 	@Override
-	public void setTimeCareNursingSet(TimeCareNursingSet timeCareNursingSet) {
-		this.timeDigestiveUnit = timeCareNursingSet.getTimeDigestiveUnit().value;
-		this.manageDistinct = timeCareNursingSet.getManageDistinct().value;
-
-	}
-
-	@Override
 	public void setNumPer1(Integer numPer1) {
 		this.nursingNumberPerson = 1;
 
@@ -154,6 +147,12 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 	public void setNumPer2(Integer numPer2) {
 		this.nursingNumberPerson = 2;
 
+	}
+
+	@Override
+	public void setTimeVacationDigestUnit(TimeVacationDigestUnit timeVacationDigestUnit) {
+		this.timeDigestiveUnit = timeVacationDigestUnit.getDigestUnit().value;
+		this.manageDistinct = timeVacationDigestUnit.getManage().value;
 	}
 
 	

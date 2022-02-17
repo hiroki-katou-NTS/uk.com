@@ -145,7 +145,7 @@
 
 /* step 2 */
 #ccgcomponent {
-	margin-left: -30px;
+	margin-left: -28px;
 }
 
 #step2_content {
@@ -384,4 +384,10 @@ body {
 
 #search_box .form-group {
 	margin-bottom: 0px !important;
+}
+#ccg001-btn-search-drawer {
+	left: 300px !important;
+}
+#component-ccg001 {
+	margin-left: 43px;
 }

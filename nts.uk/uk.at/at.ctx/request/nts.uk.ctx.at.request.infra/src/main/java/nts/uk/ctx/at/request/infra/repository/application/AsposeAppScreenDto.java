@@ -10,6 +10,7 @@ import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.content.ComplementLeaveAppLink;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 
 @Getter
@@ -65,10 +66,11 @@ public class AsposeAppScreenDto {
 				domain.getInputDate().toString("M/d(E) H:mm"), 
 				I18NText.getText(domain.getReflectionStatus()), 
 				domain.getOpApprovalStatusInquiry().isPresent() ? domain.getOpApprovalStatusInquiry().get().toString() : "", 
-				convertStartEndDate(domain.getOpAppStartDate(), domain.getOpAppEndDate(), domain.getAppType(), domain.getAppDate()));
+				convertStartEndDate(domain.getOpAppStartDate(), domain.getOpAppEndDate(), domain.getAppType(), domain.getAppDate(), domain.getOpComplementLeaveApp()));
 	}
 	
-	public static String convertStartEndDate(Optional<GeneralDate> startDate, Optional<GeneralDate> endDate, ApplicationType appType, GeneralDate appDate) {
+	public static String convertStartEndDate(Optional<GeneralDate> startDate, Optional<GeneralDate> endDate, ApplicationType appType, 
+	        GeneralDate appDate, Optional<ComplementLeaveAppLink> opComplementLeaveApp) {
 		String result = "";
 		
 		if(startDate.isPresent() && endDate.isPresent()) {
@@ -83,9 +85,20 @@ public class AsposeAppScreenDto {
 			}
 		}
 		if(appType.value == 10) {
-			result = new StringBuilder(result)
-					.append("\n'")
-					.append(appDate.toString("M/d(E)")).toString();
+		    if (opComplementLeaveApp.isPresent() && opComplementLeaveApp.get().getApplication() != null) {
+		        if (opComplementLeaveApp.get().getComplementLeaveFlg() == 1) {
+		            result = new StringBuilder(result)
+		                    .append("\n")
+		                    .append(opComplementLeaveApp.get().getLinkAppDate().toString("M/d(E)"))
+		                    .toString();
+		        } else 
+		            result = new StringBuilder(opComplementLeaveApp.get().getLinkAppDate().toString("M/d(E)"))
+		            .append("\n")
+		            .append(result)
+		            .toString();
+		    } else {
+    			result = new StringBuilder(result).toString();
+		    }
 		}
 		
 		return result;

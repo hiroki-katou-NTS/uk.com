@@ -137,6 +137,9 @@
 	padding: 0px !important;
 }
 .tabs-panel.has-content {
-    width: 270px;
+    width: 290px;
     overflow: hidden;
+}
+#component-ccg001 {
+	margin-left: 23px;
 }

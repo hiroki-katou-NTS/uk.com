@@ -48,15 +48,18 @@ module nts.uk.com.view.kfp001.h.viewmodel {
         
         search() {
             let self = this;
-            self.startPage();
-
-            var screenModel = new viewmodel.ScreenModel(self.periodValue());
-            screenModel.startPage().done(function () {
-                __viewContext.bind(screenModel);
-                screenModel.bindLinkClick();
-                $(".ntsStartDatePicker").focus();
-                $('#list_container').attr('tabindex', '4');
-            });
+            $('#period').ntsError('validate');
+            setTimeout(() => {
+                if (!$('#period').ntsError('hasError')) {
+                    var screenModel = new viewmodel.ScreenModel(self.periodValue());
+                    screenModel.startPage().done(function () {
+                        __viewContext.bind(screenModel);
+                        screenModel.bindLinkClick();
+                        $(".ntsStartDatePicker").focus();
+                        $('#list_container').attr('tabindex', '4');
+                    });
+                }
+            }, 1);
         }
         
         private closeDialog() {

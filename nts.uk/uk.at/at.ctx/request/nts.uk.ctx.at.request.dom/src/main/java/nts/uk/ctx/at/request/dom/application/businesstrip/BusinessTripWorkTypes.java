@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 @AllArgsConstructor
@@ -17,4 +18,6 @@ public class BusinessTripWorkTypes {
     // 勤務種類
     private WorkType workType;
 
+    // 就業時間帯の設定
+    private WorkTimeSetting workTimeSetting;
 }
