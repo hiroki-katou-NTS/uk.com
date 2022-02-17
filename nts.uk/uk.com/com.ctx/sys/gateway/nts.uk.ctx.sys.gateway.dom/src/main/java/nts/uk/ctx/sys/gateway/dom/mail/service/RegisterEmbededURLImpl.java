@@ -88,7 +88,7 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		if (!Objects.isNull(urlInfo)){
 			String serverPath = AppContexts.requestedWebApi().getHostApi().replaceFirst("at", "com").replaceFirst("mobile", "com");
 			String apiPath = "view/ccg/033/index.xhtml";
-			return (serverPath + apiPath +"?id="+ urlInfo.getEmbeddedId());
+			return (serverPath + apiPath +"?tcd=" + contractCD + "&id="+ urlInfo.getEmbeddedId());
 		}
 		return Strings.EMPTY;
 		
