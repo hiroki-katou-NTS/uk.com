@@ -110,7 +110,7 @@ public class GetWkpGroupRelatedInfoFileQuery {
                     }
 					@Override
 					public List<String> getAllEmpCanReferByWorkplaceGroup(String empId, GeneralDate date, DatePeriod period) {
-						// TODO 自動生成されたメソッド・スタブ
+						// don't have to implement it
 						return null;
 					}
                     @Override
