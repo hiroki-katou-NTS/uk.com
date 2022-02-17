@@ -2,6 +2,8 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 	@bean()
 	export class Cmm018XViewModel extends ko.ViewModel {
 		systemAtr: KnockoutObservable<number> = ko.observable(SystemAtr.EMPLOYMENT);
+		mode: KnockoutObservable<number> = ko.observable(0);
+
 		created() {
 			const self = this;
 			let url = $(location).attr('search');
