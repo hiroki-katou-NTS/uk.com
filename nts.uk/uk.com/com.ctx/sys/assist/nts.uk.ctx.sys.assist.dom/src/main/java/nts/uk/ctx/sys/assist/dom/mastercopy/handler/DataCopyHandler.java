@@ -4,6 +4,7 @@ import lombok.val;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.shr.com.company.CompanyId;
 import nts.uk.shr.com.constants.DefaultSettingKeys;
+import org.apache.logging.log4j.util.Strings;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -46,7 +47,7 @@ public class DataCopyHandler {
         this.keyValueHolder = keyValueHolder;
         this.tableName = tableName;
 
-        this.selectQuery = "SELECT CONTRACT_CD, CID, *, " + String.join("," + keys)
+        this.selectQuery = "SELECT CONTRACT_CD, CID, *, " + Strings.join(keys, ',')
                 + " FROM " + tableName
                 + " WHERE CID = ?";
 
@@ -65,9 +66,6 @@ public class DataCopyHandler {
             return;
         }
 
-        // 既存データをSELECT
-        List<TableRow> oldDatas = getTableRows(this.companyId.getValue());
-
         if (copyMethod == CopyMethod.REPLACE_ALL) {
             // 既存データをDELETE（会社IDのみ指定で全削除）
             this.entityManager.createNativeQuery(this.deleteQuery)
@@ -75,6 +73,8 @@ public class DataCopyHandler {
                     .executeUpdate();
         }
 
+        // 既存データをSELECT
+        List<TableRow> oldDatas = getTableRows(this.companyId.getValue());
         if (copyMethod == CopyMethod.DO_NOTHING && !oldDatas.isEmpty()) {
             // DO_NOTHINGの場合、既存データが１つでもあれば何もしない
             return;

@@ -33,6 +33,10 @@ public class CompanyId {
 		return companyId.split("-")[0];
 	}
 
+	public String getContractCode() {
+		return getContractCodeOf(value);
+	}
+
 	public String getCompanyCode() {
 		return getCompanyCode(value);
 	}

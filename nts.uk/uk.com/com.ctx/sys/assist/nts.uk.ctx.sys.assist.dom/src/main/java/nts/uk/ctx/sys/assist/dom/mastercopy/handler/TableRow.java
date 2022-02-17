@@ -2,8 +2,10 @@ package nts.uk.ctx.sys.assist.dom.mastercopy.handler;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.company.CompanyId;
+import nts.uk.shr.com.constants.DefaultSettingKeys;
 import nts.uk.shr.com.tenant.TenantCode;
 
 import java.sql.Date;
@@ -39,9 +41,25 @@ public class TableRow {
         updateInfo = insertInfo;
         exclusVer = 0;
 
+        val replacedRowData = Arrays.asList(rowData).stream()
+                .map(v -> replaceCompanyId(newCompanyId, v))
+                .collect(Collectors.toList());
         int indexKeys = rowData.length - keysSize;
-        keys = Arrays.asList(Arrays.copyOf(rowData, indexKeys));
-        contents = Arrays.asList(Arrays.copyOfRange(rowData, ColumnIndex.CONTENTS_START, indexKeys));
+        keys = replacedRowData.subList(indexKeys, rowData.length);
+        contents = replacedRowData.subList(ColumnIndex.CONTENTS_START, indexKeys);
+    }
+
+    private Object replaceCompanyId(CompanyId newCompanyId, Object v) {
+        if (v instanceof String) {
+            String s = (String) v;
+            if (s.equals(DefaultSettingKeys.CONTRACT_CODE)) {
+                return newCompanyId.getContractCode();
+            }
+            if (s.equals(DefaultSettingKeys.COMPANY_ID)) {
+                return newCompanyId.getValue();
+            }
+        }
+        return v;
     }
 
     public boolean isSameKey(TableRow other) {
