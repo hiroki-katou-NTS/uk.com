@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
@@ -633,6 +634,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				workingTimeOfDaily, null, null, null);
 
 		WorkSchedule workSchedule = new WorkSchedule(sID, yMD, null, null, null, null, null, taskSchedule,
+				SupportSchedule.createWithEmptyList(), // TODO developers are going to update
 				Optional.ofNullable(null), Optional.ofNullable(optAttendanceTime), Optional.ofNullable(null),
 				Optional.ofNullable(null));
 		return workSchedule;

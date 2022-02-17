@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendance
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -196,9 +197,11 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	 * @return
 	 */
 	public List<TimeSpanForCalc> getTimeOfTimeLeavingAtt(){
-		return this.timeLeavingWorks.stream().map(c -> {
-			return c.getTimespan();
-		}).collect(Collectors.toList());
+		
+		return this.timeLeavingWorks.stream()
+				.sorted(Comparator.comparing(TimeLeavingWork::getWorkNo))
+				.map(TimeLeavingWork::getTimespan)
+				.collect(Collectors.toList());
 	}
 	
 	/**

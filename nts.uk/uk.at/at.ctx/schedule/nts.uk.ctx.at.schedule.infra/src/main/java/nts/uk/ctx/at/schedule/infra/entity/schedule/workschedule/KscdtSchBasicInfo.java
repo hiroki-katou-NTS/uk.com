@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
@@ -337,6 +338,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				breakTime, 
 				lstEditState, 
 				taskSchedule, 
+				SupportSchedule.createWithEmptyList(), //TODO developers are going to update
 				Optional.ofNullable(optTimeLeaving), 
 				Optional.ofNullable(attendance), 
 				Optional.ofNullable(optSortTimeWork), 
