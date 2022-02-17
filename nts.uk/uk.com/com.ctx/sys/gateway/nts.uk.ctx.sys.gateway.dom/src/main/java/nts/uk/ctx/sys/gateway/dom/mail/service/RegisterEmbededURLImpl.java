@@ -42,20 +42,6 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 	private CollectCompanyList collectCompanyList;
 
 	@Override
-	public String obtainApplicationEmbeddedUrl(String appId, int appType, int prePostAtr, String employeeId) {
-		return this.registerEmbeddedForApp(appId, appType, prePostAtr, "", employeeId);
-	}
-
-	@Override
-	public String registerEmbeddedForApp(String appId, int appType, int prePostAtr, String loginId, String employeeId) {
-		EmbeddedUrlScreenID embeddedUrlScreenID = this.getEmbeddedUrlRequestScreenID(appType, prePostAtr);
-		List<UrlTaskIncre> taskInce = new ArrayList<>();
-		taskInce.add(UrlTaskIncre.createFromJavaType(null, null, null, appId, appId));
-		return this.embeddedUrlInfoRegis(embeddedUrlScreenID.getProgramId(), embeddedUrlScreenID.getDestinationId(), 1, 1, 
-				employeeId, "000000000000", loginId, "", 0, taskInce);
-	}
-
-	@Override
 	public String embeddedUrlInfoRegis(String programId, String screenId, Integer periodCls, Integer numOfPeriod, 
 			String employeeId, String contractCD, String loginId, String employeeCD, Integer isCompanyNotLogin, List<UrlTaskIncre> taskIncidental) {
 		if (loginId.isEmpty() && employeeId.isEmpty()) {
@@ -101,10 +87,6 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		UrlExecInfo urlInfo = this.updateEmbeddedUrl(cid, contractCD, loginId, employeeCD, employeeId, programId, screenId, issueDate, expiredDate, taskIncidental);
 		if (!Objects.isNull(urlInfo)){
 			String serverPath = AppContexts.requestedWebApi().getHostApi().replaceFirst("at", "com").replaceFirst("mobile", "com");
-			/** TODO: check for develop environment */
-			if(serverPath.contains("localhost:3000")){
-				serverPath = serverPath.replaceFirst("3000", "8080");
-			}
 			String apiPath = "view/ccg/033/index.xhtml";
 			return (serverPath + apiPath +"?id="+ urlInfo.getEmbeddedId());
 		}
