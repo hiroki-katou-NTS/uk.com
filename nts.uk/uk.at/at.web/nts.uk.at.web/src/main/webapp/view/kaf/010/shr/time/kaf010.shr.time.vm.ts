@@ -198,8 +198,8 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
         mounted() {
 			const self = this;
             $("#fixed-table").ntsFixedTable({ height: 100 });
-			$("#fixed-overtime-hour-table").ntsFixedTable({ height: 120 });
-			$("#fixed-table-holiday").ntsFixedTable({ height: 120 });
+			$("#fixed-overtime-hour-table").ntsFixedTable({ height: 136 });
+			$("#fixed-table-holiday").ntsFixedTable({ height: 136 });
 			$("#fixed-table-holiday-test").ntsFixedTable({ height: 216 });
         }
     }
