@@ -14,9 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class SettingsStampCommonDto {
-
-	//応援利用
-	public boolean supportUse;
 	
 	//臨時利用
 	public boolean temporaryUse;
