@@ -10,9 +10,11 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employm
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.CopyPersonalApprovalRootDomainService;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.CreateEmployeeInterimDataDomainService;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.CreatePersonalApprovalRootDomainService;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.CreateSelfApprovalRootDomainService;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.GetSelfApprovalSettingsDomainService;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.SetOperationModeDomainService;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.UpdateApprovalRootHistoryDomainService;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.UpdateSelfApprovalRootDomainService;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ApproverOperationSettingsRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.service.CreateDailyApprover;
 
@@ -42,7 +44,8 @@ public class RequireService {
 	public interface Require extends ChangePersonalApprovalRootDomainService.Require,
 			CopyPersonalApprovalRootDomainService.Require, CreateEmployeeInterimDataDomainService.Require,
 			CreatePersonalApprovalRootDomainService.Require, UpdateApprovalRootHistoryDomainService.Require,
-			SetOperationModeDomainService.Require, GetSelfApprovalSettingsDomainService.Require {
+			SetOperationModeDomainService.Require, GetSelfApprovalSettingsDomainService.Require,
+			CreateSelfApprovalRootDomainService.Require, UpdateSelfApprovalRootDomainService.Require {
 
 	}
 }
