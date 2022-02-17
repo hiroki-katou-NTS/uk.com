@@ -26,7 +26,7 @@ th, td {
 
 .nts-fixed-table .nts-editor-wrapped input {
 	background-color: transparent;
-	border-color: transparent !important;
+	border-color: transparent;
 }
 
 table.left-aligned th,
