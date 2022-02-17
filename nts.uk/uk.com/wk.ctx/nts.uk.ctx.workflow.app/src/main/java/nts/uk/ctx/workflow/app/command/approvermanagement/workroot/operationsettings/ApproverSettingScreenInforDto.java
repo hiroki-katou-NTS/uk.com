@@ -47,4 +47,5 @@ public class ApproverSettingScreenInforDto {
 				Optional.ofNullable(processMemo == null ? null : new ApproverInputExplanation(processMemo)),
 				Optional.ofNullable(attentionMemo == null ? null : new ApproverInputCareful(attentionMemo)));
 	}
+	
 }
