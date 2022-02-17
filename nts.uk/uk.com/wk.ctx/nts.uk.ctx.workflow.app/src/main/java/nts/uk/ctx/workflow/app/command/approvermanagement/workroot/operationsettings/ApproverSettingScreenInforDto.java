@@ -15,31 +15,40 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.App
 @Data
 @Builder
 public class ApproverSettingScreenInforDto {
-	
-	/** 項目1の名称 */	
+
+	/** 項目1の名称 */
 	private String firstItemName;
-	
-	/** 項目2の名称 */	
+
+	/** 項目2の名称 */
 	private String secondItemName;
-	
-	/** 項目3の名称 */	
+
+	/** 項目3の名称 */
 	private String thirdItemName;
-	
-	/** 項目4の名称 */	
+
+	/** 項目4の名称 */
 	private String fourthItemName;
-	
+
 	/** 項目5の名称 */
 	private String fifthItemName;
-	
+
 	/** 手順の説明 */
 	private String processMemo;
-	
+
 	/** 表示する注意内容 */
 	private String attentionMemo;
-	
+
+	public static ApproverSettingScreenInforDto fromValueObject(ApproverSettingScreenInfor domain) {
+		return ApproverSettingScreenInforDto.builder().firstItemName(domain.getFirstItemName().v())
+				.secondItemName(domain.getSecondItemName().map(ApproverItemName::v).orElse(null))
+				.thirdItemName(domain.getThirdItemName().map(ApproverItemName::v).orElse(null))
+				.fourthItemName(domain.getFourthItemName().map(ApproverItemName::v).orElse(null))
+				.fifthItemName(domain.getFifthItemName().map(ApproverItemName::v).orElse(null))
+				.processMemo(domain.getProcessMemo().map(ApproverInputExplanation::v).orElse(null))
+				.attentionMemo(domain.getAttentionMemo().map(ApproverInputCareful::v).orElse(null)).build();
+	}
+
 	public ApproverSettingScreenInfor toValueObject() {
-		return new ApproverSettingScreenInfor(
-				new ApproverItemName(firstItemName),
+		return new ApproverSettingScreenInfor(new ApproverItemName(firstItemName),
 				Optional.ofNullable(secondItemName == null ? null : new ApproverItemName(secondItemName)),
 				Optional.ofNullable(thirdItemName == null ? null : new ApproverItemName(thirdItemName)),
 				Optional.ofNullable(fourthItemName == null ? null : new ApproverItemName(fourthItemName)),
