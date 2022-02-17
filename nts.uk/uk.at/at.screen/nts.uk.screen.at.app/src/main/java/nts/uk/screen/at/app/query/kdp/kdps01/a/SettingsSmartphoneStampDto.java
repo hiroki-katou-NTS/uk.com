@@ -29,18 +29,11 @@ public class SettingsSmartphoneStampDto {
 	@Setter
 	private List<StampPageLayoutDto> pageLayoutSettings;
 
-	// 打刻ボタンを抑制する
-	private boolean buttonEmphasisArt;
-	
-	// 位置情報を利用する
-	private boolean locationInfoUse;
-
 	public static SettingsSmartphoneStampDto fromDomain(SettingsSmartphoneStamp domain) {
 
 		return new SettingsSmartphoneStampDto(
 				domain.getCid(),
 				DisplaySettingsStampScreenDto.fromDomain(domain.getDisplaySettingsStampScreen()), 
-				domain.getPageLayoutSettings().stream().map(setting-> StampPageLayoutDto.fromDomain(setting)).collect(Collectors.toList()),
-				domain.isButtonEmphasisArt(), domain.getLocationInfoUse().isUse());
+				domain.getPageLayoutSettings().stream().map(setting-> StampPageLayoutDto.fromDomain(setting)).collect(Collectors.toList()));
 	}
 }

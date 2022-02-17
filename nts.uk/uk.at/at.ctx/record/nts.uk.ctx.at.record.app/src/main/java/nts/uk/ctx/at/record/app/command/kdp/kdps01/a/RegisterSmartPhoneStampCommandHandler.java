@@ -13,10 +13,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-
 import nts.uk.ctx.at.auth.dom.adapter.login.IGetInfoForLogin;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
@@ -42,8 +40,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
-import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
@@ -120,9 +116,6 @@ public class RegisterSmartPhoneStampCommandHandler
 	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
 
 	@Inject
-	private WorkLocationRepository workLocationRepository;
-
-	@Inject
 	private EmpInfoTerminalRepository empInfoTerminalRepository;
 
 	@Inject
@@ -185,7 +178,7 @@ public class RegisterSmartPhoneStampCommandHandler
 
 		EnterStampFromSmartPhoneServiceImpl require = new EnterStampFromSmartPhoneServiceImpl(stampCardRepo,
 				stampCardEditRepo, companyAdapter, sysEmpPub, stampDakokuRepo, getSettingRepo,
-				createDailyResults, temporarilyReflectStampDailyAttd, workLocationRepository, empInfoTerminalRepository,
+				createDailyResults, temporarilyReflectStampDailyAttd, empInfoTerminalRepository,
 				stampCardRepo, employeeManageRCAdapter, dailyRecordAdUpService, getMngInfoFromEmpIDListAdapter,
 				iGetInfoForLogin, loginUserContextManager, calcService, closureRepo, closureEmploymentRepo,
 				shareEmploymentAdapter, attendanceItemConvertFactory, iCorrectionAttendanceRule,
@@ -244,8 +237,6 @@ public class RegisterSmartPhoneStampCommandHandler
 		private CreateDailyResults createDailyResults;
 
 		private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
-
-		private WorkLocationRepository workLocationRepository;
 
 		private EmpInfoTerminalRepository empInfoTerminalRepository;
 
@@ -323,16 +314,6 @@ public class RegisterSmartPhoneStampCommandHandler
 		@Override
 		public Optional<SettingsSmartphoneStamp> getSmartphoneStampSetting() {
 			return this.getSettingRepo.get(AppContexts.user().companyId());
-		}
-
-		@Override
-		public Optional<SettingsSmartphoneStamp> getSettingsSmartphoneStamp() {
-			return getSettingRepo.get(AppContexts.user().companyId());
-		}
-
-		@Override
-		public List<WorkLocation> findAll() {
-			return workLocationRepository.findAll(AppContexts.user().contractCode());
 		}
 
 		@Override

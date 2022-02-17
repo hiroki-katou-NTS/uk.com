@@ -20,10 +20,10 @@ public class SettingsSmartphoneStampHelper {
 
 	public static SettingsSmartphoneStamp getSettingsSmartphoneStampDefault() {
 
-		return new SettingsSmartphoneStamp("000-0000000001", new DisplaySettingsStampScreen(new CorrectionInterval(1), // dummy
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
-				new ResultDisplayTime(1)), // dummy
-				new ArrayList<StampPageLayout>(), true, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
+		return new SettingsSmartphoneStamp("000-0000000001",
+				new DisplaySettingsStampScreen(new CorrectionInterval(1), // dummy
+						new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")), new ResultDisplayTime(1)), // dummy
+				new ArrayList<StampPageLayout>(), true, null);
 	}
 
 	public static SettingsSmartphoneStamp getSettingsSmartphoneStamp() {
@@ -53,7 +53,7 @@ public class SettingsSmartphoneStampHelper {
 		return new SettingsSmartphoneStamp("000-0000000001", new DisplaySettingsStampScreen(new CorrectionInterval(1), // dummy
 				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1)), // dummy
-				lstSPL, true, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
+				lstSPL, true, null);
 	}
 	
 	public static Optional<ButtonSettings> getOPTButtonSeting(){

@@ -3,14 +3,25 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.arc.time.GeneralDate;
+import nts.gul.location.GeoCoordinate;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.EmployeeStampingAreaRestrictionSetting;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.adapter.AcquireWorkLocationEmplAdapter;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
@@ -40,11 +51,8 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 	// 打刻ボタンを抑制する
 	private boolean buttonEmphasisArt;
 	
-	// 	位置情報を利用する
-	private NotUseAtr locationInfoUse;
-	
-	// 	打刻エリア制限する
-	private NotUseAtr areaLimitAtr;
+	//打刻エリア制限
+	private StampingAreaRestriction stampingAreaRestriction;
 	
 	// [1] ボタン詳細設定を取得する																							
 	public Optional<ButtonSettings> getDetailButtonSettings(StampButton stamButton) {
@@ -86,6 +94,56 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 	public void deletePage() {
 		
 		this.pageLayoutSettings.clear();
+	}
+	
+	// [5] 打打刻してもいいエリアかチェックする
+	public Optional<WorkLocation> checkCanStampAreas(WorkLocationRepository repository ,AcquireWorkLocationEmplAdapter adapter , Require require ,ContractCode contractCd ,String companyId , String employeeId , GeoCoordinate positionInfor) {
+		
+		StampingAreaRestrictionImpl stampingAreaSettingRequire = new StampingAreaRestrictionImpl(repository, adapter);
+		// $エリア制限設定 = require.エリア制限設定を取得する(社員ID)
+		
+		
+		Optional<EmployeeStampingAreaRestrictionSetting> stampingAreaSetting = require.findByEmployeeId(employeeId);
+		// if $エリア制限設定.isPresent
+		if(stampingAreaSetting.isPresent()){
+			// return $エリア制限設定.打刻してもいいエリアかチェックする(require,契約コード,会社ID,打刻位置)
+			return stampingAreaSetting.get().checkAreaStamp(stampingAreaSettingRequire, contractCd.v(), companyId, employeeId, Optional.ofNullable(positionInfor));
+			
+		}
+		// return @打刻エリア制限.打刻してもいいエリアかチェックする(require,契約コード,会社ID,社員ID,打刻位置)
+		return stampingAreaRestriction.checkAreaStamp(stampingAreaSettingRequire, contractCd.v(), companyId, employeeId, Optional.ofNullable(positionInfor));
+	}
+	
+	
+
+	public static interface Require {
+		// [R-1] エリア制限設定を取得する
+		Optional<EmployeeStampingAreaRestrictionSetting> findByEmployeeId(String employId);
+
+	}
+
+	@AllArgsConstructor
+	private class StampingAreaRestrictionImpl implements StampingAreaRestriction.Require {
+
+		private WorkLocationRepository repository;
+		private AcquireWorkLocationEmplAdapter adapter;
+
+		@Override
+		public Optional<String> getWorkPlaceOfEmpl(String employeeID, GeneralDate date) {
+			String workplaceId = this.adapter.getAffWkpHistItemByEmpDate(employeeID, date);
+			return Optional.ofNullable(workplaceId);
+		}
+
+		@Override
+		public List<WorkLocation> findByWorkPlace(String contractCode, String cid, String workPlaceId) {
+			return this.repository.findByWorkPlace(contractCode, cid, workPlaceId);
+		}
+
+		@Override
+		public List<WorkLocation> findAll(String contractCode) {
+			return this.repository.findAll(contractCode);
+		}
+
 	}
 	
 	
