@@ -32,4 +32,8 @@ public class CompanyId {
 	public static String getContractCodeOf(String companyId) {
 		return companyId.split("-")[0];
 	}
+
+	public String getCompanyCode() {
+		return getCompanyCode(value);
+	}
 }
