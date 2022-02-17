@@ -1099,12 +1099,12 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	}
 
 	@Override
-	public Optional<GeneralDate> getStartOfLastestHist(String cid, String sid, SystemAtr systemAtr) {
+	public Optional<GeneralDate> getStartOfLastestHist(String cid, String sid) {
 		 Optional<WwfmtApprovalRoutePs> entity = this.queryProxy()
 				 .query(GET_START_OF_LASTEST_HIST, WwfmtApprovalRoutePs.class)
 				 .setParameter("cid", cid)
 				 .setParameter("sid", sid)
-				 .setParameter("sysAtr", systemAtr.value)
+				 .setParameter("sysAtr", SystemAtr.WORK.value)
 				 .setParameter("baseDate", GeneralDate.ymd(999, 12, 31))
 				 .getList()
 				 .stream()

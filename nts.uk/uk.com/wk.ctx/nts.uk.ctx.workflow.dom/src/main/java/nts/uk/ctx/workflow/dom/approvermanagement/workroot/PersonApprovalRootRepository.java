@@ -125,10 +125,9 @@ public interface PersonApprovalRootRepository {
 	 * [13] 最新の履歴の開始日を取得する
 	 * @param cid 会社ID
 	 * @param sid 社員ID
-	 * @param systemAtr システム区分
 	 * @return
 	 */
-	Optional<GeneralDate> getStartOfLastestHist(String cid, String sid, SystemAtr systemAtr);
+	Optional<GeneralDate> getStartOfLastestHist(String cid, String sid);
 	
 	/**
 	 * 	[14] 基準日から一番小さい履歴を取得する
