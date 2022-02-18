@@ -205,6 +205,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpComHisAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveMngSetRepository;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -575,6 +576,8 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 	private AttendanceItemConvertFactory factory;
 	@Inject
 	private EmpComHisAdapter empComHisAdapter;
+	@Inject
+	private TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository;
 
 	@Override
 	public List<AtomTask> aggregate(CacheCarrier cache, String cid, List<String> sids, boolean canAggrWhenLock) {
@@ -627,7 +630,7 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 				careUsedNumberRepo, childCareLeaveRemInfoRepo, careLeaveRemainingInfoRepo, tempChildCareManagementRepo,
 				tempCareManagementRepo, nursingLeaveSettingRepo, executionLogRepo, workingConditionRepository,
 				transaction, employmentAdapter, creatingDailyResultsConditionRepo, getPeriodFromPreviousToNextGrantDate,
-				workDaysNumberOnLeaveCountRepo);
+				workDaysNumberOnLeaveCountRepo, timeSpecialLeaveMngSetRepository);
 
 		return MonthlyAggregateForEmployees.aggregate(require, cid, sids, canAggrWhenLock);
 	}
@@ -766,7 +769,8 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 				EmploymentAdapter employmentAdapter,
 				CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo,
 				GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate,
-				WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo) {
+				WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo,
+				TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository) {
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
 					grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
 					specialLeaveBasicInfoRepo, interimRecAbasMngRepo, empSubstVacationRepo,
@@ -818,7 +822,7 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 					tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo, executionLogRepo,
 					workingConditionRepository, transaction, employmentAdapter, creatingDailyResultsConditionRepo,
 					getPeriodFromPreviousToNextGrantDate, workDaysNumberOnLeaveCountRepo,
-					calculateDailyRecordServiceCenter, empComHisAdapter);
+					calculateDailyRecordServiceCenter, empComHisAdapter, timeSpecialLeaveMngSetRepository);
 			this.cache = cache;
 		}
 

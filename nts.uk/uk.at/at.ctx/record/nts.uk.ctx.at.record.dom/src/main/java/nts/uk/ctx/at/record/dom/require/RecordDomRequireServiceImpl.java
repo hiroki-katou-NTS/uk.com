@@ -377,6 +377,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService.RequireM
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployeeProc;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpComHisAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveMngSetRepository;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -452,7 +453,7 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 				CareUsedNumberRepository careUsedNumberRepo, ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepo, CareLeaveRemainingInfoRepository careLeaveRemainingInfoRepo, TempChildCareManagementRepository tempChildCareManagementRepo,
 				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,ExecutionLogRepository executionLogRepo,WorkingConditionRepository workingConditionRepository, TransactionService transaction,
 				EmploymentAdapter employmentAdapter, CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo, GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate, WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepo,
-				CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter, EmpComHisAdapter empComHisAdapter) {
+				CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter, EmpComHisAdapter empComHisAdapter, TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepository) {
 			
 		super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter, grantDateTblRepo,
 				annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo, specialLeaveBasicInfoRepo,
@@ -468,7 +469,7 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 				regularLaborTimeShaRepo, deforLaborTimeShaRepo, sharedAffWorkPlaceHisAdapter, lengthServiceRepository,
 				grantYearHolidayRepo, payoutSubofHDManaRepo, leaveComDayOffManaRepo, checkChildCareService,
 				workingConditionItemService, remainCreateInforByRecordData, sysEmploymentHisAdapter, elapseYearRepo,
-				empComHisAdapter, closureStatusManagementRepo);
+				empComHisAdapter, closureStatusManagementRepo, timeSpecialLeaveMngSetRepository);
 
 			this.tmpResereLeaveMngRepo = tmpResereLeaveMngRepo;
 			this.sysEmploymentHisAdapter = sysEmploymentHisAdapter;

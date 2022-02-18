@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -26,13 +25,11 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestri
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveManagementSetting;
-import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveMngSetRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.PeriodGrantDate;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
+import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveManagementSetting;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.com.license.option.OptionLicense;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -324,7 +321,7 @@ public class SpecialHoliday extends AggregateRoot {
 				continuousAcquisition, new Memo(memo));
 	}
 	
-	 * 次回特別休暇付与を計算
+	 /* 次回特別休暇付与を計算
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * int spLeaveCD 特別休暇コード
@@ -392,15 +389,15 @@ public class SpecialHoliday extends AggregateRoot {
 	}
 
 	
-	public static interface Require
-			extends SpecialLeaveRestriction.Require, SpecialLeaveBasicInfo.Require, GrantDate.Require, PeriodGrantDate.Require {
+	public static interface Require extends SpecialLeaveRestriction.Require, SpecialLeaveBasicInfo.Require,
+			GrantDate.Require, PeriodGrantDate.Require {
 
-    /**
-	 * [R-1] 時間特別休暇の管理設定を取得する
-	 *
-	 */
-    Optional<TimeSpecialLeaveManagementSetting> findByCompany(String companyId);
-  
+		/**
+		 * [R-1] 時間特別休暇の管理設定を取得する
+		 *
+		 */
+		Optional<TimeSpecialLeaveManagementSetting> findByCompany(String companyId);
+
 		Optional<ElapseYear> elapseYear(String companyId, int specialHolidayCode);
 
 		Optional<EmpEnrollPeriodImport> getLatestEnrollmentPeriod(String lstEmpId, DatePeriod datePeriod);
