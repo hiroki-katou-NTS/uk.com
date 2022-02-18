@@ -57,7 +57,6 @@ public class VacationAppReflectOptionTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
 				1);// no = 1, 就業時間帯コード = 001
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, 
-				NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.REFLECT);// 出退勤を反映する=反映する
 
 		option.process(require, "", workInfo, new ArrayList<>(), PrePostAtrShare.POSTERIOR,
@@ -92,7 +91,6 @@ public class VacationAppReflectOptionTest {
 		String workTimeBefore = dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v();// 前就業時間帯コード
 
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, 
-				NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.NOT_REFLECT);// 出退勤を反映する=反映しない
 
 		val resultActual = option.process(require, "", workInfo, new ArrayList<>(),
@@ -127,7 +125,6 @@ public class VacationAppReflectOptionTest {
 		List<TimeZoneWithWorkNo> workingHours = Arrays.asList(new TimeZoneWithWorkNo(1, 488, 1028));
 
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.USE, // 1日休暇の場合は出退勤を削除=する
-				NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.REFLECT);
 
 		new Expectations() {
@@ -177,7 +174,6 @@ public class VacationAppReflectOptionTest {
 		List<TimeZoneWithWorkNo> workingHours = Arrays.asList(new TimeZoneWithWorkNo(1, 488, 1028));
 
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.USE,  // 1日休暇の場合は出退勤を削除=する
-				NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.REFLECT);
 		new Expectations() {
 			{

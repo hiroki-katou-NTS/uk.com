@@ -26,7 +26,6 @@ public class HolidayApplicationReflectCommand {
                 companyId,
                 new VacationAppReflectOption(
                         EnumAdaptor.valueOf(workAttendanceReflect.getOneDayLeaveDeleteAttendance(), NotUseAtr.class),
-                        EnumAdaptor.valueOf(workAttendanceReflect.getReflectAttendance(), NotUseAtr.class),
                         EnumAdaptor.valueOf(workAttendanceReflect.getReflectWorkHour(), ReflectWorkHourCondition.class)
                 ),
                 new TimeLeaveAppReflectCondition(
