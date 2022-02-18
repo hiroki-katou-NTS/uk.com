@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
@@ -17,6 +16,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
 
 /**
  * 入社退職履歴の正準化

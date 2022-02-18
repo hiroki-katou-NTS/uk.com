@@ -4,8 +4,8 @@ import java.util.List;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
 
 /**
  * 受入の影響を受ける既存データを補正する

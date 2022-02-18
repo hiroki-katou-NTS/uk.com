@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRequire;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;

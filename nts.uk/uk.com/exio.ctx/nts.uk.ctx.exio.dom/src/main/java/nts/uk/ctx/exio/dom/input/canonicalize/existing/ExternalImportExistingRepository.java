@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.input.canonicalize.existing;
 
 import java.util.List;
 
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
 
 public interface ExternalImportExistingRepository {
 

@@ -5,13 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import lombok.val;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.WorkplaceCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 

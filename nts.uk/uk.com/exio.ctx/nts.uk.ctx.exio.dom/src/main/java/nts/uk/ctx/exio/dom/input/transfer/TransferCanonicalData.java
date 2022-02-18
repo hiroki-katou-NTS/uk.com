@@ -18,7 +18,7 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
 import nts.uk.cnv.core.dom.conversiontable.pattern.NotChangePattern;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;

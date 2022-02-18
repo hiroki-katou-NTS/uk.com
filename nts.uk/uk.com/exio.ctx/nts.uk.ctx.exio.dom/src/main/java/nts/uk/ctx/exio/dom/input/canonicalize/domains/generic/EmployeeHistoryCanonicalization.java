@@ -17,7 +17,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
@@ -38,6 +37,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.methods.DatePeriodCanonicalization
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;

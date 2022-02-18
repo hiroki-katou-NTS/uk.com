@@ -1,6 +1,6 @@
 package nts.uk.ctx.exio.dom.input.workspace;
 
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;

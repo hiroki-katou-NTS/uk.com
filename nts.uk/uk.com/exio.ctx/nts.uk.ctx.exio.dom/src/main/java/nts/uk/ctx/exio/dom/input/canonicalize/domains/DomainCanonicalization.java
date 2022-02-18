@@ -3,7 +3,6 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 import java.util.List;
 
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffJobTitleHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffWorkplaceHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
@@ -18,6 +17,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalizedDataRecord;
+import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 
 /**
