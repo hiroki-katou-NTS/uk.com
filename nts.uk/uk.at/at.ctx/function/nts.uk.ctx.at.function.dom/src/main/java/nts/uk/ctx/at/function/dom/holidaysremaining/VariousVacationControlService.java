@@ -65,7 +65,7 @@ public class VariousVacationControlService {
 		if(annualPaidLeave!=null && annualPaidLeave.getManageAnnualSetting().getHalfDayManage().getManageType() == ManageDistinct.YES){
 			halfdayyearlySetting = true;
 		}
-		if(annualPaidLeave!=null &&annualPaidLeave.getTimeSetting().getTimeManageType()== ManageDistinct.YES
+		if(annualPaidLeave!=null &&annualPaidLeave.getTimeSetting().getTimeVacationDigestUnit().getManage() == ManageDistinct.YES
 				&& annualPaidLeave.getTimeSetting().getMaxYearDayLeave().manageType == ManageDistinct.YES){
 			hourlyLeaveSetting = true;
 		}
@@ -90,7 +90,7 @@ public class VariousVacationControlService {
 
 		//ドメインモデル「60H超休管理設定」を取得する
 		val com60HourVacation = com60HourVacationRepository.findById(companyId);
-		if (com60HourVacation.isPresent() && com60HourVacation.get().getSetting().getIsManage() == ManageDistinct.YES) {
+		if (com60HourVacation.isPresent() && com60HourVacation.get().getTimeVacationDigestUnit().getManage() == ManageDistinct.YES) {
 			com60HourVacationSetting = true;
 		}
 		//ドメインモデル「公休設定」を取得する

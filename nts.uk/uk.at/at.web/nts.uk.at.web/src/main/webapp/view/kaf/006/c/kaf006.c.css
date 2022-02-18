@@ -14,3 +14,8 @@
 	text-align: center;
 	height: 25px;
 }
+
+.bg-gray{
+	background-color: #6A6A6A;
+    color: #fff;
+}

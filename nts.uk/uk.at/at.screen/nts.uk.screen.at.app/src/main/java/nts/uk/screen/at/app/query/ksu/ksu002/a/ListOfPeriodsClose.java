@@ -65,7 +65,7 @@ public class ListOfPeriodsClose {
 				closureEmploymentRepo);
 		CacheCarrier cacheCarrier = new CacheCarrier();
 		String companyId = AppContexts.user().companyId();
-		String sid = AppContexts.user().employeeId();
+		String sid = input.sid;
 		
 		SystemDateDto dto = new SystemDateDto();
 		
