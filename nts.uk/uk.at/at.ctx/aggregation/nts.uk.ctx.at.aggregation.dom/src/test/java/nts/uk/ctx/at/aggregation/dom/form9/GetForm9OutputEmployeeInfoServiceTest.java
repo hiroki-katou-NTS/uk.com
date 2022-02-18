@@ -14,6 +14,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -31,7 +32,7 @@ public class GetForm9OutputEmployeeInfoServiceTest {
 	@Test
 	public void testGet_empty() {
 		TargetOrgIdenInfor targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId");
-		GeneralDate baseDate = GeneralDate.ymd(2021, 1, 1);
+		DatePeriod period = DatePeriod.daysFirstToLastIn(YearMonth.of(2021, 1));
 		String loginEmployeeId = "employeeLoginID";
 		List<String> employeeRangeIds = Arrays.asList("sid1", "sid3", "sid5", "sid2", "sid4");
 
@@ -44,16 +45,16 @@ public class GetForm9OutputEmployeeInfoServiceTest {
 				require.getLoginEmployeeId();
 				result = loginEmployeeId;
 
-				GetEmpCanReferService.getByOrg(require, loginEmployeeId, baseDate, DatePeriod.oneDay(baseDate), targetOrg);
+				GetEmpCanReferService.getByOrg(require, loginEmployeeId, GeneralDate.today(), period, targetOrg);
 				result = employeeRangeIds;
 
-				SortByForm9Service.sort(require, baseDate, employeeRangeIds);
+				SortByForm9Service.sort(require, GeneralDate.today(), employeeRangeIds);
 				result = employeeSortedIds;
 
 			}
 		};
 
-		val result = GetForm9OutputEmployeeInfoService.get(require, "workplaceGroupId", baseDate);
+		val result = GetForm9OutputEmployeeInfoService.get(require, "workplaceGroupId", period);
 
 		assertThat( result.getEmployeeInfoList() ).isEmpty();
 
@@ -73,7 +74,7 @@ public class GetForm9OutputEmployeeInfoServiceTest {
 			,	@Injectable Form9OutputEmployeeInfo outputEmployee_8) {
 
 		val targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId");
-		val baseDate = GeneralDate.ymd(2021, 1, 1);
+		DatePeriod period = DatePeriod.daysFirstToLastIn(YearMonth.of(2021, 1));
 		val loginEmployeeId = "employeeLoginID";
 		val employeeRangeIds = Arrays.asList("sid1", "sid2", "sid3", "sid4", "sid7", "sid6", "sid9", "sid11", "sid12", "sid8");
 		val employeeSortedIds = Arrays.asList("sid5", "sid2", "sid1", "sid3");
@@ -107,7 +108,7 @@ public class GetForm9OutputEmployeeInfoServiceTest {
 			}
 		};
 
-		val result = GetForm9OutputEmployeeInfoService.get(require, "workplaceGroupId", baseDate);
+		val result = GetForm9OutputEmployeeInfoService.get(require, "workplaceGroupId", period);
 
 		assertThat(result.getEmployeeInfoList())
 			.containsExactlyElementsOf(

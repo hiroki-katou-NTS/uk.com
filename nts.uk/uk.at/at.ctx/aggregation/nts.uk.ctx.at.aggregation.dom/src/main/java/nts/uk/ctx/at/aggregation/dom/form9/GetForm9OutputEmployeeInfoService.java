@@ -24,17 +24,16 @@ public class GetForm9OutputEmployeeInfoService {
 	 * @param ymd 年月日
 	 * @return
 	 */
-	public static Form9OutputEmployeeInfoList get(Require require, String workplaceGroupId, GeneralDate ymd) {
+	public static Form9OutputEmployeeInfoList get(Require require, String workplaceGroupId, DatePeriod period) {
+		
 		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(workplaceGroupId);
-
-		List<String> employeeIds = GetEmpCanReferService.getByOrg(
-					require, require.getLoginEmployeeId(), ymd, DatePeriod.oneDay(ymd), targetOrgIdenInfor
-				);
-
-		List<String> sortedEmployeeIds = SortByForm9Service.sort(require, ymd, employeeIds);
+		List<String> employeeIds = GetEmpCanReferService.getByOrg(require, require.getLoginEmployeeId(), 
+										GeneralDate.today(), period, targetOrgIdenInfor);
+				
+		List<String> sortedEmployeeIds = SortByForm9Service.sort(require, GeneralDate.today(), employeeIds);
 
 		List<Form9OutputEmployeeInfo> employeeInfoResults = sortedEmployeeIds.stream()
-				.map(sid -> Form9OutputEmployeeInfo.create(require, ymd, sid))
+				.map(sid -> Form9OutputEmployeeInfo.create(require, GeneralDate.today(), sid))
 				.flatMap(OptionalUtil::stream)
 				.collect(Collectors.toList());
 
