@@ -2,12 +2,12 @@ package nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.shr.com.license.option.OptionLicense;
+
 
 /**
  * 応援の運用設定

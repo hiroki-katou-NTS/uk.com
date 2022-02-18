@@ -35,7 +35,9 @@ module nts.uk.ui.at.kdw013.a {
         // Chọn ngày ở [画面イメージ]A6_1/[固有部品]A1_1
         CHANGE_DATE: '/screen/at/kdw013/a/changeDate',
         // RegisterWorkContentCommand
-        REGISTER: '/screen/at/kdw013/a/register_work_content',
+        REGISTER: '/screen/at/kdw013/a/register-work-content',
+        
+        GETARGETTIME: '/screen/at/kdw013/a/get-target-time',
 
         // POPUP F
         // 作業お気に入り登録を起動する
@@ -220,6 +222,7 @@ module nts.uk.ui.at.kdw013.a {
 		btnContent: KnockoutObservable<String> = ko.observable('');
 		
 		reloadFlag: KnockoutObservable<Boolean> =  ko.observable(false);
+        loaded: Boolean =  false;
 
         constructor() {
             super();
@@ -369,7 +372,7 @@ module nts.uk.ui.at.kdw013.a {
 
                         if (cache.pair <= 0) {
                             vm.$datas(null);
-                            
+                            vm.loaded= false;
                             vm
                                 .$blockui('grayout')
                                 .then(() => vm.$ajax('at', API.CHANGE_DATE, params))
@@ -378,6 +381,7 @@ module nts.uk.ui.at.kdw013.a {
                                     vm.dataChanged(false);
                                     vm.removeList([]);
                                     vm.removeBreakList([]);
+                                    vm.loaded= true;
                                 })
                                 .always(() => vm.$blockui('clear'));
                         }
@@ -691,6 +695,7 @@ module nts.uk.ui.at.kdw013.a {
                     });
 
                     vm.events(events);
+                    
                     return;
                 }
 
@@ -762,20 +767,32 @@ module nts.uk.ui.at.kdw013.a {
             let vm = this;
             let $events = ko.unwrap(vm.events);
            return _.chain(dates).map(date => {
-                let events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'days') });
-                let data = _.find(vm.$datas().dailyManHrTasks, (e) => { return moment(e.date).isSame(date, 'days') });
+                let events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'days') && !e.extendedProps.isTimeBreak  });
+                let data = _.find(vm.$datas().dailyManHrTasks, (e) => { return moment(e.date).isSame(date, 'days')});
 
                 if (events.length != _.size(_.get(data, 'taskBlocks'))) {
                     return { date: date, changed: true };
                 }
                 
-                let isChanged = _.find(events, (e) => { return _.get(e, 'extendedProps.isChanged') });
+                let isChanged = _.find($events, (e) => { return moment(e.start).isSame(date, 'days') && _.get(e, 'extendedProps.isChanged')});
 
                 if (isChanged) {
                     return { date: date, changed: true };
                 }
-
-                return { date: date, changed: false };
+               
+                let removeDate =  _.find(vm.removeList(), ri => moment(ri.date).isSame(moment(date), 'days'));
+               
+                if (removeDate) {
+                    return { date: date, changed: true };
+                }
+               
+                let removeBreakDate = _.find(vm.removeBreakList(), ri => moment(ri.date).isSame(moment(date), 'days'));
+               
+                if (removeBreakDate) {
+                    return { date: date, changed: true };
+                }
+               
+               return  { date: date, changed: false };
             }).filter(d => { return d.changed }).map(d => moment(d.date).format(DATE_TIME_FORMAT)).value();
         }
 
@@ -785,8 +802,12 @@ module nts.uk.ui.at.kdw013.a {
             let vm = this;
             _.forEach(dates, date => {
                 let eventInday = _.filter(vm.events(), (e) => { return moment(e.start).isSame(date, 'day') });
+                
+                let removeDate =  _.find(vm.removeList(), ri => moment(ri.date).isSame(moment(date), 'days'));
+               
+                let removeBreakDate = _.find(vm.removeBreakList(), ri => moment(ri.date).isSame(moment(date), 'days'));
 
-                if (eventInday.length) {
+                if (eventInday.length || removeDate || removeBreakDate) {
 
 
                     let listTaskDetails = [];
@@ -797,9 +818,9 @@ module nts.uk.ui.at.kdw013.a {
                         let {taskDetails} = _.get(e, 'extendedProps.taskBlock');
                         _.forEach(taskDetails, td => {
                             
-                            if (taskDetails.length == 1) {
-                                _.remove(td.taskItemValues, ti => ti.itemId == 3);
-                            }
+//                            if (taskDetails.length == 1) {
+//                                _.remove(td.taskItemValues, ti => ti.itemId == 3);
+//                            }
 
                             _.forEach(td.taskItemValues, ti => {
                                 let start = (moment(e.start).hour() * 60) + moment(e.start).minute();
@@ -887,50 +908,53 @@ module nts.uk.ui.at.kdw013.a {
                 .then(() => vm.$ajax('at', API.REGISTER, command))
                 .then((response: RegisterWorkContentDto) => {
                     let { dataResult, lstOvertimeLeaveTime, alarmMsg_2081 } = response;
-					if(dataResult.errorMap.message){
-						if(_.includes(dataResult.errorMap.message, 'Msg_')){
-							return vm.$dialog.error({ messageId: dataResult.errorMap[0].message });
-						}else{
-							return vm.$dialog.error(dataResult.errorMap.message);
-						}						
-					}else{
-						
-						let messageId = '';
-						let messageParams = [];
-						
-						if (alarmMsg_2081 && alarmMsg_2081.length > 0) {
-							messageId = 'Msg_2081';
-							messageParams = alarmMsg_2081[0].parameters;
-							return nts.uk.ui.dialog.caution({ messageId: messageId, messageParams: messageParams })
-								.then(() => {
-		                            vm.dataChanged(false);
-		                            //trigger reload data
-		                            vm.dateRange.valueHasMutated();
-		                        })
-		                        .then(() => lstOvertimeLeaveTime);
-						} else {
-							return vm.$dialog.info({ messageId: 'Msg_15'})
-							.then(() => {
-                                vm.dataChanged(false);
-                                //trigger reload data
-                                vm.dateRange.valueHasMutated();
-                            })
-                            .then(() => lstOvertimeLeaveTime);
-						}
-					}
+                    if (dataResult.errorMap.message) {
+                        if (_.includes(dataResult.errorMap.message, 'Msg_')) {
+                            return vm.$dialog.error({ messageId: dataResult.errorMap[0].message });
+                        } else {
+                            return vm.$dialog.error(dataResult.errorMap.message);
+                        }
+                    } else {
+                        
+                        if (alarmMsg_2081 && alarmMsg_2081.length > 0) {
+                            
+                            return vm.$dialog.info({ messageId: 'Msg_2081', messageParams: alarmMsg_2081[0].parameters })
+                                .then(() => {
+                                    vm.dataChanged(false);
+                                    //trigger reload data
+                                    vm.dateRange.valueHasMutated();
+                                })
+                                .then(() => {
+                                    return command;
+                                });
+                        } else {
+                            return vm.$dialog.info({ messageId: 'Msg_15' })
+                                .then(() => {
+                                    vm.dataChanged(false);
+                                    //trigger reload data
+                                    vm.dateRange.valueHasMutated();
+                                })
+                                .then(() => {
+                                    return command;
+                                });
+                        }
+                    }
                 })
                 .fail((response: ErrorMessage) => {
                     let { messageId, parameterIds } = response;
-					if(messageId){
-						return vm.$dialog
-                        .error({ messageId, messageParams: parameterIds })
-                        .then(() => null);	
-					}
-                })
-                .then((data: OvertimeLeaveTime[] | null) => {
-                    if (data && data.length) {
-                        vm.openDialogCaculationResult(data);
+                    if (messageId) {
+                        return vm.$dialog
+                            .error({ messageId, messageParams: parameterIds })
+                            .then(() => null);
                     }
+                })
+                .then((command) => {
+                    
+                    vm.$ajax('at', API.GETARGETTIME, command).then(result => {
+                        if (result && result.length) {
+                            vm.openDialogCaculationResult(result);
+                        }
+                    });
                 })
                 .always(() => vm.$blockui('clear'));
         }

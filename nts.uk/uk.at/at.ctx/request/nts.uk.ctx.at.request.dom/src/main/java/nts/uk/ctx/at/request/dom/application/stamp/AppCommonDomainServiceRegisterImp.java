@@ -61,6 +61,21 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 		} else {
 //			ドメインモデル「打刻申請」を登録する
 			if (appStamp.isPresent()) {
+				// 応援が1回め勤務か2回目勤務のどちらの時間帯なのか判断してセットする
+				appStamp.get().determineTheSupportTimeAndSet(
+						appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles(),
+						appStampOutput
+						.getAppDispInfoStartupOutput()
+						.getAppDispInfoWithDateOutput()
+						.getOpActualContentDisplayLst()
+						.map(t -> {
+							if (t.size() > 0 && t.get(0).getOpAchievementDetail().isPresent()) {
+								return t.get(0).getOpAchievementDetail().get().getAchievementEarly();
+							}
+							return null;
+						}
+						).orElse(null)
+				);
 				appAprrovalRepository.insertApp(application, 
 						appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().isPresent() ? appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get() : null
 						);
@@ -85,8 +100,12 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 		return processResult;
 	}
 	@Override
-	public ProcessResult updateAppStamp(Application application, Optional<AppStamp> appStampOptional,
-			Optional<AppRecordImage> appRecoderImageOptional, Boolean recoderFlag, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+	public ProcessResult updateAppStamp(Application application
+									  , Optional<AppStamp> appStampOptional
+									  , Optional<AppRecordImage> appRecoderImageOptional
+									  , Boolean recoderFlag
+									  , AppDispInfoStartupOutput appDispInfoStartupOutput
+									  , AppStampOutput appStampOutput) {
 		
 		appRepository.update(application);
 		if (recoderFlag) {
@@ -95,6 +114,23 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 				
 			}
 		} else {
+			// 応援が1回め勤務か2回目勤務のどちらの時間帯なのか判断してセットする
+			appStampOptional.get().determineTheSupportTimeAndSet(
+					appStampOutput
+						.getAppDispInfoStartupOutput()
+						.getAppDispInfoNoDateOutput()
+						.isManagementMultipleWorkCycles(),
+					appStampOutput
+						.getAppDispInfoStartupOutput()
+						.getAppDispInfoWithDateOutput()
+						.getOpActualContentDisplayLst()
+						.map(t -> {
+							if (t.size() > 0 && t.get(0).getOpAchievementDetail().isPresent()) {
+								return t.get(0).getOpAchievementDetail().get().getAchievementEarly();
+							}
+							return null;
+						}).orElse(null)
+			);
 			if (appStampOptional.isPresent()) {
 				appStampRepo.updateStamp(appStampOptional.get());
 				

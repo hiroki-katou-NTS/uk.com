@@ -70,7 +70,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShar
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceReasonContent;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
-import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 public class ConvertApplicationToShare {
 
@@ -238,7 +238,7 @@ public class ConvertApplicationToShare {
 	private static DestinationTimeAppShare converDesTimeApp(DestinationTimeApp app) {
 		return new DestinationTimeAppShare(TimeStampAppEnumShare.valueOf(app.getTimeStampAppEnum().value),
 				app.getEngraveFrameNo(), StartEndClassificationShare.valueOf(app.getStartEndClassification().value),
-				app.getSupportWork());
+				app.getSupportWorkNo().map(WorkNo::v));
 
 	}
 

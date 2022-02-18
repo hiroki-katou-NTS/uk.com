@@ -76,13 +76,19 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         reasonList: Array<GoOutTypeDispControl>;
         mode: KnockoutObservable<number>;
 
-		comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+		    comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
         comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+
+        appDate: KnockoutObservable<any> = ko.observable('');
+        kaf002Data: any;
+        workLocationNames: any[] = [];
+        workplaceNames: any[] = [];
 
         created(params: any) {
 
             const self = this;
-			
+            self.appDate = params.appDate;
+            self.kaf002Data = params.kaf002Data;
 			const comment1 = params.comment1 as KnockoutObservable<Comment>;
 			self.comment1(ko.unwrap(comment1));
 			comment1.subscribe((comment) => {
@@ -144,18 +150,39 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.selectedTab = ko.observable(paramTabs[0].id);
             self.selectedTemp = params.selectedTab;
             self.selectedTab.subscribe(value => {
-                
 				if (self.isPreAtr()) {
 					if (self.selectedTab() == 'tab-2') {
 							$('#kaf002TabPanel').width(580)							
-					} else {
-							$('#kaf002TabPanel').width(450)							
+					}
+                    else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
+                        let totalWidth = 900;
+                        if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
+                            totalWidth = totalWidth - 230;
+                        }
+                        if (self.kaf002Data && self.kaf002Data.appStampSetting.useLocationSelection == 0) {
+                            totalWidth = totalWidth - 230;
+                        }
+                        $('#kaf002TabPanel').width(totalWidth);
+                    }
+                    else {
+                        $('#kaf002TabPanel').width(450)							
 					}
 				
 				} else {
 					if (self.selectedTab() == 'tab-2') {
 							$('#kaf002TabPanel').width(680)							
-					} else {
+					}
+                    else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
+                        let totalWidth = 1000;
+                        if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
+                            totalWidth = totalWidth - 230;
+                        }
+                        if (self.kaf002Data && self.kaf002Data.appStampSetting.useLocationSelection == 0) {
+                            totalWidth = totalWidth - 230;
+                        }
+                        $('#kaf002TabPanel').width(totalWidth);
+                    }
+                    else {
 							$('#kaf002TabPanel').width(550)							
 					}
 				}
@@ -176,6 +203,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 	                } else if (value == 'tab-5') {
 	                    self.selectedTemp(4);
 	                    
+	                } else if (value === 'tab-6') {
+	                    self.selectedTemp(STAMPTYPE.CHEERING);
 	                }
 				}
 				self.loadAll();
@@ -185,18 +214,15 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.isPreAtr.subscribe((value) => {
                 if (!_.isNull(value) && self.mode() == 0) {
                     self.loadAll();
-					
                 }
-
             });
 
             self.date.subscribe((value) => {
                 self.loadAll();
-            })
-
-
+            });
 
         }
+
         createdReasonItem(reasonList: Array<GoOutTypeDispControl>) {
             let comboItems = [] as Array<any>;
             _.forEach(reasonList, (e: GoOutTypeDispControl) => {
@@ -252,6 +278,19 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 ko.cleanNode($('.flag')[index]);
                 ko.applyBindings(self, item);
             });
+
+            _.each($('td.btn_workplace').children(), (item, index) => {
+                if (!$('td.btn_workplace').children()[index]) return;
+                ko.cleanNode($('td.btn_workplace').children()[index]);
+                ko.applyBindings(self, item);
+            });
+
+            _.each($('td.btn_worklocation').children(), (item, index) => {
+                if (!$('td.btn_worklocation').children()[index]) return;
+                ko.cleanNode($('td.btn_worklocation').children()[index]);
+                ko.applyBindings(self, item);
+            });
+
             _.each(ko.toJS(self.nameGrids), (item, index) => {
                 if (!$('#' + item + '_flag')[0]) return;
                 ko.cleanNode($('#' + item + '_flag')[0]);
@@ -263,7 +302,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             // change tabs by root component
             self.tabsTemp(self.tabs());
             self.loadAll();
-			self.selectedTab(_.find(self.tabs(), item => item.visible())[0].id)
+			self.selectedTab(_.find(self.tabs(), item => item.visible()).id);
 
         }
         loadAll() {
@@ -271,14 +310,36 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             if (self.isPreAtr()) {
 				if (self.selectedTab() == 'tab-2') {
 						$('#kaf002TabPanel').width(580)							
-				} else {
+				}
+                else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
+                    let totalWidth = 900;
+                    if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
+                        totalWidth = totalWidth - 230;
+                    }
+                    if (self.kaf002Data && self.kaf002Data.appStampSetting.useLocationSelection == 0) {
+                        totalWidth = totalWidth - 230;
+                    }
+                    $('#kaf002TabPanel').width(totalWidth);
+                }
+                else {
 						$('#kaf002TabPanel').width(450)							
 				}
 				
 			} else {
 				if (self.selectedTab() == 'tab-2') {
 						$('#kaf002TabPanel').width(680)							
-				} else {
+				}
+                else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
+                    let totalWidth = 1000;
+                    if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
+                        totalWidth = totalWidth - 230;
+                    }
+                    if (self.kaf002Data && self.kaf002Data.appStampSetting.useLocationSelection == 0) {
+                        totalWidth = totalWidth - 230;
+                    }
+                    $('#kaf002TabPanel').width(totalWidth);
+                }
+                else {
 						$('#kaf002TabPanel').width(550)							
 				}
 			}
@@ -333,6 +394,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         _.forEach($('.startTime input'), i => { $(i).prop('disabled', true) });
                         _.forEach($('.endTime input'), i => { $(i).prop('disabled', true) });
                         _.forEach($('.enableFlag input'), i => { $(i).prop('disabled', true) });
+                        _.forEach($('div[class^="nts-grid-control-work"] button'), i => { $(i).prop('disabled', true) });
                         window.clearInterval(loop);
                     }
                 }, 100);
@@ -427,7 +489,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                     let paramString = 'enableList[' + String(index) + ']';
                     headerFlagContent = numberDisable != items.length ? '<div class="ntsCheckbox-002" style="display: block" align="center" data-bind="ntsCheckBox: { checked: ' + paramString + ', enable: ' + (self.mode() != 2) + '}">' + self.$i18n('KAF002_72') + '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72') + '</div>';
 
-                    dataSource = items.length >= 10 && self.isLinkList[index] ? items.slice(0, 3) : items;
+                    const maxLength = type === STAMPTYPE.CHEERING ? 3 : 10;
+                    dataSource = items.length >= maxLength && self.isLinkList[index] ? items.slice(0, 3) : items;
                 }
 
             });
@@ -476,12 +539,11 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         states: statesTable
                     }
                 ],
-                ntsControls: [
-
-                ]
+                ntsControls: []
 
             };
 
+            // Define grid options for  外出／戻り mode
             let comboColumns = [
                 { prop: 'name', length: 6 }];
             let comboItems = self.mode() == 0 ? self.createdReasonItem(self.reasonList)
@@ -542,45 +604,324 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 optionGrid.columns.pop();
             }
 
+            
 
             if (type == STAMPTYPE.GOOUT_RETURNING) {
                 if ($('#' + id).length) {
                     $('#' + id).ntsGrid(option2);
                 }
+            } else if (type === STAMPTYPE.ATTENDENCE || type === STAMPTYPE.CHEERING) {
+                if ($('#' + id).length) {
+                    _.forEach($('.btn_workplace'), e => ko.cleanNode(e));
+                    _.forEach($('.btn_workplace').children(), e => ko.cleanNode(e));
+                    _.forEach($('.btn_worklocation'), e => ko.cleanNode(e));
+                    _.forEach($('.btn_worklocation').children(), e => ko.cleanNode(e));
+                    $('#' + id).ntsGrid(self.getAtdOrCheeringGrid(isChrome, dataSource, headerFlagContent, statesTable));
+
+                    if (type === STAMPTYPE.CHEERING) {
+                        if (self.kaf002Data && self.kaf002Data.maxOfCheer && self.kaf002Data.maxOfCheer > 3 && self.isLinkList[items[0].index]) {
+                            const $expandRow = $('<tr id="trLinkCheer">');
+                            const $firstCol = $('<td class="titleColor" style="height: 50px; background-color: #CFF1A5">');
+                            const $secondCol = $('<td colspan="5">');
+                            const $secondCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">');
+                            const $secondCol__div__link = $(`<a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[${items[0].index}])">${self.$i18n('KAF002_85', [self.kaf002Data.maxOfCheer])}</a>`)
+                            $secondCol__div.append($secondCol__div__link);
+                            $secondCol.append($secondCol__div);
+                            $expandRow.append($firstCol);
+                            $expandRow.append($secondCol);
+                            $('#' + id).append($expandRow);
+                        }
+                    }
+                }
             } else {
                 if ($('#' + id).length) {
+                    ko.cleanNode($('#' + id)[0]);
                     $('#' + id).ntsGrid(optionGrid);
                 }
             }
+            
             // if isCondition2 => error state of text1
             let nameAtr = 'td[aria-describedby ="' + id + '_text1"]';
             if ($(nameAtr)) {
                 $(nameAtr).addClass('titleColor');
             }
-            // add row to display expand row
-            if (items.length >= 10 && self.isLinkList[items[0].index]) {
-                if ($('#' + id).length) {
-                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow' + String(items[0].index) + '" style="display: block" align="center"><a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']) , text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
-                }
-
-            } else {
-                self.isLinkList[items[0].index] = false;
+            
+            let buttonWorkplaceAtr = 'td[aria-describedby ="' + id + '_workplaceId"]';
+            if ($(buttonWorkplaceAtr)) {
+                $(buttonWorkplaceAtr).addClass('btn_workplace');
             }
-
+            
+            let buttonWorkLocationAtr = 'td[aria-describedby ="' + id + '_workLocationCD"]';
+            if ($(buttonWorkLocationAtr)) {
+                $(buttonWorkLocationAtr).addClass('btn_worklocation');
+            }
+            
+            // add row to display expand row
+            if (type !== STAMPTYPE.CHEERING) {
+                if (items.length >= 10 && self.isLinkList[items[0].index]) {
+                    if ($('#' + id).length) {
+                        const $expandRow = $('<tr id="trLink2">');
+                        const $secondCol = $('<td class="titleColor" style="height: 50px; background-color: #CFF1A5">')
+                        const $thirdCol = $('<td colspan="5">');
+                        const $thirdCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">')
+                        $thirdCol__div.append('<a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']), text: \'' + self.$i18n('KAF002_73') + '\'"></a>');
+                        
+                        $thirdCol.append($thirdCol__div);
+                        $expandRow.append($secondCol);
+                        $expandRow.append($thirdCol);
+                        $('#' + id).append($expandRow);
+                    }
+                    
+                } else {
+                    self.isLinkList[items[0].index] = false;
+                }
+            }
+            
             let moreRow = document.getElementById('moreRow' + String(items[0].index));
             if (moreRow && self.isLinkList[items[0].index]) {
+                ko.cleanNode(moreRow);
                 ko.applyBindings(self, moreRow);
             }
+            
+            // Handle data of workplace and location if screen in update mode
+            if (self.mode() == 1 && (type == STAMPTYPE.ATTENDENCE || type == STAMPTYPE.CHEERING)) {
+                _.forEach(dataSource, (data: any) => self.reloadWorkplaceWorkLocation(data, type));
+            }
 
-
+            // Handle data of workplace and location if screen in new mode
+            if (self.mode() == 0 && (type == STAMPTYPE.ATTENDENCE || type == STAMPTYPE.CHEERING)) {
+                _.forEach(dataSource, (data: any) => self.setActualWorkplaceAndLocation(data, type));
+            }
+            
         }
 
+        private getAtdOrCheeringGrid(isChrome: boolean, dataSource: any, headerFlagContent: any, statesTable: any) {
+            const self = this;
+            let options = {
+                height: isChrome ? (ko.toJS(self.isPreAtr) ? '310px' : '340px') : (ko.toJS(self.isPreAtr) ? '310px' : '340px'),
+                dataSource: dataSource,
+                primaryKey: 'id',
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                hidePrimaryKey: true,
+                columns: [
+                    { headerText: 'ID', key: 'id', dataType: 'number', width: 0, hidden: true },
+                    { headerText: '', key: 'index', dataType: 'number', hidden: true }, 
+                    { headerText: '', key: 'idGetList', dataType: 'number', hidden: true },
+                    { headerText: '', key: 'text1', dataType: 'string', width: 120 },
+                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: 140 },
+                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: 140 },
+                    {
+                        headerText: self.$i18n('KAF002_81'), key: 'workplaceId', dataType: 'string', width: 230,
+                        ntsControl: 'Button_WorkPlace', hidden: self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0,
+                    },
+                    {
+                        headerText: self.$i18n('KAF002_82'), key: 'workLocationCD', dataType: 'string', width: 230,
+                        ntsControl: 'Button_WorkLocation', hidden: self.kaf002Data && self.kaf002Data.appStampSetting.useLocationSelection == 0,
+                    },
+                    { headerText: headerFlagContent, key: 'flag', dataType: 'string', width: 100 }
+                ],
+                features: [
+                    {
+                        name: 'Resizing',
+                        columnSettings: [
+                            {
+                                columnKey: 'id', allowResizing: true, minimumWidth: 30
+                            },
+                            {
+                                columnKey: 'startTime', allowResizing: false, minimumWidth: 30
+                            },
+                            {
+                                columnKey: 'endTime', allowResizing: false, minimumWidth: 30
+                            },
+                            {
+                                columnKey: 'text1', allowResizing: false, minimumWidth: 30
+                            },
+                            {
+                                columnKey: 'workplaceId', allowResizing: false, minimumWidth: 30
+                            },
+                            {
+                                columnKey: 'workLocationCD', allowResizing: false, minimumWidth: 30
+                            }
+                        ]
+                    },
+                    {
+                        name: 'Selection',
+                        mode: 'row',
+                        multipleSelection: true
+                    }
+                ],
+                ntsFeatures: [
+                    {
+                        name: 'CellState',
+                        rowId: 'rowId',
+                        columnKey: 'columnKey',
+                        state: 'state',
+                        states: statesTable
+                    }
+                ],
+                ntsControls: [
+                    {
+                        name: 'Button_WorkPlace',
+                        text: nts.uk.resource.getText('KAF002_83'),
+                        click: function(data: any) {
+                            const inputCDL008: any = {
+                                startMode: 0, // workplace
+                                isMultiple: false,
+                                showNoSelection: false,
+                                selectedCodes: data.workplaceId || '',
+                                isShowBaseDate: false,
+                                baseDate: _.isNil(self.appDate()) || _.isEmpty(self.appDate())
+                                    ? moment.utc().toDate()
+                                    : moment.utc(self.appDate(), 'YYYY/MM/DD').toDate(),
+                                selectedSystemType: 2, //employment
+                                isrestrictionOfReferenceRange: false
+                            };
+                            nts.uk.ui.windows.setShared('inputCDL008', inputCDL008);
+
+                            nts.uk.ui.windows.sub.modal("com", "/view/cdl/008/a/index.xhtml").onClosed(() => {
+                                const isCancel = nts.uk.ui.windows.getShared('CDL008Cancel');
+                                if (isCancel) return;
+
+                                const selected = nts.uk.ui.windows.getShared('outputCDL008');
+                                if (data.workplaceId === selected) return;
+                                data.workplaceId = selected;
+                                self.dataSource[data.index][data.idGetList].workplaceId = selected;
+
+                                const selectedInfor = nts.uk.ui.windows.getShared('workplaceInfor')
+                                self.dataSource[data.index][data.idGetList].workplaceName = selectedInfor[0].displayName;
+                                const $selected = $(`<div class="limited-label label-workplace-id">${selectedInfor[0].displayName}</div>`);
+                                if (data.index === 0) {
+                                    $('#grid1_container .nts-grid-control-workplaceId-' + data.id + ' .label-workplace-id').remove();
+                                    if (data.workplaceId && !_.isEmpty(data.workplaceId)) {
+                                        $('#grid1_container .nts-grid-control-workplaceId-' + data.id).append($selected);
+                                    }
+                                }
+                                if (data.index === 5) {
+                                    $('#grid6_container .nts-grid-control-workplaceId-' + data.id + ' .label-workplace-id').remove();
+                                    if (data.workplaceId && !_.isEmpty(data.workplaceId)) {
+                                        $('#grid6_container .nts-grid-control-workplaceId-' + data.id).append($selected);
+                                    }
+                                }
+
+                            });
+                        },
+                        controlType: 'Button'
+                    },
+                    {
+                        name: 'Button_WorkLocation',
+                        text: nts.uk.resource.getText('KAF002_84'),
+                        click: function(data: any) {
+                            nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', data.workLocationCD);
+                            nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
+                                const returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
+                                const returnWorkLocationName = nts.uk.ui.windows.getShared("KDL010workLocationName");
+                                const workLocationCD = returnWorkLocationCD !== undefined? returnWorkLocationCD : "";
+                                if (data.workLocationCD === workLocationCD) return;
+                                data.workLocationCD = workLocationCD;
+                                self.dataSource[data.index][data.idGetList].workLocationCD = workLocationCD;
+
+                                self.dataSource[data.index][data.idGetList].workLocationName = returnWorkLocationName;
+                                const $selected = $(`<div class="limited-label label-work-location">${returnWorkLocationName}</div>`);
+                                if (data.index === 0) {
+                                    $('#grid1_container .nts-grid-control-workLocationCD-' + data.id + ' .label-work-location').remove();
+                                    if (!_.isEmpty(data.workLocationCD)) {
+                                        $('#grid1_container .nts-grid-control-workLocationCD-' + data.id).append($selected);
+                                    }
+                                }
+                                if (data.index === 5) {
+                                    $('#grid6_container .nts-grid-control-workLocationCD-' + data.id + ' .label-work-location').remove();
+                                    if (!_.isEmpty(data.workLocationCD)) {
+                                        $('#grid6_container .nts-grid-control-workLocationCD-' + data.id).append($selected);
+                                    }
+                                }
+                            });
+                        },
+                        controlType: 'Button'
+                    }
+                ]
+            };
+            if (!self.isVisibleComlumn || ko.toJS(self.isPreAtr)) {
+                options.columns.pop();
+            }
+            return options;
+        }
+
+        private reloadWorkplaceWorkLocation(data: GridItem, type: number) {
+          const self = this;
+          let gridId: number;
+          if (type === STAMPTYPE.ATTENDENCE) {
+            gridId = 1;
+          } else if (type === STAMPTYPE.CHEERING) {
+            gridId = 6;
+          } else return;
+          
+          $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} button`).ready(() => {
+            $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} button`).removeAttr("tabindex");
+
+            if (data.workplaceId && !_.isEmpty(data.workplaceId)) {
+              const $selected = $(`<div class="limited-label label-workplace-id">${data.workplaceName || ""}</div>`);
+              $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} .label-workplace-id`).remove();
+              $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id}`).append($selected);
+            }
+          });
+        
+          $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} button`).ready(() => {
+            $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} button`).removeAttr("tabindex");
+
+            if (data.workLocationCD && !_.isEmpty(data.workLocationCD)) {
+              const $selected = $(`<div class="limited-label label-work-location">${data.workLocationName || ""}</div>`);
+              $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} .label-work-location`).remove();
+              $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id}`).append($selected);
+            }
+          });
+        }
+
+        private setActualWorkplaceAndLocation(data: GridItem, type: number) {
+            const self = this;
+            let gridId: number;
+            if (type === STAMPTYPE.ATTENDENCE) gridId = 1;
+            else if (type === STAMPTYPE.CHEERING) gridId = 6;
+            else return;
+            const setActualData = () => {
+              $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} button`).ready(() => {
+                $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} button`).removeAttr("tabindex");
+                $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} .label-workplace-id`).remove();
+                
+                if (data.workplaceId) {
+                  const wkpName = _.find(self.workplaceNames, wkp => wkp?.workplaceId == data.workplaceId)?.wkpName;
+                  $(`#grid${gridId}_container .nts-grid-control-workplaceId-${data.id} .nts-button-container`).after(() => {
+                    return $(`<div class="limited-label label-workplace-id">${wkpName || ""}</div>`);
+                  });
+                }
+              });
+              
+              $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} button`).ready(() => {
+                $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} button`).removeAttr("tabindex");
+                $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} .label-work-location`).remove();
+                if (data.workLocationCD) {
+                  const locationName = _.find(self.workLocationNames, lo => lo?.workLocationCode == data.workLocationCD)?.workLocationName;
+                  $(`#grid${gridId}_container .nts-grid-control-workLocationCD-${data.id} .nts-button-container`).after(() => {
+                    return $(`<div class="limited-label label-work-location">${locationName || ""}</div>`);
+                  });
+                }
+              });
+            };
+            $('#kaf002TabPanel').parent().on('bindingActualWkpLocation', (_, param) => {
+              self.workLocationNames = param.workLocationNames;
+              self.workplaceNames = param.workplaceNames;
+              if (self.isPreAtr()) return;
+              setActualData();
+            });
+            if (self.isPreAtr()) return;
+            setActualData();
+        }
     }
 
 
     export class GridItem {
         id: number;
-        flag: string;
+        flag: any;
         startTimeRequest: KnockoutObservable<number> = ko.observable(null);
         endTimeRequest: KnockoutObservable<number> = ko.observable(null);
         startTimeActual: number;
@@ -592,6 +933,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         flagObservable: KnockoutObservable<boolean> = ko.observable(false);
         flagEnable: KnockoutObservable<boolean> = ko.observable(true);
         index: number;
+        workplace: string;
+        workplaceId: string;
+        workplaceName: string;
+        workLocation: string;
+        workLocationCD: string;
+        workLocationName: string;
+        idGetList: number;
 		nameStart: string;
 		nameEnd: string;
         errorStart: KnockoutObservable<boolean> = ko.observable(false);
@@ -600,6 +948,9 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         typeStamp: STAMPTYPE;
         constructor( dataObject: TimePlaceOutput, typeStamp: STAMPTYPE ) {
             const self = this;
+            self.workplaceId = dataObject.workplaceId;
+            self.workLocationCD = dataObject.opWorkLocationCD;
+
             self.typeStamp = typeStamp;
             self.id = dataObject.frameNo;
             self.typeReason = dataObject.opGoOutReasonAtr ? String(dataObject.opGoOutReasonAtr) : (STAMPTYPE.GOOUT_RETURNING == typeStamp ? '0' : null);
@@ -620,11 +971,15 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 				if (frameNo == 1) {
 	                this.text1 = nts.uk.resource.getText( 'KAF002_103', [dataObject.frameNo]);	
 					this.nameStart = nts.uk.resource.getText('KAF002_101', [dataObject.frameNo]);
-					this.nameEnd = nts.uk.resource.getText('KAF002_102', [dataObject.frameNo]);				
+					this.nameEnd = nts.uk.resource.getText('KAF002_102', [dataObject.frameNo]);
+                    this.workplace = nts.uk.resource.getText('KAF002_81', [dataObject.frameNo]);
+                    this.workLocation = nts.uk.resource.getText('KAF002_82', [dataObject.frameNo]);
 				} else {
 					this.text1 = nts.uk.resource.getText( 'KAF002_65', [dataObject.frameNo]);
 					this.nameStart = nts.uk.resource.getText('KAF002_87', [dataObject.frameNo]);
-					this.nameEnd = nts.uk.resource.getText('KAF002_88', [dataObject.frameNo]);		
+					this.nameEnd = nts.uk.resource.getText('KAF002_88', [dataObject.frameNo]);
+                    this.workplace = nts.uk.resource.getText('KAF002_81', [dataObject.frameNo]);
+                    this.workLocation = nts.uk.resource.getText('KAF002_82', [dataObject.frameNo]);
 				}
                 param = param + 1;
             } else if ( typeStamp == STAMPTYPE.GOOUT_RETURNING ) {
@@ -652,7 +1007,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 				this.nameStart = nts.uk.resource.getText('KAF002_89', [dataObject.frameNo -2]);
 				this.nameEnd = nts.uk.resource.getText('KAF002_90', [dataObject.frameNo -2]);
                 param = param + 2;
+            } else if (typeStamp === STAMPTYPE.CHEERING) {
+                this.text1 = nts.uk.resource.getText( 'KAF002_86', [dataObject.frameNo] );
+				this.nameStart = nts.uk.resource.getText('KAF002_99', [dataObject.frameNo]);
+				this.nameEnd = nts.uk.resource.getText('KAF002_100', [dataObject.frameNo]);
+                param = param + 7;
             }
+
             this.startTime = '<div style="display: block; margin: 0px 5px 5px 5px">'
                 + '<span style="display: block; text-align: center">' + start + '</span>'
                 + '<div align="center">'
@@ -671,6 +1032,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '</div>';
 
             this.flag = '<div align="center" data-bind="css: !' + param + '[' + idGetList + '].flagEnable ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: ' + param + '[' + idGetList + '].flagEnable, checked: ' + param + '[' + idGetList + '].flagObservable}"></div>';
+
+            self.idGetList = idGetList;
         }
 
 
@@ -682,6 +1045,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             let param = 'dataSource[' + String(self.index) + ']';
 
             let idGetList = self.id - 1;
+            self.idGetList = idGetList;
             this.startTime = '<div class="startTime" style="display: block; margin: 0px 5px 5px 5px">'
                 + '<span style="display: block; text-align: center">' + start + '</span>'
                 + '<div align="center">'
@@ -707,17 +1071,18 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             const self = this;
             let param = 'dataSource[' + String(self.index) + ']';
             let idGetList = self.id - 1;
+            self.idGetList = idGetList;
             self.flagObservable(false);
             this.startTime = '<div class="startTime" style="display: block; margin: 0px 5px 5px 5px">'
                 + '<div align="center" style="padding-top: 10px; padding-bottom: 5px">'
                 + '<input style="width: 90px; text-align: center" data-name="Time Editor" data-bind="'
-                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameStart +'\'}" />'
+                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest , constraint: \'HolidayAppPrimitiveTime\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameStart +'\'}" />'
                 + '</div>'
                 + '</div>';
             this.endTime = '<div class="endTime" style="display: block; margin: 0px 5px 5px 5px">'
                 + '<div align="center" style="padding-top: 10px; padding-bottom: 5px">'
                 + '<input style="width: 90px; text-align: center" data-name="Time Editor" data-bind="'
-                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameEnd +'\'}" />'
+                + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest , constraint: \'HolidayAppPrimitiveTime\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameEnd +'\'}" />'
                 + '</div>'
                 + '</div>';
         }
@@ -769,6 +1134,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
         opStartTime: number;
 
+        workplaceId: string;
         errorStart: boolean;
 
         errorEnd: boolean;
@@ -779,6 +1145,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             this.frameNo = index;
             this.opStartTime = null;
             this.opEndTime = null;
+            this.workplaceId= null;
             this.errorStart = false;
         }
 
