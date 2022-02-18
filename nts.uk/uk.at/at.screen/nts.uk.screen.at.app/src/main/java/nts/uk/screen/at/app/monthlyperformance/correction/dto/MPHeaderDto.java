@@ -212,7 +212,7 @@ public class MPHeaderDto {
 		// }
 		setShowZero(item, dto);
 		// Set header text
-		if (null != item.getLineBreakPosition() && item.getLineBreakPosition() > 0) {
+		if (null != item.getLineBreakPosition() && item.getLineBreakPosition() > 0 && item.getLineBreakPosition() < item.getName().length()) {
 			dto.headerText = item.getName() != null ? item.getName().substring(0, item.getLineBreakPosition()) + "<br/>"
 					+ item.getName().substring(item.getLineBreakPosition(), item.getName().length()) : "";
 		} else {
