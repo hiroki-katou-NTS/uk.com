@@ -40,4 +40,10 @@ public class UpperLimitSetting extends DomainObject {
 		memento.setMaxDaysRetention(this.maxDaysCumulation);
 		memento.setRetentionYearsAmount(this.retentionYearsAmount);
 	}
+
+	public UpperLimitSetting(RetentionYearsAmount retentionYearsAmount, MaxDaysRetention maxDaysCumulation) {
+		super();
+		this.retentionYearsAmount = retentionYearsAmount;
+		this.maxDaysCumulation = maxDaysCumulation;
+	}
 }

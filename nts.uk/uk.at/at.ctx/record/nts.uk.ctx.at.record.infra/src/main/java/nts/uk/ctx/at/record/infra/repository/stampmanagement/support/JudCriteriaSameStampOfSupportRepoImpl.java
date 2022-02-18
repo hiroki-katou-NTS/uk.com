@@ -40,7 +40,6 @@ public class JudCriteriaSameStampOfSupportRepoImpl extends JpaRepository impleme
 			KrcmtSupportStampSet entiti = this.queryProxy().find(dm.getCid().toString(),KrcmtSupportStampSet.class).orElse(null);
 			if(entiti != null){
 				entiti.sameStampRanceInMinutes = dm.getSameStampRanceInMinutes().v();
-				entiti.supportMaxFrame = dm.getSupportMaxFrame().v();
 				commandProxy().update(entiti);
 			}
 		});
@@ -65,8 +64,7 @@ public class JudCriteriaSameStampOfSupportRepoImpl extends JpaRepository impleme
 	}
 	
 	private JudgmentCriteriaSameStampOfSupport toDomain(KrcmtSupportStampSet entity) {
-		JudgmentCriteriaSameStampOfSupport dm = new JudgmentCriteriaSameStampOfSupport(entity.cid, new RangeRegardedSupportStamp(entity.sameStampRanceInMinutes), new MaximumNumberOfSupport(entity.supportMaxFrame));
-		return dm;
+		return new JudgmentCriteriaSameStampOfSupport(entity.cid, new RangeRegardedSupportStamp(entity.sameStampRanceInMinutes));
 	}
 
 }

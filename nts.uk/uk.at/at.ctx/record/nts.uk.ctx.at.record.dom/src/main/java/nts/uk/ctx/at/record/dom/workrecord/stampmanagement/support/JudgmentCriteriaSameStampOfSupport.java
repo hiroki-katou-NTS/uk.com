@@ -23,17 +23,12 @@ public class JudgmentCriteriaSameStampOfSupport implements DomainAggregate {
 
 	// 同一打刻とみなす範囲
 	private final RangeRegardedSupportStamp sameStampRanceInMinutes;
-
-	// 最大応援回数
-	private final MaximumNumberOfSupport supportMaxFrame;
 	
 	// [C-1] 応援の同一打刻の判断基準を作成する	
-	public JudgmentCriteriaSameStampOfSupport(String cid,
-			RangeRegardedSupportStamp sameStampRanceInMinutes,MaximumNumberOfSupport supportMaxFrame) {
+	public JudgmentCriteriaSameStampOfSupport(String cid, RangeRegardedSupportStamp sameStampRanceInMinutes) {
 		super();
 		this.cid = cid;
 		this.sameStampRanceInMinutes = sameStampRanceInMinutes;
-		this.supportMaxFrame = supportMaxFrame;
 	}
 	
 	/**

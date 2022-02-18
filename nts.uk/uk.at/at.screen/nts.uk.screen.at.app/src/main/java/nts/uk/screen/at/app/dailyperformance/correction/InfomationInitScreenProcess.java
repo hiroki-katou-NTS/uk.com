@@ -121,9 +121,9 @@ public class InfomationInitScreenProcess {
 		
 		// 作業運用設定を取得する
 		Optional<TaskOperationSetting> opTaskOperationSetting = taskOperationSettingRepository.getTasksOperationSetting(companyId);
-		
-		screenDto.setShowWorkLoad(opTaskOperationSetting.map(x -> x.getTaskOperationMethod()==TaskOperationMethod.USED_IN_ACHIEVENTS).orElse(false)
-				&& AppContexts.optionLicense().attendance().workload());
+		// EA No 4173
+		//screenDto.setShowWorkLoad(opTaskOperationSetting.map(x -> x.getTaskOperationMethod()==TaskOperationMethod.USED_IN_ACHIEVENTS).orElse(false)
+		//		&& AppContexts.optionLicense().attendance().workload());
 		
 		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data --休暇の管理状況をチェックする
 //		getHolidaySettingData(screenDto);

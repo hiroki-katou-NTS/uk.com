@@ -51,4 +51,15 @@ public class JpaSupportOperationSettingRepository extends JpaRepository implemen
         return entity;
     }
 
+	@Override
+	public Optional<SupportOperationSetting> getSupportOperationSetting(String cid) {
+		Optional<KshmtSupportOperationSetting> op = this.queryProxy().find(cid, KshmtSupportOperationSetting.class);
+        if(op.isPresent()){
+            KshmtSupportOperationSetting entity = op.get();
+            SupportOperationSetting domain = new SupportOperationSetting(entity.isAvailable(), entity.isCanRecipientChooseSupporter(), new MaximumNumberOfSupport(entity.getMaxTimesPerDayOfSupport()));
+            return Optional.of(domain);
+        }
+        return Optional.empty();
+	}
+
 }

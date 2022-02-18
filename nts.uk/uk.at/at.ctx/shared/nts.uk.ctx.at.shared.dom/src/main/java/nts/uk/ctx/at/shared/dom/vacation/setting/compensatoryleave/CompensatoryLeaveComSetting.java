@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
@@ -129,4 +130,57 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 		this.linkingManagementATR = linkingManagementATR;
 	}
 	
+	/**
+	 * 	[3] 代休に対応する日次の勤怠項目を取得する
+	 */
+	public List<Integer> getDailyAttendanceItemsSubHolidays() {
+		List<Integer> lstId = new ArrayList<>();
+		// 代休に対応する日次の勤怠項目
+		lstId.addAll(Arrays.asList(541, 542));
+		// 時間代休に対応する日次の勤怠項目
+		lstId.addAll(Arrays.asList(505, 517, 597, 603, 609, 615));
+		
+		return lstId;
+	}
+	
+	/**
+	 * 	[4] 代休に対応する月次の勤怠項目を取得する
+	 */
+	public List<Integer> getMonthlyAttendanceItemsSubHolidays() {
+		List<Integer> lstId = new ArrayList<>();
+		// 代休に対応する日数の月次の勤怠項目
+		lstId.addAll(Arrays.asList(1260, 1262, 1264, 1266, 1268));
+		// 時間代休に対応する月次の勤怠項目
+		lstId.addAll(Arrays.asList(188, 1666, 1667, 1668, 1669, 1670));
+		
+		return lstId;
+	}
+	
+	/**
+	 * [5] 利用できない日次の勤怠項目を取得する
+	 */
+	public List<Integer> getDailyAttendanceItems() {
+		if (this.isManagedTime())
+			return new ArrayList<>();
+		
+		if (this.isManaged())
+			// 時間代休に対応する日次の勤怠項目
+			return Arrays.asList(505, 517, 597, 603, 609, 615);
+		
+		return this.getDailyAttendanceItemsSubHolidays();
+	}
+	
+	/**
+	 * [6] 利用できない月次の勤怠項目を取得する
+	 */
+	public List<Integer> getMonthlyAttendanceItems() {
+		if (this.isManagedTime())
+			return new ArrayList<>();
+		
+		if (this.isManaged())
+			// 時間代休に対応する月次の勤怠項目
+			return Arrays.asList(188, 1666, 1667, 1668, 1669, 1670);
+		
+		return this.getMonthlyAttendanceItemsSubHolidays();
+	}
 }

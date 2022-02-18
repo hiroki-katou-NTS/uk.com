@@ -301,7 +301,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             // ドメインモデル「特別休暇枠」を取得する
             List<SpecialHolidayFrame> listSpecialFrame = specialHolidayFrameRepo.findDataDisplay(companyId, 1, 1)
                     .stream()
-                    .filter(i -> i.getDeprecateSpecialHd() == DeprecateClassification.Deprecated && i.getTimeMngAtr() == NotUseAtr.USE)
+                    .filter(i -> i.getDeprecateSpecialHd() == ManageDistinct.YES && i.getTimeMngAtr() == NotUseAtr.USE)
                     .sorted(Comparator.comparing(SpecialHolidayFrame::getSpecialHdFrameNo))
                     .collect(Collectors.toList());
             timeSpecialLeaveMng.getListSpecialFrame().addAll(listSpecialFrame);
