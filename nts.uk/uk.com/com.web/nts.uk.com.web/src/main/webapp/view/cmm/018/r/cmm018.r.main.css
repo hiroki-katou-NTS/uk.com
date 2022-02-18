@@ -1,0 +1,34 @@
+.flex-area {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+  margin-top: 10px;
+  align-items: center;
+}
+.flex-area > .item-1 {
+  flex: 1;
+}
+.flex-area > .item-2 {
+  flex: 2;
+}
+.flex-col {
+  flex-direction: column;
+}
+.flex-row {
+  flex-direction: row;
+}
+.padding-left-20 {
+  padding-left: 20px;
+}
+.padding-left-15 {
+  padding-left: 15px;
+}
+.text-center,
+.ui-igcombo-listitemholder,
+.full-height .ui-igcombo-field {
+  text-align: center !important;
+}
+.full-height .nts-combo-container {
+  height: 100% !important;
+  width: 100% !important;
+}

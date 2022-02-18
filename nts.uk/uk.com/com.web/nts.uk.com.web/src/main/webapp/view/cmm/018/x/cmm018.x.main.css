@@ -11,14 +11,6 @@
     flex-direction: column;
     row-gap: 20px;
 }
-.panelFirst,
-.panelSecond {
-    height: 500px !important;
-}
-.panelFirstJinji,
-.panelSecond.jinji {
-    height: 350px !important;
-}
 .btnInPanel {
 	width: 200px; 
 	margin: 12px
@@ -73,7 +65,7 @@ button:focus.caret-right:after {
     padding: 10px 30px;
 }
 .panel-top .panel.frame-only {
-    width: 660px;
+    width: 670px;
     margin-left: 270px;
     margin-bottom: 5px;
 }

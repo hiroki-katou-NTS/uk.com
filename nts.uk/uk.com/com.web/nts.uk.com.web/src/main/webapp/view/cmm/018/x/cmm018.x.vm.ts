@@ -1,17 +1,84 @@
 module nts.uk.com.view.cmm018.x.viewmodel {
+
+	const API = {
+		checkBootMode: 'screen/approvermanagement/workroot/check-boot-mode',
+		changeOperationMode: 'screen/approvermanagement/workroot/change-operation-mode',
+	};
+
 	@bean()
 	export class Cmm018XViewModel extends ko.ViewModel {
 		systemAtr: KnockoutObservable<number> = ko.observable(SystemAtr.EMPLOYMENT);
-		mode: KnockoutObservable<number> = ko.observable(0);
+		mode: KnockoutObservable<number> = ko.observable(OperationMode.PERSON_IN_CHARGE);
+		oldMode: number = OperationMode.PERSON_IN_CHARGE;
+		isPersonInCharge: KnockoutComputed<boolean>;
 
 		created() {
 			const self = this;
 			let url = $(location).attr('search');
             let urlParam: number = url.split("=")[1];
 			self.systemAtr(urlParam || SystemAtr.EMPLOYMENT);
+			self.checkBootMode();
+			self.isPersonInCharge = ko.computed(() => self.mode() === OperationMode.PERSON_IN_CHARGE);
 		}
+
+		checkBootMode() {
+			const self = this;
+			self
+				.$blockui('grayout')
+				.then(() => self.$ajax('com', API.checkBootMode))
+				.then((response: { operationMode: number }) => {
+					self.mode(response?.operationMode || OperationMode.PERSON_IN_CHARGE);
+				})
+				.always(() => {
+					self.subscribeMode();
+					self.$blockui('clear');
+				});
+		}
+
 		mounted() {
 			$('#btnM').focus();
+		}
+
+		subscribeMode() {
+			const self = this;
+			let isSubscribeMode = false;
+			self.mode.subscribe(newValue => {
+				if (isSubscribeMode) return;
+				isSubscribeMode = true;
+				self.$dialog
+					.confirm({ messageId: 'Msg_3306' })
+					.then((rs: 'yes' | 'no' | 'cancel') => {
+						if (rs !== 'yes') {
+							self.mode(self.oldMode);
+							isSubscribeMode = false;
+							return;
+						}
+
+						self
+							.$blockui('grayout')
+							.then(() => self.$ajax('com', API.changeOperationMode, {
+								opeMode: self.mode(),
+								itemNameInfor: {
+									firstItemName: self.$i18n("CMM018_250"),
+									secondItemName: self.$i18n("CMM018_251"),
+									thirdItemName: self.$i18n("CMM018_252"),
+									fourthItemName: self.$i18n("CMM018_253"),
+									fifthItemName: self.$i18n("CMM018_254"),
+								}
+							}))
+							.then(() => {
+								self.oldMode = newValue;
+							})
+							.fail(error => {
+								self.$dialog.error(error);
+								self.mode(self.oldMode);
+							})
+							.always(() => {
+								isSubscribeMode = false;
+								self.$blockui('clear');
+							});
+					});
+			}, null, 'beforeChange');
 		}
 
 		openDialogQ() {
@@ -53,6 +120,16 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 				// bussiness logic after modal closed
 			});
 		}
+
+		jumpToCMM018R() {
+			const vm = this;
+			vm.$jump('com', '/view/cmm/018/r/index.xhtml', ko.toJS(vm.systemAtr));
+		}
+
+		jumpToCMM030A() {
+			const vm = this;
+			vm.$jump('com', '/view/cmm/030/a/index.xhtml', ko.toJS(vm.systemAtr));
+		}
 		
 	}
 	export const SystemAtr = {
@@ -61,4 +138,10 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 	}
 	export const MODE_SYSTEM = 'SYSTEM_MODE';
 
+	export enum OperationMode {
+		/** 就業担当者が行う */
+		PERSON_IN_CHARGE = 0,
+		/** 上長・社員が行う */
+		SUPERIORS_EMPLOYEE = 1,
+	}
 }

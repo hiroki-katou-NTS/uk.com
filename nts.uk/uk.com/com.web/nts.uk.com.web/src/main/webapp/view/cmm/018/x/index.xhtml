@@ -56,7 +56,7 @@
 
 							<div class="flex-area">
 								<!-- X2_2 -->
-								<button data-bind="click: openDialogQ" class="large btnInPanel item-1">#{i18n.getText('CMM018_116')}</button>
+								<button data-bind="click: openDialogQ, enable: isPersonInCharge" class="large btnInPanel item-1">#{i18n.getText('CMM018_116')}</button>
 								<!-- X2_3 -->
 								<div data-bind="visible: ko.toJS(systemAtr) == 0" class="label textFormat item-2 frame-only">#{i18n.getText('CMM018_117', [i18n.getText('Com_Workplace')])}</div>
 								<div data-bind="visible: ko.toJS(systemAtr) == 1" class="label textFormat item-2 frame-only">#{i18n.getText('CMM018_117', [i18n.getText('Com_Department')])}</div>	
@@ -64,7 +64,7 @@
 							
 							<div data-bind="visible: ko.toJS(systemAtr) == 0" class="flex-area">
 								<!-- X2_4 -->
-								<button data-bind="click: jumpToCmm013H" class="large btnInPanel item-1">#{i18n.getText('CMM018_118')}</button>
+								<button data-bind="click: jumpToCmm013H, enable: isPersonInCharge" class="large btnInPanel item-1">#{i18n.getText('CMM018_118')}</button>
 								<!-- X2_5 -->
 								<div class="label textFormat item-2 frame-only">#{i18n.getText('CMM018_119')}</div>
 							</div>
@@ -76,7 +76,7 @@
 							</div>
 							<div class="flex-area">
 								<!-- X3_2 -->
-								<button data-bind="click: jumpToA"  class="large caret-right btnInPanel item-1">#{i18n.getText('CMM018_121')}</button>
+								<button data-bind="click: jumpToA, enable: isPersonInCharge"  class="large caret-right btnInPanel item-1">#{i18n.getText('CMM018_121')}</button>
 								<!-- X3_3 -->
 								<div data-bind="visible: ko.toJS(systemAtr) == 0" class="label textFormat item-2 frame-only">#{i18n.getText('CMM018_120', [i18n.getText('Com_Workplace')])}</div>
 								<div data-bind="visible: ko.toJS(systemAtr) == 1" class="label textFormat item-2 frame-only">#{i18n.getText('CMM018_120', [i18n.getText('Com_Department')])}</div>	
@@ -93,7 +93,7 @@
 							</div>
 							<div class="flex-area">
 								<!-- X8_3 -->
-								<button data-bind="click: jumpToA"  class="large caret-right btnInPanel item-1">#{i18n.getText('CMM018_177')}</button>
+								<button data-bind="click: jumpToCMM018R, enable: !isPersonInCharge()"  class="large caret-right btnInPanel item-1">#{i18n.getText('CMM018_177')}</button>
 								<!-- X8_4 X8_5 -->
 								<div class="label item-2 frame-only textFormat">#{i18n.getText('CMM018_178')}</div>
 							</div>
@@ -107,7 +107,7 @@
 							</div>
 							<div class="flex-area">
 								<!-- X8_9 -->
-								<button data-bind="click: jumpToA"  class="large caret-right btnInPanel item-1">#{i18n.getText('CMM018_181')}</button>
+								<button data-bind="click: jumpToCMM030A, enable: !isPersonInCharge()"  class="large caret-right btnInPanel item-1">#{i18n.getText('CMM018_181')}</button>
 								<!-- X8_10 -->
 								<div class="label item-2 frame-only textFormat">#{i18n.getText('CMM018_182')}</div>
 							</div>

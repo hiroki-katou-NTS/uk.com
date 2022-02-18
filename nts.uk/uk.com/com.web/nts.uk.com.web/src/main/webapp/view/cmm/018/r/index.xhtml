@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cmm018.r.main.css" />
+			<com:scriptfile path="cmm018.r.vm.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ApproverInputExplanation
+			</com:ValidatorScript>
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- R1_1 -->
+				<a data-bind="ntsLinkButton: { jump: '../x/index.xhtml' }">#{i18n.getText('CMM018_220')}</a>
+				<!-- R1_2 -->
+				<button class="proceed">#{i18n.getText('CMM018_221')}</button>
+				<!-- R1_3 -->
+				<button>#{i18n.getText('CMM018_222')}</button>
+			</div>
+			<div id="contents-area">
+				<!-- R2_1 -->
+				<div class="flex">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM018_223')}</div>
+				</div>
+				<!-- R2_2 -->
+				<div class="flex flex-col padding-left-20">
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM018_224')}</div>
+					<div class="padding-left-15">
+						<table id="grid1"></table>
+					</div>
+				</div>
+				<!-- R2_7 -->
+				<div class="flex flex-col padding-left-20">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM018_233')}</div>
+					<div class="padding-left-15">
+						<table id="grid2"></table>
+					</div>
+				</div>
+				<div class="flex flex-col">
+					<!-- R3_1 -->
+					<div data-bind="ntsFormLabel: { constraint: 'ApproverInputExplanation' }">#{i18n.getText('CMM018_235')}</div>
+					<!-- R3_2 -->
+					<textarea rows="7" data-bind="ntsMultilineEditor: {
+						name: '#[CMM018_236]', 
+						value: processMemo,
+						constraint: 'ApproverInputExplanation',
+						option: optionTextarea,
+						enable: true,
+						immediate: false
+					}">
+					</textarea>
+				</div>
+				<div class="flex flex-col">
+					<!-- R3_3 -->
+					<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CMM018_237')}</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
