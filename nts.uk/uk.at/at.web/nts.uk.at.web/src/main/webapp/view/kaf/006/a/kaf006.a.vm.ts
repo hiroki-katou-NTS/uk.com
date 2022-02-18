@@ -1637,7 +1637,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         openKDL020() {
             let vm = this;
             nts.uk.ui.windows.setShared('KDL020_DATA', vm.application().employeeIDLst());
-            if (vm.application().employeeIDLst().length > 1) {
+            if (vm.application().employeeIDLst().length > 1)
                 nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 1040, height: 660 });
 			else
 				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 730, height: 660 });

@@ -380,6 +380,8 @@ public class OvertimeWorkMultipleTimesTest {
                         new ArrayList<>(),
                         Optional.empty(),
                         new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
                         Optional.empty()
                 );
             }
@@ -463,6 +465,8 @@ public class OvertimeWorkMultipleTimesTest {
                         Optional.empty(),
                         new ArrayList<>(),
                         Optional.empty(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
                         new ArrayList<>(),
                         Optional.empty()
                 );

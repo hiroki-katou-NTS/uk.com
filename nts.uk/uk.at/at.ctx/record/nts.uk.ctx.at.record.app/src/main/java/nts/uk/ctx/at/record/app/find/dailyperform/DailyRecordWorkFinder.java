@@ -310,7 +310,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 		System.out.print("thoi gian lay data DB: " +(System.currentTimeMillis() - startTime));
 
 		return (List<T>) param.entrySet().stream().map(p -> {
-			return p.getValue().stream().map(d -> {
+			return (List<DailyRecordDto>) p.getValue().stream().map(d -> {
 				return DailyRecordDto.builder().employeeId(p.getKey()).workingDate(d)
 						.withWorkInfo(getValue(workInfos.get(p.getKey()), d))
 						.withCalcAttr(getValue(calcAttrs.get(p.getKey()), d))

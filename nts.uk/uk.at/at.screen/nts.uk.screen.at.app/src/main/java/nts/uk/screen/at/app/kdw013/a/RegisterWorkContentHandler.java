@@ -106,10 +106,11 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 		
 			
 		// 7.残業申請・休出時間申請の対象時間を取得する
+		// comment lai do update method getTargetTime.get
 
-		List<OvertimeLeaveTimeDto> ots = this.getTargetTime.get(command.getEmployeeId(), command.getChangedDates());
+		//List<OvertimeLeaveTimeDto> ots = this.getTargetTime.get(command.getEmployeeId(), command.getChangedDates());
 
-		result.setLstOvertimeLeaveTime(ots);
+		//result.setLstOvertimeLeaveTime(ots);
 		
 		// 8. List<残業休出時間>.isPresent check dưới client
 

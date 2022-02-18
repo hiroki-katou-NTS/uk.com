@@ -5,6 +5,9 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Builder;
@@ -39,6 +42,34 @@ public class TimeAnnualMaxDay implements Serializable {
 	public boolean isManaged(){
 		return this.manageType.equals(ManageDistinct.YES);
 	}
+	
+	/**
+	 * C-0
+	 */
+	public TimeAnnualMaxDay(ManageDistinct manageType, MaxDayReference reference, MaxTimeDay maxNumberUniformCompany) {
+		super();
+		this.manageType = manageType;
+		this.reference = reference;
+		this.maxNumberUniformCompany = maxNumberUniformCompany;
+	}
+	
+	/**
+	 * [1] 時間年休の上限日数に対応する月次の勤怠項目を取得する
+	 */
+	public List<Integer> acquiremonthAttendItemMaximumNumberDaysAnnualLeave() {
+		return Arrays.asList(1442,1443,1444,1445);
+	}
+	
+	/**
+	 * [2] 利用できない月次の勤怠項目を取得する
+	 */
+	public List<Integer> getMonthAttendItemsNotAvailable(ManageDistinct manageType, ManageDistinct timeManageType) {
+		if (!this.isManageMaximumNumberDays(manageType, timeManageType)) { 
+			return this.acquiremonthAttendItemMaximumNumberDaysAnnualLeave();
+		}
+		return new ArrayList<>();
+	}
+	
 	/**
 	 * [3] 時間年休上限日数を取得
 	 * @param fromGrantTableDays
@@ -51,5 +82,14 @@ public class TimeAnnualMaxDay implements Serializable {
 		return this.reference.equals(MaxDayReference.CompanyUniform)
 				? Optional.of(this.maxNumberUniformCompany.toLimitedTimeHdDays()) : fromGrantTableDays;
 	}
-
+	
+	/**
+	 * [4] 上限日数を管理するか
+	 */
+	public boolean isManageMaximumNumberDays(ManageDistinct manageDistinctType, ManageDistinct timeManageType) {
+		if (manageDistinctType == ManageDistinct.YES && timeManageType == ManageDistinct.YES && manageType == ManageDistinct.YES) {
+			return true;
+		}
+		return false;
+	}
 }

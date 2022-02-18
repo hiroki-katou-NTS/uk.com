@@ -13,6 +13,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceit
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService {
@@ -35,6 +37,9 @@ public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService 
 
 	@Inject
 	private AtItemNameAdapter atItemNameAdapter;
+	
+	@Inject 
+	private NarrowDownListMonthlyAttdItemPub attdItemPub;
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -71,9 +76,12 @@ public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService 
 		if (monthlyItem.isEmpty()) {
 			return Collections.emptyList();
 		}
+		List<Integer> lstAtdId = monthlyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList());
+		val lstId = attdItemPub.get(AppContexts.user().companyId(), lstAtdId);
+		List<MonthlyAttendanceItem> monthlyItemNew = monthlyItem.stream().filter(x -> lstId.contains(x.getAttendanceItemId())).collect(Collectors.toList());
 		// 	勤怠項目に対応する名称を生成する
 		// to ver7
-		List<AttItemName> monthlyAttItem = atItemNameAdapter.getNameOfMonthlyAttendanceItem(monthlyItem);
+		List<AttItemName> monthlyAttItem = atItemNameAdapter.getNameOfMonthlyAttendanceItem(monthlyItemNew);
 		for (AttItemName att : monthlyAttItem) {
 			int id = att.getAttendanceItemId();
 			if (authorityMap.containsKey(id)) {

@@ -854,12 +854,13 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		List<String> lstResult = new ArrayList<>();
 		CollectionUtil.split(listCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 			String sql = "select ERROR_ALARM_CD from KRCMT_ERAL_DAY_SET where CID = ? and ERROR_ALARM_CD IN ("
-					+ subIdList.stream().map(s -> "?").collect(Collectors.joining(",")) + " )";
+					+ subIdList.stream().map(s -> "?").collect(Collectors.joining(",")) + " ) and ERAL_ATR = ?";
 			try (val statement = this.connection().prepareStatement(sql.toString())) {
 				statement.setString(1, AppContexts.user().companyId());
 				for (int i = 0; i < listCode.size(); i++) {
 					statement.setString(i + 2, listCode.get(i));
 				}
+				statement.setInt(listCode.size() + 2, 0);
 
 				lstResult.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
 					return rec.getString("ERROR_ALARM_CD");

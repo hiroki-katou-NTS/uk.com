@@ -1138,18 +1138,47 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 				String errorAlarmCode = rs.getString("ERROR_ALARM_CD");
 				String errorAlarmName = rs.getString("ERROR_ALARM_NAME");
-				int fixedAtr = rs.getInt("FIXED_ATR");
-				int useAtr = rs.getInt("USE_ATR");
+				
+				boolean fixedAtr = false;
+				try {
+					int fixedAtrInt = rs.getInt("FIXED_ATR");
+					fixedAtr = fixedAtrInt == 1 ? true : false;
+				} catch(SQLException e) {
+					fixedAtr = rs.getBoolean("FIXED_ATR");
+				}
+				
+				boolean useAtr = false;
+				try {
+					int useAtrInt = rs.getInt("USE_ATR");
+					useAtr = useAtrInt == 1 ? true : false;
+				} catch(SQLException e) {
+					useAtr = rs.getBoolean("USE_ATR");
+				}
+				
 				int typeAtr = rs.getInt("ERAL_ATR");
-				int boldAtr = rs.getInt("BOLD_ATR");
+				
+				boolean boldAtr = false;
+				try {
+					int boldAtrInt = rs.getInt("BOLD_ATR");
+					boldAtr = boldAtrInt == 1 ? true : false;
+				} catch(SQLException e) {
+					boldAtr = rs.getBoolean("BOLD_ATR");
+				}
 				String messageColor = rs.getString("MESSAGE_COLOR");
-				int cancelableAtr = rs.getInt("CANCELABLE_ATR");
+				
+				boolean cancelableAtr = false;
+				try {
+					int cancelableAtrInt = rs.getInt("CANCELABLE_ATR");
+					cancelableAtr = cancelableAtrInt == 1 ? true : false;
+				} catch(SQLException e) {
+					cancelableAtr = rs.getBoolean("CANCELABLE_ATR");
+				}
 				Integer errorDisplayItem = rs.getInt("ERROR_DISPLAY_ITEM");
 				String messageDisplay = rs.getString("MESSAGE_DISPLAY");
 
-				dtos.add(new DPErrorSettingDto(companyId, errorAlarmCode, errorAlarmName, fixedAtr == 1 ? true : false,
-						useAtr == 1 ? true : false, typeAtr, messageDisplay == null ? "" : messageDisplay,
-						boldAtr == 1 ? true : false, messageColor, cancelableAtr == 1 ? true : false,
+				dtos.add(new DPErrorSettingDto(companyId, errorAlarmCode, errorAlarmName, fixedAtr,
+						useAtr, typeAtr, messageDisplay == null ? "" : messageDisplay,
+						boldAtr, messageColor, cancelableAtr,
 						errorDisplayItem));
 			}
 

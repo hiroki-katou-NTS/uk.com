@@ -824,7 +824,9 @@ export class KdwS03BComponent extends Vue {
                 showExpireDate: false,
                 baseDate: dateParam15,
                 taskFrameNo,
-                selectionCodeList: [selectedCD]
+                selectionCodeList: [selectedCD],
+                sid: self.params.employeeID,
+                taskCode: selectedCD == '' ? null : selectedCD
             }
         ).then((data: any) => {
             if (data) {

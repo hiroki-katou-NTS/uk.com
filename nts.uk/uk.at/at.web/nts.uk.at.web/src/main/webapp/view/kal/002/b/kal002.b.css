@@ -63,4 +63,15 @@
     margin-left: 25px;
 }
 
-
+.mail-dest-setting {
+  margin: 20px 0px 50px 70px;
+}
+.mail-dest-setting > * {
+  margin-bottom: 30px;
+}
+#B5_2 {
+  width: 465px;
+}
+#B5_3 {
+  padding: 3px 18px;
+}

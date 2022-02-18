@@ -43,4 +43,12 @@ public interface OuenWorkTimeSheetOfDailyRepo {
 	 * @param supportFrameNo 枠NO
 	 */
 	public void deleteBySupFrameNo(String sId, GeneralDate ymd, SupportFrameNo supportFrameNo);
+	
+	/**
+	 * [9]  日別実績の応援作業別勤怠時間帯を取得する
+	 * @param sId 社員ID
+	 * @param dates 年月日リスト
+	 * @return 応援作業時間帯
+	 */
+	public List<OuenWorkTimeSheetOfDaily> get(String sId, List<GeneralDate> dates);
 }
