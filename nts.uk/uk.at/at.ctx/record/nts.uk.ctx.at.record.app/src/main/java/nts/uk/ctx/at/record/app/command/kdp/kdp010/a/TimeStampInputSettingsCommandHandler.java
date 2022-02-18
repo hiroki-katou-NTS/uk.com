@@ -17,6 +17,8 @@ import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.MapAddress;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.EmployeeStampingAreaRestrictionSetting;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
@@ -57,6 +59,9 @@ public class TimeStampInputSettingsCommandHandler {
 	@Inject
 	private StampSetPerRepository stampSetPerRepo;
 	
+	@Inject
+	private StampingAreaRepository stampingAreaRepository;
+	
 	/**打刻の前準備(ポータル)を登録する*/
 	public void savePortalStampSettings(PortalStampSettingsCommand command) {
 		portalStampSettingsRepo.save(command.toDomain());
@@ -79,7 +84,7 @@ public class TimeStampInputSettingsCommandHandler {
 	/**打刻の前準備(スマホ)を登録する*/
 	public void saveSettingsSmartphoneStamp(SettingsSmartphoneStampCommand command) {
 		String companyId = AppContexts.user().companyId();
-		Optional<SettingsSmartphoneStamp> oldDomain = settingsSmartphoneStampRepo.get(companyId);
+		Optional<SettingsSmartphoneStamp> oldDomain = settingsSmartphoneStampRepo.get(companyId, AppContexts.user().employeeId());
 		SettingsSmartphoneStamp saveDomain = command.toDomain();
 		if(oldDomain.isPresent()) {
 			saveDomain.setPageLayoutSettings(oldDomain.get().getPageLayoutSettings());
@@ -87,6 +92,9 @@ public class TimeStampInputSettingsCommandHandler {
 			saveDomain.setPageLayoutSettings(new ArrayList<>());
 		}
 		settingsSmartphoneStampRepo.save(saveDomain);
+		
+		stampingAreaRepository.saveStampingArea(new EmployeeStampingAreaRestrictionSetting(
+				AppContexts.user().employeeId(), saveDomain.getStampingAreaRestriction()));
 		
 		Optional<CommonSettingsStampInput> commonDomain = commonSettingsStampInputRepo.get(companyId);
 		if (commonDomain.isPresent()) {
@@ -108,7 +116,7 @@ public class TimeStampInputSettingsCommandHandler {
 	/**打刻レイアウト(スマホ)の設定内容を削除する(Delete)*/
 	public void delPageLayoutSettingsSmartphone() {
 		String companyId = AppContexts.user().companyId();
-		Optional<SettingsSmartphoneStamp> oldDomain = settingsSmartphoneStampRepo.get(companyId);
+		Optional<SettingsSmartphoneStamp> oldDomain = settingsSmartphoneStampRepo.get(companyId, AppContexts.user().employeeId());
 		if(oldDomain.isPresent()) {
 			oldDomain.get().deletePage();
 			settingsSmartphoneStampRepo.save(oldDomain.get());
@@ -130,7 +138,7 @@ public class TimeStampInputSettingsCommandHandler {
 				stampSetPerRepo.update(domain.get());
 			}
 		}else if(command.getStampMeans() == 3){
-			Optional<SettingsSmartphoneStamp> oldDomain = settingsSmartphoneStampRepo.get(companyId);
+			Optional<SettingsSmartphoneStamp> oldDomain = settingsSmartphoneStampRepo.get(companyId, AppContexts.user().employeeId());
 			if(oldDomain.isPresent()) {
 				oldDomain.get().updatePage(command.toDomain());
 				settingsSmartphoneStampRepo.save(oldDomain.get());

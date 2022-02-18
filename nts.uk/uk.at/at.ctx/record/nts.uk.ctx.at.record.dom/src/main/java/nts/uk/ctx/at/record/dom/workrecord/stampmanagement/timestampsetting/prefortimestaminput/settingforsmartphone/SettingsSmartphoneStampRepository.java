@@ -28,6 +28,6 @@ public interface SettingsSmartphoneStampRepository {
 	 * [3]  取得する
 	 * @param cid
 	 */
-	public Optional<SettingsSmartphoneStamp> get(String cid);
+	public Optional<SettingsSmartphoneStamp> get(String cid , String sId);
 
 }

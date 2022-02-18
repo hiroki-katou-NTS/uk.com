@@ -3,12 +3,9 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +23,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * AR: スマホ打刻の打刻設定
@@ -52,6 +48,7 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 	private boolean buttonEmphasisArt;
 	
 	//打刻エリア制限
+	@Setter
 	private StampingAreaRestriction stampingAreaRestriction;
 	
 	// [1] ボタン詳細設定を取得する																							

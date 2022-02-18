@@ -73,4 +73,16 @@ public class StampingAreaReposirotyImpl extends JpaRepository implements Stampin
 		}
 
 	}
+
+	@Override
+	public void saveStampingArea(EmployeeStampingAreaRestrictionSetting restrictionSetting) {
+		Optional<EmployeeStampingAreaRestrictionSetting> data = this
+				.findByEmployeeId(restrictionSetting.getEmployeeId());
+
+		if (data.isPresent()) {
+			this.updateStampingArea(restrictionSetting);
+		} else {
+			this.insertStampingArea(restrictionSetting);
+		}
+	}
 }

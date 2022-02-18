@@ -19,6 +19,10 @@ public class StampingAreaRestrictionDto {
 
 	public static StampingAreaRestrictionDto fromDomain(StampingAreaRestriction domain) {
 
+		if (domain == null) {
+			return null;
+		}
+
 		return new StampingAreaRestrictionDto(domain.getUseLocationInformation().value,
 				domain.getStampingAreaLimit().value);
 	}

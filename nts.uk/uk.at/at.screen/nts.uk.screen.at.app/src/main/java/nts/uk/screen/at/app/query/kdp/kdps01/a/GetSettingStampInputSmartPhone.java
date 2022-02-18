@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.query.kdp.kdps01.a;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
@@ -36,6 +37,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author sonnlb
  *         UKDesign.UniversalK.就業.KDP_打刻.KDPS01_打刻入力(スマホ).A:打刻入力(スマホ).メニュー別OCD.打刻入力(スマホ)の設定を取得する.打刻入力(スマホ)の設定を取得する
  */
+@Stateless
 public class GetSettingStampInputSmartPhone {
 	@Inject
 	private SettingsSmartphoneStampRepository settingRepo;
@@ -75,7 +77,7 @@ public class GetSettingStampInputSmartPhone {
 		String companyId = AppContexts.user().companyId();
 
 		// 1 .get ログイン会社ID
-		this.settingRepo.get(companyId).ifPresent(setting -> {
+		this.settingRepo.get(companyId, AppContexts.user().employeeId()).ifPresent(setting -> {
 			result.setSetting(SettingsSmartphoneStampDto.fromDomain(setting));
 		});
 
@@ -140,7 +142,7 @@ public class GetSettingStampInputSmartPhone {
 		@Override
 		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone() {
 			String companyId = AppContexts.user().companyId();
-			return settingsSmartphoneStampRepo.get(companyId);
+			return settingsSmartphoneStampRepo.get(companyId, AppContexts.user().employeeId());
 		}
 
 		@Override

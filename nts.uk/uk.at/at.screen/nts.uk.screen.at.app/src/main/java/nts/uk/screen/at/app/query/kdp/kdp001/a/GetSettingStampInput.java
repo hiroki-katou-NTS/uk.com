@@ -217,7 +217,7 @@ public class GetSettingStampInput {
 		@Override
 		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone() {
 			String companyId = AppContexts.user().companyId();
-			return this.settingsSmartphoneStampRepo.get(companyId);
+			return this.settingsSmartphoneStampRepo.get(companyId, AppContexts.user().employeeId());
 		}
 
 		@Override

@@ -46,6 +46,7 @@ public class TimeStampInputSettingFinder {
 	@Inject
 	private StampSettingOfRICOHCopierRepository stampSettingOfRICOHCopierRepo;
 	
+	
 	/** 打刻の前準備(ポータル)の設定内容を取得する*/
 	public Optional<PortalStampSettingsDto> getPortalStampSettings() {
 		Optional<PortalStampSettings> domain = portalStampSettingsRepo.get(AppContexts.user().companyId());
@@ -70,7 +71,8 @@ public class TimeStampInputSettingFinder {
 	public SettingsSmartphoneStampDto getSettingsSmartphoneStamp() {
 		SettingsSmartphoneStampDto result = new SettingsSmartphoneStampDto();
 		String cId = AppContexts.user().companyId();
-		Optional<SettingsSmartphoneStamp> domain = settingsSmartphoneStampRepo.get(cId);
+		String sId = AppContexts.user().employeeId();
+		Optional<SettingsSmartphoneStamp> domain = settingsSmartphoneStampRepo.get(cId, sId);
 		commonSettingsStampInputRepo.get(cId).ifPresent(c->result.setGoogleMap(c.isGooglemap()?1:0));
 		if(domain.isPresent()) {
 			result.settingsSmartphoneStamp(domain.get());
@@ -95,7 +97,8 @@ public class TimeStampInputSettingFinder {
 	/**打刻レイアウト(スマホ)の設定内容を取得する*/
 	public StampPageLayoutDto getLayoutSettingsSmartphone(Integer pageNo){
 		String cId = AppContexts.user().companyId();
-		Optional<SettingsSmartphoneStamp> domain = settingsSmartphoneStampRepo.get(cId);
+		String sId = AppContexts.user().employeeId();
+		Optional<SettingsSmartphoneStamp> domain = settingsSmartphoneStampRepo.get(cId, sId);
 		if(domain.isPresent()) {
 			 Optional<StampPageLayout> result = domain.get().getPageLayoutSettings().stream().filter(c->c.getPageNo().v() == pageNo).findFirst();
 			 if(result.isPresent()) {

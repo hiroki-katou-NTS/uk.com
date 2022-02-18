@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.stamp.management.StampPageLayoutDto;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplaySettingsStampScreenDto;
+import nts.uk.screen.at.app.query.kdp.kdps01.a.StampingAreaRestrictionDto;
 
 @Getter
 @NoArgsConstructor
@@ -20,7 +21,9 @@ public class SettingsSmartphoneStampDto {
 	
 	private List<StampPageLayoutDto> pageLayoutSettings;
 	
-	private Integer buttonEmphasisArt;	
+	private Integer buttonEmphasisArt;
+	
+	private StampingAreaRestrictionDto stampingAreaRestriction;
 	
 	@Setter
 	private Integer googleMap;
@@ -29,5 +32,6 @@ public class SettingsSmartphoneStampDto {
 		this.displaySettingsStampScreen = DisplaySettingsStampScreenDto.fromDomain(domain.getDisplaySettingsStampScreen()); 
 		this.pageLayoutSettings = domain.getPageLayoutSettings().stream().map(c->StampPageLayoutDto.fromDomain(c)).collect(Collectors.toList()); 
 		this.buttonEmphasisArt = domain.isButtonEmphasisArt()?1:0;
+		this.stampingAreaRestriction = StampingAreaRestrictionDto.fromDomain(domain.getStampingAreaRestriction());
 	}
 }
