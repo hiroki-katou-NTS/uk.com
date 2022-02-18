@@ -64,9 +64,8 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 			List<Container> targetContainers) {
 
 		List<Container> results = new ArrayList<>();
-		
-		val employee = require.getEmployeeDataMngInfoByEmployeeId(employeeId).get();
-		String personId = employee.getPersonId();
+
+		String personId = getPersonId(require, context, employeeId);
 		
 		for (val container : targetContainers) {
 			
@@ -84,6 +83,15 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 		return results;
 	}
 	
+	private String getPersonId(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, String employeeId) {
+		if(context.isImportingWithEmployeeBasic()) {
+			return require.getEmployeeBasicPersonId(context.impersonateEmployeeBasicExecutionContext(), employeeId).get();
+		}
+		return require.getEmployeeDataMngInfoByEmployeeId(employeeId)
+				.get()
+				.getPersonId();
+	}
+
 	@Override
 	protected List<IntermediateResult> canonicalizeHistory(
 			DomainCanonicalization.RequireCanonicalize require,
@@ -97,6 +105,7 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 	}
 	
 	public static interface RequireCanonicalizeExtends {
+		Optional<String> getEmployeeBasicPersonId(ExecutionContext context, String sid);
 		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeId(String employeeId);
 	}
 }

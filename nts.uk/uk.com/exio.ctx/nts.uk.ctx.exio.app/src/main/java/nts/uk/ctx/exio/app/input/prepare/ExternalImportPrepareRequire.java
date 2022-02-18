@@ -314,6 +314,16 @@ public class ExternalImportPrepareRequire {
 		/***** domains for canonicalization *****/
 
 		@Override
+		public Optional<String> getEmployeeBasicSIDByEmployeeCode(ExecutionContext context, String employeeCode) {
+			return canonicalizedDataRecordRepo.getEmployeeBasicSID(this, context, employeeCode);
+		}
+
+		@Override
+		public Optional<String> getEmployeeBasicPersonId(ExecutionContext context, String sid) {
+			return canonicalizedDataRecordRepo.getEmployeeBasicPID(this, context, sid);
+		}
+		
+		@Override
 		public Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode) {
 			return employeeDataMngInfoRepo.findByScdNotDel(employeeCode, companyId);
 		}

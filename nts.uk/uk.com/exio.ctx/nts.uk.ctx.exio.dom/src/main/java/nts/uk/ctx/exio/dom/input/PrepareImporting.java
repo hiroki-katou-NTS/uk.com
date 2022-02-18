@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeRevisedData;
+import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRequire;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
@@ -22,7 +23,10 @@ public class PrepareImporting {
 			DomainImportSetting setting,
 			InputStream csvFileStream) {
 
-			val context = setting.executionContext(externalImportSetting.getCompanyId(), externalImportSetting.getCode());
+			val context = setting.executionContextForPrepare(externalImportSetting.getCompanyId(), 
+																		   externalImportSetting.getCode(),
+																		   externalImportSetting.containEmployeeBasic()
+																		   );
 
 			require.setupWorkspaceForEachDomain(context);//削除も一緒に
 			

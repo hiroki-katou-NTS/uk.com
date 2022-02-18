@@ -29,4 +29,16 @@ public class JpaCanonicalizedDataRecordRepository extends JpaRepository implemen
 		return WorkspaceSql.create(require, context, jdbcProxy(), this.database().product())
 				.getAllEmployeeIdsOfCanonicalizedData();
 	}
+
+	@Override
+	public Optional<String> getEmployeeBasicSID(Require require, ExecutionContext context, String employeeCode) {
+		return WorkspaceSql.create(require, context, jdbcProxy(), this.database().product())
+				.getEmployeeBasicSID(employeeCode);
+	}
+
+	@Override
+	public Optional<String> getEmployeeBasicPID(Require require, ExecutionContext context, String sid) {
+		return WorkspaceSql.create(require, context, jdbcProxy(), this.database().product())
+				.getEmployeeBasicPID(sid);
+	}
 }

@@ -11,4 +11,8 @@ public interface CanonicalizedDataRecordRepository {
 	void save(Require require, ExecutionContext context, CanonicalizedDataRecord record);
 	
 	List<String> getAllEmployeeIds(Require require, ExecutionContext context);
+	
+	Optional<String> getEmployeeBasicSID(Require require, ExecutionContext context, String employeeCode);
+
+	Optional<String> getEmployeeBasicPID(Require require, ExecutionContext context, String sid);
 }

@@ -43,11 +43,12 @@ public class EmployeeCodeCanonicalization {
 	 */
 	public Either<ErrorMessage, IntermediateResult> canonicalize(
 			CanonicalizationMethodRequire require,
+			ExecutionContext context,
 			RevisedDataRecord revisedData) {
 		
 		String employeeCode = revisedData.getItemByNo(itemNoEmployeeCode).get().getString();
 
-		return getEmployeeId(require, employeeCode)
+		return getEmployeeId(require, context, employeeCode)
 				.map(employeeId -> canonicalize(revisedData, employeeId));
 	}
 
@@ -68,20 +69,33 @@ public class EmployeeCodeCanonicalization {
 				itemNoEmployeeCode,
 				employeeCode);
 		
-		return getEmployeeId(require, employeeCode)
+		return getEmployeeId(require, context, employeeCode)
 				.map(employeeId -> revisedDataRecords.stream()
 							.map(r -> canonicalize(r, employeeId)))
 				.mapLeft(error -> revisedDataRecords.stream()
 							.map(r -> new RecordError(r.getRowNo(), error.getText())));
 	}
 
-	private static Either<ErrorMessage, String> getEmployeeId(CanonicalizationMethodRequire require, String employeeCode) {
+	private static Either<ErrorMessage, String> getEmployeeId(CanonicalizationMethodRequire require, 	ExecutionContext context, String employeeCode) {
 		
-		val employee = require.getEmployeeDataMngInfoByEmployeeCode(employeeCode);
+		Optional<String> employeeId = a(require, context, employeeCode);
 		
 		return Either.rightOptional(
-				employee.map(e -> e.getEmployeeId()),
+				employeeId,
 				() -> new ErrorMessage("未登録の社員コードです。"));
+	}
+	
+	
+	private static Optional<String> a(CanonicalizationMethodRequire require, ExecutionContext context, String employeeCode){
+		if(context.isImportingWithEmployeeBasic()) {
+			//個人基本の正準化結果に対して問い合わせるために、実行コンテキスト内の対象ドメインを偽装
+			val impersonateContext = context.impersonateEmployeeBasicExecutionContext();
+			return require.getEmployeeBasicSIDByEmployeeCode(impersonateContext, employeeCode);
+		}
+		else {
+			return require.getEmployeeDataMngInfoByEmployeeCode(employeeCode)
+					.map(t -> t.getEmployeeId());
+		}		
 	}
 
 	private IntermediateResult canonicalize(RevisedDataRecord revisedData, String employeeId) {
@@ -90,6 +104,7 @@ public class EmployeeCodeCanonicalization {
 	}
 	
 	public static interface Require {
+		Optional<String> getEmployeeBasicSIDByEmployeeCode(ExecutionContext context, String employeeCode);
 		
 		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode);
 	}

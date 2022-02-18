@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AdjustExistingData;
+import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
@@ -18,7 +19,7 @@ public class ExecuteImporting {
 
 	public static Iterable<AtomTask> execute(Require require, String companyId, ExternalImportCode code,  DomainImportSetting setting) {
 		
-		val context = setting.executionContext(companyId, code);
+		val context = setting.executionContextForExcecute(companyId, code);
 		
 		val transactionUnit = require.getImportingDomain(setting.getDomainId())
 				.getTransactionUnit();
