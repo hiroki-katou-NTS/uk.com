@@ -155,22 +155,22 @@ module nts.uk.at.view.kdw002.c {
                                 $("#useCheckAll").prop('checked', false);
                             }
                             
-                            let notYouCanCheckAll = true;
+                            let notYouCanCheckAll = false;
                             for(let i =0;i<listData.length;i++){
                                 if(listData[i].toUse ==true && listData[i].userCanUpdateAtr == 1){
                                     if(!listData[i].youCanChangeIt){
-                                        notYouCanCheckAll =false;
+                                        notYouCanCheckAll =true;
                                         break;
                                     }
                                 }
                             }
                             $("#youCanCheckAll").prop('checked', notYouCanCheckAll);
                             
-                            let notOtherCheckAll = true;
+                            let notOtherCheckAll = false;
                             for(let i =0;i<listData.length;i++){
                                 if(listData[i].toUse ==true && listData[i].userCanUpdateAtr == 1){
                                     if(!listData[i].canBeChangedByOthers){
-                                        notOtherCheckAll =false;
+                                        notOtherCheckAll =true;
                                         break;
                                     }
                                 }
