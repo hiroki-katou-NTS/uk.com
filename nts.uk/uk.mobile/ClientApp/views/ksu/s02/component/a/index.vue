@@ -481,7 +481,7 @@
                                   style="
                                     margin-top: 0.9vh;
                                     font-size: 3vh;
-                                    width: 42px;
+                                    width: 60px;
                                     height: 4.5vh;
                                     padding: 0.4vw;
                                     float: left;
@@ -500,7 +500,7 @@
                                   style="
                                     margin-top: 1.1vh;
                                     font-size: 2.5vh;
-                                    width: 42px;
+                                    width: 60px;
                                     height: 4.5vh;
                                     padding: 0.3vw;
                                     float: left;
@@ -529,7 +529,7 @@
                                   style="
                                     margin-top: 1.2vh;
                                     font-size: 3vh;
-                                    width: 42px;
+                                    width: 60px;
                                     height: 4.5vh;
                                     padding: 0.4vw;
                                     float: left;
@@ -547,7 +547,7 @@
                                   style="
                                     margin-top: 1.7vh;
                                     font-size: 2.5vh;
-                                    width: 42px;
+                                    width: 60px;
                                     height: 4.5vh;
                                     padding: 0.3vw;
                                     float: left;
