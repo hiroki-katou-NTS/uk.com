@@ -61,7 +61,9 @@ public class DataCopyHandler {
     public void doCopy() {
 
     	// ゼロ契約ゼロ会社から初期値をSELECT
-        List<TableRow> sourceObjects = getTableRows(DefaultSettingKeys.COMPANY_ID);
+        List<TableRow> sourceObjects = getTableRows(DefaultSettingKeys.COMPANY_ID).stream()
+                .filter(t -> !t.isNoCopy())
+                .collect(Collectors.toList());
         if (sourceObjects.isEmpty()) {
             return;
         }

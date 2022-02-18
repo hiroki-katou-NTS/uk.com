@@ -6,7 +6,6 @@ import lombok.val;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.company.CompanyId;
 import nts.uk.shr.com.constants.DefaultSettingKeys;
-import nts.uk.shr.com.tenant.TenantCode;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -21,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class TableRow {
 
+    private final boolean isNoCopy;
     private final MetaInfo insertInfo;
     private final MetaInfo updateInfo;
     private final int exclusVer;
@@ -37,6 +37,7 @@ public class TableRow {
             Object[] rowData,
             int keysSize) {
 
+        isNoCopy = isNoCopy(rowData);
         insertInfo = new MetaInfo(newCompanyId.getCompanyCode(), employeeCode);
         updateInfo = insertInfo;
         exclusVer = 0;
@@ -47,6 +48,11 @@ public class TableRow {
         int indexKeys = rowData.length - keysSize;
         keys = replacedRowData.subList(indexKeys, rowData.length);
         contents = replacedRowData.subList(ColumnIndex.CONTENTS_START, indexKeys);
+    }
+
+    private static boolean isNoCopy(Object[] rowData) {
+        String inspg = fetch(rowData, ColumnIndex.INS_PG);
+        return inspg != null && inspg.trim().equalsIgnoreCase("NOCOPY");
     }
 
     private Object replaceCompanyId(CompanyId newCompanyId, Object v) {
@@ -60,6 +66,10 @@ public class TableRow {
             }
         }
         return v;
+    }
+
+    public boolean isNoCopy() {
+        return isNoCopy;
     }
 
     public boolean isSameKey(TableRow other) {
@@ -112,6 +122,7 @@ public class TableRow {
         private static final int CID = 0;
         private static final int CONTRACT_CD = CID + 1;
         private static final int INS_DATE = CONTRACT_CD + 1;
+        private static final int INS_PG = INS_DATE + 3;
         private static final int UPD_DATE = INS_DATE + 4;
         private static final int EXCLUS_VER = UPD_DATE + 4;
         private static final int CONTENTS_START = EXCLUS_VER + 1;
