@@ -42,7 +42,7 @@ public class TableRow {
         updateInfo = insertInfo;
         exclusVer = 0;
 
-        val replacedRowData = Arrays.asList(rowData).stream()
+        val replacedRowData = Arrays.stream(rowData)
                 .map(v -> replaceCompanyId(newCompanyId, v))
                 .collect(Collectors.toList());
         int indexKeys = rowData.length - keysSize;
@@ -55,7 +55,7 @@ public class TableRow {
         return inspg != null && inspg.trim().equalsIgnoreCase("NOCOPY");
     }
 
-    private Object replaceCompanyId(CompanyId newCompanyId, Object v) {
+    private static Object replaceCompanyId(CompanyId newCompanyId, Object v) {
         if (v instanceof String) {
             String s = (String) v;
             if (s.equals(DefaultSettingKeys.CONTRACT_CODE)) {
