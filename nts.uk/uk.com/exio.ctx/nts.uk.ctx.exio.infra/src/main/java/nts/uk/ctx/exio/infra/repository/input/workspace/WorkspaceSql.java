@@ -19,9 +19,10 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalizedDataRecord;
-import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository.Require;
 import nts.uk.ctx.exio.dom.input.workspace.TemporaryTable;
@@ -289,6 +290,31 @@ public class WorkspaceSql {
 		return new RevisedDataRecord(rowNo, new DataItemList(items));
 	}
 	
+	public List<CanonicalizedDataRecord> findCanonicalizedWhere(int itemNoCondition, String conditionString) {
+		
+		String columnName = workspace.getItem(itemNoCondition)
+				.orElseThrow(() -> new RuntimeException("not found: " + itemNoCondition))
+				.getName();
+		
+		String sql = "select * from " + tableName().asCanonicalized()
+				+ " where " + columnName + " = @p";
+		
+		return jdbcProxy.query(sql)
+				.paramString("p", conditionString)
+				.getList(rec -> toCanonicalized(rec));
+	}
+	
+	private CanonicalizedDataRecord toCanonicalized(NtsResultRecord record) {
+		
+		int rowNo = record.getInt(ROW_NO.name);
+		
+		val items = workspace.getAllItemsSortedByItemNo().stream()
+				.map(wi -> toDataItem(record, wi))
+				.collect(toList());
+		
+		return new CanonicalizedDataRecord(rowNo, CanonicalItemList.of(new DataItemList(items)));
+	}
+	
 	private static DataItem toDataItem(NtsResultRecord record, WorkspaceItem workspaceItem) {
 		
 		val dataType = workspaceItem.getDataTypeConfig();
@@ -326,28 +352,6 @@ public class WorkspaceSql {
 				.stream()
 				.distinct()
 				.collect(toList());
-	}
-	
-	public Optional<String> getEmployeeBasicSID(String employeeCode) {
-	
-		// 社員IDのカラム名は固定で SID
-		String sql = "select SID from " + tableName().asCanonicalized() 
-										+ " where 社員コード = @employeeCode";
-		
-		return jdbcProxy.query(sql)
-				.paramString("employeeCode", employeeCode)
-				.getSingle(t -> t.getString("SID"));
-	}
-	
-	public Optional<String> getEmployeeBasicPID(String sid) {
-		
-		// 社員IDのカラム名は固定で SID
-		String sql = "select PID from " + tableName().asCanonicalized() 
-										+ " where SID = @sid";
-		
-		return jdbcProxy.query(sql)
-				.paramString("sid", sid)
-				.getSingle(t -> t.getString("PID"));
 	}
 	
 	private WorkspaceTableName tableName() {
