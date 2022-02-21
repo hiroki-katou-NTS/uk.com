@@ -12,7 +12,7 @@ public class SupportInfoInput {
     private List<String> employeeIds;
     private String startDate;
     private String endDate;
-    private int mode;
+    private int displayMode;
 
     public DatePeriod getPeriod() {
         return new DatePeriod(GeneralDate.fromString(this.startDate, "yyyy/MM/dd"), GeneralDate.fromString(this.endDate, "yyyy/MM/dd"));

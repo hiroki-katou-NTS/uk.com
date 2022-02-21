@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.command.kdl.kdl016;
 
 import lombok.AllArgsConstructor;
-import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
@@ -19,11 +18,15 @@ import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployee;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployeeCheckService;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployeeRepository;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
@@ -47,6 +50,9 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.TimeWithDayAttr;
+import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -57,8 +63,7 @@ import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class DeleteSupportInfoCommandHandler extends CommandHandlerWithResult<DeleteSupportInfoCommand, DeleteSupportInfoResult> {
-
+public class UpdateSupportInforCommandHandler extends CommandHandlerWithResult<UpdateSupportInforCommand, UpdateSupportInforResult> {
     @Inject
     private EmployeeAdapter employeeAdapter;
 
@@ -111,62 +116,107 @@ public class DeleteSupportInfoCommandHandler extends CommandHandlerWithResult<De
     private BusinessTypeEmpService businessTypeEmpService;
 
     @Override
-    protected DeleteSupportInfoResult handle(CommandHandlerContext<DeleteSupportInfoCommand> commandHandlerContext) {
-        DeleteSupportInfoCommand command = commandHandlerContext.getCommand();
+    protected UpdateSupportInforResult handle(CommandHandlerContext<UpdateSupportInforCommand> commandHandlerContext) {
+        UpdateSupportInforCommand command = commandHandlerContext.getCommand();
         String companyId = AppContexts.user().companyId();
 
-        // 1. List<応援可能な社員>
-        val supportableEmployees = supportableEmployeeRepo.get(command.getEmployeeIds());
+        // 1. 応援可能な社員
+        SupportableEmployee supportableEmployee = supportableEmployeeRepo.get(command.getEmployeeId()).orElse(null);
+        if (supportableEmployee == null) return new UpdateSupportInforResult(Collections.emptyList());
+
+        // 2.1. 応援形式＝＝終日
+        if (command.getSupportType() == SupportType.ALLDAY.getValue()) {
+            supportableEmployee.changePeriod(command.toDatePeriod());
+        }
+
+        // 2.2. 応援形式＝＝時間帯
+        if (command.getSupportType() == SupportType.TIMEZONE.getValue()) {
+            supportableEmployee.changeTimespan(new TimeSpanForCalc(
+                    new TimeWithDayAttr(command.getSupportTimeSpan().getStart()),
+                    new TimeWithDayAttr(command.getSupportTimeSpan().getEnd())
+            ));
+        }
+
+        // 3.
+        RequireSupportableImpl requireSupportable = new RequireSupportableImpl(companyId, supportableEmployeeRepo, supportOperationSettingRepo);
+        SupportableEmployeeCheckService.CheckResult supportableCheckResult = SupportableEmployeeCheckService.isRegistrable(requireSupportable, supportableEmployee);
+
+        // 4. チェック結果<>登録可能
+        List<SupportableEmpCannotRegisterDto> errorResults = new ArrayList<>();
+        if (supportableCheckResult != SupportableEmployeeCheckService.CheckResult.REGISTABLE) {
+            errorResults.add(SupportableEmpCannotRegisterDto.createWithError(supportableEmployee, this.getErrorMsg(supportableCheckResult)));
+        }
 
         RequireImpl require = new RequireImpl(companyId, supportableEmployeeRepo, workScheduleRepo, supportOperationSettingRepo,
                 workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository,
                 flexWorkSettingRepository, predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
                 sharedAffWorkPlaceHisAdapter, syClassificationAdapter, workingConditionRepo, businessTypeEmpService);
+        RegisterResultFromSupportableEmployee workScheduleCheckResult = UpdateSupportScheduleFromSupportableEmployee.modify(require, supportableEmployee);
 
-        List<RegisterResultFromSupportableEmployee.ErrorInformation> lstCannotDelete = new ArrayList<>();
-
-        for (SupportableEmployee supportableEmp : supportableEmployees) {
-            // 2. 応援可能な社員から応援予定を変更する.削除する(@Require, 応援可能な社員) : 1件以上存在する場合
-            RegisterResultFromSupportableEmployee result = UpdateSupportScheduleFromSupportableEmployee.remove(require, supportableEmp);
-            if (result.isError() && result.getErrorInfo().isPresent()) {
-                lstCannotDelete.add(result.getErrorInfo().get());
-                continue;
+        if (workScheduleCheckResult.isError()) {
+            if (workScheduleCheckResult.getErrorInfo().isPresent()) {
+                errorResults.add(SupportableEmpCannotRegisterDto.createWithError(
+                        workScheduleCheckResult.getErrorInfo().get().getSupportableEmployee(),
+                        workScheduleCheckResult.getErrorInfo().get().getErrorMessage()));
             }
-
-            // 3.List<応援可能な社員からの登録結果> :filter $.エラーがあるか == false
-            // 3.1 delete(List<応援可能な社員ID>): List<応援可能な社員ID>：2の結果にエラーがある分を除く１の結果のID　
-            supportableEmployeeRepo.delete(supportableEmp.getId());
-
-            // 3.2. AtomTask run
-            if (!result.getAtomTaskList().isEmpty()) {
-                transaction.execute(() -> result.getAtomTaskList().forEach(AtomTask::run));
-            }
-
         }
 
-        if (lstCannotDelete.isEmpty()) {
-            return new DeleteSupportInfoResult(Collections.emptyList());
+        // 7.
+        if (!errorResults.isEmpty()) {
+            Map<String, EmployeeInfoImport> empErrorInfoMap = employeeAdapter.getByListSid(errorResults.stream().map(x -> x.getSupportableEmployee().getId()).collect(Collectors.toList()))
+                    .stream().collect(Collectors.toMap(EmployeeInfoImport::getSid, e -> e));
+            List<EmployeeErrorResult> employeeErrorResults = errorResults.stream().map(m -> new EmployeeErrorResult(
+                    empErrorInfoMap.get(m.getSupportableEmployee().getEmployeeId().v()).getScd(),
+                    empErrorInfoMap.get(m.getSupportableEmployee().getEmployeeId().v()).getBussinessName(),
+                    supportableEmployee.getPeriod().start().toString("yyyyMMdd"),
+                    supportableEmployee.getPeriod().end().toString("yyyyMMdd"),
+                    m.getErrorInfo()
+            )).collect(Collectors.toList());
+
+            return new UpdateSupportInforResult(employeeErrorResults);
         }
 
-        // 4.社員IDリスト = List<応援可能な社員からの登録結果> ：
-        //　filter $.エラーがあるか == true
-        //　map $.エラー情報.応援可能な社員.社員ID
-        val empErrors = lstCannotDelete.stream().map(x -> x.getSupportableEmployee().getId()).collect(Collectors.toList());
-        List<EmployeeInfoImport> employeeErrorInfors = employeeAdapter.getByListSid(empErrors);
+        // 6.
+        supportableEmployeeRepo.update(companyId, supportableEmployee);   //TODO: EA ko mô tả
 
-        List<EmployeeErrorResult> employeeErrorResults = new ArrayList<>();
-        for (RegisterResultFromSupportableEmployee.ErrorInformation empErr : lstCannotDelete) {
-            val empInfoOpt = employeeErrorInfors.stream().filter(e -> e.getSid().equals(empErr.getSupportableEmployee().getEmployeeId().v())).findFirst();
-            employeeErrorResults.add(new EmployeeErrorResult(
-                    empInfoOpt.map(EmployeeInfoImport::getScd).orElse(null),
-                    empInfoOpt.map(EmployeeInfoImport::getBussinessName).orElse(null),
-                    empErr.getSupportableEmployee().getPeriod().start().toString("yyyyMMdd"),
-                    empErr.getSupportableEmployee().getPeriod().end().toString("yyyyMMdd"),
-                    empErr.getErrorMessage()
-            ));
+        if (!workScheduleCheckResult.getAtomTaskList().isEmpty()) {
+            transaction.execute(() -> workScheduleCheckResult.getAtomTaskList().forEach(AtomTask::run));
         }
 
-        return new DeleteSupportInfoResult(employeeErrorResults);
+        return new UpdateSupportInforResult(Collections.emptyList());
+    }
+
+    private String getErrorMsg(SupportableEmployeeCheckService.CheckResult value) {
+        switch (value) {
+            case DUPLICATED_PERIOD:
+                return TextResource.localize("Msg_3288");
+            case DUPLICATED_TIMEZONE:
+                return TextResource.localize("Msg_3289");
+            case UPPER_LIMIT:
+                return TextResource.localize("Msg_3290");
+            default:
+                return Strings.EMPTY;
+        }
+    }
+
+    @AllArgsConstructor
+    private class RequireSupportableImpl implements SupportableEmployeeCheckService.Require {
+
+        private String companyId;
+
+        private SupportableEmployeeRepository supportableEmployeeRepo;
+
+        private SupportOperationSettingRepository supportOperationSettingRepo;
+
+        @Override
+        public List<SupportableEmployee> getByPeriod(EmployeeId employeeId, DatePeriod period) {
+            return supportableEmployeeRepo.findByEmployeeIdWithPeriod(employeeId, period);
+        }
+
+        @Override
+        public SupportOperationSetting getSetting() {
+            return supportOperationSettingRepo.get(companyId);
+        }
     }
 
     @AllArgsConstructor

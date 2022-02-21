@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.query.kdl.kdl016;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -13,11 +14,11 @@ import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformation
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
 import nts.uk.ctx.at.schedule.dom.schedule.support.SupportFunctionControl;
 import nts.uk.ctx.at.schedule.dom.schedule.support.SupportFunctionControlRepository;
+import nts.uk.ctx.at.shared.app.find.supportmanagement.supportalloworg.SupportAllowOrganizationFinder;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployee;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployeeRepository;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportalloworg.SupportAllowOrganization;
-import nts.uk.ctx.at.shared.dom.supportmanagement.supportalloworg.SupportAllowOrganizationRepository;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.*;
@@ -37,9 +38,6 @@ import org.apache.logging.log4j.util.Strings;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -69,14 +67,16 @@ public class SupportInformationFinder {
     private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 
     @Inject
-    private SupportAllowOrganizationRepository supportAllowOrganizationRepo;
+    private WorkplaceGroupAdapter workplaceGroupAdapter;
 
     @Inject
-    private WorkplaceGroupAdapter workplaceGroupAdapter;
-    @Inject
     private RegulationInfoEmployeeAdapter regulInfoEmployeeAdap;
+
     @Inject
     private RegulationInfoEmployeePub regulInfoEmpPub;
+
+    @Inject
+    private SupportAllowOrganizationFinder supportAllowOrganizationFinder;
 
     final static String SPACE = " ";
     final static String ZEZO_TIME = "00:00";
@@ -104,8 +104,6 @@ public class SupportInformationFinder {
             //応援の運用設定.利用するか or 応援予定の機能制御.応援予定を利用するか==FALSE
             if (supportOperationSetting.isUsed() || !supportFuncCtrl.isUse()) {
                 throw new BusinessException("Msg_3240");
-//                List<応援情報DTO>　EmptyListで返す
-//                時間帯応援を利用するか：False
             }
         }
 
@@ -125,9 +123,9 @@ public class SupportInformationFinder {
     public List<SupportInfoDto> getInfoByDisplayMode(SupportInfoInput input) {
 
         // 表示モード＝＝応援に行く情報
-        if (input.getMode() == 1) { //応援に行く情報
+        if (input.getDisplayMode() == DisplayMode.GO_TO_SUPPORT.value) { //応援に行く情報
             return this.getInfoGoToSupport(input.getEmployeeIds(), input.getPeriod());
-        } else { // 表示モード＝＝応援に来る情報
+        } else { // 表示モード＝＝応援に来る情報: DisplayMode.GO_TO_SUPPORT
             return this.getInfoComeToSupport(input.getTargetOrg().getOrgId(), input.getTargetOrg().getOrgUnit(), input.getPeriod());
         }
     }
@@ -258,7 +256,7 @@ public class SupportInformationFinder {
                 : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(orgId);
 
         // 3. List<応援許可する組織>: 取得する(対象組織識別情報)
-        List<SupportAllowOrganization> supportAllowOrgs = supportAllowOrganizationRepo.getListByTargetOrg(AppContexts.user().companyId(), targetOrgIdenInfor);
+        List<SupportAllowOrganization> supportAllowOrgs = supportAllowOrganizationFinder.getListByTargetOrg(targetOrgIdenInfor);
 
         // 4. List<応援許可する組織> empty
         if (supportAllowOrgs.isEmpty()) {
@@ -324,7 +322,7 @@ public class SupportInformationFinder {
                 : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(orgId);
 
         // 3. List<応援許可する組織>: 取得する(対象組織識別情報)
-        List<SupportAllowOrganization> supportAllowOrgs = supportAllowOrganizationRepo.getListBySupportableOrg(AppContexts.user().companyId(), targetOrgIdenInfor);
+        List<SupportAllowOrganization> supportAllowOrgs = supportAllowOrganizationFinder.getListBySupportableOrg(targetOrgIdenInfor);
 
         // 4. List<応援許可する組織> empty
         if (supportAllowOrgs.isEmpty()) {
@@ -346,6 +344,54 @@ public class SupportInformationFinder {
         }
 
         return orgDisplayInfoList;
+    }
+
+    public Kdl016ScreenBOutput.Kdl016ScreenBOutputV2 getDataInitScreenCV2(String orgId, int orgUnit, DatePeriod period) {
+        // 1.取得する(組織ID, 単位, 期間)
+        val organizationDisplayInfos = this.getOrgInfoOfSupportSourceV2(orgId, orgUnit, period);
+
+        // 2. 取得する(組織ID, 単位, 期間)
+        List<EmployeeInformationDto> employeeInfos = this.getEmployeeInfo(orgId, orgUnit, period);
+
+        return new Kdl016ScreenBOutput.Kdl016ScreenBOutputV2(employeeInfos, organizationDisplayInfos);
+    }
+
+    /**
+     * 応援元の組織情報を取得する
+     *
+     * @param orgId
+     * @param orgUnit
+     * @param period
+     * @return Map<組織ID   、   組織の表示情報>
+     */
+    public Map<String, DisplayInfoOrganization> getOrgInfoOfSupportSourceV2(String orgId, int orgUnit, DatePeriod period) {
+        GeneralDate baseDate = GeneralDate.today();
+        Map<String, DisplayInfoOrganization> resultMap = new HashMap<>();
+
+        // 1. 単位＝＝職場: 対象組織識別情報
+        // 2. 単位＝＝職場グループ: 対象組織識別情報
+        TargetOrgIdenInfor targetOrgIdenInfor = orgUnit == TargetOrganizationUnit.WORKPLACE.value
+                ? TargetOrgIdenInfor.creatIdentifiWorkplace(orgId)
+                : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(orgId);
+
+        // 3. List<応援許可する組織>: 取得する(対象組織識別情報)
+        List<SupportAllowOrganization> supportAllowOrgs = supportAllowOrganizationFinder.getListBySupportableOrg(targetOrgIdenInfor);
+
+        // 4. List<応援許可する組織> empty
+        if (supportAllowOrgs.isEmpty()) {
+            throw new BusinessException("Msg_3279");
+        }
+
+        RequireOrgInfoImpl requireOrgInfo = new RequireOrgInfoImpl(groupAdapter, serviceAdapter, wplAdapter);
+        for (SupportAllowOrganization supportAllowOrg : supportAllowOrgs) {
+            String id = supportAllowOrg.getSupportableOrganization().getUnit() == TargetOrganizationUnit.WORKPLACE
+                    ? supportAllowOrg.getSupportableOrganization().getWorkplaceId().orElse(null)
+                    : supportAllowOrg.getSupportableOrganization().getWorkplaceId().orElse(null);
+            DisplayInfoOrganization displayInfoOrg = supportAllowOrg.getSupportableOrganization().getDisplayInfor(requireOrgInfo, baseDate);
+            resultMap.put(id, displayInfoOrg);
+        }
+
+        return resultMap;
     }
 
     /**
@@ -491,5 +537,20 @@ public class SupportInformationFinder {
             // don't have to implement it
             return null;
         }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum DisplayMode {
+
+        /**
+         * 応援に行く情報
+         **/
+        GO_TO_SUPPORT(1),
+        /**  **/
+        COME_TO_SUPPORT(2);
+
+        public final int value;
+
     }
 }

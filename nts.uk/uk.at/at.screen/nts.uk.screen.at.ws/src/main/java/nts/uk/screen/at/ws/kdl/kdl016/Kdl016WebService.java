@@ -26,6 +26,9 @@ public class Kdl016WebService extends WebService {
     @Inject
     private RegisterSupportInforCommandHandler registerSupportInforCommand;
 
+    @Inject
+    private UpdateSupportInforCommandHandler updateSupportInforCommand;
+
     @POST
     @Path("a/init")
     public List<SupportInfoDto> initialScreenAInfo(InitialScreenAParam param) {
@@ -62,10 +65,23 @@ public class Kdl016WebService extends WebService {
         return this.supportInfoFinder.getDataInitScreenC(param.getOrgId(), param.getOrgUnit(), param.getPeriod());
     }
 
+    // test return map for client
+    @POST
+    @Path("c/init/v2")
+    public Kdl016ScreenBOutput.Kdl016ScreenBOutputV2 initialScreenCV2(Kd016ScreenCParam param) {
+        return this.supportInfoFinder.getDataInitScreenCV2(param.getOrgId(), param.getOrgUnit(), param.getPeriod());
+    }
+
     @POST
     @Path("c/load-employee")
     public List<EmployeeInformationDto> getEmployeeByWkp(Kd016ScreenCParam param) {
         return this.supportInfoFinder.getEmployeeInfo(param.getOrgId(), param.getOrgUnit(), param.getPeriod());
+    }
+
+    @POST
+    @Path("update")
+    public UpdateSupportInforResult update(UpdateSupportInforCommand command) {
+        return this.updateSupportInforCommand.handle(command);
     }
 
 }
