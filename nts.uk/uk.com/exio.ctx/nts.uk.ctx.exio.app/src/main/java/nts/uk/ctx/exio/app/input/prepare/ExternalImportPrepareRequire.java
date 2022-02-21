@@ -324,10 +324,6 @@ public class ExternalImportPrepareRequire {
 			return this.cacheImportSetting.get(new ExternalImportCode(context.getSettingCode())).get();
 		}
 		
-		@Override
-		public List<CanonicalizedDataRecord> getEmployeeBasicEmployeeId(ExecutionContext context, ImportingDomainId domainId, int criteriaItemNo, String criteriaValue){
-			return canonicalizedDataRecordRepo.findCanonicalizedDomainDataByCriteria(this, context, domainId, criteriaItemNo, criteriaValue);
-		}
 		
 		@Override
 		public Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode) {
@@ -397,6 +393,13 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public boolean existsStamp(String cardNumber, GeneralDateTime stampDateTime, int changeClockArt) {
 			return stampDakokuRepo.existsStamp(new ContractCode(contractCode), new StampNumber(cardNumber), stampDateTime, ChangeClockAtr.valueOf(changeClockArt));
+		}
+
+
+		@Override
+		public List<CanonicalizedDataRecord> getCanonicalizedData(ExecutionContext context, ImportingDomainId domainId,
+				int targetItemNo, String targetItemValue) {
+			return canonicalizedDataRecordRepo.findCanonicalizedDomainDataByCriteria(this, context, domainId, targetItemNo, targetItemValue);
 		}
 	}
 }

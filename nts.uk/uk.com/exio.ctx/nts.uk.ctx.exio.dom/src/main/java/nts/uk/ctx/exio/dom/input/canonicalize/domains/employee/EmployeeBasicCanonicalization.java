@@ -450,7 +450,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 	
 	public static String getPersonId(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, String employeeId) {
 		if(isImportingWithEmployeeBasic(require, context)) {
-			return require.getEmployeeBasicEmployeeId(context, ImportingDomainId.EMPLOYEE_BASIC, Items.SID, employeeId)
+			return require.getCanonicalizedData(context, ImportingDomainId.EMPLOYEE_BASIC, Items.SID, employeeId)
 					.stream()
 					.map(c -> c.getItemByNo(Items.PID).get().getString())
 					.findFirst()
@@ -462,13 +462,13 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 	}
 	
 	public interface GetPersonIdRequire extends ImportingWithEmployeeBasicRequire{
-		List<CanonicalizedDataRecord> getEmployeeBasicEmployeeId(ExecutionContext context, ImportingDomainId domainId, int targetItemNo, String targetItemValue);
+		List<CanonicalizedDataRecord> getCanonicalizedData(ExecutionContext context, ImportingDomainId domainId, int targetItemNo, String targetItemValue);
 		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeId(String employeeId);
 	}
 	
 	public static Optional<String> getEmployeeId(CanonicalizationMethodRequire require, ExecutionContext context, String employeeCode) {
 		if(isImportingWithEmployeeBasic(require, context)) {
-			return require.getEmployeeBasicEmployeeId(context, ImportingDomainId.EMPLOYEE_BASIC, Items.社員コード, employeeCode)
+			return require.getCanonicalizedData(context, ImportingDomainId.EMPLOYEE_BASIC, Items.社員コード, employeeCode)
 					.stream()
 					.map(c -> c.getItemByNo(Items.SID).get().getString())
 					.findFirst();
@@ -478,7 +478,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 	}
 	
 	public interface GetEmployeeIdRequire extends ImportingWithEmployeeBasicRequire{
-		List<CanonicalizedDataRecord> getEmployeeBasicEmployeeId(ExecutionContext context, ImportingDomainId domainId, int targetItemNo, String targetItemValue);
+		List<CanonicalizedDataRecord> getCanonicalizedData(ExecutionContext context, ImportingDomainId domainId, int targetItemNo, String targetItemValue);
 		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode);
 	}
 	
