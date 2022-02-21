@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.EmployeeStampDatasFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampDataOfEmployeesDto;
@@ -25,12 +26,22 @@ public class DisplayListStampForStampInput {
 	@Inject
 	private EmployeeStampDatasFinder finder;
 
-	public List<StampDataOfEmployeesDto> getEmployeeStampData() {
+	public List<StampDataOfEmployeesDto> getEmployeeStampData(SettingPotalStampInputParam param) {
+
+		GeneralDateTime changeTime = GeneralDateTime.now().addHours(param.getRegionalTimeDifference());
 		DatePeriod period = new DatePeriod(GeneralDate.today().addDays(-3), GeneralDate.today());
 		String employeeId = AppContexts.user().employeeId();
-		
-		return finder.getEmployeeStampData(period, employeeId).stream().map(x ->  new StampDataOfEmployeesDto(x))
-				.collect(Collectors.toList());
 
+		if (changeTime.day() != GeneralDateTime.now().day()) {
+			if (GeneralDateTime.now().before(changeTime)) {
+				period = new DatePeriod(GeneralDate.today().addDays(-2), GeneralDate.today().addDays(1));
+			}
+			if (GeneralDateTime.now().after(changeTime)) {
+				period = new DatePeriod(GeneralDate.today().addDays(-4), GeneralDate.today().addDays(-1));
+			}
+		}
+
+		return finder.getEmployeeStampData(period, employeeId).stream().map(x -> new StampDataOfEmployeesDto(x))
+				.collect(Collectors.toList());
 	}
 }

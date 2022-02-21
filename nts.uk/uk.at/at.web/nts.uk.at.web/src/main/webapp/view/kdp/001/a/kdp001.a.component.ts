@@ -49,7 +49,9 @@ module nts.uk.ui.kdp001.a {
         getOmissionContents: '/at/record/stamp/employment_system/get_omission_contents',
         getStampToSuppress: '/at/record/stamp/employment_system/get_stamp_to_suppress',
         getLocation: 'at/record/stamp/employment_system/get_location_stamp_input',
-        WORKPLACE_INFO: "screen/at/kdp003/workplace-info"
+        WORKPLACE_INFO: "screen/at/kdp003/workplace-info",
+        GetWorkLocationRagionalTime: "at/record/kdp/common/get-work-location-regional-time",
+        GetWorkPlaceRegionalTime: "at/record/kdp/common/get-work-place-regional-time"
     };
 
     //個人
@@ -448,6 +450,8 @@ module nts.uk.ui.kdp001.a {
         workpalceCD: string | null = null;
         workPalceIds: string[] = null;
 
+        regionalTime: number = 0;
+
         message: {
             data: KnockoutObservable<MessageData>;
             display: KnockoutComputed<string>;
@@ -553,11 +557,11 @@ module nts.uk.ui.kdp001.a {
             const { mode } = vm;
 
             // get server time from cache
-            vm.time.tick = setInterval(() => vm.time.now(vm.$date.now()), 500);
+            vm.time.tick = setInterval(() => vm.time.now(moment(vm.$date.now()).add(vm.regionalTime, 'h').toDate()), 500);
 
-            const STAMP_INPUT = vm.$ajax('at', REST_API.getSettingStampInput);
+            const STAMP_INPUT = vm.$ajax('at', REST_API.getSettingStampInput, { regionalTimeDifference: vm.regionalTime });
             const CONFIRM_USE = vm.$ajax('at', REST_API.confirmUseOfStampInput, { stampMeans: STAMP_MEANS_PORTAL });
-            const EMPLOYEE_DATA = vm.$ajax('at', REST_API.getEmployeeStampData);
+            const EMPLOYEE_DATA = vm.$ajax('at', REST_API.getEmployeeStampData, { regionalTimeDifference: vm.regionalTime });
             const STAMP_PRESS = vm.$ajax('at', REST_API.getStampToSuppress);
 
             vm
@@ -683,7 +687,9 @@ module nts.uk.ui.kdp001.a {
                         }),
                         vm.$window.shared('screenB', { screen: "KDP001" }),
                     )
-                    .then(() => vm.$window.modal('at', '/view/kdp/002/b/index.xhtml', {stampTime: moment(vm.$date.now()).format("HH:mm")}));
+                    .then(() => vm.$window.modal('at', '/view/kdp/002/b/index.xhtml', {
+                        stampTime: moment(moment(vm.$date.now()).add(vm.regionalTime, 'h').toDate()).format("HH:mm")
+                    }));
             };
             const openDialogC = (stampDate: string, error: any) => {
                 return $
@@ -752,18 +758,18 @@ module nts.uk.ui.kdp001.a {
 
                         if (dailyAttdErrorInfos && dailyAttdErrorInfos.length) {
                             vm.$window
-							.shared('KDP010_2T', response)
-							.then(() => vm.$window.modal('at', '/view/kdp/002/t/index.xhtml'))
-							.then(() => vm.$window.shared('KDP010_T'))
-							.then(({ isClose, errorDate, btn }) => {
-								if (!isClose && errorDate) {
-									const { transfer, screen } = btn;
+                                .shared('KDP010_2T', response)
+                                .then(() => vm.$window.modal('at', '/view/kdp/002/t/index.xhtml'))
+                                .then(() => vm.$window.shared('KDP010_T'))
+                                .then(({ isClose, errorDate, btn }) => {
+                                    if (!isClose && errorDate) {
+                                        const { transfer, screen } = btn;
 
-									vm.$jump.blank('at', screen, { baseDate: transfer.appDate });
-								} else {
-									vm.stampData();
-								}
-							});
+                                        vm.$jump.blank('at', screen, { baseDate: transfer.appDate });
+                                    } else {
+                                        vm.stampData();
+                                    }
+                                });
                         } else {
                             vm.stampData();
                         }
@@ -831,6 +837,21 @@ module nts.uk.ui.kdp001.a {
                     .always(() => {
                         vm.$blockui('clear');
                     });
+            } else {
+                let inputWorkPlace = {
+                    contractCode: vm.$user.contractCode,
+                    cid: vm.$user.companyCode,
+                    sid: vm.$user.employeeId,
+                    workPlaceId: ""
+                }
+                vm.$ajax(REST_API.GetWorkPlaceRegionalTime, inputWorkPlace).then((data: GetWorkPlaceRegionalTime) => {
+                    if (data) {
+
+                        vm.workplaceId(data.workPlaceId)
+                        vm.workLocationName(data.workLocationName);
+                        // vm.regionalTime = data.regional;
+                    }
+                })
             }
 
             if (mode) {
@@ -846,7 +867,7 @@ module nts.uk.ui.kdp001.a {
             return $.Deferred()
                 .resolve(employees)
                 // if stampData call without employee data, fetch data from api
-                .then((employees: Employee[]) => employees || vm.$ajax('at', REST_API.getEmployeeStampData))
+                .then((employees: Employee[]) => employees || vm.$ajax('at', REST_API.getEmployeeStampData, { regionalTimeDifference: vm.regionalTime }))
                 .then((employees: Employee[]) => {
                     const [employee] = employees;
                     const result: any = [];
@@ -1030,5 +1051,12 @@ module nts.uk.ui.kdp001.a {
         goOut: boolean;
         goingToWork: boolean;
         turnBack: boolean;
+    }
+
+    interface GetWorkPlaceRegionalTime {
+        workPlaceId: string;
+        workLocationCD: string;
+        workLocationName: string;
+        regional: number;
     }
 }

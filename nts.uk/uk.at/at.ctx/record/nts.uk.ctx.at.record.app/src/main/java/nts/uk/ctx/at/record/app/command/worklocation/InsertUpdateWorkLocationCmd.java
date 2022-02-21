@@ -52,7 +52,7 @@ public class InsertUpdateWorkLocationCmd {
 						RadiusAtr.toEnum(this.radius), 
 						new GeoCoordinate(this.latitude, this.longitude)),
 				this.listIPAddress.stream().map(c->c.toDomain()).collect(Collectors.toList()),
-				this.workplace == null ? Optional.empty() : Optional.of(this.workplace.toDomain()));
+				this.workplace == null ? Optional.empty() : Optional.of(this.workplace.toDomain()), 0);
 	}
 	
 	public static InsertUpdateWorkLocationCmd toDto(WorkLocation domain) {
