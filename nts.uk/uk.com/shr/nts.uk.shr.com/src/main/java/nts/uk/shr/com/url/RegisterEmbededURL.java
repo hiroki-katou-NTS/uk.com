@@ -9,6 +9,27 @@ import nts.arc.time.GeneralDateTime;
  *
  */
 public interface RegisterEmbededURL {
+	// 
+	/**
+	 * アルゴリズム「申請メール埋込URL取得」を実行する
+	 * @param appId
+	 * @param appType
+	 * @param prePostAtr
+	 * @param employeeId
+	 * @return embeddedUrl
+	 */
+	public String obtainApplicationEmbeddedUrl( String appId, int appType, int prePostAtr, String employeeId);
+	/**
+	 * アルゴリズム「埋込URL情報登録申請」を実行する
+	 * @param appId
+	 * @param appType
+	 * @param prePostAtr
+	 * @param loginId
+	 * @param employeeId
+	 * @return Embed URL
+	 */
+	public String registerEmbeddedForApp(String appId, int appType, int prePostAtr, String loginId, String employeeId);
+
 	/**
 	 * アルゴリズム「埋込URL情報申請画面ID取得」を実行する
 	 * @param appType
@@ -47,7 +68,7 @@ public interface RegisterEmbededURL {
 	
 	/**
 	 * パスワード再設定メール有効期限チェック(Check giới hạn active mail tái thiết lập pass)
-	 * @param embeddedURLID 埋込URLID
+	 * @param embeddedURL 埋込URLID
 	 */
 	public void checkPassLimitExpire(String embeddedURLID);
 }
