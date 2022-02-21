@@ -323,7 +323,7 @@ public class ExtraHolidayManagementService {
 				emplData.setEmploymentCode(empSetting.getEmploymentCode().v());
 			}
 			// 管理するかないかチェック Check Setting quản lý nghỉ bù hay ko
-			if (compLeavCom != null && (compLeavCom.isManaged() || compLeavCom.getCompensatoryDigestiveTimeUnit().getIsManageByTime().equals(ManageDistinct.YES))) {
+			if (compLeavCom != null && (compLeavCom.isManaged() || compLeavCom.getTimeVacationDigestUnit().getManage().equals(ManageDistinct.YES))) {
 				emplData.setIsManage(ManageDistinct.YES);
 
 				if (empHistShrImp.getPeriod().start().beforeOrEquals(baseDate) && empHistShrImp.getPeriod().end().afterOrEquals(baseDate)) {

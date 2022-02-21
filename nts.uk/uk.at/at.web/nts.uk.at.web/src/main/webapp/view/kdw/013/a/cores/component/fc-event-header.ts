@@ -65,6 +65,10 @@ module nts.uk.ui.at.kdw013.eventheadear {
                         font-size: 12px;
                         line-height: 17px;
                     }
+					.checkbox-wrapper input[type="checkbox"]:checked+span::after{
+						top: 4px;
+						left: 1px;
+					}
                 </style>
                 `
     })
