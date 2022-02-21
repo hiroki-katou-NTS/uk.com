@@ -15,7 +15,13 @@ import lombok.NoArgsConstructor;
 @Data
 public class GetWorkPlaceRegionalTimeDto {
 
-	private String workPlace;
+	private String workPlaceId;
+
+	/** コード */
+	private String workLocationCD;
+
+	/** 名称 */
+	private String workLocationName;
 	
 	private int regional = 0;
 	

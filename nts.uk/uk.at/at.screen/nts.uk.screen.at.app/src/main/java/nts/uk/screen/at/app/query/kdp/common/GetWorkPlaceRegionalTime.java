@@ -56,8 +56,10 @@ public class GetWorkPlaceRegionalTime {
 		WorkLocationRequireImpl require = new WorkLocationRequireImpl(regionalTimeDifferenceRepository);
 		
 		if (workLocation.isPresent()) {
-			result.setWorkPlace(workLocation.get().getWorkplace().map(m -> m.getWorkpalceId()).orElse(""));
+			result.setWorkPlaceId(workLocation.get().getWorkplace().map(m -> m.getWorkpalceId()).orElse(""));
 			result.setRegional(workLocation.get().findTimeDifference(require, param.getContractCode()));
+			result.setWorkLocationName(workLocation.get().getWorkLocationName().v());
+			result.setWorkLocationCD(workLocation.get().getWorkLocationCD().v());
 		}
 
 		return result;

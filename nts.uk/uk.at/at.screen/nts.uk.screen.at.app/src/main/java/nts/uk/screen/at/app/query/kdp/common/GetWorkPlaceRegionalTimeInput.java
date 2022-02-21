@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class GetWorkPlaceRegionalTimeInput {
 
 	// 契約コード
-	private String ContractCode;
+	private String contractCode;
 	
 	// 会社ID
 	private String cid;
