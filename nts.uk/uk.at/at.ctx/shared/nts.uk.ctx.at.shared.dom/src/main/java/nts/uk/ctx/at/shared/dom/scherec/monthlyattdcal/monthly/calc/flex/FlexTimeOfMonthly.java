@@ -2000,11 +2000,11 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			/** フレックス時間発生するかを確認する */
 			if (this.checkIsFlexTimeOccur(settingsByFlex.getFlexAggrSet())) {
 				
-				/** 日単位のフレックス不足時間を合計する */
-				val flexShortage = this.flexTime.getMinusFlexTime(); 
+//				/** 日単位のフレックス不足時間を合計する */
+//				val flexShortage = this.flexTime.getMinusFlexTime(); 
 				
 				/** ○就業時間←就業合計時間　+ フレックス不足時間 */
-				return Optional.of(workTime.addMinutes(flexShortage.valueAsMinutes() * -1));
+				return Optional.of(workTime);
 			}
 			/** 日単位のフレックス超過時間を合計する */
 			val flexOver = this.flexTime.getPlusFlexTime();
