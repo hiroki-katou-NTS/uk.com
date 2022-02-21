@@ -3,12 +3,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	
+
 	<div class="tab-rows">
-		<div style="width: 100px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_24')}</div>		
+		<div style="width: 100px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_24')}</div>
 		<button tabindex="137" data-bind="click: openReferralDialog">#{i18n.getText('KMK003_103')}</button>
 		<span class="label" style="margin-left: 20px;" data-bind="text: bonusPaySettingCode()"></span>
 		<span class="label" style="margin-left: 20px;" data-bind="text: bonusPaySettingName()"></span>
 	</div>
-	
+
 </ui:composition>
