@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.worklocation;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +24,6 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.StampMobilePossibleRan
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -62,6 +59,10 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 	@Column(name = "LONGITUDE")
 	public double longitude;
 	
+	/** 地域コード */
+	@Column(name = "REGIONAL_CD")
+	public int regionalCd;
+	
 	@OneToOne(targetEntity = KrcmtWorkplacePossible.class, mappedBy = "krcmtWorkLocation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KRCMT_POSSIBLE_WKP")
 	public KrcmtWorkplacePossible krcmtWorkplacePossible;
@@ -82,6 +83,7 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 				workLocation.getStampRange().getRadius().value,
 				workLocation.getStampRange().getGeoCoordinate().getLatitude(),
 				workLocation.getStampRange().getGeoCoordinate().getLongitude(),
+				workLocation.getRegionCode(),
 				workLocation.getWorkplace().isPresent() ? KrcmtWorkplacePossible.toEntiy(
 						workLocation.getContractCode().v(),
 						workLocation.getWorkLocationCD().v(),
@@ -102,6 +104,7 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 						RadiusAtr.toEnum(this.radius), 
 						new GeoCoordinate(this.latitude, this.longitude)),
 				this.krcmtIP4Address.stream().map(c->c.toDomain()).collect(Collectors.toList()),
-				Optional.ofNullable(this.krcmtWorkplacePossible == null ? null : this.krcmtWorkplacePossible.toDomain()));
+				Optional.ofNullable(this.krcmtWorkplacePossible == null ? null : this.krcmtWorkplacePossible.toDomain()),
+				this.regionalCd);
 	}
 }

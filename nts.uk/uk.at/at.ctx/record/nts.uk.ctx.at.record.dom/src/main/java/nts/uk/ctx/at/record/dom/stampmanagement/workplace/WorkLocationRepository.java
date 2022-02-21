@@ -82,4 +82,12 @@ public interface WorkLocationRepository {
 	 * [14] 契約コード、勤務場所コード、会社IDで職場可能を取得する。（契約コード、会社ID、勤務場所コード）
 	 */
 	Optional<WorkLocation> findByWorkLocationCd(String contractCode, String cid, String workLocationCD);
+	
+	/**
+	 * 	[15] IPアドレスから勤務場所を特定する
+	 * @param contractCode
+	 * @param ipv4Address
+	 * @return
+	 */
+	Optional<WorkLocation> identifyWorkLocationByAddress(String contractCode, Ipv4Address ipv4Address);
 }

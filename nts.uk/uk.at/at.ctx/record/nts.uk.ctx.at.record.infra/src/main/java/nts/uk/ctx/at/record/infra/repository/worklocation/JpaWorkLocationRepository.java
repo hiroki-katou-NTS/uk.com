@@ -232,4 +232,10 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 		return result;
 	}
 
+	@Override
+	public Optional<WorkLocation> identifyWorkLocationByAddress(String contractCode, Ipv4Address ipv4Address) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
