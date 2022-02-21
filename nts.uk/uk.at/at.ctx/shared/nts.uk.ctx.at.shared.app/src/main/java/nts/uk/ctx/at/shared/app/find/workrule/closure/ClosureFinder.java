@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryMasterDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureIdNameDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresInfoDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.SmileClosurePeriod;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.SmileClosureTime;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.SmileEmpClosure;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
@@ -403,8 +404,8 @@ public class ClosureFinder {
 		Optional<ClosureHistory> closureTime = repository.findById(companyId, closureId, startYM);
 		if (closureTime.isPresent())
 			return new SmileClosureTime(closureTime.get().getCompanyId().toString(), closureTime.get().getClosureId().value, 
-					closureTime.get().getClosureName().v(), closureTime.get().getEndYearMonth().v(), closureTime.get().getClosureYMD(),
-					closureTime.get().getStartYearMonth().v());
+					closureTime.get().getClosureName().v(), closureTime.get().getClosureYMD(),
+					new SmileClosurePeriod(closureTime.get().getStartYearMonth().v(), closureTime.get().getEndYearMonth().v()));
 		return null;
 	}
 }

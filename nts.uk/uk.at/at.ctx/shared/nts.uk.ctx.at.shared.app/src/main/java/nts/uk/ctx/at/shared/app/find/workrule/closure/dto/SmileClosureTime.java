@@ -13,9 +13,7 @@ public class SmileClosureTime {
 	
 	private String closureName;
 	
-	private  Integer endYearMonth;
-	
 	private GeneralDate closureDate;
 	
-	private Integer startYearMonth;
+	private SmileClosurePeriod period;
 }

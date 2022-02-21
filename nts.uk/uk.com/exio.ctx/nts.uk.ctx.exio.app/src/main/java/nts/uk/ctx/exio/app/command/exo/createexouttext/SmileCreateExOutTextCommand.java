@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SmileCreateExOutTextCommand {
-	private String companyId;
 	private String conditionSetCd;
 	private Date startDate;
 	private Date endDate;

@@ -119,10 +119,11 @@ public class ExternalOutLogWebService extends WebService {
 		return this.exterOutExecLogFinder.getExterOutExecLogById(exterOutExecLogProcessId);
 	}
 	
-	@Path("smileGetExterOutExecLog/{companyId}/{exterOutExecLogProcessId}")
+	@Path("smileGetExterOutExecLog")
 	@POST
-	public JavaTypeResult<String> smileGetExterOutExecLog(@PathParam("exterOutExecLogProcessId") String exterOutExecLogProcessId, @PathParam("companyId") String companyId) {
-		String fileId = this.exterOutExecLogFinder.getExterOutExecLogByCom(companyId, exterOutExecLogProcessId).getFileId().toString();
+	public JavaTypeResult<String> smileGetExterOutExecLog(String exterOutExecLogProcessId) {
+		String Cid = AppContexts.user().companyId();
+		String fileId = this.exterOutExecLogFinder.getExterOutExecLogByCom(Cid, exterOutExecLogProcessId).getFileId().toString();
 		return new JavaTypeResult<String>(fileId);
 	}
 	

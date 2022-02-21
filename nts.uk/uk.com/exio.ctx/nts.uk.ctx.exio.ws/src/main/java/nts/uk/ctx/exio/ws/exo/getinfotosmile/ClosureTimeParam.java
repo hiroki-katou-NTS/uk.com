@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class ClosureTimeParam {
-	 private String companyId;
 	 private int closureId;
 	 private int startYM;
 }

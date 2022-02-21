@@ -90,13 +90,4 @@ public class CompanyInforFinder {
 		}).orElse(null);
 	}
 	
-	/**
-	 * Check the validity of company ID
-	 */
-	public boolean companyCheck(String companyId) {
-		Optional<Company> com = this.comRep.getComanyInfoByCid(companyId);
-		if(com.isPresent() && com.get().getCompanyId() != null)
-			return true;
-		return false;
-	}
 }

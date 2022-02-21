@@ -1,8 +1,6 @@
 package nts.uk.ctx.exio.ws.exo.condset.externaloutput;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -20,12 +18,7 @@ import nts.uk.ctx.exio.app.command.exo.createexouttext.CreateExOutTextCommandHan
 import nts.uk.ctx.exio.app.command.exo.createexouttext.SmileCreateExOutTextCommand;
 import nts.uk.ctx.exio.app.find.exo.exoutsummarysetting.ExOutSummarySettingDto;
 import nts.uk.ctx.exio.app.find.exo.exoutsummarysetting.ExOutSummarySettingFinder;
-import nts.uk.ctx.exio.app.find.exo.exoutsummarysetting.OutConditionSetDto;
 import nts.uk.ctx.exio.app.find.exo.exoutsummarysetting.SmileGetSettingDto;
-import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
-import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
-import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
-import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("exio/exo/condset")
@@ -58,9 +51,11 @@ public class CreateExOutTextWebService extends WebService {
 		String processingId = IdentifierUtil.randomUniqueId();
 		GeneralDate startDate = GeneralDate.legacyDate(command.getStartDate());
 		GeneralDate endDate = GeneralDate.legacyDate(command.getStartDate());
-		List<String> listSid = affCompanyHistRepo.getSidItemByCom(command.getCompanyId(), GeneralDate.today());
+		String Cid = AppContexts.user().companyId();
 		
-		CreateExOutTextCommand outTextCmd = new CreateExOutTextCommand(command.getCompanyId(), command.getConditionSetCd(), "", null, 
+		List<String> listSid = affCompanyHistRepo.getSidItemByCom(Cid, GeneralDate.today());
+		
+		CreateExOutTextCommand outTextCmd = new CreateExOutTextCommand(Cid, command.getConditionSetCd(), "", null, 
 																	startDate, endDate, GeneralDate.today(), processingId, true, listSid);
 		this.createExOutTextCommandHandler.handle(outTextCmd);
 
@@ -76,8 +71,9 @@ public class CreateExOutTextWebService extends WebService {
 	
 	
 	@POST
-	@Path("getExOutSummarySetting/{cid}/{conditionSetCd}")
-	public SmileGetSettingDto getExOutSetting(@PathParam("cid") String cid, @PathParam("conditionSetCd") String conditionSetCd){
+	@Path("getExOutSummarySetting")
+	public SmileGetSettingDto getExOutSetting(String conditionSetCd){
+		String cid = AppContexts.user().companyId();
 		return exOutSummarySettingFinder.getExOutSetting(cid, conditionSetCd);
 	}
 }
