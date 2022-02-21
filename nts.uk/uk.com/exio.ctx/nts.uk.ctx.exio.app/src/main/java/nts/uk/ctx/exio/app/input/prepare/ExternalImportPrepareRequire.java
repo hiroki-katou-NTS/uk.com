@@ -8,6 +8,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
+
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.layer.app.cache.MapCache;
 import nts.arc.time.GeneralDate;
@@ -16,7 +19,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
@@ -69,8 +71,6 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspaceRepository;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.shr.com.company.CompanyId;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
