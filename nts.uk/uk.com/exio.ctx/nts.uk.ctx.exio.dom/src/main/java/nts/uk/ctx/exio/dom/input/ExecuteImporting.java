@@ -19,7 +19,7 @@ public class ExecuteImporting {
 
 	public static Iterable<AtomTask> execute(Require require, String companyId, ExternalImportCode code,  DomainImportSetting setting) {
 		
-		val context = setting.executionContextForExcecute(companyId, code);
+		val context = setting.executionContext(companyId, code);
 		
 		val transactionUnit = require.getImportingDomain(setting.getDomainId())
 				.getTransactionUnit();

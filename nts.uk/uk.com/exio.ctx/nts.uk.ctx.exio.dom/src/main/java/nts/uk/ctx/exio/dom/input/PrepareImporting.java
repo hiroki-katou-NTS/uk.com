@@ -23,9 +23,9 @@ public class PrepareImporting {
 			DomainImportSetting setting,
 			InputStream csvFileStream) {
 
-			val context = setting.executionContextForPrepare(externalImportSetting.getCompanyId(), 
-																		   externalImportSetting.getCode(),
-																		   externalImportSetting.containEmployeeBasic()
+			
+			val context = setting.executionContext(externalImportSetting.getCompanyId(), 
+																		   externalImportSetting.getCode()
 																		   );
 
 			require.setupWorkspaceForEachDomain(context);//削除も一緒に

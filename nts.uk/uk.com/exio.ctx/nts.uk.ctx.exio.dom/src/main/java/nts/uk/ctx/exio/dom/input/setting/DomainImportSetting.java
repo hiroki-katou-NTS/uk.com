@@ -108,20 +108,11 @@ public class DomainImportSetting implements DomainAggregate {
 		void save(ExecutionContext context, RevisedDataRecord revisedDataRecord);
 	}
 
-	public ExecutionContext executionContextForExcecute(String companyId, ExternalImportCode code) {
-		return new DefaultExecutionContext(
+	public ExecutionContext executionContext(String companyId, ExternalImportCode code) {
+		return new ExecutionContext(
 				companyId,
 				code.v(),
 				domainId,
 				importingMode);
-	}
-	
-	public ExecutionContext executionContextForPrepare(String companyId, ExternalImportCode code, boolean importingWithEmployeeBasic) {
-		return new PrepareExecutionContext(
-				companyId,
-				code.v(),
-				domainId,
-				importingMode,
-				importingWithEmployeeBasic);
 	}
 }
