@@ -106,14 +106,21 @@ public class KrcmtStampSmartPhone extends ContractUkJpaEntity implements Seriali
 		this.textColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getTextColor().v();
 		this.buttonEmphasisArt = domain.isButtonEmphasisArt();
 		this.listKrcmtStampPageLayout = domain.getPageLayoutSettings().stream().map(c->KrcmtStampPageLayout.toEntity(c, domain.getCid(), 3)).collect(Collectors.toList());
+		this.locationInfoUse = domain.getLocationInfoUse().value;
+		this.areaLimitAtr = domain.getAreaLimitAtr().value;
 	}
 	
 	public SettingsSmartphoneStamp toDomain() {
-		return new SettingsSmartphoneStamp(this.cid,
-				new DisplaySettingsStampScreen(new CorrectionInterval(this.correctionInterval),
-						new SettingDateTimeColorOfStampScreen(new ColorCode(this.textColor)),
-						new ResultDisplayTime(this.resultDisplayTime)),
-				this.listKrcmtStampPageLayout.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
-				this.buttonEmphasisArt, null);
+		return new SettingsSmartphoneStamp(
+				this.cid, 
+				new DisplaySettingsStampScreen(
+					new CorrectionInterval(this.correctionInterval), 
+					new SettingDateTimeColorOfStampScreen(
+						new ColorCode(this.textColor)),
+					new ResultDisplayTime(this.resultDisplayTime)),
+				this.listKrcmtStampPageLayout.stream().map(c->c.toDomain()).collect(Collectors.toList()), 
+				this.buttonEmphasisArt,
+				NotUseAtr.valueOf(this.locationInfoUse),
+				NotUseAtr.valueOf(this.areaLimitAtr));
 	}
 }

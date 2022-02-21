@@ -24,10 +24,19 @@ public class SettingsSmartphoneStampDto {
 	
 	@Setter
 	private Integer googleMap;
+	
+	// 	位置情報を利用する
+	private Integer locationInfoUse;
+	
+	// 	打刻エリア制限する
+	private Integer areaLimitAtr;
+	
 	public void settingsSmartphoneStamp(SettingsSmartphoneStamp domain) {
 		this.cid = domain.getCid(); 
 		this.displaySettingsStampScreen = DisplaySettingsStampScreenDto.fromDomain(domain.getDisplaySettingsStampScreen()); 
 		this.pageLayoutSettings = domain.getPageLayoutSettings().stream().map(c->StampPageLayoutDto.fromDomain(c)).collect(Collectors.toList()); 
 		this.buttonEmphasisArt = domain.isButtonEmphasisArt()?1:0;
+		this.locationInfoUse = domain.getLocationInfoUse().value;
+		this.areaLimitAtr = domain.getAreaLimitAtr().value;
 	}
 }

@@ -2,24 +2,18 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
 import java.util.Optional;
 
-import javax.inject.Inject;
-
-import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
-import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.EmployeeStampingAreaRestrictionSetting;
-import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRepository;
-import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.adapter.AcquireWorkLocationEmplAdapter;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
-import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.FindWorkPlaceFromStampedPositionService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 
 /**
@@ -51,39 +45,27 @@ public class EnterStampFromSmartPhoneService {
 	 * 
 	 *            ページNOとボタン位置NOから作成する打刻種類を判断する 社員の打刻データを作成する
 	 */
-	@Inject
-	private static StampingAreaRepository stampingAreaRepository;
-	@Inject
-	private static WorkLocationRepository repository;
-	@Inject
-	private static AcquireWorkLocationEmplAdapter adapter;
 
 	public static TimeStampInputResult create(Require require, String cid, ContractCode contractCode, String employeeID,
 			GeneralDateTime stampDatetime, StampButton stampButton, Optional<GeoCoordinate> positionInfor,
 			RefectActualResult refActualResults) {
+		//	$打刻場所 = 打刻場所を求める#取得する(require,地理座標)
+		Optional<WorkLocation> workLocation = FindWorkPlaceFromStampedPositionService.find(require, positionInfor);
+		//  if $打刻場所.isPresent
+		if(workLocation.isPresent()) {
+			refActualResults.getWorkInforStamp().ifPresent(c->c.setWorkLocationCD(Optional.of(workLocation.get().getWorkLocationCD())));
+		}
+		
 		// $スマホ打刻の打刻設定 = require.スマホ打刻の打刻設定を取得する()
 		Optional<SettingsSmartphoneStamp> settingSmartPhoneStampOpt = require.getSmartphoneStampSetting();
 
 		if (!settingSmartPhoneStampOpt.isPresent()) {
 			throw new BusinessException("Msg_1632");
 		}
-		SettingsSmartphoneStamp settingSmartPhoneStamp = settingSmartPhoneStampOpt.get();
-		
-		SettingsSmartphoneStampImpl settingsSmartphoneStampImpl = new SettingsSmartphoneStampImpl(stampingAreaRepository);
-		
-		//	$打刻場所 = $スマホ打刻の打刻設定.打打刻してもいいエリアかチェックする(契約コード,会社ID,社員ID,地理座標)
-		
-		Optional<WorkLocation> workLocation = settingSmartPhoneStamp.checkCanStampAreas(repository, adapter, settingsSmartphoneStampImpl, contractCode, cid, employeeID, positionInfor.get());
-		
-		//  if $打刻場所.isPresent
-		if(workLocation.isPresent()) {
-			refActualResults.getWorkInforStamp().ifPresent(c->c.setWorkLocationCD(Optional.of(workLocation.get().getWorkLocationCD())));
-		}
-		
-		
 
 		// $ボタン詳細設定 = $スマホ打刻の打刻設定.ボタン詳細設定を取得する(打刻ボタン)
-		Optional<ButtonSettings> buttonSettingOpt = settingSmartPhoneStamp.getDetailButtonSettings(stampButton);
+		Optional<ButtonSettings> buttonSettingOpt = settingSmartPhoneStampOpt.get()
+				.getDetailButtonSettings(stampButton);
 
 		if (!buttonSettingOpt.isPresent()) {
 			throw new BusinessException("Msg_1632");
@@ -98,20 +80,8 @@ public class EnterStampFromSmartPhoneService {
 				positionInfor);
 
 	}
-	
-	@AllArgsConstructor
-	private static class SettingsSmartphoneStampImpl implements SettingsSmartphoneStamp.Require {
 
-		private StampingAreaRepository stampingAreaRepository;
-
-		@Override
-		public Optional<EmployeeStampingAreaRestrictionSetting> findByEmployeeId(String employId) {
-			return this.stampingAreaRepository.findByEmployeeId(employId);
-		}
-
-	}
-
-	public static interface Require extends CreateStampDataForEmployeesService.Require{
+	public static interface Require extends CreateStampDataForEmployeesService.Require, FindWorkPlaceFromStampedPositionService.Require {
 
 		// [R-1] スマホ打刻の打刻設定を取得する
 		Optional<SettingsSmartphoneStamp> getSmartphoneStampSetting();
