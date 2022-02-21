@@ -597,6 +597,18 @@ public class ProgramsManager {
             "/view/kmt/001/a/index.xhtml");
 
     /**
+     * KMT013A
+     */
+    public static final Program KMT013A = new Program(WebAppId.AT, ProgramIdConsts.KMT013A, "KMT013_1",
+            "/view/kmt/013/a/index.xhtml");
+
+    /**
+     * KMT013B
+     */
+    public static final Program KMT013B = new Program(WebAppId.AT, ProgramIdConsts.KMT013B, "KMT013_10",
+            "/view/kmt/013/b/index.xhtml");
+
+    /**
      * KDL001A
      */
     public static final Program KDL001A = new Program(WebAppId.AT, ProgramIdConsts.KDL001A, "KDL001_1",

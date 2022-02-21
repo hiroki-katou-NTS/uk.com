@@ -111,7 +111,7 @@ public class ReflectApplicationWorkSchedule {
 			// 勤務予定の更新 --- co update , thuoc tinh ConfirmedATR
 			WorkSchedule workScheduleReflect = new WorkSchedule(dailyRecordApp.getEmployeeId(), dailyRecordApp.getYmd(),
 					ConfirmedATR.UNSETTLED, dailyRecordApp.getWorkInformation(), dailyRecordApp.getAffiliationInfor(),
-					dailyRecordApp.getBreakTime(), dailyRecordApp.getEditState(), workSchedule.getTaskSchedule(),
+					dailyRecordApp.getBreakTime(), dailyRecordApp.getEditState(), workSchedule.getTaskSchedule(), workSchedule.getSupportSchedule(),
 					dailyRecordApp.getAttendanceLeave(), dailyRecordApp.getAttendanceTimeOfDailyPerformance(),
 					dailyRecordApp.getShortTime(), dailyRecordApp.getOutingTime());
 			require.insertSchedule(workScheduleReflect);

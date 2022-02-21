@@ -5,6 +5,7 @@ package nts.uk.ctx.at.schedule.app.command.schedule.workschedule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
@@ -154,7 +156,9 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 			// loop:年月日 in 年月日リスト
 			for (WorkScheduleSaveCommand<T> data : scheduleOfEmps) {
 				// step 1.1
-				ResultOfRegisteringWorkSchedule rsOfRegisteringWorkSchedule = CreateWorkScheduleByShift.create(requireImpl, sid, data.ymd, new ShiftMasterCode(data.shiftCode));
+				ResultOfRegisteringWorkSchedule rsOfRegisteringWorkSchedule = CreateWorkScheduleByShift.create(
+						requireImpl, sid, data.ymd, new ShiftMasterCode(data.shiftCode),
+						Collections.emptyList()); // TODO developers are going to update
 				
 				lstRsOfRegisWorkSchedule.add(rsOfRegisteringWorkSchedule);
 			}
@@ -395,6 +399,12 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 		public Optional<ShiftMaster> getShiftMaster(ShiftMasterCode shiftMasterCode) {
 			Optional<ShiftMaster> rs = shiftMasterRepo.getByShiftMaterCd(companyId, shiftMasterCode  == null ? null : shiftMasterCode.toString());
 			return rs;
+		}
+
+		@Override
+		public SupportOperationSetting getSupportOperationSetting() {
+			// TODO developers are going to update
+			return null;
 		}
 	}
 }

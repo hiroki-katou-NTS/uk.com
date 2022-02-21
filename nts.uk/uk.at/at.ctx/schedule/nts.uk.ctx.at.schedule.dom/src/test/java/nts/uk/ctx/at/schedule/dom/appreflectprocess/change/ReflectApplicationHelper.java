@@ -8,6 +8,7 @@ import java.util.stream.IntStream;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
@@ -393,6 +394,7 @@ public class ReflectApplicationHelper {
 				new BreakTimeOfDailyAttd(breakTimeSheets), 
 				new ArrayList<>(), 
 				TaskSchedule.createWithEmptyList(),
+				SupportSchedule.createWithEmptyList(),
 				Optional.empty(), 
 				Optional.empty(), 
 				Optional.empty(), 

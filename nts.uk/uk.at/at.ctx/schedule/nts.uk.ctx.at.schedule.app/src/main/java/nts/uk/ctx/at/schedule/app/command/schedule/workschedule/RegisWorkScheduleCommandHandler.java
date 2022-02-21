@@ -5,6 +5,7 @@ package nts.uk.ctx.at.schedule.app.command.schedule.workschedule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,7 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
@@ -150,7 +152,9 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 						requireImpl, sid, data.ymd,
 						workInfo,
 						data.isBreakByHand, // TODO VN team update
-						data.breakTimeList, data.mapAttendIdWithTime);
+						data.breakTimeList, 
+						Collections.emptyList(), // TODO VN-team is going to update
+						data.mapAttendIdWithTime);
 				
 				lstRsOfRegisWorkSchedule.add(rsOfRegisteringWorkSchedule);
 			}
@@ -382,6 +386,12 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 		@Override
 		public void registerTemporaryData(String employeeId, GeneralDate date) {
 			interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, Arrays.asList(date));
+		}
+
+		@Override
+		public SupportOperationSetting getSupportOperationSetting() {
+			// TODO developers are going to update
+			return null;
 		}
 	}
 }

@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -508,6 +509,12 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
         public void registerTemporaryData(String employeeId, GeneralDate date) {
             interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(), employeeId, Arrays.asList(date));
         }
-        
+
+		@Override
+		public SupportOperationSetting getSupportOperationSetting() {
+			// TODO developers are going to update
+			return null;
+		}
+
     }
 }
