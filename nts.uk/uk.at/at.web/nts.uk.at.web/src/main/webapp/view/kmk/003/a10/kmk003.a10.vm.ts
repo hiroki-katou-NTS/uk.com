@@ -1,63 +1,63 @@
 module a10 {
-
+    
     import WorkTimeDailyAtr = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeDailyAtr;
     import WorkTimeMethodSet = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeMethodSet
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
     import EnumConstantDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.EnumConstantDto;
-
+    
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
-
+    
     /**
      * Screen Model - Tab 10
      * 就業時間帯の共通設定 -> 加給設定
      * WorkTimeCommonSet -> BonusPaySettingCode
      */
     class ScreenModel {
-
+             
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
-
+        
         // Screen data model
         model: MainSettingModel;
         settingEnum: WorkTimeSettingEnumDto;
-
+        
         // Detail mode - Data
         bonusPaySettingCode: KnockoutObservable<string>;
         bonusPaySettingName: KnockoutObservable<string>;
-
+        
         lstBonusPaysetting: KnockoutObservableArray<any>;
-        // Simple mode - Data
-
+        // Simple mode - Data  
+        
         /**
          * Constructor
          */
         constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto, lstPaySetting:any) {
-            let _self = this;
-
+            let _self = this;          
+            
             _self.lstBonusPaysetting = ko.observableArray(lstPaySetting);
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
                 // Stop rendering page
-                return;
+                return;    
             }
-
+            
             // Binding data
-            _self.model = model;
+            _self.model = model; 
             _self.settingEnum = settingEnum;
             _self.bindingData();
-
-            _self.bonusPaySettingName = ko.observable("");
-
+                        
+            _self.bonusPaySettingName = ko.observable("");                                 
+            
             //subscribe not run here=> add control to bind name to screen
             _self.bindingNameByCode(_self.bonusPaySettingCode());
-
+            
              // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
                 // Nothing to do
-            });
-            // Subscribe Detail/Simple mode
+            });                                                            
+            // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
                 value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             });
@@ -65,23 +65,23 @@ module a10 {
                 _self.bindingNameByCode(v);
             });
         }
-
+                
         /**
          * Start tab
          */
         public startTab(screenMode: any): void {
-            let _self = this;
+            let _self = this;  
             screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
         }
-
+        
         /**
          * Binding data
          */
         private bindingData() {
-            let _self = this;
+            let _self = this;            
             _self.bonusPaySettingCode = _self.model.commonSetting.raisingSalarySet;
-        }
-
+        }             
+        
         private bindingNameByCode(code: string) {
             let _self = this;
             if (code == '000') {
@@ -126,12 +126,12 @@ module a10 {
             });
         }
     }
-
+    
     /**
      * Knockout Binding Handler - Tab 10
      */
     class KMK003A10BindingHandler implements KnockoutBindingHandler {
-
+        
         /**
          * Constructor
          */
@@ -145,7 +145,7 @@ module a10 {
         /**
          * Update
          */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {          
             let webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
                 .mergeRelativePath('/view/kmk/003/a10/index.xhtml').serialize();
@@ -167,6 +167,6 @@ module a10 {
             });
         }
     }
-
+    
     ko.bindingHandlers['ntsKMK003A10'] = new KMK003A10BindingHandler();
 }

@@ -1634,36 +1634,34 @@ module nts.uk.at.view.kmk003.a {
 
             export class WorkTimezoneShortTimeWorkSetModel {
                 nursTimezoneWorkUse: KnockoutObservable<boolean>;
+                employmentTimeDeduct: KnockoutObservable<boolean>;
                 childCareWorkUse: KnockoutObservable<boolean>;
-                roundingSet: TimeRoundingSettingModel;
-
 
                 constructor() {
                     this.nursTimezoneWorkUse = ko.observable(false);
+                    this.employmentTimeDeduct = ko.observable(false);
                     this.childCareWorkUse = ko.observable(false);
-                    this.roundingSet = new TimeRoundingSettingModel();
-
                 }
 
                 updateData(data: WorkTimezoneShortTimeWorkSetDto) {
                     this.nursTimezoneWorkUse(data.nursTimezoneWorkUse);
+                    this.employmentTimeDeduct(data.employmentTimeDeduct);
                     this.childCareWorkUse(data.childCareWorkUse);
-                    this.roundingSet.updateData(data.roundingSet);
                 }
 
                 toDto(): WorkTimezoneShortTimeWorkSetDto {
                     var dataDTO: WorkTimezoneShortTimeWorkSetDto = {
                         nursTimezoneWorkUse: this.nursTimezoneWorkUse(),
-                        childCareWorkUse: this.childCareWorkUse(),
-                        roundingSet: this.roundingSet.toDto(),
+                        employmentTimeDeduct: this.employmentTimeDeduct(),
+                        childCareWorkUse: this.childCareWorkUse()
                     };
                     return dataDTO;
                 }
 
                 resetData() {
                     this.nursTimezoneWorkUse(false);
+                    this.employmentTimeDeduct(false);
                     this.childCareWorkUse(false);
-                    this.roundingSet.resetData();
                 }
             }
 
