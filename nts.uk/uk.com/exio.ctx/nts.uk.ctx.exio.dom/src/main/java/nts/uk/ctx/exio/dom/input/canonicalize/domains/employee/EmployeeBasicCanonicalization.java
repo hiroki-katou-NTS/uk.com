@@ -19,11 +19,15 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.sys.shared.dom.user.User;
 
 /**
@@ -443,5 +447,48 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 	public int getItemNoOfEmployeeId() {
 		return Items.SID;
 	}
-
+	
+	public static String getPersonId(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, String employeeId) {
+		if(isImportingWithEmployeeBasic(require, context)) {
+			return require.getEmployeeBasicEmployeeId(context, ImportingDomainId.EMPLOYEE_BASIC, Items.PID, employeeId)
+					.stream()
+					.map(c -> c.getItemByNo(Items.PID).get().getString())
+					.findFirst()
+					.get();
+		}
+		return require.getEmployeeDataMngInfoByEmployeeId(employeeId)
+				.get()
+				.getPersonId();
+	}
+	
+	public interface GetPersonIdRequire extends ImportingWithEmployeeBasicRequire{
+		List<CanonicalizedDataRecord> getEmployeeBasicEmployeeId(ExecutionContext context, ImportingDomainId domainId, int targetItemNo, String targetItemValue);
+		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeId(String employeeId);
+	}
+	
+	public static Optional<String> getEmployeeId(CanonicalizationMethodRequire require, ExecutionContext context, String employeeCode) {
+		if(isImportingWithEmployeeBasic(require, context)) {
+			return require.getEmployeeBasicEmployeeId(context, ImportingDomainId.EMPLOYEE_BASIC, Items.SID, employeeCode)
+					.stream()
+					.map(c -> c.getItemByNo(Items.SID).get().getString())
+					.findFirst();
+		}
+		return require.getEmployeeDataMngInfoByEmployeeCode(employeeCode)
+				.map(c -> c.getEmployeeId());
+	}
+	
+	public interface GetEmployeeIdRequire extends ImportingWithEmployeeBasicRequire{
+		List<CanonicalizedDataRecord> getEmployeeBasicEmployeeId(ExecutionContext context, ImportingDomainId domainId, int targetItemNo, String targetItemValue);
+		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode);
+	}
+	
+	private static boolean isImportingWithEmployeeBasic(CanonicalizationMethodRequire require, ExecutionContext context) {
+		return require.getExternalImportSetting(context).containEmployeeBasic()
+			  && !context.getDomainId().equals(ImportingDomainId.EMPLOYEE_BASIC);
+	}
+	
+	private static interface ImportingWithEmployeeBasicRequire{
+		ExternalImportSetting getExternalImportSetting(ExecutionContext context);
+	}
+	
 }

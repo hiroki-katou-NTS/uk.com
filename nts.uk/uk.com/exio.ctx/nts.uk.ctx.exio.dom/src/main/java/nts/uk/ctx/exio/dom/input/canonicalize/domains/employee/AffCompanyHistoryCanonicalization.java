@@ -3,12 +3,10 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
@@ -84,12 +82,10 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 	}
 	
 	private String getPersonId(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, String employeeId) {
-		if(context.isImportingWithEmployeeBasic()) {
-			return require.getEmployeeBasicPersonId(context.impersonateEmployeeBasicExecutionContext(), employeeId).get();
-		}
-		return require.getEmployeeDataMngInfoByEmployeeId(employeeId)
-				.get()
-				.getPersonId();
+		return EmployeeBasicCanonicalization.getPersonId(require, context, employeeId);
+	}
+	
+	public static interface RequireCanonicalizeExtends extends EmployeeBasicCanonicalization.GetPersonIdRequire{
 	}
 
 	@Override
@@ -104,8 +100,5 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 		return super.canonicalizeHistory(require, context, addedRetireDay);
 	}
 	
-	public static interface RequireCanonicalizeExtends {
-		Optional<String> getEmployeeBasicPersonId(ExecutionContext context, String sid);
-		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeId(String employeeId);
-	}
+
 }

@@ -7,17 +7,15 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.val;
 import nts.gul.util.Either;
-import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization.GetEmployeeIdRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
-import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
 /**
@@ -81,24 +79,11 @@ public class EmployeeCodeCanonicalization {
 
 	private static Either<ErrorMessage, String> getEmployeeId(CanonicalizationMethodRequire require, 	ExecutionContext context, String employeeCode) {
 		
-		Optional<String> employeeId = a(require, context, employeeCode);
+		Optional<String> employeeId = EmployeeBasicCanonicalization.getEmployeeId(require, context, employeeCode); 
 		
 		return Either.rightOptional(
 				employeeId,
 				() -> new ErrorMessage("未登録の社員コードです。"));
-	}
-	
-	
-	private static Optional<String> a(CanonicalizationMethodRequire require, ExecutionContext context, String employeeCode){
-		if(context.isImportingWithEmployeeBasic()) {
-			//個人基本の正準化結果に対して問い合わせるために、実行コンテキスト内の対象ドメインを偽装
-			val impersonateContext = context.impersonateEmployeeBasicExecutionContext();
-			return require.getEmployeeBasicSIDByEmployeeCode(impersonateContext, employeeCode);
-		}
-		else {
-			return require.getEmployeeDataMngInfoByEmployeeCode(employeeCode)
-					.map(t -> t.getEmployeeId());
-		}		
 	}
 
 	private IntermediateResult canonicalize(RevisedDataRecord revisedData, String employeeId) {
@@ -106,10 +91,7 @@ public class EmployeeCodeCanonicalization {
 				.addCanonicalized(CanonicalItem.of(itemNoEmployeeId, employeeId));
 	}
 	
-	public static interface Require {
-		Optional<String> getEmployeeBasicSIDByEmployeeCode(ExecutionContext context, String employeeCode);
-		
-		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode);
+	public static interface Require extends GetEmployeeIdRequire{
 	}
 
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
