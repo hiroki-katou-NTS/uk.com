@@ -450,7 +450,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 	
 	public static String getPersonId(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, String employeeId) {
 		if(isImportingWithEmployeeBasic(require, context)) {
-			return require.getEmployeeBasicEmployeeId(context, ImportingDomainId.EMPLOYEE_BASIC, Items.PID, employeeId)
+			return require.getEmployeeBasicEmployeeId(context, ImportingDomainId.EMPLOYEE_BASIC, Items.SID, employeeId)
 					.stream()
 					.map(c -> c.getItemByNo(Items.PID).get().getString())
 					.findFirst()
@@ -468,7 +468,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 	
 	public static Optional<String> getEmployeeId(CanonicalizationMethodRequire require, ExecutionContext context, String employeeCode) {
 		if(isImportingWithEmployeeBasic(require, context)) {
-			return require.getEmployeeBasicEmployeeId(context, ImportingDomainId.EMPLOYEE_BASIC, Items.SID, employeeCode)
+			return require.getEmployeeBasicEmployeeId(context, ImportingDomainId.EMPLOYEE_BASIC, Items.社員コード, employeeCode)
 					.stream()
 					.map(c -> c.getItemByNo(Items.SID).get().getString())
 					.findFirst();

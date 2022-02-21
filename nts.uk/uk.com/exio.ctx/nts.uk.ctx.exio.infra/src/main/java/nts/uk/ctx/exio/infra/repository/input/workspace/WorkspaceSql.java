@@ -335,6 +335,8 @@ public class WorkspaceSql {
 			return DataItem.of(itemNo, record.getString(name));
 		case DATE:
 			return DataItem.of(itemNo, record.getGeneralDate(name));
+		case DATETIME:
+			return DataItem.of(itemNo, record.getGeneralDateTime(name));
 		case BOOLEAN:
 			return DataItem.of(itemNo, record.getBoolean(name));
 		default:

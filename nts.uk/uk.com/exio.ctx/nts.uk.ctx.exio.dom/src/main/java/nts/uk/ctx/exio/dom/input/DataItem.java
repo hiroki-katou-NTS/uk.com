@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * 1項目分のデータ
@@ -67,6 +68,16 @@ public class DataItem {
 	}
 
 	/**
+	 * 日付型
+	 * @param itemNo
+	 * @param value
+	 * @return
+	 */
+	public static DataItem of(int itemNo, GeneralDateTime value) {
+		return new DataItem(itemNo, value);
+	}
+	
+	/**
 	 * bool型
 	 * @param itemNo
 	 * @param value
@@ -90,6 +101,10 @@ public class DataItem {
 	
 	public GeneralDate getDate() {
 		return value != null ? (GeneralDate) value : null;
+	}
+	
+	public GeneralDateTime getDateTime() {
+		return value != null ? (GeneralDateTime) value : null;
 	}
 	
 	public boolean isNull() {
