@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Value;
-import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 
 /**
  * 任意の既存レコードの単純な削除

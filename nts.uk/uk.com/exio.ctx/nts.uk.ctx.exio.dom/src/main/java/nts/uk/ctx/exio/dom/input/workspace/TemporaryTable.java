@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import lombok.val;
 import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.JdbcProxy;
-import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.workspace.builder.CreateTableBuilder;
 
 /**

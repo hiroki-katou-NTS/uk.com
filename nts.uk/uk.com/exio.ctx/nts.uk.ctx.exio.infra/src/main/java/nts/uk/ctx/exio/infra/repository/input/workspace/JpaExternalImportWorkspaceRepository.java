@@ -6,7 +6,7 @@ import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
 
 @Stateless

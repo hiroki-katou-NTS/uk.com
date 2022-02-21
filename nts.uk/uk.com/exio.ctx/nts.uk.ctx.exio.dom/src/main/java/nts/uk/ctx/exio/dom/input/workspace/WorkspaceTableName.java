@@ -1,7 +1,7 @@
 package nts.uk.ctx.exio.dom.input.workspace;
 
 import lombok.RequiredArgsConstructor;
-import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 
 @RequiredArgsConstructor
 public class WorkspaceTableName {

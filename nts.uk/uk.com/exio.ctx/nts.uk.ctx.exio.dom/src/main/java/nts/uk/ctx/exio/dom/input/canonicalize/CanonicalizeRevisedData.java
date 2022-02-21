@@ -1,8 +1,8 @@
 package nts.uk.ctx.exio.dom.input.canonicalize;
 
 import lombok.val;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
-import nts.uk.ctx.exio.dom.input.context.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 
 /**
