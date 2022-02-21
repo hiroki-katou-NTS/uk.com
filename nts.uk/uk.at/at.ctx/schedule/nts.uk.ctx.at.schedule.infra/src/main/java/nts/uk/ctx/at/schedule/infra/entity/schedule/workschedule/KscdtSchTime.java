@@ -20,12 +20,15 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.support.supportschedule.KscdtSchSupport;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -75,7 +78,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.To
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.AttendanceClock;
@@ -299,6 +305,10 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 	@OneToMany(targetEntity = KscdtSchTask.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KSCDT_SCH_TASK")
 	public List<KscdtSchTask> kscdtSchTask;
+	
+	@OneToMany(targetEntity = KscdtSchSupport.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCDT_SCH_SUPPORT")
+	public List<KscdtSchSupport> kscdtSchSupport;
 
 	/**
 	 * 
@@ -313,6 +323,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		String sID = workSchedule.getEmployeeID();
 		KscdtSchTimePK pk = new KscdtSchTimePK(sID, yMD);
 		TaskSchedule task = workSchedule.getTaskSchedule();
+		SupportSchedule supportSchedule = workSchedule.getSupportSchedule();
 		ActualWorkingTimeOfDaily timeOfDailys = workSchedule.getOptAttendanceTime().get().getActualWorkingTimeOfDaily();
 		// 勤務予定．勤怠時間．勤務時間．総労働時間
 		TotalWorkingTime workingTime = timeOfDailys.getTotalWorkingTime();
@@ -438,7 +449,10 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		AtomicInteger index = new AtomicInteger(1);
 		List<KscdtSchTask> lstKscdtSchTask = task.getDetails().stream()
 				.map(c -> KscdtSchTask.toEntity(sID, yMD, cID, c, index.getAndIncrement())).collect(Collectors.toList());
-
+		//QA122923
+		List<KscdtSchSupport> lstKscdtSchSupport = supportSchedule.getDetails().stream()
+				.map(c -> KscdtSchSupport.toEntity(cID, sID, yMD , index.getAndIncrement(),c)).collect(Collectors.toList());
+		
 		KscdtSchTime kscdtSchTime = new KscdtSchTime(pk, cID, // cid
 				workingTime.getWorkTimes() == null ? 0 : workingTime.getWorkTimes().v(), // count
 				workingTime.getWorkTimes() == null ? 0 : workingTime.getTotalTime().v(), // totalTime
@@ -491,6 +505,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				kscdtSchOvertimeWork, kscdtSchHolidayWork, kscdtSchBonusPay, kscdtSchPremium, kscdtSchShortTime,
 				listKscdtSchComeLate,listKscdtSchGoingOut,listKscdtSchLeaveEarly,lstKscdtSchTask,
 				//ver5
+				lstKscdtSchSupport, // ver6
 				timeOfDaily.getWithinWorkTimeAmount() == null ? 0 : timeOfDaily.getWithinWorkTimeAmount().v(), // prsWorkTimeAmount TODO :Xác nhận lại
 				timeOfDailys.getPremiumTimeOfDailyPerformance().getTotalWorkingTime() == null?0:timeOfDailys.getPremiumTimeOfDailyPerformance().getTotalWorkingTime().v(),//premiumWorkTimeTotal
 				timeOfDailys.getPremiumTimeOfDailyPerformance().getTotalAmount() == null?0:timeOfDailys.getPremiumTimeOfDailyPerformance().getTotalAmount().v(),//premiumAmountTotal
@@ -629,12 +644,27 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				.map(task -> new TaskScheduleDetail(new TaskCode(task.taskCode), new TimeSpanForCalc(new TimeWithDayAttr(task.startClock), new TimeWithDayAttr(task.endClock))))
 				.collect(Collectors.toList());
 		TaskSchedule taskSchedule = new TaskSchedule(details);
+		
+		// SupportTime - ver6
+		List<SupportScheduleDetail> supports = kscdtSchSupport.stream()
+				.map(support -> {
+					TargetOrgIdenInfor supportDestination = new TargetOrgIdenInfor(
+							EnumAdaptor.valueOf(support.recipientTargerUnit, TargetOrganizationUnit.class), 
+							Optional.ofNullable(support.recipientTargerUnit == TargetOrganizationUnit.WORKPLACE.value ? support.recipientTargerId : null) ,
+							Optional.ofNullable(support.recipientTargerUnit == TargetOrganizationUnit.WORKPLACE_GROUP.value ? support.recipientTargerId : null));
+					SupportType supportType = EnumAdaptor.valueOf(support.supportType, SupportType.class);
+					TimeWithDayAttr start = support.start == null ? null : new TimeWithDayAttr(support.start);
+					TimeWithDayAttr end = support.end == null ? null : new TimeWithDayAttr(support.end);
+					Optional<TimeSpanForCalc> timeSpan = Optional.of(new TimeSpanForCalc(start, end));
+					return new SupportScheduleDetail(supportDestination, supportType, timeSpan);
+				}).collect(Collectors.toList());
+		SupportSchedule supportSchedule = new SupportSchedule(supports);
 
 		AttendanceTimeOfDailyAttendance optAttendanceTime = new AttendanceTimeOfDailyAttendance(null,
 				workingTimeOfDaily, null, null, null);
 
 		WorkSchedule workSchedule = new WorkSchedule(sID, yMD, null, null, null, null, null, taskSchedule,
-				SupportSchedule.createWithEmptyList(), // TODO developers are going to update
+				supportSchedule,
 				Optional.ofNullable(null), Optional.ofNullable(optAttendanceTime), Optional.ofNullable(null),
 				Optional.ofNullable(null));
 		return workSchedule;
@@ -655,7 +685,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 			int vacationAddTime, int staggeredWhTime, List<KscdtSchOvertimeWork> overtimeWorks,
 			List<KscdtSchHolidayWork> holidayWorks, List<KscdtSchBonusPay> bonusPays, List<KscdtSchPremium> premiums,
 			List<KscdtSchShortTime> shortTimes,List<KscdtSchComeLate> kscdtSchComeLate,List<KscdtSchGoingOut> kscdtSchGoingOut,List<KscdtSchLeaveEarly> kscdtSchLeaveEarly,
-			List<KscdtSchTask> kscdtSchTask,
+			List<KscdtSchTask> kscdtSchTask,List<KscdtSchSupport> kscdtSchSupport,
 			int prsWorkTimeAmount,int premiumWorkTimeTotal,int premiumAmountTotal,int useDailyHDSub
 			) {
 		super();
@@ -711,5 +741,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		this.premiumAmountTotal = premiumAmountTotal;
 		//ver4
 		this.useDailyHDSub = useDailyHDSub;
+		//ver6
+		this.kscdtSchSupport = kscdtSchSupport;
 	}
 }

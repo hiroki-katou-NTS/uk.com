@@ -307,6 +307,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		
 		AttendanceTimeOfDailyAttendance attendance = null;
 		TaskSchedule taskSchedule = TaskSchedule.createWithEmptyList();
+		SupportSchedule supportSchedule = SupportSchedule.createWithEmptyList();
 		StayingTimeOfDaily stayingTime = new StayingTimeOfDaily(new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), new AttendanceTime(0), new AttendanceTimeOfExistMinus(0));
 		MedicalCareTimeOfDaily medicalCareTime = new MedicalCareTimeOfDaily(WorkTimeNightShift.DAY_SHIFT, new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
 		
@@ -318,6 +319,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		
 		if(workSch != null) {
 			taskSchedule = workSch.getTaskSchedule();
+			supportSchedule = workSch.getSupportSchedule();
 		}
 
 		optSortTimeWork = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
@@ -338,7 +340,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				breakTime, 
 				lstEditState, 
 				taskSchedule, 
-				SupportSchedule.createWithEmptyList(), //TODO developers are going to update
+				supportSchedule, 
 				Optional.ofNullable(optTimeLeaving), 
 				Optional.ofNullable(attendance), 
 				Optional.ofNullable(optSortTimeWork), 

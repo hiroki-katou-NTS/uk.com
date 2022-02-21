@@ -28,6 +28,8 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.EmployeeAndYmd;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.support.supportschedule.KscdtSchSupport;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.support.supportschedule.KscdtSchSupportPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchAtdLvwTime;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchAtdLvwTimePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfo;
@@ -89,7 +91,9 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				"DELETE FROM KscdtSchBreakTs a ",
 				"DELETE FROM KscdtSchComeLate a ",
 				"DELETE FROM KscdtSchGoingOut a ",
-				"DELETE FROM KscdtSchLeaveEarly a "
+				"DELETE FROM KscdtSchLeaveEarly a ",
+				"DELETE FROM KscdtSchTask a ",
+				"DELETE FROM KscdtSchSupport a "
 			);
 
 
@@ -483,7 +487,23 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			} else {
 				oldData.get().kscdtSchTime.kscdtSchTask = newData.kscdtSchTime.kscdtSchTask;
 			}
+			
+			// List<KscdtSchSupport> kscdtSchSupport;
+			if (!oldData.get().kscdtSchTime.kscdtSchSupport.isEmpty()) {
+				// remove
+				String deleteSupportTime = "delete from KscdtSchSupport sp " + " where sp.pk.sid = :sid " + " and o.pk.date = :ymd";
+				this.getEntityManager().createQuery(deleteSupportTime)
+									.setParameter("sid", newData.pk.sid)
+									.setParameter("ymd", newData.pk.ymd)
+									.executeUpdate();
+				
+				oldData.get().kscdtSchTime.kscdtSchSupport = new ArrayList<KscdtSchSupport>();
+				this.commandProxy().insertAll(newData.kscdtSchTime.kscdtSchSupport);
 
+			} else {
+				oldData.get().kscdtSchTime.kscdtSchSupport = newData.kscdtSchTime.kscdtSchSupport;
+			}
+			
 			// List<KscdtSchEditState> editStates;
 			if (!oldData.get().editStates.isEmpty()) {
 				// get list insert and update data exist
@@ -827,7 +847,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			Map<Pair<String, GeneralDate>, List<KscdtSchComeLate>> mapPairComeLate = this.getKscdtSchComeLates(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchGoingOut>> mapPairGoingOut = this.getKscdtSchGoingOuts(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchLeaveEarly>> mapPairLeaveEarly = this.getKscdtSchLeaveEarlys(listEmp, period);
-			 Map<Pair<String, GeneralDate>, List<KscdtSchTask>> mapPairKscdtSchTask =  this.getKscdtSchTasks(listEmp, period);
+			Map<Pair<String, GeneralDate>, List<KscdtSchTask>> mapPairKscdtSchTask =  this.getKscdtSchTasks(listEmp, period);
+			Map<Pair<String, GeneralDate>, List<KscdtSchSupport>> mapPairKscdtSchSupport =  this.getKscdtSchSupports(listEmp, period);
 			
 			// WorkSchedule
 			Map<Pair<String, GeneralDate>, KscdtSchBasicInfo> mapPairSchBasicInfo = this.getSchBasicInfo(listEmp, period);
@@ -863,6 +884,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							scheTime.kscdtSchGoingOut = mapPairGoingOut.getOrDefault(key, new ArrayList<>());
 							scheTime.kscdtSchLeaveEarly = mapPairLeaveEarly.getOrDefault(key, new ArrayList<>());
 							scheTime.kscdtSchTask = mapPairKscdtSchTask.getOrDefault(key, new ArrayList<>());
+							scheTime.kscdtSchSupport = mapPairKscdtSchSupport.getOrDefault(key, new ArrayList<>());
 							
 							basicInfo.kscdtSchTime = scheTime;
 						}
@@ -1196,7 +1218,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						hdComHourlyTime, hd60hTime, hd60hHourlyTime, hdspTime, hdspHourlyTime, hdstkTime, hdHourlyTime,
 						hdHourlyShortageTime, absenceTime, vacationAddTime, staggeredWhTime,
 						new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
-						new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+						new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), 
+						new ArrayList<>(),new ArrayList<>(),
 						prsWorkTimeAmount, premiumWorkTimeTotal, premiumAmountTotal, useDailyHDSub);
 			});
 		} catch (SQLException ex) {
@@ -1542,7 +1565,43 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 		return mapPairKscdtSchTask;
 	}
+	
+	// KSCDT_SCH_SUPPORT
+	private Map<Pair<String, GeneralDate>, List<KscdtSchSupport>> getKscdtSchSupports(String listEmp, DatePeriod period) {
 
+		List<KscdtSchSupport> listKscdtSchSupport = new ArrayList<>();
+
+		String QUERY = "SELECT KSCDT_SCH_SUPPORT.SID, KSCDT_SCH_SUPPORT.YMD, KSCDT_SCH_SUPPORT.SERIAL_NO,  "
+				+ " KSCDT_SCH_SUPPORT.CID, KSCDT_SCH_SUPPORT.START_TS, KSCDT_SCH_SUPPORT.END_TS, "
+				+ " KSCDT_SCH_SUPPORT.RECIPIENT_TARGET_ID, KSCDT_SCH_SUPPORT.RECIPIENT_TARGET_UNIT, KSCDT_SCH_SUPPORT.SUPPORT_TYPE" 
+				+ " FROM KSCDT_SCH_SUPPORT" + " WHERE KSCDT_SCH_SUPPORT.SID IN " + listEmp
+				+ " AND KSCDT_SCH_SUPPORT.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listKscdtSchSupport = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				Integer serialNo = rs.getInt("SERIAL_NO");
+				String cid = rs.getString("CID");
+				Integer start = rs.getInt("START_TS");
+				Integer end = rs.getInt("END_TS");
+				String recipientTargerId = rs.getString("RECIPIENT_TARGET_ID");
+				Integer recipientTargerUnit = rs.getInt("RECIPIENT_TARGET_UNIT");
+				Integer supportType = rs.getInt("SUPPORT_TYPE");
+
+
+				return new KscdtSchSupport(new KscdtSchSupportPK(sid, ymd, serialNo), cid, start, end, recipientTargerId, recipientTargerUnit, supportType);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
+
+		Map<Pair<String, GeneralDate>, List<KscdtSchSupport>> mapPairKscdtSchSupport = listKscdtSchSupport.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.date)));
+
+		return mapPairKscdtSchSupport;
+	}
+	
 	private <V> List<V> removeInsertData(List<V> oldDatas, List<V> newDatas, BiFunction<V, V, Boolean> keyCheck) {
 		oldDatas.forEach(x -> {
 			if(!newDatas.stream().anyMatch(y -> keyCheck.apply(x, y))) {
