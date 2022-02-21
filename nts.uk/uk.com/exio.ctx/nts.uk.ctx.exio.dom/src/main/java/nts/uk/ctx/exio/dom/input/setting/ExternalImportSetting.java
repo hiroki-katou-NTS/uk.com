@@ -89,6 +89,9 @@ public class ExternalImportSetting implements DomainAggregate {
 		this.domainSettings.put(domainId, domainImportSetting);
 	}
 	
+	/**
+	 *個人基本情報を受入れようとしている 
+	 */
 	public boolean containEmployeeBasic() {
 		return this.domainSettings.containsKey(ImportingDomainId.EMPLOYEE_BASIC);
 	}
