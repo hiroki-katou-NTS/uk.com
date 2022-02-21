@@ -84,7 +84,7 @@ export class TimeStatus extends BaseDto {
     this.tableConfigs = {
       search: false,
       // can custom table by add new class
-      tableClass: 'table-striped table-bordered time-status-table',
+      tableClass: 'table-striped time-status-table',
       items: [],
       noDataMessage: '',
       loading: false

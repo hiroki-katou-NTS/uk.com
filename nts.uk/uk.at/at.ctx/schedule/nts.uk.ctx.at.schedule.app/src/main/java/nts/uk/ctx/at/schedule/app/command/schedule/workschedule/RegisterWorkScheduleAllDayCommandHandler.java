@@ -25,6 +25,8 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -34,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -57,7 +60,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class RegisterWorkScheduleAllDayCommandHandler extends CommandHandler<RegisterWorkScheduleAllDayCommand> {
-	
+
 	@Inject
 	private WorkScheduleRepository repo;
 	@Inject
@@ -270,6 +273,25 @@ public class RegisterWorkScheduleAllDayCommandHandler extends CommandHandler<Reg
 		@Override
 		public SupportOperationSetting getSupportOperationSetting() {
 			// TODO developers are going to update
+			return null;
+		}
+
+		@Override
+		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp,
+				GeneralDate referenceDate) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public List<NurseClassification> getListCompanyNurseCategory() {
+			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 

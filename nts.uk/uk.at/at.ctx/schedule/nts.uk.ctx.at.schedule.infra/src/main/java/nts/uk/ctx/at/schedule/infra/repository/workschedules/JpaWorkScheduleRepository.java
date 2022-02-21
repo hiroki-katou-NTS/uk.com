@@ -74,7 +74,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	private static final String WHERE_PK = "WHERE a.pk.sid = :sid AND a.pk.ymd >= :ymdStart AND a.pk.ymd <= :ymdEnd";
 
 	private static final String DELETE_BY_LIST_DATE = "WHERE a.pk.sid = :sid AND a.pk.ymd IN :ymds";
-	
+
 	private static final List<String> DELETE_TABLES = Arrays.asList(
 				"DELETE FROM KscdtSchTime a ",
 				"DELETE FROM KscdtSchOvertimeWork a ",
@@ -113,7 +113,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 		return this.getList(Arrays.asList(sid), period);
 	}
-	
+
 	private static final String SELECT_BY_LIST_KEY = "SELECT c FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND ( c.pk.ymd between :startDate AND :endDate ) ";
 
 	@Override
@@ -138,7 +138,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		if ( employeeIds.isEmpty() ) {
 			return Collections.emptyMap();
 		}
-		List<WorkSchedule> ws = 
+		List<WorkSchedule> ws =
 				this.queryProxy()
 					.query(SELECT_BY_LIST, KscdtSchBasicInfo.class)
 					.setParameter("sids", employeeIds)
@@ -190,13 +190,16 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			oldData.get().wkpId = newData.wkpId;
 			oldData.get().clsCd = newData.clsCd;
 			oldData.get().busTypeCd = newData.busTypeCd;
-			oldData.get().nurseLicense = newData.nurseLicense;
 			oldData.get().wktpCd = newData.wktpCd;
 			oldData.get().wktmCd = newData.wktmCd;
 			oldData.get().goStraightAtr = newData.goStraightAtr;
 			oldData.get().backStraightAtr = newData.backStraightAtr;
 			oldData.get().treatAsSubstituteAtr = newData.treatAsSubstituteAtr;
 			oldData.get().treatAsSubstituteDays = newData.treatAsSubstituteDays;
+			oldData.get().nursingLicenseClass = newData.nursingLicenseClass;
+			oldData.get().workplaceGroupId = newData.workplaceGroupId;
+			oldData.get().nursingManager = newData.nursingManager;
+			oldData.get().bonusPaySettingCode = newData.bonusPaySettingCode;
 
 			// kscdtSchTime
 			if (oldData.get().kscdtSchTime != null) {
@@ -476,7 +479,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				this.getEntityManager().createQuery(delete).setParameter("sid", newData.pk.sid)
 									.setParameter("ymd", newData.pk.ymd)
 									.executeUpdate();
-				
+
 				oldData.get().kscdtSchTime.kscdtSchTask = new ArrayList<KscdtSchTask>();
 				this.commandProxy().insertAll(newData.kscdtSchTime.kscdtSchTask);
 
@@ -737,7 +740,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			} else {
 				oldData.get().kscdtSchGoingOutTs = newData.kscdtSchGoingOutTs;
 			}
-			
+
 			// List<KscdtSchOvertimeWork> overtimeWorks
 			oldData.get().kscdtSchTime.overtimeWorks = removeInsertData(oldData.get().kscdtSchTime.overtimeWorks,
 					newData.kscdtSchTime.overtimeWorks, (x, y) -> {
@@ -802,12 +805,12 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			return Optional.empty();
 		return Optional.of(data.get(0));
 	}
-	
+
 	@Override
 	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
 		if (sids.isEmpty() || period == null)
 			return new ArrayList<>();
-		
+
 		List<WorkSchedule> result = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			String listEmp = "(";
@@ -816,7 +819,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			}
 			// remove last , in string and add )
 			listEmp = listEmp.substring(0, listEmp.length() - 1) + ")";
-			
+
 			// ActualWorkingTimeOfDaily
 			Map<Pair<String, GeneralDate>, KscdtSchTime> mapPairSchTime = this.getKscdtSchTimes(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchOvertimeWork>> mapPairOvertimeWork = this.getOvertimeWorks(listEmp, period);
@@ -828,7 +831,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			Map<Pair<String, GeneralDate>, List<KscdtSchGoingOut>> mapPairGoingOut = this.getKscdtSchGoingOuts(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchLeaveEarly>> mapPairLeaveEarly = this.getKscdtSchLeaveEarlys(listEmp, period);
 			 Map<Pair<String, GeneralDate>, List<KscdtSchTask>> mapPairKscdtSchTask =  this.getKscdtSchTasks(listEmp, period);
-			
+
 			// WorkSchedule
 			Map<Pair<String, GeneralDate>, KscdtSchBasicInfo> mapPairSchBasicInfo = this.getSchBasicInfo(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchEditState>> mapPairSchEditState = this.getSchEditState(listEmp, period);
@@ -836,25 +839,25 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			Map<Pair<String, GeneralDate>, List<KscdtSchShortTimeTs>> mapPairSchShortTimeTs = this.getSchShortTimeTs(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchBreakTs>> mapPairSchBreakTs = this.getKscdtSchBreakTs(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchGoingOutTs>> mapPairGoingOutTs = this.getKscdtSchGoingOutTs(listEmp, period);
-			
+
 			for (int i = 0; i < subList.size(); i++) {
 				String sid = subList.get(i);
 				period.datesBetween().forEach(ymd -> {
 					Pair<String, GeneralDate> key = Pair.of(sid, ymd);
-					
+
 					if (mapPairSchBasicInfo.containsKey(key)) {
-						
+
 						KscdtSchBasicInfo basicInfo = mapPairSchBasicInfo.get(key);
-						basicInfo.editStates = mapPairSchEditState.getOrDefault(key, new ArrayList<>()); 
-						basicInfo.atdLvwTimes = mapPairSchAtdLvwTime.getOrDefault(key, new ArrayList<>()); 
-						basicInfo.schShortTimeTs = mapPairSchShortTimeTs.getOrDefault(key, new ArrayList<>()); 
-						basicInfo.breakTs = mapPairSchBreakTs.getOrDefault(key, new ArrayList<>()); 
-						basicInfo.kscdtSchGoingOutTs = mapPairGoingOutTs.getOrDefault(key, new ArrayList<>()); 
-						
+						basicInfo.editStates = mapPairSchEditState.getOrDefault(key, new ArrayList<>());
+						basicInfo.atdLvwTimes = mapPairSchAtdLvwTime.getOrDefault(key, new ArrayList<>());
+						basicInfo.schShortTimeTs = mapPairSchShortTimeTs.getOrDefault(key, new ArrayList<>());
+						basicInfo.breakTs = mapPairSchBreakTs.getOrDefault(key, new ArrayList<>());
+						basicInfo.kscdtSchGoingOutTs = mapPairGoingOutTs.getOrDefault(key, new ArrayList<>());
+
 						if(mapPairSchTime.containsKey(key)){
 							KscdtSchTime scheTime = mapPairSchTime.get(key);
-							
-							scheTime.overtimeWorks = mapPairOvertimeWork.getOrDefault(key, new ArrayList<>()); 
+
+							scheTime.overtimeWorks = mapPairOvertimeWork.getOrDefault(key, new ArrayList<>());
 							scheTime.holidayWorks = mapPairHolidayWork.getOrDefault(key, new ArrayList<>());
 							scheTime.bonusPays = mapPairBonusPay.getOrDefault(key, new ArrayList<>());
 							scheTime.premiums = mapPairSchPremium.getOrDefault(key, new ArrayList<>());
@@ -863,10 +866,10 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							scheTime.kscdtSchGoingOut = mapPairGoingOut.getOrDefault(key, new ArrayList<>());
 							scheTime.kscdtSchLeaveEarly = mapPairLeaveEarly.getOrDefault(key, new ArrayList<>());
 							scheTime.kscdtSchTask = mapPairKscdtSchTask.getOrDefault(key, new ArrayList<>());
-							
+
 							basicInfo.kscdtSchTime = scheTime;
 						}
-						
+
 						result.add(basicInfo.toDomain(sid, ymd));
 					}
 				});
@@ -875,14 +878,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		return result;
 
 	}
-	
+
 	@Override
 	public Map<EmployeeAndYmd, ConfirmedATR> getConfirmedStatus(List<String> employeeIds, DatePeriod period) {
 
 		if ( employeeIds.isEmpty() ) {
 			return Collections.emptyMap();
 		}
-		List<WorkSchedule> ws = 
+		List<WorkSchedule> ws =
 				this.queryProxy()
 					.query(SELECT_BY_LIST, KscdtSchBasicInfo.class)
 					.setParameter("sids", employeeIds)
@@ -897,17 +900,18 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			));
 
 	}
-	
+
 	// KSCDT_SCH_BASIC_INFO
 	private Map<Pair<String, GeneralDate>, KscdtSchBasicInfo> getSchBasicInfo(String listEmp, DatePeriod period) {
 
 		List<KscdtSchBasicInfo> listSchBasicInfo = new ArrayList<>();
 
-		String QUERY = "SELECT KSCDT_SCH_BASIC_INFO.SID, KSCDT_SCH_BASIC_INFO.YMD, KSCDT_SCH_BASIC_INFO.CID, KSCDT_SCH_BASIC_INFO.DECISION_STATUS, KSCDT_SCH_BASIC_INFO.EMP_CD, "
-				+ " KSCDT_SCH_BASIC_INFO.JOB_ID, KSCDT_SCH_BASIC_INFO.WKP_ID, KSCDT_SCH_BASIC_INFO.CLS_CD, KSCDT_SCH_BASIC_INFO.BUSTYPE_CD, KSCDT_SCH_BASIC_INFO.NURSE_LICENSE, "
-				+ " KSCDT_SCH_BASIC_INFO.WKTP_CD, KSCDT_SCH_BASIC_INFO.WKTM_CD, KSCDT_SCH_BASIC_INFO.GO_STRAIGHT_ATR, KSCDT_SCH_BASIC_INFO.BACK_STRAIGHT_ATR, "
-				+ " KSCDT_SCH_BASIC_INFO.TREAT_AS_SUBSTITUTE_ATR, KSCDT_SCH_BASIC_INFO.TREAT_AS_SUBSTITUTE_DAYS"
-				+ " FROM KSCDT_SCH_BASIC_INFO" 
+		String QUERY = "SELECT KSCDT_SCH_BASIC_INFO.SID, KSCDT_SCH_BASIC_INFO.YMD, KSCDT_SCH_BASIC_INFO.CID, KSCDT_SCH_BASIC_INFO.DECISION_STATUS"
+				+ " , KSCDT_SCH_BASIC_INFO.EMP_CD, KSCDT_SCH_BASIC_INFO.JOB_ID, KSCDT_SCH_BASIC_INFO.WKP_ID, KSCDT_SCH_BASIC_INFO.CLS_CD, KSCDT_SCH_BASIC_INFO.BUSTYPE_CD"
+				+ " , KSCDT_SCH_BASIC_INFO.WKTP_CD, KSCDT_SCH_BASIC_INFO.WKTM_CD, KSCDT_SCH_BASIC_INFO.GO_STRAIGHT_ATR, KSCDT_SCH_BASIC_INFO.BACK_STRAIGHT_ATR"
+				+ " , KSCDT_SCH_BASIC_INFO.TREAT_AS_SUBSTITUTE_ATR, KSCDT_SCH_BASIC_INFO.TREAT_AS_SUBSTITUTE_DAYS"
+				+ " , KSCDT_SCH_BASIC_INFO.NURSE_LICENSE_ATR, KSCDT_SCH_BASIC_INFO.IS_NURSE_ADMINISTRATOR, KSCDT_SCH_BASIC_INFO.BONUS_PAY_CD"
+				+ " FROM KSCDT_SCH_BASIC_INFO"
 				+ " WHERE KSCDT_SCH_BASIC_INFO.SID IN " + listEmp + " AND KSCDT_SCH_BASIC_INFO.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
@@ -921,19 +925,23 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				String wkpId = rs.getString("WKP_ID");
 				String clsCd = rs.getString("CLS_CD");
 				String busTypeCd = rs.getString("BUSTYPE_CD");
-				String nurseLicense = rs.getString("NURSE_LICENSE");
 				String wktpCd = rs.getString("WKTP_CD");
 				String wktmCd = rs.getString("WKTM_CD");
 				Boolean goStraightAtr = rs.getBoolean("GO_STRAIGHT_ATR");
 				Boolean backStraightAtr = rs.getBoolean("BACK_STRAIGHT_ATR");
 				Integer treatAsSubstituteAtr = rs.getInt("TREAT_AS_SUBSTITUTE_ATR");
 				Double treatAsSubstituteDays = rs.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
+				String workplaceGroupId = rs.getString("WKP_GROUP_ID");
+				Integer nursingLicenseClass = rs.getInt("NURSE_LICENSE_ATR");
+				Integer nursingManager = rs.getInt("IS_NURSE_ADMINISTRATOR");
+				String bonusPaySettingCode = rs.getString("BONUS_PAY_CD");
 
-				return new KscdtSchBasicInfo(new KscdtSchBasicInfoPK(sid, ymd), cid, confirmedATR,
-						empCd, jobId, wkpId, clsCd, busTypeCd, nurseLicense, wktpCd, wktmCd,
-						goStraightAtr, backStraightAtr, treatAsSubstituteAtr,
-						treatAsSubstituteDays, null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-						new ArrayList<>(), new ArrayList<>());
+				return new KscdtSchBasicInfo(new KscdtSchBasicInfoPK(sid, ymd)
+							, cid, confirmedATR, empCd, jobId, wkpId, clsCd, busTypeCd
+							, wktpCd, wktmCd, goStraightAtr, backStraightAtr, treatAsSubstituteAtr, treatAsSubstituteDays
+							, workplaceGroupId, nursingLicenseClass, nursingManager, bonusPaySettingCode
+							, null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
+						);
 			});
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -951,7 +959,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		List<KscdtSchEditState> listSchEditState = new ArrayList<>();
 
 		String QUERY = "SELECT KSCDT_SCH_EDIT_STATE.SID, KSCDT_SCH_EDIT_STATE.YMD, KSCDT_SCH_EDIT_STATE.CID,"
-				+ " KSCDT_SCH_EDIT_STATE.ATD_ITEM_ID, KSCDT_SCH_EDIT_STATE.EDIT_STATE" 
+				+ " KSCDT_SCH_EDIT_STATE.ATD_ITEM_ID, KSCDT_SCH_EDIT_STATE.EDIT_STATE"
 				+ " FROM KSCDT_SCH_EDIT_STATE"
 				+ " WHERE KSCDT_SCH_EDIT_STATE.SID IN " + listEmp + " AND KSCDT_SCH_EDIT_STATE.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
@@ -985,7 +993,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " KSCDT_SCH_ATD_LVW_TIME.WORK_NO, "
 				+ " KSCDT_SCH_ATD_LVW_TIME.ATD_CLOCK, KSCDT_SCH_ATD_LVW_TIME.ATD_HOURLY_HD_TS_START, KSCDT_SCH_ATD_LVW_TIME.ATD_HOURLY_HD_TS_END,"
 				+ " KSCDT_SCH_ATD_LVW_TIME.LVW_CLOCK, KSCDT_SCH_ATD_LVW_TIME.LVW_HOURLY_HD_TS_START, KSCDT_SCH_ATD_LVW_TIME.LVW_HOURLY_HD_TS_END"
-				+ " FROM KSCDT_SCH_ATD_LVW_TIME" 
+				+ " FROM KSCDT_SCH_ATD_LVW_TIME"
 				+ " WHERE KSCDT_SCH_ATD_LVW_TIME.SID IN " + listEmp + " AND KSCDT_SCH_ATD_LVW_TIME.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
@@ -1006,7 +1014,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		}
-		
+
 		Map<Pair<String, GeneralDate>, List<KscdtSchAtdLvwTime>> mapPairSchAtdLvwTime = listSchAtdLvwTime.stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
 
@@ -1021,7 +1029,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 		String QUERY = "SELECT KSCDT_SCH_SHORTTIME_TS.SID, KSCDT_SCH_SHORTTIME_TS.YMD, KSCDT_SCH_SHORTTIME_TS.CID,"
 				+ " KSCDT_SCH_SHORTTIME_TS.CHILD_CARE_ATR, KSCDT_SCH_SHORTTIME_TS.FRAME_NO, KSCDT_SCH_SHORTTIME_TS.SHORTTIME_TS_START, KSCDT_SCH_SHORTTIME_TS.SHORTTIME_TS_END"
-				+ " FROM KSCDT_SCH_SHORTTIME_TS" 
+				+ " FROM KSCDT_SCH_SHORTTIME_TS"
 				+ " WHERE KSCDT_SCH_SHORTTIME_TS.SID IN " + listEmp + " AND KSCDT_SCH_SHORTTIME_TS.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
@@ -1054,7 +1062,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 		String QUERY = "SELECT KSCDT_SCH_BREAK_TS.SID, KSCDT_SCH_BREAK_TS.YMD, KSCDT_SCH_BREAK_TS.CID,"
 				+ " KSCDT_SCH_BREAK_TS.FRAME_NO, KSCDT_SCH_BREAK_TS.BREAK_TS_START, KSCDT_SCH_BREAK_TS.BREAK_TS_END"
-				+ " FROM KSCDT_SCH_BREAK_TS" 
+				+ " FROM KSCDT_SCH_BREAK_TS"
 				+ " WHERE KSCDT_SCH_BREAK_TS.SID IN " + listEmp + " AND KSCDT_SCH_BREAK_TS.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
@@ -1085,7 +1093,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 		String QUERY = "SELECT KSCDT_SCH_GOING_OUT_TS.SID, KSCDT_SCH_GOING_OUT_TS.YMD, KSCDT_SCH_GOING_OUT_TS.CID,"
 				+ " KSCDT_SCH_GOING_OUT_TS.FRAME_NO, KSCDT_SCH_GOING_OUT_TS.REASON_ATR, KSCDT_SCH_GOING_OUT_TS.GOING_OUT_CLOCK, KSCDT_SCH_GOING_OUT_TS.GOING_BACK_CLOCK"
-				+ " FROM KSCDT_SCH_GOING_OUT_TS" 
+				+ " FROM KSCDT_SCH_GOING_OUT_TS"
 				+ " WHERE KSCDT_SCH_GOING_OUT_TS.SID IN " + listEmp+ " AND KSCDT_SCH_GOING_OUT_TS.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
@@ -1117,8 +1125,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			this.commandProxy().update(entity.get());
 		}
 	}
-	
-	@Override	
+
+	@Override
 	public List<AffInfoForWorkSchedule> getAffiliationInfor(String sid, DatePeriod period) {
 		List<WorkSchedule>  data = this.getListBySid(sid, period);
 		List<AffInfoForWorkSchedule> result = data.stream().map(c->new AffInfoForWorkSchedule(c.getEmployeeID(), c.getYmd(), c.getAffInfo()) ).collect(Collectors.toList());
@@ -1138,7 +1146,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " KSCDT_SCH_TIME.USE_DAYLY_HD_60H, KSCDT_SCH_TIME.USE_HOURLY_HD_60H, KSCDT_SCH_TIME.USE_DAYLY_HD_SP, KSCDT_SCH_TIME.USE_HOURLY_HD_SP, KSCDT_SCH_TIME.USE_DAYLY_HD_STK,"
 				+ " KSCDT_SCH_TIME.HOURLY_HD_USETIME, KSCDT_SCH_TIME.HOURLY_HD_SHORTAGETIME, KSCDT_SCH_TIME.ABSENCE_TIME, KSCDT_SCH_TIME.VACATION_ADD_TIME, KSCDT_SCH_TIME.STAGGERED_WH_TIME,"
 				+ " KSCDT_SCH_TIME.PRS_WORK_TIME_AMOUNT, KSCDT_SCH_TIME.PREMIUM_WORK_TIME_TOTAL , KSCDT_SCH_TIME.PREMIUM_AMOUNT_TOTAL, KSCDT_SCH_TIME.USE_DAILY_HD_SUB "
-				+ " FROM KSCDT_SCH_TIME" 
+				+ " FROM KSCDT_SCH_TIME"
 				+ " WHERE KSCDT_SCH_TIME.SID IN " + listEmp + " AND KSCDT_SCH_TIME.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
@@ -1167,7 +1175,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer intervalAtdClock = rs.getInt("INTERVAL_ATD_CLOCK");
 				Integer intervalTime = rs.getInt("INTERVAL_TIME");
 				Integer brkTotalTime = rs.getInt("BRK_TOTAL_TIME");
-				
+
 				Integer hdPaidTime = rs.getInt("USE_DAYLY_HD_PAID");
 				Integer hdPaidHourlyTime = rs.getInt("USE_HOURLY_HD_PAID");
 				Integer hdComTime = rs.getInt("USE_DAYLY_HD_COM");
@@ -1179,7 +1187,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer hdstkTime = rs.getInt("USE_DAYLY_HD_STK");
 				Integer hdHourlyTime = rs.getInt("HOURLY_HD_USETIME");
 				Integer hdHourlyShortageTime = rs.getInt("HOURLY_HD_SHORTAGETIME");
-				
+
 				Integer absenceTime = rs.getInt("ABSENCE_TIME");
 				Integer vacationAddTime = rs.getInt("VACATION_ADD_TIME");
 				Integer staggeredWhTime = rs.getInt("STAGGERED_WH_TIME");
@@ -1187,7 +1195,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer premiumWorkTimeTotal = rs.getInt("PREMIUM_WORK_TIME_TOTAL");
 				Integer premiumAmountTotal = rs.getInt("PREMIUM_AMOUNT_TOTAL");
 				Integer useDailyHDSub = rs.getInt("USE_DAILY_HD_SUB");
-				
+
 				return new KscdtSchTime(new KscdtSchTimePK(sid, ymd), cid, count, totalTime, totalTimeAct, prsWorkTime,
 						prsWorkTimeAct, prsPrimeTime, prsMidniteTime, extBindTimeOtw, extBindTimeHw,
 						extVarwkOtwTimeLegal, extFlexTime, extFlexTimePreApp, extMidNiteOtwTime, extMidNiteHdwTimeLghd,
@@ -1195,7 +1203,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						intervalAtdClock, intervalTime, brkTotalTime, hdPaidTime, hdPaidHourlyTime, hdComTime,
 						hdComHourlyTime, hd60hTime, hd60hHourlyTime, hdspTime, hdspHourlyTime, hdstkTime, hdHourlyTime,
 						hdHourlyShortageTime, absenceTime, vacationAddTime, staggeredWhTime,
-						new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
+						new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
 						new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
 						prsWorkTimeAmount, premiumWorkTimeTotal, premiumAmountTotal, useDailyHDSub);
 			});
@@ -1217,7 +1225,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 		String QUERY = "SELECT KSCDT_SCH_OVERTIME_WORK.SID, KSCDT_SCH_OVERTIME_WORK.YMD, KSCDT_SCH_OVERTIME_WORK.CID, KSCDT_SCH_OVERTIME_WORK.FRAME_NO,"
 				+ " KSCDT_SCH_OVERTIME_WORK.OVERTIME_WORK_TIME, KSCDT_SCH_OVERTIME_WORK.OVERTIME_WORK_TIME_TRANS, KSCDT_SCH_OVERTIME_WORK.OVERTIME_WORK_TIME_PREAPP"
-				+ " FROM KSCDT_SCH_OVERTIME_WORK" 
+				+ " FROM KSCDT_SCH_OVERTIME_WORK"
 				+ " WHERE KSCDT_SCH_OVERTIME_WORK.SID IN " + listEmp + " AND KSCDT_SCH_OVERTIME_WORK.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
@@ -1251,7 +1259,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		String QUERY = "SELECT KSCDT_SCH_HOLIDAY_WORK.SID, KSCDT_SCH_HOLIDAY_WORK.YMD, KSCDT_SCH_HOLIDAY_WORK.CID, KSCDT_SCH_HOLIDAY_WORK.FRAME_NO,"
 				+ " KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TS_START, KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TS_END, KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TIME,"
 				+ " KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TIME_TRANS, KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TIME_PREAPP"
-				+ " FROM KSCDT_SCH_HOLIDAY_WORK" 
+				+ " FROM KSCDT_SCH_HOLIDAY_WORK"
 				+ " WHERE KSCDT_SCH_HOLIDAY_WORK.SID IN " + listEmp + " AND KSCDT_SCH_HOLIDAY_WORK.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
@@ -1287,7 +1295,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		String QUERY = "SELECT KSCDT_SCH_BONUSPAY.SID, KSCDT_SCH_BONUSPAY.YMD,KSCDT_SCH_BONUSPAY.CID,"
 				+ " KSCDT_SCH_BONUSPAY.BONUSPAY_TYPE, KSCDT_SCH_BONUSPAY.FRAME_NO,"
 				+ " KSCDT_SCH_BONUSPAY.PREMIUM_TIME, KSCDT_SCH_BONUSPAY.PREMIUM_TIME_WITHIN, KSCDT_SCH_BONUSPAY.PREMIUM_TIME_WITHOUT"
-				+ " FROM KSCDT_SCH_BONUSPAY" 
+				+ " FROM KSCDT_SCH_BONUSPAY"
 				+ " WHERE KSCDT_SCH_BONUSPAY.SID IN " + listEmp + " AND KSCDT_SCH_BONUSPAY.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
@@ -1320,7 +1328,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		List<KscdtSchPremium> listKscdtSchPremium = new ArrayList<>();
 
 		String QUERY = "SELECT KSCDT_SCH_PREMIUM.SID, KSCDT_SCH_PREMIUM.YMD, KSCDT_SCH_PREMIUM.CID,  "
-				+ " KSCDT_SCH_PREMIUM.FRAME_NO, KSCDT_SCH_PREMIUM.PREMIUM_TIME, KSCDT_SCH_PREMIUM.PREMIUM_TIME_AMOUNT , KSCDT_SCH_PREMIUM.PREMIUM_TIME_UNIT_COST" 
+				+ " KSCDT_SCH_PREMIUM.FRAME_NO, KSCDT_SCH_PREMIUM.PREMIUM_TIME, KSCDT_SCH_PREMIUM.PREMIUM_TIME_AMOUNT , KSCDT_SCH_PREMIUM.PREMIUM_TIME_UNIT_COST"
 				+ " FROM KSCDT_SCH_PREMIUM"
 				+ " WHERE KSCDT_SCH_PREMIUM.SID IN " + listEmp + " AND KSCDT_SCH_PREMIUM.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
@@ -1354,7 +1362,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		String QUERY = "SELECT KSCDT_SCH_SHORTTIME.SID, KSCDT_SCH_SHORTTIME.YMD, KSCDT_SCH_SHORTTIME.CID,  "
 				+ " KSCDT_SCH_SHORTTIME.CHILD_CARE_ATR, "
 				+ " KSCDT_SCH_SHORTTIME.COUNT, KSCDT_SCH_SHORTTIME.TOTAL_TIME, KSCDT_SCH_SHORTTIME.TOTAL_TIME_WITHIN, KSCDT_SCH_SHORTTIME.TOTAL_TIME_WITHOUT "
-				+ " FROM KSCDT_SCH_SHORTTIME" 
+				+ " FROM KSCDT_SCH_SHORTTIME"
 				+ " WHERE KSCDT_SCH_SHORTTIME.SID IN " + listEmp + " AND KSCDT_SCH_SHORTTIME.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
@@ -1392,7 +1400,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " KSCDT_SCH_COME_LATE.USE_HOURLY_HD_PAID, KSCDT_SCH_COME_LATE.USE_HOURLY_HD_COM, "
 				+ " KSCDT_SCH_COME_LATE.USE_HOURLY_HD_60H, KSCDT_SCH_COME_LATE.USE_HOURLY_HD_SP_NO, "
 				+ " KSCDT_SCH_COME_LATE.USE_HOURLY_HD_SP_TIME, KSCDT_SCH_COME_LATE.USE_HOURLY_HD_CHILDCARE, "
-				+ " KSCDT_SCH_COME_LATE.USE_HOURLY_HD_NURSECARE" 
+				+ " KSCDT_SCH_COME_LATE.USE_HOURLY_HD_NURSECARE"
 				+ " FROM KSCDT_SCH_COME_LATE"
 				+ " WHERE KSCDT_SCH_COME_LATE.SID IN " + listEmp + " AND KSCDT_SCH_COME_LATE.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
@@ -1435,7 +1443,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_PAID, KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_COM, "
 				+ " KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_60H, KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_SP_NO, "
 				+ " KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_SP_TIME, KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_CHILDCARE, "
-				+ " KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_NURSECARE" 
+				+ " KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_NURSECARE"
 				+ " FROM KSCDT_SCH_GOING_OUT"
 				+ " WHERE KSCDT_SCH_GOING_OUT.SID IN " + listEmp + " AND KSCDT_SCH_GOING_OUT.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
@@ -1478,7 +1486,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_PAID, KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_COM, "
 				+ " KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_60H, KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_SP_NO, "
 				+ " KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_SP_TIME, KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_CHILDCARE, "
-				+ " KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_NURSECARE" 
+				+ " KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_NURSECARE"
 				+ " FROM KSCDT_SCH_LEAVE_EARLY"
 				+ " WHERE KSCDT_SCH_LEAVE_EARLY.SID IN " + listEmp + " AND KSCDT_SCH_LEAVE_EARLY.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
@@ -1509,7 +1517,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 		return mapPairLeaveEarly;
 	}
-	
+
 	// KSCDT_SCH_TASK
 	private Map<Pair<String, GeneralDate>, List<KscdtSchTask>> getKscdtSchTasks(String listEmp, DatePeriod period) {
 
@@ -1517,7 +1525,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 		String QUERY = "SELECT KSCDT_SCH_TASK.SID, KSCDT_SCH_TASK.YMD, KSCDT_SCH_TASK.CID,  "
 				+ " KSCDT_SCH_TASK.SERIAL_NO, KSCDT_SCH_TASK.TASK_CODE, KSCDT_SCH_TASK.START_CLOCK, "
-				+ " KSCDT_SCH_TASK.END_CLOCK" 
+				+ " KSCDT_SCH_TASK.END_CLOCK"
 				+ " FROM KSCDT_SCH_TASK" + " WHERE KSCDT_SCH_TASK.SID IN " + listEmp
 				+ " AND KSCDT_SCH_TASK.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 

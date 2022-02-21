@@ -84,6 +84,14 @@
 									value: selectedPanel,
 									enable: enable}"
             ></div>
+            <h4>WorkplaceGroup type:</h4>
+            <div data-bind="ntsMultiCheckBox: {
+                                    options: listWkpGroupType,
+                                    optionsValue: 'id',
+                                    optionsText: 'name',
+                                    value: selectedWkpGroupTypes,
+                                    enable: enable}">
+            </div>
           </div>
         </div>
       </ui:define>

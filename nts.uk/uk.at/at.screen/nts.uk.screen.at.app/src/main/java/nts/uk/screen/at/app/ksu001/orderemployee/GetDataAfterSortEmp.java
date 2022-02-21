@@ -14,7 +14,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.Rank;
@@ -26,10 +25,10 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamReposito
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.DisplayControlPersonalCondition;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.DisplayControlPersonalConditionRepo;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.PersonalCondition;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.PersonalConditionsDto;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto;
 import nts.uk.screen.at.app.ksu001.start.OrderEmployeeParam;
@@ -131,8 +130,8 @@ public class GetDataAfterSortEmp {
 		}
 
 		@Override
-		public List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp, GeneralDate referenceDate) {
-			List<EmpMedicalWorkFormHisItem> data = empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
+		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp, GeneralDate referenceDate) {
+			List<EmpMedicalWorkStyleHistoryItem> data = empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
 			return data;
 		}
 

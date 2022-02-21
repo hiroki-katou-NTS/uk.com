@@ -24,6 +24,8 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
@@ -32,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -56,55 +59,55 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskScheduleCommand> {
-	
+
 	@Inject
 	private WorkScheduleRepository repository;
-	
+
 	@Inject
 	private  WorkTypeRepository workTypeRepo;
-	
+
 	@Inject
 	private  WorkTimeSettingRepository workTimeSettingRepository;
-	
+
 	@Inject
 	private  BasicScheduleService basicScheduleService;
-	
+
 	@Inject
 	private  FixedWorkSettingRepository fixedWorkSettingRepository;
-	
+
 	@Inject
 	private  FlowWorkSettingRepository flowWorkSettingRepository;
-	
+
 	@Inject
 	private  FlexWorkSettingRepository flexWorkSettingRepository;
-	
+
 	@Inject
 	private  PredetemineTimeSettingRepository predetemineTimeSettingRepository;
-	
+
 	@Inject
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
-	
+
 	@Inject
 	private SharedAffJobtitleHisAdapter sharedAffJobtitleHisAdapter;
-	
+
 	@Inject
 	private SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
-	
+
 	@Inject
 	private SyClassificationAdapter syClassificationAdapter;
-	
+
 	@Inject
 	private WorkingConditionRepository workingConditionRepo;
 
 	@Inject
-	private BusinessTypeEmpService businessTypeEmpService;	
+	private BusinessTypeEmpService businessTypeEmpService;
 
 	@Override
 	protected void handle(CommandHandlerContext<TaskScheduleCommand> context) {
 		TaskScheduleCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		GeneralDate ymd = command.toDate();
-		
+
 		RequireImpl require = new RequireImpl(companyId, workTypeRepo, workTimeSettingRepository,
 				basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository,
 				predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
@@ -117,47 +120,47 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 			if(optional.isPresent()) {
 				WorkSchedule workSchedule = optional.get();
 				workSchedule.createTaskScheduleForWholeDay(require, new TaskCode(command.getTaskCode()));
-				
+
 				/** 2: persist*/
 				repository.update(workSchedule);
 			} else {
 				return;
 			}
-		});		
+		});
 	}
-	
+
 	@AllArgsConstructor
 	private static class RequireImpl implements WorkSchedule.Require {
-		
+
 		private String companyId;
-		
+
 		private  WorkTypeRepository workTypeRepo;
-		
+
 		private  WorkTimeSettingRepository workTimeSettingRepository;
-		
+
 		private  BasicScheduleService basicScheduleService;
-		
+
 		private  FixedWorkSettingRepository fixedWorkSettingRepository;
-		
+
 		private  FlowWorkSettingRepository flowWorkSettingRepository;
-		
+
 		private  FlexWorkSettingRepository flexWorkSettingRepository;
-		
+
 		private  PredetemineTimeSettingRepository predetemineTimeSettingRepository;
-		
+
 		private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
-		
+
 		private SharedAffJobtitleHisAdapter sharedAffJobtitleHisAdapter;
-		
+
 		private SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
-		
+
 		private SyClassificationAdapter syClassificationAdapter;
-		
+
 		private WorkingConditionRepository workingConditionRepo;
-	
+
 		private BusinessTypeEmpService businessTypeEmpService;
-		
-		@Override		
+
+		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
@@ -229,7 +232,7 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 		@Override
 		public Optional<BusinessTypeOfEmployee> getBusinessType(String employeeId, GeneralDate standardDate) {
 			List<BusinessTypeOfEmployee> list = businessTypeEmpService.getData(employeeId, standardDate);
-			if (list.isEmpty()) 
+			if (list.isEmpty())
 				return Optional.empty();
 			return Optional.of(list.get(0));
 		}
@@ -250,5 +253,23 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 			// TODO developers are going to update
 			return null;
 		}		
+		
+		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp,
+				GeneralDate referenceDate) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public List<NurseClassification> getListCompanyNurseCategory() {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
 	}
 }

@@ -158,6 +158,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         comboItemsCalc: KnockoutObservableArray<any> = ko.observableArray([]);
         comboItemsCompact: KnockoutObservableArray<any> = ko.observableArray([]);
         comboTimeLimit: KnockoutObservableArray<any> = ko.observableArray([]);
+        comboNursingLicenseCls: KnockoutObservableArray<any> = ko.observableArray([]);
         showPrincipal: KnockoutObservable<any> = ko.observable(true);
         showSupervisor: KnockoutObservable<any> = ko.observable(true);
         dataAll: KnockoutObservable<any> = ko.observable(null);
@@ -432,11 +433,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             });
 
-            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 250) + 'px !IMPORTANT');
+            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 330) + 'px !IMPORTANT');
 
             $(window).on('resize', function() {
                 var win = $(this); //this = window
-                $(".grid-container").attr('style', 'height: ' + (win.height() - 250) + 'px !IMPORTANT');
+                $(".grid-container").attr('style', 'height: ' + (win.height() - 330) + 'px !IMPORTANT');
             });
 
             self.dataHoliday.subscribe(val => {
@@ -490,12 +491,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             self.legendOptions = {
                 items: [
-                    { colorCode: '#94B7FE', labelText: '手修正（本人）' },
-                    { colorCode: '#CEE6FF', labelText: '手修正（他人）' },
-                    { colorCode: '#BFEA60', labelText: '申請反映' },
-                    { colorCode: '#F69164', labelText: '計算値' },
-                    { colorCode: '#FD4D4D', labelText: getText("KDW003_44") },
-                    { colorCode: '#F6F636', labelText: getText("KDW003_45") },
+                    { colorCode: '#BFC5FF', labelText: '手修正（本人）' },
+                    { colorCode: '#C1E6FE', labelText: '手修正（他人）' },
+                    { colorCode: '#CBF3D2', labelText: '申請反映' },
+                    { colorCode: '#F9D4A9', labelText: '計算値' },
+                    { colorCode: '#FFE5E5', labelText: getText("KDW003_44") },
+                    { colorCode: '#FFF1BF', labelText: getText("KDW003_45") },
                 ]
             };
         }
@@ -801,7 +802,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.itemInputName = data.lstControlDisplayItem.itemInputName;
             self.dataAll(data);
             self.itemValueAll(data.itemValues);
-            self.comment(data.comment != null ? '■ ' + data.comment : null);
+            self.comment(data.comment != null ? data.comment : null);
 			if(data.lstControlDisplayItem.formatCode !=  null){
            	 	self.formatCodes(data.lstControlDisplayItem.formatCode);
 			}
@@ -813,6 +814,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.comboItemsDoWork(data.lstControlDisplayItem.comboItemDoWork);
             self.comboItemsCompact(data.lstControlDisplayItem.comboItemCalcCompact);
             self.comboTimeLimit(data.lstControlDisplayItem.comboTimeLimit);
+            self.comboNursingLicenseCls(data.lstControlDisplayItem.comboNursingLicenseCls);
 
             self.employmentCode(data.employmentCode);
             self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
@@ -2372,9 +2374,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $("#btnVacationRemaining").show();
                 $('#numberHoliday').show();
                 $('#fixed-table').show();
-                $('#content-all-grid').attr('style', 'top: -5px !IMPORTANT ; position: relative; clear: both');
-                $('#content-grid-not').attr('style', 'margin-top: -3px !IMPORTANT');
-                $('#date-extract').attr('style', 'padding-top: 0px; height: 42px');
+                $('#content-all-grid').attr('style', 'position: relative; clear: both');
+                $('#date-extract').attr('style', 'height: 42px');
                 //  $("#content-grid").attr('style', 'top: 244px !IMPORTANT');
             } else if (self.displayFormat() == 1) {
                 self.displayFormatOld = 1;
@@ -2386,10 +2387,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $('#numberHoliday').hide();
                 $('#fixed-table').hide();
                 $('#flex').hide();
-                $('#content-all-grid').attr('style', 'top: -12px !IMPORTANT ; position: relative; clear: both');
+                $('#content-all-grid').attr('style', 'position: relative; clear: both');
                 // $("#content-grid").attr('style', 'top: 225px !IMPORTANT');
-                $('#content-grid-not').attr('style', 'margin-top: -45px !IMPORTANT');
-                $('#date-extract').attr('style', 'margin-top: -10px; height: 42px');
+                $('#date-extract').attr('style', 'height: 42px');
             } else {
                 self.displayFormatOld = 2;
                 $("#daterangepickererror").css("display", "block");
@@ -2400,10 +2400,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $('#numberHoliday').hide();
                 $('#fixed-table').hide();
                 $('#flex').hide();
-                $('#content-all-grid').attr('style', 'top: -12px !IMPORTANT ; position: relative; clear: both');
-                $('#content-grid-not').attr('style', 'margin-top: -45px !IMPORTANT');
+                $('#content-all-grid').attr('style', 'position: relative; clear: both');
                 // $("#content-grid").attr('style', 'top: 180px !IMPORTANT');
-                $('#date-extract').attr('style', 'margin-top: -10px; height: 42px');
+                $('#date-extract').attr('style', 'height: 42px');
             }
         }
 
@@ -2545,6 +2544,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             self.comboItemsDoWork(data.lstControlDisplayItem.comboItemDoWork);
                             self.comboItemsCompact(data.lstControlDisplayItem.comboItemCalcCompact);
                             self.comboTimeLimit(data.lstControlDisplayItem.comboTimeLimit);
+                            self.comboNursingLicenseCls(data.lstControlDisplayItem.comboNursingLicenseCls);
                             //self.showLock(self.showButton().available12());
                             //self.unLock(false);
                             if (data.lstControlDisplayItem.lstHeader.length == 0) {
@@ -3978,7 +3978,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 			}
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 subWidth: subWidth,
-                subHeight: '285px',
+                subHeight: '350px',
                 height: (window.screen.availHeight - 240) + "px",
                 headerHeight: '40px',
                 dataSource: self.lstDataSourceLoad,
@@ -4075,6 +4075,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 { name: 'ComboboxReason', options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                 { name: 'ComboItemsCompact', options: self.comboItemsCompact(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                 { name: 'ComboboxTimeLimit', options: self.comboTimeLimit(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                { name: 'ComboboxNurseLicenseCLS', options: self.comboNursingLicenseCls(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
 
                 {
                     name: 'FlexImage', source: 'ui-icon ui-icon-locked', click: function(key, rowId, evt) {

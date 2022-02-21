@@ -25,6 +25,8 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -34,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -52,7 +55,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * 時間帯を指定して作業予定を追加する
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.勤務予定.勤務予定.App.時間帯を指定して作業予定を追加する
- * 
+ *
  * @author HieuLt
  *
  */
@@ -99,7 +102,7 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 		AddWorkScheduleByTimezoneCommand command = context.getCommand();
 		// 1:<call>()
 		DatePeriod period = new DatePeriod(command.date, command.date);
-		
+
 		List<WorkSchedule> lstWorkSchedule = repo.getList(command.lstEmpId, period);
 
 		// 2:not 勤務予定．isEmpty : 時間帯に作業予定を追加する(@Require, 計算用時間帯, 作業コード)
@@ -278,6 +281,24 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 		@Override
 		public SupportOperationSetting getSupportOperationSetting() {
 			// TODO developers are going to update
+			return null;
+		}
+		
+		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp,
+				GeneralDate referenceDate) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public List<NurseClassification> getListCompanyNurseCategory() {
+			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 

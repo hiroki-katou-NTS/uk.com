@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.classification.SClsHistImported;
 import nts.uk.ctx.at.schedule.dom.adapter.classification.SyClassificationAdapter;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
-import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport; 
+import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSyEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
@@ -25,6 +25,8 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
@@ -33,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -61,52 +64,52 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 
 	@Inject
 	private WorkScheduleRepository repository;
-	
+
 	@Inject
 	private  WorkTypeRepository workTypeRepo;
-	
+
 	@Inject
 	private  WorkTimeSettingRepository workTimeSettingRepository;
-	
+
 	@Inject
 	private  BasicScheduleService basicScheduleService;
-	
+
 	@Inject
 	private  FixedWorkSettingRepository fixedWorkSettingRepository;
-	
+
 	@Inject
 	private  FlowWorkSettingRepository flowWorkSettingRepository;
-	
+
 	@Inject
 	private  FlexWorkSettingRepository flexWorkSettingRepository;
-	
+
 	@Inject
 	private  PredetemineTimeSettingRepository predetemineTimeSettingRepository;
-	
+
 	@Inject
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
-	
+
 	@Inject
 	private SharedAffJobtitleHisAdapter sharedAffJobtitleHisAdapter;
-	
+
 	@Inject
 	private SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
-	
+
 	@Inject
 	private SyClassificationAdapter syClassificationAdapter;
-	
+
 	@Inject
 	private WorkingConditionRepository workingConditionRepo;
 
 	@Inject
-	private BusinessTypeEmpService businessTypeEmpService;	
+	private BusinessTypeEmpService businessTypeEmpService;
 
 	@Override
 	protected void handle(CommandHandlerContext<TaskScheduleCommand> context) {
 		TaskScheduleCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		GeneralDate ymd = command.toDate();
-		
+
 		RequireImpl require = new RequireImpl(companyId, workTypeRepo, workTimeSettingRepository,
 				basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository,
 				predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
@@ -117,52 +120,52 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 			Optional<WorkSchedule> optional = repository.get(empId, ymd);
 			/** 1.2: [not 勤務予定．isEmpty]:時間帯に作業予定を追加する(@Require, 計算用時間帯, 作業コード)*/
 			if(optional.isPresent()) {
-				WorkSchedule workSchedule = optional.get();				
+				WorkSchedule workSchedule = optional.get();
 				workSchedule
 						.addTaskScheduleWithTimeSpan(require,
 								new TimeSpanForCalc(new TimeWithDayAttr(command.getStartTime()), new TimeWithDayAttr(command.getEndTime())),
 													new TaskCode(command.getTaskCode()));
-				
+
 				/** 2: persist*/
 				repository.update(workSchedule);
 			} else {
 				return;
 			}
-		});		
+		});
 	}
-	
+
 	@AllArgsConstructor
 	private static class RequireImpl implements WorkSchedule.Require {
-		
+
 		private String companyId;
-		
+
 		private  WorkTypeRepository workTypeRepo;
-		
+
 		private  WorkTimeSettingRepository workTimeSettingRepository;
-		
+
 		private  BasicScheduleService basicScheduleService;
-		
+
 		private  FixedWorkSettingRepository fixedWorkSettingRepository;
-		
+
 		private  FlowWorkSettingRepository flowWorkSettingRepository;
-		
+
 		private  FlexWorkSettingRepository flexWorkSettingRepository;
-		
+
 		private  PredetemineTimeSettingRepository predetemineTimeSettingRepository;
-		
+
 		private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
-		
+
 		private SharedAffJobtitleHisAdapter sharedAffJobtitleHisAdapter;
-		
+
 		private SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
-		
+
 		private SyClassificationAdapter syClassificationAdapter;
-		
+
 		private WorkingConditionRepository workingConditionRepo;
-	
+
 		private BusinessTypeEmpService businessTypeEmpService;
-		
-		@Override		
+
+		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
@@ -234,7 +237,7 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 		@Override
 		public Optional<BusinessTypeOfEmployee> getBusinessType(String employeeId, GeneralDate standardDate) {
 			List<BusinessTypeOfEmployee> list = businessTypeEmpService.getData(employeeId, standardDate);
-			if (list.isEmpty()) 
+			if (list.isEmpty())
 				return Optional.empty();
 			return Optional.of(list.get(0));
 		}
@@ -255,5 +258,25 @@ public class TaskScheduleTimeZoneSaveCommandHandler extends CommandHandler<TaskS
 			// TODO developers are going to update
 			return null;
 		}	
+
+		@Override
+		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp,
+				GeneralDate referenceDate) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public List<NurseClassification> getListCompanyNurseCategory() {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+		
 	}
 }

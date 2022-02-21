@@ -30,6 +30,8 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -38,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -55,7 +58,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 作業予定を登録する
- * 
+ *
  * @author HieuLt
  */
 @Stateless
@@ -117,14 +120,14 @@ public class AddWorkScheduleCommandHandler extends CommandHandler<AddWorkSchedul
 				// 1.3:Optional<勤務予定>.isPresent :$新の作業予定 = 作る(List<作業予定詳細>):
 				List<TaskScheduleDetail> details = new ArrayList<>();
 				Optional<TaskScheduleDetailEmp> task = lst.stream().filter(pre -> pre.empId.equals(item)).findFirst();
-				
+
 				if (task.isPresent()) {
 				details = task.get().taskScheduleDetail.stream().map(y -> {
 						TaskScheduleDetail detail = TaskScheduleDetailDto.toDomain(y);
 						return detail;
 					}).collect(Collectors.toList());
 				}
-				
+
 				TaskSchedule newTaskSchedule = TaskSchedule.create(details);
 				// 1.4:Optional<勤務予定>．isPresent : 作業予定を入れ替える(@Require, 作業予定)
 				workSchedule.get().updateTaskSchedule(require, newTaskSchedule);
@@ -298,6 +301,25 @@ public class AddWorkScheduleCommandHandler extends CommandHandler<AddWorkSchedul
 		@Override
 		public SupportOperationSetting getSupportOperationSetting() {
 			// TODO developers are going to update
+			return null;
+		}
+
+		@Override
+		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp,
+				GeneralDate referenceDate) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public List<NurseClassification> getListCompanyNurseCategory() {
+			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 

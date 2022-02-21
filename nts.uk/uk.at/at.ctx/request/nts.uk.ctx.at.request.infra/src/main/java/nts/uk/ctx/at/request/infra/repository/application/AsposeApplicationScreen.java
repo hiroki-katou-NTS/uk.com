@@ -23,6 +23,7 @@ import lombok.val;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.at.request.dom.application.AppScreenGenerator;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppLstApprovalLstDispSet;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
@@ -128,21 +129,24 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 
 		for (int i = 3; i < appLst.getAppLst().size() + 3; i++) {
 
-			// Chua xu ly voi app type = 10
 			// Column E
 			Cell cellE = cells.get("E" + i);
 			String contentE = cellE.getStringValue();
-			this.colorSatSun(cellE, contentE, "ー");
+			if (appLst.getAppLst().get(i - 3).getAppType().equals(ApplicationType.COMPLEMENT_LEAVE_APPLICATION)) {
+			    this.colorSatSun(cellE, contentE, "\n");
+			} else {
+			    this.colorSatSun(cellE, contentE, "ー");
+			}
 
 			// Column F
 			Cell cellF = cells.get("F" + i);
 			ListOfApplication appContent = appLst.getAppLst().get(i - 3);
 			if (appContent.getOpBackgroundColor().isPresent()) {
 			    if (appContent.getOpBackgroundColor().get().equals("bg-workinh-result-excess")) {
-			        this.backgroundColor(cellF, 255, 255, 0);
+			        this.backgroundColor(cellF, 255, 192, 203);
 			    }
 			    if (appContent.getOpBackgroundColor().get().equals("bg-pre-application-excess")) {
-			        this.backgroundColor(cellF, 255, 192, 203);
+			        this.backgroundColor(cellF, 255, 255, 0);
 			    }
 			}
 			
