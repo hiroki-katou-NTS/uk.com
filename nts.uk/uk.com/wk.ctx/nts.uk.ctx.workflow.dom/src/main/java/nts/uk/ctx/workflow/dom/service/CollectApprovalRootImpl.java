@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval.ErrorContent;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
@@ -790,5 +791,43 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		}
 		approverInfoLst.removeAll(removeLst);
 		return approverInfoLst;
+	}
+
+	@Override
+	public List<ErrorContent> checkApprovalRootSequentially(LevelOutput levelOutput) {
+		List<ErrorContent> result = new ArrayList<>();
+		List<LevelInforOutput> levelInforLst = levelOutput.getLevelInforLst();
+		if(CollectionUtil.isEmpty(levelInforLst)){
+			return result;
+		}
+		for(int i = 0; i < levelInforLst.size(); i++) {
+			LevelInforOutput levelInforOutput = levelInforLst.get(i);
+			// check số lượng người approve
+			Integer approverCount = levelInforOutput.getApproverLst().stream().collect(Collectors.summingInt(x -> x.getApproverInfoLst().size()));
+			// >= 10 người
+			if(approverCount >= 10) {
+				result.add(new ErrorContent(levelInforOutput.getLevelNo(), ErrorFlag.APPROVER_UP_10));
+				continue;
+			}
+			// <= 0 người
+			if(approverCount <= 0) {
+				result.add(new ErrorContent(levelInforOutput.getLevelNo(), ErrorFlag.NO_APPROVER));
+				continue;
+			}
+			if(levelInforOutput.getApprovalForm() != ApprovalForm.SINGLE_APPROVED.value){
+				continue;
+			}
+			// check frame confirm không có người
+			for(int j = 0; j < levelInforOutput.getApproverLst().size(); j++){
+				LevelApproverList levelApproverList = levelInforOutput.getApproverLst().get(j);
+				if(!levelApproverList.isComfirmAtr()){
+					continue;
+				}
+				if(CollectionUtil.isEmpty(levelApproverList.getApproverInfoLst())){
+					result.add(new ErrorContent(levelInforOutput.getLevelNo(), ErrorFlag.NO_CONFIRM_PERSON));
+				}
+			}
+		}
+		return result;
 	}
 }
