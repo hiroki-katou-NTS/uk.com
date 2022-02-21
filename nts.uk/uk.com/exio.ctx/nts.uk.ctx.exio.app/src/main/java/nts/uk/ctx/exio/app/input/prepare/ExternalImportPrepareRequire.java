@@ -170,6 +170,8 @@ public class ExternalImportPrepareRequire {
 		private final MapCache<Pair<ImportingDomainId, Integer>, ImportableItem> cacheImportableItem;
 
 		private final MapCache<Pair<String, Integer>, ImportingUserCondition> cacheImportingUserCondition;
+		
+		private final MapCache<ExternalImportCode, ExternalImportSetting> cacheImportSetting;
 
 		public RequireImpl(String companyId) {
 			this.contractCode = CompanyId.getContractCodeOf(companyId);
@@ -185,6 +187,10 @@ public class ExternalImportPrepareRequire {
 
 			this.cacheImportingUserCondition = MapCache.incremental(key -> {
 				return importingUserConditionRepo.get(companyId, key.getLeft(), key.getRight());
+			});
+			
+			this.cacheImportSetting = MapCache.incremental(key -> {
+				return settingRepo.get(null, companyId, key);
 			});
 		}
 
@@ -208,7 +214,7 @@ public class ExternalImportPrepareRequire {
 
 		@Override
 		public ExternalImportSetting getExternalImportSetting(ExternalImportCode settingCode) {
-			return settingRepo.get(null, companyId, settingCode)
+			return cacheImportSetting.get(settingCode)
 					.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		}
 
@@ -314,13 +320,13 @@ public class ExternalImportPrepareRequire {
 		/***** domains for canonicalization *****/
 
 		@Override
-		public Optional<String> getEmployeeBasicSIDByEmployeeCode(ExecutionContext context, String employeeCode) {
-			return canonicalizedDataRecordRepo.getEmployeeBasicSID(this, context, employeeCode);
+		public ExternalImportSetting getExternalImportSetting(ExecutionContext context) {
+			return this.cacheImportSetting.get(new ExternalImportCode(context.getSettingCode())).get();
 		}
-
+		
 		@Override
-		public Optional<String> getEmployeeBasicPersonId(ExecutionContext context, String sid) {
-			return canonicalizedDataRecordRepo.getEmployeeBasicPID(this, context, sid);
+		public List<CanonicalizedDataRecord> getEmployeeBasicEmployeeId(ExecutionContext context, ImportingDomainId domainId, int criteriaItemNo, String criteriaValue){
+			return canonicalizedDataRecordRepo.findCanonicalizedDomainDataByCriteria(this, context, domainId, criteriaItemNo, criteriaValue);
 		}
 		
 		@Override
