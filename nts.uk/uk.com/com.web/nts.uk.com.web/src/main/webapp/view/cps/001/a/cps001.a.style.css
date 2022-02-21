@@ -136,10 +136,6 @@
 #lefttabs .tabs-list:empty {
 	padding: 0px !important;
 }
-.tabs-panel.has-content {
-    width: 290px;
-    overflow: hidden;
-}
 #component-ccg001 {
 	margin-left: 23px;
 }
