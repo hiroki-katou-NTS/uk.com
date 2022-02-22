@@ -426,6 +426,10 @@ module nts.uk.ui.kdp001.a {
 					color: #0000EE;
 				}
             </style>
+
+            <script src=
+            "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+                </script>
         `
     })
     export class KDP001WidgetComponent extends ko.ViewModel {
@@ -451,6 +455,7 @@ module nts.uk.ui.kdp001.a {
         workPalceIds: string[] = null;
 
         regionalTime: number = 0;
+        ipAddress: string = '';
 
         message: {
             data: KnockoutObservable<MessageData>;
@@ -799,41 +804,27 @@ module nts.uk.ui.kdp001.a {
 
             if (locationCd) {
                 vm.modeBasyo(true)
-                const param = {
-                    contractCode: vm.$user.contractCode,
-                    workLocationCode: locationCd
-                }
+                $.getJSON("https://api.ipify.org?format=json").then((address: any) => {
+                    vm.ipAddress = address.ip;
+                }).then(() => {
+                    const param = {
+                        contractCode: vm.$user.contractCode,
+                        workLocationCode: locationCd,
+                        ipv4Address: vm.ipAddress
+                    }
 
-                vm.$blockui('invisible')
-                    .then(() => {
-                        vm.$ajax(REST_API.getLocation, param)
-                            .done((data: IBasyo) => {
-                                if (data) {
-                                    if (data.workpalceId != null || data.workLocationName != null) {
-                                        vm.workpalceCD = locationCd;
+                    vm.$blockui('invisible')
+                        .then(() => {
+                            vm.$ajax(REST_API.GetWorkLocationRagionalTime, param)
+                                .done((data: GetWorkPlaceRegionalTime) => {
+                                    if (data) {
+                                        vm.workplaceId(data.workPlaceId)
+                                        vm.workLocationName(data.workLocationName);
+                                        vm.regionalTime = data.regional;
                                     }
-                                    if (data.workpalceId != null) {
-                                        if (data.workpalceId.length > 0) {
-                                            vm.workplaceId(data.workpalceId[0]);
-                                        }
-                                    }
-                                }
-
-                                if (ko.unwrap(vm.workplaceId) !== null) {
-                                    const param = { sid: __viewContext.user.employeeId, workPlaceIds: [ko.unwrap(vm.workplaceId)] };
-
-                                    vm.$ajax(REST_API.WORKPLACE_INFO, param)
-                                        .then((workPlace: any) => {
-
-                                            if (workPlace) {
-                                                if (workPlace.workPlaceInfo.length > 0) {
-                                                    vm.workLocationName(workPlace.workPlaceInfo[0].workplaceName)
-                                                }
-                                            }
-                                        })
-                                }
-                            });
-                    })
+                                });
+                        })
+                })
                     .always(() => {
                         vm.$blockui('clear');
                     });
@@ -846,10 +837,9 @@ module nts.uk.ui.kdp001.a {
                 }
                 vm.$ajax(REST_API.GetWorkPlaceRegionalTime, inputWorkPlace).then((data: GetWorkPlaceRegionalTime) => {
                     if (data) {
-
                         vm.workplaceId(data.workPlaceId)
                         vm.workLocationName(data.workLocationName);
-                        // vm.regionalTime = data.regional;
+                        vm.regionalTime = data.regional;
                     }
                 })
             }

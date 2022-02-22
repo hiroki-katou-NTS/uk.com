@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionalTimeDifference;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionalTimeDifferenceRepository;
+import nts.uk.shr.com.net.Ipv4Address;
 
 /**
  * SC: 打刻入力で勤務場所と地域時差を取得する
@@ -28,9 +29,9 @@ public class GetWorkLocationAndRegionalTimeDifference {
 	@Inject
 	private RegionalTimeDifferenceRepository regionalTimeDifferenceRepository;
 
-	public GetWorkLocationAndRegionalTimeDifferenceDto getWorkLocationAndRegionalTimeDifference(GetWorkLocationAndRegionalTimeDifferenceInput param) {
+	public GetWorkPlaceRegionalTimeDto getWorkLocationAndRegionalTimeDifference(GetWorkLocationAndRegionalTimeDifferenceInput param) {
 		
-		GetWorkLocationAndRegionalTimeDifferenceDto result = new GetWorkLocationAndRegionalTimeDifferenceDto();
+		GetWorkPlaceRegionalTimeDto result = new GetWorkPlaceRegionalTimeDto();
 
 		Optional<WorkLocation> workLocation = Optional.empty();
 
@@ -42,16 +43,18 @@ public class GetWorkLocationAndRegionalTimeDifference {
 		// Step2
 		if (param.getContractCode() == null && param.getIpv4Address() != null) {
 			workLocation = this.workLocationRepository.identifyWorkLocationByAddress(param.getContractCode(),
-					param.getIpv4Address());
+					Ipv4Address.parse(param.getIpv4Address()));
 		}
 
 		// Step3
 		if (workLocation.isPresent()) {
 			WorkLocationRequireImpl require = new WorkLocationRequireImpl(regionalTimeDifferenceRepository);
 			
-			result.setRegionalTime(workLocation.get().findTimeDifference(require, param.getContractCode()));
+			result.setRegional(workLocation.get().findTimeDifference(require, param.getContractCode()));
 			// Step4
 			result.setWorkPlaceId(workLocation.get().getWorkplace().map(m -> m.getWorkpalceId()).orElse(""));
+			result.setWorkLocationName(workLocation.get().getWorkLocationName().v());
+			result.setWorkLocationCD(workLocation.get().getWorkLocationCD().v());
 		}
 		
 		return result;

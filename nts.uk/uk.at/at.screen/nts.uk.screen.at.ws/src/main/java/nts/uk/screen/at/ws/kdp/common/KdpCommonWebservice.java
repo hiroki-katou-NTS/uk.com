@@ -7,7 +7,6 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.query.kdp.common.GetWorkLocationAndRegionalTimeDifference;
-import nts.uk.screen.at.app.query.kdp.common.GetWorkLocationAndRegionalTimeDifferenceDto;
 import nts.uk.screen.at.app.query.kdp.common.GetWorkLocationAndRegionalTimeDifferenceInput;
 import nts.uk.screen.at.app.query.kdp.common.GetWorkPlaceRegionalTime;
 import nts.uk.screen.at.app.query.kdp.common.GetWorkPlaceRegionalTimeDto;
@@ -31,7 +30,7 @@ public class KdpCommonWebservice extends WebService {
 	
 	@POST
 	@Path("get-work-location-regional-time")
-	public GetWorkLocationAndRegionalTimeDifferenceDto getWorkLocationAndRegionalTimeDifference(GetWorkLocationAndRegionalTimeDifferenceInput param) {
+	public GetWorkPlaceRegionalTimeDto getWorkLocationAndRegionalTimeDifference(GetWorkLocationAndRegionalTimeDifferenceInput param) {
 		return this.getWorkLocationAndRegionalTimeDifference.getWorkLocationAndRegionalTimeDifference(param);
 	}
 	
