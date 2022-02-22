@@ -278,6 +278,32 @@ public class WorkspaceSql {
 				.paramString("p", conditionString)
 				.getList(rec -> toRevised(rec));
 	}
+	private static DataItem toDataItem(NtsResultRecord record, WorkspaceItem workspaceItem) {
+		
+		val dataType = workspaceItem.getDataTypeConfig();
+		int itemNo = workspaceItem.getItemNo();
+		String name = workspaceItem.getName();
+		
+		// nullの場合
+		if(Objects.isNull(record.getObject(name))) {
+			return DataItem.of(itemNo);
+		}
+		
+		switch (dataType.getType()) {
+		case INT:
+			return DataItem.of(itemNo, record.getLong(name));
+		case REAL:
+			return DataItem.of(itemNo, record.getBigDecimal(name));
+		case STRING:
+			return DataItem.of(itemNo, record.getString(name));
+		case DATE:
+			return DataItem.of(itemNo, record.getGeneralDate(name));
+		case BOOLEAN:
+			return DataItem.of(itemNo, record.getBoolean(name));
+		default:
+			throw new RuntimeException("unknown: " + dataType.getType());
+		}
+	}
 	
 	private RevisedDataRecord toRevised(NtsResultRecord record) {
 		
@@ -309,13 +335,13 @@ public class WorkspaceSql {
 		int rowNo = record.getInt(ROW_NO.name);
 		
 		val items = workspace.getAllItemsSortedByItemNo().stream()
-				.map(wi -> toDataItem(record, wi))
+				.map(wi -> toCanonicalItem(record, wi))
 				.collect(toList());
 		
-		return new CanonicalizedDataRecord(rowNo, CanonicalItemList.of(new DataItemList(items)));
+		return new CanonicalizedDataRecord(rowNo, new CanonicalItemList(items));
 	}
 	
-	private static DataItem toDataItem(NtsResultRecord record, WorkspaceItem workspaceItem) {
+	private static CanonicalItem toCanonicalItem(NtsResultRecord record, WorkspaceItem workspaceItem) {
 		
 		val dataType = workspaceItem.getDataTypeConfig();
 		int itemNo = workspaceItem.getItemNo();
@@ -323,22 +349,22 @@ public class WorkspaceSql {
 		
 		// nullの場合
 		if(Objects.isNull(record.getObject(name))) {
-			return DataItem.of(itemNo);
+			return CanonicalItem.nullValue(itemNo);
 		}
 		
 		switch (dataType.getType()) {
 		case INT:
-			return DataItem.of(itemNo, record.getLong(name));
+			return CanonicalItem.of(itemNo, record.getLong(name));
 		case REAL:
-			return DataItem.of(itemNo, record.getBigDecimal(name));
+			return CanonicalItem.of(itemNo, record.getBigDecimal(name));
 		case STRING:
-			return DataItem.of(itemNo, record.getString(name));
+			return CanonicalItem.of(itemNo, record.getString(name));
 		case DATE:
-			return DataItem.of(itemNo, record.getGeneralDate(name));
+			return CanonicalItem.of(itemNo, record.getGeneralDate(name));
 		case DATETIME:
-			return DataItem.of(itemNo, record.getGeneralDateTime(name));
+			return CanonicalItem.of(itemNo, record.getGeneralDateTime(name));
 		case BOOLEAN:
-			return DataItem.of(itemNo, record.getBoolean(name));
+			return CanonicalItem.of(itemNo, record.getBoolean(name));
 		default:
 			throw new RuntimeException("unknown: " + dataType.getType());
 		}
