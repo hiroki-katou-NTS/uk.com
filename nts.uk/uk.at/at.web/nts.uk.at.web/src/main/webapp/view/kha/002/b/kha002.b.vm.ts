@@ -9,6 +9,7 @@ module nts.uk.at.kha002.b {
 
     @bean()
     export class ViewModel extends ko.ViewModel {
+        aggregateUnit: KnockoutObservable<number>;
         layoutSettings: KnockoutObservableArray<any>;
         selectedLayout: KnockoutObservable<string>;
 
@@ -19,6 +20,7 @@ module nts.uk.at.kha002.b {
 
         created(param?: any) {
             const vm = this;
+            vm.aggregateUnit = ko.observable(param ? param.aggregateUnit : 0);
             vm.layoutSettings = ko.observableArray([]);
             vm.selectedLayout = ko.observable(null);
 

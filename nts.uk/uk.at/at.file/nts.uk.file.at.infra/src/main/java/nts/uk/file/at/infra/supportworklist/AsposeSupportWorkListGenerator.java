@@ -192,26 +192,33 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
 
                         // C6_3
                         if (detail.isSupportWork()) {
-                            cells.get(startRow, 2).setValue(this.getWorkplaceInfo(dataSource.getAggregationUnit(), dataSource.getWorkplaceInfoList(), detail.getAffiliationInfo(), false));
+                            cells.get(startRow, 2).setValue(this.getWorkplaceInfo(
+                                    dataSource.getAggregationUnit(),
+                                    dataSource.getWorkplaceInfoList(),
+                                    detailLayoutSetting.getExtractCondition() == EmployeeExtractCondition.EXTRACT_EMPLOYEES_GO_TO_SUPPORT ? detail.getWorkInfo() : detail.getAffiliationInfo(),
+                                    false
+                            ));
                         }
                         this.setDetailStyle(cells.get(startRow, 2), isEventLine, true, k == 0, false, false, false);
 
                         // C6_4 ~ C6_9
                         int startColumnOfC6 = 3;
                         for (OutputItem outputItem : outputItems) {
-                            // If the "AttendanceItemID" is 928 or less, find the work name from the "Value".
-                            if (outputItem.getAttendanceItemId() <= 928) {
-                                cells.get(startRow, startColumnOfC6).setValue(this.getWorkName(outputItem.getAttendanceItemId(), dataSource.getWorkList1(), dataSource.getWorkList2(),
-                                        dataSource.getWorkList3(), dataSource.getWorkList4(), dataSource.getWorkList5()));
-                                this.setDetailStyle(cells.get(startRow, startColumnOfC6), isEventLine, true, k == 0, k == dataOfDay.getSupportWorkDetailsList().size(), false, false);
-                            } else {   // If the "AttendanceItemID" is 929 or higher, set the "Value" in Excel as it is.
-                                Optional<ItemValue> itemValue = detail.getItemList().stream().filter(item -> item.getItemId() == outputItem.getAttendanceItemId()).findFirst();
-                                if (itemValue.isPresent()) {
+                            Optional<ItemValue> itemValue = detail.getItemList().stream().filter(item -> item.getItemId() == outputItem.getAttendanceItemId()).findFirst();
+                            if (itemValue.isPresent()) {
+                                // If the "AttendanceItemID" is 928 or less, find the work name from the "Value".
+                                if (outputItem.getAttendanceItemId() <= 928) {
+                                    cells.get(startRow, startColumnOfC6).setValue(this.getWorkName(
+                                            outputItem.getAttendanceItemId(),
+                                            itemValue.get().getValue(),
+                                            dataSource
+                                    ));
+                                    this.setDetailStyle(cells.get(startRow, startColumnOfC6), isEventLine, true, k == 0, k == dataOfDay.getSupportWorkDetailsList().size(), false, false);
+                                } else {   // If the "AttendanceItemID" is 929 or higher, set the "Value" in Excel as it is.
                                     cells.get(startRow, startColumnOfC6).setValue(this.formatValue(itemValue.get().getValue(), itemValue.get().getValueType(), isCsv));
                                     this.setDetailStyle(cells.get(startRow, startColumnOfC6), isEventLine, false, k == 0, k == dataOfDay.getSupportWorkDetailsList().size(), false, false);
                                 }
                             }
-
                             // next column
                             startColumnOfC6 += 1;
                         }
@@ -452,18 +459,18 @@ public class AsposeSupportWorkListGenerator extends AsposeCellsReportGenerator i
         this.setTotalStyleCustom(cells.get(startRow, startColumn), false, true, false, topBorder, botBorder, topBorderDouble);
     }
 
-    private String getWorkName(int attendanceId, List<Task> workList1, List<Task> workList2, List<Task> workList3, List<Task> workList4, List<Task> workList5) {
+    private String getWorkName(int attendanceId, String code, SupportWorkListDataSource dataSource) {
         switch (attendanceId) {
             case 924:
-                return !workList1.isEmpty() ? workList1.get(0).getDisplayInfo().getTaskName().v() : "";
+                return dataSource.getWorkList1().stream().filter(w -> w.getCode().v().equals(code)).findFirst().map(w -> w.getDisplayInfo().getTaskName().v()).orElse("");
             case 925:
-                return !workList2.isEmpty() ? workList2.get(0).getDisplayInfo().getTaskName().v() : "";
+                return dataSource.getWorkList2().stream().filter(w -> w.getCode().v().equals(code)).findFirst().map(w -> w.getDisplayInfo().getTaskName().v()).orElse("");
             case 926:
-                return !workList3.isEmpty() ? workList3.get(0).getDisplayInfo().getTaskName().v() : "";
+                return dataSource.getWorkList3().stream().filter(w -> w.getCode().v().equals(code)).findFirst().map(w -> w.getDisplayInfo().getTaskName().v()).orElse("");
             case 927:
-                return !workList4.isEmpty() ? workList4.get(0).getDisplayInfo().getTaskName().v() : "";
+                return dataSource.getWorkList4().stream().filter(w -> w.getCode().v().equals(code)).findFirst().map(w -> w.getDisplayInfo().getTaskName().v()).orElse("");
             case 928:
-                return !workList5.isEmpty() ? workList5.get(0).getDisplayInfo().getTaskName().v() : "";
+                return dataSource.getWorkList5().stream().filter(w -> w.getCode().v().equals(code)).findFirst().map(w -> w.getDisplayInfo().getTaskName().v()).orElse("");
             default:
                 return "";
         }

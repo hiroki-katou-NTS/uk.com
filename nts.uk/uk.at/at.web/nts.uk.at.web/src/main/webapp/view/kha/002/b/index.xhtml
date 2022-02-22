@@ -94,16 +94,16 @@
                             <div data-bind="ntsCheckBox: { checked: displaySumOneDayAtr, text: $vm.$i18n('KHA002_58') }"></div>
                         </div>
                         <div class="checkbox-area">
-                            <div data-bind="ntsCheckBox: { checked: displaySumSupportWorkplaceAtr, text: '所属・応援計チェック' }"></div>
+                            <div data-bind="ntsCheckBox: { checked: displaySumSupportWorkplaceAtr, text: $vm.aggregateUnit() == 0 ? $vm.$i18n('KHA002_150') : $vm.$i18n('KHA002_151') }"></div>
                             <div data-bind="ntsCheckBox: { checked: displaySumSupportDetailAtr, text: $vm.$i18n('KHA002_59') }"></div>
-                            <div data-bind="ntsCheckBox: { checked: displaySumWorkplaceAtr, text: '所属計チェック' }"></div>
+                            <div data-bind="ntsCheckBox: { checked: displaySumWorkplaceAtr, text: $vm.aggregateUnit() == 0 ? $vm.$i18n('KHA002_152') : $vm.$i18n('KHA002_153') }"></div>
                         </div>
                     </div>
                 </div>
                 <div class="control-group valign-center">
                     <div data-bind="ntsFormLabel: {required: false, text: $vm.$i18n('KHA002_60')}"/>
                     <div style="display: inline-block;" class="checkbox-area">
-                        <div data-bind="ntsCheckBox: { checked: displayTotalSumSupportWorkplaceAtr, text: '所属・応援合計チェック' }"></div>
+                        <div data-bind="ntsCheckBox: { checked: displayTotalSumSupportWorkplaceAtr, text: $vm.aggregateUnit() == 0 ? $vm.$i18n('KHA002_154') : $vm.$i18n('KHA002_155') }"></div>
                         <div data-bind="ntsCheckBox: { checked: displayTotalSumAtr, text: $vm.$i18n('KHA002_61') }"></div>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                          data-bind="ntsSwitchButton: {
                                         options: [
                                             {code: 0, name: $vm.$i18n('KHA002_63')},
-                                            {code: 1, name: $vm.$i18n('改ページあり')},
+                                            {code: 1, name: $vm.aggregateUnit() == 0 ? $vm.$i18n('KHA002_156') : $vm.$i18n('KHA002_157')},
                                         ],
                                         optionsValue: 'code',
                                         optionsText: 'name',

@@ -216,7 +216,7 @@ module nts.uk.at.kha002.a {
 
         openDialogB() {
             const vm = this;
-            vm.$window.modal("/view/kha/002/b/index.xhtml", {code: vm.selectedLayout()}).then((data) => {
+            vm.$window.modal("/view/kha/002/b/index.xhtml", {aggregateUnit: vm.aggregateUnit(), code: vm.selectedLayout()}).then((data) => {
                 vm.getAllSettingData(data ? data.code : null);
             });
         }
