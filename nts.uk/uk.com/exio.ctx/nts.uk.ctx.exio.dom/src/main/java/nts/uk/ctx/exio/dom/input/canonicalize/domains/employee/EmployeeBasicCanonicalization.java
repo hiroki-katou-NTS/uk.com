@@ -487,10 +487,6 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 		List<CanonicalizedDataRecord> getCanonicalizedData(ExecutionContext context, ImportingDomainId domainId, int targetItemNo, String targetItemValue);
 	}
 	
-
-	
-
-	
 	private static boolean isImportingWithEmployeeBasic(CanonicalizationMethodRequire require, ExecutionContext context) {
 		return require.getExternalImportSetting(context).containEmployeeBasic()
 			  && !context.getDomainId().equals(ImportingDomainId.EMPLOYEE_BASIC);
