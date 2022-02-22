@@ -11,7 +11,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 
 /**
- * UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM030_自分の承認者設定.F：承認者の履歴確認.メニュー別OCD.Ｆ：最終履歴の削除する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.承認者管理.就業人事申請承認ルート.App.最終履歴の削除をする.最終履歴の削除をする
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
