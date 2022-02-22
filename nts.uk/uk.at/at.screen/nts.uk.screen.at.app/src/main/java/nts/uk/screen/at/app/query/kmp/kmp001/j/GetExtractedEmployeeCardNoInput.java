@@ -1,0 +1,34 @@
+package nts.uk.screen.at.app.query.kmp.kmp001.j;
+
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * 
+ * @author tutt
+ *
+ */
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class GetExtractedEmployeeCardNoInput {
+	
+	// 契約コード
+	public String contractCode;
+	
+	// 社員ID
+	public List<String> sIds; 
+	
+	// サイズQRCODE
+	public int qrSize;
+	
+	// 縦
+	public String setRow;
+	
+	// 横
+	public String setCol;
+	
+}

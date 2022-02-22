@@ -3,8 +3,9 @@
 module nts.uk.at.view.kmp001.j {
 	import getText = nts.uk.resource.getText;
 	import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
-	
+
 	const QRCODE_SIZE = 'QRCodeSize';
+	const EXPORT_QRCODE = 'screen/at/kmp001/j/exportQR';
 
 	@bean()
 	export class ViewModel extends ko.ViewModel {
@@ -14,10 +15,9 @@ module nts.uk.at.view.kmp001.j {
 
 		// KCP005
 		listComponentOption: any;
-		//selectedCode: KnockoutObservable<any> = ko.observable();
 		multiSelectedCode: KnockoutObservableArray<string> = ko.observableArray([]);
 		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
-		selectedId: KnockoutObservable<string> = ko.observable('');
+		selectedIds: KnockoutObservableArray<string> = ko.observableArray([]);
 
 		employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
 
@@ -84,28 +84,24 @@ module nts.uk.at.view.kmp001.j {
 					vm.employeeList(employees);
 					if (employees.length) {
 						vm.multiSelectedCode(_.map(employees, 'code'));
+						vm.selectedIds(_.map(employees, 'id'));
 
 					}
 				}
 
 			};
-			
+
 			$('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption).done(() => {
 				$("#ccg001-btn-search-drawer").focus();
-				/*vm.selectedCode.subscribe((newValue) => {
-					let selectedItem: UnitModel = _.find(vm.employeeList(), ['code', newValue]);
-					vm.selectedId(selectedItem.id);
-
-				});*/
 			});
-			
-			
-				vm.$window.storage(QRCODE_SIZE)
-					.then((data: any) => {
-						if (data) {
-							vm.qrSize(data.qrCodeSize);
-						}
-					});
+
+
+			vm.$window.storage(QRCODE_SIZE)
+				.then((data: any) => {
+					if (data) {
+						vm.qrSize(data.qrCodeSize);
+					}
+				});
 
 		}
 
@@ -113,12 +109,12 @@ module nts.uk.at.view.kmp001.j {
 			let vm = this;
 			vm.initEmployeeList();
 
-			
+
 			vm.qrSize.subscribe(() => {
 				vm.textEditorJ2_12('');
 				vm.textEditorJ2_16('');
 			});
-			
+
 			// 大
 			vm.textEditorJ2_12.subscribe((s) => {
 				if (vm.qrSize() == 0 && s > '4') {
@@ -162,13 +158,33 @@ module nts.uk.at.view.kmp001.j {
 
 		exportQR() {
 			let vm = this;
-			nts.uk.characteristics.save(QRCODE_SIZE, {qrCodeSize: ko.unwrap(vm.qrSize)});
+
+			if (vm.multiSelectedCode().length == 0) {
+				vm.$dialog.error({ messageId: 'MsgB_2', messageParams: [nts.uk.resource.getText('KMT014_21')] });
+			} else {
+				vm.$window.storage("contractInfo")
+				.then((data: any) => {
+					if (data) {
+						const input = { 
+							contractCode: data.contractCode, 
+							sIds: ko.unwrap(vm.selectedIds), 
+							qrSize: ko.unwrap(vm.qrSize),
+							setRow: ko.unwrap(vm.textEditorJ2_12),
+							setCol: ko.unwrap(vm.textEditorJ2_16),
+							};
+						vm.$ajax(EXPORT_QRCODE, input)
+							.then(() => {
+								nts.uk.characteristics.save(QRCODE_SIZE, { qrCodeSize: ko.unwrap(vm.qrSize) });
+							})
+					}
+				});
+			}
 		}
 
 		initEmployeeList() {
 			let vm = this;
 			vm.listComponentOption = {
-				isShowAlreadySet: true,
+				isShowAlreadySet: false,
 				isMultiSelect: true,
 				listType: ListType.EMPLOYEE,
 				employeeInputList: vm.employeeList,
