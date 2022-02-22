@@ -21,7 +21,7 @@ public class GetForm9OutputEmployeeInfoService {
 	 * 取得する
 	 * @param require
 	 * @param workplaceGroupId 職場グループID
-	 * @param ymd 年月日
+	 * @param period 年月日
 	 * @return
 	 */
 	public static Form9OutputEmployeeInfoList get(Require require, String workplaceGroupId, DatePeriod period) {

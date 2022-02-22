@@ -104,7 +104,8 @@ public class GetWorkplaceGroupRelationshipInforFileQuery {
         Form9OutputEmployeeInfoList outputEmpInfoList = GetForm9OutputEmployeeInfoService.get(
                 requireOutputEmployeeImpl,
                 workplaceGroup.getId(),
-                period);
+                period
+        );
 
         // 3. 取得する(Require, List<社員ID>, 期間, 予実取得区分)
         // result: Map<社員IDと年月日,社員の出力医療時間>
