@@ -50,11 +50,12 @@ public class UrlResult implements LoginCommandHandlerBase.AuthenticationResultBa
 
 	private IdentifiedEmployeeInfo identified;
 
-	public UrlResult(boolean success){
+	public UrlResult(boolean success, CheckChangePassDto changePw){
 		this.success = success;
+		this.changePw = changePw;
 	}
-    public static UrlResult failed() {
-		return new UrlResult(false);
+    public static UrlResult failed(CheckChangePassDto changePw) {
+		return new UrlResult(false, changePw);
     }
 
 	public static UrlResult create(UrlExecInfo urlExecInfo, Optional<DeviceInfo> device) {
@@ -75,7 +76,7 @@ public class UrlResult implements LoginCommandHandlerBase.AuthenticationResultBa
 				urlExecInfo.getIssueDate(),
 				taskValue,
 				webAppID,
-				null,
+				new CheckChangePassDto(false, null, true),
 				"",
 				device.map(d -> d.isSmartPhone()).orElse(null),
 				true,

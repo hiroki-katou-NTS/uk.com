@@ -8,7 +8,7 @@ __viewContext.ready(function() {
     }
     let urlID = urlParams.id;
     let tcd = urlParams.tcd;
-    let server_path = nts.uk.text.format("/ctx/sys/gateway/url/{0}/{1}", tcd, urlID);
+    let server_path = nts.uk.text.format("/ctx/sys/gateway/login/url/{0}/{1}", tcd, urlID);
     nts.uk.request.ajax("com", server_path).done((success) => {
         //Doi ung password policy
         if(!nts.uk.util.isNullOrUndefined(success.changePw.successMsg)&&!nts.uk.util.isNullOrEmpty(success.changePw.successMsg)){
@@ -100,7 +100,6 @@ function routeData(success, urlID){
     switch(success.programID){
         case "ccg007": {
             let path = window.location.href;
-            let urlID = _.split(path, '=')[1];
             // forgot password screen
             nts.uk.request.jump("com", "/view/ccg/007/"+success.screenID+"/index.xhtml?id="+urlID);
             break;

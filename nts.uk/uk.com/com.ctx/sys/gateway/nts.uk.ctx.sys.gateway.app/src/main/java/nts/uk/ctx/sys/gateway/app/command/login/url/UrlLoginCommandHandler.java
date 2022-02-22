@@ -7,6 +7,7 @@ import lombok.val;
 import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRequire;
+import nts.uk.ctx.sys.gateway.app.command.login.password.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.loginold.LoginRecordRegistService;
 import nts.uk.ctx.sys.gateway.app.command.tenantlogin.ConnectDataSourceOfTenant;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
@@ -27,13 +28,21 @@ import nts.uk.shr.com.context.DeviceInfo;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.url.UrlExecInfo;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class UrlLoginCommandHandler extends LoginCommandHandlerBase<
 												UrlLoginCommand,
 												UrlResult,
 												UrlResult,
 												UrlLoginCommandHandler.Require> {
+
+	@Inject
+	private LoginRequire loginRequire;
 
 	@Inject
 	UrlExecInfoRepository urlExecInfoRepository;
@@ -70,7 +79,7 @@ public class UrlLoginCommandHandler extends LoginCommandHandlerBase<
 
 	@Override
 	protected UrlResult tenantAuthencationFailed() {
-		return UrlResult.failed();
+		return UrlResult.failed(CheckChangePassDto.failedToAuthTenant());
 	}
 
 	@Override
@@ -82,7 +91,9 @@ public class UrlLoginCommandHandler extends LoginCommandHandlerBase<
 		// 埋込URL実行情報を取得する
 		val urlExecInfo = require.getUrlExecInfoByUrlID(urlID);
 		if(!urlExecInfo.isPresent()){
-			return UrlResult.failed();
+			return UrlResult.failed(
+					new CheckChangePassDto(false, null, true)
+			);
 		}
 
 		Optional<DeviceInfo> device = DeviceInfo.detectDevice(command.getRequest());
@@ -142,8 +153,11 @@ public class UrlLoginCommandHandler extends LoginCommandHandlerBase<
 		void loginRecord(LoginRecordInput loginRecord, String cid);
 	}
 
-	@RequiredArgsConstructor
 	private class RequireImpl extends LoginRequire.BaseImpl implements Require {
+		public RequireImpl(){
+			loginRequire.setup(this);
+		}
+
 		@Override
 		public Optional<UrlExecInfo> getUrlExecInfoByUrlID(String urlID) {
 			return urlExecInfoRepository.getUrlExecInfoByUrlID(urlID);
