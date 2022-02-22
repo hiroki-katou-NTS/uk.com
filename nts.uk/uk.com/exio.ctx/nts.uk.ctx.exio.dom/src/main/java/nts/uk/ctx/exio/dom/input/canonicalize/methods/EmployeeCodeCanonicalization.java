@@ -9,8 +9,7 @@ import lombok.val;
 import nts.gul.util.Either;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization.GetEmployeeIdRequire;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.employeebasic.EmployeeIdIdentifier;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
@@ -79,7 +78,7 @@ public class EmployeeCodeCanonicalization {
 
 	private static Either<ErrorMessage, String> getEmployeeId(CanonicalizationMethodRequire require, 	ExecutionContext context, String employeeCode) {
 		
-		Optional<String> employeeId = EmployeeBasicCanonicalization.getEmployeeId(require, context, employeeCode); 
+		Optional<String> employeeId = EmployeeIdIdentifier.getEmployeeId(require, context, employeeCode); 
 		
 		return Either.rightOptional(
 				employeeId,
@@ -91,7 +90,7 @@ public class EmployeeCodeCanonicalization {
 				.addCanonicalized(CanonicalItem.of(itemNoEmployeeId, employeeId));
 	}
 	
-	public static interface Require extends GetEmployeeIdRequire{
+	public static interface Require extends EmployeeIdIdentifier.GetEmployeeIdRequire{
 	}
 
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {

@@ -10,6 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.employeebasic.PersonIdIdentifier;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
@@ -82,10 +83,10 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 	}
 	
 	private String getPersonId(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, String employeeId) {
-		return EmployeeBasicCanonicalization.getPersonId(require, context, employeeId);
+		return PersonIdIdentifier.getPersonId(require, context, employeeId);
 	}
 	
-	public static interface RequireCanonicalizeExtends extends EmployeeBasicCanonicalization.GetPersonIdRequire{
+	public static interface RequireCanonicalizeExtends extends PersonIdIdentifier.GetPersonIdRequire{
 	}
 
 	@Override
