@@ -87,7 +87,7 @@ public class GetSettingStampInputSmartPhone {
 		});
 		
 		// 3 .get ログイン会社ID
-		
+		// domain 
 		// 4 .get ログイン会社ID
 		this.stampingAreaRepository.findByEmployeeId(AppContexts.user().employeeId()).ifPresent(sa -> {
 

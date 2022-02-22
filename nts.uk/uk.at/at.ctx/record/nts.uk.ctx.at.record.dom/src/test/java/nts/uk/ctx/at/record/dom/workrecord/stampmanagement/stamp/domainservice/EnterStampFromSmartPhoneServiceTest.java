@@ -102,7 +102,7 @@ public class EnterStampFromSmartPhoneServiceTest {
 		new Expectations() {
 		{
 			require.getSmartphoneStampSetting();
-			result = Optional.of(settingsSmartphoneStamp);
+			result = Optional.ofNullable(null);
 		}
 	};
 	

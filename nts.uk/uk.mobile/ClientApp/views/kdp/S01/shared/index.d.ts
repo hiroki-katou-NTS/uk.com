@@ -9,6 +9,23 @@ export module model {
 
         //抑制する打刻
         stampToSuppress: IStampToSuppress;
+
+        //社員別の打刻エリア制限設定
+        employeeStampingAreaRestrictionSetting: IEmployeeStampingAreaRestrictionSetting
+    }
+
+    export interface IEmployeeStampingAreaRestrictionSetting {
+        // 社員ID
+        employeeId: string;
+        // 打刻エリア制限
+        stampingAreaRestriction: IStampingAreaRestriction;
+    }
+
+    export interface IStampingAreaRestriction {
+        useLocationInformation: number;
+
+        /** 制限方法 */
+        stampingAreaLimit: number;
     }
 
     export interface ISettingsSmartphoneStamp {
@@ -24,9 +41,16 @@ export module model {
         // 打刻ボタンを抑制する
         buttonEmphasisArt: boolean;
 
-        // 位置情報を利用する
-	    locationInfoUse: boolean;
+        // 打刻エリア制限
+        stampingAreaRestriction: IStampingAreaRestriction;
 
+    }
+
+    export interface IStampingAreaRestriction {
+        useLocationInformation: number;
+
+        /** 制限方法 */
+        stampingAreaLimit: number;
     }
 
     export interface IStampPageLayoutDto {
@@ -59,14 +83,14 @@ export module model {
         buttonPositionNo: number;
 
         /** ボタンの表示設定 */
-        buttonDisSet: IButtonDisSetDto; 
+        buttonDisSet: IButtonDisSetDto;
 
         buttonValueType: number;
 
         usrArt: number;
 
         buttonType: IButtonTypeDto;
-        
+
         icon: string;
 
         taskChoiceArt: number;
@@ -74,8 +98,8 @@ export module model {
 
     export interface IButtonTypeDto {
         /** 予約区分 */
-	    reservationArt: number;
-        
+        reservationArt: number;
+
         /** 打刻種類 */
         stampType: IStampTypeDto;
     }
@@ -235,7 +259,7 @@ export module model {
         /**
          * 作業グループ
          */
-         workGroup: IWorkGroup; 
+        workGroup: IWorkGroup;
     }
 
     interface IOvertimeDeclarationComamnd {
@@ -299,8 +323,8 @@ export module model {
 
     export interface IStampInfoDisp {
         /**
-	 * 打刻カード番号
-	 */
+     * 打刻カード番号
+     */
         stampNumber: string;
 
         /**
@@ -320,9 +344,9 @@ export module model {
     }
     interface IStamp {
         /**
-	 * 契約コード
-	 * ver2　属性追加
-	 */
+     * 契約コード
+     * ver2　属性追加
+     */
         contractCode: string;
 
         /**
