@@ -8,6 +8,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.UkRelayState;
 import org.apache.commons.codec.net.URLCodec;
 
 import com.onelogin.saml2.util.Constants;
