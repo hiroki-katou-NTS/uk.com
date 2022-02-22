@@ -18,7 +18,7 @@ public class GetReferenceEmployeesDomainService {
 	 * @param baseDate 年月日
 	 * @return List<社員ID>
 	 */
-	public List<String> get(Require require, GeneralDate baseDate) {
+	public static List<String> get(Require require, GeneralDate baseDate) {
 		// ロールIDから参照可能な職場リストを取得する
 		List<String> workplaceIds = require.findWorkplaceList(baseDate);
 		if (workplaceIds.isEmpty()) {
