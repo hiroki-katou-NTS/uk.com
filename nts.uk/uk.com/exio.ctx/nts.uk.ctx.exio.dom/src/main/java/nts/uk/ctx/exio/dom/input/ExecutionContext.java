@@ -8,12 +8,16 @@ import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 @Value
 public class ExecutionContext{
 
+	/** 会社ID */
 	String companyId;
 	
+	/** 受入設定コード */
 	String settingCode;
 	
+	/** 受入グループID */
 	ImportingDomainId domainId;
 	
+	/** 受入モード */
 	ImportingMode mode;
 	
 	public ExternalImportCode getExternalImportCode() {
