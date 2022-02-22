@@ -129,6 +129,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ClosureSidDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.ClosureDateDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -1301,8 +1302,8 @@ public class DPCorrectionProcessorMob {
 			result = DateRange.convertPeriod(dateAgg.getPeriod());
 			closureId = dateAgg.getClosureId();
 			lstClosureCache.addAll(lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream())
-					.map(x -> new AggrPeriodClosure(x.getClosureId().value, x.getClosureDate(), x.getYearMonth().v(),
-							x.getPeriod()))
+					.map(x -> new AggrPeriodClosure(x.getClosureId().value, ClosureDateDto.convertToDoamin(x.getClosureDate()), x.getYearMonth().v(),
+							new DateRange(x.getPeriod().start(), x.getPeriod().end())))
 					.collect(Collectors.toList()));
 
 		} else if (displayFormat == DisplayFormat.ByDate.value) {

@@ -129,7 +129,7 @@ public class DailyModifyMobileCommandFacade {
 			Optional<IntegrationOfMonthly> domainMonthOpt = Optional.empty();
 			if (aggrClosure != null)
 				monthParam = new UpdateMonthDailyParam(aggrClosure.getYearMonth(), dataParent.getEmployeeId(),
-						aggrClosure.getClosureId(), ClosureDateDto.from(aggrClosure.getClosureDate()),
+						aggrClosure.getClosureId(), ClosureDateDto.from(aggrClosure.getClosureDate().convertToClosureDateDto()),
 						domainMonthOpt, new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
 						"", true, true, 0L);
