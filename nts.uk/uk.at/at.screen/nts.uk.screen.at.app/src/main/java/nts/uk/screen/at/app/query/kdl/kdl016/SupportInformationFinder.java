@@ -100,11 +100,11 @@ public class SupportInformationFinder {
         // 応援の運用設定.利用するか==TRUE
         if (supportOperationSetting.isUsed()) {
             supportFuncCtrl = supportFuncCtrlRepo.get(cid);
+        }
 
-            //応援の運用設定.利用するか or 応援予定の機能制御.応援予定を利用するか==FALSE
-            if (supportOperationSetting.isUsed() || !supportFuncCtrl.isUse()) {
-                throw new BusinessException("Msg_3240");
-            }
+        //応援の運用設定.利用するか or 応援予定の機能制御.応援予定を利用するか==FALSE
+        if (!supportOperationSetting.isUsed() || (supportFuncCtrl != null && !supportFuncCtrl.isUse())) {
+            throw new BusinessException("Msg_3240");
         }
 
         // 応援の運用設定.利用するか and 応援予定の機能制御.応援予定を利用するか==TRUE
@@ -145,7 +145,7 @@ public class SupportInformationFinder {
         List<SupportableEmployee> supportableEmployees = supportableEmployeeRepo.findByEmployeeIdWithPeriod(sIds, period);
 
         //4. 社員の情報を取得する
-        val supportEmpIds = supportableEmployees.stream().map(x -> x.getEmployeeId().v()).collect(Collectors.toList());
+        val supportEmpIds = supportableEmployees.stream().map(x -> x.getEmployeeId().v()).distinct().collect(Collectors.toList());
         List<EmployeeInformationImport> supportEmployeeInfos = this.employeeInfoAdapter
                 .getEmployeeInfo(new EmployeeInformationQueryDtoImport(supportEmpIds, period.end(), false, false, false,
                         false, false, false));
@@ -153,9 +153,6 @@ public class SupportInformationFinder {
         RequireOrgInfoImpl requireOrgInfo = new RequireOrgInfoImpl(groupAdapter, serviceAdapter, wplAdapter);
         List<SupportInfoDto> supportInfoResults = new ArrayList<>();
         for (SupportableEmployee supportableEmployee : supportableEmployees) {
-            // 2. Loop：List<応援可能な社員> .map $.対象組織識別情報 .distinct();
-            // List<TargetOrgIdenInfor> targetOrgIdenInfors = supportableEmployees.stream().filter(distinctByKey(SupportableEmployee::getRecipient)).map(SupportableEmployee::getRecipient).collect(Collectors.toList());
-
             // 組織の表示情報を取得する(Require, 年月日): output 組織の表示情報
             DisplayInfoOrganization orgInfo = supportableEmployee.getRecipient().getDisplayInfor(requireOrgInfo, period.end());
 
