@@ -399,7 +399,7 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public List<CanonicalizedDataRecord> getCanonicalizedData(ExecutionContext context, ImportingDomainId domainId,
 				int targetItemNo, String targetItemValue) {
-			return canonicalizedDataRecordRepo.findCanonicalizedDomainDataByCriteria(this, context, domainId, targetItemNo, targetItemValue);
+			return canonicalizedDataRecordRepo.findFromDomainId(this, context, domainId, targetItemNo, targetItemValue);
 		}
 	}
 }

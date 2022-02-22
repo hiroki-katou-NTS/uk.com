@@ -12,7 +12,7 @@ public interface CanonicalizedDataRecordRepository {
 	
 	List<String> getAllEmployeeIds(Require require, ExecutionContext context);
 
-	List<CanonicalizedDataRecord> findCanonicalizedDomainDataByCriteria(Require require, ExecutionContext context, ImportingDomainId domainId,int criteriaItemNo, String criteriaValue);
+	List<CanonicalizedDataRecord> findFromDomainId(Require require, ExecutionContext context, ImportingDomainId domainId,int criteriaItemNo, String criteriaValue);
 	
 	List<CanonicalizedDataRecord> findByCriteria(Require require, ExecutionContext context, int criteriaItemNo, String criteriaValue);
 }
