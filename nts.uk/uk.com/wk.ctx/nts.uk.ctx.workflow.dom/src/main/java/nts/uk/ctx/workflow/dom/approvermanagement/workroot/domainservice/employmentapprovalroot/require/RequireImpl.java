@@ -15,6 +15,9 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalSettingInform
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.adapter.EmployeeInDesignatedImport;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.adapter.GetEmployeeInDesignatedAdapter;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.adapter.GetReferenceWorkplaceListAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.require.RequireService.Require;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ApproverOperationSettings;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ApproverOperationSettingsRepository;
@@ -30,6 +33,8 @@ public class RequireImpl implements Require {
 	private ApproverOperationSettingsRepository approverOperationSettingsRepository;
 	private ApprovalSettingRepository approvalSettingRepository;
 	private CreateDailyApprover createDailyApprover;
+	private GetReferenceWorkplaceListAdapter getReferenceWorkplaceListAdapter;
+	private GetEmployeeInDesignatedAdapter getEmployeeInDesignatedAdapter;
 
 	@Override
 	public List<PersonApprovalRoot> getHistoryWithStartDate(String sid, GeneralDate baseDate) {
@@ -133,5 +138,16 @@ public class RequireImpl implements Require {
 	@Override
 	public void updateOperationSetting(ApproverOperationSettings domain) {
 		this.approverOperationSettingsRepository.update(domain);
+	}
+
+	@Override
+	public List<String> findWorkplaceList(GeneralDate baseDate) {
+		return this.getReferenceWorkplaceListAdapter.findByBaseDate(baseDate);
+	}
+
+	@Override
+	public List<EmployeeInDesignatedImport> findEmployeeList(List<String> workplaceIds, GeneralDate baseDate,
+			List<Integer> empStatus) {
+		return this.getEmployeeInDesignatedAdapter.findEmployees(workplaceIds, baseDate, empStatus);
 	}
 }
