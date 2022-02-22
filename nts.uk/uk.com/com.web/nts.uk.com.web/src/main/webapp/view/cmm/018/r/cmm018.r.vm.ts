@@ -12,11 +12,9 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 		levelData: any[] = [];
 
 		level: KnockoutObservable<number> = ko.observable(1);
-		levelBackup: number = 1;
-
+		
 		selectionData: SelectionData[] = [];
-		selectionDataBackup: SelectionData[] = [];
-
+		
 		firstItemName: KnockoutObservable<string> = ko.observable('');
 		secondItemName: KnockoutObservable<string> = ko.observable('');
 		thirdItemName: KnockoutObservable<string> = ko.observable('');
@@ -24,12 +22,34 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 		fifthItemName: KnockoutObservable<string> = ko.observable('');
 		processMemo: KnockoutObservable<string> = ko.observable('');
 		attentionMemo: KnockoutObservable<string> = ko.observable('');
+		
+		levelBackup: number = 1;
+		selectionDataBackup: SelectionData[] = [];
+		equalSelectionData: KnockoutObservable<boolean> = ko.observable(false);
+		firstItemNameBackup: string = '';
+		secondItemNameBackup: string = '';
+		thirdItemNameBackup: string = '';
+		fourthItemNameBackup: string = '';
+		fifthItemNameBackup: string = '';
+		processMemoBackup: string = '';
+		attentionMemoBackup: string = '';
 
-		canJumpToCMM030: KnockoutObservable<boolean> = ko.observable(false);
+		canJumpToCMM030: KnockoutComputed<boolean>;
 		
 		created() {
 			const vm = this;
 			vm.levelData = [{ id: 0, common: vm.$i18n('CMM018_226'), level: 1 }];
+			vm.canJumpToCMM030 = ko.computed(() => {
+				return vm.level() === vm.levelBackup &&
+				vm.equalSelectionData() &&
+				vm.firstItemName() === vm.firstItemNameBackup &&
+				vm.secondItemName() === vm.secondItemNameBackup &&
+				vm.thirdItemName() === vm.thirdItemNameBackup &&
+				vm.fourthItemName() === vm.fourthItemNameBackup &&
+				vm.fifthItemName() === vm.fifthItemNameBackup &&
+				vm.processMemo() === vm.processMemoBackup &&
+				vm.attentionMemo() === vm.attentionMemoBackup
+			});
 		} 
 
 		mounted() {
@@ -65,14 +85,25 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 						vm.fifthItemName(setting.approverSettingScreenInfor.fifthItemName);
 						vm.processMemo(setting.approverSettingScreenInfor.processMemo);
 						vm.attentionMemo(setting.approverSettingScreenInfor.attentionMemo);
+
+						vm.firstItemNameBackup = setting.approverSettingScreenInfor.firstItemName;
+						vm.secondItemNameBackup = setting.approverSettingScreenInfor.secondItemName;
+						vm.thirdItemNameBackup = setting.approverSettingScreenInfor.thirdItemName;
+						vm.fourthItemNameBackup = setting.approverSettingScreenInfor.fourthItemName;
+						vm.fifthItemNameBackup = setting.approverSettingScreenInfor.fifthItemName;
+						vm.processMemoBackup = setting.approverSettingScreenInfor.processMemo;
+						vm.attentionMemoBackup = setting.approverSettingScreenInfor.attentionMemo;
 					}
 
 					if (appUseAtrs) {
 						_.forEach(appUseAtrs, attr => {
 							const { appType } = attr;
 							const appName = _.find(listAppType, app => app.value === appType)?.name;
-							const notUseAtr = _.find(settingTypeUseds, setting => setting.applicationType === appType
-								&& setting.employmentRootAtr === EmploymentRootAtr.APPLICATION)?.notUseAtr || NotUseAtr.NOT_DO;
+							const notUseAtr = _.find(
+								settingTypeUseds,
+								setting => setting.applicationType === appType && setting.employmentRootAtr === EmploymentRootAtr.APPLICATION
+							)?.notUseAtr || NotUseAtr.NOT_DO;
+
 							vm.selectionData.push(new SelectionData({
 								name: appName,
 								applicationType: appType,
@@ -82,10 +113,14 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 						});
 					}
 
-					const useDaily = _.find(settingTypeUseds, setting => setting.confirmRootType === ConfirmationRootType.DAILY_CONFIRMATION
-						&& setting.employmentRootAtr === EmploymentRootAtr.CONFIRMATION)?.notUseAtr || NotUseAtr.NOT_DO;
-					const useMonthly = _.find(settingTypeUseds, setting => setting.confirmRootType === ConfirmationRootType.MONTHLY_CONFIRMATION
-						&& setting.employmentRootAtr === EmploymentRootAtr.APPLICATION)?.notUseAtr || NotUseAtr.NOT_DO;
+					const useDaily = _.find(
+						settingTypeUseds,
+						setting => setting.confirmRootType === ConfirmationRootType.DAILY_CONFIRMATION && setting.employmentRootAtr === EmploymentRootAtr.CONFIRMATION
+					)?.notUseAtr || NotUseAtr.NOT_DO;
+					const useMonthly = _.find(
+						settingTypeUseds,
+						setting => setting.confirmRootType === ConfirmationRootType.MONTHLY_CONFIRMATION && setting.employmentRootAtr === EmploymentRootAtr.APPLICATION
+					)?.notUseAtr || NotUseAtr.NOT_DO;
 
 					vm.selectionData.push(
 						new SelectionData({
@@ -103,6 +138,7 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 					);
 
 					vm.selectionDataBackup = _.cloneDeep(vm.selectionData);
+					vm.equalSelectionData(true);
 					dfd.resolve();
 				})
 				.fail(() => dfd.reject())
@@ -148,10 +184,9 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 				}],
 			});
 
-			$('#grid1').on('ntsgridcontrolvaluechanged', (_, val) => {
-				const { value } = val;
-				vm.level(value);
-				const validateElement: string[] = vm.getElementValidate(value);
+			$('#grid1').on('ntsgridcontrolvaluechanged', () => {
+				vm.level(vm.levelData[0]?.level);
+				const validateElement: string[] = vm.getElementValidate();
 				vm.$errors('clear').then(() => vm.$validate(validateElement));
 			});
 		}
@@ -167,9 +202,9 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 				hidePrimaryKey: true,
 				columns: [
 					{ headerText: '', key: 'id', hidden: true },
-					{ headerText: '', key: 'name', width: '180px',  },
+					{ headerText: '', key: 'name', width: '180px' },
 					{
-						headerText: vm.$i18n('CMM018_225'), key: 'notUseAtr', dataType: 'number',
+						headerText: vm.$i18n('CMM018_225'), key: 'notUseAtr', dataType: 'boolean',
 					 	width: '160px', ntsControl: 'Checkbox', headerCssClass: 'text-center', columnCssClass: 'text-center'
 					},
 				],
@@ -187,32 +222,55 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 				}],
 			});
 
+			$('#grid2').on('ntsgridcontrolvaluechanged', () => {
+				const equal = _.isEqual(vm.selectionData, vm.selectionDataBackup);
+				vm.equalSelectionData(equal);
+			});
+
 		}
 
 		register() {
 			const vm = this;
-			const validateElement: string[] = vm.getElementValidate(vm.level());
+			const validateElement: string[] = vm.getElementValidate();
+
+			const commandHandler = () => {
+				const command = vm.createCommand();
+				vm
+					.$blockui('grayout')
+					.then(() => vm.$ajax('com', API.register, command))
+					.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+					.then(() => {
+						vm.levelBackup = _.cloneDeep(vm.level());
+						vm.selectionDataBackup = _.cloneDeep(vm.selectionData);
+						vm.firstItemNameBackup = _.cloneDeep(vm.firstItemName());
+						vm.secondItemNameBackup = _.cloneDeep(vm.secondItemName());
+						vm.thirdItemNameBackup = _.cloneDeep(vm.thirdItemName());
+						vm.fourthItemNameBackup = _.cloneDeep(vm.fourthItemName());
+						vm.fifthItemNameBackup = _.cloneDeep(vm.fifthItemName());
+						vm.processMemoBackup = _.cloneDeep(vm.processMemo());
+						vm.attentionMemoBackup = _.cloneDeep(vm.attentionMemo());
+					})
+					.always(() => vm.$blockui('clear'));
+			};
 			vm.$validate(validateElement).then((valid: boolean) => {
 				if (!valid) return;
 				const check = vm.checkForChanges();
-				if (!check) return;
+				if (!check) {
+					commandHandler();
+					return;
+				};
+
 				vm.$dialog.confirm({ messageId: 'Msg_3310' }).then((result: 'yes' | 'no') => {
 					if (result === 'no') return;
-	
-					const command = vm.createCommand();
-					vm.$ajax('com', API.register, command)
-						.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
-						.then(() => {
-							vm.levelBackup = _.cloneDeep(vm.level());
-							vm.selectionDataBackup = _.cloneDeep(vm.selectionData);
-							vm.canJumpToCMM030(true)
-						});
+					commandHandler();
 				});
 			})
 			.then(() => $('#process-memo').focus());
 		}
 
-		getElementValidate(level: number) {
+		getElementValidate() {
+			const vm = this;
+			const level = ko.unwrap(vm.level);
 			const result = [
 				'#process-memo',
 				'#first-name',
@@ -238,7 +296,15 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 		createCommand(): Command {
 			const vm = this;
 			const approvalLevelNo = vm.level();
-			const settingTypeUseds = _.map(vm.selectionData, data => data.notUseAtr ? NotUseAtr.DO : NotUseAtr.NOT_DO);
+			
+			const settingTypeUseds: SettingTypeUsed[] = _.map(vm.selectionData, data => {
+				return {
+					applicationType: data.applicationType,
+					confirmRootType: data.confirmRootType,
+					employmentRootAtr: data.employmentRootAtr,
+					notUseAtr: data.notUseAtr ? NotUseAtr.DO : NotUseAtr.NOT_DO,
+				} as SettingTypeUsed;
+			});
 			const level = ko.unwrap(vm.level);
 			if (level < 5) vm.fifthItemName(null);
 			if (level < 4) vm.fourthItemName(null);
@@ -262,6 +328,8 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 
 		jumpToCMM030A() {
 			const vm = this;
+			if (!vm.canJumpToCMM030()) return;
+
 			const params = { requestUrl: '/view/cmm/018/r/index.xhtml' };
 			vm.$jump('com', '/view/cmm/030/a/index.xhtml', params);
 		}

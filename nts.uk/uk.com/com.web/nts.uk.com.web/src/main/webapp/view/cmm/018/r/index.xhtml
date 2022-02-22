@@ -24,9 +24,9 @@
 				<!-- R1_1 -->
 				<a data-bind="ntsLinkButton: { jump: '../x/index.xhtml' }">#{i18n.getText('CMM018_220')}</a>
 				<!-- R1_2 -->
-				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_221')}</button>
+				<button tabindex="1" class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_221')}</button>
 				<!-- R1_3 -->
-				<button data-bind="click: jumpToCMM030A, enable: canJumpToCMM030()">#{i18n.getText('CMM018_222')}</button>
+				<button tabindex="2" data-bind="click: jumpToCMM030A, enable: canJumpToCMM030()">#{i18n.getText('CMM018_222')}</button>
 			</div>
 			<div id="contents-area">
 				<!-- R2_1 -->
@@ -51,7 +51,7 @@
 					<!-- R3_1 -->
 					<div data-bind="ntsFormLabel: { constraint: 'ApproverInputExplanation' }">#{i18n.getText('CMM018_235')}</div>
 					<!-- R3_2 -->
-					<textarea id="process-memo" rows="7" data-bind="ntsMultilineEditor: {
+					<textarea tabindex="3" id="process-memo" rows="7" data-bind="ntsMultilineEditor: {
 						name: '#[CMM018_236]', 
 						value: processMemo,
 						constraint: 'ApproverInputExplanation',
@@ -70,11 +70,12 @@
 							<!-- R3_14 -->
 							<i class="item-arrow-right pos-absolute" data-bind="ntsIcon: { no: 238, width: 20, height: 20, extension: 'png' }"></i>
 							<!-- R3_9 -->
-							<input id="first-name" data-bind="ntsTextEditor: {
+							<input tabindex="4" id="first-name" data-bind="ntsTextEditor: {
 								name: '#[CMM018_243]',
 								value: firstItemName,
 								constraint: 'ApproverItemName',
-								option: { width: '130px'}
+								option: { width: '130px'},
+								required: true,
 							}"/>
 						</div>
 						<div class="flex flex-col pos-relative">
@@ -83,12 +84,13 @@
 							<!-- R3_15 -->
 							<i class="item-arrow-right pos-absolute" data-bind="ntsIcon: { no: 238, width: 20, height: 20, extension: 'png' }"></i>
 							<!-- R3_10 -->
-							<input id="second-name" data-bind="ntsTextEditor: {
+							<input tabindex="5" id="second-name" data-bind="ntsTextEditor: {
 								name: '#[CMM018_244]',
 								value: secondItemName,
 								constraint: 'ApproverItemName',
 								option: { width: '130px'},
-								enable: level() >= 2
+								enable: level() >= 2,
+								required: ko.computed(() => level() >= 2),
 							}"/>
 						</div>
 						<div class="flex flex-col pos-relative">
@@ -97,12 +99,13 @@
 							<!-- R3_16 -->
 							<i class="item-arrow-right pos-absolute" data-bind="ntsIcon: { no: 238, width: 20, height: 20, extension: 'png' }"></i>
 							<!-- R3_11 -->
-							<input id="third-name" data-bind="ntsTextEditor: {
+							<input tabindex="6" id="third-name" data-bind="ntsTextEditor: {
 								name: '#[CMM018_245]',
 								value: thirdItemName,
 								constraint: 'ApproverItemName',
 								option: { width: '130px'},
-								enable: level() >= 3
+								enable: level() >= 3,
+								required: ko.computed(() => level() >= 3),
 							}"/>
 						</div>
 						<div class="flex flex-col pos-relative">
@@ -111,24 +114,26 @@
 							<!-- R3_17 -->
 							<i class="item-arrow-right pos-absolute" data-bind="ntsIcon: { no: 238, width: 20, height: 20, extension: 'png' }"></i>
 							<!-- R3_12 -->
-							<input id="fourth-name" data-bind="ntsTextEditor: {
+							<input tabindex="7" id="fourth-name" data-bind="ntsTextEditor: {
 								name: '#[CMM018_246]',
 								value: fourthItemName,
 								constraint: 'ApproverItemName',
 								option: { width: '130px'},
-								enable: level() >= 4
+								enable: level() >= 4,
+								required: ko.computed(() => level() >= 4),
 							}"/>
 						</div>
 						<div class="flex flex-col pos-relative">
 							<!-- R3_8 -->
 							<div class="ml-10" data-bind="ntsFormLabel: { constraint: 'ApproverItemName' }">#{i18n.getText('CMM018_242')}</div>
 							<!-- R3_13 -->
-							<input id="fifth-name" data-bind="ntsTextEditor: {
+							<input tabindex="8" id="fifth-name" data-bind="ntsTextEditor: {
 								name: '#[CMM018_247]',
 								value: fifthItemName,
 								constraint: 'ApproverItemName',
 								option: { width: '130px'},
-								enable: level() >= 5
+								enable: level() >= 5,
+								required: ko.computed(() => level() >= 5),
 							}"/>
 						</div>
 					</div>
@@ -137,7 +142,7 @@
 					<!-- R4_1 -->
 					<div data-bind="ntsFormLabel: { constraint: 'ApproverInputCareful' }">#{i18n.getText('CMM018_248')}</div>
 					<!-- R4_2 -->
-					<textarea id="attention-memo" rows="2" data-bind="ntsMultilineEditor: {
+					<textarea tabindex="9" id="attention-memo" rows="2" data-bind="ntsMultilineEditor: {
 						name: '#[CMM018_249]', 
 						value: attentionMemo,
 						constraint: 'ApproverInputCareful',

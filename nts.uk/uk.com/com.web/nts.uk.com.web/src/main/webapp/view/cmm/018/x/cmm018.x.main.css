@@ -4,7 +4,7 @@
     box-shadow: 0 0px rgb(192, 192, 192);
     background-color: white;
     margin-top: 5px;
-    width: 590px !important;
+    width: 580px !important;
     text-align: center;
     border-color: rgb(192, 192, 192);
     display: flex;
@@ -89,6 +89,6 @@ button:focus.caret-right:after {
 }
 .panel-bottom {
     display: flex;
-    min-width: 1245px;
+    min-width: 1235px;
     column-gap: 10px;
 }

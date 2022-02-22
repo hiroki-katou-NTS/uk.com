@@ -50,7 +50,7 @@ public class JpaApproverOperationSettingsRepository extends JpaRepository implem
 			entity.item4Name = domain.getApproverSettingScreenInfor().getFourthItemName().get().v();
 		}
 		if (domain.getApproverSettingScreenInfor().getFifthItemName().isPresent()) {
-			entity.item5Name = domain.getApproverSettingScreenInfor().getThirdItemName().get().v();
+			entity.item5Name = domain.getApproverSettingScreenInfor().getFifthItemName().get().v();
 		}
 		if (!domain.getSettingTypeUseds().isEmpty() && domain.getSettingTypeUseds().get(0).getConfirmRootType().isPresent()) {
 			ConfirmationRootType confirmRootType = domain.getSettingTypeUseds().get(0).getConfirmRootType().get();
@@ -100,21 +100,22 @@ public class JpaApproverOperationSettingsRepository extends JpaRepository implem
 		
 		List<SettingTypeUsed> settingTypeUseds = entity.wwfmtApproverAppUses.stream()
 				.map(x -> {
-					EmploymentRootAtr employmentRootAtr = EmploymentRootAtr.COMMON;
-					ConfirmationRootType confirmRootType = null;
-					if (entity.confDayUse == 1 || entity.confMonthUse == 1) {
-						employmentRootAtr = EmploymentRootAtr.CONFIRMATION;
-						confirmRootType = (entity.confDayUse == 1)
-								? ConfirmationRootType.DAILY_CONFIRMATION
-								: ConfirmationRootType.MONTHLY_CONFIRMATION;
-					}
-					
-					return new SettingTypeUsed(employmentRootAtr,
+					return new SettingTypeUsed(EmploymentRootAtr.APPLICATION,
 						Optional.ofNullable(EnumAdaptor.valueOf(x.pk.appType, ApplicationType.class)),
-						Optional.ofNullable(confirmRootType),
+						Optional.empty(),
 						EnumAdaptor.valueOf(x.useAtr, NotUseAtr.class));
 				})
 				.collect(Collectors.toList());
+		
+		settingTypeUseds.add(new SettingTypeUsed(EmploymentRootAtr.CONFIRMATION,
+				Optional.empty(),
+				Optional.of(ConfirmationRootType.DAILY_CONFIRMATION),
+				EnumAdaptor.valueOf(entity.confDayUse, NotUseAtr.class)));
+		
+		settingTypeUseds.add(new SettingTypeUsed(EmploymentRootAtr.CONFIRMATION,
+				Optional.empty(),
+				Optional.of(ConfirmationRootType.MONTHLY_CONFIRMATION),
+				EnumAdaptor.valueOf(entity.confMonthUse, NotUseAtr.class)));
 		
 		return new ApproverOperationSettings(operationMode, approvalLevelNo, settingTypeUseds, approverSettingScreenInfor);
 	}
