@@ -410,6 +410,10 @@ public class IntegrationOfDaily {
 				,	this.outingTime);
 	}
 	
+	/**
+	 * 社員の応援情報を取得する
+	 * @return
+	 */
 	public SupportInfoOfEmployee getSupportInfoOfEmployee() {
 		
 		if ( this.ouenTime.isEmpty() ) {

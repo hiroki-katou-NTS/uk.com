@@ -79,10 +79,10 @@ public class SupportInfoOfEmployee {
 	
 	/**
 	 * 時間帯で応援する
-	 * @param employeeId
-	 * @param date
-	 * @param affiliationOrg
-	 * @param recipientList
+	 * @param employeeId 社員ID
+	 * @param date 年月日
+	 * @param affiliationOrg 所属組織
+	 * @param recipientList 応援先リスト
 	 * @return
 	 */
 	public static SupportInfoOfEmployee createWithTimezoneSupport (

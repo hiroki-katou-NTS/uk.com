@@ -26,16 +26,16 @@ public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 	/** 作業時間入力フラグ*/
 	private Optional<Boolean> inputFlag;
 
+
 	public OuenWorkTimeSheetOfDailyAttendance(SupportFrameNo workNo, WorkContent workContent, 
 			TimeSheetOfAttendanceEachOuenSheet timeSheet, Optional<Boolean> inputFlag) {
 		super();
 		this.workNo = workNo;
-		this.supportType = SupportType.TIMEZONE; // TODO: need to fix?
+		this.supportType = SupportType.TIMEZONE; 
 		this.workContent = workContent;
 		this.timeSheet = timeSheet;
 		this.inputFlag = inputFlag;
 	}
-	
 	public static OuenWorkTimeSheetOfDailyAttendance create(SupportFrameNo workNo, WorkContent workContent, 
 			TimeSheetOfAttendanceEachOuenSheet timeSheet, Optional<Boolean> inputFlag) {
 		
