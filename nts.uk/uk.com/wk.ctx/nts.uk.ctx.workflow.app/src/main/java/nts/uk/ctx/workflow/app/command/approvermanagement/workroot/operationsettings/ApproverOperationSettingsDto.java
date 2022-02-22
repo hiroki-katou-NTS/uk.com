@@ -48,7 +48,7 @@ public class ApproverOperationSettingsDto {
 				.fourthItemName(screenInfor.getFourthItemName().map(name -> name.v()).orElse(null))
 				.fifthItemName(screenInfor.getFifthItemName().map(name -> name.v()).orElse(null))
 				.processMemo(screenInfor.getProcessMemo().map(name -> name.v()).orElse(null))
-				.attentionMemo(screenInfor.getProcessMemo().map(name -> name.v()).orElse(null))
+				.attentionMemo(screenInfor.getAttentionMemo().map(name -> name.v()).orElse(null))
 				.build();
 		
 		return ApproverOperationSettingsDto.builder()

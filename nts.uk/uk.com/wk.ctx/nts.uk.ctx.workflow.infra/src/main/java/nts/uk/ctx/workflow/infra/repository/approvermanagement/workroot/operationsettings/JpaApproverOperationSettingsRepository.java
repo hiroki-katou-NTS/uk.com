@@ -41,16 +41,16 @@ public class JpaApproverOperationSettingsRepository extends JpaRepository implem
 		entity.levelUseNumber = domain.getApprovalLevelNo().value;
 		entity.item1Name = domain.getApproverSettingScreenInfor().getFirstItemName().v();
 		if (domain.getApproverSettingScreenInfor().getSecondItemName().isPresent()) {
-			entity.item2Name = domain.getApproverSettingScreenInfor().getFirstItemName().v();
+			entity.item2Name = domain.getApproverSettingScreenInfor().getSecondItemName().get().v();
 		}
 		if (domain.getApproverSettingScreenInfor().getThirdItemName().isPresent()) {
-			entity.item3Name = domain.getApproverSettingScreenInfor().getFirstItemName().v();
+			entity.item3Name = domain.getApproverSettingScreenInfor().getThirdItemName().get().v();
 		}
 		if (domain.getApproverSettingScreenInfor().getFourthItemName().isPresent()) {
-			entity.item4Name = domain.getApproverSettingScreenInfor().getFirstItemName().v();
+			entity.item4Name = domain.getApproverSettingScreenInfor().getFourthItemName().get().v();
 		}
 		if (domain.getApproverSettingScreenInfor().getFifthItemName().isPresent()) {
-			entity.item5Name = domain.getApproverSettingScreenInfor().getFirstItemName().v();
+			entity.item5Name = domain.getApproverSettingScreenInfor().getThirdItemName().get().v();
 		}
 		if (!domain.getSettingTypeUseds().isEmpty() && domain.getSettingTypeUseds().get(0).getConfirmRootType().isPresent()) {
 			ConfirmationRootType confirmRootType = domain.getSettingTypeUseds().get(0).getConfirmRootType().get();
@@ -61,7 +61,7 @@ public class JpaApproverOperationSettingsRepository extends JpaRepository implem
 			entity.processMemo = domain.getApproverSettingScreenInfor().getProcessMemo().get().v();
 		}
 		if (domain.getApproverSettingScreenInfor().getAttentionMemo().isPresent()) {
-			entity.processMemo = domain.getApproverSettingScreenInfor().getAttentionMemo().get().v();
+			entity.attentionMemo = domain.getApproverSettingScreenInfor().getAttentionMemo().get().v();
 		}
 		entity.wwfmtApproverAppUses = domain.getSettingTypeUseds().stream()
 				.map(this::toEntityAppUse)

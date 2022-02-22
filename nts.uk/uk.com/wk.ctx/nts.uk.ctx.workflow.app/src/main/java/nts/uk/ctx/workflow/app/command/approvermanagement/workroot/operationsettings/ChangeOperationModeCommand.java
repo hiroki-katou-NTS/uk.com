@@ -19,6 +19,9 @@ public class ChangeOperationModeCommand {
 	}
 	
 	public ItemNameInformation getItemNameInformation() {
+		if (itemNameInfor == null) {
+			return null;
+		}
 		return this.itemNameInfor.toValueObject();
 	}
 	

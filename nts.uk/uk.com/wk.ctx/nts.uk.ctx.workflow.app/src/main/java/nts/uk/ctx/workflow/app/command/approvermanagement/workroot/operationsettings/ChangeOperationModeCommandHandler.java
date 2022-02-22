@@ -7,13 +7,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.SetOperationModeDomainService;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.require.RequireService;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.OperationMode;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -32,12 +30,10 @@ public class ChangeOperationModeCommandHandler extends CommandHandler<ChangeOper
 		ChangeOperationModeCommand command = context.getCommand();
 		val require = requireService.createRequire();
 
-		EnumAdaptor.valueOf(command.getOpeMode(), OperationMode.class);
-		
 		List<AtomTask> atomTasks = SetOperationModeDomainService.update(require,
 				AppContexts.user().companyId(),
 				command.getOperationMode(),
-				Optional.of(command.getItemNameInformation()));
+				Optional.ofNullable(command.getItemNameInformation()));
 		
 		transaction.execute(AtomTask.bundle(atomTasks));
 	}

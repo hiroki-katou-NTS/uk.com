@@ -12,16 +12,21 @@
 			<com:scriptfile path="cmm018.r.vm.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ApproverInputExplanation
+				nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ApproverItemName
+				nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ApproverInputCareful
 			</com:ValidatorScript>
+			<com:EnumScript>
+				nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType
+			</com:EnumScript>
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- R1_1 -->
 				<a data-bind="ntsLinkButton: { jump: '../x/index.xhtml' }">#{i18n.getText('CMM018_220')}</a>
 				<!-- R1_2 -->
-				<button class="proceed">#{i18n.getText('CMM018_221')}</button>
+				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_221')}</button>
 				<!-- R1_3 -->
-				<button>#{i18n.getText('CMM018_222')}</button>
+				<button data-bind="click: jumpToCMM030A, enable: canJumpToCMM030()">#{i18n.getText('CMM018_222')}</button>
 			</div>
 			<div id="contents-area">
 				<!-- R2_1 -->
@@ -31,14 +36,14 @@
 				<!-- R2_2 -->
 				<div class="flex flex-col padding-left-20">
 					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM018_224')}</div>
-					<div class="padding-left-15">
+					<div class="padding-left-20">
 						<table id="grid1"></table>
 					</div>
 				</div>
 				<!-- R2_7 -->
 				<div class="flex flex-col padding-left-20">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM018_233')}</div>
-					<div class="padding-left-15">
+					<div class="padding-left-20">
 						<table id="grid2"></table>
 					</div>
 				</div>
@@ -46,19 +51,100 @@
 					<!-- R3_1 -->
 					<div data-bind="ntsFormLabel: { constraint: 'ApproverInputExplanation' }">#{i18n.getText('CMM018_235')}</div>
 					<!-- R3_2 -->
-					<textarea rows="7" data-bind="ntsMultilineEditor: {
+					<textarea id="process-memo" rows="7" data-bind="ntsMultilineEditor: {
 						name: '#[CMM018_236]', 
 						value: processMemo,
 						constraint: 'ApproverInputExplanation',
-						option: optionTextarea,
+						option: { resizeable: false, width: '850', textalign: 'left' },
 						enable: true,
-						immediate: false
 					}">
 					</textarea>
 				</div>
 				<div class="flex flex-col">
 					<!-- R3_3 -->
 					<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CMM018_237')}</div>
+					<div class="flex col-gap-20 padding-left-30">
+						<div class="flex flex-col pos-relative">
+							<!-- R3_4 -->
+							<div class="ml-10" data-bind="ntsFormLabel: { constraint: 'ApproverItemName' }">#{i18n.getText('CMM018_238')}</div>
+							<!-- R3_14 -->
+							<i class="item-arrow-right pos-absolute" data-bind="ntsIcon: { no: 238, width: 20, height: 20, extension: 'png' }"></i>
+							<!-- R3_9 -->
+							<input id="first-name" data-bind="ntsTextEditor: {
+								name: '#[CMM018_243]',
+								value: firstItemName,
+								constraint: 'ApproverItemName',
+								option: { width: '130px'}
+							}"/>
+						</div>
+						<div class="flex flex-col pos-relative">
+							<!-- R3_5 -->
+							<div class="ml-10" data-bind="ntsFormLabel: { constraint: 'ApproverItemName' }">#{i18n.getText('CMM018_239')}</div>
+							<!-- R3_15 -->
+							<i class="item-arrow-right pos-absolute" data-bind="ntsIcon: { no: 238, width: 20, height: 20, extension: 'png' }"></i>
+							<!-- R3_10 -->
+							<input id="second-name" data-bind="ntsTextEditor: {
+								name: '#[CMM018_244]',
+								value: secondItemName,
+								constraint: 'ApproverItemName',
+								option: { width: '130px'},
+								enable: level() >= 2
+							}"/>
+						</div>
+						<div class="flex flex-col pos-relative">
+							<!-- R3_6 -->
+							<div class="ml-10" data-bind="ntsFormLabel: { constraint: 'ApproverItemName' }">#{i18n.getText('CMM018_240')}</div>
+							<!-- R3_16 -->
+							<i class="item-arrow-right pos-absolute" data-bind="ntsIcon: { no: 238, width: 20, height: 20, extension: 'png' }"></i>
+							<!-- R3_11 -->
+							<input id="third-name" data-bind="ntsTextEditor: {
+								name: '#[CMM018_245]',
+								value: thirdItemName,
+								constraint: 'ApproverItemName',
+								option: { width: '130px'},
+								enable: level() >= 3
+							}"/>
+						</div>
+						<div class="flex flex-col pos-relative">
+							<!-- R3_7 -->
+							<div class="ml-10" data-bind="ntsFormLabel: { constraint: 'ApproverItemName' }">#{i18n.getText('CMM018_241')}</div>
+							<!-- R3_17 -->
+							<i class="item-arrow-right pos-absolute" data-bind="ntsIcon: { no: 238, width: 20, height: 20, extension: 'png' }"></i>
+							<!-- R3_12 -->
+							<input id="fourth-name" data-bind="ntsTextEditor: {
+								name: '#[CMM018_246]',
+								value: fourthItemName,
+								constraint: 'ApproverItemName',
+								option: { width: '130px'},
+								enable: level() >= 4
+							}"/>
+						</div>
+						<div class="flex flex-col pos-relative">
+							<!-- R3_8 -->
+							<div class="ml-10" data-bind="ntsFormLabel: { constraint: 'ApproverItemName' }">#{i18n.getText('CMM018_242')}</div>
+							<!-- R3_13 -->
+							<input id="fifth-name" data-bind="ntsTextEditor: {
+								name: '#[CMM018_247]',
+								value: fifthItemName,
+								constraint: 'ApproverItemName',
+								option: { width: '130px'},
+								enable: level() >= 5
+							}"/>
+						</div>
+					</div>
+				</div>
+				<div class="flex flex-col">
+					<!-- R4_1 -->
+					<div data-bind="ntsFormLabel: { constraint: 'ApproverInputCareful' }">#{i18n.getText('CMM018_248')}</div>
+					<!-- R4_2 -->
+					<textarea id="attention-memo" rows="2" data-bind="ntsMultilineEditor: {
+						name: '#[CMM018_249]', 
+						value: attentionMemo,
+						constraint: 'ApproverInputCareful',
+						option: { resizeable: false, width: '850', textalign: 'left' },
+						enable: true,
+					}">
+					</textarea>
 				</div>
 			</div>
 		</ui:define>

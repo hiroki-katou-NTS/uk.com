@@ -20,8 +20,8 @@
 .padding-left-20 {
   padding-left: 20px;
 }
-.padding-left-15 {
-  padding-left: 15px;
+.padding-left-30 {
+  padding-left: 30px;
 }
 .text-center,
 .ui-igcombo-listitemholder,
@@ -31,4 +31,24 @@
 .full-height .nts-combo-container {
   height: 100% !important;
   width: 100% !important;
+}
+.pos-relative {
+  position: relative;
+}
+.pos-absolute {
+  position: absolute;
+}
+.item-arrow-right {
+  position: absolute;
+  top: 6px;
+  right: -10px;
+}
+.flex.col-gap-20 {
+  column-gap: 20px;
+}
+.flex .ml-10 {
+  margin-left: 10px;
+}
+#contents-area > div {
+  margin-left: 50px;
 }

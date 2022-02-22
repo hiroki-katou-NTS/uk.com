@@ -123,12 +123,13 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 
 		jumpToCMM018R() {
 			const vm = this;
-			vm.$jump('com', '/view/cmm/018/r/index.xhtml', ko.toJS(vm.systemAtr));
+			vm.$jump('com', '/view/cmm/018/r/index.xhtml');
 		}
 
 		jumpToCMM030A() {
 			const vm = this;
-			vm.$jump('com', '/view/cmm/030/a/index.xhtml', ko.toJS(vm.systemAtr));
+			const params = { requestUrl: '/view/cmm/018/x/index.xhtml' };
+			vm.$jump('com', '/view/cmm/030/a/index.xhtml', params);
 		}
 		
 	}
