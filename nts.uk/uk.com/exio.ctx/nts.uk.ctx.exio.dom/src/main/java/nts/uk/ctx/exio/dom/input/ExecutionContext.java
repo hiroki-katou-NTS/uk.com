@@ -24,17 +24,6 @@ public class ExecutionContext{
 		return new ExternalImportCode(settingCode);
 	}
 	
-	/**
-	 * 実行コンテキストを個人基本情報へ偽装 
-	 */
-	public ExecutionContext impersonateEmployeeBasicExecutionContext() {
-		return new ExecutionContext(
-				this.companyId,
-				this.settingCode,
-				ImportingDomainId.EMPLOYEE_BASIC,
-				this.mode);
-	}
-	
 	public static ExecutionContext createForErrorTableName(String companyId) {
 		return new ExecutionContext(companyId, "", null, null); 
 	}
