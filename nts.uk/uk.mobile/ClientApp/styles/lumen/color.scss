@@ -86,7 +86,7 @@ $uk-colors: (
     remark: #c3d69b,
     light-olive: #dcedc8,
     headline: #dcedc8,
-    accordion: #dcedc8,
+    accordion: #f3f3f3,
     reflect: #e4f2c9,
     stripped: #eef9e3,
     quote: #555555,
@@ -122,6 +122,8 @@ $uk-colors: (
     powder-blue:#d7f2ff,
     alice-blue:#c6d9f1
 );
+
+$uk-color-warn: #E5465F;
 
 $uk-status-color: (
     reflected : (#333, #c3d69b, #e4f2c9),
@@ -247,3 +249,4 @@ $uk-status-color: (
         }
     }
 }
+

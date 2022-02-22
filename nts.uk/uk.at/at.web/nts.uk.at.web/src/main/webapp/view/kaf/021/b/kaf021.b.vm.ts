@@ -162,7 +162,7 @@ module nts.uk.at.kaf021.b {
 
             // B3_15
             columns.push({
-                headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '360px',
+                headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '335px',
                 constraint: {
                     primitiveValue: 'ReasonsForAgreement',
                     required: true
@@ -194,19 +194,19 @@ module nts.uk.at.kaf021.b {
         getHeaderStyles(): Array<any> {
             const vm = this;
             return [
-                { key: "wkpName", colors: ["#CFF1A5"] },
-                { key: "employeeName", colors: ["#CFF1A5"] },
-                { key: "monthStr", colors: ["#CFF1A5"] },
-                { key: "yearStr", colors: ["#CFF1A5"] },
-                { key: "monthAverage2Str", colors: ['padding-10', 'break-jp-cell', "#CFF1A5"] },
-                { key: "monthAverage3Str", colors: ['padding-10', 'break-jp-cell', "#CFF1A5"] },
-                { key: "monthAverage4Str", colors: ['padding-10', 'break-jp-cell', "#CFF1A5"] },
-                { key: "monthAverage5Str", colors: ['padding-10', 'break-jp-cell', "#CFF1A5"] },
-                { key: "monthAverage6Str", colors: ['padding-10', 'break-jp-cell', "#CFF1A5"] },
-                { key: "exceededNumber", colors: ['padding-5', "#CFF1A5"] },
-                { key: vm.getCurrentMaxKey(), colors: ['#F8EFD4'] },
-                { key: "newMax", colors: ['#F8EFD4'] },
-                { key: "reason", colors: ['#F8EFD4'] },
+                { key: "wkpName", colors: ["#6A6A6A"] },
+                { key: "employeeName", colors: ["#6A6A6A"] },
+                { key: "monthStr", colors: ["#6A6A6A"] },
+                { key: "yearStr", colors: ["#6A6A6A"] },
+                { key: "monthAverage2Str", colors: ['padding-10', 'break-jp-cell', "#6A6A6A"] },
+                { key: "monthAverage3Str", colors: ['padding-10', 'break-jp-cell', "#6A6A6A"] },
+                { key: "monthAverage4Str", colors: ['padding-10', 'break-jp-cell', "#6A6A6A"] },
+                { key: "monthAverage5Str", colors: ['padding-10', 'break-jp-cell', "#6A6A6A"] },
+                { key: "monthAverage6Str", colors: ['padding-10', 'break-jp-cell', "#6A6A6A"] },
+                { key: "exceededNumber", colors: ['padding-5', "#6A6A6A"] },
+                { key: vm.getCurrentMaxKey(), colors: ['#daa520'] },
+                { key: "newMax", colors: ['#daa520'] },
+                { key: "reason", colors: ['#daa520'] },
             ]
         }
 

@@ -208,19 +208,10 @@ public interface CommonAlgorithm {
 			WorkType workTypeApp, WorkType workTypeActual);
 	
 	/**
-	 * 11.時間消化登録時のエラーチェック
-	 * @param specAbsenceDispInfo 時間消化申請
-	 * @param superHolidayUnit 60H超休消化単位
-	 * @param substituteHoliday 時間代休消化単位
-	 * @param annualLeaveUnit 時間年休消化単位
-	 * @param childNursingUnit 時間子の看護の消化単位
-	 * @param nursingUnit 時間介護の消化単位 
-	 * @param pendingUnit 時間特別休暇の消化単位
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.時間休暇の消化単位チェック.時間休暇の消化単位チェック
+	 * @param timeDigestApplication 時間消化申請
 	 */
-	public void vacationDigestionUnitCheck(TimeDigestApplication timeDigestApplication
-			, Optional<TimeDigestiveUnit> superHolidayUnit, Optional<TimeDigestiveUnit> substituteHoliday
-			, Optional<TimeDigestiveUnit> annualLeaveUnit, Optional<TimeDigestiveUnit> childNursingUnit
-			, Optional<TimeDigestiveUnit> nursingUnit, Optional<TimeDigestiveUnit> pendingUnit);
+	public void vacationDigestionUnitCheck(TimeDigestApplication timeDigestApplication);
 	
 	/**
 	 * 申請中の勤務種類・就業時間帯を取得する

@@ -152,3 +152,7 @@ hr {
   margin-left: 10px;
   width: 50px;
 }
+
+.switchbox-wrappers {
+  display: flex !important;
+}

@@ -5,7 +5,8 @@ module nts.uk.at.view.kmk007.b.service {
         findAbsenceFrameByCode: "at/share/worktype/absenceframe/findAbsenceFrameByCode/{0}",
         findHolidayFrameByCode: "at/share/worktype/specialholidayframe/findHolidayFrameByCode/{0}",
         updateAbsenceFrame: "at/share/worktype/absenceframe/updateAbsenceFrame",
-        updateSpecialHolidayFrame: "at/share/worktype/specialholidayframe/updateSpecialHolidayFrame"
+        updateSpecialHolidayFrame: "at/share/worktype/specialholidayframe/updateSpecialHolidayFrame",
+        findAll: "at/shared/scherec/leaveCount/findAll"
     }
     
     /**
@@ -53,6 +54,11 @@ module nts.uk.at.view.kmk007.b.service {
     export function updateSpecialHolidayFrame(data: HolidayFrameDto): JQueryPromise<any> {
         return nts.uk.request.ajax("at", servicePath.updateSpecialHolidayFrame, data);
     }  
+
+    export function getAllLeaveCount(): JQueryPromise<Array<any>> {
+        var path = servicePath.findAll;
+        return nts.uk.request.ajax("at", path);
+    }
     
     export interface HolidayFrameItem {
         specialHdFrameName: string,

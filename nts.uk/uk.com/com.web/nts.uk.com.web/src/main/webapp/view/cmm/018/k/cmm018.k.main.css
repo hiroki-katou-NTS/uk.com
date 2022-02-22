@@ -34,7 +34,7 @@ table.ntsSwapGrid tbody tr td {
 }
 .ntsMoveDataArea, #swap-list-move-data,  .move-button, #swap-list-gridArea1{
 	vertical-align: top;
-	width: 45px !important;
+	/* width: 45px !important; */
 }
 
 .row-search {

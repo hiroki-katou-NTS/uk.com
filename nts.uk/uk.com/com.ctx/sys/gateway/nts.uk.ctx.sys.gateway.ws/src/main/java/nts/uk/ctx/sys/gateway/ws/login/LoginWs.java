@@ -191,7 +191,7 @@ public class LoginWs extends WebService {
 	@Path("build_info_time")
 	public VerDto getBuildTime(@Context ServletContext context) {
 		// リリースまで時間が無いのでとりあえずハードコーディング
-		return VerDto.builder().ver("Ver.1.1.1-2").build();
+		return VerDto.builder().ver("Ver.1.1.1-4").build();
 	}
 	
 	/**

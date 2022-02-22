@@ -8,6 +8,7 @@
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
         <com:scriptfile path="./kaf020.a.vm.js"/>
+        <com:stylefile path="/view/kaf/020/a/kaf020.a.css" />
 
     </ui:define>
     <ui:define name="content">
@@ -25,35 +26,37 @@
                     <div class="label" style="display: inline">#{i18n.getText('KAF020_10')}</div>
                 </div>
                 <!--A2-->
-                <table id="fixed-table">
-                    <colgroup>
-                        <col width="50px"/>
-                        <col width="300px"/>
-                        <col width="750px"/>
-                    </colgroup>
-                    <thead>
-                    <tr>
-                        <!--A2_1-->
-                        <th class="ui-widget-header" style="text-align: center">#{i18n.getText('KAF020_11')}</th>
-                        <!--A2_2-->
-                        <th class="ui-widget-header">#{i18n.getText('KAF020_12')}</th>
-                        <!--A2_3-->
-                        <th class="ui-widget-header">#{i18n.getText('KAF020_13')}</th>
-                    </tr>
-                    </thead>
-                    <tbody data-bind="foreach: { data: optionalItemAppSet, as: 'optionalItem'}">
-                    <tr>
-                        <!--A3_1-->
-                        <td data-bind="text: optionalItem.code" style="text-align: center;"></td>
-                        <!--A3_2-->
-                        <td>
-                            <a class="hyperlink" href="" data-bind="text: optionalItem.name, click: $parent.detail.bind($parent, optionalItem)"></a>
-                        </td>
-                        <!--A3_3-->
-                        <td style="white-space: pre-wrap;" data-bind="text: optionalItem.note"></td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div id="application-list" class="ui-iggrid">
+	                <table class="clickable-row">
+	                    <colgroup>
+	                        <col width="50px"/>
+	                        <col width="300px"/>
+	                        <col width="750px"/>
+	                    </colgroup>
+	                    <thead>
+		                    <tr>
+		                        <!--A2_1-->
+		                        <th class="ui-widget-header" style="text-align: center">#{i18n.getText('KAF020_11')}</th>
+		                        <!--A2_2-->
+		                        <th class="ui-widget-header">#{i18n.getText('KAF020_12')}</th>
+		                        <!--A2_3-->
+		                        <th class="ui-widget-header">#{i18n.getText('KAF020_13')}</th>
+		                    </tr>
+	                    </thead>
+	                    <tbody data-bind="foreach: { data: optionalItemAppSet, as: 'optionalItem'}">
+		                    <tr data-bind="click: $parent.detail.bind($parent, optionalItem)">
+		                        <!--A3_1-->
+		                        <td data-bind="text: optionalItem.code" style="text-align: center;"></td>
+		                        <!--A3_2-->
+		                        <td>
+		                            <span data-bind="text: optionalItem.name"></span>
+		                        </td>
+		                        <!--A3_3-->
+		                        <td style="white-space: pre-wrap;" data-bind="text: optionalItem.note"></td>
+		                    </tr>
+	                    </tbody>
+	                </table>
+	             </div>
             </div>
         </div>
     </ui:define>

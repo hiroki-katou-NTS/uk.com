@@ -108,6 +108,14 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area" style="background-color: inherit;">
+				<div class="controlButtonCell_kaf000">
+					<button class="goback" data-bind="click: backtoCMM045">申請一覧</button>
+					<!-- B1_2 -->
+					<button data-bind="click: back, enable: $vm.enableBack">前頁</button>
+					<!-- B1_3 -->
+					<button data-bind="click: next, enable: $vm.enableNext">次頁</button>
+				</div>
+				
 				<!-- B1_4 -->
 				<div class="controlButtonCell_kaf000"
 					data-bind="if: displayApprovalButton">
@@ -126,7 +134,7 @@
 				</div>
 				<!-- B1_14 -->
 				<div class="controlButtonCell_kaf000"
-					data-bind="if: displayApprovalLabel" style="vertical-align: top; margin-top: 5px;">
+					data-bind="if: displayApprovalLabel" style="vertical-align: top;">
 					<div class="comment">
 						<label>#{i18n.getText('KAF000_25')}</label>
 					</div>
@@ -141,7 +149,7 @@
 				</div>
 				<!-- B1_15 -->
 				<div class="controlButtonCell_kaf000"
-					data-bind="if: displayDenyLabel" style="vertical-align: top; margin-top: 5px;">
+					data-bind="if: displayDenyLabel" style="vertical-align: top;">
 					<div class="comment">
 						<label>#{i18n.getText('KAF000_26')}</label>
 					</div>
@@ -162,6 +170,7 @@
 								enable: enableRemandButton() &amp;&amp; $root.errors.isEmpty
 								   ">#{i18n.getText('KAF000_17')}</button>
 				</div>
+
 				<!-- B1_8 -->
 				<div class="controlButtonCell_kaf000"
 					data-bind="if: displayUpdateButton">
@@ -198,21 +207,16 @@
 				</div>
 				<!-- B1_23 -->
 				<div class="controlButtonCell_kaf000"
-					data-bind="if: displayCancelLabel" style="vertical-align: top; margin-top: 5px;">
+					data-bind="if: displayCancelLabel" style="vertical-align: top;">
 					<div class="comment">
 						<label>#{i18n.getText('KAF000_63')}</label>
 					</div>
 				</div>
+
+				
+
 			</div>
-			<div style="display: inline-block; position: absolute; left: 60px; z-index: 10;">
-				<a class="goback link-button" data-bind="click: backtoCMM045">#{i18n.getText('KAF000_14')}</a>
-			</div>
-			<div style="display: inline-block; margin-left: 5px; margin-right: 5px; position: absolute; left: 180px; z-index: 10;">
-				<!-- B1_2 -->
-				<button data-bind="click: back, enable: $vm.enableBack" style="width: 27px;">◀</button>
-				<!-- B1_3 -->
-				<button data-bind="click: next, enable: $vm.enableNext" style="width: 27px;">▶</button>
-			</div>
+			
 			<div>
 				<div data-bind="if: currentApp()=='sample'">
 					<div data-bind="if: ko.unwrap(appType) != null">
