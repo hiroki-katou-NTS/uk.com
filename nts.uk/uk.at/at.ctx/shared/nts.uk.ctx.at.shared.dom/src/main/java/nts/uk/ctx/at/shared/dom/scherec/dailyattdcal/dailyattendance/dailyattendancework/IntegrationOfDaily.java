@@ -5,11 +5,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.GettingTimeVacactionService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimeVacation;
@@ -36,6 +39,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportInfoOfEmployee;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 
 /**
  * 日別勤怠(Work)
@@ -403,5 +408,34 @@ public class IntegrationOfDaily {
 		return GettingTimeVacactionService.get(this.attendanceLeave
 				,	this.attendanceTimeOfDailyPerformance
 				,	this.outingTime);
+	}
+	
+	public SupportInfoOfEmployee getSupportInfoOfEmployee() {
+		
+		if ( this.ouenTime.isEmpty() ) {
+			
+			return SupportInfoOfEmployee.createWithoutSupport(
+					new EmployeeId(this.employeeId), 
+					this.ymd, 
+					this.affiliationInfor.getAffiliationOrg() );
+		}
+		
+		if ( this.ouenTimeSheet.get(0).getSupportType() == SupportType.ALLDAY ) {
+			return SupportInfoOfEmployee.createWithAllDaySupport(
+					new EmployeeId(this.employeeId), 
+					this.ymd, 
+					this.affiliationInfor.getAffiliationOrg(),
+					this.ouenTimeSheet.get(0).getWorkContent().getWorkplace().getRecipientOrg() );
+		} else {
+			val recipientList = this.ouenTimeSheet.stream()
+					.map(timeSheet -> timeSheet.getWorkContent().getWorkplace().getRecipientOrg())
+					.collect(Collectors.toList());
+			
+			return SupportInfoOfEmployee.createWithTimezoneSupport(
+					new EmployeeId(this.employeeId), 
+					this.ymd, 
+					this.affiliationInfor.getAffiliationOrg(),
+					recipientList);
+		}
 	}
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 
 @Getter
 /** 日別勤怠の応援作業時間帯 */
@@ -12,6 +13,9 @@ public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 
 	/** 応援勤務枠No: 応援勤務枠No supportNo*/
 	private SupportFrameNo workNo;
+	
+	/** 応援形式: 応援形式 */
+	private SupportType supportType;
 
 	/** 作業内容: 作業内容 */
 	private WorkContent workContent;
@@ -26,6 +30,7 @@ public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 			TimeSheetOfAttendanceEachOuenSheet timeSheet, Optional<Boolean> inputFlag) {
 		super();
 		this.workNo = workNo;
+		this.supportType = SupportType.TIMEZONE; // TODO: need to fix?
 		this.workContent = workContent;
 		this.timeSheet = timeSheet;
 		this.inputFlag = inputFlag;
