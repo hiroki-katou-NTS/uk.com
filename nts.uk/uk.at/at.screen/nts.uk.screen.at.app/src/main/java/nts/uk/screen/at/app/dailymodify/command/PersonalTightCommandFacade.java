@@ -60,13 +60,13 @@ public class PersonalTightCommandFacade {
 		if (isRegister) {
 			registerConfirmationMonth.registerConfirmationMonth(new ParamRegisterConfirmMonth(
 					YearMonth.of(aggrPeriod.getYearMonth()), Arrays.asList(new SelfConfirm(employeeId, isRegister)),
-					aggrPeriod.getClosureId().value, new ClosureDate(aggrPeriod.getClosureDate().getClosureDay().v(),
+					aggrPeriod.getClosureId(), new ClosureDate(aggrPeriod.getClosureDate().getClosureDay().v(),
 							aggrPeriod.getClosureDate().getLastDayOfMonth()),
 					GeneralDate.today()));
 		} else {
 			//[No.533](中間データ版)承認対象者リストと日付リストから承認状況を取得する（月別）
 			EmpPerformMonthParam param = new EmpPerformMonthParam(YearMonth.of(aggrPeriod.getYearMonth()),
-					aggrPeriod.getClosureId().value, aggrPeriod.getClosureDate(), aggrPeriod.getPeriod().end(),
+					aggrPeriod.getClosureId(), aggrPeriod.getClosureDate(), aggrPeriod.getPeriod().end(),
 					employeeId);
 			Request533Export export = intermediateDataPub.getAppRootStatusByEmpsMonth(Arrays.asList(param));
 			if (export == null || export.getAppRootSttMonthExportLst().isEmpty())
@@ -79,7 +79,7 @@ public class PersonalTightCommandFacade {
 			
 			registerConfirmationMonth.registerConfirmationMonth(new ParamRegisterConfirmMonth(
 					YearMonth.of(aggrPeriod.getYearMonth()), Arrays.asList(new SelfConfirm(employeeId, isRegister)),
-					aggrPeriod.getClosureId().value, new ClosureDate(aggrPeriod.getClosureDate().getClosureDay().v(),
+					aggrPeriod.getClosureId(), new ClosureDate(aggrPeriod.getClosureDate().getClosureDay().v(),
 							aggrPeriod.getClosureDate().getLastDayOfMonth()),
 					GeneralDate.today()));
 		}

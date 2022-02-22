@@ -1301,7 +1301,7 @@ public class DPCorrectionProcessorMob {
 			result = DateRange.convertPeriod(dateAgg.getPeriod());
 			closureId = dateAgg.getClosureId();
 			lstClosureCache.addAll(lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream())
-					.map(x -> new AggrPeriodClosure(x.getClosureId(), x.getClosureDate(), x.getYearMonth().v(),
+					.map(x -> new AggrPeriodClosure(x.getClosureId().value, x.getClosureDate(), x.getYearMonth().v(),
 							x.getPeriod()))
 					.collect(Collectors.toList()));
 
@@ -1320,7 +1320,7 @@ public class DPCorrectionProcessorMob {
 			result = DateRange.convertPeriod(closurePeriodOpt.get().getPeriod());
 		}
 
-		return new DatePeriodInfo(lstPeriod, result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache, new ArrayList<>());
+		return new DatePeriodInfo(lstPeriod, result, yearMonth == null ? 0 : yearMonth.v(), closureId.value, lstClosureCache, new ArrayList<>());
 	}
 
 	public void requestForFlush() {

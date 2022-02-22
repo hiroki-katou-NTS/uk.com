@@ -38,4 +38,5 @@ public class DataSessionDto {
 	List<Pair<String, GeneralDate>> lstSidDateErrorCalc = new ArrayList<>();
 	
 	boolean errorAllCalc = false;
+	
 }

@@ -58,6 +58,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPParams;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCalculationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DataSessionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErAlWorkRecordShortDto;
@@ -65,6 +66,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.GetWkpIDOutput;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.GetWkpIDParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.HolidayRemainNumberDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.InitParamOutput;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTime;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeParam;
@@ -186,20 +188,37 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
 		Integer closureId = params.closureId;
-		DailyPerformanceCorrectionDto screenDto = (DailyPerformanceCorrectionDto) session.getAttribute("resultReturn");
+//		DailyPerformanceCorrectionDto screenDto = (DailyPerformanceCorrectionDto) session.getAttribute("resultReturn");
+		DailyPerformanceCorrectionDto screenDto = params.screenDto;
 		DailyPerformanceCorrectionDto dtoResult = this.processor.generateData(screenDto, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.showError, params.showLock, params.objectShare, closureId);
-		session.setAttribute("domainOlds", dtoResult.getDomainOld());
-		session.setAttribute("domainOldForLog", cloneListDto(dtoResult.getDomainOld()));
-		session.setAttribute("domainEdits", null);
-		session.setAttribute("itemIdRCs", dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
-		session.setAttribute("dataSource", dtoResult.getLstData());
-		session.setAttribute("closureId", dtoResult.getClosureId());
-		session.setAttribute("resultReturn", null);
-		session.setAttribute("approvalConfirm", dtoResult.getApprovalConfirmCache());
+
+//		session.setAttribute("domainOlds", dtoResult.getDomainOld());
+//		session.setAttribute("domainOldForLog", cloneListDto(dtoResult.getDomainOld()));
+//		session.setAttribute("domainEdits", null);
+//		session.setAttribute("itemIdRCs", dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
+//		session.setAttribute("dataSource", dtoResult.getLstData());
+//		session.setAttribute("closureId", dtoResult.getClosureId());
+//		session.setAttribute("resultReturn", null);
+//		session.setAttribute("approvalConfirm", dtoResult.getApprovalConfirmCache());
+		DataSessionDto dataSessionDto = new DataSessionDto();
+		dataSessionDto.setDomainOlds(dtoResult.getDomainOld());
+		dataSessionDto.setDomainOldForLog(cloneListDto(dtoResult.getDomainOld()));
+		dataSessionDto.setDomainEdits(null);
+		dataSessionDto.setItemIdRCs(dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
+		dataSessionDto.setDataSource(dtoResult.getLstData());
+		dataSessionDto.setClosureId(dtoResult.getClosureId());
+		dataSessionDto.setResultReturn(null);
+		dataSessionDto.setApprovalConfirmCache(dtoResult.getApprovalConfirmCache());
+		
 		dtoResult.setApprovalConfirmCache(null);
 		dtoResult.setLstCellState(dtoResult.getMapCellState().values().stream().collect(Collectors.toList()));
 		dtoResult.setMapCellState(null);
-		removeSession();
+//		removeSession();
+		dataSessionDto.setLstSidDateErrorCalc(Collections.emptyList());
+		dataSessionDto.setErrorAllCalc(false);
+		
+		dtoResult.setDataSessionDto(dataSessionDto);
+		
 		dtoResult.setDomainOld(Collections.emptyList());
 		return dtoResult;
 	}
@@ -227,29 +246,34 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("initParam")
-	public DailyPerformanceCorrectionDto initScreen(DPParams params) throws InterruptedException{
-		params.dpStateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
+	public InitParamOutput initScreen(DPParams params) throws InterruptedException{
+//		params.dpStateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
+		//TODO : truyền dưới ui ?
 		Pair<DailyPerformanceCorrectionDto, ParamCommonAsync> dtoResult = this.infomationInit.initGetParam(params);
-		session.setAttribute("dpStateParam", dtoResult.getLeft().getStateParam());
-		session.setAttribute("resultReturn", dtoResult.getLeft());
-		session.setAttribute("resultMonthReturn", dtoResult.getRight());
-		return dtoResult.getLeft();
+//		session.setAttribute("dpStateParam", dtoResult.getLeft().getStateParam());
+//		session.setAttribute("resultReturn", dtoResult.getLeft());
+//		session.setAttribute("resultMonthReturn", dtoResult.getRight());
+		return new InitParamOutput(dtoResult.getLeft(),dtoResult.getRight(),dtoResult.getLeft().getStateParam());
 	}
 	
 	@POST
 	@Path("loadMonth")
 	@SuppressWarnings("unchecked")
 	public DailyPerformanceCorrectionDto loadMonth(MonthParamInit monthInit) throws InterruptedException{
-		ParamCommonAsync paramCommonAsync = (ParamCommonAsync) session.getAttribute("resultMonthReturn");
-		DPCorrectionStateParam stateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
-		Object objectCacheMonth = session.getAttribute("domainMonths");
-		Optional<MonthlyRecordWorkDto> domainMonthOpt = objectCacheMonth == null ? Optional.empty()
-				: (Optional<MonthlyRecordWorkDto>) objectCacheMonth;
+//		ParamCommonAsync paramCommonAsync = (ParamCommonAsync) session.getAttribute("resultMonthReturn");
+		ParamCommonAsync paramCommonAsync = monthInit.getParamCommonAsync();
+//		DPCorrectionStateParam stateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
+		DPCorrectionStateParam stateParam = monthInit.getDpStateParam();
+		
+//		Object objectCacheMonth = session.getAttribute("domainMonths");
+//		Optional<MonthlyRecordWorkDto> domainMonthOpt = objectCacheMonth == null ? Optional.empty()
+//				: (Optional<MonthlyRecordWorkDto>) objectCacheMonth;
 		paramCommonAsync.setStateParam(stateParam);
-		paramCommonAsync.setDomainMonthOpt(domainMonthOpt);
+		paramCommonAsync.setDomainMonthOpt(Optional.empty());
 		paramCommonAsync.setLoadAfterCalc(monthInit.isLoadAfterCalc());
 		DailyPerformanceCorrectionDto result = this.processMonthScreen.processMonth(paramCommonAsync);
-		session.setAttribute("domainMonths", result.getMonthResult() == null ? null : result.getMonthResult().getDomainMonthOpt());
+//		session.setAttribute("domainMonths", result.getMonthResult() == null ? null : result.getMonthResult().getDomainMonthOpt());
+		
 		//session.setAttribute("resultMonthReturn", null);
 		return result;
 	}

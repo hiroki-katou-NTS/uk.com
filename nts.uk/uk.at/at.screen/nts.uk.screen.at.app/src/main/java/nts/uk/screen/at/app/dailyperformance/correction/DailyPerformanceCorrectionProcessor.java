@@ -1980,7 +1980,7 @@ public class DailyPerformanceCorrectionProcessor {
 			if(dpStateParam != null) {
 			DatePeriodInfo dateInfo = dpStateParam.getDateInfo();
 			dateInfo.setTargetRange(dateRange);
-			dateInfo.setClosureId(ClosureId.valueOf(closureId));
+			dateInfo.setClosureId(closureId);
 			return dateInfo;
 			}
 		}
@@ -2102,7 +2102,7 @@ public class DailyPerformanceCorrectionProcessor {
 								empTarget, dateRefer, ym));
 			}
 //			if(lstClosurePeriod.isEmpty()) return null;
-			if(lstClosurePeriod.isEmpty()) return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache, lstPeriod);
+			if(lstClosurePeriod.isEmpty()) return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(),closureId==null?null:closureId.value, lstClosureCache, lstPeriod);
 			
 			List<AggrPeriodEachActualClosure> lstAggrPeriod = lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream())
 					    .sorted((x, y) -> x.getPeriod().start().compareTo(y.getPeriod().end()))
@@ -2126,7 +2126,7 @@ public class DailyPerformanceCorrectionProcessor {
 			result = DateRange.convertPeriod(dateAgg.getPeriod());
 			closureId = dateAgg.getClosureId();
 			lstClosureCache.addAll(lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream()).map(
-					x -> new AggrPeriodClosure(x.getClosureId(), x.getClosureDate(), x.getYearMonth().v(), x.getPeriod()))
+					x -> new AggrPeriodClosure(x.getClosureId().value, x.getClosureDate(), x.getYearMonth().v(), x.getPeriod()))
 					.collect(Collectors.toList()));
 		
 		} else if (displayFormat == DisplayFormat.ByDate.value) {
@@ -2150,7 +2150,7 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 		}
 				
-		return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache, lstPeriod);
+		return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(), closureId.value, lstClosureCache, lstPeriod);
 	}
 	
 	public void requestForFlush(){

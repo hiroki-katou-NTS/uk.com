@@ -125,11 +125,11 @@ public class DailyModifyMobileCommandFacade {
 		if (dataParent.getStateParam() != null && dataParent.getStateParam().getDateInfo() != null) {
 			DatePeriodInfo paramCommon = dataParent.getStateParam().getDateInfo();
 			AggrPeriodClosure aggrClosure = paramCommon.getLstClosureCache().stream()
-					.filter(x -> x.getClosureId().value == paramCommon.getClosureId().value).findFirst().orElse(null);
+					.filter(x -> x.getClosureId() == paramCommon.getClosureId()).findFirst().orElse(null);
 			Optional<IntegrationOfMonthly> domainMonthOpt = Optional.empty();
 			if (aggrClosure != null)
 				monthParam = new UpdateMonthDailyParam(aggrClosure.getYearMonth(), dataParent.getEmployeeId(),
-						aggrClosure.getClosureId().value, ClosureDateDto.from(aggrClosure.getClosureDate()),
+						aggrClosure.getClosureId(), ClosureDateDto.from(aggrClosure.getClosureDate()),
 						domainMonthOpt, new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
 						"", true, true, 0L);

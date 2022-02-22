@@ -13,7 +13,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class AggrPeriodClosure {
 
 	/** 締めID */
-	private ClosureId closureId;
+	private Integer closureId;
 	/** 締め日 */
 	private ClosureDate closureDate;
 	/** 年月 */
