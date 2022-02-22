@@ -127,7 +127,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		Integer monthLimit;
 		GeneralDate baseDate = GeneralDate.fromString(query.getBaseDate(), "yyyy/MM/dd");
 		// ドメインモデル「３６協定運用設定」を取得する
-		Optional<AgreementOperationSettingImport> agreementSetObj = agreementOperationSettingAdapter.find(companyId);
+		Optional<AgreementOperationSettingImport> agreementSetObj = agreementOperationSettingAdapter.findForAlarm(companyId);
 		if (PrintFormat.AGREEMENT_36.equals(printFormat)) {
 			fiscalYear = new Year(Integer.parseInt(query.getFiscalYear()));
 			startYm = this.getStartYearMonth(agreementSetObj, fiscalYear);
