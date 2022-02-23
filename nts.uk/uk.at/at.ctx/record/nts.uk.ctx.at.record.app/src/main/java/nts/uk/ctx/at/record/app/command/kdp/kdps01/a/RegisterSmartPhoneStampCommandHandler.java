@@ -194,9 +194,9 @@ public class RegisterSmartPhoneStampCommandHandler
 				interimRemainDataMngRegisterDateChange, dailyRecordShareFinder, timeReflectFromWorkinfo,
 				closureStatusManagementRepo, actualLockRepo, employmentAdapter, creatingDailyResultsConditionRepo, empEmployeeAdapter);
 
-		TimeStampInputResult stampRes = EnterStampFromSmartPhoneService.create(stampingAreaRepository,repository,adapter, require, AppContexts.user().companyId(),
-				new ContractCode(AppContexts.user().contractCode()), AppContexts.user().employeeId(),
-				cmd.getStampDatetime(), cmd.getStampButton().toDomainValue(),
+		TimeStampInputResult stampRes = EnterStampFromSmartPhoneService.create(stampingAreaRepository, repository,
+				adapter, require, AppContexts.user().companyId(), new ContractCode(AppContexts.user().contractCode()),
+				AppContexts.user().employeeId(), cmd.getStampDatetime(), cmd.getStampButton().toDomainValue(),
 				Optional.ofNullable(cmd.getGeoCoordinate().toDomainValue()), cmd.getRefActualResult().toDomainValue());
 		// 2.1:not 打刻入力結果 empty
 

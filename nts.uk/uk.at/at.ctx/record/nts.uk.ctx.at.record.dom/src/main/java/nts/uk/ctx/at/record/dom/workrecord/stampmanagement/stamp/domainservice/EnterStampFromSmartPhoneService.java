@@ -66,7 +66,9 @@ public class EnterStampFromSmartPhoneService {
 		
 		//	$打刻場所 = $スマホ打刻の打刻設定.打打刻してもいいエリアかチェックする(契約コード,会社ID,社員ID,地理座標)
 		
-		Optional<WorkLocation> workLocation = settingSmartPhoneStamp.checkCanStampAreas(repository, adapter, settingsSmartphoneStampImpl, contractCode, cid, employeeID, positionInfor.get());
+		Optional<WorkLocation> workLocation = settingSmartPhoneStamp.checkCanStampAreas(repository, adapter,
+				settingsSmartphoneStampImpl, contractCode, cid, employeeID,
+				positionInfor.isPresent() ? positionInfor.get() : null);
 		
 		//  if $打刻場所.isPresent
 		if(workLocation.isPresent()) {
