@@ -77,7 +77,7 @@ public class GetSettingStampInputSmartPhone {
 		String companyId = AppContexts.user().companyId();
 
 		// 1 .get ログイン会社ID
-		this.settingRepo.get(companyId, AppContexts.user().employeeId()).ifPresent(setting -> {
+		this.settingRepo.get(companyId).ifPresent(setting -> {
 			result.setSetting(SettingsSmartphoneStampDto.fromDomain(setting));
 		});
 
@@ -142,7 +142,7 @@ public class GetSettingStampInputSmartPhone {
 		@Override
 		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone() {
 			String companyId = AppContexts.user().companyId();
-			return settingsSmartphoneStampRepo.get(companyId, AppContexts.user().employeeId());
+			return settingsSmartphoneStampRepo.get(companyId);
 		}
 
 		@Override

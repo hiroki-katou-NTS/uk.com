@@ -126,7 +126,7 @@ public class DisplaySuppressStampButtonInStampInput {
 		@Override
 		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone() {
 			String companyId = AppContexts.user().companyId();
-			return this.settingsSmartphoneStampRepo.get(companyId, AppContexts.user().employeeId());
+			return this.settingsSmartphoneStampRepo.get(companyId);
 		}
 
 		@Override

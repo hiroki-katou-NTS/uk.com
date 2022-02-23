@@ -178,7 +178,7 @@ public class GetOmissionContentsFinder {
 
 		@Override
 		public Optional<SettingsSmartphoneStamp> getSettingSmartPhone() {
-			return settingSmartPhone.get(AppContexts.user().companyId(), AppContexts.user().employeeId());
+			return settingSmartPhone.get(AppContexts.user().companyId());
 		}
 
 		@Override

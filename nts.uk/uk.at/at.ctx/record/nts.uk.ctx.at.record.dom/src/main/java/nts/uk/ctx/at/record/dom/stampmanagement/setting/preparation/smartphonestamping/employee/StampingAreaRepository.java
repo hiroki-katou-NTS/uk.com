@@ -13,6 +13,4 @@ public interface StampingAreaRepository {
 	List<String> getStatusStampingEmpl(List<String> listEmplId);
 
 	void deleteStampSetting(String employeeId);
-	
-	void saveStampingArea(EmployeeStampingAreaRestrictionSetting restrictionSetting);
 }

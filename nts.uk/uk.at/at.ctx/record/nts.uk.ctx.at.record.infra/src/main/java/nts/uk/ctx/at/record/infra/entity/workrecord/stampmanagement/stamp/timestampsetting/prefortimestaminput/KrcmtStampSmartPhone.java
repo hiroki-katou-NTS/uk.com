@@ -17,12 +17,16 @@ import javax.persistence.Table;
 import org.eclipse.persistence.annotations.Customizer;
 
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaLimit;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -105,14 +109,20 @@ public class KrcmtStampSmartPhone extends ContractUkJpaEntity implements Seriali
 		this.textColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getTextColor().v();
 		this.buttonEmphasisArt = domain.isButtonEmphasisArt();
 		this.listKrcmtStampPageLayout = domain.getPageLayoutSettings().stream().map(c->KrcmtStampPageLayout.toEntity(c, domain.getCid(), 3)).collect(Collectors.toList());
+		this.areaLimitAtr = domain.getStampingAreaRestriction().getStampingAreaLimit().value;
+		this.locationInfoUse = domain.getStampingAreaRestriction().getUseLocationInformation().value;
 	}
 	
 	public SettingsSmartphoneStamp toDomain() {
+		
+		
 		return new SettingsSmartphoneStamp(this.cid,
 				new DisplaySettingsStampScreen(new CorrectionInterval(this.correctionInterval),
 						new SettingDateTimeColorOfStampScreen(new ColorCode(this.textColor)),
 						new ResultDisplayTime(this.resultDisplayTime)),
 				this.listKrcmtStampPageLayout.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
-				this.buttonEmphasisArt, null);
+				this.buttonEmphasisArt,
+				new StampingAreaRestriction(EnumAdaptor.valueOf(this.locationInfoUse, NotUseAtr.class),
+						EnumAdaptor.valueOf(this.areaLimitAtr, StampingAreaLimit.class)));
 	}
 }

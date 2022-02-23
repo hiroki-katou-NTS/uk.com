@@ -313,7 +313,7 @@ public class RegisterSmartPhoneStampCommandHandler
 
 		@Override
 		public Optional<SettingsSmartphoneStamp> getSmartphoneStampSetting() {
-			return this.getSettingRepo.get(AppContexts.user().companyId(), AppContexts.user().employeeId());
+			return this.getSettingRepo.get(AppContexts.user().companyId());
 		}
 
 		@Override

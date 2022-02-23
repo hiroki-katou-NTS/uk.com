@@ -71,8 +71,7 @@ public class TimeStampInputSettingFinder {
 	public SettingsSmartphoneStampDto getSettingsSmartphoneStamp() {
 		SettingsSmartphoneStampDto result = new SettingsSmartphoneStampDto();
 		String cId = AppContexts.user().companyId();
-		String sId = AppContexts.user().employeeId();
-		Optional<SettingsSmartphoneStamp> domain = settingsSmartphoneStampRepo.get(cId, sId);
+		Optional<SettingsSmartphoneStamp> domain = settingsSmartphoneStampRepo.get(cId);
 		commonSettingsStampInputRepo.get(cId).ifPresent(c->result.setGoogleMap(c.isGooglemap()?1:0));
 		if(domain.isPresent()) {
 			result.settingsSmartphoneStamp(domain.get());
@@ -97,8 +96,7 @@ public class TimeStampInputSettingFinder {
 	/**打刻レイアウト(スマホ)の設定内容を取得する*/
 	public StampPageLayoutDto getLayoutSettingsSmartphone(Integer pageNo){
 		String cId = AppContexts.user().companyId();
-		String sId = AppContexts.user().employeeId();
-		Optional<SettingsSmartphoneStamp> domain = settingsSmartphoneStampRepo.get(cId, sId);
+		Optional<SettingsSmartphoneStamp> domain = settingsSmartphoneStampRepo.get(cId);
 		if(domain.isPresent()) {
 			 Optional<StampPageLayout> result = domain.get().getPageLayoutSettings().stream().filter(c->c.getPageNo().v() == pageNo).findFirst();
 			 if(result.isPresent()) {
