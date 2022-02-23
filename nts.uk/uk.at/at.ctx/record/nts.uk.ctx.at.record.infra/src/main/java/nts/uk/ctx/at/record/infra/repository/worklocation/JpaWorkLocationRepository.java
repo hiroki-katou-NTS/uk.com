@@ -63,6 +63,15 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 			+ " WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode"
 			+ " AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD"
 			+ " AND p.krcmtWorkplacePossiblePK.cid = :cid";
+	
+	private static final String SELECT_IDENTIFY_WORKLOCATION_BY_ADDRESS = SELECT 
+			+ " INNER JOIN KrcmtIP4Address p ON p.krcmtIP4AddressPK.workLocationCD = c.kwlmtWorkLocationPK.workLocationCD"
+			+ " AND p.krcmtIP4AddressPK.contractCode = c.kwlmtWorkLocationPK.contractCode"
+			+ " WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode"
+			+ " AND p.krcmtIP4AddressPK.net1 = :net1"
+			+ " AND p.krcmtIP4AddressPK.net2 = :net2"
+			+ " AND p.krcmtIP4AddressPK.host1 = :host1"
+			+ " AND p.krcmtIP4AddressPK.host2 = :host2";
 
 	@Override
 	public List<WorkLocation> findAll(String contractCode) {
@@ -234,8 +243,12 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 
 	@Override
 	public Optional<WorkLocation> identifyWorkLocationByAddress(String contractCode, Ipv4Address ipv4Address) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(SELECT_IDENTIFY_WORKLOCATION_BY_ADDRESS, KrcmtWorkLocation.class)
+		.setParameter("contractCode", contractCode)
+		.setParameter("net1", ipv4Address.getNet1())
+		.setParameter("net2", ipv4Address.getNet2())
+		.setParameter("host1", ipv4Address.getHost1())
+		.setParameter("host2", ipv4Address.getHost2()).getSingle(c -> c.toDomain());
 	}
 
 }
