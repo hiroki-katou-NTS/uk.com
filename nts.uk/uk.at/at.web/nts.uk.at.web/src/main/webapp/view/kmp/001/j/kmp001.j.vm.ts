@@ -84,7 +84,6 @@ module nts.uk.at.view.kmp001.j {
 					vm.employeeList(employees);
 					if (employees.length) {
 						vm.multiSelectedCode(_.map(employees, 'code'));
-						vm.selectedIds(_.map(employees, 'id'));
 
 					}
 				}
@@ -162,61 +161,88 @@ module nts.uk.at.view.kmp001.j {
 			if (vm.multiSelectedCode().length == 0) {
 				vm.$dialog.error({ messageId: 'MsgB_2', messageParams: [nts.uk.resource.getText('KMT014_21')] });
 			} else {
-				vm.$window.storage("contractInfo")
-				.then((data: any) => {
-					if (data) {
-						const input = { 
-							contractCode: data.contractCode, 
-							sIds: ko.unwrap(vm.selectedIds), 
-							qrSize: ko.unwrap(vm.qrSize),
-							setRow: ko.unwrap(vm.textEditorJ2_12),
-							setCol: ko.unwrap(vm.textEditorJ2_16),
-							};
-						
-						nts.uk.request.exportFile(EXPORT_QRCODE, input)
-							.then(() => {
-								nts.uk.characteristics.save(QRCODE_SIZE, { qrCodeSize: ko.unwrap(vm.qrSize) });
-							})
+
+				vm.$validate('.nts-editor').then((valid: boolean) => {
+					if (!valid) {
+						return;
 					}
+
+					vm.$window.storage("contractInfo")
+						.then((data: any) => {
+							if (data) {
+								const input = {
+									contractCode: data.contractCode,
+									sIds: vm.getListSelectedEmployee(),
+									qrSize: ko.unwrap(vm.qrSize),
+									setRow: ko.unwrap(vm.textEditorJ2_12),
+									setCol: ko.unwrap(vm.textEditorJ2_16),
+								};
+
+								nts.uk.request.exportFile(EXPORT_QRCODE, input)
+									.then(() => {
+										nts.uk.characteristics.save(QRCODE_SIZE, { qrCodeSize: ko.unwrap(vm.qrSize) });
+									})
+							}
+						});
+
+				}).fail((error) => {
+					vm.$dialog.error(error);
+				}).always(() => {
+					vm.$blockui("clear");
 				});
+
+		}
+	}
+		
+		private getListSelectedEmployee() {
+		let self = this;
+		self.selectedIds.removeAll();
+		_.forEach(self.multiSelectedCode(), code => {
+			var employee = self.employeeList().filter(function(emp) {
+				return code == emp.code;
+			});
+			if (employee.length > 0) {
+				self.selectedIds().push(employee[0].id);
 			}
-		}
+		});
+		return self.selectedIds();
+	}
 
-		initEmployeeList() {
-			let vm = this;
-			vm.listComponentOption = {
-				isShowAlreadySet: false,
-				isMultiSelect: true,
-				listType: ListType.EMPLOYEE,
-				employeeInputList: vm.employeeList,
-				selectType: SelectType.SELECT_BY_SELECTED_CODE,
-				selectedCode: vm.multiSelectedCode,
-				isDialog: false,
-				isShowNoSelectRow: false,
-				alreadySettingList: vm.alreadySettingList,
-				isShowWorkPlaceName: true,
-				isShowSelectAllButton: false,
-				disableSelection: false
-			};
+	initEmployeeList() {
+		let vm = this;
+		vm.listComponentOption = {
+			isShowAlreadySet: false,
+			isMultiSelect: true,
+			listType: ListType.EMPLOYEE,
+			employeeInputList: vm.employeeList,
+			selectType: SelectType.SELECT_BY_SELECTED_CODE,
+			selectedCode: vm.multiSelectedCode,
+			isDialog: false,
+			isShowNoSelectRow: false,
+			alreadySettingList: vm.alreadySettingList,
+			isShowWorkPlaceName: true,
+			isShowSelectAllButton: false,
+			disableSelection: false
+		};
 
-			$('#com-kcp005').ntsListComponent(vm.listComponentOption);
-
-		}
-
+		$('#com-kcp005').ntsListComponent(vm.listComponentOption);
 
 	}
 
-	class ListType {
-		static EMPLOYMENT = 1;
-		static Classification = 2;
-		static JOB_TITLE = 3;
-		static EMPLOYEE = 4;
-	}
 
-	class SelectType {
-		static SELECT_BY_SELECTED_CODE = 1;
-		static SELECT_ALL = 2;
-		static SELECT_FIRST_ITEM = 3;
-		static NO_SELECT = 4;
-	}
+}
+
+class ListType {
+	static EMPLOYMENT = 1;
+	static Classification = 2;
+	static JOB_TITLE = 3;
+	static EMPLOYEE = 4;
+}
+
+class SelectType {
+	static SELECT_BY_SELECTED_CODE = 1;
+	static SELECT_ALL = 2;
+	static SELECT_FIRST_ITEM = 3;
+	static NO_SELECT = 4;
+}
 }

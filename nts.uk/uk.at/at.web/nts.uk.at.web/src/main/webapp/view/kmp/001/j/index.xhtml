@@ -17,6 +17,10 @@
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:stylefile path="./kmp001.j.main.css" />
 			<com:scriptfile path="./kmp001.j.vm.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.common.QRCodeVerticalNumber
+				nts.uk.ctx.at.shared.dom.common.QRCodeHorizontalNumber
+			</com:ValidatorScript>
 
 		</ui:define>
 		<ui:define name="content">
@@ -80,6 +84,7 @@
 										data-bind="ntsTextEditor: {
 													name: '#[KMP001_173]',
 													value: textEditorJ2_12,
+													constraint: 'QRCodeVerticalNumber',
 													required: true
 												}" />
 										<!-- J2_13 --> <label data-bind="i18n: 'KMP001_171'"></label>
@@ -89,6 +94,7 @@
 										data-bind="ntsTextEditor: {
 													name: '#[KMP001_174]',
 													value: textEditorJ2_16,
+													constraint: 'QRCodeHorizontalNumber',
 													required: true
 												}" />
 										<!-- J2_17 --> <label data-bind="i18n: 'KMP001_171'"></label>
