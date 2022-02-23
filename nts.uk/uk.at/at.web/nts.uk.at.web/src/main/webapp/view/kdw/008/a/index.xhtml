@@ -214,9 +214,64 @@
 										</div>
 										
 									</div>
+								<!-- isModifyAnyPeriod-->
+									<div  class="tab-content-4" style="height: 440px; width: 800px;">
+										<div tabindex="-1">
+											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
+											<div tabindex="-1" id="A_SEL_002"
+												 data-bind="ntsComboBox: {
+												options: sheetNoList,
+												optionsValue: 'sheetNoId',
+												optionsText: 'sheetNoName',
+												value: selectedSheetNo,
+												enable: true}">
+											</div>
+											<div id="label2" data-bind="ntsFormLabel: { constraint: 'DailyPerFormatSheetName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div>
+											<input tabindex="-1"
+												   id="selectedSheetName"
+												   class="need-check"
+												   data-bind=
+														   "ntsTextEditor: {value: selectedSheetName,
+																		   	  constraint: 'DailyPerFormatSheetName',
+																		   	  name: '#[KDW008_8]',
+																		   	  required: true}">
+											</input>
+											<button class="danger" data-bind="click : btnSheetNo ,enable : enableSheetNo">#{i18n.getText('KDW008_34')}</button>
+										</div>
+										<div  tabindex="-1" style="margin-top: 10px; margin-left: 413px; margin-bottom: -10px" >#{i18n.getText('KDW008_29')}</div>
+										<div style="margin-top: 10px; display: inline-block;">
+											<div tabindex="12" id="swap-list3"
+												 data-bind="ntsSwapList: {
+													showSearchBox: { showLeft : true, showRight: true},
+													height: 375,
+													dataSource: modifyAnyPeriodDataSource,
+													primaryKey: 'attendanceItemId',
+													columns: columns4,
+													value: modifyAnyPeriodValue,
+													searchMode: 'filter',
+													searchCriterion: ['attendanceItemName','attendanceItemDisplayNumber'],
+													draggable: true,
+													enableRowNumbering: false,
+													multipleDrag: { left: true, right: false },
+													innerDrag: { left: false, right: true },
+													outerDrag: { left: true, right: true },
+													itemsLimit: { right: 100}
+												}">
+											</div>
+										</div>
+										<div tabindex="13" id="up-down"
+											 data-bind="ntsUpDown: {
+													targetSource: modifyAnyPeriodValue,
+													primaryKey: 'attendanceItemId',
+													comId: '#swap-list3',
+													type: 'swap',
+													swapTarget: 'right'}">
+										</div>
+									</div>
 								</div>
 							</div>
 							<!-- Mobile Setting -->
+
 							<div data-bind="if: isMobile">
 								<div id="tab-panel" tabindex="-1" data-bind="{if: isMobile, ntsTabPanel: { dataSource: mobileTabs, active: selectedMobileTab}}">
 											<div tabindex="-1"  class="tab-content-1" style="height: 385px; width: 800px; margin-top: -15px;">

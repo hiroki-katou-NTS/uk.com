@@ -121,8 +121,10 @@ module nts.uk.at.view.kdw006 {
                 nts.uk.request.jump("/view/kdw/002/c/index.xhtml", { ShareObject: isDaily  });
             }
             open008ModifyAnyPeriod() {
-                let isDaily = false;
-                nts.uk.request.jump("/view/kdw/008/a/index.xhtml", { ShareObject: isDaily  });
+                let self = this,isModifyAnyPeriod = true;
+                if (self.formatPerformanceDto().settingUnitType() == SettingUnitType.AUTHORITY) {
+                    nts.uk.request.jump("/view/kdw/008/a/index.xhtml", { ShareObject: isModifyAnyPeriod  });
+                }
             }
             open008Month() {
                 var self = this;
