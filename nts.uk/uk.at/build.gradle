@@ -197,10 +197,6 @@ subprojects {
         //Zxing
 		compile group: 'com.google.zxing', name: 'core', version: '3.4.1'
 		compile group: 'com.google.zxing', name: 'javase', version: '3.4.1'
-		
-		//Aspose
-		compile group: 'aspose', name: 'cells', version: '9.0.0'
-		compile group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
 	}
 }
 
