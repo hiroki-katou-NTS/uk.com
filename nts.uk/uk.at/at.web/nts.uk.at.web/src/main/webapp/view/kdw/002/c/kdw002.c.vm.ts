@@ -156,25 +156,22 @@ module nts.uk.at.view.kdw002.c {
                             }
                             
                             let notYouCanCheckAll = true;
-                            for(let i =0;i<listData.length;i++){
-                                if(listData[i].toUse ==true && listData[i].userCanUpdateAtr == 1){
-                                    if(!listData[i].youCanChangeIt){
-                                        notYouCanCheckAll =false;
-                                        break;
-                                    }
-                                }
-                            }
-                            $("#youCanCheckAll").prop('checked', notYouCanCheckAll);
-                            
-                            let notOtherCheckAll = true;
-                            for(let i =0;i<listData.length;i++){
-                                if(listData[i].toUse ==true && listData[i].userCanUpdateAtr == 1){
-                                    if(!listData[i].canBeChangedByOthers){
-                                        notOtherCheckAll =false;
-                                        break;
-                                    }
-                                }
-                            }
+							let notOtherCheckAll = true;
+							let useAndUserCanUpdateAtrLst = _.chain(listData).filter(item => item.toUse ==true && item.userCanUpdateAtr == 1).value();
+							if(_.isEmpty(useAndUserCanUpdateAtrLst)) {
+								notYouCanCheckAll = false;
+								notOtherCheckAll = false;			
+							} else {
+								let youCanChangeItFalseLst = _.chain(useAndUserCanUpdateAtrLst).filter(item => item.youCanChangeIt==false).value();
+								if(!_.isEmpty(youCanChangeItFalseLst)) {
+									notYouCanCheckAll = false;
+								}
+								let canBeChangedByOthersFalseLst = _.chain(useAndUserCanUpdateAtrLst).filter(item => item.canBeChangedByOthers==false).value();
+								if(!_.isEmpty(canBeChangedByOthersFalseLst)) {
+									notOtherCheckAll = false;
+								}
+							}
+							$("#youCanCheckAll").prop('checked', notYouCanCheckAll);
                             $("#otherCheckAll").prop('checked', notOtherCheckAll);
                             
                             //nts.uk.ui.block.clear();
