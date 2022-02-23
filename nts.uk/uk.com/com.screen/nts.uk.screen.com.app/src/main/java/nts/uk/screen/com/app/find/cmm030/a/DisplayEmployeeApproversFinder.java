@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import nts.uk.screen.com.app.find.cmm030.a.dto.DisplayEmployeeApproversDto;
 import nts.uk.screen.com.app.find.cmm030.a.param.DisplayEmployeeApproversParam;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM030_自分の承認者設定.A：自分の承認者設定.メニュー別OCD.Ａ：社員の承認者を表示する
@@ -20,7 +19,7 @@ public class DisplayEmployeeApproversFinder {
 	private Cmm030AScreenQuery screenQuery;
 
 	public DisplayEmployeeApproversDto findData(DisplayEmployeeApproversParam param) {
-		String sid = AppContexts.user().employeeId();
-		return new DisplayEmployeeApproversDto(this.screenQuery.findApproverDisplayData(sid, param.getBaseDate()));
+		return new DisplayEmployeeApproversDto(
+				this.screenQuery.findApproverDisplayData(param.getSid(), param.getBaseDate()));
 	}
 }

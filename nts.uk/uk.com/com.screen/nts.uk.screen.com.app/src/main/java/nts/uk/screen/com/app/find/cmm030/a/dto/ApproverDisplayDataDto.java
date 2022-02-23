@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.bs.employee.pub.employee.ResultRequest600Export;
 
 @Data
 @AllArgsConstructor
@@ -17,5 +18,5 @@ public class ApproverDisplayDataDto {
 	/**
 	 * 社員名<List>
 	 */
-	private List<String> employeeNames;
+	private List<ResultRequest600Export> employeeNames;
 }
