@@ -19,10 +19,16 @@ public class AddModifyAnyPeriodCommandHandler extends CommandHandler<AddModifyAn
     protected void handle(CommandHandlerContext<AddModifyAnyPeriodCommand> commandHandlerContext) {
         AddModifyAnyPeriodCommand command = commandHandlerContext.getCommand();
         String cid = AppContexts.user().companyId();
-        String businessCode = command.getBusinessCode();
-        boolean exit = businessTypeFormatMDailyRepository.checkExistData(cid,businessCode);
+        String code = command.getCode();
+        //アルゴリズム「重複チェック」を実行する   (thực hiện thuật toán check duplicate)
+        boolean exit = businessTypeFormatMDailyRepository.checkExistData(cid,code);
         if(exit){
             throw  new BusinessException("Msg_3");
         }
+        //ドメインモデル「任意期間修正のフォーマット設定」を登録する Delete domain: 任意期間修正のフォーマット設定
+
+        //画面項目「A9_1：このフォーマットを初期設定にする」の状態をチェックする
+
+
     }
 }

@@ -2,6 +2,8 @@ package nts.uk.ctx.at.function.app.command.modifyanyperiod;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class ModifyAnyPeriodDetailDto {
     /**
@@ -13,4 +15,7 @@ public class ModifyAnyPeriodDetailDto {
      * 並び順
      */
     private int order;
+
+
+    private BigDecimal columnWidth;
 }
