@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * 月次の勤怠項目Repository
  * The Interface MonthlyAttendanceItemRepository.
  */
 public interface MonthlyAttendanceItemRepository {
@@ -53,9 +54,19 @@ public interface MonthlyAttendanceItemRepository {
 	 * @return the object
 	 */
 	Optional<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, int attendanceItemId);
-	
+
+	/**
+	 * Insert(月次の勤怠項目)
+	 * @param domain
+	 */
+	void insert(MonthlyAttendanceItem domain);
+
+	/**
+	 * Update(月次の勤怠項目)
+	 * @param domain
+	 */
 	void update(MonthlyAttendanceItem domain);
-	
+
 	/**
 	 * 
 	 * @param companyId

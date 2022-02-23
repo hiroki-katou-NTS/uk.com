@@ -264,6 +264,12 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 	}
 
 	@Override
+	public void insert(MonthlyAttendanceItem domain) {
+		KrcmtMonAttendanceItem entity = new KrcmtMonAttendanceItem(domain);
+		this.commandProxy().insert(entity);
+	}
+
+	@Override
 	public void update(MonthlyAttendanceItem domain) {
 		KrcmtMonAttendanceItem entity = new KrcmtMonAttendanceItem(domain);
 		this.commandProxy().update(entity);
