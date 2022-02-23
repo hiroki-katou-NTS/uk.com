@@ -395,7 +395,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                           empTarget: value,
                        };
                       self.clickChangeMonth = false;
-                      service.genDate(param).done((data) => {
+					  let genDateProcessDto = {
+						genDateDto : param,
+						dataSessionDto : self.dataSessionDto
+					  }
+                      service.genDate(genDateProcessDto).done((data) => {
                           if (data) {
                               self.yearMonth(data.yearMonth);
                               //Combobox display actual time
@@ -1400,8 +1404,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             dataParent["checkDailyChange"] = (dataChangeProcess.length > 0 || self.sprStampSourceInfo()) ? true : false;
             dataParent["showFlex"] = self.showFlex();
             dataParent["checkUnLock"] = self.checkUnLock();
+			let dataParentDto = {
+				dataParent : dataParent,
+				dataSessionDto : self.dataSessionDto
+			}
             if (checkDailyChange || (self.valueUpdateMonth != null && !_.isEmpty(self.valueUpdateMonth.items)) || self.flagCalculation || !_.isEmpty(sprStampSourceInfo)) {
-                service.addAndUpdate(dataParent).done((dataAfter) => {
+                service.addAndUpdate(dataParentDto).done((dataAfter) => {
                     // alert("done");
                     let onlyCheckBox: boolean = false;
                     if(dataAfter.onlyLoadCheckBox == true){
@@ -1631,7 +1639,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (execMontlyAggregateAsync) {
                 $('#miGrid').addClass('processing');
                 $('#agree-table').addClass('processing');
-                service.execMonthlyAggregate(dataParent).done((task) => {
+				let dataParentDto = {
+					dataParent : dataParent,
+					dataSessionDto : self.dataSessionDto
+				}
+                service.execMonthlyAggregate(dataParentDto).done((task) => {
                     $('#miGrid').block({message:"",fadeIn:200,css:{ width: '220px', 'line-height': '32px' }});
                     $('#agree-table').block({message:"",fadeIn:200,css:{ width: '220px', 'line-height': '32px' }});
                     self.observeExecution(task);
@@ -1808,7 +1820,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             dataParent["checkUnLock"] = self.checkUnLock();
             //self.removeErrorRefer();
             let dfd = $.Deferred();
-            service.calculation(dataParent).done((data) => {
+			let dataParentDto = {
+				dataParent : dataParent,
+				dataSessionDto : self.dataSessionDto
+			}
+            service.calculation(dataParentDto).done((data) => {
                 if(data.dailyCorrectDto){
                       self.processFlex(data.dailyCorrectDto, true);
                 }
@@ -2200,7 +2216,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         endDate: lstData[lstData.length - 1].date
                     };
                     paramVer.displayFormat = self.displayFormat();
-                    service.loadVerRow(paramVer).done((data) => {
+					let loadVerDataDto = {
+						loadVerData : paramVer,
+						dataSessionDto : self.dataSessionDto
+					}
+                    service.loadVerRow(loadVerDataDto).done((data) => {
                         self.indentityMonth(data.indentityMonthResult);
                         self.flagCalculation = false;
                         dfd.resolve();
@@ -2240,8 +2260,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 showLock: self.showLock(),
                 cellEdits: dataChageUI
             }
-
-            service.loadRow(param).done((data) => {
+			let dPPramLoadRowDto = {
+				dpPramLoadRow : param,
+				dataSessionDto : self.dataSessionDto
+			}
+            service.loadRow(dPPramLoadRowDto).done((data) => {
                 self.flagCalculation = false;
                 if (onlyLoadMonth && errorFlex == false) {
                     self.processFlex(data, true);
@@ -3424,10 +3447,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             let dataRowEnd = dataSource[dataSource.length - 1];
+            let empAndDateDto = {
+				dataSessionDto : self.dataSessionDto,
+				empAndDate : {}
+			}
             if (self.showFlex()) {
                 self.insertUpdate("Tight").done((loadContinue: boolean) => {
                     if(!loadContinue){
-                    service.addClosure({ employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail, showFlex: self.showFlex() }).done((data) => {
+					empAndDateDto.empAndDate = { employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail, showFlex: self.showFlex() };
+                    service.addClosure(empAndDateDto).done((data) => {
                         self.processLockButton(self.showLock());
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                             //if (self.showDialogError) self.showErrorDialog();
@@ -3440,7 +3468,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }
                 });
             } else {
-                service.addClosure({ employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail, showFlex: self.showFlex() }).done((data) => {
+				empAndDateDto.empAndDate = { employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail, showFlex: self.showFlex() };
+                service.addClosure(empAndDateDto).done((data) => {
                     self.processLockButton(self.showLock());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                         if (self.showDialogError) self.showErrorDialog();
@@ -3458,7 +3487,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             let dataRowEnd = dataSource[dataSource.length - 1];
-            service.releaseClosure({ employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail }).done((data) => {
+			let empAndDateDto = {
+				empAndDate : { employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail },
+				dataSessionDto : self.dataSessionDto
+			}
+            service.releaseClosure(empAndDateDto).done((data) => {
                 if (!_.isEmpty(data)) {
                     nts.uk.ui.dialog.info({ messageId: data }).then(() => {
                     });
@@ -3559,7 +3592,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
 
             let dfd = $.Deferred();
-            service.lock(param).done((data) => {
+			let dpDisplayLockParamDto = {
+				dpDisplayLockParam : param,
+				dataSessionDto : self.dataSessionDto
+			}
+            service.lock(dpDisplayLockParamDto).done((data) => {
                 nts.uk.ui.block.clear();
                 self.lockDisableFlex(data.lockDisableFlex);
                 self.indentityMonth(data.indentityMonthResult);
@@ -4868,7 +4905,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 valueError: any,
                 dataChange: any,
                 dataChageRow: any,
-                errorGrid: any;
+                errorGrid: any,
+				self = this;
             __viewContext.vm.flagCalculation = false;
             $("#next-month").ntsError("clear");
             // get error grid
@@ -4978,8 +5016,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 							});
 						}
 					}
-
-                    service.calcTime(param).done((value) => {
+					let dcTimeParam = {
+						calcTimeParam : param,
+						dataSessionDto : self.dataSessionDto
+					}
+                    service.calcTime(dcTimeParam).done((value) => {
                         // workType, workTime not found
 
                         if (value.errorFindMaster28 || value.errorFindMaster29) {
@@ -5365,9 +5406,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let findWkpParam = {
                         companyId: __viewContext.user.companyId, 
                         wkpCode: workplaceCode, 
-                        baseDate: dateParam2
+                        baseDate: dateParam2,
+						dataSessionDto : parent.dataSessionDto
                     };
-
                     $.when(service.findWplIDByCode(findWkpParam), service.findAllCodeName(param2)).done((res1, res2) => {
                         if (res1) {
                             workplaceId = res1.workplaceId;
