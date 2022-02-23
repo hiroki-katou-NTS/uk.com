@@ -174,11 +174,11 @@ public class RegisterSmartPhoneStampCommandHandler
     @Inject
     private EmpEmployeeAdapter empEmployeeAdapter;
 	@Inject
-	private static StampingAreaRepository stampingAreaRepository;
+	private StampingAreaRepository stampingAreaRepository;
 	@Inject
-	private static WorkLocationRepository repository;
+	private WorkLocationRepository repository;
 	@Inject
-	private static AcquireWorkLocationEmplAdapter adapter;
+	private AcquireWorkLocationEmplAdapter adapter;
 	@Override
 	protected GeneralDate handle(CommandHandlerContext<RegisterSmartPhoneStampCommand> context) {
 		RegisterSmartPhoneStampCommand cmd = context.getCommand();
