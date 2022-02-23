@@ -253,7 +253,7 @@ public class SupportInformationFinder {
                 : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(orgId);
 
         // 3. List<応援許可する組織>: 取得する(対象組織識別情報)
-        List<SupportAllowOrganization> supportAllowOrgs = supportAllowOrganizationFinder.getListByTargetOrg(targetOrgIdenInfor);
+        List<SupportAllowOrganization> supportAllowOrgs = supportAllowOrganizationFinder.getListByTargetOrg(AppContexts.user().companyId(), targetOrgIdenInfor);
 
         // 4. List<応援許可する組織> empty
         if (supportAllowOrgs.isEmpty()) {
@@ -319,7 +319,7 @@ public class SupportInformationFinder {
                 : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(orgId);
 
         // 3. List<応援許可する組織>: 取得する(対象組織識別情報)
-        List<SupportAllowOrganization> supportAllowOrgs = supportAllowOrganizationFinder.getListBySupportableOrg(targetOrgIdenInfor);
+        List<SupportAllowOrganization> supportAllowOrgs = supportAllowOrganizationFinder.getListBySupportableOrg(AppContexts.user().companyId(), targetOrgIdenInfor);
 
         // 4. List<応援許可する組織> empty
         if (supportAllowOrgs.isEmpty()) {
@@ -372,7 +372,7 @@ public class SupportInformationFinder {
                 : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(orgId);
 
         // 3. List<応援許可する組織>: 取得する(対象組織識別情報)
-        List<SupportAllowOrganization> supportAllowOrgs = supportAllowOrganizationFinder.getListBySupportableOrg(targetOrgIdenInfor);
+        List<SupportAllowOrganization> supportAllowOrgs = supportAllowOrganizationFinder.getListBySupportableOrg(AppContexts.user().companyId(), targetOrgIdenInfor);
 
         // 4. List<応援許可する組織> empty
         if (supportAllowOrgs.isEmpty()) {
