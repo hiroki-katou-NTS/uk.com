@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.CorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
@@ -90,8 +91,12 @@ public class ReflectApplicationWorkSchedule {
 
 		// 日別実績の補正処理
 		ChangeDailyAttendance changeAtt = ChangeDailyAttendance.createChangeDailyAtt(affterReflect.getLstItemId(), ScheduleRecordClassifi.SCHEDULE);
-		IntegrationOfDaily domainCorrect = CorrectDailyAttendanceService.processAttendanceRule(require,
-				dailyRecordApp.getDomain(), changeAtt);
+		IntegrationOfDaily domainCorrect = CorrectionAttendanceRule.process(require,
+				dailyRecordApp, changeAtt);
+		if (domainCorrect instanceof DailyRecordOfApplication) {
+			dailyRecordApp.setAttendanceBeforeReflect(
+					((DailyRecordOfApplication) domainCorrect).getAttendanceBeforeReflect());
+		}
 
 		// 振休振出として扱う日数を補正する
 		WorkInfoOfDailyAttendance workInfoAfter = CorrectDailyAttendanceService.correctFurikyu(require,
@@ -134,7 +139,7 @@ public class ReflectApplicationWorkSchedule {
 	}
 
 	public static interface Require extends CorrectDailyAttendanceService.Require,
-			SCCreateDailyAfterApplicationeReflect.Require, CreateApplicationReflectionHist.Require {
+			SCCreateDailyAfterApplicationeReflect.Require, CreateApplicationReflectionHist.Require, CorrectionAttendanceRule.Require {
 
 		Optional<DailySnapshotWork> snapshot(String sid, GeneralDate ymd);
 		
@@ -160,6 +165,6 @@ public class ReflectApplicationWorkSchedule {
 		// CalculateDailyRecordServiceCenterNew
 		public List<IntegrationOfDaily> calculateForSchedule(ExecutionType type, CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily);
-
+		
 	}
 }

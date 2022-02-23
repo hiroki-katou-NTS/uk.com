@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
@@ -53,6 +52,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
@@ -74,19 +74,31 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.va
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeAppRepository;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.CorrectionAttendanceRuleRequireImpl;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectSupportDataWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectatt.CorrectionAfterTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.CorrectionAfterChangeWorkInfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.CorrectionShortWorkingHour;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.CreateOneDayRangeCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.FactoryManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -100,7 +112,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -119,9 +130,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-
-	@Inject
-	private WorkTimeSettingService workTimeSettingService;
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
@@ -207,22 +215,67 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	@Inject
 	private CreateDailyResults createDailyResults;
 	
+	/**勤怠ルール補正処理*/
+	@Inject
+	private AttendanceItemConvertFactory attendanceItemConvertFactory;
+
+	@Inject
+	private OptionalItemRepository optionalItem;
+
+	@Inject
+	private CorrectionAfterTimeChange correctionAfterTimeChange;
+
+	@Inject
+	private CorrectionAfterChangeWorkInfo correctionAfterChangeWorkInfo;
+
+	@Inject
+	private CommonCompanySettingForCalc companyCommonSettingRepo;
+
+	@Inject
+	private FactoryManagePerPersonDailySet personDailySetFactory;
+
+	@Inject
+	private FixedWorkSettingRepository fixWorkSetRepo;
+
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSetRepo;
+
+	@Inject
+	private CreateOneDayRangeCalc createOneDayRangeCalc;
+
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepo;
+
+	@Inject
+	private FlowWorkSettingRepository flowWorkSettingRepo;
+
+	@Inject
+	private FlexWorkSettingRepository flexWorkSettingRepo;
+
+	@Inject
+	private ICorrectSupportDataWork iCorrectSupportDataWork;
+
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepo;
+
+	@Inject
+	private WorkingConditionRepository workingConditionRepo;
+
+	@Inject
+	private CorrectionShortWorkingHour correctShortWorkingHour;
+	
 	@Override
 	public Pair<RCReflectStatusResultExport, Optional<AtomTask>> process(Object application, GeneralDate date,
 			RCReflectStatusResultExport reflectStatus, GeneralDateTime reflectTime, String execId) {
 
-		RequireImpl impl = new RequireImpl(AppContexts.user().companyId(), AppContexts.user().contractCode(),
-				stampCardRepository, correctionAttendanceRule, workTypeRepo, workTimeSettingRepository,
-				workTimeSettingService, basicScheduleService, timeReflectFromWorkinfo, checkRangeReflectAttd,
-				checkRangeReflectLeavingWork, temporarilyReflectStampDailyAttd, dailyRecordShareFinder,
-				convertDailyRecordToAd, calculateDailyRecordServiceCenter, dailyRecordAdUpService,
-				requestSettingAdapter, flexWorkSettingRepository, predetemineTimeSettingRepository,
-				fixedWorkSettingRepository, flowWorkSettingRepository, goBackReflectRepository,
-				stampAppReflectRepository, lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository,
-				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository, vacationApplicationReflectRepository, timePriorityRepository,
-				compensLeaveComSetRepository, subLeaveAppReflectRepository, substituteWorkAppReflectRepository,
-				applicationReflectHistoryRepo, getMngInfoFromEmpIDListAdapter, createDailyResults);
-		val result = ReflectApplicationWorkRecord.process(impl , AppContexts.user().companyId(), (ApplicationShare) application, date, convertToDom(reflectStatus), reflectTime, execId);
+		ApplicationShare applicationShare = (ApplicationShare) application;
+		RequireImpl impl = new RequireImpl(AppContexts.user().companyId(), AppContexts.user().contractCode(), applicationShare,
+				attendanceItemConvertFactory, optionalItem,
+				correctionAfterTimeChange, correctionAfterChangeWorkInfo, companyCommonSettingRepo,
+				personDailySetFactory, fixWorkSetRepo, predetemineTimeSetRepo, createOneDayRangeCalc, workTypeRepo,
+				workTimeSettingRepo, flowWorkSettingRepo, flexWorkSettingRepo, iCorrectSupportDataWork,
+				workingConditionItemRepo, workingConditionRepo, correctShortWorkingHour);
+		val result = ReflectApplicationWorkRecord.process(impl , AppContexts.user().companyId(), applicationShare, date, convertToDom(reflectStatus), reflectTime, execId);
 		return Pair.of(convertToExport(result.getLeft()), result.getRight());
 	}
 
@@ -247,78 +300,34 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 								RCReasonNotReflectExport.class));
 	}
 	
-	@AllArgsConstructor
-	public class RequireImpl implements ReflectApplicationWorkRecord.Require {
+	private class RequireImpl extends CorrectionAttendanceRuleRequireImpl implements ReflectApplicationWorkRecord.Require {
 
 		private final String companyId;
 
 		private final String contractCode;
-
-		private final StampCardRepository stampCardRepository;
-
-		private final ICorrectionAttendanceRule correctionAttendanceRule;
-
-		private final WorkTypeRepository workTypeRepo;
-
-		private final WorkTimeSettingRepository workTimeSettingRepository;
-
-		private final WorkTimeSettingService workTimeSettingService;
-
-		private final BasicScheduleService basicScheduleService;
-
-		private final TimeReflectFromWorkinfo timeReflectFromWorkinfo;
-
-		private final CheckRangeReflectAttd checkRangeReflectAttd;
-
-		private final CheckRangeReflectLeavingWork checkRangeReflectLeavingWork;
-
-		private final TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
-
-		private final DailyRecordShareFinder dailyRecordShareFinder;
-
-		private final DailyRecordConverter convertDailyRecordToAd;
-
-		private final CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
-
-		private final DailyRecordAdUpService dailyRecordAdUpService;
-
-		private final RCRequestSettingAdapter requestSettingAdapter;
-
-		private final FlexWorkSettingRepository flexWorkSettingRepository;
-
-		private final PredetemineTimeSettingRepository predetemineTimeSettingRepository;
-
-		private final FixedWorkSettingRepository fixedWorkSettingRepository;
-
-		private final FlowWorkSettingRepository flowWorkSettingRepository;
 		
-		private final GoBackReflectRepository goBackReflectRepository;
-		
-		private final StampAppReflectRepository stampAppReflectRepository;
-		
-        private final LateEarlyCancelReflectRepository lateEarlyCancelReflectRepository;
-        
-        private final ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
-        
-        private final TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
-        
-        private final AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
-        
-    	private final VacationApplicationReflectRepository vacationApplicationReflectRepository;
+		private final ApplicationShare applicationShare;
     	
-        private final StampReflectionManagementRepository timePriorityRepository;
-        
-    	private final CompensLeaveComSetRepository compensLeaveComSetRepository;
-    	
-	    private final SubLeaveAppReflectRepository subLeaveAppReflectRepository;
-    	
-    	private final SubstituteWorkAppReflectRepository substituteWorkAppReflectRepository;
-    	
-    	private final ApplicationReflectHistoryRepo applicationReflectHistoryRepo;
-    	
-    	private final GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
-    	
-    	private final CreateDailyResults createDailyResults;
+		public RequireImpl(String companyId, String contractCode, ApplicationShare applicationShare,
+				AttendanceItemConvertFactory attendanceItemConvertFactory, OptionalItemRepository optionalItem,
+				CorrectionAfterTimeChange correctionAfterTimeChange,
+				CorrectionAfterChangeWorkInfo correctionAfterChangeWorkInfo,
+				CommonCompanySettingForCalc companyCommonSettingRepo,
+				FactoryManagePerPersonDailySet personDailySetFactory, FixedWorkSettingRepository fixWorkSetRepo,
+				PredetemineTimeSettingRepository predetemineTimeSetRepo, CreateOneDayRangeCalc createOneDayRangeCalc,
+				WorkTypeRepository workTypeRepo, WorkTimeSettingRepository workTimeSettingRepo,
+				FlowWorkSettingRepository flowWorkSettingRepo, FlexWorkSettingRepository flexWorkSettingRepo,
+				ICorrectSupportDataWork iCorrectSupportDataWork,
+				WorkingConditionItemRepository workingConditionItemRepo,
+				WorkingConditionRepository workingConditionRepo, CorrectionShortWorkingHour correctShortWorkingHour) {
+			super(attendanceItemConvertFactory, optionalItem, correctionAfterTimeChange, correctionAfterChangeWorkInfo,
+					companyCommonSettingRepo, personDailySetFactory, fixWorkSetRepo, predetemineTimeSetRepo,
+					createOneDayRangeCalc, workTypeRepo, workTimeSettingRepo, flowWorkSettingRepo, flexWorkSettingRepo,
+					iCorrectSupportDataWork, workingConditionItemRepo, workingConditionRepo, correctShortWorkingHour);
+			this.companyId = companyId;
+			this.contractCode = contractCode;
+			this.applicationShare = applicationShare;
+		}
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
@@ -383,7 +392,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 		@Override
 		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId) {
-			// TODO: ??? repo
 			return Optional.empty();
 		}
 
@@ -551,6 +559,15 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		@Override
 		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
 			return workTimeSettingRepository.findByCode(cid, workTimeCode);
+		}
+		
+		// Override 打刻申請
+		@Override
+		public Optional<AppStampShare> appStamp() {
+			if (applicationShare instanceof AppStampShare) {
+				return Optional.of((AppStampShare) applicationShare);
+			}
+			return Optional.empty();
 		}
 	}
 }

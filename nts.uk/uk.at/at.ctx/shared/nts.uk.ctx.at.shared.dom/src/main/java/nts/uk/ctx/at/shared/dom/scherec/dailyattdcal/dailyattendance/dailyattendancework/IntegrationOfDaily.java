@@ -1,16 +1,21 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.CancelAppStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.GettingTimeVacactionService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimeVacation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
@@ -33,9 +38,12 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.GetAttendanceItemIdService;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
 
 /**
  * 日別勤怠(Work)
@@ -403,5 +411,26 @@ public class IntegrationOfDaily {
 		return GettingTimeVacactionService.get(this.attendanceLeave
 				,	this.attendanceTimeOfDailyPerformance
 				,	this.outingTime);
+	}
+	
+	public void clearEditStateByDeletedTimeSheet(List<Integer> lstExcludedApp) {
+		val itemIds = IntStream.range(1, MaximumNumberOfSupport.getMax() + 1).boxed()
+				.filter(y -> !this.ouenTimeSheet.stream()
+						.filter(x -> x.getTimeSheet().getStartTimeWithDayAttr().isPresent()
+								&& x.getTimeSheet().getEndTimeWithDayAttr().isPresent())
+						.map(x -> x.getWorkNo().v()).collect(Collectors.toList()).contains(y))
+				.map(x -> new SupportFrameNo(x)).collect(Collectors.toList());
+
+		this.editState.removeIf(x -> {
+			return GetAttendanceItemIdService.getAttendanceItemIds(itemIds)
+					.contains(x.getAttendanceItemId()) && !lstExcludedApp.contains(x.getAttendanceItemId());
+		});
+	}
+	
+	public List<Integer> getListWplLocationIdFromOuen(){
+		return this.ouenTimeSheet.stream().flatMap(x -> {
+			return Arrays.asList(CancelAppStamp.createItemId(921, x.getWorkNo().v(), 10),
+					CancelAppStamp.createItemId(922, x.getWorkNo().v(), 10)).stream();
+		}).collect(Collectors.toList());
 	}
 }

@@ -140,7 +140,7 @@ public class BreakTimeSheetCorrector {
 		
 		Optional<ManagePerPersonDailySet> managePerPersonDailySet(String sid, GeneralDate ymd, IntegrationOfDaily dailyRecord);
 		
-		DailyRecordToAttendanceItemConverter createDailyConverter();
+		DailyRecordToAttendanceItemConverter createDailyConverter(String cid);
 		
 		Optional<WorkType> workType(String companyId, String workTypeCd);
 		

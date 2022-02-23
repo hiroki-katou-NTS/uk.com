@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.CorrectDail
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.CorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
@@ -84,15 +85,19 @@ public class ReflectApplicationWorkRecord {
 		}
 
 		// 日別実績の補正処理 --- create default ???? sau xu ly phan anh check lai
-		IntegrationOfDaily domainCorrect = CorrectDailyAttendanceService.processAttendanceRule(require,
-				dailyRecordApp.getDomain(), changeAtt);
+		IntegrationOfDaily domainCorrect = CorrectionAttendanceRule.process(require,
+				dailyRecordApp, changeAtt);
 
 		// 振休振出として扱う日数を補正する
 		WorkInfoOfDailyAttendance workInfoAfter = CorrectDailyAttendanceService.correctFurikyu(require,
 				domainBeforeReflect.getWorkInformation(), domainCorrect.getWorkInformation());
 		domainCorrect.setWorkInformation(workInfoAfter);
+		if (domainCorrect instanceof DailyRecordOfApplication) {
+			dailyRecordApp.setAttendanceBeforeReflect(
+					((DailyRecordOfApplication) domainCorrect).getAttendanceBeforeReflect());
+		}
 		dailyRecordApp.setDomain(domainCorrect);
-
+		
 		// 日別実績の修正からの計算 -- co xu ly tinh toan khac ko hay cua lich
 		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(CalculateOption.asDefault(),
 				Arrays.asList(domainCorrect), Optional.empty(), ExecutionType.NORMAL_EXECUTION);
@@ -126,8 +131,8 @@ public class ReflectApplicationWorkRecord {
 	}
 
 	public static interface Require extends GetTargetDateRecordApplication.Require,
-			CorrectDailyAttendanceService.Require, CreateApplicationReflectionHist.Require,
-			TimeStampApplicationNRMode.Require, RCCreateDailyAfterApplicationeReflect.Require {
+	        CorrectionAttendanceRule.Require, CreateApplicationReflectionHist.Require,
+			TimeStampApplicationNRMode.Require, RCCreateDailyAfterApplicationeReflect.Require, CorrectDailyAttendanceService.Require {
 		/**
 		 * 
 		 * require{ 社員の作業データ設定を取得する(社員ID） }
