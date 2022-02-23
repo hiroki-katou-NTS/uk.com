@@ -40,6 +40,9 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.adapter.AcquireWorkLocationEmplAdapter;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
@@ -170,6 +173,12 @@ public class RegisterSmartPhoneStampCommandHandler
 	private CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
     @Inject
     private EmpEmployeeAdapter empEmployeeAdapter;
+	@Inject
+	private static StampingAreaRepository stampingAreaRepository;
+	@Inject
+	private static WorkLocationRepository repository;
+	@Inject
+	private static AcquireWorkLocationEmplAdapter adapter;
 	@Override
 	protected GeneralDate handle(CommandHandlerContext<RegisterSmartPhoneStampCommand> context) {
 		RegisterSmartPhoneStampCommand cmd = context.getCommand();
@@ -185,7 +194,7 @@ public class RegisterSmartPhoneStampCommandHandler
 				interimRemainDataMngRegisterDateChange, dailyRecordShareFinder, timeReflectFromWorkinfo,
 				closureStatusManagementRepo, actualLockRepo, employmentAdapter, creatingDailyResultsConditionRepo, empEmployeeAdapter);
 
-		TimeStampInputResult stampRes = EnterStampFromSmartPhoneService.create(require, AppContexts.user().companyId(),
+		TimeStampInputResult stampRes = EnterStampFromSmartPhoneService.create(stampingAreaRepository,repository,adapter, require, AppContexts.user().companyId(),
 				new ContractCode(AppContexts.user().contractCode()), AppContexts.user().employeeId(),
 				cmd.getStampDatetime(), cmd.getStampButton().toDomainValue(),
 				Optional.ofNullable(cmd.getGeoCoordinate().toDomainValue()), cmd.getRefActualResult().toDomainValue());

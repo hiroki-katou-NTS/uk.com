@@ -2,8 +2,6 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
 import java.util.Optional;
 
-import javax.inject.Inject;
-
 import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
@@ -51,16 +49,11 @@ public class EnterStampFromSmartPhoneService {
 	 * 
 	 *            ページNOとボタン位置NOから作成する打刻種類を判断する 社員の打刻データを作成する
 	 */
-	@Inject
-	private static StampingAreaRepository stampingAreaRepository;
-	@Inject
-	private static WorkLocationRepository repository;
-	@Inject
-	private static AcquireWorkLocationEmplAdapter adapter;
 
-	public static TimeStampInputResult create(Require require, String cid, ContractCode contractCode, String employeeID,
-			GeneralDateTime stampDatetime, StampButton stampButton, Optional<GeoCoordinate> positionInfor,
-			RefectActualResult refActualResults) {
+	public static TimeStampInputResult create(StampingAreaRepository stampingAreaRepository,
+			WorkLocationRepository repository, AcquireWorkLocationEmplAdapter adapter, Require require, String cid,
+			ContractCode contractCode, String employeeID, GeneralDateTime stampDatetime, StampButton stampButton,
+			Optional<GeoCoordinate> positionInfor, RefectActualResult refActualResults) {
 		// $スマホ打刻の打刻設定 = require.スマホ打刻の打刻設定を取得する()
 		Optional<SettingsSmartphoneStamp> settingSmartPhoneStampOpt = require.getSmartphoneStampSetting();
 

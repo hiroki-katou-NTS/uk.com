@@ -17,6 +17,9 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardCreateResult;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.adapter.AcquireWorkLocationEmplAdapter;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AssignmentMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonDisSet;
@@ -55,6 +58,12 @@ public class EnterStampFromSmartPhoneServiceTest {
 
 	@Injectable
 	private nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromSmartPhoneService.Require require;
+	@Injectable
+	private nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRepository stampingAreaRepository;
+	@Injectable
+	private nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository repository;
+	@Injectable
+	private nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.adapter.AcquireWorkLocationEmplAdapter adapter;
 
 	/**
 	 * require.getSmartphoneStampSetting() isPresent()
@@ -75,7 +84,8 @@ public class EnterStampFromSmartPhoneServiceTest {
 	};
 	
 	NtsAssert.businessException("Msg_1632",
-			() -> EnterStampFromSmartPhoneService.create(require, "", contractCode, employeeId,
+				() -> EnterStampFromSmartPhoneService.create(stampingAreaRepository, repository, adapter, require, "",
+						contractCode, employeeId,
 					dateTime, stampButton,
 					Optional.empty(), null));
 	
@@ -107,7 +117,8 @@ public class EnterStampFromSmartPhoneServiceTest {
 	};
 	
 	NtsAssert.businessException("Msg_1632",
-			() -> EnterStampFromSmartPhoneService.create(require, "", contractCode, employeeId,
+				() -> EnterStampFromSmartPhoneService.create(stampingAreaRepository, repository, adapter, require, "",
+						contractCode, employeeId,
 					dateTime, stampButton,
 					Optional.of(geoCoordinate), null));
 	
