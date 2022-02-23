@@ -1409,8 +1409,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 				dataSessionDto : self.dataSessionDto
 			}
             if (checkDailyChange || (self.valueUpdateMonth != null && !_.isEmpty(self.valueUpdateMonth.items)) || self.flagCalculation || !_.isEmpty(sprStampSourceInfo)) {
-                service.addAndUpdate(dataParentDto).done((dataAfter) => {
+                service.addAndUpdate(dataParentDto).done((res : any) => {
                     // alert("done");
+                    let dataAfter = res.dataResultAfterIU;
                     let onlyCheckBox: boolean = false;
                     if(dataAfter.onlyLoadCheckBox == true){
                         onlyCheckBox = true;
@@ -1824,7 +1825,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 				dataParent : dataParent,
 				dataSessionDto : self.dataSessionDto
 			}
-            service.calculation(dataParentDto).done((data) => {
+            service.calculation(dataParentDto).done((res : any) => {
+			let data = res.dailyPerformanceCalculationDto;
                 if(data.dailyCorrectDto){
                       self.processFlex(data.dailyCorrectDto, true);
                 }
@@ -2220,8 +2222,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 						loadVerData : paramVer,
 						dataSessionDto : self.dataSessionDto
 					}
-                    service.loadVerRow(loadVerDataDto).done((data) => {
-                        self.indentityMonth(data.indentityMonthResult);
+                    service.loadVerRow(loadVerDataDto).done((data : any) => {
+                        self.indentityMonth(data.loadVerDataResult.indentityMonthResult);
                         self.flagCalculation = false;
                         dfd.resolve();
                     });
@@ -3491,7 +3493,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 				empAndDate : { employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail },
 				dataSessionDto : self.dataSessionDto
 			}
-            service.releaseClosure(empAndDateDto).done((data) => {
+            service.releaseClosure(empAndDateDto).done((res: any) => {
+				let data = res.result;
                 if (!_.isEmpty(data)) {
                     nts.uk.ui.dialog.info({ messageId: data }).then(() => {
                     });
@@ -5020,9 +5023,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 						calcTimeParam : param,
 						dataSessionDto : self.dataSessionDto
 					}
-                    service.calcTime(dcTimeParam).done((value) => {
+                    service.calcTime(dcTimeParam).done((res : any) => {
                         // workType, workTime not found
-
+						let value = res.dcCalcTime;
                         if (value.errorFindMaster28 || value.errorFindMaster29) {
 
                             let rowItemSelect: any = _.find($("#dpGrid").mGrid("dataSource"), function(value: any) {
