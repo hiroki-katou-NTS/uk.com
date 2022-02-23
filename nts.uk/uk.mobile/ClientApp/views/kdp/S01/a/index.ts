@@ -294,7 +294,7 @@ export class KdpS01AComponent extends Vue {
 
                                         vm.openDialogB(command.stampButton);
                                     } else {
-                                        let changeClockArt = button.buttonType.stampType.changeClockArt;
+                                        let changeClockArt = button.stampType.changeClockArt;
                                         switch (changeClockArt) {
                                             case 1:
                                                 if (vm.setting.usrAtrValue === 1) {
@@ -318,11 +318,11 @@ export class KdpS01AComponent extends Vue {
                                 vm.$mask('hide');
                                 vm.getStampToSuppress();
 
-                                if (!_.has(button, 'buttonType.stampType.changeClockArt')) {
+                                if (!_.has(button, 'stampType.changeClockArt')) {
 
                                     vm.openDialogB(command.stampButton);
                                 } else {
-                                    let changeClockArt = button.buttonType.stampType.changeClockArt;
+                                    let changeClockArt = button.stampType.changeClockArt;
                                     switch (changeClockArt) {
                                         case 1:
                                             if (vm.setting.usrAtrValue === 1) {
@@ -368,7 +368,7 @@ export class KdpS01AComponent extends Vue {
 
                                         vm.openDialogB(command.stampButton);
                                     } else {
-                                        let changeClockArt = button.buttonType.stampType.changeClockArt;
+                                        let changeClockArt = button.stampType.changeClockArt;
                                         switch (changeClockArt) {
                                             case 1:
                                                 if (vm.setting.usrAtrValue === 1) {
@@ -398,7 +398,7 @@ export class KdpS01AComponent extends Vue {
 
                                         vm.openDialogB(command.stampButton);
                                     } else {
-                                        let changeClockArt = button.buttonType.stampType.changeClockArt;
+                                        let changeClockArt = button.stampType.changeClockArt;
                                         switch (changeClockArt) {
                                             case 1:
                                                 if (vm.setting.usrAtrValue === 1) {
