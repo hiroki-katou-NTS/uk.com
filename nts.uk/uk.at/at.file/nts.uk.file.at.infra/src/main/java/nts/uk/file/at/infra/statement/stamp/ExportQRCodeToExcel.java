@@ -100,7 +100,7 @@ public class ExportQRCodeToExcel extends AsposeCellsReportGenerator implements I
 		for (QRStampCardDto stamp : stampCardDtos) {
 
 			// The path where the image will get saved
-			String path = "C:\\\\output\\picture/" + stamp.getCardNumber() + ".png";
+			String path = "picture/" + stamp.getCardNumber() + ".png";
 			try {
 				createQR(stamp.getCardNumber(), path, charset, hashMap, imageSize, imageSize);
 			} catch (WriterException | IOException e) {
@@ -116,7 +116,7 @@ public class ExportQRCodeToExcel extends AsposeCellsReportGenerator implements I
 			for (int i = 0; i < stampCardDtos.size(); i++) {
 				int index;
 				index = worksheet.getPictures().add(0, 1,
-						"C:\\output\\picture\\" + stampCardDtos.get(i).getCardNumber() + ".png");
+						"picture\\" + stampCardDtos.get(i).getCardNumber() + ".png");
 
 				// Get the picture and set its different attributes.
 				Picture objPicture = worksheet.getPictures().get(index);
