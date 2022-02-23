@@ -1,13 +1,14 @@
-package nts.uk.screen.at.ws.kmp.kmp001;
+package nts.uk.file.at.ws.stamp;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.screen.at.app.query.kmp.kmp001.j.ExportQrcodeByCardNumber;
-import nts.uk.screen.at.app.query.kmp.kmp001.j.GetExtractedEmployeeCardNoInput;
+import nts.uk.file.at.app.export.statement.stamp.ExportQrcodeByCardNumber;
+import nts.uk.file.at.app.export.statement.stamp.GetExtractedEmployeeCardNoInput;
 
 /**
  * 
@@ -23,8 +24,8 @@ public class ExportQrCodeWs extends WebService {
 	
 	@POST
 	@Path("exportQR")
-	public void getStatusEmployee (GetExtractedEmployeeCardNoInput input) {
-		this.exportQR.exportQRCode(input);
+	public ExportServiceResult getStatusEmployee (GetExtractedEmployeeCardNoInput input) {
+		return this.exportQR.start(input);
 	}
 
 }

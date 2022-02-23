@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.kmp.kmp001.j;
+package nts.uk.file.at.app.export.statement.stamp;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -8,7 +8,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.aggregation.dom.common.QRStampCardDto;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;

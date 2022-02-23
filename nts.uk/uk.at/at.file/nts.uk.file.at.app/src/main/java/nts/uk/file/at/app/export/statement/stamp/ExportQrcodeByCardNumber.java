@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.kmp.kmp001.j;
+package nts.uk.file.at.app.export.statement.stamp;
 
 import java.util.List;
 
@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.aggregation.dom.common.ExportQRCodeToExcel;
-import nts.uk.ctx.at.aggregation.dom.common.QRStampCardDto;
+import nts.arc.layer.app.file.export.ExportService;
+import nts.arc.layer.app.file.export.ExportServiceContext;
 
 /**
  * UKDesign.UniversalK.就業.KDP_打刻.KMP001_IDカードの登録.J：QRコード出力.メニュー別OCD.選択社員のカードNOをQRコード出力する
@@ -16,15 +16,17 @@ import nts.uk.ctx.at.aggregation.dom.common.QRStampCardDto;
  *
  */
 @Stateless
-public class ExportQrcodeByCardNumber {
+public class ExportQrcodeByCardNumber extends ExportService<GetExtractedEmployeeCardNoInput> {
 
 	@Inject
 	private GetExtractedEmployeeCardNo getCardNo;
 
 	@Inject
-	private ExportQRCodeToExcel exportQRCodeToExcel;
+	private IExportQRCodeToExcel exportQRCodeToExcel;
 
-	public void exportQRCode(GetExtractedEmployeeCardNoInput input) {
+	@Override
+	protected void handle(ExportServiceContext<GetExtractedEmployeeCardNoInput> context) {
+		GetExtractedEmployeeCardNoInput input = context.getQuery();
 
 		// 1. call query 抽出した社員のカードNOを取得する
 		List<QRStampCardDto> stampCards = getCardNo.get(input);
@@ -35,12 +37,8 @@ public class ExportQrcodeByCardNumber {
 		}
 
 		// 3. Report EXCELファイルを出力する
-		try {
-			exportQRCodeToExcel.printData(Integer.parseInt(input.getSetRow()), Integer.parseInt(input.getSetCol()),
-					stampCards, input.getQrSize());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		exportQRCodeToExcel.export(context.getGeneratorContext(), input);
+
 	}
 
 }

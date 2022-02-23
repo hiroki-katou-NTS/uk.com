@@ -454,10 +454,10 @@ module nts.uk.at.view.kdp005.a {
 				
 				// QRコード　の場合
 				if (authcMethod == 1) {
-					modal('/view/kdp/005/q/index.xhtml');
-					let ICCard = getShared('ICCard');
+					mVm.$window.modal('at','/view/kdp/005/q/index.xhtml');
+					let ICCard = getShared('ICCardFromQRCode');
 					
-					/*if (ICCard && ICCard != '') {
+					if (ICCard && ICCard != '') {
 							block.grayout();
 							vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
 								vm.registerData(btn, layout, ICCard, employeeId, stampTime, stampDateTime);
@@ -466,9 +466,7 @@ module nts.uk.at.view.kdp005.a {
 							}).always(() => {
 								block.clear();
 							});
-						}*/
-						
-						//});
+						}
 					
 				}
 				

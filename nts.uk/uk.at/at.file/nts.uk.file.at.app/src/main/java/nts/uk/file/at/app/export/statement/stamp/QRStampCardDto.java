@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.dom.common;
+package nts.uk.file.at.app.export.statement.stamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
