@@ -660,7 +660,7 @@ public class DailyPerformanceCorrectionWebService {
             return x.getDate().toString("yyyy/MM/dd").equals(param.getBaseDate());
         }).findFirst();
         
-        return new GetWkpIDOutput(dailyEditOpt.map(x -> x.getAffiliationInfo().getWorkplaceID()).orElse(null), param.getDataSessionDto());
+        return new GetWkpIDOutput(dailyEditOpt.map(x -> x.getAffiliationInfo().getWorkplaceID()).orElse(null));
 //	    return new GetWkpIDOutput(workplacePub.getWkpNewByCdDate(
 //	            param.getCompanyId(), 
 //	            param.getWkpCode(), 
