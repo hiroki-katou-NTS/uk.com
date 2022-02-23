@@ -249,6 +249,8 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 						vm.fifthItemNameBackup = _.cloneDeep(vm.fifthItemName());
 						vm.processMemoBackup = _.cloneDeep(vm.processMemo());
 						vm.attentionMemoBackup = _.cloneDeep(vm.attentionMemo());
+
+						vm.level.valueHasMutated();
 					})
 					.always(() => vm.$blockui('clear'));
 			};
