@@ -348,10 +348,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                       if (nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length != 0) {
                           return;
                       }
-                      let param = {
+                      let genDateDto = {
                           yearMonth: value,
                           empTarget: _.isEmpty(self.selectedEmployee()) ? null : self.selectedEmployee()
                        };
+                       let param = {
+                        genDateDto: genDateDto,
+                        dataSessionDto: self.dataSessionDto
+                     };
                       self.clickChangeMonth = false;
                       service.genDate(param).done((data) => {
                           if (data) {
@@ -651,6 +655,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.screenDto = data.dailyPerformanceCorrectionDto;
                     self.paramCommonAsync = data.paramCommonAsync;
                     self.dpStateParam = data.dpStateParam;
+                    
                     //self.processMapData(data);
                     if (data.dailyPerformanceCorrectionDto.lstEmployee == undefined || data.dailyPerformanceCorrectionDto.lstEmployee.length == 0 || data.dailyPerformanceCorrectionDto.errorInfomation != 0) {
                         let messageId = "Msg_1342";
@@ -683,17 +688,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         dfd.resolve({ bindDataMap: true, data: data.dailyPerformanceCorrectionDto });
                     }
                     else {
-                        self.convertDataSession();
+                        
                         let paramMonth: any = { loadAfterCalc: false , paramCommonAsync : self.paramCommonAsync , dpStateParam : self.dpStateParam}
-
-                        paramMonth.paramCommonAsync.dateRange.startDate = moment.utc(paramMonth.paramCommonAsync.dateRange.startDate,  "YYYY/MM/DD").toISOString();
-                        paramMonth.paramCommonAsync.dateRange.endDate = moment.utc(paramMonth.paramCommonAsync.dateRange.endDate,  "YYYY/MM/DD").toISOString();
-
                         
                         param.screenDto = self.screenDto;
                         
                         $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, dataDaily) => {
                             self.dataSessionDto = dataDaily.dataSessionDto;
+                            self.convertDataSessionDto();
                             dataDaily.monthResult = dataMonth.monthResult;
                             dataDaily.indentityMonthResult = dataMonth.indentityMonthResult;
                             dataDaily.showTighProcess = dataMonth.showTighProcess;
@@ -783,7 +785,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                         dfd.resolve({ bindDataMap: true, data: data.dailyPerformanceCorrectionDto });
                                     }
                                     else {
-                                        self.convertDataSession();
                                         let paramMonth: any = { loadAfterCalc: false , paramCommonAsync : self.paramCommonAsync , dpStateParam : self.dpStateParam };
                                         
                                         param.screenDto = self.screenDto;
@@ -808,89 +809,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return dfd.promise();
         }
 
-        convertDataSession(){
+        
+
+        convertDataSessionDto(){
             let self = this;
-
-            //DAily
-            self.screenDto.datePeriodResult.startDate = self.convertDateToGeneralDate(self.screenDto.datePeriodResult.startDate);
-            self.screenDto.datePeriodResult.endDate = self.convertDateToGeneralDate(self.screenDto.datePeriodResult.endDate);
-
-            self.screenDto.dateRange.startDate = self.convertDateToGeneralDate(self.screenDto.dateRange.startDate);
-            self.screenDto.dateRange.endDate = self.convertDateToGeneralDate(self.screenDto.dateRange.endDate);
-
-            self.screenDto.periodInfo.targetRange.startDate = self.convertDateToGeneralDate(self.screenDto.periodInfo.targetRange.startDate);
-            self.screenDto.periodInfo.targetRange.endDate = self.convertDateToGeneralDate(self.screenDto.periodInfo.targetRange.endDate);
-
-            for(let i = 0;i<self.screenDto.periodInfo.lstClosureCache.length;i++){
-                self.screenDto.periodInfo.lstClosureCache[i].period.startDate = self.convertDateToGeneralDate(self.screenDto.periodInfo.lstClosureCache[i].period.startDate);
-                self.screenDto.periodInfo.lstClosureCache[i].period.endDate = self.convertDateToGeneralDate(self.screenDto.periodInfo.lstClosureCache[i].period.endDate);
+            if(self.dataSessionDto !=null && self.dataSessionDto.approvalConfirmCache !=null && self.dataSessionDto.approvalConfirmCache.lstApproval != null){
+                for(let i = 0;i< self.dataSessionDto.approvalConfirmCache.lstApproval.length;i++){
+                    self.dataSessionDto.approvalConfirmCache.lstApproval[i].date = self.convertDateToGeneralDate(self.dataSessionDto.approvalConfirmCache.lstApproval[i].date);
+                }
             }
 
-            for(let i = 0;i<self.screenDto.periodInfo.lstRangeCls.length;i++){
-                self.screenDto.periodInfo.lstRangeCls[i].startDate = self.convertDateToGeneralDate(self.screenDto.periodInfo.lstRangeCls[i].startDate);
-                self.screenDto.periodInfo.lstRangeCls[i].endDate = self.convertDateToGeneralDate(self.screenDto.periodInfo.lstRangeCls[i].endDate);
-            }
-
-            for(let i = 0;i<self.screenDto.lstData.length;i++){
-                self.screenDto.lstData[i].date = self.convertDateToGeneralDate(self.screenDto.lstData[i].date);
-            }
-
-            self.screenDto.stateParam.period.startDate = self.convertDateToGeneralDate(self.screenDto.stateParam.period.startDate);
-            self.screenDto.stateParam.period.endDate = self.convertDateToGeneralDate(self.screenDto.stateParam.period.endDate);
-
-            self.screenDto.stateParam.dateInfo.targetRange.startDate = self.convertDateToGeneralDate(self.screenDto.stateParam.dateInfo.targetRange.startDate);
-            self.screenDto.stateParam.dateInfo.targetRange.endDate = self.convertDateToGeneralDate(self.screenDto.stateParam.dateInfo.targetRange.endDate);
-
-            for(let i = 0;i<self.screenDto.stateParam.dateInfo.lstClosureCache.length;i++){
-                self.screenDto.stateParam.dateInfo.lstClosureCache[i].period.startDate = self.convertDateToGeneralDate(self.screenDto.stateParam.dateInfo.lstClosureCache[i].period.startDate);
-                self.screenDto.stateParam.dateInfo.lstClosureCache[i].period.endDate = self.convertDateToGeneralDate(self.screenDto.stateParam.dateInfo.lstClosureCache[i].period.endDate);
-            }
-
-            for(let i = 0;i<self.screenDto.stateParam.dateInfo.lstRangeCls.length;i++){
-                self.screenDto.stateParam.dateInfo.lstRangeCls[i].startDate = self.convertDateToGeneralDate(self.screenDto.stateParam.dateInfo.lstRangeCls[i].startDate);
-                self.screenDto.stateParam.dateInfo.lstRangeCls[i].endDate = self.convertDateToGeneralDate(self.screenDto.stateParam.dateInfo.lstRangeCls[i].endDate);
-            }
-
-            //Monthly
-            self.paramCommonAsync.dateRange.startDate = self.convertDateToGeneralDate(self.paramCommonAsync.dateRange.startDate);
-            self.paramCommonAsync.dateRange.endDate = self.convertDateToGeneralDate(self.paramCommonAsync.dateRange.endDate);
-
-            self.paramCommonAsync.stateParam.period.startDate = self.convertDateToGeneralDate(self.paramCommonAsync.stateParam.period.startDate);
-            self.paramCommonAsync.stateParam.period.endDate = self.convertDateToGeneralDate(self.paramCommonAsync.stateParam.period.endDate);
-
-            self.paramCommonAsync.stateParam.dateInfo.targetRange.startDate = self.convertDateToGeneralDate(self.paramCommonAsync.stateParam.dateInfo.targetRange.startDate);
-            self.paramCommonAsync.stateParam.dateInfo.targetRange.endDate = self.convertDateToGeneralDate(self.paramCommonAsync.stateParam.dateInfo.targetRange.endDate);
-
-            for(let i = 0;i<self.paramCommonAsync.stateParam.dateInfo.lstClosureCache.length;i++){
-                self.paramCommonAsync.stateParam.dateInfo.lstClosureCache[i].period.startDate = self.convertDateToGeneralDate(self.paramCommonAsync.stateParam.dateInfo.lstClosureCache[i].period.startDate);
-                self.paramCommonAsync.stateParam.dateInfo.lstClosureCache[i].period.endDate = self.convertDateToGeneralDate(self.paramCommonAsync.stateParam.dateInfo.lstClosureCache[i].period.endDate);
-            }
-
-            for(let i = 0;i<self.paramCommonAsync.stateParam.dateInfo.lstRangeCls.length;i++){
-                self.paramCommonAsync.stateParam.dateInfo.lstRangeCls[i].startDate = self.convertDateToGeneralDate(self.paramCommonAsync.stateParam.dateInfo.lstRangeCls[i].startDate);
-                self.paramCommonAsync.stateParam.dateInfo.lstRangeCls[i].endDate = self.convertDateToGeneralDate(self.paramCommonAsync.stateParam.dateInfo.lstRangeCls[i].endDate);
-            }
-            //dpStateParam
-            self.dpStateParam.period.startDate = self.convertDateToGeneralDate(self.dpStateParam.period.startDate);
-            self.dpStateParam.period.endDate = self.convertDateToGeneralDate(self.dpStateParam.period.endDate);
-            
-            for(let i = 0;i<self.dpStateParam.dateInfo.lstClosureCache.length;i++){
-                self.dpStateParam.dateInfo.lstClosureCache[i].period.startDate = self.convertDateToGeneralDate(self.dpStateParam.dateInfo.lstClosureCache[i].period.startDate);
-                self.dpStateParam.dateInfo.lstClosureCache[i].period.endDate = self.convertDateToGeneralDate(self.dpStateParam.dateInfo.lstClosureCache[i].period.endDate);
-            }
-
-            for(let i = 0;i<self.dpStateParam.dateInfo.lstRangeCls.length;i++){
-                self.dpStateParam.dateInfo.lstRangeCls[i].startDate = self.convertDateToGeneralDate(self.dpStateParam.dateInfo.lstRangeCls[i].startDate);
-                self.dpStateParam.dateInfo.lstRangeCls[i].endDate = self.convertDateToGeneralDate(self.dpStateParam.dateInfo.lstRangeCls[i].endDate);
-            }
-
-            self.dpStateParam.dateInfo.targetRange.startDate = self.convertDateToGeneralDate(self.dpStateParam.dateInfo.targetRange.startDate);
-            self.dpStateParam.dateInfo.targetRange.endDate = self.convertDateToGeneralDate(self.dpStateParam.dateInfo.targetRange.endDate);
         }
 
         convertDateToGeneralDate(date){
             return moment.utc(date,  "YYYY/MM/DD").toISOString();
         }
+
         processMapData(data) {
             var self = this;
             let startTime: number = performance.now();
@@ -2612,7 +2546,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         });
                         nts.uk.ui.block.clear();
                     } else {
-                        self.convertDataSession();
                         let paramMonth: any = {loadAfterCalc: false, paramCommonAsync : self.paramCommonAsync, dpStateParam : self.dpStateParam}
 
                         param.screenDto = self.screenDto;
@@ -2806,7 +2739,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                         dfd.resolve({ bindDataMap: true, data: data.dailyPerformanceCorrectionDto });
                                     }
                                     else {
-                                        self.convertDataSession();
                                         let paramMonth: any = { loadAfterCalc: false, paramCommonAsync : self.paramCommonAsync , dpStateParam : self.dpStateParam };
 
                                         param.screenDto = self.screenDto;

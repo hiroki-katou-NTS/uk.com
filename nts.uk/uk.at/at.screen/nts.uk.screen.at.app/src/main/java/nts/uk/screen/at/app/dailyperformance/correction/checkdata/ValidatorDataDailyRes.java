@@ -57,6 +57,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmplo
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.FlexShortageRCDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalStatusActualResultKDW003Dto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ConfirmStatusActualResultKDW003Dto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
@@ -852,8 +854,8 @@ public class ValidatorDataDailyRes {
         List<Pair<String, GeneralDate>> signChangeMap = dataCheckSign.stream().map(x -> Pair.of(x.getEmployeeId(), x.getDate())).collect(Collectors.toList());
         List<Pair<String, GeneralDate>> approvalChangeMap = dataCheckApproval.stream().map(x -> Pair.of(x.getEmployeeId(), x.getDate())).collect(Collectors.toList());
         List<Pair<String, GeneralDate>> mapItemChange = itemValues.stream().map(x -> Pair.of(x.getEmployeeId(), x.getDate())).collect(Collectors.toList());
-		List<ConfirmStatusActualResult> confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId, sId, cacheOld.getEmployeeIds(), Optional.of(cacheOld.getPeriod()), Optional.empty());
-		List<ApprovalStatusActualResult> approvalResults = approvalStatusActualDayChange.processApprovalStatus(companyId, sId, cacheOld.getEmployeeIds(), Optional.of(cacheOld.getPeriod()), Optional.empty(), cacheOld.getMode());
+		List<ConfirmStatusActualResult> confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId, sId, cacheOld.getEmployeeIds(), Optional.of(cacheOld.getPeriod().convertToPeriod()), Optional.empty());
+		List<ApprovalStatusActualResult> approvalResults = approvalStatusActualDayChange.processApprovalStatus(companyId, sId, cacheOld.getEmployeeIds(), Optional.of(cacheOld.getPeriod().convertToPeriod()), Optional.empty(), cacheOld.getMode());
 		confirmResults = confirmResults.stream()
 				.filter(x -> signChangeMap.contains(Pair.of(x.getEmployeeId(), x.getDate()))
 						|| mapItemChange.contains(Pair.of(x.getEmployeeId(), x.getDate())))
@@ -868,10 +870,12 @@ public class ValidatorDataDailyRes {
 						|| mapItemChange.contains(Pair.of(x.getEmployeeId(), x.getDate())))
 				.collect(Collectors.toList()));
 		cacheOldTemp.setLstApproval(cacheOld.getLstApproval().stream()
-				.filter(x -> approvalChangeMap.contains(Pair.of(x.getEmployeeId(), x.getDate()))
-						|| mapItemChange.contains(Pair.of(x.getEmployeeId(), x.getDate())))
+				.filter(x -> approvalChangeMap.contains(Pair.of(x.getConfirmStatusActualResult().getEmployeeId(), x.getConfirmStatusActualResult().getDate()))
+						|| mapItemChange.contains(Pair.of(x.getConfirmStatusActualResult().getEmployeeId(), x.getConfirmStatusActualResult().getDate())))
 				.collect(Collectors.toList()));
-		ApprovalConfirmCache cacheNew = new ApprovalConfirmCache(sId,  cacheOld.getEmployeeIds(), cacheOld.getPeriod(), cacheOld.getMode(), confirmResults, approvalResults);
+		List<ConfirmStatusActualResultKDW003Dto> lstConfirmStatusActualResultKDW003Dto = confirmResults.stream().map(c->ConfirmStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
+		List<ApprovalStatusActualResultKDW003Dto> lstApprovalStatusActualResultKDW003Dto = approvalResults.stream().map(c->ApprovalStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
+		ApprovalConfirmCache cacheNew = new ApprovalConfirmCache(sId,  cacheOld.getEmployeeIds(), cacheOld.getPeriod(), cacheOld.getMode(), lstConfirmStatusActualResultKDW003Dto, lstApprovalStatusActualResultKDW003Dto);
 		cacheOldTemp.checkVer(cacheNew);
 	}
 }

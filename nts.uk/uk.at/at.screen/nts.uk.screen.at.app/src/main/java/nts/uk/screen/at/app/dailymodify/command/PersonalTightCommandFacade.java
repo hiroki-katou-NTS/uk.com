@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.dailymodify.command;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,6 +24,8 @@ import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.Request533Export;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalStatusActualResultKDW003Dto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ConfirmStatusActualResultKDW003Dto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.AggrPeriodClosure;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
@@ -93,14 +96,16 @@ public class PersonalTightCommandFacade {
 		String sId = AppContexts.user().employeeId();
 		
 		List<ConfirmStatusActualResult> confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId,
-				sId, cache.getEmployeeIds(), Optional.of(cache.getPeriod()), Optional.empty());
+				sId, cache.getEmployeeIds(), Optional.of(cache.getPeriod().convertToPeriod()), Optional.empty());
 		List<ApprovalStatusActualResult> approvalResults = approvalStatusActualDayChange.processApprovalStatus(
-				companyId, sId, cache.getEmployeeIds(), Optional.of(cache.getPeriod()), Optional.empty(),
+				companyId, sId, cache.getEmployeeIds(), Optional.of(cache.getPeriod().convertToPeriod()), Optional.empty(),
 				cache.getMode());
 
+		List<ConfirmStatusActualResultKDW003Dto> lstConfirmStatusActualResultKDW003Dto = confirmResults.stream().map(c->ConfirmStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
+		List<ApprovalStatusActualResultKDW003Dto> lstApprovalStatusActualResultKDW003Dto = approvalResults.stream().map(c->ApprovalStatusActualResultKDW003Dto.fromDomain(c)).collect(Collectors.toList());
 		ApprovalConfirmCache cacheNew = new ApprovalConfirmCache(AppContexts.user().employeeId(),
 				cache.getEmployeeIds(), cache.getPeriod(), cache.getMode(),
-				confirmResults, approvalResults);
+				lstConfirmStatusActualResultKDW003Dto, lstApprovalStatusActualResultKDW003Dto);
 		return cacheNew;
 	}
 }
