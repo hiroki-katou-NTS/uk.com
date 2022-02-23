@@ -30,6 +30,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.system.ServerSystemProperties;
 import nts.uk.file.at.app.export.statement.stamp.GetExtractedEmployeeCardNo;
 import nts.uk.file.at.app.export.statement.stamp.GetExtractedEmployeeCardNoInput;
 import nts.uk.file.at.app.export.statement.stamp.IExportQRCodeToExcel;
@@ -116,7 +117,7 @@ public class ExportQRCodeToExcel extends AsposeCellsReportGenerator implements I
 			for (int i = 0; i < stampCardDtos.size(); i++) {
 				int index;
 				index = worksheet.getPictures().add(0, 1,
-						"picture\\" + stampCardDtos.get(i).getCardNumber() + ".png");
+						ServerSystemProperties.fileStoragePath() + "\\" + stampCardDtos.get(i).getCardNumber() + ".png");
 
 				// Get the picture and set its different attributes.
 				Picture objPicture = worksheet.getPictures().get(index);
