@@ -774,6 +774,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					}
 					vm.checkCondition(vm.data);
 					vm.selectedType(success.applyForLeave.vacationInfo.holidayApplicationType);
+					vm.checkCondition31(vm.data);
 					vm.checkCondition37();
 
 					if (vm.data.workTypeNotRegister) {
