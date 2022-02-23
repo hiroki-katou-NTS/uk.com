@@ -172,7 +172,8 @@ module nts.uk.at.view.kmp001.j {
 							setRow: ko.unwrap(vm.textEditorJ2_12),
 							setCol: ko.unwrap(vm.textEditorJ2_16),
 							};
-						vm.$ajax(EXPORT_QRCODE, input)
+						
+						nts.uk.request.exportFile(EXPORT_QRCODE, input)
 							.then(() => {
 								nts.uk.characteristics.save(QRCODE_SIZE, { qrCodeSize: ko.unwrap(vm.qrSize) });
 							})
