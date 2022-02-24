@@ -13,7 +13,7 @@ public class WorkLocationHelper {
 		
 		return new WorkLocation(new ContractCode("ContractCode"), new WorkLocationCD("WorkLocationCD"),
 				new WorkLocationName("WorkLocationName"), new StampMobilePossibleRange(RadiusAtr.M_100, new GeoCoordinate(100, 200)),
-				new ArrayList<>(), Optional.empty());
+				new ArrayList<>(), Optional.empty(), Optional.empty());
 		
 	}
 

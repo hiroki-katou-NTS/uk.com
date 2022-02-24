@@ -42,7 +42,7 @@ public class WorkLocation extends AggregateRoot {
 	private Optional<WorkplacePossible> workplace;
 
 	/** 地域コード */
-	private int regionCode;
+	private Optional<Integer> regionCode;
 
 	/**
 	 * [1] 携帯打刻で打刻してもいい位置か判断する（地理座標input）
@@ -56,7 +56,7 @@ public class WorkLocation extends AggregateRoot {
 
 	public WorkLocation(ContractCode contractCode, WorkLocationCD workLocationCD, WorkLocationName workLocationName,
 			StampMobilePossibleRange stampRange, List<Ipv4Address> listIPAddress,
-			Optional<WorkplacePossible> workplace , int regionCode) {
+			Optional<WorkplacePossible> workplace , Optional<Integer> regionCode) {
 		super();
 		this.contractCode = contractCode;
 		this.workLocationCD = workLocationCD;
@@ -76,11 +76,11 @@ public class WorkLocation extends AggregateRoot {
 	 * @return
 	 */
 	public int findTimeDifference(Require require, String contractCode) {
-		if (this.regionCode == 0) {
+		if (!this.regionCode.isPresent()) {
 			return 0;
 		}
 
-		Optional<RegionalTimeDifference> regionalTimeDifference = require.get(contractCode, this.regionCode);
+		Optional<RegionalTimeDifference> regionalTimeDifference = require.get(contractCode, this.regionCode.get());
 		if (regionalTimeDifference.isPresent()) {
 			return regionalTimeDifference.get().getRegionalTimeDifference();
 		}

@@ -61,7 +61,7 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 	
 	/** 地域コード */
 	@Column(name = "REGIONAL_CD")
-	public int regionalCd;
+	public Integer regionalCd;
 	
 	@OneToOne(targetEntity = KrcmtWorkplacePossible.class, mappedBy = "krcmtWorkLocation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KRCMT_POSSIBLE_WKP")
@@ -83,7 +83,7 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 				workLocation.getStampRange().getRadius().value,
 				workLocation.getStampRange().getGeoCoordinate().getLatitude(),
 				workLocation.getStampRange().getGeoCoordinate().getLongitude(),
-				workLocation.getRegionCode(),
+				workLocation.getRegionCode().map(m -> m).orElse(null),
 				workLocation.getWorkplace().isPresent() ? KrcmtWorkplacePossible.toEntiy(
 						workLocation.getContractCode().v(),
 						workLocation.getWorkLocationCD().v(),
@@ -105,6 +105,6 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 						new GeoCoordinate(this.latitude, this.longitude)),
 				this.krcmtIP4Address.stream().map(c->c.toDomain()).collect(Collectors.toList()),
 				Optional.ofNullable(this.krcmtWorkplacePossible == null ? null : this.krcmtWorkplacePossible.toDomain()),
-				this.regionalCd);
+				this.regionalCd == null ? Optional.empty() : Optional.of(this.regionalCd));
 	}
 }
