@@ -93,15 +93,11 @@
 					</tr>
 				</table>
 				
+				<!-- A12 -->
+				<div class="label-middle" data-bind="visible: screenModelG.settingsUsingEmbossing.ic_card">
+					<label>#{i18n.getText('KDP010_146')}</label>
+				</div>
 				<table class="form-data" data-bind="visible: screenModelG.settingsUsingEmbossing.ic_card, with: stampSetCommunal">
-					<tr>
-						<!-- A12 -->
-						<td>
-							<div class="label-middle">
-								<label>#{i18n.getText('KDP010_146')}</label>
-							</div>
-						</td>
-					</tr>
 					<tr>
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_147')}</div> 
@@ -109,7 +105,6 @@
 						</td>
 					</tr>
 				</table>
-				
 				
 				<div class="label-middle">
 					<label>#{i18n.getText('KDP010_173')}</label>
