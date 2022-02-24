@@ -311,7 +311,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
 
             if (columnC11.isPresent()) {
                 val cellIndex = this.getCellIndex(columnC11.get().v() + rowC1);
-                cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(empInfo.getLicense().nameId);
+                cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(getText(empInfo.getLicense().nameId));
                 setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
             }
 
