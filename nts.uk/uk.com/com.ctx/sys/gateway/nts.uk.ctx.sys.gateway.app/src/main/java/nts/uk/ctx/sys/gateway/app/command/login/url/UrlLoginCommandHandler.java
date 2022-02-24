@@ -108,7 +108,7 @@ public class UrlLoginCommandHandler extends LoginCommandHandlerBase<
 
 		// ログイン社員の識別
 		val companyId = urlExecInfo.get().getCid();
-		val employeeCode = urlExecInfo.get().getSid();
+		val employeeCode = urlExecInfo.get().getScd();
 		IdentificationResult idenResult = EmployeeIdentify.identifyByEmployeeCode(require, companyId, employeeCode);
 		if(idenResult.isFailure()) {
 			transaction.execute(idenResult.getAtomTask());
