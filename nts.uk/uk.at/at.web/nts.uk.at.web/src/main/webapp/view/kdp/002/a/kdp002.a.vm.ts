@@ -21,7 +21,7 @@ module nts.uk.at.view.kdp002.a {
             workUse: KnockoutObservable<boolean> = ko.observable(false);
             workGroup: KnockoutObservable<WorkGroup> = ko.observable(null);
 
-            regionalTime: KnockoutObservable<number> = ko.observable(20);
+            regionalTime: KnockoutObservable<number> = ko.observable(0);
 
             state!: KnockoutComputed<STATE>;
             constructor() {
@@ -54,36 +54,36 @@ module nts.uk.at.view.kdp002.a {
                 nts.uk.ui.block.grayout();
 
                 self.getRegionalTime();
+                setTimeout(() => {
+                    service.getWorkManagementMultiple().done((result: boolean) => {
+                        self.workManagementMultiple(!result);
+                        service.startPage({ regionalTimeDifference: ko.unwrap(self.regionalTime) }).done((res: IStartPage) => {
+                            self.stampSetting(res.stampSetting);
 
-                service.getWorkManagementMultiple().done((result: boolean) => {
-                    self.workManagementMultiple(!result);
+                            self.stampTab().bindData(res.stampSetting.pageLayouts);
+                            self.stampGrid(new EmbossGridInfo(res, ko.unwrap(self.workManagementMultiple), ko.unwrap(self.regionalTime)));
 
-                    service.startPage().done((res: IStartPage) => {
-                        self.stampSetting(res.stampSetting);
+                            self.stampGrid().yearMonth.subscribe((val) => {
+                                if (_.get(res, 'stampSetting.historyDisplayMethod') == 2)
+                                    self.getTimeCardData();
+                            });
 
-                        self.stampTab().bindData(res.stampSetting.pageLayouts);
-                        self.stampGrid(new EmbossGridInfo(res, ko.unwrap(self.workManagementMultiple), ko.unwrap(self.regionalTime)));
-
-                        self.stampGrid().yearMonth.subscribe((val) => {
-                            if (_.get(res, 'stampSetting.historyDisplayMethod') == 2)
-                                self.getTimeCardData();
+                            let stampToSuppress = res.stampToSuppress ? res.stampToSuppress : {};
+                            stampToSuppress.isUse = res.stampSetting ? res.stampSetting.buttonEmphasisArt : false;
+                            self.stampToSuppress(stampToSuppress);
+                            self.stampResultDisplay(res.stampResultDisplay);
+                            // add correction interval
+                            self.stampClock.addCorrectionInterval(self.stampSetting().correctionInterval);
+                            dfd.resolve();
+                        }).fail((res) => {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
+                                nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                            });
+                        }).always(() => {
+                            nts.uk.ui.block.clear();
                         });
-
-                        let stampToSuppress = res.stampToSuppress ? res.stampToSuppress : {};
-                        stampToSuppress.isUse = res.stampSetting ? res.stampSetting.buttonEmphasisArt : false;
-                        self.stampToSuppress(stampToSuppress);
-                        self.stampResultDisplay(res.stampResultDisplay);
-                        // add correction interval
-                        self.stampClock.addCorrectionInterval(self.stampSetting().correctionInterval);
-                        dfd.resolve();
-                    }).fail((res) => {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
-                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
-                        });
-                    }).always(() => {
-                        nts.uk.ui.block.clear();
-                    });
-                });
+                    })
+                }, 300);
 
                 return dfd.promise();
             }
@@ -112,13 +112,12 @@ module nts.uk.at.view.kdp002.a {
                                     .then((data: GetWorkPlaceRegionalTime) => {
                                         if (data) {
                                             // self.regionalTime(data.regional);
-                                            self.regionalTime(10);
+                                            self.regionalTime(0);
                                         }
                                     });
                             }
                         });
                 });
-
             }
 
             public getTimeCardData() {
@@ -184,14 +183,14 @@ module nts.uk.at.view.kdp002.a {
                 const vm = this;
                 const view = new ko.ViewModel();
 
-                let stampTime = moment(moment(view.$date.now()).add(2, 'h').toDate()).format("HH:mm");
+                let stampTime = moment(moment(view.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate()).format("HH:mm");
 
                 nts.uk.ui.block.invisible();
                 nts.uk.request
                     .syncAjax("com", "server/time/now/")
                     .done((res) => {
                         let data = {
-                            datetime: moment.utc(moment(view.$date.now()).add(2, 'h').toDate()).format('YYYY/MM/DD HH:mm:ss'),
+                            datetime: moment.utc(moment(res).add(ko.unwrap(vm.regionalTime), 'h').toDate()).format('YYYY/MM/DD HH:mm:ss'),
                             authcMethod: 0,
                             stampMeans: 3,
                             reservationArt: btn.btnReservationArt,
@@ -215,11 +214,6 @@ module nts.uk.at.view.kdp002.a {
 
                                     }).then(() => {
                                         service.stampInput(data).done((res) => {
-                                            let param = {
-                                                sid: __viewContext.user.employeeId,
-                                                date: view.$date.now()
-                                            }
-
                                             if (vm.stampResultDisplay().notUseAttr == 1 && btn.changeClockArt == 1) {
                                                 vm.openScreenC(btn, layout);
                                             } else {
@@ -233,11 +227,6 @@ module nts.uk.at.view.kdp002.a {
 
                                 } else {
                                     service.stampInput(data).done((res) => {
-                                        let param = {
-                                            sid: __viewContext.user.employeeId,
-                                            date: view.$date.now()
-                                        }
-
                                         if (vm.stampResultDisplay().notUseAttr == 1 && btn.changeClockArt == 1) {
                                             vm.openScreenC(btn, layout);
                                         } else {
@@ -268,7 +257,7 @@ module nts.uk.at.view.kdp002.a {
                 nts.uk.ui.windows.setShared("screenB", {
                     screen: "KDP002"
                 });
-                vm.$window.modal('at', '/view/kdp/002/b/index.xhtml', { stampTime: stampTime }).then(() => {
+                vm.$window.modal('at', '/view/kdp/002/b/index.xhtml', { stampTime: stampTime, regionalTime: ko.unwrap(self.regionalTime) }).then(() => {
                     if (self.stampGrid().displayMethod() === 1) {
                         self.getStampData();
                     } else {
@@ -281,7 +270,8 @@ module nts.uk.at.view.kdp002.a {
             }
 
             public openScreenC(button, layout) {
-                let self = this;
+                const self = this;
+                const vm = new ko.ViewModel();
 
                 let data = {
                     pageNo: layout.pageNo,
@@ -294,21 +284,23 @@ module nts.uk.at.view.kdp002.a {
                         employeeId: __viewContext.user.employeeId,
                         employeeCode: __viewContext.user.employeeCode,
                         mode: Mode.Personal,
-                        error: res
+                        error: res,
+                        regionalTime: ko.unwrap(self.regionalTime)
                     });
                     nts.uk.ui.windows.setShared("screenC", {
                         screen: "KDP002"
                     });
-                    nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
-                        if (self.stampGrid().displayMethod() === 1) {
-                            self.getStampData();
-                        } else {
-                            self.getTimeCardData();
-                        }
-                        self.reloadHighLight();
-                        self.stampToSuppress.valueHasMutated();
-                        self.openKDP002T(button, layout);
-                    });
+                    nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml')
+                        .onClosed(function (): any {
+                            if (self.stampGrid().displayMethod() === 1) {
+                                self.getStampData();
+                            } else {
+                                self.getTimeCardData();
+                            }
+                            self.reloadHighLight();
+                            self.stampToSuppress.valueHasMutated();
+                            self.openKDP002T(button, layout);
+                        });
                 });
             }
 
