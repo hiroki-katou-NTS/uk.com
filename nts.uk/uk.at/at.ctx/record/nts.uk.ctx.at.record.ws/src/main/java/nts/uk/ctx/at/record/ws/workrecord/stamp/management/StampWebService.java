@@ -5,11 +5,11 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultFinder;
@@ -27,10 +27,22 @@ public class StampWebService extends WebService {
 	private DisplayScreenStampingResultFinder displayScreenStampingResultFinder;
 	
 	@POST 
-	@Path("getAllStampingResult/{employeeId}")
-	public List<DisplayScreenStampingResultDto> getDisplay(@PathParam("employeeId") String employeeId){
+	@Path("getAllStampingResult")
+	public List<DisplayScreenStampingResultDto> getDisplay(GetStampInfoInput input){
+		
 		DatePeriod datePerriod = new DatePeriod(GeneralDate.today().addDays(-3), GeneralDate.today());
-		List<DisplayScreenStampingResultDto> data = displayScreenStampingResultFinder.getDisplay(datePerriod, employeeId);
+		GeneralDateTime changeTime = GeneralDateTime.now().addHours(input.getRegionalTimeDifference());
+		
+		if (changeTime.day() != GeneralDateTime.now().day()) {
+			if (GeneralDateTime.now().before(changeTime)) {
+				datePerriod = new DatePeriod(GeneralDate.today().addDays(-2), GeneralDate.today().addDays(1));
+			}
+			if (GeneralDateTime.now().after(changeTime)) {
+				datePerriod = new DatePeriod(GeneralDate.today().addDays(-4), GeneralDate.today().addDays(-1));
+			}
+		}
+		
+		List<DisplayScreenStampingResultDto> data = displayScreenStampingResultFinder.getDisplay(datePerriod, input.getEmployeeId());
 		return data;
 	}
 }
