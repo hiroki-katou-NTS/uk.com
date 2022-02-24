@@ -34,6 +34,25 @@ public class EmployeeInformationImport {
 
 	/** The employment cls. */
 	Integer employmentCls; // 就業区分
-
 	
+	/**
+	- 1: Go to support
+	- 2: Come to support
+	- 0: Do not go to support */
+	int supportType; // 応援タイプ
+
+	public EmployeeInformationImport(String employeeId, String employeeCode, String businessName,
+			WorkplaceImport workplace, ClassificationImport classification, DepartmentImport department,
+			PositionImport position, EmploymentImport employment, Integer employmentCls) {
+		super();
+		this.employeeId = employeeId;
+		this.employeeCode = employeeCode;
+		this.businessName = businessName;
+		this.workplace = workplace;
+		this.classification = classification;
+		this.department = department;
+		this.position = position;
+		this.employment = employment;
+		this.employmentCls = employmentCls;
+	}
 }

@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,7 +18,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
@@ -34,10 +34,12 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
+import nts.uk.ctx.at.shared.app.find.supportmanagement.supportableemployee.SupportableEmployeeFinder;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployee;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.EmployeeSearchCallSystemType;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.RegulationInfoEmpQuery;
@@ -79,7 +81,8 @@ public class ScreenQueryExtractTargetEmployees {
 	private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHisRepo;
 	@Inject
 	private NurseClassificationRepository nurseClassificationRepo;
-
+	@Inject
+	private SupportableEmployeeFinder supportableEmpFinder;
 
 	final static String SPACE = " ";
 	final static String ZEZO_TIME = "00:00";
@@ -90,22 +93,55 @@ public class ScreenQueryExtractTargetEmployees {
 		// step 1 get domainSv 組織を指定して参照可能な社員を取得する
 		RequireGetEmpImpl requireGetEmpImpl = new RequireGetEmpImpl();
 		String epmloyeeId = AppContexts.user().employeeId();
-		TargetOrgIdenInfor targetOrgIdenInfor = param.targetOrgIdenInfor;
-		List<String> sids = GetEmpCanReferService.getByOrg(requireGetEmpImpl, epmloyeeId, param.systemDate, param.period, targetOrgIdenInfor);
+		TargetOrgIdenInfor targetOrgIdenInfor = param.targetOrgIdenInfor; // step2
+		// danh sach nhân viên thuộc trực thuộc workplace
+		List<String> listSidByOrg = GetEmpCanReferService.getByOrg(requireGetEmpImpl, epmloyeeId, param.systemDate, param.period, targetOrgIdenInfor);
+		
+		// step3 call ScreenQuery 応援者を取得する
+		// list này chỉ bao gồm nhân viên đi support và nhân viên đến support
+		List<SupportableEmployee> allEmpployeeSupport = supportableEmpFinder.get(listSidByOrg, null, param.period);
+		// list nhân viên trực thuộc workplace(workplaceGroup) đi support
+		List<String> listEmployeeGotoSupport = allEmpployeeSupport.stream()
+				.map(i -> i.getEmployeeId().toString())
+				.filter(x -> listSidByOrg.contains(x)).collect(Collectors.toList());
+		// list nhân viên đên support cho phòng ban
+		List<String> listEmployeeCometoSupport = allEmpployeeSupport.stream()
+				.map(i -> i.getEmployeeId().toString())
+				.filter(x -> !listSidByOrg.contains(x)).collect(Collectors.toList());
+		
+		// danh sach sid bao gồm sid của workplace và của những nhân viên đến support
+		List<String> allSID = Stream.concat(listSidByOrg.stream(), listEmployeeCometoSupport.stream()).collect(Collectors.toList());
+		
+		// step 4: create 取得したい社員情報
+		EmployeeInformationQueryDtoImport input = new EmployeeInformationQueryDtoImport(allSID, param.systemDate, false, false, false, false, false, false);
 
-		// step 2, 3
-		EmployeeInformationQueryDtoImport input = new EmployeeInformationQueryDtoImport(sids, param.systemDate, false, false, false, false, false, false);
-
-		List<EmployeeInformationImport> listEmp = empInfoAdapter.getEmployeeInfo(input);
-		//2020/9/7　発注済み step 4
+		// step5 <<Public>> 社員の情報を取得する
+		List<EmployeeInformationImport> listEmployeeInformation = empInfoAdapter.getEmployeeInfo(input);
+		
+		//2020/9/7　発注済み step 6
 		//※スケ①-5_スケ修正(職場別)
-		if(listEmp.isEmpty()){
+		if(listEmployeeInformation.isEmpty()){
 			throw new BusinessException("Msg_1779");
 		}
-		listEmp.sort( Comparator.comparing(EmployeeInformationImport :: getEmployeeCode));
-		List<String> sids2 = listEmp.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
+		
+		// set supportType
+		// list info nhân viên trực thuộc workplace(workplaceGroup)
+		List<EmployeeInformationImport> listEmployeeInformationByOrg = listEmployeeInformation.stream()
+				.filter(i -> listSidByOrg.contains(i.getEmployeeId())).collect(Collectors.toList());
+		updateSupportType(listEmployeeInformationByOrg, SupportType.DO_NOT_GO_TO_SUPPORT.value, listEmployeeGotoSupport);
+		
+		// list info nhân viên đên support cho phòng ban
+		List<EmployeeInformationImport> listEmpComeToSupport = listEmployeeInformation.stream()
+				.filter(i -> !listSidByOrg.contains(i.getEmployeeId())).collect(Collectors.toList());
+		updateSupportType(listEmpComeToSupport, SupportType.COME_TO_SUPPORT.value, new ArrayList<>());
+		
+		
+		// sort
+		// sort list nhân viên đến support (luôn ở step này để dưới UI không phải sort nữa)
+		listEmpComeToSupport.sort( Comparator.comparing(EmployeeInformationImport :: getEmployeeCode)); 
+		listEmployeeInformationByOrg.sort( Comparator.comparing(EmployeeInformationImport :: getEmployeeCode));
 
-		// step 5 call AR_並び替え設定.
+		// step 7 call AR_並び替え設定.
 		RequireSortEmpImpl requireSortEmpImpl = new RequireSortEmpImpl(belongScheduleTeamRepo,
 				employeeRankRepo, rankRepo, syJobTitleAdapter, syClassificationAdapter, empMedicalWorkStyleHisRepo,
 				nurseClassificationRepo);
@@ -113,14 +149,36 @@ public class ScreenQueryExtractTargetEmployees {
 		Optional<SortSetting> sortSetting = sortSettingRepo.get(AppContexts.user().companyId());
 		// if $並び替え設定.empty---return 社員IDリスト
 		if (!sortSetting.isPresent()) {
-			return listEmp;
+			return Stream.concat(listEmployeeInformationByOrg.stream(), listEmpComeToSupport.stream())
+                    .collect(Collectors.toList());
 		}
 
-		List<String> listSidOrder = sortSetting.get().sort(requireSortEmpImpl, param.systemDate, sids2);
+		// sort list nhân viên trực thuộc workplace|workplaceGroup
+		List<String> listSIDByOrg = listEmployeeInformationByOrg.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
+		List<String> listSidOrder = sortSetting.get().sort(requireSortEmpImpl, param.systemDate, listSIDByOrg);
 
-		listEmp.sort(Comparator.comparing(v-> listSidOrder.indexOf(v.getEmployeeId())));
+		listEmployeeInformationByOrg.sort(Comparator.comparing(v-> listSidOrder.indexOf(v.getEmployeeId())));
+		
+		// cộng 2 list nhân viên đã sort 
+		return Stream.concat(listEmployeeInformationByOrg.stream(), listEmpComeToSupport.stream())
+                .collect(Collectors.toList());
+	}
+	
+	private void updateSupportType(List<EmployeeInformationImport> listEmpInfor, int supportType, List<String> listEmpGotoSupport) {
+		
+		if (supportType == SupportType.COME_TO_SUPPORT.value) {
+			
+			listEmpInfor.forEach(e -> e.setSupportType(SupportType.COME_TO_SUPPORT.value));
+		} else {
 
-		return listEmp;
+			listEmpInfor.forEach(e -> {
+				if (listEmpGotoSupport.contains(e.getEmployeeId())) {
+					e.setSupportType(SupportType.GO_TO_SUPPORT.value);
+				} else {
+					e.setSupportType(SupportType.DO_NOT_GO_TO_SUPPORT.value);
+				}
+			});
+		}
 	}
 
 	@AllArgsConstructor
