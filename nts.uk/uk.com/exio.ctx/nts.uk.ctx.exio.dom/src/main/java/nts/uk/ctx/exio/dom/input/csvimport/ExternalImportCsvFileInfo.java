@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.csv.CSVFormat;
@@ -51,16 +52,19 @@ public class ExternalImportCsvFileInfo implements DomainObject {
 		}
 	}
 	
-	public void parse(InputStream csvFileStream, Consumer<CsvRecord> readRecords) {
+	public int parse(InputStream csvFileStream, Function<CsvRecord, Boolean> readRecords) {
 
 		val parser = new Parser(importStartRowNumber.v());
-		parser.parse(csvFileStream, readRecords);
+		return parser.parse(csvFileStream, readRecords);
 	}
 	
 	public void readBaseCsv(InputStream csvFileStream, Consumer<CsvRecord> readRecords) {
 
 		val parser = new Parser(0);
-		parser.parse(csvFileStream, readRecords);
+		parser.parse(csvFileStream, r ->{
+				readRecords.accept(r);
+				return true;
+		});
 	}
 	
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -75,27 +79,30 @@ public class ExternalImportCsvFileInfo implements DomainObject {
 		
 		
 		@SneakyThrows
-		public void parse(
+		public int parse(
 				InputStream inputStream,
-				Consumer<CsvRecord> readRecords) {
+				Function<CsvRecord, Boolean> readRecords) {
 			
 			try (val reader = new InputStreamReader(inputStream, "SJIS");
 					val parser = new CSVParser(reader, CSVFormat.EXCEL)) {
 				
 				this.iterator = parser.iterator();
 				
-				readRows(readRecords);
+				return readRows(readRecords);
 			}
 		}
 
-		private void readRows(Consumer<CsvRecord> readRecords) {
+		private int readRows(Function<CsvRecord, Boolean> readRecords) {
 			
 			advance(lineData);
-			
+			int successCount = 0;
 			for (int rowNo = 1; iterator.hasNext(); rowNo++) {
 				val record = new CsvRecord(rowNo, toStringList(readNextRow()));
-				readRecords.accept(record);
+				if(readRecords.apply(record)){
+					successCount++;
+				}
 			}
+			return successCount;
 		}
 		
 		private void advance(int targetRow) {

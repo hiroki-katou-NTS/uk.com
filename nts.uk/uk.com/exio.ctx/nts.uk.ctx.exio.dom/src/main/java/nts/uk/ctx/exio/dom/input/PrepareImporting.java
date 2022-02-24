@@ -27,11 +27,14 @@ public class PrepareImporting {
 			require.setupWorkspaceForEachDomain(context);//削除も一緒に
 			
 			// 受入データの組み立て
-			setting.assemble(require, context, externalImportSetting.getCsvFileInfo(), csvFileStream);
-			
-			// 編集済みデータの正準化
-			val meta = ImportingDataMeta.create(require, context, setting.getAssembly().getAllItemNo());
-			CanonicalizeRevisedData.canonicalize(require, context, meta);
+			val assembledCount = setting.assemble(require, context, externalImportSetting.getCsvFileInfo(), csvFileStream);
+
+			// 1件以上編集できた場合
+			if(assembledCount > 0) {
+				// 編集済みデータの正準化
+				val meta = ImportingDataMeta.create(require, context, setting.getAssembly().getAllItemNo());
+				CanonicalizeRevisedData.canonicalize(require, context, meta);
+			}
 	}
 	
 	public static interface Require extends
