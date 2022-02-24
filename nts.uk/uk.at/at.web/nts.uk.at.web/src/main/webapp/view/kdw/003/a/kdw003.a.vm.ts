@@ -619,10 +619,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.selectedDirection(obj.moveMouse)
                 }
 
+                let dateRangeParam = nts.uk.ui.windows.getShared('DateRangeKDW003');
                 var param = {
                     dateRange: dateRangeParam ? {
-                        startDate: moment(dateRangeParam.startDate).utc().toISOString(),
-                        endDate: moment(dateRangeParam.endDate).utc().toISOString()
+                        startDate: dateRangeParam.startDate,
+                        endDate: dateRangeParam.endDate
                     } : null,
                     displayFormat: _.isEmpty(self.shareObject()) ? (_.isEmpty(self.characteristics) ? 0 : self.characteristics.formatExtract) : self.shareObject().displayFormat,
                     initScreen: (_.isEmpty(self.characteristics) || !_.isEmpty(self.shareObject())) ? 0 : 1,
@@ -639,7 +640,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // delete grid in localStorage
                 self.deleteGridInLocalStorage();
 
-                let dateRangeParam = nts.uk.ui.windows.getShared('DateRangeKDW003');
+                
                 if (!(_.isEmpty(self.shareObject()))) {
                     self.displayFormat(param.displayFormat);
                     if (self.shareObject().transitionDesScreen == undefined || self.shareObject().transitionDesScreen == null) {
@@ -699,7 +700,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         
                         $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, dataDaily) => {
                             self.dataSessionDto = dataDaily.dataSessionDto;
-                            self.convertDataSessionDto();
+                            // self.convertDataSessionDto();
                             dataDaily.monthResult = dataMonth.monthResult;
                             dataDaily.indentityMonthResult = dataMonth.indentityMonthResult;
                             dataDaily.showTighProcess = dataMonth.showTighProcess;
@@ -732,8 +733,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 								self.formatCodes(data);
                                 let param = {
                                     dateRange: dateRangeParam ? {
-                                        startDate: moment(dateRangeParam.startDate).utc().toISOString(),
-                                        endDate: moment(dateRangeParam.endDate).utc().toISOString()
+                                        startDate: dateRangeParam.startDate,
+                                        endDate: dateRangeParam.endDate
                                     } : null,
                                     displayFormat: _.isEmpty(self.shareObject()) ? (_.isEmpty(self.characteristics) ? 0 : self.characteristics.formatExtract) : self.shareObject().displayFormat,
                                     initScreen: _.isEmpty(self.characteristics) ? 0 : 1,
@@ -811,18 +812,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
             })
             return dfd.promise();
-        }
-
-        
-
-        convertDataSessionDto(){
-            let self = this;
-            if(self.dataSessionDto !=null && self.dataSessionDto.approvalConfirmCache !=null && self.dataSessionDto.approvalConfirmCache.lstApproval != null){
-                for(let i = 0;i< self.dataSessionDto.approvalConfirmCache.lstApproval.length;i++){
-                    self.dataSessionDto.approvalConfirmCache.lstApproval[i].date = self.convertDateToGeneralDate(self.dataSessionDto.approvalConfirmCache.lstApproval[i].date);
-                }
-            }
-
         }
 
         convertDateToGeneralDate(date){
@@ -2501,13 +2490,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let dateRangeTemp: any = null;
                 if((self.hasEmployee && !hasChangeFormat) || self.initFromScreenOther){
                     dateRangeTemp = {
-                        startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
+                        startDate: self.displayFormat() === 1 ? self.selectedDate() : self.dateRanger().startDate,
+                        endDate: self.displayFormat() === 1 ? self.selectedDate() : self.dateRanger().endDate
                     }
                 }else if((self.hasEmployee && hasChangeFormat)){
                      dateRangeTemp = {
-                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                        startDate: self.dateRanger().startDate,
+                        endDate: self.dateRanger().endDate
                     }
                 }
                 let param = {
@@ -2707,8 +2696,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 								self.formatCodes(data);
                                 let param = {
                                     dateRange: dateRangeParam ? {
-                                        startDate: moment(dateRangeParam.startDate).utc().toISOString(),
-                                        endDate: moment(dateRangeParam.endDate).utc().toISOString()
+                                        startDate: dateRangeParam.startDate,
+                                        endDate: dateRangeParam.endDate
                                     } : null,
                                     displayFormat: _.isEmpty(self.shareObject()) ? (_.isEmpty(self.characteristics) ? 0 : self.characteristics.formatExtract) : self.shareObject().displayFormat,
                                     initScreen: _.isEmpty(self.characteristics) ? 0 : 1,
