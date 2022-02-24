@@ -693,7 +693,8 @@ module nts.uk.ui.kdp001.a {
                         vm.$window.shared('screenB', { screen: "KDP001" }),
                     )
                     .then(() => vm.$window.modal('at', '/view/kdp/002/b/index.xhtml', {
-                        stampTime: moment(moment(vm.$date.now()).add(vm.regionalTime, 'h').toDate()).format("HH:mm")
+                        stampTime: moment(moment(vm.$date.now()).add(vm.regionalTime, 'h').toDate()).format("HH:mm"),
+                        regionalTime: ko.unwrap(vm.regionalTime)
                     }));
             };
             const openDialogC = (stampDate: string, error: any) => {
@@ -707,7 +708,8 @@ module nts.uk.ui.kdp001.a {
                             stampDate,
                             workLocationName: ko.unwrap(vm.workLocationName),
                             workPlaceId: ko.unwrap(vm.workplaceId),
-                            error: error
+                            error: error,
+                            regionalTime: ko.unwrap(vm.regionalTime)
                         }),
                         vm.$window.shared('screenC', { screen: "KDP001" }),
                     )
