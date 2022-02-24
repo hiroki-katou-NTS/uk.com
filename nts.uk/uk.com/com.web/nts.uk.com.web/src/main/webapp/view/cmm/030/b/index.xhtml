@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+  <ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+      <script>
+        var dialogSize = {
+          width: 600,
+          height: 350
+        };
+      </script>
+      <com:scriptfile set="IGNITE" />
+      <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+      <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+      <com:stylefile path="cmm030.b.main.css" />
+      <com:scriptfile path="cmm030.b.vm.js" />
+    </ui:define>
+    <ui:define name="content">
+      <div id="contents-area">
+        <label id="B1_1">#{i18n.getText('CMM030_30')}</label>
+        <div class="flex">
+          <div id="B2_1" tabindex="1"></div>
+          <div id="B4" tabindex="3"></div>
+        </div>
+      </div>
+      <div id="functions-area-bottom">
+        <button id="B5_1" class="large proceed" data-bind="click: processSave" tabindex="4">#{i18n.getText('CMM030_35')}</button>
+        <button id="B5_2" data-bind="click: closeDialog" tabindex="5">#{i18n.getText('CMM030_36')}</button>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>
