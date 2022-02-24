@@ -155,24 +155,7 @@ module nts.uk.at.view.kdw002.c {
                                 $("#useCheckAll").prop('checked', false);
                             }
                             
-                            let notYouCanCheckAll = true;
-							let notOtherCheckAll = true;
-							let useAndUserCanUpdateAtrLst = _.chain(listData).filter(item => item.toUse ==true && item.userCanUpdateAtr == 1).value();
-							if(_.isEmpty(useAndUserCanUpdateAtrLst)) {
-								notYouCanCheckAll = false;
-								notOtherCheckAll = false;			
-							} else {
-								let youCanChangeItFalseLst = _.chain(useAndUserCanUpdateAtrLst).filter(item => item.youCanChangeIt==false).value();
-								if(!_.isEmpty(youCanChangeItFalseLst)) {
-									notYouCanCheckAll = false;
-								}
-								let canBeChangedByOthersFalseLst = _.chain(useAndUserCanUpdateAtrLst).filter(item => item.canBeChangedByOthers==false).value();
-								if(!_.isEmpty(canBeChangedByOthersFalseLst)) {
-									notOtherCheckAll = false;
-								}
-							}
-							$("#youCanCheckAll").prop('checked', notYouCanCheckAll);
-                            $("#otherCheckAll").prop('checked', notOtherCheckAll);
+                            displayYouAndOtherCheckAll();
                             
                             //nts.uk.ui.block.clear();
                         }
@@ -716,6 +699,7 @@ function useChanged(element, rowId, userCanSet) {
     }else{
         $("#useCheckAll").prop('checked', false);
     }
+	displayYouAndOtherCheckAll();
 }
 
 
@@ -784,6 +768,7 @@ function useHeaderChanged(element) {
 		});	
 	}
 	$("#grid").igGrid("option", "dataSource", dataSource);
+	displayYouAndOtherCheckAll();
 }
 
 
@@ -823,6 +808,28 @@ function canBeChangedByOthersHeaderChanged(element) {
 		});	
 	}
 	$("#grid").igGrid("option", "dataSource", dataSource);
+}
+
+function displayYouAndOtherCheckAll() {
+	let listData = $('#grid').data('igGrid').dataSource._data;
+    let notYouCanCheckAll = true;
+	let notOtherCheckAll = true;
+	let useAndUserCanUpdateAtrLst = _.chain(listData).filter(item => item.toUse ==true && item.userCanUpdateAtr == 1).value();
+	if(_.isEmpty(useAndUserCanUpdateAtrLst)) {
+		notYouCanCheckAll = false;
+		notOtherCheckAll = false;			
+	} else {
+		let youCanChangeItFalseLst = _.chain(useAndUserCanUpdateAtrLst).filter(item => item.youCanChangeIt==false).value();
+		if(!_.isEmpty(youCanChangeItFalseLst)) {
+			notYouCanCheckAll = false;
+		}
+		let canBeChangedByOthersFalseLst = _.chain(useAndUserCanUpdateAtrLst).filter(item => item.canBeChangedByOthers==false).value();
+		if(!_.isEmpty(canBeChangedByOthersFalseLst)) {
+			notOtherCheckAll = false;
+		}
+	}
+	$("#youCanCheckAll").prop('checked', notYouCanCheckAll);
+    $("#otherCheckAll").prop('checked', notOtherCheckAll);
 }
 
 
