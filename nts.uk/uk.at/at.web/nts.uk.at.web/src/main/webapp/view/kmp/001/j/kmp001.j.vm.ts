@@ -28,8 +28,8 @@ module nts.uk.at.view.kmp001.j {
 		]);
 
 		qrSize: KnockoutObservable<number> = ko.observable(0);
-		textEditorJ2_12: KnockoutObservable<string> = ko.observable('4');
-		textEditorJ2_16: KnockoutObservable<string> = ko.observable('3');
+		textEditorJ2_12: KnockoutObservable<number> = ko.observable(4);
+		textEditorJ2_16: KnockoutObservable<number> = ko.observable(3);
 
 		created() {
 			const vm = this;
@@ -112,56 +112,56 @@ module nts.uk.at.view.kmp001.j {
 			vm.qrSize.subscribe((s) => {
 				switch (s) {
 					case 0:
-						vm.textEditorJ2_12('4');
-						vm.textEditorJ2_16('3');
+						vm.textEditorJ2_12(4);
+						vm.textEditorJ2_16(3);
 						break;
 					case 1:
-						vm.textEditorJ2_12('5');
-						vm.textEditorJ2_16('4');
+						vm.textEditorJ2_12(5);
+						vm.textEditorJ2_16(4);
 						break;
 					case 2:
-						vm.textEditorJ2_12('6');
-						vm.textEditorJ2_16('5');
+						vm.textEditorJ2_12(6);
+						vm.textEditorJ2_16(5);
 						break;
 				}
 			});
 
 			// 大
 			vm.textEditorJ2_12.subscribe((s) => {
-				if (vm.qrSize() == 0 && s > '4') {
-					vm.textEditorJ2_12('4');
+				if (vm.qrSize() == 0 && s > 4) {
+					vm.textEditorJ2_12(4);
 				}
 			});
 
 			vm.textEditorJ2_16.subscribe((s) => {
-				if (vm.qrSize() == 0 && s > '3') {
-					vm.textEditorJ2_16('3');
+				if (vm.qrSize() == 0 && s > 3) {
+					vm.textEditorJ2_16(3);
 				}
 			});
 
 			// 中
 			vm.textEditorJ2_12.subscribe((s) => {
-				if (vm.qrSize() == 1 && s > '5') {
-					vm.textEditorJ2_12('5');
+				if (vm.qrSize() == 1 && s > 5) {
+					vm.textEditorJ2_12(5);
 				}
 			});
 
 			vm.textEditorJ2_16.subscribe((s) => {
-				if (vm.qrSize() == 1 && s > '4') {
-					vm.textEditorJ2_16('4');
+				if (vm.qrSize() == 1 && s > 4) {
+					vm.textEditorJ2_16(4);
 				}
 			});
 
 			// 小
 			vm.textEditorJ2_12.subscribe((s) => {
-				if (vm.qrSize() == 2 && s > '6') {
-					vm.textEditorJ2_12('6');
+				if (vm.qrSize() == 2 && s > 6) {
+					vm.textEditorJ2_12(6);
 				}
 			});
 
 			vm.textEditorJ2_16.subscribe((s) => {
-				if (vm.qrSize() == 2 && s > '5') {
-					vm.textEditorJ2_16('5');
+				if (vm.qrSize() == 2 && s > 5) {
+					vm.textEditorJ2_16(5);
 				}
 			});
 

@@ -122,9 +122,9 @@ public class ExportQRCodeToExcel extends AsposeCellsReportGenerator implements I
 				// Get the picture and set its different attributes.
 				Picture objPicture = worksheet.getPictures().get(index);
 
-				int crCol = i % Integer.parseInt(input.getSetCol());
+				int crCol = i % input.getSetCol();
 
-				int crRow = (i / Integer.parseInt(input.getSetCol())) * 3;
+				int crRow = (i / input.getSetCol()) * 3;
 
 				Cell cell = worksheet.getCells().get(crRow, crCol);
 
@@ -155,7 +155,7 @@ public class ExportQRCodeToExcel extends AsposeCellsReportGenerator implements I
 				objPicture.setTop(0);
 				objPicture.setLeft(0);
 
-				int firstRow = i * (Integer.parseInt(input.getSetRow()) * 3);
+				int firstRow = i * (input.getSetRow() * 3);
 
 				if (i >= 1) {
 					pageBreaks.add(firstRow);

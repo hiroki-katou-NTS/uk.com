@@ -26,9 +26,9 @@ public class GetExtractedEmployeeCardNoInput {
 	public int qrSize;
 	
 	// 縦
-	public String setRow;
+	public int setRow;
 	
 	// 横
-	public String setCol;
+	public int setCol;
 	
 }
