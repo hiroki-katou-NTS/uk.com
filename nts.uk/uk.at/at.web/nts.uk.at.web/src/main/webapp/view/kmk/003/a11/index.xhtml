@@ -34,7 +34,7 @@
 									checkedValue: 0,
 									checked: workdayOffTimeSubHolTransferSetAtr,
 									optionText: 'KMK003_106',
-									enable: workdayOffTimeUseDivision}"></label>
+									enable: workdayOffTimeUseDivision() &amp;&amp; isManageTime() }"></label>
 							<div class="padding-time">
 								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 									<label>#{i18n.getText('KMK003_42')}</label>
@@ -45,7 +45,7 @@
 									constraint:'OneDayTime',
 									mode: 'time',
 									inputFormat: 'time',
-									enable: workdayOffTimeUseDivision() &amp;&amp; workdayOffTimeSubHolTransferSetAtr() == 0,
+									enable: workdayOffTimeUseDivision() &amp;&amp; workdayOffTimeSubHolTransferSetAtr() == 0 &amp;&amp; isManageTime(),
 									required: false}" />
 							</div>
 							<div class="padding-time">
@@ -58,7 +58,7 @@
 									constraint:'OneDayTime',
 									mode: 'time',
 									inputFormat: 'time',
-									enable: workdayOffTimeUseDivision() &amp;&amp; workdayOffTimeSubHolTransferSetAtr() == 0,
+									enable: workdayOffTimeUseDivision() &amp;&amp; workdayOffTimeSubHolTransferSetAtr() == 0 &amp;&amp; isManageTime(),
 									required: false}" />
 							</div>
 						</div>
@@ -68,7 +68,7 @@
 									checkedValue: 1,
 									checked: workdayOffTimeSubHolTransferSetAtr,
 									optionText: 'KMK003_108',
-									enable: workdayOffTimeUseDivision}"></label>
+									enable: workdayOffTimeUseDivision() &amp;&amp; isManageTime() }"></label>
 							<div class="padding-time">
 								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 								</div>
@@ -78,7 +78,7 @@
 									constraint:'OneDayTime',
 									mode: 'time',
 									inputFormat: 'time',
-									enable: workdayOffTimeUseDivision() &amp;&amp; workdayOffTimeSubHolTransferSetAtr() == 1 }" />
+									enable: workdayOffTimeUseDivision() &amp;&amp; workdayOffTimeSubHolTransferSetAtr() == 1 &amp;&amp; isManageTime() } " />
 							</div>
 						</div>
 					</div>
@@ -88,7 +88,7 @@
 				<td width="300px">
 					<div tabindex="144" data-bind="ntsCheckBox: { 
 							name: '#[KMK003_109]',
-							checked: fromOverTimeUseDivision }">#{i18n.getText('KMK003_109')}</div>
+							checked: fromOverTimeUseDivision ,enable:checked() }">#{i18n.getText('KMK003_109')}</div>
 					<div tabindex="145">
 						<div class="padding-radio">
 <!--							<label class="ntsRadioBox">-->
@@ -183,7 +183,7 @@
 						mode: 'time',
 						inputFormat: 'time',
 						required: false,
-						enable: workdayOffTimeUseDivision}" />
+						enable: workdayOffTimeUseDivision }" />
 			</div>
 			<div style="padding: 5px 0px;">
 				<div class="tab-inline-item" style="width: 50px;">
@@ -196,7 +196,7 @@
 						mode: 'time',
 						inputFormat: 'time',
 						required: false,
-						enable: workdayOffTimeUseDivision}" />
+						enable: workdayOffTimeUseDivision }" />
 			</div>
 		</div>
 	</div>

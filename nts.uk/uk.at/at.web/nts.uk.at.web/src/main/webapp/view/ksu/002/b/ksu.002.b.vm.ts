@@ -28,6 +28,7 @@ module nts.uk.ui.at.ksu002.b {
             const vm = this;
             _.extend(window, {vm});
             vm.$window.storage("ksu002B_params").done((data) => {
+                vm.model.employeeId(data.employeeId)
                 vm.model.employeeCode(data.employeeCode);
                 vm.model.employeeName(data.employeeName);
                 vm.model.periodStart(data.startDate);
@@ -87,6 +88,7 @@ module nts.uk.ui.at.ksu002.b {
         public exportFile(): void {
             let vm = this;
             let query = {
+                sid: vm.model.employeeId(),
                 employeeCode: vm.model.employeeCode(),
                 employeeName: vm.model.employeeName(),
                 date: vm.model.targetDate(),
@@ -115,6 +117,7 @@ module nts.uk.ui.at.ksu002.b {
     }
 
     class Model {
+        employeeId: KnockoutObservable<string>;
         /** 社員コード*/
         employeeCode: KnockoutObservable<string>;
         /** 社員名*/
@@ -132,6 +135,8 @@ module nts.uk.ui.at.ksu002.b {
         startDay: KnockoutObservable<any>;
 
         constructor() {
+            const vm = new ko.ViewModel();
+            this.employeeId = ko.observable(vm.$user.employeeId);
             this.employeeCode = ko.observable("");
             this.employeeName = ko.observable("");
             this.periodStart = ko.observable("");

@@ -778,6 +778,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         processMapData(data) {
             var self = this;
             let startTime: number = performance.now();
+            let authory: any = _.find(data.authorityDto, (x) => x.functionNo == 37 );
+            let functionNoView: boolean = true; 
+            if(authory) {
+                functionNoView = authory.availability;
+            } else {
+                functionNoView = false;
+            }
+           
             self.closureId = data.closureId;
             //self.lstDomainOld = data.domainOld;
             //self.lstDomainEdit = _.cloneDeep(data.domainOld);
@@ -819,7 +827,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let showCheckbox = _.isEmpty(self.shareObject()) ? data.showPrincipal : data.showSupervisor;
 			let confirmEmployment = data.confirmEmployment ? data.confirmEmployment : false;
             self.showButton(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit, showCheckbox, confirmEmployment));
-			self.showWorkLoad(data.showWorkLoad);
+			self.showWorkLoad(data.showWorkLoad && functionNoView);
             self.hideLock(self.showButton().available12());
             self.showLock(true);
             self.unLock(false);
@@ -2622,11 +2630,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             if (dataTemp != undefined) {
                                 let data = [dataTemp];
 								self.formatCodes(data);
+                                let dateRangeTemp = {
+                                    startDate: moment(self.dateRanger().startDate).utc().toISOString(),
+                                    endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                                };
                                 let param = {
-                                    dateRange: dateRangeParam ? {
-                                        startDate: moment(dateRangeParam.startDate).utc().toISOString(),
-                                        endDate: moment(dateRangeParam.endDate).utc().toISOString()
-                                    } : null,
+                                    dateRange: dateRangeTemp,
                                     displayFormat: _.isEmpty(self.shareObject()) ? (_.isEmpty(self.characteristics) ? 0 : self.characteristics.formatExtract) : self.shareObject().displayFormat,
                                     initScreen: _.isEmpty(self.characteristics) ? 0 : 1,
                                     mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
@@ -2661,7 +2670,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                         nts.uk.ui.dialog.alert({ messageId: messageId }).then(function() {
                                             //self.hasEmployee = false;
                                             nts.uk.ui.block.clear();
-                                            dfd.resolve({ bindDataMap: true, data: data });
+                                            //dfd.resolve({ bindDataMap: true, data: data });
                                         });
                                     } else if (!_.isEmpty(data.errors)) {
                                         let errors = [];
@@ -2674,18 +2683,115 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                         });
                                         nts.uk.ui.dialog.bundledErrors({ errors: errors });
                                         self.hasErrorBuss = true;
-                                        dfd.resolve({ bindDataMap: true, data: data });
+                                        //dfd.resolve({ bindDataMap: true, data: data });
                                     }
                                     else {
-                                        let paramMonth: any = { loadAfterCalc: false }
-                                        $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, dataDaily) => {
-                                            dataDaily.monthResult = dataMonth.monthResult;
-                                            dataDaily.indentityMonthResult = dataMonth.indentityMonthResult;
-                                            dataDaily.showTighProcess = dataMonth.showTighProcess;
-                                            self.lstCellDisByLock = dataDaily.lstCellDisByLock;
-                                            dfd.resolve({ bindDataMap: true, data: dataDaily });
-                                        })
-                                    }
+                                        
+                                        let paramMonth: any = {loadAfterCalc: false}
+                                        $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, data) => {
+                                            //update mobile
+                                            if((hasChangeFormat && self.displayFormat() === 0) || self.initFromScreenOther){
+                                                self.yearMonth(data.periodInfo.yearMonth);
+                                                //Combobox display actual time
+                                                self.initActualTime(data.periodInfo);
+                                                self.timePeriodAllInfo = data.periodInfo;
+                                            }else if(hasChangeFormat && self.displayFormat() === 1 || self.initFromScreenOther){
+                                                self.selectedDate(data.periodInfo.targetRange.startDate);
+                                            }else if(hasChangeFormat && self.displayFormat() === 2 || self.initFromScreenOther){
+                                                 self.dateRanger({ startDate: data.periodInfo.targetRange.startDate, endDate: data.periodInfo.targetRange.endDate });
+                                            }
+                                            self.loadFirst = false;
+                                            self.initFromScreenOther = false;
+                                            data.monthResult = dataMonth.monthResult;
+                                            data.indentityMonthResult = dataMonth.indentityMonthResult;
+                                            data.showTighProcess = dataMonth.showTighProcess;
+                                            self.lockDisableFlex(data.lockDisableFlex);
+                                            self.periodCheckLock = data.rangeLock;
+                                            self.lstCellDisByLock = data.lstCellDisByLock;
+                                            self.closureId = data.closureId;
+                                            self.initScreenSPR = 1;
+                                            self.hasErrorBuss = false;
+                                            //self.lstDomainOld = data.domainOld;
+                                            //self.lstDomainEdit = _.cloneDeep(data.domainOld);
+                                            if (data.typeBussiness != localStorage.getItem('kdw003_type')) {
+                                                localStorage.removeItem(window.location.href + '/dpGrid');
+                                            }
+                                            localStorage.setItem('kdw003_type', data.typeBussiness);
+                                            self.dataAll(data);
+                                            self.itemInputName = data.lstControlDisplayItem.itemInputName;
+                                            self.formatCodes(data.lstControlDisplayItem.formatCode);
+                                            self.autBussCode(data.autBussCode);
+                                            self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
+                                            self.itemValueAll(data.itemValues);
+                                            self.createSumColumn(data);
+                                            self.columnSettings(data.lstControlDisplayItem.columnSettings);
+                                            self.showPrincipal(data.showPrincipal);
+                                            self.showSupervisor(data.showSupervisor);
+                                            self.showTighProcess(data.showTighProcess);
+                                            self.indentityMonth(data.indentityMonthResult);
+                                            self.lstHeaderReceive = _.cloneDeep(data.lstControlDisplayItem.lstHeader);
+                
+                                            // combo box
+                                            self.comboItemsCalc(data.lstControlDisplayItem.comboItemCalc);
+                                            self.comboItemsReason(data.lstControlDisplayItem.comboItemReason);
+                                            self.comboItemsDoWork(data.lstControlDisplayItem.comboItemDoWork);
+                                            self.comboItemsCompact(data.lstControlDisplayItem.comboItemCalcCompact);
+                                            self.comboTimeLimit(data.lstControlDisplayItem.comboTimeLimit);
+                                            //self.showLock(self.showButton().available12());
+                                            //self.unLock(false);
+                                            if (data.lstControlDisplayItem.lstHeader.length == 0) {
+                                                self.hasLstHeader = false;
+                                            } else {
+                                                self.hasLstHeader = true;
+                                            }
+                
+                                            if (self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {
+                                                self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
+                                                self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
+                                                self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
+                                            } else {
+                                                self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3]];
+                                                self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6]];
+                                                self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3]];
+                                            }
+                                            if (self.showSupervisor()) {
+                                                self.employeeModeHeader.push(self.fixHeaders()[8]);
+                                                self.dateModeHeader.push(self.fixHeaders()[8]);
+                                                self.errorModeHeader.push(self.fixHeaders()[8]);
+                                            }
+                                            self.receiveData(data);
+                                            self.extraction();
+                                            // no20
+                                            self.dPErrorDto(data.dperrorDto);
+                                            // flex
+                                            self.processFlex(data, true);
+                                            self.displayNumberZero();
+                                            //self.displayProfileIcon(self.displayFormat());
+                                            self.dislayNumberHeaderText();
+                                            // load hide Checkbox approval
+                                            _.forEach(data.lstHideControl, hide => {
+                                                $("#dpGrid").mGrid("setState", "_" + hide.rowId, hide.columnKey, ["mgrid-hide"]);
+                                            })
+                                            //check visable MIGrid
+                                            if (self.displayFormat() != 0) {
+                                                self.isVisibleMIGrid(false);
+                                            }
+                                            if (!self.hasEmployee) {
+                                                self.loadKcp009();
+                                                self.hasEmployee = true;
+                                            }
+                                            if (data.showErrorDialog) {
+                                                self.showDialogError = true;
+                                                self.showErrorDialog();
+                                            } else {
+                                                self.showDialogError = false;
+                                            }
+                                            setTimeout(() => {
+                                                 self.changeConditionExtract(false);
+                                            }, 500);
+                                            nts.uk.ui.block.clear();
+                                        });
+                                    }/////
                                 })
                             }
                         });
@@ -4140,7 +4246,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (id.value != null && cDisplayType == 'Clock') {
                     valueUI = self.convertToHours(Number(id.value))
                 } else if (cDisplayType == 'Currency') {
-                    valueUI = self.convertMoney(id.value, "¥");
+                    valueUI = self.convertMoney(id.value, "");
                 } else {
                     valueUI = id.value;
                 }
@@ -4439,7 +4545,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (header.constraint.cDisplayType != null && header.constraint.cDisplayType != undefined) {
                         if (header.constraint.cDisplayType != "Primitive" && header.constraint.cDisplayType != "Combo") {
                             if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
-                                header["columnCssClass"] = "currency-symbol halign-right";
+                                header["columnCssClass"] = "halign-right";
                                 header.constraint["min"] = header.constraint.min;
                                 header.constraint["max"] = header.constraint.max;
                             } else if (header.constraint.cDisplayType == "Clock") {

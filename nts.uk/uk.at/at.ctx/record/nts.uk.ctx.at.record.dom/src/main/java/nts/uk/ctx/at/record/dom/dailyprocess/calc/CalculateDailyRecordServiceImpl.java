@@ -313,7 +313,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				personCommonSetting,
 				schedule.get().getWorkType(),
 				schedule.get().getIntegrationOfWorkTime(),
-				integrationOfDaily);
+				this.createScheduleTimeSheet(converter.setData(integrationOfDaily).toDomain()));
 		
 		ManageReGetClass recordManageReGetClass = new ManageReGetClass(
 				record.get(),
@@ -578,9 +578,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			ManageReGetClass scheduleReGetClass,
 			DailyRecordToAttendanceItemConverter converter,
 			DeclareTimezoneResult declareResult) {
-		String companyId = AppContexts.user().companyId();
-
-		GeneralDate targetDate = recordReGetClass.getIntegrationOfDaily().getYmd();
 
 		// 休暇クラス
 		VacationClass vacation = CalcDefaultValue.DEFAULT_VACATION;

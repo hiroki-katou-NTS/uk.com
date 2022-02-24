@@ -111,11 +111,11 @@
 					<table>
 						<tr style="height: 50px">
 							<td><button id="A1_7_2" class="compensation" tabindex="8" data-bind="enable: false">#{i18n.getText('KSU001_13')}</button></td>
-							<td><span id="A1_7_3_1" class="label" data-bind="text: A1_7_3_line1"></span><BR /><span id="A1_7_3_2" class="label" data-bind="text: A1_7_3_line2"></span></td>
+							<td style="padding-left: 15px" ><span id="A1_7_3_1" class="label" data-bind="text: A1_7_3_line1"></span><BR /><span id="A1_7_3_2" class="label" data-bind="text: A1_7_3_line2"></span></td>
 						</tr>
 						<tr style="height: 50px">
 							<td><button id="A1_7_4" class="substitute" tabindex="9" data-bind="click: openDialogG">#{i18n.getText('KSU001_15')}</button></td>
-							<td><span class="label" id="A1_7_5" style="">#{i18n.getText('KSU001_16', ['#Com_Person'])}</span></td>
+							<td style="padding-left: 15px"><span class="label" id="A1_7_5" style="">#{i18n.getText('KSU001_16', ['#Com_Person'])}</span></td>
 						</tr>
 					</table>
 				</div>
@@ -382,7 +382,7 @@
 										</div>
 									</div>
 									<div data-bind="if: visibleShiftPalette">
-										<div id="qViewModel" style="width: 100%;margin-left: 140px; margin-top: 5px;">
+										<div id="qViewModel" style="width: 100%; margin-top: 5px;">
 											<div data-bind="with: $parent.viewAC">
 												<ui:include src="../ac/index.xhtml" />
 											</div>

@@ -29,6 +29,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimitPeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
@@ -177,7 +179,8 @@ public class ChildCareCheckOverUsedNumberWorkTest {
 				new MonthDay(4, 1), //startMonthDay,
 				maxPersonSetting(), //maxPersonSetting,
 				Optional.empty(), //specialHolidayFrame,
-				Optional.empty()); // workAbsence
+				Optional.empty(), // workAbsence
+				new TimeVacationDigestUnit(ManageDistinct.YES, TimeDigestiveUnit.OneHour));
 	}
 
 	// 子の看護介護残数不足数

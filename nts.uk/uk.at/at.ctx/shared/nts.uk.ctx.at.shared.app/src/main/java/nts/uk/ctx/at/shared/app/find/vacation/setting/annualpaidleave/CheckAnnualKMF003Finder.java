@@ -34,7 +34,7 @@ public class CheckAnnualKMF003Finder {
 		// check time
 		dto.setReference(setting.getManageAnnualSetting().getHalfDayManage().reference.value);
 		// check year
-		dto.setTimeManageType(setting.getTimeSetting().getTimeManageType().value);
+		dto.setTimeManageType(setting.getTimeSetting().getTimeVacationDigestUnit().getManage().value);
 		return dto;
 	}
 }

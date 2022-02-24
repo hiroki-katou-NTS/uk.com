@@ -81,6 +81,10 @@ public class AddAggrPeriodCommandHandler
 				throw new BusinessException("Msg_1165");
 			}
 		} else {
+			
+			// Update Optional Aggr Period
+			repository.updateAnyAggrPeriod(anyAggrPeriod);
+			
 			List<AggrPeriodTarget> periodTarget = command.getTargetCommand().toDomain(optionalAggrPeriodID);
 
 			// Add Aggr Period Target
