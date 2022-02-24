@@ -29,7 +29,7 @@
     <ui:define name="content">
       <div id="functions-area">
         <a id="A1_1" class="goback" data-bind="ntsLinkButton: { jump: returnUrl }, enable: returnUrl() !== null">#{i18n.getText('CMM030_10')}</a>
-        <button id="A1_2" tabindex="1">#{i18n.getText('CMM030_11')}</button>
+        <button id="A1_2" data-bind="click: openDialogC" tabindex="1">#{i18n.getText('CMM030_11')}</button>
         <button id="A1_3" class="proceed" data-bind="click: processSave" tabindex="2">#{i18n.getText('CMM030_12')}</button>
         <button id="A1_4" data-bind="enable: isEnableFuncButton, visible: isVisibleFuncButton" tabindex="3">#{i18n.getText('CMM030_13')}</button>
         <button id="A1_5" tabindex="4">#{i18n.getText('CMM030_14')}</button>

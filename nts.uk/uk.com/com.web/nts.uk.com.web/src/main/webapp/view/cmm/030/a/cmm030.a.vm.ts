@@ -80,6 +80,20 @@ module nts.uk.com.view.cmm030.a {
       });
     }
 
+    public openDialogC() {
+      const vm = this;
+      const param = {
+        sid: vm.selectedEmployee()
+      };
+      vm.$window.modal("/view/cmm/030/c/index.xhtml", param)
+      .then(result => {
+        if (!_.isNil(result)) {
+          vm.startDate(result.startDate);
+          // TODO
+        }
+      });
+    }
+
     public processSave() {
       const vm = this;
       vm.$blockui("grayout");
