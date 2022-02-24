@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response.Status;
 
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.gateway.app.command.login.saml.AuthenticateInfo;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlAuthenticateInfo;
 import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlAuthenticateCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlAuthenticateCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlValidateCommand;
@@ -41,7 +41,7 @@ public class SamlWs extends WebService {
 	 */
 	@POST
 	@Path("authenticate")
-	public AuthenticateInfo authenticate(SamlAuthenticateCommand command) {
+	public SamlAuthenticateInfo authenticate(SamlAuthenticateCommand command) {
 		return this.authenticate.handle(command);
 	}
 

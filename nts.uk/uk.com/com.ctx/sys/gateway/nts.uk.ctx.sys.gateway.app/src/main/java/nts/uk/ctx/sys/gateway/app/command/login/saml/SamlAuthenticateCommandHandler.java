@@ -18,20 +18,20 @@ import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<SamlAuthenticateCommand, AuthenticateInfo> {
-	
+public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<SamlAuthenticateCommand, SamlAuthenticateInfo> {
+
 	@Inject
 	private TenantAuthenticationRepository tenantAuthenticationRepository;
-	
+
 	@Inject
 	private SamlOperationRepository samlOperationRepository;
-	
+
 	@SneakyThrows
-	protected AuthenticateInfo handle(CommandHandlerContext<SamlAuthenticateCommand> context) {
+	protected SamlAuthenticateInfo handle(CommandHandlerContext<SamlAuthenticateCommand> context) {
 		SamlAuthenticateCommand command = context.getCommand();
 		String tenantCode = command.getTenantCode();
 		String password = command.getTenantPassword();
-		
+
 		// テナント認証情報のチェック
 		this.checkInput(command);
 		// テナント認証
@@ -47,27 +47,24 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 			throw new BusinessException("Msg_315");
 		}
 
-		// シングルサインオンを運用しているかチェック(仮)
-
 		val optSamlOpe = samlOperationRepository.find(tenantCode);
-		
+
 		if(!optSamlOpe.isPresent()) {
 			// SAMLの運用が取得できなかった場合
-			return new AuthenticateInfo(false, null, "Msg_1979");
+			return SamlAuthenticateInfo.noSamlOperation();
 		}
 		val samlOpe = optSamlOpe.get();
-		val useSamlSso = samlOpe.isUseSingleSignOn();
-		// 運用していない場合
-		if(!useSamlSso) {
-			return new AuthenticateInfo(useSamlSso, null, "Msg_1992");
+
+		// 認証用URLの取得
+		val optEntryUrl = samlOpe.createIdpEntryUrl(tenantCode, password, command.getRequestUrl());
+		if(optEntryUrl.isPresent()) {
+			return SamlAuthenticateInfo.useSso(optEntryUrl.get());
 		}
 		else{
-			// EntryUrlの生成
-			val idpEntryUrl = samlOpe.createIdpEntryUrl(tenantCode, password, command.getRequestUrl());
-			return new AuthenticateInfo(true, idpEntryUrl.toString(), null);
+			return SamlAuthenticateInfo.noUseSso();
 		}
 	}
-	
+
 	private void checkInput(SamlAuthenticateCommand command) {
 		if (StringUtils.isEmpty(command.getTenantCode())) {
 			throw new BusinessException("Msg_313");
