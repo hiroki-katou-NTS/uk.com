@@ -53,7 +53,13 @@ module nts.uk.at.view.kmk003.h {
                         self.roundingComboBoxOptions(self.getSpecialRounding());
                     }
                 });
-
+                
+                self.useStamp.subscribe((value: number) =>{
+                    if(value == 1){
+                        self.timeManagerSetAtr(0);
+                    }
+                });
+                
                 _.defer(() => $('#calculate-method').focus());
             }
             
