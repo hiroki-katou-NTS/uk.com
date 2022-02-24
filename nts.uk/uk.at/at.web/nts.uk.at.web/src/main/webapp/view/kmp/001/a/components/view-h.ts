@@ -45,12 +45,12 @@ module nts.uk.at.view.kmp001.h {
 							<td>
 								<div class="panel panel-frame supper">
 									<div class="panel panel-frame panel-gray-bg">
-										<div class="title" data-bind= "text: $i18n('KMP001_70')"></div>
+										<div class="title" data-bind= "text: $i18n('KMP001_175')"></div>
 									</div>
-									<pre class="content" data-bind= "text: $i18n('KMP001_105')"></pre>
+									<pre class="content" data-bind= "text: $i18n('KMP001_176')"></pre>
 									<div class="button-select">
 										<span class="caret-right caret-inline">
-											<button class="large" data-bind= "text: $i18n('KMP001_70'), click: view_J, enable: attendance"></button>
+											<button class="large" data-bind= "text: $i18n('KMP001_175'), click: view_J, enable: attendance"></button>
 										</span>
 									</div>
 								</div>
