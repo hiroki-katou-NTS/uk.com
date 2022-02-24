@@ -77,7 +77,11 @@ public class CorrectionAttendanceRule {
 				.completed();
 		if(!beforeItems.isEmpty()) {
 			if (afterDomain instanceof DailyRecordOfApplication && require.appStamp().isPresent()) {
-				val lstOuenWplLocaId = afterDomain.getListWplLocationIdFromOuen();
+				val lstReflectId = ((DailyRecordOfApplication) afterDomain).getAttendanceBeforeReflect().stream()
+						.map(x -> x.getAttendanceId()).collect(Collectors.toList());
+				val lstOuenWplLocaId = afterDomain.getListWplLocationIdFromOuen().stream().filter(x -> {
+					return lstReflectId.stream().anyMatch(y -> y == x);
+				}).collect(Collectors.toList());
 				beforeItems = beforeItems.stream().filter(x -> !lstOuenWplLocaId.contains(x.getItemId()))
 						.collect(Collectors.toList());
 			}

@@ -108,11 +108,13 @@ public class SupportWorkReflection {
 		integrationOfDaily.setOuenTimeSheet(lstCorrectMaximum);
 		List<Integer> lstId = new ArrayList<Integer>();
 		if (integrationOfDaily instanceof DailyRecordOfApplication) {
+			val lstReflectId = ((DailyRecordOfApplication) integrationOfDaily).getAttendanceBeforeReflect().stream()
+					.map(x -> x.getAttendanceId()).collect(Collectors.toList());
 			require.getInfoAppStamp().ifPresent(x -> {
 				lstId.addAll(x.getListDestinationTimeApp().stream().flatMap(y -> {
 					return Arrays.asList(CancelAppStamp.createItemId(921, y.getStampNo(), 10),
 							CancelAppStamp.createItemId(922, y.getStampNo(), 10)).stream();
-				}).distinct().collect(Collectors.toList()));
+				}).filter(y -> lstReflectId.contains(y)).distinct().collect(Collectors.toList()));
 			});
 		}
 		integrationOfDaily.clearEditStateByDeletedTimeSheet(lstId);
