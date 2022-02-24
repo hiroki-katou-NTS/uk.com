@@ -18,8 +18,10 @@ module nts.uk.at.view.kdp002.a {
             pageComment: KnockoutObservable<string> = ko.observable('');
             commentColor: KnockoutObservable<string> = ko.observable('');
 
-            workUse:  KnockoutObservable<boolean> = ko.observable(false);
+            workUse: KnockoutObservable<boolean> = ko.observable(false);
             workGroup: KnockoutObservable<WorkGroup> = ko.observable(null);
+
+            regionalTime: KnockoutObservable<number> = ko.observable(20);
 
             state!: KnockoutComputed<STATE>;
             constructor() {
@@ -46,12 +48,12 @@ module nts.uk.at.view.kdp002.a {
                 });
             }
 
-
-
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 nts.uk.ui.block.grayout();
+
+                self.getRegionalTime();
 
                 service.getWorkManagementMultiple().done((result: boolean) => {
                     self.workManagementMultiple(!result);
@@ -60,7 +62,7 @@ module nts.uk.at.view.kdp002.a {
                         self.stampSetting(res.stampSetting);
 
                         self.stampTab().bindData(res.stampSetting.pageLayouts);
-                        self.stampGrid(new EmbossGridInfo(res, ko.unwrap(self.workManagementMultiple)));
+                        self.stampGrid(new EmbossGridInfo(res, ko.unwrap(self.workManagementMultiple), ko.unwrap(self.regionalTime)));
 
                         self.stampGrid().yearMonth.subscribe((val) => {
                             if (_.get(res, 'stampSetting.historyDisplayMethod') == 2)
@@ -81,9 +83,42 @@ module nts.uk.at.view.kdp002.a {
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
-				});
+                });
 
                 return dfd.promise();
+            }
+
+            public getRegionalTime() {
+                const self = this;
+                const vm = new ko.ViewModel();
+                var ipv4Address = '';
+
+                $.getJSON("https://api.ipify.org?format=json").then((address: any) => {
+                    ipv4Address = address.ip;
+                }).done(() => {
+                    var param = { contractCode: vm.$user.companyCode, workLocationCode: '', ipv4Address: ipv4Address };
+                    vm.$ajax('at', 'at/record/kdp/common/get-work-location-regional-time', param)
+                        .then((data: GetWorkPlaceRegionalTime) => {
+                            if (data && data.regional != 0 && data.workPlaceId !== null) {
+                                self.regionalTime(data.regional);
+                            } else {
+                                let inputWorkPlace = {
+                                    contractCode: vm.$user.contractCode,
+                                    cid: vm.$user.companyCode,
+                                    sid: vm.$user.employeeId,
+                                    workPlaceId: ""
+                                };
+                                vm.$ajax('at', 'at/record/kdp/common/get-work-place-regional-time', inputWorkPlace)
+                                    .then((data: GetWorkPlaceRegionalTime) => {
+                                        if (data) {
+                                            // self.regionalTime(data.regional);
+                                            self.regionalTime(10);
+                                        }
+                                    });
+                            }
+                        });
+                });
+
             }
 
             public getTimeCardData() {
@@ -149,14 +184,14 @@ module nts.uk.at.view.kdp002.a {
                 const vm = this;
                 const view = new ko.ViewModel();
 
-				let stampTime = moment(view.$date.now()).format("HH:mm");
-				
+                let stampTime = moment(moment(view.$date.now()).add(2, 'h').toDate()).format("HH:mm");
+
                 nts.uk.ui.block.invisible();
                 nts.uk.request
                     .syncAjax("com", "server/time/now/")
                     .done((res) => {
                         let data = {
-                            datetime: moment.utc(res).format('YYYY/MM/DD HH:mm:ss'),
+                            datetime: moment.utc(moment(view.$date.now()).add(2, 'h').toDate()).format('YYYY/MM/DD HH:mm:ss'),
                             authcMethod: 0,
                             stampMeans: 3,
                             reservationArt: btn.btnReservationArt,
@@ -170,46 +205,46 @@ module nts.uk.at.view.kdp002.a {
 
                         service.getSettingStampCommon().done((result: any) => {
                             vm.workUse(!!result.workUse);
-                            
-                            service.getEmployeeWorkByStamping({sid: __viewContext.user.employeeId, workFrameNo: 1, upperFrameWorkCode: ''}).done((res: any) => {
+
+                            service.getEmployeeWorkByStamping({ sid: __viewContext.user.employeeId, workFrameNo: 1, upperFrameWorkCode: '' }).done((res: any) => {
                                 if (vm.workUse() == true && res.task.length > 0 && btn.taskChoiceArt == 1) {
-                                    view.$window.modal('at', '/view/kdp/002/l/index.xhtml', {employeeId: __viewContext.user.employeeId}).then((works: IWorkGroup) => {
-                      
-                                    vm.workGroup(works);
-                                    data.workGroup = ko.unwrap(vm.workGroup);
-                                    
-                                    }).then (() => {
+                                    view.$window.modal('at', '/view/kdp/002/l/index.xhtml', { employeeId: __viewContext.user.employeeId }).then((works: IWorkGroup) => {
+
+                                        vm.workGroup(works);
+                                        data.workGroup = ko.unwrap(vm.workGroup);
+
+                                    }).then(() => {
                                         service.stampInput(data).done((res) => {
                                             let param = {
                                                 sid: __viewContext.user.employeeId,
                                                 date: view.$date.now()
                                             }
-        
+
                                             if (vm.stampResultDisplay().notUseAttr == 1 && btn.changeClockArt == 1) {
                                                 vm.openScreenC(btn, layout);
                                             } else {
                                                 vm.openScreenB(btn, layout, stampTime);
                                             }
-                                            
+
                                         }).fail((res) => {
                                             nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                                         });
                                     })
-        
+
                                 } else {
                                     service.stampInput(data).done((res) => {
                                         let param = {
                                             sid: __viewContext.user.employeeId,
                                             date: view.$date.now()
                                         }
-            
+
                                         if (vm.stampResultDisplay().notUseAttr == 1 && btn.changeClockArt == 1) {
                                             vm.openScreenC(btn, layout);
                                         } else {
                                             vm.openScreenB(btn, layout, stampTime);
                                         }
-                                        
-            
+
+
                                     }).fail((res) => {
                                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                                     });
@@ -222,7 +257,7 @@ module nts.uk.at.view.kdp002.a {
 
             public openScreenB(button, layout, stampTime) {
                 let self = this;
-				const vm = new ko.ViewModel();
+                const vm = new ko.ViewModel();
 
                 nts.uk.ui.windows.setShared("resultDisplayTime", self.stampSetting().resultDisplayTime);
                 nts.uk.ui.windows.setShared("infoEmpToScreenB", {
@@ -233,7 +268,7 @@ module nts.uk.at.view.kdp002.a {
                 nts.uk.ui.windows.setShared("screenB", {
                     screen: "KDP002"
                 });
-				vm.$window.modal('at', '/view/kdp/002/b/index.xhtml', {stampTime: stampTime}).then(() => {
+                vm.$window.modal('at', '/view/kdp/002/b/index.xhtml', { stampTime: stampTime }).then(() => {
                     if (self.stampGrid().displayMethod() === 1) {
                         self.getStampData();
                     } else {
@@ -304,12 +339,12 @@ module nts.uk.at.view.kdp002.a {
 
             public reloadHighLight() {
                 let self = this;
-                    if (self.stampToSuppress().isUse) {
-                        service.getHighlightSetting().done((res) => {
-                            res.isUse = self.stampToSuppress().isUse;
-                            self.stampToSuppress(res);
-                        });
-                    }
+                if (self.stampToSuppress().isUse) {
+                    service.getHighlightSetting().done((res) => {
+                        res.isUse = self.stampToSuppress().isUse;
+                        self.stampToSuppress(res);
+                    });
+                }
             }
 
         }
@@ -323,37 +358,44 @@ module nts.uk.at.view.kdp002.a {
 var paramSize = 0;
 let resize = () => {
 
-	var bottomMasterWrapper = $('#master-wrapper')[0].getBoundingClientRect().bottom;
-	var topStampInfo = $('#stamp-info')[0].getBoundingClientRect().top;
-	var h = bottomMasterWrapper - topStampInfo - 98;
+    var bottomMasterWrapper = $('#master-wrapper')[0].getBoundingClientRect().bottom;
+    var topStampInfo = $('#stamp-info')[0].getBoundingClientRect().top;
+    var h = bottomMasterWrapper - topStampInfo - 98;
 
-	let stampBtnHeight = (h < 48 ? 48 : h) + 'px';
-	const $hgrid = $('#stamp-history-list');
-	const $cgrid = $('#time-card-list');
-	if (paramSize !== h) {
-		paramSize = h;
-		if ($hgrid.data('igGrid')) {
-			$hgrid.igGrid("option", "height", stampBtnHeight);
-			$hgrid.data("height", stampBtnHeight);
-		}
-		if ($cgrid.data('igGrid')) {
-			$cgrid.igGrid("option", "height", stampBtnHeight);
-			$cgrid.data("height", stampBtnHeight);
-		}
-		return true;
-	} else {
-		return false;
-	}
+    let stampBtnHeight = (h < 48 ? 48 : h) + 'px';
+    const $hgrid = $('#stamp-history-list');
+    const $cgrid = $('#time-card-list');
+    if (paramSize !== h) {
+        paramSize = h;
+        if ($hgrid.data('igGrid')) {
+            $hgrid.igGrid("option", "height", stampBtnHeight);
+            $hgrid.data("height", stampBtnHeight);
+        }
+        if ($cgrid.data('igGrid')) {
+            $cgrid.igGrid("option", "height", stampBtnHeight);
+            $cgrid.data("height", stampBtnHeight);
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
 let reCalGridWidthHeight = () => {
-	let dfd = $.Deferred<void>();
+    let dfd = $.Deferred<void>();
 
-	if ($('#stamp-info')[0]) {
-		setTimeout(() => {
-			dfd.resolve(resize());
-		});
+    if ($('#stamp-info')[0]) {
+        setTimeout(() => {
+            dfd.resolve(resize());
+        });
 
-	}
-	return dfd.promise();
+    }
+    return dfd.promise();
+}
+
+interface GetWorkPlaceRegionalTime {
+    workPlaceId: string;
+    workLocationCD: string;
+    workLocationName: string;
+    regional: number;
 }

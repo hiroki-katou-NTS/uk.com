@@ -187,12 +187,17 @@ module nts.uk.at.view.kdp.share {
 
 		events!: ClickEvent;
 		settings!: KnockoutComputed<StampColor>;
+		regionalTime: KnockoutObservable<number> = ko.observable(0);
 
 		created(params?: StampClocParam) {
 			const vm = this;
 
 			if (params) {
-				const { setting, events } = params;
+				const { setting, events, regionalTime } = params;
+
+				if (regionalTime) {
+					vm.regionalTime = regionalTime;
+				}
 
 				if (events) {
 					// convert setting event to binding object
@@ -242,12 +247,12 @@ module nts.uk.at.view.kdp.share {
 
 			vm.$ajax('at', '/server/time/now')
 				.then((c) => {
-					const date = moment(c, 'YYYY-MM-DDTHH:mm:ss').toDate();
+					const date = moment(moment(c).add(ko.unwrap(vm.regionalTime), 'h').toDate(), 'YYYY-MM-DDTHH:mm:ss').toDate();
 
 					vm.time(date);
 				});
 
-			setInterval(() => vm.time(vm.$date.now()), 300);
+			setInterval(() => vm.time(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate()), 300);
 		}
 
 		mounted() {
@@ -260,6 +265,7 @@ module nts.uk.at.view.kdp.share {
 	export interface StampClocParam {
 		events?: ClickEvent;
 		setting?: StampColor;
+		regionalTime?: KnockoutObservable<number>;
 	}
 
 	export interface ClickEvent {
