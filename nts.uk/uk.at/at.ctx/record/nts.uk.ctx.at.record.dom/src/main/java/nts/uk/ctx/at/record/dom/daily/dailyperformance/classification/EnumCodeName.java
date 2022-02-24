@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Data
 @AllArgsConstructor
@@ -56,7 +57,7 @@ public class EnumCodeName {
     public static List<EnumCodeName> getNursingLicenseCls(){
     	List<EnumCodeName> list = new ArrayList<>();
     	for(int i =0; i< LicenseClassification.values().length; i++){
-    		list.add(new EnumCodeName(LicenseClassification.values()[i].value, LicenseClassification.values()[i].nameId));
+    		list.add(new EnumCodeName(LicenseClassification.values()[i].value, TextResource.localize(LicenseClassification.values()[i].nameId)));
     	}
     	return list;
     }
