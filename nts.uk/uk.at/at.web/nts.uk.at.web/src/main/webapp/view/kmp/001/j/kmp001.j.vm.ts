@@ -193,14 +193,14 @@ module nts.uk.at.view.kmp001.j {
 								nts.uk.request.exportFile(EXPORT_QRCODE, input)
 									.then(() => {
 										nts.uk.characteristics.save(QRCODE_SIZE, { qrCodeSize: ko.unwrap(vm.qrSize) });
-									})
+									}).fail((error) => {
+										vm.$dialog.error(error);
+									}).always(() => {
+										vm.$blockui("clear");
+									});
 							}
 						});
 
-				}).fail((error) => {
-					vm.$dialog.error(error);
-				}).always(() => {
-					vm.$blockui("clear");
 				});
 
 			}

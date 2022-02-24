@@ -1,14 +1,16 @@
 package nts.uk.ctx.at.shared.dom.common;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerRange;
+import nts.arc.primitive.constraint.IntegerMaxValue;
+import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
  * QRコード縦個数
  * @author tutt
  *
  */
-@IntegerRange(min = 1, max = 6)
+@IntegerMinValue(1)
+@IntegerMaxValue(6)
 public class QRCodeVerticalNumber extends IntegerPrimitiveValue<QRCodeVerticalNumber>  {
 	private static final long serialVersionUID = 1L;
 
