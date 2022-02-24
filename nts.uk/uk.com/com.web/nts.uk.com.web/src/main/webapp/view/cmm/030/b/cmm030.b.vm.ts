@@ -34,7 +34,10 @@ module nts.uk.com.view.cmm030.b {
     mounted(): void {
       const vm = this;
       vm.$blockui("grayout");
-      vm.getWorkplaceInfo().always(() => vm.$blockui("clear"));
+      vm.getWorkplaceInfo().always(() => {
+        vm.$nextTick(() => $("#B2_1").focus());
+        vm.$blockui("clear");
+      });
     }
 
     public processSave() {

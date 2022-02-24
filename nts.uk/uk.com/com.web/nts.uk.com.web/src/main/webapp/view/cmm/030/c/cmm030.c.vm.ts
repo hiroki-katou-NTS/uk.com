@@ -22,6 +22,11 @@ module nts.uk.com.view.cmm030.c {
       ]);
     }
 
+    mounted(): void {
+      const vm = this;
+      vm.$nextTick(() => $("#C1_3").focus());
+    }
+
     public processSave() {
       const vm = this;
       vm.$blockui("grayout");
