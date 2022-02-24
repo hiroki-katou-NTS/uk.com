@@ -36,8 +36,8 @@ import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
-													SamlValidateCommand, 
-													SamlValidateCommandHandler.AuthenResult, 
+													SamlValidateCommand,
+													SamlAuthenticationResult,
 													ValidateInfo, 
 													SamlValidateCommandHandler.Require>{
 	
@@ -62,7 +62,7 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 	// 認証処理本体
 	@Override
 	@SneakyThrows
-	protected AuthenResult authenticate(Require require, SamlValidateCommand command) {
+	protected SamlAuthenticationResult authenticate(Require require, SamlValidateCommand command) {
 		HttpServletRequest request = command.getRequest();
 
 		// URLエンコードされているのでデコード
@@ -77,7 +77,7 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 		{
 			val opt = findSamlSetting.find(relayState.getTenantCode());
 			if(!opt.isPresent()) {
-				return AuthenResult.failed(CauseOfFailure.NO_SAML_SETTING);
+				return SamlAuthenticationResult.noSamlSettingFailure();
 			}
 			samlSetting = opt.get();
 		}
@@ -88,13 +88,13 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 		try {
 			validateResult = SamlResponseValidator.validate(request, samlSetting);
 		} catch (ValidateException e) {
-			return AuthenResult.failed(CauseOfFailure.INVALID_SAML_RESPONSE);
+			return SamlAuthenticationResult.samlInvalidFailure();
 		}
 
 		// Idpユーザと社員の紐付けから社員を特定
 		Optional<IdpUserAssociation> optAssociation = idpUserAssociationRepository.findByIdpUser(validateResult.getIdpUser());
 		if (!optAssociation.isPresent()) {
-			return AuthenResult.failed(CauseOfFailure.NO_ASSOCIATION);
+			return SamlAuthenticationResult.identificationFailure("社員が特定できませんでした");
 		}
 		
 		// 識別
@@ -102,12 +102,12 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 		{
 			val opt = identify(optAssociation.get().getEmployeeId());
 			if (!opt.isPresent()) {
-				return AuthenResult.failed(CauseOfFailure.EMPLOYEE_NOT_FOUND);
+				return SamlAuthenticationResult.identificationFailure("Msg_1990");
 			}
 			identified = opt.get();
 		}
 		
-		return AuthenResult.success(identified, relayState.getRequestUrl());
+		return SamlAuthenticationResult.success(identified, relayState.getRequestUrl());
 	}
 	
 	/**
@@ -132,45 +132,14 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 
 	// 社員認証失敗時の処理
 	@Override
-	protected ValidateInfo authenticationFailed(Require require, AuthenResult state) {
-		return ValidateInfo.failedToValidSaml(state.errorMessage);
+	protected ValidateInfo authenticationFailed(Require require, SamlAuthenticationResult state) {
+		return ValidateInfo.failedToValidSaml(state.getErrorMessage());
 	}
 	
 	// ログイン成功時の処理
 	@Override
-	protected ValidateInfo loginCompleted(Require require, AuthenResult state, Optional<String> msg) {
-		return ValidateInfo.successToValidSaml(state.requestUrl, msg);
-	}
-	
-	@Value
-	static class AuthenResult implements LoginCommandHandlerBase.AuthenticationResultBase{
-		
-		private boolean isSuccess;
-		private IdentifiedEmployeeInfo identified;
-		private String requestUrl;
-		private String errorMessage;
-		private Optional<AtomTask> atomTask;
-		
-		public static AuthenResult success(IdentifiedEmployeeInfo identified, String requestUrl) {
-			return new AuthenResult(true, identified, requestUrl, null, Optional.empty());
-		}
-		
-		public static AuthenResult failed(CauseOfFailure cause) {
-			return new AuthenResult(false, null, null, cause.getErrorMessageId(), Optional.empty());
-		}
-	}
-	
-	@RequiredArgsConstructor
-	@Getter
-	public enum CauseOfFailure {
-		
-		NO_SAML_SETTING("Msg_1980"),
-		INVALID_SAML_RESPONSE("Msg_1988"),
-		NO_ASSOCIATION("Msg_1989"),
-		EMPLOYEE_NOT_FOUND("Msg_1990"),
-		;
-		
-		private final String errorMessageId;
+	protected ValidateInfo loginCompleted(Require require, SamlAuthenticationResult state, Optional<String> msg) {
+		return ValidateInfo.successToValidSaml(state.getRequestUrl(), msg);
 	}
 	
 	public static interface Require extends LoginCommandHandlerBase.Require {
