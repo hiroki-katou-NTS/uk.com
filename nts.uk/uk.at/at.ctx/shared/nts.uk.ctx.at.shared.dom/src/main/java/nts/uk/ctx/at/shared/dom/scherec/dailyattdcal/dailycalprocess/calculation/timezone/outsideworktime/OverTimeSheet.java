@@ -712,13 +712,13 @@ public class OverTimeSheet {
 			}
 			// 控除時間から残業時間帯を作成
 			overTimeFrameTimeSheets.add(OverTimeFrameTimeSheetForCalc.createAsFlow(
+					personDailySetting,
 					integrationOfWorkTime.getFlowWorkSetting().get(),
 					processingFlowOTTimezone,
 					deductTimeSheet,
 					itemsWithinCalc,
 					overTimeStartTime,
 					calcRange.get().getEnd(),
-					personDailySetting.getBonusPaySetting(),
 					integrationOfDaily.getSpecDateAttr(),
 					companyCommonSetting.getMidNightTimeSheet()));
 			// 退勤時刻を含む残業枠時間帯が作成されているか判断する

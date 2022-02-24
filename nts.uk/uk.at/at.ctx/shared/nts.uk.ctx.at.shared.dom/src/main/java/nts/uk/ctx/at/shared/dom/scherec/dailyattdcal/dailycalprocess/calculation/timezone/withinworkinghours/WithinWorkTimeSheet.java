@@ -50,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WorkHour;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.StaggerDiductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.ActualWorkTimeSheetListService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
@@ -1411,21 +1412,13 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			endTime = this.withinWorkTimeFrame.get(0).getTimeSheet().getStart().forwardByMinutes(elapsedMinutes);
 			// 上限実働就業時間をセット
 			this.limitActualWorkTime = Optional.of(new AttendanceTime(elapsedMinutes));
-			
-			for(TimeSheetOfDeductionItem item : deductionTimeSheet.getForDeductionTimeZoneList()) {
-				// 重複している時間帯
-				Optional<TimeSpanForDailyCalc> overlapptingTime =
-						item.getTimeSheet().getDuplicatedWith(new TimeSpanForDailyCalc(startTime, endTime));
-				if(!overlapptingTime.isPresent()) continue;
-				// 重複していた時、対象の控除時間帯から重複開始時刻以降の時間帯を取り出す
-				TimeSheetOfDeductionItem diffSheet = item.reCreateOwn(overlapptingTime.get().getStart(), false);
-				// 控除時間の計算
-				int deductTime = diffSheet.calcTotalTime(NotUseAtr.USE, NotUseAtr.NOT_USE).valueAsMinutes();
-				if (deductTime > 0){
-					// 控除時間分、終了時刻をズラす
-					endTime = endTime.forwardByMinutes(deductTime);
-				}
-			}
+			// 控除時間分、終了時刻をズラす
+			StaggerDiductionTimeSheet forward = new StaggerDiductionTimeSheet(
+					new TimeSpanForDailyCalc(startTime, endTime),
+					this.withinWorkTimeFrame.get(0).getRounding(),
+					deductionTimeSheet.getForDeductionTimeZoneList());
+			endTime = forward.getForwardEnd(ActualWorkTimeSheetAtr.WithinWorkTime, integrationOfWorkTime.getCommonSetting(),
+					personDailySetting.getAddSetting().getVacationCalcMethodSet());
 		}
 		// 残業開始時刻
 		TimeWithDayAttr startOverTime = endTime;

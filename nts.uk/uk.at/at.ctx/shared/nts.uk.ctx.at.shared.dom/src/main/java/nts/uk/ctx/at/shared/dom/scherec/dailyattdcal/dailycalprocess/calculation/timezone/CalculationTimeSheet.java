@@ -84,14 +84,6 @@ public abstract class CalculationTimeSheet {
 	}
 	
 	/**
-	 * 指定時間を終了とする時間帯作成
-	 * @return
-	 */
-	public Optional<TimeSpanForDailyCalc> reCreateTreatAsSiteiTimeEnd(AttendanceTime transTime,OverTimeFrameTimeSheetForCalc overTimeWork) {
-		return overTimeWork.contractTimeSheet(new TimeWithDayAttr(this.calcTotalTime().valueAsMinutes() - transTime.valueAsMinutes()));
-	}
-	
-	/**
 	 * 指定時間に従って時間帯の縮小
 	 * @return 縮小後の時間帯
 	 */

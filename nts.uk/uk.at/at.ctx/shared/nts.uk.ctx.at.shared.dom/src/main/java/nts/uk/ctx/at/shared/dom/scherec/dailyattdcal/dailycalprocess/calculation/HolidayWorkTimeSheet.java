@@ -893,12 +893,12 @@ public class HolidayWorkTimeSheet{
 			}
 			// 控除時間から休出時間帯を作成
 			holidayWorkFrameTimeSheets.add(HolidayWorkFrameTimeSheetForCalc.createAsFlow(
+					personDailySetting,
 					todayWorkType,
 					integrationOfWorkTime.getFlowWorkSetting().get(),
 					deductTimeSheet,
 					itemsWithinCalc,
 					new TimeSpanForDailyCalc(holidayStart, calcRange.getEnd()),
-					personDailySetting.getBonusPaySetting(),
 					integrationOfDaily.getSpecDateAttr(),
 					companyCommonSetting.getMidNightTimeSheet(),
 					processingTimezone));

@@ -394,33 +394,6 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		result = new AttendanceTime(this.rounding.round(result.valueAsMinutes()));
 		return result;
 	}
-	
-	//控除時間の計算
-	public AttendanceTime calcDeductionTime(HolidayCalcMethodSet holidayCalcMethodSet, PremiumAtr premiumAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
-		AttendanceTime result = new AttendanceTime(0);
-		//休憩
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.BREAK, goOutSet).valueAsMinutes());
-		//外出(私用)
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.PrivateGoOut, goOutSet).valueAsMinutes());
-		//外出(組合)
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.UnionGoOut, goOutSet).valueAsMinutes());
-		//短時間
-		AttendanceTime shortTime = new AttendanceTime(0);
-		//介護
-		AttendanceTime careTime = new AttendanceTime(0);
-		//短時間勤務を控除するか判断
-		if(premiumAtr.isRegularWork() && !holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().isCalculateIncludCareTime()) {
-			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child, goOutSet);
-			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care, goOutSet);
-		}
-		if(premiumAtr.isPremium() && !holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().isCalculateIncludCareTime()) {
-			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child, goOutSet);
-			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care, goOutSet);
-		}
-		result = result.addMinutes(shortTime.valueAsMinutes());
-		result = result.addMinutes(careTime.valueAsMinutes());
-		return result;
-	}
 
 	/**
 	 * 就業時間内時間枠毎の処理
