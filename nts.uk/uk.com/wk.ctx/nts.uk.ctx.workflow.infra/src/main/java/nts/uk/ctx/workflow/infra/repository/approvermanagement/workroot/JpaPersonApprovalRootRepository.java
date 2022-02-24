@@ -628,6 +628,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				domain.getApprRoot().getNoticeId() : null;
 		entity.busEventId = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.BUS_EVENT) ?
 				domain.getApprRoot().getBusEventId() : null;
+		entity.opeMode = domain.getOperationMode().value;
 		return entity;
 	}
 	
