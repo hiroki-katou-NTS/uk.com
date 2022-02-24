@@ -16,7 +16,6 @@ import java.util.List;
 public class Kdw008WebService {
     @Inject
     private AcquisitionOfMonthlyAttendanceItemFinder attendanceItemFinder;
-
     @POST
     @Path("modifyAnyPeriodAttItems")
     public List<AttItemName> getModifyAnyPeriodAttItems() {

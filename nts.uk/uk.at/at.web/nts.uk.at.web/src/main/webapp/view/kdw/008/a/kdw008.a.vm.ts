@@ -30,10 +30,13 @@ module nts.uk.at.view.kdw008.a {
 
             //is daily
             isDaily: KnockoutObservable<boolean>;
-            isModifyAnyPeriod: KnockoutObservable<boolean>;
             enableSheetNo: KnockoutObservable<boolean>;
             isSetFormatToDefault: KnockoutObservable<boolean>;
             sideBar: KnockoutObservable<number>;
+
+            //ModifyAnyPeriod
+            isModifyAnyPeriod: KnockoutObservable<boolean>;
+
 
             columnsFormatCodde: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             formatCodeItems: KnockoutObservableArray<FormatCode>;
@@ -150,7 +153,7 @@ module nts.uk.at.view.kdw008.a {
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: getText('KDW008_14'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(self.isDaily()) },
                     { id: 'tab-2', title: getText('KDW008_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(self.isDaily()) },
-                    { id: 'tab-3', title: getText('KDW008_13'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily()) },
+                    { id: 'tab-3', title: getText('KDW008_13'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily() && !self.isModifyAnyPeriod()) },
                     { id: 'tab-4', title: getText('KDW008_38'), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(self.isModifyAnyPeriod()) }
                 ]);
 
@@ -1078,6 +1081,16 @@ module nts.uk.at.view.kdw008.a {
             }
 
             static fromMonthly(listItem): Array<FormatCode> {
+                let result = _.map(listItem, item => {
+                    let dto: IFormatCode = {};
+                    dto.formatCode = item.monthlyPfmFormatCode;
+                    dto.formatName = item.monPfmCorrectionFormatName;
+                    dto.isSetDefault = item.setFormatToDefault;
+                    return new FormatCode(dto);
+                })
+                return _.sortBy(result, ["formatCode"]);
+            }
+            static fromModifyAnyPeriod(listItem): Array<FormatCode> {
                 let result = _.map(listItem, item => {
                     let dto: IFormatCode = {};
                     dto.formatCode = item.monthlyPfmFormatCode;

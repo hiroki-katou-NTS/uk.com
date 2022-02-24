@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class AddModifyAnyPeriodCommand {
+public class UpdateModifyAnyPeriodCommand {
     private boolean initFormat;
     private String code;
     private String name;

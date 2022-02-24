@@ -17,5 +17,5 @@ public class ModifyAnyPeriodDetailDto {
     private int order;
 
 
-    private BigDecimal columnWidth;
+    private Integer columnWidth;
 }
