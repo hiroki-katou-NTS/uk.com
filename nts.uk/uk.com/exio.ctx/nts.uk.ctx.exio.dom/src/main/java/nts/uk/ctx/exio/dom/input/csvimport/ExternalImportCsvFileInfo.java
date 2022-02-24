@@ -51,7 +51,12 @@ public class ExternalImportCsvFileInfo implements DomainObject {
 					+ "受入開始行 [" + importStartRowNumber.v() + "] よりも小さい値を指定してください。"));
 		}
 	}
-	
+
+	/**
+	 * @param csvFileStream
+	 * @param readRecords(Function<CsvRecord:CSV1行分のデータ, Boolean:処理に成功したか>)
+	 * @return 処理を実行成功したレコード数
+	 */
 	public int parse(InputStream csvFileStream, Function<CsvRecord, Boolean> readRecords) {
 
 		val parser = new Parser(importStartRowNumber.v());

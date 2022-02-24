@@ -22,19 +22,20 @@ public class PrepareImporting {
 			DomainImportSetting setting,
 			InputStream csvFileStream) {
 
-			val context = setting.executionContext(externalImportSetting.getCompanyId(), externalImportSetting.getCode());
+		val context = setting.executionContext(externalImportSetting.getCompanyId(), externalImportSetting.getCode());
 
-			require.setupWorkspaceForEachDomain(context);//削除も一緒に
-			
-			// 受入データの組み立て
-			val assembledCount = setting.assemble(require, context, externalImportSetting.getCsvFileInfo(), csvFileStream);
+		require.setupWorkspaceForEachDomain(context);//削除も一緒に
 
-			// 1件以上編集できた場合
-			if(assembledCount > 0) {
-				// 編集済みデータの正準化
-				val meta = ImportingDataMeta.create(require, context, setting.getAssembly().getAllItemNo());
-				CanonicalizeRevisedData.canonicalize(require, context, meta);
-			}
+		// 受入データの組み立て
+		val assembledCount = setting.assemble(require, context, externalImportSetting.getCsvFileInfo(), csvFileStream);
+
+		if(assembledCount == 0) {
+			// 編集できたレコード数が0件の場合、正準化は行わない。
+			return;
+		}
+		// 編集済みデータの正準化
+		val meta = ImportingDataMeta.create(require, context, setting.getAssembly().getAllItemNo());
+		CanonicalizeRevisedData.canonicalize(require, context, meta);
 	}
 	
 	public static interface Require extends

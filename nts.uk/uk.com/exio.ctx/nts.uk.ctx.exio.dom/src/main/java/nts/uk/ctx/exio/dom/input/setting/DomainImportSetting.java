@@ -77,7 +77,7 @@ public class DomainImportSetting implements DomainAggregate {
 	 * @param require
 	 * @param context
 	 * @param csvRecord
-	 * @return 成功したか
+	 * @return 処理に成功したか
 	 */
 	private boolean processRecord(
 			RequireAssemble require,
