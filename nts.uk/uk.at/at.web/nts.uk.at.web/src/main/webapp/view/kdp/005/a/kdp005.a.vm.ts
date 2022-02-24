@@ -136,7 +136,7 @@ module nts.uk.at.view.kdp005.a {
 										contractCode: data.code,
 										contractPassword: ''
 									})
-									.done(() => self.startScreen().then(() => dfd.resolve()));
+										.done(() => self.startScreen().then(() => dfd.resolve()));
 								});
 						} else {
 							// Step3: テナント認証する
@@ -213,7 +213,7 @@ module nts.uk.at.view.kdp005.a {
 
 									} else {
 										self.btnChangeCompany(self.listCompany.length > 0);
-										characteristics.restore("loginKDP005").done(function (loginInfo: ILoginInfo) {
+										characteristics.restore("loginKDP005").done(function(loginInfo: ILoginInfo) {
 											if (loginInfo) {
 												self.loginInfo = loginInfo;
 
@@ -390,7 +390,7 @@ module nts.uk.at.view.kdp005.a {
 			public openDialogF(param): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<any>();
-				vm.$window.modal('at', '/view/kdp/003/f/index.xhtml', param).then(function (loginResult): any {
+				vm.$window.modal('at', '/view/kdp/003/f/index.xhtml', param).then(function(loginResult): any {
 					if (loginResult && loginResult.em) {
 						dfd.resolve(loginResult);
 					} else {
@@ -448,16 +448,15 @@ module nts.uk.at.view.kdp005.a {
 				vm.getWorkPlacesInfo();
 				let stampTime = moment(mVm.$date.now()).format("HH:mm");
 				let stampDateTime = moment(mVm.$date.now()).format();
-				
+
 				// ※ICカードチェック
 				const authcMethod = ko.unwrap(vm.fingerStampSetting).stampSetting.authcMethod;
-				
+
 				// QRコード　の場合
 				if (authcMethod == 1) {
-					mVm.$window.modal('at','/view/kdp/005/q/index.xhtml');
-					let ICCard = getShared('ICCardFromQRCode');
-					
-					if (ICCard && ICCard != '') {
+					modal('at', '/view/kdp/005/q/index.xhtml').onClosed(function(): any {
+						let ICCard = getShared('ICCardFromQRCode');
+						if (ICCard && ICCard != '') {
 							block.grayout();
 							vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
 								vm.registerData(btn, layout, ICCard, employeeId, stampTime, stampDateTime);
@@ -467,14 +466,15 @@ module nts.uk.at.view.kdp005.a {
 								block.clear();
 							});
 						}
-					
+
+					});
 				}
-				
+
 				// ICカード　の場合
 				if (authcMethod == 0) {
-					modal('/view/kdp/005/h/index.xhtml').onClosed(function (): any {
-					let ICCard = getShared('ICCard');
-					if (ICCard && ICCard != '') {
+					modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
+						let ICCard = getShared('ICCard');
+						if (ICCard && ICCard != '') {
 							block.grayout();
 							vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
 								vm.registerData(btn, layout, ICCard, employeeId, stampTime, stampDateTime);
@@ -528,7 +528,7 @@ module nts.uk.at.view.kdp005.a {
 
 			checkHis(self: ScreenModel) {
 				let vm = new ko.ViewModel();
-				modal('/view/kdp/005/h/index.xhtml').onClosed(function (): any {
+				modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
 					let ICCard = getShared('ICCard');
 					if (ICCard && ICCard != '') {
 						block.grayout();
@@ -858,7 +858,7 @@ module nts.uk.at.view.kdp005.a {
 				setShared("screenC", {
 					screen: "KDP005"
 				});
-				modal('/view/kdp/002/c/index.xhtml', { screen: "KDP005" }).onClosed(function (): any {
+				modal('/view/kdp/002/c/index.xhtml', { screen: "KDP005" }).onClosed(function(): any {
 					self.openKDP002T(button, layout);
 				});
 			}
@@ -871,7 +871,7 @@ module nts.uk.at.view.kdp005.a {
 				service.getError(data).done((res) => {
 					if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 						setShared('KDP010_2T', res, true);
-						modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
+						modal('/view/kdp/002/t/index.xhtml').onClosed(function(): any {
 							let returnData = getShared('KDP010_T');
 							if (!returnData.isClose && returnData.errorDate) {
 								let transfer = returnData.btn.transfer;
@@ -1012,7 +1012,7 @@ module nts.uk.at.view.kdp005.a {
 			basyo(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>();
 
-				$.urlParam = function (name) {
+				$.urlParam = function(name) {
 					var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 					if (results == null) {
 						return null;
