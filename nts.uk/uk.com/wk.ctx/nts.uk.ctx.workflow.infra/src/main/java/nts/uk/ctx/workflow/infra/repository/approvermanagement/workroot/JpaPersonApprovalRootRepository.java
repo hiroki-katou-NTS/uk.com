@@ -313,8 +313,8 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				+ " AND m.wwfmtPsApprovalRootPK.employeeId = :sid"
 				+ " AND m.sysAtr = :sysAtr"
 				+ " AND m.startDate = :baseDate"
-				+ " AND opeMode = 1"
-				+ "ORDER BY m.startDate DESC";
+				+ " AND m.opeMode = 1"
+				+ " ORDER BY m.startDate DESC";
 		
 		@Override
 		public List<String> getListSidRegistered(String sid, GeneralDate baseDate) {
@@ -417,14 +417,16 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	@Override
 	public void updatePsApprovalRoot(PersonApprovalRoot psAppRoot) {
 		WwfmtApprovalRoutePs a = toEntityPsApR(psAppRoot);
-		WwfmtApprovalRoutePs x = this.queryProxy().find(a.wwfmtPsApprovalRootPK, WwfmtApprovalRoutePs.class).get();
-		x.setStartDate(a.startDate);
-		x.setEndDate(a.endDate);
-		x.setApplicationType(a.applicationType);
-		x.setConfirmationRootType(a.confirmationRootType);
-		x.setEmploymentRootAtr(a.employmentRootAtr);
-		this.commandProxy().update(x);
-		this.getEntityManager().flush();
+		Optional<WwfmtApprovalRoutePs> optEntity = this.queryProxy().find(a.wwfmtPsApprovalRootPK, WwfmtApprovalRoutePs.class);
+		optEntity.ifPresent(x -> {
+			x.setStartDate(a.startDate);
+			x.setEndDate(a.endDate);
+			x.setApplicationType(a.applicationType);
+			x.setConfirmationRootType(a.confirmationRootType);
+			x.setEmploymentRootAtr(a.employmentRootAtr);
+			this.commandProxy().update(x);
+			this.getEntityManager().flush();
+		});
 	}
 	/**
 	 * update All Person Approval Root
@@ -1006,7 +1008,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				+ " WHERE m.wwfmtPsApprovalRootPK.approvalId IN :approvalIds";
 		String phaseQuery = "SELECT phase FROM WwfmtApprovalPhase phase"
 				+ " WHERE phase.wwfmtApprovalPhasePK.approvalId IN :approvalIds";
-		String approverQuery = "SELECT phase FROM WwfmtAppover approver"
+		String approverQuery = "SELECT approver FROM WwfmtAppover approver"
 				+ " WHERE approver.wwfmtAppoverPK.approvalId IN :approvalIds";
 		
 		List<WwfmtPsApprovalRootPK> rootEntitiePks = this.queryProxy()

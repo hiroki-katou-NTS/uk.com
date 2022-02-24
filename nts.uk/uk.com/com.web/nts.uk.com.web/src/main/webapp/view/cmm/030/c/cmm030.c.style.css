@@ -1,0 +1,9 @@
+.flex {
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.setting-label {
+  width: 160px;
+  flex-shrink: 0;
+}
