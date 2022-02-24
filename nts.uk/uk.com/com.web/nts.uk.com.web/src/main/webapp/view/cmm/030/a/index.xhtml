@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+  <ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+      <com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+      <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+      <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+      <com:scriptfile path="cmm030.a.vm.js" />
+      <com:stylefile path="cmm030.a.style.css" />
+      <com:ValidatorScript>
+        nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ApproverInputExplanation  
+      </com:ValidatorScript>
+      <com:EnumScript>
+        nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType
+        nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr
+        nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType
+      </com:EnumScript>
+    </ui:define>
+
+    <ui:define name="content">
+      <div id="functions-area">
+        <a id="A1_1" class="goback" data-bind="ntsLinkButton: { jump: returnUrl }, enable: returnUrl() !== null">#{i18n.getText('CMM030_10')}</a>
+        <button id="A1_2" tabindex="1">#{i18n.getText('CMM030_11')}</button>
+        <button id="A1_3" class="proceed" data-bind="click: processSave" tabindex="2">#{i18n.getText('CMM030_12')}</button>
+        <button id="A1_4" data-bind="enable: isEnableFuncButton, visible: isVisibleFuncButton" tabindex="3">#{i18n.getText('CMM030_13')}</button>
+        <button id="A1_5" tabindex="4">#{i18n.getText('CMM030_14')}</button>
+        <button id="A1_6" data-bind="enable: isEnableFuncButton, visible: isVisibleFuncButton" tabindex="5">#{i18n.getText('CMM030_15')}</button>
+      </div>
+      <div id="contents-area">
+        <div id="A3_1"></div>
+        <textarea id="A2_1" data-bind="ntsMultiLineEditor: {
+          name: '#[CMM030_16]',
+          value: inputProcedure,
+          constraint: 'ApproverInputExplanation',
+          require: false
+        }"></textarea>
+        <div id="A3_2" tabindex="6"></div>
+        <div class="flex valign-center mt-10">
+          <div id="A4_1" data-bind="ntsDatePicker: {
+            name: '#[CMM030_17]',
+            value: startDate
+          }"></div>
+          <label id="A4_2" class="ml-5">#{i18n.getText('CMM030_18')}</label>
+          <label id="A4_3" class="color-holiday" data-bind="visible: isVisibleA4_3">#{i18n.getText('CMM030_19')}</label>
+        </div>
+        <div id="A5" class="panel">
+          <table>
+            <colgroup>
+              <col width="300px"/>
+              <col width="140px"/>
+              <com:ko-if bind="approvalLevelNo() &gt; 1">
+                <col width="30px"/>
+                <col width="140px"/>
+              </com:ko-if>
+              <com:ko-if bind="approvalLevelNo() &gt; 2">
+                <col width="30px"/>
+                <col width="140px"/>
+              </com:ko-if>
+              <com:ko-if bind="approvalLevelNo() &gt; 3">
+                <col width="30px"/>
+                <col width="140px"/>
+              </com:ko-if>
+              <com:ko-if bind="approvalLevelNo() &gt; 4">
+                <col width="30px"/>
+                <col width="140px"/>
+              </com:ko-if>
+            </colgroup>
+            <thead>
+              <tr data-bind="foreach: columnHeaders">
+                <th></th>
+                <th data-bind="text: $data"></th>
+              </tr>
+            </thead>
+            <tbody data-bind="foreach: approverInputList">
+              <tr>
+                <td>
+                  <label data-bind="text: appTypeDescription"></label>
+                </td>
+                <td>
+                  <input class="approver-input" data-bind="ntsTextEditor: {
+                    name: '#[CMM030_20]',
+                    readonly: true,
+                    value: approvers[0]().name,
+                  }" />
+                </td>
+                <td data-bind="visible: $parent.approvalLevelNo() &gt; 1">
+                  <i data-bind="ntsIcon: { no: 238, width: 30, height: 30, extension: 'png' }"></i>
+                </td>
+                <td data-bind="visible: $parent.approvalLevelNo() &gt; 1">
+                  <input class="approver-input" data-bind="ntsTextEditor: {
+                    name: '#[CMM030_21]',
+                    readonly: true,
+                    value: approvers[1]().name
+                  }" />
+                </td>
+                <td data-bind="visible: $parent.approvalLevelNo() &gt; 2">
+                  <i data-bind="ntsIcon: { no: 238, width: 30, height: 30, extension: 'png' }"></i>
+                </td>
+                <td data-bind="visible: $parent.approvalLevelNo() &gt; 2">
+                  <input class="approver-input" data-bind="ntsTextEditor: {
+                    name: '#[CMM030_22]',
+                    readonly: true,
+                    value: approvers[2]().name
+                  }" />
+                </td>
+                <td data-bind="visible: $parent.approvalLevelNo() &gt; 3">
+                  <i data-bind="ntsIcon: { no: 238, width: 30, height: 30, extension: 'png' }"></i>
+                </td>
+                <td data-bind="visible: $parent.approvalLevelNo() &gt; 3">
+                  <input class="approver-input" data-bind="ntsTextEditor: {
+                    name: '#[CMM030_23]',
+                    readonly: true,
+                    value: approvers[3]().name
+                  }" />
+                </td>
+                <td data-bind="visible: $parent.approvalLevelNo() &gt; 4">
+                  <i data-bind="ntsIcon: { no: 238, width: 30, height: 30, extension: 'png' }"></i>
+                </td>
+                <td data-bind="visible: $parent.approvalLevelNo() &gt; 4">
+                  <input class="approver-input" data-bind="ntsTextEditor: {
+                    name: '#[CMM030_24]',
+                    readonly: true,
+                    value: approvers[4]().name
+                  }" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="flex halign-center mt-10">
+          <label id="A9_1" data-bind="text: caution"></label>
+        </div>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>

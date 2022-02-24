@@ -1,0 +1,54 @@
+#contents-area > * {
+  margin-left: 50px;
+}
+
+.ml-5 {
+  margin-left: 5px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.approver-input {
+  width: 120px;
+}
+
+#A2_1 {
+  width: 50%;
+  height: 150px;
+}
+
+#A5 table {
+  display: block;
+  width: fit-content;
+}
+
+#A5 thead th {
+  height: 40px;
+  text-align: center;
+}
+
+#A5 tbody tr {
+  height: 40px;
+}
+
+#A5 tbody tr:first-child {
+  height: 60px !important;
+}
+
+#A5 tbody td > i {
+  margin-top: 5px;
+}
+
+#A5 tbody {
+  display: block;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+#A9_1 {
+  position: absolute;
+  left: 0;
+  right: 0;
+}

@@ -12,7 +12,6 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.auth.app.find.employmentrole.dto.RoleDto;
 import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.StatusOfEmployment;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
@@ -41,6 +40,7 @@ import nts.uk.screen.com.app.find.cmm030.a.dto.ApprovalSettingInformationDto;
 import nts.uk.screen.com.app.find.cmm030.a.dto.ApproverDisplayDataDto;
 import nts.uk.screen.com.app.find.cmm030.a.dto.ApproverOperationSettingsDto;
 import nts.uk.screen.com.app.find.cmm030.a.dto.CurrentEmployeeInfoDto;
+import nts.uk.screen.com.app.find.cmm030.a.dto.RoleDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -131,9 +131,7 @@ public class Cmm030AScreenQuery {
 		// get(ログイン社員の就業ロールID)
 		Optional<Role> optRole = this.roleRepository.findByRoleId(AppContexts.user().roles().forAttendance());
 		return new CurrentEmployeeInfoDto(employees, workplaceInfos,
-				optRole.map(data -> new RoleDto(data.getCompanyId(), data.getRoleId(), data.getRoleCode().v(),
-						data.getName().v(), data.getAssignAtr().value, data.getEmployeeReferenceRange().value))
-						.orElse(null));
+				optRole.map(RoleDto::fromDomain).orElse(null));
 	}
 
 	/**
@@ -155,16 +153,14 @@ public class Cmm030AScreenQuery {
 				.collect(Collectors.toList());
 		List<ResultRequest600Export> employees = this.syEmployeePub.getEmpInfoLstBySids(approverIds, null, false,
 				false);
-		return new ApproverDisplayDataDto(
-				approvalSettingInformations.stream().map(ApprovalSettingInformationDto::fromDomain)
-						.collect(Collectors.toList()),
-				employees.stream().map(ResultRequest600Export::getEmployeeName).collect(Collectors.toList()));
+		return new ApproverDisplayDataDto(approvalSettingInformations.stream()
+				.map(ApprovalSettingInformationDto::fromDomain).collect(Collectors.toList()), employees);
 	}
 
 	/**
 	 * UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM030_自分の承認者設定.A：自分の承認者設定.メニュー別OCD.Ａ：複写のため既に設定されている社員を取得する
 	 * 
-	 * @param baseDate	基準日
+	 * @param baseDate 基準日
 	 * @return 設定されている社員IDリスト
 	 */
 	public List<String> getSetEmployeeList(GeneralDate baseDate) {

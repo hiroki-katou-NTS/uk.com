@@ -5,6 +5,11 @@ import nts.arc.time.GeneralDate;
 
 @Value
 public class DisplayEmployeeApproversParam {
+	
+	/**
+	 * 社員ID
+	 */
+	private String sid;
 
 	/**
 	 * 基準日

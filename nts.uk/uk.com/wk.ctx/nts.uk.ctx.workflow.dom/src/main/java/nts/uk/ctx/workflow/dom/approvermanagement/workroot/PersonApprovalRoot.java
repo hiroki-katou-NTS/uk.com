@@ -101,7 +101,8 @@ public class PersonApprovalRoot extends AggregateRoot{
 			Integer noticeId,
 			String busEventId,
 			Integer opeMode) {
-		OperationMode operationMode = EnumAdaptor.valueOf(opeMode, OperationMode.class);
+		OperationMode operationMode = opeMode == null ? null
+				: EnumAdaptor.valueOf(opeMode, OperationMode.class);
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
 		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate));
 		employmentAppHistorys.add(employmentAppHistory);
