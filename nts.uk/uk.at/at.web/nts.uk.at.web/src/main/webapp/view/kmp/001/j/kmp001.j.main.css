@@ -19,3 +19,7 @@
 	vertical-align: baseline;
 	padding-top: 18px;
 }
+
+.rightJ2 .ntsControl {
+	display: inline !important;
+}
