@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.GetSupportInfoOfEmployee;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -23,7 +24,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkTypeWorkTimeUseDailyAttendanceRecord;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployee;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployeeRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -65,6 +68,10 @@ public class CreateWorkScheduleWorkInfor {
 	private FlexWorkSettingRepository flexWorkSet;
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
+	@Inject 
+	private SupportableEmployeeRepository supportableEmpRepo;
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 	
 	public List<WorkScheduleWorkInforDto> getDataScheduleOfWorkInfo(
 			Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap, TargetOrgIdenInfor targetOrg) {		
@@ -93,7 +100,7 @@ public class CreateWorkScheduleWorkInfor {
 
 		// step 4
 		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = new ArrayList<>();
-		WorkInformation.Require require = new RequireWorkInforImpl();
+		WorkInformation.Require requireWorkInfo = new RequireWorkInforImpl();
 
 		mngStatusAndWScheMap.forEach((employeeWorkingStatus, workScheduleOpt) -> {
 			
@@ -110,7 +117,9 @@ public class CreateWorkScheduleWorkInfor {
 				workTimeSetting = lstWorkTimeSetting.stream().filter(i -> i.getWorktimeCode().toString().equals(workTimeCode)).findFirst();
 			}
 			
-			WorkScheduleWorkInforDto dto = new WorkScheduleWorkInforDto(employeeWorkingStatus, workScheduleOpt, workTypeInfor, workTimeSetting, targetOrg, wTypeWTimeUseDailyAttendRecord, require);
+			GetSupportInfoOfEmployee.Require requireGetSupportInfo = new RequireGetSupportInfoImpl(workScheduleOpt, Optional.empty());
+			
+			WorkScheduleWorkInforDto dto = new WorkScheduleWorkInforDto(employeeWorkingStatus, workScheduleOpt, workTypeInfor, workTimeSetting, targetOrg, wTypeWTimeUseDailyAttendRecord, requireWorkInfo, requireGetSupportInfo);
 			listWorkScheduleWorkInfor.add(dto);
 		});
 
@@ -159,32 +168,34 @@ public class CreateWorkScheduleWorkInfor {
 		}
 	}
 	
-	@AllArgsConstructor
 	private class RequireGetSupportInfoImpl implements GetSupportInfoOfEmployee.Require {
+		
+		private Optional<WorkSchedule> workSchedule;
+		private Optional<IntegrationOfDaily> integrationOfDaily;
+		
+		public RequireGetSupportInfoImpl(Optional<WorkSchedule> workSchedule, Optional<IntegrationOfDaily> integrationOfDaily) {
+			this.workSchedule = workSchedule;
+			this.integrationOfDaily = integrationOfDaily;
+		}
 		
 		@Override
 		public List<SupportableEmployee> getSupportableEmployee(EmployeeId employeeId, GeneralDate date) {
-			return null;
+			return supportableEmpRepo.findByEmployeeIdWithPeriod(employeeId, DatePeriod.oneDay(date));
 		}
 
 		@Override
 		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
-			// TODO Auto-generated method stub
-			return null;
+			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
 		}
 
 		@Override
 		public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
-			// TODO Auto-generated method stub
-			return null;
+			return workSchedule;
 		}
 
 		@Override
 		public Optional<IntegrationOfDaily> getRecord(String employeeId, GeneralDate date) {
-			// TODO Auto-generated method stub
-			return null;
+			return integrationOfDaily;
 		}
-		
-		
 	}
 }

@@ -15,7 +15,12 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.GetSupportInfoOfEmployee;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -23,7 +28,11 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.GetWorkInforUsedDailyAttenRecordService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployee;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployeeRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetCombinationrAndWorkHolidayAtrService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
@@ -74,6 +83,10 @@ public class CreateWorkScheduleShiftBase {
 	private FlexWorkSettingRepository flexWorkSet;
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
+	@Inject 
+	private SupportableEmployeeRepository supportableEmpRepo;
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 
 	public WorkScheduleShiftBaseResult getWorkScheduleShiftBase(
 			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> mapDataDaily,
@@ -117,7 +130,9 @@ public class CreateWorkScheduleShiftBase {
 		List<ScheduleOfShiftDto> listWorkScheduleShift = new ArrayList<>();
 		mapDataDaily.forEach((employeeWorkingStatus, integrationOfDaily) -> {
 			
-			ScheduleOfShiftDto dto = new ScheduleOfShiftDto(integrationOfDaily, employeeWorkingStatus, listShiftMaster, targetOrg);
+			GetSupportInfoOfEmployee.Require requireGetSupportInfo = new RequireGetSupportInfoImpl(Optional.empty(), integrationOfDaily);
+			
+			ScheduleOfShiftDto dto = new ScheduleOfShiftDto(integrationOfDaily, employeeWorkingStatus, listShiftMaster, targetOrg, requireGetSupportInfo);
 			listWorkScheduleShift.add(dto);
 		});
 
@@ -182,6 +197,37 @@ public class CreateWorkScheduleShiftBase {
 		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
 			Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
 			return workSetting.isPresent() ? workSetting.get() : null;
+		}
+	}
+
+	private class RequireGetSupportInfoImpl implements GetSupportInfoOfEmployee.Require {
+
+		private Optional<WorkSchedule> workSchedule;
+		private Optional<IntegrationOfDaily> integrationOfDaily;
+
+		public RequireGetSupportInfoImpl(Optional<WorkSchedule> workSchedule, Optional<IntegrationOfDaily> integrationOfDaily) {
+			this.workSchedule = workSchedule;
+			this.integrationOfDaily = integrationOfDaily;
+		}
+
+		@Override
+		public List<SupportableEmployee> getSupportableEmployee(EmployeeId employeeId, GeneralDate date) {
+			return supportableEmpRepo.findByEmployeeIdWithPeriod(employeeId, DatePeriod.oneDay(date));
+		}
+
+		@Override
+		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
+			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
+		}
+
+		@Override
+		public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
+			return workSchedule;
+		}
+
+		@Override
+		public Optional<IntegrationOfDaily> getRecord(String employeeId, GeneralDate date) {
+			return integrationOfDaily;
 		}
 	}
 }

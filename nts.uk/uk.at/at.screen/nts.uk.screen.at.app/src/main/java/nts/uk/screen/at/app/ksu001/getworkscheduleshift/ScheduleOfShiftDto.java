@@ -8,14 +8,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.GetSupportInfoOfEmployee;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.DeterEditStatusShiftService;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.ShiftEditState;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportInfoOfEmployee;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportStatus;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
@@ -78,7 +81,8 @@ public class ScheduleOfShiftDto {
 			Optional<WorkSchedule> workScheduleInput,
 			List<ShiftMasterMapWithWorkStyle> listShiftMaster,
 			TargetOrgIdenInfor targetOrg, 
-			WorkInformation.Require require) {
+			WorkInformation.Require require,
+			GetSupportInfoOfEmployee.Require requireGetSupportInfo) {
 		super();
 		// step 1 勤務予定が必要か()
 		boolean needCreateWorkSchedule = employeeWorkingStatus.getWorkingStatus().needCreateWorkSchedule();
@@ -108,6 +112,13 @@ public class ScheduleOfShiftDto {
 			if (!shiftMaster.isPresent()) {
 				System.out.println("WorkType - workTime chưa được đăng ký: " + workTypeCode + " - " + workTimeCode);
 			}
+			
+			// step3.3 call DomainService 社員の応援情報を取得する
+			// 実績の情報を取得する(Require, 社員ID, 年月日)
+			SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getRecordInfo(requireGetSupportInfo, new EmployeeId(employeeId), date);
+			
+			// step3.3.1 応援状況を取得する(対象組織識別情報)
+			this.supportStatus = supportInfoOfEmp.getSupportStatus(targetOrg).getValue();
 
 			// step 3.4  create
 			this.employeeId = employeeWorkingStatus.getEmployeeID();
@@ -196,7 +207,8 @@ public class ScheduleOfShiftDto {
 			Optional<IntegrationOfDaily> workRecord, 
 			EmployeeWorkingStatus employeeWorkingStatus,
 			List<ShiftMasterMapWithWorkStyle> listShiftMaster, 
-			TargetOrgIdenInfor targetOrg) {
+			TargetOrgIdenInfor targetOrg,
+			GetSupportInfoOfEmployee.Require requireGetSupportInfo) {
 		super();
 		// step1 勤務予定が必要か()
 		boolean needCreateWorkSchedule = employeeWorkingStatus.getWorkingStatus().needCreateWorkSchedule();
@@ -217,6 +229,13 @@ public class ScheduleOfShiftDto {
 				if (!shiftMaster.isPresent()) {
 					System.out.println("WorkType - workTime chưa được đăng ký: " + workTypeCode + " - " + workTimeCode);
 				}
+				
+				// step2 call DomainService 社員の応援情報を取得する
+				// 実績の情報を取得する(Require, 社員ID, 年月日)
+				SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getRecordInfo(requireGetSupportInfo, new EmployeeId(employeeId), date);
+				
+				// step2.1 応援状況を取得する(対象組織識別情報)
+				this.supportStatus = supportInfoOfEmp.getSupportStatus(targetOrg).getValue();
 
 				this.employeeId = employeeWorkingStatus.getEmployeeID();
 				this.date = employeeWorkingStatus.getDate();
@@ -232,7 +251,6 @@ public class ScheduleOfShiftDto {
 				this.isActive = false;
 				this.conditionAa1 = false;
 				this.conditionAa2 = false;
-				this.supportStatus = SupportStatus.DO_NOT_GO.getValue();
 			}
 		}
 	}
