@@ -102,6 +102,14 @@ module nts.uk.com.view.cmm030.a {
       }
     }
 
+    public openDialogG() {
+      const vm = this;
+      const param = {
+        baseDate: vm.startDate()
+      };
+      vm.$window.modal("/view/cmm/030/g/index.xhtml", param);
+    }
+
     private initCCG001() {
       const vm = this;
       const ccg001ComponentOption: GroupOption = {
