@@ -48,6 +48,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
 
         workplaceCode: KnockoutObservable<String> = ko.observable('');
         workplaceDisplayName: KnockoutObservable<String> = ko.observable('');
+        selectAreaCombobox: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectAreaCode: KnockoutObservable<String> = ko.observable('');
 
         changeWorkPlaceID: String = '';
         // Cần đạt như này để lưu đúng giá trị vào database.
@@ -213,7 +215,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                         self.latitude(result.latitude);
                         self.longitude(result.longitude);
                         self.isCreate(false);
-
+                        self.selectAreaCode(result.regionCode);
                     }
                     //
                     let listWorkplaceS = _.filter(data.listWorkLocationDto, function (o) { return o.workLocationCD == self.workLocationCD() });
@@ -251,7 +253,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                             datagrid.push(new GridItem(data.listCompany[i].companyCode, data.listCompany[i].companyName, workPlaceCode, workPlaceName));
                         }
                         self.items = datagrid;
-                        dfd.resolve();
+                        
                     });
                 } else {
                     self.selectWorkLocation(null);
@@ -283,16 +285,47 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                         if (checkdata.length == 0) {
                             self.items.push(new GridItem(data.listCompany[0].companyCode, data.listCompany[0].companyName, '', ''));
                         }
-                        dfd.resolve();
                     });
                     $("#focus").focus();
                 }
+                
+                service.getInfoOnTimeDifference().done((result) => {
+                    let comboItems = _.chain(result)
+                        .map(({code, name, regionalTimeDifference}) => {
+                            let sign = regionalTimeDifference == 0 ? '±' : regionalTimeDifference > 0 ? '＋' : '－';
+                            return { code, name, regionalTimeDifference, text: nts.uk.resource.getText('CMM040_46', [sign + nts.uk.time.format.byId("Time_Short_HM", Math.abs(regionalTimeDifference))]) };
+                        })
+                        .orderBy(['code'])
+                        .value();
+                    self.selectAreaCombobox(comboItems);
+                    if (self.isCreate()) {
+                        self.setDefaultSelectAreaCode();
+                    }
+                    dfd.resolve();
+                }).fail(function(error) {
+                    dfd.fail();
+                    nts.uk.ui.dialog.alertError(error.message);
+                });
+                
             }).fail(function (error) {
                 dfd.fail();
                 nts.uk.ui.dialog.alertError(error.message);
             });
 
             return dfd.promise();
+        }
+        
+        private setDefaultSelectAreaCode() {
+            let self = this;
+            if (self.selectAreaCombobox().length) {
+                let codeOfZero = _.get(_.find(self.selectAreaCombobox(), ['regionalTimeDifference', 0]), 'code');
+                if (codeOfZero) {
+                    self.selectAreaCode(codeOfZero);
+                } else {
+                    let [first] = self.selectAreaCombobox();
+                    self.selectAreaCode(first.code);
+                }
+            }
         }
 
         private selectWorkLocation(workLocationCD: string) {
@@ -311,6 +344,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 self.radius(data.radius);
                 self.latitude(data.latitude);
                 self.longitude(data.longitude);
+                self.selectAreaCode(data.regionCode);
                 let listWorkplace = [];
                 let list1 = _.find(self.workPlacesList(), function (o) { return o.workLocationCD == workLocationCD; });
                 if (list1 != null && list1.workplace != null && list1.workplace.length > 0) {
@@ -398,6 +432,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 self.longitude(self.defautValueLocation);
                 self.latitude(self.defautValueLocation);
                 self.selectedWorkLocation(null);
+                self.setDefaultSelectAreaCode();
                 $("#focus").focus();
                 errors.clearAll();
 
@@ -473,6 +508,9 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             }
             $("#focus").focus();
             self.listIpCancel([]);
+
+
+            self.setDefaultSelectAreaCode();
         }
 
         add() {
@@ -489,7 +527,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                     latitude: self.latitude(),
                     longitude: self.longitude(),
                     listIPAddress: self.listIpCancel(),
-                    workplace: self.listWorkPlaceIDs[0]
+                    workplace: self.listWorkPlaceIDs[0],
+                    regionCode: self.selectAreaCode()
                 }
                 // let select = 
                 if (self.isCreate() === true) {

@@ -143,6 +143,7 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 			}
 			
 			oldData.get().krcmtIP4Address = newData.krcmtIP4Address;
+			oldData.get().regionalCd = newData.regionalCd;
 			this.commandProxy().update(oldData.get());
 
 			if (newData.krcmtWorkplacePossible != null) {

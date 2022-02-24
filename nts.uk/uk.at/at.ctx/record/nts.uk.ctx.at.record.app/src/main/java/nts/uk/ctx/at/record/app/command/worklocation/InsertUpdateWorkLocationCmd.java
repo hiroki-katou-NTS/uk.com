@@ -43,6 +43,8 @@ public class InsertUpdateWorkLocationCmd {
 	/** 職場*/
 	private WorkplacePossibleCmd workplace;
 	
+	private Integer regionCode;
+	
 	public WorkLocation toDomain() {
 		return new WorkLocation(
 				new ContractCode(AppContexts.user().contractCode()),
@@ -52,7 +54,8 @@ public class InsertUpdateWorkLocationCmd {
 						RadiusAtr.toEnum(this.radius), 
 						new GeoCoordinate(this.latitude, this.longitude)),
 				this.listIPAddress.stream().map(c->c.toDomain()).collect(Collectors.toList()),
-				this.workplace == null ? Optional.empty() : Optional.of(this.workplace.toDomain()), 0);
+				this.workplace == null ? Optional.empty() : Optional.of(this.workplace.toDomain()),
+				Optional.ofNullable(regionCode));
 	}
 	
 	public static InsertUpdateWorkLocationCmd toDto(WorkLocation domain) {
@@ -63,6 +66,7 @@ public class InsertUpdateWorkLocationCmd {
 				domain.getStampRange().getGeoCoordinate().getLatitude(),
 				domain.getStampRange().getGeoCoordinate().getLongitude(),
 				domain.getListIPAddress().stream().map(c-> new Ipv4AddressDto(c)).collect(Collectors.toList()),
-				domain.getWorkplace().map(c-> WorkplacePossibleCmd.toDto(c)).orElse(null));
+				domain.getWorkplace().map(c-> WorkplacePossibleCmd.toDto(c)).orElse(null),
+				domain.getRegionCode().map(x-> x).orElse(null));
 	}
 }
