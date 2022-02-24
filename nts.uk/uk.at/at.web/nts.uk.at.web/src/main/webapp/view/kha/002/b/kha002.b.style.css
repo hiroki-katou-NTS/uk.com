@@ -15,19 +15,19 @@
 }
 
 .checkbox-area {
-    width: 585px;
+    width: 570px;
 }
 
 .checkbox-area .checkbox-wrapper:nth-child(1) {
-    width: 155px;
+    width: 25%;
 }
 
 .checkbox-area .checkbox-wrapper:nth-child(2) {
-    width: 155px;
+    width: 25%;
 }
 
 .switchbox-wrappers  .radio-wrapper {
     flex-direction: column;
-    width: 100px;
+    min-width: 115px;
     text-align: center;
 }
