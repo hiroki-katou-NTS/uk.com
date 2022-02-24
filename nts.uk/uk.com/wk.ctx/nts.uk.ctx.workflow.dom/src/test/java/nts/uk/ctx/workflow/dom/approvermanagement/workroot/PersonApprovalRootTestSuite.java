@@ -17,7 +17,9 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.Set
 	ApprovalPhaseTest.class,
 	ApproverOperationSettingsTest.class,
 	ApproverSettingScreenInforTest.class,
-	SettingTypeUsedTest.class
+	SettingTypeUsedTest.class,
+	ApprovalSettingTest.class,
+	ApproverRegisterSetTest.class
 })
 public class PersonApprovalRootTestSuite {
 
