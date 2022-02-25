@@ -80,7 +80,7 @@ public class TemporarilyReflectStampDailyAttd {
 			// 組み合わせ区分＝直行？
 			if (stamp.getType().getSetPreClockArt() != SetPreClockArt.DIRECT) {
 				// 出勤を反映する (Phản ánh 出勤)
-				reflectWork.reflectWork(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
+				reflectWork.reflectWork(companyId, stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
 				if (!stamp.getImprintReflectionStatus().isReflectedCategory()) {
 					return listErrorMessageInfo;
 				}
@@ -98,7 +98,7 @@ public class TemporarilyReflectStampDailyAttd {
 			// 組み合わせ区分＝直帰？
 			if (stamp.getType().getSetPreClockArt() != SetPreClockArt.BOUNCE) {
 				// 退勤を反映する （Phản ánh 退勤）
-				reflectLeavingWork.reflectLeaving(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
+				reflectLeavingWork.reflectLeaving(companyId, stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
 				if (!stamp.getImprintReflectionStatus().isReflectedCategory()) {
 					return listErrorMessageInfo;
 				}

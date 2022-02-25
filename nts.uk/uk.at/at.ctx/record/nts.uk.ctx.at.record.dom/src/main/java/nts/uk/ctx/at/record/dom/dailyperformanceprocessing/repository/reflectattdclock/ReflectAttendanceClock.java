@@ -10,7 +10,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimePrintDestinationOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInformationDomainService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
@@ -35,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
@@ -78,7 +78,9 @@ public class ReflectAttendanceClock {
 	 * @param workNo 1~2	
 	 * @param integrationOfDaily 1~2
 	 */
-	public ReflectStampOuput reflect(String companyId, Stamp stamp,AttendanceAtr attendanceAtr,ActualStampAtr actualStampAtr,int workNo,IntegrationOfDaily integrationOfDaily) {
+	public ReflectStampOuput reflect(String companyId, Stamp stamp, AttendanceAtr attendanceAtr,
+			ActualStampAtr actualStampAtr, int workNo, IntegrationOfDaily integrationOfDaily,
+			ChangeDailyAttendance changeDailyAtt) {
 		//反映先を取得する
 			
 		TimePrintDestinationOutput timePrintDestinationOutput = getDestination(attendanceAtr, actualStampAtr, workNo, integrationOfDaily, stamp);
@@ -94,6 +96,10 @@ public class ReflectAttendanceClock {
 			if(!reflectDirectBounce(stamp, integrationOfDaily)) {
 				// 打刻を反映する
 				reflectStampOuput =  reflectStamping(actualStampAtr, stamp, integrationOfDaily, attendanceAtr, workNo);
+			} else {
+				
+				/** 日別勤怠の何が変更されたかを更新する */
+				changeDailyAtt.setDirectBounceClassifi(true);
 			}
 		}
 		TimeLeavingWork timeLeavingWork = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
