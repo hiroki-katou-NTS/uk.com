@@ -37,12 +37,8 @@ public class SamlOperation {
 	 * @param requestUrl
 	 * @return
 	 */
-	public Optional<IdpEntryUrl> createIdpEntryUrl(String tenantCode, String tenantPassword, String requestUrl){
-		if(useSingleSignOn){
-			return Optional.of(new IdpEntryUrl(idpRedirectUrl, createUkRelayState(tenantCode, tenantPassword, requestUrl).serialize()));
-
-		}
-		return Optional.empty();
+	public IdpEntryUrl createIdpEntryUrl(String tenantCode, String tenantPassword, String requestUrl){
+		return new IdpEntryUrl(idpRedirectUrl, createUkRelayState(tenantCode, tenantPassword, requestUrl).serialize());
 	}
 
 	/**
