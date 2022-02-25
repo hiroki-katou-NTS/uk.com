@@ -128,15 +128,6 @@ public class UrlLoginCommandHandler extends LoginCommandHandlerBase<
 	 */
 	@Override
 	protected UrlResult authenticationFailed(UrlLoginCommandHandler.Require require, UrlResult urlResult) {
-		if (urlResult.getIdentified() == null){
-			return urlResult;	// 埋込URL実行情報が取得できないケースの場合
-		}
-		//アルゴリズム「ログイン記録」を実行する (Ghi log)
-		String employeeCD = urlResult.getEmployeeId();
-		String loginID = urlResult.getLoginId();
-		require.loginRecord(
-			urlResult.createRecord(1, 2, employeeCD + loginID + TextResource.localize("Msg_1474") + " " + TextResource.localize("Msg_1095")),
-			urlResult.getCid());
 		return urlResult;
 	}
 
