@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.favorite.adapter.EmployeeBasicImport;
 import nts.uk.ctx.office.dom.favorite.adapter.EmployeeJobHistImport;
@@ -52,7 +54,7 @@ public class PersonalInfomationDomainService {
 		// create $職場情報SIDMap ：Map<社員ID、職場情報>
 		Map<String, WorkplaceInforImport> workplaceInforSidMap = new HashMap<>();
 		sids.forEach(sid -> {
-			workplaceInforSidMap.put(sid, workplaceInfor.get(sid));
+			workplaceInforSidMap.put(sid, workplaceInfor.get(employeesWorkplaceId.get(sid)));
 		});
 		
 		// 個人情報を取得する
@@ -99,15 +101,15 @@ public class PersonalInfomationDomainService {
 				.filter(item -> item != null)
 				.collect(Collectors.toList());
 		
-		if (!workplaceInfoList.isEmpty()) {
-			sortInfomation.sort(Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getHierarchyCode, Comparator.nullsLast(Comparator.naturalOrder()))));
-			sortInfomation.sort(Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getOrderOptional, Comparator.nullsLast(Comparator.naturalOrder()))));
-			sortInfomation.sort(Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getPositionCode, Comparator.nullsLast(Comparator.naturalOrder()))));
-			sortInfomation.sort(Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getEmployeeCode, Comparator.nullsLast(Comparator.naturalOrder()))));
+		val hCodeCompare = Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getHierarchyCode, Comparator.nullsLast(Comparator.naturalOrder())));
+		val orderCompare = Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getOrderOptional, Comparator.nullsLast(Comparator.naturalOrder())));
+		val pCodeCompare = Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getPositionCode, Comparator.nullsLast(Comparator.naturalOrder())));
+		val sCodeCompare = Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getEmployeeCode, Comparator.nullsLast(Comparator.naturalOrder())));
+		
+		if (workplaceInfoList.isEmpty()) {
+			sortInfomation.sort(hCodeCompare.thenComparing(orderCompare).thenComparing(pCodeCompare).thenComparing(sCodeCompare));
 		} else {
-			sortInfomation.sort(Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getOrderOptional, Comparator.nullsLast(Comparator.naturalOrder()))));
-			sortInfomation.sort(Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getPositionCode, Comparator.nullsLast(Comparator.naturalOrder()))));
-			sortInfomation.sort(Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getEmployeeCode, Comparator.nullsLast(Comparator.naturalOrder()))));
+			sortInfomation.sort(orderCompare.thenComparing(pCodeCompare).thenComparing(sCodeCompare));
 		}
 
 		return sortInfomation.stream()
