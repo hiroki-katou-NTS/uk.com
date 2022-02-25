@@ -4,13 +4,16 @@ module nts.uk.com.view.cmm030.a {
 
   import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
   import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
+  import setShared = nts.uk.ui.windows.setShared;
+  import getShared = nts.uk.ui.windows.getShared;
 
   const API = {
     initScreen: "screen/com/cmm030/initScreenA",
     displayEmployeeApprovers: "screen/com/cmm030/displayEmployeeApprovers",
     getSetEmployeeList: "screen/com/cmm030/getSetEmployeeList",
     register: "workflow/approvermanagement/workroot/selfapproversetting/register",
-    update: "workflow/approvermanagement/workroot/selfapproversetting/update"
+    update: "workflow/approvermanagement/workroot/selfapproversetting/update",
+    copy: "workflow/approvermanagement/workroot/selfapproversetting/copy"
   };
 
   // 自分のみ
@@ -70,7 +73,7 @@ module nts.uk.com.view.cmm030.a {
         vm.$blockui("grayout");
         vm.displayEmployeeApprovers(value).always(() => {
           vm.$blockui("clear");
-          vm.focusA7_1();
+          $("#A3_2").focus();
         });
       });
     }
@@ -79,9 +82,13 @@ module nts.uk.com.view.cmm030.a {
       const vm = this;
       vm.$blockui("grayout");
       vm.initScreen().always(() => {
-        vm.focusA7_1();
         $("#A4_1").attr("readonly", "readonly");
-        setTimeout(() => $(".approver-input").on("click", e => vm.openDialogB($(e.target))), 500);
+        setTimeout(() => {
+          $(".approver-input").on("click", e => vm.openDialogB($(e.target)));
+          $("#ccg001-btn-search-drawer").attr("tabindex", -1);
+          $(".approver-input").attr("tabindex", 7);
+          vm.focusA7_1();
+        }, 500);
         vm.$blockui("clear");
       });
     }
@@ -104,6 +111,8 @@ module nts.uk.com.view.cmm030.a {
           approverInfo.sid = result.sid;
           approverInfo.name(result.name);
           vm.approverInputList.valueHasMutated();
+          vm.isUpdating(true);
+          vm.focusA7_1();
         }
       });
     }
@@ -122,6 +131,7 @@ module nts.uk.com.view.cmm030.a {
           }
           vm.isNewMode(true);
           vm.isUpdating(true);
+          vm.focusA7_1();
         }
       });
     }
@@ -131,11 +141,11 @@ module nts.uk.com.view.cmm030.a {
       vm.validateInput().then(isValid => {
         if (isValid) {
           vm.$blockui("grayout");
-          if (vm.isNewMode()) {
-            vm.register().always(() => vm.$blockui("clear"));
-          } else {
-            vm.update().always(() => vm.$blockui("clear"));
-          }
+          const promise = vm.isNewMode() ? vm.register() : vm.update();
+          promise.always(() => {
+            vm.$blockui("clear");
+            vm.focusA7_1();
+          });
         }
       });
     }
@@ -145,7 +155,36 @@ module nts.uk.com.view.cmm030.a {
       const param = {
         baseDate: vm.startDate()
       };
-      vm.$window.modal("/view/cmm/030/g/index.xhtml", param);
+      vm.$window.modal("/view/cmm/030/g/index.xhtml", param)
+      .then(() => vm.focusA7_1());
+    }
+
+    public openDialogCDL023() {
+      const vm = this;
+      vm.getSetEmployeeList().then(result => {
+        const emp = _.find(vm.employees(), { id: vm.selectedEmployee() });
+        const param = {
+          code: emp.code,
+          name: emp.businessName,
+          targetType: 6, // 職場個人
+          itemListSetting: result,
+          baseDate: moment.utc(vm.startDate(), "YYYY/MM/DD").toDate(),
+          roleType: 1 // 就業
+        };
+        setShared("CDL023Input", param);
+        vm.$window.modal("/view/cdl/023/a/index.xhtml")
+        .then(() => {
+          const result = getShared("CDL023Output");
+          if (!_.isNil(result) && !_.isEmpty(result)) {
+            vm.$blockui("grayout");
+            vm.copy(result).always(() => vm.$blockui("clear"));
+          }
+        });
+      })
+    }
+
+    public openDialogF() {
+
     }
 
     private initCCG001() {
@@ -294,7 +333,7 @@ module nts.uk.com.view.cmm030.a {
     private getSetEmployeeList(): JQueryPromise<any> {
       const vm = this;
       const param = {
-        baseDate: vm.startDate()
+        baseDate: moment.utc(vm.startDate(), "YYYY/MM/DD").toISOString()
       };
       return vm.$ajax(API.getSetEmployeeList, param);
     }
@@ -335,6 +374,21 @@ module nts.uk.com.view.cmm030.a {
         vm.isNewMode(false);
         vm.isUpdating(false);
       }))
+      .fail(err => vm.$dialog.error({ messageId: err.messageId }));
+    }
+
+    /**
+     * 複数社員に承認者を複写する
+     */
+    private copy(targetSids: string[]): JQueryPromise<any> {
+      const vm = this;
+      const param = {
+        sourceSid: vm.selectedEmployee(),
+        baseDate: moment.utc(vm.startDate(), "YYYY/MM/DD").toISOString(),
+        targetSids: targetSids
+      };
+      return vm.$ajax(API.copy, param)
+      .then(() => vm.$dialog.info({ messageId: "Msg_15" }))
       .fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
