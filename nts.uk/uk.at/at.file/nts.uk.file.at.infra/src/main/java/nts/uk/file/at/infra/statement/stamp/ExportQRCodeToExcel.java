@@ -15,6 +15,8 @@ import javax.inject.Inject;
 import com.aspose.cells.Cell;
 import com.aspose.cells.Font;
 import com.aspose.cells.HorizontalPageBreakCollection;
+import com.aspose.cells.PageSetup;
+import com.aspose.cells.PaperSizeType;
 import com.aspose.cells.Picture;
 import com.aspose.cells.PlacementType;
 import com.aspose.cells.Style;
@@ -62,24 +64,29 @@ public class ExportQRCodeToExcel extends AsposeCellsReportGenerator implements I
 	@Override
 	public void export(FileGeneratorContext generatorContext, GetExtractedEmployeeCardNoInput input) {
 		int imageSize = 0;
+		String space = "";
+		int qrSize = input.getQrSize();
 
-		switch (input.getQrSize()) {
+		switch (qrSize) {
 
 		// 大 40mm×40mm
 		case 0: {
-			imageSize = 151;
+			imageSize = 190;
+			space = "              ";
 			break;
 		}
 
 		// 中 30mm×30mm
 		case 1: {
-			imageSize = 113;
+			imageSize = 150;
+			space = "         ";
 			break;
 		}
 
 		// 小 20mm×20mm
 		case 2: {
-			imageSize = 75;
+			imageSize = 120;
+			space = "       ";
 			break;
 		}
 
@@ -113,6 +120,19 @@ public class ExportQRCodeToExcel extends AsposeCellsReportGenerator implements I
 			Workbook workbook = reportContext.getWorkbook();
 			Worksheet worksheet = workbook.getWorksheets().get(0);
 			HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
+			
+			// Setting the paper size to A4
+			PageSetup pageSetup = worksheet.getPageSetup();
+			pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
+			
+			// Set bottom, left, right and top page margins
+			pageSetup.setCenterHorizontally(true);
+			pageSetup.setCenterVertically(true);
+			
+			pageSetup.setBottomMargin(0);
+			pageSetup.setLeftMargin(2);
+			pageSetup.setRightMargin(0);
+			pageSetup.setTopMargin(0);
 
 			for (int i = 0; i < stampCardDtos.size(); i++) {
 				int index;
@@ -142,8 +162,8 @@ public class ExportQRCodeToExcel extends AsposeCellsReportGenerator implements I
 
 				worksheet.getCells().setStyle(style);
 
-				worksheet.getCells().get(crRow + 1, crCol).setValue(stampCardDtos.get(i).getEmployeeCode());
-				worksheet.getCells().get(crRow + 2, crCol).setValue(stampCardDtos.get(i).getEmployeeName());
+				worksheet.getCells().get(crRow + 1, crCol).setValue(space + stampCardDtos.get(i).getEmployeeCode());
+				worksheet.getCells().get(crRow + 2, crCol).setValue(space + stampCardDtos.get(i).getEmployeeName());
 
 				// Adjust column width and row height
 				objPicture.setPlacement(PlacementType.MOVE_AND_SIZE);
@@ -162,6 +182,7 @@ public class ExportQRCodeToExcel extends AsposeCellsReportGenerator implements I
 				}
 
 			}
+			
 			reportContext.getDesigner().setWorkbook(workbook);
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(generatorContext,
