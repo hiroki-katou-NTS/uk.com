@@ -10,7 +10,7 @@
     <script>
         var dialogSize = {
             width : 450,
-            height : 600
+            height : 560
         };
     </script>
     <com:scriptfile set="IGNITE" />
@@ -22,10 +22,12 @@
 
   <ui:define name="content">
     <div id="contents-area">
+      <div id ="A1" class="label" style="padding-left: 16px;">#{i18n.getText('CDL014_2')}</div>
       <workplace-group params="options: options"> </workplace-group>
     </div>
     <div id="functions-area-bottom" class="btn-click">
-      <button tabindex="5" data-bind="click: cancel" id="A10_2">#{i18n.getText('CDL028_7')}</button>
+      <button tabindex="2" data-bind="click: proceed"  class="proceed x-large" id="A10_1" >#{i18n.getText('CDL014_3')}</button>
+      <button tabindex="3" data-bind="click: cancel" id="A10_2">#{i18n.getText('CDL014_4')}</button>
     </div>
   </ui:define>
 </ui:composition>

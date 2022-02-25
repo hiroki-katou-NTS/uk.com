@@ -19,30 +19,42 @@
       </ui:define>
 
       <ui:define name="content">
-        <div id="functions-area"></div>
+        <div id="functions-area" ><button tabindex="-1" data-bind="click: openCdl014">
+          Open CDL014 dialog
+        </button></div>
         <div id="contents-area">
-          <div class="pull-left" style="width: 700px;">
-            <!-- <p data-bind="text: currentIds"></p>
-					<p data-bind="text: currentCodes"></p>
-					<p data-bind="text: currentNames"></p> -->
-            <button data-bind="click: testAlreadySetting">
-              Test reload data
-            </button>
-          </div>
-          <div>
-            <h4>Tree select grid type:</h4>
-            <div
-              data-bind="ntsRadioBoxGroup: {
+          <div >
+
+            <h4>選択モード:</h4>
+            <div tabindex="-1"
+                    data-bind="ntsRadioBoxGroup: {
 									options: listTreeType,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectedTreeType,
 									enable: true}"
             ></div>
-          </div>
-          <div>
-            <h4>Selection type:</h4>
-            <div
+
+            <h4>未選択表示:</h4>
+            <div tabindex="-1"
+              data-bind="ntsRadioBoxGroup: {
+									options: listDisplay,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedDisplay,
+									enable: true}"
+            ></div>
+
+            <h4>絞込リスト:</h4>
+            <div tabindex="-1" data-bind="ntsMultiCheckBox: {
+                                    options: listFilter,
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    value: selectedFilters,
+                                    enable: enable}"></div>
+
+            <h4>選択済項目 :</h4>
+            <div tabindex="-1"
               data-bind="ntsRadioBoxGroup: {
 									options: listSelectionType,
 									optionsValue: 'code',
@@ -50,35 +62,36 @@
 									value: selectedSelectionType,
 									enable: enable}"
             ></div>
-          </div>
-          <div>
-            <h4>Other select:</h4>
-            <div
-              data-bind="ntsRadioBoxGroup: {
-									options: listOther,
-									optionsValue: 'code',
-									optionsText: 'name',
-									value: selectedOther,
-									enable: enable}"
-            ></div>
-            <h4>Already setting:</h4>
-            <div
-              data-bind="ntsRadioBoxGroup: {
-									options: listSetting,
-									optionsValue: 'code',
-									optionsText: 'name',
-									value: selectedSetting,
-									enable: enable}"
-            ></div>
-            <h4>Show Panel:</h4>
-            <div
-              data-bind="ntsRadioBoxGroup: {
-									options: listPanelSetting,
-									optionsValue: 'code',
-									optionsText: 'name',
-									value: selectedPanel,
-									enable: enable}"
-            ></div>
+
+            <h4>職場グループリスト :</h4>
+            <com:ko tag="if" bind="selectedTreeType() == 0">
+              <table id="multi-list1" tabindex="-1" data-bind="ntsGridList: {
+							rows: 10,
+							options: $vm.listWorkPlace,
+							optionsValue: 'workPlaceId',
+							columns: [
+								{ headerText: 'WorkPlace Id', key: 'workPlaceId', width: 240, formatter: _.escape},
+								{ headerText: 'WorkPlace Code', key: 'workPlaceCode', width: 140, formatter: _.escape },
+								{ headerText: 'WorkPlaceName Name', key: 'workPlaceName', width: 340, formatter: _.escape }
+							],
+							multiple: false,
+							value: $vm.selectedWrk
+						}"></table>
+            </com:ko>
+            <com:ko tag="if" bind="selectedTreeType() == 1">
+              <table id="multi-list2"  tabindex="-1" data-bind="ntsGridList: {
+							rows: 10,
+							options: $vm.listWorkPlace,
+							optionsValue: 'workPlaceId',
+							columns: [
+								{ headerText: 'WorkPlace Id', key: 'workPlaceId', width: 240, formatter: _.escape},
+								{ headerText: 'WorkPlace Code', key: 'workPlaceCode', width: 140, formatter: _.escape },
+								{ headerText: 'WorkPlaceName Name', key: 'workPlaceName', width: 340, formatter: _.escape }
+							],
+							multiple: true,
+							value: $vm.selectedWrk
+						}"></table>
+            </com:ko>
           </div>
         </div>
       </ui:define>

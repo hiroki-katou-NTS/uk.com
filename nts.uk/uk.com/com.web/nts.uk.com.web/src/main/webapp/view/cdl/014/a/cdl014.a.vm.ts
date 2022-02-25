@@ -1,6 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.com.view.cdl014.a {
-    import getShared = nts.uk.ui.windows.getShared;
     import Option = nts.uk.com.view.kcp011.share.Option;
     @bean()
     export class ScreenModel  extends ko.ViewModel  {
@@ -9,76 +8,95 @@ module nts.uk.com.view.cdl014.a {
         currentCodes: KnockoutObservable<any> = ko.observable([]);
         currentNames: KnockoutObservable<any> = ko.observable([]);
         alreadySettingList: KnockoutObservableArray<any> = ko.observableArray(['1']);
-        constructor() {
+        listWorkPlace: KnockoutObservableArray<WorkPlaceReturn> = ko.observableArray([]);
+
+        constructor(dataShare: Cdl014Param) {
             super();
-            let self = this;
-            let dataShare = getShared('KCP011_TEST')
-            self.options = {
+            const vm = this;
+            vm.options = {
                 // neu muon lay code ra tu trong list thi bind gia tri nay vao
-                currentCodes: self.currentCodes,
-                currentNames: self.currentNames,
+                currentCodes: vm.currentCodes,
+                currentNames: vm.currentNames,
                 // tuong tu voi id
-                currentIds: self.currentIds,
+                currentIds: vm.currentIds,
                 //
                 multiple: dataShare.multiple,
-                tabindex:2,
-                isAlreadySetting: dataShare.isAlreadySetting,
+                rows: 12,
+                tabindex: 1,
+                isAlreadySetting: false,
                 alreadySettingList: ko.observableArray(dataShare.alreadySettingList),
                 // show o tim kiem
                 showSearch: true,
-                showPanel: dataShare.panelSetting,
+                showPanel: false,
                 // show empty item
-                showEmptyItem: dataShare.showEmptyItem,
+                showEmptyItem: dataShare.multiple ? false : dataShare.showEmptyItem,
                 // trigger reload lai data cua component
                 reloadData: ko.observable(''),
                 reloadComponent: ko.observable({}),
                 height: 370,
                 // NONE = 0, FIRST = 1, ALL = 2
-                selectedMode: dataShare.selectedMode
+                selectedMode: dataShare.selectedMode,
+                // TODO chờ code mới
+                //selectedWkpGroupTypes: dataShare.selectedWkpGroupTypes.map(function (i) { return Number(i); },
             };
         }
-
-        startPage(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            dfd.resolve();
-            return dfd.promise();
+        mounted(){
+            $("#multi-list-nopanel_container").focus();
         }
 
-        testAlreadySetting() {
-            let self = this;
-            self.alreadySettingList(['random1', 'random2', 'random3', 'random4']);
-            self.options.reloadData.valueHasMutated();
-            self.options.reloadComponent({
-                // neu muon lay code ra tu trong list thi bind gia tri nay vao
-                currentCodes: self.currentCodes,
-                currentNames: self.currentNames,
-                // tuong tu voi id
-                currentIds: self.currentIds,
-                //
-                multiple: false,
-                tabindex:2,
-                isAlreadySetting: true,
-                alreadySettingList: self.alreadySettingList,
-                // show o tim kiem
-                showSearch: true,
-                // show empty item
-                showEmptyItem: false,
-                // trigger reload lai data cua component
-                reloadData: ko.observable(''),
-                height: 395,
-                // NONE = 0, FIRST = 1, ALL = 2
-                selectedMode: 1
+        proceed(){
+            const vm = this;
+            let result:Array<WorkPlaceReturn> = [];
+            if (vm.options.multiple == true){
+                for (let i = 0; i < vm.currentCodes().length ;i++){
+                    result.push(new WorkPlaceReturn(vm.currentIds()[i],vm.currentCodes()[i],vm.currentNames()[i]));
+                }
+            } else if (!_.isEmpty(vm.currentCodes())){
+                result.push(new WorkPlaceReturn(vm.currentIds(),vm.currentCodes(),vm.currentNames()));
+            }
+
+            vm.listWorkPlace(result);
+            vm.$window.close({
+                result: vm.listWorkPlace(),
+                isCanceled: false
             });
-            self.options.reloadComponent.valueHasMutated();
         }
-
         /**
          * cancel
          */
         cancel(){
-            nts.uk.ui.windows.close();
+            const vm = this;
+            vm.$window.close({
+                result: [],
+                isCanceled: true
+            });
         };
 
+    }
+
+    export class WorkPlaceReturn{
+        workPlaceId: string = '';
+        workPlaceCode: string = '';
+        workPlaceName: string = '';
+        constructor(id: string, code: string, name: string){
+            this.workPlaceId = id;
+            this.workPlaceCode = code;
+            this.workPlaceName = name;
+        }
+    }
+
+    export class Cdl014Param{
+        multiple: boolean;
+        showEmptyItem: boolean;
+        selectedMode: number;
+        alreadySettingList: any;
+        selectedWkpGroupTypes: any;
+        constructor(multiple: boolean, showEmptyItem: boolean, selectedMode: number,alreadySettingList: any, selectedWkpGroupTypes: any){
+            this.multiple = multiple;
+            this.showEmptyItem = showEmptyItem;
+            this.selectedMode = selectedMode;
+            this.alreadySettingList = alreadySettingList;
+            this.selectedWkpGroupTypes = selectedWkpGroupTypes;
+        }
     }
 }

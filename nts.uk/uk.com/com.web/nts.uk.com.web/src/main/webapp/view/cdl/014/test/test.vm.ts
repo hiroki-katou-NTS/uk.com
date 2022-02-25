@@ -1,82 +1,81 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module test.viewmodel {
-    import getShared = nts.uk.ui.windows.getShared;
-    import setShared = nts.uk.ui.windows.setShared;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import block = nts.uk.ui.block;
+    import WorkPlaceReturn = nts.uk.com.view.cdl014.a.WorkPlaceReturn;
+    import Cdl014Param = nts.uk.com.view.cdl014.a.Cdl014Param;
     @bean()
-    export class ScreenModel extends ko.ViewModel {
-        currentIds: KnockoutObservable<any> = ko.observable([]);
-        currentCodes: KnockoutObservable<any> = ko.observable([]);
-        currentNames: KnockoutObservable<any> = ko.observable([]);
-        alreadySettingList: KnockoutObservableArray<any> = ko.observable(['1']);
-        multiple: KnockoutObservable<any> = ko.observable(true);
-        isAlreadySetting: KnockoutObservable<any> = ko.observable(true);
-        showEmptyItem: KnockoutObservable<any> = ko.observable(true);
-        selectedMode: KnockoutObservable<any> = ko.observable(1);
-
-        //selectType 
+    class ScreenModel extends ko.ViewModel {
+        //選択済項目
         listSelectionType: KnockoutObservableArray<any>;
         enable: KnockoutObservable<boolean> = ko.observable(true);
+        enableMulti: KnockoutObservable<boolean> = ko.observable(false);
         selectedSelectionType: KnockoutObservable<number> = ko.observable(0);
-        //TreeType
+
+        //選択モード
+        listTreeType: KnockoutObservableArray<any>;
         selectedTreeType: KnockoutObservable<number> = ko.observable(0);
-        selectedOther: KnockoutObservable<number> = ko.observable(0);
-        selectedSetting: KnockoutObservable<number> = ko.observable(0);
-        listSetting: KnockoutObservableArray<any>;
-        // panel
-        listPanelSetting: KnockoutObservableArray<any>;
-        selectedPanel: KnockoutObservable<number> = ko.observable(1);
+
+        // 未選択表示
+        listDisplay: KnockoutObservableArray<any>;
+        selectedDisplay: KnockoutObservable<number> = ko.observable(1);
+
+        // 絞込リスト
+        listFilter: KnockoutObservableArray<any>;
+        selectedFilters: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        // Return List＜｛職場グループID、職場グループコード、職場グループ名称}＞
+        listWorkPlace: KnockoutObservableArray<WorkPlaceReturn> = ko.observableArray([]);
+        selectedWrk : KnockoutObservable<any> = ko.observable([]);
+
         constructor() {
             super();
-            let self = this;
-            self.listSelectionType = ko.observableArray([
-                { code: 2, name: 'Select all', enable: self.isMultipleTreeGrid },
-                { code: 1, name: 'Select first item', enable: self.enable },
-                { code: 0, name: 'No select', enable: self.enable },
-                { code: 3, name: 'Select follow ID', enable: self.enable }
+            const vm = this;
+            vm.listSelectionType = ko.observableArray([
+                { code: 2, name: '全選択', enable: vm.enableMulti },
+                { code: 1, name: '先頭', enable: vm.enable },
+                { code: 0, name: '選択なし', enable: vm.enable },
+                { code: 3, name: '職場グループID（List）', enable: vm.enable }
             ]);
-            self.listTreeType = ko.observableArray([
-                { code: 0, name: 'Single tree select grid' },
-                { code: 1, name: 'Multiple tree select grid' }
+            vm.listTreeType = ko.observableArray([
+                { code: 0, name: '単一選択' },
+                { code: 1, name: '複数選択' }
             ]);
-            self.listOther = ko.observableArray([
-                { code: 1, name: 'Show empty iteam' },
-                { code: 0, name: 'Not show' }
-            ]);
-            self.listSetting = ko.observableArray([
-                { code: 1, name: 'Yes' },
-                { code: 0, name: 'No' }
+            vm.listDisplay = ko.observableArray([
+                { code: 0, name: '非表示' },
+                { code: 1, name: '表示' }
             ]);
 
-            self.listPanelSetting = ko.observableArray([
-                { code: 1, name: 'Yes' },
-                { code: 0, name: 'No' }
+            vm.listFilter = ko.observableArray([
+                { code: '0', name: '通常' },
+                { code: '1', name: '病棟' },
+                { code: '2', name: '介護事業所' }
             ]);
+            vm.selectedTreeType.subscribe((i:any)=>{
+                vm.enableMulti(i==1);
+            })
+
         }
 
-        startPage(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            dfd.resolve();
-            return dfd.promise();
-        }
-
-        testAlreadySetting() {
-            let self = this;
-            let data = {
-                multiple: self.selectedTreeType() == 1 ? true : false,
-                isAlreadySetting: self.selectedSetting() == 1 ? true : false,
-                showEmptyItem: self.selectedOther() == 1 ? true : false,
-                selectedMode: self.selectedSelectionType(),
-                alreadySettingList: self.currentIds(),
-                panelSetting: self.selectedPanel() == 1 ? true : false
+        openCdl014() {
+            const vm = this;
+            let data: Cdl014Param = {
+                multiple: vm.selectedTreeType() == 1 ? true : false,
+                showEmptyItem: vm.selectedDisplay() == 1 ? true : false,
+                selectedMode: vm.selectedSelectionType(),
+                alreadySettingList: vm.selectedSelectionType() ==3 ? (vm.selectedTreeType() == 1) ? vm.selectedWrk(): new Array(vm.selectedWrk()) : [],
+                selectedWkpGroupTypes: vm.selectedFilters()
             }
-            setShared('KCP011_TEST', data);
-            modal("/view/cdl/014/a/index.xhtml").onClosed(() => {
-                
-            });
+            let result: Array<WorkPlaceReturn> = [];
+            vm.$window.modal('/view/cdl/014/a/index.xhtml', data)
+                .then((result: any) => {
+                    if (!result.isCanceled){
+                        vm.listWorkPlace(result.result);
+                        vm.selectedWrk(_.map(result.result,(item)=>{
+                            return item.workPlaceId;
+                        }))
+                    }
+
+                });
         }
 
     }
