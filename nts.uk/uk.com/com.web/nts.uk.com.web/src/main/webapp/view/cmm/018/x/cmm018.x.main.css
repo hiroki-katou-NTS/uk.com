@@ -8,6 +8,9 @@
 #x6_1 #x6_3 {
   flex: 3.5;
 }
+#x6_1 #x6_3 > div > label {
+  margin-right: -3px !important;
+}
 .flex-area {
   display: flex;
   flex-direction: row;
