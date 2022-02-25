@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.singlesignon.saml;
+package nts.uk.ctx.sys.gateway.dom.login.sso.saml;
 
 import lombok.Getter;
 

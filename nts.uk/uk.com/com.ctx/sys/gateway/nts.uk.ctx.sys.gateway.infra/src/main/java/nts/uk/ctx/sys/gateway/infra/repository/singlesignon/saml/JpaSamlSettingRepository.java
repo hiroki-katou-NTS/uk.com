@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.security.saml.SamlSetting;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.SamlSettingRepository;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.SamlSettingRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.saml.SgwmtSamlSetting;
 
 @Stateless
