@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.RadiusAtr;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.StampMobilePossibleRange;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationName;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -83,7 +84,7 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 				workLocation.getStampRange().getRadius().value,
 				workLocation.getStampRange().getGeoCoordinate().getLatitude(),
 				workLocation.getStampRange().getGeoCoordinate().getLongitude(),
-				workLocation.getRegionCode().map(m -> m).orElse(null),
+				workLocation.getRegionCode().map(m -> m.v()).orElse(null),
 				workLocation.getWorkplace().isPresent() ? KrcmtWorkplacePossible.toEntiy(
 						workLocation.getContractCode().v(),
 						workLocation.getWorkLocationCD().v(),
@@ -105,6 +106,6 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 						new GeoCoordinate(this.latitude, this.longitude)),
 				this.krcmtIP4Address.stream().map(c->c.toDomain()).collect(Collectors.toList()),
 				Optional.ofNullable(this.krcmtWorkplacePossible == null ? null : this.krcmtWorkplacePossible.toDomain()),
-				this.regionalCd == null ? Optional.empty() : Optional.of(this.regionalCd));
+				this.regionalCd == null ? Optional.empty() : Optional.of(new RegionCode(this.regionalCd)));
 	}
 }
