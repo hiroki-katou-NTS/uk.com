@@ -64,7 +64,7 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 
 		List<Container> results = new ArrayList<>();
 
-		String personId = getPersonId(require, context, employeeId);
+		String personId = PersonIdIdentifier.getPersonId(require, context, employeeId);
 		
 		for (val container : targetContainers) {
 			
@@ -80,10 +80,6 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 		}
 		
 		return results;
-	}
-	
-	private String getPersonId(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, String employeeId) {
-		return PersonIdIdentifier.getPersonId(require, context, employeeId);
 	}
 	
 	public static interface RequireCanonicalizeExtends extends PersonIdIdentifier.GetPersonIdRequire{
