@@ -28,7 +28,7 @@ public class GetInfoOnTimeDifference {
 		List<RegionalTimeDifference> regionalTimeDifferences = regionalTimeDifferenceRepo.getAll(AppContexts.user().contractCode());
 		
 		return regionalTimeDifferences.stream().map(m -> {
-			return new GetInfoOnTimeDifferenceDto(m.getCode(), m.getName(), m.getRegionalTimeDifference());
+			return new GetInfoOnTimeDifferenceDto(m.getCode().v(), m.getName().v(), m.getRegionalTimeDifference().v());
 		}).collect(Collectors.toList());
 	}	
 }
