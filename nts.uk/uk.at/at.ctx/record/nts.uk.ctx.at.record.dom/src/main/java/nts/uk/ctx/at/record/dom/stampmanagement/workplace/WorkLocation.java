@@ -8,6 +8,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionCode;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionalTimeDifference;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.shr.com.net.Ipv4Address;
@@ -42,7 +43,7 @@ public class WorkLocation extends AggregateRoot {
 	private Optional<WorkplacePossible> workplace;
 
 	/** 地域コード */
-	private Optional<Integer> regionCode;
+	private Optional<RegionCode> regionCode;
 
 	/**
 	 * [1] 携帯打刻で打刻してもいい位置か判断する（地理座標input）
@@ -56,7 +57,7 @@ public class WorkLocation extends AggregateRoot {
 
 	public WorkLocation(ContractCode contractCode, WorkLocationCD workLocationCD, WorkLocationName workLocationName,
 			StampMobilePossibleRange stampRange, List<Ipv4Address> listIPAddress,
-			Optional<WorkplacePossible> workplace , Optional<Integer> regionCode) {
+			Optional<WorkplacePossible> workplace , Optional<RegionCode> regionCode) {
 		super();
 		this.contractCode = contractCode;
 		this.workLocationCD = workLocationCD;
@@ -80,9 +81,9 @@ public class WorkLocation extends AggregateRoot {
 			return 0;
 		}
 
-		Optional<RegionalTimeDifference> regionalTimeDifference = require.get(contractCode, this.regionCode.get());
+		Optional<RegionalTimeDifference> regionalTimeDifference = require.get(contractCode, this.regionCode.get().v());
 		if (regionalTimeDifference.isPresent()) {
-			return regionalTimeDifference.get().getRegionalTimeDifference();
+			return regionalTimeDifference.get().getRegionalTimeDifference().v();
 		}
 
 		return 0;

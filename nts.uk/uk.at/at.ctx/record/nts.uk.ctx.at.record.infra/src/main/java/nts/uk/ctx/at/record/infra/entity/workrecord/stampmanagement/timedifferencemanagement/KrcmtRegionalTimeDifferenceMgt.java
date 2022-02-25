@@ -10,6 +10,9 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionCode;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionName;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionalTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionalTimeDifference;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -51,13 +54,13 @@ public class KrcmtRegionalTimeDifferenceMgt extends UkJpaEntity implements Seria
 	}
 
 	public RegionalTimeDifference toDomain() {
-		return new RegionalTimeDifference(this.pk.code, this.name, this.timeDifference);
+		return new RegionalTimeDifference(new RegionCode(this.pk.code), new RegionName(this.name), new RegionalTime(this.timeDifference));
 	}
 
 	public KrcmtRegionalTimeDifferenceMgt toEntity(RegionalTimeDifference domain) {
 		return new KrcmtRegionalTimeDifferenceMgt(
-				new KrcmtRegionalTimeDifferenceMgtPk(AppContexts.user().contractCode(), domain.getCode()),
-				domain.getName(), domain.getRegionalTimeDifference());
+				new KrcmtRegionalTimeDifferenceMgtPk(AppContexts.user().contractCode(), domain.getCode().v()),
+				domain.getName().v(), domain.getRegionalTimeDifference().v());
 	}
 
 }

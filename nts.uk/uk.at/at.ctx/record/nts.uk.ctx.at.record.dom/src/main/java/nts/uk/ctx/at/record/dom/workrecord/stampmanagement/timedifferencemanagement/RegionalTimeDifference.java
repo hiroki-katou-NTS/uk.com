@@ -17,11 +17,11 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 public class RegionalTimeDifference implements DomainAggregate {
 	
 	// コード
-	private final int code;
+	private final RegionCode code;
 
 	// 名称
-	private String name;
+	private RegionName name;
 
 	// 時差
-	private int regionalTimeDifference;
+	private RegionalTime regionalTimeDifference;
 }

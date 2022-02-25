@@ -14,6 +14,9 @@ import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.gul.location.GeoCoordinate;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionCode;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionName;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionalTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanagement.RegionalTimeDifference;
 
 @RunWith(JMockit.class)
@@ -87,7 +90,7 @@ public class WorkLocationTest {
 		new Expectations() {
 			{
 				require.get("ContractCode", 12);
-				result = Optional.of(new RegionalTimeDifference(12, "dummy", 10));
+				result = Optional.of(new RegionalTimeDifference(new RegionCode(12), new RegionName("dummy"), new RegionalTime(10)));
 			}
 		};
 

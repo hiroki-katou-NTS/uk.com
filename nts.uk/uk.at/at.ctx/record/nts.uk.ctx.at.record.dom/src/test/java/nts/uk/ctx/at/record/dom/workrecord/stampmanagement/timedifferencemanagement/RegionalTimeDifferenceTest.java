@@ -14,7 +14,8 @@ public class RegionalTimeDifferenceTest {
 
 	@Test
 	public void getters() {
-		RegionalTimeDifference regionalTimeDifference = new RegionalTimeDifference(00001, "dummy", 2);
+		RegionalTimeDifference regionalTimeDifference = new RegionalTimeDifference(new RegionCode(00001),
+				new RegionName("dummy"), new RegionalTime(2));
 		NtsAssert.invokeGetters(regionalTimeDifference);
 	}
 
