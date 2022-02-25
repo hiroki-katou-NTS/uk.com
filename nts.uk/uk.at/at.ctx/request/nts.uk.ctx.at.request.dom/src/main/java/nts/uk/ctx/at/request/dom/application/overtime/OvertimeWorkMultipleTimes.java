@@ -211,6 +211,9 @@ public class OvertimeWorkMultipleTimes {
                 null,
                 null,
                 Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
                 Optional.empty()
         );
 
