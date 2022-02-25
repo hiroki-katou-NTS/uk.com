@@ -17,15 +17,16 @@
 .flex-row {
   flex-direction: row;
 }
+.padding-left-10 {
+  padding-left: 10px;
+}
 .padding-left-20 {
   padding-left: 20px;
 }
 .padding-left-30 {
   padding-left: 30px;
 }
-.text-center,
-.ui-igcombo-listitemholder,
-.full-height .ui-igcombo-field {
+.text-center {
   text-align: center !important;
 }
 .full-height .nts-combo-container {
@@ -43,12 +44,16 @@
   top: 6px;
   right: -10px;
 }
-.flex.col-gap-20 {
-  column-gap: 20px;
+.flex.col-gap-10 {
+  column-gap: 10px;
 }
 .flex .ml-10 {
   margin-left: 10px;
 }
-#contents-area > div {
-  margin-left: 50px;
+#contents-area {
+  display: flex;
+  column-gap: 30px;
+}
+#contents-area > div:first-child {
+  margin-left: 30px;
 }

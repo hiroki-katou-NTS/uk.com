@@ -9,12 +9,16 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 	@bean()
 	export class Cmm018RViewModel extends ko.ViewModel {
 
-		levelData: any[] = [];
+		levelData: any[] = [
+			{ level: 1, name: this.$i18n('CMM018_228') },
+			{ level: 2, name: this.$i18n('CMM018_229') },
+			{ level: 3, name: this.$i18n('CMM018_230') },
+			{ level: 4, name: this.$i18n('CMM018_231') },
+			{ level: 5, name: this.$i18n('CMM018_232') },
+		];
 
 		level: KnockoutObservable<number> = ko.observable(1);
-		
 		selectionData: SelectionData[] = [];
-		
 		firstItemName: KnockoutObservable<string> = ko.observable('');
 		secondItemName: KnockoutObservable<string> = ko.observable('');
 		thirdItemName: KnockoutObservable<string> = ko.observable('');
@@ -38,7 +42,6 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 		
 		created() {
 			const vm = this;
-			vm.levelData = [{ id: 0, common: vm.$i18n('CMM018_226'), level: 1 }];
 			vm.canJumpToCMM030 = ko.computed(() => {
 				return vm.level() === vm.levelBackup &&
 				vm.equalSelectionData() &&
@@ -55,7 +58,7 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 		mounted() {
 			const vm = this;
 			vm.initData().then(() => {
-				vm.initGrid1();
+				vm.initLevelSubcriber();
 				vm.initGrid2();
 			});
 			$('#process-memo').focus();
@@ -73,7 +76,6 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 					let settingTypeUseds: SettingTypeUsed[] = [];
 
 					if (setting && setting.approvalLevelNo) {
-						vm.levelData[0].level = setting.approvalLevelNo;
 						vm.levelBackup = setting.approvalLevelNo;
 						vm.level(setting.approvalLevelNo);
 
@@ -147,45 +149,9 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 				return dfd.promise();
 		}
 
-		initGrid1() {
+		initLevelSubcriber() {
 			const vm = this;
-			const comboItems = [
-				{ code: 1, name: vm.$i18n('CMM018_228') },
-				{ code: 2, name: vm.$i18n('CMM018_229') },
-				{ code: 3, name: vm.$i18n('CMM018_230') },
-				{ code: 4, name: vm.$i18n('CMM018_231') },
-				{ code: 5, name: vm.$i18n('CMM018_232') },
-			];
-			$('#grid1').ntsGrid({
-				dataSource: vm.levelData,
-				primaryKey: 'id',
-				height: 55,
-				virtualization: true,
-				virtualizationMode: 'continuous',
-				hidePrimaryKey: true,
-				columns: [
-					{ headerText: '', key: 'id' },
-					{ headerText: '', key: 'common', width: '180px',  },
-					{
-						headerText: vm.$i18n('CMM018_225'), key: 'level', dataType: 'number',
-					 	width: '160px', ntsControl: 'Combobox',
-						headerCssClass: 'text-center', columnCssClass: 'full-height'
-					},
-				],
-				features: [],
-				ntsControls: [{
-					name: 'Combobox',
-					options: comboItems,
-					optionsValue: 'code',
-					optionsText: 'name',
-					columns: [{ prop: 'name' }],
-					controlType: 'ComboBox',
-					enable: true,
-				}],
-			});
-
-			$('#grid1').on('ntsgridcontrolvaluechanged', () => {
-				vm.level(vm.levelData[0]?.level);
+			vm.level.subscribe(() => {
 				const validateElement: string[] = vm.getElementValidate();
 				vm.$errors('clear').then(() => vm.$validate(validateElement));
 			});
@@ -196,7 +162,7 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 			$('#grid2').ntsGrid({
 				dataSource: vm.selectionData,
 				primaryKey: 'id',
-				height: 450,
+				height: 405,
 				virtualization: true,
 				virtualizationMode: 'continuous',
 				hidePrimaryKey: true,
