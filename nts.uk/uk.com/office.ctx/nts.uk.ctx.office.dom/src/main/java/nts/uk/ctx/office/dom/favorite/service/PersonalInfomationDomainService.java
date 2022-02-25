@@ -106,7 +106,7 @@ public class PersonalInfomationDomainService {
 		val pCodeCompare = Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getPositionCode, Comparator.nullsLast(Comparator.naturalOrder())));
 		val sCodeCompare = Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getEmployeeCode, Comparator.nullsLast(Comparator.naturalOrder())));
 		
-		if (workplaceInfoList.isEmpty()) {
+		if (!workplaceInfoList.isEmpty()) {
 			sortInfomation.sort(hCodeCompare.thenComparing(orderCompare).thenComparing(pCodeCompare).thenComparing(sCodeCompare));
 		} else {
 			sortInfomation.sort(orderCompare.thenComparing(pCodeCompare).thenComparing(sCodeCompare));
