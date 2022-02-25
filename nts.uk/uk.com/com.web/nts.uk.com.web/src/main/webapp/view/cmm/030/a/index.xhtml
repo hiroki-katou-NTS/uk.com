@@ -85,52 +85,52 @@
                 <td>
                   <label data-bind="text: appTypeDescription"></label>
                 </td>
-                <td>
+                <td data-bind="with: approvers()[0]">
                   <input class="approver-input" data-bind="ntsTextEditor: {
                     name: '#[CMM030_20]',
                     readonly: true,
-                    value: approvers[0]().name,
-                  }" />
+                    value: name,
+                  }, attr: { 'data-row-id': rowId, 'data-col-id': colId }" />
                 </td>
                 <td data-bind="visible: $parent.approvalLevelNo() &gt; 1">
                   <i data-bind="ntsIcon: { no: 238, width: 30, height: 30, extension: 'png' }"></i>
                 </td>
-                <td data-bind="visible: $parent.approvalLevelNo() &gt; 1">
+                <td data-bind="visible: $parent.approvalLevelNo() &gt; 1, with: approvers()[1]">
                   <input class="approver-input" data-bind="ntsTextEditor: {
                     name: '#[CMM030_21]',
                     readonly: true,
-                    value: approvers[1]().name
-                  }" />
+                    value: name
+                  }, attr: { 'data-row-id': rowId, 'data-col-id': colId }" />
                 </td>
                 <td data-bind="visible: $parent.approvalLevelNo() &gt; 2">
                   <i data-bind="ntsIcon: { no: 238, width: 30, height: 30, extension: 'png' }"></i>
                 </td>
-                <td data-bind="visible: $parent.approvalLevelNo() &gt; 2">
+                <td data-bind="visible: $parent.approvalLevelNo() &gt; 2, with: approvers()[2]">
                   <input class="approver-input" data-bind="ntsTextEditor: {
                     name: '#[CMM030_22]',
                     readonly: true,
-                    value: approvers[2]().name
-                  }" />
+                    value: name
+                  }, attr: { 'data-row-id': rowId, 'data-col-id': colId }" />
                 </td>
                 <td data-bind="visible: $parent.approvalLevelNo() &gt; 3">
                   <i data-bind="ntsIcon: { no: 238, width: 30, height: 30, extension: 'png' }"></i>
                 </td>
-                <td data-bind="visible: $parent.approvalLevelNo() &gt; 3">
+                <td data-bind="visible: $parent.approvalLevelNo() &gt; 3, with: approvers()[3]">
                   <input class="approver-input" data-bind="ntsTextEditor: {
                     name: '#[CMM030_23]',
                     readonly: true,
-                    value: approvers[3]().name
-                  }" />
+                    value: name
+                  }, attr: { 'data-row-id': rowId, 'data-col-id': colId }" />
                 </td>
                 <td data-bind="visible: $parent.approvalLevelNo() &gt; 4">
                   <i data-bind="ntsIcon: { no: 238, width: 30, height: 30, extension: 'png' }"></i>
                 </td>
-                <td data-bind="visible: $parent.approvalLevelNo() &gt; 4">
+                <td data-bind="visible: $parent.approvalLevelNo() &gt; 4, with: approvers()[4]">
                   <input class="approver-input" data-bind="ntsTextEditor: {
                     name: '#[CMM030_24]',
                     readonly: true,
-                    value: approvers[4]().name
-                  }" />
+                    value: name
+                  }, attr: { 'data-row-id': rowId, 'data-col-id': colId }" />
                 </td>
               </tr>
             </tbody>

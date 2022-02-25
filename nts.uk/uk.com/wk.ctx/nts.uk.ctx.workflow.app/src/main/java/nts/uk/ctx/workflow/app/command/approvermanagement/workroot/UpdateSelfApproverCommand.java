@@ -3,7 +3,7 @@ package nts.uk.ctx.workflow.app.command.approvermanagement.workroot;
 import java.util.List;
 
 import lombok.Value;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.GeneralDate;
 
 @Value
 public class UpdateSelfApproverCommand {
@@ -16,7 +16,8 @@ public class UpdateSelfApproverCommand {
 	/**
 	 * 期間
 	 */
-	private DatePeriod period;
+	private GeneralDate startDate;
+	private GeneralDate endDate;
 	
 	/**
 	 * 承認者設定パラメータList
