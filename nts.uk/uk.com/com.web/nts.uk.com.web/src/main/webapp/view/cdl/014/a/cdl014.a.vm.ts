@@ -47,19 +47,22 @@ module nts.uk.com.view.cdl014.a {
         proceed(){
             const vm = this;
             let result:Array<WorkPlaceReturn> = [];
-            if (vm.options.multiple == true){
-                for (let i = 0; i < vm.currentCodes().length ;i++){
-                    result.push(new WorkPlaceReturn(vm.currentIds()[i],vm.currentCodes()[i],vm.currentNames()[i]));
+            if (vm.currentCodes().length == 0) {
+                vm.$dialog.error({messageId: "Msg_2286"});
+            } else {
+                if (vm.options.multiple == true) {
+                    for (let i = 0; i < vm.currentCodes().length; i++) {
+                        result.push(new WorkPlaceReturn(vm.currentIds()[i], vm.currentCodes()[i], vm.currentNames()[i]));
+                    }
+                } else if (!_.isEmpty(vm.currentCodes())) {
+                    result.push(new WorkPlaceReturn(vm.currentIds(), vm.currentCodes(), vm.currentNames()));
                 }
-            } else if (!_.isEmpty(vm.currentCodes())){
-                result.push(new WorkPlaceReturn(vm.currentIds(),vm.currentCodes(),vm.currentNames()));
-            }
 
-            vm.listWorkPlace(result);
-            vm.$window.close({
-                result: vm.listWorkPlace(),
-                isCanceled: false
-            });
+                vm.listWorkPlace(result);
+                vm.$window.close({
+                    result: vm.listWorkPlace(), isCanceled: false
+                });
+            }
         }
         /**
          * cancel
