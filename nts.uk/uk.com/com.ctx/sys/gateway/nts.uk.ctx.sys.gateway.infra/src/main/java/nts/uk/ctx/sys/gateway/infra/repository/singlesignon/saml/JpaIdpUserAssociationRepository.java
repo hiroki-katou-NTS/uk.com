@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.IdpUserAssociation;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.IdpUserAssociationRepository;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.IdpUserAssociation;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.IdpUserAssociationRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.saml.SgwmtIdpUserAssociatation;
 
 @Stateless

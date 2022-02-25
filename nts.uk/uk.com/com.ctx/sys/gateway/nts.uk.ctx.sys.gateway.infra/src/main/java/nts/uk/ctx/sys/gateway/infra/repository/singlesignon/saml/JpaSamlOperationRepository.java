@@ -8,8 +8,8 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.SamlOperation;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.SamlOperationRepository;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.SamlOperation;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.SamlOperationRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.saml.SgwmtSamlOperation;
 
 @Stateless
