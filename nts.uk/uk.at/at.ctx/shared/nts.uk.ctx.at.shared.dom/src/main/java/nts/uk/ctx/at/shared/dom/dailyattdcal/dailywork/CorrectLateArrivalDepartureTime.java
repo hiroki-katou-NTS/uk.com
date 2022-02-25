@@ -53,7 +53,7 @@ public class CorrectLateArrivalDepartureTime {
 			return lstTimeLeavingWork;
 
 		RoundingTime roundingTimeinfo = setting.get().getStampSet().getRoundingTime();
-		return  roundingTimeinfo.justTimeCorrectionStamp(lstTimeLeavingWork);
+		return  roundingTimeinfo.justTimeCorrectionAutoStamp(lstTimeLeavingWork);
 
 	}
 	

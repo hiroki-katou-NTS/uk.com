@@ -77,22 +77,22 @@ public class RoundingTime {
 	/*
 	 * ジャスト遅刻、早退による時刻補正
 	 */
-	public List<TimeLeavingWork> justTImeCorrection(JustCorrectionAtr justCorrectionAtr,List<TimeLeavingWork> timeLeavingWorks) {
+	public List<TimeLeavingWork> justTImeCorrectionCalcStamp(JustCorrectionAtr justCorrectionAtr,List<TimeLeavingWork> timeLeavingWorks) {
 		if(justCorrectionAtr.isNotUse()) {
 			return timeLeavingWorks;
 		}
 		List<TimeLeavingWork> newAttendanceLeave = new ArrayList<>();
 		for(TimeLeavingWork timeLeavingWork:timeLeavingWorks) {
-			newAttendanceLeave.add(timeLeavingWork.correctJustTime(this.isAttendance(), this.isleaveWork()));
+			newAttendanceLeave.add(timeLeavingWork.correctJustTimeCalcStamp(this.isAttendance(), this.isleaveWork()));
 		}
 		return newAttendanceLeave;
 	}
 
    //ジャスト遅刻補正をする
-	public List<TimeLeavingWork> justTimeCorrectionStamp(List<TimeLeavingWork> timeLeavingWorks) {
+	public List<TimeLeavingWork> justTimeCorrectionAutoStamp(List<TimeLeavingWork> timeLeavingWorks) {
 		List<TimeLeavingWork> newAttendanceLeave = new ArrayList<>();
 		for(TimeLeavingWork timeLeavingWork:timeLeavingWorks) {
-			newAttendanceLeave.add(timeLeavingWork.correctJustTimeStamp(this.isAttendance(), this.isleaveWork()));
+			newAttendanceLeave.add(timeLeavingWork.correctJustTimeAutoStamp(this.isAttendance(), this.isleaveWork()));
 		}
 		return newAttendanceLeave;
 	}
