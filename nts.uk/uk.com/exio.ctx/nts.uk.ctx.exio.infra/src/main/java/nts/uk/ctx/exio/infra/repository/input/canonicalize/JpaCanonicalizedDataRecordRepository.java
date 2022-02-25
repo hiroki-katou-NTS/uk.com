@@ -33,7 +33,7 @@ public class JpaCanonicalizedDataRecordRepository extends JpaRepository implemen
 
 	
 	@Override
-	public List<CanonicalizedDataRecord> findFromDomainId(Require require, ExecutionContext context, ImportingDomainId domainId, int criteriaItemNo, String criteriaValue){
+	public List<CanonicalizedDataRecord> findByCriteria(Require require, ExecutionContext context, ImportingDomainId domainId, int criteriaItemNo, String criteriaValue){
 		//実行コンテキストを偽装
 		val impersonatedContext = new ExecutionContext(context.getCompanyId(), 
 																						   context.getSettingCode(),
