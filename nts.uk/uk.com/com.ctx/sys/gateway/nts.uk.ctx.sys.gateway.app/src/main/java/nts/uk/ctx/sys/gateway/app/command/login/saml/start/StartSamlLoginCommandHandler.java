@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.app.command.login.saml;
+package nts.uk.ctx.sys.gateway.app.command.login.saml.start;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -24,13 +24,12 @@ import java.util.Optional;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class StartSamlLoginCommandHandler extends CommandHandlerWithResult<SamlAuthenticateCommand, SamlAuthenticateInfo> {
+public class StartSamlLoginCommandHandler extends CommandHandlerWithResult<StartSamlLoginCommand, StartSamlLoginResult> {
 
-	
 	@SneakyThrows
-	protected SamlAuthenticateInfo handle(CommandHandlerContext<SamlAuthenticateCommand> context) {
+	protected StartSamlLoginResult handle(CommandHandlerContext<StartSamlLoginCommand> context) {
 
-		SamlAuthenticateCommand command = context.getCommand();
+		StartSamlLoginCommand command = context.getCommand();
 		command.checkInput();
 
 		Require require = EmbedStopwatch.embed(new RequireImpl());
@@ -45,7 +44,7 @@ public class StartSamlLoginCommandHandler extends CommandHandlerWithResult<SamlA
 	 * @param require
 	 * @param command
 	 */
-	private void authTenant(Require require, SamlAuthenticateCommand command) {
+	private void authTenant(Require require, StartSamlLoginCommand command) {
 
 		val result = ConnectDataSourceOfTenant.connect(
 				require, LoginClient.create(command.getRequest()), command.getTenantCode(), command.getTenantPassword());
@@ -63,16 +62,16 @@ public class StartSamlLoginCommandHandler extends CommandHandlerWithResult<SamlA
 	 * @param command
 	 * @return
 	 */
-	private SamlAuthenticateInfo checkSamlOperation(Require require, SamlAuthenticateCommand command) {
+	private StartSamlLoginResult checkSamlOperation(Require require, StartSamlLoginCommand command) {
 
 		return require.getSamlOperation(command.getTenantCode())
 				.map(operation -> {
 					val relayState = new UkRelayState(command.getTenantCode(), command.getTenantPassword());
 					return operation.tryCreateIdpEntryUrl(relayState)
-							.map(url -> SamlAuthenticateInfo.isUsed(url))
-							.orElseGet(() -> SamlAuthenticateInfo.isNotUsed());
+							.map(url -> StartSamlLoginResult.isUsed(url))
+							.orElseGet(() -> StartSamlLoginResult.isNotUsed());
 				})
-				.orElseGet(() -> SamlAuthenticateInfo.operationSettingNotExist());
+				.orElseGet(() -> StartSamlLoginResult.operationSettingNotExist());
 	}
 
 	private interface Require extends AuthenticateTenant.Require {

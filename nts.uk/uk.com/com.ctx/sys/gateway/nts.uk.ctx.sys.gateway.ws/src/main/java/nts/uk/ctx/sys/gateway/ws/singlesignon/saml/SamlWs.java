@@ -12,12 +12,12 @@ import javax.ws.rs.core.Response.Status;
 
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlAuthenticateInfo;
-import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlAuthenticateCommand;
-import nts.uk.ctx.sys.gateway.app.command.login.saml.StartSamlLoginCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlValidateCommand;
-import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlValidateCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.login.saml.ValidateInfo;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.start.StartSamlLoginResult;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.start.StartSamlLoginCommand;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.start.StartSamlLoginCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.validate.SamlValidateCommand;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.validate.SamlValidateCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.validate.ValidateInfo;
 
 /**
  * The Class SamlWs.
@@ -41,7 +41,7 @@ public class SamlWs extends WebService {
 	 */
 	@POST
 	@Path("authenticate")
-	public SamlAuthenticateInfo authenticate(SamlAuthenticateCommand command) {
+	public StartSamlLoginResult authenticate(StartSamlLoginCommand command) {
 		return this.authenticate.handle(command);
 	}
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.app.command.login.saml;
+package nts.uk.ctx.sys.gateway.app.command.login.saml.start;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -8,7 +8,7 @@ import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import org.apache.commons.lang3.StringUtils;
 
 @Data
-public class SamlAuthenticateCommand implements LoginCommandHandlerBase.TenantAuth {
+public class StartSamlLoginCommand implements LoginCommandHandlerBase.TenantAuth {
 
 	private String tenantCode;
 

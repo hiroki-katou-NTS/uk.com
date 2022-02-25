@@ -1,13 +1,10 @@
-package nts.uk.ctx.sys.gateway.app.command.login.saml;
+package nts.uk.ctx.sys.gateway.app.command.login.saml.validate;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
-
-import java.util.Optional;
 
 /**
  * SAML認証の結果

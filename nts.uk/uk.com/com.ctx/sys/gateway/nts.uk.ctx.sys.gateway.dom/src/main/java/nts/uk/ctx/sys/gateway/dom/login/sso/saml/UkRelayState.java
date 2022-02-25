@@ -1,8 +1,12 @@
 package nts.uk.ctx.sys.gateway.dom.login.sso.saml;
 
 import lombok.Value;
+import lombok.val;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.gul.security.saml.RelayState;
+import org.apache.commons.codec.net.URLCodec;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 汎用的に実装してあるRelayStateクラスをUK内でルール付けて使用するためのクラス
@@ -28,10 +32,10 @@ public class UkRelayState {
 		return relayState.serialize();
 	}
 	
-	public static UkRelayState deserialize(String serializedUkRelayState) {
-		RelayState relayState = RelayState.deserialize(serializedUkRelayState);
+	public static UkRelayState deserialize(HttpServletRequest request) {
+		val relayState = RelayState.deserialize(request);
 		return new UkRelayState(
-				relayState.get("tenantCode"), 
+				relayState.get("tenantCode"),
 				CommonKeyCrypt.decrypt(relayState.get("tenantPassword")));
 	}
 }

@@ -22,7 +22,6 @@ public class JpaSamlOperationRepository extends JpaRepository implements SamlOpe
 		return new SgwmtSamlOperation(
 				domain.getTenantCode(), 
 				BooleanUtils.toInteger(domain.isUseSingleSignOn()),
-				domain.getRealmName(), 
 				domain.getIdpRedirectUrl());
 	}
 

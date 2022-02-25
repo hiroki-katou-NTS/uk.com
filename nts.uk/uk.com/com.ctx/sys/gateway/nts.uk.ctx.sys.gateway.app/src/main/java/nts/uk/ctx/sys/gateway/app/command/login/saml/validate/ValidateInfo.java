@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.app.command.login.saml;
+package nts.uk.ctx.sys.gateway.app.command.login.saml.validate;
 
 import java.util.Optional;
 
