@@ -1318,9 +1318,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (execMontlyAggregateAsync) {
                     dataParent["monthValue"].needCallCalc = false;
                 }
-                dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length - 1].dateDetail } : null;
+                dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail._i, endDate: dataSource[dataSource.length - 1].dateDetail._i } : null;
             } else {
-                dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[0].dateDetail } : null;
+                dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail._i, endDate: dataSource[0].dateDetail._i } : null;
             }
 
             let checkDailyChange = (dataChangeProcess.length > 0 || dataCheckSign.length > 0 || dataCheckApproval.length > 0 || self.sprStampSourceInfo() != null) && checkDataCare;
