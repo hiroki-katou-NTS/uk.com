@@ -39,9 +39,9 @@ public class OtWorkAppReflect {
 	 */
 	private NotUseAtr reflectActualWorkAtr;
 
-    public static OtWorkAppReflect create(int reflectActualWorkAtr, int reflectWorkInfoAtr, int reflectActualOvertimeHourAtr, int reflectBeforeBreak, int workReflect, int reflectPaytime, int reflectDivergence, int reflectBreakOuting) {
+    public static OtWorkAppReflect create(int reflectActualWorkAtr, int reflectActualOvertimeHourAtr, int reflectBeforeBreak, int workReflect, int reflectPaytime, int reflectDivergence, int reflectBreakOuting) {
         return new OtWorkAppReflect(
-                BeforeOtWorkAppReflect.create(reflectWorkInfoAtr, reflectActualOvertimeHourAtr, reflectBeforeBreak),
+                BeforeOtWorkAppReflect.create(reflectActualOvertimeHourAtr, reflectBeforeBreak),
                 AfterOtWorkAppReflect.create(workReflect, reflectPaytime, reflectDivergence, reflectBreakOuting),
                 EnumAdaptor.valueOf(reflectActualWorkAtr, NotUseAtr.class)
         );
