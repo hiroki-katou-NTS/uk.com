@@ -13,6 +13,12 @@ module nts.uk.com.view.cdl014.a {
         constructor(dataShare: Cdl014Param) {
             super();
             const vm = this;
+            if (!_.isEmpty(dataShare.currentCodes)){
+                vm.currentCodes(dataShare.currentCodes);
+            }
+            if (!_.isEmpty(dataShare.currentNames)){
+                vm.currentNames(dataShare.currentNames);
+            }
             vm.options = {
                 // neu muon lay code ra tu trong list thi bind gia tri nay vao
                 currentCodes: vm.currentCodes,
@@ -92,14 +98,19 @@ module nts.uk.com.view.cdl014.a {
         multiple: boolean;
         showEmptyItem: boolean;
         selectedMode: number;
-        alreadySettingList: any;
+        alreadySettingList: any; // selected id
+        currentCodes: any; // selected code - need to pass with id
+        currentNames: any; // selected name - need to pass with id
         selectedWkpGroupTypes: any;
-        constructor(multiple: boolean, showEmptyItem: boolean, selectedMode: number,alreadySettingList: any, selectedWkpGroupTypes: any){
+
+        constructor(multiple: boolean, showEmptyItem: boolean, selectedMode: number,alreadySettingList: any, selectedWkpGroupTypes: any, currentCodes: any,currentNames: any){
             this.multiple = multiple;
             this.showEmptyItem = showEmptyItem;
             this.selectedMode = selectedMode;
             this.alreadySettingList = alreadySettingList;
             this.selectedWkpGroupTypes = selectedWkpGroupTypes;
+            this.currentCodes = currentCodes;
+            this.currentNames = currentNames;
         }
     }
 }

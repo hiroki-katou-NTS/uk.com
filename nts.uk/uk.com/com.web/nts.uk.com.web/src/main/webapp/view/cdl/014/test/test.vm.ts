@@ -52,8 +52,10 @@ module test.viewmodel {
             ]);
             vm.selectedTreeType.subscribe((i:any)=>{
                 vm.enableMulti(i==1);
+                if (i==1){
+                    vm.selectedWrk(new Array(vm.selectedWrk().toString()));
+                }
             })
-
         }
 
         openCdl014() {
@@ -63,6 +65,8 @@ module test.viewmodel {
                 showEmptyItem: vm.selectedDisplay() == 1 ? true : false,
                 selectedMode: vm.selectedSelectionType(),
                 alreadySettingList: vm.selectedSelectionType() ==3 ? (vm.selectedTreeType() == 1) ? vm.selectedWrk(): new Array(vm.selectedWrk()) : [],
+                currentCodes: _.map( _.filter(vm.listWorkPlace(),i=> vm.selectedWrk().contains(i.workPlaceId)), (item)=>{return item.workPlaceCode}),
+                currentNames: _.map( _.filter(vm.listWorkPlace(),i=> vm.selectedWrk().contains(i.workPlaceId)), (item)=>{return item.workPlaceName}),
                 selectedWkpGroupTypes: vm.selectedFilters()
             }
             let result: Array<WorkPlaceReturn> = [];
