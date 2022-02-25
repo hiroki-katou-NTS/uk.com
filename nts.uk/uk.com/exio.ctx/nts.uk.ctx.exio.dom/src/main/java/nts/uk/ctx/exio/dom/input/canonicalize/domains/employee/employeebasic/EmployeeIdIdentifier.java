@@ -31,7 +31,7 @@ public class EmployeeIdIdentifier {
 			  && !context.getDomainId().equals(ImportingDomainId.EMPLOYEE_BASIC);
 	}
 	
-	private static interface ImportingWithEmployeeBasicRequire{
+	private interface ImportingWithEmployeeBasicRequire{
 		ExternalImportSetting getExternalImportSetting(ExecutionContext context);
 	}
 }
