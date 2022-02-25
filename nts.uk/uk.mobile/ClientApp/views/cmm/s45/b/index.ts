@@ -632,14 +632,52 @@ export class CmmS45BComponent extends Vue {
             if (value == 'yes') {
                 self.$http.post('at', servicePath.approvalBatchApp, paramCmd).then((result) => {
                     return self.$http.post('at', servicePath.approverAfterConfirm, paramCmd.listOfApplicationCmds);
-                }).then((result) => {
-                    self.$mask('hide');
-                    self.$modal.info({ messageId: 'Msg_220' }).then(() => {
+                }).then((result: any) => {
+                    if (result) {
+                        let isInfoDialog = true,
+                            displayMsg = '';
+                        if (!_.isEmpty(result.data.successMap)) {
+                            displayMsg += self.$i18n('Msg_220') + ',';
+                        } else {
+                            isInfoDialog = false;
+                        }
+                        if (!_.isEmpty(result.data.failMap)) {
+                            if (isInfoDialog) {
+                                displayMsg += self.$i18n('Msg_1726');
+                            } else {
+                                displayMsg += self.$i18n('Msg_1725');
+                            }
+                            let itemFailMap = _.filter(ListOfApplicationCmd, (item) => _.includes(Object.keys(result.data.failMap), item.appID));
+                            if (!_.isEmpty(itemFailMap)) {
+                                displayMsg += '(';
+                                displayMsg += _.chain(itemFailMap).map((item) => {
+                                    let appInfo = _.find(self.appListExtractCondition.opListOfAppTypes, (o) => o.appType == item.appType),
+                                        appName = '';
+                                    if (!_.isUndefined(appInfo)) {
+                                        appName = appInfo.appName;
+                                    }
+
+                                    return item.applicantName  + ' ' + item.appDate + ' ' + appName + ': ' + result.data.failMap[item.appID];    
+                                }).join(',').value();
+                                displayMsg += ')';
+                            }
+                        }
+                        if (_.isEmpty(displayMsg)) {
+                            displayMsg += self.$i18n('Msg_1725');
+                        }
+                        if (isInfoDialog) {
+                            return self.$modal.info(displayMsg);
+                        } else {
+                            return self.$modal.error(displayMsg);
+                        }
+                    }
+                }).then((result: any) => {
+                    if (result) {
                         self.$mask('hide');
                         self.lstAppr = [];
                         self.modeAppr = false;
                         self.getData(true, false);
-                    });
+                    }
                 }).catch(() => {
                     self.$mask('hide');
                 });
