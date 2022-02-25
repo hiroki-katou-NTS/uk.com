@@ -30,7 +30,8 @@ public class ApprovalRootDto {
 		return new ApprovalRootDto(domain.getSysAtr().value, domain.getEmploymentRootAtr().value,
 				domain.getHistoryItems().stream().map(EmploymentAppHistoryItemDto::fromDomain)
 						.collect(Collectors.toList()),
-				domain.getApplicationType().value, domain.getConfirmationRootType().value, domain.getNoticeId(),
-				domain.getBusEventId());
+				domain.getApplicationType() != null ? domain.getApplicationType().value : null,
+				domain.getConfirmationRootType() != null ? domain.getConfirmationRootType().value : null,
+				domain.getNoticeId(), domain.getBusEventId());
 	}
 }

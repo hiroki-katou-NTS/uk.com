@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.UpdateSelfApprovalRootDomainService;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.require.RequireService;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.require.RequireService.Require;
@@ -35,7 +36,7 @@ public class UpdateSelfApproverCommandHandler extends CommandHandler<UpdateSelfA
 		// 1. 変更登録する(Require, 会社ID, 社員ID, 期間, 承認者設定パラメータ)
 		List<AtomTask> atomTasks = UpdateSelfApprovalRootDomainService.register(require, cid, command.getSid(),
 				command.getParams().stream().map(ApprovalSettingParamCommand::toDomain).collect(Collectors.toList()),
-				command.getPeriod());
+				new DatePeriod(command.getStartDate(), command.getEndDate()));
 		// 2. <call>
 		this.transaction.allInOneTransaction(atomTasks);
 	}

@@ -4,8 +4,8 @@ module nts.uk.com.view.cmm030.b {
 
   import TreeComponentOption = kcp.share.tree.TreeComponentOption;
   import ComponentOption = kcp.share.list.ComponentOption;
-	import StartMode = kcp.share.tree.StartMode;
-	import SelectionType = kcp.share.tree.SelectionType;
+  import StartMode = kcp.share.tree.StartMode;
+  import SelectionType = kcp.share.tree.SelectionType;
   import ListType = kcp.share.list.ListType;
   import UnitModel = kcp.share.list.UnitModel;
 
@@ -20,11 +20,16 @@ module nts.uk.com.view.cmm030.b {
     baseDate: moment.Moment;
     selectedWorkplaceId: KnockoutObservable<string> = ko.observable("");
     selectedEmployeeId: KnockoutObservable<string> = ko.observable("");
+    selectedEmployeeCode: KnockoutObservable<string> = ko.observable("");
     employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
 
     created(params?: any): void {
       const vm = this;
-      vm.selectedWorkplaceId.subscribe(value => vm.getApprovalAuthorityHolders(value));
+      vm.selectedWorkplaceId.subscribe(value => {
+        vm.$blockui("grayout");
+        vm.getApprovalAuthorityHolders(value).always(() => vm.$blockui("clear"));
+      });
+      vm.selectedEmployeeCode.subscribe(value => vm.selectedEmployeeId(_.find(vm.employeeList(), { code: value }).id));
 
       vm.baseDate = moment.utc(params.baseDate, "YYYY/MM/DD");
       vm.selectedEmployeeId(params.sid);
@@ -43,7 +48,7 @@ module nts.uk.com.view.cmm030.b {
     public processSave() {
       const vm = this;
       const result = {
-        sid: vm.selectedEmployeeId() || "選択無し",
+        sid: vm.selectedEmployeeId(),
         name: _.find(vm.employeeList(), { id: vm.selectedEmployeeId() })?.name || "選択無し"
       };
       vm.$window.close(result);
@@ -63,7 +68,7 @@ module nts.uk.com.view.cmm030.b {
         startMode: StartMode.WORKPLACE,
         selectedId: vm.selectedWorkplaceId,
         baseDate: ko.observable(vm.baseDate.toDate()),
-        selectType: SelectionType.SELECT_FIRST_ITEM,
+        selectType: SelectionType.SELECT_BY_SELECTED_CODE,
         isShowSelectButton: true,
         isDialog: true,
         maxRows: 12,
@@ -83,7 +88,7 @@ module nts.uk.com.view.cmm030.b {
         listType: ListType.EMPLOYEE,
         employeeInputList: vm.employeeList,
         selectType: SelectionType.SELECT_BY_SELECTED_CODE,
-        selectedCode: vm.selectedEmployeeId,
+        selectedCode: vm.selectedEmployeeCode,
         isDialog: true,
         isShowNoSelectRow: true,
         alreadySettingList: ko.observableArray([]),
@@ -109,6 +114,7 @@ module nts.uk.com.view.cmm030.b {
       .then(result => {
         if (!_.isEmpty(result)) {
           vm.selectedWorkplaceId(result[0].workplaceId);
+          vm.selectedWorkplaceId.valueHasMutated();
         } else {
           vm.selectedWorkplaceId(null);
         }
@@ -132,6 +138,7 @@ module nts.uk.com.view.cmm030.b {
           name: data.employeeName
         };
       })))
+      .then(() => vm.selectedEmployeeCode(_.find(vm.employeeList(), { id: vm.selectedEmployeeId() }).code));
     }
   }
 }

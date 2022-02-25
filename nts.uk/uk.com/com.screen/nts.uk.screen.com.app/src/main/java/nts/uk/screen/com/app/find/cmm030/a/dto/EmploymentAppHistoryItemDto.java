@@ -2,7 +2,7 @@ package nts.uk.screen.com.app.find.cmm030.a.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentAppHistoryItem;
 
 @Data
@@ -13,9 +13,11 @@ public class EmploymentAppHistoryItemDto {
 	private String historyId;
 
 	/** 期間 */
-	private DatePeriod datePeriod;
-	
+	private GeneralDate startDate;
+	private GeneralDate endDate;
+
 	public static EmploymentAppHistoryItemDto fromDomain(EmploymentAppHistoryItem domain) {
-		return new EmploymentAppHistoryItemDto(domain.getHistoryId(), domain.getDatePeriod());
+		return new EmploymentAppHistoryItemDto(domain.getHistoryId(), domain.getDatePeriod().start(),
+				domain.getDatePeriod().end());
 	}
 }

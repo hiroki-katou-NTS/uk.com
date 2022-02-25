@@ -45,6 +45,7 @@
   display: block;
   max-height: 220px;
   overflow-y: auto;
+  padding-right: 10px;
 }
 
 #A9_1 {
