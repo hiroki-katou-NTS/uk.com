@@ -15,7 +15,7 @@ public class EmployeeIdIdentifier {
 
 	public static Optional<String> getEmployeeId(CanonicalizationMethodRequire require, ExecutionContext context, String employeeCode) {
 		if(isImportingWithEmployeeBasic(require, context)) {
-			return EmployeeBasicCanonicalization.getEmployeeId(require, context, employeeCode);
+			return EmployeeBasicCanonicalization.getSIDFromCanonicalizedData(require, context, employeeCode);
 		}
 		return require.getEmployeeDataMngInfoByEmployeeCode(employeeCode)
 				.map(c -> c.getEmployeeId());

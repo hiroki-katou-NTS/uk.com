@@ -15,7 +15,7 @@ public class PersonIdIdentifier {
 
 	public static String getPersonId(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, String employeeId) {
 		if(isImportingWithEmployeeBasic(require, context)) {
-			return EmployeeBasicCanonicalization.getPersonId(require, context, employeeId).get();
+			return EmployeeBasicCanonicalization.getPIDFromCanonicalizedData(require, context, employeeId).get();
 		}
 		return require.getEmployeeDataMngInfoByEmployeeId(employeeId)
 				.get()

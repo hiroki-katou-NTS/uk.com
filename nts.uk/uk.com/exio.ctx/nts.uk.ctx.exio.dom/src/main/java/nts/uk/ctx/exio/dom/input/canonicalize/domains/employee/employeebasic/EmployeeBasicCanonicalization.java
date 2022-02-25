@@ -447,11 +447,19 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 		return Items.SID;
 	}
 
-	public static Optional<String> getPersonId(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, String employeeId){
+	/**
+	 * 個人基本情報の正準化済みデータからPIDを取得する。
+	 * 検索条件(SID=employeeId)と一致する正準化済みデータが存在しない場合、PIDは取得できない。
+	 */
+	public static Optional<String> getPIDFromCanonicalizedData(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, String employeeId){
 		return getTargetItemCanonicalizedData(require, context, Items.SID, employeeId, Items.PID);
 	}
 
-	public static Optional<String> getEmployeeId(CanonicalizationMethodRequire require, ExecutionContext context, String employeeCode){
+	/**
+	 * 個人基本情報の正準化済みデータからSIDを取得する。
+	 * 検索条件(社員コード=employeeCode)と一致する正準化済みデータが存在しない場合、SIDは取得できない。
+	 */
+	public static Optional<String> getSIDFromCanonicalizedData(CanonicalizationMethodRequire require, ExecutionContext context, String employeeCode){
 		return getTargetItemCanonicalizedData(require, context, Items.社員コード, employeeCode, Items.SID);
 	}
 
