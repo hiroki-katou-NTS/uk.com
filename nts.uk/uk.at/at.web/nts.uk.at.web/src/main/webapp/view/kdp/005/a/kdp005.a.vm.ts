@@ -35,7 +35,10 @@ module nts.uk.at.view.kdp005.a {
 			NOTICE: 'at/record/stamp/notice/getStampInputSetting',
 			GET_LOCATION: 'at/record/stamp/employment_system/get_location_stamp_input',
 			SETTING_STAMP_COMMON: 'at/record/stamp/settings_stamp_common',
-			getContractCode: "at/record/stamp/finger/get-contractCode"
+			getContractCode: "at/record/stamp/finger/get-contractCode",
+            GET_WORKLOCATION:'at/record/kdp/common/get-work-location-regional-time',
+            GET_REGION_TIME:'at/record/kdp/common/get-work-place-regional-time',
+            GET_IP_URL:'https://api.ipify.org?format=json'
 		};
 
 		export class ScreenModel {
@@ -75,6 +78,7 @@ module nts.uk.at.view.kdp005.a {
 			supportUse: KnockoutObservable<boolean> = ko.observable(false);
 			pageComment: KnockoutObservable<string> = ko.observable('');
 			commentColor: KnockoutObservable<string> = ko.observable('');
+            workLocationInfo: KnockoutObservable<IWorkPlaceRegionalTimeDto> = ko.observable('');
 
 			totalOpenViewR: number = 0;
 			saveDefault: Boolean = false;
@@ -360,12 +364,15 @@ module nts.uk.at.view.kdp005.a {
 											self.loginInfo.selectedWP = result;
 											self.saveSuccess = true;
 											characteristics.save("loginKDP005", self.loginInfo).done(() => {
-												if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
-													self.reloadView()
-													dfd.resolve();
-												} else {
-													dfd.resolve(self.loginInfo);
-												}
+                                                self.getWorkLocationInfo(self.loginInfo).done(() => {
+                                                    if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
+                                                        self.reloadView();
+                                                        dfd.resolve();
+                                                    } else {
+                                                        dfd.resolve(self.loginInfo);
+                                                    }
+                                                });
+
 											});
 										}
 									});
@@ -384,13 +391,50 @@ module nts.uk.at.view.kdp005.a {
 				});
 				return dfd.promise();
 			}
+        
+            public getWorkLocationInfo(loginInfo) : JQueryPromise<any> {
+                let dfd = $.Deferred<any>();
+                let self = this;
+                const vm = new ko.ViewModel();
+                vm.$window.storage("contractInfo").then(info => {
+                    $.get(API.GET_IP_URL, function(response) {
+                        let getWkLocParam = { contractCode: info.contractCode, worklocationCode: self.worklocationCode, ipv4Address: response.ip };
+                        
+                        vm.$ajax(API.GET_WORKLOCATION, getWkLocParam).done((workLoc: IWorkPlaceRegionalTimeDto) => {
+                                
+                                let {regional, workLocationCD, workLocationName, workPlaceId } = workLoc;
+                                
+                                if (workLoc && workLocationCD != null && workLocationName != null && workPlaceId != null) {
+                                    
+                                    self.workLocationInfo(workLoc);
+                                    vm.$window.storage("workLocationInfo", workLoc);
+                                    
+                                    dfd.resolve();
+                                    
+                                } else {
+
+                                    let workregionParam = { contractCode: info.contractCode, cid: loginInfo.companyId, sid: loginInfo.employeeId, workPlaceId: loginInfo.selectedWP[0] };
+                                    
+                                    vm.$ajax(API.GET_REGION_TIME, workregionParam).done((workLoc: IWorkPlaceRegionalTimeDto) => {
+                                            
+                                            self.workLocationInfo(workLoc);
+                                            vm.$window.storage("workLocationInfo", workLoc);
+                                            
+                                            dfd.resolve();
+                                        });
+                                }
+                            });
+                    });
+                });
+                return dfd.promise();
+            }
 
 
 
 			public openDialogF(param): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				let dfd = $.Deferred<any>();
-				vm.$window.modal('at', '/view/kdp/003/f/index.xhtml', param).then(function (loginResult): any {
+                vm.$window.modal('at', DIALOG.F, param).then(function(loginResult): any {
 					if (loginResult && loginResult.em) {
 						dfd.resolve(loginResult);
 					} else {
@@ -509,7 +553,7 @@ module nts.uk.at.view.kdp005.a {
 					if (ICCard && ICCard != '') {
 						block.grayout();
 						self.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
-							vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', { employeeId: employeeId });
+							vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', { employeeId: employeeId ,regionalTime: ko.unwrap(self.regionalTime)   });
 						}).fail(() => {
 							self.openIDialog();
 						}).always(() => {
@@ -535,7 +579,10 @@ module nts.uk.at.view.kdp005.a {
 											self.loginInfo = loginResult.em;
 											self.loginInfo.selectedWP = result;
 											characteristics.save("loginKDP005", self.loginInfo).done(() => {
-												self.reloadView()
+                                                self.getWorkLocationInfo(self.loginInfo).done(() => {
+                                                    self.reloadView();
+                                                });
+												
 											});
 										} else {
 											self.reloadView()
@@ -812,7 +859,8 @@ module nts.uk.at.view.kdp005.a {
 				setShared("infoEmpToScreenB", {
 					employeeId: employeeIdRegister,
 					mode: Mode.Personal,
-					workPlaceId: self.workPlaceId
+					workPlaceId: self.workPlaceId,
+                    regionalTime: _.get(self.workLocationInfo(),'regional')
 				});
 				setShared("screenB", {
 					screen: "KDP005"
@@ -829,7 +877,8 @@ module nts.uk.at.view.kdp005.a {
 				setShared("infoEmpToScreenC", {
 					employeeId: employeeIdRegister,
 					mode: Mode.Personal,
-					workPlaceId: self.workPlaceId
+					workPlaceId: self.workPlaceId,
+                    regionalTime: _.get(self.workLocationInfo(),'regional')
 				});
 				setShared("screenC", {
 					screen: "KDP005"
