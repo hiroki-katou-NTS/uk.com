@@ -31,12 +31,12 @@
         <a id="A1_1" class="goback" data-bind="ntsLinkButton: { jump: returnUrl }, enable: returnUrl() !== null">#{i18n.getText('CMM030_10')}</a>
         <button id="A1_2" data-bind="click: openDialogC" tabindex="1">#{i18n.getText('CMM030_11')}</button>
         <button id="A1_3" class="proceed" data-bind="click: processSave" tabindex="2">#{i18n.getText('CMM030_12')}</button>
-        <button id="A1_4" data-bind="enable: isEnableFuncButton, visible: isVisibleFuncButton" tabindex="3">#{i18n.getText('CMM030_13')}</button>
+        <button id="A1_4" data-bind="enable: isEnableFuncButton, visible: isVisibleFuncButton, click: openDialogCDL023" tabindex="3">#{i18n.getText('CMM030_13')}</button>
         <button id="A1_5" tabindex="4">#{i18n.getText('CMM030_14')}</button>
         <button id="A1_6" data-bind="enable: isEnableFuncButton, visible: isVisibleFuncButton, click: openDialogG" tabindex="5">#{i18n.getText('CMM030_15')}</button>
       </div>
       <div id="contents-area">
-        <div id="A3_1"></div>
+        <div id="A3_1" tabindex="-1"></div>
         <textarea id="A2_1" data-bind="ntsMultiLineEditor: {
           name: '#[CMM030_16]',
           value: inputProcedure,
@@ -52,7 +52,7 @@
           <label id="A4_2" class="ml-5">#{i18n.getText('CMM030_18')}</label>
           <label id="A4_3" class="color-holiday" data-bind="visible: isVisibleA4_3">#{i18n.getText('CMM030_19')}</label>
         </div>
-        <div id="A5" class="panel">
+        <div id="A5">
           <table>
             <colgroup>
               <col width="300px"/>

@@ -9,7 +9,7 @@
       <script>
         var dialogSize = {
           width: 350,
-          height: 200
+          height: 300
         };
       </script>
       <com:scriptfile set="IGNITE" />
@@ -18,14 +18,16 @@
     </ui:define>
     <ui:define name="content">
       <div id="contents-area">
-        <div id="G1_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMM030_100')}</div>
-        <div id="G1_2" data-bind="ntsDatePicker: {
-          name: '#[CMM030_101]',
-          value: baseDate
-        }" tabindex="1"></div>
+        <div class="flex halign-center">
+          <div id="G1_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMM030_100')}</div>
+          <div id="G1_2" data-bind="ntsDatePicker: {
+            name: '#[CMM030_101]',
+            value: baseDate
+          }" tabindex="1"></div>
+        </div>
       </div>
       <div id="functions-area-bottom">
-        <button id="G2_1" class="large proceed" data-bind="click: proceedExport" tabindex="2">#{i18n.getText('CMM030_102')}</button>
+        <button id="G2_1" class="large proceed" data-bind="click: processExport" tabindex="2">#{i18n.getText('CMM030_102')}</button>
         <button id="G2_2" data-bind="click: closeDialog" tabindex="3">#{i18n.getText('CMM030_103')}</button>
       </div>
     </ui:define>

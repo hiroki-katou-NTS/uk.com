@@ -112,8 +112,8 @@ module nts.uk.com.view.cmm030.b {
       };
       return vm.$ajax(API.getWorkplaceInfo, param)
       .then(result => {
-        if (!_.isEmpty(result)) {
-          vm.selectedWorkplaceId(result[0].workplaceId);
+        if (!_.isEmpty(result.workplaces)) {
+          vm.selectedWorkplaceId(result.workplaces[0].workplaceId);
           vm.selectedWorkplaceId.valueHasMutated();
         } else {
           vm.selectedWorkplaceId(null);

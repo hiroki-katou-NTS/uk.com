@@ -216,7 +216,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				+ " AND m.wwfmtPsApprovalRootPK.employeeId IN :sids"
 				+ " AND m.startDate >= :baseDate"
 				+ " AND m.sysAtr = 0"
-				+ " AND opeMode = 1";
+				+ " AND m.opeMode = 1";
 		
 		private static final String GET_ALL_EMP_HIST = "SELECT m FROM WwfmtApprovalRoutePs m"
 				+ " WHERE m.wwfmtPsApprovalRootPK.companyId = :cid"
