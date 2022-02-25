@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.*;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import lombok.val;
@@ -62,7 +63,7 @@ public abstract class EmployeeIndependentCanonicalization extends IndependentCan
 	 * @param interm
 	 * @return
 	 */
-	protected abstract IntermediateResult canonicalizeExtends(
+	protected abstract Optional<IntermediateResult> canonicalizeExtends(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
 			IntermediateResult interm);

@@ -22,6 +22,9 @@ export interface DisplayInfoOverTime {
     calculationResultOp?: CalculationResult;
     infoWithDateApplicationOp?: InfoWithDateApplication;
     calculatedFlag: CalculatedFlag;
+    latestMultiOvertimeApp: any;
+    calculatedBreakTimes: Array<any>;
+    calculatedWorkTimes: Array<any>;
 }
 export interface WorkdayoffFrame {
     workdayoffFrNo: number;
@@ -337,6 +340,7 @@ export interface AppOverTime {
     workInfoOp?: WorkInformation;
     detailOverTimeOp?: AppOvertimeDetail;
     application: ApplicationDto;
+    multipleOvertimeContents: Array<any>;
 }
 export interface AppOvertimeDetail {
     applicationTime: number;
@@ -475,6 +479,14 @@ export interface BreakTime {
     title: string;
     frameNo: number;
 }
+
+export interface MultiOverTime {
+    frameNo: number;
+    valueHours: any;
+    fixedReasonCode: string;
+    appReason: string;
+}
+
 export enum CalculatedFlag {
     // 計算済
     CALCULATED, 	

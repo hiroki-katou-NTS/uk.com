@@ -43,17 +43,19 @@ public class GetCompenChangeOccDigest {
 	private static AfterChangeHolidayDaikyuInfoResult changeAccordChangeRequest(Require require, String sid,
 			DatePeriod dateData, RequestChangeDigestOccr changeDigest, RequestChangeDigestOccr changeOccr) {
 
-		// $消化一覧 =
-		val digest = GetDigestListOverwriteChangeDaikyu.get(require, sid, dateData, changeDigest);
-
-		// 発生一覧
-		val occr = GetOccListOverwriteChangeDaikyu.get(require, sid, dateData, changeOccr);
-
 		// $紐付け一覧
 		val lstCouple = require.getDigestOccByListComId(sid, dateData);
 		// $逐次発生の紐付け情報一覧
 		SeqVacationAssociationInfoList seqVacAssociInfo = new SeqVacationAssociationInfoList(
 				lstCouple.stream().map(x -> x.getAssocialInfo()).collect(Collectors.toList()));
+				
+		// $消化一覧 =
+		val digest = GetDigestListOverwriteChangeDaikyu.get(require, sid, dateData, changeDigest);
+		digest.correctUnoffset(seqVacAssociInfo, dateData);
+
+		// 発生一覧
+		val occr = GetOccListOverwriteChangeDaikyu.get(require, sid, dateData, changeOccr);
+		occr.correctUnoffset(seqVacAssociInfo, dateData);
 
 		// $補正後の紐付け一覧
 		val assocAfterCorr = seqVacAssociInfo.matchAssocStateOccAndDigest(occr, digest);

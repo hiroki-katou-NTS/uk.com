@@ -97,6 +97,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
 public class RemainCreateInforByApplicationDataImpl implements RemainCreateInforByApplicationData {
@@ -596,6 +597,11 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		public Optional<WorkingConditionItem> getWorkingConditionItemByEmpIDAndDate(String companyID, GeneralDate ymd,
 				String empID) {
 			return workingConditionItemRepo.getBySidAndStandardDate(empID, ymd);
+		}
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 
 	}

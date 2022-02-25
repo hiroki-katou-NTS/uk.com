@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
@@ -80,8 +81,8 @@ public class AbsenceTenProcessCommon {
 	public SixtyHourSettingOutput getSixtyHourSetting(String companyId, String employeeId, GeneralDate baseDate) {
 	    Com60HourVacation com60HourVacation = com60HourVacationRepo.findById(companyId).orElse(null);
 	    SixtyHourSettingOutput super60HLeaveMng = new SixtyHourSettingOutput(
-                com60HourVacation != null && com60HourVacation.isManaged(),
-                com60HourVacation == null ? null : com60HourVacation.getSetting().getDigestiveUnit().value
+                com60HourVacation != null && com60HourVacation.getTimeVacationDigestUnit().getManage().equals(ManageDistinct.YES),
+                com60HourVacation == null ? null : com60HourVacation.getTimeVacationDigestUnit().getDigestUnit().value
         );
 	    
 	    return super60HLeaveMng;

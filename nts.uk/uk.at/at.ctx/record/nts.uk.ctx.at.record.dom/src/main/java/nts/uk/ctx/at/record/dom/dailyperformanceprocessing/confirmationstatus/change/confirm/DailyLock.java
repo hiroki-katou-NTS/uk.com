@@ -62,5 +62,11 @@ public class DailyLock {
 				|| lockApprovalDay.value == StatusLock.LOCK.value || lockConfirmDay.value == StatusLock.LOCK.value
 				|| lockPast.value == StatusLock.LOCK.value;
 	}
+	
+	public static DailyLock createLockData(String employeeId, GeneralDate date) {
+		return new DailyLock(employeeId, date, StatusLock.LOCK, StatusLock.LOCK, StatusLock.LOCK, StatusLock.LOCK,
+				StatusLock.LOCK, StatusLock.LOCK, StatusLock.LOCK);
+
+	}
 
 }
