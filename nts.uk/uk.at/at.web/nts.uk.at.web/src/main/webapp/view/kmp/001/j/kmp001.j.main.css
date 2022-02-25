@@ -23,3 +23,7 @@
 .rightJ2 .ntsControl {
 	display: inline !important;
 }
+
+#left-side #com-kcp005 {
+	margin-left: 80px;
+}

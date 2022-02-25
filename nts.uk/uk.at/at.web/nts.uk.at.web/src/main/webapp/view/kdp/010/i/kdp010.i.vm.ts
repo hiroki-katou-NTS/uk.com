@@ -169,13 +169,13 @@ module nts.uk.at.view.kdp010.i {
 				self.showSelectedAudio(self.dataShare.fromScreen === 'A');
 				self.buttonPositionNo(self.dataShare.buttonPositionNo);
 				if (self.dataShare.dataShare != undefined) {
-					let data = self.dataSlhare.dataShare.lstButtonSet ? self.dataShare.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataShare.buttonPositionNo)[0] : self.dataShare.dataShare;
+					let data = self.dataShare.dataShare.lstButtonSet ? self.dataShare.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataShare.buttonPositionNo)[0] : self.dataShare.dataShare;
 					if (data) {
 						self.checkGoOut(1);
 						self.letterColors(data.buttonDisSet.buttonNameSet.textColor);
 						self.simpleValue(data.buttonDisSet.buttonNameSet.buttonName);
 						self.backgroundColors(data.buttonDisSet.backGroundColor);
-						self.selectedStamping((data.buttonType.stampType == undefined || data.buttonType.stampType.goOutArt == null) ? 0 : data.buttonType.stampType.goOutArt);
+						self.selectedStamping((data.stampType == undefined || data.stampType.goOutArt == null) ? 0 : data.stampType.goOutArt);
 						self.selectedAudio(data.audioType);
 						self.selectedHighlight(data.usrArt);
 						self.getTypeButton(data);
@@ -257,12 +257,11 @@ module nts.uk.at.view.kdp010.i {
 			}
 			public getTypeButton(data: any): void {
 				let self = this,
-					changeClockArt = data.buttonType.stampType == null ? null : data.buttonType.stampType.changeClockArt,
-					changeCalArt = data.buttonType.stampType == null ? null : data.buttonType.stampType.changeCalArt,
-					setPreClockArt = data.buttonType.stampType == null ? null : data.buttonType.stampType.setPreClockArt,
-					changeHalfDay = data.buttonType.stampType == null ? null : data.buttonType.stampType.changeHalfDay,
-					reservationArt = data.buttonType.reservationArt;
-				let typeNumber = self.checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, reservationArt);
+					changeClockArt = data.stampType == undefined ? null : data.stampType.changeClockArt,
+					changeCalArt = data.stampType == undefined ? null : data.stampType.changeCalArt,
+					setPreClockArt = data.stampType == undefined ? null : data.stampType.setPreClockArt,
+					changeHalfDay = data.stampType == undefined ? null : data.stampType.changeHalfDay;
+				let typeNumber = self.checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, 0);
 				self.selectedDay(typeNumber);
 				self.selectedDayOld(typeNumber);
 			}
