@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.singlesignon.saml;
+package nts.uk.ctx.sys.gateway.app.command.login.saml;
 
 import lombok.Data;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
@@ -14,15 +14,15 @@ public class UkRelayState {
 	private String tenantCode;
 
 	private String tenantPassword;
-
+	
 	private String requestUrl;
-
+	
 	public UkRelayState(String tenantCode, String tenantPassword, String requestUrl) {
 		this.tenantCode = tenantCode;
 		this.tenantPassword = tenantPassword;
 		this.requestUrl = requestUrl;
 	}
-
+	
 	public String serialize() {
 		String encryptedPass = CommonKeyCrypt.encrypt(tenantPassword);
 		RelayState relayState = new RelayState();
@@ -31,12 +31,12 @@ public class UkRelayState {
 		relayState.add("requestUrl", requestUrl);
 		return relayState.serialize();
 	}
-
+	
 	public static UkRelayState deserialize(String serializedUkRelayState) {
 		RelayState relayState = RelayState.deserialize(serializedUkRelayState);
 		return new UkRelayState(
-				relayState.get("tenantCode"),
-				CommonKeyCrypt.decrypt(relayState.get("tenantPassword")),
+				relayState.get("tenantCode"), 
+				CommonKeyCrypt.decrypt(relayState.get("tenantPassword")), 
 				relayState.get("requestUrl"));
 	}
 }

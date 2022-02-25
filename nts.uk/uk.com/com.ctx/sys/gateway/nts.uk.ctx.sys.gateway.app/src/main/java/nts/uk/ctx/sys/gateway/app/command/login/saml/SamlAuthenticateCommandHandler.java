@@ -13,8 +13,10 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.gul.security.saml.IdpEntryUrl;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.SamlOperationRepository;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
+import nts.uk.shr.com.program.ProgramsManager;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -61,11 +63,26 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 		if(!useSamlSso) {
 			return new AuthenticateInfo(useSamlSso, null, "Msg_1992");
 		}
-		else{
-			// EntryUrlの生成
-			val idpEntryUrl = samlOpe.createIdpEntryUrl(tenantCode, password, command.getRequestUrl());
-			return new AuthenticateInfo(true, idpEntryUrl.toString(), null);
+		
+		// UkRelayStateみたいなクラス作りたい
+		// 暗号化もふくめて
+		
+		// RelayStateの生成
+		UkRelayState relayState = new UkRelayState(tenantCode, password, toScreen(command));
+		
+		// 認証用URL生成
+		IdpEntryUrl idpEntryUrl = new IdpEntryUrl(samlOpe.getIdpRedirectUrl(), relayState.serialize());
+		
+		return new AuthenticateInfo(useSamlSso, idpEntryUrl.createParamUrl(), null);
+	}
+
+	// メソッド名に困っている
+	private String toScreen(SamlAuthenticateCommand command) {
+		if(!StringUtils.isEmpty(command.getRequestUrl())) {
+			return  command.getRequestUrl();
 		}
+		// 指定がなければトップページへ
+		return ProgramsManager.CCG008A.getRootRelativePath();
 	}
 	
 	private void checkInput(SamlAuthenticateCommand command) {

@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.gateway.app.command.login.saml;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.UkRelayState;
 import org.apache.commons.codec.net.URLCodec;
 
 import lombok.Data;
