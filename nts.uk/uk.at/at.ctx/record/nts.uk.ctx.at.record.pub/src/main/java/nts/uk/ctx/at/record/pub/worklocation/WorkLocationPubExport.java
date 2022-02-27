@@ -34,14 +34,14 @@ public class WorkLocationPubExport extends AggregateRoot {
 	/**
 	 * 
 	 */
-	private double latitude;
+	private Double latitude;
 	/**
 	 * 
 	 */
-	private double longitude;
+	private Double longitude;
 
 	public static WorkLocationPubExport createSimpleFromJavaType(String contractCode, String workLocationCD,
-			String workLocationName, int radius, double latitude, double longitude) {
+			String workLocationName, int radius, Double latitude, Double longitude) {
 		return new WorkLocationPubExport(contractCode, workLocationCD, workLocationName, radius,
 				latitude, longitude);
 	}

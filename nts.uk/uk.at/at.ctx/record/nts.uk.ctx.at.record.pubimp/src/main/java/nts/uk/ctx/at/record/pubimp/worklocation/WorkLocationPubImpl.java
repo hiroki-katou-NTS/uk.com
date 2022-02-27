@@ -33,7 +33,8 @@ public class WorkLocationPubImpl implements WorkLocationPub {
 	public WorkLocationPubExport convertToExport(WorkLocation workLocation) {
 		return new WorkLocationPubExport(workLocation.getContractCode().v(), workLocation.getWorkLocationCD().v(),
 				workLocation.getWorkLocationName().v(), workLocation.getStampRange().getRadius().value,
-				workLocation.getStampRange().getGeoCoordinate().getLatitude(), workLocation.getStampRange().getGeoCoordinate().getLongitude());
+				workLocation.getStampRange().getGeoCoordinate().map(x-> x.getLatitude()).orElse(null),
+				workLocation.getStampRange().getGeoCoordinate().map(x-> x.getLongitude()).orElse(null));
 	}
 
 	@Override
@@ -49,7 +50,8 @@ public class WorkLocationPubImpl implements WorkLocationPub {
 		return workRepository.findAll(contractCode).stream().map(w -> 
 					WorkLocationPubExport.createSimpleFromJavaType(w.getContractCode().v(), w.getWorkLocationCD().v(), 
 						w.getWorkLocationName().v(), w.getStampRange().getRadius().value,
-						w.getStampRange().getGeoCoordinate().getLatitude(), w.getStampRange().getGeoCoordinate().getLongitude()))
+						w.getStampRange().getGeoCoordinate().map(x-> x.getLatitude()).orElse(null),
+						w.getStampRange().getGeoCoordinate().map(x-> x.getLongitude()).orElse(null)))
 				.collect(Collectors.toList());
 	}
 }

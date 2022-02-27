@@ -28,10 +28,10 @@ public class WorkLocationDto {
 	private int radius;
 	
 	/** 打刻範囲.地理座標.緯度*/
-	private double latitude;
+	private Double latitude;
 	
 	/** 打刻範囲.地理座標.経度*/
-	private double longitude;
+	private Double longitude;
 	
 	/** IPアドレス一覧*/
 	private List<Ipv4AddressDto>  listIPAddress;
@@ -45,8 +45,8 @@ public class WorkLocationDto {
 				domain.getWorkLocationCD().v(),
 				domain.getWorkLocationName().v(),
 				domain.getStampRange().getRadius().value,
-				domain.getStampRange().getGeoCoordinate().getLatitude(),
-				domain.getStampRange().getGeoCoordinate().getLongitude(),
+				domain.getStampRange().getGeoCoordinate().map(x -> x.getLatitude()).orElse(null),
+				domain.getStampRange().getGeoCoordinate().map(x -> x.getLongitude()).orElse(null),
 				domain.getListIPAddress().stream().map(c->new Ipv4AddressDto(c)).collect(Collectors.toList()),
 				domain.getWorkplace().map(c->WorkplacePossibleCmd.toDto(c)).orElse(null));
 	}
