@@ -45,7 +45,7 @@ module nts.uk.at.view.kmt013.a {
         isA2NotEmpty: KnockoutObservable<boolean>;
         enableA43Btn: KnockoutObservable<boolean>;
         componentName: KnockoutObservable<string> = ko.observable("kcp017-component");
-        created(params: any) {
+        created() {
             const vm = this;
 
             vm.multiple = ko.observable(false);
@@ -68,13 +68,6 @@ module nts.uk.at.view.kmt013.a {
 
             vm.a3_1Txt = ko.observable(vm.$i18n('Com_Workplace') + ': ');
             vm.a4_1Txt = ko.observable(vm.$i18n('応援可能') + vm.$i18n('Com_Workplace') + vm.$i18n('リスト'));
-
-            // vm.updateMode = ko.computed(() => {
-            //     if (vm.isWorkplaceGroupMode()) {
-            //         return vm.alreadySettingWorkplaceGroups().indexOf(vm.selectedWkpGroupId()) >= 0;
-            //     }
-            //     return vm.alreadySettingWorkplaces().map(i => i.workplaceId).indexOf(vm.selectedWkpId()) >= 0;
-            // });
 
             vm.isA5Checked = ko.computed(() => {
                 return vm.currentCodeList().length > 0;
@@ -141,6 +134,7 @@ module nts.uk.at.view.kmt013.a {
         mounted() {
             const vm = this;
             $("#A4_2").focus();
+            $('#kcp017-component').attr("tabindex", -1);
             vm.getAlreadySettingList();
         }
 
@@ -199,12 +193,11 @@ module nts.uk.at.view.kmt013.a {
             const vm = this;
             vm.$blockui("show");
             vm.$ajax(PATH.getAllSetWkps).done((data: Array<SupportFuncGetOrganizationDto>) => {
-                if (vm.isWorkplaceGroupMode()){
-                    vm.alreadySettingWorkplaceGroups(_.map(_.filter(data,(item)=>{return item.unit == OrgUnit.WORKPLACEGROUP}),gr=>gr.orgId));
-                }else{
-                    let wrkPlace = _.map(_.filter(data,(item)=>{return item.unit == OrgUnit.WORKPLACE}),gr=>gr.orgId)
-                    vm.alreadySettingWorkplaces(wrkPlace.map(id => ({workplaceId: id, isAlreadySetting: true})));
-                }
+                vm.alreadySettingWorkplaceGroups(_.map(_.filter(data,(item)=>{return item.unit == OrgUnit.WORKPLACEGROUP}),gr=>gr.orgId));
+
+                let wrkPlace = _.map(_.filter(data,(item)=>{return item.unit == OrgUnit.WORKPLACE}),gr=>gr.orgId)
+                vm.alreadySettingWorkplaces(wrkPlace.map(id => ({workplaceId: id, isAlreadySetting: true})));
+
 
             }).fail(error => {
                 vm.$dialog.error(error);
@@ -293,12 +286,6 @@ module nts.uk.at.view.kmt013.a {
 
         openDialogCDL014() {
             const vm = this;
-            const request = {};
-            setShared('inputCDL014', request);
-            modal('com',"/view/cdl/014/a/index.xhtml").onClosed(function(){
-                let response = getShared('outputCDL014');
-                console.log(response)
-            });
             let data: any = {
                 multiple: true,
                 showEmptyItem: false,
@@ -308,27 +295,21 @@ module nts.uk.at.view.kmt013.a {
                 currentNames: _.map(vm.supportableList(), (item)=>{return item.name;}),
                 selectedWkpGroupTypes: []
             }
-            vm.$window.modal('/view/cdl/014/a/index.xhtml', data)
+            vm.$window.modal('com','/view/cdl/014/a/index.xhtml', data)
                 .then((result: any) => {
-                    // if (!result.isCanceled){
-                    //     vm.listWorkPlace(result.result);
-                    //     vm.selectedWrk(_.map(result.result,(item)=>{
-                    //         return item.workPlaceId;
-                    //     }))
-                    // }
+                    if (!result.isCanceled){
+                        let workplaceInfor = _.map(result.result,(item:any)=>{
+                            return new SupportableList(item.workPlaceId,item.workPlaceCode,item.workPlaceName);
+                        });
+                        vm.supportableList(_.sortBy(workplaceInfor,(item)=>{return item.code;}));
+                    }
 
             });
         }
 
         a4_3BtnClick() {
             const vm = this;
-            // _.each(vm.currentCodeList(), function (current) {
-            //     _.remove(vm.supportableList(), (item)=> {
-            //         return item.id == current;
-            //     });
-            // })
             vm.supportableList(_.filter(vm.supportableList(),(item)=>{return vm.currentCodeList().indexOf(item.id)<0}))
-            console.log('a4_3 click');
         }
 
     }
@@ -411,31 +392,6 @@ module nts.uk.at.view.kmt013.a {
         }
     }
 
-    class TargetOrgInfoDto {
-        /** 単位 */
-         unit: number;
-        /** 職場ID/ 職場グループID */
-        orgId: string;
-        /** 呼称 **/
-        designation: string;
-        /** コード **/
-        code: string;
-        /** 名称 **/
-        name: string;
-        /** 表示名 **/
-        displayName: string;
-        /** 呼称 **/
-        genericTerm: string;
-        constructor(param: TargetOrgInfo){
-            this.unit = param.unit;
-            this.orgId = param.orgId;
-            this.designation = param.designation;
-            this.code = param.code;
-            this.name = param.name;
-            this.displayName = param.displayName;
-            this.genericTerm = param.genericTerm;
-        }
-    }
     interface TargetOrgInfo {
         /** 単位 */
         unit: number;
