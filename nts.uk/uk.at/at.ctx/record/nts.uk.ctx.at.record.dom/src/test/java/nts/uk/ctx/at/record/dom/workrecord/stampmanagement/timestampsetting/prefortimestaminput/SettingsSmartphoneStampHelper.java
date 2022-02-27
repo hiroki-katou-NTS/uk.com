@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaLimit;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
@@ -23,7 +25,8 @@ public class SettingsSmartphoneStampHelper {
 		return new SettingsSmartphoneStamp("000-0000000001",
 				new DisplaySettingsStampScreen(new CorrectionInterval(1), // dummy
 						new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")), new ResultDisplayTime(1)), // dummy
-				new ArrayList<StampPageLayout>(), true, null);
+				new ArrayList<StampPageLayout>(), true, 
+				new StampingAreaRestriction(nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr.NOT_USE, StampingAreaLimit.NO_AREA_RESTRICTION));
 	}
 
 	public static SettingsSmartphoneStamp getSettingsSmartphoneStamp() {
@@ -53,7 +56,8 @@ public class SettingsSmartphoneStampHelper {
 		return new SettingsSmartphoneStamp("000-0000000001", new DisplaySettingsStampScreen(new CorrectionInterval(1), // dummy
 				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1)), // dummy
-				lstSPL, true, null);
+				lstSPL, true, 
+				new StampingAreaRestriction(nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr.NOT_USE, StampingAreaLimit.NO_AREA_RESTRICTION));
 	}
 	
 	public static Optional<ButtonSettings> getOPTButtonSeting(){
