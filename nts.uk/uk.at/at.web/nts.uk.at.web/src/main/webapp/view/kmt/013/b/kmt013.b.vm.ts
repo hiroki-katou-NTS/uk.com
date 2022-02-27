@@ -8,9 +8,8 @@ module nts.uk.at.view.kmt013.b {
     @bean()
     class ViewModel extends ko.ViewModel {
 
-        param: KnockoutObservableArray<string> = ko.observableArray([]);
-        items: KnockoutObservableArray<ItemModel>;
-        currentCode: KnockoutObservable<any>;
+        items: KnockoutObservableArray<ItemModelKtm013> =ko.observableArray([]);
+        currentCode: KnockoutObservable<any> = ko.observable('');
         count: number = 100;
 
         constructor(params: any) {
@@ -18,15 +17,10 @@ module nts.uk.at.view.kmt013.b {
             super();
         }
 
-        created(params: any) {
+        created(params: Array<ItemModelKtm013>) {
             const vm = this;
             $("#B3_btn").focus();
-            vm.param(params);
-            vm.items = ko.observableArray([]);
-            // for(let i = 1; i < 30; i++) {
-            //     vm.items.push(new ItemModel('0000000000' + i, '基本給'));
-            // }
-            this.currentCode = ko.observable();
+            vm.items(params);
         }
 
         mounted() {
@@ -36,12 +30,11 @@ module nts.uk.at.view.kmt013.b {
 
         closeModal() {
             const vm = this;
-            console.log(vm.param());
             vm.$window.close();
         }
     }
 
-    class ItemModel {
+    export class ItemModelKtm013 {
         destination: string;
         state: string;
 

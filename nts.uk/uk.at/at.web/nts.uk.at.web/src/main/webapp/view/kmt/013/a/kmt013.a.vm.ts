@@ -1,21 +1,23 @@
 module nts.uk.at.view.kmt013.a {
-    import flat = nts.uk.util.flatArray;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import modal = nts.uk.ui.windows.sub.modal;
-    import modeless = nts.uk.ui.windows.sub.modeless;
+    import Moment = moment.Moment;
     const PATH = {
-        getAllSetWkps: "at/shared/scherec/taskmanagement/task/kmt010/getAlreadySetWkps",
-        getAllRulesOfOrgShiftTable: 'screen/at/shift/table/setTissueList',
+        getAllSetWkps: "at/screen/kmt013/findAll",
+        getById: 'at/screen/kmt013/findAllById',
+        register: 'at/share/supportmanagement/supportalloworg/register',
+        copy: 'at/share/supportmanagement/supportalloworg/copy',
+        delete: 'at/share/supportmanagement/supportalloworg/delete',
     };
 
     @bean()
     class ViewModel extends ko.ViewModel {
 
-        unit: KnockoutObservable<number> = ko.observable(null); // WORKPLACE = 0, WORKPLACE GROUP = 1
+        unit: KnockoutObservable<number> = ko.observable(0); // WORKPLACE = 0, WORKPLACE GROUP = 1
         multiple: KnockoutObservable<boolean>;
         onDialog: KnockoutObservable<boolean>;
-        showAlreadySetting: KnockoutObservable<boolean>;
+        showAlreadySetting: KnockoutObservable<boolean> = ko.observable(true);
         selectType: KnockoutObservable<number>;
         rows: KnockoutObservable<number>;
         baseDate: KnockoutObservable<any>;
@@ -28,28 +30,26 @@ module nts.uk.at.view.kmt013.a {
         selectedWkp: KnockoutObservable<any>;
         selectedWkpGroup: KnockoutObservable<any>;
 
-        items: KnockoutObservableArray<any>;
+        supportableList: KnockoutObservableArray<SupportableList>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
         count: number = 100;
 
         a3_1Txt: KnockoutObservable<string> = ko.observable(null);
-        a3_2Txt: KnockoutObservable<string> = ko.observable(null);
+        currentWrkName: KnockoutObservable<string> = ko.observable('');
+        currentWrkCode: KnockoutObservable<string> = ko.observable('');
         a4_1Txt: KnockoutObservable<string> = ko.observable(null);
 
-        updateMode: KnockoutObservable<boolean>;
+        updateMode: KnockoutObservable<boolean> = ko.observable(false);
         isA5Checked: KnockoutObservable<boolean>;
         isA2NotEmpty: KnockoutObservable<boolean>;
         enableA43Btn: KnockoutObservable<boolean>;
-
+        componentName: KnockoutObservable<string> = ko.observable("kcp017-component");
         created(params: any) {
             const vm = this;
-            vm.getAlreadySettingList();
 
-            vm.unit = ko.observable(0);
             vm.multiple = ko.observable(false);
             vm.onDialog = ko.observable(false);
-            vm.showAlreadySetting = ko.observable(true);
             vm.selectType = ko.observable(3);
             vm.rows = ko.observable(14);
             vm.baseDate = ko.observable(new Date);
@@ -62,20 +62,19 @@ module nts.uk.at.view.kmt013.a {
             vm.selectedWkp = ko.observable(null);
             vm.selectedWkpGroup = ko.observable(null);
 
-            vm.items = ko.observableArray([]);
+            vm.supportableList = ko.observableArray([]);
             vm.currentCode = ko.observable();
             vm.currentCodeList = ko.observableArray([]);
 
             vm.a3_1Txt = ko.observable(vm.$i18n('Com_Workplace') + ': ');
-            vm.a3_2Txt = ko.observable('');
             vm.a4_1Txt = ko.observable(vm.$i18n('応援可能') + vm.$i18n('Com_Workplace') + vm.$i18n('リスト'));
 
-            vm.updateMode = ko.computed(() => {
-                if (vm.isWorkplaceGroupMode()) {
-                    return vm.alreadySettingWorkplaceGroups().indexOf(vm.selectedWkpGroupId()) >= 0;
-                }
-                return vm.alreadySettingWorkplaces().map(i => i.workplaceId).indexOf(vm.selectedWkpId()) >= 0;
-            });
+            // vm.updateMode = ko.computed(() => {
+            //     if (vm.isWorkplaceGroupMode()) {
+            //         return vm.alreadySettingWorkplaceGroups().indexOf(vm.selectedWkpGroupId()) >= 0;
+            //     }
+            //     return vm.alreadySettingWorkplaces().map(i => i.workplaceId).indexOf(vm.selectedWkpId()) >= 0;
+            // });
 
             vm.isA5Checked = ko.computed(() => {
                 return vm.currentCodeList().length > 0;
@@ -86,33 +85,55 @@ module nts.uk.at.view.kmt013.a {
             vm.enableA43Btn = ko.computed(() => {
                 return vm.isA2NotEmpty() && vm.isA5Checked();
             })
-
-            vm.selectedWkpId.subscribe((newValue) => {
-                if (typeof ko.dataFor($("#workplace-tree-grid")[0]).itemList === 'function') {
-                    let result: any = {};
-                    const workplaces: Array<any> = ko.dataFor($("#workplace-tree-grid")[0]).itemList();
-                    vm.isA2NotEmpty(workplaces.length > 0);
-                    const flwps = flat(_.cloneDeep(workplaces), "children");
-                    const itemWpl = _.find(flwps, (o) => o.id === vm.selectedWkpId());
-                    result.workplaceCode = itemWpl.code ?? '';
-                    result.workplaceID = itemWpl.id ?? '';
-                    result.workplaceName = itemWpl.name ?? '';
-                    vm.selectedWkp(result);
-                    !vm.isWorkplaceGroupMode() && vm.a3_2Txt(result.workplaceName);
+            vm.unit.subscribe((value: number)=>{
+                vm.componentName.valueHasMutated();
+               vm.isWorkplaceGroupMode(value == OrgUnit.WORKPLACEGROUP);
+                $("#A4_2").focus();
+                if (vm.isWorkplaceGroupMode()) {
+                    vm.a3_1Txt(vm.$i18n('Com_WorkplaceGroup') + ': ');
+                    vm.a4_1Txt('応援可能' + vm.$i18n('Com_WorkplaceGroup') + 'リスト');
+                } else {
+                    vm.a3_1Txt(vm.$i18n('Com_Workplace') + ': ');
+                    vm.a4_1Txt('応援可能' + vm.$i18n('Com_Workplace') + 'リスト');
                 }
+            });
+            vm.selectedWkpId.subscribe((newValue) => {
+                let param: TargetOrgParams = new TargetOrgParams(moment.utc(),vm.unit(),vm.unit() == OrgUnit.WORKPLACE ? vm.selectedWkpId(): vm.selectedWkpGroupId());
+                vm.$ajax(PATH.getById,param).done((data: TargetOrgInfo) => {
+                    if (!_.isEmpty(data.supportableOrgInfoDtoList)){
+                        vm.updateMode(true);
+                    } else {
+                        vm.updateMode(false);
+                    }
+                    vm.currentWrkCode(data.code);
+                    vm.currentWrkName(data.name);
+
+                    vm.supportableList( _.sortBy(data.supportableOrgInfoDtoList.map(id => new SupportableList(id.orgId,id.code,id.name)),(s)=>{return s.code;}));
+                }).fail(error => {
+                    vm.$dialog.error(error);
+                }).always(() => {
+                    $("#A4_2").focus();
+                    vm.$blockui("hide");
+                });
             });
 
             vm.selectedWkpGroupId.subscribe((newValue) => {
-                let result: any = {};
-                const workplaceGroups: Array<any> = ko.dataFor($("#workplace-group-pannel")[0]).workplaceGroups();
-                vm.alreadySettingWorkplaceGroups(workplaceGroups);
-                vm.isA2NotEmpty(workplaceGroups.length > 0);
-                const itemWplGr = _.find(workplaceGroups, (o) => o.id === vm.selectedWkpGroupId());
-                result.workplaceGroupCode = itemWplGr.code ?? '';
-                result.workplaceGroupID = itemWplGr.id ?? '';
-                result.workplaceGroupName = itemWplGr.name ?? '';
-                vm.selectedWkpGroup(result);
-                vm.isWorkplaceGroupMode() && vm.a3_2Txt(result.workplaceGroupName);
+                let param: TargetOrgParams = new TargetOrgParams(moment.utc(),vm.unit(),vm.unit() == OrgUnit.WORKPLACE ? vm.selectedWkpId(): vm.selectedWkpGroupId());
+                vm.$ajax(PATH.getById,param).done((data: TargetOrgInfo) => {
+                    if (!_.isEmpty(data.supportableOrgInfoDtoList)){
+                        vm.updateMode(true);
+                    } else {
+                        vm.updateMode(false);
+                    }
+                    vm.currentWrkCode(data.code);
+                    vm.currentWrkName(data.name);
+                    vm.supportableList(_.sortBy(data.supportableOrgInfoDtoList.map(id => new SupportableList(id.orgId,id.code,id.name)),(s)=>{return s.code;}));
+                }).fail(error => {
+                    vm.$dialog.error(error);
+                }).always(() => {
+                    $("#A4_2").focus();
+                    vm.$blockui("hide");
+                });
             });
 
         }
@@ -120,36 +141,71 @@ module nts.uk.at.view.kmt013.a {
         mounted() {
             const vm = this;
             $("#A4_2").focus();
-
-            $('#kcp017-switch input').change(() => {
-                $("#A4_2").focus();
-                let isWplGrMode = $('#kcp017-switch input')[1].getAttribute('checked') == 'checked';
-                vm.isWorkplaceGroupMode(isWplGrMode);
-                if (isWplGrMode) {
-                    vm.a3_1Txt(vm.$i18n('Com_WorkplaceGroup') + ': ');
-                    vm.a4_1Txt(vm.$i18n('応援可能') + vm.$i18n('Com_WorkplaceGroup') + vm.$i18n('リスト'));
-                    vm.a3_2Txt(vm.selectedWkpGroup().workplaceGroupName);
-                } else {
-                    vm.a3_1Txt(vm.$i18n('Com_Workplace') + ': ');
-                    vm.a4_1Txt(vm.$i18n('応援可能') + vm.$i18n('Com_Workplace') + vm.$i18n('リスト'));
-                    vm.a3_2Txt(vm.selectedWkp().workplaceName);
-                }
-            })
+            vm.getAlreadySettingList();
         }
 
         registerSupport() {
             const vm = this;
+            vm.$blockui("show").then(() => {
+                const data: RegisterSupportAllowOrgCommand
+                    = new RegisterSupportAllowOrgCommand(vm.unit(),vm.unit() == OrgUnit.WORKPLACE ? vm.selectedWkpId(): vm.selectedWkpGroupId(),_.map(vm.supportableList(),(item)=>{
+                        return new OrgCanBeSupportDto(item.id);
+                }));
+                return vm.$ajax(PATH.register, data);
+            }).done(() => {
+                vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                    vm.getAlreadySettingList();
+                    if (vm.isWorkplaceGroupMode()){
+                        vm.selectedWkpGroupId.valueHasMutated();
+                    } else{
+                        vm.selectedWkpId.valueHasMutated();
+                    }
+
+                });
+            }).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                $('.A6_1').focus();
+                vm.$blockui("hide");
+            });
         }
 
         deleteSupport() {
             const vm = this;
+            vm.$dialog.confirm({messageId: 'Msg_18'}).then((result) => {
+                if (result === 'yes') {
+                    vm.$blockui('show');
+                    let command: DeleteSupportAllowOrgCommand = new DeleteSupportAllowOrgCommand(vm.unit(),vm.unit() == OrgUnit.WORKPLACE ? vm.selectedWkpId(): vm.selectedWkpGroupId());
+                    vm.$ajax(PATH.delete, command).done(() => {
+                        vm.$dialog.info({messageId: 'Msg_16'}).then(() => {
+                            vm.getAlreadySettingList();
+                            if (vm.isWorkplaceGroupMode()){
+                                vm.selectedWkpGroupId.valueHasMutated();
+                            } else{
+                                vm.selectedWkpId.valueHasMutated();
+                            }
+                        });
+                    }).fail((error) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        $('.A6_1').focus();
+                        vm.$blockui('hide');
+                    });
+                }
+            });
         }
 
         getAlreadySettingList() {
             const vm = this;
             vm.$blockui("show");
-            vm.$ajax(PATH.getAllSetWkps).done((data: Array<string>) => {
-                vm.alreadySettingWorkplaces(data.map(id => ({workplaceId: id, isAlreadySetting: true})));
+            vm.$ajax(PATH.getAllSetWkps).done((data: Array<SupportFuncGetOrganizationDto>) => {
+                if (vm.isWorkplaceGroupMode()){
+                    vm.alreadySettingWorkplaceGroups(_.map(_.filter(data,(item)=>{return item.unit == OrgUnit.WORKPLACEGROUP}),gr=>gr.orgId));
+                }else{
+                    let wrkPlace = _.map(_.filter(data,(item)=>{return item.unit == OrgUnit.WORKPLACE}),gr=>gr.orgId)
+                    vm.alreadySettingWorkplaces(wrkPlace.map(id => ({workplaceId: id, isAlreadySetting: true})));
+                }
+
             }).fail(error => {
                 vm.$dialog.error(error);
             }).always(() => {
@@ -160,28 +216,47 @@ module nts.uk.at.view.kmt013.a {
         openDialogCDL023() {
             const vm = this;
             let params: IObjectDuplication = {
-                code: vm.selectedWkp().workplaceCode,
-                name: vm.selectedWkp().workplaceName,
+                code: vm.currentWrkCode(),
+                name: vm.currentWrkName(),
                 targetType: TargetType.WORKPLACE,
                 baseDate: new Date(),
                 itemListSetting: vm.alreadySettingWorkplaces().map(w => w.workplaceId),
             };
-
-            if (vm.isWorkplaceGroupMode()) {
-                params.code = vm.selectedWkpGroup().workplaceGroupCode;
-                params.name = vm.selectedWkpGroup().workplaceGroupName;
-                params.itemListSetting = vm.alreadySettingWorkplaceGroups().map(w => w.workplaceGroupId);
-            }
 
             setShared("CDL023Input", params);
             // open modal
             modal('com', 'view/cdl/023/a/index.xhtml').onClosed(() => {
                 let lstSelection: Array<string> = getShared("CDL023Output");
                 if (!_.isEmpty(lstSelection)) {
-                    // open modeless b
-                    vm.$window.modeless('at', '/view/kmt/013/b/index.xhtml', lstSelection).then(() => {
-                        // business code when modal closed
-                    });
+                    let data:Array<any> = [];
+                    let param = {
+                        targetUnit: vm.unit(),
+                        copySourceWkpId: vm.unit() == OrgUnit.WORKPLACE ? vm.selectedWkpId(): vm.selectedWkpGroupId(),
+                        // shiftMasterCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode }),
+                        copyDestinationWkpIds: lstSelection,
+                        overWrite: true
+                    }
+                    vm.$blockui("show").then(() => {
+                        vm.$ajax(PATH.copy, param)
+                            .done((results: Array<CopySupportAllowOrgResult>) => {
+                                let msg = '';
+                                results.forEach((result: CopySupportAllowOrgResult) => {
+                                    let status = result.copyResult ? vm.$i18n('KMT013_15') : '';
+                                    let destination = result.orgDisplayInfo.orgcCode + ' ' + result.orgDisplayInfo.orgName ;
+                                    data.push({destination:destination,state: status});
+
+                                });
+                                vm.$window.modeless('at', '/view/kmt/013/b/index.xhtml', data).then(() => {
+                                    vm.getAlreadySettingList();
+                                });
+                            }).fail(error => {
+                            vm.$dialog.error(error);
+                        }).always(() => {
+                            vm.$blockui("hide");
+                        });;
+                    })
+
+
                 }
             });
         }
@@ -198,7 +273,7 @@ module nts.uk.at.view.kmt013.a {
         openDialogCDL008() {
             const vm = this;
             setShared('inputCDL008', {
-                selectedCodes: vm.selectedWkpId(),
+                selectedCodes: _.map(vm.supportableList(),(item)=>{return item.id;}),
                 baseDate: moment(new Date()).toDate(),
                 isMultiple: true,
                 selectedSystemType: 2,
@@ -208,8 +283,11 @@ module nts.uk.at.view.kmt013.a {
             });
             modal('com',"/view/cdl/008/a/index.xhtml").onClosed(function(){
                 let data = getShared('outputCDL008');
+                let workplaceInfor = getShared('workplaceInfor');
                 let baseDate = getShared('baseDateCDL008');
-                console.log(data, baseDate)
+                if (data) {
+                    vm.supportableList(_.sortBy(workplaceInfor,(item)=>{return item.code;}));
+                }
             });
         }
 
@@ -221,11 +299,36 @@ module nts.uk.at.view.kmt013.a {
                 let response = getShared('outputCDL014');
                 console.log(response)
             });
+            let data: any = {
+                multiple: true,
+                showEmptyItem: false,
+                selectedMode: 3,
+                alreadySettingList: _.map(vm.supportableList(), (item)=>{return item.id;}),
+                currentCodes: _.map(vm.supportableList(), (item)=>{return item.code;}),
+                currentNames: _.map(vm.supportableList(), (item)=>{return item.name;}),
+                selectedWkpGroupTypes: []
+            }
+            vm.$window.modal('/view/cdl/014/a/index.xhtml', data)
+                .then((result: any) => {
+                    // if (!result.isCanceled){
+                    //     vm.listWorkPlace(result.result);
+                    //     vm.selectedWrk(_.map(result.result,(item)=>{
+                    //         return item.workPlaceId;
+                    //     }))
+                    // }
+
+            });
         }
 
         a4_3BtnClick() {
             const vm = this;
-            console.log('a4_3 click')
+            // _.each(vm.currentCodeList(), function (current) {
+            //     _.remove(vm.supportableList(), (item)=> {
+            //         return item.id == current;
+            //     });
+            // })
+            vm.supportableList(_.filter(vm.supportableList(),(item)=>{return vm.currentCodeList().indexOf(item.id)<0}))
+            console.log('a4_3 click');
         }
 
     }
@@ -240,6 +343,141 @@ module nts.uk.at.view.kmt013.a {
         roleType?: number; // needed when target type: ロール
     }
 
+    class SupportableList{
+        id: string;
+        code: string;
+        name: string;
+        constructor(id:string, code:string, name: string){
+            this.id = id;
+            this.code = code;
+            this.name = name;
+        }
+    }
+
+    class RegisterSupportAllowOrgCommand {
+        /** 対象組織の単位 */
+        orgUnit: number;
+
+        /** 組織ID */
+        orgId: string;
+
+        /** List<応援可能組織> */
+        orgCanBeSupports: Array<OrgCanBeSupportDto>;
+        constructor(unit: number, orgId: string, orgCanBesupported: Array<OrgCanBeSupportDto>){
+            this.orgUnit = unit;
+            this.orgId = orgId;
+            this.orgCanBeSupports = orgCanBesupported;
+        }
+    }
+
+    class OrgCanBeSupportDto {
+        orgId: string;
+        constructor(orgId: string){
+            this.orgId = orgId;
+        }
+    }
+
+    class DeleteSupportAllowOrgCommand {
+        /** 単位 */
+        unit: number;
+
+        orgId: string;
+
+        constructor(unit: number, orgId: string){
+            this.unit = unit;
+            this.orgId = orgId;
+        }
+    }
+
+    class CopySupportAllowOrgResult {
+        workplaceId: string;
+        copyResult: boolean;
+        orgDisplayInfo: OrgDisplayInfoDto;
+    }
+
+    class OrgDisplayInfoDto {
+        orgcCode: string;
+        orgName: string;
+    }
+
+    class TargetOrgParams {
+        baseDate: Moment;
+        unit: number;
+        orgId: string;
+        constructor(date: Moment, unit: number, orgId: string){
+            this.baseDate = date;
+            this.unit = unit;
+            this.orgId = orgId;
+        }
+    }
+
+    class TargetOrgInfoDto {
+        /** 単位 */
+         unit: number;
+        /** 職場ID/ 職場グループID */
+        orgId: string;
+        /** 呼称 **/
+        designation: string;
+        /** コード **/
+        code: string;
+        /** 名称 **/
+        name: string;
+        /** 表示名 **/
+        displayName: string;
+        /** 呼称 **/
+        genericTerm: string;
+        constructor(param: TargetOrgInfo){
+            this.unit = param.unit;
+            this.orgId = param.orgId;
+            this.designation = param.designation;
+            this.code = param.code;
+            this.name = param.name;
+            this.displayName = param.displayName;
+            this.genericTerm = param.genericTerm;
+        }
+    }
+    interface TargetOrgInfo {
+        /** 単位 */
+        unit: number;
+        /** 職場ID/ 職場グループID */
+        orgId: string;
+        /** 呼称 **/
+        designation: string;
+        /** コード **/
+        code: string;
+        /** 名称 **/
+        name: string;
+        /** 表示名 **/
+        displayName: string;
+        /** 呼称 **/
+        genericTerm: string;
+
+        supportableOrgInfoDtoList: Array<SupportableOrgInfoDto>;
+    }
+
+    interface SupportableOrgInfoDto {
+        /** 単位 */
+        unit: number;
+        /** 職場ID/ 職場グループID */
+        orgId: string;
+        /** 呼称 **/
+        designation: string;
+        /** コード **/
+        code: string;
+        /** 名称 **/
+        name: string;
+        /** 表示名 **/
+        displayName: string;
+        /** 呼称 **/
+        genericTerm: string;
+
+
+    }
+    interface SupportFuncGetOrganizationDto {
+        unit: number;
+
+        orgId: string;
+    }
     class TargetType {
         // 雇用
         static EMPLOYMENT = 1;
@@ -251,16 +489,9 @@ module nts.uk.at.view.kmt013.a {
         static WORKPLACE = 4;
         // 部門
         static DEPARTMENT = 5;
-        // 職場個人
-        static WORKPLACE_PERSONAL = 6;
-        // 部門個人
-        static DEPARTMENT_PERSONAL = 7;
-        // ロール
-        static ROLE = 8;
-        // 勤務種別
-        static WORK_TYPE = 9;
-        //作業
-        static  WORK = 10; //ver 6
     }
-
+    enum OrgUnit{
+        WORKPLACE = 0,
+        WORKPLACEGROUP = 1
+    }
 }

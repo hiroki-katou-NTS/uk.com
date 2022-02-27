@@ -50,5 +50,12 @@ public interface SupportAllowOrganizationRepository {
 	 * @return
 	 */
 	boolean exists( String cid, TargetOrgIdenInfor targetOrg );
+
+    /**
+     * 対象組織を指定して応援許可する組織を取得する
+     * @param cid 会社ID
+     * @return
+     */
+    List<SupportAllowOrganization> getByCid( String cid);
 	
 }

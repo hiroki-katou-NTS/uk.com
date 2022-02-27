@@ -29,9 +29,9 @@
                 <!--<i class="icon icon-searchbox"></i>-->
                 <!--<div style="background-color: #e0f59e" data-bind="component: {-->
                 <div tabindex="4" data-bind="component: {
-                    name: 'kcp017-component',
+                    name: componentName,
                     params: {
-                        unit: unit(),
+                        unit: unit,
                         selectType: selectType(),
                         multiple: multiple(),
                         baseDate: baseDate(),
@@ -48,7 +48,7 @@
             <div class="fixed-flex-layout-right">
                 <div>
                     <span id="A3_1" class="label" data-bind="{ text: a3_1Txt() }"/>
-                    <span id="A3_2" class="label" data-bind="{ text: a3_2Txt() }"/>
+                    <span id="A3_2" class="label" data-bind="{ text: currentWrkName() }"/>
                 </div>
                 <div id="A3_3"><hr/></div>
                 <div>
@@ -60,8 +60,8 @@
                 </div>
                 <div>
                     <table id="multi-list" data-bind="ntsGridList: {
-                        height: 380,
-                        options: items,
+                        height: 390,
+                        options: supportableList,
                         optionsValue: 'id',
                         columns: ko.observableArray([
                             { headerText: 'ID', key: 'id', width: 0, hidden: true },

@@ -9,7 +9,7 @@ public class CopySupportAllowOrgCommand {
     /** 複写先リスト : 職場IDリスト */
     private List<String> copyDestinationWkpIds;
     /** 上書きするか*/
-    private boolean isOverwrite;
+    private boolean overWrite;
 
     /** 組織選択リスト: 選択職場の職場ID（複写元） */
     private String copySourceWkpId;
