@@ -1,10 +1,5 @@
 module nts.uk.at.view.kmt013.b {
 
-    const PATH = {
-        init: 'at/shared/scherec/workmanagement/work/kmt001/init',
-        saveRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/register',
-    };
-
     @bean()
     class ViewModel extends ko.ViewModel {
 
