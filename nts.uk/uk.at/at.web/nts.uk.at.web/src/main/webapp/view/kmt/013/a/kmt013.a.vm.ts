@@ -85,9 +85,11 @@ module nts.uk.at.view.kmt013.a {
                 if (vm.isWorkplaceGroupMode()) {
                     vm.a3_1Txt(vm.$i18n('Com_WorkplaceGroup') + ': ');
                     vm.a4_1Txt('応援可能' + vm.$i18n('Com_WorkplaceGroup') + 'リスト');
+                    vm.rows(12);
                 } else {
                     vm.a3_1Txt(vm.$i18n('Com_Workplace') + ': ');
                     vm.a4_1Txt('応援可能' + vm.$i18n('Com_Workplace') + 'リスト');
+                    vm.rows(14);
                 }
             });
             vm.selectedWkpId.subscribe((newValue) => {

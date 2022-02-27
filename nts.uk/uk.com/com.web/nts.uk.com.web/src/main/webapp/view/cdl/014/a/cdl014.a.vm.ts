@@ -53,7 +53,7 @@ module nts.uk.com.view.cdl014.a {
         proceed(){
             const vm = this;
             let result:Array<WorkPlaceReturn> = [];
-            // The cause is kcp011 return number when select none
+                // The cause is kcp011 return number when select none
             if (vm.currentCodes().length == 0 || !_.isNaN(new Number(vm.currentIds()))) {
                 vm.$dialog.error({messageId: "Msg_2286"});
             } else {
