@@ -16,7 +16,7 @@ import java.util.Optional;
 /**
  * 任意期間修正のフォーマットを削除する
  * UKDesign.UniversalK.就業.KDW_日別実績.KDW008_表示フォーマットの登録
- *.表示フォーマットの登録.アルゴリズム.任意期間修正.任意期間修正のフォーマットを削除する.任意修正のフォーマットを削除する
+ * .表示フォーマットの登録.アルゴリズム.任意期間修正.任意期間修正のフォーマットを削除する.任意修正のフォーマットを削除する
  */
 @Stateless
 public class DeleteModifyAnyPeriodCommandHandler extends CommandHandler<DeleteModifyAnyPeriodCommand> {
@@ -26,16 +26,17 @@ public class DeleteModifyAnyPeriodCommandHandler extends CommandHandler<DeleteMo
 
     @Inject
     private AnyPeriodCorrectionFormatSettingRepository formatSettingRepository;
+
     @Override
     protected void handle(CommandHandlerContext<DeleteModifyAnyPeriodCommand> commandHandlerContext) {
         //ドメインモデル「任意期間修正のフォーマット設定」を削除する
         DeleteModifyAnyPeriodCommand command = commandHandlerContext.getCommand();
         String cid = AppContexts.user().companyId();
-        Optional<AnyPeriodCorrectionFormatSetting> optionalFormatSetting = formatSettingRepository.get(cid,command.getCode());
-        if(optionalFormatSetting.isPresent()){
-            formatSettingRepository.delete(cid,command.getCode());
+        Optional<AnyPeriodCorrectionFormatSetting> optionalFormatSetting = formatSettingRepository.get(cid, command.getCode());
+        if (optionalFormatSetting.isPresent()) {
+            formatSettingRepository.delete(cid, command.getCode());
             Optional<AnyPeriodCorrectionDefaultFormat> defaultFormat = anyPeriodCorrectionDefaultFormatRepository.get(cid);
-            if(defaultFormat.isPresent()){
+            if (defaultFormat.isPresent() && defaultFormat.get().getCode().equals(command.getCode())) {
                 anyPeriodCorrectionDefaultFormatRepository.delete(cid);
             }
         }

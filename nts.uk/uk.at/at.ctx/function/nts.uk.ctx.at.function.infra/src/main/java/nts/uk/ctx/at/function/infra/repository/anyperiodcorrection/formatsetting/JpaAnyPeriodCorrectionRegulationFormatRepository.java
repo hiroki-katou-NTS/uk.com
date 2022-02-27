@@ -34,5 +34,6 @@ public class JpaAnyPeriodCorrectionRegulationFormatRepository extends JpaReposit
     @Override
     public void delete(String companyId) {
         this.commandProxy().remove(KfnmtAnpFormDefault.class, companyId);
+        this.getEntityManager().flush();
     }
 }

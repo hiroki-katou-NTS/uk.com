@@ -59,6 +59,7 @@ module nts.uk.at.view.kdw008.a {
             modifyAnyPeriodAttItems: KnockoutObservableArray<AttendanceItemDto>;
             modifyAnyPeriodValue: KnockoutObservableArray<AttendanceItemDto>;
             modifyAnyPeriodDataSource: KnockoutObservableArray<AttendanceItemDto>;
+            modifyAnyPeriodFormatList: KnockoutObservableArray<any>;
 
             //swap list tab 3
             columns3: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
@@ -70,6 +71,7 @@ module nts.uk.at.view.kdw008.a {
             isDuplicate: boolean = false;
             codeDuplicate: string = '';
             listDailyFormSheetCommand: Array<DailyFormSheetCommand>
+            listModifyPeriodCommand: Array<ModifyPeriodSheetCommand>
 
             constructor(dataShare: any) {
                 let self = this;
@@ -88,13 +90,14 @@ module nts.uk.at.view.kdw008.a {
                 self.dailyAttItems = ko.observableArray([]);
                 self.monthlyAttItems = ko.observableArray([]);
 
+
                 self.monthCorrectionFormatList = ko.observableArray([]);
                 self.monthCorrectionFormat = ko.observable({});
                 self.monthCorrectionValue = ko.observableArray([]);
                 self.monthCorrectionDataSource = ko.observableArray([]);
 
                 self.modifyAnyPeriodDataSource  = ko.observableArray([]);
-
+                self.modifyAnyPeriodFormatList = ko.observableArray([]);
                 self.modifyAnyPeriodAttItems= ko.observableArray([]);
                 self.modifyAnyPeriodValue= ko.observableArray([]);
 
@@ -104,12 +107,13 @@ module nts.uk.at.view.kdw008.a {
                 self.sideBar = ko.observable(1);
                 //isdaily
                 self.isDaily = ko.observable(dataShare.ShareObject);
-                self.isModifyAnyPeriod = ko.observable(dataShare.ShareObject);
+                self.isModifyAnyPeriod = ko.observable(dataShare.ShareModifyAnyPeriod);
+                if(self.isModifyAnyPeriod()){
+                    self.isDaily(false);
+                }
                 if (!self.isDaily() && !self.isModifyAnyPeriod()) {
                     self.sideBar(2);
                 }
-
-
                 self.isUpdate = ko.observable(true);
                 self.isRemove = ko.observable(true);
                 self.showCode = ko.observable(false);
@@ -207,7 +211,9 @@ module nts.uk.at.view.kdw008.a {
 	                        })
 	                    } else {
                             if(self.isModifyAnyPeriod()){
-                                //------------------------------------------------------------------------
+                                self.getModifyAnyPeriodDetail(self.selectedCode(),value.toString()).done(() => {
+                                    // self.initSelectedSheetNoHasMutated();
+                                })
 
                            }else {
                                self.getMonthCorrectionDetail(value);
@@ -219,6 +225,7 @@ module nts.uk.at.view.kdw008.a {
 							self.clearDataSwapListAndSheetName();	
 						} else {
                             if(self.isModifyAnyPeriod()){
+                                self.clearDataSwapListAndSheetName();
                                 //---------------------------------------------------------------
                             }else {
                                 self.clearSwapListByMonth();
@@ -246,7 +253,6 @@ module nts.uk.at.view.kdw008.a {
                     self.currentDailyFormatName(formatSelect.formatName);
                     self.isSetFormatToDefault(!formatSelect.isSetDefault);
                     self.checked(formatSelect.isSetDefault);
-
                     if (self.isDaily()) {
                         self.getMonthlyDetail(newValue).done(() => {
                             self.initSelectedSheetNoHasMutated();
@@ -257,6 +263,9 @@ module nts.uk.at.view.kdw008.a {
                     } else {
                         //ModifyAnyPeriod
                         if(self.isModifyAnyPeriod()){
+                            self.getModifyAnyPeriodDetail(newValue,'1').done(() => {
+                                self.initSelectedSheetNoHasMutated();
+                            })
                    //------------------------------------------------------------------------------------------------
                         }else {
                             self.getMonPfmCorrectionFormat(self.currentDailyFormatCode());
@@ -327,7 +336,7 @@ module nts.uk.at.view.kdw008.a {
                                 }
                             }).always(() => {
                                 block.clear();
-                            })
+                            });
                             dfd.resolve();
                         })
                     } else {
@@ -346,13 +355,29 @@ module nts.uk.at.view.kdw008.a {
                                     }
                                 }).always(() => {
                                     block.clear();
-                                })
+                                });
                                 dfd.resolve();
                             })
                         }
-                        // -------------------------------------------------------
+                        // ModifyAnyPeriod -------------------------------------------------------
                         else {
-
+                            service.getListModifyAnyPeriodCorrectionFormat().done((data) => {
+                                let dtdGetMonthlyAttItem = self.getModifyAnyPeriodyAttItem();
+                                $.when(dtdGetMonthlyAttItem).done(() => {
+                                    if (data && data.length > 0) {
+                                        self.formatCodeItems(FormatCode.fromModifyAnyPeriod(data));
+                                        self.modifyAnyPeriodFormatList(data);
+                                        let formatCodeItem: FormatCode = self.formatCodeItems()[this.getIndex(oldIndex)];
+                                        self.initSelectedCodeHasMutated(formatCodeItem.formatCode);
+                                    } else {
+                                        self.formatCodeItems([]);
+                                        self.setNewMode();
+                                    }
+                                }).always(() => {
+                                    block.clear();
+                                })
+                                dfd.resolve();
+                            })
                         }
                         return dfd.promise();
                     }
@@ -446,7 +471,23 @@ module nts.uk.at.view.kdw008.a {
                     dfd.resolve();
                 }).fail(err => {
                     dfd.reject(err);
-                })
+                });
+                return dfd.promise();
+            }
+
+            getModifyAnyPeriodyAttItem(): JQueryPromise<any> {
+                let self = this,
+                    dfd = $.Deferred();
+                service.getListModifyAnyPeriod().done(data => {
+                    if (data) {
+                        self.modifyAnyPeriodAttItems(AttendanceItemDto.fromApp(data));
+                    }
+                    dfd.resolve();
+                }).fail(err => {
+                    dfd.reject(err);
+                }).always(()=>{
+                    block.clear();
+                });
                 return dfd.promise();
             }
 
@@ -468,6 +509,36 @@ module nts.uk.at.view.kdw008.a {
                 }).fail(err => {
                     dfd.reject(err);
                 })
+                return dfd.promise();
+            }
+
+            getModifyAnyPeriodDetail(code: string, sheetNo : string): JQueryPromise<any> {
+                let self = this,
+                    dfd = $.Deferred();
+                service.getModifyAnyPeriodByCode(code).done(data => {
+                    $("#swap-list-grid2").igGridSelection("clearSelection");
+                    $("#swap-list-grid1").igGridSelection("clearSelection");
+                    self.modifyAnyPeriodValue.removeAll();
+                    self.modifyAnyPeriodDataSource.removeAll();
+                    self.modifyAnyPeriodDataSource(_.cloneDeep(self.modifyAnyPeriodAttItems()));
+
+                    if (data) {
+                        let listAtt: any[] = data.sheetlDtos.filter((e: any) => e.sheetNo == sheetNo);
+                        if (listAtt.length > 0) {
+                            let atds = listAtt[0].detailDtoList;
+                            self.selectedSheetName(listAtt[0].sheetName);
+                            self.modifyAnyPeriodValue(self.mapAttItemFormatDetail(self.modifyAnyPeriodAttItems(), atds));
+                            console.log(self.modifyAnyPeriodValue(), 'modifyAnyPeriodValue')
+                        }else {
+                            self.selectedSheetName("");
+                        }
+                    }
+                    dfd.resolve();
+                }).fail(err => {
+                    dfd.reject(err);
+                }).always(()=>{
+                        block.clear()}
+                );
                 return dfd.promise();
             }
 
@@ -541,7 +612,7 @@ module nts.uk.at.view.kdw008.a {
                         dto.attendanceItemDisplayNumber = attItem.attendanceItemDisplayNumber;
                     }
                     return dto;
-                })
+                });
                 return attItemDetail;
             }
             //  ModifyAnyPeriod
@@ -595,7 +666,10 @@ module nts.uk.at.view.kdw008.a {
                    }
                    //----------------------------------------------------------------
                     else {
-
+                       self.modifyAnyPeriodValue.removeAll();
+                       self.modifyAnyPeriodDataSource.removeAll();
+                       self.modifyAnyPeriodDataSource(_.cloneDeep(self.modifyAnyPeriodAttItems()));
+                       self.isSetFormatToDefault(true);
                    }
                 }
                 $("#currentCode").focus();
@@ -662,11 +736,28 @@ module nts.uk.at.view.kdw008.a {
 
                     //----------------------------------------------------------------------------
                     else {
-
+                        let command = {
+                            code: self.currentDailyFormatCode(),
+                            sheetNo: self.selectedSheetNo()
+                        };
+                        nts.uk.ui.block.invisible();
+                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                            .ifYes(() => {
+                                service.deleteModifyAnyPeriodSheet(command).done(function() {
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                        self.selectedSheetNo(1);
+                                    });
+                                }).fail(function(error) {
+                                }).always(()=>{
+                                    nts.uk.ui.block.clear();
+                                });
+                            })
+                            .ifNo(()=>{
+                                nts.uk.ui.block.clear();
+                            });
                     }
                 }
             }
-
             remove() {
                 let self = this;
                 if (self.isDaily()) {
@@ -677,7 +768,7 @@ module nts.uk.at.view.kdw008.a {
                     let removeAuthorityDto = {
                         dailyPerformanceFormatCode: self.currentDailyFormatCode(),
                         isDefaultInitial: isDefaultInitial
-                    }
+                    };
                     nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
                         .ifYes(() => {
                             service.removeAuthorityDailyFormat(removeAuthorityDto, self.isMobile).done(function() {
@@ -686,7 +777,6 @@ module nts.uk.at.view.kdw008.a {
                                 });
                             }).fail(function(error) {
                             });
-
                         });
                 } else {
                     if(!self.isModifyAnyPeriod()) {
@@ -705,12 +795,28 @@ module nts.uk.at.view.kdw008.a {
                         });
                 }else {
                  //------------------------------------------------------------------------------
+                        let command = {
+                            code: self.currentDailyFormatCode()
+                        };
+                        nts.uk.ui.block.invisible();
+                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                            .ifYes(() => {
+                                service.deleteModifyAnyPeriod(command).done(function() {
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                        self.loadData();
+                                    });
+                                }).fail(function(error) {
+                                }).always(()=>{
+                                    nts.uk.ui.block.clear();
+                                });
 
-
+                            })
+                            .ifNo(()=>{
+                                nts.uk.ui.block.clear();
+                            });
                     }
                 }
             }
-
             addOrUpdateClick() {
                 let self = this;
                 $("#currentName").trigger("validate");
@@ -739,7 +845,16 @@ module nts.uk.at.view.kdw008.a {
                             }
                         }else {
                             //-----------------------------------------------------------------------
-
+                            $("#currentCode").trigger("validate");
+                            $("#currentName").trigger("validate");
+                            $("#selectedSheetName").trigger("validate");
+                            if (!nts.uk.ui.errors.hasError()) {
+                                if (self.modifyAnyPeriodValue().length <= 0) {
+                                    nts.uk.ui.dialog.alert({ messageId: "Msg_920" });
+                                } else {
+                                    self.register();
+                                }
+                            }
                         }
 
 
@@ -893,7 +1008,71 @@ module nts.uk.at.view.kdw008.a {
                             });
                         }
                     }else {
+                        let listAttItem:ModifyAnyPeriodDetailDto[] = [];
+                        let command : any = {};
+                        if(self.isDuplicate && !self.isUpdate()){
+                            let modifyAnyPeriodFormat = self.modifyAnyPeriodFormatList()
+                                .filter((item) => item.code == self.codeDuplicate)[0];
+                            let displayItem: any[] = modifyAnyPeriodFormat.sheetlDtos[0].detailDtoList;
+                            displayItem.forEach(e=>{
+                                let item : any = {};
+                                item.attendanceItemId = e.attendanceItemId;
+                                item.order = e.attendanceItemDisplayNumber;
+                                item.columnWidth = e.columnWidth;
+                                listAttItem.push(item)
+                            });
+
+                            command = new AddModifyAnyPeriodCommand(
+                                self.currentDailyFormatCode(),
+                                self.currentDailyFormatName(),
+                                modifyAnyPeriodFormat.sheetlDtos[0].sheetNo,
+                                modifyAnyPeriodFormat.sheetlDtos[0].sheetName,
+                                listAttItem,
+                                self.checked()
+                            );
+                        }else {
+                            self.modifyAnyPeriodValue().forEach(e=>{
+                                let item : any = {};
+                                item.attendanceItemId = e.attendanceItemId;
+                                item.order = e.attendanceItemDisplayNumber;
+                                item.columnWidth = e.columnWidth;
+                                listAttItem.push(item)
+                            });
+                            command = new AddModifyAnyPeriodCommand(
+                                self.currentDailyFormatCode(),
+                                self.currentDailyFormatName(),
+                                self.selectedSheetNo(),
+                                self.selectedSheetName(),
+                                listAttItem,
+                                self.checked()
+                            );
+                        }
                         //------------------------------------------------------------------------------
+                        if(self.isUpdate()){
+                            block.invisible();
+                            service.updateModifyAnyPeriod(command).done(function() {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                    self.loadData();
+                                });
+                                $("#currentName").focus();
+                            }).fail(function(error) {
+                                $('#currentCode').ntsError('set', error);
+                            }).always(function() {
+                                block.clear();
+                            });
+                        }else {
+                            block.invisible();
+                            service.addModifyAnyPeriod(command).done(function() {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                    self.loadData();
+                                });
+                                $("#currentName").focus();
+                            }).fail(function(error) {
+                                $('#currentCode').ntsError('set', error);
+                            }).always(function() {
+                                block.clear();
+                            });
+                        }
                     }
 
                 }
@@ -964,6 +1143,16 @@ module nts.uk.at.view.kdw008.a {
         }
 
         export interface DailyFormItemCommand {
+            attendanceItemId: number;
+            displayOrder: number;
+            columnWidth: number;
+        }
+        export interface ModifyPeriodSheetCommand {
+            sheetNo: number;
+            sheetName: string;
+            listDailyFormItemCommand: Array<ModifyPeriodItemCommand>
+        }
+        export interface ModifyPeriodItemCommand {
             attendanceItemId: number;
             displayOrder: number;
             columnWidth: number;
@@ -1047,6 +1236,27 @@ module nts.uk.at.view.kdw008.a {
                 this.isDefaultInitial = isDefaultInitial;
             }
         }
+        export class AddModifyAnyPeriodCommand {
+            code: string;
+            name: string;
+            sheetNo: number;
+            sheetName: string;
+            listItemDetail: Array<IModifyAnyPeriodDetailDto>;
+            initFormat: boolean;
+            constructor(code: string,
+                        name: string,
+                        sheetNo: number,
+                        sheetName: string,
+                        listItemDetail: Array<IModifyAnyPeriodDetailDto>,
+                        initFormat: boolean) {
+                this.code = code;
+                this.name = name ;
+                this.sheetNo = sheetNo ;
+                this.sheetName = sheetName;
+                this.listItemDetail = listItemDetail ;
+                this.initFormat = initFormat ;
+            }
+        }
 
         export class BusinessTypeModel {
             dailyPerformanceFormatCode: string;
@@ -1090,11 +1300,12 @@ module nts.uk.at.view.kdw008.a {
                 })
                 return _.sortBy(result, ["formatCode"]);
             }
+
             static fromModifyAnyPeriod(listItem): Array<FormatCode> {
                 let result = _.map(listItem, item => {
                     let dto: IFormatCode = {};
-                    dto.formatCode = item.monthlyPfmFormatCode;
-                    dto.formatName = item.monPfmCorrectionFormatName;
+                    dto.formatCode = item.code;
+                    dto.formatName = item.name;
                     dto.isSetDefault = item.setFormatToDefault;
                     return new FormatCode(dto);
                 })
@@ -1155,12 +1366,33 @@ module nts.uk.at.view.kdw008.a {
             static fromApp(listItem: Array<IDailyAttendanceAuthorityDetailDto>): Array<DailyAttendanceAuthorityDetailDto> {
                 let result = _.map(listItem, (item: IDailyAttendanceAuthorityDetailDto) => {
                     return new DailyAttendanceAuthorityDetailDto(item);
-                })
+                });
                 return _.sortBy(result, ["order"]);
             }
         }
+        class ModifyAnyPeriodDetailDto {
+            attendanceItemId: number;
+            order: number;
+            columnWidth: number;
+            constructor(data: IModifyAnyPeriodDetailDto) {
+                this.attendanceItemId = data.attendanceItemId;
+                this.order = data.order;
+                this.columnWidth = data.columnWidth
+            }
 
+            static fromApp(listItem: Array<IModifyAnyPeriodDetailDto>): Array<IModifyAnyPeriodDetailDto> {
+                let result = _.map(listItem, (item: IModifyAnyPeriodDetailDto) => {
+                    return new ModifyAnyPeriodDetailDto(item);
+                });
+                return _.sortBy(result, ["order"]);
+            }
+        }
         interface IDailyAttendanceAuthorityDetailDto {
+            attendanceItemId: number;
+            order: number;
+            columnWidth: number;
+        }
+        interface IModifyAnyPeriodDetailDto {
             attendanceItemId: number;
             order: number;
             columnWidth: number;
@@ -1183,7 +1415,7 @@ module nts.uk.at.view.kdw008.a {
             static fromApp(listItem: Array<IMonPfmCorrectionFormatDto>): Array<MonPfmCorrectionFormatDto> {
                 let result = _.map(listItem, (item: IMonPfmCorrectionFormatDto) => {
                     return new MonPfmCorrectionFormatDto(item);
-                })
+                });
                 return result;
             }
         }

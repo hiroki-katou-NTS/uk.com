@@ -43,11 +43,13 @@ module nts.uk.at.view.kdw008.a.service {
         //ModifyAnyPeriod
         getListModifyAnyPeriod: "at/record/kdw/008/modifyAnyPeriodAttItems",
         getListModifyAnyPeriodCorrectionFormat: "at/function/kdw/008/a/findAll",
-        getModifyAnyPeriod: "at/function/kdw/008/a/findByCode/{0}",
+        getModifyAnyPeriodByCode: "at/function/kdw/008/a/findByCode/{0}",
         addModifyAnyPeriod: "at/function/kdw/008/a/add",
         updateModifyAnyPeriod: "at/function/kdw/008/a/update",
         deleteModifyAnyPeriod: "at/function/kdw/008/a/delete",
         deleteModifyAnyPeriodSheet: "at/function/kdw/008/a/delete/sheet",
+
+
 
     }
 
@@ -156,8 +158,8 @@ module nts.uk.at.view.kdw008.a.service {
         return nts.uk.request.ajax("at", nts.uk.text.format(paths.getListModifyAnyPeriodCorrectionFormat));
     };
 
-    export function getModifyAnyPeriod(code: string): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", nts.uk.text.format(paths.getModifyAnyPeriod, code));
+    export function getModifyAnyPeriodByCode(code: string): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", nts.uk.text.format(paths.getModifyAnyPeriodByCode, code));
     };
 
     export function addModifyAnyPeriod(command: any): JQueryPromise<any> {

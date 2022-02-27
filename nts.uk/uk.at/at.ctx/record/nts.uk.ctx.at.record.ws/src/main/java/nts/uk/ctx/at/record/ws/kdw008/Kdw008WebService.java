@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.ws.kdw008;
 
 import nts.uk.ctx.at.record.app.find.kdw008.AcquisitionOfMonthlyAttendanceItemFinder;
-import nts.uk.ctx.at.shared.app.find.scherec.attitem.AttItemParam;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 
 import javax.inject.Inject;
@@ -16,6 +15,7 @@ import java.util.List;
 public class Kdw008WebService {
     @Inject
     private AcquisitionOfMonthlyAttendanceItemFinder attendanceItemFinder;
+
     @POST
     @Path("modifyAnyPeriodAttItems")
     public List<AttItemName> getModifyAnyPeriodAttItems() {

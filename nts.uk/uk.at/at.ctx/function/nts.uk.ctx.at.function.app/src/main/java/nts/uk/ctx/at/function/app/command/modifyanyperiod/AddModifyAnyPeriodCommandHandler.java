@@ -9,12 +9,13 @@ import nts.uk.ctx.at.function.dom.anyperiodcorrection.formatsetting.AnyPeriodCor
 import nts.uk.ctx.at.function.dom.anyperiodcorrection.formatsetting.AnyPeriodCorrectionFormatSetting;
 import nts.uk.ctx.at.function.dom.anyperiodcorrection.formatsetting.AnyPeriodCorrectionFormatSettingRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatName;
-import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.BusinessTypeSFormatDailyRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.DisplayTimeItem;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.SheetCorrectedMonthly;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  * .表示フォーマットの登録.アルゴリズム.任意期間修正.任意期間修正のフォーマットを登録する
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AddModifyAnyPeriodCommandHandler extends CommandHandler<AddModifyAnyPeriodCommand> {
 
     @Inject
@@ -48,7 +50,7 @@ public class AddModifyAnyPeriodCommandHandler extends CommandHandler<AddModifyAn
         //ドメインモデル「任意期間修正のフォーマット設定」を登録する
         List<SheetCorrectedMonthly> listSheet = new ArrayList<>();
         listSheet.add(new SheetCorrectedMonthly(
-                command.getSheetNo(),
+                1,
                 new DailyPerformanceFormatName(command.getSheetName()),
                 command.getListItemDetail().stream().map(e -> new DisplayTimeItem(
                         e.getOrder(),

@@ -123,7 +123,7 @@ module nts.uk.at.view.kdw006 {
             open008ModifyAnyPeriod() {
                 let self = this,isModifyAnyPeriod = true;
                 if (self.formatPerformanceDto().settingUnitType() == SettingUnitType.AUTHORITY) {
-                    nts.uk.request.jump("/view/kdw/008/a/index.xhtml", { ShareObject: isModifyAnyPeriod  });
+                    nts.uk.request.jump("/view/kdw/008/a/index.xhtml", { ShareModifyAnyPeriod: isModifyAnyPeriod  });
                 }
             }
             open008Month() {
