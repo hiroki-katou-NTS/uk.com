@@ -2,10 +2,8 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timedifferencemanage
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
-import nts.arc.primitive.constraint.StringCharType;
 
 /**
  * 地域コード
@@ -15,7 +13,6 @@ import nts.arc.primitive.constraint.StringCharType;
 
 @IntegerMinValue(0)
 @IntegerMaxValue(99)
-@StringCharType(CharType.NUMERIC)
 public class RegionCode extends IntegerPrimitiveValue<PrimitiveValue<Integer>>{
 	
 	/**
