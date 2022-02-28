@@ -20,13 +20,17 @@ import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.screen.at.app.dailymodify.mobile.DailyModifyMobileCommandFacade;
 import nts.uk.screen.at.app.dailymodify.mobile.dto.DPMobileAdUpParam;
+import nts.uk.screen.at.app.dailymodify.mobile.dto.DPMobileAdUpParamDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCorrectionInitParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIUDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DataSessionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
+import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPPramLoadRowDto;
 import nts.uk.screen.at.app.dailyperformance.correction.mobile.InitScreenMob;
 import nts.uk.screen.at.app.dailyperformance.correction.mobile.UpdateConfirmAllMob;
 
@@ -52,30 +56,31 @@ public class DailyPerformanceMobileWebService {
 	@POST
 	@Path("addUpMobile")
 	@SuppressWarnings("unchecked")
-	public DataResultAfterIU addAndUpdate(DPMobileAdUpParam dataParent) {
-		val domain = session.getAttribute("domainEdits");
+	public DataResultAfterIUDto addAndUpdate(DPMobileAdUpParamDto param) {
+		val domain  = param.getDataSessionDto().getDomainEdits();
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 		if (domain == null) {
-			dailyEdits = cloneListDto((List<DailyRecordDto>) session.getAttribute("domainOlds"));
+			dailyEdits = cloneListDto(param.getDataSessionDto().getDomainOlds());
 		} else {
 			dailyEdits = (List<DailyRecordDto>) domain;
 		}
-		dataParent.setDailyEdits(dailyEdits);
-		dataParent.setDailyOlds((List<DailyRecordDto>) session.getAttribute("domainOlds"));
-		dataParent.setDailyOldForLog((List<DailyRecordDto>) session.getAttribute("domainOldForLog"));
-		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
-		dataParent.setApprovalConfirmCache((ApprovalConfirmCache) session.getAttribute("approvalConfirm"));
-		dataParent.setStateParam((DPCorrectionStateParam)session.getAttribute("dpStateParam"));
-		Object objectCacheMonth = session.getAttribute("domainMonths");
+		param.getDpMobileAdUpParam().setDailyEdits(dailyEdits);
+		param.getDpMobileAdUpParam().setDailyOlds(param.getDataSessionDto().getDomainOlds());
+		param.getDpMobileAdUpParam().setDailyOldForLog(param.getDataSessionDto().getDomainOldForLog());
+		param.getDpMobileAdUpParam().setLstAttendanceItem(param.getDataSessionDto().getItemIdRCs());
+		param.getDpMobileAdUpParam().setApprovalConfirmCache(param.getDataSessionDto().getApprovalConfirmCache());
+		param.getDpMobileAdUpParam().setStateParam(param.getDataSessionDto().getDpStateParam());
+		Object objectCacheMonth = param.getDataSessionDto().getDomainMonthOpt();
 		Optional<MonthlyRecordWorkDto> domainMonthOpt = objectCacheMonth == null ? Optional.empty()
 				: (Optional<MonthlyRecordWorkDto>) objectCacheMonth;
-		dataParent.setDomainMonthOpt(domainMonthOpt);
-		DataResultAfterIU dataResultAfterIU = dailyModifyMobiCommandFacade.insertItemDomain(dataParent);
+		param.getDpMobileAdUpParam().setDomainMonthOpt(domainMonthOpt);
+		DataResultAfterIU dataResultAfterIU = dailyModifyMobiCommandFacade.insertItemDomain(param.getDpMobileAdUpParam());
 		// TODO: set cache month
 		if (dataResultAfterIU.getDomainMonthOpt().isPresent()) {
-			session.setAttribute("domainMonths", dataResultAfterIU.getDomainMonthOpt());
+			param.getDataSessionDto().setDomainMonthOpt(dataResultAfterIU.getDomainMonthOpt().get());
 		}
-		return dataResultAfterIU;
+		DataResultAfterIUDto result = new DataResultAfterIUDto(dataResultAfterIU, param.getDataSessionDto());
+		return result;
 	}
 
 	@POST
