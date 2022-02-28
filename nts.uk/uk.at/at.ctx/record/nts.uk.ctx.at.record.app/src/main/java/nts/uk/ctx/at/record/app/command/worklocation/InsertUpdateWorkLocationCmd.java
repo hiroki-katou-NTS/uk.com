@@ -56,7 +56,7 @@ public class InsertUpdateWorkLocationCmd {
 						new GeoCoordinate(this.latitude, this.longitude)),
 				this.listIPAddress.stream().map(c->c.toDomain()).collect(Collectors.toList()),
 				this.workplace == null ? Optional.empty() : Optional.of(this.workplace.toDomain()),
-				Optional.ofNullable(new RegionCode(regionCode)));
+				Optional.ofNullable(regionCode == null ? null : new RegionCode(regionCode)));
 	}
 	
 	public static InsertUpdateWorkLocationCmd toDto(WorkLocation domain) {
