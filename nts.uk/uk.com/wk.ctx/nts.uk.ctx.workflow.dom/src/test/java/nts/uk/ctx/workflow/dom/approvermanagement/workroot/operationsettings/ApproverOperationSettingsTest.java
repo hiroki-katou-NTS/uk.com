@@ -442,7 +442,7 @@ public class ApproverOperationSettingsTest {
 	public void testGetConfirmationToUse2() {
 		List<SettingTypeUsed> settingTypeUseds = new ArrayList<SettingTypeUsed>();
 		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithConfirmAndUse(ConfirmationRootType.DAILY_CONFIRMATION));
-		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithConfirmAndNotUse(ConfirmationRootType.DAILY_CONFIRMATION));
+		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithConfirmAndNotUse(ConfirmationRootType.MONTHLY_CONFIRMATION));
 		
 		ApproverOperationSettings domain = new ApproverOperationSettings(
 				OperationMode.SUPERIORS_EMPLOYEE,
