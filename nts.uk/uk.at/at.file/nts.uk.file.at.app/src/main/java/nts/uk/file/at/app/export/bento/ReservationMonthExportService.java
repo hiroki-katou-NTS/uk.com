@@ -85,13 +85,21 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 
 	}
 
-	private ReservationMonthDataSource createReservationMonthLedger(List<String> empLst, DatePeriod period, boolean ordered, String title) {
+	public ReservationMonthDataSource createReservationMonthLedger(List<String> empLst, DatePeriod period, boolean ordered, String title) {
 		String companyID = AppContexts.user().companyId();
 
 		List<StampCard> stampCardLst = stampCardRepository.getLstStampCardByLstSidAndContractCd(empLst, AppContexts.user().contractCode());
 		// 2.1 対象社員リストを調整
 		List<String> stampCardEmpLst = stampCardLst.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
-
+		
+		// 2.2取得したList＜弁当メニュー履歴＞.Size＞1
+		List<BentoMenuHistory> bentoMenuHistoryLst = bentoMenuRepository.findByCompanyPeriod(companyID, period);
+		if(bentoMenuHistoryLst.size() > 1) {
+			List<DatePeriod> periodLst = bentoMenuHistoryLst.stream().map(x -> x.getHistoryItem().span()).sorted(Comparator.comparing(DatePeriod::start)).collect(Collectors.toList());
+			String param = periodLst.stream().map(x -> x.start().toString() + "～" + x.end().toString()).collect(Collectors.joining("\n"));
+			throw new BusinessException("Msg_3307", param);
+		}
+		
 		// get*(対象社員リスト,期間,注文済み)
 		List<BentoReservation> bentoReservationLst = bentoReservationRepository.findByOrderedPeriodEmpLst(
 				stampCardLst.stream().map(x -> new ReservationRegisterInfo(x.getStampNumber().v())).collect(Collectors.toList()),

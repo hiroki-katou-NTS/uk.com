@@ -231,10 +231,12 @@ module nts.uk.at.view.kmr005.a.viewmodel {
                 ordered: self.selectedOrdered() == 1 ? true : false 
             };
             nts.uk.ui.block.invisible();
-            service.exportFile(param).done((data) => {
-                nts.uk.ui.block.clear();        
+			service.checkDataExportFile(param).then(() => {
+				return service.exportFile(param);
+			}).done((data) => {
+                nts.uk.ui.block.clear();
             }).fail((res: any) => {
-                dialog.alertError({ messageId : res.messageId }).then(function(){
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){
                     nts.uk.ui.block.clear();
                 });   
             });  
