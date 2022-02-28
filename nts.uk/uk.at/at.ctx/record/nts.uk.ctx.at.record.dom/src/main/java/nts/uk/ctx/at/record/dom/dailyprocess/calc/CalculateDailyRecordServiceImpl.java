@@ -66,6 +66,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.TimeSheetAt
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.OutsideWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PreviousAndNextDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.SchedulePerformance;
@@ -73,6 +74,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.TemporaryTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
@@ -523,6 +525,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				throw new RuntimeException(
 						"unknown workTimeMethodSet" + integrationOfWorkTime.get().getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet());
 		}
+		// 臨時時間帯の取得
+		Optional<TemporaryTimeSheet> temporaryTimeSheet = TemporaryTimeSheet.getTemporaryTimeSheet(
+				companyCommonSetting,
+				personCommonSetting,
+				integrationOfWorkTime.get(),
+				integrationOfDaily,
+				workType.get(),
+				oneRange.getOneDayOfRange());
+		if (oneRange.getOutsideWorkTimeSheet().isPresent()){
+			oneRange.getOutsideWorkTimeSheet().get().setTemporaryTimeSheet(temporaryTimeSheet);
+		}
+		else {
+			oneRange.setOutsideWorkTimeSheet(Finally.of(new OutsideWorkTimeSheet(
+					Optional.empty(), Optional.empty(), temporaryTimeSheet)));
+		}
 		// 勤務外短時間勤務時間帯の作成
 		oneRange.createShortTimeWSWithoutWork(
 				workType.get(),
@@ -764,6 +781,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				c.getRecordedTimeSheet().removeIf(d -> d.getDeductionAtr().isGoOut());
 			});
 		});
+		
+		// 臨時時間帯を削除
+		if (returnResult.isPresent()) {
+			if (returnResult.get().getOutsideWorkTimeSheet().isPresent()) {
+				returnResult.get().getOutsideWorkTimeSheet().get().setTemporaryTimeSheet(Optional.empty());
+			}
+		}
 		
 		if(!returnResult.isPresent()) return Optional.empty();
 		

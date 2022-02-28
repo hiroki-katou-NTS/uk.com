@@ -88,6 +88,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
@@ -343,7 +345,7 @@ public class ReflectApplicationHelper {
 
 		// 日別勤怠の臨時出退勤
 		Optional<TemporaryTimeOfDailyAttd> tempTime = Optional
-				.of(new TemporaryTimeOfDailyAttd(new WorkTimes(1), timeLeavingWorks));
+				.of(new TemporaryTimeOfDailyAttd(timeLeavingWorks));
 
 		// 日別勤怠の外出時間帯
 		OutingTimeSheet outSheet = new OutingTimeSheet(new OutingFrameNo(1),
@@ -410,7 +412,6 @@ public class ReflectApplicationHelper {
 						TimeWithCalculation.sameTime(new AttendanceTime(0))), lstSheet));
 		
 		//日別実績の所定外時間
-		
 		if(no != null && holidayWorkFrameTime.isEmpty()) {
 			holidayWorkFrameTime.add(HolidayWorkFrameTime.createDefaultWithNo(no));
 		}
@@ -419,7 +420,9 @@ public class ReflectApplicationHelper {
 				Optional.of(new OverTimeOfDaily(frameTimeSheetList, overTimeWorkFrameTime,
 						Finally.of(new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.defaultValue())))),
 				Optional.of(new HolidayWorkTimeOfDaily(holidayWorkFrameTimeSheet, holidayWorkFrameTime, Finally.empty(),
-						new AttendanceTime(0))));
+						new AttendanceTime(0))),
+				new TemporaryTimeOfDaily(new ArrayList<>(),	new TemporaryTimes(0)));
+		
 		// 加給時間
 		List<BonusPayTime> raisingSalaryTimes = new ArrayList<BonusPayTime>();
 		// 特定日加給時間
@@ -447,7 +450,7 @@ public class ReflectApplicationHelper {
 				new TotalWorkingTime(null, null, null, null, excessOfStatutory, lateTimeOfDaily, leaveEarlyTimeOfDaily,
 						null, outingTimeOfDailyPerformance,
 						new RaiseSalaryTimeOfDailyPerfor(raisingSalaryTimes, autoCalRaisingSalarySettings), null, null,
-						null, holiday, null),
+						holiday, null),
 				new DivergenceTimeOfDaily(divergenceTime), new PremiumTimeOfDailyPerformance(new ArrayList<>()));
 
 		AttendanceTimeOfDailyAttendance attTime = new AttendanceTimeOfDailyAttendance(null, actualWork, null, null,

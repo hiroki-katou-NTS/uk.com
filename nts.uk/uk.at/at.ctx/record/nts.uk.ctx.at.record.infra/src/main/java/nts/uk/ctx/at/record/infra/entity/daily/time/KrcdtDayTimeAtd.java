@@ -30,6 +30,7 @@ import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarly
 import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayTimePremium;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
+import nts.uk.ctx.at.record.infra.entity.daily.temporarytime.KrcdtDayTempFrmTime;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -66,7 +67,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.Bon
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryFrameTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AbsenceOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
@@ -1240,6 +1243,12 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	
 	/*----------------------日別実績の加給時間------------------------------*/
 	
+	/*----------------------日別実績の臨時時間------------------------------*/
+	/** 臨時回数 */
+	@Column(name = "TEMPORARY_TIMES")
+	public int temporaryTimes;
+	/*----------------------日別実績の臨時時間------------------------------*/
+	
 	@Override
 	protected Object getKey() {
 		return this.krcdtDayTimePK;
@@ -1265,6 +1274,9 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true, fetch = FetchType.LAZY)
 	public List<KrcdtDayTimeGoout> krcdtDayOutingTime; 
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true, fetch = FetchType.LAZY)
+	public List<KrcdtDayTempFrmTime> krcdtDayTempFrmTime; 
 	
 	public static KrcdtDayTimeAtd toEntity(AttendanceTimeOfDailyPerformance attendanceTime) {
 		val entity = new KrcdtDayTimeAtd();
@@ -2108,6 +2120,15 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 					}
 					/*----------------------日別実績の加給時間------------------------------*/
 					
+					/*----------------------日別実績の臨時時間------------------------------*/
+					this.temporaryTimes = 0;
+					if (totalWork != null &&
+						totalWork.getExcessOfStatutoryTimeOfDaily() != null &&
+						totalWork.getExcessOfStatutoryTimeOfDaily().getTemporaryTime() != null) {
+						this.temporaryTimes = totalWork.getExcessOfStatutoryTimeOfDaily().getTemporaryTime()
+								.getTemporaryTimes().v().intValue();
+					}
+					/*----------------------日別実績の臨時時間------------------------------*/
 				}
 			}
 		}
@@ -2270,7 +2291,8 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 						getKrcdtDayLeaveEarlyTime(), 
 						getKrcdtDayLateTime(), 
 						this.krcdtDayShorttime, 
-						this.krcdtDayOutingTime);
+						this.krcdtDayOutingTime,
+						this.krcdtDayTempFrmTime);
 		
 	}
 	
@@ -2287,7 +2309,8 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 												   			List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime,
 												   			List<KrcdtDayLateTime> krcdtDayLateTime,
 												   			List<KrcdtDayShorttime> krcdtDayShorttime
-												   			,List<KrcdtDayTimeGoout> krcdtDayOutingTime) {
+												   			,List<KrcdtDayTimeGoout> krcdtDayOutingTime,
+												   			List<KrcdtDayTempFrmTime> krcdtDayTempFrmTime) {
 		
 		/*日別実績の休憩時間*/
 		val breakTime = createBreakTime(entity);
@@ -2341,6 +2364,12 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 			outingOfDaily.add(outingTime.toDomain());
 		}
 		
+		// 日別実績の臨時枠時間
+		List<TemporaryFrameTimeOfDaily> temporaryFrameTimeOfDaily = new ArrayList<>();
+		for (KrcdtDayTempFrmTime temporaryFrametime : krcdtDayTempFrmTime){
+			temporaryFrameTimeOfDaily.add(temporaryFrametime.toDomain());
+		}
+		
 		// 日別実績の総労働時間
 		TotalWorkingTime totalTime = new TotalWorkingTime(new AttendanceTime(entity.totalAttTime),
 														  new AttendanceTime(entity.totalCalcTime),
@@ -2353,14 +2382,16 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 																				  new AttendanceTime(entity.calcOutPrsMidnTime)),
 																				  new AttendanceTime(entity.preOutPrsMidnTime)),
 																		  Optional.of(overTime),
-																		  Optional.of(holidayWork)), 
+																		  Optional.of(holidayWork),
+																		  new TemporaryTimeOfDaily(
+																				  temporaryFrameTimeOfDaily,
+																				  new TemporaryTimes(entity.temporaryTimes))),
 														  lateTime, 
 														  leaveEarly,
 														  breakTime,
 														  outingOfDaily,
 														  new RaiseSalaryTimeOfDailyPerfor(bonusPayTime, specBonusPayTime),
 														  new WorkTimes(entity.workTimes),
-														  new TemporaryTimeOfDaily(),
 														  shortTime.get(0),
 														  vacation,
 														  IntervalTimeOfDaily.of(

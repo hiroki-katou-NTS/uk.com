@@ -47,6 +47,16 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 		this.workTimes = workTimes;
 	}
 	
+	@Override
+	public void validate() {
+		// inv-1
+		this.timeLeavingWorks.stream().forEach(c -> {
+			if (c.getWorkNo().v() > 2){
+				throw new RuntimeException("TimeLeavingOfDailyAttd:validate WorkNo overflow.");
+			}
+		});
+	}
+	
 	/**
 	 * 出退勤の数から勤務回数を取得する
 	 * 削除予定の属性で正常な値が入らない可能性がある為、自身の出退勤をカウントして返す

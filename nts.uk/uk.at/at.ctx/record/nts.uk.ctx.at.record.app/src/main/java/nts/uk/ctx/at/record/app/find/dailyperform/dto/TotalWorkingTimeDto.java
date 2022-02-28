@@ -27,8 +27,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.interval.IntervalTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.RaiseSalaryTimeOfDailyPerfor;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryFrameTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -65,10 +63,6 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = EXCESS_STATUTORY)
 	private ExcessOfStatutoryTimeDailyPerformDto excessOfStatutoryTime;
 
-	/** 臨時時間: 日別実績の臨時時間 */
-	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = TEMPORARY, listMaxLength = 3, indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<TemporaryTimeFrameDto> temporaryTime;
-
 	/** 遅刻時間: 日別実績の遅刻時間 */
 	@AttendanceItemLayout(layout = LAYOUT_G, jpPropertyName = LATE, listMaxLength = 2, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<LateEarlyTimeDailyPerformDto> lateTime;
@@ -103,7 +97,7 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 	@AttendanceItemValue(type = ValueType.COUNT)
 	private Integer workTimes;
 
-	/** /*休暇加算時間: 勤怠時間 */
+	/** 休暇加算時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_O, jpPropertyName = HOLIDAY + ADD)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer vacationAddTime;
@@ -154,8 +148,6 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 			return new WithinStatutoryTimeDailyPerformDto();
 		case EXCESS_STATUTORY:
 			return new ExcessOfStatutoryTimeDailyPerformDto();
-		case TEMPORARY:
-			return new TemporaryTimeFrameDto();
 		case LATE:
 		case LEAVE_EARLY:
 			return new LateEarlyTimeDailyPerformDto();
@@ -197,8 +189,6 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 	@Override
 	public int size(String path) {
 		switch (path) {
-		case TEMPORARY:
-			return 3;
 		case LATE:
 		case LEAVE_EARLY:
 			return 2;
@@ -215,7 +205,6 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 	@Override
 	public PropType typeOf(String path) {
 		switch (path) {
-		case TEMPORARY:
 		case LATE:
 		case LEAVE_EARLY:
 			return PropType.IDX_LIST;
@@ -241,8 +230,6 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 	@Override
 	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
 		switch (path) {
-		case TEMPORARY:
-			return (List<T>) temporaryTime;
 		case LATE:
 			return (List<T>) lateTime;
 		case LEAVE_EARLY:
@@ -316,9 +303,6 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 	@Override
 	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
 		switch (path) {
-		case TEMPORARY:
-			temporaryTime = (List<TemporaryTimeFrameDto>) value;
-			break;
 		case LATE:
 			lateTime = (List<LateEarlyTimeDailyPerformDto>) value;
 			break;
@@ -341,7 +325,6 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 		return new TotalWorkingTimeDto(totalWorkingTime, totalCalcTime, actualTime,
 										withinStatutoryTime == null ? null : withinStatutoryTime.clone(),
 										excessOfStatutoryTime == null ? null : excessOfStatutoryTime.clone(),
-										temporaryTime == null ? null : temporaryTime.stream().map(t -> t.clone()).collect(Collectors.toList()),
 										lateTime == null ? null : lateTime.stream().map(t -> t.clone()).collect(Collectors.toList()),
 										leaveEarlyTime == null ? null : leaveEarlyTime.stream().map(t -> t.clone()).collect(Collectors.toList()),
 										breakTimeSheet == null ? null : breakTimeSheet.clone(),
@@ -364,11 +347,6 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 								.fromWithinStatutoryTimeDailyPerform(domain.getWithinStatutoryTimeOfDaily()),
 						ExcessOfStatutoryTimeDailyPerformDto
 								.fromExcessOfStatutoryTimeDailyPerform(domain.getExcessOfStatutoryTimeOfDaily()),
-								domain.getTemporaryTime() == null ? new ArrayList<>() : domain.getTemporaryTime().getTemporaryTime() == null ? new ArrayList<>()
-								: ConvertHelper.mapTo(domain.getTemporaryTime().getTemporaryTime(),
-										(c) -> new TemporaryTimeFrameDto(c.getWorkNo().v(),
-												getAttendanceTime(c.getTemporaryLateNightTime()),
-												getAttendanceTime(c.getTemporaryTime()))),
 						ConvertHelper.mapTo(domain.getLateTimeOfDaily(),
 								(c) -> new LateEarlyTimeDailyPerformDto(CalcAttachTimeDto.toTimeWithCal(c.getLateTime()),
 										CalcAttachTimeDto.toTimeWithCal(c.getLateDeductionTime()),
@@ -429,9 +407,6 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 				raisingSalaryTime == null ? new RaiseSalaryTimeOfDailyPerfor(new ArrayList<>(), new ArrayList<>()) 
 						: raisingSalaryTime.toDomain(),
 				workTimes == null ? null : new WorkTimes(workTimes),
-				new TemporaryTimeOfDaily(ConvertHelper.mapTo(temporaryTime, (c) -> new TemporaryFrameTimeOfDaily(new WorkNo(c.getNo()),
-										toAttendanceTime(c.getTemporaryTime()),
-										toAttendanceTime(c.getTemporaryNightTime())))),
 				shortWorkTime == null || shortWorkTime.isEmpty() ? ShortWorkTimeDto.defaultDomain() : shortWorkTime.get(shortWorkTime.size()-1).toDomain(),
 				dailyOfHoliday == null ? HolidayDailyPerformDto.defaulDomain() : dailyOfHoliday.toDomain(),
 				IntervalTimeOfDaily.of(new AttendanceClock(intervalAttendanceClock), new AttendanceTime(intervalTime)),

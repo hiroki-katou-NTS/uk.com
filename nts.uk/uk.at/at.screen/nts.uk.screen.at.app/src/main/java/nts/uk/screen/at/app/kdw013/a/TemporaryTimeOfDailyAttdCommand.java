@@ -6,21 +6,17 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 
 @AllArgsConstructor
 @Getter
 public class TemporaryTimeOfDailyAttdCommand {
-	// 勤務回数
-	private Integer workTimes;
-
-	// 1 ~ 3
+	// 1 ~ 10
 	// 出退勤
 	private List<TimeLeavingWorkCommand> timeLeavingWorks;
 
 	public TemporaryTimeOfDailyAttd toDomain() {
 
-		return new TemporaryTimeOfDailyAttd(new WorkTimes(this.getWorkTimes()),
+		return new TemporaryTimeOfDailyAttd(
 				this.getTimeLeavingWorks().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 
 	}

@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidaywork
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.FlexTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.AttendanceItemDictionaryForCalc;
@@ -54,22 +55,26 @@ public class ExcessOfStatutoryTimeOfDaily {
 	private Optional<OverTimeOfDaily> overTimeWork;
 	//休出時間
 	private Optional<HolidayWorkTimeOfDaily> workHolidayTime;
-	
+	/** 日別実績の臨時時間 */
+	private TemporaryTimeOfDaily temporaryTime;
 	
 	/**
 	 * Constructor
 	 * @param excessOfStatutoryMidNightTime
 	 * @param overTimeWork
 	 * @param workHolidayTime
+	 * @param temporaryTime
 	 */
 	public ExcessOfStatutoryTimeOfDaily(
 			ExcessOfStatutoryMidNightTime excessOfStatutoryMidNightTime,
 			Optional<OverTimeOfDaily> overTimeWork,
-			Optional<HolidayWorkTimeOfDaily> workHolidayTime) {
+			Optional<HolidayWorkTimeOfDaily> workHolidayTime,
+			TemporaryTimeOfDaily temporaryTime) {
 		super();
 		this.excessOfStatutoryMidNightTime = excessOfStatutoryMidNightTime;
 		this.overTimeWork = overTimeWork;
 		this.workHolidayTime = workHolidayTime;
+		this.temporaryTime = temporaryTime;
 	}
 	
 	public void updateOverTime(OverTimeOfDaily ot){
@@ -142,9 +147,14 @@ public class ExcessOfStatutoryTimeOfDaily {
 				declareResult);
 		
 		//所定外深夜
-		val excessOfStatutoryMidNightTime = ExcessOfStatutoryMidNightTime.calcExcessTime(Optional.of(overTime),Optional.of(workHolidayTime));
+		val excessOfStatutoryMidNightTime = ExcessOfStatutoryMidNightTime.calcExcessTime(
+				Optional.of(overTime),Optional.of(workHolidayTime),recordReget);
 		
-		return new ExcessOfStatutoryTimeOfDaily(excessOfStatutoryMidNightTime, Optional.of(overTime), Optional.of(workHolidayTime));
+		// 臨時時間
+		TemporaryTimeOfDaily temporaryTime = TemporaryTimeOfDaily.calcProcess(recordReget);
+		
+		return new ExcessOfStatutoryTimeOfDaily(
+				excessOfStatutoryMidNightTime, Optional.of(overTime), Optional.of(workHolidayTime), temporaryTime);
 	}
 	
 
@@ -384,7 +394,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 		Optional<OverTimeOfDaily> overtime = this.overTimeWork.isPresent()?Optional.of(this.overTimeWork.get().calcDiverGenceTime()):Optional.empty();
 		Optional<HolidayWorkTimeOfDaily> holiday = this.workHolidayTime.isPresent()?Optional.of(this.workHolidayTime.get().calcDiverGenceTime()):Optional.empty();
 		ExcessOfStatutoryMidNightTime excessOfStatutoryMidNightTime = this.excessOfStatutoryMidNightTime!=null?this.excessOfStatutoryMidNightTime.calcDiverGenceTime():this.excessOfStatutoryMidNightTime;
-		return new ExcessOfStatutoryTimeOfDaily(excessOfStatutoryMidNightTime,overtime,holiday); 
+		return new ExcessOfStatutoryTimeOfDaily(excessOfStatutoryMidNightTime,overtime,holiday,this.temporaryTime); 
 	}
 	
 	/**
@@ -403,9 +413,18 @@ public class ExcessOfStatutoryTimeOfDaily {
 			&& this.getWorkHolidayTime().get().getHolidayMidNightWork().isPresent()) {
 			holidayMidTime = this.getWorkHolidayTime().get().getHolidayMidNightWork().get().calcAllMidTime();
 		}
-		this.excessOfStatutoryMidNightTime = new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(overMidTime.getTime().getTime().addMinutes(holidayMidTime.getTime().valueAsMinutes()),
-																																	   overMidTime.getTime().getCalcTime().addMinutes(holidayMidTime.getCalcTime().valueAsMinutes())),
-																			   this.excessOfStatutoryMidNightTime.getBeforeApplicationTime());
+		int temporaryMidnMinutes = 0;
+		if (this.temporaryTime.getTemporaryTime().size() > 0){
+			temporaryMidnMinutes = this.temporaryTime.getTemporaryTime().stream()
+					.mapToInt(c -> c.getTemporaryLateNightTime().valueAsMinutes()).sum();
+		}
+		this.excessOfStatutoryMidNightTime = new ExcessOfStatutoryMidNightTime(
+				TimeDivergenceWithCalculation.createTimeWithCalculation(
+						overMidTime.getTime().getTime().addMinutes(
+								holidayMidTime.getTime().valueAsMinutes() + temporaryMidnMinutes),
+						overMidTime.getTime().getCalcTime().addMinutes(
+								holidayMidTime.getCalcTime().valueAsMinutes() + temporaryMidnMinutes)),
+				this.excessOfStatutoryMidNightTime.getBeforeApplicationTime());
 	}
 	
 	/**

@@ -58,6 +58,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AbsenceOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
@@ -529,7 +530,8 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily = new ExcessOfStatutoryTimeOfDaily(nightTime,
 				Optional.ofNullable(kscdtSchOvertimeWork.toDomain(overTimeOfDaily, overtimeWorks)),
 				Optional.ofNullable(kscdtSchHolidayWork.toDomain(this.extBindTimeHw, this.extMidNiteHdwTimeLghd,
-						this.extMidNiteHdwTimeIlghd, this.extMidNiteHdwTimePubhd, holidayWorks)));
+						this.extMidNiteHdwTimeIlghd, this.extMidNiteHdwTimePubhd, holidayWorks)),
+				new TemporaryTimeOfDaily(new ArrayList<>(), new TemporaryTimes(0)));
 		// raiseSalaryTimeOfDailyPerfor
 		KscdtSchBonusPay kscdtSchBonusPay = new KscdtSchBonusPay();
 		RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor = new RaiseSalaryTimeOfDailyPerfor(
@@ -563,7 +565,6 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				.of(TimeWithCalculation.sameTime(new AttendanceTime(this.brkTotalTime)), TimeWithCalculation.sameTime(AttendanceTime.ZERO), TimeWithCalculation.sameTime(AttendanceTime.ZERO));
 		BreakTimeOfDaily breakTimeOfDaily = new BreakTimeOfDaily(toRecordTotalTime, null, new BreakTimeGoOutTimes(0), new AttendanceTime(0), new ArrayList<>());
 
-		TemporaryTimeOfDaily temporaryTime = new TemporaryTimeOfDaily(new ArrayList<>());
 		IntervalTimeOfDaily intervalTime = IntervalTimeOfDaily.of(new AttendanceClock(0), new AttendanceTime(0));
 
 		// #114431
@@ -606,7 +607,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		TotalWorkingTime totalWorkingTime = new TotalWorkingTime(new AttendanceTime(this.totalTime),
 				new AttendanceTime(0), new AttendanceTime(this.totalTimeAct), withinStatutoryTimeOfDaily,
 				excessOfStatutoryTimeOfDaily, lateTimeOfDaily, leaveEarlyTimeOfDaily, breakTimeOfDaily,
-				lateOutingTimeOfDaily, raiseSalaryTimeOfDailyPerfor, new WorkTimes(this.count), temporaryTime,
+				lateOutingTimeOfDaily, raiseSalaryTimeOfDailyPerfor, new WorkTimes(this.count),
 				shotrTime, holidayOfDaily, new AttendanceTime(vacationAddTime), intervalTime);
 
 		// 乖離時間

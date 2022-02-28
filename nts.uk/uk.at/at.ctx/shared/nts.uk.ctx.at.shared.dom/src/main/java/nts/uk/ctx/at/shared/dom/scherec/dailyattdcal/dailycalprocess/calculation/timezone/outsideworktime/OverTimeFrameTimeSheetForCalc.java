@@ -141,6 +141,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 	 * @param deductionTimeSheet 控除時間帯
 	 * @param timeLeavingWork 出退勤
 	 * @param createdWithinWorkTimeSheet 就業時間内時間帯
+	 * @param oneDayOfRange 1日の範囲
 	 * @return 残業枠時間帯(WORK)(List)
 	 */
 	public static List<OverTimeFrameTimeSheetForCalc> createOverWorkFrame(
@@ -152,7 +153,8 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			DeductionTimeSheet deductionTimeSheet,
 			TimeLeavingWork timeLeavingWork,
-			WithinWorkTimeSheet createdWithinWorkTimeSheet) {
+			WithinWorkTimeSheet createdWithinWorkTimeSheet,
+			TimeSpanForDailyCalc oneDayOfRange) {
 		List<OverTimeFrameTimeSheetForCalc> createTimeSheet = new ArrayList<>();
 		
 		for(OverTimeOfTimeZoneSet overTimeHourSet:integrationOfWorkTime.getOverTimeOfTimeZoneSetList(todayWorkType)) {
@@ -170,6 +172,14 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 				createTimeSheet.add(overTimeFrameTimeSheet.get());
 			}
 		}
+		// 臨時による残業時間帯の取得
+		createTimeSheet.addAll(OverTimeSheet.getOverTimeSheetFromTemporary(
+				companyCommonSetting,
+				personDailySetting,
+				integrationOfWorkTime,
+				integrationOfDaily,
+				todayWorkType,
+				oneDayOfRange));
 		///*変形残業　振替*/
 		List<OverTimeFrameTimeSheetForCalc> afterVariableWork = new ArrayList<>();
 		afterVariableWork = dicisionCalcVariableWork(
@@ -319,6 +329,14 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 		
 		// 労働条件項目の確認
 		WorkingConditionItem conditionItem = personDailySetting.getPersonInfo();
+		
+		// 出退勤があるか確認する　（なければ、法定内残業を計算しない）
+		boolean isExistAttendanceLeave = false;
+		if (integrationOfDaily.getAttendanceLeave().isPresent()) {
+			if (integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().size() > 0)
+				isExistAttendanceLeave = true;		// 出退勤が存在する
+		}
+		if (!isExistAttendanceLeave) return overTimeWorkFrameTimeSheetList;
 		
 		if(integrationOfWorkTime.isLegalInternalTime()) {
 			/*振替処理   法定内基準時間を計算する*/
