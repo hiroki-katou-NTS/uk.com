@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 550, height: 250 };</script>
+        <com:ValidatorScript>
+            nts.uk.ctx.at.aggregation.dom.scheduledailytable.ScheduleDailyTableCode
+            nts.uk.ctx.at.aggregation.dom.scheduledailytable.ScheduleDailyTableName
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE" />
+        <!--<com:stylefile path="ksu011.a.main.css" />-->
+        <com:scriptfile path="ksu011.d.vm.js" />
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area" style="margin: auto 20px;">
+            <div style="display: table;" class="control-group">
+                <div id="D1_1" style="display: table-cell">
+                    <span class="label" data-bind="text: $i18n('KSU011_70')"/>
+                </div>
+                <div id="D1_2" style="display: table-cell">
+                    <div data-bind="ntsFormLabel: {text: $i18n('KSU011_71')}"/>
+                </div>
+                <div id="D1_3" style="display: table-cell">
+                    <span class="label" data-bind="text: sourceCode" style="margin: 0 13px;"/>
+                </div>
+                <div id="D1_4" style="display: table-cell">
+                    <span class="label" data-bind="text: sourceName" style="margin: 0 13px;"/>
+                </div>
+            </div>
+            <div style="display: table;">
+                <div id="D2_1" style="display: table-cell">
+                    <span class="label" data-bind="text: $i18n('KSU011_72')"/>
+                </div>
+                <div id="D2_2" style="display: table-cell">
+                    <div data-bind="ntsFormLabel: {text: $i18n('KSU011_73'), required: true, constraint: ['ScheduleDailyTableCode', 'ScheduleDailyTableName']}"/>
+                </div>
+                <div id="D2_3" style="display: table-cell">
+                    <input style="margin: 0 2px;"
+                           data-bind="ntsTextEditor: {
+                                        value: desCode,
+                                        constraint: 'ScheduleDailyTableCode',
+                                        required: true,
+                                        name: $i18n('KSU011_74')
+                                    }" />
+                </div>
+                <div id="D2_4" style="display: table-cell">
+                    <input style="margin: 0 2px;"
+                           data-bind="ntsTextEditor: {
+                                        value: desName,
+                                        constraint: 'ScheduleDailyTableName',
+                                        required: true,
+                                        name: $i18n('KSU011_75')
+                                    }" />
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <div class="control-group">
+                <div data-bind="ntsCheckBox: { checked: checked, style: 'warnpanel', text: $i18n('KSU011_76')}"></div>
+            </div>
+            <div>
+                <button id="C5_1" data-bind="click: decideCopy, enable: $root.errors.isEmpty" class="proceed x-large">#{i18n.getText('KSU011_77')}</button>
+                <button id="C5_2" data-bind="click: cancel">#{i18n.getText('KSU011_78')}</button>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

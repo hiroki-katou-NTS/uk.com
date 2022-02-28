@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SeqVacationAssociationInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.vacationdetail.CorrectDaikyuFurikyuFixed;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 /**
@@ -47,8 +46,8 @@ public class NumberCompensatoryLeavePeriodQuery {
 		List<AccumulationAbsenceDetail> lstAbsRec = sequentialVacaDetail.getVacationDetail().getLstAcctAbsenDetail();
 
 		//休出振出管理データを補正する。
-		CorrectDaikyuFurikyuFixed.correct(sequentialVacaDetail.getVacationDetail(),
-				sequentialVacaDetail.getSeqVacInfoList());
+//		CorrectDaikyuFurikyuFixed.correct(sequentialVacaDetail.getVacationDetail(),
+//				sequentialVacaDetail.getSeqVacInfoList());
 				
 		// 振休振出から月初の繰越数を計算
 		val calcNumCarry = CalcNumCarryAtBeginMonthFromHol.calculate(require, inputParam.getCid(), inputParam.getSid(),

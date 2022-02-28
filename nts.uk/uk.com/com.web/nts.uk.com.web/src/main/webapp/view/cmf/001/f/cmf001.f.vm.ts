@@ -57,36 +57,40 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			
 			var params = __viewContext.transferred.get();
 			self.settingCode = params.settingCode;
+			
+			self.selectedDomainId.subscribe(() => {
+				self.selectedDomain();
+			})
 
-			self.startPage();
-			
-			self.selectedDomainId.subscribe((value) => {
-				if (value) {
-					var info = $.grep(self.domainInfoList(), function (di) {
-						return di.domainId == self.selectedDomainId();
-					});
-					if (info.length !== 0){
-						self.setDomain(info[0]);
-						self.canEditDetail(info[0].resistered);
-						return;
-					}
+			self.startPage().done(() => {
+				if (params.domainId !== undefined) {
+					self.selectedDomainId(params.domainId);
 				}
-				self.layoutItemNoList([]);
-				self.canEditDetail(false);
-			})
-	
-			self.layoutItemNoList.subscribe((value) => {
-				self.setLayout(value);
-			})
-			
-			if (params.domainId !== undefined){
-				self.selectedDomainId(params.domainId);
-			}
+			});
 		}
-		
-		setDomain(info: DomainInfo) {
-			let self = this;
-			self.layoutItemNoList(info.itemNoList);
+
+		selectedDomain(){
+			var self = this;
+			if (self.selectedDomainId()) {
+				var info = $.grep(self.domainInfoList(), function (di) {
+					return di.domainId == self.selectedDomainId();
+				});
+				if (info.length !== 0){
+					self.layoutItemNoList(info[0].itemNoList);
+					self.canEditDetail(info[0].resistered);
+
+					if(!info[0].resistered){
+						self.setLayout(self.layoutItemNoList()).done(()=>{
+							self.save();
+						})
+					}
+
+					return self.setLayout(self.layoutItemNoList());
+				}
+			}
+			self.layoutItemNoList([]);
+			self.canEditDetail(false);
+			return self.setLayout(self.layoutItemNoList());
 		}
 
 		startPage(){
@@ -97,11 +101,13 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				if (self.domainList() !== null && self.domainList().length !== 0) {
 					self.selectedDomainId(self.domainList()[0].domainId);
 				}
+				
+				self.$grid = $("#grid");
+				self.initGrid();
+
+				dfd.resolve();
 			});
 			
-			self.$grid = $("#grid");
-			self.initGrid();
-		      
 			return dfd.promise();
 		}
 
@@ -129,9 +135,9 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				self.domainInfoList(importDomainInfoList);
 				
 				let csvItem = $.map(res.csvItems, function(value, index) {
-					return new CsvItem(index + 1, value);
+					return new CsvItem(index + 1, value.name, value.sampleData);
 				});
-				csvItem.unshift(new CsvItem(null, ''));
+				csvItem.unshift(new CsvItem(null, '', ''));
 				self.csvItemOption=ko.observableArray(csvItem);
 
 				dfd.resolve();
@@ -153,32 +159,32 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			}
 			
 			self.$grid.ntsGrid({
-				height: '300px',
+				height: '600px',
 				dataSource: self.layout(),
 		        primaryKey: 'itemNo',
 		        rowVirtualization: true,
 		        virtualization: true,
 		        virtualizationMode: 'continuous',
 		        columns: [
-					{ headerText: "削除", 				key: "required", 			dataType: 'boolean',	width: 50, formatter: deleteButton},
-					{ headerText: "NO", 					key: "itemNo", 				dataType: 'number',	width: 50, 	hidden: true },
-					{ headerText: "名称", 				key: "name", 				dataType: 'string',		width: 250},
-					{ headerText: "受入元", 				key: "isFixedValue",		dataType: 'number',	width: 130, ntsControl: 'SwitchButtons'},
+					{ headerText: "削除", 			key: "required", 			dataType: 'boolean',width: 50, formatter: deleteButton},
+					{ headerText: "NO", 			key: "itemNo", 				dataType: 'number',	width: 50, 	hidden: true },
+					{ headerText: "名称", 			key: "name", 				dataType: 'string',	width: 250},
+					{ headerText: "受入元", 			key: "isFixedValue",		dataType: 'number',	width: 130, ntsControl: 'SwitchButtons'},
 					{ headerText: "CSVヘッダ名", 	key: "selectedCsvItemNo",	dataType: 'number',	width: 220, ntsControl: 'Combobox' },
-					{ headerText: "サンプルデータ", 				key: "csvData", 				dataType: 'string',		width: 120	}
+					{ headerText: "サンプルデータ", 				key: "csvData", 				dataType: 'string',		width: 400	}
 				],
 		        features: [
-		          {
-		          },
+					{
+					},
 		        ],
 		        ntsControls: [
-		          {
-			            name: 'SwitchButtons',
-			            options: [{ value:0, text: 'CSV' },{ value:1, text: '固定値' }],
-                        optionsValue: 'value',
-                        optionsText: 'text',
-                        controlType: 'SwitchButtons',
-                        enable: true 
+					{
+						name: 'SwitchButtons',
+						options: [{ value:0, text: 'CSV' },{ value:1, text: '固定値' }],
+						optionsValue: 'value',
+						optionsText: 'text',
+						controlType: 'SwitchButtons',
+						enable: true
 		          },
 		          {
 		            name: 'Combobox',
@@ -191,9 +197,9 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		            dropDownAttachedToBody: false,
 		        	selectFirstIfNull: false,
 		            enable: true
-		          }
+					}
 		        ]
-		      });
+		    });
 		}
 		
 		removeItem(target: number){
@@ -210,6 +216,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 
 		setLayout(itemNoList: number[]){
 			let self = this;
+			let dfd = $.Deferred();
 			if(itemNoList.length > 0){
 				let condition = {
 					settingCode: self.settingCode,
@@ -218,36 +225,57 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				ajax("screen/com/cmf/cmf001/f/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
 					self.layout(layoutItems);
 					self.initGrid();
+					dfd.resolve();
 				});
 			}else{
 				self.layout([]);
+				self.initGrid();
+				dfd.resolve();
 			}
+			return dfd.promise();
 		}
 
-		canSave = ko.computed(() => !nts.uk.ui.errors.hasError() );
-	
-		save(){
+		canSave = ko.computed(() =>
+			!nts.uk.ui.errors.hasError() && this.selectedDomainId());
+
+		clickSave(){
 			let self = this;
+			self.save().done(() => {
+				info(nts.uk.resource.getMessage("Msg_15", []));
+				self.reloadPage();
+			});
+		}
+
+		save() {
+			let self = this;
+			let dfd = $.Deferred();
+
 			self.checkError();
-			if(!nts.uk.ui.errors.hasError()){
-				let domains = $.map(self.layout(), l =>{
-					return {
-						itemNo: l.itemNo,
-						isFixedValue: l.isFixedValue,
-						csvItemNo: l.selectedCsvItemNo,
-						fixedValue: l.fixedValue
-					}
-				});
-				let saveContents = {
-					code: self.settingCode,
-					domainId: self.selectedDomainId(),
-					items: domains
-				};
-				ajax("screen/com/cmf/cmf001/f/save", saveContents).done(() => {
-					info(nts.uk.resource.getMessage("Msg_15", []));
-					self.reloadPage();
-	            });
-			}
+			if(nts.uk.ui.errors.hasError()) return;
+
+			var info = $.grep(self.domainInfoList(), function (di) {
+				return di.domainId == self.selectedDomainId();
+			});
+			let domains = $.map(self.layout(), l =>{
+				return {
+					itemNo: l.itemNo,
+					isFixedValue: l.isFixedValue,
+					csvItemNo: l.selectedCsvItemNo,
+					fixedValue: l.fixedValue
+				}
+			});
+			let saveContents = {
+				code: self.settingCode,
+				domainId: self.selectedDomainId(),
+				items: domains
+			};
+			ajax("screen/com/cmf/cmf001/f/save", saveContents).done(() => {
+				info[0].resistered = true;
+				self.canEditDetail(true);
+				dfd.resolve();
+			});
+
+			return dfd.promise();
 		}
 
 		uploadCsv() {
@@ -272,10 +300,11 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				itemNoList: []};
 			ajax("com", "screen/com/cmf/cmf001/b/get/layout", condition)
 			.done((itemNoList: number[]) => {
-				self.domainInfoList.push(new DomainInfo(self.importDomain(), itemNoList), false);
-				self.selectedDomainId(self.importDomain());
+				let domainInfo = new DomainInfo(self.importDomain(), itemNoList, false);
+				self.domainInfoList.push(domainInfo);
 				self.importDomain(null);
-
+				self.selectedDomainId(domainInfo.domainId);
+				// self.selectedDomain();
 			});
 		}
 		
@@ -312,6 +341,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 					let ItemNoList: string[] = getShared('CMF001DOutput')
 					console.log("closed: " + ItemNoList)
 					ko.utils.arrayPushAll(self.layoutItemNoList, ItemNoList.map(n => Number(n)));
+					self.setLayout(self.layoutItemNoList());
 				}
 			});
 		}
@@ -407,10 +437,12 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 	export class CsvItem {
 	    no: number;
 	    name: string;
+		sampleData: string;
 	
-	    constructor(no: number, name: string) {
+	    constructor(no: number, name: string, sampleData: string) {
 	        this.no = no;
 	        this.name = name;
+			this.sampleData = sampleData;
 	    }
 	}
 }

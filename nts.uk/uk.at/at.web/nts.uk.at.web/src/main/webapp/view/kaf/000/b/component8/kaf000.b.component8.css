@@ -2,12 +2,13 @@
 	display: inline-block;
 }
 
-#kaf000-b-component8 .approver-block {
-	text-align: left;
-	display: inline-block;
-	vertical-align: top;
-}
-
 #kaf000-b-component8 .limited-label {
 	width: 100%;
+}
+
+.approver-block {
+	display: inline-block;
+	margin-right: 10px;
+	text-align: left;
+	max-width: 85px;
 }

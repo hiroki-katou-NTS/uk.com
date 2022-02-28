@@ -9,10 +9,10 @@ import java.util.Optional;
 
 //import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
 import nts.uk.shr.com.time.calendar.MonthDay;
@@ -136,9 +136,9 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
 	}
 
 	@Override
-	public void setTimeCareNursingSet(TimeCareNursingSet timeCareNursingSet) {
-		this.entityNursing.setDigestiveUnit(timeCareNursingSet.getTimeDigestiveUnit().value);
-		this.entityNursing.setTimeManageAtr(timeCareNursingSet.getManageDistinct().value);
+	public void setTimeVacationDigestUnit(TimeVacationDigestUnit timeVacationDigestUnit) {
+		this.entityNursing.setDigestiveUnit(timeVacationDigestUnit.getDigestUnit().value);
+		this.entityNursing.setTimeManageAtr(timeVacationDigestUnit.getManage().value);
 
 	}
 

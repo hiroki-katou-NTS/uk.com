@@ -110,6 +110,9 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(626, join(DAILY_AFFILIATION_INFO_NAME, EMPLOYEMENT));
 		temp.put(1294, join(DAILY_AFFILIATION_INFO_NAME, RAISING_SALARY));
 		temp.put(858, join(DAILY_AFFILIATION_INFO_NAME, BUSINESS_TYPE));
+		temp.put(2185, join(DAILY_AFFILIATION_INFO_NAME, WKP_GROUP_ID));
+		temp.put(2186, join(DAILY_AFFILIATION_INFO_NAME, NURSE_LICENSE_CLS));
+		temp.put(2187, join(DAILY_AFFILIATION_INFO_NAME, IS_NURSE_ADMINISTRATOR));
 		
 		temp.put(1, join(DAILY_SNAPSHOT_NAME, WORK_TYPE));
 		temp.put(2, join(DAILY_SNAPSHOT_NAME, WORK_TIME));
@@ -575,6 +578,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(537, join(breakTime, CALC, WITHIN_STATUTORY, TIME));
 		temp.put(538, join(breakTime, DEDUCTION, WITHIN_STATUTORY, TIME));
 		temp.put(798, join(breakTime, CALC, EXCESS_STATUTORY, TIME));
+		temp.put(1139, join(breakTime, DEDUCTION, EXCESS_STATUTORY, TIME));
 		temp.put(574, join(breakTime, WORKING_TIME));
 		temp.put(160, join(breakTime, AFTER_CORRECTED, joinNS(START, NUMBER_1)));
 		temp.put(161, join(breakTime, AFTER_CORRECTED, joinNS(END, NUMBER_1)));

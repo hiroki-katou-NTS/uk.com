@@ -25,6 +25,10 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -34,6 +38,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -52,7 +58,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * 時間帯を指定して作業予定を追加する
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.勤務予定.勤務予定.App.時間帯を指定して作業予定を追加する
- * 
+ *
  * @author HieuLt
  *
  */
@@ -93,13 +99,20 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 	private BusinessTypeEmpService businessTypeEmpService;
 	@Inject
 	private SyClassificationAdapter syClassificationAdapter;
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+	@Inject
+	private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+	@Inject
+	private NurseClassificationRepository nurseClassificationRepo;
+	
 
 	@Override
 	protected void handle(CommandHandlerContext<AddWorkScheduleByTimezoneCommand> context) {
 		AddWorkScheduleByTimezoneCommand command = context.getCommand();
 		// 1:<call>()
 		DatePeriod period = new DatePeriod(command.date, command.date);
-		
+
 		List<WorkSchedule> lstWorkSchedule = repo.getList(command.lstEmpId, period);
 
 		// 2:not 勤務予定．isEmpty : 時間帯に作業予定を追加する(@Require, 計算用時間帯, 作業コード)
@@ -107,7 +120,8 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 		Require require = new Require(basicScheduleService, workTypeRepo, workTimeSettingRepository, fixedWorkSet,
 				flowWorkSet, flexWorkSet, predetemineTimeSet, workScheduleRepo, correctWorkSchedule,
 				interimRemainDataMngRegisterDateChange, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
-				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter);
+				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter, 
+				empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
 		// 2:not 勤務予定．isEmpty : 時間帯に作業予定を追加する(@Require, 計算用時間帯, 作業コード)
 		if (!lstWorkSchedule.isEmpty()) {
 			for (WorkSchedule item : lstWorkSchedule) {
@@ -156,6 +170,12 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 		private BusinessTypeEmpService businessTypeEmpService;
 		@Inject
 		private SyClassificationAdapter syClassificationAdapter;
+		
+		private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+		
+		private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+		
+		private NurseClassificationRepository nurseClassificationRepo;
 
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
@@ -281,5 +301,24 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 			return null;
 		}
 
+		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
+			List<EmpOrganizationImport> results = empAffiliationInforAdapter.getEmpOrganization(standardDate, Arrays.asList(employeeId));
+			if(results.isEmpty())
+				return null;
+			return results.get(0);
+		}
+
+		@Override
+		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp,
+				GeneralDate referenceDate) {
+			return empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
+		}
+
+		@Override
+		public List<NurseClassification> getListCompanyNurseCategory() {
+			String companyId = AppContexts.user().companyId();
+			return nurseClassificationRepo.getListCompanyNurseCategory(companyId);
+		}
+		
 	}
 }

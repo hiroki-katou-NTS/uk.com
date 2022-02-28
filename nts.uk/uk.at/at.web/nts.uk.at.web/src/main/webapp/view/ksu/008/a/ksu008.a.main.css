@@ -1,0 +1,63 @@
+.right-panel .form-label {
+    width: 100px;
+}
+
+.right-panel .panel.panel-frame:not(:first-child) {
+    margin-top: 15px;
+}
+
+.ui-widget-header  {
+    background-color: #CFF1A5;
+    border: none;
+}
+
+#color-setting {
+    display: inline-block;
+}
+
+#color-setting, #color-setting tr:nth-child(1), #color-setting tr:nth-child(2) {
+    border-top: solid 1px #CCC;
+    border-left: solid 1px #CCC;
+    border-right: solid 1px #CCC;
+}
+
+#color-setting, #color-setting tr:nth-child(1), #color-setting tr:nth-child(3) {
+    border-bottom: solid 1px #CCC;
+    border-left: solid 1px #CCC;
+    border-right: solid 1px #CCC;
+}
+
+#color-setting tr td:nth-child(1) {
+    border-right: solid 1px #CCC;
+}
+
+#color-setting tr td:nth-child(3),
+#color-setting tr td:nth-child(4) {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#color-setting tr:nth-child(3) td:nth-child(4) {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.margin-5 {
+    margin: 6px 10px;
+}
+
+.panel.panel-frame .control-group:first-child {
+    margin-top: 10px
+}
+
+.panel.panel-frame .control-group:not(:first-child) {
+    margin-top: 15px
+}
+
+.left-panel #multi-list-nopanel td {
+    height: 24px;
+}
+
+.right-panel .panel.panel-frame:nth-child(2) .nts-combo-column-1 {
+    width: 250px!important;
+}
