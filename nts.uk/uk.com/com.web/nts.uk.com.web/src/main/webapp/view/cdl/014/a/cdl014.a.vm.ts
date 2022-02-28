@@ -42,8 +42,7 @@ module nts.uk.com.view.cdl014.a {
                 height: 370,
                 // NONE = 0, FIRST = 1, ALL = 2
                 selectedMode: dataShare.selectedMode,
-                // TODO chờ code mới
-                //selectedWkpGroupTypes: dataShare.selectedWkpGroupTypes.map(function (i) { return Number(i); },
+                workplaceGroupTypes: dataShare.selectedWkpGroupTypes.map(function (i: any) { return Number(i); })
             };
         }
         mounted(){
@@ -102,7 +101,7 @@ module nts.uk.com.view.cdl014.a {
         alreadySettingList: any; // selected id
         currentCodes: any; // selected code - need to pass with id
         currentNames: any; // selected name - need to pass with id
-        selectedWkpGroupTypes: any;
+        selectedWkpGroupTypes: any; // 絞込リスト
 
         constructor(multiple: boolean, showEmptyItem: boolean, selectedMode: number,alreadySettingList: any, selectedWkpGroupTypes: any, currentCodes: any,currentNames: any){
             this.multiple = multiple;
