@@ -11,10 +11,11 @@ import nts.gul.security.saml.ValidSamlResponse;
 import nts.gul.util.Either;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRequire;
-import nts.uk.ctx.sys.gateway.dom.login.sso.saml.IdpUserAssociation;
-import nts.uk.ctx.sys.gateway.dom.login.sso.saml.IdpUserAssociationRepository;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.assoc.IdpUserAssociation;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.assoc.IdpUserAssociationRepository;
 import nts.uk.ctx.sys.gateway.dom.login.sso.saml.SamlSettingRepository;
 import nts.uk.ctx.sys.gateway.dom.login.sso.saml.UkRelayState;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.assoc.SamlIdpUserName;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataManageInfoAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.shared.dom.user.User;
@@ -130,7 +131,7 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 
 		@Override
 		public Optional<IdpUserAssociation> getIdpUserAssociation(String idpUserId) {
-			return idpUserAssociationRepo.findByIdpUser(tenantCode, idpUserId);
+			return idpUserAssociationRepo.findByIdpUser(tenantCode, new SamlIdpUserName(idpUserId));
 		}
 
 		@Override

@@ -4,9 +4,8 @@ import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.sys.gateway.dom.login.sso.saml.IdpUserAssociation;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.assoc.IdpUserAssociation;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.assoc.SamlIdpUserName;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -22,11 +21,11 @@ public class SgwmtSamlUserAssocEmp extends UkJpaEntity {
 	public String employeeId;
 	
 	public static SgwmtSamlUserAssocEmp toEntity(IdpUserAssociation domain) {
-		return new SgwmtSamlUserAssocEmp(new PK(domain.getTenantCode(), domain.getIdpUserName()), domain.getEmployeeId());
+		return new SgwmtSamlUserAssocEmp(new PK(domain.getTenantCode(), domain.getIdpUserName().v()), domain.getEmployeeId());
 	}
 
 	public IdpUserAssociation toDomain() {
-		return new IdpUserAssociation(pk.contractCode, pk.idpUserName, employeeId);
+		return new IdpUserAssociation(pk.contractCode, new SamlIdpUserName(pk.idpUserName), employeeId);
 	}
 
 	@Embeddable

@@ -1,11 +1,10 @@
 package nts.uk.ctx.sys.gateway.app.command.login.saml.validate;
 
 import lombok.val;
-import nts.arc.error.ErrorMessageId;
 import nts.gul.util.Either;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify;
-import nts.uk.ctx.sys.gateway.dom.login.sso.saml.IdpUserAssociation;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.assoc.IdpUserAssociation;
 
 import java.util.Optional;
 

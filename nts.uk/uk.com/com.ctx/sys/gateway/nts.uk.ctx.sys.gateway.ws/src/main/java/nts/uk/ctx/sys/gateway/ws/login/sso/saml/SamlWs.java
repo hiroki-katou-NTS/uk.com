@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.ws.singlesignon.saml;
+package nts.uk.ctx.sys.gateway.ws.login.sso.saml;
 
 import lombok.val;
 import nts.arc.i18n.I18NText;
