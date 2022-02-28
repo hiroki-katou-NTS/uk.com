@@ -47,7 +47,9 @@ public class PersonApprovalRootPubImpl implements PersonApprovalRootPub {
 					.map(data -> new EmploymentAppHistoryItemExport(data.getHistoryId(), data.getDatePeriod()))
 					.collect(Collectors.toList());
 			ApprovalRootExport apprRoot = new ApprovalRootExport(appRootDomain.getSysAtr().value, appRootDomain.getEmploymentRootAtr().value, historyItems, appRootDomain.getApplicationType().value, appRootDomain.getConfirmationRootType().value, appRootDomain.getNoticeId(), appRootDomain.getBusEventId());
-			PersonApprovalRootExport personApprovalRoot = new PersonApprovalRootExport(cid, personAppRootDomain.getApprovalId(), personAppRootDomain.getEmployeeId(), apprRoot, personAppRootDomain.getOperationMode().value);
+			PersonApprovalRootExport personApprovalRoot = new PersonApprovalRootExport(cid, personAppRootDomain.getApprRoot().getHistoryItems().isEmpty()
+					? ""
+					: personAppRootDomain.getApprRoot().getHistoryItems().get(0).getApprovalId(), personAppRootDomain.getEmployeeId(), apprRoot, personAppRootDomain.getOperationMode().value);
 			return new ApprovalSettingInformationExport(approvalPhases, personApprovalRoot);
 		}).collect(Collectors.toList());
 	}

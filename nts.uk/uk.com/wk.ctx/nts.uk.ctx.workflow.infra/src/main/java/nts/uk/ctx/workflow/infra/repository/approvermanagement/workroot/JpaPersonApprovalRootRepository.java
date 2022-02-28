@@ -529,9 +529,6 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		case CONFIRMATION:
 			query = FIND_CONFIRMATION;
 			break;
-		case ANYITEM:
-			query = FIND_ANYITEM;
-			break;
 		case NOTICE:
 			query = FIND_NOTICE;
 			break;
