@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.attendance.worktime.WorktimeByWorkplaceCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffClassHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.CardNumberCanonicalaization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffCompanyHistoryCanonicalization;
@@ -54,6 +55,9 @@ public enum ImportingDomainId {
 	
 	/** 設備分類マスタ */
 	EQUIPMENT_CLASSIFICATION(33, EquipmentClassiicationCanonicalization::new),
+
+	/** 職場別就業時間帯*/
+	WORKTIME_BY_WORKSPACE(42, WorktimeByWorkplaceCanonicalization::new),
 
 	/** 個人基本情報 */
 	EMPLOYEE_BASIC(100, EmployeeBasicCanonicalization::new),
