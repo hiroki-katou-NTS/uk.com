@@ -145,8 +145,8 @@ public class GetNextAnnualLeaveGrantProc {
 				period, isSingleDay, nextAnnualLeaveGrantList);
 
 		// １日に相当する契約時間を取得する
-		Optional<LaborContractTime> laborContractTimeOpt
-			= LeaveRemainingNumber.getContractTime(require, companyId, employeeId, period.start());
+		Optional<LaborContractTime> laborContractTimeOpt = annualSetting.getTimeSetting()
+				.getTimeAnnualLeaveTimeDay().getContractTime(require, employeeId, period.start());
 
 		for (val nextAnnualLeaveGrant : nextAnnualLeaveGrantList){
 

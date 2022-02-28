@@ -806,8 +806,7 @@ public class AggregateMonthlyRecordServiceProc {
 							public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
 								return Optional.of(latsWorkCondition);
 							}
-						}, this.employeeId, datePeriod.end())
-					.orElse(latsWorkCondition.getContractTime());
+						}, this.employeeId, datePeriod.end()).get();
 		}
 		
 		// 月初の情報を作成

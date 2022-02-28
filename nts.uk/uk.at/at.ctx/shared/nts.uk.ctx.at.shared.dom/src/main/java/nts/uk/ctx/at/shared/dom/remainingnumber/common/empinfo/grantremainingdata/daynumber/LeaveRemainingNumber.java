@@ -159,7 +159,10 @@ public class LeaveRemainingNumber {
 			LeaveUsedNumber leaveUsedNumber,
 			String companyId,
 			String employeeId,
-			GeneralDate baseDate){
+			GeneralDate baseDate) {
+		
+		/** 年休設定を取得する */
+		AnnualPaidLeaveSetting annualPaidLeave = require.annualPaidLeaveSetting(companyId);
 
 		// 消化できなかった休暇使用数クラスのオブジェクトを作成
 		LeaveUsedNumber unusedNumber = new LeaveUsedNumber();
@@ -182,8 +185,11 @@ public class LeaveRemainingNumber {
 				if (needStacking){ // 積み崩しが必要なとき
 
 					// 年休１日に相当する時間年休時間を取得する
-					Optional<LaborContractTime> contractTimeOpt
-						= getContractTime(require, companyId, employeeId, baseDate);
+					Optional<LaborContractTime> contractTimeOpt = Optional.empty();
+					if(annualPaidLeave != null){
+						contractTimeOpt = annualPaidLeave.getTimeSetting().getTimeAnnualLeaveTimeDay()
+								.getContractTime(require, employeeId, baseDate);
+					}
 
 					// 積み崩し処理を行う
 					if (contractTimeOpt.isPresent()){
@@ -278,32 +284,6 @@ public class LeaveRemainingNumber {
 		}
 
 		return unusedNumber;
-	}
-
-	/**
-	 * １日に相当する契約時間を取得する
-	 * @param repositoriesRequiredByRemNum ロードデータ（キャッシュ）
-	 * @param employeeId 社員ID
-	 * @param baseDate 基準日
-	 * @return　労働契約時間
-	 */
-	static public Optional<LaborContractTime> getContractTime(
-		RequireM3 require,
-		String companyID,
-		String employeeId,
-		GeneralDate baseDate){
-
-		// ドメインモデル「年休設定」を取得する
-		AnnualPaidLeaveSetting annualPaidLeave = require.annualPaidLeaveSetting(companyID);
-		if(annualPaidLeave == null){
-			return Optional.empty();
-		}
-
-		// 1日の時間を取得
-		TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay
-			= annualPaidLeave.getTimeSetting().getTimeAnnualLeaveTimeDay();
-
-		return timeAnnualLeaveTimeDay.getContractTime(require, employeeId, baseDate);
 	}
 
 	public static interface RequireM3 extends AbsenceTenProcess.RequireM1,TimeAnnualLeaveTimeDay.Require  {

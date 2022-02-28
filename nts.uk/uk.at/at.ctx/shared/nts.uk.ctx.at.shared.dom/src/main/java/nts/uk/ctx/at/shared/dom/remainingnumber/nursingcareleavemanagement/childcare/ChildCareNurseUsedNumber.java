@@ -10,6 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 
 /**
@@ -95,11 +96,15 @@ public class ChildCareNurseUsedNumber implements Cloneable{
 	 */
 	public ChildCareNurseUsedNumber contractTime(RequireM3 require, String companyId, String employeeId, GeneralDate criteriaDate) {
 
-//		// INPUT．Require．年休の契約時間を取得する
-//		LaborContractTime contractTime = require.contractTime(companyId, employeeId, criteriaDate);
+		/** 年休設定を取得する */
+		AnnualPaidLeaveSetting annualPaidLeave = require.annualPaidLeaveSetting(companyId);
 
 		// 「年休１日に相当する時間年休時間を取得する」を取得する
-		 Optional<LaborContractTime> contractTime = LeaveRemainingNumber.getContractTime(require, companyId, employeeId, criteriaDate);
+		Optional<LaborContractTime> contractTime = Optional.empty();
+		if(annualPaidLeave != null){
+			contractTime = annualPaidLeave.getTimeSetting().getTimeAnnualLeaveTimeDay()
+					.getContractTime(require, employeeId, criteriaDate);
+		}
 
 		return usedDayfromUsedTime(contractTime);
 	}
