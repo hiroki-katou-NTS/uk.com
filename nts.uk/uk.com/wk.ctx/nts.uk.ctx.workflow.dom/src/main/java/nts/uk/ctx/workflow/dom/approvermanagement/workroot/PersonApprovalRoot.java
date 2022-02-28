@@ -73,9 +73,9 @@ public class PersonApprovalRoot extends AggregateRoot{
 			String employeeId,
 			DatePeriod datePeriod,
 			EmploymentRootAtr employmentRootAtr,
-			ApplicationType applicationType,
-			ConfirmationRootType confirmationRootType) {
-		ApprovalRoot approvalRoot = new ApprovalRoot(datePeriod, employmentRootAtr, Optional.ofNullable(applicationType), Optional.ofNullable(confirmationRootType));
+			Optional<ApplicationType> applicationType,
+			Optional<ConfirmationRootType> confirmationRootType) {
+		ApprovalRoot approvalRoot = new ApprovalRoot(datePeriod, employmentRootAtr, applicationType, confirmationRootType);
 		this.companyId = companyId;
 		this.employeeId = employeeId;
 		this.apprRoot = approvalRoot;

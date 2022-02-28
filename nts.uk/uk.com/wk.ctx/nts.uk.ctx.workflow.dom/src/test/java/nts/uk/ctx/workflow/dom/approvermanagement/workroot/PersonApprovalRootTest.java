@@ -29,8 +29,8 @@ public class PersonApprovalRootTest {
 				expEmployeeId,
 				expDatePeriod,
 				expEmploymentRootAtr,
-				expApplicationType,
-				expConfirmationRootType);
+				Optional.ofNullable(expApplicationType),
+				Optional.ofNullable(expConfirmationRootType));
 		
 		assertThat(domain.getCompanyId()).isEqualTo(expCompanyId);
 		assertThat(domain.getEmployeeId()).isEqualTo(expEmployeeId);

@@ -50,7 +50,7 @@ public class DomainServiceTestHelper {
 
 	public static PersonApprovalRoot mockPersonApprovalRoot(OperationMode operationMode) {
 		PersonApprovalRoot domain = new PersonApprovalRoot(CID, CID, PERIOD, EmploymentRootAtr.COMMON,
-				ApplicationType.COMPLEMENT_LEAVE_APPLICATION, ConfirmationRootType.DAILY_CONFIRMATION);
+				Optional.of(ApplicationType.COMPLEMENT_LEAVE_APPLICATION), Optional.of(ConfirmationRootType.DAILY_CONFIRMATION));
 		domain.setOperationMode(operationMode);
 		return domain;
 	}

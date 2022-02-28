@@ -44,8 +44,8 @@ public class CreatePersonalApprovalRootDomainService {
 		List<ApproverInformation> approvalPhases = param.getApprovalPhases();
 		// 個人別承認ルートを作成する
 		PersonApprovalRoot personApprovalRoot = new PersonApprovalRoot(cid, sid, approvalRootInfo.getDatePeriod(),
-				approvalRootInfo.getEmploymentRootAtr(), approvalRootInfo.getApplicationType().orElse(null),
-				approvalRootInfo.getConfirmationRootType().orElse(null));
+				approvalRootInfo.getEmploymentRootAtr(), approvalRootInfo.getApplicationType(),
+				approvalRootInfo.getConfirmationRootType());
 		String approvalId = personApprovalRoot.getApprovalId();
 		//承認フェーズを作成する
 		List<ApprovalPhase> phases = approvalPhases.stream()
