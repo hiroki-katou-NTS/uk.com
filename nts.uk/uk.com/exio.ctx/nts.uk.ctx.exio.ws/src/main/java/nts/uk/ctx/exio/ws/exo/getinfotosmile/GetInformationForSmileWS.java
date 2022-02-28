@@ -1,8 +1,6 @@
 package nts.uk.ctx.exio.ws.exo.getinfotosmile;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -23,6 +21,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresInfoDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.SmileClosureTime;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.SmileEmpClosure;
+import nts.uk.ctx.exio.app.find.exo.smilelink.TargetEmployeeFinder;
 import nts.uk.ctx.sys.gateway.app.find.tenantlogin.TenanLoginFinder;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -48,6 +47,8 @@ public class GetInformationForSmileWS extends WebService{
 	@Inject
 	private GetSpecifyPeriod specify;
 	
+	@Inject
+	private TargetEmployeeFinder employeeFinder;
 	
 	// 締め情報を取得する
 	@POST
@@ -93,6 +94,7 @@ public class GetInformationForSmileWS extends WebService{
 	@POST
 	@Path("getmonth-state")
 	public ApprovalRootStateDto getEmploymentClosure(ApprovalRootStateParam param) {
+		
 		ApprovalRootStateImport_New approState = this.approvalFinder.getAppRootInstanceMonthByEmpPeriod(param.getEmployeeId(), new DatePeriod(GeneralDate.legacyDate(param.getStartDate()), GeneralDate.legacyDate(param.getEndDate())), 
 				new YearMonth(param.getYearMonth()), param.getClosureID(), new ClosureDate(param.getClosureDay(), param.getLastDayOfMonth()), GeneralDate.legacyDate(param.getBaseDate()));
 		if(approState == null)
@@ -122,12 +124,17 @@ public class GetInformationForSmileWS extends WebService{
 	// 指定した年月の締め期間を取得する
 	@POST
 	@Path("getclosing-period")
-	public Map<Integer, List<ClosureHistPeriodDto>> getSpecify(ClosingPeriodParam param) {
+	public List<ClosureHistPeriodDto> getSpecify(ClosingPeriodParam param) {
 		List<ClosureHistPeriod> listSpecify = specify.getSpecifyPeriod(new YearMonth(param.getYearmonth()));
 		List<ClosureHistPeriodDto> listPeriod = listSpecify.stream().map(x -> new ClosureHistPeriodDto(x)).collect(Collectors.toList());
-		
-		Map<Integer, List<ClosureHistPeriodDto>> listPeriodHist = new HashMap<>();
-		listPeriodHist = listPeriod.stream().collect(Collectors.groupingBy(ClosureHistPeriodDto :: getClosureId));
-		return listPeriodHist;
+		return listPeriod;
+	}
+	
+	// 出力対象社員リスト取得
+	@POST
+	@Path("gettarget-employee")
+	public List<String> getTargetEmployee(TargetEmployeeParam param){
+		List<String> employeeCd = employeeFinder.getTargetEmployee(param.getEmploymentCd(), GeneralDate.legacyDate(param.getStartDate()), GeneralDate.legacyDate(param.getEndDate()));
+		return employeeCd;
 	}
 }
