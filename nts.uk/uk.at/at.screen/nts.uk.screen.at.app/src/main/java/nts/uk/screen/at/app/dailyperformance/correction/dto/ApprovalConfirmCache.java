@@ -6,11 +6,13 @@ import java.util.List;
 import javax.persistence.OptimisticLockException;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.i18n.I18NText;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApprovalConfirmCache implements Serializable{

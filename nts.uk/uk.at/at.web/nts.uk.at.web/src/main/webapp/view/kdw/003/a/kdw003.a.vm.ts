@@ -1952,7 +1952,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let lstData = _.map(_.sortBy(_.filter(self.dailyPerfomanceData(), (v) => _.includes(rowIds, v.id)), (sort) => {
                 return new Date(sort.date);
             }), (map) => {
-                map.date = moment(map.date).format('YYYY-MM-DD') + 'T00:00:00.000Z';
+                map.date = moment(map.date).format('YYYY/MM/DD');
                 map.state = "";
                 map.error = "";
                 map.sign = false;
@@ -2092,7 +2092,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             return temp.rowId == temp2.id;
                         });
                         if (!_.includes(lstDataChange, lstTemp => {return lstTemp.employeeId == findRow.employeeId && lstTemp.date == findRow.dateDetail })) {
-                            lstDataChange.push({ employeeId: findRow.employeeId, date: findRow.dateDetail });
+                            lstDataChange.push({ employeeId: findRow.employeeId, date: findRow.dateDetail._i });
                         }
                     })
                     _.forEach(dataChangeApproval, temp => {
@@ -2100,7 +2100,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             return temp.rowId == temp2.id;
                         });
                         if (!_.includes(lstDataChange, lstTemp => {return lstTemp.employeeId == findRow.employeeId && lstTemp.date == findRow.dateDetail })) {
-                            lstDataChange.push({ employeeId: findRow.employeeId, date: findRow.dateDetail });
+                            lstDataChange.push({ employeeId: findRow.employeeId, date: findRow.dateDetail._i });
                         }
                     })
 
@@ -2137,14 +2137,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                     paramVer.lstDataChange = lstDataChange;
                     paramVer.dateRange = {
-                        startDate: lstData[0].date,
-                        endDate: lstData[lstData.length - 1].date
+                        startDate: moment(lstData[0].date).format("YYYY/MM/DD"),
+                        endDate: moment(lstData[lstData.length - 1].date).format("YYYY/MM/DD")
                     };
                     paramVer.displayFormat = self.displayFormat();
 					let loadVerDataDto = {
 						loadVerData : paramVer,
 						dataSessionDto : self.dataSessionDto
 					}
+					loadVerDataDto.dataSessionDto.dpStateParam = self.dpStateParam;
+					loadVerDataDto.dataSessionDto.paramCommonAsync = self.paramCommonAsync;
                     service.loadVerRow(loadVerDataDto).done((data : any) => {
                         self.indentityMonth(data.loadVerDataResult.indentityMonthResult);
                         self.flagCalculation = false;
@@ -2174,12 +2176,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 lstData: lstData,
                 lstHeader: self.lstHeaderReceive,
                 autBussCode: self.autBussCode(),
-                dateMonth: moment(self.dateRanger().endDate).utc().toISOString(),
+                dateMonth: moment(self.dateRanger().endDate).format("YYYY/MM/DD"),
                 onlyLoadMonth: onlyLoadMonth,
                 //dailys: self.lstDomainEdit,
                 dateExtract: {
-                    startDate: moment(self.dateRanger().startDate).toISOString(),
-                    endDate: moment(self.dateRanger().endDate).toISOString()
+                    startDate: moment(self.dateRanger().startDate).format("YYYY/MM/DD"),
+                    endDate: moment(self.dateRanger().endDate).format("YYYY/MM/DD")
                 },
                 identityProcess: self.dataAll().identityProcessDto,
                 showLock: self.showLock(),
@@ -2189,6 +2191,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 				dpPramLoadRow : param,
 				dataSessionDto : self.dataSessionDto
 			}
+			dPPramLoadRowDto.dataSessionDto.dpStateParam = self.dpStateParam;
+			dPPramLoadRowDto.dataSessionDto.paramCommonAsync = self.paramCommonAsync;
             service.loadRow(dPPramLoadRowDto).done((data) => {
                 self.flagCalculation = false;
                 if (onlyLoadMonth && errorFlex == false) {
@@ -3378,6 +3382,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.insertUpdate("Tight").done((loadContinue: boolean) => {
                     if(!loadContinue){
 					empAndDateDto.empAndDate = { employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail, showFlex: self.showFlex() };
+					empAndDateDto.dataSessionDto.dpStateParam = self.dpStateParam;
+					empAndDateDto.dataSessionDto.paramCommonAsync = self.paramCommonAsync;
                     service.addClosure(empAndDateDto).done((data) => {
                         self.processLockButton(self.showLock());
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -3414,6 +3420,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 				empAndDate : { employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail },
 				dataSessionDto : self.dataSessionDto
 			}
+			empAndDateDto.dataSessionDto.dpStateParam = self.dpStateParam;
+			empAndDateDto.dataSessionDto.paramCommonAsync = self.paramCommonAsync;
             service.releaseClosure(empAndDateDto).done((res: any) => {
 				let data = res.result;
                 if (!_.isEmpty(data)) {
@@ -3520,6 +3528,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 				dpDisplayLockParam : param,
 				dataSessionDto : self.dataSessionDto
 			}
+			dpDisplayLockParamDto.dataSessionDto.dpStateParam = self.dpStateParam;
+			dpDisplayLockParamDto.dataSessionDto.paramCommonAsync = self.paramCommonAsync;
             service.lock(dpDisplayLockParamDto).done((data) => {
                 nts.uk.ui.block.clear();
                 self.lockDisableFlex(data.lockDisableFlex);

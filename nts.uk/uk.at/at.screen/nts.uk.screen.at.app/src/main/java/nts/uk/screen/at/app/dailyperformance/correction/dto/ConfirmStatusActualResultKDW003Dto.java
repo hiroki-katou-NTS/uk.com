@@ -63,4 +63,32 @@ public class ConfirmStatusActualResultKDW003Dto {
 				ReleasedAtr.valueOf(this.permissionRelease));
 
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ConfirmStatusActualResultKDW003Dto other = (ConfirmStatusActualResultKDW003Dto) obj;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		} else if (!date.equals(other.date))
+			return false;
+		if (employeeId == null) {
+			if (other.employeeId != null)
+				return false;
+		} else if (!employeeId.equals(other.employeeId))
+			return false;
+		if (permissionCheck != other.permissionCheck)
+			return false;
+		if (permissionRelease != other.permissionRelease)
+			return false;
+		if (status != other.status)
+			return false;
+		return true;
+	}
 }
