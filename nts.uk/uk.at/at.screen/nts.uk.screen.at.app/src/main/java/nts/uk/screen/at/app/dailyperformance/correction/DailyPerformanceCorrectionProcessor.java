@@ -76,6 +76,7 @@ import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationLis
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
@@ -810,7 +811,7 @@ public class DailyPerformanceCorrectionProcessor {
 							} 
 						} else {
 							if (groupType != null) {
-								if (groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value) {
+								if (groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value || groupType == TypeLink.WKP_GROUP.value) {
 //									Optional<CodeName> optCodeName = dataDialogWithTypeProcessor
 //											.getCodeNameWithId(groupType, data.getDate(), value);
 									val mapCodeNameAll = mapGetName.get(groupType).get(value);
@@ -1103,8 +1104,8 @@ public class DailyPerformanceCorrectionProcessor {
 		appplicationDisable.forEach(x -> {
 			String key = x.getEmployeeID() + "|" + x.getAppDate();
 			if (disableSignMap != null) {
-				boolean disable = (x.getReflectState() == ReflectedState_New.NOTREFLECTED.value
-						|| x.getReflectState() == ReflectedState_New.REMAND.value)
+				boolean disable = (x.getReflectState() == ReflectedStateShare.NOTREFLECTED.value
+						|| x.getReflectState() == ReflectedStateShare.REMAND.value)
 						&& x.getAppType() != nts.uk.ctx.at.request.dom.application.ApplicationType.OVER_TIME_APPLICATION.value;
 				if (disableSignMap.containsKey(key)) {
 					disableSignMap.put(key, disableSignMap.get(key) || disable);
@@ -1737,6 +1738,7 @@ public class DailyPerformanceCorrectionProcessor {
 		result.setComboItemReason(EnumCodeName.getReasonGoOut());
 		result.setComboItemCalcCompact(EnumCodeName.getCalcCompact());
 		result.setComboTimeLimit(EnumCodeName.getComboTimeLimit());
+		result.setComboNursingLicenseCls(EnumCodeName.getNursingLicenseCls());
 		result.setItemIds(lstAtdItemUnique);
 		return result;
 	}

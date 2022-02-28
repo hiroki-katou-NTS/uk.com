@@ -1174,8 +1174,8 @@ module nts.uk.com.view.ccg.share.ccg {
              * Calculate KCP005 rows
              */
             private calculateKcp005Rows(marginHeight: number): number {
-                const tabContentHeight = parseInt(document.querySelector('.ccg-tabpanel #ccg001-tab-content-3').style.height);
-                const heightPerRow = 24;
+                const tabContentHeight = $("#component-ccg001 .tabs-content").height();
+                const heightPerRow = 30;
                 return (tabContentHeight - marginHeight) / heightPerRow;
             }
 
@@ -1183,7 +1183,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 if (self.showAdvancedSearchTab && self.showEmployeeSelection) {
-                    const Kcp005MarginHeight = 70;
+                    const Kcp005MarginHeight = 95;
 
                     // set KCP005 options
                     self.employeeinfo = {
@@ -2451,7 +2451,8 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                 </div>
 
                 <div tabindex="-1" class="tab-content-2 height-maximum" data-bind="visible: showAdvancedSearchTab">
-                        <div id="ccg001-tab-content-2" class="height-maximum">
+                    <div id="ccg001-tab-content-2" class="height-maximum" data-bind="css: { withEmployeeFilter: showEmployeeSelection }">
+                        <div class="conditions-filter">
                             <div class="ccg001-tab-content-filters" style="overflow-y: scroll;">
                                 <div>
                                     <label>`+CCG001TextResource.CCG001_24+`</label>
@@ -2610,90 +2611,84 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                     ${CCG001TextResource.CCG001_25}
                                 </button>
                             </div>
-                            
-                            <!-- ko if: showEmployeeSelection -->
-                                <div class="pull-left height-maximum margin-left-10">
+                        </div>
+
+                        <!-- ko if: showEmployeeSelection -->
+                            <div class="employees-filter">
+                                <div class="ccg001-tab-content-filters">
                                     <div id="employeeinfo"></div>
                                 </div>
-                                <div class="pull-left height-maximum margin-left-10 ccg001-table has-state">
-                                    <div class="ccg001-cell mid">
-                                        <div id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
-                                            data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployees">
-                                            <div class="ccg001-cell mid">
-                                                <i class="icon icon-47-white-check-mark icon-ml"></i>
-                                                <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_26+`</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="ccg001-cell mid">
-                                        <span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
-                                    </div>
+                                <div class="footer-button">
+                                    <button id="ccg001-btn-KCP005-apply" class="green" data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployees">
+                                        ${CCG001TextResource.CCG001_26}
+                                    </button>
                                 </div>
-                            <!-- /ko -->
-                            <div class="cf"></div>
-                        </div>
-                        <div class="cf"></div>
+                            </div>
+                        <!-- /ko -->
+
                     </div>
-            <div id="ccg001-tab-content-3" class="height-maximum">
-                <div id="ccg001-part-g" class="ccg001-tab-content-filters">
-                    <div class="ccg001-control-group">
-                        <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_104+`</div>
-                        <input class="ccg001-inp fit-to-right" id="ccg001-input-code"
-                                    data-bind="attr: {tabindex: ccg001Tabindex}, ntsTextEditor: {
-                                    name: '#[CCG001_106]',
-                                    value: inputCodeTab3,
-                                    valueUpdate: 'keypress',
-                                    required: false
-                                    }" />
-                        <button class="proceed fit-to-left fit-to-editor" id="ccg001-tab3-search-by-code"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByCode, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
-                    </div>
-                    <div class="ccg001-control-group">
-                        <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_105+`</div>
-                        <input class="ccg001-inp fit-to-right" id="ccg001-inp-name"
-                                    data-bind="attr: {tabindex: ccg001Tabindex}, ntsTextEditor: {
-                                    name: '#[CCG001_107]',
-                                    value: inputNameTab3,
-                                    valueUpdate: 'keypress',
-                                    required: false
-                                    }" />
-                        <button class="proceed fit-to-left fit-to-editor" id="ccg001-tab3-search-by-name"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByName, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
-                    </div>
-                    <div class="ccg001-control-group">
-                        <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_98+`</div>
-                        <div id="ccg001-date-entry" class="ccg001-date-range fit-to-right"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
-                                name: '#[CCG001_100]',
-                                required: false,
-                                enable: true,
-                                showNextPrevious: false,
-                                value: entryDateTab3
-                                }"/>
-                        <button class="proceed fit-to-left fit-to-editor" id="search-by-entry-date"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByEntryDate, enable: isValidEntryDateSearch">`+CCG001TextResource.CCG001_108+`</button>
-                    </div>
-                    <div class="ccg001-control-group">
-                        <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_99+`</div>
-                        <div id="ccg001-date-retirement" class="ccg001-date-range fit-to-right"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
-                                name: '#[CCG001_100]',
-                                required: false,
-                                enable: true,
-                                showNextPrevious: false,
-                                value: retirementDateTab3 }"/>
-                        <button class="proceed fit-to-left fit-to-editor" id="search-by-retirement-date"
-                            data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByRetirementDate, enable: isValidRetirementDateSearch">`+CCG001TextResource.CCG001_108+`</button>
-                    </div>
-                    <div id="tab3kcp005"></div>
                 </div>
-                <div class="footer-button">
-                    <button id="ccg001-btn-KCP005-apply" class="green" data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployeesInTab3">
-                        ${CCG001TextResource.CCG001_26}
-                    </button>
+
+                <div id="ccg001-tab-content-3" class="height-maximum">
+                    <div id="ccg001-part-g" class="ccg001-tab-content-filters">
+                        <div class="ccg001-control-group">
+                            <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_104+`</div>
+                            <input class="ccg001-inp fit-to-right" id="ccg001-input-code"
+                                        data-bind="attr: {tabindex: ccg001Tabindex}, ntsTextEditor: {
+                                        name: '#[CCG001_106]',
+                                        value: inputCodeTab3,
+                                        valueUpdate: 'keypress',
+                                        required: false
+                                        }" />
+                            <button class="proceed fit-to-left fit-to-editor" id="ccg001-tab3-search-by-code"
+                                data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByCode, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
+                        </div>
+                        <div class="ccg001-control-group">
+                            <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_105+`</div>
+                            <input class="ccg001-inp fit-to-right" id="ccg001-inp-name"
+                                        data-bind="attr: {tabindex: ccg001Tabindex}, ntsTextEditor: {
+                                        name: '#[CCG001_107]',
+                                        value: inputNameTab3,
+                                        valueUpdate: 'keypress',
+                                        required: false
+                                        }" />
+                            <button class="proceed fit-to-left fit-to-editor" id="ccg001-tab3-search-by-name"
+                                data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByName, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
+                        </div>
+                        <div class="ccg001-control-group">
+                            <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_98+`</div>
+                            <div id="ccg001-date-entry" class="ccg001-date-range fit-to-right"
+                                data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
+                                    name: '#[CCG001_100]',
+                                    required: false,
+                                    enable: true,
+                                    showNextPrevious: false,
+                                    value: entryDateTab3
+                                    }"/>
+                            <button class="proceed fit-to-left fit-to-editor" id="search-by-entry-date"
+                                data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByEntryDate, enable: isValidEntryDateSearch">`+CCG001TextResource.CCG001_108+`</button>
+                        </div>
+                        <div class="ccg001-control-group">
+                            <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_99+`</div>
+                            <div id="ccg001-date-retirement" class="ccg001-date-range fit-to-right"
+                                data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
+                                    name: '#[CCG001_100]',
+                                    required: false,
+                                    enable: true,
+                                    showNextPrevious: false,
+                                    value: retirementDateTab3 }"/>
+                            <button class="proceed fit-to-left fit-to-editor" id="search-by-retirement-date"
+                                data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByRetirementDate, enable: isValidRetirementDateSearch">`+CCG001TextResource.CCG001_108+`</button>
+                        </div>
+                        <div id="tab3kcp005"></div>
+                    </div>
+                    <div class="footer-button">
+                        <button id="ccg001-btn-KCP005-apply" class="green" data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployeesInTab3">
+                            ${CCG001TextResource.CCG001_26}
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
     </div>
     <div id="hor-scroll-button-hide">

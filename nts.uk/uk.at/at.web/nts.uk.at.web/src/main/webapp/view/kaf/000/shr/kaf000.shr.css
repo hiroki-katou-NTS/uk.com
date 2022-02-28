@@ -26,7 +26,7 @@ th, td {
 
 .nts-fixed-table .nts-editor-wrapped input {
 	background-color: transparent;
-	border-color: transparent !important;
+	border-color: transparent;
 }
 
 table.left-aligned th,
@@ -46,13 +46,13 @@ table.left-aligned td:not(:first-child) {
 }
 
 .left-panel {
-	width: calc(100% - 388px);
+	width: calc(100% - 348px);
 	padding-bottom: 5px;
 	height: inherit;
 	overflow-y: auto !important;
 }
 
-.left-panel > .form-header {
+.left-panel .form-header {
 	margin-bottom: 40px;
 }
 
@@ -64,16 +64,13 @@ table.left-aligned td:not(:first-child) {
 	text-align: left;
 	display: inline-block;
 	vertical-align: top;
-	margin-left: 30px;
-	width: 112px;
+	/* margin-left: 30px; */
+	/* width: 112px; */
 }
 
-.left-panel > .form-header .approver-block > div:first-child {
-}
-
-.left-panel > .form-header .approver-block > div:first-child * {
+/* .left-panel > .form-header .approver-block > div:first-child * {
 	font-size: 12px;
-}
+} */
 
 .left-panel > .form-header .approver-block > div:first-child > .cell {
 	vertical-align: middle;
@@ -91,12 +88,12 @@ table.left-aligned td:not(:first-child) {
 }
 
 .left-panel .table.item > .cm-column {
-	width: 200px;
+	width: 120px;
 }
 
 .left-panel .table.item > .cm-column:not(.valign-top),
 .left-panel .table.item > .cell:nth-child(2):not(.valign-top) {
-	vertical-align: middle; /* ’Pˆês€–Ú‚Ímiddle‚Ì‚Ü‚Ü‚Å‚¢‚¢‚ªAc‚É’·‚¢€–Ú‚Ítop‚É‚·‚é‚±‚Æ */
+	vertical-align: middle; /* ï¿½Pï¿½ï¿½sï¿½ï¿½ï¿½Ú‚ï¿½middleï¿½Ì‚Ü‚Ü‚Å‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½cï¿½É’ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú‚ï¿½topï¿½É‚ï¿½ï¿½é‚±ï¿½ï¿½ */
 }
 
 .left-panel .table.item > .cm-column.valign-top,
@@ -105,13 +102,13 @@ table.left-aligned td:not(:first-child) {
 	top: 3px;
 }
 
-.left-panel button {
+.left-panel button{
 	min-width: 100px;
 }
 
 .left-panel button.proceed.x-large{
 	width:	192px;
-	margin-left: 200px;
+	/* margin-left: 200px; */
 }
 
 .right-panel {
@@ -135,4 +132,8 @@ table.left-aligned td:not(:first-child) {
 
 .right-panel .right-panel-block > .content {
 	margin-top: 13px;
+}
+
+span.text {
+    font-size: 0.8rem;
 }

@@ -280,7 +280,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       </div>
 
       <!-- A3_2 Popup -->
-      <div id="ccg005-star-popup" style="width: 212px;">
+      <div id="ccg005-star-popup" style="width: 240px;">
         <!-- A3_2.1 -->
         <table>
           <tr style="height: 25px">
@@ -769,7 +769,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     private initResizeable(vm: any) {
-      $('.widget-container .widget-content.ui-resizable')
+      $('.widget-container .widget-content.ui-resizable#ccg005-watching')
         .on('wg.resize', () => {
           vm.onResizeable(vm);
         });

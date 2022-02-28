@@ -1136,6 +1136,38 @@ public class ProgramsManager {
             "/view/ksu/001/kc/index.xhtml");
 
     /**
+     * KSU011A
+     */
+    public static final Program KSU011A = new Program(WebAppId.AT, ProgramIdConsts.KSU011A, "KSU011_1",
+            "/view/ksu/011/a/index.xhtml");
+    /**
+     * KSU011B
+     */
+    public static final Program KSU011B = new Program(WebAppId.AT, ProgramIdConsts.KSU011B, "KSU011_2",
+            "/view/ksu/011/b/index.xhtml");
+    /**
+     * KSU011C
+     */
+    public static final Program KSU011C = new Program(WebAppId.AT, ProgramIdConsts.KSU011C, "KSU011_3",
+            "/view/ksu/011/c/index.xhtml");
+    /**
+     * KSU011D
+     */
+    public static final Program KSU011D = new Program(WebAppId.AT, ProgramIdConsts.KSU011D, "KSU011_4",
+            "/view/ksu/011/d/index.xhtml");
+    /**
+     *  KSU008
+     */
+    public static final Program KSU008A = new Program(WebAppId.AT, ProgramIdConsts.KSU008A, "KSU008_1",
+            "/view/ksu/008/a/index.xhtml");
+    public static final Program KSU008B = new Program(WebAppId.AT, ProgramIdConsts.KSU008B, "KSU008_2",
+            "/view/ksu/008/b/index.xhtml");
+    public static final Program KSU008C = new Program(WebAppId.AT, ProgramIdConsts.KSU008C, "KSU008_3",
+            "/view/ksu/008/c/index.xhtml");
+    public static final Program KSU008D = new Program(WebAppId.AT, ProgramIdConsts.KSU008D, "KSU008_4",
+            "/view/ksu/008/d/index.xhtml");
+
+    /**
      * KML002A
      */
     public static final Program KML002A = new Program(WebAppId.AT, ProgramIdConsts.KML002A, "KML002_1",

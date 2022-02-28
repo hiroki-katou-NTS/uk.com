@@ -24,6 +24,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.SystemImportingItems;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskCanonicalization.Items;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffCompanyHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordTo;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
@@ -33,6 +34,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.history.ExternalImportHistory;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryKeyColumnNames;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.DatePeriodCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
@@ -144,7 +146,8 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		
 		employeeCanonicalized.stream()
 				.sorted(Comparator.comparing(c -> c.getItemByNo(itemNoStartDate).get().getDate()))
-				.forEach(interm -> getPeriod(interm)
+				.forEach(interm -> new DatePeriodCanonicalization(itemNoStartDate,itemNoEndDate)
+						.getPeriod(interm)
 						.map(p -> new Container(interm, DateHistoryItem.createNewHistory(p)))
 						.ifRight(c -> containers.add(c))
 						.ifLeft(e -> require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), e.getText()))));

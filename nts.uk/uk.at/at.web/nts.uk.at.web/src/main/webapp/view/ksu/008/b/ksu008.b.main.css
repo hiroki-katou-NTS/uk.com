@@ -1,0 +1,78 @@
+.left-panel, .right-panel {
+    padding-top: 5px;
+}
+
+.left-panel #single-list td {
+    height: 24px;
+}
+
+.right-panel .form-label:not(.has-help) {
+    width: 166px;
+}
+
+.right-panel .form-label.has-help {
+    width: initial;
+}
+
+.right-panel .nts-fixed-table {
+    display: inline-block;
+}
+
+.right-panel .ui-widget-header  {
+    background-color: #CFF1A5;
+}
+
+#B6_1-table .fixed-table-first-row {
+    border-top-width: 2px!important;
+}
+
+#B7_2-table .yellow-header {
+    background-color: #f2e481;
+}
+
+#B7_2-table .vertical-header {
+    white-space: initial;
+    padding: 0 12px;
+    text-align: center;
+}
+
+#B6_1-table input, #B7_2-table input {
+    width: 60px!important;
+}
+
+#B7_2-table .nts-editor-wrapped {
+    width: initial!important;
+}
+
+#file-upload .nts-editor.nts-input {
+    width: 290px;
+}
+
+.icon-78{
+    background:url('/nts.uk.com.web/view/ccg/025/component/icon78.png');
+    width: 18px;
+    height: 18px;
+    background-size: 20px 20px;
+}
+
+#single-list tr td:last-child {
+    text-align: center;
+}
+
+#B6_1-table td span.label {
+    padding-left: 20px;
+}
+
+#B7_2-table td span.label {
+    padding-left: 35px;
+}
+
+#B7_2-table tr:nth-child(11) td span.label,
+#B7_2-table tr:nth-child(13) td span.label,
+#B7_2-table tr:nth-child(14) td span.label {
+    padding-left: 20px;
+}
+
+.diagonalCross {
+    background: linear-gradient(to top left, #fff calc(50% - 1px), #ccc , #fff calc(50% + 1px))
+}

@@ -11,14 +11,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -31,7 +31,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -44,7 +44,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -54,7 +54,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -64,28 +64,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -108,7 +108,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -177,7 +177,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 return browser;
@@ -1897,7 +1897,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -4950,6 +4950,60 @@ var nts;
                     return StringValidator;
                 }());
                 validation.StringValidator = StringValidator;
+                var OutputCellValidator = /** @class */ (function () {
+                    function OutputCellValidator(name, primitiveValueName, option) {
+                        this.name = name;
+                        this.constraint = getConstraint(primitiveValueName);
+                        if (nts.uk.util.isNullOrUndefined(this.constraint)) {
+                            this.constraint = {};
+                        }
+                        this.charType = uk.text.getCharType(primitiveValueName);
+                        this.required = (!nts.uk.util.isNullOrUndefined(option.required) && option.required) || this.constraint.required;
+                    }
+                    OutputCellValidator.prototype.validate = function (inputText, option) {
+                        var result = new ValidationResult();
+                        if (util.isNullOrEmpty(inputText)) {
+                            if (this.required !== undefined && this.required !== false) {
+                                result.fail(nts.uk.resource.getMessage('MsgB_1', [this.name]), 'MsgB_1');
+                                return result;
+                            }
+                            result.success(inputText);
+                            return result;
+                        }
+                        var validateResult;
+                        if (!util.isNullOrUndefined(this.charType)) {
+                            if (this.charType.viewName === ui.toBeResource.alphaNumeric) {
+                                inputText = uk.text.toUpperCase(inputText);
+                            }
+                            validateResult = this.charType.validate(inputText);
+                            if (!validateResult.isValid) {
+                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, (!util.isNullOrUndefined(this.constraint.maxLength)
+                                        ? this.charType.getViewLength(this.constraint.maxLength) : 9999)]), validateResult.errorCode);
+                                return result;
+                            }
+                        }
+                        else {
+                            validateResult = result;
+                        }
+                        if (this.constraint !== undefined && this.constraint !== null) {
+                            if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
+                                var maxLength = this.constraint.maxLength;
+                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
+                                return result;
+                            }
+                            if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
+                                if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                                    result.fail(nts.uk.resource.getMessage('Msg_2300', [this.name]), 'Msg_2300');
+                                    return result;
+                                }
+                            }
+                        }
+                        result.success(inputText);
+                        return result;
+                    };
+                    return OutputCellValidator;
+                }());
+                validation.OutputCellValidator = OutputCellValidator;
                 var NumberValidator = /** @class */ (function () {
                     function NumberValidator(name, primitiveValueName, option) {
                         this.name = name;
@@ -7149,15 +7203,6 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../reference.ts"/>
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 var nts;
 (function (nts) {
     var uk;
@@ -14008,7 +14053,7 @@ var nts;
                                     var id = target.getAttribute("id");
                                     if (_.isNil(id))
                                         return;
-                                    if (!rightClickFt.chartFilter.apply(rightClickFt, __spreadArray(__spreadArray([], id.split('-'), false), [target], false)))
+                                    if (!rightClickFt.chartFilter.apply(rightClickFt, id.split('-').concat([target])))
                                         return;
                                 }
                                 else {
@@ -14023,7 +14068,7 @@ var nts;
                                     ui = helper.getCellCoord(target);
                                 }
                                 else {
-                                    _a = __spreadArray([], id.split('-'), true), ui.rowIndex = _a[0], ui.id = _a[1];
+                                    _a = id.split('-').slice(), ui.rowIndex = _a[0], ui.id = _a[1];
                                 }
                                 ui.target = target;
                                 ui.contextMenu = function (items) {
@@ -17834,7 +17879,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-                                                accessor.checked(__spreadArray(__spreadArray([], checkeds, true), [value_1], false));
+                                                accessor.checked(checkeds.concat([value_1]));
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -20334,6 +20379,9 @@ var nts;
                         if (data.constraint === "EmployeeCode") {
                             return new validation.EmployeeCodeValidator(name, { required: required });
                         }
+                        if (data.constraint == "OutputCell") {
+                            return new validation.OutputCellValidator(name, constraintName, { required: required });
+                        }
                         return new validation.StringValidator(name, constraintName, { required: required });
                     };
                     TextEditorProcessor.prototype.setWidthByConstraint = function (constraintName, $input) {
@@ -20505,7 +20553,7 @@ var nts;
                             var delKeyCode = [46];
                             var dotWithNumpadKeyCodes = [110, 190]; //'.'
                             var minusWithNumpadKeyCodes = [109, 189]; //'-'
-                            var allowedKeyCodes = __spreadArray(__spreadArray(__spreadArray(__spreadArray(__spreadArray(__spreadArray([], numberKeyCodes, true), numberNumpadKeyCodes, true), backspaceKeyCode, true), delKeyCode, true), dotWithNumpadKeyCodes, true), minusWithNumpadKeyCodes, true);
+                            var allowedKeyCodes = numberKeyCodes.concat(numberNumpadKeyCodes, backspaceKeyCode, delKeyCode, dotWithNumpadKeyCodes, minusWithNumpadKeyCodes);
                             if (allowedKeyCodes.indexOf(dorgi.keyCode) == -1) {
                                 $input.val(dval);
                                 $input.data(_kc, null);
@@ -21205,8 +21253,8 @@ var nts;
                     function NtsGridListBindingHandler() {
                     }
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var HEADER_HEIGHT = 27;
-                        var ROW_HEIGHT = 24;
+                        var HEADER_HEIGHT = 30;
+                        var ROW_HEIGHT = 30;
                         var DIFF_NUMBER = 2;
                         var $grid = $(element).addClass("nts-gridlist");
                         var gridId = $grid.attr('id');
@@ -21230,7 +21278,7 @@ var nts;
                         $grid.data("selectionDisables", selectionDisables);
                         $grid.data("initValue", value);
                         if (data.multiple) {
-                            ROW_HEIGHT = 24;
+                            ROW_HEIGHT = 30;
                             // Internet Explorer 6-11
                             var _document = document;
                             var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
@@ -21248,7 +21296,7 @@ var nts;
                                 name: 'RowSelectors',
                                 enableCheckBoxes: data.multiple,
                                 enableRowNumbering: false,
-                                rowSelectorColumnWidth: 25
+                                rowSelectorColumnWidth: 40
                             });
                         }
                         if (columnResize) {
@@ -21673,7 +21721,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -22642,7 +22690,7 @@ var nts;
                         var tabIndex = _.isEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
                         $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
                         $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor fit-to-right ntsSearchBox_Component' type='text' /></span></div>");
-                        $container.find('.input-wrapper').append("<i id='search-icon' class='img-icon'></i>");
+                        // $container.find('.input-wrapper').append("<i id='search-icon' class='img-icon'></i>");
                         $container.append("<div class='input-wrapper'><button class='search-btn fit-to-left fit-to-editor ntsSearchBox_Component'>" + searchText + "</button></div>");
                         if (!_.isEmpty(label)) {
                             var $formLabel = $("<div>", { text: label });
@@ -22676,7 +22724,8 @@ var nts;
                         }
                         $input.attr("placeholder", placeHolder);
                         $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
-                        $input.outerWidth($container.outerWidth(true) - minusWidth);
+                        $input.outerWidth($container.outerWidth(true) - minusWidth - 6);
+                        $input.css('margin-right', '6px');
                         var primaryKey = ko.unwrap(data.targetKey);
                         var searchObject = new SearchPub(primaryKey, searchMode, dataSource, fields, childField);
                         $container.data("searchObject", searchObject);
@@ -22860,11 +22909,11 @@ var nts;
                      */
                     NtsSwapListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
-                        var CHECKBOX_WIDTH = 25;
+                        var CHECKBOX_WIDTH = 40;
                         var SEARCH_AREA_HEIGHT = 45;
                         var BUTTON_SEARCH_WIDTH = 85; //width 80 + margin 5
                         var INPUT_SEARCH_PADDING = 22;
-                        var SCROLL_WIDTH = 17;
+                        var SCROLL_WIDTH = 10;
                         var BUTTON_CLEAR_WIDTH = 36; //width 31 + margin 5
                         var $swap = $(element);
                         var elementId = $swap.attr('id');
@@ -22956,7 +23005,7 @@ var nts;
                             }
                             if (showSearchBox.showRight) {
                                 var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
-                                $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH).css({ position: "absolute", right: 0 });
+                                $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH - 7).css({ position: "absolute", right: 0 });
                                 initSearchArea($searchRightContainer, "highlight", data.rightSearchBoxText || defaultSearchText);
                                 $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
                             }
@@ -22973,7 +23022,7 @@ var nts;
                         var $grid2 = $swap.find(grid2Id);
                         var features = [{ name: 'Selection', multipleSelection: true },
                             //                            { name: 'Sorting', type: 'local' },
-                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering, rowSelectorColumnWidth: 25 }];
+                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering, rowSelectorColumnWidth: 40 }];
                         $swap.find("#" + elementId + "-gridArea1").width(leftGridWidth + CHECKBOX_WIDTH);
                         $swap.find("#" + elementId + "-gridArea2").width(rightGridWidth + CHECKBOX_WIDTH);
                         var leftCriterion = _.map(leftColumns(), function (c) { return c.key === undefined ? c.prop : c.key; });
@@ -23007,7 +23056,7 @@ var nts;
                             .build());
                         this.swapper = new SwapHandler().setModel(new GridSwapList($swap, swapParts));
                         $grid1.igGrid({
-                            //width: leftGridWidth + CHECKBOX_WIDTH, 
+                            // width: leftGridWidth + SCROLL_WIDTH + CHECKBOX_WIDTH, 
                             height: (gridHeight) + "px",
                             primaryKey: primaryKey,
                             columns: leftIggridColumns,
@@ -23022,7 +23071,7 @@ var nts;
                             .attr("tabindex", tabIndex);
                         $grid1.ntsGridList('setupSelecting');
                         $grid2.igGrid({
-                            //width: rightGridWidth + CHECKBOX_WIDTH,
+                            // width: rightGridWidth + SCROLL_WIDTH + CHECKBOX_WIDTH,
                             height: (gridHeight) + "px",
                             primaryKey: primaryKey,
                             columns: rightIggridColumns,
@@ -23149,7 +23198,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -23868,7 +23917,8 @@ var nts;
                                         read: function () {
                                             var ds = ko.toJS(accessor.dataSource);
                                             return ds.filter(function (d) { return d.visible !== false; })
-                                                .map(function (d) { return (__assign(__assign({}, d), { active: active, tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
+                                                .map(function (d) { return (__assign({}, d, { active: active,
+                                                tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
                                                     'btn-link': d.title,
                                                     icon: d.icon || 'CHECKBOX',
                                                     width: 40,
@@ -38751,7 +38801,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, __spreadArray([], Array.prototype.slice.apply(arguments, []), true));
+                            $jump.apply(null, Array.prototype.slice.apply(arguments, []).slice());
                         }
                     },
                     blank: {
@@ -40603,8 +40653,8 @@ var nts;
                         if (typeof options === "string") {
                             return delegateMethod($grid, options, arguments[1]);
                         }
-                        var HEADER_HEIGHT = 27;
-                        var ROW_HEIGHT = 23;
+                        var HEADER_HEIGHT = 30;
+                        var ROW_HEIGHT = 30;
                         var DIFF_NUMBER = 2;
                         $grid.addClass("nts-gridlist");
                         var gridId = $grid.attr('id');
@@ -40625,7 +40675,7 @@ var nts;
                         $grid.data("selectionDisables", selectionDisables);
                         $grid.data("initValue", value);
                         if (options.multiple) {
-                            ROW_HEIGHT = 24;
+                            ROW_HEIGHT = 30;
                             // Internet Explorer 6-11
                             var _document = document;
                             var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
@@ -40643,7 +40693,7 @@ var nts;
                                 name: 'RowSelectors',
                                 enableCheckBoxes: options.multiple,
                                 enableRowNumbering: false,
-                                rowSelectorColumnWidth: 25
+                                rowSelectorColumnWidth: 40
                             });
                         }
                         if (columnResize) {
@@ -47714,7 +47764,8 @@ var nts;
                         }
                         $input.attr("placeholder", placeHolder);
                         $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
-                        $input.outerWidth($container.outerWidth(true) - minusWidth);
+                        $input.outerWidth($container.outerWidth(true) - minusWidth - 6);
+                        $input.css('margin-right', '6px');
                         var primaryKey = options.targetKey;
                         var searchObject = new ui_22.koExtentions.SearchPub(primaryKey, searchMode, dataSource, fields, childField);
                         $container.data("searchObject", searchObject);

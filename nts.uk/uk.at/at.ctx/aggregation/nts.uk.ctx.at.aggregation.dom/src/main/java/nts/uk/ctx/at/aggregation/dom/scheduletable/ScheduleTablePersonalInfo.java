@@ -8,7 +8,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.aggregation.dom.adapter.rank.EmployeeRankInfoImported;
 import nts.uk.ctx.at.aggregation.dom.adapter.team.EmployeeTeamInfoImported;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpLicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpLicenseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.importeddto.EmployeeInfoImported;
 
 /**
@@ -18,17 +18,17 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
  */
 @Value
 public class ScheduleTablePersonalInfo {
-	
+
 	/**
 	 * 社員ID
 	 */
 	private final String employeeId;
-	
+
 	/**
 	 * 個人情報Map
 	 */
 	private final Map<ScheduleTablePersonalInfoItem, ScheduleTablePersonalInfoItemData> personalInfoMap;
-	
+
 	/**
 	 * 作る
 	 * @param employeeId 社員ID
@@ -45,9 +45,9 @@ public class ScheduleTablePersonalInfo {
 			EmployeeRankInfoImported employeeRankInfo,
 			EmpLicenseClassification employeeLicenseClass
 			) {
-		
+
 		Map<ScheduleTablePersonalInfoItem, ScheduleTablePersonalInfoItemData> personalInfoMap = new HashMap<>();
-		
+
 		addEmployeeName(personalInfoMap, employeeInfo);
 		addEmployment(personalInfoMap, employeeInfo);
 		addJobTitle(personalInfoMap, employeeInfo);
@@ -55,10 +55,10 @@ public class ScheduleTablePersonalInfo {
 		addTeam(personalInfoMap, employeeTeamInfo);
 		addRank(personalInfoMap, employeeRankInfo);
 		addNurseClassification(personalInfoMap, employeeLicenseClass);
-		
+
 		return new ScheduleTablePersonalInfo(employeeId, personalInfoMap);
 	}
-	
+
 	/**
 	 * 社員名を追加する
 	 * @param personalInfoMap
@@ -74,7 +74,7 @@ public class ScheduleTablePersonalInfo {
 						employeeInfo.getEmployeeCode(),
 						employeeInfo.getBusinessName()));
 	}
-	
+
 	/**
 	 * 雇用を追加する
 	 * @param personalInfoMap
@@ -83,17 +83,17 @@ public class ScheduleTablePersonalInfo {
 	private static void addEmployment(
 			Map<ScheduleTablePersonalInfoItem, ScheduleTablePersonalInfoItemData> personalInfoMap,
 			EmployeeInfoImported employeeInfo) {
-		
+
 		if ( employeeInfo.getEmployment().isPresent() ) {
-			
+
 			personalInfoMap.put(
-					ScheduleTablePersonalInfoItem.EMPLOYMENT, 
+					ScheduleTablePersonalInfoItem.EMPLOYMENT,
 					new ScheduleTablePersonalInfoItemData(
-							employeeInfo.getEmployment().get().getEmploymentCode(), 
+							employeeInfo.getEmployment().get().getEmploymentCode(),
 							employeeInfo.getEmployment().get().getEmploymentName()));
 		}
 	}
-	
+
 	/**
 	 * 職位を追加する
 	 * @param personalInfoMap
@@ -102,17 +102,17 @@ public class ScheduleTablePersonalInfo {
 	private static void addJobTitle(
 			Map<ScheduleTablePersonalInfoItem, ScheduleTablePersonalInfoItemData> personalInfoMap,
 			EmployeeInfoImported employeeInfo) {
-		
+
 		if ( employeeInfo.getPosition().isPresent() ) {
-			
+
 			personalInfoMap.put(
-					ScheduleTablePersonalInfoItem.JOBTITLE, 
+					ScheduleTablePersonalInfoItem.JOBTITLE,
 					new ScheduleTablePersonalInfoItemData(
-							employeeInfo.getPosition().get().getPositionCode(), 
+							employeeInfo.getPosition().get().getPositionCode(),
 							employeeInfo.getPosition().get().getPositionName()));
 		}
 	}
-	
+
 	/**
 	 * 分類を追加する
 	 * @param personalInfoMap
@@ -121,17 +121,17 @@ public class ScheduleTablePersonalInfo {
 	private static void addClassification(
 			Map<ScheduleTablePersonalInfoItem, ScheduleTablePersonalInfoItemData> personalInfoMap,
 			EmployeeInfoImported employeeInfo) {
-		
+
 		if ( employeeInfo.getClassification().isPresent() ) {
-			
+
 			personalInfoMap.put(
-					ScheduleTablePersonalInfoItem.CLASSIFICATION, 
+					ScheduleTablePersonalInfoItem.CLASSIFICATION,
 					new ScheduleTablePersonalInfoItemData(
-							employeeInfo.getClassification().get().getClassificationCode(), 
+							employeeInfo.getClassification().get().getClassificationCode(),
 							employeeInfo.getClassification().get().getClassificationName()));
 		}
 	}
-	
+
 	/**
 	 * チームを追加する
 	 * @param personalInfoMap
@@ -140,17 +140,17 @@ public class ScheduleTablePersonalInfo {
 	private static void addTeam(
 			Map<ScheduleTablePersonalInfoItem, ScheduleTablePersonalInfoItemData> personalInfoMap,
 			EmployeeTeamInfoImported employeeTeamInfo) {
-		
+
 		if ( employeeTeamInfo != null && employeeTeamInfo.getTeamCode().isPresent() && employeeTeamInfo.getTeamName().isPresent() ) {
-			
+
 			personalInfoMap.put(
 					ScheduleTablePersonalInfoItem.TEAM,
 					new ScheduleTablePersonalInfoItemData(
-							employeeTeamInfo.getTeamCode().get(), 
+							employeeTeamInfo.getTeamCode().get(),
 							employeeTeamInfo.getTeamName().get()));
 		}
 	}
-	
+
 	/**
 	 * ランクを追加する
 	 * @param personalInfoMap
@@ -159,17 +159,17 @@ public class ScheduleTablePersonalInfo {
 	private static void addRank(
 			Map<ScheduleTablePersonalInfoItem, ScheduleTablePersonalInfoItemData> personalInfoMap,
 			EmployeeRankInfoImported employeeRankInfo) {
-		
+
 		if ( employeeRankInfo != null && employeeRankInfo.getRankCode().isPresent() && employeeRankInfo.getRankSymbol().isPresent() ) {
-			
+
 			personalInfoMap.put(
-					ScheduleTablePersonalInfoItem.RANK, 
+					ScheduleTablePersonalInfoItem.RANK,
 					new ScheduleTablePersonalInfoItemData(
-							employeeRankInfo.getRankCode().get(), 
+							employeeRankInfo.getRankCode().get(),
 							employeeRankInfo.getRankSymbol().get()));
 		}
 	}
-	
+
 	/**
 	 * 看護区分を追加する
 	 * @param personalInfoMap
@@ -178,18 +178,18 @@ public class ScheduleTablePersonalInfo {
 	private static void addNurseClassification(
 			Map<ScheduleTablePersonalInfoItem, ScheduleTablePersonalInfoItemData> personalInfoMap,
 			EmpLicenseClassification employeeLicenseClass) {
-		
+
 		if ( employeeLicenseClass != null && employeeLicenseClass.getOptLicenseClassification().isPresent() ){
-			
+
 			EnumConstant constant = EnumAdaptor.convertToValueName(
 					employeeLicenseClass.getOptLicenseClassification().get());
-			
+
 			personalInfoMap.put(
-					ScheduleTablePersonalInfoItem.NURSE_CLASSIFICATION, 
+					ScheduleTablePersonalInfoItem.NURSE_CLASSIFICATION,
 					new ScheduleTablePersonalInfoItemData(
-							String.valueOf(constant.getValue()), 
+							String.valueOf(constant.getValue()),
 							constant.getLocalizedName()));
 		}
 	}
-	
+
 }

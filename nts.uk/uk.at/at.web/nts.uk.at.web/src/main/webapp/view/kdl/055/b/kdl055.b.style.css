@@ -37,6 +37,11 @@
     text-align: center !important;
 }
 
+.align-left {
+    vertical-align: middle !important;
+    text-align: left !important;
+}
+
 #grid .limited-label {
     display: table-cell;
 }
