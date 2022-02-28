@@ -19,13 +19,14 @@ module nts.uk.at.kdp003.a {
 		REGISTER: '/at/record/stamp/employment/system/register-stamp-input',
 		NOW: '/server/time/now',
 		NOTICE: 'at/record/stamp/notice/getStampInputSetting',
-		GET_WORKPLACE_BASYO: 'at/record/stamp/employment_system/get_location_stamp_input',
 		confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
 		STAMP_SETTING_COMMON: 'at/record/stamp/settings_stamp_common',
 		getEmployeeWorkByStamping: 'at/record/stamp/employee_work_by_stamping',
 		getIsCloud: "at/record/stamp/finger/get-isCloud",
 		getContractCode: "at/record/stamp/finger/get-contractCode",
-		getAuthenticate: "at/record/stamp/finger/get-authenticate"
+		getAuthenticate: "at/record/stamp/finger/get-authenticate",
+		GetWorkLocationRagionalTime: "at/record/kdp/common/get-work-location-regional-time",
+		GetWorkPlaceRegionalTime: "at/record/kdp/common/get-work-place-regional-time"
 
 	};
 
@@ -111,6 +112,8 @@ module nts.uk.at.kdp003.a {
 
 		totalOpenViewR: number = 0;
 
+		regionalTime: KnockoutObservable<number> = ko.observable(0);
+
 		created() {
 			const vm = this;
 
@@ -125,10 +128,10 @@ module nts.uk.at.kdp003.a {
 									contractCode: data.code,
 									contractPassword: ""
 								})
-								.done(() => {
-									vm.contractCode = data.code;
-								})
-								.done(() => vm.getDataStartScreen());
+									.done(() => {
+										vm.contractCode = data.code;
+									})
+									.done(() => vm.getDataStartScreen());
 							});
 					} else {
 						// Step3: テナント認証する
@@ -252,6 +255,7 @@ module nts.uk.at.kdp003.a {
 
 		// get WorkPlace from basyo -> save locastorage.
 		basyo() {
+			const vm = this;
 			$.urlParam = function (name) {
 				var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 				if (results == null) {
@@ -262,32 +266,59 @@ module nts.uk.at.kdp003.a {
 				}
 			}
 
+			vm.getTimeZone();
+		}
+
+		getTimeZone(): JQueryPromise<void> {
 			const vm = this,
 				locationCd = $.urlParam('basyo');
+			let ipv4Address = '';
+			let dfd = $.Deferred<void>();
 
 			if (locationCd) {
-				const param = {
-					contractCode: vm.contractCode,
-					workLocationCode: locationCd
-				}
 
-				vm.$ajax(API.GET_WORKPLACE_BASYO, param)
-					.done((data: IBasyo) => {
+				$.getJSON("https://api.ipify.org?format=json").then((address: any) => {
+					ipv4Address = address.ip;
+				}).done(() => {
+					const param = {
+						contractCode: vm.contractCode,
+						workLocationCode: locationCd,
+						ipv4Address: ipv4Address
+					}
+					vm.$ajax('at', API.GetWorkLocationRagionalTime, param).then((data: GetWorkPlaceRegionalTime) => {
 						if (data) {
-
-							if (data.workLocationName != null || data.workpalceId != null) {
+							vm.regionalTime(data.regional);
+							if (data.workLocationCD != null && data.workPlaceId != null) {
 								vm.worklocationCode = locationCd;
-							}
-
-							if (data.workpalceId) {
-								if (data.workpalceId.length > 0) {
-									vm.modeBasyo(true);
-									vm.workPlace = data.workpalceId;
-								}
+								vm.workPlace = [];
+								vm.workPlace.push(data.workPlaceId);
+								vm.modeBasyo(true);
+							}if (data.workPlaceId == null) {
+								vm.modeBasyo(false);
 							}
 						}
-					});
+					})
+				});
+			} else {
+				vm.$window
+					.storage('loginKDP003')
+					.then((data: any) => {
+						if (data.WKPID.length > 0) {
+							const param = {
+								contractCode: vm.$user.companyCode,
+								cid: vm.$user.companyId,
+								sid: vm.$user.employeeId,
+								workPlaceId: data.WKPID[0]
+							}
+							vm.$ajax('at', API.GetWorkPlaceRegionalTime, param).then((data: GetWorkPlaceRegionalTime) => {
+								if (data) {
+									vm.regionalTime(data.regional);
+								}
+							})
+						}
+					})
 			}
+			return dfd.promise();
 		}
 
 		mountedContent() {
@@ -381,31 +412,7 @@ module nts.uk.at.kdp003.a {
 						}
 					}
 
-					const locationCd = $.urlParam('basyo');
-
-					if (locationCd) {
-						const param = {
-							contractCode: vm.contractCode,
-							workLocationCode: locationCd
-						}
-
-						return vm.$ajax(API.GET_WORKPLACE_BASYO, param)
-							.then((dataBasyo: IBasyo) => {
-								if (dataBasyo) {
-									if (dataBasyo.workLocationName != null || dataBasyo.workpalceId != null) {
-										vm.worklocationCode = locationCd;
-									}
-
-									if (dataBasyo.workpalceId) {
-										if (dataBasyo.workpalceId.length > 0) {
-											vm.modeBasyo(true);
-											vm.workPlace = dataBasyo.workpalceId;
-										}
-									}
-								}
-							})
-							.then(() => data);
-					}
+					vm.getTimeZone().then(()=> data);
 
 					return data;
 				})
@@ -819,37 +826,7 @@ module nts.uk.at.kdp003.a {
 						}
 					}
 
-					const locationCd = $.urlParam('basyo');
-
-					if (locationCd) {
-						const param = {
-							contractCode: vm.contractCode,
-							workLocationCode: locationCd
-						}
-
-						return vm.$ajax(API.GET_WORKPLACE_BASYO, param)
-							.then((data: IBasyo) => {
-
-								if (data) {
-
-									if (data.workLocationName != null || data.workpalceId != null) {
-										vm.worklocationCode = locationCd;
-									}
-
-									if (data.workpalceId) {
-										if (data.workpalceId.length > 0) {
-											vm.modeBasyo(true);
-											vm.workPlace = data.workpalceId;
-										}
-
-										if (data.workpalceId.length == 0) {
-											vm.modeBasyo(false);
-										}
-									}
-								}
-							})
-							.then(() => loginData);
-					}
+					vm.getTimeZone().then(()=> loginData);
 					return loginData;
 				})
 				.then((loginData: undefined | f.TimeStampLoginData) => {
@@ -1695,5 +1672,12 @@ module nts.uk.at.kdp003.a {
 		name: string,
 		workplaceDisplayName: string,
 		workplaceGeneric: string
+	}
+
+	interface GetWorkPlaceRegionalTime {
+		workPlaceId: string;
+		workLocationCD: string;
+		workLocationName: string;
+		regional: number;
 	}
 }
