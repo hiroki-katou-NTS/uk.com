@@ -23,13 +23,11 @@ public class ApproverOperationSettingsTest {
 		
 		ApprovalLevelNo approvalLevelNo = null;
 		ItemNameInformation itemNameInformation = ApproverOperationSettingsTestHelper.createDefaultItemName();
-		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createDefaultWithNullAttr();
+		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation);
 		
 		boolean actual = NtsAssert.Invoke.privateMethod(
 				instance,
-				"isItemNameInforMatchLevel",
-				approvalLevelNo,
-				itemNameInformation);
+				"isItemNameInforMatchLevel");
 		
 		assertThat(actual).isFalse();
 	}
@@ -43,13 +41,11 @@ public class ApproverOperationSettingsTest {
 		
 		ApprovalLevelNo approvalLevelNo = ApprovalLevelNo.ONE_LEVEL;
 		ItemNameInformation itemNameInformation = ApproverOperationSettingsTestHelper.createDefaultItemName();
-		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createDefaultWithNullAttr();
+		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation);
 		
 		boolean actual = NtsAssert.Invoke.privateMethod(
 				instance,
-				"isItemNameInforMatchLevel",
-				approvalLevelNo,
-				itemNameInformation);
+				"isItemNameInforMatchLevel");
 		
 		assertThat(actual).isTrue();
 	}
@@ -64,10 +60,11 @@ public class ApproverOperationSettingsTest {
 		ApprovalLevelNo approvalLevelNo = ApprovalLevelNo.ONE_LEVEL;
 		ItemNameInformation itemNameInformation1 = ApproverOperationSettingsTestHelper.createNullName1();
 		ItemNameInformation itemNameInformation2 = ApproverOperationSettingsTestHelper.createEmptyName1();
-		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createDefaultWithNullAttr();
+		ApproverOperationSettings instance1 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation1);
+		ApproverOperationSettings instance2 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation2);
 		
-		boolean actual1 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation1);
-		boolean actual2 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation2);
+		boolean actual1 = NtsAssert.Invoke.privateMethod(instance1, "isItemNameInforMatchLevel");
+		boolean actual2 = NtsAssert.Invoke.privateMethod(instance2, "isItemNameInforMatchLevel");
 		assertThat(actual1).isFalse();
 		assertThat(actual2).isFalse();
 	}
@@ -81,13 +78,11 @@ public class ApproverOperationSettingsTest {
 		
 		ApprovalLevelNo approvalLevelNo = ApprovalLevelNo.TWO_LEVEL;
 		ItemNameInformation itemNameInformation = ApproverOperationSettingsTestHelper.createDefaultItemName();
-		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createDefaultWithNullAttr();
+		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation);
 		
 		boolean actual = NtsAssert.Invoke.privateMethod(
 				instance,
-				"isItemNameInforMatchLevel",
-				approvalLevelNo,
-				itemNameInformation);
+				"isItemNameInforMatchLevel");
 		
 		assertThat(actual).isTrue();
 	}
@@ -104,12 +99,15 @@ public class ApproverOperationSettingsTest {
 		ItemNameInformation itemNameInformation2 = ApproverOperationSettingsTestHelper.createEmptyName1();
 		ItemNameInformation itemNameInformation3 = ApproverOperationSettingsTestHelper.createNullName2();
 		ItemNameInformation itemNameInformation4 = ApproverOperationSettingsTestHelper.createEmptyName2();
-		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createDefaultWithNullAttr();
+		ApproverOperationSettings instance1 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation1);
+		ApproverOperationSettings instance2 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation2);
+		ApproverOperationSettings instance3 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation3);
+		ApproverOperationSettings instance4 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation4);
 		
-		boolean actual1 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation1);
-		boolean actual2 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation2);
-		boolean actual3 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation3);
-		boolean actual4 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation4);
+		boolean actual1 = NtsAssert.Invoke.privateMethod(instance1, "isItemNameInforMatchLevel");
+		boolean actual2 = NtsAssert.Invoke.privateMethod(instance2, "isItemNameInforMatchLevel");
+		boolean actual3 = NtsAssert.Invoke.privateMethod(instance3, "isItemNameInforMatchLevel");
+		boolean actual4 = NtsAssert.Invoke.privateMethod(instance4, "isItemNameInforMatchLevel");
 		
 		assertThat(actual1).isFalse();
 		assertThat(actual2).isFalse();
@@ -126,13 +124,11 @@ public class ApproverOperationSettingsTest {
 		
 		ApprovalLevelNo approvalLevelNo = ApprovalLevelNo.THREE_LEVEL;
 		ItemNameInformation itemNameInformation = ApproverOperationSettingsTestHelper.createDefaultItemName();
-		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createDefaultWithNullAttr();
+		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation);
 		
 		boolean actual = NtsAssert.Invoke.privateMethod(
 				instance,
-				"isItemNameInforMatchLevel",
-				approvalLevelNo,
-				itemNameInformation);
+				"isItemNameInforMatchLevel");
 		
 		assertThat(actual).isTrue();
 	}
@@ -151,14 +147,19 @@ public class ApproverOperationSettingsTest {
 		ItemNameInformation itemNameInformation4 = ApproverOperationSettingsTestHelper.createEmptyName2();
 		ItemNameInformation itemNameInformation5 = ApproverOperationSettingsTestHelper.createNullName3();
 		ItemNameInformation itemNameInformation6 = ApproverOperationSettingsTestHelper.createEmptyName3();
-		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createDefaultWithNullAttr();
+		ApproverOperationSettings instance1 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation1);
+		ApproverOperationSettings instance2 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation2);
+		ApproverOperationSettings instance3 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation3);
+		ApproverOperationSettings instance4 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation4);
+		ApproverOperationSettings instance5 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation5);
+		ApproverOperationSettings instance6 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation6);
 		
-		boolean actual1 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation1);
-		boolean actual2 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation2);
-		boolean actual3 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation3);
-		boolean actual4 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation4);
-		boolean actual5 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation5);
-		boolean actual6 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation6);
+		boolean actual1 = NtsAssert.Invoke.privateMethod(instance1, "isItemNameInforMatchLevel");
+		boolean actual2 = NtsAssert.Invoke.privateMethod(instance2, "isItemNameInforMatchLevel");
+		boolean actual3 = NtsAssert.Invoke.privateMethod(instance3, "isItemNameInforMatchLevel");
+		boolean actual4 = NtsAssert.Invoke.privateMethod(instance4, "isItemNameInforMatchLevel");
+		boolean actual5 = NtsAssert.Invoke.privateMethod(instance5, "isItemNameInforMatchLevel");
+		boolean actual6 = NtsAssert.Invoke.privateMethod(instance6, "isItemNameInforMatchLevel");
 		
 		assertThat(actual1).isFalse();
 		assertThat(actual2).isFalse();
@@ -177,13 +178,11 @@ public class ApproverOperationSettingsTest {
 		
 		ApprovalLevelNo approvalLevelNo = ApprovalLevelNo.FOUR_LEVEL;
 		ItemNameInformation itemNameInformation = ApproverOperationSettingsTestHelper.createDefaultItemName();
-		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createDefaultWithNullAttr();
+		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation);
 		
 		boolean actual = NtsAssert.Invoke.privateMethod(
 				instance,
-				"isItemNameInforMatchLevel",
-				approvalLevelNo,
-				itemNameInformation);
+				"isItemNameInforMatchLevel");
 		
 		assertThat(actual).isTrue();
 	}
@@ -204,16 +203,23 @@ public class ApproverOperationSettingsTest {
 		ItemNameInformation itemNameInformation6 = ApproverOperationSettingsTestHelper.createEmptyName3();
 		ItemNameInformation itemNameInformation7 = ApproverOperationSettingsTestHelper.createNullName4();
 		ItemNameInformation itemNameInformation8 = ApproverOperationSettingsTestHelper.createEmptyName4();
-		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createDefaultWithNullAttr();
+		ApproverOperationSettings instance1 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation1);
+		ApproverOperationSettings instance2 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation2);
+		ApproverOperationSettings instance3 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation3);
+		ApproverOperationSettings instance4 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation4);
+		ApproverOperationSettings instance5 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation5);
+		ApproverOperationSettings instance6 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation6);
+		ApproverOperationSettings instance7 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation7);
+		ApproverOperationSettings instance8 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation8);
 		
-		boolean actual1 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation1);
-		boolean actual2 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation2);
-		boolean actual3 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation3);
-		boolean actual4 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation4);
-		boolean actual5 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation5);
-		boolean actual6 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation6);
-		boolean actual7 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation7);
-		boolean actual8 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation8);
+		boolean actual1 = NtsAssert.Invoke.privateMethod(instance1, "isItemNameInforMatchLevel");
+		boolean actual2 = NtsAssert.Invoke.privateMethod(instance2, "isItemNameInforMatchLevel");
+		boolean actual3 = NtsAssert.Invoke.privateMethod(instance3, "isItemNameInforMatchLevel");
+		boolean actual4 = NtsAssert.Invoke.privateMethod(instance4, "isItemNameInforMatchLevel");
+		boolean actual5 = NtsAssert.Invoke.privateMethod(instance5, "isItemNameInforMatchLevel");
+		boolean actual6 = NtsAssert.Invoke.privateMethod(instance6, "isItemNameInforMatchLevel");
+		boolean actual7 = NtsAssert.Invoke.privateMethod(instance7, "isItemNameInforMatchLevel");
+		boolean actual8 = NtsAssert.Invoke.privateMethod(instance8, "isItemNameInforMatchLevel");
 		
 		assertThat(actual1).isFalse();
 		assertThat(actual2).isFalse();
@@ -234,13 +240,11 @@ public class ApproverOperationSettingsTest {
 		
 		ApprovalLevelNo approvalLevelNo = ApprovalLevelNo.FIVE_LEVEL;
 		ItemNameInformation itemNameInformation = ApproverOperationSettingsTestHelper.createDefaultItemName();
-		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createDefaultWithNullAttr();
+		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation);
 		
 		boolean actual = NtsAssert.Invoke.privateMethod(
 				instance,
-				"isItemNameInforMatchLevel",
-				approvalLevelNo,
-				itemNameInformation);
+				"isItemNameInforMatchLevel");
 		
 		assertThat(actual).isTrue();
 	}
@@ -263,18 +267,27 @@ public class ApproverOperationSettingsTest {
 		ItemNameInformation itemNameInformation8 = ApproverOperationSettingsTestHelper.createEmptyName4();
 		ItemNameInformation itemNameInformation9 = ApproverOperationSettingsTestHelper.createEmptyName5();
 		ItemNameInformation itemNameInformation10 = ApproverOperationSettingsTestHelper.createNullName5();
-		ApproverOperationSettings instance = ApproverOperationSettingsTestHelper.createDefaultWithNullAttr();
+		ApproverOperationSettings instance1 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation1);
+		ApproverOperationSettings instance2 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation2);
+		ApproverOperationSettings instance3 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation3);
+		ApproverOperationSettings instance4 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation4);
+		ApproverOperationSettings instance5 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation5);
+		ApproverOperationSettings instance6 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation6);
+		ApproverOperationSettings instance7 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation7);
+		ApproverOperationSettings instance8 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation8);
+		ApproverOperationSettings instance9 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation9);
+		ApproverOperationSettings instance10 = ApproverOperationSettingsTestHelper.createByLevelAndSetting(approvalLevelNo, itemNameInformation10);
 		
-		boolean actual1 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation1);
-		boolean actual2 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation2);
-		boolean actual3 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation3);
-		boolean actual4 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation4);
-		boolean actual5 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation5);
-		boolean actual6 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation6);
-		boolean actual7 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation7);
-		boolean actual8 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation8);
-		boolean actual9 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation9);
-		boolean actual10 = NtsAssert.Invoke.privateMethod(instance, "isItemNameInforMatchLevel", approvalLevelNo, itemNameInformation10);
+		boolean actual1 = NtsAssert.Invoke.privateMethod(instance1, "isItemNameInforMatchLevel");
+		boolean actual2 = NtsAssert.Invoke.privateMethod(instance2, "isItemNameInforMatchLevel");
+		boolean actual3 = NtsAssert.Invoke.privateMethod(instance3, "isItemNameInforMatchLevel");
+		boolean actual4 = NtsAssert.Invoke.privateMethod(instance4, "isItemNameInforMatchLevel");
+		boolean actual5 = NtsAssert.Invoke.privateMethod(instance5, "isItemNameInforMatchLevel");
+		boolean actual6 = NtsAssert.Invoke.privateMethod(instance6, "isItemNameInforMatchLevel");
+		boolean actual7 = NtsAssert.Invoke.privateMethod(instance7, "isItemNameInforMatchLevel");
+		boolean actual8 = NtsAssert.Invoke.privateMethod(instance8, "isItemNameInforMatchLevel");
+		boolean actual9 = NtsAssert.Invoke.privateMethod(instance9, "isItemNameInforMatchLevel");
+		boolean actual10 = NtsAssert.Invoke.privateMethod(instance10, "isItemNameInforMatchLevel");
 		
 		assertThat(actual1).isFalse();
 		assertThat(actual2).isFalse();

@@ -19,6 +19,17 @@ public class ApproverOperationSettingsTestHelper {
 				approverSettingScreenInfor);
 	}
 	
+	public static ApproverOperationSettings createByLevelAndSetting(ApprovalLevelNo approvalLevelNo, ItemNameInformation itemNames) {
+		OperationMode operationMode = null;
+		List<SettingTypeUsed> settingTypeUseds = new ArrayList<>();
+		ApproverSettingScreenInfor approverSettingScreenInfor = new ApproverSettingScreenInfor(itemNames);
+		
+		return new ApproverOperationSettings(operationMode,
+				approvalLevelNo,
+				settingTypeUseds,
+				approverSettingScreenInfor);
+	}
+	
 	public static ItemNameInformation createDefaultItemName() {
 		return new ItemNameInformation(new ApproverItemName("name 1"),
 				new ApproverItemName("name 2"),

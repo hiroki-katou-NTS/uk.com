@@ -41,35 +41,35 @@ public class ApproverOperationSettings extends AggregateRoot {
 	 * @param itemNameInformation 項目の名称情報
 	 * @return true|false
 	 */
-	private boolean isItemNameInforMatchLevel(ApprovalLevelNo approvalLevelNo, ItemNameInformation itemNameInformation) {
+	private boolean isItemNameInforMatchLevel() {
 		if (approvalLevelNo == ApprovalLevelNo.ONE_LEVEL) {
-			return itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty();
+			return approverSettingScreenInfor.getFirstItemName() != null && !approverSettingScreenInfor.getFirstItemName().v().isEmpty();
 		}
 		
 		if (approvalLevelNo == ApprovalLevelNo.TWO_LEVEL) {
-			return (itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty())
-				&& (itemNameInformation.getSecondItemName() != null && !itemNameInformation.getSecondItemName().v().isEmpty());
+			return (approverSettingScreenInfor.getFirstItemName() != null && !approverSettingScreenInfor.getFirstItemName().v().isEmpty())
+				&& (approverSettingScreenInfor.getSecondItemName().isPresent() && !approverSettingScreenInfor.getSecondItemName().get().v().isEmpty());
 		}
 		
 		if (approvalLevelNo == ApprovalLevelNo.THREE_LEVEL) {
-			return (itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty())
-				&& (itemNameInformation.getSecondItemName() != null && !itemNameInformation.getSecondItemName().v().isEmpty())
-				&& (itemNameInformation.getThirdItemName() != null && !itemNameInformation.getThirdItemName().v().isEmpty());
+			return (approverSettingScreenInfor.getFirstItemName() != null && !approverSettingScreenInfor.getFirstItemName().v().isEmpty())
+				&& (approverSettingScreenInfor.getSecondItemName().isPresent() && !approverSettingScreenInfor.getSecondItemName().get().v().isEmpty())
+				&& (approverSettingScreenInfor.getThirdItemName().isPresent() && !approverSettingScreenInfor.getThirdItemName().get().v().isEmpty());
 		}
 
 		if (approvalLevelNo == ApprovalLevelNo.FOUR_LEVEL) {
-			return (itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty())
-				&& (itemNameInformation.getSecondItemName() != null && !itemNameInformation.getSecondItemName().v().isEmpty())
-				&& (itemNameInformation.getThirdItemName() != null && !itemNameInformation.getThirdItemName().v().isEmpty())
-				&& (itemNameInformation.getFourthItemName() != null && !itemNameInformation.getFourthItemName().v().isEmpty());
+			return (approverSettingScreenInfor.getFirstItemName() != null && !approverSettingScreenInfor.getFirstItemName().v().isEmpty())
+				&& (approverSettingScreenInfor.getSecondItemName().isPresent() && !approverSettingScreenInfor.getSecondItemName().get().v().isEmpty())
+				&& (approverSettingScreenInfor.getThirdItemName().isPresent() && !approverSettingScreenInfor.getThirdItemName().get().v().isEmpty())
+				&& (approverSettingScreenInfor.getFourthItemName().isPresent() && !approverSettingScreenInfor.getFourthItemName().get().v().isEmpty());
 		}
 
 		if (approvalLevelNo == ApprovalLevelNo.FIVE_LEVEL) {
-			return (itemNameInformation.getFirstItemName() != null && !itemNameInformation.getFirstItemName().v().isEmpty())
-				&& (itemNameInformation.getSecondItemName() != null && !itemNameInformation.getSecondItemName().v().isEmpty())
-				&& (itemNameInformation.getThirdItemName() != null && !itemNameInformation.getThirdItemName().v().isEmpty())
-				&& (itemNameInformation.getFourthItemName() != null && !itemNameInformation.getFourthItemName().v().isEmpty())
-				&& (itemNameInformation.getFifthItemName() != null && !itemNameInformation.getFifthItemName().v().isEmpty());
+			return (approverSettingScreenInfor.getFirstItemName() != null && !approverSettingScreenInfor.getFirstItemName().v().isEmpty())
+				&& (approverSettingScreenInfor.getSecondItemName().isPresent() && !approverSettingScreenInfor.getSecondItemName().get().v().isEmpty())
+				&& (approverSettingScreenInfor.getThirdItemName().isPresent() && !approverSettingScreenInfor.getThirdItemName().get().v().isEmpty())
+				&& (approverSettingScreenInfor.getFourthItemName().isPresent() && !approverSettingScreenInfor.getFourthItemName().get().v().isEmpty())
+				&& (approverSettingScreenInfor.getFifthItemName().isPresent() && !approverSettingScreenInfor.getFifthItemName().get().v().isEmpty());
 		}
 		return false;
 	}
@@ -80,16 +80,16 @@ public class ApproverOperationSettings extends AggregateRoot {
 	 * @param itemNameInformation 項目の名称情報
 	 */
 	public ApproverOperationSettings(OperationMode operationMode, ItemNameInformation itemNameInformation) {
-		if (!this.isItemNameInforMatchLevel(ApprovalLevelNo.FIVE_LEVEL, itemNameInformation)) {
-			throw new BusinessException("Msg_3311");
-		}
-		
 		List<SettingTypeUsed> settingTypes = SettingTypeUsed.createWithoutUsingAttr();
 		ApproverSettingScreenInfor approverSettingScreenInformation = new ApproverSettingScreenInfor(itemNameInformation);
 		this.operationMode = operationMode;
 		this.approvalLevelNo = ApprovalLevelNo.FIVE_LEVEL;
 		this.settingTypeUseds = settingTypes;
 		this.approverSettingScreenInfor = approverSettingScreenInformation;
+		
+		if (!this.isItemNameInforMatchLevel()) {
+			throw new BusinessException("Msg_3311");
+		}
 	}
 	
 	/**
