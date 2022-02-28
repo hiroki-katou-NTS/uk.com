@@ -33,7 +33,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateDailyRecordSe
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.GetSubHolOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -167,10 +166,9 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 		}
 
 		@Override
-		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
-				ExecutionType reCalcAtr) {
-			return calculateDailyRecordServiceCenter.calculatePassCompanySetting(calcOption, integrationOfDaily, reCalcAtr);
+		public List<IntegrationOfDaily> calculateForRecordSchedule(CalculateOption calcOption,
+				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySe) {
+			return calculateDailyRecordServiceCenter.calculateForSchedule(calcOption, integrationOfDaily);
 		}
 
 		@Override
