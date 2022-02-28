@@ -10,7 +10,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.sys.gateway.dom.login.sso.saml.SamlOperation;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.operate.SamlOperation;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor

@@ -8,8 +8,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.sys.gateway.app.command.tenantlogin.ConnectDataSourceOfTenant;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
-import nts.uk.ctx.sys.gateway.dom.login.sso.saml.SamlOperation;
-import nts.uk.ctx.sys.gateway.dom.login.sso.saml.SamlOperationRepository;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.operate.SamlOperation;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.operate.SamlOperationRepository;
 import nts.uk.ctx.sys.gateway.dom.login.sso.saml.UkRelayState;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.*;
 
