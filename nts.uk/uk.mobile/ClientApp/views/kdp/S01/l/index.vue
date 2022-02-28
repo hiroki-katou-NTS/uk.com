@@ -1,7 +1,7 @@
 <template>
   <div cl>
     <div class="modal-header rounded-0 d-block p-0">
-      <div class="uk-bg-teal p-2">
+      <div class=" p-2">
         <h4 class="modal-title text-white">
           <span>{{ "KDPS01_15" | i18n }}</span>
         </h4>

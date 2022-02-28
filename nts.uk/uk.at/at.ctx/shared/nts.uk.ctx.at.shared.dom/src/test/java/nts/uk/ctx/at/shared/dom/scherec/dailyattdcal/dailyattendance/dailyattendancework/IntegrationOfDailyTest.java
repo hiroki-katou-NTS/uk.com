@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Collections;
 import java.util.Map;
@@ -25,7 +25,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -35,65 +34,69 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 @RunWith(JMockit.class)
 public class IntegrationOfDailyTest {
-	
-	@Injectable 
+
+	@Injectable
 	TimeLeavingOfDailyAttd timeLeaving;
-	
-	@Injectable 
+
+	@Injectable
 	AttendanceTimeOfDailyAttendance attendanceTime;
-	
+
 	@Injectable
 	OutingTimeOfDailyAttd outingTime;
-	
+
 	@Test
 	public void testGetTimeVacation_success(
 			@Injectable Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacations) {
-		
+
 		new MockUp<GettingTimeVacactionService>() {
-			
+
 			@Mock
 			public Map<TimezoneToUseHourlyHoliday, TimeVacation> get(Optional<TimeLeavingOfDailyAttd> optTimeLeaving,
 					Optional<AttendanceTimeOfDailyAttendance> optAttendanceTime,
 					Optional<OutingTimeOfDailyAttd> outingTime) {
 
 				return timeVacations;
-				
+
 			}
-			
+
 		};
-		
+
 		// Arrange
 		IntegrationOfDaily  target = Helper.createWithParams(
-				Optional.of(timeLeaving), 
+				Optional.of(timeLeaving),
 				Optional.of(attendanceTime),
 				Optional.of(outingTime));
-		
+
 		// Action
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = target.getTimeVacation();
-		
+
 		// Assert
 		assertThat(result).isEqualTo(timeVacations);
 	}
 
 	public static class Helper{
-		
+
 		private static WorkInfoOfDailyAttendance defaultWorkInfo = new WorkInfoOfDailyAttendance(
-				new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("001")), 
-				CalculationState.No_Calculated, 
-				NotUseAttribute.Not_use, 
-				NotUseAttribute.Not_use, 
-				DayOfWeek.MONDAY, 
-				Collections.emptyList(), 
+				new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("001")),
+				CalculationState.No_Calculated,
+				NotUseAttribute.Not_use,
+				NotUseAttribute.Not_use,
+				DayOfWeek.MONDAY,
+				Collections.emptyList(),
 				Optional.empty());
-		
+
 		private static AffiliationInforOfDailyAttd defaultAffInfo = new AffiliationInforOfDailyAttd(
 				new EmploymentCode("EmpCode-001"),
-				"JobTitle-Id-001", 
-				"Wpl-Id-001", 
-				new ClassificationCode("class-001"), 
-				Optional.empty(), 
-				Optional.empty());
-		
+				"JobTitle-Id-001",
+				"Wpl-Id-001",
+				new ClassificationCode("class-001"),
+				Optional.empty(),
+				Optional.empty()
+				, Optional.empty()
+				, Optional.empty()
+				, Optional.empty()
+				);
+
 		public static IntegrationOfDaily createWithParams(
 				Optional<TimeLeavingOfDailyAttd> optTimeLeaving,
 				Optional<AttendanceTimeOfDailyAttendance> optAttendanceTime,

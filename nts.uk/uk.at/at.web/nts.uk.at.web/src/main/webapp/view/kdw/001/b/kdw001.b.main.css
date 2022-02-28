@@ -144,3 +144,7 @@
 .nts-wizard>.content>.body {
  padding: 0;
 }
+
+#contents-area #ccg001-btn-search-drawer {
+	left: 245px;
+}
