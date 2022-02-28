@@ -11,12 +11,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
-import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
-import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
-import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
-import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
-import nts.uk.ctx.exio.dom.input.setting.FromCsvBaseSettingToDomainRequire;
-import nts.uk.ctx.exio.dom.input.setting.ImportSettingBaseType;
+import nts.uk.ctx.exio.dom.input.setting.*;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -42,7 +37,7 @@ public class ExternalImportSettingDto {
 	
 	private List<ImportDomainDto> domains;
 	
-	private List<String> csvItems;
+	private List<BaseCsvInfoDto> csvItems;
 
 	public static interface RequireMerge extends
 		ExternalImportSetting.RequireMerge{
@@ -54,9 +49,9 @@ public class ExternalImportSettingDto {
 			.map(ds -> new ImportDomainDto(ds.getDomainId().value, ds.getAssembly().getAllItemNo()))
 			.collect(Collectors.toList());
 
-		List<String> items = (setting.getBaseType() != ImportSettingBaseType.CSV_BASE || !setting.getCsvFileInfo().getBaseCsvFileId().isPresent())
-				? new ArrayList<String>()
-				:  toDomainRequire.createBaseCsvInfo(setting.getCsvFileInfo()).orElse(new ArrayList<String>());
+		List<BaseCsvInfoDto> items = (setting.getBaseType() != ImportSettingBaseType.CSV_BASE || !setting.getCsvFileInfo().getBaseCsvFileId().isPresent())
+				? new ArrayList<BaseCsvInfoDto>()
+				:  toDomainRequire.createBaseCsvInfo(setting.getCsvFileInfo()).orElse(new ArrayList<BaseCsvInfoDto>());
 		
 		return new ExternalImportSettingDto(
 				setting.getCompanyId(),

@@ -10,8 +10,19 @@ import java.util.Optional;
 
 @Stateless
 public class JpaTimeSpecialLeaveMngSetRepository extends JpaRepository implements TimeSpecialLeaveMngSetRepository {
-    @Override
-    public Optional<TimeSpecialLeaveManagementSetting> findByCompany(String companyId) {
-        return this.queryProxy().find(companyId, KshmtHdspTimeMgt.class).map(KshmtHdspTimeMgt::toDomain);
-    }
+
+	@Override
+	public Optional<TimeSpecialLeaveManagementSetting> findByCompany(String companyId) {
+		return this.queryProxy().find(companyId, KshmtHdspTimeMgt.class).map(KshmtHdspTimeMgt::toDomain);
+	}
+
+	@Override
+	public void add(TimeSpecialLeaveManagementSetting setting) {
+		this.commandProxy().insert(KshmtHdspTimeMgt.fromDomain(setting));
+	}
+
+	@Override
+	public void update(TimeSpecialLeaveManagementSetting setting) {
+		this.commandProxy().update(KshmtHdspTimeMgt.fromDomain(setting));
+	}
 }

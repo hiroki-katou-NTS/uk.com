@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.kdp.kdp004.a.RegisterFingerStampCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp004.a.RegisterFingerStampCommandHandler;
 import nts.uk.screen.at.app.query.kdp.kdp004.a.GetFingerStampSettingDto;
+import nts.uk.shr.com.system.config.SystemConfiguration;
 import nts.uk.shr.com.system.property.UKServerSystemProperties;
 import nts.uk.screen.at.app.query.kdp.kdp003.a.AuthenticateTenantByStampInput;
 import nts.uk.screen.at.app.query.kdp.kdp003.a.AuthenticateTenantInput;
@@ -26,9 +27,12 @@ public class FingerStampWebService extends WebService {
 
 	@Inject
 	private RegisterFingerStampCommandHandler commandHanler;
-	
+
 	@Inject
 	private AuthenticateTenantByStampInput authenticate;
+	
+	@Inject
+	private SystemConfiguration systemConfig;
 
 	@POST
 	@Path("get-finger-stamp-setting")
@@ -41,14 +45,21 @@ public class FingerStampWebService extends WebService {
 	public GeneralDate registerFingerStamp(RegisterFingerStampCommand command) {
 		return this.commandHanler.handle(command);
 	}
-	
+
 	// クラウド/オンプレの判断を行う
 	@POST
 	@Path("get-isCloud")
 	public boolean getIsCloud() {
 		return UKServerSystemProperties.isCloud();
 	}
-	
+
+	@POST
+	@Path("get-contractCode")
+	public ContractCodePremisesDto getContractCode() {
+		ContractCodePremisesDto result = new ContractCodePremisesDto(systemConfig.getTenantCodeOnPremise().get());
+		return result;
+	}
+
 	@POST
 	@Path("get-authenticate")
 	public boolean getAuthenTicate(@Context HttpServletRequest request, AuthenticateTenantInput param) {

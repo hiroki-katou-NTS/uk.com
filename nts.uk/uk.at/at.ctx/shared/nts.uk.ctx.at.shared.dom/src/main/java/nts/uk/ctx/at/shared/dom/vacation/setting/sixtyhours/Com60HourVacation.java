@@ -6,12 +6,15 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.SixtyHourExtra;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 
 /**
  * The Class CompanyCompensatoryLeave.
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.休暇.60H超休.60H超休.60H超休管理設定
  */
-// 60H超休管理設定
 @Getter
 public class Com60HourVacation extends DomainObject {
 
@@ -19,9 +22,11 @@ public class Com60HourVacation extends DomainObject {
 	// 会社ID
 	private String companyId;
 
-	/** The setting. */
-	// 設定
-	private SixtyHourVacationSetting setting;
+	// 時間休暇消化単位
+	private TimeVacationDigestUnit timeVacationDigestUnit;
+	
+	// 60H超休使用期限
+	private SixtyHourExtra sixtyHourExtra;
 
 	/**
 	 * Checks if is managed.
@@ -29,7 +34,7 @@ public class Com60HourVacation extends DomainObject {
 	 * @return true, if is managed
 	 */
 	public boolean isManaged() {
-		return this.setting.getIsManage().equals(ManageDistinct.YES);
+		return this.timeVacationDigestUnit.getManage().equals(ManageDistinct.YES);
 	}
 
 	/**
@@ -38,10 +43,11 @@ public class Com60HourVacation extends DomainObject {
 	 * @param companyId the company id
 	 * @param setting the setting
 	 */
-	public Com60HourVacation(String companyId, SixtyHourVacationSetting setting) {
+	public Com60HourVacation(String companyId, TimeVacationDigestUnit digestiveUnit, SixtyHourExtra sixtyHourExtra) {
 		super();
 		this.companyId = companyId;
-		this.setting = setting;
+		this.timeVacationDigestUnit = digestiveUnit;
+		this.sixtyHourExtra = sixtyHourExtra;
 	}
 
 	// =================== Memento State Support Method ===================
@@ -53,7 +59,8 @@ public class Com60HourVacation extends DomainObject {
 	 */
 	public Com60HourVacation(Com60HourVacationGetMemento memento) {
 		this.companyId = memento.getCompanyId();
-		this.setting = memento.getSetting();
+		this.timeVacationDigestUnit = memento.getDigestiveUnit();
+		this.sixtyHourExtra = memento.getSixtyHourExtra();
 	}
 
 	/**
@@ -64,7 +71,26 @@ public class Com60HourVacation extends DomainObject {
 	 */
 	public void saveToMemento(Com60HourVacationSetMemento memento) {
 		memento.setCompanyId(this.companyId);
-		memento.setSetting(this.setting);
+		memento.setTimeVacationDigestUnit(this.timeVacationDigestUnit);
+		memento.setSixtyHourExtra(this.sixtyHourExtra);
+	}
+	
+	
+	/**
+	 * [1] 利用する休暇時間の消化単位をチェックする
+	 * @param require
+	 * @param time
+	 */
+	public boolean checkVacationTimeUnitUsed(TimeVacationDigestUnit.Require require, AttendanceTime time) {
+		return this.timeVacationDigestUnit.checkDigestUnit(require, time);
+	}
+	
+	/**
+	 * [2] 時間60H超休を管理するか
+	 * @param require
+	 */
+	public boolean isVacationTimeManage(TimeVacationDigestUnit.Require require) {
+		return this.timeVacationDigestUnit.isVacationTimeManage(require);
 	}
 
 }

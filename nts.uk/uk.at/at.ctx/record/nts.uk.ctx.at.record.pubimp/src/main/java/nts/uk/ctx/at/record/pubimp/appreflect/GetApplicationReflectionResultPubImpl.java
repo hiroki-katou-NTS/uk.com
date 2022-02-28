@@ -66,6 +66,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
 public class GetApplicationReflectionResultPubImpl implements GetApplicationReflectionResultPub {
@@ -363,6 +365,11 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
 			return this.calculateForRecordSchedule(calcOption, integrationOfDaily, companySet);
+		}
+			
+       @Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 	}
 

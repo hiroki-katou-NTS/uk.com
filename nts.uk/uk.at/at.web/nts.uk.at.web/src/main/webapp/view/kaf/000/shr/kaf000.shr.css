@@ -1,3 +1,139 @@
-.right-panel > div > div {
-    margin: 0 10px;
+
+th, td {
+	text-align: center !important;
+	height: 33px !important;
+}
+
+
+.nts-fixed-table .nts-fixed-header-container {
+	border-color: #fff !important;
+}
+
+.nts-fixed-table .scroll-header {
+	border-color: #fff !important;
+	background-color: #fff !important;
+}
+
+.has-row-header .nts-fixed-table thead tr th:first-child {
+	background-color: transparent;
+	border: none !important;
+}
+
+.has-row-header .nts-fixed-body-wrapper tbody tr td:first-child {
+	background-color: #6A6A6A;
+	color: #fff;
+}
+
+.nts-fixed-table .nts-editor-wrapped input {
+	background-color: transparent;
+	border-color: transparent;
+}
+
+table.left-aligned th,
+table.left-aligned td {
+	text-align: left !important;
+	padding-left: 7px !important;
+	padding-right: 7px !important;
+}
+
+table.left-aligned td:not(:first-child) {
+	padding-left: 20px !important;
+}
+
+.two-panel {
+	width: 1330px;
+	height: 100%;
+}
+
+.left-panel {
+	width: calc(100% - 348px);
+	padding-bottom: 5px;
+	height: inherit;
+	overflow-y: auto !important;
+}
+
+.left-panel .form-header {
+	margin-bottom: 40px;
+}
+
+.left-panel > .form-header > .cell {
+	vertical-align: middle;
+}
+
+.left-panel > .form-header .approver-block {
+	text-align: left;
+	display: inline-block;
+	vertical-align: top;
+	/* margin-left: 30px; */
+	/* width: 112px; */
+}
+
+/* .left-panel > .form-header .approver-block > div:first-child * {
+	font-size: 12px;
+} */
+
+.left-panel > .form-header .approver-block > div:first-child > .cell {
+	vertical-align: middle;
+}
+
+.left-panel > .form-header .approver-block > div:first-child .status-icon {
+	width: 24px;
+	height: 24px;
+	padding-left: 4px
+}
+
+.left-panel .table.item {
+	margin-bottom: 12px;
+	min-height: 45px;
+}
+
+.left-panel .table.item > .cm-column {
+	width: 120px;
+}
+
+.left-panel .table.item > .cm-column:not(.valign-top),
+.left-panel .table.item > .cell:nth-child(2):not(.valign-top) {
+	vertical-align: middle; /* �P��s���ڂ�middle�̂܂܂ł������A�c�ɒ������ڂ�top�ɂ��邱�� */
+}
+
+.left-panel .table.item > .cm-column.valign-top,
+.left-panel .table.item > .cell:nth-child(2).valign-top {
+	position: relative;
+	top: 3px;
+}
+
+.left-panel button{
+	min-width: 100px;
+}
+
+.left-panel button.proceed.x-large{
+	width:	192px;
+	/* margin-left: 200px; */
+}
+
+.right-panel {
+	overflow-y: auto !important;
+}
+
+.right-panel .right-panel-block {
+	margin-bottom: 20px;
+}
+
+.right-panel .right-panel-block > .header,
+.right-panel .right-panel-block > .content {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.right-panel .right-panel-block > .header {
+	border-bottom: solid 1px #000000;
+	padding-bottom: 5px;
+}
+
+.right-panel .right-panel-block > .content {
+	margin-top: 13px;
+}
+
+span.text {
+    font-size: 0.8rem;
 }

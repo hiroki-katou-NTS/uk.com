@@ -9,8 +9,8 @@ import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.SubstituteHolidaySetting;
@@ -72,18 +72,6 @@ public class JpaCompensLeaveComSetMemento implements CompensatoryLeaveComSetMeme
      * (non-Javadoc)
      * 
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryLeaveComSetMemento#setCompensatoryDigestiveTimeUnit(nts.uk.
-     * ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryDigestiveTimeUnit)
-     */
-    @Override
-    public void setCompensatoryDigestiveTimeUnit(CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit) {
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
      * CompensatoryLeaveComSetMemento#setCompensatoryOccurrenceSetting(java.util
      * .List)
      */
@@ -117,6 +105,13 @@ public class JpaCompensLeaveComSetMemento implements CompensatoryLeaveComSetMeme
 	@Override
 	public void setLinkingManagementATR(ManageDistinct linkingManagementATR) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setTimeVacationDigestUnit(TimeVacationDigestUnit timeVacationDigestUnit) {
+		this.entity.setManageAtr(timeVacationDigestUnit.getManage() == ManageDistinct.YES);
+		this.entity.setDigestionUnit(timeVacationDigestUnit.getDigestUnit().value);
 		
 	}
 

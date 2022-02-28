@@ -48,6 +48,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 /**
  * 暫定データを作成する為の勤務予定を取得する
@@ -212,6 +214,11 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 			return service.checkNeededOfWorkTimeSetting(workTypeCode);
+		}
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 
 	}

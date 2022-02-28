@@ -152,9 +152,10 @@ public class FurikyuMngDataExtractionService {
 				return itemData;
 			}).collect(Collectors.toList());
 			
+			double remainingDays = lstDataRemainDto.stream().mapToDouble(RemainInfoDto::getDayLetf).sum();
 			DisplayRemainingNumberDataInformation result = DisplayRemainingNumberDataInformation.builder()
 					.employeeId(empId)
-					.totalRemainingNumber(0d)
+					.totalRemainingNumber(remainingDays)
 					.expirationDate(manageSetting.getSubstVacationSetting() == null
 						? null
 						: manageSetting.getSubstVacationSetting().getExpirationDate().value)
@@ -340,7 +341,9 @@ public class FurikyuMngDataExtractionService {
 							.filter(data -> data.getAssocialInfo().getDateOfUse().equals(useDate))
 							.findFirst();
 					Optional<GeneralDate> digestionDay = optPayoutSub.map(data -> data.getAssocialInfo().getDateOfUse());
-					Optional<Double> digestionDays = optPayoutSub.map(data -> data.getAssocialInfo().getDayNumberUsed().v());
+					Optional<Double> digestionDays = !optInterimDayOff.isPresent() 
+							? optPayoutSub.map(data -> data.getAssocialInfo().getDayNumberUsed().v())
+							: Optional.empty();
 					Optional<String> digestionId = Optional.of(optSubstitution.map(data -> data.getSubOfHDID())
 							.orElse(optInterimDayOff.map(data -> data.getRemainManaID()).orElse(null)));
 					// 残数データ情報を作成
@@ -434,7 +437,7 @@ public class FurikyuMngDataExtractionService {
 						.digestionDay(itemSubstitution.getHolidayDate().getDayoffDate())
 						.digestionDays(Optional.of(itemSubstitution.getRequiredDays().v()))
 						.legalDistinction(Optional.empty()).occurrenceId(Optional.empty())
-						.digestionId(Optional.of(itemSubstitution.getSubOfHDID())).dayLetf(0.0).usedDay(0.0).usedTime(0)
+						.digestionId(Optional.of(itemSubstitution.getSubOfHDID())).dayLetf(-1.0).usedDay(0.0).usedTime(0)
 						.occurrenceHour(Optional.empty()).digestionTimes(Optional.empty())
 						.remainingHours(Optional.empty()).mergeCell(mergeCell).build();
 				// List＜残数データ情報＞に作成した残数データ情報を追加

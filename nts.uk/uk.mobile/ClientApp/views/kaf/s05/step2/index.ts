@@ -7,6 +7,7 @@ import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/
 import { ExcessTimeStatus } from '../../s00/sub/p1';
 import { KafS00SubP2Component } from 'views/kaf/s00/sub/p2';
 import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplication, DivergenceReasonSelect, AppOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame, ExcessState } from '../a/define.interface';
+
 @component({
     name: 'kafs05step2',
     route: '/kaf/s05/step2',
@@ -56,9 +57,6 @@ import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplic
     }
 })
 export class KafS05Step2Component extends Vue {
-    public title: string = 'KafS05Step2';
-    public overTime: number = null;
-
     public overTimes: Array<OverTime> = [];
     public holidayTimes: Array<HolidayTime> = [];
 
@@ -91,20 +89,16 @@ export class KafS05Step2Component extends Vue {
 
     public created() {
         const self = this;
-        if (self.$appContext.getoverTimeClf() == 0) {
-            self.pgName = 'kafs05step1';
-        } else if (self.$appContext.getoverTimeClf() == 1) {
-            self.pgName = 'kafs05step2';
-        } else if (self.$appContext.getoverTimeClf() == 2) {
-            self.pgName = 'kafs05step3';
+        if (self.$appContext.overTimeClf == 0) {
+            self.pgName = 'kafs05PgName1';
+        } else if (self.$appContext.overTimeClf == 1) {
+            self.pgName = 'kafs05PgName2';
+        } else if (self.$appContext.overTimeClf == 3) {
+            self.pgName = 'kafs05PgName4';
         } else {
-            self.pgName = 'kafs05step4';
+            self.pgName = 'kafs05PgName3';
         }
         
-    }
-    public mounted() {
-        const self = this;
-        console.log('mounted');
     }
 
     public bindOverTime() {

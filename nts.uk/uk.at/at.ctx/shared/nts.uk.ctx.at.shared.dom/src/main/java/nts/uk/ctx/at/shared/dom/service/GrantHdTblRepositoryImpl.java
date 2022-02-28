@@ -39,7 +39,7 @@ public class GrantHdTblRepositoryImpl implements GrantHdTblRepository{
 	public Boolean checkLimitDay() {
 		String companyId = AppContexts.user().companyId();
 		AnnualPaidLeaveSetting annualPaid = annualRep.findByCompanyId(companyId);
-		int timeManageType = annualPaid.getTimeSetting().getTimeManageType().value;
+		int timeManageType = annualPaid.getTimeSetting().getTimeVacationDigestUnit().getManage().value;
 		int reference = annualPaid.getTimeSetting().getMaxYearDayLeave().reference.value;
 		int manageType = annualPaid.getTimeSetting().getMaxYearDayLeave().manageType.value;
 		if(timeManageType == 1 && manageType == 1 && reference == 1){

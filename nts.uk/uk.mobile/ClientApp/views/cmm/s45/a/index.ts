@@ -98,7 +98,9 @@ export class CmmS45AComponent extends Vue {
             case '0_1':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '0_2':
-                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;    
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '0_3':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '1':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '2':
@@ -657,7 +659,7 @@ export class AppListInfo {
     public moreThanDispLineNO: boolean;
 
     //  表示設定
-    public displaySet: number;
+    public displaySet: any;
 }
 class Application {
     public opStampRequestMode: number;

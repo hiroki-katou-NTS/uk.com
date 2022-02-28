@@ -19,7 +19,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area">
+			<div id="contents-area" style="overflow-y: hidden;">
 				<div class="control-group cf">
 					<table class="info-table">
 						<tr>
@@ -60,7 +60,7 @@
 						</tr>
 					</table>
 				</div>
-				<div class="place-holder">
+				<div>
 					<table id="single-list" class="disappear"  tabindex="2"
 						data-bind="css: {disappear: !isComplete()},
 						ntsGridList: {

@@ -11,9 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Data;
 import nts.uk.client.exi.ExiClientProperty;
 import nts.uk.client.exi.LogManager;
 
@@ -34,7 +37,9 @@ public class ExternalImport {
 	private String employeeCode;
 	private String password;
 
-	public ExternalImport(String settingCode) {
+	private boolean continueFlg;
+
+	public ExternalImport(String settingCode, boolean continueFlg) {
 		this.serverUrl = ExiClientProperty.getProperty(ExiClientProperty.UK_SERVER_URL);
 		
     	this.constractCode = ExiClientProperty.getProperty(ExiClientProperty.UK_CONTRACT_CODE);
@@ -44,14 +49,18 @@ public class ExternalImport {
 
     	this.employeeCode = ExiClientProperty.getProperty(ExiClientProperty.UK_LOGIN_EMPLOYEE_CODE);
 		this.password = ExiClientProperty.getProperty(ExiClientProperty.UK_LOGIN_PASSWORD);
+
+		this.continueFlg = continueFlg;
 	}
 
 	public boolean doWork(String fileId) {
 
 		try {
 			CallWebServiceResult result = login();
-			prepare(fileId, result.setCookies);
-			execute(result.setCookies);
+			boolean preparaResult = prepare(fileId, result.setCookies);
+			if(continueFlg || preparaResult) {
+				execute(result.setCookies);
+			}
 		}
 		catch (Exception e){
 			System.out.println(EOL);
@@ -75,8 +84,8 @@ public class ExternalImport {
 			return callWebService(url, json);
 	}
 
-	private void prepare(String fileId, List<String> cookieList) throws IOException, InterruptedException {
-		LogManager.out("外部受入 事前チェック -- 開始 --");
+	private boolean prepare(String fileId, List<String> cookieList) throws IOException, InterruptedException {
+		LogManager.out("ExternalImport.prepare start");
 
 	    String json = "{"
 				+ "\"settingCode\": \"" + this.settingCode + "\","
@@ -84,20 +93,20 @@ public class ExternalImport {
 			+ "}";
 	    
 		URL url = new URL(serverUrl + SERVICE_URL_PREPARE);
-		CallWebServiceResult result = callWebService(url, json, cookieList);
-		
-		String taskId = (String) result.jsonAsyncTaskInfo.get("id");
-		if ((boolean) result.jsonAsyncTaskInfo.get("running")) {
-			awaitComplated(cookieList, taskId);
-		}
+		CallWebServiceResult wsResult = callWebService(url, json, cookieList);
+		String taskId = (String) wsResult.jsonAsyncTaskInfo.get("id");
 
-		checkErrorMessage("受入準備",cookieList);
-		
-		LogManager.out("外部受入 事前チェック -- 終了 --");
+		boolean result = awaitComplated(cookieList, taskId);
+		if (!result) return result;
+
+		result = checkErrorMessage("受入準備",cookieList);
+		LogManager.out("ExternalImport.prepare end");
+
+		return result;
 	}
 
 	private void execute(List<String> cookieList) throws IOException, InterruptedException {
-		LogManager.out("外部受入 実行 -- 開始 --");
+		LogManager.out("ExternalImport.execute start");
 
 	    String json = "{"
 				+ "\"settingCode\": \"" + this.settingCode + "\""
@@ -108,28 +117,58 @@ public class ExternalImport {
 
 		String taskId = (String) result.jsonAsyncTaskInfo.get("id");
 
-		if ((boolean) result.jsonAsyncTaskInfo.get("running")) {
+		if ((boolean) result.jsonAsyncTaskInfo.get("pending")
+				|| (boolean) result.jsonAsyncTaskInfo.get("running")) {
 			awaitComplated(cookieList, taskId);
 		}
 
 		checkErrorMessage("受入実行", cookieList);
 		
-		LogManager.out("外部受入 実行 -- 終了 --");
+		LogManager.out("ExternalImport.execute end");
 	}
 
-	private void awaitComplated(List<String> cookieList, String taskId) throws IOException, InterruptedException {
+	private boolean awaitComplated(List<String> cookieList, String taskId) throws IOException, InterruptedException {
 		URL checkAsyncTaskUrl = new URL(serverUrl + SERVICE_URL_ASYNC +  taskId);
 		CallWebServiceResult result;
 		while(true) {
 			result = callWebService(checkAsyncTaskUrl, "", cookieList);
-			if ((boolean) result.jsonAsyncTaskInfo.get("running") == false) {
+			if ((boolean) result.jsonAsyncTaskInfo.get("pending") == false
+					&& (boolean) result.jsonAsyncTaskInfo.get("running") == false) {
 				break;
 			}
 			Thread.sleep(1000);
 		}
+		
 		if ((boolean) result.jsonAsyncTaskInfo.get("succeeded") == false) {
 			LogManager.err(result.jsonAsyncTaskInfo.get("error").toString());
+			return false;
 		}
+
+		ObjectMapper mapper = new ObjectMapper();
+	    mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		String taskDataString = result.jsonAsyncTaskInfo.get("taskDatas").toString()
+				.replaceAll("=([^,}]*)([,|}])", "=\"$1\"$2")
+				.replaceAll("=", ":");
+		
+		List<TaskData> taskData = new ArrayList<>();
+		try {
+			taskData = mapper.readValue(taskDataString,new TypeReference<List<TaskData>>() {});
+		} catch (JsonProcessingException e) {
+			LogManager.err(e);
+		}
+		
+		boolean failed = taskData.stream()
+			.filter(t -> "process".equals(t.key))
+			.map(t -> t.getValueAsString())
+			.anyMatch(val -> "failed".contentEquals(val));
+		if(failed) {
+			taskData.stream()
+				.filter(t -> "message".equals(t.key))
+				.map(t -> t.getValueAsString())
+				.forEach(msg -> LogManager.err(msg));
+			return false;
+		}
+		return true;
 	}
 
 	private CallWebServiceResult callWebService(URL url, String json) throws IOException {
@@ -200,7 +239,7 @@ public class ExternalImport {
 		}
 	}
 
-	private void checkErrorMessage(String processName, List<String> cookieList) throws IOException {
+	private boolean checkErrorMessage(String processName, List<String> cookieList) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		int errorsCount = 1;
 		for (int requestCount = 1;; requestCount++) {
@@ -215,6 +254,21 @@ public class ExternalImport {
 		if(sb.length()>0) {
 			String errorMessage = processName + "が完了しましたが、以下のエラーが発生しています。\r\n" + sb.toString();
 			LogManager.err(errorMessage);
+
+			return false;
+		}
+
+		return true;
+	}
+	
+	@Data
+	public static class TaskData {
+		String key;
+		String valueAsString;
+		String valueAsBoolean;
+		String valueAsNumber;
+		
+		public TaskData() {
 		}
 	}
 }

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
@@ -104,5 +105,53 @@ public class VacationDetails {
 
 		return this.lstAcctAbsenDetail.stream().filter(x -> x.getDateOccur().getDayoffDate().isPresent()
 				&& x.getDateOccur().getDayoffDate().get().equals(correspDay)).findFirst();
+	}
+	
+	// 発生確定の未相殺数を調整する
+	private void correctUnoffsetOfOccrFixed(SeqVacationAssociationInfoList seqVacAssociInfo, DatePeriod period) {
+		val occrFixed = this.getOccurrenceNotDateUnknown().stream()
+				.filter(x -> x.getDataAtr() == MngDataStatus.CONFIRMED).collect(Collectors.toList());
+		occrFixed.stream().forEach(x -> {
+			x.correctUnoffsetOfOccrFixed(seqVacAssociInfo, period);
+		});
+	}
+
+	// 消化確定の未相殺数を調整する
+	private void correctUnoffsetOfDigestFixed(SeqVacationAssociationInfoList seqVacAssociInfo, DatePeriod period) {
+		val digestFixed = this.getDigestNotDateUnknown().stream().filter(x -> x.getDataAtr() == MngDataStatus.CONFIRMED)
+				.collect(Collectors.toList());
+		digestFixed.stream().forEach(x -> {
+		x.correctUnoffsetOfDigestFixed(seqVacAssociInfo, period);
+		});
+	}
+
+	// 発生暫定の未相殺数を調整する
+	private void correctUnoffsetOfOccrTemp(SeqVacationAssociationInfoList seqVacAssociInfo, DatePeriod period) {
+		val occrTemp = this.getOccurrenceNotDateUnknown().stream()
+				.filter(x -> x.getDataAtr() != MngDataStatus.CONFIRMED).collect(Collectors.toList());
+		occrTemp.stream().forEach(x -> {
+			x.correctUnoffsetOfOccrTemp(seqVacAssociInfo, period);
+		});
+	}
+
+	// 消化暫定の未相殺数を調整する
+	private void correctUnoffsetOfDigestTemp(SeqVacationAssociationInfoList seqVacAssociInfo, DatePeriod period) {
+		val digestTemp = this.getDigestNotDateUnknown().stream().filter(x -> x.getDataAtr() != MngDataStatus.CONFIRMED)
+				.collect(Collectors.toList());
+		digestTemp.stream().forEach(x -> {
+			x.correctUnoffsetOfDigestTemp(seqVacAssociInfo, period);
+		});
+	}
+
+	// 未相殺数を調整する
+	public void correctUnoffset(SeqVacationAssociationInfoList seqVacAssociInfo, DatePeriod period) {
+		// 発生確定
+		correctUnoffsetOfOccrFixed(seqVacAssociInfo, period);
+		// 消化確定
+		correctUnoffsetOfDigestFixed(seqVacAssociInfo, period);
+		// 発生確定
+		correctUnoffsetOfOccrTemp(seqVacAssociInfo, period);
+		// 消化暫定
+		correctUnoffsetOfDigestTemp(seqVacAssociInfo, period);
 	}
 }

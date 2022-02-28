@@ -18,113 +18,98 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		<div id="kaf005-b">
 			<div id="contents-area"
 				style="background-color: inherit; height: calc(100vh - 137px);">
-				<div class="two-panel" style="height: 100%;" data-bind="style: {width: opOvertimeAppAtr() == 3 &amp;&amp; appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason &amp;&amp; appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason ? '1344px' : '1260px'}">
-					<div class="left-panel"
-						style="width: calc(100% - 388px); height: inherit; padding-bottom: 5px;">
-						<div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px;"> 
-							<div class="table"
-								style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
-								<div class="cell" style="vertical-align: middle;">
-									<div
-										data-bind="component: { name: 'kaf000-b-component4',
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-								</div>
-								<div class="cell"
-									style="text-align: right; vertical-align: middle;">
-									<div
-										data-bind="component: { name: 'kaf000-b-component8', 
-														params: {
-															appType: appType,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-								</div>
+				<div class="two-panel" style="width: 1260px;">
+					<div class="left-panel" style="width: calc(1260px - 388px);">
+						<div class="form-header table">
+							<div class="cell" style="vertical-align: middle;">
+								<div
+									data-bind="component: { name: 'kaf000-b-component4',
+													params: {
+														appType: appType,
+														application: application,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
 							</div>
-							<div data-bind="component: { name: 'kaf000-b-component2', 
-														params: {
-															appType: appType,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-							<div
-								data-bind="component: { name: 'kaf000-b-component5', 
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-							<div
-								data-bind="component: { name: 'kaf000-b-component6', 
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"
-								style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -15px"></div>
+							<div class="cell"
+								style="text-align: right; vertical-align: middle;">
+								<div
+									data-bind="component: { name: 'kaf000-b-component8', 
+													params: {
+														appType: appType,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
+							</div>
+						</div>
+						<div data-bind="component: { name: 'kaf000-b-component2', 
+													params: {
+														appType: appType,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
+						<div
+							data-bind="component: { name: 'kaf000-b-component5', 
+													params: {
+														appType: appType,
+														application: application,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
+						<div
+							data-bind="component: { name: 'kaf000-b-component6', 
+													params: {
+														appType: appType,
+														application: application,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"
+							style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
 
-
-
-							<div style="margin-top: -10px">
-
-							<div data-bind="component: { name: 'kaf005-share-work-info', 
-										params: {
-														workInfo: workInfo
-													} 
-										}"></div>
-								
-							<div data-bind="component: { name: 'kaf005-share',
-											params: {
-												restTime: restTime,
-												holidayTime: holidayTime,
-												overTime: overTime,
-												visibleModel: visibleModel,
-												agent: agentForTable
-											}
+						<div data-bind="component: { name: 'kaf005-share-work-info', 
+									params: {
+													workInfo: workInfo
+												} 
+									}"></div>
 							
-										}"></div>
-							</div>
-							<div data-bind="if: opOvertimeAppAtr() != 3">
-								<div style="margin-top: 11px"
-									data-bind="component: { name: 'kaf000-b-component7', 
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-							</div>										
-							<div data-bind="component: { name: 'kaf005-share-footer'}"></div>
+						<div data-bind="component: { name: 'kaf005-share',
+										params: {
+											restTime: restTime,
+											holidayTime: holidayTime,
+											overTime: overTime,
+											visibleModel: visibleModel,
+											agent: agentForTable
+										}
 						
-							<div style="padding-top: 30px;">
-											
-							</div>                          
+									}"></div>
+
+						<div data-bind="if: opOvertimeAppAtr() != 3">
+							<div style="margin-top: 11px"
+								data-bind="component: { name: 'kaf000-b-component7', 
+													params: {
+														appType: appType,
+														application: application,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
+						</div>										
+						<div data-bind="component: { name: 'kaf005-share-footer'}"></div>
+					
+						<div style="padding-top: 30px;">
+										
 						</div>
 					</div>
-					<div class="right-panel" style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
-						<div style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden">
-							<div
-								data-bind="component: { name: 'kaf000-b-component1', 
-									params: {
-										appType: appType,
-										appDispInfoStartupOutput: appDispInfoStartupOutput	
-									} }"></div>
-<!--							<div data-bind="if: visibleModel.c6()">-->
-								<div
-									data-bind="component: { name: 'kaf005-share-header',
-													params: {
-														overTimeWork: overTimeWork
-													}
-													}"></div>   
-<!--							</div>     -->
-							<div
-								data-bind="component: { name: 'kaf000-b-component9',
-									params: {
-										appType: appType,
-										application: application,
-										appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-									} }"></div>
-						</div>
+					<div class="right-panel" style="width: 388px;">
+						<div data-bind="component: { name: 'kaf000-b-component1', 
+								params: {
+									appType: appType,
+									appDispInfoStartupOutput: appDispInfoStartupOutput	
+								} }"></div>
+						<div data-bind="component: { name: 'kaf005-share-header',
+											params: {
+												overTimeWork: overTimeWork
+											}
+											}"></div>   
+						<div data-bind="component: { name: 'kaf000-b-component9',
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
+								} }"></div>
 					</div>
 				</div>
 			</div>
@@ -492,15 +477,6 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                 // check value this row
                 if (_.isNumber(i.start()) && _.isNumber(i.end()) && i.start() > i.end()) {
                     vm.$errors('#A15_5_' + idx, 'Msg_307');
-                }
-
-                // check value previous row
-                if (idx > 0) {
-                    if (_.isNumber(i.start())
-                        && _.isNumber(vm.multipleOvertimeContents()[idx - 1].end())
-                        && i.start() < vm.multipleOvertimeContents()[idx - 1].end()) {
-                        vm.$errors('#A15_3_' + idx, {messageId: 'Msg_3281', messageParams: [idx.toString(), (idx + 1).toString()]});
-                    }
                 }
             });
         }
@@ -1660,7 +1636,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                         if (!_.isEmpty(res.calculatedWorkTimes)) {
                             self.workInfo().workHours1.start(res.calculatedWorkTimes[0].timeZone.startTime);
                             self.workInfo().workHours1.end(res.calculatedWorkTimes[0].timeZone.endTime);
-                            if (res.calculatedWorkTimes.length > 1) {
+                            if (res.calculatedWorkTimes.length > 1 && self.visibleModel.c29()) {
                                 self.workInfo().workHours2.start(res.calculatedWorkTimes[1].timeZone.startTime);
                                 self.workInfo().workHours2.end(res.calculatedWorkTimes[1].timeZone.endTime);
                             } else {
