@@ -32,4 +32,11 @@ public interface TmpAnnualHolidayMngRepository {
 	public void deleteSidPeriod(String sid, DatePeriod period);
 	
 	void deleteSidAndYmd(String sid, GeneralDate ymd);
+	
+	/**
+	 * 年月日より前全て削除
+	 * @param sid
+	 * @param ymd
+	 */
+	public void deleteBySidBeforeTheYmd(String sid, GeneralDate ymd);
 }

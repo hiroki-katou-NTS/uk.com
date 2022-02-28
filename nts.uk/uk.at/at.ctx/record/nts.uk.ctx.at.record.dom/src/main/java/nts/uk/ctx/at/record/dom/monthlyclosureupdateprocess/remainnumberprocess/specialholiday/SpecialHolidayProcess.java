@@ -56,7 +56,7 @@ public class SpecialHolidayProcess {
 														specialHoliday.getSpecialHolidayCode().v(), specialHoliday.getAutoGrant().value))
 					/** 特別休暇暫定データ削除 */
 							.then(deleteTemp(
-									require, empId, specialHoliday.getSpecialHolidayCode().v(), period.getPeriod()));
+									require, empId, specialHoliday.getSpecialHolidayCode().v(), period.getPeriod().end()));
 		}).collect(Collectors.toList());
 
 		return AtomTask.bundle(atomTask);
@@ -167,9 +167,9 @@ public class SpecialHolidayProcess {
 	 * @return
 	 */
 	public static AtomTask deleteTemp(
-			RequireM4 require, String employeeId, int specialLeaveCode,  DatePeriod period){
+			RequireM4 require, String employeeId, int specialLeaveCode,  GeneralDate ymd){
 		
-		return AtomTask.of(() -> require.deleteTempSpecialSidPeriod(employeeId, specialLeaveCode, period));
+		return AtomTask.of(() -> require.deleteTempSpecialBySidBeforeTheYmd(employeeId, specialLeaveCode, ymd));
 	}
 
 	public static interface RequireM1 extends SpecialLeaveManagementService.RequireM5 {
@@ -196,6 +196,6 @@ public class SpecialHolidayProcess {
 	}
 	
 	public static interface RequireM4{
-		void deleteTempSpecialSidPeriod(String sid, int specialCode, DatePeriod period);
+		void deleteTempSpecialBySidBeforeTheYmd(String sid ,int specialCd, GeneralDate ymd);
 	}
 }

@@ -54,4 +54,12 @@ public interface TempChildCareManagementRepository{
 	 * @param period
 	 */
 	public void deleteByPeriod(String sid, DatePeriod period);
+	
+	
+	/**
+	 *  年月日より前全て削除
+	 * @param sid
+	 * @param ymd
+	 */
+	public void deleteBySidBeforeTheYmd(String sid, GeneralDate ymd);
 }

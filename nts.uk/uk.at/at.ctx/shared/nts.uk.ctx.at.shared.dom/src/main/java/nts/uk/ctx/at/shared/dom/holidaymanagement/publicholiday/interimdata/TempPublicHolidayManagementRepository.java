@@ -42,4 +42,11 @@ public interface TempPublicHolidayManagementRepository {
 	 * @param domain
 	 */
 	public void persistAndUpdate(TempPublicHolidayManagement domain);
+	
+	/**
+	 *  年月日より前全て削除
+	 * @param sid
+	 * @param ymd
+	 */
+	public void deleteBySidBeforeTheYmd(String sid, GeneralDate ymd);
 }

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 public interface TmpResereLeaveMngRepository {
@@ -35,5 +36,12 @@ public interface TmpResereLeaveMngRepository {
 	 * @param period
 	 */
 	public void deleteSidPeriod(String sid, DatePeriod period);
+	
+	/**
+	 * 年月日より前全て削除
+	 * @param sid
+	 * @param ymd
+	 */
+	public void deleteBySidBeforeTheYmd(String sid, GeneralDate ymd);
 
 }

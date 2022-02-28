@@ -3176,4 +3176,67 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		public List<InterimDayOffMng> getDayOffDateList(String sid, List<GeneralDate> lstDate) {
 			return interimBreakDayOffMngRepo.getDayOffDateList(sid, lstDate);
 		}
+		
+		
+		@Override
+		public void deleteTempAnnualBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+			tmpAnnualHolidayMngRepo.deleteBySidBeforeTheYmd(sid, ymd);
+			
+		}
+		
+		@Override
+		public void deleteTempResereBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+			tmpResereLeaveMngRepo.deleteBySidBeforeTheYmd(sid, ymd);
+			
+		}
+
+		@Override
+		public void deleteInterimAbsMngBySidBeforeTheYmd(String sId, GeneralDate ymd) {
+			interimRecAbasMngRepo.deleteAbsMngBySidBeforeTheYmd(sId, ymd);
+			
+		}
+
+		@Override
+		public void deleteInterimRecMngBySidBeforeTheYmd(String sId, GeneralDate ymd) {
+			interimRecAbasMngRepo.deleteRecMngBySidBeforeTheYmd(sId, ymd);
+			
+		}
+		
+		@Override
+		public void deleteInterimDayoffBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+			interimBreakDayOffMngRepo.deleteDayoffBySidBeforeTheYmd(sid, ymd);
+			
+		}
+
+		@Override
+		public void deleteInterimBreakoffBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+			interimBreakDayOffMngRepo.deleteBreakoffBySidBeforeTheYmd(sid, ymd);
+			
+		}
+		
+		@Override
+		public void deleteTempSpecialBySidBeforeTheYmd(String sid, int specialCd, GeneralDate ymd) {
+			interimSpecialHolidayMngRepo.deleteBySidBeforeTheYmd(sid, specialCd, ymd);
+			
+		}
+		
+		@Override
+		public void deleteTempPublicHolidayBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+			tempPublicHolidayManagementRepo.deleteBySidBeforeTheYmd(sid, ymd);
+			
+		}
+
+		@Override
+		public void deleteTempChildCareBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+			tempChildCareManagementRepo.deleteBySidBeforeTheYmd(sid, ymd);
+			
+		}
+		
+		@Override
+		public void deleteTempCareBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+			tempCareManagementRepo.deleteBySidBeforeTheYmd(sid, ymd);
+		}
+
+
+
 	}
