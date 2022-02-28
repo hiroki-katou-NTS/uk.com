@@ -49,6 +49,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 /**
  * 暫定データを作成する為の勤務予定を取得する
@@ -86,7 +88,7 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 		DatePeriod period = new DatePeriod(dates.stream().min(Comparator.comparing(GeneralDate::date)).get(),
 				dates.stream().max(Comparator.comparing(GeneralDate::date)).get());
 		// 勤務予定を取得する
-		List<WorkSchedule> sches = this.workScheRepo.getListBySid(sid, period);
+		List<WorkSchedule> sches = this.workScheRepo.getListBySidJpa(sid, period);
 		// (Imported)「残数作成元の勤務予定を取得する」
 		// 残数作成元情報を返す
 		RequireImpl impl = new RequireImpl(cid);
@@ -214,6 +216,11 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 			return service.checkNeededOfWorkTimeSetting(workTypeCode);
+		}
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 
 	}

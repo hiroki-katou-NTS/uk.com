@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -63,7 +64,7 @@ public interface OvertimeService {
 			Boolean agent,
 			List<OvertimeHour> overtimeHours,
 			List<OvertimeReason> overtimeReasons,
-			Optional<AchievementDetail> opAchievementDetail
+			boolean managementMultipleWorkCycles
 	);
 	/**
 	 * Refactor5 19_計算処理
@@ -330,9 +331,11 @@ public interface OvertimeService {
 	 */
 	public DisplayInfoOverTime changeDateMobile(
 			String companyId,
+			String employeeId,
 			GeneralDate date,
+			PrePostAtr prePostAtr,
 			DisplayInfoOverTime displayInfoOverTime
-			);
+	);
 	/**
 	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAFS05_残業申請(スマホ).A：残業申請(新規).アルゴリズム.申請時間の申請内容をチェックする
 	 * 申請時間の申請内容をチェックする
@@ -457,7 +460,7 @@ public interface OvertimeService {
 	 * @param overtimeReasons
 	 * @param workingHours
 	 * @param workInformation
-	 * @param achievementDetail
+	 * @param managementMultipleWorkCycles
 	 * @return
 	 */
 	Pair<List<TimeZoneWithWorkNo>, List<BreakTimeSheet>> getWorkingHoursAndBreakHours(
@@ -468,6 +471,6 @@ public interface OvertimeService {
 			List<OvertimeReason> overtimeReasons,
 			List<TimeZoneWithWorkNo> workingHours,
 			WorkInformation workInformation,
-			Optional<AchievementDetail> achievementDetail
+			boolean managementMultipleWorkCycles
 	);
 }

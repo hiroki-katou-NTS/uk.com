@@ -16,11 +16,22 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.snapshot.DailySnapshotWork;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.snapshot.DailySnapshotWorkRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.LeaveCountedAsWorkDaysType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.WorkDaysNumberOnLeaveCount;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.WorkDaysNumberOnLeaveCountRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
+import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.DayType;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.NumberOfItem;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalCountDay;
@@ -46,6 +57,15 @@ public class TotalDayCountWs {
 	@Inject
 	private DailySnapshotWorkRepository dailySnapshotWorkRepository;
 	
+	@Inject
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
+	
+	@Inject
+	private RetentionYearlySettingRepository retentionYearlySettingRepository;
+	
+	@Inject
+	private WorkDaysNumberOnLeaveCountRepository workDaysNumberOnLeaveCountRepository;
+	
 	/**
 	 * 所定日数を計算する
 	 * @param employeeId
@@ -68,7 +88,7 @@ public class TotalDayCountWs {
 					.collect(Collectors.toList());
 			double count = snapshotWorkTypeCds.stream()
 					.filter(data -> workTypeCds.contains(data))
-					.mapToDouble(data -> this.getDayCount(lstWorkType, data, true)).sum();
+					.mapToDouble(data -> this.getDayCountForDetermined(lstWorkType, data)).sum();
 			totalCountDay.setPredeterminedDay(count);
 		}
 		else {
@@ -86,6 +106,19 @@ public class TotalDayCountWs {
 	 */
 	private TotalCountDay calculateNonPredeterminedDay(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
 		String companyId = AppContexts.user().companyId();
+		
+		// ドメインモデル「年休設定」を取得する
+		AnnualPaidLeaveSetting annPaidLeaveSet = this.annualPaidLeaveSettingRepository.findByCompanyId(companyId);
+		boolean isAnnualPaidLeave = annPaidLeaveSet == null ? false : annPaidLeaveSet.getYearManageType().equals(ManageDistinct.YES);
+		
+		// ドメインモデル「積休年休設定」を取得する
+		Optional<RetentionYearlySetting> optRetenYearlySet = this.retentionYearlySettingRepository
+				.findByCompanyId(companyId);
+		boolean isRetenYearly = optRetenYearlySet.map(data -> data.getManagementCategory().equals(ManageDistinct.YES)).orElse(false);
+		
+		// ドメインモデル「休暇取得時の出勤日数カウント」を取得する
+		WorkDaysNumberOnLeaveCount leaveCount = this.workDaysNumberOnLeaveCountRepository
+				.findByCid(companyId);
 		
 		List<WorkInfoOfDailyPerformance> workInformationList = this.workInformationRepository
 				.findByPeriodOrderByYmd(employeeId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()));
@@ -107,7 +140,8 @@ public class TotalDayCountWs {
 					// 日別勤務表の勤務種類コードの値と合致するか
 					if (optWorkType.isPresent()) {
 						// 日数をカウントする 
-						double dayCount = this.getDayCount(lstWorkType, workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode(), false);
+						double dayCount = this.getDayCountForNonDetermined(dayType, lstWorkType, workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode(),
+								isAnnualPaidLeave, isRetenYearly, leaveCount);
 						switch (dayType) {
 						case ATTENDANCE:
 							totalCountDay.setWorkingDay(totalCountDay.getWorkingDay() + dayCount);
@@ -227,23 +261,22 @@ public class TotalDayCountWs {
 	/**
 	 * 勤務種類　＝　0：出勤、2：年休、3：積立年休、
 　　　　　　　　 　4：特別休暇、5：欠勤、6：代休、
-　　　　　　　　　 7：振出、9：時間消化休暇
+　　　　　　　　　 7：振出、9：時間消化休暇、10:連続勤務
 	 */
 	private boolean isPredetermineWorkType(WorkTypeClassification workTypeClassification) {
 		return Arrays.asList(WorkTypeClassification.Attendance, WorkTypeClassification.AnnualHoliday,
 				WorkTypeClassification.YearlyReserved, WorkTypeClassification.SpecialHoliday, WorkTypeClassification.SpecialHoliday,
 				WorkTypeClassification.Absence, WorkTypeClassification.SubstituteHoliday, WorkTypeClassification.Shooting,
-				WorkTypeClassification.TimeDigestVacation).contains(workTypeClassification);
+				WorkTypeClassification.TimeDigestVacation, WorkTypeClassification.ContinuousWork).contains(workTypeClassification);
 	}
 	
 	/**
-	 * Calculate day used for worktype (0/0.5/1)
+	 * Calculate determined day used for worktype (0/0.5/1)
 	 * @param workTypes
 	 * @param code
-	 * @param isPredetermined	所定日数?
 	 * @return
 	 */
-	private double getDayCount(List<WorkType> workTypes, WorkTypeCode code, boolean isPredetermined) {
+	private double getDayCountForDetermined(List<WorkType> workTypes, WorkTypeCode code) {
 		Optional<WorkType> optWorkType = workTypes.stream()
 				.filter(data -> data.getWorkTypeCode().equals(code)).findFirst();
 		if (optWorkType.isPresent()) {
@@ -252,14 +285,73 @@ public class TotalDayCountWs {
 			case OneDay:
 				return 1.0d;
 			case MonringAndAfternoon:
-				// Calculate sum if 所定日数
-				if (isPredetermined) {
-					return (this.isPredetermineWorkType(dailyWork.getMorning()) ? 0.5d : 0d)
-							+ (this.isPredetermineWorkType(dailyWork.getAfternoon()) ? 0.5d : 0d);
-				}
-				return 0.5d;
+				return ((this.isPredetermineWorkType(dailyWork.getMorning())
+						&& !dailyWork.getMorning().equals(WorkTypeClassification.ContinuousWork)) ? 0.5d : 0d)
+						+ ((this.isPredetermineWorkType(dailyWork.getAfternoon()))
+								&& !dailyWork.getAfternoon().equals(WorkTypeClassification.ContinuousWork)? 0.5d : 0d);
 			}
 		}
 		return 0d;
+	}
+	
+	private double getDayCountForNonDetermined(DayType dayType, List<WorkType> workTypes, WorkTypeCode code,
+			boolean isAnnPaidLeave, boolean isRetenYearly, WorkDaysNumberOnLeaveCount leaveCount) {
+		Optional<WorkType> optWorkType = workTypes.stream()
+				.filter(data -> data.getWorkTypeCode().equals(code)).findFirst();
+		if (optWorkType.isPresent()) {
+			DailyWork dailyWork = optWorkType.get().getDailyWork();
+			List<WorkTypeClassification> allowedWorkTypes = leaveCount.getCountedLeaveList().stream()
+					.map(LeaveCountedAsWorkDaysType::toWorkTypeClassification).collect(Collectors.toList());
+			if (dailyWork.getWorkTypeUnit().equals(WorkTypeUnit.OneDay)) {
+				boolean isEnableLeaveCount = allowedWorkTypes.contains(dailyWork.getOneDay());
+				return this.isCountingForNonDetermined(dayType,
+						optWorkType.get().getWorkTypeSetByAtr(WorkAtr.OneDay).orElse(null), WorkTypeUnit.OneDay,
+						dailyWork.getOneDay(), isAnnPaidLeave, isRetenYearly, isEnableLeaveCount) ? 1.0d : 0d;
+			} else {
+				boolean isEnableLeaveCountMorning = allowedWorkTypes.contains(dailyWork.getMorning());
+				boolean isEnableLeaveCountAfternoon = allowedWorkTypes.contains(dailyWork.getAfternoon());
+				boolean isCountingMorning = this.isCountingForNonDetermined(dayType,
+						optWorkType.get().getWorkTypeSetByAtr(WorkAtr.Monring).orElse(null),
+						WorkTypeUnit.MonringAndAfternoon, dailyWork.getMorning(), isAnnPaidLeave, isRetenYearly,
+						isEnableLeaveCountMorning);
+				boolean isCountingAfternoon = this.isCountingForNonDetermined(dayType,
+						optWorkType.get().getWorkTypeSetByAtr(WorkAtr.Afternoon).orElse(null),
+						WorkTypeUnit.MonringAndAfternoon, dailyWork.getAfternoon(), isAnnPaidLeave, isRetenYearly,
+						isEnableLeaveCountAfternoon);
+				return (isCountingMorning ? 0.5d : 0d) + (isCountingAfternoon ? 0.5d : 0d);
+			}
+		}
+		return 0d;
+	}
+	
+	private boolean isCountingForNonDetermined(DayType dayType, WorkTypeSet workTypeSet, WorkTypeUnit workTypeUnit,
+			WorkTypeClassification workTypeCls, boolean isAnnPaidLeave, boolean isRetenYearly, boolean isEnableLeaveCount) {
+		if (!dayType.compareToWorkTypeCls(workTypeCls)) {
+			return false;
+		}
+		switch (workTypeCls) {
+		case AnnualHoliday:
+			if (dayType.equals(DayType.ATTENDANCE)) {
+				return isAnnPaidLeave && isEnableLeaveCount;
+			}
+		case YearlyReserved:
+			if (dayType.equals(DayType.ATTENDANCE)) {
+				return isAnnPaidLeave && isRetenYearly && isEnableLeaveCount;
+			}
+		case SpecialHoliday:
+			if (dayType.equals(DayType.ATTENDANCE)) {
+				return isEnableLeaveCount;
+			}
+		case Holiday:
+			if (dayType.equals(DayType.HOLIDAY) && workTypeUnit.equals(WorkTypeUnit.MonringAndAfternoon)) {
+				return workTypeSet.getCountHodiday().isCheck();
+			}
+		case HolidayWork:
+			if (dayType.equals(DayType.OFF_WORK) && workTypeUnit.equals(WorkTypeUnit.MonringAndAfternoon)) {
+				return false;
+			}
+		default: 
+			return true;
+		}
 	}
 }

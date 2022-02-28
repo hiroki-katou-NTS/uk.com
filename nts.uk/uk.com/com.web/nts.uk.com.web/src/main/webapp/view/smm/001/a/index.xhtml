@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+  <ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+      <com:scriptfile set="IGNITE" />
+      <com:stylefile path="smm001.a.style.css" />
+      <com:scriptfile path="../b/smm001.b.vm.js" />
+      <com:scriptfile path="smm001.a.vm.js" />
+      <com:EnumScript>
+        nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceItem
+        nts.uk.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceClassification
+        nts.uk.smile.dom.smilelinked.cooperationoutput.SmileCooperationOutputClassification
+        nts.uk.smile.dom.smilelinked.cooperationoutput.PaymentCategory
+        nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedMonthSettingClassification
+      </com:EnumScript>
+    </ui:define>
+
+    <ui:define name="content">
+      <div id="functions-area">
+        <!--A1-->
+        <button class="proceed" tabindex="3" data-bind="click: registerSmileSetting">
+          #{i18n.getText('SMM001_2')}
+        </button>
+      </div>
+      <div id="contents-area">
+        <!--A3-->
+        <div id="tab-panel tab-panel-smile" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+          <!--A3_1-->
+          <div class="tab-content-1">
+            <!--A2_1-->
+            <p class="mb-1">
+              #{i18n.getText('SMM001_5')}
+            </p>
+            <div class="d-flex mb-1">
+              <!--A2_2-->
+              <div tabindex="4" id="checkbox_A2_2"
+                data-bind="ntsCheckBox: { checked: checkedOrganizationInformation, enable: true, text: ORGANIZATION_INFORMATION}">
+              </div>
+              <!--A2_3-->
+              <div tabindex="5" class="combo-box-info" data-bind="ntsComboBox: {
+                name: '#[SMM001_6]',
+                options: itemList,
+                optionsValue: 'code',
+                visibleItemsCount: 5,
+                value: selectedOrganizationInformation,
+                optionsText: 'name',
+                editable: false,
+                enable: checkedOrganizationInformation,
+                columns: [
+                  { prop: 'code', length: 4 },
+                  { prop: 'name', length: 10 },
+                ]}">
+              </div>
+            </div>
+            <div class="d-flex mb-1">
+              <!--A2_4-->
+              <div tabindex="6"
+                data-bind="ntsCheckBox: { checked: checkedBasicPersonnelInformation, enable: true, text: BASIC_PERSONNEL_INFORMATION }">
+              </div>
+              <!--A2_5-->
+              <div tabindex="7" class="combo-box-info" data-bind="ntsComboBox: {
+                name: '#[SMM001_6]',
+                options: itemList,
+                optionsValue: 'code',
+                visibleItemsCount: 5,
+                value: selectedBasicPersonnelInformation,
+                optionsText: 'name',
+                editable: false,
+                enable: checkedBasicPersonnelInformation,
+                columns: [
+                  { prop: 'code', length: 4 },
+                  { prop: 'name', length: 10 },
+                ]}">
+              </div>
+            </div>
+            <div class="d-flex mb-1">
+              <!--A2_6-->
+              <div tabindex="8"
+                data-bind="ntsCheckBox: { checked: checkedJobStructureInformation, enable: true, text: JOB_STRUCTURE_INFORMATION }">
+              </div>
+              <!--A2_7-->
+              <div tabindex="9" class="combo-box-info" data-bind="ntsComboBox: {
+                name: '#[SMM001_6]',
+                options: itemList,
+                optionsValue: 'code',
+                visibleItemsCount: 5,
+                value: selectedJobStructureInformation,
+                optionsText: 'name',
+                editable: false,
+                enable: checkedJobStructureInformation,
+                columns: [
+                  { prop: 'code', length: 4 },
+                  { prop: 'name', length: 10 },
+                ]}">
+              </div>
+            </div>
+            <div class="d-flex mb-1">
+              <!--A2_8-->
+              <div tabindex="10"
+                data-bind="ntsCheckBox: { checked: checkedAddressInformation, enable: true, text: ADDRESS_INFORMATION }">
+              </div>
+              <!--A2_9-->
+              <div tabindex="11" class="combo-box-info" data-bind="ntsComboBox: {
+                name: '#[SMM001_6]',
+                options: itemList,
+                optionsValue: 'code',
+                visibleItemsCount: 5,
+                value: selectedAddressInformation,
+                optionsText: 'name',
+                editable: false,
+                enable: checkedAddressInformation,
+                columns: [
+                  { prop: 'code', length: 4 },
+                  { prop: 'name', length: 10 },
+                ]}">
+              </div>
+            </div>
+            <div class="d-flex mb-1">
+              <!--A2_10-->
+              <div tabindex="12"
+                data-bind="ntsCheckBox: { checked: checkedLeaveInformation, enable: true, text: LEAVE_INFORMATION }">
+              </div>
+              <!--A2_11-->
+              <div tabindex="13" class="combo-box-info" data-bind="ntsComboBox: {
+                name: '#[SMM001_6]',
+                options: itemList,
+                optionsValue: 'code',
+                visibleItemsCount: 5,
+                value: selectedLeaveInformation,
+                optionsText: 'name',
+                editable: false,
+                enable: checkedLeaveInformation,
+                columns: [
+                  { prop: 'code', length: 4 },
+                  { prop: 'name', length: 10 },
+                ]}">
+              </div>
+            </div>
+            <div class="d-flex mb-1">
+              <!--A2_12-->
+              <div tabindex="14"
+                data-bind="ntsCheckBox: { checked: checkedAffiliatedMaster, enable: true, text: AFFILIATED_MASTER }">
+              </div>
+              <!--A2_13-->
+              <div tabindex="15" class="combo-box-info" data-bind="ntsComboBox: {
+                name: '#[SMM001_6]',
+                options: itemList,
+                optionsValue: 'code',
+                visibleItemsCount: 5,
+                value: selectedAffiliatedMaster,
+                optionsText: 'name',
+                editable: false,
+                enable: checkedAffiliatedMaster,
+                columns: [
+                  { prop: 'code', length: 4 },
+                  { prop: 'name', length: 10 },
+                ]}">
+              </div>
+            </div>
+            <div class="d-flex mb-1">
+              <!--A2_14-->
+              <div tabindex="16"
+                data-bind="ntsCheckBox: { checked: checkedEmployeeMaster, enable: true, text: EMPLOYEE_MASTER }">
+              </div>
+              <!--A2_15-->
+              <div tabindex="17" class="combo-box-info" data-bind="ntsComboBox: {
+                name: '#[SMM001_6]',
+                options: itemList,
+                optionsValue: 'code',
+                visibleItemsCount: 5,
+                value: selectedEmployeeMaster,
+                optionsText: 'name',
+                editable: false,
+                enable: checkedEmployeeMaster,
+                columns: [
+                  { prop: 'code', length: 4 },
+                  { prop: 'name', length: 10 },
+                ]}">
+              </div>
+            </div>
+          </div>
+          <!--A3_2-->
+          <div class="tab-content-2" data-bind="with: screenB">
+            <ui:include src="../b/index.xhtml" />
+          </div>
+        </div>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+
+</html>

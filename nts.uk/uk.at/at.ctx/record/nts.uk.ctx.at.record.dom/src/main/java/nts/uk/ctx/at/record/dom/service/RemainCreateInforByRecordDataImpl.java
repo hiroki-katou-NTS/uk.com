@@ -36,6 +36,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 /**
  *
@@ -124,6 +126,11 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
+		}
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 
 	}

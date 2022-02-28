@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.ac.role.workplace;
 
+import java.util.Optional;
 import java.util.OptionalInt;
 
 import javax.ejb.Stateless;
@@ -34,7 +35,7 @@ public class SyRoleAdapterImpl implements SyRoleAdapter {
 
 		WorkplaceIDImport workplaceIDImport = new WorkplaceIDImport();
 
-		WorkplaceIdExport workplaceIdExport = roleExportRepo.findWorkPlaceIdByRoleId(systemType, baseDate);
+		WorkplaceIdExport workplaceIdExport = roleExportRepo.findWorkPlaceIdByRoleId(systemType, baseDate, Optional.empty());
 		workplaceIDImport.setIsAllEmp(workplaceIdExport.getIsAllEmp());
 		workplaceIDImport.setListWorkplaceIds(workplaceIdExport.getListWorkplaceIds());
 

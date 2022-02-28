@@ -13,6 +13,7 @@ module nts.uk.at.view.kdp002.a {
             serverTime: KnockoutObservable<any> = ko.observable('');
             workManagementMultiple: KnockoutObservable<boolean> = ko.observable(false);
             checkerShowWork2: KnockoutObservable<boolean> = ko.observable(false);
+            kdp002: KnockoutObservable<boolean> = ko.observable(true);
 
             pageComment: KnockoutObservable<string> = ko.observable('');
             commentColor: KnockoutObservable<string> = ko.observable('');

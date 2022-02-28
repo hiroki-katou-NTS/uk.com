@@ -114,11 +114,10 @@ public class DPControlDisplayItem {
 							}
 							s.addColumn("Name" + f.getAttendanceItemId());
 						} else if(attendanceAtr == DailyAttendanceAtr.Application.value) {
-							s.addColumn("Submitted");
+							s.addColumn("A" + String.valueOf(f.getAttendanceItemId()));
 							if(showButton){
 								s.addColumn("Application");
 							}
-							s.addColumn("ApplicationList");
 						} else {
 							s.addColumn("A" + String.valueOf(f.getAttendanceItemId()));
 						}

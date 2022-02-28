@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<div>
+  <div class="smile-div">
+    <p class="ml-1">#{i18n.getText('SMM001_7')}</p>
+    <div class="d-flex mb-5px ml-2">
+      <div tabindex="18" data-bind="ntsCheckBox: { checked: salaryCooperationClassification, enable: true }">
+        #{i18n.getText('SMM001_8')}
+      </div>
+      <div tabindex="19" class="combo-box-info" data-bind="ntsComboBox: {
+        name: '#[SMM001_7]',
+        options: itemListCndSet,
+        optionsValue: 'code',
+        visibleItemsCount: 5,
+        value: salaryCooperationConditions,
+        optionsText: 'name',
+        enable: salaryCooperationClassification,
+        columns: [
+          { prop: 'code', length: 4 },
+          { prop: 'name', length: 10 },
+        ]}">
+      </div>
+    </div>
+  </div>
+
+  <div class="smile-div">
+    <div class="ml-1">
+      #{i18n.getText('SMM001_9')}
+    </div>
+    <div class="ml-2">
+      <label tabindex="20"
+        data-bind="ntsRadioButton: { checked: monthlyLockClassification, optionText: DO_TEXT, checkedValue: 1, group: 'lockClassification' }"></label>
+      <label tabindex="21"
+        data-bind="ntsRadioButton: { checked: monthlyLockClassification, optionText: DO_NOT_TEXT, checkedValue: 0, group: 'lockClassification' }"></label>
+    </div>
+  </div>
+  <div class="smile-div">
+    <div class="ml-1">
+      #{i18n.getText('SMM001_10')}
+    </div>
+    <div class="ml-2">
+      <label tabindex="23"
+        data-bind="ntsRadioButton: { checked: monthlyApprovalCategory, optionText: DO_TEXT, checkedValue: 1, group: 'approvalCategory' }"></label>
+      <label tabindex="24"
+        data-bind="ntsRadioButton: { checked: monthlyApprovalCategory, optionText: DO_NOT_TEXT, checkedValue: 0, group: 'approvalCategory' }"></label>
+    </div>
+  </div>
+
+  <div class="smile-div">
+    <div class="d-flex al-c ml-2 mt-3px">
+      <p>
+        #{i18n.getText('SMM001_13')}
+      </p>
+      <div tabindex="26" class="ml-1 combo-box-payment-category" data-bind="ntsComboBox: {
+              name: '#[SMM001_13]',
+              options: enumPaymentCategoryList,
+              optionsValue: 'value',
+              visibleItemsCount: 3,
+              value: paymentCode,
+              optionsText: 'name',
+              enable: true,
+              columns: [
+                { prop: 'code', length: 4 },
+                { prop: 'name', length: 10 },
+              ]}">
+      </div>
+    </div>
+    <table class="ml-10px mb-10px">
+      <tr>
+        <td style="padding-bottom: 0px;">
+          <div data-bind="ntsFormLabel: {text: $i18n('SMM001_11')}"></div>
+        </td>
+        <td></td>
+        <td style="padding-bottom: 0px;padding-left: 10px;">
+          <div data-bind="ntsFormLabel: {text: $i18n('SMM001_12')}"></div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div tabindex="27" id="component-left">
+            <table id="grid-component-left" style="white-space: nowrap;" data-bind="ntsGridList: {
+                dataSource: employmentDtos,
+                primaryKey: 'code',
+                columns: [
+                  { headerText: '#{i18n.getText('SMM001_14')}', key: 'code', width: 50 },
+                  { headerText: '#{i18n.getText('SMM001_15')}', key: 'name', width: 200 }
+                ],
+                deleteOptions : {visible : false},
+                multiple: true,
+                rows: 5,
+                value: currentCode
+              }">
+            </table>
+          </div>
+        </td>
+        <td>
+          <div class="ntsMoveDataArea ntsSwapComponent" id="swap-list-move-data">
+            <div>
+              <button tabindex="28" id="C11_2" class="move-button move-forward ntsSwap_Component"
+                data-bind="click: moveItemToRight, disable: isDisableLeftButton">
+                <i class="img-icon icon-next"></i>
+              </button>
+            </div>
+            <div>
+              <button tabindex="29" id="C11_3" class="move-button move-forward ntsSwap_Component"
+                data-bind="click: moveItemToLeft, disable: isDisableRightButton">
+                <i class="img-icon icon-prev"></i>
+              </button>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div tabindex="30" id="component-right">
+            <table id="grid-component-right" style="white-space: nowrap;" data-bind="ntsGridList: {
+              dataSource: rightEmployments,
+              primaryKey: 'code',
+              columns: columnEmp,
+              deleteOptions : {visible : false},
+              multiple: true,
+              rows: 5,
+              value: currentCodeRight
+              }">
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+</html>

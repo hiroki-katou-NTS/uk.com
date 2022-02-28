@@ -238,7 +238,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             }
             cells.get(secondLieOfCalender, col).setValue(l2P1);
             cells.get(secondLieOfCalender, col + 3).setValue(l2P2);
-            if (l3P1 != null && l3P2 != null) {
+            if (StringUtils.isNotEmpty(l3P1) && StringUtils.isNotEmpty(l3P2)) {
                 cells.get(thirdLieOfCalender, col).setValue(l3P1 + " " + divider + " " + l3P2);
             }
             if (holidayClass != null) {
@@ -914,18 +914,6 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
     private String getText(String resourceId) {
         return TextResource.localize(resourceId);
-    }
-
-    private void removeTemplate(Worksheet worksheet) {
-        removeFirstShapes(worksheet);
-        Cells cells = worksheet.getCells();
-        cells.deleteRows(0, NUMBER_ROW_OF_PAGE);
-    }
-
-    private void removeFirstShapes(Worksheet worksheet) {
-        if (worksheet.getShapes().getCount() > 0) {
-            worksheet.getShapes().removeAt(0);
-        }
     }
 
     private void setTopBorderStyle(Cell cell) {

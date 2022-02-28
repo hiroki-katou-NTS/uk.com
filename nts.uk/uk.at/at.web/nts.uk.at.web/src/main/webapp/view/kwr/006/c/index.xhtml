@@ -33,7 +33,7 @@
 				<button tabindex="2" id="save" class="proceed btn-control"
 					data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('KWR006_35')}</button>
 				<!-- C1_3 -->
-				<button tabindex="3" data-bind="click: openScreenD">#{i18n.getText('KWR006_36')}</button>
+				<!-- <button tabindex="3" data-bind="click: openScreenD">#{i18n.getText('KWR006_36')}</button> -->
 				<!-- C1_4 -->
 				<button tabindex="4" id="delete" class="danger C1_4 btn-control"
 					data-bind="click: removeData, enable: enableBtnDel">#{i18n.getText('KWR006_37')}</button>
@@ -136,7 +136,7 @@
 									<com:ko-if bind="loadSwapLst">
 										<div tabindex="10" id="swap-list" data-bind="ntsSwapList: {
 												showSearchBox: { showLeft : true, showRight: true},
-												height: 330,
+												height: 395,
 												dataSource: items,
 												disableMoveButton: false,
 												primaryKey: 'code',

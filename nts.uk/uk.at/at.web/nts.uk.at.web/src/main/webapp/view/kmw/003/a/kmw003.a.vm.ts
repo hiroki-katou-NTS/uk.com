@@ -457,7 +457,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.actualTimeSelectedDat(data.selectedActualTime);
                 self.initActualTime();
                 //comment
-                self.comment(data.comment ? '■ ' + data.comment : null);
+                self.comment(data.comment ? data.comment : null);
                 /*********************************
                  * Grid data
                  *********************************/
@@ -1522,7 +1522,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     if (header.constraint.cDisplayType != null && header.constraint.cDisplayType != undefined) {
                         if (header.constraint.cDisplayType != "Primitive" && header.constraint.cDisplayType != "Combo") {
                             if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
-                                header["columnCssClass"] = "currency-symbol halign-right";
+                                header["columnCssClass"] = "halign-right";
                                 header.constraint["min"] = header.constraint.min;
                                 header.constraint["max"] = header.constraint.max;
                             } else if (header.constraint.cDisplayType == "Clock") {

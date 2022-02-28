@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -71,11 +72,11 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 	/**
 	 * 特別休暇付与情報: 付与日数
 	 */
-	private Optional<SpecialLeaveGrantUseDay> grantDays;
+	private Optional<LeaveGrantDayNumber> grantDays;
 
 	public SpecialHolidayRemainData(String sid, YearMonth ym, int closureId, ClosureDate closureDate,
 			DatePeriod closurePeriod, ClosureStatus closureStatus, int specialHolidayCd, SpecialLeave actualSpecial,
-			SpecialLeave specialLeave, Optional<SpecialLeaveGrantUseDay> grantDays, boolean grantAtr,
+			SpecialLeave specialLeave, Optional<LeaveGrantDayNumber> grantDays, boolean grantAtr,
 			SpecialLeaveUnDigestion unDegestionNumber) {
 		super();
 		this.sid = sid;
