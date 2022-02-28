@@ -33,7 +33,7 @@ public class PersonIdIdentifier {
 			  && !context.getDomainId().equals(ImportingDomainId.EMPLOYEE_BASIC);
 	}
 	
-	private static interface ImportingWithEmployeeBasicRequire{
+	public interface ImportingWithEmployeeBasicRequire{
 		ExternalImportSetting getExternalImportSetting(ExecutionContext context);
 	}
 }
