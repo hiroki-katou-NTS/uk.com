@@ -3,6 +3,7 @@ module nts.uk.at.view.kdw008.a {
         import getText = nts.uk.resource.getText;
         import confirm = nts.uk.ui.dialog.confirm;
         import block = nts.uk.ui.block;
+        import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
         export class ScreenModel {
             checkInitSheetNo: boolean;
 
@@ -29,13 +30,13 @@ module nts.uk.at.view.kdw008.a {
             selectedMobileTab: KnockoutObservable<string>;
 
             //is daily
-            isDaily: KnockoutObservable<boolean>;
+            isDaily: KnockoutObservable<boolean> = ko.observable(false);
             enableSheetNo: KnockoutObservable<boolean>;
             isSetFormatToDefault: KnockoutObservable<boolean>;
             sideBar: KnockoutObservable<number>;
 
             //ModifyAnyPeriod
-            isModifyAnyPeriod: KnockoutObservable<boolean>;
+            isModifyAnyPeriod: KnockoutObservable<boolean> =  ko.observable(false);
 
 
             columnsFormatCodde: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
@@ -106,10 +107,11 @@ module nts.uk.at.view.kdw008.a {
                 self.isSetFormatToDefault = ko.observable(false);
                 self.sideBar = ko.observable(1);
                 //isdaily
-                self.isDaily = ko.observable(dataShare.ShareObject);
-                self.isModifyAnyPeriod = ko.observable(dataShare.ShareModifyAnyPeriod);
-                if(self.isModifyAnyPeriod()){
-                    self.isDaily(false);
+                if(!isNullOrUndefined(dataShare.ShareObject)){
+                    self.isDaily = ko.observable(dataShare.ShareObject);
+                }
+                if(!isNullOrUndefined(dataShare.ShareModifyAnyPeriod)){
+                    self.isModifyAnyPeriod = ko.observable(dataShare.ShareModifyAnyPeriod);
                 }
                 if (!self.isDaily() && !self.isModifyAnyPeriod()) {
                     self.sideBar(2);
