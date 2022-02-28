@@ -308,7 +308,7 @@ public class ApproverOperationSettingsTest {
 	@Test
 	public void testFirstConstruct1() {
 		OperationMode operationMode = OperationMode.SUPERIORS_EMPLOYEE;
-		ItemNameInformation itemNameInformation = ApproverOperationSettingsTestHelper.createEmptyName1();
+		ItemNameInformation itemNameInformation = ApproverOperationSettingsTestHelper.createEmptyName2();
 		
 		NtsAssert.businessException("Msg_3311", () -> new ApproverOperationSettings(operationMode, itemNameInformation));
 	}
