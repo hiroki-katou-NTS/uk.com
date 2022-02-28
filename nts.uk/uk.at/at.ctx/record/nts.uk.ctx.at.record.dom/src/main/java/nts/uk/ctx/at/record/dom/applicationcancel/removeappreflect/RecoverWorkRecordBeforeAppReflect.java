@@ -14,7 +14,8 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.cancelreflectapp.CancellationOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -48,8 +49,7 @@ public class RecoverWorkRecordBeforeAppReflect {
 		domainDaily = require.correct(domainDaily, changeAtt);
 
 		// 日別実績の修正からの計算
-		List<IntegrationOfDaily> lstAfterCalc = require.calculateForRecord(Arrays.asList(domainDaily),
-				ExecutionType.NORMAL_EXECUTION);
+		List<IntegrationOfDaily> lstAfterCalc = require.calculateForRecord(CalculateOption.asDefault(), Arrays.asList(domainDaily), Optional.empty());
 		if (!lstAfterCalc.isEmpty()) {
 			domainDaily = lstAfterCalc.get(0);
 		}
@@ -83,8 +83,8 @@ public class RecoverWorkRecordBeforeAppReflect {
 		public IntegrationOfDaily correct(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt);
 
 		// CalculateDailyRecordServiceCenter
-		public List<IntegrationOfDaily> calculateForRecord(List<IntegrationOfDaily> integrationOfDaily,
-				ExecutionType reCalcAtr);
+		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption, List<IntegrationOfDaily> integrationOfDaily,
+				Optional<ManagePerCompanySet> companySet);
 
 		// DailyRecordAdUpService
 		public void addAllDomain(IntegrationOfDaily domain);

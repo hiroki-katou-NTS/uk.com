@@ -36,6 +36,8 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         end: ''
     } as WorkHours;
 
+    public multiOverTimes: Array<any> = [];
+
     public breakTimes: Array<BreakTime> = [];
 
     public preApp: ExtraTime = {
@@ -299,6 +301,43 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         });
     }
 
+    get comboReasonDisp() {
+        const vm = this;
+        if (!vm.params.appDispInfoStartupOutput) {
+            return false;
+        }
+
+        return vm.params.appDispInfoStartupOutput.appDispInfoNoDateOutput.displayStandardReason == 1;
+    }
+
+    get textReasonDisp() {
+        const vm = this;
+        if (!vm.params.appDispInfoStartupOutput) {
+            return false;
+        }
+
+        return vm.params.appDispInfoStartupOutput.appDispInfoNoDateOutput.displayAppReason == 1;
+    }
+
+    public comboReason(code: any) {
+        const vm = this;
+        if (!vm.params.appDispInfoStartupOutput) {
+            return '';
+        }
+        let dropdownList = vm.params.appDispInfoStartupOutput.appDispInfoNoDateOutput.reasonTypeItemLst,
+            opComboReason = _.find(dropdownList, (o: any) => {
+                return o.appStandardReasonCD == code;
+            });
+        if (opComboReason) {
+            return opComboReason.reasonForFixedForm;
+        }
+        if (_.isEmpty(code)) {
+            return '';
+        }
+
+        return code + ' ' + vm.$i18n('CMMS45_87');
+    }
+
     public bindReasons() {
         const self = this;
         let reasons = [] as Array<Reason>;
@@ -353,10 +392,19 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         const self = this;
         self.bindWorkInfo();
         self.bindWorkHours();
+        self.bindMultiOvertime();
         self.bindBreakTime();
         self.bindOverTimes();
         self.bindHolidayTimes();
         self.bindReasons();
+    }
+    public bindMultiOvertime() {
+        const self = this;
+        if (self.dataOutput && self.dataOutput.appOverTime && self.dataOutput.appOverTime.overTimeClf == 3) {
+            self.multiOverTimes = self.dataOutput.appOverTime.multipleOvertimeContents || [];
+        } else {
+            self.multiOverTimes = [];
+        }
     }
     public bindHolidayTimes() {
         const self = this;
@@ -784,7 +832,7 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         const self = this;
         let breakTime = [] as Array<BreakTime>;
         let countBreakTime = 0;
-        _.range(1, 10)
+        _.range(1, 11)
         .forEach((index: number) => {
             let result = _.findLast(_.get(self.dataOutput, 'appOverTime.breakTimeOp'), (i: TimeZoneWithWorkNo) => i.workNo == index) as any;
             let findResult = _.get(result, 'timeZone') as TimeZoneNew;

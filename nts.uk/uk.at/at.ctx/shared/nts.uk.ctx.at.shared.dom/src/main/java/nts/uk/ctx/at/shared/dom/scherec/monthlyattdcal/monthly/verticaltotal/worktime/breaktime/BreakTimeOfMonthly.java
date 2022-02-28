@@ -86,12 +86,12 @@ public class BreakTimeOfMonthly implements Serializable{
 		this.breakTimes = this.breakTimes.addTimes(breakTimeOfDaily.getGooutTimes().v());
 		this.excessTime = this.excessTime.addMinutes(breakTimeOfDaily.getToRecordTotalTime()
 				.getExcessOfStatutoryTotalTime().getTime().valueAsMinutes());
-		this.excessDeductionTime = this.excessTime.addMinutes(breakTimeOfDaily.getDeductionTotalTime()
+		this.excessDeductionTime = this.excessDeductionTime.addMinutes(breakTimeOfDaily.getDeductionTotalTime()
 				.getExcessOfStatutoryTotalTime().getTime().valueAsMinutes());
-		this.withinDeductionTime = this.excessTime.addMinutes(breakTimeOfDaily.getDeductionTotalTime()
+		this.withinDeductionTime = this.withinDeductionTime.addMinutes(breakTimeOfDaily.getDeductionTotalTime()
 				.getWithinStatutoryTotalTime().getTime().valueAsMinutes());
-		this.withinTime = this.excessTime.addMinutes(breakTimeOfDaily.getToRecordTotalTime()
-				.getWithinStatutoryTotalTime().getTime().valueAsMinutes());
+		this.withinTime = this.withinTime.addMinutes(breakTimeOfDaily.getToRecordTotalTime()
+				.getWithinStatutoryTotalTime().getTime().valueAsMinutes()); 
 	}
 
 	/**

@@ -14,11 +14,12 @@ import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemUpdateCommand;
 import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemUpdateCommandhandler;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemDto;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemFinder;
+import nts.uk.ctx.at.shared.app.find.bonuspay.item.BPItemArt;
 
 @Path("at/share/bonusPayTimeItem")
 @Produces("application/json")
 public class BonusPayTimeItemWebService extends WebService {
-	
+
 	@Inject
 	private BPTimeItemAddCommandHandler bpTimeItemAddCommandHandler;
 	@Inject
@@ -30,24 +31,24 @@ public class BonusPayTimeItemWebService extends WebService {
 	@Path("checkInit")
 	public int checkInit() {
 		return this.bpTimeItemFinder.checkInit();
-	}	
+	}
 
 	@POST
 	@Path("getListBonusPayTimeItem")
 	public List<BPTimeItemDto> getListBonusPayTimeItem() {
 		return this.bpTimeItemFinder.getListBonusPayTimeItem();
-	}	
+	}
 
 	@POST
 	@Path("getListBonusPayTimeItemInUse")
 	public List<BPTimeItemDto> getListBonusPayTimeItemInUse() {
 		return this.bpTimeItemFinder.getListBonusPayTimeItemInUse();
 	}
-	
+
 	@POST
 	@Path("checkUseArt")
-	public void checkUseArt(List<Boolean> lstuseArt){
-		this.bpTimeItemFinder.checkUseArt(lstuseArt);
+	public void checkUseArt(BPItemArt arts){
+		this.bpTimeItemFinder.checkUseArt(arts);
 	}
 
 	@POST

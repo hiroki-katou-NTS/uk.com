@@ -39,7 +39,7 @@ body {
 }
 
 #ctgName {
-	width: 200px;
+	width: 197px !important;
 }
 
 #ctgCode {
@@ -108,7 +108,7 @@ input.ntsSearchBox {
 
 table tr td, table tr th {
 	font-size: 14px;
-	font-family: "DroidSansMono", "Meiryo";
+	font-family: "Noto Sans JP";
 }
 
 .ui-igcombo-wrapper {
@@ -134,6 +134,7 @@ thead {
 	min-width: 180px !important;
 	border-left: none;
     border-top: none;
+    color: white;
 }
 
 #COL_2 {
@@ -145,6 +146,7 @@ thead {
 	min-width: 249px !important;
 	border-right: none;
 	border-top: none;
+	color: white;
 }
 
 #combo-box {
@@ -238,6 +240,7 @@ label[for] {
 
 #A3_13 {
 	margin-left: 5px !important;
+	height: 30px;
 }
 
 #A3_15 {
@@ -262,4 +265,7 @@ abbr[title] {
 
 .selectionName {
 	width: 180px;
+}
+#functions-area button{
+	min-width: 60px;
 }

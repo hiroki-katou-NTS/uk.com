@@ -188,6 +188,7 @@ module nts.uk.at.view.kmk005.k {
                     let data = getShared('KDL007_VALUES');
                     if (data && data.selecteds.length) {
                         model.bpsc(data.selecteds[0]);
+                        if(!(_.isEmpty(data.selecteds[0]))){
                         service.getBonusPaySettingByCode(data.selecteds[0])
                             .done(x => {
                                 if (x) {
@@ -201,6 +202,10 @@ module nts.uk.at.view.kmk005.k {
                                 model.bpsc('');
                                 model.bpsn(getText("KDL007_6"));
                             });
+                        }else{
+                            model.bpsc('');
+                            model.bpsn(getText("KDL007_6"));
+                        }
                     }
                 });
             }

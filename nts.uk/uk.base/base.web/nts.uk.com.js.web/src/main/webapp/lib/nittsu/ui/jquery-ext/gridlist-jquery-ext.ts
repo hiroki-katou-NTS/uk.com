@@ -445,8 +445,8 @@ module nts.uk.ui.jqueryExtentions {
                 return delegateMethod($grid, options, arguments[1]);
             }
             
-            let HEADER_HEIGHT = 27;
-            let ROW_HEIGHT = 23;
+            let HEADER_HEIGHT = 30;
+            let ROW_HEIGHT = 30;
             let DIFF_NUMBER = 2;
             
             $grid.addClass("nts-gridlist");
@@ -471,7 +471,7 @@ module nts.uk.ui.jqueryExtentions {
             $grid.data("initValue", value); 
             
             if (options.multiple) {
-                ROW_HEIGHT = 24;
+                ROW_HEIGHT = 30;
                 // Internet Explorer 6-11
                 let _document: any = document;
                 let isIE = /*@cc_on!@*/false || !!_document.documentMode;
@@ -491,7 +491,7 @@ module nts.uk.ui.jqueryExtentions {
                     name: 'RowSelectors',
                     enableCheckBoxes: options.multiple,
                     enableRowNumbering: false,
-                    rowSelectorColumnWidth: 25
+                    rowSelectorColumnWidth: 40
                 });    
             }
             
