@@ -202,7 +202,11 @@ module nts.uk.at.view.kmt013.a {
 
 
             }).fail(error => {
-                vm.$dialog.error(error);
+                vm.$dialog.error(error).then(()=>{
+                    if (error.messageId == "Msg_3240"){
+                        vm.$jump("com", "/view/ccg/008/a/index.xhtml");
+                    }
+                });
             }).always(() => {
                 vm.$blockui("hide");
             });
