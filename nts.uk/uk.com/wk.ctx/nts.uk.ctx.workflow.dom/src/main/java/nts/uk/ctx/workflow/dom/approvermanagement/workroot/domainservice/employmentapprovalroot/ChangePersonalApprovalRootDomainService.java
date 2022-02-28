@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employ
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import nts.arc.task.tran.AtomTask;
@@ -32,7 +33,8 @@ public class ChangePersonalApprovalRootDomainService {
 		// DBに古いデータを削除する
 		List<PersonApprovalRoot> personApprovalRoots = require.getPersonApprovalRoots(cid, sid, period);
 		List<String> approverIds = personApprovalRoots.stream()
-				.map(PersonApprovalRoot::getApprovalId).distinct().collect(Collectors.toList());
+				.map(PersonApprovalRoot::getApprovalId)
+				.filter(Objects::nonNull).distinct().collect(Collectors.toList());
 		if (!approverIds.isEmpty()) {
 			atomTasks.add(AtomTask.of(() -> require.deletePersonApprovalRoots(approverIds)));
 		}

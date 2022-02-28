@@ -138,4 +138,8 @@ public class PersonApprovalRoot extends AggregateRoot{
 	public boolean isBusEvent(){
 		return this.apprRoot.getEmploymentRootAtr()  == EmploymentRootAtr.BUS_EVENT;
 	}
+	public String getApprovalId() {
+		return this.apprRoot.getHistoryItems().stream().map(EmploymentAppHistoryItem::getApprovalId)
+				.findFirst().orElse(null);
+	}
 }

@@ -43,7 +43,7 @@ public class GetSelfApprovalSettingsDomainServiceTest {
 		ApproverOperationSettings operationSetting = DomainServiceTestHelper.mockApproverOperationSettings();
 		PersonApprovalRoot personApprovalRoot = DomainServiceTestHelper
 				.mockPersonApprovalRoot(OperationMode.PERSON_IN_CHARGE);
-		personApprovalRoot.setApprovalId("dummy");
+		personApprovalRoot.getApprRoot().getHistoryItems().forEach(data -> data.setApprovalId("dummy"));
 		new Expectations() {
 			{
 				require.getApprovalPhases(Arrays.asList("dummy"));
@@ -88,7 +88,7 @@ public class GetSelfApprovalSettingsDomainServiceTest {
 		// given
 		PersonApprovalRoot personApprovalRoot = DomainServiceTestHelper
 				.mockPersonApprovalRoot(OperationMode.PERSON_IN_CHARGE);
-		personApprovalRoot.setApprovalId("dummy");
+		personApprovalRoot.getApprRoot().getHistoryItems().forEach(data -> data.setApprovalId("dummy"));
 		new Expectations() {
 			{
 				require.getApprovalPhases(Arrays.asList("dummy"));
@@ -132,7 +132,7 @@ public class GetSelfApprovalSettingsDomainServiceTest {
 		PersonApprovalRoot personApprovalRoot = DomainServiceTestHelper
 				.mockPersonApprovalRoot(OperationMode.PERSON_IN_CHARGE);
 		personApprovalRoot.getApprRoot().getHistoryItems().get(0).changeSpan(new DatePeriod(baseDate, baseDate));
-		personApprovalRoot.setApprovalId("dummy");
+		personApprovalRoot.getApprRoot().getHistoryItems().forEach(data -> data.setApprovalId("dummy"));
 		new Expectations() {
 			{
 				require.getApprovalPhases(Arrays.asList("dummy"));
@@ -184,7 +184,7 @@ public class GetSelfApprovalSettingsDomainServiceTest {
 		PersonApprovalRoot personApprovalRoot = DomainServiceTestHelper
 				.mockPersonApprovalRoot(OperationMode.PERSON_IN_CHARGE);
 		personApprovalRoot.getApprRoot().getHistoryItems().get(0).changeSpan(new DatePeriod(baseDate, baseDate));
-		personApprovalRoot.setApprovalId("dummy");
+		personApprovalRoot.getApprRoot().getHistoryItems().forEach(data -> data.setApprovalId("dummy"));
 		new Expectations() {
 			{
 				require.getApprovalPhases(Collections.emptyList());
@@ -224,7 +224,7 @@ public class GetSelfApprovalSettingsDomainServiceTest {
 		ApproverOperationSettings operationSetting = DomainServiceTestHelper.mockApproverOperationSettings();
 		PersonApprovalRoot personApprovalRoot = DomainServiceTestHelper
 				.mockPersonApprovalRoot(OperationMode.PERSON_IN_CHARGE);
-		personApprovalRoot.setApprovalId("dummy");
+		personApprovalRoot.getApprRoot().getHistoryItems().forEach(data -> data.setApprovalId("dummy"));
 		ApprovalPhase approvalPhase = DomainServiceTestHelper.mockApprovalPhase();
 		approvalPhase.setPhaseOrder(0);
 		new Expectations() {

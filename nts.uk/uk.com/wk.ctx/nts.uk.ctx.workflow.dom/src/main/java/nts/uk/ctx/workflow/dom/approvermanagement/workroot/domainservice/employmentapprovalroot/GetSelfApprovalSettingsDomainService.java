@@ -3,6 +3,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employ
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,8 +51,8 @@ public class GetSelfApprovalSettingsDomainService {
 						confirmationRootTypes);
 			}
 		}
-		List<String> approverIds = personApprovalRoots.stream().map(data -> data.getApprovalId()).distinct()
-				.collect(Collectors.toList());
+		List<String> approverIds = personApprovalRoots.stream().map(data -> data.getApprovalId())
+				.filter(Objects::nonNull).distinct().collect(Collectors.toList());
 		List<ApprovalPhase> approvalPhases = require.getApprovalPhases(approverIds);
 
 		// 承認フェーズListを整理する

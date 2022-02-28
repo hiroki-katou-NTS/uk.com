@@ -40,7 +40,7 @@ public class DomainServiceTestHelper {
 	public static ApprovalSettingInformation mockSettingInfo() {
 		List<ApprovalPhase> approvalPhases = Arrays.asList(mockApprovalPhase());
 		PersonApprovalRoot personApprovalRoot = mockPersonApprovalRoot(OperationMode.SUPERIORS_EMPLOYEE);
-		personApprovalRoot.setApprovalId("dummy");
+		personApprovalRoot.getApprRoot().getHistoryItems().forEach(data -> data.setApprovalId("dummy"));
 		return new ApprovalSettingInformation(approvalPhases, personApprovalRoot);
 	}
 
