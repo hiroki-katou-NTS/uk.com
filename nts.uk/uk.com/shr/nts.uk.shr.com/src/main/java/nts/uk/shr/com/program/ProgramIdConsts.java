@@ -1736,5 +1736,8 @@ public class ProgramIdConsts {
 	public static final String OEW001D = "OEW001D";
 	
 	public static final String OEM003A = "OEM003A";
+	
+	public static final String SMM001A = "SMM001A";
+	public static final String SMM001B = "SMM001B";
 
 }
