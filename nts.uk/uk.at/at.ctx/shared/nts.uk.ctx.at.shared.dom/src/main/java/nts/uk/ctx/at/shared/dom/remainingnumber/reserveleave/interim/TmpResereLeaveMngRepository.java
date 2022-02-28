@@ -38,7 +38,7 @@ public interface TmpResereLeaveMngRepository {
 	public void deleteSidPeriod(String sid, DatePeriod period);
 	
 	/**
-	 * 年月日より前全て削除
+	 * 年月日以前全て削除
 	 * @param sid
 	 * @param ymd
 	 */

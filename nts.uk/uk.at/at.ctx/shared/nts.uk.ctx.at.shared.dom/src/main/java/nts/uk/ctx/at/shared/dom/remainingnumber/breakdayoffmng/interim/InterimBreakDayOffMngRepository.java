@@ -172,10 +172,10 @@ public interface InterimBreakDayOffMngRepository {
 	
 	List<InterimDayOffMng> getDayOffByIds(List<String> remainManaIds);
 	
-	// [8] 年月日より前全て削除 暫定休出管理データ
+	// [8] 年月日以前全て削除 暫定休出管理データ
 	void deleteBreakoffBySidBeforeTheYmd(String sid, GeneralDate ymd);
 
-	// [8] 年月日より前全て削除 暫定代休管理データ
+	// [8] 年月日以前全て削除 暫定代休管理データ
 	void deleteDayoffBySidBeforeTheYmd(String sid, GeneralDate ymd);
 
 	

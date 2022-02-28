@@ -34,7 +34,7 @@ public interface TmpAnnualHolidayMngRepository {
 	void deleteSidAndYmd(String sid, GeneralDate ymd);
 	
 	/**
-	 * 年月日より前全て削除
+	 * 年月日以前全て削除
 	 * @param sid
 	 * @param ymd
 	 */
