@@ -47,11 +47,8 @@ public class InsertUpdateWorkLocationCmd {
 		return new WorkLocation(
 				new ContractCode(AppContexts.user().contractCode()),
 				new WorkLocationCD(this.workLocationCD), 
-				new WorkLocationName(this.workLocationName), 
-				new StampMobilePossibleRange(this.radius == null ? null : RadiusAtr.toEnum(this.radius),
-
-						(this.latitude == null || this.longitude == null) ? null: new GeoCoordinate(this.latitude, this.longitude)),
-				
+				new WorkLocationName(this.workLocationName),
+				Optional.ofNullable((this.radius == null || this.latitude == null || this.longitude == null) ? null:new StampMobilePossibleRange(RadiusAtr.toEnum(this.radius),new GeoCoordinate(this.latitude, this.longitude))),
 				this.listIPAddress.stream().map(c->c.toDomain()).collect(Collectors.toList()),
 				this.workplace == null ? Optional.empty() : Optional.of(this.workplace.toDomain()));
 	}
@@ -60,10 +57,10 @@ public class InsertUpdateWorkLocationCmd {
 		return new InsertUpdateWorkLocationCmd(
 				domain.getWorkLocationCD().v(), 
 				domain.getWorkLocationName().v(), 
-				domain.getStampRange().getRadius() == null ? null : domain.getStampRange().getRadius().value,
+				domain.getStampRange().map(x-> x.getRadius().value).orElse(null),
 						
-				domain.getStampRange().getGeoCoordinate().map(x-> x.getLatitude()).orElse(null),
-				domain.getStampRange().getGeoCoordinate().map(x-> x.getLongitude()).orElse(null),
+				domain.getStampRange().map(x-> x.getGeoCoordinate().map(y-> y.getLatitude()).orElse(null)).orElse(null),
+				domain.getStampRange().map(x-> x.getGeoCoordinate().map(y-> y.getLongitude()).orElse(null)).orElse(null),
 				
 				domain.getListIPAddress().stream().map(c-> new Ipv4AddressDto(c)).collect(Collectors.toList()),
 				domain.getWorkplace().map(c-> WorkplacePossibleCmd.toDto(c)).orElse(null));

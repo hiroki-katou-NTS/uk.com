@@ -78,11 +78,11 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 		return new KrcmtWorkLocation(new KwlmtWorkLocationPK(workLocation.getContractCode().v(), workLocation.getWorkLocationCD().v()),
 				workLocation.getWorkLocationName().v(),
 				
-				workLocation.getStampRange().getRadius() == null ? null: workLocation.getStampRange().getRadius().value,
+				workLocation.getStampRange().map(x-> x.getRadius().value).orElse(null),
 						
-				workLocation.getStampRange().getGeoCoordinate().map(x -> BigDecimal.valueOf(x.getLatitude())).orElse(null),
+				workLocation.getStampRange().map(x-> x.getGeoCoordinate().map(y->  BigDecimal.valueOf(y.getLatitude())).orElse(null)).orElse(null),
 				
-				workLocation.getStampRange().getGeoCoordinate().map(x -> BigDecimal.valueOf(x.getLongitude())).orElse(null),
+				workLocation.getStampRange().map(x-> x.getGeoCoordinate().map(y->  BigDecimal.valueOf(y.getLongitude())).orElse(null)).orElse(null),
 				
 				workLocation.getWorkplace().isPresent() ? KrcmtWorkplacePossible.toEntiy(
 						workLocation.getContractCode().v(),
@@ -99,10 +99,10 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 		return new WorkLocation(
 				new ContractCode(this.kwlmtWorkLocationPK.contractCode),
 				new WorkLocationCD(this.kwlmtWorkLocationPK.workLocationCD), 
-				new WorkLocationName(this.workLocationName), 
-				new StampMobilePossibleRange(
-						this.radius == null ? null : RadiusAtr.toEnum(this.radius),
-						(this.latitude == null || this.longitude == null) ? null:new GeoCoordinate(this.latitude.doubleValue(), this.longitude.doubleValue())),
+				new WorkLocationName(this.workLocationName),
+				Optional.ofNullable((this.radius == null || this.latitude == null || this.longitude == null) ? null
+						: new StampMobilePossibleRange(RadiusAtr.toEnum(this.radius),
+								new GeoCoordinate(this.latitude.doubleValue(), this.longitude.doubleValue()))),
 				this.krcmtIP4Address.stream().map(c->c.toDomain()).collect(Collectors.toList()),
 				Optional.ofNullable(this.krcmtWorkplacePossible == null ? null : this.krcmtWorkplacePossible.toDomain()));
 	}

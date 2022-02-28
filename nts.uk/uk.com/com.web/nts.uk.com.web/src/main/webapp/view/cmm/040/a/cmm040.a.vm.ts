@@ -103,21 +103,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             });
 
             self.longitude.subscribe(function (value) {
-                $('#validatelong').ntsError('clear');
-                $('#validatelat').ntsError('clear');
                 
-                if ((!value || !value.toString()) && self.latitude()) {
-                    $('#validatelong').ntsError('set', { messageId: "Msg_2161" });
-                    return;
-                }
-                
-                if (value.toString() && !self.latitude()) {
-                    $('#validatelat').ntsError('set', { messageId: "Msg_2161" });
-                    return;
-                }
-                
-                $('#validatelong').ntsError('clear');
-                $('#validatelat').ntsError('clear');
+                self.validate();
                 
                 if (!value || !value.toString()) {
                     return;
@@ -131,23 +118,10 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 }
             });
 
+            
             self.latitude.subscribe(function (value) {
                 
-                $('#validatelong').ntsError('clear');
-                $('#validatelat').ntsError('clear');
-                
-                if ((!value || !value.toString()) && self.longitude()) {
-                    $('#validatelat').ntsError('set', { messageId: "Msg_2161" });
-                    return;
-                }
-                
-                if (value.toString() && !self.longitude()) {
-                    $('#validatelong').ntsError('set', { messageId: "Msg_2161" });
-                    return;
-                }
-                
-                $('#validatelong').ntsError('clear');
-                $('#validatelat').ntsError('clear');
+                self.validate();
                 
                 if (!value || !value.toString()) {
                     return;
@@ -159,7 +133,22 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                     }
                 }
             });
+            
+            self.radius.subscribe((value) => {
+                
+                setTimeout(() => self.validate(), 100);
+                
+                if (value != 9999) {
+                    $('#combo-box').ntsError('clear');
+                }
+            });
 
+        }
+        
+        validate() {
+            let self = this;
+            $(".nts-input").ntsError("clear");
+            $(".nts-input").trigger("validate");
         }
 
         startPage(): JQueryPromise<any> {
@@ -179,6 +168,19 @@ module nts.uk.com.view.cmm040.a.viewmodel {
 
             return dfd.promise();
         }
+        
+        latitudeRequired() {
+            let self = this;
+            return self.radius() != 9999 || !!self.longitude();
+
+        };
+        
+        longitudeRequired() {
+            let self = this;
+            return self.radius() != 9999 || !!self.latitude();
+        }
+        
+        
 
         setDataWorkPlace(data: any) {
             const self = this;
@@ -503,6 +505,11 @@ module nts.uk.com.view.cmm040.a.viewmodel {
 
         add() {
             let self = this;
+            $('#combo-box').ntsError('clear');
+            if ((!!self.latitude() || !!self.longitude()) && self.radius() == 9999) {
+                $('#combo-box').ntsError('set', { messageId: "MsgB_1" ,messageParams:[nts.uk.resource.getText("CMM040_39")] });
+                return;
+            }
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
                 let listWorkplace = [];
