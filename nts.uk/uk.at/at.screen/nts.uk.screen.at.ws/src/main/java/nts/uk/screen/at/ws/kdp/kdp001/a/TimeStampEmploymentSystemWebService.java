@@ -8,7 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.ConfirmUseOfStampInputCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.ConfirmUseOfStampInputCommandHandler;
 import nts.uk.ctx.at.record.app.command.kdp.kdp001.a.ConfirmUseOfStampInputResult;
