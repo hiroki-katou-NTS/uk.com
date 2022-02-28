@@ -850,7 +850,7 @@ module nts.uk.at.view.kdw008.a {
                             //-----------------------------------------------------------------------
                             $("#currentCode").trigger("validate");
                             $("#currentName").trigger("validate");
-                            $("#selectedSheetName").trigger("validate");
+                            $("#selectedSheetNameAnyPeriod").trigger("validate");
                             if (!nts.uk.ui.errors.hasError()) {
                                 if (self.modifyAnyPeriodValue().length <= 0) {
                                     nts.uk.ui.dialog.alert({ messageId: "Msg_920" });
