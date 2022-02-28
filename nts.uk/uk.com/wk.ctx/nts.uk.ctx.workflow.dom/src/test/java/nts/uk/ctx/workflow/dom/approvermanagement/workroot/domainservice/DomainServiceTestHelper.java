@@ -32,7 +32,7 @@ public class DomainServiceTestHelper {
 	public static ApprovalSettingParam mockSettingParam() {
 		List<ApproverInformation> approvalPhases = Arrays.asList(new ApproverInformation(0, "dummy1"),
 				new ApproverInformation(1, "dummy2"));
-		ApprovalRootInformation approvalRootInfo = new ApprovalRootInformation(EmploymentRootAtr.ANYITEM, PERIOD,
+		ApprovalRootInformation approvalRootInfo = new ApprovalRootInformation(EmploymentRootAtr.COMMON, PERIOD,
 				Optional.empty(), Optional.empty());
 		return new ApprovalSettingParam(approvalPhases, approvalRootInfo);
 	}
@@ -49,7 +49,7 @@ public class DomainServiceTestHelper {
 	}
 
 	public static PersonApprovalRoot mockPersonApprovalRoot(OperationMode operationMode) {
-		PersonApprovalRoot domain = new PersonApprovalRoot(CID, CID, PERIOD, EmploymentRootAtr.ANYITEM,
+		PersonApprovalRoot domain = new PersonApprovalRoot(CID, CID, PERIOD, EmploymentRootAtr.COMMON,
 				ApplicationType.COMPLEMENT_LEAVE_APPLICATION, ConfirmationRootType.DAILY_CONFIRMATION);
 		domain.setOperationMode(operationMode);
 		return domain;
