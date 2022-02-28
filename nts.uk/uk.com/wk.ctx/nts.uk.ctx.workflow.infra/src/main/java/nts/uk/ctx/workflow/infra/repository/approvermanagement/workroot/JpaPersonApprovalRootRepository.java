@@ -616,7 +616,8 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 */
 	private WwfmtApprovalRoutePs toEntityPsApR(PersonApprovalRoot domain){
 		val entity = new WwfmtApprovalRoutePs();
-		entity.wwfmtPsApprovalRootPK = new WwfmtPsApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(),
+		entity.wwfmtPsApprovalRootPK = new WwfmtPsApprovalRootPK(domain.getCompanyId(),
+				domain.getApprRoot().getHistoryItems().isEmpty() ? "" : domain.getApprRoot().getHistoryItems().get(0).getApprovalId(),
 				domain.getEmployeeId(), domain.getApprRoot().getHistoryItems().get(0).getHistoryId());
 		entity.sysAtr = domain.getApprRoot().getSysAtr().value;
 		entity.startDate = domain.getApprRoot().getHistoryItems().get(0).start();

@@ -140,7 +140,8 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		for(PersonApprovalRoot root: lstPss) {
 			List<ApprovalForApplication> psWootInfor = new ArrayList<>();
 			ApprovalRootCommonOutput psRoot = new ApprovalRootCommonOutput(root.getCompanyId(),
-					root.getApprovalId(), root.getEmployeeId(),
+					root.getApprRoot().getHistoryItems().isEmpty() ? "" : root.getApprRoot().getHistoryItems().get(0).getApprovalId(),
+					root.getEmployeeId(),
 					"", 
 					root.getApprRoot().getHistoryItems().get(0).getHistoryId(),
 					root.getApprRoot().getApplicationType() == null ? 0: root.getApprRoot().getApplicationType().value,

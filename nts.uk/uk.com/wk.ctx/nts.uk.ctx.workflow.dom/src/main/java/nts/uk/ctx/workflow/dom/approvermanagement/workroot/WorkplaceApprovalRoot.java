@@ -34,7 +34,7 @@ public class WorkplaceApprovalRoot extends AggregateRoot {
 			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
-		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"), GeneralDate.fromString(endDate, "yyyy-MM-dd")));
+		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"), GeneralDate.fromString(endDate, "yyyy-MM-dd")), approvalId);
 		employmentAppHistorys.add(employmentAppHistory);
 		return new WorkplaceApprovalRoot(companyId,
 			approvalId,
@@ -52,7 +52,7 @@ public class WorkplaceApprovalRoot extends AggregateRoot {
 			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
-		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate));
+		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate), approvalId);
 		employmentAppHistorys.add(employmentAppHistory);
 		return new WorkplaceApprovalRoot(companyId,
 			approvalId,

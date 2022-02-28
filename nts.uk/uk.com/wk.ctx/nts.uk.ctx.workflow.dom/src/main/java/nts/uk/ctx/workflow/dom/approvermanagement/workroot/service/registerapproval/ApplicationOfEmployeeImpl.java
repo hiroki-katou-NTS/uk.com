@@ -50,7 +50,8 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		if(!CollectionUtil.isEmpty(lstPsRoots)) {
 			List<ApprovalPhase> lstPhase = new ArrayList<>();
 			lstPsRoots.stream().forEach(y -> {
-				phaseRespoitory.getAllIncludeApprovers(y.getApprovalId()).stream().forEach(z -> {
+				phaseRespoitory.getAllIncludeApprovers(y.getApprRoot().getHistoryItems().isEmpty()
+						? "" : y.getApprRoot().getHistoryItems().get(0).getApprovalId()).stream().forEach(z -> {
 					lstPhase.add(z);
 				});
 				
@@ -60,7 +61,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 				List<ApprovalRootCommonOutput> rootOutputs = lstPsRoots
 						.stream()
 						.map(x -> new ApprovalRootCommonOutput(x.getCompanyId(),
-								x.getApprovalId(), 
+								x.getApprRoot().getHistoryItems().isEmpty() ? "" : x.getApprRoot().getHistoryItems().get(0).getApprovalId(), 
 								x.getEmployeeId(), 
 								"",
 								x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
@@ -189,7 +190,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			List<ApprovalRootCommonOutput> rootOutputs = lstPsCommonRoots
 					.stream()
 					.map(x -> new ApprovalRootCommonOutput(x.getCompanyId(),
-							x.getApprovalId(), 
+							x.getApprRoot().getHistoryItems().isEmpty() ? "" : x.getApprRoot().getHistoryItems().get(0).getApprovalId(), 
 							x.getEmployeeId(), 
 							"",
 							x.getApprRoot().getHistoryItems().get(0).getHistoryId(),

@@ -2,7 +2,6 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,9 +22,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.Ope
 public class PersonApprovalRoot extends AggregateRoot{
 	/**会社ID*/
 	private String companyId;
-	
-	/** 承認ID */
-	private String approvalId;
 	
 	/**社員ID*/
 	private String employeeId;
@@ -48,10 +44,9 @@ public class PersonApprovalRoot extends AggregateRoot{
 			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
-		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"), GeneralDate.fromString(endDate, "yyyy-MM-dd")));
+		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"), GeneralDate.fromString(endDate, "yyyy-MM-dd")), approvalId);
 		employmentAppHistorys.add(employmentAppHistory);
 		return new PersonApprovalRoot(companyId,
-			approvalId,
 			employeeId,
 			new ApprovalRoot(EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
@@ -81,7 +76,6 @@ public class PersonApprovalRoot extends AggregateRoot{
 			ConfirmationRootType confirmationRootType) {
 		ApprovalRoot approvalRoot = new ApprovalRoot(datePeriod, employmentRootAtr, applicationType, confirmationRootType);
 		this.companyId = companyId;
-		this.approvalId = UUID.randomUUID().toString();
 		this.employeeId = employeeId;
 		this.apprRoot = approvalRoot;
 		this.operationMode = OperationMode.SUPERIORS_EMPLOYEE;
@@ -104,10 +98,9 @@ public class PersonApprovalRoot extends AggregateRoot{
 		OperationMode operationMode = opeMode == null ? null
 				: EnumAdaptor.valueOf(opeMode, OperationMode.class);
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
-		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate));
+		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate), approvalId);
 		employmentAppHistorys.add(employmentAppHistory);
 		return new PersonApprovalRoot(companyId,
-			approvalId,
 			employeeId,
 			new ApprovalRoot(EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),

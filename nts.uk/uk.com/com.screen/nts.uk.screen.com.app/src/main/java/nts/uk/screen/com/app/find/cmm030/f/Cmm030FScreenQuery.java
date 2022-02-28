@@ -94,9 +94,13 @@ public class Cmm030FScreenQuery {
 				OverlapKey key = new OverlapKey(hist.getDatePeriod().start(), hist.getDatePeriod().end(),
 						data.getOperationMode().value);
 				if (dataMap.containsKey(key)) {
-					dataMap.get(key).add(data.getApprovalId());
+					dataMap.get(key).add(data.getApprRoot().getHistoryItems().isEmpty()
+							? ""
+							: data.getApprRoot().getHistoryItems().get(0).getApprovalId());
 				} else {
-					dataMap.put(key, Arrays.asList(data.getApprovalId()));
+					dataMap.put(key, Arrays.asList(data.getApprRoot().getHistoryItems().isEmpty()
+							? ""
+							: data.getApprRoot().getHistoryItems().get(0).getApprovalId()));
 				}
 			});
 		});

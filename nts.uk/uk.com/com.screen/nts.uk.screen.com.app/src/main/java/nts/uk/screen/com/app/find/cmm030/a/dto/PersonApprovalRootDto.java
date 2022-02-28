@@ -24,7 +24,8 @@ public class PersonApprovalRootDto {
 	private int operationMode;
 
 	public static PersonApprovalRootDto fromDomain(PersonApprovalRoot domain) {
-		return new PersonApprovalRootDto(domain.getCompanyId(), domain.getApprovalId(), domain.getEmployeeId(),
+		return new PersonApprovalRootDto(domain.getCompanyId(), domain.getApprRoot().getHistoryItems().isEmpty()
+				? "" : domain.getApprRoot().getHistoryItems().get(0).getApprovalId(), domain.getEmployeeId(),
 				ApprovalRootDto.fromDomain(domain.getApprRoot()), domain.getOperationMode().value);
 	}
 }

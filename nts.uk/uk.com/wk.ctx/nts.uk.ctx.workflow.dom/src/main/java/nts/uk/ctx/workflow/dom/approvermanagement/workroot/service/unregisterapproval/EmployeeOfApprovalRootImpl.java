@@ -35,7 +35,9 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 		List<ApprovalPhase> approvalPhases = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(personRootAll)) {
 			personRootAll.stream().forEach(x -> {
-				approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
+				approvalPhase.getAllApprovalPhasebyCode(x.getApprRoot().getHistoryItems().isEmpty()
+						? ""
+						: x.getApprRoot().getHistoryItems().get(0).getApprovalId()).stream()
 				.forEach(y -> {
 					approvalPhases.add(y);
 				});
@@ -51,7 +53,9 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 					.collect(Collectors.toList());
 			if(!CollectionUtil.isEmpty(psRootCommonAtr)) {
 				psRootCommonAtr.stream().forEach(x -> {
-					approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
+					approvalPhase.getAllApprovalPhasebyCode(x.getApprRoot().getHistoryItems().isEmpty()
+							? ""
+							: x.getApprRoot().getHistoryItems().get(0).getApprovalId()).stream()
 					.forEach(y -> {
 						approvalPhases.add(y);
 					});
