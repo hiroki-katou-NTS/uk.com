@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ApprovalLevelNoTest;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ApproverOperationSettingsTest;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ApproverSettingScreenInforTest;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.SettingTypeUsedTest;
@@ -19,7 +20,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.Set
 	ApproverSettingScreenInforTest.class,
 	SettingTypeUsedTest.class,
 	ApprovalSettingTest.class,
-	ApproverRegisterSetTest.class
+	ApproverRegisterSetTest.class,
+	ApprovalLevelNoTest.class
 })
 public class PersonApprovalRootTestSuite {
 
