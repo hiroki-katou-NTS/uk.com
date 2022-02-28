@@ -20,7 +20,8 @@ public class NRLWebService extends RequestDispatcher {
 
 	@POST
 	@Path("dataCollect")
-	@RequestData({ Command.TEST, Command.POLLING, Command.SESSION, Command.TIMESET_INFO, Command.ALL_IO_TIME })
+	@RequestData({ Command.TEST, Command.POLLING, Command.SESSION, Command.TIMESET_INFO, Command.ALL_IO_TIME,
+			Command.TR_REMOTE_SEND_SETTING })
 	public Frame requestTimeInOut(InputStream is) {
 		NRLResponse response = ignite(is);
 		// NRLResponse response = NRLResponse.mute();

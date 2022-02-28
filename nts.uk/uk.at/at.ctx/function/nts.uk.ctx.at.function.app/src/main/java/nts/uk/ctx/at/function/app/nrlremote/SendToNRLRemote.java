@@ -8,6 +8,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
 import nts.uk.ctx.at.function.app.nrl.Command;
 import nts.uk.ctx.at.function.app.nrl.crypt.Codryptofy;
 import nts.uk.ctx.at.function.app.nrl.data.FrameItemArranger;
@@ -26,11 +27,10 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetUp
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.repo.TimeRecordSetFormatListRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.repo.TimeRecordSetUpdateListRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.service.ConvertTimeRecordUpdateToXmlService;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.xml.NRLRemoteDataXml;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 
 @RequestScoped
-@Named(value = Command.TR_REMOTE, decrypt = true)
+@Named(value = Command.TR_REMOTE)
 public class SendToNRLRemote extends NRLRequest<Frame> {
 
 	@Inject
@@ -48,13 +48,12 @@ public class SendToNRLRemote extends NRLRequest<Frame> {
 		items.add(FrameItemArranger.SOH());
 		items.add(new MapItem(Element.HDR, Command.TR_REMOTE.Response));
 		String payload = "";
-		Frame frame = context.getEntity();
 		RequireImpl impl = new RequireImpl(empInfoTerminalRepository, timeRecordSetFormatListRepository,
 				trSetUpdateListRepository);
-		NRLRemoteDataXml xml = ConvertTimeRecordUpdateToXmlService.convertToXml(impl,
-				frame.getItem(Element.MAC_ADDR).getValue());
-		if (xml != null) {
-			payload = xml.getPayload();
+		val xml = ConvertTimeRecordUpdateToXmlService.convertToXml(impl,
+				new ContractCode(context.getTerminal().getContractCode()), new EmpInfoTerminalCode(empInfoTerCode));
+		if (xml.isPresent()) {
+			payload = xml.get();
 		}
 		byte[] payloadBytes = Codryptofy.decode(payload);
 		int length = payloadBytes.length + 32;
@@ -66,7 +65,7 @@ public class SendToNRLRemote extends NRLRequest<Frame> {
 		items.add(new MapItem(Element.NRL_NO, context.getTerminal().getNrlNo()));
 		items.add(new MapItem(Element.MAC_ADDR, context.getTerminal().getMacAddress()));
 		items.add(FrameItemArranger.ZeroPadding());
-		context.collectEncrypt(items, payload);
+		context.collect(items, payload);
 
 	}
 

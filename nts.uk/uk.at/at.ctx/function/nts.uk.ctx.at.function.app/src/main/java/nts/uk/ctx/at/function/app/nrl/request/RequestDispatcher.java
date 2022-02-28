@@ -25,6 +25,7 @@ import nts.uk.ctx.at.function.app.nrl.response.NRLResponse;
 import nts.uk.ctx.at.function.app.nrl.xml.DefaultXDocument;
 import nts.uk.ctx.at.function.app.nrl.xml.Element;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
+import nts.uk.ctx.at.function.app.nrlremote.ReceiveNRLRemoteDataSetting;
 import nts.uk.ctx.at.function.app.nrlremote.SendToNRLRemote;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.FuncEmpInfoTerminalImport;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.RQEmpInfoTerminalAdapter;
@@ -71,6 +72,7 @@ public class RequestDispatcher {
 		RequestMapper.put(Command.TR_REMOTE.Request, SendToNRLRemote.class);
 		RequestMapper.put(Command.APPLICATION_INFO.Request, ApplicationReasonRequest.class);
 		RequestMapper.put(Command.UK_SWITCH_MODE.Request, DateTimeSwitchUKModeRequest.class);
+		RequestMapper.put(Command.TR_REMOTE_SEND_SETTING.Request, ReceiveNRLRemoteDataSetting.class);
 	}
 	
 	/**

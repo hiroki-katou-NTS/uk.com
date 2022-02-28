@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.dto.TimeRecordS
 /**
  * @author ThanhNX
  *
- *         タイムレコードの設定情報
+ *         タイムレコーダの設定情報
  */
 @Setter
 @Getter

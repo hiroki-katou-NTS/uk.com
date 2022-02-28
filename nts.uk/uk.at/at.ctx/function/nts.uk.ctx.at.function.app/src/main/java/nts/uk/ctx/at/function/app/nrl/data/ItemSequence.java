@@ -120,6 +120,11 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			Element.YEAR, Element.MONTH, Element.DAY, Element.HOUR, Element.MINITE, Element.SECOND, Element.WEEK,
 			Element.BCC);
 	
+	public static final List<String> TR_REMOTE_SEND_SETTING = Arrays.asList(Element.SOH, Element.HDR, Element.PADDING1, Element.LENGTH,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING2,
+			Element.PAYLOAD, Element.BCC);
+	
+	
 	/**
 	 * From map.
 	 * 
@@ -197,6 +202,10 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			
 		case UK_SWITCH_MODE:
 			 orders = request ? UK_SWITCH_MODE_REQ : UK_SWITCH_MODE_RES;
+			 break;
+			 
+		case TR_REMOTE_SEND_SETTING:
+			 orders = request ? TR_REMOTE_SEND_SETTING : ACCEPT_ORDER;
 			 break;
 		default:
 			return Optional.empty();
