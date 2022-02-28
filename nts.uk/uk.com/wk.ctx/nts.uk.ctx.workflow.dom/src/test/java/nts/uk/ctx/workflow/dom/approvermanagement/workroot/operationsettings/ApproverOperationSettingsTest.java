@@ -409,6 +409,27 @@ public class ApproverOperationSettingsTest {
 	}
 	
 	/**
+	 * Test [2] 利用する申請を取得する
+	 * Case 3: Output is empty
+	 */
+	@Test
+	public void testGetApplicationToUse3() {
+		List<SettingTypeUsed> settingTypeUseds = new ArrayList<SettingTypeUsed>();
+		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithAnyUseAndEmptyAppType());
+	
+		ApproverOperationSettings domain = new ApproverOperationSettings(
+				OperationMode.SUPERIORS_EMPLOYEE,
+				ApprovalLevelNo.FIVE_LEVEL,
+				new ArrayList<SettingTypeUsed>(),
+				null);
+		domain.setSettingTypeUseds(settingTypeUseds);
+		
+		List<ApplicationType> actual = domain.getApplicationToUse();
+		
+		assertThat(actual).isEmpty();
+	}
+	
+	/**
 	 * Test [3] 利用する確認を取得する
 	 * Case 1: 確認ルート種類が利用するか判断する is present
 	 */
@@ -456,6 +477,27 @@ public class ApproverOperationSettingsTest {
 		assertThat(actual)
 		.extracting(d -> d)
 		.containsExactly(ConfirmationRootType.DAILY_CONFIRMATION);
+	}
+	
+	/**
+	 * Test [3] 利用する確認を取得する
+	 * Case 3: Output is empty
+	 */
+	@Test
+	public void testGetConfirmationToUse3() {
+		List<SettingTypeUsed> settingTypeUseds = new ArrayList<SettingTypeUsed>();
+		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithConfirmAndNotUse(ConfirmationRootType.MONTHLY_CONFIRMATION));
+		
+		ApproverOperationSettings domain = new ApproverOperationSettings(
+				OperationMode.SUPERIORS_EMPLOYEE,
+				ApprovalLevelNo.FIVE_LEVEL,
+				new ArrayList<SettingTypeUsed>(),
+				null);
+		domain.setSettingTypeUseds(settingTypeUseds);
+		
+		List<ConfirmationRootType> actual = domain.getConfirmationToUse();
+		
+		assertThat(actual).isEmpty();
 	}
 
 }
