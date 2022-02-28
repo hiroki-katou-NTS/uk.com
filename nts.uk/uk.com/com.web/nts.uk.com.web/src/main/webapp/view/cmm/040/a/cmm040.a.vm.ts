@@ -104,34 +104,45 @@ module nts.uk.com.view.cmm040.a.viewmodel {
 
             self.longitude.subscribe(function (value) {
                 
-                self.validate();
+                setTimeout(() => self.validate(), 100);
                 
                 if (!value || !value.toString()) {
                     return;
                 }
                 
-                if ((value > 180) || (value < -180)) {
-                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function (o) { return o.errorCode == "Msg_2161"; });
-                    if (temp == null) {
-                        $('#validatelong').ntsError('set', { messageId: "Msg_2161" });
+               
+                    
+                setTimeout(() => {
+                    if ((value > 180) || (value < -180)) {
+                        let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2161"; });
+                        if (temp == null) {
+                            $('#validatelong').ntsError('set', { messageId: "Msg_2162" })
+                        }
                     }
-                }
+                }, 100);
+
+                
             });
 
             
             self.latitude.subscribe(function (value) {
                 
-                self.validate();
+                setTimeout(() => self.validate(), 100);
                 
                 if (!value || !value.toString()) {
                     return;
                 }
-                if ((value > 90) || (value < -90)) {
-                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function (o) { return o.errorCode == "Msg_2162"; });
-                    if (temp == null) {
-                        $('#validatelat').ntsError('set', { messageId: "Msg_2162" });
+                
+                
+                setTimeout(() => {
+                    if ((value > 90) || (value < -90)) {
+                        let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2161"; });
+                        if (temp == null) {
+                            $('#validatelat').ntsError('set', { messageId: "Msg_2162" })
+                        }
                     }
-                }
+                }, 100);
+                
             });
             
             self.radius.subscribe((value) => {
@@ -149,6 +160,11 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             let self = this;
             $(".nts-input").ntsError("clear");
             $(".nts-input").trigger("validate");
+            $('#combo-box').ntsError('clear');
+            if ((!!self.latitude() || !!self.longitude()) && self.radius() == 9999) {
+                $('#combo-box').ntsError('set', { messageId: "MsgB_1" ,messageParams:[nts.uk.resource.getText("CMM040_39")] });
+                return;
+            }
         }
 
         startPage(): JQueryPromise<any> {
