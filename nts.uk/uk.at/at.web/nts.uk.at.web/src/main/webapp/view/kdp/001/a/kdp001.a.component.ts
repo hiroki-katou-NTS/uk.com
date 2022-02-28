@@ -833,7 +833,7 @@ module nts.uk.ui.kdp001.a {
             } else {
                 let inputWorkPlace = {
                     contractCode: vm.$user.contractCode,
-                    cid: vm.$user.companyCode,
+                    cid: vm.$user.companyId,
                     sid: vm.$user.employeeId,
                     workPlaceId: ""
                 }

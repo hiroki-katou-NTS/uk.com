@@ -190,6 +190,12 @@ module nts.uk.at.kdp003.a {
 					vm.showMessage(result);
 
 				}
+			});
+
+			vm.regionalTime.subscribe((data: number) => {
+				if (data != 0) {
+					vm.loadNotice();
+				}
 			})
 		}
 
@@ -217,13 +223,6 @@ module nts.uk.at.kdp003.a {
 			vm.$window.storage('contractInfo')
 				.done((data: any) => {
 					vm.passContract = _.escape(data ? data.contractPassword : "");
-				});
-
-			vm.$ajax('at', API.NOW)
-				.then((c) => {
-					const date = moment(c, 'YYYY-MM-DDTHH:mm:ss').toDate();
-
-					vm.employeeData.baseDate(date);
 				});
 
 			vm.$ajax(API.STAMP_SETTING_COMMON)
@@ -276,7 +275,6 @@ module nts.uk.at.kdp003.a {
 			let dfd = $.Deferred<void>();
 
 			if (locationCd) {
-
 				$.getJSON("https://api.ipify.org?format=json").then((address: any) => {
 					ipv4Address = address.ip;
 				}).done(() => {
@@ -293,11 +291,17 @@ module nts.uk.at.kdp003.a {
 								vm.workPlace = [];
 								vm.workPlace.push(data.workPlaceId);
 								vm.modeBasyo(true);
-							}if (data.workPlaceId == null) {
+							} if (data.workPlaceId == null) {
 								vm.modeBasyo(false);
 							}
 						}
-					})
+					}).then(() => {
+						vm.$ajax('at', API.NOW)
+							.then((c) => {
+								const date = moment(moment(c, 'YYYY-MM-DDTHH:mm:ss').add(ko.unwrap(vm.regionalTime), 'h').toDate()).toDate();
+								vm.employeeData.baseDate(date);
+							});
+					});
 				});
 			} else {
 				vm.$window
@@ -305,7 +309,7 @@ module nts.uk.at.kdp003.a {
 					.then((data: any) => {
 						if (data.WKPID.length > 0) {
 							const param = {
-								contractCode: vm.$user.companyCode,
+								contractCode: vm.$user.contractCode,
 								cid: vm.$user.companyId,
 								sid: vm.$user.employeeId,
 								workPlaceId: data.WKPID[0]
@@ -316,7 +320,13 @@ module nts.uk.at.kdp003.a {
 								}
 							})
 						}
-					})
+					}).then(() => {
+						vm.$ajax('at', API.NOW)
+							.then((c) => {
+								const date = moment(moment(c, 'YYYY-MM-DDTHH:mm:ss').add(ko.unwrap(vm.regionalTime), 'h').toDate()).toDate();
+								vm.employeeData.baseDate(date);
+							});
+					});
 			}
 			return dfd.promise();
 		}
@@ -412,7 +422,7 @@ module nts.uk.at.kdp003.a {
 						}
 					}
 
-					vm.getTimeZone().then(()=> data);
+					vm.getTimeZone().then(() => data);
 
 					return data;
 				})
@@ -623,7 +633,7 @@ module nts.uk.at.kdp003.a {
 
 		loadNotice(storage?: StorageData) {
 			const vm = this;
-			let startDate = vm.$date.now();
+			let startDate = moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate());
 			//startDate.setDate(startDate.getDate() - 3);
 			var wkpIds: string[];
 
@@ -642,10 +652,12 @@ module nts.uk.at.kdp003.a {
 							const param = {
 								periodDto: {
 									startDate: startDate,
-									endDate: vm.$date.now()
+									endDate: moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate())
 								},
 								wkpIds: wkpIds
 							}
+
+							console.log(param);
 
 							vm.$ajax(API.NOTICE, param)
 								.done((data: IMessage) => {
@@ -670,7 +682,7 @@ module nts.uk.at.kdp003.a {
 				const param = {
 					periodDto: {
 						startDate: startDate,
-						endDate: vm.$date.now()
+						endDate: moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate())
 					},
 					wkpIds: wkpIds
 				}
@@ -826,7 +838,7 @@ module nts.uk.at.kdp003.a {
 						}
 					}
 
-					vm.getTimeZone().then(()=> loginData);
+					vm.getTimeZone().then(() => loginData);
 					return loginData;
 				})
 				.then((loginData: undefined | f.TimeStampLoginData) => {
@@ -1058,7 +1070,7 @@ module nts.uk.at.kdp003.a {
 							return vm.$dialog.error(data.errorMessage);
 						}
 
-						return vm.$window.modal('at', DIALOG.S, { employeeId: data.em.employeeId });
+						return vm.$window.modal('at', DIALOG.S, { employeeId: data.em.employeeId, regionalTime: ko.unwrap(vm.regionalTime) });
 					}
 				});
 		}
@@ -1068,8 +1080,8 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			const { buttonPage, employeeData } = vm;
 			const { selectedId, employees, nameSelectArt } = ko.toJS(employeeData) as EmployeeListData;
-			let stampTime = moment(vm.$date.now()).format("HH:mm");
-			let stampDateTime = moment(vm.$date.now()).format();
+			let stampTime = moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate()).format("HH:mm");
+			let stampDateTime = moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate()).format();
 
 			const reloadSetting = () =>
 				$.Deferred()
@@ -1190,7 +1202,7 @@ module nts.uk.at.kdp003.a {
 																						const { USE } = NotUseAtr;
 
 																						vm.playAudio(btn.audioType);
-																						const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
+																						const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId, regionalTime: ko.unwrap(vm.regionalTime) };
 
 																						if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 
@@ -1205,7 +1217,7 @@ module nts.uk.at.kdp003.a {
 																							return storage('resultDisplayTime', resultDisplayTime)
 																								.then(() => storage('infoEmpToScreenB', employeeInfo))
 																								.then(() => storage('screenB', { screen: "KDP003" }))
-																								.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime })) as JQueryPromise<any>;
+																								.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime, regionalTime: ko.unwrap(vm.regionalTime) })) as JQueryPromise<any>;
 																						}
 																					})
 																						.fail((message: BussinessException) => {
@@ -1233,7 +1245,7 @@ module nts.uk.at.kdp003.a {
 																				const { USE } = NotUseAtr;
 
 																				vm.playAudio(btn.audioType);
-																				const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
+																				const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId, regionalTime: ko.unwrap(vm.regionalTime) };
 
 																				if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 
@@ -1248,7 +1260,7 @@ module nts.uk.at.kdp003.a {
 																					return storage('resultDisplayTime', resultDisplayTime)
 																						.then(() => storage('infoEmpToScreenB', employeeInfo))
 																						.then(() => storage('screenB', { screen: "KDP003" }))
-																						.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime })) as JQueryPromise<any>;
+																						.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime, regionalTime: ko.unwrap(vm.regionalTime) })) as JQueryPromise<any>;
 																				}
 																			}).fail((message: BussinessException) => {
 																				const { messageId, parameterIds } = message;
@@ -1284,7 +1296,7 @@ module nts.uk.at.kdp003.a {
 																		const { USE } = NotUseAtr;
 
 																		vm.playAudio(btn.audioType);
-																		const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
+																		const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId, regionalTime: ko.unwrap(vm.regionalTime) };
 
 																		if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 
@@ -1299,7 +1311,7 @@ module nts.uk.at.kdp003.a {
 																			return storage('resultDisplayTime', resultDisplayTime)
 																				.then(() => storage('infoEmpToScreenB', employeeInfo))
 																				.then(() => storage('screenB', { screen: "KDP003" }))
-																				.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime })) as JQueryPromise<any>;
+																				.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime, regionalTime: ko.unwrap(vm.regionalTime) })) as JQueryPromise<any>;
 																		}
 																	})
 																		.fail((message: BussinessException) => {
@@ -1328,7 +1340,7 @@ module nts.uk.at.kdp003.a {
 																const { USE } = NotUseAtr;
 
 																vm.playAudio(btn.audioType);
-																const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
+																const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId, regionalTime: ko.unwrap(vm.regionalTime) };
 
 																if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 
@@ -1343,7 +1355,7 @@ module nts.uk.at.kdp003.a {
 																	return storage('resultDisplayTime', resultDisplayTime)
 																		.then(() => storage('infoEmpToScreenB', employeeInfo))
 																		.then(() => storage('screenB', { screen: "KDP003" }))
-																		.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime })) as JQueryPromise<any>;
+																		.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime, regionalTime: ko.unwrap(vm.regionalTime) })) as JQueryPromise<any>;
 																}
 															}).fail((message: BussinessException) => {
 																const { messageId, parameterIds } = message;
@@ -1381,7 +1393,7 @@ module nts.uk.at.kdp003.a {
 																			const { USE } = NotUseAtr;
 
 																			vm.playAudio(btn.audioType);
-																			const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
+																			const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId, regionalTime: ko.unwrap(vm.regionalTime) };
 
 																			if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 
@@ -1396,7 +1408,7 @@ module nts.uk.at.kdp003.a {
 																				return storage('resultDisplayTime', resultDisplayTime)
 																					.then(() => storage('infoEmpToScreenB', employeeInfo))
 																					.then(() => storage('screenB', { screen: "KDP003" }))
-																					.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime })) as JQueryPromise<any>;
+																					.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime, regionalTime: ko.unwrap(vm.regionalTime) })) as JQueryPromise<any>;
 																			}
 																		})
 																			.fail((message: BussinessException) => {
@@ -1428,7 +1440,7 @@ module nts.uk.at.kdp003.a {
 																		const { USE } = NotUseAtr;
 
 																		vm.playAudio(btn.audioType);
-																		const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
+																		const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId, regionalTime: ko.unwrap(vm.regionalTime) };
 
 																		if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 
@@ -1443,7 +1455,7 @@ module nts.uk.at.kdp003.a {
 																			return storage('resultDisplayTime', resultDisplayTime)
 																				.then(() => storage('infoEmpToScreenB', employeeInfo))
 																				.then(() => storage('screenB', { screen: "KDP003" }))
-																				.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime })) as JQueryPromise<any>;
+																				.then(() => modal('at', DIALOG.KDP002_B, { stampTime: stampTime, regionalTime: ko.unwrap(vm.regionalTime) })) as JQueryPromise<any>;
 																		}
 																	})
 																	.fail((message: BussinessException) => {
