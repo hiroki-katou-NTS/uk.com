@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,17 +11,21 @@ import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.AutoCreateStampCardNumberService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardCreateResult;
-import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRepository;
-import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.adapter.AcquireWorkLocationEmplAdapter;
-import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaLimit;
+import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AssignmentMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonDisSet;
@@ -64,7 +70,7 @@ public class EnterStampFromSmartPhoneServiceTest {
 	private nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository repository;
 	@Injectable
 	private nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.adapter.AcquireWorkLocationEmplAdapter adapter;
-
+	
 	/**
 	 * require.getSmartphoneStampSetting() isPresent()
 	 * resutl : BusinessException("Msg_1632")
@@ -178,31 +184,31 @@ public class EnterStampFromSmartPhoneServiceTest {
 				new StampPageComment(new PageComment("DUMMY"), new ColorCode("DUMMY")), ButtonLayoutType.SMALL_8,
 				lstButtonSet));
 		
-		SettingsSmartphoneStamp settingsSmartphoneStamp = new SettingsSmartphoneStamp(contractCode.v(), displaySettingsStamScreen, stampPageLayouts, true,null);
+		SettingsSmartphoneStamp settingsSmartphoneStamp = new SettingsSmartphoneStamp(contractCode.v(), displaySettingsStamScreen, stampPageLayouts, true,new StampingAreaRestriction(nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr.NOT_USE, StampingAreaLimit.NO_AREA_RESTRICTION));
 		
-//		new Expectations() {
-//		{
-//			require.getSmartphoneStampSetting();
-//			result = Optional.of(settingsSmartphoneStamp);
-//		}
-//	};
-//	
+		new Expectations() {
+		{
+			require.getSmartphoneStampSetting();
+			result = Optional.of(settingsSmartphoneStamp);
+		}
+	};
+	
 	AtomTask atomTask = AtomTask.of(() -> {});// dummy
 	StampCardCreateResult stampCardCreateResult = new StampCardCreateResult("1", Optional.of(atomTask));
 	
-//	new MockUp<AutoCreateStampCardNumberService>() {
-//		@Mock
-//		public Optional<StampCardCreateResult> create(AutoCreateStampCardNumberService.Require require,
-//				String employeeID, StampMeans stampMeanss) {
-//			return Optional.of(stampCardCreateResult);
-//		}
-//	};
+	new MockUp<AutoCreateStampCardNumberService>() {
+		@Mock
+		public Optional<StampCardCreateResult> create(AutoCreateStampCardNumberService.Require require,
+				String employeeID, StampMeans stampMeanss) {
+			return Optional.of(stampCardCreateResult);
+		}
+	};
 	
-//	TimeStampInputResult timeStampInputResult = EnterStampFromSmartPhoneService.create(require, "", contractCode, employeeId,
-//					dateTime, stampButton,
-//					Optional.of(geoCoordinate), null);
-//	
-//	assertThat(timeStampInputResult.at).isNotEmpty();
-//	assertThat(timeStampInputResult.stampDataReflectResult.getAtomTask()).isNotNull();
+		TimeStampInputResult timeStampInputResult = EnterStampFromSmartPhoneService.create(stampingAreaRepository,
+				repository, adapter, require, "", contractCode, employeeId, dateTime, stampButton,
+				Optional.of(geoCoordinate), StampHelper.getRefectActualResultDefault());
+	
+	assertThat(timeStampInputResult.getAt()).isPresent();
+	assertThat(timeStampInputResult.stampDataReflectResult.getAtomTask()).isNotNull();
 	}
 }
