@@ -46,7 +46,13 @@ public class PersonApprovalRootPubImpl implements PersonApprovalRootPub {
 			List<EmploymentAppHistoryItemExport> historyItems = result.getPersonApprovalRoot().getApprRoot().getHistoryItems().stream()
 					.map(data -> new EmploymentAppHistoryItemExport(data.getHistoryId(), data.getDatePeriod()))
 					.collect(Collectors.toList());
-			ApprovalRootExport apprRoot = new ApprovalRootExport(appRootDomain.getSysAtr().value, appRootDomain.getEmploymentRootAtr().value, historyItems, appRootDomain.getApplicationType().value, appRootDomain.getConfirmationRootType().value, appRootDomain.getNoticeId(), appRootDomain.getBusEventId());
+			ApprovalRootExport apprRoot = new ApprovalRootExport(appRootDomain.getSysAtr().value,
+					appRootDomain.getEmploymentRootAtr().value,
+					historyItems,
+					appRootDomain.getApplicationType().map(x -> x.value).orElse(null),
+					appRootDomain.getConfirmationRootType().map(x -> x.value).orElse(null),
+					appRootDomain.getNoticeId().orElse(null),
+					appRootDomain.getBusEventId().orElse(null));
 			PersonApprovalRootExport personApprovalRoot = new PersonApprovalRootExport(cid, personAppRootDomain.getApprRoot().getHistoryItems().isEmpty()
 					? ""
 					: personAppRootDomain.getApprRoot().getHistoryItems().get(0).getApprovalId(), personAppRootDomain.getEmployeeId(), apprRoot, personAppRootDomain.getOperationMode().value);

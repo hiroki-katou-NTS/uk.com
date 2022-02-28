@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,9 +40,9 @@ public class CompanyApprovalRoot extends AggregateRoot{
 			new ApprovalRoot(EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
 					employmentAppHistorys,
-					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
-					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
-					noticeId, busEventId));
+					Optional.ofNullable(applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class)), 
+					Optional.ofNullable(confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class)),
+					Optional.ofNullable(noticeId), Optional.ofNullable(busEventId)));
 	}
 	public static CompanyApprovalRoot convert(String companyId,
 			String approvalId, String historyId, Integer applicationType,
@@ -56,9 +57,9 @@ public class CompanyApprovalRoot extends AggregateRoot{
 			new ApprovalRoot(EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
 					employmentAppHistorys,
-					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
-					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
-					noticeId, busEventId));
+					Optional.ofNullable(applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class)), 
+					Optional.ofNullable(confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class)),
+					Optional.ofNullable(noticeId), Optional.ofNullable(busEventId)));
 	}
 	public static CompanyApprovalRoot updateEdate(CompanyApprovalRoot comApprovalRoot, String eDate){
 		CompanyApprovalRoot com = comApprovalRoot;

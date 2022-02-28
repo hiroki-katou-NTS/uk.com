@@ -39,8 +39,8 @@ public class CopyPersonalApprovalRootDomainService {
 					ApprovalRootInformation approvalRootInfo = new ApprovalRootInformation(
 							data.getApprRoot().getEmploymentRootAtr(),
 							histItem.map(EmploymentAppHistoryItem::getDatePeriod).orElse(null),
-							Optional.ofNullable(data.getApprRoot().getApplicationType()),
-							Optional.ofNullable(data.getApprRoot().getConfirmationRootType()));
+							data.getApprRoot().getApplicationType(),
+							data.getApprRoot().getConfirmationRootType());
 					List<ApproverInformation> approvalPhases = sourceInfos.stream()
 							.map(ApprovalSettingInformation::getApprovalPhases).flatMap(List::stream)
 							.filter(x -> x.getApprovalId().equals(data.getApprovalId()))

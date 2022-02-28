@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,10 +53,10 @@ public class PersonApprovalRoot extends AggregateRoot{
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
 					// branchId, 
 					employmentAppHistorys,
-					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
-					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
+					Optional.ofNullable(applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class)), 
+					Optional.ofNullable(confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class)),
 					// anyItemApplicationId,
-					noticeId, busEventId),
+					Optional.ofNullable(noticeId), Optional.ofNullable(busEventId)),
 			OperationMode.PERSON_IN_CHARGE);
 	}
 	
@@ -74,7 +75,7 @@ public class PersonApprovalRoot extends AggregateRoot{
 			EmploymentRootAtr employmentRootAtr,
 			ApplicationType applicationType,
 			ConfirmationRootType confirmationRootType) {
-		ApprovalRoot approvalRoot = new ApprovalRoot(datePeriod, employmentRootAtr, applicationType, confirmationRootType);
+		ApprovalRoot approvalRoot = new ApprovalRoot(datePeriod, employmentRootAtr, Optional.ofNullable(applicationType), Optional.ofNullable(confirmationRootType));
 		this.companyId = companyId;
 		this.employeeId = employeeId;
 		this.apprRoot = approvalRoot;
@@ -106,10 +107,10 @@ public class PersonApprovalRoot extends AggregateRoot{
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
 					// branchId, 
 					employmentAppHistorys,
-					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
-					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
+					Optional.ofNullable(applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class)), 
+					Optional.ofNullable(confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class)),
 					// anyItemApplicationId,
-					noticeId, busEventId),
+					Optional.ofNullable(noticeId), Optional.ofNullable(busEventId)),
 			operationMode);
 	}
 	public static PersonApprovalRoot updateEdate(PersonApprovalRoot psApprovalRoot, String eDate){

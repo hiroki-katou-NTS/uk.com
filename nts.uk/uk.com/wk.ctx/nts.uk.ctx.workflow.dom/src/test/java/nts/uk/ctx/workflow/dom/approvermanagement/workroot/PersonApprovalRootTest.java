@@ -1,6 +1,9 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Optional;
+
 import org.junit.Test;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -20,7 +23,7 @@ public class PersonApprovalRootTest {
 		ApplicationType expApplicationType = ApplicationType.ABSENCE_APPLICATION;
 		ConfirmationRootType expConfirmationRootType = ConfirmationRootType.DAILY_CONFIRMATION;
 		OperationMode expOperationMode = OperationMode.SUPERIORS_EMPLOYEE; 
-		ApprovalRoot expApprovalRoot = new ApprovalRoot(expDatePeriod, expEmploymentRootAtr, expApplicationType, expConfirmationRootType);
+		ApprovalRoot expApprovalRoot = new ApprovalRoot(expDatePeriod, expEmploymentRootAtr, Optional.ofNullable(expApplicationType), Optional.ofNullable(expConfirmationRootType));
 		
 		PersonApprovalRoot domain = new PersonApprovalRoot(expCompanyId,
 				expEmployeeId,

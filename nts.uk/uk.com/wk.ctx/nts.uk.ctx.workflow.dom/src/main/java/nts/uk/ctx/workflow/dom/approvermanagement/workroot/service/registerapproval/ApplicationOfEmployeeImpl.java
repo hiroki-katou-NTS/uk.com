@@ -65,15 +65,15 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 								x.getEmployeeId(), 
 								"",
 								x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
-								x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+								x.getApprRoot().getApplicationType().map(v -> v.value).orElse(99),
 								x.getApprRoot().getHistoryItems().get(0).start(),
 								x.getApprRoot().getHistoryItems().get(0).end(),
 								// x.getApprRoot().getBranchId(),
 								// x.getApprRoot().getAnyItemApplicationId(),
-								x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+								x.getApprRoot().getConfirmationRootType().map(v -> v.value).orElse(null),
 								x.getApprRoot().getEmploymentRootAtr().value,
-								x.getApprRoot().getNoticeId(),
-								x.getApprRoot().getBusEventId()))
+								x.getApprRoot().getNoticeId().orElse(null),
+								x.getApprRoot().getBusEventId().orElse(null)))
 						.collect(Collectors.toList());
 				return rootOutputs;
 			}			
@@ -114,15 +114,15 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 									"", 
 									x.getWorkplaceId(),
 									x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
-									x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+									x.getApprRoot().getApplicationType().map(v -> v.value).orElse(99),
 									x.getApprRoot().getHistoryItems().get(0).start(),
 									x.getApprRoot().getHistoryItems().get(0).end(),
 									// x.getApprRoot().getBranchId(),
 									// x.getApprRoot().getAnyItemApplicationId(),
-									x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+									x.getApprRoot().getConfirmationRootType().map(v -> v.value).orElse(null),
 									x.getApprRoot().getEmploymentRootAtr().value,
-									x.getApprRoot().getNoticeId(),
-									x.getApprRoot().getBusEventId()))
+									x.getApprRoot().getNoticeId().orElse(null),
+									x.getApprRoot().getBusEventId().orElse(null)))
 							.collect(Collectors.toList());
 					return rootOutputs;
 				}				
@@ -157,15 +157,15 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 									"", 
 									"",
 									x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
-									x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+									x.getApprRoot().getApplicationType().map(v -> v.value).orElse(99),
 									x.getApprRoot().getHistoryItems().get(0).start(),
 									x.getApprRoot().getHistoryItems().get(0).end(),
 									// x.getApprRoot().getBranchId(),
 									// x.getApprRoot().getAnyItemApplicationId(),
-									x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+									x.getApprRoot().getConfirmationRootType().map(v -> v.value).orElse(null),
 									x.getApprRoot().getEmploymentRootAtr().value,
-									x.getApprRoot().getNoticeId(),
-									x.getApprRoot().getBusEventId()))
+									x.getApprRoot().getNoticeId().orElse(null),
+									x.getApprRoot().getBusEventId().orElse(null)))
 							.collect(Collectors.toList());
 					return rootOutputs;
 				}
@@ -201,8 +201,8 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							// x.getApprRoot().getAnyItemApplicationId(),
 							null,
 							x.getApprRoot().getEmploymentRootAtr().value,
-							x.getApprRoot().getNoticeId(),
-							x.getApprRoot().getBusEventId()))
+							x.getApprRoot().getNoticeId().orElse(null),
+							x.getApprRoot().getBusEventId().orElse(null)))
 					.collect(Collectors.toList());
 			return rootOutputs;
 		}
@@ -226,15 +226,15 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 								"", 
 								x.getWorkplaceId(),
 								x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
-								x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+								x.getApprRoot().getApplicationType().map(v -> v.value).orElse(99), 
 								x.getApprRoot().getHistoryItems().get(0).start(),
 								x.getApprRoot().getHistoryItems().get(0).end(),
 								// x.getApprRoot().getBranchId(),
 								// x.getApprRoot().getAnyItemApplicationId(),
-								x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+								x.getApprRoot().getConfirmationRootType().map(v -> v.value).orElse(null),
 								x.getApprRoot().getEmploymentRootAtr().value,
-								x.getApprRoot().getNoticeId(),
-								x.getApprRoot().getBusEventId()))
+								x.getApprRoot().getNoticeId().orElse(null),
+								x.getApprRoot().getBusEventId().orElse(null)))
 						.collect(Collectors.toList());
 				return rootOutputs;
 			}
@@ -253,15 +253,15 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							"", 
 							"",
 							x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
-							x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+							x.getApprRoot().getApplicationType().map(v -> v.value).orElse(99), 
 							x.getApprRoot().getHistoryItems().get(0).start(),
 							x.getApprRoot().getHistoryItems().get(0).end(),
 							// x.getApprRoot().getBranchId(),
 							// x.getApprRoot().getAnyItemApplicationId(),
-							x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+							x.getApprRoot().getConfirmationRootType().map(v -> v.value).orElse(null),
 							x.getApprRoot().getEmploymentRootAtr().value,
-							x.getApprRoot().getNoticeId(),
-							x.getApprRoot().getBusEventId()))
+							x.getApprRoot().getNoticeId().orElse(null),
+							x.getApprRoot().getBusEventId().orElse(null)))
 					.collect(Collectors.toList());
 			return rootOutputs;
 		}
@@ -294,19 +294,19 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 
 	private String typeS(ApprovalRoot apprRoot) {
 		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.BUS_EVENT)) {
-			return apprRoot.getBusEventId();
+			return apprRoot.getBusEventId().map(x -> x).orElse(null);
 		}
 		return null;
 	}
 	private Integer typeV(ApprovalRoot apprRoot) {
 		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.APPLICATION)) {
-			return apprRoot.getApplicationType().value;
+			return apprRoot.getApplicationType().map(x -> x.value).orElse(null);
 		}
 		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.CONFIRMATION)) {
-			return apprRoot.getConfirmationRootType().value;
+			return apprRoot.getConfirmationRootType().map(x -> x.value).orElse(null);
 		}
 		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.NOTICE)) {
-			return apprRoot.getNoticeId();
+			return apprRoot.getNoticeId().map(x -> x).orElse(null);
 		}
 		return null;
 	}

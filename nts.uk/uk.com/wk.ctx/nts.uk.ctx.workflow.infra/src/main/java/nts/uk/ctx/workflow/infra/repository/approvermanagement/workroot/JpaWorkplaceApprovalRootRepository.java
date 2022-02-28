@@ -475,13 +475,13 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		entity.endDate = domain.getApprRoot().getHistoryItems().get(0).end();
 		entity.employmentRootAtr = domain.getApprRoot().getEmploymentRootAtr().value;
 		entity.applicationType = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.APPLICATION) ?
-				domain.getApprRoot().getApplicationType().value : null;
+				domain.getApprRoot().getApplicationType().map(x -> x.value).orElse(null) : null;
 		entity.confirmationRootType = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.CONFIRMATION) ?
-				domain.getApprRoot().getConfirmationRootType().value : null;
+				domain.getApprRoot().getConfirmationRootType().map(x -> x.value).orElse(null) : null;
 		entity.noticeId = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.NOTICE) ?
-				domain.getApprRoot().getNoticeId() : null;
+				domain.getApprRoot().getNoticeId().orElse(null) : null;
 		entity.busEventId = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.BUS_EVENT) ?
-				domain.getApprRoot().getBusEventId() : null;
+				domain.getApprRoot().getBusEventId().orElse(null) : null;
 		return entity;
 	}
 	

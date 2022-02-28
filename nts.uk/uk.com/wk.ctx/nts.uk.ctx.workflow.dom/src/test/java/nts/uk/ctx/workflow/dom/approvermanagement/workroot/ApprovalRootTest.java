@@ -2,6 +2,8 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.Test;
 
 import nts.arc.time.YearMonth;
@@ -21,15 +23,15 @@ public class ApprovalRootTest {
 		
 		ApprovalRoot domain = new ApprovalRoot(expDatePeriod, 
 				expEmploymentRootAtr, 
-				expApplicationType,
-				expConfirmationRootType);
+				Optional.ofNullable(expApplicationType),
+				Optional.ofNullable(expConfirmationRootType));
 		
 		assertThat(domain.getSysAtr()).isEqualTo(SystemAtr.WORK);
 		assertThat(domain.getEmploymentRootAtr()).isEqualTo(expEmploymentRootAtr);
-		assertThat(domain.getApplicationType()).isEqualTo(expApplicationType);
-		assertThat(domain.getConfirmationRootType()).isEqualTo(expConfirmationRootType);
-		assertThat(domain.getNoticeId()).isNull();
-		assertThat(domain.getBusEventId()).isNull();
+		assertThat(domain.getApplicationType().get()).isEqualTo(expApplicationType);
+		assertThat(domain.getConfirmationRootType().get()).isEqualTo(expConfirmationRootType);
+		assertThat(domain.getNoticeId()).isEmpty();
+		assertThat(domain.getBusEventId()).isEmpty();
 		assertThat(domain.getHistoryItems().size()).isEqualTo(1);
 		assertThat(domain.getHistoryItems().get(0).getDatePeriod()).isEqualToComparingFieldByField(expDatePeriod);
 	}
