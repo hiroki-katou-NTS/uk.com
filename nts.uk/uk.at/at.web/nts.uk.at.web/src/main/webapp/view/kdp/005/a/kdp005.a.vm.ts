@@ -399,7 +399,7 @@ module nts.uk.at.view.kdp005.a {
                 const vm = new ko.ViewModel();
                 vm.$window.storage("contractInfo").then(info => {
                     vm.$ajax(API.GET_IP_URL, { contractCode: info.contractCode }) .done((response) => {
-                        let getWkLocParam = { contractCode: info.contractCode, worklocationCode: self.worklocationCode, ipv4Address: response.ipaddress };
+                        let getWkLocParam = { contractCode: info.contractCode, workLocationCode: self.worklocationCode, ipv4Address: response.ipaddress };
 
                         vm.$ajax(API.GET_WORKLOCATION, getWkLocParam).done((workLoc: IWorkPlaceRegionalTimeDto) => {
 
@@ -934,11 +934,15 @@ module nts.uk.at.view.kdp005.a {
 							vm.$window.modal('at', DIALOG.F, { mode, companyId })
 								.then((output: string) => {
 									if (output === 'loginSuccess') {
-										vm.$window.modal('at', DIALOG.P)
-											.then(() => {
-												// self.loadNotice(self.loginInfo);
-												self.reloadView()
-											})
+                                        
+                                        vm.$window.storage("workLocationInfo").then((workLocInfo) => {
+                                            vm.$window.modal('at', DIALOG.P, { regionalTime: workLocInfo.regional })
+                                                .then(() => {
+                                                    // self.loadNotice(self.loginInfo);
+                                                    self.reloadView()
+                                                })
+                                        });
+										
 									}
 								});
 						}
@@ -1066,7 +1070,7 @@ module nts.uk.at.view.kdp005.a {
                         .then((info: any) => {
                             if (info) {
                                 vm.$ajax(API.GET_IP_URL, { contractCode: info.contractCode }).done((response) => {
-                                    let getWkLocParam = { contractCode: info.contractCode, worklocationCode: locationCd, ipv4Address: response.ipaddress };
+                                    let getWkLocParam = { contractCode: info.contractCode, workLocationCode: locationCd, ipv4Address: response.ipaddress };
 
                                     vm.$ajax(API.GET_WORKLOCATION, getWkLocParam).done((workLoc: IWorkPlaceRegionalTimeDto) => {
 
@@ -1076,6 +1080,7 @@ module nts.uk.at.view.kdp005.a {
 
                                             self.worklocationCode = locationCd;
                                             self.modeBasyo(true);
+                                            self.workplace = [workPlaceId];
                                             dfd.resolve();
 
                                         } else {
