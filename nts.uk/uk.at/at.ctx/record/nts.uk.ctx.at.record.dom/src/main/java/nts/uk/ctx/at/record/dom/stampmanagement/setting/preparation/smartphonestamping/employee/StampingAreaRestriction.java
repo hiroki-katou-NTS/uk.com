@@ -42,7 +42,7 @@ public class StampingAreaRestriction extends ValueObject {
 												 String employeeId, Optional<GeoCoordinate> positionInfor) {
 		Optional<WorkLocation> workLocation = null;
 		List<WorkLocation> listWorkLocation = new ArrayList<>();
-		if (useLocationInformation == NotUseAtr.NOT_USE) {
+		if (useLocationInformation.equals(NotUseAtr.NOT_USE)) {
 			return Optional.empty();
 		}
 		
@@ -50,7 +50,7 @@ public class StampingAreaRestriction extends ValueObject {
 			throw new BusinessException("Msg_2096");
 		}
 		
-		if (stampingAreaLimit == StampingAreaLimit.ONLY_THE_WORKPLACE_BELONG_ALLOWED) {
+		if (stampingAreaLimit.equals(StampingAreaLimit.ONLY_THE_WORKPLACE_BELONG_ALLOWED)) {
 			// $場所一覧 = [prv-1] 所属職場に紐づける勤務場所を特定する(require,契約コード,会社ID,社員ID,打刻位置)
 			listWorkLocation = identifyWorkLocation(require, contractCd, companyId, employeeId, positionInfor);
 		} else {
@@ -62,7 +62,7 @@ public class StampingAreaRestriction extends ValueObject {
 				.filter(c -> c.canStamptedByMobile(positionInfor.get()))
 				.findFirst();
 		
-		if (stampingAreaLimit != StampingAreaLimit.NO_AREA_RESTRICTION && !workLocation.isPresent()) {
+		if (!stampingAreaLimit.equals(StampingAreaLimit.NO_AREA_RESTRICTION) && !workLocation.isPresent()) {
 			throw new BusinessException("Msg_2095");
 		}
 		
