@@ -12,7 +12,7 @@ module nts.uk.at.view.kdp010.j {
 		const paths: any = {
 			getSettingCommonStamp: "at/record/stamp/timestampinputsetting/getSettingCommonStamp",
 	        getData: "at/record/stamp/timestampinputsetting/smartphonepagelayoutsettings/get",
-	        save: "at/record/stamp/timestampinputsetting/save",
+	        save: "at/record/stamp/timestampinputsetting/saveStampPage",
 	        del: "at/record/stamp/timestampinputsetting/smartphonepagelayoutsettings/del"
 	    }
 		export class ScreenModel {
@@ -324,7 +324,7 @@ module nts.uk.at.view.kdp010.j {
         class ButtonSettings {
             buttonPositionNo: number;
             buttonDisSet = new ButtonDisSet();
-            buttonType: any = null;
+            stampType: any = null;
             usrArt = ko.observable(0);
             audioType = 0;
 			icon: KnockoutObservable<string> = ko.observable();
@@ -336,8 +336,8 @@ module nts.uk.at.view.kdp010.j {
                 if(param){
                     self.buttonPositionNo = param.buttonPositionNo;
                     self.buttonDisSet.update(param.buttonDisSet);
-                    self.buttonType = param.buttonType;
-					self.icon(self.getUrlImg(self.buttonType));
+                    self.stampType = param.stampType;
+					self.icon(self.getUrlImg(self.stampType));
                     self.usrArt(param.usrArt);
                     self.supportWplSet = param.supportWplSet;
                     self.taskChoiceArt = param.taskChoiceArt;
@@ -347,7 +347,7 @@ module nts.uk.at.view.kdp010.j {
 			clear(){
 				let self = this;
                 self.buttonDisSet.clear();
-                self.buttonType = null;
+                self.stampType = null;
 				self.icon("");
                 self.usrArt(0);
                 self.supportWplSet = null;
