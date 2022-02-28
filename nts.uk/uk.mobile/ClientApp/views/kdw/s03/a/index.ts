@@ -359,7 +359,8 @@ export class Kdws03AComponent extends Vue {
                                 'employeeName': param.employeeName,
                                 'date': param.date,
                                 'rowData': rowData,
-                                'paramData': self.paramData
+                                'paramData': self.paramData,
+                                'dataSessionDto' : self.dataSessionDto
                             }).then((v: any) => {
                                 if (v.reload) {
                                     this.startPage();
@@ -671,7 +672,8 @@ export class Kdws03AComponent extends Vue {
             'date': date,
             'rowData': rowData,
             'paramData': paramData,
-            'displayformat': displayformat
+            'displayformat': displayformat,
+            'dataSessionDto' : self.dataSessionDto
         }).then((v: any) => {
             if (v.reload) {
                 this.startPage();
@@ -715,7 +717,8 @@ export class Kdws03AComponent extends Vue {
                             'employeeName': param.employeeName,
                             'date': param.date,
                             'rowData': rowData,
-                            'paramData': self.paramData
+                            'paramData': self.paramData,
+                            'dataSessionDto' : self.dataSessionDto
                         });
                     }
 
@@ -746,7 +749,8 @@ export class Kdws03AComponent extends Vue {
                         'employeeName': paramOpenB.employeeName,
                         'date': paramOpenB.date,
                         'rowData': rowData,
-                        'paramData': self.paramData
+                        'paramData': self.paramData,
+                        'dataSessionDto' : self.dataSessionDto
                     });
                 }
             });

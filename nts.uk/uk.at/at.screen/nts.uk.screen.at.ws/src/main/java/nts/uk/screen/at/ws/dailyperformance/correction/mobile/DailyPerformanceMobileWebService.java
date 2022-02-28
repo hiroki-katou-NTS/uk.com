@@ -3,7 +3,6 @@ package nts.uk.screen.at.ws.dailyperformance.correction.mobile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -13,24 +12,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import lombok.val;
-import nts.arc.web.session.HttpSubSession;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceMobileCodeFinder;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyPerformanceCodeDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.screen.at.app.dailymodify.mobile.DailyModifyMobileCommandFacade;
-import nts.uk.screen.at.app.dailymodify.mobile.dto.DPMobileAdUpParam;
 import nts.uk.screen.at.app.dailymodify.mobile.dto.DPMobileAdUpParamDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCorrectionInitParam;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIUDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataSessionDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
-import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPPramLoadRowDto;
 import nts.uk.screen.at.app.dailyperformance.correction.mobile.InitScreenMob;
 import nts.uk.screen.at.app.dailyperformance.correction.mobile.UpdateConfirmAllMob;
 
@@ -38,8 +30,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.mobile.UpdateConfirmAllM
 @Produces("application/json")
 public class DailyPerformanceMobileWebService {
 
-	@Inject
-	private HttpSubSession session;
+//	@Inject
+//	private HttpSubSession session;
 
 	@Inject
 	private DailyModifyMobileCommandFacade dailyModifyMobiCommandFacade;
@@ -83,12 +75,12 @@ public class DailyPerformanceMobileWebService {
 		return result;
 	}
 
-	@POST
-	@Path("resetCacheDomain")
-	public void resetCacheDomain() {
-		session.setAttribute("domainEdits", null);
-		return ;
-	}
+//	@POST
+//	@Path("resetCacheDomain")
+//	public void resetCacheDomain() {
+//		session.setAttribute("domainEdits", null);
+//		return ;
+//	}
 	
 	@POST
 	@Path("initMOB")

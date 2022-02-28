@@ -1321,7 +1321,7 @@ public class DPCorrectionProcessorMob {
 			result = DateRange.convertPeriod(closurePeriodOpt.get().getPeriod());
 		}
 
-		return new DatePeriodInfo(lstPeriod, result, yearMonth == null ? 0 : yearMonth.v(), closureId.value, lstClosureCache, new ArrayList<>());
+		return new DatePeriodInfo(lstPeriod, result, yearMonth == null ? 0 : yearMonth.v(),closureId ==null? null: closureId.value, lstClosureCache, new ArrayList<>());
 	}
 
 	public void requestForFlush() {
