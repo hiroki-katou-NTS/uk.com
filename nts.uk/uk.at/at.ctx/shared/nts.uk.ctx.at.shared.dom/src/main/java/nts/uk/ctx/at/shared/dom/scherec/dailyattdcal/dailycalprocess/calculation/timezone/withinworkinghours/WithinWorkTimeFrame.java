@@ -38,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeVacationWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeVacationWorkEachNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.OverTimeByTimeVacation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
@@ -280,13 +281,8 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		AttendanceTime timeVacationOffsetTime = this.getTimeVacationOffsetTimeForAddWorkTime(
 				integrationOfDaily, integrationOfWorkTime, addSetting, holidayAddtionSet);
 		workTime = new AttendanceTime(workTime.valueAsMinutes() + timeVacationOffsetTime.valueAsMinutes());
-		if(this.leaveEarlyTimeSheet.isPresent() && this.leaveEarlyTimeSheet.get().getForDeducationTimeSheet().isPresent()) {
-			//休暇加算によって、就業時間から溢れて残業になる時間帯
-			TimeSpanForDailyCalc overTimebyTimeVacation = new TimeSpanForDailyCalc(
-					this.timeSheet.getEnd(),
-					this.leaveEarlyTimeSheet.get().getForDeducationTimeSheet().get().getAfterRoundingAsLeaveEarly().getStart());
-			workTime = new AttendanceTime(workTime.valueAsMinutes() - overTimebyTimeVacation.lengthAsMinutes());
-		}
+		// 休暇加算によって就業時間から溢れて残業になる時間帯 を控除する
+		workTime = workTime.minusMinutes(OverTimeByTimeVacation.create(this).calcTotalTime().valueAsMinutes());
 		// 丸め処理
 		TimeRoundingSetting rounding = this.getRounding();
 		workTime = new AttendanceTime(rounding.round(workTime.valueAsMinutes()));

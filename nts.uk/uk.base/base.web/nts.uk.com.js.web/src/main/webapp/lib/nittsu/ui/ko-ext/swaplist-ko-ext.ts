@@ -19,11 +19,11 @@ module nts.uk.ui.koExtentions {
          */
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var HEADER_HEIGHT = 27;
-            var CHECKBOX_WIDTH = 25;
+            var CHECKBOX_WIDTH = 40;
             var SEARCH_AREA_HEIGHT = 45;
             var BUTTON_SEARCH_WIDTH = 85; //width 80 + margin 5
             var INPUT_SEARCH_PADDING = 22;
-            var SCROLL_WIDTH = 17;
+            var SCROLL_WIDTH = 10;
             var BUTTON_CLEAR_WIDTH = 36; //width 31 + margin 5
 
             var $swap = $(element);
@@ -129,7 +129,7 @@ module nts.uk.ui.koExtentions {
                 if(showSearchBox.showRight){
                     var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
                     
-                    $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH).css({position: "absolute", right: 0});
+                    $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH - 7).css({position: "absolute", right: 0});
                     
                     initSearchArea($searchRightContainer, "highlight", data.rightSearchBoxText || defaultSearchText);
                     $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
@@ -151,7 +151,7 @@ module nts.uk.ui.koExtentions {
 
             var features = [{ name: 'Selection', multipleSelection: true },
 //                            { name: 'Sorting', type: 'local' },
-                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering, rowSelectorColumnWidth: 25 }];
+                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering, rowSelectorColumnWidth: 40 }];
           
             $swap.find("#" + elementId + "-gridArea1").width(leftGridWidth + CHECKBOX_WIDTH);
             $swap.find("#" + elementId + "-gridArea2").width(rightGridWidth + CHECKBOX_WIDTH);
@@ -191,7 +191,7 @@ module nts.uk.ui.koExtentions {
             
             
             $grid1.igGrid({
-                //width: leftGridWidth + CHECKBOX_WIDTH, 
+                // width: leftGridWidth + SCROLL_WIDTH + CHECKBOX_WIDTH, 
                 height: (gridHeight) + "px",
                 primaryKey: primaryKey,
                 columns: leftIggridColumns,
@@ -209,7 +209,7 @@ module nts.uk.ui.koExtentions {
             $grid1.ntsGridList('setupSelecting');
 
             $grid2.igGrid({
-                //width: rightGridWidth + CHECKBOX_WIDTH,
+                // width: rightGridWidth + SCROLL_WIDTH + CHECKBOX_WIDTH,
                 height: (gridHeight) + "px",
                 primaryKey: primaryKey,
                 columns: rightIggridColumns,

@@ -6,15 +6,17 @@ module nts.uk.at.view.kaf000.a.component1.viewmodel {
         template: `
             <div id="kaf000-a-component1">
 				<div data-bind="if: displayMsg">
-					<div style="padding-top: 20px" class="message-div">
-						<div style="word-break: break-all; word-wrap: break-word; line-height: 1.6;" data-bind="html: message"></div>
-					</div>
+                    <div class="right-panel-block"
+                        <div style="padding-top: 20px" class="message-div">
+                            <div style="word-break: break-all; word-wrap: break-word; line-height: 1.6;" data-bind="html: message"></div>
+                        </div>
+                    </div>
 				</div>
 				<div data-bind="if: displayDeadline">
-					<div class="message-div">
-						<div data-bind="text: $i18n('KAF000_2')" style="padding-top: 20px; padding-bottom: 10px; font-weight: bold;"></div>
-						<div data-bind="html: deadline" style="line-height: 1.8;"></div>
-					</div>
+                    <div class="right-panel-block">
+                        <div class="header" data-bind="text: $i18n('KAF000_2')"></div>
+                        <div class="content" data-bind="html: deadline" style="line-height: 1.8;"></div>
+                    </div>
 				</div>
 			</div>
         `

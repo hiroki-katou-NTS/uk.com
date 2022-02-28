@@ -6,8 +6,8 @@ import static nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
@@ -68,11 +68,8 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	 * Record(CSV行番号, 編集済みの項目List)のListの方からworkspaceの項目Noに一致しているやつの値を取る 
 	 */
 	protected KeyValues getPrimaryKeys(RevisedDataRecord record, DomainWorkspace workspace) {
-		
-		return getPrimaryKeyItemNos(workspace).stream()
-				.map(itemNo -> record.getItemByNo(itemNo).get())
-				.map(item -> item.getValue())
-				.collect(Collectors.collectingAndThen(toList(), KeyValues::new));
+		val itemNos = getPrimaryKeyItemNos(workspace);
+		return KeyValues.create(IntermediateResult.create(record), itemNos);
 	}
 	
 	/**
@@ -80,9 +77,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	 * @return
 	 */
 	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return workspace.getItemsPk().stream()
-				.map(k -> k.getItemNo())
-				.collect(toList());
+		return workspace.getPkItemNos();
 	}
 
 	protected void canonicalize(
@@ -105,15 +100,23 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			require.save(context, toDelete(context, workspace, keyValues));
 		}
 		
-		require.save(context, canonicalizeExtends(intermResult).complete());
+		//追加の正規化処理やって、データを登録したくない場合はOptional.empty
+		canonicalizeExtends(require, context, intermResult).ifPresent(interm ->{
+			require.save(context, interm.complete());
+		});
 	}
 	
 	/**
 	 * 追加の正準化処理が必要ならoverrideすること
+	 * @param require 
+	 * @param context 
 	 * @param targertResult
 	 */
-	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
-		return targertResult;
+	protected Optional<IntermediateResult> canonicalizeExtends(
+				DomainCanonicalization.RequireCanonicalize require, 
+				ExecutionContext context, 
+				IntermediateResult targertResult) {
+		return Optional.of(targertResult);
 	}
 
 	private AnyRecordToDelete toDelete(
@@ -195,7 +198,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 				value = stringified.asString();
 				break;
 			case INT:
-				value = stringified.asInteger();
+				value = stringified.asLong();
 				break;
 			case REAL:
 				value = stringified.asBigDecimal();

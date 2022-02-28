@@ -27,7 +27,8 @@ public class PersonalScheduleByIndividualExportService extends ExportService<Per
         PersonalScheduleIndividualDataSource dataSource = exportQuery.get(
                 period,
                 query.getStartDate(),
-                query.isTotalDisplay()
+                query.isTotalDisplay(),
+                query.getSid()
         );
         exportGenerator.generate(exportServiceContext.getGeneratorContext(), dataSource, query);
     }

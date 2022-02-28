@@ -27,4 +27,6 @@ public class UpdateAppAbsenceCommand {
 	
 	// 振出振休紐付け管理<List>
 	private List<PayoutSubofHDManagementDto> payoutSubofHDManagements;
+	
+	private boolean holidayFlg;
 }

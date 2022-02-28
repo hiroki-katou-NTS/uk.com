@@ -41,6 +41,9 @@ public class JpaToppageRepository extends JpaRepository implements ToppageReposi
 		SptmtToppage oldEntity = this.queryProxy().find(pk, SptmtToppage.class).get();
 		oldEntity.setLayoutDisp(entity.getLayoutDisp());
 		oldEntity.setTopPageName(entity.getTopPageName());
+		oldEntity.setFrameLayout1(entity.getFrameLayout1());
+		oldEntity.setFrameLayout2(entity.getFrameLayout2());
+		oldEntity.setFrameLayout3(entity.getFrameLayout3());
 		// update
 		this.commandProxy().update(oldEntity);
 	}

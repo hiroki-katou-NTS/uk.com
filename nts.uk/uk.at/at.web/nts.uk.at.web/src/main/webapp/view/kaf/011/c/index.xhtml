@@ -74,10 +74,10 @@
 								<div class="cell">
 									<table class="table-phase">
 										<thead>
-											<tr class="bg-green">
-												<th style="width: 111px; border: 1px solid black; text-align: center; height: 25px;"></th>
-												<th style="width: 111px; border: 1px solid black; text-align: center; height: 25px;"></th>
-												<th style="width: 230px; border: 1px solid black; text-align: center; height: 25px;" data-bind="text: nts.uk.resource.getText('KAF000_3')"></th>
+											<tr class="bg-gray">
+												<th style="width: 111px; border: 1px solid white; text-align: center; height: 25px; background-color: white;"></th>
+												<th style="width: 111px; border: 1px solid white; text-align: center; height: 25px; background-color: white;"></th>
+												<th style="width: 230px; border: 1px solid white; text-align: center; height: 25px;" data-bind="text: nts.uk.resource.getText('KAF000_3')"></th>
 											</tr>
 										</thead>
 										<tbody data-bind="foreach: { data: approvalRootState, as: 'loopPhase' }">
@@ -86,14 +86,14 @@
 												<tr>
 													<com:ko bind="$vm.isFirstIndexFrame(loopPhase, loopFrame, loopApprover)" tag="if">
 														<td data-bind="attr: {rowspan: ko.pureComputed(function() { return $vm.frameCount(loopPhase.listApprovalFrame())}) }" 
-														style="width: 81px; border: 1px solid black; text-align: center; height: 25px;" class="bg-green">
+														style="width: 81px; border: 1px solid white; text-align: center; height: 25px;" class="bg-gray">
 															<p style="height: 25px;" data-bind="text: $vm.getPhaseLabel(loopPhase.phaseOrder())"></p>
 														</td>
 													</com:ko>
-													<td style="width: 73px; border: 1px solid black; text-align: center; height: 25px;" class="bg-green">
+													<td style="width: 73px; border: 1px solid white; text-align: center; height: 25px;" class="bg-gray">
 														<p style="height: 25px;" data-bind="text: $vm.getApproverLabelByIndex()"></p>
 													</td>
-													<td style="width: 275px; border: 1px solid black; text-align: center; height: 25px;">
+													<td style="width: 275px; border: 1px solid white; text-align: center; height: 25px;">
 														<p class="limited-label" style="width: 270px; text-align: left; padding-left: 5px; vertical-align: middle; height: 25px;"
 															data-bind="text: ko.pureComputed(function() { return $vm.getApproverAtr(loopApprover)})">
 														</p>

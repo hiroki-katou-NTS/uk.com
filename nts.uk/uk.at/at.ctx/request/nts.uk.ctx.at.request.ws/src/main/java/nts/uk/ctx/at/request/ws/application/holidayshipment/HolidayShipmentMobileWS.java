@@ -128,7 +128,8 @@ public class HolidayShipmentMobileWS extends WebService {
 				command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 				command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 				command.isCheckFlag(), 
-				command.getDisplayInforWhenStarting().getApplicationForHoliday().getWorkTypeList().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+				command.getDisplayInforWhenStarting().getApplicationForHoliday().getWorkTypeList().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				EnumAdaptor.valueOf(command.getDisplayInforWhenStarting().getSubstituteManagement(), ManageDistinct.class));
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
 //		errorCheckProcessingBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(
 //				companyId, 
