@@ -111,8 +111,7 @@ module nts.uk.at.view.kdp002.a {
                                 vm.$ajax('at', 'at/record/kdp/common/get-work-place-regional-time', inputWorkPlace)
                                     .then((data: GetWorkPlaceRegionalTime) => {
                                         if (data) {
-                                            // self.regionalTime(data.regional);
-                                            self.regionalTime(0);
+                                            self.regionalTime(data.regional);
                                         }
                                     });
                             }
