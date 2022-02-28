@@ -1,18 +1,18 @@
 package nts.uk.screen.at.app.query.kdl.kdl016.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 
 /**
  * 応援情報DTO
  */
 @Data
-@AllArgsConstructor
 public class SupportInfoDto {
+    private int id;
     private String employeeId;
-    private DatePeriod datePeriod;
+    private String periodStart;
+    private String periodEnd;
     private String employeeCode;
     private String employeeName;
     private String supportOrgName;
@@ -20,4 +20,28 @@ public class SupportInfoDto {
     private int supportOrgUnit;
     private int supportType;
     private TimeSpanForCalcDto timeSpan;
+
+    private String supportTypeName;
+    private String periodDisplay;
+    private String employeeDisplay;
+    private String timeSpanDisplay;
+
+    public SupportInfoDto(int id, String employeeId, String periodStart, String periodEnd, String employeeCode, String employeeName,
+                          String supportOrgName, String supportOrgId, int supportOrgUnit, int supportType, TimeSpanForCalcDto timeSpan) {
+        this.id = id;
+        this.employeeId = employeeId;
+        this.periodStart = periodStart;
+        this.periodEnd = periodEnd;
+        this.employeeCode = employeeCode;
+        this.employeeName = employeeName;
+        this.supportOrgName = supportOrgName;
+        this.supportOrgId = supportOrgId;
+        this.supportOrgUnit = supportOrgUnit;
+        this.supportType = supportType;
+        this.timeSpan = timeSpan;
+        this.supportTypeName = supportType == SupportType.ALLDAY.getValue() ? SupportType.ALLDAY.name() : SupportType.TIMEZONE.name();
+        this.periodDisplay = periodStart + "～" + periodEnd;
+        this.employeeDisplay = employeeCode + "　" + employeeName;
+        this.timeSpanDisplay = timeSpan.getStart() + "～" + timeSpan.getEnd();
+    }
 }

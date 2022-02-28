@@ -21,6 +21,10 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportableEmployee;
@@ -30,9 +34,12 @@ import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.Suppor
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.EmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.importeddto.EmployeeCodeAndDisplayNameImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.importeddto.EmployeeInfoImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -110,6 +117,15 @@ public class DeleteSupportInfoCommandHandler extends CommandHandlerWithResult<De
     @Inject
     private BusinessTypeEmpService businessTypeEmpService;
 
+    @Inject
+    private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+
+    @Inject
+    private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+
+    @Inject
+    private NurseClassificationRepository nurseClassificationRepo;
+
     @Override
     protected DeleteSupportInfoResult handle(CommandHandlerContext<DeleteSupportInfoCommand> commandHandlerContext) {
         DeleteSupportInfoCommand command = commandHandlerContext.getCommand();
@@ -121,7 +137,8 @@ public class DeleteSupportInfoCommandHandler extends CommandHandlerWithResult<De
         RequireImpl require = new RequireImpl(companyId, supportableEmployeeRepo, workScheduleRepo, supportOperationSettingRepo,
                 workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository,
                 flexWorkSettingRepository, predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
-                sharedAffWorkPlaceHisAdapter, syClassificationAdapter, workingConditionRepo, businessTypeEmpService);
+                sharedAffWorkPlaceHisAdapter, syClassificationAdapter, workingConditionRepo, businessTypeEmpService,
+                empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
 
         List<RegisterResultFromSupportableEmployee.ErrorInformation> lstCannotDelete = new ArrayList<>();
 
@@ -152,14 +169,14 @@ public class DeleteSupportInfoCommandHandler extends CommandHandlerWithResult<De
         //　filter $.エラーがあるか == true
         //　map $.エラー情報.応援可能な社員.社員ID
         val empErrors = lstCannotDelete.stream().map(x -> x.getSupportableEmployee().getId()).collect(Collectors.toList());
-        List<EmployeeInfoImport> employeeErrorInfors = employeeAdapter.getByListSid(empErrors);
+        List<EmployeeCodeAndDisplayNameImport> employeeErrorInfors = employeeAdapter.getEmployeeCodeAndDisplayNameImportByEmployeeIds(empErrors);
 
         List<EmployeeErrorResult> employeeErrorResults = new ArrayList<>();
         for (RegisterResultFromSupportableEmployee.ErrorInformation empErr : lstCannotDelete) {
-            val empInfoOpt = employeeErrorInfors.stream().filter(e -> e.getSid().equals(empErr.getSupportableEmployee().getEmployeeId().v())).findFirst();
+            val empInfoOpt = employeeErrorInfors.stream().filter(e -> e.getEmployeeId().equals(empErr.getSupportableEmployee().getEmployeeId().v())).findFirst();
             employeeErrorResults.add(new EmployeeErrorResult(
-                    empInfoOpt.map(EmployeeInfoImport::getScd).orElse(null),
-                    empInfoOpt.map(EmployeeInfoImport::getBussinessName).orElse(null),
+                    empInfoOpt.map(EmployeeCodeAndDisplayNameImport::getEmployeeCode).orElse(null),
+                    empInfoOpt.map(EmployeeCodeAndDisplayNameImport::getBusinessName).orElse(null),
                     empErr.getSupportableEmployee().getPeriod().start().toString("yyyyMMdd"),
                     empErr.getSupportableEmployee().getPeriod().end().toString("yyyyMMdd"),
                     empErr.getErrorMessage()
@@ -205,6 +222,12 @@ public class DeleteSupportInfoCommandHandler extends CommandHandlerWithResult<De
         private WorkingConditionRepository workingConditionRepo;
 
         private BusinessTypeEmpService businessTypeEmpService;
+
+        private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+
+        private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+
+        private NurseClassificationRepository nurseClassificationRepo;
 
         @Override
         public Optional<SupportableEmployee> getSupportableEmployee(String id) {
@@ -293,6 +316,14 @@ public class DeleteSupportInfoCommandHandler extends CommandHandlerWithResult<De
         }
 
         @Override
+        public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
+            List<EmpOrganizationImport> results = empAffiliationInforAdapter.getEmpOrganization(standardDate, Arrays.asList(employeeId));
+            if(results.isEmpty())
+                return null;
+            return results.get(0);
+        }
+
+        @Override
         public String getLoginEmployeeId() {
             return AppContexts.user().employeeId();
         }
@@ -315,6 +346,16 @@ public class DeleteSupportInfoCommandHandler extends CommandHandlerWithResult<De
         @Override
         public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
             return flexWorkSettingRepository.find(companyId, code.v()).orElse(null);
+        }
+
+        @Override
+        public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp, GeneralDate referenceDate) {
+            return empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
+        }
+
+        @Override
+        public List<NurseClassification> getListCompanyNurseCategory() {
+            return nurseClassificationRepo.getListCompanyNurseCategory(AppContexts.user().companyId());
         }
     }
 }

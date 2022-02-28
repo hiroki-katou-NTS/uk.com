@@ -152,15 +152,18 @@ public class SupportInformationFinder {
 
         RequireOrgInfoImpl requireOrgInfo = new RequireOrgInfoImpl(groupAdapter, serviceAdapter, wplAdapter);
         List<SupportInfoDto> supportInfoResults = new ArrayList<>();
-        for (SupportableEmployee supportableEmployee : supportableEmployees) {
+        for (int i = 1; i <= supportableEmployees.size(); i++) {
+            SupportableEmployee supportableEmployee = supportableEmployees.get(i);
             // 組織の表示情報を取得する(Require, 年月日): output 組織の表示情報
             DisplayInfoOrganization orgInfo = supportableEmployee.getRecipient().getDisplayInfor(requireOrgInfo, period.end());
 
 
             val employeeInfoOpt = supportEmployeeInfos.stream().filter(x -> x.getEmployeeId().equals(supportableEmployee.getEmployeeId().v())).findFirst();
             supportInfoResults.add(new SupportInfoDto(
+                    i,
                     supportableEmployee.getId(),
-                    supportableEmployee.getPeriod(),
+                    supportableEmployee.getPeriod().start().toString("yyyy/MM/dd"),
+                    supportableEmployee.getPeriod().end().toString("yyyy/MM/dd"),
                     employeeInfoOpt.isPresent() ? employeeInfoOpt.get().getEmployeeCode() : Strings.EMPTY,
                     employeeInfoOpt.isPresent() ? employeeInfoOpt.get().getBusinessName() : Strings.EMPTY,
                     orgInfo.getDisplayName(),
@@ -205,7 +208,8 @@ public class SupportInformationFinder {
 
         RequireOrgImpl requireOrg = new RequireOrgImpl(empAffiliationInforAdapter);
         RequireOrgInfoImpl requireOrgInfo = new RequireOrgInfoImpl(groupAdapter, serviceAdapter, wplAdapter);
-        for (SupportableEmployee supportableEmployee : supportableEmployees) {
+        for (int i = 1; i <= supportableEmployees.size(); i++) {
+            SupportableEmployee supportableEmployee = supportableEmployees.get(i);
             // 5.1. 取得する(Require, 年月日, 社員ID)
             TargetOrgIdenInfor orgInfor = GetTargetIdentifiInforService.get(
                     requireOrg,
@@ -217,8 +221,10 @@ public class SupportInformationFinder {
 
             val employeeInfoOpt = supportEmployeeInfos.stream().filter(x -> x.getEmployeeId().equals(supportableEmployee.getEmployeeId().v())).findFirst();
             supportInfoResults.add(new SupportInfoDto(
+                    i,
                     supportableEmployee.getId(),
-                    supportableEmployee.getPeriod(),
+                    supportableEmployee.getPeriod().start().toString("yyyy/MM/dd"),
+                    supportableEmployee.getPeriod().end().toString("yyyy/MM/dd"),
                     employeeInfoOpt.isPresent() ? employeeInfoOpt.get().getEmployeeCode() : Strings.EMPTY,
                     employeeInfoOpt.isPresent() ? employeeInfoOpt.get().getBusinessName() : Strings.EMPTY,
                     orgInfo.getDisplayName(),

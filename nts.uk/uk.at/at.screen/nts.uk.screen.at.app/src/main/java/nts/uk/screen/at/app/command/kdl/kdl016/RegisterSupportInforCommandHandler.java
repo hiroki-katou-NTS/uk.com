@@ -22,6 +22,10 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
@@ -33,11 +37,14 @@ import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.Suppor
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.EmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.importeddto.EmployeeCodeAndDisplayNameImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.importeddto.EmployeeInfoImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -118,6 +125,15 @@ public class RegisterSupportInforCommandHandler extends CommandHandlerWithResult
     @Inject
     private BusinessTypeEmpService businessTypeEmpService;
 
+    @Inject
+    private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+
+    @Inject
+    private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+
+    @Inject
+    private NurseClassificationRepository nurseClassificationRepo;
+
     @Override
     protected RegisterSupportInforResult handle(CommandHandlerContext<RegisterSupportInforCommand> commandHandlerContext) {
         RegisterSupportInforCommand command = commandHandlerContext.getCommand();
@@ -169,7 +185,8 @@ public class RegisterSupportInforCommandHandler extends CommandHandlerWithResult
             RequireImpl require = new RequireImpl(companyId, supportableEmployeeRepo, workScheduleRepo, supportOperationSettingRepo,
                     workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository,
                     flexWorkSettingRepository, predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
-                    sharedAffWorkPlaceHisAdapter, syClassificationAdapter, workingConditionRepo, businessTypeEmpService);
+                    sharedAffWorkPlaceHisAdapter, syClassificationAdapter, workingConditionRepo, businessTypeEmpService,
+                    empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
             RegisterResultFromSupportableEmployee workScheduleCheckResult = UpdateSupportScheduleFromSupportableEmployee.add(require, supportableEmp);
 
             if (workScheduleCheckResult.isError()) {
@@ -195,12 +212,12 @@ public class RegisterSupportInforCommandHandler extends CommandHandlerWithResult
         }
 
         // 3.
-        Map<String, EmployeeInfoImport> empErrorInfoMap = employeeAdapter.getByListSid(new ArrayList<>(cannotRegisterMap.keySet()))
-                .stream().collect(Collectors.toMap(EmployeeInfoImport::getSid, e -> e));
+        Map<String, EmployeeCodeAndDisplayNameImport> empErrorInfoMap = employeeAdapter.getEmployeeCodeAndDisplayNameImportByEmployeeIds(new ArrayList<>(cannotRegisterMap.keySet()))
+                .stream().collect(Collectors.toMap(EmployeeCodeAndDisplayNameImport::getEmployeeId, e -> e));
 
         List<EmployeeErrorResult> employeeErrorResults = cannotRegisterMap.entrySet().stream().map(m -> new EmployeeErrorResult(
-                empErrorInfoMap.get(m.getKey()).getScd(),
-                empErrorInfoMap.get(m.getKey()).getBussinessName(),
+                empErrorInfoMap.get(m.getKey()).getEmployeeCode(),
+                empErrorInfoMap.get(m.getKey()).getBusinessName(),
                 m.getValue().getSupportableEmployee().getPeriod().start().toString("yyyyMMdd"),
                 m.getValue().getSupportableEmployee().getPeriod().end().toString("yyyyMMdd"),
                 m.getValue().getErrorInfo()
@@ -278,6 +295,12 @@ public class RegisterSupportInforCommandHandler extends CommandHandlerWithResult
         private WorkingConditionRepository workingConditionRepo;
 
         private BusinessTypeEmpService businessTypeEmpService;
+
+        private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+
+        private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+
+        private NurseClassificationRepository nurseClassificationRepo;
 
         @Override
         public Optional<SupportableEmployee> getSupportableEmployee(String id) {
@@ -366,6 +389,14 @@ public class RegisterSupportInforCommandHandler extends CommandHandlerWithResult
         }
 
         @Override
+        public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
+            List<EmpOrganizationImport> results = empAffiliationInforAdapter.getEmpOrganization(standardDate, Arrays.asList(employeeId));
+            if(results.isEmpty())
+                return null;
+            return results.get(0);
+        }
+
+        @Override
         public String getLoginEmployeeId() {
             return AppContexts.user().employeeId();
         }
@@ -388,6 +419,16 @@ public class RegisterSupportInforCommandHandler extends CommandHandlerWithResult
         @Override
         public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
             return flexWorkSettingRepository.find(companyId, code.v()).orElse(null);
+        }
+
+        @Override
+        public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp, GeneralDate referenceDate) {
+            return empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
+        }
+
+        @Override
+        public List<NurseClassification> getListCompanyNurseCategory() {
+            return nurseClassificationRepo.getListCompanyNurseCategory(AppContexts.user().companyId());
         }
     }
 }
