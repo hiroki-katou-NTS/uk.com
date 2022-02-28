@@ -48,10 +48,11 @@ public class GetWorkPlaceRegionalTime {
 
 		// 3.
 		Optional<WorkLocation> workLocation = Optional.empty();
-		if (optWkpInfp.isPresent()) {
-			workLocation = workLocations.stream().filter(f -> f.getWorkplace()
-					.map(m -> m.getWorkpalceId()).orElse("").equals(optWkpInfp.get().getWorkplaceId())).findFirst();
-		}
+		
+		String wkpId = optWkpInfp.map(x -> x.getWorkplaceId()).orElse(param.getWorkPlaceId());
+
+		workLocation = workLocations.stream().filter(f -> f.getWorkplace().map(m -> m.getWorkpalceId()).orElse("").equals(wkpId)).findFirst();
+		
 		
 		WorkLocationRequireImpl require = new WorkLocationRequireImpl(regionalTimeDifferenceRepository);
 		
