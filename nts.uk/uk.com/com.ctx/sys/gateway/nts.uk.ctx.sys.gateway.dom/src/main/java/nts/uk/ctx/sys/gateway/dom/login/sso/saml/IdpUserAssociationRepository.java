@@ -9,9 +9,7 @@ public interface IdpUserAssociationRepository {
 
 	void insert(IdpUserAssociation association);
 	
-	void delete(IdpUserAssociation association);
+	void delete(String tenantCode, String idpUserName);
 	
-	Optional<IdpUserAssociation> findByEmployee(String employeeId);
-	
-	Optional<IdpUserAssociation> findByIdpUser(String idpUserId);
+	Optional<IdpUserAssociation> findByIdpUser(String tenantCode, String idpUserName);
 }

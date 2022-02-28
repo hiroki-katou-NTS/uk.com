@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.gateway.app.command.login.saml.validate;
 
 import com.onelogin.saml2.util.Constants;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.gul.security.saml.SamlResponseValidator;
@@ -103,7 +104,7 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 	
 	@Override
 	protected Require getRequire(SamlValidateCommand command) {
-		return EmbedStopwatch.embed(new RequireImpl());
+		return EmbedStopwatch.embed(new RequireImpl(command.getTenantCode()));
 	}
 
 	public interface Require extends LoginCommandHandlerBase.Require, IdentifySamlUser.Require {
@@ -121,12 +122,15 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 
 	@Inject
 	private SamlSettingRepository samlSettingRepo;
-	
+
+	@RequiredArgsConstructor
 	public class RequireImpl extends LoginRequire.BaseImpl implements Require {
+
+		private final String tenantCode;
 
 		@Override
 		public Optional<IdpUserAssociation> getIdpUserAssociation(String idpUserId) {
-			return idpUserAssociationRepo.findByIdpUser(idpUserId);
+			return idpUserAssociationRepo.findByIdpUser(tenantCode, idpUserId);
 		}
 
 		@Override
