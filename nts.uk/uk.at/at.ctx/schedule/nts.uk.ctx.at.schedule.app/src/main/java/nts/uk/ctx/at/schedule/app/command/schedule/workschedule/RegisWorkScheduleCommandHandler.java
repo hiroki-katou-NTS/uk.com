@@ -50,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRe
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
@@ -119,6 +120,9 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 	@Inject
 	private EmpEmployeeAdapter empAdapter;
 	
+	@Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
+	
 	private final String STATUS_REGISTER = "STATUS_REGISTER";
 	private final String STATUS_ERROR = "STATUS_ERROR";
 	
@@ -136,7 +140,8 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 		RequireImpl requireImpl = new RequireImpl(basicScheduleService, workTypeRepo, workTimeSettingRepository,
 				fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet, workScheduleRepo, correctWorkSchedule,
 				interimRemainDataMngRegisterDateChange, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
-				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter);
+				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter,
+				supportOperationSettingRepo);
 		List<ResultOfRegisteringWorkSchedule> lstRsOfRegisWorkSchedule = new ArrayList<ResultOfRegisteringWorkSchedule>();
 		
 		// step 1
@@ -249,6 +254,9 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 		private BusinessTypeEmpService businessTypeEmpService;
 		@Inject
 		private SyClassificationAdapter syClassificationAdapter;
+		
+		@Inject
+		private SupportOperationSettingRepository supportOperationSettingRepo;
 		
 		// implements WorkInformation.Require
 		@Override
@@ -390,8 +398,7 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 
 		@Override
 		public SupportOperationSetting getSupportOperationSetting() {
-			// TODO developers are going to update
-			return null;
+			return supportOperationSettingRepo.get(companyId);
 		}
 	}
 }

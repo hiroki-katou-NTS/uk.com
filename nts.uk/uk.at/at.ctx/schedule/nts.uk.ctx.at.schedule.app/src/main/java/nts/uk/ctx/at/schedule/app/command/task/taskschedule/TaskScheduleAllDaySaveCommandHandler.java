@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
@@ -97,7 +98,10 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 	private WorkingConditionRepository workingConditionRepo;
 
 	@Inject
-	private BusinessTypeEmpService businessTypeEmpService;	
+	private BusinessTypeEmpService businessTypeEmpService;
+	
+    @Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<TaskScheduleCommand> context) {
@@ -108,7 +112,9 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 		RequireImpl require = new RequireImpl(companyId, workTypeRepo, workTimeSettingRepository,
 				basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository,
 				predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
-				sharedAffWorkPlaceHisAdapter, syClassificationAdapter, workingConditionRepo, businessTypeEmpService);
+				sharedAffWorkPlaceHisAdapter, syClassificationAdapter, workingConditionRepo, businessTypeEmpService,
+				supportOperationSettingRepo);
+		
 		/**loop:社員ID in 社員IDリスト */
 		command.getEmployeeIds().stream().forEach(empId -> {
 			/** 1.1: get(社員ID、年月日):Optional<勤務予定>*/
@@ -156,6 +162,9 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 		private WorkingConditionRepository workingConditionRepo;
 	
 		private BusinessTypeEmpService businessTypeEmpService;
+		
+	    @Inject
+		private SupportOperationSettingRepository supportOperationSettingRepo;
 		
 		@Override		
 		public Optional<WorkType> getWorkType(String workTypeCd) {
@@ -247,8 +256,7 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 
 		@Override
 		public SupportOperationSetting getSupportOperationSetting() {
-			// TODO developers are going to update
-			return null;
+			return supportOperationSettingRepo.get(AppContexts.user().companyId());
 		}		
 	}
 }

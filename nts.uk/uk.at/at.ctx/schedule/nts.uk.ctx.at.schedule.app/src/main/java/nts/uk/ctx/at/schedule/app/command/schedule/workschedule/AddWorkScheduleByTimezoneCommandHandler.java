@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
@@ -93,6 +94,8 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 	private BusinessTypeEmpService businessTypeEmpService;
 	@Inject
 	private SyClassificationAdapter syClassificationAdapter;
+	@Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<AddWorkScheduleByTimezoneCommand> context) {
@@ -107,7 +110,8 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 		Require require = new Require(basicScheduleService, workTypeRepo, workTimeSettingRepository, fixedWorkSet,
 				flowWorkSet, flexWorkSet, predetemineTimeSet, workScheduleRepo, correctWorkSchedule,
 				interimRemainDataMngRegisterDateChange, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
-				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter);
+				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter,
+				supportOperationSettingRepo);
 		// 2:not 勤務予定．isEmpty : 時間帯に作業予定を追加する(@Require, 計算用時間帯, 作業コード)
 		if (!lstWorkSchedule.isEmpty()) {
 			for (WorkSchedule item : lstWorkSchedule) {
@@ -156,6 +160,8 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 		private BusinessTypeEmpService businessTypeEmpService;
 		@Inject
 		private SyClassificationAdapter syClassificationAdapter;
+		@Inject
+		private SupportOperationSettingRepository supportOperationSettingRepo;
 
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
@@ -277,8 +283,7 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 
 		@Override
 		public SupportOperationSetting getSupportOperationSetting() {
-			// TODO developers are going to update
-			return null;
+			return supportOperationSettingRepo.get(AppContexts.user().companyId());
 		}
 
 	}

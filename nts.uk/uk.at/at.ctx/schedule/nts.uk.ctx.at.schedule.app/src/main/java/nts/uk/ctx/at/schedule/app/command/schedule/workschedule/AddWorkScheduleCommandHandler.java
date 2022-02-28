@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRe
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
@@ -95,6 +96,8 @@ public class AddWorkScheduleCommandHandler extends CommandHandler<AddWorkSchedul
 	private BusinessTypeEmpService businessTypeEmpService;
 	@Inject
 	private SyClassificationAdapter syClassificationAdapter;
+	@Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<AddWorkScheduleCommand> context) {
@@ -105,7 +108,8 @@ public class AddWorkScheduleCommandHandler extends CommandHandler<AddWorkSchedul
 		Require require = new Require(basicScheduleService, workTypeRepo, workTimeSettingRepository, fixedWorkSet,
 				flowWorkSet, flexWorkSet, predetemineTimeSet, workScheduleRepo, correctWorkSchedule,
 				interimRemainDataMngRegisterDateChange, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
-				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter);
+				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter,
+				supportOperationSettingRepo);
 		List<WorkSchedule> lstWorkSchedule = new ArrayList<WorkSchedule>();
 		for (String item : lstEmt) {
 			// 1.1:get(社員ID、年月日) : Optional<勤務予定>
@@ -176,7 +180,9 @@ public class AddWorkScheduleCommandHandler extends CommandHandler<AddWorkSchedul
 		private BusinessTypeEmpService businessTypeEmpService;
 		@Inject
 		private SyClassificationAdapter syClassificationAdapter;
-
+		@Inject
+		private SupportOperationSettingRepository supportOperationSettingRepo;
+		
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
 			String companyId = AppContexts.user().companyId();
@@ -297,8 +303,7 @@ public class AddWorkScheduleCommandHandler extends CommandHandler<AddWorkSchedul
 		
 		@Override
 		public SupportOperationSetting getSupportOperationSetting() {
-			// TODO developers are going to update
-			return null;
+			return supportOperationSettingRepo.get(AppContexts.user().companyId());
 		}
 
 	}
