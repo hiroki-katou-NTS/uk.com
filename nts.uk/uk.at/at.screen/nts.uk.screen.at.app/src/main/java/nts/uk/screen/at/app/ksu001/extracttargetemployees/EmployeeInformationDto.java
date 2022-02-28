@@ -12,5 +12,5 @@ public class EmployeeInformationDto {
 	public String employeeId; // 社員ID
 	public String employeeCode; // 社員コード
 	public String businessName; // ビジネスネーム
-	public int supportType; // 応援タイプ
+	public int supportType; // 応援タイプ (update ver6)
 }

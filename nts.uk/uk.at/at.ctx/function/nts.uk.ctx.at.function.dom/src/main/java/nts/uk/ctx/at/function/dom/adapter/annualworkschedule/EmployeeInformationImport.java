@@ -36,9 +36,9 @@ public class EmployeeInformationImport {
 	Integer employmentCls; // 就業区分
 	
 	/**
+	- 0: Do not go to support
 	- 1: Go to support
-	- 2: Come to support
-	- 0: Do not go to support */
+	- 2: Come to support */
 	int supportType; // 応援タイプ
 
 	public EmployeeInformationImport(String employeeId, String employeeCode, String businessName,

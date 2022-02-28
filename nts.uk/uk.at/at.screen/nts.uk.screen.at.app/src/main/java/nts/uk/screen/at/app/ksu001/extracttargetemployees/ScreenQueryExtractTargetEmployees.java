@@ -137,7 +137,7 @@ public class ScreenQueryExtractTargetEmployees {
 		
 		
 		// sort
-		// sort list nhân viên đến support (luôn ở step này để dưới UI không phải sort nữa)
+		// sort list nhân viên đến support (sort luôn ở step này để dưới UI không phải sort nữa)
 		listEmpComeToSupport.sort( Comparator.comparing(EmployeeInformationImport :: getEmployeeCode)); 
 		listEmployeeInformationByOrg.sort( Comparator.comparing(EmployeeInformationImport :: getEmployeeCode));
 
