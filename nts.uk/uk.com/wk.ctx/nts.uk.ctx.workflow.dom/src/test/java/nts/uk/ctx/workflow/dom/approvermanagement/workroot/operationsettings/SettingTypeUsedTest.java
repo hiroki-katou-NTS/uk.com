@@ -116,8 +116,7 @@ public class SettingTypeUsedTest {
 	 */
 	@Test
 	public void testDetermineAppTypeIsUsed3() {
-		ApplicationType applicationType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
-		SettingTypeUsed domain = SettingTypeUsedTestHelper.createWithAnyAndUse(applicationType);
+		SettingTypeUsed domain = SettingTypeUsedTestHelper.createWithAnyAndUse();
 		
 		val actual = domain.determineAppTypeIsUsed();
 		assertThat(actual).isEmpty();
@@ -168,8 +167,7 @@ public class SettingTypeUsedTest {
 	 */
 	@Test
 	public void testdDetermineConfirmRootTypeIsUsed3() {
-		ConfirmationRootType confirmRootType = ConfirmationRootType.MONTHLY_CONFIRMATION;
-		SettingTypeUsed domain = SettingTypeUsedTestHelper.createWithAnyAndNotUse(confirmRootType);
+		SettingTypeUsed domain = SettingTypeUsedTestHelper.createWithAnyAndNotUse();
 		
 		val actual = domain.determineConfirmRootTypeIsUsed();
 		assertThat(actual).isEmpty();
@@ -181,8 +179,7 @@ public class SettingTypeUsedTest {
 	 */
 	@Test
 	public void testdDetermineConfirmRootTypeIsUsed4() {
-		ConfirmationRootType confirmRootType = ConfirmationRootType.MONTHLY_CONFIRMATION;
-		SettingTypeUsed domain = SettingTypeUsedTestHelper.createWithAnyAndUse(confirmRootType);
+		SettingTypeUsed domain = SettingTypeUsedTestHelper.createWithAnyAndUse();
 		
 		val actual = domain.determineConfirmRootTypeIsUsed();
 		assertThat(actual).isEmpty();

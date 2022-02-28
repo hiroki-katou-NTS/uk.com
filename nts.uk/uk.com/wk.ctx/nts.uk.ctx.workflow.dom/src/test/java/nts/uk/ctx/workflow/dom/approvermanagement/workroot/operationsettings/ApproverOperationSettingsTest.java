@@ -391,7 +391,7 @@ public class ApproverOperationSettingsTest {
 	public void testGetApplicationToUse2() {
 		List<SettingTypeUsed> settingTypeUseds = new ArrayList<SettingTypeUsed>();
 		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithApplicationAndUse(ApplicationType.ANNUAL_HOLIDAY_APPLICATION));
-		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithAnyAndUse(ApplicationType.ABSENCE_APPLICATION));
+		settingTypeUseds.add(SettingTypeUsedTestHelper.createWithAnyUseAndEmptyAppType());
 	
 		ApproverOperationSettings domain = new ApproverOperationSettings(
 				OperationMode.SUPERIORS_EMPLOYEE,

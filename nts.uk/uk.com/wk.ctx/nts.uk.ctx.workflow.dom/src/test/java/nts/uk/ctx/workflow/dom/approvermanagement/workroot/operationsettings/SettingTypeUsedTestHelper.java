@@ -44,7 +44,7 @@ public class SettingTypeUsedTestHelper {
 	 * 利用する == しない
 	 */
 	public static SettingTypeUsed createWithAnyAndNotUse(ApplicationType applicationType) {
-		EmploymentRootAtr employmentRootAtr = EmploymentRootAtr.ANYITEM;
+		EmploymentRootAtr employmentRootAtr = EmploymentRootAtr.COMMON;
 		Optional<ConfirmationRootType> confirmRootType = Optional.empty();
 		NotUseAtr notUseAtr = NotUseAtr.NOT_USE;
 		return new SettingTypeUsed(employmentRootAtr, Optional.ofNullable(applicationType), confirmRootType, notUseAtr);
@@ -54,11 +54,11 @@ public class SettingTypeUsedTestHelper {
 	 * 承認ルート区分!＝「申請」 
 	 * 利用する == ない
 	 */
-	public static SettingTypeUsed createWithAnyAndUse(ApplicationType applicationType) {
-		EmploymentRootAtr employmentRootAtr = EmploymentRootAtr.ANYITEM;
+	public static SettingTypeUsed createWithAnyUseAndEmptyAppType() {
+		EmploymentRootAtr employmentRootAtr = EmploymentRootAtr.COMMON;
 		Optional<ConfirmationRootType> confirmRootType = Optional.empty();
 		NotUseAtr notUseAtr = NotUseAtr.USE;
-		return new SettingTypeUsed(employmentRootAtr, Optional.ofNullable(applicationType), confirmRootType, notUseAtr);
+		return new SettingTypeUsed(employmentRootAtr, Optional.empty(), confirmRootType, notUseAtr);
 	}
 	
 	/**
@@ -87,9 +87,9 @@ public class SettingTypeUsedTestHelper {
 	 * 承認ルート区分!＝「確認」 
 	 * 利用する == しない
 	 */
-	public static SettingTypeUsed createWithAnyAndNotUse(ConfirmationRootType confirmType) {
-		EmploymentRootAtr employmentRootAtr = EmploymentRootAtr.ANYITEM;
-		Optional<ConfirmationRootType> confirmRootType = Optional.ofNullable(confirmType);
+	public static SettingTypeUsed createWithAnyAndNotUse() {
+		EmploymentRootAtr employmentRootAtr = EmploymentRootAtr.COMMON;
+		Optional<ConfirmationRootType> confirmRootType = Optional.empty();
 		NotUseAtr notUseAtr = NotUseAtr.NOT_USE;
 		return new SettingTypeUsed(employmentRootAtr, Optional.empty(), confirmRootType, notUseAtr);
 	}
@@ -98,9 +98,9 @@ public class SettingTypeUsedTestHelper {
 	 * 承認ルート区分!＝「確認」 
 	 * 利用する == ない
 	 */
-	public static SettingTypeUsed createWithAnyAndUse(ConfirmationRootType confirmType) {
-		EmploymentRootAtr employmentRootAtr = EmploymentRootAtr.ANYITEM;
-		Optional<ConfirmationRootType> confirmRootType = Optional.ofNullable(confirmType);
+	public static SettingTypeUsed createWithAnyAndUse() {
+		EmploymentRootAtr employmentRootAtr = EmploymentRootAtr.COMMON;
+		Optional<ConfirmationRootType> confirmRootType = Optional.empty();
 		NotUseAtr notUseAtr = NotUseAtr.USE;
 		return new SettingTypeUsed(employmentRootAtr, Optional.empty(), confirmRootType, notUseAtr);
 	}
