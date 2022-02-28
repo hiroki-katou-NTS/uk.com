@@ -221,16 +221,13 @@ module nts.uk.at.view.kdp010.i {
 						}),
 						backGroundColor: self.backgroundColors()
 					}),
-					buttonType: ({
-						reservationArt: self.lstData.reservationArt,
-						stampType: self.selectedDay() == 20 || self.selectedDay() == 19 ? ({}) : ({
+					stampType: self.selectedDay() == 20 || self.selectedDay() == 19 ? ({}) : ({
 							changeHalfDay: self.lstData.changeHalfDay,
 							goOutArt: self.selectedDay() == 8 ? self.selectedStamping() : null,
 							setPreClockArt: self.lstData.setPreClockArt,
 							changeClockArt: self.lstData.changeClockArt,
 							changeCalArt: self.lstData.changeCalArt
-						})
-					}),
+						}),
 					usrArt: self.selectedHighlight(),
 					audioType: self.selectedAudio(),
 					taskChoiceArt: taskChoiceArt,
