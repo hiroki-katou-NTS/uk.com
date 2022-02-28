@@ -242,6 +242,7 @@ module nts.uk.at.view.kdw008.a {
 
                 self.selectedCode.subscribe(newValue => {
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
+                    nts.uk.ui.errors.clearAll();
                     block.invisible();
                     self.isUpdate(true);
                     self.showCode(false); 
