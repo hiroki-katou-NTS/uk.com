@@ -93,25 +93,42 @@ public class DailyPerformanceMobileWebService {
 	@POST
 	@Path("initMOB")
 	public DailyPerformanceCorrectionDto initScreen(DPCorrectionInitParam param) throws InterruptedException{
-		param.dpStateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
+//		param.dpStateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
+		param.dpStateParam = param.dpStateParamSession;
 		DailyPerformanceCorrectionDto dtoResult = this.initScreenMob.initMOB(param);
-		session.setAttribute("dpStateParam", dtoResult.getStateParam());
+//		session.setAttribute("dpStateParam", dtoResult.getStateParam());
 		if (dtoResult.getErrorInfomation() != 0 || !dtoResult.getErrors().isEmpty()) {
 			return dtoResult;
 		}
-		session.setAttribute("domainOlds", dtoResult.getDomainOld());		
+		
+		//
+		DataSessionDto dataSessionDto = new DataSessionDto();
+		dataSessionDto.setDpStateParam(dtoResult.getStateParam());
+		dataSessionDto.setDomainOlds(dtoResult.getDomainOld());
+		dataSessionDto.setDomainOldForLog(cloneListDto(dtoResult.getDomainOld()));
+		dataSessionDto.setDomainEdits(null);
+		dataSessionDto.setItemIdRCs(dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
+		dataSessionDto.setDataSource(dtoResult.getLstData());
+		dataSessionDto.setClosureId(dtoResult.getClosureId());
+		dataSessionDto.setResultReturn(null);
+		dataSessionDto.setApprovalConfirmCache(dtoResult.getApprovalConfirmCache());
+		dataSessionDto.setLstSidDateErrorCalc(Collections.emptyList());
+		dataSessionDto.setErrorAllCalc(false);
+		dtoResult.setDataSessionDto(dataSessionDto);
+		
+//		session.setAttribute("domainOlds", dtoResult.getDomainOld());		
 		//add
-		session.setAttribute("domainOldForLog", cloneListDto(dtoResult.getDomainOld()));
-		session.setAttribute("domainEdits", null);
-		session.setAttribute("itemIdRCs", dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
-		session.setAttribute("dataSource", dtoResult.getLstData());
-		session.setAttribute("closureId", dtoResult.getClosureId());
-		session.setAttribute("resultReturn", null);
-		session.setAttribute("approvalConfirm", dtoResult.getApprovalConfirmCache());
+//		session.setAttribute("domainOldForLog", cloneListDto(dtoResult.getDomainOld()));
+//		session.setAttribute("domainEdits", null);
+//		session.setAttribute("itemIdRCs", dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
+//		session.setAttribute("dataSource", dtoResult.getLstData());
+//		session.setAttribute("closureId", dtoResult.getClosureId());
+//		session.setAttribute("resultReturn", null);
+//		session.setAttribute("approvalConfirm", dtoResult.getApprovalConfirmCache());
 		dtoResult.setApprovalConfirmCache(null);
 		dtoResult.setLstCellState(dtoResult.getMapCellState().values().stream().collect(Collectors.toList()));
 		dtoResult.setMapCellState(null);
-		removeSession();
+//		removeSession();
 		dtoResult.setDomainOld(Collections.emptyList());
 		return dtoResult;
 	}
@@ -119,9 +136,9 @@ public class DailyPerformanceMobileWebService {
 	@POST
 	@Path("confirmAll")
 	@SuppressWarnings("unchecked")
-	public void confirmAll(List<DPItemCheckBox> dataCheckSign) throws InterruptedException{
-		List<DailyRecordDto> dailyRecordDtos = (List<DailyRecordDto>) session.getAttribute("domainOlds");
-		updateConfirmAllMob.confirmAll(dataCheckSign, dailyRecordDtos);
+	public void confirmAll(ConfirmAllInput dataCheckSign) throws InterruptedException{
+//		List<DailyRecordDto> dailyRecordDtos = (List<DailyRecordDto>) session.getAttribute("domainOlds");
+		updateConfirmAllMob.confirmAll(dataCheckSign.getListDPItemCheckBox(), dataCheckSign.getDailyRecordDtos());
 		return;
 	}
 	
@@ -131,10 +148,10 @@ public class DailyPerformanceMobileWebService {
 		return dtos.stream().map(x -> x.clone()).collect(Collectors.toList());
 	}
 	
-	private void removeSession() {
-		session.setAttribute("lstSidDateErrorCalc", Collections.emptyList());
-		session.setAttribute("errorAllCalc", false);
-	}
+//	private void removeSession() {
+//		session.setAttribute("lstSidDateErrorCalc", Collections.emptyList());
+//		session.setAttribute("errorAllCalc", false);
+//	}
 	
 	@POST
 	@Path("getFormatList")

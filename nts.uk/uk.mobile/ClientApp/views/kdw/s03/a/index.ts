@@ -102,6 +102,10 @@ export class Kdws03AComponent extends Vue {
     // param B screen
     public paramData: any = null;
 
+    // data session
+    public dpStateParamSession: any = null;
+    public dataSessionDto: any = null;
+
     @Watch('$route')
     public changeParamUrl(value: any, valueOld: any) {
         window.location.reload();
@@ -246,7 +250,7 @@ export class Kdws03AComponent extends Vue {
             initDisplayDate: null,
             employeeID: self.selectedEmployee == '' ? self.params.targetEmployee : self.selectedEmployee,
             objectDateRange: self.displayFormat == '0' ?
-                (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
+                (!_.isNil(self.dateRanger) ? { startDate: self.dateRanger.startDate, endDate: self.dateRanger.endDate } : null) :
                 (!_.isNil(self.selectedDate) ? { startDate: self.selectedDate, endDate: self.selectedDate } : null),
             lstEmployee: [],
             initClock: self.params.initClock,
@@ -254,11 +258,14 @@ export class Kdws03AComponent extends Vue {
             displayDateRange: null,
             transitionDesScreen: self.params.transitionDesScreen,
             closureId: self.params.closureID,
-            formatCodes: selectedCode
+            formatCodes: selectedCode,
+            dpStateParamSession: self.dpStateParamSession
         };
 
         self.$http.post('at', servicePath.initMOB, param).then(async (result: { data: any }) => {
             let dataInit = result.data;
+            self.dataSessionDto = dataInit.dataSessionDto;
+            self.dpStateParamSession = dataInit.dataSessionDto.dpStateParam;
             if (dataInit.lstEmployee == undefined || dataInit.lstEmployee.length == 0 || dataInit.errorInfomation != 0) {
                 let messageId = 'Msg_1342';
                 if (dataInit.errorInfomation == DCErrorInfomation.APPROVAL_NOT_EMP) {
@@ -312,6 +319,7 @@ export class Kdws03AComponent extends Vue {
                 let dateR: any = self.displayFormat == '0' ?
                     (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
                     { startDate: self.selectedDate, endDate: self.selectedDate };
+                self.paramData.dataSessionDto = null;
                 storage.session.setItem('dailyCorrectionState', {
                     screenMode: self.params.screenMode,
                     displayFormat: self.displayFormat,
@@ -356,7 +364,9 @@ export class Kdws03AComponent extends Vue {
                                 if (v.reload) {
                                     this.startPage();
                                 } else {
-                                    self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => { });
+                                    // self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => { 
+                                        self.dataSessionDto.domainEdits = null;
+                                    // });
                                 }
                             });
                         }
@@ -666,7 +676,9 @@ export class Kdws03AComponent extends Vue {
             if (v.reload) {
                 this.startPage();
             } else {
-                self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => { });
+                // self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => { 
+                    self.dataSessionDto.domainEdits = null;
+                // });
             }
         });
     }
@@ -848,7 +860,15 @@ export class Kdws03AComponent extends Vue {
     //期間取得
     public initActualTime(value: any, selectedEmployee: string) {
         let self = this;
-        self.$http.post('at', servicePath.genDate, { yearMonth: value, empTarget: selectedEmployee }).then((result: { data: any }) => {
+
+        let param = {
+            genDateDto: {
+                yearMonth: value,
+                empTarget: selectedEmployee
+             },
+            dataSessionDto: self.dataSessionDto
+       };
+        self.$http.post('at', servicePath.genDate, param ).then((result: { data: any }) => {
             let data = result.data;
             if (_.isNil(data.lstRange)) {
                 this.yearMonth = this.yearMonthTemp;
@@ -878,7 +898,7 @@ export class Kdws03AComponent extends Vue {
 const servicePath = {
     initMOB: 'screen/at/correctionofdailyperformance/initMOB',
     genDate: 'screen/at/correctionofdailyperformance/gendate',
-    resetCacheDomain: 'screen/at/correctionofdailyperformance/resetCacheDomain',
+    // resetCacheDomain: 'screen/at/correctionofdailyperformance/resetCacheDomain',
 };
 
 //エラータイプ

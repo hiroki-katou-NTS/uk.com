@@ -20,26 +20,27 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.task.AsyncTaskInfo;
-import nts.uk.screen.at.app.dailymodify.command.*;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.app.file.export.ExportServiceResult;
+import nts.arc.task.AsyncTaskInfo;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.web.session.HttpSubSession;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceAuthoritySetting;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.MonthlyPerfomanceAuthorityFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
-import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.bs.employee.dom.employee.service.SearchEmployeeService;
 import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeSearchData;
 import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeSearchDto;
-
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
+import nts.uk.screen.at.app.dailymodify.command.AsyncExecuteMonthlyAggregateCommandHandler;
+import nts.uk.screen.at.app.dailymodify.command.DailyCalculationRCommandFacade;
+import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
+import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DisplayRemainingHolidayNumber;
@@ -50,21 +51,15 @@ import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCal
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParentDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPParams;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCalcDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCalculationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIUDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataSessionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfoDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDateDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErAlWorkRecordShortDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
@@ -73,15 +68,12 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.GetWkpIDParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.HolidayRemainNumberDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.InitParamOutput;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTime;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeParamDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.mobile.ErrorParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.mobile.MasterDialogParam;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
-import nts.uk.screen.at.app.dailyperformance.correction.gendate.GenDateDto;
 import nts.uk.screen.at.app.dailyperformance.correction.gendate.GenDateProcessDto;
 import nts.uk.screen.at.app.dailyperformance.correction.gendate.GenDateProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferDto;
@@ -89,14 +81,10 @@ import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErro
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferExportService;
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferFinder;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProcessor;
-import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPPramLoadRow;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPPramLoadRowDto;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.onlycheckbox.DPLoadVerProcessor;
-import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.onlycheckbox.LoadVerData;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.onlycheckbox.LoadVerDataDto;
-import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.onlycheckbox.LoadVerDataResult;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.onlycheckbox.LoadVerDataResultDto;
-import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockParam;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockParamDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.mobile.DPCorrectionProcessorMob;
@@ -167,9 +155,6 @@ public class DailyPerformanceCorrectionWebService {
 	private MonthlyPerfomanceAuthorityFinder monthlyPerfomanceAuthorityFinder;
 	
 	@Inject
-	private HttpSubSession session;
-	
-	@Inject
 	private DPLoadVerProcessor dPLoadVerProcessor;
 	
 	@Inject
@@ -187,9 +172,6 @@ public class DailyPerformanceCorrectionWebService {
 	@Inject
 	private DPCorrectionProcessorMob dpCorrectionProcessorMob;
 	
-	@Inject
-	private WorkplacePub workplacePub;
-
 	@Inject
 	private SearchEmployeeService searchEmployeeService;
 
@@ -601,10 +583,10 @@ public class DailyPerformanceCorrectionWebService {
 		return dtos.stream().map(x -> x.clone()).collect(Collectors.toList());
 	}
 	
-	private void removeSession() {
-		session.setAttribute("lstSidDateErrorCalc", Collections.emptyList());
-		session.setAttribute("errorAllCalc", false);
-	}
+//	private void removeSession() {
+//		session.setAttribute("lstSidDateErrorCalc", Collections.emptyList());
+//		session.setAttribute("errorAllCalc", false);
+//	}
 	
 	@POST
 	@Path("getErrorMobile")
