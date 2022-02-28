@@ -14,19 +14,28 @@ import java.util.Optional;
  */
 public class IdentifySamlUser {
 
-    public static Either<ErrorMessageId, IdentifiedEmployeeInfo> identify(Require require, String idpUserId) {
+    public static Either<ErrorType, IdentifiedEmployeeInfo> identify(Require require, String idpUserId) {
 
         val idpUser = require.getIdpUserAssociation(idpUserId);
         if (!idpUser.isPresent()) {
-            return Either.left(new ErrorMessageId("Msg_1989"));
+            return Either.left(ErrorType.NO_IDP_USER_ASSOCIATION);
         }
 
         val result = EmployeeIdentify.identifyByEmployeeId(require, idpUser.get().getEmployeeId());
         if (result.isFailure()) {
-            return Either.left(new ErrorMessageId("Msg_1990"));
+            return Either.left(ErrorType.NO_EMPLOYEE);
         }
 
         return Either.right(result.getEmployeeInfo());
+    }
+
+    public enum ErrorType {
+
+        /** IdPユーザとの紐付けが無い */
+        NO_IDP_USER_ASSOCIATION,
+
+        /** 紐付けはあるが社員が存在しない */
+        NO_EMPLOYEE,
     }
 
     public interface Require extends EmployeeIdentify.RequireByEmployeeId {

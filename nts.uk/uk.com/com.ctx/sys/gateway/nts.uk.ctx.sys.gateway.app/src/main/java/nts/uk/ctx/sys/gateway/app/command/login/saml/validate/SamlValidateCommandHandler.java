@@ -1,13 +1,13 @@
 package nts.uk.ctx.sys.gateway.app.command.login.saml.validate;
 
 import com.onelogin.saml2.util.Constants;
-import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.gul.security.saml.SamlResponseValidator;
 import nts.gul.security.saml.SamlResponseValidator.ValidateException;
 import nts.gul.security.saml.SamlSetting;
 import nts.gul.security.saml.ValidSamlResponse;
+import nts.gul.util.Either;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRequire;
 import nts.uk.ctx.sys.gateway.dom.login.sso.saml.IdpUserAssociation;
@@ -18,7 +18,6 @@ import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataManageInfoAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
-import nts.uk.shr.com.program.ProgramsManager;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -27,26 +26,47 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
+import static nts.uk.ctx.sys.gateway.app.command.login.saml.validate.SamlAuthenticationState.INVALID_SAML_RESPONSE;
+import static nts.uk.ctx.sys.gateway.app.command.login.saml.validate.SamlAuthenticationState.NO_SAML_SETTING;
+
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
-													SamlValidateCommand,
-													SamlAuthenticationResult,
-													ValidateInfo, 
-													SamlValidateCommandHandler.Require>{
+		SamlValidateCommand,
+		SamlAuthenticationResult,
+		SamlLoginResult,
+		SamlValidateCommandHandler.Require> {
 
 	
 	// テナント認証失敗時
 	@Override
-	protected ValidateInfo tenantAuthencationFailed() {
-		return ValidateInfo.failedToAuthTenant();
+	protected SamlLoginResult tenantAuthencationFailed() {
+		// SAMLログインの開始時にテナント認証できた認証情報を使っているのに、ここで失敗するはずがない
+		throw new RuntimeException("テナント認証に失敗");
 	}
 	
 	// 認証処理本体
 	@Override
-	@SneakyThrows
 	protected SamlAuthenticationResult authenticate(Require require, SamlValidateCommand command) {
-		HttpServletRequest request = command.getRequest();
+
+		// SAMLResponseの検証処理
+		ValidSamlResponse validated;
+		{
+			val validateEither = validate(require, command.getRequest());
+			if (validateEither.isLeft()) {
+				return validateEither.getLeft();
+			}
+			validated = validateEither.getRight();
+		}
+
+		val either = IdentifySamlUser.identify(require, validated.getIdpUser()).map(
+				error -> SamlAuthenticationResult.failed(SamlAuthenticationState.of(error), Optional.of(validated.getIdpUser())),
+				identified -> SamlAuthenticationResult.succeeded(identified));
+
+		return either.isRight() ? either.getRight() : either.getLeft();
+	}
+
+	private static Either<SamlAuthenticationResult, ValidSamlResponse> validate(Require require, HttpServletRequest request) {
 
 		UkRelayState relayState = UkRelayState.deserialize(request);
 
@@ -55,38 +75,30 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 		{
 			val opt = require.getSamlSetting(relayState.getTenantCode());
 			if (!opt.isPresent()) {
-				return SamlAuthenticationResult.noSamlSettingFailure();
+				return Either.left(SamlAuthenticationResult.failed(NO_SAML_SETTING, Optional.empty()));
 			}
 			samlSetting = opt.get();
 			samlSetting.setSignatureAlgorithm(Constants.RSA_SHA1);
 		}
 
 		// SAMLResponseの検証処理
-		ValidSamlResponse validateResult;
 		try {
-			validateResult = SamlResponseValidator.validate(request, samlSetting);
+			return Either.right(SamlResponseValidator.validate(request, samlSetting));
 		} catch (ValidateException e) {
-			return SamlAuthenticationResult.samlInvalidFailure();
+			return Either.left(SamlAuthenticationResult.failed(INVALID_SAML_RESPONSE, Optional.empty()));
 		}
-
-		String topPage = ProgramsManager.CCG008A.getRootRelativePath();
-		val either = IdentifySamlUser.identify(require, validateResult.getIdpUser()).map(
-				error -> SamlAuthenticationResult.identificationFailure(error.getId()),
-				identified -> SamlAuthenticationResult.success(identified, topPage));
-
-		return either.isRight() ? either.getRight() : either.getLeft();
 	}
 
 	// 社員認証失敗時の処理
 	@Override
-	protected ValidateInfo authenticationFailed(Require require, SamlAuthenticationResult state) {
-		return ValidateInfo.failedToValidSaml(state.getErrorMessage());
+	protected SamlLoginResult authenticationFailed(Require require, SamlAuthenticationResult state) {
+		return SamlLoginResult.failed(state);
 	}
 	
 	// ログイン成功時の処理
 	@Override
-	protected ValidateInfo loginCompleted(Require require, SamlAuthenticationResult state, Optional<String> msg) {
-		return ValidateInfo.successToValidSaml(state.getRequestUrl(), msg);
+	protected SamlLoginResult loginCompleted(Require require, SamlAuthenticationResult state, Optional<String> msg) {
+		return SamlLoginResult.succeeded();
 	}
 	
 	@Override

@@ -1,5 +1,15 @@
 package nts.uk.ctx.sys.gateway.ws.singlesignon.saml;
 
+import lombok.val;
+import nts.arc.i18n.I18NText;
+import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.start.StartSamlLoginCommand;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.start.StartSamlLoginCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.start.StartSamlLoginResult;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.validate.SamlLoginResult;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.validate.SamlValidateCommand;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.validate.SamlValidateCommandHandler;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
@@ -10,15 +20,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import nts.arc.i18n.I18NText;
-import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.gateway.app.command.login.saml.start.StartSamlLoginResult;
-import nts.uk.ctx.sys.gateway.app.command.login.saml.start.StartSamlLoginCommand;
-import nts.uk.ctx.sys.gateway.app.command.login.saml.start.StartSamlLoginCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.login.saml.validate.SamlValidateCommand;
-import nts.uk.ctx.sys.gateway.app.command.login.saml.validate.SamlValidateCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.login.saml.validate.ValidateInfo;
-
 /**
  * The Class SamlWs.
  */
@@ -26,7 +27,6 @@ import nts.uk.ctx.sys.gateway.app.command.login.saml.validate.ValidateInfo;
 @Produces(MediaType.APPLICATION_JSON)
 public class SamlWs extends WebService {
 
-	/** The submit contract with sso. */
 	@Inject
 	private StartSamlLoginCommandHandler authenticate;
 
@@ -55,17 +55,39 @@ public class SamlWs extends WebService {
 	@POST
 	@Path("validateandlogin")
 	public Response validateAndLogin(@Context final HttpServletRequest request) {
-		ValidateInfo validateInfo = this.validate.handle(new SamlValidateCommand(request));
-		// 認証成功の場合
-		if (validateInfo.isSamlValid()) {
-			return Response.status(Status.FOUND).header("Location", validateInfo.getRequestUrl()).build();
+
+		val result = this.validate.handle(new SamlValidateCommand(request));
+
+		if (result.isLoginSucceeded()) {
+			return Response.status(Status.FOUND)
+					.header("Location", result.getRedirectUrl())
+					.build();
 		}
-		// 認証失敗の場合
-		
+
 		return Response.status(Status.OK).type(MediaType.TEXT_HTML)
-				.entity("<html>" 
-						+ "<meta http-equiv=\"content-type\" charset=\"utf-8\">" 
-						+ I18NText.getText(validateInfo.getErrorMessage())
-						+ "</html>").build();
+				.entity(createHtml(result))
+				.build();
+	}
+
+	private static String createHtml(SamlLoginResult result) {
+
+		if (result.isLoginSucceeded()) {
+			throw new RuntimeException();
+		}
+
+		val html = new StringBuilder()
+				.append("<!DOCTYPE html><html><head><meta http-equiv=\"content-type\" charset=\"utf-8\"></head><body>");
+
+		if (result.isAssociationNeeded()) {
+			html.append("<script>")
+					// IdPUserNameにシングルクォートが入っているとバグるが、レアケースなので今は無視しておく
+					.append("sessionStorage.setItem('nts.uk.saml.idpUserName', '" + result.getIdpUserName() + "');")
+					.append("location.href = '" + result.getRedirectUrl() + "';")
+					.append("</script>");
+		} else {
+			html.append(I18NText.getText(result.getErrorMessageId()));
+		}
+
+		return html.append("</body></html>").toString();
 	}
 }

@@ -6,57 +6,62 @@ import lombok.Getter;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 
+import java.util.Optional;
+
+import static nts.uk.ctx.sys.gateway.app.command.login.saml.validate.SamlAuthenticationState.SUCCESS;
+
 /**
  * SAML認証の結果
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Getter
-public class SamlAuthenticationResult implements LoginCommandHandlerBase.AuthenticationResultBase{
+public class SamlAuthenticationResult implements LoginCommandHandlerBase.AuthenticationResultBase {
 
-	/** 認証成功 */
-	private boolean isSuccess;
+	@Getter
+	private final SamlAuthenticationState state;
+
+	/**
+	 * SAMLResponseから取り出したIdPユーザ名
+	 * 識別失敗した場合にのみ値が入る。
+	 * SAMLResponseが不正な場合は当然Emptyだが、識別成功した場合も不要になるのでEmptyとする。
+	 */
+	@Getter
+	private Optional<String> idpUserName;
 
 	/** 識別された社員 */
-	private IdentifiedEmployeeInfo identified;
+	private Optional<IdentifiedEmployeeInfo> identified;
 
-	/** ログイン後にアクセスしたいURL*/
-	private String requestUrl;
+	@Override
+	public boolean isSuccess() {
+		return state == SUCCESS;
+	}
 
-	/** エラーメッセージ */
-	private String errorMessage;
+	@Override
+	public IdentifiedEmployeeInfo getIdentified() {
+		return identified.get();
+	}
+
+	public boolean isValidated() {
+		return state.isValidated();
+	}
 
 	/**
 	 * 成功
 	 * @param identified
-	 * @param requestUrl
 	 * @return
 	 */
-	public static SamlAuthenticationResult success(IdentifiedEmployeeInfo identified, String requestUrl) {
-		return new SamlAuthenticationResult(true, identified, requestUrl, null);
+	public static SamlAuthenticationResult succeeded(IdentifiedEmployeeInfo identified) {
+		return new SamlAuthenticationResult(SUCCESS, Optional.empty(), Optional.of(identified));
 	}
 
 	/**
-	 * SAMLの検証が存在しない
+	 * 失敗
 	 * @return
 	 */
-	public static SamlAuthenticationResult noSamlSettingFailure() {
-		return new SamlAuthenticationResult(false, null, null, "Msg_1980");
+	public static SamlAuthenticationResult failed(SamlAuthenticationState state, Optional<String> idpUserName) {
+		if (state == SUCCESS) {
+			throw new RuntimeException("not success");
+		}
+		return new SamlAuthenticationResult(state, idpUserName, Optional.empty());
 	}
 
-	/**
-	 * レスポンスの検証に失敗
-	 * @return
-	 */
-	public static SamlAuthenticationResult samlInvalidFailure() {
-		return new SamlAuthenticationResult(false, null, null, "Msg_1988");
-	}
-
-	/**
-	 * 社員の識別に失敗
-	 * @param errorMessage
-	 * @return
-	 */
-	public static SamlAuthenticationResult identificationFailure(String errorMessage) {
-		return new SamlAuthenticationResult(false, null, null, errorMessage);
-	}
 }
