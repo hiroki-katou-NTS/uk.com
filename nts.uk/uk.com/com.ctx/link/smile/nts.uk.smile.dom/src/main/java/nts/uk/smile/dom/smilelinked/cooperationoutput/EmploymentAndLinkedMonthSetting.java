@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * AR_連動支払変換
+ * 雇用と連動月設定
  *
  */
 @Getter
