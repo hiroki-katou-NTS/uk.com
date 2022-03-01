@@ -30,7 +30,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
@@ -400,7 +399,7 @@ public class NursingLeaveSettingTest {
 		assertThat(lstId).extracting(d -> d).containsExactly(1671, 1672, 2250, 2251, 1275, 1276, 2248, 2249);
 		
 		// 管理区分 = 管理する && 介護看護区分 = 介護  && 時間介護看護設定.管理区分 = 管理しない 
-		TimeCareNursingSet timeCareNursingSetting = NursingLeaveSettingHelper.createTimeCareNursingSet(ManageDistinct.NO);
+		TimeVacationDigestUnit timeCareNursingSetting = NursingLeaveSettingHelper.createTimeCareNursingSet(ManageDistinct.NO);
 		nursingLeaveSetting = NursingLeaveSettingHelper
 				.createNursingLeaveSetting(ManageDistinct.YES, NursingCategory.Nursing, timeCareNursingSetting);
 		lstId = nursingLeaveSetting.getMonthlyAttendanceItems();
@@ -418,6 +417,7 @@ public class NursingLeaveSettingTest {
 				.createNursingLeaveSetting(ManageDistinct.YES, NursingCategory.ChildNursing, timeCareNursingSetting);
 		lstId = nursingLeaveSetting.getMonthlyAttendanceItems();
 		assertThat(lstId.isEmpty()).isTrue();
+	}
 	
 	/**
 	 * Test [8]利用する休暇時間の消化単位をチェックする

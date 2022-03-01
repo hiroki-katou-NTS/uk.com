@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -156,13 +155,13 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 	/**
 	 * [3] 利用できない日次の勤怠項目を取得する
 	 */
-	public List<Integer> getDailyAttendanceItemsNotAvailable() {
+	public List<Integer> getDailyAttendanceItemsNotAvailable(TimeVacationDigestUnit.Require require) {
 		List<Integer> lstId = new ArrayList<>();
 		if (this.yearManageType == ManageDistinct.NO)
 			// 年休に対応する日次の勤怠項目
 			lstId.addAll(Arrays.asList(539, 540));
 		
-		lstId.addAll(timeSetting.getDailyAttendItemsNotAvailable(yearManageType));
+		lstId.addAll(timeSetting.getDailyAttendItemsNotAvailable(require, yearManageType));
 		
 		return lstId;
 	}
@@ -170,7 +169,7 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 	/**
 	 * [4] 利用できない月次の勤怠項目を取得する
 	 */
-	public List<Integer> getMonthlyAttendanceItemsNotAvailable() {
+	public List<Integer> getMonthlyAttendanceItemsNotAvailable(TimeVacationDigestUnit.Require require) {
 		List<Integer> lstId = new ArrayList<>();
 		if (this.yearManageType == ManageDistinct.NO)
 			// 年休に対応する月次の勤怠項目
@@ -181,7 +180,7 @@ public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializabl
 		lstId.addAll(manageAnnualSetting.getMonthlyAttendanceItems(yearManageType));
 		
 		// $時間年休
-		lstId.addAll(timeSetting.getMonthlyAttendItemsNotAvailable(yearManageType));
+		lstId.addAll(timeSetting.getMonthlyAttendItemsNotAvailable(require, yearManageType));
 				
 		return lstId;
 	}

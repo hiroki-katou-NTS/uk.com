@@ -117,7 +117,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 	
 	public NursingLeaveSetting(String companyId, ManageDistinct manageType, NursingCategory nursingCategory,
 			MonthDay startMonthDay, List<MaxPersonSetting> maxPersonSetting, Optional<Integer> specialHolidayFrame,
-			Optional<Integer> workAbsence, TimeCareNursingSet timeCareNursingSetting) {
+			Optional<Integer> workAbsence, TimeVacationDigestUnit timeCareNursingSetting) {
 		super();
 		this.companyId = companyId;
 		this.manageType = manageType;
@@ -126,7 +126,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 		this.maxPersonSetting = maxPersonSetting;
 		this.specialHolidayFrame = specialHolidayFrame;
 		this.workAbsence = workAbsence;
-		this.timeCareNursingSetting = timeCareNursingSetting;
+		this.timeVacationDigestUnit = timeCareNursingSetting;
 	}
 
 	/**
@@ -519,7 +519,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 			return this.getCorrespondMonthlyAttendanceItems();
 		
 		// @時間介護看護設定.管理区分 == 管理しない
-		if (this.timeCareNursingSetting.getManageDistinct() ==  ManageDistinct.NO)
+		if (this.timeVacationDigestUnit.getManage() ==  ManageDistinct.NO)
 			return this.getMonthlyAttendanceItemsTime();
 			
 		return new ArrayList<>();

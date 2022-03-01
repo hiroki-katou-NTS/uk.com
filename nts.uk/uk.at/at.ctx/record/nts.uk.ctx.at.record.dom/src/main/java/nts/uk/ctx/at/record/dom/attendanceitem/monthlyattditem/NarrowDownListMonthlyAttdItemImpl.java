@@ -24,6 +24,8 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
@@ -49,7 +51,9 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepo
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
@@ -140,6 +144,10 @@ public class NarrowDownListMonthlyAttdItemImpl implements NarrowDownListMonthlyA
 	private ClosureStatusManagementRepository closureStatusManagementRepo;
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
+	@Inject
+	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
+	@Inject
+	private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
 	
 	@Override
 	public List<Integer> get(String companyId, List<Integer> listAttdId) {
@@ -324,6 +332,21 @@ public class NarrowDownListMonthlyAttdItemImpl implements NarrowDownListMonthlyA
 		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
 				String employeeId, GeneralDate baseDate) {
 			return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+			return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
+		}
+		
+		@Override
+		public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode) {
+			return Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode));
+		}
+		
+		@Override
+		public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId) {
+			return Optional.ofNullable(compensLeaveComSetRepository.find(companyId));
 		}
 		
 	}

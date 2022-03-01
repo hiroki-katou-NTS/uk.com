@@ -97,7 +97,7 @@ public class SpecialHoliday extends AggregateRoot {
 	 */
 	public List<Integer> getMonthlyAttendanceItems(Require require){
 		Optional<TimeSpecialLeaveManagementSetting> timeMana =  require.findByCompany(companyId);
-		if (!timeMana.isPresent() || (timeMana.isPresent() && timeMana.get().getManageType() == ManageDistinct.NO)) { // nhờ dev update ver 3 sửa cho điều kiện này khi update tài liệu
+		if (!timeMana.isPresent() || (timeMana.isPresent() && timeMana.get().getTimeVacationDigestUnit().getManage() == ManageDistinct.NO)) { // nhờ dev update ver 3 sửa cho điều kiện này khi update tài liệu
 			return SpecialHoliday.getAttendanceItemsTimeSpecialHoliday(Arrays.asList(this.specialHolidayCode));
 		}
 		return new ArrayList<>();

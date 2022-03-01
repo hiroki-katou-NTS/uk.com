@@ -50,9 +50,9 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayHelper;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingHelper;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSettingHelper;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
@@ -477,7 +477,7 @@ public class NarrowDownListMonthlyAttdItemTest {
 	@Test
 	public void testGetUnavailableSubstituteHolidayItem_2() {
 		String companyId = "companyId";
-		CompensatoryDigestiveTimeUnit timeUnit = CompensatoryLeaveComSettingHelper
+		TimeVacationDigestUnit timeUnit = CompensatoryLeaveComSettingHelper
 				.createCompensatoryDigestiveTimeUnit(ManageDistinct.NO);
 		CompensatoryLeaveComSetting domain = CompensatoryLeaveComSettingHelper
 				.createCompensatoryLeaveComSetting(ManageDistinct.NO, timeUnit);
