@@ -747,7 +747,7 @@ module nts.uk.at.view.kdw008.a {
                         nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
                             .ifYes(() => {
                                 service.deleteModifyAnyPeriodSheet(command).done(function() {
-                                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                    nts.uk.ui.dialog.info({ messageId: "991" }).then(() => {
                                         self.selectedSheetNo(1);
                                     });
                                 }).fail(function(error) {
@@ -1013,31 +1013,32 @@ module nts.uk.at.view.kdw008.a {
                     }else {
                         let listAttItem:ModifyAnyPeriodDetailDto[] = [];
                         let command : any = {};
-                        if(self.isDuplicate && !self.isUpdate()){
-                            let modifyAnyPeriodFormat = self.modifyAnyPeriodFormatList()
-                                .filter((item) => item.code == self.codeDuplicate)[0];
-                            let displayItem: any[] = modifyAnyPeriodFormat.sheetlDtos[0].detailDtoList;
-                            displayItem.forEach(e=>{
-                                let item : any = {};
-                                item.attendanceItemId = e.attendanceItemId;
-                                item.order = e.attendanceItemDisplayNumber;
-                                item.columnWidth = e.columnWidth;
-                                listAttItem.push(item)
+                        if(self.isDuplicate){
+                            command = {
+                                initFormat :  self.checked(),
+                                code       : self.currentDailyFormatCode(),
+                                name       :   self.currentDailyFormatName(),
+                                codeCurrent: self.codeDuplicate
+                            };
+                            block.invisible();
+                            service.duplicateModifyAnyPeriod(command).done(function() {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                    self.loadData();
+                                });
+                                $("#currentName").focus();
+                            }).fail(function(error) {
+                                $('#currentCode').ntsError('set', error);
+                            }).always(function() {
+                                self.isDuplicate = false;
+                                block.clear();
                             });
-
-                            command = new AddModifyAnyPeriodCommand(
-                                self.currentDailyFormatCode(),
-                                self.currentDailyFormatName(),
-                                modifyAnyPeriodFormat.sheetlDtos[0].sheetNo,
-                                modifyAnyPeriodFormat.sheetlDtos[0].sheetName,
-                                listAttItem,
-                                self.checked()
-                            );
                         }else {
                             self.modifyAnyPeriodValue().forEach(e=>{
+                                var indexOfItem = _.findIndex(self.modifyAnyPeriodValue(), { attendanceItemId: e.attendanceItemId });
+
                                 let item : any = {};
                                 item.attendanceItemId = e.attendanceItemId;
-                                item.order = e.attendanceItemDisplayNumber;
+                                item.order = indexOfItem;
                                 item.columnWidth = e.columnWidth;
                                 listAttItem.push(item)
                             });
@@ -1049,33 +1050,34 @@ module nts.uk.at.view.kdw008.a {
                                 listAttItem,
                                 self.checked()
                             );
-                        }
-                        //------------------------------------------------------------------------------
-                        if(self.isUpdate()){
-                            block.invisible();
-                            service.updateModifyAnyPeriod(command).done(function() {
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    self.loadData();
+                            //------------------------------------------------------------------------------
+                            if(self.isUpdate()){
+                                block.invisible();
+                                service.updateModifyAnyPeriod(command).done(function() {
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                        self.loadData();
+                                    });
+                                    $("#currentName").focus();
+                                }).fail(function(error) {
+                                    $('#currentCode').ntsError('set', error);
+                                }).always(function() {
+                                    block.clear();
                                 });
-                                $("#currentName").focus();
-                            }).fail(function(error) {
-                                $('#currentCode').ntsError('set', error);
-                            }).always(function() {
-                                block.clear();
-                            });
-                        }else {
-                            block.invisible();
-                            service.addModifyAnyPeriod(command).done(function() {
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    self.loadData();
+                            }else {
+                                block.invisible();
+                                service.addModifyAnyPeriod(command).done(function() {
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                        self.loadData();
+                                    });
+                                    $("#currentName").focus();
+                                }).fail(function(error) {
+                                    $('#currentCode').ntsError('set', error);
+                                }).always(function() {
+                                    block.clear();
                                 });
-                                $("#currentName").focus();
-                            }).fail(function(error) {
-                                $('#currentCode').ntsError('set', error);
-                            }).always(function() {
-                                block.clear();
-                            });
+                            }
                         }
+
                     }
 
                 }

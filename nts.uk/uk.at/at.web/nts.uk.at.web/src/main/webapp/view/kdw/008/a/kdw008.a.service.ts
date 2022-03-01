@@ -48,6 +48,7 @@ module nts.uk.at.view.kdw008.a.service {
         updateModifyAnyPeriod: "at/function/kdw/008/a/update",
         deleteModifyAnyPeriod: "at/function/kdw/008/a/delete",
         deleteModifyAnyPeriodSheet: "at/function/kdw/008/a/delete/sheet",
+        duplicateModifyAnyPeriod: "at/function/kdw/008/a/duplicate",
 
 
 
@@ -176,5 +177,7 @@ module nts.uk.at.view.kdw008.a.service {
     export function deleteModifyAnyPeriodSheet(command: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.deleteModifyAnyPeriodSheet, command);
     };
-    
+    export function duplicateModifyAnyPeriod(command: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.duplicateModifyAnyPeriod, command);
+    };
 }

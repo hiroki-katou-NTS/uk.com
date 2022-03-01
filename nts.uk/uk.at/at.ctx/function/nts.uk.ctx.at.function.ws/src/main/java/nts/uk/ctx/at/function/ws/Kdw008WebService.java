@@ -29,10 +29,19 @@ public class Kdw008WebService {
     @Inject
     private ModifyAnyPeriodFinder modifyAnyPeriodFinder;
 
+    @Inject
+    private DuplicateModifyAnyPeriodCommandHandler duplicateModifyAnyPeriodCommandHandler;
+
     @POST
     @Path("add")
     public void addNew(AddModifyAnyPeriodCommand command) {
         addModifyAnyPeriodCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("duplicate")
+    public void duplicate(DuplicateModifyAnyPeriodCommand command) {
+        duplicateModifyAnyPeriodCommandHandler.handle(command);
     }
 
     @POST
