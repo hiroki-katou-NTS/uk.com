@@ -25,7 +25,7 @@ public class WorkLocationDto {
 	private String workLocationName;
 	
 	/** 打刻範囲 . 半径*/
-	private int radius;
+	private Integer radius;
 	
 	/** 打刻範囲.地理座標.緯度*/
 	private Double latitude;
@@ -44,9 +44,9 @@ public class WorkLocationDto {
 				domain.getContractCode().v(),
 				domain.getWorkLocationCD().v(),
 				domain.getWorkLocationName().v(),
-				domain.getStampRange().getRadius().value,
-				domain.getStampRange().getGeoCoordinate().map(x -> x.getLatitude()).orElse(null),
-				domain.getStampRange().getGeoCoordinate().map(x -> x.getLongitude()).orElse(null),
+				domain.getStampRange().map(x-> x.getRadius().value).orElse(null),
+				domain.getStampRange().map(x-> .getGeoCoordinate().map(x -> x.getLatitude()).orElse(null)).orElse(null) ,
+				domain.getStampRange().map(x-> .getGeoCoordinate().map(x -> x.getLongitude()).orElse(null)).orElse(null),
 				domain.getListIPAddress().stream().map(c->new Ipv4AddressDto(c)).collect(Collectors.toList()),
 				domain.getWorkplace().map(c->WorkplacePossibleCmd.toDto(c)).orElse(null));
 	}
