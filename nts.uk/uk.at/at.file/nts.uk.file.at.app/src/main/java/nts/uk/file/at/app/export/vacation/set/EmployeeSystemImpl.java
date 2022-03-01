@@ -194,8 +194,6 @@ public class EmployeeSystemImpl implements MasterListData {
                         ColumnTextAlign.LEFT, "", true));
                 columns.add(new MasterHeaderColumn(KMF001_207, TextResource.localize("KMF001_207"),
                         ColumnTextAlign.LEFT, "", true));
-                columns.add(new MasterHeaderColumn(KMF001_209, TextResource.localize("KMF001_209"),
-                        ColumnTextAlign.LEFT, "", true));
                 columns.add(new MasterHeaderColumn(KMF001_330, TextResource.localize("KMF001_330"),
                         ColumnTextAlign.LEFT, "", true));
                 columns.add(new MasterHeaderColumn(KMF001_210, TextResource.localize("KMF001_210"),

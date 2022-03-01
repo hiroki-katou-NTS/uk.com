@@ -9,6 +9,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualLeaveTimeDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
@@ -108,5 +109,10 @@ public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemen
 		this.entity.setUniformTime(timeAnnualLeaveTimeDay.getUniformTime().isPresent() ? timeAnnualLeaveTimeDay.getUniformTime().get().v() : 0 );
 		this.entity.setContractTimeRound(timeAnnualLeaveTimeDay.getContractTimeRound().isPresent() ? timeAnnualLeaveTimeDay.getContractTimeRound().get().value : 0 );
 		
+	}
+	@Override
+	public void setTimeVacationDigestUnit(TimeVacationDigestUnit timeVacationDigestUnit) {
+		this.entity.setTimeManageAtr(timeVacationDigestUnit.getManage().value);
+		this.entity.setTimeUnit(timeVacationDigestUnit.getDigestUnit().value);
 	}
 }

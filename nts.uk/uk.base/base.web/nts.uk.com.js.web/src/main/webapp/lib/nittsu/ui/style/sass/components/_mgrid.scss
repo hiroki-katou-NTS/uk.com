@@ -1,5 +1,8 @@
 @import "_radiobox.scss";
 @import "_button.scss";
+@import "_ignitecommons.scss";
+
+$hover_hl_color: darken($hover_row_back_color, 2%);
 
 .mgrid :not(.mgrid-header) table tr {
 
@@ -92,7 +95,7 @@
 }
 
 .mgrid table tr td.ui-state-hover {
-  	background-color: #99aea9;
+  	background-color: $hover_hl_color;
 }
 
 .mgrid table tr td.mgrid-hide .ntsCheckBox {

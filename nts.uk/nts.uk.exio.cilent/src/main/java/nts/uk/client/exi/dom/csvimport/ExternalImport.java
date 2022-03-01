@@ -11,9 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Data;
 import nts.uk.client.exi.ExiClientProperty;
 import nts.uk.client.exi.LogManager;
 
@@ -91,15 +94,12 @@ public class ExternalImport {
 	    
 		URL url = new URL(serverUrl + SERVICE_URL_PREPARE);
 		CallWebServiceResult wsResult = callWebService(url, json, cookieList);
-		
 		String taskId = (String) wsResult.jsonAsyncTaskInfo.get("id");
-		if ((boolean) wsResult.jsonAsyncTaskInfo.get("pending")
-				|| (boolean) wsResult.jsonAsyncTaskInfo.get("running")) {
-			awaitComplated(cookieList, taskId);
-		}
 
-		boolean result = checkErrorMessage("受入準備",cookieList);
-		
+		boolean result = awaitComplated(cookieList, taskId);
+		if (!result) return result;
+
+		result = checkErrorMessage("受入準備",cookieList);
 		LogManager.out("ExternalImport.prepare end");
 
 		return result;
@@ -127,7 +127,7 @@ public class ExternalImport {
 		LogManager.out("ExternalImport.execute end");
 	}
 
-	private void awaitComplated(List<String> cookieList, String taskId) throws IOException, InterruptedException {
+	private boolean awaitComplated(List<String> cookieList, String taskId) throws IOException, InterruptedException {
 		URL checkAsyncTaskUrl = new URL(serverUrl + SERVICE_URL_ASYNC +  taskId);
 		CallWebServiceResult result;
 		while(true) {
@@ -138,9 +138,37 @@ public class ExternalImport {
 			}
 			Thread.sleep(1000);
 		}
+		
 		if ((boolean) result.jsonAsyncTaskInfo.get("succeeded") == false) {
 			LogManager.err(result.jsonAsyncTaskInfo.get("error").toString());
+			return false;
 		}
+
+		ObjectMapper mapper = new ObjectMapper();
+	    mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		String taskDataString = result.jsonAsyncTaskInfo.get("taskDatas").toString()
+				.replaceAll("=([^,}]*)([,|}])", "=\"$1\"$2")
+				.replaceAll("=", ":");
+		
+		List<TaskData> taskData = new ArrayList<>();
+		try {
+			taskData = mapper.readValue(taskDataString,new TypeReference<List<TaskData>>() {});
+		} catch (JsonProcessingException e) {
+			LogManager.err(e);
+		}
+		
+		boolean failed = taskData.stream()
+			.filter(t -> "process".equals(t.key))
+			.map(t -> t.getValueAsString())
+			.anyMatch(val -> "failed".contentEquals(val));
+		if(failed) {
+			taskData.stream()
+				.filter(t -> "message".equals(t.key))
+				.map(t -> t.getValueAsString())
+				.forEach(msg -> LogManager.err(msg));
+			return false;
+		}
+		return true;
 	}
 
 	private CallWebServiceResult callWebService(URL url, String json) throws IOException {
@@ -231,5 +259,16 @@ public class ExternalImport {
 		}
 
 		return true;
+	}
+	
+	@Data
+	public static class TaskData {
+		String key;
+		String valueAsString;
+		String valueAsBoolean;
+		String valueAsNumber;
+		
+		public TaskData() {
+		}
 	}
 }
