@@ -174,15 +174,15 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 		// 勤続年数テーブル
 		val yearHolidayCodes = new ArrayList<String>();
 
-		List<LengthOfService> LengthOfServiceList = new ArrayList<LengthOfService>();
+		List<LengthOfService> lengthOfServiceList = new ArrayList<LengthOfService>();
 		for(String companyId: companyIds){
 			List<LengthOfService> lengthOfServiceListTmp
 				= lengthServiceRepository.findByCompanyId(companyId)
 				.stream().flatMap(c->c.getLengthOfServices().stream()).collect(Collectors.toList());
 
-			LengthOfServiceList.addAll(lengthOfServiceListTmp);
+			lengthOfServiceList.addAll(lengthOfServiceListTmp);
 		}
-		toBinaryMap.put(LengthServiceTbl.class.toString(), LengthOfServiceList);
+		toBinaryMap.put(LengthServiceTbl.class.toString(), lengthOfServiceList);
 
 		// 年休月別残数データ
 		val annLeaRemNumEachMonthList

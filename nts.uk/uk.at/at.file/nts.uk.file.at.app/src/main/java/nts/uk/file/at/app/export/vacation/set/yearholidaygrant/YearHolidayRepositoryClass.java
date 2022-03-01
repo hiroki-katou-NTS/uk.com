@@ -383,7 +383,7 @@ public class YearHolidayRepositoryClass {
 
 		                        data.put("付与回 10", i+1);
 
-		                        if(listFindByCode.getLengthOfServices().size()==0 || listYearHoliday.size()== 0){
+		                        if(listFindByCode.getLengthOfServicesSize()==0 || listYearHoliday.size()== 0){
 		                        }else{
 		                        	LengthOfService dataFindByCode = listFindByCode.getLengthOfServices().get(i);
 		                            data.put("勤続年数年 11", dataFindByCode.getYear()+""+TextResource.localize("KMF003_41"));
@@ -661,7 +661,7 @@ public class YearHolidayRepositoryClass {
 		                        data.put("備考 54","");
 
 		                        // su ly 11
-		                        if (i < listFindByCode.getLengthOfServices().size()) {
+		                        if (i < listFindByCode.getLengthOfServicesSize()) {
 		                               LengthOfService dataFindByCode = listFindByCode.getLengthOfServices().get(i);
 		                               data.put("勤続年数年 11", dataFindByCode.getYear() + TextResource.localize("KMF003_41"));
 		                               data.put("勤続年数月 12", dataFindByCode.getMonth() + TextResource.localize("KMF003_76"));

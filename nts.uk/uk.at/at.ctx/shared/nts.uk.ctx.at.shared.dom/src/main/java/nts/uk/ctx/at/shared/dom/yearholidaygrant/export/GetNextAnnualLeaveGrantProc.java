@@ -137,12 +137,12 @@ public class GetNextAnnualLeaveGrantProc {
 			lengthServiceTblOpt = require.lengthServiceTbl(companyId, grantTableCode);
 		}
 		if(lengthServiceTblOpt.isPresent()) {
-			if (lengthServiceTblOpt.get().getLengthOfServices().size() <= 0) return nextAnnualLeaveGrantList;
+			if (lengthServiceTblOpt.get().getLengthOfServicesSize() <= 0) return nextAnnualLeaveGrantList;
 		}
 		// 期間内に該当する付与年月日をListで取得
 		GetNextAnnualLeaveGrantProcKdm002.calcAnnualLeaveGrantDate(
 				require, companyId,
-				entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTblOpt.isPresent() ? Optional.of(lengthServiceTblOpt.get().getLengthOfServices()):Optional.empty(),
+				entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTblOpt.map(c->c.getLengthOfServices()).get(),
 				period, isSingleDay, nextAnnualLeaveGrantList);
 
 		// １日に相当する契約時間を取得する

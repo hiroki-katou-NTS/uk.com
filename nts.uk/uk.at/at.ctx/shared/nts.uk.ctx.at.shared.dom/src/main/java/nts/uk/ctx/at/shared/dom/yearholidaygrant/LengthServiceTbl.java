@@ -98,15 +98,6 @@ public class LengthServiceTbl extends AggregateRoot implements Serializable{
 
 	}
 
-
-	public LengthServiceTbl(String companyId, YearHolidayCode yearHolidayCode, GrantNum grantNum,
-			List<LengthOfService> lengthOfServices) {
-
-		this.companyId = companyId;
-		this.yearHolidayCode = yearHolidayCode;
-		this.lengthOfServices = lengthOfServices;
-	}
-
 	/**
 	 *
 	 *
