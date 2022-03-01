@@ -906,4 +906,22 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				this.lateDecisionClock,
 				this.coreTimeSheet);
 	}
+	
+	/**
+	 * 逆丸めにして取得する
+	 * @return フレックス就業時間内時間帯
+	 */
+	@Override
+	public FlexWithinWorkTimeSheet getReverseRounding() {
+		return new FlexWithinWorkTimeSheet(
+				this.withinWorkTimeFrame.stream().map(f -> f.getReverseRounding()).collect(Collectors.toList()),
+				this.shortTimeSheet.stream().map(s -> s.clone()).collect(Collectors.toList()),
+				this.leaveEarlyDecisionClock.stream()
+						.map(l -> new LeaveEarlyDecisionClock(new TimeWithDayAttr(l.getLeaveEarlyDecisionClock().valueAsMinutes()), l.getWorkNo()))
+						.collect(Collectors.toList()),
+				this.lateDecisionClock.stream()
+						.map(l -> new LateDecisionClock(new TimeWithDayAttr(l.getLateDecisionClock().valueAsMinutes()), l.getWorkNo()))
+						.collect(Collectors.toList()),
+				this.coreTimeSheet.map(c -> c.clone()));
+	}
 }

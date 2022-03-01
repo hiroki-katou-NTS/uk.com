@@ -979,4 +979,14 @@ public class HolidayWorkTimeSheet{
 		}
 		return Optional.of(new HolidayWorkTimeSheet(recreated));
 	}
+	
+	/**
+	 * 逆丸めにして取得する
+	 * @return 休日出勤時間帯
+	 */
+	public HolidayWorkTimeSheet getReverseRounding() {
+		return new HolidayWorkTimeSheet(this.workHolidayTime.stream()
+				.map(f -> f.getReverseRounding())
+				.collect(Collectors.toList()));
+	}
 }
