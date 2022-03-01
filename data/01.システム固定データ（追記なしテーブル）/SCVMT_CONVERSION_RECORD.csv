@@ -27,6 +27,7 @@
 "労働条件","KSHMT_WORKCOND_WORK_TS",7,"2c461417-a969-4e72-9a5f-ca408048a768","金曜日","",true
 "労働条件","KSHMT_WORKCOND_WORK_TS",8,"2c461417-a969-4e72-9a5f-ca408048a768","土曜日","",true
 "労働条件","KSHMT_WORKCOND_WORK_TS",9,"2c461417-a969-4e72-9a5f-ca408048a768","日曜日","",true
+"勤務場所IPマスタ","KRCMT_IP4ADDRESS",1,"f6566c97-4035-4667-9018-485e537a91de","","",true
 "年休上限データ","KRCDT_HDPAID_MAX",1,"8552868a-1b91-44d5-ba04-c12c34de24b3","",,true
 "年休付与残数データ","KRCDT_HDPAID_REM",1,"0d47b186-fc61-4fd4-a0c2-04e7eacc5118","",,true
 "年休社員基本情報","KRCMT_HDPAID_BASIC",1,"1425bc22-d946-40e0-bdd0-0c6db0bfaa32","",,true

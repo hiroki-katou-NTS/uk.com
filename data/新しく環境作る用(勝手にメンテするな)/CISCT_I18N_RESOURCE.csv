@@ -25184,6 +25184,7 @@
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_HourlySegment_MINUTE","分",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_INDIVIDUAL_ANNUITY_INSURANCE","個人年金保険",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_INSERT_ONLY","既存データが存在しないデータのみ受け入れる",1
+,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_WORK_LOCATION_IP","勤務場所IPマスタ",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_AFF_COMPANY_HISTORY","入社退職履歴",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_AFF_WORKPLACE_HISTORY","所属職場履歴",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_ANNUAL_LEAVE_REMAINING","年休付与残数データ",1
