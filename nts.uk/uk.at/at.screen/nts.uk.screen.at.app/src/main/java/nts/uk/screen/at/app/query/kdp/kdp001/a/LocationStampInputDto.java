@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.query.kdp.kdp001.a;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -19,6 +20,6 @@ public class LocationStampInputDto {
 
 	private String workLocationName;
 
-	private List<String> workpalceId;
+	private List<String> workpalceId = new ArrayList<>();
 
 }
