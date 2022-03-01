@@ -52,3 +52,7 @@
 .cmm024-f .row .col-right #up-down {
     margin-left: 10px;
 }
+
+#swap-list .ntsMoveDataArea {
+    padding: 0 5px;
+}

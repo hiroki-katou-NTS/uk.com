@@ -1,0 +1,29 @@
+.left-panel {
+    padding-left: 15px!important;
+}
+
+.right-panel .form-label {
+    width: 100px;
+}
+
+.right-panel .control-group {
+    margin-top: 15px;
+}
+
+.right-panel .panel-frame {
+    width: 570px;
+}
+
+.switchbox-wrappers {
+    display: inline-flex;
+}
+
+.switchbox-wrappers .radio-wrapper {
+    flex-direction: column;
+    text-align: center;
+    width: 85px;
+}
+
+#multi-list-nopanel tr td {
+    height: 24px;
+}

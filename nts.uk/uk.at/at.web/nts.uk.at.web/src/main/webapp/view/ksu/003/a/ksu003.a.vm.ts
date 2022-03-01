@@ -3965,8 +3965,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			//$("#extable-ksu003").exTable("setHeight", 10 * 30 + 18);
 			$(".ex-body-leftmost").css("height", "300px");
 			$(".ex-body-detail").css("height", "301px");
-			$(".ex-body-detail-horz-scroll").css("top", "336px");
-			$(".ex-body-middle").css('height', '318px');
+			$(".ex-body-detail-horz-scroll").css("top", "335px");
+			$(".ex-body-middle").css('height', '311px');
 			$(".toDown").css({ "margin-top": 10 * 30 + 10 + 'px' });
 
 			if (self.initDispStart != 0)
@@ -4001,7 +4001,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (self.showA9)
 				$("#extable-ksu003").exTable("showMiddle");
 
-			$(".ex-body-middle").css('height', '318px');
+			$(".ex-body-middle").css('height', '311px');
 			$(".toLeft").css('margin-left', margin + 'px');
 
 			let x = $('.ex-header-leftmost').width() + $('.ex-header-middle').width() + $('.ex-header-detail').width() + 10 + 6;
@@ -4048,8 +4048,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 				$(".ex-body-leftmost").css("height", "511px");
 				$(".ex-body-detail").css("height", "512px");
-				$(".ex-body-detail-horz-scroll").css("top", "547px");
-				$(".ex-body-middle").css('height', '529px');
+				$(".ex-body-detail-horz-scroll").css("top", "546px");
+				$(".ex-body-middle").css('height', '522px');
 
 				if (window.innerWidth >= 1340) {
 					$("#A1_4").css("margin-right", "0px")
@@ -4069,8 +4069,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 				$(".ex-body-leftmost").css("height", "300px");
 				$(".ex-body-detail").css("height", "301px");
-				$(".ex-body-detail-horz-scroll").css("top", "336px");
-				$(".ex-body-middle").css('height', '318px');
+				$(".ex-body-detail-horz-scroll").css("top", "335px");
+				$(".ex-body-middle").css('height', '311px');
 
 				if (navigator.userAgent.indexOf("Chrome") == -1) {
 					$("#master-wrapper").css({ 'overflow-y': 'hidden' });

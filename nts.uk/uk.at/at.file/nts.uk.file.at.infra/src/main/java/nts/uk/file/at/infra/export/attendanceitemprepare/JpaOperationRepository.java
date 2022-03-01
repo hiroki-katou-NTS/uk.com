@@ -11,6 +11,7 @@ import javax.persistence.Query;
 import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.record.dom.confirmemployment.RestrictConfirmEmployment;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
@@ -59,6 +60,9 @@ public class JpaOperationRepository extends JpaRepository implements OperationEx
     		+ "as availability from KRCMT_ATTENDANCE_AUT a left join SACMT_ROLE  b "
     		+ "on a.ROLE_ID=b.ROLE_ID and b.CID = a.CID left join KRCCT_ATTENDANCE_FUN c "
     		+ "on a.FUNCTION_NO=c.FUNCTION_NO where a.CID=?cid  ORDER BY b.ROLE_CD ";
+    
+	private static final String GET_BY_CID = "select s from KrcmtRestrictConfirmEmployment s "
+			+ " where s.restrictConfirmEmploymentPk.cid = :cid";
 	
     @Override
     public Optional<FormatPerformance> getFormatPerformanceById(String companyId){
@@ -142,12 +146,12 @@ public class JpaOperationRepository extends JpaRepository implements OperationEx
 	@Override
 	public Optional<RestrictConfirmEmployment> getRestrictConfirmEmploymentByCompanyId(String companyId) {
 		String sql = "select * from KRCMT_WORK_FIXED_CTR where CID = @companyId";
-		return new NtsStatement(sql, this.jdbcProxy())
-				.paramString("companyId", companyId)
-				.getSingle(rec -> {
-					return new RestrictConfirmEmployment(
-							rec.getString("CID"), 
-							rec.getInt("USAGE_ATR") == 0 ? false : true);
+		return new NtsStatement(sql, this.jdbcProxy()).paramString("companyId", companyId).getSingle(rec -> {
+			if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
+				return new RestrictConfirmEmployment(rec.getString("CID"), rec.getInt("USAGE_ATR") == 0 ? false : true);
+			} else {
+				return new RestrictConfirmEmployment(rec.getString("CID"), rec.getBoolean("USAGE_ATR"));
+			}
 		});
 	}
 }

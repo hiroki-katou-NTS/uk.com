@@ -35,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService.Require;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
 public class DailyHolidayWorkPubImpl implements DailyHolidayWorkPub{
@@ -188,6 +189,11 @@ public class DailyHolidayWorkPubImpl implements DailyHolidayWorkPub{
 		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
 			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(cid, code.v());
 			return workSetting.isPresent() ? workSetting.get() : null;
+		}
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 	}
 }

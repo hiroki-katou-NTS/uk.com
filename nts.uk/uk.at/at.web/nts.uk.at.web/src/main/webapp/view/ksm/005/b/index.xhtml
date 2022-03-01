@@ -17,14 +17,14 @@
     <ui:define name="content">
         <div id="contents-area" class="contents">
             <div class="period_labels">
-                <div style="width: 55px" data-bind="ntsFormLabel: {required: true}">
+                <div data-bind="ntsFormLabel: {required: true}">
                     <label>#{i18n.getText('KSM005_27')}</label>
                 </div>
                 <div id="daterangepicker" tabindex="1"
                      data-bind="ntsDateRangePicker: { name: '#[KSM005_27]', startName: '#[KSM005_35]', endName: '#[KSM005_36]', required: true, enable: true, showNextPrevious: false, value: dateValue, maxRange: 'oneYear', type: 'yearmonth'}"/>
             </div>
             <div class="employee_labels">
-                <div data-bind="ntsFormLabel: {}">
+                <div style="padding-right: 18px;" data-bind="ntsFormLabel: {}">
                     <label>#{i18n.getText('KSM005_28')}</label>
                 </div>
                 <div>

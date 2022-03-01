@@ -26,6 +26,10 @@ module test.viewmodel {
         // panel
         listPanelSetting: KnockoutObservableArray<any>;
         selectedPanel: KnockoutObservable<number> = ko.observable(1);
+        // MultiCheckBox
+        listWkpGroupType: KnockoutObservableArray<any>;
+        selectedWkpGroupTypes: KnockoutObservableArray<string>;
+
         constructor() {
             let self = this;
             self.options = {
@@ -72,6 +76,12 @@ module test.viewmodel {
                 { code: 1, name: 'Yes' },
                 { code: 0, name: 'No' }
             ]);
+            self.listWkpGroupType = ko.observableArray([
+                new WorkplaceGroupTypeModel('0', 'Normal'),
+                new WorkplaceGroupTypeModel('1', 'Medical care'),
+                new WorkplaceGroupTypeModel('2', 'Care office')
+            ]);
+            self.selectedWkpGroupTypes = ko.observableArray([]);
         }
 
         startPage(): JQueryPromise<any> {
@@ -89,7 +99,8 @@ module test.viewmodel {
                 showEmptyItem: self.selectedOther() == 1 ? true : false,
                 selectedMode: self.selectedSelectionType(),
                 alreadySettingList: self.currentIds(),
-                panelSetting: self.selectedPanel() == 1 ? true : false
+                panelSetting: self.selectedPanel() == 1 ? true : false,
+                selectedWkpGroupTypes: self.selectedWkpGroupTypes().map( i => Number(i))
             }
             setShared('KCP011_TEST', data);
             modal("/view/kcp/011/test2/index.xhtml").onClosed(() => {
@@ -97,5 +108,16 @@ module test.viewmodel {
             });
         }
 
+    }
+
+    class WorkplaceGroupTypeModel {
+        id: string;
+        name: string;
+
+        constructor(id: string, name: string) {
+            let self = this;
+            self.id = id;
+            self.name = name;
+        }
     }
 }

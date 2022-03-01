@@ -106,20 +106,22 @@ table#grid_matome tbody td {
 
 /* COLUMN APPNAME */
 .nts-grid-wrapper table tr td.ui-state-hover.appNameBgColor {
-	background-color: #CFF1A5;
+	background-color: #DDE4E9;
+	color: #fff;
 }
 .appNameBgColor {
-	background-color: #CFF1A5;
+	background-color: #6A6A6A;
+	color: #fff;
 }
 /* PHASE SETTING */
 table#grid_matome tr td.ui-state-hover.phaseBgColor {
-	background-color: #C5F1F7;
+	background-color: #DDE4E9;
 }
 table#grid_matomeC tr td.ui-state-hover.phaseBgColor {
-	background-color: #C5F1F7;
+	background-color: #DDE4E9;
 }
 table#grid_matomeE tr td.ui-state-hover.phaseBgColor {
-	background-color: #C5F1F7;
+	background-color: #DDE4E9;
 }
 .phaseBgColor{
 	background-color: #C5F1F7;

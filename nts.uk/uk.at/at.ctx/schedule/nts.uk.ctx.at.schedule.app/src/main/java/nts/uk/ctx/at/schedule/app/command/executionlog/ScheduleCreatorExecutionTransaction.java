@@ -837,10 +837,9 @@ public class ScheduleCreatorExecutionTransaction {
 		// if 休職中
 		if (optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE || 
 				optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.CLOSED) {
-		prepareWorkOutput = this.getWorkInfoLeave( employeesTempo, command, creator, domain,
-			 targetPeriod, dateInPeriod, masterCache, dateRegistedEmpSche, carrier);
-		return prepareWorkOutput;
-
+			prepareWorkOutput = this.getWorkInfoLeave( employeesTempo, command, creator, domain,
+				targetPeriod, dateInPeriod, masterCache, dateRegistedEmpSche, carrier);
+			return prepareWorkOutput;
 		}
 
 		// if 予定管理する
@@ -1614,7 +1613,10 @@ public class ScheduleCreatorExecutionTransaction {
 												x.getWorkplaceId()))
 										.collect(Collectors.toList())))
 						.collect(Collectors.toList()),
-				masterCache.getListBusTypeOfEmpHis());
+				masterCache.getListBusTypeOfEmpHis(),
+				masterCache.getEmpGeneralInfo().getEmpWorkplaceGroup(), 
+				masterCache.getEmpGeneralInfo().getEmpLicense());
+		
 		return generalInfoImport;
 
 	}

@@ -1,17 +1,17 @@
 package nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupRespository;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupType;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 import nts.uk.shr.com.context.AppContexts;
@@ -38,9 +38,16 @@ public class WorkplaceGroupFinder {
 	 * 部品起動
 	 * @return List<職場グループ>
 	 */
-	public WorkplaceGroupDto getWorkplaceGroup () {
+	public WorkplaceGroupDto getWorkplaceGroup(List<Integer> wkpGroupTypes) {
 		String cid = AppContexts.user().companyId();
-		List<WorkplaceGroup> wkpGroups = wkpGroupRepo.getAll(cid);
+
+		List<WorkplaceGroup> wkpGroups = new ArrayList<>();
+		if (CollectionUtil.isEmpty(wkpGroupTypes)) {
+			wkpGroups = wkpGroupRepo.getAll(cid);
+		} else {
+			List<WorkplaceGroupType> wkpGroupTypeList = wkpGroupTypes.stream().map(WorkplaceGroupType::valueOf).collect(Collectors.toList());
+			wkpGroups = wkpGroupRepo.getWorkplaceGroupByCidAndFilterList(cid, wkpGroupTypeList);
+		}
 		return new WorkplaceGroupDto(wkpGroups);
 	}
 	
