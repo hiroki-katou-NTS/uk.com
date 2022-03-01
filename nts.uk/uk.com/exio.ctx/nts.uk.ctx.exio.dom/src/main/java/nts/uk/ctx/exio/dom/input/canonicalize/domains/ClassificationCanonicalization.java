@@ -19,6 +19,7 @@ public class ClassificationCanonicalization extends IndependentCanonicalization{
 		public static final int 分類コード = 1;
 		public static final int 分類名称 = 2;
 		public static final int メモ = 3;
+		public static final int 会社ID = 9998;
 	}
 
     @Override
