@@ -41,7 +41,6 @@ public class AnyPeriodActualResultCorrectionService {
         AttendanceTimeOfAnyPeriod afterCalculation = afterCorrection.orElse(null);
 
         return new AnyPeriodActualResultCorrectionDetail(
-                converter,
                 afterCorrection.orElse(null),
                 afterCalculation
         );

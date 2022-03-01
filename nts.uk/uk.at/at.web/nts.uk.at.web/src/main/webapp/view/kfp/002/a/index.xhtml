@@ -1,0 +1,210 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js" of="/nts.uk.com.js.web" />
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js" of="/nts.uk.com.js.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="kfp002.a.vm.js" />
+			<com:stylefile path="kfp002.a.style.css" />
+			<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode
+					nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode
+					nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD
+					nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode
+					nts.uk.shr.com.primitive.WorkplaceCode
+					nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode
+					nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode
+					nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode
+					nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RecordRemarks
+					nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+					nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus
+					nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth
+					nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth
+					nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.OverTime
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes
+					nts.uk.ctx.at.shared.dom.common.days.MonthlyDays
+					nts.uk.ctx.at.shared.dom.common.days.YearlyDays
+					nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays
+					nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain
+					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain
+					nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse
+					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse
+					nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+                    nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth
+                    nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth
+                    nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth
+                    nts.uk.ctx.bs.employee.dom.classification.ClassificationCode
+                    nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode
+		    </com:ValidatorScript>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!--A1_1-->
+				<button data-bind="enable: $root.errors.isEmpty, click: insertUpdate" class="proceed">#{i18n.getText('KFP002_1')}</button>
+				<!--A1_2-->
+				<button data-bind="click: openDialogB">#{i18n.getText('KFP002_2')}</button>
+				<!--A1_3-->
+				<button data-bind="click: openCDL027">#{i18n.getText('KFP002_3')}</button>
+			</div>
+			<!--<div id="contents-area" class="fixed-flex-layout">-->
+			<div id="contents-area">
+				<!--A3_1-->
+				<div id="ccg001"></div>
+				<div style="margin-left: 50px;">
+					<div class="control-group valign-center">
+						<div id="A2_1"
+							 style="width: 250px;"
+							 data-bind="ntsComboBox: {
+										name:'#[KFP002_4]',
+										options: aggregateFrames,
+										optionsValue: 'aggrFrameCode',
+										visibleItemsCount: 10,
+										value: selectedFrameCode,
+										optionsText: 'optionalAggrName',
+										columns: [
+											{ prop: 'aggrFrameCode', length: 4 },
+											{ prop: 'optionalAggrName', length: 10 },
+										]}">
+						</div>
+						<button data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KMW003_33')}</button>
+						<button data-bind="click: saveColumnWidth">#{i18n.getText('KFP002_5')}</button>
+						<button id="A2_5"><i data-bind="ntsIcon: { no: 5, width: 20, height: 20 }"></i></button>
+						<div id="setting-content">
+							<div class="control-group valign-center">
+								<span>#{i18n.getText('KFP002_11')}</span>
+								<div id="cbCursorMoveDirection"
+									 style="width: 60px;"
+									 data-bind="ntsComboBox: {
+													visibleItemsCount: 2,
+													name:'#[KFP002_11]',
+													options: cursorMoveDirections,
+													optionsValue: 'code',
+													value: cursorDirection,
+													optionsText: 'name',
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 3 }
+													]}">
+								</div>
+							</div>
+							<div class="control-group valign-center">
+								<div data-bind="ntsCheckBox: { checked: displayZero }">#{i18n.getText('KFP002_12')}</div>
+							</div>
+							<div class="control-group valign-center">
+								<div data-bind="ntsCheckBox: { checked: displayItemNumber }">#{i18n.getText('KFP002_13')}</div>
+							</div>
+						</div>
+					</div>
+                    <table id="anpGrid"></table>
+				</div>
+				<!--<div class="fixed-flex-layout-left" style="width: 70px;">-->
+					<!--<div style="min-width: 50px">-->
+						<!--&lt;!&ndash;A1_11 ロック解除中&ndash;&gt; -->
+						<!--<div class="label warning" data-bind="{visible:showButton().available_A1_11}">#{i18n.getText('KMW003_34')}</div>	-->
+						<!---->
+					<!--</div>					-->
+				<!--</div>-->
+				<!--<div class="fixed-flex-layout-right">-->
+					<!--<div class="control-group" style="display: inline-block;">-->
+						<!--&lt;!&ndash;A3_1 処理年月&ndash;&gt; -->
+						<!--<div data-bind="ntsFormLabel: { required: true}">#{i18n.getText('KMW003_9')}</div>-->
+						<!--&lt;!&ndash;A3_2 処理年月&ndash;&gt; -->
+						<!--<div id="yearMonthPicker"  data-bind="ntsDatePicker: { -->
+									<!--value: yearMonth,-->
+									<!--name: '#[KMW003_9]',-->
+									<!--required: true, -->
+									<!--dateFormat: 'yearmonth',-->
+									<!--showJumpButtons: true,-->
+									<!--valueFormat: 'YYYYMM'}" />-->
+						<!--&lt;!&ndash;A4_3 実績期間&ndash;&gt; -->
+						<!--<div id="dislayFormatLbl" class="label" style="width: 80px">#{i18n.getText('KMW003_11')}</div>-->
+						<!--&lt;!&ndash;A4_4 実績期間選択&ndash;&gt; -->
+						<!--<div  id="dislayFormatLbl" style="width:218px; vertical-align: middle; height: 27px" data-bind="ntsComboBox: {-->
+								<!--options: actualTimeOptionDisp,-->
+								<!--optionsValue: 'code',-->
+								<!--value: actualTimeSelectedCode,-->
+								<!--optionsText: 'name',-->
+								<!--enable: showButton().enable_multiActualTime,-->
+								<!--name:'#[KMW003_12]',-->
+								<!--columns: [-->
+									<!--{ prop: 'name', length: 10 },-->
+								<!--]}">-->
+						<!--</div>-->
+					<!--</div>-->
+					<!--<div class="control-group" id = "id-vertical-middle">-->
+						<!--&lt;!&ndash;A4_1 締め日&ndash;&gt; -->
+						<!--<div class="label" style="width: 70px">#{i18n.getText('KMW003_10')}</div>-->
+						<!--&lt;!&ndash;A4_2 対象締め日&ndash;&gt; -->
+						<!--<div data-bind="{text: closureName,visible:showButton().available_A4_2}" id="dislayFormatLbl" class="label"  style="width: 100px"></div>-->
+						<!--&lt;!&ndash;A4_7 &ndash;&gt;-->
+						<!--<div id="cbClosureInfo" style="height: 27px"-->
+							<!--data-bind="ntsComboBox: {-->
+										<!--visibleItemsCount: 5,-->
+										<!--name:'#[KMW003_10]',-->
+										<!--options: closureInfoItems,-->
+										<!--optionsValue: 'name',-->
+										<!--value: selectedClosure,-->
+										<!--optionsText: 'code',-->
+										<!--enable:showButton().available_A4_7,-->
+										<!--columns: [-->
+											<!--{ prop: 'code', length: 10 }-->
+										<!--]}">-->
+						<!--</div>  -->
+								<!---->
+						<!--&lt;!&ndash;A4_6 複数実績メッセージ&ndash;&gt; -->
+						<!--<div id="multi-archieve-message" data-bind="{visible:showButton().enable_multiActualTime}" class="label">#{i18n.getText('KMW003_13')}</div>-->
+					<!--</div>-->
+					<!--<div id="content-grid-not">-->
+						<!--&lt;!&ndash;A5_1 一括承認ボタン&ndash;&gt;-->
+						<!--<button id="btn-signAll" data-bind="click: signAll">#{i18n.getText('KMW003_14')}</button>-->
+						<!--&lt;!&ndash;A5_6 一括解除ボタン	  &ndash;&gt;-->
+						<!--<button id="btn-unSignAll" data-bind="click: releaseAll">#{i18n.getText('KMW003_88')}</button>-->
+						<!--&lt;!&ndash;A5_3 凡例ボタン&ndash;&gt; -->
+						<!--<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KMW003_33')}</button>-->
+						<!--&lt;!&ndash;A5_4 列幅保存ボタン&ndash;&gt; 							-->
+						<!--<button id="btn-saveColumnWidth" data-bind="{visible:showButton().available_A5_4, enable:showButton().enable_A5_4, click : btnSaveColumnWidth_Click}">#{i18n.getText('KMW003_15')}</button>-->
+						<!--<div class="setting-container">-->
+							<!--&lt;!&ndash;A5_5 画面固有情報の設定ボタン&ndash;&gt; -->
+
+						<!--</div>-->
+					<!--</div>-->
+					<!--<div class="compact-grid grid-container" id="gid">-->
+
+					<!--</div>-->
+					<!---->
+					<!--&lt;!&ndash; <span style="margin: 10px 0 0 0px; display: inline-block; width : 50%" data-bind="text: comment"></span> &ndash;&gt;-->
+					<!--&lt;!&ndash;A7_1 コメント&ndash;&gt; -->
+					<!--<div style="clear: both"></div>-->
+					<!--<div id = "comment-text" style="width : 50%" data-bind="text: comment"></div>-->
+				<!--</div>-->
+				<!---->
+				<!--<div id="tooltip"><span id="textLock"></span></div>-->
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

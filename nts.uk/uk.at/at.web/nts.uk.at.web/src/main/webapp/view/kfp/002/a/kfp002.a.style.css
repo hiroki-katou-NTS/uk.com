@@ -1,0 +1,29 @@
+.mgrid .mgrid-header td {
+    color: #545454;
+    white-space: pre;
+}
+
+/*.mgrid-calc {*/
+    /*color.Error = "mgrid-error";*/
+    /*color.Alarm = "mgrid-alarm";*/
+    /*color.ManualEditTarget = "mgrid-manual-edit-target";*/
+    /*color.ManualEditOther = "mgrid-manual-edit-other";*/
+    /*color.Reflect = "mgrid-reflect";*/
+    /*color.Calculation = "mgrid-calc";*/
+    /*color.Disable = "mgrid-disable";*/
+    /*color.Lock = "mgrid-lock";*/
+    /*color.Hide = "mgrid-hide";*/
+    /*color.HOVER = "ui-state-hover";*/
+/*}*/
+
+/*.text-center-align {*/
+    /*text-align: center !important;*/
+/*}*/
+
+/*.text-left-align {*/
+    /*text-align: left !important;*/
+/*}*/
+
+/*.text-right-align {*/
+    /*text-align: right !important;*/
+/*}*/

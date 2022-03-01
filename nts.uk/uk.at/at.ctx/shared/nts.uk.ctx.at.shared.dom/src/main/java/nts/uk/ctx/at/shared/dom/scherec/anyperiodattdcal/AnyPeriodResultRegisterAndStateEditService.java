@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -26,12 +25,6 @@ public class AnyPeriodResultRegisterAndStateEditService {
 
     @Inject
     private AnyPeriodActualResultCorrectionService correctionService;
-
-    @Inject
-    private AnyPeriodCorrectionEditStateCreateService editStateCreateService;
-
-    @Inject
-    private AnyPeriodCorrectionEditStateRegisterService editStateRegisterService;
 
     @Inject
     private AnyPeriodEditingStateRepository anyPeriodEditingStateRepo;
@@ -48,12 +41,7 @@ public class AnyPeriodResultRegisterAndStateEditService {
     public AnyPeriodResultRegistrationDetail register(Require require, String anyPeriodTotalFrameCode, String correctingEmployeeId, String targetEmployeeId, List<ItemValue> items) {
         List<AtomTask> processes = new ArrayList<>();
         AnyPeriodActualResultCorrectionDetail attdTime = correctionService.create(
-                new AnyPeriodActualResultCorrectionService.Require() {
-                    @Override
-                    public Optional<AttendanceTimeOfAnyPeriod> find(String employeeId, String frameCode) {
-                        return anyPeriodRepository.find(employeeId, frameCode);
-                    }
-                },
+                (employeeId, frameCode) -> anyPeriodRepository.find(employeeId, frameCode),
                 anyPeriodTotalFrameCode,
                 targetEmployeeId,
                 items
@@ -66,20 +54,16 @@ public class AnyPeriodResultRegisterAndStateEditService {
             processes.add(task);
 
             List<Integer> editedItems = items.stream().map(ItemValue::getItemId).distinct().collect(Collectors.toList());
-            List<AnyPeriodCorrectionEditingState> editingStates = editStateCreateService.create(
+            List<AnyPeriodCorrectionEditingState> editingStates = AnyPeriodCorrectionEditStateCreateService.create(
                     anyPeriodTotalFrameCode,
                     correctingEmployeeId,
                     targetEmployeeId,
                     editedItems
             );
 
-            processes.addAll(editStateRegisterService.register(
-                    new AnyPeriodCorrectionEditStateRegisterService.Require() {
-                        @Override
-                        public void persist(AnyPeriodCorrectionEditingState state) {
-                            anyPeriodEditingStateRepo.persist(state);
-                        }
-                    }, editingStates
+            processes.addAll(AnyPeriodCorrectionEditStateRegisterService.register(
+                    state -> anyPeriodEditingStateRepo.persist(state),
+                    editingStates
             ));
 
             return new AnyPeriodResultRegistrationDetail(processes, attdTime);

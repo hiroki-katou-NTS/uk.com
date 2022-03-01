@@ -50,7 +50,7 @@ public class JpaAnyPeriodEditingStatusRepository extends JpaRepository implement
     @Override
     public void persist(AnyPeriodCorrectionEditingState state) {
         Optional<KsrdtAnpEditState> existState = this.queryProxy()
-                .find(new KsrdtAnpEditStatePk(state.getAnyPeriodFrameCode().v(), state.getEmployeeId(), state.getAttendanceItemId()), KsrdtAnpEditState.class);
+                .find(new KsrdtAnpEditStatePk(state.getEmployeeId(), state.getAnyPeriodFrameCode().v(), state.getAttendanceItemId()), KsrdtAnpEditState.class);
         if (existState.isPresent()) {
             this.updateEntity(existState.get(), state);
         } else {
