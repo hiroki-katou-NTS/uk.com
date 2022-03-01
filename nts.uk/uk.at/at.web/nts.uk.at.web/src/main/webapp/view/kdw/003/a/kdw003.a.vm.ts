@@ -700,6 +700,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         
                         $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, dataDaily) => {
                             self.dataSessionDto = dataDaily.dataSessionDto;
+							self.screenDto.dataSessionDto = self.dataSessionDto;
                             // self.convertDataSessionDto();
                             dataDaily.monthResult = dataMonth.monthResult;
                             dataDaily.indentityMonthResult = dataMonth.indentityMonthResult;
@@ -797,6 +798,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                                         $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, dataDaily) => {
                                             self.dataSessionDto = dataDaily.dataSessionDto;
+											self.screenDto.dataSessionDto = self.dataSessionDto;
                                             dataDaily.monthResult = dataMonth.monthResult;
                                             dataDaily.indentityMonthResult = dataMonth.indentityMonthResult;
                                             dataDaily.showTighProcess = dataMonth.showTighProcess;
@@ -1728,13 +1730,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dataParent["dateRange"] = { startDate: self.shareObject().initClock.dateSpr.utc(), endDate: self.shareObject().initClock.dateSpr.utc() };
                 } else {
                     dataParent["employeeId"] = dataSource.length > 0 ? dataSource[0].employeeId : null;
-                    dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length - 1].dateDetail } : null;
+                    dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail._i, endDate: dataSource[dataSource.length - 1].dateDetail._i } : null;
                 }
                 dataParent["monthValue"] = self.valueUpdateMonth;
             }else{
                  dataParent["dateRange"] = {
-                    startDate: moment(self.dateRanger().startDate).toISOString(),
-                    endDate: moment(self.dateRanger().endDate).toISOString()
+                    startDate: self.dateRanger().startDate,
+                    endDate: self.dateRanger().endDate
                 }
             }
 
@@ -2494,8 +2496,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let dateRangeTemp: any = null;
                 if((self.hasEmployee && !hasChangeFormat) || self.initFromScreenOther){
                     dateRangeTemp = {
-                        startDate: self.displayFormat() === 1 ? self.selectedDate() : self.dateRanger().startDate,
-                        endDate: self.displayFormat() === 1 ? self.selectedDate() : self.dateRanger().endDate
+                        startDate: self.displayFormat() === 1 ? moment(self.selectedDate()).format('YYYY/MM/DD') : self.dateRanger().startDate,
+                        endDate: self.displayFormat() === 1 ? moment(self.selectedDate()).format('YYYY/MM/DD') : self.dateRanger().endDate
                     }
                 }else if((self.hasEmployee && hasChangeFormat)){
                      dateRangeTemp = {
@@ -2570,6 +2572,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                         $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, data) => {
                             self.dataSessionDto = data.dataSessionDto;
+							self.screenDto.dataSessionDto = self.dataSessionDto;
                             //update mobile
                             if((hasChangeFormat && self.displayFormat() === 0) || self.initFromScreenOther){
                                 self.yearMonth(data.periodInfo.yearMonth);
@@ -2763,6 +2766,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                        
                                         $.when(service.loadMonth(paramMonth), service.startScreen(param)).done((dataMonth, dataDaily) => {
                                             self.dataSessionDto = dataDaily.dataSessionDto;
+											self.screenDto.dataSessionDto = self.dataSessionDto;
                                             dataDaily.monthResult = dataMonth.monthResult;
                                             dataDaily.indentityMonthResult = dataMonth.indentityMonthResult;
                                             dataDaily.showTighProcess = dataMonth.showTighProcess;
@@ -3080,11 +3084,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (lstEmployee.length > 0) {
                 let param = {
                     dateRange: {
-                        startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
+                        startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : self.dateRanger().startDate,
+                        endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : self.dateRanger().endDate
                     },
                     lstEmployee: lstEmployee,
-                    selectFormat:  self.formatCodes()
+                    selectFormat:  self.formatCodes(),
+					screenDto: self.screenDto
                 };
 				setShared("displayFormat", self.displayFormat());
                 setShared("paramToGetError", param);
@@ -3123,8 +3128,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (errorCodes != undefined && errorCodes.length > 0) {
                         let param = {
                             dateRange: {
-                                startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
-                                endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
+                                startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : self.dateRanger().startDate,
+                                endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : self.dateRanger().endDate
                             },
                             lstEmployee: lstEmployee,
                             displayFormat: self.displayFormat(),
@@ -3495,7 +3500,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             let lstData = _.map(self.dailyPerfomanceData(), (map) => {
-                map.date = moment(map.date).toISOString();
+                //map.date = moment(map.date).toISOString();
                 map.state = "";
                 return map;
             });
@@ -3512,15 +3517,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 lstAttendanceItem: self.lstAttendanceItem(),
                 lstEmployee: lstEmployee,
                 dateRange: self.hasEmployee ? {
-                    startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
-                    endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
+                    startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : self.dateRanger().startDate,
+                    endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : self.dateRanger().endDate
                 } : null,
                 mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                 displayFormat: self.displayFormat(),
                 lstData: lstData,
                 lstHeader: self.lstHeaderReceive,
                 showLock: showLock,
-                periodLock: self.periodCheckLock == null ? null : {startDate: moment(self.periodCheckLock.startDate), endDate: moment(self.periodCheckLock.endDate)}
+                periodLock: self.periodCheckLock == null ? null : {startDate: self.periodCheckLock.startDate, endDate: self.periodCheckLock.endDate}
             }
 
             let dfd = $.Deferred();

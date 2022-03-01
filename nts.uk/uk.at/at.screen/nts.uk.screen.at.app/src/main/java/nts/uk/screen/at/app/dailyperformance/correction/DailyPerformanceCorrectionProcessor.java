@@ -2155,7 +2155,7 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 		}
 				
-		return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(), closureId.value, lstClosureCache, lstPeriod);
+		return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(),closureId == null?null: closureId.value, lstClosureCache, lstPeriod);
 	}
 	
 	public void requestForFlush(){
