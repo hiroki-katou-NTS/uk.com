@@ -73,6 +73,7 @@ public class AddSubHdManagementService {
 						subHdManagementData.getDateHoliday(), subHdManagementData.getDuedateHoliday(),
 						subHdManagementData.getSelectedCodeHoliday(), 0, subHdManagementData.getSelectedCodeHoliday(), 0,
 						subHDAtr, equivalentADay, equivalentHalfDay);
+				domainLeaveManagementData.validate();
 				repoLeaveManaData.create(domainLeaveManagementData);
 				if (subHdManagementData.getCheckedSubHoliday()) {
 					CompensatoryDayOffManaData domainCompensatoryDayOffManaData = new CompensatoryDayOffManaData(
