@@ -832,10 +832,87 @@ public class SupportScheduleTest {
 			assertThat(result.getDetails()).isEmpty();
 			
 		}
+	}
+
+	public static class SupportSchedule_havePlanToSupport {
+		
+		@Injectable
+		private SupportSchedule.Require require;
+		
+		/**
+		 * target: havePlanToSupport
+		 * pattern: 応援する予定がない
+		 */
+		@Test
+		public void testHavePlanToSupport_case_not_support() {
+			
+			val supportSchedule = SupportSchedule.createWithEmptyList();
+			
+			//act
+			val result = supportSchedule.havePlanToSupport();
+			
+			//assert
+			assertThat( result ).isFalse();
+
+		}
+		
+		/**
+		 * target: havePlanToSupport
+		 * pattern: 終日で応援する予定がある
+		 */
+		@Test
+		public void testHavePlanToSupport_case_all_day_support() {
+			
+			val details = Arrays.asList(
+					Helper.createSupportScheduleDetail(SupportType.ALLDAY, Optional.empty())
+					);
+			val supportSchedule = SupportSchedule.create( require, details );
+			
+			//act
+			val result = supportSchedule.havePlanToSupport();
+			
+			//assert
+			assertThat( result ).isTrue();
+			
+		}
+		
+		/**
+		 * target: havePlanToSupport
+		 * pattern: 時間帯で応援する予定がある
+		 */
+		@Test
+		public void testHavePlanToSupport_case_timeZone(
+				@Injectable TimeSpanForCalc time1
+			,	@Injectable TimeSpanForCalc time2
+				) {
+			
+			val supportSetting = new SupportOperationSetting(
+					true, true //dummy
+				,	new MaximumNumberOfSupport(5)//一日の最大応援回数
+					);
+			
+			new Expectations() {{
+				
+				require.getSupportOperationSetting();
+				result = supportSetting;
+				
+			}};
+			
+			val details = Arrays.asList(
+					Helper.createSupportScheduleDetail( SupportType.TIMEZONE, Optional.of( time1 ) )
+				,	Helper.createSupportScheduleDetail( SupportType.TIMEZONE, Optional.of( time2 ) )
+					);
+			val supportSchedule = SupportSchedule.create( require, details );
+			
+			//act
+			val result = supportSchedule.havePlanToSupport();
+			
+			//assert
+			assertThat( result ).isTrue();
+			
+		}
 		
 	}
-	
-	
 	
 	public static class Helper{
 		

@@ -18,10 +18,6 @@ import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSe
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
@@ -30,9 +26,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  *
@@ -182,7 +176,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 		if (dto.getWorkContent().getWorkplace().getWorkplaceId() != null && dto.getWorkContent().getWorkplace().getWorkplaceId().v().isEmpty()) {
 			WorkplaceOfWorkEachOuen workplace = WorkplaceOfWorkEachOuen.create(new WorkplaceId(workplaceId), dto.getWorkContent().getWorkplace().getWorkLocationCD().map(x -> x).orElse(null));
 			WorkContent workContent = WorkContent.create(workplace, dto.getWorkContent().getWork(), dto.getWorkContent().getWorkSuppInfo());
-			return new OuenWorkTimeSheetOfDailyAttendance(dto.getWorkNo(), workContent, dto.getTimeSheet(), dto.getInputFlag());
+			return OuenWorkTimeSheetOfDailyAttendance.create(dto.getWorkNo(), workContent, dto.getTimeSheet(), dto.getInputFlag());
 		}
 		return dto;
 	}

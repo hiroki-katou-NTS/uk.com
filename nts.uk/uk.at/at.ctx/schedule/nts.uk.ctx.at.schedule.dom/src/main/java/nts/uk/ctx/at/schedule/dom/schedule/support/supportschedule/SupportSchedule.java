@@ -173,7 +173,7 @@ public class SupportSchedule implements DomainValue{
 	 */
 	public Optional<SupportType> getSupportType() {
 		
-		if ( ! this.havePlanToSupport() ) {
+		if ( !this.havePlanToSupport() ) {
 			return Optional.empty(); 
 		}
 		
