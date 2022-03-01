@@ -49,7 +49,7 @@ public interface LinkedPaymentConversionRepository {
 	List<EmploymentAndLinkedMonthSetting> getByPaymentCode(String contractCode, String companyId, PaymentCategory paymentCode);
 	
 	/**
-	 * get 会社を指定して連動支払変換を取得する
+	 * get 会社を指定して選択雇用一覧を取得する
 	 * 
 	 * @param companyId 契約コード
 	 * @param code      会社ID
