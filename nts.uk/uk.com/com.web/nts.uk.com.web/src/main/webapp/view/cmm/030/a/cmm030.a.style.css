@@ -15,7 +15,7 @@
 }
 
 #A2_1 {
-  width: 50%;
+  width: 800px;
   height: 150px;
 }
 
@@ -37,6 +37,10 @@
   height: 60px !important;
 }
 
+#A5 tbody tr td:first-child {
+  width: 300px !important;
+}
+
 #A5 tbody td > i {
   margin-top: 5px;
 }
@@ -52,4 +56,5 @@
   position: absolute;
   left: 0;
   right: 0;
+  min-height: 50px;
 }

@@ -667,7 +667,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		return rootEntities.stream()
 				.map(root -> {
 					List<WwfmtApprovalPhase> phases = phaseEntities.stream()
-							.filter(x -> x.wwfmtApprovalPhasePK.approvalId == root.wwfmtPsApprovalRootPK.approvalId)
+							.filter(x -> x.wwfmtApprovalPhasePK.approvalId.equals(root.wwfmtPsApprovalRootPK.approvalId))
 							.collect(Collectors.toList());
 					return this.createApprovalSettingInfoFromEntities(root, phases);
 				})

@@ -28,16 +28,16 @@
 
     <ui:define name="content">
       <div id="functions-area">
-        <a id="A1_1" class="goback" data-bind="ntsLinkButton: { jump: returnUrl }, enable: returnUrl() !== null">#{i18n.getText('CMM030_10')}</a>
+        <a id="A1_1" class="goback" data-bind="ntsLinkButton: { jump: returnUrl }, visible: !_.isEmpty(returnUrl())">#{i18n.getText('CMM030_10')}</a>
         <button id="A1_2" data-bind="click: openDialogC" tabindex="1">#{i18n.getText('CMM030_11')}</button>
         <button id="A1_3" class="proceed" data-bind="click: processSave" tabindex="2">#{i18n.getText('CMM030_12')}</button>
         <button id="A1_4" data-bind="enable: isEnableFuncButton, visible: isVisibleFuncButton, click: openDialogCDL023" tabindex="3">#{i18n.getText('CMM030_13')}</button>
-        <button id="A1_5" tabindex="4">#{i18n.getText('CMM030_14')}</button>
+        <button id="A1_5" tabindex="4" data-bind="click: openDialogF">#{i18n.getText('CMM030_14')}</button>
         <button id="A1_6" data-bind="enable: isEnableFuncButton, visible: isVisibleFuncButton, click: openDialogG" tabindex="5">#{i18n.getText('CMM030_15')}</button>
       </div>
       <div id="contents-area">
         <div id="A3_1" tabindex="-1"></div>
-        <textarea id="A2_1" data-bind="ntsMultiLineEditor: {
+        <textarea id="A2_1" data-bind="ntsMultilineEditor: {
           name: '#[CMM030_16]',
           value: inputProcedure,
           constraint: 'ApproverInputExplanation',

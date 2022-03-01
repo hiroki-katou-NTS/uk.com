@@ -1,5 +1,6 @@
 package nts.uk.screen.com.app.find.cmm030.f;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -98,15 +99,16 @@ public class Cmm030FScreenQuery {
 							? ""
 							: data.getApprRoot().getHistoryItems().get(0).getApprovalId());
 				} else {
-					dataMap.put(key, Arrays.asList(data.getApprRoot().getHistoryItems().isEmpty()
+					dataMap.put(key, new ArrayList<>(Arrays.asList(data.getApprRoot().getHistoryItems().isEmpty()
 							? ""
-							: data.getApprRoot().getHistoryItems().get(0).getApprovalId()));
+							: data.getApprRoot().getHistoryItems().get(0).getApprovalId())));
 				}
 			});
 		});
 		// グルーピングした期間・運用モードは重なっているかチェックする（期間毎に重なる場合フラグセット）
 		return dataMap.entrySet().stream().map(e -> {
-			boolean isOverlap = dataMap.keySet().stream().anyMatch(k -> k.isOverlap(e.getKey()));
+			// Result is always >= 1 (overlap itself)
+			boolean isOverlap = dataMap.keySet().stream().filter(k -> k.isOverlap(e.getKey())).count() > 1;
 			return new SummarizePeriodDto(e.getKey().startDate, e.getKey().endDate, e.getKey().operationMode, isOverlap,
 					e.getValue());
 		}).collect(Collectors.toList());
@@ -150,6 +152,11 @@ public class Cmm030FScreenQuery {
 						&& o.operationMode == this.operationMode;
 			}
 			return false;
+		}
+		
+		@Override
+		public int hashCode() {
+			return this.startDate.hashCode() + this.endDate.hashCode() + this.operationMode;
 		}
 	}
 }

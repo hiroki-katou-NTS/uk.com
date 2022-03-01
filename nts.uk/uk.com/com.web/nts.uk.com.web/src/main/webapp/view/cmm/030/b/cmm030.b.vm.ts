@@ -25,14 +25,14 @@ module nts.uk.com.view.cmm030.b {
 
     created(params?: any): void {
       const vm = this;
+      vm.baseDate = moment.utc(params.baseDate, "YYYY/MM/DD");
+      vm.selectedEmployeeId(params.sid);
+
       vm.selectedWorkplaceId.subscribe(value => {
         vm.$blockui("grayout");
         vm.getApprovalAuthorityHolders(value).always(() => vm.$blockui("clear"));
       });
       vm.selectedEmployeeCode.subscribe(value => vm.selectedEmployeeId(_.find(vm.employeeList(), { code: value }).id));
-
-      vm.baseDate = moment.utc(params.baseDate, "YYYY/MM/DD");
-      vm.selectedEmployeeId(params.sid);
       $.when(vm.initKcp004(), vm.initKcp005());
     }
 
@@ -138,7 +138,11 @@ module nts.uk.com.view.cmm030.b {
           name: data.employeeName
         };
       })))
-      .then(() => vm.selectedEmployeeCode(_.find(vm.employeeList(), { id: vm.selectedEmployeeId() }).code));
+      .then(() => {
+        if (!_.isNil(vm.selectedEmployeeId())) {
+          vm.selectedEmployeeCode(_.find(vm.employeeList(), { id: vm.selectedEmployeeId() }).code)
+        }
+      });
     }
   }
 }
