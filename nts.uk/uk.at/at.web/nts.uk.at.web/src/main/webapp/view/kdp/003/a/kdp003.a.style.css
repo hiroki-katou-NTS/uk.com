@@ -1,48 +1,43 @@
 #contents-area {
-	overflow-y: auto;
-    height: calc(100vh - 10px);
+	display: flex;
+	justify-content: center;
+	padding-top: 70px;
 }
-
-.kdp-003-a {
-	padding: 10px 0 0;
-	background: linear-gradient(#EBFCF6, #F5F5F5);
-}
-
-.kdp-003-a .time-sheet,
-.kdp-003-a .time-stamp {
-	float:left;
-}
-
-.kdp-003-a .time-sheet {
-	width: 260px;
-	margin-right: 10px;
-}
-
-/* .kdp-003-a #stamp-input.time-stamp {
-	min-width: 100%;
-} */
-
-/* .kdp-003-a .has-time-sheet #stamp-input.time-stamp {
-	min-width: calc(100% - 270px);
-} */
 
 .kdp-003-a .control-panel {
-	margin: 0 auto;
-	width: 542px;
 }
 
-.kdp-003-a .control-panel.has-time-sheet {
-    max-width: 750px;
-    width: 100%;
+.kdp-003-a .control-panel > div {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.kdp-003-a .control-panel > .time-sheet,
+.kdp-003-a .control-panel > .dummy-spacer {
+	width: 300px;
+}
+
+.kdp-003-a .control-panel > .time-stamp {
+	width: 500px;
+}
+
+.kdp-003-a .control-panel > .time-stamp .time * {
+	font-family: Quicksand !important;
+	font-weight: bold;
 }
 
 .kdp-003-a .control-panel:not(.has-time-sheet) .time-sheet {
 	display: none;
 }
 
+.kdp-003-a .time-sheet .nts-datepicker-wrapper input {
+	border-radius: 0;
+    background-color: #6A6A6A;
+    color: #fff;
+    border: none;
+}
+
 .kdp-003-a #stamp-input {
-	/* width: calc(100% - 270px); */
-	width: 100%;
 }
 
 .kdp-003-a .not_used_label {
@@ -50,6 +45,7 @@
 	font-size: 1.2rem !important;
 }
 .pageComent {
-	word-break: break-all !important;
-	white-space: pre-wrap !important;
+	position: absolute;
+	bottom: 30px;
+	right: 30px;
 }

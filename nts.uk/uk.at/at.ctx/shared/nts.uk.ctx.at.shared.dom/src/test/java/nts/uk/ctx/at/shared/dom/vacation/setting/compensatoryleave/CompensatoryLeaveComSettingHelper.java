@@ -5,6 +5,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 
@@ -23,8 +24,8 @@ public class CompensatoryLeaveComSettingHelper {
 								new DesignatedTime(new OneDayTime(1), new OneDayTime(2)), EnumTimeDivision.FIXED_TIME)));
 	}
 	
-	public static CompensatoryDigestiveTimeUnit createCompensatoryDigestiveTimeUnit() {
-		return new CompensatoryDigestiveTimeUnit(ManageDistinct.NO, TimeDigestiveUnit.FifteenMinute);
+	public static TimeVacationDigestUnit createCompensatoryDigestiveTimeUnit() {
+		return new TimeVacationDigestUnit(ManageDistinct.NO, TimeDigestiveUnit.FifteenMinute);
 	}
 	
 	public static CompensatoryLeaveComSetting createCompensatoryLeaveComSetting () {
@@ -38,7 +39,7 @@ public class CompensatoryLeaveComSettingHelper {
 		return comSetting;
 	}
 	
-	public static CompensatoryLeaveComSetting createCompensatoryLeaveComSetting (ManageDistinct isManaged, CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit) {
+	public static CompensatoryLeaveComSetting createCompensatoryLeaveComSetting (ManageDistinct isManaged, TimeVacationDigestUnit compensatoryDigestiveTimeUnit) {
 		CompensatoryLeaveComSetting comSetting = new CompensatoryLeaveComSetting(
 				"000000000003-0006", 
 				isManaged, 
@@ -49,7 +50,7 @@ public class CompensatoryLeaveComSettingHelper {
 		return comSetting;
 	}
 	
-	public static CompensatoryDigestiveTimeUnit createCompensatoryDigestiveTimeUnit(ManageDistinct isManagedTime) {
-		return new CompensatoryDigestiveTimeUnit(isManagedTime, TimeDigestiveUnit.FifteenMinute);
+	public static TimeVacationDigestUnit createCompensatoryDigestiveTimeUnit(ManageDistinct isManagedTime) {
+		return new TimeVacationDigestUnit(isManagedTime, TimeDigestiveUnit.FifteenMinute);
 	}
 }

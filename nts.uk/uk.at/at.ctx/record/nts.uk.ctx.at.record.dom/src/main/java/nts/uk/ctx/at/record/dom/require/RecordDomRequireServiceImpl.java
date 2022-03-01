@@ -1,4 +1,5 @@
 package nts.uk.ctx.at.record.dom.require;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,6 +10,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.dom.AggregateRoot;
@@ -35,9 +38,7 @@ import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkA
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
-import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.CreatingDailyResultsCondition;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.CreatingDailyResultsConditionRepository;
@@ -190,7 +191,6 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UnitAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
@@ -365,7 +365,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -403,7 +402,6 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements RecordDomRequireService.Require {
-		private Optional<WeekRuleManagement> weekRuleManagementCache = Optional.empty();
 
 		public RecordDomRequireServiceImpl(ComSubstVacationRepository comSubstVacationRepo, CompensLeaveComSetRepository compensLeaveComSetRepo, SpecialLeaveGrantRepository specialLeaveGrantRepo,
 				EmpEmployeeAdapter empEmployeeAdapter, GrantDateTblRepository grantDateTblRepo, AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo, SpecialHolidayRepository specialHolidayRepo,
@@ -895,26 +893,7 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		
 		private  CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
 
-		Map<String,Optional<PredetemineTimeSetting>> predetemineTimeSettingMap = new ConcurrentHashMap<String, Optional<PredetemineTimeSetting>>();
-		Map<String, Optional<RegularLaborTimeEmp>> regularLaborTimeEmpMap = new ConcurrentHashMap<String, Optional<RegularLaborTimeEmp>>();
-		Map<String, Optional<DeforLaborTimeEmp>> deforLaborTimeEmpMap = new ConcurrentHashMap<String, Optional<DeforLaborTimeEmp>>();
-		Map<String, Optional<RegularLaborTimeWkp>> regularLaborTimeWkpMap = new ConcurrentHashMap<String, Optional<RegularLaborTimeWkp>>();
-		Map<String, Optional<DeforLaborTimeWkp>> deforLaborTimeWkpMap = new ConcurrentHashMap<String, Optional<DeforLaborTimeWkp>>();
-		Map<String, Optional<MonthlyWorkTimeSetEmp>> monthlyWorkTimeSetEmpMap = new ConcurrentHashMap<String, Optional<MonthlyWorkTimeSetEmp>>();
-		Optional<RegularLaborTimeCom> regularLaborTimeComCache = Optional.empty();
-		Optional<DeforLaborTimeCom> deforLaborTimeComCache = Optional.empty();
-		Map<String, Optional<MonthlyWorkTimeSetCom>> monthlyWorkTimeSetComMap = new ConcurrentHashMap<String, Optional<MonthlyWorkTimeSetCom>>();
-		Map<String, Optional<MonthlyWorkTimeSetWkp>> monthlyWorkTimeSetWkpMap = new ConcurrentHashMap<String, Optional<MonthlyWorkTimeSetWkp>>();
-		Map<String, Optional<WkpFlexMonthActCalSet>> wkpFlexMonthActCalSetMap = new ConcurrentHashMap<String, Optional<WkpFlexMonthActCalSet>>();
-		Map<String, Optional<EmpFlexMonthActCalSet>> empFlexMonthActCalSetMap = new ConcurrentHashMap<String, Optional<EmpFlexMonthActCalSet>>();
-		Map<String, Optional<WkpDeforLaborMonthActCalSet>> wkpDeforLaborMonthActCalSetMap = new ConcurrentHashMap<String, Optional<WkpDeforLaborMonthActCalSet>>();
-		Map<String, Optional<EmpDeforLaborMonthActCalSet>> empDeforLaborMonthActCalSetMap = new ConcurrentHashMap<String, Optional<EmpDeforLaborMonthActCalSet>>();
-		Map<String, Optional<WkpRegulaMonthActCalSet>> wkpRegulaMonthActCalSetMap = new ConcurrentHashMap<String, Optional<WkpRegulaMonthActCalSet>>();
-		Map<String, Optional<EmpRegulaMonthActCalSet>> empRegulaMonthActCalSetMap = new ConcurrentHashMap<String, Optional<EmpRegulaMonthActCalSet>>();
-		Optional<UsageUnitSetting> usageUnitSettingCache = Optional.empty();
-		Optional<RoundingSetOfMonthly> roundingSetOfMonthlyCache = Optional.empty();
-		Optional<AgreementOperationSetting> agreementOperationSettingCache = Optional.empty();
-		Map<String, List<ClosureEmployment>> employmentClosureCache = new ConcurrentHashMap<String, List<ClosureEmployment>>();
+		RecordDomRequireServiceCache cache = new RecordDomRequireServiceCache();
 
 		@Override
 		public Optional<SEmpHistoryImport> employeeEmploymentHis(CacheCarrier cacheCarrier, String companyId,
@@ -924,29 +903,63 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Map<GeneralDate, WorkInfoOfDailyAttendance> dailyWorkInfos(String employeeId, DatePeriod datePeriod) {
-			return workInformationRepo.findByPeriodOrderByYmd(employeeId, datePeriod)
-					.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getWorkInformation()));
+			Map<GeneralDate, WorkInfoOfDailyAttendance> dataForResult = new ConcurrentHashMap<GeneralDate, WorkInfoOfDailyAttendance>();
+			Map<GeneralDate, WorkInfoOfDailyAttendance> dataByRepo = new ConcurrentHashMap<GeneralDate, WorkInfoOfDailyAttendance>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cache.getWorkInfoOfDailyAttendanceMap().containsKey(keyForGet)){
+					dataForResult.put(date,cache.getWorkInfoOfDailyAttendanceMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =workInformationRepo.findByPeriodOrderByYmd(employeeId, new DatePeriod(date,datePeriod.end()))
+							.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getWorkInformation()));
+					
+					dataByRepo.forEach((k, v) ->{
+						String keyForPut = employeeId + "-" + k.toString();
+						if(!cache.getWorkInfoOfDailyAttendanceMap().containsKey(keyForPut)){
+							cache.getWorkInfoOfDailyAttendanceMap().put(keyForPut, v);
+						}
+						dataForResult.put(k, v);
+					});
+					
+					break;
+				}
+			};
+
+			return dataForResult;
 		}
 
 		@Override
 		public Optional<OperationStartSetDailyPerform> dailyOperationStartSet(CompanyId companyId) {
-			return operationStartSetDailyPerformRepo.findByCid(companyId);
+			if(!cache.getOperationStartSetDailyPerformCache().isPresent()){
+				cache.setOperationStartSetDailyPerformCache(operationStartSetDailyPerformRepo.findByCid(companyId));
+			}
+			return cache.getOperationStartSetDailyPerformCache();
 		}
 
 		@Override
 		public List<EmploymentHistImport> employmentHistories(String employeeId) {
-			return employmentHistAdapter.findByEmployeeIdOrderByStartDate(employeeId);
+			if(!cache.getEmploymentHistImportMap().containsKey(employeeId)){
+				cache.getEmploymentHistImportMap().put(employeeId, employmentHistAdapter.findByEmployeeIdOrderByStartDate(employeeId));
+			}
+			return cache.getEmploymentHistImportMap().get(employeeId);
 		}
 
 		@Override
 		public List<GrantHdTblSet> grantHdTblSets(String companyId) {
-			return yearHolidayRepo.findAll(companyId);
+			if(cache.getGrantHdTblSetCache().isEmpty()){
+				cache.setGrantHdTblSetCache(yearHolidayRepo.findAll(companyId));
+			}
+			return cache.getGrantHdTblSetCache();
 		}
 
 		@Override
 		public List<ScheRemainCreateInfor> scheRemainCreateInfor(String cid, String sid,
 				DatePeriod dateData) {
+			
 			return remainCreateInforByScheData.createRemainInforNew(cid, sid, dateData.datesBetween());
+
 		}
 
 		@Override
@@ -963,62 +976,238 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<UsageUnitSetting> usageUnitSetting(String companyId) {
-			if(usageUnitSettingCache.isPresent()) {
-				return usageUnitSettingCache;
+			if(!cache.getUsageUnitSettingCache().isPresent()) {
+				cache.setUsageUnitSettingCache(usageUnitSettingRepo.findByCompany(companyId));
 			}
-			usageUnitSettingCache = usageUnitSettingRepo.findByCompany(companyId);
-			return usageUnitSettingCache;
+			return cache.getUsageUnitSettingCache();
 		}
 
 		@Override
 		public Map<GeneralDate, TimeLeavingOfDailyAttd> dailyTimeLeavings(String employeeId, DatePeriod datePeriod) {
-			return timeLeavingOfDailyPerformanceRepo.findbyPeriodOrderByYmd(employeeId, datePeriod)
-					.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAttendance()));
+			
+			Map<GeneralDate, TimeLeavingOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, TimeLeavingOfDailyAttd>();
+			Map<GeneralDate, TimeLeavingOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, TimeLeavingOfDailyAttd>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cache.getTimeLeavingOfDailyAttdMap().containsKey(keyForGet)){
+					dataForResult.put(date,cache.getTimeLeavingOfDailyAttdMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =timeLeavingOfDailyPerformanceRepo.findbyPeriodOrderByYmd(employeeId, new DatePeriod(date, datePeriod.end()))
+							.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAttendance()));
+					
+					dataByRepo.forEach((k, v) ->{
+						String keyForPut = employeeId + "-" + k.toString();
+						if(!cache.getTimeLeavingOfDailyAttdMap().containsKey(keyForPut)){
+							cache.getTimeLeavingOfDailyAttdMap().put(keyForPut, v);
+						}
+						dataForResult.put(k, v);
+					});
+					
+					break;
+				}
+			};
+
+			return dataForResult;
 		}
 
 		@Override
 		public Map<GeneralDate, TemporaryTimeOfDailyAttd> dailyTemporaryTimes(String employeeId, DatePeriod datePeriod) {
-			return temporaryTimeOfDailyPerformanceRepo.findbyPeriodOrderByYmd(employeeId, datePeriod)
-					.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAttendance()));
+			
+			Map<GeneralDate, TemporaryTimeOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, TemporaryTimeOfDailyAttd>();
+			Map<GeneralDate, TemporaryTimeOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, TemporaryTimeOfDailyAttd>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cache.getTemporaryTimeOfDailyAttdMap().containsKey(keyForGet)){
+					dataForResult.put(date,cache.getTemporaryTimeOfDailyAttdMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =temporaryTimeOfDailyPerformanceRepo.findbyPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()))
+							.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAttendance()));
+					
+					dataByRepo.forEach((k, v) ->{
+						String keyForPut = employeeId + "-" + k.toString();
+						if(!cache.getTemporaryTimeOfDailyAttdMap().containsKey(keyForPut)){
+							cache.getTemporaryTimeOfDailyAttdMap().put(keyForPut, v);
+						}
+						dataForResult.put(k, v);
+					});
+					
+					break;
+				}
+			};
+
+			return dataForResult;
 		}
 
 		@Override
 		public Map<GeneralDate, SpecificDateAttrOfDailyAttd> dailySpecificDates(String employeeId, DatePeriod datePeriod) {
-			return specificDateAttrOfDailyPerforRepo.findByPeriodOrderByYmd(employeeId, datePeriod)
-					.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getSpecificDay()));
+			
+			Map<GeneralDate, SpecificDateAttrOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, SpecificDateAttrOfDailyAttd>();
+			Map<GeneralDate, SpecificDateAttrOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, SpecificDateAttrOfDailyAttd>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cache.getSpecificDateAttrOfDailyAttdMap().containsKey(keyForGet)){
+					dataForResult.put(date,cache.getSpecificDateAttrOfDailyAttdMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =specificDateAttrOfDailyPerforRepo.findByPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()))
+							.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getSpecificDay()));
+					
+					dataByRepo.forEach((k, v) ->{
+						String keyForPut = employeeId + "-" + k.toString();
+						if(!cache.getSpecificDateAttrOfDailyAttdMap().containsKey(keyForPut)){
+							cache.getSpecificDateAttrOfDailyAttdMap().put(keyForPut, v);
+						}
+						dataForResult.put(k, v);
+					});
+					
+					break;
+				}
+			};
+
+			return dataForResult;
+			
 		}
 
 		@Override
 		public List<EmployeeDailyPerError> dailyEmpErrors(String employeeId, DatePeriod datePeriod) {
-			return employeeDailyPerErrorRepo.findByPeriodOrderByYmd(employeeId, datePeriod);
+			
+			List<EmployeeDailyPerError> dataForResult = new ArrayList<>();
+			List<EmployeeDailyPerError> dataByRepo =  new ArrayList<>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cache.getEmployeeDailyPerErrorMap().containsKey(keyForGet)){
+					dataForResult.add(cache.getEmployeeDailyPerErrorMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =employeeDailyPerErrorRepo.findByPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()));
+					
+					dataByRepo.forEach((v) ->{
+						String keyForPut = employeeId + "-" + v.getDate().toString();
+						if(!cache.getEmployeeDailyPerErrorMap().containsKey(keyForPut)){
+							cache.getEmployeeDailyPerErrorMap().put(keyForPut, v);
+						}
+						dataForResult.add(v);
+					});
+					
+					break;
+				}
+			};
+
+			return dataForResult;
 		}
 
 		@Override
-		public Map<GeneralDate, AnyItemValueOfDailyAttd> dailyAnyItems(List<String> employeeId, DatePeriod baseDate) {
-			return anyItemValueOfDailyRepo.finds(employeeId, baseDate)
-					.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAnyItem()));
+		public Map<GeneralDate, AnyItemValueOfDailyAttd> dailyAnyItems(List<String> employeeIds, DatePeriod baseDate) {
+			
+			
+			Map<GeneralDate, AnyItemValueOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, AnyItemValueOfDailyAttd>();
+			Map<GeneralDate, AnyItemValueOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, AnyItemValueOfDailyAttd>();
+		
+			for(String employeeId : employeeIds){
+				for(GeneralDate date : baseDate.datesBetween()){
+					String keyForGet = employeeId + "-" + date.toString();	
+					if(cache.getAnyItemValueOfDailyAttdMap().containsKey(keyForGet)){
+						dataForResult.put(date,cache.getAnyItemValueOfDailyAttdMap().get(keyForGet));
+					}
+					else{
+						dataByRepo =anyItemValueOfDailyRepo.finds(Arrays.asList(employeeId), new DatePeriod(date, baseDate.end()))
+								.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAnyItem()));
+						
+						dataByRepo.forEach((k, v) ->{
+							String keyForPut = employeeId + "-" + k.toString();
+							if(!cache.getAnyItemValueOfDailyAttdMap().containsKey(keyForPut)){
+								cache.getAnyItemValueOfDailyAttdMap().put(keyForPut, v);
+							}
+							dataForResult.put(k, v);
+						});
+						
+						break;
+					}
+				};
+			}
+			return dataForResult;
 		}
 
 		@Override
-		public Map<GeneralDate, PCLogOnInfoOfDailyAttd> dailyPcLogons(List<String> employeeId, DatePeriod baseDate) {
-			return pcLogOnInfoOfDailyRepo.finds(employeeId, baseDate)
-					.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTimeZone()));
+		public Map<GeneralDate, PCLogOnInfoOfDailyAttd> dailyPcLogons(List<String> employeeIds, DatePeriod baseDate) {
+			
+			Map<GeneralDate, PCLogOnInfoOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, PCLogOnInfoOfDailyAttd>();
+			Map<GeneralDate, PCLogOnInfoOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, PCLogOnInfoOfDailyAttd>();
+		
+			for(String employeeId : employeeIds){
+				for(GeneralDate date : baseDate.datesBetween()){
+					String keyForGet = employeeId + "-" + date.toString();	
+					if(cache.getPCLogOnInfoOfDailyAttdMap().containsKey(keyForGet)){
+						dataForResult.put(date,cache.getPCLogOnInfoOfDailyAttdMap().get(keyForGet));
+					}
+					else{
+						dataByRepo =pcLogOnInfoOfDailyRepo.finds(Arrays.asList(employeeId), new DatePeriod(date, baseDate.end()))
+								.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTimeZone()));
+						
+						dataByRepo.forEach((k, v) ->{
+							String keyForPut = employeeId + "-" + k.toString();
+							if(!cache.getPCLogOnInfoOfDailyAttdMap().containsKey(keyForPut)){
+								cache.getPCLogOnInfoOfDailyAttdMap().put(keyForPut, v);
+							}
+							dataForResult.put(k, v);
+						});
+						
+						break;
+					}
+				};
+			}
+			return dataForResult;
 		}
 
 		@Override
 		public Map<GeneralDate, AttendanceTimeOfDailyAttendance> dailyAttendanceTimes(String employeeId, DatePeriod datePeriod) {
-			return attendanceTimeRepo.findByPeriodOrderByYmd(employeeId, datePeriod)
-					.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime()));
+			Map<GeneralDate, AttendanceTimeOfDailyAttendance> dataForResult = new ConcurrentHashMap<GeneralDate, AttendanceTimeOfDailyAttendance>();
+			Map<GeneralDate, AttendanceTimeOfDailyAttendance> dataByRepo = new ConcurrentHashMap<GeneralDate, AttendanceTimeOfDailyAttendance>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cache.getAttendanceTimeOfDailyAttendanceMap().containsKey(keyForGet)){
+					dataForResult.put(date,cache.getAttendanceTimeOfDailyAttendanceMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =attendanceTimeRepo.findByPeriodOrderByYmd(employeeId, new DatePeriod(date, datePeriod.end()))
+							.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime()));
+					
+					dataByRepo.forEach((k, v) ->{
+						String keyForPut = employeeId + "-" + k.toString();
+						if(!cache.getAttendanceTimeOfDailyAttendanceMap().containsKey(keyForPut)){
+							cache.getAttendanceTimeOfDailyAttendanceMap().put(keyForPut, v);
+						}
+						dataForResult.put(k, v);
+					});
+					
+					break;
+				}
+			};
+
+			return dataForResult;
 		}
 
 		@Override
 		public Optional<PayItemCountOfMonthly> monthPayItemCount(String companyId) {
-			return payItemCountOfMonthlyRepo.find(companyId);
+			if(!cache.getPayItemCountOfMonthlyCache().isPresent()){
+				cache.setPayItemCountOfMonthlyCache(payItemCountOfMonthlyRepo.find(companyId));
+			}
+			return cache.getPayItemCountOfMonthlyCache();
 		}
 
 		@Override
 		public List<OptionalItem> optionalItems(String companyId) {
-			return optionalItemRepo.findAll(companyId);
+			if(cache.getOptionalItemCache().isEmpty()){
+				cache.setOptionalItemCache(optionalItemRepo.findAll(companyId));
+			}
+			return cache.getOptionalItemCache();
 		}
 
 		@Override
@@ -1028,12 +1217,18 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public List<Formula> formulas(String companyId) {
-			return formulaRepo.find(companyId);
+			if(cache.getFormulaCache().isEmpty()){
+				cache.setFormulaCache(formulaRepo.find(companyId));
+			}
+			return cache.getFormulaCache();
 		}
 
 		@Override
 		public List<FormulaDispOrder> formulaDispOrder(String companyId) {
-			return formulaDispOrderRepo.findAll(companyId);
+			if(cache.getFormulaDispOrderCache().isEmpty()){
+				cache.setFormulaDispOrderCache(formulaDispOrderRepo.findAll(companyId));
+			}
+			return cache.getFormulaDispOrderCache();
 		}
 
 		@Override
@@ -1043,17 +1238,26 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public List<EmptYearlyRetentionSetting> emptYearlyRetentionSet(String companyId) {
-			return employmentSettingRepo.findAll(companyId);
+			if(cache.getEmptYearlyRetentionSettingCache().isEmpty()){
+				cache.setEmptYearlyRetentionSettingCache(employmentSettingRepo.findAll(companyId));
+			}
+			return cache.getEmptYearlyRetentionSettingCache();
 		}
 
 		@Override
 		public Optional<LegalTransferOrderSetOfAggrMonthly> monthLegalTransferOrderCalcSet(String companyId) {
-			return legalTransferOrderSetOfAggrMonthlyRepo.find(companyId);
+			if(!cache.getLegalTransferOrderSetOfAggrMonthlyCache().isPresent()){
+				cache.setLegalTransferOrderSetOfAggrMonthlyCache(legalTransferOrderSetOfAggrMonthlyRepo.find(companyId));
+			}
+			return cache.getLegalTransferOrderSetOfAggrMonthlyCache();
 		}
 
 		@Override
 		public List<OvertimeWorkFrame> roleOvertimeWorks(String companyId) {
-			return roleOvertimeWorkRepo.getOvertimeWorkFrameByFrameByCom(companyId, NotUseAtr.USE.value);
+			if(cache.getOvertimeWorkFrameCache().isEmpty()){
+				cache.setOvertimeWorkFrameCache(roleOvertimeWorkRepo.getOvertimeWorkFrameByFrameByCom(companyId, NotUseAtr.USE.value));
+			}
+			return cache.getOvertimeWorkFrameCache();
 		}
 
 		@Override
@@ -1063,45 +1267,72 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<MonthlyAggrSetOfFlex> monthFlexAggrSet(String companyId) {
-			return monthlyAggrSetOfFlexRepo.find(companyId);
+			if(!cache.getMonthlyAggrSetOfFlexCache().isPresent()){
+				cache.setMonthlyAggrSetOfFlexCache(monthlyAggrSetOfFlexRepo.find(companyId));
+			}
+			return cache.getMonthlyAggrSetOfFlexCache();
 		}
 
 		@Override
 		public Optional<InsufficientFlexHolidayMnt> insufficientFlexHolidayMnt(String cid) {
-			return insufficientFlexHolidayMntRepo.findByCId(cid);
+			if(!cache.getInsufficientFlexHolidayMntCache().isPresent()){
+				cache.setInsufficientFlexHolidayMntCache(insufficientFlexHolidayMntRepo.findByCId(cid));
+			}
+			return cache.getInsufficientFlexHolidayMntCache();
 		}
 
 		@Override
 		public Optional<FlexShortageLimit> flexShortageLimit(String companyId) {
-			return flexShortageLimitRepo.get(companyId);
+			if(!cache.getFlexShortageLimitCache().isPresent()){
+				cache.setFlexShortageLimitCache(flexShortageLimitRepo.get(companyId));
+			}
+			return cache.getFlexShortageLimitCache();
 		}
 
 		@Override
 		public Optional<RoundingSetOfMonthly> monthRoundingSet(String companyId) {
-			if(roundingSetOfMonthlyCache.isPresent()) {
-				return roundingSetOfMonthlyCache;
+			if(!cache.getRoundingSetOfMonthlyCache().isPresent()) {
+				cache.setRoundingSetOfMonthlyCache(roundingSetOfMonthlyRepo.find(companyId));
 			}
-			roundingSetOfMonthlyCache = roundingSetOfMonthlyRepo.find(companyId);
-			return roundingSetOfMonthlyCache;
+			return cache.getRoundingSetOfMonthlyCache();
 		}
 
 		@Override
 		public List<TotalTimes> totalTimes(String companyId) {
-			return totalTimesRepo.getAllTotalTimes(companyId);
+			if(cache.getTotalTimesCache().isEmpty()){
+				cache.setTotalTimesCache(totalTimesRepo.getAllTotalTimes(companyId));
+			}
+			return cache.getTotalTimesCache();
 		}
 
 		@Override
 		public Optional<AgreementOperationSetting> agreementOperationSetting(String companyId) {
-			if(agreementOperationSettingCache.isPresent()) {
-				return agreementOperationSettingCache;
+			if(!cache.getAgreementOperationSettingCache().isPresent()) {
+				cache.setAgreementOperationSettingCache(agreementOperationSettingRepo.find(companyId));
 			}
-			agreementOperationSettingCache = agreementOperationSettingRepo.find(companyId);
-			return agreementOperationSettingCache;
+			return cache.getAgreementOperationSettingCache();
 		}
 
 		@Override
 		public Optional<SharedAffWorkPlaceHisImport> affWorkPlace(String employeeId, GeneralDate baseDate) {
-			return sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, baseDate);
+			
+			List<SharedAffWorkPlaceHisImport> byCache = new ArrayList<>();
+			cache.getSharedAffWorkPlaceHisImportMapMap().forEach((k,v)->{
+				if(k.getKey().equals(employeeId)){
+					byCache.add(v);	
+				}
+			});
+			
+			Optional<SharedAffWorkPlaceHisImport> dataForResult = byCache.stream().filter(c->c.getDateRange().contains(baseDate)).findFirst();
+			if(dataForResult.isPresent())
+				return dataForResult;
+			
+			dataForResult = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, baseDate);
+			if(dataForResult.isPresent() && !cache.getSharedAffWorkPlaceHisImportMapMap().containsKey(Pair.of(employeeId, dataForResult.get().getDateRange()))){
+				cache.getSharedAffWorkPlaceHisImportMapMap().put(Pair.of(employeeId, dataForResult.get().getDateRange()), dataForResult.get());
+			}
+				
+			return dataForResult;
 		}
 		
 		@Override
@@ -1111,7 +1342,10 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<WorkingCondition> workingCondition(String historyId) {
-			return workingConditionRepo.getByHistoryId(historyId);
+			if(!cache.getWorkingConditionMap().containsKey(historyId)){
+				cache.getWorkingConditionMap().put(historyId, workingConditionRepo.getByHistoryId(historyId));
+			}
+			return cache.getWorkingConditionMap().get(historyId);
 		}
 
 		@Override
@@ -1122,26 +1356,20 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public List<ClosureEmployment> employmentClosure(String companyId, List<String> employmentCDs) {
-			if(employmentClosureCache.containsKey(companyId)) {
-				return employmentClosureCache.get(companyId).stream()
-						.filter(c -> employmentCDs.contains(c.getEmploymentCD())).collect(Collectors.toList());
+			if(!cache.getEmploymentClosureCache().containsKey(companyId)) {
+				cache.getEmploymentClosureCache().put(companyId, closureEmploymentRepo.findAllByCid(companyId));
 			}
-			
-			employmentClosureCache.put(companyId, closureEmploymentRepo.findAllByCid(companyId));
-			
-			return employmentClosureCache.get(companyId).stream()
+			return cache.getEmploymentClosureCache().get(companyId).stream()
 					.filter(c -> employmentCDs.contains(c.getEmploymentCD())).collect(Collectors.toList());
 		}
 
 		@Override
 		public Optional<PredetemineTimeSetting> predetemineTimeSetByWorkTimeCode(String companyId,
 				String workTimeCode) {
-			if(predetemineTimeSettingMap.containsKey(workTimeCode)) {
-				return predetemineTimeSettingMap.get(workTimeCode);
+			if(!cache.getPredetemineTimeSettingMap().containsKey(workTimeCode)) {
+				cache.getPredetemineTimeSettingMap().put(workTimeCode, predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode));
 			}
-			Optional<PredetemineTimeSetting> item = predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode);
-			predetemineTimeSettingMap.put(workTimeCode, item);
-			return item;
+			return cache.getPredetemineTimeSettingMap().get(workTimeCode);
 		}
 
 		@Override
@@ -1270,7 +1498,11 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<EmpCalAndSumExeLog> calAndSumExeLog(String empCalAndSumExecLogID) {
-			return empCalAndSumExeLogRepo.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
+			if(!cache.getEmpCalAndSumExeLogMap().containsKey(empCalAndSumExecLogID)){
+				cache.getEmpCalAndSumExeLogMap().put(empCalAndSumExecLogID,
+					empCalAndSumExeLogRepo.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID));
+			}
+			return cache.getEmpCalAndSumExeLogMap().get(empCalAndSumExecLogID);
 		}
 
 		@Override
@@ -1291,9 +1523,34 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 //		} 
 
 		@Override
-		public Map<GeneralDate, AffiliationInforOfDailyAttd> dailyAffiliationInfors(List<String> employeeId, DatePeriod ymd) {
-			return affiliationInforOfDailyPerforRepo.finds(employeeId, ymd)
-					.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAffiliationInfor()));
+		public Map<GeneralDate, AffiliationInforOfDailyAttd> dailyAffiliationInfors(List<String> employeeIds, DatePeriod ymd) {
+			
+			Map<GeneralDate, AffiliationInforOfDailyAttd> dataForResult = new ConcurrentHashMap<GeneralDate, AffiliationInforOfDailyAttd>();
+			Map<GeneralDate, AffiliationInforOfDailyAttd> dataByRepo = new ConcurrentHashMap<GeneralDate, AffiliationInforOfDailyAttd>();
+		
+			for(String employeeId : employeeIds){
+				for(GeneralDate date : ymd.datesBetween()){
+					String keyForGet = employeeId + "-" + date.toString();	
+					if(cache.getAffiliationInforOfDailyAttdMap().containsKey(keyForGet)){
+						dataForResult.put(date,cache.getAffiliationInforOfDailyAttdMap().get(keyForGet));
+					}
+					else{
+						dataByRepo =affiliationInforOfDailyPerforRepo.finds(Arrays.asList(employeeId), new DatePeriod(date, ymd.end()))
+								.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAffiliationInfor()));
+						
+						dataByRepo.forEach((k, v) ->{
+							String keyForPut = employeeId + "-" + k.toString();
+							if(!cache.getAffiliationInforOfDailyAttdMap().containsKey(keyForPut)){
+								cache.getAffiliationInforOfDailyAttdMap().put(keyForPut, v);
+							}
+							dataForResult.put(k, v);
+						});
+						
+						break;
+					}
+				};
+			}
+			return dataForResult;
 		}
 
 		@Override
@@ -1335,7 +1592,10 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<AgreementUnitSetting> agreementUnitSetting(String companyId) {
-			return agreementUnitSetRepo.find(companyId);
+			if(!cache.getAgreementUnitSettingCache().isPresent()){
+				cache.setAgreementUnitSettingCache(agreementUnitSetRepo.find(companyId));
+			}
+			return cache.getAgreementUnitSettingCache();
 		}
 
 		@Override
@@ -1353,7 +1613,13 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		@Override
 		public Optional<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId,
 				LaborSystemtAtr laborSystemAtr, String classificationCode) {
-			return agreementTimeOfClassificationRepo.getByCidAndClassificationCode(companyId, classificationCode,laborSystemAtr);
+			
+			String key = companyId + "-" + laborSystemAtr + "-" + classificationCode;
+			if(!cache.getAgreementTimeOfClassificationMap().containsKey(key)){
+				cache.getAgreementTimeOfClassificationMap().put(key, agreementTimeOfClassificationRepo
+					.getByCidAndClassificationCode(companyId, classificationCode, laborSystemAtr));
+			}
+			return cache.getAgreementTimeOfClassificationMap().get(key);
 		}
 
 		@Override
@@ -1382,7 +1648,11 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		@Override
 		public Optional<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlace(String workplaceId,
 				LaborSystemtAtr laborSystemAtr) {
-			return agreementTimeWorkPlaceRepo.getByWorkplaceId(workplaceId, laborSystemAtr);
+			String key = workplaceId + "-" + laborSystemAtr;
+			if(!cache.getAgreementTimeOfWorkPlaceMap().containsKey(key)){
+				cache.getAgreementTimeOfWorkPlaceMap().put(key, agreementTimeWorkPlaceRepo.getByWorkplaceId(workplaceId, laborSystemAtr));
+			}
+			return cache.getAgreementTimeOfWorkPlaceMap().get(key);
 		}
 
 		@Override
@@ -1409,18 +1679,29 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		@Override
 		public Optional<AgreementTimeOfEmployment> agreementTimeOfEmployment(String companyId,
 				String employmentCategoryCode, LaborSystemtAtr laborSystemAtr) {
-			return agreementTimeOfEmploymentRepo.getByCidAndCd(companyId, employmentCategoryCode, laborSystemAtr);
+			String key = companyId + "-" + employmentCategoryCode + "-" + laborSystemAtr;
+			if(!cache.getAgreementTimeOfEmploymentMap().containsKey(key)){
+				cache.getAgreementTimeOfEmploymentMap().put(key, 
+						agreementTimeOfEmploymentRepo.getByCidAndCd(companyId, employmentCategoryCode, laborSystemAtr));
+			}
+			return cache.getAgreementTimeOfEmploymentMap().get(key);
 		}
 
 		@Override
 		public List<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId) {
-			return agreementTimeCompanyRepo.find(companyId);
+			if(cache.getAgreementTimeOfCompanyCache().isEmpty()){
+				cache.setAgreementTimeOfCompanyCache(agreementTimeCompanyRepo.find(companyId));
+			}
+			return cache.getAgreementTimeOfCompanyCache();
 		}
 
 		@Override
 		public Optional<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId,
 				LaborSystemtAtr laborSystemAtr) {
-			return agreementTimeCompanyRepo.getByCid(companyId, laborSystemAtr);
+			if(!cache.getAgreementTimeOfCompanyMap().containsKey(laborSystemAtr)){
+				cache.getAgreementTimeOfCompanyMap().put(laborSystemAtr, agreementTimeCompanyRepo.getByCid(companyId, laborSystemAtr));
+			}
+			return cache.getAgreementTimeOfCompanyMap().get(laborSystemAtr);
 		}
 
 		@Override
@@ -1446,7 +1727,10 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId) {
-			return closureStatusManagementRepo.getLatestByEmpId(employeeId);
+			if(!cache.getClosureStatusManagementOptMap().containsKey(employeeId)){
+				cache.getClosureStatusManagementOptMap().put(employeeId, closureStatusManagementRepo.getLatestByEmpId(employeeId));
+			}
+			return cache.getClosureStatusManagementOptMap().get(employeeId);
 		}
 
 //		@Override
@@ -1507,7 +1791,10 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<AnnualLeaveMaxData> annualLeaveMaxData(String employeeId) {
-			return annLeaMaxDataRepo.get(employeeId);
+			if(!cache.getAnnualLeaveMaxDataMap().containsKey(employeeId)){
+				cache.getAnnualLeaveMaxDataMap().put(employeeId, annLeaMaxDataRepo.get(employeeId));
+			}
+			return cache.getAnnualLeaveMaxDataMap().get(employeeId);
 		}
 
 		@Override
@@ -1533,13 +1820,20 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId) {
-			return rervLeaGrantRemDataRepo.find(employeeId);
+			if(!cache.getReserveLeaveGrantRemainingDataMap().containsKey(employeeId)){
+				cache.getReserveLeaveGrantRemainingDataMap().put(employeeId, rervLeaGrantRemDataRepo.find(employeeId));
+			}
+			return cache.getReserveLeaveGrantRemainingDataMap().get(employeeId);
 		}
 
 		@Override
 		public List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId,
 				GeneralDate grantDate) {
-			return rervLeaGrantRemDataRepo.find(employeeId, grantDate);
+			String key = employeeId + "-" + grantDate;
+			if(!cache.getReserveLeaveGrantRemainingDatabyGrantDateMap().containsKey(key)){
+				cache.getReserveLeaveGrantRemainingDatabyGrantDateMap().put(key, rervLeaGrantRemDataRepo.find(employeeId, grantDate));
+			}
+			return cache.getReserveLeaveGrantRemainingDatabyGrantDateMap().get(key);
 		}
 
 		@Override
@@ -1614,7 +1908,11 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String employeeId, int specialCode) {
-			return specialLeaveGrantRepo.getAll(employeeId, specialCode);
+			String key = employeeId + "-" + specialCode ;
+			if(!cache.getSpecialLeaveGrantRemainingDataMap().containsKey(key)){
+				cache.getSpecialLeaveGrantRemainingDataMap().put(key, specialLeaveGrantRepo.getAll(employeeId, specialCode));
+			}
+			return cache.getSpecialLeaveGrantRemainingDataMap().get(key);
 		}
 
 		@Override
@@ -1629,7 +1927,10 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public List<SpecialHoliday> specialHoliday(String companyId) {
-			return specialHolidayRepo.findByCompanyId(companyId);
+			if(cache.getSpecialHolidayCache().isEmpty()){
+				cache.setSpecialHolidayCache(specialHolidayRepo.findByCompanyId(companyId));
+			}
+			return cache.getSpecialHolidayCache();
 		}
 
 		@Override
@@ -1646,12 +1947,20 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		@Override
 		public List<MonthlyClosureUpdateErrorInfor> monthlyClosureUpdateErrorInfor(String monthlyClosureUpdateLogId,
 				String employeeId) {
-			return monthlyClosureUpdateErrorInforRepo.getByLogIdAndEmpId(monthlyClosureUpdateLogId, employeeId);
+			String key = monthlyClosureUpdateLogId + "-" + employeeId;
+			if(!cache.getMonthlyClosureUpdateErrorInforMap().containsKey(key)){
+				cache.getMonthlyClosureUpdateErrorInforMap().put(key,
+					monthlyClosureUpdateErrorInforRepo.getByLogIdAndEmpId(monthlyClosureUpdateLogId, employeeId));
+			}
+			return cache.getMonthlyClosureUpdateErrorInforMap().get(key);
 		}
 
 		@Override
 		public Optional<MonthlyClosureUpdateLog> monthlyClosureUpdateLog(String id) {
-			return monthlyClosureUpdateLogRepo.getLogById(id);
+			if(!cache.getMonthlyClosureUpdateLogMap().containsKey(id)){
+				cache.getMonthlyClosureUpdateLogMap().put(id, monthlyClosureUpdateLogRepo.getLogById(id));
+			}
+			return cache.getMonthlyClosureUpdateLogMap().get(id);
 		}
 
 		@Override
@@ -1661,7 +1970,11 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public List<MonthlyClosureUpdatePersonLog> monthlyClosureUpdatePersonLog(String monthlyClosureUpdateLogId) {
-			return monthlyClosureUpdatePersonLogRepo.getAll(monthlyClosureUpdateLogId);
+			if(!cache.getMonthlyClosureUpdatePersonLogMap().containsKey(monthlyClosureUpdateLogId)){
+				cache.getMonthlyClosureUpdatePersonLogMap().put(monthlyClosureUpdateLogId,
+					monthlyClosureUpdatePersonLogRepo.getAll(monthlyClosureUpdateLogId));
+			}
+			return cache.getMonthlyClosureUpdatePersonLogMap().get(monthlyClosureUpdateLogId);
 		}
 
 		@Override
@@ -1677,7 +1990,10 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<ActualLock> actualLock(String companyId, int closureId) {
-			return actualLockRepo.findById(companyId, closureId);
+			if(!cache.getActualLockMap().containsKey(closureId)){
+				cache.getActualLockMap().put(closureId, actualLockRepo.findById(companyId, closureId));
+			}
+			return cache.getActualLockMap().get(closureId);
 		}
 
 		@Override
@@ -1692,27 +2008,31 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<OuenAggregateFrameSetOfMonthly> ouenAggregateFrameSetOfMonthly(String companyId) {
-
-			return ouenAggregateFrameSetOfMonthlyRepo.find(companyId);
+			if(!cache.getOuenAggregateFrameSetOfMonthlyCache().isPresent()){
+				cache.setOuenAggregateFrameSetOfMonthlyCache(ouenAggregateFrameSetOfMonthlyRepo.find(companyId));
+			}
+			return cache.getOuenAggregateFrameSetOfMonthlyCache();
 		}
 
 		@Override
 		public List<OuenWorkTimeOfDailyAttendance> ouenWorkTimeOfDailyAttendance(String empId, GeneralDate ymd) {
-			Optional<OuenWorkTimeOfDaily> daily = ouenWorkTimeOfDailyRepo.find(empId, ymd);
-			if(!daily.isPresent()) {
-				return new ArrayList<>();
-			}
-			return daily.get().getOuenTimes();
+//			Optional<OuenWorkTimeOfDaily> daily = ouenWorkTimeOfDailyRepo.find(empId, ymd);
+//			if(!daily.isPresent()) {
+//				return new ArrayList<>();
+//			}
+//			return daily.get().getOuenTimes();
+			return new ArrayList<>();
 		}
 
 		@Override
 		public List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheetOfDailyAttendance(String empId,
 				GeneralDate ymd) {
-			OuenWorkTimeSheetOfDaily domain =  ouenWorkTimeSheetOfDailyRepo.find(empId, ymd);
-			if(domain == null)
-				return new ArrayList<>();
-			
-			return domain.getOuenTimeSheet();
+//			OuenWorkTimeSheetOfDaily domain =  ouenWorkTimeSheetOfDailyRepo.find(empId, ymd);
+//			if(domain == null)
+//				return new ArrayList<>();
+//			
+//			return domain.getOuenTimeSheet();
+			return new ArrayList<>();
 		}
 
 		@Override
@@ -1722,216 +2042,218 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<RegularLaborTimeCom> regularLaborTimeByCompany(String companyId) {
-			if(regularLaborTimeComCache.isPresent()) {
-				return regularLaborTimeComCache;
+			if(!cache.getRegularLaborTimeComCache().isPresent()) {
+				cache.setRegularLaborTimeComCache(regularLaborTimeComRepo.find(companyId));
 			}
-			regularLaborTimeComCache = regularLaborTimeComRepo.find(companyId);
-			return regularLaborTimeComCache;
+			return cache.getRegularLaborTimeComCache();
 		}
 
 		@Override
 		public Optional<DeforLaborTimeCom> deforLaborTimeByCompany(String companyId) {
-			if(deforLaborTimeComCache.isPresent()) {
-				return deforLaborTimeComCache;
+			if(!cache.getDeforLaborTimeComCache().isPresent()) {
+				cache.setDeforLaborTimeComCache(deforLaborTimeComRepo.find(companyId));
 			}
-			deforLaborTimeComCache = deforLaborTimeComRepo.find(companyId);
-			return deforLaborTimeComCache;
+			return cache.getDeforLaborTimeComCache();
 		}
 
 		@Override
 		public Optional<RegularLaborTimeWkp> regularLaborTimeByWorkplace(String cid, String wkpId) {
-			if(regularLaborTimeWkpMap.containsKey(wkpId)) {
-				return regularLaborTimeWkpMap.get(wkpId);
+			if(!cache.getRegularLaborTimeWkpMap().containsKey(wkpId)) {
+				cache.getRegularLaborTimeWkpMap().put(wkpId, regularLaborTimeWkpRepo.find(cid, wkpId));
 			}
-			Optional<RegularLaborTimeWkp> item  = regularLaborTimeWkpRepo.find(cid, wkpId);
-			regularLaborTimeWkpMap.put(wkpId, item);
-			return item;
+			return cache.getRegularLaborTimeWkpMap().get(wkpId);
 		}
 
 		@Override
 		public Optional<DeforLaborTimeWkp> deforLaborTimeByWorkplace(String cid, String wkpId) {
-			if(deforLaborTimeWkpMap.containsKey(wkpId)) {
-				return deforLaborTimeWkpMap.get(wkpId);
+			if(!cache.getDeforLaborTimeWkpMap().containsKey(wkpId)) {
+				cache.getDeforLaborTimeWkpMap().put(wkpId, deforLaborTimeWkpRepo.find(cid, wkpId));
 			}
-			Optional<DeforLaborTimeWkp> item  = deforLaborTimeWkpRepo.find(cid, wkpId);
-			deforLaborTimeWkpMap.put(wkpId, item);
-			return item;
+			
+			return cache.getDeforLaborTimeWkpMap().get(wkpId);
 		}
 
 
 
 		@Override
 		public Optional<RegularLaborTimeEmp> regularLaborTimeByEmployment(String cid, String employmentCode) {
-			if(regularLaborTimeEmpMap.containsKey(employmentCode)) {
-				return regularLaborTimeEmpMap.get(employmentCode);
+			if(!cache.getRegularLaborTimeEmpMap().containsKey(employmentCode)) {
+				cache.getRegularLaborTimeEmpMap().put(employmentCode, regularLaborTimeEmpRepo.findById(cid, employmentCode));
 			}
-			Optional<RegularLaborTimeEmp> item = regularLaborTimeEmpRepo.findById(cid, employmentCode);
-			regularLaborTimeEmpMap.put(employmentCode, item);
-			return item;
+			return cache.getRegularLaborTimeEmpMap().get(employmentCode);
 		}
 
 		@Override
 		public Optional<DeforLaborTimeEmp> deforLaborTimeByEmployment(String cid, String employmentCode) {
-			if(deforLaborTimeEmpMap.containsKey(employmentCode)) {
-				return deforLaborTimeEmpMap.get(employmentCode);
+			if(!cache.getDeforLaborTimeEmpMap().containsKey(employmentCode)) {
+				cache.getDeforLaborTimeEmpMap().put(employmentCode, deforLaborTimeEmpRepo.find(cid, employmentCode));
 			}
-			Optional<DeforLaborTimeEmp> item = deforLaborTimeEmpRepo.find(cid, employmentCode);
-			deforLaborTimeEmpMap.put(employmentCode, item);
-			return item;
+			return cache.getDeforLaborTimeEmpMap().get(employmentCode);
 		}
 
 		@Override
 		public Optional<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, String EmpId) {
-			return regularLaborTimeShaRepo.find(Cid, EmpId);
+			if(!cache.getRegularLaborTimeShaMap().containsKey(EmpId)){
+				cache.getRegularLaborTimeShaMap().put(EmpId, regularLaborTimeShaRepo.find(Cid, EmpId));
+			}
+			return cache.getRegularLaborTimeShaMap().get(EmpId);
 		}
 
 		@Override
 		public Optional<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, String empId) {
-			return deforLaborTimeShaRepo.find(cid, empId);
+			if(!cache.getDeforLaborTimeShaMap().containsKey(empId)){
+				cache.getDeforLaborTimeShaMap().put(empId, deforLaborTimeShaRepo.find(cid, empId));
+			}
+			return cache.getDeforLaborTimeShaMap().get(empId);
 		}
 
 		@Override
 		public Optional<ShaFlexMonthActCalSet> monthFlexCalcSetbyEmployee(
 				String cid, String sId) {
-			return shaFlexMonthActCalSetRepo.find(cid, sId);
+			if(!cache.getShaFlexMonthActCalSetMap().containsKey(sId)){
+				cache.getShaFlexMonthActCalSetMap().put(sId, shaFlexMonthActCalSetRepo.find(cid, sId));
+			}
+			return cache.getShaFlexMonthActCalSetMap().get(sId);
 		}
 
 		@Override
 		public Optional<ShaDeforLaborMonthActCalSet> monthDeforLaborCalcSetByEmployee(
 				String cId, String sId) {
-			return shaDeforLaborMonthActCalSetRepo.find(cId, sId);
+			if(!cache.getShaDeforLaborMonthActCalSetMap().containsKey(sId)){
+				cache.getShaDeforLaborMonthActCalSetMap().put(sId, shaDeforLaborMonthActCalSetRepo.find(cId, sId));
+			}
+			return cache.getShaDeforLaborMonthActCalSetMap().get(sId);
 		}
 
 		@Override
 		public Optional<ShaRegulaMonthActCalSet> monthRegulaCalcSetByEmployee(
 				String cid, String sId) {
-			return shaRegulaMonthActCalSetRepo.find(cid, sId);
+			if(!cache.getShaRegulaMonthActCalSetMap().containsKey(sId)){
+				cache.getShaRegulaMonthActCalSetMap().put(sId, shaRegulaMonthActCalSetRepo.find(cid, sId));
+			}
+			return cache.getShaRegulaMonthActCalSetMap().get(sId);
 		}
 
 		@Override
 		public Optional<ComRegulaMonthActCalSet> monthRegulaCalSetByCompany(
 				String companyId) {
-			return comRegulaMonthActCalSetRepo.find(companyId);
+			if(!cache.getComRegulaMonthActCalSetCache().isPresent()){
+				cache.setComRegulaMonthActCalSetCache(comRegulaMonthActCalSetRepo.find(companyId));
+			}
+			return cache.getComRegulaMonthActCalSetCache();
 		}
 
 		@Override
 		public Optional<ComDeforLaborMonthActCalSet> monthDeforLaborCalSetByCompany(
 				String companyId) {
-			return comDeforLaborMonthActCalSetRepo.find(companyId);
+			if(!cache.getComDeforLaborMonthActCalSetCache().isPresent()){
+				cache.setComDeforLaborMonthActCalSetCache(comDeforLaborMonthActCalSetRepo.find(companyId));
+			}
+			return cache.getComDeforLaborMonthActCalSetCache();
 		}
 
 		@Override
 		public Optional<ComFlexMonthActCalSet> monthFlexCalSetByCompany(
 				String companyId) {
-			return comFlexMonthActCalSetRepo.find(companyId);
+			if(!cache.getComFlexMonthActCalSetCache().isPresent()){
+				cache.setComFlexMonthActCalSetCache(comFlexMonthActCalSetRepo.find(companyId));
+			}
+			return cache.getComFlexMonthActCalSetCache();
 		}
 
 		@Override
 		public Optional<WkpRegulaMonthActCalSet> monthRegularCalcSetByWorkplace(
 				String cid, String wkpId) {
-			if(wkpRegulaMonthActCalSetMap.containsKey(wkpId)) {
-				return wkpRegulaMonthActCalSetMap.get(wkpId);
+			if(!cache.getWkpRegulaMonthActCalSetMap().containsKey(wkpId)) {
+				cache.getWkpRegulaMonthActCalSetMap().put(wkpId, wkpRegulaMonthActCalSetRepo.find(cid, wkpId));
 			}
-			Optional<WkpRegulaMonthActCalSet> item  = wkpRegulaMonthActCalSetRepo.find(cid, wkpId);
-			wkpRegulaMonthActCalSetMap.put(wkpId, item);
-			return item;
+			return cache.getWkpRegulaMonthActCalSetMap().get(wkpId);
 		}
 
 		@Override
 		public Optional<EmpRegulaMonthActCalSet> monthRegularCalcSetByEmployment(
 				String cid, String empCode) {
-			if(empRegulaMonthActCalSetMap.containsKey(empCode)) {
-				return empRegulaMonthActCalSetMap.get(empCode);
+			if(!cache.getEmpRegulaMonthActCalSetMap().containsKey(empCode)) {
+				cache.getEmpRegulaMonthActCalSetMap().put(empCode, empRegulaMonthActCalSetRepo.find(cid, empCode));
 			}
-			Optional<EmpRegulaMonthActCalSet> item = empRegulaMonthActCalSetRepo.find(cid, empCode);
-			empRegulaMonthActCalSetMap.put(empCode, item);
-			return item;
+			return cache.getEmpRegulaMonthActCalSetMap().get(empCode);
 		}
 
 		@Override
 		public Optional<WkpDeforLaborMonthActCalSet> monthDeforCalcSetByWorkplace(
 				String cid, String wkpId) {
-			if(wkpDeforLaborMonthActCalSetMap.containsKey(wkpId)) {
-				return wkpDeforLaborMonthActCalSetMap.get(wkpId);
+			if(!cache.getWkpDeforLaborMonthActCalSetMap().containsKey(wkpId)) {
+				cache.getWkpDeforLaborMonthActCalSetMap().put(wkpId, wkpDeforLaborMonthActCalSetRepo.find(cid, wkpId));
 			}
-			Optional<WkpDeforLaborMonthActCalSet> item = wkpDeforLaborMonthActCalSetRepo.find(cid, wkpId);
-			wkpDeforLaborMonthActCalSetMap.put(wkpId, item);
-			return item;
+			return cache.getWkpDeforLaborMonthActCalSetMap().get(wkpId);
 		}
 
 		@Override
 		public Optional<EmpDeforLaborMonthActCalSet> monthDeforCalcSetByEmployment(
 				String cid, String empCode) {
-			if(empDeforLaborMonthActCalSetMap.containsKey(empCode)) {
-				return empDeforLaborMonthActCalSetMap.get(empCode);
+			if(!cache.getEmpDeforLaborMonthActCalSetMap().containsKey(empCode)) {
+				cache.getEmpDeforLaborMonthActCalSetMap().put(empCode, empDeforLaborMonthActCalSetRepo.find(cid, empCode));
 			}
-			Optional<EmpDeforLaborMonthActCalSet> item = empDeforLaborMonthActCalSetRepo.find(cid, empCode);
-			empDeforLaborMonthActCalSetMap.put(empCode, item);
-			return item;
+			return cache.getEmpDeforLaborMonthActCalSetMap().get(empCode);
 		}
 
 		@Override
 		public Optional<WkpFlexMonthActCalSet> monthFlexCalcSetByWorkplace(
 				String cid, String wkpId) {
-			if(wkpFlexMonthActCalSetMap.containsKey(wkpId)) {
-				return wkpFlexMonthActCalSetMap.get(wkpId);
+			if(!cache.getWkpFlexMonthActCalSetMap().containsKey(wkpId)) {
+				cache.getWkpFlexMonthActCalSetMap().put(wkpId, wkpFlexMonthActCalSetRepo.find(cid, wkpId));
 			}
-			Optional<WkpFlexMonthActCalSet> item = wkpFlexMonthActCalSetRepo.find(cid, wkpId);
-			wkpFlexMonthActCalSetMap.put(wkpId, item);
-			return item;
+			return cache.getWkpFlexMonthActCalSetMap().get(wkpId);
 		}
 
 		@Override
 		public Optional<EmpFlexMonthActCalSet> monthFlexCalcSetByEmployment(
 				String cid, String empCode) {
-			if(empFlexMonthActCalSetMap.containsKey(empCode)) {
-				return empFlexMonthActCalSetMap.get(empCode);
+			if(!cache.getEmpFlexMonthActCalSetMap().containsKey(empCode)) {
+				cache.getEmpFlexMonthActCalSetMap().put(empCode, empFlexMonthActCalSetRepo.find(cid, empCode));
 			}
-			Optional<EmpFlexMonthActCalSet> item = empFlexMonthActCalSetRepo.find(cid, empCode);
-			empFlexMonthActCalSetMap.put(empCode, item);
-			return item;
+			return cache.getEmpFlexMonthActCalSetMap().get(empCode);
 		}
 
 		@Override
 		public Optional<MonthlyWorkTimeSetWkp> monthlyWorkTimeSetWkp(String cid, String workplaceId,
 				LaborWorkTypeAttr laborAttr, YearMonth ym) {
 			String key = workplaceId + "-" + laborAttr.value + "-" + ym.v();
-			if(monthlyWorkTimeSetWkpMap.containsKey(key)) {
-				return monthlyWorkTimeSetWkpMap.get(key);
+			if(!cache.getMonthlyWorkTimeSetWkpMap().containsKey(key)) {
+				cache.getMonthlyWorkTimeSetWkpMap().put(key, monthlyWorkTimeSetRepo.findWorkplace(cid, workplaceId, laborAttr, ym));
 			}
-			Optional<MonthlyWorkTimeSetWkp> item = monthlyWorkTimeSetRepo.findWorkplace(cid, workplaceId, laborAttr, ym);
-			monthlyWorkTimeSetWkpMap.put(key, item);
-			return item;
+			return cache.getMonthlyWorkTimeSetWkpMap().get(key);
 		}
 
 		@Override
 		public Optional<MonthlyWorkTimeSetSha> monthlyWorkTimeSetSha(String cid, String sid,
 				LaborWorkTypeAttr laborAttr, YearMonth ym) {
-			return monthlyWorkTimeSetRepo.findEmployee(cid, sid, laborAttr, ym);
+			String key = sid + "-" + laborAttr.value + "-" + ym.v();
+			if(!cache.getMonthlyWorkTimeSetShaMap().containsKey(key)){
+				cache.getMonthlyWorkTimeSetShaMap().put(key, monthlyWorkTimeSetRepo.findEmployee(cid, sid, laborAttr, ym));
+			}
+
+			return cache.getMonthlyWorkTimeSetShaMap().get(key);
 		}
 
 		@Override
 		public Optional<MonthlyWorkTimeSetEmp> monthlyWorkTimeSetEmp(String cid, String empCode,
 				LaborWorkTypeAttr laborAttr, YearMonth ym) {
 			String key = empCode + "-" + laborAttr.value + "-" + ym.v();
-			if(monthlyWorkTimeSetEmpMap.containsKey(key)) {
-				return monthlyWorkTimeSetEmpMap.get(key);
+			if(!cache.getMonthlyWorkTimeSetEmpMap().containsKey(key)) {
+				cache.getMonthlyWorkTimeSetEmpMap().put(key, monthlyWorkTimeSetRepo.findEmployment(cid, empCode, laborAttr, ym));
 			}
-			Optional<MonthlyWorkTimeSetEmp> item = monthlyWorkTimeSetRepo.findEmployment(cid, empCode, laborAttr, ym);
-			monthlyWorkTimeSetEmpMap.put(key, item);
-			return item;
+			return cache.getMonthlyWorkTimeSetEmpMap().get(key);
 		}
 
 		@Override
 		public Optional<MonthlyWorkTimeSetCom> monthlyWorkTimeSetCom(String cid, LaborWorkTypeAttr laborAttr,
 				YearMonth ym) {
 			String key = laborAttr.value + "-" + ym.v().toString();
-			if(monthlyWorkTimeSetComMap.containsKey(key)) {
-				return monthlyWorkTimeSetComMap.get(key);
+			if(!cache.getMonthlyWorkTimeSetComMap().containsKey(key)) {
+				cache.getMonthlyWorkTimeSetComMap().put(key, monthlyWorkTimeSetRepo.findCompany(cid, laborAttr, ym));
 			}
-			Optional<MonthlyWorkTimeSetCom> item = monthlyWorkTimeSetRepo.findCompany(cid, laborAttr, ym);
-			monthlyWorkTimeSetComMap.put(key, item);
-			return item;
+			return cache.getMonthlyWorkTimeSetComMap().get(key);
 		}
 
 		@Override
@@ -1941,7 +2263,10 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 
 		public Optional<AggregateMethodOfMonthly> aggregateMethodOfMonthly(String cid) {
-			return verticalTotalMethodOfMonthlyRepo.findByCid(cid);
+			if(!cache.getAggregateMethodOfMonthlyCache().isPresent()){
+				cache.setAggregateMethodOfMonthlyCache(verticalTotalMethodOfMonthlyRepo.findByCid(cid));
+			}
+			return cache.getAggregateMethodOfMonthlyCache();
 		}
 
 		@Override
@@ -1976,19 +2301,68 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		@Override
 		public List<IntegrationOfDaily> integrationOfDaily(String sid, DatePeriod period) {
 
-			return integrationOfDailyGetter.getIntegrationOfDaily(sid, period);
+			List<IntegrationOfDaily> dataForResult = new ArrayList<>();
+			List<IntegrationOfDaily> dataByRepo =  new ArrayList<>();
+			
+			for(GeneralDate date : period.datesBetween()){
+				String keyForGet = sid + "-" + date.toString();	
+				if(cache.getIntegrationOfDailyMap().containsKey(keyForGet)){
+					dataForResult.add(cache.getIntegrationOfDailyMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =integrationOfDailyGetter.getIntegrationOfDaily(sid,  new DatePeriod(date, period.end()));
+					
+					dataByRepo.forEach((v) ->{
+						String keyForPut = sid + "-" + v.getYmd().toString();
+						if(!cache.getIntegrationOfDailyMap().containsKey(keyForPut)){
+							cache.getIntegrationOfDailyMap().put(keyForPut, v);
+						}
+						dataForResult.add(v);
+					});
+					
+					break;
+				}
+			};
+
+			return dataForResult;
 		}
 		
 		@Override
-		public List<IntegrationOfDaily> integrationOfDailyClones(List<String> sid, DatePeriod period) {
+		public List<IntegrationOfDaily> integrationOfDailyClones(List<String> sids, DatePeriod period) {
 
-			return integrationOfDailyGetter.getIntegrationOfDailyClones(sid, period);
+			List<IntegrationOfDaily> dataForResult = new ArrayList<>();
+			List<IntegrationOfDaily> dataByRepo =  new ArrayList<>();
+			
+			for(String sid : sids){
+				for(GeneralDate date : period.datesBetween()){
+					String keyForGet = sid + "-" + date.toString();	
+					if(cache.getIntegrationOfDailySIDListMap().containsKey(keyForGet)){
+						dataForResult.add(cache.getIntegrationOfDailySIDListMap().get(keyForGet));
+					}
+					else{
+						dataByRepo =integrationOfDailyGetter.getIntegrationOfDailyClones(Arrays.asList(sid),  new DatePeriod(date, period.end()));
+						
+						dataByRepo.forEach((v) ->{
+							String keyForPut = sid + "-" + v.getYmd().toString();
+							if(!cache.getIntegrationOfDailySIDListMap().containsKey(keyForPut)){
+								cache.getIntegrationOfDailySIDListMap().put(keyForPut, v);
+							}
+							dataForResult.add(v);
+						});
+						
+						break;
+					}
+				};
+			}
+			return dataForResult;
 		}
 
 		@Override
 		public MonAggrCompanySettings monAggrCompanySettings(String cid) {
-
-			return MonAggrCompanySettings.loadSettings(this, cid);
+			if(cache.getMonAggrCompanySettingsCache() == null){
+				cache.setMonAggrCompanySettingsCache(MonAggrCompanySettings.loadSettings(this, cid));
+			}
+			return cache.getMonAggrCompanySettingsCache();
 		}
 
 		@Override
@@ -2007,11 +2381,10 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<WeekRuleManagement> weekRuleManagement(String cid) {
-			if(weekRuleManagementCache.isPresent()) {
-				return weekRuleManagementCache;
+			if(!cache.getWeekRuleManagementCache().isPresent()) {
+				cache.setWeekRuleManagementCache(weekRuleManagementRepo.find(cid));
 			}
-			weekRuleManagementCache = weekRuleManagementRepo.find(cid);
-			return weekRuleManagementCache;
+			return cache.getWeekRuleManagementCache();
 		}
 
 		@Override
@@ -2022,8 +2395,10 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public List<StampCard> stampCard(String empId) {
-
-			return stampCardRepo.getListStampCard(empId);
+			if(!cache.getStampCardMap().containsKey(empId)){
+				cache.getStampCardMap().put(empId, stampCardRepo.getListStampCard(empId));
+			}
+			return cache.getStampCardMap().get(empId);
 		}
 
 		@Override
@@ -2054,7 +2429,10 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<SuperHD60HConMed> superHD60HConMed(String cid) {
-			return superHD60HConMedRepo.findById(cid);
+			if(!cache.getSuperHD60HConMedCache().isPresent()){
+				cache.setSuperHD60HConMedCache(superHD60HConMedRepo.findById(cid));
+			}
+			return cache.getSuperHD60HConMedCache();
 		}
 
 		@Override
@@ -2076,12 +2454,6 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 			return monthlyAggregationRemainingNumber.aggregation(cacheCarrier, period, companyId, employeeId, yearMonth,
 					closureId, closureDate, companySets, employeeSets, monthlyCalculatingDailys, interimRemainMngMode,
 					isCalcAttendanceRate);
-		}
-
-		@Override
-		public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UnitAtr use) {
-
-			return this.specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, UseAtr.USE);
 		}
 
 
@@ -2115,31 +2487,47 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		@Override
 		public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD,
 				UseAtr use) {
-			return specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use);
+			String key = sid + "-" + spLeaveCD + "-" + use.value;
+			if(!cache.getSpecialLeaveBasicInfoMap().containsKey(key)){
+				cache.getSpecialLeaveBasicInfoMap().put(key,
+						specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use));
+			}			
+			return cache.getSpecialLeaveBasicInfoMap().get(key);
 		}
 
 		@Override
 		public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
-			return this.specialHolidayRepo.findBySingleCD(companyID, specialHolidayCD);
+			if(!cache.getSpecialHolidayMap().containsKey(specialHolidayCD)){
+				cache.getSpecialHolidayMap().put(specialHolidayCD, this.specialHolidayRepo.findBySingleCD(companyID, specialHolidayCD));
+			}
+			return cache.getSpecialHolidayMap().get(specialHolidayCD);
 		}
 
 
 		@Override
 		public Optional<ElapseYear> elapseYear(String companyId, int specialHolidayCode) {
-
-			return this.elapseYearRepository.findByCode(new CompanyId(companyId), new SpecialHolidayCode(specialHolidayCode));
+			if(!cache.getElapseYearMap().containsKey(specialHolidayCode)){
+			cache.getElapseYearMap().put(specialHolidayCode, this.elapseYearRepository
+					.findByCode(new CompanyId(companyId), new SpecialHolidayCode(specialHolidayCode)));
+			}
+			return cache.getElapseYearMap().get(specialHolidayCode);
 		}
 
 		@Override
 		public List<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
-
-			return this.grantDateTblRepo.findBySphdCd(companyId, specialHolidayCode);
+			if(!cache.getGrantDateTblMap().containsKey(specialHolidayCode)){
+				cache.getGrantDateTblMap().put(specialHolidayCode, this.grantDateTblRepo.findBySphdCd(companyId, specialHolidayCode));
+			}
+			return cache.getGrantDateTblMap().get(specialHolidayCode);
 		}
 
 		@Override
 		public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode, String grantDateCode) {
-
-			return this.grantDateTblRepo.findByCode(companyId, specialHolidayCode, grantDateCode);
+			String key = companyId + "-" + specialHolidayCode + "-" + grantDateCode;
+			if(!cache.getGrantDateTblOptMap().containsKey(key)){
+				cache.getGrantDateTblOptMap().put(key, this.grantDateTblRepo.findByCode(companyId, specialHolidayCode, grantDateCode));
+			}
+			return cache.getGrantDateTblOptMap().get(key);
 		}
 
 		@Override
@@ -2169,7 +2557,10 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		}
 
 		public List<AnnualLeaveGrantRemainingData> annualLeaveGrantRemainingData(String employeeId) {
-			return annLeaGrantRemDataRepo.find(employeeId);
+			if(!cache.getAnnualLeaveGrantRemainingDataMap().containsKey(employeeId)){
+				cache.getAnnualLeaveGrantRemainingDataMap().put(employeeId, annLeaGrantRemDataRepo.find(employeeId));
+			}
+			return cache.getAnnualLeaveGrantRemainingDataMap().get(employeeId);
 		}
 
 		@Override
@@ -2196,19 +2587,26 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public List<ClosureStatusManagement> getAllByEmpId(String employeeId) {
-			return closureStatusManagementRepo.getAllByEmpId(employeeId);
+			if(!cache.getClosureStatusManagementMap().containsKey(employeeId)){
+				cache.getClosureStatusManagementMap().put(employeeId, closureStatusManagementRepo.getAllByEmpId(employeeId));
+			}
+			
+			return cache.getClosureStatusManagementMap().get(employeeId);
 		}
 
 		@Override
 		public Optional<ClosureEmployment> findByEmploymentCD(String employmentCode) {
 			String companyId = AppContexts.user().companyId();
-			return closureEmploymentRepo.findByEmploymentCD(companyId, employmentCode);
+			if(!cache.getClosureEmploymentMap().containsKey(employmentCode)){
+				cache.getClosureEmploymentMap().put(employmentCode, closureEmploymentRepo.findByEmploymentCD(companyId, employmentCode));
+			}
+			return cache.getClosureEmploymentMap().get(employmentCode);
 		}
 
 		@Override
 		public Optional<ActualLock> findById(int closureId) {
 			String companyId = AppContexts.user().companyId();
-			return actualLockRepo.findById(companyId, closureId);
+			return this.actualLock(companyId, closureId);
 		}
 
 		@Override
@@ -2220,18 +2618,28 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<ExecutionLog> getByExecutionContent(String empCalAndSumExecLogID, int executionContent) {
-			return executionLogRepo.getByExecutionContent(empCalAndSumExecLogID, executionContent);
+			String key = empCalAndSumExecLogID + "-" + executionContent;
+			if(!cache.getExecutionLogMap().containsKey(key)){
+				cache.getExecutionLogMap().put(key, executionLogRepo.getByExecutionContent(empCalAndSumExecLogID, executionContent));
+			}
+			return cache.getExecutionLogMap().get(key);
 		}
 
 		@Override
-		public Closure findClosureById(int closureId) {
+		public Optional<Closure> findClosureById(int closureId) {
 			String companyId = AppContexts.user().companyId();
-			return closureRepo.findById(companyId, closureId).get();
+			if(!cache.getClosureMap().containsKey(closureId)){
+				cache.getClosureMap().put(closureId, closureRepo.findById(companyId, closureId));
+			}
+			return cache.getClosureMap().get(closureId);
 		}
 
 		@Override
 		public Optional<HolidayAddtionSet> holidayAddtionSet(String cid) {
-			return holidayAddtionRepo.findByCId(cid);
+			if(!cache.getHolidayAddtionSetCache().isPresent()){
+				cache.setHolidayAddtionSetCache(holidayAddtionRepo.findByCId(cid));
+			}
+			return cache.getHolidayAddtionSetCache();
 		}
 
 //		@Override
@@ -2241,12 +2649,18 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 
 		@Override
 		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
-			return this.workTimeSetting(cid, workTimeCode);
+			if(!cache.getWorkTimeSettingMap().containsKey(workTimeCode)){
+				cache.getWorkTimeSettingMap().put(workTimeCode, this.workTimeSetting(cid, workTimeCode));
+			}
+			return cache.getWorkTimeSettingMap().get(workTimeCode);
 		}
 
 		@Override
 		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
-			return this.compensatoryLeaveComSetting(companyId);
+			if(cache.getCompensatoryLeaveComSettingCache() == null){
+				cache.setCompensatoryLeaveComSettingCache(this.compensatoryLeaveComSetting(companyId));
+			}
+			return cache.getCompensatoryLeaveComSettingCache();
 		}
 
 		@Override
@@ -2266,12 +2680,18 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		
 		@Override
 		public Optional<PublicHolidaySetting> publicHolidaySetting(String companyID){
-			return this.publicHolidaySettingRepo.get(companyID);
+			if(!cache.getPublicHolidaySettingCache().isPresent()){
+				cache.setPublicHolidaySettingCache(this.publicHolidaySettingRepo.get(companyID));
+			}
+			return cache.getPublicHolidaySettingCache();
 		}
 		
 		@Override
 		public Optional<PublicHolidayManagementUsageUnit> publicHolidayManagementUsageUnit(String companyID){
-			return this.publicHolidayManagementUsageUnitRepo.get(companyID);
+			if(!cache.getPublicHolidayManagementUsageUnitCache().isPresent()){
+				cache.setPublicHolidayManagementUsageUnitCache(this.publicHolidayManagementUsageUnitRepo.get(companyID));
+			}
+			return cache.getPublicHolidayManagementUsageUnitCache();
 		}
 		
 		@Override
@@ -2297,7 +2717,10 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		}
 		
 		public Optional<PublicHolidayCarryForwardData> publicHolidayCarryForwardData(String employeeId){
-			return this.publicHolidayCarryForwardDataRepo.get(employeeId);
+			if(!cache.getPublicHolidayCarryForwardDataMap().containsKey(employeeId)){
+				cache.getPublicHolidayCarryForwardDataMap().put(employeeId, this.publicHolidayCarryForwardDataRepo.get(employeeId));
+			}
+			return cache.getPublicHolidayCarryForwardDataMap().get(employeeId);
 		}
 		
 		public List<EmploymentMonthDaySetting> getEmploymentMonthDaySetting(String companyID, 
@@ -2365,7 +2788,10 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		
 		@Override
 		public EmployeeImport findByEmpId(String empId) {
-			return this.empEmployeeAdapter.findByEmpId(empId);
+			if(!cache.getEmployeeImportMap().containsKey(empId)){
+				cache.getEmployeeImportMap().put(empId, Optional.ofNullable(this.empEmployeeAdapter.findByEmpId(empId)));
+			}
+			return cache.getEmployeeImportMap().get(empId).orElse(null);
 		}
 		
 		@Override
@@ -2389,18 +2815,28 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		
 		@Override
 		public NursingLeaveSetting nursingLeaveSetting(String companyId, NursingCategory nursingCategory) {
-			return this.nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, nursingCategory.value);
+			if(!cache.getNursingLeaveSettingMap().containsKey(nursingCategory)){
+				cache.getNursingLeaveSettingMap().put(nursingCategory,
+					Optional.ofNullable(this.nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, nursingCategory.value)));
+			}
+			return cache.getNursingLeaveSettingMap().get(nursingCategory).orElse(null);
 		}
 		
 
 		@Override
 		public Optional<ChildCareUsedNumberData> childCareUsedNumber(String employeeId) {
-			return this.childCareUsedNumberRepo.find(employeeId);
+			if(!cache.getChildCareUsedNumberDataMap().containsKey(employeeId)){
+				cache.getChildCareUsedNumberDataMap().put(employeeId, this.childCareUsedNumberRepo.find(employeeId));
+			}
+			return cache.getChildCareUsedNumberDataMap().get(employeeId);
 		}
 		
 		@Override
 		public Optional<CareUsedNumberData> careUsedNumber(String employeeId) {
-			return this.careUsedNumberRepo.find(employeeId);
+			if(!cache.getCareUsedNumberDataMap().containsKey(employeeId)){
+				cache.getCareUsedNumberDataMap().put(employeeId, this.careUsedNumberRepo.find(employeeId));
+			}
+			return cache.getCareUsedNumberDataMap().get(employeeId);
 		}
 		
 		@Override
@@ -2411,22 +2847,36 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		
 		@Override
 		public Optional<ChildCareLeaveRemainingInfo> childCareLeaveEmployeeInfo(String employeeId) {
-			return this.childCareLeaveRemInfoRepo.getChildCareByEmpId(employeeId);
+			if(!cache.getChildCareLeaveRemainingInfoMap().containsKey(employeeId)){
+				cache.getChildCareLeaveRemainingInfoMap().put(employeeId, this.childCareLeaveRemInfoRepo.getChildCareByEmpId(employeeId));
+			}
+			return cache.getChildCareLeaveRemainingInfoMap().get(employeeId);
 		}
 		
 		@Override
 		public Optional<CareLeaveRemainingInfo> careLeaveEmployeeInfo(String employeeId) {
-			return this.careLeaveRemainingInfoRepo.getCareByEmpId(employeeId);
+			if(!cache.getCareLeaveRemainingInfo().containsKey(employeeId)){
+				cache.getCareLeaveRemainingInfo().put(employeeId, this.careLeaveRemainingInfoRepo.getCareByEmpId(employeeId));
+			}
+			return cache.getCareLeaveRemainingInfo().get(employeeId);
 		}
 		
 		
 		@Override
 		public Optional<NursingCareLeaveRemainingInfo> employeeInfo(String employeeId, NursingCategory nursingCategory) {
-			if(nursingCategory.equals(NursingCategory.Nursing))
-				return this.careLeaveRemainingInfoRepo.getCareByEmpId(employeeId).map(mapper->(NursingCareLeaveRemainingInfo)mapper);
-			if(nursingCategory.equals(NursingCategory.ChildNursing))
-				return this.childCareLeaveRemInfoRepo.getChildCareByEmpId(employeeId).map(mapper->(NursingCareLeaveRemainingInfo)mapper);
-			return Optional.empty();
+			String key = employeeId + "-" + nursingCategory;
+			if(!cache.getNursingCareLeaveRemainingInfoMap().containsKey(key)){
+				if(nursingCategory.equals(NursingCategory.Nursing)){
+					cache.getNursingCareLeaveRemainingInfoMap().put(key, this.careLeaveRemainingInfoRepo
+							.getCareByEmpId(employeeId).map(mapper -> (NursingCareLeaveRemainingInfo) mapper));
+				}
+				if(nursingCategory.equals(NursingCategory.ChildNursing)){
+					cache.getNursingCareLeaveRemainingInfoMap().put(key, this.childCareLeaveRemInfoRepo
+							.getChildCareByEmpId(employeeId).map(mapper->(NursingCareLeaveRemainingInfo)mapper));
+				}
+			}
+			return cache.getNursingCareLeaveRemainingInfoMap().getOrDefault(key, Optional.empty());
+			
 		}
 		
 		public void persistAndUpdateUseCare(String employeeId, CareUsedNumberData domain){
@@ -2455,7 +2905,10 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		
 		@Override
 		public AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId) {
-			return annualPaidLeaveSettingRepo.findByCompanyId(companyId);
+			if(cache.getAnnualPaidLeaveSettingCache() == null){
+				cache.setAnnualPaidLeaveSettingCache(annualPaidLeaveSettingRepo.findByCompanyId(companyId));
+			}
+			return cache.getAnnualPaidLeaveSettingCache();
 		}
 
 		@Override
@@ -2542,14 +2995,34 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		@Override
 		public Map<String, Map<GeneralDate, AttendanceTimeOfDailyAttendance>> dailyAttendanceTimesclones(
 				List<String> employeeId, DatePeriod datePeriod) {
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyPerformance = attendanceTimeRepo.finds(employeeId, datePeriod);
 			Map<String, Map<GeneralDate, AttendanceTimeOfDailyAttendance>> result = new HashMap<String, Map<GeneralDate,AttendanceTimeOfDailyAttendance>>();
-			
+
 			for (String id : employeeId) {
-				List<AttendanceTimeOfDailyPerformance> attendance = attendanceTimeOfDailyPerformance.stream().filter(c->c.getEmployeeId().equals(id)).collect(Collectors.toList());
-				result.put(id, attendance.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime())));
+				Map<GeneralDate, AttendanceTimeOfDailyAttendance> dataForResult = new ConcurrentHashMap<GeneralDate, AttendanceTimeOfDailyAttendance>();
+				Map<GeneralDate, AttendanceTimeOfDailyAttendance> dataByRepo = new ConcurrentHashMap<GeneralDate, AttendanceTimeOfDailyAttendance>();
+				for(GeneralDate date : datePeriod.datesBetween()){
+					String keyForGet = employeeId + "-" + date.toString();	
+					if(cache.getAttendanceTimeOfDailyAttendanceListMap().containsKey(keyForGet)){
+						dataForResult.put(date,cache.getAttendanceTimeOfDailyAttendanceListMap().get(keyForGet));
+					}
+					else{
+						dataByRepo =attendanceTimeRepo.finds(Arrays.asList(id), new DatePeriod(date,datePeriod.end()))
+								.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime()));
+						
+						dataByRepo.forEach((k, v) ->{
+							String keyForPut = employeeId + "-" + k.toString();
+							if(!cache.getAttendanceTimeOfDailyAttendanceListMap().containsKey(keyForPut)){
+								cache.getAttendanceTimeOfDailyAttendanceListMap().put(keyForPut, v);
+							}
+							dataForResult.put(k, v);
+						});
+						
+						break;
+					}
+				};
+				result.put(id,dataForResult);
 			}
-			
+
 			return result;
 		}
 
@@ -2577,12 +3050,18 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		
 		@Override
 		public List<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId) {
-			return employmentAdapter.getEmpHistBySid(companyId, employeeId);
+			if(!cache.getEmploymentHistoryImportedMap().containsKey(employeeId)){
+				cache.getEmploymentHistoryImportedMap().put(employeeId, employmentAdapter.getEmpHistBySid(companyId, employeeId));
+			}
+			return cache.getEmploymentHistoryImportedMap().get(employeeId);
 		}
 
 		@Override
 		public Optional<CreatingDailyResultsCondition> creatingDailyResultsCondition(String cid) {
-			return creatingDailyResultsConditionRepo.findByCid(cid);
+			if(!cache.getCreatingDailyResultsConditionCache().isPresent()){
+				cache.setCreatingDailyResultsConditionCache(creatingDailyResultsConditionRepo.findByCid(cid));
+			}
+			return cache.getCreatingDailyResultsConditionCache();
 		}
 
 		@Override
@@ -2617,24 +3096,29 @@ public  class RecordDomRequireServiceImpl extends nts.uk.ctx.at.shared.dom.remai
 		
 		@Override
 		public WorkDaysNumberOnLeaveCount workDaysNumberOnLeaveCount(String cid) {
-			return workDaysNumberOnLeaveCountRepo.findByCid(cid);
+			if(cache.getWorkDaysNumberOnLeaveCountCache() == null){
+				cache.setWorkDaysNumberOnLeaveCountCache(workDaysNumberOnLeaveCountRepo.findByCid(cid));
+			}
+			return cache.getWorkDaysNumberOnLeaveCountCache();
 		}
 		
 		@Override
 		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
-			return predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode);
+			return this.predetemineTimeSetByWorkTimeCode(companyId, workTimeCode);
 		}
 
 		@Override
-		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
-				ExecutionType reCalcAtr) {
-			return calculateDailyRecordServiceCenter.calculatePassCompanySetting(calcOption, integrationOfDaily, companySet, reCalcAtr);
+		public List<IntegrationOfDaily> calculateForRecordSchedule(CalculateOption calcOption,
+				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
+			return calculateDailyRecordServiceCenter.calculateForRecord(calcOption, integrationOfDaily, companySet);
 		}
 
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK( AppContexts.user().companyId(), workTypeCd);
+			if(!cache.getWorkTypeMap().containsKey(workTypeCd)){
+				cache.getWorkTypeMap().put(workTypeCd, workTypeRepo.findByPK( AppContexts.user().companyId(), workTypeCd));
+			}
+			return cache.getWorkTypeMap().get(workTypeCd);
 		}
 
 		@Override

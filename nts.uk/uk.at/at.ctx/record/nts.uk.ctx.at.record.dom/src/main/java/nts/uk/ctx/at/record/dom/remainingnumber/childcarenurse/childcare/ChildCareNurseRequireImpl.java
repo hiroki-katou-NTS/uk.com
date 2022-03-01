@@ -40,6 +40,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetRemainingNumberChildCareNurseService;
 
 public class ChildCareNurseRequireImpl implements GetRemainingNumberChildCareNurseService.Require{
@@ -194,6 +196,11 @@ public class ChildCareNurseRequireImpl implements GetRemainingNumberChildCareNur
 		if(nursingCategory.equals(NursingCategory.ChildNursing))
 			return childCareLeaveRemInfoRepository.getChildCareByEmpId(employeeId).map(mapper->(NursingCareLeaveRemainingInfo)mapper);
 		return Optional.empty();
+	}
+
+	@Override
+	public OptionLicense getOptionLicense() {
+		return AppContexts.optionLicense();
 	}
 
 

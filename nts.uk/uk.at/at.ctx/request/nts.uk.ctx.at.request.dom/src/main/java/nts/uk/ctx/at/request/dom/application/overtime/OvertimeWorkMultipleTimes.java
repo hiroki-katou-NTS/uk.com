@@ -12,13 +12,30 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardRe
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.com.time.TimeZone;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -44,14 +61,24 @@ public class OvertimeWorkMultipleTimes {
      * @return 複数回残業内容
      */
     public static OvertimeWorkMultipleTimes create(List<OvertimeHour> overtimeHours, List<OvertimeReason> overtimeReasons) {
+        overtimeHours.sort(Comparator.comparing(i -> i.getOvertimeHours().getStart()));
         for (int i = 0; i < overtimeHours.size() - 1; i++) {
             if (overtimeHours.get(i).getOvertimeHours().getDuplicatedWith(overtimeHours.get(i + 1).getOvertimeHours()).isPresent()) {
                 throw new BusinessException("Msg_3238");
             }
         }
-        overtimeHours.sort(Comparator.comparing(OvertimeHour::getOvertimeNumber));
-        overtimeReasons.sort(Comparator.comparing(OvertimeReason::getOvertimeNumber));
-        return new OvertimeWorkMultipleTimes(overtimeHours, overtimeReasons);
+
+        List<OvertimeHour> newOvertimeHours = new ArrayList<>();
+        List<OvertimeReason> newOvertimeReasons = new ArrayList<>();
+        for (int i = 0; i < overtimeHours.size(); i++) {
+            OvertimeHour overtimeHour = overtimeHours.get(i);
+            OvertimeNumber overtimeNumber = new OvertimeNumber(i + 1);
+            newOvertimeHours.add(new OvertimeHour(overtimeNumber, overtimeHour.getOvertimeHours()));
+            overtimeReasons.stream().filter(r -> r.getOvertimeNumber().equals(overtimeHour.getOvertimeNumber())).findFirst().ifPresent(reason -> {
+                newOvertimeReasons.add(new OvertimeReason(overtimeNumber, reason.getFixedReasonCode(), reason.getApplyReason()));
+            });
+        }
+        return new OvertimeWorkMultipleTimes(newOvertimeHours, newOvertimeReasons);
     }
 
     /**
@@ -125,35 +152,36 @@ public class OvertimeWorkMultipleTimes {
      * @return 休憩時間帯List
      */
     public List<BreakTimeSheet> getBreakTimeToCalculateOvertime(Require require,
-                                                               String companyId,
-                                                               String employeeId,
-                                                               GeneralDate date,
-                                                               WorkInformation workInfo,
-                                                               List<TimeZoneWithWorkNo> workingHours,
-                                                               List<BreakTimeSheet> breakTimes) {
-        List<TimeZoneWithWorkNo> workingHoursPredetemine = new ArrayList<>(workingHours);
+                                                                String companyId,
+                                                                String employeeId,
+                                                                GeneralDate date,
+                                                                WorkInformation workInfo,
+                                                                List<TimeZoneWithWorkNo> workingHours,
+                                                                List<BreakTimeSheet> breakTimes,
+                                                                boolean managementMultipleWorkCycles) {
+        List<TimeZoneWithWorkNo> predeterminedWorkingHours = workingHours;
         if (workInfo.getWorkTimeCodeNotNull().isPresent()) {
             Optional<PredetemineTimeSetting> predTimeSet = require.getPredetemineTimeSetting(companyId, workInfo.getWorkTimeCode().v());
             if (predTimeSet.isPresent()) {
-                workingHoursPredetemine = predTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone()
-                        .stream().filter(i -> i.isUsed())
+                predeterminedWorkingHours = predTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone()
+                        .stream().filter(i -> i.isUsed() && (i.getWorkNo() == 1 || managementMultipleWorkCycles))
                         .map(i -> new TimeZoneWithWorkNo(i.getWorkNo(), i.getStart().v(), i.getEnd().v()))
                         .collect(Collectors.toList());
             }
             Optional<WorkTimeSetting> workTimeSetting = require.getWorkTimeSetting(companyId, workInfo.getWorkTimeCode().v());
             if (workTimeSetting.isPresent() && workTimeSetting.get().getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
-                breakTimes = this.getFlowWorkBreakTime(require, companyId, employeeId, date, workInfo, predTimeSet, new ArrayList<>(workingHours));
+                breakTimes = this.getFlowWorkBreakTime(require, employeeId, date, workInfo, predTimeSet, workingHours);
+                predeterminedWorkingHours.get(0).getTimeZone().setEndTime(this.getFlowWorkEndTime(require, employeeId, date, workInfo, predTimeSet, workingHours));
             }
         }
-        List<BreakTimeSheet> result = this.calculateNewBreakTimes(breakTimes, workingHoursPredetemine, workingHours);
+        List<BreakTimeSheet> result = this.calculateNewBreakTimes(breakTimes, predeterminedWorkingHours, workingHours);
         if (result.size() > 10) throw new BusinessException("Msg_3236");
         return result;
     }
 
     /**
-     * 流動勤務で 休憩時間帯を取得する
+     * [prv-1]流動勤務で 休憩時間帯を取得する
      * @param require
-     * @param companyId 会社ID
      * @param employeeId 申請者ID
      * @param date 年月日
      * @param workInfo 勤務情報
@@ -162,83 +190,137 @@ public class OvertimeWorkMultipleTimes {
      * @return 休憩時間帯List
      */
     private List<BreakTimeSheet> getFlowWorkBreakTime(Require require,
-                                                      String companyId,
                                                       String employeeId,
                                                       GeneralDate date,
                                                       WorkInformation workInfo,
                                                       Optional<PredetemineTimeSetting> predTimeSet,
                                                       List<TimeZoneWithWorkNo> workingHours) {
-        predTimeSet.ifPresent(predetemineTimeSetting -> workingHours.get(workingHours.size() - 1).getTimeZone().setEndTime(predetemineTimeSetting.getEndDateClock()));
-        CalculationParams params = new CalculationParams(
+        WorkInfoOfDailyAttendance workInformation = new WorkInfoOfDailyAttendance(
+                workInfo,
+                CalculationState.No_Calculated,
+                NotUseAttribute.Not_use,
+                NotUseAttribute.Not_use,
+                DayOfWeek.MONDAY,
+                new ArrayList<>(),
+                Optional.empty()
+        );
+        CalAttrOfDailyAttd calCategory = CalAttrOfDailyAttd.defaultData();
+        AffiliationInforOfDailyAttd affiliationInforOfDailyPerfor = new AffiliationInforOfDailyAttd(
+                null,
+                null,
+                null,
+                null,
+                Optional.empty(),
+                Optional.empty()
+        );
+
+        List<TimeZoneWithWorkNo> tmpWorkingHours = new ArrayList<>();
+        workingHours.forEach(wh -> {
+            if (wh.getWorkNo().v() == workingHours.size() && predTimeSet.isPresent()) {
+                tmpWorkingHours.add(new TimeZoneWithWorkNo(
+                        wh.getWorkNo().v(),
+                        wh.getTimeZone().getStartTime().v(),
+                        predTimeSet.get().getEndDateClock().v()
+                ));
+            } else {
+                tmpWorkingHours.add(wh);
+            }
+        });
+
+        TimeLeavingOfDailyAttd attendanceLeave = new TimeLeavingOfDailyAttd(
+                tmpWorkingHours.stream().map(i -> new TimeLeavingWork(
+                        i.getWorkNo(),
+                        new TimeActualStamp(
+                                WorkStamp.createByAutomaticSet(i.getTimeZone().getStartTime()),
+                                WorkStamp.createByAutomaticSet(i.getTimeZone().getStartTime()),
+                                1
+                        ),
+                        new TimeActualStamp(
+                                WorkStamp.createByAutomaticSet(i.getTimeZone().getEndTime()),
+                                WorkStamp.createByAutomaticSet(i.getTimeZone().getEndTime()),
+                                1
+                        )
+                )).collect(Collectors.toList()),
+                new WorkTimes(1)
+        );
+
+        IntegrationOfDaily dailyAttendance = new IntegrationOfDaily(
                 employeeId,
                 date,
-                workInfo.getWorkTypeCode(),
-                workInfo.getWorkTimeCode(),
-                workingHours,
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Collections.emptyList()
+                workInformation,
+                calCategory,
+                affiliationInforOfDailyPerfor,
+                Optional.empty(),
+                new ArrayList<>(),
+                Optional.empty(),
+                new BreakTimeOfDailyAttd(),
+                Optional.empty(),
+                Optional.of(attendanceLeave),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                new ArrayList<>(),
+                Optional.empty(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                Optional.empty()
         );
-        IntegrationOfDaily calcResult = require.tempCalculateOneDayAttendanceTime(params);
-        return calcResult != null ? calcResult.getBreakTime().getBreakTimeSheets() : new ArrayList<>();
+        ChangeDailyAttendance changeAtt = new ChangeDailyAttendance(
+                false,
+                false,
+                true,
+                false,
+                ScheduleRecordClassifi.RECORD,
+                false
+        );
+        return new ArrayList<>(require.process(dailyAttendance, changeAtt).getBreakTime().getBreakTimeSheets());
     }
 
     /**
-     * 休憩時間帯Newを判断する
+     * [prv-2]休憩時間帯Newを判断する
      * @param breakTimes 休憩時間帯List
-     * @param workingHoursPredetemine 勤務時間List（所定）
+     * @param predeterminedWorkingHours 勤務時間List（所定）
      * @param workingHours 勤務時間List（整理後）
      * @return 休憩時間帯List
      */
-    private List<BreakTimeSheet> calculateNewBreakTimes(List<BreakTimeSheet> breakTimes, List<TimeZoneWithWorkNo> workingHoursPredetemine, List<TimeZoneWithWorkNo> workingHours) {
+    private List<BreakTimeSheet> calculateNewBreakTimes(List<BreakTimeSheet> breakTimes, List<TimeZoneWithWorkNo> predeterminedWorkingHours, List<TimeZoneWithWorkNo> workingHours) {
         // ①休憩時間帯List(所定)
         // ②「勤務時間と残業時刻」の間隔は「休憩時間」になる（仕事なし）
         // ③２つ別の残業の間隔は「休憩時間」になる　（仕事なし）
         // ④休憩時間帯が軒並の場合、１つに合同する
         // ⑤休憩時間帯(所定）と残業時間帯が重複の場合、休憩時間帯が優先
+        // ⑥勤務時間(所定）と勤務時間（整理）の間に残業時間ない場合、休憩時間になる
 
-        List<TimeSpanForCalc> timeline = new ArrayList<>();
-        timeline.addAll(workingHoursPredetemine.stream().map(i -> new TimeSpanForCalc(i.getTimeZone().getStartTime(), i.getTimeZone().getEndTime())).collect(Collectors.toList()));
-        timeline.addAll(overtimeHours.stream().map(OvertimeHour::getOvertimeHours).collect(Collectors.toList()));
-        timeline.sort(Comparator.comparing(TimeSpanForCalc::getStart));
-
-        for (int i = 0; i < timeline.size() - 1; i++) {
-            TimeSpanForCalc a = timeline.get(i);
-            TimeSpanForCalc b = timeline.get(i + 1);
-            if (a.getEnd().lessThan(b.getStart())) {
-                breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), a.getEnd(), b.getStart()));
+        List<TimeSpanForCalc> timeLine = new ArrayList<>();
+        timeLine.addAll(predeterminedWorkingHours.stream().map(i -> new TimeSpanForCalc(i.getTimeZone().getStartTime(), i.getTimeZone().getEndTime())).collect(Collectors.toList()));
+        this.overtimeHours.forEach(ot -> {
+            if (timeLine.stream().noneMatch(t -> t.contains(ot.getOvertimeHours()))) {
+                timeLine.add(ot.getOvertimeHours());
             }
+        });
+        timeLine.sort(Comparator.comparing(TimeSpanForCalc::getStart));
+
+        if (!timeLine.isEmpty()) {
+            new TimeSpanForCalc(timeLine.get(0).getStart(), timeLine.get(timeLine.size() - 1).getEnd())
+                    .getNotDuplicatedWith(timeLine).forEach(bt -> {
+                breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), bt.getStart(), bt.getEnd()));
+            });
         }
 
-        workingHours.forEach(time -> {
-            workingHoursPredetemine.forEach(predTime -> {
-                if (time.getWorkNo().equals(predTime.getWorkNo())) {
-                    if (time.getTimeZone().getStartTime().lessThan(predTime.getTimeZone().getStartTime())) {
-                        Optional<TimeSpanForCalc> overtime = timeline.stream()
-                                .filter(ot -> time.getTimeZone().getStartTime().lessThanOrEqualTo(ot.getStart())
-                                        && time.getTimeZone().getEndTime().greaterThan(ot.getEnd()))
-                                .findFirst();
-                        if (overtime.isPresent()) {
-                            if (time.getTimeZone().getStartTime().lessThan(overtime.get().getStart()))
-                                breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), time.getTimeZone().getStartTime(), overtime.get().getStart()));
-                        } else {
-                            breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), time.getTimeZone().getStartTime(), predTime.getTimeZone().getStartTime()));
-                        }
-                    }
-                    if (time.getTimeZone().getEndTime().greaterThan(predTime.getTimeZone().getEndTime())) {
-                        Optional<TimeSpanForCalc> overtime = timeline.stream()
-                                .filter(ot -> time.getTimeZone().getStartTime().lessThan(ot.getStart())
-                                        && time.getTimeZone().getEndTime().greaterThanOrEqualTo(ot.getEnd()))
-                                .reduce((first, second) -> second);
-                        if (overtime.isPresent()) {
-                            if (time.getTimeZone().getEndTime().greaterThan(overtime.get().getEnd()))
-                                breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), overtime.get().getEnd(), time.getTimeZone().getEndTime()));
-                        } else {
-                            breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), predTime.getTimeZone().getEndTime(), time.getTimeZone().getEndTime()));
-                        }
-                    }
-                }
-            });
+        TimeZone workingTime = new TimeZone(null, null);
+        workingHours.forEach(wh -> {
+            if (workingTime.getStartTime() == null || workingTime.getStartTime().greaterThan(wh.getTimeZone().getStartTime())) {
+                workingTime.setStartTime(wh.getTimeZone().getStartTime());
+            }
+            if (workingTime.getEndTime() == null || workingTime.getEndTime().lessThan(wh.getTimeZone().getEndTime())) {
+                workingTime.setEndTime(wh.getTimeZone().getEndTime());
+            }
+        });
+        new TimeSpanForCalc(workingTime.getStartTime(), workingTime.getEndTime())
+                .getNotDuplicatedWith(timeLine).forEach(bt -> {
+            breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), bt.getStart(), bt.getEnd()));
         });
 
         breakTimes.sort(Comparator.comparing(BreakTimeSheet::getStartTime));
@@ -266,6 +348,56 @@ public class OvertimeWorkMultipleTimes {
         return result;
     }
 
+    /**
+     * [prv-6]流動勤務で勤務時間の終了時刻を取得する
+     * @param require Require
+     * @param employeeId 申請者ID
+     * @param date 年月日
+     * @param workInformation 勤務情報
+     * @param predTimeSet 所定時間設定
+     * @param workingHours 勤務時間List
+     * @return 終了時刻
+     */
+    private TimeWithDayAttr getFlowWorkEndTime(Require require, String employeeId, GeneralDate date, WorkInformation workInformation, Optional<PredetemineTimeSetting> predTimeSet, List<TimeZoneWithWorkNo> workingHours) {
+        List<TimeZoneWithWorkNo> tmpWorkingHours = new ArrayList<>();
+        workingHours.forEach(wh -> {
+            if (wh.getWorkNo().v() == workingHours.size() && predTimeSet.isPresent()) {
+                tmpWorkingHours.add(new TimeZoneWithWorkNo(
+                        wh.getWorkNo().v(),
+                        wh.getTimeZone().getStartTime().v(),
+                        predTimeSet.get().getEndDateClock().v()
+                ));
+            } else {
+                tmpWorkingHours.add(wh);
+            }
+        });
+
+        CalculationParams params = new CalculationParams(
+                employeeId,
+                date,
+                workInformation.getWorkTypeCode(),
+                workInformation.getWorkTimeCode(),
+                tmpWorkingHours,
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList()
+        );
+        IntegrationOfDaily calcResult = require.tempCalculateOneDayAttendanceTime(params);
+        if (!calcResult.getAttendanceTimeOfDailyPerformance().isPresent()
+                || !calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
+            return workingHours.get(workingHours.size() - 1).getTimeZone().getEndTime();
+        }
+        List<OverTimeFrameTimeSheet> overTimeWorkFrameTimeSheet = calcResult
+                .getAttendanceTimeOfDailyPerformance().get()
+                .getActualWorkingTimeOfDaily()
+                .getTotalWorkingTime()
+                .getExcessOfStatutoryTimeOfDaily()
+                .getOverTimeWork().get()
+                .getOverTimeWorkFrameTimeSheet();
+        TimeWithDayAttr minOvertimeStart = overTimeWorkFrameTimeSheet.stream().map(i -> i.getTimeSpan().getStart()).sorted().findFirst().orElse(workingHours.get(workingHours.size() - 1).getTimeZone().getEndTime());
+        return minOvertimeStart;
+    }
+
     public interface Require {
         /**
          * 就業時間帯の設定を取得する
@@ -281,5 +413,7 @@ public class OvertimeWorkMultipleTimes {
          * 所定時間設定を取得する
          */
         Optional<PredetemineTimeSetting> getPredetemineTimeSetting(String companyId, String workTimeCode);
+
+        IntegrationOfDaily process(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt);
     }
 }

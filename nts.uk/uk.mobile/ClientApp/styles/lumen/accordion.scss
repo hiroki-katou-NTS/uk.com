@@ -2,6 +2,11 @@
   .card {
     .card-header {
       padding: 0.25rem;
+
+      &, * {
+        background-color: #f3f3f3 !important;
+      }
+
       &:before {
         color: $dark;
         content: "\f078";

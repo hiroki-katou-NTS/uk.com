@@ -18,6 +18,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegalTimeMEmp;
@@ -41,7 +43,7 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 	private static final String GET_EXPORT_MONTH = "SELECT m.MONTH_STR FROM BCMMT_COMPANY m WHERE m.CID = ?cid";
 	
 	private static final String LEGAL_TIME_EMP = "SELECT s FROM KshmtLegalTimeMEmp s WHERE "
-			+ " s.pk.cid = :cid AND s.pk.ym >= :minYm AND s.pk.ym < :maxYm"
+			+ " s.pk.cid = :cid AND s.pk.ym IN :yms"
 			+ " ORDER BY s.pk.ym";	
 	
 	private static final String GET_EMPLOYMENT_SQLSERVER = "SELECT "
@@ -143,12 +145,12 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 		List<MasterData> datas = new ArrayList<>();
 		int month = this.month();
 
+		YearMonthPeriod ymPeriod = new YearMonthPeriod(YearMonth.of(startDate, month), YearMonth.of(endDate, month).nextYear().previousMonth());
 		String startOfWeek = getStartOfWeek(cid);
 
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_EMP, KshmtLegalTimeMEmp.class)
 				.setParameter("cid", cid)
-				.setParameter("minYm", startDate * 100 + month)
-				.setParameter("maxYm", endDate * 100 + month)
+				.setParameter("yms", ymPeriod.yearMonthsBetween().stream().map(x -> x.v().toString()).collect(Collectors.toList()))
 				.getList();
 			
 		if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
@@ -314,198 +316,185 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 					deforIncludeExtraOt == null?null : deforIncludeExtraOt != 0 ? KMK004PrintCommon.getLegalType(convertToInteger(r, "DEFOR_INCLUDE_HOLIDAY_OT")) : null
 					));
 
-//			int nextYm = y *100 + month + 1;
-//			
-//			
-//			val normalN = legals.stream()
-//					.filter(l -> l.pk.ym == nextYm && l.pk.empCD.equals(employmentCode) && l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value)
-//					.findFirst();
-//			val deforN = legals.stream()
-//					.filter(l -> l.pk.ym == nextYm && l.pk.empCD.equals(employmentCode) && l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value)
-//					.findFirst();
-//			val flexN = legals.stream()
-//					.filter(l -> l.pk.ym == nextYm && l.pk.empCD.equals(employmentCode) && l.pk.type == LaborWorkTypeAttr.FLEX.value)
-//					.findFirst();
-//			// buil arow = month + 1
-//			datas.add(buildEmploymentARow(
-//					//R12_1
-//					 null,
-//					//R12_2
-//					null,
-//					//R12_3
-//					null,
-//					//R12_4
-//					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"), 
-//					//R12_5
-//					KMK004PrintCommon.convertTime(normalN.isPresent() ? normalN.get().legalTime : null),
-//					//R12_6
-//					null,
-//					//R12_7
-//					null,
-//					//R12_8
-//					null,
-//					//R12_9
-//					null, 
-//					//R12_10
-//					null, 
-//					//R12_11
-//					null,
-//					//R12_12
-//					null, 
-//					//R12_13		
-//					null,
-//					//R12_14
-//					null,
-//					//R12_15
-//					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
-//					//R12_16 
-//					KMK004PrintCommon.convertTime(refPreTime == 0? null :flexN.isPresent() ? flexN.get().withinTime : null),
-//					//R12_17
-//					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().legalTime : null),
-//					//R10_18
-//					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().weekAvgTime : null),
-//					//R12_19
-//					null,
-//					//R12_20
-//					null,
-//					//R12_21
-//					null,
-//					//R12_22
-//					null, 
-//					//R12_23
-//					null,
-//					//R12_24
-//					null,
-//					//R12_25
-//					null,
-//					//R12_26
-//					null,
-//					//R12_27
-//					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
-//					//R12_28
-//					KMK004PrintCommon.convertTime(deforN.isPresent() ? deforN.get().legalTime : null),
-//					//R12_29
-//					null, 
-//					//R12_30
-//					null,
-//					//R12_31
-//					null,
-//					//R12_32
-//					null,
-//					//R12_33
-//					null,
-//					//R12_34
-//					null,
-//					//R12_35
-//					null,
-//					//R12_36
-//					null,
-//					//R12_37
-//					null,
-//					//R12_38
-//					null,
-//					//R12_39
-//					null
-//					));
+			int nextYm = y * 100 + month + 1;
+			val normalN = legals.stream().filter(l -> l.pk.ym == nextYm && l.pk.empCD.equals(employmentCode)
+					&& l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value).findFirst();
+			val deforN = legals.stream().filter(l -> l.pk.ym == nextYm && l.pk.empCD.equals(employmentCode)
+					&& l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value).findFirst();
+			val flexN = legals.stream().filter(l -> l.pk.ym == nextYm && l.pk.empCD.equals(employmentCode)
+					&& l.pk.type == LaborWorkTypeAttr.FLEX.value).findFirst();
+			// buil arow = month + 1
+			datas.add(buildEmploymentARow(
+					// R12_1
+					null,
+					// R12_2
+					null,
+					// R12_3
+					null,
+					// R12_4
+					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
+					// R12_5
+					KMK004PrintCommon.convertTime(normalN.isPresent() ? normalN.get().legalTime : null),
+					// R12_6
+					null,
+					// R12_7
+					null,
+					// R12_8
+					null,
+					// R12_9
+					null,
+					// R12_10
+					null,
+					// R12_11
+					null,
+					// R12_12
+					null,
+					// R12_13
+					null,
+					// R12_14
+					null,
+					// R12_15
+					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
+					// R12_16
+					KMK004PrintCommon
+							.convertTime(refPreTime == 0 ? null : flexN.isPresent() ? flexN.get().withinTime : null),
+					// R12_17
+					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().legalTime : null),
+					// R10_18
+					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().weekAvgTime : null),
+					// R12_19
+					null,
+					// R12_20
+					null,
+					// R12_21
+					null,
+					// R12_22
+					null,
+					// R12_23
+					null,
+					// R12_24
+					null,
+					// R12_25
+					null,
+					// R12_26
+					null,
+					// R12_27
+					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
+					// R12_28
+					KMK004PrintCommon.convertTime(deforN.isPresent() ? deforN.get().legalTime : null),
+					// R12_29
+					null,
+					// R12_30
+					null,
+					// R12_31
+					null,
+					// R12_32
+					null,
+					// R12_33
+					null,
+					// R12_34
+					null,
+					// R12_35
+					null,
+					// R12_36
+					null,
+					// R12_37
+					null,
+					// R12_38
+					null,
+					// R12_39
+					null));
 			
 			// buil month remain
-			for (int i = 1; i < 12; i++) {
-				int nm = month + i;
-				int m = nm > 12 ? nm % 12 : nm;
-				int currentYm = (y + nm> 12? nm / 12 : 0) * 100 + m;
-				
-				val listC = legals.stream()
-						.filter(l -> l.pk.ym == currentYm && l.pk.empCD.equals(employmentCode)).collect(Collectors.toList());
-				
-				val normalC = listC.stream()
-						.filter(l -> l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value)
-						.findFirst();
-				val deforC = listC.stream()
-						.filter(l -> l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value)
-						.findFirst();
-				val flexC = listC.stream()
-						.filter(l -> l.pk.type == LaborWorkTypeAttr.FLEX.value)
-						.findFirst();
+			for (int i = 1; i < 11; i++) {
+				int m = (month + i) % 12 + 1;
+				int currentYm = y * 100 + ((month + i) / 12) * 100 + m;
+				val normalC = legals.stream().filter(l -> l.pk.ym == currentYm && l.pk.empCD.equals(employmentCode)
+						&& l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value).findFirst();
+				val deforC = legals.stream().filter(l -> l.pk.ym == currentYm && l.pk.empCD.equals(employmentCode)
+						&& l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value).findFirst();
+				val flexC = legals.stream().filter(l -> l.pk.ym == currentYm && l.pk.empCD.equals(employmentCode)
+						&& l.pk.type == LaborWorkTypeAttr.FLEX.value).findFirst();
 				datas.add(buildEmploymentARow(
-						//R12_1
-						 null,
-						//R12_2
+						// R12_1
 						null,
-						//R12_3
+						// R12_2
 						null,
-						//R12_4
-						(m) + kdp004_401, 
-						//R12_5
-						KMK004PrintCommon.convertTime(normalC.map(f -> f.legalTime).orElse(null)),
-						//R12_6
+						// R12_3
 						null,
-						//R12_7
+						// R12_4
+						(m) + I18NText.getText("KMK004_401"),
+						// R12_5
+						KMK004PrintCommon.convertTime(normalC.isPresent() ? normalC.get().legalTime : null),
+						// R12_6
 						null,
-						//R12_8
+						// R12_7
 						null,
-						//R12_9
-						null, 
-						//R12_10
-						null, 
-						//R12_11
+						// R12_8
 						null,
-						//R12_12
-						null, 
-						//R12_13		
+						// R12_9
 						null,
-						//R12_14
+						// R12_10
 						null,
-						//R12_15
-						(m) + kdp004_401,
-						//R12_16 
-						KMK004PrintCommon.convertTime(refPreTime == 0? null :flexC.map(f -> f.withinTime).orElse(null)),
-						//R12_17
-						KMK004PrintCommon.convertTime(flexC.map(f -> f.legalTime).orElse(null)),
-						//R10_18
-						KMK004PrintCommon.convertTime(flexC.map(f -> f.weekAvgTime).orElse(null)),
-						//R12_19
+						// R12_11
 						null,
-						//R12_20
+						// R12_12
 						null,
-						//R12_21
+						// R12_13
 						null,
-						//R12_22
-						null, 
-						//R12_23
+						// R12_14
 						null,
-						//R12_24
+						// R12_15
+						(m) + I18NText.getText("KMK004_401"),
+						// R12_16
+						KMK004PrintCommon.convertTime(
+								refPreTime == 0 ? null : flexC.isPresent() ? flexC.get().withinTime : null),
+						// R12_17
+						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().legalTime : null),
+						// R10_18
+						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().weekAvgTime : null),
+						// R12_19
 						null,
-						//R12_25
+						// R12_20
 						null,
-						//R12_26
+						// R12_21
 						null,
-						//R12_27
-						(m) + kdp004_401,
-						//R12_28
-						KMK004PrintCommon.convertTime(deforC.map(f -> f.legalTime).orElse(null)),
-						//R12_29
-						null, 
-						//R12_30
+						// R12_22
 						null,
-						//R12_31
+						// R12_23
 						null,
-						//R12_32
+						// R12_24
 						null,
-						//R12_33
+						// R12_25
 						null,
-						//R12_34
+						// R12_26
 						null,
-						//R12_35
+						// R12_27
+						(m) + I18NText.getText("KMK004_401"),
+						// R12_28
+						KMK004PrintCommon.convertTime(deforC.isPresent() ? deforC.get().legalTime : null),
+						// R12_29
 						null,
-						//R12_36
+						// R12_30
 						null,
-						//R12_37
+						// R12_31
 						null,
-						//R12_38
+						// R12_32
 						null,
-						//R12_39
-						null
-						));
+						// R12_33
+						null,
+						// R12_34
+						null,
+						// R12_35
+						null,
+						// R12_36
+						null,
+						// R12_37
+						null,
+						// R12_38
+						null,
+						// R12_39
+						null));
 			}
 		}
 		return datas;

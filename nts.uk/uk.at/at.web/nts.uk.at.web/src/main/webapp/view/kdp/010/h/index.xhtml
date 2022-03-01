@@ -157,9 +157,8 @@
 								<td>
 									<button class="btn-name btn1 stamp-rec-btn" id="button1" data-bind="
 																							click: openHDialog.bind($data,1), 
-																							style:{'background-color': $data.buttonInfo()[0].buttonColor()}">
+																							style:{'background-color': $data.buttonInfo()[0].buttonColor(), 'border-color': buttonInfo()[0].textColor()}">
 										<com:ko-if bind="buttonInfo()[0].usrArt() != 0">
-											<img width="100px" height="100px" data-bind="attr:{src: buttonInfo()[0].icon}" />  
 											<div data-bind="text: buttonInfo()[0].buttonName, 
 															style:{
 																'font-size': 
@@ -172,9 +171,8 @@
 								<td>
 									<button class="btn-name btn2 stamp-rec-btn" id="button2" data-bind="
 																							click: openHDialog.bind($data,2),
-																							style:{'background-color': $data.buttonInfo()[1].buttonColor()}">
+																							style:{'background-color': $data.buttonInfo()[1].buttonColor(), 'border-color': buttonInfo()[1].textColor()}">
 										<com:ko-if bind="buttonInfo()[1].usrArt() != 0">
-											<img width="100px" height="100px" data-bind="attr:{src: buttonInfo()[1].icon}" />
 											<div data-bind="text: buttonInfo()[1].buttonName, 
 															style:{
 																'font-size': 
@@ -188,9 +186,8 @@
 								<td>
 									<button class="btn-name btn3 stamp-rec-btn" id="button3" data-bind="
 																							click: openHDialog.bind($data,3), 
-																							style:{'background-color': $data.buttonInfo()[2].buttonColor()}">
+																							style:{'background-color': $data.buttonInfo()[2].buttonColor(), 'border-color': buttonInfo()[2].textColor()}">
 										<com:ko-if bind="buttonInfo()[2].usrArt() != 0">
-											<img width="40px" height="40px" data-bind="attr:{src: buttonInfo()[2].icon}" />
 											<div data-bind="text: buttonInfo()[2].buttonName, style:{color: $data.buttonInfo()[2].textColor()}"></div>
 										</com:ko-if>
 									</button>
@@ -198,9 +195,8 @@
 								<td>
 									<button class="btn-name btn4 stamp-rec-btn" id="button4" data-bind="
 																							click: openHDialog.bind($data,4), 
-																							style:{'background-color' :  $data.buttonInfo()[3].buttonColor()}">
+																							style:{'background-color' :  $data.buttonInfo()[3].buttonColor(), 'border-color': buttonInfo()[3].textColor()}">
 										<com:ko-if bind="buttonInfo()[3].usrArt() != 0">
-											<img width="40px" height="40px" data-bind="attr:{src: buttonInfo()[3].icon}" />
 											<div data-bind="text: buttonInfo()[3].buttonName, style:{color: $data.buttonInfo()[3].textColor()}"></div>
 										</com:ko-if>
 									</button>
@@ -210,9 +206,8 @@
 								<td>
 									<button class="btn-name btn5 stamp-rec-btn" id="button5" data-bind="
 																							click: openHDialog.bind($data,5), 
-																							style:{'background-color' :  $data.buttonInfo()[4].buttonColor()}">
+																							style:{'background-color' :  $data.buttonInfo()[4].buttonColor(), 'border-color': buttonInfo()[4].textColor()}">
 										<com:ko-if bind="buttonInfo()[4].usrArt() != 0">
-											<img width="40px" height="40px" data-bind="attr:{src: buttonInfo()[4].icon}" />
 											<div data-bind="text: buttonInfo()[4].buttonName, style:{color: $data.buttonInfo()[4].textColor()}"></div>
 										</com:ko-if>	
 									</button>
@@ -220,9 +215,8 @@
 								<td>
 									<button class="btn-name btn6 stamp-rec-btn" id="button6" data-bind="
 																							click: openHDialog.bind($data,6), 
-																							style:{'background-color' :  $data.buttonInfo()[5].buttonColor()}">
+																							style:{'background-color' :  $data.buttonInfo()[5].buttonColor(), 'border-color': buttonInfo()[5].textColor()}">
 										<com:ko-if bind="buttonInfo()[5].usrArt() != 0">
-											<img width="40px" height="40px" data-bind="attr:{src: buttonInfo()[5].icon}" />
 											<div data-bind="text: buttonInfo()[5].buttonName, style:{color: $data.buttonInfo()[5].textColor()}"></div>
 										</com:ko-if>	
 									</button>
@@ -237,9 +231,8 @@
 							<tr>
 								<td>
 									<button class="btn-name btn3 stamp-rec-btn" id="button1"
-										data-bind="click: openHDialog.bind($data,1), style:{ 'background-color' :  buttonInfo()[0].buttonColor() }">
+										data-bind="click: openHDialog.bind($data,1), style:{ 'background-color' :  buttonInfo()[0].buttonColor(), 'border-color': buttonInfo()[0].textColor() }">
 										<com:ko-if bind="buttonInfo()[0].usrArt() != 0">
-											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[0].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[0].buttonName, 
 																		  style: {
 																		  	'font-size': 
@@ -254,9 +247,8 @@
 								</td>
 								<td>
 									<button class="btn-name btn4 stamp-rec-btn" id="button2"
-										data-bind="click: openHDialog.bind($data,2), style:{ 'background-color' : buttonInfo()[1].buttonColor()}">
+										data-bind="click: openHDialog.bind($data,2), style:{ 'background-color' : buttonInfo()[1].buttonColor(), 'border-color': buttonInfo()[1].textColor()}">
 										<com:ko-if bind="buttonInfo()[1].usrArt() != 0">
-											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[1].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[1].buttonName, 
 																		  style: {
 																		  	'font-size': 
@@ -273,9 +265,8 @@
 							<tr>
 								<td>
 									<button class="btn-name btn3 stamp-rec-btn" id="button3"
-										data-bind="click: openHDialog.bind($data,3), style:{ 'background-color' :  buttonInfo()[2].buttonColor()}">
+										data-bind="click: openHDialog.bind($data,3), style:{ 'background-color' :  buttonInfo()[2].buttonColor(), 'border-color': buttonInfo()[2].textColor()}">
 										<com:ko-if bind="buttonInfo()[2].usrArt() != 0">
-											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[2].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[2].buttonName, 
 																		  style: {
 																		  	'font-size': 
@@ -290,9 +281,8 @@
 								</td>
 								<td>
 									<button class="btn-name btn4 stamp-rec-btn" id="button4"
-										data-bind="click: openHDialog.bind($data,4), style:{ 'background-color' : buttonInfo()[3].buttonColor() }">
+										data-bind="click: openHDialog.bind($data,4), style:{ 'background-color' : buttonInfo()[3].buttonColor(), 'border-color': buttonInfo()[3].textColor() }">
 										<com:ko-if bind="buttonInfo()[3].usrArt() != 0">
-											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[3].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[3].buttonName, 
 																		  style: {
 																		  	'font-size': 
@@ -309,9 +299,8 @@
 							<tr>
 								<td>
 									<button class="btn-name btn3 stamp-rec-btn" id="button5"
-										data-bind="click: openHDialog.bind($data,5), style:{ 'background-color' :  buttonInfo()[4].buttonColor()}">
+										data-bind="click: openHDialog.bind($data,5), style:{ 'background-color' :  buttonInfo()[4].buttonColor(), 'border-color': buttonInfo()[4].textColor()}">
 										<com:ko-if bind="buttonInfo()[4].usrArt() != 0">
-											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[4].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[4].buttonName, 
 																		  style: {
 																		  	'font-size': 
@@ -326,9 +315,8 @@
 								</td>
 								<td>
 									<button class="btn-name btn4 stamp-rec-btn" id="button6"
-										data-bind="click: openHDialog.bind($data,6), style:{ 'background-color' :  buttonInfo()[5].buttonColor()}">
+										data-bind="click: openHDialog.bind($data,6), style:{ 'background-color' :  buttonInfo()[5].buttonColor(), 'border-color': buttonInfo()[5].textColor()}">
 										<com:ko-if bind="buttonInfo()[5].usrArt() != 0">
-											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[5].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[5].buttonName, 
 																		  style: {
 																		  	'font-size': 
@@ -345,9 +333,8 @@
 							<tr>
 								<td>
 									<button class="btn-name btn3 stamp-rec-btn" id="button7"
-										data-bind="click: openHDialog.bind($data,7), style:{ 'background-color' :  buttonInfo()[6].buttonColor()}">
+										data-bind="click: openHDialog.bind($data,7), style:{ 'background-color' :  buttonInfo()[6].buttonColor(), 'border-color': buttonInfo()[6].textColor()}">
 										<com:ko-if bind="buttonInfo()[6].usrArt() != 0">
-											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[6].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[6].buttonName, 
 																		  style: {
 																		  	'font-size': 
@@ -362,9 +349,8 @@
 								</td>
 								<td>
 									<button class="btn-name btn4 stamp-rec-btn" id="button8"
-										data-bind="click: openHDialog.bind($data,8), style:{ 'background-color' :  buttonInfo()[7].buttonColor()}">
+										data-bind="click: openHDialog.bind($data,8), style:{ 'background-color' :  buttonInfo()[7].buttonColor(), 'border-color': buttonInfo()[7].textColor()}">
 										<com:ko-if bind="buttonInfo()[7].usrArt() != 0">
-											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[7].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[7].buttonName, 
 																		  style: {
 																		  	'font-size': 

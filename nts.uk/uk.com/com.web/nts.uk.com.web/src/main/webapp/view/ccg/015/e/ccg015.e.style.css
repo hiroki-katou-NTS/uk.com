@@ -145,3 +145,6 @@
   background: #ffffff !important;
   max-width: 100%;
 }
+.hover-pointer:hover {
+  cursor: pointer;
+}
