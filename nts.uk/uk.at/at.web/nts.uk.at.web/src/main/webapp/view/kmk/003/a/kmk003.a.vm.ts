@@ -1445,6 +1445,8 @@ module nts.uk.at.view.kmk003.a {
 
                 command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = workTimes.morning;
                 command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = workTimes.afternoon;
+				command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = command.fixedWorkSetting.lstHalfDayWorkTimezone[0].workTimezone.lstWorkingTimezone;
+	            command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = command.fixedWorkSetting.lstHalfDayWorkTimezone[0].workTimezone.lstWorkingTimezone;
 
                 if (!_self.useHalfDayOverTime()) {
                     let OTTimes = _self.autoCreateHalfDayOT(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone());
