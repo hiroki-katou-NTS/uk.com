@@ -47,6 +47,8 @@ DOMAIN_ID,ITEM_NO,ITEM_NAME,ITEM_TYPE,REQUIRED,IS_PRIMARYKEY,CHECK_METHOD,FQN
 37,3,"NET2",1,true,true,,""
 37,4,"HOST1",1,true,true,,""
 37,5,"HOST2",1,true,true,,""
+52,1,"年月日",3,false,true,,""
+52,2,"祝日名称",0,true,false,1,"nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.HolidayName"
 100,1,"社員コード",0,false,true,1,"nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode"
 100,2,"個人名",0,true,false,1,"nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullName"
 100,3,"個人名カナ",0,true,false,1,"nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameKana"

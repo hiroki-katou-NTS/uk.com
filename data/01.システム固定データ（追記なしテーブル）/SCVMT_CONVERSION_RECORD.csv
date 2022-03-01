@@ -51,6 +51,7 @@
 "短時間勤務","KSHMT_SHORTTIME_TS",2,"d5c3b896-6fa1-44d5-9045-cba334fecd54","勤務回数２用","短時間2開始時刻 IS NOT NULL",false
 "社員の年休付与設定","KRCMT_HDPAID_BASIC",1,"e1a0369f-c882-4edc-b566-0622214dd035","",,true
 "社員の特別休暇付与設定","KRCMT_HDSP_BASIC",1,"0e12f3f7-5d56-4180-ab3b-88d1805f99b5","",,true
+"祝日マスタ","KSCMT_PUBLIC_HOLIDAY",1,"f3da446b-cb9e-41a4-9066-a27ea133106a","","",true
 "積立休暇付与残数データ","KRCDT_HDSTK_REM",1,"8944b23c-0c77-474b-a03a-1d1686a552fe","",,true
 "職場マスタ","BSYMT_WKP_CONFIG_2",1,"8e2c3182-e4bd-4d4b-9b35-afb8eec509de","","",true
 "職場マスタ","BSYMT_WKP_INFO",1,"8e2c3182-e4bd-4d4b-9b35-afb8eec509de","","",true
