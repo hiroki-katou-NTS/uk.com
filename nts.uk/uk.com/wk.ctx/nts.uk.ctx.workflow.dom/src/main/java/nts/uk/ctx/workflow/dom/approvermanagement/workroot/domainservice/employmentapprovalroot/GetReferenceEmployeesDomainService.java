@@ -9,6 +9,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmployment;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.adapter.EmployeeInDesignatedImport;
 
+/**
+ * 参照可能な社員を取得
+ */
 public class GetReferenceEmployeesDomainService {
 
 	/**

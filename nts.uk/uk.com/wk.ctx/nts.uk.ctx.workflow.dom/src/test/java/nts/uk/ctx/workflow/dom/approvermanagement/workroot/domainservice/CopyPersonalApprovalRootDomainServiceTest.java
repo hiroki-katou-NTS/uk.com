@@ -1,5 +1,9 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,11 +39,12 @@ public class CopyPersonalApprovalRootDomainServiceTest {
 		};
 
 		// when
-		AtomTask atomTask = CopyPersonalApprovalRootDomainService.copy(require, DomainServiceTestHelper.CID,
+		List<AtomTask> atomTasks = CopyPersonalApprovalRootDomainService.copy(require, DomainServiceTestHelper.CID,
 				DomainServiceTestHelper.SID, targetSid, baseDate);
 
 		// then
-		NtsAssert.atomTask(() -> atomTask);
+		assertThat(atomTasks.size()).isEqualTo(1);
+		NtsAssert.atomTask(() -> atomTasks.get(0), any -> require.insertAll(any.get(), any.get()));
 	}
 
 	/**
@@ -55,10 +60,10 @@ public class CopyPersonalApprovalRootDomainServiceTest {
 		GeneralDate baseDate = GeneralDate.today();
 
 		// when
-		AtomTask atomTask = CopyPersonalApprovalRootDomainService.copy(require, DomainServiceTestHelper.CID,
+		List<AtomTask> atomTasks = CopyPersonalApprovalRootDomainService.copy(require, DomainServiceTestHelper.CID,
 				DomainServiceTestHelper.SID, targetSid, baseDate);
 
 		// then
-		NtsAssert.atomTask(() -> atomTask);
+		assertThat(atomTasks).isEmpty();
 	}
 }
