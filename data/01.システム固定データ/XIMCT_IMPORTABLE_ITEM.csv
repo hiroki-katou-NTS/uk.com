@@ -1,4 +1,7 @@
 DOMAIN_ID,ITEM_NO,ITEM_NAME,ITEM_TYPE,REQUIRED,IS_PRIMARYKEY,CHECK_METHOD,FQN
+12,1,"分類コード",0,true,true,1,"nts.uk.ctx.bs.employee.dom.classification.ClassificationCode"
+12,2,"分類名称",0,true,false,1,"nts.uk.ctx.bs.employee.dom.classification.ClassificationName"
+12,3,"メモ",0,false,true,1,"nts.uk.shr.com.primitive.Memo"
 13,1,"開始日",3,false,true,,""
 13,2,"終了日",3,true,false,,""
 13,3,"職場コード",0,false,true,1,"nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceCode"

@@ -32,6 +32,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.StampCanonica
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.EnterpriseStampCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskChildCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ClassificationCanonicalization;
 
 /**
  * 受入グループID
@@ -39,7 +40,10 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskChildCanonicalization;
  */
 @RequiredArgsConstructor
 public enum ImportingDomainId {
-	
+
+	/** 分類マスタ　*/
+	CLASSIFICATION(12, ClassificationCanonicalization::new),
+
 	/** 職場マスタ */
 	WORKPLACE(13, WorkplaceCanonicalization::new),
 	
