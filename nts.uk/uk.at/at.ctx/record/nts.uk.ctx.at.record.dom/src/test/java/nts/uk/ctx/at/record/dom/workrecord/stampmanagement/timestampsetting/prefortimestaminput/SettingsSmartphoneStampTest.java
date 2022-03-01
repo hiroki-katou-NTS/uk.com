@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -26,7 +28,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
  * @author chungnt
  *
  */
-
+@RunWith(JMockit.class)
 public class SettingsSmartphoneStampTest {
 	
 	@Injectable
