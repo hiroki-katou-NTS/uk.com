@@ -737,7 +737,9 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             service.radiusEnum().done(function (res: Array<Enum>) {
                 self.radiusEnum(res);
                 self.itemList(res)
-                self.itemList().push({value: 9999, fieldName: "M_9999", localizedName: "9999"});
+                if(res.length){
+                    self.itemList().push({value: 9999, fieldName: "M_9999", localizedName: "9999 M"});
+                    }
                 dfd.resolve();
             }).fail(function (res) {
                 nts.uk.ui.dialog.alertError(res.message);
