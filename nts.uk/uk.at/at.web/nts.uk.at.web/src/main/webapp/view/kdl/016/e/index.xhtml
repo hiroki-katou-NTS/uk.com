@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = {width: 390, height: 350};</script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="kdl016.e.style.css"/>
+        <com:scriptfile path="kdl016.e.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area" style="padding-left: 25px;">
+            <div class="control-group valign-center" style="padding-top: 10px">
+                <!--E1_1-->
+                <div style="width: 23%" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU008_7')}</div>
+                <!--E1_2-->
+                <span data-bind="text: detail().supportOrgName"/>
+            </div>
+            <div class="control-group valign-center">
+                <!--E2_1-->
+                <div style="width: 23%" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_16')}</div>
+                <!--E2_2-->
+                <div class="emp-width" style="display: inline-block">
+                    <span class="limited-label" data-bind="text: detail().employeeDisplay"/>
+                </div>
+            </div>
+            <div class="control-group valign-center">
+                <!--E3_1-->
+                <div style="width: 23%" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_17')}</div>
+                <!--E3_2-->
+                <span data-bind="text: detail().supportTypeName"/>
+            </div>
+            <div class="control-group valign-center">
+                <!--E4_1-->
+                <div style="width: 23%" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_33')}</div>
+                <!--E4_2-->
+                <span data-bind="text: detail().periodStart"/>
+            </div>
+            <div class="control-group valign-center">
+                <!--E5_1-->
+                <div style="width: 23%" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_18')}</div>
+                <!--E5_2-->
+                <div style="display: inline-block">
+                    <input id ="timespanMin" data-bind="ntsTimeWithDayEditor: {
+												name: '#[KDL016_25]',
+												value: detail().timeSpan.start,
+												constraint: 'TimeWithDayAttr',
+										 		option: {
+								                    width: '50px',
+								                    placeholder: '00:00',
+								                    timeWithDay: false
+								                },
+												required: true,
+												enable: true,
+												readonly: false}" tabindex="1"/>
+
+                    <span class="label">～</span>
+                    <input data-bind="ntsTimeWithDayEditor: {
+												name: '#[KDL016_26]',
+												value: detail().timeSpan.end,
+												constraint: 'TimeWithDayAttr',
+										 		option: {
+								                    width: '50px',
+								                    placeholder: '00:00',
+								                    timeWithDay: false
+								                },
+												required: true,
+												enable: true,
+												readonly: false}"/>
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button id="update"
+                    data-bind="click: $vm.update, enable : $root.errors.isEmpty"
+                    class="proceed" tabindex="2">#{i18n.getText('KDL016_30')}</button>
+            <button data-bind="click: $vm.closeDialog"
+                    class="normal" tabindex="3">#{i18n.getText('KDL016_31')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

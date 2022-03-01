@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 900, height: 650 };</script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="kdl016.a.style.css"/>
+        <com:scriptfile path="kdl016.a.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--A1_1-->
+            <button id="A1_1" tabindex="1" class="proceed" data-bind="click: register, enable: true; $root.errors.isEmpty()">#{i18n.getText('KDL016_7')}</button>
+            <!--A1_2-->
+            <button tabindex="2" class="danger" data-bind="click: remove">#{i18n.getText('KDL016_8')}</button>
+            <!--A1_3-->
+            <button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KDL016_9')}</button>
+        </div>
+        <div id="contents-area">
+            <div class="control-group valign-center">
+                <!--A2_1-->
+                <span class="lable-input" data-bind="text: orgUnitName"/>
+                <!--A2_2-->
+                <span data-bind="text: orgDisplayName"/>
+                <!--A2_3-->
+                <div class = "lable-input target-period" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL016_10')}</div>
+                <!--A2_4-->
+                <span data-bind="text: displayPeriod" />
+            </div>
+
+            <div class="control-group valign-center">
+                <!--A3_1-->
+                <div class="cf" data-bind="ntsSwitchButton: {
+                name: '#[KDL016_11]',
+                options: supportModes,
+                optionsValue: 'code',
+                optionsText: 'name',
+                value: selectedMode,
+                required: true,
+                enable: true }" tabindex="4"></div>
+            </div>
+            <div class="control-group valign-center">
+                <!--A4-->
+                <table tabindex="5" id="grid"></table>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

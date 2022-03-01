@@ -649,9 +649,23 @@ public class ProgramsManager {
      */
     public static final Program KDL013 = new Program(WebAppId.AT, ProgramIdConsts.KDL013, "KDL013_8",
             "/view/kdl/013/a/index.xhtml");
+
     /**
-     * 
+     * KDL016
      */
+    public static final Program KDL016A = new Program(WebAppId.AT, ProgramIdConsts.KDL016A, "KDL016_1",
+            "/view/kdl/016/a/single.xhtml");
+    public static final Program KDL016B = new Program(WebAppId.AT, ProgramIdConsts.KDL016B, "KDL016_2",
+            "/view/kdl/016/b/single.xhtml");
+    public static final Program KDL016C = new Program(WebAppId.AT, ProgramIdConsts.KDL016C, "KDL016_3",
+            "/view/kdl/016/c/single.xhtml");
+    public static final Program KDL016D = new Program(WebAppId.AT, ProgramIdConsts.KDL016D, "KDL016_4",
+            "/view/kdl/016/d/single.xhtml");
+    public static final Program KDL016E = new Program(WebAppId.AT, ProgramIdConsts.KDL016E, "KDL016_5",
+            "/view/kdl/016/e/single.xhtml");
+    public static final Program KDL016F = new Program(WebAppId.AT, ProgramIdConsts.KDL016F, "KDL016_6",
+            "/view/kdl/016/f/single.xhtml");
+
     /**
      * KDL017A
      */

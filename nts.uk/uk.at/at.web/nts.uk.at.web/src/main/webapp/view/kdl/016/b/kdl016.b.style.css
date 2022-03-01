@@ -1,0 +1,31 @@
+.fixed-flex-layout-left {
+    padding: 20px;
+    margin-right: 0 !important;
+}
+
+.fixed-flex-layout-right .form-label {
+    width: 100px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+#employee-list {
+    margin-top: -33px;
+}
+
+.radio-wrapper {
+    margin-left: 0px;
+    min-width: 90px;
+}
+
+.vertical-radio .radio-wrapper {
+    display: block;
+}
+
+.with-text.radio-wrapper.nts-input span {
+    min-width: 65px;
+    margin-right: 0px;
+}
+

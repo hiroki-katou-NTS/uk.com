@@ -1,0 +1,43 @@
+.fixed-flex-layout-left {
+    padding: 20px;
+    margin-right: 0 !important;
+}
+
+.fixed-flex-layout-right .form-label {
+    width: 100px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+#employee-list {
+    margin-top: -30px;
+}
+
+.radio-wrapper {
+    margin-left: 0px;
+    min-width: 90px;
+}
+
+.vertical-radio .radio-wrapper {
+    display: block;
+}
+
+.with-text.radio-wrapper.nts-input span {
+    min-width: 65px;
+    margin-right: 0px;
+}
+
+#combo-box {
+    margin-left: 43px;
+}
+
+.caret-bottom {
+    font-size: 28px;
+    margin-left: 180px;
+    color: #E0F59E;
+    vertical-align: top;
+    line-height: 28px;
+}
+
