@@ -71,8 +71,8 @@ public class ExportQRCodeToExcel extends AsposeCellsReportGenerator implements I
 
 		// 大 40mm×40mm
 		case 0: {
-			imageSize = 190;
-			space = "              ";
+			imageSize = 200;
+			space = "               ";
 			break;
 		}
 
