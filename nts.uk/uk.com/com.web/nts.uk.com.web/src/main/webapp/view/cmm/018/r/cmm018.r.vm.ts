@@ -99,7 +99,8 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 
 					if (appUseAtrs) {
 						_.forEach(appUseAtrs, attr => {
-							const { appType } = attr;
+							const { appType, useAtr } = attr;
+							if (!useAtr) return;
 							const appName = _.find(listAppType, app => app.value === appType)?.name;
 							const notUseAtr = _.find(
 								settingTypeUseds,
