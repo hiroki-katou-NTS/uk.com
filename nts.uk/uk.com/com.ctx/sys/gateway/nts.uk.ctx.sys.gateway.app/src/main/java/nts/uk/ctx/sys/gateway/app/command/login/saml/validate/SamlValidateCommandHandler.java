@@ -1,21 +1,18 @@
 package nts.uk.ctx.sys.gateway.app.command.login.saml.validate;
 
-import com.onelogin.saml2.util.Constants;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
-import nts.gul.security.saml.SamlResponseValidator;
-import nts.gul.security.saml.SamlResponseValidator.ValidateException;
-import nts.gul.security.saml.SamlSetting;
 import nts.gul.security.saml.ValidSamlResponse;
 import nts.gul.util.Either;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRequire;
 import nts.uk.ctx.sys.gateway.dom.login.sso.saml.assoc.IdpUserAssociation;
 import nts.uk.ctx.sys.gateway.dom.login.sso.saml.assoc.IdpUserAssociationRepository;
-import nts.uk.ctx.sys.gateway.dom.login.sso.saml.SamlSettingRepository;
 import nts.uk.ctx.sys.gateway.dom.login.sso.saml.UkRelayState;
 import nts.uk.ctx.sys.gateway.dom.login.sso.saml.assoc.SamlIdpUserName;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.validate.SamlResponseValidation;
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.validate.SamlResponseValidationRepository;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataManageInfoAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.shared.dom.user.User;
@@ -72,23 +69,14 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 
 		UkRelayState relayState = UkRelayState.deserialize(request);
 
-		// RelayStateのテナント情報からSAMLSettingを取得
-		SamlSetting samlSetting;
-		{
-			val opt = require.getSamlSetting(relayState.getTenantCode());
-			if (!opt.isPresent()) {
-				return Either.left(SamlAuthenticationResult.failed(NO_SAML_SETTING, Optional.empty()));
-			}
-			samlSetting = opt.get();
-			samlSetting.setSignatureAlgorithm(Constants.RSA_SHA1);
+		val validation = require.getSamlResponseValidation(relayState.getTenantCode());
+		if (!validation.isPresent()) {
+			return Either.left(SamlAuthenticationResult.failed(NO_SAML_SETTING, Optional.empty()));
 		}
 
-		// SAMLResponseの検証処理
-		try {
-			return Either.right(SamlResponseValidator.validate(request, samlSetting));
-		} catch (ValidateException e) {
-			return Either.left(SamlAuthenticationResult.failed(INVALID_SAML_RESPONSE, Optional.empty()));
-		}
+		return Either.rightOptional(
+				validation.get().validate(request),
+				() -> SamlAuthenticationResult.failed(INVALID_SAML_RESPONSE, Optional.empty()));
 	}
 
 	// 社員認証失敗時の処理
@@ -109,7 +97,8 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 	}
 
 	public interface Require extends LoginCommandHandlerBase.Require, IdentifySamlUser.Require {
-		Optional<SamlSetting> getSamlSetting(String tenantCode);
+
+		Optional<SamlResponseValidation> getSamlResponseValidation(String tenantCode);
 	}
 
 	@Inject
@@ -122,7 +111,7 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 	private UserRepository userRepo;
 
 	@Inject
-	private SamlSettingRepository samlSettingRepo;
+	private SamlResponseValidationRepository validationRepo;
 
 	@RequiredArgsConstructor
 	public class RequireImpl extends LoginRequire.BaseImpl implements Require {
@@ -145,8 +134,8 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 		}
 
 		@Override
-		public Optional<SamlSetting> getSamlSetting(String tenantCode) {
-			return samlSettingRepo.find(tenantCode);
+		public Optional<SamlResponseValidation> getSamlResponseValidation(String tenantCode) {
+			return validationRepo.find(tenantCode);
 		}
 	}
 }
