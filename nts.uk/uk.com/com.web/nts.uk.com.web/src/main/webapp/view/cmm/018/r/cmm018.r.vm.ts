@@ -170,7 +170,7 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 					{ headerText: '', key: 'id', hidden: true },
 					{ headerText: '', key: 'name', width: '180px' },
 					{
-						headerText: vm.$i18n('CMM018_225'), key: 'notUseAtr', dataType: 'boolean',
+						headerText: vm.$i18n('CMM018_234'), key: 'notUseAtr', dataType: 'boolean',
 					 	width: '160px', ntsControl: 'Checkbox', headerCssClass: 'text-center', columnCssClass: 'text-center'
 					},
 				],
