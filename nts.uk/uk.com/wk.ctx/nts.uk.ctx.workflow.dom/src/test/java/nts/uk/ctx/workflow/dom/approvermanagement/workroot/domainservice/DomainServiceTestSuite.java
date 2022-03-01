@@ -13,7 +13,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	GetSelfApprovalSettingsDomainServiceTest.class,
 	SetOperationModeDomainServiceTest.class,
 	UpdateApprovalRootHistoryDomainServiceTest.class,
-	UpdateSelfApprovalRootDomainServiceTest.class
+	UpdateSelfApprovalRootDomainServiceTest.class,
+	GetReferenceEmployeesDomainServiceTest.class
 })
 public class DomainServiceTestSuite {
 

@@ -33,6 +33,7 @@ public class CopyApproversCommandHandler extends CommandHandler<CopyApproversCom
 		// 1. 複写する(Require, 社員ID, 社員ID, 年月日)
 		List<AtomTask> atomTasks = command.getTargetSids().stream()
 				.map(targetSid -> CopyPersonalApprovalRootDomainService.copy(require, cid, command.getSourceSid(), targetSid, command.getBaseDate()))
+				.flatMap(List::stream)
 				.collect(Collectors.toList());
 		// 2. persist
 		this.transaction.allInOneTransaction(atomTasks);

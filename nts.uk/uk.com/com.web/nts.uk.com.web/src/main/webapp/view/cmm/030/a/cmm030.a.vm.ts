@@ -27,7 +27,7 @@ module nts.uk.com.view.cmm030.a {
     approverInputList: KnockoutObservableArray<ApproverInput> = ko.observableArray([]);
     employees: KnockoutObservableArray<EmployeeModel> = ko.observableArray([]);
     selectedEmployee: KnockoutObservable<string> = ko.observable(null);
-    returnUrl: KnockoutComputed<string>;
+    returnUrl: KnockoutObservable<string> = ko.observable("");
     columnHeaders: KnockoutObservableArray<string> = ko.observableArray([]);
     caution: KnockoutObservable<string> = ko.observable("");
 
@@ -46,13 +46,7 @@ module nts.uk.com.view.cmm030.a {
       const vm = this;
       vm.initCCG001();
 
-      vm.returnUrl = ko.computed(() => {
-        switch (params?.returnType as number) {
-          case ParentType.CMM018R: return "/view/cmm/018/r/index.xhtml";
-          case ParentType.CMM018X: return "/view/cmm/018/x/index.xhtml";
-        }
-        return null;
-      });
+      vm.returnUrl(params?.requestUrl || "");
       vm.isVisibleFuncButton = ko.computed(() => {
         if (_.isNil(vm.role())) {
           return false;
@@ -76,6 +70,7 @@ module nts.uk.com.view.cmm030.a {
           $("#A3_2").focus();
         });
       });
+      vm.inputProcedure.subscribe(value => console.log(value));
     }
 
     mounted(): void {
@@ -97,6 +92,7 @@ module nts.uk.com.view.cmm030.a {
       const vm = this;
       if (nts.uk.text.isNullOrEmpty(vm.startDate())) {
         vm.$dialog.error({ messageId: "Msg_3299" });
+        return;
       }
       const rowId = elem.data("row-id");
       const colId = elem.data("col-id");
@@ -150,6 +146,18 @@ module nts.uk.com.view.cmm030.a {
       });
     }
 
+    public openDialogF() {
+      const vm = this;
+      const emp = _.find(vm.employees(), { id: vm.selectedEmployee() });
+      const param = {
+        employeeId: vm.selectedEmployee(),
+        employeeCode: emp.code,
+        employeeName: emp.businessName
+      };
+      vm.$window.modal("/view/cmm/030/f/index.xhtml", param)
+      .then(() => vm.focusA7_1());
+    }
+
     public openDialogG() {
       const vm = this;
       const param = {
@@ -167,7 +175,7 @@ module nts.uk.com.view.cmm030.a {
           code: emp.code,
           name: emp.businessName,
           targetType: 6, // 職場個人
-          itemListSetting: result,
+          itemListSetting: result.employeeIds,
           baseDate: moment.utc(vm.startDate(), "YYYY/MM/DD").toDate(),
           roleType: 1 // 就業
         };
@@ -181,10 +189,6 @@ module nts.uk.com.view.cmm030.a {
           }
         });
       })
-    }
-
-    public openDialogF() {
-
     }
 
     private initCCG001() {
@@ -282,8 +286,13 @@ module nts.uk.com.view.cmm030.a {
         .orderBy(["employmentRootAtr", "applicationType", "confirmRootType"], ["asc", "asc", "asc"])
         .map((data: SettingTypeUsed) => {
           if (data.notUseAtr === NotUseAtr.USE ) {
-            return new ApproverInput(vm.getSettingId(data), vm.getAppTypeDesc(data.employmentRootAtr, data.applicationType | data.confirmRootType)
-            + vm.$i18n("CMM030_110"), vm.$i18n("CMM030_25"));
+            const input = new ApproverInput(vm.getSettingId(data), vm.getAppTypeDesc(data.employmentRootAtr, data.applicationType, data.confirmRootType)
+            + vm.$i18n("CMM030_110"), vm.$i18n("CMM030_25"), vm.approvalLevelNo());
+            _.forEach(input.approvers(), (approver, index) => {
+              approver.colId = ko.observable(index);
+              approver.rowId = ko.observable(input.id);
+            });
+            return input;
           }
           return null;
         }).filter(data => !_.isNull(data)).value());
@@ -394,34 +403,37 @@ module nts.uk.com.view.cmm030.a {
 
     private createApprovalSettingParam(): any {
       const vm = this;
-      return _.map(vm.settingTypeUseds(), settingTypeUsed => {
-        if (settingTypeUsed.notUseAtr === NotUseAtr.USE) {
-          const approvalRootInfo = {
-            startDate: moment.utc(vm.startDate(), "YYYY/MM/DD").toISOString(),
-            endDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(),
-            employmentRootAtr: settingTypeUsed.employmentRootAtr,
-            applicationType: settingTypeUsed.applicationType,
-            confirmationRootType: settingTypeUsed.confirmRootType
-          };
-          const approverInput = _.find(vm.approverInputList(), { id: vm.getSettingId(settingTypeUsed) });
-          const approvalPhases = _.chain(approverInput.approvers()).reverse().map((approver, index) => {
-            return {
-              phaseOrder: index,
-              approverId: approver.sid
-            };
-          });
+      return _.chain(vm.settingTypeUseds()).filter(data => data.notUseAtr === NotUseAtr.USE)
+      .map(settingTypeUsed => {
+        const approvalRootInfo = {
+          startDate: moment.utc(vm.startDate(), "YYYY/MM/DD").toISOString(),
+          endDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(),
+          employmentRootAtr: settingTypeUsed.employmentRootAtr,
+          applicationType: settingTypeUsed.applicationType,
+          confirmationRootType: settingTypeUsed.confirmRootType
+        };
+        const approverInput = _.find(vm.approverInputList(), { id: vm.getSettingId(settingTypeUsed) });
+        const approvalPhases = _.chain(approverInput.approvers()).map((approver, index) => {
           return {
-            approvalRootInfo: approvalRootInfo,
-            approvalPhases: approvalPhases
+            phaseOrder: 5 - index,
+            approverId: approver.sid
           };
-        }
-      });
+        });
+        return {
+          approvalRootInfo: approvalRootInfo,
+          approvalPhases: approvalPhases
+        };
+      }).value();
     }
 
     private updateApproverData(approverDisplayData: any) {
       const vm = this;
       vm.isNewMode(_.isEmpty(approverDisplayData.approvalSettingInformations));
       vm.isUpdating(false);
+      if (_.isEmpty(approverDisplayData.approvalSettingInformations)) {
+        vm.startDate("");
+        _.forEach(vm.approverInputList(), approverInput => approverInput.wipeData(vm.$i18n("CMM030_25")));
+      }
       _.forEach(vm.approverInputList(), approverInput => {
         const settingInfo = _.find(approverDisplayData.approvalSettingInformations, 
           (data: any) => vm.getSettingId(data.personApprovalRoot.apprRoot) === approverInput.id);
@@ -434,11 +446,15 @@ module nts.uk.com.view.cmm030.a {
           .map((phase: any) => phase.approver).flatten()
           .map((approver: any, index) => {
             const emp: any = _.find(approverDisplayData.employeeNames, { sid: approver.employeeId });
-            let data = !_.isNil(emp) ? new ApproverInfo(emp.sid, emp.employeeName) : new ApproverInfo(null, vm.$i18n("CMM030_25"));
-            data.colId = ko.observable(index);
-            data.rowId = ko.observable(approverInput.id);
+            let data = !_.isNil(emp) ? new ApproverInfo(emp.sid, emp.employeeName, approverInput.id, index)
+              : new ApproverInfo(null, vm.$i18n("CMM030_25"), approverInput.id, index);
             return data;
           }).value();
+          // Populate dummy data
+          if (approvers.length < vm.approvalLevelNo()) {
+            const dummy: ApproverInfo[] = _.map(_.range(approvers.length, vm.approvalLevelNo()), (data, index) => new ApproverInfo(null, vm.$i18n("CMM030_25"), approverInput.id, index));
+            approvers.push(...dummy);
+          }
           approverInput.approvers(approvers);
         }
       });
@@ -460,13 +476,20 @@ module nts.uk.com.view.cmm030.a {
       });
     }
 
-    private getAppTypeDesc(employmentRootAtr: number, typeAtr?: number): string {
+    private getAppTypeDesc(employmentRootAtr: number, applicationType: number, confirmationRootType: number): string {
       const vm = this;
       let enums: any[];
+      let typeAtr: number;
       switch (employmentRootAtr) {
         case EmploymentRootAtr.COMMON: return vm.$i18n("CMM030_11");
-        case EmploymentRootAtr.APPLICATION: enums = __viewContext.enums["ApplicationType"]; break;
-        case EmploymentRootAtr.CONFIRMATION: enums = __viewContext.enums["ConfirmationRootType"]; break;
+        case EmploymentRootAtr.APPLICATION: 
+          enums = __viewContext.enums["ApplicationType"];
+          typeAtr = applicationType;
+          break;
+        case EmploymentRootAtr.CONFIRMATION:
+          enums = __viewContext.enums["ConfirmationRootType"];
+          typeAtr = confirmationRootType;
+          break;
       }
       return _.find(enums, { value: typeAtr }).name;
     }
@@ -481,12 +504,10 @@ module nts.uk.com.view.cmm030.a {
     appTypeDescription: KnockoutObservable<string>;
     approvers: KnockoutObservableArray<ApproverInfo>;
 
-    constructor(id: string, appTypeDescription: string, defaultName: string) {
+    constructor(id: string, appTypeDescription: string, defaultName: string, approvalLevelNo: number) {
       this.id = id;
       this.appTypeDescription = ko.observable(appTypeDescription);
-      let arr = new Array(5);
-      _.fill(arr, ko.observable(_.clone(new ApproverInfo(null, defaultName))));
-      this.approvers = ko.observableArray(arr);
+      this.approvers = ko.observableArray(_.map(_.range(approvalLevelNo), (data, index) => new ApproverInfo(null, defaultName, id, index)));
     }
 
     public wipeData(defaultName: string) {
@@ -499,13 +520,15 @@ module nts.uk.com.view.cmm030.a {
 
   export class ApproverInfo {
     sid: string;
-    name: KnockoutObservable<string> = ko.observable(null);
-    rowId: KnockoutObservable<string> = ko.observable(null);
-    colId: KnockoutObservable<number> = ko.observable(null);
+    name: KnockoutObservable<string>;
+    rowId: KnockoutObservable<string>;
+    colId: KnockoutObservable<number>;
 
-    constructor(sid: string, name: string) {
+    constructor(sid: string, name: string, rowId?: string, colId?: number) {
       this.sid = sid;
-      this.name(name);
+      this.name = ko.observable(name);
+      this.rowId = ko.observable(rowId);
+      this.colId = ko.observable(colId);
     }
   }
 
