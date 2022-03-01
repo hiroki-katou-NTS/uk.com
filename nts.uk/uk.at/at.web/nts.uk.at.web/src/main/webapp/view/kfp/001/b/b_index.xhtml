@@ -60,15 +60,25 @@
 					data-bind="ntsFormLabel: {required: true}">
 					#{i18n.getText('KFP001_18')}</div>
 		<div id = "data-range" style="margin-top: -33px; margin-left: 340px;">
-			<div id="daterangepicker" tabindex="6" style="margin-left: 130px"
-				data-bind="ntsDateRangePicker: { required: true, 
-												enable: enableText, 
-												showNextPrevious: false, 
-												value: dateValue, 
+				<div id="daterangepicker" tabindex="6" style="margin-left: 130px"
+					 data-bind="ntsDateRangePicker: { required: true,
+												enable: enableText,
+												showNextPrevious: false,
+												value: dateValue,
 												maxRange: 'oneYear'}" />
-			<hr></hr>
+			<div>
+				<div style="margin-left: 130px; margin-top: 10px"
+					 data-bind="ntsCheckBox: { text: '#{i18n.getText('KFP001_62')}', checked: reintegration }"/>
+				<div style="margin-left: 130px;">
+						<span>
+					#{i18n.getText('KFP001_63')}
+				</span>
+				</div>
+
+				<hr></hr>
+			</div>
+
 		</div>
-		
 		<div id="update-mode" style="margin-left: 340px;">
 			<div id="label-hidden">
 				<div id="label2-B7_1" class="label"

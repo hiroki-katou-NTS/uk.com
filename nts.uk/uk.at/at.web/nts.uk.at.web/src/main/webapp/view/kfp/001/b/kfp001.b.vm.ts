@@ -25,6 +25,7 @@ module nts.uk.at.view.kfp001.b {
             //
             enableNEW: KnockoutObservable<boolean>;
             enableDEL: KnockoutObservable<boolean>;
+            reintegration: KnockoutObservable<boolean> = ko.observable(false);
             peopleNo: KnockoutObservable<number>;
             peopleFromC: KnockoutObservable<number>;
 
