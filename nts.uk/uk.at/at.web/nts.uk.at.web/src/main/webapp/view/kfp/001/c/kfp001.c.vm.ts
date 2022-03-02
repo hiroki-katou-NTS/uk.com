@@ -4,6 +4,8 @@ module nts.uk.at.view.kfp001.c {
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     export module viewmodel {
+        import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+
         export class ScreenModel {
 
             //Declare screenName flag to forward screen B or screen C
@@ -21,7 +23,7 @@ module nts.uk.at.view.kfp001.c {
             isShowWorkPlaceName: KnockoutObservable<boolean>;
             isShowSelectAllButton: KnockoutObservable<boolean>;
             employeeList: KnockoutObservableArray<UnitModel>;
-
+            reintegration: KnockoutObservable<boolean> = ko.observable(false);
             //Declare employee filter component
             ccg001ComponentOption: any;
             showinfoSelectedEmployee: KnockoutObservable<boolean>;
@@ -76,7 +78,10 @@ module nts.uk.at.view.kfp001.c {
                 self.selectedEmployee = ko.observableArray([]);
                 self.showinfoSelectedEmployee = ko.observable(false);
                 self.baseDate = ko.observable(new Date());
-
+                let reintegration =   nts.uk.ui.windows.getShared("B_CHECKED");
+                if(!isNullOrUndefined(reintegration)){
+                    self.reintegration(reintegration);
+                }
                 self.reloadCcg001();
                 self.dScreenmodel = new nts.uk.at.view.kfp001.d.viewmodel.ScreenModel();
 
@@ -178,7 +183,7 @@ module nts.uk.at.view.kfp001.c {
                 $("#wizard").ntsWizard("next").done(function() {
                     $('#checkBox1').focus();
                 });
-
+                nts.uk.ui.windows.setShared("B_CHECKED", self.reintegration());
                 nts.uk.ui.windows.setShared("KFP001_DATAC", self.selectedEmployee());
                 nts.uk.ui.windows.setShared("KFP001_DATAC_SELECT", self.multiSelectedCode().length);
                 self.dScreenmodel.start();

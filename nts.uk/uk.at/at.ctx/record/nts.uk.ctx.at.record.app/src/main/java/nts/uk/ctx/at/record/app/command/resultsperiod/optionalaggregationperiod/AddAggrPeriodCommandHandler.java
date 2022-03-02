@@ -30,6 +30,9 @@ public class AddAggrPeriodCommandHandler
 	private AggrPeriodExcutionRepository excutionrRepository;
 	@Inject
 	private AggrPeriodTargetRepository targetRepository;
+
+	@Inject
+	private RemoveOptionalAggrPeriodCommandHandler periodCommandHandler;
 //	@Inject
 //	private AggrPeriodInforRepository inforRepository; 
 
@@ -64,9 +67,9 @@ public class AddAggrPeriodCommandHandler
 
 				// Add Aggr Period Target
 				targetRepository.addTarget(periodTarget);
-
+				//EA4209
 				AggrPeriodExcution periodExcution = command.getExecutionCommand().toDomain(companyId, executionEmpId,
-						optionalAggrPeriodID, startDateTime, endDateTime);
+						optionalAggrPeriodID);
 
 				// Add Aggr Period Excution
 				excutionrRepository.addExcution(periodExcution);
@@ -81,16 +84,23 @@ public class AddAggrPeriodCommandHandler
 				throw new BusinessException("Msg_1165");
 			}
 		} else {
+
+			repository.updateAnyAggrPeriod(anyAggrPeriod);
+
 			List<AggrPeriodTarget> periodTarget = command.getTargetCommand().toDomain(optionalAggrPeriodID);
 
 			// Add Aggr Period Target
 			targetRepository.addTarget(periodTarget);
-
+			//EA4209
 			AggrPeriodExcution periodExcution = command.getExecutionCommand().toDomain(companyId, executionEmpId,
-					optionalAggrPeriodID, startDateTime, endDateTime);
+					optionalAggrPeriodID);
 
 			// Add Aggr Period Excution
 			excutionrRepository.addExcution(periodExcution);
+			//EA4209
+			if(command.isReintegration()){
+				periodCommandHandler.deletionOfaggreDataForAnyPeriod(command.getAggrPeriodCommand().getAggrFrameCode(),companyId);
+			}
 
 			// Thêm lỗi khi chưa có xử lý tính toán
 //			if(optionalAggrPeriod.getAggrFrameCode().v().equals("001")){

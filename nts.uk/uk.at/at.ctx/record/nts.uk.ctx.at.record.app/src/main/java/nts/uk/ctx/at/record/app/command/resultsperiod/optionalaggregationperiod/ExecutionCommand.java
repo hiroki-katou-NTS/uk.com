@@ -23,9 +23,9 @@ public class ExecutionCommand {
 
 	private int presenceOfError;
 
-	public AggrPeriodExcution toDomain(String companyId, String executionEmpId, String aggrId, GeneralDateTime startDateTime, GeneralDateTime endDateTime) {
+	public AggrPeriodExcution toDomain(String companyId, String executionEmpId, String aggrId) {
 		return AggrPeriodExcution.createFromJavaType(companyId, executionEmpId, this.aggrFrameCode, aggrId,
-				startDateTime, endDateTime, this.executionAtr, this.executionStatus, this.presenceOfError);
+				this.startDateTime, this.endDateTime, this.executionAtr, this.executionStatus, this.presenceOfError);
 
 	}
 }

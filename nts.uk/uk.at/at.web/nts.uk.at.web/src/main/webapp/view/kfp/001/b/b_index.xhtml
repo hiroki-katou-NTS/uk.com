@@ -62,19 +62,21 @@
 		<div id = "data-range" style="margin-top: -33px; margin-left: 340px;">
 				<div id="daterangepicker" tabindex="6" style="margin-left: 130px"
 					 data-bind="ntsDateRangePicker: { required: true,
-												enable: enableText,
+												enable:  mode() == 0  || reintegration() ,
 												showNextPrevious: false,
 												value: dateValue,
+
 												maxRange: 'oneYear'}" />
 			<div>
-				<div style="margin-left: 130px; margin-top: 10px"
-					 data-bind="ntsCheckBox: { text: '#{i18n.getText('KFP001_62')}', checked: reintegration }"/>
-				<div style="margin-left: 130px;">
+				<div data-bind="if: mode() != 0">
+					<div style="margin-left: 130px; margin-top: 10px"
+						 data-bind="ntsCheckBox: { text: '#{i18n.getText('KFP001_62')}', checked: reintegration }"/>
+					<div style="margin-left: 130px;">
 						<span>
 					#{i18n.getText('KFP001_63')}
 				</span>
+					</div>
 				</div>
-
 				<hr></hr>
 			</div>
 

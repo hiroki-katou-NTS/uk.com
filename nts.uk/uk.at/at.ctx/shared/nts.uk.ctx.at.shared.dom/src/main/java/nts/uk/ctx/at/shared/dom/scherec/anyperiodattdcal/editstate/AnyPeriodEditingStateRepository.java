@@ -11,6 +11,8 @@ public interface AnyPeriodEditingStateRepository {
 
     void delete(String employeeId, String anyPeriodFrameCode);
 
+    void deleteByCidAndCode(String cid, String anyPeriodFrameCode);
+
     void persist(AnyPeriodCorrectionEditingState state);
 
     Map<String, List<AnyPeriodCorrectionEditingState>> getByListEmployee(String anyPeriodFrameCode, List<String> employeeIds);

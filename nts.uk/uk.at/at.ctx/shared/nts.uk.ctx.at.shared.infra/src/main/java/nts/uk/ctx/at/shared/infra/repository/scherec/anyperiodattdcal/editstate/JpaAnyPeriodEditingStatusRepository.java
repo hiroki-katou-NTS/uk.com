@@ -16,6 +16,14 @@ import java.util.stream.Collectors;
 
 @Stateless
 public class JpaAnyPeriodEditingStatusRepository extends JpaRepository implements AnyPeriodEditingStateRepository {
+    private final static String SELECT_BY_CID_AND_CODE;
+    static {
+        StringBuilder builder = new StringBuilder();
+        builder.append(" SELECT a FROM KsrdtAnpEditState a ");
+        builder.append(" WHERE a.companyId = :cid ");
+        builder.append(" AND a.pk.frameCode = :frameCode ");
+        SELECT_BY_CID_AND_CODE = builder.toString();
+    }
     @Override
     public void insert(AnyPeriodCorrectionEditingState state) {
         KsrdtAnpEditState entity = new KsrdtAnpEditState(
@@ -44,6 +52,12 @@ public class JpaAnyPeriodEditingStatusRepository extends JpaRepository implement
     @Override
     public void delete(String employeeId, String anyPeriodFrameCode) {
         List<KsrdtAnpEditState> entities = this.getEntitiesByEmployee(employeeId, anyPeriodFrameCode);
+        this.commandProxy().removeAll(entities);
+    }
+
+    @Override
+    public void deleteByCidAndCode(String cid, String anyPeriodFrameCode) {
+        List<KsrdtAnpEditState> entities = this.getEntitiesByCidAndCode(cid, anyPeriodFrameCode);
         this.commandProxy().removeAll(entities);
     }
 
@@ -86,6 +100,14 @@ public class JpaAnyPeriodEditingStatusRepository extends JpaRepository implement
     private List<KsrdtAnpEditState> getEntitiesByEmployee(String employeeId, String frameCode) {
         List<KsrdtAnpEditState> entities = this.queryProxy().query(QUERY_BY_EMPLOYEE, KsrdtAnpEditState.class)
                 .setParameter("employeeIds", employeeId)
+                .setParameter("frameCode", frameCode)
+                .getList();
+        return entities;
+    }
+
+    private List<KsrdtAnpEditState> getEntitiesByCidAndCode(String employeeId, String frameCode) {
+        List<KsrdtAnpEditState> entities = this.queryProxy().query(SELECT_BY_CID_AND_CODE, KsrdtAnpEditState.class)
+                .setParameter("cid", employeeId)
                 .setParameter("frameCode", frameCode)
                 .getList();
         return entities;
