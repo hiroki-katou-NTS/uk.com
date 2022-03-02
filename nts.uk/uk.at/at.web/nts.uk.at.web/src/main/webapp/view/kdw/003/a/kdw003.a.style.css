@@ -305,7 +305,12 @@
 }
 
 #monthly-data-view #miGrid_scroll {
-	overflow: hidden !important;
+	/* overflow: hidden !important; */
+	overflow-x: auto visible;
+} 
+
+#miGrid_container {
+	width:auto;
 }
 
 /* �c���f�[�^ */
