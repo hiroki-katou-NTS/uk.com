@@ -113,6 +113,7 @@ table.left-aligned td:not(:first-child) {
 
 .right-panel {
 	overflow-y: auto !important;
+	height: inherit;
 }
 
 .right-panel .right-panel-block {
