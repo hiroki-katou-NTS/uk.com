@@ -13,11 +13,7 @@ import java.util.Optional;
 /**
  * 修正後の任意期間別実績を作成する
  */
-@Stateless
 public class AnyPeriodActualResultCorrectionService {
-    @Inject
-    private AttendanceItemConvertFactory converterFactory;
-
     /**
      * 作成する
      * @param require
@@ -26,10 +22,10 @@ public class AnyPeriodActualResultCorrectionService {
      * @param items 編集項目値リスト
      * @return 任意期間実績の修正詳細
      */
-    public AnyPeriodActualResultCorrectionDetail create(Require require, String anyPeriodTotalFrameCode, String employeeId, List<ItemValue> items) {
+    public static AnyPeriodActualResultCorrectionDetail create(Require require, String anyPeriodTotalFrameCode, String employeeId, List<ItemValue> items) {
         AttendanceTimeOfAnyPeriod beforeCorrection = require.find(employeeId, anyPeriodTotalFrameCode).orElse(null);
 
-        AnyPeriodRecordToAttendanceItemConverter converter = converterFactory.createOptionalItemConverter()
+        AnyPeriodRecordToAttendanceItemConverter converter = require.createOptionalItemConverter()
                 .withBase(employeeId)
                 .withAttendanceTime(beforeCorrection)
                 .completed();
@@ -41,7 +37,6 @@ public class AnyPeriodActualResultCorrectionService {
         AttendanceTimeOfAnyPeriod afterCalculation = afterCorrection.orElse(null);
 
         return new AnyPeriodActualResultCorrectionDetail(
-                converter,
                 afterCorrection.orElse(null),
                 afterCalculation
         );
@@ -49,5 +44,7 @@ public class AnyPeriodActualResultCorrectionService {
 
     public interface Require {
         Optional<AttendanceTimeOfAnyPeriod> find(String employeeId, String frameCode);
+
+        AnyPeriodRecordToAttendanceItemConverter createOptionalItemConverter();
     }
 }

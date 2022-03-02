@@ -13,29 +13,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
  * 任意期間別実績と編集状態を登録する
  */
-@Stateless
 public class AnyPeriodResultRegisterAndStateEditService {
-    @Inject
-    private AttendanceTimeOfAnyPeriodRepository anyPeriodRepository;
-
-    @Inject
-    private AnyPeriodActualResultCorrectionService correctionService;
-
-    @Inject
-    private AnyPeriodCorrectionEditStateCreateService editStateCreateService;
-
-    @Inject
-    private AnyPeriodCorrectionEditStateRegisterService editStateRegisterService;
-
-    @Inject
-    private AnyPeriodEditingStateRepository anyPeriodEditingStateRepo;
-
     /**
      * 登録する
      * @param require
@@ -45,15 +28,10 @@ public class AnyPeriodResultRegisterAndStateEditService {
      * @param items 編集項目値リスト
      * @return 任意期間実績の登録内容
      */
-    public AnyPeriodResultRegistrationDetail register(Require require, String anyPeriodTotalFrameCode, String correctingEmployeeId, String targetEmployeeId, List<ItemValue> items) {
+    public static AnyPeriodResultRegistrationDetail register(Require require, String anyPeriodTotalFrameCode, String correctingEmployeeId, String targetEmployeeId, List<ItemValue> items) {
         List<AtomTask> processes = new ArrayList<>();
-        AnyPeriodActualResultCorrectionDetail attdTime = correctionService.create(
-                new AnyPeriodActualResultCorrectionService.Require() {
-                    @Override
-                    public Optional<AttendanceTimeOfAnyPeriod> find(String employeeId, String frameCode) {
-                        return anyPeriodRepository.find(employeeId, frameCode);
-                    }
-                },
+        AnyPeriodActualResultCorrectionDetail attdTime = AnyPeriodActualResultCorrectionService.create(
+                require,
                 anyPeriodTotalFrameCode,
                 targetEmployeeId,
                 items
@@ -66,20 +44,16 @@ public class AnyPeriodResultRegisterAndStateEditService {
             processes.add(task);
 
             List<Integer> editedItems = items.stream().map(ItemValue::getItemId).distinct().collect(Collectors.toList());
-            List<AnyPeriodCorrectionEditingState> editingStates = editStateCreateService.create(
+            List<AnyPeriodCorrectionEditingState> editingStates = AnyPeriodCorrectionEditStateCreateService.create(
                     anyPeriodTotalFrameCode,
                     correctingEmployeeId,
                     targetEmployeeId,
                     editedItems
             );
 
-            processes.addAll(editStateRegisterService.register(
-                    new AnyPeriodCorrectionEditStateRegisterService.Require() {
-                        @Override
-                        public void persist(AnyPeriodCorrectionEditingState state) {
-                            anyPeriodEditingStateRepo.persist(state);
-                        }
-                    }, editingStates
+            processes.addAll(AnyPeriodCorrectionEditStateRegisterService.register(
+                    require,
+                    editingStates
             ));
 
             return new AnyPeriodResultRegistrationDetail(processes, attdTime);
@@ -87,7 +61,7 @@ public class AnyPeriodResultRegisterAndStateEditService {
         return new AnyPeriodResultRegistrationDetail(new ArrayList<>(), attdTime);
     }
 
-    public interface Require {
+    public interface Require extends AnyPeriodActualResultCorrectionService.Require, AnyPeriodCorrectionEditStateRegisterService.Require {
         void update(AttendanceTimeOfAnyPeriod attendanceTime);
     }
 }

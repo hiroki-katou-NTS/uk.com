@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js" of="/nts.uk.com.js.web" />
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js" of="/nts.uk.com.js.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="kfp002.a.vm.js" />
+			<com:stylefile path="kfp002.a.style.css" />
+			<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+					nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus
+					nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth
+					nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth
+					nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.OverTime
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes
+					nts.uk.ctx.at.shared.dom.common.days.MonthlyDays
+					nts.uk.ctx.at.shared.dom.common.days.YearlyDays
+					nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays
+					nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain
+					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain
+					nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse
+					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse
+					nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+                    nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth
+                    nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth
+                    nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth
+		    </com:ValidatorScript>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!--A1_1-->
+				<button data-bind="enable: isEnableRegister, click: insertUpdate" class="proceed">#{i18n.getText('KFP002_1')}</button>
+				<!--A1_2-->
+				<button data-bind="click: openDialogB">#{i18n.getText('KFP002_2')}</button>
+				<!--A1_3-->
+				<button data-bind="click: openCDL027">#{i18n.getText('KFP002_3')}</button>
+			</div>
+
+			<div id="contents-area">
+				<!--A3_1-->
+				<div id="ccg001"></div>
+				<div style="margin-left: 50px;">
+					<div class="control-group valign-center">
+						<div id="A2_1"
+							 style="width: 250px;"
+							 data-bind="ntsComboBox: {
+										name:'#[KFP002_4]',
+										options: aggregateFrames,
+										optionsValue: 'aggrFrameCode',
+										visibleItemsCount: 10,
+										value: selectedFrameCode,
+										optionsText: 'optionalAggrName',
+										columns: [
+											{ prop: 'aggrFrameCode', length: 4 },
+											{ prop: 'optionalAggrName', length: 10 },
+										]}">
+						</div>
+						<button data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KMW003_33')}</button>
+						<button data-bind="click: saveColumnWidth, enable: ko.computed(() => displayFormat() &amp;&amp; displayFormat().items.length > 0)">#{i18n.getText('KFP002_5')}</button>
+						<button id="A2_5"><i data-bind="ntsIcon: { no: 5, width: 20, height: 20 }"></i></button>
+						<div id="setting-content">
+							<div class="control-group valign-center">
+								<span>#{i18n.getText('KFP002_11')}</span>
+								<div id="cbCursorMoveDirection"
+									 style="width: 60px;"
+									 data-bind="ntsComboBox: {
+													visibleItemsCount: 2,
+													name:'#[KFP002_11]',
+													options: cursorMoveDirections,
+													optionsValue: 'code',
+													value: cursorDirection,
+													optionsText: 'name',
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 3 }
+													]}">
+								</div>
+							</div>
+							<div class="control-group valign-center">
+								<div data-bind="ntsCheckBox: { checked: displayZero }">#{i18n.getText('KFP002_12')}</div>
+							</div>
+							<div class="control-group valign-center">
+								<div data-bind="ntsCheckBox: { checked: displayItemNumber }">#{i18n.getText('KFP002_13')}</div>
+							</div>
+						</div>
+					</div>
+                    <table id="anpGrid"></table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
