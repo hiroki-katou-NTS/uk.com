@@ -74,6 +74,13 @@ module cmm044.d.viewmodel {
             const dfd = $.Deferred();
             self.personList.removeAll();
             nts.uk.ui.block.invisible();
+            if(self.dateValue().startDate === '' || self.dateValue().endDate === ''){
+                nts.uk.ui.dialog.alertError({messageId: "Msg_3313"}).then(() => {
+                    self.dateValue({ startDate: '', endDate: '' });
+                })
+                nts.uk.ui.block.clear();
+                return;
+            }
             service.findAgentByDate(self.dateValue().startDate, self.dateValue().endDate).done(function(agent_arr: Array<model.AgentDto>) {
                 if (agent_arr.length == 0) {
                     nts.uk.ui.dialog.alertError({messageId: "Msg_7"}).then(() => {

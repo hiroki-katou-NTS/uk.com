@@ -77,6 +77,10 @@ module nts.uk.com.view.kcp011.share {
                 });
             }
 
+            if (nts.uk.util.isNullOrUndefined(self.setting().workplaceGroupTypes)) {
+                self.setting().workplaceGroupTypes = [];
+            }
+
             self.loadData().done(() => {
                 let selectedMode = setting.selectedMode;
                 if (selectedMode == SELECTED_MODE.NONE) {
@@ -100,7 +104,6 @@ module nts.uk.com.view.kcp011.share {
                         }
                 }
             });
-            
         }
 
         loadData() {
@@ -108,7 +111,7 @@ module nts.uk.com.view.kcp011.share {
             let dfd = $.Deferred();
 
             nts.uk.ui.block.grayout();
-            nts.uk.request.ajax("com", GET_WORKPLACE_URL).done((res) => {
+            nts.uk.request.ajax("com", GET_WORKPLACE_URL, {wkpGroupTypes: self.setting().workplaceGroupTypes}).done((res) => {
                 let workplaces = _.orderBy(res.workplaces, ['code'], ['asc']);
                 if (self.setting().showEmptyItem) {
                     workplaces.unshift({ id: Math.random(), code: NASHI_CODE, name: nts.uk.resource.getText("KCP011_5"), configured: null });
@@ -174,6 +177,17 @@ module nts.uk.com.view.kcp011.share {
         // 選択モード // NONE = 0, FIRST = 1, ALL = 2
         selectedMode: number;
         itemList: any;
+        // 種類: 通常 = 0, 医療(病棟) = 1, 介護事業所 = 2
+        workplaceGroupTypes: Array<number>;
+    }
+    
+    export enum WORKPLACE_GROUP_TYPE {
+        /** 通常 **/
+        NORMAL = 0,
+        /** 医療(病棟) **/
+        MEDICAL_CARE = 1,
+        /** 介護事業所 **/
+        CARE_OFFICE = 2
     }
 }
 

@@ -158,7 +158,7 @@ public class GetDeitalInfoNursingByEmp {
 			String v1 ="";
 			String v2 ="";
 			//取得した介護看護休暇設定．時間介護看護設定．管理区分
-			if(acquireNursingAndChildNursingDto.getNursingLeaveSetting().get().getTimeCareNursingSetting().getManageDistinct() == ManageDistinct.YES ) {
+			if(acquireNursingAndChildNursingDto.getNursingLeaveSetting().get().getTimeVacationDigestUnit().getManage() == ManageDistinct.YES ) {
 				v1 = TextResource.localize("KDL051_31");
 				//子の看護介護休暇集計結果．起算日からの休暇情報．本年．残数．時間、
 				v2 = convertTime(aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getRemainTimes().isPresent()? 
@@ -179,7 +179,7 @@ public class GetDeitalInfoNursingByEmp {
 			String value1 = "";
 			String value2 = "";
 			String value3 = "";
-			if ( acquireNursingAndChildNursingDto.getNursingLeaveSetting().get().getTimeCareNursingSetting().getManageDistinct() == ManageDistinct.YES) { //120688
+			if ( acquireNursingAndChildNursingDto.getNursingLeaveSetting().get().getTimeVacationDigestUnit().getManage() == ManageDistinct.YES) { //120688
 				value1 = KDL051_31;
 				value2 = convertTime(aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getUsedDays().getUsedTimes().isPresent()?
 						aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getUsedDays().getUsedTimes().get().v():0);

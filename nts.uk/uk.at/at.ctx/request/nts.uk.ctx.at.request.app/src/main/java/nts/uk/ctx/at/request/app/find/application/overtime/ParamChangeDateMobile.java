@@ -9,8 +9,12 @@ import nts.uk.ctx.at.request.app.command.application.overtime.DisplayInfoOverTim
 public class ParamChangeDateMobile {
 	
 	public String companyId;
-	
+
+	public String employeeId;
+
 	public String date;
+
+	public int prePostAtr;
 	
 	public DisplayInfoOverTimeCommand displayInfoOverTime;
 }

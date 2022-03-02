@@ -2,6 +2,10 @@
     max-width: 450px;
 }
 
+.widget-title {
+    background-color: #fcfcfc;
+}
+
 .kdp-001-a-content .kdp-001-a.widget-title
 .text-time {
     position: absolute;
@@ -128,7 +132,7 @@
 
 .kdp-001-a-content .kdp-001-a.kdp-001-a-btn .btn-left {
     color: #fff;
-    background: #127D09;
+    background: #01956A;
     border: 5px;
 }
 

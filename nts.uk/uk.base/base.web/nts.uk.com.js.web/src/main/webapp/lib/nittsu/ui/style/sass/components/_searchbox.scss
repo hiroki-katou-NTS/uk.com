@@ -30,8 +30,8 @@
 	}
 	
 	 
-    button.clear-icon {
-		background-image: url("images/icons/numbered/225.png");
+	button.clear-icon {
+		background-image: url("images/icons/numbered/225.svg");
 		background-repeat: no-repeat;
 		background-size: contain;
 		margin-left: 5px;
@@ -39,13 +39,15 @@
 		height: 31px;
 		border-style: none;
 		background-color: transparent;
-    }
+	}
   
 	.input-wrapper {
 		position: relative;
 	}
   
 	#search-icon {
+		display: none;
+
 		background-color: #30cc40;
 		position: absolute;
 		right: 5px;

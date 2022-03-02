@@ -8,6 +8,7 @@ module nts.uk.ui.koExtentions {
             no: string;
             width: string;
             height: string;
+            extension: string;
         }
 
         @handler({
@@ -20,8 +21,9 @@ module nts.uk.ui.koExtentions {
                 const iconNo: string = ko.unwrap(data.no);
                 const width: string = ko.unwrap(data.width) || "100%";
                 const height: string = ko.unwrap(data.height) || "100%";
+                const extension: string = ko.unwrap(data.extension) || "svg";
 
-                const iconFileName = iconNo + ".png";
+                const iconFileName = iconNo + "." + extension;
                 const iconPath = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
                     .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")

@@ -1,0 +1,37 @@
+.form-label {
+    width: 100px;
+}
+
+#B5_2, #B5_3 {
+    width: 100px;
+}
+
+#B5_2_1, #B5_3_1 {
+    width: 460px;
+}
+
+.radio-wrappers .radio-wrapper {
+    display: block;
+}
+
+.nts-help-button-image {
+    transform: scale(0.68);
+    padding: 12px 12px !important;
+}
+
+.left-panel, .right-panel {
+    padding-top: 2px;
+}
+
+.left-panel {
+    padding-left: 15px!important;
+}
+
+.right-panel .control-group {
+    width: 702px;
+    margin-bottom: 11px;
+}
+
+#B2_3 tr td {
+    height: 24px;
+}

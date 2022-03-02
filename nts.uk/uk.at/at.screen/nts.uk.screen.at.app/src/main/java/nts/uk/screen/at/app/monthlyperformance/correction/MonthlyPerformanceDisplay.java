@@ -217,7 +217,9 @@ public class MonthlyPerformanceDisplay {
 					item.setDisplayNumber(c.getDisplayNumber());
 					item.setAttendanceAtr(c.getMonthlyAttendanceAtr());
 					item.setName(attdanceNames.get(c.getAttendanceItemId()));
-					item.setUserCanChange(c.getNameLineFeedPosition() == 1 ? true : false);
+				    // item.setUserCanChange(c.getNameLineFeedPosition() == 1 ? true : false);
+					item.setUserCanChange(c.getUserCanUpdateAtr() == 1 ? true : false);
+					item.setLineBreakPosition(c.getNameLineFeedPosition());
 					item.setUserCanUpdateAtr(c.getUserCanUpdateAtr());
 				});
 			}

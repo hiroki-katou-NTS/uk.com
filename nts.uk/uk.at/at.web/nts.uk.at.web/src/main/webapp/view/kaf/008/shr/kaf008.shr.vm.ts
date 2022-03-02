@@ -66,7 +66,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                                         </td>
                                         <td>
                                             <div class="div_line A10_D3" data-bind="if: $parent.enableInput()">
-                                                <a tab-index="8" class="hyperlink" data-bind="text: wkTypeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
+                                                <a tab-index="8" class="hyperlink" style="color: #000" data-bind="text: wkTypeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
                                             </div>
                                             <div class="div_line A10_D3" data-bind="if: !$parent.enableInput()">
                                                 <span tab-index="8" data-bind="text: wkTypeName"></span>
@@ -84,7 +84,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                                         </td>
                                         <td>
                                             <div class="div_line A10_D5" data-bind="if: $parent.enableInput()">
-                                                <a tab-index="10" class="hyperlink" data-bind="text: wkTimeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
+                                                <a tab-index="10" class="hyperlink" style="color: #000" data-bind="text: wkTimeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
                                             </div>
                                             <div class="div_line A10_D5" data-bind="if: !$parent.enableInput()">
                                                 <span tab-index="10" data-bind="text: wkTimeName"></span>
@@ -100,7 +100,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                                                             readonly: false,
                                                             required: false
                                                             },
-                                                            attr: {id: id}"/>
+                                                            attr: {id: id + '-start'}"/>
                                             </div>
                                         </td>
                                         <td>
@@ -112,7 +112,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                                                             enable: $parent.enableInput(),
                                                             readonly: false,
                                                             required: false
-                                                            }"/>
+                                                            }, 
+                                                            attr: {id: id + '-end'}"/>
                                             </div>
                                         </td>
                                     </tr>
@@ -199,11 +200,13 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                             });
                             eachContent.start.subscribe(startValue => {
                                 vm.clearWorkTimeErrorByDate(content.date);
+                                vm.clearStartTimeErrorByDate(content.date);
                                 content.opAchievementDetail.opWorkTime = startValue;
 
                             });
                             eachContent.end.subscribe(endValue => {
                                 vm.clearWorkTimeErrorByDate(content.date);
+                                vm.clearEndTimeErrorByDate(content.date);
                                 content.opAchievementDetail.opLeaveTime = endValue;
                             });
                             return eachContent;
@@ -263,10 +266,12 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         });
                         contentTrip.start.subscribe(startValue => {
                             vm.clearWorkTimeErrorByDate(data.date);
+                            vm.clearStartTimeErrorByDate(data.date);
                             data.startWorkTime = startValue;
                         });
                         contentTrip.end.subscribe(endValue => {
                             vm.clearWorkTimeErrorByDate(data.date);
+                            vm.clearEndTimeErrorByDate(data.date);
                             data.endWorkTime = endValue;
                         });
                         return contentTrip;
@@ -347,6 +352,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             };
 
             vm.clearWorkTimeErrorByDate(date);
+            vm.clearStartTimeErrorByDate(date);
+            vm.clearEndTimeErrorByDate(date);
             vm.$blockui("show");
             vm.$validate([
                 '#kaf008-share #A10_D4'
@@ -446,6 +453,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             };
 
             vm.clearWorkTimeErrorByDate(command.date);
+            vm.clearStartTimeErrorByDate(command.date);
+            vm.clearEndTimeErrorByDate(command.date);
             vm.$blockui("show");
             vm.$validate([
                 '#kaf008-share #A10_D4'
@@ -547,6 +556,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         vm.$errors("clear");
                         vm.clearWorkTypeErrorByDate(selectedDate);
                         vm.clearWorkTimeErrorByDate(selectedDate);
+                        vm.clearStartTimeErrorByDate(selectedDate);
+                        vm.clearEndTimeErrorByDate(selectedDate);
                         vm.isCodeChangedFromKDL(true);
                         vm.isTimeChangedFromKDL(true);
                         if (!rs.selectedWorkTimeCode) {
@@ -642,6 +653,14 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
         clearWorkTimeErrorByDate(date: any) {
             $('#' + date.replace(/\//g, "") + '-tmCode').ntsError('clear');
+        }
+
+        clearStartTimeErrorByDate(date: any) {
+            $('#' + date.replace(/\//g, "") + '-start').ntsError('clear');
+        }
+
+        clearEndTimeErrorByDate(date: any) {
+            $('#' + date.replace(/\//g, "") + '-end').ntsError('clear');
         }
 
         focusWorkTypeByDate(date: any) {
