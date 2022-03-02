@@ -24,8 +24,11 @@ public class JpaIdpUserAssociationRepository extends JpaRepository implements Id
 
 	@Override
 	public void delete(String tenantCode, SamlIdpUserName idpUserName) {
-		val pk = new SgwmtSamlUserAssocEmp.PK(tenantCode, idpUserName.v());
-		this.commandProxy().remove(SgwmtSamlUserAssocEmp.class, pk);
+		String query = "delete from SgwmtSamlUserAssocEmp e where e.pk.contractCode = :cont and e.pk.idpUserName = :name";
+		this.getEntityManager().createQuery(query)
+				.setParameter("cont", tenantCode)
+				.setParameter("name", idpUserName.v())
+				.executeUpdate();
 	}
 
 	@Override
