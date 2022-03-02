@@ -100,7 +100,7 @@ public class ReflectApplicationWorkSchedule {
 		dailyRecordApp.setDomain(domainCorrect);
 
 		// 日別実績の修正からの計算
-		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(ExecutionType.NORMAL_EXECUTION, CalculateOption.asDefault(),
+		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(CalculateOption.asDefault(),
 				Arrays.asList(domainCorrect));
 		if (!lstAfterCalc.isEmpty()) {
 			dailyRecordApp.setDomain(lstAfterCalc.get(0));
@@ -158,7 +158,7 @@ public class ReflectApplicationWorkSchedule {
 		public void insertSchedule(WorkSchedule workSchedule);
 
 		// CalculateDailyRecordServiceCenterNew
-		public List<IntegrationOfDaily> calculateForSchedule(ExecutionType type, CalculateOption calcOption,
+		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily);
 
 	}
