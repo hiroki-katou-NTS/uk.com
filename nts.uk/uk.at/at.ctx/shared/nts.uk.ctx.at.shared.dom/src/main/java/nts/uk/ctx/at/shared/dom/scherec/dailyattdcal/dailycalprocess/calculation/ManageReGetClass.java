@@ -291,7 +291,7 @@ public class ManageReGetClass {
 	}
 	
 	/**
-	 * 逆丸めに変更して取得する
+	 * 逆丸めにして取得する
 	 * @return ManageReGetClass
 	 */
 	public ManageReGetClass getReverseRounding() {
