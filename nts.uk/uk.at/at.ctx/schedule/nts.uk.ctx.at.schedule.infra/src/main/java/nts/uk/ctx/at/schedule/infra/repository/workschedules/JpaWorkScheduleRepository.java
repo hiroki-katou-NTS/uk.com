@@ -1605,7 +1605,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		}
 
 		Map<Pair<String, GeneralDate>, List<KscdtSchSupport>> mapPairKscdtSchSupport = listKscdtSchSupport.stream()
-				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.date)));
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
 
 		return mapPairKscdtSchSupport;
 	}

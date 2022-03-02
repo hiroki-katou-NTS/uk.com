@@ -24,14 +24,14 @@ public class KscdtSchSupportPK implements Serializable {
 	public String sid;
 
 	@Column(name = "YMD")
-	public GeneralDate date;
+	public GeneralDate ymd;
 	
 	@Column(name = "SERIAL_NO")
 	public int serialNo;
 
-	public KscdtSchSupportPK(String sid, GeneralDate date, int serialNo) {
+	public KscdtSchSupportPK(String sid, GeneralDate ymd, int serialNo) {
 		this.sid = sid;
-		this.date = date;
+		this.ymd = ymd;
 		this.serialNo = serialNo;
 	}
 
