@@ -18,6 +18,7 @@ public class EquipmentClassiicationCanonicalization extends IndependentCanonical
 	public static class Items {
 		public static final int 設備分類コード = 1;
 		public static final int 設備分類名称 = 2;
+		public static final int 契約コード = 9999;
 	}
 	
 	@Override
@@ -32,8 +33,8 @@ public class EquipmentClassiicationCanonicalization extends IndependentCanonical
 
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(new DomainDataColumn("CONTRACT_CD", DataType.STRING),
-										 new DomainDataColumn("CODE", DataType.STRING)
+		return Arrays.asList(new DomainDataColumn(Items.契約コード, "CONTRACT_CD", DataType.STRING),
+										 new DomainDataColumn(Items.設備分類コード,"CODE", DataType.STRING)
 				);
 	}
 }
