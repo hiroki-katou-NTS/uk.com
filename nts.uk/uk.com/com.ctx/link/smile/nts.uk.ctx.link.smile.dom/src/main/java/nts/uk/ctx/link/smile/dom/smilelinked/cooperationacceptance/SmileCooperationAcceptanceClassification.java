@@ -1,4 +1,4 @@
-package nts.uk.smile.dom.smilelinked.cooperationacceptance;
+package nts.uk.ctx.link.smile.dom.smilelinked.cooperationacceptance;
 
 /**
  * Smile連携受入区分

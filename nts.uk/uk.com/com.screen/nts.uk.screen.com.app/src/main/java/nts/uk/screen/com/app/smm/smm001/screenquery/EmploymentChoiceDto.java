@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSetting;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSetting;
 
 @Data
 @AllArgsConstructor

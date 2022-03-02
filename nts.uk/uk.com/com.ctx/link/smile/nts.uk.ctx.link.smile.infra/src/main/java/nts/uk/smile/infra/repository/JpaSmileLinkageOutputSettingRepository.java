@@ -7,10 +7,10 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.processexecution.ExternalOutputConditionCode;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.SmileCooperationOutputClassification;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSetting;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileCooperationOutputClassification;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSetting;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingRepository;
 import nts.uk.smile.infra.entity.smilelinked.LsmmtSmileLinkOutset;
 import nts.uk.smile.infra.entity.smilelinked.LsmmtSmileLinkOutsetPK;
 
@@ -58,14 +58,14 @@ public class JpaSmileLinkageOutputSettingRepository extends JpaRepository
 	}
 
 	@Override
-	public SmileLinkageOutputSetting get(String contractCode, String companyId) {
+	public Optional<SmileLinkageOutputSetting> get(String contractCode, String companyId) {
 		LsmmtSmileLinkOutsetPK miomtSmileLinkOutsetPK = new LsmmtSmileLinkOutsetPK(contractCode, companyId);
 		Optional<LsmmtSmileLinkOutset> optinalMiomtSmileLinkOutset = this.queryProxy().find(miomtSmileLinkOutsetPK,
 				LsmmtSmileLinkOutset.class);
 		if (optinalMiomtSmileLinkOutset.isPresent()) {
-			return this.toDomain(optinalMiomtSmileLinkOutset.get());
+			return Optional.of(this.toDomain(optinalMiomtSmileLinkOutset.get()));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 }

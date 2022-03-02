@@ -1,4 +1,4 @@
-package nts.uk.smile.dom.smilelinked.cooperationoutput;
+package nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput;
 
 import java.util.List;
 
@@ -49,11 +49,20 @@ public interface LinkedPaymentConversionRepository {
 	List<EmploymentAndLinkedMonthSetting> getByPaymentCode(String contractCode, String companyId, PaymentCategory paymentCode);
 	
 	/**
-	 * get 会社を指定して連動支払変換を取得する
+	 * get 会社を指定して選択雇用一覧を取得する
 	 * 
 	 * @param companyId 契約コード
 	 * @param code      会社ID
 	 * @return
 	 */
 	List<EmploymentAndLinkedMonthSetting> get(String contractCode, String companyId);
+	
+	/**
+	 * get 会社を指定して連動支払変換を取得する
+	 * 
+	 * @param companyId 契約コード
+	 * @param code      会社ID
+	 * @return
+	 */
+	List<LinkedPaymentConversion> getLinkPayConver(String contractCode, String companyId);
 }

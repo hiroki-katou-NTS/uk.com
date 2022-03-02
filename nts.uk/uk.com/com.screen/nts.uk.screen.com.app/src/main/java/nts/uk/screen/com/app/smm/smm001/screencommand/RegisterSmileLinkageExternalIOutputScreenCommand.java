@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.function.dom.processexecution.ExternalOutputConditionCode;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSetting;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedMonthSettingClassification;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversion;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.PaymentCategory;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileCooperationOutputClassification;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSetting;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.processexecution.ExternalOutputConditionCode;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSetting;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.LinkedMonthSettingClassification;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversion;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.PaymentCategory;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.SmileCooperationOutputClassification;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSetting;
 
 @Getter
 public class RegisterSmileLinkageExternalIOutputScreenCommand {

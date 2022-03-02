@@ -1,6 +1,7 @@
 package nts.uk.screen.com.app.smm.smm001.screencommand;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -10,13 +11,13 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSetting;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversion;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversionRepository;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.PaymentCategory;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSetting;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSetting;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversion;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversionRepository;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.PaymentCategory;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSetting;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingRepository;
 
 /**
  * SMILE連携外部出力を登録する
@@ -41,11 +42,11 @@ public class RegisterSmileLinkageExternalIOutputScreenCommandHandler
 		 */
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
-		SmileLinkageOutputSetting smileLinkageOutputSetting = smileLinkageOutputSettingRepository.get(contractCode,
+		Optional<SmileLinkageOutputSetting> smileLinkageOutputSetting = smileLinkageOutputSettingRepository.get(contractCode,
 				companyId);
 		SmileLinkageOutputSetting newSmileLinkageOutputSetting = command.convertScreenCommandToEntity();
 
-		if (smileLinkageOutputSetting == null) {
+		if (!smileLinkageOutputSetting.isPresent()) {
 			smileLinkageOutputSettingRepository.insert(newSmileLinkageOutputSetting);
 		} else {
 			smileLinkageOutputSettingRepository.update(newSmileLinkageOutputSetting);

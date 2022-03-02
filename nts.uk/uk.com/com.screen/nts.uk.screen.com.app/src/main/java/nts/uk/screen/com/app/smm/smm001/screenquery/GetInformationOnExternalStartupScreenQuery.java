@@ -1,6 +1,7 @@
 package nts.uk.screen.com.app.smm.smm001.screenquery;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,12 +14,11 @@ import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSetting;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversionRepository;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSetting;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSetting;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversionRepository;
-//import nts.uk.smile.dom.smilelinked.cooperationoutput.PaymentCategory;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSetting;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSettingRepository;
 
 /**
  * UKDesign.UniversalK.就業.SMM_Smile連携.SMM001_SMILE連携外部受入出力_詳細設定.B:SMILE連携外部出力詳細設定.外部出起動の情報取得する
@@ -47,16 +47,16 @@ public class GetInformationOnExternalStartupScreenQuery {
 		 */
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
-		SmileLinkageOutputSetting smileLinkageOutputSetting = smileLinkageOutputSettingRepository.get(contractCode,
+		Optional<SmileLinkageOutputSetting> smileLinkageOutputSetting = smileLinkageOutputSettingRepository.get(contractCode,
 				companyId);
 		SmileLinkageOutputSettingDto smileLinkageOutputSettingDto = new SmileLinkageOutputSettingDto();
-		if (smileLinkageOutputSetting != null) {
+		if (smileLinkageOutputSetting.isPresent()) {
 			smileLinkageOutputSettingDto = new SmileLinkageOutputSettingDto(
-					smileLinkageOutputSetting.getSalaryCooperationClassification().value,
-					smileLinkageOutputSetting.getMonthlyLockClassification().value,
-					smileLinkageOutputSetting.getMonthlyApprovalCategory().value,
-					smileLinkageOutputSetting.getSalaryCooperationConditions().isPresent()
-							? smileLinkageOutputSetting.getSalaryCooperationConditions().get().v()
+					smileLinkageOutputSetting.get().getSalaryCooperationClassification().value,
+					smileLinkageOutputSetting.get().getMonthlyLockClassification().value,
+					smileLinkageOutputSetting.get().getMonthlyApprovalCategory().value,
+					smileLinkageOutputSetting.get().getSalaryCooperationConditions().isPresent()
+							? smileLinkageOutputSetting.get().getSalaryCooperationConditions().get().v()
 							: null);
 		}
 
