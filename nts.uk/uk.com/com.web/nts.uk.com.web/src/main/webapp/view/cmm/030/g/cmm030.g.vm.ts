@@ -3,7 +3,7 @@
 module nts.uk.com.view.cmm030.g {
 
   const API = {
-    
+    export: "com/file/approvalmanagement/workroot/approvers/export"
   };
 
   @bean()
@@ -21,7 +21,18 @@ module nts.uk.com.view.cmm030.g {
     }
 
     public processExport() {
-
+      const vm = this;
+      vm.$validate().then(isValid => {
+        if (isValid) {
+          const param = {
+            baseDate: moment.utc(vm.baseDate(), "YYYY/MM/DD").toISOString()
+          };
+          vm.$blockui("grayout");
+          nts.uk.request.exportFile(API.export, param)
+          .then(() => vm.closeDialog())
+          .always(() => vm.$blockui("clear"));
+        }
+      });
     }
 
     public closeDialog() {
