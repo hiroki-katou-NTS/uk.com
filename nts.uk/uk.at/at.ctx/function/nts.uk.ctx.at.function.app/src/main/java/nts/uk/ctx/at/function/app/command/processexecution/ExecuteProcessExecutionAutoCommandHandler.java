@@ -2592,15 +2592,15 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				// (AggrPeriodExcution)
 				int executionAtr = nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.
 						ExecutionAtr.AUTOMATIC_EXECUTION.value;
-
+				//EA4209
 				val startDate = GeneralDateTime.fromString(anyAggrPeriod.get().getPeriod().start().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT);
-				val endate = GeneralDateTime.fromString(anyAggrPeriod.get().getPeriod().end().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT);
+				val endDate = GeneralDateTime.fromString(anyAggrPeriod.get().getPeriod().end().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT);
 
 				AggrPeriodExcutionImport aggrPeriodExcution = AggrPeriodExcutionImport.builder().companyId(companyId)
 						.aggrId(execId).aggrFrameCode(aggrFrameCode).executionEmpId("System")
 						.startDateTime(startDate).executionAtr(executionAtr)
 						.executionStatus(Optional.empty()).presenceOfError(PresenceOfError.NO_ERROR.value)
-						.endDateTime(endate).build();
+						.endDateTime(endDate).build();
 				this.aggrPeriodExcutionAdapter.addExcution(aggrPeriodExcution);
 
 				// 取得した「社員ID＜List＞」の分だけ「任意期間集計対象者」を登録する

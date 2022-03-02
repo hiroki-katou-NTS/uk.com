@@ -2570,15 +2570,16 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 						Optional.of(procExec.getExecScope().getWorkplaceIdList()), Optional.empty());
 				// Step ドメインモデル「任意期間集計実行ログ」を新規登録する - Registering a new domain model 任意期間集計実行ログ
 				// (AggrPeriodExcution)
+                //EA4209
                 val startDate = GeneralDateTime.fromString(anyAggrPeriod.get().getPeriod().start().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT);
-                val endate = GeneralDateTime.fromString(anyAggrPeriod.get().getPeriod().end().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT);
+                val endDate = GeneralDateTime.fromString(anyAggrPeriod.get().getPeriod().end().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT);
 				int executionAtr = nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.
 						ExecutionAtr.AUTOMATIC_EXECUTION.value;
 				AggrPeriodExcutionImport aggrPeriodExcution = AggrPeriodExcutionImport.builder().companyId(companyId)
 						.aggrId(execId).aggrFrameCode(aggrFrameCode).executionEmpId("System")
 						.startDateTime(startDate).executionAtr(executionAtr)
 						.executionStatus(Optional.empty()).presenceOfError(PresenceOfError.NO_ERROR.value)
-						.endDateTime(endate).build();
+						.endDateTime(endDate).build();
 				this.aggrPeriodExcutionAdapter.addExcution(aggrPeriodExcution);
 
 				// Step ドメインモデル「L」を新規登録する - Registering a new domain model "any period Aggregate
