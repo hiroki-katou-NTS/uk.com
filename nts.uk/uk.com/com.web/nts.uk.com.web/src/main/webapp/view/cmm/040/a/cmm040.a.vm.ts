@@ -161,7 +161,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             $(".nts-input").ntsError("clear");
             $(".nts-input").trigger("validate");
             $('#combo-box .ui-igcombo').ntsError('clear');
-            if (( _.isNumber(self.latitude()) || _.isNumber(self.longitude())) && self.radius() == 9999) {
+            if (( self.isNumberic(self.latitude()) || self.isNumberic(self.longitude())) && self.radius() == 9999) {
                 $('#combo-box .ui-igcombo').ntsError('set', { messageId: "MsgB_1" ,messageParams:[nts.uk.resource.getText("CMM040_39")] });
                 return;
             }
@@ -187,13 +187,17 @@ module nts.uk.com.view.cmm040.a.viewmodel {
         
         latitudeRequired() {
             let self = this;
-            return self.radius() != 9999 || _.isNumber(self.longitude());
+            return self.radius() != 9999 || self.isNumberic(self.longitude());
 
         };
         
+        isNumberic(value){
+            return !isNaN(parseFloat(value)) && isFinite(value);
+        }
+        
         longitudeRequired() {
             let self = this;
-            return self.radius() != 9999 || _.isNumber(self.latitude());
+            return self.radius() != 9999 || self.isNumberic(self.latitude());
         }
         
         
@@ -522,7 +526,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
         add() {
             let self = this;
             $('#combo-box .ui-igcombo').ntsError('clear');
-            if (( _.isNumber(self.latitude()) || _.isNumber(self.longitude())) && self.radius() == 9999) {
+            if (( self.isNumberic(self.latitude()) || self.isNumberic(self.longitude())) && self.radius() == 9999) {
                 $('#combo-box .ui-igcombo').ntsError('set', { messageId: "MsgB_1" ,messageParams:[nts.uk.resource.getText("CMM040_39")] });
                 return;
             }
