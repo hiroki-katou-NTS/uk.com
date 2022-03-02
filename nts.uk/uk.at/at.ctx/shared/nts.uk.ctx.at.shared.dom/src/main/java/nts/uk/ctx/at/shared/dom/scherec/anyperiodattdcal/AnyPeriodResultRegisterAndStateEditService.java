@@ -18,17 +18,7 @@ import java.util.stream.Collectors;
 /**
  * 任意期間別実績と編集状態を登録する
  */
-@Stateless
 public class AnyPeriodResultRegisterAndStateEditService {
-    @Inject
-    private AttendanceTimeOfAnyPeriodRepository anyPeriodRepository;
-
-    @Inject
-    private AnyPeriodActualResultCorrectionService correctionService;
-
-    @Inject
-    private AnyPeriodEditingStateRepository anyPeriodEditingStateRepo;
-
     /**
      * 登録する
      * @param require
@@ -38,10 +28,10 @@ public class AnyPeriodResultRegisterAndStateEditService {
      * @param items 編集項目値リスト
      * @return 任意期間実績の登録内容
      */
-    public AnyPeriodResultRegistrationDetail register(Require require, String anyPeriodTotalFrameCode, String correctingEmployeeId, String targetEmployeeId, List<ItemValue> items) {
+    public static AnyPeriodResultRegistrationDetail register(Require require, String anyPeriodTotalFrameCode, String correctingEmployeeId, String targetEmployeeId, List<ItemValue> items) {
         List<AtomTask> processes = new ArrayList<>();
-        AnyPeriodActualResultCorrectionDetail attdTime = correctionService.create(
-                (employeeId, frameCode) -> anyPeriodRepository.find(employeeId, frameCode),
+        AnyPeriodActualResultCorrectionDetail attdTime = AnyPeriodActualResultCorrectionService.create(
+                require,
                 anyPeriodTotalFrameCode,
                 targetEmployeeId,
                 items
@@ -62,7 +52,7 @@ public class AnyPeriodResultRegisterAndStateEditService {
             );
 
             processes.addAll(AnyPeriodCorrectionEditStateRegisterService.register(
-                    state -> anyPeriodEditingStateRepo.persist(state),
+                    require,
                     editingStates
             ));
 
@@ -71,7 +61,7 @@ public class AnyPeriodResultRegisterAndStateEditService {
         return new AnyPeriodResultRegistrationDetail(new ArrayList<>(), attdTime);
     }
 
-    public interface Require {
+    public interface Require extends AnyPeriodActualResultCorrectionService.Require, AnyPeriodCorrectionEditStateRegisterService.Require {
         void update(AttendanceTimeOfAnyPeriod attendanceTime);
     }
 }

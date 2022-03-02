@@ -18,15 +18,6 @@
 			<com:scriptfile path="kfp002.a.vm.js" />
 			<com:stylefile path="kfp002.a.style.css" />
 			<com:ValidatorScript>
-					nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode
-					nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode
-					nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD
-					nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode
-					nts.uk.shr.com.primitive.WorkplaceCode
-					nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode
-					nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode
-					nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode
-					nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RecordRemarks
 					nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
 					nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus
 					nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth
@@ -56,8 +47,6 @@
                     nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth
                     nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes
                     nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth
-                    nts.uk.ctx.bs.employee.dom.classification.ClassificationCode
-                    nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode
 		    </com:ValidatorScript>
 		</ui:define>
 
@@ -91,7 +80,7 @@
 										]}">
 						</div>
 						<button data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KMW003_33')}</button>
-						<button data-bind="click: saveColumnWidth">#{i18n.getText('KFP002_5')}</button>
+						<button data-bind="click: saveColumnWidth, enable: ko.computed(() => displayFormat() &amp;&amp; displayFormat().items.length > 0)">#{i18n.getText('KFP002_5')}</button>
 						<button id="A2_5"><i data-bind="ntsIcon: { no: 5, width: 20, height: 20 }"></i></button>
 						<div id="setting-content">
 							<div class="control-group valign-center">

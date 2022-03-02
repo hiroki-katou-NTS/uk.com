@@ -116,7 +116,9 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                         displayZero: self.displayZero(),
                         displayItemNumber: self.displayItemNumber()
                     });
-                    self.getData();
+                    if (!_.isEmpty(self.lstEmployee()) && self.displayFormat()) {
+                        self.getData();
+                    }
                 }
             });
 
@@ -176,7 +178,9 @@ module nts.uk.at.view.kfp002.a.viewmodel {
             });
 
             self.lstEmployee.subscribe(val => {
-                self.getData();
+                if (!_.isEmpty(val) && self.displayFormat()) {
+                    self.getData();
+                }
             });
         }
 
@@ -215,7 +219,12 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                         self.savedColumnWidths(colWidths);
                         self.getColumns();
                         self.$blockui('hide');
-                        self.getData();
+                        if (!_.isEmpty(self.lstEmployee())) {
+                            self.getData();
+                        } else {
+                            self.dataSource([]);
+                            self.loadGrid();
+                        }
                     }).fail(error => {
                         self.$blockui('hide');
                         self.$dialog.alert(error);
@@ -386,7 +395,6 @@ module nts.uk.at.view.kfp002.a.viewmodel {
 
         getPrimitive(primitive: number): string {
             switch (primitive) {
-                case 13: return "RecordRemarks";
                 case 16: return "AttendanceTimeMonth";
                 case 17: return "AttendanceTimeMonthWithMinus";
                 case 18: return "AttendanceDaysMonth";
@@ -459,7 +467,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                 self.$blockui("show");
                 self.$ajax(Paths.correct, dataUpdate).done((data) => {
                     self.$dialog.info({ messageId: 'Msg_15' });
-                    self.isEnableRegister(false);
+                    // self.isEnableRegister(false);
                     self.getData().then(() => {
                         self.updateCellIsCal(data);
                     });
@@ -588,6 +596,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
 
         loadGrid() {
             let self = this;
+            self.isEnableRegister(false);
             if ($("#anpGrid").data('mGrid')) {
                 $("#anpGrid").mGrid("destroy");
                 $("#anpGrid").off();
@@ -623,7 +632,15 @@ module nts.uk.at.view.kfp002.a.viewmodel {
             }).create();
             self.displayItemNumber.valueHasMutated();
             self.displayZero.valueHasMutated();
-            $("#anpGrid td").on("click keyup", () => {
+            self.checkEnableRegisterBinding();
+            $(".mgrid-sheet-button").not(".ui-state-active").click(() => {
+                self.checkEnableRegisterBinding();
+            });
+        }
+
+        checkEnableRegisterBinding() {
+            const self = this;
+            $("#anpGrid>div, #anpGrid td, body").on("click keypress blur", () => {
                 if ($("#anpGrid").data('mGrid')
                     && _.size(_.uniqWith($("#anpGrid").mGrid("updatedCells", true),  _.isEqual)) > 0
                     && _.isEmpty($("#anpGrid").mGrid("errors"))) {
@@ -649,12 +666,6 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     currentPageIndex: 0
                 },
                 {
-                    name: 'ColumnFixing',
-                    fixingDirection: 'left',
-                    showFixButtons: false,
-                    columnSettings: FIXED_COLUMNS.map(c => ({ columnKey: c.key, isFixed: true }))
-                },
-                {
                     name: 'Summaries',
                     showSummariesButton: false,
                     showDropDownButton: false,
@@ -675,6 +686,14 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     name: "Sheet",
                     initialDisplay: self.sheets()[0].name,
                     sheets: self.sheets()
+                });
+            }
+            if (self.displayFormat() && !_.isEmpty(self.displayFormat().items)) {
+                features.push({
+                    name: 'ColumnFixing',
+                    fixingDirection: 'left',
+                    showFixButtons: false,
+                    columnSettings: FIXED_COLUMNS.map(c => ({ columnKey: c.key, isFixed: true }))
                 });
             }
             return features;

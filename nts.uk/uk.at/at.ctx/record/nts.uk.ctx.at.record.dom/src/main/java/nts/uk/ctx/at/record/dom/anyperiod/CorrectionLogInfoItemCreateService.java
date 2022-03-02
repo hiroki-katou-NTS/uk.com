@@ -7,7 +7,6 @@ import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.ejb.Stateless;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +15,6 @@ import java.util.stream.Collectors;
 /**
  * 修正ログの項目情報を作成する
  */
-@Stateless
 public class CorrectionLogInfoItemCreateService {
 
     /**
@@ -26,15 +24,15 @@ public class CorrectionLogInfoItemCreateService {
      * @param comparingItems 比較項目リスト
      * @return 修正リスト
      */
-    public List<ItemInfo> create(Require require, List<ItemValue> targetItems, List<ItemValue> comparingItems) {
+    public static List<ItemInfo> create(Require require, List<ItemValue> targetItems, List<ItemValue> comparingItems) {
         List<ItemInfo> result = new ArrayList<>();
         List<Integer> itemIds = targetItems.stream().map(ItemValue::getItemId).collect(Collectors.toList());
-        List<AttItemName> attItemNames = require.getNameOfAttendanceItem(itemIds, TypeOfItemImport.AnyPeriod);
+        List<AttItemName> attItemNames = require.getNameOfAttendanceItem(itemIds, TypeOfItemImport.Monthly);
         attItemNames.forEach(attItem -> {
             ItemValue target = targetItems.stream().filter(i -> i.getItemId() == attItem.getAttendanceItemId()).findFirst().get();
             ItemValue compare = comparingItems.stream().filter(i -> i.getItemId() == attItem.getAttendanceItemId()).findFirst().get();
             if (StringUtils.compare(target.getValue(), compare.getValue()) != 0) {
-                ItemInfo info = this.createTargetInfo(
+                ItemInfo info = createTargetInfo(
                         attItem,
                         Optional.ofNullable(target.getValue()),
                         Optional.ofNullable(compare.getValue())
@@ -52,7 +50,7 @@ public class CorrectionLogInfoItemCreateService {
      * @param valueAfter 修正後の項目値
      * @return 項目情報
      */
-    private ItemInfo createTargetInfo(AttItemName attItemName, Optional<String> valueBefore, Optional<String> valueAfter) {
+    private static ItemInfo createTargetInfo(AttItemName attItemName, Optional<String> valueBefore, Optional<String> valueAfter) {
         return ItemInfo.create(
                 String.valueOf(attItemName.getAttendanceItemId()),
                 attItemName.getAttendanceItemName(),
@@ -62,7 +60,7 @@ public class CorrectionLogInfoItemCreateService {
         );
     }
 
-    private String convertTime_Short_HM(int time) {
+    private static String convertTime_Short_HM(int time) {
         return (time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60));
     }
 

@@ -1,3 +1,7 @@
 .mgrid .mgrid-header td {
     white-space: pre;
 }
+
+.mgrid-sheet, .mgrid-sheet-nav {
+    overflow: auto;
+}

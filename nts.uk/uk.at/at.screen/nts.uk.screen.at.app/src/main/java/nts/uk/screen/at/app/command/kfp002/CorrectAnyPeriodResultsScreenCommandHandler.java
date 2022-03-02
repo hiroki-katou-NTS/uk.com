@@ -5,14 +5,20 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.record.dom.anyperiod.AnyPeriodCorrectionLogRegisterService;
+import nts.uk.ctx.at.record.dom.anyperiod.CorrectionLogInfoItemCreateService;
 import nts.uk.ctx.at.shared.dom.scherec.anyperiod.attendancetime.converter.AnyPeriodRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.anyperiodattdcal.AnyPeriodActualResultCorrectionDetail;
 import nts.uk.ctx.at.shared.dom.scherec.anyperiodattdcal.AnyPeriodResultRegisterAndStateEditService;
 import nts.uk.ctx.at.shared.dom.scherec.anyperiodattdcal.AnyPeriodResultRegistrationDetail;
 import nts.uk.ctx.at.shared.dom.scherec.anyperiodattdcal.CalculatedItemDetail;
+import nts.uk.ctx.at.shared.dom.scherec.anyperiodattdcal.editstate.AnyPeriodCorrectionEditingState;
+import nts.uk.ctx.at.shared.dom.scherec.anyperiodattdcal.editstate.AnyPeriodEditingStateRepository;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
 import nts.uk.screen.at.app.kdw013.a.ItemValueCommand;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -27,16 +33,16 @@ import java.util.stream.Collectors;
 @Stateless
 public class CorrectAnyPeriodResultsScreenCommandHandler extends CommandHandlerWithResult<CorrectAnyPeriodResultsScreenCommand, List<CalculatedItemDetail>> {
     @Inject
-    private AnyPeriodResultRegisterAndStateEditService registerDomainService;
-
-    @Inject
     private AttendanceTimeOfAnyPeriodRepository attendanceRepo;
 
     @Inject
-    private AnyPeriodCorrectionLogRegisterService correctionLogService;
+    private AttendanceItemConvertFactory converterFactory;
 
     @Inject
-    private AttendanceItemConvertFactory converterFactory;
+    private AtItemNameAdapter atItemNameAdapter;
+
+    @Inject
+    private AnyPeriodEditingStateRepository anyPeriodEditingStateRepo;
 
     @Override
     protected List<CalculatedItemDetail> handle(CommandHandlerContext<CorrectAnyPeriodResultsScreenCommand> commandHandlerContext) {
@@ -49,8 +55,25 @@ public class CorrectAnyPeriodResultsScreenCommandHandler extends CommandHandlerW
         AnyPeriodRecordToAttendanceItemConverter converter = converterFactory.createOptionalItemConverter();
 
         itemsByEmployee.forEach((employeeId, items) -> {
-            AnyPeriodResultRegistrationDetail detail = registerDomainService.register(
-                    attendanceTime -> attendanceRepo.persistAndUpdate(attendanceTime),
+            AnyPeriodResultRegistrationDetail detail = AnyPeriodResultRegisterAndStateEditService.register(
+                    new AnyPeriodResultRegisterAndStateEditService.Require() {
+                        @Override
+                        public void persist(AnyPeriodCorrectionEditingState state) {
+                            anyPeriodEditingStateRepo.persist(state);
+                        }
+                        @Override
+                        public Optional<AttendanceTimeOfAnyPeriod> find(String employeeId, String frameCode) {
+                            return attendanceRepo.find(employeeId, frameCode);
+                        }
+                        @Override
+                        public AnyPeriodRecordToAttendanceItemConverter createOptionalItemConverter() {
+                            return converter;
+                        }
+                        @Override
+                        public void update(AttendanceTimeOfAnyPeriod attendanceTime) {
+                            attendanceRepo.persistAndUpdate(attendanceTime);
+                        }
+                    },
                     frameCode,
                     AppContexts.user().employeeId(),
                     employeeId,
@@ -62,13 +85,26 @@ public class CorrectAnyPeriodResultsScreenCommandHandler extends CommandHandlerW
             calculatedDetails.add(detail.getCorrectionDetail().getCalculatedItems(converter));
         });
 
-        transaction.execute(AtomTask.bundle(tasks));
-
-        correctionLogService.register(
-                (frameCode1, employeeId) -> attendanceRepo.find(employeeId, frameCode1),
+        AnyPeriodCorrectionLogRegisterService.register(
+                new AnyPeriodCorrectionLogRegisterService.Require() {
+                    @Override
+                    public List<AttItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItemImport type) {
+                        return atItemNameAdapter.getNameOfAttendanceItem(attendanceItemIds, type);
+                    }
+                    @Override
+                    public Optional<AttendanceTimeOfAnyPeriod> find(String frameCode, String employeeId) {
+                        return attendanceRepo.find(employeeId, frameCode);
+                    }
+                    @Override
+                    public AnyPeriodRecordToAttendanceItemConverter createOptionalItemConverter() {
+                        return converter;
+                    }
+                },
                 AppContexts.user().companyId(),
                 correctionDetails
         );
+
+        transaction.execute(AtomTask.bundle(tasks));
 
         return calculatedDetails;
     }
