@@ -70,7 +70,6 @@ module nts.uk.com.view.cmm030.a {
           $("#A3_2").focus();
         });
       });
-      vm.inputProcedure.subscribe(value => console.log(value));
     }
 
     mounted(): void {

@@ -9,7 +9,7 @@
       <script>
         var dialogSize = {
           width: 1000,
-          height: 600
+          height: 500
         };
       </script>
       <com:scriptfile set="IGNITE" />
@@ -23,14 +23,16 @@
     </ui:define>
     <ui:define name="content">
       <div id="contents-area">
-        <div class="flex valign-center">
-          <div id="F1_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMM030_80')}</div>
-          <label id="F1_2" data-bind="text: employeeCode"></label>
-          <label id="F1_3" data-bind="text: employeeName"></label>
-        </div>
-        <div class="flex valign-center setting-delete">
-          <label id="F2_2">#{i18n.getText('CMM030_82')}</label>
-          <button id="F2_1" class="danger" data-bind="enable: isFirstLineSelected, click: processDeleteHist">#{i18n.getText('CMM030_81')}</button>
+        <div class="flex valign-center setting-zone">
+          <div class="flex valign-center">
+            <div id="F1_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMM030_80')}</div>
+            <label id="F1_2" data-bind="text: employeeCode"></label>
+            <label id="F1_3" data-bind="text: employeeName"></label>
+          </div>
+          <div class="flex valign-center setting-delete">
+            <label id="F2_2">#{i18n.getText('CMM030_82')}</label>
+            <button id="F2_1" class="danger" data-bind="enable: isFirstLineSelected, click: processDeleteHist">#{i18n.getText('CMM030_81')}</button>
+          </div>
         </div>
         <div class="flex mt-20">
           <table id="F3" data-bind="ntsGridList: {
