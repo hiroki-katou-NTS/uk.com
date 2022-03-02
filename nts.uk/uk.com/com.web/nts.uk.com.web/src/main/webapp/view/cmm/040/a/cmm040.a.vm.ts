@@ -150,7 +150,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 setTimeout(() => self.validate(), 100);
                 
                 if (value != 9999) {
-                    $('#combo-box').ntsError('clear');
+                    $('#combo-box .ui-igcombo').ntsError('clear');
                 }
             });
 
@@ -160,9 +160,9 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             let self = this;
             $(".nts-input").ntsError("clear");
             $(".nts-input").trigger("validate");
-            $('#combo-box').ntsError('clear');
-            if ((!!self.latitude() || !!self.longitude()) && self.radius() == 9999) {
-                $('#combo-box').ntsError('set', { messageId: "MsgB_1" ,messageParams:[nts.uk.resource.getText("CMM040_39")] });
+            $('#combo-box .ui-igcombo').ntsError('clear');
+            if ((self.latitude() == '' || self.longitude() == '') && self.radius() == 9999) {
+                $('#combo-box .ui-igcombo').ntsError('set', { messageId: "MsgB_1" ,messageParams:[nts.uk.resource.getText("CMM040_39")] });
                 return;
             }
         }
@@ -521,9 +521,9 @@ module nts.uk.com.view.cmm040.a.viewmodel {
 
         add() {
             let self = this;
-            $('#combo-box').ntsError('clear');
-            if ((!!self.latitude() || !!self.longitude()) && self.radius() == 9999) {
-                $('#combo-box').ntsError('set', { messageId: "MsgB_1" ,messageParams:[nts.uk.resource.getText("CMM040_39")] });
+            $('#combo-box .ui-igcombo').ntsError('clear');
+            if ((self.latitude() == '' || self.longitude() == '') && self.radius() == 9999) {
+                $('#combo-box .ui-igcombo').ntsError('set', { messageId: "MsgB_1" ,messageParams:[nts.uk.resource.getText("CMM040_39")] });
                 return;
             }
             $(".nts-input").trigger("validate");
