@@ -3,7 +3,9 @@ package nts.uk.screen.at.app.kmt013;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.app.find.supportmanagement.supportalloworg.SupportAllowOrganizationFinder;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.WorkplaceInfo;
@@ -59,7 +61,7 @@ public class ListOrgCanBeSupportedScreenQuery {
         // 3. Loop 対象組織識別情報 in List<応援許可する組織.応援可能組織>
         // 組織の表示情報を取得する(Require, 年月日): 組織の表示情報
         RequireImpl require = new RequireImpl(workplaceGroupAdapter, serviceAdapter, wplAdapter);
-        val targetOrgInfo = targetOrg.getDisplayInfor(require,date);
+        val targetOrgInfo = StringUtil.isNullOrEmpty(orgId,false) ? new DisplayInfoOrganization("","","","","") : targetOrg.getDisplayInfor(require,date);
 
         supportOrg.forEach(item ->{
             val supportableOrganization = item.getSupportableOrganization();
