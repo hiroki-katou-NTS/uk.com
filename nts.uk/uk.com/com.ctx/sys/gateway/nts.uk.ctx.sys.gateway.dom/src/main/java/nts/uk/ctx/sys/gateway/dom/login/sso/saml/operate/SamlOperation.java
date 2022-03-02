@@ -15,9 +15,9 @@ public class SamlOperation {
 	
 	private boolean useSingleSignOn;
 	
-	private String idpRedirectUrl;
+	private SamlRedirectUrl idpRedirectUrl;
 	
-	public SamlOperation(String tenantCode, boolean useSingleSignOn, String idpRedirectUrl) {
+	public SamlOperation(String tenantCode, boolean useSingleSignOn, SamlRedirectUrl idpRedirectUrl) {
 		this.tenantCode = tenantCode;
 		this.useSingleSignOn = useSingleSignOn;
 		this.idpRedirectUrl = idpRedirectUrl;
@@ -29,6 +29,6 @@ public class SamlOperation {
 			return Optional.empty();
 		}
 
-		return Optional.of(new IdpEntryUrl(idpRedirectUrl, relayState.serialize()));
+		return Optional.of(new IdpEntryUrl(idpRedirectUrl.v(), relayState.serialize()));
 	}
 }

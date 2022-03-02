@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import nts.uk.ctx.sys.gateway.dom.login.sso.saml.operate.SamlRedirectUrl;
 import org.apache.commons.lang3.BooleanUtils;
 
 import lombok.AllArgsConstructor;
@@ -32,7 +33,10 @@ public class SgwmtSamlOperation extends UkJpaEntity {
 	public static final JpaEntityMapper<SgwmtSamlOperation> MAPPER = new JpaEntityMapper<>(SgwmtSamlOperation.class);
 	
 	public SamlOperation toDomain() {
-		return new SamlOperation(tenantCode, BooleanUtils.toBoolean(useSingleSignOn), idpRedirectUrl);
+		return new SamlOperation(
+				tenantCode,
+				BooleanUtils.toBoolean(useSingleSignOn),
+				new SamlRedirectUrl(idpRedirectUrl));
 	}
 
 	@Override
