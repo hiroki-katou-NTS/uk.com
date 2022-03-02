@@ -196,14 +196,11 @@ public class ShortWorkTimeOfDaily {
 			PremiumAtr premiumAtr){
 		
 		DeductionTotalTime result = DeductionTotalTime.defaultValue();
+		CalculationRangeOfOneDay oneDay = recordClass.getCalculationRangeOfOneDay();
 		
-		// 短時間勤務を控除するかどうかの設定を確認
-		if (decisionDeductChild(dedAtr, premiumAtr, recordClass.getHolidayCalcMethodSet())) {
-			CalculationRangeOfOneDay oneDay = recordClass.getCalculationRangeOfOneDay();
-			
-			/** 短時間勤務時間の計算 */
-			result = calcShortTime(dedAtr, careAtr, oneDay);
-		}
+		/** 短時間勤務時間の計算 */
+		result = calcShortTime(dedAtr, careAtr, premiumAtr, oneDay, recordClass.getHolidayCalcMethodSet());
+		
 		if (dedAtr.isAppropriate()){
 			if (recordClass.getCalculationRangeOfOneDay().getShortTimeWSWithoutWork().isPresent()){
 				ShortTimeWorkSheetWithoutWork withoutWork =
@@ -228,12 +225,25 @@ public class ShortWorkTimeOfDaily {
 		return result;
 	}
 
-	private static DeductionTotalTime calcShortTime(DeductionAtr dedAtr, ChildCareAtr careAtr,
-			CalculationRangeOfOneDay oneDay) {
+	/**
+	 * 控除短時間勤務時間の計算
+	 * @param dedAtr 控除区分
+	 * @param careAtr 育児介護区分
+	 * @param premiumAtr 割増区分
+	 * @param oneDay 1日の計算範囲
+	 * @param addSet 労働時間の加算設定
+	 * @return 控除合計時間
+	 */
+	private static DeductionTotalTime calcShortTime(DeductionAtr dedAtr, ChildCareAtr careAtr, PremiumAtr premiumAtr,
+			CalculationRangeOfOneDay oneDay, AddSettingOfWorkingTime addSet) {
 		ConditionAtr conditionAtr = (careAtr.isChildCare() ? ConditionAtr.Child : ConditionAtr.Care);
-		// 所定内育児時間の計算
-		TimeWithCalculation withinTime = oneDay.getDeductionTime(
-				conditionAtr, dedAtr, StatutoryAtr.Statutory, Optional.empty());
+		TimeWithCalculation withinTime = TimeWithCalculation.sameTime(AttendanceTime.ZERO);
+		// 短時間勤務を控除するかどうかの設定を確認
+		if(decisionDeductChild(dedAtr, premiumAtr, addSet)) {
+			// 所定内育児時間の計算
+			withinTime = oneDay.getDeductionTime(
+					conditionAtr, dedAtr, StatutoryAtr.Statutory, Optional.empty());
+		}
 		// 所定外育児時間の計算
 		TimeWithCalculation excessTime = oneDay.getDeductionTime(
 				conditionAtr, dedAtr, StatutoryAtr.Excess, Optional.empty());
