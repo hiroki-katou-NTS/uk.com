@@ -190,8 +190,8 @@ public class LeaveEarlyTimeOfDaily {
 		
 		// 遅刻早退を就業時間に含めるか判断する　→　控除区分
 		NotUseAtr notDeductLateLeaveEarly = NotUseAtr.NOT_USE;
-		Optional<WorkTimezoneLateEarlySet> lateEarlySet = recordClass.getWorkTimezoneCommonSet().map(c -> c.getLateEarlySet());
-		if (!recordClass.getHolidayCalcMethodSet().isIncludeLateEarlyInWorkTime(PremiumAtr.RegularWork, lateEarlySet)){
+		if (WithinWorkTimeFrame.isDeductLateLeaveEarly(recordClass.getIntegrationOfWorkTime(), PremiumAtr.RegularWork,
+				recordClass.getHolidayCalcMethodSet(), recordClass.getWorkTimezoneCommonSet(), NotUseAtr.NOT_USE)) {
 			notDeductLateLeaveEarly = NotUseAtr.USE;
 		}
 		boolean leaveEarly = recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly();
