@@ -125,7 +125,7 @@ public class SupportInformationFinder {
         // 表示モード＝＝応援に行く情報
         if (input.getDisplayMode() == DisplayMode.GO_TO_SUPPORT.value) { //応援に行く情報
             return this.getInfoGoToSupport(input.getEmployeeIds(), input.getPeriod());
-        } else { // 表示モード＝＝応援に来る情報: DisplayMode.GO_TO_SUPPORT
+        } else { // 表示モード＝＝応援に来る情報: DisplayMode.COME_TO_SUPPORT
             return this.getInfoComeToSupport(input.getTargetOrg().getOrgId(), input.getTargetOrg().getOrgUnit(), input.getPeriod());
         }
     }
@@ -172,7 +172,8 @@ public class SupportInformationFinder {
                             : supportableEmployee.getRecipient().getWorkplaceGroupId().orElse(null),
                     supportableEmployee.getRecipient().getUnit().value,
                     supportableEmployee.getSupportType().getValue(),
-                    supportableEmployee.getTimespan().isPresent() ? new TimeSpanForCalcDto(supportableEmployee.getTimespan().get().start(), supportableEmployee.getTimespan().get().end()) : null
+                    supportableEmployee.getTimespan().isPresent() ? new TimeSpanForCalcDto(supportableEmployee.getTimespan().get().start(), supportableEmployee.getTimespan().get().end()) : null,
+                    DisplayMode.GO_TO_SUPPORT.value
             ));
         }
 
@@ -233,7 +234,8 @@ public class SupportInformationFinder {
                             : supportableEmployee.getRecipient().getWorkplaceGroupId().orElse(null),
                     supportableEmployee.getRecipient().getUnit().value,
                     supportableEmployee.getSupportType().getValue(),
-                    supportableEmployee.getTimespan().isPresent() ? new TimeSpanForCalcDto(supportableEmployee.getTimespan().get().start(), supportableEmployee.getTimespan().get().end()) : null
+                    supportableEmployee.getTimespan().isPresent() ? new TimeSpanForCalcDto(supportableEmployee.getTimespan().get().start(), supportableEmployee.getTimespan().get().end()) : null,
+                    DisplayMode.COME_TO_SUPPORT.value
             ));
 
         }
