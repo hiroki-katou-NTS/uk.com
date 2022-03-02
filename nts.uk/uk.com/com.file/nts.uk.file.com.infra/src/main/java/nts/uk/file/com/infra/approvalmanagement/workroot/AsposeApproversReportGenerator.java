@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -252,7 +253,7 @@ public class AsposeApproversReportGenerator extends AsposeCellsReportGenerator i
 					this.printCell(cell, TextResource.localize("CMM030_161"));
 				} else if (isValidOpeMode) {
 					Optional<String> optApproverId = phase.getApprover().stream().map(ApproverExport::getEmployeeId)
-							.findFirst();
+							.filter(Objects::nonNull).findFirst();
 					String empName = dataSource.getEmployees().stream()
 							.filter(data -> optApproverId.map(x -> x.equals(data.getSid())).orElse(false)).findFirst()
 							.map(ResultRequest600Export::getEmployeeName).orElse("");

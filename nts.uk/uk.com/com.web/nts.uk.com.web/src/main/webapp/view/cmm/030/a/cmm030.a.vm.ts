@@ -466,8 +466,12 @@ module nts.uk.com.view.cmm030.a {
           vm.$dialog.error({ messageId: "Msg_3293" });
           return false;
         }
-        let hasBlank = !!_.find(vm.approverInputList(), data => _.find(data.approvers(), approver => approver.sid === null));
-        if (hasBlank) {
+        const isErr3294 = !!_.find(vm.approverInputList(), data => {
+          const approvers = _.chain(data.approvers()).filter(approver => approver.sid != null).map(approver => approver.colId()).value();
+          const isConsecutive = !!_.reduce(approvers, (prev: number, curr) => prev + 1 === curr ? curr : false);
+          return approvers.length === 0 || approvers[0] !== 0 || !isConsecutive;
+        });
+        if (isErr3294) {
           vm.$dialog.error({ messageId: "Msg_3294" });
           return false;
         }
