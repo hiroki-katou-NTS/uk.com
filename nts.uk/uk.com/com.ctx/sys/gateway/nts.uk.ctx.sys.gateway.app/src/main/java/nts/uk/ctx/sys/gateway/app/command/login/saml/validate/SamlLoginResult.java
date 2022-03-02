@@ -31,7 +31,7 @@ public class SamlLoginResult {
 			return new SamlLoginResult(State.ASSOCIATION_NEEDED, authen.getIdpUserName(), Optional.of(loginPage), Optional.empty());
 		}
 
-		return new SamlLoginResult(State.VALIDATION_FAILED, authen.getIdpUserName(), Optional.empty(), Optional.empty());
+		return new SamlLoginResult(State.VALIDATION_FAILED, authen.getIdpUserName(), Optional.empty(), Optional.of(authen.getState().errorMessageId));
 	}
 
 	public static SamlLoginResult succeeded() {

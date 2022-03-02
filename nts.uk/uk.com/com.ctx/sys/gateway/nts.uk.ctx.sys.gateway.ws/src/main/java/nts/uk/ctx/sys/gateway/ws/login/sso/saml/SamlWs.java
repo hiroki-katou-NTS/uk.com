@@ -41,7 +41,8 @@ public class SamlWs extends WebService {
 	 */
 	@POST
 	@Path("authenticate")
-	public StartSamlLoginResult authenticate(StartSamlLoginCommand command) {
+	public StartSamlLoginResult authenticate(@Context final HttpServletRequest request, StartSamlLoginCommand command) {
+		command.setRequest(request);
 		return this.authenticate.handle(command);
 	}
 

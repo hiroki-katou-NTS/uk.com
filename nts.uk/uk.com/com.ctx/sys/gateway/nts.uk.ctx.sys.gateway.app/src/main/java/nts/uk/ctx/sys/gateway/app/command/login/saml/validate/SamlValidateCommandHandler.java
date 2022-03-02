@@ -90,10 +90,15 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 	protected SamlLoginResult loginCompleted(Require require, SamlAuthenticationResult state, Optional<String> msg) {
 		return SamlLoginResult.succeeded();
 	}
+
+	@Inject
+	private LoginRequire loginRequire;
 	
 	@Override
 	protected Require getRequire(SamlValidateCommand command) {
-		return EmbedStopwatch.embed(new RequireImpl(command.getTenantCode()));
+		RequireImpl require = new RequireImpl(command.getTenantCode());
+		loginRequire.setup(require);
+		return EmbedStopwatch.embed(require);
 	}
 
 	public interface Require extends LoginCommandHandlerBase.Require, IdentifySamlUser.Require {

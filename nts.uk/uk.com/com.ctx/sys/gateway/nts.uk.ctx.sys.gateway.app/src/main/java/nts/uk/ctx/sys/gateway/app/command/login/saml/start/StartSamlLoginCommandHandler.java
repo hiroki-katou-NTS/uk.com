@@ -74,7 +74,7 @@ public class StartSamlLoginCommandHandler extends CommandHandlerWithResult<Start
 				.orElseGet(() -> StartSamlLoginResult.operationSettingNotExist());
 	}
 
-	private interface Require extends AuthenticateTenant.Require {
+	public interface Require extends AuthenticateTenant.Require {
 
 		Optional<SamlOperation> getSamlOperation(String tenantCode);
 	}

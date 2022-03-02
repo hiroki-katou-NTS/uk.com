@@ -2,9 +2,7 @@ package nts.uk.ctx.sys.gateway.dom.login.sso.saml;
 
 import lombok.Value;
 import lombok.val;
-import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.gul.security.saml.RelayState;
-import org.apache.commons.codec.net.URLCodec;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,10 +23,9 @@ public class UkRelayState {
 	}
 	
 	public String serialize() {
-		String encryptedPass = CommonKeyCrypt.encrypt(tenantPassword);
 		RelayState relayState = new RelayState();
 		relayState.add("tenantCode", tenantCode);
-		relayState.add("tenantPassword", encryptedPass);
+		relayState.add("tenantPassword", tenantPassword);
 		return relayState.serialize();
 	}
 	
@@ -36,6 +33,6 @@ public class UkRelayState {
 		val relayState = RelayState.deserialize(request);
 		return new UkRelayState(
 				relayState.get("tenantCode"),
-				CommonKeyCrypt.decrypt(relayState.get("tenantPassword")));
+				relayState.get("tenantPassword"));
 	}
 }
