@@ -23,13 +23,13 @@ public class SamlResponseValidation implements DomainAggregate {
     private final String tenantCode;
 
     @Getter
-    private SamlIdpEntityId idpEntityId;
-
-    @Getter
     private SamlClientId clientId;
 
     @Getter
-    private SamlClientCertificate clientCertificate;
+    private SamlIdpEntityId idpEntityId;
+
+    @Getter
+    private SamlIdpCertificate idpCertificate;
 
     public Optional<ValidSamlResponse> validate(HttpServletRequest request) {
 
@@ -50,7 +50,7 @@ public class SamlResponseValidation implements DomainAggregate {
         val samlSetting = new SamlSetting();
 
         samlSetting.setIDPEntityId(idpEntityId.v());
-        samlSetting.setIdpx509Certificate(clientCertificate.v());
+        samlSetting.setIdpx509Certificate(idpCertificate.v());
         samlSetting.setSPEntityId(clientId.v());
         samlSetting.setSignatureAlgorithm(Constants.RSA_SHA256); // 今はこれだけサポート(KeyCloak default)
 
