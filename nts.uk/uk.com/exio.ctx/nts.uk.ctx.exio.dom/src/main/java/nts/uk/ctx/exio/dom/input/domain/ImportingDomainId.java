@@ -34,6 +34,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskChildCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.task.TaskAssignEmpCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.task.TaskAssignWkpCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.shift.businesscalendar.PublicHolidayCanonicalization;
 
 /**
  * 受入グループID
@@ -57,6 +58,9 @@ public enum ImportingDomainId {
 	/** 設備分類マスタ */
 	EQUIPMENT_CLASSIFICATION(33, EquipmentClassiicationCanonicalization::new),
 
+	/** 祝日マスタ*/
+	PUBLIC_HOLIDAY(52, PublicHolidayCanonicalization::new),
+	
 	/** 個人基本情報 */
 	EMPLOYEE_BASIC(100, EmployeeBasicCanonicalization::new),
 

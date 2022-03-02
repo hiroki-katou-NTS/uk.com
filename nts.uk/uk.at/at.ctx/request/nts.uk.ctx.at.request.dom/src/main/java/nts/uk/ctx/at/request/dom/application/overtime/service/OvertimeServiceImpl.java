@@ -19,6 +19,8 @@ import nts.uk.ctx.at.request.dom.adapter.OneDayAttendanceTimeTempCalcAdapter;
 import nts.uk.ctx.at.request.dom.application.overtime.*;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -183,7 +185,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSetRepo;
-	
+
+	@Inject
+	private ICorrectionAttendanceRule correctionAttendanceRule;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -1295,12 +1299,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Override
 	public DisplayInfoOverTime changeDateMobile(
 			String companyId,
+			String employeeId,
 			GeneralDate date,
+            PrePostAtr prePostAtr,
 			DisplayInfoOverTime displayInfoOverTime) {
 		
 		List<GeneralDate> dates = new ArrayList<>();
-		dates.add(date);
-		
+		if (date != null) dates.add(date);
+
 		// 申請表示情報(基準日関係あり)を取得する
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithmImpl.getAppDispInfoWithDate(
 				companyId,
@@ -1313,7 +1319,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 		displayInfoOverTime.getAppDispInfoStartup().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		// 申請日に関する情報を取得する
 		commonAlgorithmOverTime.changeApplicationDate(companyId, date, displayInfoOverTime);
-		
+        if (displayInfoOverTime.getOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME && date != null) {
+            Optional<AppOverTime> app = appOverTimeRepository.findLatestMultipleOvertimeApp(employeeId, date, prePostAtr);
+            displayInfoOverTime.setLatestMultipleOvertimeApp(app);
+        }
 		return displayInfoOverTime;
 	}
 
@@ -1514,12 +1523,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 					workContent,
 					displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet(),
 					agent,
-					new ArrayList<>(),
-					new ArrayList<>(),
+					appOverTime.getMultipleTimesOp().map(OvertimeWorkMultipleTimes::getOvertimeHours).orElse(new ArrayList<>()),
+					appOverTime.getMultipleTimesOp().map(OvertimeWorkMultipleTimes::getOvertimeReasons).orElse(new ArrayList<>()),
 					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()
 			);
 			displayInfoOverTime.setCalculationResultOp(temp.getCalculationResultOp());
 			displayInfoOverTime.setWorkdayoffFrames(temp.getWorkdayoffFrames());
+			displayInfoOverTime.setCalculatedWorkTimes(temp.getCalculatedWorkTimes());
+            displayInfoOverTime.setCalculatedBreakTimes(temp.getCalculatedBreakTimes());
 		}
 		
 		return displayInfoOverTime;
@@ -1859,6 +1870,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 					@Override
 					public Optional<PredetemineTimeSetting> getPredetemineTimeSetting(String companyId, String workTimeCode) {
 						return predetemineTimeSetRepo.findByWorkTimeCode(companyId, workTimeCode);
+					}
+					@Override
+					public IntegrationOfDaily process(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
+						return correctionAttendanceRule.process(domainDaily, changeAtt);
 					}
 				},
 				companyId,

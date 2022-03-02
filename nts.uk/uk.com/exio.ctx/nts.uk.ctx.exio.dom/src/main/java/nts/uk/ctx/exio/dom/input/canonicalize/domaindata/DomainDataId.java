@@ -72,18 +72,18 @@ public class DomainDataId {
 			return this;
 		}
 		
-		public Builder key(String name, int value) {
-			this.keys.add(new Key(name, DataType.INT, value));
+		public Builder key(int itemNo, String name, int value) {
+			this.keys.add(new Key(itemNo, name, DataType.INT, value));
 			return this;
 		}
 		
-		public Builder key(String name, BigDecimal value) {
-			this.keys.add(new Key(name, DataType.REAL, value));
+		public Builder key(int itemNo, String name, BigDecimal value) {
+			this.keys.add(new Key(itemNo, name, DataType.REAL, value));
 			return this;
 		}
 		
-		public Builder key(String name, GeneralDate value) {
-			this.keys.add(new Key(name, DataType.DATE, value));
+		public Builder key(int itemNo, String name, GeneralDate value) {
+			this.keys.add(new Key(itemNo, name, DataType.DATE, value));
 			return this;
 		}
 		
@@ -99,8 +99,8 @@ public class DomainDataId {
 		private final DomainDataColumn column;
 		private final Object value;
 		
-		Key(String name, DataType type, Object value) {
-			this(new DomainDataColumn(name, type), value);
+		Key(int itemNo, String name, DataType type, Object value) {
+			this(new DomainDataColumn(itemNo, name, type), value);
 		}
 		
 		public void setParam(NtsStatement statement, String paramName) {

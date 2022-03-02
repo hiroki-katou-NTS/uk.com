@@ -337,3 +337,7 @@ button.nts-switch-button {
 .fix-dialog {
   width: auto !important;
 }
+
+#contents-area #ccg001-btn-search-drawer {
+	left: 245px;
+}

@@ -74,14 +74,6 @@ public class StampCanonicalization implements DomainCanonicalization {
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 
-		List<IntermediateResult> revisedRecords = require.getAllRevisedDataRecords(context).stream()
-				.map(r -> IntermediateResult.create(r))
-				.collect(toList());
-
-		if (revisedRecords.isEmpty()) {
-			return;
-		}
-
 		val workspace = require.getDomainWorkspace(context.getDomainId());
 
 		// 受入データ内の重複チェック

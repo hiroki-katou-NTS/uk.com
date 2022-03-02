@@ -187,3 +187,7 @@ div.form-label.broken {
 	line-height: 40px;
 }
 
+.item .nts-fixed-body-container {
+	height: 100px;
+}
+

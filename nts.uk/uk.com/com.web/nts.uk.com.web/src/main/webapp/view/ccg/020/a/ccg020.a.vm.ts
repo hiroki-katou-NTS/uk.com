@@ -30,7 +30,7 @@ module nts.uk.com.view.ccg020.a {
       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
         textmode: 'text',
         width: '162px',
-        placeholder: '画面 or マニュアル'
+        placeholder: 'メニュー'
       }))
     },
     click: eventClickSearch" />
