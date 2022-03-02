@@ -286,6 +286,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 	@Inject
 	private ScheduleCreatorExecutionService executeService;
+
+    final static String SPACE = " ";
+    final static String ZEZO_TIME = "00:00";
+    final static String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
     /**
      * 更新処理を開始する
      * 会社ID
@@ -2566,13 +2570,15 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 						Optional.of(procExec.getExecScope().getWorkplaceIdList()), Optional.empty());
 				// Step ドメインモデル「任意期間集計実行ログ」を新規登録する - Registering a new domain model 任意期間集計実行ログ
 				// (AggrPeriodExcution)
+                val startDate = GeneralDateTime.fromString(anyAggrPeriod.get().getPeriod().start().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT);
+                val endate = GeneralDateTime.fromString(anyAggrPeriod.get().getPeriod().end().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT);
 				int executionAtr = nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.
 						ExecutionAtr.AUTOMATIC_EXECUTION.value;
 				AggrPeriodExcutionImport aggrPeriodExcution = AggrPeriodExcutionImport.builder().companyId(companyId)
 						.aggrId(execId).aggrFrameCode(aggrFrameCode).executionEmpId("System")
-						.startDateTime(GeneralDateTime.now()).executionAtr(executionAtr)
+						.startDateTime(startDate).executionAtr(executionAtr)
 						.executionStatus(Optional.empty()).presenceOfError(PresenceOfError.NO_ERROR.value)
-						.endDateTime(GeneralDateTime.now()).build();
+						.endDateTime(endate).build();
 				this.aggrPeriodExcutionAdapter.addExcution(aggrPeriodExcution);
 
 				// Step ドメインモデル「L」を新規登録する - Registering a new domain model "any period Aggregate
