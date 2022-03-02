@@ -26,18 +26,25 @@ public class SmileOutLinkSetFinder {
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
 		
-		SmileLinkageOutputSetting linkOut = linkOutRep.get(contractCode, companyId);
+		Optional<SmileLinkageOutputSetting> linkOut = linkOutRep.get(contractCode, companyId);
 		List<LinkedPaymentConversion> listPayConver = payConverRep.getLinkPayConver(contractCode, companyId);
 		
-		SmileOutLinkSetDto outSet = new SmileOutLinkSetDto(linkOut.getSalaryCooperationClassification().value, 
-															linkOut.getMonthlyLockClassification().value, 
-															linkOut.getMonthlyApprovalCategory().value, 
-															linkOut.getSalaryCooperationConditions().isPresent() ? Optional.of(linkOut.getSalaryCooperationConditions().get().v()) : Optional.empty(), 
-															listPayConver.stream().map(x -> new LinkedPaymentDto(x.getPaymentCode().value, 
-																							x.getSelectiveEmploymentCodes().stream().map(y -> new EmploymentLinkedMonthDto(y.getInterlockingMonthAdjustment().value, 
-																									y.getScd())).collect(Collectors.toList())
-																						)).collect(Collectors.toList()));
-		return outSet;
+		if(linkOut.isPresent()) {
+			SmileOutLinkSetDto outSet = new SmileOutLinkSetDto(linkOut.get().getSalaryCooperationClassification().value, 
+					linkOut.get().getMonthlyLockClassification().value, 
+					linkOut.get().getMonthlyApprovalCategory().value, 
+					linkOut.get().getSalaryCooperationConditions().isPresent() ? Optional.of(linkOut.get().getSalaryCooperationConditions().get().v()) : Optional.empty(), 
+					listPayConver.stream().map(x -> new LinkedPaymentDto(x.getPaymentCode().value, 
+													x.getSelectiveEmploymentCodes().stream().map(y -> new EmploymentLinkedMonthDto(y.getInterlockingMonthAdjustment().value, 
+															y.getScd())).collect(Collectors.toList())
+												)).collect(Collectors.toList()));
+			return outSet;
+		}
+		return new SmileOutLinkSetDto(null, null, null, Optional.empty(), listPayConver.stream().map(x -> new LinkedPaymentDto(x.getPaymentCode().value, 
+													x.getSelectiveEmploymentCodes().stream().map(y -> new EmploymentLinkedMonthDto(y.getInterlockingMonthAdjustment().value, 
+															y.getScd())).collect(Collectors.toList())
+												)).collect(Collectors.toList()));
+		
 	}
 	
 }

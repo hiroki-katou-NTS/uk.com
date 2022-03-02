@@ -1,5 +1,7 @@
 package nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput;
 
+import java.util.Optional;
+
 /**
  * Smile連携出力設定Repository										
  *
@@ -34,5 +36,5 @@ public interface SmileLinkageOutputSettingRepository {
 	 * @param code      会社ID
 	 * @return
 	 */
-	SmileLinkageOutputSetting get(String contractCode, String companyId);
+	Optional<SmileLinkageOutputSetting> get(String contractCode, String companyId);
 }

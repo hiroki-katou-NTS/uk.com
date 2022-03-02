@@ -1,6 +1,7 @@
 package nts.uk.screen.com.app.smm.smm001.screencommand;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -41,11 +42,11 @@ public class RegisterSmileLinkageExternalIOutputScreenCommandHandler
 		 */
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
-		SmileLinkageOutputSetting smileLinkageOutputSetting = smileLinkageOutputSettingRepository.get(contractCode,
+		Optional<SmileLinkageOutputSetting> smileLinkageOutputSetting = smileLinkageOutputSettingRepository.get(contractCode,
 				companyId);
 		SmileLinkageOutputSetting newSmileLinkageOutputSetting = command.convertScreenCommandToEntity();
 
-		if (smileLinkageOutputSetting == null) {
+		if (!smileLinkageOutputSetting.isPresent()) {
 			smileLinkageOutputSettingRepository.insert(newSmileLinkageOutputSetting);
 		} else {
 			smileLinkageOutputSettingRepository.update(newSmileLinkageOutputSetting);

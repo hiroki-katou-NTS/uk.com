@@ -58,14 +58,14 @@ public class JpaSmileLinkageOutputSettingRepository extends JpaRepository
 	}
 
 	@Override
-	public SmileLinkageOutputSetting get(String contractCode, String companyId) {
+	public Optional<SmileLinkageOutputSetting> get(String contractCode, String companyId) {
 		LsmmtSmileLinkOutsetPK miomtSmileLinkOutsetPK = new LsmmtSmileLinkOutsetPK(contractCode, companyId);
 		Optional<LsmmtSmileLinkOutset> optinalMiomtSmileLinkOutset = this.queryProxy().find(miomtSmileLinkOutsetPK,
 				LsmmtSmileLinkOutset.class);
 		if (optinalMiomtSmileLinkOutset.isPresent()) {
-			return this.toDomain(optinalMiomtSmileLinkOutset.get());
+			return Optional.of(this.toDomain(optinalMiomtSmileLinkOutset.get()));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 }

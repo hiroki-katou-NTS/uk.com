@@ -1,6 +1,7 @@
 package nts.uk.screen.com.app.smm.smm001.screenquery;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -46,16 +47,16 @@ public class GetInformationOnExternalStartupScreenQuery {
 		 */
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
-		SmileLinkageOutputSetting smileLinkageOutputSetting = smileLinkageOutputSettingRepository.get(contractCode,
+		Optional<SmileLinkageOutputSetting> smileLinkageOutputSetting = smileLinkageOutputSettingRepository.get(contractCode,
 				companyId);
 		SmileLinkageOutputSettingDto smileLinkageOutputSettingDto = new SmileLinkageOutputSettingDto();
-		if (smileLinkageOutputSetting != null) {
+		if (smileLinkageOutputSetting.isPresent()) {
 			smileLinkageOutputSettingDto = new SmileLinkageOutputSettingDto(
-					smileLinkageOutputSetting.getSalaryCooperationClassification().value,
-					smileLinkageOutputSetting.getMonthlyLockClassification().value,
-					smileLinkageOutputSetting.getMonthlyApprovalCategory().value,
-					smileLinkageOutputSetting.getSalaryCooperationConditions().isPresent()
-							? smileLinkageOutputSetting.getSalaryCooperationConditions().get().v()
+					smileLinkageOutputSetting.get().getSalaryCooperationClassification().value,
+					smileLinkageOutputSetting.get().getMonthlyLockClassification().value,
+					smileLinkageOutputSetting.get().getMonthlyApprovalCategory().value,
+					smileLinkageOutputSetting.get().getSalaryCooperationConditions().isPresent()
+							? smileLinkageOutputSetting.get().getSalaryCooperationConditions().get().v()
 							: null);
 		}
 
