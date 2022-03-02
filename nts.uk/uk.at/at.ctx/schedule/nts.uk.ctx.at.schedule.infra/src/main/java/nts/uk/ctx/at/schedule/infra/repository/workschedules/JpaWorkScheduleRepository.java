@@ -955,7 +955,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Double treatAsSubstituteDays = rs.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
 				String workplaceGroupId = rs.getString("WKP_GROUP_ID");
 				Integer nursingLicenseClass = rs.getInt("NURSE_LICENSE_ATR");
-				Integer nursingManager = rs.getInt("IS_NURSE_ADMINISTRATOR");
+				Boolean nursingManager = rs.getBoolean("IS_NURSE_ADMINISTRATOR");
 				String bonusPaySettingCode = rs.getString("BONUS_PAY_CD");	
 				
 				return new KscdtSchBasicInfo(new KscdtSchBasicInfoPK(sid, ymd)
