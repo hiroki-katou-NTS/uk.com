@@ -56,4 +56,13 @@ public interface LinkedPaymentConversionRepository {
 	 * @return
 	 */
 	List<EmploymentAndLinkedMonthSetting> get(String contractCode, String companyId);
+	
+	/**
+	 * get 会社を指定して連動支払変換を取得する
+	 * 
+	 * @param companyId 契約コード
+	 * @param code      会社ID
+	 * @return
+	 */
+	List<LinkedPaymentConversion> getLinkPayConver(String contractCode, String companyId);
 }
