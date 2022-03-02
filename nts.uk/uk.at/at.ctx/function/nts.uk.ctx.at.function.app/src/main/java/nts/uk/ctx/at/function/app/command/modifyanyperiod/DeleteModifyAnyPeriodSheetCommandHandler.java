@@ -15,6 +15,8 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,8 +50,12 @@ public class DeleteModifyAnyPeriodSheetCommandHandler extends CommandHandler<Del
                 AnyPeriodCorrectionFormatSetting domain = domainOpt.get();
                 List<SheetCorrectedMonthly> sheetSetting = domain
                         .getSheetSetting()
-                        .getListSheetCorrectedMonthly().stream().filter(x -> x.getSheetNo() <= sheetNo)
-                        .collect(Collectors.toList());
+                        .getListSheetCorrectedMonthly();
+                sheetSetting.removeIf(i->i.getSheetNo() == sheetNo);
+                for (int i = 0; i < sheetSetting.size() ; i++) {
+                    val sheet = sheetSetting.get(i);
+                    sheet.setSheetNo(i + 1);
+                }
                 domain.getSheetSetting().setListSheetCorrectedMonthly(sheetSetting);
                 formatSettingRepository.update(domain);
                 val  defaultFormatOpt = anyPeriodCorrectionDefaultFormatRepository.get(cid);
