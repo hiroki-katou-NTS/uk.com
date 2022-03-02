@@ -26,12 +26,9 @@ public class SamlLoginResult {
 			throw new RuntimeException("not success");
 		}
 
-		if (authen.isValidated()) {
-			String loginPage = ProgramsManager.CCG007D.getRootRelativePath();
-			return new SamlLoginResult(State.ASSOCIATION_NEEDED, authen.getIdpUserName(), Optional.of(loginPage), Optional.empty());
-		}
-
-		return new SamlLoginResult(State.VALIDATION_FAILED, authen.getIdpUserName(), Optional.empty(), Optional.of(authen.getState().errorMessageId));
+		State state = authen.isValidated() ? State.ASSOCIATION_NEEDED : State.VALIDATION_FAILED;
+		String loginPage = ProgramsManager.CCG007D.getRootRelativePath();
+		return new SamlLoginResult(state, authen.getIdpUserName(), Optional.of(loginPage), Optional.of(authen.getState().errorMessageId));
 	}
 
 	public static SamlLoginResult succeeded() {

@@ -77,18 +77,19 @@ public class SamlWs extends WebService {
 		}
 
 		val html = new StringBuilder()
-				.append("<!DOCTYPE html><html><head><meta http-equiv=\"content-type\" charset=\"utf-8\"></head><body>");
+				.append("<!DOCTYPE html><html><head><meta http-equiv=\"content-type\" charset=\"utf-8\"></head><body>")
+				.append("<script>");
 
 		if (result.isAssociationNeeded()) {
-			html.append("<script>")
-					// IdPUserNameにシングルクォートが入っているとバグるが、レアケースなので今は無視しておく
-					.append("sessionStorage.setItem('nts.uk.saml.idpUserName', '" + result.getIdpUserName() + "');")
-					.append("location.href = '" + result.getRedirectUrl() + "';")
-					.append("</script>");
-		} else {
-			html.append(I18NText.getText(result.getErrorMessageId()));
+			// IdPUserNameにシングルクォートが入っているとバグるが、レアケースなので今は無視しておく
+			html.append("sessionStorage.setItem('nts.uk.saml.idpUserName', '" + result.getIdpUserName() + "');");
 		}
 
-		return html.append("</body></html>").toString();
+		html.append("sessionStorage.setItem('nts.uk.saml.message', '" + I18NText.getText(result.getErrorMessageId()) + "');")
+				.append("location.href = '" + result.getRedirectUrl() + "';")
+				.append("</script>")
+				.append("</body></html>");
+
+		return html.toString();
 	}
 }

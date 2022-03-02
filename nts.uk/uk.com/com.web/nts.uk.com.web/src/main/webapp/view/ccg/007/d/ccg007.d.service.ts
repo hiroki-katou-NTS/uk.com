@@ -12,6 +12,7 @@ module nts.uk.pr.view.ccg007.d {
             ver: "ctx/sys/gateway/login/build_info_time", 
             
             submitLogin: "ctx/sys/gateway/login/password",
+            getSamlOperation: "ctx/sys/gateway/login/sso/saml/operation/find",
             samlLogin: "ctx/sys/gateway/singlesignon/saml/authenticate",
             samlAssociate: "ctx/sys/gateway/login/sso/saml/associate/loginemployee",
         }
@@ -32,6 +33,10 @@ module nts.uk.pr.view.ccg007.d {
           */
         export function submitLogin(data: any): JQueryPromise<string> {
             return nts.uk.request.ajax(servicePath.submitLogin + location.search, data);
+        }
+
+        export function getSamlOperation(contractCode: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.getSamlOperation + "/" + contractCode);
         }
 
         export function samlLogin(data: any): JQueryPromise<AuthenticateInfo> {

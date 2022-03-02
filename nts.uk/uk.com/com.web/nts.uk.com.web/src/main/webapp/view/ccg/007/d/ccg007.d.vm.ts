@@ -18,7 +18,9 @@
             contractPassword: KnockoutObservable<string>;
             isSignOn: KnockoutObservable<boolean> = ko.observable(false);
             isSamlAssociation: KnockoutObservable<boolean> = ko.observable(false);
+            useSaml: KnockoutObservable<boolean> = ko.observable(false);
             samlIdpUserName: KnockoutObservable<string> = ko.observable(null);
+            samlMessage: KnockoutObservable<string> = ko.observable(null);
             displayLogin: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {
@@ -59,9 +61,13 @@
                     self.displayLogin(true);
                 }
 
-                sessionStorage.getItem("nts.uk.saml.idpUserName").ifPresent(idpUserName => {
+                sessionStorage.getItemAndRemove("nts.uk.saml.idpUserName").ifPresent(idpUserName => {
                     self.isSamlAssociation(true);
                     self.samlIdpUserName(idpUserName);
+                });
+
+                sessionStorage.getItemAndRemove("nts.uk.saml.message").ifPresent(message => {
+                    self.samlMessage(message);
                 });
 
                 var dfd = $.Deferred<void>();
@@ -128,6 +134,10 @@
                         }
                     }
                 });
+
+                if (vm.samlMessage() !== null) {
+                    nts.uk.ui.dialog.info(vm.samlMessage());
+                }
             }
 
             //when invalid contract 
@@ -197,6 +207,14 @@
                                     }
                                 });
                             });
+
+                            service.getSamlOperation(contractCode).done(saml => {
+                                if (saml == null) {
+                                    return;
+                                }
+
+                                self.useSaml(saml.useSingleSignOn);
+                            })
                         }
                     }
                 });
