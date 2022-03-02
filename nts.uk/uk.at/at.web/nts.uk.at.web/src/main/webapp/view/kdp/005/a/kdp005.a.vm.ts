@@ -528,7 +528,30 @@ module nts.uk.at.view.kdp005.a {
 
 			checkHis(self: ScreenModel) {
 				let vm = new ko.ViewModel();
-				modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
+				
+				// ※ICカードチェック
+				const authcMethod = ko.unwrap(self.fingerStampSetting).stampSetting.authcMethod;
+
+				// QRコード　の場合
+				if (authcMethod == 1) {
+					modal('at', '/view/kdp/005/q/index.xhtml').onClosed(function(): any {
+						let ICCard = getShared('ICCardFromQRCode');
+						if (ICCard && ICCard != '') {
+							block.grayout();
+							self.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
+								vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', { employeeId: employeeId });
+							}).fail(() => {
+								self.openIDialog();
+							}).always(() => {
+								block.clear();
+							});
+						}
+					});
+				}
+					
+				// ICカード　の場合
+				if (authcMethod == 0) {
+					modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
 					let ICCard = getShared('ICCard');
 					if (ICCard && ICCard != '') {
 						block.grayout();
@@ -540,7 +563,8 @@ module nts.uk.at.view.kdp005.a {
 							block.clear();
 						});
 					}
-				});
+					});
+				}
 			}
 
 			settingUser(self: ScreenModel) {
