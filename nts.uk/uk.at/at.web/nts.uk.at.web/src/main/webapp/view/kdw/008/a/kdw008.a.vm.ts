@@ -747,7 +747,7 @@ module nts.uk.at.view.kdw008.a {
                         nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
                             .ifYes(() => {
                                 service.deleteModifyAnyPeriodSheet(command).done(function() {
-                                    nts.uk.ui.dialog.info({ messageId: "991" }).then(() => {
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
                                         self.selectedSheetNo(1);
                                     });
                                 }).fail(function(error) {
