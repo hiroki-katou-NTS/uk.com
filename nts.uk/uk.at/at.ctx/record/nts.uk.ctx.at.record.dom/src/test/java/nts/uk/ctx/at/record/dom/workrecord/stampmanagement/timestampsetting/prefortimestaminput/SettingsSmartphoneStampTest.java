@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.EmployeeStampingAreaRestrictionSettingHelper;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaLimit;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
-import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.adapter.AcquireWorkLocationEmplAdapter;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
@@ -35,10 +34,6 @@ public class SettingsSmartphoneStampTest {
 	private SettingsSmartphoneStamp.Require settingsSmartphoneStampRequire;
 	@Injectable
 	private WorkLocationRepository repository;
-	@Injectable
-	private AcquireWorkLocationEmplAdapter adapter;
-	@Injectable
-	private StampingAreaRestriction.Require stampingAreaRestrictionRequire;
 	
 	private static final String EMPLOYEE_ID = "employeeId";
 	private static final String CONTRACT_CD = "contractCd";
@@ -94,7 +89,7 @@ public class SettingsSmartphoneStampTest {
 			}
 		};
 		
-		Optional<WorkLocation> rs = settingsSmartphoneStamp.checkCanStampAreas(repository, adapter, settingsSmartphoneStampRequire, new ContractCode(CONTRACT_CD),COMPANY_ID, EMPLOYEE_ID, new GeoCoordinate(0, 0));
+		Optional<WorkLocation> rs = settingsSmartphoneStamp.checkCanStampAreas(settingsSmartphoneStampRequire, new ContractCode(CONTRACT_CD),COMPANY_ID, EMPLOYEE_ID, new GeoCoordinate(0, 0));
 		
 		assertThat(rs).isNotPresent();
 	}
@@ -111,9 +106,7 @@ public class SettingsSmartphoneStampTest {
 			}
 		};
 		
-		Optional<WorkLocation> rs = settingsSmartphoneStamp.checkCanStampAreas(repository, adapter,
-				settingsSmartphoneStampRequire, new ContractCode(CONTRACT_CD), COMPANY_ID, EMPLOYEE_ID,
-				new GeoCoordinate(0, 0));
+		Optional<WorkLocation> rs = settingsSmartphoneStamp.checkCanStampAreas(settingsSmartphoneStampRequire, new ContractCode(CONTRACT_CD), COMPANY_ID, EMPLOYEE_ID,new GeoCoordinate(0, 0));
 		
 		assertThat(rs).isNotPresent();
 	}

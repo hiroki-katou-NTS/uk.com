@@ -11,14 +11,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.arc.time.GeneralDate;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.EmployeeStampingAreaRestrictionSetting;
 import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.StampingAreaRestriction;
-import nts.uk.ctx.at.record.dom.stampmanagement.setting.preparation.smartphonestamping.employee.adapter.AcquireWorkLocationEmplAdapter;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
-import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateStampDataForEmployeesService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
@@ -66,6 +64,8 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 		return stampPageLayout.get().getLstButtonSet().stream().filter(it -> it.getButtonPositionNo().equals(stamButton.getButtonPositionNo())).findFirst();
 	}
 	
+	
+	
 	// [2] ページを追加する
 	public void addPage(StampPageLayout pageLayoutSetting) {
 		
@@ -94,9 +94,7 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 	}
 	
 	// [5] 打打刻してもいいエリアかチェックする
-	public Optional<WorkLocation> checkCanStampAreas(WorkLocationRepository repository ,AcquireWorkLocationEmplAdapter adapter , Require require ,ContractCode contractCd ,String companyId , String employeeId , GeoCoordinate positionInfor) {
-		
-		StampingAreaRestrictionImpl stampingAreaSettingRequire = new StampingAreaRestrictionImpl(repository, adapter);
+	public Optional<WorkLocation> checkCanStampAreas(Require require ,ContractCode contractCd ,String companyId , String employeeId , GeoCoordinate positionInfor) {
 		// $エリア制限設定 = require.エリア制限設定を取得する(社員ID)
 		
 		
@@ -104,42 +102,16 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 		// if $エリア制限設定.isPresent
 		if(stampingAreaSetting.isPresent()){
 			// return $エリア制限設定.打刻してもいいエリアかチェックする(require,契約コード,会社ID,打刻位置)
-			return stampingAreaSetting.get().checkAreaStamp(stampingAreaSettingRequire, contractCd.v(), companyId, employeeId, Optional.ofNullable(positionInfor));
+			return stampingAreaSetting.get().checkAreaStamp(require, contractCd.v(), companyId, employeeId, Optional.ofNullable(positionInfor));
 			
 		}
 		// return @打刻エリア制限.打刻してもいいエリアかチェックする(require,契約コード,会社ID,社員ID,打刻位置)
-		return stampingAreaRestriction.checkAreaStamp(stampingAreaSettingRequire, contractCd.v(), companyId, employeeId, Optional.ofNullable(positionInfor));
+		return stampingAreaRestriction.checkAreaStamp(require, contractCd.v(), companyId, employeeId, Optional.ofNullable(positionInfor));
 	}
-	
-	
 
-	public static interface Require {
+	public static interface Require  extends CreateStampDataForEmployeesService.Require, StampingAreaRestriction.Require{
 		// [R-1] エリア制限設定を取得する
 		Optional<EmployeeStampingAreaRestrictionSetting> findByEmployeeId(String employId);
-
-	}
-
-	@AllArgsConstructor
-	private class StampingAreaRestrictionImpl implements StampingAreaRestriction.Require {
-
-		private WorkLocationRepository repository;
-		private AcquireWorkLocationEmplAdapter adapter;
-
-		@Override
-		public Optional<String> getWorkPlaceOfEmpl(String employeeID, GeneralDate date) {
-			String workplaceId = this.adapter.getAffWkpHistItemByEmpDate(employeeID, date);
-			return Optional.ofNullable(workplaceId);
-		}
-
-		@Override
-		public List<WorkLocation> findByWorkPlace(String contractCode, String cid, String workPlaceId) {
-			return this.repository.findByWorkPlace(contractCode, cid, workPlaceId);
-		}
-
-		@Override
-		public List<WorkLocation> findAll(String contractCode) {
-			return this.repository.findAll(contractCode);
-		}
 
 	}
 	
