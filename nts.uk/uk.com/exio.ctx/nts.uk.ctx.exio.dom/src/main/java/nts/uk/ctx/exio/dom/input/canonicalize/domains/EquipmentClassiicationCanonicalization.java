@@ -18,6 +18,7 @@ public class EquipmentClassiicationCanonicalization extends IndependentCanonical
 	public static class Items {
 		public static final int 設備分類コード = 1;
 		public static final int 設備分類名称 = 2;
+		public static final int 契約コード = 9999;
 	}
 	
 	@Override
