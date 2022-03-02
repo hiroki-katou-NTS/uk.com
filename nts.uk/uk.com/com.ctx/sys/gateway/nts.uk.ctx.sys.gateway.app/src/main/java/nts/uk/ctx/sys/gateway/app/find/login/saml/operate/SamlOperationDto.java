@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.gateway.app.find.login.saml.operate;
 
 import lombok.Value;
 import nts.uk.ctx.sys.gateway.dom.login.sso.saml.operate.SamlOperation;
-import nts.uk.ctx.sys.gateway.dom.login.sso.saml.operate.SamlRedirectUrl;
 
 @Value
 public class SamlOperationDto {
@@ -14,6 +13,9 @@ public class SamlOperationDto {
     String idpRedirectUrl;
 
     public static SamlOperationDto fromDomain(SamlOperation domain) {
-        return new SamlOperationDto(domain.getTenantCode(), domain.isUseSingleSignOn(), domain.getIdpRedirectUrl().v());
+        return new SamlOperationDto(
+                domain.getTenantCode(),
+                domain.isUseSingleSignOn(),
+                domain.getIdpRedirectUrl().map(u -> u.v()).orElse(null));
     }
 }

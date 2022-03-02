@@ -1,6 +1,7 @@
 
 package nts.uk.ctx.sys.gateway.dom.login.sso.saml.operate;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.gul.security.saml.IdpEntryUrl;
 import nts.gul.util.Either;
@@ -15,11 +16,15 @@ public class SamlOperation {
 	
 	private boolean useSingleSignOn;
 	
-	private SamlRedirectUrl idpRedirectUrl;
+	private Optional<SamlRedirectUrl> idpRedirectUrl;
 	
-	public SamlOperation(String tenantCode, boolean useSingleSignOn, SamlRedirectUrl idpRedirectUrl) {
+	public SamlOperation(String tenantCode, boolean useSingleSignOn, Optional<SamlRedirectUrl> idpRedirectUrl) {
 		this.tenantCode = tenantCode;
 		this.useSingleSignOn = useSingleSignOn;
+
+		if (useSingleSignOn && !idpRedirectUrl.isPresent()) {
+			throw new RuntimeException("idpRedirectUrl is required");
+		}
 		this.idpRedirectUrl = idpRedirectUrl;
 	}
 
@@ -29,6 +34,6 @@ public class SamlOperation {
 			return Optional.empty();
 		}
 
-		return Optional.of(new IdpEntryUrl(idpRedirectUrl.v(), relayState.serialize()));
+		return Optional.of(new IdpEntryUrl(idpRedirectUrl.get().v(), relayState.serialize()));
 	}
 }

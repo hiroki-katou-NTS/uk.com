@@ -14,6 +14,8 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.sys.gateway.dom.login.sso.saml.operate.SamlOperation;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+import java.util.Optional;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -36,7 +38,7 @@ public class SgwmtSamlOperation extends UkJpaEntity {
 		return new SamlOperation(
 				tenantCode,
 				BooleanUtils.toBoolean(useSingleSignOn),
-				new SamlRedirectUrl(idpRedirectUrl));
+				Optional.ofNullable(idpRedirectUrl).map(SamlRedirectUrl::new));
 	}
 
 	@Override
