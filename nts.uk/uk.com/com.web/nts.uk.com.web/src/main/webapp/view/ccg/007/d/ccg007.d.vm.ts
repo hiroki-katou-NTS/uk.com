@@ -332,7 +332,7 @@
                 // dummy promise
                 let promiseAssoc: JQueryPromise<any> = $.Deferred().resolve().promise();
                 if (this.isSamlAssociation) {
-                    let command = { idpUserName: this.samlIdpUserName };
+                    let command = { idpUserName: this.samlIdpUserName() };
                     promiseAssoc = service.samlAssociate(command);
                 }
 
