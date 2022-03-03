@@ -59,6 +59,7 @@
     text-align: left;
     border-radius: 0;
 	background-color: #a9a9a9;
+	text-align: center;
 }
 
 #stamp-employee-selection .list-group .check-out-of-list.active {
