@@ -5588,7 +5588,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             setShared('KSU001S', {
                 date: self.dtAft(),
-                listEmpId: self.listEmpData
+                listEmpId: _.filter(self.listEmpData, function(o) { return o.supportType != SupportType.COME_TO_SUPPORT; })
             });
 
             $('#A1_12_1').ntsPopup('hide');
@@ -5609,7 +5609,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
             setShared("KSU001La", {
                 date: self.dateTimeAfter(),
-                listEmpData: self.listEmpData
+                listEmpData: _.filter(self.listEmpData, function(o) { return o.supportType != SupportType.COME_TO_SUPPORT; })
             });
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml").onClosed(() => {
@@ -5626,7 +5626,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // A1_12_20
         openMDialog(): void {
             let self = this;
-            setShared("KSU001M", self.listEmpData);
+            setShared( "KSU001M", _.filter(self.listEmpData, function(o) { return o.supportType != SupportType.COME_TO_SUPPORT; }) );
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/m/index.xhtml").onClosed(() => {
                 let dataShare = getShared("ksu001m-result");
