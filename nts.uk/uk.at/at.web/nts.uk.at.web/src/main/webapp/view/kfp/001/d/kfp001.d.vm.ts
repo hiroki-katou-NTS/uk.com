@@ -1,6 +1,8 @@
 module nts.uk.at.view.kfp001.d {
     import getText = nts.uk.resource.getText;
     export module viewmodel {
+        import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+
         export class ScreenModel {
             aggrFrameCode: KnockoutObservable<string>;
             optionalAggrName: KnockoutObservable<string>;
@@ -17,6 +19,7 @@ module nts.uk.at.view.kfp001.d {
             presenceOfError: KnockoutObservable<string> = ko.observable('');
             executionStatus: KnockoutObservable<string> = ko.observable('');
             addErrorInforCommand: KnockoutObservable<any> = ko.observable({});
+            reintegration: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {
                 var self = this;
@@ -26,6 +29,10 @@ module nts.uk.at.view.kfp001.d {
                 self.endDate = ko.observable('');
                 self.listEmp = ko.observableArray([]);
                 self.executionId = ko.observable('');
+                let reintegration =   nts.uk.ui.windows.getShared("B_CHECKED");
+                if(!isNullOrUndefined(reintegration)){
+                    self.reintegration(reintegration);
+                }
             }
             start() {
                 let self = this;
@@ -72,8 +79,10 @@ module nts.uk.at.view.kfp001.d {
                     aggrFrameCode: self.aggrFrameCode(),
                     executionAtr: 1,
                     executionStatus: 0,
-                    presenceOfError: 1
-                }
+                    presenceOfError: 1,
+                    startDateTime: moment(self.startDate()).utc(),
+                    endDateTime: moment(self.endDate()).utc(),
+                };
                 let aggrPeriodDto = {
                     aggrFrameCode: self.aggrFrameCode(),
                     optionalAggrName: self.optionalAggrName(),
@@ -91,6 +100,7 @@ module nts.uk.at.view.kfp001.d {
 //                })
 
                 let addAggrPeriodCommand = {
+                    reintegration:self.reintegration(),//EA4209
                     mode: self.mode(),
                     aggrPeriodCommand: aggrPeriodDto,
                     targetCommand: targetDto,

@@ -351,7 +351,7 @@ module nts.uk.at.view.kfp001.b {
             opendScreenBorJ() {
                 let self = this;
                 var dfd = $.Deferred();
-
+                nts.uk.ui.windows.setShared("B_CHECKED", self.reintegration());
                 $("#code-text-d4-2").trigger("validate");
                 $("#code-text-d4-21").trigger("validate");
                 $("#start-date-B6-3").trigger("validate");
