@@ -2173,7 +2173,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			if (checkIsFlexTimeOccur(flexAggrSet)) {
 
 				/** 日単位のフレックス超過時間を合計する - 日単位のフレックス不足時間を合計する */
-				return this.flexTime.getPlusFlexTime().minusMinutes(this.flexTime.getMinusFlexTime().valueAsMinutes());
+				return this.flexTime.getPlusFlexTime().addMinutes(this.flexTime.getMinusFlexTime().valueAsMinutes());
 			}
 			
 			return new AttendanceTimeMonth(0);
