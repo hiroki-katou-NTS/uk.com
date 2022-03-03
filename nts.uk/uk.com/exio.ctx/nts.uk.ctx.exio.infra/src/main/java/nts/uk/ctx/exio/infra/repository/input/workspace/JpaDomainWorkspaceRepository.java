@@ -60,7 +60,7 @@ public class JpaDomainWorkspaceRepository extends JpaRepository implements Domai
 
 		// 非PK項目は順不同
 		val itemsNotPk = items.stream()
-				.filter(item -> primaryKeys.contains(item.getName()))
+				.filter(item -> !primaryKeys.contains(item.getName()))
 				.collect(Collectors.toList());
 
 		return new DomainWorkspace(ImportingDomainId.valueOf(entity.domainId), itemsPk, itemsNotPk);
