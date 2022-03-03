@@ -216,11 +216,12 @@ export class KdpS01AComponent extends Vue {
                 };
 
             if (button) {
-                let btnType = vm.checkType(button.stampType == null ? null : button.stampType.changeClockArt, 
+                let btnType = vm.checkType(
+                    button.stampType == null ? null : button.stampType.changeClockArt, 
                     button.stampType == null ? null : button.stampType.changeCalArt, 
                     button.stampType == null ? null : button.stampType.setPreClockArt, 
                     button.stampType == null ? null : button.stampType.changeHalfDay, 
-					0
+                    0 
                     );
                 
                 // 応援利用＝Trueの場合				
@@ -362,86 +363,7 @@ export class KdpS01AComponent extends Vue {
                             }).catch((res: any) => {
                                 vm.showError(res);
                             });
-//<<<<<<< HEAD
-//=======
-                        }
 
-                    }).catch((res: any) => {
-                        vm.showError(res);
-                    });
-                });
-                
-            }
-        }, (error) => {
-            command.geoCoordinate = { latitude, longitude };
-            vm.$mask('show');
-            
-            vm.$auth.user.then((userInfo) => {
-
-                vm.$http.post('at', servicePath.getEmployeeWorkByStamping, {sid: userInfo.employeeId, workFrameNo: 1, upperFrameWorkCode: ''}).then((result: any) => {
-                    if (vm.settingStampCommon.workUse === true && result.data.task.length > 0 && button.taskChoiceArt == 1) {
-                        vm.$modal(KdpS01LComponent, {employeeId: userInfo.employeeId}, { title: 'KDPS01_15' }).then((works: IWorkGroup) => {
-                            command.refActualResult.workGroup = works;
-
-                        }).then (() => {
-                            vm.$http.post('at', servicePath.registerStamp, command)
-                                .then((result: any) => {
-                                    vm.$mask('hide');
-                                    vm.getStampToSuppress();
-
-                                    if (!_.has(button, 'buttonType.stampType.changeClockArt')) {
-
-                                        vm.openDialogB(command.stampButton);
-                                    } else {
-                                        let changeClockArt = button.stampType.changeClockArt;
-                                        switch (changeClockArt) {
-                                            case 1:
-                                                if (vm.setting.usrAtrValue === 1) {
-                                                    vm.openDialogC(command.stampButton);
-                                                } else {
-                                                    vm.openDialogB(command.stampButton);
-                                                }
-                                                break;
-                                            default:
-                                                vm.openDialogB(command.stampButton);
-                                                break;
-                                        }
-                                    }
-                                }).catch((res: any) => {
-                                    vm.showError(res);
-                                });
-                        });
-
-                    } else {
-
-                        vm.$http.post('at', servicePath.registerStamp, command)
-                                .then((result: any) => {
-                                    vm.$mask('hide');
-                                    vm.getStampToSuppress();
-
-                                    if (!_.has(button, 'buttonType.stampType.changeClockArt')) {
-
-                                        vm.openDialogB(command.stampButton);
-                                    } else {
-                                        let changeClockArt = button.stampType.changeClockArt;
-                                        switch (changeClockArt) {
-                                            case 1:
-                                                if (vm.setting.usrAtrValue === 1) {
-                                                    vm.openDialogC(command.stampButton);
-                                                } else {
-                                                    vm.openDialogB(command.stampButton);
-                                                }
-                                                break;
-                                            default:
-                                                vm.openDialogB(command.stampButton);
-                                                break;
-                                        }
-                                    }
-                                }).catch((res: any) => {
-                                    vm.showError(res);
-                                });
-
-//>>>>>>> pj/at/teamb/dakoku8-qrcode
                     }
 
                 }).catch((res: any) => {
