@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.app.nrlremote;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,13 +9,12 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.function.app.nrl.Command;
+import nts.uk.ctx.at.function.app.nrl.NRContentList;
 import nts.uk.ctx.at.function.app.nrl.crypt.Codryptofy;
-import nts.uk.ctx.at.function.app.nrl.data.FrameItemArranger;
 import nts.uk.ctx.at.function.app.nrl.data.ItemSequence.MapItem;
 import nts.uk.ctx.at.function.app.nrl.request.NRLRequest;
 import nts.uk.ctx.at.function.app.nrl.request.Named;
 import nts.uk.ctx.at.function.app.nrl.request.ResourceContext;
-import nts.uk.ctx.at.function.app.nrl.xml.Element;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
@@ -44,9 +42,6 @@ public class SendToNRLRemote extends NRLRequest<Frame> {
 
 	@Override
 	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
-		List<MapItem> items = new ArrayList<>();
-		items.add(FrameItemArranger.SOH());
-		items.add(new MapItem(Element.HDR, Command.TR_REMOTE.Response));
 		String payload = "";
 		RequireImpl impl = new RequireImpl(empInfoTerminalRepository, timeRecordSetFormatListRepository,
 				trSetUpdateListRepository);
@@ -55,18 +50,10 @@ public class SendToNRLRemote extends NRLRequest<Frame> {
 		if (xml.isPresent()) {
 			payload = xml.get();
 		}
-		byte[] payloadBytes = Codryptofy.decode(payload);
-		int length = payloadBytes.length + 32;
-		items.add(new MapItem(Element.LENGTH, Integer.toHexString(length)));
-
-		items.add(FrameItemArranger.Version());
-		items.add(FrameItemArranger.FlagEndNoAck());
-		items.add(FrameItemArranger.NoFragment());
-		items.add(new MapItem(Element.NRL_NO, context.getTerminal().getNrlNo()));
-		items.add(new MapItem(Element.MAC_ADDR, context.getTerminal().getMacAddress()));
-		items.add(FrameItemArranger.ZeroPadding());
+		payload = Codryptofy.paddingWithByte(payload, 51200, "0");
+		List<MapItem> items = NRContentList.createFieldForPadding2(Command.TR_REMOTE,
+				Optional.ofNullable(Integer.toHexString(51244)), context.getTerminal());
 		context.collect(items, payload);
-
 	}
 
 	@Override

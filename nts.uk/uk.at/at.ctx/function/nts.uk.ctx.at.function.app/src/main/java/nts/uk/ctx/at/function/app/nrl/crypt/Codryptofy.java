@@ -248,8 +248,12 @@ public class Codryptofy {
 	}
 	
 	public static String paddingWithByte(String text, int byteText) {
+		return paddingWithByte(text, byteText, " ");
+	}
+	
+	public static String paddingWithByte(String text, int byteText, String defaultText) {
 		int sizeText = decode(text).length;
-		String emptyString = StringUtils.rightPad("", byteText-sizeText, " ");
+		String emptyString = StringUtils.rightPad("", byteText-sizeText, defaultText);
 		return encode(decode(text + emptyString));
 	}
 	

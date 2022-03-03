@@ -38,4 +38,23 @@ public class NRContentList {
 		public static List<MapItem> createDefaultField(Command command, Optional<String> payloadLength, Terminal teminal) {
 			return createDefaultField(command, payloadLength, teminal, DefaultValue.ZERO_PADDING);
 		};
+		
+	// [S-2] デフォルトのコンテンツListを作る
+	public static List<MapItem> createFieldForPadding2(Command command, Optional<String> payloadLength,
+			Terminal teminal) {
+		List<MapItem> items = new ArrayList<>();
+		items.add(FrameItemArranger.SOH());
+		items.add(new MapItem(Element.HDR, command.Response));
+		items.add(new MapItem(Element.PADDING1, "00"));
+		items.add(new MapItem(Element.LENGTH,
+				payloadLength.map(x -> StringUtils.leftPad(x, 4, "0").toUpperCase()).orElse(null)));
+		items.add(FrameItemArranger.Version());
+		items.add(FrameItemArranger.FlagEndNoAck());
+		items.add(FrameItemArranger.NoFragment());
+		items.add(new MapItem(Element.NRL_NO, teminal.getNrlNo()));
+		items.add(new MapItem(Element.MAC_ADDR, teminal.getMacAddress()));
+		items.add(new MapItem(Element.CONTRACT_CODE, teminal.getContractCode()));
+		items.add(new MapItem(Element.PADDING2, "00"));
+		return items;
+	};
 }
