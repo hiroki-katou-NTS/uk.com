@@ -42,10 +42,18 @@ public class SupportInfoDto {
         this.supportOrgUnit = supportOrgUnit;
         this.supportType = supportType;
         this.timeSpan = timeSpan;
-        this.supportTypeName = supportType == SupportType.ALLDAY.getValue() ? SupportType.ALLDAY.name() : SupportType.TIMEZONE.name();
-        this.periodDisplay = StringUtils.isNotEmpty(periodEnd) ? periodStart + "～" + periodEnd : periodStart;
+        this.supportTypeName = supportType == SupportType.ALLDAY.getValue() ? "終日" : "時間帯";
+        this.periodDisplay = supportType == SupportType.TIMEZONE.getValue() ? periodStart : StringUtils.isNotEmpty(periodEnd) ? periodStart + "～" + periodEnd : periodStart;
         this.employeeDisplay = employeeCode + "　" + employeeName;
-        this.timeSpanDisplay = timeSpan.getStart() + "～" + timeSpan.getEnd();
+        this.timeSpanDisplay = timeSpan.getStart() == null && timeSpan.getEnd() == null ? null : this.convertNumberToTime(timeSpan.getStart()) + "～" + this.convertNumberToTime(timeSpan.getEnd());
         this.displayMode = displayMode;
+    }
+
+    private String convertNumberToTime(Integer totalMinute) {
+        if (totalMinute == null) return "";
+        int hour = totalMinute / 60;
+        int minute = totalMinute % 60;
+
+        return (hour < 10 ? "0" + hour : hour) + ":" + (minute < 10 ? "0" + minute : minute);
     }
 }

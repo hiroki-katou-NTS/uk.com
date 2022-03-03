@@ -3,51 +3,71 @@ module nts.uk.at.view.kdl016.a {
     import Moment = moment.Moment;
 
     const API = {
-        init: "screen/at/kdl016//a/init",
-        get: "screen/at/kdl016//a/init",
+        init: "screen/at/kdl016/a/init",
+        get: "screen/at/kdl016/a/get",
         delete: "screen/at/kdl016/a/delete"
     };
 
     @bean()
     export class ViewModel extends ko.ViewModel {
-        unit: KnockoutObservable<number> = ko.observable(0);
-        orgUnitName: KnockoutComputed<string>;
-        orgDisplayName: KnockoutObservable<string> = ko.observable("OrgName");
-        periodStart: KnockoutObservable<string> = ko.observable("2022/02/01");
-        periodEnd: KnockoutObservable<string> = ko.observable("2022/02/28");
+        targetOrg: KnockoutObservable<ITargetOrganization> = ko.observable(null);
+        employeeIds: KnockoutObservableArray<string> = ko.observableArray([]);
+        targetOrgUnitName: KnockoutComputed<string>;
+        periodStart: KnockoutObservable<string> = ko.observable("");
+        periodEnd: KnockoutObservable<string> = ko.observable("");
         displayPeriod: KnockoutComputed<string>;
 
         supportModes: KnockoutObservableArray<any>;
         selectedMode: any;
 
-        igGridHeader: Array<IgGridColumnModel> = [];
         selectedRow: KnockoutObservableArray<number> = ko.observableArray([]);
         selectedCode: KnockoutObservableArray<number> = ko.observableArray([]);
+        // selectRowChanged: KnockoutObservable<boolean> = ko.observable(false);
         igGridDataSource: ISupportInformation[] = [];
+
+        canDelete: KnockoutObservable<boolean> = ko.observable(false);
+
+        // $grid!: JQuery;
 
         constructor(params: IScreenParameter) {
             super();
             const vm = this;
+            if (!_.isNil(params)) {
+                vm.targetOrg(params.targetOrg);
+                vm.periodStart(params.startDate);
+                vm.periodEnd(params.endDate);
+                vm.employeeIds(params.employeeIds);
+            }
 
-            vm.orgUnitName = ko.computed(() => {
-                return vm.unit() == TARGET_ORG.WORKPLACE ? vm.$i18n('Com_Workplace') : vm.$i18n('Com_WorkplaceGroup');
+            // vm.$grid = $("#grid");
+
+            vm.targetOrgUnitName = ko.computed(() => {
+                return vm.targetOrg().unit == TARGET_ORG.WORKPLACE ? vm.$i18n('Com_Workplace') : vm.$i18n('Com_WorkplaceGroup');
             });
 
             vm.displayPeriod = ko.computed(() => {
                 if (vm.periodStart() && vm.periodEnd())
-                    return moment.utc(vm.periodStart()).format("YYYY/MM/DD") + " ～ " + moment.utc(vm.periodEnd()).format("YYYY/MM/DD");
+                    return moment.utc(vm.periodStart()).format("YYYY/MM/DD") + "  ～  " + moment.utc(vm.periodEnd()).format("YYYY/MM/DD");
                 else if (vm.periodStart() && !vm.periodEnd())
-                    return moment.utc(vm.periodStart()).format("YYYY/MM/DD") + " ～ ";
+                    return moment.utc(vm.periodStart()).format("YYYY/MM/DD") + "  ～";
                 else return "";
             });
 
             vm.supportModes = ko.observableArray([
-                {code: '1', name: vm.$i18n('KDL016_12')},
-                {code: '2', name: vm.$i18n('KDL016_13')}
+                {code: 1, name: vm.$i18n('KDL016_12')},
+                {code: 2, name: vm.$i18n('KDL016_13')}
             ]);
-            vm.selectedMode = ko.observable('2');
+            vm.selectedMode = ko.observable(1);
 
-            vm.loadSupportInfo();
+            vm.initialData();
+
+            vm.selectedMode.subscribe((newValue: number) => {
+                vm.loadSupportInfo(newValue);
+            });
+
+            vm.selectedCode.subscribe((newValue: any) => {
+                vm.selectedCode().length > 0 ? vm.canDelete(true) : vm.canDelete(false);
+            });
         }
 
         created(params: any) {
@@ -61,268 +81,75 @@ module nts.uk.at.view.kdl016.a {
             $('#A1_1').focus();
         }
 
-        loadSupportInfo(): void {
-            const vm = this;
+        initialData() {
+            const vm = this, dfd = $.Deferred();
+            vm.$blockui("show");
+            const request = {
+                employeeIds: vm.employeeIds(),
+                periodStart: vm.periodStart(),
+                periodEnd: vm.periodEnd()
+            };
 
-            // Fake data
-            let data: ISupportInformation[] = [
-                {
-                    id: 1,
-                    employeeId: 'employeeId1',
-                    periodStart: '2022/01/01',
-                    periodEnd: '2022/01/31',
-                    employeeCode: 'EmpCode1',
-                    employeeName: 'EmpName1',
-                    supportOrgName: '3SI',
-                    supportOrgId: '3siId',
-                    supportOrgUnit: 0,
-                    supportType: 1,
-                    timeSpan: {
-                        start: 100,
-                        end: 450
-                    },
-                    supportTypeName: '時間帯',
-                    periodDisplay: '2022/01/01 - 2022/01/31',
-                    employeeDisplay: '0000001 Elangaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-                    timeSpanDisplay: '8:00 - 10:00',
-                    displayMode: 1
-                },
-                {
-                    id: 2,
-                    employeeId: 'employeeId2',
-                    periodStart: '2022/01/01',
-                    periodEnd: '2022/01/31',
-                    employeeCode: 'EmpCode2',
-                    employeeName: 'EmpName2',
-                    supportOrgName: '3SI',
-                    supportOrgId: '3siId',
-                    supportOrgUnit: 0,
-                    supportType: 1,
-                    timeSpan: {
-                        start: 100,
-                        end: 450
-                    },
-                    supportTypeName: '終日',
-                    periodDisplay: '2022/01/01 - 2022/01/31',
-                    employeeDisplay: '0000001 Elanga',
-                    timeSpanDisplay: '8:00 - 10:00',
-                    displayMode: 1
-                },
-                {
-                    id: 3,
-                    employeeId: 'employeeId1',
-                    periodStart: '2022/01/01',
-                    periodEnd: '2022/01/31',
-                    employeeCode: 'EmpCode1',
-                    employeeName: 'EmpName1',
-                    supportOrgName: '3SI',
-                    supportOrgId: '3siId',
-                    supportOrgUnit: 0,
-                    supportType: 1,
-                    timeSpan: {
-                        start: 100,
-                        end: 450
-                    },
-                    supportTypeName: '時間帯',
-                    periodDisplay: '2022/01/01 - 2022/01/31',
-                    employeeDisplay: '0000001 Elanga',
-                    timeSpanDisplay: '8:00 - 10:00',
-                    displayMode: 1
-                },
-                {
-                    id: 4,
-                    employeeId: 'employeeId2',
-                    periodStart: '2022/01/01',
-                    periodEnd: '2022/01/31',
-                    employeeCode: 'EmpCode2',
-                    employeeName: 'EmpName2',
-                    supportOrgName: '3SI',
-                    supportOrgId: '3siId',
-                    supportOrgUnit: 0,
-                    supportType: 1,
-                    timeSpan: {
-                        start: 100,
-                        end: 450
-                    },
-                    supportTypeName: '終日',
-                    periodDisplay: '2022/01/01 - 2022/01/31',
-                    employeeDisplay: '0000001 Elanga',
-                    timeSpanDisplay: '8:00 - 10:00',
-                    displayMode: 1
-                },
-                {
-                    id: 5,
-                    employeeId: 'employeeId1',
-                    periodStart: '2022/01/01',
-                    periodEnd: '2022/01/31',
-                    employeeCode: 'EmpCode1',
-                    employeeName: 'EmpName1',
-                    supportOrgName: '3SI',
-                    supportOrgId: '3siId',
-                    supportOrgUnit: 0,
-                    supportType: 1,
-                    timeSpan: {
-                        start: 100,
-                        end: 450
-                    },
-                    supportTypeName: '時間帯',
-                    periodDisplay: '2022/01/01 - 2022/01/31',
-                    employeeDisplay: '0000001 Elanga',
-                    timeSpanDisplay: '8:00 - 10:00',
-                    displayMode: 1
-                },
-                {
-                    id: 6,
-                    employeeId: 'employeeId2',
-                    periodStart: '2022/01/01',
-                    periodEnd: '2022/01/31',
-                    employeeCode: 'EmpCode2',
-                    employeeName: 'EmpName2',
-                    supportOrgName: '3SI',
-                    supportOrgId: '3siId',
-                    supportOrgUnit: 0,
-                    supportType: 1,
-                    timeSpan: {
-                        start: 100,
-                        end: 450
-                    },
-                    supportTypeName: '終日',
-                    periodDisplay: '2022/01/01 - 2022/01/31',
-                    employeeDisplay: '0000001 Elanga',
-                    timeSpanDisplay: '8:00 - 10:00',
-                    displayMode: 1
-                },
-                {
-                    id: 7,
-                    employeeId: 'employeeId1',
-                    periodStart: '2022/01/01',
-                    periodEnd: '2022/01/31',
-                    employeeCode: 'EmpCode1',
-                    employeeName: 'EmpName1',
-                    supportOrgName: '3SI',
-                    supportOrgId: '3siId',
-                    supportOrgUnit: 0,
-                    supportType: 1,
-                    timeSpan: {
-                        start: 100,
-                        end: 450
-                    },
-                    supportTypeName: '終日',
-                    periodDisplay: '2022/01/01 - 2022/01/31',
-                    employeeDisplay: '0000001 Elanga',
-                    timeSpanDisplay: '8:00 - 10:00',
-                    displayMode: 1
-                },
-                {
-                    id: 8,
-                    employeeId: 'employeeId2',
-                    periodStart: '2022/01/01',
-                    periodEnd: '2022/01/31',
-                    employeeCode: 'EmpCode2',
-                    employeeName: 'EmpName2',
-                    supportOrgName: '3SI',
-                    supportOrgId: '3siId',
-                    supportOrgUnit: 0,
-                    supportType: 1,
-                    timeSpan: {
-                        start: 100,
-                        end: 450
-                    },
-                    supportTypeName: '時間帯',
-                    periodDisplay: '2022/01/01 - 2022/01/31',
-                    employeeDisplay: '0000002 Ronaldo',
-                    timeSpanDisplay: '8:00 - 10:00',
-                    displayMode: 1
-                },
-                {
-                    id: 9,
-                    employeeId: 'employeeId1',
-                    periodStart: '2022/01/01',
-                    periodEnd: '2022/01/31',
-                    employeeCode: 'EmpCode1',
-                    employeeName: 'EmpName1',
-                    supportOrgName: '3SI',
-                    supportOrgId: '3siId',
-                    supportOrgUnit: 0,
-                    supportType: 1,
-                    timeSpan: {
-                        start: 100,
-                        end: 450
-                    },
-                    supportTypeName: '終日',
-                    periodDisplay: '2022/01/01 - 2022/01/31',
-                    employeeDisplay: '0000001 Elanga',
-                    timeSpanDisplay: '8:00 - 10:00',
-                    displayMode: 1
-                },
-                {
-                    id: 10,
-                    employeeId: 'employeeId2',
-                    periodStart: '2022/01/01',
-                    periodEnd: '2022/01/31',
-                    employeeCode: 'EmpCode2',
-                    employeeName: 'EmpName2',
-                    supportOrgName: '3SI',
-                    supportOrgId: '3siId',
-                    supportOrgUnit: 0,
-                    supportType: 1,
-                    timeSpan: {
-                        start: 100,
-                        end: 450
-                    },
-                    supportTypeName: '時間帯',
-                    periodDisplay: '2022/01/01 - 2022/01/31',
-                    employeeDisplay: '0000002 Ronaldo',
-                    timeSpanDisplay: '8:00 - 10:00',
-                    displayMode: 1
-                },
-                {
-                    id: 11,
-                    employeeId: 'employeeId1',
-                    periodStart: '2022/01/01',
-                    periodEnd: '2022/01/31',
-                    employeeCode: 'EmpCode1',
-                    employeeName: 'EmpName1',
-                    supportOrgName: '3SI',
-                    supportOrgId: '3siId',
-                    supportOrgUnit: 0,
-                    supportType: 1,
-                    timeSpan: {
-                        start: 100,
-                        end: 450
-                    },
-                    supportTypeName: '終日',
-                    periodDisplay: '2022/01/01 - 2022/01/31',
-                    employeeDisplay: '0000001 Elanga',
-                    timeSpanDisplay: '8:00 - 10:00',
-                    displayMode: 1
-                }
-            ];
-            vm.igGridDataSource = data;
+            vm.$ajax(API.init, request).done(data => {
+                vm.igGridDataSource = data || [];
+                vm.initGrid(vm.igGridDataSource);
+                dfd.resolve();
+            }).fail(error => {
+                vm.$dialog.error(error);
+                dfd.reject();
+                vm.$window.close();
+            }).always(() => {
+                vm.$blockui("hide");
+            });
 
-            vm.initGrid(vm.igGridDataSource);
+            return dfd.promise();
+        }
 
-            window.onresize = function (evt: any) {
-                $('#grid_displayContainer').height(window.innerHeight - 285);
-                $('#grid_container').height(window.innerHeight - 285);
-                $('#grid_virtualContainer').height(window.innerHeight - 285);
-                $('#grid_scrollContainer').height(window.innerHeight - 285);
-            }
+        loadSupportInfo(mode: number) {
+            const vm = this, dfd = $.Deferred();
+            vm.$blockui("show");
+            const request = {
+                targetOrg: {
+                    orgId: vm.targetOrg().id,
+                    orgUnit: vm.targetOrg().unit
+                },
+                employeeIds: vm.employeeIds(),
+                startDate: vm.periodStart(),
+                endDate: vm.periodEnd(),
+                displayMode: mode
+            };
+
+            vm.$ajax(API.get, request).done(data => {
+                vm.igGridDataSource = data || [];
+                vm.initGrid(vm.igGridDataSource);
+                dfd.resolve();
+            }).fail(error => {
+                vm.$dialog.error(error);
+                dfd.reject();
+                vm.$window.close();
+            }).always(() => {
+                vm.$blockui("hide");
+            });
+
+            return dfd.promise();
         }
 
         private initGrid(dataSource: ISupportInformation[]) {
-            let vm = this,
-                selectMode = vm.selectedMode(),
+            const vm = this,
                 supportType = [
                     {id: '', Name: '空白'},
                     {id: '終日', Name: '終日'},
                     {id: '時間帯', Name: '時間帯'},
                 ];
+
+            // if (vm.$grid.data("igGrid")) {
+            //     vm.$grid.ntsGrid("destroy");
+            // }
             const $grid = $("#grid");
             let primaryKeyName: string = "id";
             $grid.igGrid({
-                // width: "1020px",
-                height: window.innerHeight - 275,
+                // width: "929px",
+                height: "352px",
                 dataSource: dataSource,
                 dataSourceType: "json",
                 primaryKey: primaryKeyName,
@@ -338,8 +165,8 @@ module nts.uk.at.view.kdl016.a {
                     {headerText: 'DisplayMode', key: 'displayMode', dataType: 'number', width: '0px', hidden: true},
                     // {headerText: '', key: "edit", dataType: "string", width: "30px", unbound: true, ntsControl: 'EditButton'},
                     {
-                        key: "edit", width: "70px", headerText: '', dataType: "string", unbound: true,
-                        template: "<input type= \"button\"  onclick = \"nts.uk.at.view.kdl016.a.redirectEditModal(${id}, ${displayMode}) \" value= \" " + vm.$i18n('KDL016_19') + " \" />"
+                        key: "edit", width: "60px", headerText: '', dataType: "string", unbound: true,
+                        template: "<input type= \"button\"  onclick = \"nts.uk.at.view.kdl016.a.openRegisterModal(${id}, ${displayMode}) \" value= \" " + vm.$i18n('KDL016_19') + " \" />"
                     },
                     {
                         headerText: vm.$i18n('KDL016_14'),
@@ -348,16 +175,16 @@ module nts.uk.at.view.kdl016.a {
                         width: '200px',
                         template: '<div style="float:left">${periodDisplay} </div>'
                     },
-                    {headerText: vm.$i18n('KDL016_15'), key: "supportOrgName", width: '80px', dataType: "string"},
+                    {headerText: vm.$i18n('KDL016_15'), key: "supportOrgName", width: '100px', dataType: "string"},
                     {
                         headerText: vm.$i18n('KDL016_16'),
                         key: "employeeDisplay",
                         dataType: "string",
-                        width: "250px",
+                        width: "260px",
                         template: '<div class="limited-label" style="float:left">${employeeDisplay} </div>'
                     },
-                    {headerText: vm.$i18n('KDL016_17'), key: "supportTypeName", width: '80px', dataType: "string"},
-                    {headerText: vm.$i18n('KDL016_18'), key: "timeSpanDisplay", width: "110px", dataType: "string"}
+                    {headerText: vm.$i18n('KDL016_17'), key: "supportTypeName", width: '95px', dataType: "string"},
+                    {headerText: vm.$i18n('KDL016_18'), key: "timeSpanDisplay", width: "120px", dataType: "string"}
                 ],
                 features: [
                     {
@@ -403,7 +230,24 @@ module nts.uk.at.view.kdl016.a {
                                     {cond: "equal"}
                                 ]
                             },
-                            {columnKey: 'supportOrgName', allowFiltering: false},
+                            {
+                                columnKey: 'supportOrgName',
+                                conditionList: ["contain", "notContain"],
+                                customConditions: {
+                                    contain: {
+                                        labelText: vm.$i18n('KDL016_45'),
+                                        expressionText: vm.$i18n('KDL016_45'),
+                                        requireExpr: true,
+                                        filterFunc: vm.contain
+                                    },
+                                    notContain: {
+                                        labelText: vm.$i18n('KDL016_46'),
+                                        expressionText: vm.$i18n('KDL016_46'),
+                                        requireExpr: true,
+                                        filterFunc: vm.notContain
+                                    }
+                                }
+                            },
                             {
                                 columnKey: 'employeeDisplay',
                                 conditionList: ["contain", "notContain"],
@@ -503,23 +347,88 @@ module nts.uk.at.view.kdl016.a {
 
         register() {
             const vm = this;
+            let param: any = {};
             if (vm.selectedMode() == DISPLAY_MODE.GO_TO_SUPPORT) {
-                nts.uk.ui.windows.sub.modal("/view/kdl/016/b/index.xhtml").onClosed(() => {
-
+                param = {
+                    employeeIds: vm.employeeIds(),
+                    targetOrg: {
+                        orgId: vm.targetOrg().id,
+                        orgUnit: vm.targetOrg().unit
+                    }
+                };
+                vm.$blockui("invisible");
+                vm.$window.modal("/view/kdl/016/b/index.xhtml", param).then((result: any) => {
+                    vm.loadSupportInfo(DISPLAY_MODE.GO_TO_SUPPORT);
                 });
             } else {
-                nts.uk.ui.windows.sub.modal("/view/kdl/016/c/index.xhtml").onClosed(() => {
-
+                param = {
+                    targetOrg: {
+                        orgId: vm.targetOrg().id,
+                        orgUnit: vm.targetOrg().unit
+                    },
+                    startDate: vm.periodStart(),
+                    endDate: vm.periodEnd()
+                };
+                vm.$window.modal("/view/kdl/016/c/index.xhtml", param).then((data: any) => {
+                    vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
                 });
             }
-
         }
 
-        openEditPopup(value: any) {
+        remove(): void {
+            const vm = this;
+            vm.$blockui("invisible");
 
-        }
+            let listEmpIdSelected: any = [];
+            _.forEach(vm.igGridDataSource, function (value: any) {
+                if (_.includes(vm.selectedCode(), value.id.toString())) {
+                    listEmpIdSelected.push(value.employeeId);
+                }
+            });
 
-        remove() {
+            let command = {
+                employeeIds: listEmpIdSelected
+            };
+
+            vm.$dialog.confirm({messageId: 'Msg_18'}).then((result: 'no' | 'yes') => {
+                vm.$blockui("invisible");
+                if (result === 'yes') {
+                    vm.$ajax(API.delete, command).then((data: any) => {
+                        if (!data.error) {
+                            vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
+                                vm.loadSupportInfo(vm.selectedMode());
+                            });
+                        } else {
+                            let errorResults = data.errorResults;
+                            let dataError: any = [];
+                            for (let i = 0; i < errorResults.length; i++) {
+                                let err = errorResults[i];
+                                dataError.push(
+                                    {
+                                        id: i + 1,
+                                        periodDisplay: err.periodDisplay,
+                                        employeeDisplay: err.employeeDisplay,
+                                        errorMessage: err.errorMessage,
+                                    }
+                                );
+                            }
+
+                            vm.$window.modal("/view/kdl/016/f/index.xhtml", dataError).then((result: any) => {
+                                vm.closeDialog();
+                            });
+                        }
+                    }).fail(error => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("clear");
+                    });
+                }
+
+                if (result === 'no') {
+                    vm.$blockui("hide");
+                }
+            });
+
 
         }
 
@@ -539,36 +448,60 @@ module nts.uk.at.view.kdl016.a {
             $('input:first').attr('placeholder', $('input:first').attr('placeholder').split('<=').join('').split('>=').join('').split('＝').join(''));
         }
 
-        equal(value, expression, dataType, ignoreCase, preciseDateFormat) {
+        equal(value: any, expression: any, dataType: any, ignoreCase: any, preciseDateFormat: any) {
             if (isNaN(parseInt(expression))) {
                 return parseInt(value.split('/').join('')) == 99999999;
             }
-            return parseInt(value.split('/').join('')) == parseInt(expression.split('/').join(''));
+
+            let dateVale = value.split('～');
+            if (dateVale.length == 1) {
+                return parseInt(dateVale[0].split('/').join('')) == parseInt(expression.split('/').join(''));
+            }
+            if (dateVale.length == 2) {
+                return parseInt(dateVale[0].split('/').join('')) >= parseInt(expression.split('/').join('')) ||
+                    parseInt(dateVale[1].split('/').join('')) <= parseInt(expression.split('/').join(''));
+            }
         }
 
-        beforeAndEqual(value, expression, dataType, ignoreCase, preciseDateFormat) {
+        beforeAndEqual(value: any, expression: any, dataType: any, ignoreCase: any, preciseDateFormat: any) {
             if (isNaN(parseInt(expression))) {
                 return parseInt(value.split('/').join('')) == 99999999;
             }
-            return parseInt(value.split('/').join('')) <= parseInt(expression.split('/').join(''));
+
+            let dateVale = value.split('～');
+            if (dateVale.length == 1) {
+                return parseInt(dateVale[0].split('/').join('')) <= parseInt(expression.split('/').join(''));
+            }
+            if (dateVale.length == 2) {
+                return parseInt(dateVale[1].split('/').join('')) <= parseInt(expression.split('/').join(''))
+                    || (parseInt(expression.split('/').join('')) >= parseInt(dateVale[0].split('/').join('')) &&
+                    parseInt(expression.split('/').join('')) <= parseInt(dateVale[1].split('/').join('')));
+            }
         }
 
-        afterAndEqual(value, expression, dataType, ignoreCase, preciseDateFormat) {
+        afterAndEqual(value: any, expression: any, dataType: any, ignoreCase: any, preciseDateFormat: any) {
             if (isNaN(parseInt(expression))) {
                 return parseInt(value.split('/').join('')) == 99999999;
             }
-            return parseInt(value.split('/').join('')) >= parseInt(expression.split('/').join(''));
+
+            let dateVale = value.split('～');
+            if (dateVale.length == 1) {
+                return parseInt(dateVale[0].split('/').join('')) >= parseInt(expression.split('/').join(''));
+            }
+            return parseInt(dateVale[0].split('/').join('')) >= parseInt(expression.split('/').join(''))
+                || (parseInt(expression.split('/').join('')) >= parseInt(dateVale[0].split('/').join('')) &&
+                    parseInt(expression.split('/').join('')) <= parseInt(dateVale[1].split('/').join('')));
         }
 
-        contain(value, expression, dataType, ignoreCase, preciseDateFormat) {
+        contain(value: any, expression: any, dataType: any, ignoreCase: any, preciseDateFormat: any) {
             return value.indexOf(expression) !== -1;
         }
 
-        notContain(value, expression, dataType, ignoreCase, preciseDateFormat) {
+        notContain(value: any, expression: any, dataType: any, ignoreCase: any, preciseDateFormat: any) {
             return value.indexOf(expression) == -1;
         }
 
-        notFilter(value, expression, dataType, ignoreCase, preciseDateFormat) {
+        notFilter(value: any, expression: any, dataType: any, ignoreCase: any, preciseDateFormat: any) {
             return value;
         }
 
@@ -577,7 +510,7 @@ module nts.uk.at.view.kdl016.a {
         }
     }
 
-    export function redirectEditModal(id: number, mode: number) {
+    export function openRegisterModal(id: number, mode: number) {
         const vm = this;
         let dataSource = $("#grid").igGrid("option", "dataSource");
         let dataShare = _.find(dataSource, (value: any) => {
@@ -587,7 +520,7 @@ module nts.uk.at.view.kdl016.a {
         // var checkboxes = $('#igGridSupportInfo').igGridRowSelectors("option", "enableCheckBoxes");
 
         nts.uk.ui.windows.setShared("shareFromKdl016a", dataShare);
-        if (mode.toString() == DISPLAY_MODE.GO_TO_SUPPORT) {
+        if (mode == DISPLAY_MODE.GO_TO_SUPPORT) {
             nts.uk.ui.windows.sub.modal("/view/kdl/016/d/index.xhtml").onClosed(() => {
 
             });
@@ -632,7 +565,8 @@ module nts.uk.at.view.kdl016.a {
     interface ITargetOrganization {
         id: string;
         code: string;
-        unit: number
+        unit: number;
+        name: string;
     }
 
     class IgGridColumnModel {
@@ -656,8 +590,8 @@ module nts.uk.at.view.kdl016.a {
     }
 
     enum DISPLAY_MODE {
-        GO_TO_SUPPORT = '1',
-        COME_TO_SUPPORT = '2',
+        GO_TO_SUPPORT = 1,
+        COME_TO_SUPPORT = 2,
     }
 
     enum TARGET_ORG {

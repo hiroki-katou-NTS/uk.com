@@ -29,14 +29,14 @@ module nts.uk.at.view.kdl016.f {
                         headerText: vm.$i18n('KDL016_16'),
                         key: "employeeDisplay",
                         dataType: "string",
-                        width: '220px',
+                        width: '265px',
                         template: '<div class="limited-label">${employeeDisplay} </div>'
                     },
                     {
                         headerText: vm.$i18n('KDL016_36'),
                         key: "errorMessage",
                         dataType: "string",
-                        width: '270px',
+                        width: '320px',
                         template: '<div class="limited-label">${errorMessage} </div>'
                     }
                 ],

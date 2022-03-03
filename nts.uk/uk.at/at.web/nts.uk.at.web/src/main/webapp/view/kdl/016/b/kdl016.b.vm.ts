@@ -1,7 +1,6 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.kdl016.b {
     import Moment = moment.Moment;
-    import ListType = nts.uk.at.ksm008.b.ListType;
 
     const API = {
         get: "screen/at/kdl016/b/init",
@@ -10,6 +9,9 @@ module nts.uk.at.view.kdl016.b {
 
     @bean()
     export class ViewModel extends ko.ViewModel {
+        requiredParam: IParameter;
+        organizationInfoList: any[] = [];
+
         // kcp005
         listComponentOption: any;
         date: KnockoutObservable<string> = ko.observable(new Date().toISOString());
@@ -17,20 +19,18 @@ module nts.uk.at.view.kdl016.b {
         endDate: KnockoutObservable<string> = ko.observable(null);
         employeeList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedEmployees: KnockoutObservableArray<string> = ko.observableArray([]);
-        displayGoback: KnockoutObservable<boolean>;
-        updateMode: KnockoutObservable<boolean> = ko.observable(false);
 
         // combobox
-        orgList: KnockoutObservableArray<OrgItemModel>;
-        selectedOrgCode: KnockoutObservable<string>;
+        orgList: KnockoutObservableArray<OrgItemModel> = ko.observableArray([]);
+        selectedOrgCode: KnockoutObservable<string> = ko.observable(undefined);
 
         // RadioBtn
         supportTypes: KnockoutObservableArray<any>;
         selectedSupportType: KnockoutObservable<number>;
 
         enableEditTimespan: KnockoutObservable<boolean> = ko.observable(false);
-        timespanMin: KnockoutObservable<number>;
-        timespanMax: KnockoutObservable<number>;
+        timespanMin: KnockoutObservable<number> = ko.observable(undefined);
+        timespanMax: KnockoutObservable<number> = ko.observable(undefined);
 
         startDateStr: KnockoutObservable<string> = ko.observable("");
         endDateStr: KnockoutObservable<string> = ko.observable("");
@@ -39,22 +39,9 @@ module nts.uk.at.view.kdl016.b {
             endDate: new Date(),
         });
 
-        constructor(params: IScreenParameter) {
+        constructor(params: any) {
             super();
             const vm = this;
-            vm.employeeList = ko.observableArray<UnitModel>([
-                {id: '1', code: '0001', name: 'Angela Babykasjgdkajsghdkahskdhaksdhasd', workplaceName: 'HN'},
-                {id: '2', code: '0002', name: 'Xuan Toc Doaslkdhasklhdlashdhlashdl', workplaceName: 'HN'},
-                {id: '3', code: '0003', name: 'Park Shin Hye', workplaceName: 'HCM'},
-                {id: '4', code: '0004', name: 'Vladimir Nabokov', workplaceName: 'HN'}
-            ]);
-
-            vm.orgList = ko.observableArray([
-                new OrgItemModel('1', '基本給'),
-                new OrgItemModel('2', '役職手当'),
-                new OrgItemModel('3', '基本給ながい文字列ながい')
-            ]);
-            vm.selectedOrgCode = ko.observable('1');
 
             vm.supportTypes = ko.observableArray([
                 new BoxModel(0, '終日応援'),
@@ -62,17 +49,6 @@ module nts.uk.at.view.kdl016.b {
             ]);
             vm.selectedSupportType = ko.observable(0);
 
-            vm.timespanMin = ko.observable(100);
-            vm.timespanMax = ko.observable(300);
-            vm.selectedSupportType.subscribe(value => {
-                if (value == 1)
-                    vm.enableEditTimespan(true);
-                else
-                    vm.enableEditTimespan(false);
-            });
-
-            vm.startDateStr = ko.observable('2022/01/01');
-            vm.endDateStr = ko.observable('2022/02/28');
             vm.startDateStr.subscribe(function (value) {
                 vm.dateValue().startDate = value;
                 vm.dateValue.valueHasMutated();
@@ -81,10 +57,26 @@ module nts.uk.at.view.kdl016.b {
                 vm.dateValue().endDate = value;
                 vm.dateValue.valueHasMutated();
             });
+
+            vm.selectedSupportType.subscribe(value => {
+                if (value == 1) {
+                    vm.enableEditTimespan(true);
+                }
+                else {
+                    vm.enableEditTimespan(false);
+                    vm.$errors("clear");
+                }
+            });
         }
 
-        created(params: any) {
+        created(params: IParameter) {
             const vm = this;
+            if (!_.isNil(params)) {
+                vm.requiredParam = params;
+            }
+
+            vm.loadData();
+
             vm.listComponentOption = {
                 isShowAlreadySet: false,
                 isMultiSelect: true,
@@ -103,40 +95,118 @@ module nts.uk.at.view.kdl016.b {
             $('#employee-list').focus();
         }
 
-        loadData(): void {
-            const vm = this;
+        loadData() {
+            const vm = this, dfd = $.Deferred();
+            vm.$blockui("show");
+            const request = {
+                employeeIds: vm.requiredParam.employeeIds,
+                orgId: vm.requiredParam.targetOrg.orgId,
+                orgUnit: vm.requiredParam.targetOrg.orgUnit
+            };
 
+            vm.$ajax(API.get, request).done(data => {
+                vm.employeeList(data.employeeInforList.map((e: any) => ({
+                    id: e.employeeId,
+                    code: e.employeeCode,
+                    name: e.businessName
+                })));
 
+                vm.organizationInfoList = data.orgInfoList;
+                vm.orgList(data.orgInfoList.map((i: any) => new OrgItemModel(i.orgCode, i.displayName)));
+
+                dfd.resolve();
+            }).fail(error => {
+                vm.$dialog.error(error);
+                dfd.reject();
+                vm.closeDialog();
+            }).always(() => {
+                vm.$blockui("hide");
+            });
+
+            return dfd.promise();
         }
 
         register() {
+            const vm = this;
+            // if (_.isEmpty(self.employeeList())) {
+            //     $('#A6_2').ntsError('set', {messageId:'MsgB_2',messageParams:[nts.uk.resource.getText('KDL014_21')]});
+            //     return;
+            // }
 
+            let orgSelected = _.find(vm.organizationInfoList, (i: any) => {
+                return i.orgCode == vm.selectedOrgCode()
+            });
+            let empIdSelected: string[] = vm.employeeList().filter((i) => {
+                return _.includes(vm.selectedEmployees(), i.code)
+            }).map(i => i.id);
+            let command: any = {
+                employeeIds: empIdSelected,
+                supportDestinationId: vm.selectedOrgCode(),
+                orgUnit: orgSelected.orgUnit,
+                supportType: vm.selectedSupportType(),
+                supportPeriodStart: moment.utc(vm.dateValue().startDate).format("YYYY/MM/DD"),
+                supportPeriodEnd: moment.utc(vm.dateValue().endDate).format("YYYY/MM/DD"),
+                supportTimeSpan: {
+                    start: vm.selectedSupportType() === 0 ? null : vm.timespanMin(),
+                    end: vm.selectedSupportType() === 0 ? null : vm.timespanMax()
+                }
+            };
+
+            if (moment.utc(vm.dateValue().startDate).isBefore(moment.utc().format('YYYY/MM/DD'))) {
+                vm.$dialog.confirm({messageId: 'Msg_3280'}).then((result: 'no' | 'yes') => {
+                    vm.$blockui("invisible");
+                    if (result === 'yes') {
+                        vm.execute(command);
+                    }
+
+                    if (result === 'no') {
+                        vm.$blockui("hide");
+                    }
+                });
+            } else {
+                vm.$blockui("invisible");
+                vm.execute(command);
+            }
         }
 
-        // findById(id: number): ISupportInformation[] {
-        //     let vm = this;
-        //     return _.find(vm.igGridDataSource, (value: any) => {
-        //         return value.id == id;
-        //     });
-        // }
+        execute(command: any) {
+            const vm = this;
+            vm.$ajax(API.register, command).then((data: any) => {
+                if (!data.error) {
+                    vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
+                        vm.closeDialog();
+                    });
+                } else {
+                    let errorResults = data.errorResults;
+                    let dataError: any = [];
+                    for (let i = 0; i < errorResults.length; i++) {
+                        dataError.push(
+                            {
+                                id: i + 1,
+                                periodDisplay: errorResults[i].periodDisplay,
+                                employeeDisplay: errorResults[i].employeeDisplay,
+                                errorMessage: errorResults[i].errorMessage,
+                            }
+                        );
+                    }
+
+                    vm.$window.modal("/view/kdl/016/f/index.xhtml", dataError).then((result: any) => {
+                        vm.closeDialog();
+                    });
+                }
+            }).fail(error => {
+                vm.$dialog.error(error).then(() => {
+                    vm.closeDialog();
+                });
+            }).always(() => {
+                vm.$blockui("clear");
+            });
+        }
 
         closeDialog(): void {
             const vm = this;
             vm.$window.close();
         }
-    }
-
-    export function redirectEditModal(id: number) {
-        let dataSource = $("#grid").igGrid("option", "dataSource");
-        let rowSelect = _.find(dataSource, (value: any) => {
-            return value.id == id;
-        });
-
-        var checkboxes = $('#igGridSupportInfo').igGridRowSelectors("option", "enableCheckBoxes");
-
-        nts.uk.ui.windows.sub.modal("/view/kdl/016/d/index.xhtml").onClosed(() => {
-
-        });
     }
 
     interface ISupportInformation {
@@ -162,17 +232,14 @@ module nts.uk.at.view.kdl016.b {
         end: number;
     }
 
-    interface IScreenParameter {
-        targetOrg: ITargetOrganization;
-        startDate: string;
-        endDate: string;
+    interface IParameter {
         employeeIds: string[]
+        targetOrg: ITargetOrganization;
     }
 
     interface ITargetOrganization {
-        id: string;
-        code: string;
-        unit: number
+        orgId: string;
+        orgUnit: number
     }
 
     class OrgItemModel {
@@ -194,16 +261,6 @@ module nts.uk.at.view.kdl016.b {
             self.id = id;
             self.name = name;
         }
-    }
-
-    enum DISPLAY_MODE {
-        GO_TO_SUPPORT = 1,
-        COME_TO_SUPPORT = 2,
-    }
-
-    enum TARGET_ORG {
-        WORKPLACE = 0,
-        WORKPLACE_GROUP = 1,
     }
 
     enum SUPPORT_TYPE {

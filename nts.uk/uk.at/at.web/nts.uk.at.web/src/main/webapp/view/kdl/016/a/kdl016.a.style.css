@@ -7,6 +7,10 @@
     margin-right: 20px;
 }
 
+.ml {
+    margin-left: 263px;
+}
+
 .ui-iggrid td.ui-iggrid-filtercell {
     border: 0.5px solid #CCC !important;
 }
@@ -48,6 +52,4 @@ tr[data-role='filterrow'] .ui-igedit.ui-igedit-container.ui-widget.ui-corner-all
 .ui-iggrid .ui-iggrid-tablebody td {
     white-space: nowrap;
 }
-
-.ui-iggrid-filtercell .
 

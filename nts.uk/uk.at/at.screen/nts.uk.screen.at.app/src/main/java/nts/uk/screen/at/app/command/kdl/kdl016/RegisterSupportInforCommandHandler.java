@@ -218,8 +218,8 @@ public class RegisterSupportInforCommandHandler extends CommandHandlerWithResult
         List<EmployeeErrorResult> employeeErrorResults = cannotRegisterMap.entrySet().stream().map(m -> new EmployeeErrorResult(
                 empErrorInfoMap.get(m.getKey()).getEmployeeCode(),
                 empErrorInfoMap.get(m.getKey()).getBusinessName(),
-                m.getValue().getSupportableEmployee().getPeriod().start().toString("yyyyMMdd"),
-                m.getValue().getSupportableEmployee().getPeriod().end().toString("yyyyMMdd"),
+                m.getValue().getSupportableEmployee().getPeriod().start().toString("yyyy/MM/dd"),
+                m.getValue().getSupportableEmployee().getPeriod().end().toString("yyyy/MM/dd"),
                 m.getValue().getErrorInfo()
         )).collect(Collectors.toList());
 

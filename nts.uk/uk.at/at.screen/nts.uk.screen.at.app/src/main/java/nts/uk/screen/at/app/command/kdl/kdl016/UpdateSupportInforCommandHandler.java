@@ -185,8 +185,8 @@ public class UpdateSupportInforCommandHandler extends CommandHandlerWithResult<U
             List<EmployeeErrorResult> employeeErrorResults = errorResults.stream().map(m -> new EmployeeErrorResult(
                     empErrorInfoMap.get(m.getSupportableEmployee().getEmployeeId().v()).getEmployeeCode(),
                     empErrorInfoMap.get(m.getSupportableEmployee().getEmployeeId().v()).getBusinessName(),
-                    supportableEmployee.getPeriod().start().toString("yyyyMMdd"),
-                    supportableEmployee.getPeriod().end().toString("yyyyMMdd"),
+                    supportableEmployee.getPeriod().start().toString("yyyy/MM/dd"),
+                    supportableEmployee.getPeriod().end().toString("yyyy/MM/dd"),
                     m.getErrorInfo()
             )).collect(Collectors.toList());
 
@@ -194,7 +194,7 @@ public class UpdateSupportInforCommandHandler extends CommandHandlerWithResult<U
         }
 
         // 6.
-        supportableEmployeeRepo.update(companyId, supportableEmployee);   //TODO: EA ko mô tả
+        supportableEmployeeRepo.update(companyId, supportableEmployee);
 
         if (!workScheduleCheckResult.getAtomTaskList().isEmpty()) {
             transaction.execute(() -> workScheduleCheckResult.getAtomTaskList().forEach(AtomTask::run));

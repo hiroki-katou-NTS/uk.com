@@ -152,7 +152,7 @@ public class SupportInformationFinder {
 
         RequireOrgInfoImpl requireOrgInfo = new RequireOrgInfoImpl(groupAdapter, serviceAdapter, wplAdapter);
         List<SupportInfoDto> supportInfoResults = new ArrayList<>();
-        for (int i = 1; i <= supportableEmployees.size(); i++) {
+        for (int i = 0; i < supportableEmployees.size(); i++) {
             SupportableEmployee supportableEmployee = supportableEmployees.get(i);
             // 組織の表示情報を取得する(Require, 年月日): output 組織の表示情報
             DisplayInfoOrganization orgInfo = supportableEmployee.getRecipient().getDisplayInfor(requireOrgInfo, period.end());
@@ -160,7 +160,7 @@ public class SupportInformationFinder {
 
             val employeeInfoOpt = supportEmployeeInfos.stream().filter(x -> x.getEmployeeId().equals(supportableEmployee.getEmployeeId().v())).findFirst();
             supportInfoResults.add(new SupportInfoDto(
-                    i,
+                    i + 1,
                     supportableEmployee.getId(),
                     supportableEmployee.getPeriod().start().toString("yyyy/MM/dd"),
                     supportableEmployee.getPeriod().end().toString("yyyy/MM/dd"),
@@ -172,12 +172,12 @@ public class SupportInformationFinder {
                             : supportableEmployee.getRecipient().getWorkplaceGroupId().orElse(null),
                     supportableEmployee.getRecipient().getUnit().value,
                     supportableEmployee.getSupportType().getValue(),
-                    supportableEmployee.getTimespan().isPresent() ? new TimeSpanForCalcDto(supportableEmployee.getTimespan().get().start(), supportableEmployee.getTimespan().get().end()) : null,
+                    supportableEmployee.getTimespan().isPresent() ? new TimeSpanForCalcDto(supportableEmployee.getTimespan().get().start(), supportableEmployee.getTimespan().get().end()) : new TimeSpanForCalcDto(null, null),
                     DisplayMode.GO_TO_SUPPORT.value
             ));
         }
 
-        return supportInfoResults;
+        return supportInfoResults.stream().sorted(Comparator.comparing(SupportInfoDto::getId)).collect(Collectors.toList());
     }
 
     /**
@@ -234,13 +234,13 @@ public class SupportInformationFinder {
                             : supportableEmployee.getRecipient().getWorkplaceGroupId().orElse(null),
                     supportableEmployee.getRecipient().getUnit().value,
                     supportableEmployee.getSupportType().getValue(),
-                    supportableEmployee.getTimespan().isPresent() ? new TimeSpanForCalcDto(supportableEmployee.getTimespan().get().start(), supportableEmployee.getTimespan().get().end()) : null,
+                    supportableEmployee.getTimespan().isPresent() ? new TimeSpanForCalcDto(supportableEmployee.getTimespan().get().start(), supportableEmployee.getTimespan().get().end()) : new TimeSpanForCalcDto(null, null),
                     DisplayMode.COME_TO_SUPPORT.value
             ));
 
         }
 
-        return supportInfoResults;
+        return supportInfoResults.stream().sorted(Comparator.comparing(SupportInfoDto::getId)).collect(Collectors.toList());
     }
 
     /**

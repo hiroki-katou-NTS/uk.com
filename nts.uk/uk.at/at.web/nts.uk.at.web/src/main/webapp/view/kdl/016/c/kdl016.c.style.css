@@ -13,6 +13,7 @@
 
 #employee-list {
     margin-top: -30px;
+    margin-left: -25px;
 }
 
 .radio-wrapper {
@@ -35,7 +36,7 @@
 
 .caret-bottom {
     font-size: 28px;
-    margin-left: 180px;
+    margin-left: 160px;
     color: #E0F59E;
     vertical-align: top;
     line-height: 28px;
