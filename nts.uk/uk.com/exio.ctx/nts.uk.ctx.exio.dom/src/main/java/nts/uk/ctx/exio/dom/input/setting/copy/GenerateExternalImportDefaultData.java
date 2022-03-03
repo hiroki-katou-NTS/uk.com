@@ -20,8 +20,7 @@ public class GenerateExternalImportDefaultData {
             ExternalImportCode generatingCode,
             ExternalImportDefaultDataItem generatingTargetItem) {
 
-        val isCodeDuplicated = require.getExternalImportSetting(companyId, generatingCode).isPresent();
-        if (isCodeDuplicated) {
+        if (require.existsExternalImportSetting(companyId, generatingCode)) {
             throw new BusinessException("Msg_3");
         }
 
@@ -41,6 +40,8 @@ public class GenerateExternalImportDefaultData {
     }
 
     public interface Require extends ExternalImportDefaultDataItem.RequireStoreBaseCsvFile {
+
+        boolean existsExternalImportSetting(String companyId, ExternalImportCode code);
 
         Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode code);
 
