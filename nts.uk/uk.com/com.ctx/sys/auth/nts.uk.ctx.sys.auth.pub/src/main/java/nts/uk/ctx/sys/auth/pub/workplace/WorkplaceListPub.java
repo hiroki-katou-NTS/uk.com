@@ -52,5 +52,8 @@ public interface WorkplaceListPub {
 	 * @param date 基準日
 	 */
 	Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date);
+	
+	// 職場管理者かチェックする
+	Optional<WorkplaceManagerExport> findWkpMngByEmpWkpDate(String employeeID, String workplaceID, GeneralDate date);
 }
 

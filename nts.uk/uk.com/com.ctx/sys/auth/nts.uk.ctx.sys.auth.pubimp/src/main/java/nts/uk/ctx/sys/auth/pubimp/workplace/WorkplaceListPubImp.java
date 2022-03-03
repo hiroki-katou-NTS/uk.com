@@ -189,5 +189,14 @@ public class WorkplaceListPubImp implements WorkplaceListPub{
 		//return 所属職場リストを取得するAdapter.取得する(基準日,職場リスト)
 		return workplaceAdapter.getByListIds(workplaceList, date);
 	}
+
+	@Override
+	public Optional<WorkplaceManagerExport> findWkpMngByEmpWkpDate(String employeeID, String workplaceID,
+			GeneralDate date) {
+		return workplaceManagerRepo.findWkpMngByEmpWkpDate(employeeID, workplaceID, date).map(i -> {
+			WorkplaceManagerExport export = new WorkplaceManagerExport(i.getWorkplaceManagerId(), i.getEmployeeId(), i.getWorkplaceId(), i.getHistoryPeriod());
+			return export;
+		});
+	}
 }
 
