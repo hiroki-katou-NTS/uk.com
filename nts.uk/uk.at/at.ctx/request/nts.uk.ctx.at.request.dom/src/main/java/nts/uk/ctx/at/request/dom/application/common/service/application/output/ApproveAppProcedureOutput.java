@@ -12,6 +12,8 @@ public class ApproveAppProcedureOutput {
 	private List<String> failList;
 	// 承認失敗申請IDリスト
 	private List<String> approveFailLst;
+	// 申請データ削除済みリスト
+	private List<String> deleteLst;
 	// 送信失敗社員リスト
 	private List<String> failServerList;
 	// 送信成功社員リスト

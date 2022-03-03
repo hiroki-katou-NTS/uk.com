@@ -89,6 +89,7 @@ public class ApproveAppProcedure {
 			Optional<String> opApprovalComment, List<AppTypeSetting> appTypeSettingLst, boolean errorCheckFlg, boolean isInsert) {
 		List<String> failList = new ArrayList<>();
 		List<String> approveFailLst = new ArrayList<>();
+		List<String> deleteLst = new ArrayList<>();
 		List<String> failServerList = new ArrayList<>();
 		List<String> successList = new ArrayList<>();
 		List<Application> appCompleteApproveLst = new ArrayList<>();
@@ -107,9 +108,15 @@ public class ApproveAppProcedure {
 				continue;
 			}
 			// 取得した「排他エラー」をチェックする
-			if(approveAppOutput.isExclusiveError()) {
-				// 「承認失敗申請IDリスト」に処理中の申請IDを追加する
-				approveFailLst.add(app.getAppID());
+			if(approveAppOutput.isExclusiveError() || approveAppOutput.isAppDeleteError()) {
+				if(approveAppOutput.isExclusiveError()) {
+					// 「承認失敗申請IDリスト」に処理中の申請IDを追加する
+					approveFailLst.add(app.getAppID());
+				}
+				if(approveAppOutput.isAppDeleteError()) {
+					// 「申請データ削除済みリスト」に処理中の申請IDを追加する
+					deleteLst.add(app.getAppID());
+				}
 			} else {
 				// 承認後のメール送信処理
 				AppTypeSetting appTypeSetting = appTypeSettingLst.stream().filter(x -> x.getAppType()==app.getAppType()).findAny().get();
@@ -123,6 +130,7 @@ public class ApproveAppProcedure {
 				successList.addAll(mailResult.getSuccessList());
 			}
 		}
+		// 申請を承認後の手続き
 		AsyncTask task = AsyncTask.builder().keepsTrack(false).threadName(this.getClass().getName() + ".reflect-app: ")
 				.build(() -> {
 					this.procedureAfterApprove(appCompleteApproveLst, companyID);
@@ -133,6 +141,7 @@ public class ApproveAppProcedure {
 		return new ApproveAppProcedureOutput(
 				failList.stream().distinct().collect(Collectors.toList()), 
 				approveFailLst.stream().distinct().collect(Collectors.toList()), 
+				deleteLst.stream().distinct().collect(Collectors.toList()), 
 				failServerList.stream().distinct().collect(Collectors.toList()), 
 				successList.stream().distinct().collect(Collectors.toList()));
 	}
@@ -180,8 +189,14 @@ public class ApproveAppProcedure {
 			String exclusiveCheck = detailBeforeUpdate.exclusiveCheckLogic(companyID, app.getAppID(), app.getVersion());
 			if(Strings.isNotBlank(exclusiveCheck)) {
 				if(errorCheckFlg) {
-					// OUTPUTを返す
-					return new ApproveAppOutput(false, true, Optional.empty(), Optional.empty());
+					if(exclusiveCheck.equals("Msg_197")) {
+						// OUTPUTを返す
+						return new ApproveAppOutput(false, true, false, Optional.empty(), Optional.empty());
+					}
+					if(exclusiveCheck.equals("Msg_198")) {
+						// OUTPUTを返す
+						return new ApproveAppOutput(false, false, true, Optional.empty(), Optional.empty());
+					}
 				}
 				// エラーメッセージを表示して処理終了する
 				throw new BusinessException(exclusiveCheck);
@@ -209,6 +224,7 @@ public class ApproveAppProcedure {
 		return new ApproveAppOutput(
 				allApprovalFlg, 
 				false, 
+				false,
 				Optional.of(approveResultImport.getApprovalPhaseNumber()), 
 				Optional.of(approveResultImport.getApprovalRootState()));
 	}

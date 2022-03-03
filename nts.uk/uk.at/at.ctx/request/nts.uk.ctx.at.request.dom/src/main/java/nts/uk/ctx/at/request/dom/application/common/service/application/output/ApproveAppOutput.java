@@ -18,10 +18,13 @@ public class ApproveAppOutput {
 	 */
 	private boolean exclusiveError;
 	/**
+	 * 申請削除済エラー
+	 */
+	private boolean appDeleteError;
+	/**
 	 * Optional<承認フェーズ枠番>
 	 */
 	private Optional<Integer> opApprovalPhaseNumber;
-	
 	/**
 	 * Optional<承認ルートインスタンス>
 	 */

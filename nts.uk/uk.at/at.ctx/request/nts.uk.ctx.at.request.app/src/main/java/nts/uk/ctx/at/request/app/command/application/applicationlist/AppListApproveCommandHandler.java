@@ -39,6 +39,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * refactor 4
@@ -185,9 +186,13 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
         		applicationSetting.getAppTypeSettings(), 
         		true,
         		false);
+		String approveFailMsgContent = TextResource.localize("Msg_3320");
+		String deleteMsgContent = TextResource.localize("Msg_3321");
 		for(Application application : appLst) {
 			if(approveAppProcedureOutput.getApproveFailLst().contains(application.getAppID())) {
-				result.getFailMap().put(application.getAppID(), "");
+				result.getFailMap().put(application.getAppID(), approveFailMsgContent);
+			} else if(approveAppProcedureOutput.getDeleteLst().contains(application.getAppID())) {
+				result.getFailMap().put(application.getAppID(), deleteMsgContent);
 			} else {
 				result.getSuccessMap().put(application.getAppID(), "");
 			}
