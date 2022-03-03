@@ -91,7 +91,7 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 				}
 				importingKeys.add(keyValue);
 				
-				super.canonicalize(require, context, interm, keyValue);
+				super.canonicalize(require, context, interm);
 			}
 		});
 	}

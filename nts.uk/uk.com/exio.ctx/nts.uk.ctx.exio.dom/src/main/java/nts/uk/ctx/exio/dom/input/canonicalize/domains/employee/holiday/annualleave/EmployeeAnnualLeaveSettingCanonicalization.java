@@ -77,7 +77,7 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 				}
 				importingKeys.add(keyValue);
 				
-				super.canonicalize(require, context, interm, keyValue);
+				super.canonicalize(require, context, interm);
 			}
 		});
 	}
@@ -88,7 +88,7 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 	
 	/**
 	 * 追加の正準化処理が必要ならoverrideすること
-	 * @param targetContainers
+	 * @param targertResult
 	 */
 	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
 		return addFixedItems(targertResult);

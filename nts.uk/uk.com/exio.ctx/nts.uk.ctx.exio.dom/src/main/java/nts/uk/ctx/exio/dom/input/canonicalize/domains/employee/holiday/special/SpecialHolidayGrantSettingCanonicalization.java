@@ -65,7 +65,7 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 				}
 				importingKeys.add(keyValue);
 				val addedInterm = interm.addCanonicalized(getFixedItems());
-				super.canonicalize(require, context, addedInterm, keyValue);
+				super.canonicalize(require, context, addedInterm);
 			}
 		});
 	}

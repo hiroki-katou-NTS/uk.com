@@ -88,7 +88,7 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization 
 					}
 
 					//既存データのチェックと保存は継承先に任せる
-					super.canonicalize(require, context, interm, getPrimaryKeys(interm));
+					super.canonicalize(require, context, interm);
 					importingKeys.add(keyValue);
 				}
 		});

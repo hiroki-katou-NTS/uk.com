@@ -94,7 +94,7 @@ public class AnnualLeaveRemainingCanonicalization extends IndependentCanonicaliz
 				}
 				importingKeys.add(keyValue);
 				
-				super.canonicalize(require, context, interm, keyValue);
+				super.canonicalize(require, context, interm);
 			}
 		});
 	}
