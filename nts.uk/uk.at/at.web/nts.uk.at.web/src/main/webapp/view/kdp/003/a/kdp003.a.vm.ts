@@ -131,7 +131,9 @@ module nts.uk.at.kdp003.a {
 									.done(() => {
 										vm.contractCode = data.code;
 									})
-									.done(() => vm.getDataStartScreen());
+									.done(() => {
+										vm.getDataStartScreen();
+									});
 							});
 					} else {
 						// Step3: テナント認証する
@@ -219,6 +221,8 @@ module nts.uk.at.kdp003.a {
 			vm.$window.storage(IS_RELOAD_VIEW, true)
 			// show or hide stampHistoryButton
 			vm.message.subscribe((value) => vm.showClockButton.company(value === null));
+
+			vm.basyo();
 
 			vm.$window.storage('contractInfo')
 				.done((data: any) => {
@@ -512,16 +516,16 @@ module nts.uk.at.kdp003.a {
 
 					if (!ko.unwrap(vm.modeBasyo)) {
 						if (!exest) {
-							vm.setMessage({ messageId: 'Msg_1647' });
-							return false;
+							// vm.setMessage({ messageId: 'Msg_1647' });
+							// return false;
 						}
 					} else {
 						if (data.loginData.result) {
 							exest = false;
 						}
 						if (exest) {
-							vm.setMessage({ messageId: 'Msg_1647' });
-							return false;
+							// vm.setMessage({ messageId: 'Msg_1647' });
+							// return false;
 						}
 					}
 
@@ -562,16 +566,29 @@ module nts.uk.at.kdp003.a {
 
 					if (ko.unwrap(vm.modeBasyo)) {
 
-						const storeData = {
-							CCD: em.companyCode,
-							CID: em.companyId,
-							PWD: em.password,
-							SCD: em.employeeCode,
-							SID: em.employeeId,
-							WKLOC_CD: '',
-							WKPID: vm.workPlace
-						};
-						return storage(KDP003_SAVE_DATA, storeData);
+						if (em) {
+							const storeData = {
+								CCD: em.companyCode,
+								CID: em.companyId,
+								PWD: em.password,
+								SCD: em.employeeCode,
+								SID: em.employeeId,
+								WKLOC_CD: '',
+								WKPID: vm.workPlace
+							};
+							return storage(KDP003_SAVE_DATA, storeData);
+						} else {
+							const storeData = {
+								CCD: storageData.CCD,
+								CID: storageData.CID,
+								PWD: storageData.PWD,
+								SCD: storageData.SCD,
+								SID: storageData.SID,
+								WKLOC_CD: '',
+								WKPID: vm.workPlace
+							};
+							return storage(KDP003_SAVE_DATA, storeData);
+						}
 					} else {
 						if (workplaceData) {
 							const { selectedId } = workplaceData;
