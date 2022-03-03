@@ -118,18 +118,10 @@ public class ShortWorkTimeOfDaily {
 	/** 加算時間を補正する */
 	private static AttendanceTime correctAddTime(AddSettingOfWorkingTime addSet, CalculationRangeOfOneDay oneDay,
 			ChildCareAtr careAtr) {
-		
-		/** 育児介護時間を含めて計算するか判断する */
-		if (addSet.isCalculateIncludCareTime(PremiumAtr.RegularWork)) {
-			
-			/** 控除短時間勤務時間の計算 */
-			DeductionTotalTime time = calcShortTime(DeductionAtr.Deduction, careAtr, oneDay);
-			
-			/** 〇合計時間の計算 */
-			return time.getTotalTime().getCalcTime();
-		}
-		
-		return AttendanceTime.ZERO;
+		/** 控除短時間勤務時間の計算 */
+		DeductionTotalTime time = calcShortTime(DeductionAtr.Deduction, careAtr, PremiumAtr.RegularWork, oneDay, addSet);
+		/** 〇合計時間の計算 */
+		return time.getTotalTime().getCalcTime();
 	}
 	
 	public static WorkTimes calcWorkTimes(ManageReGetClass recordClass,ConditionAtr condition) {
