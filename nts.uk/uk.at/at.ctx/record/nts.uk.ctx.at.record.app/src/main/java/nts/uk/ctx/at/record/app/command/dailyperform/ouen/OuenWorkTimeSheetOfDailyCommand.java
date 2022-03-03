@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.ouen;
 
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,10 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyAttendanceDto;
 import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyDto;
-import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.WorkContentDto;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
@@ -72,7 +68,7 @@ public class OuenWorkTimeSheetOfDailyCommand extends DailyWorkCommonCommand {
 		if (dto.getWorkContent().getWorkplace().getWorkplaceId() != null && dto.getWorkContent().getWorkplace().getWorkplaceId().v().isEmpty()) {
 			WorkplaceOfWorkEachOuen workplace = WorkplaceOfWorkEachOuen.create(new WorkplaceId(workplaceId), dto.getWorkContent().getWorkplace().getWorkLocationCD().map(x -> x).orElse(null));
 			WorkContent workContent = WorkContent.create(workplace, dto.getWorkContent().getWork(), dto.getWorkContent().getWorkSuppInfo());
-			return new OuenWorkTimeSheetOfDailyAttendance(dto.getWorkNo(), workContent, dto.getTimeSheet(), dto.getInputFlag());
+			return OuenWorkTimeSheetOfDailyAttendance.create(dto.getWorkNo(), workContent, dto.getTimeSheet(), dto.getInputFlag());
 		}
 		return dto;
 	}
