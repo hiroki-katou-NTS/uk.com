@@ -54,8 +54,8 @@ public class TaskCanonicalization extends IndependentCanonicalization{
     @Override
     protected List<DomainDataColumn> getDomainDataKeys() {
         return Arrays.asList(DomainDataColumn.CID,
-        								new DomainDataColumn("FRAME_NO", DataType.INT),
-                						new DomainDataColumn("CD", DataType.STRING));
+        								new DomainDataColumn(Items.作業枠NO, "FRAME_NO", DataType.INT),
+                						new DomainDataColumn(Items.作業コード, "CD", DataType.STRING));
     }
 
     @Override

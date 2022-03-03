@@ -33,6 +33,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.StampCanonica
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.EnterpriseStampCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskChildCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.shift.businesscalendar.PublicHolidayCanonicalization;
 
 /**
  * 受入グループID
@@ -59,6 +60,9 @@ public enum ImportingDomainId {
 	/** 職場別就業時間帯*/
 	WORKTIME_BY_WORKSPACE(42, WorktimeByWorkplaceCanonicalization::new),
 
+	/** 祝日マスタ*/
+	PUBLIC_HOLIDAY(52, PublicHolidayCanonicalization::new),
+	
 	/** 個人基本情報 */
 	EMPLOYEE_BASIC(100, EmployeeBasicCanonicalization::new),
 

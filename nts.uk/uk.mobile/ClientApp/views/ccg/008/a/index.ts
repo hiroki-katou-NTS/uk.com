@@ -14,10 +14,10 @@ const servicePath = {
     getVisibleConfig:'screen/at/mobile/ccgs08/visibleConfig'
 };
 
-enum SystemOperationMode {
-    RUNNING = 0,
-    IN_PROGESS = 1,
-    STOP = 2
+enum SystemStatusType {
+    RUNNING = 1,
+    IN_PROGESS = 2,
+    STOP = 3
 }
 
 enum User {
@@ -170,10 +170,10 @@ export class Ccg008AComponent extends Vue {
     public checkSystemStopSetting(setting: ServerAlertDto) { 
         let self = this; 
         if (setting.company) {
-            setting.company.visible = SystemOperationMode.IN_PROGESS === setting.company.systemStatus;    
+            setting.company.visible = SystemStatusType.IN_PROGESS === setting.company.systemStatus;    
         }
         if (setting.system) {
-            setting.system.visible = SystemOperationMode.IN_PROGESS === setting.system.systemStatus;
+            setting.system.visible = SystemStatusType.IN_PROGESS === setting.system.systemStatus;
         }
         setting.visible = (setting.company && setting.company.visible) || (setting.system && setting.system.visible);
 
