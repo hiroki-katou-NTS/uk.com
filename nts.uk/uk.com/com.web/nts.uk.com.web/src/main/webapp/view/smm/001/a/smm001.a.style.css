@@ -32,7 +32,7 @@
 
 .smile-div {
   min-height: 50px;
-  width: 1100px;
+  width: 1110px;
   margin-top: 10px;
   border: 1px solid;
 }
@@ -83,4 +83,8 @@
 
 .group-check-lock-classification .radio-wrapper input[type="radio"]+span {
   line-height: 15px !important;
+}
+
+#swap-list-move-data {
+  padding: 0px !important;
 }
