@@ -159,12 +159,21 @@ public class SupportSchedule implements DomainValue{
 	}
 	
 	/**
+	 * 応援する予定があるか
+	 * @return
+	 */
+	public boolean havePlanToSupport() {
+		
+		return !this.details.isEmpty();
+	}
+	
+	/**
 	 * 応援形式を返す
 	 * @return
 	 */
 	public Optional<SupportType> getSupportType() {
 		
-		if ( this.details.isEmpty() ) {
+		if ( !this.havePlanToSupport() ) {
 			return Optional.empty(); 
 		}
 		

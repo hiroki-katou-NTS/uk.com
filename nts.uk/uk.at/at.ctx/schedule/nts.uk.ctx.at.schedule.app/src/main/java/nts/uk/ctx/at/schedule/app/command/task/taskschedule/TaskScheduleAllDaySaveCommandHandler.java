@@ -297,6 +297,6 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 			String companyId = AppContexts.user().companyId();
 			return nurseClassificationRepo.getListCompanyNurseCategory(companyId);
 		}
-
+		
 	}
 }

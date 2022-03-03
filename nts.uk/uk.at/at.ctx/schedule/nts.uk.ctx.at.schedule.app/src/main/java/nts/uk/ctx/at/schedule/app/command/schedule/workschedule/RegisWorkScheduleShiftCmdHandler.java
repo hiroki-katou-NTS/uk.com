@@ -457,7 +457,7 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 		public SupportOperationSetting getSupportOperationSetting() {
 			return supportOperationSettingRepo.get(companyId);
 		}
-		
+
 		// GetEmpLicenseClassificationService
 		@Override
 		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp,

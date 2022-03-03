@@ -28,6 +28,14 @@ public interface SupportAllowOrganizationRepository {
 	void delete( String cid, TargetOrgIdenInfor targetOrg );
 	
 	/**
+	 * getAll
+	 * @param cid 会社ID
+	 * @return
+	 */
+	List<SupportAllowOrganization> getAll( String cid );
+	
+	
+	/**
 	 * 対象組織を指定して応援許可する組織を取得する
 	 * @param cid 会社ID
 	 * @param targetOrg 対象組織情報

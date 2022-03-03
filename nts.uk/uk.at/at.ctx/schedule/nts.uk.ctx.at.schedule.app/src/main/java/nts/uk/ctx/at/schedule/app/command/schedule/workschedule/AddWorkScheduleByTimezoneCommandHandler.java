@@ -304,7 +304,7 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 		public SupportOperationSetting getSupportOperationSetting() {
 			return supportOperationSettingRepo.get(AppContexts.user().companyId());
 		}
-
+		
 		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
 			List<EmpOrganizationImport> results = empAffiliationInforAdapter.getEmpOrganization(standardDate, Arrays.asList(employeeId));
 			if(results.isEmpty())

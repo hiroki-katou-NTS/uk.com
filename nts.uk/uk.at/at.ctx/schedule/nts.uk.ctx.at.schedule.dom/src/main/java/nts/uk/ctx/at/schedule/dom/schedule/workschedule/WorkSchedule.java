@@ -19,9 +19,11 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
@@ -42,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportInfoOfEmployee;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -534,6 +537,40 @@ public class WorkSchedule implements DomainAggregate {
 		}
 		
 		this.supportSchedule = this.supportSchedule.remove(ticket);
+	}
+	
+	/**
+	 * 社員の応援情報を取得する
+	 * @param require
+	 * @return
+	 */
+	public SupportInfoOfEmployee getSupportInfoOfEmployee() {
+		
+		if ( ! this.supportSchedule.havePlanToSupport() ) {
+			
+			return SupportInfoOfEmployee.createWithoutSupport(
+					new EmployeeId(this.employeeID), 
+					this.ymd, 
+					this.affInfo.getAffiliationOrg());
+		}
+		
+		if ( this.supportSchedule.getSupportType().get() == SupportType.ALLDAY ) {
+			return SupportInfoOfEmployee.createWithAllDaySupport(
+					new EmployeeId(this.employeeID), 
+					this.ymd,
+					this.affInfo.getAffiliationOrg(), 
+					this.supportSchedule.getDetails().get(0).getSupportDestination());
+		} else {
+			val recipientList = this.supportSchedule.getDetails().stream()
+					.map(SupportScheduleDetail::getSupportDestination)
+					.collect(Collectors.toList());
+			
+			return SupportInfoOfEmployee.createWithTimezoneSupport(
+					new EmployeeId(this.employeeID),
+					this.ymd,
+					this.affInfo.getAffiliationOrg(),
+					recipientList);
+		}
 	}
 	
 	/**
