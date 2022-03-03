@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.childcare;
 
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.GeneralDate;
 
 /**
  * 子の看護休暇暫定データ削除
@@ -17,12 +17,12 @@ public class DeleteTempChildCare {
 	 * @param period
 	 * @return
 	 */
-	public static AtomTask delete(Require require, String employeeId, DatePeriod period){
-		return AtomTask.of(() -> require.deleteTempChildCareByPeriod(employeeId, period));
+	public static AtomTask delete(Require require, String employeeId, GeneralDate ymd){
+		return AtomTask.of(() -> require.deleteTempChildCareBySidBeforeTheYmd(employeeId, ymd));
 	}
 
 	
 	public static interface Require{
-		void deleteTempChildCareByPeriod(String sid, DatePeriod period);
+		void deleteTempChildCareBySidBeforeTheYmd(String sid, GeneralDate ymd);
 	}
 }

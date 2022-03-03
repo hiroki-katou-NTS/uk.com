@@ -18,7 +18,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<div style="display: inline-block; text-align: center;"
 						data-bind="if: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1, 
 									style: {
-											width: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? '200px' : '0',
+											width: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? '185px' : '0',
 											marginLeft: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? '10px' : '0'
 									}">
 						<div data-bind="ntsFormLabel: {
@@ -29,7 +29,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 						<div style="display: inline-block; text-align: center;"
 							data-bind="if: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1,
 										style: {
-											width: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? '200px' : '0',
+											width: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? '185px' : '0',
 											marginLeft: appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? '10px' : '0'
 									}">
 						<div data-bind="ntsFormLabel: {
@@ -61,7 +61,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 												required: ko.computed(function() {return _.isNumber(start())})
 																					}, attr: {id: 'A15_5_' + $index()}" />
 						</td>
-						<div class="multiple-reason" style="width: 200px; margin-left: 10px;"
+						<div class="multiple-reason" style="width: 185px; margin-left: 10px;"
 							data-bind="ntsComboBox: {
 											name: $parent.$i18n('KAF005_87'),
 											options: $parent.reasonTypeItemLst,
@@ -81,18 +81,18 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 												constraint: 'AppReason',
 												enable: ($parent.visibleModel.c7() && $parent.outputMode()),            
 												required: ko.computed(function() { return (!!start() || !!end()) && $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting && $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason; }),
-												option: {width: '200'}          
+												option: {width: '185'}          
 										},
 										visible: $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1"/>
-						<button style="width: 30px; border: none; box-shadow: none; padding: 5px;" data-bind="click: $parent.removeMultipleRow.bind($parent, $data, $element), enable: ($parent.visibleModel.c7() && $parent.outputMode())">
+						<button style="min-width: 30px; border: none; box-shadow: none; padding: 5px; background: none;" data-bind="click: $parent.removeMultipleRow.bind($parent, $data, $element), enable: ($parent.visibleModel.c7() && $parent.outputMode())">
 								<i data-bind="ntsIcon: { no: 237 }"></i>
 											</button>				
 					</div>
 				</div>
-				<button id="A15_9" style="width: 100px; border: none; box-shadow: none; padding: 5px;" 
+				<button id="A15_9" style="width: 100px; border: none; box-shadow: none; padding: 5px; background: none;" 
 						data-bind="click: addMultipleRow, visible: multipleOvertimeContents().length < 10, enable: (visibleModel.c7() && outputMode())">
 					<i data-bind="ntsIcon: { no: 236 }" style="background-position: left center;"></i>
-					<span style="position: relative; top: -27px; left: 10px;" data-bind="text: $i18n('KAF005_350')"></span>
+					<span style="position: relative; top: -25px; left: 10px;" data-bind="text: $i18n('KAF005_350')"></span>
 				</button>
 			</div>
 		</div>
@@ -100,7 +100,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 	
 	<div class="table item" data-bind="visible: visibleModel.c7()">
 		<!--A5_1 休憩時間ラベル-->
-		<div class="cell cm-column valign-top">
+		<div class="cell cm-column valign-top" style="width: 120px;">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_40'), ntsFormLabel: {}"></div>
 		</div>
@@ -153,7 +153,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 	<!-- calculate button A5_8-->
 	<div data-bind="if: visibleModel.c7()">
 		<div class="table item">
-			<div class="cell cm-column"></div>
+			<div class="cell cm-column" style="width: 120px;"></div>
 			<div class="cell">
 				<button data-bind="text: $i18n('KAF005_43'), click: calculate, enable: outputMode()"></button>
 			</div>
@@ -163,7 +163,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 	<!-- over time hours -->
 	<div class="table item" data-bind="visible: true">
 		<!--A6_1 残業時間ラベル-->
-		<div class="cell cm-column valign-top">
+		<div class="cell cm-column valign-top" style="width: 120px;">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_50'), ntsFormLabel: {required: true}"></div>
 		</div>

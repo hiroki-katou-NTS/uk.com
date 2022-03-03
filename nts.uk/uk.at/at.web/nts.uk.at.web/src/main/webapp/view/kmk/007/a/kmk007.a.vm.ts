@@ -1134,7 +1134,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             let listAbsenceFrames = _.map(listAbsences, item => new ItemModel(item.code, item.name, item.priority)),
                 absCode = this.sumAbsenseNo(),
                 selectedAbs = _.find(listAbsenceFrames, { 'code': absCode });
-            if (!selectedAbs && absCode != 0) {
+            if (!selectedAbs && absCode != 0 && absCode != null) {
                 listAbsenceFrames.push(new ItemModel(absCode,
                     absCode + "マスタ未登録",
                     1));

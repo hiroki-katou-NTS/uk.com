@@ -3756,35 +3756,48 @@ module nts.uk.ui.at.kdw013.calendar {
                             let cbh = businessHours[i];
                             let breakOfDay = _.find(breakTimes, { 'dayOfWeek': cbh.dayOfWeek });
                             if (breakOfDay && breakOfDay.breakTimes.length) {
-                                for (let j = 0; j < breakOfDay.breakTimes.length; j++) {
-                                    let brTime = breakOfDay.breakTimes[j];
-                                    let brBeforeTime = breakOfDay.breakTimes[j - 1];
-                                    let end = cbh.end;
-                                    let start = cbh.start;
-                                    if (brTime.end < end && brTime.end > start) {
-                                        bhs.push(
-                                            {
-                                                daysOfWeek: [cbh.dayOfWeek],
-                                                startTime: formatTime(brTime.end, false),
-                                                endTime: formatTime(end, false)
-                                            },
-                                            {
-                                            daysOfWeek: [cbh.dayOfWeek],
-                                            startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
-                                            endTime: !brBeforeTime ?  formatTime(brTime.start, false) : formatTime(brTime.start, false)
-                                            }
-                                        );
-                                    } else {
-                                        if (!_.find(bhs, bh => bh.daysOfWeek.indexOf(cbh.dayOfWeek) != -1)) {
+                                let breakList = _.chain(breakOfDay.breakTimes)
+                                        .filter(br => br.start >= cbh.start )
+                                        .sortBy(['start'])
+                                        .value();
+                                    if (breakList.length) {
+                                        let firstBreak = breakList[0];
+                                        if (firstBreak.start > cbh.start && firstBreak.start < cbh.end) {
                                             bhs.push({
                                                 daysOfWeek: [cbh.dayOfWeek],
-                                                startTime: formatTime(start, false),
-                                                endTime: formatTime(end, false)
+                                                startTime: formatTime(cbh.start, false),
+                                                endTime: formatTime(firstBreak.start, false)
                                             });
                                         }
-                                    }
 
-                                }
+                                        for (let j = 0; j < breakList.length; j++) {
+                                            let brTime = breakList[j];
+                                            if (brTime.end <= cbh.end && brTime.end > cbh.start && brTime.start >= cbh.start && j != breakList.length - 1) {
+                                                let brTimeNext = breakList[j + 1];
+                                                bhs.push({
+                                                    daysOfWeek: [cbh.dayOfWeek],
+                                                    startTime: formatTime(brTime.end, false),
+                                                    endTime: formatTime(brTimeNext.start, false)
+                                                });
+                                            }
+                                        }
+
+                                        let lastBreak = breakList[breakList.length - 1];
+                                        if (lastBreak.end < cbh.end) {
+                                            bhs.push({
+                                                daysOfWeek: [cbh.dayOfWeek],
+                                                startTime: formatTime(lastBreak.end, false),
+                                                endTime: formatTime(cbh.end, false)
+                                            });
+                                        }
+                                    } else {
+                                        bhs.push({
+                                            daysOfWeek: [cbh.dayOfWeek],
+                                            startTime: formatTime(cbh.start, false),
+                                            endTime: formatTime(cbh.end, false)
+                                        });
+                                    }
+                                
                             } else {
                                 bhs.push({
                                     daysOfWeek: [cbh.dayOfWeek],

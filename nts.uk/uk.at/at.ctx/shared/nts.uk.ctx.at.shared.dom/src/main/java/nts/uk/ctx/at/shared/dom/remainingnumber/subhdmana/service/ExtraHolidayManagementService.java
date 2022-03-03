@@ -323,7 +323,7 @@ public class ExtraHolidayManagementService {
 				emplData.setEmploymentCode(empSetting.getEmploymentCode().v());
 			}
 			// 管理するかないかチェック Check Setting quản lý nghỉ bù hay ko
-			if (compLeavCom != null && (compLeavCom.isManaged() || compLeavCom.getCompensatoryDigestiveTimeUnit().getIsManageByTime().equals(ManageDistinct.YES))) {
+			if (compLeavCom != null && (compLeavCom.isManaged() || compLeavCom.getTimeVacationDigestUnit().getManage().equals(ManageDistinct.YES))) {
 				emplData.setIsManage(ManageDistinct.YES);
 
 				if (empHistShrImp.getPeriod().start().beforeOrEquals(baseDate) && empHistShrImp.getPeriod().end().afterOrEquals(baseDate)) {
@@ -414,7 +414,9 @@ public class ExtraHolidayManagementService {
 						.filter(data -> data.getAssocialInfo().getDateOfUse().equals(useDate))
 						.findFirst();
 				Optional<GeneralDate> digestionDay = optComDayOff.map(data -> data.getAssocialInfo().getDateOfUse());
-				Optional<Double> digestionDays = optComDayOff.map(data -> data.getAssocialInfo().getDayNumberUsed().v());
+				Optional<Double> digestionDays = !optInterimDayOff.isPresent() 
+						? optComDayOff.map(data -> data.getAssocialInfo().getDayNumberUsed().v())
+						: Optional.empty();
 				Optional<Integer> digestionTimes = Optional.ofNullable(optCompenDayOffData
 						.map(data -> data.getRemainTimes().v())
 						.orElse(optInterimDayOff.map(data -> data.getRequiredTime().v()).orElse(null)));

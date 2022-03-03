@@ -248,7 +248,7 @@ module nts.uk.at.kaf021.a {
             const vm = this;
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 subWidth: "130px",
-                subHeight: "255px",
+                subHeight: "285px",
                 headerHeight: '70px',
                 rowHeight: '40px',
                 dataSource: vm.datas,
@@ -391,21 +391,24 @@ module nts.uk.at.kaf021.a {
             let date = common.getProcessingDate(vm.processingMonth);
             let currentMonth = vm.getMonthKey(date.getMonth() + 1);
             const headerStyles = [
-                { key: "checked", colors: ['padding-5', "#CFF1A5"] },
-                { key: "statusStr", colors: ['padding-5', "#CFF1A5"] },
-                { key: "wkpName", colors: ["#CFF1A5"] },
-                { key: "employeeName", colors: ["#CFF1A5"] },
-                { key: "yearStr", colors: ["#CFF1A5"] },
-                { key: "monthAverage3Str", colors: ['padding-10', 'break-jp-cell', "#CFF1A5"] },
-                { key: "monthAverage4Str", colors: ['padding-10', 'break-jp-cell', "#CFF1A5"] },
-                { key: "monthAverage2Str", colors: ['padding-10', 'break-jp-cell', "#CFF1A5"] },
-                { key: "monthAverage5Str", colors: ['padding-10', 'break-jp-cell', "#CFF1A5"] },
-                { key: "monthAverage6Str", colors: ['padding-10', 'break-jp-cell', "#CFF1A5"] },
-                { key: "exceededNumber", colors: ['padding-5', "#CFF1A5"] }
+                { key: "checked", colors: ['padding-5', "#6A6A6A"] },
+                { key: "statusStr", colors: ['padding-5', "#6A6A6A"] },
+                { key: "wkpName", colors: ["#6A6A6A"] },
+                { key: "employeeName", colors: ["#6A6A6A"] },
+                { key: "yearStr", colors: ["#6A6A6A"] },
+                { key: "monthAverage3Str", colors: ['padding-10', 'break-jp-cell', "#6A6A6A"] },
+                { key: "monthAverage4Str", colors: ['padding-10', 'break-jp-cell', "#6A6A6A"] },
+                { key: "monthAverage2Str", colors: ['padding-10', 'break-jp-cell', "#6A6A6A"] },
+                { key: "monthAverage5Str", colors: ['padding-10', 'break-jp-cell', "#6A6A6A"] },
+                { key: "monthAverage6Str", colors: ['padding-10', 'break-jp-cell', "#6A6A6A"] },
+                { key: "exceededNumber", colors: ['padding-5', "#6A6A6A"] }
             ];
             for (let month = 0; month < 12; month++) {
                 const key = vm.getMonthKey(month + 1);
-                headerStyles.push({key: key, colors: [key == currentMonth ? '#ffffff' : "#CFF1A5"]});
+                if(key == currentMonth){
+                    headerStyles.push({key: key, colors: ['color-text-current-month', '#ffffcc']});
+                }
+                headerStyles.push({key: key, colors: ["#6A6A6A"]});
             }
             return headerStyles;
         }
