@@ -1,11 +1,5 @@
 package nts.uk.ctx.exio.dom.input.setting;
 
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
@@ -13,6 +7,12 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
+
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 受入設定
@@ -54,6 +54,19 @@ public class ExternalImportSetting implements DomainAggregate {
 		this.name = name;
 		this.csvFileInfo = csvFileInfo;
 		this.domainSettings = domainSettings;
+	}
+
+	/**
+	 * 変更する（設定コピー用）
+	 * @param newCode
+	 * @param baseCsvFileId
+	 */
+	public void changeForCopy(ExternalImportCode newCode, String baseCsvFileId) {
+		code = newCode;
+		csvFileInfo = new ExternalImportCsvFileInfo(
+				csvFileInfo.getItemNameRowNumber(),
+				csvFileInfo.getImportStartRowNumber(),
+				Optional.of(baseCsvFileId));
 	}
 	
 	public List<DomainImportSetting> getDomainSettings() {
