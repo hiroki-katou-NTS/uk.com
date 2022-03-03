@@ -1,17 +1,19 @@
 package nts.uk.smile.infra.repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSetting;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.LinkedMonthSettingClassification;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversion;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversionRepository;
+import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.PaymentCategory;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSetting;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedMonthSettingClassification;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversion;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversionRepository;
-import nts.uk.smile.dom.smilelinked.cooperationoutput.PaymentCategory;
 import nts.uk.smile.infra.entity.smilelinked.LsmmtEmplinkMonthSet;
 import nts.uk.smile.infra.entity.smilelinked.LsmmtEmplinkMonthSetPK;
 
@@ -116,6 +118,38 @@ public class JpaLinkedPaymentConversionRepository extends JpaRepository implemen
 				.setParameter("contractCd", contractCode).setParameter("cid", companyId)
 				.getList(e -> new EmploymentAndLinkedMonthSetting(
 						LinkedMonthSettingClassification.valueOf(e.getMiomtEmplinkMonthSet()), e.getPk().getEmpCd()));
+	}
+
+	@Override
+	public List<LinkedPaymentConversion> getLinkPayConver(String contractCode, String companyId) {
+		
+		List<LsmmtEmplinkMonthSet> payConver = this.queryProxy().query(GET_BY_CONTRACT_AND_CID, LsmmtEmplinkMonthSet.class)
+				.setParameter("contractCd", contractCode).setParameter("cid", companyId)
+				.getList();
+		
+		List<LinkedPaymentConversion> listPayconver = this.entityToDomain(payConver);
+		return listPayconver;
+	}
+	
+	public List<LinkedPaymentConversion> entityToDomain(List<LsmmtEmplinkMonthSet> entity) {
+		List<LinkedPaymentConversion> listPayConver = new ArrayList<>();
+		
+		Map<Integer, List<LsmmtEmplinkMonthSet>> linkMonthGroup = entity.stream().collect(Collectors.groupingBy(x -> x.getPk().getPaymentCd()));
+		if(entity.isEmpty())
+			return new ArrayList<>();
+		
+		linkMonthGroup.keySet().forEach(y -> {
+			List<EmploymentAndLinkedMonthSetting> empMonth = new ArrayList<>();
+			linkMonthGroup.get(y).forEach(m -> {
+				EmploymentAndLinkedMonthSetting monthSet = new EmploymentAndLinkedMonthSetting(LinkedMonthSettingClassification.valueOf(m.getMiomtEmplinkMonthSet()), 
+						m.getPk().getEmpCd());
+				empMonth.add(monthSet);
+			});
+			PaymentCategory paymentCate = PaymentCategory.valueOf(entity.get(0).getPk().getPaymentCd());
+			LinkedPaymentConversion PayConver = new LinkedPaymentConversion(paymentCate, empMonth);
+			listPayConver.add(PayConver);
+		});
+		return listPayConver;
 	}
 
 }

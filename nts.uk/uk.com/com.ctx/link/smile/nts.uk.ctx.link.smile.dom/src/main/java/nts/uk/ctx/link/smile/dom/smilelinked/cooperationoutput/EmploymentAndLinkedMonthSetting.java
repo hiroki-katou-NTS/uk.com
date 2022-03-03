@@ -1,4 +1,4 @@
-package nts.uk.smile.dom.smilelinked.cooperationoutput;
+package nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput;
 
 import org.eclipse.persistence.internal.xr.ValueObject;
 
@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * AR_連動支払変換
+ * 雇用と連動月設定
  *
  */
 @Getter

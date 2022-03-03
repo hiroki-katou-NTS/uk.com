@@ -1,4 +1,4 @@
-package nts.uk.smile.dom.smilelinked.cooperationoutput;
+package nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * SMILE連携出力の設定データを保存する。
+ * 連動支払変換
  *
  */
 @Getter

@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StdOutputCondSetDto {
 	private String conditionSetCode;
+	
 	private String conditionSetName;
 }
