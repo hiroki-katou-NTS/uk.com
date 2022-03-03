@@ -8,7 +8,7 @@ module nts.uk.at.view.kdp002.a {
 			items: KnockoutObservableArray<any> = ko.observableArray([]);
 			displayMethod: KnockoutObservable<any>;
 			displayType: any = { HIDE: 0, DISPLAY: 1, SHOW_TIME_CARD: 2 };
-			dateValue: KnockoutObservable<{ startDate: string; endDate: string; }>;
+			dateValue: KnockoutObservable<{ startDate: string; endDate: string; }> = ko.observable({startDate: '', endDate: ''});
 			yearMonth: KnockoutObservable<any> = ko.observable('');
 			workManagementMultiple: KnockoutObservable<boolean> = ko.observable(false);
 			systemDate: KnockoutObservable<any> = ko.observable('');
@@ -33,7 +33,7 @@ module nts.uk.at.view.kdp002.a {
 						self.systemDate(sysDate);
 						self.bindItemData(start.stampDataOfEmployees);
 
-						self.dateValue = ko.observable({
+						self.dateValue({
 							startDate: moment(c).add(ko.unwrap(regionalTime), 'm').add(-3, 'days').format('YYYY/MM/DD'),
 							endDate: moment(c).add(ko.unwrap(regionalTime), 'm').format('YYYY/MM/DD')
 						});
