@@ -22,14 +22,12 @@ module nts.uk.at.view.kdp010 {
 				{
 					buttonPositionNo: 1,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 0, 
-							changeCalArt: 0, 
-							setPreClockArt: 0, 
-							changeHalfDay: false, 
-							goOutArt: null},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 0, 
+						changeCalArt: 0, 
+						setPreClockArt: 0, 
+						changeHalfDay: false, 
+						goOutArt: null},
 					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
@@ -41,14 +39,12 @@ module nts.uk.at.view.kdp010 {
 				},{
 					buttonPositionNo: 2,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 1, 
-							changeCalArt: 0, 
-							setPreClockArt: 0, 
-							changeHalfDay: false, 
-							goOutArt: null},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 1, 
+						changeCalArt: 0, 
+						setPreClockArt: 0, 
+						changeHalfDay: false, 
+						goOutArt: null},
 					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
@@ -60,14 +56,12 @@ module nts.uk.at.view.kdp010 {
 				},{
 					buttonPositionNo: 3,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 0, 
-							changeCalArt: 0, 
-							setPreClockArt: 1, 
-							changeHalfDay: false, 
-							goOutArt: null},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 0, 
+						changeCalArt: 0, 
+						setPreClockArt: 1, 
+						changeHalfDay: false, 
+						goOutArt: null},
 					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
@@ -79,14 +73,12 @@ module nts.uk.at.view.kdp010 {
 				},{
 					buttonPositionNo: 4,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 1, 
-							changeCalArt: 0, 
-							setPreClockArt: 2, 
-							changeHalfDay: false, 
-							goOutArt: null},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 1, 
+						changeCalArt: 0, 
+						setPreClockArt: 2, 
+						changeHalfDay: false, 
+						goOutArt: null},
 					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
@@ -98,14 +90,12 @@ module nts.uk.at.view.kdp010 {
 				},{
 					buttonPositionNo: 5,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 4, 
-							changeCalArt: 0, 
-							setPreClockArt: 0, 
-							changeHalfDay: false, 
-							goOutArt: 0},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 4, 
+						changeCalArt: 0, 
+						setPreClockArt: 0, 
+						changeHalfDay: false, 
+						goOutArt: 0},
 					taskChoiceArt: null,
 					supportWplSet: null,
 					buttonDisSet: {
@@ -117,14 +107,12 @@ module nts.uk.at.view.kdp010 {
 				},{
 					buttonPositionNo: 6,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 5, 
-							changeCalArt: 0, 
-							setPreClockArt: 0, 
-							changeHalfDay: false, 
-							goOutArt: null},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 5, 
+						changeCalArt: 0, 
+						setPreClockArt: 0, 
+						changeHalfDay: false, 
+						goOutArt: null},
 					taskChoiceArt: null,
 					supportWplSet: null,
 					buttonDisSet: {
@@ -140,14 +128,12 @@ module nts.uk.at.view.kdp010 {
 				{
 					buttonPositionNo: 1,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 6, 
-							changeCalArt: 0, 
-							setPreClockArt: 0, 
-							changeHalfDay: false, 
-							goOutArt: null},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 6, 
+						changeCalArt: 0, 
+						setPreClockArt: 0, 
+						changeHalfDay: false, 
+						goOutArt: null},
 					taskChoiceArt: 0,
 					supportWplSet: 0,
 					buttonDisSet: {
@@ -159,14 +145,12 @@ module nts.uk.at.view.kdp010 {
 				},{
 					buttonPositionNo: 2,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 1, 
-							changeCalArt: 0, 
-							setPreClockArt: 0, 
-							changeHalfDay: false, 
-							goOutArt: null},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 1, 
+						changeCalArt: 0, 
+						setPreClockArt: 0, 
+						changeHalfDay: false, 
+						goOutArt: null},
 					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
@@ -178,14 +162,12 @@ module nts.uk.at.view.kdp010 {
 				},{
 					buttonPositionNo: 5,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 4, 
-							changeCalArt: 0, 
-							setPreClockArt: 0, 
-							changeHalfDay: false, 
-							goOutArt: 0},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 4, 
+						changeCalArt: 0, 
+						setPreClockArt: 0, 
+						changeHalfDay: false, 
+						goOutArt: 0},
 					taskChoiceArt: null,
 					supportWplSet: null,
 					buttonDisSet: {
@@ -197,14 +179,12 @@ module nts.uk.at.view.kdp010 {
 				},{
 					buttonPositionNo: 6,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 5, 
-							changeCalArt: 0, 
-							setPreClockArt: 0, 
-							changeHalfDay: false, 
-							goOutArt: null},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 5, 
+						changeCalArt: 0, 
+						setPreClockArt: 0, 
+						changeHalfDay: false, 
+						goOutArt: null},
 					taskChoiceArt: null,
 					supportWplSet: null,
 					buttonDisSet: {
@@ -220,14 +200,12 @@ module nts.uk.at.view.kdp010 {
 				{
 					buttonPositionNo: 1,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 6, 
-							changeCalArt: 0, 
-							setPreClockArt: 0, 
-							changeHalfDay: false, 
-							goOutArt: null},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 6, 
+						changeCalArt: 0, 
+						setPreClockArt: 0, 
+						changeHalfDay: false, 
+						goOutArt: null},
 					taskChoiceArt: 0,
 					supportWplSet: 0,
 					buttonDisSet: {
@@ -239,14 +217,12 @@ module nts.uk.at.view.kdp010 {
 				},{
 					buttonPositionNo: 2,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 1, 
-							changeCalArt: 0, 
-							setPreClockArt: 0, 
-							changeHalfDay: false, 
-							goOutArt: null},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 1, 
+						changeCalArt: 0, 
+						setPreClockArt: 0, 
+						changeHalfDay: false, 
+						goOutArt: null},
 					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
@@ -258,14 +234,12 @@ module nts.uk.at.view.kdp010 {
 				},{
 					buttonPositionNo: 6,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 8, 
-							changeCalArt: 0, 
-							setPreClockArt: 0, 
-							changeHalfDay: false, 
-							goOutArt: null},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 8, 
+						changeCalArt: 0, 
+						setPreClockArt: 0, 
+						changeHalfDay: false, 
+						goOutArt: null},
 					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
@@ -281,14 +255,12 @@ module nts.uk.at.view.kdp010 {
 				{
 					buttonPositionNo: 1,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 0, 
-							changeCalArt: 0, 
-							setPreClockArt: 0, 
-							changeHalfDay: false, 
-							goOutArt: null},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 0, 
+						changeCalArt: 0, 
+						setPreClockArt: 0, 
+						changeHalfDay: false, 
+						goOutArt: null},
 					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
@@ -300,14 +272,12 @@ module nts.uk.at.view.kdp010 {
 				},{
 					buttonPositionNo: 2,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 1, 
-							changeCalArt: 0, 
-							setPreClockArt: 0, 
-							changeHalfDay: false, 
-							goOutArt: null},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 1, 
+						changeCalArt: 0, 
+						setPreClockArt: 0, 
+						changeHalfDay: false, 
+						goOutArt: null},
 					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
@@ -319,14 +289,12 @@ module nts.uk.at.view.kdp010 {
 				},{
 					buttonPositionNo: 6,
 					usrArt: 1,
-					buttonType: {
-						stampType: {
-							changeClockArt: 6, 
-							changeCalArt: 0, 
-							setPreClockArt: 0, 
-							changeHalfDay: false, 
-							goOutArt: null},
-						reservationArt: 0},
+					stampType: {
+						changeClockArt: 6, 
+						changeCalArt: 0, 
+						setPreClockArt: 0, 
+						changeHalfDay: false, 
+						goOutArt: null},
 					taskChoiceArt: 0,
 					supportWplSet: 1,
 					buttonDisSet: {

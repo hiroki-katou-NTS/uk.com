@@ -89,20 +89,21 @@ export module model {
 
         usrArt: number;
 
-        buttonType: IButtonTypeDto;
-
+        //buttonType: IButtonTypeDto;
+        stampType: IStampTypeDto;
+        
         icon: string;
 
         taskChoiceArt: number;
     }
 
-    export interface IButtonTypeDto {
-        /** 予約区分 */
-        reservationArt: number;
-
-        /** 打刻種類 */
-        stampType: IStampTypeDto;
-    }
+    // export interface IButtonTypeDto {
+    //     /** 予約区分 */
+	//     reservationArt: number;
+        
+    //     /** 打刻種類 */
+    //     stampType: IStampTypeDto;
+    // }
 
     export interface IStampTypeDto {
         /** 勤務種類を半休に変更する */

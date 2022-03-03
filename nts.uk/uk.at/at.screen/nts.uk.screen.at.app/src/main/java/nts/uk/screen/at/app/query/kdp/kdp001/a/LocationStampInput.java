@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.query.kdp.kdp001.a;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -36,9 +38,11 @@ public class LocationStampInput {
 		WorkLocation workLocation = optWorkLocation.get();
 
 		dto.setWorkLocationName(workLocation.getWorkLocationName().toString());
-		
+
 		if (workLocation.getWorkplace().isPresent()) {
-			dto.getWorkpalceId().add(workLocation.getWorkplace().get().getWorkpalceId());
+			List<String> workPlaceIDs = new ArrayList<>();
+			workPlaceIDs.add(workLocation.getWorkplace().get().getWorkpalceId());
+			dto.setWorkpalceId(workPlaceIDs);
 		}
 
 		return dto;

@@ -3107,6 +3107,8 @@ public class ProgramsManager {
 
     public static final Program KMP001I = new Program(WebAppId.AT, ProgramIdConsts.KMP001I, "KMP001_160",
             "/view/kmp/001/i/index.xhtml");
+    public static final Program KMP001J = new Program(WebAppId.AT, ProgramIdConsts.KMP001J, "KMP001_175",
+            "/view/kmp/001/j/index.xhtml");
     /**
      * KDP001
      */
