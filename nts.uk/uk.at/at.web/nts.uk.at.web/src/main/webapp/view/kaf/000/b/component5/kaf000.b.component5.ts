@@ -3,8 +3,8 @@ module nts.uk.at.view.kaf000.b.component5.viewmodel {
     @component({
         name: 'kaf000-b-component5',
         template: `
-            <div id="kaf000-b-component5">
-                <div class="table item" data-bind="if: prePostAtrDisp">
+            <div id="kaf000-b-component5" data-bind="if: prePostAtrDisp">
+                <div class="table item">
                     <div class="cell cm-column">
                         <div class="cell valign-center" data-bind="ntsFormLabel:{required: true}, text: $i18n('KAF000_46')"></div>
                     </div>

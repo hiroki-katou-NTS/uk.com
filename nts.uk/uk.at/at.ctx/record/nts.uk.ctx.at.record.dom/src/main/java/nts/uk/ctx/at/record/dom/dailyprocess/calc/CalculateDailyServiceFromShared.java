@@ -23,18 +23,10 @@ public class CalculateDailyServiceFromShared implements CalculateDailyRecordServ
 	private CalculateDailyRecordServiceCenter center;
 	
 	@Override
-	public List<IntegrationOfDaily> calculatePassCompanySetting(
-			CalculateOption calcOption,
-			List<IntegrationOfDaily> integrationOfDailys,
-			ExecutionType reCalcAtr){
-		val companyCommonSetting = commonCompanySettingForCalc.getCompanySetting();
-		return center.calculatePassCompanySetting(calcOption, integrationOfDailys, Optional.ofNullable(companyCommonSetting), reCalcAtr);
-	}
-
-	@Override
 	public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
 			List<IntegrationOfDaily> integrationOfDaily) {
-		return center.calculateForSchedule(calcOption, integrationOfDaily, Optional.empty());
+		val companyCommonSetting = commonCompanySettingForCalc.getCompanySetting();
+		return center.calculateForSchedule(calcOption, integrationOfDaily, Optional.ofNullable(companyCommonSetting));
 	}
 
 }

@@ -18,8 +18,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		<div id="kaf005-b">
 			<div id="contents-area"
 				style="background-color: inherit; height: calc(100vh - 137px);">
-				<div class="two-panel">
-					<div class="left-panel">
+				<div class="two-panel" style="width: 1260px;">
+					<div class="left-panel" style="width: calc(1260px - 388px);">
 						<div class="form-header table">
 							<div class="cell" style="vertical-align: middle;">
 								<div
@@ -93,7 +93,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 										
 						</div>
 					</div>
-					<div class="right-panel">
+					<div class="right-panel" style="width: 388px;">
 						<div data-bind="component: { name: 'kaf000-b-component1', 
 								params: {
 									appType: appType,

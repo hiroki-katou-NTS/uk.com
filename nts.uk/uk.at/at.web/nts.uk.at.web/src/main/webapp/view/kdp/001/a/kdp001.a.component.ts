@@ -326,6 +326,7 @@ module nts.uk.ui.kdp001.a {
                     width: 448px;
                     margin: 5px auto 20px auto;
                     border-radius: 3px;
+                    position: inherit;
                 }
                 .kdp-001-a-potal.widget-content table {
                     width: 100%;

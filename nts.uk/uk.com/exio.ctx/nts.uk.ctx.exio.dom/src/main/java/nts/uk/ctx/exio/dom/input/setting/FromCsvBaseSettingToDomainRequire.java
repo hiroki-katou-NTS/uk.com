@@ -7,7 +7,7 @@ import java.util.Optional;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 
 public interface FromCsvBaseSettingToDomainRequire {
-	Optional<List<String>> createBaseCsvInfo(ExternalImportCsvFileInfo fileInfo);
+	Optional<List<BaseCsvInfoDto>> createBaseCsvInfo(ExternalImportCsvFileInfo fileInfo);
 
 	Map<Integer, List<String>> readBaseCsvWithFirstData(ExternalImportCsvFileInfo fileInfo);
 }

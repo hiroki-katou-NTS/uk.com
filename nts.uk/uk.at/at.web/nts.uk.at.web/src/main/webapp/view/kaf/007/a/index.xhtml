@@ -50,84 +50,80 @@
 			<div style="display: inline-block; position: absolute; z-index: 10; margin-left: 70px;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
 			<div id="contents-area" style="background-color: inherit;">
 				<div class="two-panel" style="height: 100%; width: 1260px">
-					<div class="left-panel" style="width: calc(1260px - 388px); padding-bottom: 5px; height: inherit;">
-						<div style="border: 1px solid #CCC; height: inherit; background-color: #fff; padding: 0 10px; overflow-y: auto; overflow-x: hidden;">
-							<div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
-								<div class="cell" style="vertical-align: middle;">
-									<div data-bind="component: { name: 'kaf000-a-component2',
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput,
-															isAgentMode: isAgentMode
-					                                          } }"></div>
-								</div>
-								<div class="cell" style="text-align: right; vertical-align: middle;">
-									<div data-bind="component: { name: 'kaf000-a-component6',
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-								</div>
+					<div class="left-panel" style="width: calc(1260px - 388px); padding-bottom: 5px;">
+						<div class="table form-header">
+							<div class="cell" style="vertical-align: middle;">
+								<div data-bind="component: { name: 'kaf000-a-component2',
+													params: {
+														appType: appType,
+														application: application,
+														appDispInfoStartupOutput: appDispInfoStartupOutput,
+														isAgentMode: isAgentMode
+															} }"></div>
 							</div>
-							<div class="mv-13" data-bind="component: { name: 'kaf000-a-component3', 
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-							<div class="mv-13" data-bind="component: { name: 'kaf000-a-component4', 
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-							<div class="mv-13" data-bind="component: { name: 'kaf007-share', 
-														params: {
-															model: model,
-															mode: 0,
-															appWorkChange: appWorkChange,
-															reflectWorkChange: reflectWorkChange,
-															isStraightBack: isStraightBack,
-															isStraightGo: isStraightGo
-														} }">
+							<div class="cell" style="text-align: right; vertical-align: middle;">
+								<div data-bind="component: { name: 'kaf000-a-component6',
+													params: {
+														appType: appType,
+														application: application,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
 							</div>
-							<div class="mv-13" data-bind="component: { name: 'kaf000-a-component5', 
+						</div>
+						<div class="mv-13" data-bind="component: { name: 'kaf000-a-component3', 
+													params: {
+														appType: appType,
+														application: application,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
+						<div class="mv-13" data-bind="component: { name: 'kaf000-a-component4', 
+													params: {
+														appType: appType,
+														application: application,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
+						<div class="mv-13" data-bind="component: { name: 'kaf007-share', 
+													params: {
+														model: model,
+														mode: 0,
+														appWorkChange: appWorkChange,
+														reflectWorkChange: reflectWorkChange,
+														isStraightBack: isStraightBack,
+														isStraightGo: isStraightGo
+													} }">
+						</div>
+						<div class="mv-13" data-bind="component: { name: 'kaf000-a-component5', 
+													params: {
+														appType: appType,
+														application: application,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
+						<div style="text-align: center; padding-top: 20px;">
+							<div style="padding-bottom: 5px;">
+								<button style="width: 300px;" class="proceed x-large" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KAF007_54')}</button>
+							</div>
+							<div>
+								<div data-bind="component: { name: 'kaf000-a-component7', 
 														params: {
 															appType: appType,
-															application: application,
+															checkBoxValue: isSendMail,
 															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-							<div style="text-align: center; padding-top: 20px;">
-								<div style="padding-bottom: 5px;">
-									<button style="width: 300px;" class="proceed x-large" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KAF007_54')}</button>
-								</div>
-								<div>
-									<div data-bind="component: { name: 'kaf000-a-component7', 
-															params: {
-																appType: appType,
-																checkBoxValue: isSendMail,
-																appDispInfoStartupOutput: appDispInfoStartupOutput
-															} }" style="display: inline-block;"></div>
-								</div>
+														} }" style="display: inline-block;"></div>
 							</div>
 						</div>
 					</div>
-					<div class="right-panel" style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
-						<div style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden;">
-							<div  data-bind="component: { name: 'kaf000-a-component1',
-														params: {
-															appType: appType,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-							<div data-bind="component: { name: 'kaf000-a-component8',
-														params: {
-															appType: appType,
-															application: application,
-															appDispInfoStartupOutput: appDispInfoStartupOutput
-														} }"></div>
-						</div>
+					<div class="right-panel" style="width: 388px; padding-bottom: 5px; padding-right: 0px">
+						<div  data-bind="component: { name: 'kaf000-a-component1',
+													params: {
+														appType: appType,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
+						<div data-bind="component: { name: 'kaf000-a-component8',
+													params: {
+														appType: appType,
+														application: application,
+														appDispInfoStartupOutput: appDispInfoStartupOutput
+													} }"></div>
 					</div>
 				</div>
 			</div>

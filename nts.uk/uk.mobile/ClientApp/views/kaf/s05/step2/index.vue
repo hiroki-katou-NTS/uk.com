@@ -125,7 +125,7 @@
       </div>
     </div>
 
-    <div>
+    <div v-if="$appContext.overTimeClf != 3">
       <kafs00-c
         v-if="$appContext.kaf000_C_Params != null"
         v-bind:params="$appContext.kaf000_C_Params"

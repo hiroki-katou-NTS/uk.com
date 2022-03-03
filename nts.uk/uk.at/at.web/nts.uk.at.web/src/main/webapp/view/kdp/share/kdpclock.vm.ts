@@ -30,11 +30,13 @@ module nts.uk.at.view.kdp.share {
 			
 			.time-container .time .date .ymd {
 				font-size: 32px;
+				font-family: Quicksand !important;
 			}
 			
 			.time-container .time .date .ddd {
 				font-size: 26px;
-				font-family: "Noto Sans JP" !important;
+				font-family: Quicksand !important;
+				font-weight: bold;
 			}
 
 			.time-container .time .hour-second {
@@ -45,6 +47,7 @@ module nts.uk.at.view.kdp.share {
 				z-index: 1;
 				font-size: 80px;
 				line-height: 80px;
+				font-family: Quicksand !important;
 			}
 			.time-container .time .second {
 				font-size: 50px;
@@ -52,6 +55,7 @@ module nts.uk.at.view.kdp.share {
 				position: relative;
 				left: 16px;
 				z-index: 1;
+				font-family: Quicksand !important;
 			}
 
 			.time-container .button-group {

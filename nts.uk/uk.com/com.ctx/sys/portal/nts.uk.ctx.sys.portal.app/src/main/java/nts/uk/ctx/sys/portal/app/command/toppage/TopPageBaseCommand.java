@@ -18,6 +18,12 @@ public class TopPageBaseCommand implements Toppage.MementoSetter, Toppage.Mement
 	private String cid;
 	/** 名称 */
 	private String topPageName;
+	/** 枠レイアウト1 */
+	private Integer frameLayout1;
+	/** 枠レイアウト2 */
+	private Integer frameLayout2;
+	/** 枠レイアウト3 */
+	private Integer frameLayout3;
 	
 	@Override
 	public BigDecimal getLayoutDisp() {

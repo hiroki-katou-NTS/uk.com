@@ -331,7 +331,7 @@ public class KTG004Finder {
 		if (subHdManage) {
 		    CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(cid);
 		    if (compensatoryLeaveComSetting != null) {
-		        remainNumber.setSubHolidayTimeManage(compensatoryLeaveComSetting.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value);
+		        remainNumber.setSubHolidayTimeManage(compensatoryLeaveComSetting.getTimeVacationDigestUnit().getManage().value);
 		    }
 		}
 		
