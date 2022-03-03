@@ -110,6 +110,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         listPersonalConditions     = [];
         displayControlPersonalCond = {};
         listDateInfo     = [];
+        detailLeftMostDeco = []; // ver6 _ Deco A8
         
         // shift mode
         detailContentDecoNormal = [];  // deco ở mode edit + background normal
@@ -983,6 +984,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let detailContentDecoModeConfirm = [];
             let horizontalDetailColumns: any = [];
             let htmlToolTip       = [];
+            let detailLeftMostDeco = [];
             
             // Deco ở mode shift
             let detailContentDecoNormal = [];  // deco ở mode edit + background normal
@@ -1001,6 +1003,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.detailContentDecoShift = [];   // deco ở mode edit + background shift
             self.detailContentDecoModeConfirmNormal = []; // deco ở mode confirm + background normal
             self.detailContentDecoModeConfirmShift = [];  // deco ở mode confirm + background normal
+            self.detailLeftMostDeco = []; // deco A8 ( set background cho nhân viên support)
             
             self.tooltipShare = data.listDateInfo;
             self.listWorkTypeInfo = data.listWorkTypeInfo;
@@ -1016,7 +1019,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 leftmostDs.push({ sid: i.toString() ,employeeId: emp.employeeId, codeNameOfEmp: emp.employeeCode + ' ' + businessName });
                 
                 self.listSid.push(emp.employeeId);
-                self.listEmpData.push({ id: emp.employeeId, code: emp.employeeCode, name : businessName });
+                self.listEmpData.push({ id: emp.employeeId, code: emp.employeeCode, name : businessName, supportType : emp.supportType });
                 let listWorkScheduleInforByEmp: Array<IWorkScheduleWorkInforDto> = _.filter(data.listWorkScheduleWorkInfor, function(workSchedul: IWorkScheduleWorkInforDto) { return workSchedul.employeeId === emp.employeeId });
                 let listWorkScheduleShiftByEmp: Array<IWorkScheduleShiftInforDto> = _.filter(data.listWorkScheduleShift, function(workSchedul: IWorkScheduleShiftInforDto) { return workSchedul.employeeId === emp.employeeId });
                 // set data middle
@@ -1029,6 +1032,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     rank: _.isNil(personalCond[0].rankName) ? '' : personalCond[0].rankName, 
                     qualification: _.isNil(personalCond[0].licenseClassification) ? '' : personalCond[0].licenseClassification });
                 }
+                
+                // set Deco phần leftMost ver6
+                if(emp.supportType == SupportType.GO_TO_SUPPORT || emp.supportType == SupportType.COME_TO_SUPPORT)
+                    detailLeftMostDeco.push(new CellColor('codeNameOfEmp', rowId, "bg-schedule-support", 0));
+                
                 
                 // set data to detailContent : datasource va deco
                 if (viewMode == ViewMode.SHIFT) {
@@ -1785,7 +1793,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 detailContentDecoNormal: detailContentDecoNormal,  // deco ở mode edit + background normal
                 detailContentDecoShift: detailContentDecoShift,   // deco ở mode edit + background shift
                 detailContentDecoModeConfirmNormal: detailContentDecoModeConfirmNormal, // deco ở mode confirm + background normal
-                detailContentDecoModeConfirmShift: detailContentDecoModeConfirmShift  // deco ở mode confirm + background normal
+                detailContentDecoModeConfirmShift: detailContentDecoModeConfirmShift,  // deco ở mode confirm + background normal
+                detailLeftMostDeco: detailLeftMostDeco
             };
             
             self.detailContentDs = detailContentDs;
@@ -1798,6 +1807,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.detailContentDecoShift = detailContentDecoShift;   // deco ở mode edit + background shift
             self.detailContentDecoModeConfirmNormal = detailContentDecoModeConfirmNormal; // deco ở mode confirm + background normal
             self.detailContentDecoModeConfirmShift = detailContentDecoModeConfirmShift;  // deco ở mode confirm + background normal
+            self.detailLeftMostDeco = detailLeftMostDeco;
 			
 			if(data.aggreratePersonal) {
 				self.dataAggreratePersonal = data.aggreratePersonal;	
@@ -2344,6 +2354,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let leftmostHeader = {};
             let leftmostContent = {};
             let leftmostDs = dataBindGrid.leftmostDs;
+            let detailLeftMostDeco = dataBindGrid.detailLeftMostDeco;
 
             leftmostColumns = [{
                 key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8 +"px",
@@ -2360,7 +2371,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             leftmostContent = {
                 columns: leftmostColumns,
                 dataSource: leftmostDs,
-                primaryKey: "sid"
+                primaryKey: "sid",
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: detailLeftMostDeco
+                }]
             };
 
             // Phần middle
@@ -4367,7 +4382,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 unit:             self.userInfor.unit,
                 getActualData   : !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false, 
                 listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst, 
-                sids: self.listSid(),
+                sids: [],
                 modePeriod : self. selectedDisplayPeriod(),
                 day: self.closeDate.day, 
                 isLastDay: self.closeDate.lastDay,
@@ -4431,7 +4446,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 unit: self.userInfor.unit,
                 getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
                 listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst,
-                sids: self.listSid(),
+                sids: [],
                 modePeriod: self.selectedDisplayPeriod(),
                 day: self.closeDate.day,
                 isLastDay: self.closeDate.lastDay,
@@ -5798,8 +5813,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (funcNo7_WorkPlace == false || data.dataBasicDto.useWorkAvailabilityAtr == false)
                 document.getElementById("A1_7").remove();
 
-            // btn A1_8 職9  -  ※2 (tạm thời chưa đối ứng thằng ※2 này)
-            if (funcNo9_WorkPlace == false)
+            // btn A1_8 職9  -  ※2 (ver6)
+            if (funcNo9_WorkPlace == false || data.dataBasicDto.useSupportSchedule == false )
                 document.getElementById("A1_8").remove();
 
             // btn A1_9 職6
@@ -6496,7 +6511,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     interface IEmpInfo {
         employeeId: string,
         employeeCode: string,
-        businessName: string
+        businessName: string,
+        supportType: number
     }
 
     interface IPersonalConditions {
@@ -6593,7 +6609,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         conditionAbc1: boolean;
         conditionAbc2: boolean;
         workTimeForm: any;
-        condTargetdate: boolean
+        condTargetdate: boolean;
+        supportStatus: number;
     }
 
     interface IWorkScheduleShiftInforDto {
@@ -6611,7 +6628,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         workHolidayCls: number; // 出勤休日区分
         conditionAa1: boolean;
         conditionAa2: boolean;
-        condTargetdate: boolean
+        condTargetdate: boolean,
+        supportStatus: number;
     }
 
     interface AggreratePersonalDto {
@@ -6651,6 +6669,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         SupportTo = 5, // 終日応援先
     }
 
+    enum SupportStatus {
+        DO_NOT_GO = 0,    // 応援に行かない
+        DO_NOT_COME = 1,  // 応援に来ない
+        GO_ALLDAY = 2,    // 応援に行く(終日)
+        GO_TIMEZONE = 3,  // 応援に行く(時間帯)
+        COME_ALLDAY = 4,  // 応援に来る(終日)
+        COME_TIMEZONE = 5 // 応援に来る(時間帯)
+    }
+    
+    enum SupportType {
+        DO_NOT_GOTOSUPPORT = 0,  
+        GO_TO_SUPPORT = 1,
+        COME_TO_SUPPORT = 2  
+    }
+    
     interface IUserInfor {
         disPlayFormat: string;
         backgroundColor: number; // 背景色
