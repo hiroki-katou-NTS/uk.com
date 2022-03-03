@@ -40,6 +40,7 @@
 	width: 800px;
 	margin-left: 35px;
 }
+.rightContent .text{ white-space: nowrap; }
 .column1 { width: 120px; }
 .column2 { width: 75px; }
 #tab-panel { margin-top: 5px; }
@@ -78,7 +79,8 @@ button.nts-switch-button {
 	padding-left: 10px;
 	padding-right: 10px;
 	height: 20px;
-	background-color: #C7F391;
+	background-color: #6A6A6A;
+	color:white;
 }
 #table-panel-1 > tbody > tr > td:NTH-CHILD(1) {
 	padding: 2px;
@@ -99,7 +101,8 @@ button.nts-switch-button {
 	padding-left: 10px;
 	padding-right: 10px;
 	height: 20px;
-	background-color: #C7F391;
+	background-color: #6A6A6A;
+	color:white;
 }
 #table-panel-2 > tbody > tr > td:NTH-CHILD(1) {
 	padding: 2px;

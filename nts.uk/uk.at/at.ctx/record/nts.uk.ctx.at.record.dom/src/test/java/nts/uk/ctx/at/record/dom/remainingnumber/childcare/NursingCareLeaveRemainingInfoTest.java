@@ -20,6 +20,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimitPeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.FamilyInfo;
@@ -250,7 +252,8 @@ public class NursingCareLeaveRemainingInfoTest {
 				new MonthDay(4, 1), //startMonthDay,
 				maxPersonSetting(), //maxPersonSetting,
 				Optional.empty(), //specialHolidayFrame,
-				Optional.empty()); // workAbsence
+				Optional.empty(),// workAbsence
+				new TimeVacationDigestUnit(ManageDistinct.YES, TimeDigestiveUnit.OneHour));
 	}
 
 	// 上限日数期間

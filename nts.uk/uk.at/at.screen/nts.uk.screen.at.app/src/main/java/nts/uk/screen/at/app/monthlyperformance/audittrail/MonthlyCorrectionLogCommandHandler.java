@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
@@ -62,15 +64,35 @@ public class MonthlyCorrectionLogCommandHandler extends CommandHandler<MonthlyCo
 				itemNewMap.forEach((key, value) -> {
 					ItemValue itemNew = value;
 					ItemValue itemOld = itemOldMap.get(key);
-					if(itemNew.getValue() != null && itemOld.getValue() != null && itemNew.getValueType().isDouble()){
+					if(itemOld != null && itemNew != null && itemNew.getValue() != null && itemOld.getValue() != null && itemNew.getValueType().isDouble()){
 						itemNew.value(String.valueOf(Double.valueOf(itemNew.getValue()))).valueType(ValueType.COUNT_WITH_DECIMAL);
 						itemOld.value(String.valueOf(Double.valueOf(itemOld.getValue()))).valueType(ValueType.COUNT_WITH_DECIMAL);;
 					}
-					if (!itemNew.equals(itemOld)) {
-						MonthlyCorrectedItem item = new MonthlyCorrectedItem(itemNameMap.get(key), key, itemOld.getValue(),
-								itemNew.getValue(), convertType(itemNew.getValueType()),
-								editItems.contains(key) ? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
-						monthTarget.getCorrectedItems().add(item);
+					if (itemOld != null && itemNew != null && (itemNew.getItemId() == itemOld.getItemId())
+							&& (itemNew.getValue() != null && itemOld.getValue() != null)
+							&& !StringUtils.equals(itemNew.getValue(), itemOld.getValue())) {
+						String oldValue = itemOld.getValue();
+						String newValue = itemNew.getValue();
+						
+						// trường hợp item tính toán old và new đang bị format không giống nhau
+						if (!editItems.contains(key)) {
+							if (oldValue.contains(".") && !newValue.contains(".")) {
+								oldValue = oldValue.substring(0, oldValue.indexOf("."));
+							}
+
+							if (!oldValue.contains(".") && newValue.contains(".")) {
+								newValue = newValue.substring(0, newValue.indexOf("."));
+							}
+						}
+
+						if (!StringUtils.equals(oldValue, newValue)) {
+							MonthlyCorrectedItem item = new MonthlyCorrectedItem(itemNameMap.get(key), key,
+									oldValue,
+									newValue, 
+									convertType(itemNew.getValueType()),
+									editItems.contains(key) ? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
+							monthTarget.getCorrectedItems().add(item);
+						}
 					}
 				});
 				targets.add(monthTarget);

@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -89,7 +90,10 @@ public class OvertimeWorkMultipleTimesTest {
     @Test
     public void testCreateFixedReasonPresent() {
         OvertimeWorkMultipleTimes target = OvertimeWorkMultipleTimes.create(
-                Collections.emptyList(),
+                Arrays.asList(
+                        new OvertimeHour(new OvertimeNumber(1), new TimeSpanForCalc(new TimeWithDayAttr(300), new TimeWithDayAttr(600))),
+                        new OvertimeHour(new OvertimeNumber(2), new TimeSpanForCalc(new TimeWithDayAttr(800), new TimeWithDayAttr(1000)))
+                ),
                 Arrays.asList(
                         new OvertimeReason(new OvertimeNumber(1), Optional.of(new AppStandardReasonCode(1)), Optional.empty()),
                         new OvertimeReason(new OvertimeNumber(2), Optional.of(new AppStandardReasonCode(2)), Optional.empty())
@@ -125,7 +129,11 @@ public class OvertimeWorkMultipleTimesTest {
     @Test
     public void testCreateApplyReasonPresent() {
         OvertimeWorkMultipleTimes target = OvertimeWorkMultipleTimes.create(
-                Collections.emptyList(),
+                Arrays.asList(
+                        new OvertimeHour(new OvertimeNumber(1), new TimeSpanForCalc(new TimeWithDayAttr(300), new TimeWithDayAttr(500))),
+                        new OvertimeHour(new OvertimeNumber(2), new TimeSpanForCalc(new TimeWithDayAttr(700), new TimeWithDayAttr(900))),
+                        new OvertimeHour(new OvertimeNumber(3), new TimeSpanForCalc(new TimeWithDayAttr(1100), new TimeWithDayAttr(1300)))
+                ),
                 Arrays.asList(
                         new OvertimeReason(new OvertimeNumber(1), Optional.empty(), Optional.of(new AppReason("test 1"))),
                         new OvertimeReason(new OvertimeNumber(2), Optional.empty(), Optional.of(new AppReason("test 2"))),
@@ -281,7 +289,7 @@ public class OvertimeWorkMultipleTimesTest {
                 Collections.emptyList()
         );
 
-        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, breakTimes);
+        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, breakTimes, false);
 
         assertThat(result.size()).isEqualTo(4);
         // 休憩枠NO1：8:00~8:30
@@ -316,7 +324,7 @@ public class OvertimeWorkMultipleTimesTest {
                 Collections.emptyList()
         );
 
-        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, breakTimes);
+        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, breakTimes, false);
 
         assertThat(result.size()).isEqualTo(2);
         // 休憩枠NO1：12:00~13:00
@@ -360,6 +368,31 @@ public class OvertimeWorkMultipleTimesTest {
                         null
                 ));
 
+                require.process((IntegrationOfDaily) any, (ChangeDailyAttendance) any);
+                result = new IntegrationOfDaily(
+                        "",
+                        GeneralDate.today(),
+                        null,
+                        null,
+                        null,
+                        Optional.empty(),
+                        new ArrayList<>(),
+                        Optional.empty(),
+                        new BreakTimeOfDailyAttd(breakTimes),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        Optional.empty(),
+                        new ArrayList<>(),
+                        Optional.empty(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        Optional.empty()
+                );
+
                 require.tempCalculateOneDayAttendanceTime(calculationParams);
                 result = new IntegrationOfDaily(
                         "",
@@ -396,7 +429,7 @@ public class OvertimeWorkMultipleTimesTest {
                 Collections.emptyList()
         );
 
-        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, new ArrayList<>());
+        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, new ArrayList<>(), false);
 
         assertThat(result.size()).isEqualTo(4);
         // 休憩枠NO1：8:00~8:30
@@ -482,7 +515,7 @@ public class OvertimeWorkMultipleTimesTest {
                 Collections.emptyList()
         );
 
-        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, new ArrayList<>());
+        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, new ArrayList<>(), false);
 
         assertThat(result.size()).isEqualTo(3);
         // 休憩枠NO1：8:00~8:30
@@ -534,7 +567,7 @@ public class OvertimeWorkMultipleTimesTest {
                 Collections.emptyList()
         );
 
-        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, breakTimes);
+        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, breakTimes, false);
 
         assertThat(result.size()).isEqualTo(5);
         // 休憩枠NO1：8:00~8:30
@@ -594,7 +627,7 @@ public class OvertimeWorkMultipleTimesTest {
                 Collections.emptyList()
         );
 
-        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, breakTimes);
+        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, breakTimes, false);
 
         assertThat(result.size()).isEqualTo(6);
 
@@ -655,7 +688,7 @@ public class OvertimeWorkMultipleTimesTest {
                 Collections.emptyList()
         );
 
-        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, breakTimes);
+        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, breakTimes, false);
 
         assertThat(result.size()).isEqualTo(4);
         // 休憩枠NO1：8:00~8:30
@@ -708,7 +741,7 @@ public class OvertimeWorkMultipleTimesTest {
                 Collections.emptyList()
         );
 
-        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, breakTimes);
+        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, breakTimes, false);
 
         assertThat(result.size()).isEqualTo(2);
 

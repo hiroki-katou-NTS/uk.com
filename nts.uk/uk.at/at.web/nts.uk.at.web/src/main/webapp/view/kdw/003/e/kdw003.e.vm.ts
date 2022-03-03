@@ -25,7 +25,7 @@ module nts.uk.at.view.kdw003.e.viewmodel {
             for (var i = 0; i < dataShare.listValue.length; i++) {
                 temp.push(new ItemModel(dataShare.listValue[i].value, dataShare.listValue[i].fieldName, ""));
             }
-            self.itemList(temp);
+            self.itemList(_.sortBy(temp, ['code']));
             self.dateRefer(moment(dataShare.date, "YYYY/MM/DD").format("YYYY/MM/DD(dd)"));
             self.dateJump(moment(dataShare.date, "YYYY/MM/DD"))
             dfd.resolve();

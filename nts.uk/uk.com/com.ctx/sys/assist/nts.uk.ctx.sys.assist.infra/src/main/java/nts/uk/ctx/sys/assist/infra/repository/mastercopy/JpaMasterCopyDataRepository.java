@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
@@ -29,11 +30,15 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
 import nts.uk.ctx.sys.assist.dom.mastercopy.SystemType;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
+import nts.uk.ctx.sys.assist.dom.mastercopy.handler.KeyValueHolder;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyCategory;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory_;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyData;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyDataPK_;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData_;
+import nts.uk.shr.com.company.CompanyId;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.tenant.TenantCode;
 
 
 @Stateless
@@ -58,18 +63,23 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository#doCopy(java.lang.String, nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod, java.lang.String)
 	 */
 	@Override
-	public void doCopy(String tableName, List<String> keys, CopyMethod copyMethod, String cotnractCode, String companyId, boolean isOnlyCid) {
+	public void doCopy(
+			String tableName,
+			List<String> keys,
+			CopyMethod copyMethod,
+			CompanyId companyId,
+			KeyValueHolder keyValueHolder) {
 		//case 0,1
-        DataCopyHandler.DataCopyHandlerBuilder.aDataCopyHandler()
-                .withOnlyCid(isOnlyCid)
-                .withCompanyId(cotnractCode, companyId)
-                .withCopyMethod(copyMethod)
-                .withEntityManager(getEntityManager())
-                .withKeys(keys)
-                .withTableName(tableName)
-                .buildQuery()
-                .build()
-                .doCopy();
+        val handler = new DataCopyHandler(
+				getEntityManager(),
+				copyMethod,
+				companyId,
+				AppContexts.user().employeeCode(),
+				keys,
+				keyValueHolder,
+				tableName);
+
+		handler.doCopy();
 	}
 
 	@Override

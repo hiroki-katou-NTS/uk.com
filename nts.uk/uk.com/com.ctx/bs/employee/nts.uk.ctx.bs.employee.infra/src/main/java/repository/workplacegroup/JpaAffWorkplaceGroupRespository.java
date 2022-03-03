@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import entity.workplacegroup.BsymtAffWorkPlaceGroup;
 import entity.workplacegroup.BsymtWorkplaceGroup;
@@ -189,6 +191,7 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	 * @return
 	 */
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AffWorkplaceGroup> getByListWKPID(String CID, List<String> WKPID) {
 		Set<String> lstWKPID = WKPID.stream().map(x -> x).collect(Collectors.toSet());
 		return this.queryProxy().query(SELECT_BY_CID_LIST_WPID, BsymtAffWorkPlaceGroup.class).setParameter("CID", CID)

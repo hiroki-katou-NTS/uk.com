@@ -389,7 +389,8 @@ public class TotalWorkingTime {
 											+ excesstime.calcOverTime().valueAsMinutes()
 											+ excesstime.calcWorkHolidayTime().valueAsMinutes()
 											+ tempTime.totalTemporaryFrameTime()
-											+ flexTime);
+											+ flexTime
+											+ excesstime.getOverTimeWork().map(o -> o.getIrregularWithinPrescribedOverTimeWork().valueAsMinutes()).orElse(0));
 		
 		//実働時間の計算
 		boolean isOOtsukaIWMode = decisionIWOOtsukaMode(workType,recordWorkTimeCode,recordClass);
@@ -410,7 +411,7 @@ public class TotalWorkingTime {
 		
 		//実働時間
 		val actualTime = new AttendanceTime(withinStatutoryTimeOfDaily.getActualWorkTime().valueAsMinutes()
-											+ withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().valueAsMinutes() 
+											+ withinStatutoryTimeOfDaily.getActualWithinPremiumTime().valueAsMinutes() 
 											+ excesstime.calcOverTime().valueAsMinutes()
 											+ excesstime.calcWorkHolidayTime().valueAsMinutes()
 											+ tempTime.totalTemporaryFrameTime()
@@ -653,18 +654,20 @@ public class TotalWorkingTime {
 	
 	/**
 	 * 手修正再計算用
-	 * 残業時間＋フレ＋振替時間を求める
+	 * 残業時間＋フレ＋振替時間＋変形法定内残業を求める
 	 * @return
 	 */
 	public int calcOverTime() {
 		int removeFlexTime = 0;
 		int flexTime = 0;
+		int irregular = 0;
 		if(this.excessOfStatutoryTimeOfDaily.getOverTimeWork().isPresent()) {
 			removeFlexTime = calcOverTimeRemoveFlex();
 			flexTime = this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime().getTime().valueAsMinutes();
 			flexTime = flexTime > 0 ? flexTime : 0;
+			irregular = this.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getIrregularWithinPrescribedOverTimeWork().valueAsMinutes();
 		}
-		return removeFlexTime + flexTime;
+		return removeFlexTime + flexTime + irregular;
 	}
 	
 	public int calcOverTimeRemoveFlex() {

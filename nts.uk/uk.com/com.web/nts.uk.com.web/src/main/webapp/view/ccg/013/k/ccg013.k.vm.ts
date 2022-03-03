@@ -29,7 +29,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                     headerText: nts.uk.resource.getText("CCG013_51"),
                     key: 'displayOrder',
                     width: 80,
-                    template: '<div style="text-align: right">${displayOrder}</div>',
+                    template: '<div>${displayOrder}</div>',
                 },
                 { headerText: nts.uk.resource.getText("CCG013_52"), key: 'targetItems', width: 150 },
                 {
