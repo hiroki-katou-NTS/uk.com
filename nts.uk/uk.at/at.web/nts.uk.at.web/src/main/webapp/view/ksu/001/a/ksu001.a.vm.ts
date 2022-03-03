@@ -82,6 +82,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         arrDay: Time[] = [];
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
         listEmpData = [];
+        listSidByOrg = [];
         
         listCheckNeededOfWorkTime: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -1020,6 +1021,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.listSid.push(emp.employeeId);
                 self.listEmpData.push({ id: emp.employeeId, code: emp.employeeCode, name : businessName, supportType : emp.supportType });
+                if(emp.supportType == SupportType.DO_NOT_GOTOSUPPORT)
+                    self.listSidByOrg.push(emp.employeeId);
+                 
                 let listWorkScheduleInforByEmp: Array<IWorkScheduleWorkInforDto> = _.filter(data.listWorkScheduleWorkInfor, function(workSchedul: IWorkScheduleWorkInforDto) { return workSchedul.employeeId === emp.employeeId });
                 let listWorkScheduleShiftByEmp: Array<IWorkScheduleShiftInforDto> = _.filter(data.listWorkScheduleShift, function(workSchedul: IWorkScheduleShiftInforDto) { return workSchedul.employeeId === emp.employeeId });
                 // set data middle
