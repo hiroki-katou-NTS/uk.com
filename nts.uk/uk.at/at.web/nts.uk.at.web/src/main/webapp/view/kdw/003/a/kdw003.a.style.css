@@ -297,7 +297,7 @@
 #monthly-data-view {
 	margin-top: 10px;
 	width: calc(100% - 800px);
-	overflow-x: scroll;
+	/* overflow-x: scroll; */
 }
 
 #monthly-data-view #miGrid_fixedContainerScroller {
