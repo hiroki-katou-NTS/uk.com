@@ -5425,7 +5425,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setShared('dataShareDialogG', {
                 startDate   : moment(self.dtPrev()).format('YYYY/MM/DD'),
                 endDate     : moment(self.dtAft()).format('YYYY/MM/DD'),
-                employeeIDs : self.listSid(),
+                employeeIDs : self.listSidByOrg,
             });
             $('#A1_7_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modeless("/view/ksu/001/g/index.xhtml").onClosed(() => {});
