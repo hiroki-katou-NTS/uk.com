@@ -1,11 +1,13 @@
 package nts.uk.ctx.exio.dom.input.validation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.DataItem;
+import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
@@ -26,7 +28,7 @@ public class ValidateData {
 	/**
 	 * 妥当な数値であるか検証する
 	 */
-	public static List<ItemError> validate(
+	public static Either<List<ItemError>, RevisedDataRecord> validate(
 			ValidateRequire require,
 			ExecutionContext context,
 			RevisedDataRecord record) {
@@ -35,14 +37,20 @@ public class ValidateData {
 		
 		for (val item : record.getItems()) {
 			
-			validateBySystem(require, context, item)
-				.mapEither(err -> validateByUserCondition(require, context, item))
-				.ifLeft(err -> errors.add(new ItemError(item.getItemNo(), err.getText())));
+//			validateBySystem(require, context, item)
+//				.mapEither(err -> validateEmployeeId(require, context, item))
+//				.ifLeft(err -> errors.add(new ItemError(item.getItemNo(), err.getText())));
+//				.mapEither(err -> validateByUserCondition(require, context, item))
 		}
 
-		return errors;
+		return Either.left(Collections.emptyList());
 	}
 
+//	private DataItemList validateEmployeeId(ValidateRequire require,
+//																				 DataItemList record) {
+//		
+//	}
+	
 	private static Either<ErrorMessage, Void> validateBySystem(
 			ValidateRequire require,
 			ExecutionContext context,
