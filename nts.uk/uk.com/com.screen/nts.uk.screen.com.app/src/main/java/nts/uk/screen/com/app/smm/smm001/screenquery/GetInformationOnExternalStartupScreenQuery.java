@@ -41,10 +41,7 @@ public class GetInformationOnExternalStartupScreenQuery {
 	StdOutputCondSetRepository condSetRepository;
 
 	public InitialStartupOutputDto get(Integer paymentCode) {
-		/**
-		 * Function: 会社IDを指定してSM連携出力設定を取得する Input: 契約コード、会社ID Return:
-		 * Object＜Smile連携出力設定＞
-		 */
+		// Function: 会社IDを指定してSM連携出力設定を取得する 
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
 		Optional<SmileLinkageOutputSetting> smileLinkageOutputSetting = smileLinkageOutputSettingRepository.get(contractCode,
@@ -60,9 +57,7 @@ public class GetInformationOnExternalStartupScreenQuery {
 							: null);
 		}
 
-		/**
-		 * Function: 会社IDを指定して連動支払変換を取得する Input: 契約コード、会社ID Return: List＜出力条件設定（定型）＞
-		 */
+		// 会社IDを指定して連動支払変換を取得する
 		List<StdOutputCondSet> outputConditionSettings = condSetRepository.getStdOutCondSetByCid(companyId);
 		List<StdOutputCondSetDto> stdOutputCondSetDtos = outputConditionSettings.stream()
 				.map(e -> new StdOutputCondSetDto(e.getConditionSetCode().v(), e.getConditionSetName().v()))
@@ -75,9 +70,7 @@ public class GetInformationOnExternalStartupScreenQuery {
 				.map(e -> new EmploymentAndLinkedMonthSettingDto(e.getInterlockingMonthAdjustment().value, e.getScd()))
 				.collect(Collectors.toList());
 
-		/**
-		 * List＜雇用コード、雇用名称＞
-		 */
+		// List＜雇用コード、雇用名称＞
 		List<Employment> employments = employmentRepository.findAll(companyId);
 		List<EmploymentDto> employmentDtos = employments.stream()
 				.map(e -> new EmploymentDto(e.getEmploymentCode().v(), e.getEmploymentName().v()))

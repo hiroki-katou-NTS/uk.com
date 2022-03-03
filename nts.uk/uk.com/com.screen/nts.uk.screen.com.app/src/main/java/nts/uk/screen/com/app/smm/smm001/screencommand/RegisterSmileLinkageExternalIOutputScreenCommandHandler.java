@@ -37,9 +37,8 @@ public class RegisterSmileLinkageExternalIOutputScreenCommandHandler
 	@Override
 	protected void handle(CommandHandlerContext<RegisterSmileLinkageExternalIOutputScreenCommand> context) {
 		RegisterSmileLinkageExternalIOutputScreenCommand command = context.getCommand();
-		/**
-		 * get 契約コード、会社ID Object＜Smile連携出力設定＞
-		 */
+		
+		// get 契約コード、会社ID Object＜Smile連携出力設定＞
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
 		Optional<SmileLinkageOutputSetting> smileLinkageOutputSetting = smileLinkageOutputSettingRepository.get(contractCode,
@@ -52,9 +51,7 @@ public class RegisterSmileLinkageExternalIOutputScreenCommandHandler
 			smileLinkageOutputSettingRepository.update(newSmileLinkageOutputSetting);
 		}
 
-		/**
-		 * 支払コードを指定して連動支払変換を取得する 契約コード、会社ID、支払コード
-		 */
+		// 支払コードを指定して連動支払変換を取得する 契約コード、会社ID、支払コード
 		PaymentCategory paymentCategory = EnumAdaptor.valueOf(command.getPaymentCode(), PaymentCategory.class);
 		List<EmploymentAndLinkedMonthSetting> employmentAndLinkedMonthSettings = linkedPaymentConversionRepository
 				.getByPaymentCode(contractCode, companyId, paymentCategory);

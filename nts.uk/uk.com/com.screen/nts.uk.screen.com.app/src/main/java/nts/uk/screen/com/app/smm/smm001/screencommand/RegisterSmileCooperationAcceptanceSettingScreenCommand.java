@@ -16,20 +16,35 @@ import nts.uk.ctx.link.smile.dom.smilelinked.cooperationacceptance.SmileCooperat
 @Getter
 public class RegisterSmileCooperationAcceptanceSettingScreenCommand {
 	private Integer checkedOrganizationInformation;
+	
 	private Integer checkedBasicPersonnelInformation;
+	
 	private Integer checkedJobStructureInformation;
+	
 	private Integer checkedAddressInformation;
+	
 	private Integer checkedLeaveInformation;
+	
 	private Integer checkedAffiliatedMaster;
+	
 	private Integer checkedEmployeeMaster;
+	
 	private String selectedOrganizationInformation;
+	
 	private String selectedBasicPersonnelInformation;
+	
 	private String selectedJobStructureInformation;
+	
 	private String selectedAddressInformation;
+	
 	private String selectedLeaveInformation;
+	
 	private String selectedAffiliatedMaster;
+	
 	private String selectedEmployeeMaster;
+	
 	private List<Integer> listCheckedCheckbox;
+	
 	private List<String> listSelectedComboboxValue;
 
 	public List<SmileCooperationAcceptanceSetting> convertScreenCommandToListSetting() {
