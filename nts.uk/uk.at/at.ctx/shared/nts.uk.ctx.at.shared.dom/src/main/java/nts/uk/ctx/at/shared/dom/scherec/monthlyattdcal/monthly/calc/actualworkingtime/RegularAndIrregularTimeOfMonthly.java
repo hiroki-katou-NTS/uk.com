@@ -586,7 +586,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 		
 		/**　○当月の変形期間繰越時間を変形期間繰越時間に入れる　*/
 		this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(this.irregularPeriodCarryforwardsTime.getTime());
-		
+		this.irregularWorkingTime.getIrregularPeriodCarryforwardTime();
 		/** 変形基準内残業を集計する */
 		aggregateIrregularLegalOverTime(employeeId, datePeriod, monthlyCalcDailys);
 	}
@@ -693,10 +693,15 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 	 * 総労働対象時間の取得
 	 * @return 総労働対象時間
 	 */
-	public AttendanceTimeMonth getTotalWorkingTargetTime(){
+	public AttendanceTimeMonth getTotalWorkingTargetTime(YearMonth ym, WorkingSystem workingSystem, SettingRequiredByDefo defoSet) {
 		
-		return new AttendanceTimeMonth(this.weeklyTotalPremiumTime.v() + this.monthlyTotalPremiumTime.v() +
-				this.irregularWorkingTime.getTotalWorkingTargetTime().v());
+		if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK && defoSet.getDeforAggrSet().isMultiMonthSettlePeriod(ym)) {
+			
+			return new AttendanceTimeMonth(this.weeklyTotalPremiumTime.v() +
+					this.irregularWorkingTime.getTotalWorkingTargetTime().v());
+		}
+		
+		return new AttendanceTimeMonth(this.weeklyTotalPremiumTime.v() + this.monthlyTotalPremiumTime.v());
 	}
 	
 	/**

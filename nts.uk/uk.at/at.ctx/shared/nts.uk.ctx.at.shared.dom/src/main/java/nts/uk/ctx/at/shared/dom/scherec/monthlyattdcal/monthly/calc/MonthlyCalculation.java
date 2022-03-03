@@ -998,7 +998,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	public void calcTotalWorkingTime() {
 
 		this.totalWorkingTime = new AttendanceTimeMonth(this.aggregateTime.getTotalWorkingTargetTime().v()
-				+ this.actualWorkingTime.getTotalWorkingTargetTime().v());
+				+ this.actualWorkingTime.getTotalWorkingTargetTime(this.yearMonth, this.workingSystem, this.settingsByDefo).v());
 		
 		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK) 
 			this.totalWorkingTime = this.totalWorkingTime.addMinutes(this.flexTime.getTotalWorkingTargetTime().v());
