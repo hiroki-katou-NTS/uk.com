@@ -43,11 +43,11 @@ public class WorkLocationIpCanonicalization extends IndependentCanonicalization{
     @Override
     protected List<DomainDataColumn> getDomainDataKeys() {
         return Arrays.asList(
-										new DomainDataColumn(1, "WK_LOCATION_CD", DataType.STRING),
-                						new DomainDataColumn(2, "NET1", DataType.INT),
-                						new DomainDataColumn(3, "NET2", DataType.INT),
-                						new DomainDataColumn(4, "HOST1", DataType.INT),
-                						new DomainDataColumn(5, "HOST2", DataType.INT),
+										new DomainDataColumn(Items.勤務場所コード, "WK_LOCATION_CD", DataType.STRING),
+                						new DomainDataColumn(Items.NET1, "NET1", DataType.INT),
+                						new DomainDataColumn(Items.NET2, "NET2", DataType.INT),
+                						new DomainDataColumn(Items.HOST1, "HOST1", DataType.INT),
+                						new DomainDataColumn(Items.HOST2, "HOST2", DataType.INT),
                 						new DomainDataColumn(9999, "CONTRACT_CD", DataType.STRING));
     }
 
