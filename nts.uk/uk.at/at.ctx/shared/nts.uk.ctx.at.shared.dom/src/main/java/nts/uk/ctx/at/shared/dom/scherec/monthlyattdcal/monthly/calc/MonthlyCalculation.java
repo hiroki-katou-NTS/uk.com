@@ -996,12 +996,14 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	 * @param datePeriod 期間
 	 */
 	public void calcTotalWorkingTime() {
-
+		
 		this.totalWorkingTime = new AttendanceTimeMonth(this.aggregateTime.getTotalWorkingTargetTime().v()
 				+ this.actualWorkingTime.getTotalWorkingTargetTime(this.yearMonth, this.workingSystem, this.settingsByDefo).v());
 		
-		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK) 
-			this.totalWorkingTime = this.totalWorkingTime.addMinutes(this.flexTime.getTotalWorkingTargetTime().v());
+		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK) {
+			val flexTime = this.flexTime.getTotalWorkingTargetTime(this.settingsByFlex.getFlexAggrSet());
+			this.totalWorkingTime = this.totalWorkingTime.addMinutes(flexTime.v());
+		}
 	}
 	
 	/**
