@@ -14,6 +14,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 import java.util.*;
 
@@ -41,35 +42,15 @@ public class WorktimeByWorkplaceCanonicalization extends IndependentCanonicaliza
 	}
 
 	@Override
-	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
-
-		val workspace = require.getDomainWorkspace(context.getDomainId());
-
-		// 受入データ内の重複チェック
-		Set<KeyValues> importingKeys = new HashSet<>();
-
-		CanonicalizeUtil.forEachRow(require, context, revisedData -> {
-
-			IntermediateResult interm = IntermediateResult.create(revisedData);
-			// 職場コードの正準化
-			interm =  interm.optionalItem(CanonicalItem.of(Items.基準日, GeneralDate.today()));
-			val either = workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo());
-			if (either.isLeft()) {
-				require.add(ExternalImportError.of(context.getDomainId(), either.getLeft()));
-				return;
-			}
-			interm = either.getRight();
-
-			// キー重複チェック
-			KeyValues key = KeyValues.create(interm, workspace.getPkItemNos());
-			if (importingKeys.contains(key)) {
-				require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), "受入データの中にキーの重複があります。"));
-				return;
-			}
-			importingKeys.add(key);
-
-			super.canonicalize(require, context, interm, key);
-		});
+	protected Optional<IntermediateResult> canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, IntermediateResult interm) {
+		// 職場コードの正準化
+		interm =  interm.optionalItem(CanonicalItem.of(Items.基準日, GeneralDate.today()));
+		val either = workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo());
+		if (either.isLeft()) {
+			require.add(ExternalImportError.of(context.getDomainId(), either.getLeft()));
+			return Optional.empty();
+		}
+		return Optional.of(either.getRight());
 	}
 
 	@Override
