@@ -1070,7 +1070,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // điều kiện ※Aa1 editMode - background Normal                                              
                         if (cell.conditionAa1 == false) {
                             detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "xseal", 0));
-                        } else if (cell.supportCategory != SupportCategory.NotCheering) {
+                        } else if (cell.supportStatus != SupportStatus.DO_NOT_GO && cell.supportStatus != SupportStatus.DO_NOT_COME) {
                             detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0));
                         } else {
                             if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
@@ -1107,10 +1107,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
 
                         // điều kiện ※Aa2 confirmMode - background Normal                                              
-                        if (cell.conditionAa2 == false) {
+                        if (cell.conditionAa2 == false || cell.supportStatus == SupportStatus.COME_TIMEZONE || cell.supportStatus == SupportStatus.GO_ALLDAY) {
                             detailContentDecoModeConfirmNormal.push(new CellColor('_' + ymd, rowId, "xseal", 0));
-                        } else if (cell.supportCategory != SupportCategory.NotCheering) {
-                            detailContentDecoModeConfirmNormal.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0));
                         } else if (cell.confirmed == true) {
                             self.listLockCells.push({ rowIndex: rowId, columnKey: '_' + ymd, confirm: true });
                         } else {
@@ -1216,6 +1214,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         if (cell.conditionAbc1 == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
+                        } else if(cell.supportStatus != SupportStatus.DO_NOT_GO && cell.supportStatus != SupportStatus.DO_NOT_COME){
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 1));
                         } else {
                             if (cell.workTypeEditStatus != null) {
                                 if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
@@ -1279,7 +1280,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         
                         // điều kiện ※Abc2 confirmMode
-                        if (cell.conditionAbc2 == false) {
+                        if (cell.conditionAbc2 == false || cell.supportStatus == SupportStatus.COME_TIMEZONE || cell.supportStatus == SupportStatus.GO_ALLDAY) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                         } else if (cell.confirmed == true) {
@@ -1357,6 +1358,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 2));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 3));
+                            
+                        }  else if(cell.supportStatus != SupportStatus.DO_NOT_GO && cell.supportStatus != SupportStatus.DO_NOT_COME){
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 1));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 2));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 3));
+                            
                         } else {
                             if (cell.workTypeEditStatus != null) {
                                 if (cell.workTypeEditStatus.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
@@ -1450,7 +1458,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         
                         // điều kiện ※Abc2 confirmMode
-                        if (cell.conditionAbc2 == false) {
+                        if (cell.conditionAbc2 == false || cell.supportStatus == SupportStatus.COME_TIMEZONE || cell.supportStatus == SupportStatus.GO_ALLDAY) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 2));
