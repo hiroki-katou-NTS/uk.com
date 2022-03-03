@@ -41,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.GetSubHolOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetDesignatedTime;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
@@ -49,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
+import nts.uk.shr.com.context.AppContexts;
 
 public class InterimRemainOffDateCreateData {
 
@@ -773,7 +775,7 @@ public class InterimRemainOffDateCreateData {
 		String workTimeCode = determineWorkTimeCode(require, cid, sid, ymd, wkTypeCd, wkTimeCd);
 		// 所定時間帯を取得
 		// 所定時間を取得
-		Integer predTime = WorkTimeIsFluidWork.getTimeByWorkTimeTypeCode(require, workTimeCode, wkTypeCd);
+		Integer predTime = getTimeByWorkTimeTypeCode(require, cid, workTimeCode, wkTypeCd, wkClasssifi);
 		// 取得した時間を設定
 		List<OccurrenceUseDetail> occurrenceDetailData = result.getOccurrenceDetailData();
 		occurrenceDetailData.forEach(x -> {
@@ -784,6 +786,31 @@ public class InterimRemainOffDateCreateData {
 		result.setOccurrenceDetailData(occurrenceDetailData);
 	}
 
+	/**
+	 * 時間代休を作成する
+	 * 
+	 * @param workTimeCode
+	 * @param workTypeCode
+	 * @return
+	 */
+	private static Integer getTimeByWorkTimeTypeCode(RequireM9 require, String companyId, String workTimeCode, String workTypeCode,
+			WorkTypeClassification workTypeClass) {
+		//所定時間帯を取得
+		Optional<PredetemineTimeSetting> pred = require.predetemineTimeSetting(companyId, workTimeCode);
+		//勤務種類を取得する
+		Optional<WorkType> workTypeInfor = require.workType(companyId, workTypeCode);
+		if (pred.isPresent() && workTypeInfor.isPresent()) {
+			//指定の分類の1日午前午後区分を取得
+			Optional<WorkAtr> workAtr = workTypeInfor.get().getWorkAtrForWorkTypeClassification(workTypeClass);
+			if (!workAtr.isPresent()) {
+				return 0;
+			}
+			//所定時間を取得する
+			return pred.get().getPredTime().getPredTime().get(workAtr.get()).v();
+		}
+		return 0;
+	}
+	
 	/**
 	 * 就業時間帯コードを判断
 	 * @param require
@@ -1429,7 +1456,7 @@ public class InterimRemainOffDateCreateData {
 	}
 
 	public static interface RequireM9 extends RequireM6, RequireM7 {
-
+		Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, String workTimeCode);
 	}
 
 	public static interface RequireM8 {

@@ -909,7 +909,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		String QUERY = "SELECT KSCDT_SCH_BASIC_INFO.SID, KSCDT_SCH_BASIC_INFO.YMD, KSCDT_SCH_BASIC_INFO.CID, KSCDT_SCH_BASIC_INFO.DECISION_STATUS"
 				+ " , KSCDT_SCH_BASIC_INFO.EMP_CD, KSCDT_SCH_BASIC_INFO.JOB_ID, KSCDT_SCH_BASIC_INFO.WKP_ID, KSCDT_SCH_BASIC_INFO.CLS_CD, KSCDT_SCH_BASIC_INFO.BUSTYPE_CD"
 				+ " , KSCDT_SCH_BASIC_INFO.WKTP_CD, KSCDT_SCH_BASIC_INFO.WKTM_CD, KSCDT_SCH_BASIC_INFO.GO_STRAIGHT_ATR, KSCDT_SCH_BASIC_INFO.BACK_STRAIGHT_ATR"
-				+ " , KSCDT_SCH_BASIC_INFO.TREAT_AS_SUBSTITUTE_ATR, KSCDT_SCH_BASIC_INFO.TREAT_AS_SUBSTITUTE_DAYS"
+				+ " , KSCDT_SCH_BASIC_INFO.TREAT_AS_SUBSTITUTE_ATR, KSCDT_SCH_BASIC_INFO.TREAT_AS_SUBSTITUTE_DAYS, KSCDT_SCH_BASIC_INFO.WKP_GROUP_ID"
 				+ " , KSCDT_SCH_BASIC_INFO.NURSE_LICENSE_ATR, KSCDT_SCH_BASIC_INFO.IS_NURSE_ADMINISTRATOR, KSCDT_SCH_BASIC_INFO.BONUS_PAY_CD"
 				+ " FROM KSCDT_SCH_BASIC_INFO"
 				+ " WHERE KSCDT_SCH_BASIC_INFO.SID IN " + listEmp + " AND KSCDT_SCH_BASIC_INFO.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
@@ -934,8 +934,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				String workplaceGroupId = rs.getString("WKP_GROUP_ID");
 				Integer nursingLicenseClass = rs.getInt("NURSE_LICENSE_ATR");
 				Integer nursingManager = rs.getInt("IS_NURSE_ADMINISTRATOR");
-				String bonusPaySettingCode = rs.getString("BONUS_PAY_CD");
-
+				String bonusPaySettingCode = rs.getString("BONUS_PAY_CD");	
+				
 				return new KscdtSchBasicInfo(new KscdtSchBasicInfoPK(sid, ymd)
 							, cid, confirmedATR, empCd, jobId, wkpId, clsCd, busTypeCd
 							, wktpCd, wktmCd, goStraightAtr, backStraightAtr, treatAsSubstituteAtr, treatAsSubstituteDays

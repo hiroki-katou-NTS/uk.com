@@ -421,7 +421,7 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 			// TODO developers are going to update
 			return null;
 		}
-
+		
 		// GetEmpLicenseClassificationService
 		@Override
 		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp,

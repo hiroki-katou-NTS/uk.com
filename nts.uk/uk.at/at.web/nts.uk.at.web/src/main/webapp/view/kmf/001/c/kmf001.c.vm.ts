@@ -138,10 +138,10 @@ module nts.uk.pr.view.kmf001.c {
                     return self.selectedMaxNumberSemiVacation() == 0 && self.selectedAnnualManage() == 1;
                 });
                 self.requiredC535 = ko.computed(function() {
-                    return self.selectC531() == 1 && self.selectedAnnualManage() == 1;
+                    return self.selectC531() == 0 && self.selectedAnnualManage() == 1;
                 });
                 self.requiredC533 = ko.computed(function() {
-                    return self.selectC531() == 1 && self.selectedAnnualManage() == 1;
+                    return self.selectC531() == 0 && self.selectedAnnualManage() == 1;
                 }); 
                 
                 self.enableC5_31 = ko.computed(function() {

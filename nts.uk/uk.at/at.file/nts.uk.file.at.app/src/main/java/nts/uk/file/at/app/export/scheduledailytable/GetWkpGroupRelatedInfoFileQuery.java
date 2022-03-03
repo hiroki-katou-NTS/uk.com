@@ -164,7 +164,7 @@ public class GetWkpGroupRelatedInfoFileQuery {
                     }
                 },
                 AppContexts.user().employeeId(),
-                period.end(),
+                GeneralDate.today(),
                 period,
                 targetOrg
         );

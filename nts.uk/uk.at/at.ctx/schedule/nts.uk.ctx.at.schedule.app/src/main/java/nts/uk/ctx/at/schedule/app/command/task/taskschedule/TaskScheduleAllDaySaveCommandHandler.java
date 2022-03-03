@@ -25,7 +25,9 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
@@ -34,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -101,6 +104,13 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 
 	@Inject
 	private BusinessTypeEmpService businessTypeEmpService;
+	
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+	@Inject
+	private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+	@Inject
+	private NurseClassificationRepository nurseClassificationRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<TaskScheduleCommand> context) {
@@ -111,7 +121,8 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 		RequireImpl require = new RequireImpl(companyId, workTypeRepo, workTimeSettingRepository,
 				basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository,
 				predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
-				sharedAffWorkPlaceHisAdapter, syClassificationAdapter, workingConditionRepo, businessTypeEmpService);
+				sharedAffWorkPlaceHisAdapter, syClassificationAdapter, workingConditionRepo, businessTypeEmpService,
+				empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
 		/**loop:社員ID in 社員IDリスト */
 		command.getEmployeeIds().stream().forEach(empId -> {
 			/** 1.1: get(社員ID、年月日):Optional<勤務予定>*/
@@ -159,6 +170,12 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 		private WorkingConditionRepository workingConditionRepo;
 
 		private BusinessTypeEmpService businessTypeEmpService;
+		
+		private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+		
+		private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+		
+		private NurseClassificationRepository nurseClassificationRepo;
 
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
@@ -253,23 +270,25 @@ public class TaskScheduleAllDaySaveCommandHandler extends CommandHandler<TaskSch
 			// TODO developers are going to update
 			return null;
 		}		
-		
+
 		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			List<EmpOrganizationImport> results = empAffiliationInforAdapter.getEmpOrganization(standardDate, Arrays.asList(employeeId));
+			if(results.isEmpty())
+				return null;
+			return results.get(0);
 		}
 
 		@Override
 		public List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp,
 				GeneralDate referenceDate) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
 		}
 
 		@Override
 		public List<NurseClassification> getListCompanyNurseCategory() {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			String companyId = AppContexts.user().companyId();
+			return nurseClassificationRepo.getListCompanyNurseCategory(companyId);
 		}
+		
 	}
 }

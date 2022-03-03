@@ -70,7 +70,8 @@ td .control-group {
 }
 
 .color-header {
-	background-color: #CFF1A5;
+	background-color: #6A6A6A;
+    color: #fff;
 	white-space: normal !important;
 	padding-left: 10px !important;
 }

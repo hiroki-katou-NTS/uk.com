@@ -46,41 +46,61 @@ export class Ccg007BComponent extends CCG007Login {
 
     public created() {
         let self = this;
+        // オンプレミスかをチェックする
+        self.$http.post('at', API.getIsCloud).then((response: any) => {
+            if (!response.data) {
+                // 契約コードに関するlocalstrageに登録する
+                self.$http.post('at', API.getContractCode).then((response: any) => {
+                    storage.local.setItem('contract', { code: response.data.code, password: '' });
 
-        if (!_.isNil(self.params.contractCode)) {
-            self.contractCode = self.params.contractCode;
-            self.contractPass = self.params.contractPass;
-            self.checkEmpCodeAndCompany();
-        } else {
-            self.$auth.contract
-                .then((value: any) => {
-                    if (!_.isNil(value)) {
-                        self.contractCode = value.code;
-                        self.contractPass = value.password;
-                    }
-                }).then(() => {
-                    return this.$http
-                        .post(API.checkContract, {
-                            contractCode: self.contractCode || DEFAULT_CONTRACT,
-                            contractPassword: self.contractPass
-                        });
-                }).then((rel: { data: any }) => {
-                    if (rel.data.onpre) {
-                        self.contractCode = DEFAULT_CONTRACT;
-                        self.contractPass = null;
-
-                        storage.local.setItem('contract', { code: self.contractCode, password: self.contractPass });
-                    } else {
-                        if (rel.data.showContract && !rel.data.onpre) {
-                            self.$goto('ccg007a');
-                        }
-                    }
-                }).then(() => {
+                    // Start Activity.
+                    self.contractCode = response.data.code;
+                    self.contractPass = '';
                     self.checkEmpCodeAndCompany();
-                }).catch((res) => {
-
                 });
-        }
+            } else {
+
+                const contract = storage.local.getItem('contract') as any;
+                if (contract && contract.password === '') {
+                    localStorage.clear();
+                }
+
+                if (!_.isNil(self.params.contractCode)) {
+                    self.contractCode = self.params.contractCode;
+                    self.contractPass = self.params.contractPass;
+                    self.checkEmpCodeAndCompany();
+                } else {
+                    self.$auth.contract
+                        .then((value: any) => {
+                            if (!_.isNil(value)) {
+                                self.contractCode = value.code;
+                                self.contractPass = value.password;
+                            }
+                        }).then(() => {
+                            return this.$http
+                                .post(API.checkContract, {
+                                    contractCode: self.contractCode || DEFAULT_CONTRACT,
+                                    contractPassword: self.contractPass
+                                });
+                        }).then((rel: { data: any }) => {
+                            if (rel.data.onpre) {
+                                self.contractCode = DEFAULT_CONTRACT;
+                                self.contractPass = null;
+
+                                storage.local.setItem('contract', { code: self.contractCode, password: self.contractPass });
+                            } else {
+                                if (rel.data.showContract && !rel.data.onpre) {
+                                    self.$goto('ccg007a');
+                                }
+                            }
+                        }).then(() => {
+                            self.checkEmpCodeAndCompany();
+                        }).catch((res) => {
+
+                        });
+                }
+            }
+        });
 
         this.$http
             .post(API.ver)
@@ -166,7 +186,9 @@ export class Ccg007BComponent extends CCG007Login {
 const API = {
     checkContract: 'ctx/sys/gateway/login/checkcontract',
     getAllCompany: 'ctx/sys/gateway/login/getcompany/',
-    ver: 'ctx/sys/gateway/login/build_info_time'
+    ver: 'ctx/sys/gateway/login/build_info_time',
+    getIsCloud: 'at/record/stamp/finger/get-isCloud',
+    getContractCode: 'at/record/stamp/finger/get-contractCode'
 };
 
 interface ICompany {

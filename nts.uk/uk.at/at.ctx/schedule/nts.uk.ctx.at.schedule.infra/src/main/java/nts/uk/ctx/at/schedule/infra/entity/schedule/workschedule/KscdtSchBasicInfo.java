@@ -58,6 +58,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.FuriClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NumberOfDaySuspension;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
@@ -312,6 +313,10 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			timeLeavingWorks.add(timeLeavingWork);
 		});
 		optTimeLeaving = new TimeLeavingOfDailyAttd(timeLeavingWorks, new WorkTimes(0));
+		workInfo.setScheduleTimeSheets(timeLeavingWorks.stream()
+				.filter(x -> x.getAttendanceTime().isPresent() && x.getLeaveTime().isPresent())
+				.map(x -> new ScheduleTimeSheet(x.getWorkNo(), x.getAttendanceTime().get(), x.getLeaveTime().get()))
+				.collect(Collectors.toList()));
 
 		// create Optional<ShortTimeOfDailyAttd> optSortTimeWork
 		ShortTimeOfDailyAttd optSortTimeWork = null;
