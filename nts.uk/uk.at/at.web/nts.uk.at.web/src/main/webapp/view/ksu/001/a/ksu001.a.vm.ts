@@ -5430,6 +5430,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $('#A1_7_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modeless("/view/ksu/001/g/index.xhtml").onClosed(() => {});
         }
+        
+        openKDL016(): void {
+            let self = this;
+            let userInfor: IUserInfor = self.userInfor;
+            setShared('dataShareKDL016', {
+                unit: userInfor.unit, // 対象組織識別情報.単位
+                id: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, // 対象組織識別情報.組織ID
+                code: userInfor.code , // 対象組織識別情報.組織コード
+                name: userInfor.workPlaceName, // 対象組織識別情報.組織名称
+                startDate: moment(self.dtPrev()).format('YYYY/MM/DD'), // 基準期間.開始日
+                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),  // 基準期間.終了日
+                employeeIDs: self.listSidByOrg, // List<社員ID>
+            });
+            nts.uk.ui.windows.sub.modeless("/view/kdl/016/a/index.xhtml").onClosed(() => { });
+        }
 
         openKDL055() {
             let self = this;
