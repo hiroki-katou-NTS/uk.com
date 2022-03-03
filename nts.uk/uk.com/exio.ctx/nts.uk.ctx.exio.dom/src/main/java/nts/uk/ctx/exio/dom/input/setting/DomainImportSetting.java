@@ -87,16 +87,11 @@ public class DomainImportSetting implements DomainAggregate {
 
 		val revisedData = optRevisedData.get();
 
-		val errors = ValidateData.validate(require, context, revisedData);
-
-		if(errors.isEmpty()) {
-			require.save(context, revisedData);
-		}
-		else {
-			errors.forEach(e -> {
-				require.add(ExternalImportError.of(revisedData.getRowNo(), context.getDomainId(), e));
-			});
-		}
+		ValidateData.validate(require, context, revisedData)
+			.ifRight(validatedValue ->require.save(context, validatedValue))
+			.ifLeft(errors -> errors.forEach(error ->{
+						require.add(ExternalImportError.of(revisedData.getRowNo(), context.getDomainId(), error));
+					 }));
 	}
 
 	public static interface RequireAssemble extends
