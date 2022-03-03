@@ -5446,21 +5446,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             nts.uk.ui.windows.sub.modeless("/view/kdl/016/a/index.xhtml").onClosed(() => { });
         }
 
-        openKDL055() {
-            let self = this;
-        }
-
-        openDialogKDL055() {
-            let self = this;
-            let param = {
-                listSid: self.listSid(),
-                startDate: self.dateTimePrev(),
-                endDate: self.dateTimeAfter(),
-            };
-            setShared('dataShareDialogKDL055', param);
-            nts.uk.ui.windows.sub.modal('/view/kdl/055/a/index.xhtml').onClosed(function(): any { });
-        }
-        
         // A2_1
         openKDL046() {
             let self = this;
@@ -5737,7 +5722,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         openKDL055(): void {
             let self = this, dfd = $.Deferred();
             let userInfor = self.userInfor;
-            let param: any = { sIDs: self.sids(), startDate: moment(self.dateTimePrev()).format('YYYY/MM/DD'), endDate: moment(self.dateTimeAfter()).format('YYYY/MM/DD') };
+            let param: any = { sIDs: self.listSidByOrg, startDate: moment(self.dateTimePrev()).format('YYYY/MM/DD'), endDate: moment(self.dateTimeAfter()).format('YYYY/MM/DD') };
             setShared('dataShareDialogKDL055A', param);
             nts.uk.ui.windows.sub.modal("/view/kdl/055/a/index.xhtml").onClosed(() => {
                 let paramB = getShared('paramB');
@@ -5746,7 +5731,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     setShared('dataShareDialogKDL055B', paramB);
                     nts.uk.ui.windows.sub.modal("/view/kdl/055/b/index.xhtml").onClosed(() => {
                         let resultB = getShared('statusKDL055');
-                        console.log(resultB);
                         let openAKDL055 = getShared('openA');
                         if (resultB == 'UPDATE') {
                             nts.uk.ui.block.grayout();
