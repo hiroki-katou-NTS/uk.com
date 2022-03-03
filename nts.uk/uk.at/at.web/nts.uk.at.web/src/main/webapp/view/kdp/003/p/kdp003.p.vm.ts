@@ -24,7 +24,7 @@ module nts.uk.at.kdp003.p {
 			const vm = this;
 			vm.searchMessage(null);
 			vm.$blockui('show');
-			vm.$ajax('com', API.GET_EMP_NOTICE)
+			vm.$ajax('com', API.GET_EMP_NOTICE, { regionalTime: 0 })
 				.then((response: EmployeeNotification) => {
 					if (response.role) {
 						vm.role(response.role);
@@ -63,7 +63,7 @@ module nts.uk.at.kdp003.p {
 
 		onClickSearch() {
 			const vm = this;
-			
+
 			vm.$validate('#P2_2').then((valid: boolean) => {
 				if (!valid) {
 					nts.uk.ui.errors.show();

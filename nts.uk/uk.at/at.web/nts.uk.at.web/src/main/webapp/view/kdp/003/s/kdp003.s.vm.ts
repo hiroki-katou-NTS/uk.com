@@ -3,6 +3,7 @@
 module nts.uk.at.kdp003.s {
 	interface Params {
 		employeeId: string;
+		regionalTime: number;
 	}
 
 	const API = {
@@ -23,9 +24,12 @@ module nts.uk.at.kdp003.s {
 		constructor(private params: Params) {
 			super();
 
+			const vm = this;
 			if (!params) {
-				this.params = { employeeId: '' };
+				vm.params = { employeeId: '', regionalTime: 0 };
 			}
+
+			vm.filter.day = ko.observable(parseInt(moment(vm.$date.now()).add(params.regionalTime, 'h').format('YYYYMM')));
 		}
 
 		created() {
@@ -43,7 +47,7 @@ module nts.uk.at.kdp003.s {
 						.each((item: StampData) => {
 							const d = moment(item.stampDate, 'YYYY/MM/DD');
 							const day = d.clone().locale('en').format('dddd');
-							
+
 							let value = item.buttonValueType;
 
 							const pushable = {
@@ -52,8 +56,8 @@ module nts.uk.at.kdp003.s {
 								date: `<div class="color-schedule-${day.toLowerCase()}">${d.format('YYYY/MM/DD(dd)')}</div>`,
 								name: `<div style="text-align: 
 								${(ButtonType.GOING_TO_WORK == value || ButtonType.RESERVATION_SYSTEM == value) ? 'left' :
-								ButtonType.WORKING_OUT == value ? 'right' 
-								: 'center'};">${item.stampArt}</div>`
+										ButtonType.WORKING_OUT == value ? 'right'
+											: 'center'};">${item.stampArt}</div>`
 							};
 
 							// S1 bussiness logic
@@ -89,12 +93,10 @@ module nts.uk.at.kdp003.s {
 			vm.filter.day
 				.subscribe((value: number) => {
 					const fm = 'YYYY/MM/DD';
-					const { employeeId } = vm.params;
-					const baseDate = moment(`${value}`, 'YYYYMM');
-					const endDate = baseDate.endOf('month').format(fm);
-					const startDate = baseDate.startOf("month").format(fm);
+					const endDate = moment(moment(vm.$date.now()).add(vm.params.regionalTime, 'h').endOf('month')).format(fm);
+					const startDate = moment(moment(vm.$date.now()).add(vm.params.regionalTime, 'h').startOf('month')).format(fm);
 
-					vm.$ajax(API.GET_STAMP_MANAGEMENT, { employeeId, endDate, startDate })
+					vm.$ajax(API.GET_STAMP_MANAGEMENT, { employeeId: vm.params.employeeId, endDate, startDate })
 						.then((data: StampData[]) => {
 							if (ko.toJS(vm.filter.day) === value) {
 								vm.dataSources.all(data);
@@ -104,7 +106,7 @@ module nts.uk.at.kdp003.s {
 
 			vm.filter.day.valueHasMutated();
 		}
-		
+
 		mounted() {
 			$('.nts-datepicker-wrapper').first().find('input').focus();
 		}
@@ -117,7 +119,7 @@ module nts.uk.at.kdp003.s {
 	}
 
 	export type ENGRAVING = '1' | '2' | '3' | '4';
-	
+
 	export enum ButtonType {
 		// 系
 
@@ -279,7 +281,7 @@ module nts.uk.at.kdp003.s {
 		changeHalfDay: boolean;
 		corectTtimeStampType: string;
 		correctTimeStampValue: ContentsStampType;
-		buttonValueType:number;
+		buttonValueType: number;
 		empInfoTerCode: string;
 		goOutArt: string;
 		latitude: number;

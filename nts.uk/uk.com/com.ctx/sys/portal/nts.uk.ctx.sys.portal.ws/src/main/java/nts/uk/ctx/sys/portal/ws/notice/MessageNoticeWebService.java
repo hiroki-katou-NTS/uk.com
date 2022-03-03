@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import lombok.Data;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.portal.app.command.notice.DeleteMessageNoticeCommand;
 import nts.uk.ctx.sys.portal.app.command.notice.DeleteMessageNoticeCommandHandler;
@@ -52,8 +53,13 @@ public class MessageNoticeWebService extends WebService {
 
 	@POST
 	@Path("/getEmployeeNotification")
-	public EmployeeNotificationDto getEmployeeNotification() {
+	public EmployeeNotificationDto getEmployeeNotification(RegionalTimeInput param) {
 		GeneralDate sysDate = GeneralDate.today();
+		if (param != null) {
+			if (param.getRegionalTime() != 0) {
+				sysDate = GeneralDateTime.now().addHours(param.getRegionalTime()).toDate();
+			}
+		}
 		return screenQuery.getEmployeeNotification(new DatePeriod(sysDate, sysDate));
 	}
 

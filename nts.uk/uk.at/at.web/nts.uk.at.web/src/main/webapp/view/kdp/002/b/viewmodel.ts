@@ -381,8 +381,8 @@ class KDP002BViewModel extends ko.ViewModel {
     getNotification() {
         const vm = this;
         const param = {
-            startDate: vm.$date.now(),
-            endDate: vm.$date.now(),
+            startDate: moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate(),
+            endDate: moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate(),
             sid: vm.infoEmpFromScreenA.employeeId
         }
 
