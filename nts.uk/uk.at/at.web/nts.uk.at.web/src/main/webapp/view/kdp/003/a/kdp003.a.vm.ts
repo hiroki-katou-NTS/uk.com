@@ -121,14 +121,11 @@ module nts.uk.at.kdp003.a {
 					if (!data) {
 						vm.$ajax('at', API.getContractCode)
 							.then((data: any) => {
+								vm.contractCode = data.code;
 								vm.$window.storage("contractInfo", {
 									contractCode: data.code,
 									contractPassword: ""
-								})
-								.done(() => {
-									vm.contractCode = data.code;
-								})
-								.done(() => vm.getDataStartScreen());
+								}).done(() => vm.getDataStartScreen());
 							});
 					} else {
 						// Step3: テナント認証する
@@ -165,7 +162,7 @@ module nts.uk.at.kdp003.a {
 					const mes = ko.unwrap(vm.message);
 					const noti = ko.unwrap(vm.fingerStampSetting).noticeSetDto;
 
-					var result = null;
+					let result = null;
 
 					if (mes === null) {
 						result = false;
@@ -185,7 +182,6 @@ module nts.uk.at.kdp003.a {
 					}
 
 					vm.showMessage(result);
-
 				}
 			})
 		}
@@ -201,7 +197,13 @@ module nts.uk.at.kdp003.a {
 				width: 400,
 				title: nts.uk.resource.getText("CCG007_9"),
 				dialogClass: 'no-close'
-			}).onClosed(() => { vm.getDataStartScreen() });
+			}).onClosed(() => {
+
+				vm.$window.storage("contractInfo")
+					.then((data: any) => { vm.contractCode = data.contractCode }).then(() => {
+						vm.getDataStartScreen()
+					})
+			});
 		}
 
 		getDataStartScreen() {
@@ -253,7 +255,7 @@ module nts.uk.at.kdp003.a {
 		// get WorkPlace from basyo -> save locastorage.
 		basyo() {
 			$.urlParam = function (name) {
-				var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+				let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 				if (results == null) {
 					return null;
 				}
@@ -281,8 +283,9 @@ module nts.uk.at.kdp003.a {
 
 							if (data.workpalceId) {
 								if (data.workpalceId.length > 0) {
+									vm.workPlace = [];
+									vm.workPlace.push(data.workpalceId[0]);
 									vm.modeBasyo(true);
-									vm.workPlace = data.workpalceId;
 								}
 							}
 						}
@@ -294,7 +297,7 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			const { storage } = vm.$window;
 			$(window).trigger('resize');
-			var checkUsed: boolean | null;
+			let checkUsed: boolean | null;
 
 			vm.$ajax(API.confirmUseOfStampInput, { employeeId: null, stampMeans: 0 })
 				.then((data: any) => {
@@ -371,7 +374,7 @@ module nts.uk.at.kdp003.a {
 						});
 
 					$.urlParam = function (name) {
-						var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+						let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 
 						if (results == null) {
 							return null;
@@ -398,8 +401,9 @@ module nts.uk.at.kdp003.a {
 
 									if (dataBasyo.workpalceId) {
 										if (dataBasyo.workpalceId.length > 0) {
+											vm.workPlace = [];
+											vm.workPlace.push(dataBasyo.workpalceId[0]);
 											vm.modeBasyo(true);
-											vm.workPlace = dataBasyo.workpalceId;
 										}
 									}
 								}
@@ -411,8 +415,8 @@ module nts.uk.at.kdp003.a {
 				})
 				.then((data: LoginData) => {
 
-					var exest = false;
-					var check1527 = false;
+					let exest = false;
+					let check1527 = false;
 
 					if (ko.unwrap(vm.message)) {
 						if (ko.unwrap(vm.message).messageId === 'Msg_1527') {
@@ -440,7 +444,7 @@ module nts.uk.at.kdp003.a {
 					return data;
 				})
 				.then((data: LoginData) => {
-					var check1527 = false;
+					let check1527 = false;
 
 					if (data.loginData === undefined) {
 						vm.setMessage({ messageId: 'Msg_1647' });
@@ -463,7 +467,7 @@ module nts.uk.at.kdp003.a {
 						return false;
 					}
 
-					var exest = false;
+					let exest = false;
 
 					if (data.loginData.notification == null) {
 						exest = true;
@@ -474,13 +478,14 @@ module nts.uk.at.kdp003.a {
 							vm.setMessage({ messageId: 'Msg_1647' });
 							return false;
 						}
-					} else {
+					}
+					else {
 						if (data.loginData.result) {
 							exest = false;
 						}
 						if (exest) {
-							vm.setMessage({ messageId: 'Msg_1647' });
-							return false;
+							// vm.setMessage({ messageId: 'Msg_1647' });
+							// return false;
 						}
 					}
 
@@ -520,17 +525,23 @@ module nts.uk.at.kdp003.a {
 					const { em } = loginData;
 
 					if (ko.unwrap(vm.modeBasyo)) {
+						if (em != null) {
+							const storeData = {
+								CCD: em.companyCode,
+								CID: em.companyId,
+								PWD: em.password,
+								SCD: em.employeeCode,
+								SID: em.employeeId,
+								WKLOC_CD: '',
+								WKPID: vm.workPlace
+							};
 
-						const storeData = {
-							CCD: em.companyCode,
-							CID: em.companyId,
-							PWD: em.password,
-							SCD: em.employeeCode,
-							SID: em.employeeId,
-							WKLOC_CD: '',
-							WKPID: vm.workPlace
-						};
-						return storage(KDP003_SAVE_DATA, storeData);
+							return storage(KDP003_SAVE_DATA, storeData);
+						} else {
+
+							storageData.WKPID = vm.workPlace;
+							return storage(KDP003_SAVE_DATA, storageData);
+						}
 					} else {
 						if (workplaceData) {
 							const { selectedId } = workplaceData;
@@ -558,7 +569,7 @@ module nts.uk.at.kdp003.a {
 							.then((data: FingerStampSetting) => {
 								if (data) {
 									vm.fingerStampSetting(data);
-									var time = data.stampSetting.correctionInterval * 60000;
+									let time = data.stampSetting.correctionInterval * 60000;
 
 									setInterval(() => {
 										vm.loadNotice();
@@ -618,7 +629,7 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			let startDate = vm.$date.now();
 			//startDate.setDate(startDate.getDate() - 3);
-			var wkpIds: string[];
+			let wkpIds: string[];
 
 			if (storage) {
 				wkpIds = storage.WKPID;
@@ -793,8 +804,8 @@ module nts.uk.at.kdp003.a {
 		setting() {
 			const vm = this;
 			const { storage } = vm.$window;
-			var openViewK: boolean | null = null;
-			var saveSuccess: boolean = false;
+			let openViewK: boolean | null = null;
+			let saveSuccess: boolean = false;
 
 			// if (!!ko.unwrap(vm.message)) {
 			// 	vm.message(false);
@@ -809,7 +820,7 @@ module nts.uk.at.kdp003.a {
 				.then((loginData: undefined | f.TimeStampLoginData) => {
 
 					$.urlParam = function (name) {
-						var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+						let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 
 						if (results == null) {
 							return null;
@@ -838,8 +849,9 @@ module nts.uk.at.kdp003.a {
 
 									if (data.workpalceId) {
 										if (data.workpalceId.length > 0) {
+											vm.workPlace = [];
+											vm.workPlace.push(data.workpalceId[0]);
 											vm.modeBasyo(true);
-											vm.workPlace = data.workpalceId;
 										}
 
 										if (data.workpalceId.length == 0) {
@@ -876,10 +888,10 @@ module nts.uk.at.kdp003.a {
 					return loginData;
 				})
 				.then((data: LoginData) => {
-					var exist = true;
-					var exist1 = false;
-					var checkExistBasyo = false;
-					var check1527 = false;
+					let exist = true;
+					let exist1 = false;
+					let checkExistBasyo = false;
+					let check1527 = false;
 
 					if (data === undefined) {
 						return false;
@@ -899,7 +911,7 @@ module nts.uk.at.kdp003.a {
 					if (ko.unwrap(vm.modeBasyo)) {
 
 						if (data.notification == null) {
-							var checkExistBasyo = true;
+							let checkExistBasyo = true;
 						}
 						if (data.result) {
 							checkExistBasyo = false;
@@ -1157,7 +1169,7 @@ module nts.uk.at.kdp003.a {
 							// shorten name
 							const { modal, storage } = vm.$window;
 
-							// var isSupport: boolean = false;
+							// let isSupport: boolean = false;
 
 							// if (btn.supportWplset == 1) {
 							// 	isSupport = true;
@@ -1165,8 +1177,8 @@ module nts.uk.at.kdp003.a {
 							if (fingerStampSetting) {
 								vm.$window.storage(KDP003_SAVE_DATA)
 									.then((dataStorage: StorageData) => {
-										var workGroup: any;
-										var isShowViewL = false;
+										let workGroup: any;
+										let isShowViewL = false;
 										if (ko.unwrap(vm.useWork)) {
 											if (btn.taskChoiceArt && btn.taskChoiceArt == 1) {
 												isShowViewL = true;
@@ -1558,7 +1570,7 @@ module nts.uk.at.kdp003.a {
 	}
 
 	interface StampSetting {
-        authcMethod: any;
+		authcMethod: any;
 		authcFailCnt: number;
 		backGroundColor: string;
 		buttonEmphasisArt: boolean;
