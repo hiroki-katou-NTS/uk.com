@@ -17,11 +17,21 @@ module nts.uk.at.view.kmw005.a {
             selectedClosureText: KnockoutObservable<string>;
             closureName: KnockoutObservable<string>;
             yearMonth: number = 0;
+            enableDailyLockState: KnockoutComputed<boolean>;
 
             constructor() {
                 var self = this;
                 self.actualLock = new ActualLock();
                 self.actualLockList = ko.observableArray<ActualLockFind>([]);
+                self.enableDailyLockState = ko.computed(() => {
+                    const monthlyLockState = ko.unwrap(self.actualLock.monthlyLockState);
+
+                    if (monthlyLockState === Lock.DO) {
+                        self.actualLock.dailyLockState(Lock.DO);
+                    }
+                    return monthlyLockState === Lock.NOT;
+                });
+
                 self.actualLock.closureId.subscribe(function(closureId: number) {
                     if (closureId) {
                         // ClosureName
@@ -277,6 +287,16 @@ module nts.uk.at.view.kmw005.a {
                 this.dailyLockState(dto.dailyLockState);
                 this.monthlyLockState(dto.monthlyLockState);
             }
+        }
+
+        enum Mode {
+            NEW = 0,
+            UPDATE = 1,
+        }
+
+        enum Lock {
+            DO = 1,
+            NOT = 0,
         }
 
     }
