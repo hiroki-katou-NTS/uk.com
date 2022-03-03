@@ -3,6 +3,8 @@ package nts.uk.ctx.exio.infra.repository.input.workspace;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -46,20 +48,21 @@ public class JpaDomainWorkspaceRepository extends JpaRepository implements Domai
 	}
 	
 	private DomainWorkspace toDomain(XimctWorkspaceDomain entity, List<WorkspaceItem> items) {
-		
+
 		List<String> primaryKeys = Arrays.asList(entity.primaryKeys.split(","));
-		
-		val itemsPk = new ArrayList<WorkspaceItem>();
-		val itemsNotPk = new ArrayList<WorkspaceItem>();
-		
-		items.forEach(item -> {
-			if(primaryKeys.contains(item.getName())) {
-				itemsPk.add(item);
-			}else {
-				itemsNotPk.add(item);
-			}
-		});
-		
+		Map<String, WorkspaceItem> nameMap = items.stream()
+				.collect(Collectors.toMap(i -> i.getName(), i -> i));
+
+		// 	PKの順番でセットされているべきなので、primaryKeysでstreamする
+		val itemsPk = primaryKeys.stream()
+				.map(pk -> nameMap.get(pk))
+				.collect(Collectors.toList());
+
+		// 非PK項目は順不同
+		val itemsNotPk = items.stream()
+				.filter(item -> primaryKeys.contains(item.getName()))
+				.collect(Collectors.toList());
+
 		return new DomainWorkspace(ImportingDomainId.valueOf(entity.domainId), itemsPk, itemsNotPk);
 	}
 }
