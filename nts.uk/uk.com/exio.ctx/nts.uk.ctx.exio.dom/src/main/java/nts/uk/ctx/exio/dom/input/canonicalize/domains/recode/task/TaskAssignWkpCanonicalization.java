@@ -91,8 +91,8 @@ public class TaskAssignWkpCanonicalization extends IndependentCanonicalization {
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(
-				new DomainDataColumn("FRAME_NO", DataType.INT),
-				new DomainDataColumn("TASK_CD", DataType.STRING),
-				new DomainDataColumn("WKP_ID", DataType.STRING));
+				new DomainDataColumn(Items.作業枠NO, "FRAME_NO", DataType.INT),
+				new DomainDataColumn(Items.作業コード, "TASK_CD", DataType.STRING),
+				new DomainDataColumn(Items.職場ID, "WKP_ID", DataType.STRING));
 	}
 }

@@ -48,8 +48,8 @@ public class TaskAssignEmpCanonicalization extends EmployeeIndependentCanonicali
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(
-				new DomainDataColumn("SID", DataType.STRING),
-				new DomainDataColumn("FRAME_NO", DataType.INT),
-				new DomainDataColumn("TASK_CD", DataType.STRING));
+				new DomainDataColumn(Items.SID, "SID", DataType.STRING),
+				new DomainDataColumn(Items.作業枠NO, "FRAME_NO", DataType.INT),
+				new DomainDataColumn(Items.作業コード, "TASK_CD", DataType.STRING));
 	}
 }
