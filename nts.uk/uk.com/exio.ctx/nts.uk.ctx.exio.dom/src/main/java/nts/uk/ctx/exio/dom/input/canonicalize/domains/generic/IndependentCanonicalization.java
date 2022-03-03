@@ -51,7 +51,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 		
 		CanonicalizeUtil.forEachRow(require, context, revisedData -> {
 			
-			KeyValues key = getPrimaryKeys(revisedData, workspace);
+			KeyValues key = getWorkspacePrimaryKeyValues(revisedData, workspace);
 			if (importingKeys.contains(key)) {
 				require.add(ExternalImportError.record(revisedData.getRowNo(), context.getDomainId(),"受入データの中にキーの重複があります。"));
 				return; // 次のレコードへ
@@ -66,12 +66,10 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	}
 	
 	/**
-	 * Record(CSV行番号, 編集済みの項目List)のListの方からworkspaceの項目Noに一致しているやつの値を取る 
+	 * WorkspaceとしてのPrimaryKeyを取得する
 	 */
-	protected KeyValues getPrimaryKeys(RevisedDataRecord record, DomainWorkspace workspace) {
-		val itemNos = getDomainDataKeys().stream()
-				.map(d -> d.getItemNo())
-				.collect(Collectors.toList());
+	private KeyValues getWorkspacePrimaryKeyValues(RevisedDataRecord record, DomainWorkspace workspace) {
+		val itemNos = workspace.getPkItemNos();
 		return KeyValues.create(IntermediateResult.create(record), itemNos);
 	}
 	
