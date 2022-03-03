@@ -189,9 +189,9 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                     for (val acctAbsenDetail : substituteHolidayAggrResult.getVacationDetails().getLstAcctAbsenDetail()) {
                         val dateOptional = acctAbsenDetail.getDateOccur().getDayoffDate();
                         //　・発生取得明細(i)．発生消化区分　　　＝ 代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．発生消化区分
-                        if (dateOptional.isPresent()
+                        if ((dateOptional.isPresent()
                                 && affComHistItem.getDatePeriod().start().beforeOrEquals(dateOptional.get())
-                                && affComHistItem.getDatePeriod().end().afterOrEquals(dateOptional.get())) {
+                                && affComHistItem.getDatePeriod().end().afterOrEquals(dateOptional.get())) || acctAbsenDetail.getDateOccur().isUnknownDate()) {
                             OccurrenceDigClass occurrenceDigClass = acctAbsenDetail.getOccurrentClass();
                             CompensatoryDayoffDate date = null;
                             AccumulationAbsenceDetail.NumberConsecuVacation numberConsecuVacation = null;

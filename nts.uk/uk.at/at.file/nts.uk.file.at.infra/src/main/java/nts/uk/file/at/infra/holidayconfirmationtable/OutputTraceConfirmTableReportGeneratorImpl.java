@@ -235,8 +235,14 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                         content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList(),
                         content.getObservationOfExitLeave().get().getListTyingInformation()
                 );
+                val listItem = new ArrayList<>(content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().stream().filter(e -> e.getDate().isUnknownDate()).collect(Collectors.toList()));
+                val listDate = content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().stream()
+                        .filter(e -> !e.getDate().isUnknownDate()).sorted(Comparator.comparing(i -> i.getDate().getDayoffDate().get()))
+                        .collect(Collectors.toList());
+                listItem.addAll(listDate);
+
                 if (isPresent) {
-                    content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
+                    content.getObservationOfExitLeave().get().setOccurrenceAcquisitionDetailsList(listItem);
                 }
                 int col = 9;
                 int size = isPresent ? content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().size() : 1;
@@ -272,10 +278,13 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                             int idx = loop * 10 + i;
                             if (idx < size) {
                                 OccurrenceAcquisitionDetails acquisitionDetail = content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().get(idx);
+
                                 if (!isTime) {
                                     if (acquisitionDetail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
+
                                         val value = this.formatNoLinkedDate(mngUnit, acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
                                         this.setValue(cells, row, col + i, value);
+
                                     } else {
                                         val value = this.formatNoLinkedDate(mngUnit, acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
                                         this.setValue(cells, row + 1, col + i, value);
@@ -466,6 +475,11 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
     private String formatNoLinkedDate(Integer mngUnit, OccurrenceAcquisitionDetails detail, int howToPrintDate) {
         StringBuilder formattedDate = new StringBuilder();
         int spaceLeft = 2, spaceRight = 3;
+        if(detail.getDate().isUnknownDate()){
+            val text = (detail.getNumberConsecuVacation().getDay().v() != 1.0 && mngUnit != 2 )
+                    ? TextResource.localize("KDR003_120"): TextResource.localize("KDR003_121");
+           return formattedDate.append(text).toString();
+        }
         if (howToPrintDate == 0) {
             formattedDate.append(detail.getDate().getDayoffDate().get().toString("MM/dd"));
         } else {
@@ -634,6 +648,9 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
             while (iterator.hasNext()) {
                 OccurrenceAcquisitionDetails detail = iterator.next();
                 double linkingUsedDays;
+                if(!detail.getDate().getDayoffDate().isPresent()){
+                    continue;
+                }
                 if (detail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
                     linkingUsedDays = linkingInfors
                             .stream().filter(i -> i.getOccurrenceDate().equals(detail.getDate().getDayoffDate()
@@ -650,7 +667,6 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                 }
             }
         }
-           details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
     }
     private void setForegroundRed(Cell cell) {
         Style style = cell.getStyle();
