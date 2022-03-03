@@ -70,9 +70,7 @@ public class TimeStampSetShareTStampHelper {
 				true, 
 				false, 
 				true, 
-				Optional.empty(),
-				AuthenticationMethod.IC_CARD
-				);
+				Optional.empty());
 		
 		return setShareTStamp;
 	}
@@ -92,9 +90,7 @@ public static StampSetCommunal get_list_empty() {
 				true, 
 				false, 
 				true, 
-				Optional.empty(),
-				AuthenticationMethod.IC_CARD
-				);
+				Optional.empty());
 		
 		return setShareTStamp;
 	}
