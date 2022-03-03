@@ -61,10 +61,10 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			
 			// データ自体を正準化する必要は無い
 			val intermResult = IntermediateResult.create(revisedData);
-			canonicalize(require, context, intermResult, key);
+			canonicalize(require, context, intermResult);
 		});
 	}
-	
+
 	/**
 	 * WorkspaceとしてのPrimaryKeyを取得する
 	 */
@@ -72,14 +72,15 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 		val itemNos = workspace.getPkItemNos();
 		return KeyValues.create(IntermediateResult.create(record), itemNos);
 	}
-	
+
 	protected void canonicalize(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
-			IntermediateResult intermResult,
-			KeyValues keyValues) {
-		
-		val domainDataId = DomainDataId.createDomainDataId(getParentTableName(), getDomainDataKeys(), keyValues);
+			IntermediateResult intermResult) {
+		val domainDataKeys = getDomainDataKeys();
+		val domainDataKeyValues = KeyValues.create(intermResult, getDomainKeyNos());
+
+		val domainDataId = DomainDataId.createDomainDataId(getParentTableName(), domainDataKeys, domainDataKeyValues);
 		boolean exists = require.existsDomainData(domainDataId);
 		
 		// 受け入れず無視するケース
@@ -90,7 +91,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 		if (context.getMode() == DELETE_RECORD_BEFOREHAND) {
 			// 既存データがあれば削除する（DELETE文になるので、実際にデータがあるかどうかのチェックは不要）
 			val workspace = require.getDomainWorkspace(context.getDomainId());
-			require.save(context, toDelete(context, workspace, keyValues));
+			require.save(context, toDelete(context, workspace, domainDataKeyValues));
 		}
 		
 		//追加の正規化処理やって、データを登録したくない場合はOptional.empty
