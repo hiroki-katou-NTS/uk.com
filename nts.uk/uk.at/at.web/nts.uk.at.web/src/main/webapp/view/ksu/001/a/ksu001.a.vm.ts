@@ -1021,7 +1021,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.listSid.push(emp.employeeId);
                 self.listEmpData.push({ id: emp.employeeId, code: emp.employeeCode, name : businessName, supportType : emp.supportType });
-                if(emp.supportType == SupportType.DO_NOT_GOTOSUPPORT)
+                if(emp.supportType != SupportType.COME_TO_SUPPORT)
                     self.listSidByOrg.push(emp.employeeId);
                  
                 let listWorkScheduleInforByEmp: Array<IWorkScheduleWorkInforDto> = _.filter(data.listWorkScheduleWorkInfor, function(workSchedul: IWorkScheduleWorkInforDto) { return workSchedul.employeeId === emp.employeeId });
