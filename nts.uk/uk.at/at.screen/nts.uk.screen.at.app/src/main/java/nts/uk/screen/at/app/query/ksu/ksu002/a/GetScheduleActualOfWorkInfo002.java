@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.query.ksu.ksu002.a;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,6 +14,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.GetLegalWorkTimeOfEmployeeService;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingRepository;
@@ -46,6 +49,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.LegalWorkTimeOfEmployeeDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PeriodListPeriodDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkScheduleWorkInforDto;
@@ -107,6 +112,9 @@ public class GetScheduleActualOfWorkInfo002 {
 	@Inject
 	private KSU002Finder kSU002Finder;
 	
+	@Inject
+	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepository;
+	
 	
 	public List<WorkScheduleWorkInforDto> getDataScheduleAndAactualOfWorkInfo(DisplayInWorkInfoInput param) {
 		
@@ -146,11 +154,22 @@ public class GetScheduleActualOfWorkInfo002 {
 	//ScreenQuery 期間に応じる基本情報を取得する  -> 3 取得する(@Require, 社員ID, 期間) Optional<社員の法定労働時間>
 	public LegalWorkTimeOfEmployeeDto getlegalworkinghours(DisplayInWorkInfoInput param) {
 		String companyId = AppContexts.user().companyId();
+		
+		List<EmployeeId> employeeIDs = param.listSid.stream().map(m -> {
+			return new EmployeeId(m);
+		}).collect(Collectors.toList());
+		
+		List<DateInformation> dateInfo = kSU002Finder.getDateInformation(employeeIDs, param.getPeriod());
+		
+		List<AffWorkplaceHistoryItem> affWorkPlaces = affWorkplaceHistoryItemRepository.getAffWrkplaHistItemByEmpIdAndDate(GeneralDate.today(), param.listSid.get(0));
+		
 		LegalWorkTimeOfEmployeeDto result = new LegalWorkTimeOfEmployeeDto();
 		if(param.listSid.isEmpty()) {
 			return result;
 		}
 		result.setValue(GetLegalWorkTimeOfEmployeeService.get(new LegalWorkTimeRequireImpl(companyId), param.listSid.get(0), param.getPeriod()));
+		result.setAffWorkPlaces(affWorkPlaces.stream().map(m -> m.getWorkplaceId()).collect(Collectors.toList()));
+		result.setDateInfo(dateInfo);
 		return result;
 	}
 
