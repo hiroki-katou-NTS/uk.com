@@ -39,7 +39,6 @@ public class PublicHolidayCanonicalization extends  IndependentCanonicalization{
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(DomainDataColumn.CID,
-								new DomainDataColumn("YMD_K", DataType.DATE))	;
+								new DomainDataColumn(Items.年月日, "YMD_K", DataType.DATE))	;
 	}
-
 }
