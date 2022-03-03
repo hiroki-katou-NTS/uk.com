@@ -17,10 +17,15 @@ import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutpu
 @Getter
 public class RegisterSmileLinkageExternalIOutputScreenCommand {
 	private Integer paymentCode;
+	
 	private List<EmploymentAndLinkedMonthSettingDto> rightEmployments;
+	
 	private Integer salaryCooperationClassification;
+	
 	private Integer monthlyLockClassification;
+	
 	private Integer monthlyApprovalCategory;
+	
 	private String salaryCooperationConditions;
 
 	public SmileLinkageOutputSetting convertScreenCommandToEntity() {
