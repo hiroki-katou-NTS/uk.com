@@ -10,10 +10,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -45,6 +48,7 @@ import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
  * path: UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).A：個人スケジュール修正（職場別）.メニュー別OCD.初期起動
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class StartKSU001Ver5 {
 
 	@Inject
@@ -71,14 +75,27 @@ public class StartKSU001Ver5 {
 		resultStep1.setStartDate(startDate);
 		resultStep1.setEndDate(endDate);
 		
-		TargetOrgIdenInfor targetOrgIdenInfor = null;
-		if (resultStep1.targetOrgIdenInfor.unit == TargetOrganizationUnit.WORKPLACE.value) {
-			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,Optional.of(param.workplaceId == null ? resultStep1.targetOrgIdenInfor.workplaceId : param.workplaceId),Optional.empty());
+		int unit = 0;
+		String workplaceId = "";
+		String workplaceGroupId = "";
+		if (StringUtil.isNullOrEmpty(param.workplaceId, true) && StringUtil.isNullOrEmpty(param.workplaceGroupId, true)) {
+			unit = resultStep1.targetOrgIdenInfor.unit;
+			workplaceId = resultStep1.targetOrgIdenInfor.workplaceId;
+			workplaceGroupId = resultStep1.targetOrgIdenInfor.workplaceGroupId;
 		} else {
-			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, Optional.empty(),Optional.of(param.workplaceGroupId == null ? resultStep1.targetOrgIdenInfor.workplaceGroupId : param.workplaceGroupId));
+			unit = param.unit;
+			workplaceId = param.workplaceId;
+			workplaceGroupId = param.workplaceGroupId ;
+		}
+		
+		TargetOrgIdenInfor targetOrgIdenInfor = null;
+		if (unit == TargetOrganizationUnit.WORKPLACE.value) {
+			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,Optional.of(workplaceId),Optional.empty());
+		} else {
+			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, Optional.empty(),Optional.of(workplaceGroupId));
 		}
 
-		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, targetOrgIdenInfor);
+		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(GeneralDate.today(), new DatePeriod(startDate, endDate), targetOrgIdenInfor);
 		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp(param2);
 		// step 2 end
 		
@@ -114,12 +131,12 @@ public class StartKSU001Ver5 {
 			param51.setListSid(listSid);
 			param51.setStartDate(startDate);
 			param51.setEndDate(endDate);
-			param51.setWorkplaceId(resultStep1.targetOrgIdenInfor.workplaceId);
-			param51.setWorkplaceGroupId(resultStep1.targetOrgIdenInfor.workplaceGroupId);
 			param51.setListShiftMasterNotNeedGetNew(new ArrayList<>());
 			param51.setShiftPaletteWantGet(new ShiftPaletteWantGet(param.shiftPalletUnit, param.pageNumberCom, param.pageNumberOrg));
 			param51.setGetActualData(param.getActualData);
-			param51.setUnit(resultStep1.targetOrgIdenInfor.unit);
+			param51.setUnit(targetOrgIdenInfor.getUnit().value);
+			param51.setWorkplaceId(targetOrgIdenInfor.getWorkplaceId().orElse(null));
+			param51.setWorkplaceGroupId(targetOrgIdenInfor.getWorkplaceGroupId().orElse(null));
 			
 			param51.setPersonalCounterOp(StringUtil.isNullOrEmpty(param.personTotalSelected, true) ? (resultStep1.useCategoriesPersonal.isEmpty() ? null : resultStep1.useCategoriesPersonal.get(0).getValue()) : Integer.valueOf(param.personTotalSelected));
 			param51.setWorkplaceCounterOp(StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? (resultStep1.useCategoriesWorkplace.isEmpty() ? null : resultStep1.useCategoriesWorkplace.get(0).getValue()) : Integer.valueOf(param.workplaceSelected));

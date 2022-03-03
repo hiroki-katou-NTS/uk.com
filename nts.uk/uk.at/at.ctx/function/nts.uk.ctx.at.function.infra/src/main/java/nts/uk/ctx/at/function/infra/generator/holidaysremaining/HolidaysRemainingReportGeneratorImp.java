@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.infra.generator.holidaysremaining;
 import com.aspose.cells.*;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.annleauseddays.FindAnnLeaUsedDaysAdapter;
@@ -104,6 +105,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             WorksheetCollection worksheets = workbook.getWorksheets();
             // Get first sheet in template
             Worksheet worksheet = worksheets.get(0);
+            worksheet.setName(dataSource.getTitle());
             printHeader(worksheet, dataSource);
             printTemplate(worksheet, dataSource);
             worksheets.setActiveSheetIndex(0);
@@ -120,7 +122,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             removeTemplate(worksheet);
             designer.getDesigner().setWorkbook(workbook);
             designer.processDesigner();
-            designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(REPORT_FILE_NAME)));
+            designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(dataSource.getTitle()+".xlsx")));
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -622,7 +624,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         List<AggrResultOfAnnualLeaveEachMonthKdr> rs363New = hdRemainingInfor.getRs363New();
         if (dataSource != null && rs363New != null) {
             // E1_4
-            val valueE14 = listAnnLeaGrant.stream().mapToDouble(AnnLeaGrantNumberImported::getRemainDay).sum();
+            Double valueE14 = listAnnLeaGrant.isEmpty() ? null:
+                    listAnnLeaGrant.stream().mapToDouble(AnnLeaGrantNumberImported::getRemainDay).sum();
             Double leave_DaysRemain = checkShowAreaAnnualBreak1(
                     dataSource.getHolidaysRemainingManagement()) ?
                     valueE14 : null;
@@ -633,30 +636,38 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             // E1_5 - value in 363- 年休_使用数_日数
             // 年休_使用数_日数 =  月度使用日数+ 付与後月度使用日数;
             // 月度使用日数 = 年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．使用数．付与前;
+            List<Double> use_dates = rs363New.stream().filter(e -> e.getYearMonth().compareTo(currentMonth) == 0)
+                    .filter(e->e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
+                            .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
+                            .getUsedNumberBeforeGrant().getUsedDays().isPresent())
+                    .mapToDouble(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
+                            .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
+                            .getUsedNumberBeforeGrant().getUsedDays().get().v()).boxed().collect(Collectors.toList());
 
-            Double use_date = rs363New.stream().filter(e -> e.getYearMonth().compareTo(currentMonth) == 0)
-                    .map(e -> {
-                        val i = e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
-                                .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
-                                .getUsedNumberBeforeGrant().getUsedDays();
-                        if (i.isPresent()) {
-                            return i.get().v();
-                        } else {
-                            return (double) 0;
-                        }
-                    }).mapToDouble(e -> e).sum();
+            Double use_date = !use_dates.isEmpty() ? use_dates.stream().mapToDouble(e-> e).sum() : null;
             // 付与後月度使用日数 = 年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．使用数．付与後
-            Double use_after_grant = rs363New.stream().filter(e -> e.getYearMonth().compareTo(currentMonth) == 0)
+            List<Double> use_after_grants = rs363New.stream().filter(e -> e.getYearMonth().compareTo(currentMonth) == 0)
+                    .filter(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
+                            .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
+                            .getUsedNumberAfterGrantOpt().isPresent())
                     .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                             .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
-                            .getUsedNumberAfterGrantOpt()).mapToDouble(e ->
-                            {
-                                return e.filter(annualLeaveUsedNumber -> annualLeaveUsedNumber.getUsedDays().isPresent())
-                                        .map(annualLeaveUsedNumber -> annualLeaveUsedNumber.getUsedDays().get().v()).orElseGet(() -> (double) 0);
+                            .getUsedNumberAfterGrantOpt().get())
+                    .filter(e->e.getUsedDays().isPresent())
+                    .mapToDouble(e -> {
+                                return e.getUsedDays().get().v();
                             }
-                    ).sum();
+                    ).boxed().collect(Collectors.toList());;
+            Double use_after_grant = !use_after_grants.isEmpty()? use_after_grants.stream().mapToDouble(e->e).sum() : null;
 
-            Double valueE15 = use_date + use_after_grant;
+            Double valueE15 = null;
+            if(use_date!=null && use_after_grant!=null){
+                valueE15 = use_date + use_after_grant;
+            }else {
+                if(use_date!=null)valueE15 = use_date;
+                if(use_after_grant!=null)valueE15 = use_after_grant;
+
+            }
             //Double valueE15 = use_after_grant;
             Double used_Days = checkShowAreaAnnualBreak1(
                     dataSource.getHolidaysRemainingManagement()) ?
@@ -665,10 +676,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             // E1_6 - value in 363 - 年休_残数_日数
             // 年休_残数_日数: So luong con la :月度残日数: 年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)
             // ．残数．年休(マイナスあり)．残数．付与前	合計残日数
-            Double valueE16 = rs363New.stream().filter(e -> e.getYearMonth().compareTo(currentMonth) == 0)
+            List<Double> valueE16s = rs363New.stream().filter(e -> e.getYearMonth().compareTo(currentMonth) == 0)
                     .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                             .getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo()
-                            .getRemainingNumberBeforeGrant().getTotalRemainingDays()).mapToDouble(e -> e != null ? e.v() : 0).sum(); //
+                            .getRemainingNumberBeforeGrant().getTotalRemainingDays())
+                    .filter(Objects::nonNull).mapToDouble(PrimitiveValueBase::v).boxed().collect(Collectors.toList()); //
+            Double valueE16 = !valueE16s.isEmpty() ? valueE16s.stream().mapToDouble(e->e).sum() : null;
 
             Double number_date_remain = checkShowAreaAnnualBreak1(
                     dataSource.getHolidaysRemainingManagement()) ?
@@ -681,9 +694,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
             // E1_13; SUM VALUE 281
             if (isTime) {
-                Double valueE113 = listAnnLeaGrant.stream()
+                val valueE113s =  listAnnLeaGrant.stream()
                         .filter(x -> x.getRemainTime() != null)
-                        .mapToDouble(AnnLeaGrantNumberImported::getRemainTime).sum();
+                        .mapToDouble(AnnLeaGrantNumberImported::getRemainTime)
+                        .boxed().collect(Collectors.toList()); //;
+                Double valueE113 = !valueE113s.isEmpty()? valueE113s.stream().mapToDouble(e->e).sum(): null;
                 Double leave_Hours = isTime ?
                         valueE113 : null;
                 val e113 = leave_Hours != null ? convertToTime((int) (leave_Hours.doubleValue())) : "";
@@ -694,31 +709,47 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 // E1_14
                 // 年休_使用数_時間 = 月度使用時間+付与後月度使用時間
                 // 月度使用時間 = 年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．使用数．付与前
-                val use_time =
+                List<Double> use_times =
                         rs363New.stream().filter(e -> e.getYearMonth().compareTo(currentMonth) == 0)
+                                .filter(e->e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
+                                        .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
+                                        .getUsedNumberBeforeGrant().getUsedTime().isPresent())
                                 .map((AggrResultOfAnnualLeaveEachMonthKdr e) -> {
                                     val i = e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                                             .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
                                             .getUsedNumberBeforeGrant().getUsedTime();
-                                    if (i.isPresent()) {
                                         return i.get().v();
-                                    } else {
-                                        return 0;
-                                    }
-                                }).mapToDouble(e -> e).sum();
+                                }).mapToDouble(e -> e).boxed().collect(Collectors.toList());
+
+                Double use_time = !use_times.isEmpty() ? use_times.stream().mapToDouble(e->e).sum() : null;
                 // 付与後月度使用時間 =年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．使用数．付与後
-                val use_after_grant_time = rs363New.stream().filter(e -> e.getYearMonth().compareTo(currentMonth) == 0)
+                List<Double> use_after_grant_times = rs363New.stream().filter(e -> e.getYearMonth().compareTo(currentMonth) == 0)
+                        .filter(e->e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
+                                .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
+                                .getUsedNumberAfterGrantOpt().isPresent() &&
+                                e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
+                                        .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
+                                        .getUsedNumberAfterGrantOpt().get().getUsedTime().isPresent()
+                        )
                         .map(e -> {
                                     val i = e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                                             .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
                                             .getUsedNumberAfterGrantOpt();
-                                    if (i.isPresent() && i.get().getUsedTime().isPresent()) {
                                         return i.get().getUsedTime().get().v();
-                                    } else return 0;
                                 }
-                        ).mapToDouble(e -> e).sum();
-
-                val valueE114 = use_time + use_after_grant_time;
+                        ).mapToDouble(e -> e).boxed().collect(Collectors.toList());
+                Double use_after_grant_time = !use_after_grant_times.isEmpty()? use_after_grant_times.stream().mapToDouble(e->e).sum(): null;
+                Double valueE114 = null;
+                if(use_time!=null && use_after_grant_time!= null){
+                    valueE114 = use_time + use_after_grant_time;
+                }else {
+                    if(use_time!=null){
+                        valueE114 = use_time;
+                    }
+                    if(use_after_grant_time!=null){
+                        valueE114 = use_after_grant_time;
+                    }
+                }
                 //val valueE114 = use_after_grant_time ;
                 Double uses_Hours = valueE114;
                 val e114 = uses_Hours != null ? convertToTime(uses_Hours.intValue()) : "";
@@ -726,11 +757,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 // E1_15
                 // 年休_残数_時間 :月度残時間
                 // 月度残時間 = 年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．残数．付与前
-                val valueE115 = rs363New.stream().filter(e -> e.getYearMonth().compareTo(currentMonth) == 0)
+                List<Double> valueE115s = rs363New.stream().filter(e -> e.getYearMonth().compareTo(currentMonth) == 0)
                         .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                                 .getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo()
-                                .getRemainingNumberBeforeGrant().getTotalRemainingTime()).mapToDouble(e -> e.isPresent() && e != null ? e.get().v() : 0).sum();
-                Double leave_RemainHours = valueE115;
+                                .getRemainingNumberBeforeGrant().getTotalRemainingTime())
+                        .filter(e->e.isPresent() && e != null)
+                        .mapToDouble(e -> e.get().v()).boxed().collect(Collectors.toList());
+                Double leave_RemainHours = !valueE115s.isEmpty() ? valueE115s.stream().mapToDouble(e->e).sum():null;
                 val e115 = leave_RemainHours != null ? convertToTime(leave_RemainHours.intValue()) : "";
                 cells.get(firstRow + 1, 7).setValue(e115);
                 if (leave_RemainHours != null && leave_RemainHours < 0) {
@@ -880,7 +913,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             dataSource.getHolidaysRemainingManagement()) ?
                             value33 : null;
                     cells.get(firstRow + row33, 10 + totalMonth).setValue(e33 != null
-                            && e33 != 0
                             ? df.format(e33) : null);
                     if (e33 != null && e33 < 0) {
                         setForegroundRed(cells.get(firstRow + row33, 10 + totalMonth));
@@ -933,7 +965,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         Integer e34 = value34;
 
                         cells.get(firstRow + row34, 10 + totalMonth).setValue(e34 != null
-                                && e34 != 0
                                 ? convertToTime((int) e34.doubleValue()) : null);
                         if (e34 != null && e34 < 0) {
                             setForegroundRed(cells.get(firstRow + row34, 10 + totalMonth));
@@ -1251,7 +1282,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         boolean isTime = false;
         if (compensatoryLeaveComSet != null)
             isTime = compensatoryLeaveComSet
-                    .getCompensatoryDigestiveTimeUnit().getIsManageByTime() == ManageDistinct.YES;
+                    .getTimeVacationDigestUnit().getManage() == ManageDistinct.YES;
 
         val substituteHolidayAggrResultsRight = hdRemainingInfor.getSubstituteHolidayAggrResultsRight();
 
@@ -2000,7 +2031,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                             .getRemainingNumber().getHalfDayAnnualLeaveWithMinus();
                                     if (i.isPresent()) {
                                         return
-                                                i.get().getRemainingNum().getTimes().v();
+                                                i.get().getRemainingNum().getTimesBeforeGrant().v();
                                     } else {
                                         return 0;
                                     }
@@ -2115,8 +2146,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 val number_of_date_remainOpt = item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                         .getRemainingNumber().getHalfDayAnnualLeaveWithMinus();
                 if (number_of_date_remainOpt.isPresent() && number_of_date_remainOpt.get().getRemainingNum() != null &&
-                        number_of_date_remainOpt.get().getRemainingNum().getTimes().v() != 0) {
-                    val number_of_date_remain = number_of_date_remainOpt.get().getRemainingNum().getTimes();
+                        number_of_date_remainOpt.get().getRemainingNum().getTimesBeforeGrant().v() != 0) {
+                    val number_of_date_remain = number_of_date_remainOpt.get().getRemainingNum().getTimesBeforeGrant();
                     cells.get(firstRow + 1, 10 + totalMonth)
                             .setValue(number_of_date_remain + TextResource.localize("KDR001_75"));
                     if (number_of_date_remain.v() < 0) {
@@ -2652,8 +2683,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         //※2
         val listNursingLeaveSetting = nursingLeaveSettingRepository.findByCompanyId(AppContexts.user().companyId());
         val childNursing = listNursingLeaveSetting.stream()
-                .filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing && i.getTimeCareNursingSetting()
-                        .getManageDistinct() == ManageDistinct.YES).findFirst();
+                .filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing && i.getTimeVacationDigestUnit()
+                        .getManage() == ManageDistinct.YES).findFirst();
         boolean isTime = false;
         if (childNursing.isPresent()) {
             isTime = childNursing.get().isManaged();
@@ -2974,8 +3005,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
         val nursingCare = listNursingLeaveSetting.stream()
                 .filter(i -> i.getNursingCategory() == NursingCategory.Nursing
-                        && i.getTimeCareNursingSetting()
-                        .getManageDistinct() == ManageDistinct.YES).findFirst();
+                        && i.getTimeVacationDigestUnit()
+                        .getManage() == ManageDistinct.YES).findFirst();
         boolean isTime = false;
         if (nursingCare.isPresent()) {
             isTime = nursingCare.get().isManaged();
@@ -3555,7 +3586,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             if ((checkLeave == null || checkLeave.getYearManageType() == ManageDistinct.NO)) {
                 return false;
             } else {
-                if (checkLeave.getTimeSetting().getTimeManageType() == ManageDistinct.YES) {
+                if (checkLeave.getTimeSetting().getTimeVacationDigestUnit().getManage() == ManageDistinct.YES) {
                     return true;
                 } else {
                     return false;
@@ -3590,7 +3621,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             if ((checkLeave == null || checkLeave.getYearManageType() == ManageDistinct.NO)) {
                 return false;
             } else {
-                if (checkLeave.getTimeSetting().getTimeManageType() == ManageDistinct.NO) {
+                if (checkLeave.getTimeSetting().getTimeVacationDigestUnit().getManage() == ManageDistinct.NO) {
                     return false;
                 } else {
                     if (checkLeave.getTimeSetting().getMaxYearDayLeave().manageType == ManageDistinct.NO) {
@@ -3800,8 +3831,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         }
         val listNursingLeaveSetting = nursingLeaveSettingRepository.findByCompanyId(AppContexts.user().companyId());
         val childNursing = listNursingLeaveSetting.stream()
-                .filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing && i.getTimeCareNursingSetting()
-                        .getManageDistinct() == ManageDistinct.YES).findFirst();
+                .filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing && i.getTimeVacationDigestUnit()
+                        .getManage() == ManageDistinct.YES).findFirst();
         boolean isTime = false;
         if (childNursing.isPresent()) {
             isTime = childNursing.get().isManaged();
@@ -3825,8 +3856,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         int firstRow = 0;
         val listNursingLeaveSetting = nursingLeaveSettingRepository.findByCompanyId(AppContexts.user().companyId());
         val childNursing = listNursingLeaveSetting.stream()
-                .filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing && i.getTimeCareNursingSetting()
-                        .getManageDistinct() == ManageDistinct.YES).findFirst();
+                .filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing && i.getTimeVacationDigestUnit()
+                        .getManage() == ManageDistinct.YES).findFirst();
         boolean isTime = false;
         if (childNursing.isPresent()) {
             isTime = childNursing.get().isManaged();

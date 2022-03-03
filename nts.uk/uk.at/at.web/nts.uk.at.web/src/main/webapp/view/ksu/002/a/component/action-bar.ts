@@ -57,6 +57,7 @@ module nts.uk.ui.at.ksu002.a {
 				"></button>
 			<button class="small btn-help" data-bind="
 					i18n: 'KSU002_27',
+					enable: false,
 					attr: {
 						tabindex: $$tabindex
 					}

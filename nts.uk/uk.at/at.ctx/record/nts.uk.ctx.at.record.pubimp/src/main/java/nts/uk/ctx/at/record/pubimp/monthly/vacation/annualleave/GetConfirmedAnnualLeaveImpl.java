@@ -233,7 +233,7 @@ public class GetConfirmedAnnualLeaveImpl implements GetConfirmedAnnualLeave {
 								halfDayAnnualLeave.get().getRemainingNum().getTimesBeforeGrant():null;
 					}
 					if(maxRemainingTime.isPresent()){
-						monthlyRemainTime = maxRemainingTime.get().getTimeBeforeGrant();
+						monthlyRemainTime = new RemainingMinutes(maxRemainingTime.get().getTimeBeforeGrant().v());
 					}
 					AnnualLeaveUsedDayNumber usedDays =
 							new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().map(c -> c.v()).orElse(0d));

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.cancelreflectapp.Cance
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -38,15 +39,17 @@ public class RecoverWorkScheduleBeforeAppReflect {
 		}
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(workSchedule.getEmployeeID(), workSchedule.getYmd(),
 				workSchedule.getWorkInfo(), CalAttrOfDailyAttd.createAllCalculate(), workSchedule.getAffInfo(),
-				Optional.empty(), new ArrayList<>(), Optional.empty(), workSchedule.getLstBreakTime(),
+				Optional.empty(), new ArrayList<>(), workSchedule.getOutingTime(), workSchedule.getLstBreakTime(),
 				workSchedule.getOptAttendanceTime(), workSchedule.getOptTimeLeaving(),
 				workSchedule.getOptSortTimeWork(), Optional.empty(), Optional.empty(), Optional.empty(),
-				workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>(), Optional.empty());
+				workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty());
 
 		// 申請取消の処理
 		DailyAfterAppReflectResult cancellationResult = CancellationOfApplication.process(require, application, date,
 				ScheduleRecordClassifi.SCHEDULE, domainDaily);
 		domainDaily = cancellationResult.getDomainDaily().getDomain();
+		// remove Optional<OutingTimeOfDailyAttd> outingTime
+		domainDaily.getOutingTime().ifPresent(x -> x.removeTimeDayNull());
 
 //		// 労働条件項目を取得
 //		Optional<WorkingConditionItem> workCondOpt = WorkingConditionService.findWorkConditionByEmployee(require,
@@ -59,7 +62,7 @@ public class RecoverWorkScheduleBeforeAppReflect {
 		domainDaily = require.correct(domainDaily, changeAtt);
 
 		// 日別実績の修正からの計算
-		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(ExecutionType.NORMAL_EXECUTION,
+		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(CalculateOption.asDefault(),
 				Arrays.asList(domainDaily));
 		if (!lstAfterCalc.isEmpty()) {
 			domainDaily = lstAfterCalc.get(0);
@@ -97,7 +100,7 @@ public class RecoverWorkScheduleBeforeAppReflect {
 		public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd);
 
 		// CalculateDailyRecordServiceCenterNew
-		public List<IntegrationOfDaily> calculateForSchedule(ExecutionType type,
+		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily);
 
 		// WorkScheduleRepository

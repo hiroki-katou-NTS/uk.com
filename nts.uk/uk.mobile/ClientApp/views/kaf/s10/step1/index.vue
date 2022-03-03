@@ -71,8 +71,6 @@
             workInfo.workTime.code
           }}</span>
           <span>{{ workInfo.workTime.name }}</span>
-          <!--A1_4_6-->
-          <span class="d-block mt-1">{{ workInfo.workTime.time }}</span>
         </button>
       </div>
     </div>
@@ -165,7 +163,7 @@
             <span
               v-on:click="addBreakHour"
               class="fas fa-2x fa-plus-circle"
-              style="color: #6CC0E5"
+              style="color: #6A6A6A"
             ></span>
           </div>
         </div>

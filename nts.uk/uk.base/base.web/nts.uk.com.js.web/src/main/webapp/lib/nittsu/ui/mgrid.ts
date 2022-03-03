@@ -544,6 +544,7 @@ module nts.uk.ui.mgrid {
         export const FACON_DESC = "facon-desc";
         export const ALIGN_LEFT = "halign-left";
         export const ALIGN_RIGHT = "halign-right";
+        export const ALIGN_CENTER = "halign-center";
         export const DefaultRowConfig = { css: { height: BODY_ROW_HEIGHT } };
         export let _voilerRows = {};
         export let _encarRows = [];
@@ -979,7 +980,7 @@ module nts.uk.ui.mgrid {
                 let tdStyle = "";
                 tdStyle += "; border-width: 1px; overflow: hidden; ";
                 if (self.options.isHeader) {
-                    tdStyle += "word-break: break-all; vertical-align: top;";
+                    tdStyle += "word-break: break-all; vertical-align: middle;";
                 } else {
                     tdStyle += "white-space: " + ws + ";"; // position: relative;";
                 }
@@ -1478,7 +1479,7 @@ module nts.uk.ui.mgrid {
                 let self = this;
                 let $td = document.createElement("td");
                 $.data($td, lo.VIEW, rowIdx + "-" + cell.key);
-                let tdStyle = "; border-width: 1px; overflow: hidden; word-break: break-all; vertical-align: top; border-collapse: collapse;";
+                let tdStyle = "; border-width: 1px; overflow: hidden; word-break: break-all; vertical-align: middle; border-collapse: collapse;";
                 if (!_.isNil(cell.rowspan) && cell.rowspan > 1) $td.setAttribute("rowspan", cell.rowspan);
                 if (!_.isNil(cell.colspan) && cell.colspan > 1) $td.setAttribute("colspan", cell.colspan);
                 else if (_.isNil(cell.colspan) && !self.visibleColumnsMap[cell.key]) {
@@ -2377,7 +2378,7 @@ module nts.uk.ui.mgrid {
                 if (!col) tdStyle += "; display: none;";
                 else if (!_.isNil(col[0].columnCssClass)) {
                     col[0].columnCssClass.split(' ').forEach(clz => {
-                        if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
+                        if (clz === hpl.CURRENCY_CLS || clz === v.ALIGN_RIGHT || clz === v.ALIGN_CENTER) {
                             td.classList.add(clz);
                         }
                     });
@@ -2734,7 +2735,7 @@ module nts.uk.ui.mgrid {
                 if (!col) tdStyle += "; display: none;";
                 else if (!_.isNil(col[0].columnCssClass)) {
                     col[0].columnCssClass.split(' ').forEach(clz => {
-                        if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
+                        if (clz === hpl.CURRENCY_CLS || clz === v.ALIGN_RIGHT || clz === v.ALIGN_CENTER) {
                             td.classList.add(clz);
                         }
                     });
@@ -3002,7 +3003,7 @@ module nts.uk.ui.mgrid {
                 top: top,
                 left: left,
                 width: width,
-                border: "solid 1px #CCC"
+                border: "none"
             };
             
             if (maxWidth) {
@@ -6840,7 +6841,7 @@ module nts.uk.ui.mgrid {
                         after = parseFloat(cellValue);
                         before = parseFloat($.data(calcCell, v.DATA));
                         total = sum[currentPage] + ((isNaN(after) ? 0 : after) - (isNaN(before) ? 0 : before));
-                        sum[currentPage] = total;
+                        sum[currentPage] = parseFloat(total).toFixed(5).toDecimal();
                         sumDone = true;
                     }
                     sum[sheet].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[currentPage]) : sum[currentPage];
@@ -6982,6 +6983,28 @@ module nts.uk.ui.mgrid {
                         if (control === dkn.LINK_LABEL) {
                             let link = t.c.querySelector("a");
                             link.innerHTML = cellValue;
+                        } else if (control === dkn.CHECKBOX) {
+                            let check = t.c.querySelector("input[type='checkbox']");
+                            if (!check) return;
+                            if (cellValue) {
+                                check.setAttribute("checked", "checked");
+                                check.checked = true;
+                                let evt = document.createEvent("HTMLEvents");
+                                evt.initEvent("change", false, true);
+                                evt.resetValue = reset;
+                                evt.checked = cellValue;
+                                evt.stopUpdate = true;
+                                check.dispatchEvent(evt);
+                            } else if (!cellValue) {
+                                check.removeAttribute("checked");
+                                check.checked = false;
+                                let evt = document.createEvent("HTMLEvents");
+                                evt.initEvent("change", false, true);
+                                evt.resetValue = reset;
+                                evt.checked = cellValue;
+                                evt.stopUpdate = true;
+                                check.dispatchEvent(evt);
+                            }
                         } else if (_.isObject(control) && control.type === dkn.COMBOBOX) {
                             let sel = _.find(control.options, o => o.code === cellValue);
                             if (sel) { 
@@ -8449,7 +8472,7 @@ module nts.uk.ui.mgrid {
                 }
                 
                 let r = ti.closest($checkBox, "tr");
-                if (r) {
+                if (r && !evt.stopUpdate) {
                     setChecked(checked, parseFloat($.data(r, lo.VIEW)), evt.resetValue, evt.pg);
                 }
             });

@@ -16,7 +16,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.DateHistoryCache;
-import nts.arc.layer.app.cache.DateHistoryCache.Entry;
 import nts.arc.layer.app.cache.KeyDateHistoryCache;
 import nts.arc.layer.app.cache.NestedMapCache;
 import nts.arc.time.GeneralDate;
@@ -41,6 +40,8 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
@@ -101,7 +102,7 @@ public class GetScheduleOfWorkInfo002 {
 		List<nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto> listDtoCommon = scheduleWorkInfor.getDataScheduleOfWorkInfo(mngStatusAndWScheMap);
 		
 		List<DateInformation> dateInformation = kSU002Finder.getDateInformation(param.listSid.stream().map(e -> new EmployeeId(e)).collect(Collectors.toList()), period);
-		
+
 		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = listDtoCommon
 				.stream()
 				.map(m -> {
@@ -110,39 +111,39 @@ public class GetScheduleOfWorkInfo002 {
 					GetDateInfoDuringThePeriodInput param1 = new GetDateInfoDuringThePeriodInput();
 					param1.setGeneralDate(m.getDate());
 					param1.setSids(sids);
-					
+
 					EditStateOfDailyAttdDto workTypeEditStatus = null;
 					if (m.workTypeEditStatus != null) {
 						workTypeEditStatus = new EditStateOfDailyAttdDto(m.workTypeEditStatus.getAttendanceItemId(), m.workTypeEditStatus.getEditStateSetting());
 					}
-					
+
 					EditStateOfDailyAttdDto workTimeEditStatus = null;
 					if (m.workTimeEditStatus != null) {
 						workTimeEditStatus = new EditStateOfDailyAttdDto(m.workTimeEditStatus.getAttendanceItemId(), m.workTimeEditStatus.getEditStateSetting());
 					}
-					
+
 					EditStateOfDailyAttdDto startTimeEditState = null;
 					if (m.startTimeEditState != null) {
 						startTimeEditState = new EditStateOfDailyAttdDto(m.startTimeEditState.getAttendanceItemId(), m.startTimeEditState.getEditStateSetting());
 					}
-					
+
 					EditStateOfDailyAttdDto endTimeEditState = null;
 					if (m.endTimeEditState != null) {
 						endTimeEditState = new EditStateOfDailyAttdDto(m.endTimeEditState.getAttendanceItemId(), m.endTimeEditState.getEditStateSetting());
 					}
-					
+
 					// Xửa lý theo hướng của anh Lai
 					Integer startTime = m.startTime;
 					Integer endTime = m.endTime;
-					
+
 					if (startTime != null && endTime != null) {
 						if (startTime == 0 && endTime == 0){
 							startTime = null;
 							endTime = null;
 						}
 					}
-					
-					
+
+
 					WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder()
 							.employeeId(m.getEmployeeId())
 							.date(m.getDate())
@@ -234,6 +235,8 @@ public class GetScheduleOfWorkInfo002 {
 		private KeyDateHistoryCache<String, EmployeeLeaveJobPeriodImport> empLeaveJobPeriodCache;
 		private KeyDateHistoryCache<String, EmpLeaveWorkPeriodImport> empLeaveWorkPeriodCache;
 		private KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workCondItemWithPeriodCache;
+		@Inject
+		private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 
 		public RequireImpl(List<String> empIdList, DatePeriod period, WorkScheduleRepository workScheduleRepo,
 				EmpComHisAdapter empComHisAdapter, WorkingConditionRepository workCondRepo,
@@ -251,8 +254,8 @@ public class GetScheduleOfWorkInfo002 {
 			List<EmploymentPeriodImported> listEmploymentPeriodImported = employmentHisScheduleAdapter
 					.getEmploymentPeriod(empIdList, period);
 			List<EmploymentPeriodImported> listEmploymentPeriodImported1 = listEmploymentPeriodImported.stream()
-                    .filter( distinctByKey(p -> p.getEmpID()) )
-                    .collect( Collectors.toList() );
+					.filter( distinctByKey(p -> p.getEmpID()) )
+					.collect( Collectors.toList() );
 			employmentPeriodCache = KeyDateHistoryCache.loaded(listEmploymentPeriodImported1.stream().collect(Collectors
 					.toMap(h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 
@@ -272,10 +275,10 @@ public class GetScheduleOfWorkInfo002 {
 		}
 
 		public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
-	    {
-	        Map<Object, Boolean> map = new ConcurrentHashMap<>();
-	        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
-	    }
+		{
+			Map<Object, Boolean> map = new ConcurrentHashMap<>();
+			return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+		}
 
 		@Override
 		public Optional<WorkSchedule> get(String employeeId, GeneralDate date) {
@@ -311,6 +314,11 @@ public class GetScheduleOfWorkInfo002 {
 		public Optional<EmploymentPeriodImported> getEmploymentHistory(String sid, GeneralDate startDate) {
 			Optional<EmploymentPeriodImported> data = employmentPeriodCache.get(sid, startDate);
 			return data;
+		}
+
+		@Override
+		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
+			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
 		}
 	}
 	

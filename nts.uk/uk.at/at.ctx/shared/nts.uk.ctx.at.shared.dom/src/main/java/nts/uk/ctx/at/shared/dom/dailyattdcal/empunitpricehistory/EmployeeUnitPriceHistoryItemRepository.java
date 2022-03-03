@@ -26,5 +26,4 @@ public interface EmployeeUnitPriceHistoryItemRepository {
 	void update(EmployeeUnitPriceHistoryItem employeeUnitPriceHistoryItem);
 
 	void delete(String companyId, String empId , String historyId); 
-
 }

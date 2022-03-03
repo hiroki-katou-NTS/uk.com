@@ -55,7 +55,14 @@ export class KSUS01BComponent extends Vue {
     }
 
     public formatNumberSeparated(num): string {
-        return num.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
+        if (num == null || num == undefined) {
+
+            return '';
+        }
+        
+        return num.toString().replace(/(\.\d+)|(?=(?:\d{3})+\b)(?!\b)/g, (m, r) =>  r || ',' );
+
+
     }
 }
 

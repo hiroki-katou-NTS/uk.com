@@ -103,7 +103,7 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
         /*※10_01*/
         boolean isNotOccurrOTTimeAtr = !isOccurrOTTimeAtr;
         /*A15_1*/
-        String isManagementOfHolidays = CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString("MANAGE_ATR")));
+        String isManagementOfHolidays = CommonTempHolidays.getTextEnumManageDistinct(rs.getBoolean("MANAGE_ATR") ? 1 : 0);
         /*A15_2*/
         String subExpDateColumn = isManagement ? CommonTempHolidays.getTextEnumExpirationTime(Integer.valueOf(rs.getString("EXPIRATION_USE_SET"))) : null;
         /*A15_3*/
@@ -181,11 +181,6 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
                 .columnId(EmployeeSystemImpl.KMF001_208)
                 .value(value3.getValue())
                 .style(MasterCellStyle.build().horizontalAlign(value3.getPositon()))
-                .build());
-        data.put(EmployeeSystemImpl.KMF001_209, MasterCellData.builder()
-                .columnId(EmployeeSystemImpl.KMF001_209)
-                .value(value4.getValue())
-                .style(MasterCellStyle.build().horizontalAlign(value4.getPositon()))
                 .build());
         data.put(EmployeeSystemImpl.KMF001_210, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_210)

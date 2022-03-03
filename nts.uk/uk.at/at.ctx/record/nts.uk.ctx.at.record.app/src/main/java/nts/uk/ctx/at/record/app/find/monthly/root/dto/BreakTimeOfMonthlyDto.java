@@ -80,7 +80,7 @@ public class BreakTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate 
 		case EXCESS_STATUTORY:
 			return Optional.of(ItemValue.builder().value(excessBreakTime).valueType(ValueType.TIME));
 		case COUNT:
-			return Optional.of(ItemValue.builder().value(breakTimes).valueType(ValueType.TIME));
+			return Optional.of(ItemValue.builder().value(breakTimes).valueType(ValueType.COUNT));
 		case (WITHIN_STATUTORY + DEDUCTION):
 			return Optional.of(ItemValue.builder().value(withinDeductionTime).valueType(ValueType.TIME));
 		case (EXCESS_STATUTORY + DEDUCTION):

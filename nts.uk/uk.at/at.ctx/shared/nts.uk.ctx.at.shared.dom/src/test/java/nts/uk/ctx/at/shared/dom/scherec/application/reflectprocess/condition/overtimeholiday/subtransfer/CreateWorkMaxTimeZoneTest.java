@@ -15,8 +15,8 @@ import mockit.Injectable;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer.CreateWorkMaxTimeZone;
 import nts.uk.ctx.at.shared.dom.scherec.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.CreateWorkMaxTimeZone;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -65,8 +65,8 @@ public class CreateWorkMaxTimeZoneTest {
 				converter.setData((IntegrationOfDaily) any).toDomain();
 				result = dailyApp.getDomain();
 
-				require.calculateForRecord((CalculateOption) any, (List<IntegrationOfDaily>) any,
-						(Optional<ManagePerCompanySet>) any, (ExecutionType) any);
+				require.calculateForRecordSchedule((CalculateOption) any, (List<IntegrationOfDaily>) any,
+						(Optional<ManagePerCompanySet>) any);
 				result = Arrays.asList(ReflectApplicationHelper.afterCalc(dailyApp.getDomain(), 0, 240));
 			}
 		};

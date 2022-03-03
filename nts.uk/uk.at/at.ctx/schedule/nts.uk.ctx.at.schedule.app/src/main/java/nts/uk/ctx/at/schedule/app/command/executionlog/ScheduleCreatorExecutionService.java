@@ -46,8 +46,6 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
@@ -68,6 +66,8 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -77,7 +77,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -89,10 +88,6 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 public class ScheduleCreatorExecutionService {
 	@Inject
 	private ManagedParallelWithContext parallel;
-
-	/** The basic schedule repository. */
-	@Inject
-	private BasicScheduleRepository basicScheduleRepository;
 
 	/** The schedule execution log repository. */
 	@Inject
@@ -179,6 +174,9 @@ public class ScheduleCreatorExecutionService {
 
 	@Inject
 	private EmploymentHisScheduleAdapter scheAdapter;
+	
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 	
 	@Inject
 	protected TransactionService transactionService;
@@ -302,10 +300,10 @@ public class ScheduleCreatorExecutionService {
 		CacheCarrier carrier = new CacheCarrier();
 		this.parallel.forEach(
 				scheduleCreators.stream().sorted((a,b) -> a.getEmployeeId().compareTo(b.getEmployeeId())).collect(Collectors.toList()),
-				scheduleCreator -> {
-					
-			transactionService.execute(() -> createScheOnePerson(command, scheduleExecutionLog, asyncTask, companyId, exeId, period, masterCache,
-					companySetting, checkStop, carrier, scheduleCreator));
+				scheduleCreator -> {					
+					createScheOnePerson(command, scheduleExecutionLog, asyncTask, companyId, exeId, period, masterCache,
+						companySetting, checkStop, carrier, scheduleCreator);
+
 		});
 
 		transactionService.execute(() -> postExecute(command, scheduleExecutionLog, asyncTask, exeId, companySetting));
@@ -351,9 +349,6 @@ public class ScheduleCreatorExecutionService {
 			final int unitMonthsOfTransaction = 2;
 			dateAfterCorrection.forEachByMonths(unitMonthsOfTransaction, subPeriod -> {
 
-				List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findSomePropertyWithJDBC(
-						Arrays.asList(scheduleCreator.getEmployeeId()), subPeriod);
-
 				// 勤務予定作成する
 				this.transaction.execute(
 						command,
@@ -363,7 +358,6 @@ public class ScheduleCreatorExecutionService {
 						exeId,
 						subPeriod,
 						masterCache,
-						listBasicSchedule,
 						companySetting,
 						scheduleCreator,
 						carrier);
@@ -494,7 +488,7 @@ public class ScheduleCreatorExecutionService {
 			for (val date : period.datesBetween()) {
 				// 「社員の予定管理状態」を取得する
 				// 「Output」・社員の予定管理状態一覧
-				EmployeeWorkingStatus.Require require = new ScheManaStatuTempoImpl(companyId, comHisAdapter,
+				EmployeeWorkingStatus.Require require = new EmployeeWorkingStatusRequireImpl(companyId, comHisAdapter,
 						conditionRespo, empHisAdapter, leaHisAdapter, scheAdapter);
 				EmployeeWorkingStatus manaStatuTempo = EmployeeWorkingStatus.create(require, id, date);
 				lstStatuTempos.add(manaStatuTempo);
@@ -505,8 +499,7 @@ public class ScheduleCreatorExecutionService {
 		// 勤務種類情報を取得する ↓
 		// EA修正履歴 No2282
 		// ドメインモデル「勤務種類」を取得する
-		List<WorkType> lstWorkTypeInfo = workTypeRepository.findWorkByDeprecate(companyId,
-				DeprecateClassification.NotDeprecated.value);
+		List<WorkType> lstWorkTypeInfo = workTypeRepository.findByCompanyId(companyId);
 		// -----↑
 		// 勤務種別をテク定期間の社員情報を入れて返す (Comment theo luồng của bác Bình)
 		CreateScheduleMasterCache cache = new CreateScheduleMasterCache(empGeneralInfo, mapEmploymentStatus,
@@ -702,8 +695,10 @@ public class ScheduleCreatorExecutionService {
 	}
 
 	@AllArgsConstructor
-	public static class ScheManaStatuTempoImpl implements EmployeeWorkingStatus.Require {
+	public class EmployeeWorkingStatusRequireImpl implements EmployeeWorkingStatus.Require {
+
 		String companyId = AppContexts.user().companyId();
+
 		@Inject
 		private EmpComHisAdapter comHisAdapter;
 
@@ -718,6 +713,7 @@ public class ScheduleCreatorExecutionService {
 
 		@Inject
 		private EmploymentHisScheduleAdapter scheAdapter;
+
 
 		@Override
 		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(String employeeId, GeneralDate date) {
@@ -756,5 +752,12 @@ public class ScheduleCreatorExecutionService {
 				return Optional.empty();
 			return Optional.of(result.get(0));
 		}
+
+
+		@Override
+		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
+			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
+		}
+
 	}
 }

@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -111,6 +112,16 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	public List<WorkSchedule> getListBySid(String sid, DatePeriod period) {
 
 		return this.getList(Arrays.asList(sid), period);
+	}
+	
+	private static final String SELECT_BY_LIST_KEY = "SELECT c FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND ( c.pk.ymd between :startDate AND :endDate ) ";
+
+	@Override
+	public List<WorkSchedule> getListBySidJpa(String sid, DatePeriod period) {
+		return this.queryProxy().query(SELECT_BY_LIST_KEY, KscdtSchBasicInfo.class).setParameter("employeeID", sid)
+				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList().stream()
+				.map(x -> x.toDomain(x.pk.sid, x.pk.ymd)).collect(Collectors.toList());
+
 	}
 
 	@Override
@@ -225,38 +236,11 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				oldData.get().kscdtSchTime.absenceTime = newData.kscdtSchTime.absenceTime;
 				oldData.get().kscdtSchTime.vacationAddTime = newData.kscdtSchTime.vacationAddTime;
 				oldData.get().kscdtSchTime.staggeredWhTime = newData.kscdtSchTime.staggeredWhTime;
+				oldData.get().kscdtSchTime.premiumWorkTimeTotal = newData.kscdtSchTime.premiumWorkTimeTotal;
+				oldData.get().kscdtSchTime.premiumAmountTotal = newData.kscdtSchTime.premiumAmountTotal;
 			}
 
 			if (oldData.get().kscdtSchTime != null) {
-				// List<KscdtSchOvertimeWork> overtimeWorks
-				if (!oldData.get().kscdtSchTime.overtimeWorks.isEmpty()) {
-					for (KscdtSchOvertimeWork y : newData.kscdtSchTime.overtimeWorks) {
-						oldData.get().kscdtSchTime.overtimeWorks.forEach(x -> {
-							if (y.pk.frameNo == x.pk.frameNo) {
-								x.cid = y.cid;
-								x.overtimeWorkTime = y.overtimeWorkTime;
-								x.overtimeWorkTimeTrans = y.overtimeWorkTimeTrans;
-								x.overtimeWorkTimePreApp = y.getOvertimeWorkTimePreApp();
-							}
-						});
-					}
-				}
-
-				// List<KscdtSchHolidayWork> holidayWorks
-				if (!oldData.get().kscdtSchTime.holidayWorks.isEmpty()) {
-					for (KscdtSchHolidayWork y : newData.kscdtSchTime.holidayWorks) {
-						oldData.get().kscdtSchTime.holidayWorks.forEach(x -> {
-							if (y.pk.frameNo == x.pk.frameNo) {
-								x.cid = y.cid;
-								x.holidayWorkTsStart = y.holidayWorkTsStart;
-								x.holidayWorkTsEnd = y.holidayWorkTsEnd;
-								x.holidayWorkTime = y.holidayWorkTime;
-								x.holidayWorkTimeTrans = y.holidayWorkTimeTrans;
-								x.holidayWorkTimePreApp = y.holidayWorkTimePreApp;
-							}
-						});
-					}
-				}
 
 				// List<KscdtSchBonusPay> bonusPays
 				if (!oldData.get().kscdtSchTime.bonusPays.isEmpty()) {
@@ -753,6 +737,18 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			} else {
 				oldData.get().kscdtSchGoingOutTs = newData.kscdtSchGoingOutTs;
 			}
+			
+			// List<KscdtSchOvertimeWork> overtimeWorks
+			oldData.get().kscdtSchTime.overtimeWorks = removeInsertData(oldData.get().kscdtSchTime.overtimeWorks,
+					newData.kscdtSchTime.overtimeWorks, (x, y) -> {
+						return y.pk.frameNo == x.pk.frameNo;
+					});
+
+			// List<KscdtSchHolidayWork> holidayWorks
+			oldData.get().kscdtSchTime.holidayWorks = removeInsertData(oldData.get().kscdtSchTime.holidayWorks,
+					newData.kscdtSchTime.holidayWorks, (x, y) -> {
+						return y.pk.frameNo == x.pk.frameNo;
+					});
 			this.commandProxy().update(oldData.get());
 		}
 	}
@@ -1547,4 +1543,12 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		return mapPairKscdtSchTask;
 	}
 
+	private <V> List<V> removeInsertData(List<V> oldDatas, List<V> newDatas, BiFunction<V, V, Boolean> keyCheck) {
+		oldDatas.forEach(x -> {
+			if(!newDatas.stream().anyMatch(y -> keyCheck.apply(x, y))) {
+				this.commandProxy().remove(x);
+			}
+		});
+		return newDatas;
+	}
 }

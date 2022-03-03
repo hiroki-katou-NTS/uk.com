@@ -26,6 +26,7 @@ import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyStartDateService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
@@ -263,18 +264,18 @@ public class WorkScheduleImportServiceTest {
 
 		new Expectations( GetEmpCanReferService.class ) {{
 			// 参照可能社員の取得
-			GetEmpCanReferService.getAll(require, (GeneralDate)any, anyString);
+			GetEmpCanReferService.getAll(require, (String)any, (GeneralDate)any, (DatePeriod)any);
 			result = referableEmployees;
 		}};
 
-		// 予定管理状態
+		// 就業状態
 		importSeeds.entrySet().stream()
 			.filter( seed -> seed.getValue().isPresent() )
 			.forEach( seed -> {
-				val scheMngStatus = Helper.createScheMngStatus( seed.getKey().getEmployeeId(), seed.getKey().getYmd(), seed.getValue().get() );
+				val status = Helper.createEmployeeWorkingStatus( seed.getKey().getEmployeeId(), seed.getKey().getYmd(), seed.getValue().get() );
 				new Expectations( EmployeeWorkingStatus.class ) {{
 					EmployeeWorkingStatus.create( require, seed.getKey().getEmployeeId().v(), seed.getKey().getYmd() );
-					result = scheMngStatus;
+					result = status;
 				}};
 			} );
 
@@ -296,6 +297,7 @@ public class WorkScheduleImportServiceTest {
 			.containsExactlyElementsOf( interimResult.getOrderOfEmployees() );
 
 		// 取り込み結果
+		assertThat( result ).isNotEqualTo( interimResult );
 		assertThat( result.getResults() )
 			.containsExactlyInAnyOrderElementsOf(
 					importSeeds.entrySet().stream()
@@ -319,7 +321,7 @@ public class WorkScheduleImportServiceTest {
 			put( Helper.createDummyShiftMaster( "Imp#DDD" ), true );
 			put( Helper.createDummyShiftMaster( "Imp#GGG" ), true );
 			put( Helper.createDummyShiftMaster( "Imp#SWK" ), true );
-			// put( Helper.createDummyWithImportCode( "Imp#XXX" ), false ); ⇒ 取得失敗
+			// put( Helper.createDummyShiftMaster( "Imp#XXX" ), false ); ⇒ 取得失敗
 			put( Helper.createDummyShiftMaster( "Imp#AAA" ), false );
 			put( Helper.createDummyShiftMaster( "Imp#ABC" ), true );
 			put( Helper.createDummyShiftMaster( "Imp#TDS" ), false );
@@ -395,6 +397,7 @@ public class WorkScheduleImportServiceTest {
 			.containsExactlyElementsOf( interimResult.getOrderOfEmployees() );
 
 		// 取り込み結果
+		assertThat( result ).isNotEqualTo( interimResult );
 		assertThat( result.getResults() )
 			.containsExactlyInAnyOrderElementsOf(
 					importSeeds.stream()
@@ -485,6 +488,7 @@ public class WorkScheduleImportServiceTest {
 			.containsExactlyElementsOf( interimResult.getOrderOfEmployees() );
 
 		// 取り込み結果
+		assertThat( result ).isNotEqualTo( interimResult );
 		assertThat( result.getResults() )
 			.containsExactlyInAnyOrderElementsOf(
 					importSeeds.entrySet().stream()
@@ -492,10 +496,66 @@ public class WorkScheduleImportServiceTest {
 						.collect(Collectors.toList())
 			);
 
+
 	}
 
 
+	/**
+	 * Target	:
+	 * 	- checkIfEmployeeIsTarget
+	 * 	- checkForContentIntegrity
+	 * 	- checkForExistingWorkSchedule
+	 * Pattern	: 未チェックの取り込み対象がない
+	 */
+	@Test
+	public void test_unexistsUncheckedResults(@Injectable ImportResult interimResult) {
 
+		/* 未チェックの取込対象なし */
+		new Expectations() {{
+			interimResult.existsUncheckedResults();
+			result = false;
+		}};
+
+
+		/* 取込対象の社員かチェックする: checkIfEmployeeIsTarget */
+		{
+			// 実行
+			ImportResult result = NtsAssert.Invoke.staticMethod(
+					WorkScheduleImportService.class, "checkIfEmployeeIsTarget"
+						, require, interimResult
+			);
+			// 検証
+			assertThat( result ).isEqualTo( interimResult );
+		}
+
+		/* 取り込み内容の整合性をチェックする: checkForContentIntegrity */
+		{
+			// 実行
+			ImportResult result = NtsAssert.Invoke.staticMethod(
+					WorkScheduleImportService.class, "checkForContentIntegrity"
+						, require, interimResult
+			);
+			// 検証
+			assertThat( result ).isEqualTo( interimResult );
+		}
+
+		/* 取込対象の勤務予定をチェックする: checkForExistingWorkSchedule */
+		{
+			// 実行
+			ImportResult result = NtsAssert.Invoke.staticMethod(
+					WorkScheduleImportService.class, "checkForExistingWorkSchedule"
+						, require, interimResult
+			);
+			// 検証
+			assertThat( result ).isEqualTo( interimResult );
+		}
+
+	}
+
+
+	/**
+	 * Target	: importFrom
+	 */
 	@Test
 	public void test_importFrom() {
 
@@ -625,17 +685,17 @@ public class WorkScheduleImportServiceTest {
 		/* 参照可能社員 */
 		new Expectations( GetEmpCanReferService.class ) {{
 			// 参照可能社員の取得
-			GetEmpCanReferService.getAll(require, (GeneralDate)any, anyString);
+			GetEmpCanReferService.getAll(require, (String)any, (GeneralDate)any, (DatePeriod)any);
 			result = referableEmployees;
 		}};
 
-		/* 予定管理状態 */
+		/* 就業状態 */
 		new MockUp<EmployeeWorkingStatus>() {
 			@Mock EmployeeWorkingStatus create(@SuppressWarnings("unused") EmployeeWorkingStatus.Require require, String employeeID, GeneralDate date) {
 				val importSeed = importSeeds.stream()
 						.filter( seed -> seed.getEmployeeId().orElse(new EmployeeId("")).v().equals(employeeID) && seed.getYmd().equals(date) )
 						.findFirst().get();
-				return Helper.createScheMngStatus( importSeed.getEmployeeId().get(), importSeed.getYmd(), importSeed.getScheMngStatus().get() );
+				return Helper.createEmployeeWorkingStatus( importSeed.getEmployeeId().get(), importSeed.getYmd(), importSeed.getScheMngStatus().get() );
 			}
 		};
 
@@ -728,14 +788,14 @@ public class WorkScheduleImportServiceTest {
 	private static class Helper {
 
 		/**
-		 * 社員の予定管理状態を作成する
+		 * 社員の就業状態を作成する
 		 * @param employeeId 社員ID
 		 * @param date 年月日
 		 * @param status 予定管理状態
 		 * @return
 		 */
-		public static EmployeeWorkingStatus createScheMngStatus(EmployeeId employeeId, GeneralDate date, WorkingStatus status) {
-			return new EmployeeWorkingStatus( employeeId.v(), date, status, Optional.empty(), Optional.empty() );
+		public static EmployeeWorkingStatus createEmployeeWorkingStatus(EmployeeId employeeId, GeneralDate date, WorkingStatus status) {
+			return new EmployeeWorkingStatus( employeeId.v(), date, status, Optional.empty(), Optional.empty(), Optional.empty() );
 		}
 
 		/**
@@ -813,7 +873,7 @@ public class WorkScheduleImportServiceTest {
 		}
 		public ExpectImportFromRawData(Map<String, String> empCdIdMap
 				,	String employeeCode, GeneralDate ymd, String importCode
-				,	ImportStatus expectedStatus, nts.uk.ctx.at.shared.dom.employeeworkway.WorkingStatus scheMngStatus, ConfirmedATR confirmedStatus
+				,	ImportStatus expectedStatus, WorkingStatus scheMngStatus, ConfirmedATR confirmedStatus
 		) {
 			this.employeeCode = employeeCode;
 			this.ymd = ymd;

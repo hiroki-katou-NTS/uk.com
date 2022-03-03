@@ -28,6 +28,7 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.cl
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementDomainService;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.CurrentClosingPeriodExport;
@@ -37,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSettingForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -55,6 +57,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeList36;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHours;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHoursDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimedDisplayForSuperiorsDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.UpperLimitTimeDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -302,7 +305,8 @@ public class KTG027QueryProcessor {
 	 * @return
 	 * @param currentOrNextMonth
 	 */
-	public OvertimedDisplayForSuperiorsDto getOvertimeDisplayForSuperiorsDto(int currentOrNextMonth) {
+	public OvertimedDisplayForSuperiorsDto getOvertimeDisplayForSuperiorsDto(int currentOrNextMonth,
+			int closingId, String startDate, String endDate, int processingYm) {
 		val require = this.requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 		String sID = AppContexts.user().employeeId();
@@ -319,17 +323,13 @@ public class KTG027QueryProcessor {
 			return result;
 		}
 
-		// 上長用の時間外時間表示．当月の締め情報．処理年月＝取得したドメインモデル「締め」．当月
-		// 上長用の時間外時間表示．当月の締め情報．締め開始日＝取得した締め期間．開始日
-		// 上長用の時間外時間表示．当月の締め情報．締め終了日＝取得した締め期間．終了日
-		// 上長用の時間外時間表示．ログイン者の締めID＝取得したドメインモデル「締め」．締めID
 		CurrentClosingPeriodExport closingInformationForCurrentMonth = CurrentClosingPeriodExport.builder()
-				.processingYm(closure.getClosureMonth().getProcessingYm().v())
-				.closureEndDate(lstClosure.get(0).getPeriod().end().toString())
-				.closureStartDate(lstClosure.get(0).getPeriod().start().toString())
+				.processingYm(processingYm)
+				.closureEndDate(endDate)
+				.closureStartDate(startDate)
 				.build();
 		result.setClosingInformationForCurrentMonth(closingInformationForCurrentMonth);
-		result.setClosureId(closure.getClosureId().value);
+		result.setClosureId(closingId);
 		// INPUT．表示年月＝当月表示
 		if (currentOrNextMonth == 1) {
 			// 対象年月を指定するログイン者の配下社員の時間外時間の取得
@@ -344,6 +344,7 @@ public class KTG027QueryProcessor {
 			result.setPersonalInformationOfSubordinateEmployees(
 				acquisitionOfOvertimeHoursOfEmployeesDto.getPersonalInformationOfSubordinateEmployees()
 			);
+			result.setUpperLimit(acquisitionOfOvertimeHoursOfEmployeesDto.getUpperLimit());
 
 		} else {
 
@@ -375,6 +376,7 @@ public class KTG027QueryProcessor {
 			result.setPersonalInformationOfSubordinateEmployees(
 				acquisitionOfOvertimeHoursOfEmployeesDto.getPersonalInformationOfSubordinateEmployees()
 			);
+			result.setUpperLimit(acquisitionOfOvertimeHoursOfEmployeesDto.getUpperLimit());
 		}
 
 		return result;
@@ -407,6 +409,13 @@ public class KTG027QueryProcessor {
 
 		// [RQ30]社員所属職場履歴を取得
 		SWkpHistImport sWkpHistImport = this.employeeAdapter.getSWkpHistByEmployeeID(sID, referencePeriod.get().end());
+		
+		if (sWkpHistImport == null) {
+			return AcquisitionOfOvertimeHoursOfEmployeesDto.builder()
+					.personalInformationOfSubordinateEmployees(new ArrayList<PersonEmpBasicInfoImport>())
+					.overtimeOfSubordinateEmployees(new ArrayList<AgreementTimeOfManagePeriodDto>())
+					.build();
+		}
 
 		// [No.573]職場の下位職場を基準職場を含めて取得する
 		List<String> lstWorkPlaceId = this.workplacePub.getWorkplaceIdAndChildren(
@@ -426,12 +435,24 @@ public class KTG027QueryProcessor {
 				, targetDate
 				, referencePeriod);
 
+		// 年月ごとの36協定時間（上限時間）を取得する
+		Map<String, BasicAgreementSettingForCalc> basicAgreementSettings = AgreementDomainService.getBasicSetClones(requireService.createRequire(),
+				AppContexts.user().companyId(), lstEmployeeId, GeneralDate.today(), targetDate);
+		
+		List<UpperLimitTimeDto> upperLimit = new ArrayList<UpperLimitTimeDto>();
+		basicAgreementSettings.forEach((k, v) -> {
+			upperLimit.add(new UpperLimitTimeDto(k, targetDate.v(), v.getBasicSetting().getOneMonth().getBasic().getUpperLimit().v()));
+		});
+		
+		
 		// OUTPUT：
 		// List＜個人社員基本情報＞
 		// List＜管理期間の36協定時間＞
 		AcquisitionOfOvertimeHoursOfEmployeesDto result = AcquisitionOfOvertimeHoursOfEmployeesDto.builder()
 				.personalInformationOfSubordinateEmployees(listPersonEmp)
-				.OvertimeOfSubordinateEmployees(listAgreementTimeDetail).build();
+				.overtimeOfSubordinateEmployees(listAgreementTimeDetail)
+				.upperLimit(upperLimit)
+				.build();
 
 		return result;
 	}

@@ -34,8 +34,6 @@ import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 export class KafS05Component extends KafS00ShrComponent {
 
     private numb: number = 1;
-    public text1: string = null;
-    public text2: string = 'step2';
     public isValidateAll: boolean = true;
     public user: any = null;
     public modeNew: boolean = true;
@@ -55,33 +53,12 @@ export class KafS05Component extends KafS00ShrComponent {
     @Prop()
     public params: InitParam;
 
-    public get getoverTimeClf(): number {
-        const self = this;
-
-        return self.overTimeClf;
-    }
-
-    // @Watch('numb', {deep: true})
-    // public changeoverTimeClf(data: any) {
-    //     const self = this;
-
-    //     if (self.numb == 1) {
-    //         self.pgName = 'kafs05step1';
-    //     } else if (self.numb == 2) {
-    //         self.pgName = 'kafs05step2';
-    //     } else {
-    //         self.pgName = 'kafs05step3';
-    //     }
-    // }
-   
-
     public get step() {
-
         const self = this;
-        
 
         return `step_${self.numb}`;
     }
+
     public get overTimeWorkHoursDto(): OverTimeWorkHoursDto {
         const self = this;
         let model = self.model as Model;
@@ -362,15 +339,35 @@ export class KafS05Component extends KafS00ShrComponent {
         return c21_1 && c21_2;
     }
 
+    @Watch('$route.query')
+    public routeQueryWatcher(value) {
+        const vm = this;
+        if (value.overworkatr == 0) {
+            vm.pgName = 'kafs05PgName1';
+            vm.overTimeClf = 0;
+        } else if (value.overworkatr == 1) {
+            vm.pgName = 'kafs05PgName2';
+            vm.overTimeClf = 1;
+        } else if (value.overworkatr == 3) {
+            vm.pgName = 'kafs05PgName4';
+            vm.overTimeClf = 3;
+        } else {
+            vm.pgName = 'kafs05PgName3';
+            vm.overTimeClf = 2;
+        }
 
-
+        let step1 = vm.$refs.step1 as KafS05Step1Component;
+        step1.multiOverTimes = [{
+            frameNo: 1,
+            valueHours: {start: null, end: null},
+            fixedReasonCode: null,
+            appReason: ''
+        }];
+        step1.$forceUpdate();
+    }
 
     public created() {
         const vm = this;
-
-
-        
-
         if (!_.isNil(vm.params) && vm.params.isDetailMode) {
             vm.modeNew = false;
             let model = {} as Model;
@@ -385,45 +382,34 @@ export class KafS05Component extends KafS00ShrComponent {
                 vm.overTimeClf = 0;
             } else if (vm.$route.query.overworkatr == '1') {
                 vm.overTimeClf = 1;
-            } else {
-                vm.overTimeClf = 2;
-            }
-        } else {
-            vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf');
-        }
-
-        if (_.isNil(vm.overTimeClf)) {
-            vm.overTimeClf = 2;
-        }
-        if (vm.overTimeClf == 0) {
-            vm.pgName = 'kafs05step1';
-        } else if (vm.overTimeClf == 1) {
-            vm.pgName = 'kafs05step2';
-        } else {
-            vm.pgName = 'kafs05step3';
-        }
-    }
-    public mounted() {
-        const vm = this;
-        vm.fetchData();
-    }
-    public fetchData() {
-        const vm = this;
-        vm.$mask('show');
-        if (!vm.modeNew) {
-            vm.date = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
-        }
-        if (vm.modeNew) {
-            if (vm.$route.query.overworkatr == '0') {
-                vm.overTimeClf = 0;
-            } else if (vm.$route.query.overworkatr == '1') {
-                vm.overTimeClf = 1;
+            } else if (vm.$route.query.overworkatr == '3') {
+                vm.overTimeClf = 3;
             } else {
                 vm.overTimeClf = 2;
             }
         } else {
             vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf') || 2;
         }
+
+        if (!vm.modeNew
+            && vm.model.displayInfoOverTime.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == 0
+            && vm.model.appOverTime.overTimeClf == 3) {
+            vm.handleErrorCustom({messageId: 'Msg_3237'});
+        }
+    }
+
+    public mounted() {
+        const vm = this;
+        vm.fetchData();
+    }
+
+    public fetchData() {
+        const vm = this;
+        vm.$mask('show');
+        if (!vm.modeNew) {
+            vm.date = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
+        }
+
         if (vm.modeNew) {
             vm.application = vm.createApplicationInsert(AppType.OVER_TIME_APPLICATION);
             vm.application.employeeIDLst = _.get(vm.params, 'employeeID') ? [_.get(vm.params, 'employeeID')] : [];
@@ -481,13 +467,17 @@ export class KafS05Component extends KafS00ShrComponent {
                 // 勤務種類リストと就業時間帯リストがない場合エラーを返す
                 if (vm.model.displayInfoOverTime) {
                     
-                    if (_.isEmpty(vm.model.displayInfoOverTime.infoBaseDateOutput.worktypes)) {
+                    if (_.isEmpty(vm.model.displayInfoOverTime.infoBaseDateOutput.worktypes)
+                        && vm.model.displayInfoOverTime.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == NotUseAtr.USE
+                    ) {
                         // msg_1567
                         vm.$modal.error({ messageId: 'Msg_1567'});	
                     }
                     if (vm.model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst) {
                         
-                        if (_.isEmpty(vm.model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst)) {
+                        if (_.isEmpty(vm.model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst)
+                        && vm.model.displayInfoOverTime.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == NotUseAtr.USE        
+                        ) {
                             vm.$modal.error({ messageId: 'Msg_1568'});	
                         }
                     } else {
@@ -514,7 +504,9 @@ export class KafS05Component extends KafS00ShrComponent {
         self.$mask('show');
         let command = {
             companyId: self.user.companyId,
+            employeeId: !_.isEmpty(self.application.employeeIDLst) ? self.application.employeeIDLst[0] : self.user.employeeId,
             date,
+            prePostAtr: self.application.prePostAtr,
             displayInfoOverTime: self.model.displayInfoOverTime,
             agent: false
         };
@@ -542,7 +534,10 @@ export class KafS05Component extends KafS00ShrComponent {
                 } else {
                     self.isMsg_1556 = false;
                 }
-                self.$mask('hide');
+                self.$nextTick(() => {
+                    self.customValidate(step1);
+                    self.$mask('hide');
+                });
             })
             .catch((res: any) => {
                 self.$nextTick(() => {
@@ -560,7 +555,6 @@ export class KafS05Component extends KafS00ShrComponent {
 
     public kaf000BChangeDate(objectDate) {
         const self = this;
-        console.log('emit' + objectDate);
         if (objectDate.startDate) {
             if (self.modeNew) {
                 self.application.appDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
@@ -574,19 +568,46 @@ export class KafS05Component extends KafS00ShrComponent {
 
     public kaf000BChangePrePost(prePostAtr) {
         const self = this;
-        console.log('emit' + prePostAtr);
         self.application.prePostAtr = prePostAtr;
+        if (self.overTimeClf == 3 && self.date && self.modeNew) {
+            self.$mask('show');
+            self.$http.post('at', API.getLatestMultiApp, {
+                employeeId: !_.isEmpty(self.application.employeeIDLst) ? self.application.employeeIDLst[0] : self.user.employeeId,
+                dateOp: self.date,
+                prePost: prePostAtr
+            }).then((res: any) => {
+                const step1 = self.$refs.step1 as KafS05Step1Component;
+                if (res.data && res.data.latestMultiOvertimeApp) {
+                    step1.loadDataLatestMultiOvertime(res.data.latestMultiOvertimeApp);
+                } else {
+                    step1.loadDataFromDisplayInfo(self.model.displayInfoOverTime);
+                }
+                self.$nextTick(() => {
+                    self.customValidate(step1);
+                    self.$mask('hide');
+                });
+            }).catch((error) => {
+                self.$nextTick(() => {
+                    self.$mask('hide');
+                });
+                // xử lý lỗi nghiệp vụ riêng
+                self.handleErrorCustom(error).then((result: any) => {
+                    if (result) {
+                        // xử lý lỗi nghiệp vụ chung
+                        self.handleErrorCommon(error);
+                    }
+                });
+            });
+        }
     }
 
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {
         const self = this;
-        console.log('emit' + opAppStandardReasonCD);
         self.application.opAppStandardReasonCD = opAppStandardReasonCD;
     }
 
     public kaf000CChangeAppReason(opAppReason) {
         const self = this;
-        console.log('emit' + opAppReason);
         self.application.opAppReason = opAppReason;
     }
     public toAppOverTime() {
@@ -651,9 +672,18 @@ export class KafS05Component extends KafS00ShrComponent {
                     }
                 });
             }
-
+            if (self.overTimeClf == 3) {
+                appOverTimeInsert.multipleOvertimeContents = step1.multiOverTimes
+                    .filter((item) => item.valueHours && (!!item.valueHours.start || !!item.valueHours.end))
+                    .map((item, index) => ({
+                        frameNo: index + 1,
+                        startTime: item.valueHours.start,
+                        endTime: item.valueHours.end,
+                        fixedReasonCode: item.fixedReasonCode,
+                        appReason: item.appReason
+                    }));
+            }
         }
-
 
         return appOverTimeInsert;
     }
@@ -788,6 +818,8 @@ export class KafS05Component extends KafS00ShrComponent {
                     vm.model.displayInfoOverTime.calculationResultOp = res.data.calculationResultOp;
                     vm.model.displayInfoOverTime.workdayoffFrames = res.data.workdayoffFrames;
                     vm.model.displayInfoOverTime.calculatedFlag = res.data.calculatedFlag;
+                    vm.model.displayInfoOverTime.calculatedBreakTimes = res.data.calculatedBreakTimes;
+                    vm.model.displayInfoOverTime.calculatedWorkTimes = res.data.calculatedWorkTimes;
                     let step2 = vm.$refs.step2 as KafS05Step2Component;
                     // 計算後の「残業申請の表示情報．計算結果．事前申請・実績の超過状態．実績状態」 = 超過エラー
                     let c1 = _.get(vm.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.achivementStatus') == ExcessState.EXCESS_ERROR;
@@ -816,6 +848,31 @@ export class KafS05Component extends KafS00ShrComponent {
                     });
                 });
         } else if (vm.numb == 2 && value == 1) { // step 2 -> step 1
+            let step1 = vm.$refs.step1 as KafS05Step1Component;
+            step1.isFirstModeUpdate = true;
+            if (!_.isEmpty(vm.model.displayInfoOverTime.calculatedWorkTimes)) {
+                let workHours1 = {} as any;
+                let workHours2 = {} as any;
+                if (vm.model.displayInfoOverTime.calculatedWorkTimes.length > 0) {
+                    workHours1.start = vm.model.displayInfoOverTime.calculatedWorkTimes[0].timeZone.startTime;
+                    workHours1.end = vm.model.displayInfoOverTime.calculatedWorkTimes[0].timeZone.endTime;
+                }
+                if (vm.model.displayInfoOverTime.calculatedWorkTimes.length > 1) {
+                    workHours2.start = vm.model.displayInfoOverTime.calculatedWorkTimes[1].timeZone.startTime;
+                    workHours2.end = vm.model.displayInfoOverTime.calculatedWorkTimes[1].timeZone.endTime;
+                }
+                step1.workHours1 = (_.isNumber(workHours1.start) || _.isNumber(workHours1.end)) ?  workHours1 : null;
+                step1.workHours2 = (_.isNumber(workHours2.start) || _.isNumber(workHours2.end)) ?  workHours2 : null;
+            }
+            if (!_.isEmpty(vm.model.displayInfoOverTime.calculatedBreakTimes)) {
+                step1.createBreakTime(_.map(vm.model.displayInfoOverTime.calculatedBreakTimes, (x: any) => {
+                    return {
+                        start: x.timeZone.startTime,
+                        end: x.timeZone.endTime
+                    };
+                }));
+            }
+
             let step2 = vm.$refs.step2 as KafS05Step2Component;
             step2.overTimes = [];
             step2.holidayTimes = [];
@@ -910,8 +967,8 @@ export class KafS05Component extends KafS00ShrComponent {
         const vm = this;
 
         return new Promise((resolve) => {
-            if (failData.messageId == 'Msg_197') {
-                vm.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+            if (failData.messageId == 'Msg_197' || (!vm.modeNew && failData.messageId == 'Msg_3237')) {
+                vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds }).then(() => {
                     let appID = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
                     vm.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData: InitParam) => {
                         vm.params = newData;
@@ -927,13 +984,7 @@ export class KafS05Component extends KafS00ShrComponent {
                         if (_.isNil(vm.overTimeClf)) {
                             vm.overTimeClf = 2;
                         }
-                        if (vm.overTimeClf == 0) {
-                            vm.pgName = 'kafs05step1';
-                        } else if (vm.overTimeClf == 1) {
-                            vm.pgName = 'kafs05step2';
-                        } else {
-                            vm.pgName = 'kafs05step3';
-                        }
+
                         vm.fetchData();
                     });
                 });
@@ -941,10 +992,22 @@ export class KafS05Component extends KafS00ShrComponent {
                 return resolve(false);
             }
 
-            if (failData.messageId == 'Msg_26') {
+            if (failData.messageId == 'Msg_26' || (vm.modeNew && failData.messageId == 'Msg_3237')) {
                 vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
                     .then(() => {
                         vm.$goto('ccg008a');
+                    });
+
+                return resolve(false);
+            }
+
+            if (failData.messageId == 'Msg_3238' || failData.messageId == 'Msg_3248') {
+                vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+                    .then(() => {
+                        let content = document.getElementsByClassName('multi-overtime-contents');
+                        if (!_.isEmpty(content)) {
+                            content[0].scrollIntoView();
+                        }
                     });
 
                 return resolve(false);
@@ -1047,22 +1110,13 @@ export class KafS05Component extends KafS00ShrComponent {
                     if (res) {
                         let step1 = self.$refs.step1 as KafS05Step1Component;
                         // call API select work info
-                        let infoWithDateApplicationOp = _.get(self.model.displayInfoOverTime, 'infoWithDateApplicationOp') as InfoWithDateApplication;
-                        if (!_.isNil(infoWithDateApplicationOp)) {
-                            infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
-                            infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
-                            infoWithDateApplicationOp.workHours = res.data.workHours;
-                            infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
-                            infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
-                        } else {
-                            infoWithDateApplicationOp = {} as InfoWithDateApplication;
-                            infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
-                            infoWithDateApplicationOp.workHours = res.data.workHours;
-                            infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
-                            infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
-                            infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
-                            self.model.displayInfoOverTime.infoWithDateApplicationOp = infoWithDateApplicationOp;
-                        }
+                        let infoWithDateApplicationOp = {} as InfoWithDateApplication;
+                        infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
+                        infoWithDateApplicationOp.workHours = res.data.workHours;
+                        infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
+                        infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
+                        infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                        self.model.displayInfoOverTime.infoWithDateApplicationOp = infoWithDateApplicationOp;
                         step1.loadData(self.model.displayInfoOverTime, true, true);
                         step1.createHoursWorkTime();
                     }
@@ -1127,22 +1181,13 @@ export class KafS05Component extends KafS00ShrComponent {
                     if (res) {
                         // call API select work info
                         let step1 = self.$refs.step1 as KafS05Step1Component;
-                        let infoWithDateApplicationOp = _.get(self.model.displayInfoOverTime, 'infoWithDateApplicationOp') as InfoWithDateApplication;
-                        if (!_.isNil(infoWithDateApplicationOp)) {
-                            infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
-                            infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
-                            infoWithDateApplicationOp.workHours = res.data.workHours;
-                            infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
-                            infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
-                        } else {
-                            infoWithDateApplicationOp = {} as InfoWithDateApplication;
-                            infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
-                            infoWithDateApplicationOp.workHours = res.data.workHours;
-                            infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
-                            infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
-                            infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
-                            self.model.displayInfoOverTime.infoWithDateApplicationOp = infoWithDateApplicationOp;
-                        }
+                        let infoWithDateApplicationOp = {} as InfoWithDateApplication;
+                        infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
+                        infoWithDateApplicationOp.workHours = res.data.workHours;
+                        infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
+                        infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
+                        infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                        self.model.displayInfoOverTime.infoWithDateApplicationOp = infoWithDateApplicationOp;
                         step1.loadData(self.model.displayInfoOverTime, true, true);
                         step1.createHoursWorkTime();
                     }
@@ -1207,27 +1252,6 @@ export class KafS05Component extends KafS00ShrComponent {
         vm.appDispInfoStartupOutput = res.appDispInfoStartupOutput;
         vm.model = model;
 
-        if (vm.modeNew) {
-            if (vm.$route.query.overworkatr == '0') {
-                vm.overTimeClf = 0;
-            } else if (vm.$route.query.overworkatr == '1') {
-                vm.overTimeClf = 1;
-            } else {
-                vm.overTimeClf = 2;
-            }
-        } else {
-            vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf');
-        }
-        if (_.isNil(vm.overTimeClf)) {
-            vm.overTimeClf = 2;
-        }
-        if (vm.overTimeClf == 0) {
-            vm.pgName = 'kafs05step1';
-        } else if (vm.overTimeClf == 1) {
-            vm.pgName = 'kafs05step2';
-        } else {
-            vm.pgName = 'kafs05step3';
-        }
         vm.fetchData();
     }
 
@@ -1260,13 +1284,7 @@ export class KafS05Component extends KafS00ShrComponent {
         if (_.isNil(vm.overTimeClf)) {
             vm.overTimeClf = 2;
         }
-        if (vm.overTimeClf == 0) {
-            vm.pgName = 'kafs05step1';
-        } else if (vm.overTimeClf == 1) {
-            vm.pgName = 'kafs05step2';
-        } else {
-            vm.pgName = 'kafs05step3';
-        }
+
         vm.fetchData();
     }
 
@@ -1280,7 +1298,7 @@ const API = {
     checkBeforeRegister: 'at/request/application/overtime/mobile/checkBeforeInsert',
     register: 'at/request/application/overtime/mobile/insert',
     reflectApp: 'at/request/application/reflect-app',
-
+    getLatestMultiApp: 'at/request/application/overtime/latestMultiApp',
     sendMailAfterRegisterSample: ''
 };
 

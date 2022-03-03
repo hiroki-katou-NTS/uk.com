@@ -9,9 +9,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.DateHistoryCache;
 import nts.arc.layer.app.cache.KeyDateHistoryCache;
 import nts.arc.layer.app.cache.NestedMapCache;
@@ -53,6 +54,8 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -65,6 +68,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ScreenQueryAggregatePersonal {
 
 	@Inject 
@@ -106,6 +110,8 @@ public class ScreenQueryAggregatePersonal {
 	@Inject
 	private HandlingOfCriterionAmountRepository handlingOfCriterionAmountRepository;
 	
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 	
 	public AggregatePersonalDto aggreratePersonal(
 			PersonalCounterCategory personalCounter, // 個人計カテゴリ
@@ -114,22 +120,9 @@ public class ScreenQueryAggregatePersonal {
 			DateInMonth closeDate // 締め日
 			) {
 		
-		Require require = new Require(
-				workScheduleRepository,
-				dailyRecordWorkFinder,
-				empComHisAdapter,
-				workCondRepo,
-				empLeaveHisAdapter,
-				empLeaveWorkHisAdapter,
-				employmentHisScheduleAdapter,
-				criterionAmountUsageSettingRepository,
-				criterionAmountForCompanyRepository,
-				criterionAmountForEmploymentRepository,
-				handlingOfCriterionAmountRepository,
-				AppContexts.user().companyId()
-				);
+		Require require = new Require(AppContexts.user().companyId());
 		
-		Require2 require2 = new Require2(workTypeRepository);
+		Require2 require2 = new Require2();
 		
 		AggregatePersonalDto output = new AggregatePersonalDto();
 		if (personalCounter == PersonalCounterCategory.WORKING_HOURS) {
@@ -243,67 +236,22 @@ public class ScreenQueryAggregatePersonal {
 		
 	}
 	
-	@AllArgsConstructor
-	private static class Require2 implements WorkdayHolidayCounterService.Require {
-		
-		@Inject
-		private WorkTypeRepository workTypeRepository;
+	private class Require2 implements WorkdayHolidayCounterService.Require {
 		
 		@Override
 		public Optional<WorkType> getWorkType(WorkTypeCode workTypeCd) {
 			return workTypeRepository.findByPK(AppContexts.user().companyId(), workTypeCd.v());
 		}
-		
 	}
 	
-	@AllArgsConstructor
-	private static class Require implements EstimatedSalaryAggregationService.Require {
+	private class Require implements EstimatedSalaryAggregationService.Require {
 
-		private WorkScheduleRepository workScheduleRepository;
-		
-		private DailyRecordWorkFinder dailyRecordWorkFinder;
-
-		private EmpComHisAdapter empComHisAdapter;
-		
-		private WorkingConditionRepository workCondRepo;
-		
-		private EmpLeaveHistoryAdapter empLeaveHisAdapter;
-		
-		private EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter;
-		
-		private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
-		
-		private CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepository;
-		
-		private CriterionAmountForCompanyRepository criterionAmountForCompanyRepository;
-		
-		private CriterionAmountForEmploymentRepository criterionAmountForEmploymentRepository;
-		
-		private HandlingOfCriterionAmountRepository handlingOfCriterionAmountRepository;
-		
-		
-		
 		private String cid;
 
-		
-//		public Require(
-//				WorkScheduleRepository workScheduleRepository,
-//				DailyRecordWorkFinder dailyRecordWorkFinder,
-//				EmpComHisAdapter empComHisAdapter,
-//				WorkingConditionRepository workCondRepo,
-//				EmpLeaveHistoryAdapter empLeaveHisAdapter,
-//				EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter,
-//				EmploymentHisScheduleAdapter employmentHisScheduleAdapter,
-//				CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepository,
-//				CriterionAmountForCompanyRepository criterionAmountForCompanyRepository,
-//				CriterionAmountForEmploymentRepository criterionAmountForEmploymentRepository,
-//				HandlingOfCriterionAmountRepository handlingOfCriterionAmountRepository
-//				) {
-//			this.workScheduleRepository = workScheduleRepository;
-//
-//			}
-		
-		
+		public Require(String cid) {
+			this.cid = cid;
+		}
+
 		@Override
 		public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> empIds, DatePeriod period) {
 			List<WorkSchedule> workSchedules = 
@@ -322,15 +270,9 @@ public class ScreenQueryAggregatePersonal {
 			List<String> sids = empIds.stream()
 					  .map(x -> x.v())
 					  .collect(Collectors.toList());
-			RequireDailyImpl requireDailyImpl = new RequireDailyImpl(
-					sids,
-					period,
-					dailyRecordWorkFinder,
-					empComHisAdapter,
-					workCondRepo,
-					empLeaveHisAdapter,
-					empLeaveWorkHisAdapter,
-					employmentHisScheduleAdapter);
+			
+			RequireDailyImpl requireDailyImpl = new RequireDailyImpl(sids, period);
+			
 			Map<EmployeeWorkingStatus , Optional<IntegrationOfDaily>> map = GetDailyRecordByScheduleManagementService.get(requireDailyImpl, sids, period);
 			
 			return map.entrySet()
@@ -370,8 +312,7 @@ public class ScreenQueryAggregatePersonal {
 			return handlingOfCriterionAmountRepository.get(cid);
 		}
 		
-		@AllArgsConstructor
-		private static class RequireDailyImpl implements GetDailyRecordByScheduleManagementService.Require {
+		private class RequireDailyImpl implements GetDailyRecordByScheduleManagementService.Require {
 
 			private NestedMapCache<String, GeneralDate, DailyRecordDto> workScheduleCache;
 			private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;
@@ -380,57 +321,35 @@ public class ScreenQueryAggregatePersonal {
 			private KeyDateHistoryCache<String, EmpLeaveWorkPeriodImport> empLeaveWorkPeriodCache;
 			private KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workCondItemWithPeriodCache;
 
-			public RequireDailyImpl(
-					List<String> empIdList,
-					DatePeriod period,
-					DailyRecordWorkFinder dailyRecordWorkFinder,
-					EmpComHisAdapter empComHisAdapter,
-					WorkingConditionRepository workCondRepo,
-					EmpLeaveHistoryAdapter empLeaveHisAdapter,
-					EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter,
-					EmploymentHisScheduleAdapter employmentHisScheduleAdapter) {
+			public RequireDailyImpl(List<String> empIdList, DatePeriod period) {
 
-				long start1 = System.nanoTime();
 				List<DailyRecordDto> sDailyRecordDtos = dailyRecordWorkFinder.find(empIdList, period);
 				workScheduleCache = NestedMapCache.preloadedAll(sDailyRecordDtos.stream(),
 						workSchedule -> workSchedule.getEmployeeId(),
 						workSchedule -> workSchedule.getDate());
-				System.out.println("thoi gian get data Daily " + ((System.nanoTime() - start1 )/1000000) + "ms");
 
-				long start2 = System.nanoTime();
 				List<EmpEnrollPeriodImport> affCompanyHists =  empComHisAdapter.getEnrollmentPeriod(empIdList, period);
 				Map<String, List<EmpEnrollPeriodImport>> data2 = affCompanyHists.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
 				affCompanyHistByEmployeeCache = KeyDateHistoryCache.loaded(createEntries1(data2));
-				System.out.println("thoi gian get data affCompanyHistByEmp " + ((System.nanoTime() - start2 )/1000000) + "ms");
 
-				long start3 = System.nanoTime();
 				List<EmploymentPeriodImported> listEmploymentPeriodImported = employmentHisScheduleAdapter.getEmploymentPeriod(empIdList, period);
 				Map<String, List<EmploymentPeriodImported>> data3 = listEmploymentPeriodImported.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
 				employmentPeriodCache = KeyDateHistoryCache.loaded(createEntries2(data3));
-				System.out.println("thoi gian get data EmploymentPeriod " + ((System.nanoTime() - start3 )/1000000) + "ms");
 
-				long start4 = System.nanoTime();
 				List<EmployeeLeaveJobPeriodImport> empLeaveJobPeriods = empLeaveHisAdapter.getLeaveBySpecifyingPeriod(empIdList, period);
 				Map<String, List<EmployeeLeaveJobPeriodImport>> data4 = empLeaveJobPeriods.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
 				empLeaveJobPeriodCache = KeyDateHistoryCache.loaded(createEntries3(data4));
-				System.out.println("thoi gian get data EmployeeLeaveJob " + ((System.nanoTime() - start4 )/1000000) + "ms");
 
-				long start5 = System.nanoTime();
 				List<EmpLeaveWorkPeriodImport> empLeaveWorkPeriods =  empLeaveWorkHisAdapter.getHolidayPeriod(empIdList, period);
 				Map<String, List<EmpLeaveWorkPeriodImport>> data5 = empLeaveWorkPeriods.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
 				empLeaveWorkPeriodCache = KeyDateHistoryCache.loaded(createEntries4(data5));
-				System.out.println("thoi gian get data EmpLeaveWork " + ((System.nanoTime() - start5 )/1000000) + "ms");
 
-				long start6 = System.nanoTime();
 				List<WorkingConditionItemWithPeriod> listData = workCondRepo.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(),empIdList, period);
 				Map<String, List<WorkingConditionItemWithPeriod>> data6 = listData.stream().collect(Collectors.groupingBy(item ->item.getWorkingConditionItem().getEmployeeId()));
 				workCondItemWithPeriodCache = KeyDateHistoryCache.loaded(createEntries5(data6));
-				System.out.println("thoi gian get data WorkingConditionItem " + ((System.nanoTime() - start6 )/1000000) + "ms");
-
-				System.out.println("thoi gian get data để lưu vào Cache" + ((System.nanoTime() - start1 )/1000000) + "ms");
 			}
 			
-			private static Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>>  createEntries1(Map<String, List<EmpEnrollPeriodImport>> data) {
+			private Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>>  createEntries1(Map<String, List<EmpEnrollPeriodImport>> data) {
 				Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>> rs = new HashMap<>();
 				data.forEach( (k,v) -> {
 					List<DateHistoryCache.Entry<EmpEnrollPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmpEnrollPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -439,7 +358,7 @@ public class ScreenQueryAggregatePersonal {
 				return rs;
 			}
 			
-			private static Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
+			private Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
 				Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>> rs = new HashMap<>();
 				data.forEach( (k,v) -> {
 					List<DateHistoryCache.Entry<EmploymentPeriodImported>> s = v.stream().map(i->new DateHistoryCache.Entry<EmploymentPeriodImported>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -448,7 +367,7 @@ public class ScreenQueryAggregatePersonal {
 				return rs;
 			}
 			
-			private static Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>>  createEntries3(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
+			private Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>>  createEntries3(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
 				Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>> rs = new HashMap<>();
 				data.forEach( (k,v) -> {
 					List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -457,7 +376,7 @@ public class ScreenQueryAggregatePersonal {
 				return rs;
 			}
 			
-			private static Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
+			private Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
 				Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>> rs = new HashMap<>();
 				data.forEach( (k,v) -> {
 					List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -466,7 +385,7 @@ public class ScreenQueryAggregatePersonal {
 				return rs;
 			}
 			
-			private static Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries5(Map<String, List<WorkingConditionItemWithPeriod>> data) {
+			private Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries5(Map<String, List<WorkingConditionItemWithPeriod>> data) {
 				Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>> rs = new HashMap<>();
 				data.forEach( (k,v) -> {
 					List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>> s = v.stream().map(i->new DateHistoryCache.Entry<WorkingConditionItemWithPeriod>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -487,8 +406,7 @@ public class ScreenQueryAggregatePersonal {
 
 			@Override
 			public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(String sid, GeneralDate startDate) {
-				Optional<EmpEnrollPeriodImport> data = affCompanyHistByEmployeeCache.get(sid, startDate);
-				return data;
+				return affCompanyHistByEmployeeCache.get(sid, startDate);
 			}
 
 			@Override
@@ -499,22 +417,23 @@ public class ScreenQueryAggregatePersonal {
 
 			@Override
 			public Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(String sid, GeneralDate startDate) {
-				Optional<EmployeeLeaveJobPeriodImport> data =  empLeaveJobPeriodCache.get(sid, startDate);
-				return data;
+				return  empLeaveJobPeriodCache.get(sid, startDate);
 			}
 
 			@Override
 			public Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(String sid, GeneralDate startDate) {
-				Optional<EmpLeaveWorkPeriodImport> data = empLeaveWorkPeriodCache.get(sid, startDate);
-				return data;
+				return empLeaveWorkPeriodCache.get(sid, startDate);
 			}
 
 			@Override
 			public Optional<EmploymentPeriodImported> getEmploymentHistory(String sid, GeneralDate startDate) {
-				Optional<EmploymentPeriodImported> data = employmentPeriodCache.get(sid, startDate);
-				return data;
+				return employmentPeriodCache.get(sid, startDate);
+			}
+
+			@Override
+			public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
+				return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
 			}
 		}
-		
 	}
 }

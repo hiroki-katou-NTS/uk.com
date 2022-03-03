@@ -8,6 +8,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnualLeaveGrantImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnualLeaveRemainingNumberImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -70,6 +72,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
@@ -138,6 +141,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHolidayInfo;
 import nts.uk.screen.at.app.ktgwidget.ktg004.VacationSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 /**
  * @author hieult
@@ -978,24 +982,13 @@ public class ToppageStartupProcessMobFinder {
 			}
 		}
 		// lấy request 198
-		ReNumAnnLeaReferenceDateImport reNumAnnLeaReferenceDate = annLeaveRemainNumberAdapter
-				.getReferDateAnnualLeaveRemainNumber(employeeId, date);
+		ReNumAnnLeaveImport reNumAnnLeaReferenceDate = annLeaveRemainNumberAdapter
+				.getReferDateAnnualLeaveRemain(employeeId, date);
 
-		Double yearDays = 0d;
-		int yearHours = 0;
-		List<AnnualLeaveGrantImport> annualLeaveGrantExports = reNumAnnLeaReferenceDate.getAnnualLeaveGrantExports();
-		for (int i = 0; i < annualLeaveGrantExports.size(); i++) {
-		    yearHours += annualLeaveGrantExports.get(i).getRemainMinutes();
-        }
-		
-		AnnualLeaveRemainingNumberImport remainingNumber = reNumAnnLeaReferenceDate.getAnnualLeaveRemainNumberExport();
-		yearDays = remainingNumber == null ? 0 : remainingNumber.getAnnualLeaveGrantDay();
-		yearlyHoliday.setNextTimeInfo(new YearlyHolidayInfo(yearDays,
-				new TimeOT(yearHours / 60,
-				        yearHours % 60),
-				remainingNumber.getNumberOfRemainGrantPre(),
-				new TimeOT(remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue() / 60,
-						remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue() % 60)));
+		yearlyHoliday.setNextTimeInfo(new YearlyHolidayInfo(reNumAnnLeaReferenceDate.getRemainingDays(),
+				new TimeOT(reNumAnnLeaReferenceDate.getRemainingTime() / 60,
+				        reNumAnnLeaReferenceDate.getRemainingTime() % 60),
+				0, new TimeOT(0, 0)));
 		/*
 		 * yearlyHoliday.setNextGrantDateInfo(new
 		 * YearlyHolidayInfo(remainingNumber.getAnnualLeaveGrantPreDay(), new
@@ -1070,8 +1063,7 @@ public class ToppageStartupProcessMobFinder {
 			List<Application> listApplication = applicationRepository.findByListID(cid, listApplicationID);
 			/* 「申請」．申請種類＝Input．申請種類 & 「申請」．実績反映状態<>差し戻し に該当する申請が存在するかチェックする */
 			List<Application> listApplicationFilter = listApplication.stream()
-					.filter(c -> (c.getAppType() == ApplicationType.OVER_TIME_APPLICATION)
-							&& c.getAppReflectedState() != ReflectedState.REMAND)
+					.filter(c -> c.getAppReflectedState() != ReflectedState.REMAND && c.getAppReflectedState() != ReflectedState.CANCELED)
 					.collect(Collectors.toList());
 			if (listApplicationFilter.isEmpty()) {
 				return false;
@@ -1295,5 +1287,25 @@ public class ToppageStartupProcessMobFinder {
                 String employeeId, GeneralDate baseDate) {
             return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
         }
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
+		}
+
+		@Override
+		public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+			return Optional.empty();
+		}
+
+		@Override
+		public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId) {
+			return Optional.ofNullable(this.compensLeaveComSetRepo.find(companyId));
+		}
+
+		@Override
+		public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode) {
+			return Optional.ofNullable(this.compensLeaveEmSetRepo.find(companyId, employmentCode));
+		}
     }
 }

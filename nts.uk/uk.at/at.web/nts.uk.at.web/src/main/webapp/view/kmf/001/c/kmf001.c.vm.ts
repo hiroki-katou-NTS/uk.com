@@ -3,6 +3,7 @@ module nts.uk.pr.view.kmf001.c {
         
         import EnumertionModel = service.model.EnumerationModel;
         
+        const LEAVE_TYPE = 1;
         export class ScreenModel {
             manageDistinctList: KnockoutObservableArray<EnumertionModel>;
             selectedAnnualManage: KnockoutObservable<number>;
@@ -137,10 +138,10 @@ module nts.uk.pr.view.kmf001.c {
                     return self.selectedMaxNumberSemiVacation() == 0 && self.selectedAnnualManage() == 1;
                 });
                 self.requiredC535 = ko.computed(function() {
-                    return self.selectC531() == 1 && self.selectedAnnualManage() == 1;
+                    return self.selectC531() == 0 && self.selectedAnnualManage() == 1;
                 });
                 self.requiredC533 = ko.computed(function() {
-                    return self.selectC531() == 1 && self.selectedAnnualManage() == 1;
+                    return self.selectC531() == 0 && self.selectedAnnualManage() == 1;
                 }); 
                 
                 self.enableC5_31 = ko.computed(function() {
@@ -182,7 +183,7 @@ module nts.uk.pr.view.kmf001.c {
                         self.loadRoundProcessClassificationEnums(), self.loadRoundProcessClassificEnums()).done(function() {
                     self.loadSetting().done(() => {
                         $('#annual-manage').focus();
-                    });
+                    }).then(() => self.findLeaveCount());
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -198,12 +199,16 @@ module nts.uk.pr.view.kmf001.c {
                 
                 nts.uk.ui.block.grayout();
 
-                nts.uk.pr.view.kmf001.c.service.save(command).done(function() {
+                nts.uk.pr.view.kmf001.c.service.save(command).then(() => service.registerLeaveCount({
+                  isCounting: self.selectedAddAttendanceDay() === 1,
+                  leaveType: LEAVE_TYPE
+                }))
+                .done(function() {
                     self.loadSetting().done(function() {
                         $('#annual-manage').focus();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         dfd.resolve();
-                    });
+                    }).then(() => self.findLeaveCount());
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 }).always(() => {
@@ -223,6 +228,13 @@ module nts.uk.pr.view.kmf001.c {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
+            }
+
+            private findLeaveCount(): JQueryPromise<any> {
+              const vm = this;
+              return service.findLeaveCount().then(result => {
+                vm.selectedAddAttendanceDay(_.includes(result.countedLeaveList, LEAVE_TYPE) ? 1 : 0);
+              });
             }
             
             private toJsObject(): any {
@@ -272,7 +284,6 @@ module nts.uk.pr.view.kmf001.c {
                 self.selectedAnnualManage(res.annualManage);
                 
                 // Annual Setting
-                self.selectedAddAttendanceDay(res.addAttendanceDay);
                 self.selectedMaxManageSemiVacation(res.maxManageSemiVacation);
                 self.selectedMaxNumberSemiVacation(res.maxNumberSemiVacation);
                 self.maxNumberCompany(res.maxNumberCompany);

@@ -67,7 +67,19 @@ import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCom
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -77,17 +89,20 @@ import nts.uk.ctx.at.shared.dom.workmanagementmultiple.UseATR;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveManagementSetting;
+import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveMngSetRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.service.HolidayAtrOutput;
 import nts.uk.ctx.at.shared.dom.worktype.service.JudgmentOneDayHoliday;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
 public class CommonAlgorithmImpl implements CommonAlgorithm {
@@ -154,6 +169,27 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
+	
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
+	
+	@Inject
+	private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
+	
+	@Inject
+	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
+	
+	@Inject
+	private Com60HourVacationRepository com60HourVacationRepository;
+	
+	@Inject
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
+	
+	@Inject
+	private TimeSpecialLeaveMngSetRepository timeSpecialLeaveMngSetRepo;
+	
+	@Inject
+	private NursingLeaveSettingRepository nursingLeaveSettingRepo;
 
 	@Override
 	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType appType, 
@@ -188,6 +224,17 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			appDispInfoNoDateOutput.setOpAdvanceReceptionHours(preAppAcceptLimit.getOpAvailableTime());
 		}
 		// 「申請表示情報(基準日関係なし)」を返す (Trả về 「Thông tin hiển thị application(kg liên quan base date)」)
+		String loginID = AppContexts.user().employeeId();
+		Optional<EmployeeInfoImport> opEmployeeInfo = Optional.empty();
+		if(applicantLst.contains(loginID)) {
+			// 取得した「申請者情報」から入力者社員情報を取得する
+			opEmployeeInfo = employeeInfoLst.stream().filter(x -> x.getSid().equals(loginID)).findAny();
+		} else {
+			// 入力者の社員情報を取得する
+			opEmployeeInfo = this.getEnterPersonInfor(applicantLst.stream().findFirst().orElse(""), loginID);
+		}
+		// 取得した「入力者社員情報」をセットする
+		appDispInfoNoDateOutput.setOpEmployeeInfo(opEmployeeInfo);
 		return appDispInfoNoDateOutput;
 	}
 
@@ -258,7 +305,6 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			opErrorFlag = Optional.of(approvalRootContentImport.getErrorFlag());
 		}
 		// 申請表示情報(申請対象日関係あり)を取得する
-		// TODO: 申請設定 domain has changed!
 		ApplicationSetting applicationSetting = appDispInfoNoDateOutput.getApplicationSetting();
 		Optional<AppTypeSetting> opAppTypeSetting = applicationSetting.getAppTypeSettings().stream().filter(x -> x.getAppType()==appType).findAny();
 		Optional<ReceptionRestrictionSetting> opReceptionRestrictionSetting = applicationSetting.getReceptionRestrictionSettings().stream().filter(x -> x.getAppType()==appType).findAny();
@@ -359,7 +405,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		List<ActualContentDisplay> actualContentDisplayLst = collectAchievement.getAchievementContents(companyID, employeeID, dateLst, appType);
 		output.setActualContentDisplayLst(actualContentDisplayLst);
 		// 事前内容の取得
-		List<PreAppContentDisplay> preAppContentDisplayLst = collectAchievement.getPreAppContents(companyID, employeeID, dateLst, appType);
+		List<PreAppContentDisplay> preAppContentDisplayLst = collectAchievement.getPreAppContents(companyID, employeeID, dateLst, appType, opOvertimeAppAtr);
 		output.setPreAppContentDisplayLst(preAppContentDisplayLst);
 		return output;
 	}
@@ -383,7 +429,6 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
 		if(appDispInfoNoDateOutput.getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
 			// 申請表示情報(申請対象日関係あり)を取得する
-			// TODO: 申請設定 domain has changed!
 			ApplicationSetting applicationSetting = appDispInfoNoDateOutput.getApplicationSetting();
 			Optional<AppTypeSetting> opAppTypeSetting = applicationSetting.getAppTypeSettings().stream().filter(x -> x.getAppType() == appType).findAny();
 			Optional<ReceptionRestrictionSetting> opReceptionRestrictionSetting = applicationSetting.getReceptionRestrictionSettings().stream().filter(x -> x.getAppType()==appType).findAny();
@@ -814,197 +859,136 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	}
 	
 	@Override
-	public void vacationDigestionUnitCheck(TimeDigestApplication timeDigestApplication
-			, Optional<TimeDigestiveUnit> superHolidayUnit, Optional<TimeDigestiveUnit> substituteHoliday
-			, Optional<TimeDigestiveUnit> annualLeaveUnit, Optional<TimeDigestiveUnit> childNursingUnit
-			, Optional<TimeDigestiveUnit> nursingUnit, Optional<TimeDigestiveUnit> pendingUnit) {
+	public void vacationDigestionUnitCheck(TimeDigestApplication timeDigestApplication) {
+
+		String companyID = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
+		GeneralDate ymd = GeneralDate.today();
+		CompensatoryLeaveComSetting.RequireM7 require = this.createRequireM7();
+
+		// 時間代休
+		AttendanceTime timeOff = timeDigestApplication.getTimeOff();
+		// 60H超休
+		AttendanceTime overtime60H = timeDigestApplication.getOvertime60H();
+		// 時間年休
+		AttendanceTime timeAnnualLeave = timeDigestApplication.getTimeAnnualLeave();
+		// 子の看護時間
+		AttendanceTime childTime = timeDigestApplication.getChildTime();
+		// 介護時間
+		AttendanceTime nursingTime = timeDigestApplication.getNursingTime();
+		// 時間特別休暇
+		AttendanceTime timeSpecialVacation = timeDigestApplication.getTimeSpecialVacation();
+
+		if (timeDigestApplication == null ||
+			(timeOff.equals(AttendanceTime.ZERO)
+			&& overtime60H.equals(AttendanceTime.ZERO)
+			&& timeAnnualLeave.equals(AttendanceTime.ZERO)
+			&& childTime.equals(AttendanceTime.ZERO)
+			&& nursingTime.equals(AttendanceTime.ZERO)
+			&& timeSpecialVacation.equals(AttendanceTime.ZERO))) {
+				throw new BusinessException("Msg_511");
+		}
+
+		// INPUT.時間消化申請.時間代休をチェックする
+		if (timeOff.greaterThan(AttendanceTime.ZERO)) {
+			// ドメインモデル「代休管理設定」を取得する
+			CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(companyID);
+			// 利用する休暇時間の消化単位をチェックする
+			if (compensatoryLeaveComSetting != null && !compensatoryLeaveComSetting.checkVacationTimeUnitUsed(require, companyID, timeOff, employeeId, ymd)) {
+				// エラーメッセージ(Msg_477)を表示する
+				throw new BusinessException("Msg_477",
+						compensatoryLeaveComSetting.getTimeVacationDigestUnit().getDigestUnit().description);
+			}
+		}
+
+		// INPUT.時間消化申請.60H超休をチェックする
+		if (overtime60H.greaterThan(AttendanceTime.ZERO)) {
+			// ドメインモデル「60H超休管理設定」を取得する
+			Com60HourVacation com60HourVacation = com60HourVacationRepository.findById(companyID).orElse(null);
+			// 利用する休暇時間の消化単位をチェックする
+			if (com60HourVacation != null && !com60HourVacation.checkVacationTimeUnitUsed(require, overtime60H)) {
+				// エラーメッセージ(Msg_478)を表示する
+				throw new BusinessException("Msg_477",
+						com60HourVacation.getTimeVacationDigestUnit().getDigestUnit().description);
+			}
+		}
+
+		// INPUT.時間消化申請.時間年休をチェックする
+		if (timeAnnualLeave.greaterThan(AttendanceTime.ZERO)) {
+			// ドメインモデル「年休設定」を取得する
+			AnnualPaidLeaveSetting annualPaidLeaveSetting = annualPaidLeaveSettingRepository.findByCompanyId(companyID);
+			// 利用する休暇時間の消化単位をチェックする
+			if (annualPaidLeaveSetting != null && !annualPaidLeaveSetting.checkVacationTimeUnitUsed(require, timeAnnualLeave)) {
+				// エラーメッセージ(Msg_476)を表示する
+				throw new BusinessException("Msg_476",
+						annualPaidLeaveSetting.getTimeSetting().getTimeVacationDigestUnit().getDigestUnit().description);
+			}
+		}
+
+		// INPUT.時間消化申請.時間特別休暇をチェックする
+		if (timeSpecialVacation.greaterThan(AttendanceTime.ZERO)) {
+			// ドメインモデル「時間特別休暇の管理設定」を取得する
+			TimeSpecialLeaveManagementSetting timeSpecialLeaveMngSet = timeSpecialLeaveMngSetRepo.findByCompany(companyID).orElse(null);
+			// 利用する休暇時間の消化単位をチェックする
+			if (timeSpecialLeaveMngSet == null || !timeSpecialLeaveMngSet.checkVacationTimeUnitUsed(require, timeSpecialVacation)) {
+				// エラーメッセージ(Msg_1686)を表示する
+				throw new BusinessException("Msg_1686",
+						TextResource.localize("KAFS12_46"),
+						timeSpecialLeaveMngSet.getTimeVacationDigestUnit().getDigestUnit().description);
+			}
+		}
+
+		// INPUT.時間消化申請.子の看護時間をチェックする
+		if (childTime.greaterThan(AttendanceTime.ZERO)) {
+			// ドメインモデル「介護看護休暇設定」を取得する
+			NursingLeaveSetting nursingLeaveSet = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyID, NursingCategory.ChildNursing.value);
+			// 利用する休暇時間の消化単位をチェックする
+			if (nursingLeaveSet!= null && !nursingLeaveSet.checkVacationTimeUnitUsed(require, childTime)) {
+				// エラーメッセージ(Msg_1686)を表示する
+				throw new BusinessException("Msg_1686",
+						TextResource.localize("Com_ChildNurseHoliday"),
+						nursingLeaveSet.getTimeVacationDigestUnit().getDigestUnit().description);
+			}
+		}
+
+		// INPUT.時間消化申請.介護時間をチェックする
+		if (nursingTime.greaterThan(AttendanceTime.ZERO)) {
+			// ドメインモデル「介護看護休暇設定」を取得する
+			NursingLeaveSetting nursingLeaveSet = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyID, NursingCategory.Nursing.value);
+			// 利用する休暇時間の消化単位をチェックする
+			if (nursingLeaveSet != null && !nursingLeaveSet.checkVacationTimeUnitUsed(require, nursingTime)) {
+				// エラーメッセージ(Msg_1686)を表示する
+				throw new BusinessException("Msg_1686",
+						TextResource.localize("Com_CareHoliday"),
+						nursingLeaveSet.getTimeVacationDigestUnit().getDigestUnit().description);
+			}
+		}
 		
-		if (!Optional.ofNullable(timeDigestApplication).isPresent()) {
+	}
+	
+	private CompensatoryLeaveComSetting.RequireM7 createRequireM7() {
+		return new CompensatoryLeaveComSetting.RequireM7() {
 			
-			throw new BusinessException("Msg_511");
-		}
-		if (!this.isValidAttendanceTime(timeDigestApplication.getChildTime()) && 
-		        !this.isValidAttendanceTime(timeDigestApplication.getNursingTime()) && 
-		        !this.isValidAttendanceTime(timeDigestApplication.getOvertime60H()) && 
-		        !this.isValidAttendanceTime(timeDigestApplication.getTimeAnnualLeave()) &&
-		        !this.isValidAttendanceTime(timeDigestApplication.getTimeOff()) &&
-		        !this.isValidAttendanceTime(timeDigestApplication.getTimeSpecialVacation())) {
-            throw new BusinessException("Msg_511");
-        }
-		
-		if (timeDigestApplication.getOvertime60H() != null && timeDigestApplication.getOvertime60H().v() > 0) {
-		    int remain60H = 0;
-		    if (superHolidayUnit.isPresent()) {
-		        switch (superHolidayUnit.get()) {
-                case OneMinute:
-                    remain60H = timeDigestApplication.getOvertime60H().v() % 1;
-                    break;
-                case FifteenMinute:
-                    remain60H = timeDigestApplication.getOvertime60H().v() % 15;
-                    break;
-                case ThirtyMinute:
-                    remain60H = timeDigestApplication.getOvertime60H().v() % 30;
-                    break;
-                case OneHour:
-                    remain60H = timeDigestApplication.getOvertime60H().v() % 60;
-                    break;
-                case TwoHour:
-                    remain60H = timeDigestApplication.getOvertime60H().v() % 120;
-                    break;
-                default:
-                    break;
-                }
-		        
-		        if (remain60H != 0) {
-		            throw new BusinessException("Msg_478", superHolidayUnit.get().description);
-		        }
-		    }
-		}
-		
-		if (timeDigestApplication.getTimeOff() != null && timeDigestApplication.getTimeOff().v() > 0) {
-		    int remainTimeOff = 0;
-		    if (substituteHoliday.isPresent()) {
-		        switch (substituteHoliday.get()) {
-		        case OneMinute:
-		            remainTimeOff = timeDigestApplication.getTimeOff().v() % 1;
-                    break;
-                case FifteenMinute:
-                    remainTimeOff = timeDigestApplication.getTimeOff().v() % 15;
-                    break;
-                case ThirtyMinute:
-                    remainTimeOff = timeDigestApplication.getTimeOff().v() % 30;
-                    break;
-                case OneHour:
-                    remainTimeOff = timeDigestApplication.getTimeOff().v() % 60;
-                    break;
-                case TwoHour:
-                    remainTimeOff = timeDigestApplication.getTimeOff().v() % 120;
-                    break;
-                default:
-                    break;
-                }
-		        
-		        if (remainTimeOff != 0) {
-		            throw new BusinessException("Msg_477", substituteHoliday.get().description);
-                }
-		    }
-		}
-		
-		if (timeDigestApplication.getTimeAnnualLeave() != null && timeDigestApplication.getTimeAnnualLeave().v() > 0) {
-		    int remainAnnual = 0;
-		    if (annualLeaveUnit.isPresent()) {
-		        switch (annualLeaveUnit.get()) {
-                case OneMinute:
-                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 1;
-                    break;
-                case FifteenMinute:
-                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 15;
-                    break;
-                case ThirtyMinute:
-                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 30;
-                    break;
-                case OneHour:
-                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 60;
-                    break;
-                case TwoHour:
-                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 120;
-                    break;
-                default:
-                    break;
-                }
-                
-                if (remainAnnual != 0) {
-                    throw new BusinessException("Msg_476", annualLeaveUnit.get().description);
-                }
-		    }
-		}
-		
-		if (timeDigestApplication.getChildTime() != null && timeDigestApplication.getChildTime().v() > 0) {
-		    int childTimeRemain = 0;
-		    if (childNursingUnit.isPresent()) {
-		        switch (childNursingUnit.get()) {
-                case OneMinute:
-                    childTimeRemain = timeDigestApplication.getChildTime().v() % 1;
-                    break;
-                case FifteenMinute:
-                    childTimeRemain = timeDigestApplication.getChildTime().v() % 15;
-                    break;
-                case ThirtyMinute:
-                    childTimeRemain = timeDigestApplication.getChildTime().v() % 30;
-                    break;
-                case OneHour:
-                    childTimeRemain = timeDigestApplication.getChildTime().v() % 60;
-                    break;
-                case TwoHour:
-                    childTimeRemain = timeDigestApplication.getChildTime().v() % 120;
-                    break;
-                default:
-                    break;
-                }
-                
-                if (childTimeRemain != 0) {
-                    throw new BusinessException("Msg_1686", "Com_ChildNurseHoliday", childNursingUnit.get().description);
-                }
-		    }
-		}
-		
-		if (timeDigestApplication.getNursingTime() != null && timeDigestApplication.getNursingTime().v() > 0) {
-		    int nursingRemain = 0;
-		    if (nursingUnit.isPresent()) {
-		        switch (nursingUnit.get()) {
-                case OneMinute:
-                    nursingRemain = timeDigestApplication.getNursingTime().v() % 1;
-                    break;
-                case FifteenMinute:
-                    nursingRemain = timeDigestApplication.getNursingTime().v() % 15;
-                    break;
-                case ThirtyMinute:
-                    nursingRemain = timeDigestApplication.getNursingTime().v() % 30;
-                    break;
-                case OneHour:
-                    nursingRemain = timeDigestApplication.getNursingTime().v() % 60;
-                    break;
-                case TwoHour:
-                    nursingRemain = timeDigestApplication.getNursingTime().v() % 120;
-                    break;
-                default:
-                    break;
-                }
-                
-                if (nursingRemain != 0) {
-                    throw new BusinessException("Msg_1686", "Com_CareHoliday", nursingUnit.get().description);
-                }
-		    }
-		}
-		
-		if (timeDigestApplication.getTimeSpecialVacation() != null && timeDigestApplication.getTimeSpecialVacation().v() > 0) {
-		    int timeSpecialRemain = 0;
-		    if (pendingUnit.isPresent()) {
-		        switch (pendingUnit.get()) {
-		        case OneMinute:
-		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 1;
-		            break;
-		        case FifteenMinute:
-		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 15;
-		            break;
-		        case ThirtyMinute:
-		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 30;
-		            break;
-		        case OneHour:
-		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 60;
-		            break;
-		        case TwoHour:
-		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 120;
-		            break;
-		        default:
-		            break;
-		        }
-		        
-		        if (timeSpecialRemain != 0) {
-		            throw new BusinessException("Msg_1686", "KAFS12_46", pendingUnit.get().description);
-		        }
-		    }
-		}
+			@Override
+			public OptionLicense getOptionLicense() {
+				return AppContexts.optionLicense();
+			}
+			
+			@Override
+			public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+				return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
+			}
+			
+			@Override
+			public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode) {
+				return Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode));
+			}
+			
+			@Override
+			public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId) {
+				return Optional.ofNullable(compensLeaveComSetRepository.find(companyId));
+			}
+		};
 	}
 	
 	private WorkingConditionService.RequireM1 createRequireM1() {

@@ -7,7 +7,9 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.DayOffDayTimeUnUse;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.DayOffRemainCarryForward;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.DayOffRemainDayAndTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.RemainUnDigestedDayTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.TotalRemainUndigestNumber.RemainUndigestResult;
@@ -18,7 +20,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.vacationdetail.CalcNumCarryAtBeginMonthFromDaikyu;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.vacationdetail.GetSequentialVacationDetailDaikyu;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
 
 /**
  * @author ThanhNX
@@ -44,11 +47,15 @@ public class NumberRemainVacationLeaveRangeQuery {
 				inputParam.getInterimMng(), inputParam.getProcessDate(), inputParam.getOptBeforeResult());
 		List<AccumulationAbsenceDetail> lstAccTemp = sequentialVacaDetail.getVacationDetail().getLstAcctAbsenDetail();
 
+		//休出振出管理データを補正する。
+		//CorrectDaikyuFurikyuFixed.correct(sequentialVacaDetail.getVacationDetail(), sequentialVacaDetail.getSeqVacInfoList());
+		
 		// 代休、休出から月初の繰越数を計算
 		val calcNumCarry = CalcNumCarryAtBeginMonthFromDaikyu.calculate(require, inputParam.getCid(), inputParam.getSid(),
 				inputParam.getDateData(), sequentialVacaDetail.getVacationDetail(), inputParam.isMode());
-		result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(calcNumCarry.getCarryForwardDays()));
-		result.setCarryoverTime(new RemainingMinutes(calcNumCarry.getCarryForwardTime()));
+		result.setCarryForward(
+				new DayOffRemainCarryForward(new LeaveRemainingDayNumber(calcNumCarry.getCarryForwardDays()),
+						Optional.of(new LeaveRemainingTime(calcNumCarry.getCarryForwardTime()))));
 
 		// 「休出代休明細」をソートする(sort 「休出代休明細」)
 		lstAccTemp.sort(new AccumulationAbsenceDetailComparator());
@@ -63,10 +70,11 @@ public class NumberRemainVacationLeaveRangeQuery {
 		// da co xu ly o tren
 		RemainUndigestResult remainUndigestResult = TotalRemainUndigestNumber.process(require, inputParam.getCid(),
 				inputParam.getSid(), inputParam.getScreenDisplayDate(), lstAccTemp, inputParam.isMode());
-		result.setRemainDay(new ReserveLeaveRemainingDayNumber(remainUndigestResult.getRemainingDay()));
-		result.setRemainTime(new RemainingMinutes(remainUndigestResult.getRemainingTime()));
-		result.setUnusedDay(new ReserveLeaveRemainingDayNumber(remainUndigestResult.getUndigestDay()));
-		result.setUnusedTime(new RemainingMinutes(remainUndigestResult.getUndigestTime()));
+		result.setRemain(
+				new DayOffRemainDayAndTimes(new LeaveRemainingDayNumber(remainUndigestResult.getRemainingDay()),
+						Optional.of(new LeaveRemainingTime(remainUndigestResult.getRemainingTime()))));
+		result.setUnUsed(new DayOffDayTimeUnUse(new LeaveRemainingDayNumber(remainUndigestResult.getUndigestDay()),
+				Optional.of(new LeaveRemainingTime(remainUndigestResult.getUndigestTime()))));
 		// 発生数、使用数を計算
 		RemainUnDigestedDayTimes remainUnDigDayTime = CalcNumberOccurUses.process(lstAccTemp, inputParam.getDateData());
 		result.setCalcNumberOccurUses(remainUnDigDayTime);
@@ -84,7 +92,7 @@ public class NumberRemainVacationLeaveRangeQuery {
 	}
 
 	public static interface Require extends GetSequentialVacationDetailDaikyu.Require,
-			CalcNumCarryAtBeginMonthFromDaikyu.Require, OffsetProcessing.Require, CorrectOutputAccordTimeMagSetting.Require {
+			CalcNumCarryAtBeginMonthFromDaikyu.Require, OffsetProcessing.Require, CorrectOutputAccordTimeMagSetting.Require{
 
 	}
 

@@ -29,12 +29,10 @@ public class GetWorkScheduleByScheduleManagementService {
 
 		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> map = new HashMap<>();
 		employeeIds.stream().forEach( employeeId -> {
-			long start = System.nanoTime();
 
 			// 社員別に取得する
 			map.putAll( GetWorkScheduleByScheduleManagementService.getByEmployee(require, employeeId, period) );
 
-			System.out.println("employee: " + ((System.nanoTime() - start )/1000000) + "ms");
 		});
 
 		return  map;

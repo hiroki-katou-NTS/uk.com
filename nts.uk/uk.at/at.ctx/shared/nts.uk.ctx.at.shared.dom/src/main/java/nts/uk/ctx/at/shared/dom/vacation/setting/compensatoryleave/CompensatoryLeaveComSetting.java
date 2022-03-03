@@ -9,7 +9,10 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
@@ -39,7 +42,7 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 		
 	// 時間代休の消化単位
 	/** The compensatory digestive time unit. */
-	private CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit;
+	private TimeVacationDigestUnit timeVacationDigestUnit;
    
 	// 紐付け管理区分
 	private ManageDistinct linkingManagementATR;
@@ -75,8 +78,18 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 	 *
 	 * @return true, if is managed
 	 */
+	//代休を管理するかどうか判断する
 	public boolean isManaged() {
 		return this.isManaged.equals(ManageDistinct.YES);
+	}
+	
+	/**
+	 * [2] 時間代休を管理するかどうか判断する
+	 * @param require
+	 * @return
+	 */
+	public boolean isManagedTime(TimeVacationDigestUnit.Require require) {
+		return this.timeVacationDigestUnit.isVacationTimeManage(require, this.isManaged);
 	}
 
 	/**
@@ -89,7 +102,7 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 		this.companyId = memento.getCompanyId();
 		this.isManaged = memento.getIsManaged();
 		this.compensatoryAcquisitionUse = memento.getCompensatoryAcquisitionUse();
-		this.compensatoryDigestiveTimeUnit = memento.getCompensatoryDigestiveTimeUnit();
+		this.timeVacationDigestUnit = memento.getTimeVacationDigestUnit();
 //		this.compensatoryOccurrenceSetting = memento.getCompensatoryOccurrenceSetting();
 		this.substituteHolidaySetting = memento.getSubstituteHolidaySetting();
 		this.linkingManagementATR = memento.getLinkingManagementATR();
@@ -105,7 +118,7 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 		memento.setCompanyId(this.companyId);
 		memento.setIsManaged(this.isManaged);
 		memento.setCompensatoryAcquisitionUse(this.compensatoryAcquisitionUse);
-		memento.setCompensatoryDigestiveTimeUnit(this.compensatoryDigestiveTimeUnit);
+		memento.setTimeVacationDigestUnit(this.timeVacationDigestUnit);
 //		memento.setCompensatoryOccurrenceSetting(this.compensatoryOccurrenceSetting);
 		memento.setSubstituteHolidaySetting(this.substituteHolidaySetting);
 		memento.setLinkingManagementATR(this.linkingManagementATR);
@@ -113,14 +126,40 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 
 	public CompensatoryLeaveComSetting(String companyId, ManageDistinct isManaged,
 			CompensatoryAcquisitionUse compensatoryAcquisitionUse, SubstituteHolidaySetting substituteHolidaySetting,
-			CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit, ManageDistinct linkingManagementATR) {
+			TimeVacationDigestUnit compensatoryDigestiveTimeUnit, ManageDistinct linkingManagementATR) {
 		super();
 		this.companyId = companyId;
 		this.isManaged = isManaged;
 		this.compensatoryAcquisitionUse = compensatoryAcquisitionUse;
 		this.substituteHolidaySetting = substituteHolidaySetting;
-		this.compensatoryDigestiveTimeUnit = compensatoryDigestiveTimeUnit;
+		this.timeVacationDigestUnit = compensatoryDigestiveTimeUnit;
 		this.linkingManagementATR = linkingManagementATR;
 	}
 	
+	/**
+	 * [7] 利用する休暇時間の消化単位をチェックする
+	 * @param require
+	 * @param cid 会社ID
+	 * @param time 休暇使用時間
+	 * @param employeeId 社員ID
+	 * @param ymd 基準日
+	 */
+	public boolean checkVacationTimeUnitUsed(RequireM7 require, String cid, AttendanceTime time, String employeeId, GeneralDate ymd) {
+		boolean isManage = CheckDateForManageCmpLeaveService.check(require, cid, employeeId, ymd);
+    	return this.timeVacationDigestUnit.checkDigestUnit(require, time, ManageDistinct.valueOf(isManage ? 1 : 0));
+    }
+	
+	/**
+	 * [8]雇用設定に従う時間代休を管理するかどうか判断する
+	 * @param require
+	 * @param cid 会社ID
+	 * @param employeeId 社員ID
+	 * @param ymd 基準日
+	 */
+	public boolean manageTimeOffAccordingEmpSettings(RequireM7 require, String cid, String employeeId, GeneralDate ymd) {
+		boolean isManage = CheckDateForManageCmpLeaveService.check(require, cid, employeeId, ymd);
+		return this.timeVacationDigestUnit.isVacationTimeManage(require, ManageDistinct.valueOf(isManage ? 1 : 0));
+	}
+
+	public static interface RequireM7 extends CheckDateForManageCmpLeaveService.Require, TimeVacationDigestUnit.Require {}
 }

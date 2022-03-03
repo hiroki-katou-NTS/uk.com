@@ -22,15 +22,15 @@ import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetExcessTimesYearAd
 import nts.uk.ctx.at.function.dom.adapter.standardtime.GetAgreementPeriodFromYearAdapter;
 import nts.uk.ctx.at.record.app.find.monthly.agreement.export.AgreementExcessInfoDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AgreementTimeOfManagePeriodDto;
-import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.ClosureHistPeriod;
-import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.GetSpecifyPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.sys.auth.dom.adapter.person.EmployeeBasicInforAuthImport;
@@ -38,6 +38,7 @@ import nts.uk.ctx.sys.auth.dom.wkpmanager.EmpInfoAdapter;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.EmpBasicInfoImport;
 import nts.uk.screen.at.app.ktgwidget.find.dto.EmployeesOvertimeDisplayDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.PresentClosingPeriodDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.UpperLimitTimeDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearAndEmpOtHoursDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearMonthOvertime;
 import nts.uk.shr.com.context.AppContexts;
@@ -53,10 +54,6 @@ public class KTG026QueryProcessor {
 	// The agreement operation setting repository
 	@Inject
 	private AgreementOperationSettingRepository agreementOperationSettingRepository;
-
-	// The get specify period
-	@Inject
-	private GetSpecifyPeriod getSpecifyPeriod;
 
 	// The employee info adapter
 	@Inject
@@ -76,37 +73,17 @@ public class KTG026QueryProcessor {
 	 * @param currentOrNextMonth
 	 * @return
 	 */
-	public EmployeesOvertimeDisplayDto startScreenKtg026(String employeeId, Integer targetDate, Integer targetYear,
-			int currentOrNextMonth) {
-		val require = requireService.createRequire();
-		CacheCarrier cacheCarrier = new CacheCarrier();
-		// システム日付
-		GeneralDate systemDate = GeneralDate.today();
-
-		// 社員に対応する処理締めを取得する
-		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, systemDate);
-
-		// 従業員用の時間外時間表示．ログイン者の締めID＝取得したドメインモデル「締め」．締めID
-		int closureID = closure.getClosureId().value;
-
-		YearMonth yearMonth = closure.getClosureMonth().getProcessingYm();
-
-		// 指定した年月の締め期間を取得する
-		List<ClosureHistPeriod> lstClosureHist = getSpecifyPeriod.getSpecifyPeriod(yearMonth);
-
-		// 従業員用の時間外時間表示．当月の締め情報．処理年月＝取得したドメインモデル「締め」．当月
-		// 従業員用の時間外時間表示．当月の締め情報．締め開始日＝取得した締め期間．開始日
-		// 従業員用の時間外時間表示．当月の締め情報．締め終了日＝取得した締め期間．終了日
-		PresentClosingPeriodDto closingPeriod = null;
-		if (!lstClosureHist.isEmpty()) {
-			closingPeriod = PresentClosingPeriodDto.builder()
-					.processingYm(closure.getClosureMonth().getProcessingYm().v())
-					.closureStartDate(lstClosureHist.get(0).getPeriod().start())
-					.closureEndDate(lstClosureHist.get(0).getPeriod().start()).build();
-		}
+	public EmployeesOvertimeDisplayDto startScreenKtg026(int closureID, String employeeId, Integer targetDate, Integer targetYear,
+			int currentOrNextMonth, int processingYm) {
+		
+		PresentClosingPeriodDto closingPeriod =  PresentClosingPeriodDto.builder()
+					.processingYm(processingYm)
+					.closureStartDate(null)
+					.closureEndDate(null)
+					.build();
 
 		// アルゴリズム「年月を指定して、36協定期間の年度を取得する」を実行する
-		Year year = this.getYearAgreementPeriod(closure.getClosureMonth().getProcessingYm());
+		Year year = this.getYearAgreementPeriod(YearMonth.of(processingYm));
 
 		// 従業員用の時間外時間表示．当月含む年＝取得した年度
 		int yearIncludeThisMonth = year.v();
@@ -181,6 +158,7 @@ public class KTG026QueryProcessor {
 		return EmployeesOvertimeDisplayDto.builder()
 					.ymOvertimes(otHours.getOvertimeHours())
 					.agreeInfo(agreeInfo)
+					.upperLimit(otHours.getUpperLimit())
 					.build();
 	}
 
@@ -199,7 +177,7 @@ public class KTG026QueryProcessor {
 
 		// パラメータ「年月」の月と起算月を比較 The month of the parameter "year-month" and the starting
 		// month are compared
-		if (yearMonth.month() < (agreeOpSet.getStartingMonth().value + 1)) { // パラメータ「年月」の月 ＜ 起算月 の場合
+		if (yearMonth.month() < (agreeOpSet.getStartingMonth().value)) { // パラメータ「年月」の月 ＜ 起算月 の場合
 			// パラメータ「年月」の年を-1年する Make the year of the parameter "year-month" -1 year
 			year = new Year(yearMonth.year() - 1);
 		}
@@ -218,6 +196,7 @@ public class KTG026QueryProcessor {
 	public YearAndEmpOtHoursDto getYearAndEmployeeOTHours(String employeeId, int closingId, Year targetYear, YearMonth processingDate) {
 		// 年月ごとの時間外時間
 		List<YearMonthOvertime> ymOvertimes = new ArrayList<YearMonthOvertime>();
+		List<UpperLimitTimeDto> upperLimit = new ArrayList<UpperLimitTimeDto>();
 		
 		val require = requireService.createRequire();
 		CacheCarrier cacheCarrier = new CacheCarrier();
@@ -286,7 +265,14 @@ public class KTG026QueryProcessor {
 				}
 			}
 			
+			// 年月ごとの36協定時間（上限時間）を取得する
+	        BasicAgreementSetting basicAgreementSetting = AgreementDomainService.getBasicSet(require, AppContexts.user().companyId(), employeeId, systemDate, loopYM).getBasicSetting();
+	        int basicUpperLimitTime = basicAgreementSetting.getOneMonth().getBasic().getUpperLimit().v();
+	        upperLimit.add(new UpperLimitTimeDto(employeeId, loopYM.v(), basicUpperLimitTime));
+	        
 			loopYM = loopYM.nextMonth();
+			
+			
 		}
 		// OUTPUT．年月ごとの時間外時間をソートする
 		ymOvertimes.stream().sorted((a, b) -> b.getYearMonth() - a.getYearMonth());
@@ -294,6 +280,7 @@ public class KTG026QueryProcessor {
 		return YearAndEmpOtHoursDto.builder()
 					.agreeInfo(agreeInfo)
 					.overtimeHours(ymOvertimes)
+					.upperLimit(upperLimit)
 					.build();
 		
 	}

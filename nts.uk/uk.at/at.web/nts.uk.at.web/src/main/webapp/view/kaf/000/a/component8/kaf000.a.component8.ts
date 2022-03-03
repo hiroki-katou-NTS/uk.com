@@ -4,53 +4,63 @@ module nts.uk.at.view.kaf000.a.component8.viewmodel {
     @component({
         name: 'kaf000-a-component8',
         template: `
-            <div id="kaf000-a-component8">
-				<div class="table" style="padding-top: 20px; padding-bottom: 10px;">
-					<div class="cell" data-bind="i18n: 'KAF000_54'" style="font-weight: bold;"></div>
-				</div>
-				<div class="panel panel-frame" data-bind="foreach: actualContentDisplayDtoLst" style="overflow: auto; height: 200px; margin-left: 3px; margin-top: 5px;">
-					<div style="margin-bottom: 10px;">
-						<div data-bind="if: $index">
-							<div style="border-bottom: 1px solid #B1B1B1; margin-bottom: 10px;"></div>
-						</div>
-						<div class="table" style="margin-bottom: 3px;">
-			              	<div class="cell column1" data-bind="style: { color: $component.getColor(opAchievementDetail) }, i18n: 'KAF000_55'"></div>
-			              	<div class="cell column2" data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: date"></div>
-			          	</div>
-			          	<div class="table" style="margin-bottom: 3px; margin-top: 3px;">
-			              	<div class="cell column1" data-bind="style: { color: $component.getColor(opAchievementDetail) }, i18n: 'KAF000_56'"></div>
-			              	<div class="cell column2" data-bind="if: opAchievementDetail">
-			                  	<span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: opAchievementDetail.workTypeCD"></span>
-			                  	<span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: opAchievementDetail.opWorkTypeName"></span>
-			              	</div>
-			          	</div>
-			          	<div class="table" style="margin-bottom: 3px; margin-top: 3px;">
-			              	<div class="cell column1" data-bind="style: { color: $component.getColor(opAchievementDetail) }, i18n: 'KAF000_57'"></div>
-			              	<div class="cell column2" data-bind="if: opAchievementDetail">
-			                  	<span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: opAchievementDetail.workTimeCD"></span>
-			                  	<span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: opAchievementDetail.opWorkTimeName"></span>
-			              	</div>
-			          	</div>
-			          	<div class="table" style="margin-top: 3px;">
-			              	<div class="cell column1" data-bind="style: { color: $component.getColor(opAchievementDetail) }, i18n: 'KAF000_58'"></div>
-			              	<div class="cell column2" data-bind="if: opAchievementDetail">
-								<span data-bind="if: opAchievementDetail.opWorkTime">
-									<span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: $parent.formatTime(opAchievementDetail.opWorkTime)"></span>
-								</span>
-								<span data-bind="if: !opAchievementDetail.opWorkTime">
-									<span style="visibility: hidden;">null</span>
-								</span>
-								<span data-bind="if: opAchievementDetail.opWorkTime || opAchievementDetail.opLeaveTime">
-									<span data-bind="style: { color: $component.getColor(opAchievementDetail) }"> ~ </span>
-								</span>
-								<span data-bind="if: opAchievementDetail.opLeaveTime">
-									<span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: $parent.formatTime(opAchievementDetail.opLeaveTime)"></span>
-								</span>
-								<span data-bind="if: !opAchievementDetail.opLeaveTime">
-									<span style="visibility: hidden;">null</span>
-								</span>
+            <div id="kaf000-a-component8" class="right-panel-block">
+				<div class="header">予定／実績内容</div>
+				<div class="content">
+					<div data-bind="foreach: actualContentDisplayDtoLst"">
+						<div class="ui-iggrid">
+							<div data-bind="if: $index">
+								<div style="margin-bottom: 10px;"></div>
 							</div>
-			           	</div>
+							<table class="left-aligned">
+								<tbody>
+									<tr>
+										<td><span data-bind="style: { color: $component.getColor(opAchievementDetail) }, i18n: 'KAF000_55'"></span></td>
+										<td><span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: date"></span></td>
+									</tr>
+									<tr>
+										<td><span data-bind="style: { color: $component.getColor(opAchievementDetail) }, i18n: 'KAF000_56'"></span></td>
+										<td>
+											<div data-bind="if: opAchievementDetail">
+												<span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: opAchievementDetail.workTypeCD"></span>
+												<span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: opAchievementDetail.opWorkTypeName"></span>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td><span data-bind="style: { color: $component.getColor(opAchievementDetail) }, i18n: 'KAF000_57'"></span></td>
+										<td>
+											<div data-bind="if: opAchievementDetail">
+												<span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: opAchievementDetail.workTimeCD"></span>
+												<span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: opAchievementDetail.opWorkTimeName"></span>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td><span data-bind="style: { color: $component.getColor(opAchievementDetail) }, i18n: 'KAF000_58'"></span></td>
+										<td>
+											<div data-bind="if: opAchievementDetail">
+												<span data-bind="if: opAchievementDetail.opWorkTime">
+													<span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: $parent.formatTime(opAchievementDetail.opWorkTime)"></span>
+												</span>
+												<span data-bind="if: !opAchievementDetail.opWorkTime">
+													<span style="visibility: hidden;">null</span>
+												</span>
+												<span data-bind="if: opAchievementDetail.opWorkTime || opAchievementDetail.opLeaveTime">
+													<span data-bind="style: { color: $component.getColor(opAchievementDetail) }"> ～ </span>
+												</span>
+												<span data-bind="if: opAchievementDetail.opLeaveTime">
+													<span data-bind="style: { color: $component.getColor(opAchievementDetail) }, text: $parent.formatTime(opAchievementDetail.opLeaveTime)"></span>
+												</span>
+												<span data-bind="if: !opAchievementDetail.opLeaveTime">
+													<span style="visibility: hidden;">null</span>
+												</span>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>

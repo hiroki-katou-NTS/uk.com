@@ -85,7 +85,6 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 						kmamtMngAnnualSet.setHalfMaxReference(rec.getInt("HALF_MAX_REFERENCE"));
 						kmamtMngAnnualSet
 								.setHalfMaxUniformComp(rec.getInt("HALF_MAX_UNIFORM_COMP"));
-						kmamtMngAnnualSet.setIsWorkDayCal(rec.getInt("IS_WORK_DAY_CAL"));
 						kmamtMngAnnualSet.setRetentionYear(rec.getInt("RETENTION_YEAR"));
 						kmamtMngAnnualSet.setHalfRoundProc(rec.getInt("KMASHALF_ROUND_PROC"));
 						kmamtMngAnnualSet.setScheduleWorkingDays(rec.getDouble("KMASSCHEDULD_WORKING_DAYS"));

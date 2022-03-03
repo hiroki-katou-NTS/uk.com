@@ -2,10 +2,13 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculatio
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.enterprise.inject.New;
 
 import lombok.Getter;
 import lombok.val;
@@ -284,7 +287,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 							ableRangeTime,
 							createTimeSheet,
 							integrationOfDaily.getCalAttr().getOvertimeSetting(),
-							integrationOfWorkTime.getLegalOverTimeFrameNoMap(todayWorkType),
+							new HashMap<>(),
 							personDailySetting.getAddSetting().getVacationCalcMethodSet());
 			}
 		}
@@ -488,16 +491,16 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 
         val statutoryOverFrameNo = Optional.ofNullable(statutoryOverFrames.get(this.getOverTimeWorkSheetNo()));
 		
-        if(this.timeSheet.getEnd().equals(baseTime)) {
+        if(this.timeSheet.getEnd().lessThanOrEqualTo(baseTime)) {
             returnList.add(new OverTimeFrameTimeSheetForCalc(this.timeSheet
-                    										,this.rounding
+                    										,new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN) 
                     										,this.recordedTimeSheet
                     										,this.deductionTimeSheet
                     										,this.bonusPayTimeSheet
                     										,this.specBonusPayTimesheet
                     										,this.midNightTimeSheet
                     										,this.getFrameTime().changeFrameNo(statutoryOverFrameNo.isPresent()?statutoryOverFrameNo.get().v():this.getFrameTime().getOverWorkFrameNo().v())
-                    										,StatutoryAtr.Statutory
+                    										,StatutoryAtr.DeformationCriterion
                     										,this.goEarly
                     										,this.getOverTimeWorkSheetNo()
                     										,this.asTreatBindTime
@@ -539,7 +542,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
                                                          ,beforeSpecBp
                                                          ,beforeMid
                                                          ,this.getFrameTime().changeFrameNo(statutoryOverFrameNo.isPresent()?statutoryOverFrameNo.get().v():this.getFrameTime().getOverWorkFrameNo().v())
-                                                         ,StatutoryAtr.Statutory
+                                                         ,StatutoryAtr.DeformationCriterion
                                                          ,this.goEarly
                                                          ,this.getOverTimeWorkSheetNo()
                                                          ,this.asTreatBindTime
@@ -572,14 +575,14 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 			MidNightTimeSheetForCalcList afterMid = afterDuplicate.recreateMidNightTimeSheetBeforeBase(baseTime, false);
             
             returnList.add(new OverTimeFrameTimeSheetForCalc(new TimeSpanForDailyCalc(baseTime, this.timeSheet.getEnd())
-                                                          ,this.rounding
+                                                         ,this.rounding
                                                          ,afterRec
                                                          ,afterDed
                                                          ,afterBp
                                                          ,afterSpecBp
                                                          ,afterMid
                                                          ,this.getFrameTime().changeFrameNo(this.getFrameTime().getOverWorkFrameNo().v())
-                                                         ,StatutoryAtr.Excess
+                                                         ,this.getWithinStatutryAtr()
                                                          ,this.goEarly
                                                          ,this.getOverTimeWorkSheetNo()
                                                          ,this.asTreatBindTime
@@ -809,5 +812,38 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 				false,
 				Optional.empty(),
 				Optional.empty());
+	}
+
+	/**
+	 * 重複する時間帯で作り直す
+	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 残業枠時間帯
+	 */
+	public Optional<OverTimeFrameTimeSheetForCalc> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		Optional<TimeSpanForDailyCalc> duplicate = this.timeSheet.getDuplicatedWith(timeSpan);
+		if(!duplicate.isPresent()) {
+			return Optional.empty();
+		}
+		OverTimeFrameTimeSheetForCalc recreated = new OverTimeFrameTimeSheetForCalc(
+				duplicate.get(),
+				this.rounding.clone(),
+				this.recordedTimeSheet.stream().map(r -> r.getAfterDeleteOffsetTime()).collect(Collectors.toList()),
+				this.deductionTimeSheet.stream().map(d -> d.getAfterDeleteOffsetTime()).collect(Collectors.toList()),
+				this.getDuplicatedBonusPayNotStatic(this.bonusPayTimeSheet, duplicate.get()),
+				this.getDuplicatedSpecBonusPayzNotStatic(this.specBonusPayTimesheet, duplicate.get()),
+				this.midNightTimeSheet.getDuplicateRangeTimeSheet(duplicate.get()),
+				this.frameTime.clone(),
+				StatutoryAtr.valueOf(this.withinStatutryAtr.toString()),
+				this.goEarly,
+				new EmTimezoneNo(this.overTimeWorkSheetNo.v().intValue()),
+				this.asTreatBindTime,
+				this.payOrder.map(p -> new SettlementOrder(p.v())),
+				this.adjustTime.map(a -> new AttendanceTime(a.valueAsMinutes())));
+		
+		//控除時間帯の登録
+		recreated.registDeductionList(ActualWorkTimeSheetAtr.OverTimeWork, this.getCloneDeductionTimeSheet(), commonSet);
+		
+		return Optional.of(recreated);
 	}
 }

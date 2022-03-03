@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.application.overtime.*;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
@@ -34,13 +35,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitWkTypeWkTimeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
-import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
-import nts.uk.ctx.at.request.dom.application.overtime.OutDateApplication;
-import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
@@ -201,7 +195,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		}
 		
 		// OUTPUT「利用する残業枠」を更新して返す
-		output.setOverTimeQuotaList(frames);
+		output.setOverTimeQuotaList(frames.stream().sorted(Comparator.comparing(OvertimeWorkFrame::getOvertimeWorkFrNo)).collect(Collectors.toList()));
 		
 		
 		return output;
@@ -531,7 +525,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 					  .collect(Collectors.toList());
 			output.setTimeZones(timeZones);
 			// 勤務時間外の休憩時間を除く
-			output = this.createBreakTime(startTimeOp, endTimeOp, output);
+			// output = this.createBreakTime(startTimeOp, endTimeOp, output);
 		}
 		// 「開始時刻」の昇順にソートする(in excel)
 		output.setTimeZones(output.getTimeZones().stream().sorted(Comparator.comparing(DeductionTime::getStart)).collect(Collectors.toList()));
@@ -581,7 +575,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			) {
 		Optional<WorkHours> output = Optional.empty();
 		// INPUT．「申請日」と「＠時間入力利用区分」をチェックする
-		if (!(dateOp.isPresent() && applicationDetailSetting.getTimeInputUse() == NotUseAtr.USE)) {
+		if (!dateOp.isPresent()) {
 			return output;
 		}
 		// 勤務時間を取得する
@@ -1163,9 +1157,5 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		
 		return displayInfoOverTime;
 	}
-	
-
-
-	
 
 }

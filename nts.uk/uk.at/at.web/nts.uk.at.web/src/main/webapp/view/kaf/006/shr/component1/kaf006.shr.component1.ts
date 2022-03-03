@@ -3,55 +3,58 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
     @component({
         name: 'kaf006-shr-component1',
         template: `
-            <div id="kaf006-shr-component1" class="control-group"
-                style="border-bottom: 2px solid #B1B1B1; padding-bottom: 25px; margin: 15px 15px 0">
-                <div class="cell" style="font-weight: bold" data-bind="text: $i18n('KAF006_97')"></div>
-                <div class="space-between-table ">
-                    <!-- ko if: $parent.condition22 -->
-                    <div class="row-underline" style="display: flex; justify-content: space-between">
-                        <div data-bind="ntsFormLabel: {}, text: $i18n('KAF006_70')"></div>
-                        <a class="hyperlink" href="" data-bind="text: $parent.subVacaHourRemain, click: openKDL005"></a>
-                    </div>
-                    <!-- /ko -->
-                    <!-- ko if: $parent.condition23 -->
-                    <div class="row-underline" style="display: flex; justify-content: space-between">
-                        <div data-bind="ntsFormLabel: {}, text: $i18n('KAF006_71')"></div>
-                        <a class="hyperlink" href="" data-bind="text: $parent.subVacaRemain, click: openKDL009"></a>
-                    </div>
-                    <!-- /ko -->
-                    <!-- ko if: $parent.condition21 -->
-                    <div class="row-underline" style="justify-content: space-between">
-                        <div>
-                            <div data-bind="ntsFormLabel: {}, text: $i18n('KAF006_69')"></div>
-                            <a class="hyperlink" style="float: right;" href="" data-bind="text: $parent.yearRemain, click: openKDL020"></a>
-                        </div>
-                        <div data-bind="text: $parent.grantDaysOfYear" style="font-size: 0.7rem; margin-left: 12px"></div>
-                    </div>
-                    <!-- /ko -->
-                    <!-- ko if: $parent.condition24 -->
-                    <div class="row-underline" style="display: flex; justify-content: space-between">
-                        <div data-bind="ntsFormLabel: {}, text: $i18n('KAF006_72')"></div>
-                        <a class="hyperlink" href="" data-bind="text: $parent.remainingHours, click: openKDL029"></a>
-                    </div>
-                    <!-- /ko -->
-                    <!-- ko if: $parent.condition19Over60 -->
-                    <div class="row-underline" style="display: flex; justify-content: space-between">
-                        <div data-bind="ntsFormLabel: {}, text: $i18n('Com_ExsessHoliday')"></div>
-                        <a class="hyperlink" href="" data-bind="text: $parent.over60HHourRemain, click: openKDL017"></a>
-                    </div>
-                    <!-- /ko -->
-                    <!-- ko if: $parent.condition19ChildNursing -->
-                    <div class="row-underline" style="display: flex; justify-content: space-between">
-                        <div data-bind="ntsFormLabel: {}, text: $i18n('Com_ChildNurseHoliday')"></div>
-                        <span data-bind="text: $parent.childNursingRemain"></span>
-                    </div>
-                    <!-- /ko -->
-                    <!-- ko if: $parent.condition19Nursing -->
-                    <div class="row-underline" style="display: flex; justify-content: space-between">
-                        <div data-bind="ntsFormLabel: {}, text: $i18n('Com_CareHoliday')"></div>
-                        <span data-bind="text: $parent.nursingRemain"></span>
-                    </div>
-                    <!-- /ko -->
+            <div id="kaf006-shr-component1" class="control-group ui-iggrid right-panel-block">
+                <div class="header" data-bind="text: $i18n('KAF006_97')"></div>
+                <div class="content">
+                    <table class="space-between-table clickable-row left-aligned">
+                        <tbody>
+                            <!-- ko if: $parent.condition22 -->
+                            <tr data-bind="click: openKDL005">
+                                <td><div data-bind="text: $i18n('KAF006_70')"></div></td>
+                                <td><span data-bind="text: $parent.subVacaHourRemain"></span></td>
+                            </tr>
+                            <!-- /ko -->
+                            <!-- ko if: $parent.condition23 -->
+                            <tr data-bind="click: openKDL009">
+                                <td><div data-bind="text: $i18n('KAF006_71')"></div></td>
+                                <td><span data-bind="text: $parent.subVacaRemain"></span></td>
+                            </tr>
+                            <!-- /ko -->
+                            <!-- ko if: $parent.condition21 -->
+                            <tr data-bind="click: openKDL020">
+                                <td><div data-bind="text: $i18n('KAF006_69')"></div></td>
+                                <td>
+                                    <span data-bind="text: $parent.yearRemain"></span>
+                                    <div data-bind="text: $parent.grantDaysOfYear" style="font-size: 10px"></div>
+                                </td>
+                            </tr>
+                            <!-- /ko -->
+                            <!-- ko if: $parent.condition24 -->
+                            <tr data-bind="click: openKDL029">
+                                <td><div data-bind="text: $i18n('KAF006_72')"></div></td>
+                                <td><span data-bind="text: $parent.remainingHours"></span></td>
+                            </tr>
+                            <!-- /ko -->
+                            <!-- ko if: $parent.condition19Over60 -->
+                            <tr data-bind="click: openKDL017">
+                                <td><div data-bind="text: $i18n('Com_ExsessHoliday')"></div></td>
+                                <td><span data-bind="text: $parent.over60HHourRemain"></span></td>
+                            </tr>
+                            <!-- /ko -->
+                            <!-- ko if: $parent.condition19ChildNursing -->
+                            <tr data-bind="click: openKDL051">
+                                <td><div data-bind="text: $i18n('Com_ChildNurseHoliday')"></div></td>
+                                <td><span data-bind="text: $parent.childNursingRemain"></span></td>
+                            </div>
+                            <!-- /ko -->
+                            <!-- ko if: $parent.condition19Nursing -->
+                            <tr data-bind="click: openKDL052">
+                                <td><div data-bind="text: $i18n('Com_CareHoliday')"></div></td>
+                                <td><span data-bind="text: $parent.nursingRemain"></span></td>
+                            </tr>
+                            <!-- /ko -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         `

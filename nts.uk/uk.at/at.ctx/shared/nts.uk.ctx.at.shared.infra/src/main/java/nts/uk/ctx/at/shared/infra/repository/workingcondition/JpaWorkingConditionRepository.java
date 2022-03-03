@@ -838,6 +838,9 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		
 		List<WorkingCondition> data = new ArrayList<>();
 		
+		if(lstEmpID.isEmpty())
+			return data;
+		
 		String QUERY = "SELECT item FROM KshmtWorkcondHist item LEFT JOIN  item.kshmtWorkingCondItem hst WHERE item.cid = :cid AND item.kshmtWorkingCondPK.sid in :sids";
 		List<KshmtWorkcondHist> lstEntity = this.queryProxy().query(QUERY, KshmtWorkcondHist.class)
 				.setParameter("cid", companyID)

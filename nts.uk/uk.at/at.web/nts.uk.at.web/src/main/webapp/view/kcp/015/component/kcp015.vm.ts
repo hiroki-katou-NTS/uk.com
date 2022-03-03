@@ -58,7 +58,7 @@ module nts.uk.ui.at.kcp015.shared {
                 <div id="button-bot">
                     <button tabindex="2" class="small substitute"     data-bind="text: text('Com_SubstituteHoliday'), click: openKDL009, visible: visibleA32Com "></button>
                     <button tabindex="4" class="small fundedPaid"     data-bind="text: text('Com_FundedPaidHoliday'), click: openKDL029, visible: visibleA34Com "></button>
-                    <button tabindex="6" class="small supportsetting" data-bind="text: text('KCP015_2'),          click: openKDL039, visible: visibleA36Com "></button>
+                    <button tabindex="6" class="small supportsetting" data-bind="text: text('KCP015_2'),          click: openKDL039, visible: false "></button>
                 </div>
              </div><!-- /ko -->`
     })
@@ -206,12 +206,12 @@ module nts.uk.ui.at.kcp015.shared {
                 baseDate: baseDate
             };
 
-            nts.uk.ui.windows.setShared('KDL005_DATA', param);
+            nts.uk.ui.windows.setShared('KDL005_DATA', empIds);
             $('#A1_10_1').ntsPopup('hide');
-            if (param.employeeIds.length > 1) {
-                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/multi.xhtml");
+            if (empIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml", {  width: 1160, height: 640 });
             } else {
-                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/single.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 860, height: 640 });
             }
         }
 
@@ -235,49 +235,43 @@ module nts.uk.ui.at.kcp015.shared {
              *        const { employeeIds } = param;
              * 
              *        if(employeeIds.length > 1){
-             *            vm.$window.modal('/view/kdl/009/a/multi.xhtml');
+             *            vm.$window.modal("/view/kdl/009/a/index.xhtml",{width: 1100, height: 650});
              *        } else {
-             *            vm.$window.modal('/view/kdl/009/a/single.xhtml');
+             *            vm.$window.modal("/view/kdl/009/a/index.xhtml",{width: 770, height: 650});
              *        }
              *    });
              * Những đoạn code dùng cấu trúc cũ thay tương tự.
              */
-            nts.uk.ui.windows.setShared('KDL009_DATA', param);
+            nts.uk.ui.windows.setShared('KDL009_DATA', param.employeeIds);
             $('#A1_10_1').ntsPopup('hide');
             if (param.employeeIds.length > 1) {
-                nts.uk.ui.windows.sub.modal("/view/kdl/009/a/multi.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/009/a/index.xhtml",{width: 1100, height: 650});
             } else {
-                nts.uk.ui.windows.sub.modal("/view/kdl/009/a/single.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/009/a/index.xhtml",{width: 770, height: 650});
             }
         }
 
         // A1_10_4
         openKDL020() {
             let vm = this;
-            var param: any = {
-                employeeIds: vm.data.sids(),
-                baseDate: new Date()
-            };
-            setShared('KDL020A_PARAM', param );
             $('#A1_10_1').ntsPopup('hide');
-            if (param.employeeIds.length == 1) {
-                nts.uk.ui.windows.sub.modal('/view/kdl/020/a/single.xhtml').onClosed(function(): any { });
-            } else {
-                nts.uk.ui.windows.sub.modal('/view/kdl/020/a/multi.xhtml').onClosed(function(): any { });
-            }
+
+			setShared('KDL020_DATA', vm.data.sids());
+			if (vm.data.sids().length > 1)
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 1040, height: 660 });
+			else
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 730, height: 660 });
         }
 
         // A1_10_5
         openKDL029() {
             let vm = this;
-            let param = {
-                employeeIds: vm.data.sids(),
-                baseDate: moment(new Date()).format("YYYY/MM/DD")
-            }
-            setShared('KDL029_PARAM', param);
             $('#A1_10_1').ntsPopup('hide');
-            nts.uk.ui.windows.sub.modal('/view/kdl/029/a/index.xhtml').onClosed(function(): any {
-            });
+			nts.uk.ui.windows.setShared('KDL029_DATA', vm.data.sids());
+			if (vm.data.sids().length > 1)
+				nts.uk.ui.windows.sub.modal("/view/kdl/029/a/index.xhtml",{  width: 1060, height: 600 });
+			else
+				nts.uk.ui.windows.sub.modal("/view/kdl/029/a/index.xhtml",{  width: 710, height: 600 });
         }
         
         openKDL017() {

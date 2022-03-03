@@ -6,34 +6,19 @@ package nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave.dto.CompensatoryAcquisitionUseDto;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave.dto.CompensatoryDigestiveTimeUnitDto;
-import nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave.dto.CompensatoryOccurrenceSettingDto;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave.dto.SubstituteHolidaySettingDto;
-import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CertainPeriodOfTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.DeadlCheckMonth;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EnumTimeDivision;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.HolidayWorkHourRequired;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OvertimeHourRequired;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.SubstituteHolidaySetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TermManagement;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -131,11 +116,6 @@ public class SaveCompensatoryLeaveCommand {
 		}
 
 		@Override
-		public CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit() {
-			return this.command.compensatoryDigestiveTimeUnit.toDomain();
-		}
-
-		@Override
 		public List<CompensatoryOccurrenceSetting> getCompensatoryOccurrenceSetting() {
 //			return this.command.compensatoryOccurrenceSetting.stream().map(item -> {
 //				return item.toDomain();
@@ -153,6 +133,11 @@ public class SaveCompensatoryLeaveCommand {
 		public ManageDistinct getLinkingManagementATR() {
 			
 			return ManageDistinct.valueOf(this.command.linkingManagementATR);
+		}
+
+		@Override
+		public TimeVacationDigestUnit getTimeVacationDigestUnit() {
+			return this.command.compensatoryDigestiveTimeUnit.toDomain();
 		}
 	}
 }

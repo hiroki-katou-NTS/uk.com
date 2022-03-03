@@ -144,15 +144,18 @@ module nts.uk.at.view.kml002.c {
         //月間想定給与額
         vm.estimatedMonthlySalary(data[0].use ? Usage.Use : Usage.NotUse);
         //年間想定給与額
-        vm.estimatedAnnualSalary(data[1].use ? Usage.Use : Usage.NotUse);
+        vm.estimatedAnnualSalary(Usage.NotUse);
         //基準労働時間比較
-        vm.comparisonStandardWorkingHours(data[2].use ? Usage.Use : Usage.NotUse);
+        // vm.comparisonStandardWorkingHours(data[2].use ? Usage.Use : Usage.NotUse);
+        vm.comparisonStandardWorkingHours(Usage.NotUse);
         //労働時間
         vm.workingTime(data[3].use ? Usage.Use : Usage.NotUse);
         //夜勤時間
-        vm.nightShiftTime(data[4].use ? Usage.Use : Usage.NotUse);
+        // vm.nightShiftTime(data[4].use ? Usage.Use : Usage.NotUse);
+        vm.nightShiftTime(Usage.NotUse);
         //週間休日日数
-        vm.weeklyHolidayDays(data[5].use ? Usage.Use : Usage.NotUse);
+        // vm.weeklyHolidayDays(data[5].use ? Usage.Use : Usage.NotUse);
+        vm.weeklyHolidayDays(Usage.NotUse);
         //出勤・休日日数
         vm.attendanceHolidayDays(data[6].use ? Usage.Use : Usage.NotUse);
         //回数集計１
@@ -190,7 +193,7 @@ module nts.uk.at.view.kml002.c {
       const vm = this;
       let links = [
         { icon: "images/go-out.png", link: '/view/kml/001/a/index.xhtml', text: vm.$i18n('KML002_11') },
-        { icon: "images/go-out.png", link: '/view/kmf/002/a/index.xhtml', text: vm.$i18n('KML002_45') },
+        { icon: "images/go-out.png", link: '/view/kmf/002/g/index.xhtml', text: vm.$i18n('KML002_45') },
         // { icon: "images/go-out.png", link: '/view/ksm/001/a/index.xhtml', text: vm.$i18n('KML002_46') },
         //{ icon: "images/go-out.png", link: '#', text: vm.$i18n('KML002_118') },
       ];

@@ -67,7 +67,6 @@ module nts.uk.at.view.ktg026.a {
                     color: '#BFBFBF',
                     z: 1,
                     borderDash: [3, 2],
-                    zeroLineColor: 'rgba(0, 0, 0, 0)'
                 }
             }],
             yAxes: [{
@@ -304,9 +303,10 @@ module nts.uk.at.view.ktg026.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="25%" />
                             <col width="20%" />
-                            <col width="55%" />
+                            <col width="20%" />
+                            <col width="15%" />
+                            <col width="45%" />
                         </colgroup>
                         <head>
                             <tr>
@@ -314,9 +314,13 @@ module nts.uk.at.view.ktg026.a {
                                     <!-- A2_1 -->
                                     <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_7') }"></div>
                                 </th>
-                                <th class="text-center">
+                                <th class="text-right">
                                     <!-- A2_2 -->
                                     <div style="padding-right: 0px;" data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_4') }"></div>
+                                </th>
+                                <th class="text-right" style="padding-right: 5px;">
+                                    <!-- A4_1 -->
+                                    <div style="padding-right: 0px;" data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_10') }"></div>
                                 </th>
                                 <td rowspan="1"style="padding-left: 10px;">
                                     <canvas data-bind="ktg-026-chart: $component.dataTable, type: 'head'"></canvas>
@@ -330,15 +334,16 @@ module nts.uk.at.view.ktg026.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="45%" />
                             <col width="55%" />
+                            <col width="45%" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr style="height: 35px;">
                                 <td>
-                                    <div data-bind="if: row">
-                                        <div class="text-center" data-bind="text: row.date" style="float:left; width: 60%;"></div>
-                                        <div class="text-right" data-bind="time: row.time.tt, css: row.state" style="height: 25px; padding-right: 5px;"></div>
+                                    <div data-bind="if: row" style="display: flex;">
+                                        <div class="text-center ktg026-ot-date" style="color: inherit;" data-bind="text: row.date, css: row.state"></div>
+                                        <div class="text-right ktg026-ot-time" data-bind="time: row.time.tt, css: row.state"></div>
+                                        <div class="text-right ktg026-remain-time" data-bind="time: row.time.rm, css: row.state"></div>
                                     </div>
                                 </td>
                                 <td style="padding-left: 10px;" data-bind="ktg-chart: $component.dataTable"></td>
@@ -348,6 +353,19 @@ module nts.uk.at.view.ktg026.a {
                 </div>
             </div>
             <style>
+                .ktg026-ot-date {
+                    flex: 4;
+                    line-height: 25px;
+                }
+                .ktg026-ot-time {
+                    flex: 4;
+                    line-height: 25px;
+                }
+                .ktg026-remain-time {
+                    flex: 3;
+                    padding-right: 5px;
+                    line-height: 25px;
+                }
                 .ktg026-border-top {
                     border-top: none !important;
                 }
@@ -363,7 +381,7 @@ module nts.uk.at.view.ktg026.a {
                     font-size: 1rem;
                 }
                 .ktg026-fontsize div.form-label>span.text {
-                    font-size: 1.2rem !important;
+                    font-size: 1rem !important;
                 }
                 .ktg026-hidden {
                     display: none;
@@ -392,7 +410,7 @@ module nts.uk.at.view.ktg026.a {
                     overflow: hidden;
                 }
                 .ktg-026-a.widget-content.ui-resizable td[rowspan] canvas {
-                    width: 230px !important;
+                    width: 200px !important;
                 }
                 .ktg-026-a.widget-content.ui-resizable.widget-fixed {
                     padding-bottom: 0px;
@@ -407,16 +425,16 @@ module nts.uk.at.view.ktg026.a {
                     margin-top: -1px;
                 }
                 .widget-container.has-scroll .ktg-026-a.scroll-padding {
-                    padding-right: 17px !important;
+                    padding-right: 10px !important;
                 }
                 /* 限度アラーム時間超過 */
                 .ktg-026-a.widget-content.ui-resizable table tr td div.exceeding-limit-alarm {
-                    background-color: #FFFF99; /* 36協定アラーム */
-                    color: #FF9900; /* 36協定アラーム文字 */
+                    background-color: #F4D35E; /* 36協定アラーム */
+                    color: #000000; /* 36協定アラーム文字 */
                 }
                 /* 限度エラー時間超過 */
                 .ktg-026-a.widget-content.ui-resizable table tr td div.exceeding-limit-error {
-                    background-color: #FF99CC; /* 36協定エラー */
+                    background-color: #DB4F51; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
                 /* 限度アラーム時間超過（特例あり） */
@@ -429,14 +447,20 @@ module nts.uk.at.view.ktg026.a {
                 }
                 /* 特例限度アラーム時間超過 */
                 .ktg-026-a.widget-content.ui-resizable table tr td div.special-exceeded-limit-alarm  {
-                    background-color: #FFFF99; /* 36協定アラーム */
-                    color: #FF9900; /* 36協定アラーム文字 */
+                    background-color: #F4D35E; /* 36協定アラーム */
+                    color: #000000; /* 36協定アラーム文字 */
                 }
                 /* 特例限度エラー時間超過 */
                 .ktg-026-a.widget-content.ui-resizable table tr td div.special-exceeded-limit-error {
-                    background-color: #FF99CC; /* 36協定エラー */
+                    background-color: #DB4F51; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
+
+				.ktg-026-a div.nts-datepicker-wrapper .ntsDateNextButton,
+				.ktg-026-a div.nts-datepicker-wrapper .ntsDatePrevButton {
+				  padding: 0px 3px;
+				  font-size: 1rem;
+				}
             </style>
             <style data-bind="html: $component.chartStyle"></style>
         `
@@ -462,18 +486,10 @@ module nts.uk.at.view.ktg026.a {
         dialogParam: any;
 
         legendOptions: any;
+        cache: any;
 
-        constructor(private cache: { currentOrNextMonth: 1 | 2; } | null) {
+        constructor() {
             super();
-
-            if (!this.cache) {
-                this.cache = { currentOrNextMonth: 1 };
-            } else {
-                if (typeof this.cache.currentOrNextMonth === 'undefined') {
-                    this.cache.currentOrNextMonth = 1;
-                }
-            }
-
             const vm = this;
 
             vm.chartStyle = ko.computed({
@@ -506,16 +522,6 @@ module nts.uk.at.view.ktg026.a {
 
         created(param?: any) {
             const vm = this;
-            vm.isDialog = param && !!param.mode;
-            vm.dialogParam = vm.isDialog ? param : null;
-            const { $user, cache } = vm;
-            const { employeeId } = vm.isDialog ? vm.dialogParam:  $user;
-            // 1: 従業員参照モード 2: 上長参照モード
-            const { currentOrNextMonth } = (cache || { currentOrNextMonth: 1 });
-            const targetDate: any = vm.isDialog ? vm.dialogParam.targetDate : null;
-            let targetYear: any = vm.isDialog ? vm.dialogParam.targetYear : null;
-
-            const command = { employeeId, targetDate, targetYear, currentOrNextMonth };
             vm.legendOptions = {
                 items: [
                     { colorCode: '#99FF66', labelText: vm.$i18n('KTG026_2') },
@@ -526,6 +532,18 @@ module nts.uk.at.view.ktg026.a {
                 + '<div style="color: #{colorCode};" data-bind="ntsFormLabel: { required: false }">#{labelText}</div>'
                 + '</div>'
             };
+            vm.isDialog = param && !!param.mode;
+            vm.dialogParam = vm.isDialog ? param : null;
+            
+            const startScreen = () => {
+            const { $user, cache } = vm;
+            const { employeeId } = vm.isDialog ? vm.dialogParam:  $user;
+            // 1: 従業員参照モード 2: 上長参照モード
+            const { currentOrNextMonth, closureId, processDate } = cache;
+            const targetDate: any = vm.isDialog ? vm.dialogParam.targetDate : null;
+            let targetYear: any = vm.isDialog ? vm.dialogParam.targetYear : null;
+
+            const command = { closureID: closureId, employeeId, targetDate, targetYear, currentOrNextMonth, processingYm: processDate };
 
             vm
                 .$blockui('invisibleView')
@@ -533,20 +551,16 @@ module nts.uk.at.view.ktg026.a {
                 .then((response: EmployeesOvertimeDisplay) => {
                     if (!!response) {
                         vm.employeesOvertime = response;
-                        const { yearIncludeThisMonth, yearIncludeNextMonth } = response;
+                        const { displayYear } = response;
 
                         // ???
                         vm.employeeName(response.empInfo.businessName);
-
-                        vm.$window.storage('KTG026_TARGET')
+                        vm.$window.storage('KTG026_INITIAL_DATA')
                             .then((rs: {isRefresh: boolean, target: any}) => {
-                                if (rs && rs.isRefresh) {
-                                    targetYear = rs.target;
-                                }
-                                
+                                targetYear = rs && rs.isRefresh && rs.target ? rs.target : null;
                                 const year = !_.isNil(targetYear) && !_.isEmpty(targetYear)
                                 ? targetYear
-                                : ((currentOrNextMonth === 1 ? yearIncludeThisMonth : yearIncludeNextMonth) || '');
+                                : displayYear;
     
                                 vm.targetYear(year.toString());
                             })
@@ -565,6 +579,12 @@ module nts.uk.at.view.ktg026.a {
                         $('.ktg-026-a.ui-resizable').trigger('wg.resize');
                     });
                 });
+            };
+
+            // Rq609 is called here, by cache of ccg008
+            vm.$window.storage('cache')
+                .then(obj => vm.cache = obj)
+                .then(() => startScreen());
         }
 
         mounted() {
@@ -576,7 +596,7 @@ module nts.uk.at.view.ktg026.a {
                     vm.$validate('#ktg026-datepick').then(valid => {
                         if (!valid || _.isEmpty(targetYear)) return;
 
-                        vm.$window.storage('KTG026_TARGET', {
+                        vm.$window.storage('KTG026_INITIAL_DATA', {
                             isRefresh: false,
                             target: targetYear
                         });
@@ -629,7 +649,15 @@ module nts.uk.at.view.ktg026.a {
             vm.dataTable([]);
 
             vm.$nextTick(() => {
-                const { ymOvertimes } = data;
+                const { ymOvertimes, upperLimit } = data;
+                const findRemainTime = (ym: number, total: number) => {
+                    const limit = _.find(upperLimit, x => x.yearMonth === ym);
+                    if (!limit || limit.time - total < 0) {
+                        return 0;
+                    }
+                    // 36協定基本設定 - 従業員用の時間外時間表示．対象社員の各月の時間外時間．対象年月の時間外時間．36協定対象時間．対象時間
+                    return limit.time - total;
+                };
 
                 if (!!ymOvertimes) {
                     const data = _
@@ -645,7 +673,8 @@ module nts.uk.at.view.ktg026.a {
                                     // total = overtime + work with holiday
                                     tt: at.agreementTime || 0,
                                     ot: Math.min(6000, at.agreementTime),
-                                    wh: at.agreementTime >= 6000 ? 0 : Math.max((am.agreementTime || 0) - (at.agreementTime || 0), 0)
+                                    wh: at.agreementTime >= 6000 ? 0 : Math.max((am.agreementTime || 0) - (at.agreementTime || 0), 0),
+                                    rm: findRemainTime(yearMonth, at.agreementTime || 0)
                                 },
                                 state: timeStyle(state)
                             };
@@ -716,6 +745,14 @@ module nts.uk.at.view.ktg026.a {
         yearIncludeNextMonth: number;
         // 表示する年
         displayYear: number;
+
+        upperLimit: UpperLimit[];
+    }
+
+    interface UpperLimit {
+        sid: string;
+        yearMonth: number;
+        time: number;
     }
 
 }

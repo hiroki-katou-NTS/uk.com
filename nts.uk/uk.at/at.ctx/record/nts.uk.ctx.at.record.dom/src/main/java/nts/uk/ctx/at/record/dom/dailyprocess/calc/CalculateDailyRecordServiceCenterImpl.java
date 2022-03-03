@@ -21,7 +21,6 @@ import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
@@ -49,6 +48,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.FactoryManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
@@ -84,7 +84,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	
 	//割増計算用に追加
 	@Inject
-	private PersonnelCostSettingAdapter personnelCostSettingAdapter;
+	private PersonCostCalculationRepository personCostCalculationRepository;
 	
 	//計算を動かすための会社共通設定取得
 	@Inject
@@ -230,6 +230,16 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	}
 	
 	@Override
+	// 実績計算
+	public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
+			List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
+
+		return commonPerCompany(calcOption, integrationOfDaily, companySet, Collections.emptyList(),
+				JustCorrectionAtr.USE, Optional.empty()).getLst().stream().map(tc -> tc.getIntegrationOfDaily())
+						.collect(Collectors.toList());
+	}
+	
+	@Override
 	//会社共通の設定を他のコンテキストで取得できる場合に呼び出す窓口
 	public List<IntegrationOfDaily> calculatePassCompanySetting(CalculateOption calcOption,
 			List<IntegrationOfDaily> integrationOfDailys, Optional<ManagePerCompanySet> companySet, ExecutionType reCalcAtr){
@@ -349,9 +359,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			companyCommonSetting.setShareContainer(shareContainer);
 		}
 		
-		companyCommonSetting.setPersonnelCostSettings(personnelCostSettingAdapter.findAll(comanyId, getDateSpan(integrationOfDailys)));
+		companyCommonSetting.setPersonnelCostSetting(personCostCalculationRepository.getHistAnPerCost(comanyId));
 		
-
 		/***会社共通処理***/
 		List<ManageCalcStateAndResult> returnList = new ArrayList<>();
 		

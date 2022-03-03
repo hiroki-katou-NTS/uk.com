@@ -303,7 +303,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 								rs.getString("SID"),
 								rs.getGeneralDate("PROCESSING_DATE"),
 								new ErrorAlarmWorkRecordCode(rs.getString("ERROR_CODE")),
-								Arrays.asList(rs.getInt("ATTENDANCE_ITEM_ID")),
+								rs.getInt("ATTENDANCE_ITEM_ID") == null? new ArrayList<>(): Arrays.asList(rs.getInt("ATTENDANCE_ITEM_ID")),
 								0,
 								rs.getString("ERROR_MESSAGE")));
 
@@ -736,5 +736,21 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 					.getList(x -> x.toDomainForCcg005()));
 		});
 		return result;
+	}
+
+	@Override
+	public void deleteByErrorCode(String sid, GeneralDate date, String errorCode) {
+		StringBuilder query = new StringBuilder("DELETE FROM KrcdtDaySyaError a ");
+		query.append("WHERE a.processingDate = :processingDate ");
+		query.append("AND a.employeeId = :employeeId ");
+		query.append("AND a.errorCode = :errorCode ");
+		
+		String DELETE_BY_ERRORCODE = query.toString();
+		
+		this.getEntityManager().createQuery(DELETE_BY_ERRORCODE)
+			.setParameter("employeeId", sid)
+			.setParameter("processingDate", date)
+			.setParameter("errorCode", errorCode).executeUpdate();
+		this.getEntityManager().flush();
 	}
 }

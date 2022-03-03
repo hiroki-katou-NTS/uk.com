@@ -53,22 +53,6 @@ public class JpaRetentionYearlySetMemento implements RetentionYearlySettingSetMe
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * RetentionYearlySettingSetMemento#
-	 * setcanAddToCumulationYearlyAsNormalWorkDay(java.lang.Boolean)
-	 */
-	@Override
-	public void setLeaveAsWorkDays(Boolean leaveAsWorkDays) {
-		if(leaveAsWorkDays) {
-			this.typeValue.setLeaveAsWorkDays((short) 1);
-		}
-		else {
-			this.typeValue.setLeaveAsWorkDays((short) 0);
-		}		
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
 	 * RetentionYearlySettingSetMemento#setManagementCategory
 	 * (nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct)
 	 */

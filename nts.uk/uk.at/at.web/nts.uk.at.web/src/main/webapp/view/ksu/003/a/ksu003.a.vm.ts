@@ -2471,6 +2471,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}, 10);
 			}
 			let self = this, dfd = $.Deferred(), updatedCells = $("#extable-ksu003").exTable("updatedCells"), params = [];
+			if (updatedCells.length == 1){
+				let checkUpdate = _.filter(self.disableDs, (z : any) => {
+					return z.index ==  updatedCells[0].rowIndex && updatedCells[0].value === "なし";
+				})
+				
+				if (checkUpdate.length > 0) {
+					updatedCells = [];
+				}
+			}
 			block.grayout();
 			// đăng ký với mode bình thường
 			if (self.selectedDisplayPeriod() == 1) {
@@ -3956,8 +3965,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			//$("#extable-ksu003").exTable("setHeight", 10 * 30 + 18);
 			$(".ex-body-leftmost").css("height", "300px");
 			$(".ex-body-detail").css("height", "301px");
-			$(".ex-body-detail-horz-scroll").css("top", "336px");
-			$(".ex-body-middle").css('height', '318px');
+			$(".ex-body-detail-horz-scroll").css("top", "335px");
+			$(".ex-body-middle").css('height', '311px');
 			$(".toDown").css({ "margin-top": 10 * 30 + 10 + 'px' });
 
 			if (self.initDispStart != 0)
@@ -3992,7 +4001,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (self.showA9)
 				$("#extable-ksu003").exTable("showMiddle");
 
-			$(".ex-body-middle").css('height', '318px');
+			$(".ex-body-middle").css('height', '311px');
 			$(".toLeft").css('margin-left', margin + 'px');
 
 			let x = $('.ex-header-leftmost').width() + $('.ex-header-middle').width() + $('.ex-header-detail').width() + 10 + 6;
@@ -4039,8 +4048,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 				$(".ex-body-leftmost").css("height", "511px");
 				$(".ex-body-detail").css("height", "512px");
-				$(".ex-body-detail-horz-scroll").css("top", "547px");
-				$(".ex-body-middle").css('height', '529px');
+				$(".ex-body-detail-horz-scroll").css("top", "546px");
+				$(".ex-body-middle").css('height', '522px');
 
 				if (window.innerWidth >= 1340) {
 					$("#A1_4").css("margin-right", "0px")
@@ -4060,8 +4069,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 				$(".ex-body-leftmost").css("height", "300px");
 				$(".ex-body-detail").css("height", "301px");
-				$(".ex-body-detail-horz-scroll").css("top", "336px");
-				$(".ex-body-middle").css('height', '318px');
+				$(".ex-body-detail-horz-scroll").css("top", "335px");
+				$(".ex-body-middle").css('height', '311px');
 
 				if (navigator.userAgent.indexOf("Chrome") == -1) {
 					$("#master-wrapper").css({ 'overflow-y': 'hidden' });
@@ -4728,6 +4737,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				model.removeError(css.cssWorkType, css.cssWorkTime, css.cssWorkTypeName, css.cssWorkTName, css.cssStartTime1, css.cssEndTime1, css.cssStartTime2, css.cssEndTime2, 0);
 				_.remove($("#extable-ksu003").data("errors"), { rowIndex: lineNo })
 				block.clear()
+				setShared("targetInforKsu003", self.dataScreen003A().targetInfor); // fix tạm sau khi merge 5_3 thì xóa đi
 				self.dataScreen045A(getShared('dataFromKdl045'));
 				self.check045003 = false;
 				if (!_.isNil(self.dataScreen045A())) {
@@ -5049,7 +5059,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 											lineNo: lineNo
 										}
 									}]);
-
 									self.check045003 = false;
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
 									model.setCellValue(empId);
@@ -5094,7 +5103,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									self.checkClearTime = false;
 									self.checkUpdateMidChart = false;
 								}
-
+								setShared("targetInforKsu003", self.dataScreen003A().targetInfor); // fix tạm sau khi merge 5_3 thì xóa đi
 								self.setDataToMidExtable(lineNo, empId, self.dataScreen003A().employeeInfo[lineNo].workScheduleDto, self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto);
 								self.convertDataIntoExtable(lineNo);
 
@@ -6593,6 +6602,24 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			return dfd.promise();
 		}
 
+        public openKSU003D(): void {
+            let self = this;
+            let data = {
+                targetOrg: {
+                    unit: self.dataFromA().unit,
+                    workplaceId: self.dataFromA().workplaceId,
+                    workplaceGroupId: self.dataFromA().workplaceGroupId,
+                },
+                employeeIds: _.map(self.lstEmpId, (x: any) => { return x.empId }),
+                targetPeriod: {
+                    startDate: self.dataFromA().daySelect,
+                    endDate: self.dataFromA().daySelect
+                }
+            };
+            setShared('dataShareKsu003D', data);
+            nts.uk.ui.windows.sub.modal("/view/ksu/003/d/index.xhtml");
+        }
+		
 		// 決定（A14_11）をクリックする (click A14_11)
 		public closePopupA14() {
 			let self = this;

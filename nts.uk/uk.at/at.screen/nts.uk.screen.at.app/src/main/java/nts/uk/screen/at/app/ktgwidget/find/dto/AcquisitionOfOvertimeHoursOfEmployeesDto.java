@@ -15,5 +15,7 @@ public class AcquisitionOfOvertimeHoursOfEmployeesDto {
 	private List<PersonEmpBasicInfoImport> personalInformationOfSubordinateEmployees;
 	
 	//	配下社員の時間外時間
-	private List<AgreementTimeOfManagePeriodDto> OvertimeOfSubordinateEmployees;
+	private List<AgreementTimeOfManagePeriodDto> overtimeOfSubordinateEmployees;
+	
+	private List<UpperLimitTimeDto> upperLimit;
 }

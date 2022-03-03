@@ -3,50 +3,53 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
     import setShared = nts.uk.ui.windows.setShared;
 
     const template = `
-    <div id="kaf012-share-component1">
-        <div class="cell" style="font-weight: bold" data-bind="text: $i18n('KAF012_2')"></div>
-        <div class="space-between-table ">
-            <!-- ko if: display1() -->
-            <div class="row-underline" style="display: flex; justify-content: space-between">
-                <div data-bind="text: $i18n('KAF012_3')"></div>
-                <a class="hyperlink" href="" data-bind="text: substituteRemaining, click: openKDL005"></a>
-            </div>
-            <!-- /ko -->
-            <!-- ko if: display2() -->
-            <div class="row-underline" style="height: 60px">
-                <div style="display: flex; justify-content: space-between">
-                  <div data-bind="text: $i18n('KAF012_4')"></div>
-                  <a class="hyperlink" href="" data-bind="text: annualRemaining, click: openKDL020"></a>
-                </div>
-                  <div style="margin-left: 15px; margin-top: -5px" data-bind="ntsFormLabel: {text: maxGrantDate}"></div>
-            </div>
-            <!-- /ko -->
-            <!-- ko if: display3() -->
-            <div class="row-underline" style="display: flex; justify-content: space-between">
-                <div data-bind="text: $i18n('Com_ChildNurseHoliday')"></div>
-                <span data-bind="text: childNursingRemaining"></span>
-            </div>
-            <!-- /ko -->
-            <!-- ko if: display4() -->
-            <div class="row-underline"  style="display: flex; justify-content: space-between">
-                <div data-bind="text: $i18n('Com_CareHoliday')"></div>
-                <span data-bind="text: nursingRemaining"></span>
-            </div>
-            <!-- /ko -->
-            <!-- ko if: display5() -->
-            <div class="row-underline" style="display: flex; justify-content: space-between">
-                <div data-bind="text: $i18n('Com_ExsessHoliday')"></div>
-                <a class="hyperlink" href="" data-bind="text: super60HRemaining, click: openKDL017"></a>
-            </div>
-            <!-- /ko -->
-            <!-- ko if: display6() -->
-            <div class="row-underline"  style="display: flex; justify-content: space-between">
-                <div data-bind="text: $i18n('KAF012_46')"></div>
-                <span data-bind="text: specialRemaining"></span>
-            </div>
-            <!-- /ko -->
+    <div id="kaf012-share-component1" class="control-group ui-iggrid right-panel-block">
+        <div class="header" data-bind="text: $i18n('KAF012_2')"></div>
+        <div class="content">
+            <table class="space-between-table clickable-row left-aligned">
+                <tbody>
+                    <!-- ko if: display1() -->
+                    <tr data-bind="click: openKDL005">
+                        <td><div data-bind="ntsFormLabel: {}, text: $i18n('KAF012_3')"></div></td>
+                        <td><span href="" data-bind="text: substituteRemaining"></span></td>
+                    </tr>
+                    <!-- /ko -->
+                    <!-- ko if: display2() -->
+                    <tr data-bind="click: openKDL020">
+                        <td><div data-bind="ntsFormLabel: {}, text: $i18n('KAF012_4')"></div></td>
+                        <td>
+                            <span href="" data-bind="text: annualRemaining"></span>
+                            <div data-bind="text: maxGrantDate" style="font-size: 0.7rem;"></div
+                        </td>
+                    </tr>
+                    <!-- /ko -->
+                    <!-- ko if: display3() -->
+                    <tr data-bind="click: openKDL051">
+                        <td><div data-bind="text: $i18n('Com_ChildNurseHoliday')"></div></td>
+                        <td><span href="" data-bind="text: childNursingRemaining"></span></td>
+                    </tr>
+                    <!-- /ko -->
+                    <!-- ko if: display4() -->
+                    <tr data-bind="click: openKDL052">
+                        <td><div data-bind="text: $i18n('Com_CareHoliday')"></div></td>
+                        <td><span href="" data-bind="text: nursingRemaining, click: openKDL052"></span></td>
+                    </tr>
+                    <!-- /ko -->
+                    <!-- ko if: display5() -->
+                    <tr data-bind="click: openKDL017">
+                        <td><div data-bind="ntsFormLabel: {}, text: $i18n('Com_ExsessHoliday')"></div></td>
+                        <td><span href="" data-bind="text: super60HRemaining"></span></td>
+                    </tr>
+                    <!-- /ko -->
+                    <!-- ko if: display6() -->
+                    <tr>
+                        <td><div data-bind="ntsFormLabel: {}, text: $i18n('KAF012_46')"></div></td>
+                        <td><span data-bind="text: specialRemaining"></span></td>
+                    </tr>
+                    <!-- /ko -->
+                </tbody>
+            </table>
         </div>
-        <div class="end-line"></div>
     </div>`;
 
     @component({
@@ -225,11 +228,11 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
                 employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
                 baseDate: nts.uk.time.formatDate(new Date(vm.timeLeaveRemaining().remainingStart), "yyyyMMdd")
             };
-            setShared('KDL005_DATA', param);
-            if(param.employeeIds.length > 1) {
-                modal("/view/kdl/005/a/multi.xhtml");
+            setShared('KDL005_DATA', param.employeeIds);
+            if (param.employeeIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml", {  width: 1160, height: 640 });
             } else {
-                modal("/view/kdl/005/a/single.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 860, height: 640 });
             }
         }
 
@@ -239,12 +242,11 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
                 employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
                 baseDate: new Date(vm.timeLeaveRemaining().remainingStart).toISOString()
             };
-            setShared('KDL020A_PARAM', data);
-            if(data.employeeIds.length > 1 ) {
-                modal("/view/kdl/020/a/multi.xhtml");
-            } else {
-                modal("/view/kdl/020/a/single.xhtml");
-            }
+			setShared('KDL020_DATA', data.employeeIds);
+			if (data.employeeIds.length > 1)
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 1040, height: 660 });
+			else
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 730, height: 660 });
         }
 
         openKDL051() {
@@ -253,25 +255,22 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
                 employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
                 baseDate: new Date(vm.timeLeaveRemaining().remainingStart)
             };
-            setShared('KDL051A_PARAM', data);
+            setShared('KDL051A_PARAM', data.employeeIds);
             if(data.employeeIds.length > 1 ) {
-                modal("/view/kdl/051/multi.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 980, height: 570});
             } else {
-                modal("/view/kdl/051/single.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 650, height: 530});
             }
         }
 
         openKDL052() {
             const vm = this;
             const data = {
-                employeeList: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
+                employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
                 baseDate: new Date(vm.timeLeaveRemaining().remainingStart).toISOString()
             };
-            if (data.employeeList.length > 1) {
-                vm.$window.modal('/view/kdl/052/multi.xhtml', data);
-            } else {
-                vm.$window.modal('/view/kdl/052/single.xhtml', data);
-            }
+            setShared('KDL052A_PARAM', data);
+            modal('/view/kdl/052/a/index.xhtml');           
         }
 
         openKDL017() {

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.businesstrip.service;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
@@ -103,6 +104,6 @@ public interface BusinessTripService {
      * @param startTime
      * @param endTime
      */
-    void checkTimeByWorkType(GeneralDate date, String workTypeCode, Integer startTime, Integer endTime);
+    BundledBusinessException checkTimeByWorkType(GeneralDate date, String workTypeCode, Integer startTime, Integer endTime);
 
 }

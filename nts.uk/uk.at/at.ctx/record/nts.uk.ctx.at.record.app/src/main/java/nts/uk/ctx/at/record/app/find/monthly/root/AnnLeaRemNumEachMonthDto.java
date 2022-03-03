@@ -11,6 +11,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.TimeRemainNumberDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.TimeUsedNumberDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AnnualLeaveAttdRateDaysDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AnnualLeaveDto;
@@ -96,11 +97,11 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 
 	/** 上限残時間 */
 	@AttendanceItemLayout(jpPropertyName = UPPER_LIMIT + REMAIN, layout = LAYOUT_H)
-	private TimeUsedNumberDto maxRemainingTime;
+	private TimeRemainNumberDto maxRemainingTime;
 
 	/** 実上限残時間 */
 	@AttendanceItemLayout(jpPropertyName = REAL + UPPER_LIMIT + REMAIN, layout = LAYOUT_I)
-	private TimeUsedNumberDto realMaxRemainingTime;
+	private TimeRemainNumberDto realMaxRemainingTime;
 
 	/** 年休出勤率日数 */
 	@AttendanceItemLayout(jpPropertyName = ATTENDANCE + RATE, layout = LAYOUT_J)
@@ -134,8 +135,8 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 			dto.setHalfDayAnnualLeave(HalfDayAnnualLeaveDto.from(domain.getHalfDayAnnualLeave().orElse(null)));
 			dto.setRealHalfDayAnnualLeave(HalfDayAnnualLeaveDto.from(domain.getRealHalfDayAnnualLeave().orElse(null)));
 			dto.setAnnualLeaveGrant(AnnualLeaveGrantDto.from(domain.getAnnualLeaveGrant().orElse(null)));
-			dto.setMaxRemainingTime(TimeUsedNumberDto.from(domain.getMaxRemainingTime().orElse(null)));
-			dto.setRealMaxRemainingTime(TimeUsedNumberDto.from(domain.getRealMaxRemainingTime().orElse(null)));
+			dto.setMaxRemainingTime(TimeRemainNumberDto.from(domain.getMaxRemainingTime().orElse(null)));
+			dto.setRealMaxRemainingTime(TimeRemainNumberDto.from(domain.getRealMaxRemainingTime().orElse(null)));
 			dto.setAttendanceRateDays(AnnualLeaveAttdRateDaysDto.from(domain.getAttendanceRateDays()));
 			dto.setGrantAtr(domain.isGrantAtr());
 			dto.setUndigestedNumber(AnnualLeaveUndigestedNumberDto.from(domain.getUndigestedNumber()));
@@ -290,9 +291,9 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 		case (ANNUNAL_LEAVE + GRANT):
 			(annualLeaveGrant) = (AnnualLeaveGrantDto) value; break;
 		case (UPPER_LIMIT + REMAIN):
-			(maxRemainingTime) = (TimeUsedNumberDto) value; break;
+			(maxRemainingTime) = (TimeRemainNumberDto) value; break;
 		case (REAL + UPPER_LIMIT + REMAIN):
-			(realMaxRemainingTime) = (TimeUsedNumberDto) value; break;
+			(realMaxRemainingTime) = (TimeRemainNumberDto) value; break;
 		case (ATTENDANCE + RATE):
 			(attendanceRateDays) = (AnnualLeaveAttdRateDaysDto) value; break;
 		case NOT_DIGESTION:

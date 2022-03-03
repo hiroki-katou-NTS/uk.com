@@ -26,6 +26,12 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.S
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantSettingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.stock.StockHolidayRemainingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.WorkplaceCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.EquipmentCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.EquipmentClassiicationCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.StampCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.EnterpriseStampCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskChildCanonicalization;
 
 /**
  * 受入グループID
@@ -37,6 +43,18 @@ public enum ImportingDomainId {
 	/** 職場マスタ */
 	WORKPLACE(13, WorkplaceCanonicalization::new),
 	
+	/** 作業マスタ */
+	TASK(30, TaskCanonicalization::new),
+
+	/** 下位作業マスタ */
+	TASK_CHILD(31, TaskChildCanonicalization::new),
+
+	/** 設備マスタ */
+	EQUIPMENT(32, EquipmentCanonicalization::new),
+	
+	/** 設備分類マスタ */
+	EQUIPMENT_CLASSIFICATION(33, EquipmentClassiicationCanonicalization::new),
+
 	/** 個人基本情報 */
 	EMPLOYEE_BASIC(100, EmployeeBasicCanonicalization::new),
 
@@ -96,6 +114,12 @@ public enum ImportingDomainId {
 	
 	/** 休出管理データ */
 	HOLIDAY_WORK(121, HolidayWorkCanonicalization::new),
+
+	/** 打刻データ */
+	STAMP(130, StampCanonicalization::new),
+
+	/** 打刻データE版 */
+	STAMP_ENTERPRISE(131, EnterpriseStampCanonicalization::new),
 	
 	;
 	

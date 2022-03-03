@@ -26,9 +26,6 @@ public class KrcdtAnnLeaMaxHist extends ContractUkJpaEntity {
 	@EmbeddedId
 	public KrcdtAnnLeaMaxHistPK PK;
 
-	@Column(name = "CID")
-	public String cid;
-
 	//半日年休上限回数
 	@Column(name = "MAX_TIMES")
 	@Basic(optional = true)
@@ -64,11 +61,10 @@ public class KrcdtAnnLeaMaxHist extends ContractUkJpaEntity {
 		return this.PK;
 	}
 
-	public KrcdtAnnLeaMaxHist(String sid, String cid, Integer maxTimes, Integer usedTimes, Integer remainingTimes,
+	public KrcdtAnnLeaMaxHist(String sid, Integer maxTimes, Integer usedTimes, Integer remainingTimes,
 			Integer maxMinutes, Integer usedMinutes, Integer remainingMinutes, int yearMonth, int closureId,
 			Integer closeDay, Integer isLastDay) {
 		super();
-		this.cid = cid;
 		this.maxTimes = maxTimes;
 		this.usedTimes = usedTimes;
 		this.remainingTimes = remainingTimes;
@@ -79,7 +75,7 @@ public class KrcdtAnnLeaMaxHist extends ContractUkJpaEntity {
 	}
 
 	public static KrcdtAnnLeaMaxHist fromDomain(AnnualLeaveMaxHistoryData domain) {
-		return new KrcdtAnnLeaMaxHist(domain.getEmployeeId(), domain.getCompanyId(),
+		return new KrcdtAnnLeaMaxHist(domain.getEmployeeId(),
 				domain.getHalfdayAnnualLeaveMax().isPresent()
 						? domain.getHalfdayAnnualLeaveMax().get().getMaxTimes().v() : null,
 				domain.getHalfdayAnnualLeaveMax().isPresent()

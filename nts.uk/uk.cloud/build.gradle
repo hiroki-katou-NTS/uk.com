@@ -143,8 +143,8 @@ subprojects {
 
 		// Log4J
 		compile group: 'log4j', name: 'log4j', version: '1.2.17'
-		compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.7'
-		compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
+		compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.0'
+		compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.0'
 
 		// SLF4J
 		compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
@@ -462,6 +462,10 @@ project (':cloud.web:nts.uk.cloud.web') {
 
 		runtime group: 'nts.tenantlocator.client', name:'nts.tenantlocator.client', version:version
 		runtime group: 'nts.tenantlocator.common', name:'nts.tenantlocator.common', version:version
+        
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.common', version: version
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.client', version: version
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.worker', version: version
 	}
 
 	task tsc(type: Exec) {
