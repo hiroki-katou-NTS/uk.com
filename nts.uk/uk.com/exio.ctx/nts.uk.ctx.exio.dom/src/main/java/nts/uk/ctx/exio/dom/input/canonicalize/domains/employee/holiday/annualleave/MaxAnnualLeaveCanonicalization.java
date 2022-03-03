@@ -98,11 +98,6 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization 
 		//このドメインのKeyはSIDなので、Stringで取り出す。
 		return new KeyValues(Arrays.asList(interm.getItemByNo(Items.SID).get().getString()));
 	}
-	
-	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return Arrays.asList(Items.SID);
-	}
 
 	private static class FixedItem{
 		private static final Map<Integer,String> timesNumbers = new HashMap<>();

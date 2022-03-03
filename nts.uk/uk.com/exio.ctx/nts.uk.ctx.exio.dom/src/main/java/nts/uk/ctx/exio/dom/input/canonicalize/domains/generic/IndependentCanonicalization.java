@@ -75,14 +75,6 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 		return KeyValues.create(IntermediateResult.create(record), itemNos);
 	}
 	
-	/**
-	 * 既存データの補正に使用する主キーが格納される項目NOを返す（Workspaceとは別の主キーを指定したければOverrideすること）
-	 * @return
-	 */
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return workspace.getPkItemNos();
-	}
-
 	protected void canonicalize(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
@@ -122,13 +114,23 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 		return Optional.of(targertResult);
 	}
 
+
+	/**
+	 * DomainとしてのKey項目のNo一覧を取得する
+	 */
+	private List<Integer> getDomainKeyNos() {
+		return getDomainDataKeys().stream()
+				.map(d -> d.getItemNo())
+				.collect(Collectors.toList());
+	}
+
 	private AnyRecordToDelete toDelete(
 			ExecutionContext context,
 			DomainWorkspace workspace,
 			KeyValues keyValues) {
 		
 		val toDelete = AnyRecordToDelete.create(context); 
-		val keys = getPrimaryKeyItemNos(workspace);
+		val keys = getDomainKeyNos();
 		
 		for (int i = 0; i < keys.size(); i++) {
 			val pkItemNo = keys.get(i);

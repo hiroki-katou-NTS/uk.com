@@ -89,11 +89,6 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 	}
 	
 	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace){
-		return Arrays.asList(Items.SID);
-	}
-	
-	@Override
 	protected String getParentTableName() {
 		return "KRCMT_HDSP_BASIC";
 	}

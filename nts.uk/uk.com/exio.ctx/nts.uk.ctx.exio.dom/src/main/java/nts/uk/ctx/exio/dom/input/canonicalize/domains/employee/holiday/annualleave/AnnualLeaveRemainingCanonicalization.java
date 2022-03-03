@@ -127,11 +127,6 @@ public class AnnualLeaveRemainingCanonicalization extends IndependentCanonicaliz
 	}
 	
 	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return Arrays.asList(Items.SID);
-	}
-	
-	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
 		return employeeCodeCanonicalization.appendMeta(source);
 	}
