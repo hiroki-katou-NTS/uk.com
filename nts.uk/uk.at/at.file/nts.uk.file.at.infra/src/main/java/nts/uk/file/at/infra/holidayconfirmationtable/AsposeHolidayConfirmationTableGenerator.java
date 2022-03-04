@@ -2,6 +2,7 @@ package nts.uk.file.at.infra.holidayconfirmationtable;
 
 import com.aspose.cells.*;
 import com.aspose.pdf.HorizontalAlignment;
+import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
@@ -229,6 +230,21 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                         content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails(),
                         content.getHolidayAcquisitionInfo().get().getLinkingInfos()
                 );
+
+
+                if (content.getHolidayAcquisitionInfo().isPresent()) {
+                    val listItem = content.getHolidayAcquisitionInfo()
+                            .get().getOccurrenceAcquisitionDetails().stream().filter(e -> e.getDate().isUnknownDate())
+                            .collect(Collectors.toCollection(ArrayList::new));
+
+                    val listDate = content.getHolidayAcquisitionInfo()
+                            .get().getOccurrenceAcquisitionDetails().stream()
+                            .filter(e -> !e.getDate().isUnknownDate()).sorted(Comparator.comparing(i -> i.getDate().getDayoffDate().get()))
+                            .collect(Collectors.toList());
+                    listItem.addAll(listDate);
+                    content.getHolidayAcquisitionInfo().get().setOccurrenceAcquisitionDetails(listItem);
+                }
+
                 int col = 9;
                 int size = content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails().size();
                 int loops = size > 0 && size % 10 == 0 ? (size / 10) : (size / 10 + 1);
@@ -360,6 +376,11 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
      */
     private String formatNoLinkedDate(OccurrenceAcquisitionDetail detail, int howToPrintDate) {
         StringBuilder formattedDate = new StringBuilder();
+        if(detail.getDate().isUnknownDate()){
+            val text = (detail.getOccurrencesUseNumber().getDay().v() != 1.0)
+                    ? TextResource.localize("KDR004_120"): TextResource.localize("KDR004_121");
+            return formattedDate.append(text).toString();
+        }
         if (howToPrintDate == 0) {
             formattedDate.append(detail.getDate().getDayoffDate().get().toString("MM/dd"));
         } else {
@@ -523,6 +544,8 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
             ListIterator<OccurrenceAcquisitionDetail> iterator = details.listIterator();
             while (iterator.hasNext()) {
                 OccurrenceAcquisitionDetail detail = iterator.next();
+                if(detail.getDate().isUnknownDate())
+                    continue;
                 double linkingUsedDays;
                 if (detail.getOccurrenceDigCls() == OccurrenceDigClass.OCCURRENCE) {
                     linkingUsedDays = linkingInfors
@@ -541,7 +564,7 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                 }
             }
         }
-        details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
+        //details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
     }
 
 }

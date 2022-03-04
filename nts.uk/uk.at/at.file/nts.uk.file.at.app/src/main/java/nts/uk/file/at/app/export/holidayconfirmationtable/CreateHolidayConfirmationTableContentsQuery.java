@@ -145,9 +145,9 @@ public class CreateHolidayConfirmationTableContentsQuery {
                     for (AffCompanyHistByEmployee hist : affCompHistsOfEmp) {
                         for (AffCompanyHistItem histItem : hist.items()) {
                             for (AccumulationAbsenceDetail detail : absRecRemain.getVacationDetails().getLstAcctAbsenDetail()) {
-                                if (detail.getDateOccur().getDayoffDate().isPresent()
+                                if ((detail.getDateOccur().getDayoffDate().isPresent()
                                         && histItem.getDatePeriod().start().beforeOrEquals(detail.getDateOccur().getDayoffDate().get())
-                                        && histItem.getDatePeriod().end().afterOrEquals(detail.getDateOccur().getDayoffDate().get())) {
+                                        && histItem.getDatePeriod().end().afterOrEquals(detail.getDateOccur().getDayoffDate().get())) || detail.getDateOccur().isUnknownDate()) {
                                     OccurrenceAcquisitionDetail acquisitionDetail = new OccurrenceAcquisitionDetail();
                                     acquisitionDetail.setOccurrenceDigCls(detail.getOccurrentClass());
                                     acquisitionDetail.setDate(detail.getDateOccur());
