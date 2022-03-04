@@ -300,8 +300,7 @@ module nts.uk.com.view.cmm030.a {
           approverSettingScreenInfor.firstItemName, approverSettingScreenInfor.secondItemName, approverSettingScreenInfor.thirdItemName, 
           approverSettingScreenInfor.fourthItemName, approverSettingScreenInfor.fifthItemName, 
         ]);
-        vm.inputProcedure(String(approverSettingScreenInfor.processMemo));
-        vm.inputProcedure.valueHasMutated();
+        vm.inputProcedure(approverSettingScreenInfor.processMemo);
         vm.caution(approverSettingScreenInfor.attentionMemo);
 
         // Ａ：ログイン社員の情報取得する
@@ -468,7 +467,7 @@ module nts.uk.com.view.cmm030.a {
         }
         const isErr3294 = !!_.find(vm.approverInputList(), data => {
           const approvers = _.chain(data.approvers()).filter(approver => approver.sid != null).map(approver => approver.colId()).value();
-          const isConsecutive = !!_.reduce(approvers, (prev: number, curr) => prev + 1 === curr ? curr : false);
+          const isConsecutive = _.reduce(approvers, (prev: number, curr) => prev + 1 === curr ? curr : false, -1) !== false;
           return approvers.length === 0 || approvers[0] !== 0 || !isConsecutive;
         });
         if (isErr3294) {
@@ -484,7 +483,7 @@ module nts.uk.com.view.cmm030.a {
       let enums: any[];
       let typeAtr: number;
       switch (employmentRootAtr) {
-        case EmploymentRootAtr.COMMON: return vm.$i18n("CMM030_11");
+        case EmploymentRootAtr.COMMON: return vm.$i18n("CMM030_111");
         case EmploymentRootAtr.APPLICATION: 
           enums = __viewContext.enums["ApplicationType"];
           typeAtr = applicationType;

@@ -107,6 +107,8 @@ public class JpaApproverOperationSettingsRepository extends JpaRepository implem
 				})
 				.collect(Collectors.toList());
 		
+		settingTypeUseds.add(0, new SettingTypeUsed(EmploymentRootAtr.COMMON, Optional.empty(), Optional.empty(), NotUseAtr.USE));
+		
 		settingTypeUseds.add(new SettingTypeUsed(EmploymentRootAtr.CONFIRMATION,
 				Optional.empty(),
 				Optional.of(ConfirmationRootType.DAILY_CONFIRMATION),
