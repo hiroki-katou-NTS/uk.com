@@ -77,7 +77,7 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 				}
 				importingKeys.add(keyValue);
 				val addedInterm = interm.addCanonicalized(getFixedItems());
-				super.canonicalize(require, context, addedInterm, keyValue);
+				super.canonicalize(require, context, addedInterm);
 			}
 		});
 	}
@@ -103,11 +103,6 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 				interm.getItemByNo(Items.SID).get().getString(),
 				interm.getItemByNo(Items.特別休暇コード).get(),
 				interm.getItemByNo(Items.特別休暇付与日).get()));
-	}
-	
-	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace){
-		return Arrays.asList(Items.SID);
 	}
 	
 	@Override

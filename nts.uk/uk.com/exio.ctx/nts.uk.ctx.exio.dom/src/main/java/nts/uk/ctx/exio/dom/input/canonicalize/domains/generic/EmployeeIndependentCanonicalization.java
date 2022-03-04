@@ -47,7 +47,7 @@ public abstract class EmployeeIndependentCanonicalization extends IndependentCan
 				
 				importingKeys.add(key);
 				
-				super.canonicalize(require, context, interm, new KeyValues(key));
+				super.canonicalize(require, context, interm);
 			}
 		});
 	}
