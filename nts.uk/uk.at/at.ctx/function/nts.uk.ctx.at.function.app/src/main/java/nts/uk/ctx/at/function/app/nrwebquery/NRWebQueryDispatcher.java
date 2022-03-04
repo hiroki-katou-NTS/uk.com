@@ -41,6 +41,8 @@ public class NRWebQueryDispatcher {
 		RequestMapper.put(NRWebQueryMenuName.DAILY.key, NRWebQueryDailyFinder.class);
 		RequestMapper.put(NRWebQueryMenuName.MONTHLY.key, NRWebQueryMonthFinder.class);
 		RequestMapper.put(NRWebQueryMenuName.APPLICATION.key, NRWebQueryAppFinder.class);
+		RequestMapper.put(NRWebQueryMenuName.MONTH_WAGE.key, NRWebQueryMonthWageFinder.class);
+		RequestMapper.put(NRWebQueryMenuName.ANNUAL_WAGE.key, NRWebQueryAnnualWageFinder.class);
 	}
 
 	@Inject
@@ -48,10 +50,10 @@ public class NRWebQueryDispatcher {
 
 	@Inject
 	private FuncStampCardAdapter funcStampCardAdapter;
-	
+
 	@Inject
 	private SyEmployeeFnAdapter syEmployeeFnAdapter;
-	
+
 	public Response process(MultivaluedMap<String, String> query, NRWebQueryMenuName menuName) {
 
 		try {
@@ -78,9 +80,9 @@ public class NRWebQueryDispatcher {
 		private final RQEmpInfoTerminalAdapter rQEmpInfoTerminalAdapter;
 
 		private final FuncStampCardAdapter funcStampCardAdapter;
-		
+
 		private final SyEmployeeFnAdapter syEmployeeFnAdapter;
-		
+
 		@Override
 		public Optional<FuncEmpInfoTerminalImport> getEmpInfoTerminal(String empInfoTerCode, String contractCode) {
 			return rQEmpInfoTerminalAdapter.getEmpInfoTerminal(empInfoTerCode, contractCode);
