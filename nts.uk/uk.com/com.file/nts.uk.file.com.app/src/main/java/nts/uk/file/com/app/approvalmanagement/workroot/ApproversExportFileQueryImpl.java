@@ -33,6 +33,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class ApproversExportFileQueryImpl implements ApproversExportFileQuery {
+	
+	@Inject
+	private ApproversExportGenerator generator;
 
 	@Inject
 	private CompanyRepository companyRepository;
@@ -54,8 +57,8 @@ public class ApproversExportFileQueryImpl implements ApproversExportFileQuery {
 
 	@Override
 	public void handle(ExportServiceContext<ApproversQuery> context, ApproversQuery query) {
-		// TODO Auto-generated method stub
-
+		ApproversExportDataSource dataSource = this.getExportData(query);
+		this.generator.generate(context.getGeneratorContext(), dataSource);
 	}
 
 	/**

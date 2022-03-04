@@ -3,8 +3,11 @@
   margin-top: 40px;
 }
 
+.setting-zone {
+  justify-content: space-between;
+}
+
 .setting-delete {
-  justify-content: flex-end;
   margin-right: 35px;
 }
 
