@@ -77,10 +77,18 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
 			IntermediateResult intermResult) {
-		val domainDataKeys = getDomainDataKeys();
-		val domainDataKeyValues = KeyValues.create(intermResult, getDomainKeyNos());
 
-		val domainDataId = DomainDataId.createDomainDataId(getParentTableName(), domainDataKeys, domainDataKeyValues);
+		//追加の正準化処理
+		val intermExtends = canonicalizeExtends(require, context, intermResult);
+		if(intermExtends.isPresent()){
+			intermResult = intermExtends.get();
+		} else {
+			// 追加の正準化で受け入れない場合は無視する
+			return;
+		}
+
+		val domainDataKeyValues = KeyValues.create(intermResult, getDomainKeyNos());
+		val domainDataId = DomainDataId.createDomainDataId(getParentTableName(), getDomainDataKeys(), domainDataKeyValues);
 		boolean exists = require.existsDomainData(domainDataId);
 
 		// 受け入れず無視するケース
@@ -88,14 +96,8 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			return;
 		}
 
-		//追加の正規化処理
-		val intermExtends = canonicalizeExtends(require, context, intermResult);
-		if(intermExtends.isPresent()){
-			require.save(context, intermExtends.get().complete());
-		} else {
-			// 追加の正準化で受け入れない場合は無視する
-			return;
-		}
+		// 正準化した結果を永続化
+		require.save(context, intermResult.complete());
 
 		// 既存データの調整準備
 		prepareAdjust(require, context, domainDataKeyValues);
