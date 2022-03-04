@@ -230,6 +230,16 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	}
 	
 	@Override
+	// 実績計算
+	public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
+			List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
+
+		return commonPerCompany(calcOption, integrationOfDaily, companySet, Collections.emptyList(),
+				JustCorrectionAtr.USE, Optional.empty()).getLst().stream().map(tc -> tc.getIntegrationOfDaily())
+						.collect(Collectors.toList());
+	}
+	
+	@Override
 	//会社共通の設定を他のコンテキストで取得できる場合に呼び出す窓口
 	public List<IntegrationOfDaily> calculatePassCompanySetting(CalculateOption calcOption,
 			List<IntegrationOfDaily> integrationOfDailys, Optional<ManagePerCompanySet> companySet, ExecutionType reCalcAtr){

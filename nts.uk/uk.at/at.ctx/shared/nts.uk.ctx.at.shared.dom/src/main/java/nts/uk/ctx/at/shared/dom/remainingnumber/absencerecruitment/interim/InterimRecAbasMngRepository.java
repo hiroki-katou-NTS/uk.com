@@ -202,4 +202,9 @@ public interface InterimRecAbasMngRepository {
 	//暫定振休管理データ 
 	List<InterimAbsMng> getAbsBySidDateList(String sid, List<GeneralDate> lstDate);
 
+	// [8] 年月日以前全て削除 暫定振休管理データ
+	void deleteAbsMngBySidBeforeTheYmd(String sid, GeneralDate ymd);
+	
+	// [8] 年月日以前全て削除 暫定振出管理データ
+	void deleteRecMngBySidBeforeTheYmd(String sid, GeneralDate ymd);
 }
