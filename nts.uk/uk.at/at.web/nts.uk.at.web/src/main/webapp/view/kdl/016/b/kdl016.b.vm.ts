@@ -61,6 +61,8 @@ module nts.uk.at.view.kdl016.b {
             vm.selectedSupportType.subscribe(value => {
                 if (value == 1) {
                     vm.enableEditTimespan(true);
+                    $('#daterangepicker .ntsEndDatePicker').hide();
+                    $(".ntsEndDate").attr('disabled', 'disabled');
                 }
                 else {
                     vm.enableEditTimespan(false);
@@ -116,9 +118,10 @@ module nts.uk.at.view.kdl016.b {
 
                 dfd.resolve();
             }).fail(error => {
-                vm.$dialog.error(error);
+                vm.$dialog.error(error).then(() => {
+                    vm.$window.close({closeable: true});
+                });
                 dfd.reject();
-                vm.closeDialog();
             }).always(() => {
                 vm.$blockui("hide");
             });
@@ -128,10 +131,6 @@ module nts.uk.at.view.kdl016.b {
 
         register() {
             const vm = this;
-            // if (_.isEmpty(self.employeeList())) {
-            //     $('#A6_2').ntsError('set', {messageId:'MsgB_2',messageParams:[nts.uk.resource.getText('KDL014_21')]});
-            //     return;
-            // }
 
             let orgSelected = _.find(vm.organizationInfoList, (i: any) => {
                 return i.orgCode == vm.selectedOrgCode()
@@ -141,7 +140,7 @@ module nts.uk.at.view.kdl016.b {
             }).map(i => i.id);
             let command: any = {
                 employeeIds: empIdSelected,
-                supportDestinationId: vm.selectedOrgCode(),
+                supportDestinationId: orgSelected.orgId,
                 orgUnit: orgSelected.orgUnit,
                 supportType: vm.selectedSupportType(),
                 supportPeriodStart: moment.utc(vm.dateValue().startDate).format("YYYY/MM/DD"),

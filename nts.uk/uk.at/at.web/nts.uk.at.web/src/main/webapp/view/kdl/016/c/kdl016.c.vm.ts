@@ -68,7 +68,9 @@ module nts.uk.at.view.kdl016.c {
             });
 
             vm.selectedOrgCode.subscribe((newValue: any) => {
-                vm.reloadEmployeeInfo(newValue);
+                if(!_.isNil(newValue)) {
+                    vm.reloadEmployeeInfo(newValue);
+                }
             });
         }
 
@@ -120,9 +122,10 @@ module nts.uk.at.view.kdl016.c {
 
                 dfd.resolve();
             }).fail(error => {
-                vm.$dialog.error(error);
+                vm.$dialog.error(error).then(() => {
+                    vm.$window.close({closeable: true});
+                });
                 dfd.reject();
-                vm.closeDialog();
             }).always(() => {
                 vm.$blockui("hide");
             });
@@ -133,18 +136,18 @@ module nts.uk.at.view.kdl016.c {
         reloadEmployeeInfo(orgCode: string) {
             const vm = this, dfd = $.Deferred();
             vm.$blockui("show");
-            let orgId = _.find(vm.organizationInfoList, (i: any) => {
+            let org = _.find(vm.organizationInfoList, (i: any) => {
                 return i.orgCode == orgCode
             });
             const request = {
-                orgId: orgId,
+                orgId: org.orgId,
                 orgUnit: vm.requiredParams.targetOrg.orgUnit,
                 periodStart: vm.requiredParams.startDate,
                 periodEnd: vm.requiredParams.endDate
             };
 
             vm.$ajax(API.reloadEmployee, request).done(data => {
-                vm.employeeList(data.employeeInforList.map((e: any) => ({
+                vm.employeeList(data.map((e: any) => ({
                     id: e.employeeId,
                     code: e.employeeCode,
                     name: e.businessName
@@ -161,21 +164,14 @@ module nts.uk.at.view.kdl016.c {
 
         register() {
             const vm = this;
-            // if (_.isEmpty(self.employeeList())) {
-            //     $('#A6_2').ntsError('set', {messageId:'MsgB_2',messageParams:[nts.uk.resource.getText('KDL014_21')]});
-            //     return;
-            // }
 
-            let orgSelected = _.find(vm.organizationInfoList, (i: any) => {
-                return i.orgCode == vm.selectedOrgCode()
-            });
             let empIdSelected: string[] = vm.employeeList().filter((i) => {
                 return _.includes(vm.selectedEmployees(), i.code)
             }).map(i => i.id);
             let command: any = {
                 employeeIds: empIdSelected,
-                supportDestinationId: vm.selectedOrgCode(),
-                orgUnit: orgSelected.orgUnit,
+                supportDestinationId: vm.requiredParams.targetOrg.orgId,
+                orgUnit: vm.requiredParams.targetOrg.orgUnit,
                 supportType: vm.selectedSupportType(),
                 supportPeriodStart: moment.utc(vm.dateValue().startDate).format("YYYY/MM/DD"),
                 supportPeriodEnd: moment.utc(vm.dateValue().endDate).format("YYYY/MM/DD"),
