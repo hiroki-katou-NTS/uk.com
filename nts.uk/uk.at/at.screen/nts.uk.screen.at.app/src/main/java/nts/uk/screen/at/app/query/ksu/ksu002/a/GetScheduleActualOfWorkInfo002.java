@@ -158,17 +158,21 @@ public class GetScheduleActualOfWorkInfo002 {
 		List<EmployeeId> employeeIDs = param.listSid.stream().map(m -> {
 			return new EmployeeId(m);
 		}).collect(Collectors.toList());
-		
+		// 1
 		List<DateInformation> dateInfo = kSU002Finder.getDateInformation(employeeIDs, param.getPeriod());
 		
-		List<AffWorkplaceHistoryItem> affWorkPlaces = affWorkplaceHistoryItemRepository.getAffWrkplaHistItemByEmpIdAndDate(GeneralDate.today(), param.listSid.get(0));
+		// 2
+		List<AffWorkplaceHistoryItem> affWorkPlaces = affWorkplaceHistoryItemRepository.getAffWrkplaHistItemByEmpIdAndDate(param.getEndDate() , param.listSid.get(0));
 		
+		// 3
 		LegalWorkTimeOfEmployeeDto result = new LegalWorkTimeOfEmployeeDto();
 		if(param.listSid.isEmpty()) {
 			return result;
 		}
 		result.setValue(GetLegalWorkTimeOfEmployeeService.get(new LegalWorkTimeRequireImpl(companyId), param.listSid.get(0), param.getPeriod()));
-		result.setAffWorkPlaces(affWorkPlaces.stream().map(m -> m.getWorkplaceId()).collect(Collectors.toList()));
+		// 123064-note11
+		// Tại sao lại get(0)
+		result.setAffWorkPlace(affWorkPlaces.get(0).getWorkplaceId());
 		result.setDateInfo(dateInfo);
 		return result;
 	}

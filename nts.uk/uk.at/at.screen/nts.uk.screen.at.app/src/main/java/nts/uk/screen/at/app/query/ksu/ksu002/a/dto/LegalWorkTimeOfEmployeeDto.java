@@ -28,7 +28,7 @@ public class LegalWorkTimeOfEmployeeDto {
 	/** 月の時間 */
 	private Integer monthlyEstimateTime = 0;
 	
-	private List<String> affWorkPlaces = new ArrayList<>();
+	private String affWorkPlace;
 	
 	List<DateInformationDto> dateInfo = new ArrayList<>();
 	
