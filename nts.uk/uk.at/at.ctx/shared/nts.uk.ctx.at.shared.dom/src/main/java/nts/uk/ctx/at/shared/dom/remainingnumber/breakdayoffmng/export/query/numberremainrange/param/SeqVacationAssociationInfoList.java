@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 /**
@@ -71,4 +72,18 @@ public class SeqVacationAssociationInfoList {
 		return this;
 	}
 
+	//[3] 指定した休出と紐づく紐付け情報を取得する
+	public List<SeqVacationAssociationInfo> getWithOccrDay(GeneralDate date){
+		return this.seqVacInfoList.stream().filter(x -> x.getOutbreakDay().equals(date)).collect(Collectors.toList());
+	}
+	
+	// [4] 指定した消化日と紐づく紐付け情報を取得する
+	public  List<SeqVacationAssociationInfo> getWithDigestDay(GeneralDate date) {
+		return this.seqVacInfoList.stream().filter(x -> x.getDateOfUse().equals(date)).collect(Collectors.toList());
+	}
+	
+	//[5] 使用日数を合計する
+	public double sumUsed() {
+		return this.seqVacInfoList.stream().collect(Collectors.summingDouble(x -> x.getDayNumberUsed().v()));
+	}
 }

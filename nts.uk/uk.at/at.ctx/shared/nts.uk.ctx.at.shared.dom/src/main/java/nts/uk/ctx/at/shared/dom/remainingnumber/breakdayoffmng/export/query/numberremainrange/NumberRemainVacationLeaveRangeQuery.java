@@ -47,6 +47,9 @@ public class NumberRemainVacationLeaveRangeQuery {
 				inputParam.getInterimMng(), inputParam.getProcessDate(), inputParam.getOptBeforeResult());
 		List<AccumulationAbsenceDetail> lstAccTemp = sequentialVacaDetail.getVacationDetail().getLstAcctAbsenDetail();
 
+		//休出振出管理データを補正する。
+		//CorrectDaikyuFurikyuFixed.correct(sequentialVacaDetail.getVacationDetail(), sequentialVacaDetail.getSeqVacInfoList());
+		
 		// 代休、休出から月初の繰越数を計算
 		val calcNumCarry = CalcNumCarryAtBeginMonthFromDaikyu.calculate(require, inputParam.getCid(), inputParam.getSid(),
 				inputParam.getDateData(), sequentialVacaDetail.getVacationDetail(), inputParam.isMode());
@@ -89,7 +92,7 @@ public class NumberRemainVacationLeaveRangeQuery {
 	}
 
 	public static interface Require extends GetSequentialVacationDetailDaikyu.Require,
-			CalcNumCarryAtBeginMonthFromDaikyu.Require, OffsetProcessing.Require, CorrectOutputAccordTimeMagSetting.Require {
+			CalcNumCarryAtBeginMonthFromDaikyu.Require, OffsetProcessing.Require, CorrectOutputAccordTimeMagSetting.Require{
 
 	}
 

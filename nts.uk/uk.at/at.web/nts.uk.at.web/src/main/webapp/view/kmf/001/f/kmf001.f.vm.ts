@@ -565,10 +565,17 @@ module nts.uk.pr.view.kmf001.f {
             //save company
             private saveData() {
                 let self = this;
+                const vm = this;
                 let dfd = $.Deferred<void>();
+                const { callerParameter } = vm;
                   if(self.managementClassification() == 1 && self.compenTimeManage() == 1 ){
-                   nts.uk.ui.dialog.alertError({ messageId: "Msg_1942", messageParams: [] });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1942", messageParams: [] });
                       return;
+                    }else if(self.compenTimeManage() == 1 && self.managementClassification() != 1) {
+                      nts.uk.ui.dialog.info({ messageId: "Msg_3262" })
+                        .then(() => {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15"});
+                        });
                     }
                 self.reCallValidate().done(function() {
                     if (!$('.check_error').ntsError('hasError')){
@@ -577,7 +584,9 @@ module nts.uk.pr.view.kmf001.f {
                         
                         service.update(self.collectData()).done(function() {
                             self.loadSetting().then(function() {
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                                if(self.compenTimeManage() != 1) {
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_15"}); 
+                                  }                                 
                             });
                         })
                         .fail((err) => {

@@ -142,10 +142,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 						let condition = o.appType==vm.appType();
 						if(vm.appType() == 7) {
 							if(vm.application().opStampRequestMode()==0) {
-								condition = condition && o.opApplicationTypeDisplay==3;
+								condition = condition && o.opApplicationTypeDisplay==0;
 								opString = "C";
 							} else {
-								condition = condition && o.opApplicationTypeDisplay==4;
+								condition = condition && o.opApplicationTypeDisplay==1;
 								opString = "D";
 							}
 						}

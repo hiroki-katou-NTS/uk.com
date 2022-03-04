@@ -1,6 +1,7 @@
 package nts.uk.screen.at.ws.kdw.kdw013;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -21,11 +22,14 @@ import nts.uk.screen.at.app.kdw013.a.DeleteOneDayTaskSet;
 import nts.uk.screen.at.app.kdw013.a.DeleteTaskSet;
 import nts.uk.screen.at.app.kdw013.a.DeleteWorkRecordConfirmationCommandHandler;
 import nts.uk.screen.at.app.kdw013.a.EmployeeDisplayInfo;
+import nts.uk.screen.at.app.kdw013.a.EncouragedTargetApplicationDto;
+import nts.uk.screen.at.app.kdw013.a.GetTargetTime;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentCommand;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentDto;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentHandler;
 import nts.uk.screen.at.app.kdw013.a.StartProcess;
 import nts.uk.screen.at.app.kdw013.a.StartProcessDto;
+import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.screen.at.app.kdw013.a.favorite.oneday.FavOneDayDto;
 import nts.uk.screen.at.app.kdw013.a.favorite.oneday.GetFavOneDay;
 import nts.uk.screen.at.app.kdw013.a.favorite.task.FavTaskDto;
@@ -37,6 +41,11 @@ import nts.uk.screen.at.app.kdw013.command.RegisterFavoriteCommand;
 import nts.uk.screen.at.app.kdw013.command.RegisterFavoriteForOneDayCommand;
 import nts.uk.screen.at.app.kdw013.command.UpdateFavNameCommand;
 import nts.uk.screen.at.app.kdw013.command.UpdateOneDayFavNameCommand;
+import nts.uk.screen.at.app.kdw013.e.GetAvailableWorkingCommand;
+import nts.uk.screen.at.app.kdw013.e.GetWorkDataMasterInforCommand;
+import nts.uk.screen.at.app.kdw013.e.GetWorkDataMasterInforDto;
+import nts.uk.screen.at.app.kdw013.e.SelectTaskItem;
+import nts.uk.screen.at.app.kdw013.e.StartWorkNoTime;
 import nts.uk.screen.at.app.kdw013.e.UpdateAttendanceTimeZoneBySupportWork;
 import nts.uk.screen.at.app.kdw013.e.UpdateAttendanceTimeZoneBySupportWorkCommand;
 import nts.uk.screen.at.app.kdw013.f.AddNewFavoriteTask;
@@ -111,6 +120,15 @@ public class KDW013WebService {
 	@Inject
 	private ChangeFavOneDayDisplayOrder changeFavOneDayOrder;
 	
+	@Inject
+	private StartWorkNoTime startWorkNoTime;
+	
+	@Inject
+	private SelectTaskItem selectTaskItem;
+	
+	@Inject
+	private GetTargetTime getTargetTime;
+	
 	@POST
 	@Path("a/get-fav-task")
 	public FavTaskDto getFavTask() {
@@ -151,13 +169,20 @@ public class KDW013WebService {
 	public List<ConfirmerDto> deleteConfirmation(DeleteWorkResultConfirmCommand param) {
 		return deleteWorkRecordConfirmationHandler.delete(param);
 	}
-
+	
 	// A:工数入力.メニュー別OCD
 	// 作業内容を登録する
 	@POST
-	@Path("a/register_work_content")
+	@Path("a/register-work-content")
 	public RegisterWorkContentDto registerWorkContent(RegisterWorkContentCommand command) {
 		return registerHandler.handle(command);
+	}
+
+	// 7.残業申請・休出時間申請の対象時間を取得する
+	@POST
+	@Path("a/get-target-time")
+	public List<EncouragedTargetApplicationDto> getTargetTime(GetTargetTimeCommand command) {
+		return this.getTargetTime.get(command.getEmployeeId(), command.getChangedDates()).stream().map(x-> EncouragedTargetApplicationDto.fromDomain(x)).collect(Collectors.toList());
 	}
 
 	// A:1日作業セットを削除する
@@ -236,6 +261,20 @@ public class KDW013WebService {
 	public void updateSupportTimezone(UpdateAttendanceTimeZoneBySupportWorkCommand command) {
 		updateAttendanceTimeZoneBySupportWork.update(command);
 	}
+	
+	// E: 時刻なし作業内容を起動する
+	@POST
+	@Path("e/start_task_content_without_time")
+	public GetWorkDataMasterInforDto startTaskContent(GetWorkDataMasterInforCommand command) {
+		return startWorkNoTime.startWorkNoTime(command);
+	}
+	
+	// E: 作業項目を選択する
+	@POST
+	@Path("e/select_task_item")
+	public SelectTaskItemDto selectTaskItem(GetAvailableWorkingCommand command) {
+		return new SelectTaskItemDto(selectTaskItem.selectTaskItem(command));
+	}
 
 }
 @Getter
@@ -245,4 +284,11 @@ class StartParam {
 	// 基準日
 	private GeneralDate inputDate;
 
+}
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+class SelectTaskItemDto {
+	private List<TaskDto> taskDtos;
 }

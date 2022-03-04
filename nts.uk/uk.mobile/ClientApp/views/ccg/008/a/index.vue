@@ -15,11 +15,11 @@
           <div class="collapse">
             <div class="card-body">
               <ul>
-                <li v-if="serverAlert.system.visible">
-                  <span v-html="serverAlert.system.usageStopMessage">  </span>
+                <li v-if="serverAlert.system && serverAlert.system.visible">
+                  <span v-html="serverAlert.system.stopMessage">  </span>
                 </li>
-                <li v-if="serverAlert.company.visible">
-                  <span v-html="serverAlert.company.usageStopMessage"></span>
+                <li v-if="serverAlert.company && serverAlert.company.visible">
+                  <span v-html="serverAlert.company.stopMessage"></span>
                 </li>
               </ul>
             </div>
@@ -31,7 +31,7 @@
 
     <!-- Notice -->
     <div class="section notice-wrapper" v-show="displayNotifis && displayNotifis.length > 0">
-      <nts-label v-bind:constraint="labelConstraint">{{ 'CCGS08_3' | i18n}}</nts-label>
+      <nts-label v-bind:constraint="labelConstraint">お知らせ</nts-label>
       <div class="content" v-show="displayNotifisVissible">
         <template v-for="notice in displayNotifis" >
           <button
@@ -69,14 +69,14 @@
         <div class="error-message color-danger" v-if="false">{{overtime.errorMessage}}</div>
         <nts-ccgs008-table :configs="overtime.tableConfigs" />
         <div class="text-center mt-n2">
-          <button type="button" v-bind:class="{'btn-outline-info': showFull, 'btn-info': !showFull}"  v-show="agreementButton"
-            style="width: 150px" v-on:click="reverseShowAgreement" class="shadow-none btn rounded-pill">
+          <button type="button" v-show="agreementButton"
+            style="width: 150px" v-on:click="reverseShowAgreement" class="shadow-none btn btn-info">
             <span v-if="!showFull">
-              <i class="fas fa-angle-double-down"></i> 
+              <i class="fas fa-angle-down"></i> 
               {{ 'CCGS08_33' | i18n }}
             </span>
             <span v-if="showFull">
-              <i class="fas fa-angle-double-up"></i> 
+              <i class="fas fa-angle-up"></i> 
               {{ 'CCGS08_34' | i18n }}
             </span>
           </button>
@@ -87,7 +87,7 @@
 
     <!-- Time status -->
     <div class="section time-status-wrapper" v-if="timeStatus.visible">
-      <nts-label v-bind:constraint="labelConstraint">{{ 'CCGS08_4' | i18n}}</nts-label>
+      <nts-label v-bind:constraint="labelConstraint">休暇残数</nts-label>
       <div class="content">
         <nts-ccgs008-table :configs="timeStatus.tableConfigs" />
       </div>

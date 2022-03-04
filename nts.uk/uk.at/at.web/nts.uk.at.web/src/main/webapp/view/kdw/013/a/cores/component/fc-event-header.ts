@@ -3,26 +3,61 @@ module nts.uk.ui.at.kdw013.eventheadear {
         name: 'fc-event-header',
         template:
         `<td data-bind="i18n: 'KDW013_20'"></td>
-                               
-
                 <!-- ko foreach: { data: $component.params.data, as: 'day' } -->
                 <td class="fc-event-note fc-day" style='text-align: center;' data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }">
                     <div style="display: flex;height:calc(100% - 19px);"> 
-                        <div style='text-align: left;' data-bind="foreach: { data: day.events, as: 'note' }">
+                        <div style='text-align: left;flex-grow: 1;' data-bind="foreach: { data: day.events, as: 'note' }">
                             <div class="text-note" data-bind="text: note.title"></div>
                         </div>
-                        <div style='text-align: left;margin-left: 5px;width: calc(100% - 70px);' data-bind="foreach: { data: day.events, as: 'note' }">
-                            <div style='display: block;' class="text-note limited-label" data-bind="text: note.text"></div>
+                        <div style='text-align: left;margin-left: 5px;flex-grow: 1000;' data-bind="foreach: { data: day.events, as: 'note' }">
+                            <!-- ko if: note.valueType == 0 -->
+                                <div style='display: block;' class="text-note limited-label" data-bind="text: note.text"></div>
+                            <!-- /ko -->
+                            
+                            <!-- ko if: note.valueType == 3 -->
+                                <div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: true , readonly: true }">する</div>
+                            <!-- /ko -->
+                            
+                            <!-- ko if: note.valueType == 2 -->
+                                <div class="fc-evn-checkbox" data-bind="ntsCheckBox: { checked: false , readonly: true }">する</div>
+                            <!-- /ko -->
                         </div>
                     </div>
                     <!-- ko if: $component.showHIcon(day.date) -->
                     <div style="min-height: 20px; height:20px;">     
-                        <i class='openHIcon' data-bind="ntsIcon: { no: 232, width: 20, height: 20 },click: function(day) { $component.openHDialog(day) } " > </i>
+                        <i class='openHIcon' data-bind="ntsIcon: { no: 232, width: 20, height: 20, extension: 'png' },click: function(day) { $component.openHDialog(day) } " > </i>
                     </div>
                     <!-- /ko -->
                 </td>
                 <!-- /ko -->
                 <style rel="stylesheet">
+                    .fc-evn-checkbox input[type="checkbox"]+span::before{
+                        top: 2px;
+                        left: 0px;
+                        width: 12px;
+                        height: 12px;
+                    }
+                    .fc-evn-checkbox input[type="checkbox"]+span::after{
+                        top: 5px;
+                        left: 2px;
+                        width: 8px;
+                        height: 5px;
+                        transform: rotate(-59deg);
+                    }
+                    .fc-evn-checkbox input[type="checkbox"]+span{
+                        line-height: 14px;
+                        font-size: 12px;
+                        cursor: default;
+                    }
+                    .fc-evn-checkbox{
+                        padding: 0px 0px 0px 17px;
+                        height: 17px;
+                        display: flex;
+                    }
+                    .fc-evn-checkbox label{
+                         line-height: 11px;
+                    }
+                   
                     .openHIcon{
                         cursor: pointer;
                         }
@@ -30,6 +65,10 @@ module nts.uk.ui.at.kdw013.eventheadear {
                         font-size: 12px;
                         line-height: 17px;
                     }
+					.checkbox-wrapper input[type="checkbox"]:checked+span::after{
+						top: 4px;
+						left: 1px;
+					}
                 </style>
                 `
     })

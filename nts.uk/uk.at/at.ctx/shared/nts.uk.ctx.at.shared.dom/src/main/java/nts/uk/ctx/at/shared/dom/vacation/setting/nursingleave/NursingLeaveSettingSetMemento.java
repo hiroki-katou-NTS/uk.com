@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
@@ -66,7 +67,7 @@ public interface NursingLeaveSettingSetMemento {
 
 
 
-    void setTimeCareNursingSet(TimeCareNursingSet timeCareNursingSet);
+    void setTimeVacationDigestUnit(TimeVacationDigestUnit timeVacationDigestUnit);
 
     void setNumPer1(Integer numPer1);
 

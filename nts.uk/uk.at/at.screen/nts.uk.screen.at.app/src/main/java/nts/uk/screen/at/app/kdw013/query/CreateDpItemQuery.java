@@ -253,7 +253,7 @@ public class CreateDpItemQuery {
 		existingList.forEach(eItem -> {
 
 			itemVals.stream().filter(iv -> iv.getItemId() == eItem.getItemId()).findFirst().ifPresent(iv -> {
-				if (iv.getValue() != null && !iv.getValue().equals(eItem.getValue())) {
+				if (iv.getValue() == null || !iv.getValue().equals(eItem.getValue())) {
 					changedList.add(iv);
 				}
 			});

@@ -6,8 +6,10 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.AccumulationAbsenceDetailComparator;
@@ -84,12 +86,72 @@ public class VacationDetails {
 				.mapToInt(x -> x.getUnbalanceNumber().getTime().map(y -> y.v()).orElse(0)).sum();
 		return new UnoffsetNumSeqVacation(new LeaveRemainingDayNumber(daySum), new LeaveRemainingTime(timeSum));
 	}
+
+	// [10] 発生の確定データを取得する
+	public List<AccumulationAbsenceDetail> getOccrFixed() {
+		return this.getOccurrenceNotDateUnknown().stream().filter(x -> x.getDataAtr() == MngDataStatus.CONFIRMED)
+				.collect(Collectors.toList());
+	}
 	
+	// [11] 指定した日付の消化暫定データを取得する
+	public Optional<AccumulationAbsenceDetail> getDigestTempWithDate(GeneralDate date) {
+		return this.getDigestNotDateUnknown().stream().filter(
+				x -> x.getDateOccur().getDayoffDate().get().equals(date) && x.getDataAtr() != MngDataStatus.CONFIRMED)
+				.findFirst();
+	}
 	
 	// [1] 該当する日の休暇明細を取得
 	private Optional<AccumulationAbsenceDetail> getVacStateForAppDay(GeneralDate correspDay) {
 
 		return this.lstAcctAbsenDetail.stream().filter(x -> x.getDateOccur().getDayoffDate().isPresent()
 				&& x.getDateOccur().getDayoffDate().get().equals(correspDay)).findFirst();
+	}
+	
+	// 発生確定の未相殺数を調整する
+	private void correctUnoffsetOfOccrFixed(SeqVacationAssociationInfoList seqVacAssociInfo, DatePeriod period) {
+		val occrFixed = this.getOccurrenceNotDateUnknown().stream()
+				.filter(x -> x.getDataAtr() == MngDataStatus.CONFIRMED).collect(Collectors.toList());
+		occrFixed.stream().forEach(x -> {
+			x.correctUnoffsetOfOccrFixed(seqVacAssociInfo, period);
+		});
+	}
+
+	// 消化確定の未相殺数を調整する
+	private void correctUnoffsetOfDigestFixed(SeqVacationAssociationInfoList seqVacAssociInfo, DatePeriod period) {
+		val digestFixed = this.getDigestNotDateUnknown().stream().filter(x -> x.getDataAtr() == MngDataStatus.CONFIRMED)
+				.collect(Collectors.toList());
+		digestFixed.stream().forEach(x -> {
+		x.correctUnoffsetOfDigestFixed(seqVacAssociInfo, period);
+		});
+	}
+
+	// 発生暫定の未相殺数を調整する
+	private void correctUnoffsetOfOccrTemp(SeqVacationAssociationInfoList seqVacAssociInfo, DatePeriod period) {
+		val occrTemp = this.getOccurrenceNotDateUnknown().stream()
+				.filter(x -> x.getDataAtr() != MngDataStatus.CONFIRMED).collect(Collectors.toList());
+		occrTemp.stream().forEach(x -> {
+			x.correctUnoffsetOfOccrTemp(seqVacAssociInfo, period);
+		});
+	}
+
+	// 消化暫定の未相殺数を調整する
+	private void correctUnoffsetOfDigestTemp(SeqVacationAssociationInfoList seqVacAssociInfo, DatePeriod period) {
+		val digestTemp = this.getDigestNotDateUnknown().stream().filter(x -> x.getDataAtr() != MngDataStatus.CONFIRMED)
+				.collect(Collectors.toList());
+		digestTemp.stream().forEach(x -> {
+			x.correctUnoffsetOfDigestTemp(seqVacAssociInfo, period);
+		});
+	}
+
+	// 未相殺数を調整する
+	public void correctUnoffset(SeqVacationAssociationInfoList seqVacAssociInfo, DatePeriod period) {
+		// 発生確定
+		correctUnoffsetOfOccrFixed(seqVacAssociInfo, period);
+		// 消化確定
+		correctUnoffsetOfDigestFixed(seqVacAssociInfo, period);
+		// 発生確定
+		correctUnoffsetOfOccrTemp(seqVacAssociInfo, period);
+		// 消化暫定
+		correctUnoffsetOfDigestTemp(seqVacAssociInfo, period);
 	}
 }

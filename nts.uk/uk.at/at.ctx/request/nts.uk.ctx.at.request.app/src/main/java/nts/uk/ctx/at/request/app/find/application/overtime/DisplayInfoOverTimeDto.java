@@ -83,7 +83,7 @@ public class DisplayInfoOverTimeDto {
 				)).collect(Collectors.toList()),
 				displayInfoOverTime.getCalculatedWorkTimes().stream().map(i -> new TimeZoneWithWorkNoDto(
 						1,
-						new TimeZone_NewDto(i.getStart().v(), i.getEnd().v())
+						new TimeZone_NewDto(i.getStart() != null ? i.getStart().v() : null, i.getEnd() != null ? i.getEnd().v() : null)
 				)).collect(Collectors.toList())
 		);
 	}

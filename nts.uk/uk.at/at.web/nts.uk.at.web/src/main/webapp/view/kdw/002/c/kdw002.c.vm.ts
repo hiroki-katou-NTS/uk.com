@@ -57,22 +57,22 @@ module nts.uk.at.view.kdw002.c {
                 self.currentRoleId.subscribe(roleId => {
                     self.currentRoleId(roleId);
                     _.defer(() => nts.uk.ui.block.invisible());
-                    
-                    var useTemplate = "<input tabindex='-1' type='checkbox' {{if ${toUse} }} checked {{/if}} onclick='useChanged(this, ${itemDailyID},${userCanUpdateAtr})' />";
-                    var youCanChangeItTemplate = "<input tabindex='-1' type='checkbox' {{if ${youCanChangeIt} }} checked {{/if}} onclick='youCanChangeItChanged(this, ${itemDailyID})' />";
-                    var canBeChangedByOthersTemplate = "<input tabindex='-1' type='checkbox' {{if ${canBeChangedByOthers} }} checked {{/if}} onclick='canBeChangedByOthersChanged(this, ${itemDailyID})' />";
 
-                    var useHeader = "<input  tabindex='-1' type='checkbox' id = 'useCheckAll' onclick='useHeaderChanged(this)'/> ";
-                    var youCanChangeItHeader =  "<input  tabindex='-1' type='checkbox' id = 'youCanCheckAll' onclick='youCanChangeItHeaderChanged(this)'/> ";
-                    var canBeChangedByOthersHeader = "<input  tabindex='-1'  type='checkbox' id = 'otherCheckAll' onclick='canBeChangedByOthersHeaderChanged(this)'/> ";
+                    var useHeader = `<input style="vertical-align: middle;" tabindex='-1' type='checkbox' id = 'useCheckAll' onclick='useHeaderChanged(this)'/> `;
+                    var youCanChangeItHeader =  `<input style="vertical-align: middle;" tabindex='-1' type='checkbox' id = 'youCanCheckAll' onclick='youCanChangeItHeaderChanged(this)'/> `;
+                    var canBeChangedByOthersHeader = `<input style="vertical-align: middle;" tabindex='-1'  type='checkbox' id = 'otherCheckAll' onclick='canBeChangedByOthersHeaderChanged(this)'/> `;
                     // A4_2, A4_3, A4_4, A4_41, A4_8, A4_8.1, A4_9, A4_10, A4_11, A4_16, A4_18
                     self.columns = ko.observableArray([
                         { headerText: '', key: 'itemDailyID', width: 1, hidden: true },
-                        { headerText: getText('KDW002_3'), key: 'displayNumber', width: 70  , formatter: _.escape },
-                        { headerText: getText('KDW002_4'), key: 'itemDailyName', width: 220  , formatter: _.escape},
-                        { headerText: useHeader + getText('KDW002_5'), key: 'toUse', width: 120, template: useTemplate },
-                        { headerText: youCanChangeItHeader + getText('KDW002_6'), key: 'youCanChangeIt', width: 120, template: youCanChangeItTemplate },
-                        { headerText: canBeChangedByOthersHeader + getText('KDW002_7'), key: 'canBeChangedByOthers', width: 165, template: canBeChangedByOthersTemplate },
+                        { headerText: getText('KDW002_3'), key: 'displayNumber', width: 70, formatter: _.escape },
+                        { headerText: getText('KDW002_4'), key: 'itemDailyName', width: 220  , 
+										formatter: (keyValue: any) => { return '<div>' + _.escape(keyValue) + '</div>'} },
+                        { headerText: useHeader + getText('KDW002_5'), key: 'toUse', width: 120, 
+										formatter: (keyValue: any, itemValue: DisplayAndInputControl) => self.getUseTemplate(keyValue, itemValue) },
+                        { headerText: youCanChangeItHeader + getText('KDW002_6'), key: 'youCanChangeIt', width: 120, columnCssClass: 'column-style',
+										formatter: (keyValue: any, itemValue: DisplayAndInputControl) => self.getYouCanChangeItTemplate(keyValue, itemValue) },
+                        { headerText: canBeChangedByOthersHeader + getText('KDW002_7'), key: 'canBeChangedByOthers', width: 165, columnCssClass: 'column-style',
+										formatter: (keyValue: any, itemValue: DisplayAndInputControl) => self.getCanBeChangedByOthersTemplate(keyValue, itemValue) },
                         { headerText: '', key: 'userCanUpdateAtr', width: 1, hidden: true },
                     ]);
 
@@ -110,6 +110,12 @@ module nts.uk.at.view.kdw002.c {
                                     rowVirtualization: false,
                                   virtualizationMode: "continuous",
 //                                    virtualizationMode: "fixed",
+									dataRendered: () => {
+										nts.uk.ui.block.clear();
+									},
+									rendered: () => {
+								   		nts.uk.ui.block.clear();
+								    },
                                     columns: self.columns(),
                                     features: [
                                         {
@@ -140,23 +146,6 @@ module nts.uk.at.view.kdw002.c {
                                 });
                                  $("#grid").setupSearchScroll("igGrid", false);
                                  $("#grid").ntsGridList("setupScrollWhenBinding"); 
-                                let lengthData = self.dailyServiceTypeControl().displayAndInput.length;
-                                for (let i = 0; i < lengthData; i++) {
-                                    if (!self.dailyServiceTypeControl().displayAndInput[i].userCanUpdateAtr || !self.dailyServiceTypeControl().displayAndInput[i].toUse) {
-                                        if (!self.dailyServiceTypeControl().displayAndInput[i].userCanUpdateAtr) {
-                                            $("#grid").igGridUpdating("setCellValue", self.dailyServiceTypeControl().displayAndInput[i].itemDailyID, "canBeChangedByOthers", false);
-                                        }
-                                        var rowId = self.dailyServiceTypeControl().displayAndInput[i].itemDailyID;
-                                        var cellYouCanChangeIt = $("#grid").igGrid("cellById", rowId, "youCanChangeIt");
-                                        var cellCanBeChangedByOthers = $("#grid").igGrid("cellById", rowId, "canBeChangedByOthers");
-                                        cellYouCanChangeIt.addClass('readOnlyColorIsUse');
-                                        cellCanBeChangedByOthers.addClass('readOnlyColorIsUse');
-                                        cellYouCanChangeIt.children().prop("disabled", true);
-                                        cellCanBeChangedByOthers.children().prop("disabled", true);
-
-
-                                    }
-                                }
                             }
                             let listData = self.dailyServiceTypeControl().displayAndInput;
                             let notUseExist = _.find(listData, function(e){ return !e.toUse });
@@ -166,35 +155,85 @@ module nts.uk.at.view.kdw002.c {
                                 $("#useCheckAll").prop('checked', false);
                             }
                             
-                            let notYouCanCheckAll = true;
-                            for(let i =0;i<listData.length;i++){
-                                if(listData[i].toUse ==true && listData[i].userCanUpdateAtr == 1){
-                                    if(!listData[i].youCanChangeIt){
-                                        notYouCanCheckAll =false;
-                                        break;
-                                    }
-                                }
-                            }
-                            $("#youCanCheckAll").prop('checked', notYouCanCheckAll);
+                            displayYouAndOtherCheckAll();
                             
-                            let notOtherCheckAll = true;
-                            for(let i =0;i<listData.length;i++){
-                                if(listData[i].toUse ==true && listData[i].userCanUpdateAtr == 1){
-                                    if(!listData[i].canBeChangedByOthers){
-                                        notOtherCheckAll =false;
-                                        break;
-                                    }
-                                }
-                            }
-                            $("#otherCheckAll").prop('checked', notOtherCheckAll);
-                            
-                            nts.uk.ui.block.clear();
+                            //nts.uk.ui.block.clear();
                         }
                     );
                 });
 
                 self.txtSearch = ko.observable("");
             }
+
+			getUseTemplate(keyValue: any, itemValue: DisplayAndInputControl) {
+				let s = ``;
+				s += `<div style="margin-left: -2px; margin-right: -2px; padding-left: 2px; padding-right: 2px; color: transparent;">`;
+				if(itemValue.toUse) {
+					s+= `<div class="test-div"><input tabindex='-1' type='checkbox' checked `;
+				} else {
+					s+= `<div class="test-div"><input tabindex='-1' type='checkbox' `;
+				}
+				s += `onclick='useChanged(this, ${itemValue.itemDailyID},${itemValue.userCanUpdateAtr})' /></div>`;
+				s += `</div>`;
+				return s;
+			}
+			
+			getYouCanChangeItTemplate(keyValue: any, itemValue: DisplayAndInputControl) {
+				let s = ``;
+				let disable = !itemValue.userCanUpdateAtr || !itemValue.toUse;
+				if(disable) {
+					s += `<div style="position: absolute; top: 0; color: transparent; margin-left: -2px;" class="readOnlyColorIsUse">名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名</div>`;
+				} else {
+					s += `<div style="position: absolute; top: 0; color: transparent; margin-left: -2px;">名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名</div>`;
+				}
+				s += `<div style="margin-left: -2px; margin-right: -2px; padding-left: 2px; padding-right: 2px; color: transparent; position: inherit;"`;
+				if(itemValue.youCanChangeIt) {
+					s+= `<div class="test-div"><input tabindex='-1' type='checkbox' checked `;
+				} else {
+					s+= `<div class="test-div"><input tabindex='-1' type='checkbox' `;
+				}
+				if(disable) {
+					s += ` disabled `;
+				} else {
+					s += ``;
+				}
+				s += `onclick='youCanChangeItChanged(this, ${itemValue.itemDailyID})' /></div>`;
+				s += `</div>`;
+				return s;
+			}
+			
+			getCanBeChangedByOthersTemplate(keyValue: any, itemValue: DisplayAndInputControl) {
+				let s = ``;
+				let disable = !itemValue.userCanUpdateAtr || !itemValue.toUse;
+				if(disable) {
+					s += `<div style="position: absolute; top: 0; color: transparent; margin-left: -2px;" class="readOnlyColorIsUse">名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名</div>`;
+				} else {
+					s += `<div style="position: absolute; top: 0; color: transparent; margin-left: -2px;">名名名名名名名名名名名名名名名名名名名名名名名名名名名名名名</div>`;
+				}
+				s += `<div style="margin-left: -2px; margin-right: -2px; padding-left: 2px; padding-right: 2px; color: transparent; position: inherit;"`;
+				if(itemValue.canBeChangedByOthers) {
+					s += `<div class="test-div"><input tabindex='-1' type='checkbox' checked `;
+				} else {
+					s += `<div class="test-div"><input tabindex='-1' type='checkbox' `;
+				}
+				if(disable) {
+					s += ` disabled `;
+				} else {
+					s += ``;
+				}
+				s += `onclick='canBeChangedByOthersChanged(this, ${itemValue.itemDailyID})' /></div>`;
+				s += `</div>`;
+				return s;
+			}
+			
+			getColumnClass(keyValue: any, itemValue: DisplayAndInputControl) {
+				let disable = !itemValue.userCanUpdateAtr || !itemValue.toUse;
+				if(disable) {
+					return "readOnlyColorIsUse";
+				} else {
+					return "";
+				}
+			}
             
             jumpToHome(): void {
                 let self = this;
@@ -326,50 +365,24 @@ module nts.uk.at.view.kdw002.c {
                     let listDefault: Array<DisplayAndInputControl> = [];
                     self.listAttFullDataClone(_.cloneDeep(self.listAttFullData()));
                     _.each(self.listAttFullDataClone(), attFullData => {
+                        let canToUse: boolean = false;
                         for(let i=0;i<data.length;i++){
                             if(attFullData.attendanceItemId == data[i].attendanceItemId){
                                 attFullData.authority = data[i].authority; 
+                                canToUse = true;
                                 break;
                             }    
                         }
-                        listDefault.push(DisplayAndInputControl.fromApp(attFullData));
-                    });
-                    /*if (nts.uk.util.isNullOrUndefined(data)) {
-                        if (self.listAttdItem.length != 0) {
-                            for (let i = 0; i < self.listAttdItem.length; i++) {
-                                listDefault.push(
-                                    new DisplayAndInputControl(
-                                        self.listAttdItem[i].attendanceItemId,
-                                        self.listAttdItem[i].attendanceName,
-                                        self.listAttdItem[i].displayNumber,
-                                        self.listAttdItem[i].userCanUpdateAtr,
-                                        true,
-                                        false,
-                                        false));
+
+                        if(!canToUse) {
+                            attFullData.authority = {   
+                                'toUse' : false,
+                                'canBeChangedByOthers' : false,
+                                'youCanChangeIt' : false    
                             }
                         }
-
-                    } else {
-                        if (self.listAttdItem.length != 0) {
-                            for (let j = 0; j < data.displayAndInput.length; j++) {
-                                for (let i = 0; i < self.listAttdItem.length; i++) {
-                                    if (data.displayAndInput[j].itemDailyID == self.listAttdItem[i].attendanceItemId) {
-                                        listDefault.push(
-                                            new DisplayAndInputControl(
-                                                self.listAttdItem[i].attendanceItemId,
-                                                self.listAttdItem[i].attendanceName,
-                                                self.listAttdItem[i].displayNumber,
-                                                self.listAttdItem[i].userCanUpdateAtr,
-                                                data.displayAndInput[j].toUse,
-                                                data.displayAndInput[j].canBeChangedByOthers,
-                                                data.displayAndInput[j].youCanChangeIt));
-                                        break;
-                                    }//end if        
-                                }//end for 2
-                            }//end for 1
-                        }//end if
-
-                    }//end else to*/
+                        listDefault.push(DisplayAndInputControl.fromApp(attFullData));
+                    });
                     self.dailyServiceTypeControl(
                         new DailyAttendanceItemAuth("", roleID, _.sortBy(listDefault, ['displayNumber']))
                     );
@@ -382,7 +395,7 @@ module nts.uk.at.view.kdw002.c {
             //get monthly Attd Item By Role ID
             getMonthlyAttdItemByRoleID(roleID: string) {
                 let self = this;
-                let dfd = $.Deferred();
+                let dfd = $.Deferred();                
                 service.getMontlyAttItemNew(roleID).done(function(data) {
                     if (nts.uk.util.isNullOrUndefined(data) || data.length <= 0 || data.every((att: any) => att.authority == null)) {
                         self.isNewMode(true);
@@ -390,59 +403,25 @@ module nts.uk.at.view.kdw002.c {
                         self.isNewMode(false);
                     }
                     let listDefault: Array<DisplayAndInputControl> = [];
-//                    _.each(data, item => {
-//                        listDefault.push(DisplayAndInputControl.fromApp(item));
-//                    })
                     self.listAttFullDataClone(_.cloneDeep(self.listAttFullData()));
                     _.each(self.listAttFullDataClone(), attFullData => {
+                        let canToUse: boolean = false;
                         for(let i=0;i<data.length;i++){
                             if(attFullData.attendanceItemId == data[i].attendanceItemId){
                                 attFullData.authority = data[i].authority;
+                                canToUse = true;
                                 break;
-                            }    
+                            } 
                         }
-                            
-                        listDefault.push(DisplayAndInputControl.fromApp(attFullData));
-                    });
-                    /*if (nts.uk.util.isNullOrUndefined(data)) {
-                        
-                        
-                        if (self.listAttdMonthlyItem.length != 0) {
-                            for (let i = 0; i < self.listAttdMonthlyItem.length; i++) {
-                                listDefault.push(
-                                    new DisplayAndInputControl(
-                                        self.listAttdMonthlyItem[i].attendanceItemId,
-                                        self.listAttdMonthlyItem[i].attendanceItemName,
-                                        self.listAttdMonthlyItem[i].attendanceItemDisplayNumber,
-                                        self.listAttdMonthlyItem[i].userCanUpdateAtr,
-                                        true,
-                                        false,
-                                        false));
+                        if(!canToUse) {
+                            attFullData.authority = {   
+                                'toUse' : false,
+                                'canBeChangedByOthers' : false,
+                                'youCanChangeIt' : false    
                             }
                         }
-
-                    } else {
-                        
-                        if (self.listAttdMonthlyItem.length != 0) {
-                            for (let j = 0; j < data.listDisplayAndInputMonthly.length; j++) {
-                                for (let i = 0; i < self.listAttdMonthlyItem.length; i++) {
-                                    if (data.listDisplayAndInputMonthly[j].itemMonthlyId == self.listAttdMonthlyItem[i].attendanceItemId) {
-                                        listDefault.push(
-                                            new DisplayAndInputControl(
-                                                self.listAttdMonthlyItem[i].attendanceItemId,
-                                                self.listAttdMonthlyItem[i].attendanceItemName,
-                                                self.listAttdMonthlyItem[i].attendanceItemDisplayNumber,
-                                                self.listAttdMonthlyItem[i].userCanUpdateAtr,
-                                                data.listDisplayAndInputMonthly[j].toUse,
-                                                data.listDisplayAndInputMonthly[j].canBeChangedByOthers,
-                                                data.listDisplayAndInputMonthly[j].youCanChangeIt));
-                                        break;
-                                    }//end if        
-                                }//end for 2
-                            }//end for 1
-                        }//end if
-
-                    }//end else to*/
+                        listDefault.push(DisplayAndInputControl.fromApp(attFullData));
+                    });
                     self.dailyServiceTypeControl(
                         new DailyAttendanceItemAuth("", roleID, _.sortBy(listDefault, ['displayNumber']))
                     );
@@ -451,51 +430,6 @@ module nts.uk.at.view.kdw002.c {
                 });
                 return dfd.promise();
             }
-            
-            /*
-            //daily
-            getListDailyAttdItem() {
-                let self = this;
-                let dfd = $.Deferred();
-                service.getListDailyAttdItem().done(function(data) {
-                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
-                    service.getNameDaily(listAttdID).done(function(dataNew) {
-                        for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<=dataNew.length; j++){
-                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
-                                    data[i].attendanceName = dataNew[j].attendanceItemName;
-                                    break;
-                                }  
-                            }    
-                        }
-                        
-                        self.listAttdItem = data; 
-                        dfd.resolve();   
-                    });
-                });
-                return dfd.promise();
-            }
-            //monthly
-            getListMonthlyAttdItem() {
-                let self = this;
-                let dfd = $.Deferred();
-                service.getListMonthlyAttdItem().done(function(data) {
-                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
-                    service.getNameMonthly(listAttdID).done(function(dataNew) {
-                        for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<=dataNew.length; j++){
-                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
-                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
-                                    break;
-                                }  
-                            }    
-                        }
-                        self.listAttdMonthlyItem = data; 
-                        dfd.resolve();
-                        });   
-                });
-                return dfd.promise();
-            }*/
 
             submitData(): void {
                 var self = this;
@@ -513,7 +447,7 @@ module nts.uk.at.view.kdw002.c {
                             
                         });
                     }).always(function() {
-                        nts.uk.ui.block.clear();
+                        //nts.uk.ui.block.clear();
                     });
                 }else{
                     let dataMonthly = dataSource.transformedData('afterfilteringandpaging');
@@ -545,7 +479,7 @@ module nts.uk.at.view.kdw002.c {
                             });
                         });
                     }).always(function() {
-                        nts.uk.ui.block.clear();
+                        //nts.uk.ui.block.clear();
                     });
                     
                 }
@@ -757,26 +691,6 @@ function useChanged(element, rowId, userCanSet) {
         $("#grid").igGridUpdating('endEdit', true);
     }
     $("#grid").igGridUpdating("setCellValue", rowId, "toUse", value != true);
-
-    //get value youCanChangeIt,canBeChangedByOthers
-    var cellYouCanChangeIt = $("#grid").igGrid("cellById", rowId, "youCanChangeIt");
-    var cellCanBeChangedByOthers = $("#grid").igGrid("cellById", rowId, "canBeChangedByOthers");
-    //if toUse = true and nameLine = 1
-    if (value == true && userCanSet.toString() === "1") {
-        //set value and disable
-        cellYouCanChangeIt.addClass('readOnlyColorIsUse');
-        cellCanBeChangedByOthers.addClass('readOnlyColorIsUse');
-        cellYouCanChangeIt.children().prop("disabled", true);
-        cellCanBeChangedByOthers.children().prop("disabled", true);
-    } else if (value != true && userCanSet.toString() === "1") {
-        cellYouCanChangeIt.removeClass('readOnlyColorIsUse');
-        cellCanBeChangedByOthers.removeClass('readOnlyColorIsUse');
-        cellYouCanChangeIt.children().prop("disabled", false);
-        cellCanBeChangedByOthers.children().prop("disabled", false);
-    } else {
-        cellYouCanChangeIt.children().prop("disabled", true);
-        cellCanBeChangedByOthers.children().prop("disabled", true);
-    }
     
     let temp = $('#grid').data('igGrid').dataSource._data;
     let notUseExist = _.find(temp, function(e){ return !e.toUse });
@@ -785,6 +699,7 @@ function useChanged(element, rowId, userCanSet) {
     }else{
         $("#useCheckAll").prop('checked', false);
     }
+	displayYouAndOtherCheckAll();
 }
 
 
@@ -841,103 +756,80 @@ function userCanSetChanged(element, rowId) {
 }
 
 function useHeaderChanged(element) {
-    var dataSource = $('#grid').data('igGrid').dataSource;
-    var filteredData = dataSource.transformedData('afterfilteringandpaging');
-    if (element.checked) {
-        var i;
-        var l = filteredData.length;
-        for (i = 0; i < l; i++) {
-            $("#grid").igGridUpdating("setCellValue", filteredData[i].itemDailyID, "toUse", true);
-            var rowId = filteredData[i].itemDailyID;
-            var cellYouCanChangeIt = $("#grid").igGrid("cellById", rowId, "youCanChangeIt");
-            var cellCanBeChangedByOthers = $("#grid").igGrid("cellById", rowId, "canBeChangedByOthers");
-            if (filteredData[i].userCanUpdateAtr.toString() === "1") {
-                if (cellYouCanChangeIt.hasClass('readOnlyColorIsUse')) {
-                    cellYouCanChangeIt.removeClass('readOnlyColorIsUse');
-                }
-                if (cellCanBeChangedByOthers.hasClass('readOnlyColorIsUse')) {
-                    cellCanBeChangedByOthers.removeClass('readOnlyColorIsUse');
-                }
-                cellYouCanChangeIt.children().prop("disabled", false);
-                cellCanBeChangedByOthers.children().prop("disabled", false);
-            } else {
-                cellYouCanChangeIt.children().prop("disabled", true);
-                cellCanBeChangedByOthers.children().prop("disabled", true);
-            }
-        }
-
-    } else {
-        var i;
-        var l = filteredData.length;
-        for (i = 0; i < l; i++) {
-            $("#grid").igGridUpdating("setCellValue", filteredData[i].itemDailyID, "toUse", false);
-            var rowId = filteredData[i].itemDailyID;
-            var cellYouCanChangeIt = $("#grid").igGrid("cellById", rowId, "youCanChangeIt");
-            var cellCanBeChangedByOthers = $("#grid").igGrid("cellById", rowId, "canBeChangedByOthers");
-            if (filteredData[i].userCanUpdateAtr.toString() === "1") {
-                if (!cellYouCanChangeIt.hasClass('readOnlyColorIsUse')) {
-                    cellYouCanChangeIt.addClass('readOnlyColorIsUse');
-                }
-                if (!cellCanBeChangedByOthers.hasClass('readOnlyColorIsUse')) {
-                    cellCanBeChangedByOthers.addClass('readOnlyColorIsUse');
-                }
-                cellYouCanChangeIt.children().prop("disabled", true);
-                cellCanBeChangedByOthers.children().prop("disabled", true);
-            } else {
-                cellYouCanChangeIt.children().prop("disabled", true);
-                cellCanBeChangedByOthers.children().prop("disabled", true);
-            }
-        }
-
-    }
+	nts.uk.ui.block.grayout();
+	var dataSource = $('#grid').data('igGrid').dataSource._data;
+	if(element.checked) {
+		_.forEach(dataSource, item => {
+			item.toUse = true;
+		});
+	} else {
+		_.forEach(dataSource, item => {
+			item.toUse = false;
+		});	
+	}
+	$("#grid").igGrid("option", "dataSource", dataSource);
+	displayYouAndOtherCheckAll();
 }
 
 
 function youCanChangeItHeaderChanged(element) {
-    var dataSource = $('#grid').data('igGrid').dataSource;
-    var filteredData = dataSource.transformedData('afterfilteringandpaging');
-    if (element.checked) {
-        var i;
-        var l = filteredData.length;
-        for (i = 0; i < l; i++) {
-            if (filteredData[i].userCanUpdateAtr.toString() === "1" && filteredData[i].toUse) {
-                $("#grid").igGridUpdating("setCellValue", filteredData[i].itemDailyID, "youCanChangeIt", true);
-            }
-        }
-    } else {
-        var i;
-        var l = filteredData.length;
-        for (i = 0; i < l; i++) {
-            if (filteredData[i].userCanUpdateAtr.toString() === "1" && filteredData[i].toUse) {
-                //update 
-                $("#grid").igGridUpdating("setCellValue", filteredData[i].itemDailyID, "youCanChangeIt", false);
-            }
-        }
-    }
-
+	nts.uk.ui.block.grayout();
+	var dataSource = $('#grid').data('igGrid').dataSource._data;
+	if(element.checked) {
+		_.forEach(dataSource, item => {
+			if(item.userCanUpdateAtr==1 && item.toUse) {
+				item.youCanChangeIt = true;
+			}
+		});
+	} else {
+		_.forEach(dataSource, item => {
+			if(item.userCanUpdateAtr==1 && item.toUse) {
+				item.youCanChangeIt = false;
+			}
+		});	
+	}
+	$("#grid").igGrid("option", "dataSource", dataSource);
 }
 
 function canBeChangedByOthersHeaderChanged(element) {
-    var dataSource = $('#grid').data('igGrid').dataSource;
-    var filteredData = dataSource.transformedData('afterfilteringandpaging');
-    if (element.checked) {
-        var i;
-        var l = filteredData.length;
-        for (i = 0; i < l; i++) {
-            if (filteredData[i].userCanUpdateAtr.toString() === "1" && filteredData[i].toUse) {
-                $("#grid").igGridUpdating("setCellValue", filteredData[i].itemDailyID, "canBeChangedByOthers", true);
-            }
-        }
-    } else {
-        var i;
-        var l = filteredData.length;
-        for (i = 0; i < l; i++) {
-            if (filteredData[i].userCanUpdateAtr.toString() === "1" && filteredData[i].toUse) {
-                $("#grid").igGridUpdating("setCellValue", filteredData[i].itemDailyID, "canBeChangedByOthers", false);
-            }
-        }
+	nts.uk.ui.block.grayout();
+	var dataSource = $('#grid').data('igGrid').dataSource._data;
+	if(element.checked) {
+		_.forEach(dataSource, item => {
+			if(item.userCanUpdateAtr==1 && item.toUse) {
+				item.canBeChangedByOthers = true;
+			}
+		});
+	} else {
+		_.forEach(dataSource, item => {
+			if(item.userCanUpdateAtr==1 && item.toUse) {
+				item.canBeChangedByOthers = false;
+			}
+		});	
+	}
+	$("#grid").igGrid("option", "dataSource", dataSource);
+}
 
-    }
+function displayYouAndOtherCheckAll() {
+	let listData = $('#grid').data('igGrid').dataSource._data;
+    let notYouCanCheckAll = true;
+	let notOtherCheckAll = true;
+	let useAndUserCanUpdateAtrLst = _.chain(listData).filter(item => item.toUse ==true && item.userCanUpdateAtr == 1).value();
+	if(_.isEmpty(useAndUserCanUpdateAtrLst)) {
+		notYouCanCheckAll = false;
+		notOtherCheckAll = false;			
+	} else {
+		let youCanChangeItFalseLst = _.chain(useAndUserCanUpdateAtrLst).filter(item => item.youCanChangeIt==false).value();
+		if(!_.isEmpty(youCanChangeItFalseLst)) {
+			notYouCanCheckAll = false;
+		}
+		let canBeChangedByOthersFalseLst = _.chain(useAndUserCanUpdateAtrLst).filter(item => item.canBeChangedByOthers==false).value();
+		if(!_.isEmpty(canBeChangedByOthersFalseLst)) {
+			notOtherCheckAll = false;
+		}
+	}
+	$("#youCanCheckAll").prop('checked', notYouCanCheckAll);
+    $("#otherCheckAll").prop('checked', notOtherCheckAll);
 }
 
 

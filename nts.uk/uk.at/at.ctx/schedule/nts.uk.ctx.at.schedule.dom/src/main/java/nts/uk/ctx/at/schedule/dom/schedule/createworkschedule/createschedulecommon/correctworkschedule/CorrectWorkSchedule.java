@@ -7,7 +7,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
@@ -90,7 +89,7 @@ public class CorrectWorkSchedule {
 		integrationOfDaily.setYmd(targetDate);
 		lstInteOfDaily.add(integrationOfDaily);
 		CalculateOption calculateOption = new CalculateOption(false, true);
-		lstInteOfDaily = centerNew.calculatePassCompanySetting(calculateOption, lstInteOfDaily, EnumAdaptor.valueOf(ExecutionType.NORMAL_EXECUTION.value, ExecutionType.class));
+		lstInteOfDaily = centerNew.calculateForSchedule(calculateOption, lstInteOfDaily);
 		
 		return lstInteOfDaily;
 	}

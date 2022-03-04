@@ -54,7 +54,7 @@ module nts.uk.at.view.kdp010.i {
 			letterColors: KnockoutObservable<string> = ko.observable('#ffffff');
 
 			// H6_2
-			backgroundColors: KnockoutObservable<string> = ko.observable('#127D09');
+			backgroundColors: KnockoutObservable<string> = ko.observable('#01956A');
 
 			// H7_2
 			optionAudio: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.AudioType);
@@ -135,6 +135,8 @@ module nts.uk.at.view.kdp010.i {
 				block.invisible();
 				var tg = __viewContext.enums.ContentsStampType;
 
+				self.dataShare = nts.uk.ui.windows.getShared('KDP010_G');
+
 				_.remove(tg, (n: any) => { return n.value == 16; });
 				ajax(paths.getSettingCommonStamp).done(function (data: any) {
 					if (!data.supportUse) {
@@ -148,7 +150,9 @@ module nts.uk.at.view.kdp010.i {
 					}
 					self.contentsStampType(tg);
 					self.isUseWork(data.workUse);
-					self.isSupportUse(data.supportUse);
+					if (self.dataShare.stampMeans != 1 && self.dataShare.stampMeans != 3) {
+						self.isSupportUse(data.supportUse);
+					}
 					dfd.resolve();
 				}).fail(function (res: any) {
 					error({ messageId: res.messageId });

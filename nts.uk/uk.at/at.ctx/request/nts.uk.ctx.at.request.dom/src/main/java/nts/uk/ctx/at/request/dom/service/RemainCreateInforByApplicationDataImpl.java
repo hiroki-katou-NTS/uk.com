@@ -97,6 +97,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
 public class RemainCreateInforByApplicationDataImpl implements RemainCreateInforByApplicationData {
@@ -185,6 +186,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		List<Integer> lstReflect = new ArrayList<>();
 		lstReflect.add(ReflectedState.NOTREFLECTED.value);
 		lstReflect.add(ReflectedState.WAITREFLECTION.value);
+		lstReflect.add(ReflectedState.REMAND.value);
 		List<Integer> lstAppType = this.lstAppType();
 		List<Application> lstAppData = new ArrayList<>();
 		if (!lstAppType.isEmpty()) {
@@ -199,6 +201,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		List<Integer> lstReflect = new ArrayList<>();
 		lstReflect.add(ReflectedState.NOTREFLECTED.value);
 		lstReflect.add(ReflectedState.WAITREFLECTION.value);
+		lstReflect.add(ReflectedState.REMAND.value);
 		List<Integer> lstAppType = this.lstAppType();
 		List<Application> lstAppData = new ArrayList<>();
 		if (!lstAppType.isEmpty()) {
@@ -245,7 +248,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			case GO_RETURN_DIRECTLY_APPLICATION:
 				Optional<GoBackDirectly> goBack = goBackRepo.find(cid, appData.getAppID());
 				goBack.ifPresent(x -> {
-					outData.setWorkTimeCode(x.getDataWork().map(dw -> dw.getWorkTimeCode().v()));
+					outData.setWorkTimeCode(x.getDataWork().map(dw -> dw.getWorkTimeCode() != null ? dw.getWorkTimeCode().v() : null));
 					outData.setWorkTypeCode(x.getDataWork().map(dw -> dw.getWorkTypeCode().v()));
 				});
 				break;
@@ -366,22 +369,22 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			}
 			
 			//予定or実績への全ての申請反映結果を取得
-//			Optional<IntegrationOfDaily> domainDailySche = ObtainAllAppReflecResultInScheduleRecord.getData(impl, cid,
-//					sid, outData.getAppDate(), outData.getAppId());
-//			if(domainDailySche.isPresent()) {
-//				if(outData.getWorkTypeCode().isPresent()) {
-//					WorkInfoOfDailyAttendance workAfter = CorrectDailyAttendanceService.correctFurikyu(impl, domainDailySche.get().getWorkInformation(),
-//							new WorkInfoOfDailyAttendance(
-//									new WorkInformation(outData.getWorkTypeCode().get(),
-//											outData.getWorkTimeCode().orElse(null)),
-//									domainDailySche.get().getWorkInformation().getCalculationState(),
-//									domainDailySche.get().getWorkInformation().getGoStraightAtr(),
-//									domainDailySche.get().getWorkInformation().getBackStraightAtr(),
-//									domainDailySche.get().getWorkInformation().getDayOfWeek(),
-//									domainDailySche.get().getWorkInformation().getScheduleTimeSheets(), Optional.empty()));
-//					outData.setNumberOfDaySusp(workAfter.getNumberDaySuspension());
-//				}
-//			}
+			Optional<IntegrationOfDaily> domainDailySche = ObtainAllAppReflecResultInScheduleRecord.getData(impl, cid,
+					sid, outData.getAppDate(), outData.getAppId());
+			if(domainDailySche.isPresent()) {
+				if(outData.getWorkTypeCode().isPresent()) {
+					WorkInfoOfDailyAttendance workAfter = CorrectDailyAttendanceService.correctFurikyu(impl, domainDailySche.get().getWorkInformation(),
+							new WorkInfoOfDailyAttendance(
+									new WorkInformation(outData.getWorkTypeCode().get(),
+											outData.getWorkTimeCode().orElse(null)),
+									domainDailySche.get().getWorkInformation().getCalculationState(),
+									domainDailySche.get().getWorkInformation().getGoStraightAtr(),
+									domainDailySche.get().getWorkInformation().getBackStraightAtr(),
+									domainDailySche.get().getWorkInformation().getDayOfWeek(),
+									domainDailySche.get().getWorkInformation().getScheduleTimeSheets(), Optional.empty()));
+					outData.setNumberOfDaySusp(workAfter.getNumberDaySuspension());
+				}
+			}
 			lstOutputData.add(outData);
 		});
 		return lstOutputData;
@@ -596,6 +599,11 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		public Optional<WorkingConditionItem> getWorkingConditionItemByEmpIDAndDate(String companyID, GeneralDate ymd,
 				String empID) {
 			return workingConditionItemRepo.getBySidAndStandardDate(empID, ymd);
+		}
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 
 	}

@@ -589,10 +589,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 shiftPalletUnit : self.userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
                 pageNumberCom   : self.userInfor.shiftPalettePageNumberCom,
                 pageNumberOrg   : self.userInfor.shiftPalettePageNumberOrg,
-                getActualData   : !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false, 
+                getActualData   : self.userInfor.achievementDisplaySelected, 
                 listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
                 listSid: self.listSid(),
-                unit: !_.isNil(self.userInfor) ? self.userInfor.unit : 0,
+                unit: self.userInfor.unit,
                 workplaceId     : self.userInfor.workplaceId,
                 workplaceGroupId: self.userInfor.workplaceGroupId,
                 personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
@@ -676,8 +676,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 viewMode: ViewMode.SHORTNAME,
                 startDate: self.dateTimePrev(),
                 endDate:   self.dateTimeAfter() ,
-                getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
-                unit: !_.isNil(self.userInfor) ? self.userInfor.unit : 0,
+                getActualData: self.userInfor.achievementDisplaySelected,
+                unit: self.userInfor.unit,
                 workplaceId     : self.userInfor.workplaceId,
                 workplaceGroupId: self.userInfor.workplaceGroupId,
                 personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
@@ -735,8 +735,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 viewMode: ViewMode.TIME,
                 startDate: self.dateTimePrev(),
                 endDate: self.dateTimeAfter(),
-                getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
-                unit: !_.isNil(self.userInfor) ? self.userInfor.unit : 0,
+                getActualData: self.userInfor.achievementDisplaySelected,
+                unit: self.userInfor.unit,
                 workplaceId     : self.userInfor.workplaceId,
                 workplaceGroupId: self.userInfor.workplaceGroupId,
                 personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
@@ -1579,12 +1579,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (innerIdx == 3) {
                         startTime = nts.uk.time.minutesBased.duration.parseString(cellData.startTime).toValue();
                         endTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
-                        if (endTime == '' || _.isNaN(endTime)) return dfd.reject();
+                        if (endTime == '' || _.isNil(endTime) ||  _.isNaN(endTime)) return dfd.reject();
 
                     } else if (innerIdx == 2) {
                         startTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
                         endTime = nts.uk.time.minutesBased.duration.parseString(cellData.endTime).toValue();
-                        if (startTime == '' || _.isNaN(startTime)) return dfd.reject();
+                        if (startTime == '' || _.isNil(startTime) || _.isNaN(startTime)) return dfd.reject();
 
                     }
 
@@ -1763,10 +1763,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 
                 if (dateInfo.htmlTooltip != null) {
-                    objDetailHeaderDs['_' + ymd] = "<img class='header-image-event'>";
+                    objDetailHeaderDs['_' + ymd] = "<span class='header-image-event'>●</span>";
                     htmlToolTip.push(new HtmlToolTip('_' + ymd, dateInfo.htmlTooltip));
                 } else {
-                    objDetailHeaderDs['_' + ymd] = "<img class='header-image-no-event'>";
+                    objDetailHeaderDs['_' + ymd] = "<span class='header-image-no-event'>●</span>";
                 }
             });
             
@@ -1821,7 +1821,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.keyGrid = empLogin[0].sid;
                 self.rowIndexOfEmpLogin = _.indexOf(detailContentDs, empLogin[0]);
             } else {
-                self.keyGrid = '0';
+                self.keyGrid = 'NOTEXISTS';
                 self.rowIndexOfEmpLogin = 0;
             }
             return result;
@@ -1863,10 +1863,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let iconEmpPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("7.png").serialize();
                 $('.icon-leftmost').css('background-image', 'url(' + iconEmpPath + ')');
                 // set backgound image icon header
-                let iconEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("120.png").serialize();
-                $('.header-image-event').attr('src', iconEventPath);
-                let iconNoEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("121.png").serialize();
-                $('.header-image-no-event').attr('src', iconNoEventPath);
                 if (self.mode() === UpdateMode.EDIT) {
                     self.bindingEventClickFlower();
                 }
@@ -2126,6 +2122,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             let data = self.buidDataReg(self.userInfor.disPlayFormat, cellsGroup);
             
+            if(data.length == 0){
+                nts.uk.ui.block.clear();
+                return;
+            }
+            
             service.regWorkSchedule(data).done((rs) => {
                 self.taskId = rs.taskInfor.id;
                 self.checkStateAsyncTask(isKsu003, detailContentDs);
@@ -2345,7 +2346,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let leftmostDs = dataBindGrid.leftmostDs;
 
             leftmostColumns = [{
-                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8 +"px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8 +"px",
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
                 headerControl: "link", headerHandler: function() {  }
             }];
@@ -2520,10 +2521,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let startTime, endTime;
                 if (innerIdx === 2) {
                     startTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
-                    endTime = !_.isNil(obj.endTime) ? nts.uk.time.minutesBased.duration.parseString(obj.endTime).toValue() : 0;
+                    if (_.isNil(obj.endTime) || obj.endTime == '') {
+                        endTime = 0;
+                    } else {
+                        endTime = nts.uk.time.minutesBased.duration.parseString(obj.endTime).toValue();
+                    }
                 } else if (innerIdx === 3) {
-                    startTime = !_.isNil(obj.startTime) ? nts.uk.time.minutesBased.duration.parseString(obj.startTime).toValue() : 0;
                     endTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
+                    if (_.isNil(obj.startTime) || obj.startTime == '') {
+                        startTime = 0;
+                    } else {
+                        startTime = nts.uk.time.minutesBased.duration.parseString(obj.startTime).toValue();
+                    }
                 }
                 
                 if (startTime > endTime) {
@@ -3682,7 +3691,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let wkpEventName     = rs.wkpEventName;
                         // update lai header grid
                         self.updateHeader().done(() => {
-                            if (userInfor.disPlayFormat == ViewMode.TIME) {
+                            if (self.userInfor.disPlayFormat == ViewMode.TIME) {
                                 // enable những cell đã disable trước đó đi rồi sau khi update grid mới disable đi được
                                 self.enableCellsTime();
                                 self.diseableCellsTime();
@@ -3769,10 +3778,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
 
                     if (dateInfo.htmlTooltip != null) {
-                        objDetailHeaderDs['_' + ymd] = "<img class='header-image-event'>";
+                        objDetailHeaderDs['_' + ymd] = "<span class='header-image-event'>●</span>";
                         htmlToolTip.push(new HtmlToolTip('_' + ymd, dateInfo.htmlTooltip));
                     } else {
-                        objDetailHeaderDs['_' + ymd] = "<img class='header-image-no-event'>";
+                        objDetailHeaderDs['_' + ymd] = "<span class='header-image-no-event'>●</span>";
                     }
                 });
 
@@ -3848,7 +3857,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // update phan leftMost
             let leftmostDs = dataBindGrid.leftmostDs;
             let leftmostColumns = [{
-                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8+"px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8+"px",
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
                 headerControl: "link", headerHandler: function() { alert("Link!"); }
             }];
@@ -4915,8 +4924,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // set lai starttime, endtime cua object stick
                 $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
 
-                let startTime = rs.startTime == null ? '' : formatById("Clock_Short_HM", rs.startTime);
-                let endTime = rs.endTime == null ? '' : formatById("Clock_Short_HM", rs.endTime);
+                let startTime = rs.startTime == null ? null : formatById("Clock_Short_HM", rs.startTime);
+                let endTime = rs.endTime == null ? null : formatById("Clock_Short_HM", rs.endTime);
                 $("#extable").exTable("stickData", {
                     workTypeCode: data.workTypeCode,
                     workTypeName: data.workTypeName,
@@ -4965,8 +4974,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (!_.isNil(objWTime)) {
                         if (userInfor.disPlayFormat == ViewMode.TIME) {
                             if (data.workHolidayCls === 3) { // đi làm fulltime
-                                let startTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzStart1);
-                                let endTime   = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzEnd1);
+                                let startTime = _.isNil(objWTime) ? null : formatById("Clock_Short_HM", objWTime.tzStart1);
+                                let endTime   = _.isNil(objWTime) ? null : formatById("Clock_Short_HM", objWTime.tzEnd1);
 
                                 $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
                                 $("#extable").exTable("stickData", {
@@ -4997,8 +5006,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     // set lai starttime, endtime cua object stick
                                     $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
 
-                                    let startTime = rs.startTime == null ? '' : formatById("Clock_Short_HM", rs.startTime);
-                                    let endTime = rs.endTime == null ? '' : formatById("Clock_Short_HM", rs.endTime);
+                                    let startTime = rs.startTime == null ? null : formatById("Clock_Short_HM", rs.startTime);
+                                    let endTime = rs.endTime == null ? null : formatById("Clock_Short_HM", rs.endTime);
                                     $("#extable").exTable("stickData", {
                                         workTypeCode: data.workTypeCode,
                                         workTypeName: data.workTypeName,
@@ -5033,8 +5042,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 workTypeName: data.workTypeName,
                                 workTimeCode: cellData.workTimeCode,
                                 workTimeName: cellData.workTimeName,
-                                startTime: '',
-                                endTime: '',
+                                startTime: null,
+                                endTime: null,
                                 achievements: false,
                                 workHolidayCls: data.workHolidayCls
                             });
@@ -5072,8 +5081,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     // set lai starttime, endtime cua object stick
                                     $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
 
-                                    let startTime = rs.startTime == null ? '' : formatById("Clock_Short_HM", rs.startTime);
-                                    let endTime = rs.endTime == null ? '' : formatById("Clock_Short_HM", rs.endTime);
+                                    let startTime = rs.startTime == null ? null : formatById("Clock_Short_HM", rs.startTime);
+                                    let endTime = rs.endTime == null ? null : formatById("Clock_Short_HM", rs.endTime);
                                     $("#extable").exTable("stickData", {
                                         workTypeCode: data.workTypeCode,
                                         workTypeName: data.workTypeName,
@@ -5108,8 +5117,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 workTypeName: data.workTypeName,
                                 workTimeCode: cellData.workTimeCode,
                                 workTimeName: cellData.workTimeName,
-                                startTime: '',
-                                endTime: '',
+                                startTime: null,
+                                endTime: null,
                                 achievements: false,
                                 workHolidayCls: data.workHolidayCls
                             });
@@ -5263,7 +5272,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (userInfor.updateMode == UpdateMode.STICK) {
                 $("#extable").exTable("stickRedo", function(rowIdx, columnKey, innerIdx, cellData) {
                     if (userInfor.disPlayFormat == ViewMode.TIME) {
-                        if ((cellData.workHolidayCls === 0) || (cellData.startTime === '' && cellData.endTime === '')) {
+                        if ((cellData.workHolidayCls === 0) || ((cellData.startTime === ''||cellData.startTime == null)  && (cellData.endTime === ''||cellData.endTime == null))) {
                             self.diseableCellStartEndTime(rowIdx + '', columnKey);
                         } else {
                             self.enableCellStartEndTime(rowIdx + '', columnKey);
@@ -5273,7 +5282,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else if (userInfor.updateMode == UpdateMode.COPY_PASTE) {
                 $("#extable").exTable("copyRedo", function(rowIdx, columnKey, cellData) {
                     if (userInfor.disPlayFormat == ViewMode.TIME) {
-                        if ((cellData.workHolidayCls === 0) || (cellData.startTime === '' && cellData.endTime === '')) {
+                        if ((cellData.workHolidayCls === 0) || ((cellData.startTime === ''||cellData.startTime == null) && (cellData.endTime === ''||cellData.endTime == null))) {
                             self.diseableCellStartEndTime(rowIdx + '', columnKey);
                         } else {
                             self.enableCellStartEndTime(rowIdx + '', columnKey);
@@ -5808,8 +5817,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // btn A6_1, A6_2 職2    
             if (funcNo2_WorkPlace == false) {
                 $('#contain-view-left').empty();
-                $('#contain-view-left').css('margin-left', '16px');
-                $('#contain-view-right').css('width', '1177px');
             }
 
             // 職13
@@ -5907,16 +5914,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.selectedDisplayPeriod(1);
                 $('#A3_2').empty();
             } else if (useDisplayPeriods.length == 1) {
-                self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
+                self.disPeriodSelectionList().push({ id: 1, name: "締日" /*getText("KSU001_39")*/ });
                 if (useDisplayPeriods[0] == 0) {
-                    self.disPeriodSelectionList().push({ id: 2, name: getText("KSU001_40") });
+                    self.disPeriodSelectionList().push({ id: 2, name: "４週" /*getText("KSU001_40")*/ });
                 } else if (useDisplayPeriods[0] == 1) {
-                    self.disPeriodSelectionList().push({ id: 3, name: getText("KSU001_41") });
+                    self.disPeriodSelectionList().push({ id: 3, name: "１ヶ月" /*getText("KSU001_41")*/ });
                 }
             } else if (useDisplayPeriods.length == 2) {
-                self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
-                self.disPeriodSelectionList().push({ id: 2, name: getText("KSU001_40") });
-                self.disPeriodSelectionList().push({ id: 3, name: getText("KSU001_41") });
+                self.disPeriodSelectionList().push({ id: 1, name: "締日" /*getText("KSU001_39")*/ });
+                self.disPeriodSelectionList().push({ id: 2, name: "４週" /*getText("KSU001_40")*/ });
+                self.disPeriodSelectionList().push({ id: 3, name: "１ヶ月" /*getText("KSU001_41")*/ });
             }
 
             // set css lại

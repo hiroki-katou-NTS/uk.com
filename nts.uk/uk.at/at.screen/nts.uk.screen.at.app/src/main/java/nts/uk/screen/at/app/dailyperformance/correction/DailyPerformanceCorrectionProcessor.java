@@ -76,6 +76,7 @@ import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationLis
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
@@ -523,13 +524,10 @@ public class DailyPerformanceCorrectionProcessor {
 				screenDto.setCellSate(data.getId(), DPText.LOCK_APPLICATION, DPText.STATE_DISABLE);
 			}
 			// map name submitted into cell
+			String appNameLst = "";
 			if (appMapDateSid.containsKey(data.getEmployeeId() + "|" + data.getDate())) {
-				data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED,
-						appMapDateSid.get(data.getEmployeeId() + "|" + data.getDate()), "", ""));
-			} else {
-				data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED, "", "", ""));
+				appNameLst = appMapDateSid.get(data.getEmployeeId() + "|" + data.getDate());
 			}
-			data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED, "", "", ""));
 			data.addCellData(new DPCellDataDto(DPText.LOCK_APPLICATION, "", "", ""));
 			data.addCellData(new DPCellDataDto(DPText.LOCK_APPLICATION_LIST, "", "", ""));
 			
@@ -584,7 +582,7 @@ public class DailyPerformanceCorrectionProcessor {
 				Optional<TaskItem> opTaskItem = getTaskItemByEmpDate(taskInitialSelHistLst, data.getEmployeeId(), data.getDate());
 				Optional<DailyRecordDto> opDailyRecordDto = screenDto.getDomainOld().stream().filter(x -> x.getEmployeeId().equals(data.getEmployeeId()) && x.getDate().equals(data.getDate())).findAny();
 				processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem, mapGetName, codeNameReasonMap, codeNameTaskMap,
-						itemValueMap,  data, lockDaykWpl, dailyRecEditSetsMap, objectShare, opTaskItem, opDailyRecordDto);
+						itemValueMap,  data, lockDaykWpl, dailyRecEditSetsMap, objectShare, opTaskItem, opDailyRecordDto, appNameLst);
 				data.setCellDatas(data.getCellDatas().stream().sorted(Comparator.comparing(DPCellDataDto::getColumnKey)).collect(Collectors.toSet()));
 				lstData.add(data);
 				// DPCellDataDto bPCellDataDto = new DPCellDataDto(columnKey,
@@ -690,7 +688,7 @@ public class DailyPerformanceCorrectionProcessor {
 			DPControlDisplayItem dPControlDisplayItem,
 			Map<Integer, Map<String, CodeName>> mapGetName,  Map<String, CodeName> mapReasonName, Map<String, CodeName> codeNameTaskMap, 
 			Map<String, ItemValue> itemValueMap, DPDataDto data,
-			boolean lock, Map<String, Integer> dailyRecEditSetsMap, ObjectShare share, Optional<TaskItem> opTaskItem, Optional<DailyRecordDto> opDomainOldItem) {
+			boolean lock, Map<String, Integer> dailyRecEditSetsMap, ObjectShare share, Optional<TaskItem> opTaskItem, Optional<DailyRecordDto> opDomainOldItem, String appNameLst) {
 		Set<DPCellDataDto> cellDatas = data.getCellDatas();
 		String typeGroup = "";
 		Integer cellEdit;
@@ -994,7 +992,7 @@ public class DailyPerformanceCorrectionProcessor {
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_MYSELF);
 			}else if(cellEdit == 1){
 				screenDto.setCellSate(rowId, columnKey, DPText.HAND_CORRECTION_OTHER);
-			}else{
+			}else if(cellEdit == 2 || cellEdit == 4){
 				screenDto.setCellSate(rowId, columnKey, DPText.REFLECT_APPLICATION);
 			}
 		}
@@ -1106,8 +1104,8 @@ public class DailyPerformanceCorrectionProcessor {
 		appplicationDisable.forEach(x -> {
 			String key = x.getEmployeeID() + "|" + x.getAppDate();
 			if (disableSignMap != null) {
-				boolean disable = (x.getReflectState() == ReflectedState_New.NOTREFLECTED.value
-						|| x.getReflectState() == ReflectedState_New.REMAND.value)
+				boolean disable = (x.getReflectState() == ReflectedStateShare.NOTREFLECTED.value
+						|| x.getReflectState() == ReflectedStateShare.REMAND.value)
 						&& x.getAppType() != nts.uk.ctx.at.request.dom.application.ApplicationType.OVER_TIME_APPLICATION.value;
 				if (disableSignMap.containsKey(key)) {
 					disableSignMap.put(key, disableSignMap.get(key) || disable);
@@ -1682,15 +1680,13 @@ public class DailyPerformanceCorrectionProcessor {
 				.getListAttendanceItemControl(companyId, lstAtdItemUnique).stream().collect(Collectors.toMap(x -> x.getAttendanceItemId(), x -> x));
 		for (FormatDPCorrectionDto dto : lstFormat) {
 			if(mapDP.get(dto.getAttendanceItemId()).getAttendanceAtr()==DailyAttendanceAtr.Application.value) {
-				lstHeader.add(DPHeaderDto.addHeaderSubmitted(mergeString(DPText.ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())), mapAttendanceItemControl));
 				if (showButton) {
 					lstHeader.add(DPHeaderDto.addHeaderApplication(mergeString(DPText.ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())), mapAttendanceItemControl));
 				}
-			} else {
-				lstHeader.add(DPHeaderDto.createSimpleHeader(companyId,
-						mergeString(DPText.ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())),
-						(dto.getColumnWidth()== null || dto.getColumnWidth() == 0) ? "100px" : String.valueOf(dto.getColumnWidth()) + DPText.PX, mapDP, mapAttendanceItemControl));
 			}
+			lstHeader.add(DPHeaderDto.createSimpleHeader(companyId,
+					mergeString(DPText.ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())),
+					(dto.getColumnWidth()== null || dto.getColumnWidth() == 0) ? "100px" : String.valueOf(dto.getColumnWidth()) + DPText.PX, mapDP, mapAttendanceItemControl));
 		}
 		
 		result.setLstHeader(lstHeader);

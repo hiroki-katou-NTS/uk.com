@@ -48,16 +48,6 @@
 				
 				.color-schedule-performance {color:#008000 !important;}
 				
-				#undo[disabled] {
-    				background-color: #d9d9d9 !important;
-    				cursor: default;
-    				color: #888888;
-				}
-				#redo[disabled] {
-    				background-color: #d9d9d9 !important;
-    				cursor: default;
-    				color: #888888;
-				}
 			</style>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -120,12 +110,12 @@
 				<div id="A1_7_1" class="popup-area popup-panel btn10">
 					<table>
 						<tr style="height: 50px">
-							<td><button id="A1_7_2" class="compensation" tabindex="8">#{i18n.getText('KSU001_13')}</button></td>
-							<td><span id="A1_7_3_1" class="label" data-bind="text: A1_7_3_line1"></span><BR /><span id="A1_7_3_2" class="label" data-bind="text: A1_7_3_line2"></span></td>
+							<td><button id="A1_7_2" class="compensation" tabindex="8" data-bind="enable: false">#{i18n.getText('KSU001_13')}</button></td>
+							<td style="padding-left: 15px" ><span id="A1_7_3_1" class="label" data-bind="text: A1_7_3_line1"></span><BR /><span id="A1_7_3_2" class="label" data-bind="text: A1_7_3_line2"></span></td>
 						</tr>
 						<tr style="height: 50px">
 							<td><button id="A1_7_4" class="substitute" tabindex="9" data-bind="click: openDialogG">#{i18n.getText('KSU001_15')}</button></td>
-							<td><span class="label" id="A1_7_5" style="">#{i18n.getText('KSU001_16', ['#Com_Person'])}</span></td>
+							<td style="padding-left: 15px"><span class="label" id="A1_7_5" style="">#{i18n.getText('KSU001_16', ['#Com_Person'])}</span></td>
 						</tr>
 					</table>
 				</div>
@@ -333,33 +323,33 @@
 							</div>
 							<div id="functon-area-row2-center">
 								<div id="A3_1">
-									<div id="A3_1_left">
-										<button id="prevMonth" tabindex="26" class="size-image-button3"
-											data-bind="click: backMonth, timeClick: -1"><i data-bind="ntsIcon: { no: 57 }"></i> </button>
-										<span id="date-time-prev" class = 'date-time' data-bind="text: dateTimePrev"></span>
-										<span id="special" class = 'date-time'>#{i18n.getText('KSU001_66')}</span> 
-										<span id="date-time-after" class = 'date-time' data-bind="text: dateTimeAfter"></span>
-										<button id="nextMonth" tabindex="27" class="size-image-button3"
-											data-bind="click: nextMonth, timeClick: -1"><i data-bind="ntsIcon: { no: 58 }"></i></button>
+									<div class="unit">
+										<div class="func-label">表示<br/>単位</div>
+										<div class="func-content" tabindex="26"
+											data-bind="ntsSwitchButton: {
+											options: disPeriodSelectionList,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedDisplayPeriod}">
 										</div>
-									<div id="A3_2" tabindex="28" class="cf"
-										data-bind="ntsSwitchButton: {
-										options: disPeriodSelectionList,
-										optionsValue: 'id',
-										optionsText: 'name',
-										value: selectedDisplayPeriod}">
 									</div>
-									<div style="clear: left"></div>
+									<div class="period">
+										<div class="func-label">表示<br/>期間</div>
+										<div class="func-content">
+											<button id="prevMonth" tabindex="27" class="size-image-button3"
+												data-bind="click: backMonth, timeClick: -1">＜</button>
+											<span id="date-time-prev" class = 'date-time' data-bind="text: dateTimePrev"></span>
+											<span id="special" class = 'date-time'>#{i18n.getText('KSU001_66')}</span> 
+											<span id="date-time-after" class = 'date-time' data-bind="text: dateTimeAfter"></span>
+											<button id="nextMonth" tabindex="28" class="size-image-button3"
+												data-bind="click: nextMonth, timeClick: -1">＞</button>
+										</div>
+									</div>
 								</div>
 							</div>
-							<div id="functon-area-row2-right">
-								<button id="A4" tabindex="29" data-bind="enable: true ">#{i18n.getText('KSU001_67')}</button>
-								<button id="A5" tabindex="33" class="ml-2 size-image-button1"><i style="margin-left: -3px;" data-bind="ntsIcon: { no: 139,width: 20, height: 20 }"></i></button>
-							</div>
 						</div>
-						<div style="clear: left"></div>
-						<div id="content-main" style="width: 1218px">
-							<div style="white-space: nowrap; width: fit-content;">
+						<div id="content-main">
+							<div class="main-controls">
 								<div id="contain-view-left">
 									<button id="A6_1" tabindex="34" class="editMode" style="height: 38px;"
 										data-bind="click: editMode ">#{i18n.getText('KSU001_140')}</button>
@@ -370,29 +360,29 @@
 								</div>
 								<div id="contain-view-right" class="inline">
 									<div id="group-bt">
-										<button id="paste" class="A7_1" tabindex="36" 
-											data-bind="click: pasteData, enable: enableBtnPaste">貼り付け</button>
-										<button id="coppy" class="A7_2" tabindex="37" 
-											data-bind="click: coppyData , enable: enableBtnCoppy">コピペ</button>
-										<button id="input" class="A7_3" tabindex="38" 
-											data-bind="click: inputData, enable: enableBtnInput, visible : visibleBtnInput">時刻入力</button>
-										<br />
+										<button id="paste" class="A7_1" tabindex="36" data-bind="click: pasteData, enable: enableBtnPaste">貼付</button>
+										<button id="coppy" class="A7_2" tabindex="37" data-bind="click: coppyData, enable: enableBtnCoppy">
+											<span>Ctrl+C<br/>Ctrl+V<br/>使用</span>
+										</button>
+										<button id="input" class="A7_3" tabindex="38" data-bind="click: inputData, enable: enableBtnInput, visible : visibleBtnInput">
+											<span>時刻<br/>入力</span>
+										</button>
 										<button id="undo" class="size-image-button2 A7_4" tabindex="39" 
 											data-bind="click: undoData, enable: enableBtnUndo , visible : visibleBtnUndo , timeClick: -1"><i data-bind="ntsIcon: { no: 44 }"></i></button>
 										<button id="redo" class="size-image-button2 A7_5" tabindex="40" 
 											data-bind="click: redoData, enable: enableBtnRedo , visible : visibleBtnRedo , timeClick: -1"><i data-bind="ntsIcon: { no: 154 }"></i></button>
-										<button tabindex="41"  data-bind="ntsHelpButton: {textId: '', textParams:[], position: 'right center' ,enable: false}"
-											style="margin-top: 13px;">？</button>
+										<!-- <button tabindex="41"  data-bind="ntsHelpButton: {textId: '', textParams:[], position: 'right center' ,enable: false}"
+											style="margin-top: 13px;">？</button>-->
 									</div>
-									<div data-bind="ifnot: visibleShiftPalette" style="width: 100%;margin-left: 140px; margin-top: 5px;">
+									<div data-bind="ifnot: visibleShiftPalette">
 										<div id="oViewModel">
 											<div data-bind="with: $parent.viewAB">
 												<ui:include src="../ab/index.xhtml" />
 											</div>
 										</div>
 									</div>
-									<div data-bind="if: visibleShiftPalette" style="width: 100%;margin-left: 140px; margin-top: 5px;">
-										<div id="qViewModel">
+									<div data-bind="if: visibleShiftPalette">
+										<div id="qViewModel" style="width: 100%; margin-top: 5px;">
 											<div data-bind="with: $parent.viewAC">
 												<ui:include src="../ac/index.xhtml" />
 											</div>
@@ -400,15 +390,16 @@
 									</div>
 								</div>
 							</div>
-							<div style="clear: left"></div>
+							<div class="right-end">
+								<button id="A5" tabindex="33">凡例</button>
+								<button id="A4" tabindex="29" data-bind="enable: true ">#{i18n.getText('KSU001_67')}</button>
+								<button class="settingHeightGrid"> <i data-bind="ntsIcon: { no: 3 }"></i> </button>
+							</div>
 							<div style="width: fit-content;">
 								<div id = "btnControlLeftRight">
 									<button id = "A13" class="toLeft inline" data-bind="click : toLeft"> <i class="iconToLeft" data-bind="ntsIcon : { no: 152, width: 15, height: 20 }"></i></button>
-									<div style="display: inline-block;" data-bind="if: showA11">
-										<button id = "A14" class="toRight inline" data-bind="click: toRight"><i class="iconToRight " data-bind="ntsIcon: { no: 153, width: 15, height: 20 }"></i></button>
-									</div>
+									<button id = "A14" class="toRight inline" data-bind="visible: showA11, click: toRight"><i class="iconToRight " data-bind="ntsIcon: { no: 153, width: 15, height: 20 }"></i></button>
 								</div>
-								<div style="clear: left"></div>
 								<div id = "sub-content-main">
 									<div style="float: left;width: 28px; height: 349px;">
 										<div data-bind="if: showA12">
@@ -417,9 +408,6 @@
 									</div>
 									<div id="extable-outside" style="float: left">
 										<div id="extable"></div>
-									</div>
-									<div style="float: left; margin-left: -30px">
-										<button class="settingHeightGrid"> <i data-bind="ntsIcon: { no: 3,width: 18, height: 18 }"></i> </button>
 									</div>
 								</div>
 							</div>

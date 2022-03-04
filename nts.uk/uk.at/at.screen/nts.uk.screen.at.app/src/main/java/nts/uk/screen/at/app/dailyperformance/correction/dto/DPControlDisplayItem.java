@@ -113,25 +113,13 @@ public class DPControlDisplayItem {
 								s.addColumn("NO" + f.getAttendanceItemId());
 							}
 							s.addColumn("Name" + f.getAttendanceItemId());
-						} else {
+						} else if(attendanceAtr == DailyAttendanceAtr.Application.value) {
 							s.addColumn("A" + String.valueOf(f.getAttendanceItemId()));
-						}
-					}
-				}
-			});
-		});
-		this.lstSheet = this.lstSheet.stream().filter(x -> x.getColumns().size() > 0).collect(Collectors.toList());
-		lstFormat.forEach(f -> {
-			this.lstSheet.forEach(s -> {
-				if (f.getSheetNo().equals(s.getName()) && !s.isExistColumn(String.valueOf(f.getAttendanceItemId()))) {
-					if (mapDP.containsKey(f.getAttendanceItemId())) {
-						int attendanceAtr = mapDP.get(f.getAttendanceItemId()).getAttendanceAtr();
-						if (attendanceAtr == DailyAttendanceAtr.Application.value) {
-							s.addColumn("Submitted");
 							if(showButton){
 								s.addColumn("Application");
 							}
-							s.addColumn("ApplicationList");
+						} else {
+							s.addColumn("A" + String.valueOf(f.getAttendanceItemId()));
 						}
 					}
 				}

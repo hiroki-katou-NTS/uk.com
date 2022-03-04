@@ -13,6 +13,7 @@ module nts.uk.at.view.kdp002.a {
             serverTime: KnockoutObservable<any> = ko.observable('');
             workManagementMultiple: KnockoutObservable<boolean> = ko.observable(false);
             checkerShowWork2: KnockoutObservable<boolean> = ko.observable(false);
+            kdp002: KnockoutObservable<boolean> = ko.observable(true);
 
             pageComment: KnockoutObservable<string> = ko.observable('');
             commentColor: KnockoutObservable<string> = ko.observable('');
@@ -147,7 +148,8 @@ module nts.uk.at.view.kdp002.a {
             public clickBtn1(btn: any, layout: any) {
                 const vm = this;
                 const view = new ko.ViewModel();
-				let stampTime = moment(new Date()).format("HH:mm");
+
+				let stampTime = moment(view.$date.now()).format("HH:mm");
 				
                 nts.uk.ui.block.invisible();
                 nts.uk.request

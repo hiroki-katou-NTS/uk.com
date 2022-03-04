@@ -1007,7 +1007,7 @@ module nts.uk.com.view.ccg034.d {
                   vm.modifiedPartList.added.push(partMenu.fileId);
                 }
                 if (!_.find(vm.modifiedPartList.deleted, partMenu.originalFileId) 
-                  && (partMenu.fileId !== partMenu.originalFileId || (partMenu.isFixed === 0 && !nts.uk.text.isNullOrEmpty(partMenu.originalFileId)))) {
+                  && (partMenu.fileId !== partMenu.originalFileId || (partMenu.isFixed !== 1 && !_.isEmpty(partMenu.originalFileId)))) {
                   vm.modifiedPartList.deleted.push(partMenu.originalFileId);
                 }
                 // Update part data
@@ -1372,13 +1372,15 @@ module nts.uk.com.view.ccg034.d {
             }),
           });
           // Filter for unused fileIds and deleted them
-          const files = _.chain(vm.modifiedPartList.deleted)
-            .filter(fileId => !_.chain(listMenuSettingDto).filter(data => data.isFixed === 1).map(data => data.fileId).includes(fileId).value()
-                           && !_.chain(listFileAttachmentSettingDto).map(data => data.fileId).includes(fileId).value()
-                           && !_.chain(listImageSettingDto).filter(data => data.isFixed === 1).map(data => data.fileId).includes(fileId).value())
-            .uniq()
-            .value();
-          files.forEach(fileId => vm.removeFile(fileId));
+          _.remove(vm.modifiedPartList.deleted,
+            fileId => _.isEmpty(_.filter(listMenuSettingDto, data => data.isFixed !== null && data.fileId === fileId))
+                   && _.isEmpty(_.filter(listFileAttachmentSettingDto, data => data.fileId === fileId))
+                   && _.isEmpty(_.filter(listImageSettingDto, data => data.fileId === fileId)))
+          .forEach(fileId => vm.removeFile(fileId));
+          _.remove(vm.modifiedPartList.added, 
+            fileId => !_.isEmpty(_.filter(listMenuSettingDto, data => data.isFixed !== null && data.fileId === fileId))
+                   || !_.isEmpty(_.filter(listFileAttachmentSettingDto, data => data.fileId === fileId))
+                   || !_.isEmpty(_.filter(listImageSettingDto, data => data.fileId === fileId)));
           return vm.$ajax(API.updateLayout, updateLayoutParams);
         })
         // [After] save layout data
@@ -1972,6 +1974,7 @@ module nts.uk.com.view.ccg034.d {
       switch (partData.partType) {
         case MenuPartType.PART_MENU:
           const partDataMenuModel: PartDataMenuModel = (partData as PartDataMenuModel);
+          partDataMenuModel.originalFileId = partDataMenuModel.fileId;
           const hasImg = !_.isNil(partDataMenuModel.isFixed);
           const $partMenuHTML: JQuery = $('<a>', { 'href': `${location.origin}${partDataMenuModel.menuUrl}`, 'target': '_top' })
             .text(partDataMenuModel.menuName)
@@ -2065,8 +2068,8 @@ module nts.uk.com.view.ccg034.d {
             .css({
               'font-size': `${partDataLinkModel.fontSize}px`,
               'font-weight': partDataLinkModel.isBold ? 'bold' : 'normal',
-              'color': '#0066CC',
-              'text-decoration': 'underline',
+              'color': '#8d7565',
+              'text-decoration': 'none',
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
@@ -2087,6 +2090,7 @@ module nts.uk.com.view.ccg034.d {
           break;
         case MenuPartType.PART_ATTACHMENT:
           const partDataAttachmentModel: PartDataAttachmentModel = (partData as PartDataAttachmentModel);
+          partDataAttachmentModel.originalFileId = partDataAttachmentModel.fileId;
           const fileLink: string = `${location.origin}/nts.uk.com.web/webapi/shr/infra/file/storage/get/${partDataAttachmentModel.fileId}`;
           const $partAttachmentHTML: JQuery = $('<a>', { 'href': fileLink, 'target': '_blank' })
             .text(partDataAttachmentModel.linkContent || partDataAttachmentModel.fileName)
@@ -2094,8 +2098,8 @@ module nts.uk.com.view.ccg034.d {
             .css({
               'font-size': `${partDataAttachmentModel.fontSize}px`,
               'font-weight': partDataAttachmentModel.isBold ? 'bold' : 'normal',
-              'color': '#0066CC',
-              'text-decoration': 'underline',
+              'color': '#8d7565',
+              'text-decoration': 'none',
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
@@ -2116,6 +2120,7 @@ module nts.uk.com.view.ccg034.d {
           break;
         case MenuPartType.PART_IMAGE:
           const partDataImageModel: PartDataImageModel = (partData as PartDataImageModel);
+          partDataImageModel.originalFileId = partDataImageModel.fileId;
           const $partImageHTML: JQuery = $('<img>', {
             'src': partDataImageModel.isFixed === 0
               ? partDataImageModel.fileName

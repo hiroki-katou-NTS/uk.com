@@ -1,17 +1,24 @@
+@import "../../../../styles/lumen/variables";
+
 .ccg008a {
   $button-padding: 0.1rem 0.75rem;
   $element-margin: 20px;
   .section {
     padding: 10px 0px 10px 0px;
-    border-bottom: 1px solid #F2F2F2;
+
     .control-label{
       margin: 0rem 0rem 0.3rem 0rem;
     }
-    .content{
-      margin-top: 0.6rem; 
-    }
     &:last-child {
       border-bottom: none;
+    }
+  }
+
+  .notice-wrapper {
+    .content {
+      button {
+        background-color: inherit;
+      }
     }
   }
   

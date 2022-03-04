@@ -1,8 +1,75 @@
-.btn_show_list {
-	width: 70px;
-	height: 30px;
-	border-radius: 5px;
+.kcp009-root {
+	white-space: nowrap;
 }
+
+/* font-size‚ÌŽw’è‚Í“ú•ÊC³‚É‚¨‚¯‚é—Dæ“x’²®‚Ì‚½‚ß‚É #contents-area ‚ðŠÜ‚ß‚Ä‚¢‚é */
+#contents-area .kcp009-root div,
+#contents-area .kcp009-root span {
+	font-size: 16px;
+}
+
+#contents-area .kcp009-root .switch-target {
+	font-size: 18px;
+}
+
+#contents-area .btn_show_list {
+	font-size: 14px;
+}
+
+.kcp009-root > div {
+	position: relative;
+	top: -3px;
+	display: inline-block;
+	text-align: center;
+	font-weight: 500;
+}
+
+.kcp009-root .limited-label {
+	position: relative;
+	top: 2px;
+}
+
+.kcp009-root .switch-target {
+	color: #9A9A9A;
+	background-color: transparent;
+}
+
+.kcp009-root .organization-name {
+	width: 180px;
+}
+
+.kcp009-root .employee-code {
+	padding: 0 10px;
+}
+
+.kcp009-root .employee-name {
+	width: 200px;
+	text-align: left;
+}
+
+.kcp009-root .number-of-people {
+	padding: 0 16px;
+}
+
+.kcp009-root .btn_show_list {
+	width: 90px;
+	height: 24px;
+	position: relative;
+	top: -2px;
+}
+
+.kcp009-root .nts-editor-wrapped.ntsControl {
+	height: 24px;
+}
+
+.kcp009-root .nts-editor-wrapped.ntsControl .search-input {
+	width: 80px;
+	height: 24px;
+	padding: 0 4px;
+	position: relative;
+	top: -1px;
+}
+
 
 .btn_select {
 	width: 40px;
@@ -77,4 +144,8 @@ td.employment-tdpad {
 
 .kcp009-display-content {
   display: table-cell;
+}
+
+.over_text .limited-label {
+    display: block !important;
 }

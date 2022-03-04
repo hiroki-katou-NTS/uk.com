@@ -110,6 +110,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.param.PAttendanceItem;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQueryProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
@@ -871,7 +872,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			List<String> listCss = new ArrayList<>();
 			listCss.add("daily-confirm-color");
 			if (monthlyPerformaceLockStatus != null) {
-				if (monthlyPerformaceLockStatus.getMonthlyResultConfirm() == LockStatus.LOCK) {
+				if (monthlyPerformaceLockStatus.getMonthlyResultConfirm() == LockStatus.LOCK.value) {
 					dailyConfirm = "未";
 					// mau cua kiban chua dap ung duoc nen dang tu set mau
 					// set color for cell dailyConfirm
@@ -936,7 +937,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 						if(hasErrorDaily) {
 							lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE,STATE_ERROR)));
 						} else {
-							performanceLockStatus.stream().filter(p -> p.getEmployeeId().equals(employee.getId()) && (p.getPastPerformaceLock() == LockStatus.LOCK || p.getMonthlyResultLock() == LockStatus.LOCK)).forEach(p -> {
+							performanceLockStatus.stream().filter(p -> p.getEmployeeId().equals(employee.getId()) && (p.getPastPerformaceLock() == LockStatus.LOCK.value || p.getMonthlyResultLock() == LockStatus.LOCK.value)).forEach(p -> {
 								lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
 							});
 						}
@@ -1024,7 +1025,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 						if(hasErrorDaily) {
 							lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE,STATE_ERROR)));
 						} else {
-							performanceLockStatus.stream().filter(p -> p.getEmployeeId().equals(employee.getId()) && (p.getPastPerformaceLock() == LockStatus.LOCK || p.getMonthlyResultLock() == LockStatus.LOCK)).forEach(p -> {
+							performanceLockStatus.stream().filter(p -> p.getEmployeeId().equals(employee.getId()) && (p.getPastPerformaceLock() == LockStatus.LOCK.value || p.getMonthlyResultLock() == LockStatus.LOCK.value)).forEach(p -> {
 								lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
 							});
 						}
@@ -1246,11 +1247,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 				for(CheckEmpEralOuput checkEmpEralOuput: listCheckEmpEralOuput) {
 					if(x.getEmployeeId().equals(checkEmpEralOuput.getEmployId())) {
 						if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ERROR) {
-							x.setError("ER");
+							x.setError(TextResource.localize("KMW003_47"));
 						}else if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ALARM) {
-							x.setError("AL");
+							x.setError(TextResource.localize("KMW003_48"));
 						}else if(checkEmpEralOuput.getTypeAtr() == TypeErrorAlarm.ERROR_ALARM) {
-							x.setError("ER/AL");
+							x.setError(TextResource.localize("KMW003_46"));
 						}else {
 							x.setError("");
 						}
