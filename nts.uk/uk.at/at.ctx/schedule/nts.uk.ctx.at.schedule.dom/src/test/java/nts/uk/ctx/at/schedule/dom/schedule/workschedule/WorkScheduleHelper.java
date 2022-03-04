@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.val;
 import mockit.Injectable;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
@@ -273,26 +272,10 @@ public class WorkScheduleHelper {
 	}
 	
 	/**
-	 * 日別勤怠の所属情報を作る
-	 * @param wplID 職場ID
-	 * @param workplaceGroupId 職場グループID
-	 * @return
-	 */
-	public static AffiliationInforOfDailyAttd createAffiliationInforOfDailyAttd( String wplID, Optional<String> workplaceGroupId ) {
-		
-		val domain = new AffiliationInforOfDailyAttd();
-		
-		domain.setWplID(wplID);
-		domain.setWorkplaceGroupId(workplaceGroupId);
-		
-		return domain;
-	}
-	
-	/**
 	 * 勤務予定を作る
 	 * @param sid 社員ID
 	 * @param ymd 年月日
-	 * @param affInfo 確定区分
+	 * @param affInfo 勤務情報
 	 * @param supportSchedule 応援予定
 	 * @return
 	 */

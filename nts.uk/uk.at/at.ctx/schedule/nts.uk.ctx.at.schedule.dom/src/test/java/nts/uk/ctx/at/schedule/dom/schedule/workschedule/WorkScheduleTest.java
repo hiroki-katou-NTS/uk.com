@@ -35,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.GettingTime
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimeVacation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttdHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
@@ -2737,7 +2738,7 @@ public class WorkScheduleTest {
 	@Test
 	public void testGetSupportInfoOfEmployee_not_support() {
 		
-		val affiliationInfo = WorkScheduleHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
+		val affiliationInfo = AffiliationInforOfDailyAttdHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
 		
 		val workSchedule = WorkScheduleHelper.createWorkSchedule( "sid"//社員ID
 				,	GeneralDate.ymd( 2022, 02, 25)//年月日
@@ -2764,7 +2765,7 @@ public class WorkScheduleTest {
 	@Test
 	public void testGetSupportInfoOfEmployee_support_all_day() {
 		
-		val affiliationInfo = WorkScheduleHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
+		val affiliationInfo = AffiliationInforOfDailyAttdHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
 		val recipient1 = TargetOrgIdenInfor.creatIdentifiWorkplace( "recipient_1" );
 		
 		val supportSchedule = new SupportSchedule(
@@ -2803,7 +2804,7 @@ public class WorkScheduleTest {
 				@Injectable TimeSpanForCalc time1
 			,	@Injectable TimeSpanForCalc time2) {
 		
-		val affiliationInfo = WorkScheduleHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
+		val affiliationInfo = AffiliationInforOfDailyAttdHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
 		val recipient1 = TargetOrgIdenInfor.creatIdentifiWorkplace( "recipient_1" );
 		val recipient2 = TargetOrgIdenInfor.creatIdentifiWorkplace( "recipient_2" );
 		val supportSchedule = new SupportSchedule( Arrays.asList(

@@ -70,7 +70,7 @@ public class GetSupportInfoOfEmployeeFromSupportableEmployeeTest {
 		//終日で応援者
 		val supportableEmp = SupportableEmployee.createAsAllday(	new EmployeeId( "sid" )
 																,	recipient
-																,	new DatePeriod( GeneralDate.ymd( 2022, 2, 22 ), GeneralDate.ymd( 2022, 2, 22 ) ) );
+																,	new DatePeriod( GeneralDate.ymd( 2022, 2, 22 ), GeneralDate.ymd( 2022, 2, 25 ) ) );
 		
 		new Expectations( GetTargetIdentifiInforService.class ) {
 			{
@@ -86,17 +86,10 @@ public class GetSupportInfoOfEmployeeFromSupportableEmployeeTest {
 		val result = GetSupportInfoOfEmployeeFromSupportableEmployee.get( require, new EmployeeId( "sid" ), GeneralDate.ymd( 2022,2,22 ) );
 		
 		//assert
-		assertThat( result ).extracting(
-				info -> info.getEmployeeId().v()
-			,	info -> info.getDate()
-			,	info -> info.getAffiliationOrg()
-			,	info -> info.getSupportType().get()
-		).containsOnly(
-				"sid"
-			,	GeneralDate.ymd( 2022,2,22 )
-			,	affiliationOrg
-			,	SupportType.ALLDAY 
-		);
+		assertThat( result.getEmployeeId().v() ).isEqualTo( "sid" );
+		assertThat( result.getDate() ).isEqualTo( GeneralDate.ymd( 2022,2,22 ) );
+		assertThat( result.getAffiliationOrg() ).isEqualTo( affiliationOrg );
+		assertThat( result.getSupportType().get() ).isEqualTo( SupportType.ALLDAY );
 		
 		assertThat( result.getRecipientList() ).containsExactly( recipient );
 		
@@ -141,18 +134,11 @@ public class GetSupportInfoOfEmployeeFromSupportableEmployeeTest {
 		//act
 		val result = GetSupportInfoOfEmployeeFromSupportableEmployee.get( require, new EmployeeId( "sid" ), GeneralDate.ymd( 2022,2,22 ) );
 		
-		//assert
-		assertThat( result ).extracting(
-				info -> info.getEmployeeId().v()
-			,	info -> info.getDate()
-			,	info -> info.getAffiliationOrg()
-			,	info -> info.getSupportType().get()
-		).containsOnly(
-				"sid"
-			,	GeneralDate.ymd( 2022,2,22 )
-			,	affiliationOrg
-			,	SupportType.TIMEZONE
-		);
+		//assert		
+		assertThat( result.getEmployeeId().v() ).isEqualTo( "sid" );
+		assertThat( result.getDate() ).isEqualTo( GeneralDate.ymd( 2022,2,22 ) );
+		assertThat( result.getAffiliationOrg() ).isEqualTo( affiliationOrg );
+		assertThat( result.getSupportType().get() ).isEqualTo( SupportType.TIMEZONE );
 		
 		assertThat( result.getRecipientList() ).containsExactly( recipient_1, recipient_2 );
 	}
