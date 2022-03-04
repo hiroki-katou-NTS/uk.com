@@ -88,7 +88,7 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization 
 					}
 
 					//既存データのチェックと保存は継承先に任せる
-					super.canonicalize(require, context, interm, getPrimaryKeys(interm));
+					super.canonicalize(require, context, interm);
 					importingKeys.add(keyValue);
 				}
 		});
@@ -97,11 +97,6 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization 
 	private KeyValues getPrimaryKeys(IntermediateResult interm) {
 		//このドメインのKeyはSIDなので、Stringで取り出す。
 		return new KeyValues(Arrays.asList(interm.getItemByNo(Items.SID).get().getString()));
-	}
-	
-	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return Arrays.asList(Items.SID);
 	}
 
 	private static class FixedItem{
