@@ -1,12 +1,13 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.smile;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.TempAbsenceHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.smile.pv.SmileTempAbsenceDataEndDate;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.smile.pv.SmileTempAbsenceDataReasonCode;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 
@@ -21,7 +22,7 @@ public class SmileTempAbsenceHistoryCanonicalization extends TempAbsenceHistoryC
 		public static final int 社員コード = 1;
 		public static final int 開始日 = 2;
 		public static final int 終了日 = 3;
-		public static final int 休職休業枠NO = 4;
+		public static final int 休職休業区分 = 4;
 		public static final int 備考 = 5;
 		public static final int SID = 101;
 		public static final int HIST_ID = 102;
@@ -40,15 +41,10 @@ public class SmileTempAbsenceHistoryCanonicalization extends TempAbsenceHistoryC
 	}
 	
 	@Override
-	protected List<IntermediateResult> preCanonicalize(List<IntermediateResult> interm) {
-		
-		List<IntermediateResult> preCannicalizedData = new ArrayList<>();
-		
-		interm.forEach(t ->{
-			preCannicalizedData.add(create(t));
-
-		});
-		return interm;
+	protected List<IntermediateResult> preCanonicalize(List<IntermediateResult> interms) {
+		return interms.stream()
+				.map(interm -> create(interm))
+				.collect(Collectors.toList());
 	}
 	
 	
@@ -59,14 +55,15 @@ public class SmileTempAbsenceHistoryCanonicalization extends TempAbsenceHistoryC
 		}
 		
 		return t.addCanonicalized(new CanonicalItem(Items.開始日, getStartDate(t)))
-					 .addCanonicalized(new CanonicalItem(Items.終了日, getEndDate(t)));
-//					 .addCanonicalized(new CanonicalItem(Items.休職休業区分, getEndDate(t)));
+					 .addCanonicalized(new CanonicalItem(Items.終了日, getEndDate(t)))
+					 .addCanonicalized(new CanonicalItem(Items.休職休業区分, getReasonCode(t)));
 	}
 
 
-//	private SmileTempAbsenceDataReasonCode getReasonCode(IntermediateResult t) {
-////		new SmileTempAbsenceDataReasonCode(t.getItemByNo(Items.理由コード).get().getString());
-//	}
+	private long getReasonCode(IntermediateResult t) {
+		SmileTempAbsenceDataReasonCode reasonCode = SmileTempAbsenceDataReasonCode.create(t.getItemByNo(Items.理由コード).get().getString());
+		return Long.valueOf(reasonCode.v());
+	}
 
 	private GeneralDate getStartDate(IntermediateResult t) { 
 		return t.getItemByNo(Items.開始年月日).get().getDate();
