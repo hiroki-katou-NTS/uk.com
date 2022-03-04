@@ -37,7 +37,7 @@ public class PublicHolidayProcess {
 		//公休残数更新
 		return AtomTask.of(RemainPublicHolidayUpdating.updateRemain(require, cacheCarrier, period, employeeId, output))
 				//公休暫定データ削除
-				.then(DeleteTempPublicHoliday.delete(require, employeeId, period.getPeriod()));
+				.then(DeleteTempPublicHoliday.delete(require, employeeId, period.getPeriod().end()));
 		
 	}
 	/**
