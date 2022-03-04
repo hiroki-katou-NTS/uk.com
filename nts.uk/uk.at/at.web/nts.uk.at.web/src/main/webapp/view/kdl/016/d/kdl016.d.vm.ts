@@ -7,7 +7,7 @@ module nts.uk.at.view.kdl016.d {
     @bean()
     export class ViewModel extends ko.ViewModel {
         detail: KnockoutObservable<ISupportInformation> = ko.observable(null);
-        data : ISupportInformation;
+        data: ISupportInformation;
 
         startDateStr: KnockoutObservable<string> = ko.observable("");
         endDateStr: KnockoutObservable<string> = ko.observable("");
@@ -40,6 +40,7 @@ module nts.uk.at.view.kdl016.d {
                     timeSpanDisplay: dataFromA.timeSpanDisplay
                 };
                 vm.detail(transfer);
+
                 vm.dateValue = ko.observable({
                     startDate: vm.detail().periodStart,
                     endDate: vm.detail().periodEnd,
@@ -53,7 +54,69 @@ module nts.uk.at.view.kdl016.d {
         }
 
         update() {
+            const vm = this;
+            vm.$blockui("invisible");
 
+            let command: any = {
+                employeeId: vm.detail().employeeId,
+                supportType: vm.detail().supportType,
+                periodStart: moment.utc(vm.dateValue().startDate).format("YYYY/MM/DD"),
+                periodEnd: moment.utc(vm.dateValue().endDate).format("YYYY/MM/DD"),
+                supportTimeSpan: {
+                    start: null,
+                    end: null
+                }
+            };
+
+            if (moment.utc(vm.dateValue().startDate).isBefore(moment.utc().format('YYYY/MM/DD'))) {
+                vm.$dialog.confirm({messageId: 'Msg_3280'}).then((result: 'no' | 'yes') => {
+                    vm.$blockui("invisible");
+                    if (result === 'yes') {
+                        vm.executeUpdate(command);
+                    }
+
+                    if (result === 'no') {
+                        vm.$blockui("hide");
+                    }
+                });
+            } else {
+                vm.$blockui("invisible");
+                vm.executeUpdate(command);
+            }
+        }
+
+        executeUpdate(command: any) {
+            const vm = this;
+            vm.$ajax(API.update, command).then((data: any) => {
+                if (!data.error) {
+                    vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
+                        vm.closeDialog();
+                    });
+                } else {
+                    let errorResults = data.errorResults;
+                    let dataError: any = [];
+                    for (let i = 0; i < errorResults.length; i++) {
+                        dataError.push(
+                            {
+                                id: i + 1,
+                                periodDisplay: errorResults[i].periodDisplay,
+                                employeeDisplay: errorResults[i].employeeDisplay,
+                                errorMessage: errorResults[i].errorMessage,
+                            }
+                        );
+                    }
+
+                    vm.$window.modal("/view/kdl/016/f/index.xhtml", dataError).then((result: any) => {
+                        vm.closeDialog();
+                    });
+                }
+            }).fail(error => {
+                vm.$dialog.error(error).then(() => {
+                    vm.closeDialog();
+                });
+            }).always(() => {
+                vm.$blockui("clear");
+            });
         }
 
         closeDialog(): void {

@@ -86,7 +86,7 @@
 								                },
 												required: true,
 												enable: enableEditTimespan,
-												readonly: false}"/>
+												readonly: false}" tabindex="4"/>
                     </div>
                 </div>
                 <div class="control-group valign-center">
@@ -105,16 +105,11 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <!--<div class="line">-->
-                <!--<hr/>-->
-            <!--</div>-->
-            <!--<div class="btn-function-area">-->
             <button id="register"
                     data-bind="click: $vm.register, enable: selectedEmployees().length > 0"
                     class="proceed" tabindex="6">#{i18n.getText('KDL016_30')}</button>
             <button data-bind="click: $vm.closeDialog"
                     class="normal" tabindex="7">#{i18n.getText('KDL016_31')}</button>
-            <!--</div>-->
         </div>
     </ui:define>
 </ui:composition>

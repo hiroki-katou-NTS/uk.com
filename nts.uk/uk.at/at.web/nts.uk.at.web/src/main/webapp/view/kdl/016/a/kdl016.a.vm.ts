@@ -1,7 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.kdl016.a {
-    import Moment = moment.Moment;
-
     const API = {
         init: "screen/at/kdl016/a/init",
         get: "screen/at/kdl016/a/get",
@@ -166,7 +164,7 @@ module nts.uk.at.view.kdl016.a {
                     // {headerText: '', key: "edit", dataType: "string", width: "30px", unbound: true, ntsControl: 'EditButton'},
                     {
                         key: "edit", width: "60px", headerText: '', dataType: "string", unbound: true,
-                        template: "<input type= \"button\"  onclick = \"nts.uk.at.view.kdl016.a.openRegisterModal(${id}, ${displayMode}) \" value= \" " + vm.$i18n('KDL016_19') + " \" />"
+                        template: "<input type= \"button\"  onclick = \"nts.uk.at.view.kdl016.a.openEditModal(${id}, ${displayMode}) \" value= \" " + vm.$i18n('KDL016_19') + " \" />"
                     },
                     {
                         headerText: vm.$i18n('KDL016_14'),
@@ -316,20 +314,7 @@ module nts.uk.at.view.kdl016.a {
                         name: "Resizing",
                         deferredResizing: false,
                         allowDoubleClickToResize: true
-                    },
-                    // {
-                    //     name: "Filtering",
-                    //     type: "local",
-                    //     filterDropDownItemIcons: false,
-                    //     filterDropDownWidth: 200,
-                    //     filterDialogHeight: "390px",
-                    //     filterDialogWidth: "515px",
-                    //     columnSettings: [
-                    //         {columnKey: primaryKeyName, allowFiltering: false},
-                    //         {columnKey: 'edit', allowFiltering: false},
-                    //         {columnKey: 'timeSpanDisplay', allowFiltering: false}
-                    //     ]
-                    // }
+                    }
                 ],
                 // ntsControls: [
                 //     { name: 'EditButton', text: vm.$i18n('KDL016_19'), click: function (value: any) { vm.openEditPopup(value) }, controlType: 'Button', enable: true }
@@ -369,8 +354,12 @@ module nts.uk.at.view.kdl016.a {
                     startDate: vm.periodStart(),
                     endDate: vm.periodEnd()
                 };
-                vm.$window.modal("/view/kdl/016/c/index.xhtml", param).then((data: any) => {
-                    vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
+                vm.$window.modal("/view/kdl/016/c/index.xhtml", param).then((result: any) => {
+                    if (result.closeable) {
+                        vm.closeDialog();
+                    } else {
+                        vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
+                    }
                 });
             }
         }
@@ -444,7 +433,7 @@ module nts.uk.at.view.kdl016.a {
             });
         }
 
-        dropDownClosing(e, arg) {
+        dropDownClosing(e: any, arg: any) {
             $('input:first').attr('placeholder', $('input:first').attr('placeholder').split('<=').join('').split('>=').join('').split('＝').join(''));
         }
 
@@ -501,17 +490,13 @@ module nts.uk.at.view.kdl016.a {
             return value.indexOf(expression) == -1;
         }
 
-        notFilter(value: any, expression: any, dataType: any, ignoreCase: any, preciseDateFormat: any) {
-            return value;
-        }
-
         clearFilter() {
             $("#grid").igGridFiltering("filter", [], true);
         }
     }
 
-    export function openRegisterModal(id: number, mode: number) {
-        const vm = this;
+    export function openEditModal(id: number, mode: number) {
+        let vm = nts.uk.ui._viewModel.content;
         let dataSource = $("#grid").igGrid("option", "dataSource");
         let dataShare = _.find(dataSource, (value: any) => {
             return value.id == id;
@@ -522,11 +507,11 @@ module nts.uk.at.view.kdl016.a {
         nts.uk.ui.windows.setShared("shareFromKdl016a", dataShare);
         if (mode == DISPLAY_MODE.GO_TO_SUPPORT) {
             nts.uk.ui.windows.sub.modal("/view/kdl/016/d/index.xhtml").onClosed(() => {
-
+                vm.loadSupportInfo(DISPLAY_MODE.GO_TO_SUPPORT);
             });
         } else {
             nts.uk.ui.windows.sub.modal("/view/kdl/016/e/index.xhtml").onClosed(() => {
-
+                vm.loadSupportInfo(DISPLAY_MODE.COME_TO_SUPPORT);
             });
         }
     }

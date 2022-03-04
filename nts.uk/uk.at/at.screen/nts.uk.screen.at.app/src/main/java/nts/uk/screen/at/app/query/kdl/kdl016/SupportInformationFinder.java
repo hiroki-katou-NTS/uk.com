@@ -209,7 +209,7 @@ public class SupportInformationFinder {
 
         RequireOrgImpl requireOrg = new RequireOrgImpl(empAffiliationInforAdapter);
         RequireOrgInfoImpl requireOrgInfo = new RequireOrgInfoImpl(groupAdapter, serviceAdapter, wplAdapter);
-        for (int i = 1; i <= supportableEmployees.size(); i++) {
+        for (int i = 0; i < supportableEmployees.size(); i++) {
             SupportableEmployee supportableEmployee = supportableEmployees.get(i);
             // 5.1. 取得する(Require, 年月日, 社員ID)
             TargetOrgIdenInfor orgInfor = GetTargetIdentifiInforService.get(
@@ -222,7 +222,7 @@ public class SupportInformationFinder {
 
             val employeeInfoOpt = supportEmployeeInfos.stream().filter(x -> x.getEmployeeId().equals(supportableEmployee.getEmployeeId().v())).findFirst();
             supportInfoResults.add(new SupportInfoDto(
-                    i,
+                    i++,
                     supportableEmployee.getId(),
                     supportableEmployee.getPeriod().start().toString("yyyy/MM/dd"),
                     supportableEmployee.getPeriod().end().toString("yyyy/MM/dd"),
@@ -275,7 +275,7 @@ public class SupportInformationFinder {
             orgDisplayInfoList.add(new OrganizationDisplayInfoDto(
                     supportAllowOrg.getSupportableOrganization().getUnit() == TargetOrganizationUnit.WORKPLACE
                             ? supportAllowOrg.getSupportableOrganization().getWorkplaceId().orElse(null)
-                            : supportAllowOrg.getSupportableOrganization().getWorkplaceId().orElse(null),
+                            : supportAllowOrg.getSupportableOrganization().getWorkplaceGroupId().orElse(null),
                     supportAllowOrg.getSupportableOrganization().getUnit().value,
                     displayInfoOrg.getCode(),
                     displayInfoOrg.getDisplayName()
@@ -337,12 +337,12 @@ public class SupportInformationFinder {
         RequireOrgInfoImpl requireOrgInfo = new RequireOrgInfoImpl(groupAdapter, serviceAdapter, wplAdapter);
         List<OrganizationDisplayInfoDto> orgDisplayInfoList = new ArrayList<>();
         for (SupportAllowOrganization supportAllowOrg : supportAllowOrgs) {
-            DisplayInfoOrganization displayInfoOrg = supportAllowOrg.getSupportableOrganization().getDisplayInfor(requireOrgInfo, baseDate);
+            DisplayInfoOrganization displayInfoOrg = supportAllowOrg.getTargetOrg().getDisplayInfor(requireOrgInfo, baseDate);
             orgDisplayInfoList.add(new OrganizationDisplayInfoDto(
-                    supportAllowOrg.getSupportableOrganization().getUnit() == TargetOrganizationUnit.WORKPLACE
-                            ? supportAllowOrg.getSupportableOrganization().getWorkplaceId().orElse(null)
-                            : supportAllowOrg.getSupportableOrganization().getWorkplaceId().orElse(null),
-                    supportAllowOrg.getSupportableOrganization().getUnit().value,
+                    supportAllowOrg.getTargetOrg().getUnit() == TargetOrganizationUnit.WORKPLACE
+                            ? supportAllowOrg.getTargetOrg().getWorkplaceId().orElse(null)
+                            : supportAllowOrg.getTargetOrg().getWorkplaceGroupId().orElse(null),
+                    supportAllowOrg.getTargetOrg().getUnit().value,
                     displayInfoOrg.getCode(),
                     displayInfoOrg.getDisplayName()
             ));
@@ -391,7 +391,7 @@ public class SupportInformationFinder {
         for (SupportAllowOrganization supportAllowOrg : supportAllowOrgs) {
             String id = supportAllowOrg.getSupportableOrganization().getUnit() == TargetOrganizationUnit.WORKPLACE
                     ? supportAllowOrg.getSupportableOrganization().getWorkplaceId().orElse(null)
-                    : supportAllowOrg.getSupportableOrganization().getWorkplaceId().orElse(null);
+                    : supportAllowOrg.getSupportableOrganization().getWorkplaceGroupId().orElse(null);
             DisplayInfoOrganization displayInfoOrg = supportAllowOrg.getSupportableOrganization().getDisplayInfor(requireOrgInfo, baseDate);
             resultMap.put(id, displayInfoOrg);
         }
@@ -425,7 +425,7 @@ public class SupportInformationFinder {
         List<String> sids = GetEmpCanReferService.getByOrg(require, AppContexts.user().employeeId(), baseDate, period, targetOrgIdenInfor);
 
         List<EmployeeInformationImport> employeeInfos = this.employeeInfoAdapter
-                .getEmployeeInfo(new EmployeeInformationQueryDtoImport(sids, baseDate, false, false, false,
+                .getEmployeeInfo(new EmployeeInformationQueryDtoImport(sids, period.end(), false, false, false,
                         false, false, false));
 
         return employeeInfos.stream().map(e -> new EmployeeInformationDto(e.getEmployeeId(), e.getEmployeeCode(), e.getBusinessName())).collect(Collectors.toList());

@@ -44,24 +44,50 @@ module nts.uk.at.view.kdl016.e {
             $('#timespanMin').focus();
         }
 
-        update(): void {
+        update() {
             const vm = this;
-            let dataError = [
-                {
-                    id: 1,
-                    periodDisplay: '2022/01/01 - 2022/01/31',
-                    employeeDisplay: '0000001 Anthony Elanga',
-                    errorMessage: "登録できません 登録できません 登録できません",
-                },
-                {
-                    id: 2,
-                    periodDisplay: '2022/01/01 - 2022/01/31',
-                    employeeDisplay: '0000002 Volodymyr Zelensky',
-                    errorMessage: "登録できません 登録できません 登録できません",
+            vm.$blockui("invisible");
+
+            let command: any = {
+                employeeId: vm.detail().employeeId,
+                supportType: vm.detail().supportType,
+                // periodStart: moment.utc(vm.dateValue().startDate).format("YYYY/MM/DD"),
+                // periodEnd: moment.utc(vm.dateValue().endDate).format("YYYY/MM/DD"),
+                supportTimeSpan: {
+                    start: vm.detail().supportType === 0 ? null : vm.detail().timeSpan.start,
+                    end: vm.detail().supportType === 0 ? null : vm.detail().timeSpan.end
                 }
-            ];
-            vm.$window.modal("/view/kdl/016/f/index.xhtml", dataError).then((result: any) => {
-                vm.closeDialog();
+            };
+
+            vm.$ajax(API.update, command).then((data: any) => {
+                if (!data.error) {
+                    vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
+                        vm.closeDialog();
+                    });
+                } else {
+                    let errorResults = data.errorResults;
+                    let dataError: any = [];
+                    for (let i = 0; i < errorResults.length; i++) {
+                        dataError.push(
+                            {
+                                id: i + 1,
+                                periodDisplay: errorResults[i].periodDisplay,
+                                employeeDisplay: errorResults[i].employeeDisplay,
+                                errorMessage: errorResults[i].errorMessage,
+                            }
+                        );
+                    }
+
+                    vm.$window.modal("/view/kdl/016/f/index.xhtml", dataError).then((result: any) => {
+                        vm.closeDialog();
+                    });
+                }
+            }).fail(error => {
+                vm.$dialog.error(error).then(() => {
+                    vm.closeDialog();
+                });
+            }).always(() => {
+                vm.$blockui("clear");
             });
         }
 

@@ -21,6 +21,7 @@ public class UpdateSupportInforCommand {
      private TimeSpanForCalcDto supportTimeSpan;
 
     public DatePeriod toDatePeriod() {
+        if (this.periodStart == null) return null;
         return new DatePeriod(GeneralDate.fromString(this.periodStart, "yyyy/MM/dd"), GeneralDate.fromString(this.periodEnd, "yyyy/MM/dd"));
     }
 }

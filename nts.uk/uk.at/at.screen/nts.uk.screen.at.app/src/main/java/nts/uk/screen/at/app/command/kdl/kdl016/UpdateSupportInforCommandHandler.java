@@ -38,7 +38,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.EmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.importeddto.EmployeeCodeAndDisplayNameImport;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.importeddto.EmployeeInfoImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
@@ -141,13 +140,16 @@ public class UpdateSupportInforCommandHandler extends CommandHandlerWithResult<U
         if (supportableEmployee == null) return new UpdateSupportInforResult(Collections.emptyList());
 
         // 2.1. 応援形式＝＝終日
+        SupportableEmployee supportableEmpChanged = supportableEmployee;
         if (command.getSupportType() == SupportType.ALLDAY.getValue()) {
-            supportableEmployee.changePeriod(command.toDatePeriod());
+            if (command.toDatePeriod() != null) {
+                supportableEmpChanged = supportableEmployee.changePeriod(command.toDatePeriod());
+            }
         }
 
         // 2.2. 応援形式＝＝時間帯
         if (command.getSupportType() == SupportType.TIMEZONE.getValue()) {
-            supportableEmployee.changeTimespan(new TimeSpanForCalc(
+            supportableEmpChanged = supportableEmployee.changeTimespan(new TimeSpanForCalc(
                     new TimeWithDayAttr(command.getSupportTimeSpan().getStart()),
                     new TimeWithDayAttr(command.getSupportTimeSpan().getEnd())
             ));
@@ -155,12 +157,12 @@ public class UpdateSupportInforCommandHandler extends CommandHandlerWithResult<U
 
         // 3.
         RequireSupportableImpl requireSupportable = new RequireSupportableImpl(companyId, supportableEmployeeRepo, supportOperationSettingRepo);
-        SupportableEmployeeCheckService.CheckResult supportableCheckResult = SupportableEmployeeCheckService.isRegistrable(requireSupportable, supportableEmployee);
+        SupportableEmployeeCheckService.CheckResult supportableCheckResult = SupportableEmployeeCheckService.isRegistrable(requireSupportable, supportableEmpChanged);
 
         // 4. チェック結果<>登録可能
         List<SupportableEmpCannotRegisterDto> errorResults = new ArrayList<>();
         if (supportableCheckResult != SupportableEmployeeCheckService.CheckResult.REGISTABLE) {
-            errorResults.add(SupportableEmpCannotRegisterDto.createWithError(supportableEmployee, this.getErrorMsg(supportableCheckResult)));
+            errorResults.add(SupportableEmpCannotRegisterDto.createWithError(supportableEmpChanged, this.getErrorMsg(supportableCheckResult)));
         }
 
         RequireImpl require = new RequireImpl(companyId, supportableEmployeeRepo, workScheduleRepo, supportOperationSettingRepo,
@@ -168,7 +170,7 @@ public class UpdateSupportInforCommandHandler extends CommandHandlerWithResult<U
                 flexWorkSettingRepository, predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
                 sharedAffWorkPlaceHisAdapter, syClassificationAdapter, workingConditionRepo, businessTypeEmpService,
                 empAffiliationInforAdapter, empMedicalWorkStyleHistoryRepo, nurseClassificationRepo);
-        RegisterResultFromSupportableEmployee workScheduleCheckResult = UpdateSupportScheduleFromSupportableEmployee.modify(require, supportableEmployee);
+        RegisterResultFromSupportableEmployee workScheduleCheckResult = UpdateSupportScheduleFromSupportableEmployee.modify(require, supportableEmpChanged);
 
         if (workScheduleCheckResult.isError()) {
             if (workScheduleCheckResult.getErrorInfo().isPresent()) {
@@ -182,11 +184,12 @@ public class UpdateSupportInforCommandHandler extends CommandHandlerWithResult<U
         if (!errorResults.isEmpty()) {
             Map<String, EmployeeCodeAndDisplayNameImport> empErrorInfoMap = employeeAdapter.getEmployeeCodeAndDisplayNameImportByEmployeeIds(errorResults.stream().map(x -> x.getSupportableEmployee().getId()).collect(Collectors.toList()))
                     .stream().collect(Collectors.toMap(EmployeeCodeAndDisplayNameImport::getEmployeeId, e -> e));
+            DatePeriod period = supportableEmployee.getPeriod();
             List<EmployeeErrorResult> employeeErrorResults = errorResults.stream().map(m -> new EmployeeErrorResult(
                     empErrorInfoMap.get(m.getSupportableEmployee().getEmployeeId().v()).getEmployeeCode(),
                     empErrorInfoMap.get(m.getSupportableEmployee().getEmployeeId().v()).getBusinessName(),
-                    supportableEmployee.getPeriod().start().toString("yyyy/MM/dd"),
-                    supportableEmployee.getPeriod().end().toString("yyyy/MM/dd"),
+                    period.start().toString("yyyy/MM/dd"),
+                    period.end().toString("yyyy/MM/dd"),
                     m.getErrorInfo()
             )).collect(Collectors.toList());
 
@@ -194,7 +197,7 @@ public class UpdateSupportInforCommandHandler extends CommandHandlerWithResult<U
         }
 
         // 6.
-        supportableEmployeeRepo.update(companyId, supportableEmployee);
+        supportableEmployeeRepo.update(companyId, supportableEmpChanged);
 
         if (!workScheduleCheckResult.getAtomTaskList().isEmpty()) {
             transaction.execute(() -> workScheduleCheckResult.getAtomTaskList().forEach(AtomTask::run));
