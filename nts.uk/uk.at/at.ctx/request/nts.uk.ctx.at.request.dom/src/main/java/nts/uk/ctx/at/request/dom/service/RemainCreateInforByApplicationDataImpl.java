@@ -186,6 +186,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		List<Integer> lstReflect = new ArrayList<>();
 		lstReflect.add(ReflectedState.NOTREFLECTED.value);
 		lstReflect.add(ReflectedState.WAITREFLECTION.value);
+		lstReflect.add(ReflectedState.REMAND.value);
 		List<Integer> lstAppType = this.lstAppType();
 		List<Application> lstAppData = new ArrayList<>();
 		if (!lstAppType.isEmpty()) {
@@ -200,6 +201,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		List<Integer> lstReflect = new ArrayList<>();
 		lstReflect.add(ReflectedState.NOTREFLECTED.value);
 		lstReflect.add(ReflectedState.WAITREFLECTION.value);
+		lstReflect.add(ReflectedState.REMAND.value);
 		List<Integer> lstAppType = this.lstAppType();
 		List<Application> lstAppData = new ArrayList<>();
 		if (!lstAppType.isEmpty()) {

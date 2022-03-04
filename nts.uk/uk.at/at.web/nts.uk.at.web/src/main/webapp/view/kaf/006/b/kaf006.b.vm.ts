@@ -113,7 +113,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		condition31: KnockoutObservable<boolean> = ko.observable(true);
 		condition32: KnockoutObservable<boolean> = ko.observable(false);
 		flowWorkFlag: KnockoutObservable<boolean> = ko.observable(false);
-        
+
         created(params: {
             appType: any,
             application: any,
@@ -741,7 +741,6 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					vm.workTypeOrigin = success.appAbsenceStartInfo.selectedWorkTypeCD;
 					vm.workTimeOrigin = success.appAbsenceStartInfo.selectedWorkTimeCD;
 					// B3_2
-					vm.selectedType(success.applyForLeave.vacationInfo.holidayApplicationType);
 					vm.fetchData(success.appAbsenceStartInfo);
 					vm.appDispInfoStartupOutput(success.appAbsenceStartInfo.appDispInfoStartupOutput);
 					vm.fetchDataAppForLeave(success.applyForLeave);
@@ -774,6 +773,9 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						});
 					}
 					vm.checkCondition(vm.data);
+					vm.selectedType(success.applyForLeave.vacationInfo.holidayApplicationType);
+					vm.checkCondition31(vm.data);
+					vm.checkCondition37();
 
 					if (vm.data.workTypeNotRegister) {
 						vm.workTypeLst().push(new WorkType({workTypeCode: vm.data.selectedWorkTypeCD, name: vm.data.selectedWorkTypeCD + ' マスタ未登録'}))
@@ -1588,7 +1590,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				return true;
 			}
 			vm.condition21(false);
-			// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 0}));
+			vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 0}));
 		}
 
 		checkCondition22(data: any) {
@@ -1598,7 +1600,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				return true;
 			}
 			vm.condition22(false);
-			// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 1}));
+			vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 1}));
 		}
 
 		checkCondition23(data: any) {
@@ -1617,7 +1619,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				return true;
 			}
 			vm.condition24(false);
-			// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 4}));
+			vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 4}));
 		}
 
 		checkCondition1(data: any) {
@@ -1629,49 +1631,49 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.condition1_0(true);
 					} else {
 						vm.condition1_0(false);
-						// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 0}));
+						vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 0}));
 					}
 
 					if (_.filter(targetWorkType, { 'opHolidayAppType': 1 }).length > 0 && !_.filter(targetWorkType, { 'opHolidayAppType': 1 })[0].opHolidayTypeUse) {
 						vm.condition1_1(true);
 					} else {
 						vm.condition1_1(false);
-						// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 1}));
+						vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 1}));
 					}
 
 					if (_.filter(targetWorkType, { 'opHolidayAppType': 2 }).length > 0 && !_.filter(targetWorkType, { 'opHolidayAppType': 2 })[0].opHolidayTypeUse) {
 						vm.condition1_2(true);
 					} else {
 						vm.condition1_2(false);
-						// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 2}));
+						vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 2}));
 					}
 
 					if (_.filter(targetWorkType, { 'opHolidayAppType': 3 }).length > 0 && !_.filter(targetWorkType, { 'opHolidayAppType': 3 })[0].opHolidayTypeUse) {
 						vm.condition1_3(true);
 					} else {
 						vm.condition1_3(false);
-						// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 3}));
+						vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 3}));
 					}
 
 					if (_.filter(targetWorkType, { 'opHolidayAppType': 4 }).length > 0 && !_.filter(targetWorkType, { 'opHolidayAppType': 4 })[0].opHolidayTypeUse) {
 						vm.condition1_4(true);
 					} else {
 						vm.condition1_4(false);
-						// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 4}));
+						vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 4}));
 					}
 
 					if (_.filter(targetWorkType, { 'opHolidayAppType': 5 }).length > 0 && !_.filter(targetWorkType, { 'opHolidayAppType': 5 })[0].opHolidayTypeUse) {
 						vm.condition1_5(true);
 					} else {
 						vm.condition1_5(false);
-						// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 5}));
+						vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 5}));
 					}
 
 					if (_.filter(targetWorkType, { 'opHolidayAppType': 6 }).length > 0 && !_.filter(targetWorkType, { 'opHolidayAppType': 6 })[0].opHolidayTypeUse) {
 						vm.condition1_6(true);
 					} else {
 						vm.condition1_6(false);
-						// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 6}));
+						vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 6}));
 					}
 				}
 			}
@@ -1697,6 +1699,17 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			}
 
 			vm.condition32(false);
+		}
+
+		checkCondition37(){
+			const vm = this;
+			let hdAppSetInput: any[] = vm.data.hdAppSet.dispNames;
+			const selectedType = _.find(hdAppSetInput, ['holidayAppType', vm.selectedType()]);
+			if(!_.find(vm.hdAppSet(), ['holidayAppType', vm.selectedType()])){
+				vm.hdAppSet().push(selectedType);
+				vm.hdAppSet(_.sortBy(vm.hdAppSet(), 'holidayAppType'));
+				vm.hdAppSet.valueHasMutated();
+			}
 		}
 
 		openKDL020() {
