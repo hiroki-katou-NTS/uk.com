@@ -99,7 +99,7 @@ public class GetScheduleOfWorkInfo002 {
 				.getScheduleManagement(RequireImpl, param.listSid, period);
 
 
-		List<nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto> listDtoCommon = scheduleWorkInfor.getDataScheduleOfWorkInfo(mngStatusAndWScheMap);
+		List<nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto> listDtoCommon = scheduleWorkInfor.getDataScheduleOfWorkInfo(mngStatusAndWScheMap, param.targetOrg.convertFromDomain());
 		
 		List<DateInformation> dateInformation = kSU002Finder.getDateInformation(param.listSid.stream().map(e -> new EmployeeId(e)).collect(Collectors.toList()), period);
 
