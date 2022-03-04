@@ -77,7 +77,7 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 				}
 				importingKeys.add(keyValue);
 				
-				super.canonicalize(require, context, interm, keyValue);
+				super.canonicalize(require, context, interm);
 			}
 		});
 	}
@@ -85,15 +85,10 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 	private KeyValues getPrimaryKeys(IntermediateResult interm) {
 		return new KeyValues(Arrays.asList(interm.getItemByNo(Items.SID).get().getString()));
 	}
-
-	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return Arrays.asList(Items.SID);
-	}
 	
 	/**
 	 * 追加の正準化処理が必要ならoverrideすること
-	 * @param targetContainers
+	 * @param targertResult
 	 */
 	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
 		return addFixedItems(targertResult);
