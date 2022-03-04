@@ -1,12 +1,9 @@
 package nts.uk.ctx.at.shared.dom.scherec.anyperiodattdcal;
 
 import nts.uk.ctx.at.shared.dom.scherec.anyperiod.attendancetime.converter.AnyPeriodRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 

@@ -14,9 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(JMockit.class)
 public class AnyPeriodCorrectionEditStateRegisterServiceTest {
     @Injectable
-    private AnyPeriodCorrectionEditStateRegisterService service;
-
-    @Injectable
     private AnyPeriodCorrectionEditStateRegisterService.Require require;
 
     @Test
@@ -28,7 +25,7 @@ public class AnyPeriodCorrectionEditStateRegisterServiceTest {
                 Arrays.asList(1, 2, 3)
         );
 
-        List<AtomTask> tasks = service.register(require, states);
+        List<AtomTask> tasks = AnyPeriodCorrectionEditStateRegisterService.register(require, states);
 
         assertThat(tasks.size()).isEqualTo(3);
     }
