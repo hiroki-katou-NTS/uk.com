@@ -268,11 +268,17 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 			
 			const settingTypeUseds: SettingTypeUsed[] = _.map(vm.selectionData, data => {
 				return {
+					employmentRootAtr: data.employmentRootAtr,
 					applicationType: data.applicationType,
 					confirmRootType: data.confirmRootType,
-					employmentRootAtr: data.employmentRootAtr,
 					notUseAtr: data.notUseAtr ? NotUseAtr.DO : NotUseAtr.NOT_DO,
 				} as SettingTypeUsed;
+			});
+			settingTypeUseds.unshift({
+				employmentRootAtr: EmploymentRootAtr.COMMON,
+				applicationType: null,
+				confirmRootType: null,
+				notUseAtr: NotUseAtr.DO,
 			});
 			const level = ko.unwrap(vm.level);
 			if (level < 5) vm.fifthItemName(null);
@@ -311,6 +317,7 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 	}
 
 	enum EmploymentRootAtr {
+		COMMON = 0,
 		APPLICATION = 1,
 		CONFIRMATION = 2,
 	}
