@@ -50,7 +50,7 @@ module nts.uk.at.view.kmp001.h {
 									<pre class="content" data-bind= "text: $i18n('KMP001_176')"></pre>
 									<div class="button-select">
 										<span class="caret-right caret-inline">
-											<button class="large" data-bind= "text: $i18n('KMP001_175'), click: view_J, enable: attendance"></button>
+											<button class="large" data-bind= "text: $i18n('KMP001_175'), click: view_J"></button>
 										</span>
 									</div>
 								</div>
