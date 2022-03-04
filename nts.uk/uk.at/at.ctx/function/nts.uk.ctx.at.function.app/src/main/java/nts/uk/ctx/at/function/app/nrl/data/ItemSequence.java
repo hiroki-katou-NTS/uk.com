@@ -124,6 +124,13 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING2,
 			Element.PAYLOAD, Element.BCC);
 	
+	public static final List<String> MESSAGE_REQ =  Arrays.asList(Element.SOH, Element.HDR, Element.PADDING1, Element.LENGTH,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING2,
+			Element.PAYLOAD, Element.BCC);
+	
+	public static final List<String> MESSAGE_RES =  Arrays.asList(Element.SOH, Element.HDR, Element.PADDING1, Element.LENGTH,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING2,
+			Element.PAYLOAD, Element.BCC);
 	
 	/**
 	 * From map.
@@ -207,6 +214,11 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 		case TR_REMOTE_SEND_SETTING:
 			 orders = request ? TR_REMOTE_SEND_SETTING : ACCEPT_ORDER;
 			 break;
+			 
+		case MESSAGE:
+			 orders = request ? MESSAGE_REQ : MESSAGE_RES;
+			 break;
+			 
 		default:
 			return Optional.empty();
 		}

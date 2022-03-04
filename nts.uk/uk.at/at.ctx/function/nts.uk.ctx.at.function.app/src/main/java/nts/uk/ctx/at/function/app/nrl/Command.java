@@ -45,8 +45,9 @@ public enum Command {
 	//UKモードへの切替日時(22, 0E)
 	UK_SWITCH_MODE("DateTimeSwitchUKMode", "22", "14"),
 	//レコーダの設定送信
-	TR_REMOTE_SEND_SETTING("ReceiveNRLRemoteDataSetting", "23", "01");
-	
+	TR_REMOTE_SEND_SETTING("ReceiveNRLRemoteDataSetting", "23", "01"),
+	// レコーダの設定送信
+	MESSAGE("GetNotificationMessageQuery","1A","06");
 
 	/**
 	 * Name
