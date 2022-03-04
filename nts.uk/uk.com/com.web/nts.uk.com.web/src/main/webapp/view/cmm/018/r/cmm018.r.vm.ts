@@ -80,21 +80,21 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 						vm.level(setting.approvalLevelNo);
 
 						settingTypeUseds = setting.settingTypeUseds;
-						vm.firstItemName(setting.approverSettingScreenInfor.firstItemName);
-						vm.secondItemName(setting.approverSettingScreenInfor.secondItemName);
-						vm.thirdItemName(setting.approverSettingScreenInfor.thirdItemName);
-						vm.fourthItemName(setting.approverSettingScreenInfor.fourthItemName);
-						vm.fifthItemName(setting.approverSettingScreenInfor.fifthItemName);
-						vm.processMemo(setting.approverSettingScreenInfor.processMemo);
-						vm.attentionMemo(setting.approverSettingScreenInfor.attentionMemo);
+						vm.firstItemName(setting.approverSettingScreenInfor.firstItemName || '');
+						vm.secondItemName(setting.approverSettingScreenInfor.secondItemName || '');
+						vm.thirdItemName(setting.approverSettingScreenInfor.thirdItemName || '');
+						vm.fourthItemName(setting.approverSettingScreenInfor.fourthItemName || '');
+						vm.fifthItemName(setting.approverSettingScreenInfor.fifthItemName || '');
+						vm.processMemo(setting.approverSettingScreenInfor.processMemo || '');
+						vm.attentionMemo(setting.approverSettingScreenInfor.attentionMemo || '');
 
-						vm.firstItemNameBackup = setting.approverSettingScreenInfor.firstItemName;
-						vm.secondItemNameBackup = setting.approverSettingScreenInfor.secondItemName;
-						vm.thirdItemNameBackup = setting.approverSettingScreenInfor.thirdItemName;
-						vm.fourthItemNameBackup = setting.approverSettingScreenInfor.fourthItemName;
-						vm.fifthItemNameBackup = setting.approverSettingScreenInfor.fifthItemName;
-						vm.processMemoBackup = setting.approverSettingScreenInfor.processMemo;
-						vm.attentionMemoBackup = setting.approverSettingScreenInfor.attentionMemo;
+						vm.firstItemNameBackup = setting.approverSettingScreenInfor.firstItemName || '';
+						vm.secondItemNameBackup = setting.approverSettingScreenInfor.secondItemName || '';
+						vm.thirdItemNameBackup = setting.approverSettingScreenInfor.thirdItemName || '';
+						vm.fourthItemNameBackup = setting.approverSettingScreenInfor.fourthItemName || '';
+						vm.fifthItemNameBackup = setting.approverSettingScreenInfor.fifthItemName || '';
+						vm.processMemoBackup = setting.approverSettingScreenInfor.processMemo || '';
+						vm.attentionMemoBackup = setting.approverSettingScreenInfor.attentionMemo || '';
 					}
 
 					if (appUseAtrs) {
@@ -281,21 +281,19 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 				notUseAtr: NotUseAtr.DO,
 			});
 			const level = ko.unwrap(vm.level);
-			if (level < 5) vm.fifthItemName(null);
-			if (level < 4) vm.fourthItemName(null);
-			if (level < 3) vm.thirdItemName(null);
-			if (level < 2) vm.secondItemName(null);
-			if (_.isEmpty(vm.processMemo())) vm.processMemo(null);
-			if (_.isEmpty(vm.attentionMemo())) vm.attentionMemo(null);
+			if (level < 5) vm.fifthItemName('');
+			if (level < 4) vm.fourthItemName('');
+			if (level < 3) vm.thirdItemName('');
+			if (level < 2) vm.secondItemName('');
 
 			const approverSettingScreenInfor: ApproverSettingScreenInfor = {
-				firstItemName: vm.firstItemName(),
-				secondItemName: vm.secondItemName(),
-				thirdItemName: vm.thirdItemName(),
-				fourthItemName: vm.fourthItemName(),
-				fifthItemName: vm.fifthItemName(),
-				processMemo: vm.processMemo(),
-				attentionMemo: vm.attentionMemo(),
+				firstItemName: _.isEmpty(vm.firstItemName()) ? null : vm.firstItemName(),
+				secondItemName: _.isEmpty(vm.secondItemName()) ? null : vm.secondItemName(),
+				thirdItemName: _.isEmpty(vm.thirdItemName()) ? null : vm.thirdItemName(),
+				fourthItemName: _.isEmpty(vm.fourthItemName()) ? null : vm.fourthItemName(),
+				fifthItemName: _.isEmpty(vm.fifthItemName()) ? null : vm.fifthItemName(),
+				processMemo: _.isEmpty(vm.processMemo()) ? null : vm.processMemo(),
+				attentionMemo: _.isEmpty(vm.attentionMemo()) ? null : vm.attentionMemo(),
 			};
 
 			return new Command({ approvalLevelNo, settingTypeUseds, approverSettingScreenInfor });
