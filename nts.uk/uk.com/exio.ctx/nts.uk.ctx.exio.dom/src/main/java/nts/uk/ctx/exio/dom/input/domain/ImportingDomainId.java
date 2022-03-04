@@ -34,6 +34,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskChildCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.WorkLocationIpCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.shift.businesscalendar.PublicHolidayCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.EmploymentCanonicalization;
 
 /**
  * 受入グループID
@@ -41,6 +42,9 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.shift.businesscalendar.Pub
  */
 @RequiredArgsConstructor
 public enum ImportingDomainId {
+
+	/** 雇用マスタ */
+	EMPLOYMENT(11, EmploymentCanonicalization::new),
 
 	/** 職場マスタ */
 	WORKPLACE(13, WorkplaceCanonicalization::new),
@@ -62,7 +66,7 @@ public enum ImportingDomainId {
 
 	/** 祝日マスタ*/
 	PUBLIC_HOLIDAY(52, PublicHolidayCanonicalization::new),
-	
+
 	/** 個人基本情報 */
 	EMPLOYEE_BASIC(100, EmployeeBasicCanonicalization::new),
 
