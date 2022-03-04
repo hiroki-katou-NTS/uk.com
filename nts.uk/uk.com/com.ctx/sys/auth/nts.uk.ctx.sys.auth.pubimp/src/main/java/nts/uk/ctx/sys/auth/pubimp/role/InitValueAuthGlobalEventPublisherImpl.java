@@ -8,11 +8,13 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.sys.auth.dom.role.ContractCode;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.pub.event.InitValueAuthGlobalEventPublisher;
 import nts.uk.ctx.sys.auth.pub.event.RoleByRoleTiesGlobalEvent;
+import nts.uk.shr.com.company.CompanyId;
 import nts.uk.shr.com.constants.DefaultSettingKeys;
 
 //Event：権限管理の初期値登録 - Tuy la event nhưng thực tế đang viết dạng publish
@@ -35,10 +37,12 @@ public class InitValueAuthGlobalEventPublisherImpl implements InitValueAuthGloba
 			List<Role> listRoleCopy = new ArrayList<>();
 			List<String> listRoleTiesID = new ArrayList<>();
 
+			val contractCode = new ContractCode(CompanyId.getContractCodeOf(companyIDCopy));
+
 			for (Role role : listRoleZeroCompany) {
 				String roleID = IdentifierUtil.randomUniqueId();
 				val initRole = new Role(roleID, role.getRoleCode(), role.getRoleType(),
-						role.getEmployeeReferenceRange(), role.getName(), role.getContractCode(), role.getAssignAtr(),
+						role.getEmployeeReferenceRange(), role.getName(), contractCode, role.getAssignAtr(),
 						companyIDCopy);
 				listRoleCopy.add(initRole);
 				listRoleTiesID.add(roleID);
