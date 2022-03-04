@@ -382,8 +382,8 @@ module nts.uk.at.view.kdw008.a {
                                 dfd.resolve();
                             })
                         }
-                        return dfd.promise();
                     }
+                return dfd.promise();
             }
             
             getIndex(oldIndex: number) {
