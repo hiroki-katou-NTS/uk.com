@@ -51,22 +51,20 @@
                     <span id="A3_2" class="label" data-bind="{ text: currentWrkName() }"/>
                 </div>
                 <div id="A3_3"><hr/></div>
-                <div>
-                    <label id="A4_1" data-bind="{ text: a4_1Txt() }"/>
-                </div>
+                <div  data-bind="ntsFormLabel: {required: true, text: a4_1Txt() }"></div>
                 <div id="functions-area-right" style="margin-top: 5px">
                     <button id="A4_2" tabindex="5" data-bind="text: $vm.$i18n('KMT013_6') , click: a4_2BtnClick, enable: isA2NotEmpty()"/>
                     <button id="A4_3" tabindex="6" class="danger" data-bind="text: $vm.$i18n('KMT013_3'), click: a4_3BtnClick, enable: enableA43Btn()"/>
                 </div>
                 <div>
                     <table id="multi-list" data-bind="ntsGridList: {
-                        height: 390,
+                        height: 376,
                         options: supportableList,
                         optionsValue: 'id',
                         columns: ko.observableArray([
                             { headerText: 'ID', key: 'id', width: 0, hidden: true },
-                            { headerText: $i18n('KMT013_7'), key: 'code' },
-                            { headerText: $i18n('KMT013_8'), key: 'name' }
+                            { headerText: $i18n('KMT013_7'), key: 'code', width: 120 },
+                            { headerText: $i18n('KMT013_8'), key: 'name', width: 240 }
                         ]),
                         multiple: true,
                         value: currentCodeList

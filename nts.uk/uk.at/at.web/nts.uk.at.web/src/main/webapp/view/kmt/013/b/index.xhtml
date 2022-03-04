@@ -8,7 +8,6 @@
 <!--<ui:composition template="/master/dialog.xhtml">-->
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 500, height: 620 };</script>
         <com:scriptfile set="IGNITE" />
         <com:stylefile path="kmt013.b.css" />
         <com:scriptfile path="kmt013.b.vm.js" />
@@ -21,7 +20,7 @@
                     <label data-bind="text: $vm.$i18n('KMT013_11')"/>
                 </div>
                 <table id="single-list" data-bind="ntsGridList: {
-                    height: 470,
+                    height: height(),
                     dataSource: items,
                     primaryKey: 'destination',
                     columns: ko.observableArray([

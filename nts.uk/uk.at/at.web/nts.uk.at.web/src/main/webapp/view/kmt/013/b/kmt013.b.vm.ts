@@ -5,6 +5,7 @@ module nts.uk.at.view.kmt013.b {
 
         items: KnockoutObservableArray<ItemModelKtm013> =ko.observableArray([]);
         currentCode: KnockoutObservable<any> = ko.observable('');
+        height: KnockoutObservable<number> = ko.observable(500);
         count: number = 100;
 
         constructor(params: any) {
@@ -12,10 +13,11 @@ module nts.uk.at.view.kmt013.b {
             super();
         }
 
-        created(params: Array<ItemModelKtm013>) {
+        created(params: any) {
             const vm = this;
             $("#B3_btn").focus();
-            vm.items(params);
+            vm.items(params.listdata);
+            vm.height(params.height);
         }
 
         mounted() {
