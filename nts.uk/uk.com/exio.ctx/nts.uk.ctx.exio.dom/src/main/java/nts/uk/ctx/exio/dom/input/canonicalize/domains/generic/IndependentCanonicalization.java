@@ -82,22 +82,37 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 
 		val domainDataId = DomainDataId.createDomainDataId(getParentTableName(), domainDataKeys, domainDataKeyValues);
 		boolean exists = require.existsDomainData(domainDataId);
-		
+
 		// 受け入れず無視するケース
 		if (!context.getMode().canImport(exists)) {
 			return;
 		}
-		
+
+		//追加の正規化処理
+		val intermExtends = canonicalizeExtends(require, context, intermResult);
+		if(intermExtends.isPresent()){
+			require.save(context, intermExtends.get().complete());
+		} else {
+			// 追加の正準化で受け入れない場合は無視する
+			return;
+		}
+
+		// 既存データの調整準備
+		prepareAdjust(require, context, domainDataKeyValues);
+	}
+
+	/**
+	 * 既存データを調整するための準備
+	 * @param require
+	 * @param context
+	 * @param domainDataKeyValues
+	 */
+	private void prepareAdjust(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, KeyValues domainDataKeyValues) {
 		if (context.getMode() == DELETE_RECORD_BEFOREHAND) {
 			// 既存データがあれば削除する（DELETE文になるので、実際にデータがあるかどうかのチェックは不要）
 			val workspace = require.getDomainWorkspace(context.getDomainId());
 			require.save(context, toDelete(context, workspace, domainDataKeyValues));
 		}
-		
-		//追加の正規化処理やって、データを登録したくない場合はOptional.empty
-		canonicalizeExtends(require, context, intermResult).ifPresent(interm ->{
-			require.save(context, interm.complete());
-		});
 	}
 	
 	/**
