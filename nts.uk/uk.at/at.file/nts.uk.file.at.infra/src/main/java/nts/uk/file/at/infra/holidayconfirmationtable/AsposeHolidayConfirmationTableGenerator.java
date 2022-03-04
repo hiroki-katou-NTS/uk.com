@@ -272,9 +272,19 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                             if (acquisitionDetail.getOccurrenceDigCls() == OccurrenceDigClass.OCCURRENCE) {
                                 String value = this.formatNoLinkedDate(acquisitionDetail, dataSource.getHowToPrintDate());
                                 this.setValue(cells, row, col + i, value);
+                                if(acquisitionDetail.getDate().isUnknownDate()){
+                                    Style style = cells.get(row, col).getStyle();
+                                    style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+                                    cells.get(row, col + i).setStyle(style);
+                                }
                             } else {
                                 String value = this.formatNoLinkedDate(acquisitionDetail, dataSource.getHowToPrintDate());
                                 this.setValue(cells, row + 1, col + i, value);
+                                if(acquisitionDetail.getDate().isUnknownDate()){
+                                    Style style = cells.get(row, col).getStyle();
+                                    style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+                                    cells.get(row + 1, col + i).setStyle(style);
+                                }
                             }
                         } else {
                             break;
