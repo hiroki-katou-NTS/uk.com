@@ -376,7 +376,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
         private setCalculatorMethod(): void {
             const self = this;
-            const legalCloseAtr = self.itemCloseAtr().filter((item) => item.name === nts.uk.resource.getText('Enum_CloseAtr_PRENATAL') ||
+            const legalCloseAtr = self.lstHdWrk().filter((item) => item.name === nts.uk.resource.getText('Enum_CloseAtr_PRENATAL') ||
                 item.name === nts.uk.resource.getText('Enum_CloseAtr_POSTPARTUM') || item.name === nts.uk.resource.getText('Enum_CloseAtr_CHILD_CARE') ||
                 item.name === nts.uk.resource.getText('Enum_CloseAtr_CARE'));
             
