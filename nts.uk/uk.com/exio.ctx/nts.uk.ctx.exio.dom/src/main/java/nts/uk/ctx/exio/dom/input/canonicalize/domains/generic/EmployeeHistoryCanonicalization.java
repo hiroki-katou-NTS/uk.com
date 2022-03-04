@@ -1,6 +1,6 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.generic;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +17,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.util.Either;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
@@ -24,7 +25,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.SystemImportingItems;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskCanonicalization.Items;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffCompanyHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordTo;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
@@ -41,7 +41,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.gul.util.Either;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -135,7 +134,11 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 				.getItemByNo(this.getItemNoOfEmployeeId())
 				.get().getString();
 
-		DomainDataId id = new DomainDataId(this.getParentTableName(), Arrays.asList(new DomainDataId.Key(DomainDataColumn.SID, employeeId)));
+		
+		DomainDataId id = new DomainDataId(
+				this.getParentTableName(), 
+				Arrays.asList(new DomainDataId.Key(DomainDataColumn.getSID(this.getItemNoOfEmployeeId()),
+				employeeId)));
 		
 		// 既存履歴
 		val existingHistory = require.getHistory(id, this.historyType, getKeyColumnNames());
@@ -437,7 +440,7 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 	}
 
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.HIST_ID);
+		return Arrays.asList(DomainDataColumn.getHistId(this.itemNoHistoryId));
 	}
 	
 	public static interface RequireAdjust{

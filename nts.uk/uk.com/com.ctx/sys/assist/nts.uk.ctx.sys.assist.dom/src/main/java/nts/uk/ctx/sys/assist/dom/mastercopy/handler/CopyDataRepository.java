@@ -7,5 +7,5 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.TargetTableInfo;
  */
 public interface CopyDataRepository {
 
-    void copy(String contractCode, String companyId, TargetTableInfo targetTableInfo, Integer categoryCopyMethod);
+    void copy(String contractCode, String companyId, TargetTableInfo targetTableInfo, Integer categoryCopyMethod, KeyValueHolder keyValueHolder);
 }
