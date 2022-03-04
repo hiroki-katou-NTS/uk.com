@@ -2,24 +2,17 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.task;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
-import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.StampCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.WorkplaceCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
-
 import java.util.*;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * 職場別作業の絞込の正準化
@@ -46,36 +39,15 @@ public class TaskAssignWkpCanonicalization extends IndependentCanonicalization {
 	}
 
 	@Override
-	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
-
-		val workspace = require.getDomainWorkspace(context.getDomainId());
-
-		// 受入データ内の重複チェック
-		Set<KeyValues> importingKeys = new HashSet<>();
-
-		CanonicalizeUtil.forEachRow(require, context, revisedData -> {
-
-			IntermediateResult interm = IntermediateResult.create(revisedData);
-			// 職場コードの正準化
-			interm =  interm.optionalItem(CanonicalItem.of(Items.基準日, GeneralDate.today()));
-			val either = workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo());
-			if (either.isLeft()) {
-				require.add(ExternalImportError.of(context.getDomainId(), either.getLeft()));
-				return;
-			}
-			interm = either.getRight();
-
-			// キー重複チェック
-			KeyValues key = KeyValues.create(interm, workspace.getPkItemNos());
-			if (importingKeys.contains(key)) {
-				require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), "受入データの中にキーの重複があります。"));
-				return;
-			}
-			importingKeys.add(key);
-
-			super.canonicalize(require, context, interm, key);
-		});
-
+	protected Optional<IntermediateResult> canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, IntermediateResult interm) {
+		// 職場コードの正準化
+		interm =  interm.optionalItem(CanonicalItem.of(Items.基準日, GeneralDate.today()));
+		val either = workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo());
+		if (either.isLeft()) {
+			require.add(ExternalImportError.of(context.getDomainId(), either.getLeft()));
+			return Optional.empty();
+		}
+		return Optional.of(either.getRight());
 	}
 
 	@Override
