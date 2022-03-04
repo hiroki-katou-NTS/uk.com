@@ -58,7 +58,7 @@ public class SupportWorkOutputData {
                                  EmployeeExtractCondition extractCondition) {
         Map<String, List<SupportWorkDetails>> dataMap = this.seperateDetailsByWorkplace(supportWorkDetails, extractCondition);
         this.supportWorkDataList = dataMap.entrySet().stream()
-                .map(e -> new WorkplaceSupportWorkData(require, companyId, e.getKey(), e.getValue(), wkpTotalDisplaySetting))
+                .map(e -> new WorkplaceSupportWorkData(require, companyId, e.getKey(), e.getValue(), wkpTotalDisplaySetting, extractCondition))
                 .collect(Collectors.toList());
 
         if (grandTotalDisplaySetting.getDisplayGrandTotal() == NotUseAtr.USE) {

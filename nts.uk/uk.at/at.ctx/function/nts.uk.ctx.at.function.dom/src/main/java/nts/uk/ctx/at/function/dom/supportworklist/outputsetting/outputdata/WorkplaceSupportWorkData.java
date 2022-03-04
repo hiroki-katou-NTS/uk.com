@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.supportworklist.aggregationsetting.SupportWorkDetails;
+import nts.uk.ctx.at.function.dom.supportworklist.outputsetting.EmployeeExtractCondition;
 import nts.uk.ctx.at.function.dom.supportworklist.outputsetting.SupportWorkOutputDataRequire;
 import nts.uk.ctx.at.function.dom.supportworklist.outputsetting.WorkplaceTotalDisplaySetting;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -63,7 +64,8 @@ public class WorkplaceSupportWorkData {
                                     String companyId,
                                     String workplace,
                                     List<SupportWorkDetails> supportWorkDetails,
-                                    WorkplaceTotalDisplaySetting displaySetting) {
+                                    WorkplaceTotalDisplaySetting displaySetting,
+                                    EmployeeExtractCondition extractCondition) {
         this.workplace = workplace;
 
         Map<GeneralDate, List<SupportWorkDetails>> dateData = supportWorkDetails.stream().collect(Collectors.groupingBy(SupportWorkDetails::getDate));
@@ -76,7 +78,7 @@ public class WorkplaceSupportWorkData {
         }
 
         if (displaySetting.getDisplaySupportDetail() == NotUseAtr.USE) {
-            this.calculateSupportDetail(require, companyId, supportWorkDetails);
+            this.calculateSupportDetail(require, companyId, supportWorkDetails, extractCondition);
         }
 
         if (displaySetting.getDisplayWorkplaceTotal() == NotUseAtr.USE) {
@@ -109,9 +111,14 @@ public class WorkplaceSupportWorkData {
      */
     private void calculateSupportDetail(SupportWorkOutputDataRequire require,
                                         String companyId,
-                                        List<SupportWorkDetails> supportWorkDetails) {
+                                        List<SupportWorkDetails> supportWorkDetails,
+                                        EmployeeExtractCondition extractCondition) {
         this.supportDetails = supportWorkDetails.stream().filter(i -> i.isSupportWork())
-                .collect(Collectors.groupingBy(SupportWorkDetails::getWorkInfo))
+                .collect(Collectors.groupingBy(i -> {
+                    return extractCondition == EmployeeExtractCondition.EXTRACT_EMPLOYEES_GO_TO_SUPPORT
+                            ? i.getAffiliationInfo()
+                            : i.getWorkInfo();
+                }))
                 .entrySet().stream().map(e -> {
                     return SupportDetail.create(require, companyId, e.getKey(), e.getValue());
                 }).collect(Collectors.toList());
