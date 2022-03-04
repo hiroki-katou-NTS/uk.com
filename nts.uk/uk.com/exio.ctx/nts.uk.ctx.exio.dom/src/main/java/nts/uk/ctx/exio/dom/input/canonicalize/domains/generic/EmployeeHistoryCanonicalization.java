@@ -97,12 +97,21 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interm -> {
 			
+			interm = preCanonicalize(interm); 
+			
 			val results = canonicalizeHistory(require, context, interm);
 			
 			results.forEach(result -> {
 				require.save(context, result.complete());
 			});
 		});
+	}
+
+	/**
+	 * 正準化前に挟みたい処理があれば、オーバーライドする。 
+	 */
+	protected List<IntermediateResult> preCanonicalize(List<IntermediateResult> interm) {
+		return interm;
 	}
 
 	/**
