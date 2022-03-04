@@ -42,7 +42,7 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 		subscribeMode() {
 			const self = this;
 			let isSubscribeMode = false;
-			self.mode.subscribe(newValue => {
+			self.mode.subscribe(() => {
 				if (isSubscribeMode) return;
 				isSubscribeMode = true;
 				self.$dialog
@@ -67,7 +67,7 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 								}
 							}))
 							.then(() => {
-								self.oldMode = newValue;
+								self.oldMode = _.cloneDeep(self.mode());
 							})
 							.fail(error => {
 								self.$dialog.error(error);
