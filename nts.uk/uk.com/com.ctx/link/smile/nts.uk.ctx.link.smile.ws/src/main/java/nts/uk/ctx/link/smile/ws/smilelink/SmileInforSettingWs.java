@@ -10,7 +10,7 @@ import nts.uk.ctx.link.smile.app.smilelink.SmileAcceptLinkFinder;
 import nts.uk.ctx.link.smile.app.smilelink.SmileOutLinkSetDto;
 import nts.uk.ctx.link.smile.app.smilelink.SmileOutLinkSetFinder;
 
-@Path("link/smile")
+@Path("ctx/link/smile/smilelink")
 @Produces("application/json")
 public class SmileInforSettingWs {
 	@Inject

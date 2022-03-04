@@ -88,3 +88,12 @@
 #swap-list-move-data {
   padding: 0px !important;
 }
+
+.init-data-text {
+	width: 50px;
+	margin-left: 20px;
+}
+
+.init-data-button {
+	margin-left: 10px;
+}
