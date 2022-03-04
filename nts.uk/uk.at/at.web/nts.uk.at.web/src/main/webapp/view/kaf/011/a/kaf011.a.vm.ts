@@ -270,9 +270,9 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 
 		}
 		
-		openKDL009() {
-			let self = this;
-			nts.uk.ui.windows.setShared('KDL009_DATA', (self.params ? self.params.employeeIds : [__viewContext.user.employeeId]));
+		openKDL009(vm: any) {
+			const self = vm;
+			nts.uk.ui.windows.setShared('KDL009_DATA', (self.applicationCommon() ? self.applicationCommon().employeeIDLst() : [__viewContext.user.employeeId]));
 			if(self.params && self.params.employeeIds.length > 1){
 				nts.uk.ui.windows.sub.modal("/view/kdl/009/a/index.xhtml",{width: 1100, height: 650});	
 			}else{
