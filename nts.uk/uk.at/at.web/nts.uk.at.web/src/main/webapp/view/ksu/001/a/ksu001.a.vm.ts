@@ -1074,7 +1074,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // điều kiện ※Aa1 editMode - background Normal                                              
                         if (cell.conditionAa1 == false) {
                             detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "xseal", 0));
-                        } else if (cell.supportStatus != SupportStatus.DO_NOT_GO && cell.supportStatus != SupportStatus.DO_NOT_COME) {
+                        } else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE ||  cell.supportStatus == SupportStatus.COME_ALLDAY) {
+                            // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時間帯)/応援に行かない）
+                            // supportStatus != (SupportStatus.DO_NOT_COME, SupportStatus.DO_NOT_GO,  SupportStatus.COME_TIMEZONE)
                             detailContentDecoNormal.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0));
                         } else {
                             if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === EditStateSetting.HAND_CORRECTION_MYSELF) {
@@ -1218,7 +1220,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         if (cell.conditionAbc1 == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
-                        } else if(cell.supportStatus != SupportStatus.DO_NOT_GO && cell.supportStatus != SupportStatus.DO_NOT_COME){
+                        } else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE || cell.supportStatus == SupportStatus.COME_ALLDAY) {
+                            // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時間帯)/応援に行かない）
+                            // supportStatus != (SupportStatus.DO_NOT_COME, SupportStatus.DO_NOT_GO,  SupportStatus.COME_TIMEZONE)
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 1));
                         } else {
@@ -1363,7 +1367,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 2));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 3));
                             
-                        }  else if(cell.supportStatus != SupportStatus.DO_NOT_GO && cell.supportStatus != SupportStatus.DO_NOT_COME){
+                        }  else if (cell.supportStatus == SupportStatus.GO_ALLDAY || cell.supportStatus == SupportStatus.GO_TIMEZONE || cell.supportStatus == SupportStatus.COME_ALLDAY) {
+                            // 勤務予定（シフト）dto．応援状況 <>（応援に来ない/応援に来る(時間帯)/応援に行かない）
+                            // supportStatus != (SupportStatus.DO_NOT_COME, SupportStatus.DO_NOT_GO,  SupportStatus.COME_TIMEZONE)
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 1));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 2));
