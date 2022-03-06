@@ -1068,6 +1068,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         shiftName = (cell.haveData == true && (cell.shiftName == null || cell.shiftName == '')) ? getText("KSU001_94") : cell.shiftName;
                         if (cell.needToWork == false)
                             shiftName = null;
+                        
+                        //check data nhân viên đến support
+                        if (emp.supportType == SupportType.COME_TO_SUPPORT && cell.supportStatus != SupportStatus.COME_ALLDAY && cell.supportStatus != SupportStatus.COME_TIMEZONE) {
+                            shiftName = null;
+                            cell.conditionAa1 = false;
+                            cell.conditionAa2 = false;
+                        }
+                        
+                            
                         objDetailContentDs['_' + ymd] = new ExCell(null, null, null, null, null, null, shiftName, cell.shiftCode, cell.confirmed , cell.achievements, cell.workHolidayCls, cell.needToWork, cell.supportCategory, cell.condTargetdate);
 
                         // set Deco background
@@ -1212,6 +1221,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             workTypeName = null;
                             workTimeName = null;
                         }
+                        
+                        //check data nhân viên đến support
+                        if (emp.supportType == SupportType.COME_TO_SUPPORT && cell.supportStatus != SupportStatus.COME_ALLDAY && cell.supportStatus != SupportStatus.COME_TIMEZONE) {
+                            workTypeName = null;
+                            workTimeName = null;
+                            cell.conditionAbc1 = false;
+                            cell.conditionAbc2 = false;
+                        }
+                        
                         objDetailContentDs['_' + ymd] = new ExCell(cell.workTypeCode, workTypeName, cell.workTimeCode, workTimeName, null, null, null, null,cell.confirmed , cell.achievements, cell.workHolidayCls, cell.needToWork, cell.supportCategory, cell.condTargetdate);
 
                         // set Deco background
@@ -1355,6 +1373,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         if(cell.startTime == 0 && cell.endTime == 0){
                             startTime    = null;
                             endTime      = null;
+                        }
+                        
+                         //check data nhân viên đến support
+                        if (emp.supportType == SupportType.COME_TO_SUPPORT && cell.supportStatus != SupportStatus.COME_ALLDAY && cell.supportStatus != SupportStatus.COME_TIMEZONE) {
+                            workTypeName = null;
+                            workTimeName = null;
+                            startTime    = null;
+                            endTime      = null;
+                            cell.conditionAbc1 = false;
+                            cell.conditionAbc2 = false;
                         }
                         
                         objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime, null, null, cell.confirmed , cell.achievements, cell.workHolidayCls, cell.needToWork, cell.supportCategory, cell.condTargetdate);
@@ -6054,7 +6082,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 workplaceId: self.userInfor.workplaceId,
                 workplaceGroupId: self.userInfor.workplaceGroupId,
                 workplaceName: self.userInfor.workPlaceName,
-                listEmp: self.listEmpData,
+                listEmp: _.filter(self.listEmpData, function(o) { return o.supportType != SupportType.COME_TO_SUPPORT; }),
                 daySelect: moment(ui.columnKey.slice(1)).format('YYYY/MM/DD'),
                 startDate: self.dateTimePrev(),
                 endDate: self.dateTimeAfter(),
@@ -6085,7 +6113,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if(_.isNil(blockScreen))
                 nts.uk.ui.block.grayout();
             let param = {
-                listSid: self.listSid(),
+                listSid: self.listSidByOrg,
                 startDate: self.dateTimePrev(),
                 endDate: self.dateTimeAfter(),
                 day: self.closeDate.day,
