@@ -86,7 +86,7 @@ public class ScheduleOfShiftDto {
 		super();
 		// step 1 勤務予定が必要か()
 		boolean needCreateWorkSchedule = employeeWorkingStatus.getWorkingStatus().needCreateWorkSchedule();
-		if (needCreateWorkSchedule) {
+		if (needCreateWorkSchedule && workScheduleInput.isPresent()) {
 			// step3.1 勤務予定.勤務情報
 			WorkSchedule workSchedule = workScheduleInput.get();
 			WorkInformation workInformation = workSchedule.getWorkInfo().getRecordInfo();
@@ -136,35 +136,40 @@ public class ScheduleOfShiftDto {
 			this.conditionAa1 = true;
 			this.conditionAa2 = true;
 			this.supportStatus = SupportStatus.DO_NOT_GO.getValue();
-
+			
 			/**※Aa1
-			勤務予定（シフト）dto．実績か == true	           achievements	        ×	
-			勤務予定（シフト）dto．確定済みか == true          confirmed		        ×	
-			勤務予定（シフト）dto．勤務予定が必要か == false	   needToWork		    ×	
-			勤務予定（シフト）dto．応援状況 == 応援に来る(時間帯)supportStatus		×	
-			対象の日 < A画面パラメータ. 修正可能開始日　の場合    targetDate		    ×	=> check dưới UI
-			上記以外									   other                ○	
+			勤務予定（シフト）dto．実績か == true	           achievements	            ×	
+			勤務予定（シフト）dto．確定済みか == true          confirmed		            ×	
+			勤務予定（シフト）dto．勤務予定が必要か == false	   needToWork		        ×	
+			勤務予定（シフト）dto．応援状況 == 応援に来ない　or　応援に来る(時間帯)supportStatus	×	
+			対象の日 < A画面パラメータ. 修正可能開始日　の場合    targetDate		            ×	=> check dưới UI
+			上記以外									   other                    ○	
 			*/
-			if (this.achievements == true || this.confirmed == true || this.needToWork == false 
-					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()) {
+			if (       this.achievements == true 
+					|| this.confirmed == true 
+					|| this.needToWork == false 
+					|| this.supportStatus == SupportStatus.DO_NOT_COME.getValue() 
+					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue() ) 
+			{	
 				this.setEdit(false);
 				this.setConditionAa1(false);
 			}
 
 			/**
 			 * ※Aa2			シフト確定																					
-			勤務予定（シフト）dto．実績か == true                                    achievements		×	
+			勤務予定（シフト）dto．実績か == true                                    achievements	×	
 			勤務予定（シフト）dto．勤務予定が必要か == false                           needToWork	 	×	
 			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)  supportStatus		×	
 			対象の日 < A画面パラメータ. 修正可能開始日　の場合	                      targetDate		×	=> check dưới UI
-			上記以外										                      other				○	
+			上記以外										                      other			○	
 			 */
-			if (this.achievements == true || this.needToWork == false
-					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()
-					|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()) {
-				this.setActive(false);
+			if (  this.achievements == true || this.needToWork == false
+				|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()
+				|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()) 
+			{	this.setActive(false);
 				this.setConditionAa2(false);
 			}
+			
 		} else {
 			// step2 create
 			this.employeeId = employeeWorkingStatus.getEmployeeID();
@@ -184,15 +189,20 @@ public class ScheduleOfShiftDto {
 			this.supportStatus = SupportStatus.DO_NOT_COME.getValue();
 			
 			// ※Aa1
-			if (this.achievements == true || this.confirmed == true || this.needToWork == false
+			if (this.achievements == true 
+					|| this.confirmed == true 
+					|| this.needToWork == false
+					|| this.supportStatus == SupportStatus.DO_NOT_COME.getValue() 
 					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()) {
 				this.setEdit(false);
 				this.setConditionAa1(false);
 			}
 			// ※Aa2
-			if (this.achievements == true || this.needToWork == false
+			if (      this.achievements == true 
+					|| this.needToWork == false
 					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()
-					|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()) {
+					|| this.supportStatus == SupportStatus.GO_ALLDAY.getValue()) 
+			{
 				this.setActive(false);
 				this.setConditionAa2(false);
 			}

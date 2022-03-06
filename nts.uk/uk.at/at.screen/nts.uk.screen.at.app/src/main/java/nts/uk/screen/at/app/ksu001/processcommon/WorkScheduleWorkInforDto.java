@@ -127,7 +127,7 @@ public class WorkScheduleWorkInforDto {
 		super();
 		// step 1 : 勤務予定が必要か()
 		boolean needCreateWorkSchedule = empWorkingStatus.getWorkingStatus().needCreateWorkSchedule();
-		if (!needCreateWorkSchedule) {
+		if (!needCreateWorkSchedule || !workScheduleInput.isPresent()) {
 			// step 2 : 勤務予定が必要か() == false
 			this.employeeId = empWorkingStatus.getEmployeeID();
 			this.date = empWorkingStatus.getDate();
@@ -153,16 +153,17 @@ public class WorkScheduleWorkInforDto {
 			this.supportStatus = SupportStatus.DO_NOT_COME.getValue();
 
 			/*※Abc1
-			勤務予定（勤務情報）dto．実績か == true	Achievement						×	
-			勤務予定（勤務情報）dto．確定済みか == true Confirmed						×	
-			勤務予定（勤務情報）dto．勤務予定が必要か == false need a work				×	
-			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)	 supportStatus		× 
-			対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				× => check ở dưới UI	
-			上記以外																○	
+			勤務予定（勤務情報）dto．実績か == true	Achievement						         ×	
+			勤務予定（勤務情報）dto．確定済みか == true Confirmed						     × 	
+			勤務予定（勤務情報）dto．勤務予定が必要か == false need a work				         ×	
+			勤務予定（勤務情報）dto．応援状況 == 応援に来ない　or　応援に来る(時間帯) supportStatus   ×
+			対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date   			         × => check ở dưới UI	
+			上記以外																     ○	
 			*/
 			if (this.achievements == true 
 					|| this.confirmed == true 
 					|| this.needToWork == false
+					|| this.supportStatus == SupportStatus.DO_NOT_COME.getValue()
 					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()) {
 				this.conditionAbc1 = false;
 			}
@@ -172,7 +173,7 @@ public class WorkScheduleWorkInforDto {
 			勤務予定（勤務情報）dto．勤務予定が必要か == false	need a work				           ×	
 			勤務予定（勤務情報）dto．応援状況 == 応援に来る(時間帯)　or　応援に行く(終日)	 supportStatus ×	
 			対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				           × => check ở dưới UI
-			上記以外																           ○	
+			上記以外																       ○	
 			 */
 			if (this.achievements == true 
 					|| this.needToWork == false
@@ -286,16 +287,17 @@ public class WorkScheduleWorkInforDto {
 			this.conditionAbc2 = true;
 
 			/*※Abc1
-			勤務予定（勤務情報）dto．実績か == true	Achievement						×	
-			勤務予定（勤務情報）dto．確定済みか == true Confirmed					    ×	
-			勤務予定（勤務情報）dto．勤務予定が必要か == false need a work				×	
-			勤務予定（勤務情報）dto．応援か == 時間帯応援先	 supportStatus				× 
-			対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				×	=> check ở dưới UI
-			上記以外															    ○	
+			勤務予定（勤務情報）dto．実績か == true	Achievement						        ×	
+			勤務予定（勤務情報）dto．確定済みか == true Confirmed					        ×	
+			勤務予定（勤務情報）dto．勤務予定が必要か == false need a work				        ×	
+			勤務予定（勤務情報）dto．応援状況 == 応援に来ない　or　応援に来る(時間帯) supportStatus	× 
+			対象の日 < A画面パラメータ. 修正可能開始日　の場合 Target date				        ×	=> check ở dưới UI
+			上記以外															        ○	
 			*/
 			if (this.achievements == true 
 					|| this.confirmed == true 
 					|| this.needToWork == false
+					|| this.supportStatus == SupportStatus.DO_NOT_COME.getValue()
 					|| this.supportStatus == SupportStatus.COME_TIMEZONE.getValue()) {
 				this.conditionAbc1 = false;
 			}
@@ -336,7 +338,7 @@ public class WorkScheduleWorkInforDto {
 		super();
 		// step 1 check 社員の就業状態.就業状態
 		boolean needCreateWorkSchedule = empWorkingStatus.getWorkingStatus().needCreateWorkSchedule();
-		if (needCreateWorkSchedule) {
+		if (needCreateWorkSchedule && workRecord.isPresent()) {
 			
 			IntegrationOfDaily daily = workRecord.get();
 			if (daily.getWorkInformation() != null) {
