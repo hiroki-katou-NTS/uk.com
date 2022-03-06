@@ -19,10 +19,10 @@ module nts.uk.at.view.kdp002.a {
 				let setting = start.stampSetting;
 
 				self.displayMethod = ko.observable(setting.historyDisplayMethod);
-				self.dateValue = ko.observable({
-					startDate: moment(vm.$date.now()).add(ko.unwrap(regionalTime), 'm').add(-3, 'days').format('YYYY/MM/DD'),
-					endDate: moment(vm.$date.now()).add(ko.unwrap(regionalTime), 'm').format('YYYY/MM/DD')
-				});
+				// self.dateValue = ko.observable({
+				// 	startDate: moment(vm.$date.now()).add(ko.unwrap(regionalTime), 'm').add(-3, 'days').format('YYYY/MM/DD'),
+				// 	endDate: moment(vm.$date.now()).add(ko.unwrap(regionalTime), 'm').format('YYYY/MM/DD')
+				// });
 
 				vm.$ajax('at', '/server/time/now')
 					.then((c) => {
@@ -32,6 +32,11 @@ module nts.uk.at.view.kdp002.a {
 						self.yearMonth(yearMonth);
 						self.systemDate(sysDate);
 						self.bindItemData(start.stampDataOfEmployees);
+
+						self.dateValue = ko.observable({
+							startDate: moment(c).add(ko.unwrap(regionalTime), 'm').add(-3, 'days').format('YYYY/MM/DD'),
+							endDate: moment(c).add(ko.unwrap(regionalTime), 'm').format('YYYY/MM/DD')
+						});
 					});
 				self.workManagementMultiple(workManagementMultiple);
 
