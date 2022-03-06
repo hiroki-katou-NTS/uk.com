@@ -551,10 +551,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		if(appPhaseN5 != null){
 			listAppPhase.add(appPhaseN5);
 		}
-		for (ApprovalPhase phase : listAppPhase) {
-			repoApprover.addAllApprover(phase.getApprovalId(), phase.getPhaseOrder(), phase.getApprovers());
-		}
-		repoAppPhase.addAllApprovalPhase(listAppPhase);
+        repoAppPhase.addAllApprovalPhase(listAppPhase);
 	}
 
 	/**
@@ -606,8 +603,6 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		}
 		Optional<ApprovalPhase> appPh1 = repoAppPhase.getApprovalPhase(approvalId, appPhaseN1.getPhaseOrder());
 		if(!appPh1.isPresent()){//add new appPh and Approver
-			List<Approver>  approvers = appPhaseN1.getApprovers();
-			repoApprover.addAllApprover(appPhaseN1.getApprovalId(), appPhaseN1.getPhaseOrder(), approvers);
 			repoAppPhase.addApprovalPhase(appPhaseN1);
 		}
 	}

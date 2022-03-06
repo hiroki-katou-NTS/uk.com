@@ -24,10 +24,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
-import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.FullJoinWwfmtApprovalPhase;
-import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtAppover;
-import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalPhase;
-import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalPhasePK;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.*;
+
 /**
  * 
  * @author hoatt
@@ -203,6 +201,16 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		entity.approvalForm = domain.getApprovalForm().value;
 		entity.browsingPhase = domain.getBrowsingPhase();
 		entity.approvalAtr = domain.getApprovalAtr().value;
+		entity.wwfmtAppovers = new ArrayList<>();
+		for (Approver appover : domain.getApprovers()) {
+			WwfmtAppover tmp = new WwfmtAppover();
+			tmp.wwfmtAppoverPK = new WwfmtAppoverPK(domain.getApprovalId(), domain.getPhaseOrder(), appover.getApproverOrder());
+			tmp.jobGCD = appover.getJobGCD();
+			tmp.employeeId = appover.getEmployeeId();
+			tmp.confirmPerson = appover.getConfirmPerson().value;
+			tmp.specWkpId = appover.getSpecWkpId();
+			entity.wwfmtAppovers.add(tmp);
+		}
 		return entity;
 	}
 
