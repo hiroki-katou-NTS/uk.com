@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.smil
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
@@ -10,6 +11,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.TempA
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.smile.pv.SmileTempAbsenceDataEndDate;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.smile.pv.SmileTempAbsenceDataReasonCode;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 
@@ -51,14 +53,17 @@ public class SmileTempAbsenceHistoryCanonicalization extends TempAbsenceHistoryC
 	
 	
 	private static IntermediateResult canonicalize(IntermediateResult interm) {
-		
+
+		val items = new CanonicalItemList()
+				.add(Items.開始日, getStartDate(interm))
+				.add(Items.終了日, getEndDate(interm))
+				.add(Items.休職休業区分, getReasonCode(interm));
+
 		if(interm.isImporting(Items.休職理由)) {
-			interm = interm.addCanonicalized(new CanonicalItem(Items.備考, interm.getItemByNo(Items.休職理由).get().getString()));
+			items.add(Items.備考, interm.getItemByNo(Items.休職理由).get().getString());
 		}
-		
-		return interm.addCanonicalized(new CanonicalItem(Items.開始日, getStartDate(interm)))
-					 .addCanonicalized(new CanonicalItem(Items.終了日, getEndDate(interm)))
-					 .addCanonicalized(new CanonicalItem(Items.休職休業区分, getReasonCode(interm)));
+
+		return interm.addCanonicalized(items);
 	}
 
 
