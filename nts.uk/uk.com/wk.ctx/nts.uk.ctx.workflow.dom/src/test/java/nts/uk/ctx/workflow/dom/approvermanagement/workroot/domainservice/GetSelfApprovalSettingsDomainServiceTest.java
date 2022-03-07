@@ -23,6 +23,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.GetSelfApprovalSettingsDomainService;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.domainservice.employmentapprovalroot.GetSelfApprovalSettingsDomainService.Require;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ApprovalLevelNo;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.ApproverOperationSettings;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.operationsettings.OperationMode;
 
@@ -226,7 +227,8 @@ public class GetSelfApprovalSettingsDomainServiceTest {
 				.mockPersonApprovalRoot(OperationMode.PERSON_IN_CHARGE);
 		personApprovalRoot.getApprRoot().getHistoryItems().forEach(data -> data.setApprovalId("dummy"));
 		ApprovalPhase approvalPhase = DomainServiceTestHelper.mockApprovalPhase();
-		approvalPhase.setPhaseOrder(0);
+		operationSetting.setApprovalLevelNo(ApprovalLevelNo.ONE_LEVEL);
+		approvalPhase.setPhaseOrder(1);
 		new Expectations() {
 			{
 				require.getApprovalPhases(Arrays.asList("dummy"));
