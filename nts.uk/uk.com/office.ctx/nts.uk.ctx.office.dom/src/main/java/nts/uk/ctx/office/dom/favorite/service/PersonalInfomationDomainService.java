@@ -91,7 +91,7 @@ public class PersonalInfomationDomainService {
 					.sid(v)
 					.hierarchyCode(workplaceInfo.get(v) != null ? workplaceInfo.get(v).getHierarchyCode() : null)
 					.order(getOrder(positionId.get(v) != null ? positionId.get(v).getSequenceCode() : null, positionOrder))
-					.positionCode(positionId.get(v) != null ? positionId.get(v).getSequenceCode() : null)
+					.positionCode(positionId.get(v) != null ? positionId.get(v).getJobTitleCode() : null)
 					.employeeCode(personalInfo.get(v) != null ? personalInfo.get(v).getEmployeeCode() : null)
 					.build();
 		}).collect(Collectors.toList());
