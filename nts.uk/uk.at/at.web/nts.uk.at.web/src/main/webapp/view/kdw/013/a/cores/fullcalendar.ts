@@ -1865,7 +1865,7 @@ module nts.uk.ui.at.kdw013.calendar {
             let mapExProps = (ext) => {
                 return {...ext,
                     taskBlock: {
-                        caltimeSpan: { start: ext.taskBlock.start, end: ext.taskBlock.end },
+                        caltimeSpan: { start: ext.taskBlock.caltimeSpan.start, end: ext.taskBlock.caltimeSpan.end },
                         taskDetails: _.map(ext.taskBlock.taskDetails, td => {
                             return {
                                 taskItemValues: _.map(td.taskItemValues, tiv => { return { itemId: tiv.itemId, value: tiv.value } }),
@@ -3226,6 +3226,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     _.forEach(_.filter(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null), ot => {
                         frameNos.push(ot.workNo);
                     });
+                    let startMinutes = (moment(start).hour() * 60) + moment(start).minute();
+                    let endMinutes = (moment(end).hour() * 60) + moment(end).minute();
                     let newEvent = {
                         id: randomId(),
                         start: start,
@@ -3244,7 +3246,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             frameNos,
                             //工数実績作業ブロック
                             taskBlock: {
-                                caltimeSpan: { start: start, end: end },
+                                caltimeSpan: { start: startMinutes, end: endMinutes },
 
                                 taskDetails: [{ supNo: null, taskItemValues: vm.getTaskValues() }]
                             },
