@@ -1,0 +1,128 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+module nts.uk.at.view.kdl016.e {
+    const API = {
+        update: "screen/at/kdl016/update"
+    };
+
+    @bean()
+    export class ViewModel extends ko.ViewModel {
+        detail: KnockoutObservable<ISupportInformation> = ko.observable(null);
+        data: ISupportInformation;
+
+        constructor(params: any) {
+            super();
+            const vm = this;
+        }
+
+        created(params: any) {
+            const vm = this;
+            let dataFromA = nts.uk.ui.windows.getShared("shareFromKdl016a");
+            if (!_.isNil(dataFromA)) {
+                let transfer: ISupportInformation = {
+                    id: dataFromA.id,
+                    employeeId: dataFromA.employeeId,
+                    periodStart: dataFromA.periodStart,
+                    periodEnd: dataFromA.periodEnd,
+                    employeeCode: dataFromA.employeeCode,
+                    employeeName: dataFromA.employeeName,
+                    supportOrgName: dataFromA.supportOrgName,
+                    supportOrgId: dataFromA.supportOrgId,
+                    supportOrgUnit: dataFromA.supportOrgUnit,
+                    supportType: dataFromA.supportType,
+                    timeSpan: dataFromA.timeSpan,
+                    supportTypeName: dataFromA.supportTypeName,
+                    periodDisplay: dataFromA.periodDisplay,
+                    employeeDisplay: dataFromA.employeeDisplay,
+                    timeSpanDisplay: dataFromA.timeSpanDisplay
+                };
+                vm.detail(transfer);
+            }
+        }
+
+        mounted() {
+            const vm = this;
+            $('#timespanMin').focus();
+        }
+
+        update() {
+            const vm = this;
+            vm.$blockui("invisible");
+
+            let command: any = {
+                employeeId: vm.detail().employeeId,
+                supportType: vm.detail().supportType,
+                // periodStart: moment.utc(vm.dateValue().startDate).format("YYYY/MM/DD"),
+                // periodEnd: moment.utc(vm.dateValue().endDate).format("YYYY/MM/DD"),
+                supportTimeSpan: {
+                    start: vm.detail().supportType === 0 ? null : vm.detail().timeSpan.start,
+                    end: vm.detail().supportType === 0 ? null : vm.detail().timeSpan.end
+                }
+            };
+
+            vm.$ajax(API.update, command).then((data: any) => {
+                if (!data.error) {
+                    vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
+                        vm.closeDialog();
+                    });
+                } else {
+                    let errorResults = data.errorResults;
+                    let dataError: any = [];
+                    for (let i = 0; i < errorResults.length; i++) {
+                        dataError.push(
+                            {
+                                id: i + 1,
+                                periodDisplay: errorResults[i].periodDisplay,
+                                employeeDisplay: errorResults[i].employeeDisplay,
+                                errorMessage: errorResults[i].errorMessage,
+                            }
+                        );
+                    }
+
+                    vm.$window.modal("/view/kdl/016/f/index.xhtml", dataError).then((result: any) => {
+                        vm.closeDialog();
+                    });
+                }
+            }).fail(error => {
+                vm.$dialog.error(error).then(() => {
+                    vm.closeDialog();
+                });
+            }).always(() => {
+                vm.$blockui("clear");
+            });
+        }
+
+        closeDialog(): void {
+            const vm = this;
+            vm.$window.close();
+        }
+    }
+
+    interface ISupportInformation {
+        id: number;
+        employeeId: string;
+        periodStart: string;
+        periodEnd: string;
+        employeeCode: string;
+        employeeName: string;
+        supportOrgName: string;
+        supportOrgId: string;
+        supportOrgUnit: number;
+        supportType: number;
+        timeSpan: ITimeSpan;
+        supportTypeName: string;
+        periodDisplay: string;
+        employeeDisplay: string;
+        timeSpanDisplay: string;
+    }
+
+    interface ITimeSpan {
+        start: number;
+        end: number;
+    }
+
+    interface ITargetOrganization {
+        id: string;
+        code: string;
+        unit: number
+    }
+}

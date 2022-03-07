@@ -26,6 +26,9 @@
             tabindex="2"
             data-bind="text: $vm.$i18n('KSM011_18'), click: saveData, enable: $root.errors.isEmpty"
           ></button>
+          <div class="pull-right" >
+            <div tabindex="12" data-bind="ntsFunctionPanel: {width: 200, headerText: $i18n('KSM011_124'), dataSource: functionItems}"></div>
+          </div>
         </div>
         <div id="contents-area">
           <div class="group">
@@ -173,6 +176,46 @@
               </div>
             </div>
           </div>
+          <div class="group">
+            <div class="divi" data-bind="text: $vm.$i18n('KSM011_120')"></div>
+            <hr />
+            <div class="table mb-5">
+              <div class="cell cell-left">
+                <div
+                        data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_121')"
+                ></div>
+              </div>
+              <div class="cell valign-center">
+                <!-- C43, C44 -->
+                <div
+                        class="cf"
+                        tabindex="10"
+                        data-bind="ntsSwitchButton: {
+									name: '#[KSM011_121]',
+									options: switchItems1,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: use,
+									required: true,
+									enable: true }"
+                ></div>
+              </div>
+            </div>
+            <div class="table mb-5">
+              <div class="cell cell-left">
+              </div>
+              <div class="cell valign-center">
+                <!-- C43, C44 -->
+                <div tabindex="11" data-bind="ntsCheckBox: { checked: useSupportInTimezone, enable: enableSupportTime}">#{i18n.getText('KSM011_122')}</div>
+              </div>
+            </div>
+            <div class="table mb-5">
+              <div class="cell valign-center">
+                <div class="" >#{i18n.getText('KSM011_123')}</div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </ui:define>
     </ui:composition>
