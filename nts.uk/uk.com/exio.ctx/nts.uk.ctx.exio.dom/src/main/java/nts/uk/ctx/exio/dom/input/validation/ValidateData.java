@@ -67,7 +67,7 @@ public class ValidateData {
 		return Either.rightVoid();
 	}
 
-	public static interface ValidateRequire extends CorrectedEmployeeCode.EmployeeCodeValidateRequire{
+	public interface ValidateRequire extends CorrectedEmployeeCode.EmployeeCodeValidateRequire{
 
 		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 
