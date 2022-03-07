@@ -92,7 +92,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.loadData(paramKAF000).then((loadDataFlag: any) => {
 				if(loadDataFlag) {
 					vm.$blockui("grayout");
-					return vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()});
+					return vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: vm.params?vm.params.employeeIds:[], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()});
 				}
 			}).then((data: any) =>{
 				if(data) {
