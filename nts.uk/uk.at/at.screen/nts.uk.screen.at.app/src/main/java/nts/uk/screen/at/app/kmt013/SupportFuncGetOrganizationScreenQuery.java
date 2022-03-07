@@ -38,8 +38,8 @@ public class SupportFuncGetOrganizationScreenQuery {
             throw new BusinessException("Msg_3240");
         }
 
-        // 3. 対象組織情報を取得する(会社ID) : List<対象組織情報> TODO
-        val targetOrg = supportAllowOrganizationRepository.getByCid(AppContexts.user().companyId());
+        // 3. 対象組織情報を取得する(会社ID) : List<対象組織情報>
+        val targetOrg = supportAllowOrganizationRepository.getAll(AppContexts.user().companyId());
 
         return targetOrg.stream().map(i-> new SupportFuncGetOrganizationDto(i.getTargetOrg().getUnit().value,i.getTargetOrg().getUnit().value == TargetOrganizationUnit.WORKPLACE.value ? i.getTargetOrg().getWorkplaceId().orElse(null) :i.getTargetOrg().getWorkplaceGroupId().orElse(null))).distinct().collect(Collectors.toList());
     }

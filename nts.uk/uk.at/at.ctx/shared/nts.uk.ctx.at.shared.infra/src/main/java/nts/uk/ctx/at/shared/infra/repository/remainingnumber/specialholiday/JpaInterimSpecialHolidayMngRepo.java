@@ -44,6 +44,11 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 			+ " AND c.pk.ymd >= :startDate "
 			+ " AND c.pk.ymd <= :endDate";
 	
+	private static final String DELETE_BY_SID_CD_BEFORETHEYMD = "DELETE FROM KrcdtInterimHdSpMng c"
+			+ " WHERE c.pk.sid = :sid "
+			+ " AND c.pk.specialHolidayCode = :specialHolidayCode"
+			+ " AND c.pk.ymd <= :ymd";
+	
 
 	private InterimSpecialHolidayMng toDomain(KrcdtInterimHdSpMng c) {
 		
@@ -134,6 +139,16 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 		.setParameter("startDate", period.start())
 		.setParameter("endDate", period.end())
 		.executeUpdate();
+	}
+
+	@Override
+	public void deleteBySidBeforeTheYmd(String sid ,int specialCd, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_BY_SID_CD_BEFORETHEYMD)
+		.setParameter("sid", sid)
+		.setParameter("specialHolidayCode", specialCd)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
+		
 	}
 
 }

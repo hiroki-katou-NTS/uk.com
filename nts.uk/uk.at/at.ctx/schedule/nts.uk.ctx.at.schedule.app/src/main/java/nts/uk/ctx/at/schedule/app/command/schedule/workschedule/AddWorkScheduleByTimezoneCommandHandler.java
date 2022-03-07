@@ -300,7 +300,7 @@ public class AddWorkScheduleByTimezoneCommandHandler extends CommandHandler<AddW
 			// TODO developers are going to update
 			return null;
 		}
-
+		
 		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
 			List<EmpOrganizationImport> results = empAffiliationInforAdapter.getEmpOrganization(standardDate, Arrays.asList(employeeId));
 			if(results.isEmpty())

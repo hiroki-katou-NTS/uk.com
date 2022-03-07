@@ -538,7 +538,7 @@ public class ScheduleRegisterCommandHandler extends AsyncCommandHandler<Schedule
 			return null;
 		}
 
-        @Override
+		@Override
 		public EmpOrganizationImport getEmpOrganization(String employeeId, GeneralDate standardDate) {
 			List<EmpOrganizationImport> results = empAffiliationInforAdapter.getEmpOrganization(standardDate, Arrays.asList(employeeId));
 			if(results.isEmpty())

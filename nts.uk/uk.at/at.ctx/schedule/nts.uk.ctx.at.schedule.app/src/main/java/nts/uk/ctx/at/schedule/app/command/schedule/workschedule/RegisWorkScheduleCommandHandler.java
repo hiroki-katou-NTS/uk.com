@@ -434,5 +434,6 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 		public List<NurseClassification> getListCompanyNurseCategory() {
 			return nurseClassificationRepo.getListCompanyNurseCategory(AppContexts.user().companyId());
 		}
+		
 	}
 }
