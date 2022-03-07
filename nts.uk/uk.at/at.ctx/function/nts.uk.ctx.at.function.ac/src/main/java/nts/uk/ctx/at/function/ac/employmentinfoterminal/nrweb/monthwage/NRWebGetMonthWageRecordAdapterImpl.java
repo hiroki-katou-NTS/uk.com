@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.ac.employmentinfoterminal.nrweb.wage;
+package nts.uk.ctx.at.function.ac.employmentinfoterminal.nrweb.monthwage;
 
 import java.util.List;
 

@@ -36,24 +36,24 @@ public class GetNRWebQueryMonthWage {
 		DatePeriod period = require.getClosurePeriod(closure, param.getNrWebQuery().getYmFormat());
 
 		// 賃金を取得する
-		return getWage(require, param.getSid(), period);
+		return getWage(require, param.getCid(), param.getSid(), period);
 
 	}
 
 	// [2] 勤務予定と勤務実績から賃金を取得する
-	public static NRWebMonthWageAndEmployeeId getWage(Require require, String employeeId, DatePeriod period) {
+	public static NRWebMonthWageAndEmployeeId getWage(Require require, String cid, String employeeId, DatePeriod period) {
 
 		// 予定期間と実績期間の処理時間を取得する
 		SchedulePeriodAndRecordPeriod periodSR = calcPeriod(require, period, employeeId);
 
 		// 月間賃金実績を取得する
 		List<NRWebMonthWageRecordImported> wageRecords = periodSR.getPeriodRecord()
-				.map(c -> require.getMonthWageRecord(employeeId, c))
+				.map(c -> require.getMonthWageRecord(cid, employeeId, c))
 				.orElse(new ArrayList<>());
 
 		// 月間賃金予定を取得する
 		List<NRWebMonthWageScheduleImported> wageSchedules = periodSR.getPeriodSchedule()
-				.map(c -> require.getMonthWageSchedule(employeeId, c))
+				.map(c -> require.getMonthWageSchedule(cid, employeeId, c))
 				.orElse(new ArrayList<>());
 
 		// 勤務予定と勤務実績から賃金を取得する
@@ -151,11 +151,11 @@ public class GetNRWebQueryMonthWage {
 
 		// [R-4] NRWeb照会月間賃金実績を取得
 		// NRWebGetMonthWageRecordAdapter
-		public List<NRWebMonthWageRecordImported> getMonthWageRecord(String employeeId, DatePeriod period);
+		public List<NRWebMonthWageRecordImported> getMonthWageRecord(String cid, String employeeId, DatePeriod period);
 
 		// [R-5] NRWeb照会月間賃金予定を取得
 		// NRWebGetMonthWageScheduleAdapter
-		public List<NRWebMonthWageScheduleImported> getMonthWageSchedule(String employeeId, DatePeriod period);
+		public List<NRWebMonthWageScheduleImported> getMonthWageSchedule(String cid, String employeeId, DatePeriod period);
 
 	}
 }
