@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.val;
 import nts.gul.util.Either;
 import nts.uk.ctx.exio.dom.input.DataItem;
+import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
@@ -30,15 +31,33 @@ public class ValidateData {
 	public static Either<List<ItemError>, RevisedDataRecord> validate(ValidateRequire require, ExecutionContext context,
 			RevisedDataRecord record) {
 
+		val correctedItems = new DataItemList();
 		val errors = new ArrayList<ItemError>();
-		record = CorrectEmployeeCode.correct(require, context, record);
 
 		for (val item : record.getItems()) {
 			validateBySystem(require, context, item)
+					.ifRight(__ -> correctedItems.add(correct(require, context, item)))
 					.mapEither(__ -> validateByUserCondition(require, context, item))
 					.ifLeft(err -> errors.add(new ItemError(item.getItemNo(), err.getText())));
 		}
-		return errors.isEmpty() ? Either.right(record) : Either.left(errors);
+
+		if (!errors.isEmpty()) {
+			Either.left(errors);
+		}
+
+		return Either.right(new RevisedDataRecord(record.getRowNo(), correctedItems));
+	}
+
+	/**
+	 * ユーザ設定の検証をする前に、型による補正がかかる項目を自動補正する
+	 * @param require
+	 * @param context
+	 * @param item
+	 * @return
+	 */
+	private static DataItem correct(ValidateRequire require, ExecutionContext context, DataItem item) {
+		item = CorrectEmployeeCode.correct(require, context, item);
+		return item;
 	}
 
 	private static Either<ErrorMessage, Void> validateBySystem(ValidateRequire require, ExecutionContext context,
