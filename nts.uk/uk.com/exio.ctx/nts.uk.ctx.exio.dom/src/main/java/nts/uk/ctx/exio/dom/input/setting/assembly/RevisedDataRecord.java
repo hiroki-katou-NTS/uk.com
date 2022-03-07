@@ -30,14 +30,9 @@ public class RevisedDataRecord {
 	}
 	
 	public RevisedDataRecord replace(DataItem newDataItem) {
-		val removedTarget = remove(newDataItem.getItemNo());
-		removedTarget.add(newDataItem);
-		return new RevisedDataRecord(this.rowNo, new DataItemList(removedTarget)); 
-	}
-	
-	private List<DataItem> remove(int itemNo) {
-		return this.items.stream()
-								.filter(item -> !(item.getItemNo() == itemNo))
-								.collect(Collectors.toList());
+		val newItems = items.stream()
+				.map(item -> item.getItemNo() == newDataItem.getItemNo() ? newDataItem : item)
+				.collect(Collectors.toList());
+		return new RevisedDataRecord(this.rowNo, new DataItemList(newItems));
 	}
 }
