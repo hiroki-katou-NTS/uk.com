@@ -25,6 +25,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantRemainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantSettingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.stock.StockHolidayRemainingCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.EmploymentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.WorkplaceCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.EquipmentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.EquipmentClassiicationCanonicalization;
@@ -34,7 +35,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskChildCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.WorkLocationIpCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.shift.businesscalendar.PublicHolidayCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.EmploymentCanonicalization;
 
 /**
  * 受入グループID

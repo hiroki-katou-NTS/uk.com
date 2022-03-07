@@ -1,10 +1,11 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 
