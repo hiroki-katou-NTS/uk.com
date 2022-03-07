@@ -42,6 +42,8 @@ DOMAIN_ID,ITEM_NO,ITEM_NAME,ITEM_TYPE,REQUIRED,IS_PRIMARYKEY,CHECK_METHOD,FQN
 32,6,"備考",0,false,false,1,"nts.uk.ctx.office.dom.equipment.information.EquipmentRemark"
 33,1,"設備分類コード",0,true,true,1,"nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationCode"
 33,2,"設備分類名称",0,true,false,1,"nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationName"
+36,1,"勤務場所コード",0,true,true,1,"nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD"
+36,2,"勤務場所名称",0,true,false,1,"nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationName"
 37,1,"勤務場所コード",0,true,true,1,"nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD"
 37,2,"NET1",1,true,true,,""
 37,3,"NET2",1,true,true,,""
