@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="kmt013.a.css"/>
+        <com:scriptfile path="kmt013.a.vm.js"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/011/kcp.011.vm.js" of="/nts.uk.com.web"/>
+        <com:stylefile path="/view/kcp/011/main.css" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/017/kcp017.js" of="/nts.uk.com.web"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <button id="A1_1" tabindex="1" class="proceed" data-bind="text: $vm.$i18n('KMT013_2'), click: registerSupport"/>
+            <button id="A1_2" tabindex="2" class="danger"
+                    data-bind="text: $vm.$i18n('KMT013_3'), click: deleteSupport, enable: updateMode()"/>
+            <button id="A1_3" tabindex="3" data-bind="text: $vm.$i18n('KMT013_4'), click: openDialogCDL023, visible: !isWorkplaceGroupMode(), enable: updateMode()"/>
+        </div>
+        <div id="contents-area" class="fixed-flex-layout">
+            <!--<div class="fixed-flex-layout-left caret-right caret-background deprecate">-->
+            <div class="fixed-flex-layout-left">
+                <!--<i class="icon icon-searchbox"></i>-->
+                <!--<div style="background-color: #e0f59e" data-bind="component: {-->
+                <div tabindex="4" data-bind="component: {
+                    name: componentName,
+                    params: {
+                        unit: unit,
+                        selectType: selectType(),
+                        multiple: multiple(),
+                        baseDate: baseDate(),
+                        onDialog: onDialog(),
+                        showAlreadySetting: showAlreadySetting(),
+                        rows: rows(),
+                        alreadySettingWorkplaces: alreadySettingWorkplaces,
+                        alreadySettingWorkplaceGroups: alreadySettingWorkplaceGroups,
+                        selectedWorkplaces: selectedWkpId,
+                        selectedWorkplaceGroups: selectedWkpGroupId
+                    }
+                }"/>
+            </div>
+            <div class="fixed-flex-layout-right">
+                <div>
+                    <span id="A3_1" class="label" data-bind="{ text: a3_1Txt() }"/>
+                    <span id="A3_2" class="label" data-bind="{ text: currentWrkName() }"/>
+                </div>
+                <div id="A3_3"><hr/></div>
+                <div  data-bind="ntsFormLabel: {required: true, text: a4_1Txt() }"></div>
+                <div id="functions-area-right" style="margin-top: 5px">
+                    <button id="A4_2" tabindex="5" data-bind="text: $vm.$i18n('KMT013_6') , click: a4_2BtnClick, enable: isA2NotEmpty()"/>
+                    <button id="A4_3" tabindex="6" class="danger" data-bind="text: $vm.$i18n('KMT013_3'), click: a4_3BtnClick, enable: enableA43Btn()"/>
+                </div>
+                <div>
+                    <table id="multi-list" data-bind="ntsGridList: {
+                        height: 376,
+                        options: supportableList,
+                        optionsValue: 'id',
+                        columns: ko.observableArray([
+                            { headerText: 'ID', key: 'id', width: 0, hidden: true },
+                            { headerText: $i18n('KMT013_7'), key: 'code', width: 120 },
+                            { headerText: $i18n('KMT013_8'), key: 'name', width: 240 }
+                        ]),
+                        multiple: true,
+                        value: currentCodeList
+                    }"></table>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

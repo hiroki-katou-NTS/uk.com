@@ -35,19 +35,19 @@ public class JpaSupportableEmployeeRepository extends JpaRepository implements S
 
     static {
         StringBuilder builderString = new StringBuilder();
-        builderString.append(" SELECT ");
+        builderString.append(" SELECT a");
         builderString.append(" FROM KshdtSupportTableEmployee a ");
         builderString.append(" WHERE a.Id IN :listId ");
         SELECT_BY_LIST_ID = builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append(" SELECT ");
+        builderString.append(" SELECT a");
         builderString.append(" FROM KshdtSupportTableEmployee a ");
-        builderString.append(" WHERE a.employeeId  =:employeeId ");
+        builderString.append(" WHERE a.employeeId = :employeeId ");
         SELECT_BY_SID = builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append(" SELECT ");
+        builderString.append(" SELECT a");
         builderString.append(" FROM KshdtSupportTableEmployee a ");
         builderString.append(" WHERE a.employeeId IN =:employeeIds ");
         SELECT_BY_SIDS = builderString.toString();
@@ -57,9 +57,9 @@ public class JpaSupportableEmployeeRepository extends JpaRepository implements S
         //|| 期間.開始日 between $.期間.開始日 and $.期間.終了日
         //|| 期間.終了日 between $.期間.開始日 and $.期間.終了日
         builderString = new StringBuilder();
-        builderString.append(" SELECT ");
+        builderString.append(" SELECT a");
         builderString.append(" FROM KshdtSupportTableEmployee a ");
-        builderString.append(" WHERE a.employeeId  =:employeeId ");
+        builderString.append(" WHERE a.employeeId = :employeeId ");
         builderString.append(" AND ");
         builderString.append(" (( a.startDate  >= :startDate ");
         builderString.append(" AND a.startDate  <= :endDate )");
@@ -75,9 +75,9 @@ public class JpaSupportableEmployeeRepository extends JpaRepository implements S
         SELECT_BY_SID_AND_DATEPERIOD = builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append(" SELECT ");
+        builderString.append(" SELECT a");
         builderString.append(" FROM KshdtSupportTableEmployee a ");
-        builderString.append(" WHERE a.employeeId IN  =:employeeIds ");
+        builderString.append(" WHERE a.employeeId IN :employeeIds ");
         builderString.append(" AND ");
         builderString.append(" (( a.startDate  >= :startDate ");
         builderString.append(" AND a.startDate  <= :endDate )");
@@ -93,10 +93,10 @@ public class JpaSupportableEmployeeRepository extends JpaRepository implements S
         SELECT_BY_SIDS_AND_DATEPERIOD = builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append(" SELECT ");
+        builderString.append(" SELECT a");
         builderString.append(" FROM KshdtSupportTableEmployee a ");
-        builderString.append(" WHERE a.recipientTargetUnit   =:recipientTargetUnit ");
-        builderString.append(" WHERE a.recipientTargetId   =:recipientTargetId ");
+        builderString.append(" WHERE a.recipientTargetUnit = :recipientTargetUnit ");
+        builderString.append(" AND a.recipientTargetId = :recipientTargetId ");
         builderString.append(" AND ");
         builderString.append(" (( a.startDate  >= :startDate ");
         builderString.append(" AND a.startDate  <= :endDate )");
@@ -223,12 +223,10 @@ public class JpaSupportableEmployeeRepository extends JpaRepository implements S
                 entity.getId(),
                 new EmployeeId(entity.getEmployeeId()),
                 targetRecipient,
-                EnumAdaptor.valueOf(entity.getSupportType(), SupportType.class),
+                entity.getSupportType() == 0 ? SupportType.ALLDAY : SupportType.TIMEZONE,
                 new DatePeriod(entity.startDate, entity.endDate),
                 timespan
         );
-
-
     }
 
 }

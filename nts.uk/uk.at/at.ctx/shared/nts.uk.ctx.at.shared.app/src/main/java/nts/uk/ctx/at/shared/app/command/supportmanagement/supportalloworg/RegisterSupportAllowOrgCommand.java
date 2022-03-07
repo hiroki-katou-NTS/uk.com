@@ -18,7 +18,5 @@ public class RegisterSupportAllowOrgCommand {
 
 @Data
 class OrgCanBeSupportDto {
-    private int orgUnit;
-
     private String orgId;
 }

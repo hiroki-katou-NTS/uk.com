@@ -18,7 +18,7 @@ public class JpaSupportAllowOrganizationRepository extends JpaRepository impleme
     public static final String DELETE_BY_TARGET_ORG;
     public static final String SELECT_BY_TARGET_ORG;
     public static final String SELECT_BY_SUPPORT_ORG;
-
+    public static final String SELECT_TARGET_BYID;
     static {
         StringBuilder builderString = new StringBuilder();
         builderString.append( " DELETE ");
@@ -29,7 +29,7 @@ public class JpaSupportAllowOrganizationRepository extends JpaRepository impleme
         DELETE_BY_TARGET_ORG = builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append( " SELECT ");
+        builderString.append( " SELECT a");
         builderString .append(" FROM KshmtSupportPermittedOrg a ");
         builderString .append(" WHERE a.permittedOrgPk.targetUnit =:targetUnit ");
         builderString .append(" AND a.permittedOrgPk.targetId =:targetId ");
@@ -37,12 +37,18 @@ public class JpaSupportAllowOrganizationRepository extends JpaRepository impleme
         SELECT_BY_TARGET_ORG = builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append( " SELECT ");
+        builderString.append( " SELECT a");
         builderString .append(" FROM KshmtSupportPermittedOrg a ");
         builderString .append(" WHERE a.permittedOrgPk.permittedTargetUnit =:permittedTargetUnit ");
         builderString .append(" AND a.permittedOrgPk.permittedTargetId =:permittedTargetId ");
         builderString .append(" AND a.companyId =:cid ");
         SELECT_BY_SUPPORT_ORG = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append( " SELECT a");
+        builderString .append(" FROM KshmtSupportPermittedOrg a ");
+        builderString .append(" WHERE a.companyId =:cid ");
+        SELECT_TARGET_BYID = builderString.toString();
     }
 
     @Override
@@ -55,7 +61,8 @@ public class JpaSupportAllowOrganizationRepository extends JpaRepository impleme
 
     @Override
     public void update(String cid, SupportAllowOrganization supportAllowOrg) {
-        this.commandProxy().update(KshmtSupportPermittedOrg.toEntity(supportAllowOrg,cid));
+        val entity = KshmtSupportPermittedOrg.toEntity(supportAllowOrg,cid);
+        this.commandProxy().update(entity);
     }
 
     @Override
@@ -65,6 +72,7 @@ public class JpaSupportAllowOrganizationRepository extends JpaRepository impleme
                 .setParameter("targetId",targetOrg.getTargetId())
                 .setParameter("cid",cid)
                 .executeUpdate();
+        this.getEntityManager().flush();
 
     }
 
@@ -90,6 +98,14 @@ public class JpaSupportAllowOrganizationRepository extends JpaRepository impleme
     public boolean exists(String cid, TargetOrgIdenInfor targetOrg) {
         return !this.getListByTargetOrg(cid,targetOrg).isEmpty();
     }
+
+    @Override
+    public List<SupportAllowOrganization> getByCid(String cid){
+        return this.queryProxy().query(SELECT_TARGET_BYID,KshmtSupportPermittedOrg.class)
+                .setParameter("cid",cid)
+                .getList(this::toDomain);
+    }
+
     private SupportAllowOrganization toDomain(KshmtSupportPermittedOrg entity){
         val unitTargetOrg = EnumAdaptor.valueOf(entity.getPermittedOrgPk().getTargetUnit(), TargetOrganizationUnit.class);
         val unitSupportable = EnumAdaptor.valueOf(entity.getPermittedOrgPk().getPermittedTargetUnit(), TargetOrganizationUnit.class);

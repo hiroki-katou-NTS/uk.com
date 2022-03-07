@@ -74,7 +74,7 @@ public class CopySupportAllowOrgCommandHandler extends CommandHandlerWithResult<
 
             // 3.4. 複写する(Require, List<応援許可する組織>, 対象組織識別情報, boolean)
             RequireCopyImpl requireCopy = new RequireCopyImpl(cid, supportAllowOrgRepo);
-            Optional<AtomTask> atomTaskOpt = CopySupportAllowOrganizationService.copy(requireCopy, targetOrgAllows, destinationTargetOrg, command.isOverwrite());
+            Optional<AtomTask> atomTaskOpt = CopySupportAllowOrganizationService.copy(requireCopy, targetOrgAllows, destinationTargetOrg, command.isOverWrite());
 
             atomTaskOpt.ifPresent(atomTask -> transaction.execute(atomTask::run));
 
