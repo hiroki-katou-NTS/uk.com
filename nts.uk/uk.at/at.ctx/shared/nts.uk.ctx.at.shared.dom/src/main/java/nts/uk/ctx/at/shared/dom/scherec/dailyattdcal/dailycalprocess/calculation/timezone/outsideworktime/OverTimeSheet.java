@@ -883,4 +883,14 @@ public class OverTimeSheet {
 		}
 		return Optional.of(new OverTimeSheet(recreated));
 	}
+	
+	/**
+	 * 逆丸めにして取得する
+	 * @return 残業時間帯
+	 */
+	public OverTimeSheet getReverseRounding() {
+		return new OverTimeSheet(this.frameTimeSheets.stream()
+				.map(f -> f.getReverseRounding())
+				.collect(Collectors.toList()));
+	}
 }

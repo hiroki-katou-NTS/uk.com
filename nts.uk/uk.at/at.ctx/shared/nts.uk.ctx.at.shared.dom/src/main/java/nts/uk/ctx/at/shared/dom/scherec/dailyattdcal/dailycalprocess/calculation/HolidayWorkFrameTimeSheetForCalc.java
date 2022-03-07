@@ -375,4 +375,23 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 		
 		return Optional.of(recreated);
 	}
+	
+	/**
+	 * 逆丸めにして取得する
+	 * @return 休出枠時間帯
+	 */
+	public HolidayWorkFrameTimeSheetForCalc getReverseRounding() {
+		return new HolidayWorkFrameTimeSheetForCalc(
+				this.timeSheet.clone(),
+				this.rounding.getReverseRounding(),
+				this.recordedTimeSheet.stream().map(r -> r.clone()).collect(Collectors.toList()),
+				this.deductionTimeSheet.stream().map(d -> d.clone()).collect(Collectors.toList()),
+				this.bonusPayTimeSheet.stream().map(b -> b.clone()).collect(Collectors.toList()),
+				this.specBonusPayTimesheet.stream().map(s -> s.clone()).collect(Collectors.toList()),
+				this.midNightTimeSheet.clone(),
+				this.frameTime.clone(),
+				this.TreatAsTimeSpentAtWork,
+				new EmTimezoneNo(this.HolidayWorkTimeSheetNo.v().intValue()),
+				this.statutoryAtr.isPresent() ? Finally.of(StaturoryAtrOfHolidayWork.valueOf(this.statutoryAtr.get().toString())) : Finally.empty());
+	}
 }

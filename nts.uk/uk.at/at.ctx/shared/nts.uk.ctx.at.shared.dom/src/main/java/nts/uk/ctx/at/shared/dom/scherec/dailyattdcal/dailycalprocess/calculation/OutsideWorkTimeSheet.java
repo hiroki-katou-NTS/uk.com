@@ -319,4 +319,14 @@ public class OutsideWorkTimeSheet {
 		Optional<HolidayWorkTimeSheet> holidayWorkTime = this.holidayWorkTimeSheet.flatMap(h -> h.recreateWithDuplicate(timeSpan, commonSet));
 		return new OutsideWorkTimeSheet(overTime, holidayWorkTime);
 	}
+	
+	/**
+	 * 逆丸めにして取得する
+	 * @return 就業時間外時間帯
+	 */
+	public OutsideWorkTimeSheet getReverseRounding() {
+		return new OutsideWorkTimeSheet(
+				this.overTimeWorkSheet.map(o -> o.getReverseRounding()),
+				this.holidayWorkTimeSheet.map(h -> h.getReverseRounding()));
+	}
 }
