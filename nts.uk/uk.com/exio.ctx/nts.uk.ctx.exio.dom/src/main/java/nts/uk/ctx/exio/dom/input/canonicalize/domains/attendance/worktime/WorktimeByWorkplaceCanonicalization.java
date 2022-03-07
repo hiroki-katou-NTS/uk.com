@@ -41,12 +41,9 @@ public class WorktimeByWorkplaceCanonicalization extends IndependentCanonicaliza
 	protected Optional<IntermediateResult> canonicalizeExtends(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context, IntermediateResult interm) {
 		// 職場コードの正準化
 		interm =  interm.optionalItem(CanonicalItem.of(Items.基準日, GeneralDate.today()));
-		val either = workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo());
-		if (either.isLeft()) {
-			require.add(ExternalImportError.of(context.getDomainId(), either.getLeft()));
-			return Optional.empty();
-		}
-		return Optional.of(either.getRight());
+		return workplaceCodeCanonicalization.canonicalize(require, interm, interm.getRowNo())
+				.ifLeft(error -> require.add(ExternalImportError.of(context.getDomainId(), error)))
+				.getRightOptional();
 	}
 
 	@Override
