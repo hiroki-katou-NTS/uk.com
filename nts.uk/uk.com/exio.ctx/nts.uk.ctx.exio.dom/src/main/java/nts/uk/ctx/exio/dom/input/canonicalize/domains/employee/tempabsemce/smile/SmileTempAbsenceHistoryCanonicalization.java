@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.TempAbsenceHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.smile.pv.SmileTempAbsenceDataEndDate;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.tempabsemce.smile.pv.SmileTempAbsenceDataReasonCode;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 
 public class SmileTempAbsenceHistoryCanonicalization extends TempAbsenceHistoryCanonicalization{
 	
@@ -72,6 +74,11 @@ public class SmileTempAbsenceHistoryCanonicalization extends TempAbsenceHistoryC
 	private GeneralDate getEndDate(IntermediateResult t) { 
 		return new SmileTempAbsenceDataEndDate(t.getItemByNo(Items.終了年月日).get().getString())
 						.getGeneralDate();
+	}
+	
+	@Override
+	public ImportingDomainId transferDataTo(ExecutionContext context) {
+		return ImportingDomainId.TEMP_ABSENCE_HISTORY;
 	}
 
 }

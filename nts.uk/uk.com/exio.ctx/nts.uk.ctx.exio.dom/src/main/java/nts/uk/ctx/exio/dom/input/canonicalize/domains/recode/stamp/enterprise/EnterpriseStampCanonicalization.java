@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.StampCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.pv.EnterpriseStampDataFunctionNo;
@@ -15,6 +16,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.stamp.enterprise.pv
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -120,5 +122,10 @@ public class EnterpriseStampCanonicalization extends StampCanonicalization {
         }
 
         return interm;
+    }
+    
+    @Override
+    public ImportingDomainId transferDataTo(ExecutionContext context) {
+    	return ImportingDomainId.STAMP;
     }
 }
