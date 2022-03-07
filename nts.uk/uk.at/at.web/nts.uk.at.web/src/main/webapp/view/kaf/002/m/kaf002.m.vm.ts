@@ -155,7 +155,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 							$('#kaf002TabPanel').width(580)							
 					}
                     else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
-                        let totalWidth = 900;
+                        let totalWidth = 890;
                         if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
                             totalWidth = totalWidth - 230;
                         }
@@ -173,7 +173,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 							$('#kaf002TabPanel').width(680)							
 					}
                     else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
-                        let totalWidth = 1000;
+                        let totalWidth = 990;
                         if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
                             totalWidth = totalWidth - 230;
                         }
@@ -312,7 +312,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 						$('#kaf002TabPanel').width(580)							
 				}
                 else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
-                    let totalWidth = 900;
+                    let totalWidth = 890;
                     if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
                         totalWidth = totalWidth - 230;
                     }
@@ -330,7 +330,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 						$('#kaf002TabPanel').width(680)							
 				}
                 else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
-                    let totalWidth = 1000;
+                    let totalWidth = 990;
                     if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
                         totalWidth = totalWidth - 230;
                     }

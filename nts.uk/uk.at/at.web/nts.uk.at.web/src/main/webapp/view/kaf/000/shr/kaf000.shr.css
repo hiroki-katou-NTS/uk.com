@@ -46,7 +46,7 @@ table.left-aligned td:not(:first-child) {
 }
 
 .left-panel {
-	width: calc(100% - 348px);
+	/* width: calc(100% - 348px); */
 	padding-bottom: 5px;
 	height: inherit;
 	overflow-y: auto !important;
