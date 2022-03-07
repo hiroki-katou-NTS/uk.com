@@ -1,4 +1,4 @@
-﻿INS_DATE,INS_CCD,INS_SCD,INS_PG,UPD_DATE,UPD_CCD,UPD_SCD,UPD_PG,EXCLUS_VER,LANGUAGE_ID,SYSTEM_ID,CLASS_ID,RESOURCE_ID,CONTENT,RESOURCE_TYPE
+INS_DATE,INS_CCD,INS_SCD,INS_PG,UPD_DATE,UPD_CCD,UPD_SCD,UPD_PG,EXCLUS_VER,LANGUAGE_ID,SYSTEM_ID,CLASS_ID,RESOURCE_ID,CONTENT,RESOURCE_TYPE
 ,,,,,,,,0,"en","C","CAS001","1","",1
 ,,,,,,,,0,"en","C","CAS001","10","",1
 ,,,,,,,,0,"en","C","CAS001","11","",1
@@ -25184,6 +25184,7 @@
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_HourlySegment_MINUTE","分",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_INDIVIDUAL_ANNUITY_INSURANCE","個人年金保険",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_INSERT_ONLY","既存データが存在しないデータのみ受け入れる",1
+,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_WORK_LOCATION","勤務場所",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_WORK_LOCATION_IP","勤務場所IPマスタ",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_AFF_COMPANY_HISTORY","入社退職履歴",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_AFF_WORKPLACE_HISTORY","所属職場履歴",1
@@ -25214,6 +25215,7 @@
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_WORKPLACE","職場マスタ",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_TASK_ASSIGN_WORKPLACE","職場別作業の絞込",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_TASK_ASSIGN_EMPLOYEE","社員別作業の絞込",1
+,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingDomainId_WORKTIME_BY_WORKSPACE","職場別就業時間帯",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingMode_DELETE_DOMAIN_BEFOREHAND","受入対象グループのデータをすべて削除して受け入れる",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingMode_DELETE_RECORD_BEFOREHAND","受入対象レコードを削除して受け入れる",1
 ,,,,,,,,0,"ja","C","SYSTEM","Enum_ImportingMode_INSERT_ONLY","既存データが存在しないデータのみ受け入れる",1
