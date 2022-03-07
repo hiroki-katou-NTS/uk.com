@@ -36,6 +36,7 @@ module nts.uk.at.view.kfp001.b {
             enableText: KnockoutObservable<boolean>;
 
             dateValue: KnockoutObservable<any>;
+            dateCurrentValue: KnockoutObservable<any>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
             peopleCount: KnockoutObservable<string> = ko.observable('');
@@ -54,6 +55,7 @@ module nts.uk.at.view.kfp001.b {
                 self.startDateString = ko.observable("");
                 self.endDateString = ko.observable("");
                 self.dateValue = ko.observable({});
+                self.dateCurrentValue = ko.observable({});
 
                 self.startDateString.subscribe(function(value) {
                     self.dateValue().startDate = value;
@@ -115,6 +117,11 @@ module nts.uk.at.view.kfp001.b {
                             endDate: self.currentItem().endDate()
                         });
 
+                        self.dateCurrentValue({
+                            startDate: self.currentItem().startDate(),
+                            endDate: self.currentItem().endDate()
+                        });
+
                         self.enableText(false);
                         nts.uk.ui.errors.clearAll();
                         $('#update-mode').show();
@@ -124,7 +131,14 @@ module nts.uk.at.view.kfp001.b {
                     }
                     $('.control-group').find('#code-text-d4-2').focus();
                 });
-
+                self.reintegration.subscribe((vl)=>{
+                    if(vl == false){
+                        self.dateValue({
+                            startDate: self.dateCurrentValue().startDate,
+                            endDate: self.dateCurrentValue().endDate
+                        });
+                    }
+                });
                 //
                 self.enableNEW = ko.observable(true);
                 self.enableDEL = ko.observable(true);

@@ -519,8 +519,8 @@ module nts.uk.at.view.kdw008.a {
                 let self = this,
                     dfd = $.Deferred();
                 service.getModifyAnyPeriodByCode(code).done(data => {
-                    $("#swap-list-grid2").igGridSelection("clearSelection");
-                    $("#swap-list-grid1").igGridSelection("clearSelection");
+                    $("#swap-list4-grid2").igGridSelection("clearSelection");
+                    $("#swap-list4-grid1").igGridSelection("clearSelection");
                     self.modifyAnyPeriodValue.removeAll();
                     self.modifyAnyPeriodDataSource.removeAll();
                     self.modifyAnyPeriodDataSource(_.cloneDeep(self.modifyAnyPeriodAttItems()));
