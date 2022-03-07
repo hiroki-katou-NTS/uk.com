@@ -45,7 +45,7 @@ public class CorrectEmployeeCode {
 				.orElse(false);
 	}
 	
-	public static interface EmployeeCodeValidateRequire{
+	public interface EmployeeCodeValidateRequire{
 		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 
 		Optional<EmployeeCESetting> getEmployeeCESetting(String companyId);
