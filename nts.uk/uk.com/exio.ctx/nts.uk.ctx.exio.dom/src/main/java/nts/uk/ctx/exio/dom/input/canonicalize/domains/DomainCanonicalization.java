@@ -18,6 +18,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalizedDataRecord;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 
 /**
@@ -49,6 +50,15 @@ public interface DomainCanonicalization {
 	 */
 	ImportingDataMeta appendMeta(ImportingDataMeta source);
 
+	
+	/**
+	 *正準化データの移送先を既存ドメインに従う場合のみOverrideする 
+	 *(exp...打刻E版、Smile休職情報)
+	 */
+	default ImportingDomainId transferDataTo(ExecutionContext context) {
+		return context.getDomainId();
+	}
+	
 	/**
 	 * 受入に影響される既存データを補正する
 	 * @param require
