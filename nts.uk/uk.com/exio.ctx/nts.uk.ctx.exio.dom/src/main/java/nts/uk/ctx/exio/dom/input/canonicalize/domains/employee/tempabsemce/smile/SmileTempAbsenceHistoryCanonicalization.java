@@ -50,15 +50,15 @@ public class SmileTempAbsenceHistoryCanonicalization extends TempAbsenceHistoryC
 	}
 	
 	
-	private IntermediateResult create(IntermediateResult t) {
+	private IntermediateResult create(IntermediateResult interm) {
 		
-		if(t.isImporting(Items.休職理由)) {
-			t = t.addCanonicalized(new CanonicalItem(Items.備考, t.getItemByNo(Items.休職理由).get().getString()));
+		if(interm.isImporting(Items.休職理由)) {
+			interm = interm.addCanonicalized(new CanonicalItem(Items.備考, interm.getItemByNo(Items.休職理由).get().getString()));
 		}
 		
-		return t.addCanonicalized(new CanonicalItem(Items.開始日, getStartDate(t)))
-					 .addCanonicalized(new CanonicalItem(Items.終了日, getEndDate(t)))
-					 .addCanonicalized(new CanonicalItem(Items.休職休業区分, getReasonCode(t)));
+		return interm.addCanonicalized(new CanonicalItem(Items.開始日, getStartDate(interm)))
+					 .addCanonicalized(new CanonicalItem(Items.終了日, getEndDate(interm)))
+					 .addCanonicalized(new CanonicalItem(Items.休職休業区分, getReasonCode(interm)));
 	}
 
 
