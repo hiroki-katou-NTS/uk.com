@@ -125,7 +125,7 @@ public class EnterpriseStampCanonicalization extends StampCanonicalization {
     }
     
     @Override
-    public ImportingDomainId transferDataTo(ExecutionContext context) {
+    public ImportingDomainId getTransferDomainId(ExecutionContext context) {
     	return ImportingDomainId.STAMP;
     }
 }

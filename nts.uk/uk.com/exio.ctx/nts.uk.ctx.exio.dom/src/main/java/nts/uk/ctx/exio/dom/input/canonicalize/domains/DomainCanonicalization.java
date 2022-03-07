@@ -52,10 +52,10 @@ public interface DomainCanonicalization {
 
 	
 	/**
-	 *正準化データの移送先を既存ドメインに従う場合のみOverrideする 
-	 *(exp...打刻E版、Smile休職情報)
+	 * 他のドメインの移送マッピングを流用する場合はOverrideすること
+	 *　(exp...打刻E版、Smile休職情報)
 	 */
-	default ImportingDomainId transferDataTo(ExecutionContext context) {
+	default ImportingDomainId getTransferDomainId(ExecutionContext context) {
 		return context.getDomainId();
 	}
 	

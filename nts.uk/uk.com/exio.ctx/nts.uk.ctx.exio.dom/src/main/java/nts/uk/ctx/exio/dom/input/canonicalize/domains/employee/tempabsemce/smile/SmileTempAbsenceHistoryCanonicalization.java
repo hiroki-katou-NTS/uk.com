@@ -82,7 +82,7 @@ public class SmileTempAbsenceHistoryCanonicalization extends TempAbsenceHistoryC
 	}
 	
 	@Override
-	public ImportingDomainId transferDataTo(ExecutionContext context) {
+	public ImportingDomainId getTransferDomainId(ExecutionContext context) {
 		return ImportingDomainId.TEMP_ABSENCE_HISTORY;
 	}
 

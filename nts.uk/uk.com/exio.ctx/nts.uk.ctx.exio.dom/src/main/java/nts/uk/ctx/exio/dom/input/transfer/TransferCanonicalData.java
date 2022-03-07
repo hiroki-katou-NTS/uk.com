@@ -61,7 +61,7 @@ public class TransferCanonicalData {
 
 		String importingDomainName;
 		{
-			ImportingDomainId domainId = context.getDomainId().createCanonicalization().transferDataTo(context);
+			ImportingDomainId domainId = context.getDomainId().createCanonicalization().getTransferDomainId(context);
 			importingDomainName = require.getImportingDomain(domainId).getName();
 		}
 
@@ -141,7 +141,7 @@ public class TransferCanonicalData {
 	
 	private static ConversionSource getConversionSource(Require require, ExecutionContext context) {
 		
-		ImportingDomainId transferToDomain = context.getDomainId().createCanonicalization().transferDataTo(context);
+		ImportingDomainId transferToDomain = context.getDomainId().createCanonicalization().getTransferDomainId(context);
 		
 		String imporingDomainName =  require.getImportingDomain(transferToDomain).getName();
 
