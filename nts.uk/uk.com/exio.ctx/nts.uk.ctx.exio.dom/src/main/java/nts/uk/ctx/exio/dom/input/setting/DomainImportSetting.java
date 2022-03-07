@@ -71,7 +71,6 @@ public class DomainImportSetting implements DomainAggregate {
 	 * 1レコード分の組み立て
 	 * @param require
 	 * @param context
-	 * @param columnNames
 	 * @param csvRecord
 	 */
 	private void processRecord(
