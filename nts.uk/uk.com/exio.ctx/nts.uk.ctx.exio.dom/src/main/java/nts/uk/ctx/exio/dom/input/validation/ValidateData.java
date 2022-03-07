@@ -32,7 +32,7 @@ public class ValidateData {
 
 		val errors = new ArrayList<ItemError>();
 		record = CorrectedEmployeeCode.correct(require, context, record);
-		
+
 		for (val item : record.getItems()) {
 			validateBySystem(require, context, item)
 					.mapEither(err -> validateByUserCondition(require, context, item))
@@ -44,8 +44,10 @@ public class ValidateData {
 	private static Either<ErrorMessage, Void> validateBySystem(ValidateRequire require, ExecutionContext context,
 			DataItem item) {
 
-		return require.getImportableItem(context.getDomainId(), item.getItemNo()).validate(item)
-				.map(err -> Either.leftVoid(err)).orElseGet(() -> Either.rightVoid());
+		return require.getImportableItem(context.getDomainId(), item.getItemNo())
+				.validate(item)
+				.map(err -> Either.leftVoid(err))
+				.orElseGet(() -> Either.rightVoid());
 	}
 
 	/**
