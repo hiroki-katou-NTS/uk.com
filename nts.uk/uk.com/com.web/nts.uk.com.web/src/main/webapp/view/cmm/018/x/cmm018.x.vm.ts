@@ -28,6 +28,7 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 				.then(() => self.$ajax('com', API.checkBootMode))
 				.then((response: { operationMode: number }) => {
 					self.mode(response?.operationMode || OperationMode.PERSON_IN_CHARGE);
+					self.oldMode = _.cloneDeep(self.mode());
 				})
 				.always(() => {
 					self.subscribeMode();
