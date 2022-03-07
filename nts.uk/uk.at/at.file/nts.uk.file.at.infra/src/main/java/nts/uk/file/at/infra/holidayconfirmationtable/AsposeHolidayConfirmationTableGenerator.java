@@ -230,7 +230,7 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                         content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails(),
                         content.getHolidayAcquisitionInfo().get().getLinkingInfos()
                 );
-
+                // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  START
 
                 if (content.getHolidayAcquisitionInfo().isPresent()) {
                     val listItem = content.getHolidayAcquisitionInfo()
@@ -244,7 +244,7 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                     listItem.addAll(listDate);
                     content.getHolidayAcquisitionInfo().get().setOccurrenceAcquisitionDetails(listItem);
                 }
-
+                // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  END
                 int col = 9;
                 int size = content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails().size();
                 int loops = size > 0 && size % 10 == 0 ? (size / 10) : (size / 10 + 1);
@@ -272,19 +272,23 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                             if (acquisitionDetail.getOccurrenceDigCls() == OccurrenceDigClass.OCCURRENCE) {
                                 String value = this.formatNoLinkedDate(acquisitionDetail, dataSource.getHowToPrintDate());
                                 this.setValue(cells, row, col + i, value);
+                                // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  START
                                 if(acquisitionDetail.getDate().isUnknownDate()){
                                     Style style = cells.get(row, col).getStyle();
                                     style.setHorizontalAlignment(TextAlignmentType.RIGHT);
                                     cells.get(row, col + i).setStyle(style);
                                 }
+                                // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  END
                             } else {
                                 String value = this.formatNoLinkedDate(acquisitionDetail, dataSource.getHowToPrintDate());
                                 this.setValue(cells, row + 1, col + i, value);
+                                // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  START
                                 if(acquisitionDetail.getDate().isUnknownDate()){
                                     Style style = cells.get(row, col).getStyle();
                                     style.setHorizontalAlignment(TextAlignmentType.RIGHT);
                                     cells.get(row + 1, col + i).setStyle(style);
                                 }
+                                // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  END
                             }
                         } else {
                             break;
@@ -386,11 +390,13 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
      */
     private String formatNoLinkedDate(OccurrenceAcquisitionDetail detail, int howToPrintDate) {
         StringBuilder formattedDate = new StringBuilder();
+        // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  START
         if(detail.getDate().isUnknownDate()){
             val text = (detail.getOccurrencesUseNumber().getDay().v() != 1.0)
                     ? TextResource.localize("KDR004_120"): TextResource.localize("KDR004_121");
             return formattedDate.append(text).toString();
         }
+        // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 追加  START
         if (howToPrintDate == 0) {
             formattedDate.append(detail.getDate().getDayoffDate().get().toString("MM/dd"));
         } else {
@@ -574,7 +580,9 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                 }
             }
         }
+        // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 削除  START
         //details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
+        // 2022.03.07 - 3S - chinh.hm  - issues #123165  - 削除  END
     }
 
 }
