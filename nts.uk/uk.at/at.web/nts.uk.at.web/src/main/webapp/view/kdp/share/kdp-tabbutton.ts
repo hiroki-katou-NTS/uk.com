@@ -3,9 +3,15 @@
 module nts.uk.at.view.kdp.share {
 	const tabButtonTempate = `
 		<!-- ko if: ko.unwrap($component.filteredTabs).length -->
-		<!-- ko if: ko.unwrap($component.filteredTabs).length > 1 -->
-			<div data-bind="ntsTabPanel: { dataSource: $component.filteredTabs, active: $component.selected }"></div>
-		<!-- /ko -->
+			<!-- ko if: ko.unwrap($component.kdp002) -->
+				<!-- ko if: ko.unwrap($component.filteredTabs).length > 1 -->
+					<div data-bind="ntsTabPanel: { dataSource: $component.filteredTabs, active: $component.selected }"></div>
+				<!-- /ko -->
+			<!-- /ko -->
+			<!-- ko if: !ko.unwrap($component.kdp002) -->
+				<div data-bind="ntsTabPanel: { dataSource: $component.filteredTabs, active: $component.selected },
+				css: { 'has-info-kdp': ko.unwrap($component.filteredTabs).length == 1}"></div>
+			<!-- /ko -->
 		<div id="stampBtnContainer" data-bind="foreach: { data: $component.filteredTabs, as: 'group' }">
 			<div class="grid-container" data-bind="
 				if: ko.toJS($component.currentTab).pageNo === group.pageLayout.pageNo,
@@ -28,6 +34,9 @@ module nts.uk.at.view.kdp.share {
 		<style>
 		#stamp-desc div {
 			font-size: 2.5vmin;
+		}
+		.has-info-kdp {
+			visibility: hidden;
 		}
 	</style>
 		<!-- /ko -->
@@ -222,6 +231,8 @@ module nts.uk.at.view.kdp.share {
 		temporaryUse: KnockoutObservable<boolean> = ko.observable(false);
 
 		entranceExitUse: KnockoutObservable<boolean> = ko.observable(false);
+
+		kdp002: KnockoutObservable<boolean> = ko.observable(false);
 		
 		constructor(public params: StampParam) {
 			super();
@@ -258,6 +269,10 @@ module nts.uk.at.view.kdp.share {
 
 			if (!params.marginBottom) {
 				params.marginBottom = ko.observable(0);
+			}
+
+			if (params.kdp002) {
+				vm.kdp002 = params.kdp002;
 			}
 
 			ko.computed({
@@ -503,6 +518,7 @@ module nts.uk.at.view.kdp.share {
 		marginBottom: KnockoutObservable<number>;
 		pageComment: KnockoutObservable<string>;
 		commentColor: KnockoutObservable<string>;
+		kdp002: KnockoutObservable<boolean>;
 	}
 
 	export interface StampToSuppress {

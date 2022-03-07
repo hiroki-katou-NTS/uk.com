@@ -140,7 +140,7 @@ module nts.uk.at.view.kmk005.h {
                     let data: any = getShared('KDL007_VALUES');
                     if (data && data.selecteds) {
                         let code: string = data.selecteds[0];
-                        if (code) {
+                        if (!(_.isEmpty(code))) {
                             model.id(code);
                             service.getName(code).done(resp => {
                                 if (resp) {

@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.dto.SixtyHourVacationSettingCheckDto;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.dto.SixtyHourVacationSettingDto;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -41,11 +42,10 @@ public class SixtyHourVacationFinderDefault implements SixtyHourVacationFinder {
 			return null;
 		}
 
-		SixtyHourVacationSettingDto dto = new SixtyHourVacationSettingDto();
-
-		optCom60HVacation.get().getSetting().saveToMemento(dto);
-
-		return dto;
+		Com60HourVacation vacation = optCom60HVacation.get();
+		return new SixtyHourVacationSettingDto(vacation.getTimeVacationDigestUnit().getManage().value,
+				vacation.getSixtyHourExtra().value,
+				vacation.getTimeVacationDigestUnit().getDigestUnit().value);
 	}
 
 	/*
@@ -66,9 +66,7 @@ public class SixtyHourVacationFinderDefault implements SixtyHourVacationFinder {
 		}
 
 		SixtyHourVacationSettingCheckDto dto = new SixtyHourVacationSettingCheckDto();
-
-		optCom60HVacation.get().getSetting().saveToMemento(dto);
-
+		dto.setManage(optCom60HVacation.get().getTimeVacationDigestUnit().getManage() == ManageDistinct.YES);
 		return dto;
 	}
 
