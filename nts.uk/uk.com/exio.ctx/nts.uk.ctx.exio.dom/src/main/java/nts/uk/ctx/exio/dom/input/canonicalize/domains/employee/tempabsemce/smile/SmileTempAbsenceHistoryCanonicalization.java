@@ -50,7 +50,7 @@ public class SmileTempAbsenceHistoryCanonicalization extends TempAbsenceHistoryC
 	}
 	
 	
-	private IntermediateResult create(IntermediateResult interm) {
+	private static IntermediateResult create(IntermediateResult interm) {
 		
 		if(interm.isImporting(Items.休職理由)) {
 			interm = interm.addCanonicalized(new CanonicalItem(Items.備考, interm.getItemByNo(Items.休職理由).get().getString()));
@@ -62,16 +62,16 @@ public class SmileTempAbsenceHistoryCanonicalization extends TempAbsenceHistoryC
 	}
 
 
-	private long getReasonCode(IntermediateResult t) {
+	private static long getReasonCode(IntermediateResult t) {
 		SmileTempAbsenceDataReasonCode reasonCode = SmileTempAbsenceDataReasonCode.create(t.getItemByNo(Items.理由コード).get().getString());
 		return Long.valueOf(reasonCode.v());
 	}
 
-	private GeneralDate getStartDate(IntermediateResult t) { 
+	private static GeneralDate getStartDate(IntermediateResult t) {
 		return t.getItemByNo(Items.開始年月日).get().getDate();
 	}
 	
-	private GeneralDate getEndDate(IntermediateResult t) { 
+	private static GeneralDate getEndDate(IntermediateResult t) {
 		return new SmileTempAbsenceDataEndDate(t.getItemByNo(Items.終了年月日).get().getString())
 						.getGeneralDate();
 	}
