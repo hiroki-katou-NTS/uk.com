@@ -35,6 +35,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.TaskChildCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.task.TaskAssignEmpCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.recode.task.TaskAssignWkpCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.WorkLocationCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.WorkLocationIpCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.shift.businesscalendar.PublicHolidayCanonicalization;
 
