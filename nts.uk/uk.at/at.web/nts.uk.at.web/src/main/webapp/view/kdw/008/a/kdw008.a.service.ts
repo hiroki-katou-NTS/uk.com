@@ -36,6 +36,8 @@ module nts.uk.at.view.kdw008.a.service {
         getMobileListAuthorityDailyFormatCode: BASE_DAILY_PATH + "mobile/getAuthorityDailyFormatCode",
         getMobileDailyPerformance: BASE_DAILY_PATH + "mobile/getAuthorityDailyFormat/{0}",
         addMobileDailyDetail: BASE_DAILY_PATH + "mobile/addAuthorityDailyFormat",
+        duplicateMobileDailyDetail: BASE_DAILY_PATH + "mobile/duplicateAuthorityDailyFormat",
+
         updateMobileDailyDetail: BASE_DAILY_PATH + "mobile/updateAuthorityDailyFormat",
         removeMobileAuthorityDailyFormat: BASE_DAILY_PATH + "mobile/removeAuthorityFormat",
         getMonthlyMobileDetail: BASE_DAILY_PATH + "mobile/getAuthorityMonthlyFormat/{0}",
@@ -179,5 +181,9 @@ module nts.uk.at.view.kdw008.a.service {
     };
     export function duplicateModifyAnyPeriod(command: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.duplicateModifyAnyPeriod, command);
+    };
+
+    export function duplicateMobileDailyDetail(command: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.duplicateMobileDailyDetail, command);
     };
 }

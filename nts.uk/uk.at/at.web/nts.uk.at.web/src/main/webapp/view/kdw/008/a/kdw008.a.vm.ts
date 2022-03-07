@@ -913,25 +913,46 @@ module nts.uk.at.view.kdw008.a {
                             });
                         } else {
                             if (self.isDuplicate) {
-                                let duplicateDailyDetailCmd = {
-                                    dailyPerformanceFormatCode: self.currentDailyFormatCode(), 
-                                    dailyPerformanceFormatName: self.currentDailyFormatName(), 
-                                    listDailyFormSheetCommand: self.listDailyFormSheetCommand,
-                                    authorityMonthlyCommand: addOrUpdateBusinessFormatMonthly
-                                }
-                                
-                                service.duplicateDailyDetail(duplicateDailyDetailCmd).done(() => {
-                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                        self.loadData();
+                                if(self.isMobile){
+                                   let command = {
+                                       isDefaultInitial :  self.checked()? 1 : 0,
+                                       dailyPerformanceFormatCode       : self.currentDailyFormatCode(),
+                                       dailyPerformanceFormatName       :   self.currentDailyFormatName(),
+                                       currentCode: self.codeDuplicate
+                                    };
+                                    block.invisible();
+                                    service.duplicateMobileDailyDetail(command).done(function() {
+                                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                            self.loadData();
+                                        });
+                                        $("#currentName").focus();
+                                    }).fail(function(error) {
+                                        $('#currentCode').ntsError('set', error);
+                                    }).always(function() {
+                                        self.isDuplicate = false;
+                                        block.clear();
                                     });
-    
-                                    $("#currentName").focus();
-                                })
-                                .fail((error: any) => $('#currentCode').ntsError('set', error))
-                                .always(() => {
-                                    self.isDuplicate = false;
-                                    block.clear();
-                                });
+                                }else {
+                                    let duplicateDailyDetailCmd = {
+                                        dailyPerformanceFormatCode: self.currentDailyFormatCode(),
+                                        dailyPerformanceFormatName: self.currentDailyFormatName(),
+                                        listDailyFormSheetCommand: self.listDailyFormSheetCommand,
+                                        authorityMonthlyCommand: addOrUpdateBusinessFormatMonthly
+                                    }
+
+                                    service.duplicateDailyDetail(duplicateDailyDetailCmd).done(() => {
+                                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                            self.loadData();
+                                        });
+
+                                        $("#currentName").focus();
+                                    })
+                                        .fail((error: any) => $('#currentCode').ntsError('set', error))
+                                        .always(() => {
+                                            self.isDuplicate = false;
+                                            block.clear();
+                                        });
+                                }
                             } else {
                                 service.addDailyDetail(addOrUpdateDailyFormat, self.isMobile).done(function() {
                                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
