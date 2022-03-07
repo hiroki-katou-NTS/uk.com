@@ -16,12 +16,14 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave.AnnualLeaveRemainingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeIndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
@@ -75,7 +77,7 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 				}
 				importingKeys.add(keyValue);
 				val addedInterm = interm.addCanonicalized(getFixedItems());
-				super.canonicalize(require, context, addedInterm, keyValue);
+				super.canonicalize(require, context, addedInterm);
 			}
 		});
 	}
@@ -104,11 +106,6 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 	}
 	
 	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace){
-		return Arrays.asList(Items.SID);
-	}
-	
-	@Override
 	protected String getParentTableName() {
 		return "KRCDT_HD_SP_REMAIN";
 	}
@@ -120,7 +117,7 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 	
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.SID);
+		return Arrays.asList(new DomainDataColumn(Items.SID, "SID", DataType.STRING));
 	}
 	
 	@Override

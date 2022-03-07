@@ -1,4 +1,4 @@
-﻿CATEGORY_NAME,TARGET_TBL_NAME,RECORD_NO,SOURCE_ID,EXPLANATION,WHERE_CONDITION,REMOVE_DUPLICATE
+CATEGORY_NAME,TARGET_TBL_NAME,RECORD_NO,SOURCE_ID,EXPLANATION,WHERE_CONDITION,REMOVE_DUPLICATE
 "カードNO","KRCMT_STAMP_CARD",1,"1b4ac422-22f8-4107-801a-d0da10541622","","",true
 "下位作業マスタ","KSRMT_TASK_CHILD",1,"97cb613b-815b-49ed-a1c2-eede0214df51","","",true
 "代休管理データ","KRCDT_HD_COM_MNG",1,"2faf6ed6-d354-4265-a16a-f214e729294e","",,true
@@ -28,6 +28,8 @@
 "労働条件","KSHMT_WORKCOND_WORK_TS",7,"2c461417-a969-4e72-9a5f-ca408048a768","金曜日","",true
 "労働条件","KSHMT_WORKCOND_WORK_TS",8,"2c461417-a969-4e72-9a5f-ca408048a768","土曜日","",true
 "労働条件","KSHMT_WORKCOND_WORK_TS",9,"2c461417-a969-4e72-9a5f-ca408048a768","日曜日","",true
+"勤務場所IPマスタ","KRCMT_IP4ADDRESS",1,"f6566c97-4035-4667-9018-485e537a91de","","",true
+"勤務場所マスタ","KRCMT_WORK_LOCATION",1,"5ea6a969-8ac1-45e1-a04a-832d7f014ad8","","",true
 "年休上限データ","KRCDT_HDPAID_MAX",1,"8552868a-1b91-44d5-ba04-c12c34de24b3","",,true
 "年休付与残数データ","KRCDT_HDPAID_REM",1,"0d47b186-fc61-4fd4-a0c2-04e7eacc5118","",,true
 "年休社員基本情報","KRCMT_HDPAID_BASIC",1,"1425bc22-d946-40e0-bdd0-0c6db0bfaa32","",,true
@@ -51,9 +53,12 @@
 "短時間勤務","KSHMT_SHORTTIME_TS",2,"d5c3b896-6fa1-44d5-9045-cba334fecd54","勤務回数２用","短時間2開始時刻 IS NOT NULL",false
 "社員の年休付与設定","KRCMT_HDPAID_BASIC",1,"e1a0369f-c882-4edc-b566-0622214dd035","",,true
 "社員の特別休暇付与設定","KRCMT_HDSP_BASIC",1,"0e12f3f7-5d56-4180-ab3b-88d1805f99b5","",,true
+"社員別作業の絞込","KSRMT_TASK_ASSIGN_SYA",1,"854e7916-50bf-4165-a19d-3f860b010384","","",true
 "祝日マスタ","KSCMT_PUBLIC_HOLIDAY",1,"f3da446b-cb9e-41a4-9066-a27ea133106a","","",true
 "積立休暇付与残数データ","KRCDT_HDSTK_REM",1,"8944b23c-0c77-474b-a03a-1d1686a552fe","",,true
 "職場マスタ","BSYMT_WKP_CONFIG_2",1,"8e2c3182-e4bd-4d4b-9b35-afb8eec509de","","",true
 "職場マスタ","BSYMT_WKP_INFO",1,"8e2c3182-e4bd-4d4b-9b35-afb8eec509de","","",true
+"職場別作業の絞込","KSRMT_TASK_ASSIGN_WKP",1,"66cbfbbb-2d02-42f2-85d0-4b23156e6fd9","","",true
+"職場別就業時間帯","KSHMT_WT_COM_WKP",1,"b707fd0e-a5b5-4b08-a21c-4c3d24c970fd","","",true
 "設備マスタ","OFIDT_EQUIPMENT",1,"5394007d-42bc-451c-bbe0-c0479be44759","","",true
 "設備分類マスタ","OFIDT_EQUIPMENT_CLS",1,"2ec30cfc-3d1e-479d-8f4f-53fb6ff6d1bc","","",true

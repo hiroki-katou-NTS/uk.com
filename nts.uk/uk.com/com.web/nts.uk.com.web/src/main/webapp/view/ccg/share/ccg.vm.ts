@@ -1175,7 +1175,7 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private calculateKcp005Rows(marginHeight: number): number {
                 const tabContentHeight = $("#component-ccg001 .tabs-content").height();
-                const heightPerRow = 24;
+                const heightPerRow = 30;
                 return (tabContentHeight - marginHeight) / heightPerRow;
             }
 

@@ -20,6 +20,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
@@ -64,7 +65,7 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 				}
 				importingKeys.add(keyValue);
 				val addedInterm = interm.addCanonicalized(getFixedItems());
-				super.canonicalize(require, context, addedInterm, keyValue);
+				super.canonicalize(require, context, addedInterm);
 			}
 		});
 	}
@@ -88,11 +89,6 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 	}
 	
 	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace){
-		return Arrays.asList(Items.SID);
-	}
-	
-	@Override
 	protected String getParentTableName() {
 		return "KRCMT_HDSP_BASIC";
 	}
@@ -104,7 +100,7 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 	
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.SID);
+		return Arrays.asList(new DomainDataColumn(Items.SID, "SID", DataType.STRING));
 	}
 	
 	@Override
