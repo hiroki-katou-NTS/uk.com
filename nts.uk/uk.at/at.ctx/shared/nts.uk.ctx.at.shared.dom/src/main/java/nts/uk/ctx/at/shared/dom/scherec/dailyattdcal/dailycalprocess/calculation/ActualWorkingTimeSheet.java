@@ -439,12 +439,13 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 
 	/**
 	 * 時間の計算
+	 * @param actualAtr 実働時間帯区分
 	 * @param goOutSet 就業時間帯の外出設定
 	 * @return 控除後の時間
 	 */
-	public AttendanceTime calcTime(Optional<WorkTimezoneGoOutSet> goOutSet) {
+	public AttendanceTime calcTime(ActualWorkTimeSheetAtr actualAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		AttendanceTime length = new AttendanceTime(this.timeSheet.lengthAsMinutes());
-		AttendanceTime deduct = this.calcDeductionTime(goOutSet);
+		AttendanceTime deduct = this.calcDeductionTime(actualAtr, goOutSet);
 		AttendanceTime beforeRound = length.minusMinutes(deduct.valueAsMinutes());
 		AttendanceTime afterRound = new AttendanceTime(this.rounding.round(beforeRound.valueAsMinutes()));
 		return afterRound;
@@ -452,21 +453,22 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 
 	/**
 	 * 控除時間の計算
+	 * @param actualAtr 実働時間帯区分
 	 * @param goOutSet 就業時間帯の外出設定
 	 * @return 控除時間
 	 */
-	public AttendanceTime calcDeductionTime(Optional<WorkTimezoneGoOutSet> goOutSet) {
+	public AttendanceTime calcDeductionTime(ActualWorkTimeSheetAtr actualAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		AttendanceTime result = new AttendanceTime(0);
 		//休憩
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.BREAK, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.BREAK, goOutSet).valueAsMinutes());
 		//外出(私用)
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.PrivateGoOut, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.PrivateGoOut, goOutSet).valueAsMinutes());
 		//外出(組合)
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.UnionGoOut, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.UnionGoOut, goOutSet).valueAsMinutes());
 		//育児
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.Child, goOutSet).valueAsMinutes());
 		//介護
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(actualAtr, DeductionAtr.Deduction,ConditionAtr.Care, goOutSet).valueAsMinutes());
 		return result;
 	}
 	
@@ -480,23 +482,23 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 	public AttendanceTime calcDeductionTime(HolidayCalcMethodSet holidayCalcMethodSet, PremiumAtr premiumAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		AttendanceTime result = new AttendanceTime(0);
 		//休憩
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.BREAK, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.BREAK, goOutSet).valueAsMinutes());
 		//外出(私用)
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.PrivateGoOut, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.PrivateGoOut, goOutSet).valueAsMinutes());
 		//外出(組合)
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.UnionGoOut, goOutSet).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.UnionGoOut, goOutSet).valueAsMinutes());
 		//短時間
 		AttendanceTime shortTime = new AttendanceTime(0);
 		//介護
 		AttendanceTime careTime = new AttendanceTime(0);
 		//短時間勤務を控除するか判断
 		if(premiumAtr.isRegularWork() && !holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().isCalculateIncludCareTime()) {
-			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child, goOutSet);
-			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care, goOutSet);
+			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Child, goOutSet);
+			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Care, goOutSet);
 		}
 		if(premiumAtr.isPremium() && !holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().isCalculateIncludCareTime()) {
-			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child, goOutSet);
-			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care, goOutSet);
+			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Child, goOutSet);
+			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction,ConditionAtr.Care, goOutSet);
 		}
 		result = result.addMinutes(shortTime.valueAsMinutes());
 		result = result.addMinutes(careTime.valueAsMinutes());

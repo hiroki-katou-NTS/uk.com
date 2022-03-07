@@ -64,7 +64,7 @@ public class StaggerDiductionTimeSheet extends ActualWorkingTimeSheet {
 			AttendanceTime within = this.calcDeductionTime(holidaySet, PremiumAtr.RegularWork, Optional.of(commonSet.getGoOutSet()));
 			return this.timeSheet.getEnd().forwardByMinutes(within.valueAsMinutes());
 		}
-		AttendanceTime outside = this.calcDeductionTime(Optional.of(commonSet.getGoOutSet()));
+		AttendanceTime outside = this.calcDeductionTime(atr, Optional.of(commonSet.getGoOutSet()));
 		return this.timeSheet.getEnd().forwardByMinutes(outside.valueAsMinutes());
 	}
 }

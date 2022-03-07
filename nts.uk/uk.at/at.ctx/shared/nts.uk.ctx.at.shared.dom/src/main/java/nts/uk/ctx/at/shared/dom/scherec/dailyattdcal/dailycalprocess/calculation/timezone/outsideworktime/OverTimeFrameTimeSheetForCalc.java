@@ -438,7 +438,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 	 * @return
 	 */
 	public TimeWithDayAttr reCreateSiteiTimeFromStartTime(AttendanceTime transTime, WorkTimezoneGoOutSet goOutSet) {
-		TimeWithDayAttr minusTime = new TimeWithDayAttr(this.calcTime(Optional.of(goOutSet)).valueAsMinutes() - transTime.valueAsMinutes());
+		TimeWithDayAttr minusTime = new TimeWithDayAttr(this.calcTime(ActualWorkTimeSheetAtr.OverTimeWork, Optional.of(goOutSet)).valueAsMinutes() - transTime.valueAsMinutes());
 		return this.contractTimeSheet(minusTime).orElse(this.timeSheet).getEnd();
 	}
 	
@@ -646,7 +646,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 	public AttendanceTime overTimeCalculationByAdjustTime(Optional<WorkTimezoneGoOutSet> goOutSet) {
 		//調整時間を加算
 		this.timeSheet = new TimeSpanForDailyCalc(this.timeSheet.getStart(), this.timeSheet.getEnd().forwardByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes()));
-		AttendanceTime time = this.calcTime(goOutSet);
+		AttendanceTime time = this.calcTime(ActualWorkTimeSheetAtr.OverTimeWork, goOutSet);
 		//調整時間を減算(元に戻す)
 		this.timeSheet = new TimeSpanForDailyCalc(this.timeSheet.getStart(), this.timeSheet.getEnd().backByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes()));
 		time = time.minusMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes()) ;
@@ -685,7 +685,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 				itemsWithinCalc,
 				overTimeStartTime,
 				leaveStampTime,
-				personDailySetting.getAddSetting().getVacationCalcMethodSet());
+					personDailySetting.getAddSetting().getVacationCalcMethodSet());
 		// 残業枠時間を作成
 		OverTimeFrameTime frameTime = new OverTimeFrameTime(
 				new OverTimeFrameNo(processingFlowOTTimezone.getOTFrameNo().v().intValue()),

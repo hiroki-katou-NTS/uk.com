@@ -474,7 +474,7 @@ public class OverTimeSheet {
 	public AttendanceTime getDeductionTime(
 			ConditionAtr conditionAtr, DeductionAtr dedAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		
-		return ActualWorkTimeSheetListService.calcDeductionTime(conditionAtr, dedAtr, goOutSet,
+		return ActualWorkTimeSheetListService.calcDeductionTime(ActualWorkTimeSheetAtr.OverTimeWork, conditionAtr, dedAtr, goOutSet,
 				this.frameTimeSheets.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()));
 	}
 

@@ -123,15 +123,16 @@ public abstract class CalculationTimeSheet {
 	
 	/**
 	 * 控除時間の合計を算出する
+	 * @param actualAtr 実働時間帯区分
 	 * @param dedAtr 控除区分
 	 * @param conditionAtr 条件
 	 * @param goOutSet 就業時間帯の外出設定
 	 * @return 控除時間
 	 */
-	public AttendanceTime calcDedTimeByAtr(DeductionAtr dedAtr, ConditionAtr conditionAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
+	public AttendanceTime calcDedTimeByAtr(ActualWorkTimeSheetAtr actualAtr, DeductionAtr dedAtr, ConditionAtr conditionAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		val forCalcList = getDedTimeSheetByAtr(dedAtr,conditionAtr);
 		int total = forCalcList.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
-		Optional<TimeRoundingSetting> roundSet = goOutSet.flatMap(g -> g.getAfterTotalInFrame(ActualWorkTimeSheetAtr.WithinWorkTime, conditionAtr, dedAtr, this.rounding));
+		Optional<TimeRoundingSetting> roundSet = goOutSet.flatMap(g -> g.getAfterTotalInFrame(actualAtr, conditionAtr, dedAtr, this.rounding));
 		if(roundSet.isPresent()) {
 			return new AttendanceTime(roundSet.get().round(total));
 		}

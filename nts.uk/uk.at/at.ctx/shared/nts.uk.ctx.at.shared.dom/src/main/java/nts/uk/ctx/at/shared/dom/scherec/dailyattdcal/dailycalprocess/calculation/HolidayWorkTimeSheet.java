@@ -540,7 +540,7 @@ public class HolidayWorkTimeSheet{
 	public AttendanceTime getDeductionTime(
 			ConditionAtr conditionAtr, DeductionAtr dedAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		
-		return ActualWorkTimeSheetListService.calcDeductionTime(conditionAtr, dedAtr,  goOutSet,
+		return ActualWorkTimeSheetListService.calcDeductionTime(ActualWorkTimeSheetAtr.HolidayWork, conditionAtr, dedAtr,  goOutSet,
 				this.workHolidayTime.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()));
 	}
 	
