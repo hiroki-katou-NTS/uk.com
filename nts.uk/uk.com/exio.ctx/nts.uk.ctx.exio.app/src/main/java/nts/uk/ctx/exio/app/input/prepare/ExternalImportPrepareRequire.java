@@ -238,7 +238,7 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public Optional<EmployeeCESetting> getByComId(String companyId) {
+		public Optional<EmployeeCESetting> getEmployeeCESetting(String companyId) {
 			return cacheEmployeeCESetting.get(companyId);
 		}
 

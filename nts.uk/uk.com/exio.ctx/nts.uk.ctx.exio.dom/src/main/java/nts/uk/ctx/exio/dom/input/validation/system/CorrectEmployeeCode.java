@@ -33,7 +33,7 @@ public class CorrectEmployeeCode {
 	 *  社員コードの編集設定に基づいて社員コードを補正する 
 	 */
 	private static String getCorrectedEmployeeCode(EmployeeCodeValidateRequire require, ExecutionContext context, String employeeCode) {
-		return require.getByComId(context.getCompanyId())
+		return require.getEmployeeCESetting(context.getCompanyId())
 				.get()
 				.editEmployeeCode(employeeCode);
 	}
@@ -48,6 +48,6 @@ public class CorrectEmployeeCode {
 	public static interface EmployeeCodeValidateRequire{
 		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 
-		Optional<EmployeeCESetting> getByComId(String companyId);
+		Optional<EmployeeCESetting> getEmployeeCESetting(String companyId);
 	}
 }
