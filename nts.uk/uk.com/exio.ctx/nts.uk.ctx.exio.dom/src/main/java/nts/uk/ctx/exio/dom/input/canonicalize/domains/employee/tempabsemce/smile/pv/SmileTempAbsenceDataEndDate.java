@@ -20,7 +20,7 @@ public class SmileTempAbsenceDataEndDate extends StringPrimitiveValue<SmileTempA
 		super(rawValue); 
 	}
 	
-	private final String smileDateFormat = "yyyyMMdd"; 
+	private static final String smileDateFormat = "yyyyMMdd";
 	
 	public GeneralDate getGeneralDate() {
 		if(isNull()) {
