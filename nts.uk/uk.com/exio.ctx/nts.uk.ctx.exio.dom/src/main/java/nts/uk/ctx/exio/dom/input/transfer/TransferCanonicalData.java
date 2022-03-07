@@ -62,12 +62,6 @@ public class TransferCanonicalData {
 		String importingDomainName;
 		{
 			ImportingDomainId domainId = context.getDomainId().createCanonicalization().transferDataTo(context);
-//			if (domainId == ImportingDomainId.STAMP_ENTERPRISE) {
-//				domainId = ImportingDomainId.STAMP;
-//			}
-//			else if(domainId == ImportingDomainId.TEMP_ABSENCE_HISTORY_SMILE) {
-//				domainId = ImportingDomainId.TEMP_ABSENCE_HISTORY;
-//			}
 			importingDomainName = require.getImportingDomain(domainId).getName();
 		}
 
@@ -150,15 +144,6 @@ public class TransferCanonicalData {
 		ImportingDomainId transferToDomain = context.getDomainId().createCanonicalization().transferDataTo(context);
 		
 		String imporingDomainName =  require.getImportingDomain(transferToDomain).getName();
-
-		// 他の受入ドメインの移送表を流用したいケースは、今のところ打刻データE版のみだが、
-		// 今後も増えるならここのif文を肥大化させず、リファクタリングして対処したい。
-//		if (context.getDomainId() == ImportingDomainId.STAMP_ENTERPRISE) {
-//			imporingDomainName = require.getImportingDomain(ImportingDomainId.STAMP).getName();
-//		}
-//		else if (context.getDomainId() == ImportingDomainId.TEMP_ABSENCE_HISTORY_SMILE) {
-//			imporingDomainName = require.getImportingDomain(ImportingDomainId.TEMP_ABSENCE_HISTORY).getName();
-//		}
 
 		val base = require.getConversionSource(imporingDomainName);
 		
