@@ -13,7 +13,7 @@ import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.ItemError;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
-import nts.uk.ctx.exio.dom.input.validation.system.CorrectedEmployeeCode;
+import nts.uk.ctx.exio.dom.input.validation.system.CorrectEmployeeCode;
 import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserCondition;
 
 /**
@@ -31,7 +31,7 @@ public class ValidateData {
 			RevisedDataRecord record) {
 
 		val errors = new ArrayList<ItemError>();
-		record = CorrectedEmployeeCode.correct(require, context, record);
+		record = CorrectEmployeeCode.correct(require, context, record);
 
 		for (val item : record.getItems()) {
 			validateBySystem(require, context, item)
@@ -67,7 +67,7 @@ public class ValidateData {
 		return Either.rightVoid();
 	}
 
-	public interface ValidateRequire extends CorrectedEmployeeCode.EmployeeCodeValidateRequire{
+	public interface ValidateRequire extends CorrectEmployeeCode.EmployeeCodeValidateRequire{
 
 		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 

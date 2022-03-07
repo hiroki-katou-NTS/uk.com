@@ -14,7 +14,7 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 /**
  * 社員コードを社員コードの編集設定に基づき補正する
  */
-public class CorrectedEmployeeCode {
+public class CorrectEmployeeCode {
 	
 	private final static String employeeCodeFQN = EmployeeCode.class.getName();
 	
