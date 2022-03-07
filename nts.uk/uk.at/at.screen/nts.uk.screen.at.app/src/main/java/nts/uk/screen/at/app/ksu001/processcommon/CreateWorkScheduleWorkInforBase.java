@@ -97,11 +97,13 @@ public class CreateWorkScheduleWorkInforBase {
 				//※就業時間帯：3のList<就業時間帯> filter:$就業時間帯コード＝＝日別勤怠(Work).勤務情報.就業時間帯コード
 				String workTimeCode = workInformation.getWorkTimeCode() == null  ? null : workInformation.getWorkTimeCode().toString();
 				workTimeSetting = lstWorkTimeSetting.stream().filter(i -> i.getWorktimeCode().toString().equals(workTimeCode)).findFirst();
+				
+				GetSupportInfoOfEmployee.Require requireGetSupportInfo = new RequireGetSupportInfoImpl(Optional.empty(), integrationOfDaily);
+				
+				WorkScheduleWorkInforDto dto = new WorkScheduleWorkInforDto(integrationOfDaily, employeeWorkingStatus, workTypeInfor, workTimeSetting, targetOrg, wTypeWTimeUseDailyAttendRecord, requireGetSupportInfo);
+				
+				listWorkScheduleWorkInfor.add(dto);
 			}
-			GetSupportInfoOfEmployee.Require requireGetSupportInfo = new RequireGetSupportInfoImpl(Optional.empty(), integrationOfDaily);
-			
-			WorkScheduleWorkInforDto dto = new WorkScheduleWorkInforDto(integrationOfDaily, employeeWorkingStatus, workTypeInfor, workTimeSetting, targetOrg, wTypeWTimeUseDailyAttendRecord, requireGetSupportInfo);
-			listWorkScheduleWorkInfor.add(dto);
 		});
 
 		return listWorkScheduleWorkInfor;

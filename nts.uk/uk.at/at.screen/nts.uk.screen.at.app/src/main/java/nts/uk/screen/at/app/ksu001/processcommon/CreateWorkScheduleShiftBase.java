@@ -130,10 +130,16 @@ public class CreateWorkScheduleShiftBase {
 		List<ScheduleOfShiftDto> listWorkScheduleShift = new ArrayList<>();
 		mapDataDaily.forEach((employeeWorkingStatus, integrationOfDaily) -> {
 			
-			GetSupportInfoOfEmployee.Require requireGetSupportInfo = new RequireGetSupportInfoImpl(Optional.empty(), integrationOfDaily);
+			if(integrationOfDaily.isPresent()){
+				
+				GetSupportInfoOfEmployee.Require requireGetSupportInfo = new RequireGetSupportInfoImpl(Optional.empty(), integrationOfDaily);
+				
+				ScheduleOfShiftDto dto = new ScheduleOfShiftDto(integrationOfDaily, employeeWorkingStatus, listShiftMaster, targetOrg, requireGetSupportInfo);
+				
+				listWorkScheduleShift.add(dto);
+				
+			}
 			
-			ScheduleOfShiftDto dto = new ScheduleOfShiftDto(integrationOfDaily, employeeWorkingStatus, listShiftMaster, targetOrg, requireGetSupportInfo);
-			listWorkScheduleShift.add(dto);
 		});
 
 		// convert list to Map
