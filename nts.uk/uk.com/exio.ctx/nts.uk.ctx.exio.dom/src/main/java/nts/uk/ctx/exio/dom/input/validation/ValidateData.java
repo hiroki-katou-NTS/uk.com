@@ -35,7 +35,7 @@ public class ValidateData {
 
 		for (val item : record.getItems()) {
 			validateBySystem(require, context, item)
-					.mapEither(err -> validateByUserCondition(require, context, item))
+					.mapEither(__ -> validateByUserCondition(require, context, item))
 					.ifLeft(err -> errors.add(new ItemError(item.getItemNo(), err.getText())));
 		}
 		return errors.isEmpty() ? Either.right(record) : Either.left(errors);
