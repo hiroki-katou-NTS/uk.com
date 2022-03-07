@@ -41,7 +41,7 @@ table.left-aligned td:not(:first-child) {
 }
 
 .two-panel {
-	width: 1330px;
+	/* width: 1330px; */
 	height: 100%;
 }
 
