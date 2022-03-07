@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.organization;
 
 import java.util.Arrays;
 import java.util.Collections;
