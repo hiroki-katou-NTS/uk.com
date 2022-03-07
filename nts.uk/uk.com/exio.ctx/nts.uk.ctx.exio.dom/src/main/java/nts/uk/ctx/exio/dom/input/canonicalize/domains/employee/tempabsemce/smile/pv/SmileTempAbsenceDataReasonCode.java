@@ -15,11 +15,7 @@ public class SmileTempAbsenceDataReasonCode extends StringPrimitiveValue<SmileTe
 	private static final long serialVersionUID = 1L;
 
 	public SmileTempAbsenceDataReasonCode(String rawValue) {
-		super(rawValue);
-	}
-	
-	public static SmileTempAbsenceDataReasonCode create(String value) {
-		return new SmileTempAbsenceDataReasonCode(value.trim());
+		super(rawValue.trim());
 	}
 
 }
