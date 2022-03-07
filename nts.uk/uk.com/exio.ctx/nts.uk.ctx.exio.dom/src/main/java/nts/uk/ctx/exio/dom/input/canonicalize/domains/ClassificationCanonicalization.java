@@ -34,8 +34,9 @@ public class ClassificationCanonicalization extends IndependentCanonicalization{
 
     @Override
     protected List<DomainDataColumn> getDomainDataKeys() {
-        return Arrays.asList(new DomainDataColumn("CLSCD", DataType.STRING),
-        					DomainDataColumn.CID);
+        return Arrays.asList(
+				new DomainDataColumn(Items.会社ID, "CID", DataType.STRING),
+				new DomainDataColumn(Items.分類コード, "CLSCD", DataType.STRING));
     }
 
 
