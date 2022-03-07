@@ -59,6 +59,9 @@ public enum ImportingDomainId {
 	/** 設備分類マスタ */
 	EQUIPMENT_CLASSIFICATION(33, EquipmentClassiicationCanonicalization::new),
 
+	/** 勤務場所マスタ*/
+	WORK_LOCATION(36, WorkLocationCanonicalization::new),
+
 	/** 勤務場所IPマスタ*/
 	WORK_LOCATION_IP(37, WorkLocationIpCanonicalization::new),
 
