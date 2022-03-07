@@ -98,6 +98,54 @@
       </div>
     </div>
 
+    <!-- Multi overtime A1_B7-->
+    <div v-if="$appContext.overTimeClf == 3" class="card card-label">
+      <!--A1_B7_1-->
+      <div class="card-header uk-bg-accordion mt-2 mb-n2 multi-overtime-contents">
+        <span>{{ "KAFS05_92" | i18n }}</span>
+        <span class="badge badge-warning">必須</span>
+      </div>
+
+      <!-- A1_B7_2 -->
+      <div
+              v-for="(item, index) in multiOverTimes"
+              v-bind:key="index"
+              :value="index"
+      >
+        <!--A1_B7_2_N1-->
+        <div class="card-body">
+          <div class="row mt-3">
+            <div class="col-6">{{ "KAFS05_91" | i18n([index + 1]) }}</div>
+            <div class="col-2 offset-4">
+              <span class="fas fa-2x fa-minus-circle"
+                    style="color: red; float: right;"
+                    v-on:click="multiOverTimes.splice(index, 1)"></span>
+            </div>
+          </div>
+          <kafs05multi
+                  v-bind:params="item"
+                  v-bind:appDispInfoStartupOutput="$appContext.appDispInfoStartupOutput"
+          />
+        </div>
+      </div>
+      <!-- A1_B7_3 -->
+      <div v-if="multiOverTimes.length < 10">
+        <div class="text-center position-relative" style="height: 35px">
+          <div class="position-absolute w-100">
+            <hr />
+          </div>
+          <div class="position-absolute w-100 mt-1">
+            <span
+                    v-on:click="addMultiOverTime"
+                    class="fas fa-2x fa-plus-circle"
+                    style="color: #33b5e5"
+            ></span>
+          </div>
+        </div>
+        <div class="text-center">{{ "KAFS05_84" | i18n }}</div>
+      </div>
+    </div>
+
     <!-- Break A1_B6-->
     <div v-if="$appContext.c3" class="card card-label">
       <!--A1_B6_1-->
@@ -120,6 +168,7 @@
           <div class="card-body">
             <nts-time-range-input
               class="mb-1"
+              v-bind:disabled="$appContext.overTimeClf == 3"
               v-model="item.valueHours"
             />
           </div>
@@ -135,7 +184,7 @@
             <span
               v-on:click="addBreakHour"
               class="fas fa-2x fa-plus-circle"
-              style="color: #33b5e5"
+              style="color: #6A6A6A"
             ></span>
           </div>
         </div>
@@ -150,7 +199,7 @@
           class="btn btn-block btn-success btn-lg text-center"
           v-on:click="$appContext.toStep(2)"
         >
-          {{ ($appContext.c3 ? 'KAFS05_16' : 'KAFS05_17') | i18n}}
+          {{ 'KAFS05_17' | i18n}}
         </button>
       </div> 
 

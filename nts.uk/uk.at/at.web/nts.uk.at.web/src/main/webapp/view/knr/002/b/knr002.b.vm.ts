@@ -104,9 +104,6 @@ module knr002.b {
              */
             private extract(): any {
                 let self = this;
-                if(self.hasError()){
-                    return;
-                }
                 // process
                 let sDateTime = self.toDate(new Date(self.sTime()));
                 let eDateTime = self.toDate(new Date(self.eTime()));
@@ -126,7 +123,7 @@ module knr002.b {
              */
             private loadLogInPeriod(empInfoTerCode: string, sTime: string, eTime: string): void{
                 var self = this; 
-                if(empInfoTerCode === undefined || empInfoTerCode === ''){
+                if(self.hasError() || empInfoTerCode === undefined || empInfoTerCode === ''){
                     self.displayLogList([]);
                 }else{
                     service.getInPeriod(empInfoTerCode, sTime, eTime).done((data: Array<any>) => {
@@ -166,7 +163,6 @@ module knr002.b {
              */
             private hasError(): boolean{
                 var self = this;
-                self.clearErrors();
                 //period time
                 return $("#B4_2").ntsError("hasError");
             }

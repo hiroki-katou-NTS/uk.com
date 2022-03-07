@@ -8,8 +8,8 @@ module nts.uk.ui.koExtentions {
     class NtsGridListBindingHandler implements KnockoutBindingHandler {
 
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            let HEADER_HEIGHT = 27;
-            let ROW_HEIGHT = 24;
+            let HEADER_HEIGHT = 30;
+            let ROW_HEIGHT = 30;
             let DIFF_NUMBER = 2;
             
             var $grid = $(element).addClass("nts-gridlist");
@@ -37,7 +37,7 @@ module nts.uk.ui.koExtentions {
             $grid.data("initValue", value); 
             
             if (data.multiple){
-                ROW_HEIGHT = 24;
+                ROW_HEIGHT = 30;
                 
                 // Internet Explorer 6-11
                 let _document: any = document;
@@ -57,7 +57,7 @@ module nts.uk.ui.koExtentions {
                     name: 'RowSelectors',
                     enableCheckBoxes: data.multiple,
                     enableRowNumbering: false, //this feature is not needed
-                    rowSelectorColumnWidth: 25
+                    rowSelectorColumnWidth: 40
                 });    
             }
             if(columnResize){

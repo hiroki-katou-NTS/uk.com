@@ -68,8 +68,6 @@ div.form-label.broken {
 }
 
 .workSelectKAF010{
-    height: 60px;
-    margin-top: 10px;
 }
 .panel.panel-gray-bg {
     margin-bottom: 15px;
@@ -89,14 +87,6 @@ div.form-label.broken {
 	width: 280px;
 	float: left;
 	margin-left: 30px;
-}
-
-.lblTitle {
-	color: #808080;
-    line-height: 32px;
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 500
 }
 
 .btnSendMail {
@@ -140,9 +130,6 @@ div.form-label.broken {
 .fix-margin-left{
 	margin-left:13px;
 }
-.cm-column {
-	width: 130px;
-}
 .cm-column2 {
 	width: 145px;
 }
@@ -174,7 +161,8 @@ div.form-label.broken {
 }
 
 .headerKAF010 {
-	background-color: #CFF1A5;
+	background-color: #6A6A6A;
+    color: #fff;
 }
 
 .scroll-header{
@@ -182,4 +170,8 @@ div.form-label.broken {
 }
 th {
 	text-align: center !important;
+}
+
+.code-name{
+	display: inline-block;
 }

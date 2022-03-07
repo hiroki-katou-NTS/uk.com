@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.holidaysremaining.report;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -83,6 +84,12 @@ public class HolidayRemainingInfor {
 
     List<NursingCareLeaveThisMonthFutureSituation> nursingCareLeaveThisMonthFutureSituationRight;//17
     NursingCareLeaveThisMonthFutureSituation nursingCareLeaveThisMonthFutureSituationLeft ;//18
+    // 262 - Dữ liệu quá khứ cho ngày nghỉ phần L
+    List<PublicHolidayPastSituation> publicHolidayPastSituations = new ArrayList<>();
+    // 718 - Left : Dữ liệu tháng hiện tại của phần L
+    FutureSituationOfTheMonthPublicHoliday leftPublicHolidays = null ;
+    // 718 - Right: Dữ liệu tháng hiện tại và tương lai
+    List<FutureSituationOfTheMonthPublicHoliday> rightPublicHolidays = new ArrayList<>() ;
 
     public HolidayRemainingInfor(Optional<GeneralDate> grantDate,
                                  List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber,
@@ -111,7 +118,13 @@ public class HolidayRemainingInfor {
                                  ChildNursingLeaveThisMonthFutureSituation childCareRemNumWithinPeriodLeft,
                                  List<ChildNursingLeaveThisMonthFutureSituation> childCareRemNumWithinPeriodRight,
                                  List<NursingCareLeaveThisMonthFutureSituation> nursingCareLeaveThisMonthFutureSituationRight,
-                                 NursingCareLeaveThisMonthFutureSituation nursingCareLeaveThisMonthFutureSituationLeft
+                                 NursingCareLeaveThisMonthFutureSituation nursingCareLeaveThisMonthFutureSituationLeft,
+                                 // 262 - Dữ liệu quá khứ cho ngày nghỉ phần L
+                                 List<PublicHolidayPastSituation> publicHolidayPastSituations,
+                                    // 718 - Left : Dữ liệu tháng hiện tại của phần L
+                                 FutureSituationOfTheMonthPublicHoliday leftPublicHolidays,
+                                    // 718 - Right: Dữ liệu tháng hiện tại và tương lai
+                                 List<FutureSituationOfTheMonthPublicHoliday> rightPublicHolidays
 
     ) {
         super();
@@ -144,5 +157,8 @@ public class HolidayRemainingInfor {
         this.childCareRemNumWithinPeriodLeft = childCareRemNumWithinPeriodLeft;
         this.nursingCareLeaveThisMonthFutureSituationLeft = nursingCareLeaveThisMonthFutureSituationLeft;
         this.nursingCareLeaveThisMonthFutureSituationRight = nursingCareLeaveThisMonthFutureSituationRight;
+        this.publicHolidayPastSituations = publicHolidayPastSituations;
+        this.leftPublicHolidays = leftPublicHolidays;
+        this.rightPublicHolidays = rightPublicHolidays;
     }
 }

@@ -75,7 +75,7 @@
 											</colgroup>
 											<thead >
 												<tr>
-													<th  class="ui-widget-header check_column" data-bind="click: clickCheckAll" ><div tabindex="-1" data-bind="ntsCheckBox: {checked: checkAll}"></div></th>
+													<th class="ui-widget-header check_column" data-bind="click: clickCheckAll" ><div tabindex="-1" data-bind="ntsCheckBox: {checked: checkAll}"></div></th>
 													<th class="ui-widget-header" >#{i18n.getText('KAL001_6')}</th>
 													<th class="ui-widget-header" >#{i18n.getText('KAL001_7')}</th>
 
@@ -83,7 +83,7 @@
 											</thead>
 											<tbody >
 												<com:ko-foreach bind="periodByCategory">
-													<tr  data-bind="attr:{ categorynumber: id}">
+													<tr class="ui-widget-body" data-bind="attr:{ categorynumber: id}">
 														<td   class ="check_column"  data-bind="click: setClick"><div tabindex="-1" data-bind="ntsCheckBox: {checked: checkBox}"></div></td>
 														<td tabindex="-1" data-bind ="text: categoryName "></td>
 														

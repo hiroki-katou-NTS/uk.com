@@ -36,7 +36,7 @@ public interface StampDakokuRepository {
 
 	/**
 	 * [4] 取得する
-	 * 
+	 *
 	 * @param 契約コード
 	 *            contractCode
 	 * @param stampNumbers
@@ -47,26 +47,26 @@ public interface StampDakokuRepository {
 
 	/**
 	 * [5] 打刻カード未登録の打刻データを取得する
-	 * 
+	 *
 	 * @param 契約コード
 	 *            contractCode
 	 * @param period
 	 * @return
 	 */
 	public List<Stamp> getStempRcNotResgistNumberStamp(String contractCode, DatePeriod period);
-	
+
 	public List<Stamp> getByListCard(List<String> stampNumbers);
-	
+
 	public List<Stamp> getByDateperiod(String companyId,DatePeriod period);
-	
+
 	public List<Stamp> getByCardAndPeriod(String companyId,List<String> listCard,DatePeriod period);
 
 	public List<Stamp> getByDateTimeperiod(List<String> listCard, GeneralDateTime startDate, GeneralDateTime endDate);
 
 	public Optional<Stamp> get(String contractCode, StampNumber stampNumber);
-	
+
 	//[6] exists(契約コード,打刻カード番号, 打刻日時,時刻変更区分)
 	public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
-			ChangeClockAtr changeClockArt) ;
+							   ChangeClockAtr changeClockArt) ;
 
 }

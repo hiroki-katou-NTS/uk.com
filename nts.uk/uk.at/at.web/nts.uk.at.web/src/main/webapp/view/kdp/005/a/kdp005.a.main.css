@@ -14,7 +14,7 @@ html {
 }
 
 .kdp005a {
-	background: linear-gradient(#EBFCF6, #F5F5F5);
+	/* background: linear-gradient(#EBFCF6, #F5F5F5); */
 	padding: 10px;
 }
 
@@ -111,4 +111,7 @@ html {
 .pageComent {
 	word-break: break-all !important;
 	white-space: pre-wrap !important;
+	position: absolute;
+    bottom: 30px;
+    right: 30px;
 }

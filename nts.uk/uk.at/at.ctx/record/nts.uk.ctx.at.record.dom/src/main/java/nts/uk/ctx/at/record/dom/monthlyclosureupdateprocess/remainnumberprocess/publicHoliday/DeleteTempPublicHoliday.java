@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.publicHoliday;
 
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.GeneralDate;
 
 /**
  * 公休暫定データ削除
@@ -17,12 +17,12 @@ public class DeleteTempPublicHoliday {
 	 * @param period　期間
 	 * @return
 	 */
-	public static AtomTask delete(Require require, String employeeId, DatePeriod period){
-		return AtomTask.of(() -> require.deleteTempPublicHolidayByPeriod(employeeId, period));
+	public static AtomTask delete(Require require, String employeeId, GeneralDate ymd){
+		return AtomTask.of(() -> require.deleteTempPublicHolidayBySidBeforeTheYmd(employeeId, ymd));
 	}
 	
 	public static interface Require{
-		void deleteTempPublicHolidayByPeriod(String employeeId, DatePeriod period);
+		void deleteTempPublicHolidayBySidBeforeTheYmd(String sid, GeneralDate ymd);
 		
 	}
 }

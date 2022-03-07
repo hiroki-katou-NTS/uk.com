@@ -11,6 +11,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ContractTimeRound;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DayTimeAnnualLeave;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
@@ -121,5 +122,11 @@ public class JpaTimeAnnualSettingGetMemento implements TimeAnnualSettingGetMemen
 				Optional.ofNullable(this.entity.getContractTimeRound() == null ? null :  ContractTimeRound.valueOf(this.entity.getContractTimeRound())));
 		return data
 				;
+	}
+
+	@Override
+	public TimeVacationDigestUnit getTimeVacationDigestUnit() {
+		return new TimeVacationDigestUnit(ManageDistinct.valueOf(this.entity.getTimeManageAtr()),
+				TimeDigestiveUnit.valueOf(this.entity.getTimeUnit()));
 	}
 }

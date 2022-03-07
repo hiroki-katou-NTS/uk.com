@@ -24,7 +24,7 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonica
 		
 	public AffWorkplaceHistoryCanonicalization() {
 		super(HistoryType.PERSISTENERESIDENT);
-		workplaceCodeCanonicalization = new WorkplaceCodeCanonicalization(this.getItemNoMap());
+		workplaceCodeCanonicalization = new WorkplaceCodeCanonicalization(Items.開始日, Items.職場コード, Items.WORKPLACE_ID);
 	}
 
 	@Override

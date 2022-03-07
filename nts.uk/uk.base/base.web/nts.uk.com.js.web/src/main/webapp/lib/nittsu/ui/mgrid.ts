@@ -980,7 +980,7 @@ module nts.uk.ui.mgrid {
                 let tdStyle = "";
                 tdStyle += "; border-width: 1px; overflow: hidden; ";
                 if (self.options.isHeader) {
-                    tdStyle += "word-break: break-all; vertical-align: top;";
+                    tdStyle += "word-break: break-all; vertical-align: middle;";
                 } else {
                     tdStyle += "white-space: " + ws + ";"; // position: relative;";
                 }
@@ -1479,7 +1479,7 @@ module nts.uk.ui.mgrid {
                 let self = this;
                 let $td = document.createElement("td");
                 $.data($td, lo.VIEW, rowIdx + "-" + cell.key);
-                let tdStyle = "; border-width: 1px; overflow: hidden; word-break: break-all; vertical-align: top; border-collapse: collapse;";
+                let tdStyle = "; border-width: 1px; overflow: hidden; word-break: break-all; vertical-align: middle; border-collapse: collapse;";
                 if (!_.isNil(cell.rowspan) && cell.rowspan > 1) $td.setAttribute("rowspan", cell.rowspan);
                 if (!_.isNil(cell.colspan) && cell.colspan > 1) $td.setAttribute("colspan", cell.colspan);
                 else if (_.isNil(cell.colspan) && !self.visibleColumnsMap[cell.key]) {
@@ -3003,7 +3003,7 @@ module nts.uk.ui.mgrid {
                 top: top,
                 left: left,
                 width: width,
-                border: "solid 1px #CCC"
+                border: "none"
             };
             
             if (maxWidth) {

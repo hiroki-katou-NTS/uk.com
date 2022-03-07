@@ -575,6 +575,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(537, join(breakTime, CALC, WITHIN_STATUTORY, TIME));
 		temp.put(538, join(breakTime, DEDUCTION, WITHIN_STATUTORY, TIME));
 		temp.put(798, join(breakTime, CALC, EXCESS_STATUTORY, TIME));
+		temp.put(1139, join(breakTime, DEDUCTION, EXCESS_STATUTORY, TIME));
 		temp.put(574, join(breakTime, WORKING_TIME));
 		temp.put(160, join(breakTime, AFTER_CORRECTED, joinNS(START, NUMBER_1)));
 		temp.put(161, join(breakTime, AFTER_CORRECTED, joinNS(END, NUMBER_1)));
