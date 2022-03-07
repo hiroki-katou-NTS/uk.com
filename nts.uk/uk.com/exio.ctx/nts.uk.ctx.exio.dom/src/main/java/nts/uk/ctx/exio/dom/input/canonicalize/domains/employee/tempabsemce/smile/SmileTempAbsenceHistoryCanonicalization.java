@@ -45,12 +45,12 @@ public class SmileTempAbsenceHistoryCanonicalization extends TempAbsenceHistoryC
 	@Override
 	protected List<IntermediateResult> preCanonicalize(List<IntermediateResult> interms) {
 		return interms.stream()
-				.map(interm -> create(interm))
+				.map(interm -> canonicalize(interm))
 				.collect(Collectors.toList());
 	}
 	
 	
-	private static IntermediateResult create(IntermediateResult interm) {
+	private static IntermediateResult canonicalize(IntermediateResult interm) {
 		
 		if(interm.isImporting(Items.休職理由)) {
 			interm = interm.addCanonicalized(new CanonicalItem(Items.備考, interm.getItemByNo(Items.休職理由).get().getString()));
