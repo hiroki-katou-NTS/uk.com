@@ -67,7 +67,7 @@ public class RegisterResultFromSupportableEmployee {
 	}
 	
 	@Value
-	static class ErrorInformation {
+	public static class ErrorInformation {
 		
 		/**
 		 * 応援可能な社員

@@ -24,8 +24,8 @@ public class DeleteSupportAllowOrgCommandHandler extends CommandHandler<DeleteSu
         DeleteSupportAllowOrgCommand command = commandHandlerContext.getCommand();
 
         TargetOrgIdenInfor targetOrgIdenInfor = command.getUnit() == TargetOrganizationUnit.WORKPLACE.value
-                ? TargetOrgIdenInfor.creatIdentifiWorkplace(command.getWorkplaceId())
-                : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(command.getWorkplaceGroupId());
+                ? TargetOrgIdenInfor.creatIdentifiWorkplace(command.getOrgId())
+                : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(command.getOrgId());
 
         supportAllowOrganizationRepo.delete(AppContexts.user().companyId(), targetOrgIdenInfor);
     }

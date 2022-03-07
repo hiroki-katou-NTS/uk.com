@@ -25,24 +25,28 @@ public class RegisterSupportAllowOrgCommandHandler extends CommandHandler<Regist
 
     @Override
     protected void handle(CommandHandlerContext<RegisterSupportAllowOrgCommand> commandHandlerContext) {
-        RegisterSupportAllowOrgCommand command = commandHandlerContext.getCommand();
+        val command = commandHandlerContext.getCommand();
         String cid = AppContexts.user().companyId();
 
         TargetOrgIdenInfor targetOrgIdenInfor = this.createOrg(command.getOrgUnit(), command.getOrgId());
 
-        List<SupportAllowOrganization> supportableOrgList = supportAllowOrgRepo.getListBySupportableOrg(cid, targetOrgIdenInfor);
+        // get(会社ID、対象組織情報): List<応援可能組織>
+        List<SupportAllowOrganization> supportableOrgList = supportAllowOrgRepo.getListByTargetOrg(cid, targetOrgIdenInfor);
         if (supportableOrgList.isEmpty()) {
             val supportAllowOrgs = command.getOrgCanBeSupports()
                     .stream()
-                    .map(org -> SupportAllowOrganization.create(targetOrgIdenInfor, this.createOrg(org.getOrgUnit(), org.getOrgId())))
+                    .map(org -> SupportAllowOrganization.create(targetOrgIdenInfor, this.createOrg(command.getOrgUnit(), org.getOrgId())))
                     .collect(Collectors.toList());
             if (!supportAllowOrgs.isEmpty()) {
                 supportAllowOrgRepo.insertAll(cid, supportAllowOrgs);
             }
         } else {
-            command.getOrgCanBeSupports().forEach(org -> {
-                supportAllowOrgRepo.update(cid, SupportAllowOrganization.create(targetOrgIdenInfor, this.createOrg(org.getOrgUnit(), org.getOrgId())));
-            });
+            supportAllowOrgRepo.delete(AppContexts.user().companyId(), targetOrgIdenInfor);
+            val supportAllowOrgs = command.getOrgCanBeSupports()
+                    .stream()
+                    .map(org -> SupportAllowOrganization.create(targetOrgIdenInfor, this.createOrg(command.getOrgUnit(), org.getOrgId())))
+                    .collect(Collectors.toList());
+            supportAllowOrgRepo.insertAll(cid, supportAllowOrgs);
         }
     }
 

@@ -4,6 +4,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionControl;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionControlRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.support.SupportFunctionControlRepository;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -32,6 +33,9 @@ public class RegisterScheFuncCtrlCommandHandler extends CommandHandler<RegisterS
     @Inject
     private BasicScheduleService basicScheduleService;
 
+    @Inject
+    private SupportFunctionControlRepository supportFunctionControlRepository;
+
     @Override
     protected void handle(CommandHandlerContext<RegisterScheFuncCtrlCommand> commandHandlerContext) {
         RegisterScheFuncCtrlCommand command = commandHandlerContext.getCommand();
@@ -49,6 +53,10 @@ public class RegisterScheFuncCtrlCommandHandler extends CommandHandler<RegisterS
             scheFunctionControlRepo.update(companyId, command.toDomain(lstWorkType));
         } else {
             scheFunctionControlRepo.insert(companyId, command.toDomain(lstWorkType));
+        }
+
+        if (supportFunctionControlRepository.get(companyId) != null){
+            supportFunctionControlRepository.update(companyId,command.toSupportFunc());
         }
     }
 }
