@@ -9,7 +9,7 @@
       <script>
         var dialogSize = {
           width: 1000,
-          height: 500
+          height: 580
         };
       </script>
       <com:scriptfile set="IGNITE" />
@@ -31,28 +31,28 @@
           </div>
           <div class="flex valign-center setting-delete">
             <label id="F2_2">#{i18n.getText('CMM030_82')}</label>
-            <button id="F2_1" class="danger" data-bind="enable: isFirstLineSelected, click: processDeleteHist">#{i18n.getText('CMM030_81')}</button>
+            <button id="F2_1" class="danger small" data-bind="enable: isFirstLineSelected, click: processDeleteHist">#{i18n.getText('CMM030_81')}</button>
           </div>
         </div>
         <div class="flex mt-20">
           <table id="F3" data-bind="ntsGridList: {
+            height: 385,
             options: periodList,
             optionsValue: 'id',
             columns: periodColumns,
             value: selectedPeriodId,
-            rows: 12
           }" tabindex="1"></table>
           <table id="F4" data-bind="ntsGridList: {
+            height: 385,
             options: approverList,
             optionsValue: 'id',
             columns: approverColumns,
             value: selectedApproverId,
-            rows: 12
           }"></table>
         </div>
       </div>
       <div id="functions-area-bottom">
-        <button id="F6_1" data-bind="click: closeDialog">#{i18n.getText('CMM030_87')}</button>
+        <button id="F6_1" class="large" data-bind="click: closeDialog">#{i18n.getText('CMM030_87')}</button>
       </div>
     </ui:define>
   </ui:composition>

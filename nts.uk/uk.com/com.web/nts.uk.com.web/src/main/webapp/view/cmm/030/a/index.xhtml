@@ -45,10 +45,11 @@
         }"></textarea>
         <div id="A3_2" tabindex="6"></div>
         <div class="flex valign-center mt-10">
-          <div id="A4_1" data-bind="ntsDatePicker: {
+          <input id="A4_1" data-bind="ntsTextEditor: {
             name: '#[CMM030_17]',
-            value: startDate
-          }"></div>
+            value: startDate,
+            option: { width: '80px' }
+          }" />
           <label id="A4_2" class="ml-5">#{i18n.getText('CMM030_18')}</label>
           <label id="A4_3" class="color-holiday" data-bind="visible: isVisibleA4_3">#{i18n.getText('CMM030_19')}</label>
         </div>

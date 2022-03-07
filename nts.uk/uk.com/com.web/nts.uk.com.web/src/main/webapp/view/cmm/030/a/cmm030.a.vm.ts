@@ -76,6 +76,7 @@ module nts.uk.com.view.cmm030.a {
       const vm = this;
       vm.$blockui("grayout");
       vm.initScreen().always(() => {
+        $("#A2_1").attr("readonly", "readonly");
         $("#A4_1").attr("readonly", "readonly");
         setTimeout(() => {
           $(".approver-input").on("click", e => vm.openDialogB($(e.target)));
@@ -159,10 +160,7 @@ module nts.uk.com.view.cmm030.a {
 
     public openDialogG() {
       const vm = this;
-      const param = {
-        baseDate: vm.startDate()
-      };
-      vm.$window.modal("/view/cmm/030/g/index.xhtml", param)
+      vm.$window.modal("/view/cmm/030/g/index.xhtml")
       .then(() => vm.focusA7_1());
     }
 
@@ -317,7 +315,11 @@ module nts.uk.com.view.cmm030.a {
         // Ａ：承認者表示データの取得する 
         const approverDisplayData = result.approverDisplayData;
         vm.updateApproverData(approverDisplayData);
-      }).fail(err => vm.$dialog.error({ messageId: err.messageId }));
+      }).fail(err => vm.$dialog.error({ messageId: err.messageId }).then(() => {
+        if (err.messageId === "Msg_3287") {
+          vm.$jump("/view/ccg/008/a/index.xhtml");
+        }
+      }));
     }
 
     /**
@@ -416,7 +418,7 @@ module nts.uk.com.view.cmm030.a {
             phaseOrder: 5 - index,
             approverId: approver.sid
           };
-        });
+        }).filter(data => !_.isNil(data.approverId)).value();
         return {
           approvalRootInfo: approvalRootInfo,
           approvalPhases: approvalPhases

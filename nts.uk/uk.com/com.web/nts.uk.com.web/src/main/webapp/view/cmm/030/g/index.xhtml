@@ -19,7 +19,7 @@
     <ui:define name="content">
       <div id="contents-area">
         <div class="flex halign-center">
-          <div id="G1_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMM030_100')}</div>
+          <div id="G1_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM030_100')}</div>
           <div id="G1_2" data-bind="ntsDatePicker: {
             name: '#[CMM030_101]',
             value: baseDate

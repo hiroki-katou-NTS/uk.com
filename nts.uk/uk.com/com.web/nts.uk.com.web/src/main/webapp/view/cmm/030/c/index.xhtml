@@ -20,7 +20,7 @@
       <div id="contents-area">
         <label id="C1_1">#{i18n.getText('CMM030_50')}</label>
         <div class="flex valign-center">
-          <div id="C1_2" class="setting-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMM030_51')}</div>
+          <div id="C1_2" class="setting-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM030_51')}</div>
           <div id="C1_3" data-bind="ntsDatePicker: {
             name: '#[CMM030_52]',
             value: startDate

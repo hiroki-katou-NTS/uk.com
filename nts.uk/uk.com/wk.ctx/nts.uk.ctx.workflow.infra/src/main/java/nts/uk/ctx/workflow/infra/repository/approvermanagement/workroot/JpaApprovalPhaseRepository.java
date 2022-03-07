@@ -86,7 +86,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		String query = "SELECT phase.APPROVAL_ID, phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.BROWSING_PHASE, phase.APPROVAL_ATR as PHASE_ATR, " +
 						"approver.APPROVER_G_CD, approver.SID, approver.APPROVER_ORDER, approver.CONFIRM_PERSON, approver.SPEC_WKP_ID " +
 						"FROM WWFMT_APPROVAL_PHASE phase " +
-						"LEFT JOIN WWFMT_APPROVER approver " +
+						"RIGHT JOIN WWFMT_APPROVER approver " +
 						"ON phase.APPROVAL_ID = approver.APPROVAL_ID " +
 						"AND phase.PHASE_ORDER = approver.PHASE_ORDER " +
 						"WHERE phase.APPROVAL_ID = 'approvalId' " ;

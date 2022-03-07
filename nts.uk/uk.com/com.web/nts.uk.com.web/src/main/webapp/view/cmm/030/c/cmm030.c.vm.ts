@@ -9,7 +9,7 @@ module nts.uk.com.view.cmm030.c {
   @bean()
   export class ScreenModel extends ko.ViewModel {
     sid: string;
-    startDate: KnockoutObservable<string> = ko.observable("");
+    startDate: KnockoutObservable<string> = ko.observable(moment.utc().format("YYYY/MM/DD"));
     transferList: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedTransfer: KnockoutObservable<number> = ko.observable(0);
 

@@ -153,6 +153,7 @@ module nts.uk.com.view.cmm030.f {
           });
         }).value();
         vm.approverList(approvers);
+        vm.$nextTick(() => $("#F4 td").addClass("limited-label"));
       });
     }
 

@@ -8,12 +8,7 @@ module nts.uk.com.view.cmm030.g {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    baseDate: KnockoutObservable<string> = ko.observable("");
-
-    created(params?: any): void {
-      const vm = this;
-      vm.baseDate(params.baseDate || moment.utc().format("YYYY/MM/DD"));
-    }
+    baseDate: KnockoutObservable<string> = ko.observable(moment.utc().format("YYYY/MM/DD"));
 
     mounted(): void {
       const vm = this;

@@ -11,6 +11,10 @@
   margin-right: 35px;
 }
 
+td.limited-label {
+  display: table-cell;
+}
+
 .mt-20 {
   margin-top: 20px;
 }
