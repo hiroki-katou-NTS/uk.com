@@ -328,16 +328,10 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		val tempAnnualLeaveMngs = getTempAnnualLeaveMngs(
 				require, employeeId, aggrPeriod, mode,
 				isOverWriteOpt, forOverWriteListOpt,isOverWritePeriod);
-
-		for (val aggregatePeriodWork : periodWorkList.getPeriodWorkList()){
-
-			//残数処理
-			aggrResult = annualLeaveInfo.remainNumberProcess(require, companyId, employeeId, periodWorkList,
-					aggregatePeriodWork, tempAnnualLeaveMngs, aggrResult, annualLeaveSet);
-
-		}
-
 		
+		//残数処理
+		aggrResult = periodWorkList.remainNumberProcess(require, companyId, employeeId, tempAnnualLeaveMngs, annualLeaveSet,
+				annualLeaveInfo);		
 		
 		// 【渡すパラメータ】 年休情報　←　年休の集計結果．年休情報（期間終了日時点）
 		AnnualLeaveInfo annualLeaveInfoEnd = aggrResult.getAsOfPeriodEnd();

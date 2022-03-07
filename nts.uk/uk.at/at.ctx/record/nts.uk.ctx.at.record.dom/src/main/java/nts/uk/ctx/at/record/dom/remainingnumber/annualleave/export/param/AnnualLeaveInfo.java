@@ -197,7 +197,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	 * @return
 	 */
 	public AggrResultOfAnnualLeave remainNumberProcess(LeaveRemainingNumber.RequireM3 require, String companyId,
-			String employeeId, AggregatePeriodWorkList periodWorkList, AggregatePeriodWork aggregatePeriodWork, 
+			String employeeId, GrantBeforeAfterAtr grantBeforeAfterAtr, AggregatePeriodWork aggregatePeriodWork, 
 			List<TempAnnualLeaveMngs> tempAnnualLeaveMngs,AggrResultOfAnnualLeave aggrResult, 
 			AnnualPaidLeaveSetting annualPaidLeaveSet){
 		
@@ -211,7 +211,7 @@ public class AnnualLeaveInfo implements Cloneable {
 					
 		//消滅処理
 		aggrResult = lapsedProcess(aggregatePeriodWork, aggrResult,
-				periodWorkList.isNextGrantPeriodAtr(aggregatePeriodWork));
+				grantBeforeAfterAtr);
 		
 		return aggrResult;
 	}
