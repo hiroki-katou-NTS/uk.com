@@ -528,7 +528,7 @@ module nts.uk.ui.at.ksu002.a {
 
 			vm.$ajax('at', 'screen/ksu/ksu002/getlegalworkinghours', command).then((data2: any) => {
 				vm.legalworkinghours(data2);
-				vm.workplaceId(data2.affWorkPlaces);
+				vm.workplaceId(data2.affWorkPlace);
 			}).then(() => {
 				const command1 = {
 					listSid: [ko.unwrap(vm.employeeId)],
