@@ -12,18 +12,18 @@ import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
 /**
- * 社員コードを編集する
+ * 社員コードを社員コードの編集設定に基づき補正する
  */
-public class ValidateEmployeeCode {
+public class CorrectedEmployeeCode {
 	
 	private final static String employeeCodeFQN = EmployeeCode.class.getName();
 	
-	public static RevisedDataRecord validate(EmployeeCodeValidateRequire require, ExecutionContext context, RevisedDataRecord record) {
+	public static RevisedDataRecord correct(EmployeeCodeValidateRequire require, ExecutionContext context, RevisedDataRecord record) {
 		return record.getItems().stream()
 			.filter(item -> isEmployeeCodePrimitiveValue(require, context, item))
 			.findFirst()
 			.map(target -> {
-				val correctedData = new DataItem(target.getItemNo(), correctedEmployeeCode(require, context, target.getString()));
+				val correctedData = new DataItem(target.getItemNo(), getCorrectedEmployeeCode(require, context, target.getString()));
 				return record.replace(correctedData); 
 			})
 			.orElse(record);
@@ -32,7 +32,7 @@ public class ValidateEmployeeCode {
 	/**
 	 *  社員コードの編集設定に基づいて社員コードを補正する 
 	 */
-	private static String correctedEmployeeCode(EmployeeCodeValidateRequire require, ExecutionContext context, String employeeCode) {
+	private static String getCorrectedEmployeeCode(EmployeeCodeValidateRequire require, ExecutionContext context, String employeeCode) {
 		return require.getByComId(context.getCompanyId())
 				.get()
 				.editEmployeeCode(employeeCode);
