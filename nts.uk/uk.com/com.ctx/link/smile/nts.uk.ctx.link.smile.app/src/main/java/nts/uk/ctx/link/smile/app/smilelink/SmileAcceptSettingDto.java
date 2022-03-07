@@ -20,13 +20,13 @@ public class SmileAcceptSettingDto {
 	private int cooperationAcceptanceClassification;
 	
 	// 外部受入条件コード
-	private Optional<String> cooperationAcceptanceConditions;
+	private String cooperationAcceptanceConditions;
 
 	public SmileAcceptSettingDto(int cooperationAcceptance, int cooperationAcceptanceClassification,
 			Optional<String> cooperationAcceptanceConditions) {
 		super();
 		this.cooperationAcceptance = cooperationAcceptance;
 		this.cooperationAcceptanceClassification = cooperationAcceptanceClassification;
-		this.cooperationAcceptanceConditions = cooperationAcceptanceConditions;
+		this.cooperationAcceptanceConditions = cooperationAcceptanceConditions.isPresent() ? cooperationAcceptanceConditions.get() : null;
 	}
 }
