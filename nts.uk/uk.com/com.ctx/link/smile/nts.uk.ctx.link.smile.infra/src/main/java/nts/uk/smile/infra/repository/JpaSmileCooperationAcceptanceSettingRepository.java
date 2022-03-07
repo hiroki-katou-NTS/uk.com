@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.processexecution.ExternalAcceptanceConditionCode;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.link.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceClassification;
 import nts.uk.ctx.link.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceItem;
 import nts.uk.ctx.link.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSetting;
@@ -36,9 +37,9 @@ public class JpaSmileCooperationAcceptanceSettingRepository extends JpaRepositor
 	}
 
 	private SmileCooperationAcceptanceSetting toDomain(LsmmtSmileCooperationAccepset entity) {
-		ExternalAcceptanceConditionCode acceptanceConditionCode = null;
+		ExternalImportCode acceptanceConditionCode = null;
 		if (entity.getConditionSetCd() != null) {
-			acceptanceConditionCode = new ExternalAcceptanceConditionCode(entity.getConditionSetCd());
+			acceptanceConditionCode = new ExternalImportCode(entity.getConditionSetCd());
 		}
 		SmileCooperationAcceptanceSetting domain = new SmileCooperationAcceptanceSetting(
 				EnumAdaptor.valueOf(entity.getPk().getSmileCooperAccept(), SmileCooperationAcceptanceItem.class),

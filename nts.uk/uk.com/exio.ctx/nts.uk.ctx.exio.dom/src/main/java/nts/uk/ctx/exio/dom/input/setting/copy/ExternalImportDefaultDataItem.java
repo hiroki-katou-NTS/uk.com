@@ -15,16 +15,16 @@ import java.io.InputStream;
 public enum ExternalImportDefaultDataItem {
 
     /** SMILE組織情報 */
-    SMILE_SOSHIKI(new ExternalImportCode("SL1"), ""),
+    SMILE_SOSHIKI(new ExternalImportCode("SL1")),
 
     /** SMILE人事基本情報 */
-    SMILE_JINJI_KIHON(new ExternalImportCode("SL1"), ""),
+    SMILE_JINJI_KIHON(new ExternalImportCode("SL2")),
 
     /** SMILE職制情報 */
-    SMILE_SHOKUSEI(new ExternalImportCode("SL1"), ""),
+    SMILE_SHOKUSEI(new ExternalImportCode("SL3")),
 
     /** SMILE休職情報 */
-    SMILE_KYUSHOKU(new ExternalImportCode("SL1"), ""),
+    SMILE_KYUSHOKU(new ExternalImportCode("SL4")),
 
     ;
 
@@ -32,17 +32,18 @@ public enum ExternalImportDefaultDataItem {
     @Getter
     private final ExternalImportCode sourceDataCode;
 
-    /** サンプルCSVファイルのリソースのパス */
-    private final String sampleCsvResourcePath;
-
     public String storeBaseCsvFile(RequireStoreBaseCsvFile require) {
-        val file = this.getClass().getClassLoader().getResourceAsStream(sampleCsvResourcePath);
+        val file = this.getClass().getClassLoader().getResourceAsStream(getBaseCsvResourcePath());
         return require.storeFileThenGetFileId(file, getFileName(), "csv");
     }
 
     private String getFileName() {
-        String[] parts = sampleCsvResourcePath.split("/");
+        String[] parts = getBaseCsvResourcePath().split("/");
         return parts[parts.length - 1];
+    }
+
+    private String getBaseCsvResourcePath() {
+        return "input/defaultdata/basecsv/" + this.name() + ".csv";
     }
 
     public interface RequireStoreBaseCsvFile {
