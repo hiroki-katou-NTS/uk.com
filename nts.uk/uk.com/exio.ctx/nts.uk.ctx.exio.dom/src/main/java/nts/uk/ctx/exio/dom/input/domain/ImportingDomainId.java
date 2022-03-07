@@ -26,6 +26,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantRemainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantSettingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.stock.StockHolidayRemainingCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.EmploymentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.WorkplaceCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.EquipmentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.EquipmentClassiicationCanonicalization;
@@ -46,6 +47,9 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.shift.businesscalendar.Pub
  */
 @RequiredArgsConstructor
 public enum ImportingDomainId {
+
+	/** 雇用マスタ */
+	EMPLOYMENT(11, EmploymentCanonicalization::new),
 
 	/** 分類マスタ　*/
 	CLASSIFICATION(12, ClassificationCanonicalization::new),
@@ -76,7 +80,7 @@ public enum ImportingDomainId {
 
 	/** 祝日マスタ*/
 	PUBLIC_HOLIDAY(52, PublicHolidayCanonicalization::new),
-	
+
 	/** 個人基本情報 */
 	EMPLOYEE_BASIC(100, EmployeeBasicCanonicalization::new),
 

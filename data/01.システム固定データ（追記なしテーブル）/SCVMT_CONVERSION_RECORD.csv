@@ -62,3 +62,4 @@ CATEGORY_NAME,TARGET_TBL_NAME,RECORD_NO,SOURCE_ID,EXPLANATION,WHERE_CONDITION,RE
 "職場別就業時間帯","KSHMT_WT_COM_WKP",1,"b707fd0e-a5b5-4b08-a21c-4c3d24c970fd","","",true
 "設備マスタ","OFIDT_EQUIPMENT",1,"5394007d-42bc-451c-bbe0-c0479be44759","","",true
 "設備分類マスタ","OFIDT_EQUIPMENT_CLS",1,"2ec30cfc-3d1e-479d-8f4f-53fb6ff6d1bc","","",true
+"雇用マスタ","BSYMT_EMPLOYMENT",1,"b765bd42-e570-4896-bc26-697bdd0874dd","","",true
