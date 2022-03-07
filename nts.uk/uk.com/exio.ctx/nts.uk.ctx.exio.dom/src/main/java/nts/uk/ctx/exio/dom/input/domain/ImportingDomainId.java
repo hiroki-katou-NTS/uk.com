@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.attendance.worktime.WorktimeByWorkplaceCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffClassHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.CardNumberCanonicalaization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffCompanyHistoryCanonicalization;
@@ -64,6 +65,9 @@ public enum ImportingDomainId {
 
 	/** 勤務場所IPマスタ*/
 	WORK_LOCATION_IP(37, WorkLocationIpCanonicalization::new),
+
+	/** 職場別就業時間帯*/
+	WORKTIME_BY_WORKSPACE(42, WorktimeByWorkplaceCanonicalization::new),
 
 	/** 祝日マスタ*/
 	PUBLIC_HOLIDAY(52, PublicHolidayCanonicalization::new),
