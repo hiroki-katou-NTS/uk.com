@@ -189,9 +189,14 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                     for (val acctAbsenDetail : substituteHolidayAggrResult.getVacationDetails().getLstAcctAbsenDetail()) {
                         val dateOptional = acctAbsenDetail.getDateOccur().getDayoffDate();
                         //　・発生取得明細(i)．発生消化区分　　　＝ 代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．発生消化区分
+                        // 2022.03.07 - 3S - chinh.hm  - issues #122855   - 変更 START
+                        //if (dateOptional.isPresent()
+                        //        && affComHistItem.getDatePeriod().start().beforeOrEquals(dateOptional.get())
+                        //        && affComHistItem.getDatePeriod().end().afterOrEquals(dateOptional.get())) {
                         if ((dateOptional.isPresent()
-                                && affComHistItem.getDatePeriod().start().beforeOrEquals(dateOptional.get())
-                                && affComHistItem.getDatePeriod().end().afterOrEquals(dateOptional.get())) || acctAbsenDetail.getDateOccur().isUnknownDate()) {
+                                    && affComHistItem.getDatePeriod().start().beforeOrEquals(dateOptional.get())
+                                    && affComHistItem.getDatePeriod().end().afterOrEquals(dateOptional.get())) || acctAbsenDetail.getDateOccur().isUnknownDate()) {
+                        // 2022.03.07 - 3S - chinh.hm  - issues #122855   - 変更 END
                             OccurrenceDigClass occurrenceDigClass = acctAbsenDetail.getOccurrentClass();
                             CompensatoryDayoffDate date = null;
                             AccumulationAbsenceDetail.NumberConsecuVacation numberConsecuVacation = null;

@@ -235,15 +235,16 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                         content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList(),
                         content.getObservationOfExitLeave().get().getListTyingInformation()
                 );
-                val listItem = new ArrayList<>(content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().stream().filter(e -> e.getDate().isUnknownDate()).collect(Collectors.toList()));
-                val listDate = content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().stream()
-                        .filter(e -> !e.getDate().isUnknownDate()).sorted(Comparator.comparing(i -> i.getDate().getDayoffDate().get()))
-                        .collect(Collectors.toList());
-                listItem.addAll(listDate);
-
+                // 2022.03.07 - 3S - chinh.hm  - issues #122855   - 追加  START
                 if (isPresent) {
+                    val listItem = new ArrayList<>(content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().stream().filter(e -> e.getDate().isUnknownDate()).collect(Collectors.toList()));
+                    val listDate = content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().stream()
+                            .filter(e -> !e.getDate().isUnknownDate()).sorted(Comparator.comparing(i -> i.getDate().getDayoffDate().get()))
+                            .collect(Collectors.toList());
+                    listItem.addAll(listDate);
                     content.getObservationOfExitLeave().get().setOccurrenceAcquisitionDetailsList(listItem);
                 }
+                // 2022.03.07 - 3S - chinh.hm  - issues #122855   - 追加  START
                 int col = 9;
                 int size = isPresent ? content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().size() : 1;
                 int loops = size > 0 && size % 10 == 0 ? (size / 10) : (size / 10 + 1);
@@ -278,13 +279,10 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                             int idx = loop * 10 + i;
                             if (idx < size) {
                                 OccurrenceAcquisitionDetails acquisitionDetail = content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().get(idx);
-
                                 if (!isTime) {
                                     if (acquisitionDetail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
-
                                         val value = this.formatNoLinkedDate(mngUnit, acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
                                         this.setValue(cells, row, col + i, value);
-
                                     } else {
                                         val value = this.formatNoLinkedDate(mngUnit, acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
                                         this.setValue(cells, row + 1, col + i, value);
@@ -475,11 +473,13 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
     private String formatNoLinkedDate(Integer mngUnit, OccurrenceAcquisitionDetails detail, int howToPrintDate) {
         StringBuilder formattedDate = new StringBuilder();
         int spaceLeft = 2, spaceRight = 3;
+        // 2022.03.07 - 3S - chinh.hm  - issues #122855  - 追加  START
         if(detail.getDate().isUnknownDate()){
             val text = (detail.getNumberConsecuVacation().getDay().v() != 1.0 && mngUnit != 2 )
                     ? TextResource.localize("KDR003_120"): TextResource.localize("KDR003_121");
            return formattedDate.append(text).toString();
         }
+        // 2022.03.07 - 3S - chinh.hm  - issues #122855  - 追加  START
         if (howToPrintDate == 0) {
             formattedDate.append(detail.getDate().getDayoffDate().get().toString("MM/dd"));
         } else {
@@ -667,6 +667,9 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                 }
             }
         }
+        // 2022.03.07 - 3S - chinh.hm  - issues #122855   - 削除  START
+        //details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
+        // 2022.03.07 - 3S - chinh.hm  - issues #122855   - 削除  END
     }
     private void setForegroundRed(Cell cell) {
         Style style = cell.getStyle();
