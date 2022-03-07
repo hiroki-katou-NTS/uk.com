@@ -115,7 +115,7 @@ public class ScheduleOfShiftDto {
 			
 			// step3.3 call DomainService 社員の応援情報を取得する
 			// 実績の情報を取得する(Require, 社員ID, 年月日)
-			SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getRecordInfo(requireGetSupportInfo, new EmployeeId(employeeId), date);
+			SupportInfoOfEmployee supportInfoOfEmp = GetSupportInfoOfEmployee.getScheduleInfo(requireGetSupportInfo, new EmployeeId(employeeId), date);
 			
 			// step3.3.1 応援状況を取得する(対象組織識別情報)
 			this.supportStatus = supportInfoOfEmp.getSupportStatus(targetOrg).getValue();
