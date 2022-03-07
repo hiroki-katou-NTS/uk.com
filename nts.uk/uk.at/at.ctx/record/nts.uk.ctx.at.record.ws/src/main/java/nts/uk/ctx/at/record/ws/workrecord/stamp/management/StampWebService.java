@@ -31,7 +31,7 @@ public class StampWebService extends WebService {
 	public List<DisplayScreenStampingResultDto> getDisplay(GetStampInfoInput input){
 		
 		DatePeriod datePerriod = new DatePeriod(GeneralDate.today().addDays(-3), GeneralDate.today());
-		GeneralDateTime changeTime = GeneralDateTime.now().addHours(input.getRegionalTimeDifference());
+		GeneralDateTime changeTime = GeneralDateTime.now().addMinutes(input.getRegionalTimeDifference());
 		
 		if (changeTime.day() != GeneralDateTime.now().day()) {
 			if (GeneralDateTime.now().before(changeTime)) {

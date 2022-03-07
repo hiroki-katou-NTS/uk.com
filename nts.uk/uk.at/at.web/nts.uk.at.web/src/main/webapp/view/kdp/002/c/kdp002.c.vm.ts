@@ -111,7 +111,7 @@ module nts.uk.at.view.kdp002.c {
 					});
 
 				vm.$ajax("at", "server/time/now").then((output: any) => {
-					let data: Date = moment(moment(output).add(ko.unwrap(self.regionalTime), 'h')).utc();
+					let data: Date = moment(moment(output).add(ko.unwrap(self.regionalTime), 'm')).utc();
 					self.timeView(data)
 				})
 			}
@@ -160,7 +160,7 @@ module nts.uk.at.view.kdp002.c {
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenC");
 
 				self.regionalTime = self.infoEmpFromScreenA.regionalTime;
-				self.time.now = ko.observable(moment(self.$date.now()).add(ko.unwrap(self.regionalTime), 'h').toDate())
+				self.time.now = ko.observable(moment(self.$date.now()).add(ko.unwrap(self.regionalTime), 'm').toDate())
 
 				self.getWorkPlacwName(self.infoEmpFromScreenA.workPlaceId);
 
@@ -298,8 +298,8 @@ module nts.uk.at.view.kdp002.c {
 				const mockvm = new ko.ViewModel();
 
 				const param = {
-					startDate: moment(mockvm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate(),
-					endDate: moment(mockvm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate(),
+					startDate: moment(mockvm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate(),
+					endDate: moment(mockvm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate(),
 					sid: vm.infoEmpFromScreenA.employeeId
 				}
 

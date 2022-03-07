@@ -562,7 +562,7 @@ module nts.uk.ui.kdp001.a {
             const { mode } = vm;
 
             // get server time from cache
-            vm.time.tick = setInterval(() => vm.time.now(moment(vm.$date.now()).add(vm.regionalTime, 'h').toDate()), 500);
+            vm.time.tick = setInterval(() => vm.time.now(moment(vm.$date.now()).add(vm.regionalTime, 'm').toDate()), 500);
 
             const STAMP_INPUT = vm.$ajax('at', REST_API.getSettingStampInput, { regionalTimeDifference: vm.regionalTime });
             const CONFIRM_USE = vm.$ajax('at', REST_API.confirmUseOfStampInput, { stampMeans: STAMP_MEANS_PORTAL });
@@ -693,7 +693,7 @@ module nts.uk.ui.kdp001.a {
                         vm.$window.shared('screenB', { screen: "KDP001" }),
                     )
                     .then(() => vm.$window.modal('at', '/view/kdp/002/b/index.xhtml', {
-                        stampTime: moment(moment(vm.$date.now()).add(vm.regionalTime, 'h').toDate()).format("HH:mm"),
+                        stampTime: moment(moment(vm.$date.now()).add(vm.regionalTime, 'm').toDate()).format("HH:mm"),
                         regionalTime: ko.unwrap(vm.regionalTime)
                     }));
             };

@@ -28,7 +28,7 @@ public class DisplayListStampForStampInput {
 
 	public List<StampDataOfEmployeesDto> getEmployeeStampData(SettingPotalStampInputParam param) {
 
-		GeneralDateTime changeTime = GeneralDateTime.now().addHours(param.getRegionalTimeDifference());
+		GeneralDateTime changeTime = GeneralDateTime.now().addMinutes(param.getRegionalTimeDifference());
 		DatePeriod period = new DatePeriod(GeneralDate.today().addDays(-3), GeneralDate.today());
 		String employeeId = AppContexts.user().employeeId();
 

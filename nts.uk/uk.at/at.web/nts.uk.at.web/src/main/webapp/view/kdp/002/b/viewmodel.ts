@@ -82,10 +82,10 @@ class KDP002BViewModel extends ko.ViewModel {
         const vm = this;
         vm.stampTime(params.stampTime);
         vm.regionalTime = params.regionalTime;
-        vm.time.now = ko.observable(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate())
-        vm.currentDate(moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h')).add(-3, 'days').format("YYYY/MM/DD")
+        vm.time.now = ko.observable(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate())
+        vm.currentDate(moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm')).add(-3, 'days').format("YYYY/MM/DD")
             + " ～ "
-            + moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h')).format("YYYY/MM/DD"));
+            + moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm')).format("YYYY/MM/DD"));
 
         vm.$window.shared("resultDisplayTime").done(displayTime => {
             vm.resultDisplayTime(displayTime);
@@ -381,8 +381,8 @@ class KDP002BViewModel extends ko.ViewModel {
     getNotification() {
         const vm = this;
         const param = {
-            startDate: moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate(),
-            endDate: moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate(),
+            startDate: moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate(),
+            endDate: moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate(),
             sid: vm.infoEmpFromScreenA.employeeId
         }
 

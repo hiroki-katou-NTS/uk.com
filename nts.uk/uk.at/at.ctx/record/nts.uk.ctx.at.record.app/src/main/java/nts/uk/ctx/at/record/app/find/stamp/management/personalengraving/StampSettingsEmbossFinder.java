@@ -119,7 +119,7 @@ public class StampSettingsEmbossFinder {
 
 		// 5 DS 社員の打刻一覧を取得する
 		DatePeriod period = new DatePeriod(GeneralDate.today().addDays(-3), GeneralDate.today());
-		GeneralDateTime changeTime = GeneralDateTime.now().addHours(param.getRegionalTimeDifference());
+		GeneralDateTime changeTime = GeneralDateTime.now().addMinutes(param.getRegionalTimeDifference());
 		if (changeTime.day() != GeneralDateTime.now().day()) {
 			if (GeneralDateTime.now().before(changeTime)) {
 				period = new DatePeriod(GeneralDate.today().addDays(-2), GeneralDate.today().addDays(1));

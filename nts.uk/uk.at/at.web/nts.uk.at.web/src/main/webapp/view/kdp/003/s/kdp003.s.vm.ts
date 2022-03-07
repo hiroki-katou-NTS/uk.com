@@ -29,7 +29,7 @@ module nts.uk.at.kdp003.s {
 				vm.params = { employeeId: '', regionalTime: 0 };
 			}
 
-			vm.filter.day = ko.observable(parseInt(moment(vm.$date.now()).add(params.regionalTime, 'h').format('YYYYMM')));
+			vm.filter.day = ko.observable(parseInt(moment(vm.$date.now()).add(params.regionalTime, 'm').format('YYYYMM')));
 		}
 
 		created() {
@@ -93,8 +93,8 @@ module nts.uk.at.kdp003.s {
 			vm.filter.day
 				.subscribe((value: number) => {
 					const fm = 'YYYY/MM/DD';
-					const endDate = moment(moment(vm.$date.now()).add(vm.params.regionalTime, 'h').endOf('month')).format(fm);
-					const startDate = moment(moment(vm.$date.now()).add(vm.params.regionalTime, 'h').startOf('month')).format(fm);
+					const endDate = moment(moment(vm.$date.now()).add(vm.params.regionalTime, 'm').endOf('month')).format(fm);
+					const startDate = moment(moment(vm.$date.now()).add(vm.params.regionalTime, 'm').startOf('month')).format(fm);
 
 					vm.$ajax(API.GET_STAMP_MANAGEMENT, { employeeId: vm.params.employeeId, endDate, startDate })
 						.then((data: StampData[]) => {

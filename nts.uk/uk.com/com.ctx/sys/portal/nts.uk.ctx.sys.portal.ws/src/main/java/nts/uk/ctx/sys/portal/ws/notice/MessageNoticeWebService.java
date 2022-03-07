@@ -57,7 +57,7 @@ public class MessageNoticeWebService extends WebService {
 		GeneralDate sysDate = GeneralDate.today();
 		if (param != null) {
 			if (param.getRegionalTime() != 0) {
-				sysDate = GeneralDateTime.now().addHours(param.getRegionalTime()).toDate();
+				sysDate = GeneralDateTime.now().addMinutes(param.getRegionalTime()).toDate();
 			}
 		}
 		return screenQuery.getEmployeeNotification(new DatePeriod(sysDate, sysDate));

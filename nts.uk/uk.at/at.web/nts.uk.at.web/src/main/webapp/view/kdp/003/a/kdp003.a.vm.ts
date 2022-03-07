@@ -298,7 +298,7 @@ module nts.uk.at.kdp003.a {
 					}).then(() => {
 						vm.$ajax('at', API.NOW)
 							.then((c) => {
-								const date = moment(moment(c, 'YYYY-MM-DDTHH:mm:ss').add(ko.unwrap(vm.regionalTime), 'h').toDate()).toDate();
+								const date = moment(moment(c, 'YYYY-MM-DDTHH:mm:ss').add(ko.unwrap(vm.regionalTime), 'm').toDate()).toDate();
 								vm.employeeData.baseDate(date);
 							});
 					});
@@ -323,7 +323,7 @@ module nts.uk.at.kdp003.a {
 					}).then(() => {
 						vm.$ajax('at', API.NOW)
 							.then((c) => {
-								const date = moment(moment(c, 'YYYY-MM-DDTHH:mm:ss').add(ko.unwrap(vm.regionalTime), 'h').toDate()).toDate();
+								const date = moment(moment(c, 'YYYY-MM-DDTHH:mm:ss').add(ko.unwrap(vm.regionalTime), 'm').toDate()).toDate();
 								vm.employeeData.baseDate(date);
 							});
 					});
@@ -633,7 +633,7 @@ module nts.uk.at.kdp003.a {
 
 		loadNotice(storage?: StorageData) {
 			const vm = this;
-			let startDate = moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate());
+			let startDate = moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate());
 			//startDate.setDate(startDate.getDate() - 3);
 			var wkpIds: string[];
 
@@ -652,7 +652,7 @@ module nts.uk.at.kdp003.a {
 							const param = {
 								periodDto: {
 									startDate: startDate,
-									endDate: moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate())
+									endDate: moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate())
 								},
 								wkpIds: wkpIds
 							}
@@ -682,7 +682,7 @@ module nts.uk.at.kdp003.a {
 				const param = {
 					periodDto: {
 						startDate: startDate,
-						endDate: moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate())
+						endDate: moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate())
 					},
 					wkpIds: wkpIds
 				}
@@ -1080,8 +1080,8 @@ module nts.uk.at.kdp003.a {
 			const vm = this;
 			const { buttonPage, employeeData } = vm;
 			const { selectedId, employees, nameSelectArt } = ko.toJS(employeeData) as EmployeeListData;
-			let stampTime = moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate()).format("HH:mm");
-			let stampDateTime = moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'h').toDate()).format();
+			let stampTime = moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate()).format("HH:mm");
+			let stampDateTime = moment(moment(vm.$date.now()).add(ko.unwrap(vm.regionalTime), 'm').toDate()).format();
 
 			const reloadSetting = () =>
 				$.Deferred()
