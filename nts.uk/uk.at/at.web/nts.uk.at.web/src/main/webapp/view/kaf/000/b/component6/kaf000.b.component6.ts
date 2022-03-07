@@ -4,8 +4,8 @@ module nts.uk.at.view.kaf000.b.component6.viewmodel {
         name: 'kaf000-b-component6',
         template: `
             <div id="kaf000-b-component6">
-                <div class="table">
-                    <div class="cell col-1">
+                <div class="table item">
+                    <div class="cell cm-column">
                         <div class="cell valign-center" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_49')"></div>
                     </div>
                     <div class="cell valign-center" data-bind="text: appDateString"></div>

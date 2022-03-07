@@ -76,7 +76,6 @@ module nts.uk.at.view.kmk003.a {
             isSimpleMode: KnockoutComputed<boolean>;
             isDetailMode: KnockoutComputed<boolean>;
             isLoading: KnockoutObservable<boolean>;
-            
             flexWorkManaging: boolean;
             workMultiple: KnockoutObservable<boolean>;
             overTimeWorkFrameOptions: KnockoutObservableArray<any>;
@@ -98,7 +97,6 @@ module nts.uk.at.view.kmk003.a {
 
                 // initial screen mode
                 self.screenMode = ko.observable(ScreenMode.NEW);
-
                 //initial otsuka mode
                 self.otsukaMode = ko.observable(false);
 
@@ -114,9 +112,7 @@ module nts.uk.at.view.kmk003.a {
                 self.useHalfDayWorking = ko.observable(false); // A19_1_2 initial value = false
                 self.useHalfDayOvertime = ko.observable(false); // A19_2_2 initial value = false
                 self.useHalfDayBreak = ko.observable(false); // A19_3_2 initial value = false
-
-
-                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewOrCopyMode, self.useHalfDayOptions, self.useHalfDayWorking, self.useHalfDayOvertime, self.useHalfDayBreak, self.isNewMode);
+                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewOrCopyMode, self.useHalfDayOptions, self.useHalfDayWorking, self.useHalfDayOvertime, self.useHalfDayBreak, self.isNewMode, ko.observable(1));
                 self.selectedWorkTimeCode = ko.observable('');
                 self.workTimeSettingLoader = new WorkTimeSettingLoader(self.mainSettingModel.workTimeSetting.worktimeCode);
                 self.workTimeSettings = ko.observableArray([]);
@@ -1135,7 +1131,7 @@ module nts.uk.at.view.kmk003.a {
             tabMode: KnockoutObservable<number>;
             addMode: KnockoutComputed<boolean>;
             isNewMode: KnockoutObservable<boolean>;
-            
+            isManageByTime: KnockoutObservable<number>;
             // Interlock dialog J
             isInterlockDialogJ: KnockoutObservable<boolean>;
             
@@ -1144,7 +1140,7 @@ module nts.uk.at.view.kmk003.a {
                         halfDayWorking: KnockoutObservable<boolean>,
                         halfDayOverTime: KnockoutObservable<boolean>,
                         halfDayBreak: KnockoutObservable<boolean>,
-                        isNewMode: KnockoutObservable<boolean>) {
+                        isNewMode: KnockoutObservable<boolean>,) {
                 let self = this;
                 self.isChangeItemTable = ko.observable(false);
                 self.useHalfDayOptions = useHalfDayOptions;
@@ -1153,7 +1149,6 @@ module nts.uk.at.view.kmk003.a {
                 self.useHalfDayBreak = halfDayBreak;
                 self.isInterlockDialogJ = ko.observable(true);
                 self.tabMode = tabMode;
-                
                 self.addMode = isNewOrCopyMode;
                 self.isNewMode = isNewMode;
                 
@@ -1742,7 +1737,8 @@ module nts.uk.at.view.kmk003.a {
 	                self.updateInterlockDialogJ();
 	                self.updateStampValue();
 	                dfd.resolve();
-				})
+				});
+              
 				return dfd.promise();
             }
             

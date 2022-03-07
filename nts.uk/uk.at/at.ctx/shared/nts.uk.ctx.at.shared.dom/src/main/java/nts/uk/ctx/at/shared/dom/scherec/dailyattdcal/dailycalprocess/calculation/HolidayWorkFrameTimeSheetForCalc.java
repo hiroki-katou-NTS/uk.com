@@ -310,8 +310,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 	 * @param processingHolidayTimeZone 処理中の流動休出時間帯
 	 * @param holidayTimezones 流動休出時間帯(List)
 	 * @param timeSheetOfDeductionItems 控除項目の時間帯(List)
-	 * @param holidayStartEnd 休出開始時刻
-	 * @param leaveStampTime 退勤時刻
+	 * @param holidayStartEnd 休出開始終了時刻
 	 * @return 終了時刻
 	 */
 	private static TimeWithDayAttr calcEndTimeForFlow(
@@ -339,8 +338,11 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 			//控除時間分、終了時刻をズラす
 			endTime = timeSpan.forwardByDeductionTime(timeSheetOfDeductionItems);
 			
+			//終了時刻をズラした時間帯
+			TimeSpanForDailyCalc afterShift = new TimeSpanForDailyCalc(timeSpan.getStart(), endTime);
+			
 			//間にinput.退勤時刻があるか確認、input.退勤時刻に置き換え
-			if(timeSpan.contains(holidayStartEnd.getEnd())) endTime = holidayStartEnd.getEnd();
+			if(afterShift.contains(holidayStartEnd.getEnd())) endTime = holidayStartEnd.getEnd();
 		}
 		else {
 			endTime = holidayStartEnd.getEnd();

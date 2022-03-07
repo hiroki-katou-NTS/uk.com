@@ -1829,33 +1829,22 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 //		if (flexAggrSet.getAggrMethod() == FlexAggregateMethod.PRINCIPLE){
 			
 			// 「清算後フレックス時間」を確認する
-			if (afterSettleMinutes > 0){
-				
-				// フレックス時間　←　清算後フレックス時間
-				this.flexTime.getFlexTime().setFlex(new TimeMonthWithCalculationAndMinus(
-						new AttendanceTimeMonthWithMinus(afterSettleMinutes),
-						this.flexTime.getFlexTime().getFlexTime().getCalcTime()));
-				this.flexShortageTime = new AttendanceTimeMonth(0);
-				this.flexExcessTime = new AttendanceTimeMonth(afterSettleMinutes);
-				
-				// 法定内・法定外フレックス時間を求める
-				this.calcLegalFlexTime(require, cacheCarrier, companyId, employeeId, yearMonth, period, aggregateAtr,
-						new AttendanceTimeMonthWithMinus(afterSettleMinutes), companySets, employeeSets, settingsByFlex,
-						aggregateTotalWorkingTime, closureId, closureDate, monthlyCalculatingDailys, this.flexTime.getFlexTime(),
-						this.flexTime.getFlexTimeCurrentMonth());
-				
-//				return;
-			}
-//		}
-		
-		// フレックス時間　←　清算後フレックス時間
-//		this.flexTime.getFlexTime().setFlex(new TimeMonthWithCalculationAndMinus(
-//				new AttendanceTimeMonthWithMinus(afterSettleMinutes),
-//				this.flexTime.getFlexTime().getFlexTime().getCalcTime()));
-//		this.flexTime.getFlexTime().setFlexLegal(new AttendanceTimeMonth(0));
-//		this.flexTime.getFlexTime().setFlexIllegal(new AttendanceTimeMonth(afterSettleMinutes));
-//		this.flexShortageTime = new AttendanceTimeMonth(0);
-//		this.flexExcessTime = new AttendanceTimeMonth(afterSettleMinutes);
+		if (afterSettleMinutes > 0){
+			
+			// フレックス時間　←　清算後フレックス時間
+			this.flexTime.getFlexTime().setFlex(new TimeMonthWithCalculationAndMinus(
+					new AttendanceTimeMonthWithMinus(afterSettleMinutes),
+					this.flexTime.getFlexTime().getFlexTime().getCalcTime()));
+			this.flexShortageTime = new AttendanceTimeMonth(0);
+			this.flexExcessTime = new AttendanceTimeMonth(afterSettleMinutes);
+			
+			// 法定内・法定外フレックス時間を求める
+			this.calcLegalFlexTime(require, cacheCarrier, companyId, employeeId, yearMonth, period, aggregateAtr,
+					new AttendanceTimeMonthWithMinus(afterSettleMinutes), companySets, employeeSets, settingsByFlex,
+					aggregateTotalWorkingTime, closureId, closureDate, monthlyCalculatingDailys, this.flexTime.getFlexTime(),
+					this.flexTime.getFlexTimeCurrentMonth());
+			
+		}
 	}
 	
 	/**
@@ -1925,7 +1914,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 				val flexShortage = this.flexTime.getMinusFlexTime(); 
 				
 				/** ○就業時間←就業合計時間 */
-				aggregateTotalWorkingTime.getWorkTime().setWorkTime(workTime.addMinutes(flexShortage.valueAsMinutes()));
+				aggregateTotalWorkingTime.getWorkTime().setWorkTime(workTime.addMinutes(flexShortage.valueAsMinutes()* -1));
 				
 			} else {
 

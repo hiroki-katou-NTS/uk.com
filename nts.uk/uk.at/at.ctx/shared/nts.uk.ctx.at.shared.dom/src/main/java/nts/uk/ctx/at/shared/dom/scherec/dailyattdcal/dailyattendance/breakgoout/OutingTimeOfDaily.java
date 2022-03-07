@@ -302,7 +302,8 @@ public class OutingTimeOfDaily {
 		}
 		//一致する計上用時間帯を取得する
 		List<TimeSheetOfDeductionItem> records = deductionTimeSheet.getForRecordTimeZoneList().stream()
-				.filter(r -> r.getDeductionAtr().isGoOut() && r.getGoOutReason().equals(Finally.of(this.reason)))
+				.filter(r -> r.getGoOutReason().isPresent())
+				.filter(r -> r.getDeductionAtr().isGoOut() && r.getGoOutReason().get().equals(this.reason))
 				.collect(Collectors.toList());
 		//計算計上用外出時間
 		AttendanceTime outCalcTime = deductionTimeSheet.getDeductionTotalTime(records, false).getTotalTime().getCalcTime();

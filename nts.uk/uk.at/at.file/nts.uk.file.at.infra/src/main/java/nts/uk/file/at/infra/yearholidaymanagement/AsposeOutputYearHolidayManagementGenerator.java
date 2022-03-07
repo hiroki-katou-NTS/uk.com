@@ -491,7 +491,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		try {
 			AnnualPaidLeaveSetting annualPaidLeaveSetting = this.annualPaidLeaveSettingRepository
 					.findByCompanyId(AppContexts.user().companyId());
-			boolean isManageTime = annualPaidLeaveSetting.getTimeSetting().getTimeManageType().equals(ManageDistinct.YES);
+			boolean isManageTime = annualPaidLeaveSetting.getTimeSetting().getTimeVacationDigestUnit().getManage().equals(ManageDistinct.YES);
 			worksheet.setName(sheetName);
 			Cells cells = worksheet.getCells();
 			this.setHeader(cells, query);

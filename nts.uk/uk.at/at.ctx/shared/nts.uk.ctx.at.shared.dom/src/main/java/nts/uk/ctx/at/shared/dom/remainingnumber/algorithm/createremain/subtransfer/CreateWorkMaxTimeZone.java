@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.D
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
@@ -61,8 +60,8 @@ public class CreateWorkMaxTimeZone {
 		});
 
 		// 日別実績計算
-		return require.calculateForRecord(CalculateOption.asDefault(),
-				Arrays.asList(dailyCalc), Optional.empty(), ExecutionType.NORMAL_EXECUTION).get(0);
+		return require.calculateForRecordSchedule(CalculateOption.asDefault(),
+				Arrays.asList(dailyCalc), Optional.empty()).get(0);
 
 	}
 
@@ -71,8 +70,7 @@ public class CreateWorkMaxTimeZone {
 		// DailyRecordConverter
 		DailyRecordToAttendanceItemConverter createDailyConverter();
 		
-		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
-				ExecutionType reCalcAtr);
+		public List<IntegrationOfDaily> calculateForRecordSchedule(CalculateOption calcOption,
+				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet);
 	}
 }

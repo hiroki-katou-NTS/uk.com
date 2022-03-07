@@ -34,7 +34,10 @@ public enum DayType {
 		switch (this) {
 		case ATTENDANCE:
 			return WorkTypeClassification.Attendance.equals(workTypeCls)
-					|| WorkTypeClassification.Shooting.equals(workTypeCls);
+					|| WorkTypeClassification.Shooting.equals(workTypeCls)
+					|| WorkTypeClassification.AnnualHoliday.equals(workTypeCls)
+					|| WorkTypeClassification.YearlyReserved.equals(workTypeCls)
+					|| WorkTypeClassification.SpecialHoliday.equals(workTypeCls);
 		case HOLIDAY:
 			return WorkTypeClassification.Holiday.equals(workTypeCls)
 					|| WorkTypeClassification.Pause.equals(workTypeCls);

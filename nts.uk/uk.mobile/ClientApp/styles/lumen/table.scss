@@ -1,8 +1,43 @@
+@import "_variables.scss";
+
 .table {
     &.uk-table-striped {
         tbody {
             tr:nth-of-type(odd) {
                 background-color: map-get($map: $uk-colors, $key: stripped);
+            }
+        }
+    }
+
+    thead {
+        tr {
+            background-color: $header-gray !important;
+            color: #fff;
+
+            th {
+                font-weight: normal;
+            }
+        }
+    }
+
+    thead tr th,
+    tbody tr td {
+        border: none;
+    }
+
+    th, td {
+        padding: 3px;
+    }
+
+    &.table-striped {
+        tbody {
+            tr {
+                &:nth-of-type(odd) {
+                    background-color: #FCFCFC !important;
+                }
+                &:nth-of-type(even) {
+                    background-color: #F3F3F3 !important;
+                }
             }
         }
     }

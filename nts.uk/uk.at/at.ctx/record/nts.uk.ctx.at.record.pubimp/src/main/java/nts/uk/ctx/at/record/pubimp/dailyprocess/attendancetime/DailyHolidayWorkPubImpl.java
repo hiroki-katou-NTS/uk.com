@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
 public class DailyHolidayWorkPubImpl implements DailyHolidayWorkPub{
@@ -127,6 +128,11 @@ public class DailyHolidayWorkPubImpl implements DailyHolidayWorkPub{
 		@Override
 		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
 			return workTypeRepository.findByPK(companyId, workTypeCode.v());
+		}
+
+		@Override
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 	}
 }

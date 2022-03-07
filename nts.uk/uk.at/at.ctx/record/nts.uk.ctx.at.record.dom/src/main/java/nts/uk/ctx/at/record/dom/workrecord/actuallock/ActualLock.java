@@ -10,7 +10,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.AchievementAtr;
@@ -143,9 +142,7 @@ public class ActualLock extends AggregateRoot {
 		}
 		//	val $締め期間 = require.指定した年月の期間を算出する(@締めID、$締め。当月);
 		DatePeriod periodClosure = require.getClosurePeriod(this.closureId.value, closure.get().getClosureMonth().getProcessingYm());
-		GeneralDate startPeriodClosure = periodClosure.start().addDays(-1);
-		GeneralDate endPeriodClosure = periodClosure.end().addDays(1);
-		return period.subtract(new DatePeriod(startPeriodClosure, endPeriodClosure));
+		return period.subtract(periodClosure);
 	}
 
 	public static interface Require {

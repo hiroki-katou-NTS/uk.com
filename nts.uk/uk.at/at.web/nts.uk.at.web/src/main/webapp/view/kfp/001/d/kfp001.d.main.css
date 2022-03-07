@@ -1,6 +1,11 @@
 #button-1D {
-	margin-top: 174px;
-    margin-left: 457px;
+  left: 453px;
+	top: 191px;
+}
+
+#button-2D {
+  left: 465px;
+	top: 191px;
 }
 
 #screenView {

@@ -1,6 +1,3 @@
-## 設定ファイル名
-SettingFile=D:\\uk_exio\\importlist.csv
-
 ## ログファイル名
 LogFile=D:\\uk_exio\\log\\log.txt
 

@@ -78,6 +78,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /** 月別実績過去月集計する */
@@ -591,6 +592,11 @@ public class AggregatePastMonthsService {
 			@Override
 			public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
 				return require.predetemineTimeSetting(companyId, workTimeCode);
+			}
+
+			@Override
+			public OptionLicense getOptionLicense() {
+				return AppContexts.optionLicense();
 			}
 		};
 	}

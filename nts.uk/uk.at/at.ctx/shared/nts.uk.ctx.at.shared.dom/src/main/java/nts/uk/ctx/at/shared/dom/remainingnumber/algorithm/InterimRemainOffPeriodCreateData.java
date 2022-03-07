@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBr
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -102,7 +103,7 @@ public class InterimRemainOffPeriodCreateData {
 					inputParam.getCid(),
 					inputParam.getSid(),
 					loopDate,
-					comHolidaySetting.getDayOffSetting().isManagedTime(),
+					comHolidaySetting.getDayOffSetting().isManagedTime(require),
 					dataCreate,
 					comHolidaySetting,
 					employmentHolidaySetting,
@@ -112,6 +113,7 @@ public class InterimRemainOffPeriodCreateData {
 			}
 		}
 
+		updateUnoffDaikyuFurikyu(require, inputParam.getSid(), dataOutput);
 		return dataOutput;
 	}
 
@@ -225,19 +227,18 @@ public class InterimRemainOffPeriodCreateData {
 				param.getAppData());
 		Map<GeneralDate, DailyInterimRemainMngData> result = createInterimRemainDataMng(require, cacheCarrier,
 				createDataParam, comHolidaySetting);
-		updateUnoffDaikyuFurikyu(require, param.getSid(), result);
 		return result;
 	}
 
 	// 代休振休の未相殺数を更新する
-	private static void updateUnoffDaikyuFurikyu(RequireM2 require, String sid,
+	private static void updateUnoffDaikyuFurikyu(RequireM4 require, String sid,
 			Map<GeneralDate, DailyInterimRemainMngData> result) {
 		updateUnoffDaikyu(require, sid, result);
 		updateUnoffFurikyu(require, sid, result);
 	}
 
 	// 代休の未相殺数を更新する
-	private static void updateUnoffDaikyu(RequireM2 require, String sid,
+	private static void updateUnoffDaikyu(RequireM4 require, String sid,
 			Map<GeneralDate, DailyInterimRemainMngData> result) {
 
 		List<InterimDayOffMng> lstDayoff = result.values().stream().flatMap(x -> x.getDayOffData().stream())
@@ -262,7 +263,7 @@ public class InterimRemainOffPeriodCreateData {
 	}
 	
 	// 振休の未相殺数を更新する
-	private static void updateUnoffFurikyu(RequireM2 require, String sid,
+	private static void updateUnoffFurikyu(RequireM4 require, String sid,
 			Map<GeneralDate, DailyInterimRemainMngData> result) {
 
 		List<InterimAbsMng> lstAbsMng = result.values().stream().filter(x -> x.getInterimAbsData().isPresent())
@@ -285,8 +286,9 @@ public class InterimRemainOffPeriodCreateData {
 			});
 		});
 	}
-	
-	public static interface RequireM4 extends RequireM1, RequireM3, InterimRemainOffDateCreateData.RequireM9 {
+
+	public static interface RequireM4 extends RequireM1, RequireM3, InterimRemainOffDateCreateData.RequireM9, TimeVacationDigestUnit.Require,
+			UpdateNumberUnoffFurikyuProcess.Require, UpdateNumberUnoffDaikyuProcess.Require {
 
 		List<SharedSidPeriodDateEmploymentImport> employmentHistory(CacheCarrier cacheCarrier, List<String> sids , DatePeriod datePeriod);
 	}
@@ -296,7 +298,7 @@ public class InterimRemainOffPeriodCreateData {
 		//Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid,String appID);
 	}
 
-	public static interface RequireM2 extends RequireM4, UpdateNumberUnoffFurikyuProcess.Require, UpdateNumberUnoffDaikyuProcess.Require {
+	public static interface RequireM2 extends RequireM4 {
 		List<ScheRemainCreateInfor> scheRemainCreateInfor(String cid, String sid, DatePeriod dateData);
 
 		List<RecordRemainCreateInfor> recordRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData);

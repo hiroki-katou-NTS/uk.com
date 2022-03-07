@@ -1,9 +1,9 @@
 <template>
-    <div id="login" class="pt-5">
+    <div id="login" class="pt-4">
         <div class="row justify-content-md-center">
             <div class="col-lg-4 col-md-6">
-                <div class="text-center page-title">UniversalK</div>
-                <fieldset class="login-form mt-5">
+                <div class="text-center page-title"></div>
+                <fieldset class="login-form mt-4">
                     <nts-dropdown
                         id="companyCode"
                         class="justify-content-end"
@@ -61,7 +61,7 @@
                     </div>
                 </fieldset>
                 <div class="text-right mt-3">
-                    <label class="badge badge-pill badge-primary"> {{ 'CCGS07_7' | i18n(model.ver) }} </label>
+                    <label> {{ model.ver }} </label>
                 </div>
             </div>
         </div>

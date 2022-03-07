@@ -75,6 +75,7 @@ body {
 
 .group-button-1 {
   margin-left: 5px;
+  margin-top: 5px;
 }
 
 .layout-list-date > .panel {
@@ -83,4 +84,8 @@ body {
 
 .drag-panel > .row {
   margin-left: 15px;
+}
+
+.switchbox-wrappers {
+  display: flex;
 }
