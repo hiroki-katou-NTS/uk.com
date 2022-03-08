@@ -12,7 +12,7 @@ public class WorkLocationHelper {
 	public static WorkLocation getDefault() {
 		
 		return new WorkLocation(new ContractCode("ContractCode"), new WorkLocationCD("WorkLocationCD"),
-				new WorkLocationName("WorkLocationName"), new StampMobilePossibleRange(RadiusAtr.M_100, new GeoCoordinate(100, 200)),
+				new WorkLocationName("WorkLocationName"),Optional.ofNullable(new StampMobilePossibleRange(RadiusAtr.M_100, new GeoCoordinate(100, 200))),
 				new ArrayList<>(), Optional.empty());
 		
 	}
