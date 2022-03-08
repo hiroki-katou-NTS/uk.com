@@ -25,9 +25,9 @@
 
 .ui-igcombo-wrapper {
     width: auto !important;
-    height: 21px !important;
+    height: 20px !important;
     margin-top: 3px;
-    margin-left: 1px;
+    margin-left: 2px;
 }
 
 /*#grid {*/
@@ -45,13 +45,13 @@
     /*max-height: 24px !important;*/
 /*}*/
 
-.ui-iggrid td.ui-iggrid-filtercell {
-    height: 20px !important;
-}
+/*.ui-iggrid td.ui-iggrid-filtercell {*/
+    /*height: 20px !important;*/
+/*}*/
 
-.ui-iggrid .ui-iggrid-tablebody td {
-    white-space: nowrap;
-}
+/*.ui-iggrid .ui-iggrid-tablebody td {*/
+    /*white-space: nowrap;*/
+/*}*/
 
 .ui-igcombo-wrapper .ui-igcombo .ui-igcombo-button {
     background-color: white;

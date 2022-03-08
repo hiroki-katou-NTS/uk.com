@@ -13,7 +13,7 @@
 
 #employee-list {
     margin-top: -30px;
-    margin-left: -25px;
+    margin-left: 2px;
 }
 
 .radio-wrapper {
@@ -31,13 +31,13 @@
 }
 
 #combo-box {
-    margin-left: 33px;
+    margin-left: 24px;
     width: 345px;
 }
 
 .caret-bottom {
     font-size: 28px;
-    margin-left: 227px;
+    margin-left: 253px;
     color: #E0F59E;
     vertical-align: top;
     line-height: 28px;
