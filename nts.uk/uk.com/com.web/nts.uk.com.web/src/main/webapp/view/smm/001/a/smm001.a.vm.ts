@@ -67,6 +67,15 @@ module nts.uk.com.view.smm001.a {
     resA: KnockoutObservable<string> = ko.observable("");
     // End: Init enum
 
+    // Initial data: A4_1 -> A4_14
+    initDataText1:   KnockoutObservableArray<string> = ko.observable("");
+    initDataText2:   KnockoutObservableArray<string> = ko.observable("");
+    initDataText3:   KnockoutObservableArray<string> = ko.observable("");
+    initDataText4:   KnockoutObservableArray<string> = ko.observable("");
+    initDataText5:   KnockoutObservableArray<string> = ko.observable("");
+    initDataText6:   KnockoutObservableArray<string> = ko.observable("");
+    initDataText7:   KnockoutObservableArray<string> = ko.observable("");
+      
     created() {
       const vm = this;
       vm.setDefault();

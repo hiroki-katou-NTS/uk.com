@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LinkedPaymentConversionDto {
 	private Integer paymentCode;
+	
 	private List<EmploymentAndLinkedMonthSettingDto> employmentAndLinkedMonthSettingDtos;
 }
