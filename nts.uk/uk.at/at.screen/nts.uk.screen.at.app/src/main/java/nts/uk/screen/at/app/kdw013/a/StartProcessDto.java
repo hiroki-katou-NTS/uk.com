@@ -9,6 +9,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.DivergenceReasonInput
 import nts.uk.ctx.at.request.app.find.application.overtime.DivergenceTimeRootDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
+import nts.uk.screen.at.app.kdw006.i.ManHrInputUsageSettingDto;
 import nts.uk.screen.at.app.kdw006.j.DailyAttendanceItemDto;
 import nts.uk.screen.at.app.kdw013.query.AttItemNameDto;
 import nts.uk.screen.at.app.kdw013.query.AttendanceItemMasterInformationDto;
@@ -75,6 +76,9 @@ public class StartProcessDto {
 
 	// お気に入り作業の表示順
 	public FavoriteTaskDisplayOrderDto favTaskDisplayOrders;
+	
+	// 工数入力の利用設定 
+	public ManHrInputUsageSettingDto manHrInputUsageSetting;
 
 	public void setManHourInput(StartManHourInput domain) {
 		
@@ -84,6 +88,8 @@ public class StartProcessDto {
 		this.tasks = domain.getTasks().stream().map(x -> TaskDto.toDto(x)).collect(Collectors.toList());
 		
 		this.manHrInputDisplayFormat = domain.getManHrInputDisplayFormat().map(df -> new ManHrInputDisplayFormatDto(df)).orElse(null);
+		
+		this.manHrInputUsageSetting = domain.getManHrInputUsageSetting();
 		
 	}
 
