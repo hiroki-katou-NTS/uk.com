@@ -184,10 +184,10 @@ public class LateTimeOfDaily {
 		LateTimeSheet lateTimeSheet = new LateTimeSheet(
 				Optional.ofNullable(forRecordTimeSheet), Optional.ofNullable(forDeductTimeSheet), workNo.v());
 		
-		// 遅刻早退を就業時間に含めるか判断する　→　控除区分
+		// 遅刻早退を控除するかどうか判断　→　控除区分
 		NotUseAtr notDeductLateLeaveEarly = NotUseAtr.NOT_USE;
-		Optional<WorkTimezoneLateEarlySet> lateEarlySet = recordClass.getWorkTimezoneCommonSet().map(c -> c.getLateEarlySet());
-		if (!recordClass.getHolidayCalcMethodSet().isIncludeLateEarlyInWorkTime(PremiumAtr.RegularWork, lateEarlySet)){
+		if (WithinWorkTimeFrame.isDeductLateLeaveEarly(recordClass.getIntegrationOfWorkTime(), PremiumAtr.RegularWork,
+				recordClass.getHolidayCalcMethodSet(), recordClass.getWorkTimezoneCommonSet(), NotUseAtr.NOT_USE)) {
 			notDeductLateLeaveEarly = NotUseAtr.USE;
 		}
 		boolean late = recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate();
