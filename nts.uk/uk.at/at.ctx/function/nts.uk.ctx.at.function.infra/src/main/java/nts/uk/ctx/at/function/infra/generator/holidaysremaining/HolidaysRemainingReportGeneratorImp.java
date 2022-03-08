@@ -17,10 +17,7 @@ import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
 import nts.uk.ctx.at.function.dom.holidaysremaining.BreakSelection;
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControl;
-import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataSource;
-import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
-import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
-import nts.uk.ctx.at.function.dom.holidaysremaining.report.SpecialVacationPastSituation;
+import nts.uk.ctx.at.function.dom.holidaysremaining.report.*;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
@@ -922,7 +919,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     }
                     // E2_4
                     if (isTime) {
-                        val use_time255 = listPerMonth.stream().mapToDouble(AnnualLeaveUsageImported::getUsedTime).sum();
+                        val use_time255 = listPerMonth.stream().filter(e->e.getUsedTime()!=null).mapToDouble(AnnualLeaveUsageImported::getUsedTime).sum();
                         // BEFORE: 付与前 = 月度使用時間＋(255)年休利用状況.月度使用時間(※)
                         val use_time363Opt = item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                                 .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
@@ -1439,9 +1436,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
         }
         // 月初残数
-        val monRemainingDate = substituteHolidayAggrResult.getCarryoverDay().v();
+        val monRemainingDate =substituteHolidayAggrResult == null ? null : substituteHolidayAggrResult.getCarryoverDay().v();
         // 時間
-        val monRemainingTime = substituteHolidayAggrResult.getCarryoverTime().v();
+        val monRemainingTime = substituteHolidayAggrResult == null ? null :substituteHolidayAggrResult.getCarryoverTime().v();
         String i12 = "";
         if (checkShow.isSubstituteHolidaySetting() && monRemainingDate != null && !isTime) {
             i12 = monRemainingDate == 0 ? "0.0" : df.format(monRemainingDate);
@@ -1458,9 +1455,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         }
         //I1_3 使用数
         // 日数
-        val dateUse = substituteHolidayAggrResult.getDayUse().v();
+        val dateUse = substituteHolidayAggrResult == null ? null :substituteHolidayAggrResult.getDayUse().v();
         // 時間
-        val timeUse = substituteHolidayAggrResult.getTimeUse().v();
+        val timeUse = substituteHolidayAggrResult == null ? null :substituteHolidayAggrResult.getTimeUse().v();
         // 代休+時間代休の場合
         String i13 = "";
         if (checkShow.isSubstituteHolidaySetting() && dateUse != null && !isTime)
@@ -1474,9 +1471,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         if (remainingChargeSubstitute) {
             // I1_4 残数
             // 日数
-            val remainDay = substituteHolidayAggrResult.getRemainDay().v();
+            val remainDay = substituteHolidayAggrResult == null ? null :substituteHolidayAggrResult.getRemainDay().v();
             //時間
-            val remainTime = substituteHolidayAggrResult.getRemainTime().v();
+            val remainTime = substituteHolidayAggrResult == null ? null :substituteHolidayAggrResult.getRemainTime().v();
             // 代休+時間代休の場合
             String i14 = "";
             if (checkShow.isSubstituteHolidaySetting() && remainDay != null && !isTime) {
@@ -1501,9 +1498,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 .getListItemsOutput().getSubstituteHoliday().isRepresentSubstitute();
         // I1_5: 未消化数
         //日数
-        val unusedDay = substituteHolidayAggrResult.getUnusedDay().v();
+        val unusedDay = substituteHolidayAggrResult == null ? null :substituteHolidayAggrResult.getUnusedDay().v();
         //時間
-        val unusedTime = substituteHolidayAggrResult.getUnusedTime().v();
+        val unusedTime = substituteHolidayAggrResult == null ? null :substituteHolidayAggrResult.getUnusedTime().v();
         if (representSubstitute) {
             //代休+時間代休の場合
             String i15 = "";
@@ -2446,7 +2443,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
                 // Result RequestList273
                 //val specialVacationImported = hdRemainingInfor.getMapSpecialVacation().get(specialHolidayCode);
-                val result273New = hdRemainingInfor.getMap273New().get(specialHolidayCode);
+                SpecialVacationImportedKdr result273New = hdRemainingInfor.getMap273New().get(specialHolidayCode);
                 // Result RequestList263
                 // RS263 NEW
                 val rs263 = hdRemainingInfor.getGetSpeHdOfConfMonVer2()
@@ -2467,43 +2464,45 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             .mapToDouble(item -> item.getDetails().getRemainingNumber().getMinutes().isPresent() ?
                                     item.getDetails().getRemainingNumber().getMinutes().get().v() : 0).sum();
                 }
-                // 特別休暇_付与数日数
-                val vlm12 = result273New.getGrantDays();
-                val vlm16 = result273New.getGrantTime();
-                cells.get(firstRow, 4)
-                        .setValue(vlm12 != null ? df.format(vlm12) : "");
-                if (isTime) {
-                    // M 1_6
-                    cells.get(firstRow + 1, 4).setValue(vlm16 != null ? convertToTime((int) vlm16) : "");
-                    // M1_7 特別休暇_月初残時間
-                    cells.get(firstRow + 1, 5).setValue(remainTime != null ? convertToTime((int) remainTime.doubleValue()) : "");
-                    if (remainTime != null && remainTime < 0) {
-                        setForegroundRed(cells.get(firstRow + 1, 5));
+                if(result273New!=null){
+                    // 特別休暇_付与数日数
+                    val vlm12 = result273New.getGrantDays();
+                    val vlm16 = result273New.getGrantTime();
+                    cells.get(firstRow, 4)
+                            .setValue(vlm12 != null ? df.format(vlm12) : "");
+                    if (isTime) {
+                        // M 1_6
+                        cells.get(firstRow + 1, 4).setValue(vlm16 != null ? convertToTime((int) vlm16) : "");
+                        // M1_7 特別休暇_月初残時間
+                        cells.get(firstRow + 1, 5).setValue(remainTime != null ? convertToTime((int) remainTime.doubleValue()) : "");
+                        if (remainTime != null && remainTime < 0) {
+                            setForegroundRed(cells.get(firstRow + 1, 5));
+                        }
+                        // M1_8 特別休暇_使用数時間
+                        val vlm18 = result273New.getUsedHoursBf();
+                        cells.get(firstRow + 1, 6).setValue(vlm18 != null ? convertToTime((int) vlm18.doubleValue()) : "");
+                        // M1_9 特別休暇_残数時間
+                        val vlm19 = result273New.getRemainHoursBf();
+                        cells.get(firstRow + 1, 7).setValue(vlm19 != null ? convertToTime((int) vlm19) : "");
+                        if (vlm19 != null && vlm19 < 0) {
+                            setForegroundRed(cells.get(firstRow + 1, 7));
+                        }
                     }
-                    // M1_8 特別休暇_使用数時間
-                    val vlm18 = result273New.getUsedHoursBf();
-                    cells.get(firstRow + 1, 6).setValue(vlm18 != null ? convertToTime((int) vlm18.doubleValue()) : "");
-                    // M1_9 特別休暇_残数時間
-                    val vlm19 = result273New.getRemainHoursBf();
-                    cells.get(firstRow + 1, 7).setValue(vlm19 != null ? convertToTime((int) vlm19) : "");
-                    if (vlm19 != null && vlm19 < 0) {
-                        setForegroundRed(cells.get(firstRow + 1, 7));
+                    // M1_4 特別休暇_使用数日数
+                    val vlm14 = result273New.getUsedDateBf();
+                    cells.get(firstRow, 6).setValue(vlm14 != null ? df.format(vlm14) : "");
+                    // M1_3 特別休暇_月初残日数
+                    cells.get(firstRow, 5).setValue(remainDate != null ? df.format(remainDate) : "");
+                    if (remainDate != null && remainDate < 0) {
+                        setForegroundRed(cells.get(firstRow, 5));
                     }
-                }
-                // M1_4 特別休暇_使用数日数
-                val vlm14 = result273New.getUsedDateBf();
-                cells.get(firstRow, 6).setValue(vlm14 != null ? df.format(vlm14) : "");
-                // M1_3 特別休暇_月初残日数
-                cells.get(firstRow, 5).setValue(remainDate != null ? df.format(remainDate) : "");
-                if (remainDate != null && remainDate < 0) {
-                    setForegroundRed(cells.get(firstRow, 5));
-                }
-                // M1_5 特別休暇_残数日数
-                val vlm15 = result273New.getRemainDateBf();
-                cells.get(firstRow, 7).setValue(vlm15 != null ? df.format(vlm15) : "");
+                    // M1_5 特別休暇_残数日数
+                    val vlm15 = result273New.getRemainDateBf();
+                    cells.get(firstRow, 7).setValue(vlm15 != null ? df.format(vlm15) : "");
 
-                if (result273New.getRemainDate() != null && result273New.getRemainDate() < 0) {
-                    setForegroundRed(cells.get(firstRow, 7));
+                    if (result273New.getRemainDate() != null && result273New.getRemainDate() < 0) {
+                        setForegroundRed(cells.get(firstRow, 7));
+                    }
                 }
                 if (rs263 != null) {
                     for (SpecialVacationPastSituation item : rs263) {
@@ -3277,12 +3276,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     private DtoCheck publicHolidays(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
                                     HolidayRemainingDataSource dataSource, DtoCheck dtoCheck, HorizontalPageBreakCollection pageBreaks) throws Exception {
         // 代休
+        NumberFormat df = new DecimalFormat("#0.0");
         Integer count = dtoCheck.getCount();
         Integer first = firstRow;
         val listItemsOutput = dataSource.getHolidaysRemainingManagement().getListItemsOutput();
         val manageHoliday = dataSource.getVariousVacationControl().isPublicHolidaySetting();
         val hdRemainingInfor = dataSource.getMapEmployees().get(employee.getEmployeeId()).getHolidayRemainingInfor();
-        if (hdRemainingInfor == null) {
+        if (hdRemainingInfor == null ||!manageHoliday) {
             dtoCheck.setFirstRow(firstRow);
             return dtoCheck;
         }
@@ -3295,18 +3295,24 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             return dtoCheck;
         }
         // ※2 : 出力項目設定[公休繰越数]：休暇残数管理表の出力項目設定．出力する項目一覧．公休．公休繰越数を出力する
-        val outputHolidayForward = listItemsOutput.getHolidays().isOutputHolidayForward();
+        val con_2 = listItemsOutput.getHolidays().isOutputHolidayForward();
 
         // ※3 : 出力項目設定[公休月度残]：休暇残数管理表の出力項目設定．出力する項目一覧．公休．公休月度残を出力する
-        val monthlyPublic = listItemsOutput.getHolidays().isMonthlyPublic();
-        int countL = 2;
-        if (outputHolidayForward) {
-            countL += 1;
-        }
-        if (monthlyPublic) {
-            countL += 1;
-        }
+        val con_3 = listItemsOutput.getHolidays().isMonthlyPublic();
 
+        int countL = 2;
+        if (con_2) {
+            countL += 1;
+        }
+        if (con_3) {
+            countL += 1;
+        }
+        // 262 - Dữ liệu quá khứ cho ngày nghỉ phần L
+        List<PublicHolidayPastSituation> publicHolidayPastSituations = hdRemainingInfor.getPublicHolidayPastSituations();
+        // 718 - Left : Dữ liệu tháng hiện tại của phần L
+        FutureSituationOfTheMonthPublicHoliday leftPublicHolidays = hdRemainingInfor.getLeftPublicHolidays();
+        // 718 - Right: Dữ liệu tháng hiện tại và tương lai
+        List<FutureSituationOfTheMonthPublicHoliday> rightPublicHolidays = hdRemainingInfor.getRightPublicHolidays();
         if (count >= MAX_ROW_IN_PAGE || MAX_ROW_IN_PAGE - count < 4) {
             Integer countEmployeeBefore = dtoCheck.getCountEmployeeBefore();
             printEmployeeInfore(cells, firstRow - (count - 6 - countEmployeeBefore), dataSource, employee);
@@ -3332,72 +3338,152 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         cells.copyRows(cells, !checkCopyRowK(dataSource, employee) ? NUMBER_ROW_OF_HEADER + 24 : 73, firstRow, countL);
         // L1_1
         cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_21"));
-        //2
-        val isOutputHolidayForward = listItemsOutput.getHolidays().isOutputHolidayForward();
-        //3
-        val isMonthlyPublic = listItemsOutput.getHolidays().isMonthlyPublic();
-
-
-        if (isOutputHolidayForward) {
+        if(leftPublicHolidays !=null){
+            // L 1_2
+            Double l_12 = leftPublicHolidays.getNumberOfGrants();
+            Double l_13 = leftPublicHolidays.getNumberOfCarryforwards();
+            Double l_14 = leftPublicHolidays.getNumberOfUse();
+            Double l_15 = leftPublicHolidays.getNumberOfRemaining();
+            cells.get(firstRow, 4).setValue(l_12 != null ? df.format(l_12) : "");  // L1_4 特別休暇_使用数日数
+            if(con_2){
+                cells.get(firstRow, 5).setValue(l_13 != null ? df.format(l_13) : "");
+            }else {
+                setBackgroundGray(cells.get(firstRow , 5));
+            }
+            // L1_4 特別休暇_使用数日数
+            cells.get(firstRow, 6).setValue(l_14 != null ? df.format(l_14) : "");
+            if (l_13 != null && l_13 < 0) {
+                setForegroundRed(cells.get(firstRow, 5));
+            }
+            if(con_3){
+                // L1_5 特別休暇_残数日数
+                cells.get(firstRow, 7).setValue(l_15 != null ? df.format(l_15) : "");
+            }else {
+                setBackgroundGray(cells.get(firstRow , 7));
+            }
+            if (l_15 != null && l_15 < 0) {
+                setForegroundRed(cells.get(firstRow, 7));
+            }
+        }
+        if (con_2) {
             // L2_1
             cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_23"));
         }
         // L2_2
-        cells.get(firstRow + (isOutputHolidayForward ? 1 : 0), 9).setValue(TextResource.localize("KDR001_22"));
+        cells.get(firstRow + (con_2 ? 1 : 0), 9).setValue(TextResource.localize("KDR001_22"));
         // L2_3
-        cells.get(firstRow + (isOutputHolidayForward ? 2 : 1), 9).setValue(TextResource.localize("KDR001_17"));
+        cells.get(firstRow + (con_2 ? 2 : 1), 9).setValue(TextResource.localize("KDR001_17"));
 
-        if (isMonthlyPublic)
+        if (con_3){
             // L2_4
-            cells.get(firstRow + (isOutputHolidayForward ? 3 : 2), 9).setValue(TextResource.localize("KDR001_80"));
+            cells.get(firstRow + (con_2 ? 3 : 2), 9).setValue(TextResource.localize("KDR001_80"));
+        }
+        YearMonth currentMonth = employee.getCurrentMonth().get();
+        int maxRange = totalMonths(dataSource.getStartMonth().yearMonth(), dataSource.getEndMonth().yearMonth());
 
-        if (employee.getCurrentMonth().isPresent()) {
-            YearMonth currentMonth = employee.getCurrentMonth().get();
-            //  Set background
-            for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
-                    dataSource.getEndMonth().yearMonth()); i++) {
-                if (manageHoliday) {
-                    if (dataSource.getStartMonth().addMonths(i).yearMonth().compareTo(currentMonth) > 0) {
+        for (val item : publicHolidayPastSituations) {
+            // Before this month
+            int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), item.getYm());
+            if (currentMonth.compareTo(item.getYm()) > 0) {
+                if (maxRange >= totalMonth && totalMonth >= 0) {
+                    // 付与数 : 月別休暇付与日数
+                    Double numberOfGrants = item.getNumberOfGrants();
+                    // 使用数 : 月別休暇使用日数
+                    Double numberOfUse = item.getNumberOfUse();
+                    // 残数 :月別休暇残日数
+                    Double  numberOfRemaining = item.getNumberOfRemaining();
+                    // 繰越数: 月別休暇残日数
+                    Double  numberOfCarryforwards = item.getNumberOfCarryforwards();
 
-                        if (countL == 2) {
-                            setBackgroundGray(cells.get(firstRow, 10 + i));
-                        }
-                        if (countL == 3) {
-                            setBackgroundGray(cells.get(firstRow, 10 + i));
-                            setBackgroundGray(cells.get(firstRow + (monthlyPublic ? 2 : 1), 10 + i));
-                        }
-                        if (countL == 4) {
-                            setBackgroundGray(cells.get(firstRow, 10 + i));
-                            setBackgroundGray(cells.get(firstRow + 1, 10 + i));
-                            setBackgroundGray(cells.get(firstRow + 3, 10 + i));
+                    //L 25
+                    if(con_2){
+                        cells.get(firstRow, 10 + totalMonth)
+                                .setValue(numberOfCarryforwards == null || numberOfCarryforwards == 0 ? null : df.format(numberOfCarryforwards));
+                    }
+                    //L 26
+                    cells.get(firstRow + (con_2 ? 1 : 0), 10 + totalMonth)
+                            .setValue(numberOfGrants == null || numberOfGrants == 0 ? "" : df.format(numberOfGrants));
+                    if(con_3){
+                        //L 28
+                        cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth)
+                                .setValue(numberOfRemaining == null ? "" : df.format(numberOfRemaining));
+                        if (numberOfRemaining != null && numberOfRemaining < 0) {
+                            setForegroundRed(cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth));
                         }
                     }
-                } else {
-                    if (countL == 2) {
-                        setBackgroundGray(cells.get(firstRow, 10 + i));
-                    }
-                    if (countL == 3) {
-                        setBackgroundGray(cells.get(firstRow, 10 + i));
-                        setBackgroundGray(cells.get(firstRow + (monthlyPublic ? 2 : 1), 10 + i));
-                    }
-                    if (countL == 4) {
-                        setBackgroundGray(cells.get(firstRow, 10 + i));
-                        setBackgroundGray(cells.get(firstRow + 1, 10 + i));
-                        setBackgroundGray(cells.get(firstRow + 3, 10 + i));
+                    //L 27
+                    cells.get(firstRow + (con_2 ? 2 : 1), 10 + totalMonth)
+                            .setValue(numberOfUse == null || numberOfUse == 0 ? "" : df.format(numberOfUse));
+
+                }
+            }
+        }
+        List<YearMonth> lstYm = new ArrayList<>();
+        for (YearMonth i = currentMonth; i.lessThanOrEqualTo(dataSource.getEndMonth().yearMonth()); i = i.addMonths(1)) {
+            lstYm.add(i);
+        }
+        Collections.sort(lstYm);
+        val mapRightPublicHolidays =
+                rightPublicHolidays
+                        .stream().collect(Collectors.toMap(FutureSituationOfTheMonthPublicHoliday::getYm, e -> e));
+        for (YearMonth ym : lstYm) {
+            int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), ym);
+            val thisMonthFutureSituation = mapRightPublicHolidays.getOrDefault(ym, null);
+            if (thisMonthFutureSituation != null) {
+                if (totalMonth <= maxRange && totalMonth >= 0) {
+                    //年月　　　←INPUT．集計年月
+                    // 公休繰越数←[*1]．公休消化情報．繰越数
+                    Double numberOfCarryforwards = thisMonthFutureSituation.getNumberOfCarryforwards();
+                    // 公休付与数←[*1]．公休消化情報．公休日数
+                    Double numberOfGrants = thisMonthFutureSituation.getNumberOfGrants();
+                    // 公休使用数←[*1]．公休消化情報．取得数
+                    Double numberOfUse = thisMonthFutureSituation.getNumberOfUse();
+                    // 公休残数　←[*1]．公休繰越情報．翌月繰越数
+                    Double  numberOfRemaining = thisMonthFutureSituation.getNumberOfRemaining();
+                    if (ym.compareTo(currentMonth) == 0) {
+                        //L 25
+                        if(con_2){
+                            cells.get(firstRow, 10 + totalMonth)
+                                    .setValue(numberOfCarryforwards == null || numberOfCarryforwards == 0 ? null : df.format(numberOfCarryforwards));
+                        }
+                        //L 26
+                        cells.get(firstRow + (con_2 ? 1 : 0), 10 + totalMonth)
+                                .setValue(numberOfGrants == null || numberOfGrants == 0 ? "" : df.format(numberOfGrants));
+                        if(con_3){
+                            //L 28
+                            cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth)
+                                    .setValue(numberOfRemaining == null ? "" : df.format(numberOfRemaining));
+                            if (numberOfRemaining != null && numberOfRemaining < 0) {
+                                setForegroundRed(cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth));
+                            }
+                        }
+                        //L 27
+                        cells.get(firstRow + (con_2 ? 2 : 1), 10 + totalMonth)
+                                .setValue(numberOfUse == null || numberOfUse == 0 ? "" : df.format(numberOfUse));
+                    } else {
+
+                        //L 25
+                        setBackgroundGray( cells.get(firstRow, 10 + totalMonth));
+                        //L 26
+                        if(con_2){
+                            setBackgroundGray(cells.get(firstRow + 1, 10 + totalMonth));
+                        }
+                        //L 28
+                        if(con_3 ){
+                            setBackgroundGray( cells.get(firstRow + (con_2 ? 3 : 2), 10 + totalMonth));
+                        }
+                        //L 27
+                        cells.get(firstRow + (con_2 ? 2 : 1), 10 + totalMonth)
+                                .setValue(numberOfUse == null || numberOfUse == 0 ? "" : df.format(numberOfUse));
                     }
                 }
             }
         }
-        if (!outputHolidayForward) {
 
+        if (!con_2) {
             setBackgroundGray(cells.get(firstRow, 5));
         }
-        if (!monthlyPublic) {
-            setBackgroundGray(cells.get(firstRow, 7));
-        }
-        if (!manageHoliday) {
-            setBackgroundGray(cells.get(firstRow, 4));
-            setBackgroundGray(cells.get(firstRow, 5));
+        if (!con_3) {
             setBackgroundGray(cells.get(firstRow, 7));
         }
 

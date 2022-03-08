@@ -51,7 +51,7 @@ module nts.uk.at.view.kmt013.a {
             vm.multiple = ko.observable(false);
             vm.onDialog = ko.observable(false);
             vm.selectType = ko.observable(3);
-            vm.rows = ko.observable(14);
+            vm.rows = ko.observable(11);
             vm.baseDate = ko.observable(new Date);
             vm.alreadySettingWorkplaces = ko.observableArray([]);
             vm.alreadySettingWorkplaceGroups = ko.observableArray([]);
@@ -85,14 +85,23 @@ module nts.uk.at.view.kmt013.a {
                 if (vm.isWorkplaceGroupMode()) {
                     vm.a3_1Txt(vm.$i18n('Com_WorkplaceGroup') + ': ');
                     vm.a4_1Txt('応援可能' + vm.$i18n('Com_WorkplaceGroup') + 'リスト');
-                    vm.rows(12);
+                    vm.rows(10);
+                    vm.selectedWkpGroupId.valueHasMutated();
                 } else {
                     vm.a3_1Txt(vm.$i18n('Com_Workplace') + ': ');
                     vm.a4_1Txt('応援可能' + vm.$i18n('Com_Workplace') + 'リスト');
-                    vm.rows(14);
+                    vm.rows(11);
+                    vm.selectedWkpId.valueHasMutated();
                 }
             });
             vm.selectedWkpId.subscribe((newValue) => {
+                if (!vm.isWorkplaceGroupMode()){
+                    if (_.isEmpty(newValue)){
+                        vm.isA2NotEmpty(false);
+                    } else {
+                        vm.isA2NotEmpty(true);
+                    }
+                }
                 let param: TargetOrgParams = new TargetOrgParams(moment.utc(),vm.unit(),vm.unit() == OrgUnit.WORKPLACE ? vm.selectedWkpId(): vm.selectedWkpGroupId());
                 vm.$ajax(PATH.getById,param).done((data: TargetOrgInfo) => {
                     if (!_.isEmpty(data.supportableOrgInfoDtoList)){
@@ -113,6 +122,13 @@ module nts.uk.at.view.kmt013.a {
             });
 
             vm.selectedWkpGroupId.subscribe((newValue) => {
+                if (vm.isWorkplaceGroupMode()){
+                    if (_.isEmpty(newValue)){
+                        vm.isA2NotEmpty(false);
+                    } else {
+                        vm.isA2NotEmpty(true);
+                    }
+                }
                 let param: TargetOrgParams = new TargetOrgParams(moment.utc(),vm.unit(),vm.unit() == OrgUnit.WORKPLACE ? vm.selectedWkpId(): vm.selectedWkpGroupId());
                 vm.$ajax(PATH.getById,param).done((data: TargetOrgInfo) => {
                     if (!_.isEmpty(data.supportableOrgInfoDtoList)){
@@ -227,6 +243,7 @@ module nts.uk.at.view.kmt013.a {
             modal('com', 'view/cdl/023/a/index.xhtml').onClosed(() => {
                 let lstSelection: Array<string> = getShared("CDL023Output");
                 if (!_.isEmpty(lstSelection)) {
+                    let params: any;
                     let data:Array<any> = [];
                     let param = {
                         targetUnit: vm.unit(),
@@ -239,13 +256,17 @@ module nts.uk.at.view.kmt013.a {
                         vm.$ajax(PATH.copy, param)
                             .done((results: Array<CopySupportAllowOrgResult>) => {
                                 let msg = '';
-                                results.forEach((result: CopySupportAllowOrgResult) => {
+                                _.sortBy(results,(i)=>{return i.orgDisplayInfo.orgcCode}).forEach((result: CopySupportAllowOrgResult) => {
                                     let status = result.copyResult ? vm.$i18n('KMT013_15') : '';
                                     let destination = result.orgDisplayInfo.orgcCode + ' ' + result.orgDisplayInfo.orgName ;
                                     data.push({destination:destination,state: status});
 
                                 });
-                                vm.$window.modeless('at', '/view/kmt/013/b/index.xhtml', data).then(() => {
+                                let height = 30 + data.length *30;
+                                let dialogHeight = (170 + height) > 500 ? 500 : (170+height);
+                                let dialogSize = { width: 500, height: dialogHeight };
+                                let gridHeight = height > 330 ? 330 : height;
+                                vm.$window.modal('at', '/view/kmt/013/b/index.xhtml', {listdata: data,height: gridHeight},dialogSize).then(() => {
                                     vm.getAlreadySettingList();
                                 });
                             }).fail(error => {

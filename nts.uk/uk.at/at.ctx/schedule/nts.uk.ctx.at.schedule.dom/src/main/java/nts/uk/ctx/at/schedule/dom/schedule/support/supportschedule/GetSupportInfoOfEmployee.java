@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule;
 
 import java.util.Optional;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
@@ -9,7 +10,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportInfoOfEmployee;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.GetSupportInfoOfEmployeeFromSupportableEmployee;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
  * 社員の応援情報を取得する
@@ -27,20 +27,30 @@ public class GetSupportInfoOfEmployee {
 	 */
 	public static SupportInfoOfEmployee getScheduleInfo(Require require, EmployeeId employeeId, GeneralDate date) {
 		
-		// TODO implementing
-		return SupportInfoOfEmployee.createWithoutSupport(employeeId, date, 
-				TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("mockID"));
+		val workSchedule = require.getWorkSchedule(employeeId.v(), date);
+		if ( workSchedule.isPresent() ) {
+			return workSchedule.get().getSupportInfoOfEmployee();
+		}
+		
+		return GetSupportInfoOfEmployeeFromSupportableEmployee.get(require, employeeId, date);
 	}
 	
 	/**
 	 * 実績の情報を取得する
+	 * @param require
+	 * @param employeeId 社員ID
+	 * @param date 年月日
 	 * @return
 	 */
 	public static SupportInfoOfEmployee getRecordInfo(Require require, EmployeeId employeeId, GeneralDate date) {
 		
-		// TODO implementing
-		return SupportInfoOfEmployee.createWithoutSupport(employeeId, date, 
-				TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("mockID"));
+		val record = require.getRecord(employeeId.v(), date);
+		if ( record.isPresent() ) {
+			return record.get().getSupportInfoOfEmployee();
+		}
+		
+		val affiliationOrg = GetTargetIdentifiInforService.get(require, date, employeeId.v());
+		return SupportInfoOfEmployee.createWithoutSupport(employeeId, date, affiliationOrg);
 	}
 	
 	public static interface Require 

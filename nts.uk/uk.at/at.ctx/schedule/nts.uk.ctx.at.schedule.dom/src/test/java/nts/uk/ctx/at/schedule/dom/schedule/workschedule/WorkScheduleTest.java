@@ -55,6 +55,7 @@ import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTic
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class WorkScheduleTest {
@@ -2729,4 +2730,108 @@ public class WorkScheduleTest {
 					tuple(recipient, SupportType.TIMEZONE, 13, 0, 17, 0));
 	}
 	
+	/**
+	 * target: getSupportInfoOfEmployee
+	 * pattern: 応援する予定がない
+	 */
+	@Test
+	public void testGetSupportInfoOfEmployee_not_support() {
+		
+		val affiliationInfo = WorkScheduleHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
+		
+		val workSchedule = WorkScheduleHelper.createWorkSchedule( "sid"//社員ID
+				,	GeneralDate.ymd( 2022, 02, 25)//年月日
+				,	affiliationInfo
+				,	SupportSchedule.createWithEmptyList()//応援詳細リストがない
+					);
+		
+		//act
+		val result = workSchedule.getSupportInfoOfEmployee();
+		
+		//assert
+		assertThat( result.getEmployeeId().v() ).isEqualTo( "sid" );
+		assertThat( result.getDate() ).isEqualTo( GeneralDate.ymd( 2022, 2, 25 ) );
+		assertThat( result.getAffiliationOrg().getTargetId() ).isEqualTo( "workplaceId" );
+		assertThat( result.getAffiliationOrg().getUnit() ).isEqualTo( TargetOrganizationUnit.WORKPLACE );
+		assertThat( result.getSupportType() ).isEmpty();
+		assertThat( result.getRecipientList() ).isEmpty();
+		
+	}
+	/**
+	 * target: getSupportInfoOfEmployee
+	 * pattern: 終日で応援する予定
+	 */
+	@Test
+	public void testGetSupportInfoOfEmployee_support_all_day() {
+		
+		val affiliationInfo = WorkScheduleHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
+		val recipient1 = TargetOrgIdenInfor.creatIdentifiWorkplace( "recipient_1" );
+		
+		val supportSchedule = new SupportSchedule(
+				Arrays.asList(new SupportScheduleDetail(recipient1, SupportType.ALLDAY, Optional.empty()))
+				);
+		
+		val workSchedule = WorkScheduleHelper.createWorkSchedule( "sid"//社員ID
+				,	GeneralDate.ymd( 2022, 02, 25)//年月日
+				,	affiliationInfo
+				,	supportSchedule
+					);
+		
+		//act
+		val result = workSchedule.getSupportInfoOfEmployee();
+		
+		//assert
+		assertThat( result.getEmployeeId().v() ).isEqualTo( "sid" );
+		assertThat( result.getDate() ).isEqualTo( GeneralDate.ymd( 2022, 2, 25 ) );
+		assertThat( result.getAffiliationOrg().getTargetId() ).isEqualTo( "workplaceId" );
+		assertThat( result.getAffiliationOrg().getUnit() ).isEqualTo( TargetOrganizationUnit.WORKPLACE );
+		assertThat( result.getSupportType().get() ).isEqualTo( SupportType.ALLDAY );
+		assertThat( result.getRecipientList() )
+		.extracting(	r -> r.getUnit()
+					,	r -> r.getTargetId())
+		.containsExactly( 
+						tuple(	TargetOrganizationUnit.WORKPLACE, "recipient_1" )
+				);
+	}
+	
+	/**
+	 * target: getSupportInfoOfEmployee
+	 * pattern: 時間帯で応援する予定
+	 */
+	@Test
+	public void testGetSupportInfoOfEmployee_support_time_zone(
+				@Injectable TimeSpanForCalc time1
+			,	@Injectable TimeSpanForCalc time2) {
+		
+		val affiliationInfo = WorkScheduleHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
+		val recipient1 = TargetOrgIdenInfor.creatIdentifiWorkplace( "recipient_1" );
+		val recipient2 = TargetOrgIdenInfor.creatIdentifiWorkplace( "recipient_2" );
+		val supportSchedule = new SupportSchedule( Arrays.asList(
+				new SupportScheduleDetail( recipient1, SupportType.TIMEZONE, Optional.of( time1 ) )
+			,	new SupportScheduleDetail( recipient2, SupportType.TIMEZONE, Optional.of( time2 ) )
+				));
+		
+		val workSchedule = WorkScheduleHelper.createWorkSchedule( "sid"//社員ID
+				,	GeneralDate.ymd( 2022, 02, 25)//年月日
+				,	affiliationInfo
+				,	supportSchedule
+					);
+		
+		//act
+		val result = workSchedule.getSupportInfoOfEmployee();
+		
+		//assert
+		assertThat( result.getEmployeeId().v() ).isEqualTo( "sid" );
+		assertThat( result.getDate() ).isEqualTo( GeneralDate.ymd( 2022, 2, 25 ) );
+		assertThat( result.getAffiliationOrg().getTargetId() ).isEqualTo( "workplaceId" );
+		assertThat( result.getAffiliationOrg().getUnit() ).isEqualTo( TargetOrganizationUnit.WORKPLACE );
+		assertThat( result.getSupportType().get() ).isEqualTo( SupportType.TIMEZONE );
+		assertThat( result.getRecipientList() )
+		.extracting(	r -> r.getUnit()
+					,	r -> r.getTargetId())
+		.containsExactly( 
+						tuple(	TargetOrganizationUnit.WORKPLACE, "recipient_1" )
+					,	tuple(	TargetOrganizationUnit.WORKPLACE, "recipient_2" )
+				);
+	}
 }

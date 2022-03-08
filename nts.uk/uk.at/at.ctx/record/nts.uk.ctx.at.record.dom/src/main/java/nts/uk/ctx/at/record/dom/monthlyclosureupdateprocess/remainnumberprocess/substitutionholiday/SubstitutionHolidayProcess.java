@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
@@ -56,7 +56,7 @@ public class SubstitutionHolidayProcess {
 				/** 振休逐次休暇の紐付け情報を追加する */
 				.then(addSeqVacation(require, empId, output.getLstSeqVacation()))
 				/** 振休暫定データ削除 */
-				.then(deleteTemp(require, empId, period.getPeriod()));	
+				.then(deleteTemp(require, empId, period.getPeriod().end()));	
 	}
 	
 	/** 振休逐次休暇の紐付け情報を追加する */
@@ -135,11 +135,11 @@ public class SubstitutionHolidayProcess {
 	 * @param period
 	 * @return
 	 */
-	public static AtomTask deleteTemp(Require require, String employeeId, DatePeriod period){
+	public static AtomTask deleteTemp(Require require, String employeeId, GeneralDate ymd){
 		//暫定振休管理データ 削除
-		return AtomTask.of(() -> require.deleteInterimAbsMngBySidDatePeriod(employeeId, period))
+		return AtomTask.of(() -> require.deleteInterimAbsMngBySidBeforeTheYmd(employeeId, ymd))
 				//暫定振出管理データ 削除
-				.then(AtomTask.of(() -> require.deleteInterimRecMngBySidDatePeriod(employeeId, period)));
+				.then(AtomTask.of(() -> require.deleteInterimRecMngBySidBeforeTheYmd(employeeId, ymd)));
 	}
 
 	/** 振出管理データの更新 */
@@ -240,8 +240,8 @@ public class SubstitutionHolidayProcess {
 	}
 
 	private static interface RequireM3{
-		void deleteInterimAbsMngBySidDatePeriod(String sId, DatePeriod period);
-		void deleteInterimRecMngBySidDatePeriod(String sId, DatePeriod period);
+		void deleteInterimAbsMngBySidBeforeTheYmd(String sId, GeneralDate ymd);
+		void deleteInterimRecMngBySidBeforeTheYmd(String sId, GeneralDate ymd);
 	}
 	
 	public static interface RequireM2 extends NumberCompensatoryLeavePeriodQuery.Require {

@@ -41,6 +41,10 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 			+ " WHERE a.pk.sid = :sid"
 			+ " AND a.pk.ymd >= :startYmd "
 			+ " AND a.pk.ymd <= :endYmd ";
+	
+	private static final String DELETE_BY_SID_BEFORETHEYMD = "DELETE FROM KshdtInterimCareData a"
+			+ " WHERE a.pk.sid = :sid"
+			+ " AND a.pk.ymd <= :ymd ";
 
 
 	/** 検索 */
@@ -124,6 +128,15 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 		.setParameter("startYmd", period.start())
 		.setParameter("endYmd", period.end())
 		.executeUpdate();
+	}
+
+	@Override
+	public void deleteBySidBeforeTheYmd(String sid, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_BY_SID_BEFORETHEYMD)
+		.setParameter("sid", sid)
+		.setParameter("ymd", ymd)
+		.executeUpdate();
+		
 	}
 
 }

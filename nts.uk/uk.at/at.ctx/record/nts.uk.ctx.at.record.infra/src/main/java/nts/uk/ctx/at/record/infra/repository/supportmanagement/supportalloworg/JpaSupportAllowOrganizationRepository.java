@@ -100,7 +100,7 @@ public class JpaSupportAllowOrganizationRepository extends JpaRepository impleme
     }
 
     @Override
-    public List<SupportAllowOrganization> getByCid(String cid){
+    public List<SupportAllowOrganization> getAll(String cid){
         return this.queryProxy().query(SELECT_TARGET_BYID,KshmtSupportPermittedOrg.class)
                 .setParameter("cid",cid)
                 .getList(this::toDomain);

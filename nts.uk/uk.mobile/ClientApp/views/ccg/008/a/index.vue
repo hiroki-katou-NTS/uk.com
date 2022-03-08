@@ -15,11 +15,11 @@
           <div class="collapse">
             <div class="card-body">
               <ul>
-                <li v-if="serverAlert.system.visible">
-                  <span v-html="serverAlert.system.usageStopMessage">  </span>
+                <li v-if="serverAlert.system && serverAlert.system.visible">
+                  <span v-html="serverAlert.system.stopMessage">  </span>
                 </li>
-                <li v-if="serverAlert.company.visible">
-                  <span v-html="serverAlert.company.usageStopMessage"></span>
+                <li v-if="serverAlert.company && serverAlert.company.visible">
+                  <span v-html="serverAlert.company.stopMessage"></span>
                 </li>
               </ul>
             </div>

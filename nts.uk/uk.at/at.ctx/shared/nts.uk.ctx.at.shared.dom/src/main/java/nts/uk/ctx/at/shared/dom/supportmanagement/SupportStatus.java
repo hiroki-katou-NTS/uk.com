@@ -28,7 +28,6 @@ public enum SupportStatus {
 
 	private final int value;
 	
-	
 	/**
 	 * 勤務予定を変更できるか
 	 * @return
