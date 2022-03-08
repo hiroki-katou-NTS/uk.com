@@ -1445,4 +1445,30 @@ public class CalculationRangeOfOneDay {
 				unionOutingOpt.isPresent() ?
 						unionOutingOpt.get().getTimeVacationUseOfDaily().clone() : TimevacationUseTimeOfDaily.defaultValue());
 	}
+	
+	/**
+	 * 逆丸めにして取得する
+	 * @return 1日の計算範囲
+	 */
+	public CalculationRangeOfOneDay getReverseRounding() {
+		Finally<WithinWorkTimeSheet> within = Finally.empty();
+		if(this.withinWorkingTimeSheet.isPresent()) {
+			within = Finally.of(this.withinWorkingTimeSheet.get().getReverseRounding());
+		}
+		Finally<OutsideWorkTimeSheet> outside = Finally.empty();
+		if(this.outsideWorkTimeSheet.isPresent()) {
+			outside = Finally.of(this.outsideWorkTimeSheet.get().getReverseRounding());
+		}
+		return new CalculationRangeOfOneDay(
+				this.oneDayOfRange,
+				this.workInformationOfDaily,
+				this.attendanceLeavingWork,
+				this.predetermineTimeSetForCalc,
+				this.nonWorkingTimeSheet,
+				this.shortTimeWSWithoutWork,
+				within,
+				outside,
+				this.beforeAttendance,
+				this.afterLeaving);
+	}
 }

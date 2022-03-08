@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 public class CommonSettingsStampInputTest {
 
@@ -13,7 +12,7 @@ public class CommonSettingsStampInputTest {
 	public void getters() {
 	
 		CommonSettingsStampInput commonSettingsStampInput = new CommonSettingsStampInput("companyId",
-				true, Optional.of(new MapAddress("Tokyo")), NotUseAtr.USE);
+				true, Optional.of(new MapAddress("Tokyo")),null);
 		
 		NtsAssert.invokeGetters(commonSettingsStampInput);
 	

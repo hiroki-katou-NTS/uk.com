@@ -86,7 +86,7 @@ public class OuenMovementTimeEachTimeSheet implements DomainObject {
 		//時間帯を変更して日別勤怠の勤怠時間を計算する
 		AttendanceTimeOfDailyAttendance calcResult = AttendanceTimeOfDailyAttendance.calcAfterChangedRange(
 				scheduleReGetClass,
-				recordReGetClass,
+				recordReGetClass.getReverseRounding(),
 				workType,
 				recordWorkTimeCode,
 				predetermineTimeSetByPersonInfo,
