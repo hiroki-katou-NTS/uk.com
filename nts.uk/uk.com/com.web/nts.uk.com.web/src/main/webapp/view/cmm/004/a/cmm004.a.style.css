@@ -1,0 +1,18 @@
+#contents-area {
+	display: flex;
+	flex-direction: column;
+	row-gap: 10px;
+}
+.flex-row {
+	display: flex;
+	flex-direction: row;
+	column-gap: 30px;
+	width: 800px;
+	margin-left: 30px;
+}
+.flex-row .flex-row_left {
+	flex: 1;
+}
+.flex-row .flex-row_right {
+	flex: 3;
+}

@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.gateway.dom.login.sso.saml.operate.SamlRedirectUrl
+				nts.uk.ctx.sys.gateway.dom.login.sso.saml.validate.SamlClientId
+				nts.uk.ctx.sys.gateway.dom.login.sso.saml.validate.SamlIdpEntityId
+				nts.uk.ctx.sys.gateway.dom.login.sso.saml.validate.SamlIdpCertificate
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cmm004.a.style.css" />
+			<com:scriptfile path="cmm004.a.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- A1_1 -->
+				<button tabindex="1" class="proceed" data-bind="click: register,
+					enable: $root.errors.isEmpty">#{i18n.getText('CMM004_1')}</button>
+			</div>
+			<div id="contents-area">
+				<div class="flex-row valign-center">
+					<div class="flex-row_left">
+						<!-- A2_1 -->
+						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM004_2')}</div>
+					</div>
+					<div class="flex-row_right">
+						<!-- A2_2 -->
+						<div tabindex="2" id="useSingleSignOn" data-bind="ntsSwitchButton: {
+							name: '#[CMM004_3]',
+							options: [
+									{ code: true, name: '#{i18n.getText('CMM004_4')}' },
+									{ code: false, name: '#{i18n.getText('CMM004_5')}' }
+							],
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: useSingleSignOn,
+							required: true
+						}"/>
+					</div>
+				</div>
+
+				<div class="flex-row valign-center">
+					<div class="flex-row_left">
+						<!-- A3_1 -->
+						<div data-bind="ntsFormLabel: { constraint: 'SamlRedirectUrl', inline: true }">#{i18n.getText('CMM004_6')}</div>
+					</div>
+					<div class="flex-row_right">
+						<!-- A3_2 -->
+						<input tabindex="3" data-bind="ntsTextEditor: {
+							name: '#[CMM004_6]',
+							value: idpRedirectUrl,
+							constraint: 'SamlRedirectUrl',
+							required: useSingleSignOn,
+							enable: useSingleSignOn,
+							option: { width: '450' }
+						}" />
+					</div>
+				</div>
+
+				<div class="flex-row valign-center">
+					<div class="flex-row_left">
+						<!-- A3_3 -->
+						<div data-bind="ntsFormLabel: { constraint: 'SamlClientId', inline: true }">#{i18n.getText('CMM004_7')}</div>
+					</div>
+					<div class="flex-row_right">
+						<!-- A3_4 -->
+						<input tabindex="4" data-bind="ntsTextEditor: {
+							name: '#[CMM004_7]',
+							value: clientId,
+							constraint: 'SamlClientId',
+							required: useSingleSignOn,
+							enable: useSingleSignOn,
+							option: { width: '450' }
+						}" />
+					</div>
+				</div>
+
+				<div class="flex-row valign-center">
+					<div class="flex-row_left">
+						<!-- A3_5 -->
+						<div data-bind="ntsFormLabel: { constraint: 'SamlIdpEntityId', inline: true }">#{i18n.getText('CMM004_8')}</div>
+					</div>
+					<div class="flex-row_right">
+						<!-- A3_6 -->
+						<input tabindex="5" data-bind="ntsTextEditor: {
+							name: '#[CMM004_8]',
+							value: idpEntityId,
+							constraint: 'SamlIdpEntityId',
+							required: useSingleSignOn,
+							enable: useSingleSignOn,
+							option: { width: '450' }
+						}" />
+					</div>
+				</div>
+
+				<div class="flex-row">
+					<div class="flex-row_left">
+						<!-- A3_7 -->
+						<div data-bind="ntsFormLabel: { constraint: 'SamlIdpCertificate', inline: true }">#{i18n.getText('CMM004_9')}</div>
+					</div>
+					<div class="flex-row_right">
+						<!-- A3_8 -->
+						<textarea tabindex="6" rows="15" data-bind="ntsMultilineEditor: {
+							name: '#[CMM004_9]',
+							value: idpCertificate,
+							option: {
+								resizeable: false,
+								width: '450',
+								textalign: 'left'
+							},
+							required: useSingleSignOn,
+							enable: useSingleSignOn,
+							constraint: 'SamlIdpCertificate'
+						}"/>
+					</div>
+				</div>
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
