@@ -22,6 +22,7 @@ import mockit.MockUp;
 import mockit.Mocked;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.share.AffiliationInforOfDailyAttdHelperInSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
@@ -35,7 +36,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.GettingTime
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimeVacation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttdHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
@@ -51,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
+import nts.uk.ctx.at.shared.dom.supportmanagement.SupportInfoOfEmployee;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.SupportTicket;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
@@ -2738,7 +2739,7 @@ public class WorkScheduleTest {
 	@Test
 	public void testGetSupportInfoOfEmployee_not_support() {
 		
-		val affiliationInfo = AffiliationInforOfDailyAttdHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
+		val affiliationInfo = AffiliationInforOfDailyAttdHelperInSchedule.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
 		
 		val workSchedule = WorkScheduleHelper.createWorkSchedule( "sid"//社員ID
 				,	GeneralDate.ymd( 2022, 02, 25)//年月日
@@ -2765,7 +2766,7 @@ public class WorkScheduleTest {
 	@Test
 	public void testGetSupportInfoOfEmployee_support_all_day() {
 		
-		val affiliationInfo = AffiliationInforOfDailyAttdHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
+		val affiliationInfo = AffiliationInforOfDailyAttdHelperInSchedule.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
 		val recipient1 = TargetOrgIdenInfor.creatIdentifiWorkplace( "recipient_1" );
 		
 		val supportSchedule = new SupportSchedule(
@@ -2804,7 +2805,7 @@ public class WorkScheduleTest {
 				@Injectable TimeSpanForCalc time1
 			,	@Injectable TimeSpanForCalc time2) {
 		
-		val affiliationInfo = AffiliationInforOfDailyAttdHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
+		val affiliationInfo = AffiliationInforOfDailyAttdHelperInSchedule.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() );//職場
 		val recipient1 = TargetOrgIdenInfor.creatIdentifiWorkplace( "recipient_1" );
 		val recipient2 = TargetOrgIdenInfor.creatIdentifiWorkplace( "recipient_2" );
 		val supportSchedule = new SupportSchedule( Arrays.asList(
@@ -2819,7 +2820,7 @@ public class WorkScheduleTest {
 					);
 		
 		//act
-		val result = workSchedule.getSupportInfoOfEmployee();
+		SupportInfoOfEmployee result = workSchedule.getSupportInfoOfEmployee();
 		
 		//assert
 		assertThat( result.getEmployeeId().v() ).isEqualTo( "sid" );

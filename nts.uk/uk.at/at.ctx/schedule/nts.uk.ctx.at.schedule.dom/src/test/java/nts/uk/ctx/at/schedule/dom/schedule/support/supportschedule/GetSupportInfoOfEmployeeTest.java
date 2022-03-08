@@ -13,12 +13,12 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.share.AffiliationInforOfDailyAttdHelperInSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.share.IntegrationOfDailyHelperInSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.share.OuenWorkTimeSheetOfDailyAttendanceHelperInSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleHelper;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttdHelper;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDailyHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.OuenWorkTimeSheetOfDailyAttendanceHelper;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportInfoOfEmployee;
 import nts.uk.ctx.at.shared.dom.supportmanagement.SupportType;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportableemployee.GetSupportInfoOfEmployeeFromSupportableEmployee;
@@ -46,7 +46,7 @@ public class GetSupportInfoOfEmployeeTest {
 		val recipient2 = TargetOrgIdenInfor.creatIdentifiWorkplace( "workplace_2" );
 		val workSchedule = WorkScheduleHelper.createWorkSchedule( "sid"//社員ID
 				,	GeneralDate.ymd( 2022, 02, 25)//年月日
-				,	AffiliationInforOfDailyAttdHelper.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() )//職場
+				,	AffiliationInforOfDailyAttdHelperInSchedule.createAffiliationInforOfDailyAttd( "workplaceId", Optional.empty() )//職場
 				,	new SupportSchedule (
 						Arrays.asList(
 							SupportScheduleDetailHelper.createSupportScheduleDetailByTimeZone( recipient1 )//応援形式 = 時間帯
@@ -127,14 +127,14 @@ public class GetSupportInfoOfEmployeeTest {
 			@Injectable OuenWorkTimeOfDailyAttendance ouenTime
 			) {
 		
-		val dailyWork = IntegrationOfDailyHelper.createIntegrationOfDaily(
+		val dailyWork = IntegrationOfDailyHelperInSchedule.createIntegrationOfDaily(
 					"sid"//社員ID
 				,	GeneralDate.ymd( 2022, 02, 25)//年月日
-				,	AffiliationInforOfDailyAttdHelper.createAffiliationInforOfDailyAttd( "affiliation", Optional.empty() )//職場
+				,	AffiliationInforOfDailyAttdHelperInSchedule.createAffiliationInforOfDailyAttd( "affiliation", Optional.empty() )//職場
 				,	Arrays.asList( ouenTime )
 				,	Arrays.asList(
-							OuenWorkTimeSheetOfDailyAttendanceHelper.createOuenWorkTimeSheetOfDailyAttendance( "recipient_1" )
-						,	OuenWorkTimeSheetOfDailyAttendanceHelper.createOuenWorkTimeSheetOfDailyAttendance( "recipient_2" )
+							OuenWorkTimeSheetOfDailyAttendanceHelperInSchedule.createOuenWorkTimeSheetOfDailyAttendance( "recipient_1" )
+						,	OuenWorkTimeSheetOfDailyAttendanceHelperInSchedule.createOuenWorkTimeSheetOfDailyAttendance( "recipient_2" )
 							)
 					);
 		

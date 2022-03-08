@@ -37,22 +37,4 @@ public class OuenWorkTimeSheetOfDailyAttendanceHelper {
 						);
 	}
 	
-	/**
-	 * 時間帯で日別勤怠の応援作業時間帯を作る
-	 * @param workplaceId 職場ID
-	 * @return
-	 */
-	public static OuenWorkTimeSheetOfDailyAttendance createOuenWorkTimeSheetOfDailyAttendance(
-			String workplaceId
-			) {
-		return OuenWorkTimeSheetOfDailyAttendance.create( new SupportFrameNo( 1 )
-				,	WorkContent.create( 
-							new WorkplaceOfWorkEachOuen( new WorkplaceId( workplaceId ), Optional.empty(), Optional.empty() )
-						,	Optional.empty()
-						,	Optional.empty() )
-				,	timeSheet
-				,	Optional.empty()
-					);
-	}
-	
 }
