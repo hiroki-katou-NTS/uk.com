@@ -493,8 +493,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				opAchievementDetail = opActualContentDisplay.get().getOpAchievementDetail();
 			}
 			if(!opAchievementDetail.isPresent()) {
+				continue;
 				// エラーメッセージ(Msg_1715)を表示
-				throw new BusinessException("Msg_1715", employeeInfo.getBussinessName(), loopDate.toString());
+				// throw new BusinessException("Msg_1715", employeeInfo.getBussinessName(), loopDate.toString());
 			}
 			// INPUT．申請する勤務種類リストをチェックする
 			if(CollectionUtil.isEmpty(workTypeLst)) {
@@ -518,6 +519,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			this.inconsistencyCheckApplication(companyID, employeeInfo, loopDate, opWorkTypeFirst.get(), opWorkTypeActual.get());
 			// 日ごとに休日区分の矛盾チェック
 			this.inconsistencyCheckHoliday(companyID, employeeInfo, loopDate, opWorkTypeFirst.get(), opWorkTypeActual.get());
+		}
+		if(CollectionUtil.isEmpty(actualContentDisplayLst)) {
+			return;
 		}
 		// INPUT．申請する勤務種類リストをチェックする
 		if(workTypeLst.size() <= 1) {
@@ -583,6 +587,11 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeID, paramDate);
 		String processWorkType = null;
 		String processWorkTime = null; 
+		
+		if(!opWorkingConditionItem.isPresent()) {
+			// エラーメッセージ（Msg_3267）を表示する
+			throw new BusinessException("Msg_3267");
+		}
 		
 		if(opWorkingConditionItem.isPresent()) {
 			

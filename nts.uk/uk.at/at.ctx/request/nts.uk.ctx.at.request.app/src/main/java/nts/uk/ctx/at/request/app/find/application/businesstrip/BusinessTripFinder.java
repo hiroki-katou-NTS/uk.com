@@ -19,6 +19,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.ApproveTripRequestParam;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.CheckPeriodDto;
@@ -52,6 +53,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -61,13 +63,18 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.busi
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class BusinessTripFinder {
@@ -92,6 +99,12 @@ public class BusinessTripFinder {
 
     @Inject
     private DetailAppCommonSetService appCommonSetService;
+    
+    @Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
+    
+    @Inject
+	private WorkingConditionRepository workingConditionRepository;
 
     /**
      * 起動する
@@ -167,6 +180,32 @@ public class BusinessTripFinder {
                     null))
                     .collect(Collectors.toList());
         }
+        
+    	List<ActualContentDisplay> actualContentDisplayLst = opActualContentDisplayLst.orElse(new ArrayList<>());
+    	// 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
+        List<ActualContentDisplay> dateNotHaveContentLst = actualContentDisplayLst.stream().filter(i -> !i.getOpAchievementDetail().isPresent() || i.getOpAchievementDetail() == null).collect(Collectors.toList());
+        actualContentDisplayLst.removeAll(dateNotHaveContentLst);
+        if (!CollectionUtil.isEmpty(dateNotHaveContentLst)) {
+        	for(GeneralDate loopDate : dateNotHaveContentLst.stream().map(x -> x.getDate()).collect(Collectors.toList())) {
+        		// 社員の労働条件を取得する
+        		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(
+        				createRequireM1(), 
+        				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
+        				loopDate);
+        		if(!opWorkingConditionItem.isPresent()) {
+        			// エラーメッセージ（Msg_3267）を表示する
+        			throw new BusinessException("Msg_3267");
+        		}
+        		// 実績データに労働条件を追加する
+        		WorkInformation workInformation = opWorkingConditionItem.get().getWorkCategory().getWorkInformationWorkDay();
+        		AchievementDetail achievementDetail = new AchievementDetail(workInformation.getWorkTypeCode().v(), workInformation.getWorkTimeCode().v());
+        		ActualContentDisplay actualContentDisplay = new ActualContentDisplay(loopDate, Optional.of(achievementDetail));
+        		actualContentDisplayLst.add(actualContentDisplay);
+        	}
+        }
+        opActualContentDisplayLst = Optional.of(actualContentDisplayLst);
+        appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setOpActualContentDisplayLst(opActualContentDisplayLst);
+        
         // 取得した情報をOUTPUT「出張申請の表示情報」にセットしてを返す
         BusinessTripInfoOutput output = new BusinessTripInfoOutput(
                 tripRequestSet.orElse(null),
@@ -274,13 +313,28 @@ public class BusinessTripFinder {
         // 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
         // エラーメッセージとして「#Msg_1695」を返す({0}＝年月日)
         Optional<List<ActualContentDisplay>> opActualContentDisplayLst = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
-
-        if (opActualContentDisplayLst.isPresent()) {
-            Optional<ActualContentDisplay> dateNotHaveContent = opActualContentDisplayLst.get().stream().filter(i -> !i.getOpAchievementDetail().isPresent() || i.getOpAchievementDetail() == null).findFirst();
-            if (dateNotHaveContent.isPresent()) {
-                throw new BusinessException("Msg_1695", dateNotHaveContent.get().getDate().toString());
-            }
+        
+        List<ActualContentDisplay> actualContentDisplayLst = opActualContentDisplayLst.orElse(new ArrayList<>());
+        List<ActualContentDisplay> dateNotHaveContentLst = opActualContentDisplayLst.get().stream().filter(i -> !i.getOpAchievementDetail().isPresent() || i.getOpAchievementDetail() == null).collect(Collectors.toList());
+        actualContentDisplayLst.removeAll(dateNotHaveContentLst);
+        if (!CollectionUtil.isEmpty(dateNotHaveContentLst)) {
+        	for(GeneralDate loopDate : dateNotHaveContentLst.stream().map(x -> x.getDate()).collect(Collectors.toList())) {
+        		// 社員の労働条件を取得する
+        		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), applicationDto.getEmployeeID(), loopDate);
+        		if(!opWorkingConditionItem.isPresent()) {
+        			// エラーメッセージ（Msg_3267）を表示する
+        			throw new BusinessException("Msg_3267");
+        		}
+        		// 実績データに労働条件を追加する
+        		WorkInformation workInformation = opWorkingConditionItem.get().getWorkCategory().getWorkInformationWorkDay();
+        		AchievementDetail achievementDetail = new AchievementDetail(workInformation.getWorkTypeCode().v(), workInformation.getWorkTimeCode().v());
+        		ActualContentDisplay actualContentDisplay = new ActualContentDisplay(loopDate, Optional.of(achievementDetail));
+        		actualContentDisplayLst.add(actualContentDisplay);
+        	}
         }
+        opActualContentDisplayLst = Optional.of(actualContentDisplayLst);
+        appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setOpActualContentDisplayLst(opActualContentDisplayLst);
+        
 
         businessTripService.getBusinessTripNotApproved(loginSid, inputDates, opActualContentDisplayLst);
 
@@ -647,5 +701,21 @@ public class BusinessTripFinder {
         }
         return result;
     }
+    
+    private WorkingConditionService.RequireM1 createRequireM1() {
+		return new WorkingConditionService.RequireM1() {
+			
+			@Override
+			public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
+				return workingConditionItemRepository.getByHistoryId(historyId);
+			}
+			
+			@Override
+			public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
+				return workingConditionRepository.getBySidAndStandardDate(companyId, employeeId, baseDate);
+			}
+		};
+	}
+
 
 }

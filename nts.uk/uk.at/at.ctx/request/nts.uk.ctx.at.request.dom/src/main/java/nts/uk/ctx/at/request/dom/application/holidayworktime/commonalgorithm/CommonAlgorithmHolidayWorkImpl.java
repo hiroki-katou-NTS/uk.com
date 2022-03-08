@@ -967,6 +967,10 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 			Optional<HolidayAtr> holidayAtrOp,
 			Optional<WorkingConditionItem> workingConditionItemOp
 			) {
+		if(!workingConditionItemOp.isPresent()) {
+			// エラーメッセージ（Msg_3267）を表示する
+			throw new BusinessException("Msg_3267");
+		}
 		WorkHolidayInfo output =new WorkHolidayInfo();
 		if (holidayAtrOp.isPresent() && workingConditionItemOp.isPresent()) {
 			HolidayAtr holidayAtr = holidayAtrOp.get();

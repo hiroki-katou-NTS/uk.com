@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other.output;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -140,5 +141,29 @@ public class AchievementDetail {
 	 */
 	@Setter
 	private Optional<AttendanceTimeOfExistMinus> opFlexTime = Optional.empty();
+	
+	public AchievementDetail(String workTypeCD, String workTimeCD) {
+		this.workTypeCD = workTypeCD;
+		this.workTimeCD = workTimeCD;
+		this.breakTimeSheets = Collections.emptyList();
+		this.timeContentOutput = new TimeContentOutput(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+		this.trackRecordAtr = TrackRecordAtr.DAILY_RESULTS;
+		this.stampRecordOutput = new StampRecordOutput(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+		this.shortWorkTimeLst = Collections.emptyList();
+		this.achievementEarly = new AchievementEarly(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+		this.opDepartureTime2 = Optional.empty();
+		this.opWorkTypeName = Optional.empty();
+		this.opWorkTimeName = Optional.empty();
+		this.opWorkTime = Optional.empty();
+		this.opLeaveTime = Optional.empty();
+		this.opAchievementStatus = Optional.empty();
+		this.opWorkTime2 = Optional.empty();
+		this.opOvertimeMidnightTime = Optional.empty();
+		this.opInlawHolidayMidnightTime = Optional.empty();
+		this.opOutlawHolidayMidnightTime = Optional.empty();
+		this.opPublicHolidayMidnightTime = Optional.empty();
+		this.opOvertimeLeaveTimeLst = Optional.empty();
+		this.opFlexTime = Optional.empty();
+	}
 	
 }
