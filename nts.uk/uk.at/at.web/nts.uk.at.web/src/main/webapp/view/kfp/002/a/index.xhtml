@@ -18,35 +18,55 @@
 			<com:scriptfile path="kfp002.a.vm.js" />
 			<com:stylefile path="kfp002.a.style.css" />
 			<com:ValidatorScript>
-					nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
-					nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus
-					nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth
-					nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth
-					nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.OverTime
-					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber
-					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber
-					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime
-					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes
-					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes
-					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes
-					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes
-					nts.uk.ctx.at.shared.dom.common.days.MonthlyDays
-					nts.uk.ctx.at.shared.dom.common.days.YearlyDays
-					nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays
-					nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber
-					nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber
-					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain
-					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain
-					nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber
-					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse
-					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse
-					nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
-                    nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount
-                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth
-                    nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime
-                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth
-                    nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes
-                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth
+                nts.uk.shr.com.time.TimeWithDayAttr
+                nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.OverTime
+                nts.uk.ctx.at.record.dom.daily.WorkTimes
+                nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily
+                nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth
+                nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth
+                nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth
+                nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth
+                nts.uk.ctx.at.shared.dom.common.days.MonthlyDays
+                nts.uk.ctx.at.shared.dom.common.days.YearlyDays
+                nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
+                nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus
+                nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+				nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus
+				nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth
+				nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber
+				nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber
+				nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime
+				nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes
+				nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes
+				nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime
+				nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime
+				nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOver
+				nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber
+				nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber
+				nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber
+				nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber
+				nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain
+				nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain
+				nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse
+				nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse
+                nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes
+                nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes
+                nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.RemainDataDaysMonth
+				nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AttendanceDaysMonthToTal
+                nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeavaRemainTime
+                nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.OrderNumberMonthly
+                nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.OrderAmountMonthly
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppNumValue
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes
+				nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount
+				nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime
+				nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes
+				nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountMonth
+                nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate
+                nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDay
+                nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime
+                nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays
 		    </com:ValidatorScript>
 		</ui:define>
 
@@ -79,7 +99,7 @@
 											{ prop: 'optionalAggrName', length: 10 },
 										]}">
 						</div>
-						<button data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KMW003_33')}</button>
+						<button data-bind="ntsLegendButton: legendOptions" style="margin-left: 28px;">#{i18n.getText('KMW003_33')}</button>
 						<button data-bind="click: saveColumnWidth, enable: ko.computed(() => displayFormat() &amp;&amp; displayFormat().items.length > 0)">#{i18n.getText('KFP002_5')}</button>
 						<button id="A2_5"><i data-bind="ntsIcon: { no: 5, width: 20, height: 20 }"></i></button>
 						<div id="setting-content">
