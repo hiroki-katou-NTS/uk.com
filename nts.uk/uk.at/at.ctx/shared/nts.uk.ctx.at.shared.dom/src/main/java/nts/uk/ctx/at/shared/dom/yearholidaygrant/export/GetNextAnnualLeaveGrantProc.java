@@ -142,7 +142,7 @@ public class GetNextAnnualLeaveGrantProc {
 		// 期間内に該当する付与年月日をListで取得
 		GetNextAnnualLeaveGrantProcKdm002.calcAnnualLeaveGrantDate(
 				require, companyId,
-				entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTblOpt.map(c->c.getLengthOfServices()).get(),
+				entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTblOpt.map(c->c.getLengthOfServices()).orElse(new ArrayList<>()),
 				period, isSingleDay, nextAnnualLeaveGrantList);
 
 		// １日に相当する契約時間を取得する
