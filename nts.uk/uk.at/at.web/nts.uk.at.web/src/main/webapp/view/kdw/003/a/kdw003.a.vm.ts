@@ -2517,7 +2517,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     closureId: self.closureId,
                     initFromScreenOther: self.initFromScreenOther,
                     changeFormat: hasChangeFormat,
-                    screenDto: self.screenDto
+                    screenDto: null
                 };
                 self.characteristics.formatExtract = param.displayFormat;
                 character.save('characterKdw003a', self.characteristics);
@@ -3084,8 +3084,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (lstEmployee.length > 0) {
                 let param = {
                     dateRange: {
-                        startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : self.dateRanger().startDate,
-                        endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : self.dateRanger().endDate
+                        startDate: self.displayFormat() === 1 ? moment(self.selectedDate()).format("YYYY/MM/DD") : self.dateRanger().startDate,
+                        endDate: self.displayFormat() === 1 ? moment(self.selectedDate()).format("YYYY/MM/DD") : self.dateRanger().endDate
                     },
                     lstEmployee: lstEmployee,
                     selectFormat:  self.formatCodes(),
@@ -3128,8 +3128,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (errorCodes != undefined && errorCodes.length > 0) {
                         let param = {
                             dateRange: {
-                                startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : self.dateRanger().startDate,
-                                endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : self.dateRanger().endDate
+                                startDate: self.displayFormat() === 1 ? moment(self.selectedDate()).format("YYYY/MM/DD") : self.dateRanger().startDate,
+                                endDate: self.displayFormat() === 1 ? moment(self.selectedDate()).format("YYYY/MM/DD") : self.dateRanger().endDate
                             },
                             lstEmployee: lstEmployee,
                             displayFormat: self.displayFormat(),
@@ -3459,7 +3459,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 } else {
                     lstEmployee = self.lstEmployee();
                 }
-				dataShare.baseDate = moment(self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString()).format("YYYY/MM/DD");
+				dataShare.baseDate = moment(self.displayFormat() === 1 ? moment(self.selectedDate()).format("YYYY/MM/DD") : moment(self.dateRanger().startDate).utc().toISOString()).format("YYYY/MM/DD");
 				dataShare.employeeIds = _.map(lstEmployee, item => item.id);
 	
 				setShared('dataShareKdw003g', dataShare);
@@ -3517,8 +3517,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 lstAttendanceItem: self.lstAttendanceItem(),
                 lstEmployee: lstEmployee,
                 dateRange: self.hasEmployee ? {
-                    startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : self.dateRanger().startDate,
-                    endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : self.dateRanger().endDate
+                    startDate: self.displayFormat() === 1 ? moment(self.selectedDate()).format("YYYY/MM/DD") : self.dateRanger().startDate,
+                    endDate: self.displayFormat() === 1 ? moment(self.selectedDate()).format("YYYY/MM/DD") : self.dateRanger().endDate
                 } : null,
                 mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                 displayFormat: self.displayFormat(),
