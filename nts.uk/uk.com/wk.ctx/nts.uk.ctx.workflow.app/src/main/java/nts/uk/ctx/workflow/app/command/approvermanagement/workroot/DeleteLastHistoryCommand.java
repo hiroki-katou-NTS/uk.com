@@ -21,5 +21,5 @@ public class DeleteLastHistoryCommand {
 	/**
 	 * 承認ID<List>
 	 */
-	private List<String> approvalIds;
+	private List<UpdateHistoryDto> approvalInfos;
 }

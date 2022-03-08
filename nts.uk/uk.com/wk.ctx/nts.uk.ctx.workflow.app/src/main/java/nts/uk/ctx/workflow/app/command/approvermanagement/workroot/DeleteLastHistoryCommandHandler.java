@@ -1,7 +1,5 @@
 package nts.uk.ctx.workflow.app.command.approvermanagement.workroot;
 
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -26,12 +24,13 @@ public class DeleteLastHistoryCommandHandler extends CommandHandler<DeleteLastHi
 		UpdateWorkAppApprovalRByHistCommand delCommand = new UpdateWorkAppApprovalRByHistCommand();
 		delCommand.setCheck(2);
 		delCommand.setEmployeeId(command.getSid());
-		delCommand.setStartDate(command.getStartDate().toString("yyyy/mm/dd"));
+		delCommand.setStartDate(command.getStartDate().toString("yyyy/MM/dd"));
 		delCommand.setEndDate("9999/12/31");
 		delCommand.setSysAtr(0);
-		delCommand.setLstUpdate(command.getApprovalIds().stream().map(data -> new UpdateHistoryDto(data, null, null, 0))
-				.collect(Collectors.toList()));
+		delCommand.setLstUpdate(command.getApprovalInfos());
 		delCommand.setEditOrDelete(0);
+		delCommand.setCheckMode(0);
+		delCommand.setStartDatePrevious(command.getStartDate().toString("yyyy/MM/dd"));
 		// 03.履歴の削除を実行する(まとめて設定モード)
 		this.updateWorkAppApprovalRByHistCommandHandler.handle(delCommand);
 	}

@@ -108,7 +108,6 @@ module nts.uk.com.view.cmm030.a {
           approverInfo.name(result.name);
           vm.approverInputList.valueHasMutated();
           vm.isUpdating(true);
-          vm.focusA7_1();
         }
       });
     }
@@ -121,7 +120,7 @@ module nts.uk.com.view.cmm030.a {
       vm.$window.modal("/view/cmm/030/c/index.xhtml", param)
       .then(result => {
         if (!_.isNil(result)) {
-          vm.startDate(result.startDate);
+          vm.startDate(moment.utc(result.startDate, "YYYY-MM-DD").format("YYYY/MM/DD"));
           if (result.transfer === 1) {
             _.forEach(vm.approverInputList(), data => data.wipeData(vm.$i18n("CMM030_25")));
           }
@@ -180,10 +179,16 @@ module nts.uk.com.view.cmm030.a {
         vm.$window.modal("/view/cdl/023/a/index.xhtml")
         .then(() => {
           const result = getShared("CDL023Output");
-          if (!_.isNil(result) && !_.isEmpty(result)) {
+          const isCancel = getShared("CDL023Cancel");
+          if (!_.isNil(result) && !_.isEmpty(result) && !isCancel) {
             vm.$blockui("grayout");
             vm.copy(result).always(() => vm.$blockui("clear"));
           }
+
+          // Remove shared
+          setShared("CDL023Output", null);
+          setShared("CDL023Cancel", false);
+          vm.$nextTick(() => vm.focusA7_1());
         });
       })
     }
@@ -240,7 +245,7 @@ module nts.uk.com.view.cmm030.a {
             workplaceName: x.affiliationName,
           })));
           vm.initKcp009();
-          vm.$nextTick(() => vm.focusA7_1());
+          vm.$nextTick(() => $("#A3_2").focus());
         }
       };
 
@@ -397,7 +402,7 @@ module nts.uk.com.view.cmm030.a {
         targetSids: targetSids
       };
       return vm.$ajax(API.copy, param)
-      .then(() => vm.$dialog.info({ messageId: "Msg_15" }))
+      .then(() => vm.$dialog.info({ messageId: "Msg_3309" }))
       .fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
@@ -452,7 +457,8 @@ module nts.uk.com.view.cmm030.a {
           }).value();
           // Populate dummy data
           if (approvers.length < vm.approvalLevelNo()) {
-            const dummy: ApproverInfo[] = _.map(_.range(approvers.length, vm.approvalLevelNo()), (data, index) => new ApproverInfo(null, vm.$i18n("CMM030_25"), approverInput.id, index));
+            const dummy: ApproverInfo[] = _.map(_.range(approvers.length, vm.approvalLevelNo()), (data, index) => 
+              new ApproverInfo(null, vm.$i18n("CMM030_25"), approverInput.id, index + approvers.length));
             approvers.push(...dummy);
           }
           approverInput.approvers(approvers);

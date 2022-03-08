@@ -38,7 +38,7 @@
         </div>
       </div>
       <div id="functions-area-bottom">
-        <button id="C3_1" class="large proceed" data-bind="click: processSave" tabindex="3">#{i18n.getText('CMM030_57')}</button>
+        <button id="C3_1" class="large proceed" data-bind="click: processSave, enable: $root.errors.isEmpty" tabindex="3">#{i18n.getText('CMM030_57')}</button>
         <button id="C3_2" data-bind="click: closeDialog" tabindex="4">#{i18n.getText('CMM030_58')}</button>
       </div>
     </ui:define>

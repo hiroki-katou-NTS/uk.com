@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.pub.employee.ResultRequest600Export;
@@ -54,6 +55,10 @@ public class Cmm030FScreenQuery {
 		String cid = AppContexts.user().companyId();
 		// 全ての社員履歴を取得する(ログイン会社ID、対象社員ID、input.システム区分)
 		List<PersonApprovalRoot> domains = this.personApprovalRootRepository.getAllEmpHist(cid, sid, systemAtr);
+		// [個人別承認ルート<List>＝NULL]
+		if (domains.isEmpty()) {
+			throw new BusinessException("Msg_3301");
+		}
 		// 期間をまとめる
 		return this.summarizePeriod(domains);
 	}

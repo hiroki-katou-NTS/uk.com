@@ -47,6 +47,10 @@ module nts.uk.com.view.cmm030.b {
 
     public processSave() {
       const vm = this;
+      if (_.isNil(vm.selectedEmployeeId())) {
+        vm.$dialog.error({ messageId: "Msg_3295" });
+        return;
+      }
       const result = {
         sid: vm.selectedEmployeeId(),
         name: _.find(vm.employeeList(), { id: vm.selectedEmployeeId() })?.name || "選択無し"

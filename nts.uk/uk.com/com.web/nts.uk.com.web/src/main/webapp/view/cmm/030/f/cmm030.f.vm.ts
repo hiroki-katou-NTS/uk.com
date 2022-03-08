@@ -10,6 +10,7 @@ module nts.uk.com.view.cmm030.f {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
+    histMap: any = {};
     employeeId: KnockoutObservable<string> = ko.observable("");
     employeeCode: KnockoutObservable<string> = ko.observable("");
     employeeName: KnockoutObservable<string> = ko.observable("");
@@ -51,6 +52,11 @@ module nts.uk.com.view.cmm030.f {
 
       vm.selectedPeriodId.subscribe(value => {
         const period = _.find(vm.periodList(), { id: value });
+        if (period.operationMode === 0) { // 就業担当者が行う
+          vm.$dialog.error({ messageId: "Msg_3298" });
+          vm.approverList([]);
+          return;
+        }
         if (!_.isNil(period)) {
           vm.$blockui("grayout");
           vm.getSelfApproverSetting(period).always(() => vm.$blockui("clear"));
@@ -98,6 +104,8 @@ module nts.uk.com.view.cmm030.f {
      */
     private getApproverHistory(): JQueryPromise<any> {
       const vm = this;
+      vm.periodList([]);
+      vm.approverList([]);
       return vm.$ajax(nts.uk.text.format(API.getApproverHistory, vm.employeeId()))
       .then(result => {
         const periodList = _.chain(result).orderBy("startDate", "desc")
@@ -113,7 +121,7 @@ module nts.uk.com.view.cmm030.f {
         if (!_.isEmpty(periodList)) {
           vm.selectedPeriodId(periodList[0].id);
         }
-      });
+      }).fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
     /**
@@ -153,8 +161,20 @@ module nts.uk.com.view.cmm030.f {
           });
         }).value();
         vm.approverList(approvers);
+
+        // Generate approvalId-UpdateHistoryDto map
+        _.forEach(result.personApprovalRoots, (personAppRoot: any) => {
+          const histItem = personAppRoot.apprRoot.historyItems[0];
+          const updateHist = new UpdateHistoryDto({
+            approvalId: personAppRoot.approvalId,
+            historyId: histItem.historyId,
+            employRootAtr: personAppRoot.apprRoot.employmentRootAtr,
+            applicationType: personAppRoot.apprRoot.applicationType
+          });
+          vm.histMap[personAppRoot.approvalId] = updateHist;
+        });
         vm.$nextTick(() => $("#F4 td").addClass("limited-label"));
-      });
+      }).fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
     /**
@@ -166,7 +186,7 @@ module nts.uk.com.view.cmm030.f {
       const param = {
         sid: vm.employeeId(),
         startDate: moment.utc(period.startDate, "YYYY/MM/DD").toISOString(),
-        approvalIds: period.approvalIds
+        approvalInfos: _.map(period.approvalIds, approvalId => vm.histMap[approvalId])
       };
       return vm.$ajax(API.deleteLastHist, param)
       .then(() => vm.$dialog.info({ messageId: "Msg_16" }))
@@ -217,6 +237,21 @@ module nts.uk.com.view.cmm030.f {
     approverName5: string;
 
     constructor(init?: Partial<ApproverModel>) {
+      $.extend(this, init);
+    }
+  }
+
+  class UpdateHistoryDto {
+    /**承認ID*/
+	  approvalId: string;
+    /**履歴ID*/
+    historyId: string;
+    /**種類*/
+    applicationType: number;
+    /**就業ルート区分*/
+    employRootAtr: number;
+
+    constructor(init?: Partial<UpdateHistoryDto>) {
       $.extend(this, init);
     }
   }

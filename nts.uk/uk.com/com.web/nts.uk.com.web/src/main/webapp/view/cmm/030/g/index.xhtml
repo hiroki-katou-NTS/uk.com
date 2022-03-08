@@ -27,7 +27,7 @@
         </div>
       </div>
       <div id="functions-area-bottom">
-        <button id="G2_1" class="large proceed" data-bind="click: processExport" tabindex="2">#{i18n.getText('CMM030_102')}</button>
+        <button id="G2_1" class="large proceed" data-bind="click: processExport, enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('CMM030_102')}</button>
         <button id="G2_2" data-bind="click: closeDialog" tabindex="3">#{i18n.getText('CMM030_103')}</button>
       </div>
     </ui:define>
