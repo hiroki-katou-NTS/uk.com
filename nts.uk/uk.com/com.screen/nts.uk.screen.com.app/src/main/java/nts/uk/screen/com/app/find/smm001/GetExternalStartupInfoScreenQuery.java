@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.smm.smm001.screenquery;
+package nts.uk.screen.com.app.find.smm001;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
-public class GetInformationOnExternalStartupScreenQuery {
+public class GetExternalStartupInfoScreenQuery {
 
 	@Inject
 	private SmileLinkageOutputSettingRepository smileLinkageOutputSettingRepository;

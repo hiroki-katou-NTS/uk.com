@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.smm.smm001.screencommand;
+package nts.uk.screen.com.app.command.smm001;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

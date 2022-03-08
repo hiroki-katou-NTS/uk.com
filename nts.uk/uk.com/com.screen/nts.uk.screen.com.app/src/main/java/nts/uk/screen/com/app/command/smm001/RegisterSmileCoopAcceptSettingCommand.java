@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.smm.smm001.screencommand;
+package nts.uk.screen.com.app.command.smm001;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +14,7 @@ import nts.uk.ctx.link.smile.dom.smilelinked.cooperationacceptance.SmileCooperat
 import nts.uk.ctx.link.smile.dom.smilelinked.cooperationacceptance.SmileCooperationAcceptanceSetting;
 
 @Getter
-public class RegisterSmileCooperationAcceptanceSettingScreenCommand {
+public class RegisterSmileCoopAcceptSettingCommand {
 	private Integer checkedOrganizationInformation;
 	
 	private Integer checkedBasicPersonnelInformation;

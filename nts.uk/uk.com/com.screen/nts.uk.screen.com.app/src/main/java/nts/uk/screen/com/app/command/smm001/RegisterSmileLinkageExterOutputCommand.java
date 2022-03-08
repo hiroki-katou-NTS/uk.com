@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.smm.smm001.screencommand;
+package nts.uk.screen.com.app.command.smm001;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.SmileCooperationO
 import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.SmileLinkageOutputSetting;
 
 @Getter
-public class RegisterSmileLinkageExternalIOutputScreenCommand {
+public class RegisterSmileLinkageExterOutputCommand {
 	private Integer paymentCode;
 	
 	private List<EmploymentAndLinkedMonthSettingDto> rightEmployments;
