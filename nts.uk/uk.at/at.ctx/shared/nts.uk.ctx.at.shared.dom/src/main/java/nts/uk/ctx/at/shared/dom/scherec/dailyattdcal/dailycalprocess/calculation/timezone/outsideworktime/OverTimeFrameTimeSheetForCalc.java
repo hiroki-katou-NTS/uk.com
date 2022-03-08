@@ -685,7 +685,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 				itemsWithinCalc,
 				overTimeStartTime,
 				leaveStampTime,
-					personDailySetting.getAddSetting().getVacationCalcMethodSet());
+				personDailySetting.getAddSetting().getVacationCalcMethodSet());
 		// 残業枠時間を作成
 		OverTimeFrameTime frameTime = new OverTimeFrameTime(
 				new OverTimeFrameNo(processingFlowOTTimezone.getOTFrameNo().v().intValue()),
