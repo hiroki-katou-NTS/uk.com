@@ -16,9 +16,10 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.support.supportschedule.SupportScheduleDetail;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchTime;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfo;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -56,9 +57,7 @@ public class KscdtSchSupport extends ContractUkJpaEntity implements Serializable
 	@ManyToOne(fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "SID", referencedColumnName = "SID"),
 			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
-	public KscdtSchTime kscdtSchTime;
-	
-	
+	public KscdtSchBasicInfo kscdtSchBasicInfo;
 	
 	public static KscdtSchSupport toEntity(String cid, String sid, GeneralDate date, int serialNo, SupportScheduleDetail supportScheduleDetail) {
 		KscdtSchSupport entity = new KscdtSchSupport(
