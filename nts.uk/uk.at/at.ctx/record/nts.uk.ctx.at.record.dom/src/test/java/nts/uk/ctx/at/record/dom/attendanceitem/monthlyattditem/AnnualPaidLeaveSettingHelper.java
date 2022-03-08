@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.attendanceitem.monthlyattditem;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -28,8 +29,9 @@ public class AnnualPaidLeaveSettingHelper {
 	
 	public static TimeAnnualSetting createTimeAnnualSetting() {
 		TimeAnnualMaxDay annualMaxDay = AnnualPaidLeaveSettingHelper.createTimeAnnualMaxDay();
-		return new TimeAnnualSetting(ManageDistinct.NO, TimeDigestiveUnit.OneHour, annualMaxDay, 
-				TimeAnnualRoundProcesCla.RoundUpToTheDay, null);
+		return new TimeAnnualSetting(annualMaxDay, 
+				TimeAnnualRoundProcesCla.RoundUpToTheDay, null,
+				new TimeVacationDigestUnit(ManageDistinct.NO, TimeDigestiveUnit.OneHour));
 	}
 	
 	public static TimeAnnualMaxDay createTimeAnnualMaxDay() {
@@ -69,8 +71,9 @@ public class AnnualPaidLeaveSettingHelper {
 	}
 	
 	public static TimeAnnualSetting createTimeAnnualSetting(TimeAnnualMaxDay annualMaxDay, ManageDistinct timeManageType) {
-		return new TimeAnnualSetting(timeManageType, TimeDigestiveUnit.OneHour, annualMaxDay, 
-				TimeAnnualRoundProcesCla.RoundUpToTheDay, null);
+		return new TimeAnnualSetting(annualMaxDay, 
+				TimeAnnualRoundProcesCla.RoundUpToTheDay, null,
+				new TimeVacationDigestUnit(timeManageType, TimeDigestiveUnit.OneHour));
 	}
 	
 	public static TimeAnnualMaxDay createTimeAnnualMaxDay(ManageDistinct manageType) {

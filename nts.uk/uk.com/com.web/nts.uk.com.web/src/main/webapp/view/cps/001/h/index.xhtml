@@ -10,8 +10,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width: 680,
-					height: 738
+					width: 660,
+					height: 748
 				};
 			</script>
 			<com:ValidatorScript>
@@ -79,7 +79,7 @@
 							<td>
 								<table>
 									<tr>
-										<td colspan='3' style='font-weight: bold;padding: 10px;'>#{i18n.getText('CPS001_114')}</td>
+										<td colspan='3' style='font-weight: bold;'>#{i18n.getText('CPS001_114')}</td>
 									</tr>
 									<tr>
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_115')}</div></td>
@@ -106,8 +106,8 @@
 		                                    enable: true, 
 		                                    required: true,
 		                                    }"/></td>
-										<td class='paddingTd' data-itemCode="IS00406 overLimitDays">
-										<span>5</span><span><input class="realTxt" id="overLimitDays" tabindex='12' data-bind="ntsNumberEditor: {
+										<td class='paddingTd' style='padding-left: 20px !important' data-itemCode="IS00406 overLimitDays">
+										<span>5</span><span style='margin-left: 20px;'><input class="realTxt" id="overLimitDays" tabindex='12' data-bind="ntsNumberEditor: {
 											name: lmd,
 		                                    value: overLimitDays,
 		                                    constraint:'ReserveLeaveOverLimitDayNumber',

@@ -34,7 +34,6 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDa
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
-import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.CreatingDailyResultsConditionRepository;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
@@ -825,6 +824,8 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 					calculateDailyRecordServiceCenter, empComHisAdapter, timeSpecialLeaveMngSetRepository);
 			this.cache = cache;
 		}
+		
+		MonthlyAggregateForEmployeesPubImplCache cacheMonthly = new MonthlyAggregateForEmployeesPubImplCache();
 
 		@Override
 		public Map<GeneralDate, WorkInfoOfDailyAttendance> dailyWorkInfos(String employeeId, DatePeriod datePeriod) {
@@ -833,8 +834,29 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 			List<WorkInfoOfDailyPerformance> lstDom = lstDomCache.stream()
 					.map(x -> new WorkInfoOfDailyPerformance(x.getEmployeeId(), x.getYmd(), x.getWorkInformation()))
 					.collect(Collectors.toList());
-			Map<String, List<GeneralDate>> mapDate = createMapDate(Arrays.asList(employeeId), datePeriod);
-			List<WorkInfoOfDailyPerformance> lstDomOld = workInformationRepo.finds(mapDate);
+			List<WorkInfoOfDailyPerformance> lstDomOld = new ArrayList<>();
+			List<WorkInfoOfDailyPerformance> dataByRepo =  new ArrayList<>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cacheMonthly.getWorkInfoOfDailyPerformanceMap().containsKey(keyForGet)){
+					lstDomOld.add(cacheMonthly.getWorkInfoOfDailyPerformanceMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =workInformationRepo.findByPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()));
+					
+					dataByRepo.forEach((v) ->{
+						String keyForPut = employeeId + "-" + v.getYmd().toString();
+						if(!cacheMonthly.getWorkInfoOfDailyPerformanceMap().containsKey(keyForPut)){
+							cacheMonthly.getWorkInfoOfDailyPerformanceMap().put(keyForPut, v);
+						}
+						lstDomOld.add(v);
+					});
+					
+					break;
+				}
+			};
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd())).findFirst();
 				return fromCache.isPresent();
@@ -850,9 +872,30 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 					.filter(x -> x.getAttendanceLeave().isPresent())
 					.map(x -> new TimeLeavingOfDailyPerformance(employeeId, x.getYmd(), x.getAttendanceLeave().get()))
 					.collect(Collectors.toList());
-			Map<String, List<GeneralDate>> mapDate = createMapDate(Arrays.asList(employeeId), datePeriod);
-			List<TimeLeavingOfDailyPerformance> lstDomOld = timeLeavingOfDailyPerformanceRepo
-					.finds(mapDate);
+			List<TimeLeavingOfDailyPerformance> lstDomOld = new ArrayList<>();
+			List<TimeLeavingOfDailyPerformance> dataByRepo =  new ArrayList<>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cacheMonthly.getTimeLeavingOfDailyPerformanceMap().containsKey(keyForGet)){
+					lstDomOld.add(cacheMonthly.getTimeLeavingOfDailyPerformanceMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =timeLeavingOfDailyPerformanceRepo
+							.findbyPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()));
+					
+					dataByRepo.forEach((v) ->{
+						String keyForPut = employeeId + "-" + v.getYmd().toString();
+						if(!cacheMonthly.getTimeLeavingOfDailyPerformanceMap().containsKey(keyForPut)){
+							cacheMonthly.getTimeLeavingOfDailyPerformanceMap().put(keyForPut, v);
+						}
+						lstDomOld.add(v);
+					});
+					
+					break;
+				}
+			};
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd())).findFirst();
 				return fromCache.isPresent();
@@ -868,9 +911,30 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 			List<TemporaryTimeOfDailyPerformance> lstDom = lstDomCache.stream().filter(x -> x.getTempTime().isPresent())
 					.map(x -> new TemporaryTimeOfDailyPerformance(employeeId, x.getYmd(), x.getTempTime().get()))
 					.collect(Collectors.toList());
-			Map<String, List<GeneralDate>> mapDate = createMapDate(Arrays.asList(employeeId), datePeriod);
-			List<TemporaryTimeOfDailyPerformance> lstDomOld = temporaryTimeOfDailyPerformanceRepo
-					.finds(mapDate);
+			List<TemporaryTimeOfDailyPerformance> lstDomOld = new ArrayList<>();
+			List<TemporaryTimeOfDailyPerformance> dataByRepo =  new ArrayList<>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cacheMonthly.getTemporaryTimeOfDailyPerformanceMap().containsKey(keyForGet)){
+					lstDomOld.add(cacheMonthly.getTemporaryTimeOfDailyPerformanceMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =temporaryTimeOfDailyPerformanceRepo
+							.findbyPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()));
+					
+					dataByRepo.forEach((v) ->{
+						String keyForPut = employeeId + "-" + v.getYmd().toString();
+						if(!cacheMonthly.getTemporaryTimeOfDailyPerformanceMap().containsKey(keyForPut)){
+							cacheMonthly.getTemporaryTimeOfDailyPerformanceMap().put(keyForPut, v);
+						}
+						lstDomOld.add(v);
+					});
+					
+					break;
+				}
+			};
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd())).findFirst();
 				return fromCache.isPresent();
@@ -885,8 +949,29 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 			List<SpecificDateAttrOfDailyPerfor> lstDom = lstDomCache.stream().filter(x -> x.getTempTime().isPresent())
 					.map(x -> new SpecificDateAttrOfDailyPerfor(employeeId, x.getYmd(), x.getSpecDateAttr().get()))
 					.collect(Collectors.toList());
-			Map<String, List<GeneralDate>> mapDate = createMapDate(Arrays.asList(employeeId), datePeriod);
-			List<SpecificDateAttrOfDailyPerfor> lstDomOld =specificDateAttrOfDailyPerforRepo.finds(mapDate);
+			List<SpecificDateAttrOfDailyPerfor> lstDomOld = new ArrayList<>();
+			List<SpecificDateAttrOfDailyPerfor> dataByRepo =  new ArrayList<>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cacheMonthly.getSpecificDateAttrOfDailyPerforMap().containsKey(keyForGet)){
+					lstDomOld.add(cacheMonthly.getSpecificDateAttrOfDailyPerforMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =specificDateAttrOfDailyPerforRepo.findByPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()));
+					
+					dataByRepo.forEach((v) ->{
+						String keyForPut = employeeId + "-" + v.getYmd().toString();
+						if(!cacheMonthly.getSpecificDateAttrOfDailyPerforMap().containsKey(keyForPut)){
+							cacheMonthly.getSpecificDateAttrOfDailyPerforMap().put(keyForPut, v);
+						}
+						lstDomOld.add(v);
+					});
+					
+					break;
+				}
+			};
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd())).findFirst();
 				return fromCache.isPresent();
@@ -900,8 +985,29 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeId, datePeriod);
 			List<EmployeeDailyPerError> lstDom = lstDomCache.stream().flatMap(x -> x.getEmployeeError().stream())
 					.collect(Collectors.toList());
-			Map<String, List<GeneralDate>> mapDate = createMapDate(Arrays.asList(employeeId), datePeriod);
-			List<EmployeeDailyPerError> lstDomOld = employeeDailyPerErrorRepo.finds(mapDate);
+			List<EmployeeDailyPerError> lstDomOld = new ArrayList<>();
+			List<EmployeeDailyPerError> dataByRepo =  new ArrayList<>();
+			
+			for(GeneralDate date : datePeriod.datesBetween()){
+				String keyForGet = employeeId + "-" + date.toString();	
+				if(cacheMonthly.getEmployeeDailyPerErrorMap().containsKey(keyForGet)){
+					lstDomOld.add(cacheMonthly.getEmployeeDailyPerErrorMap().get(keyForGet));
+				}
+				else{
+					dataByRepo =employeeDailyPerErrorRepo.findByPeriodOrderByYmd(employeeId,  new DatePeriod(date, datePeriod.end()));
+					
+					dataByRepo.forEach((v) ->{
+						String keyForPut = employeeId + "-" + v.getDate().toString();
+						if(!cacheMonthly.getEmployeeDailyPerErrorMap().containsKey(keyForPut)){
+							cacheMonthly.getEmployeeDailyPerErrorMap().put(keyForPut, v);
+						}
+						lstDomOld.add(v);
+					});
+					
+					break;
+				}
+			};
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getDate().equals(x.getDate())).findFirst();
 				return fromCache.isPresent();
@@ -911,13 +1017,36 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 		}
 
 		@Override
-		public Map<GeneralDate, AnyItemValueOfDailyAttd> dailyAnyItems(List<String> employeeId, DatePeriod baseDate) {
-			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeId, baseDate);
+		public Map<GeneralDate, AnyItemValueOfDailyAttd> dailyAnyItems(List<String> employeeIds, DatePeriod baseDate) {
+			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeIds, baseDate);
 			List<AnyItemValueOfDaily> lstDom = lstDomCache.stream().filter(x -> x.getAnyItemValue().isPresent())
 					.map(x -> new AnyItemValueOfDaily(x.getEmployeeId(), x.getYmd(), x.getAnyItemValue().get()))
 					.collect(Collectors.toList());
-			Map<String, List<GeneralDate>> mapDate = createMapDate(employeeId, baseDate);
-			List<AnyItemValueOfDaily> lstDomOld = anyItemValueOfDailyRepo.finds(mapDate);
+			List<AnyItemValueOfDaily> lstDomOld = new ArrayList<>();
+			List<AnyItemValueOfDaily> dataByRepo =  new ArrayList<>();
+			
+			for(String employeeId : employeeIds){
+				for(GeneralDate date : baseDate.datesBetween()){
+					String keyForGet = employeeIds + "-" + date.toString();	
+					if(cacheMonthly.getAnyItemValueOfDailyMap().containsKey(keyForGet)){
+						lstDomOld.add(cacheMonthly.getAnyItemValueOfDailyMap().get(keyForGet));
+					}
+					else{
+						dataByRepo =anyItemValueOfDailyRepo.finds(Arrays.asList(employeeId),  new DatePeriod(date, baseDate.end()));
+						
+						dataByRepo.forEach((v) ->{
+							String keyForPut = employeeId + "-" + v.getYmd().toString();
+							if(!cacheMonthly.getAnyItemValueOfDailyMap().containsKey(keyForPut)){
+								cacheMonthly.getAnyItemValueOfDailyMap().put(keyForPut, v);
+							}
+							lstDomOld.add(v);
+						});
+						
+						break;
+					}
+				};
+			}
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd()) && y.getEmployeeId().equals(x.getEmployeeId())).findFirst();
 				return fromCache.isPresent();
@@ -927,13 +1056,36 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 		}
 
 		@Override
-		public Map<GeneralDate, PCLogOnInfoOfDailyAttd> dailyPcLogons(List<String> employeeId, DatePeriod baseDate) {
-			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeId, baseDate);
+		public Map<GeneralDate, PCLogOnInfoOfDailyAttd> dailyPcLogons(List<String> employeeIds, DatePeriod baseDate) {
+			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeIds, baseDate);
 			List<PCLogOnInfoOfDaily> lstDom = lstDomCache.stream().filter(x -> x.getPcLogOnInfo().isPresent())
 					.map(x -> new PCLogOnInfoOfDaily(x.getEmployeeId(), x.getYmd(), x.getPcLogOnInfo().get()))
 					.collect(Collectors.toList());
-			Map<String, List<GeneralDate>> mapDate = createMapDate(employeeId, baseDate);
-			List<PCLogOnInfoOfDaily> lstDomOld =pcLogOnInfoOfDailyRepo.finds(mapDate);
+			List<PCLogOnInfoOfDaily> lstDomOld = new ArrayList<>();
+			List<PCLogOnInfoOfDaily> dataByRepo =  new ArrayList<>();
+			
+			for(String employeeId : employeeIds){
+				for(GeneralDate date : baseDate.datesBetween()){
+					String keyForGet = employeeIds + "-" + date.toString();	
+					if(cacheMonthly.getPCLogOnInfoOfDailyMap().containsKey(keyForGet)){
+						lstDomOld.add(cacheMonthly.getPCLogOnInfoOfDailyMap().get(keyForGet));
+					}
+					else{
+						dataByRepo =pcLogOnInfoOfDailyRepo.finds(Arrays.asList(employeeId),  new DatePeriod(date, baseDate.end()));
+						
+						dataByRepo.forEach((v) ->{
+							String keyForPut = employeeId + "-" + v.getYmd().toString();
+							if(!cacheMonthly.getPCLogOnInfoOfDailyMap().containsKey(keyForPut)){
+								cacheMonthly.getPCLogOnInfoOfDailyMap().put(keyForPut, v);
+							}
+							lstDomOld.add(v);
+						});
+						
+						break;
+					}
+				};
+			}
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd()) && y.getEmployeeId().equals(x.getEmployeeId())).findFirst();
 				return fromCache.isPresent();
@@ -999,20 +1151,21 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 		
 		@Override
 		public List<OuenWorkTimeOfDailyAttendance> ouenWorkTimeOfDailyAttendance(String empId, GeneralDate ymd) {
-			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(empId, new DatePeriod(ymd, ymd));
+/*			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(empId, new DatePeriod(ymd, ymd));
 			List<OuenWorkTimeOfDailyAttendance> lstDom = lstDomCache.stream()
 					.filter(x -> x.getEmployeeId().equals(empId) && x.getYmd().equals(ymd))
 					.flatMap(x -> x.getOuenTime().stream()).collect(Collectors.toList());
 			if(!lstDom.isEmpty()) {
 				return lstDom;
 			}
-			return ouenWorkTimeOfDailyRepo.find(empId, ymd).map(x -> x.getOuenTimes()).orElse(new ArrayList<>());
+			return ouenWorkTimeOfDailyRepo.find(empId, ymd).map(x -> x.getOuenTimes()).orElse(new ArrayList<>());*/
+			return new ArrayList<>();
 		}
 
 		@Override
 		public List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheetOfDailyAttendance(String empId,
 				GeneralDate ymd) {
-			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(empId, new DatePeriod(ymd, ymd));
+/*			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(empId, new DatePeriod(ymd, ymd));
 			List<OuenWorkTimeSheetOfDailyAttendance> lstDom = lstDomCache.stream()
 					.filter(x -> x.getEmployeeId().equals(empId) && x.getYmd().equals(ymd))
 					.flatMap(x -> x.getOuenTimeSheet().stream()).collect(Collectors.toList());
@@ -1023,7 +1176,9 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 			if(domain == null)
 				return new ArrayList<>();
 			
-			return domain.getOuenTimeSheet();
+			return domain.getOuenTimeSheet();*/
+			
+			return new ArrayList<>();
 		}
 		
 		@Override
@@ -1042,13 +1197,37 @@ public class MonthlyAggregateForEmployeesPubImpl implements MonthlyAggregateForE
 		}
 
 		@Override
-		public Map<GeneralDate, AffiliationInforOfDailyAttd> dailyAffiliationInfors(List<String> employeeId, DatePeriod ymd) {
-			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeId, ymd);
+		public Map<GeneralDate, AffiliationInforOfDailyAttd> dailyAffiliationInfors(List<String> employeeIds, DatePeriod ymd) {
+			List<IntegrationOfDaily> lstDomCache = getDailyDomCache(employeeIds, ymd);
 			List<AffiliationInforOfDailyPerfor> lstDom = lstDomCache.stream()
 					.map(x -> new AffiliationInforOfDailyPerfor(x.getEmployeeId(), x.getYmd(), x.getAffiliationInfor()))
 					.collect(Collectors.toList());
-			Map<String, List<GeneralDate>> mapDate = createMapDate(employeeId, ymd);
-			List<AffiliationInforOfDailyPerfor> lstDomOld = affiliationInforOfDailyPerforRepo.finds(mapDate);
+			List<AffiliationInforOfDailyPerfor> lstDomOld = new ArrayList<>();
+			List<AffiliationInforOfDailyPerfor> dataByRepo =  new ArrayList<>();
+			
+			for(String employeeId : employeeIds){
+				for(GeneralDate date : ymd.datesBetween()){
+					String keyForGet = employeeIds + "-" + date.toString();	
+					if(cacheMonthly.getAffiliationInforOfDailyPerforMap().containsKey(keyForGet)){
+						lstDomOld.add(cacheMonthly.getAffiliationInforOfDailyPerforMap().get(keyForGet));
+					}
+					else{
+						dataByRepo =affiliationInforOfDailyPerforRepo.finds(Arrays.asList(employeeId),  new DatePeriod(date, ymd.end()));
+						
+						dataByRepo.forEach((v) ->{
+							String keyForPut = employeeId + "-" + v.getYmd().toString();
+							if(!cacheMonthly.getAffiliationInforOfDailyPerforMap().containsKey(keyForPut)){
+								cacheMonthly.getAffiliationInforOfDailyPerforMap().put(keyForPut, v);
+							}
+							lstDomOld.add(v);
+						});
+						
+						break;
+					}
+				};
+			}
+			
+			
 			lstDomOld.removeIf(x -> {
 				val fromCache = lstDom.stream().filter(y -> y.getYmd().equals(x.getYmd())).findFirst();
 				return fromCache.isPresent();

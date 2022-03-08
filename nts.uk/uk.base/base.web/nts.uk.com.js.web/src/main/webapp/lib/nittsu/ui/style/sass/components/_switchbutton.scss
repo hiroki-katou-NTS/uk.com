@@ -1,3 +1,5 @@
+@import "_button.scss";
+
 .switchbox-wrappers {
 	&.radio-wrappers {	
 		label {
@@ -13,20 +15,21 @@
 					}
 
 					z-index: 1;
-					font-size: 14px;
+					font-size: 13px;
 					padding: 2px 7px;
 					line-height: 26px;
 					box-sizing: border-box;
-					border: 1px solid #EAE8F2;
+					border: none;
+					border-radius: 3px;
+					background-color: $button-normal-base-color;
+					text-align: center;
 				}
 
 				&:checked {
 					&+span {
 						z-index: 2;
 						color: #fff;
-						border-radius: 2px;
-						border-color: #30CC40;
-						background-color: #30CC40;
+						background-color: $button-proceed-base-color;
 					}
 				}
 
@@ -34,35 +37,9 @@
 				&:active {
 					&+span {
 						z-index: 3;
-						border-color: #30CC40;
-						box-shadow: 0 0 0 2px lighten($color: #30CC40, $amount: 30);
-					}
-				}
-			}
-
-			&:first-child {
-				input {
-					&+span {
-						border-top-left-radius: 2px;
-						border-bottom-left-radius: 2px;
-					}
-				}
-			}
-
-			&:last-child {
-				input {
-					&+span {
-						border-top-right-radius: 2px;
-						border-bottom-right-radius: 2px;
-					}
-				}
-			}
-
-			&:not(:first-child) {
-
-				input {
-					&+span {
-						margin-left: -1px;
+            outline-style: solid;
+            outline-width: 3px;
+						outline-color: $button-proceed-focus-outline;
 					}
 				}
 			}

@@ -163,8 +163,8 @@
       <app10 v-if="appType==10" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app6 v-if="appType==6" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
     </div>
-    <div v-if="comboReasonDisp || textReasonDisp" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_34' | i18n}}</div>
-    <div v-if="comboReasonDisp || textReasonDisp" class="row content-div border-top uk-border-light-gray text-break">
+    <div v-if="reasonDisplay" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_34' | i18n}}</div>
+    <div v-if="reasonDisplay" class="row content-div border-top uk-border-light-gray text-break">
       <div class="col-12">
         <div v-if="comboReasonDisp" class="row"><div class="col-12 pl-0">{{ comboReason | i18n }}</div></div> 
         <div v-if="textReasonDisp" class="row"><div class="col-12 pl-0" v-html="textReason"></div></div>

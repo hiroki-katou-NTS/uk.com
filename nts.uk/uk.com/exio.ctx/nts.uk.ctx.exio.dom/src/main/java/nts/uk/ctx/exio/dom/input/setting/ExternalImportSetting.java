@@ -19,6 +19,7 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
  */
 @Getter
 public class ExternalImportSetting implements DomainAggregate {
+	
 	/**設定ベース種類*/
 	private ImportSettingBaseType baseType;
 

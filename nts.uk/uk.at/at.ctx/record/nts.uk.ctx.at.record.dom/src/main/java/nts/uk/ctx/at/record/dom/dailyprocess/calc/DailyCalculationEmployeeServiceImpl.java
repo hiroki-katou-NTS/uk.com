@@ -574,9 +574,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		}
 
 		@Override
-		public Closure findClosureById(int closureId) {
+		public Optional<Closure> findClosureById(int closureId) {
 			String companyId = AppContexts.user().companyId();
-			return closureRepository.findById(companyId, closureId).get();
+			return closureRepository.findById(companyId, closureId);
 		}
 
 		@Override

@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
 <div
 	id="kaf002TabPanel"
-	data-bind="ntsTabPanel: { dataSource:  $component.tabs, active: selectedTab }" style="width: 450px">
+	data-bind="ntsTabPanel: { dataSource:  $component.tabs, active: selectedTab }" style="min-width: 620px">
 	<div data-bind="if: comment1().content != ''" >
 		<div
 			data-bind="text: comment1().content,
@@ -155,7 +155,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 							$('#kaf002TabPanel').width(580)							
 					}
                     else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
-                        let totalWidth = 900;
+                        let totalWidth = 890;
                         if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
                             totalWidth = totalWidth - 230;
                         }
@@ -173,7 +173,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 							$('#kaf002TabPanel').width(680)							
 					}
                     else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
-                        let totalWidth = 1000;
+                        let totalWidth = 990;
                         if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
                             totalWidth = totalWidth - 230;
                         }
@@ -312,7 +312,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 						$('#kaf002TabPanel').width(580)							
 				}
                 else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
-                    let totalWidth = 900;
+                    let totalWidth = 890;
                     if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
                         totalWidth = totalWidth - 230;
                     }
@@ -330,7 +330,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 						$('#kaf002TabPanel').width(680)							
 				}
                 else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
-                    let totalWidth = 1000;
+                    let totalWidth = 990;
                     if (self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0) {
                         totalWidth = totalWidth - 230;
                     }
@@ -674,6 +674,12 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                     
                 } else {
                     self.isLinkList[items[0].index] = false;
+                }
+            }
+            
+            if (items.length >= 10 && self.isLinkList[items[0].index]) {
+                if ($('#' + id).length) {
+                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #6A6A6A"><div></div></td><td colspan="4"><div id="moreRow' + String(items[0].index) + '" style="display: block" align="center"><a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']) , text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
                 }
             }
             

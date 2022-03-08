@@ -50,4 +50,10 @@ public class DomainWorkspace {
 				.findFirst()
 				.orElseThrow(() -> new RuntimeException("not found: '" + itemName + "' in: " + this));
 	}
+
+	public List<Integer> getPkItemNos() {
+		return getItemsPk().stream()
+				.map(k -> k.getItemNo())
+				.collect(toList());
+	}
 }

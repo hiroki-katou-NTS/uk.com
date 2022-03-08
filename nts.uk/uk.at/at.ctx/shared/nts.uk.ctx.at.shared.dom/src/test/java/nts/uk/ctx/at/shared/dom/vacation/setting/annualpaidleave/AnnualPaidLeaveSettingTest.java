@@ -6,11 +6,23 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit.Require;
 
+@RunWith(JMockit.class)
 public class AnnualPaidLeaveSettingTest {
+	
+	@Injectable
+	private Require require;
+	
+	
 	@Test
 	public void getters() {
 		AcquisitionSetting acquisitionSetting = new AcquisitionSetting(AnnualPriority.FIFO);
@@ -58,7 +70,15 @@ public class AnnualPaidLeaveSettingTest {
 		// 年休設定.年休管理区分 = 管理しない
 		AnnualPaidLeaveSetting leaveSetting = AnnualPaidLeaveSettingHelper
 				.createAnnualPaidLeaveSetting(timeAnnualSetting, ManageDistinct.NO);
-		List<Integer> lstId = leaveSetting.getDailyAttendanceItemsNotAvailable();
+		
+		new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = AnnualPaidLeaveSettingTestHelper.getOptionLicense(true);
+    		}
+		};
+		
+		List<Integer> lstId = leaveSetting.getDailyAttendanceItemsNotAvailable(require);
 		assertThat(lstId).extracting(d -> d).containsExactly(539, 540,502,514,595,601,607,613);
 		
 	// Case 2
@@ -70,7 +90,15 @@ public class AnnualPaidLeaveSettingTest {
 		// 年休設定.年休管理区分 = 管理する
 		leaveSetting = AnnualPaidLeaveSettingHelper
 				.createAnnualPaidLeaveSetting(timeAnnualSetting, ManageDistinct.YES);
-		lstId = leaveSetting.getDailyAttendanceItemsNotAvailable();
+		
+		new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = AnnualPaidLeaveSettingTestHelper.getOptionLicense(true);
+    		}
+		};
+		
+		lstId = leaveSetting.getDailyAttendanceItemsNotAvailable(require);
 		assertThat(lstId.isEmpty()).isTrue();
 		
 	// Case 3
@@ -82,7 +110,15 @@ public class AnnualPaidLeaveSettingTest {
 		// 年休設定.年休管理区分 = 管理する
 		leaveSetting = AnnualPaidLeaveSettingHelper
 				.createAnnualPaidLeaveSetting(timeAnnualSetting, ManageDistinct.YES);
-		lstId = leaveSetting.getDailyAttendanceItemsNotAvailable();
+		
+		new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = AnnualPaidLeaveSettingTestHelper.getOptionLicense(true);
+    		}
+		};
+		
+		lstId = leaveSetting.getDailyAttendanceItemsNotAvailable(require);
 		assertThat(lstId).extracting(d -> d).containsExactly(502, 514, 595, 601, 607, 613);
 	}
 
@@ -103,8 +139,15 @@ public class AnnualPaidLeaveSettingTest {
 		// 年休管理区分 = 管理しない
 		AnnualPaidLeaveSetting leaveSetting = AnnualPaidLeaveSettingHelper
 				.createAnnualPaidLeaveSetting(timeAnnualSetting, manageAnnualSetting, ManageDistinct.NO);
+		
+		new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = AnnualPaidLeaveSettingTestHelper.getOptionLicense(true);
+    		}
+		};
 
-		List<Integer> lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable();
+		List<Integer> lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable(require);
 		List<Integer> lstIdCanGet = Arrays.asList(189, 794, 798, 799, 790, 801, 805, 809, 1427, 1428, 1432, 1433, 1780, 1781, 1782, 1783, 1784, 1785, 
 				1786, 1787, 1788, 1789, 1434, 1435, 1436, 1437, 1438, 1439, 1440, 1441, 1424, 1425, 1426, 1429, 1430, 1431, 1861, 1862, 1442, 1443, 1444, 1445);
 		
@@ -124,7 +167,7 @@ public class AnnualPaidLeaveSettingTest {
 		leaveSetting = AnnualPaidLeaveSettingHelper.createAnnualPaidLeaveSetting(timeAnnualSetting, manageAnnualSetting,
 				ManageDistinct.YES);
 
-		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable();
+		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable(require);
 		lstIdCanGet = Arrays.asList(1434, 1435, 1436, 1437, 1438, 1439, 1440, 1441, 1442, 1443, 1444, 1445);
 		assertThat(lstId.containsAll(lstIdCanGet)).isTrue();
 		
@@ -140,7 +183,7 @@ public class AnnualPaidLeaveSettingTest {
 		leaveSetting = AnnualPaidLeaveSettingHelper.createAnnualPaidLeaveSetting(timeAnnualSetting, manageAnnualSetting,
 				ManageDistinct.YES);
 
-		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable();
+		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable(require);
 		lstIdCanGet = Arrays.asList(1442, 1443, 1444, 1445);
 		assertThat(lstId.containsAll(lstIdCanGet)).isTrue();
 		
@@ -156,7 +199,7 @@ public class AnnualPaidLeaveSettingTest {
 		leaveSetting = AnnualPaidLeaveSettingHelper.createAnnualPaidLeaveSetting(timeAnnualSetting, manageAnnualSetting,
 				ManageDistinct.NO);
 
-		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable();
+		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable(require);
 		lstIdCanGet = Arrays.asList(189, 794, 798, 799, 790, 801, 805, 809, 1427, 1428, 1432, 1433, 1780, 1781, 1782, 
 				1783, 1784, 1785, 1786, 1787, 1788, 1789, 1434, 1435, 1436, 1437, 1438, 1439, 1440, 1441, 1442, 1443, 1444, 1445);
 		assertThat(lstId.containsAll(lstIdCanGet)).isTrue();
@@ -174,7 +217,7 @@ public class AnnualPaidLeaveSettingTest {
 		leaveSetting = AnnualPaidLeaveSettingHelper.createAnnualPaidLeaveSetting(timeAnnualSetting, manageAnnualSetting,
 				ManageDistinct.YES);
 
-		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable();
+		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable(require);
 		lstIdCanGet = Arrays.asList(1434, 1435, 1436, 1437, 1438, 1439, 1440, 1441);
 
 		// 管理区分 = 管理する && 管理区分 = 管理しない && 時間年休管理区分 = 管理する && 年休管理区分 = 管理する
@@ -192,7 +235,7 @@ public class AnnualPaidLeaveSettingTest {
 		leaveSetting = AnnualPaidLeaveSettingHelper.createAnnualPaidLeaveSetting(timeAnnualSetting, manageAnnualSetting,
 				ManageDistinct.YES);
 
-		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable();
+		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable(require);
 
 		// 管理区分 = 管理する && 管理区分 = 管理する && 時間年休管理区分 = 管理する && 年休管理区分 = 管理する
 		assertThat(lstId.isEmpty()).isTrue();
@@ -209,11 +252,79 @@ public class AnnualPaidLeaveSettingTest {
 		leaveSetting = AnnualPaidLeaveSettingHelper.createAnnualPaidLeaveSetting(timeAnnualSetting, manageAnnualSetting,
 				ManageDistinct.YES);
 
-		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable();
+		lstId = leaveSetting.getMonthlyAttendanceItemsNotAvailable(require);
 		lstIdCanGet = Arrays.asList(1442, 1443, 1444, 1445);
 
 		// 管理区分 = 管理しない && 管理区分 = 管理する && 時間年休管理区分 = 管理する && 年休管理区分 = 管理する
 		assertThat(lstId.containsAll(lstIdCanGet)).isTrue();
 		
+	}
+
+	/**
+	 * Test [9] 時間年休を管理するか
+	 * Case 1: $Option.就業.時間休暇 = true
+	 */
+	@Test
+	public void testIsManageTimeAnnualLeave1() {
+		AnnualPaidLeaveSetting domain = AnnualPaidLeaveSettingTestHelper.createDefault();
+		new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = AnnualPaidLeaveSettingTestHelper.getOptionLicense(true);
+    		}
+		};
+		boolean isManageTimeAnnualLeave = domain.isManageTimeAnnualLeave(require);
+		assertThat(isManageTimeAnnualLeave).isTrue();
+	}
+	
+	/**
+	 * Test [9] 時間年休を管理するか
+	 * Case 2: $Option.就業.時間休暇 = false
+	 */
+	@Test
+	public void testIsManageTimeAnnualLeave2() {
+		AnnualPaidLeaveSetting domain = AnnualPaidLeaveSettingTestHelper.createDefault();
+		new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = AnnualPaidLeaveSettingTestHelper.getOptionLicense(false);
+    		}
+		};
+		boolean isManageTimeAnnualLeave = domain.isManageTimeAnnualLeave(require);
+		assertThat(isManageTimeAnnualLeave).isFalse();
+	}
+	
+	/**
+	 * Test [10] 利用する休暇時間の消化単位をチェックする
+	 * Case 1: $Option.就業.時間休暇 = true && 「休暇使用時間」 % 「@消化単位」 = 0
+	 */
+	@Test
+	public void testCheckVacationTimeUnitUsed1() {
+		AnnualPaidLeaveSetting domain = AnnualPaidLeaveSettingTestHelper.createDefault();
+		new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = AnnualPaidLeaveSettingTestHelper.getOptionLicense(true);
+    		}
+		};
+		boolean checkDigestUnits = domain.checkVacationTimeUnitUsed(require, new AttendanceTime(600));
+		assertThat(checkDigestUnits).isTrue();
+	}
+	
+	/**
+	 * Test [10] 利用する休暇時間の消化単位をチェックする
+	 * Case 2: $Option.就業.時間休暇 = true && 「休暇使用時間」 % 「@消化単位」 != 0
+	 */
+	@Test
+	public void testCheckVacationTimeUnitUsed2() {
+		AnnualPaidLeaveSetting domain = AnnualPaidLeaveSettingTestHelper.createDefault();
+		new Expectations() {
+    		{
+    			require.getOptionLicense();
+    			result = AnnualPaidLeaveSettingTestHelper.getOptionLicense(true);
+    		}
+		};
+		boolean checkDigestUnits = domain.checkVacationTimeUnitUsed(require, new AttendanceTime(11));
+		assertThat(checkDigestUnits).isFalse();
 	}
 }

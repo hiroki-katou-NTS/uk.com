@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestri
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestUnit;
 import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveManagementSetting;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.primitive.Memo;
@@ -43,8 +44,7 @@ public class SpecialHolidayTest {
 			// $時間特別休暇の管理設定.時間休暇消化単位.管理区分 == 管理しない
 			Optional<TimeSpecialLeaveManagementSetting> timeMana = Optional.of(new TimeSpecialLeaveManagementSetting(
 					"000000000008-0006", // dummy
-					TimeDigestiveUnit.OneHour, // dummy
-					ManageDistinct.NO));
+					new TimeVacationDigestUnit(ManageDistinct.NO, TimeDigestiveUnit.OneHour)));
 	
 			new Expectations() {
 				{
@@ -157,8 +157,7 @@ public class SpecialHolidayTest {
 			// $時間特別休暇の管理設定.時間休暇消化単位.管理区分 == 管理する
 			Optional<TimeSpecialLeaveManagementSetting> timeMana2 = Optional.of(new TimeSpecialLeaveManagementSetting(
 					"000000000008-0006", // dummy
-					TimeDigestiveUnit.OneHour,// dummy
-					ManageDistinct.YES));
+					new TimeVacationDigestUnit(ManageDistinct.YES, TimeDigestiveUnit.OneHour)));
 
 			new Expectations() {
 				{
