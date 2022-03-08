@@ -8,5 +8,9 @@ public interface SamlResponseValidationRepository {
 
     void save(SamlResponseValidation validation);
     
+    void insert(SamlResponseValidation validation);
+    
+    void update(SamlResponseValidation validation);
+    
     void remove(String tenantCode);
 }

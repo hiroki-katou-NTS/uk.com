@@ -55,10 +55,16 @@ public class RegisterSamlAuthSettingCommandHandler extends CommandHandler<Regist
 				&& !command.getIdpCertificate().isEmpty()) {
 			SamlResponseValidation validation = command.getSamlResponseValidation();
 			
-			tasks.add(AtomTask.of(() -> this.responseValidRepo.save(validation)));
+			Optional<SamlResponseValidation> validationOpt = this.responseValidRepo.find(tenantCode);
+			
+			if (validationOpt.isPresent()) {
+				tasks.add(AtomTask.of(() -> this.responseValidRepo.update(validation)));
+			} else {
+				tasks.add(AtomTask.of(() -> this.responseValidRepo.insert(validation)));
+			}
 		}
 		
-		AtomTask.bundle(tasks);
+		AtomTask.bundle(tasks).run();
 	}
 
 }

@@ -29,9 +29,23 @@ public class JpaSamlResponseValidationRepository extends JpaRepository implement
 		val entity = SgwmtSamlResponseValidation.toEntity(validation);
 		commandProxy().insert(entity);
 	}
+	
+	@Override
+	public void insert(SamlResponseValidation validation) {
+		val entity = SgwmtSamlResponseValidation.toEntity(validation);
+		commandProxy().insert(entity);
+	}
+
+	@Override
+	public void update(SamlResponseValidation validation) {
+		val entity = SgwmtSamlResponseValidation.toEntity(validation);
+		commandProxy().update(entity);
+	}
 
 	@Override
 	public void remove(String tenantCode) {
 		commandProxy().remove(SgwmtSamlResponseValidation.class, tenantCode);
 	}
+
+	
 }

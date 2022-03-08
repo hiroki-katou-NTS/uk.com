@@ -18,7 +18,7 @@ public class SamlResponseValidationWebService extends WebService {
 	private SamlResponseValidationQuery samlResponseValidationQuery;
 	
 	@POST
-    @Path("find/{tenantCode}")
+    @Path("find")
     public SamlResponseValidationDto find() {
         return this.samlResponseValidationQuery.find();
     }
