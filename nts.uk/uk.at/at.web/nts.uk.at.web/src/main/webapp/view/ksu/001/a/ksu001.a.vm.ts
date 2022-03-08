@@ -1070,7 +1070,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             shiftName = null;
                         
                         //check data nhân viên đến support
-                        if (emp.supportType == SupportType.COME_TO_SUPPORT && cell.supportStatus != SupportStatus.COME_ALLDAY && cell.supportStatus != SupportStatus.COME_TIMEZONE) {
+                        if (cell.supportStatus == SupportStatus.DO_NOT_COME) {
                             shiftName = null;
                             cell.conditionAa1 = false;
                             cell.conditionAa2 = false;
@@ -1223,7 +1223,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         
                         //check data nhân viên đến support
-                        if (emp.supportType == SupportType.COME_TO_SUPPORT && cell.supportStatus != SupportStatus.COME_ALLDAY && cell.supportStatus != SupportStatus.COME_TIMEZONE) {
+                        if (cell.supportStatus == SupportStatus.DO_NOT_COME) {
                             workTypeName = null;
                             workTimeName = null;
                             cell.conditionAbc1 = false;
@@ -1376,7 +1376,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         
                          //check data nhân viên đến support
-                        if (emp.supportType == SupportType.COME_TO_SUPPORT && cell.supportStatus != SupportStatus.COME_ALLDAY && cell.supportStatus != SupportStatus.COME_TIMEZONE) {
+                        if (cell.supportStatus == SupportStatus.DO_NOT_COME) {
                             workTypeName = null;
                             workTimeName = null;
                             startTime    = null;
