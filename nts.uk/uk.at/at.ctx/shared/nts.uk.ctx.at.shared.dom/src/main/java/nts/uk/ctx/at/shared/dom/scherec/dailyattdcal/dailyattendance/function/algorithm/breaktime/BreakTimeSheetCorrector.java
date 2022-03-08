@@ -47,7 +47,7 @@ public class BreakTimeSheetCorrector {
 		}
 		
 		/** 勤務予定から移送した値も補正するをチェック */
-		if (isFixedBreak == BreakTimeType.FIXED_BREAK && correctValCopyFromSche) {
+		if (isFixedBreak == BreakTimeType.FIXED_BREAK && !correctValCopyFromSche) {
 			
 			return;
 		}
