@@ -143,20 +143,19 @@ module nts.uk.at.view.kdl016.a {
             // if (vm.$grid.data("igGrid")) {
             //     vm.$grid.ntsGrid("destroy");
             // }
-            const $grid = $("#grid");
-            let primaryKeyName: string = "id";
-            $grid.igGrid({
+            // const $grid =  $("#grid");
+            $("#grid").igGrid({
                 // width: "929px",
                 height: "352px",
                 dataSource: dataSource,
                 dataSourceType: "json",
-                primaryKey: primaryKeyName,
-                autoGenerateColumns: false,
-                responseDataKey: "results",
+                primaryKey: 'id',
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                // autoGenerateColumns: false,
+                // responseDataKey: "results",
                 // tabIndex: 1,
                 // rowVirtualization: true,
-                // virtualization: true,
-                // virtualizationMode: 'continuous',
                 // hidePrimaryKey: true,
                 columns: [
                     {headerText: '', key: 'id', dataType: 'number', width: '0px', hidden: true},
@@ -173,7 +172,7 @@ module nts.uk.at.view.kdl016.a {
                         width: '200px',
                         template: '<div style="float:left">${periodDisplay} </div>'
                     },
-                    {headerText: vm.$i18n('KDL016_15'), key: "supportOrgName", width: '100px', dataType: "string"},
+                    {headerText: vm.$i18n('KDL016_15'), key: "supportOrgName", width: '115px', dataType: "string"},
                     {
                         headerText: vm.$i18n('KDL016_16'),
                         key: "employeeDisplay",
@@ -199,7 +198,7 @@ module nts.uk.at.view.kdl016.a {
                         // filterDialogHeight: "390px",
                         // filterDialogWidth: "515px",
                         columnSettings: [
-                            {columnKey: primaryKeyName, allowFiltering: false},
+                            {columnKey: 'id', allowFiltering: false},
                             {columnKey: 'edit', allowFiltering: false},
                             {
                                 columnKey: 'periodDisplay',
@@ -224,9 +223,9 @@ module nts.uk.at.view.kdl016.a {
                                         filterFunc: vm.beforeAndEqual
                                     }
                                 },
-                                defaultExpressions: [
-                                    {cond: "equal"}
-                                ]
+                                // defaultExpressions: [
+                                //     {cond: "equal"}
+                                // ]
                             },
                             {
                                 columnKey: 'supportOrgName',
@@ -306,10 +305,10 @@ module nts.uk.at.view.kdl016.a {
                         // rowSelectionChanging: function() {},
                         // rowSelectionChanged: function(event: any, ui: any) {}
                     },
-                    {
-                        name: "Sorting",
-                        type: "local"
-                    },
+                    // {
+                    //     name: "Sorting",
+                    //     type: "local"
+                    // },
                     {
                         name: "Resizing",
                         deferredResizing: false,
@@ -322,12 +321,8 @@ module nts.uk.at.view.kdl016.a {
             });
 
             // $('#igGridSupportInfo').igGridSelection('selectRow', vm.selectedRow());
-            // vm.$blockui('hide');
             $('#grid_scroll').focus();
             $('#grid').focus();
-            // $('input:first').attr('placeholder', vm.$i18n('KSU001_4057'));
-            // $("table thead tr td:nth-child(3)").css('padding', "0px !important");
-            // $("td").eq(2).css('padding', "0px !important");
         }
 
         register() {
@@ -488,10 +483,6 @@ module nts.uk.at.view.kdl016.a {
 
         notContain(value: any, expression: any, dataType: any, ignoreCase: any, preciseDateFormat: any) {
             return value.indexOf(expression) == -1;
-        }
-
-        clearFilter() {
-            $("#grid").igGridFiltering("filter", [], true);
         }
     }
 

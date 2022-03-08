@@ -166,7 +166,7 @@ public class SupportInformationFinder {
                     supportableEmployee.getPeriod().end().toString("yyyy/MM/dd"),
                     employeeInfoOpt.isPresent() ? employeeInfoOpt.get().getEmployeeCode() : Strings.EMPTY,
                     employeeInfoOpt.isPresent() ? employeeInfoOpt.get().getBusinessName() : Strings.EMPTY,
-                    orgInfo.getDisplayName(),
+                    orgInfo.getName(),
                     supportableEmployee.getRecipient().getUnit() == TargetOrganizationUnit.WORKPLACE
                             ? supportableEmployee.getRecipient().getWorkplaceId().orElse(null)
                             : supportableEmployee.getRecipient().getWorkplaceGroupId().orElse(null),
@@ -228,7 +228,7 @@ public class SupportInformationFinder {
                     supportableEmployee.getPeriod().end().toString("yyyy/MM/dd"),
                     employeeInfoOpt.isPresent() ? employeeInfoOpt.get().getEmployeeCode() : Strings.EMPTY,
                     employeeInfoOpt.isPresent() ? employeeInfoOpt.get().getBusinessName() : Strings.EMPTY,
-                    orgInfo.getDisplayName(),
+                    orgInfo.getName(),
                     supportableEmployee.getRecipient().getUnit() == TargetOrganizationUnit.WORKPLACE
                             ? supportableEmployee.getRecipient().getWorkplaceId().orElse(null)
                             : supportableEmployee.getRecipient().getWorkplaceGroupId().orElse(null),
@@ -278,7 +278,7 @@ public class SupportInformationFinder {
                             : supportAllowOrg.getSupportableOrganization().getWorkplaceGroupId().orElse(null),
                     supportAllowOrg.getSupportableOrganization().getUnit().value,
                     displayInfoOrg.getCode(),
-                    displayInfoOrg.getDisplayName()
+                    displayInfoOrg.getName()
             ));
         }
 
@@ -344,7 +344,7 @@ public class SupportInformationFinder {
                             : supportAllowOrg.getTargetOrg().getWorkplaceGroupId().orElse(null),
                     supportAllowOrg.getTargetOrg().getUnit().value,
                     displayInfoOrg.getCode(),
-                    displayInfoOrg.getDisplayName()
+                    displayInfoOrg.getName()
             ));
         }
 
