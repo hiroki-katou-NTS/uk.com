@@ -25,7 +25,8 @@ module nts.uk.at.kdp003.a {
 		getEmployeeWorkByStamping: 'at/record/stamp/employee_work_by_stamping',
 		getIsCloud: "at/record/stamp/finger/get-isCloud",
 		getContractCode: "at/record/stamp/finger/get-contractCode",
-		getAuthenticate: "at/record/stamp/finger/get-authenticate"
+		getAuthenticate: "at/record/stamp/finger/get-authenticate",
+        getIPAddress: "at/record/stamp/finger/get-ip-address"
 
 	};
 
@@ -155,6 +156,11 @@ module nts.uk.at.kdp003.a {
 												vm.getDataStartScreen();
 											}
 										});
+                                        
+                                    vm.$ajax(API.getIPAddress, { contactCode: data.contractCode, password: data.contractPassword })
+                                        .then((result: any) => {
+                                            console.log(result);
+                                        });
 								}
 							});
 					}
