@@ -32,4 +32,8 @@ $(document).ready(function() {
         });
     })
 
+    $('#btn-cancel').on('click', function() {
+        nts.uk.ui.windows.close();
+    });
+
 });

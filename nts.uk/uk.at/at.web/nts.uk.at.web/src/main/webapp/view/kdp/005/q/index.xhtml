@@ -13,18 +13,21 @@
 			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kdp005.q.vm.js" />
-			<script>var dialogSize = {width: 400, height: 380 };</script>
+			<script>var dialogSize = {width: 400, height: 450};</script>
 			
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="qr-content">
+			<div class="contents-area">
 			
 				<div id="divScan" class="float-left" style="width: 400px; height: 334px; border: 0.5px solid #7F7F7F;">
 					<div style="width: 100%;" id="reader"></div>
 					<button id="btn-clear" style="color: #FFFFFF; width: 400px">
 						ＱＲコード読み取り
 					</button>
+					<div style="margin-top: 15px; text-align: center">
+						<button id="btn-cancel" tabindex="3" class="x-large">#{i18n.getText('KDP005_8')}</button>
+					</div>
 				</div>
 			</div>
 		</ui:define>
