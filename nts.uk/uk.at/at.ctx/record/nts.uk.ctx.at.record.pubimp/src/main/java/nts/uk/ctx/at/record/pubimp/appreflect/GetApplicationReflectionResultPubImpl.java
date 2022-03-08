@@ -328,11 +328,6 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		}
 
 		@Override
-		public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
-			return Optional.ofNullable(compensLeaveComSetRepository.find(companyId));
-		}
-
-		@Override
 		public Optional<SubstituteWorkAppReflect> findSubWorkAppReflectByCompany(String companyId) {
 			return substituteWorkAppReflectRepository.findSubWorkAppReflectByCompany(companyId);
 		}
@@ -357,6 +352,16 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		public OptionLicense getOptionLicense() {
 			return AppContexts.optionLicense();
 		}
+
+	@Override
+	public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+		return this.workTimeSetting(cid, new WorkTimeCode(workTimeCode));
+	}
+
+	@Override
+	public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+		return compensLeaveComSetRepository.find(companyId);
+	}
 	}
 
 }

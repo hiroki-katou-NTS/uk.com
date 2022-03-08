@@ -22,9 +22,9 @@ public class GetSubHolOccurrenceSetting {
 			CompensatoryOccurrenceDivision originAtr) {
 		
 		//	$代休管理設定
-		Optional<CompensatoryLeaveComSetting> comLeavSet = require.compensatoryLeaveComSetting(cid);
+		CompensatoryLeaveComSetting comLeavSet = require.findCompensatoryLeaveComSet(cid);
 		//	if($代休管理設定.is not Present())
-		if (!comLeavSet.isPresent())
+		if (comLeavSet == null)
 			return Optional.empty();
 		if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime) && !comLeavSet.isManagedTime(require)) {
 			return Optional.empty();
@@ -54,7 +54,7 @@ public class GetSubHolOccurrenceSetting {
 					.filter(x -> x.getOriginAtr() == originAtr).map(x -> x.getSubHolTimeSet()).findFirst();
 		}
 		
-		SubHolTransferSet result = comLeavSet.get().getCompensatoryOccurrenceSetting().stream()
+		SubHolTransferSet result = comLeavSet.getCompensatoryOccurrenceSetting().stream()
 				.filter(x -> x.getOccurrenceType().value == originAtr.value).map(x -> x.getTransferSetting())
 				.findFirst().orElse(null);
 		return (result != null && result.isUseDivision()) ? Optional.of(result) : Optional.empty();

@@ -98,6 +98,8 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @AllArgsConstructor
@@ -401,11 +403,6 @@ public class MonthlyAggregationEmployeeServiceRequireImpl implements AggregateMo
 	}
 
 	@Override
-	public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
-		return require.compensatoryLeaveComSetting(companyId);
-	}
-
-	@Override
 	public Optional<HolidayAddtionSet> holidayAddtionSet(String cid) {
 		return require.holidayAddtionSet(cid);
 	}
@@ -622,6 +619,21 @@ public class MonthlyAggregationEmployeeServiceRequireImpl implements AggregateMo
 	public AttendanceDaysMonth monthAttendanceDays(CacheCarrier cacheCarrier, DatePeriod period,
 			Map<String, WorkType> workTypeMap) {
 		return require.monthAttendanceDays(cacheCarrier, period, workTypeMap);
+	}
+
+	@Override
+	public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+		return this.workTimeSetting(cid, new WorkTimeCode(workTimeCode));
+	}
+
+	@Override
+	public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+		return require.compensatoryLeaveComSetting(companyId).get();
+	}
+
+	@Override
+	public OptionLicense getOptionLicense() {
+		return AppContexts.optionLicense();
 	}
 
 }

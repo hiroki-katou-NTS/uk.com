@@ -805,14 +805,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			return new WorkScheduleTimeOfDaily(WorkScheduleTime.defaultValue(), actualPredWorkTime);
 		}
 		totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(scheRegetManage,
-															   vacationClass, 
-															   scheRegetManage.getWorkType().get(), 
-															   workDailyAtr, //就業時間帯依存
 															   flexCalcMethod, //詳細が決まってなさそう(2018.6.21)
-															   eachCompanyTimeSet, //会社共通 
-															   conditionItem,
-															   predetermineTimeSetByPersonInfo,
-															   recordWorkTimeCode,
 															   new DeclareTimezoneResult());
 		scheTotalTime = totalWorkingTime.getTotalTime();
 		if(totalWorkingTime.getWithinStatutoryTimeOfDaily() != null)

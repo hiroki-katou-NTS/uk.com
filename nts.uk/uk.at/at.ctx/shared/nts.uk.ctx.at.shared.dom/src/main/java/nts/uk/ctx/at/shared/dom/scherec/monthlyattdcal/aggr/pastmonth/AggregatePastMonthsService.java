@@ -565,11 +565,6 @@ public class AggregatePastMonthsService {
 			}
 
 			@Override
-			public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
-				return require.compensatoryLeaveComSetting(companyId);
-			}
-
-			@Override
 			public Optional<AddSetManageWorkHour> addSetManageWorkHour(String cid) {
 				return require.addSetManageWorkHour(cid);
 			}
@@ -597,6 +592,16 @@ public class AggregatePastMonthsService {
 			@Override
 			public OptionLicense getOptionLicense() {
 				return AppContexts.optionLicense();
+			}
+
+			@Override
+			public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+				return require.workTimeSetting(cid, workTimeCode);
+			}
+
+			@Override
+			public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+				return require.findCompensatoryLeaveComSet(companyId);
 			}
 		};
 	}

@@ -1294,18 +1294,8 @@ public class ToppageStartupProcessMobFinder {
 		}
 
 		@Override
-		public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+		public Optional<SEmpHistoryImport> getSEmpHistoryImport(String employeeId, GeneralDate baseDate) {
 			return Optional.empty();
-		}
-
-		@Override
-		public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId) {
-			return Optional.ofNullable(this.compensLeaveComSetRepo.find(companyId));
-		}
-
-		@Override
-		public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode) {
-			return Optional.ofNullable(this.compensLeaveEmSetRepo.find(companyId, employmentCode));
 		}
     }
 }

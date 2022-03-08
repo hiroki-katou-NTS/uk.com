@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.inject.New;
-
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -286,7 +284,8 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 							createTimeSheet,
 							integrationOfDaily.getCalAttr().getOvertimeSetting(),
 							new HashMap<>(),
-							personDailySetting.getAddSetting().getVacationCalcMethodSet());
+							personDailySetting.getAddSetting().getAddSetOfWorkingTime(),
+							integrationOfWorkTime.getCommonSetting().getGoOutSet());
 			}
 		}
 		return createTimeSheet;

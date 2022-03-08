@@ -983,4 +983,14 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public List<InterimDayOffMng> getDayOffDateList(String sid, List<GeneralDate> lstDate) {
 		return interimBreakDayOffMngRepo.getDayOffDateList(sid, lstDate);
 	}
+
+	@Override
+	public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+		return this.workTimeSetting(cid, new WorkTimeCode(workTimeCode));
+	}
+
+	@Override
+	public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+		return this.compensatoryLeaveComSetting(companyId).get();
+	}
 }

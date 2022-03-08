@@ -420,31 +420,24 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
-				ExecutionType reCalcAtr) {
-			return calculateForSchedule(reCalcAtr, calcOption, integrationOfDaily);
-		}
-
-		@Override
-		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
-			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode);
-		}
-
-		@Override
 		public List<IntegrationOfDaily> calculateForRecordSchedule(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
 			return calculateForSchedule(calcOption, integrationOfDaily);
 		}
 
 		@Override
-		public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
-			return Optional.ofNullable(compensLeaveComSetRepository.find(companyId));
+		public OptionLicense getOptionLicense() {
+			return AppContexts.optionLicense();
 		}
 
 		@Override
-		public OptionLicense getOptionLicense() {
-			return AppContexts.optionLicense();
+		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+			return this.workTimeSetting(cid, new WorkTimeCode(workTimeCode));
+		}
+
+		@Override
+		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+			return compensLeaveComSetRepository.find(companyId);
 		}
 
 	}

@@ -600,6 +600,16 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			return AppContexts.optionLicense();
 		}
 
+		@Override
+		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+			return this.workTimeSetting(cid, new WorkTimeCode(workTimeCode));
+		}
+
+		@Override
+		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+			return this.compensatoryLeaveComSetting(cid).orElse(null);
+		}
+
 	}
 
 }

@@ -481,32 +481,11 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
-				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
-				ExecutionType reCalcAtr) {
-			return calculateForSchedule(calcOption, integrationOfDaily, companySet, reCalcAtr);
-		}
-		
-		@Override
-		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
-		}
-
-		@Override
-		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
-			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode);
-		}
-
-		@Override
 		public List<IntegrationOfDaily> calculateForRecordSchedule(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
 			return calculateForRecord(calcOption, integrationOfDaily, companySet);
 		}
 
-		@Override
-		public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
-			return Optional.ofNullable(compensLeaveComSetRepository.find(companyId));
-		}
 
 		@Override
 		public void removeConfirmApproval(List<IntegrationOfDaily> domainDaily) {
@@ -563,6 +542,11 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		@Override
 		public OptionLicense getOptionLicense() {
 			return AppContexts.optionLicense();
+		}
+
+		@Override
+		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+			return compensLeaveComSetRepository.find(companyId);
 		}
 	}
 }
