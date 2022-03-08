@@ -26,7 +26,7 @@ public interface RecSpecificDateSettingAdapter {
 	 */
 	public RecSpecificDateSettingImport specificDateSettingServiceByListWpl(String companyID, List<String> workPlaceID, GeneralDate date);
 	
-	public List<RecSpecificDateSettingImport> getList(String companyID, List<String> workPlaceID, DatePeriod datePeriod);
+	public List<RecSpecificDateSettingImport> getList(String companyID, String workPlaceID, DatePeriod datePeriod);
 	
 	/**
 	 * Get list 特定日項目 by 特定日項目No
