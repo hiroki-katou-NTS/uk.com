@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.gateway.ws.login.sso.saml;
 import lombok.val;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.RegisterSamlAuthSettingCommand;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.RegisterSamlAuthSettingCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.saml.start.StartSamlLoginCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.saml.start.StartSamlLoginCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.saml.start.StartSamlLoginResult;
@@ -32,6 +34,9 @@ public class SamlWs extends WebService {
 
 	@Inject
 	private SamlValidateCommandHandler validate;
+	
+	@Inject
+	private RegisterSamlAuthSettingCommandHandler samlAuthSettingRegister;
 
 	/**
 	 * テナント認証＆SAMLRequest生成
@@ -91,5 +96,11 @@ public class SamlWs extends WebService {
 				.append("</body></html>");
 
 		return html.toString();
+	}
+	
+	@POST
+	@Path("saveAuthSetting")
+	public void saveAuthSetting(RegisterSamlAuthSettingCommand command) {
+		this.samlAuthSettingRegister.handle(command);
 	}
 }

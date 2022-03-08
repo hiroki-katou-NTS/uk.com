@@ -7,4 +7,6 @@ public interface SamlResponseValidationRepository {
     Optional<SamlResponseValidation> find(String tenantCode);
 
     void save(SamlResponseValidation validation);
+    
+    void remove(String tenantCode);
 }
