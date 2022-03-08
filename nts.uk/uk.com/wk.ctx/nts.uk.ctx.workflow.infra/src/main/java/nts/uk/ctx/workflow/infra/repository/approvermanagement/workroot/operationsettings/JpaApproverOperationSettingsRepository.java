@@ -52,11 +52,14 @@ public class JpaApproverOperationSettingsRepository extends JpaRepository implem
 		if (domain.getApproverSettingScreenInfor().getFifthItemName().isPresent()) {
 			entity.item5Name = domain.getApproverSettingScreenInfor().getFifthItemName().get().v();
 		}
-		if (!domain.getSettingTypeUseds().isEmpty() && domain.getSettingTypeUseds().get(0).getConfirmRootType().isPresent()) {
-			ConfirmationRootType confirmRootType = domain.getSettingTypeUseds().get(0).getConfirmRootType().get();
-			entity.confDayUse = (confirmRootType == ConfirmationRootType.DAILY_CONFIRMATION) ? 1 : 0;
-			entity.confMonthUse = (confirmRootType == ConfirmationRootType.MONTHLY_CONFIRMATION) ? 1 : 0;
-		}
+		domain.getSettingTypeUseds().stream().filter(data -> data.getConfirmRootType().isPresent()).forEach(data -> {
+			ConfirmationRootType confirmRootType = data.getConfirmRootType().get();
+			if (confirmRootType.equals(ConfirmationRootType.DAILY_CONFIRMATION)) {
+				entity.confDayUse = data.getNotUseAtr().value;
+			} else if (confirmRootType.equals(ConfirmationRootType.MONTHLY_CONFIRMATION)) {
+				entity.confMonthUse = data.getNotUseAtr().value;
+			}
+		});
 		if (domain.getApproverSettingScreenInfor().getProcessMemo().isPresent()) {
 			entity.processMemo = domain.getApproverSettingScreenInfor().getProcessMemo().get().v();
 		}

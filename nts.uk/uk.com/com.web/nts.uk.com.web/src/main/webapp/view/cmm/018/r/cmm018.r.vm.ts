@@ -122,7 +122,7 @@ module nts.uk.com.view.cmm018.r.viewmodel {
 					)?.notUseAtr || NotUseAtr.NOT_DO;
 					const useMonthly = _.find(
 						settingTypeUseds,
-						setting => setting.confirmRootType === ConfirmationRootType.MONTHLY_CONFIRMATION && setting.employmentRootAtr === EmploymentRootAtr.APPLICATION
+						setting => setting.confirmRootType === ConfirmationRootType.MONTHLY_CONFIRMATION && setting.employmentRootAtr === EmploymentRootAtr.CONFIRMATION
 					)?.notUseAtr || NotUseAtr.NOT_DO;
 
 					vm.selectionData.push(
