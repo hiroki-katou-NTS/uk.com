@@ -99,50 +99,6 @@ module a14 {
             _self.childCareWorkRoundingTime = _self.model.commonSetting.shortTimeWorkSet.roundingSet.roundingTime;
             _self.childCareWorkRounding = _self.model.commonSetting.shortTimeWorkSet.roundingSet.rounding;
         }
-
-        public initDataModel(): void {
-            var self = this;
-            self.fixTableOptionFlow = {
-                maxRow: 1,
-                minRow: 1,
-                maxRowDisplay: 5,
-                isShowButton: true,
-                dataSource: self.dataSourceFlow,
-                isMultipleSelect: true,
-                columns: self.columnSettingFlow(),
-                tabindex: 90
-            };
-            self.fixTableOptionFlex = {
-                maxRow: 1,
-                minRow: 1,
-                maxRowDisplay: 10,
-                isShowButton: true,
-                dataSource: self.dataSourceFlex,
-                isMultipleSelect: true,
-                columns: self.columnSettingOtherFlow(),
-                tabindex: 89
-            };
-            self.fixTableOptionFixed = {
-                maxRow: 1,
-                minRow: 1,
-                maxRowDisplay: 10,
-                isShowButton: true,
-                dataSource: self.dataSourceFixed,
-                isMultipleSelect: true,
-                columns: self.columnSettingOtherFlow(),
-                tabindex: 89
-            };
-            self.fixTableOptionDiffTime = {
-                maxRow: 1,
-                minRow: 1,
-                maxRowDisplay: 10,
-                isShowButton: true,
-                dataSource: self.dataSourceDiffTime,
-                isMultipleSelect: true,
-                columns: self.columnSettingOtherFlow(),
-                tabindex: 89
-            };
-        }
     }
     
     /**
