@@ -49,6 +49,10 @@ public class ImportableItem implements DomainAggregate{
 		return domainConstraint
 				.flatMap(c -> c.validate(dataItem.getValue()));
 	}
+	
+	public boolean isOptional() {
+		return !required && !isPrimaryKey;
+	}
 
 	/**
 	 * 型を変換する

@@ -5,13 +5,17 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.screen.com.app.cmf.cmf001.b.get.GetLayoutParam;
 import nts.uk.screen.com.app.cmf.cmf001.f.delete.Cmf001fDeleteCommand;
 import nts.uk.screen.com.app.cmf.cmf001.f.delete.Cmf001fDeleteCommandHandler;
 import nts.uk.screen.com.app.cmf.cmf001.f.get.CsvBaseLayoutDto;
+import nts.uk.screen.com.app.cmf.cmf001.f.get.CsvBasedImportSettingDto;
+import nts.uk.screen.com.app.cmf.cmf001.f.get.GetCsvBasedImportSetting;
 import nts.uk.screen.com.app.cmf.cmf001.f.get.GetLayoutForCsvBase;
 import nts.uk.screen.com.app.cmf.cmf001.f.save.Cmf001fSaveCommand;
 import nts.uk.screen.com.app.cmf.cmf001.f.save.Cmf001fSaveCommandHandler;
@@ -21,6 +25,15 @@ import nts.uk.screen.com.app.cmf.cmf001.f.save.Cmf001fSaveCommandHandler;
 public class Cmf001fWebService {
 	
 	@Inject
+	private GetCsvBasedImportSetting getSetting;
+	
+	@POST
+	@Path("setting/{code}")
+	public CsvBasedImportSettingDto getSetting(@PathParam("code") String code) {
+		return getSetting.get(new ExternalImportCode(code));
+	}
+	
+	@Inject
 	private GetLayoutForCsvBase layout;
 	
 	@Inject
@@ -28,6 +41,7 @@ public class Cmf001fWebService {
 	
 	@Inject
 	private Cmf001fDeleteCommandHandler delHandler;
+	
 	
 	@POST
 	@Path("get/layout/detail")

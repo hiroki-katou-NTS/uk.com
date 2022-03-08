@@ -51,6 +51,8 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			{ headerText: "受入ドメイン", 	key: "name", 			width: 280},
 		]);
 
+		sourceType = [{ value: 0, text: 'CSV' },{ value: 1, text: '固定値' }];
+
 		constructor() {
 			super();
 			var self = this;
@@ -70,27 +72,29 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		}
 
 		selectedDomain(){
-			var self = this;
-			if (self.selectedDomainId()) {
-				var info = $.grep(self.domainInfoList(), function (di) {
-					return di.domainId == self.selectedDomainId();
-				});
-				if (info.length !== 0){
-					self.layoutItemNoList(info[0].itemNoList);
-					self.canEditDetail(info[0].resistered);
 
-					if(!info[0].resistered){
-						self.setLayout(self.layoutItemNoList()).done(()=>{
-							self.save();
+			let selectedDomainId = this.selectedDomainId();
+			if (selectedDomainId) {
+
+				var info = _.find(this.domainInfoList(), di => di.domainId == selectedDomainId);
+
+				if (info !== undefined){
+					this.layoutItemNoList(info.itemNoList);
+					this.canEditDetail(info.resistered);
+
+					if(!info.resistered){
+						this.setLayout(this.layoutItemNoList()).done(()=>{
+							this.save();
 						})
 					}
 
-					return self.setLayout(self.layoutItemNoList());
+					return this.setLayout(this.layoutItemNoList());
 				}
 			}
-			self.layoutItemNoList([]);
-			self.canEditDetail(false);
-			return self.setLayout(self.layoutItemNoList());
+
+			this.layoutItemNoList([]);
+			this.canEditDetail(false);
+			return this.setLayout(this.layoutItemNoList());
 		}
 
 		startPage(){
@@ -420,14 +424,14 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		itemNo: number;
 		name: string;
 		required: boolean;
-		selectedCsvItemNo: number;
+		selectedCsvItemNo: KnockoutObservable<number>;
 		isFixedValue: number;
 	
 		constructor(itemNo: number, name: string, required: boolean, selectedCsvItemNo: number, fixedValue: string, csvData: string, isFixedValue: number) {
 			this.itemNo = itemNo;
 			this.name = name;
 			this.required = required;
-			this.selectedCsvItemNo = selectedCsvItemNo;
+			this.selectedCsvItemNo = ko.observable(selectedCsvItemNo);
 			this.fixedValue = fixedValue;
 			this.csvData = csvData;
 			this.isFixedValue = isFixedValue;
