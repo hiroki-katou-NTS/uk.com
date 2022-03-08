@@ -54,7 +54,7 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 		}
 			
 		// アルゴリズム「職場IDから上位職場を取得する」を実行する ( Acquire upper workplace from workplace ID )
-		List<String> workplaceIDList = scWorkplaceAdapter.findParentWpkIdsByWkpId(companyID, workPlaceID, date);
+		List<String> workplaceIDList = scWorkplaceAdapter.getWorkplaceIdAndUpper(companyID, date, workPlaceID);
 		workplaceIDList.stream().forEach(workplace -> {
 			Optional<WorkplaceSpecificDateItem> workplaceSpecificDateItemOpt = workplaceSpecificDateRepository.get( workplace, date );
 			if( workplaceSpecificDateItemOpt.isPresent() ) {
