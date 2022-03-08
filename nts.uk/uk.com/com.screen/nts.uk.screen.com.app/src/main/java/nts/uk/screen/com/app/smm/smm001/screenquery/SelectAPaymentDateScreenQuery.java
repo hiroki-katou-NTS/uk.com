@@ -1,6 +1,8 @@
 package nts.uk.screen.com.app.smm.smm001.screenquery;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -8,7 +10,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.EmploymentAndLinkedMonthSetting;
+import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.LinkedPaymentConversionRepository;
 import nts.uk.ctx.link.smile.dom.smilelinked.cooperationoutput.PaymentCategory;
 import nts.uk.shr.com.context.AppContexts;
@@ -24,8 +26,12 @@ public class SelectAPaymentDateScreenQuery {
 	@Inject
 	private LinkedPaymentConversionRepository linkedPaymentConversionRepository;
 
+	@Inject
+	private EmploymentRepository employmentRepository;
+
 	/**
 	 * get
+	 * 
 	 * @param paymentCode
 	 * @return EmploymentChoiceDto
 	 */
@@ -35,13 +41,25 @@ public class SelectAPaymentDateScreenQuery {
 
 		// 支払コードを指定して連動支払変換を取得する
 		PaymentCategory paymentCategory = EnumAdaptor.valueOf(paymentCode, PaymentCategory.class);
-		List<EmploymentAndLinkedMonthSetting> employmentListWithSpecifiedCompany = linkedPaymentConversionRepository
-				.getByPaymentCode(contractCode, companyId, paymentCategory);
+		List<EmploymentAndLinkedMonthSettingDto> employmentListWithSpecifiedCompany = linkedPaymentConversionRepository
+				.getByPaymentCode(contractCode, companyId, paymentCategory).stream()
+				.map(data -> new EmploymentAndLinkedMonthSettingDto(data.getInterlockingMonthAdjustment().value,
+						data.getScd()))
+				.collect(Collectors.toList());
 
 		// 会社を指定して連動支払変換を取得する
-		List<EmploymentAndLinkedMonthSetting> employmentListWithSpecifiedPaymentDate = linkedPaymentConversionRepository
-				.get(contractCode, companyId);
+		List<EmploymentAndLinkedMonthSettingDto> employmentListWithSpecifiedPaymentDate = linkedPaymentConversionRepository
+				.get(contractCode, companyId).stream()
+				.map(data -> new EmploymentAndLinkedMonthSettingDto(data.getInterlockingMonthAdjustment().value,
+						data.getScd()))
+				.collect(Collectors.toList());
 
-		return new EmploymentChoiceDto(employmentListWithSpecifiedCompany, employmentListWithSpecifiedPaymentDate);
+		// 会社IDから雇用を取得する
+		List<EmploymentDto> employments = this.employmentRepository.findAll(companyId).stream()
+				.map(data -> new EmploymentDto(data.getEmploymentCode().v(), data.getEmploymentName().v()))
+				.sorted(Comparator.comparing(EmploymentDto::getEmploymentCode)).collect(Collectors.toList());
+
+		return new EmploymentChoiceDto(employmentListWithSpecifiedCompany, employmentListWithSpecifiedPaymentDate,
+				employments);
 	}
 }
