@@ -28,4 +28,9 @@ public class ExecutionCommand {
 				this.startDateTime, this.endDateTime, this.executionAtr, this.executionStatus, this.presenceOfError);
 
 	}
+	public AggrPeriodExcution toDomain(String companyId, String executionEmpId, String aggrId,GeneralDateTime startDateTime,GeneralDateTime endDateTime) {
+		return AggrPeriodExcution.createFromJavaType(companyId, executionEmpId, this.aggrFrameCode, aggrId,
+				startDateTime, endDateTime, this.executionAtr, this.executionStatus, this.presenceOfError);
+
+	}
 }
