@@ -75,7 +75,7 @@ module nts.uk.at.view.kmp001.j {
 				returnDataFromCcg001: function(data: any) {
 					const employees = data.listEmployee
 						.map((m: any) => ({
-							workplaceName: m.affiliationName,
+							affiliationName: m.affiliationName,
 							code: m.employeeCode,
 							name: m.employeeName,
 							id: m.employeeId
