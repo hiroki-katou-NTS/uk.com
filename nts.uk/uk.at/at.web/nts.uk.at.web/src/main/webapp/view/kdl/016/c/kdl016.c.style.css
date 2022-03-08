@@ -31,18 +31,16 @@
 }
 
 #combo-box {
-    margin-left: 43px;
+    margin-left: 33px;
+    width: 345px;
 }
 
 .caret-bottom {
     font-size: 28px;
-    margin-left: 160px;
+    margin-left: 227px;
     color: #E0F59E;
     vertical-align: top;
     line-height: 28px;
 }
 
-#combo-box {
-    width: 343px;
-}
 

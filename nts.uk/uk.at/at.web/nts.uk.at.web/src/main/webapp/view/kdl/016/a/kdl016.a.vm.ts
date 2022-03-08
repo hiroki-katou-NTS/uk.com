@@ -381,6 +381,8 @@ module nts.uk.at.view.kdl016.a {
                         if (!data.error) {
                             vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
                                 vm.loadSupportInfo(vm.selectedMode());
+                                vm.canDelete(false);
+                                vm.selectedCode([]);
                             });
                         } else {
                             let errorResults = data.errorResults;

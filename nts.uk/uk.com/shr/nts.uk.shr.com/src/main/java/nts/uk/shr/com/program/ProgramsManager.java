@@ -654,17 +654,17 @@ public class ProgramsManager {
      * KDL016
      */
     public static final Program KDL016A = new Program(WebAppId.AT, ProgramIdConsts.KDL016A, "KDL016_1",
-            "/view/kdl/016/a/single.xhtml");
+            "/view/kdl/016/a/index.xhtml");
     public static final Program KDL016B = new Program(WebAppId.AT, ProgramIdConsts.KDL016B, "KDL016_2",
-            "/view/kdl/016/b/single.xhtml");
+            "/view/kdl/016/b/index.xhtml");
     public static final Program KDL016C = new Program(WebAppId.AT, ProgramIdConsts.KDL016C, "KDL016_3",
-            "/view/kdl/016/c/single.xhtml");
+            "/view/kdl/016/c/index.xhtml");
     public static final Program KDL016D = new Program(WebAppId.AT, ProgramIdConsts.KDL016D, "KDL016_4",
-            "/view/kdl/016/d/single.xhtml");
+            "/view/kdl/016/d/index.xhtml");
     public static final Program KDL016E = new Program(WebAppId.AT, ProgramIdConsts.KDL016E, "KDL016_5",
-            "/view/kdl/016/e/single.xhtml");
+            "/view/kdl/016/e/index.xhtml");
     public static final Program KDL016F = new Program(WebAppId.AT, ProgramIdConsts.KDL016F, "KDL016_6",
-            "/view/kdl/016/f/single.xhtml");
+            "/view/kdl/016/f/index.xhtml");
 
     /**
      * KDL017A
