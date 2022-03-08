@@ -2593,8 +2593,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				int executionAtr = nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.
 						ExecutionAtr.AUTOMATIC_EXECUTION.value;
 				//EA4209
-				val startDate = GeneralDateTime.fromString(anyAggrPeriod.get().getPeriod().start().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT);
-				val endDate = GeneralDateTime.fromString(anyAggrPeriod.get().getPeriod().end().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT);
+				val startDate = GeneralDateTime.now();
+				val endDate = GeneralDateTime.now();
 
 				AggrPeriodExcutionImport aggrPeriodExcution = AggrPeriodExcutionImport.builder().companyId(companyId)
 						.aggrId(execId).aggrFrameCode(aggrFrameCode).executionEmpId("System")

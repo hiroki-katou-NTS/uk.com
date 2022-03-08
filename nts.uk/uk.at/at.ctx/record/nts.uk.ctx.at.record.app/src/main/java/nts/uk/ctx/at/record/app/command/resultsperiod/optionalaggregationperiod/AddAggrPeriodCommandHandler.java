@@ -69,7 +69,7 @@ public class AddAggrPeriodCommandHandler
 				targetRepository.addTarget(periodTarget);
 				//EA4209
 				AggrPeriodExcution periodExcution = command.getExecutionCommand().toDomain(companyId, executionEmpId,
-						optionalAggrPeriodID);
+						optionalAggrPeriodID,startDateTime,endDateTime);
 
 				// Add Aggr Period Excution
 				excutionrRepository.addExcution(periodExcution);
@@ -93,7 +93,7 @@ public class AddAggrPeriodCommandHandler
 			targetRepository.addTarget(periodTarget);
 			//EA4209
 			AggrPeriodExcution periodExcution = command.getExecutionCommand().toDomain(companyId, executionEmpId,
-					optionalAggrPeriodID);
+					optionalAggrPeriodID,startDateTime,endDateTime);
 
 			// Add Aggr Period Excution
 			excutionrRepository.addExcution(periodExcution);
