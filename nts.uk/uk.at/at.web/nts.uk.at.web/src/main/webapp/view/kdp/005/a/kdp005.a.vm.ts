@@ -38,7 +38,7 @@ module nts.uk.at.view.kdp005.a {
 			getContractCode: "at/record/stamp/finger/get-contractCode",
             GET_WORKLOCATION:'at/record/kdp/common/get-work-location-regional-time',
             GET_REGION_TIME:'at/record/kdp/common/get-work-place-regional-time',
-            GET_IP_URL:'https://api.ipify.org?format=json'
+            GET_IP_URL:'at/record/stamp/finger/get-ip-address'
 		};
 
 		export class ScreenModel {
@@ -397,33 +397,33 @@ module nts.uk.at.view.kdp005.a {
                 let self = this;
                 const vm = new ko.ViewModel();
                 vm.$window.storage("contractInfo").then(info => {
-                    $.get(API.GET_IP_URL, function(response) {
-                        let getWkLocParam = { contractCode: info.contractCode, worklocationCode: self.worklocationCode, ipv4Address: response.ip };
-                        
+                    vm.$ajax(API.GET_IP_URL, { contractCode: info.contractCode }) .done((response) => {
+                        let getWkLocParam = { contractCode: info.contractCode, worklocationCode: self.worklocationCode, ipv4Address: response.ipaddress };
+
                         vm.$ajax(API.GET_WORKLOCATION, getWkLocParam).done((workLoc: IWorkPlaceRegionalTimeDto) => {
-                                
-                                let {regional, workLocationCD, workLocationName, workPlaceId } = workLoc;
-                                
-                                if (workLoc && workLocationCD != null && workLocationName != null && workPlaceId != null) {
-                                    
+
+                            let {regional, workLocationCD, workLocationName, workPlaceId } = workLoc;
+
+                            if (workLoc && workLocationCD != null && workLocationName != null && workPlaceId != null) {
+
+                                self.workLocationInfo(workLoc);
+                                vm.$window.storage("workLocationInfo", workLoc);
+
+                                dfd.resolve();
+
+                            } else {
+
+                                let workregionParam = { contractCode: info.contractCode, cid: loginInfo.companyId, sid: loginInfo.employeeId, workPlaceId: loginInfo.selectedWP[0] };
+
+                                vm.$ajax(API.GET_REGION_TIME, workregionParam).done((workLoc: IWorkPlaceRegionalTimeDto) => {
+
                                     self.workLocationInfo(workLoc);
                                     vm.$window.storage("workLocationInfo", workLoc);
-                                    
-                                    dfd.resolve();
-                                    
-                                } else {
 
-                                    let workregionParam = { contractCode: info.contractCode, cid: loginInfo.companyId, sid: loginInfo.employeeId, workPlaceId: loginInfo.selectedWP[0] };
-                                    
-                                    vm.$ajax(API.GET_REGION_TIME, workregionParam).done((workLoc: IWorkPlaceRegionalTimeDto) => {
-                                            
-                                            self.workLocationInfo(workLoc);
-                                            vm.$window.storage("workLocationInfo", workLoc);
-                                            
-                                            dfd.resolve();
-                                        });
-                                }
-                            });
+                                    dfd.resolve();
+                                });
+                            }
+                        });
                     });
                 });
                 return dfd.promise();
@@ -1056,34 +1056,9 @@ module nts.uk.at.view.kdp005.a {
 
 					vm.$window.storage("contractInfo")
 						.then((data: any) => {
-							if (data) {
-								const param = {
-									contractCode: data.contractCode,
-									workLocationCode: locationCd
-								}
-								vm.$ajax(API.GET_LOCATION, param)
-									.done((data: IBasyo) => {
-										if (data) {
-											if (data.workLocationName != null || data.workpalceId != null) {
-												self.worklocationCode = locationCd;
-												dfd.resolve();
-											}
-
-											if (data.workpalceId) {
-												if (data.workpalceId.length > 0) {
-													self.modeBasyo(true);
-													self.workplace = data.workpalceId;
-												}
-
-												if (data.workpalceId.length == 0) {
-													self.modeBasyo(false);
-												}
-												dfd.resolve();
-											}
-										} else {
-											dfd.resolve();
-										}
-									});
+							if (data) {                                
+                                self.worklocationCode = locationCd;
+                                dfd.resolve();
 							} else {
 								dfd.resolve();
 							}
