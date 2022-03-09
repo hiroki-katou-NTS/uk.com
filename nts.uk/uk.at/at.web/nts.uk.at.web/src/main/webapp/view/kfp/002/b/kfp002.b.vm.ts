@@ -21,11 +21,10 @@ module nts.uk.at.view.kfp002.b {
             self.$blockui("show");
             self.$ajax(Paths.getAllFormats).done(formats => {
                 self.formats(formats);
-                self.selectedFormatCode(formats[0].code);
             }).fail(error => {
                 self.$dialog.alert(error).then(() => {
                     if (error.messageId == "Msg_1402") {
-                        nts.uk.request.jumpToTopPage();
+                        nts.uk.request.jumpFromDialogOrFrame("com", "view/ccg/008/a/index.xhtml");
                     }
                 });
             }).always(() => {

@@ -91,7 +91,16 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     of: "#A2_5"
                 },
                 showOnStart: false,
-                dismissible: true
+                dismissible: false
+            });
+
+            $("body").click((evt) => {
+                if (evt.target.id != "A2_5"
+                    && evt.target.parentElement.id != "A2_5"
+                    && $(evt.target).closest("#setting-content").length == 0
+                    && ($(evt.target).closest("div[dropdown-for='cbCursorMoveDirection']").length == 0 || $(evt.target).closest("div[dropdown-for='A2_1']").length > 0)) {
+                    $("#setting-content").ntsPopup("hide");
+                }
             });
 
             self.formatCode = ko.observable(null);
@@ -276,11 +285,48 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                                             primitiveValue: self.getPrimitive(monthlyItem.primitive),
                                             required: false
                                         };
+                                        if (monthlyItem.monthlyAttendanceAtr == 4) {
+                                            const constraint = nts.uk.ui.validation.getConstraint(column.constraint.primitiveValue);
+                                            column.constraint = {
+                                                cDisplayType: "Currency",
+                                                min: constraint.min,
+                                                max: constraint.max
+                                            };
+                                            column.columnCssClass = "currency-symbol";
+                                        }
+                                    } else {
+                                        if (monthlyItem.monthlyAttendanceAtr == 1) {
+                                            column.constraint = {
+                                                cDisplayType: "Clock",
+                                                min: "0:00",
+                                                max: "999:59"
+                                            };
+                                        } else if (monthlyItem.monthlyAttendanceAtr == 2) {
+                                            column.constraint = {
+                                                cDisplayType: "Integer",
+                                                min: "0",
+                                                max: "99"
+                                            };
+                                        } else if (monthlyItem.monthlyAttendanceAtr == 3) {
+                                            column.constraint = {
+                                                cDisplayType: "HalfInt",
+                                                min: "0",
+                                                max: "99.5"
+                                            };
+                                        } else if (monthlyItem.monthlyAttendanceAtr == 4) {
+                                            column.constraint = {
+                                                cDisplayType: "Currency",
+                                                min: "0",
+                                                max: "999999999"
+                                            };
+                                            column.columnCssClass = "currency-symbol";
+                                        }
                                     }
                                     self.summaryColumns.push({
                                         columnKey: column.key,
                                         allowSummaries: true,
-                                        summaryCalculator: monthlyItem.monthlyAttendanceAtr == 1 ? 'Time' : 'Number'
+                                        summaryCalculator: monthlyItem.monthlyAttendanceAtr == 1 ? 'Time' : 'Number',
+                                        formatter: monthlyItem.monthlyAttendanceAtr == 4 ? 'Currency' : ''
                                     });
                                 }
                                 self.columns.push(column);
@@ -350,7 +396,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     self.cellStates.push({
                         columnKey: "C" + String(state.itemId),
                         rowId: state.employeeId,
-                        state: state.editState == 0 ? ["mgrid-manual-edit-target"] : ["mgrid-manual-edit-other"]
+                        state: state.editState == 0 ? [nts.uk.ui.mgrid.color.ManualEditTarget] : [nts.uk.ui.mgrid.color.ManualEditOther]
                     });
                 });
                 self.loadGrid();
@@ -395,43 +441,59 @@ module nts.uk.at.view.kfp002.a.viewmodel {
 
         getPrimitive(primitive: number): string {
             switch (primitive) {
+                case 1:
+                case 22: return "AttendanceTime";
+                case 2: return "AttendanceTimeOfExistMinus";
+                case 3: return "WorkTimes";
+                case 12: return "BreakTimeGoOutTimes";
+                case 15: return "TimeWithDayAttr";
                 case 16: return "AttendanceTimeMonth";
                 case 17: return "AttendanceTimeMonthWithMinus";
                 case 18: return "AttendanceDaysMonth";
                 case 19: return "AttendanceTimesMonth";
                 case 20: return "OverTime";
                 case 23: return "MonthlyDays";
+                case 26: return "AttendanceRate";
                 case 27: return "YearlyDays";
-                case 28: return "LeaveGrantDayNumber";
+                case 28: return "AnnualLeaveGrantDay";
                 case 29: return "AnnualLeaveUsedDayNumber";
                 case 30: return "AnnualLeaveRemainingDayNumber";
                 case 31: return "AnnualLeaveRemainingTime";
-                case 32: return "UsedTimes";
+                case 32:
+                case 34:
+                case 43: return "UsedTimes";
                 case 33: return "RemainingTimes";
-                case 34: return "UsedTimes";
-                case 35: return "UsedMinutes";
-                case 36: return "RemainingMinutes";
-                case 37: return "LeaveGrantDayNumber";
-                case 38: return "ReserveLeaveUsedDayNumber";
-                case 39: return "ReserveLeaveRemainingDayNumber";
+                case 35: return "LeaveUsedTime";
+                case 36: return "LeaveRemainingTime";
+                case 37: return "ReserveLeaveGrantDayNumber";
+                case 38:
+                case 46: return "ReserveLeaveUsedDayNumber";
+                case 39:
+                case 47:
+                case 50: return "ReserveLeaveRemainingDayNumber";
                 case 40: return "TimeOfRemain";
                 case 41: return "DayNumberOfRemain";
                 case 42: return "LeaveGrantDayNumber";
-                case 43: return "UsedTimes";
                 case 44: return "TimeOfUse";
                 case 45: return "DayNumberOfUse";
-                case 46: return "ReserveLeaveUsedDayNumber";
-                case 47: return "ReserveLeaveRemainingDayNumber";
                 case 48: return "UsedMinutes";
                 case 49: return "RemainingMinutes";
-                case 50: return "ReserveLeaveRemainingDayNumber";
-                case 51: return "ReserveLeaveUsedDayNumber";
+                case 51: return "AttendanceDaysMonthToTal";
+                case 52:
+                case 53: return "RemainDataDaysMonth";
                 case 54: return "AnyItemAmount";
                 case 55: return "AnyAmountMonth";
                 case 56: return "AnyItemTime";
                 case 57: return "AnyTimeMonth";
                 case 58: return "AnyItemTimes";
                 case 59: return "AnyTimesMonth";
+                case 65: return "AttendanceAmountMonth";
+                case 66: return "OrderNumberMonthly";
+                case 67: return "OrderAmountMonthly";
+                case 69: return "AttendanceAmountDaily";
+                case 70: return "WorkingHoursUnitPrice";
+                case 72: return "LaborContractTime";
+                case 73: return "SuppNumValue";
                 default: return null;
             }
         }
@@ -453,9 +515,9 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                     dataUpdate.items[empId] = cells.map((c: any) => {
                         const monthlyItem = _.find(self.displayFormat().monthlyItems, (mi: any) => mi.attendanceItemId == Number(c.columnKey.substring(1)));
                         let valueType = 1; // time
-                        if (monthlyItem.monthlyAttendanceAtr == 2) valueType = 8;
-                        if (monthlyItem.monthlyAttendanceAtr == 3) valueType = 12;
-                        if (monthlyItem.monthlyAttendanceAtr == 4) valueType = 13;
+                        if (monthlyItem.monthlyAttendanceAtr == 2) valueType = 8; // count
+                        if (monthlyItem.monthlyAttendanceAtr == 3) valueType = 12; // days
+                        if (monthlyItem.monthlyAttendanceAtr == 4) valueType = monthlyItem.primitive == 65 ? 17 : 16; // amount
                         return {
                             itemId: Number(c.columnKey.substring(1)),
                             valueType: valueType,
@@ -489,7 +551,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
 		updateCellIsCal(data:any){
 			_.forEach(data, row => {
 				_.forEach(row.calculatedItemIds, item => {
-					$("#anpGrid").mGrid("setState", row.employeeId, String(item), ["mgrid-calc"]);
+					$("#anpGrid").mGrid("setState", row.employeeId, String(item), [nts.uk.ui.mgrid.color.Calculation]);
 				});
 			});
 		}
@@ -597,7 +659,9 @@ module nts.uk.at.view.kfp002.a.viewmodel {
         loadGrid() {
             let self = this;
             self.isEnableRegister(false);
+            let initSheet = null;
             if ($("#anpGrid").data('mGrid')) {
+                initSheet = $(".mgrid-sheet-button.ui-state-active")[0].innerText;
                 $("#anpGrid").mGrid("destroy");
                 $("#anpGrid").off();
             }
@@ -617,13 +681,13 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 enter: self.cursorDirection() == 0 ? 'below' : 'right',
-                autoFitWindow: false,
+                autoFitWindow: true,
                 preventEditInError: false,
                 hidePrimaryKey: true,
                 userId: __viewContext.user.employeeId,
                 getUserId: function(k) { return String(k); },
                 columns: self.columns(),
-                features: self.getGridFeatures(),
+                features: self.getGridFeatures(initSheet),
                 ntsFeatures: [
                     { name: 'CopyPaste' },
                     { name: 'CellEdit' }
@@ -651,7 +715,7 @@ module nts.uk.at.view.kfp002.a.viewmodel {
             });
         }
 
-        getGridFeatures(): Array<any> {
+        getGridFeatures(initSheet: string): Array<any> {
             let self = this;
             let features: Array<any> = [
                 {
@@ -682,9 +746,10 @@ module nts.uk.at.view.kfp002.a.viewmodel {
                 }
             ];
             if (self.sheets().length > 0) {
+                const sheet = _.find(self.sheets(), s => s.text == initSheet);
                 features.push({
                     name: "Sheet",
-                    initialDisplay: self.sheets()[0].name,
+                    initialDisplay: sheet ? sheet.name : self.sheets()[0].name,
                     sheets: self.sheets()
                 });
             }
