@@ -111,9 +111,6 @@ ul#list-box-search {
 .hide-class {
   display: none;
 }
-.ui-dialog .ui-dialog-content.notice-dialog > .text {
-  width: 270px;
-}
 #img-avatar {
   width: 40px;
   position: relative;

@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive;
 
-import java.util.Optional;
-
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.StampClassifi;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
+
+import java.util.Optional;
 
 /**
  * @author ThanhNX
@@ -100,5 +102,99 @@ public enum LeaveCategory {
 			return Optional.empty();
 		}
 
+	}
+
+	public Optional<ChangeClockAtr> toChangeClockAtr(boolean changesToEntryExit) {
+
+		switch (this) {
+			case WORK:
+			case WORK_HALF:
+			case WORK_FLEX:
+				if (changesToEntryExit)
+					return Optional.of(ChangeClockAtr.OVER_TIME);
+				return Optional.of(ChangeClockAtr.GOING_TO_WORK);
+
+			case EARLY:
+			case VACATION:
+				return Optional.of(ChangeClockAtr.GOING_TO_WORK);
+
+			case LEAVE:
+			case LEAVE_HALF:
+			case LEAVE_OVERTIME:
+			case LEAVE_FLEX:
+				if (changesToEntryExit)
+					return Optional.of(ChangeClockAtr.BRARK);
+				return Optional.of(ChangeClockAtr.WORKING_OUT);
+
+			case GO_OUT:
+				if (changesToEntryExit)
+					return Optional.of(ChangeClockAtr.START_OF_SUPPORT);
+				return Optional.of(ChangeClockAtr.GO_OUT);
+
+			case RETURN:
+				if (changesToEntryExit)
+					return Optional.of(ChangeClockAtr.END_OF_SUPPORT);
+				return Optional.of(ChangeClockAtr.RETURN);
+
+			case WORK_TEMPORARY:
+				return Optional.of(ChangeClockAtr.TEMPORARY_WORK);
+
+			case RETURN_START:
+				return Optional.of(ChangeClockAtr.START_OF_SUPPORT);
+
+			case GO_EN:
+				return Optional.of(ChangeClockAtr.END_OF_SUPPORT);
+
+			case WORK_ENTRANCE:
+			case WORK_HALF_ENTRANCE:
+			case WORK_FLEX_ENTRANCE:
+				return Optional.of(ChangeClockAtr.GOING_TO_WORK);
+
+			case VACATION_ENTRANCE:
+			case EARLY_ENTRANCE:
+				return Optional.of(ChangeClockAtr.START_OF_SUPPORT);
+
+			case TEMPORARY_ENTRANCE:
+				return Optional.of(ChangeClockAtr.TEMPORARY_WORK);
+
+			case RETIRED_TEMPORARY:
+				return Optional.of(ChangeClockAtr.TEMPORARY_LEAVING);
+
+			default:
+				return Optional.empty();
+		}
+	}
+
+	/**
+	 * 計算区分変更対象
+	 */
+	public ChangeCalArt toChangeCalArt() {
+		switch (this) {
+
+			case WORK_FLEX:
+			case LEAVE_FLEX:
+			case WORK_FLEX_ENTRANCE:
+				return ChangeCalArt.FIX;
+
+			case LEAVE_OVERTIME:
+				return ChangeCalArt.OVER_TIME;
+
+			case EARLY:
+			case EARLY_ENTRANCE:
+				return ChangeCalArt.EARLY_APPEARANCE;
+
+			case VACATION:
+			case VACATION_ENTRANCE:
+				return ChangeCalArt.BRARK;
+
+			default:
+				return ChangeCalArt.NONE;
+		}
+	}
+
+	public boolean isHalfDay() {
+		return this == LeaveCategory.WORK_HALF
+				|| this == LeaveCategory.LEAVE_HALF
+				|| this == LeaveCategory.WORK_HALF_ENTRANCE;
 	}
 }

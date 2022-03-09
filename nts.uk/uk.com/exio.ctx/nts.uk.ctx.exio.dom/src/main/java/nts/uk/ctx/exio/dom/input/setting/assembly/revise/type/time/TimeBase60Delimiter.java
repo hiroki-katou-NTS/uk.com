@@ -41,6 +41,18 @@ public enum TimeBase60Delimiter {
 	 * @return
 	 */
 	public Either<ErrorMessage, Integer> toMinutes(String target) {
+		
+		// マイナス符号は一旦取り除いて処理
+		boolean isMinus = target.charAt(0) == '-';
+		
+		String targetPositive = isMinus ? target.substring(1) : target;
+		
+		// マイナス符号を復活
+		return toMinutesPositiveOnly(targetPositive)
+				.map(m -> isMinus ? -m : m);
+	}
+
+	private Either<ErrorMessage, Integer> toMinutesPositiveOnly(String target) {
 		switch(this) {
 		case NONE:
 			return convertNoDelimiter(target);
@@ -64,9 +76,11 @@ public enum TimeBase60Delimiter {
 			target = PaddingMethod.ZERO_BEFORE.complement(target, 4);
 		}
 		
+		int minutePartIndex = target.length() - 2;
+		
 		return convert(
-				target.substring(0, 2),
-				target.substring(2));
+				target.substring(0, minutePartIndex),
+				target.substring(minutePartIndex));
 	}
 	
 	// 区切り文字あり

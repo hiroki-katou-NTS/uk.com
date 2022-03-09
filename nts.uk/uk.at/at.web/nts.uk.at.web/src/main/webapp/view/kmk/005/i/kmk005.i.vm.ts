@@ -213,7 +213,7 @@ module nts.uk.at.view.kmk005.i {
                     if (data && data.selecteds) {
                         let arrCode: any = data.selecteds[0];
                         let code: string = Array.isArray(arrCode) ? arrCode[0] : arrCode;
-                        if (code) {
+                        if (!(_.isEmpty(code))) {
                             model.bid(code);
                             service.getName(code).done(resp => {
                                 if (resp) {

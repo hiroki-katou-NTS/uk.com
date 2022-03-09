@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.ac.child;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.child.ChildNursingLeaveThisMonthFutureSituation;
 import nts.uk.ctx.at.function.dom.adapter.child.GetRemainingNumberCareNurseAdapter;
@@ -26,6 +27,7 @@ public class GetRemainingNumberCareNurseAdapterImpl implements GetRemainingNumbe
             String companyId,
             String employeeId,
             DatePeriod period,
+            YearMonth ym,
             GeneralDate criteriaDate) {
         val result = new ChildNursingLeaveThisMonthFutureSituation();
         val rs206 = getRemainingNumberChildCareNursePub.getChildCareRemNumWithinPeriod(
@@ -41,7 +43,7 @@ public class GetRemainingNumberCareNurseAdapterImpl implements GetRemainingNumbe
                 Optional.empty());
         if (rs206 != null) {
             //[*1]　子の看護介護休暇集計結果．集計期間の休暇情報
-            result.setYm(period.end().yearMonth());
+            result.setYm(ym);
             val aggrperiodinfo = rs206.getAggrperiodinfo();
             if (aggrperiodinfo != null) {
                 val thisYear = aggrperiodinfo.getThisYear().getAggrPeriodUsedNumber();
@@ -77,7 +79,7 @@ public class GetRemainingNumberCareNurseAdapterImpl implements GetRemainingNumbe
     }
 
     @Override
-    public NursingCareLeaveThisMonthFutureSituation getNursingCareLeaveThisMonthFutureSituation(String companyId, String employeeId, DatePeriod period, GeneralDate criteriaDate) {
+    public NursingCareLeaveThisMonthFutureSituation getNursingCareLeaveThisMonthFutureSituation(String companyId, String employeeId, DatePeriod period, YearMonth ym, GeneralDate criteriaDate) {
         val result = new NursingCareLeaveThisMonthFutureSituation();
         val rs207 = getRemainingNumberCarePub.getCareRemNumWithinPeriod(
                 companyId,
@@ -92,7 +94,7 @@ public class GetRemainingNumberCareNurseAdapterImpl implements GetRemainingNumbe
                 Optional.empty());
         if (rs207!= null) {
             //[*1]　子の看護介護休暇集計結果．集計期間の休暇情報
-            result.setYm(period.end().yearMonth());
+            result.setYm(ym);
             val aggrperiodinfo = rs207.getAggrperiodinfo();
             if (aggrperiodinfo != null) {
                 val nextYearOpt = aggrperiodinfo.getNextYear();

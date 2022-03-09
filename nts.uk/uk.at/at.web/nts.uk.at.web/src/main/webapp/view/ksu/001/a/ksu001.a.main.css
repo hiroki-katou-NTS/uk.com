@@ -1,3 +1,7 @@
+#sub-content-main {
+	float: left;	
+}
+
 .header-image-no-event {
     background-size: contain;
     width: 16px;
@@ -60,7 +64,7 @@
 }
 
 .xheader tr:nth-child(2) td {
-	background-color: #F3F3F3;
+	/* background-color: #F3F3F3;  */
 }
 
 .xheader tr:nth-child(2) td span {
@@ -145,8 +149,12 @@
 	float: left;
 }
 
-#oViewModel, #qViewModel {
+#oViewModel {
 	margin-left: 15px;
+}
+
+#qViewModel {
+	margin-left: 12px;
 }
 
 #group-btmode {
@@ -203,7 +211,7 @@
 }
 
 #A4_1_popup {
-	width: 350px
+	width: 350px;
 }
 
 #popup6-radioBox {
@@ -285,7 +293,7 @@
 }
 
 #contain-view-right #group-bt {
-	margin-right: 20px;
+	/*  margin-right: 20px; */
 }
 
 #contain-view-right #group-bt button {
