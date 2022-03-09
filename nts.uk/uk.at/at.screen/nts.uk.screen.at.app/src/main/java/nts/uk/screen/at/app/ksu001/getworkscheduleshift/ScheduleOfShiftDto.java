@@ -135,7 +135,6 @@ public class ScheduleOfShiftDto {
 			this.isActive = true;
 			this.conditionAa1 = true;
 			this.conditionAa2 = true;
-			this.supportStatus = SupportStatus.DO_NOT_GO.getValue();
 			
 			/**※Aa1
 			勤務予定（シフト）dto．実績か == true	           achievements	            ×	
